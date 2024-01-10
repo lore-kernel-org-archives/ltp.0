@@ -4,102 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A00C7C4707B
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 18:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 929E1C47073
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 18:17:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E00C3CE4C8
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 19:06:39 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id BE0793CE511
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 19:16:59 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 951AB3CE4B6
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 19:06:24 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 842BA3C0644
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 19:16:44 +0100 (CET)
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com
+ [IPv6:2607:f8b0:4864:20::d33])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E8231100288F
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 19:06:23 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BB8EB221EB;
- Wed, 10 Jan 2024 18:06:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704909968;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Dtrgv2ijM+nGFKmAZ8yGyZHKgC2qOpbECUmx6BKJzv8=;
- b=B1rnhXjor1P/dcIJDRoBP2k83Ii6erllB1SKenF4/R0OURYRIGiDXTlcdQtC2061Q00ucp
- bQ0ugN62Wv4iPljR0iZBWoFwLV37UNlt7f1rjP7n1sKbNl3B4heqwAxWBJ2bbyjlakOy7b
- OXDymVOFW2aEGzQ9jzRC4bufORjTNzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704909968;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Dtrgv2ijM+nGFKmAZ8yGyZHKgC2qOpbECUmx6BKJzv8=;
- b=NFs958sk+CioLzcfnkeclYISrZEH1C/g8dFsUbQaibJjyAMBvwHVoBj/2UH7JSmKA00Uym
- RujBO4sXRufelgCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704909968;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Dtrgv2ijM+nGFKmAZ8yGyZHKgC2qOpbECUmx6BKJzv8=;
- b=B1rnhXjor1P/dcIJDRoBP2k83Ii6erllB1SKenF4/R0OURYRIGiDXTlcdQtC2061Q00ucp
- bQ0ugN62Wv4iPljR0iZBWoFwLV37UNlt7f1rjP7n1sKbNl3B4heqwAxWBJ2bbyjlakOy7b
- OXDymVOFW2aEGzQ9jzRC4bufORjTNzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704909968;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Dtrgv2ijM+nGFKmAZ8yGyZHKgC2qOpbECUmx6BKJzv8=;
- b=NFs958sk+CioLzcfnkeclYISrZEH1C/g8dFsUbQaibJjyAMBvwHVoBj/2UH7JSmKA00Uym
- RujBO4sXRufelgCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 30835139C6;
- Wed, 10 Jan 2024 18:04:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id Asn8CUTcnmU8FwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 18:04:52 +0000
-Date: Wed, 10 Jan 2024 19:06:20 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>, LTP List <ltp@lists.linux.it>
-Message-ID: <20240110180620.GA1767461@pevik>
-References: <ZZQHPkwg-W2R1ejJ@yuki>
- <20240102210150.GA942817@pevik>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E7CD0200C2D
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 19:16:42 +0100 (CET)
+Received: by mail-io1-xd33.google.com with SMTP id
+ ca18e2360f4ac-7ba9f1cfe94so137412039f.1
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 10:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704910601; x=1705515401;
+ darn=lists.linux.it; 
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=lo1VQ4EJOV7cREJOABitf1hSk8b65EfBHPgIFVrB/OQ=;
+ b=HuGiWIpuGDtM2b3TXG1PRsF+2m9kwyriZwcc9dF5vw4SMfaRFptnz5DJdH35gxiTm6
+ 8pkrV19+3VSmsV1p0wT4aVw0FzGoOoQEd9vawznUKKuy4Uc0M0zZnT8zhlWpOzMkRloW
+ nwxgsFvjXQnNRJsbqFnlHa0ZxdFOCm9oKvaNS1e42ERv5xUtTKnkwB0/bTz1kkzhzRFI
+ t0/FlCM53uXMcZHVcaoMKcndvnhpCdZaYI7xoL1TuYCAANQUPHt5qzR1SbIH1CLtM6oQ
+ 39qHr1MLZCykL0DgVG3QHB6yDtcFNnEiQ1G0pVSDv5NkSHtWteEXuSSFCZ10xP70mxQ5
+ 4BCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1704910601; x=1705515401;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=lo1VQ4EJOV7cREJOABitf1hSk8b65EfBHPgIFVrB/OQ=;
+ b=P12yJgg0oh/SQRFgZAhlTKzfrEPn1c8OBylXQ9QvESFEJL1hv4bKWCfyLO/5Bsb+WA
+ 9coFbF1ZhZA9ewpaZYS2PHyzljhQiux7i+qjDBpnngdixuZUulU+MHv64/opmN8kegmk
+ Ii5AYyX+3k0NL01AFHQ7dFA2/hqw6XwvMESpe3fsKAel59TEeknqXgFLzW7PFeAz+TYd
+ RLtN9/BVjheAqQY+Ue+gpqnIBwdSwnhpJlBEnwjeAvjgm1oLhNOaOUmk5TKI0De1B1Va
+ d+LBK0MRiqKV09Hyf/3oqau7UMX1Uy8zjTD7jjaChq6/rLjJ+A0CE3qOoiLkJNfBkVUE
+ E1nA==
+X-Gm-Message-State: AOJu0YzDcfDkeBCi79ZQnUbzaA5GtqzSQgLKBIXztLoDUywUkmQLYojd
+ BWr65AxPsziZezCkccoVdABgsUqnpqEVtQ==
+X-Google-Smtp-Source: AGHT+IE4EzhYPa/LzL9jotCAfZZS/ofuHIbVxibF33Hm19VsMiO5K5RqGzW8lAvCC04sDZHn23tGgw==
+X-Received: by 2002:a05:6e02:1c0e:b0:35d:4463:5dd2 with SMTP id
+ l14-20020a056e021c0e00b0035d44635dd2mr375930ilh.16.1704910601268; 
+ Wed, 10 Jan 2024 10:16:41 -0800 (PST)
+Received: from [172.16.32.83] ([198.232.126.202])
+ by smtp.gmail.com with ESMTPSA id
+ c21-20020a02c9d5000000b0046b4a8df4f1sm1423121jap.75.2024.01.10.10.16.40
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 10 Jan 2024 10:16:40 -0800 (PST)
+Message-ID: <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
+Date: Wed, 10 Jan 2024 12:23:19 -0600
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240102210150.GA942817@pevik>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-3.50 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+ <20240110133358.GB1698252@pevik>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <20240110133358.GB1698252@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
+ Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,80 +95,112 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
+ Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, all,
+On 1/10/24 07:33, Petr Vorel wrote:
+>> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+>> of people have been happy to consume my work, but getting any of them to post
+>> directly to linux-kernel is like pulling teeth.
+> 
+> Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
+> but I wonder if anybody really test it with LTP. And if yes, I wonder why we
+> don't have reports about tests broken in new API.
 
-> Hi Cyril, all,
-...
-> * .modprobe_module
-> I'm not sure about .modprobe_module [2]. I have draft of v3, but I'm not sure if
-> it's needed. My motivation was to fix setsockopt08.c failure on openSUSE
-> Tumbleweed, but that turns out to be procps package issue due broken symlink
-> (bsc#1217990). Calling modprobe is is needed on these tests:
+I don't expect a lot of nommu users are aware you ever _could_ run LTP on nommu.
 
-It looks like also keyctl05 requires modprobe for part of the functionality
-https://lore.kernel.org/ltp/20240110175931.GA1766165@pevik/
-=> it would be another user of .modprobe_module (unless there is a way to
-trigger automatic loading of dns_resolver module).
+But I'd like to get nommu more regularly supported. You _should_ be able to
+build a musl-linux userspace with busybox or toybox and be able to build a
+recognizable system (even an alpine-alike) which could then get the basic
+plumbing regression tested on qemu even without access to nommu hardware.
 
-Kind regards,
-Petr
+>> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+>> > support him in my free time (review patches, give advices). And if nobody
+>> > stands, this patchset which removes the support in the old API will be merged
+>> > after next LTP release (in the end of January).
+> 
+>> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+>> something?
+> 
+> New C API is documented at our wiki: the API for using in the tests [1]
+> and the library itself [2]. (We also have shell API, but we can ignore it for
+> nommu.)
 
->  ** testcases/network/can/cve/can_bcm01.c
-> 	modprobe on can_bcm01.c is required to fix failures on sle-12-SP3 which uses
-> 	4.4 based kernel (I'm not sure if the problem is on mainline as well):
-> 	can_bcm01.c:44: TBROK: Failed to create vcan device ltp_vcan0: EOPNOTSUPP
-> 	can_bcm01.c:126: TWARN: Failed to remove netdevice ltp_vcan0: ENODEV
+I'm writing a bash-compatible shell, which (thanks to Elliott forwarding
+questions) has involved surprisingly long threads with the bash maintainer about
+weird corner cases neither the man page nor my testing made clear:
 
-> 	Maybe we should call modprobe only on kernel <= 4.4 (to test automatic
-> 	module loading on newer kernels where it's supposed to work), but it would
-> 	not be possible to implement it via .modprobe_module. Adding
-> 	tst_modprobe_module(), which I was asked by Li would allow to call it only
-> 	for older kernel.
+http://lists.landley.net/pipermail/toybox-landley.net/2023-July/029631.html
 
->  ** testcases/kernel/syscalls/madvise/madvise11.c
-> 	.modprobe_module does a lot of simplification here (I should verify, if it
-> 	really detects a bug on kernels with reverted d4ae9916ea29).
+(Alas I try NOT to involve him because when I bring stuff up he keeps FIXING
+BASH which from my point of view just makes it a moving target...)
 
->     BTW madvise11.c writes to /dev/kmsg, which is also done in kmsg01.c (+
-> 	deprecated ltp-pan.c). I'm not sure if it's worth to move this code to
-> 	library when only 2 tests use it, but generic code like this certainly
-> 	belongs to the library. Maybe we could write starting of the test in
-> 	/dev/kmsg in the library for tests which runs under root (getuid() == 0 or
-> 	on tests with .needs_root = 1).
+Anyway, running the shell API on nommu doesn't seem out of the question, but
+probably not any time soon. (The fact the shell isn't finished yet is one of the
+big REASONS I haven't got enough time to take on LTP. That and I haven't started
+writing "awk" and "make" yet". And I need to cycle back to
+https://landley.net/notes-2023.html#12-10-2023 . And after that debian, ala
+https://peertube.debian.social/w/chzkKrMvEczG7qQyjbMKPr and
+https://peertube.debian.social/w/45XroN9CnbYLNLKQH3GD9F . And follow up on
+https://lists.gnu.org/archive/html/coreutils/2023-08/msg00009.html . And...)
 
-> Also I mentioned in the pathset tests which use modprobe but using
-> .modprobe_module is not usable:
+> All files in lib/ directory which include tst_test.h are part of new C API. Main
+> file is lib/tst_test.c.
 
->  ** kvm_pagefault01.c would require module parameters, which can be actually
-> 	useful. But it also uses reloading module (via test specific reload_module()
-> 	function), e.g. something used only in this test.
+safe_fork(), safe_clone(), fork_testrun()...
 
->  ** zram03.c, zram_lib.sh (too complicated check due /sys/class/zram-control
-> 	introduced in v4.2-rc1 vs. the old API, but maybe this could be simplified).
-> 	Again, tst_modprobe_module() would remove code duplication.
+> LTP tests, which has been rewritten to new API include
+> tst_test.h, they are in testcases/ directory. Library has it's own tests (for
+> testing regression in in lib/newlib_tests/*.c.
 
->  ** netstress.c (used only when testing dccp, which is determined by getopts)
-> 	=> use tst_modprobe_module()
+Library meaning... libc? Or does LTP have a library?
 
-> Implementing tst_modprobe_module() in the library would reduce some code, I'll
-> probably implement it.
+> The reason why Cyril wrote in 2016 new C API was that the old API was buggy
+> (tests randomly fails). Tests which are still using the old API (there is
+> ongoing rewrite) include test.h. The old API is not much documented.
+> 
+> Feel free to ask any more question.
 
-> What about .modprobe_module?  We have tests which load kernel modules from LTP
-> via insmod and rmmod via tst_module_load(), tst_module_unload() (at least
-> delete_module03.c needs it, possibly others). Maybe rename them to
-> tst_insmod_module() and tst_rmmod_module() and create tst_module_unload() which
-> would use "modprobe -r" which would be used in can_bcm01.c, madvise11.c,
-> netstress.c, zram03.c and in .modprobe_module (in cleanup phase) if implemented?
-...
+My standard questions are "what does success look like" and "how do I reproduce
+the problem".
 
-Kind regards,
-Petr
+For the first: if there previously was nommu support in LTP, what's the last
+version that's known to work? Is there an existing build/test setup that can be
+reproduced?
+
+For the second... If I try to run LTP on sh2eb (my current nommu test board)
+with the current LTP... do I get a build break? Additional test failures at
+runtime? You talk about "removing nommu support", but... what's the current
+status? (A subset of tests still use the old api...?)
+
+Yes I need to read https://github.com/linux-test-project/ltp/wiki/C-Test-API but
+I also need to know how to build LTP from source. I'm looking at the README's
+list of "autoconf, automake, m4, pkgconf / pkg-config" and wincing
+significantly. (What does gnu/autoconf DO here? Disable tests? I never
+understand why anybody uses that giant hairball of complexity. Half of cross
+compiling is figuring out how to lie to autoconf, and my normal workaround for
+that is to bootstrap a target system and build natively, but while I've gotten
+gcc to run natively on nommu systems, I never _tried_ gnu/autoconf.
+Bootstrapping some subset of LFS on a nommu system so it has the dependencies
+LFS needs to natively build seems like the long way 'round...
+
+(I am not the right guy for "make it work the easy way". I am the guy who will
+step on every land mine between here and there. I code by debugging an empty
+screen. If I don't start from "known working" setup... it would take a while.)
+
+Rob
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
