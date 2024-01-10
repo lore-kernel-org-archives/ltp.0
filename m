@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84FF1C3DA6E
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 04:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E1F2C47074
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 05:41:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B251D3C75D1
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 05:55:22 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5BC873CE49E
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 06:41:08 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D26F3C08CF
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 05:55:06 +0100 (CET)
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com
- [IPv6:2607:f8b0:4864:20::d2a])
+ by picard.linux.it (Postfix) with ESMTPS id 53AAE3CE484
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 06:40:54 +0100 (CET)
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
+ [IPv6:2607:f8b0:4864:20::82b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8D39E601BA6
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 05:55:05 +0100 (CET)
-Received: by mail-io1-xd2a.google.com with SMTP id
- ca18e2360f4ac-7ba903342c2so264079239f.3
- for <ltp@lists.linux.it>; Tue, 09 Jan 2024 20:55:05 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F393D1A027C3
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 06:40:52 +0100 (CET)
+Received: by mail-qt1-x82b.google.com with SMTP id
+ d75a77b69052e-427a3887483so26987111cf.3
+ for <ltp@lists.linux.it>; Tue, 09 Jan 2024 21:40:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704862504; x=1705467304;
+ d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704865251; x=1705470051;
  darn=lists.linux.it; 
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=CzVp5mzD+Fj7TLL+nhaVBHlXPHxADhlYIbeceq4hmZc=;
- b=a+njnJBVBh27VOww6w2X5i+JVM5h7+YR9G7+jqaFLyvO5xa8tbeMyLbvGi5Bi/Kqkv
- HnzJFOn+Dellhd7GYmZZtDwCitX+Pyx73ADQILnEfy4Pp996G3f43hokBcxmwtsECZun
- yjOJ6q5o6vjHB/he90iqkDWcO8ZyLvWtMwwjwEjucgDa/ajsoUP9UWoo/VTGaIikMkp0
- Sk6sTYnUGQMSLNg4NUdDVHKT7y2IKUF0s/Ez4GJ0s7nVKnRK8yWKRz6tekkPcQUCRHJ8
- cDftA8OdU1F9RrgbuHtlV+yDKT0yI7HIHhSMFjNrarcmlHkK3TUfIZ4ceypms/tanxqv
- LMkA==
+ bh=Wl6KplL8vfqqzv9XIvHtOm+qlgn0/YVCH+xMxC333j8=;
+ b=FZaiMPoAoULVsnlA967XKJaGSjZuQeb1qM+d27/mYXKcwoLtEnNIDJ2+6dNDjdNGSA
+ WPmvOqj6Z/2WlXtc+eNJx3A4xNjAjqJZuol8XPpnqT6Av/gzXwzM5wH80cllykmMbfG1
+ ZcX3rmJ5kep8SklXO69txZZQwzQ7hNd5H97XRll0XwN1bRXX4L4tcVFDZuO4RgfxIzgP
+ g9Du8hnjFJ6FXCP1W+0bxTfhDkwzKNFazaxAlWc/pDalpr+oTwat2WhQfAPNzVsAoOn4
+ WCokWLBuglvdxinip5ebrRH5NfEPogB9qk9ZRP+sIOSIwcKO0dyVwzEpu76cVVZ20hPN
+ Ac1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704862504; x=1705467304;
+ d=1e100.net; s=20230601; t=1704865251; x=1705470051;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=CzVp5mzD+Fj7TLL+nhaVBHlXPHxADhlYIbeceq4hmZc=;
- b=N8McE5/aQO4SVz1yZeoONIyOh1EXUsKdTUlFasPaPHDwEET7i+OtOJjFIcBwCbKZqH
- OzGuWEwRpWrzQm1V6aqHt/UPCEWOg+zloVuIzJuZkiyoYY16QA/94Pj/xkCzG1W9fda7
- EdBgRDbtU4QfFASYb++KlqN03wAaVbWCkfprbSeEa7VZA0nJFvuJFieMu6KujfNcsflb
- qYY4XrV0YLlhY4y6RnAg4+0xAwLY5pkGZKzXu4m8bE+1gQSJbOq8UQ6ITh8h520WuI/W
- EVV0ooN4DnJDNGVIYh5BZtQxOCwGcsFMTwhKAlFJXQNBFST8NuiFvGQubP3vB6/MA5Fm
- kOVQ==
-X-Gm-Message-State: AOJu0YxWxCawbTMWwSrXxyIV8/nk+dRWMqpv7eAw/roAevLbfUaKvJdO
- 6TXBzc4xfzQTTYtRxB/CjdA/Tpib/ex9/w==
-X-Google-Smtp-Source: AGHT+IFb0/sWi2xHI0sNc7LK1zG0hgGtr9339MhRxKhI3GiazRtMe5O0d+j7I+eYAKtWStVTQG/jeg==
-X-Received: by 2002:a6b:f307:0:b0:7be:f955:c5d6 with SMTP id
- m7-20020a6bf307000000b007bef955c5d6mr89967ioh.21.1704862503861; 
- Tue, 09 Jan 2024 20:55:03 -0800 (PST)
+ bh=Wl6KplL8vfqqzv9XIvHtOm+qlgn0/YVCH+xMxC333j8=;
+ b=R1wf3vkC9A5hWnkqwPZbniqyubPaBrvHQ3X+gtlusLvu1R2ZvJexX3Kd967faijKQd
+ PTcFLX2SkPEbcsNfCUumsuM0LuIu/xEU7tTFZdHXZqNT6KhMG1vsf9ufBtSo54wYrNM1
+ wFGNQ0SJMnA43wPp2avbBHYNBsTH5CiQuO8Si9hxFCk0JkilPt9dB64whaJTmZdwzFO8
+ N6O4v8CukEQdv59woHYivylQR0vrzhLKgrK1UlittNCM7lWFrJ5fXTiwPdQmY/fTdCbj
+ if9Q4NN0/lvTMoxCsNfB7L78HOaINWi22upn0KGdcYeqVCcl2VbKLPuhvY7Rww3+K6pJ
+ 6sSg==
+X-Gm-Message-State: AOJu0YxsLDN6lLuG2bnzmBU8K2CaDiY6ae9QoT7vs7fE6KjW2TrsKRus
+ zO4V9KnukjpTD0nD6Id64WUuiQ+x6tddOw==
+X-Google-Smtp-Source: AGHT+IE8kWehfow24cvasfCahOteXRnQwmSQ0KUU70I6cj4jEzLcuNUg6AgxZgtVGm7CpYkCj/gbDA==
+X-Received: by 2002:a05:622a:588:b0:429:b76a:c3fa with SMTP id
+ c8-20020a05622a058800b00429b76ac3famr202269qtb.26.1704865251286; 
+ Tue, 09 Jan 2024 21:40:51 -0800 (PST)
 Received: from [172.16.32.83] ([198.232.126.202])
  by smtp.gmail.com with ESMTPSA id
- b21-20020a5d8915000000b007bc3ebacf3esm93045ion.46.2024.01.09.20.55.02
+ cr14-20020a05622a428e00b0042997333149sm1497591qtb.63.2024.01.09.21.40.49
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 09 Jan 2024 20:55:03 -0800 (PST)
-Message-ID: <a1842251-6b0d-6a8d-3781-fd04c66fa471@landley.net>
-Date: Tue, 9 Jan 2024 23:01:40 -0600
+ Tue, 09 Jan 2024 21:40:51 -0800 (PST)
+Message-ID: <b3a8b9db-86ee-47c6-96e2-baa2cba61404@landley.net>
+Date: Tue, 9 Jan 2024 23:47:27 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
 Content-Language: en-US
-To: "Bird, Tim" <Tim.Bird@sony.com>, Cyril Hrubis <chrubis@suse.cz>,
- Petr Vorel <pvorel@suse.cz>
+To: Greg Ungerer <gerg@linux-m68k.org>, Petr Vorel <pvorel@suse.cz>
 References: <20240103015240.1065284-1-pvorel@suse.cz>
  <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
  <20240103114957.GD1073466@pevik>
@@ -76,14 +75,15 @@ References: <20240103015240.1065284-1-pvorel@suse.cz>
  <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
  <20240105131135.GA1484621@pevik>
  <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+ <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
 From: Rob Landley <rob@landley.net>
-In-Reply-To: <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+In-Reply-To: <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
- Re: [PATCH 00/36] Remove UCLINUX from LTP]
+Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
+ Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,235 +98,211 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
 Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
  Linux-sh list <linux-sh@vger.kernel.org>,
  Christophe Lyon <christophe.lyon@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>,
  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- "buildroot@buildroot.org" <buildroot@buildroot.org>,
- Greg Ungerer <gerg@linux-m68k.org>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
- "automated-testing@lists.yoctoproject.org"
- <automated-testing@lists.yoctoproject.org>
+ linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
+ ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 1/9/24 16:37, Bird, Tim wrote:
->> -----Original Message-----
->> From: automated-testing@lists.yoctoproject.org <automated-testing@lists.yoctoproject.org> On Behalf Of Cyril Hrubis
->> Hi!
->> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
->> > support him in my free time (review patches, give advices). And if nobody
->> > stands, this patchset which removes the support in the old API will be merged
->> > after next LTP release (in the end of January).
+
+
+On 1/9/24 17:17, Greg Ungerer wrote:
+> 
+> On 10/1/24 06:24, Rob Landley wrote:
+>> On 1/8/24 03:03, Petr Vorel wrote:
+>>> Hi Rob, all,
+>>>
+>>> [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
+>>> buildroot ]
 >> 
->> Let me highlight this part, we are eager to help anybody who is willing
->> to pick the nommu work, but we do not have resources to drive it.
+>> Hi Niklas!
+>> 
+>>>> Buildroot also apparently has an LTP package selectable in menuconfig:
+>>>
+>>>> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
+>>>
+>>>> But I haven't tried it...
+>>>
+>>> I'm the maintainer of the LTP package in buildroot in my private time.
+>>> BTW I spent quite a lot of time fixing LTP (and some other system packages,
+>>> e.g. nfs-utils) compilation on some old legacy architectures reported via
+>>> http://autobuild.buildroot.net/ I've never used in the reality.
+>>> But I certainly don't have time to drive nommu support in my private time.
+>>> I don't even have an interest, I don't use any nommu device.
+>> 
+>> I do, but I've never done much with LTP, and I have my hands full with toybox
+>> and mkroot already.
+>> 
+>>> Therefore nobody who is not involved in nommu will not find a time to support it
+>>> in LTP (support does not mean just to add the functionality to the new C API,
+>>> but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
+>>> on nommu platforms, it would have to be a hobby project, right?
+>> 
+>> A bunch of people are paid to work on nommu platforms, and I've worked with them
+>> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
+>> insular, and categorically dismissive of their interests.
 > 
-> I have a couple of comments here.
+> I have been involved in the kernel nommu space for 20 years, and sure, there is
+> some of that. But mostly spending some time and effort to get involved pays off.
+> I have seen potential contributors show up with some arrogant attitudes too,
+> so it cuts both ways here.
 > 
-> I think it would be good to give a little bit more time to try to find a helper/maintainer
-> for this.  As Rob pointed out, a lot of embedded Linux developers are using very old
-> kernels (and, if they are using LTP, likely very old versions of LTP).  They are also
-> notorious for not being active on the mailing lists.  So this might take some active
-> outreach to find helpers.  (I realize that this thread is part of this
-> outreach effort).  For this reason, I'd like a few more weeks to try to advertise this
-> need within the embedded Linux community.
+> The m68k community I have been part of has been nothing but welcoming. The mm
+> people have tried hard to keep nommu support up-to-date where almost none of them
+> actually have a vested interest in doing so.
+> 
+> What I have seen is that many companies working in this space just don't want
+> to spend the time and effort to go mainline.
 
-I'd like to point out I have the _interest_ in doing this, and might have some
-ability, but what I don't have is the spare bandwidth.
+Sometimes they don't bother. Sometimes there's a language barrier. Sometimes
+they can't get anything newer than 2.6 working because that's the BSP they were
+given so what's the point of trying to engage upstream? Sometimes they think
+it's their upstream vendor's responsibility. Sometimes they poke their head up
+and get it bit off ala http://landley.net/notes-2008.html#11-12-2008 and then
+that serves as a warning to others for generations. Sometimes the company's
+legal department thinks it's a terrible idea to attract attention from people
+like the SFLC. And sometimes...
 
-I maintain toybox, which Android is using as the command line for both its
-installed systems and its build system (which they call "hermetic" builds,
-shipping their own build dependencies). I'm trying to get Android to build under
-android, which is a slightly heavier lift than turning busybox into a
-development environment capable of building Linux From Scratch starting from
-just 7 packages (Linux, busybox, uclibc, make, gcc, binutils, and bash) was.
 
-Which I _succeeded_ at some years ago, by the way:
+The SmartFusion 2 project I was doing on cortex-m was for a project that was to
+be launched into space on a NASA rocket, and thus fell under ITAR export
+regulations (as the entire US space program has since 1996 due to
+https://en.wikipedia.org/wiki/International_Traffic_in_Arms_Regulations#:~:text=Intelsat
+) and my manager explained it to me as:
 
-  https://landley.net/aboriginal/about.html
+"If I buy a screwdriver from Home Depot, it's just a screwdriver. If I use it to
+turn a screw on a spacecraft it is now a munition and cannot be discussed with
+non-US persons".
 
-The development work I was doing on busybox was why I wound up maintaining that
-project for a bit, and after I got it to work (the project's 1.0 release) other
-projects like Alpine and Adelie Linux took it from there.
+The stupid linked above was:
 
-Unfortunately, this time due to the FSF's spectacular stupidity with GPLv3, the
-Android trademark licensing guidelines do not allow adding any GPL code in
-userspace beyond what was grandfathered in circa 2007. (Busybox predates
-android, yet android does not ship busybox. There's a reason for that.) Even
-those grandfathered in ones they've been steadily replacing (rewriting the
-bluetooth daemon with an apache licensed version, switching the build from gcc
-to llvm, replacing gnu make with kati, and so on...) So I couldn't use ANY
-existing gpl code (like busybox could) and largely had to write a new one of
-everything. (Android was using a lot of bsd implementations, but have you ever
-tried to build the linux kernel with bsd sed or bsd make? Doesn't quite fit.)
+1) cryptography was categorized as a munition until Bill Clinton relaxed it via
+executive order, because 56 bit https was preventing anybody from trusting the
+web with their credit card data.
 
-Anyway, I'm most of the way done now (see http://landley.net/toybox/status.html
-and https://landley.net/toybox/roadmap.html#dev_env) and almost all my toybox
-stuff already supports nommu. I'm even writing a bash replacement shell
-(handling all the <(bash/{weirdness}/{1..7}) I can manage) that has full nommu
-support. To support subshells it does a vfork() and exec of itself, then
-marshalls all the local variable and function state across a pipe to the child
-instance. (The sending side is at
-https://github.com/landley/toybox/blob/master/toys/pending/sh.c#L1360 and the
-receiving side at
-https://github.com/landley/toybox/blob/master/toys/pending/sh.c#L4146 .)
+2) Before that, in 1996, china wanted to launch a satellite into space with
+crypto stuff so they negotiated with the USA to get some cryptographic hardware
+which was delivered/installed under armed guard and escorted to the launch pad.
 
-Speaking of which, I'm still sad that the kernel never implemented a "re-exec
-self" that isn't dependent on /proc and doesn't get confused by chroots, but
-this is another aspect of "linux-kernel does not care when we bring this stuff
-up". The topic comes up from time to time, and some patches have been proposed,
-but it has yet to result in a way to do it that I am aware of:
+3) The rocket blew up on launch, scattering debris over a chinese city (becuase
+of COURSE china's rocket launches go over large population centers). The crypto
+hardware was never recovered.
 
-https://lkml.iu.edu/hypermail/linux/kernel/0612.3/0238.html
-https://lkml.iu.edu/hypermail/linux/kernel/1709.1/03186.html
-https://lkml.iu.edu/hypermail/linux/kernel/2005.2/07206.html
+4) It became a scandal. Congress freaked. And somehow in the scuffle ITAR export
+regulations were extended from cryptography to the entire US space program.
 
-Also, ext4 eventually fixed the ext2/ext3 split, but binfmt_fdpic.c is still a
-separate file and not a couple of if() statements in binfmt_elf.c. Sigh...
+5) The US space program dried up and blew away, as engineers had to choose
+between "I can work on space stuff" and "I can have any sort of professional
+network online". (Because who online is a "non-US person"? That includes canada.
+You can't discuss ITAR subjects with canadians. Or foreign nationals living in
+the USA. You couldn't ask Alan Cox a question about an ITAR project.)
 
-Anyway...
+So that's a whole category that stays very quiet about what they do, and whose
+legal analysis of the GPL is "we're making 3 of these and shooting them into
+space, if you retrieve one from space and demand source code from us we will
+forward you to the relevant federal agencies, and there's a nonzero chance
+you'll be on a black site in Diego Garcia within 24 hours where they will figure
+out how you did that. Or maybe you'll get the code. Who knows?"
 
-> I am not using nommu systems myself, so I'm in a similar position as Petr in terms
-> of it not making much sense for me to be the maintainer.  However, having said that,
-> I have had for a few years now an idea for a background project related to LTP
-> that might make this a more interesting fit for me.  Sony uses NuttX, and is considering
-> using Zephyr in some of our low-end processor systems.  This includes some nommu
-> systems.  For some time now, I have wanted to experiment with using LTP to test
-> the compatibility of those systems with the Linux system APIs.  In full disclosure,
-> I have no idea if this is a feasible or useful idea or not.  But it's something I'd like
-> to investigate.
+Me, I try to avoid that kind of contract...
 
-I've been talking with Rich Felker on IRC about what's involved in porting musl
-on top of RTOS du jour. There was a long list of things he said in IRC that I
-could try to scrape out of the log if you're interested.
+> That is a business decision they
+> make, and that is fine. Heck my work in actual mainline has never really been
+> paid for by any company and I have sunk a _lot_ of time into it. (Full disclosure
+> I did get paid to work on early porting and support - just not geting it into
+> mainline and maintain it there).
 
-The midipix guy also pointed me at https://midipix.org/sys_sysapi.h and
-https://git.midipix.org/mmglue from where he ported musl to Windows.
+The thing is if you post something _once_ it gets ignored, and if you follow-up
+long enough for it to go in (which often takes years), it will then get ripped
+out again a few years later because "we never hear from anybody who uses this".
 
-I also got pointed at
-http://lists.landley.net/pipermail/toybox-landley.net/2024-January/029967.html
-I.E. https://github.com/apexrtos/apex/blob/master/sys/kern/syscall_table.c from
-somebody ELSE who did it for a different RTOS...
+Engaging with the community is signing up for an ongoing commitment.
 
-> I realize that testing non-Linux RTOSes is out-of-scope for LTP.
+>> For example, cortex-m is a large nommu platform on which vendors support Linux
+>> BSPs, but notice how page 8 of
+>> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
+>> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
+>> a 2.6.33 kernel?
+> 
+> Any company/person who follows the route of not working with the linux kernel
+> community to get their work included is going to inevitably get stuck on older
+> versions of everything.
 
-What we've basically been discussing is that "the Linux API" is a de-facto
-standard somewhere beyond posix, which has been implemented a bunch of different
-times now. FreeBSD's Linux emulation layer, Windows Subsystem For Linux, Google
-proposed a Linux layer for Fuchsia
-(https://9to5google.com/2021/02/12/google-fuchsia-os-android-linux-programs-starnix/),
-here's a guy who wrote his own kernel that runs the Linux binaries
-(https://github.com/vvaltchev/tilck
-I.E. https://www.youtube.com/watch?v=Ce1pMlZO_mI )...
+I fight hard to get current versions of everything to work on all my supported
+targets. This requires regular regression testing, and I maintain a pile of
+patches that I post here periodically but I fully admit will probably never go in:
 
-I dunno what subset of the API other operating systems want to support, but
-given that Linus is an empty nester now (all three daughters off to college),
-idle discussions about his eventual retirement have been quietly going on for a
-while now...
+  https://lkml.iu.edu/hypermail/linux/kernel/2302.2/05594.html
 
-> But given that that is
-> something I would like to do, and that it might be relevant to the Linux nommu tests,
-> I would humbly request a few weeks to investigate this before the nommu code is removed.
-> This delay would be to see if it would make sense for me to volunteer to help out with
-> maintaining this otherwise abandoned code.
+(Sigh, now that 6.7 is out I should post the new round...)
 
-I am interested in helping, but I am overstretched as it is.
+People who want to use my kernels as a source are welcome to do so (and I've
+seen my patches quietly show up in other projects), but getting upstream to
+actually _fix_ anything? Every one of those patches had a link to the previous
+time it was posted to the list and ignored.
 
-My mkroot script builds bootable linux systems and regression tests them under
-qemu for a dozen architectures, all in about 350 lines of bash. To make that
-work I created an even _more_ compressed kernel config format, microconfig, so
-adding support for a new target is... well I recently added or1k support and
-everything the script knows about that target is the 3 lines starting at:
+I mean literally, the first of those patches teaches the makefile to autodetect
+whether $PREFIX-cc is gcc or llvm and just do the right thing, and I was told
+that they actively didn't want it to:
 
-https://github.com/landley/toybox/blob/master/mkroot/mkroot.sh#L233
+https://lkml.iu.edu/hypermail/linux/kernel/2302.2/07184.html
 
-That build script is already mostly self-hosting, in that it first builds a
-directory of toybox binaries (line 62) and points the $PATH at those, and then
-builds toybox and a Linux kernel under that. Which works, but cheats:
+That is modern linux-kernel development.
 
-https://github.com/landley/toybox/blob/master/scripts/install.sh#L105
+>> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+>> of people have been happy to consume my work, but getting any of them to post
+>> directly to linux-kernel is like pulling teeth.
+> 
+> I regularly test nommu configurations (as in every kernel rc and release) on m68k
+> and at least every release on other architectures like arm(*) and recently on
+> riscv as well.
 
-The PENDING= command list is the binaries it symlinks out of the host $PATH, the
-ones before the multi-space break are theones I have partial implementations of
-in "pending" (but which aren't in defconfig yet because they're not finished),
-and the ones after the break are the ones I haven't started writing yet. I.E. I
-still need to finish "expr git tr bash sh gzip", and I need to start "awk bison
-flex make". But once I've written all of those, I should be able to run
-mkroot.sh in a mkroot image.
+Sigh, I should start caring about riscv. I added or1k support, I should do
+riscv. (Except I did or1k because I found it in actual hardware, the Orange Pi
+3b's power controller is an or1k asic so I needed an or1k toolchain to build
+some of u-boot's firmware or else the board couldn't reboot, and there was a
+qemu-system-or1k already, which turned into adding it to mkroot via a long
+https://lore.kernel.org/openrisc/ZX1xbs_AGdgLgcx7@antec/ thread with its
+developers. Alas I still can't get qemu to exit (I.E. virtually reboot or power
+off), apparently I need to reinstall my laptop to have a new enough version of
+python 3 to build a newer qemu with. It's on the todo list...)
 
-And THEN I need to get the automated regression test script that makes sure all
-the targets still work under qemu
-(https://github.com/landley/toybox/blob/master/mkroot/testroot.sh about 100
-lines) to also run the toybox test suite in qemu, but that still requires actual
-bash to run the test suite, toysh isn't quite finished yet (and I refuse to trim
-it because I want toysh to implement all those bash features).
+I still have a hard time considering riscv anything other than open source's
+version of Itanium. Promises of ubiquity, but even a 28 nanometer mask is still
+6 figures before you run any wafers and your mask build process is sucking in
+all the black box libraries the fab can sell you, so what does "open" really get
+you here? Cortex-m got cheap when the superh patents expired so Arm didn't have
+to pay royalties to hitachi (renesas?) for the thumb instruction set anymore,
+and they belt those suckers en masse amortizing the up-front costs over ENORMOUS
+volume.
 
-And THEN I need to get it to build Linux From Scratch, which I did back under
-aboriginal linux back in the day:
+And yes, j-core was trying to fix the closed source library and toolchain issues
+back when I was still working with them. Among other things fishing
+Google/skywater's openlane toolchain build out of their magic docker and
+reproducing it under a vanilla debootstrap, ala
+https://github.com/j-core/openlane-vhdl-build (As with most corporate
+clusterfscks, once you dig far enough it turns out you can throw over 90% of it
+out...)
 
-https://landley.net/aboriginal/control-images/
+But these days I'm trying to get toybox to 1.0...
 
-(I have to start over with the current LFS 12.0 stuff because none of those old
-packages know what musl is and autoconf is just craptacular. Alas, LFS is full
-of gnu packages, and gnu is brittle navel-gazing crap. But that's the best
-stress test for my command line stuff handling all the weired evil corner cases
-it throws at them. And it's also why both busybox and toybox seds reply to
---version with "this is not gnu sed 9.0" because of STUPID autoconf regexes...)
+> (*) somewhat annoyingly needing a minor patch to run the versatile qemu platform
+>      I like to test with. But hey, that is on me :-)
 
-mkroot's already got the plumbing to add arbitrary extra behavior to the images
-as build packages, the
-https://github.com/landley/toybox/blob/master/mkroot/packages/tests package is
-just a stub for now but I know what I want to have that do once the shell's ready...
+I would very much like to add more nommu targets to mkroot, can I get your
+build/config info offline? (I tried fishing configs out of buildroot a couple
+years ago, but after the THIRD one where the secret was "use very old versions
+of packages, the current stuff is broken"... And the problems were things like
+"the conversion to device tree deleted a huge chunk of this infrastructure", not
+simple fixes.)
 
-And once I've got it building Linux From Scratch, THEN I need to tackle AOSP,
-which is its own rant, but luckily its maintainer (Elliott Hughes, the "Android
-base OS" maintainer) is the #2 developer on toybox, and I've been discussing
-these plans with him for years:
-
-http://lists.landley.net/pipermail/toybox-landley.net/2016-July/024590.html
-
-But he's waiting for me to get through my todo list before actually trying to
-add anything like a posix container to Android. It's mostly a security thing,
-the ability to create arbitrary code and then execute it is like someone asking
-to bring an open flame onto an airplane:
-
-http://lists.landley.net/pipermail/toybox-landley.net/2019-September/026992.html
-
-The other problem is that for historical reasons each app installs as a
-different UID and a "posix container" would need to be able to install a UID/GID
-_range_ which the container could then remap using container plumbing (and also
-lock the hell DOWN using container plumbing, so its ability to trojan the phone
-and do evil maid attacks and 37 other bad things was NOT ALLOWED, which is some
-design work they seem to be deferring until I wave something otherwise usable at
-them)...
-
-(Ok, and he thinks phones are too slow to build android, that nobody does
-development on anything less powerful than a 32 processor machine with at least
-that many gigs of ram and a fiber connection to the net because nobody at GOOGLE
-has less than that. He has boggled at me about this cultural difference before,
-skip to about 20:30 in
-http://androidbackstage.blogspot.com/2016/07/episode-53-adb-on-adb.html for
-example. Anyway, at some point I need to STRIP DOWN the AOSP build so it takes
-less than forever. Haven't even opened that can of worms yet, but from a
-capability standpoint it's gotta build the whole thing _first_...)
-
-Anyway, the point is this is its own whole ecosystem, which I'd need a staff of
-a dozen people to navigate properly, and there's just me. And now that toybox
-has users, I get support requests coming in...
-
-> I can't promise anything, but I'd like to find out more about:
-> 1) what parts of the current LTP are not supporting nommu (what's currently broken),
-> 2) how much code we're talking about, and
-> 3) what the desired roadmap going forward would be, to continue to support this code.
-
-I am very interested in these things as well. I would like to help, and am happy
-to answer all the questions I can, but caffeine only takes you so far when it
-comes to regular commitments...
+> Regards
+> Greg
 
 Rob
 
