@@ -4,57 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15B2C4725D
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 15:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96322C47073
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 17:59:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 26E253CE4DB
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 16:19:26 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id AEE293CE4F2
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 18:59:52 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D9EE3C4C18
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 15:47:07 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=145.40.73.55; helo=sin.source.kernel.org;
- envelope-from=srs0=/pmw=iu=linux-m68k.org=gerg@kernel.org;
- receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ by picard.linux.it (Postfix) with ESMTPS id C24853C2674
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 18:59:37 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 29F7B14098AB
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 15:47:05 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id 7BA53CE1B5F;
- Wed, 10 Jan 2024 14:46:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0237C433F1;
- Wed, 10 Jan 2024 14:46:37 +0000 (UTC)
-Message-ID: <aef3568c-7894-49c9-a7aa-b3c58b822b91@linux-m68k.org>
-Date: Thu, 11 Jan 2024 00:46:35 +1000
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 39F661A007E5
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 18:59:36 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A61ED222B2;
+ Wed, 10 Jan 2024 17:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704909483;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/wzPaeWBHWMKlwcls44EOJXdWO/Vw7KrHidfljdwdJs=;
+ b=UerlZwEr/VT41tzeM27bBYXASB3i7U0/PYHk1K/jWyhbqa8IfNQIoSlgjh8d1X3EKkIyZm
+ sO9zgqnBgBoKRwVTfsCfGjekyCybqW87M6QfrIEA894HNFxgSozMyFZ0Db4+tarTdQQUQb
+ AMcklFyz9LTfBFs79/exGUDOkP93+5s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704909483;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/wzPaeWBHWMKlwcls44EOJXdWO/Vw7KrHidfljdwdJs=;
+ b=+wi9X1mIYcpua8wEs1Wi9YNpO8LVjZYDI2dUihZbHImCpmYdNxiDy6KDyPD5owsXCvWEPz
+ Dh9s43F1CBt2B0CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704909483;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/wzPaeWBHWMKlwcls44EOJXdWO/Vw7KrHidfljdwdJs=;
+ b=UerlZwEr/VT41tzeM27bBYXASB3i7U0/PYHk1K/jWyhbqa8IfNQIoSlgjh8d1X3EKkIyZm
+ sO9zgqnBgBoKRwVTfsCfGjekyCybqW87M6QfrIEA894HNFxgSozMyFZ0Db4+tarTdQQUQb
+ AMcklFyz9LTfBFs79/exGUDOkP93+5s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704909483;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/wzPaeWBHWMKlwcls44EOJXdWO/Vw7KrHidfljdwdJs=;
+ b=+wi9X1mIYcpua8wEs1Wi9YNpO8LVjZYDI2dUihZbHImCpmYdNxiDy6KDyPD5owsXCvWEPz
+ Dh9s43F1CBt2B0CQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DF328139C6;
+ Wed, 10 Jan 2024 17:58:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id QMlAL6ranmUAFgAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 17:58:02 +0000
+Date: Wed, 10 Jan 2024 18:59:31 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Pengfei Xu <pengfei.xu@intel.com>
+Message-ID: <20240110175931.GA1766165@pevik>
+References: <cover.1704868967.git.pengfei.xu@intel.com>
+ <f60daf00d0de49e54a5389c73c90994e7711a7d1.1704868967.git.pengfei.xu@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
- <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
- <b3a8b9db-86ee-47c6-96e2-baa2cba61404@landley.net>
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <b3a8b9db-86ee-47c6-96e2-baa2cba61404@landley.net>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <f60daf00d0de49e54a5389c73c90994e7711a7d1.1704868967.git.pengfei.xu@intel.com>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UerlZwEr;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+wi9X1mI
+X-Spamd-Result: default: False [0.49 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[38.80%];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: A61ED222B2
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 10 Jan 2024 16:18:54 +0100
-Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
- Remove UCLINUX from LTP]
+Subject: Re: [LTP] [PATCH v1 1/1] keyctl05: increase dns_res_payload data
+ due to kernel code changes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,92 +121,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
- ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Heng Su <heng.su@intel.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Xu,
 
-On 10/1/24 15:47, Rob Landley wrote:
-> On 1/9/24 17:17, Greg Ungerer wrote:
->> On 10/1/24 06:24, Rob Landley wrote:
->>> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
->>> of people have been happy to consume my work, but getting any of them to post
->>> directly to linux-kernel is like pulling teeth.
->>
->> I regularly test nommu configurations (as in every kernel rc and release) on m68k
->> and at least every release on other architectures like arm(*) and recently on
->> riscv as well.
-> 
-> Sigh, I should start caring about riscv. I added or1k support, I should do
-> riscv. (Except I did or1k because I found it in actual hardware, the Orange Pi
-> 3b's power controller is an or1k asic so I needed an or1k toolchain to build
-> some of u-boot's firmware or else the board couldn't reboot, and there was a
-> qemu-system-or1k already, which turned into adding it to mkroot via a long
-> https://lore.kernel.org/openrisc/ZX1xbs_AGdgLgcx7@antec/ thread with its
-> developers. Alas I still can't get qemu to exit (I.E. virtually reboot or power
-> off), apparently I need to reinstall my laptop to have a new enough version of
-> python 3 to build a newer qemu with. It's on the todo list...)
-> 
-> I still have a hard time considering riscv anything other than open source's
-> version of Itanium. Promises of ubiquity, but even a 28 nanometer mask is still
-> 6 figures before you run any wafers and your mask build process is sucking in
-> all the black box libraries the fab can sell you, so what does "open" really get
-> you here? Cortex-m got cheap when the superh patents expired so Arm didn't have
-> to pay royalties to hitachi (renesas?) for the thumb instruction set anymore,
-> and they belt those suckers en masse amortizing the up-front costs over ENORMOUS
-> volume.
-> 
-> And yes, j-core was trying to fix the closed source library and toolchain issues
-> back when I was still working with them. Among other things fishing
-> Google/skywater's openlane toolchain build out of their magic docker and
-> reproducing it under a vanilla debootstrap, ala
-> https://github.com/j-core/openlane-vhdl-build (As with most corporate
-> clusterfscks, once you dig far enough it turns out you can throw over 90% of it
-> out...)
-> 
-> But these days I'm trying to get toybox to 1.0...
-> 
->> (*) somewhat annoyingly needing a minor patch to run the versatile qemu platform
->>       I like to test with. But hey, that is on me :-)
-> 
-> I would very much like to add more nommu targets to mkroot, can I get your
-> build/config info offline? (I tried fishing configs out of buildroot a couple
-> years ago, but after the THIRD one where the secret was "use very old versions
-> of packages, the current stuff is broken"... And the problems were things like
-> "the conversion to device tree deleted a huge chunk of this infrastructure", not
-> simple fixes.)
+Good catch, merged.
 
-Maybe getting a little off-topic here, but I'll just send links here.
-Who knows it might be useful to others.
+BTW any change how to trigger autoload of dns_resolver ?
 
-Recently I have been experimenting with minimal builds, this is a bunch of
-scripts, configs and a couple of patches I currently have:
+# ./keyctl05
+...
+keyctl05.c:99: TCONF: kernel doesn't support key type 'dns_resolver'
+...
 
-     https://github.com/gregungerer/simple-linux
+# modprobe dns_resolver
+# ./keyctl05
+...
+keyctl05.c:143: TPASS: updating 'dns_resolver' key expectedly failed with EOPNOTSUPP
+...
 
-Mostly the kernel builds use the architecture defconfigs, but for armnommu
-versatile it was easier to use a dedicated config and patch:
+We consider modprobe as the last result.
 
-     https://github.com/gregungerer/simple-linux/blob/master/configs/linux-6.6-armnommu-versatile.config
-     https://github.com/gregungerer/simple-linux/blob/master/patches/linux-6.6-armnommu-versatile.patch
-
-Anyway the scripting uses the newest package versions of everything
-(binutils, gcc, linux, uClibc, busybox).
-
-Regards
-Greg
-
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
