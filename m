@@ -4,71 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA048C4707C
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 13:34:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163DEC4707C
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 14:15:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CAE043CE4D0
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 14:34:16 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 527CD3C4C18
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 15:15:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EC5253C4D74
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 14:34:02 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A2BBD3CE49D
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 15:14:59 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 36FB86005FC
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 14:34:01 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BC7B61B60ECF
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 15:14:57 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2B0A7220B0;
- Wed, 10 Jan 2024 13:34:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2EA9C1FD4F;
+ Wed, 10 Jan 2024 14:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704896097;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
+ b=axywVzU0qfXkI0dwkXp2+fXubEDIJhi6loKe7hEmkc3ShqFyIvVAs/4GU9OXR9+MUbmWzQ
+ 2Tjc6bYN7j0JXrPmpJlypsM8+wRYVei7aFYxlVp9XL8o094G3ziXurTe67oDaIH20b8tNc
+ L+r6nB9M6mb8qw+JGCfsXpLURskFp6g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704896097;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
+ b=OxbBVAmgoTmOcYfw7uE2vG0Xe/o4jWPGi3hB1LW68Qe2hl8mffzjDJMGzDWV4/zabNp1G0
+ YUh1dz1o7sXtlCAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704896097;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
+ b=axywVzU0qfXkI0dwkXp2+fXubEDIJhi6loKe7hEmkc3ShqFyIvVAs/4GU9OXR9+MUbmWzQ
+ 2Tjc6bYN7j0JXrPmpJlypsM8+wRYVei7aFYxlVp9XL8o094G3ziXurTe67oDaIH20b8tNc
+ L+r6nB9M6mb8qw+JGCfsXpLURskFp6g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704896097;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
+ b=OxbBVAmgoTmOcYfw7uE2vG0Xe/o4jWPGi3hB1LW68Qe2hl8mffzjDJMGzDWV4/zabNp1G0
+ YUh1dz1o7sXtlCAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4201013786;
- Wed, 10 Jan 2024 13:34:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90FFF1398A;
+ Wed, 10 Jan 2024 14:14:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5hiwDMicnmUSKwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 13:34:00 +0000
-Date: Wed, 10 Jan 2024 14:33:58 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +XwGIWCmnmUgcQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 14:14:56 +0000
+Date: Wed, 10 Jan 2024 15:14:55 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Rob Landley <rob@landley.net>
-Message-ID: <20240110133358.GB1698252@pevik>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+To: Tim Bird <tim.bird@sony.com>
+Message-ID: <20240110141455.GC1698252@pevik>
+References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
  <20240103114957.GD1073466@pevik>
  <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
  <ZZVOhlGPg5KRyS-F@yuki>
  <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
  <20240105131135.GA1484621@pevik>
  <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+ <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2B0A7220B0
-Authentication-Results: smtp-out1.suse.de;
+In-Reply-To: <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.50 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWELVE(0.00)[20];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
- Remove UCLINUX from LTP]
+Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
+ Re: [PATCH 00/36] Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,99 +123,133 @@ Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
  Linux-sh list <linux-sh@vger.kernel.org>,
  Christophe Lyon <christophe.lyon@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Rob Landley <rob@landley.net>,
  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
- Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it,
- automated-testing@lists.yoctoproject.org
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ "buildroot@buildroot.org" <buildroot@buildroot.org>,
+ Greg Ungerer <gerg@linux-m68k.org>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Rob, all,
+Hi Tim, all,
 
-> On 1/8/24 03:03, Petr Vorel wrote:
-> > Hi Rob, all,
+> > -----Original Message-----
+> > From: automated-testing@lists.yoctoproject.org <automated-testing@lists.yoctoproject.org> On Behalf Of Cyril Hrubis
+> > Hi!
+> > > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> > > support him in my free time (review patches, give advices). And if nobody
+> > > stands, this patchset which removes the support in the old API will be merged
+> > > after next LTP release (in the end of January).
 
-> > [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
-> > buildroot ]
+> > Let me highlight this part, we are eager to help anybody who is willing
+> > to pick the nommu work, but we do not have resources to drive it.
 
-> Hi Niklas!
+> I have a couple of comments here.
 
-> >> Buildroot also apparently has an LTP package selectable in menuconfig:
+> I think it would be good to give a little bit more time to try to find a helper/maintainer
+> for this.  As Rob pointed out, a lot of embedded Linux developers are using very old
+> kernels (and, if they are using LTP, likely very old versions of LTP).  They are also
+> notorious for not being active on the mailing lists.  So this might take some active
+> outreach to find helpers.  (I realize that this thread is part of this
+> outreach effort).  For this reason, I'd like a few more weeks to try to advertise this
+> need within the embedded Linux community.
 
-> >> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
+Thank you.
 
-> >> But I haven't tried it...
+> I am not using nommu systems myself, so I'm in a similar position as Petr in terms
+> of it not making much sense for me to be the maintainer.  However, having said that,
+> I have had for a few years now an idea for a background project related to LTP
+> that might make this a more interesting fit for me.  Sony uses NuttX, and is considering
+> using Zephyr in some of our low-end processor systems.  This includes some nommu
+> systems.  For some time now, I have wanted to experiment with using LTP to test
+> the compatibility of those systems with the Linux system APIs.  In full disclosure,
+> I have no idea if this is a feasible or useful idea or not.  But it's something I'd like
+> to investigate.
 
-> > I'm the maintainer of the LTP package in buildroot in my private time.
-> > BTW I spent quite a lot of time fixing LTP (and some other system packages,
-> > e.g. nfs-utils) compilation on some old legacy architectures reported via
-> > http://autobuild.buildroot.net/ I've never used in the reality.
-> > But I certainly don't have time to drive nommu support in my private time.
-> > I don't even have an interest, I don't use any nommu device.
+> I realize that testing non-Linux RTOSes is out-of-scope for LTP.  But given that that is
+> something I would like to do, and that it might be relevant to the Linux nommu tests,
+> I would humbly request a few weeks to investigate this before the nommu code is removed.
+> This delay would be to see if it would make sense for me to volunteer to help out with
+> maintaining this otherwise abandoned code.
 
-> I do, but I've never done much with LTP, and I have my hands full with toybox
-> and mkroot already.
+> I can't promise anything, but I'd like to find out more about:
+> 1) what parts of the current LTP are not supporting nommu (what's currently broken),
+The new C API, I described it in my reply to Rob:
+https://lore.kernel.org/ltp/20240110133358.GB1698252@pevik/
 
-Understand.
+But I don't know whether the code in the old API was even working,
+whole old API suffered with random failures, that was one of the reasons to
+write a new one from the scratch.
 
-> > Therefore nobody who is not involved in nommu will not find a time to support it
-> > in LTP (support does not mean just to add the functionality to the new C API,
-> > but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
-> > on nommu platforms, it would have to be a hobby project, right?
+> 2) how much code we're talking about, and
 
-> A bunch of people are paid to work on nommu platforms, and I've worked with them
-> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
-> insular, and categorically dismissive of their interests.
+There was FORK_OR_VFORK(), which would probably in the new API call vfork() for
+nommu targets (tst_old_flush() is probably not needed in the new API).
 
-> For example, cortex-m is a large nommu platform on which vendors support Linux
-> BSPs, but notice how page 8 of
-> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
-> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
-> a 2.6.33 kernel?
+There is a special handling of getopts in lib/parse_opts.c + -C param for it.
+One would have to integrate these two functions from lib/self_exec.c to the new
+API (and port them to use new API via tst_test.h with #define
+TST_NO_DEFAULT_MAIN):
 
-> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
-> of people have been happy to consume my work, but getting any of them to post
-> directly to linux-kernel is like pulling teeth.
+    void maybe_run_child(void (*child)(), const char *fmt, ...);
+    int self_exec(const char *argv0, const char *fmt, ...);
 
-Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
-but I wonder if anybody really test it with LTP. And if yes, I wonder why we
-don't have reports about tests broken in new API.
+char *child_args is somehow integrated to lib/tst_test.c via -C arg, I haven't
+found what uses that option.
 
-> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
-> > support him in my free time (review patches, give advices). And if nobody
-> > stands, this patchset which removes the support in the old API will be merged
-> > after next LTP release (in the end of January).
+There is m4, that would be usable (m4/ltp-nommu-linux.m4).
 
-> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
-> something?
+Various tests and testsuites were not compiled for nommu (e.g. capget).
 
-New C API is documented at our wiki: the API for using in the tests [1]
-and the library itself [2]. (We also have shell API, but we can ignore it for
-nommu.)
+There is MAP_PRIVATE_EXCEPT_UCLINUX constant to avoid using MAP_PRIVATE on
+uClinux, who knows if this is relevant on nommu?
 
-All files in lib/ directory which include tst_test.h are part of new C API. Main
-file is lib/tst_test.c. LTP tests, which has been rewritten to new API include
-tst_test.h, they are in testcases/ directory. Library has it's own tests (for
-testing regression in in lib/newlib_tests/*.c.
+> 3) what the desired roadmap going forward would be, to continue to support this code.
 
-The reason why Cyril wrote in 2016 new C API was that the old API was buggy
-(tests randomly fails). Tests which are still using the old API (there is
-ongoing rewrite) include test.h. The old API is not much documented.
+All LTP tests are being rewritten to use new API since 2016 (new API was
+introduced in 20160510), thus we are loosing the support with old API going
+away. Sure, I can hold on this patchset and we continue removing the
+functionality tests manually. But sooner or later it's gone.
 
-Feel free to ask any more question.
+One can check files which had special handling in the old API:
+
+$ git grep -l UCLINUX 20160126 -- testcases/ | wc -l
+173
+
+What is supported now:
+
+$ git grep -l UCLINUX  -- testcases/  |wc -l
+55
+
+=> We have now removed nearly 2/3 of it (this means we're arguing about 1/3 of
+the tests which initially somehow supported nommu).
 
 Kind regards,
 Petr
 
-[1] https://github.com/linux-test-project/ltp/wiki/C-Test-API
-[2] https://github.com/linux-test-project/ltp/tree/master/lib
+> Thanks,
+>  -- Tim
 
-> Rob
+
+
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#1271): https://lists.yoctoproject.org/g/automated-testing/message/1271
+> Mute This Topic: https://lists.yoctoproject.org/mt/103541824/3616762
+> Group Owner: automated-testing+owner@lists.yoctoproject.org
+> Unsubscribe: https://lists.yoctoproject.org/g/automated-testing/unsub [pvorel@suse.cz]
+> -=-=-=-=-=-=-=-=-=-=-=-
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
