@@ -4,102 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44785C4707C
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 12:26:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA048C4707C
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 13:34:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DF623CE49E
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 13:26:48 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id CAE043CE4D0
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 14:34:16 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 267233C4C18
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 13:26:34 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id EC5253C4D74
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 14:34:02 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7CCEB1A0BC5A
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 13:26:32 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 36FB86005FC
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 14:34:01 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 699181F88C;
- Wed, 10 Jan 2024 12:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704889592;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
- b=iegckxamOAbBewCppBf+9TCkOvl3TUuXPnRBmImylJVPC8GA93s7LQPKQm9AadX2VfGb1W
- T2M107C4ddHWmtybtUgMu7j5xqsnt470fFdK/YB+tYSvauUu3bkKRhHZGrjGL3FQj4UZkv
- Dup157EPxOYloxKM0lEg+AnUES0ROTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704889592;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
- b=BoF6ThQQ7adD3e2ZKPNOzzVOUsZMiR6xpaQJYqUTxZVN6rj4tsX0Akg2veHvNn5UJuGaf4
- lv742z2xi0P52iCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704889592;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
- b=iegckxamOAbBewCppBf+9TCkOvl3TUuXPnRBmImylJVPC8GA93s7LQPKQm9AadX2VfGb1W
- T2M107C4ddHWmtybtUgMu7j5xqsnt470fFdK/YB+tYSvauUu3bkKRhHZGrjGL3FQj4UZkv
- Dup157EPxOYloxKM0lEg+AnUES0ROTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704889592;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
- b=BoF6ThQQ7adD3e2ZKPNOzzVOUsZMiR6xpaQJYqUTxZVN6rj4tsX0Akg2veHvNn5UJuGaf4
- lv742z2xi0P52iCQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2B0A7220B0;
+ Wed, 10 Jan 2024 13:34:01 +0000 (UTC)
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EB391398A;
- Wed, 10 Jan 2024 12:26:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4201013786;
+ Wed, 10 Jan 2024 13:34:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BQA1DviMnmVvOQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 12:26:32 +0000
-Date: Wed, 10 Jan 2024 13:26:30 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5hiwDMicnmUSKwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 13:34:00 +0000
+Date: Wed, 10 Jan 2024 14:33:58 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240110122630.GA1698252@pevik>
-References: <20231031125114.5879-1-chrubis@suse.cz>
- <20240109192444.GA1670891@pevik> <ZZ54308dqXEv3OBI@yuki>
+To: Rob Landley <rob@landley.net>
+Message-ID: <20240110133358.GB1698252@pevik>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
+ <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZZ54308dqXEv3OBI@yuki>
-Authentication-Results: smtp-out2.suse.de;
+In-Reply-To: <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2B0A7220B0
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-6.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[]; RCVD_COUNT_THREE(0.00)[3];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] sched: add sched sysctl sanity test
+Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
+ Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,67 +81,102 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
+ Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > It looks like the second fix 079be8fc6309 ("sched/rt: Disallow writing invalid
-> > values to sched_rt_period_us") is not in stable, shouldn't be there?
+Hi Rob, all,
 
-> No idea to be honest, the second fix about rejecting invalid values is a
-> minor fix.
+> On 1/8/24 03:03, Petr Vorel wrote:
+> > Hi Rob, all,
 
-IMHO it's a fix of broken functionality. And Greg stated several times that
-stable is not only for security fixes but for other fixes. Therefore I would
-vote for adding it.
+> > [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
+> > buildroot ]
 
-> > > - Fixed a few whitespaces
-> > > - Added second kernel commit into metadata
-> > nit: metadata of the git commit looks ugly, but we would need to agree on better
-> > solution.
+> Hi Niklas!
 
-> Which metadata exactly? This part is after the scisors and will be cut
-> when the patch is applied.
+> >> Buildroot also apparently has an LTP package selectable in menuconfig:
 
-I don't like formatting after "This is a regression test for a commits:".
-It formates like code block (gray background) via using <pre>...</pre> HTML
-tags:
+> >> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
 
-	commit c1fc6484e1fb7cc2481d169bfef129a1b0676abe
-	Author: Cyril Hrubis <chrubis@suse.cz>
-	Date:   Wed Aug 2 17:19:06 2023 +0200
+> >> But I haven't tried it...
 
-	sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+> > I'm the maintainer of the LTP package in buildroot in my private time.
+> > BTW I spent quite a lot of time fixing LTP (and some other system packages,
+> > e.g. nfs-utils) compilation on some old legacy architectures reported via
+> > http://autobuild.buildroot.net/ I've never used in the reality.
+> > But I certainly don't have time to drive nommu support in my private time.
+> > I don't even have an interest, I don't use any nommu device.
 
-	commit 079be8fc630943d9fc70a97807feb73d169ee3fc
-	Author: Cyril Hrubis <chrubis@suse.cz>
-	Date:   Mon Oct 2 13:55:51 2023 +0200
+> I do, but I've never done much with LTP, and I have my hands full with toybox
+> and mkroot already.
 
-	sched/rt: Disallow writing invalid values to sched_rt_period_us
+Understand.
 
-(see a real output in metadata.html)
+> > Therefore nobody who is not involved in nommu will not find a time to support it
+> > in LTP (support does not mean just to add the functionality to the new C API,
+> > but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
+> > on nommu platforms, it would have to be a hobby project, right?
 
-Given we have this in the Tag table below, I found it useless. I mean, we could
-have it, but not in docparse comment /*\ ... */, but in normal C comment /* ... */
-(for reader of the C source, but not in docparse format). Or, if we want to have
-it in docparse output, we could format it as:
+> A bunch of people are paid to work on nommu platforms, and I've worked with them
+> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
+> insular, and categorically dismissive of their interests.
 
- /*\
-...
- * This is a regression test for a commits:
+> For example, cortex-m is a large nommu platform on which vendors support Linux
+> BSPs, but notice how page 8 of
+> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
+> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
+> a 2.6.33 kernel?
 
- * * c1fc6484e1fb ("sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset")
- * * 079be8fc6309 ("sched/rt: Disallow writing invalid values to sched_rt_period_us")
+> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+> of people have been happy to consume my work, but getting any of them to post
+> directly to linux-kernel is like pulling teeth.
 
-This is not unique to this commit, we don't have to solve it now (and it's
-definitely a blocker for this patch). But it would be good to find a consensus
-how the output should look like.
+Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
+but I wonder if anybody really test it with LTP. And if yes, I wonder why we
+don't have reports about tests broken in new API.
+
+> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> > support him in my free time (review patches, give advices). And if nobody
+> > stands, this patchset which removes the support in the old API will be merged
+> > after next LTP release (in the end of January).
+
+> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+> something?
+
+New C API is documented at our wiki: the API for using in the tests [1]
+and the library itself [2]. (We also have shell API, but we can ignore it for
+nommu.)
+
+All files in lib/ directory which include tst_test.h are part of new C API. Main
+file is lib/tst_test.c. LTP tests, which has been rewritten to new API include
+tst_test.h, they are in testcases/ directory. Library has it's own tests (for
+testing regression in in lib/newlib_tests/*.c.
+
+The reason why Cyril wrote in 2016 new C API was that the old API was buggy
+(tests randomly fails). Tests which are still using the old API (there is
+ongoing rewrite) include test.h. The old API is not much documented.
+
+Feel free to ask any more question.
 
 Kind regards,
 Petr
+
+[1] https://github.com/linux-test-project/ltp/wiki/C-Test-API
+[2] https://github.com/linux-test-project/ltp/tree/master/lib
+
+> Rob
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
