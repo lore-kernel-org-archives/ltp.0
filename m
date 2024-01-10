@@ -4,108 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2264FC4707B
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 11:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44785C4707C
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 12:26:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 85B1B3CE49A
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 12:29:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5DF623CE49E
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 13:26:48 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1033E3CB830
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 12:28:54 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 267233C4C18
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 13:26:34 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6D4411000603
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 12:28:53 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7CCEB1A0BC5A
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 13:26:32 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 31F4521E4D;
- Wed, 10 Jan 2024 11:28:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 699181F88C;
+ Wed, 10 Jan 2024 12:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704886132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1704889592;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zC1N4+xn8bItHXb1ft4BFZ05PRSL/yGeWxnEZWd3psk=;
- b=JHobxStz6qPrSyvaAD5av4i/sWq+vebE4nJ5skeyJ8lTYSf20vgIB8F9xOKAYUEevB7/Cv
- YgcKoBI6UI1FF8XwHoWyF3GXI512N99B5gXd8WVQIvGzcl2DUfVn258GXE1n3nxC6aGp+z
- 4FF0dTzGodFevxuKJdEYbgGfPMajAsI=
+ bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
+ b=iegckxamOAbBewCppBf+9TCkOvl3TUuXPnRBmImylJVPC8GA93s7LQPKQm9AadX2VfGb1W
+ T2M107C4ddHWmtybtUgMu7j5xqsnt470fFdK/YB+tYSvauUu3bkKRhHZGrjGL3FQj4UZkv
+ Dup157EPxOYloxKM0lEg+AnUES0ROTE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704886132;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1704889592;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zC1N4+xn8bItHXb1ft4BFZ05PRSL/yGeWxnEZWd3psk=;
- b=BWf42+GlHxyeRX/Ho+dWe3nvUn4Z30yaljmJlFwe+791Rfz2bwwJbTp19o8xfCZPaPjYGR
- rdG19pJJ72mrRrDw==
+ bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
+ b=BoF6ThQQ7adD3e2ZKPNOzzVOUsZMiR6xpaQJYqUTxZVN6rj4tsX0Akg2veHvNn5UJuGaf4
+ lv742z2xi0P52iCQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1704886130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1704889592;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zC1N4+xn8bItHXb1ft4BFZ05PRSL/yGeWxnEZWd3psk=;
- b=1zqfsZRpL80o78eNRVmW+D0R+/UEwllqiS1S6tfzfGcTbLh+S9QEymfO/qu11qPys89wr0
- 0eHGRNpGse7nuIaHva+l07/lUIymqmkpIJkySCBZ8uLvMfqMFOl3Mn1VDZjkXhh4A2tl1n
- 9bUUoho56DiYSXZu9dgtF/LYKsbqEZ0=
+ bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
+ b=iegckxamOAbBewCppBf+9TCkOvl3TUuXPnRBmImylJVPC8GA93s7LQPKQm9AadX2VfGb1W
+ T2M107C4ddHWmtybtUgMu7j5xqsnt470fFdK/YB+tYSvauUu3bkKRhHZGrjGL3FQj4UZkv
+ Dup157EPxOYloxKM0lEg+AnUES0ROTE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1704886130;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1704889592;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zC1N4+xn8bItHXb1ft4BFZ05PRSL/yGeWxnEZWd3psk=;
- b=ak19iiFt12Hm37dMpYHH8aZAkkTYJNBuwCL23WgLKsNrs4lHNYYGIMvll7oitCaYMn7lwX
- aHHR+L1W9UK99YCw==
+ bh=G1s0z/nzY8cJbBKgjgxaxPyiwdc7QBZJouSTHfMbgYU=;
+ b=BoF6ThQQ7adD3e2ZKPNOzzVOUsZMiR6xpaQJYqUTxZVN6rj4tsX0Akg2veHvNn5UJuGaf4
+ lv742z2xi0P52iCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 122F713786;
- Wed, 10 Jan 2024 11:28:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GpFsBHJ/nmWoWQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 10 Jan 2024 11:28:50 +0000
-Date: Wed, 10 Jan 2024 12:29:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZZ5_ipzDWAKldKyO@yuki>
-References: <20231031132756.12799-1-chrubis@suse.cz>
- <20231215190725.GA67360@pevik>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EB391398A;
+ Wed, 10 Jan 2024 12:26:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BQA1DviMnmVvOQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 12:26:32 +0000
+Date: Wed, 10 Jan 2024 13:26:30 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240110122630.GA1698252@pevik>
+References: <20231031125114.5879-1-chrubis@suse.cz>
+ <20240109192444.GA1670891@pevik> <ZZ54308dqXEv3OBI@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231215190725.GA67360@pevik>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 31F4521E4D
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1zqfsZRp;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ak19iiFt
-X-Spamd-Result: default: False [-1.24 / 50.00]; ARC_NA(0.00)[];
+In-Reply-To: <ZZ54308dqXEv3OBI@yuki>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-6.30 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ REPLY(-4.00)[]; RCVD_COUNT_THREE(0.00)[3];
  RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.23)[72.51%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/sched_rr_get_interval: Convert to
- docparse
+Subject: Re: [LTP] [PATCH v2] sched: add sched sysctl sanity test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,31 +111,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Or, if this is not important, could we use just:
-> 
-> /*\
->  * [Description]
-> ....
->  * It is also a regression test for:
->  * * 975e155ed8732 ("sched/rt: Show the 'sched_rr_timeslice' SCHED_RR timeslice tuning knob in milliseconds")
->  * * c7fcb99877f9f ("sched/rt: Fix sysctl_sched_rr_timeslice intial value")
->  */
->
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Hi!
+> > It looks like the second fix 079be8fc6309 ("sched/rt: Disallow writing invalid
+> > values to sched_rt_period_us") is not in stable, shouldn't be there?
 
-I've changed the this as proposed (added empty line and used '-' instead
-of '*' though) and pushed, thanks.
+> No idea to be honest, the second fix about rejecting invalid values is a
+> minor fix.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+IMHO it's a fix of broken functionality. And Greg stated several times that
+stable is not only for security fixes but for other fixes. Therefore I would
+vote for adding it.
+
+> > > - Fixed a few whitespaces
+> > > - Added second kernel commit into metadata
+> > nit: metadata of the git commit looks ugly, but we would need to agree on better
+> > solution.
+
+> Which metadata exactly? This part is after the scisors and will be cut
+> when the patch is applied.
+
+I don't like formatting after "This is a regression test for a commits:".
+It formates like code block (gray background) via using <pre>...</pre> HTML
+tags:
+
+	commit c1fc6484e1fb7cc2481d169bfef129a1b0676abe
+	Author: Cyril Hrubis <chrubis@suse.cz>
+	Date:   Wed Aug 2 17:19:06 2023 +0200
+
+	sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+
+	commit 079be8fc630943d9fc70a97807feb73d169ee3fc
+	Author: Cyril Hrubis <chrubis@suse.cz>
+	Date:   Mon Oct 2 13:55:51 2023 +0200
+
+	sched/rt: Disallow writing invalid values to sched_rt_period_us
+
+(see a real output in metadata.html)
+
+Given we have this in the Tag table below, I found it useless. I mean, we could
+have it, but not in docparse comment /*\ ... */, but in normal C comment /* ... */
+(for reader of the C source, but not in docparse format). Or, if we want to have
+it in docparse output, we could format it as:
+
+ /*\
+...
+ * This is a regression test for a commits:
+
+ * * c1fc6484e1fb ("sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset")
+ * * 079be8fc6309 ("sched/rt: Disallow writing invalid values to sched_rt_period_us")
+
+This is not unique to this commit, we don't have to solve it now (and it's
+definitely a blocker for this patch). But it would be good to find a consensus
+how the output should look like.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
