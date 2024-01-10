@@ -4,82 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F3C0C4707B
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 19:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27BD6C4707B
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 21:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1704921489; h=to : date :
+ message-id : references : in-reply-to : content-id : mime-version :
+ subject : list-id : list-unsubscribe : list-archive : list-post :
+ list-help : list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=zVjU8rS2+nh8+dlkbcs25d7Ahg8XTOIBvY6radJ1tSc=;
+ b=H6tb0Ws9AqXxrnzcrXKebLJ9YkOjj628QVXnI4OCpzLyBtluSAO9n0VMxxyFijM3m9hnW
+ fuzWTtlOCfTGMgAxrUjaaLjuHXMrtV07GtNcbw1PJDy6TZXDz19nQNGRGQvHK9hX6xObyrD
+ qizFAI9qRafPsrreyHnGu2eTQr80ST8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78CA73CE4DD
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 20:17:32 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0A0463CE4D9
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 22:18:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A07B23C8603
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 20:17:17 +0100 (CET)
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com
- [IPv6:2607:f8b0:4864:20::729])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 91B243CB872
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 22:17:46 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=wdc.com
+ (client-ip=216.71.153.144; helo=esa5.hgst.iphmx.com;
+ envelope-from=prvs=732c5d01e=niklas.cassel@wdc.com; receiver=lists.linux.it)
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 225D8200C0B
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 20:17:16 +0100 (CET)
-Received: by mail-qk1-x729.google.com with SMTP id
- af79cd13be357-7831b3a48e7so254201085a.3
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 11:17:15 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 174CC1A00CD8
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 22:17:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+ t=1704921465; x=1736457465;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
+ b=RJvhuPT7b+fZUnlK5n3Xs0VO0LUKj9FJuF0oynQMuDaLVMqTD++scrQz
+ sM4rnh3hh2PE6gdcMPFErA1Qqj86TCLk5IwhhBjBWx4RdH5F25hdFa7Yy
+ MkOmuvmts7ehbkoxllGsIcnSJZ7NKCZrt+MzjJv8Q2nVIZhskiP2zVV2c
+ sUAbheE2EFUAlkTpPM94RxE92U1uOTer8UIDkhklfpA0jwXCxIJsg9gIb
+ yGhUQKB0Aqb8tqG9VboAJe2pA6wIVY+60IOrZUe2aLeomqh2XX4zUTVV3
+ 0Ps9KRWojHLIFAE7KPI3PZta8HxxpA0/ZbPcSbTN+6lfgb17spdYlYNu/ A==;
+X-CSE-ConnectionGUID: FJl8ZIHhTF+so6h/iXswdQ==
+X-CSE-MsgGUID: i9boEqsqS1iE+3bIXWv0RA==
+X-IronPort-AV: E=Sophos;i="6.04,184,1695657600"; 
+   d="scan'208";a="7068362"
+Received: from mail-co1nam11lp2169.outbound.protection.outlook.com (HELO
+ NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.169])
+ by ob1.hgst.iphmx.com with ESMTP; 11 Jan 2024 05:17:36 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iWqqOp8ca60lTyJy7isrvApIB2rS3hXZWt/sb/qMC2jnkJF08zTD8yxPVzATlgtvXp7DyTzsdBq67sEQEiiXhDvaj1ppH2dSvhJePxFG8TxGpBRxA2aSYY4eCc4kee17JcVsZr41yGjPA6iTd5cgytXJahtBxU/um+lipf/lQjUr3wtWtpgzwp1ECnvgYwRfSWNvaV61+zBzb7iTYrDXz3e7lwzp074jkC7Tu/1ihmybVzmdCHwPsacN4LxnXdmBsjQpKdgrUSuAU7rSUzBza5IsI6lbHzCVqQ6w4CdNEu3hABKDwO5N1KM3W3CdVpl/JR5kYgfc1bd3ivVivDkwsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
+ b=TUu05vIM3onw5ShQbuFOI1RgY28nQaZwyyAWfwTDnO+0EHS9hpbOEbspuoGHbjUq6h6w4kNx8FL8vrVpblbnWmL/Gmltodadtumyga/GlWfMA81sMTsag/3tLgfxdQyL8a/B6EnrCalpVi8gK6ufcqlI8Tj6I9A3WOqusmGNWuthb4D7xkT0YihpBEllPCWj+LU0yapMd6JPRmAnfIoQ06r0kdiYpKGiEtXoG7FwsjvAlY3hiSw+oVPbijtdmS0WIqCrPn0XD9WnPBgrQGuB6uN8+2K/9pinUNONbdenJ9F6/FoNWVB7lrSMg/lXYnhftJK1YoeXy6TWmSOB1m2ZkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704914235; x=1705519035;
- darn=lists.linux.it; 
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=dVeghFTfEKwCnZqoaITfL2C3OqeDo91GFIUdqHYe6xU=;
- b=purV+4B7Cn6gM89J5pUzZ4rApfsz7bL+3a1IQWRx1OIqAQdGgF2xt9wtVJHFWAgZua
- 8Ue7I6iYNmqIcFgRZ4qQf++1V0mnAYz8Eyqj+LdikpfC4G8fMUp5FcGJm3FY78qfvnuV
- CmxU6mGC0D7LsQWYf1TV4+7O/jjeyYvPXAolP29vw2da7tUxhAiavz07yHL9h9/Rcxka
- KVakFPaHs91Z8swk80U2ktpYAqEO8s6ygIWBaDdZkcvDrBEoxFTv1FRxzA1oOCYr+gBx
- TzzEHLOykNBeCpiqtR6yxA5UxlbKlzkCdVoiQU8dQR6XLvzLoVFbigQEixkKKa3OTroi
- 1xeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704914235; x=1705519035;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=dVeghFTfEKwCnZqoaITfL2C3OqeDo91GFIUdqHYe6xU=;
- b=MZr30HogdyLyq3L3ePosZwqE5gtkx3lZwiLJuMYY6c3pWKRFSocguj5pLxbwkFmCut
- ppES+oI7hwz6uqV6076gZ1bfUe+FW7NtkYMBIPTxRXY6fHm48s5BA7767xYQamyvI8s5
- CL9YPcNGZkR8+zhffqjvKVKcux1njkNxY27+mqmXkv2iR2hTU7mnReOaWr1b3M+/eEVF
- 3Ok+2BqfLI71Pzyj41Lmu0zPx9x8RdMCFT40a6pP1gBRDS2qNQbfMKdq3gvFCmeji5zO
- WPcBnnBg1oJiEzyP4VCU+heaPi433u+kMrZwgNMqRXCVSXUwbj18Ehn63SUfQvObTCIV
- KV+w==
-X-Gm-Message-State: AOJu0Yyf0OEmyFI4TcUpQqacGMYoiHhGgbAVhJT9CM7FQFbSdxN9yd0V
- i5vSc2vy6c9Ki4hUfO2GQNYhZX1l9WG9jA==
-X-Google-Smtp-Source: AGHT+IFBLddxdTc58MefjwJbm3rpNUvZuoZw01f+SN8/20c7qP+g4Wbqx7KwDLaVAoQ2dQCOfpGd4w==
-X-Received: by 2002:ac8:57cf:0:b0:429:bc00:ef25 with SMTP id
- w15-20020ac857cf000000b00429bc00ef25mr24399qta.122.1704914234609; 
- Wed, 10 Jan 2024 11:17:14 -0800 (PST)
-Received: from [172.16.32.83] ([198.232.126.202])
- by smtp.gmail.com with ESMTPSA id
- hb5-20020a05622a2b4500b0042830a16af7sm1985351qtb.62.2024.01.10.11.17.12
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 10 Jan 2024 11:17:14 -0800 (PST)
-Message-ID: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
-Date: Wed, 10 Jan 2024 13:23:51 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Tim Bird <tim.bird@sony.com>
-References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
+ b=Apx2R6UA9psyo6qiQ8okAERk1tdfio4DQkQvl7hB6TYjvO3OjTsFb1NwoNBiKePbWppq89IN9EcKsEmSvZe0LPCKohR2ani1nwbcXrczoblB3dJnNKCFGqjjPV0xM603AOQG/NDQEfxQTWTft7Wr+B1OhD6DCCVKnmsAasKayBw=
+Received: from BL0PR04MB4850.namprd04.prod.outlook.com (2603:10b6:208:5f::14)
+ by BN0PR04MB8205.namprd04.prod.outlook.com (2603:10b6:408:15c::11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 10 Jan
+ 2024 21:17:33 +0000
+Received: from BL0PR04MB4850.namprd04.prod.outlook.com
+ ([fe80::56e9:30a:5826:79fa]) by BL0PR04MB4850.namprd04.prod.outlook.com
+ ([fe80::56e9:30a:5826:79fa%4]) with mapi id 15.20.7181.018; Wed, 10 Jan 2024
+ 21:17:33 +0000
+To: Rob Landley <rob@landley.net>
+Thread-Topic: [Automated-testing] Call for nommu LTP maintainer [was: Re:
+ [PATCH 00/36] Remove UCLINUX from LTP]
+Thread-Index: AQHaQhGbMR/7MaUknku9yjrZLvyb+bDPsNGAgAO+XIiAACGIAA==
+Date: Wed, 10 Jan 2024 21:17:33 +0000
+Message-ID: <ZZ8JbCPd3rq4u7iG@x1-carbon>
+References: <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
  <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
  <20240105131135.GA1484621@pevik>
  <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
  <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
  <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
  <20240110141455.GC1698252@pevik>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <20240110141455.GC1698252@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR04MB4850:EE_|BN0PR04MB8205:EE_
+x-ms-office365-filtering-correlation-id: 5335a178-577a-4fd1-6f39-08dc12218fbc
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2AGQOBr5hNUb8tiBxtQ5GOq9maAvTLTndTo6bZT9iOc8dokGOH+mkm2WadUmYfC9vCIXqruubLSUIvDJL6nmohm1CIfmTgR0ILnqHYk1S0cYe9fWkjf4jkq/r4xzk7x94uia0LpK/TogjgGnl3/OZ7VuqaFUkxjauxs5axIym4MAHc4MPprkF3isGwZheGQ54YQ97LAD5NgGiy0IcJgaAhjWz/1ETpt2FOx59VyKRoX3Ofxbc2fgOdsYr0Q+DUo9tey9sV8ktY5olOF+K6YPmAHBM1Fk1LE9UiGrjmbT4gHwPCzt41uF2/bCv0CinY0Qek5TtIPl9ro0dpbjCHfj99taeKAIEAvOmibhdTsKgTo9ltI0+s1SqCRH8IIwW/fXB+8nbOm/r7d8DG9H/J1bdev8A87tuBf9fQhT5vwn/yojMBWARKYSx3OCA3JSGqLJxGR9ktdM/lfWLLkKmTNaW/dCT7gMdoDTPSTINkLIjeZIgYlvK9c5IQ0OFkmOqHw68SvxqHxU8Gts4rLWav5S3UNr4lt7Vg312FvFB6ng81Hm1WGffDT7vu/HD6p7yYJn9wmtxX61BfQcGIAt4T138cvkJx47L2ArmVXjWDhU3FzYdlvl2Sh09P7NUGy+gWDW
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL0PR04MB4850.namprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(7916004)(39860400002)(136003)(366004)(346002)(376002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(7416002)(5660300002)(4744005)(8936002)(8676002)(38070700009)(4326008)(2906002)(41300700001)(33716001)(478600001)(38100700002)(122000001)(26005)(76116006)(71200400001)(6512007)(9686003)(91956017)(66946007)(66556008)(6916009)(66446008)(66476007)(6506007)(316002)(54906003)(64756008)(86362001)(6486002)(82960400001);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?E28fibFmwXdzfjbvsy3NJ70Ss2vpnTk7fX7fdEvcjNQCO8rtnwxN7uhKwxIi?=
+ =?us-ascii?Q?Tyus+PcGD33hKuQ0wjvGMKGht0riS693mz/SdJheYma83Z+A7w2EGmvTZXpc?=
+ =?us-ascii?Q?N4QzAZWrdy0pcXsdjpGPBmQvTbrXD4QXbDSGDgnteZyLLG6y4vOUJw0SjvCC?=
+ =?us-ascii?Q?x2OafVEBr04vMLUDW1MtKBgG6UPJqb4HNzCXEeUH/DUTE7pes5eRGXhmbYoj?=
+ =?us-ascii?Q?KnpGGmAhXjb4V3itYCN5tDQhpmR9TvRmyNRPc61nZRaurPEhleeZPmDy5t3/?=
+ =?us-ascii?Q?RZQfZOaumSqWw9eJ0FIPVW/v6JQ6fDq82R8qYW20cJAgBRixnwW7PBaF9bQK?=
+ =?us-ascii?Q?ZGCCi4RxBLGwK1w2D8Dd2anAgpYI4tStnNP3el6i5mXxqHA5rFC6eua/dwBg?=
+ =?us-ascii?Q?lLkcxxIFiBf3N4M6jefswyh0AAGYrA47OYq1wWEvkrLrqBtmpLHPiBUwrO3B?=
+ =?us-ascii?Q?oBFE1bH0ij0JVXaBDEtNsMjHKuvFnEqX8oPN8bU4zHIPJAeOSP3Y8i+meaVa?=
+ =?us-ascii?Q?FAIcIwdhMDWnwrSC9ipRzhZPOL4UG3egeo7XumTAf/2HcNz+7p5w9TrZocak?=
+ =?us-ascii?Q?EbDQRzBRPsbLZrnO464ngQlHuTeAWn7AV+gho5wmuoYLNNehtV4hWoMx0aE1?=
+ =?us-ascii?Q?6w5E3USoAAD4PBX6SrG5dZGo+dqk4T9As3qJwZ59nRwVm2g312OXdZ7YDj54?=
+ =?us-ascii?Q?jlk9Y8KapQ7SIIlBJBao9N4Yi0U2vpz1wpLqXLUiVwFgf56pOQRYa+L4vIBK?=
+ =?us-ascii?Q?iTwu4z8yCARkkhSiGcOwx2D2z9N+hcOvMCfGVBjl6oA3iDWs85keNZbXyF5e?=
+ =?us-ascii?Q?3UGaR4ulIxggbGoUFMqVLS0EzcAQ3gZoayx9x5P5bZyZ888PMliscUhWxgyn?=
+ =?us-ascii?Q?H8ygWqr2yGF1HL50OzY+3Rb5HjNto3ZMbziXnnPRvoMnu0hdy3WVWgTDrEFf?=
+ =?us-ascii?Q?0x3LE66sLM1IETWArasxMnSWYBY0Oaq/uEGrKmUk5Iiwu+UwoboF95OUatZc?=
+ =?us-ascii?Q?Aik//akhIZ0TaQpvadVZCw4x6jy56R7fTSFozlKwq7Qq2ulJmXLM7N0Enzcy?=
+ =?us-ascii?Q?pQgkmI+rhgHAuZeJ6Ye/3Q9U2ldqrhD68ZB3ks48ep+IcuQeeNkeE8/Ur2mf?=
+ =?us-ascii?Q?BWJayDkqArQ679iVuQ9yr/305s/kzW7dFPlbfIUATzNvMgX7YWY5sbzgiQR+?=
+ =?us-ascii?Q?HISMBMRGHgRnVV94pFq58K/VD7o3m2yZIaugz7PiTAXtGTI45rFi8ukq6g2V?=
+ =?us-ascii?Q?Bge2YKMN9eeS55c71eQBmPV91LgCNr4eP2AvHWFPyL34eoBkl/UX7CPEfdHG?=
+ =?us-ascii?Q?lz0HaWe3P0SBC9YENzcCPomHmHgMlY8QN53+9+RF4udFRV/L+ZArTvPUzbz6?=
+ =?us-ascii?Q?HHOiFdJyulIWV3F6Ff3wJPyAQ+3Awr7ATeI98qoNu7U81GfckMu3tnj48Ht0?=
+ =?us-ascii?Q?TZtk2SzG8FhdVfF/1gmDtf15v1/Hh8t/Lp0KEyN1cX3DchLnrXIcZBey2EQ9?=
+ =?us-ascii?Q?ASi4oQ3kO0JRYaaxhjhyk+TvyAAOZe+uTg70XonMgGnQmNenkrF31xHQv1jW?=
+ =?us-ascii?Q?BEav9VRJkojbDe3XHHSUpPHCB6ZCkcU6NWxJ4k5Yp4ytsfM17Ll1tU/ni2cO?=
+ =?us-ascii?Q?pA=3D=3D?=
+Content-ID: <D0EE684CEEEBCB4F9B30529F4622F2BC@namprd04.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: KxJ6n7KptPQC0IsWWxLkAi5SKHDASz8X4e2/XRkPKViPutqtSzW+6HTW4wirjNJnYvmjwdx2XP5oejDJAFahISxlwOHT6EzqKu8TZY1uEc0EMl/54cWBu//GmML1edA0tOZlByb3+zJlXG2DQs59paddfSHsHQf8lAVSFZ0EkxiOBe2bvtA/jepi7bzd6WLyuRyY8PMjvHU0IMqVwOy7f8WBvT/xw4ImOoZHOl7CaoBfDUEhLTYzli/0UTu2O/Lu4Ed94PoKdGAK5VJ8c5SYReFieeZMZHHUlWjYq4oCKOwR6Z9vdqIWLqvYkEY4WNZmK+kQTn1o7nvH4TcL/HviUapOck6ad2Yn61YXOdtnTuBBIxcyEAbH0djms7bcyz/+N7xuZFuEASkWVW/GYETXsg1tidcSh66po/XiB3Qb42vj9bNwI0zPr8QedL80/pTdM/y9iZ+vzGgxr+2m3WIX4bo85QBxyiLX3I5EYed1jgOMzOhOKoX1mpG9jkwrNXzfvnc3c8x5ItpK2Li3kmnJxauiDYtUtYrpBnd+7ELTAgIZ55BnOPo2jJrRo3e2lpyYEEKIEMZVZx82pQC7aiCfpH87c8TxxxklV+7go5EGIs2h2fztUWXRkfjWXHM+QGHc
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB4850.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5335a178-577a-4fd1-6f39-08dc12218fbc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 21:17:33.3934 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RCiK2NIFFVcpTKzw/4XxnJbcNdCPegZHqth4w6rgSbiPQTvBBtfJvZySDNcvEJmLSnXl0wrYZvSJseQh723M/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB8205
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
  Re: [PATCH 00/36] Remove UCLINUX from LTP]
@@ -94,14 +168,15 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Christophe Lyon <christophe.lyon@linaro.org>,
+From: Niklas Cassel via ltp <ltp@lists.linux.it>
+Reply-To: Niklas Cassel <Niklas.Cassel@wdc.com>
+Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
  Randy Dunlap <rdunlap@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
  Geert Uytterhoeven <geert@linux-m68k.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
  linux-riscv <linux-riscv@lists.infradead.org>,
  "buildroot@buildroot.org" <buildroot@buildroot.org>,
@@ -113,158 +188,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 1/10/24 08:14, Petr Vorel wrote:
-> There is MAP_PRIVATE_EXCEPT_UCLINUX constant to avoid using MAP_PRIVATE on
-> uClinux, who knows if this is relevant on nommu?
+On Wed, Jan 10, 2024 at 01:23:51PM -0600, Rob Landley wrote:
+> UCLINUX is a long-dead distro. Linaro died in the dot-com crash and its founder
+> Jeff Dionne moved to Japan for his next gig and never came back. On the way out
+> he handed uclinux off to someone else, who didn't do a lot of work maintaining
+> it. Most of the actual support went "upstream" into various packages (linux and
+> busybox and gcc and so on) before the handoff, so you didn't NEED uclinux anymore.
 
-MAP_PRIVATE creates a copy-on-write mapping, and doing copy-on-write requires an
-MMU. (You mark it read only in the page table, take a fault when they try to
-write, the fault handler allocates a new physical page, copies the old contents
-to it, marks it writeable, and returns allowing the write to complete to the new
-page.)
+s/Linaro/Lineo/
 
-On NOMMU you can MAP_SHARED and MAP_ANON, but not MAP_PRIVATE.
 
-Swap is implemented kind of similarly, except when you recycle pages you mark
-them as neither readable nor writeable in the page table, schedule the page's
-contents to be written to disk, suspend the process so the scheduler can go run
-something else, and then when you get the I/O completion interrupt you mark the
-page free so whatever else needed a page can use it. And then when the process
-tries to access the page the fault handler reverses the process, allocating a
-new physical page and load in the contents back in while the process is
-suspended waiting for that to finish. Can't do that without an MMU either.
-
->> 3) what the desired roadmap going forward would be, to continue to support this code.
-> 
-> All LTP tests are being rewritten to use new API since 2016 (new API was
-> introduced in 20160510), thus we are loosing the support with old API going
-> away. Sure, I can hold on this patchset and we continue removing the
-> functionality tests manually. But sooner or later it's gone.
-
-You can't fork() on nommu because copies of the mappings have different
-addresses, meaning any pointers in the copied mappings would point into the OLD
-mappings (belonging to the parent process), and fixing them up is 100%
-equivalent to the "garbage collection in C" problem. (It's AI-complete. Of the
-C3PO kind, not the "autocorrect with syntax checking" kind.) People get hung up
-on the "it would be very inefficient to do that because no copy-on-write"
-problem and miss the "the child couldn't FUNCTION because its pointer variables
-all contain parent addresses" problem.
-
-So instead vfork() creates a child with all the same memory mappings (a bit like
-a thread) and freezes the parent process until that child discards those
-mappings, either by calling exec() or _exit(). (At which point the parent gets
-un-suspended.)
-
-The child can do quite a lot of setup before calling exec, it already has its
-own filehandle table for example, but it has to be really careful about MEMORY.
-Anything it writes to global variables the parent will see, any changes to the
-heap persist in the parent, and anything it writes to local variables the parent
-MAY see. (Systems have historically differed about whether the vfork() child
-gets a new stack like a thread would, or keeps using the parent's mapping since
-the new stack would be quickly discarded anyway. If you call into a new setup()
-function after vfork() it doesn't matter much either way, but do NOT return from
-the function that called vfork(): either your new stack hasn't got anything to
-return to or you'll corrupt the parent's stack by overwriting its return address
-so when the parent exits from its current function it jumps to la-la land.)
-
-The OTHER fun thing about nommu is you can't run conventional ELF binaries,
-because everything is linked at fixed address. So you might be able to run ONE
-instance of the program as your init task, assuming those addresses were
-available even then, but as soon as you try to run a second one it's a conflict.
-
-The quick and dirty work around is to make PIE binaries, which can relocate
-everything into available space, which works but doesn't scale. The problem with
-ELF PIE is that everything is linked contiguously from a single base pointer,
-meaning your text, rodata, data, and bss segments are all one linear blob. So if
-you run two instances of bash, you've loaded two copies of the test and the
-rodoata. This fills up your memory fast.
-
-AND PIE requires contiguous memory, which nommu is bad at providing because it
-has no page tables to remap stuff. With an mmu it can coalesce scattered
-physical pages into a virtually contiguous range, but without an mmu you can
-have plenty of memory free but in tiny chunks, none big enough to satisfy an
-allocation request.
-
-So they invented FDPIC, which is ELF with FOUR base pointers. Each major section
-(rodata, text, data, and bss) has its own base pointer, so you need to find
-smaller chunks of memory to load them into (and thus it can work on a more
-fragmented system), AND it means that two instances of the same program can
-share the read-only sections (rodata and text) so you only need new copies of
-the writeable segments (data and bss. And the heap. And the stack.)
-
-(The earlier binflt format is an a.out variant with 4 base pointers. FDPIC is
-the ELF version of the same idea. Since a.out went bye-bye binflt is obsolete,
-but not everybody's moved off it yet because so many nommu people are still
-using 2.6 or even earlier, and also using gcc 3.x or 2.x toolchains.)
-
-Oh, the OTHER thing is none of this is deferred allocation, it's all up front.
-On systems with mmu you can populate large empty virtual mappings that read as
-zeroed but it's actually redundant copy-on-write instances of the zero page, and
-when you write to them it takes a soft fault and the fault handler allocates the
-page you dirtied when you dirty it. On nommu, if you want a 4 megabyte mapping
-you have to find 4 contiguous megabyte and allocate it immediately, or else the
-mmap() or malloc() returns failure. (On systems with mmu malloc() almost never
-returns NULL, because you've got virtual address space coming out of your ears
-and if you ACTUALLY run out of memory that's happens way later, the OOM killer
-triggers long after malloc() returned success. But on a nommu system, malloc()
-returns NULL all the time, even if you THINK you have enough memory, because
-what's left is too fragmented to contain a free chunk THAT BIG...)
-
-This impacts the stack. On MMU Linux, the default stack size is 8 megs but it's
-seldom all used. On nommu linux, that would be RIDICULOUS because A) it would
-always be allocated to its full size right up front, B) you'd need contiguous
-memory for it. So instead you set the default stack size when building the
-linker (you can also set it on the ld command line), and common sizes range from
-8k to maybe 256k depending on what you expect to be running. Toybox tries not to
-use more than 16k stack, although I usually test it with 32k on nommu. (There's
-no guard page to tell you when you went off the edge, because no MMU so no page
-faults, but you can check that the stack page at end-16k is still clean at exit
-if you like. Some nommu hardware has range registers, but Linux has never
-supported them that I'm aware of.)
-
-There's not THAT much to learn about NOMMU. It could all be covered in an hour
-presentation at a conference, I expect?
-
-> One can check files which had special handling in the old API:
-> 
-> $ git grep -l UCLINUX 20160126 -- testcases/ | wc -l
-> 173
-> 
-> What is supported now:
-> 
-> $ git grep -l UCLINUX  -- testcases/  |wc -l
-> 55
-
-UCLINUX is a long-dead distro. Linaro died in the dot-com crash and its founder
-Jeff Dionne moved to Japan for his next gig and never came back. On the way out
-he handed uclinux off to someone else, who didn't do a lot of work maintaining
-it. Most of the actual support went "upstream" into various packages (linux and
-busybox and gcc and so on) before the handoff, so you didn't NEED uclinux anymore.
-
-The real nail in the coffin is the inheritor of uclinux never migrated it off
-CVS, and then the disk holding the CVS archive crashed with no backup. He came
-out with a couple more releases after that by monkey-patching the last release's
-filesystem, but the writing was on the wall and it rolled to a stop.
-
-I did a triage of its last release (from 2014) as part of my toybox roadmap:
-
-https://landley.net/toybox/roadmap.html#uclinux
-
-> => We have now removed nearly 2/3 of it (this means we're arguing about 1/3 of
-> the tests which initially somehow supported nommu).
-
-I'd like to get more tests supporting nommu. Possibly the approach here is just
-get ANYTHING working with the new api, and then whack-a-mole more tests in as we go.
-
-Other than lacking fork(), restricted mmap(), different executable packaging,
-smaller stack size, having to actually test the return from malloc(), no page
-faults if you follow a wild pointer, and the complete lack of swap space...
-
-Unless I missed something, it's otherwise normal Linux? (People comfortable with
-threads can still do all their thread tricks on nommu systems. And the Turtle
-board I'm using is an SMP nommu system, they do exist. :)
-
-Rob
+Kind regards,
+Niklas
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
