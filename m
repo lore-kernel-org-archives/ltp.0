@@ -4,159 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27BD6C4707B
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 21:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1704921489; h=to : date :
- message-id : references : in-reply-to : content-id : mime-version :
- subject : list-id : list-unsubscribe : list-archive : list-post :
- list-help : list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=zVjU8rS2+nh8+dlkbcs25d7Ahg8XTOIBvY6radJ1tSc=;
- b=H6tb0Ws9AqXxrnzcrXKebLJ9YkOjj628QVXnI4OCpzLyBtluSAO9n0VMxxyFijM3m9hnW
- fuzWTtlOCfTGMgAxrUjaaLjuHXMrtV07GtNcbw1PJDy6TZXDz19nQNGRGQvHK9hX6xObyrD
- qizFAI9qRafPsrreyHnGu2eTQr80ST8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB5F9C47073
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 22:33:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A0463CE4D9
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 22:18:09 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0AA473CE655
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 23:33:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91B243CB872
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 22:17:46 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=wdc.com
- (client-ip=216.71.153.144; helo=esa5.hgst.iphmx.com;
- envelope-from=prvs=732c5d01e=niklas.cassel@wdc.com; receiver=lists.linux.it)
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5AD8C3CB738
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 23:33:37 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 174CC1A00CD8
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 22:17:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
- t=1704921465; x=1736457465;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
- b=RJvhuPT7b+fZUnlK5n3Xs0VO0LUKj9FJuF0oynQMuDaLVMqTD++scrQz
- sM4rnh3hh2PE6gdcMPFErA1Qqj86TCLk5IwhhBjBWx4RdH5F25hdFa7Yy
- MkOmuvmts7ehbkoxllGsIcnSJZ7NKCZrt+MzjJv8Q2nVIZhskiP2zVV2c
- sUAbheE2EFUAlkTpPM94RxE92U1uOTer8UIDkhklfpA0jwXCxIJsg9gIb
- yGhUQKB0Aqb8tqG9VboAJe2pA6wIVY+60IOrZUe2aLeomqh2XX4zUTVV3
- 0Ps9KRWojHLIFAE7KPI3PZta8HxxpA0/ZbPcSbTN+6lfgb17spdYlYNu/ A==;
-X-CSE-ConnectionGUID: FJl8ZIHhTF+so6h/iXswdQ==
-X-CSE-MsgGUID: i9boEqsqS1iE+3bIXWv0RA==
-X-IronPort-AV: E=Sophos;i="6.04,184,1695657600"; 
-   d="scan'208";a="7068362"
-Received: from mail-co1nam11lp2169.outbound.protection.outlook.com (HELO
- NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.169])
- by ob1.hgst.iphmx.com with ESMTP; 11 Jan 2024 05:17:36 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iWqqOp8ca60lTyJy7isrvApIB2rS3hXZWt/sb/qMC2jnkJF08zTD8yxPVzATlgtvXp7DyTzsdBq67sEQEiiXhDvaj1ppH2dSvhJePxFG8TxGpBRxA2aSYY4eCc4kee17JcVsZr41yGjPA6iTd5cgytXJahtBxU/um+lipf/lQjUr3wtWtpgzwp1ECnvgYwRfSWNvaV61+zBzb7iTYrDXz3e7lwzp074jkC7Tu/1ihmybVzmdCHwPsacN4LxnXdmBsjQpKdgrUSuAU7rSUzBza5IsI6lbHzCVqQ6w4CdNEu3hABKDwO5N1KM3W3CdVpl/JR5kYgfc1bd3ivVivDkwsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
- b=TUu05vIM3onw5ShQbuFOI1RgY28nQaZwyyAWfwTDnO+0EHS9hpbOEbspuoGHbjUq6h6w4kNx8FL8vrVpblbnWmL/Gmltodadtumyga/GlWfMA81sMTsag/3tLgfxdQyL8a/B6EnrCalpVi8gK6ufcqlI8Tj6I9A3WOqusmGNWuthb4D7xkT0YihpBEllPCWj+LU0yapMd6JPRmAnfIoQ06r0kdiYpKGiEtXoG7FwsjvAlY3hiSw+oVPbijtdmS0WIqCrPn0XD9WnPBgrQGuB6uN8+2K/9pinUNONbdenJ9F6/FoNWVB7lrSMg/lXYnhftJK1YoeXy6TWmSOB1m2ZkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b3/x+NVwIv4zyU9+V7EOtGVmS1MiBfeSBIDXCUFJYNY=;
- b=Apx2R6UA9psyo6qiQ8okAERk1tdfio4DQkQvl7hB6TYjvO3OjTsFb1NwoNBiKePbWppq89IN9EcKsEmSvZe0LPCKohR2ani1nwbcXrczoblB3dJnNKCFGqjjPV0xM603AOQG/NDQEfxQTWTft7Wr+B1OhD6DCCVKnmsAasKayBw=
-Received: from BL0PR04MB4850.namprd04.prod.outlook.com (2603:10b6:208:5f::14)
- by BN0PR04MB8205.namprd04.prod.outlook.com (2603:10b6:408:15c::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 10 Jan
- 2024 21:17:33 +0000
-Received: from BL0PR04MB4850.namprd04.prod.outlook.com
- ([fe80::56e9:30a:5826:79fa]) by BL0PR04MB4850.namprd04.prod.outlook.com
- ([fe80::56e9:30a:5826:79fa%4]) with mapi id 15.20.7181.018; Wed, 10 Jan 2024
- 21:17:33 +0000
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 87616200B98
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 23:33:36 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3CC431F8D6;
+ Wed, 10 Jan 2024 22:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704926000;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+ b=QkQWgqz9NjnfgXPVYQcoX+4SPrI7JDaq9ZrREmAxylHoT24zOJZQtyEKmNsfJgNYbQQZ5z
+ BdEcBF4Qcil5Onp+ryTczBatY7VQwdWWjUcprwfFYhAJ4jzB6MwV3fQh2egK6/xelDE21u
+ Cr3GObjh2Eell5VYCP+WcfysVxuuKeA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704926000;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+ b=5HYw1OMBCSBUpNbDqkpWvOZdJgexcKFKN5UAD8NVzy49GQW7do2s5UpMyt8yvM2eJT2aRl
+ 2FVvxrr+YrHrmYAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704926000;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+ b=QkQWgqz9NjnfgXPVYQcoX+4SPrI7JDaq9ZrREmAxylHoT24zOJZQtyEKmNsfJgNYbQQZ5z
+ BdEcBF4Qcil5Onp+ryTczBatY7VQwdWWjUcprwfFYhAJ4jzB6MwV3fQh2egK6/xelDE21u
+ Cr3GObjh2Eell5VYCP+WcfysVxuuKeA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704926000;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+ b=5HYw1OMBCSBUpNbDqkpWvOZdJgexcKFKN5UAD8NVzy49GQW7do2s5UpMyt8yvM2eJT2aRl
+ 2FVvxrr+YrHrmYAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E127139C6;
+ Wed, 10 Jan 2024 22:32:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id Sph8EeMan2VQQQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 22:32:03 +0000
+Date: Wed, 10 Jan 2024 23:33:32 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Rob Landley <rob@landley.net>
-Thread-Topic: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Index: AQHaQhGbMR/7MaUknku9yjrZLvyb+bDPsNGAgAO+XIiAACGIAA==
-Date: Wed, 10 Jan 2024 21:17:33 +0000
-Message-ID: <ZZ8JbCPd3rq4u7iG@x1-carbon>
-References: <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+Message-ID: <20240110223332.GA1797182@pevik>
+References: <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
+ <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
  <20240105131135.GA1484621@pevik>
  <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
- <20240110141455.GC1698252@pevik>
- <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
-In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR04MB4850:EE_|BN0PR04MB8205:EE_
-x-ms-office365-filtering-correlation-id: 5335a178-577a-4fd1-6f39-08dc12218fbc
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2AGQOBr5hNUb8tiBxtQ5GOq9maAvTLTndTo6bZT9iOc8dokGOH+mkm2WadUmYfC9vCIXqruubLSUIvDJL6nmohm1CIfmTgR0ILnqHYk1S0cYe9fWkjf4jkq/r4xzk7x94uia0LpK/TogjgGnl3/OZ7VuqaFUkxjauxs5axIym4MAHc4MPprkF3isGwZheGQ54YQ97LAD5NgGiy0IcJgaAhjWz/1ETpt2FOx59VyKRoX3Ofxbc2fgOdsYr0Q+DUo9tey9sV8ktY5olOF+K6YPmAHBM1Fk1LE9UiGrjmbT4gHwPCzt41uF2/bCv0CinY0Qek5TtIPl9ro0dpbjCHfj99taeKAIEAvOmibhdTsKgTo9ltI0+s1SqCRH8IIwW/fXB+8nbOm/r7d8DG9H/J1bdev8A87tuBf9fQhT5vwn/yojMBWARKYSx3OCA3JSGqLJxGR9ktdM/lfWLLkKmTNaW/dCT7gMdoDTPSTINkLIjeZIgYlvK9c5IQ0OFkmOqHw68SvxqHxU8Gts4rLWav5S3UNr4lt7Vg312FvFB6ng81Hm1WGffDT7vu/HD6p7yYJn9wmtxX61BfQcGIAt4T138cvkJx47L2ArmVXjWDhU3FzYdlvl2Sh09P7NUGy+gWDW
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BL0PR04MB4850.namprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(7916004)(39860400002)(136003)(366004)(346002)(376002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(7416002)(5660300002)(4744005)(8936002)(8676002)(38070700009)(4326008)(2906002)(41300700001)(33716001)(478600001)(38100700002)(122000001)(26005)(76116006)(71200400001)(6512007)(9686003)(91956017)(66946007)(66556008)(6916009)(66446008)(66476007)(6506007)(316002)(54906003)(64756008)(86362001)(6486002)(82960400001);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?E28fibFmwXdzfjbvsy3NJ70Ss2vpnTk7fX7fdEvcjNQCO8rtnwxN7uhKwxIi?=
- =?us-ascii?Q?Tyus+PcGD33hKuQ0wjvGMKGht0riS693mz/SdJheYma83Z+A7w2EGmvTZXpc?=
- =?us-ascii?Q?N4QzAZWrdy0pcXsdjpGPBmQvTbrXD4QXbDSGDgnteZyLLG6y4vOUJw0SjvCC?=
- =?us-ascii?Q?x2OafVEBr04vMLUDW1MtKBgG6UPJqb4HNzCXEeUH/DUTE7pes5eRGXhmbYoj?=
- =?us-ascii?Q?KnpGGmAhXjb4V3itYCN5tDQhpmR9TvRmyNRPc61nZRaurPEhleeZPmDy5t3/?=
- =?us-ascii?Q?RZQfZOaumSqWw9eJ0FIPVW/v6JQ6fDq82R8qYW20cJAgBRixnwW7PBaF9bQK?=
- =?us-ascii?Q?ZGCCi4RxBLGwK1w2D8Dd2anAgpYI4tStnNP3el6i5mXxqHA5rFC6eua/dwBg?=
- =?us-ascii?Q?lLkcxxIFiBf3N4M6jefswyh0AAGYrA47OYq1wWEvkrLrqBtmpLHPiBUwrO3B?=
- =?us-ascii?Q?oBFE1bH0ij0JVXaBDEtNsMjHKuvFnEqX8oPN8bU4zHIPJAeOSP3Y8i+meaVa?=
- =?us-ascii?Q?FAIcIwdhMDWnwrSC9ipRzhZPOL4UG3egeo7XumTAf/2HcNz+7p5w9TrZocak?=
- =?us-ascii?Q?EbDQRzBRPsbLZrnO464ngQlHuTeAWn7AV+gho5wmuoYLNNehtV4hWoMx0aE1?=
- =?us-ascii?Q?6w5E3USoAAD4PBX6SrG5dZGo+dqk4T9As3qJwZ59nRwVm2g312OXdZ7YDj54?=
- =?us-ascii?Q?jlk9Y8KapQ7SIIlBJBao9N4Yi0U2vpz1wpLqXLUiVwFgf56pOQRYa+L4vIBK?=
- =?us-ascii?Q?iTwu4z8yCARkkhSiGcOwx2D2z9N+hcOvMCfGVBjl6oA3iDWs85keNZbXyF5e?=
- =?us-ascii?Q?3UGaR4ulIxggbGoUFMqVLS0EzcAQ3gZoayx9x5P5bZyZ888PMliscUhWxgyn?=
- =?us-ascii?Q?H8ygWqr2yGF1HL50OzY+3Rb5HjNto3ZMbziXnnPRvoMnu0hdy3WVWgTDrEFf?=
- =?us-ascii?Q?0x3LE66sLM1IETWArasxMnSWYBY0Oaq/uEGrKmUk5Iiwu+UwoboF95OUatZc?=
- =?us-ascii?Q?Aik//akhIZ0TaQpvadVZCw4x6jy56R7fTSFozlKwq7Qq2ulJmXLM7N0Enzcy?=
- =?us-ascii?Q?pQgkmI+rhgHAuZeJ6Ye/3Q9U2ldqrhD68ZB3ks48ep+IcuQeeNkeE8/Ur2mf?=
- =?us-ascii?Q?BWJayDkqArQ679iVuQ9yr/305s/kzW7dFPlbfIUATzNvMgX7YWY5sbzgiQR+?=
- =?us-ascii?Q?HISMBMRGHgRnVV94pFq58K/VD7o3m2yZIaugz7PiTAXtGTI45rFi8ukq6g2V?=
- =?us-ascii?Q?Bge2YKMN9eeS55c71eQBmPV91LgCNr4eP2AvHWFPyL34eoBkl/UX7CPEfdHG?=
- =?us-ascii?Q?lz0HaWe3P0SBC9YENzcCPomHmHgMlY8QN53+9+RF4udFRV/L+ZArTvPUzbz6?=
- =?us-ascii?Q?HHOiFdJyulIWV3F6Ff3wJPyAQ+3Awr7ATeI98qoNu7U81GfckMu3tnj48Ht0?=
- =?us-ascii?Q?TZtk2SzG8FhdVfF/1gmDtf15v1/Hh8t/Lp0KEyN1cX3DchLnrXIcZBey2EQ9?=
- =?us-ascii?Q?ASi4oQ3kO0JRYaaxhjhyk+TvyAAOZe+uTg70XonMgGnQmNenkrF31xHQv1jW?=
- =?us-ascii?Q?BEav9VRJkojbDe3XHHSUpPHCB6ZCkcU6NWxJ4k5Yp4ytsfM17Ll1tU/ni2cO?=
- =?us-ascii?Q?pA=3D=3D?=
-Content-ID: <D0EE684CEEEBCB4F9B30529F4622F2BC@namprd04.prod.outlook.com>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+ <20240110133358.GB1698252@pevik>
+ <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: KxJ6n7KptPQC0IsWWxLkAi5SKHDASz8X4e2/XRkPKViPutqtSzW+6HTW4wirjNJnYvmjwdx2XP5oejDJAFahISxlwOHT6EzqKu8TZY1uEc0EMl/54cWBu//GmML1edA0tOZlByb3+zJlXG2DQs59paddfSHsHQf8lAVSFZ0EkxiOBe2bvtA/jepi7bzd6WLyuRyY8PMjvHU0IMqVwOy7f8WBvT/xw4ImOoZHOl7CaoBfDUEhLTYzli/0UTu2O/Lu4Ed94PoKdGAK5VJ8c5SYReFieeZMZHHUlWjYq4oCKOwR6Z9vdqIWLqvYkEY4WNZmK+kQTn1o7nvH4TcL/HviUapOck6ad2Yn61YXOdtnTuBBIxcyEAbH0djms7bcyz/+N7xuZFuEASkWVW/GYETXsg1tidcSh66po/XiB3Qb42vj9bNwI0zPr8QedL80/pTdM/y9iZ+vzGgxr+2m3WIX4bo85QBxyiLX3I5EYed1jgOMzOhOKoX1mpG9jkwrNXzfvnc3c8x5ItpK2Li3kmnJxauiDYtUtYrpBnd+7ELTAgIZ55BnOPo2jJrRo3e2lpyYEEKIEMZVZx82pQC7aiCfpH87c8TxxxklV+7go5EGIs2h2fztUWXRkfjWXHM+QGHc
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB4850.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5335a178-577a-4fd1-6f39-08dc12218fbc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 21:17:33.3934 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RCiK2NIFFVcpTKzw/4XxnJbcNdCPegZHqth4w6rgSbiPQTvBBtfJvZySDNcvEJmLSnXl0wrYZvSJseQh723M/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB8205
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.50 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWELVE(0.00)[19];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[gnu.org:url];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
- Re: [PATCH 00/36] Remove UCLINUX from LTP]
+Subject: Re: [LTP] Call for nommu LTP maintainer [was: Re: [PATCH 00/36]
+ Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -168,38 +121,134 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Niklas Cassel via ltp <ltp@lists.linux.it>
-Reply-To: Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
  Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- "buildroot@buildroot.org" <buildroot@buildroot.org>,
- Greg Ungerer <gerg@linux-m68k.org>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
- "automated-testing@lists.yoctoproject.org"
- <automated-testing@lists.yoctoproject.org>
+ linux-riscv <linux-riscv@lists.infradead.org>, buildroot@buildroot.org,
+ Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jan 10, 2024 at 01:23:51PM -0600, Rob Landley wrote:
-> UCLINUX is a long-dead distro. Linaro died in the dot-com crash and its founder
-> Jeff Dionne moved to Japan for his next gig and never came back. On the way out
-> he handed uclinux off to someone else, who didn't do a lot of work maintaining
-> it. Most of the actual support went "upstream" into various packages (linux and
-> busybox and gcc and so on) before the handoff, so you didn't NEED uclinux anymore.
+> On 1/10/24 07:33, Petr Vorel wrote:
+> >> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+> >> of people have been happy to consume my work, but getting any of them to post
+> >> directly to linux-kernel is like pulling teeth.
 
-s/Linaro/Lineo/
+> > Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
+> > but I wonder if anybody really test it with LTP. And if yes, I wonder why we
+> > don't have reports about tests broken in new API.
 
+> I don't expect a lot of nommu users are aware you ever _could_ run LTP on nommu.
+
+> But I'd like to get nommu more regularly supported. You _should_ be able to
+> build a musl-linux userspace with busybox or toybox and be able to build a
+> recognizable system (even an alpine-alike) which could then get the basic
+> plumbing regression tested on qemu even without access to nommu hardware.
+
+> >> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> >> > support him in my free time (review patches, give advices). And if nobody
+> >> > stands, this patchset which removes the support in the old API will be merged
+> >> > after next LTP release (in the end of January).
+
+> >> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+> >> something?
+
+> > New C API is documented at our wiki: the API for using in the tests [1]
+> > and the library itself [2]. (We also have shell API, but we can ignore it for
+> > nommu.)
+
+> I'm writing a bash-compatible shell, which (thanks to Elliott forwarding
+> questions) has involved surprisingly long threads with the bash maintainer about
+> weird corner cases neither the man page nor my testing made clear:
+
+> http://lists.landley.net/pipermail/toybox-landley.net/2023-July/029631.html
+
+> (Alas I try NOT to involve him because when I bring stuff up he keeps FIXING
+> BASH which from my point of view just makes it a moving target...)
+
+> Anyway, running the shell API on nommu doesn't seem out of the question, but
+> probably not any time soon. (The fact the shell isn't finished yet is one of the
+> big REASONS I haven't got enough time to take on LTP. That and I haven't started
+> writing "awk" and "make" yet". And I need to cycle back to
+> https://landley.net/notes-2023.html#12-10-2023 . And after that debian, ala
+> https://peertube.debian.social/w/chzkKrMvEczG7qQyjbMKPr and
+> https://peertube.debian.social/w/45XroN9CnbYLNLKQH3GD9F . And follow up on
+> https://lists.gnu.org/archive/html/coreutils/2023-08/msg00009.html . And...)
+
+> > All files in lib/ directory which include tst_test.h are part of new C API. Main
+> > file is lib/tst_test.c.
+
+> safe_fork(), safe_clone(), fork_testrun()...
+
+> > LTP tests, which has been rewritten to new API include
+> > tst_test.h, they are in testcases/ directory. Library has it's own tests (for
+> > testing regression in in lib/newlib_tests/*.c.
+
+> Library meaning... libc? Or does LTP have a library?
+
+Yes, LTP has a library (lib/libltp.a). That's what I meant here and in all my
+text. So far I did not mention anything libc specific.
+
+> > The reason why Cyril wrote in 2016 new C API was that the old API was buggy
+> > (tests randomly fails). Tests which are still using the old API (there is
+> > ongoing rewrite) include test.h. The old API is not much documented.
+
+> > Feel free to ask any more question.
+
+> My standard questions are "what does success look like" and "how do I reproduce
+> the problem".
+
+> For the first: if there previously was nommu support in LTP, what's the last
+> version that's known to work? Is there an existing build/test setup that can be
+> reproduced?
+
+I have no idea whether it worked. Best would be to ask Mike Frysinger (the
+author of m4/ltp-nommu-linux.m4). The code was added 14 years ago, even before
+all of the current maintainers were involved.
+
+> For the second... If I try to run LTP on sh2eb (my current nommu test board)
+> with the current LTP... do I get a build break? Additional test failures at
+> runtime? You talk about "removing nommu support", but... what's the current
+> status? (A subset of tests still use the old api...?)
+
+Yes, subset of the tests which use the old API (git grep UCLINUX).
+
+> Yes I need to read https://github.com/linux-test-project/ltp/wiki/C-Test-API but
+> I also need to know how to build LTP from source. I'm looking at the README's
+> list of "autoconf, automake, m4, pkgconf / pkg-config" and wincing
+> significantly. (What does gnu/autoconf DO here? Disable tests? I never
+> understand why anybody uses that giant hairball of complexity. Half of cross
+> compiling is figuring out how to lie to autoconf, and my normal workaround for
+> that is to bootstrap a target system and build natively, but while I've gotten
+> gcc to run natively on nommu systems, I never _tried_ gnu/autoconf.
+> Bootstrapping some subset of LFS on a nommu system so it has the dependencies
+> LFS needs to natively build seems like the long way 'round...
+
+Well, one day we might migrate to use something else (meson?), but until then
+autoconf + m4 + pkgconf is used (instead of automake there is LTP custom
+system). This was written in 2009 and nobody plans to change it (well, Andrea
+played with meson [1] [2]). But we got far away from the original topic :).
 
 Kind regards,
-Niklas
+Petr
+
+[1] https://github.com/acerv/ltp-core
+[2] https://github.com/acerv/ltp-testcases
+
+
+> (I am not the right guy for "make it work the easy way". I am the guy who will
+> step on every land mine between here and there. I code by debugging an empty
+> screen. If I don't start from "known working" setup... it would take a while.)
+
+> Rob
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
