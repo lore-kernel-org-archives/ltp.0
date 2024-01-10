@@ -4,60 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBB2BC3DA6E
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 06:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E394C3DA6E
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 09:41:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EDFF3C62A5
-	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 07:56:13 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 977B93CE4B7
+	for <ltp@archiver.kernel.org>; Wed, 10 Jan 2024 10:41:22 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DAE0F3C62A5
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 07:55:58 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.198.163.7; helo=mgamail.intel.com;
- envelope-from=pengfei.xu@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id BF4873C08CF
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 10:41:07 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C1BFA6002C2
- for <ltp@lists.linux.it>; Wed, 10 Jan 2024 07:55:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1704869757; x=1736405757;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=KyYpyp8FMo5fiA+qP1cyYSJk6fWpEMmEfY6wLt2y/P0=;
- b=FJt5tqyoSavL5EJyoR2PaPuEyJMhui/ny1i8pPOlKACZ7btVaFaak29D
- sZUhNkMvd2VgtbYNrV0J6Xgck+D1n9uBb/1U6PbwBgOLSMM/4G/tz9nyx
- ZwOJOje7JpgLAPa4kzUbLEQorr/bIQ648P4fApJaaeFCdFZRdQloRKgXh
- LP+WF4Kvx2gNbobDGri5YksaCnZfyYcDBX61kILyZPQOzIOFX1pcv/8fc
- S0FKI03f4G8VhAjpbZj1MB95d/kTgauF6NA705T1ClrU2Hy5HWEj8Jkyl
- ZZ+8857kGOQB0AvrNaQJ3eIubatjgUhkIJ1c4AqQc7Sw3MKtkYuSu6lBT Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="19927161"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; d="scan'208";a="19927161"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jan 2024 22:55:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872514781"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; d="scan'208";a="872514781"
-Received: from xpf.sh.intel.com ([10.239.182.130])
- by FMSMGA003.fm.intel.com with ESMTP; 09 Jan 2024 22:55:45 -0800
-From: Pengfei Xu <pengfei.xu@intel.com>
-To: ltp@lists.linux.it
-Date: Wed, 10 Jan 2024 14:50:21 +0800
-Message-Id: <f60daf00d0de49e54a5389c73c90994e7711a7d1.1704868967.git.pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1704868967.git.pengfei.xu@intel.com>
-References: <cover.1704868967.git.pengfei.xu@intel.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6F0782202E1
+ for <ltp@lists.linux.it>; Wed, 10 Jan 2024 10:41:06 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E41F21F8A8;
+ Wed, 10 Jan 2024 09:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1704879665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L5FkPPaddV8IsyK7xptXD0llrZbvgJJ5MEPuR9JbJIA=;
+ b=YVkDHPj5o37+VivrB3/Y4n1LBLYlg5ivlKa+MrqtGZBuXwROWXE8O1lI1aVBWSagxOmIu6
+ WWX05MIosNxmffzICijBZxVBw8Uym1JilRMWvaoRXx67WW1IGa3SvkmMECHXvUhoa8CZ/9
+ ILVefyTL+0EdkJT5GmO4Vlhrbo1bpw0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1704879665;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L5FkPPaddV8IsyK7xptXD0llrZbvgJJ5MEPuR9JbJIA=;
+ b=VVCiDuUzaVS16Lz5dKDISIHebCAf8VnOeJlBcpUmqlQztGl9psan2GCnRj/s8ImGEtuEQv
+ XE0hkpmkHBnPvSAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1704879664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L5FkPPaddV8IsyK7xptXD0llrZbvgJJ5MEPuR9JbJIA=;
+ b=XXHS9MJgV8d/s0wFjGKzTvnqXBQptNQ/g233L9qRbzMkEC3BtJ+eALuHDchco3qLtoMtk8
+ slMHF3uqxCpHcl25qK1gu/xrqO/ZqnR8f8xUivTASPpDiZdxRRF+gQiCqGFN8++xSSgT9T
+ ORu7QNtOt5qO6fuZFbFM69zwoX+VgYU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1704879664;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L5FkPPaddV8IsyK7xptXD0llrZbvgJJ5MEPuR9JbJIA=;
+ b=BSYH9Wqu7CrZE71vNa3hWxVhBrc6DEmkhruT9pdPYc77BJ1V7ZEGyyUvRAVJCRGbn+/fP9
+ uCDS/Zqp90ttLTCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D557B13CB3;
+ Wed, 10 Jan 2024 09:41:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Z1BJMzBmnmUhJgAAD6G6ig
+ (envelope-from <akumar@suse.de>); Wed, 10 Jan 2024 09:41:04 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 10 Jan 2024 10:41:04 +0100
+Message-ID: <1832890.05rotGpD9z@localhost>
+Organization: SUSE
+In-Reply-To: <20240109171502.GA1661159@pevik>
+References: <ZUEd79N7aiC_VCDO@yuki> <20231211204908.7212-1-akumar@suse.de>
+ <20240109171502.GA1661159@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: E41F21F8A8
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XXHS9MJg;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BSYH9Wqu
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Bar: /
+X-Spamd-Result: default: False [-0.75 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; HAS_ORG_HEADER(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3]; DKIM_TRACE(0.00)[suse.de:+];
+ RCPT_COUNT_TWO(0.00)[2]; MX_GOOD(-0.01)[];
+ FREEMAIL_TO(0.00)[gmail.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[];
+ BAYES_HAM(-0.24)[73.09%]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TAGGED_RCPT(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/1] keyctl05: increase dns_res_payload data due to
- kernel code changes
+Subject: Re: [LTP] [PATCH v3] syscalls/mmap15: Rewrite test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,46 +126,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Heng Su <heng.su@intel.com>, rpalethorpe@suse.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-keyctl05 was failed in v6.7-rc8 kernel, related discussion link:
-https://lore.kernel.org/all/ZZ4vaJMN2w%2FilkR3@xpf.sh.intel.com/
+On Tuesday, January 9, 2024 6:15:02 PM CET Petr Vorel wrote:
+> Hi Avinesh,
+> 
+> I'm sorry v3 come too late, although Cyril pointed out not needed needs_root
+> and else if => if change, in the end v2 was merged.
+> 
+> Thus I fixed this as a separate change.
+> 
+> Kind regards,
+> Petr
 
-From v6.7-rc8 commit 1997b3cb4217b09e49659b634c94da47f0340409:
-the incoming data for add_key syscall should be larger than 6 bytes, because
-struct dns_server_list_v1_header without body after kernel v6.7-rc8 is 6 bytes.
+Hi Petr,
 
-Fixes: 9662d802a0 ("keyctl05: use data that passes dns_resolver_preparse() check")
+Thank you! I didn't see a reply with merged. Maybe I should have checked the 
+version on master branch before sending the revision.
 
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
----
- testcases/kernel/syscalls/keyctl/keyctl05.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+--
+Avinesh
 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl05.c b/testcases/kernel/syscalls/keyctl/keyctl05.c
-index 7d7c076c0..90cf1ef06 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl05.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl05.c
-@@ -198,8 +198,12 @@ static void do_test(unsigned int i)
- 	/*
- 	 * We need to pass check in dns_resolver_preparse(),
- 	 * give it dummy server list request.
-+	 * From v6.7-rc8 commit 1997b3cb4217b09e49659b634c94da47f0340409:
-+	 * the incoming data for add_key syscall should be larger than 6 bytes,
-+	 * because struct dns_server_list_v1_header without body is 6 bytes.
- 	 */
--	static char dns_res_payload[] = { 0x00, 0x00, 0x01, 0xff, 0x00 };
-+	static char dns_res_payload[] = { 0x00, 0x00, 0x01, 0xff, 0x00, \
-+					  0x00, 0x00 };
- 
- 	switch (i) {
- 	case 0:
--- 
-2.39.3
+
 
 
 -- 
