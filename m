@@ -4,71 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCF1AC4707B
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 02:20:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14D10C4707B
+	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 02:26:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5058B3CE4EF
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 03:20:29 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6C5783CE649
+	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 03:26:13 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA6023C768C
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 03:19:58 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0A1F23C1CE0
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 03:25:58 +0100 (CET)
 Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.130;
- helo=esa5.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ smtp.mailfrom=kernel.org (client-ip=2604:1380:40e1:4800::1;
+ helo=sin.source.kernel.org;
+ envelope-from=srs0=sanw=iv=linux-m68k.org=gerg@kernel.org;
  receiver=lists.linux.it)
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
- [68.232.139.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 17B821A00A3E
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 03:19:57 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="145251669"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695654000"; d="scan'208";a="145251669"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
- by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2024 11:19:55 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 51278CA241
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 11:19:53 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 75798F6910
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 11:19:52 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 0F3D92005019F
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 11:19:52 +0900 (JST)
-Received: from irides.g08.fujitsu.local (unknown [10.167.226.114])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id BCFB01A0070
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 10:19:51 +0800 (CST)
-From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Thu, 11 Jan 2024 10:19:50 +0800
-Message-Id: <20240111021951.1784735-1-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240110182913.GA1768734@pevik>
-References: <20240110182913.GA1768734@pevik>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5149B1A01520
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 03:25:56 +0100 (CET)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sin.source.kernel.org (Postfix) with ESMTP id 78E86CE1E59;
+ Thu, 11 Jan 2024 02:25:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 720CAC433C7;
+ Thu, 11 Jan 2024 02:25:48 +0000 (UTC)
+Message-ID: <81c07a13-305a-404b-b14c-3aff8fde3f67@linux-m68k.org>
+Date: Thu, 11 Jan 2024 12:25:45 +1000
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28112.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28112.004
-X-TMASE-Result: 10--4.595900-10.000000
-X-TMASE-MatchedRID: J3TEshnsAz6H/OjJ1CEsvE7nLUqYrlslFIuBIWrdOeOU8ftiyKjZrXlb
- NLJMhGktx8cx3E6pg15WTBAeKqaX9Spe4ofkluPsiH95tLFH8edZ+CK+BxQ9k224tW2R9/7QDui
- v1PSTVn4QT82YoBmnzDFTm2Y2SkL+qFxsFrCmzTTTfU1/F+PbM6VjgXyvS9c//NbvBEf2bLkbJA
- HWhH3kCoTei6L3bqIN3XPw9QFitX4Dn8FLAokMMc36paW7ZnFofrTt+hmA5bI8zUakDfUiKxFEt
- 97pQ+C8ardV3Qj27xsD087g4LiNvIHcC7KYYAdEVV4ZZmbE3Yxa9oWcYwi86jxzAG47ocHfKYU5
- gkls+qmaIuBZNVsPT4Ay6p60ZV62SwOSQ/fMiOrdB/CxWTRRu+rAZ8KTspSzxfw793fSnsqfrgX
- IXOkHtwOs/PyFdbi1DbIZjoFs4tXhL1BrvcjQ+TdLEO1eJ6bElbcflqlVXWhYXasXKJE1pn/lgG
- y0KlfmT1VL0zswEA0e89suUG5ol7mrEnDXnASMB0RtcVvgTmh+3BndfXUhXQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>,
+ Tim Bird <tim.bird@sony.com>
+References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240110141455.GC1698252@pevik>
+ <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] dup06: Convert to new API
+Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
+ Re: [PATCH 00/36] Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,190 +67,228 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ "buildroot@buildroot.org" <buildroot@buildroot.org>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/dup/dup06.c | 145 ++++++++++----------------
- 1 file changed, 55 insertions(+), 90 deletions(-)
+Sorry Rob, but I think you are wrong about a number of things here.
+I know, I was there at the coal face so to speak during the early
+years of uClinux and right up today. I feel I have to correct some of
+the things you claim.
 
-diff --git a/testcases/kernel/syscalls/dup/dup06.c b/testcases/kernel/syscalls/dup/dup06.c
-index e3f8070bf..e7dfbbac8 100644
---- a/testcases/kernel/syscalls/dup/dup06.c
-+++ b/testcases/kernel/syscalls/dup/dup06.c
-@@ -1,41 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *    ported from SPIE, section2/iosuite/dup1.c, by Airong Zhang
-- *   Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2002
-+ * Ported from SPIE, section2/iosuite/dup1.c, by Airong Zhang
-+ * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) Linux Test Project, 2003-2024
-  */
- 
--/*
--  WHAT:  Does dup return -1 on the 21st file?
--  HOW:   Create up to _NFILE (20) files and check for -1 return on the
--         next attempt
--         Should check NOFILE as well as _NFILE.  19-Jun-84 Dale.
--*/
-+/*\
-+ * [Description]
-+ *
-+ * Test for dup(2) syscall with max open file descriptors.
-+ */
- 
--#include <stdio.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <unistd.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/param.h>
--#include "test.h"
-+#include <stdlib.h>
-+#include "tst_test.h"
- 
--char *TCID = "dup06";
--int TST_TOTAL = 1;
-+static int *pfildes;
-+static int minfd, maxfd, freefds;
-+static char pfilname[40];
- 
- static int cnt_free_fds(int maxfd)
- {
-@@ -45,70 +27,53 @@ static int cnt_free_fds(int maxfd)
- 		if (fcntl(maxfd, F_GETFD) == -1 && errno == EBADF)
- 			freefds++;
- 
--	return (freefds);
-+	return freefds;
- }
- 
--static void setup(void);
--static void cleanup(void);
--
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int *fildes, i;
--	int min;
--	int freefds;
--	int lc;
--	const char *pfilname = "dup06";
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	min = getdtablesize();
--	freefds = cnt_free_fds(min);
--	fildes = malloc((min + 5) * sizeof(int));
--
--	for (i = 0; i < min + 5; i++)
--		fildes[i] = 0;
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		unlink(pfilname);
--
--		if ((fildes[0] = creat(pfilname, 0666)) == -1) {
--			tst_resm(TFAIL, "Cannot open first file");
--		} else {
--			for (i = 1; i < min + 5; i++) {
--				if ((fildes[i] = dup(fildes[i - 1])) == -1)
--					break;
--			}
--			if (i < freefds) {
--				tst_resm(TFAIL, "Not enough files duped");
--			} else if (i > freefds) {
--				tst_resm(TFAIL, "Too many files duped");
--			} else {
--				tst_resm(TPASS, "Test passed.");
--			}
--		}
--
--		unlink(pfilname);
--
--		for (i = 0; i < min + 5; i++) {
--			if (fildes[i] != 0 && fildes[i] != -1)
--				close(fildes[i]);
--
--			fildes[i] = 0;
--		}
--	}
--
--	cleanup();
--	tst_exit();
-+	minfd = getdtablesize();	/* get number of files allowed open */
-+	maxfd = minfd + 5;
-+	freefds = cnt_free_fds(minfd);
-+	pfildes = SAFE_MALLOC(maxfd * sizeof(int));
-+	memset(pfildes, -1, maxfd * sizeof(int));
-+	sprintf(pfilname, "./dup06.%d\n", getpid());
- }
- 
--static void setup(void)
-+static void cleanup(void)
- {
--	tst_tmpdir();
-+	if (pfildes != NULL)
-+		free(pfildes);
- }
- 
--static void cleanup(void)
-+static void run(void)
- {
--	tst_rmdir();
-+	int i;
-+
-+	pfildes[0] = SAFE_CREAT(pfilname, 0666);
-+	for (i = 1; i < maxfd; i++) {
-+		pfildes[i] = dup(pfildes[i - 1]);
-+		if (pfildes[i] == -1)
-+			break;
-+	}
-+	if (i < freefds)
-+		tst_res(TFAIL, "Not enough files duped");
-+	else if (i > freefds)
-+		tst_res(TFAIL, "Too many files duped");
-+	else
-+		tst_res(TPASS, "Test passed.");
-+
-+	SAFE_UNLINK(pfilname);
-+
-+	for (i = 0; i < maxfd; i++) {
-+		if (pfildes[i] != 0 && pfildes[i] != -1)
-+			SAFE_CLOSE(pfildes[i]);
-+	}
- }
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.34.1
+
+On 11/1/24 05:23, Rob Landley wrote:
+> On 1/10/24 08:14, Petr Vorel wrote:
+>> There is MAP_PRIVATE_EXCEPT_UCLINUX constant to avoid using MAP_PRIVATE on
+>> uClinux, who knows if this is relevant on nommu?
+> 
+> MAP_PRIVATE creates a copy-on-write mapping, and doing copy-on-write requires an
+> MMU. (You mark it read only in the page table, take a fault when they try to
+> write, the fault handler allocates a new physical page, copies the old contents
+> to it, marks it writeable, and returns allowing the write to complete to the new
+> page.)
+> 
+> On NOMMU you can MAP_SHARED and MAP_ANON, but not MAP_PRIVATE.
+> 
+> Swap is implemented kind of similarly, except when you recycle pages you mark
+> them as neither readable nor writeable in the page table, schedule the page's
+> contents to be written to disk, suspend the process so the scheduler can go run
+> something else, and then when you get the I/O completion interrupt you mark the
+> page free so whatever else needed a page can use it. And then when the process
+> tries to access the page the fault handler reverses the process, allocating a
+> new physical page and load in the contents back in while the process is
+> suspended waiting for that to finish. Can't do that without an MMU either.
+> 
+>>> 3) what the desired roadmap going forward would be, to continue to support this code.
+>>
+>> All LTP tests are being rewritten to use new API since 2016 (new API was
+>> introduced in 20160510), thus we are loosing the support with old API going
+>> away. Sure, I can hold on this patchset and we continue removing the
+>> functionality tests manually. But sooner or later it's gone.
+> 
+> You can't fork() on nommu because copies of the mappings have different
+> addresses, meaning any pointers in the copied mappings would point into the OLD
+> mappings (belonging to the parent process), and fixing them up is 100%
+> equivalent to the "garbage collection in C" problem. (It's AI-complete. Of the
+> C3PO kind, not the "autocorrect with syntax checking" kind.) People get hung up
+> on the "it would be very inefficient to do that because no copy-on-write"
+> problem and miss the "the child couldn't FUNCTION because its pointer variables
+> all contain parent addresses" problem.
+> 
+> So instead vfork() creates a child with all the same memory mappings (a bit like
+> a thread) and freezes the parent process until that child discards those
+> mappings, either by calling exec() or _exit(). (At which point the parent gets
+> un-suspended.)
+
+Just to be clear, vfork is not a uClinux invention. It dates way back to the
+early BSD UNIX days. It just so happens that it fits in very nicely with
+the no-MMU model of the world.
+
+
+> The child can do quite a lot of setup before calling exec, it already has its
+> own filehandle table for example, but it has to be really careful about MEMORY.
+> Anything it writes to global variables the parent will see, any changes to the
+> heap persist in the parent, and anything it writes to local variables the parent
+> MAY see. (Systems have historically differed about whether the vfork() child
+> gets a new stack like a thread would, or keeps using the parent's mapping since
+> the new stack would be quickly discarded anyway. If you call into a new setup()
+> function after vfork() it doesn't matter much either way, but do NOT return from
+> the function that called vfork(): either your new stack hasn't got anything to
+> return to or you'll corrupt the parent's stack by overwriting its return address
+> so when the parent exits from its current function it jumps to la-la land.)
+> 
+> The OTHER fun thing about nommu is you can't run conventional ELF binaries,
+> because everything is linked at fixed address. So you might be able to run ONE
+> instance of the program as your init task, assuming those addresses were
+> available even then, but as soon as you try to run a second one it's a conflict.
+> 
+> The quick and dirty work around is to make PIE binaries, which can relocate
+> everything into available space, which works but doesn't scale. The problem with
+> ELF PIE is that everything is linked contiguously from a single base pointer,
+> meaning your text, rodata, data, and bss segments are all one linear blob. So if
+> you run two instances of bash, you've loaded two copies of the test and the
+> rodoata. This fills up your memory fast.
+> 
+> AND PIE requires contiguous memory, which nommu is bad at providing because it
+> has no page tables to remap stuff. With an mmu it can coalesce scattered
+> physical pages into a virtually contiguous range, but without an mmu you can
+> have plenty of memory free but in tiny chunks, none big enough to satisfy an
+> allocation request.
+> 
+> So they invented FDPIC, which is ELF with FOUR base pointers. Each major section
+> (rodata, text, data, and bss) has its own base pointer, so you need to find
+> smaller chunks of memory to load them into (and thus it can work on a more
+> fragmented system), AND it means that two instances of the same program can
+> share the read-only sections (rodata and text) so you only need new copies of
+> the writeable segments (data and bss. And the heap. And the stack.)
+
+It is worth noting that to run PIE style ELF binaries on no-MMU systems you
+actually use the FDPIC ELF loader - not the traditional linux ELF loader (binfmt_elf).
+Using this setup is going to become much easier now that uClibc has native
+support for generating a relevant library and ld.so for noMMU linux (certainly
+for m68k, arm and riscv at least) - as of version 1.0.45.
+
+
+> (The earlier binflt format is an a.out variant with 4 base pointers. FDPIC is
+> the ELF version of the same idea. Since a.out went bye-bye binflt is obsolete,
+> but not everybody's moved off it yet because so many nommu people are still
+> using 2.6 or even earlier, and also using gcc 3.x or 2.x toolchains.)
+
+Flat format (binfmt_flat) is in no way related to a.out. It is not derived from
+it and shares nothing with it. A.out being removed from the kernel in no way affects
+flat format. It doesn't magically make it obsolete. It isn't going anywhere.
+
+I don't see how this is related to versions of kernel or gcc or toolchains either.
+Flat format works on every kernel up to todays v6.7. The conversion tool works
+with the latest gcc and binutils (gcc-13.2 and bintuils-2.41 as of today) and many
+versions going back for the best part of 20 years. Sure that elf2flt tool has been
+forked a lot it has a spotty history of getting updated. But, hey, as of today it
+looks pretty up to date across most architectures.
+
+
+> Oh, the OTHER thing is none of this is deferred allocation, it's all up front.
+> On systems with mmu you can populate large empty virtual mappings that read as
+> zeroed but it's actually redundant copy-on-write instances of the zero page, and
+> when you write to them it takes a soft fault and the fault handler allocates the
+> page you dirtied when you dirty it. On nommu, if you want a 4 megabyte mapping
+> you have to find 4 contiguous megabyte and allocate it immediately, or else the
+> mmap() or malloc() returns failure. (On systems with mmu malloc() almost never
+> returns NULL, because you've got virtual address space coming out of your ears
+> and if you ACTUALLY run out of memory that's happens way later, the OOM killer
+> triggers long after malloc() returned success. But on a nommu system, malloc()
+> returns NULL all the time, even if you THINK you have enough memory, because
+> what's left is too fragmented to contain a free chunk THAT BIG...)
+> 
+> This impacts the stack. On MMU Linux, the default stack size is 8 megs but it's
+> seldom all used. On nommu linux, that would be RIDICULOUS because A) it would
+> always be allocated to its full size right up front, B) you'd need contiguous
+> memory for it. So instead you set the default stack size when building the
+> linker (you can also set it on the ld command line), and common sizes range from
+> 8k to maybe 256k depending on what you expect to be running. Toybox tries not to
+> use more than 16k stack, although I usually test it with 32k on nommu. (There's
+> no guard page to tell you when you went off the edge, because no MMU so no page
+> faults, but you can check that the stack page at end-16k is still clean at exit
+> if you like. Some nommu hardware has range registers, but Linux has never
+> supported them that I'm aware of.)
+> 
+> There's not THAT much to learn about NOMMU. It could all be covered in an hour
+> presentation at a conference, I expect?
+> 
+>> One can check files which had special handling in the old API:
+>>
+>> $ git grep -l UCLINUX 20160126 -- testcases/ | wc -l
+>> 173
+>>
+>> What is supported now:
+>>
+>> $ git grep -l UCLINUX  -- testcases/  |wc -l
+>> 55
+> 
+> UCLINUX is a long-dead distro. Linaro died in the dot-com crash and its founder
+> Jeff Dionne moved to Japan for his next gig and never came back. On the way out
+> he handed uclinux off to someone else, who didn't do a lot of work maintaining
+> it. Most of the actual support went "upstream" into various packages (linux and
+> busybox and gcc and so on) before the handoff, so you didn't NEED uclinux anymore.
+
+Why do you keep claiming that "UCLINUX" (why all caps?) is a distro?
+That is just not the case. uClinux has been used as an umbrella term for
+patches, tools, packages relating to running Linux on a CPU with no MMU.
+
+There was a build package called uclinux-dist that you might consider a distro.
+But it has always been cleanly named as "uclinux-dist". For a long time that
+was the goto starting point for anyone wanting to use Linux with no-MMU.
+The collection of patches to the toolchains, kernel, libraries and application
+packages was a pretty high mountain to climb to get started in those early
+days (late 90's and early 2000's). But through the work of a _lot_ of people
+much of that change has made its way into relevant packages across the board
+(from gcc to kernel to creation of uClibc, etc).
+
+But lets face it once no-MMU support was integrated into mainline linux as off
+v2.5.46 it is really now just "Linux". The no-MMU support outgrew that trade marked
+term. But the name has stubbornly stuck around.
+
+
+> The real nail in the coffin is the inheritor of uclinux never migrated it off
+> CVS, and then the disk holding the CVS archive crashed with no backup. He came
+> out with a couple more releases after that by monkey-patching the last release's
+> filesystem, but the writing was on the wall and it rolled to a stop.
+
+No, the public facing CVS was never the master sources for the uclinux-dist.
+The public facing CVS was only ever a copy of the tar ball releases.
+Its loss was annoying to some who used it but had no real impact on the
+development. Its development model was kind of "internal" and published
+at random points in time. Today that is what probably most people would
+call the "vendor" distro model.
+
+That work was slowing down due to fact that it just wasn't really
+needed any more. There are way more popular build systems (eg build-root)
+for building complete firmware images from scratch.
+
+
+> I did a triage of its last release (from 2014) as part of my toybox roadmap:
+
+No, the last release was in 2016, see it archived at:
+https://sourceforge.net/projects/uclinux/files/uClinux%20Stable/
+
+But that is all kind of archeological now, relegated to history.
+
+Regards
+Greg
 
 
 -- 
