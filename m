@@ -4,146 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26DF2C47077
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 12:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FA67C47422
+	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 13:12:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8050F3CE435
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 13:30:37 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 668AB3CE444
+	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 14:12:14 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBBB13C768C
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 13:30:21 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.55.52.88; helo=mgamail.intel.com;
- envelope-from=pengfei.xu@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 0B8243CB828
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 14:11:59 +0100 (CET)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com
+ [209.85.128.180])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CA1F6201748
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 13:30:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1704976219; x=1736512219;
- h=date:from:to:cc:subject:message-id:references:
- in-reply-to:mime-version;
- bh=PkoQckG9EE9YWO+UzSPHZO7Y0024ih/94zEXOumSrk4=;
- b=dy3pT9BR6wo2RJMBrxj1m7tM9/M+xE2Z9fSiZLtTfgT50euJo/qfANcr
- wpDOasiH8usHBZV8c2wja/KBI+Xd8H5apPM6OUTYKu594L8+XF9BgEN9K
- PpghWnbalgWLbDKnS0WvGDvk57813WLHiZP7M9VdTHRtEm/+1WEPWKW/W
- QlER5iHR9LeGxGMY6ywtlfcP4YAkrz5rvpLVz7u4he3zSLSlCUq4kTk6J
- 69orz3o7XvJrz1LrJAPJDE2CZRtsGk58AqePORZI4eZdaOl8CQcpoy0hf
- Dv1K32+60ctDHy1SThsmzOyg8+xx1zxkhcd91GHkzlmSidyYEIZcxB2PH w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="430011230"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; d="scan'208";a="430011230"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2024 04:30:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; d="scan'208";a="24317437"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
- by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 11 Jan 2024 04:30:11 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Jan 2024 04:30:11 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 11 Jan 2024 04:30:11 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Jan 2024 04:30:10 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f+00kCUuoLkdFzKmX0MkSsq8hzSwD+mgxMa9AUlXSCoA2i0IZ4lJ6M+Jxco04y8hFPP7gNwVIQBReyn1rWjmn/t6VLHZKhYJg1MVQEQiAhkCP2XC/D1ZMSO47FEHk95HnJEkaWd4lcTsCuMg6Vy4xd1gh/CMULp4B1iROYli1d2sg84ek4fjNcTrsXL2IVbuavT3obzXM8ZvEantSXdFcqOfVjXCjoBrOnKYkICBzEKCfk2/gEFzsMXEroZJx9sAYItn0JzfBwaRusw6jgNW31O93HSBlmRSnPx0dzMcS70qJklX0ilbwwM2CiBZsz4qS8Q1paECkmQAZvX7kj6UOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lKleGb2uPvz8nT5+dt1g3yjgJRVKBYJBQrrG11wigbA=;
- b=Quydv0OedvCz6YmBC+0jxumUizFnANKmfGEePRWS3xJdYjkOxFHofZhXAjvMM+YC9AV7W61n86X7FAawD+neHAXjFBUUbl8JCHpMHzDMmoqN0OMAchi4VXRljCDZXnkDD+WeztlMblNh9NrdMxm/pUDYoCknRwFO+tv11n28u/frbHAviBPfWor2t9mH8wPctkVaD4RHqTPnldwNdLLo9mWxIgLn/6YhQtN6D8FKQTENLVRXasxdBvxl4zvz6fGcQlSsqZRtcC9hISEvc+62bpHzf3qGPUhSGhyVQLwDxi4Gd6v00chOt5Yvq43dyQyrDQGF0ep1V08KMsjWDg2cLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
- by SA1PR11MB8447.namprd11.prod.outlook.com (2603:10b6:806:3ac::22)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Thu, 11 Jan
- 2024 12:30:08 +0000
-Received: from PH0PR11MB4839.namprd11.prod.outlook.com
- ([fe80::25c4:9c11:c628:1283]) by PH0PR11MB4839.namprd11.prod.outlook.com
- ([fe80::25c4:9c11:c628:1283%4]) with mapi id 15.20.7181.015; Thu, 11 Jan 2024
- 12:30:08 +0000
-Date: Thu, 11 Jan 2024 20:24:42 +0800
-From: Pengfei Xu <pengfei.xu@intel.com>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZZ/eCt9jeCNYMMff@xpf.sh.intel.com>
-References: <cover.1704949719.git.pengfei.xu@intel.com>
- <48efcb1293a682182fc5db23f01be7af2889e26c.1704949719.git.pengfei.xu@intel.com>
- <20240111100949.GA1895489@pevik>
-Content-Disposition: inline
-In-Reply-To: <20240111100949.GA1895489@pevik>
-X-ClientProxiedBy: TY2PR02CA0066.apcprd02.prod.outlook.com
- (2603:1096:404:e2::30) To PH0PR11MB4839.namprd11.prod.outlook.com
- (2603:10b6:510:42::18)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3B50460094E
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 14:11:59 +0100 (CET)
+Received: by mail-yw1-f180.google.com with SMTP id
+ 00721157ae682-5eefd0da5c0so54092557b3.2
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 05:11:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1704978718; x=1705583518;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=EQ5ASUjPjhRUwAFEFid0Fjz0cuH2JwdEJzRuxsRLB6E=;
+ b=Nu0NY+tt29Zgp6nYM7lgzinkqOZnTCWG0NLLAz/4QI0gu1Qxn03v4p7qDxA/uqU8Gz
+ U4C98jei+iOWY4SWXUzXrSZA9+2kz2BehvB3mtddIOWqL0X/qTCJcX5RP/hWLS8qJTzy
+ jUPXv18XtjBhlBX9V7JLR7Cq/+NO1hOfp49XK5lM8YWnGp2wOC6M5YRWaGvm8XGhbsxP
+ h4uKKyp3ksYkjrFoMgKFEBmkq3OsRwswXLONCGK7PvpWwbSH0RwxAIYyscTKvCNX2BAs
+ r6RzRsnLMAfm5yoJoMWHJjH830Wo61nshQjMW38WV+w36ajPFQXYF5x9wHoMBNzIdt9N
+ mXBQ==
+X-Gm-Message-State: AOJu0YwfUzndjF+1VMv8PLIVfHm2+feNK/v1kvIFbOfjlV3PkgufeoST
+ G3iBRZwJEyWtVX6tD8GhI1I0AR8rJ6O2QA==
+X-Google-Smtp-Source: AGHT+IH6o2tLMw1TmEuKGfHoApZBHjQYO91VkWmry8Sxd9TglDFP3IqnmqBzRmPpsq8fpVCFdpn70Q==
+X-Received: by 2002:a81:b813:0:b0:5ef:317b:67ee with SMTP id
+ v19-20020a81b813000000b005ef317b67eemr496921ywe.9.1704978717814; 
+ Thu, 11 Jan 2024 05:11:57 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com.
+ [209.85.219.170]) by smtp.gmail.com with ESMTPSA id
+ i21-20020a0ddf15000000b005e739f09057sm384691ywe.121.2024.01.11.05.11.56
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 11 Jan 2024 05:11:57 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id
+ 3f1490d57ef6-dbeff495c16so3868833276.3
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 05:11:56 -0800 (PST)
+X-Received: by 2002:a25:41cf:0:b0:dbd:ab41:60d5 with SMTP id
+ o198-20020a2541cf000000b00dbdab4160d5mr1033855yba.123.1704978716687; Thu, 11
+ Jan 2024 05:11:56 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|SA1PR11MB8447:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e38541e-8906-4c6d-a59f-08dc12a10c64
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Lzl6LbfFydquvBJhIOXRgXA7LzRn66ezR8VPw2bNTVsnpIIFvWhORDzpPJnkraty2IUixelb/YFoJ72c0Zvgn2SnlCXibmYBKs4N0pfC000PwhUwhoSEvzJ+aeJtkunkAaUPyyztpcDoD1PQ4h7kA5ZVThaoBUzsZxnFx9ype18qGrHIar2rNPpP7Jll4AkXg9f698Lr8Xs3DSiiehbt6SztXPB+PtcBbuFmZ8KpYxqdMdHokVXAewmwhAxQ2sxbqMYPISwTU7FyJtB4G9Bog67nK145DrYjwDKoupgq91RnuP1jP8855ZggbIqGqIIL3g/bxHbgBFy9pAJS0BIg5tjrt2nCS9UmDMcxcu80WcMnZxnKdoJvOkfrK3JmdyXDgM33QjLtbJTI4h4pk+5pRkixkurIIgdtIO8+GnL+YUk9WcCzOUsy16jEWWmtA74VSkp0MqjGG/RIyZgOnEieArRBWVSONn3mNegbo/6uiDB2vejYyT+G30s6X/KFOXniUREyW1kwzzgFkhxvquRYv7O50U7AXS0A3IhYFtvWSalhMCUDRXjhfDraom3u0p7TJ6I3MKyoxGl2dETbkJliFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH0PR11MB4839.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(346002)(39860400002)(376002)(396003)(136003)(366004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(2906002)(107886003)(26005)(66476007)(6486002)(66946007)(41300700001)(86362001)(66556008)(82960400001)(4326008)(6512007)(83380400001)(53546011)(6666004)(6506007)(966005)(44832011)(6916009)(5660300002)(478600001)(316002)(8936002)(8676002)(38100700002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CEc0zgaNNpX28Q2/ZJlF9ryU3pgxg4lDdlfgXFpZZFtFZHchoU6DPb3vppvT?=
- =?us-ascii?Q?/C9e7q3+ZjVT46n0kyvGi3l2oVhLkVdl859ZlNwQtjwGR1+m056SjckIwyWn?=
- =?us-ascii?Q?MsUHY9wkLHdyZ4IVrYcHLXG8fU21AeEVzJOh/bqbVW7WwDYUpCTgVADrbqCo?=
- =?us-ascii?Q?kjiD2Nhp/L8UUjulZXs08HdOUrrcsGC73AiPTa/F36E3/ve9rwpEOfS3HeUt?=
- =?us-ascii?Q?2nwmeMOdPRLrFUdc6n9QBtEZtOpgpPxLhm5JJF65rqOR/QS69YaWQtx+wyTs?=
- =?us-ascii?Q?YI9plLa6yyC49zFosuWUoPhZamMxTOXpIWb7iXNmDxlTiQBLWkq3Sblm8AyQ?=
- =?us-ascii?Q?8VkqD4kWZEgPw8wQTk6zsw5KfKs+jm3FvJCm4htg/35aG3emK1g9AWJo4Z2a?=
- =?us-ascii?Q?xrjTYLLybFO+Aca1qEoKxBG6/OxK3MNnPvwLSqJvQKfJRs8blYahbQWK5weZ?=
- =?us-ascii?Q?wkESEWvTE7lnNvFyfqe+3dtO4fAvZNzHONmWaUgRLUoYx+IuGpsUkCQFWUEy?=
- =?us-ascii?Q?AFXBoK0NXKCrOCNEcXBfj9YKdDLP6cJ2J5ZgrGBCzQTP2WinBcFl4BfP4rUi?=
- =?us-ascii?Q?M7xMh6xhSt4ErRC2TQ0Iu5Q88F0ksWb7l2Y8zhlPeaDcg1z48FTECrvcu4vR?=
- =?us-ascii?Q?sSfci1mdR4FkgFojsaMO1+iC+gIfrNRTWbD3R1+4/FxH0j3TkTD29Dvm6oAi?=
- =?us-ascii?Q?8URq+rihFN2Yq4Jl92nU1fz9NfqeS6pAri9+ACK9J+sns91kOqVUSKCIK+y9?=
- =?us-ascii?Q?3oi+YMWaOw9VOU2AaxtcXpTUndGulaECPZ/gGCiAAE2uLdsLamK4Ihn5SZfo?=
- =?us-ascii?Q?zCNMx3tCSb9+9kiw5vMEtguinXGEX+NoWkD45CBG3he42GnbSlaUVr9KJPRG?=
- =?us-ascii?Q?Anlc5nDY91n2R7/RKdvd3XMPe6RNdCOBjTX4uJRRQaIPaEdGittK7JVxfTTG?=
- =?us-ascii?Q?4sN3Bx4+O/QKsemdnks3/X0GjcONB7ieRYyVR0Oi4BIvkaBUyXUOk5dDuWjj?=
- =?us-ascii?Q?oNKBiz0jgnIL+8m5ARidryoJFsQIpiFsE1e8ehCVqMq+pyXuIF0dBaEdfTkQ?=
- =?us-ascii?Q?7PILb7gPrXZKJ32fGoLrNdU6CLPmqZxKmKqLDHyR1aEob6PLrmH7AtIPMGO2?=
- =?us-ascii?Q?en+veRVbajOPuDu+09ud7kMn3zQvhQ8uACqntpyeUttJu4Koa6UHBDn5Pmkr?=
- =?us-ascii?Q?yeBECkYyaWNguI5Qb1UVIOsRJ+U6NzrPCyADb1wCizDQta3zCdUEeMSuIZFq?=
- =?us-ascii?Q?H01h7tDj0/HZVolGTEHIzVzIdz78npfAWxbJEtj5d/R7paoZzZj8EzHeAtDP?=
- =?us-ascii?Q?ELHlEQZbEeJRhVPelzRw5xM6ptUUczTTZfdqRjCewO3szSRPVdnC2JlKDYYd?=
- =?us-ascii?Q?eP9r8lHMC9P64UcxA2wiYPz1D7GjCxMpHn2McGqb8agh23flC+U2VTqjUTuE?=
- =?us-ascii?Q?8o19iyT/e/28YuXov6Q2LHDxExzoU1n0eYzx32Q3KBJmgUOzaOTr1YZcaxbQ?=
- =?us-ascii?Q?7qFy2mEik5QE2z6OGzr+biz7z88XZBFdBOxuZzVieMnQTJqtKlM/SvBorpLw?=
- =?us-ascii?Q?ekCWOR6n7immMFmlVlDtzEPgM5QNImizo91XUPg4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e38541e-8906-4c6d-a59f-08dc12a10c64
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 12:30:08.7913 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CgBj6J8LFVXtDzcFsDBl3D1yC1F1sUw4Su46DZIvdRmCOarLclgaAhfzBMguRWPKXAOxkDIY2zVYy1xdiOQnqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8447
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240110141455.GC1698252@pevik>
+ <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Jan 2024 14:11:43 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
+Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
+To: Rob Landley <rob@landley.net>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] keyctl05: improve the dns_res_payload for
- boundary testing
+Subject: Re: [LTP] [Automated-testing] Call for nommu LTP maintainer [was:
+ Re: [PATCH 00/36] Remove UCLINUX from LTP]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,69 +87,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Heng Su <heng.su@intel.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Niklas Cassel <niklas.cassel@wdc.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux-sh list <linux-sh@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ "buildroot@buildroot.org" <buildroot@buildroot.org>,
+ Greg Ungerer <gerg@linux-m68k.org>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-
-On 2024-01-11 at 11:09:49 +0100, Petr Vorel wrote:
-> Hi Xu,
-> 
-> > Because the following patch will fix the add_key syscall incoming data boundary
-> > size issue, 6 bytes incoming data should pass:
-> > https://lore.kernel.org/all/1784441.1704907412@warthog.procyon.org.uk/
-> >  -> https://lore.kernel.org/all/1850031.1704921100@warthog.procyon.org.uk/
-> > In order to test above boundary incoming data size, change the dns_res_payload
-> > size.
-> 
-> I'm sorry, I was faster and just fixed \ myself.
-> Rebasing is trivial, but there was missing commit (already merged and other
-> things). Thus I have sent v2 under your name (which I actually forget to mark
-> as v2 :().
-> 
-> https://lore.kernel.org/ltp/20240111100636.1897637-1-pvorel@suse.cz/
-> https://patchwork.ozlabs.org/project/ltp/patch/20240111100636.1897637-1-pvorel@suse.cz/
-> 
-> Can you please have a look on it?
-
-Yes, it's better to add the linux-git acc657692aed and it looks good.
-Thanks for your improvment!
-
-Best Regards,
-Thanks!
-
-> 
-> Kind regards,
-> Petr
-> 
-> > Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
-> > ---
-> >  testcases/kernel/syscalls/keyctl/keyctl05.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> > diff --git a/testcases/kernel/syscalls/keyctl/keyctl05.c b/testcases/kernel/syscalls/keyctl/keyctl05.c
-> > index 90cf1ef06..50e78853c 100644
-> > --- a/testcases/kernel/syscalls/keyctl/keyctl05.c
-> > +++ b/testcases/kernel/syscalls/keyctl/keyctl05.c
-> > @@ -199,11 +199,11 @@ static void do_test(unsigned int i)
-> >  	 * We need to pass check in dns_resolver_preparse(),
-> >  	 * give it dummy server list request.
-> >  	 * From v6.7-rc8 commit 1997b3cb4217b09e49659b634c94da47f0340409:
-> > -	 * the incoming data for add_key syscall should be larger than 6 bytes,
-> > -	 * because struct dns_server_list_v1_header without body is 6 bytes.
-> > +	 * the incoming data for add_key syscall should be not less than 6
-> > +	 * bytes, because struct dns_server_list_v1_header is 6 bytes.
-> > +	 * The minimum payload will be tested here for boundary testing.
-> >  	 */
-> > -	static char dns_res_payload[] = { 0x00, 0x00, 0x01, 0xff, 0x00, \
-> > -					  0x00, 0x00 };
-> > +	static char dns_res_payload[] = { 0x00, 0x00, 0x01, 0xff, 0x00, 0x00 };
-> 
-> >  	switch (i) {
-> >  	case 0:
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUm9iLAoKT24gV2VkLCBKYW4gMTAsIDIwMjQgYXQgODoxN+KAr1BNIFJvYiBMYW5kbGV5IDxy
+b2JAbGFuZGxleS5uZXQ+IHdyb3RlOgo+IFlvdSBjYW4ndCBmb3JrKCkgb24gbm9tbXUgYmVjYXVz
+ZSBjb3BpZXMgb2YgdGhlIG1hcHBpbmdzIGhhdmUgZGlmZmVyZW50Cj4gYWRkcmVzc2VzLCBtZWFu
+aW5nIGFueSBwb2ludGVycyBpbiB0aGUgY29waWVkIG1hcHBpbmdzIHdvdWxkIHBvaW50IGludG8g
+dGhlIE9MRAo+IG1hcHBpbmdzIChiZWxvbmdpbmcgdG8gdGhlIHBhcmVudCBwcm9jZXNzKSwgYW5k
+IGZpeGluZyB0aGVtIHVwIGlzIDEwMCUKPiBlcXVpdmFsZW50IHRvIHRoZSAiZ2FyYmFnZSBjb2xs
+ZWN0aW9uIGluIEMiIHByb2JsZW0uIChJdCdzIEFJLWNvbXBsZXRlLiBPZiB0aGUKPiBDM1BPIGtp
+bmQsIG5vdCB0aGUgImF1dG9jb3JyZWN0IHdpdGggc3ludGF4IGNoZWNraW5nIiBraW5kLikgUGVv
+cGxlIGdldCBodW5nIHVwCj4gb24gdGhlICJpdCB3b3VsZCBiZSB2ZXJ5IGluZWZmaWNpZW50IHRv
+IGRvIHRoYXQgYmVjYXVzZSBubyBjb3B5LW9uLXdyaXRlIgo+IHByb2JsZW0gYW5kIG1pc3MgdGhl
+ICJ0aGUgY2hpbGQgY291bGRuJ3QgRlVOQ1RJT04gYmVjYXVzZSBpdHMgcG9pbnRlciB2YXJpYWJs
+ZXMKPiBhbGwgY29udGFpbiBwYXJlbnQgYWRkcmVzc2VzIiBwcm9ibGVtLgoKQWN0dWFsbHkgeW91
+IGNhbiBpbXBsZW1lbnQgZm9yaygpLCBpZiB5b3UgdGVhY2ggdGhlIGNvbXBpbGVyIHRvIHVzZQpz
+ZXBhcmF0ZSBzdGFja3MgZm9yIHJldHVybiBhZGRyZXNzZXMgYW5kIGRhdGE6CiAgLSBUaGUgZmly
+c3Qgc3RhY2sgd291bGQgY29udGFpbiBvbmx5IGFic29sdXRlIGFkZHJlc3NlcywgdG8gYmUKICAg
+IHJlbG9jYXRlZCBhZnRlciBjb3B5aW5nLAogIC0gVGhlIHNlY29uZCBzdGFjayB3b3VsZCBjb250
+YWluIGludGVnZXJzIGFuZCByZWxhdGl2ZSBwb2ludGVycwogICAgKHNlZSBGRFBJQyBiZWxvdyks
+IHdoaWNoIGRvIG5vdCBuZWVkIHJlbG9jYXRpb24gYWZ0ZXIgY29weWluZy4KCj4gVGhlIE9USEVS
+IGZ1biB0aGluZyBhYm91dCBub21tdSBpcyB5b3UgY2FuJ3QgcnVuIGNvbnZlbnRpb25hbCBFTEYg
+YmluYXJpZXMsCj4gYmVjYXVzZSBldmVyeXRoaW5nIGlzIGxpbmtlZCBhdCBmaXhlZCBhZGRyZXNz
+LiBTbyB5b3UgbWlnaHQgYmUgYWJsZSB0byBydW4gT05FCj4gaW5zdGFuY2Ugb2YgdGhlIHByb2dy
+YW0gYXMgeW91ciBpbml0IHRhc2ssIGFzc3VtaW5nIHRob3NlIGFkZHJlc3NlcyB3ZXJlCj4gYXZh
+aWxhYmxlIGV2ZW4gdGhlbiwgYnV0IGFzIHNvb24gYXMgeW91IHRyeSB0byBydW4gYSBzZWNvbmQg
+b25lIGl0J3MgYSBjb25mbGljdC4KPgo+IFRoZSBxdWljayBhbmQgZGlydHkgd29yayBhcm91bmQg
+aXMgdG8gbWFrZSBQSUUgYmluYXJpZXMsIHdoaWNoIGNhbiByZWxvY2F0ZQo+IGV2ZXJ5dGhpbmcg
+aW50byBhdmFpbGFibGUgc3BhY2UsIHdoaWNoIHdvcmtzIGJ1dCBkb2Vzbid0IHNjYWxlLiBUaGUg
+cHJvYmxlbSB3aXRoCj4gRUxGIFBJRSBpcyB0aGF0IGV2ZXJ5dGhpbmcgaXMgbGlua2VkIGNvbnRp
+Z3VvdXNseSBmcm9tIGEgc2luZ2xlIGJhc2UgcG9pbnRlciwKPiBtZWFuaW5nIHlvdXIgdGV4dCwg
+cm9kYXRhLCBkYXRhLCBhbmQgYnNzIHNlZ21lbnRzIGFyZSBhbGwgb25lIGxpbmVhciBibG9iLiBT
+byBpZgo+IHlvdSBydW4gdHdvIGluc3RhbmNlcyBvZiBiYXNoLCB5b3UndmUgbG9hZGVkIHR3byBj
+b3BpZXMgb2YgdGhlIHRlc3QgYW5kIHRoZQo+IHJvZG9hdGEuIFRoaXMgZmlsbHMgdXAgeW91ciBt
+ZW1vcnkgZmFzdC4KPgo+IEFORCBQSUUgcmVxdWlyZXMgY29udGlndW91cyBtZW1vcnksIHdoaWNo
+IG5vbW11IGlzIGJhZCBhdCBwcm92aWRpbmcgYmVjYXVzZSBpdAo+IGhhcyBubyBwYWdlIHRhYmxl
+cyB0byByZW1hcCBzdHVmZi4gV2l0aCBhbiBtbXUgaXQgY2FuIGNvYWxlc2NlIHNjYXR0ZXJlZAo+
+IHBoeXNpY2FsIHBhZ2VzIGludG8gYSB2aXJ0dWFsbHkgY29udGlndW91cyByYW5nZSwgYnV0IHdp
+dGhvdXQgYW4gbW11IHlvdSBjYW4KPiBoYXZlIHBsZW50eSBvZiBtZW1vcnkgZnJlZSBidXQgaW4g
+dGlueSBjaHVua3MsIG5vbmUgYmlnIGVub3VnaCB0byBzYXRpc2Z5IGFuCj4gYWxsb2NhdGlvbiBy
+ZXF1ZXN0Lgo+Cj4gU28gdGhleSBpbnZlbnRlZCBGRFBJQywgd2hpY2ggaXMgRUxGIHdpdGggRk9V
+UiBiYXNlIHBvaW50ZXJzLiBFYWNoIG1ham9yIHNlY3Rpb24KPiAocm9kYXRhLCB0ZXh0LCBkYXRh
+LCBhbmQgYnNzKSBoYXMgaXRzIG93biBiYXNlIHBvaW50ZXIsIHNvIHlvdSBuZWVkIHRvIGZpbmQK
+PiBzbWFsbGVyIGNodW5rcyBvZiBtZW1vcnkgdG8gbG9hZCB0aGVtIGludG8gKGFuZCB0aHVzIGl0
+IGNhbiB3b3JrIG9uIGEgbW9yZQo+IGZyYWdtZW50ZWQgc3lzdGVtKSwgQU5EIGl0IG1lYW5zIHRo
+YXQgdHdvIGluc3RhbmNlcyBvZiB0aGUgc2FtZSBwcm9ncmFtIGNhbgo+IHNoYXJlIHRoZSByZWFk
+LW9ubHkgc2VjdGlvbnMgKHJvZGF0YSBhbmQgdGV4dCkgc28geW91IG9ubHkgbmVlZCBuZXcgY29w
+aWVzIG9mCj4gdGhlIHdyaXRlYWJsZSBzZWdtZW50cyAoZGF0YSBhbmQgYnNzLiBBbmQgdGhlIGhl
+YXAuIEFuZCB0aGUgc3RhY2suKQoKT3IgQW1pZ2EgTG9hZFNlZygpIHJlbG9jYXRhYmxlIGJpbmFy
+aWVzIGFuZCBzaGFyZWQgbGlicmFyaWVzIDstKQpBcyB0aGlzIHN1cHBvcnRlZCBzcGxpdHRpbmcg
+Y29kZSwgZGF0YSwgYW5kIGJzcyBpbiBsb3RzIG9mIHNtYWxsZXIKaHVua3MsIGl0IGNvdWxkIGNv
+dW50ZXIgZnJhZ21lbnRlZCBtZW1vcnkgcXVpdGUgd2VsbC4KCkJUVywgY2FuJ3QgeW91IHJ1biBh
+bmQgdGh1cyB0ZXN0IG5vbW11LWJpbmFyaWVzIHVuZGVyIG5vcm1hbCBMaW51eCwgdG9vPwoKR3J7
+b2V0amUsZWV0aW5nfXMsCgogICAgICAgICAgICAgICAgICAgICAgICBHZWVydAoKLS0gCkdlZXJ0
+IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2Vl
+cnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmlj
+YWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0
+byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0
+aGF0LgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzCgot
+LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
+Cg==
