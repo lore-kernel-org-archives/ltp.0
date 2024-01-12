@@ -4,104 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08351C47077
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 15:14:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF99BC4706C
+	for <ltp@archiver.kernel.org>; Fri, 12 Jan 2024 05:15:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E5983CE433
-	for <ltp@archiver.kernel.org>; Thu, 11 Jan 2024 16:14:03 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C92CC3CD0D6
+	for <ltp@archiver.kernel.org>; Fri, 12 Jan 2024 06:15:35 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 30AEE3C768C
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 16:13:48 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 65F243C1BC7
+ for <ltp@lists.linux.it>; Fri, 12 Jan 2024 06:15:20 +0100 (CET)
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com
+ [IPv6:2607:f8b0:4864:20::a30])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6949F201DAE
- for <ltp@lists.linux.it>; Thu, 11 Jan 2024 16:13:48 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7D1F02201F;
- Thu, 11 Jan 2024 15:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704986027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4L5jMITFZjA9dEdSCxJ57llc+goj6hxRqSVODn6rIGo=;
- b=EIIco/fhzc5xrell22hF7aiLQLmqgoR7icwTTYcYZncV+Mrvf/S2MF1P8kv8tNplAWKnOR
- j+VxlZW8bp/lebg3MUN7SokpbxVeAdSkpiKt3FSg+i7MqF4urtfTdQaJToHMbZCQmdFrZn
- vlx6crQQOzRDcQrjLXgYOID21sAFDyI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704986027;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4L5jMITFZjA9dEdSCxJ57llc+goj6hxRqSVODn6rIGo=;
- b=MzUmMaRjS4KONwaIOItrehDr37d4BqP5RCkxPHnVWmdFumvqzueNWIxXk9OYQo0hsrfiuW
- WWq5eFJy9VAf9/DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704986027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4L5jMITFZjA9dEdSCxJ57llc+goj6hxRqSVODn6rIGo=;
- b=EIIco/fhzc5xrell22hF7aiLQLmqgoR7icwTTYcYZncV+Mrvf/S2MF1P8kv8tNplAWKnOR
- j+VxlZW8bp/lebg3MUN7SokpbxVeAdSkpiKt3FSg+i7MqF4urtfTdQaJToHMbZCQmdFrZn
- vlx6crQQOzRDcQrjLXgYOID21sAFDyI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704986027;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4L5jMITFZjA9dEdSCxJ57llc+goj6hxRqSVODn6rIGo=;
- b=MzUmMaRjS4KONwaIOItrehDr37d4BqP5RCkxPHnVWmdFumvqzueNWIxXk9OYQo0hsrfiuW
- WWq5eFJy9VAf9/DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 71E92132CF;
- Thu, 11 Jan 2024 15:13:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id I2avG6sFoGXiSAAAD6G6ig
- (envelope-from <pvorel@suse.de>); Thu, 11 Jan 2024 15:13:47 +0000
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3EB69208DED
+ for <ltp@lists.linux.it>; Fri, 12 Jan 2024 06:15:20 +0100 (CET)
+Received: by mail-vk1-xa30.google.com with SMTP id
+ 71dfb90a1353d-4b72f2bdbdaso1756720e0c.3
+ for <ltp@lists.linux.it>; Thu, 11 Jan 2024 21:15:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1705036519; x=1705641319; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=IgIz5Jw3xaCiRypp9t/7nFofZKzAWe2AVuDOEAahvJw=;
+ b=f8uoHCsT5xilz2u5wJSi19SU0/4XpD4/gF3aJbgtyyh7TyyYZifucV+s5tCWRVdnDZ
+ FvT93i8bUafF0imUiq/C/4Nys877kG7hQq/iIH6oNG9LZYb+4BALFgMlGtIrEb3Bw+4U
+ 1uIaQrS1HZYDqIt0fCKrQamHDD2XBbX4Lt/dtZIoat0+LfFo5VsZ9E9A2F0o+d7e8zqK
+ V6ARIVVoOsi9OQmu9/oFg3IZkDWLTRK/0SxoHwUIGLV5P0bV7RBVcKByQUG9oaxKvC+b
+ Otp0NU9z5Cn1E20iPfADKmKl2V0DaKQRqQbqwtu8g4Rzm9fp9UrGGvimo9wGAqikID1A
+ lh6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1705036519; x=1705641319;
+ h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=IgIz5Jw3xaCiRypp9t/7nFofZKzAWe2AVuDOEAahvJw=;
+ b=WbtwhPj3+PlqYJaa0rq7nZND7NXteLp3ml1JcWD1dew2AZazcFMBpOdHLwG1x0lGmh
+ 3D35EnQxalgqDvDtA66dXy4C+wESvV3oMU9/5d82zrhbeIo6R1ut3g1QqYLadYFulx9v
+ qts6gzuHHYEmaM7ngFZ6AgPG8Nr9WGggPKshdodSHTbwg8+qG8evjeLiOBz9pnfbh2fJ
+ RVtN+B8SDv8grkf0NkoXqQi88IDo7jl2rj6Z3Xp5eTQsF20mC3lZ8qagxT6P1GwakvIG
+ hhuA1xcG2mlhLEyToP71hhpMSTSEXVnd5O3W3l+l2RT5H9Fx1CU8mt6CFMMOnqRt7ITO
+ dYoQ==
+X-Gm-Message-State: AOJu0YxG5gf6XnO/9t03UCJLAA8qqXFOQCvmBQWbU3hyLdqI1EXDrlzs
+ DlrTel79ylrinD3xLkaEl4d09SaXvnLGp6KsYfHlHqOFnatWPw==
+X-Google-Smtp-Source: AGHT+IHPLvPAb+MT+s200UzDgvlLJVHSQjmJYTb0cHfWBa5Vn8ew9C7G9AwMneG0HO+in1yTFy80+h7ZYa1cXDFsG/w=
+X-Received: by 2002:a05:6122:4d0e:b0:4b7:a95b:7b3 with SMTP id
+ fi14-20020a0561224d0e00b004b7a95b07b3mr706190vkb.26.1705036518758; Thu, 11
+ Jan 2024 21:15:18 -0800 (PST)
 MIME-Version: 1.0
-Date: Thu, 11 Jan 2024 16:13:47 +0100
-From: pvorel <pvorel@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-In-Reply-To: <20240111150553.1923767-1-pvorel@suse.cz>
-References: <20240111150553.1923767-1-pvorel@suse.cz>
-User-Agent: Roundcube Webmail
-Message-ID: <24ca6ef55b11b485a47515496de01e2c@suse.de>
-X-Sender: pvorel@suse.de
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.83 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; XM_UA_NO_VERSION(0.01)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; BAYES_HAM(-0.74)[83.89%];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCPT_COUNT_SEVEN(0.00)[11];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- MID_RHS_MATCH_FROM(0.00)[]
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 12 Jan 2024 10:45:08 +0530
+Message-ID: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
+To: linux-block <linux-block@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+ Linux Regressions <regressions@lists.linux.dev>,
+ lkft-triage@lists.linaro.org, open list <linux-kernel@vger.kernel.org>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] safe_macros: Fix bcachefs failure old kernel
+Subject: Re: [LTP] scsi: block: ioprio: Clean up interface definition -
+ ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,77 +76,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- Brian Foster <bfoster@redhat.com>, fstests@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, ltp@lists.linux.it
+Cc: Jens Axboe <axboe@kernel.dk>, Niklas Cassel <niklas.cassel@wdc.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+The LTP test 'iopri_set03' fails on all the devices.
+It fails on linux kernel >= v6.5. ( on Debian rootfs ).
+Test fail confirmed on LTP release 20230929 and 20230516.
 
-I'm sorry, I haven't updated the subject, it should have been:
-"tst_supported_fs_types: Skip bcachefs on old kernel"
+Test failed log:
+------------
+tst_test.c:1690: TINFO: LTP version: 20230929
+tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
+ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
+ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
 
-Kind regards,
-Petr
+Investigation:
+----------
+Bisecting this test between kernel v6.4 and v6.5 shows patch
+eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
+as the first faulty commit.
 
-On 2024-01-11 16:05, Petr Vorel wrote:
-> LTP with bcachefs-tools and kernel < 6.7 fails (more tests):
-> 
->     # LTP_SINGLE_FS_TYPE=bcachefs ./chdir01
->     ...
->     tst_supported_fs_types.c:57: TINFO: mkfs.bcachefs does exist
->     tst_test.c:1669: TINFO: === Testing on bcachefs ===
->     tst_test.c:1117: TINFO: Formatting /dev/loop0 with bcachefs opts=''
->     extra opts=''
->     tst_test.c:1131: TINFO: Mounting /dev/loop0 to
->     /tmp/LTP_chdwqhGtZ/mntpoint fstyp=bcachefs flags=0
->     tst_test.c:1131: TBROK: mount(/dev/loop0, mntpoint, bcachefs, 0, 
-> (nil))
->     failed: ENODEV (19)
-> 
-> The problem is that on FUSE support we expect there is FUSE bcachefs
-> implementation. bcachefs supports fusemount, but let's skip testing 
-> atm.
-> 
-> Fixes: 94802606e ("lib: Add support bcachefs filesystem to 
-> .all_filesystems")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi all,
-> 
-> I'm sorry, although man bcachefs(8) mentions fusemount, I haven't
-> figured out how to mount filesystem. Am I missing something?
-> 
-> Also, maybe for the start I would prefer to to test just kernel
-> functionality (no fuse).
-> 
-> Kind regards,
-> Petr
-> 
->  lib/tst_supported_fs_types.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/lib/tst_supported_fs_types.c 
-> b/lib/tst_supported_fs_types.c
-> index 369836717..21765c370 100644
-> --- a/lib/tst_supported_fs_types.c
-> +++ b/lib/tst_supported_fs_types.c
-> @@ -96,6 +96,11 @@ static enum tst_fs_impl has_kernel_support(const
-> char *fs_type)
-> 
->  	SAFE_RMDIR(template);
-> 
-> +	if (!strcmp(fs_type, "bcachefs") && tst_kvercmp(6, 7, 0) < 0) {
-> +		tst_res(TINFO, "bcachefs skipped on kernel < 6.7");
-> +		return TST_FS_UNSUPPORTED;
-> +	}
-> +
->  	/* Is FUSE supported by kernel? */
->  	if (fuse_supported == -1) {
->  		ret = open("/dev/fuse", O_RDWR);
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240109/testrun/22021120/suite/ltp-syscalls/test/ioprio_set03/details/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240110/testrun/22034175/suite/ltp-syscalls/test/ioprio_set03/history/
+
+Steps to reproduce:
+---------------
+This is how you can reproduce it easily:
+Install podman or docker, tuxmake and tuxrun, if docker please change
+the --runtime below to docker.
+cd into the kernel you want to build:
+$ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
+--kconfig defconfig --results-hook 'tuxrun --runtime podman --device
+qemu-arm64 --boot-args rw --tuxmake ./ --rootfs
+https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz
+--parameters SKIPFILE=skipfile-lkft.yaml --timeouts boot=30 --overlay
+https://storage.tuxboot.com/overlays/debian/bookworm/arm64/ltp/20230929/ltp.tar.xz
+/ --save-outputs --log-file - -- "cd /opt/ltp && ./runltp -s
+ioprio_set03"'
+
+
+Bisection log:
+------------
+# bad: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
+# good: [6995e2de6891c724bfeb2db33d7b87775f913ad1] Linux 6.4
+git bisect start 'v6.5' 'v6.4'
+# good: [b775d6c5859affe00527cbe74263de05cfe6b9f9] Merge tag
+'mips_6.5' of git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux
+git bisect good b775d6c5859affe00527cbe74263de05cfe6b9f9
+# bad: [56cbceab928d7ac3702de172ff8dcc1da2a6aaeb] Merge tag
+'usb-6.5-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
+git bisect bad 56cbceab928d7ac3702de172ff8dcc1da2a6aaeb
+# good: [b30d7a77c53ec04a6d94683d7680ec406b7f3ac8] Merge tag
+'perf-tools-for-v6.5-1-2023-06-28' of
+git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next
+git bisect good b30d7a77c53ec04a6d94683d7680ec406b7f3ac8
+# bad: [dfab92f27c600fea3cadc6e2cb39f092024e1fef] Merge tag
+'nfs-for-6.5-1' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
+git bisect bad dfab92f27c600fea3cadc6e2cb39f092024e1fef
+# bad: [28968f384be3c064d66954aac4c534a5e76bf973] Merge tag
+'pinctrl-v6.5-1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
+git bisect bad 28968f384be3c064d66954aac4c534a5e76bf973
+# bad: [af92c02fb2090692f4920ea4b74870940260cf49] Merge patch series
+"scsi: fixes for targets with many LUNs, and scsi_target_block rework"
+git bisect bad af92c02fb2090692f4920ea4b74870940260cf49
+# bad: [2e2fe5ac695a00ab03cab4db1f4d6be07168ed9d] scsi: 3w-xxxx: Add
+error handling for initialization failure in tw_probe()
+git bisect bad 2e2fe5ac695a00ab03cab4db1f4d6be07168ed9d
+# good: [8759924ddb93498bd5777f0b05b6bc9cacf4ffe3] Merge patch series
+"scsi: hisi_sas: Some misc changes"
+git bisect good 8759924ddb93498bd5777f0b05b6bc9cacf4ffe3
+# good: [7907ad748bdba8ac9ca47f0a650cc2e5d2ad6e24] Merge patch series
+"Use block pr_ops in LIO"
+git bisect good 7907ad748bdba8ac9ca47f0a650cc2e5d2ad6e24
+# bad: [390e2d1a587405a522dc6b433d45648f895a352c] scsi: sd: Handle
+read/write CDL timeout failures
+git bisect bad 390e2d1a587405a522dc6b433d45648f895a352c
+# bad: [734326937b65cec7ffd00bfbbce0f791ac4aac84] scsi: core: Rename
+and move get_scsi_ml_byte()
+git bisect bad 734326937b65cec7ffd00bfbbce0f791ac4aac84
+# bad: [6c913257226a25879bfd6226e0ee265e98904ce6] scsi: block:
+Introduce ioprio hints
+git bisect bad 6c913257226a25879bfd6226e0ee265e98904ce6
+# bad: [eca2040972b411ec27483bf75dc8b84e730e88ff] scsi: block: ioprio:
+Clean up interface definition
+git bisect bad eca2040972b411ec27483bf75dc8b84e730e88ff
+# first bad commit: [eca2040972b411ec27483bf75dc8b84e730e88ff] scsi:
+block: ioprio: Clean up interface definition
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
