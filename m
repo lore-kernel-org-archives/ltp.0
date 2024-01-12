@@ -4,74 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1795C3DA79
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 13:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA908C3DA79
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 14:15:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0395B3CE36B
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 14:34:27 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 3E01E3CCB7C
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 15:15:20 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 92CAF3CCB38
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 14:34:08 +0100 (CET)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
- [IPv6:2607:f8b0:4864:20::62d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8A5763CB3DC
+ for <ltp@lists.linux.it>; Fri, 12 Jan 2024 14:34:42 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=damenly.org (client-ip=136.175.108.105;
+ helo=mail-108-mta105.mxroute.com; envelope-from=l@damenly.org;
+ receiver=lists.linux.it)
+Received: from mail-108-mta105.mxroute.com (mail-108-mta105.mxroute.com
+ [136.175.108.105])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F23CF1001120
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 14:34:07 +0100 (CET)
-Received: by mail-pl1-x62d.google.com with SMTP id
- d9443c01a7336-1d542701796so44363135ad.1
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 05:34:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1705325646; x=1705930446; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ZDfOjucIAVZj+2eocaWPQAAzptoNtGFIpHNTyBSwXTA=;
- b=b+ir3iFCJPlZ4YhsRHMV2hjhd0+A9u6HuC09lY67Xw49+Ex8GisrtmX4UdZKlf9gvG
- +dezlFVAnYwJoLvaqj7tNfXRSCirKKM3B4NC28+4GHh+x3tFzakqzN87YMcBCuFajFJy
- NKAtGA7LVk1N+Xad52CxS9PUDjTE3uZUmac5NSRdrCYUo/FxteOA07N7O+7V/VTjWc/I
- ZRDWPPpFpowfLQdV3oKCJzmSBXL/SclDzZtjwPROl/L5qwReBYPIYTQU5DyQ4DZlnEI1
- EPZXnsWEvP+rkMmwPEdLidCAljafX0V8YGS369UcQWopofxqNKIasiUCxtQPs2OXVQJk
- 7knA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1705325646; x=1705930446;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=ZDfOjucIAVZj+2eocaWPQAAzptoNtGFIpHNTyBSwXTA=;
- b=LT1nF7Sf9L4McDh0tlF1ebYA2EcJnufqdTlqYHmdYSBNGKXvKwjlIJQmgnpc7mQvlC
- XoI0tuyqnZZ8253mQP4Sg7j82qNx7SiGs4m/IN8eBzrqKKIVW/dEV2PSH4rXBp8cWKaJ
- NjC3IJmdnKQ/saoT8FF6gyH6t7BiAMfgayn74WzW0KNHSYc8v9OkYMKqNQLL2m8eAhyc
- pwrm12Vb8ibXavhcd5eVUt/YOtF/diKj/llKJYKvN0xOqDrMEIN0MtRGumOWj2UsjF4q
- viA1O5mYqcQVIu020O78kPiBRRKdGmgslm+3IAxj8/xgqy3CqKzYF6xIildTC37+bWIR
- twdQ==
-X-Gm-Message-State: AOJu0YwPY6Dhg/3Onu14jbW+Kfz2tSFQ9+Z24hMqv4mMPM9tCQzmgPxe
- lqek8qR8FScJI782Ay0PAHFblU1VEuY=
-X-Google-Smtp-Source: AGHT+IGVL72vPwxLUUpU89fWD4cVokb4xcN4BV0Gl1c4Rqwc5RQ+zbLwLKU1znrAeUAsZbC6BF0QQA==
-X-Received: by 2002:a17:902:e881:b0:1d4:868b:830a with SMTP id
- w1-20020a170902e88100b001d4868b830amr2937223plg.101.1705325646137; 
- Mon, 15 Jan 2024 05:34:06 -0800 (PST)
-Received: from localhost.localdomain ([106.51.187.155])
- by smtp.gmail.com with ESMTPSA id
- kr16-20020a170903081000b001d4e05828a9sm7643553plb.260.2024.01.15.05.34.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Jan 2024 05:34:05 -0800 (PST)
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-To: ltp@lists.linux.it
-Date: Mon, 15 Jan 2024 08:34:00 -0500
-Message-Id: <20240115133400.2431-1-subramanya.swamy.linux@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <70e4ec51-fc24-4e56-a7b3-58aec44643de@gmail.com>
-References: <70e4ec51-fc24-4e56-a7b3-58aec44643de@gmail.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E37AC1B601D0
+ for <ltp@lists.linux.it>; Fri, 12 Jan 2024 14:34:40 +0100 (CET)
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta105.mxroute.com (ZoneMTA) with ESMTPSA id
+ 18cfde1abf30003727.005 for <ltp@lists.linux.it>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Fri, 12 Jan 2024 13:34:34 +0000
+X-Zone-Loop: 694dcc78b987041cd980dd9b5afc9c2ca91f65fba84c
+X-Originating-IP: [136.175.111.2]
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
+ ; s=x;
+ h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
+ From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=w063HSJyW1ImjwCr5PeZnn5DHNc2eDTl35iwzvMc8iU=; b=F57URQyRqOhdnflP2xaEA5e49y
+ zrHK94RafbXZBNnGBh6LeplVvACf33wxkghqswER47SEwLM03rvvMEcBTwU4USCFL81zjvOebIaRv
+ SGj1lHmtdiwdjgYPEmFg0bRSzu7pUc8mIPjHmNic7SQB9QDSnBwOqeRPzmNZqQUTVVINps6A9ee7J
+ fm35yXrJUhHT1XUAFIPm5M7/N3xRc0memS0giQ/p01bmOBInQIHcG9G5kul+B7qcAGUmpmYnjRVlk
+ +gW8iQkPV+8f+CBAnw3Y9+G/0SWlfJNryqnLGb71dmvdT6o5SWvjFqaM9EtPCQWPT935nI2o8xaGn
+ dbBZT0IA==;
+References: <20231207194011.273027-1-pvorel@suse.cz>
+ <20231207194011.273027-2-pvorel@suse.cz>
+User-agent: mu4e 1.7.5; emacs 28.2
+From: Su Yue <l@damenly.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Date: Fri, 12 Jan 2024 21:18:18 +0800
+In-reply-to: <20231207194011.273027-2-pvorel@suse.cz>
+Message-ID: <frz27k44.fsf@damenly.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Authenticated-Id: l@damenly.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] read_all :catch alignment faults while reading sys
- entries seen in commit :1bbc21785b7336619fb6a67f1fff5afdaf229acc
+X-Mailman-Approved-At: Mon, 15 Jan 2024 15:15:05 +0100
+Subject: Re: [LTP] [PATCH v2 1/3] lib: Add Bcachefs magic
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,44 +72,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+ Brian Foster <bfoster@redhat.com>, fstests@vger.kernel.org,
+ Richard Palethorpe <rpalethorpe@suse.com>, linux-bcachefs@vger.kernel.org,
+ Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
----
- testcases/kernel/fs/read_all/read_all.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index ddc48edd8..e87f47979 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -251,17 +251,11 @@ static void read_test(const int worker, const char *const path)
- 	worker_heartbeat(worker);
- 	/*
- 	 * This could catch any alignment faults while reading sys entries
--	 * seen in commit :1bbc21785b7336619fb6a67f1fff5afdaf229acc so reading 1024 bytes
--	 * in chunks of 8 bytes 128 times
-+	 * seen in commit :1bbc21785b7336619fb6a67f1fff5afdaf229acc
- 	 */
- 	char check_buf[7];
--	unsigned int i;
- 
--	for (i = 0; i < 128; i++) {
--		count = read(fd, check_buf, sizeof(check_buf));
--		if (count == 0 || count < 0)
--			break;
--	}
-+	count = pread(fd, check_buf, sizeof(check_buf), 1);
- 
- 	count = pread(fd, buf, sizeof(buf) - 1, 0);
- 	elapsed = worker_elapsed(worker);
--- 
-2.39.3
+On Thu 07 Dec 2023 at 20:40, Petr Vorel <pvorel@suse.cz> wrote:
 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v2
+>
+>  include/tst_fs.h  | 3 +++
+>  lib/tst_fs_type.c | 2 ++
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/include/tst_fs.h b/include/tst_fs.h
+> index eb9841165..06f5be896 100644
+> --- a/include/tst_fs.h
+> +++ b/include/tst_fs.h
+> @@ -34,6 +34,9 @@
+>  #define TST_VFAT_MAGIC     0x4d44 /* AKA MSDOS */
+>  #define TST_EXFAT_MAGIC    0x2011BAB0UL
+>
+> +/* fs/bcachefs/bcachefs_format.h */
+> +#define TST_BCACHE_MAGIC		0xca451a4e
+> +
+>
+Not object to the patch. There are three MAGIC values in
+bcachefs_format.h: BCACHE_MAGIC, BCHFS_MAGIC, 
+BCACHEFS_STATFS_MAGIC.
+
+IIUC, BCACHE_MAGIC is the older one in superblock, BCHFS_MAGIC is 
+the
+new one. BCACHEFS_STATFS_MAGIC is for statfs.
+Kent,
+Would you please export needed magic values to 
+include/uapi/linux/magic.h?
+Since you are the maintainer also I'm confused about variables to 
+be named.
+
+--
+Su
+
+>  enum tst_fill_access_pattern {
+>  	TST_FILL_BLOCKS,
+>  	TST_FILL_RANDOM
+> diff --git a/lib/tst_fs_type.c b/lib/tst_fs_type.c
+> index d9c9c0817..7f0d61a8e 100644
+> --- a/lib/tst_fs_type.c
+> +++ b/lib/tst_fs_type.c
+> @@ -36,6 +36,8 @@ const char *tst_fs_type_name(long f_type)
+>  		return "9p";
+>  	case TST_RAMFS_MAGIC:
+>  		return "ramfs";
+> +	case TST_BCACHE_MAGIC:
+> +		return "bcachefs";
+>  	case TST_BTRFS_MAGIC:
+>  		return "btrfs";
+>  	case TST_XFS_MAGIC:
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
