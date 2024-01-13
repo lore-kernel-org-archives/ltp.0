@@ -4,68 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67BEBC4707B
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 07:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F7CC4706C
+	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 14:50:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F4A43CE3AD
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 08:05:35 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3E2A43CE3C0
+	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 15:50:14 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D092B3C2209
- for <ltp@lists.linux.it>; Sat, 13 Jan 2024 08:05:21 +0100 (CET)
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com
- [IPv6:2607:f8b0:4864:20::f2d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C5D3860055A
- for <ltp@lists.linux.it>; Sat, 13 Jan 2024 08:05:20 +0100 (CET)
-Received: by mail-qv1-xf2d.google.com with SMTP id
- 6a1803df08f44-68141aa810eso8031946d6.2
- for <ltp@lists.linux.it>; Fri, 12 Jan 2024 23:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1705129519; x=1705734319; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=GqUVJ8s7EGwnf8VW2qN30KaMR9GjPb0OJdm4xU8DVmE=;
- b=fCp1g9oAR/KM0KR/SyILP8Rr2M7P7Y+N0Ar23ZU6fHBczBfwo5h1zy38DfHw/UU8oX
- ZpNa4vITQPHfQ71WJz+aIR09+zWAoYSuwftgVU02U2GJAQ1ip0P/H1CwgNA7UWo0Kx9f
- SPFpL/xnZNP+lPO2I2a1VDrYc4eBA/HqlVx9/SZ1L1KwKhMRhVKJUMSIPJJjxYUkw3Rw
- pgN+35/c7Yt/ne4oEs9BzY3c13f8rbWJ4ibqvcvFHEFqrzzMV2ylfbZ+mm6KWPRk2QHE
- xP45JP+4lj7Xee3G/mM2Wcz5sQLtNAE3s1io8qw6b/b/uGs7Ooj6dDRU9IAZceaaK7FJ
- S6Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1705129519; x=1705734319;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GqUVJ8s7EGwnf8VW2qN30KaMR9GjPb0OJdm4xU8DVmE=;
- b=u9dvib4kwzhK8k8idW7ZhhqWLZbT8DoshicA9tUPvoIxQMdGbGn2uT9qBeTeXTlv1u
- 8+lTmNGQwFVAU6vQ/ft/6YAwB8Qi+VehjhNAMEs6h5OAe9c7wI3JflRfmdCFLE6n/UJW
- ULEwhDdhGBFDGFMZ4iCyy3scfvoe6uTg3LAetCApjodX/ftUhUqhhS8jUtkr4AYh5mx+
- 0Yea49E82MM9Ods3m8KJgMSAkWiTc/COkt7fjPofG3J5HQQlk3VZmMzhasFiCfZENIZ0
- xi/PqBdQZfZ8EMLCnJcMZJWM6AzI/hwRFF6gRcBXrrNy0qLdWEO6PKTWSk95hS9I6JKu
- Hi8g==
-X-Gm-Message-State: AOJu0YwjGMKtBQez+SU+RwZOHbDmEYvwVAAX7CLr3if5lrQEt+AjvTHY
- lddSeNKfDD7hfd/GPodBhyWk4FL78XhOHet65hqvKyhd12h2oQ==
-X-Google-Smtp-Source: AGHT+IFc0y2uSmt7xB6X4CM/6iYzv7XLzqDXm1OMDLNeYk0eIgGxUlMEo1QaTfdT2BHiqR6aEvzb2Y8BVfmQGNWecLs=
-X-Received: by 2002:ad4:5be2:0:b0:681:3b95:cedd with SMTP id
- k2-20020ad45be2000000b006813b95ceddmr2122750qvc.59.1705129519531; Fri, 12 Jan
- 2024 23:05:19 -0800 (PST)
+ by picard.linux.it (Postfix) with ESMTPS id E37853CA4A9
+ for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:59 +0100 (CET)
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 1BBA6201172
+ for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=UaiHy
+ t1sSRJaSE+Vog/y39DUV2IeecXASyvR7MN+6sY=; b=bHXTWOvN6/zrCF+FS8trE
+ apVKMh2HTPW6znk1PBJmbyhgSXQKIArcutC0P67Z7GEzJJziJiFVcngvvz3QKCHN
+ QnOuewMKA6PwQll/N+2e46VVcKxOO7IrOfdqpxynlkibqSIbaOt6aSK3t7baDB8Z
+ n6KtS45h0qjyOIEg9iByzs=
+Received: from localhost.localdomain (unknown [183.210.226.120])
+ by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wD3X1IFo6JlDGAUBA--.25846S3;
+ Sat, 13 Jan 2024 22:49:44 +0800 (CST)
+From: ice_yangxiao@163.com
+To: ltp@lists.linux.it
+Date: Sat, 13 Jan 2024 22:49:39 +0800
+Message-Id: <20240113144940.133746-2-ice_yangxiao@163.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20240113144940.133746-1-ice_yangxiao@163.com>
+References: <20240113144940.133746-1-ice_yangxiao@163.com>
 MIME-Version: 1.0
-References: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
- <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
-In-Reply-To: <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Sat, 13 Jan 2024 12:35:08 +0530
-Message-ID: <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
-To: Damien Le Moal <dlemoal@kernel.org>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-CM-TRANSID: _____wD3X1IFo6JlDGAUBA--.25846S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3GF4rtr18ur4xtFW8tF1rtFb_yoW7AF4fp3
+ y7K34qyws5ta1xWrnrXF48Aa4rZ3WfAry3u3W0yrs5Zr4Fqw15JF4aqFy5JFyUXry7KFW7
+ tr4furW2y3WrZFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UQIDcUUUUU=
+X-Originating-IP: [183.210.226.120]
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiqAJkXmVOBoai8gABsq
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] scsi: block: ioprio: Clean up interface definition -
- ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+Subject: [LTP] [PATCH 2/2] syscalls/pwritev: Make make check happy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,56 +56,154 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Niklas Cassel <niklas.cassel@wdc.com>,
- Linux Regressions <regressions@lists.linux.dev>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- linux-block <linux-block@vger.kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, Christoph Hellwig <hch@lst.de>,
- LTP List <ltp@lists.linux.it>, Hannes Reinecke <hare@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, 12 Jan 2024 at 10:49, Damien Le Moal <dlemoal@kernel.org> wrote:
->
-> On 1/12/24 14:15, Naresh Kamboju wrote:
-> > The LTP test 'iopri_set03' fails on all the devices.
-> > It fails on linux kernel >= v6.5. ( on Debian rootfs ).
-> > Test fail confirmed on LTP release 20230929 and 20230516.
-> >
-> > Test failed log:
-> > ------------
-> > tst_test.c:1690: TINFO: LTP version: 20230929
-> > tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
-> > ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
-> > ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
-> > ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
-> >
-> > Investigation:
-> > ----------
-> > Bisecting this test between kernel v6.4 and v6.5 shows patch
-> > eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
-> > as the first faulty commit.
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> This is fixed in LTP. Please update your LTP setup to avoid this issue.
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-Please point me to the fixed commit id.
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/pwritev/pwritev.h   | 19 ++------
+ testcases/kernel/syscalls/pwritev/pwritev01.c | 20 ++++----
+ testcases/kernel/syscalls/pwritev/pwritev02.c | 46 +++++++++----------
+ testcases/kernel/syscalls/pwritev/pwritev03.c |  2 +-
+ 4 files changed, 38 insertions(+), 49 deletions(-)
 
-I have the latest LTP release test results as ioprio_set03 has failed.
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev.h b/testcases/kernel/syscalls/pwritev/pwritev.h
+index 833160ddb..6c12027b5 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev.h
++++ b/testcases/kernel/syscalls/pwritev/pwritev.h
+@@ -1,18 +1,7 @@
+-/*
+-* Copyright (c) 2015 Fujitsu Ltd.
+-* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-*
+-* This program is free software; you can redistribute it and/or modify it
+-* under the terms of version 2 of the GNU General Public License as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it would be useful, but
+-* WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-*
+-* You should have received a copy of the GNU General Public License
+-* alone with this program.
+-*/
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
+ 
+ #ifndef PWRITEV_H
+ #define PWRITEV_H
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev01.c b/testcases/kernel/syscalls/pwritev/pwritev01.c
+index 66358f7c4..4c2b84c5b 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev01.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev01.c
+@@ -1,17 +1,17 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+-* Copyright (c) 2015 Fujitsu Ltd.
+-* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-*/
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
+ 
+ /*
+-* Test Name: pwritev01
+-*
+-* Test Description:
+-* Testcase to check the basic functionality of the pwritev(2).
+-* pwritev(2) should succeed to write the expected content of data
+-* and after writing the file, the file offset is not changed.
+-*/
++ * Test Name: pwritev01
++ *
++ * Test Description:
++ * Testcase to check the basic functionality of the pwritev(2).
++ * pwritev(2) should succeed to write the expected content of data
++ * and after writing the file, the file offset is not changed.
++ */
+ 
+ #define _GNU_SOURCE
+ #include <string.h>
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
+index 0881b7566..de69d5add 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev02.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
+@@ -1,30 +1,30 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+-* Copyright (c) 2015-2016 Fujitsu Ltd.
+-* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-*/
++ * Copyright (c) 2015-2016 Fujitsu Ltd.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
+ 
+ /*
+-* Test Name: pwritev02
+-*
+-* Description:
+-* 1) pwritev(2) fails if iov_len is invalid.
+-* 2) pwritev(2) fails if the vector count iovcnt is less than zero.
+-* 3) pwritev(2) fails if offset is negative.
+-* 4) pwritev(2) fails when attempts to write from a invalid address
+-* 5) pwritev(2) fails if file descriptor is invalid.
+-* 6) pwritev(2) fails if file descriptor is not open for writing.
+-* 7) pwritev(2) fails if fd is associated with a pipe.
+-*
+-* Expected Result:
+-* 1) pwritev(2) should return -1 and set errno to EINVAL.
+-* 2) pwritev(2) should return -1 and set errno to EINVAL.
+-* 3) pwritev(2) should return -1 and set errno to EINVAL.
+-* 4) pwritev(2) should return -1 and set errno to EFAULT.
+-* 5) pwritev(2) should return -1 and set errno to EBADF.
+-* 6) pwritev(2) should return -1 and set errno to EBADF.
+-* 7) pwritev(2) should return -1 and set errno to ESPIPE.
+-*/
++ * Test Name: pwritev02
++ *
++ * Description:
++ * 1) pwritev(2) fails if iov_len is invalid.
++ * 2) pwritev(2) fails if the vector count iovcnt is less than zero.
++ * 3) pwritev(2) fails if offset is negative.
++ * 4) pwritev(2) fails when attempts to write from a invalid address
++ * 5) pwritev(2) fails if file descriptor is invalid.
++ * 6) pwritev(2) fails if file descriptor is not open for writing.
++ * 7) pwritev(2) fails if fd is associated with a pipe.
++ *
++ * Expected Result:
++ * 1) pwritev(2) should return -1 and set errno to EINVAL.
++ * 2) pwritev(2) should return -1 and set errno to EINVAL.
++ * 3) pwritev(2) should return -1 and set errno to EINVAL.
++ * 4) pwritev(2) should return -1 and set errno to EFAULT.
++ * 5) pwritev(2) should return -1 and set errno to EBADF.
++ * 6) pwritev(2) should return -1 and set errno to EBADF.
++ * 7) pwritev(2) should return -1 and set errno to ESPIPE.
++ */
+ 
+ #define _GNU_SOURCE
+ 
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev03.c b/testcases/kernel/syscalls/pwritev/pwritev03.c
+index 8b91de336..e60ef191e 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev03.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev03.c
+@@ -90,7 +90,7 @@ static void verify_direct_pwritev(unsigned int n)
+ static void setup(void)
+ {
+ 	int dev_fd, ret;
+-	
++
+ 	dev_fd = SAFE_OPEN(tst_device->dev, O_RDWR);
+ 	SAFE_IOCTL(dev_fd, BLKSSZGET, &ret);
+ 	SAFE_CLOSE(dev_fd);
+-- 
+2.26.2
 
-ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
-LTP Version: 20230929-258-gec0a8f18b
-on Debian rootfs.
-
-Links:
- - https://qa-reports.linaro.org/lkft/ltp-master/build/v6.6.10_20230929-258-gec0a8f18b/testrun/22035919/suite/ltp-syscalls/test/ioprio_set03/history/
- - https://qa-reports.linaro.org/lkft/ltp-master/build/v6.6.10_20230929-258-gec0a8f18b/testrun/22035919/suite/ltp-syscalls/test/ioprio_set03/details/
-
-- Naresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
