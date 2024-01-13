@@ -4,47 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F7CC4706C
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 14:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06743C4707B
+	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 14:50:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E2A43CE3C0
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 15:50:14 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 485833CE3BB
+	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 15:50:29 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E37853CA4A9
+ by picard.linux.it (Postfix) with ESMTPS id 302423CA4A9
  for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:59 +0100 (CET)
 Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
- by in-7.smtp.seeweb.it (Postfix) with ESMTP id 1BBA6201172
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id D5E6D1400C44
  for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:56 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=UaiHy
- t1sSRJaSE+Vog/y39DUV2IeecXASyvR7MN+6sY=; b=bHXTWOvN6/zrCF+FS8trE
- apVKMh2HTPW6znk1PBJmbyhgSXQKIArcutC0P67Z7GEzJJziJiFVcngvvz3QKCHN
- QnOuewMKA6PwQll/N+2e46VVcKxOO7IrOfdqpxynlkibqSIbaOt6aSK3t7baDB8Z
- n6KtS45h0qjyOIEg9iByzs=
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=F7rDs
+ 22gRFQqKtAU0mQRHTOQu0UDtFEMsyFO6hdckf4=; b=fTQDxiOS4IZIQ6D1asnIv
+ pemyjvu5c8sf3ttcBNlBCF809uT0T9eB8r2nDvt01d5HsQCMIn/ov9knXIFZXABX
+ GYweswD1QFo2V1aG9l1T5/Ee/PYtWZTFiwSeC6rlh+SfaI1Eq6AQiUuq/4Ba0tni
+ yDetiBE3+JHlQmjscFM77Q=
 Received: from localhost.localdomain (unknown [183.210.226.120])
- by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wD3X1IFo6JlDGAUBA--.25846S3;
- Sat, 13 Jan 2024 22:49:44 +0800 (CST)
+ by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wD3X1IFo6JlDGAUBA--.25846S2;
+ Sat, 13 Jan 2024 22:49:43 +0800 (CST)
 From: ice_yangxiao@163.com
 To: ltp@lists.linux.it
-Date: Sat, 13 Jan 2024 22:49:39 +0800
-Message-Id: <20240113144940.133746-2-ice_yangxiao@163.com>
+Date: Sat, 13 Jan 2024 22:49:38 +0800
+Message-Id: <20240113144940.133746-1-ice_yangxiao@163.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20240113144940.133746-1-ice_yangxiao@163.com>
-References: <20240113144940.133746-1-ice_yangxiao@163.com>
 MIME-Version: 1.0
-X-CM-TRANSID: _____wD3X1IFo6JlDGAUBA--.25846S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GF4rtr18ur4xtFW8tF1rtFb_yoW7AF4fp3
- y7K34qyws5ta1xWrnrXF48Aa4rZ3WfAry3u3W0yrs5Zr4Fqw15JF4aqFy5JFyUXry7KFW7
- tr4furW2y3WrZFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UQIDcUUUUU=
+X-CM-TRANSID: _____wD3X1IFo6JlDGAUBA--.25846S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Xw47CF15GryDKr18AF1UJrb_yoW7Cr43p3
+ y7Ja4UKF4kJr1fu3Z7Zr40ka1rA3Z2yFyrKF4Ika15ZrsYvw45CFW2qFyrJFyUXr48Kayj
+ yF4fXry2qw1kJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UPkusUUUUU=
 X-Originating-IP: [183.210.226.120]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiqAJkXmVOBoai8gABsq
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBEhFkXmVOBo5MrwAAs5
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/pwritev: Make make check happy
+Subject: [LTP] [PATCH 1/2] syscalls/preadv: Make make check happy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,16 +64,15 @@ From: Xiao Yang <yangx.jy@fujitsu.com>
 
 Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/pwritev/pwritev.h   | 19 ++------
- testcases/kernel/syscalls/pwritev/pwritev01.c | 20 ++++----
- testcases/kernel/syscalls/pwritev/pwritev02.c | 46 +++++++++----------
- testcases/kernel/syscalls/pwritev/pwritev03.c |  2 +-
- 4 files changed, 38 insertions(+), 49 deletions(-)
+ testcases/kernel/syscalls/preadv/preadv.h   | 19 ++------
+ testcases/kernel/syscalls/preadv/preadv01.c | 26 +++++------
+ testcases/kernel/syscalls/preadv/preadv02.c | 50 ++++++++++-----------
+ 3 files changed, 42 insertions(+), 53 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev.h b/testcases/kernel/syscalls/pwritev/pwritev.h
-index 833160ddb..6c12027b5 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev.h
-+++ b/testcases/kernel/syscalls/pwritev/pwritev.h
+diff --git a/testcases/kernel/syscalls/preadv/preadv.h b/testcases/kernel/syscalls/preadv/preadv.h
+index 73466a9aa..c3e9e5f19 100644
+--- a/testcases/kernel/syscalls/preadv/preadv.h
++++ b/testcases/kernel/syscalls/preadv/preadv.h
 @@ -1,18 +1,7 @@
 -/*
 -* Copyright (c) 2015 Fujitsu Ltd.
@@ -96,12 +94,12 @@ index 833160ddb..6c12027b5 100644
 + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 + */
  
- #ifndef PWRITEV_H
- #define PWRITEV_H
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev01.c b/testcases/kernel/syscalls/pwritev/pwritev01.c
-index 66358f7c4..4c2b84c5b 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev01.c
-+++ b/testcases/kernel/syscalls/pwritev/pwritev01.c
+ #ifndef PREADV_H
+ #define PREADV_H
+diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
+index 62f9296f2..aba4748a5 100644
+--- a/testcases/kernel/syscalls/preadv/preadv01.c
++++ b/testcases/kernel/syscalls/preadv/preadv01.c
 @@ -1,17 +1,17 @@
  // SPDX-License-Identifier: GPL-2.0-or-later
  /*
@@ -113,28 +111,55 @@ index 66358f7c4..4c2b84c5b 100644
 + */
  
  /*
--* Test Name: pwritev01
+-* Test Name: preadv01
 -*
 -* Test Description:
--* Testcase to check the basic functionality of the pwritev(2).
--* pwritev(2) should succeed to write the expected content of data
--* and after writing the file, the file offset is not changed.
+-* Testcase to check the basic functionality of the preadv(2).
+-* Preadv(2) should succeed to read the expected content of data
+-* and after reading the file, the file offset is not changed.
 -*/
-+ * Test Name: pwritev01
++ * Test Name: preadv01
 + *
 + * Test Description:
-+ * Testcase to check the basic functionality of the pwritev(2).
-+ * pwritev(2) should succeed to write the expected content of data
-+ * and after writing the file, the file offset is not changed.
++ * Testcase to check the basic functionality of the preadv(2).
++ * Preadv(2) should succeed to read the expected content of data
++ * and after reading the file, the file offset is not changed.
 + */
  
  #define _GNU_SOURCE
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
-index 0881b7566..de69d5add 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev02.c
-+++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
-@@ -1,30 +1,30 @@
+ 
+@@ -38,7 +38,7 @@ static struct tcase {
+ 	{1, CHUNK*3/2, CHUNK/2, 'b'}
+ };
+ 
+-void verify_preadv(unsigned int n)
++static void verify_preadv(unsigned int n)
+ {
+ 	int i;
+ 	char *vec;
+@@ -81,7 +81,7 @@ void verify_preadv(unsigned int n)
+ 		 "with content '%c' expectedly", tc->size, tc->content);
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	char buf[CHUNK];
+ 
+@@ -94,7 +94,7 @@ void setup(void)
+ 	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, sizeof(buf));
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
+ 	if (fd > 0)
+ 		SAFE_CLOSE(fd);
+diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
+index 500059e42..65d4795d6 100644
+--- a/testcases/kernel/syscalls/preadv/preadv02.c
++++ b/testcases/kernel/syscalls/preadv/preadv02.c
+@@ -1,32 +1,32 @@
  // SPDX-License-Identifier: GPL-2.0-or-later
  /*
 -* Copyright (c) 2015-2016 Fujitsu Ltd.
@@ -145,62 +170,53 @@ index 0881b7566..de69d5add 100644
 + */
  
  /*
--* Test Name: pwritev02
+-* Test Name: preadv02
 -*
 -* Description:
--* 1) pwritev(2) fails if iov_len is invalid.
--* 2) pwritev(2) fails if the vector count iovcnt is less than zero.
--* 3) pwritev(2) fails if offset is negative.
--* 4) pwritev(2) fails when attempts to write from a invalid address
--* 5) pwritev(2) fails if file descriptor is invalid.
--* 6) pwritev(2) fails if file descriptor is not open for writing.
--* 7) pwritev(2) fails if fd is associated with a pipe.
+-* 1) preadv(2) fails if iov_len is invalid.
+-* 2) preadv(2) fails if the vector count iovcnt is less than zero.
+-* 3) preadv(2) fails if offset is negative.
+-* 4) preadv(2) fails when attempts to read into a invalid address.
+-* 5) preadv(2) fails if file descriptor is invalid.
+-* 6) preadv(2) fails if file descriptor is not open for reading.
+-* 7) preadv(2) fails when fd refers to a directory.
+-* 8) preadv(2) fails if fd is associated with a pipe.
 -*
 -* Expected Result:
--* 1) pwritev(2) should return -1 and set errno to EINVAL.
--* 2) pwritev(2) should return -1 and set errno to EINVAL.
--* 3) pwritev(2) should return -1 and set errno to EINVAL.
--* 4) pwritev(2) should return -1 and set errno to EFAULT.
--* 5) pwritev(2) should return -1 and set errno to EBADF.
--* 6) pwritev(2) should return -1 and set errno to EBADF.
--* 7) pwritev(2) should return -1 and set errno to ESPIPE.
+-* 1) preadv(2) should return -1 and set errno to EINVAL.
+-* 2) preadv(2) should return -1 and set errno to EINVAL.
+-* 3) preadv(2) should return -1 and set errno to EINVAL.
+-* 4) preadv(2) should return -1 and set errno to EFAULT.
+-* 5) preadv(2) should return -1 and set errno to EBADF.
+-* 6) preadv(2) should return -1 and set errno to EBADF.
+-* 7) preadv(2) should return -1 and set errno to EISDIR.
+-* 8) preadv(2) should return -1 and set errno to ESPIPE.
 -*/
-+ * Test Name: pwritev02
++ * Test Name: preadv02
 + *
 + * Description:
-+ * 1) pwritev(2) fails if iov_len is invalid.
-+ * 2) pwritev(2) fails if the vector count iovcnt is less than zero.
-+ * 3) pwritev(2) fails if offset is negative.
-+ * 4) pwritev(2) fails when attempts to write from a invalid address
-+ * 5) pwritev(2) fails if file descriptor is invalid.
-+ * 6) pwritev(2) fails if file descriptor is not open for writing.
-+ * 7) pwritev(2) fails if fd is associated with a pipe.
++ * 1) preadv(2) fails if iov_len is invalid.
++ * 2) preadv(2) fails if the vector count iovcnt is less than zero.
++ * 3) preadv(2) fails if offset is negative.
++ * 4) preadv(2) fails when attempts to read into a invalid address.
++ * 5) preadv(2) fails if file descriptor is invalid.
++ * 6) preadv(2) fails if file descriptor is not open for reading.
++ * 7) preadv(2) fails when fd refers to a directory.
++ * 8) preadv(2) fails if fd is associated with a pipe.
 + *
 + * Expected Result:
-+ * 1) pwritev(2) should return -1 and set errno to EINVAL.
-+ * 2) pwritev(2) should return -1 and set errno to EINVAL.
-+ * 3) pwritev(2) should return -1 and set errno to EINVAL.
-+ * 4) pwritev(2) should return -1 and set errno to EFAULT.
-+ * 5) pwritev(2) should return -1 and set errno to EBADF.
-+ * 6) pwritev(2) should return -1 and set errno to EBADF.
-+ * 7) pwritev(2) should return -1 and set errno to ESPIPE.
++ * 1) preadv(2) should return -1 and set errno to EINVAL.
++ * 2) preadv(2) should return -1 and set errno to EINVAL.
++ * 3) preadv(2) should return -1 and set errno to EINVAL.
++ * 4) preadv(2) should return -1 and set errno to EFAULT.
++ * 5) preadv(2) should return -1 and set errno to EBADF.
++ * 6) preadv(2) should return -1 and set errno to EBADF.
++ * 7) preadv(2) should return -1 and set errno to EISDIR.
++ * 8) preadv(2) should return -1 and set errno to ESPIPE.
 + */
  
  #define _GNU_SOURCE
  
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev03.c b/testcases/kernel/syscalls/pwritev/pwritev03.c
-index 8b91de336..e60ef191e 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev03.c
-+++ b/testcases/kernel/syscalls/pwritev/pwritev03.c
-@@ -90,7 +90,7 @@ static void verify_direct_pwritev(unsigned int n)
- static void setup(void)
- {
- 	int dev_fd, ret;
--	
-+
- 	dev_fd = SAFE_OPEN(tst_device->dev, O_RDWR);
- 	SAFE_IOCTL(dev_fd, BLKSSZGET, &ret);
- 	SAFE_CLOSE(dev_fd);
 -- 
 2.26.2
 
