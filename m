@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06743C4707B
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 14:50:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40B51C47077
+	for <ltp@archiver.kernel.org>; Sun, 14 Jan 2024 06:39:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 485833CE3BB
-	for <ltp@archiver.kernel.org>; Sat, 13 Jan 2024 15:50:29 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 3A24B3CD0A8
+	for <ltp@archiver.kernel.org>; Sun, 14 Jan 2024 07:39:22 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 302423CA4A9
- for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:59 +0100 (CET)
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id D5E6D1400C44
- for <ltp@lists.linux.it>; Sat, 13 Jan 2024 15:49:56 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 15FC33CA6E3
+ for <ltp@lists.linux.it>; Sun, 14 Jan 2024 07:39:06 +0100 (CET)
+Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.220])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTP id DDD9D1A00670
+ for <ltp@lists.linux.it>; Sun, 14 Jan 2024 07:39:03 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=F7rDs
- 22gRFQqKtAU0mQRHTOQu0UDtFEMsyFO6hdckf4=; b=fTQDxiOS4IZIQ6D1asnIv
- pemyjvu5c8sf3ttcBNlBCF809uT0T9eB8r2nDvt01d5HsQCMIn/ov9knXIFZXABX
- GYweswD1QFo2V1aG9l1T5/Ee/PYtWZTFiwSeC6rlh+SfaI1Eq6AQiUuq/4Ba0tni
- yDetiBE3+JHlQmjscFM77Q=
-Received: from localhost.localdomain (unknown [183.210.226.120])
- by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wD3X1IFo6JlDGAUBA--.25846S2;
- Sat, 13 Jan 2024 22:49:43 +0800 (CST)
-From: ice_yangxiao@163.com
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=bfF85
+ c/8DAAeX5yROX3Lg9ZcYWlxQPvAmCFaUp3TmAw=; b=ph/zBzE6FpU4K6/6UDlKS
+ AdUgGX751gl1AN17SJebz9he5j1c0pZN7gb2E3HbaLJ3I71ra4ooZxCWM5bC1dyw
+ kNwcKUwvj7LY1y2O9fmIVhtFCNZbXcYg9on+BJ0iaZo0yIPiVyokycZKCHM9dKLh
+ 6bfP8TmuAUTRWh92RiYNcc=
+Received: from ubuntu22.localdomain (unknown [171.213.57.23])
+ by gzga-smtp-mta-g0-1 (Coremail) with SMTP id _____wD3_wmAgaNluqQEAQ--.42650S2;
+ Sun, 14 Jan 2024 14:38:57 +0800 (CST)
+From: chenguanxi11234@163.com
 To: ltp@lists.linux.it
-Date: Sat, 13 Jan 2024 22:49:38 +0800
-Message-Id: <20240113144940.133746-1-ice_yangxiao@163.com>
-X-Mailer: git-send-email 2.26.2
+Date: Sun, 14 Jan 2024 14:38:54 +0800
+Message-Id: <977c827a45313499dd372cfda1c5156c2729595d.1704804430.git.chen.haonan2@zte.com.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-CM-TRANSID: _____wD3X1IFo6JlDGAUBA--.25846S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Xw47CF15GryDKr18AF1UJrb_yoW7Cr43p3
- y7Ja4UKF4kJr1fu3Z7Zr40ka1rA3Z2yFyrKF4Ika15ZrsYvw45CFW2qFyrJFyUXr48Kayj
- yF4fXry2qw1kJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UPkusUUUUU=
-X-Originating-IP: [183.210.226.120]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBEhFkXmVOBo5MrwAAs5
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-CM-TRANSID: _____wD3_wmAgaNluqQEAQ--.42650S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJw15Jw1xGry8Aw1fZFy7ZFb_yoW5XF4DpF
+ ZxCa9Yyr95Jr1Sgry7AF4qvF1FkrZ3JF1UJryxuw10k3sayryYyr4vqry5JF18u392gFWr
+ CrWfJa4rX390qr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U5xhXUUUUU=
+X-Originating-IP: [171.213.57.23]
+X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiQANj+mVOA-BQgQABsS
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] syscalls/preadv: Make make check happy
+Subject: [LTP] [PATCH v2] posix/conformance/interfaces/sem_timedwait/2-1:
+ Fix test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,170 +55,112 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: yang.guang5@zte.com.cn, Chen Haonan <chen.haonan2@zte.com.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+From: Chen Haonan <chen.haonan2@zte.com.cn>
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Since the parent and child processes are not operating on the 
+same semaphore, this code wasn't doing its job correctly before,
+so we mapped the semaphore to a piece of shared memory and 
+changed some implementation details in the original code to make it work.
+
+Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
 ---
- testcases/kernel/syscalls/preadv/preadv.h   | 19 ++------
- testcases/kernel/syscalls/preadv/preadv01.c | 26 +++++------
- testcases/kernel/syscalls/preadv/preadv02.c | 50 ++++++++++-----------
- 3 files changed, 42 insertions(+), 53 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/preadv/preadv.h b/testcases/kernel/syscalls/preadv/preadv.h
-index 73466a9aa..c3e9e5f19 100644
---- a/testcases/kernel/syscalls/preadv/preadv.h
-+++ b/testcases/kernel/syscalls/preadv/preadv.h
-@@ -1,18 +1,7 @@
--/*
--* Copyright (c) 2015 Fujitsu Ltd.
--* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it would be useful, but
--* WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--*
--* You should have received a copy of the GNU General Public License
--* alone with this program.
--*/
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
+ .../interfaces/sem_timedwait/2-1.c            | 34 ++++++++++++-------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+index 655e35108..f5b9cf921 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+@@ -10,13 +10,14 @@
+  * will unlock the semaphore from another process.
+  */
  
- #ifndef PREADV_H
- #define PREADV_H
-diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
-index 62f9296f2..aba4748a5 100644
---- a/testcases/kernel/syscalls/preadv/preadv01.c
-+++ b/testcases/kernel/syscalls/preadv/preadv01.c
-@@ -1,17 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
--* Copyright (c) 2015 Fujitsu Ltd.
--* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
--*/
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
+-
++#include <stdlib.h>
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
+ #include <semaphore.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/mman.h>
+ #include <fcntl.h>
+ #include <signal.h>
+ #include <time.h>
+@@ -28,12 +29,17 @@
  
- /*
--* Test Name: preadv01
--*
--* Test Description:
--* Testcase to check the basic functionality of the preadv(2).
--* Preadv(2) should succeed to read the expected content of data
--* and after reading the file, the file offset is not changed.
--*/
-+ * Test Name: preadv01
-+ *
-+ * Test Description:
-+ * Testcase to check the basic functionality of the preadv(2).
-+ * Preadv(2) should succeed to read the expected content of data
-+ * and after reading the file, the file offset is not changed.
-+ */
- 
- #define _GNU_SOURCE
- 
-@@ -38,7 +38,7 @@ static struct tcase {
- 	{1, CHUNK*3/2, CHUNK/2, 'b'}
- };
- 
--void verify_preadv(unsigned int n)
-+static void verify_preadv(unsigned int n)
+ int main(void)
  {
- 	int i;
- 	char *vec;
-@@ -81,7 +81,7 @@ void verify_preadv(unsigned int n)
- 		 "with content '%c' expectedly", tc->size, tc->content);
- }
+-	sem_t mysemp;
++	sem_t *mysemp;
+ 	struct timespec ts;
+ 	int pid;
  
--void setup(void)
-+static void setup(void)
- {
- 	char buf[CHUNK];
- 
-@@ -94,7 +94,7 @@ void setup(void)
- 	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, sizeof(buf));
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
- 	if (fd > 0)
- 		SAFE_CLOSE(fd);
-diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
-index 500059e42..65d4795d6 100644
---- a/testcases/kernel/syscalls/preadv/preadv02.c
-+++ b/testcases/kernel/syscalls/preadv/preadv02.c
-@@ -1,32 +1,32 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
--* Copyright (c) 2015-2016 Fujitsu Ltd.
--* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
--*/
-+ * Copyright (c) 2015-2016 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
- 
- /*
--* Test Name: preadv02
--*
--* Description:
--* 1) preadv(2) fails if iov_len is invalid.
--* 2) preadv(2) fails if the vector count iovcnt is less than zero.
--* 3) preadv(2) fails if offset is negative.
--* 4) preadv(2) fails when attempts to read into a invalid address.
--* 5) preadv(2) fails if file descriptor is invalid.
--* 6) preadv(2) fails if file descriptor is not open for reading.
--* 7) preadv(2) fails when fd refers to a directory.
--* 8) preadv(2) fails if fd is associated with a pipe.
--*
--* Expected Result:
--* 1) preadv(2) should return -1 and set errno to EINVAL.
--* 2) preadv(2) should return -1 and set errno to EINVAL.
--* 3) preadv(2) should return -1 and set errno to EINVAL.
--* 4) preadv(2) should return -1 and set errno to EFAULT.
--* 5) preadv(2) should return -1 and set errno to EBADF.
--* 6) preadv(2) should return -1 and set errno to EBADF.
--* 7) preadv(2) should return -1 and set errno to EISDIR.
--* 8) preadv(2) should return -1 and set errno to ESPIPE.
--*/
-+ * Test Name: preadv02
-+ *
-+ * Description:
-+ * 1) preadv(2) fails if iov_len is invalid.
-+ * 2) preadv(2) fails if the vector count iovcnt is less than zero.
-+ * 3) preadv(2) fails if offset is negative.
-+ * 4) preadv(2) fails when attempts to read into a invalid address.
-+ * 5) preadv(2) fails if file descriptor is invalid.
-+ * 6) preadv(2) fails if file descriptor is not open for reading.
-+ * 7) preadv(2) fails when fd refers to a directory.
-+ * 8) preadv(2) fails if fd is associated with a pipe.
-+ *
-+ * Expected Result:
-+ * 1) preadv(2) should return -1 and set errno to EINVAL.
-+ * 2) preadv(2) should return -1 and set errno to EINVAL.
-+ * 3) preadv(2) should return -1 and set errno to EINVAL.
-+ * 4) preadv(2) should return -1 and set errno to EFAULT.
-+ * 5) preadv(2) should return -1 and set errno to EBADF.
-+ * 6) preadv(2) should return -1 and set errno to EBADF.
-+ * 7) preadv(2) should return -1 and set errno to EISDIR.
-+ * 8) preadv(2) should return -1 and set errno to ESPIPE.
-+ */
- 
- #define _GNU_SOURCE
- 
+-	/* Semaphore started out locked */
+-	if (sem_init(&mysemp, 0, 0) == -1) {
++	/* Map semaphore to shared memory */
++	int shm_fd = shm_open("/myshm", O_CREAT | O_RDWR, 0666);
++
++	ftruncate(shm_fd, sizeof(sem_t));
++	mysemp = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
++
++	if (sem_init(mysemp, 1, 0) == -1) {
+ 		perror(ERROR_PREFIX "sem_init");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -43,20 +49,22 @@ int main(void)
+ 	{
+ 		ts.tv_sec = time(NULL) + 2;
+ 		ts.tv_nsec = 0;
+-
+-		if (sem_timedwait(&mysemp, &ts) == -1) {
++		if (sem_timedwait(mysemp, &ts) == -1) {
+ 			puts("TEST FAILED");
++			sem_destroy(mysemp);
++			munmap(mysemp, sizeof(sem_t));
++			close(shm_fd);
++			shm_unlink("/myshm");
+ 			return PTS_FAIL;
+ 		} else {
+-			puts("TEST PASSED");
+-			sem_destroy(&mysemp);
++			puts("TEST PASSED");
+ 			return PTS_PASS;
+ 		}
+ 	} else if (pid > 0)	// parent to unlock semaphore
+ 	{
+ 		int i;
+ 		sleep(1);
+-		if (sem_post(&mysemp) == -1) {
++		if (sem_post(mysemp) == -1) {
+ 			perror(ERROR_PREFIX "sem_post");
+ 			return PTS_FAIL;
+ 		}
+@@ -64,12 +72,14 @@ int main(void)
+ 			perror("Error waiting for child to exit");
+ 			return PTS_UNRESOLVED;
+ 		}
+-
+-		if (!WEXITSTATUS(i)) {
++		if (WEXITSTATUS(i)) {
+ 			return PTS_FAIL;
+ 		}
+ 		puts("TEST PASSED");
+-		sem_destroy(&mysemp);
++		sem_destroy(mysemp);
++		munmap(mysemp, sizeof(sem_t));
++		close(shm_fd);
++		shm_unlink("/myshm");
+ 		return PTS_PASS;
+ 	}
+ 	return PTS_UNRESOLVED;
 -- 
-2.26.2
+2.25.1
 
 
 -- 
