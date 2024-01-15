@@ -4,71 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98C7CC3DA79
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 16:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F654C3DA79
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 22:52:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F17583CFD0A
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 17:00:08 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D1F093CE36F
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 23:52:43 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E9EE93CCB4A
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 16:59:52 +0100 (CET)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
- [IPv6:2607:f8b0:4864:20::62f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EE6903CCB0F
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 23:52:27 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5DB5A600BC9
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 16:59:52 +0100 (CET)
-Received: by mail-pl1-x62f.google.com with SMTP id
- d9443c01a7336-1d3ec3db764so33454645ad.2
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 07:59:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1705334390; x=1705939190; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=Z1d24Wsn5+Xjgi/7URex0zjrTgjAUVZgXb/uGxbE6Hs=;
- b=m2rC99WXHZyMLmRQaR0CugP6Qgu+QR2ePh8rlPmEFwN86vtR/RLxmEd7JFZonRBNj7
- 68XCa+xNnTmvXsm2sUWNXKyxevP+3QiY/U9kf4JeIIvVcaQ3GFS3jwGsOsXaQQzm8uhX
- uUnUj0YPAiRAovpzLgavBhYqL6bnvorN6wsYbUFtUO+Lre6D8KE3hjp9FJ6SeYjeMrYn
- uKVwd9j453o8ATqc5FJ3UAQVEMjLpdJmLjSVQc7FqU/RpQ2wAwZ5SElzsHKv/ToH5Flq
- 17Nn9/TDrmsXI43+LLI0+81b+WLd/u/Mvj6SWFb1jipf97oEklus4lqv9DOanWBlpkYe
- LS2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1705334390; x=1705939190;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Z1d24Wsn5+Xjgi/7URex0zjrTgjAUVZgXb/uGxbE6Hs=;
- b=eDIX35JTVNxNCdO/q6Q6xFNyuVIuu59sUme3/yhH8y3DT8fkyi8VJKayLYEePzF3rk
- 3m8y5riCg9rVLcigs6HQegsx7k+2Zaa9+OjUqM9WZYx5FHBDYdKB1PPN9jVOYt5/jQjD
- WtAW8rjeXeS6tas5UwRYGcpvBhBX2yqSM/gn3qSuy3TkTmxltWJFD0T+1mqj0AYBQLl4
- tvFPZxHT9kbE9EY/pj723sw8yHerM6Irvjpb1x7ltgns7aDn/gPG6BO9PSFwWT4mjoMF
- 8x9+riPLBekmRXW2Nu5WyXO6lven7mPyVgoRuQQ3Hi/oIl9ylvoCt0ADFF3Wm8Ieer2q
- ayyw==
-X-Gm-Message-State: AOJu0Yw6dE//97E+lz+DyanODjABZBO5PlqkVT7tpxKi2xActoEJ6YjO
- L1yOQZcb7V2oCBek6fc/prIhIJKb59o=
-X-Google-Smtp-Source: AGHT+IGdNqhvM/WsariRy/2jFAdtAe3cQk/eGx5mOC5FQeMiT85MWG4dkqYtun30m6conP/o66Cm/A==
-X-Received: by 2002:a17:903:328b:b0:1d4:e1d6:10cc with SMTP id
- jh11-20020a170903328b00b001d4e1d610ccmr2963421plb.73.1705334390622; 
- Mon, 15 Jan 2024 07:59:50 -0800 (PST)
-Received: from localhost.localdomain ([106.51.187.155])
- by smtp.gmail.com with ESMTPSA id
- o7-20020a1709026b0700b001d5383ae01csm7680482plk.121.2024.01.15.07.59.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Jan 2024 07:59:50 -0800 (PST)
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-To: ltp@lists.linux.it
-Date: Mon, 15 Jan 2024 10:59:36 -0500
-Message-Id: <20240115155936.3235-1-subramanya.swamy.linux@gmail.com>
-X-Mailer: git-send-email 2.39.3
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C6B58600C22
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 23:52:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5477E21ABC;
+ Mon, 15 Jan 2024 22:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705359143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FP4DHX1JTAwbUv9ShrvCVFjs0jNbRlrsRuUMzdwYvxU=;
+ b=Zjh36BiiZ6Cp5qMdIprXuIoCuWkBLonGNrQOZn5yx1K9W8OdiKKax533VxxFKyB7IIWoVF
+ sff4QJChV+ZW1H5jemvX5v/Bc91UXBqIPMSesvzIb2I+h1NwxkAq28rPEivmbwLyP5MBI6
+ rw/MxuWAlupVDdv9eegsJlqdIW8Dp1c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705359143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FP4DHX1JTAwbUv9ShrvCVFjs0jNbRlrsRuUMzdwYvxU=;
+ b=E2LShrFMdm2PRQ4eqPVG6tW5FfzrER6hz1PbidxHmJUUH9syHDbfgVZb+CeGexUVcDd+Qk
+ hqTDwvmTKarETLBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705359142;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FP4DHX1JTAwbUv9ShrvCVFjs0jNbRlrsRuUMzdwYvxU=;
+ b=q9f8lg2vwtN17RcXXF7D4FA+m2tT8lhonTsDNReAv41zB62B/tvDQh6uRFEfHFql/eY7ug
+ Kh0HgY0OoOQbL40K1GaPWcWjZjd2hOepeFEcywFS8DPPUJk8KOZiySqP21G1u4ynhtMOVl
+ wxDvgP5uKEry5GKXDflQIwiR4X9+2LM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705359142;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FP4DHX1JTAwbUv9ShrvCVFjs0jNbRlrsRuUMzdwYvxU=;
+ b=NxEa5t0Pxz/b89BFz53Q9mMmDbEMgobzFabCBDP58GWzDuEE5c9hUkTRtRroG/uAgcjGwz
+ VpzHqbHFEvQabIDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F6B8136F5;
+ Mon, 15 Jan 2024 22:52:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BXUgAia3pWVwewAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 15 Jan 2024 22:52:22 +0000
+Date: Mon, 15 Jan 2024 23:52:20 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240115225220.GA2532501@pevik>
+References: <20231016123320.9865-1-chrubis@suse.cz>
+ <20231016123320.9865-2-chrubis@suse.cz>
+ <20240105004236.GA1451456@pevik> <ZaUius9Q_5U113q9@yuki>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <ZaUius9Q_5U113q9@yuki>
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=q9f8lg2v;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NxEa5t0P
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.71 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ RCPT_COUNT_SEVEN(0.00)[8]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ BAYES_HAM(-0.00)[40.14%]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: 5477E21ABC
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] isofs.sh:Use genisoimage/xorrisofs instead of
- mkisofs
+Subject: Re: [LTP] [PATCH v2 1/4] lib: Add tst_fd iterator
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,56 +123,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: mszeredi@redhat.com, brauner@kernel.org, Jan Kara <jack@suse.cz>,
+ Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Debain uses genisoimage/xorrisofs and Centos uses xorrisofs
-both genisoimage & xorrisofs have symlinks to mkisofs
-xorrisofs doesn't support -hfs option & supports only -hfsplus option
-genisoimage supports both -hfs & -hfsplus options
+Hi Cyril,
 
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
----
- testcases/kernel/fs/iso9660/isofs.sh | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> > In file included from tst_fd.c:22:0:
+> > ../include/lapi/bpf.h:188:12: note: 'map_flags' declared here
+> >    uint32_t map_flags; /* BPF_MAP_CREATE related
+> >             ^
+> > make[1]: *** [tst_fd.o] Error 1
+> > ../include/mk/rules.mk:15: recipe for target 'tst_fd.o' failed
 
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index dfa4ac73d..392e1a764 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -19,12 +19,14 @@ MAX_DIRS=4
- 
- setup()
- {
--	if tst_cmd_available mkisofs; then
--		MKISOFS_CMD="mkisofs"
-+	if tst_cmd_available xorrisofs; then
-+		MKISOFS_CMD="xorrisofs"
-+		HFSOPT="-hfsplus -D"
- 	elif tst_cmd_available genisoimage; then
- 		MKISOFS_CMD="genisoimage"
-+		HFSOPT="-hfsplus -D -hfs -D"
- 	else
--		tst_brk TCONF "please install mkisofs or genisoimage"
-+		tst_brk TCONF "please install xorrisofs or genisoimage"
- 	fi
- }
- 
-@@ -62,7 +64,7 @@ do_test()
- 	for mkisofs_opt in \
- 		" " \
- 		"-J" \
--		"-hfs -D" \
-+                $HFSOPT \
- 		" -R " \
- 		"-R -J" \
- 		"-f -l -D -J -allow-leading-dots -R" \
--- 
-2.39.3
+> Uff, do we still support distros with these header failures?
 
+Unfortunately yes (SLES 12-SP2, somehow covered in CI by openSUSE Leap 42.2).
+
+> I especailly used the lapi/ headers where possible in order to avoid any
+> compilation failures, if lapi/bpf.h fails it's lapi/bpf.h that is broken
+> though.
+
+...
+> > > +static void open_eventfd(struct tst_fd *fd)
+> > > +{
+> > > +	fd->fd = eventfd(0, 0);
+> > > +
+> > > +	if (fd->fd < 0) {
+> > > +		tst_res(TCONF | TERRNO,
+> > > +			"Skipping %s", tst_fd_desc(fd));
+> > Why there is sometimes TCONF? Permissions? I would expect some check which would
+> > determine whether TCONF or TBROK. Again, I suppose you'll be able to check, when
+> > TST_EXP_FAIL() merged, right?
+
+> The TCONF branch is added to the calls that can be disabled in kernel.
+> The CONFIG_EVENTFD can turn off the eventfd() syscall so we can't TBROK
+> here on a failure.
+
+OK, thx for info!
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
