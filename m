@@ -4,108 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4759AC4707C
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 11:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B500C3DA79
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 12:18:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 340B33CE34D
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 12:05:42 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E21983CE365
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 13:18:56 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 49A633CCB6C
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 12:05:25 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 85AD23CCB38
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 13:18:41 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6EFE4600B5C
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 12:05:25 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18738600197
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 13:18:39 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 75B9B219AE;
- Mon, 15 Jan 2024 11:05:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DCF312218C;
+ Mon, 15 Jan 2024 12:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705316724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705321119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=skHhTrnbqj6hiAc+Qek9WIV1+5b0uOre1ok086NHFpE=;
- b=ueNrocxoQsSB7fN0UqZUofCBy8MKnrssih4tfFf3oIVOUhQ4sqjlfHfH2QePniczW1Re+S
- y9S+ClcsLlHk546A9f0WEEJc5ds5+AOh8OLXpdWe98Kgm1MYEWe7Ow2K0jZNKvAHUOAGoo
- CFdR3sn7C2qZGZN6vhDdZbXfeEsvEj0=
+ bh=xROj9KtL80LNCGHeMoyEZqGzKYtoZ/IQJbml5dp/jik=;
+ b=XHQ9hJHWHjAM2/wy/wKBl71kfasHhI5S57Y3QPfCfXQsm6a1fzvxf4UVBg3yHpWaUMazoD
+ YJWqxXzObqjoUD65GXntaUjNbbB5fw4jWmZeUd/dXSQW5AmrLIZ7DtlD9krx7uEmUpp93Y
+ E5NabpV80fwZXaAn4EKJ8CABZwVo17s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705316724;
+ s=susede2_ed25519; t=1705321119;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=skHhTrnbqj6hiAc+Qek9WIV1+5b0uOre1ok086NHFpE=;
- b=YNxeiyoxcP6Hj/ulF8jqE2Y52ilwUunRdOQwIBSkd8bTVpb8RSiht61wY62g5uwrSN/Jsj
- XIxi+jL/uNLh5LBQ==
+ bh=xROj9KtL80LNCGHeMoyEZqGzKYtoZ/IQJbml5dp/jik=;
+ b=U0tKfAnwwddlaobdiZbrw92ebFjEVscZI0cdeswiWd5NwTBRqaatV/4J2xdDJv3Ux4fxA3
+ 0GyvXK/cDs3jYeBg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705316723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705321118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=skHhTrnbqj6hiAc+Qek9WIV1+5b0uOre1ok086NHFpE=;
- b=SOTz+WCd3s4XqjKnP2S6ihawpibI1lETyXn5bjAdoD2cMi/6N9ran2J7whPBe4Jv6CtFWB
- m6LFahtfTHHORpa5hKC9E9IGHT8600h7wrqAufccCHeXc540hxSRCadJwJ65kt74szPmwT
- Qq3YRXRMG1SU/18xKYtNErHZEF4/anA=
+ bh=xROj9KtL80LNCGHeMoyEZqGzKYtoZ/IQJbml5dp/jik=;
+ b=orzhm96qh5UNpbg6FXKzKb06ondANqIPBJiIQdbfFOiZ6jADn8S8kJF7bykPsUYNI7KXvh
+ P5qfIWkPp5azw3uduksD9370RahVpdZwHghGOxD+3EPtkv/bKl9CSyXg3qW5A74hfDIJPN
+ KLEVGilw5/5SQr71kOClVc6VB4N5lCI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705316723;
+ s=susede2_ed25519; t=1705321118;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=skHhTrnbqj6hiAc+Qek9WIV1+5b0uOre1ok086NHFpE=;
- b=AOwQQ2/QPfUfGlUjbhw/rMKoDHvGVvkiPS8dxsXzeV8ArNK3HYomWZQtvzFLYTRp4okvrV
- ozBmg7cS/BrDj1Aw==
+ bh=xROj9KtL80LNCGHeMoyEZqGzKYtoZ/IQJbml5dp/jik=;
+ b=SPPmrGB5mDK0e6ksVoP1EXgITTJgAfvyLxVcvsemMHkWYhADJTJVkWZhXvgcIO48cYKsMc
+ xJz+56MY4QTi5qCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54472132FA;
- Mon, 15 Jan 2024 11:05:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CAF7E132FA;
+ Mon, 15 Jan 2024 12:18:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id smpeEnMRpWW6NQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 15 Jan 2024 11:05:23 +0000
-Date: Mon, 15 Jan 2024 12:05:50 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Be9BMJ4ipWVFSwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 15 Jan 2024 12:18:38 +0000
+Date: Mon, 15 Jan 2024 13:19:06 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZaURjuDHkJeN9miL@yuki>
-References: <20240103115700.14585-1-chrubis@suse.cz>
- <20240104225719.GA1447350@pevik>
+Message-ID: <ZaUius9Q_5U113q9@yuki>
+References: <20231016123320.9865-1-chrubis@suse.cz>
+ <20231016123320.9865-2-chrubis@suse.cz>
+ <20240105004236.GA1451456@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240104225719.GA1447350@pevik>
+In-Reply-To: <20240105004236.GA1451456@pevik>
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SOTz+WCd;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="AOwQQ2/Q"
-X-Spamd-Result: default: False [-0.46 / 50.00]; ARC_NA(0.00)[];
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=orzhm96q;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SPPmrGB5
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- RCVD_COUNT_THREE(0.00)[3];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ RCPT_COUNT_SEVEN(0.00)[8]; NEURAL_HAM_SHORT(-0.20)[-1.000];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.65)[82.62%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 75B9B219AE
-X-Spamd-Bar: /
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: DCF312218C
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: TST_EXP_FAIL: Add array variants
+Subject: Re: [LTP] [PATCH v2 1/4] lib: Add tst_fd iterator
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,20 +117,238 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: mszeredi@redhat.com, brauner@kernel.org, Jan Kara <jack@suse.cz>,
+ Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> I suppose this patchset is a preparation for splice07, right?
+> centos stream 9 (glibc 2.34)
+> https://github.com/pevik/ltp/actions/runs/7415994730/job/20180154319
+> In file included from /usr/include/linux/fs.h:19,
+>                  from /__w/ltp/ltp/include/lapi/io_uring.h:17,
+>                  from /__w/ltp/ltp/lib/tst_fd.c:21:
+> /usr/include/x86_64-linux-gnu/sys/mount.h:35:3: error: expected identifier before numeric constant
+>    35 |   MS_RDONLY = 1,                /* Mount read-only.  */
+>       |   ^~~~~~~~~
+> CC lib/tst_fill_file.o
+> make[1]: *** [/__w/ltp/ltp/include/mk/rules.mk:15: tst_fd.o] Error 1
+> make[1]: *** Waiting for unfinished jobs....
 > 
-> https://lore.kernel.org/ltp/20231024093320.wsusd5qtveqt64dt@quack3/
+> https://sourceware.org/glibc/wiki/Synchronizing_Headers
+> does mention conflict between <linux/mount.h> and <sys/mount.h>,
+> and that's what happen - <linux/fs.h> includes <linux/mount.h>.
 > 
-> Hopefully we could merge this and tst_fd iterator API before the release.
+> I send a fix for this which should be applied before the release:
+> https://patchwork.ozlabs.org/project/ltp/patch/20240105002914.1463989-1-pvorel@suse.cz/
+> 
+> It fixes most of the distros:
+> https://github.com/pevik/ltp/actions/runs/7416413061/job/20181348475
+> 
+> But unfortunately it fails on one distro: Ubuntu Bionic (glibc 2.27):
+> https://github.com/pevik/ltp/actions/runs/7416413061/job/20181348475
+> 
+> In file included from ../include/lapi/io_uring.h:17:0,
+>                  from tst_fd.c:21:
+> /usr/include/x86_64-linux-gnu/sys/mount.h:35:3: error: expected identifier before numeric constant
+>    MS_RDONLY = 1,  /* Mount read-only.  */
+>    ^
+> ../include/mk/rules.mk:15: recipe for target 'tst_fd.o' failed
+> 
+> I'm not sure if we can fix it. Somebody tried to fix it for QEMU:
+> https://lore.kernel.org/qemu-devel/20220802164134.1851910-1-berrange@redhat.com/
+> 
+> which got later deleted due accepted glibc fix:
+> https://lore.kernel.org/qemu-devel/20231109135933.1462615-46-mjt@tls.msk.ru/
+> 
+> Maybe it's time to drop Ubuntu Bionic? We have Leap 42.2, which is the oldest
+> distro we care and it works on it (probably it does not have HAVE_FSOPEN
+> defined).
+> 
+> There is yet another error for very old distros ie. old Leap 42.2 (glibc 2.22),
+> probably missing fallback definitions?
+> https://github.com/pevik/ltp/actions/runs/7415994730/job/20180153354
+> 
+> In file included from ../include/lapi/io_uring.h:17:0,
+>                  from tst_fd.c:21:
+> /usr/include/sys/mount.h:35:3: error: expected identifier before numeric constant
+>    MS_RDONLY = 1,  /* Mount read-only.  */
+>    ^
+> tst_fd.c: In function 'open_io_uring':
+> tst_fd.c:195:9: warning: missing initializer for field 'sq_entries' of 'struct io_uring_params' [-Wmissing-field-initializers]
+>   struct io_uring_params uring_params = {};
+>          ^
+> In file included from tst_fd.c:21:0:
+> ../include/lapi/io_uring.h:198:11: note: 'sq_entries' declared here
+>   uint32_t sq_entries;
+>            ^
+> tst_fd.c: In function 'open_bpf_map':
+> tst_fd.c:208:3: warning: missing initializer for field 'key_size' of 'struct <anonymous>' [-Wmissing-field-initializers]
+>    .key_size = 4,
+>    ^
+> In file included from tst_fd.c:22:0:
+> ../include/lapi/bpf.h:185:12: note: 'key_size' declared here
+>    uint32_t key_size; /* size of key in bytes */
+>             ^
+> tst_fd.c:209:3: warning: missing initializer for field 'value_size' of 'struct <anonymous>' [-Wmissing-field-initializers]
+>    .value_size = 8,
+>    ^
+> In file included from tst_fd.c:22:0:
+> ../include/lapi/bpf.h:186:12: note: 'value_size' declared here
+>    uint32_t value_size; /* size of value in bytes */
+>             ^
+> tst_fd.c:210:3: warning: missing initializer for field 'max_entries' of 'struct <anonymous>' [-Wmissing-field-initializers]
+>    .max_entries = 1,
+>    ^
+> In file included from tst_fd.c:22:0:
+> ../include/lapi/bpf.h:187:12: note: 'max_entries' declared here
+>    uint32_t max_entries; /* max number of entries in a map */
+>             ^
+> tst_fd.c:211:2: warning: missing initializer for field 'map_flags' of 'struct <anonymous>' [-Wmissing-field-initializers]
+>   };
+>   ^
+> In file included from tst_fd.c:22:0:
+> ../include/lapi/bpf.h:188:12: note: 'map_flags' declared here
+>    uint32_t map_flags; /* BPF_MAP_CREATE related
+>             ^
+> make[1]: *** [tst_fd.o] Error 1
+> ../include/mk/rules.mk:15: recipe for target 'tst_fd.o' failed
 
-Yes, I'm working on that now.
+Uff, do we still support distros with these header failures?
+
+I especailly used the lapi/ headers where possible in order to avoid any
+compilation failures, if lapi/bpf.h fails it's lapi/bpf.h that is broken
+though.
+
+> > +static void destroy_pipe(struct tst_fd *fd)
+> > +{
+> > +	SAFE_CLOSE(fd->priv);
+> > +}
+> > +
+> > +static void open_unix_sock(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
+> > +}
+> > +
+> > +static void open_inet_sock(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+> > +}
+> > +
+> > +static void open_epoll(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = epoll_create(1);
+> > +
+> > +	if (fd->fd < 0)
+> > +		tst_brk(TBROK | TERRNO, "epoll_create()");
+> > +}
+> > +
+> > +static void open_eventfd(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = eventfd(0, 0);
+> > +
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> Why there is sometimes TCONF? Permissions? I would expect some check which would
+> determine whether TCONF or TBROK. Again, I suppose you'll be able to check, when
+> TST_EXP_FAIL() merged, right?
+
+The TCONF branch is added to the calls that can be disabled in kernel.
+The CONFIG_EVENTFD can turn off the eventfd() syscall so we can't TBROK
+here on a failure.
+
+> > +	}
+> > +}
+> > +
+> > +static void open_signalfd(struct tst_fd *fd)
+> > +{
+> > +	sigset_t sfd_mask;
+> > +	sigemptyset(&sfd_mask);
+> > +
+> > +	fd->fd = signalfd(-1, &sfd_mask, 0);
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> > +	}
+> > +}
+> > +
+> > +static void open_timerfd(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = timerfd_create(CLOCK_REALTIME, 0);
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> > +	}
+> > +}
+> > +
+> > +static void open_pidfd(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = pidfd_open(getpid(), 0);
+> > +	if (fd->fd < 0)
+> > +		tst_brk(TBROK | TERRNO, "pidfd_open()");
+> > +}
+> > +
+> > +static void open_fanotify(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = fanotify_init(FAN_CLASS_NOTIF, O_RDONLY);
+> FYI we have safe_fanotify_init(), which checks for ENOSYS.
+
+But it calls tst_brk() on ENOSYS so we can't use that here.
+
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> > +	}
+> > +}
+> > +
+> > +static void open_inotify(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = inotify_init();
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> > +	}
+> > +}
+> > +
+> > +static void open_userfaultfd(struct tst_fd *fd)
+> > +{
+> > +	fd->fd = syscall(__NR_userfaultfd, 0);
+> Wouldn't be safe to use tst_syscall() ?
+
+Again that one calls tst_brk() on ENOSYS, we can't call any of the tst_*
+or safe_* variants because of that.
+
+> > +
+> > +	if (fd->fd < 0) {
+> > +		tst_res(TCONF | TERRNO,
+> > +			"Skipping %s", tst_fd_desc(fd));
+> > +	}
+> > +}
+> 
+> ...
+> > +	[TST_FD_FSPICK] = {.open_fd = open_fspick, .desc = "fspick"},
+> > +	[TST_FD_OPEN_TREE] = {.open_fd = open_open_tree, .desc = "open_tree"},
+> > +	[TST_FD_MEMFD] = {.open_fd = open_memfd, .desc = "memfd"},
+> > +	[TST_FD_MEMFD_SECRET] = {.open_fd = open_memfd_secret, .desc = "memfd secret"},
+> > +};
+> > +
+> > +const char *tst_fd_desc(struct tst_fd *fd)
+> > +{
+> > +	if (fd->type >= ARRAY_SIZE(fd_desc))
+> > +		return "invalid";
+> Maybe use assert() instead?
+> > +
+> > +	return fd_desc[fd->type].desc;
+> > +}
+> > +
+> > +void tst_fd_init(struct tst_fd *fd)
+> This is not in tst_fd.h, thus check complains about not static.
+
+Ah, right, this is a leftover that should be removed, will do.
 
 -- 
 Cyril Hrubis
