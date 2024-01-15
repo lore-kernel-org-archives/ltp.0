@@ -4,58 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 552BFC47077
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 00:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86098C47258
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 10:01:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 616E73CE38F
-	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 01:13:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 403893CCD79
+	for <ltp@archiver.kernel.org>; Mon, 15 Jan 2024 11:01:05 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 017633CCE0A
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 01:13:18 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=145.40.68.75; helo=ams.source.kernel.org;
- envelope-from=dlemoal@kernel.org; receiver=lists.linux.it)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ by picard.linux.it (Postfix) with ESMTPS id 9B4523CBAAC
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 11:00:49 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C5DE9140043E
- for <ltp@lists.linux.it>; Mon, 15 Jan 2024 01:13:17 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by ams.source.kernel.org (Postfix) with ESMTP id 17EE8B8013C;
- Mon, 15 Jan 2024 00:13:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520D1C433F1;
- Mon, 15 Jan 2024 00:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1705277595;
- bh=9d8JNOymYGZ3/p+9qqiDWzbARwPOR0ThFsLa+omTDVE=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=HlwrgbtrQaMjHk6Rl1IBwvE+2sWuIYEn5he/RDz7dSWZhfu/UENTUW929466EuROU
- ior5hw4k52TxL8Vd87EW5a2iJgmNEZyPJjUeJDXTntdTbsmyE7/SdwiV9EIAoWldtM
- joQIkSN5rhwPYMbpNAK3l2gctjvZ8darjJfrPCu6ArKul1KdEfX0EljfJHR0GcDq8I
- uJ5sgUQkwp4kyuYVEfe5WbAbcBCxmlvvQ8OjSovamjWsXmvTtmOD1lEoXGgTETRAHf
- JWgsmDt9yubJJ1Y8LE/OL8dmm5WIdxR8Lpz2+GgASw13adcD8MlMMS4Jgj7HCSAQDl
- MmaVWl/5A75dQ==
-Message-ID: <b5c9a4d9-894c-4812-8dbf-e623cb1baad2@kernel.org>
-Date: Mon, 15 Jan 2024 09:13:11 +0900
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 581A1600478
+ for <ltp@lists.linux.it>; Mon, 15 Jan 2024 11:00:47 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C52A61F898;
+ Mon, 15 Jan 2024 10:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705312845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uLCN3ljd4vwBaFzthJJT/NT3C2ptQDKkys4i6Xik5gE=;
+ b=wo22ZCensRGIiH8B7bvRDIBEnZl8Q0HnqhnLqVGMwklSNp4HDqOSizqdlfY4cB0R+pFc6n
+ 6RXIh1iHCridywedbnrTuzbXA4ghILq7YkTUr1+Ka6+RpwdDVxfgtYz7MWxkqK7IlLFlgJ
+ dN+yX4RAZpoJ3LAq2whV3xlb0/hD46U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705312845;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uLCN3ljd4vwBaFzthJJT/NT3C2ptQDKkys4i6Xik5gE=;
+ b=ibtyLXf1s4siCk7xFv9cWDEDkEq7dPJtkVcUN+tQx/X0J2gUB0rFTLyrQ1KKFGnlVBceok
+ lf/zFIlg80M+XdAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705312845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uLCN3ljd4vwBaFzthJJT/NT3C2ptQDKkys4i6Xik5gE=;
+ b=wo22ZCensRGIiH8B7bvRDIBEnZl8Q0HnqhnLqVGMwklSNp4HDqOSizqdlfY4cB0R+pFc6n
+ 6RXIh1iHCridywedbnrTuzbXA4ghILq7YkTUr1+Ka6+RpwdDVxfgtYz7MWxkqK7IlLFlgJ
+ dN+yX4RAZpoJ3LAq2whV3xlb0/hD46U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705312845;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uLCN3ljd4vwBaFzthJJT/NT3C2ptQDKkys4i6Xik5gE=;
+ b=ibtyLXf1s4siCk7xFv9cWDEDkEq7dPJtkVcUN+tQx/X0J2gUB0rFTLyrQ1KKFGnlVBceok
+ lf/zFIlg80M+XdAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5BF913712;
+ Mon, 15 Jan 2024 10:00:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id O6lCK00CpWUCIgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 15 Jan 2024 10:00:45 +0000
+Date: Mon, 15 Jan 2024 11:01:13 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: chenguanxi11234@163.com
+Message-ID: <ZaUCaXEcdEquP_r7@yuki>
+References: <977c827a45313499dd372cfda1c5156c2729595d.1704804430.git.chen.haonan2@zte.com.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
- <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
- <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <977c827a45313499dd372cfda1c5156c2729595d.1704804430.git.chen.haonan2@zte.com.cn>
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wo22ZCen;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ibtyLXf1
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; FREEMAIL_TO(0.00)[163.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ BAYES_HAM(-0.00)[26.53%]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_DKIM_ARC_DNSWL_HI(-1.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FREEMAIL_ENVRCPT(0.00)[163.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_IN_DNSWL_HI(-1.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: C52A61F898
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] scsi: block: ioprio: Clean up interface definition -
- ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+Subject: Re: [LTP] [PATCH v2]
+ posix/conformance/interfaces/sem_timedwait/2-1: Fix test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,56 +120,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Niklas Cassel <niklas.cassel@wdc.com>,
- Linux Regressions <regressions@lists.linux.dev>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- linux-block <linux-block@vger.kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, Christoph Hellwig <hch@lst.de>,
- LTP List <ltp@lists.linux.it>, Hannes Reinecke <hare@suse.de>
+Cc: yang.guang5@zte.com.cn, ltp@lists.linux.it,
+ Chen Haonan <chen.haonan2@zte.com.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 1/13/24 16:05, Naresh Kamboju wrote:
-> On Fri, 12 Jan 2024 at 10:49, Damien Le Moal <dlemoal@kernel.org> wrote:
->>
->> On 1/12/24 14:15, Naresh Kamboju wrote:
->>> The LTP test 'iopri_set03' fails on all the devices.
->>> It fails on linux kernel >= v6.5. ( on Debian rootfs ).
->>> Test fail confirmed on LTP release 20230929 and 20230516.
->>>
->>> Test failed log:
->>> ------------
->>> tst_test.c:1690: TINFO: LTP version: 20230929
->>> tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
->>> ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
->>> ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
->>> ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
->>>
->>> Investigation:
->>> ----------
->>> Bisecting this test between kernel v6.4 and v6.5 shows patch
->>> eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
->>> as the first faulty commit.
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>
->> This is fixed in LTP. Please update your LTP setup to avoid this issue.
-> 
-> Please point me to the fixed commit id.
+Hi!
+> -	/* Semaphore started out locked */
+> -	if (sem_init(&mysemp, 0, 0) == -1) {
+> +	/* Map semaphore to shared memory */
+> +	int shm_fd = shm_open("/myshm", O_CREAT | O_RDWR, 0666);
+> +
+> +	ftruncate(shm_fd, sizeof(sem_t));
+> +	mysemp = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
-git log --author="Damien Le Moal"
+Again, this can be just anonymous memory, need need to back it up by the
+file descriptor. Should be as easy as:
 
-And of course you need to make sure that you are compiling LTP against the
-kernel headers of the target test kernel.
+	mysemp = mmap(NULL, sizeof(*mysemp), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
+As well as the error conditions are still not checked.
 
 -- 
-Damien Le Moal
-Western Digital Research
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
