@@ -4,121 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3E21C47258
-	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 08:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FA6BC47DA7
+	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 08:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1705478719; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1705478873; h=date : to :
+ message-id : references : in-reply-to : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=uSm3/XRk/8WHwahlOJg5tGIg3XOhs9cmO5BufrmvMaw=;
- b=WNcPqcJgbQdb0p3YROfhIFTOdjPvCcvnsLQ9hb1QCjPge1zmjiwUyWm0DXfJn4l4/zjfF
- y9kJAK5PPCJuID4/LmPBQcZDnyMP4zP3U+W0i0avX38OXMBqP8waFZLcYGcKQX//4cTP7yU
- VnBfHFzciyxh9m93Q17Rw4hjjQ5YVjs=
+ bh=HidRJG8mJpJ9W7lx5Bc5nZ+kbgzqp6OKNtNSj2K/MrA=;
+ b=U5JsR4hXoBg/a8PF8W6eNef+WLfr8wPN5kI3deQ6VFlNkQb8/ktL4XmhTtsI11oZSiDBe
+ nhsLouIcAnAl8v+92KxPpYf9uqG0g7YK9GiRWKaQXcdjYpkTvH4OKUlXKEsjoRN8Gvzg2VN
+ tN4AP7DZ/IDa4uLnnuTsXguULVljUWk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DEFD3CC96D
-	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 09:05:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 94EE43CE2F7
+	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 09:07:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C98A3CB542
- for <ltp@lists.linux.it>; Wed, 17 Jan 2024 09:04:58 +0100 (CET)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04on0626.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0e::626])
+ by picard.linux.it (Postfix) with ESMTPS id AB01D3CC96D
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 09:07:31 +0100 (CET)
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com
+ (mail-am0eur02on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2606::600])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 90ED51036E54
- for <ltp@lists.linux.it>; Wed, 17 Jan 2024 09:04:57 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A20EB600FE3
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 09:07:30 +0100 (CET)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jiy+j87jf3HUEWtMnAO443VS8Cgm8dXImbTwCaKPFq5knmwvdDQ9ScvdhVthJK6JXeGyah2qMjlqG7uzQ5zn3hZu47dCT0FD32vdoAgogQ+sjhHlAxv67UcUsNV52xtORJqF0nZkEoEBaFN+uK6lsfxXHcqYh6khMyGIq3SBnwFG1kUfO8cgjyaxsOQJUCDOwbkTBCWJrxl5cUVvCwo2OlY/C2wCtynRU7OiLWFFphr+N2frVF8hH8wZ5NQdFgE9eltVI+4BY3gGH4fLCzmJWt/DNNnQiyaf+SomuY2FIbeV0QoPrhYH/Wx1+2W2/5dPTNRLOavvZEB4ZHLk/Hipzw==
+ b=EX3ET7YgfYTvb4e09Szg4bdu7BbWkeMavjYHcn0SwDqTXEg49Mv10VsLFAZ4LPRZq6Y2IuAFZiUI8B4cudl0btr5z3/qLeLIWCGv+BD78rS+1E2ozrtPaMAIHqW4dJo+TQBtTv7g5SGr4J7JXEu6dTOHqDD0OM9G0UryR7FBKJHqtxV+p+WqKpNA8/VeZkxIb+C+UYYtS/eKZfIwDoeNUMSfq56nyoTakLS349CP6/ljdPHk2/MS0MQYr9BSgryu1n6aisdfcpdsC3gls7mdLv3kcmg/MyJZjWrKC5urPYpgXN8Ongm+mRKrOLPjpa/m6P0gVszTTYaO3Mnozs98Vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e+Qx16CDl6HZKmE+GCCFhAZOoK0Po4N5kUX4jR9pUyg=;
- b=ktmhtdcZobfI8b/pyEuPg2l2jIW26rbFDGTp0emmlctEY0r/5jpFLgE01QIQEYq5M/MpDkobRGsqrDgqmzas1SW65m6GQuyIS5ArbbITK3xBtA4HLS7oIG/IOTjaeI5fALANT3K5uyXqDbN/S2/scgHYzG2zmMeFgZt8HVc8Jtl2QD9a4uLJCzENFnE/sPpBsGvFf08YMJNtexQ1asU71xG853kyeZLA8IHFPtHmWi9L5D0QK6Xr84bjweDrOOhnT+W1+Gi7g1Ccds+Od10kiyG6j/MmwZT2d4k21DQ4BL/XBVoOozMDIlpSbI2Kk+oGVgo23Wtwtf6KdyXU6tVrpg==
+ bh=kL/XSWVdLopcxkttBecBZ/5FtzDzwM1VxFWheWdcizw=;
+ b=DMimcCTLf6DHAY+Ayln9JZt8vaDJt8btTfWxjAJ0jaGgpo8CH9sdbsqQ2Ks/Z3DndXvgo4ZLLejmFY3tWP5gpRcTjE4Naqb/xvERV8YAx9B76M3DhTFb4EpatC4S0aXM54Rgm537CUTQLHZAYX5LwxcFiV4Nfwz0pfKWcWHiu+GB/PjJgp2c93IWmJO28KCIB4U+1nRYeqPBBhmJUKUdXpZ2ZERKLzMiYOz2sVopJDU/kZ972XvNCx96TQtTyDFWyNE73Am5oIX+DIUEtsqumoMd+diF3lH+yrq6aMtEnW6fypH7dxDMVZH2ZerPkyzuoYFhRxUZLFRAUa0MSE0Wvw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+Qx16CDl6HZKmE+GCCFhAZOoK0Po4N5kUX4jR9pUyg=;
- b=rWzJKW9S+xogoCOcCgJ1PsF1ok4P9ZrwsIxVZTFXY5SCvn3uNKVIKaw59raMku5TvDRMiEsB4q3hpF1Z5UGL+x0Qkx8MWW3v0G3RRsMbDH2zpDi9w4FFRrfUZnKnUu2xsbSmsKmGF7zDusVUIpIAKpbqzGw+3kt06XXsFzdIiakR0dSlIPfKapVAvoxI7R0WwEiExOYHCEObwWnnhz/tCaTpVZoP5HkFmq9sSxge/Fcs297LvNfxtItHI2GLtEXdFSEhibVwDdnzsNGumxlwl4GgpEs4ZCJ0XGk1j4qU+MmrgVMAGm7tmdY7gJQ8BideZddddlk1jYQ6c7bj3p93ZQ==
+ bh=kL/XSWVdLopcxkttBecBZ/5FtzDzwM1VxFWheWdcizw=;
+ b=W8baKdppnjXxXWoC1ktlObxoRYcCaPBOAtOUC3ENmX9CapEQKeOqJIZei5L0AM4g1Hc22OFmuv1eb/YfFDrvwlu+c1GxEMFqjfH2pVAbAqKG7Ffus/G7UphBWBDuZ5wsSVVlYZGQVZSoH1R3OHKfp89WgQ/P3Lb58UIHK1drjc/YvbC/8sj5CkiE33Rp3AZ2LtciuAVH28k5U3EE++kLin/aVdCivPRxonp2kpBXlDTEfVbBYkQCPtCKXafrnoHHS02Lv7c4lG/TXmpjAQLRPTwHojxHFM+yCJQmJfinPhHWR6ocEihbb8GVa/lizlG8s5jYiAPsQWXKUnBTxEttCA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by DB9PR04MB9789.eurprd04.prod.outlook.com (2603:10a6:10:4ed::8) with
- Microsoft SMTP Server (version=TLS1_2,
+ by PA4PR04MB8061.eurprd04.prod.outlook.com (2603:10a6:102:bb::13)
+ with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28; Wed, 17 Jan
- 2024 08:04:55 +0000
+ 2024 08:07:27 +0000
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::80ed:f1d1:a471:ee74]) by AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::80ed:f1d1:a471:ee74%4]) with mapi id 15.20.7202.020; Wed, 17 Jan 2024
- 08:04:55 +0000
-To: ltp@lists.linux.it
-Date: Wed, 17 Jan 2024 03:04:46 -0500
-Message-Id: <20240117080446.9663-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240111012650.9731-1-wegao@suse.com>
+ 08:07:27 +0000
+Date: Wed, 17 Jan 2024 03:07:18 -0500
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZaeKtqtQV1ObshCT@wegao>
 References: <20240111012650.9731-1-wegao@suse.com>
-X-ClientProxiedBy: TYCP286CA0184.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:382::7) To AS8PR04MB8199.eurprd04.prod.outlook.com
+ <20240116174926.GA2617288@pevik>
+Content-Disposition: inline
+In-Reply-To: <20240116174926.GA2617288@pevik>
+X-ClientProxiedBy: TYCPR01CA0149.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b7::9) To AS8PR04MB8199.eurprd04.prod.outlook.com
  (2603:10a6:20b:3f6::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|DB9PR04MB9789:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ff6ab6a-9056-4790-4c7d-08dc1732fd1c
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|PA4PR04MB8061:EE_
+X-MS-Office365-Filtering-Correlation-Id: 654a2a6c-f3e5-455f-f31f-08dc17335869
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wgxuu6YAbXVLNNCI1uZOOs5XYbgoBB3G6nLIG9Wm2xAx3stRXEE8NAyIRq35HNpEzEW5/ZAv/lm1bdYA8+54O3KqiSVABQF6VWcTXtkK98PBiaUVOyCCOkQ5JhFb6GlNP/ZvrWiwtqqpA+a7BEpXdNFn+8kxo/UHuMoHNh3fnb21JSBhH0gYNoHrm1uOv8cPCwCUSgwhSF2lC44w5s6AmcGqWg1fP56RIBjkn5bkl2ZKBVV/Az5sOgBKpgMWbvQWcuzx9Wi1/9VcTAHcJ95iMfGeUYvKlAY9ok0nHzfj7lVSDLjJBEwr8MoVVaFxjI2836q51AMGGHamPB4eUefLfaV7s6Q7A21l9EDy68wJtKDih1dskMCpkTzgYaMi6Vpq/Y7N+lRBfAjTgf+3V922extBw1FUU+5d46CefvC9n3/bHScICU7OKlEz+8P3pLJ332ev2GkkxhXRbqPRyfl7g+nT5eHVfxrMHMYi1sCnUPknJ52qOhNIBfEDiD/V5zrLByjT/UIutZ/QjZ/LVx9tR0357H4nlV4jxsN9SXA+THzZd9wcxENuEfwMfQmXgnUK
+X-Microsoft-Antispam-Message-Info: /DraLkuNCB70/Yihdn1T357LnIj7jIsy05CBLREiMvdp6AyUTUE98p142gDV8UaJhJCUuWWUAy9JoQ41BPAyh7hQH6fX+8O0AM+KoVg5uO6MmSQRxbUXXGU+ljfIner9FZqyh8lZVv4+sPj8PqIc6/kulfRlFlbjvIwjv+EmYvew3RUyq4AWotcNS6JxliLgDF9k7XD5awedcGGSd4lWZ7P3QZ/Aiqj4vj3w0CrbY0/ET+Xk4meKnI6iFJG3ky4AcvYRddGHz9MoBy5IyMRu3KNFMZV3w+GPnykn5JbJqxPi4DqC7IGsn8IgFwFnb3WI0CBsp1gXO3jxDYV+Ofppr9LY8uk1+fHrVHatWjMTSx7oRavJp5fKmVmL+fQLJ2/dW5Bj/1+tkaxYPQaYOJgLQx95D0YmKG12zxM0sCyCWr7qbEc10xJXItSk4nTn8DOgfaJ+9JYJOMfnD2V/aAEPljKeO6TzlWoGWUl1ihVZyL0cpYPtLdXZLAnmZpEtNfOcWyXB2IXrwZb/f49/BZCjBaWo/GTblwcP/1JehnCTQzE=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(346002)(376002)(396003)(39850400004)(136003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(5660300002)(4326008)(66946007)(316002)(6666004)(2906002)(6506007)(41300700001)(66476007)(66556008)(8676002)(6916009)(8936002)(6486002)(36756003)(86362001)(478600001)(1076003)(6512007)(26005)(2616005)(107886003)(38100700002);
+ SFS:(13230031)(7916004)(39850400004)(396003)(346002)(136003)(366004)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(8676002)(4326008)(8936002)(5660300002)(66946007)(6916009)(66556008)(66476007)(316002)(2906002)(26005)(86362001)(9686003)(6506007)(966005)(6486002)(6512007)(478600001)(6666004)(33716001)(41300700001)(38100700002);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uvMHe5wxTo0NR8XpggBxqLEwTODbqrYYM1nTrg7BqwxrJbblcySX5hLMJOKX?=
- =?us-ascii?Q?paFmbpi+w0c3aj3NJwjn7EOdTLXDde8hzal/kQQeTcEhFJfT/c10JII5GelR?=
- =?us-ascii?Q?urQkVtWBRCa1E+kTz/pejk5cJkwORcvBuISLG2tMewwvsMvT+HMwPJVwv9y9?=
- =?us-ascii?Q?rw0A1mv8Q1t7ELfhd1+6BDSL+YnZTboLV318lx9q8fpaZGTygWhJZ8hrfyh+?=
- =?us-ascii?Q?yYOXqkDuIZ3dO3vIDjqA9pUqIUL4BJ9He+MjrJvW+clLsobHjFD6Efp/Ui9s?=
- =?us-ascii?Q?argvuUak/G/uDf5vQatLoog4NQiHOWjQTwe2V0p8We53NefXwIXZ7LSvrcDp?=
- =?us-ascii?Q?gp+YZXgINS8W2G6ZStVSMrCHV91V0/aRoD2uSZ/xxfKcGWd6suJPMkxgHiRn?=
- =?us-ascii?Q?ak8JCAZBld7uCDJPfGIc2wsWcg6waPky6hKKiDo5jOIQ4JIaW1zIsiMn3zii?=
- =?us-ascii?Q?0E9edPIPZIAqyDa9HMMz2yqTrTgD4jfp/ccEggXoB5i/1uJNSY/7f5pOIm9s?=
- =?us-ascii?Q?WGdiCmZN+gKV6zT2MS2NWw+ilQ+fr5k5tmxRdOsMaykgGT9lRqav/tJlnPBE?=
- =?us-ascii?Q?B3YazhnhAleRp5OWfBq6CEHDpaX268scAzCNmmkv+LQbLrBE7UDEbKujrtMj?=
- =?us-ascii?Q?pTz/xYxbhwekNVJxaR+2D6Xo4dvz7jPa6SfnxwNpHnl7GvQ1iZvoz0hJtgn3?=
- =?us-ascii?Q?bmSfjOi4q9f/RGM6ZEJHzDwnYV7bvgbJ7fwTzJt4Rj8aanBtV5KI1j2kFpsW?=
- =?us-ascii?Q?NjXCylEWqe++TqtoWcm9IczS+hnqKvxMj4dwW2fzQp6l7x8ZAHlfMe3SVmEd?=
- =?us-ascii?Q?I5Ki2prz3l1nzGroIab5kAk/fwy48/Jjq8rpMmZF02jS0NHwYBQw4X+ZH6Np?=
- =?us-ascii?Q?TKJmmS2nJbwbbJ5I+ghRe9b3VEfeV+UsOw+DoG5t76fO9fICC61Iw2RsYQlq?=
- =?us-ascii?Q?hHFKSxuxoe8a/o8A6GDgTEuH33a+IiTx0obQQLjD3ViX8pq8enC9mfDW1iCE?=
- =?us-ascii?Q?dqcvonHpizNoKMjc2vmZCQ/tWNUGlF1I9zBxj41AOTYqll32otC3w3NR9ZoI?=
- =?us-ascii?Q?QcvT2z9Om/jRh7vpOV8tl6DB1a0ytYUMGON36sRvtEDxhuMITrEIUbfwXCLG?=
- =?us-ascii?Q?cmuvRgz3jlYjtP2kkZqECO/6fgRkvtIqvLRdriXOE/GkxzhAuL+kHiHnWg5p?=
- =?us-ascii?Q?8ei9JKaMH3LCaNfDMdn13qIOHnCSMHYoqua7tsEZwbsHwV/ClTDsO5RCU1m+?=
- =?us-ascii?Q?Nw8WlnHglXuwzjHPD9cmrwSUeAkFUA0yNuWk0RaPeHncsnooUED5MB1xvtzK?=
- =?us-ascii?Q?nphLGhMROF2ALiptWMNrphtLUukO3o8UwV3JDgOyFf8Rljhd98OmBg5YTt8q?=
- =?us-ascii?Q?e7DlwPDKUvloUWHfeRBwNM2kLVKThuWogJUpVEOSMcvMDLiuq0wjBodMToc+?=
- =?us-ascii?Q?Ou9uI/AbXO2pFOLFH1CAOK5ThB/p8W1gWvPNO6/YFnzzHJVD9QQQNuUWpOES?=
- =?us-ascii?Q?Hnt9x3rkSTC/ZlJ+QfcFZ8ConXgF1bxX2tDSqlWPFDb3Q+aHZh6+BQIz+BfG?=
- =?us-ascii?Q?rYzhOcnv+/Ls1zdz1yY=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4rXpqLrrtZJxmikK8SmN2dM5DhyPpAyiobpjNd8gTodejAf6Ix9ZwtpsX3sC?=
+ =?us-ascii?Q?8lc1n2GWTooW0i8pR7H3IvZfzb60kK//2KthpFX/kIGKslrcSLxLjg/2cMkR?=
+ =?us-ascii?Q?3VMt38ofdU365/2aa9XoxGDKspYBh1qHz1CHRLG2CZgbApB51p/dJpKvIwXQ?=
+ =?us-ascii?Q?iOGL1jtaVdw2TyxuUbZn4YwqDwY6ersV61j+TQ+SQvp/upPzPcVzw4vZ8hZ7?=
+ =?us-ascii?Q?NoLwulVyqnX5BaytmT7sCEr+VK3vtSABrWyUqNqR5pXtDsBUynT5du+aQnq5?=
+ =?us-ascii?Q?8qeOhpPsngX/fnfqLDsSjeMUyEDjDSIoIuRIgWXxMSzsi6Zo2zX29L6PXtwG?=
+ =?us-ascii?Q?HQYah836SCwpZBJyBnSAuJxf1WbbSTA2JVtes5z6L8wC3IPkrL70y26ROe3u?=
+ =?us-ascii?Q?psJCXOyuXspcLCfeSBCO8evXcQU5gnoTBnBffBh+ymDQlsLeIZbdRM+bNR07?=
+ =?us-ascii?Q?WV9wG0JNs5gHOnKwaauPOExSksaIQrAWgtDpQzvEf3vitI+3uUX7N/VlmD8L?=
+ =?us-ascii?Q?o8yJtPrZDfSjb0NxxeOzRhqQIlOpC242U0R2+JkanHiz4QKCfgUEs1qO1s6f?=
+ =?us-ascii?Q?qKVNgvRh9W+WKGn8Ih/yg+a9NmfbJDEMg7bvabSCMV2ThccZTm6A1tZ9Fn3q?=
+ =?us-ascii?Q?ELE7O4+Byd5qKj43iaF0syvkQAcoJ4D6UgtZ2ggpnxB8nhaV7igJW/hi1L1a?=
+ =?us-ascii?Q?TQcjWVQasGNM+jhSAsZCK5s0vXTj6/ocbcLzGmHNgvI/n6se1wxodZa5Ra8s?=
+ =?us-ascii?Q?GBLtfBvAcso5rp6KV4K5iUfSiA7XgeQzDUDvfuHxp/OArqFr4FFoPA9bEHzS?=
+ =?us-ascii?Q?SsTUsS85JkfeR/EHvrMblDiJ1zmsEO8flYuU72/ep+bn1Jfou69vexXrw2Ar?=
+ =?us-ascii?Q?dhR/76iIdcN1nLHFiRX7I102MXeJyKWiQ2WVmUd4VO0H90yAt68pZerOFbQN?=
+ =?us-ascii?Q?CQu/lxyj3YVnLCsamMDnXLX76cgDGhJCjDSsmAsna8HZ54QGeku18TRJ0VQy?=
+ =?us-ascii?Q?46EHLQe0KJR31FWddZ0YROXhZa1hD6hOl8m0Y24ICAvXf6AaPX0KolOc58eU?=
+ =?us-ascii?Q?ni80kGdADDpLA7952+dHA7XyRnU0VoTBNQri35Pcw7/O337cJDhyVAwxBl1E?=
+ =?us-ascii?Q?HLx9/spGZZR3huEeMSChiYEogmIUYN6s4a+W0LGSVIVjnE2gDOV/37cPduD4?=
+ =?us-ascii?Q?e3M2Z1BV9C6T7udH7yEgJn+OPyz7pYuBzSVo+ot4/ld5N2txJgUnznSwWuqS?=
+ =?us-ascii?Q?MCljMvVa3P2gXKBUL+vLBv92YUIuE2DalSzmOGika2ph83aSIB7JwPSft0/4?=
+ =?us-ascii?Q?RfEmXYV4/0sD2HR6pvVooh7SRG1a3v+Ne58lQ9HPEzzWkGf6/ZiyNK1PQ62c?=
+ =?us-ascii?Q?AGXwXOBeCpyUM0tyIdIAT72KNelnSwEMOurif98DMpYME0i12uieFut4ZaOh?=
+ =?us-ascii?Q?Iflf+/+DyPEnD/MdOKjMQjWYO5o5BNfzaltygWs9179pdqXTapoM95UoSAEY?=
+ =?us-ascii?Q?nym40Y1X9do8vYOoUz15GLwYvT5Yz+zEGeKL0U5y6ZZHgSlGaMBmBaFZ2YBY?=
+ =?us-ascii?Q?m138EJouQgwDHXdX/RQ=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ff6ab6a-9056-4790-4c7d-08dc1732fd1c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 654a2a6c-f3e5-455f-f31f-08dc17335869
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 08:04:55.1724 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 08:07:27.6644 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ugYc9SDsxQuG0jH/zANAnppHzB32svNlGJFjo5VgiVR1oSuNx7NOyfL87YbfLXVM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9789
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-UserPrincipalName: gLg7Os0XcjxLLTtYSGvPmjweQ2MN7wDM5eci1+pfR/CPBp7KqqFwLoIH+JDTNvto
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB8061
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Add TST_EXP_FAIL_PTR
+Subject: Re: [LTP] [PATCH v1] Add TST_EXP_FAIL_PTR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,143 +133,69 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- include/tst_test_macros.h        | 41 +++++++++++++++++++++++++++++
- lib/newlib_tests/.gitignore      |  1 +
- lib/newlib_tests/test_macros07.c | 44 ++++++++++++++++++++++++++++++++
- 3 files changed, 86 insertions(+)
- create mode 100644 lib/newlib_tests/test_macros07.c
-
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index 24fd324bf..409e6847c 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -227,6 +227,30 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
- 		}                                                              \
- 	} while (0)
- 
-+#define TST_EXP_FAIL_SILENT_PTR_(SCALL, SSCALL, ERRNOS, ERRNOS_CNT, ...)       \
-+	do {                                                                   \
-+		TESTPTR(SCALL);                                                \
-+		                                                               \
-+		TST_PASS = 0;                                                  \
-+		                                                               \
-+		if (TST_RET_PTR) {                                             \
-+			TST_MSG_(TFAIL, " succeeded", SSCALL, ##__VA_ARGS__);  \
-+		        break;                                                 \
-+		}                                                              \
-+		                                                               \
-+		if (!tst_errno_in_set(TST_ERR, ERRNOS, ERRNOS_CNT)) {          \
-+			char tst_str_buf__[ERRNOS_CNT * 20];                   \
-+			TST_MSGP_(TFAIL | TTERRNO, " expected %s",             \
-+				  tst_errno_names(tst_str_buf__,               \
-+						  ERRNOS, ERRNOS_CNT),         \
-+				  SSCALL, ##__VA_ARGS__);                      \
-+			break;                                                 \
-+		}                                                              \
-+                                                                               \
-+		TST_PASS = 1;                                                  \
-+                                                                               \
-+	} while (0)
-+
- #define TST_EXP_FAIL_ARR_(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)                  \
- 	do {                                                                   \
- 		TST_EXP_FAIL_SILENT_(TST_RET == 0, SCALL, #SCALL,              \
-@@ -258,6 +282,23 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
- 		TST_EXP_FAIL2_ARR_(SCALL, EXP_ERRS, ARRAY_SIZE(EXP_ERRS),      \
-                                   ##__VA_ARGS__);                              \
- 
-+#define TST_EXP_FAIL_PTR(SCALL, EXP_ERR, ...)                                  \
-+	do {                                                                   \
-+		int tst_exp_err__ = EXP_ERR;                                   \
-+		TST_EXP_FAIL_SILENT_PTR_(SCALL, #SCALL,                        \
-+			&tst_exp_err__, 1, ##__VA_ARGS__);                     \
-+		if (TST_PASS)                                                  \
-+			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
-+	} while (0)
-+
-+#define TST_EXP_FAIL_PTR_ARR(SCALL, EXP_ERRS, ...)                             \
-+	do {                                                                   \
-+		TST_EXP_FAIL_SILENT_PTR_(SCALL, #SCALL,                        \
-+			EXP_ERRS, ARRAY_SIZE(EXP_ERRS), ##__VA_ARGS__);        \
-+		if (TST_PASS)                                                  \
-+			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
-+	} while (0)
-+
- #define TST_EXP_FAIL2(SCALL, EXP_ERR, ...)                                     \
- 	do {                                                                   \
- 		int tst_exp_err__ = EXP_ERR;                                   \
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index a69b29e24..4f43899e5 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -40,6 +40,7 @@ test_macros03
- test_macros04
- test_macros05
- test_macros06
-+test_macros07
- tst_fuzzy_sync01
- tst_fuzzy_sync02
- tst_fuzzy_sync03
-diff --git a/lib/newlib_tests/test_macros07.c b/lib/newlib_tests/test_macros07.c
-new file mode 100644
-index 000000000..45bba8409
---- /dev/null
-+++ b/lib/newlib_tests/test_macros07.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*
-+ * Test TST_EXP_FAIL_PTR and TST_EXP_FAIL_PTR_ARR macro.
-+ */
-+
-+#include "tst_test.h"
-+
-+static char *fail_fn(void)
-+{
-+	errno = EINVAL;
-+	return NULL;
-+}
-+
-+static char *pass_fn(void)
-+{
-+	return "pass";
-+}
-+
-+static void do_test(void)
-+{
-+	const int exp_errs_pass[] = {ENOTTY, EINVAL};
-+	const int exp_errs_fail[] = {ENOTTY, EISDIR};
-+
-+	tst_res(TINFO, "Testing TST_EXP_FAIL_PTR macro");
-+	TST_EXP_FAIL_PTR(fail_fn(), EINVAL, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL_PTR(fail_fn(), ENOTTY, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL_PTR(pass_fn(), ENOTTY, "pass_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL_PTR_ARR(fail_fn(), exp_errs_pass, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL_PTR_ARR(fail_fn(), exp_errs_fail, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
--- 
-2.35.3
-
+On Tue, Jan 16, 2024 at 06:49:26PM +0100, Petr Vorel wrote:
+> Hi Wei,
+> 
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > ---
+> >  include/tst_test_macros.h | 28 ++++++++++++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+> 
+> > This is draft patch and should rebase after following patch merge.
+> > https://patchwork.ozlabs.org/project/ltp/patch/20240103115700.14585-1-chrubis@suse.cz/
+> 
+> Patch was accepted, please rebase. Also, please add at least one test which
+> uses it.
+> 
+> Also, I wonder if we need TST_EXP_PASS_PTR().
+Sure, i can create another patch for TST_EXP_PASS_PTR.
+> 
+> > diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> > index 3f4f9f11d..6e45e0b27 100644
+> > --- a/include/tst_test_macros.h
+> > +++ b/include/tst_test_macros.h
+> > @@ -212,6 +212,26 @@ extern void *TST_RET_PTR;
+> >  		}                                                              \
+> >  	} while (0)
+> 
+> > +#define TST_EXP_FAIL_SILENT_PTR_(SCALL, SSCALL, ERRNO, ...)             \
+> > +	do {                                                                   \
+> > +		TESTPTR(SCALL);                                                   \
+> > +		                                                               \
+> > +		TST_PASS = 0;                                                  \
+> > +		                                                               \
+> > +		if (TST_RET_PTR) {                                               \
+> > +			TST_MSG_(TFAIL, " succeeded", SSCALL, ##__VA_ARGS__);  \
+> > +		        break;                                                 \
+> > +		}                                                              \
+> > +		                                                               \
+> > +		if (TST_ERR == (ERRNO)) {                                      \
+> > +			TST_PASS = 1;                                          \
+> > +		} else {                                                       \
+> > +			TST_MSGP_(TFAIL | TTERRNO, " expected %s",             \
+> > +				  tst_strerrno(ERRNO),                         \
+> > +				  SSCALL, ##__VA_ARGS__);                      \
+> > +		}                                                              \
+> 
+> Maybe follow the pattern of already used tests (break saves else clause)?
+>  		if (TST_ERR != (ERRNO)) {                                      \
+> 			TST_MSGP_(TFAIL | TTERRNO, " expected %s",             \
+> 				  tst_strerrno(ERRNO),                         \
+> 				  SSCALL, ##__VA_ARGS__);                      \
+> 			break;                                                 \
+> 		}                                                              \
+>                                                                                \
+> 		TST_PASS = 1;                                                  \
+> 
+> 
+> > +	} while (0)
+> > +
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
