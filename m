@@ -4,104 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3FC1C47422
-	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 09:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1968C47DA7
+	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 10:18:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF6093CE2F7
-	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 10:49:40 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 052673CCCE5
+	for <ltp@archiver.kernel.org>; Wed, 17 Jan 2024 11:18:09 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B02AA3C1DC2
- for <ltp@lists.linux.it>; Wed, 17 Jan 2024 10:49:25 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id C87913CB05E
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 11:17:54 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9F53D14094EB
- for <ltp@lists.linux.it>; Wed, 17 Jan 2024 10:49:24 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 28123601A38
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 11:17:53 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 948AB1FBF2;
- Wed, 17 Jan 2024 09:49:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 291E522255
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 10:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705484963;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1qohAr3r1uOeB7Rv+9aA/7fgOxMktnueh+PyfMFLY7A=;
- b=VQn6d8x5IH5/rBDB6qh1FOdrVAN+fBcjgYnD7cZZb+FrT9tgIx40K+K6zjK3IVldtti5I5
- l7z7ZstnfdJ2K0Q7KSvXiv6+CEuK0lBsCEeanFvD+uzQwfS5rXh+7KlNpYXJJK1j8R/nPN
- OlCuO/jnBJSoRmgWgIMskFDvdUxJfJk=
+ t=1705486673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rpZfknjo1D2pfAVVkQCC87usznkVdLhTmLMtoGmR/Vg=;
+ b=cSBKjMF9GQUCFIlqTwB0igQ0Dt4I7HYUyS7dsewB7qeAuQl8bFKvXDTLMnmPycFfKDpSRa
+ cexKsjkqpFQU7hELnhGI/17tL9f4/3rgyHsX4NerZyYPablLaLv7uJaV6sDctUvwITEyGZ
+ +gFL4iGaWn2K7UvqluHE1McnRqyfUwE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705484963;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1qohAr3r1uOeB7Rv+9aA/7fgOxMktnueh+PyfMFLY7A=;
- b=rEq8V92xIvCnPcfYBRHhIgW0ZTqM+P5APpBJ8HJ+5XrIfTxqZeq/3ifMGZrujKRu4gyL3L
- g67oU35trJSJtuBA==
+ s=susede2_ed25519; t=1705486673;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rpZfknjo1D2pfAVVkQCC87usznkVdLhTmLMtoGmR/Vg=;
+ b=tvu0RFJJNdG1vjPP1bpJSwg72mceQUvPKpYhDio26mS0YLPsnrUKNzXR/gYX3V259wYcKE
+ ++5Cr8F9H/q+2mDw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705484963;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1qohAr3r1uOeB7Rv+9aA/7fgOxMktnueh+PyfMFLY7A=;
- b=VQn6d8x5IH5/rBDB6qh1FOdrVAN+fBcjgYnD7cZZb+FrT9tgIx40K+K6zjK3IVldtti5I5
- l7z7ZstnfdJ2K0Q7KSvXiv6+CEuK0lBsCEeanFvD+uzQwfS5rXh+7KlNpYXJJK1j8R/nPN
- OlCuO/jnBJSoRmgWgIMskFDvdUxJfJk=
+ t=1705486673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rpZfknjo1D2pfAVVkQCC87usznkVdLhTmLMtoGmR/Vg=;
+ b=cSBKjMF9GQUCFIlqTwB0igQ0Dt4I7HYUyS7dsewB7qeAuQl8bFKvXDTLMnmPycFfKDpSRa
+ cexKsjkqpFQU7hELnhGI/17tL9f4/3rgyHsX4NerZyYPablLaLv7uJaV6sDctUvwITEyGZ
+ +gFL4iGaWn2K7UvqluHE1McnRqyfUwE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705484963;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1qohAr3r1uOeB7Rv+9aA/7fgOxMktnueh+PyfMFLY7A=;
- b=rEq8V92xIvCnPcfYBRHhIgW0ZTqM+P5APpBJ8HJ+5XrIfTxqZeq/3ifMGZrujKRu4gyL3L
- g67oU35trJSJtuBA==
+ s=susede2_ed25519; t=1705486673;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rpZfknjo1D2pfAVVkQCC87usznkVdLhTmLMtoGmR/Vg=;
+ b=tvu0RFJJNdG1vjPP1bpJSwg72mceQUvPKpYhDio26mS0YLPsnrUKNzXR/gYX3V259wYcKE
+ ++5Cr8F9H/q+2mDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5BD5F137EB;
- Wed, 17 Jan 2024 09:49:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nhtZFKOip2VQIwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 17 Jan 2024 09:49:23 +0000
-Date: Wed, 17 Jan 2024 10:49:21 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20240117094921.GE2665992@pevik>
-References: <20240111012650.9731-1-wegao@suse.com>
- <20240117080446.9663-1-wegao@suse.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1673F13751
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 10:17:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iSSfBFGpp2XPLAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 17 Jan 2024 10:17:53 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed, 17 Jan 2024 11:18:01 +0100
+Message-ID: <20240117101801.12536-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240117080446.9663-1-wegao@suse.com>
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-1.85 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_THREE(0.00)[3];
+X-Spamd-Result: default: False [4.90 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_ONE(0.00)[1];
+ RCVD_COUNT_THREE(0.00)[3]; TO_DN_NONE(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-1.35)[90.49%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.00)[20.57%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add TST_EXP_FAIL_PTR
+Subject: [LTP] [PATCH] lib: TST_EXP_FAIL: Fix the *_ARR_() macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,27 +105,88 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+This is basically the same fix as:
+d7e5e102364b (tst_test_macros.h: fix "too many arguments")
 
-subject should be: "lib: TST_EXP_{FAIL,PASS}_PTR"
-(can be changed before merge)
+The point is that the SCALL parameter has to be stringified in the first
+pass otherwise it ends up expandend and as long as it contains coma the
+number of parameters will increase breaking the printf() formatting
+again.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Fixes: #1120
 
-Thanks for adding a library test.
+Fixes: 1cfe61428982 ("lib: TST_EXP_FAIL: Add array variants")
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_test_macros.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-If you send a patch for a test which actually uses these, we can merge it before
-the release. Otherwise I would wait for the merge after the release.
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index 24fd324bf..d2e50a219 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -227,41 +227,41 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+ 		}                                                              \
+ 	} while (0)
+ 
+-#define TST_EXP_FAIL_ARR_(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)                  \
++#define TST_EXP_FAIL_ARR_(SCALL, SSCALL, EXP_ERRS, EXP_ERRS_CNT, ...)          \
+ 	do {                                                                   \
+-		TST_EXP_FAIL_SILENT_(TST_RET == 0, SCALL, #SCALL,              \
++		TST_EXP_FAIL_SILENT_(TST_RET == 0, SCALL, SSCALL,              \
+ 			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);                \
+ 		if (TST_PASS)                                                  \
+-			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
++			TST_MSG_(TPASS | TTERRNO, " ", SSCALL, ##__VA_ARGS__); \
+ 	} while (0)
+ 
+ #define TST_EXP_FAIL(SCALL, EXP_ERR, ...)                                      \
+ 	do {                                                                   \
+ 		int tst_exp_err__ = EXP_ERR;                                   \
+-		TST_EXP_FAIL_ARR_(SCALL, &tst_exp_err__, 1,                    \
++		TST_EXP_FAIL_ARR_(SCALL, #SCALL, &tst_exp_err__, 1,            \
+                                   ##__VA_ARGS__);                              \
+ 	} while (0)
+ 
+ #define TST_EXP_FAIL_ARR(SCALL, EXP_ERRS, ...)                                 \
+-		TST_EXP_FAIL_ARR_(SCALL, EXP_ERRS, ARRAY_SIZE(EXP_ERRS),       \
+-                                  ##__VA_ARGS__);                              \
++		TST_EXP_FAIL_ARR_(SCALL, #SCALL, EXP_ERRS,                     \
++				  ARRAY_SIZE(EXP_ERRS), ##__VA_ARGS__);
+ 
+-#define TST_EXP_FAIL2_ARR_(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)                 \
++#define TST_EXP_FAIL2_ARR_(SCALL, SSCALL, EXP_ERRS, EXP_ERRS_CNT, ...)         \
+ 	do {                                                                   \
+-		TST_EXP_FAIL_SILENT_(TST_RET >= 0, SCALL, #SCALL,              \
++		TST_EXP_FAIL_SILENT_(TST_RET >= 0, SCALL, SSCALL,              \
+ 			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);                \
+ 		if (TST_PASS)                                                  \
+-			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
++			TST_MSG_(TPASS | TTERRNO, " ", SSCALL, ##__VA_ARGS__); \
+ 	} while (0)
+ 
+ #define TST_EXP_FAIL2_ARR(SCALL, EXP_ERRS, ...)                                \
+-		TST_EXP_FAIL2_ARR_(SCALL, EXP_ERRS, ARRAY_SIZE(EXP_ERRS),      \
+-                                  ##__VA_ARGS__);                              \
++		TST_EXP_FAIL2_ARR_(SCALL, #SCALL, EXP_ERRS,                    \
++		                  ARRAY_SIZE(EXP_ERRS), ##__VA_ARGS__);
+ 
+ #define TST_EXP_FAIL2(SCALL, EXP_ERR, ...)                                     \
+ 	do {                                                                   \
+ 		int tst_exp_err__ = EXP_ERR;                                   \
+-		TST_EXP_FAIL2_ARR_(SCALL, &tst_exp_err__, 1,                   \
++		TST_EXP_FAIL2_ARR_(SCALL, #SCALL, &tst_exp_err__, 1,           \
+                                   ##__VA_ARGS__);                              \
+ 	} while (0)
+ 
+-- 
+2.43.0
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
