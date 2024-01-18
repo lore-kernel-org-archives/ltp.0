@@ -4,92 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8AB1C4707B
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 15:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97740C47DAF
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 19:14:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E648F3CFCC5
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 16:35:31 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 765953CFCC4
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 20:14:17 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3FD3E3C1DC2
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:35:17 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ by picard.linux.it (Postfix) with ESMTPS id C0BED3CC959
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 20:14:02 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 37882201101
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:35:15 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CFDE1A00FA7
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 20:14:01 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 619931F78C;
- Thu, 18 Jan 2024 15:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1705592115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E60191F797;
+ Thu, 18 Jan 2024 19:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705605241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=sXK6kvIKFKmIbMdiaAj3KygQouHu3N8dKAgFC4VS2PY=;
- b=McNk0894ZjHvfrtaXjUbgJhw+xx/z8NuWlOXvhYZBjf1dPKKsfvC634vrr7v9kpPhVw3Zk
- X2unqHIFS9y2w6mJXNJbVgnOjbzhRAD0DyfHLKqmoyRCrtFXUDRV6TzQZeS9Y3pACVXitF
- VgakKiB+vIXL8RqrFE4Ir+oIuhYsYK4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1705592115;
+ bh=sZTnfsZlyLwwgbjxDKHuPnK7ruuAFM705So6Pui86fg=;
+ b=u8sgDNS4JOMp7W4dbw2zhK+7p+S/bFhWSCXPCRRnaD3lMIj4yc0Bfq7L8EBLtQ8nNNQokl
+ /z4nPALEuAac70nkmZw3VEgfF7h5wrqj4Xm/r4v7MWtViMS1E0PgOoGPpzCr/lxKdXTjpE
+ 5Df4EfgHUJ76ydLEvq7EBib0boUE1EY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705605241;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=sXK6kvIKFKmIbMdiaAj3KygQouHu3N8dKAgFC4VS2PY=;
- b=hAk56HShny3j4rKYAIHIu11nfl0ycNmMpHII2HepLhF9Af0unXey5Sgr1a8wvYxnPa8QOY
- 9MceqzbGGnCpJ9DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1705592115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ bh=sZTnfsZlyLwwgbjxDKHuPnK7ruuAFM705So6Pui86fg=;
+ b=EeqemCRWSGPaMqS5Z6AUQ1xudsT4P5OAG1kRjqqa8NFxvSjvICEvN0lfdQqS7gTyeP72dB
+ TJl+iucIXoRpsxCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705605240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=sXK6kvIKFKmIbMdiaAj3KygQouHu3N8dKAgFC4VS2PY=;
- b=McNk0894ZjHvfrtaXjUbgJhw+xx/z8NuWlOXvhYZBjf1dPKKsfvC634vrr7v9kpPhVw3Zk
- X2unqHIFS9y2w6mJXNJbVgnOjbzhRAD0DyfHLKqmoyRCrtFXUDRV6TzQZeS9Y3pACVXitF
- VgakKiB+vIXL8RqrFE4Ir+oIuhYsYK4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1705592115;
+ bh=sZTnfsZlyLwwgbjxDKHuPnK7ruuAFM705So6Pui86fg=;
+ b=ifpRGIYx3KYeLFBCfXPtrTBXrcbbRz4YMnmCbamOCcVmeVXcSwdj0EXsg9exZtinqeWpyu
+ dQa5Ee3//Okg7LGGMB34m3K4gcbbbTxvE5WRlZ16wtzfMPaNMA2YW3gWghNgrG/8JQ/Lug
+ ZyehZ4bKiH2mNmnD+fcM7NpDhOv+n0c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705605240;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=sXK6kvIKFKmIbMdiaAj3KygQouHu3N8dKAgFC4VS2PY=;
- b=hAk56HShny3j4rKYAIHIu11nfl0ycNmMpHII2HepLhF9Af0unXey5Sgr1a8wvYxnPa8QOY
- 9MceqzbGGnCpJ9DQ==
+ bh=sZTnfsZlyLwwgbjxDKHuPnK7ruuAFM705So6Pui86fg=;
+ b=UnVFsQCctIaaU9itXq7o4ItLPkStVPHuPM9Ma9Flm+OLkZSFuybi+RB7NTPflpXVnEs8ig
+ HAlhy2z0O5lqKEDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D92713874;
- Thu, 18 Jan 2024 15:35:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 726AA1386D;
+ Thu, 18 Jan 2024 19:14:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id x/kdCDNFqWXBMQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 18 Jan 2024 15:35:15 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id vpIYF3h4qWWadAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 18 Jan 2024 19:14:00 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 18 Jan 2024 16:35:14 +0100
-Message-Id: <20240118153514.2436-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+Date: Thu, 18 Jan 2024 20:13:53 +0100
+Message-ID: <20240118191353.2815915-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [4.90 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [4.84 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_FIVE(0.00)[5];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[opensuse.org:email,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.06)[61.79%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Add mkdir10 test
+Subject: [LTP] [RFC PATCH 1/1] readahead01: Pass also on memfd secret
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,85 +103,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Dominique Leuenberger <dimstar@opensuse.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+It fixes failure on 6.6 kernels:
 
-This test has been extracted from symlink01 and it verifies that
-mkdir() can't overwrite symlink() generated files.
+TFAIL: readahead() on memfd secret succeeded
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Fixes: ecf81d729 ("syscalls: readahead01: Make use of tst_fd")
+Reported-by: Dominique Leuenberger <dimstar@opensuse.org>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                           |  2 +-
- testcases/kernel/syscalls/mkdir/.gitignore |  1 +
- testcases/kernel/syscalls/mkdir/mkdir10.c  | 30 ++++++++++++++++++++++
- 3 files changed, 32 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/mkdir/mkdir10.c
+Hi,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 8dd8a49ca..e62e793e3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -757,8 +757,8 @@ mkdir02 mkdir02
- mkdir03 mkdir03
- mkdir04 mkdir04
- mkdir05 mkdir05
--mkdir05A symlink01 -T mkdir05
- mkdir09 mkdir09
-+mkdir10 mkdir10
- 
- #mkdirat test cases
- mkdirat01 mkdirat01
-diff --git a/testcases/kernel/syscalls/mkdir/.gitignore b/testcases/kernel/syscalls/mkdir/.gitignore
-index 880ff50c0..416fbbd7c 100644
---- a/testcases/kernel/syscalls/mkdir/.gitignore
-+++ b/testcases/kernel/syscalls/mkdir/.gitignore
-@@ -3,3 +3,4 @@
- /mkdir04
- /mkdir05
- /mkdir09
-+/mkdir10
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir10.c b/testcases/kernel/syscalls/mkdir/mkdir10.c
-new file mode 100644
-index 000000000..b0c0993ba
---- /dev/null
-+++ b/testcases/kernel/syscalls/mkdir/mkdir10.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ *    Author: David Fenner
-+ *    Copilot: Jon Hendrickson
-+ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test verifies that mkdir() can't overwrite symlink() generated files.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run(void)
-+{
-+	char *symname = "my_symlink0";
-+
-+	SAFE_SYMLINK(tst_get_tmpdir(), symname);
-+	TST_EXP_FAIL(mkdir(symname, 0777), EEXIST);
-+
-+	SAFE_UNLINK(symname);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.needs_tmpdir = 1,
-+};
+I wonder if this is a bug or just changed functionality.
+
+I also tested on 5.14 SLES and 5.10 Debian and both TCONF due ENOSYS:
+
+tst_fd.c:260: TCONF: Skipping memfd secret: ENOSYS (38)
+
+Kind regards,
+Petr
+
+ testcases/kernel/syscalls/readahead/readahead01.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+index e86a73e3e..a1f313605 100644
+--- a/testcases/kernel/syscalls/readahead/readahead01.c
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -51,6 +51,7 @@ static void test_invalid_fd(struct tst_fd *fd)
+ 	/* These succeed */
+ 	case TST_FD_FILE:
+ 	case TST_FD_MEMFD:
++	case TST_FD_MEMFD_SECRET:
+ 	case TST_FD_PROC_MAPS:
+ 		return;
+ 	default:
 -- 
-2.35.3
+2.43.0
 
 
 -- 
