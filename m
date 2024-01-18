@@ -4,100 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7A41C4707B
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 15:16:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90559C4707B
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 15:24:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3F9AA3CFCD2
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 16:16:07 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 143143CFCCA
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 16:24:56 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 147D63C62C0
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:15:51 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id DB5543C62C0
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:24:40 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1471214011A4
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:15:50 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0E56F6019B4
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 16:24:39 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3448521DB0;
- Thu, 18 Jan 2024 15:15:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2EB1B1FD04;
+ Thu, 18 Jan 2024 15:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1705590950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705591479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Xpb9fZ5YH9gOjvmeSjbX//+dN6uKYYcHyll1xdDtKmc=;
- b=AGgIvoP+JXjgAtZV7VFYQ0UTq92WXqo5qg3RZMjz9JZo6yLFO5v+21dC1rMT3ATVqoBZll
- i75s34ze1f5ACOp/3Xla0CenvcIi86YjChLpC0cuE80fS4gwzXR4CLRC3hCSB+zTbt7uCV
- djSvTtS3rloyScoFrs8HBzTjN2DJxYU=
+ bh=VSkQs338MxvEcgbx4hpEpKFz9lhYL364N3JZ6lDsVek=;
+ b=w415vXHm9IViPePOL32u+Q48aJb+4Kn/GTjlZoPOgSnbk9vu3CsVbY/vgkLCUZpYkbCupb
+ 1Hqh/jgaHsBZtNGIvQ7scr7IMGyriw7OQZ6/GSTtjWqX+LWiw9LXJ1l8RC9D8xEOLWEA/S
+ 3y6mg818Gr5eTfHlHeTlngK7NeP29zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1705590950;
+ s=susede2_ed25519; t=1705591479;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Xpb9fZ5YH9gOjvmeSjbX//+dN6uKYYcHyll1xdDtKmc=;
- b=qHD6UzcUDGS950mhSsIfzF47zbs4A0YCiLJEuR+5qJRYpV6857t2BKcYCS7A9JtkXzo8lw
- /adB1cNPewnlpUAQ==
+ bh=VSkQs338MxvEcgbx4hpEpKFz9lhYL364N3JZ6lDsVek=;
+ b=b9NSMAhvS5JbpKh5aDAgvnSuEVLXp3us0XPtNVRe8l/7oJ4Ca1PM4DLmbCWC12+NOCmyaB
+ Z5beiIS0nm5B5ICA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1705590950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705591479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Xpb9fZ5YH9gOjvmeSjbX//+dN6uKYYcHyll1xdDtKmc=;
- b=AGgIvoP+JXjgAtZV7VFYQ0UTq92WXqo5qg3RZMjz9JZo6yLFO5v+21dC1rMT3ATVqoBZll
- i75s34ze1f5ACOp/3Xla0CenvcIi86YjChLpC0cuE80fS4gwzXR4CLRC3hCSB+zTbt7uCV
- djSvTtS3rloyScoFrs8HBzTjN2DJxYU=
+ bh=VSkQs338MxvEcgbx4hpEpKFz9lhYL364N3JZ6lDsVek=;
+ b=w415vXHm9IViPePOL32u+Q48aJb+4Kn/GTjlZoPOgSnbk9vu3CsVbY/vgkLCUZpYkbCupb
+ 1Hqh/jgaHsBZtNGIvQ7scr7IMGyriw7OQZ6/GSTtjWqX+LWiw9LXJ1l8RC9D8xEOLWEA/S
+ 3y6mg818Gr5eTfHlHeTlngK7NeP29zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1705590950;
+ s=susede2_ed25519; t=1705591479;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Xpb9fZ5YH9gOjvmeSjbX//+dN6uKYYcHyll1xdDtKmc=;
- b=qHD6UzcUDGS950mhSsIfzF47zbs4A0YCiLJEuR+5qJRYpV6857t2BKcYCS7A9JtkXzo8lw
- /adB1cNPewnlpUAQ==
+ bh=VSkQs338MxvEcgbx4hpEpKFz9lhYL364N3JZ6lDsVek=;
+ b=b9NSMAhvS5JbpKh5aDAgvnSuEVLXp3us0XPtNVRe8l/7oJ4Ca1PM4DLmbCWC12+NOCmyaB
+ Z5beiIS0nm5B5ICA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01D8013874;
- Thu, 18 Jan 2024 15:15:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F1E9713874;
+ Thu, 18 Jan 2024 15:24:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6aZSOaVAqWWiKwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 18 Jan 2024 15:15:49 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mltmOLZCqWV1LgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 18 Jan 2024 15:24:38 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 18 Jan 2024 16:15:47 +0100
-Message-Id: <20240118151547.12980-1-andrea.cervesato@suse.de>
+Date: Thu, 18 Jan 2024 16:24:38 +0100
+Message-Id: <20240118152438.15668-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=AGgIvoP+;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qHD6UzcU
-X-Spamd-Result: default: False [4.69 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=w415vXHm;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=b9NSMAhv
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [3.49 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- RCVD_COUNT_THREE(0.00)[3];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
  MID_CONTAINS_FROM(1.00)[]; MX_GOOD(-0.01)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 3448521DB0
-X-Spamd-Bar: ++++
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: 2EB1B1FD04
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Add stat04 test
+Subject: [LTP] [PATCH v1] Add lstat03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,80 +118,70 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This test has been extracted from symlink01 test and it tests stat()
-functionalities on symlink generated file.
+This test has been extracted from symlink01 test and it verifies
+lstat() syscall functionalities on symlink generated file.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/smoketest                         |  2 +-
- runtest/syscalls                          |  4 +-
- testcases/kernel/syscalls/stat/.gitignore |  2 +
- testcases/kernel/syscalls/stat/stat04.c   | 75 +++++++++++++++++++++++
- 4 files changed, 80 insertions(+), 3 deletions(-)
- create mode 100644 testcases/kernel/syscalls/stat/stat04.c
+ runtest/syscalls                           |  4 +-
+ testcases/kernel/syscalls/lstat/.gitignore |  2 +
+ testcases/kernel/syscalls/lstat/lstat03.c  | 69 ++++++++++++++++++++++
+ 3 files changed, 73 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/lstat/lstat03.c
 
-diff --git a/runtest/smoketest b/runtest/smoketest
-index 83eebfe7b..5608417f9 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -8,7 +8,7 @@ time01 time01
- wait02 wait02
- write01 write01
- symlink01 symlink01
--stat04 symlink01 -T stat04
-+stat04 stat04
- utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
- splice02 splice02 -s 20
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 6e2407879..8dd8a49ca 100644
+index 6e2407879..69ac20b49 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1529,8 +1529,8 @@ stat02 stat02
- stat02_64 stat02_64
- stat03 stat03
- stat03_64 stat03_64
--stat04 symlink01 -T stat04
--stat04_64 symlink01 -T stat04_64
-+stat04 stat04
-+stat04_64 stat04_64
+@@ -723,12 +723,12 @@ lseek02 lseek02
+ lseek07 lseek07
+ lseek11 lseek11
  
- statfs01 statfs01
- statfs01_64 statfs01_64
-diff --git a/testcases/kernel/syscalls/stat/.gitignore b/testcases/kernel/syscalls/stat/.gitignore
-index fa0a4ce9f..0a62dc6ee 100644
---- a/testcases/kernel/syscalls/stat/.gitignore
-+++ b/testcases/kernel/syscalls/stat/.gitignore
-@@ -4,3 +4,5 @@
- /stat02_64
- /stat03
- /stat03_64
-+/stat04
-+/stat04_64
-diff --git a/testcases/kernel/syscalls/stat/stat04.c b/testcases/kernel/syscalls/stat/stat04.c
+-lstat01A symlink01 -T lstat01
+-lstat01A_64 symlink01 -T lstat01_64
+ lstat01 lstat01
+ lstat01_64 lstat01_64
+ lstat02 lstat02
+ lstat02_64 lstat02_64
++lstat03 lstat03
++lstat03_64 lstat03_64
+ 
+ mallinfo02 mallinfo02
+ 
+diff --git a/testcases/kernel/syscalls/lstat/.gitignore b/testcases/kernel/syscalls/lstat/.gitignore
+index a497a445f..72cba871f 100644
+--- a/testcases/kernel/syscalls/lstat/.gitignore
++++ b/testcases/kernel/syscalls/lstat/.gitignore
+@@ -2,3 +2,5 @@
+ /lstat01_64
+ /lstat02
+ /lstat02_64
++/lstat03
++/lstat03_64
+diff --git a/testcases/kernel/syscalls/lstat/lstat03.c b/testcases/kernel/syscalls/lstat/lstat03.c
 new file mode 100644
-index 000000000..879eec996
+index 000000000..86efed348
 --- /dev/null
-+++ b/testcases/kernel/syscalls/stat/stat04.c
-@@ -0,0 +1,75 @@
++++ b/testcases/kernel/syscalls/lstat/lstat03.c
+@@ -0,0 +1,69 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 + *    Author: David Fenner
 + *    Copilot: Jon Hendrickson
-+ * Copyright (C) 2024 Andrea Cervesato <andrea.cervesato@suse.com>
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * This test verifies that stat() is working correctly on symlink()
++ * This test verifies that lstat() is working correctly on symlink()
 + * generated files.
 + */
 +
 +#include "tst_test.h"
 +
-+static void test_stat(void)
++static void test_lstat(void)
 +{
 +	char *symname = "my_symlink0";
 +
@@ -198,49 +190,43 @@ index 000000000..879eec996
 +	struct stat path_stat;
 +	struct stat link_stat;
 +
-+	SAFE_STAT(tst_get_tmpdir(), &path_stat);
-+	SAFE_STAT(symname, &link_stat);
++	SAFE_LSTAT(tst_get_tmpdir(), &path_stat);
++	SAFE_LSTAT(symname, &link_stat);
 +
 +	TST_EXP_EQ_LI(path_stat.st_dev, link_stat.st_dev);
-+	TST_EXP_EQ_LI(path_stat.st_mode, link_stat.st_mode);
 +	TST_EXP_EQ_LI(path_stat.st_nlink, link_stat.st_nlink);
 +	TST_EXP_EQ_LI(path_stat.st_uid, link_stat.st_uid);
 +	TST_EXP_EQ_LI(path_stat.st_gid, link_stat.st_gid);
-+	TST_EXP_EQ_LI(path_stat.st_size, link_stat.st_size);
 +	TST_EXP_EQ_LI(path_stat.st_atime, link_stat.st_atime);
 +	TST_EXP_EQ_LI(path_stat.st_mtime, link_stat.st_mtime);
 +	TST_EXP_EQ_LI(path_stat.st_ctime, link_stat.st_ctime);
 +
++	TST_EXP_EXPR(path_stat.st_mode != link_stat.st_mode,
++		"object and symbolic link have different st_mode");
++	TST_EXP_EXPR(path_stat.st_size != link_stat.st_size,
++		"object and symbolic link have different st_size");
++
 +	SAFE_UNLINK(symname);
 +}
 +
-+static void test_stat_no_path(void)
++static void test_lstat_no_path(void)
 +{
 +	char *symname = "my_symlink1";
 +	struct stat link_stat;
 +
 +	TST_EXP_PASS(symlink("bc+eFhi!k", symname));
-+	TST_EXP_FAIL(stat(symname, &link_stat), ENOENT);
 +
-+	SAFE_UNLINK(symname);
-+}
-+
-+static void test_stat_loop(void)
-+{
-+	char *symname = "my_symlink2";
-+	struct stat link_stat;
-+
-+	TST_EXP_PASS(symlink(symname, symname));
-+	TST_EXP_FAIL(stat(symname, &link_stat), ELOOP);
++	SAFE_LSTAT(symname, &link_stat);
++	TST_EXP_EXPR((link_stat.st_mode & S_IFMT) == S_IFLNK,
++		"can read symlink file information");
 +
 +	SAFE_UNLINK(symname);
 +}
 +
 +static void run(void)
 +{
-+	test_stat();
-+	test_stat_no_path();
-+	test_stat_loop();
++	test_lstat();
++	test_lstat_no_path();
 +}
 +
 +static struct tst_test test = {
