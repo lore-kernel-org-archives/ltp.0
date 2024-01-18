@@ -4,121 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1C0BC4707B
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 07:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1705563174; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=iUHgaNbWXXxXbRuo/Wo1hg2zAC9syckdHObL2k2m3ws=;
- b=IfXcyY2LMWbTj85Qlvvvta6Taybqp6HqlbsFckhXugrh7H4rsIyJq9jOUa9qGl8mPRmTo
- TwcFkaeUzN4cmxH9xrIizjv46WrvnMUloTEpetp6Fu25jYmaVkLDUvQ4m3cQdREwoor3KLZ
- bLfWifIi7UEy3HaBtf5kRoUNGMlJvMc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C1D8C4707B
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 09:00:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 477E33CE2E1
-	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 08:32:54 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 194833CE2E8
+	for <ltp@archiver.kernel.org>; Thu, 18 Jan 2024 10:00:34 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D42993CC235
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 08:32:29 +0100 (CET)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com
- (mail-am7eur03on2072.outbound.protection.outlook.com [40.107.105.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2E2123C0349
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 10:00:18 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8D9721410873
- for <ltp@lists.linux.it>; Thu, 18 Jan 2024 08:32:27 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ffgOY/etcK94OVX/QvLkodu8RbjXNYeAGoHTdQ0jMur6D+KbLAnkYE4iV+yzFMXLvNCQ44ztB5YS/XjvrRmgnTjJHkYy4UZEn91RgPsTMsSE1GGYg4js46f2vlXFTgmhS/4xJ1VJE09+8oszNyBoPGtW/WnHCT7m18z5c/flVDgwgVptpSFXxsNtwWtRvk5fr8ghbwaIm64wu5vc6adX1CIyHE+bwg2uhzoTfrQydJoyUSFktZBMjrMJckliWeBZF18mOj+8JfSn4cnlwGwz+/wqTNtvm3FE9YiaSNQa0UNeA+w89qZAdIcdSlsgSXQuneWPvzNPZFe+TeNxFES9bA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TA4yzBKKWRv+J7GqWeAcb7HR00Or09l9HMDsPuI+cDk=;
- b=eXcvxhc5Mi73GjA6Fhm8qhR9ClzvWZly75O6ZrKkNA3DqwduMhA3l5NODhGyRc3BhMrGJ3qYr5rqSmoYY/l5rFVDgyFRqapG3ZaERGtsit9nWoKyXHwhhrvbD7zBq7jgCY0eG1lDf8h2+2JAi/jEUUkvenUAYujynMB5IvvFrn55kgtQsbnhu6g7fLzP1hUObOege3o9RO6NpTwNOMhNB40ArTSZTI5p0pAPDxQay6gySdQ7VG+8Bs2rZrrIRN6vh+KDxoCtRy2nm/cUdkZElrot958zGAzNNdZzG58PKovbAbV4HPmObmHO8lYsNISVkdzzHVP5pTpMng/yHGrw4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TA4yzBKKWRv+J7GqWeAcb7HR00Or09l9HMDsPuI+cDk=;
- b=WUX5Ti7wXSpInDJC6VvxTHq39PsIbYGKZLrQob2oxdZePIY/8X1Pf9U71LJ8BnqLa/lkMZiEVmCGRBMP2lRcGHpbN2nxOyTvaYBdxaNz2WgTxC/yUSXcgulUAJlcZWP3FQ1Z7HvqcVh9InhWVfHKB89VpyYXWgeKoeTtogZPAsQ11ICk2WFw7kM7r6zlB0Xd2mhvEHUKHucgK5RMiaOunmUbztVuiSkObObYmF6x8UEqGzpZOrpNqUd3O9XTMvWH6po1UPuPS0Uos4pgyvO/F72n2y/f38L3brVIn1/czhnXcO6Yf8XJEjrrocmXFs8UPYM3L5/ARpJVcrXj5ZJFpw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by AS8PR04MB8056.eurprd04.prod.outlook.com (2603:10a6:20b:288::5)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 07:32:24 +0000
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::80ed:f1d1:a471:ee74]) by AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::80ed:f1d1:a471:ee74%4]) with mapi id 15.20.7202.020; Thu, 18 Jan 2024
- 07:32:24 +0000
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 082F260101C
+ for <ltp@lists.linux.it>; Thu, 18 Jan 2024 10:00:16 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5AA1E1F76E;
+ Thu, 18 Jan 2024 09:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705568415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+ b=MFiPLupXoI/IjAFBOm+i8VxEFvE9hLE3jyvyjnNE/brjFelGGsBJ/qWJeTOxsVV8rbGJ/z
+ d4cMfqJqapzeMt+uQ8P0Ixp8oA2xeMYKR6HRe68hrpk7+zA009qPshBkMd4AxOblvAVj0V
+ 0F7ICy23Y+uSdMciISIVpjhKXKBChug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705568415;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+ b=+KWY0Bk5LOi9Mi7trAeQusRxYkvp4JhbEGiwIBz0jjJjLSENlymcBTrwI72vUjgaICh6P9
+ uEIwkx8t44gJ7yBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705568414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+ b=zh48p0VG8fbrBt+T/qJYdSzf9+Zf1O3R5Ya1py1kJPTrO7LyZcWz0hChYPE3uvjR4qu21H
+ 68N/l7jcI5zQBHOgTCYIXFr9YHD5nx6CUXbVcGisHIYkV8GjiQPenxdne73RwqiFdvhcX6
+ osVjNH5dqLBuHN2YQMS9HhEZuMoCJh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705568414;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+ b=uRfGgje1H/VAtaqD68L+XB03JUuvQ52sO6hza1OrSr2gfeAA+fKHMNaFqkUwuldrT4qJWd
+ p5a1J89zF+1IACDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DBDA136F5;
+ Thu, 18 Jan 2024 09:00:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Pq1aCZ3oqGVnMAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 18 Jan 2024 09:00:13 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 18 Jan 2024 02:32:15 -0500
-Message-Id: <20240118073215.10026-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231018054357.29035-1-wegao@suse.com>
-References: <20231018054357.29035-1-wegao@suse.com>
-X-ClientProxiedBy: TYCP286CA0084.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:2b3::14) To AS8PR04MB8199.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f6::21)
+Date: Thu, 18 Jan 2024 10:00:04 +0100
+Message-ID: <20240118090004.2748107-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|AS8PR04MB8056:EE_
-X-MS-Office365-Filtering-Correlation-Id: 714dc321-5248-425c-89c1-08dc17f79d43
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZlJnDu9MEJyOpWjP2YjYwedsBQUUyvotYpaWOw1OIPtLAL34hZgHsMGSzZOlzLbgzm8ettkdN842SfK/n2IAdIOzVe4jSROs5GEr+VqBQ7nuI2qi0pXoo63Z8udhzPL48oj3d/XcvnG0hjd/xLvgb297cybagE5zEePCRkyz4dtl4CfG4Nu9mCf+8iV1G8cHcvlooVEbQhS6Wur2Dw9z5ET86dcrtU7h83rxGCy5r/Ihtq6pVRhRt8MPpyUQZVTgd/yurFMCYw17hUxgs9RYz7OJYlrhnKZOz7f30cDIsW/3mk4/0kc6T4FeArVAG9dtHGlAvKoqp5lrmhYKBJLiti4MUr3473OfB/PMZ9eky+wbuCj6p3cZUbruibgeiUOMa0PMuX4MkxpNKcis8SKxnvy3iwN4E3TYrNI5BV6nzNpOtDzxJNc7rBrY3EQIFEI2vsUs2QEHF5Rrov3Pl7uDz+Z2GSwI/wPyvrNZUgsLVcgEqNTkf58G0fOgZuaZwSRZhZjTgrdeS94RfSdXecbpFNxLl9/ZBwixU1C0cZalKBWRootFjNpPCmoo7oA6Gz9O
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(39850400004)(136003)(396003)(376002)(366004)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(8936002)(6666004)(8676002)(6506007)(4326008)(41300700001)(26005)(1076003)(36756003)(107886003)(5660300002)(2616005)(38100700002)(2906002)(86362001)(83380400001)(6512007)(66476007)(316002)(6916009)(6486002)(66556008)(66946007)(478600001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ha28Ve6KNULgVL2OdTB3RC6UsV+r7mjOHaWaT/TC72MoJ17WP2JtK5+RaMni?=
- =?us-ascii?Q?AEZrh2ebhGngM91eplm42qnwCLktIcJiyUEONL60ui0wyiEoqNjMeN8sNEe7?=
- =?us-ascii?Q?834EXJl6RlEPvWu+ok+X6g3/96myIhokO2zr9EdRvCHn6COSzAWns78P1i/j?=
- =?us-ascii?Q?PzPaZEJeLV/bcdW0klgksOkVO+wgqZ7+iM7GfY/z9WNTJUroGbR/KtIzeske?=
- =?us-ascii?Q?cFVtljz6CZteho7qiymx97bkKimnhDWBZM9QytaEIVqVRv3AEFyz6Dv+CWAa?=
- =?us-ascii?Q?SkSahBYfk0ANQGMJIf9u8pKy6RPFdRRz8t5rlH4Teb4IStfTxeRq3mhd5wcb?=
- =?us-ascii?Q?yj4/spPe6+ENlRkHv/XbfmaHdOUKpo5YBN3QBYIADQFvxO3/PYOq3opLAURd?=
- =?us-ascii?Q?fl6gXU9aSYJduXBPNXtF3vY0w4kyJVeypb6Kqeg5bIXOlKDH8IuQGUKZsYNn?=
- =?us-ascii?Q?9vr1odRtLISYN6HXeAZB/bzCExU8yZWiTDpULL69DnIGRcP/YN9uUcje2xvO?=
- =?us-ascii?Q?Jp1riuP2Clku6OFBm8GtoVKZQ1PLBiHwoLPu7yy7BXFg7R5kT4Nu57+SLthY?=
- =?us-ascii?Q?y7Q8faFaR4hpJT8/hCY70G2P/EWkKIIfK/z8VAujER/Zba4m4KM4jEBURoku?=
- =?us-ascii?Q?EypnxHAuGIhTSrvvN427bqLQqyXe6iQ1qgEHgvdj27z6sQ/XduboZ7h18SLH?=
- =?us-ascii?Q?I04YIArq0b/si+f9YjNfB7OQjoMo9RzCqFTneFeewhKu8ZYK35elhnJacReh?=
- =?us-ascii?Q?lmU0dFV3XkJYhWo10bwHC0jO2Uxncod6vQNxmWbx77+6ott6lUgALHSLRBMd?=
- =?us-ascii?Q?pbwfd60iqIQpYRztwP1XoMuyhp3ISEWshGW5QaOWh0lNJAcX1tFWddfMeRNe?=
- =?us-ascii?Q?5Vt0AKrim7KWzVFDy5aS5gdC5z2lCzcvrZ4YUjaCQ0jLF9/5t9VyuhSbZw4L?=
- =?us-ascii?Q?oxoSmYXf6lNJ6GIumwPG28HqdZWYLaakWwHweEBmzqeyKwVZweXUKUL+RWHf?=
- =?us-ascii?Q?9kPFzvZbmsoyd8x+ifVsOEKauAl72aLd1wTqoS26fOupowLdNBcf8Wnz0Bc7?=
- =?us-ascii?Q?FXcu70DFZ8KRIxdO38l7rDpIIkqFUCWFHhKzOq/jfBlcGRzo/kDaYyzTXUnD?=
- =?us-ascii?Q?riz8w5wW6jYB48aODriOAoUpKh0UQRNI8/mQWZWpz3GMKVx2HLv7cVIvPE9s?=
- =?us-ascii?Q?wSg1no1XREwN00DyBmhHbNC753oPzyRS8oXjZkcq9WC4sAqLWqh+lXpQvmHG?=
- =?us-ascii?Q?yHBRrtaxbXhssq+XYB1zxsjh7KM4rxmLBGHJyA7Mva+e+nEuzMSbmeQIspys?=
- =?us-ascii?Q?nSrtHviJ9B3+TaSVGlIR9N7zi8J3XQXooNWpJ/Q3ACDpqcLf2ioaeuWOeHQa?=
- =?us-ascii?Q?Rv4ZFdZTaH72t/jqrw1E32ReP6K10p0wwTL9WnYahH9U9OoweAoEtC9byObn?=
- =?us-ascii?Q?vgJxKYLt0WBVDR1rg0CvXMMO0RjM9Y0uDncWRScJtMNTuAuvnsvAc0ttboBY?=
- =?us-ascii?Q?OnP9KzxR9OPFcocRAAv31ej38YYx7PyFz3Io0lOxntqYsgERTqyp6u+fryIO?=
- =?us-ascii?Q?p6GCtBoswsJdLE4hG48=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 714dc321-5248-425c-89c1-08dc17f79d43
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 07:32:24.4496 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qUix6jF+eliX4ubRlSimuqNYpF+mZP9gzet4v/FgpP+AZowNvgfp8C7n3AmNCUZF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8056
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [4.54 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_SEVEN(0.00)[11]; MID_CONTAINS_FROM(1.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.36)[76.67%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] ioctl_fiemap01: New test for fiemap ioctl()
+Subject: [LTP] [PATCH 1/1] tst_supported_fs_types: Disable FUSE bcachefs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,169 +100,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
+ Brian Foster <bfoster@redhat.com>, fstests@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #535
+bcachefs got into the kernel in 6.7 therefore it's not much useful for
+testing FUSE version.
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+NOTE: The original purpose for this was a failure with bcachefs-tools on
+kernel without bcachefs support (e.g. kernel < 6.7):
+
+    # LTP_SINGLE_FS_TYPE=bcachefs ./chdir01
+    ...
+    tst_supported_fs_types.c:57: TINFO: mkfs.bcachefs does exist
+    tst_test.c:1669: TINFO: === Testing on bcachefs ===
+    tst_test.c:1117: TINFO: Formatting /dev/loop0 with bcachefs opts=''
+    extra opts=''
+    tst_test.c:1131: TINFO: Mounting /dev/loop0 to
+    /tmp/LTP_chdwqhGtZ/mntpoint fstyp=bcachefs flags=0
+    tst_test.c:1131: TBROK: mount(/dev/loop0, mntpoint, bcachefs, 0, (nil))
+    failed: ENODEV (19)
+
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_fiemap01.c    | 116 ++++++++++++++++++
- 3 files changed, 119 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
+ lib/tst_supported_fs_types.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6e2407879..4e6ce5aef 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -589,6 +589,8 @@ ioctl_ns07 ioctl_ns07
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 369836717..bbbb8df19 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -33,6 +33,11 @@ static const char *const fs_type_whitelist[] = {
+ 	NULL
+ };
  
- ioctl_sg01 ioctl_sg01
- 
-+ioctl_fiemap01 ioctl_fiemap01
-+
- inotify_init1_01 inotify_init1_01
- inotify_init1_02 inotify_init1_02
- 
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 5fff7a61d..64adcdfe6 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -22,3 +22,4 @@
- /ioctl_ns06
- /ioctl_ns07
- /ioctl_sg01
-+/ioctl_fiemap01
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-new file mode 100644
-index 000000000..a626bb03c
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify basic fiemap ioctl
-+ *
-+ */
-+
-+#include <linux/fs.h>
-+#include <linux/fiemap.h>
-+#include <stdlib.h>
-+
-+#include "tst_test.h"
-+
-+#define TESTFILE "testfile"
-+#define NUM_EXTENT 2
-+#define FILE_OFFSET ((rand() % 8 + 2) * getpagesize())
-+
-+static char *buf;
-+
-+static void print_extens(struct fiemap *fiemap)
-+{
-+
-+	tst_res(TDEBUG, "File extent count: %u", fiemap->fm_mapped_extents);
-+	for (unsigned int i = 0; i < fiemap->fm_mapped_extents; ++i) {
-+		tst_res(TDEBUG, "Extent %u: Logical offset: %llu, Physical offset: %llu, flags: %u, Length: %llu",
-+				i + 1,
-+				fiemap->fm_extents[i].fe_logical,
-+				fiemap->fm_extents[i].fe_physical,
-+				fiemap->fm_extents[i].fe_flags,
-+				fiemap->fm_extents[i].fe_length);
-+	}
-+}
-+
-+static void verify_ioctl(void)
-+{
-+	int fd;
-+	struct fiemap *fiemap;
-+
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+
-+	fiemap = SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent) * NUM_EXTENT);
-+	fiemap->fm_start = 0;
-+	fiemap->fm_length = ~0ULL;
-+	fiemap->fm_extent_count = 1;
-+
-+	fiemap->fm_flags =  -1;
-+	TST_EXP_FAIL(ioctl(fd, FS_IOC_FIEMAP, fiemap), EBADR);
-+
-+	fiemap->fm_flags =  0;
-+	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
-+	print_extens(fiemap);
-+	if (fiemap->fm_mapped_extents == 0)
-+		tst_res(TPASS, "Check fiemap iotct zero fm_mapped_extents pass");
-+	else
-+		tst_res(TFAIL, "Check fiemap iotct zero fm_mapped_extents failed");
-+
-+	SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, getpagesize());
-+	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
-+	print_extens(fiemap);
-+	if ((fiemap->fm_mapped_extents == 1) && (fiemap->fm_extents[0].fe_physical == 0))
-+		tst_res(TPASS, "Check fiemap iotct one fm_mapped_extents pass");
-+	else
-+		tst_res(TFAIL, "Check fiemap iotct one fm_mapped_extents failed");
-+
-+	fiemap->fm_flags = FIEMAP_FLAG_SYNC;
-+	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
-+	print_extens(fiemap);
-+	if ((fiemap->fm_mapped_extents == 1) &&
-+		(fiemap->fm_extents[0].fe_flags == FIEMAP_EXTENT_LAST) &&
-+		(fiemap->fm_extents[0].fe_physical > 0) &&
-+		(fiemap->fm_extents[0].fe_length == (__u64)getpagesize()))
-+		tst_res(TPASS, "Check fiemap iotct FIEMAP_FLAG_SYNC fm_flags pass");
-+	else
-+		tst_res(TFAIL, "Check fiemap iotct FIEMAP_FLAG_SYNC fm_flags failed");
-+
-+	fiemap->fm_extent_count = NUM_EXTENT;
-+	srand(time(NULL));
-+	SAFE_LSEEK(fd, FILE_OFFSET, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, getpagesize());
-+	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
-+	print_extens(fiemap);
-+	if ((fiemap->fm_mapped_extents == NUM_EXTENT) &&
-+		(fiemap->fm_extents[NUM_EXTENT - 1].fe_flags == FIEMAP_EXTENT_LAST) &&
-+		(fiemap->fm_extents[NUM_EXTENT - 1].fe_physical > 0) &&
-+		(fiemap->fm_extents[NUM_EXTENT - 1].fe_length == (__u64)getpagesize()))
-+		tst_res(TPASS, "Check fiemap iotct multiple fm_mapped_extents pass");
-+	else
-+		tst_res(TFAIL, "Check fiemap iotct multiple fm_mapped_extents failed");
-+
-+	free(fiemap);
-+	SAFE_CLOSE(fd);
-+	unlink(TESTFILE);
-+}
-+
-+static void setup(void)
-+{
-+	buf = SAFE_MALLOC(getpagesize());
-+}
-+
-+static void cleanup(void)
-+{
-+	free(buf);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_ioctl,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
++static const char *const fs_type_fuse_blacklist[] = {
++	"bcachefs",
++	NULL,
 +};
++
+ static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
+ 
+ static int has_mkfs(const char *fs_type)
+@@ -96,6 +101,11 @@ static enum tst_fs_impl has_kernel_support(const char *fs_type)
+ 
+ 	SAFE_RMDIR(template);
+ 
++	if (tst_fs_in_skiplist(fs_type, fs_type_fuse_blacklist)) {
++		tst_res(TINFO, "Skipping %s because of FUSE blacklist", fs_type);
++		return TST_FS_UNSUPPORTED;
++	}
++
+ 	/* Is FUSE supported by kernel? */
+ 	if (fuse_supported == -1) {
+ 		ret = open("/dev/fuse", O_RDWR);
 -- 
-2.35.3
+2.43.0
 
 
 -- 
