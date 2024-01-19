@@ -4,93 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2EC4C4725D
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 11:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B42CC4725D
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 11:42:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B37903CE2CB
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 12:20:32 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id DD7283CE2BC
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 12:42:18 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 504C73CAC5F
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 12:20:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B7BB13CAC5F
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 12:42:03 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 746DE600D50
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 12:20:16 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2D78B600784
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 12:42:01 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2E88421F43;
- Fri, 19 Jan 2024 11:20:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B15D51FD12;
+ Fri, 19 Jan 2024 11:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705663216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705664520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cJs8aQLoIkbaKLxyVRevGwC/ZpI79hqpJBp8+ee239c=;
- b=sZoPVP2TpffhHte1bK4/JS67lb+Zfr0g/6IKTsvTvpDNyV2VRoyh/tB738JJw19wEBTSPz
- QcMVPA13CDlSI8fq9i4ZKe6HzczvI9fvE4lNB/qrH1zbroUNhF2O6EAHN5TslYvPB+pfG7
- Ud3w1XQH+L1mn5jl/LX+1iELrpf8TPQ=
+ bh=eLrrvFJYV0hI4Rt+MkMz3y6iwaOTObaOpCAfnLdWmIw=;
+ b=zz1AKLyaRkrbqA3rbFlo6kK0+ljfJAsizuhqozmubuTfuxI9SoPS2ktPRL5O+aGyQO0Dni
+ R+if6rhYoijJcI/9jM2AOedxJcfFM/kHzQz2j1MoJlGSWjcwIEfFgGkceWPV2vlDDzxvON
+ 2lGCdBsbc0ZYhynaxzIogrHvyRyF7nA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705663216;
+ s=susede2_ed25519; t=1705664520;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cJs8aQLoIkbaKLxyVRevGwC/ZpI79hqpJBp8+ee239c=;
- b=sWeNkfLGNMg+ugdujH3HGZ1DxtzdzPCq0djwN/dBWZ37IjFTPytcpg7JfBfHt4HvVbEfUb
- KdmEeNwynA/iEaDQ==
+ bh=eLrrvFJYV0hI4Rt+MkMz3y6iwaOTObaOpCAfnLdWmIw=;
+ b=8wwKOUoNesl2FbayZeDvEjP7ZHmPEcds5mX3d5kdWykZZgY0fxPEfPY6QrcpuzzCZgU6a7
+ 5aBSGfHiGiw2vaCg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705663215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705664520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cJs8aQLoIkbaKLxyVRevGwC/ZpI79hqpJBp8+ee239c=;
- b=3OX09qm2MxuQ5t6PF0jtKTKmRNhrL7U90Aj81+O2yuVw6SnpRO8dNRV/rCDGD6Rcn1KsNw
- udHcq4KzRnF2wOngCZ0ntiZH2mw9UtEF9ZBesZcAksdE3bGPFGsLGYsWi5Gne79ETlAjBp
- zrkh1lmUgMfEyFkVGWXOPzNGlyTWisA=
+ bh=eLrrvFJYV0hI4Rt+MkMz3y6iwaOTObaOpCAfnLdWmIw=;
+ b=zz1AKLyaRkrbqA3rbFlo6kK0+ljfJAsizuhqozmubuTfuxI9SoPS2ktPRL5O+aGyQO0Dni
+ R+if6rhYoijJcI/9jM2AOedxJcfFM/kHzQz2j1MoJlGSWjcwIEfFgGkceWPV2vlDDzxvON
+ 2lGCdBsbc0ZYhynaxzIogrHvyRyF7nA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705663215;
+ s=susede2_ed25519; t=1705664520;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cJs8aQLoIkbaKLxyVRevGwC/ZpI79hqpJBp8+ee239c=;
- b=5MoEt3yXYfudKYQ03KWeFOk4R7UkbV4TkX9agFPhRBgVr/drUnSl4XJPBvbcpMN7jDinRS
- gvGSm4j1PFIb/RDA==
+ bh=eLrrvFJYV0hI4Rt+MkMz3y6iwaOTObaOpCAfnLdWmIw=;
+ b=8wwKOUoNesl2FbayZeDvEjP7ZHmPEcds5mX3d5kdWykZZgY0fxPEfPY6QrcpuzzCZgU6a7
+ 5aBSGfHiGiw2vaCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11AD81388C;
- Fri, 19 Jan 2024 11:20:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86A7313894;
+ Fri, 19 Jan 2024 11:42:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ycItAu9aqmWAdQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 19 Jan 2024 11:20:15 +0000
-Date: Fri, 19 Jan 2024 12:20:24 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TujyHghgqmXpewAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 19 Jan 2024 11:42:00 +0000
+Date: Fri, 19 Jan 2024 12:42:10 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Zapa-P9vY--8BrdW@yuki>
-References: <20231011160822.578637-1-pvorel@suse.cz>
- <20231011160822.578637-3-pvorel@suse.cz>
+Message-ID: <ZapgEnqfXwdL7_Pu@yuki>
+References: <20231011162428.583911-1-pvorel@suse.cz>
+ <20231011162428.583911-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231011160822.578637-3-pvorel@suse.cz>
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=3OX09qm2;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5MoEt3yX
-X-Spamd-Result: default: False [-0.35 / 50.00]; ARC_NA(0.00)[];
+In-Reply-To: <20231011162428.583911-2-pvorel@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zz1AKLya;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8wwKOUoN
+X-Spamd-Result: default: False [-2.81 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  MIME_GOOD(-0.10)[text/plain]; RCVD_COUNT_THREE(0.00)[3];
@@ -99,13 +97,12 @@ X-Spamd-Result: default: False [-0.35 / 50.00]; ARC_NA(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.54)[80.78%]
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2E88421F43
-X-Spamd-Bar: /
+X-Rspamd-Queue-Id: B15D51FD12
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] tst_fs.h: Improve tst_fibmap() doc
+Subject: Re: [LTP] [PATCH 1/2] swapon01: Test on all filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,20 +121,89 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
->  /*
-> - * test if FIBMAP ioctl is supported
-> + * Check if FIBMAP ioctl is supported.
-> + * Tests which use tst_fibmap() should use .needs_root = 1 to avoid EPERM.
-               ^
-	       Maybe just:
+> Test on all filesystems to increase coverage.  btrfs and tmpfs
+> currently does not support swap file, but keep it in case this get
+> changed in the future.
+> 
+> Testing on all filesystems usually requests root, but we don't require
+> it with .needs_root = 1. But using swapon() requires it as well, thus
+> keep it defined.
+> 
+> Also detect the support on the same file as which is being tested.
 
-	       Tests nees to set .needs_root = 1 in order to avoid EPERM.
+For the previous iteration of this patch Li wasn't sure if this adds
+enough value since there isn't ton of filesystem specific code involved
+unless we actually start writing to the swapfile.
 
-> + * @return 0: FIBMAP is supported, 1: FIBMAP is *not* supported.
+And as the patch is I would agree with that. What may make sense I think
+is to require certain filesystem to support swap, i.e. fail the test in
+the case that we haven't managed to create and enable the swapfile where
+it's supposed to work. That would guard about accidental breakages, as
+it is the test would not catch these because it woult TCONF in the
+setup.
 
-Otherwise it looks good.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> IMHO it's not a big slowdown thus I keep btrfs and tmpfs.
+> They might get support one day.
+> 
+>  testcases/kernel/syscalls/swapon/swapon01.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+> index b5c3f359c..6b7f96cf7 100644
+> --- a/testcases/kernel/syscalls/swapon/swapon01.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+> @@ -9,6 +9,9 @@
+>   * Checks that swapon() succeds with swapfile.
+>   */
+>  
+> +#define MNTPOINT	"mntpoint"
+> +#define SWAP_FILE	MNTPOINT"/swapfile01"
+> +
+>  #include <unistd.h>
+>  #include <errno.h>
+>  #include <stdlib.h>
+> @@ -18,14 +21,14 @@
+>  
+>  static void verify_swapon(void)
+>  {
+> -	TEST(tst_syscall(__NR_swapon, "./swapfile01", 0));
+> +	TEST(tst_syscall(__NR_swapon, SWAP_FILE, 0));
+>  
+>  	if (TST_RET == -1) {
+>  		tst_res(TFAIL | TTERRNO, "Failed to turn on swapfile");
+>  	} else {
+>  		tst_res(TPASS, "Succeeded to turn on swapfile");
+>  		/*we need to turn this swap file off for -i option */
+> -		if (tst_syscall(__NR_swapoff, "./swapfile01") != 0) {
+> +		if (tst_syscall(__NR_swapoff, SWAP_FILE) != 0) {
+>  			tst_brk(TBROK | TERRNO, "Failed to turn off swapfile,"
+>  				" system reboot after execution of LTP "
+>  				"test suite is recommended.");
+> @@ -35,13 +38,15 @@ static void verify_swapon(void)
+>  
+>  static void setup(void)
+>  {
+> -	is_swap_supported("./tstswap");
+> -	make_swapfile("swapfile01", 0);
+> +	is_swap_supported(SWAP_FILE);
+> +	make_swapfile(SWAP_FILE, 0);
+>  }
+>  
+>  static struct tst_test test = {
+> -	.needs_root = 1,
+> -	.needs_tmpdir = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.mount_device = 1,
+> +	.needs_root = 1, /* for swapon() */
+> +	.all_filesystems = 1,
+>  	.test_all = verify_swapon,
+>  	.setup = setup
+>  };
+> -- 
+> 2.42.0
+> 
 
 -- 
 Cyril Hrubis
