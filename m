@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFAC8C4725D
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 13:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC3ADC4725D
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 13:53:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5514E3CE2D9
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 14:36:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 21A7F3CE2D3
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 14:53:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F1143CC8BF
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 14:36:38 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 7CBB43CBB56
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 14:52:58 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -23,42 +23,75 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 23F121400E56
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 14:36:36 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DFB9960118E
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 14:52:57 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 237E11FD15;
- Fri, 19 Jan 2024 13:36:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DE2271F7F1;
+ Fri, 19 Jan 2024 13:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705672377; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xjqqToMsWhYPqVT9iuA9qaHS4xef6118oV7MWbM8huU=;
+ b=Ir+thWtqpoZ+3KX7Xech1qazTL8Zl1vxxGd6xOJsL+v7b12PpcVc+nxUr4uMp1H0Qs1sL0
+ ++1LC1zOyA32lUlKsoVxz2/eLfOKxxXgzjv/j2M8zp01bMm7gpgho/vdnPWg554R9nobmG
+ rdnfpNz2MqcFvEpEm8F1I1u1Io1I/z4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705672377;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xjqqToMsWhYPqVT9iuA9qaHS4xef6118oV7MWbM8huU=;
+ b=RrlfB02MUW5JPtWeGSvHR2rWG8TzOHsMCKmaccUCV0T961G3bEJhXXkFVeqbZMl3mnbsTN
+ G/g8hh9xcktw+UDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705672376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xjqqToMsWhYPqVT9iuA9qaHS4xef6118oV7MWbM8huU=;
+ b=hQNRkOgEzv2VcQK2ag/nmutpQcOFn2Vh/6SoRu8mY6lQfsml4M0naTxIFLypyV0L5cgtDp
+ JvvrsydvJDgTnqaB80Y3wEHz6wJTOoLql33PVSmBNQATLvZB76h3zieHOPohfbPd3P5FiH
+ bu2JVuLEeX95AWRgagHmAKvFwKLQQYA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705672376;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xjqqToMsWhYPqVT9iuA9qaHS4xef6118oV7MWbM8huU=;
+ b=/9BL4UfplcLsXCT1dK24ZrYNpR4BHMNHumw/rKKjnJUhOvVVII/DlCy8HYuo9YFUBt3kNx
+ 9wswgf2raJxFNGCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCECF1388C;
- Fri, 19 Jan 2024 13:36:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0C4C1388C;
+ Fri, 19 Jan 2024 13:52:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id okQzNON6qmXuIAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 19 Jan 2024 13:36:35 +0000
-Date: Fri, 19 Jan 2024 14:36:34 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zr/zLbh+qmUWJgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 19 Jan 2024 13:52:56 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240119133634.GA27666@pevik>
-References: <20231011162428.583911-1-pvorel@suse.cz>
- <20231011162428.583911-3-pvorel@suse.cz> <ZapkKSTNkXsnulC3@yuki>
+To: ltp@lists.linux.it
+Date: Fri, 19 Jan 2024 14:52:52 +0100
+Message-ID: <20240119135252.32420-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZapkKSTNkXsnulC3@yuki>
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 237E11FD15
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Spamd-Result: default: False [3.70 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; TO_DN_SOME(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.00)[44.75%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] swapon01: Simplify code, add copyright
+Subject: [LTP] [RFC PATCH 1/1] libswap: Pass enum instead of int to
+ make_swapfile()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,55 +103,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Not only that enum is better than int (we should not rely on
+TST_CMD_PASS_RETVAL being 1, but also it was missing
+TST_CMD_TCONF_ON_MISSING, thus on systems without mkswap test reported
+wrong results on filesystems which supports swap:
 
-> Hi!
-> >  /*\
-> > @@ -21,18 +22,11 @@
+TFAIL: mkswap on ext2/ext3/ext4 failed
 
-> >  static void verify_swapon(void)
-> >  {
-> > -	TEST(tst_syscall(__NR_swapon, SWAP_FILE, 0));
-> > +	TST_EXP_PASS(tst_syscall(__NR_swapon, SWAP_FILE, 0));
+Now it correctly print:
 
-> > -	if (TST_RET == -1) {
-> > -		tst_res(TFAIL | TTERRNO, "Failed to turn on swapfile");
-> > -	} else {
-> > -		tst_res(TPASS, "Succeeded to turn on swapfile");
-> > -		/*we need to turn this swap file off for -i option */
-> > -		if (tst_syscall(__NR_swapoff, SWAP_FILE) != 0) {
-> > -			tst_brk(TBROK | TERRNO, "Failed to turn off swapfile,"
-> > -				" system reboot after execution of LTP "
-> > -				"test suite is recommended.");
-> > -		}
-> > +	if (tst_syscall(__NR_swapoff, SWAP_FILE) != 0) {
+tst_cmd.c:75: TCONF: Couldn't find '___mkswap' in $PATH at tst_cmd.c:75
 
-> Maybe if (TST_PASS && tst_syscall(__NR_swapoff, ...) != 0) {
+Fixes: ec51970b7 ("lib/tst_cmd_*(): Turn int pass_exit_val into enum")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-Rebased, add this change and merged. Thanks!
+obviously OK, but before git freeze I rather post than directly push.
 
 Kind regards,
 Petr
 
+ libs/libltpswap/libswap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Otherwise it looks good, with that change:
+diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+index d014325e5..13610709e 100644
+--- a/libs/libltpswap/libswap.c
++++ b/libs/libltpswap/libswap.c
+@@ -30,7 +30,8 @@ int make_swapfile(const char *swapfile, int safe)
+ 	argv[1] = swapfile;
+ 	argv[2] = NULL;
+ 
+-	return tst_cmd(argv, "/dev/null", "/dev/null", safe);
++	return tst_cmd(argv, "/dev/null", "/dev/null", safe ?
++				   TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING : 0);
+ }
+ 
+ /*
+-- 
+2.43.0
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-> > +		tst_brk(TBROK | TERRNO,
-> > +				"Failed to turn off swapfile, system reboot recommended");
-> >  	}
-> >  }
-
-> > -- 
-> > 2.42.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
