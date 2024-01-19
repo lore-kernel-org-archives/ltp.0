@@ -4,99 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96E96C4725D
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 15:06:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D03C47DAF
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 15:33:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E5CE63CE2D9
-	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 16:06:10 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 57C813CE2C0
+	for <ltp@archiver.kernel.org>; Fri, 19 Jan 2024 16:33:26 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 940DB3CB172
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 16:05:55 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 992ED3CAB18
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 16:33:11 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=jack@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B3F6F1BCCB4C
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 16:05:54 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EF51510185DC
+ for <ltp@lists.linux.it>; Fri, 19 Jan 2024 16:33:10 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9127C21E0B;
- Fri, 19 Jan 2024 15:05:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E13991F7F9;
+ Fri, 19 Jan 2024 15:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705676753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705678390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U0zS0JTXL08BCVqJTU66VISLfMpVBtUUFeroXEN7A5o=;
- b=G2/FyeQ4xzy7/guxoLXObO++fo2fu6cKEdpT0klrx9F+wjpJzS9mk72jyU0o+lwknyyaH3
- +svnoo+EVruft4c+gP/uHi8iEZckoaq4hwE9WW2Ng2zWx430AyjHFod5phUY4OBH0Lvaxx
- ktqPQCe7iBowMS2ifRiIIDvAL/JuLR0=
+ bh=Rs5b5cOV0qckeX/XZspqjvMa8hgW8nx6KjcntJmivmA=;
+ b=3Blq9VrAb67neqE3tMIqyvonrxDzQDZsr+l3hSW2AZmGwekhZt5K3euvD2LyEVR5ctkVs5
+ MN3MF+qzF/RC45H/e1RBo5mThlfAVk5+DkhxYkflWAjkgSKXrZGWVbbeG4WerdsoeMzORf
+ WmQ2tcLdU77huMrQC+3rcDvy60l8XtE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705676753;
+ s=susede2_ed25519; t=1705678390;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U0zS0JTXL08BCVqJTU66VISLfMpVBtUUFeroXEN7A5o=;
- b=I3RASp7LoJ83rcoOzP+k/cHPwcSx/2wPvW9M9b/BobZj5TYUk1Z3PT59u4YLJSf2FehClb
- 3xwttyqkasdS0pAg==
+ bh=Rs5b5cOV0qckeX/XZspqjvMa8hgW8nx6KjcntJmivmA=;
+ b=fL9cHlPO9C2T/mPwYFXNTvVloCe4y1EtA6EcdTkXhCYRyqKotyCgwtbRpPlbpxe7MeAQWZ
+ r2SSVBSs+OwhXUAQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1705676753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1705678389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U0zS0JTXL08BCVqJTU66VISLfMpVBtUUFeroXEN7A5o=;
- b=G2/FyeQ4xzy7/guxoLXObO++fo2fu6cKEdpT0klrx9F+wjpJzS9mk72jyU0o+lwknyyaH3
- +svnoo+EVruft4c+gP/uHi8iEZckoaq4hwE9WW2Ng2zWx430AyjHFod5phUY4OBH0Lvaxx
- ktqPQCe7iBowMS2ifRiIIDvAL/JuLR0=
+ bh=Rs5b5cOV0qckeX/XZspqjvMa8hgW8nx6KjcntJmivmA=;
+ b=ORGdUBo2/9y971jfxM4gFnxA6pfuFbi4gRDZq4eJkxX+oToevVmgN/myU9uy9ppEuooQYF
+ 3Qi2xOOWCqEzTkKtA88rqsbUMjLdWfMqIlhuIvjkVH5UTgGmzA0dbLZhysO6UIDFWVine4
+ P+gZp91CCCRW4HFl1N2wZtzFSpr5uc4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1705676753;
+ s=susede2_ed25519; t=1705678389;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U0zS0JTXL08BCVqJTU66VISLfMpVBtUUFeroXEN7A5o=;
- b=I3RASp7LoJ83rcoOzP+k/cHPwcSx/2wPvW9M9b/BobZj5TYUk1Z3PT59u4YLJSf2FehClb
- 3xwttyqkasdS0pAg==
+ bh=Rs5b5cOV0qckeX/XZspqjvMa8hgW8nx6KjcntJmivmA=;
+ b=YgMV+F7Xz+LcmRiesCcqnJMp/UzGWQRaa7vobgRS5Exxy3Mo41PHOhWAzwcDC0rkBIhxYK
+ OLBy7vQVDFIx4XDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8017F136F5;
- Fri, 19 Jan 2024 15:05:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D318B1388C;
+ Fri, 19 Jan 2024 15:33:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ylcXHtGPqmWNPgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 19 Jan 2024 15:05:53 +0000
-Date: Fri, 19 Jan 2024 16:06:03 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7T6CMzWWqmUmRwAAD6G6ig
+ (envelope-from <jack@suse.cz>); Fri, 19 Jan 2024 15:33:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 6FDAEA0803; Fri, 19 Jan 2024 16:33:05 +0100 (CET)
+Date: Fri, 19 Jan 2024 16:33:05 +0100
+From: Jan Kara <jack@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZaqP2_ZeyRM1YY0w@yuki>
-References: <20240119144322.41928-1-pvorel@suse.cz>
+Message-ID: <20240119153305.bzqn3ehrzgrgs3ud@quack3>
+References: <20240118191353.2815915-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240119144322.41928-1-pvorel@suse.cz>
-Authentication-Results: smtp-out1.suse.de;
+In-Reply-To: <20240118191353.2815915-1-pvorel@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-2.02 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-6.21 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ REPLY(-4.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[opensuse.org:email,suse.cz:email,suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.42)[97.34%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-1.41)[90.96%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] swapon01: Test on all filesystems
+Subject: Re: [LTP] [RFC PATCH 1/1] readahead01: Pass also on memfd secret
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,89 +111,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Dominique Leuenberger <dimstar@opensuse.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  testcases/kernel/syscalls/swapon/swapon01.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
+On Thu 18-01-24 20:13:53, Petr Vorel wrote:
+> It fixes failure on 6.6 kernels:
 > 
-> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-> index e59fb20a1..ef4ebfdcf 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon01.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
-> @@ -8,6 +8,7 @@
->   * [Description]
->   *
->   * Checks that swapon() succeds with swapfile.
-> + * Testing on all filesystems which support swap file.
->   */
->  
->  #include <unistd.h>
-> @@ -17,13 +18,14 @@
->  #include "lapi/syscalls.h"
->  #include "libswap.h"
->  
-> -#define SWAP_FILE "swapfile01"
-> +#define MNTPOINT	"mntpoint"
-> +#define SWAP_FILE	MNTPOINT"/swapfile01"
->  
->  static void verify_swapon(void)
->  {
->  	TST_EXP_PASS(tst_syscall(__NR_swapon, SWAP_FILE, 0));
->  
-> -	if (TST_PASS && tst_syscall(__NR_swapoff, SWAP_FILE) != 0) {
-> +	if (tst_syscall(__NR_swapoff, SWAP_FILE) != 0) {
+> TFAIL: readahead() on memfd secret succeeded
+> 
+> Fixes: ecf81d729 ("syscalls: readahead01: Make use of tst_fd")
+> Reported-by: Dominique Leuenberger <dimstar@opensuse.org>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-I do not think that this should be removed, if the swapon() call fails
-we still do not want TBROK here.
+Yes, memfd secret is standard tmpfs file in principle so readahead(2)
+succeeds. Feel free to add:
 
->  		tst_brk(TBROK | TERRNO,
->  				"Failed to turn off swapfile, system reboot recommended");
->  	}
-> @@ -31,13 +33,20 @@ static void verify_swapon(void)
->  
->  static void setup(void)
->  {
-> -	is_swap_supported(SWAP_FILE);
->  	make_swapfile(SWAP_FILE, 0);
->  }
->  
->  static struct tst_test test = {
-> -	.needs_root = 1,
-> -	.needs_tmpdir = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.mount_device = 1,
-> +	.needs_root = 1, /* for swapon() */
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Can we please avoid comments like this?
+								Honza
 
-I'ts pretty clear that if you are working with devices and setting up
-swapfiles it's priviledged operation...
-
-> +	.all_filesystems = 1,
->  	.test_all = verify_swapon,
-> -	.setup = setup
-> +	.setup = setup,
-> +	.skip_filesystems = (const char *[]) {
-> +		"bcachefs",
-> +		"btrfs",
-> +		"tmpfs",
-
-So the rest of the filesystems work fine? If so this change looks fine
-to me.
-
-> +		NULL
-> +	},
->  };
-
-
+> ---
+> Hi,
+> 
+> I wonder if this is a bug or just changed functionality.
+> 
+> I also tested on 5.14 SLES and 5.10 Debian and both TCONF due ENOSYS:
+> 
+> tst_fd.c:260: TCONF: Skipping memfd secret: ENOSYS (38)
+> 
+> Kind regards,
+> Petr
+> 
+>  testcases/kernel/syscalls/readahead/readahead01.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+> index e86a73e3e..a1f313605 100644
+> --- a/testcases/kernel/syscalls/readahead/readahead01.c
+> +++ b/testcases/kernel/syscalls/readahead/readahead01.c
+> @@ -51,6 +51,7 @@ static void test_invalid_fd(struct tst_fd *fd)
+>  	/* These succeed */
+>  	case TST_FD_FILE:
+>  	case TST_FD_MEMFD:
+> +	case TST_FD_MEMFD_SECRET:
+>  	case TST_FD_PROC_MAPS:
+>  		return;
+>  	default:
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
