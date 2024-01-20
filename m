@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C182C47258
-	for <ltp@archiver.kernel.org>; Sat, 20 Jan 2024 06:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3E1BC47258
+	for <ltp@archiver.kernel.org>; Sat, 20 Jan 2024 08:27:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A4513CD657
-	for <ltp@archiver.kernel.org>; Sat, 20 Jan 2024 07:53:12 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 275033CC832
+	for <ltp@archiver.kernel.org>; Sat, 20 Jan 2024 09:27:52 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E30E23CB660
- for <ltp@lists.linux.it>; Sat, 20 Jan 2024 07:52:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id EFB463CB6E6
+ for <ltp@lists.linux.it>; Sat, 20 Jan 2024 09:27:36 +0100 (CET)
 Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 536A8601088
- for <ltp@lists.linux.it>; Sat, 20 Jan 2024 07:52:55 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3635460122D
+ for <ltp@lists.linux.it>; Sat, 20 Jan 2024 09:27:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1705733574;
+ s=mimecast20190719; t=1705739254;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=k2tt3fWztt1HStqKxRQXun41tkqAd7o0l1HT2wdm6U4=;
- b=FP4R9KZ5bodmnTP1IVbYNJYCLLvJevANysXk0TfYP5Sq9c1o5hkD+GkKbmgsvTmmqYzsIt
- 5PyW2MUs6QNlDmXylEKbf/0Ej1JQ3wYNnXEmmOA4HBhGrV2XC9BtWRqkVmkW709/ZQx7gD
- XSJswZWRMc6piHscGKQvQYk32FsCgHM=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=og3iR5/1mhFBz6LdjChwS2pYKavEOjTOSgW7Zbs+P1g=;
+ b=PgNTs5O0po6B2MszqeIGsAzJ+nXgDFoJAtcM/rIvBj5fz35PBWZFW+OLg33wdn0eC/hBXT
+ H2TutrmIHnWJ0kqEk+M4jTXn9apTOjtY9hfTYvMqT7iQCr9ygON/k1I8SAmmiFWakQtjgT
+ xu2IkeAvdd8dUCQ/iu+zfpdz9mzlpcE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586--hgll09LP4GsqHI9emaZZw-1; Sat, 20 Jan 2024 01:52:52 -0500
-X-MC-Unique: -hgll09LP4GsqHI9emaZZw-1
-Received: by mail-oi1-f198.google.com with SMTP id
- 5614622812f47-3bd4ba35a60so2692826b6e.3
- for <ltp@lists.linux.it>; Fri, 19 Jan 2024 22:52:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1705733570; x=1706338370;
- h=to:subject:message-id:date:from:in-reply-to:references:mime-version
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=k2tt3fWztt1HStqKxRQXun41tkqAd7o0l1HT2wdm6U4=;
- b=uAIHXXA452dy5VpzDJUMdsmSyxFUT+JuOwPxyAccWDIqZ7urG7xAspgW1HTn0qnbjc
- yGeZ2+q5cLJQSeZhjBQRBXxJ8sdO1hj4xbAtrxe8ZHhzKdwgfXVuTLEHVuOWCv8IYEDj
- mGCpzx8+LDLGmPmPUk9QWhpG4zeCRvtr6JGGBTmt2YOYA/IMp1PeEyY6nIqccyRHhcBF
- IFxCwT1EqzikDMZVi22edJbVpMZDzusgwiu2GqqXdgNUhETVdc+UvkjDc9sXg5St2Q7c
- fWkw7zs3eThRXK6AGDz4GoI4iH1E+NOg0pH7SA1ePbE2HgwWOJaTE9gg7NUL4iwKWTpE
- HI7Q==
-X-Gm-Message-State: AOJu0YwNJeZSE/o7ZqrN3TnPmTTSRW9Db7pQinpe8C0Fkqz8wjpZbmuO
- naMhFWxpz47j4+REHdDsXam00t4lFsWLgMjWXK7OU/aFK+1ipjQ/uTp6QvVrBxDmfff+0zZLuj2
- K5WXdC6Tq6fyrk+EF0WPqPNsZAz1VUS7ySC1lIm8c7tOgKP6u6CTsi1R+kAK8LfGPhcHMEiaz+Y
- Nt/1EWePkANH6glxr6V3I/HqM/iH/zgZ3rpvHg
-X-Received: by 2002:a05:6808:18d:b0:3bd:9d8d:8f75 with SMTP id
- w13-20020a056808018d00b003bd9d8d8f75mr1177044oic.69.1705733570460; 
- Fri, 19 Jan 2024 22:52:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEq4pcHQ0dPekknbmuTZfS/LOX5fsgTvpCGeCL4UdBpTBv0jAXvbCCbXWbmAGtD83p0jpHmDAgeslk6XYm4w1Y=
-X-Received: by 2002:a05:6808:18d:b0:3bd:9d8d:8f75 with SMTP id
- w13-20020a056808018d00b003bd9d8d8f75mr1177033oic.69.1705733570099; Fri, 19
- Jan 2024 22:52:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20240120043412.2544860-2-liwang@redhat.com>
- <20240120064033.2547728-1-liwang@redhat.com>
-In-Reply-To: <20240120064033.2547728-1-liwang@redhat.com>
+ us-mta-134-I6mCR5OXMgCy4e0xi0OVWQ-1; Sat, 20 Jan 2024 03:27:30 -0500
+X-MC-Unique: I6mCR5OXMgCy4e0xi0OVWQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1035B85A588
+ for <ltp@lists.linux.it>; Sat, 20 Jan 2024 08:27:30 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 23ECA40C6EBA
+ for <ltp@lists.linux.it>; Sat, 20 Jan 2024 08:27:28 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Sat, 20 Jan 2024 14:52:38 +0800
-Message-ID: <CAEemH2cZXX2K3r3TFn5DKu7xJhWShtLZDvf+bmeAPzXTjpavtA@mail.gmail.com>
 To: ltp@lists.linux.it
+Date: Sat, 20 Jan 2024 16:27:25 +0800
+Message-Id: <20240120082725.2550695-1-liwang@redhat.com>
+In-Reply-To: <20240120043412.2544860-2-liwang@redhat.com>
+References: <20240120043412.2544860-2-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] swapon01: Improving test with memory limits and
- swap reporting
+Subject: [LTP] [PATCH] libswap: add Btrfs noCOW attribute setting for swap
+ files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,58 +77,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gU2F0LCBKYW4gMjAsIDIwMjQgYXQgMjo0MOKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPiB3cm90ZToKCj4gVGhpcyBpcyB0YXJnZXQgdG8gY3JlYXRlIGEgbW9yZSByb2J1c3QgYW5k
-IGNvbnRyb2xsZWQgZW52aXJvbm1lbnQgdG8gdGVzdAo+IHRoZSBzd2Fwb24gc3lzdGVtIGNhbGwu
-IEJ5IGludHJvZHVjaW5nIG1lbW9yeSBsaW1pdHMgdGhyb3VnaCBjZ3JvdXBzIGFuZAo+IGZpbGxp
-bmcgbWVtb3J5IHdpdGggYSBrbm93biBwYXR0ZXJuLCB0aGUgdGVzdCBjYW4gYmV0dGVyIGFzc2Vz
-cyBzd2Fwb24KPiBiZWhhdmlvciB3aGVuIHRoZSBzeXN0ZW0gZXhwZXJpZW5jZXMgbWVtb3J5IHBy
-ZXNzdXJlLgo+Cj4gQWRkaXRpb25hbGx5LCB0aGUgcmVwb3J0aW5nIG9mICJTd2FwQ2FjaGVkIiBt
-ZW1vcnkgYmVmb3JlIHR1cm5pbmcgb2ZmIHRoZQo+IHN3YXAgZmlsZSBwcm92aWRlcyBhIGNsZWFy
-ZXIgdW5kZXJzdGFuZGluZyBvZiB0aGUgc3dhcCBzeXN0ZW0ncyBzdGF0ZSBpbgo+IHJlc3BvbnNl
-IHRvIHRoZSB0ZXN0IGNvbmRpdGlvbnMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBMaSBXYW5nIDxsaXdh
-bmdAcmVkaGF0LmNvbT4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24v
-c3dhcG9uMDEuYyB8IDkgKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMo
-KykKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fw
-b24wMS5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMS5jCj4g
-aW5kZXggZTFmZTUwNDU5Li5mYWY0YTgwMDIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDEuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvc3dhcG9uL3N3YXBvbjAxLmMKPiBAQCAtMjAsNiArMjAsNyBAQAo+Cj4gICNkZWZpbmUg
-TU5UUE9JTlQgICAgICAgIm1udHBvaW50Igo+ICAjZGVmaW5lIFNXQVBfRklMRSAgICAgIE1OVFBP
-SU5UIi9zd2FwZmlsZTAxIgo+ICsjZGVmaW5lIFRFU1RNRU0gICAgICAgICAgICAgICAgKDFVTDw8
-MzApCj4KPiAgc3RhdGljIHZvaWQgdmVyaWZ5X3N3YXBvbih2b2lkKQo+ICB7Cj4gQEAgLTI5LDEy
-ICszMCwxOSBAQCBzdGF0aWMgdm9pZCB2ZXJpZnlfc3dhcG9uKHZvaWQpCj4gICAgICAgICAgICAg
-ICAgIHRzdF9icmsoVEJST0sgfCBURVJSTk8sCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAiRmFpbGVkIHRvIHR1cm4gb2ZmIHN3YXBmaWxlLCBzeXN0ZW0KPiByZWJvb3QgcmVjb21t
-ZW5kZWQiKTsKPiAgICAgICAgIH0KPiArCj4gKyAgICAgICB0c3RfcmVzKFRJTkZPLCAiU3dhcENh
-Y2hlZDogJWxkIEtiIiwKPiBTQUZFX1JFQURfTUVNSU5GTygiU3dhcENhY2hlZDoiKSk7Cj4gIH0K
-Pgo+ICBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ICB7Cj4gICAgICAgICBpc19zd2FwX3N1cHBv
-cnRlZChTV0FQX0ZJTEUpOwo+ICAgICAgICAgbWFrZV9zd2FwZmlsZShTV0FQX0ZJTEUsIDApOwo+
-ICsKPiArICAgICAgIFNBRkVfQ0dfUFJJTlRGKHRzdF9jZywgImNncm91cC5wcm9jcyIsICIlZCIs
-IGdldHBpZCgpKTsKPiArICAgICAgIFNBRkVfQ0dfUFJJTlRGKHRzdF9jZywgIm1lbW9yeS5tYXgi
-LCAiJWx1IiwgVEVTVE1FTSk7Cj4gKwo+ICsgICAgICAgdHN0X3BvbGx1dGVfbWVtb3J5KFRFU1RN
-RU0sIDB4NDEpOwo+CgpPb3BzLCB0aGlzIHBvbGx1dGUgbWVtb3J5IHNob3VsZCBtb3ZlIHRvIHRo
-ZSBiZWhpbmQgb2Ygc3dhcG9uLApJIGZvcmdldCB0byBzdWJtaXQgdGhlIGxhc3QgY2hhbmdlcyB3
-aGVuIGZvcm1hdHRpbmcgdGhlIHBhdGNoLgoKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9zd2Fwb24vc3dhcG9uMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBv
-bi9zd2Fwb24wMS5jCkBAIC0yNiwxMiArMjYsMTMgQEAgc3RhdGljIHZvaWQgdmVyaWZ5X3N3YXBv
-bih2b2lkKQogewogICAgICAgIFRTVF9FWFBfUEFTUyh0c3Rfc3lzY2FsbChfX05SX3N3YXBvbiwg
-U1dBUF9GSUxFLCAwKSk7CgorICAgICAgIHRzdF9wb2xsdXRlX21lbW9yeShURVNUTUVNLCAweDQx
-KTsKKyAgICAgICB0c3RfcmVzKFRJTkZPLCAiU3dhcENhY2hlZDogJWxkIEtiIiwKU0FGRV9SRUFE
-X01FTUlORk8oIlN3YXBDYWNoZWQ6IikpOworCiAgICAgICAgaWYgKFRTVF9QQVNTICYmIHRzdF9z
-eXNjYWxsKF9fTlJfc3dhcG9mZiwgU1dBUF9GSUxFKSAhPSAwKSB7CiAgICAgICAgICAgICAgICB0
-c3RfYnJrKFRCUk9LIHwgVEVSUk5PLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJG
-YWlsZWQgdG8gdHVybiBvZmYgc3dhcGZpbGUsIHN5c3RlbSByZWJvb3QKcmVjb21tZW5kZWQiKTsK
-ICAgICAgICB9Ci0KLSAgICAgICB0c3RfcmVzKFRJTkZPLCAiU3dhcENhY2hlZDogJWxkIEtiIiwK
-U0FGRV9SRUFEX01FTUlORk8oIlN3YXBDYWNoZWQ6IikpOwogfQoKIHN0YXRpYyB2b2lkIHNldHVw
-KHZvaWQpCkBAIC00MSw4ICs0Miw2IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCgogICAgICAg
-IFNBRkVfQ0dfUFJJTlRGKHRzdF9jZywgImNncm91cC5wcm9jcyIsICIlZCIsIGdldHBpZCgpKTsK
-ICAgICAgICBTQUZFX0NHX1BSSU5URih0c3RfY2csICJtZW1vcnkubWF4IiwgIiVsdSIsIFRFU1RN
-RU0pOwotCi0gICAgICAgdHN0X3BvbGx1dGVfbWVtb3J5KFRFU1RNRU0sIDB4NDEpOwogfQoKIHN0
-YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0g
-Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+The patch aims to ensure swap files on Btrfs filesystems are created
+with the appropriate FS_NOCOW_FL attribute, which is necessary to
+disable CoW (Copy-on-Write) for swap files, perthe btrfs(5) manual page.
+This change is gated behind a kernel version check to ensure compatibility
+with the system's capabilities.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+
+Notes:
+    Hi Petr,
+    
+      I haven't gotten a chance to test this patch on any Btrfs platform,
+      but only compile successfully without error on my RHEL8/9(xfs).
+      Can you help test and guarantee it works for you?
+
+ libs/libltpswap/libswap.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+index 5f9622aca..8b180f288 100644
+--- a/libs/libltpswap/libswap.c
++++ b/libs/libltpswap/libswap.c
+@@ -4,6 +4,7 @@
+  * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+  */
+ 
++#include <linux/fs.h>
+ #include <errno.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+@@ -23,11 +24,37 @@ static const char *const swap_supported_fs[] = {
+ 	NULL
+ };
+ 
++static void set_nocow_attr(const char *filename)
++{
++	int fd;
++	int attrs;
++
++	fd = SAFE_OPEN(filename, O_RDONLY);
++
++	if (ioctl(fd, FS_IOC_GETFLAGS, &attrs) == -1) {
++		tst_res(TFAIL | TERRNO, "Error getting attributes");
++		close(fd);
++		return;
++	}
++
++	attrs |= FS_NOCOW_FL;
++
++	if (ioctl(fd, FS_IOC_SETFLAGS, &attrs) == -1)
++		tst_res(TFAIL | TERRNO, "Error setting FS_NOCOW_FL attribute");
++	else
++		tst_res(TINFO, "FS_NOCOW_FL attribute set on %s\n", filename);
++
++	close(fd);
++}
++
+ /*
+  * Make a swap file
+  */
+ int make_swapfile(const char *swapfile, int safe)
+ {
++	long fs_type = tst_fs_type(swapfile);
++	const char *fstype = tst_fs_type_name(fs_type);
++
+ 	if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES))
+ 		tst_brk(TBROK, "Insufficient disk space to create swap file");
+ 
+@@ -35,6 +62,14 @@ int make_swapfile(const char *swapfile, int safe)
+ 	if (tst_fill_file(swapfile, 0, sysconf(_SC_PAGESIZE), 10) != 0)
+ 		tst_brk(TBROK, "Failed to create swapfile");
+ 
++	/* Btrfs file need set 'nocow' attribute */
++	if (strcmp(fstype, "btrfs") == 0) {
++		if (tst_kvercmp(5, 0, 0) > 0)
++			set_nocow_attr(swapfile);
++		else
++			tst_brk(TCONF, "Swapfile on %s not implemented", fstype);
++	}
++
+ 	/* make the file swapfile */
+ 	const char *argv[2 + 1];
+ 	argv[0] = "mkswap";
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
