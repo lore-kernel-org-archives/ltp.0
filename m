@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB9FC47DAF
-	for <ltp@archiver.kernel.org>; Sun, 21 Jan 2024 16:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0862C47422
+	for <ltp@archiver.kernel.org>; Sun, 21 Jan 2024 17:24:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 05E7F3CE261
-	for <ltp@archiver.kernel.org>; Sun, 21 Jan 2024 17:12:41 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id AB5D03CE24C
+	for <ltp@archiver.kernel.org>; Sun, 21 Jan 2024 18:24:57 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86CE73CE248
- for <ltp@lists.linux.it>; Sun, 21 Jan 2024 17:12:09 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 477F13CB2A9
+ for <ltp@lists.linux.it>; Sun, 21 Jan 2024 18:24:37 +0100 (CET)
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com
+ [IPv6:2607:f8b0:4864:20::b34])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 76FB51400E6B
- for <ltp@lists.linux.it>; Sun, 21 Jan 2024 17:12:06 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="126167407"
-X-IronPort-AV: E=Sophos;i="6.05,210,1701097200"; d="scan'208";a="126167407"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Jan 2024 01:12:04 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
- [192.168.87.61])
- by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 0B8B6D64AA
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 01:12:02 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 0011EC13AF
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 01:12:00 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 755F120079116
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 01:12:00 +0900 (JST)
-Received: from irides.g08.fujitsu.local (unknown [10.167.226.114])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 0223C1A015E
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 00:11:59 +0800 (CST)
-From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Mon, 22 Jan 2024 00:11:58 +0800
-Message-Id: <20240121161159.4106646-1-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.34.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 60C18100126B
+ for <ltp@lists.linux.it>; Sun, 21 Jan 2024 18:24:36 +0100 (CET)
+Received: by mail-yb1-xb34.google.com with SMTP id
+ 3f1490d57ef6-dc22ae44595so1973156276.1
+ for <ltp@lists.linux.it>; Sun, 21 Jan 2024 09:24:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1705857875; x=1706462675;
+ darn=lists.linux.it; 
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=snMWskyqUdl0O7NRtTKjUI7iqtPJz7QtelGMlXizfKM=;
+ b=27b0FbEm40uUkEKAMmM5gun4odGtg8+kdhSvJQqhIG8ieHOC8qxcb/1KkeIqPsktJa
+ SwaF+5PUNldH+rxxuUgTZIpl5bPtjfWnUayP0VkpDfcQEkAoxCOcb7sTM2JDtWMUn2sg
+ VH3uMO7P01/4dgiy//03I4yBz+6jxP8zldyZGBiYEmNT0QSd1W9jlNTzpNETyW9iDr1H
+ O0tZ6m721GBi9o4IfLhlpmZYsEd32ZA8fjwHCdTRv8hHIWovEgt6QdX3naJgaji/P5PC
+ G36bruQRCN82+Z897NL26B0jxQAgj63TXRd5Z9UbeNJ6OGA3WrIzMRPRDkyBeeSvXNko
+ 9qsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1705857875; x=1706462675;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=snMWskyqUdl0O7NRtTKjUI7iqtPJz7QtelGMlXizfKM=;
+ b=FUf3I1uZcLfdHDSxRICyKQMQSsRHnbfUJeuzAWn54BuLxSgbJPgz620JRjqH+vXG/a
+ A6V5VrRmZdt/bHyGCbBYddxmuxHYHf95+VVKLjVqMxlHqIS2CgYmuV7ysBlE+qbR9hmw
+ hLIBdPUCcbsFZDla+UMHjm9wEyckaiGC4TdWx+LUiqjkYf1CJrqmxcXjDcA7f+2P2BsX
+ wY/OknyWkwZQaKlb5QcQTTUD4/XATdU/JwcSwL5kh+yAnFLSHML/v6ZAcovHXG7CB0mL
+ wHuNgQmy8xQF+V49C/oqLaIq3USvdHzWRApFB26Ag6gOfDvJ5dNw0zKS0FsdRc9sfO6+
+ cY/w==
+X-Gm-Message-State: AOJu0Yz4ZfLroBS6deUVfrCgS8m3RFNsIpMSrwEfjvTCUg61PCRd3lpy
+ 3xcVMWZ25suWuCG0YHo18hjmd8I4bteysOh4UM+rWa//3eYM4itxIwlEXpQZpAze35HYZvbak9u
+ 4zID+aVeF82KJdOEqb/Lq7+BH5SyWNqjlLaqZ
+X-Google-Smtp-Source: AGHT+IGrK1KlJx8OJe/SsExcwnyiY0RZvxQ8XmHADUiWcEAjxBPYAf3y6wxGAsHruHPo3OlWiS8UNeyvqMDGySeP5w4=
+X-Received: by 2002:a05:6902:543:b0:dc2:1ffe:92b3 with SMTP id
+ z3-20020a056902054300b00dc21ffe92b3mr1186359ybs.81.1705857874878; Sun, 21 Jan
+ 2024 09:24:34 -0800 (PST)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28134.001
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28134.001
-X-TMASE-Result: 10--4.739900-10.000000
-X-TMASE-MatchedRID: toN6SH028bWOPHcS3uzQKazGfgakLdjaCZa9cSpBObnAuQ0xDMaXkH4q
- tYI9sRE/L2EYbInFI5ubvdUVlY5ZkKxTA8iT+xtuKiJEqUFWRgidj7YWJLs3nf4DDXoaCqk7QSD
- EyvYoV0Di8zVgXoAltuJ5hXsnxp7jC24oEZ6SpSkgbhiVsIMQK2u5XqFPzjITvUAKOtKcH0UoW7
- 0o99+H1Ya5Nqub4GCl2vAXzUE+m9OongbSbyU9v8XfBFd/4tez5DgnY5a8+4OTlSVbXvaZpNONF
- uNksbJZ1wqZyFg4yCCY5Bsvgd8C/vVKhDXp0zcGiwLnYKDZPn8uQHnY0nrehA==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <20240116031728.2500892-1-liwang@redhat.com>
+ <CAM0EoMns7T+JkJquM21_9S0FUoPdPQxw1Ebg4jBPLer5cOF+uQ@mail.gmail.com>
+ <CAEemH2cZ9KLCb=yaVvLzC6uo0m8+vmw7ic4KNTFe7K5TauV3dA@mail.gmail.com>
+In-Reply-To: <CAEemH2cZ9KLCb=yaVvLzC6uo0m8+vmw7ic4KNTFe7K5TauV3dA@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Sun, 21 Jan 2024 12:24:23 -0500
+Message-ID: <CAM0EoMmy6t_D+xjyQt+Co2tH3kN5tvT9kqPqFeQH=w+DjZcV9g@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] getxattr04,05: Add [Description] tag
+Subject: Re: [LTP] [PATCH] tcindex01: fix compilation errors due to missing
+ TCA_TCINDEX_ constants
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,52 +81,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Jakub Kicinski <kuba@kernel.org>, Victor Nogueira <victor@mojatatu.com>,
+ Pedro Tammela <pctammela@mojatatu.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/getxattr/getxattr04.c | 4 +++-
- testcases/kernel/syscalls/getxattr/getxattr05.c | 6 ++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr04.c b/testcases/kernel/syscalls/getxattr/getxattr04.c
-index e64f2a1f1..b1106ee20 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr04.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr04.c
-@@ -4,7 +4,9 @@
-  * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-  */
- 
--/*
-+/*\
-+ * [Description]
-+ *
-  * This is a regression test for the race between getting an existing
-  * xattr and setting/removing a large xattr.  This bug leads to that
-  * getxattr() fails to get an existing xattr and returns ENOATTR in xfs
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
-index 8d1752fd0..b144a87de 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr05.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
-@@ -4,8 +4,10 @@
-  * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-  */
- 
--/*
-- * Description:
-+/*\
-+ * [Description]
-+ *
-+ * This test verifies that:
-  * 1) Witout a user namespace, getxattr(2) should get same data when
-  *    acquiring the value of system.posix_acl_access twice.
-  * 2) With/Without mapped root UID in a user namespaces, getxattr(2) should
--- 
-2.34.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTGkgV2FuZywKCk9uIFdlZCwgSmFuIDE3LCAyMDI0IGF0IDc6NDnigK9QTSBMaSBXYW5nIDxs
+aXdhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cj4KPiBIaSBKYW1hbCwKPgo+IEphbWFsIEhhZGkgU2Fs
+aW0gPGpoc0Btb2phdGF0dS5jb20+IHdyb3RlOgo+Cj4+IFBhcmRvbiBteSBpZ25vcmFuY2UgLSB3
+aGF0IGlzIHRoaXMgdHJlZT8gSSBkb250IHJlY2FsbCBzZWVpbmcgdGhpcwo+PiBhbnl3aGVyZS4g
+SWYgeW91IHB1bGwgdWFwaSBoZWFkZXJzIGZyb20gdGhlIGtlcm5lbCBvbiB5b3VyIHRyZWUgeW91
+Cj4+IGNhbiBjYXRjaCB0aGVzZSBkZWxldGlvbnMgc29vbmVyLi4KPgo+Cj4gVGhpcyBpcyBhbiBM
+VFAgKExpbnV4IFRlc3QgUHJvamVjdCkgdGhhdCB0YXJnZXRzIHRlc3RpbmcgdGhlIExpbnV4IGtl
+cm5lbC4KPgo+IFRoZSBjb21taXQgODJiMjU0NWVkOWEgeW91IG1hZGUgaW4ga2VybmVsIHJlY2Vu
+dGx5IGNhdXNlZCB0aGUgTFRQCj4gY29tcGlsZSBicmVhayBvbiB0aGUgbGF0ZXN0IG1haW5saW5l
+IGtlcm5lbC4gU28gdGhhdCdzIHdoeSBJIENDZWQgeW91Cj4gaW4gdGhpcyBwYXRjaC4KPgo+IEJU
+VywgSXQgd291bGQgYmUgaGVscGZ1bCB0byBydW4gc29tZSBMVFAgdGVzdCBjYXNlcyBhZ2FpbnN0
+IG91ciBrZXJuZWwtcGF0Y2gKPiBiZWZvcmUgc2VudCB0byBMS01MIG5leHQgdGltZS4KPgoKVGFr
+ZSBhIGxvb2sgYXQgTklQQS4gSXQgYWxsb3dzIGRpc3RyaWJ1dGVkIHRlc3RpbmcgLSBtZWFuaW5n
+IHlvdSBjYW4KcnVuIExUUCB0ZXN0cyBvbiB5b3VyIG1hY2hpbmUocykgYW5kIHRoZW4gc2hhcmUg
+dGhlIHJlc3VsdHMuIFRoZXJlJ3MgYQpkb2MgaGVyZToKaHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20v
+ZG9jdW1lbnQvZC8xVFBsT092djBHYW9wQzNmelctd2lxOFRZcGw3cmg4VmxfbW1hbDB1RmVKYy9l
+ZGl0Ckl0IGN1cnJlbnRseSBpdCB3b3JrcyBvbiBrZXJuZWwgYnJhbmNoIHNuYXBzaG90cyAtIHdo
+aWNoIGF0IG1pbmltYWwKd291bGQgaGF2ZSBjYXVnaHQgdGhlIGlzc3VlIHlvdSBmaXhlZCBvbiBM
+VFAgd2l0aCB0Y2luZGV4LgoKY2hlZXJzLApqYW1hbAoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
+dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
