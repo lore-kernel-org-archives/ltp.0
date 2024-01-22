@@ -4,82 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22206C47DAF
-	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 07:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 806BAC4725D
+	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 07:48:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 908F23CE22A
-	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 08:39:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 13B1C3CE241
+	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 08:48:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 97D553C98F9
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 08:39:22 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id CD2E43CE227
+ for <ltp@lists.linux.it>; Mon, 22 Jan 2024 08:47:50 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A00BA64285F
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 08:39:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1705909160;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 35D301000232
+ for <ltp@lists.linux.it>; Mon, 22 Jan 2024 08:47:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E56B321E42;
+ Mon, 22 Jan 2024 07:47:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705909669;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=y5vY5oeuTQKvmiD1JPE9TkFaJl4kwDHbNPAdkhR0Fts=;
- b=feUrkp+SizrqNz8yAPJaTbZcldrwA0Wuf2JnCOUnGgknHyts5pgQrrh/GptSA7nScQT1rX
- tN52Do6cECYMA2He1QLRgf+jA1CtSvmTsPXBMV53h+L1YN2XvN2rOfFsWB1OTM2mXg3ooQ
- WvIq387Xc9Aqe5g/2qTpHhRZQEGB7Oc=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-533-gA78w7t3MG-MZKu-HWo98g-1; Mon, 22 Jan 2024 02:39:17 -0500
-X-MC-Unique: gA78w7t3MG-MZKu-HWo98g-1
-Received: by mail-pf1-f200.google.com with SMTP id
- d2e1a72fcca58-6dbd35c052eso1968206b3a.0
- for <ltp@lists.linux.it>; Sun, 21 Jan 2024 23:39:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1705909156; x=1706513956;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=y5vY5oeuTQKvmiD1JPE9TkFaJl4kwDHbNPAdkhR0Fts=;
- b=P24sV0QznqfakEPU0j47EzLL7DYYaXYt4FZCFUwsnEVNJA4cJYmU+pgsTyGIgABPIg
- y7SSk2R78A6qIPtbpjIBpyNhu6uGLNDPbouMyzt3rSPy8vBbQQ0UWLGlH/e08WhM8SXz
- vk2PcfvqmLHpSSSBt8LbEd7rYLvXarnY7k/Bb0cuyfhzUQK0sPvtlVsJpNvfnCnJUbTn
- pjpYl5cmlv22cYXt4nvItBCatAcPlZNoLOBK+AAwei457No2gXHngKydv1FMIroARCLU
- sdnNd8QyA8EmyD+NlWWRTo8hRJH3AA9iD7VWE40InmKK8ZR3jl0fjNH6wpsWA0u2tCe+
- squA==
-X-Gm-Message-State: AOJu0Yyp1RDH3ibnZ6I1tP25Poz/iSZjBISyA9Bxmmkpn/vE+ODHxazH
- niuKjeOb/JxIsFfhsAY6g4SyggPW8DrYCxM3cALxsvTjbPM8Rz9z6MANIUrod1HuVgJ5AVxb4yn
- ooD83hWzAOZkqyGtj0rezHAGEBw0YHsZDUgJcdUl7GqJCI/6PKn8ojiSDcC3D4T7FhdoOJKQ0QB
- K5Pz+IxhIDisetzezXoT4hRR+jQ2t2OYVeiI9U
-X-Received: by 2002:a05:6a20:158c:b0:19a:3da0:103f with SMTP id
- h12-20020a056a20158c00b0019a3da0103fmr5208501pzj.7.1705909156132; 
- Sun, 21 Jan 2024 23:39:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFwOs9U1jshK8iDJLkywZnJawTbOyTzOnoL3XU0ASqzHLdJ+M/ZSRs7xyBWUilZ/KY14CY5yGaz0jR9EyyU4k=
-X-Received: by 2002:a05:6a20:158c:b0:19a:3da0:103f with SMTP id
- h12-20020a056a20158c00b0019a3da0103fmr5208496pzj.7.1705909155847; Sun, 21 Jan
- 2024 23:39:15 -0800 (PST)
+ bh=yh4gU7uIIdVrWq23vLAaakpZuzxWV0a9v9XhZ/atg3E=;
+ b=m/b1+GOCSGy46/iCaEv9Rn9sWFBefTNS8HDQ2PPSOlHeb0ajfdWEyrXefIvfy25K0EBuhY
+ RnhfSSjgMj4nhgTDrHmM2qJNk1ORTBqy/jlOjmg3L0gMHfXnuxUw0EmEIy6C5pJPSuHqZ+
+ G6kh7SmAV4aaRlsvvGmBreL7U/rjV1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705909669;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yh4gU7uIIdVrWq23vLAaakpZuzxWV0a9v9XhZ/atg3E=;
+ b=6Edp/4Y8XWT7o2gf+cng1AWilfZf7+ACeAWI7CXD1ZKwLp1gJcMArhWvCM60IVqzkPlzQD
+ 6fwJ+auzPYSsBuBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1705909668;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yh4gU7uIIdVrWq23vLAaakpZuzxWV0a9v9XhZ/atg3E=;
+ b=JbXt4Psc90rv0ewTnPxLbw8VqQ0Bp8qJrBpqxiqHca5lcQpwiG7paaqKiHpGXZaUxHV7w4
+ dIiLa6LEPTklS3U00tCj0qyssQ3dqLUzPRvORNioYW4hiq+WhgnRqE/y24+/xxBnzdQd0k
+ nPIUxxHeMHOgDn9rZvrU6ealmOkGrCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1705909668;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yh4gU7uIIdVrWq23vLAaakpZuzxWV0a9v9XhZ/atg3E=;
+ b=tfnhgaS4h434KXKCkTqUi4YyZU0ywatYgAYwG+N9n8X66SqJ77Pzb3HN/A1JIBhSX6Olpd
+ bSWe4LA9blQCYpBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6379139A2;
+ Mon, 22 Jan 2024 07:47:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7Mx+GaQdrmW3UAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 22 Jan 2024 07:47:48 +0000
+Date: Mon, 22 Jan 2024 08:47:42 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, David Howells <dhowells@redhat.com>,
+ ltp@lists.linux.it
+Message-ID: <20240122074742.GA70626@pevik>
+References: <20240111100636.1897637-1-pvorel@suse.cz> <Zakb4b4EKURkixiC@yuki>
+ <20240118142325.GB2774347@pevik>
 MIME-Version: 1.0
-References: <20240119144322.41928-1-pvorel@suse.cz> <ZaqP2_ZeyRM1YY0w@yuki>
- <20240122062239.GA58756@pevik>
-In-Reply-To: <20240122062239.GA58756@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 22 Jan 2024 15:39:03 +0800
-Message-ID: <CAEemH2f2qAnG4ebk=D5Ys5XZdJZT0iY=bwQWZ-WVp4MHevgMOw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240118142325.GB2774347@pevik>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JbXt4Psc;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tfnhgaS4
+X-Spamd-Result: default: False [0.49 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: E56B321E42
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/1] swapon01: Test on all filesystems
+Subject: Re: [LTP] [PATCH 1/1] keyctl05: Improve the dns_res_payload for
+ boundary testing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,18 +122,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0cgoKT24gTW9uLCBKYW4gMjIsIDIwMjQgYXQgMjoyMuKAr1BNIFBldHIgVm9yZWwgPHB2
-b3JlbEBzdXNlLmN6PiB3cm90ZToKCgo+Cj4gPiBTbyB0aGUgcmVzdCBvZiB0aGUgZmlsZXN5c3Rl
-bXMgd29yayBmaW5lPyBJZiBzbyB0aGlzIGNoYW5nZSBsb29rcyBmaW5lCj4gPiB0byBtZS4KPgo+
-IFllcy4KPgo+IEdvaW5nIHRvIHNlbmQgdjIuCj4KCk5vIG5lZWQsIEkgZGFyZWQgdG8gbW9kaWZ5
-IGFuZCBjb21iaW5lIGl0IGluIHRoZSAyLzQuCiAgaHR0cHM6Ly9saXN0cy5saW51eC5pdC9waXBl
-cm1haWwvbHRwLzIwMjQtSmFudWFyeS8wMzY4MDYuaHRtbAoKU29ycnkgZm9yIG15IGFyYml0cmFy
-eSB3b3JrLCBJIGp1c3QgdG8gdGVzdCB0aGUgcGF0Y2hzZXQgb24gbXkgc2lkZSBlYXNpbHkuCgoK
-LS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Cyril, David,
+
+> > Hi!
+> > > NOTE: I would wait with this to at least v6.8-rc2. Ideally it should be
+> > > released, when the commit reaches any stable tree or when v6.8 is released.
+
+> > What is the status here? Shall we include this for the January stable
+> > release? Did the kernel patch got backported to stable kernels allready?
+
+> I guess the question was to David (and I prefer him to clarify).
+
+> I see patches backported to stable already, e.g. for 6.6.x stable:
+
+> $ git show afc360e8a1256acb7579a6f5b6f2c30b85b39301
+> commit afc360e8a1256acb7579a6f5b6f2c30b85b39301
+> Author: David Howells <dhowells@redhat.com>
+> Date:   Sat Dec 9 00:41:55 2023 +0000
+
+>     keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry
+
+>     [ Upstream commit 39299bdd2546688d92ed9db4948f6219ca1b9542 ]
+> ...
+
+I'm sorry I checked a different commit, we're talking about
+acc657692aed ("keys, dns: Fix size check of V1 server-list header")
+
+v6.8-rc1 is out, with this commit. I see it's already prepared in stable queue
+for 6.7 by Sasha [1] and somebody already asked to add it to 6.1 and 6.6, where
+it's needed (I verified test fails without it).
+
+I guess we can merge now to get it to the upcoming release.
+
+Kind regards,
+Petr
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-6.7/keys-dns-fix-size-check-of-v1-server-list-header.patch
+[2] https://lore.kernel.org/stable/CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com/
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
