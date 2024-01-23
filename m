@@ -4,65 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36151C47DD9
-	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 20:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1E51C46CD2
+	for <ltp@archiver.kernel.org>; Tue, 23 Jan 2024 01:29:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C15A3CFBB6
-	for <ltp@archiver.kernel.org>; Mon, 22 Jan 2024 21:23:46 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E1AAE3CE3AF
+	for <ltp@archiver.kernel.org>; Tue, 23 Jan 2024 02:29:31 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A75333C080E
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 21:23:31 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 60C193CC987
+ for <ltp@lists.linux.it>; Tue, 23 Jan 2024 02:29:12 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=intel.com (client-ip=192.198.163.10; helo=mgamail.intel.com;
+ envelope-from=pengfei.xu@intel.com; receiver=lists.linux.it)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 98DE52009C8
- for <ltp@lists.linux.it>; Mon, 22 Jan 2024 21:23:30 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4ACF422010;
- Mon, 22 Jan 2024 20:23:29 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F205D13995;
- Mon, 22 Jan 2024 20:23:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eiXUNsDOrmUvQAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 22 Jan 2024 20:23:28 +0000
-Date: Mon, 22 Jan 2024 21:23:25 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240122202325.GA119341@pevik>
-References: <20240122072948.2568801-1-liwang@redhat.com>
- <20240122091356.GF76754@pevik>
- <CAEemH2dA6sjKz4LGUwYT3wr-4WRZ5H_usSptEG30HxVDVbWSWA@mail.gmail.com>
- <20240122110344.GB95077@pevik>
- <CAEemH2cNn1kyWrnqXHHeOteGT_FQ=PBVc55NFhkZbmkbMOoD=A@mail.gmail.com>
-MIME-Version: 1.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AB5C960096B
+ for <ltp@lists.linux.it>; Tue, 23 Jan 2024 02:29:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1705973351; x=1737509351;
+ h=date:from:to:cc:subject:message-id:references:
+ in-reply-to:mime-version;
+ bh=wf53HYRGhBu15oZhI7gm2cqu6W8dmG5qijb/LshXF0o=;
+ b=HLr1aoIgyUhfCpDxOn8qZvnifsBFYhrXURI2N/1C+VUI+JBODOT16Rin
+ a0p6OuC4qd0NqhJuLQsV8BUdnNg6YvjzQZ7ZuzqzT7hHMs1Fwn6MUhPF4
+ 30BBIHCyQ0WG1qEgHKkoJsQOF1FeR+FB5jBRkXGDpaq8sT6LP/8QRP6iB
+ Qfm9Jw6afJaGq16EhgIg+Y7lXSHkgu/K6KM0ZnLAOAvOuNNmHaG01L1Ps
+ SG3weocKtFGjo5bhs5ual2/gq0DkLmwWU9hGqeUZy4raVw1V51mbMacMY
+ /AdI6ciEU713PxMzlv4oZr/Z/k0ZJCtm7d9eO8BsMUUqM8pK8LtnWXjb9 g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8777243"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="8777243"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jan 2024 17:29:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="958942803"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; d="scan'208";a="958942803"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+ by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 22 Jan 2024 17:29:06 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 17:29:05 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 17:29:05 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Jan 2024 17:29:05 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Jan 2024 17:29:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FSJ7r1IbuUUqhwZ0l7agdzBv7mYYgYFaHVAr6VPIvXyJLbug17Hzims4ROLlAbeOb7VT0dNWdp4lE8mBza4PgYrjV1NXB4WLZZ37F/JL0zvlnWRgscwiEUH3FM7YnukNWNmmJiqMSFvNECkJtoPofhGMZ0pEtii63Ufe6LucvGDpRoNLC+QV8m9eS5AVQ2QUlbqA9ojB1UQguT0dVv3Kj9b+G9HHLaf8em4HPsnEOrDtWUSZ7LV2bjqq2uFa+85yUmc/aOQ0GAZY3ny12Sy4xFLCHrvciMcPxGU4CFWVqiIifC13Ji2eKVxDe57Iu9S+n/f9iej1zff66CWY4RKbqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r7Re2sKmKpfIxZ+wCc8VeSuYM3NB4+OlMeue0dx7TJ4=;
+ b=Lo242r4+2rfMye4k9iX0p33SEShgywprRZbSg1lALWF68UofM2/WiYv3C48tWza6GR1069LY8cAwmcxSgjpHCW9n4PkMVXSX/rC0psBmnSDdyQzJVDwG8VM7peGGVxfTXzdqUU86sBB8wdoItHIKqz2DOPDjrvTfm/4ahjw64hMUP6vi/ckUq5TTHd+pFv80N3H91MiyDvALPVpLUpTs1aNE7BDuvrh3W2kDCAuFRDkJO+Q786kbllIXaJRs78HL+SRsYGGPmSkWP6X4RFsorKVxFv9o1ctlKEtASNJKFCo2RO5oiXdTsrkyxL3ZL9PTZ6SMd3h3SOJ0PJhGguQaFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by MW3PR11MB4650.namprd11.prod.outlook.com (2603:10b6:303:54::18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Tue, 23 Jan
+ 2024 01:29:01 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::8cc7:6be8:dd32:a9e5]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::8cc7:6be8:dd32:a9e5%4]) with mapi id 15.20.7202.034; Tue, 23 Jan 2024
+ 01:29:00 +0000
+Date: Tue, 23 Jan 2024 09:23:38 +0800
+From: Pengfei Xu <pengfei.xu@intel.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Za8VGs4SDvKc0Xf8@xpf.sh.intel.com>
+References: <cover.1704949719.git.pengfei.xu@intel.com>
+ <48efcb1293a682182fc5db23f01be7af2889e26c.1704949719.git.pengfei.xu@intel.com>
+ <20240111100949.GA1895489@pevik>
+ <ZZ/eCt9jeCNYMMff@xpf.sh.intel.com> <20240122182228.GA111853@pevik>
 Content-Disposition: inline
-In-Reply-To: <CAEemH2cNn1kyWrnqXHHeOteGT_FQ=PBVc55NFhkZbmkbMOoD=A@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 4ACF422010
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20240122182228.GA111853@pevik>
+X-ClientProxiedBy: SI1PR02CA0011.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::19) To PH0PR11MB4839.namprd11.prod.outlook.com
+ (2603:10b6:510:42::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|MW3PR11MB4650:EE_
+X-MS-Office365-Filtering-Correlation-Id: f2185030-6a77-4456-bd45-08dc1bb2ad69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c5wXvB9EkISkFrnw+N+KLov0BovzOj7uozyLZMRumY/sRYelbbHBjbFD30HXiyu1xvn0LWPfzh0xdLR6WjpXTrf5lyQ1yhc2BlU4E3jw4ElSnWsVek4ETtwgGdDeDXncX/45ieX9ZGD3KazDfd+S7HfuOQb59dLx9MAzNOVvQXtNNCg9ym206TIb17jisiiWJyz2SYxGTff1SllJiZAyXZEHTxmAdtkugjTm05HUol7oAAcWTth8YYelo3zORnhi/eXysBJ/PY9LPhZ+Oui0k88cuEbxRo7lryhEZKdVTZ0O1QFbRZcnVdmo1FZHBaNvc+0lFFrpg01S8ZKYfBLtrufikBCl7DQQ9yVpemE95peBoSjOx34Vt7zjzVbDchj2Gm9aZmow9dHKo0bESQfdEwSSw2rbVmOuvWqWnwe9XP+kzheDuwNEd5pY3v9TRJ0ZwAtMHFVb1SfwpXfHJ9Rnzf7FuHgi2bUY7K9RF28OyDHPe1L1cVLElr9JubL11nwAUKMLKg53fZ6t45P+zrUHdm4sWmwVIzlh+4omKupXzRI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH0PR11MB4839.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(346002)(39860400002)(376002)(366004)(396003)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(6666004)(26005)(107886003)(6506007)(6512007)(53546011)(5660300002)(478600001)(2906002)(4744005)(44832011)(41300700001)(66556008)(6486002)(966005)(4326008)(316002)(6916009)(8676002)(66946007)(66476007)(8936002)(86362001)(38100700002)(82960400001);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9OBZTBXQNWbQu2fN9xWIrhrx/yj96A+7j3OpxlZhGf8yGZyMhO66ZRMFLuXG?=
+ =?us-ascii?Q?DxgUWM3GYVeqbtYIqcCX5yUTYnxSL6ggn+RGbmip35R9j2VI0e8GNEFZm3j/?=
+ =?us-ascii?Q?4IpLm7yCgPsPBrPCbvmv4jGWWWRUr26/8/qn5ksCKoJCzH4DSJRUARHl3xZo?=
+ =?us-ascii?Q?bZKFZAIrXCPGdTWWi48MLleA4qZ06E6w0riFfE9NjXWSQgPwGH49yoUBMc8g?=
+ =?us-ascii?Q?9M7ZzLIslGI5YFDOJtD6jDjEHQ/F3ITvnsqaUZ1EgJRjL34OMIHLwvtxp7OA?=
+ =?us-ascii?Q?R7NdyrECdaIUT6Jx5cXse/ACljOGKm4lK+wta0ziSwhARPJ1ul+fwIsz42F7?=
+ =?us-ascii?Q?WkmbR43C2FmPO+vfnKhWC6lTP36rxw76jZHoViXDyM+5YsOiv0ygGQpbK1ee?=
+ =?us-ascii?Q?qpETjfCK1E4GjY9EXKja6DYz+UIGThD+D6K2MKRg494h9JJCLXkquhovYUK4?=
+ =?us-ascii?Q?KixRX5DMv0oPW84DD85/1qjQRgunzWNwD1SntTIKF/DacZ+XalreZB7MnBma?=
+ =?us-ascii?Q?ktLNk/EeK2UQiD49ydd31JIjGoOgPyxTG6GS69zpRkkE+YbmtVcpn0TKXZkP?=
+ =?us-ascii?Q?npOU/MhSceOjUSgLASfuWWwlLX7gfIR7LZakU1KLBEBQfVSrtBeyMxoL4QvR?=
+ =?us-ascii?Q?VPfLmHYbRVaTw9Zo8OhKS+YABq+G5h3drAGPUJARAWbG41DReVB7aGdVehg9?=
+ =?us-ascii?Q?T5RhZ56Evh+w/naJPXfdegIsqvEjpQahffN+L1nqUHeTEeAtkxOznH/VFE+Q?=
+ =?us-ascii?Q?i/N8TfX8nj3NWzIXh/vEOqND6JDBJQXJ7JxLvo9ol+VaoR02Yb7zxdTdkFmc?=
+ =?us-ascii?Q?oLxLg7ZtvMKcH/XfYjCxatIVedRqIW0nGg0+Gnfv5z3zaVV+h7Cwc/gZ6Yff?=
+ =?us-ascii?Q?nfnW/+0LSFmSmZhgYeV8e4OwoIm75CI5rgdaR8uLMz3EVnW0qVZqmlwy5Dv0?=
+ =?us-ascii?Q?zqsgDDoyTDibuLuMA2B8EQMq2Jz+KsGiIUDLSPo6FEQkq73qi9s2bbweOQBv?=
+ =?us-ascii?Q?+DXmWN54lnxmO6rTMnaj+uf3Iq2qBw3PNJhNXF+MGHoUmkMhXlqszBedJ58M?=
+ =?us-ascii?Q?FTugTWzKuX5izJtG0UuPpBxysMBieWyr6N6Dn8yeBHWmVMkeUvvxgo3kjgfr?=
+ =?us-ascii?Q?kv2a6GO1+cglWSybyFeQTjmrAHNDsqiZ7ue0O4Z+YqoGNx6yWNV/XUaRaxQy?=
+ =?us-ascii?Q?skxaMt5Zi1CdXPqpcr4yo5xFtzGTi9Rr+OgJW+fT8C89nUcBEjzFuD9zCxsL?=
+ =?us-ascii?Q?qf5l/scIc8s4EGHgJm9MUF+OWWIk1CojjFtqJEpBdZxoSrXSLhxHVO26ZZHX?=
+ =?us-ascii?Q?PnGziTBJ46epkFRweyhc25s82KLoT+OIvUQIhvFoDJ2/alDaCpjKtmwOmd3J?=
+ =?us-ascii?Q?Z64FRWTgTY8DcIdjVyItgzecbYMMVQB1qOxhQCq06N2cJ4/mIZeMm4GoBJd6?=
+ =?us-ascii?Q?jikUTM6pMzXTFF+FStLtuLkE/eUJJJKmZebLTN+MCVqhYG/9k/lbRbq6Cob1?=
+ =?us-ascii?Q?9ycNgj4hDpC0R1H3slFnwWSH5lrJgCbrGRDu0u6SoC5cPsIoahvMwqC5A95z?=
+ =?us-ascii?Q?oX3jA3vn6u96S5yATpN9Whro6dKFpLHkNm0Q8aW2?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2185030-6a77-4456-bd45-08dc1bb2ad69
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 01:29:00.8742 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LCf8g8LoWchLLJdff2uvaBD42bjPyUX67jfeuPG46IZBMoIAAKoa7m8bpNooipnH7nV+q5xz3GtRRkKP04HPUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4650
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/4] libswap: add known swap supported fs check
+Subject: Re: [LTP] [PATCH v1 1/1] keyctl05: improve the dns_res_payload for
+ boundary testing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,58 +162,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Heng Su <heng.su@intel.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Petr,
 
-> Great, and FYI.
+On 2024-01-22 at 19:22:28 +0100, Petr Vorel wrote:
+> Hi Xu, all,
+> 
+> fix will be backported to stable series: 6.7, 6.6, 6.1, 5.15 and 5.10,
+> it's not applicable to 4.19 and 5.4 stable).
+> 
+> Therefore merged. Thanks!
 
-> I just pushed a new commit to resolve the FIBMAP (unsupported on BTRFS)
-> problem on my ltp:libswap branch.
+Great, thank you for your info and remind in community:
+https://lore.kernel.org/all/CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com/
 
-> https://github.com/wangli5665/ltp/commit/699711bfe8c8dbc3597c46587345fa1197c054c9
+Best Regards,
+Thanks!
 
-> Hope you can try on your side and give some feedback :).
-
-Unfortunately regardless of kernel version it fails:
-
-# LTP_SINGLE_FS_TYPE=btrfs ./swapon01
-...
-tst_test.c:1669: TINFO: === Testing on btrfs ===
-tst_test.c:1117: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1131: TINFO: Mounting /dev/loop0 to /tmp/LTP_swa497AKp/mntpoint fstyp=btrfs flags=0
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:93: TINFO: File 'mntpoint/swapfile01' is not contiguous
-libswap.c:34: TINFO: FS_NOCOW_FL attribute set on mntpoint/swapfile01
-libswap.c:169: TFAIL: swapon() on btrfs failed: EINVAL (22)
-
-Also, tst_brk() in is_swap_supported() causes test to fail quickly.
-Given similar Martin's fix to shell API I merged today, which use tst_res +
-return instead of tst_brk [1] I suggest to use tst_res + change return function
-from void to int and handle another return in the test. That will allow to test
-other filesystems (which is useful to see, if particular filesystem code is
-broken or or VFS or some common code reused by all filesystems). This is the
-reason why I don't think "quit as early as possible" is a good approach when
-testing on all filesystems.
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/commit/5c73ad84f3e6db9a965df3ed4a846352136ed990
-
-> > > https://github.com/wangli5665/ltp/tree/libswap
-
-> > > And, I prefer to wait for Cryil's feedback before posting them in ML:)
-
-> > +1
-
-> > Kind regards,
-> > Petr
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
