@@ -4,60 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48F88C46CD2
-	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 13:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF87BC47DDF
+	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 13:48:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 102B53CFB38
-	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 14:26:20 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 1C5ED3CE2A5
+	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 14:48:56 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A05253C5815
- for <ltp@lists.linux.it>; Wed, 24 Jan 2024 14:26:05 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 047403C1DC2
+ for <ltp@lists.linux.it>; Wed, 24 Jan 2024 14:48:41 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EE86B601935
- for <ltp@lists.linux.it>; Wed, 24 Jan 2024 14:26:04 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5E9CA601933
+ for <ltp@lists.linux.it>; Wed, 24 Jan 2024 14:48:40 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 44C2821F7C;
- Wed, 24 Jan 2024 13:26:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3FD3F1FD67;
+ Wed, 24 Jan 2024 13:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706104120;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TZwL64Ot9MRJfJkGeSbqwDekU8dncxn0ciEsoXiT/Eg=;
+ b=KfYaOsN1ss71OqXxRc1DtwP225Nj3TnN0WqtbOft6XN3YJ28vyYA3HFS6FTB+FnIHTOPGg
+ IcsX/K9tlEOGq4RVRXI+SiwYHIic+TP2OnaOy7NGI1E22HYw0zyGwpcCkrKQ0Z30sDBTy0
+ N69aEt3Uqow/2du5R0AXQZ8voeyNmns=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706104120;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TZwL64Ot9MRJfJkGeSbqwDekU8dncxn0ciEsoXiT/Eg=;
+ b=NaoZpAa+Lx19JjRHReLEtAJbuDH2Q/KlZMae1h4anj+lrAVXqYMCoNJcnrii6qqE9q2NFO
+ 1ZNyBIpI2WMcX7DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706104120;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TZwL64Ot9MRJfJkGeSbqwDekU8dncxn0ciEsoXiT/Eg=;
+ b=KfYaOsN1ss71OqXxRc1DtwP225Nj3TnN0WqtbOft6XN3YJ28vyYA3HFS6FTB+FnIHTOPGg
+ IcsX/K9tlEOGq4RVRXI+SiwYHIic+TP2OnaOy7NGI1E22HYw0zyGwpcCkrKQ0Z30sDBTy0
+ N69aEt3Uqow/2du5R0AXQZ8voeyNmns=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706104120;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TZwL64Ot9MRJfJkGeSbqwDekU8dncxn0ciEsoXiT/Eg=;
+ b=NaoZpAa+Lx19JjRHReLEtAJbuDH2Q/KlZMae1h4anj+lrAVXqYMCoNJcnrii6qqE9q2NFO
+ 1ZNyBIpI2WMcX7DQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3812813786;
- Wed, 24 Jan 2024 13:26:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 08DA51333E;
+ Wed, 24 Jan 2024 13:48:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id T/mpDewPsWUuRQAAD6G6ig
- (envelope-from <akumar@suse.de>); Wed, 24 Jan 2024 13:26:04 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 24 Jan 2024 14:26:02 +0100
-Message-ID: <20240124132603.16199-1-akumar@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <325e7294-f6b1-4e27-a51b-8a8e146bf5bc@suse.cz>
-References: <325e7294-f6b1-4e27-a51b-8a8e146bf5bc@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zGqWADgVsWXsTAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 24 Jan 2024 13:48:40 +0000
+Date: Wed, 24 Jan 2024 14:48:38 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240124134838.GA295776@pevik>
+References: <20240123162647.210424-1-pvorel@suse.cz>
+ <20240123162647.210424-5-pvorel@suse.cz>
+ <9f884555-dbd3-46f8-8eaf-000815bf404c@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
+Content-Disposition: inline
+In-Reply-To: <9f884555-dbd3-46f8-8eaf-000815bf404c@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 44C2821F7C
+X-Spamd-Result: default: False [-4.50 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_THREE(0.00)[3];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[39.67%]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] mmap04.c: Avoid vma merging
+Subject: Re: [LTP] [PATCH 4/4] network: Fix tst_brk TFAIL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,79 +112,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-We hit a scenario where new mapping was merged with existing mapping of
-same permission and the return address from the mmap was hidden in the
-merged mapping in /proc/self/maps, causing the test to fail.
-To avoid this, we first  create a 2-page mapping with the different
-permissions, and then remap the 2nd page with the perms being tested.
+Hi Martin,
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
-Reported-by: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/mmap/mmap04.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+> Hi,
+> two comments below.
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap04.c b/testcases/kernel/syscalls/mmap/mmap04.c
-index f6f4f7c98..fa85deed1 100644
---- a/testcases/kernel/syscalls/mmap/mmap04.c
-+++ b/testcases/kernel/syscalls/mmap/mmap04.c
-@@ -17,8 +17,8 @@
- #include "tst_test.h"
- #include <stdio.h>
- 
--#define MMAPSIZE 1024
--static char *addr;
-+static char *addr1;
-+static char *addr2;
- 
- static struct tcase {
- 	int prot;
-@@ -44,14 +44,23 @@ static struct tcase {
- static void run(unsigned int i)
- {
- 	struct tcase *tc = &tcases[i];
--	char addr_str[20];
- 	char perms[8];
- 	char fmt[1024];
-+	unsigned int pagesize;
-+	int flag;
- 
--	addr = SAFE_MMAP(NULL, MMAPSIZE, tc->prot, tc->flags, -1, 0);
-+	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
- 
--	sprintf(addr_str, "%" PRIxPTR, (uintptr_t)addr);
--	sprintf(fmt, "%s-%%*x %%s", addr_str);
-+	/* To avoid new mapping getting merged with existing mappings, we first
-+	 * create a 2-page mapping with the different permissions, and then remap
-+	 * the 2nd page with the perms being tested.
-+	 */
-+	flag = (tc->flags & MAP_PRIVATE) ? MAP_SHARED : MAP_PRIVATE;
-+	addr1 = SAFE_MMAP(NULL, pagesize * 2, PROT_NONE, MAP_ANONYMOUS | flag, -1, 0);
-+
-+	addr2 = SAFE_MMAP(addr1 + pagesize, pagesize, tc->prot, tc->flags | MAP_FIXED, -1, 0);
-+
-+	sprintf(fmt, "%" PRIxPTR "-%%*x %%s", (uintptr_t)addr2);
- 	SAFE_FILE_LINES_SCANF("/proc/self/maps", fmt, perms);
- 
- 	if (!strcmp(perms, tc->exp_perms)) {
-@@ -61,7 +70,7 @@ static void run(unsigned int i)
- 						tc->exp_perms, perms);
- 	}
- 
--	SAFE_MUNMAP(addr, MMAPSIZE);
-+	SAFE_MUNMAP(addr1, pagesize * 2);
- }
- 
- static struct tst_test test = {
--- 
-2.43.0
+...
+> > +++ b/testcases/network/virt/virt_lib.sh
+> > @@ -174,8 +174,10 @@ virt_multiple_add_test()
+> >   	tst_res TINFO "add $NS_TIMES $virt_type, then delete"
+> >   	for i in $(seq $start_id $max); do
+> > -		virt_add ltp_v$i id $i $opt || \
+> > -			tst_brk TFAIL "failed to create 'ltp_v0 $opt'"
+> > +		if ! virt_add ltp_v$i id $i $opt; then
+> > +			tst_res TFAIL "failed to create 'ltp_v0 $opt'"
+> > +			return
 
+> This is a library function so tst_brk TBROK is probably the correct fix
+> here. Also, the message should say ltp_v$i instead of ltp_v0, but that's for
+> a separate patch.
+
+Thanks! tst_brk TBROK makes sense here.
+
+ltp_v$i fixed in separate commit with your credit (merged now).
+
+> > +		fi
+> >   		ROD_SILENT "ip link set ltp_v$i up"
+> >   	done
+> > @@ -196,8 +198,10 @@ virt_add_delete_test()
+> >   	tst_res TINFO "add/del $virt_type $NS_TIMES times"
+> >   	for i in $(seq 0 $max); do
+> > -		virt_add ltp_v0 $opt || \
+> > -			tst_brk TFAIL "failed to create 'ltp_v0 $opt'"
+> > +		if ! virt_add ltp_v0 $opt; then
+> > +			tst_res TFAIL "failed to create 'ltp_v0 $opt'"
+> > +			return
+
+> Same here.
+
+Yes (tst_brk TBROK).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
