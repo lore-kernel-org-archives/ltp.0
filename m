@@ -4,104 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0038BC46CD2
-	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 14:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2A20C46CD2
+	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 14:45:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 983E13CFB3F
-	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 15:36:56 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0C81C3CECA2
+	for <ltp@archiver.kernel.org>; Wed, 24 Jan 2024 15:45:57 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6FA5F3CEE6A
- for <ltp@lists.linux.it>; Wed, 24 Jan 2024 15:36:32 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BB5883C5D1E
+ for <ltp@lists.linux.it>; Wed, 24 Jan 2024 15:45:42 +0100 (CET)
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com
+ [IPv6:2607:f8b0:4864:20::82f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 60AAB600798
- for <ltp@lists.linux.it>; Wed, 24 Jan 2024 15:36:31 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9027E2200D;
- Wed, 24 Jan 2024 14:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1706106990; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U48GhGjTaGvY746EE7JSAuVTIxaEh/g3WDI4z+6SK74=;
- b=EBfl+/qnVrcgPDVMg41zhyisXvq+yHw+rwGNMt6XJDCe+dPWE9O2MlielLqyQ3xbqzB0ej
- csTE5/VIGzC7i0a/xZ+rnfDcj4gpJZpSnL6K2xDn3uj+3jmqqglJQX26G+t0pGgA/1dfsr
- G4MhgZtrjkyntiE65NsgCIwKui+akoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1706106990;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U48GhGjTaGvY746EE7JSAuVTIxaEh/g3WDI4z+6SK74=;
- b=aNwvDvmyLMxe9wNcyY2gsNupis552OFIWzh3vjTGxo9uu+rDMgQWjZ0lVaQ0G9Ti4vEBdJ
- yaS6cz2AjQJ/kPCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1706106990; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U48GhGjTaGvY746EE7JSAuVTIxaEh/g3WDI4z+6SK74=;
- b=EBfl+/qnVrcgPDVMg41zhyisXvq+yHw+rwGNMt6XJDCe+dPWE9O2MlielLqyQ3xbqzB0ej
- csTE5/VIGzC7i0a/xZ+rnfDcj4gpJZpSnL6K2xDn3uj+3jmqqglJQX26G+t0pGgA/1dfsr
- G4MhgZtrjkyntiE65NsgCIwKui+akoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1706106990;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U48GhGjTaGvY746EE7JSAuVTIxaEh/g3WDI4z+6SK74=;
- b=aNwvDvmyLMxe9wNcyY2gsNupis552OFIWzh3vjTGxo9uu+rDMgQWjZ0lVaQ0G9Ti4vEBdJ
- yaS6cz2AjQJ/kPCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 804D81333E;
- Wed, 24 Jan 2024 14:36:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id N/t3Hm4gsWU5XQAAD6G6ig
- (envelope-from <akumar@suse.de>); Wed, 24 Jan 2024 14:36:30 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 24 Jan 2024 15:36:30 +0100
-Message-ID: <2947768.e9J7NaK4W3@localhost>
-Organization: SUSE
-In-Reply-To: <325e7294-f6b1-4e27-a51b-8a8e146bf5bc@suse.cz>
-References: <20240123165539.32514-1-akumar@suse.de>
- <325e7294-f6b1-4e27-a51b-8a8e146bf5bc@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1069B60103A
+ for <ltp@lists.linux.it>; Wed, 24 Jan 2024 15:45:42 +0100 (CET)
+Received: by mail-qt1-x82f.google.com with SMTP id
+ d75a77b69052e-429be9fe952so48031551cf.0
+ for <ltp@lists.linux.it>; Wed, 24 Jan 2024 06:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1706107540; x=1706712340; darn=lists.linux.it;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=2S/1H5IvvEO17I9bPEYoBUKpIxZLOUCJLe0afZYx7Rk=;
+ b=EQFA5q/uceCGfni+92TsUvzq87AyRvHSQKRZIsUmXvxUPAD+OJvjuzIYdkhz7VsU1X
+ OBrSd4tC8OpyQHU8BRNOczefKXYeCbaavSH5zSiOFontVALtTKPDs3lFf7m+DwFiJ6Tt
+ aSRf5rMHzhPv+82JOky54aNf4taV1PKJ5fd3lFLKA7O6su1KbnvsykvUwOEJCKJ177C1
+ 5JqTCmUbNI5fJ7PRXNELcsNixURtucD485Wcv7onslBwkwvz1WJUqYNp25rnmWKfxur9
+ nhQCxvEhIeo9JzRmtfsrrVdMqgMRJ9jfFYJ72YJUITLKKFWk0JIghnUra7zuESB7ShsM
+ ekhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1706107540; x=1706712340;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=2S/1H5IvvEO17I9bPEYoBUKpIxZLOUCJLe0afZYx7Rk=;
+ b=sUOTxOtxAHF+GidccbMzH2MtzH8Hh0rv6wUcfCqi9rX5w1FyBU2Q7Tkuwae7OaI2T6
+ aBygn5/3Wh0SYu01f/RB4yU6MyPSTAdN284GTYPTySVNtzHhxYUrmzUkEABwCYfx7mnR
+ 8h8yjoQLjv/M4QA787Mqdn0Ma7tZoOXZu2b+b18/GLdSDxNj4sKjXX3zVP3bGWbiZE5q
+ coXX5gy53OX2eQ1a5rI3D3yyF3XrDVGh9vLIuJ4NpHo+Z9iE+S/omvcLIc4vC6YxMBGs
+ z323oGBq7HDi7Q40Y15pW7Z+kCpQ4gqfPJLhWKAAY9vNh1rFzU/oMdxV+V5dxTOWt0eg
+ +1xw==
+X-Gm-Message-State: AOJu0Yx3zLG7kqsBrug3FuRIFoMiM6lCFtImNBwTrbrpPXqDJaUbQiBU
+ DirV+LtPGfq9EBYoIgW71po6NlgWdr1vhnGvBoAZG1zt1U60GT1WFXod5Tichu7o4us78Yht+Wx
+ pPu3VMY6Z3XsTudWT4igspAkd4dM=
+X-Google-Smtp-Source: AGHT+IHC8XeBd8IHRS5VgUi16MPWMRT6r0bsbtaXdtS8fQkIZRH3sJ79LpbUmC39OajNNDGBpbs19q1IWiFAeFNIm8c=
+X-Received: by 2002:ad4:5d4b:0:b0:686:abd8:7758 with SMTP id
+ jk11-20020ad45d4b000000b00686abd87758mr1744025qvb.54.1706107540680; Wed, 24
+ Jan 2024 06:45:40 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-6.10 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
- REPLY(-4.00)[]; HAS_ORG_HEADER(0.00)[];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <20240124122130.288374-1-pvorel@suse.cz>
+In-Reply-To: <20240124122130.288374-1-pvorel@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 24 Jan 2024 16:45:29 +0200
+Message-ID: <CAOQ4uxjtJg7iprcOAizXOUdw=6PouBDtiyL8R3CfqGr6yyR9vw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mmap04.c: Avoid vma merging
+Subject: Re: [LTP] [PATCH 1/1] fanotify: Handle EOPNOTSUPP as TCONF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,157 +77,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Dominique Leuenberger <dleuenberger@suse.com>, Jan Kara <jack@suse.cz>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
-
-On Wednesday, January 24, 2024 12:56:58 PM CET Martin Doucha wrote:
-> Hi,
-> some comments below.
-> 
-> On 23. 01. 24 17:55, Avinesh Kumar wrote:
-> > We hit a scenario where new mapping was merged with existing mapping of
-> > same permission and the return address from the mmap was hidden in the
-> > merged mapping in /proc/self/maps, causing the test to fail.
-> > To avoid this, we first  create a 2-page mapping with the different
-> > permissions, and then remap the 2nd page with the perms being tested.
-> > 
-> > Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> > Reported-by: Martin Doucha <mdoucha@suse.cz>
-> > ---
-> > 
-> >   testcases/kernel/syscalls/mmap/mmap04.c | 49 +++++++++++++++----------
-> >   1 file changed, 30 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/mmap/mmap04.c
-> > b/testcases/kernel/syscalls/mmap/mmap04.c index f6f4f7c98..f0f87b7f5
-> > 100644
-> > --- a/testcases/kernel/syscalls/mmap/mmap04.c
-> > +++ b/testcases/kernel/syscalls/mmap/mmap04.c
-> > @@ -17,28 +17,28 @@
-> > 
-> >   #include "tst_test.h"
-> >   #include <stdio.h>
-> > 
-> > -#define MMAPSIZE 1024
-> > -static char *addr;
-> > +static char *addr1;
-> > +static char *addr2;
-> > 
-> >   static struct tcase {
-> >   
-> >   	int prot;
-> >   	int flags;
-> >   	char *exp_perms;
-> >   
-> >   } tcases[] = {
-> > 
-> > -	{PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, "---p"},
-> > -	{PROT_NONE, MAP_ANONYMOUS | MAP_SHARED, "---s"},
-> > -	{PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, "r--p"},
-> > -	{PROT_READ, MAP_ANONYMOUS | MAP_SHARED, "r--s"},
-> > -	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, "-w-p"},
-> > -	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, "-w-s"},
-> > -	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, "rw-p"},
-> > -	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, "rw-s"},
-> > -	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, "r-xp"},
-> > -	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, "r-xs"},
-> > -	{PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, "-wxp"},
-> > -	{PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, "-wxs"},
-> > -	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE,
-> > "rwxp"}, -	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS |
-> > MAP_SHARED, "rwxs"} +	{PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE |
-> > MAP_FIXED, "---p"},
-> > +	{PROT_NONE, MAP_ANONYMOUS | MAP_SHARED | MAP_FIXED, "---s"},
-> > +	{PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE | MAP_FIXED, "r--p"},
-> > +	{PROT_READ, MAP_ANONYMOUS | MAP_SHARED | MAP_FIXED, "r--s"},
-> > +	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_FIXED, "-w-p"},
-> > +	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED | MAP_FIXED, "-w-s"},
-> > +	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_FIXED,
-> > "rw-p"}, +	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED |
-> > MAP_FIXED, "rw-s"}, +	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE
-> > | MAP_FIXED, "r-xp"}, +	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS |
-> > MAP_SHARED | MAP_FIXED, "r-xs"}, +	{PROT_WRITE | PROT_EXEC, 
-MAP_ANONYMOUS
-> > | MAP_PRIVATE | MAP_FIXED, "-wxp"}, +	{PROT_WRITE | PROT_EXEC,
-> > MAP_ANONYMOUS | MAP_SHARED | MAP_FIXED, "-wxs"}, +	{PROT_READ |
-> > PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE | MAP_FIXED, "rwxp"},
-> > +	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED |
-> > MAP_FIXED, "rwxs"}
-> The MAP_FIXED flag doesn't belong in the testcases, it should be added
-> in the mmap() call instead: SAFE_MMAP(..., tc->flags | MAP_FIXED, ...);
-> It's an implementation detail not related to the testcases themselves.
-> You don't want to rewrite all the test cases again if we decide to not
-> use MAP_FIXED for whatever reason in the future.
-> 
-Thank you for review and all the corrections/suggestions. I have send the 
-updated patch.
-
-> >   };
-> >   
-> >   static void run(unsigned int i)
-> > 
-> > @@ -47,10 +47,21 @@ static void run(unsigned int i)
-> > 
-> >   	char addr_str[20];
-> >   	char perms[8];
-> >   	char fmt[1024];
-> > 
-> > +	unsigned int pagesize;
-> > 
-> > -	addr = SAFE_MMAP(NULL, MMAPSIZE, tc->prot, tc->flags, -1, 0);
-> > +	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
-> > 
-> > -	sprintf(addr_str, "%" PRIxPTR, (uintptr_t)addr);
-> > +	/* To avoid new mapping getting merged with existing mappings, we 
-first
-> > +	   create a 2-page mapping with the different permissions, and then
-> > remap
-> > +	   the 2nd page with the perms being tested. */
-> > +	if ((tc->prot == PROT_NONE) && (tc->flags == (MAP_ANONYMOUS |
-> > MAP_PRIVATE | MAP_FIXED))) +		addr1 = SAFE_MMAP(NULL, 
-pagesize * 2,
-> > PROT_READ, MAP_ANONYMOUS | MAP_SHARED, -1, 0); +	else
-> > +		addr1 = SAFE_MMAP(NULL, pagesize * 2, PROT_NONE, 
-MAP_ANONYMOUS |
-> > MAP_PRIVATE, -1, 0);
-> This would be cleaner (just invert the shared/private flag):
-> int flags = (tc->flags & MAP_PRIVATE) ? MAP_SHARED : MAP_PRIVATE;
-> addr1 = SAFE_MMAP(NULL, pagesize * 2, PROT_NONE, MAP_ANONYMOUS | flags,
-> -1, 0);
-> 
-> > +
-> > +	addr2 = SAFE_MMAP(addr1 + pagesize, pagesize, tc->prot, tc->flags, 
--1,
-> > 0); +
-> > +	sprintf(addr_str, "%" PRIxPTR, (uintptr_t)addr2);
-> 
-> Why not merge the two sprintf()s into one?
-> sprintf(fmt, "%" PRIxPTR "-%%*x %%s", (uintptr_t)addr2);
-> 
-> >   	sprintf(fmt, "%s-%%*x %%s", addr_str);
-> >   	SAFE_FILE_LINES_SCANF("/proc/self/maps", fmt, perms);
-> > 
-> > @@ -61,7 +72,7 @@ static void run(unsigned int i)
-> > 
-> >   						tc-
->exp_perms, perms);
-> >   	
-> >   	}
-> > 
-> > -	SAFE_MUNMAP(addr, MMAPSIZE);
-> > +	SAFE_MUNMAP(addr1, pagesize * 2);
-> > 
-> >   }
-> >   
-> >   static struct tst_test test = {
-
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBKYW4gMjQsIDIwMjQgYXQgMjoyMeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEZvdW5kIG9uIGtlcm5lbCA2LjcgKFR1bWJsZXdlZWQpIG9uIGV4ZmF0
+Ogo+Cj4gdHN0X3Rlc3QuYzoxNjY5OiBUSU5GTzogPT09IFRlc3Rpbmcgb24gZXhmYXQgPT09Cj4g
+dHN0X3Rlc3QuYzoxMTE3OiBUSU5GTzogRm9ybWF0dGluZyAvZGV2L2xvb3AxIHdpdGggZXhmYXQg
+b3B0cz0nJyBleHRyYSBvcHRzPScnCj4gdHN0X3Rlc3QuYzoxMTMxOiBUSU5GTzogTW91bnRpbmcg
+L2Rldi9sb29wMSB0byAvdG1wL0xUUF9mYW5vTDlLTEUvbW50cG9pbnQgZnN0eXA9ZXhmYXQgZmxh
+Z3M9MAo+IGZhbm90aWZ5MTQuYzoyNDY6IFRJTkZPOiBUZXN0IGNhc2UgMDogZmFub3RpZnlfaW5p
+dChGQU5fQ0xBU1NfQ09OVEVOVCB8IEZBTl9SRVBPUlRfRklELCBPX1JET05MWSkKPiBmYW5vdGlm
+eTE0LmM6MjYwOiBUUEFTUzogZmFub3RpZnlfaW5pdCh0Yy0+aW5pdC5mbGFncywgT19SRE9OTFkp
+IDogRUlOVkFMICgyMikKPiBmYW5vdGlmeTE0LmM6MjQ2OiBUSU5GTzogVGVzdCBjYXNlIDE6IGZh
+bm90aWZ5X2luaXQoRkFOX0NMQVNTX1BSRV9DT05URU5UIHwgRkFOX1JFUE9SVF9GSUQsIE9fUkRP
+TkxZKQo+IGZhbm90aWZ5MTQuYzoyNjA6IFRQQVNTOiBmYW5vdGlmeV9pbml0KHRjLT5pbml0LmZs
+YWdzLCBPX1JET05MWSkgOiBFSU5WQUwgKDIyKQo+IGZhbm90aWZ5MTQuYzoyNDY6IFRJTkZPOiBU
+ZXN0IGNhc2UgMjogZmFub3RpZnlfaW5pdChGQU5fQ0xBU1NfTk9USUYsIE9fUkRPTkxZKQo+IGZh
+bm90aWZ5MTQuYzoyNjM6IFRQQVNTOiBmYW5vdGlmeV9pbml0KHRjLT5pbml0LmZsYWdzLCBPX1JE
+T05MWSkgcmV0dXJuZWQgZmQgNQo+IGZhbm90aWZ5MTQuYzoyODM6IFRJTkZPOiBUZXN0aW5nIEZB
+Tl9NQVJLX0lOT0RFIHdpdGggSU5PREVfRVZFTlRTCj4gZmFub3RpZnkxNC5jOjI4NTogVFBBU1M6
+IGZhbm90aWZ5X21hcmsoZmFub3RpZnlfZmQsIDB4MDAwMDAwMDEgfCB0Yy0+bWFyay5mbGFncywg
+dGMtPm1hc2suZmxhZ3MsIGRpcmZkLCBwYXRoKSA6IEVJTlZBTCAoMjIpCj4gZmFub3RpZnkxNC5j
+OjI0NjogVElORk86IFRlc3QgY2FzZSAzOiBmYW5vdGlmeV9pbml0KEZBTl9DTEFTU19OT1RJRiB8
+IEZBTl9SRVBPUlRfRklELCBPX1JET05MWSkKPiBmYW5vdGlmeTE0LmM6MjYzOiBUUEFTUzogZmFu
+b3RpZnlfaW5pdCh0Yy0+aW5pdC5mbGFncywgT19SRE9OTFkpIHJldHVybmVkIGZkIDUKPiBmYW5v
+dGlmeTE0LmM6MjgzOiBUSU5GTzogVGVzdGluZyBGQU5fTUFSS19NT1VOVCB3aXRoIElOT0RFX0VW
+RU5UUwo+IGZhbm90aWZ5MTQuYzoyODU6IFRQQVNTOiBmYW5vdGlmeV9tYXJrKGZhbm90aWZ5X2Zk
+LCAweDAwMDAwMDAxIHwgdGMtPm1hcmsuZmxhZ3MsIHRjLT5tYXNrLmZsYWdzLCBkaXJmZCwgcGF0
+aCkgOiBFSU5WQUwgKDIyKQo+IGZhbm90aWZ5MTQuYzoyNDY6IFRJTkZPOiBUZXN0IGNhc2UgNDog
+ZmFub3RpZnlfaW5pdChGQU5fQ0xBU1NfTk9USUYgfCBGQU5fUkVQT1JUX05BTUUsIE9fUkRPTkxZ
+KQo+IGZhbm90aWZ5MTQuYzoyNjA6IFRQQVNTOiBmYW5vdGlmeV9pbml0KHRjLT5pbml0LmZsYWdz
+LCBPX1JET05MWSkgOiBFSU5WQUwgKDIyKQo+IGZhbm90aWZ5MTQuYzoyNDY6IFRJTkZPOiBUZXN0
+IGNhc2UgNTogZmFub3RpZnlfaW5pdChGQU5fQ0xBU1NfTk9USUYgfCBGQU5fUkVQT1JUX0ZJRCB8
+IEZBTl9SRVBPUlRfTkFNRSwgT19SRE9OTFkpCj4gZmFub3RpZnkxNC5jOjI2MDogVFBBU1M6IGZh
+bm90aWZ5X2luaXQodGMtPmluaXQuZmxhZ3MsIE9fUkRPTkxZKSA6IEVJTlZBTCAoMjIpCj4gZmFu
+b3RpZnkxNC5jOjI0NjogVElORk86IFRlc3QgY2FzZSA2OiBmYW5vdGlmeV9pbml0KEZBTl9DTEFT
+U19OT1RJRiB8IEZBTl9SRVBPUlRfVEFSR0VUX0ZJRCB8IEZBTl9SRVBPUlRfREZJRF9OQU1FLCBP
+X1JET05MWSkKPiBmYW5vdGlmeTE0LmM6MjYwOiBUUEFTUzogZmFub3RpZnlfaW5pdCh0Yy0+aW5p
+dC5mbGFncywgT19SRE9OTFkpIDogRUlOVkFMICgyMikKPiBmYW5vdGlmeTE0LmM6MjQ2OiBUSU5G
+TzogVGVzdCBjYXNlIDc6IGZhbm90aWZ5X2luaXQoRkFOX0NMQVNTX05PVElGIHwgRkFOX1JFUE9S
+VF9UQVJHRVRfRklEIHwgRkFOX1JFUE9SVF9ERklEX0ZJRCwgT19SRE9OTFkpCj4gZmFub3RpZnkx
+NC5jOjI2MDogVFBBU1M6IGZhbm90aWZ5X2luaXQodGMtPmluaXQuZmxhZ3MsIE9fUkRPTkxZKSA6
+IEVJTlZBTCAoMjIpCj4gZmFub3RpZnkxNC5jOjI0NjogVElORk86IFRlc3QgY2FzZSA4OiBmYW5v
+dGlmeV9pbml0KEZBTl9DTEFTU19OT1RJRiB8IEZBTl9SRVBPUlRfREZJRF9GSUQsIE9fUkRPTkxZ
+KQo+IGZhbm90aWZ5MTQuYzoyNjM6IFRQQVNTOiBmYW5vdGlmeV9pbml0KHRjLT5pbml0LmZsYWdz
+LCBPX1JET05MWSkgcmV0dXJuZWQgZmQgNQo+IGZhbm90aWZ5MTQuYzoyODM6IFRJTkZPOiBUZXN0
+aW5nIEZBTl9NQVJLX0lOT0RFIHdpdGggRkFOX1JFTkFNRQo+IGZhbm90aWZ5MTQuYzoyODU6IFRQ
+QVNTOiBmYW5vdGlmeV9tYXJrKGZhbm90aWZ5X2ZkLCAweDAwMDAwMDAxIHwgdGMtPm1hcmsuZmxh
+Z3MsIHRjLT5tYXNrLmZsYWdzLCBkaXJmZCwgcGF0aCkgOiBFSU5WQUwgKDIyKQo+IGZhbm90aWZ5
+MTQuYzoyNDY6IFRJTkZPOiBUZXN0IGNhc2UgOTogZmFub3RpZnlfaW5pdChGQU5fQ0xBU1NfTk9U
+SUYsIE9fUkRPTkxZKQo+IGZhbm90aWZ5MTQuYzoyNjM6IFRQQVNTOiBmYW5vdGlmeV9pbml0KHRj
+LT5pbml0LmZsYWdzLCBPX1JET05MWSkgcmV0dXJuZWQgZmQgNQo+IGZhbm90aWZ5MTQuYzoyODM6
+IFRJTkZPOiBUZXN0aW5nIEZBTl9NQVJLX09OTFlESVIgd2l0aCBGQU5fT1BFTgo+IGZhbm90aWZ5
+MTQuYzoyODU6IFRQQVNTOiBmYW5vdGlmeV9tYXJrKGZhbm90aWZ5X2ZkLCAweDAwMDAwMDAxIHwg
+dGMtPm1hcmsuZmxhZ3MsIHRjLT5tYXNrLmZsYWdzLCBkaXJmZCwgcGF0aCkgOiBFTk9URElSICgy
+MCkKPiBmYW5vdGlmeTE0LmM6Mjk4OiBUUEFTUzogQWRkaW5nIGFuIGlub2RlIG1hcmsgb24gZGly
+ZWN0b3J5IGRpZCBub3QgZmFpbCB3aXRoIEVOT1RESVIgZXJyb3IgYXMgb24gbm9uLWRpciBpbm9k
+ZQo+IGZhbm90aWZ5MTQuYzoyNDY6IFRJTkZPOiBUZXN0IGNhc2UgMTA6IGZhbm90aWZ5X2luaXQo
+RkFOX0NMQVNTX05PVElGIHwgRkFOX1JFUE9SVF9ERklEX05BTUVfVEFSR0VULCBPX1JET05MWSkK
+PiBmYW5vdGlmeTE0LmM6MjYzOiBUUEFTUzogZmFub3RpZnlfaW5pdCh0Yy0+aW5pdC5mbGFncywg
+T19SRE9OTFkpIHJldHVybmVkIGZkIDUKPiBmYW5vdGlmeTE0LmM6MjgzOiBUSU5GTzogVGVzdGlu
+ZyBGQU5fTUFSS19JTk9ERSB3aXRoIEZBTl9ERUxFVEUKPiBmYW5vdGlmeTE0LmM6Mjg1OiBUUEFT
+UzogZmFub3RpZnlfbWFyayhmYW5vdGlmeV9mZCwgMHgwMDAwMDAwMSB8IHRjLT5tYXJrLmZsYWdz
+LCB0Yy0+bWFzay5mbGFncywgZGlyZmQsIHBhdGgpIDogRU5PVERJUiAoMjApCj4gZmFub3RpZnkx
+NC5jOjI5ODogVFBBU1M6IEFkZGluZyBhbiBpbm9kZSBtYXJrIG9uIGRpcmVjdG9yeSBkaWQgbm90
+IGZhaWwgd2l0aCBFTk9URElSIGVycm9yIGFzIG9uIG5vbi1kaXIgaW5vZGUKPiBmYW5vdGlmeTE0
+LmM6MzAzOiBUQlJPSzogZmFub3RpZnlfbWFyayg1LCAweDEwMSwgMHgyMDAsIC4uLiwgbW50cG9p
+bnQvZmlsZTEpIHVuc3VwcG9ydGVkOiBFT1BOT1RTVVBQICg5NSkKPgo+IFJlcG9ydGVkLWJ5OiBE
+b21pbmlxdWUgTGV1ZW5iZXJnZXIgPGRsZXVlbmJlcmdlckBzdXNlLmNvbT4KPiBTaWduZWQtb2Zm
+LWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiAtLS0KPiBIaSwKPgo+IEkgd29uZGVy
+LCBpZiB0aGlzIGlzIGEgYnVnIG9yIG5vdC4KPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiAg
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeS5oIHwgMTIgKysrKysr
+KysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
+Cj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5v
+dGlmeS5oIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeS5oCj4g
+aW5kZXggZTBkMTc4YmNjLi5kZDFmNWM4NGMgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeS5oCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeS5oCj4gQEAgLTQ3LDkgKzQ3LDE1IEBAIHN0YXRpYyBp
+bmxpbmUgaW50IHNhZmVfZmFub3RpZnlfbWFyayhjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQg
+bGluZW5vLAo+ICAgICAgICAgcnZhbCA9IGZhbm90aWZ5X21hcmsoZmQsIGZsYWdzLCBtYXNrLCBk
+ZmQsIHBhdGhuYW1lKTsKPgo+ICAgICAgICAgaWYgKHJ2YWwgPT0gLTEpIHsKPiAtICAgICAgICAg
+ICAgICAgdHN0X2Jya18oZmlsZSwgbGluZW5vLCBUQlJPSyB8IFRFUlJOTywKPiAtICAgICAgICAg
+ICAgICAgICAgICAgICAgImZhbm90aWZ5X21hcmsoJWQsIDB4JXgsIDB4JWx4LCAuLi4sICVzKSBm
+YWlsZWQiLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICBmZCwgZmxhZ3MsIG1hc2ssIHBhdGhu
+YW1lKTsKPiArICAgICAgICAgICAgICAgaWYgKGVycm5vID09IEVPUE5PVFNVUFApIHsKPiArICAg
+ICAgICAgICAgICAgICAgICAgICB0c3RfYnJrXyhmaWxlLCBsaW5lbm8sIFRDT05GIHwgVEVSUk5P
+LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImZhbm90aWZ5X21h
+cmsoJWQsIDB4JXgsIDB4JWx4LCAuLi4sICVzKSB1bnN1cHBvcnRlZCIsCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmZCwgZmxhZ3MsIG1hc2ssIHBhdGhuYW1lKTsK
+PiArICAgICAgICAgICAgICAgfSBlbHNlIHsKPiArICAgICAgICAgICAgICAgICAgICAgICB0c3Rf
+YnJrXyhmaWxlLCBsaW5lbm8sIFRCUk9LIHwgVEVSUk5PLAo+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgImZhbm90aWZ5X21hcmsoJWQsIDB4JXgsIDB4JWx4LCAuLi4s
+ICVzKSBmYWlsZWQiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ZmQsIGZsYWdzLCBtYXNrLCBwYXRobmFtZSk7Cj4gKyAgICAgICAgICAgICAgIH0KPiAgICAgICAg
+IH0KPgo+ICAgICAgICAgaWYgKHJ2YWwgPCAtMSkgewo+IC0tCj4gMi40My4wCj4KClBldHIsCgpJ
+IGRvbid0IHRoaW5rIHRoaXMgaXMgdGhlIHJpZ2h0IGZpeC4KCkFtIEkgY29ycmVjdCB0byBhc3N1
+bWUgdGhhdCBleGZhdCB3YXMgc2tpcHBlZCBpbiB0aGlzIHRlc3QgcHJpb3IKdG8gdjYuOC1yYzE/
+CjMwYWQxOTM4MzI2YiBmYW5vdGlmeTogYWxsb3cgIndlYWsiIGZzaWQgd2hlbiB3YXRjaGluZyBh
+IHNpbmdsZSBmaWxlc3lzdGVtCgpJIGhhdmUgcHJlcGFyZWQgYSBicmFuY2ggdG8gdGVzdCB0aGUg
+djYuOC1yYzEgZmFub3RpZnkgY2hhbmdlczoKCmh0dHBzOi8vZ2l0aHViLmNvbS9hbWlyNzNpbC9s
+dHAvY29tbWl0cy9mYW5vdGlmeV9mc2lkLwoKTm9ybWFsbHksIEkgcG9zdCB0aGUgdGVzdHMgbXVj
+aCBsYXRlciBpbiB0aGUgYSByZWxlYXNlIGN5Y2xlLCBidXQgdGhlIGNoYW5nZXMKaW4gdjYuOC1y
+YzEgd2lsbCBjYXVzZSBzZXZlcmFsIG5ldyBmaWxlc3lzdGVtcyAoZS5nLiBmdXNlLW50ZnMzKSB0
+byBzdGFydApydW5uaW5nIHRoZSBmYW5vdGlmeSB0ZXN0cywgc28gd2UgbWF5IG5lZWQgdG8gbWVy
+Z2Ugc29tZSBvZiB0aG9zZSB0ZXN0CmZpeGVzIHNvb25lci4KCkNhbiB5b3UgcGxlYXNlIHRlc3Qg
+aWYgdGhlIGNoYW5nZXMgaW4gbXkgYnJhbmNoIGZpeCB0aGlzIHRlc3QgZmFpbHVyZS4KTGV0IG1l
+IGtub3cgaWYgeW91IG5lZWQgbWUgdG8gcG9zdCB0aGUgY2hhbmdlcyBmb3IgcmV2aWV3LgoKQXMg
+ZmFyIGFzIEkgY2FuIHNlZSwgb25seSB0aGUgY2hhbmdlOgozNWY0OWE5Y2IgZmFub3RpZnkwMTog
+VGVzdCBzZXR0aW5nIHR3byBtYXJrcyBvbiBkaWZmZXJlbnQgZmlsZXN5c3RlbXMKCnRlc3RzIGZv
+ciBuZXcgdjYuOC1yYzEgZnVuY3Rpb25hbGl0eSwgYnV0IGl0IHNob3VsZCBub3QgYWZmZWN0IHJ1
+bm5pbmcgdGhlCnRlc3Qgb24gb2xkZXIga2VybmVscywgd2hlcmUgdGhlIGFmZmVjdGVkIGZpbGVz
+eXN0ZW1zIGFyZSBza2lwcGVkIGFueXdheS4KClRoYW5rcywKQW1pci4KCi0tIApNYWlsaW5nIGxp
+c3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
