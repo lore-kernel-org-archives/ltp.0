@@ -4,60 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DFA2C47258
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 12:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64DAC48260
+	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 13:45:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A17CB3CFAF9
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 13:23:55 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3E0863CFB01
+	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 14:45:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16FAF3CE1C3
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 13:23:40 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A877F3CE1EF
+ for <ltp@lists.linux.it>; Thu, 25 Jan 2024 14:45:38 +0100 (CET)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
+ [IPv6:2607:f8b0:4864:20::f2b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F3FD5601E90
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 13:23:39 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1819721ED1;
- Thu, 25 Jan 2024 12:23:39 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D628E13649;
- Thu, 25 Jan 2024 12:23:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MtBWMspSsmWzDAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 25 Jan 2024 12:23:38 +0000
-Date: Thu, 25 Jan 2024 13:23:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20240125122337.GA398849@pevik>
-References: <20240125110510.751445-1-amir73il@gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B6898201DC5
+ for <ltp@lists.linux.it>; Thu, 25 Jan 2024 14:45:37 +0100 (CET)
+Received: by mail-qv1-xf2b.google.com with SMTP id
+ 6a1803df08f44-68195c0c8d1so27428816d6.3
+ for <ltp@lists.linux.it>; Thu, 25 Jan 2024 05:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1706190336; x=1706795136; darn=lists.linux.it;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=6h3Bto91tsGryiQD4l0dRypWcLX2s4+9LxrRy+H+9VA=;
+ b=hrnRumQK4xqeTBA/VvEQIkXlKqPSSGVr0tPbbIQqnjPAOuoA3tEhPLpjlP9jSOgBwq
+ PrL2IfVDwGtl9KQZdUe3WrxDEkryeQWt4IUsfhQ9jVfFEN0St/7e/koHoJlekYoao1Pl
+ RW4Z1ZwhC803E3Cv0WpQaPmDkpR16dIzK/v59UC9Wz9aWbDfWfeHbnFh4V4Cjg5d34g9
+ 0WZwBKJ47aLYEY8cUnJ7dzrH5ezlqsx0AQksLRjKFuhsyoa56dklK7+BVsSosB+WfvRO
+ b+7FfNKWSD8ZDs/GST6YUJqTzOWBTdUqllPcQ0pl9flWTVA8M6QauVIr6b2LrF9K3qhp
+ C1FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1706190336; x=1706795136;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=6h3Bto91tsGryiQD4l0dRypWcLX2s4+9LxrRy+H+9VA=;
+ b=TTrSvxMDReZeO0UvAxAGIYmjZABrcwOcIdSoEAkfDEB3nRquxo7coYe7dQ7oFuVD1g
+ YMRulygP1L9LcAwpHLEpGJXoMPFFl7btmgUeLdkieP0Av+zJH+ERAjO3aTrAAxDG+g/Z
+ aJogcGr3cEg/w6noH5EpQ3SOuAqXrnRba+qCQfNamDLC79WpXJifam/cIX2ReH++9veV
+ g767Z0oYRx3ozMlO0XEZUXSWdEH4JiWODhT3JDyysxJiDnSUTzNz8fJTZZnmgLma8o1N
+ kN9sKr0h2YeuakYwu+mc/M0oceVY5rcClg3VKzM0G0Oc1WSmnwc4YSF53lAs5cIypRgD
+ xyig==
+X-Gm-Message-State: AOJu0YyBDEyGB1L3k9Twvx0m9kLNi40GKXtQQDmkqBOCcR2XT85Xqg5m
+ C4fGgfb6ta5US58kuOZzPU/eob16782w85oxHdcbElbziC8Bk3MeIz92yGGkiqNEUoa68T7bxMl
+ vt8HZdwoBU3npPEjoU7+4+xlGhZs=
+X-Google-Smtp-Source: AGHT+IHTkcQYJPMksHee7uGKUVoRqK+zNUmaHAEO4GkvKL3jmMxcJ7S6BHvX6NLuy8cZtjc87w/wv4QVsmKBtrz6NHc=
+X-Received: by 2002:a05:6214:d47:b0:680:fee7:7781 with SMTP id
+ 7-20020a0562140d4700b00680fee77781mr982863qvr.52.1706190336456; Thu, 25 Jan
+ 2024 05:45:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240125110510.751445-1-amir73il@gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 1819721ED1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+References: <20240125110510.751445-1-amir73il@gmail.com>
+ <20240125122337.GA398849@pevik>
+In-Reply-To: <20240125122337.GA398849@pevik>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 25 Jan 2024 15:45:24 +0200
+Message-ID: <CAOQ4uxjMiPG5E5=jirxT_D=NDxdUfA2Vp8u1yNZ=YH_SxC0S8Q@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] fanotify01: Test setting two marks on different
  filesystems
@@ -72,159 +80,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> When tested fs has zero fsid (e.g. fuse) and events are reported
-> with fsid+fid, watching different filesystems with the same group is
-> not supported.
-
-> Try to setup a bogus mark on test tmp dir, in addition to the mark
-> on the tested filesystem, to check if marks on different filesystems
-> are supported.
-
-> Run on all filesystem to test both fs with zero fsid (e.g. fuse) and
-> fs with valid fsid.
-
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
-
-Hi Amir,
-
-> Petr,
-
-> The fanotify tests changes that you already picked from my github [1]
-> have to do with fixing new test failures in v6.7 and v6.8-rc1, dues to
-> the fact that each of those kernel versions added new filesystems that
-> support fanotify events with fid+fsid.
-
-> This is the only change to test new functionality in v6.8-rc1, namely,
-> that for fs with zero fsid (e.g. fuse), an fanotify group can watch a
-> single fs instance.
-
-This patch would have to be rebased, to be applicable of the previous one (which
-touches more tests) in your branch.
-
-I also wonder what I did wrong, the branch works after reboot, tested on:
-1) mainline kernel 6.8.0-rc1 in rapido-linux
-2) openSUSE kernel 6.8.0-rc1-2.gf4ba5db-default
-3) 6.7.0-9.gaedda80-default
-
-> To fix the problem that you reported with this test on exfat [2],
-> I needed to make a distiction between the fs that do not support mount
-> mark with fid due to having zero fsid (e.g. fuse) and those fs that
-> do not support decoding fid (e.g. exfat).
-
-> It is not urgent to merge this change to the upcoming code freeze -
-> it's up to you, but since I already tested it I am posting it now.
-
-I'll probably merge it after LTP release.
-
-Kind regards,
-Petr
-
-> Thanks,
-> Amir.
-
-> [1] https://github.com/amir73il/ltp/commits/fanotify_fsid/
-> [2] https://lore.kernel.org/ltp/CAOQ4uxh1VwoMK_ssjdcxo_sk4cw0pD_FcXZ6Lb2=XHLf21kGAw@mail.gmail.com/T/#mf15d751e8f77a497ee4387b0791219e800cde7ea
-
->  testcases/kernel/syscalls/fanotify/fanotify.h |  6 +++++-
->  .../kernel/syscalls/fanotify/fanotify01.c     | 19 +++++++++++++++++++
->  2 files changed, 24 insertions(+), 1 deletion(-)
-
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index e0d178bcc..554940a7e 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -166,20 +166,23 @@ static inline int fanotify_flags_supported_on_fs(unsigned int init_flags,
->  {
->  	int fd;
->  	int rval = 0;
-> +	int err = 0;
-
->  	fd = fanotify_init(init_flags, O_RDONLY);
-> -
->  	if (fd < 0) {
-> +		err = errno;
->  		if (errno == ENOSYS)
->  			tst_brk(TCONF, "fanotify not configured in kernel");
->  		if (errno != EINVAL)
->  			tst_brk(TBROK | TERRNO,
->  				"fanotify_init(%x, O_RDONLY) failed",
->  				init_flags);
-> +		errno = err;
->  		return -1;
->  	}
-
->  	if (fname && fanotify_mark(fd, FAN_MARK_ADD | mark_flags, event_flags, AT_FDCWD, fname) < 0) {
-> +		err = errno;
->  		if (errno == ENODEV || errno == EOPNOTSUPP || errno == EXDEV) {
->  			rval = strcmp(fname, OVL_MNT) ? -2 : -3;
->  		} else if (errno != EINVAL) {
-> @@ -194,6 +197,7 @@ static inline int fanotify_flags_supported_on_fs(unsigned int init_flags,
-
->  	SAFE_CLOSE(fd);
-
-> +	errno = err;
->  	return rval;
->  }
-
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> index e4398f236..ba09f309d 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify01.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> @@ -77,6 +77,7 @@ static char buf[BUF_SIZE];
->  static int fd_notify;
->  static int fan_report_fid_unsupported;
->  static int mount_mark_fid_unsupported;
-> +static int inode_mark_fid_xdev;
->  static int filesystem_mark_unsupported;
-
->  static unsigned long long event_set[EVENT_MAX];
-> @@ -328,6 +329,17 @@ pass:
-
->  	}
-
-> +
-> +	/*
-> +	 * Try to setup a bogus mark on test tmp dir, to check if marks on
-> +	 * different filesystems are supported.
-> +	 * When tested fs has zero fsid (e.g. fuse) and events are reported
-> +	 * with fsid+fid, watching different filesystems is not supported.
-> +	 */
-> +	ret = report_fid ? inode_mark_fid_xdev : 0;
-> +	TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
-> +					 AT_FDCWD, "."), ret);
-> +
->  	/* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
->  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE | mark->flag,
->  			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
-> @@ -352,6 +364,12 @@ static void setup(void)
->  	mount_mark_fid_unsupported = fanotify_flags_supported_on_fs(FAN_REPORT_FID,
->  								    FAN_MARK_MOUNT,
->  								    FAN_OPEN, fname);
-> +	/* When mount mark is not supported due to zero fsid, multi fs inode marks are not supported */
-> +	if (mount_mark_fid_unsupported && errno == ENODEV) {
-> +		tst_res(TINFO, "filesystem %s does not support reporting events with fid from multi fs",
-> +				tst_device->fs_type);
-> +		inode_mark_fid_xdev = EXDEV;
-> +	}
->  }
-
->  static void cleanup(void)
-> @@ -368,6 +386,7 @@ static struct tst_test test = {
->  	.needs_root = 1,
->  	.mount_device = 1,
->  	.mntpoint = MOUNT_PATH,
-> +	.all_filesystems = 1,
->  };
-
->  #else
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBKYW4gMjUsIDIwMjQgYXQgMjoyM+KAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+ID4gV2hlbiB0ZXN0ZWQgZnMgaGFzIHplcm8gZnNpZCAoZS5nLiBmdXNl
+KSBhbmQgZXZlbnRzIGFyZSByZXBvcnRlZAo+ID4gd2l0aCBmc2lkK2ZpZCwgd2F0Y2hpbmcgZGlm
+ZmVyZW50IGZpbGVzeXN0ZW1zIHdpdGggdGhlIHNhbWUgZ3JvdXAgaXMKPiA+IG5vdCBzdXBwb3J0
+ZWQuCj4KPiA+IFRyeSB0byBzZXR1cCBhIGJvZ3VzIG1hcmsgb24gdGVzdCB0bXAgZGlyLCBpbiBh
+ZGRpdGlvbiB0byB0aGUgbWFyawo+ID4gb24gdGhlIHRlc3RlZCBmaWxlc3lzdGVtLCB0byBjaGVj
+ayBpZiBtYXJrcyBvbiBkaWZmZXJlbnQgZmlsZXN5c3RlbXMKPiA+IGFyZSBzdXBwb3J0ZWQuCj4K
+PiA+IFJ1biBvbiBhbGwgZmlsZXN5c3RlbSB0byB0ZXN0IGJvdGggZnMgd2l0aCB6ZXJvIGZzaWQg
+KGUuZy4gZnVzZSkgYW5kCj4gPiBmcyB3aXRoIHZhbGlkIGZzaWQuCj4KPiA+IFNpZ25lZC1vZmYt
+Ynk6IEFtaXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+Cj4gPiAtLS0KPgo+IEhpIEFt
+aXIsCj4KPiA+IFBldHIsCj4KPiA+IFRoZSBmYW5vdGlmeSB0ZXN0cyBjaGFuZ2VzIHRoYXQgeW91
+IGFscmVhZHkgcGlja2VkIGZyb20gbXkgZ2l0aHViIFsxXQo+ID4gaGF2ZSB0byBkbyB3aXRoIGZp
+eGluZyBuZXcgdGVzdCBmYWlsdXJlcyBpbiB2Ni43IGFuZCB2Ni44LXJjMSwgZHVlcyB0bwo+ID4g
+dGhlIGZhY3QgdGhhdCBlYWNoIG9mIHRob3NlIGtlcm5lbCB2ZXJzaW9ucyBhZGRlZCBuZXcgZmls
+ZXN5c3RlbXMgdGhhdAo+ID4gc3VwcG9ydCBmYW5vdGlmeSBldmVudHMgd2l0aCBmaWQrZnNpZC4K
+Pgo+ID4gVGhpcyBpcyB0aGUgb25seSBjaGFuZ2UgdG8gdGVzdCBuZXcgZnVuY3Rpb25hbGl0eSBp
+biB2Ni44LXJjMSwgbmFtZWx5LAo+ID4gdGhhdCBmb3IgZnMgd2l0aCB6ZXJvIGZzaWQgKGUuZy4g
+ZnVzZSksIGFuIGZhbm90aWZ5IGdyb3VwIGNhbiB3YXRjaCBhCj4gPiBzaW5nbGUgZnMgaW5zdGFu
+Y2UuCj4KPiBUaGlzIHBhdGNoIHdvdWxkIGhhdmUgdG8gYmUgcmViYXNlZCwgdG8gYmUgYXBwbGlj
+YWJsZSBvZiB0aGUgcHJldmlvdXMgb25lICh3aGljaAo+IHRvdWNoZXMgbW9yZSB0ZXN0cykgaW4g
+eW91ciBicmFuY2guCgpJIGRvbid0IHVuZGVyc3RhbmQgLSB0aGlzIHBhdGNoIGlzIGFscmVhZHkg
+cmViYXNlZC4KSSBoYXZlIGl0IGluIG15IGJyYW5jaCBhZnRlciB0aGUgZml4IHBhdGNoZXM6Cgo3
+ZGIyZGFjOWYgKEhFQUQgLT4gZmFub3RpZnlfZnNpZCkgZmFub3RpZnkwMTogVGVzdCBzZXR0aW5n
+IHR3byBtYXJrcwpvbiBkaWZmZXJlbnQgZmlsZXN5c3RlbXMKZjgwZGM1MTJlIGZhbm90aWZ5ezAx
+LDA5LDEwfTogQ2hlY2sgZm9yIHJlcG9ydCBmaWQgc3VwcG9ydCB3aXRoIG1vdW50IG1hcmsKOTA2
+MjgyNGE3IChtYXN0ZXIpIGZhbm90aWZ5MTY6IEZpeCB0ZXN0IGZhaWx1cmUgb24gRlVTRQplYTA4
+NTcxM2YgZmFub3RpZnl7MTQsMTUsMTZ9OiBDaGVjayBmb3IgZmlsZXN5c3RlbSBtYXJrIHN1cHBv
+cnQgb24gZmlsZXN5c3RlbQo5MjFmMGNlODYgZmFub3RpZnkxMzogVXNlIGdlbmVyaWMgY2hlY2sg
+Zm9yIG1hcmsgdHlwZSBzdXBwb3J0IG9uIGZpbGVzeXN0ZW0KCj4KPiBJIGFsc28gd29uZGVyIHdo
+YXQgSSBkaWQgd3JvbmcsIHRoZSBicmFuY2ggd29ya3MgYWZ0ZXIgcmVib290LCB0ZXN0ZWQgb246
+Cj4gMSkgbWFpbmxpbmUga2VybmVsIDYuOC4wLXJjMSBpbiByYXBpZG8tbGludXgKPiAyKSBvcGVu
+U1VTRSBrZXJuZWwgNi44LjAtcmMxLTIuZ2Y0YmE1ZGItZGVmYXVsdAo+IDMpIDYuNy4wLTkuZ2Fl
+ZGRhODAtZGVmYXVsdAo+CgpXaGljaCBicmFuY2ggd29ya3M/IExUUCBtYXN0ZXIgYnJhbmNoPwoK
+TXkgY2xhaW0gaXMgdGhhdCB3aXRoIHRoZSBjdXJyZW50IExUUCBtYXN0ZXIgYnJhbmNoLCBmYW5v
+dGlmeTAxLDA5LDEwCndvdWxkIGZhaWwgb24ga2VybmVsIDYuOC4wLXJjMSB3aGVuIHJ1bm5pbmcg
+d2l0aApMVFBfREVWX0ZTX1RZUEU9ZXhmYXQgKG5vdCBMVFBfU0lOR0xFX0ZTX1RZUEU9ZXhmYXQp
+CgpTbyBhdCBsZWFzdCB5b3Ugc2hvdWxkIGNvbnNpZGVyIGFwcGx5aW5nIHRoaXMgZml4IGZvciB0
+aGUgcmVsZWFzZToKZjgwZGM1MTJlIGZhbm90aWZ5ezAxLDA5LDEwfTogQ2hlY2sgZm9yIHJlcG9y
+dCBmaWQgc3VwcG9ydCB3aXRoIG1vdW50IG1hcmsKClRoYW5rcywKQW1pci4KCi0tIApNYWlsaW5n
+IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
