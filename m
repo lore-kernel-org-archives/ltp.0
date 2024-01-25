@@ -4,100 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB92DC47258
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 10:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E538C47258
+	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 10:27:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4A3883CE1EF
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 11:26:10 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D41F43CE1C7
+	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 11:27:29 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 894483C62AC
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 11:25:55 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id B82883CE1C7
+ for <ltp@lists.linux.it>; Thu, 25 Jan 2024 11:27:15 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 003DB600121
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 11:25:54 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4D0DD257335
+ for <ltp@lists.linux.it>; Thu, 25 Jan 2024 11:27:14 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EE8FC1F839;
- Thu, 25 Jan 2024 10:25:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4AB6221F28;
+ Thu, 25 Jan 2024 10:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706178354;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1706178432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S2Dfju/1sonkZt+KjTtDxot92b/Q/saYhcQhWwrda0w=;
- b=fOS0bN0qKehnh8enZ9aP6q3ovmLkMD9yQ3xHzx6KoLsc37McBDlFQgq6Axx0wWLjeOlS5s
- WKQS53hETI/XAlDbclmn95riyvSQ2C6+g5nXVAlE6qNzSLfludTQXAj2RFXzjy4LDomaCh
- EkWyJWFlZ1Oon4FhxmDRCbmiWxMztUU=
+ bh=c88dHbA2WNLQOZk/AhvFr+lCZuN334Vvp1iBV3EFqmk=;
+ b=sAq78NpYN8oM58lTXcQVeD/QUEcLf07ohTPzPAEUIFpTkBt0H2jEo3YYGhvP/NsguIEM9M
+ qOQEMoShpR55PCNvzEnJaLC5uhGw9lzTp98z7bD7IIf/nIogC8F+UaIuP0R4q9s8nDuuzl
+ Cp9ZeGGFoZKmKowjJq1aiaoR1K/r8WQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706178354;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1706178432;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S2Dfju/1sonkZt+KjTtDxot92b/Q/saYhcQhWwrda0w=;
- b=j7KmCnxYm9KHqs9XLeSbsHgyNnRY3J8manRon9J+O3ETYd8jec2YWPU5z2zxfLcruwIXC5
- lxq4eJpv4OY9J7AA==
+ bh=c88dHbA2WNLQOZk/AhvFr+lCZuN334Vvp1iBV3EFqmk=;
+ b=sF0H9/p2AWqs0hMsj9ei3feOKtoFfyOXu6o5TnqTYaHNreazg8FV+3AYROsjAcDnZXF84u
+ NwiI66jVC/Q18RBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706178353;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1706178432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S2Dfju/1sonkZt+KjTtDxot92b/Q/saYhcQhWwrda0w=;
- b=sXk8BWbWgqGxQmkkSxLbvTzaFRBigAloapOEKt4nhWKTFl4/XR+y7YweXqI9pWlAzOvLnk
- lxbe/W9aVDq/Gxcy+OeAA7Y89LRccGag/5Y8kI6aaSwjxAbjnJlGwydBGts+1SPuD9SHQa
- puIwnYKaih6ES9mdUTw/QuXuINzKBBg=
+ bh=c88dHbA2WNLQOZk/AhvFr+lCZuN334Vvp1iBV3EFqmk=;
+ b=sAq78NpYN8oM58lTXcQVeD/QUEcLf07ohTPzPAEUIFpTkBt0H2jEo3YYGhvP/NsguIEM9M
+ qOQEMoShpR55PCNvzEnJaLC5uhGw9lzTp98z7bD7IIf/nIogC8F+UaIuP0R4q9s8nDuuzl
+ Cp9ZeGGFoZKmKowjJq1aiaoR1K/r8WQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706178353;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1706178432;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S2Dfju/1sonkZt+KjTtDxot92b/Q/saYhcQhWwrda0w=;
- b=nqJXHGM1Hzix7DTgKz+N6VAYqgrel/NxN06J7WCcDa8K+jl8Ce+ocqBYJiTKMihULWXXdD
- NgWBwr3IaKthivDA==
+ bh=c88dHbA2WNLQOZk/AhvFr+lCZuN334Vvp1iBV3EFqmk=;
+ b=sF0H9/p2AWqs0hMsj9ei3feOKtoFfyOXu6o5TnqTYaHNreazg8FV+3AYROsjAcDnZXF84u
+ NwiI66jVC/Q18RBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C90CC134C3;
- Thu, 25 Jan 2024 10:25:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id erGwLzE3smU9ZQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 25 Jan 2024 10:25:53 +0000
-Date: Thu, 25 Jan 2024 11:25:52 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240125102552.GA389091@pevik>
-References: <20240125100009.387096-1-pvorel@suse.cz>
- <ZbIyh-kyBMTE5OA5@yuki>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F73C134C3;
+ Thu, 25 Jan 2024 10:27:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 32leCoA3smW6ZQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 25 Jan 2024 10:27:12 +0000
+Date: Thu, 25 Jan 2024 11:27:25 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZbI3jdbljCoCl-Zi@yuki>
+References: <20240125100009.387096-1-pvorel@suse.cz> <ZbIyh-kyBMTE5OA5@yuki>
+ <20240125102552.GA389091@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZbIyh-kyBMTE5OA5@yuki>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.35 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+In-Reply-To: <20240125102552.GA389091@pevik>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sAq78NpY;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="sF0H9/p2"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.01 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- RCVD_COUNT_THREE(0.00)[3]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.05)[59.81%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[19.48%]
+X-Rspamd-Queue-Id: 4AB6221F28
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] fs_fill: Increase timeout to 5 min
 X-BeenThere: ltp@lists.linux.it
@@ -111,30 +117,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> Shouldn't this have fixes tag for:
+Hi!
+> I'm not sure if increasing to 1 GB makes test run slightly faster.
+> Maybe device size and runtime are related.
 
-> "fs_fill: Increase test loop device size to 1GB"
+Of course it is, the test fills the whole device with data, the runtime
+should really be a function of the device size.
 
-The timeout was during 300 MB, that's why I would not add it.
-But I can be wrong.
-
-I'm not sure if increasing to 1 GB makes test run slightly faster.
-Maybe device size and runtime are related.
-
-Kind regards,
-Petr
-
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-Thanks!
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
