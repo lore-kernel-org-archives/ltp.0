@@ -4,101 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFDC1C47422
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 15:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D56AC47422
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 04:02:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 28C363CFAFB
-	for <ltp@archiver.kernel.org>; Thu, 25 Jan 2024 16:51:29 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id DF66C3D0107
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 05:02:04 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A0F113CE1E6
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 16:51:14 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 946F13CFB1B
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:49 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.223;
+ helo=esa9.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EE4321A0100A
- for <ltp@lists.linux.it>; Thu, 25 Jan 2024 16:51:13 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D212C1F88D;
- Thu, 25 Jan 2024 15:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706197872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zyeZk1KxQlGSa+S7DLlIoUWWc/eUp67r4UM/IPMbbHw=;
- b=N7Ni1WgZlzYF1L2eqKfd9rxSku5EL6Hw4cB2ERMApUtlmZeEnRthDXoapN4pJFWLvh1eRR
- xfbw4sryJeWSDsitQrTa5F8mTXrKVVBW3zWOM7Ky2zhjVfAW1ARLOL8o6winMw2rMN4VXv
- UL3P2ahjmCgbrnuWQRVbFEk4WsgsiWY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706197872;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zyeZk1KxQlGSa+S7DLlIoUWWc/eUp67r4UM/IPMbbHw=;
- b=BnCxxh/MIprq7d2SpEXU4oMVdj7gXWKRPERL6SKq5UHfRYhtLOQX8y3HIPgKmszykp7sGl
- unX5RKLZaL3bBcDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706197871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zyeZk1KxQlGSa+S7DLlIoUWWc/eUp67r4UM/IPMbbHw=;
- b=uw/OXPEJJINc9oInsx75K+zvC8WDGbPbL0+Ly5TdlA3+jn1enovEllvddG1oQ9dcatrl5Z
- 21YiTwON8z4/M7iBPX1L1f1p8uRBR3ROCQUwoR7MCOBvQ4okBCiFAuoNnnLAj4IJlcnszw
- I9k5ohYSdMCulyP9OmuDTYroFzuBEP8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706197871;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zyeZk1KxQlGSa+S7DLlIoUWWc/eUp67r4UM/IPMbbHw=;
- b=WcCr2QLr8Am/EOX7tvbrGgmxYGLkn5/7uKRbppcWjj/mXagoEdKuUa1EhaAXAPrlQZesVM
- +QASCEWzevBT8kAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F0C313649;
- Thu, 25 Jan 2024 15:51:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 10QfG2+DsmXjbgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 25 Jan 2024 15:51:11 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 270EC601F66
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1706241707; x=1737777707;
+ h=from:to:subject:date:message-id:in-reply-to:references:
+ mime-version:content-transfer-encoding;
+ bh=CrR7lvLpD153EvDUorqyatC0tlsoilUI0f/xqNCqnM4=;
+ b=PokNLr1wDEOENBV0KWsABqJUJarkcpt4X27i9tLgFVa1u0dsAdAxVdjL
+ 8FYkEkwlNhVj0OzOGBprZJ5kCCx96d5g9tl3G6fHaolJzIOwKcR04Ba2D
+ TiUXTvjZKbnrInuiB8HwEX42HdVNWqPFToHFL2VCDK5pHu1yNxpkIGg4p
+ kavwnhRUAga+9Mr+fZKPVQgFiEKVY+n0FG4hQVCloIDITueQZI5yI1X6C
+ vcI/noU3CrA2THQS63RdpTA5HMBqqbzaASHAB74rGqSf8O4H8LOWZGIw3
+ YSzW5WSks5T6194EHEO1VWquuN6QzYFefzloa+7TdqnGl/FYRIyGL4UdF A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="135724758"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; d="scan'208";a="135724758"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jan 2024 13:01:44 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
+ [192.168.87.58])
+ by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6C759D64A7
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:42 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 08A0FD8BCF
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:41 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 9BE9E2007C3E2
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:40 +0900 (JST)
+Received: from irides.. (unknown [10.167.226.114])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 459F01A006E
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 12:01:40 +0800 (CST)
+From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Thu, 25 Jan 2024 16:51:07 +0100
-Message-ID: <20240125155107.430656-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+Date: Fri, 26 Jan 2024 12:01:39 +0800
+Message-Id: <20240126040139.2534873-3-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
+References: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="uw/OXPEJ";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WcCr2QLr
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.34 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-1.00)[-1.000];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.15)[68.65%]
-X-Rspamd-Queue-Id: D212C1F88D
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28142.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28142.004
+X-TMASE-Result: 10--6.705500-10.000000
+X-TMASE-MatchedRID: JUGAxiLh1cOOPHcS3uzQKazGfgakLdjawTlc9CcHMZerwqxtE531VIPc
+ XuILVCbaxRnB4y+KJ+Rl+L/qU7bESyJMyaD9gw+Xqoeab9Xgz8+EpBVx5tWvLRe1yJq6HIhHE4L
+ eIK6WkgroBNTOy2tS54Ay6p60ZV62To3UJuRLIoTdB/CxWTRRu25FeHtsUoHul8V3NT7JckDnnF
+ 7chyyk2M/L9YWZMHYt0iMueUVgByZfCOKFKuVYGg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] splice07: Whitelist /dev/zero on pipe write
+Subject: [LTP] [PATCH 3/3] fdatasync03: add [Description] tag and cleanup
+ code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,43 +90,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-/dev/zero on pipe write started to succeeded on kernel 6.7.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 ---
-Hi,
+ testcases/kernel/syscalls/fdatasync/fdatasync03.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-@Jan could you please check the problem is a kernel 6.7 bug
-or just wanted change and we should whitelist /dev/zero on pipe write?
-
-Thanks!
-
-Kind regards,
-Petr
-
- testcases/kernel/syscalls/splice/splice07.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/syscalls/splice/splice07.c b/testcases/kernel/syscalls/splice/splice07.c
-index 135c42e47..1fa13b3e6 100644
---- a/testcases/kernel/syscalls/splice/splice07.c
-+++ b/testcases/kernel/syscalls/splice/splice07.c
-@@ -38,6 +38,7 @@ static void check_splice(struct tst_fd *fd_in, struct tst_fd *fd_out)
- 	if (fd_out->type == TST_FD_PIPE_WRITE) {
- 		switch (fd_in->type) {
- 		/* While these combinations succeeed */
-+		case TST_FD_DEV_ZERO:
- 		case TST_FD_FILE:
- 		case TST_FD_MEMFD:
- 			return;
+diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync03.c b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
+index 5f3e0c96f..257e413d0 100644
+--- a/testcases/kernel/syscalls/fdatasync/fdatasync03.c
++++ b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
+@@ -4,8 +4,8 @@
+  * Author: Sumit Garg <sumit.garg@linaro.org>
+  */
+ 
+-/*
+- * fdatasync03
++/*\
++ * [Description]
+  *
+  * It basically tests fdatasync() to sync test file data having large dirty
+  * file pages to block device. Also, it tests all supported filesystems on a
+@@ -37,10 +37,7 @@ static void verify_fdatasync(void)
+ 
+ 	tst_fill_fd(fd, 0, TST_MB, FILE_SIZE_MB);
+ 
+-	TEST(fdatasync(fd));
+-
+-	if (TST_RET)
+-		tst_brk(TFAIL | TTERRNO, "fdatasync(fd) failed");
++	TST_EXP_PASS_SILENT(fdatasync(fd));
+ 
+ 	written = tst_dev_bytes_written(tst_device->dev);
+ 
 -- 
-2.43.0
+2.34.1
 
 
 -- 
