@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F45C47422
-	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 04:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2BB7C47DDB
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 04:02:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 330C93D010C
-	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 05:02:23 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id ED1DA3CFB1F
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 05:02:39 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 924F73CFB18
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:48 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.117;
- helo=esa4.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id DC3EB3CFB2D
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:51 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.252;
+ helo=esa7.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com
- [68.232.139.117])
+Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
+ [139.138.61.252])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 139301400074
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:47 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 88ED520093F
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:49 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1706241707; x=1737777707;
- h=from:to:subject:date:message-id:in-reply-to:references:
- mime-version:content-transfer-encoding;
- bh=7aKWHiDqqLaTN65bg+yOBXRtWo8bwEziF8t65eZ9bhA=;
- b=MaK1hSMgBbWtAFtN1/ezVnwyygh4yY7tVpljzKJV1dSw+QBNRKW6QK9z
- ZG0SwLVH61RkRZRlDNZM3kMgEImHJfr/4ouOwVwqHXpc8/O4ZiGpIuNxf
- 4gRWzIkbs28a60CqNeT5l3MCwyUqZVqsGreRmcUqCh8PU8lTYaPc/ZcUc
- aAhQAWJgnCZIHp31ElbrghKveQOeBagVOgbtbjqjGnZ0Dx148TpyLaIsy
- TeYvV3nbA0CfQbxMVAJy9rkWBge8ELc4LtTizk+7kDjz9+Pen2KyD6M8u
- Y0sAKe61UZZpdkA+K4Is1OcmtJCnIpy9gSHmQjWYGzgBQYUxDYu178xBB w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="147604329"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; d="scan'208";a="147604329"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ t=1706241710; x=1737777710;
+ h=from:to:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=xMI1UjbLy7vvgLix5jTE+2lbEtSMG0YXBs8dPU1sZbI=;
+ b=UxzdnFze59xZCHZVfwu6I9w564nUoI3gD+EAZb8UQBKa9AW/FDMGuTSr
+ E1Ws5RtKchLXcHbk/z5K3Iir77Tk2b0EGULjSs0Od9dozgQSa4RH5UdML
+ M8ArbJAgcD1rRcWNOMbtDtUB6nlQ1dRP/iLfiT18xwzjqVwjLAgBfpeAH
+ W1t5ITmtbNZf/FqYQKjbyE/9cGJboGelfU3Itjrddj2QqQc55nzAPSSjY
+ yLvGLuDbpWJ/qlmZDeGBGUyJMxNYai65D3NhBWaYz58KXLLA024jtEYgo
+ GPYgNxKQBg0yCJUS49Ki3Hnl3KA22EQ2F4irTvBAW72wjVd4jz2rKhuoy Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="126110251"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; d="scan'208";a="126110251"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  26 Jan 2024 13:01:44 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 7C1B4D9DA6
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
+ [192.168.87.58])
+ by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5847CE8C08
  for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:42 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id EA4EED2965
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id C79BAD8BCC
  for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:40 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 6D9B16B4C1
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 60D262007C3E2
  for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:40 +0900 (JST)
 Received: from irides.. (unknown [10.167.226.114])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 2008D1A006C
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 12:01:40 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id EDD321A006A
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 12:01:39 +0800 (CST)
 From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri, 26 Jan 2024 12:01:38 +0800
-Message-Id: <20240126040139.2534873-2-ruansy.fnst@fujitsu.com>
+Date: Fri, 26 Jan 2024 12:01:37 +0800
+Message-Id: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
-References: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28142.004
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28142.004
-X-TMASE-Result: 10--19.373900-10.000000
-X-TMASE-MatchedRID: Pb1HNPK8sDryq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
+X-TMASE-Result: 10--22.004700-10.000000
+X-TMASE-MatchedRID: VRedb8S231nyq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
  7wkSW5bKbnRB47KLJ1QzLmfGY6iDkYF+91Q/EzGtN70wXhI0DX4yhLY8urUHvmvlGb+24NaZuJE
- UmdYPGSXiTzfmGp/ZBzTiWC5C1sf/sIm8s6bJZMU5ZRbFNAl0j79cAlQW5Yprr2Pto2emO2WkkT
- GZnjve6+14wOm5RFSV22skxEv+S/UO9fZKTjt+zwA+Y0oNaxbQyqyllX6UJIs1Y73PdzvXZJClV
- uR6WzhZIVhz3157EfnJuTpHnCXm39XQ2R27CZyzGYJhRh6ssesfimmlcABuNxj4eND0g8+sggEK
- sdd1+9z76oy6MPOJDWN26yr2I7RBhVgj6N6wwHCF0P4btTlf9KTYf9v9flolACF5TKaad18phVB
- O6Z0CBjxfxSdl51k89Cg8TV2EmpA3KXWd30Ii3RRFJJyf5BJe3QfwsVk0UbslCGssfkpInQ==
+ UmdYPGSXiTzfmGp/ZBzTiWC5C1sf/sIm8s6bJZMU5ZRbFNAl0j79cAlQW5YprpjlkbDvDJ4djDe
+ scmMp4DI2J1F/55TUPJEbUc8xGQ/ZXDwaouY0y7s2CuVPkCNzuBGvINcfHqhcvPRFFhcWhYNBBe
+ W0QNlfKWLhiC/mMnN+ITE3HVSm/hYaYpgfhqlfrEzEoOqAAVLM2hINq/IswlJmPq8jhF/uENq8y
+ lq3YspJADnLPlN1QTR00eqxHEa4eEd0YyW6tLbkdahq+rGDn/50JB6wB6CqmVC4aflv2vZlJI7w
+ YmUmzrHJcwyKKWovqJKpa08oNRnyPJkelMnqjq1VeGWZmxN2MHhysWPN3OzibKItl61J/yZ+inT
+ K0bC9eKrauXd3MZDUD/dHyT/Xh7Q==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] fdatasync02: Convert to new API
+Subject: [LTP] [PATCH 1/3] fdatasync01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,14 +98,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 ---
- .../kernel/syscalls/fdatasync/fdatasync02.c   | 207 +++---------------
- 1 file changed, 33 insertions(+), 174 deletions(-)
+ .../kernel/syscalls/fdatasync/fdatasync01.c   | 164 +++---------------
+ 1 file changed, 26 insertions(+), 138 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync02.c b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-index 9ce4fc7bb..89a815219 100644
---- a/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-+++ b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-@@ -1,197 +1,56 @@
+diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync01.c b/testcases/kernel/syscalls/fdatasync/fdatasync01.c
+index 24a91785c..ba4375b68 100644
+--- a/testcases/kernel/syscalls/fdatasync/fdatasync01.c
++++ b/testcases/kernel/syscalls/fdatasync/fdatasync01.c
+@@ -1,155 +1,43 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -127,47 +126,43 @@ index 9ce4fc7bb..89a815219 100644
   */
 -/**********************************************************
 - *
-- *    TEST IDENTIFIER   : fdatasync02
+- *    TEST IDENTIFIER   : fdatasync01
 - *
 - *    EXECUTED BY       : Any user
 - *
-- *    TEST TITLE        : Checking error conditions for fdatasync(2)
+- *    TEST TITLE        : Basic test for fdatasync(2)
 - *
-- *    TEST CASE TOTAL   : 2
+- *    TEST CASE TOTAL   : 1
 - *
 - *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
 - *
 - *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
 - *
 - *    DESCRIPTION
-- *      Verify that,
-- *      1. fdatasync(2) returns -1 and sets errno to EBADF for invalid
-- *	   file descriptor.
-- *      2. fdatasync(2) returns -1 and sets errno to EINVAL for file
-- *         descriptor to a special file.
+- *	This is a Phase I test for the fdatasync(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
 - *
-- *      Setup:
-- *        Setup signal handling.
-- *        Set expected errnos for logging
-- *        Pause for SIGUSR1 if option specified.
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *	  Create a temp directory and cd to it
+- *	  Initialize filename and open it in write mode for each child process.
 - *
-- *      Test:
-- *       Loop if the proper options are given.
-- *	  Perform testcase specific setup (if needed)
-- *        Execute system call
-- *        Check return code and error number, if matching,
-- *                   Issue PASS message
-- *        Otherwise,
-- *                   Issue FAIL message
-- *	  Perform testcase specific cleanup (if needed)
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Issue FAIL message with errno.
+- *	  Otherwise, Issue PASS message.
 - *
-- *      Cleanup:
-- *        Print errno log and/or timing stats if options given
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *	  Remove temporary directory and all files in it.
 - *
 - * USAGE:  <for command-line>
-- *  fdatasync02 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
+- *  fdatasync01 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
 - *		where,  -c n : Run n copies concurrently.
 - *			-e   : Turn on errno logging.
 - *			-f   : Turn off functional testing
@@ -182,133 +177,64 @@ index 9ce4fc7bb..89a815219 100644
 + * [Description]
   *
 - ****************************************************************/
-+ * Verify that,
-+ * 1. fdatasync(2) returns -1 and sets errno to EBADF for invalid file
-+ *    descriptor.
-+ * 2. fdatasync(2) returns -1 and sets errno to EINVAL for file descriptor to a
-+ *    special file.
-+ */
- 
 -#include <errno.h>
--#include <pwd.h>
 -#include <sys/types.h>
 -#include <sys/stat.h>
 -#include <fcntl.h>
 -#include <unistd.h>
 -#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
++ * Basic test for fdatasync(). Call fdatasync() on a fd and expect it to pass.
++ */
  
- #define EXP_RET_VAL	-1
- #define SPL_FILE	"/dev/null"
- 
--struct test_case_t {		/* test case structure */
-+static struct tcase {		/* test case structure */
-+	int fd;
- 	int experrno;		/* expected errno */
- 	char *desc;
--	int (*setup) (void);	/* Individual setup routine */
--	void (*cleanup) (void);	/* Individual cleanup routine */
-+} tcases[] = {
-+	{ -1, EBADF, "invalid file descriptor" },
-+	// initialize this fd later in setup()
-+	{ -1, EINVAL, "file descriptor to a special file" },
- };
- 
--char *TCID = "fdatasync02";
--
--static int testno;
 -static int fd;
--
+-static char filename[30];
 -static void setup(void);
 -static void cleanup(void);
--static int setup1(void);
--static int setup2(void);
--static void cleanup2(void);
--
--static struct test_case_t tdat[] = {
--	{EBADF, "invalid file descriptor", setup1, NULL},
--	{EINVAL, "file descriptor to a special file", setup2, cleanup2},
--};
--
--int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
--
++#include "tst_test.h"
+ 
+-char *TCID = "fdatasync01";
+-int TST_TOTAL = 1;
++static int fd;
++static char pfilename[30];
+ 
 -int main(int argc, char **argv)
-+static void run(unsigned int n)
++static void run(void)
  {
 -	int lc;
-+	struct tcase *tc = &tcases[n];
- 
+-
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			if ((tdat[testno].setup) && (tdat[testno].setup())) {
--				/* setup() failed, skip this test */
--				continue;
--			}
+-		/* Test the system call */
+-		TEST(fdatasync(fd));
 -
--			/* Test the system call */
--			TEST(fdatasync(fd));
--			if ((TEST_RETURN == EXP_RET_VAL) &&
--			    (TEST_ERRNO == tdat[testno].experrno)) {
--				tst_resm(TPASS, "Expected failure for %s, "
--					 "errno: %d", tdat[testno].desc,
--					 TEST_ERRNO);
--			} else {
--				tst_resm(TFAIL, "Unexpected results for %s ; "
--					 "returned %ld (expected %d), errno %d "
--					 "(expected %d)", tdat[testno].desc,
--					 TEST_RETURN, EXP_RET_VAL,
--					 TEST_ERRNO, tdat[testno].experrno);
--			}
--			if (tdat[testno].cleanup) {
--				tdat[testno].cleanup();
--			}
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "fdatasync() failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			/* No Functional verification yet */
+-			tst_resm(TPASS, "fdatasync() successful");
 -		}
 -	}
+-
+-	/* perform global cleanup and exit */
 -	cleanup();
 -
 -	tst_exit();
--}
 -
--int setup1(void)
--{
--	fd = -1;
--	return 0;
--}
--
--int setup2(void)
--{
--	/* Open special file */
--	if ((fd = open(SPL_FILE, O_RDONLY)) == -1) {
--		tst_resm(TBROK, "Failed to open %s", SPL_FILE);
--		return 1;
--	}
--	return 0;
-+	TST_EXP_FAIL(fdatasync(tc->fd), tc->experrno,
-+		     "fdatasync() for %s(%d)", tc->desc, tc->fd);
++	TST_EXP_PASS(fdatasync(fd), "fdatasync(%d)", fd);
  }
  
--void cleanup2(void)
-+static void setup(void)
- {
--	/* close special file */
--	SAFE_CLOSE(NULL, fd);
-+	tcases[1].fd = SAFE_OPEN(SPL_FILE, O_RDONLY);
- }
- 
--/*
-- * setup()
-- *	performs all ONE TIME setup for this test
-- */
+-/* setup() - performs all ONE TIME setup for this test */
 -void setup(void)
-+static void cleanup(void)
++static void setup(void)
  {
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
@@ -318,7 +244,23 @@ index 9ce4fc7bb..89a815219 100644
 -	 */
 -	TEST_PAUSE;
 -
-+	SAFE_CLOSE(tcases[1].fd);
+-	tst_tmpdir();
+-
+ 	/* Initialize unique filename for each child process */
+-	if (sprintf(filename, "fdatasync_%d", getpid()) <= 0) {
+-		tst_brkm(TBROK, cleanup, "Failed to initialize filename");
+-	}
+-	if ((fd = open(filename, O_CREAT | O_WRONLY, 0777)) == -1) {	//mode must be specified when O_CREATE is in the flag
+-		tst_brkm(TBROK, cleanup, "open() failed");
+-	}
+-	if ((write(fd, filename, strlen(filename) + 1)) == -1) {
+-		tst_brkm(TBROK, cleanup, "write() failed");
+-	}
++	sprintf(pfilename, "fdatasync_%d", getpid());
++
++	/* mode must be specified when O_CREATE is in the flag */
++	fd = SAFE_OPEN(pfilename, O_CREAT | O_WRONLY, 0777);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, pfilename, strlen(pfilename) + 1);
  }
  
 -/*
@@ -327,13 +269,21 @@ index 9ce4fc7bb..89a815219 100644
 - *	completion or premature exit
 - */
 -void cleanup(void)
--{
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	close(fd);
 -
--}
+-	tst_rmdir();
+-
+ }
++
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +};
