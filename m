@@ -4,82 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2BB7C47DDB
-	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 04:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF45DC47422
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 06:26:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED1DA3CFB1F
-	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 05:02:39 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 319CB3CE1AF
+	for <ltp@archiver.kernel.org>; Fri, 26 Jan 2024 07:26:04 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC3EB3CFB2D
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:51 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 48FA93CD3BC
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 07:25:49 +0100 (CET)
 Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.252;
- helo=esa7.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
+ helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
- [139.138.61.252])
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
+ [207.54.90.137])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 88ED520093F
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 05:01:49 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 595F020093F
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 07:25:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1706241710; x=1737777710;
- h=from:to:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=xMI1UjbLy7vvgLix5jTE+2lbEtSMG0YXBs8dPU1sZbI=;
- b=UxzdnFze59xZCHZVfwu6I9w564nUoI3gD+EAZb8UQBKa9AW/FDMGuTSr
- E1Ws5RtKchLXcHbk/z5K3Iir77Tk2b0EGULjSs0Od9dozgQSa4RH5UdML
- M8ArbJAgcD1rRcWNOMbtDtUB6nlQ1dRP/iLfiT18xwzjqVwjLAgBfpeAH
- W1t5ITmtbNZf/FqYQKjbyE/9cGJboGelfU3Itjrddj2QqQc55nzAPSSjY
- yLvGLuDbpWJ/qlmZDeGBGUyJMxNYai65D3NhBWaYz58KXLLA024jtEYgo
- GPYgNxKQBg0yCJUS49Ki3Hnl3KA22EQ2F4irTvBAW72wjVd4jz2rKhuoy Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="126110251"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; d="scan'208";a="126110251"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jan 2024 13:01:44 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5847CE8C08
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:42 +0900 (JST)
+ t=1706250349; x=1737786349;
+ h=from:to:subject:date:message-id:in-reply-to:references:
+ mime-version:content-transfer-encoding;
+ bh=lVf8lwYDj0Vn7uDvC7NIMT2IqxsATKFh33lGTMunwT4=;
+ b=B+qQXNEJpZlir9J51r+c3hALJxCqvZBWaDzI1FTNVhOLVwLPRzWkpnZk
+ vxx/oTvgcgzd9J5pxy5WkIEuWd/iibi+mBFmjL4vnYgR/ZiJXYLR6HO1S
+ k82t7NN4g2tdzrCusZZwae9IAMHwgtoMPBlB4FHvaEp11cicemm0czVIZ
+ 5MyZp1/deap5m/dxlpUVNcTGeT7SauexweyxEUa9JXCg0sBasXNclmFC6
+ gpZXN4GeaZaNw0QFlPkPslJ17Y+5Y6G3ENSDh1iaPOqWaZsBqHwxaN8HA
+ aU7DcFEUzmaWfnVVt8HoVtib8bHf/5XL3vUJSZZtJxU0GuTdTB/HP0Cv6 w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="126748995"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; d="scan'208";a="126748995"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jan 2024 15:25:45 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 88652DC14B
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 15:25:42 +0900 (JST)
 Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
  [192.51.206.21])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id C79BAD8BCC
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:40 +0900 (JST)
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id B16BDBDC8B
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 15:25:41 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 60D262007C3E2
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 13:01:40 +0900 (JST)
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 468A120059322
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 15:25:41 +0900 (JST)
 Received: from irides.. (unknown [10.167.226.114])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id EDD321A006A
- for <ltp@lists.linux.it>; Fri, 26 Jan 2024 12:01:39 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id F157D1A006C
+ for <ltp@lists.linux.it>; Fri, 26 Jan 2024 14:25:40 +0800 (CST)
 From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri, 26 Jan 2024 12:01:37 +0800
-Message-Id: <20240126040139.2534873-1-ruansy.fnst@fujitsu.com>
+Date: Fri, 26 Jan 2024 14:25:40 +0800
+Message-Id: <20240126062540.2596279-2-ruansy.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126062540.2596279-1-ruansy.fnst@fujitsu.com>
+References: <20240126062540.2596279-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28142.004
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28142.005
 X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28142.004
-X-TMASE-Result: 10--22.004700-10.000000
-X-TMASE-MatchedRID: VRedb8S231nyq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
- 7wkSW5bKbnRB47KLJ1QzLmfGY6iDkYF+91Q/EzGtN70wXhI0DX4yhLY8urUHvmvlGb+24NaZuJE
- UmdYPGSXiTzfmGp/ZBzTiWC5C1sf/sIm8s6bJZMU5ZRbFNAl0j79cAlQW5YprpjlkbDvDJ4djDe
- scmMp4DI2J1F/55TUPJEbUc8xGQ/ZXDwaouY0y7s2CuVPkCNzuBGvINcfHqhcvPRFFhcWhYNBBe
- W0QNlfKWLhiC/mMnN+ITE3HVSm/hYaYpgfhqlfrEzEoOqAAVLM2hINq/IswlJmPq8jhF/uENq8y
- lq3YspJADnLPlN1QTR00eqxHEa4eEd0YyW6tLbkdahq+rGDn/50JB6wB6CqmVC4aflv2vZlJI7w
- YmUmzrHJcwyKKWovqJKpa08oNRnyPJkelMnqjq1VeGWZmxN2MHhysWPN3OzibKItl61J/yZ+inT
- K0bC9eKrauXd3MZDUD/dHyT/Xh7Q==
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28142.005
+X-TMASE-Result: 10--8.556400-10.000000
+X-TMASE-MatchedRID: 8R18cQDv3dnyq/cli2hvDU7nLUqYrlslFIuBIWrdOeNrL/5mlYISizib
+ ESY8R8hiQMOJEqjTDACExML3RSdglgU0om6w5sPzkYD8wAZKsSBr2qJoNIuCjf+aPQT1cxlGd93
+ A76AVNsB34VOGRdhrB+vbgxb5qGOHA5/BSwKJDDGVd49c0zgWM79cAlQW5YprrblmM/aFaC+Trr
+ +C1WNmxS/KXR4/4Lv6EC9CQs9quavsR84ORZreslVeGWZmxN2MHhysWPN3OzibKItl61J/yZ+in
+ TK0bC9eKrauXd3MZDUb7Ul726xKAumeD8tsEd8opbhRvroerCtH8A8EzrwiS3T1+YGd0/3t
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] fdatasync01: Convert to new API
+Subject: [LTP] [PATCH 2/2] fchownat02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,17 +96,18 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 ---
- .../kernel/syscalls/fdatasync/fdatasync01.c   | 164 +++---------------
- 1 file changed, 26 insertions(+), 138 deletions(-)
+ .../kernel/syscalls/fchownat/fchownat02.c     | 133 +++++-------------
+ 1 file changed, 37 insertions(+), 96 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync01.c b/testcases/kernel/syscalls/fdatasync/fdatasync01.c
-index 24a91785c..ba4375b68 100644
---- a/testcases/kernel/syscalls/fdatasync/fdatasync01.c
-+++ b/testcases/kernel/syscalls/fdatasync/fdatasync01.c
-@@ -1,155 +1,43 @@
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
+index 6dd1e024e..db8f662dc 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat02.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
+@@ -1,135 +1,76 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  * Copyright (c) 2014 Fujitsu Ltd.
+- * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -119,170 +118,160 @@ index 24a91785c..ba4375b68 100644
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
 - * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * Copyright (c) Linux Test Project, 2003-2024
+- * with this program.
++ * Copyright (c) Linux Test Project, 2014-2024
   */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER   : fdatasync01
-- *
-- *    EXECUTED BY       : Any user
-- *
-- *    TEST TITLE        : Basic test for fdatasync(2)
-- *
-- *    TEST CASE TOTAL   : 1
-- *
-- *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
-- *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This is a Phase I test for the fdatasync(2) system call.
-- *	It is intended to provide a limited exposure of the system call.
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *	  Create a temp directory and cd to it
-- *	  Initialize filename and open it in write mode for each child process.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Issue FAIL message with errno.
-- *	  Otherwise, Issue PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *	  Remove temporary directory and all files in it.
-- *
-- * USAGE:  <for command-line>
-- *  fdatasync01 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
-- *		where,  -c n : Run n copies concurrently.
-- *			-e   : Turn on errno logging.
-- *			-f   : Turn off functional testing
-- *			-h   : Show help screen
-- *			-i n : Execute test n times.
-- *			-I x : Execute test for x seconds.
-- *			-p   : Pause for SIGUSR1 before starting
-- *			-P x : Pause for x seconds between iterations.
-- *			-t   : Turn on syscall timing.
+-/*
+- * Test Description:
+- *   Verify that,
 +
 +/*\
 + * [Description]
-  *
-- ****************************************************************/
--#include <errno.h>
++ *
++ * Verify that,
+  *   The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
+  *   not be dereferenced if the pathname is a symbolic link.
+  */
+ 
+ #define _GNU_SOURCE
+-
 -#include <sys/types.h>
 -#include <sys/stat.h>
--#include <fcntl.h>
 -#include <unistd.h>
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
 -#include "test.h"
-+ * Basic test for fdatasync(). Call fdatasync() on a fd and expect it to pass.
-+ */
- 
--static int fd;
--static char filename[30];
--static void setup(void);
--static void cleanup(void);
+-#include "safe_macros.h"
+-#include "lapi/fcntl.h"
 +#include "tst_test.h"
  
--char *TCID = "fdatasync01";
--int TST_TOTAL = 1;
-+static int fd;
-+static char pfilename[30];
+ #define TESTFILE	"testfile"
+ #define TESTFILE_LINK	"testfile_link"
  
--int main(int argc, char **argv)
-+static void run(void)
- {
--	int lc;
+-char *TCID = "fchownat02";
+-int TST_TOTAL = 1;
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
+ static int dir_fd;
+ static uid_t set_uid = 1000;
+ static gid_t set_gid = 1000;
+-static void setup(void);
+-static void cleanup(void);
+-static void test_verify(void);
+-static void fchownat_verify(void);
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		/* reset tst_count in case we are looping */
 -		tst_count = 0;
--
--		/* Test the system call */
--		TEST(fdatasync(fd));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "fdatasync() failed, errno=%d : %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			/* No Functional verification yet */
--			tst_resm(TPASS, "fdatasync() successful");
--		}
+-		for (i = 0; i < TST_TOTAL; i++)
+-			fchownat_verify();
 -	}
 -
--	/* perform global cleanup and exit */
 -	cleanup();
--
 -	tst_exit();
--
-+	TST_EXP_PASS(fdatasync(fd), "fdatasync(%d)", fd);
- }
+-}
  
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
-+static void setup(void)
+ static void setup(void)
  {
+ 	struct stat c_buf, l_buf;
+ 
+-	tst_require_root();
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -c option.
--	 */
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
- 	/* Initialize unique filename for each child process */
--	if (sprintf(filename, "fdatasync_%d", getpid()) <= 0) {
--		tst_brkm(TBROK, cleanup, "Failed to initialize filename");
--	}
--	if ((fd = open(filename, O_CREAT | O_WRONLY, 0777)) == -1) {	//mode must be specified when O_CREATE is in the flag
--		tst_brkm(TBROK, cleanup, "open() failed");
--	}
--	if ((write(fd, filename, strlen(filename) + 1)) == -1) {
--		tst_brkm(TBROK, cleanup, "write() failed");
--	}
-+	sprintf(pfilename, "fdatasync_%d", getpid());
-+
-+	/* mode must be specified when O_CREATE is in the flag */
-+	fd = SAFE_OPEN(pfilename, O_CREAT | O_WRONLY, 0777);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, pfilename, strlen(pfilename) + 1);
+-	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
+-
+-	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
+-
+-	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
+-
+-	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
+-
+-	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
++	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
++	SAFE_TOUCH(TESTFILE, 0600, NULL);
++	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
++	SAFE_STAT(TESTFILE_LINK, &c_buf);
++	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+ 
+ 	if (l_buf.st_uid == set_uid || l_buf.st_gid == set_gid) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "link_uid(%d) == set_uid(%d) or link_gid(%d) == "
+-			 "set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
+-			 set_gid);
++		tst_brk(TBROK | TERRNO,
++			"link_uid(%d) == set_uid(%d) or link_gid(%d) == "
++			"set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
++			set_gid);
+ 	}
  }
  
--/*
-- * cleanup()
-- *	performs all ONE TIME cleanup for this test at
-- *	completion or premature exit
-- */
--void cleanup(void)
-+static void cleanup(void)
+-static void fchownat_verify(void)
+-{
+-	TEST(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
+-		      AT_SYMLINK_NOFOLLOW));
+-
+-	if (TEST_RETURN != 0) {
+-		tst_resm(TFAIL | TTERRNO, "fchownat() failed, errno=%d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
+-	} else {
+-		test_verify();
+-	}
+-}
+-
+-static void test_verify(void)
++static void run(void)
  {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	close(fd);
--
+ 	struct stat c_buf, l_buf;
+ 
+-	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
++	TST_EXP_PASS_SILENT(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
++				     AT_SYMLINK_NOFOLLOW));
+ 
+-	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
++	SAFE_STAT(TESTFILE_LINK, &c_buf);
++	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+ 
+ 	if (c_buf.st_uid != set_uid && l_buf.st_uid == set_uid &&
+ 	    c_buf.st_gid != set_gid && l_buf.st_gid == set_gid) {
+-		tst_resm(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
++		tst_res(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
+ 	} else {
+-		tst_resm(TFAIL,
+-			 "fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
+-			 "link_uid=%d set_uid=%d | gid=%d link_gid=%d "
+-			 "set_gid=%d", c_buf.st_uid, l_buf.st_uid, set_uid,
+-			 c_buf.st_gid, l_buf.st_gid, set_gid);
++		tst_res(TFAIL,
++			"fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
++			"link_uid=%d set_uid=%d | gid=%d link_gid=%d set_gid=%d",
++			c_buf.st_uid, l_buf.st_uid, set_uid,
++			c_buf.st_gid, l_buf.st_gid, set_gid);
+ 	}
+ }
+ 
+ static void cleanup(void)
+ {
 -	tst_rmdir();
--
++	SAFE_CLOSE(dir_fd);
  }
 +
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
++	.needs_root = 1,
 +	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
