@@ -4,68 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BE50C46CD2
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 02:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B161AC47258
+	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 16:32:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A389E3CE70B
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 03:51:18 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A83893CE184
+	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 17:32:15 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9CDA33CE70B
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 03:49:01 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 7C7D83CC968
+ for <ltp@lists.linux.it>; Sun, 28 Jan 2024 17:32:00 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.49;
+ helo=esa3.hc1455-7.c3s2.iphmx.com; envelope-from=yangx.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 53C0B1000F26
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 03:48:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1706410138;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ldhElJT0G/3lc6jlpgrOHBx7SpfZOupzKY6bJNP8S4I=;
- b=SfvmCwIvuNNTCoVHuhMbWJgHSm6Xb171QnH3lca9ZJW6+ne5CIxDyspbSDVCvYd16v/9hb
- ZlLtpIZL0zY/1k71C2AyhObw89Hh7q4nPyI28bbfDruGhp2Xo1ApNkSoxcvuUiAN7w6c0A
- e9tRWhVzZ/DKnKSxJOU92TCbmwoIJW8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-MJrpJ9jvMGyejjcgkDlu1w-1; Sat, 27 Jan 2024 21:48:56 -0500
-X-MC-Unique: MJrpJ9jvMGyejjcgkDlu1w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
- [10.11.54.7])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B372D827D85
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 02:48:56 +0000 (UTC)
-Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
- [10.66.145.229])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id C98D71C060B1
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 02:48:55 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Sun, 28 Jan 2024 10:48:38 +0800
-Message-Id: <20240128024838.2699248-9-liwang@redhat.com>
-In-Reply-To: <20240128024838.2699248-1-liwang@redhat.com>
-References: <20240128024838.2699248-1-liwang@redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6A9241400978
+ for <ltp@lists.linux.it>; Sun, 28 Jan 2024 17:31:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1706459520; x=1737995520;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=ElzWZ3/OQyOBr4TbweHC4WreovR0D8GboYUJCQUBmak=;
+ b=qG6eR/lbb8xHkk77WcNHnRKMkb7crBQtwgoY5ej4FLMomUJNWF0TuCkX
+ WFIC5WdXJ/KG5Gz5Xgq92rDtCCX4aNfwazr4GHcY6+7OVtK1tK5jQSvtr
+ ddP7SxLPpjTkJX1QKh4smtiETIH72aCrXNIOf+0k6P2TzDitfX+9CDNCt
+ Ga021WzH5j92OK+GEu+T5AgHCfb9yz1t1py5+008DKvvBCs0mZAgoopQ5
+ MXn3ha9w/CAumW0cbbEYYP9S/Fvj32jORDeJXhsmMOc9Zpo7d6Tr9ZEbJ
+ RyNrst4V624i58lrm5848fSqgXrQ1Mwsu49eks4KjhtEKQjHG37yiWdUc Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="147522062"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701097200"; d="scan'208";a="147522062"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jan 2024 01:31:56 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 21F77EDC18
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:54 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4DC6F21AA16
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:53 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BE7C8200501A0
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:52 +0900 (JST)
+Received: from [10.167.214.93] (unknown [10.167.214.93])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 3B58B1A006C;
+ Mon, 29 Jan 2024 00:31:52 +0800 (CST)
+Message-ID: <0ab9793c-e9a8-cfd5-4582-728ca420860e@fujitsu.com>
+Date: Mon, 29 Jan 2024 00:31:51 +0800
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+To: Petr Vorel <pvorel@suse.cz>
+References: <20240121122959.1386-1-yangx.jy@fujitsu.com>
+ <20240121122959.1386-4-yangx.jy@fujitsu.com> <20240121194949.GF51882@pevik>
+From: Xiao Yang <yangx.jy@fujitsu.com>
+In-Reply-To: <20240121194949.GF51882@pevik>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28148.000
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28148.000
+X-TMASE-Result: 10--0.205300-10.000000
+X-TMASE-MatchedRID: 2UwwcHKl5CGPvrMjLFD6eL084HjrfFAS82SgwNf6SK5mimiikJEPRKPF
+ jJEFr+olA9Mriq0CDAiIxtV/pB/tzNvteQQ2MnYQvM83WO0obmVP1GghjjIA0gtuKBGekqUpbGV
+ EmIfjf3u6x6MAwYU0Qu8xeCBpQaq4m06OEXhQPKd7njm3UNEQDGkOl6o4hZ5f9Kpk6L5uXxvmjp
+ qHWd5d8YvXMDl2Z/5HFUZFMicqbsM=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 8/8] libswap: Refactor is_swap_supported function
- to return status
+Subject: Re: [LTP] [PATCH v2 4/4] syscalls/pwritev: Make make check happy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,91 +90,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This updates the is_swap_supported function in the libltpswap
-to return an integer status instead of void, allowing the function
-to communicate success or failure to the caller. It introduces
-checks and returns 0 on various failure conditions while logging
-the failure without aborting the test case.
+Hi Petr,
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- include/libswap.h         |  2 +-
- libs/libltpswap/libswap.c | 28 ++++++++++++++++++----------
- 2 files changed, 19 insertions(+), 11 deletions(-)
+Merged with your reviewed-by and relicense.
+Thanks a lot.
 
-diff --git a/include/libswap.h b/include/libswap.h
-index e67d65756..1e09db031 100644
---- a/include/libswap.h
-+++ b/include/libswap.h
-@@ -20,5 +20,5 @@ int make_swapfile(const char *swapfile, int blocks, int safe);
-  * Check swapon/swapoff support status of filesystems or files
-  * we are testing on.
-  */
--void is_swap_supported(const char *filename);
-+int is_swap_supported(const char *filename);
- #endif /* __LIBSWAP_H__ */
-diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
-index 8aecad48d..14b7d9e3a 100644
---- a/libs/libltpswap/libswap.c
-+++ b/libs/libltpswap/libswap.c
-@@ -168,7 +168,7 @@ int make_swapfile(const char *swapfile, int blocks, int safe)
-  * Check swapon/swapoff support status of filesystems or files
-  * we are testing on.
-  */
--void is_swap_supported(const char *filename)
-+int is_swap_supported(const char *filename)
- {
- 	int i, sw_support = 0;
- 	int ret = make_swapfile(filename, 10, 1);
-@@ -188,23 +188,31 @@ void is_swap_supported(const char *filename)
- 	}
- 
- 	if (ret != 0) {
--		if (fi_contiguous == 0 && sw_support == 0)
-+		if (fi_contiguous == 0 && sw_support == 0) {
- 			tst_brk(TCONF, "mkswap on %s not supported", fstype);
--		else
--			tst_brk(TFAIL, "mkswap on %s failed", fstype);
-+		} else {
-+			tst_res(TFAIL, "mkswap on %s failed", fstype);
-+			return 0;
-+		}
- 	}
- 
- 	TEST(tst_syscall(__NR_swapon, filename, 0));
- 	if (TST_RET == -1) {
--		if (errno == EPERM)
-+		if (errno == EPERM) {
- 			tst_brk(TCONF, "Permission denied for swapon()");
--		else if (errno == EINVAL && fi_contiguous == 0 && sw_support == 0)
-+		} else if (errno == EINVAL && fi_contiguous == 0 && sw_support == 0) {
- 			tst_brk(TCONF, "Swapfile on %s not implemented", fstype);
--		else
--			tst_brk(TFAIL | TTERRNO, "swapon() on %s failed", fstype);
-+		} else {
-+			tst_res(TFAIL | TTERRNO, "swapon() on %s failed", fstype);
-+			return 0;
-+		}
- 	}
- 
- 	TEST(tst_syscall(__NR_swapoff, filename, 0));
--	if (TST_RET == -1)
--		tst_brk(TFAIL | TTERRNO, "swapoff on %s failed", fstype);
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "swapoff on %s failed", fstype);
-+		return 0;
-+	}
-+
-+	return (TST_RET == 0);
- }
--- 
-2.40.1
-
+Best Regards,
+Xiao Yang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
