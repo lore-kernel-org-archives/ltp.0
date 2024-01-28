@@ -4,81 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B161AC47258
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 16:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56DBBC47258
+	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 18:15:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A83893CE184
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 17:32:15 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 095E43CE181
+	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 19:15:51 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C7D83CC968
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 17:32:00 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.49;
- helo=esa3.hc1455-7.c3s2.iphmx.com; envelope-from=yangx.jy@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
- [207.54.90.49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1348B3C0644
+ for <ltp@lists.linux.it>; Sun, 28 Jan 2024 19:15:35 +0100 (CET)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com
+ [IPv6:2607:f8b0:4864:20::532])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6A9241400978
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 17:31:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1706459520; x=1737995520;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=ElzWZ3/OQyOBr4TbweHC4WreovR0D8GboYUJCQUBmak=;
- b=qG6eR/lbb8xHkk77WcNHnRKMkb7crBQtwgoY5ej4FLMomUJNWF0TuCkX
- WFIC5WdXJ/KG5Gz5Xgq92rDtCCX4aNfwazr4GHcY6+7OVtK1tK5jQSvtr
- ddP7SxLPpjTkJX1QKh4smtiETIH72aCrXNIOf+0k6P2TzDitfX+9CDNCt
- Ga021WzH5j92OK+GEu+T5AgHCfb9yz1t1py5+008DKvvBCs0mZAgoopQ5
- MXn3ha9w/CAumW0cbbEYYP9S/Fvj32jORDeJXhsmMOc9Zpo7d6Tr9ZEbJ
- RyNrst4V624i58lrm5848fSqgXrQ1Mwsu49eks4KjhtEKQjHG37yiWdUc Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="147522062"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701097200"; d="scan'208";a="147522062"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jan 2024 01:31:56 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
- [192.168.87.61])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 21F77EDC18
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:54 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4DC6F21AA16
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:53 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BE7C8200501A0
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 01:31:52 +0900 (JST)
-Received: from [10.167.214.93] (unknown [10.167.214.93])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 3B58B1A006C;
- Mon, 29 Jan 2024 00:31:52 +0800 (CST)
-Message-ID: <0ab9793c-e9a8-cfd5-4582-728ca420860e@fujitsu.com>
-Date: Mon, 29 Jan 2024 00:31:51 +0800
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3F54F1001164
+ for <ltp@lists.linux.it>; Sun, 28 Jan 2024 19:15:35 +0100 (CET)
+Received: by mail-pg1-x532.google.com with SMTP id
+ 41be03b00d2f7-5cddc5455aeso1153569a12.1
+ for <ltp@lists.linux.it>; Sun, 28 Jan 2024 10:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1706465733; x=1707070533; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=E1i5P4fiaGHjQznCRkHVqjEWLkd9273/vHW9AZdmJ2I=;
+ b=RRuOUlKYoVI9rZUQfpp4sp0RZUKMDeuWZQ889w/OxS57mvwIAjUAyJ25wchf6oQ7Ti
+ 93pndgRgK76iji7/8Nv7m7sRUSyAZYNx6ndd5ZovP0gpUBIuGash8veTb6jYeaRMZ4bN
+ N0MU4UY+7a2Fr9V3EPGbNKOnrRWBDpJDCz3YxkhuQZ9u42W45vy85OsJdTiRwzHoQDHK
+ 0NZuFysnpnhDKdAjn00I3YWUcW5kyheTUeZh3y9PykrMzkaYgoIp8u+m2zRM4RywlbHh
+ JyyI9qi/inoBYYPYmjPyNFUv6eCNqE06Z+YN0EzO2lPUX+28Kic74s9ZwPP/LYaxYfiC
+ 31lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1706465733; x=1707070533;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=E1i5P4fiaGHjQznCRkHVqjEWLkd9273/vHW9AZdmJ2I=;
+ b=vwfG6HGvAGkYeJBJCHQKlR0ozil0ECMXFsddzuXI5hxWZ+6J4GdcePZWS7vZcPKH8s
+ g1WQPo4ST/LQyE4LK79HokhfRHr0+pmDrImujLN6bGlQtWAHdQ1qYfjTdmDsKxeFGXF4
+ X5+U8i4SUnvqDFxAaoBr8L5yrf17IDofV69PpJvune1hkxhCHfg2g8UiXBupbuYcPYWT
+ /UVekkeFFVl3XrvbI0uhC2zMzNoHPhQLl33yjo6N4yrahlmy/n/2aqjmCUwvCVoNNA1x
+ mXmIsDcMhWxUZB5KmBnUA84R3O0OMi0kLP6rro8JLyo6TXCPCJGbaWbY/J5558416l7L
+ DFIQ==
+X-Gm-Message-State: AOJu0Ywjb+sJIo7lbaAGIY8UU8msRcLrCuoYMlQ7P8JKhyLArcHicmSL
+ g2R9R59kUz4FLtfHCTeZnp7Trh2gCY0VvPFoSUFSgye+dYv1nYYZvzy3UFPc
+X-Google-Smtp-Source: AGHT+IHJTTXZURglcHZTwnLskGavxsQynTaoRI09dlrmtDSr8gwh0VPOLpo7aUQKFQ+rvzQtoG8R7Q==
+X-Received: by 2002:a17:903:1206:b0:1d7:133e:5c09 with SMTP id
+ l6-20020a170903120600b001d7133e5c09mr1780454plh.22.1706465732883; 
+ Sun, 28 Jan 2024 10:15:32 -0800 (PST)
+Received: from localhost.localdomain ([106.51.191.124])
+ by smtp.gmail.com with ESMTPSA id
+ r24-20020a170902be1800b001d7233dc459sm3889140pls.76.2024.01.28.10.15.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 28 Jan 2024 10:15:32 -0800 (PST)
+From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+To: ltp@lists.linux.it
+Date: Sun, 28 Jan 2024 13:15:23 -0500
+Message-ID: <20240128181526.5395-1-subramanya.swamy.linux@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-To: Petr Vorel <pvorel@suse.cz>
-References: <20240121122959.1386-1-yangx.jy@fujitsu.com>
- <20240121122959.1386-4-yangx.jy@fujitsu.com> <20240121194949.GF51882@pevik>
-From: Xiao Yang <yangx.jy@fujitsu.com>
-In-Reply-To: <20240121194949.GF51882@pevik>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28148.000
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28148.000
-X-TMASE-Result: 10--0.205300-10.000000
-X-TMASE-MatchedRID: 2UwwcHKl5CGPvrMjLFD6eL084HjrfFAS82SgwNf6SK5mimiikJEPRKPF
- jJEFr+olA9Mriq0CDAiIxtV/pB/tzNvteQQ2MnYQvM83WO0obmVP1GghjjIA0gtuKBGekqUpbGV
- EmIfjf3u6x6MAwYU0Qu8xeCBpQaq4m06OEXhQPKd7njm3UNEQDGkOl6o4hZ5f9Kpk6L5uXxvmjp
- qHWd5d8YvXMDl2Z/5HFUZFMicqbsM=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/4] syscalls/pwritev: Make make check happy
+Subject: [LTP] [PATCH v2] isofs.sh:Run test on genisoimage,
+ xorriso &mksisofs if not symlinks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,19 +81,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+    1)mkisofs, genisoimage and xorriso tools are present as separate
+    tools in some distros while in others they are symlinks to one
+    another. Tests are skipped on symlinks.
 
-Merged with your reviewed-by and relicense.
-Thanks a lot.
+    2)mkisofs supports only -hfs option
+      genisoimage supports both -hfs & -hfsplus options
+      xorrisofs supports only -hfsplus option
 
-Best Regards,
-Xiao Yang
+Co-Authored-By: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+---
+ testcases/kernel/fs/iso9660/isofs.sh | 41 ++++++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+index dfa4ac73d..9aa853e67 100755
+--- a/testcases/kernel/fs/iso9660/isofs.sh
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -13,18 +13,16 @@ TST_NEEDS_CMDS="mount umount"
+ TST_NEEDS_TMPDIR=1
+ TST_SETUP=setup
+ TST_TESTFUNC=do_test
++TST_CNT=3
+ 
+ MAX_DEPTH=3
+ MAX_DIRS=4
+ 
+ setup()
+ {
+-	if tst_cmd_available mkisofs; then
+-		MKISOFS_CMD="mkisofs"
+-	elif tst_cmd_available genisoimage; then
+-		MKISOFS_CMD="genisoimage"
+-	else
+-		tst_brk TCONF "please install mkisofs or genisoimage"
++	if !(tst_cmd_available mkisofs \
++		|| tst_cmd_available genisoimage || tst_cmd_available xorrisofs);then
++			tst_brk TCONF "please install mkisofs / genisoimage / xorriso"
+ 	fi
+ }
+ 
+@@ -46,6 +44,29 @@ gen_fs_tree()
+ 
+ do_test()
+ {
++        case $1 in
++        1) MKISOFS_CMD="mkisofs"
++	   HFSOPT="-hfs -D"
++	   GREPOPT="mkisofs";;
++        2) MKISOFS_CMD="genisoimage"
++	   HFSOPT="-hfsplus -D -hfs -D"
++	   GREPOPT="genisoimage";;
++        3) MKISOFS_CMD="xorrisofs"
++	   HFSOPT="-hfsplus -D"
++	   GREPOPT="xorriso";;
++        esac
++
++
++        if ! tst_cmd_available $MKISOFS_CMD; then
++                tst_res TCONF "Missing '$MKISOFS_CMD'"
++                return
++        fi
++
++        if ! $MKISOFS_CMD 2>&1 | head -n 2 |grep -q "$GREPOPT"; then
++                tst_res TCONF "'$MKISOFS_CMD' is a symlink to another tool"
++                return
++        fi
++
+ 	local mnt_point="$PWD/mnt"
+ 	local make_file_sys_dir="$PWD/files"
+ 	local mkisofs_opt mount_opt
+@@ -62,14 +83,16 @@ do_test()
+ 	for mkisofs_opt in \
+ 		" " \
+ 		"-J" \
+-		"-hfs -D" \
++		${HFSOPT} \
+ 		" -R " \
+ 		"-R -J" \
+ 		"-f -l -D -J -allow-leading-dots -R" \
+-		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
++		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J \
++			-allow-leading-dots -R"
+ 	do
+ 		rm -f isofs.iso
+-		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
++		EXPECT_PASS $MKISOFS_CMD -o isofs.iso \
++			-quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
+ 			|| continue
+ 
+ 		for mount_opt in \
+-- 
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
