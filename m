@@ -4,103 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD651C47DA9
-	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 09:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8E24C47DA9
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 09:58:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0B623CE112
-	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 10:22:55 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 645CC3CCF92
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 10:58:56 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4150A3CC020
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 10:22:39 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 1363F3CC48B
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 10:58:40 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5A67E20650E
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 10:22:37 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1DBFA10009F3
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 10:58:39 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ED5831F7D8;
- Mon, 29 Jan 2024 09:22:35 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8FB4821F1C;
+ Mon, 29 Jan 2024 09:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706520157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=siBEeiF60dnzKv0UKtH4eikc6F4oB2U0kG2P25QF/p4=;
- b=WMoaWnSHMmhQWPf27ZCNQ2gemO7zVFZ9gd4iOR9TFs3vlybbM2YDIzg8pOQV2bFqo6dpLQ
- XF92ywlaEa7ZbBRLQTfF0oB4elN67+Vx/DG/8s7GHZYtUrV/agNjoT81KaUSp71zTINhwK
- I+bD00uS+mNEp7nmkJgOZg0IYlzhwhI=
+ t=1706522318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=UEZhE7BPpVjjfDJlWGG+zWvMrgbNEkwpjcUM/ca8FXg=;
+ b=E9HoiTTzrduqYOyBGxxoWHbbL+OA2zL5EnMFo5x/O3z1ks9sW4+tGaDXvNnTxE4WXcpWu5
+ PsrGplkqFN+WUrPfDLFCwc3Lvo0D+811Kpo9Hw22Af0FIgftpjEhBEXDy/6WIaEhXcxhsY
+ ev5h8IiNUfI8BUVYbqE4rJ4VWy0j7Zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706520157;
+ s=susede2_ed25519; t=1706522318;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=siBEeiF60dnzKv0UKtH4eikc6F4oB2U0kG2P25QF/p4=;
- b=lri/9g4K2ewdQLD9B+eq5Q0Ys2o1DRQ7SMesJ9gdPwXouixxLwUj8kb+2CvIHdnMqB6JTB
- yZbl96U4STPwsBAw==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=UEZhE7BPpVjjfDJlWGG+zWvMrgbNEkwpjcUM/ca8FXg=;
+ b=pbTXaA+xGB/2AK25b38lpR3ad91j+mznwS10JI+ISqJwl0tx88IOiqmL5v+m/d2Szbb5iP
+ JC/7v/QdxnbWG4Bg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706520155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=siBEeiF60dnzKv0UKtH4eikc6F4oB2U0kG2P25QF/p4=;
- b=hLafyL9BPQjke+U950emDCRB9hsHT3m5VXSwQpaFus79LRPIGSRdfgMdi0AylZPdxbCMEL
- BU9bQBDP7OgiyPbimL7B5Q4zK3K1D9DhuE+rLyNy1BRAOn04XIF+5udFjeGqIWe2AF9UsP
- TwIv55HL25QznZLCyoHxX9fB5YKAVmI=
+ t=1706522318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=UEZhE7BPpVjjfDJlWGG+zWvMrgbNEkwpjcUM/ca8FXg=;
+ b=E9HoiTTzrduqYOyBGxxoWHbbL+OA2zL5EnMFo5x/O3z1ks9sW4+tGaDXvNnTxE4WXcpWu5
+ PsrGplkqFN+WUrPfDLFCwc3Lvo0D+811Kpo9Hw22Af0FIgftpjEhBEXDy/6WIaEhXcxhsY
+ ev5h8IiNUfI8BUVYbqE4rJ4VWy0j7Zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706520155;
+ s=susede2_ed25519; t=1706522318;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=siBEeiF60dnzKv0UKtH4eikc6F4oB2U0kG2P25QF/p4=;
- b=6d1Jq4dt02p0Lsfflh7vxm9gCqZgRtYWdQmZasCII9LYQHCquJaXjIMnllFMeknt6N2M5g
- XRdMTK9zDg43DhAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=UEZhE7BPpVjjfDJlWGG+zWvMrgbNEkwpjcUM/ca8FXg=;
+ b=pbTXaA+xGB/2AK25b38lpR3ad91j+mznwS10JI+ISqJwl0tx88IOiqmL5v+m/d2Szbb5iP
+ JC/7v/QdxnbWG4Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AAD5F13911;
- Mon, 29 Jan 2024 09:22:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F6A513647;
+ Mon, 29 Jan 2024 09:58:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id m1FSJltut2U/QgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 29 Jan 2024 09:22:35 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 29 Jan 2024 10:22:32 +0100
-Message-ID: <20240129092232.599010-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6vF4Hs52t2XmdAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Mon, 29 Jan 2024 09:58:38 +0000
+Message-ID: <b0ac9068-72b5-4afd-86a9-e4335a8a0a66@suse.cz>
+Date: Mon, 29 Jan 2024 10:58:38 +0100
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hLafyL9B;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6d1Jq4dt
-X-Spamd-Result: default: False [1.69 / 50.00]; ARC_NA(0.00)[];
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20240125155107.430656-1-pvorel@suse.cz>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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
+In-Reply-To: <20240125155107.430656-1-pvorel@suse.cz>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E9HoiTTz;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pbTXaA+x
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.62 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; R_MISSING_CHARSET(2.50)[];
- TAGGED_RCPT(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ XM_UA_NO_VERSION(0.01)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; BAYES_HAM(-0.12)[66.92%];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- MID_CONTAINS_FROM(1.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- FREEMAIL_CC(0.00)[gmail.com,suse.cz]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: ED5831F7D8
-X-Spamd-Bar: +
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ NEURAL_HAM_SHORT(-0.20)[-0.999];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Queue-Id: 8FB4821F1C
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/1] isofs.sh: Test genisoimage,
- xorriso and mksisofs
+Subject: Re: [LTP] [PATCH 1/1] splice07: Whitelist /dev/zero on pipe write
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,140 +163,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Jan Kara <jack@suse.cz>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+Hi,
+we should drop v2 and merge this patch.
 
-Run test an all 3 tools: genisoimage, xorriso and mksisofs.
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-mkisofs, genisoimage and xorriso tools are present as separate tools in
-some distros while in others they are symlinks to one another. Tests are
-skipped on symlinks.
+On 25. 01. 24 16:51, Petr Vorel wrote:
+> /dev/zero on pipe write started to succeeded on kernel 6.7.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+> 
+> @Jan could you please check the problem is a kernel 6.7 bug
+> or just wanted change and we should whitelist /dev/zero on pipe write?
+> 
+> Thanks!
+> 
+> Kind regards,
+> Petr
+> 
+>   testcases/kernel/syscalls/splice/splice07.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/kernel/syscalls/splice/splice07.c b/testcases/kernel/syscalls/splice/splice07.c
+> index 135c42e47..1fa13b3e6 100644
+> --- a/testcases/kernel/syscalls/splice/splice07.c
+> +++ b/testcases/kernel/syscalls/splice/splice07.c
+> @@ -38,6 +38,7 @@ static void check_splice(struct tst_fd *fd_in, struct tst_fd *fd_out)
+>   	if (fd_out->type == TST_FD_PIPE_WRITE) {
+>   		switch (fd_in->type) {
+>   		/* While these combinations succeeed */
+> +		case TST_FD_DEV_ZERO:
+>   		case TST_FD_FILE:
+>   		case TST_FD_MEMFD:
+>   			return;
 
-mkisofs supports only -hfs option
-genisoimage supports both -hfs and -hfsplus options
-xorrisofs supports only -hfsplus option
-
-This actually fixes xorrisofs on CentOS which is a symlink to mkisofs
-and because it does not supports -hfs test IMHO fails.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Co-Authored-By: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-@Cyril unless you ack this, it will be merged after the release.
-
-Also, I consider to implement test variants for shell API, because it
-would be better to use tests variants for this (and test variants would
-be useful to be used here and for ping tests.
-
-Kind regards,
-Petr
-
- testcases/kernel/fs/iso9660/isofs.sh | 49 ++++++++++++++++++----------
- 1 file changed, 31 insertions(+), 18 deletions(-)
-
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index dfa4ac73d..06f97a64f 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines Corp., 2003
--# Copyright (c) Linux Test Project, 2016-2021
-+# Copyright (c) Linux Test Project, 2016-2024
- # Written by Prakash Narayana (prakashn@us.ibm.com)
- # and Michael Reed (mreed10@us.ibm.com)
- #
-@@ -11,23 +11,12 @@
- 
- TST_NEEDS_CMDS="mount umount"
- TST_NEEDS_TMPDIR=1
--TST_SETUP=setup
- TST_TESTFUNC=do_test
-+TST_CNT=3
- 
- MAX_DEPTH=3
- MAX_DIRS=4
- 
--setup()
--{
--	if tst_cmd_available mkisofs; then
--		MKISOFS_CMD="mkisofs"
--	elif tst_cmd_available genisoimage; then
--		MKISOFS_CMD="genisoimage"
--	else
--		tst_brk TCONF "please install mkisofs or genisoimage"
--	fi
--}
--
- gen_fs_tree()
- {
- 	local cur_path="$1"
-@@ -50,10 +39,33 @@ do_test()
- 	local make_file_sys_dir="$PWD/files"
- 	local mkisofs_opt mount_opt
- 
-+	case $1 in
-+		1) MKISOFS_CMD="mkisofs"
-+			HFSOPT="-hfs -D"
-+			GREPOPT="mkisofs";;
-+		2) MKISOFS_CMD="genisoimage"
-+			HFSOPT="-hfsplus -D -hfs -D"
-+			GREPOPT="genisoimage";;
-+		3) MKISOFS_CMD="xorrisofs"
-+			HFSOPT="-hfsplus -D"
-+			GREPOPT="xorriso";;
-+	esac
-+
-+	tst_res TINFO "Testing $MKISOFS_CMD"
-+
-+	if ! tst_cmd_available $MKISOFS_CMD; then
-+		tst_res TCONF "Missing '$MKISOFS_CMD'"
-+		return
-+	fi
-+
-+	if ! $MKISOFS_CMD 2>&1 | head -n 2 | grep -q "$GREPOPT"; then
-+		tst_res TCONF "'$MKISOFS_CMD' is a symlink to another tool"
-+		return
-+	fi
-+
- 	mkdir -p -m 777 $mnt_point
- 	mkdir -p $make_file_sys_dir
- 
--	# Generated directories and files
- 	mkdir -p $make_file_sys_dir
- 	gen_fs_tree "$make_file_sys_dir" 1
- 
-@@ -62,15 +74,16 @@ do_test()
- 	for mkisofs_opt in \
- 		" " \
- 		"-J" \
--		"-hfs -D" \
-+		"$HFSOPT" \
- 		" -R " \
- 		"-R -J" \
- 		"-f -l -D -J -allow-leading-dots -R" \
--		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
-+		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J \
-+			-allow-leading-dots -R"
- 	do
- 		rm -f isofs.iso
--		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
--			|| continue
-+		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt \
-+			$make_file_sys_dir 2\> /dev/null || continue
- 
- 		for mount_opt in \
- 			"loop" \
 -- 
-2.43.0
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
