@@ -4,72 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56DBBC47258
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 18:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01117C47422
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 08:03:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 095E43CE181
-	for <ltp@archiver.kernel.org>; Sun, 28 Jan 2024 19:15:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 8CBAB3CC6C1
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 09:03:20 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1348B3C0644
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 19:15:35 +0100 (CET)
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com
- [IPv6:2607:f8b0:4864:20::532])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 68B523CC020
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:05 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3F54F1001164
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 19:15:35 +0100 (CET)
-Received: by mail-pg1-x532.google.com with SMTP id
- 41be03b00d2f7-5cddc5455aeso1153569a12.1
- for <ltp@lists.linux.it>; Sun, 28 Jan 2024 10:15:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1706465733; x=1707070533; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=E1i5P4fiaGHjQznCRkHVqjEWLkd9273/vHW9AZdmJ2I=;
- b=RRuOUlKYoVI9rZUQfpp4sp0RZUKMDeuWZQ889w/OxS57mvwIAjUAyJ25wchf6oQ7Ti
- 93pndgRgK76iji7/8Nv7m7sRUSyAZYNx6ndd5ZovP0gpUBIuGash8veTb6jYeaRMZ4bN
- N0MU4UY+7a2Fr9V3EPGbNKOnrRWBDpJDCz3YxkhuQZ9u42W45vy85OsJdTiRwzHoQDHK
- 0NZuFysnpnhDKdAjn00I3YWUcW5kyheTUeZh3y9PykrMzkaYgoIp8u+m2zRM4RywlbHh
- JyyI9qi/inoBYYPYmjPyNFUv6eCNqE06Z+YN0EzO2lPUX+28Kic74s9ZwPP/LYaxYfiC
- 31lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1706465733; x=1707070533;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=E1i5P4fiaGHjQznCRkHVqjEWLkd9273/vHW9AZdmJ2I=;
- b=vwfG6HGvAGkYeJBJCHQKlR0ozil0ECMXFsddzuXI5hxWZ+6J4GdcePZWS7vZcPKH8s
- g1WQPo4ST/LQyE4LK79HokhfRHr0+pmDrImujLN6bGlQtWAHdQ1qYfjTdmDsKxeFGXF4
- X5+U8i4SUnvqDFxAaoBr8L5yrf17IDofV69PpJvune1hkxhCHfg2g8UiXBupbuYcPYWT
- /UVekkeFFVl3XrvbI0uhC2zMzNoHPhQLl33yjo6N4yrahlmy/n/2aqjmCUwvCVoNNA1x
- mXmIsDcMhWxUZB5KmBnUA84R3O0OMi0kLP6rro8JLyo6TXCPCJGbaWbY/J5558416l7L
- DFIQ==
-X-Gm-Message-State: AOJu0Ywjb+sJIo7lbaAGIY8UU8msRcLrCuoYMlQ7P8JKhyLArcHicmSL
- g2R9R59kUz4FLtfHCTeZnp7Trh2gCY0VvPFoSUFSgye+dYv1nYYZvzy3UFPc
-X-Google-Smtp-Source: AGHT+IHJTTXZURglcHZTwnLskGavxsQynTaoRI09dlrmtDSr8gwh0VPOLpo7aUQKFQ+rvzQtoG8R7Q==
-X-Received: by 2002:a17:903:1206:b0:1d7:133e:5c09 with SMTP id
- l6-20020a170903120600b001d7133e5c09mr1780454plh.22.1706465732883; 
- Sun, 28 Jan 2024 10:15:32 -0800 (PST)
-Received: from localhost.localdomain ([106.51.191.124])
- by smtp.gmail.com with ESMTPSA id
- r24-20020a170902be1800b001d7233dc459sm3889140pls.76.2024.01.28.10.15.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 28 Jan 2024 10:15:32 -0800 (PST)
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-To: ltp@lists.linux.it
-Date: Sun, 28 Jan 2024 13:15:23 -0500
-Message-ID: <20240128181526.5395-1-subramanya.swamy.linux@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BA72E1401642
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:04 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9913C2207E;
+ Mon, 29 Jan 2024 08:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706515381;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
+ b=hyxveYgiGMy/hcFDgk2mmxQwp23ciQ2O0zkTtn/uoLRqJ+RQXmHvQQpYt8mlG462AYUqPQ
+ baJ22vts54FgF+pkeBgCd+N9/1SwO1XbuVxilD7KAmr9FJoAhgGAfwUPHoQlD53S75J8/1
+ oWxTMNKnGgyA8DcNn4eRau+LImGpWhg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706515381;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
+ b=31E7NoDjydJBWk5tVbK+mxwYgRUXLP7ePwyYWQH92s9B0SNF6SmtX5qp06SeUuugYrPmvh
+ 3rrsL9NrZ2QptbAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706515381;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
+ b=hyxveYgiGMy/hcFDgk2mmxQwp23ciQ2O0zkTtn/uoLRqJ+RQXmHvQQpYt8mlG462AYUqPQ
+ baJ22vts54FgF+pkeBgCd+N9/1SwO1XbuVxilD7KAmr9FJoAhgGAfwUPHoQlD53S75J8/1
+ oWxTMNKnGgyA8DcNn4eRau+LImGpWhg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706515381;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
+ b=31E7NoDjydJBWk5tVbK+mxwYgRUXLP7ePwyYWQH92s9B0SNF6SmtX5qp06SeUuugYrPmvh
+ 3rrsL9NrZ2QptbAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7EE0D132FA;
+ Mon, 29 Jan 2024 08:03:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id QOvIHbVbt2WHLwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Mon, 29 Jan 2024 08:03:01 +0000
+Date: Mon, 29 Jan 2024 09:03:00 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240129080300.GA584389@pevik>
+References: <20240128024838.2699248-1-liwang@redhat.com>
+ <20240128024838.2699248-8-liwang@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240128024838.2699248-8-liwang@redhat.com>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hyxveYgi;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=31E7NoDj
+X-Spamd-Result: default: False [-4.01 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[]; DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9913C2207E
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] isofs.sh:Run test on genisoimage,
- xorriso &mksisofs if not symlinks
+Subject: Re: [LTP] [PATCH v5 7/8] swapon/off: enable all_filesystem in swap
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,106 +122,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-    1)mkisofs, genisoimage and xorriso tools are present as separate
-    tools in some distros while in others they are symlinks to one
-    another. Tests are skipped on symlinks.
+Hi Li,
 
-    2)mkisofs supports only -hfs option
-      genisoimage supports both -hfs & -hfsplus options
-      xorrisofs supports only -hfsplus option
+> +++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+> @@ -18,6 +18,8 @@
+>  #include "lapi/syscalls.h"
+>  #include "libswap.h"
 
-Co-Authored-By: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
----
- testcases/kernel/fs/iso9660/isofs.sh | 41 ++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 9 deletions(-)
+> +#define MNTPOINT	"mntpoint"
+> +
+>  static int setup01(void);
+>  static void cleanup01(void);
 
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index dfa4ac73d..9aa853e67 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -13,18 +13,16 @@ TST_NEEDS_CMDS="mount umount"
- TST_NEEDS_TMPDIR=1
- TST_SETUP=setup
- TST_TESTFUNC=do_test
-+TST_CNT=3
- 
- MAX_DEPTH=3
- MAX_DIRS=4
- 
- setup()
- {
--	if tst_cmd_available mkisofs; then
--		MKISOFS_CMD="mkisofs"
--	elif tst_cmd_available genisoimage; then
--		MKISOFS_CMD="genisoimage"
--	else
--		tst_brk TCONF "please install mkisofs or genisoimage"
-+	if !(tst_cmd_available mkisofs \
-+		|| tst_cmd_available genisoimage || tst_cmd_available xorrisofs);then
-+			tst_brk TCONF "please install mkisofs / genisoimage / xorriso"
- 	fi
- }
- 
-@@ -46,6 +44,29 @@ gen_fs_tree()
- 
- do_test()
- {
-+        case $1 in
-+        1) MKISOFS_CMD="mkisofs"
-+	   HFSOPT="-hfs -D"
-+	   GREPOPT="mkisofs";;
-+        2) MKISOFS_CMD="genisoimage"
-+	   HFSOPT="-hfsplus -D -hfs -D"
-+	   GREPOPT="genisoimage";;
-+        3) MKISOFS_CMD="xorrisofs"
-+	   HFSOPT="-hfsplus -D"
-+	   GREPOPT="xorriso";;
-+        esac
-+
-+
-+        if ! tst_cmd_available $MKISOFS_CMD; then
-+                tst_res TCONF "Missing '$MKISOFS_CMD'"
-+                return
-+        fi
-+
-+        if ! $MKISOFS_CMD 2>&1 | head -n 2 |grep -q "$GREPOPT"; then
-+                tst_res TCONF "'$MKISOFS_CMD' is a symlink to another tool"
-+                return
-+        fi
-+
- 	local mnt_point="$PWD/mnt"
- 	local make_file_sys_dir="$PWD/files"
- 	local mkisofs_opt mount_opt
-@@ -62,14 +83,16 @@ do_test()
- 	for mkisofs_opt in \
- 		" " \
- 		"-J" \
--		"-hfs -D" \
-+		${HFSOPT} \
- 		" -R " \
- 		"-R -J" \
- 		"-f -l -D -J -allow-leading-dots -R" \
--		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
-+		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J \
-+			-allow-leading-dots -R"
- 	do
- 		rm -f isofs.iso
--		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-+		EXPECT_PASS $MKISOFS_CMD -o isofs.iso \
-+			-quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
- 			|| continue
- 
- 		for mount_opt in \
--- 
-2.43.0
+> @@ -84,14 +86,13 @@ static void setup(void)
 
+>  	is_swap_supported("./tstswap");
+This needs to be run on MNTPOINT, see swapon01.c (change from second commit I
+made: "swapon01: Test on all filesystems").
+
+The same problem is in other tests. Otherwise we check always on TMPDIR
+(which TCONF when /tmp is tmpfs).
+
+Kind regards,
+Petr
+
+# ./swapoff02
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1709: TINFO: LTP version: 20230929-307-g5485ddaaf
+tst_test.c:1593: TINFO: Timeout per run is 0h 00m 30s
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports bcachefs
+tst_supported_fs_types.c:62: TINFO: mkfs.bcachefs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports exfat
+tst_supported_fs_types.c:62: TINFO: mkfs.exfat does exist
+tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1669: TINFO: === Testing on ext2 ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on ext3 ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on ext4 ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on xfs ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on btrfs ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on bcachefs ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on vfat ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on exfat ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on ntfs ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+tst_test.c:1669: TINFO: === Testing on tmpfs ===
+tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+libswap.c:202: TCONF: Swapfile on tmpfs not implemented
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  10
+warnings 0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
