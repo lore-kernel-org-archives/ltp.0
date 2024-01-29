@@ -4,113 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01117C47422
-	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 08:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C096C47422
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 08:03:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8CBAB3CC6C1
-	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 09:03:20 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id BC2663CE116
+	for <ltp@archiver.kernel.org>; Mon, 29 Jan 2024 09:03:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68B523CC020
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:05 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0367C3CE117
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:18 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BA72E1401642
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:04 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 10F741001F29
+ for <ltp@lists.linux.it>; Mon, 29 Jan 2024 09:03:17 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9913C2207E;
- Mon, 29 Jan 2024 08:03:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D0DBE1FCEE;
+ Mon, 29 Jan 2024 08:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706515381;
+ t=1706515396;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
- b=hyxveYgiGMy/hcFDgk2mmxQwp23ciQ2O0zkTtn/uoLRqJ+RQXmHvQQpYt8mlG462AYUqPQ
- baJ22vts54FgF+pkeBgCd+N9/1SwO1XbuVxilD7KAmr9FJoAhgGAfwUPHoQlD53S75J8/1
- oWxTMNKnGgyA8DcNn4eRau+LImGpWhg=
+ bh=Zk0OwyQqiREQeB7mlAUBqdQaTGwWEHS+EUd+LlTynBM=;
+ b=aUGT7qqTwqR53d6u59G+gOxpRum5fh1Za3O58/kz9FTnCEYeMHkX6z82JsZFPl0EYzhDNp
+ ahK0bProYIyOQe0bVzX84qObvOS6znKBgm54Ll3Qx6Z7aPGrEqFgvOGVnTzLIOEPO4Ml9m
+ XoWcNQvruR8fRZC0iIcl0DSjXPoHwk8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706515381;
+ s=susede2_ed25519; t=1706515396;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
- b=31E7NoDjydJBWk5tVbK+mxwYgRUXLP7ePwyYWQH92s9B0SNF6SmtX5qp06SeUuugYrPmvh
- 3rrsL9NrZ2QptbAw==
+ bh=Zk0OwyQqiREQeB7mlAUBqdQaTGwWEHS+EUd+LlTynBM=;
+ b=uXEbSklL1WjrHjEViI5ayFN8ToAXXI1wI6eQSu+wsbygQHEY7Ih02XHdhbqKYFWW7TWaox
+ 5gyL51FvewdjXjBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706515381;
+ t=1706515396;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
- b=hyxveYgiGMy/hcFDgk2mmxQwp23ciQ2O0zkTtn/uoLRqJ+RQXmHvQQpYt8mlG462AYUqPQ
- baJ22vts54FgF+pkeBgCd+N9/1SwO1XbuVxilD7KAmr9FJoAhgGAfwUPHoQlD53S75J8/1
- oWxTMNKnGgyA8DcNn4eRau+LImGpWhg=
+ bh=Zk0OwyQqiREQeB7mlAUBqdQaTGwWEHS+EUd+LlTynBM=;
+ b=aUGT7qqTwqR53d6u59G+gOxpRum5fh1Za3O58/kz9FTnCEYeMHkX6z82JsZFPl0EYzhDNp
+ ahK0bProYIyOQe0bVzX84qObvOS6znKBgm54Ll3Qx6Z7aPGrEqFgvOGVnTzLIOEPO4Ml9m
+ XoWcNQvruR8fRZC0iIcl0DSjXPoHwk8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706515381;
+ s=susede2_ed25519; t=1706515396;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3GvRkti6uaGj+3BHMuOIBJ/r8NXagM8fIesGa3giYho=;
- b=31E7NoDjydJBWk5tVbK+mxwYgRUXLP7ePwyYWQH92s9B0SNF6SmtX5qp06SeUuugYrPmvh
- 3rrsL9NrZ2QptbAw==
+ bh=Zk0OwyQqiREQeB7mlAUBqdQaTGwWEHS+EUd+LlTynBM=;
+ b=uXEbSklL1WjrHjEViI5ayFN8ToAXXI1wI6eQSu+wsbygQHEY7Ih02XHdhbqKYFWW7TWaox
+ 5gyL51FvewdjXjBQ==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7EE0D132FA;
- Mon, 29 Jan 2024 08:03:01 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8077132FA;
+ Mon, 29 Jan 2024 08:03:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id QOvIHbVbt2WHLwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 29 Jan 2024 08:03:01 +0000
-Date: Mon, 29 Jan 2024 09:03:00 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id enIOK8Rbt2WXLwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Mon, 29 Jan 2024 08:03:16 +0000
+Date: Mon, 29 Jan 2024 09:03:14 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20240129080300.GA584389@pevik>
+Message-ID: <20240129080314.GA581064@pevik>
 References: <20240128024838.2699248-1-liwang@redhat.com>
- <20240128024838.2699248-8-liwang@redhat.com>
+ <20240128024838.2699248-9-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240128024838.2699248-8-liwang@redhat.com>
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hyxveYgi;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=31E7NoDj
-X-Spamd-Result: default: False [-4.01 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
- RCVD_COUNT_THREE(0.00)[3];
+In-Reply-To: <20240128024838.2699248-9-liwang@redhat.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.30 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[]; DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
  RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 9913C2207E
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 7/8] swapon/off: enable all_filesystem in swap
- test
+Subject: Re: [LTP] [PATCH v5 8/8] libswap: Refactor is_swap_supported
+ function to return status
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,91 +119,65 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+> This updates the is_swap_supported function in the libltpswap
+> to return an integer status instead of void, allowing the function
+> to communicate success or failure to the caller. It introduces
+> checks and returns 0 on various failure conditions while logging
+> the failure without aborting the test case.
 
-> +++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
-> @@ -18,6 +18,8 @@
->  #include "lapi/syscalls.h"
->  #include "libswap.h"
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  include/libswap.h         |  2 +-
+>  libs/libltpswap/libswap.c | 28 ++++++++++++++++++----------
+>  2 files changed, 19 insertions(+), 11 deletions(-)
 
-> +#define MNTPOINT	"mntpoint"
-> +
->  static int setup01(void);
->  static void cleanup01(void);
+> diff --git a/include/libswap.h b/include/libswap.h
+> index e67d65756..1e09db031 100644
+> --- a/include/libswap.h
+> +++ b/include/libswap.h
+> @@ -20,5 +20,5 @@ int make_swapfile(const char *swapfile, int blocks, int safe);
+>   * Check swapon/swapoff support status of filesystems or files
+>   * we are testing on.
+>   */
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> @@ -84,14 +86,13 @@ static void setup(void)
+Thanks for further improving it. Few comments to fix old issues, when we are at
+it (and plan to merge after the release). But feel free to ignore.
 
->  	is_swap_supported("./tstswap");
-This needs to be run on MNTPOINT, see swapon01.c (change from second commit I
-made: "swapon01: Test on all filesystems").
+BTW do you plan to use it somewhere?
 
-The same problem is in other tests. Otherwise we check always on TMPDIR
-(which TCONF when /tmp is tmpfs).
+testcases/kernel/syscalls/swapoff/swapoff01.c
+
+nit: I would comment here the return code.
+Also maybe use bool (from stdbool.h)? The advantage is that we don't think what
+the return code is (sometimes we use syscalls approach when 0 is success,
+otherwise - like here - 0 is failure). Slowly converting to bool would be the
+best.
+
+> -void is_swap_supported(const char *filename);
+> +int is_swap_supported(const char *filename);
+>  #endif /* __LIBSWAP_H__ */
+> diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+> index 8aecad48d..14b7d9e3a 100644
+> --- a/libs/libltpswap/libswap.c
+> +++ b/libs/libltpswap/libswap.c
+> @@ -168,7 +168,7 @@ int make_swapfile(const char *swapfile, int blocks, int safe)
+>   * Check swapon/swapoff support status of filesystems or files
+>   * we are testing on.
+>   */
+nit: Although I did not like doc being just at the header, I now prefer it now
+to have it just at the header because we don't have to sync the same text on two
+places.
 
 Kind regards,
 Petr
 
-# ./swapoff02
-tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
-tst_test.c:1709: TINFO: LTP version: 20230929-307-g5485ddaaf
-tst_test.c:1593: TINFO: Timeout per run is 0h 00m 30s
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
-tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
-tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
-tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
-tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports bcachefs
-tst_supported_fs_types.c:62: TINFO: mkfs.bcachefs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
-tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports exfat
-tst_supported_fs_types.c:62: TINFO: mkfs.exfat does exist
-tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
-tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
-tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
-tst_test.c:1669: TINFO: === Testing on ext2 ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on ext3 ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on ext4 ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on xfs ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on btrfs ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on bcachefs ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on vfat ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on exfat ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on ntfs ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-tst_test.c:1669: TINFO: === Testing on tmpfs ===
-tst_ioctl.c:21: TINFO: FIBMAP ioctl is NOT supported: EINVAL (22)
-libswap.c:202: TCONF: Swapfile on tmpfs not implemented
-
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  10
-warnings 0
+> -void is_swap_supported(const char *filename)
+> +int is_swap_supported(const char *filename)
+>  {
+>  	int i, sw_support = 0;
+>  	int ret = make_swapfile(filename, 10, 1);
+...
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
