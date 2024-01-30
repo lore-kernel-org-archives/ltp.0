@@ -4,112 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85003C46CD2
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 13:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16D23C47DDF
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 13:14:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D076B3CF95B
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 14:07:33 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7D0463CF97C
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 14:14:52 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A1F1E3CE101
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 14:07:18 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 697293CE101
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 14:14:36 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6BABA1002059
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 14:07:17 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EE8231A008B1
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 14:14:35 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 85ADC1F848;
- Tue, 30 Jan 2024 13:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706620034;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tKAYt1fn1euZi5LszqMypWEMN9SWJen1x3IaJlfsFfk=;
- b=qycYkM6dqoCxCoFXXIWkQGT0AugIzYkG6SRB643Z9g2XWYQXGb5G0G4R1O2kosYlECwXcw
- JWvNkKPZS2psu4MJ/igrEL0T+zigTM463pSIU8mshhb/nRr2c27efwqrGzbKP0YdXFoI9X
- GyFwXyHHbMZDnD2KP+pCw7psv/imEw8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706620034;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tKAYt1fn1euZi5LszqMypWEMN9SWJen1x3IaJlfsFfk=;
- b=9bDwztMBNmNRp2vtWBpJ8BjOiMkdMdmXH2jmUEb1V+fDECK6G02mPg5D9yegw0XEW08RmH
- hgPLcC6ssB3CieCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706620034;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tKAYt1fn1euZi5LszqMypWEMN9SWJen1x3IaJlfsFfk=;
- b=qycYkM6dqoCxCoFXXIWkQGT0AugIzYkG6SRB643Z9g2XWYQXGb5G0G4R1O2kosYlECwXcw
- JWvNkKPZS2psu4MJ/igrEL0T+zigTM463pSIU8mshhb/nRr2c27efwqrGzbKP0YdXFoI9X
- GyFwXyHHbMZDnD2KP+pCw7psv/imEw8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706620034;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tKAYt1fn1euZi5LszqMypWEMN9SWJen1x3IaJlfsFfk=;
- b=9bDwztMBNmNRp2vtWBpJ8BjOiMkdMdmXH2jmUEb1V+fDECK6G02mPg5D9yegw0XEW08RmH
- hgPLcC6ssB3CieCA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E5A96222CB;
+ Tue, 30 Jan 2024 13:14:34 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5EDF913212;
- Tue, 30 Jan 2024 13:07:14 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BF23613212;
+ Tue, 30 Jan 2024 13:14:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id c2UzFoL0uGUaJgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 13:07:14 +0000
-Date: Tue, 30 Jan 2024 14:07:12 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id WKxGLDr2uGXmJwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 13:14:34 +0000
+Date: Tue, 30 Jan 2024 14:14:29 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20240130130712.GB778733@pevik>
-References: <20240125110510.751445-1-amir73il@gmail.com>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <20240130131429.GA786076@pevik>
+References: <20240129174647.635944-1-pvorel@suse.cz>
+ <12395443.O9o76ZdvQC@localhost>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240125110510.751445-1-amir73il@gmail.com>
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qycYkM6d;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9bDwztMB
-X-Spamd-Result: default: False [-1.72 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- FREEMAIL_TO(0.00)[gmail.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; BAYES_HAM(-2.21)[96.24%];
- ARC_NA(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+In-Reply-To: <12395443.O9o76ZdvQC@localhost>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 85ADC1F848
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Queue-Id: E5A96222CB
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify01: Test setting two marks on different
- filesystems
+Subject: Re: [LTP] [PATCH 1/1] README: Mention -f param for strace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,53 +72,47 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Amir, Jan,
+Hi Avinesh,
 
-I was going to merge, but I suspect this does not work on TMPDIR on btrfs.
+> Hi Petr,
+> > -Debugging with gdb
+> > -==================
+> > +Debugging with gdb and strace
+> > +=============================
 
-Tested on SLE 15-SP6 (kernel 6.4), on 15-SP4 (kernel 5.14), Tumbleweed (kernel
-6.8.0-rc1), Alpine Linux (kernel 6.4) I get:
+> >  The new test library runs the actual test, i.e. the `test()` function in a
+> >  forked process. To get stack trace of a crashing test in gdb it's needed to
+> > [`set follow-fork-mode
+> > child`](https://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_25.html). +To
+> > trace test with strace use `-f`.
+> For a second I thought ltp tests has `-f` option.
+> So maybe if we can make it absolutely clear, or maybe it is just me. :D
 
-fanotify01.c:341: TFAIL: fanotify_mark(fd_notify, 0x00000001, 0x00000008, -100, ".") failed: EXDEV (18)
+thanks for having a look!
 
-for tests #3, #4 and #5 on all filesystems.
+There is currently no -f parameter, but sure, it could be in the future.
+./fanotify01 -h # shows no -f parameter
 
-Testing on other on other filesystem it works: Debian kernel 5.10, 6.1 on ext4,
-Alpine Linux kernel 6.4 on tmpfs, Tumbleweed kernel 6.8.0-rc1 on tmpfs.
+./fanotify01 -f
+...
+tst_test.c:688: TBROK: Invalid option
 
-Should be btrfs handled differently or skipped? (below)
-Or test EXDEV for #3, #4 and #5? (not sure how handle just half of the tests on
-btrfs differently).
+But I meant '-f' as strace parameter, e.g.:
+
+strace -f ./fanotify01
+
+should I wrote this?
+
+	To trace test with strace use call strace with `-f` parameter.
 
 Kind regards,
 Petr
-
-diff --git testcases/kernel/syscalls/fanotify/fanotify01.c testcases/kernel/syscalls/fanotify/fanotify01.c
-index ba09f309d..97ade1829 100644
---- testcases/kernel/syscalls/fanotify/fanotify01.c
-+++ testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -335,8 +335,15 @@ pass:
- 	 * different filesystems are supported.
- 	 * When tested fs has zero fsid (e.g. fuse) and events are reported
- 	 * with fsid+fid, watching different filesystems is not supported.
-+	 * Not supported on Btrfs.
- 	 */
-+	if (tst_fs_type(".") == TST_BTRFS_MAGIC) {
-+		tst_res(TCONF, "skipped on Btrfs");
-+		return;
-+	}
-+
- 	ret = report_fid ? inode_mark_fid_xdev : 0;
-+
- 	TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
- 					 AT_FDCWD, "."), ret);
- 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
