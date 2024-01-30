@@ -4,71 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 919BDC47DDB
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 14:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3D15C46CD2
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 15:29:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9E8CA3CF970
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 15:58:59 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2B6FA3CF980
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 16:29:42 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 327A33C71C6
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 15:58:41 +0100 (CET)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com
- [IPv6:2607:f8b0:4864:20::f30])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 17E783CE0F4
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 16:29:26 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 726746002C8
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 15:58:41 +0100 (CET)
-Received: by mail-qv1-xf30.google.com with SMTP id
- 6a1803df08f44-68c438fde8eso25950376d6.1
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 06:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1706626720; x=1707231520; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=KWtRWwcmyih03Ag9nPi5dRm9AkE50nrgZ0tkN/exEXk=;
- b=HEMHzXjudDrH79uMprMnOnehfLi7QXgUTVcIL5HRYSSA9Kqr6TXHKa3ahEjVTbl77M
- Dh9dicREVYaYjrqrxlZMIrDWw4HSw/GWALQ6xP4zZq3mQhYoXWQLD7eRt3BJWyRZH3yg
- E1lhvAyJTKhrjtU+TQSR/xE8yAdFZ0/OzdoEtTWGM8KaWQIGnDHhpjoSkHp0KF1x5Nlp
- Qf8Tu9UsWCmIyjhTLOmRsqKJKKD7ucbxorFGtqoAqA4jDzzbEBKbk9hQM7sfk3Yp1ZFs
- GEXMXBsDwC7TWvh3zNaL+IJmlE+fO0KE4xfTJhnCN/IisSWALoLKyDx3M7zM2FEf6Va2
- M9qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1706626720; x=1707231520;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=KWtRWwcmyih03Ag9nPi5dRm9AkE50nrgZ0tkN/exEXk=;
- b=cfGgX2rcmjSZh8FPAc0xkG91+ZvPHp743FrxNq6Xx/0VsoioG1+HHIo3tae1DOW78o
- dbqwABqU9i/DAR52ZUqJMpn+bhG6kNy1QxS3W+3B18DAvEhCyzaqO5l2laf/UkHNzO+r
- FgqDgS1EOjCBf8i3EE2+Hv4dWlokvu0BMcdrXPjVijnPBQQdUKKs4+w6VxXnqlsWWKbH
- AmnqV0w5Fm2zi5LhiSlEHcqElbFvHaB5QXyEyZSWWAiY4pFOvSv8oAni3qP7czAD+/Hq
- DCOasJXLOGRSkC4IXsC1DxTbCKBVKa0Kuiz+iMcqZ6vPOQYwm7lYXZ7rRwSZlyO6xHTY
- NieA==
-X-Gm-Message-State: AOJu0YyrCWdOFOtizHUoZcmrcBizS7vdv3ttQUzyA3uS5fphA3GFEzfw
- k5jxVVaF4C6a/sKsuQTc0oRwqrJqGOcRuiFkvDYfiJx20mhE0wuNzU+e8r4O+99yeic4Ye/c/oO
- 0k5uHUg4bPFDNWUTl/Je/Ft/qixQ=
-X-Google-Smtp-Source: AGHT+IGZES3U5dUHVZ4CIgWVwRFyd/zm0/K462/dOqTMZzCXeAIC6ReGJiBKwcrAz0lrHTVG41UPz+GzHJ2HOjqYxsI=
-X-Received: by 2002:ad4:5ec7:0:b0:681:172f:a989 with SMTP id
- jm7-20020ad45ec7000000b00681172fa989mr8323687qvb.107.1706626720213; Tue, 30
- Jan 2024 06:58:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20240125110510.751445-1-amir73il@gmail.com>
- <20240130130712.GB778733@pevik>
-In-Reply-To: <20240130130712.GB778733@pevik>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 30 Jan 2024 16:58:28 +0200
-Message-ID: <CAOQ4uxi+0us5cq5BhoLoPDCbZgeqhtWiK4UCDV5HaZ+aZQwCLw@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5D06C1400F87
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 16:29:25 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 707F822117;
+ Tue, 30 Jan 2024 15:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1706628565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=OL8Catcifx1NQpFR3MLaD2hPqDHNNdknpmQStsvvomc=;
+ b=joOKmJcxgc6sh0K7AZog2t2okjmI7ZvsSoFg9zSnza3g5EbaCc8zb1XoiiFCimh+E8Pb5p
+ qt+XQkTTg1SwUtTmefLImXh8GOvbZEcF4gkct9niSh4N8ynV9lDV7KGHTfBHYeNk0Jai76
+ keXsb2lCIZ2+Po8CLLcDyE5VN4p1ouo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1706628565;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=OL8Catcifx1NQpFR3MLaD2hPqDHNNdknpmQStsvvomc=;
+ b=ia3u1k3y7BWb3rnoyM5QVN+5MnhE5ipIt4l4vAO/VPkLfcy9chSEvimBjtkEIvsl9h4nvD
+ LGl0qY9nC3EwneCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1706628563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=OL8Catcifx1NQpFR3MLaD2hPqDHNNdknpmQStsvvomc=;
+ b=ZzDSO7hc2ltpj0LtOSnVpM8bj+90QlEOQ2wM9NTxkGl1jMgluxAGOlIzy5lx3wOv5XQigi
+ Jl2u/+L1sHznDsdZtpIbpwId9j2RwL19/yB+0EctUcufsKyxLqaHgZTsHexxy7TrFUSwaV
+ 0d+U7rZq2O78Fn2xONh5VgPqQBvk9Y0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1706628563;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=OL8Catcifx1NQpFR3MLaD2hPqDHNNdknpmQStsvvomc=;
+ b=P4yVq0lo7VLe/YhFm9D1s+bGMaUjj/mZ6OA7q1K12nebvYP4SgghLXXChLzwfdT1oYihFi
+ CGm1ECxnn8CtpmBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FE4912FF7;
+ Tue, 30 Jan 2024 15:29:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2PuMFtMVuWVBeAAAD6G6ig
+ (envelope-from <akumar@suse.de>); Tue, 30 Jan 2024 15:29:23 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Date: Tue, 30 Jan 2024 16:29:23 +0100
+Message-ID: <2945958.e9J7NaK4W3@localhost>
+Organization: SUSE
+In-Reply-To: <20240130131429.GA786076@pevik>
+References: <20240129174647.635944-1-pvorel@suse.cz>
+ <12395443.O9o76ZdvQC@localhost> <20240130131429.GA786076@pevik>
+MIME-Version: 1.0
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.33 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_ORG_HEADER(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[gnu.org:url];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.57)[81.17%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify01: Test setting two marks on different
- filesystems
+Subject: Re: [LTP] [PATCH 1/1] README: Mention -f param for strace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,63 +113,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKYW4gMzAsIDIwMjQgYXQgMzowN+KAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpIEFtaXIsIEphbiwKPgo+IEkgd2FzIGdvaW5nIHRvIG1lcmdlLCBi
-dXQgSSBzdXNwZWN0IHRoaXMgZG9lcyBub3Qgd29yayBvbiBUTVBESVIgb24gYnRyZnMuCj4KClRo
-aXMgaXMgYSBwcm9ibGVtIGJlY2F1c2UgdGhlIHRlc3QgcmVzdWx0IGRlcGVuZHMgb24gdGhlIHR5
-cGUgb2YgVE1QRElSLgpUaGUgZmFpbHVyZSBpbiB5b3VyIGNhc2UgaXMgYmVjYXVzZSBUTVBESVIg
-aXMgbm90IG9ubHkgYnRyZnMsIGJ1dCBhCmJ0cmZzIHN1YnZvbC4KSmFuIGhhcyBkZWFsdCB3aXRo
-IHNldmVyYWwgcmVsYXRlZCBmYW5vdGlmeSB0ZXN0cyBmYWlsdXJlcyBsYXRlbHkuCgo+IFRlc3Rl
-ZCBvbiBTTEUgMTUtU1A2IChrZXJuZWwgNi40KSwgb24gMTUtU1A0IChrZXJuZWwgNS4xNCksIFR1
-bWJsZXdlZWQgKGtlcm5lbAo+IDYuOC4wLXJjMSksIEFscGluZSBMaW51eCAoa2VybmVsIDYuNCkg
-SSBnZXQ6Cj4KPiBmYW5vdGlmeTAxLmM6MzQxOiBURkFJTDogZmFub3RpZnlfbWFyayhmZF9ub3Rp
-ZnksIDB4MDAwMDAwMDEsIDB4MDAwMDAwMDgsIC0xMDAsICIuIikgZmFpbGVkOiBFWERFViAoMTgp
-Cj4KPiBmb3IgdGVzdHMgIzMsICM0IGFuZCAjNSBvbiBhbGwgZmlsZXN5c3RlbXMuCj4KPiBUZXN0
-aW5nIG9uIG90aGVyIG9uIG90aGVyIGZpbGVzeXN0ZW0gaXQgd29ya3M6IERlYmlhbiBrZXJuZWwg
-NS4xMCwgNi4xIG9uIGV4dDQsCj4gQWxwaW5lIExpbnV4IGtlcm5lbCA2LjQgb24gdG1wZnMsIFR1
-bWJsZXdlZWQga2VybmVsIDYuOC4wLXJjMSBvbiB0bXBmcy4KPgo+IFNob3VsZCBiZSBidHJmcyBo
-YW5kbGVkIGRpZmZlcmVudGx5IG9yIHNraXBwZWQ/IChiZWxvdykKPiBPciB0ZXN0IEVYREVWIGZv
-ciAjMywgIzQgYW5kICM1PyAobm90IHN1cmUgaG93IGhhbmRsZSBqdXN0IGhhbGYgb2YgdGhlIHRl
-c3RzIG9uCj4gYnRyZnMgZGlmZmVyZW50bHkpLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPgo+
-IGRpZmYgLS1naXQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTAx
-LmMgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTAxLmMKPiBpbmRl
-eCBiYTA5ZjMwOWQuLjk3YWRlMTgyOSAxMDA2NDQKPiAtLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9mYW5vdGlmeS9mYW5vdGlmeTAxLmMKPiArKysgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9mYW5vdGlmeS9mYW5vdGlmeTAxLmMKPiBAQCAtMzM1LDggKzMzNSwxNSBAQCBwYXNzOgo+ICAg
-ICAgICAgICogZGlmZmVyZW50IGZpbGVzeXN0ZW1zIGFyZSBzdXBwb3J0ZWQuCj4gICAgICAgICAg
-KiBXaGVuIHRlc3RlZCBmcyBoYXMgemVybyBmc2lkIChlLmcuIGZ1c2UpIGFuZCBldmVudHMgYXJl
-IHJlcG9ydGVkCj4gICAgICAgICAgKiB3aXRoIGZzaWQrZmlkLCB3YXRjaGluZyBkaWZmZXJlbnQg
-ZmlsZXN5c3RlbXMgaXMgbm90IHN1cHBvcnRlZC4KPiArICAgICAgICAqIE5vdCBzdXBwb3J0ZWQg
-b24gQnRyZnMuCj4gICAgICAgICAgKi8KPiArICAgICAgIGlmICh0c3RfZnNfdHlwZSgiLiIpID09
-IFRTVF9CVFJGU19NQUdJQykgewo+ICsgICAgICAgICAgICAgICB0c3RfcmVzKFRDT05GLCAic2tp
-cHBlZCBvbiBCdHJmcyIpOwo+ICsgICAgICAgICAgICAgICByZXR1cm47Cj4gKyAgICAgICB9Cj4g
-KwoKTm90ZSB0aGF0IGJ0cmZzIGlzIG5vdCB0aGUgRlMgdW5kZXIgdGVzdC4gSXQgaXMgdGhlIEZT
-IG9mIFRNUEZTLApzbyBldmVuIGlmIHlvdSBkaWQgc2tpcCwgdGhpcyBtZXNzYWdlIHdvdWxkIGhh
-dmUgYmVlbiB3cm9uZy4KClBsZWFzZSB0cnkgdGhlIHBhdGNoIGJlbG93LgoKVGhhbmtzLApBbWly
-LgoKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTAxLmMK
-KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTAxLmMKQEAg
-LTM2NCwxMiArMzY0LDE5IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiAgICAgICAgbW91bnRf
-bWFya19maWRfdW5zdXBwb3J0ZWQgPQpmYW5vdGlmeV9mbGFnc19zdXBwb3J0ZWRfb25fZnMoRkFO
-X1JFUE9SVF9GSUQsCgpGQU5fTUFSS19NT1VOVCwKCkZBTl9PUEVOLCBmbmFtZSk7Ci0gICAgICAg
-LyogV2hlbiBtb3VudCBtYXJrIGlzIG5vdCBzdXBwb3J0ZWQgZHVlIHRvIHplcm8gZnNpZCwgbXVs
-dGkgZnMKaW5vZGUgbWFya3MgYXJlIG5vdCBzdXBwb3J0ZWQgKi8KKyAgICAgICAvKgorICAgICAg
-ICAqIFdoZW4gbW91bnQgbWFyayBpcyBub3Qgc3VwcG9ydGVkIGR1ZSB0byB6ZXJvIGZzaWQgKGUu
-Zy4KZnVzZSkgb3IgaWYgVE1QRElSIGhhcyBub24tdW5pZm9ybQorICAgICAgICAqIGZzaWQgKGUu
-Zy4gYnRyZnMgc3Vidm9sKSwgbXVsdGkgZnMgaW5vZGUgbWFya3MgYXJlIG5vdCBzdXBwb3J0ZWQu
-CisgICAgICAgICovCiAgICAgICAgaWYgKG1vdW50X21hcmtfZmlkX3Vuc3VwcG9ydGVkICYmIGVy
-cm5vID09IEVOT0RFVikgewogICAgICAgICAgICAgICAgdHN0X3JlcyhUSU5GTywgImZpbGVzeXN0
-ZW0gJXMgZG9lcyBub3Qgc3VwcG9ydApyZXBvcnRpbmcgZXZlbnRzIHdpdGggZmlkIGZyb20gbXVs
-dGkgZnMiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRzdF9kZXZpY2UtPmZzX3R5
-cGUpOwogICAgICAgICAgICAgICAgaW5vZGVfbWFya19maWRfeGRldiA9IEVYREVWOwogICAgICAg
-IH0KKyAgICAgICBpZiAoZmFub3RpZnlfZmxhZ3Nfc3VwcG9ydGVkX29uX2ZzKEZBTl9SRVBPUlRf
-RklELApGQU5fTUFSS19NT1VOVCwgRkFOX09QRU4sICIuIikpIHsKKyAgICAgICAgICAgICAgIGlu
-b2RlX21hcmtfZmlkX3hkZXYgPSBlcnJubzsKKyAgICAgICAgICAgICAgIHRzdF9yZXMoVElORk8s
-ICJUTVBESVIgZG9lcyBub3Qgc3VwcG9ydCByZXBvcnRpbmcKZXZlbnRzIHdpdGggZmlkIGZyb20g
-bXVsdGkgZnMiKTsKKyAgICAgICB9CiB9CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
-bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Tuesday, January 30, 2024 2:14:29 PM CET Petr Vorel wrote:
+> Hi Avinesh,
+> 
+> > Hi Petr,
+> > 
+> > > -Debugging with gdb
+> > > -==================
+> > > +Debugging with gdb and strace
+> > > +=============================
+> > > 
+> > >  The new test library runs the actual test, i.e. the `test()` function
+> > >  in a
+> > >  forked process. To get stack trace of a crashing test in gdb it's
+> > >  needed to
+> > > 
+> > > [`set follow-fork-mode
+> > > child`](https://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_25.html).
+> > > +To
+> > > trace test with strace use `-f`.
+> > 
+> > For a second I thought ltp tests has `-f` option.
+> > So maybe if we can make it absolutely clear, or maybe it is just me. :D
+> 
+> thanks for having a look!
+> 
+> There is currently no -f parameter, but sure, it could be in the future.
+> ./fanotify01 -h # shows no -f parameter
+> 
+> ./fanotify01 -f
+> ...
+> tst_test.c:688: TBROK: Invalid option
+> 
+> But I meant '-f' as strace parameter, e.g.:
+> 
+> strace -f ./fanotify01
+> 
+> should I wrote this?
+> 
+> 	To trace test with strace use call strace with `-f` parameter.
+yes, or maybe-
+To trace the test with strace, use strace with `-f` option to enable tracing 
+of forked processes also.
+
+Thanks,
+Avinesh
+> 
+> Kind regards,
+> Petr
+
+
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
