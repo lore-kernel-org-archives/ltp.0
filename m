@@ -4,103 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2127DC46CD2
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 11:55:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D90FC46CD2
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 12:09:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 75DF43CF965
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 12:55:18 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 988073CF965
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 13:09:54 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69C453CC765
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 12:55:03 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 111F53CB8E6
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 13:09:40 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7748460141F
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 12:55:02 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6E97220173D
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 13:09:39 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 784971F848;
- Tue, 30 Jan 2024 11:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706615702;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DVS5wxuD8LAW666ZK1F0EVLsTqAFRPO73mIskN+jCgc=;
- b=fqFQ1lpnoG68eF18gIVhBWWcZTv2Fx2rWTn7NcLNNpEi5vFckvMrGe8H66Ck1Bo9nLj60e
- /wwEAmAgrUuyNHZYT/Yb44aKtIm4c8p0VCIJBKN80vFxN5quAQOSbkCOxCjHFwpHO0NnrH
- d/d5bKxjh/z6EjboAzxD9woyIIm3mrM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706615702;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DVS5wxuD8LAW666ZK1F0EVLsTqAFRPO73mIskN+jCgc=;
- b=PCzun37WlhaVvlWHJ9bQTR58HZNLpaNiuqtWwBgusrfToJeVGIUzIgVKYwqXoct0G7jie2
- /cZRAmjq5sYku4Dw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706615702;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DVS5wxuD8LAW666ZK1F0EVLsTqAFRPO73mIskN+jCgc=;
- b=fqFQ1lpnoG68eF18gIVhBWWcZTv2Fx2rWTn7NcLNNpEi5vFckvMrGe8H66Ck1Bo9nLj60e
- /wwEAmAgrUuyNHZYT/Yb44aKtIm4c8p0VCIJBKN80vFxN5quAQOSbkCOxCjHFwpHO0NnrH
- d/d5bKxjh/z6EjboAzxD9woyIIm3mrM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706615702;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DVS5wxuD8LAW666ZK1F0EVLsTqAFRPO73mIskN+jCgc=;
- b=PCzun37WlhaVvlWHJ9bQTR58HZNLpaNiuqtWwBgusrfToJeVGIUzIgVKYwqXoct0G7jie2
- /cZRAmjq5sYku4Dw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5945B21F9D;
+ Tue, 30 Jan 2024 12:09:39 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 47A3413462;
- Tue, 30 Jan 2024 11:55:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id s0hpEJbjuGW4FAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 11:55:02 +0000
-Date: Tue, 30 Jan 2024 12:55:00 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
-Message-ID: <20240130115500.GB766274@pevik>
-References: <20240109065904.18117-1-wegao@suse.com>
- <20240123021928.9721-1-wegao@suse.com>
- <20240123021928.9721-2-wegao@suse.com>
- <20240123083654.GA149835@pevik>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B9C613A66;
+ Tue, 30 Jan 2024 12:09:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EURMDgPnuGXySgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 30 Jan 2024 12:09:39 +0000
+Date: Tue, 30 Jan 2024 13:09:55 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZbjnEzmW0RvxWhg9@yuki>
+References: <20240130103319.22763-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240123083654.GA149835@pevik>
-Authentication-Results: smtp-out2.suse.de;
+In-Reply-To: <20240130103319.22763-1-andrea.cervesato@suse.de>
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-1.88 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.58)[98.15%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 5945B21F9D
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 1/2] lib: Add .ulimit
+Subject: Re: [LTP] [PATCH v1] Fix dio_append/aiodio_append tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,18 +70,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi!
+> diff --git a/testcases/kernel/io/ltp-aiodio/dio_append.c b/testcases/kernel/io/ltp-aiodio/dio_append.c
+> index 057ae73d9..bd48a8252 100644
+> --- a/testcases/kernel/io/ltp-aiodio/dio_append.c
+> +++ b/testcases/kernel/io/ltp-aiodio/dio_append.c
+> @@ -33,7 +33,7 @@ static void setup(void)
+>  {
+>  	numchildren = 16;
+>  	writesize = 64 * 1024;
+> -	appends = 1000;
+> +	appends = 10000;
 
-thanks, patchset merged!
+Since we are increasing this we should probably check the free space as
+well, so we should add something as:
 
-Kind regards,
-Petr
+	if (!tst_fs_has_free(".", appends, writesize))
+		tst_brk(TCONF, "Not enough space to run the test");
+
+Or even better put a function:
+
+void tst_assert_free_space(const char *path, unsigned int size, unsigned int mult)
+
+into the test library and this function would tst_brk(TCONF, ) if there
+is not enough space and tst_res(TWARN, ) if the free space is let's say
+only 10% more than the test would need to run. And we can use that in
+all of these tests.
+
+>  	if (tst_parse_int(str_numchildren, &numchildren, 1, INT_MAX))
+>  		tst_brk(TBROK, "Invalid number of children '%s'", str_numchildren);
+> @@ -97,7 +97,7 @@ static struct tst_test test = {
+>  	.options = (struct tst_option[]) {
+>  		{"n:", &str_numchildren, "Number of processes (default 16)"},
+>  		{"w:", &str_writesize, "Write size for each append (default 64K)"},
+> -		{"c:", &str_appends, "Number of appends (default 1000)"},
+> +		{"c:", &str_appends, "Number of appends (default 10000)"},
+>  		{}
+>  	},
+>  	.skip_filesystems = (const char *[]) {
+> -- 
+> 2.35.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
