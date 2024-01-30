@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35CA8C46CD2
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 07:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62AC0C46CD2
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 07:35:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 051D23CE103
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 08:23:33 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id D2F643CF95C
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 08:35:27 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 79E0C3CB948
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:23:18 +0100 (CET)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E79713C4DB7
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:35:12 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A336D1400BE6
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:23:17 +0100 (CET)
-Received: by mail-ed1-x536.google.com with SMTP id
- 4fb4d7f45d1cf-55a179f5fa1so4118112a12.0
- for <ltp@lists.linux.it>; Mon, 29 Jan 2024 23:23:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1706599397; x=1707204197; darn=lists.linux.it;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=tzvdPgvt5+7oQC8//UTqp7pRz++rztY2vF1W4o1jwgs=;
- b=gaj3tbLkdOTfF2u+270ZPNuFBpJAEYEPXqSklm1hKzUhao/H8Hyy9RulvyfCEaoGfX
- KuP8WvpVhCBeWnUlb2x3LYOvQBVpm77Ho7dy1wJMXr1v7wnfzN/uQplKh9XyopDclf7k
- 1Xe8N60vv9MB32VrvYs/CQ4t2gbMQiAIAUxZ10+Yibe0HyPA2z+nJWe5U5xMC1qP+UpC
- jwjYPIHwFCrsqCbiVtNQMpd1PgHowkqzK56hPjM8eFiZ4Wxai7iJ3k8wuuFcn7hHrgY8
- VxZXalFRvQdeU+Bh4ssMp9PB09oZsYBvS9YH2kQX12frRRDnFH+H/jt8sQPGyPaeaHeU
- qgZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1706599397; x=1707204197;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=tzvdPgvt5+7oQC8//UTqp7pRz++rztY2vF1W4o1jwgs=;
- b=duQf+r/Byk0cug9oe4h52OrHUrS97rV1QcJP8ionWEKb9RdV/JlhzEiC/fqP+77hs1
- JJSN3aRyDAIP/w3lRuYyYvq79IHtdCy5HmnRs+1/8TDUAR8vaev/98t7ojAnpVoW4WfE
- 3da3Ei3UogaiNr42/LKwZv7Y60GKov+Ca1VCGT+TpEhlRdv4A/woVH7vdhhu/6JbhArm
- RMjSa9N/jZ2dUdoKkdlQCW+vP9XY09+7Ti993DFuBhk+WTNqbwjudx29WKTh+DcBwmGK
- yR1JqiM5Z+Q2gvCBlPruQjJTjgxmEixlvS36G+U3uCQVCqL3IuEG7hr9wS3bCeBUmBh1
- khvg==
-X-Gm-Message-State: AOJu0YxwC5btRky8+FLYG4tndVvsiBCQH0u5AM4iodf2l+h1ONDeQl0Y
- iA57lUdLBYF8eJWZ+UOEOLNNadgOSOC6EhqpUCNE+OmJRO8W8Fm6F6pDrXOBB2TYCZyOLrsQfiC
- 5NfZEmIz1N05BbmPs02+9xY0MhTLfFWo=
-X-Google-Smtp-Source: AGHT+IFiPwmVO4ZREQw1oQct/8vPkimzakkQ+NVj289BZqfvhifQUGZoHGpZ1e+Z3vH6Ogom8EzWT6pCvYCtGq1g+cM=
-X-Received: by 2002:a05:6402:3594:b0:55d:2ecf:eb1b with SMTP id
- y20-20020a056402359400b0055d2ecfeb1bmr6023890edc.1.1706599396692; Mon, 29 Jan
- 2024 23:23:16 -0800 (PST)
-MIME-Version: 1.0
-From: Anil kumar Julakal <julakalanilkumar@gmail.com>
-Date: Tue, 30 Jan 2024 12:53:03 +0530
-Message-ID: <CA+QiLSHC64=ZA0dpeM1AsMWAY6TQ5BHHb0JHchV_4K+_oCHdeg@mail.gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5B04F200A03
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:35:12 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5FB5822043;
+ Tue, 30 Jan 2024 07:35:11 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4163B13462;
+ Tue, 30 Jan 2024 07:35:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id MKPIDq+muGVjTwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 07:35:11 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Date: Tue, 30 Jan 2024 08:35:06 +0100
+Message-ID: <20240130073507.662414-3-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240130073507.662414-1-pvorel@suse.cz>
+References: <20240130073507.662414-1-pvorel@suse.cz>
+MIME-Version: 1.0
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 5FB5822043
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] cve 2015 3290 broken
+Subject: [LTP] [PATCH 2/3] runtest: Move io content to ltp-aiodio.part4
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,31 +76,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
++ Remove bogus comments.
 
-I am running ltp test cases on the android x86_64 platform with Kernel
-v5.15.106. CVE-2015-3290 is failing with Timeout for both 32bit and 64bit.
-Following is the error I see,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/io               | 3 ---
+ runtest/ltp-aiodio.part4 | 6 +++---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
+ delete mode 100644 runtest/io
 
+diff --git a/runtest/io b/runtest/io
+deleted file mode 100644
+index cd51cce3c..000000000
+--- a/runtest/io
++++ /dev/null
+@@ -1,3 +0,0 @@
+-#AIO01 & AIO02 tests to be run
+-aio01 aio01
+-aio02 aio02
+diff --git a/runtest/ltp-aiodio.part4 b/runtest/ltp-aiodio.part4
+index c31bef934..de00b8a78 100644
+--- a/runtest/ltp-aiodio.part4
++++ b/runtest/ltp-aiodio.part4
+@@ -1,6 +1,6 @@
+-# 3/2006
+-# Malcles Jacky: this file is a copy from Ridgeway Marty's aio script
+-#     goal: all aio tests using the same framework
++aio01 aio01
++aio02 aio02
++
+ #Running dio_sparse & dirty tests
+ DI000 dirty
+ DS000 dio_sparse
+-- 
+2.43.0
 
-
-*pid: 8962, tid: 8964, name: cve-2015-3290 >>> cve-2015-3290 <<<
-uid: 0
-signal 5 (SIGTRAP), code 128 (SI_KERNEL), fault addr 0x0000000000000000
-rax 0000000000000001 rbx 0000000000000010 rcx 0000000000000049 rdx
-0000000000000000
-r8 0000000000000000 r9 0000000000000000 r10 0000000000000000 r11
-0000000000000246
-r12 0000000000000007 r13 0000000000000010 r14 0000737216a3f000 r15
-00007372164b4000
-rdi 0000000000000026 rsi 0000000000000033
-rbp 0000000000000800 rsp 0000737217227bf0 rip 000064711cc81b7b*
-
-Can you please help me on this issue?
-
-Thanks & Regards,
-
-Anil Kumar Julakal
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
