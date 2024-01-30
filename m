@@ -4,60 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDD7AC46CD2
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 07:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9C78C47DA9
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 07:36:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4FCE03CE0F5
-	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 08:35:43 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 47FF63CE111
+	for <ltp@archiver.kernel.org>; Tue, 30 Jan 2024 08:35:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F24073CE0E2
+ by picard.linux.it (Postfix) with ESMTPS id 0ACB23CE0E6
  for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:35:12 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 55A2B100096F
- for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:35:11 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6022F1400E17
+ for <ltp@lists.linux.it>; Tue, 30 Jan 2024 08:35:12 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7B3DB22052;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 173081F833;
  Tue, 30 Jan 2024 07:35:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706600111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=clDFRJVHNiO/+swh8uuRyZPKQmMMhVECvdC80duwlXQ=;
+ b=Di54TC9SBeHluMx/YQjci95dvz76uxQNY4hVkhu2jfcQ5p1SI9+hQ3VwWJ9PTnzGmXTxXC
+ NRWH1PHcnAJ8ApX+CJvpZ+JqHkvVybO8xnlg5trByQQozSnl2SHBclA7Z+CTZGUzfx/l15
+ Qo8fiA7Y/hM1d6U9dwc86OSXzOPIhY8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706600111;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=clDFRJVHNiO/+swh8uuRyZPKQmMMhVECvdC80duwlXQ=;
+ b=dntvCQJoI/XQCq5iEbE7f7oGcEjxhwlIRZab1rectvr7w/d1H5bB7VO2dCcDGPK3eqjIRy
+ FQdsoFy5fS+6mWDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1706600111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=clDFRJVHNiO/+swh8uuRyZPKQmMMhVECvdC80duwlXQ=;
+ b=Di54TC9SBeHluMx/YQjci95dvz76uxQNY4hVkhu2jfcQ5p1SI9+hQ3VwWJ9PTnzGmXTxXC
+ NRWH1PHcnAJ8ApX+CJvpZ+JqHkvVybO8xnlg5trByQQozSnl2SHBclA7Z+CTZGUzfx/l15
+ Qo8fiA7Y/hM1d6U9dwc86OSXzOPIhY8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1706600111;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=clDFRJVHNiO/+swh8uuRyZPKQmMMhVECvdC80duwlXQ=;
+ b=dntvCQJoI/XQCq5iEbE7f7oGcEjxhwlIRZab1rectvr7w/d1H5bB7VO2dCcDGPK3eqjIRy
+ FQdsoFy5fS+6mWDQ==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 60624139E1;
- Tue, 30 Jan 2024 07:35:11 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F208713462;
+ Tue, 30 Jan 2024 07:35:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id UJl9Fq+muGVjTwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 07:35:11 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id 9ff2Oa6muGVjTwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 30 Jan 2024 07:35:10 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 30 Jan 2024 08:35:07 +0100
-Message-ID: <20240130073507.662414-4-pvorel@suse.cz>
+Date: Tue, 30 Jan 2024 08:35:04 +0100
+Message-ID: <20240130073507.662414-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240130073507.662414-1-pvorel@suse.cz>
-References: <20240130073507.662414-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7B3DB22052
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [1.93 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; MID_CONTAINS_FROM(1.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-2.97)[99.88%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] runtest: Remove 'ltp-' prefix from aio* runtests
+Subject: [LTP] [PATCH 0/3] runtest cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,43 +107,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Renaming runtest files will force people to rename in their frameworks /
-toolings, but it's nice to be consistent.
+Petr Vorel (3):
+  runtest: Move capability related tests to new capability
+  runtest: Move io content to ltp-aiodio.part4
+  runtest: Remove 'ltp-' prefix from aio* runtests
 
  runtest/{ltp-aio-stress => aio-stress}     | 0
  runtest/{ltp-aiodio.part1 => aiodio.part1} | 0
  runtest/{ltp-aiodio.part2 => aiodio.part2} | 0
  runtest/{ltp-aiodio.part3 => aiodio.part3} | 0
- runtest/{ltp-aiodio.part4 => aiodio.part4} | 0
- 5 files changed, 0 insertions(+), 0 deletions(-)
+ runtest/{ltp-aiodio.part4 => aiodio.part4} | 6 +++---
+ runtest/cap_bounds                         | 2 --
+ runtest/{securebits => capability}         | 5 ++++-
+ runtest/filecaps                           | 2 --
+ runtest/io                                 | 3 ---
+ 9 files changed, 7 insertions(+), 11 deletions(-)
  rename runtest/{ltp-aio-stress => aio-stress} (100%)
  rename runtest/{ltp-aiodio.part1 => aiodio.part1} (100%)
  rename runtest/{ltp-aiodio.part2 => aiodio.part2} (100%)
  rename runtest/{ltp-aiodio.part3 => aiodio.part3} (100%)
- rename runtest/{ltp-aiodio.part4 => aiodio.part4} (100%)
+ rename runtest/{ltp-aiodio.part4 => aiodio.part4} (90%)
+ delete mode 100644 runtest/cap_bounds
+ rename runtest/{securebits => capability} (53%)
+ delete mode 100644 runtest/filecaps
+ delete mode 100644 runtest/io
 
-diff --git a/runtest/ltp-aio-stress b/runtest/aio-stress
-similarity index 100%
-rename from runtest/ltp-aio-stress
-rename to runtest/aio-stress
-diff --git a/runtest/ltp-aiodio.part1 b/runtest/aiodio.part1
-similarity index 100%
-rename from runtest/ltp-aiodio.part1
-rename to runtest/aiodio.part1
-diff --git a/runtest/ltp-aiodio.part2 b/runtest/aiodio.part2
-similarity index 100%
-rename from runtest/ltp-aiodio.part2
-rename to runtest/aiodio.part2
-diff --git a/runtest/ltp-aiodio.part3 b/runtest/aiodio.part3
-similarity index 100%
-rename from runtest/ltp-aiodio.part3
-rename to runtest/aiodio.part3
-diff --git a/runtest/ltp-aiodio.part4 b/runtest/aiodio.part4
-similarity index 100%
-rename from runtest/ltp-aiodio.part4
-rename to runtest/aiodio.part4
 -- 
 2.43.0
 
