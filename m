@@ -4,102 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F7C0C47258
-	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 15:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A4DFC47258
+	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 15:15:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AED3C3CF952
-	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 16:15:16 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 13ECF3CFF96
+	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 16:15:31 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C74523CB492
- for <ltp@lists.linux.it>; Wed, 31 Jan 2024 16:15:01 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 266523CB492
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 16:15:02 +0100 (CET)
 Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0A880600FFA
- for <ltp@lists.linux.it>; Wed, 31 Jan 2024 16:15:00 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4EEBA6019A6
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 16:15:01 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C5B8A21FF9;
- Wed, 31 Jan 2024 15:14:59 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8970C1FB86;
+ Wed, 31 Jan 2024 15:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706714099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZEiUTRZkh8inO5+YNVbj+n37qKraFO4+vyQgGitviAA=;
- b=jWuPLTo1tn1PT+igogqktc66cl6+dlGY0U/xLc57rxZIHCC83dN2c0H1GZa8XBWYyqP/E0
- F9kAbAOiHXs07cv/7IldwsFiM1gY8a2ZDmwI0kRgKVyyAZ7AF91ymx84z4PIzMJW3YIvbN
- 6hBPFBtg2Rv76kDtxQ5mtbPdi2Do7WM=
+ t=1706714100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ClPYoEK4bFUBa7k6SnD9lFD1SaV7eKmtVrefH6DHGA=;
+ b=TwAfBM2OXILoTJennKq4re2ISrFXaBLrTrnm72b8S5/xwF0KMciraQ9urTo6FT0aPAGp0U
+ gkhNWnYgnZh+EPjgcKbvR6+ADIflWW+yv+ZdY9nHPAtWMVhDsTVc7KshE7A+YRM3BMhFgP
+ VF0QMcDjBOi6NqCk87+wSUPL4bLG27A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706714099;
+ s=susede2_ed25519; t=1706714100;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZEiUTRZkh8inO5+YNVbj+n37qKraFO4+vyQgGitviAA=;
- b=Gp390m5cK/lO56fp9uc0lQ1zGL9EVhzZxc96bbAY2URzxNdg5ISX+um0yxlWlJrzTxLn3n
- gLYO1GBMpUeuvQCg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ClPYoEK4bFUBa7k6SnD9lFD1SaV7eKmtVrefH6DHGA=;
+ b=dfmz3u5lraoKl4B9imW+Ktbtrb6LxHY+eCRRsVtjCDeeACqSShDyHpgmOXIqeBVSmuKQsW
+ SneWzQrA1Co37WDA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1706714099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZEiUTRZkh8inO5+YNVbj+n37qKraFO4+vyQgGitviAA=;
- b=jWuPLTo1tn1PT+igogqktc66cl6+dlGY0U/xLc57rxZIHCC83dN2c0H1GZa8XBWYyqP/E0
- F9kAbAOiHXs07cv/7IldwsFiM1gY8a2ZDmwI0kRgKVyyAZ7AF91ymx84z4PIzMJW3YIvbN
- 6hBPFBtg2Rv76kDtxQ5mtbPdi2Do7WM=
+ t=1706714100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ClPYoEK4bFUBa7k6SnD9lFD1SaV7eKmtVrefH6DHGA=;
+ b=TwAfBM2OXILoTJennKq4re2ISrFXaBLrTrnm72b8S5/xwF0KMciraQ9urTo6FT0aPAGp0U
+ gkhNWnYgnZh+EPjgcKbvR6+ADIflWW+yv+ZdY9nHPAtWMVhDsTVc7KshE7A+YRM3BMhFgP
+ VF0QMcDjBOi6NqCk87+wSUPL4bLG27A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1706714099;
+ s=susede2_ed25519; t=1706714100;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZEiUTRZkh8inO5+YNVbj+n37qKraFO4+vyQgGitviAA=;
- b=Gp390m5cK/lO56fp9uc0lQ1zGL9EVhzZxc96bbAY2URzxNdg5ISX+um0yxlWlJrzTxLn3n
- gLYO1GBMpUeuvQCg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ClPYoEK4bFUBa7k6SnD9lFD1SaV7eKmtVrefH6DHGA=;
+ b=dfmz3u5lraoKl4B9imW+Ktbtrb6LxHY+eCRRsVtjCDeeACqSShDyHpgmOXIqeBVSmuKQsW
+ SneWzQrA1Co37WDA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7774F132FA;
- Wed, 31 Jan 2024 15:14:59 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AD5B132FA;
+ Wed, 31 Jan 2024 15:15:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id 6QFcG/NjumWJeQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 31 Jan 2024 15:14:59 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id SEvuCvRjumWJeQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 31 Jan 2024 15:15:00 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 31 Jan 2024 16:14:42 +0100
-Message-ID: <20240131151446.936281-1-pvorel@suse.cz>
+Date: Wed, 31 Jan 2024 16:14:44 +0100
+Message-ID: <20240131151446.936281-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240131151446.936281-1-pvorel@suse.cz>
+References: <20240131151446.936281-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jWuPLTo1;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Gp390m5c
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.49 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-1.00)[-1.000];
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_FIVE(0.00)[5];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
  MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[43.18%]
-X-Rspamd-Queue-Id: C5B8A21FF9
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/4] nfsstat: Test also on NFSv4*
+Subject: [LTP] [PATCH 2/4] nfsstat01.sh: Validate parsing /proc/net/rpc/nfs{, d}
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,16 +120,73 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel (4):
-  runtest/net.nfs: Rename test names
-  nfsstat01.sh: Validate parsing /proc/net/rpc/nfs{,d}
-  nfsstat01.sh: Add support for NFSv4*
-  nfsstat01.sh: Run on all NFS versions, TCP and UDP
+print TWARN when parsing /proc/net/rpc/nfs{,d} fails.
+NOTE: better would be to quit with TBROK, but at this point test would
+fail to umount.
 
- runtest/net.nfs                              | 197 ++++++++++---------
- testcases/network/nfs/nfsstat01/nfsstat01.sh |  47 +++--
- 2 files changed, 135 insertions(+), 109 deletions(-)
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+NFS developers can ignore this patch (LTP specific).
 
+@Cyril, @Martin it'd be nice to fix nfs_lib.sh so that it would support
+tst_brk. The problem could be that get_calls() is called inside $()
+therefore cd $LTPROOT (to leave mounted directory) in the cleanup
+function is done for child process). I would have to redirect to a file
+and read it afterwards, right? (similarly get_pcr10_aggregate() in
+ima_tpm.sh does).
+
+Kind regards,
+Petr
+
+ testcases/network/nfs/nfsstat01/nfsstat01.sh | 29 ++++++++++++++------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+index 708750a97..4c09ae135 100755
+--- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
++++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+@@ -11,20 +11,33 @@ get_calls()
+ 	local name=$1
+ 	local field=$2
+ 	local nfs_f=$3
+-	local calls=
+-	local opt=
++	local type="lhost"
++	local calls opt
++
+ 	[ "$name" = "rpc" ] && opt="r" || opt="n"
++	! tst_net_use_netns && [ "$nfs_f" != "nfs" ] && type="rhost"
+ 
+-	if tst_net_use_netns || [ "$nfs_f" = "nfs" ]; then
++	if [ "$type" = "lhost" ]; then
+ 		calls="$(grep $name /proc/net/rpc/$nfs_f | cut -d' ' -f$field)"
+ 		ROD nfsstat -c$opt | grep -q "$calls"
+-		echo "$calls"
+-		return
++	else
++		calls=$(tst_rhost_run -c "grep $name /proc/net/rpc/$nfs_f" | \
++			cut -d' ' -f$field)
++		tst_rhost_run -s -c "nfsstat -s$opt" | grep -q "$calls"
++	fi
++
++	if ! tst_is_int "$calls"; then
++		if [ "$type" = "lhost" ]; then
++			tst_res TINFO "lhost /proc/net/rpc/$nfs_f"
++			cat /proc/net/rpc/$nfs_f >&2
++		else
++			tst_res TINFO "rhost /proc/net/rpc/$nfs_f"
++			tst_rhost_run -c "cat /proc/net/rpc/$nfs_f" >&2
++		fi
++
++		tst_res TWARN "get_calls: failed to get integer value (args: $@)"
+ 	fi
+ 
+-	calls=$(tst_rhost_run -c "grep $name /proc/net/rpc/$nfs_f" | \
+-		cut -d' ' -f$field)
+-	tst_rhost_run -s -c "nfsstat -s$opt" | grep -q "$calls"
+ 	echo "$calls"
+ }
+ 
 -- 
 2.43.0
 
