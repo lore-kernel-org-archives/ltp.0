@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4058AC4828D
-	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 10:26:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D127C47258
+	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 10:27:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0F293CE0D0
-	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 11:26:51 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 90D723CF922
+	for <ltp@archiver.kernel.org>; Wed, 31 Jan 2024 11:27:11 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 45A5A3CA8CA
- for <ltp@lists.linux.it>; Wed, 31 Jan 2024 11:25:31 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id 0D0193CE0D0
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 11:25:33 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
  helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
@@ -25,47 +24,47 @@ Received: from us-smtp-delivery-124.mimecast.com
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 05F0A1409517
- for <ltp@lists.linux.it>; Wed, 31 Jan 2024 11:25:30 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 523AC600BD8
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 11:25:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1706696729;
+ s=mimecast20190719; t=1706696731;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=HgP536nsY+EyzA6vAsIOoH/p8ASXIJFc5vTaT5YnoGo=;
- b=N6u/u9xxPM+/j3LZfZ8PfwMYwWtMBsAGV2G4TYHfu413Pu+0e7mjZk5heITZJaTgSyLz9N
- Ldu+cR8ir9XAZLcw+6LaqmO+iyoaEv3EwG6qihtcegoifyJEqxDzyi96LNV5VtY30oWNzY
- Bo+kvwKdz5ftxyYiLX1AQcQqSKWDmwQ=
+ bh=UuEHZOwarWNWJLs9BLL7IqH547YDp6AV/jHcW7pRiE4=;
+ b=VZ/Kg+TvprxeZzpj8w6KevmaB5ZruCnnx3aIKylzf21JoIcPbz/eQXFIRCf3EDZhlrSvNP
+ lmC/60miNyVQ+T9CPVvEQBU5Dq7gnAhvHSQGu6HAtl8jJReIZpDeMDKSQ6o5ApUA8HfrLd
+ r+abfoLEcuxlCAlcZhGmC/5Idlq6omo=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609-9Z6ElE3_NUid_PYY75xjwQ-1; Wed, 31 Jan 2024 05:25:28 -0500
-X-MC-Unique: 9Z6ElE3_NUid_PYY75xjwQ-1
+ us-mta-669-G0Rw8xs0Pca3Xi2BV3Rsbg-1; Wed, 31 Jan 2024 05:25:29 -0500
+X-MC-Unique: G0Rw8xs0Pca3Xi2BV3Rsbg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
  [10.11.54.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E849410AFB85;
- Wed, 31 Jan 2024 10:25:27 +0000 (UTC)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6B742185A784
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 10:25:29 +0000 (UTC)
 Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
  [10.66.145.229])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id B553A157;
- Wed, 31 Jan 2024 10:25:26 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 83D52487
+ for <ltp@lists.linux.it>; Wed, 31 Jan 2024 10:25:28 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Wed, 31 Jan 2024 18:25:11 +0800
-Message-Id: <20240131102514.2739270-6-liwang@redhat.com>
+Date: Wed, 31 Jan 2024 18:25:12 +0800
+Message-Id: <20240131102514.2739270-7-liwang@redhat.com>
 In-Reply-To: <20240131102514.2739270-1-liwang@redhat.com>
 References: <20240131102514.2739270-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [Patch v6 5/8] libswap: Introduce file contiguity check
+Subject: [LTP] [Patch v6 6/8] libswap: customize swapfile size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,137 +81,156 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patch introduces a new function file_is_contiguous to the
-libltpswap library to determine if a swap file is stored in a
-contiguous block of disk space, which is a typical requirement
-for swap files in Linux. The function performs a series of checks
-using the fiemap structure to assess the contiguity of the file
-and logs the result.
-
-It is integrated into the is_swap_supported function to replace
-the previous tst_fibmap check, providing a more reliable method
-for verifying that a file suitable for swap is indeed contiguous.
+The key change is the modification of the make_swapfile function to
+accept an additional parameter blocks, specifying the number of
+blocks to allocate for the swap file. This change allows for more
+granular control over the size of swap files created during tests.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
 ---
- libs/libltpswap/libswap.c | 70 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 65 insertions(+), 5 deletions(-)
+ include/libswap.h                             |  2 +-
+ libs/libltpswap/libswap.c                     | 23 +++++++++++++------
+ testcases/kernel/syscalls/swapoff/swapoff01.c |  5 +---
+ testcases/kernel/syscalls/swapon/swapon01.c   |  2 +-
+ testcases/kernel/syscalls/swapon/swapon02.c   |  4 ++--
+ testcases/kernel/syscalls/swapon/swapon03.c   |  4 ++--
+ 6 files changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
-index e606e3f03..95d4f59b0 100644
---- a/libs/libltpswap/libswap.c
-+++ b/libs/libltpswap/libswap.c
-@@ -6,6 +6,8 @@
- 
- #include <linux/fs.h>
- #include <errno.h>
-+#include <linux/fiemap.h>
-+#include <stdlib.h>
- 
- #define TST_NO_DEFAULT_MAIN
- 
-@@ -69,6 +71,61 @@ static int prealloc_contiguous_file(const char *path, size_t bs, size_t bcount)
- 	return 0;
- }
- 
-+static int file_is_contiguous(const char *filename)
-+{
-+	int fd, contiguous = 0;
-+	struct fiemap *fiemap;
-+
-+	if (tst_fibmap(filename) == 0) {
-+		contiguous = 1;
-+		goto out;
-+	}
-+
-+	if (tst_fs_type(filename) == TST_TMPFS_MAGIC)
-+		goto out;
-+
-+	fd = SAFE_OPEN(filename, O_RDONLY);
-+
-+	fiemap = (struct fiemap *)SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent));
-+	memset(fiemap, 0, sizeof(struct fiemap) + sizeof(struct fiemap_extent));
-+
-+	fiemap->fm_start = 0;
-+	fiemap->fm_length = ~0;
-+	fiemap->fm_flags = 0;
-+	fiemap->fm_extent_count = 1;
-+
-+	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
-+
-+	/*
-+	 * fiemap->fm_mapped_extents != 1:
-+	 *   This checks if the file does not have exactly one extent. If there are more
-+	 *   or zero extents, the file is not stored in a single contiguous block.
-+	 *
-+	 * fiemap->fm_extents[0].fe_logical != 0:
-+	 *   This checks if the first extent does not start at the logical offset 0 of
-+	 *   the file. If it doesn't, it indicates that the file's first block of data
-+	 *   is not at the beginning of the file, which implies non-contiguity.
-+	 *
-+	 * (fiemap->fm_extents[0].fe_flags & FIEMAP_EXTENT_LAST) != FIEMAP_EXTENT_LAST:
-+	 *   This checks if the first extent does not have the FIEMAP_EXTENT_LAST flag set.
-+	 *   If the flag isn't set, it means that this extent is not the last one, suggesting
-+	 *   that there are more extents and the file is not contiguous.
-+	 */
-+	if (fiemap->fm_mapped_extents != 1 ||
-+		fiemap->fm_extents[0].fe_logical != 0 ||
-+		(fiemap->fm_extents[0].fe_flags & FIEMAP_EXTENT_LAST) != FIEMAP_EXTENT_LAST) {
-+
-+		tst_res(TINFO, "File '%s' is not contiguous", filename);
-+		contiguous = 0;
-+	}
-+
-+	SAFE_CLOSE(fd);
-+	free(fiemap);
-+
-+out:
-+	return contiguous;
-+}
-+
+diff --git a/include/libswap.h b/include/libswap.h
+index d4b5301a5..e67d65756 100644
+--- a/include/libswap.h
++++ b/include/libswap.h
+@@ -14,7 +14,7 @@
  /*
   * Make a swap file
   */
-@@ -105,10 +162,15 @@ int make_swapfile(const char *swapfile, int safe)
+-int make_swapfile(const char *swapfile, int safe);
++int make_swapfile(const char *swapfile, int blocks, int safe);
+ 
+ /*
+  * Check swapon/swapoff support status of filesystems or files
+diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+index 95d4f59b0..8aecad48d 100644
+--- a/libs/libltpswap/libswap.c
++++ b/libs/libltpswap/libswap.c
+@@ -4,6 +4,7 @@
+  * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+  */
+ 
++#include <sys/statvfs.h>
+ #include <linux/fs.h>
+ #include <errno.h>
+ #include <linux/fiemap.h>
+@@ -129,19 +130,27 @@ out:
+ /*
+  * Make a swap file
+  */
+-int make_swapfile(const char *swapfile, int safe)
++int make_swapfile(const char *swapfile, int blocks, int safe)
+ {
+-	if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES))
++	struct statvfs fs_info;
++	unsigned long blk_size;
++
++	if (statvfs(".", &fs_info) == -1)
++		return -1;
++
++	blk_size = fs_info.f_bsize;
++
++	if (!tst_fs_has_free(".", blk_size * blocks, TST_BYTES))
+ 		tst_brk(TBROK, "Insufficient disk space to create swap file");
+ 
+ 	/* create file */
+-	if (prealloc_contiguous_file(swapfile, sysconf(_SC_PAGESIZE), 10) != 0)
++	if (prealloc_contiguous_file(swapfile, blk_size, blocks) != 0)
+ 		tst_brk(TBROK, "Failed to create swapfile");
+ 
+-	/* Full the file to make old xfs happy*/
++	/* Fill the file if needed (specific to old xfs filesystems) */
+ 	if (tst_fs_type(swapfile) == TST_XFS_MAGIC) {
+-		if (tst_fill_file(swapfile, 0, sysconf(_SC_PAGESIZE), 10) != 0)
+-			tst_brk(TBROK, "Failed to create swapfile");
++		if (tst_fill_file(swapfile, 0, blk_size, blocks) != 0)
++			tst_brk(TBROK, "Failed to fill swapfile");
+ 	}
+ 
+ 	/* make the file swapfile */
+@@ -162,7 +171,7 @@ int make_swapfile(const char *swapfile, int safe)
  void is_swap_supported(const char *filename)
  {
  	int i, sw_support = 0;
--	int fibmap = tst_fibmap(filename);
-+	int ret = make_swapfile(filename, 1);
-+	int fi_contiguous = file_is_contiguous(filename);
+-	int ret = make_swapfile(filename, 1);
++	int ret = make_swapfile(filename, 10, 1);
+ 	int fi_contiguous = file_is_contiguous(filename);
  	long fs_type = tst_fs_type(filename);
  	const char *fstype = tst_fs_type_name(fs_type);
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
+index b27eecdad..e3b445d05 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff01.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+@@ -44,11 +44,8 @@ static void setup(void)
+ 		tst_brk(TBROK,
+ 			"Insufficient disk space to create swap file");
  
-+	if (fs_type == TST_BTRFS_MAGIC &&
-+			tst_kvercmp(5, 0, 0) < 0)
-+		tst_brk(TCONF, "Swapfile on Btrfs (kernel < 5.0) not implemented");
-+
- 	for (i = 0; swap_supported_fs[i]; i++) {
- 		if (strstr(fstype, swap_supported_fs[i])) {
- 			sw_support = 1;
-@@ -116,10 +178,8 @@ void is_swap_supported(const char *filename)
- 		}
- 	}
- 
--	int ret = make_swapfile(filename, 1);
+-	if (tst_fill_file("swapfile01", 0x00, 1024, 65536))
++	if (make_swapfile("swapfile01", 65536, 1))
+ 		tst_brk(TBROK, "Failed to create file for swap");
 -
- 	if (ret != 0) {
--		if (fibmap == 1 && sw_support == 0)
-+		if (fi_contiguous == 0 && sw_support == 0)
- 			tst_brk(TCONF, "mkswap on %s not supported", fstype);
- 		else
- 			tst_brk(TFAIL, "mkswap on %s failed", fstype);
-@@ -129,7 +189,7 @@ void is_swap_supported(const char *filename)
- 	if (TST_RET == -1) {
- 		if (errno == EPERM)
- 			tst_brk(TCONF, "Permission denied for swapon()");
--		else if (fibmap == 1 && errno == EINVAL && sw_support == 0)
-+		else if (errno == EINVAL && fi_contiguous == 0 && sw_support == 0)
- 			tst_brk(TCONF, "Swapfile on %s not implemented", fstype);
- 		else
- 			tst_brk(TFAIL | TTERRNO, "swapon() on %s failed", fstype);
+-	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0)
+-		tst_brk(TBROK, "Failed to make swapfile");
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+index a74a5171e..d406e4bd9 100644
+--- a/testcases/kernel/syscalls/swapon/swapon01.c
++++ b/testcases/kernel/syscalls/swapon/swapon01.c
+@@ -38,7 +38,7 @@ static void verify_swapon(void)
+ static void setup(void)
+ {
+ 	is_swap_supported(SWAP_FILE);
+-	make_swapfile(SWAP_FILE, 0);
++	make_swapfile(SWAP_FILE, 10, 0);
+ 
+ 	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lu", TESTMEM);
+diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+index fceea77be..f5b0d6d56 100644
+--- a/testcases/kernel/syscalls/swapon/swapon02.c
++++ b/testcases/kernel/syscalls/swapon/swapon02.c
+@@ -44,8 +44,8 @@ static void setup(void)
+ 	is_swap_supported("./tstswap");
+ 
+ 	SAFE_TOUCH("notswap", 0777, NULL);
+-	make_swapfile("swapfile01", 0);
+-	make_swapfile("alreadyused", 0);
++	make_swapfile("swapfile01", 10, 0);
++	make_swapfile("alreadyused", 10, 0);
+ 
+ 	if (tst_syscall(__NR_swapon, "alreadyused", 0))
+ 		tst_res(TWARN | TERRNO, "swapon(alreadyused) failed");
+diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+index dc633ebc6..e13009111 100644
+--- a/testcases/kernel/syscalls/swapon/swapon03.c
++++ b/testcases/kernel/syscalls/swapon/swapon03.c
+@@ -155,7 +155,7 @@ static int setup_swap(void)
+ 			}
+ 
+ 			/* Create the swapfile */
+-			make_swapfile(filename, 0);
++			make_swapfile(filename, 10, 0);
+ 
+ 			/* turn on the swap file */
+ 			res = tst_syscall(__NR_swapon, filename, 0);
+@@ -178,7 +178,7 @@ static int setup_swap(void)
+ 
+ 	/* Create all needed extra swapfiles for testing */
+ 	for (j = 0; j < testfiles; j++)
+-		make_swapfile(swap_testfiles[j].filename, 0);
++		make_swapfile(swap_testfiles[j].filename, 10, 0);
+ 
+ 	return 0;
+ }
 -- 
 2.40.1
 
