@@ -4,65 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41D75C47DDF
-	for <ltp@archiver.kernel.org>; Thu,  1 Feb 2024 07:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321B2C47DDB
+	for <ltp@archiver.kernel.org>; Thu,  1 Feb 2024 08:05:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9653F3CF8DC
-	for <ltp@archiver.kernel.org>; Thu,  1 Feb 2024 08:46:50 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A4E483CF8D1
+	for <ltp@archiver.kernel.org>; Thu,  1 Feb 2024 09:05:37 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 32F713CE127
- for <ltp@lists.linux.it>; Thu,  1 Feb 2024 08:46:36 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 2823D3C9968
+ for <ltp@lists.linux.it>; Thu,  1 Feb 2024 09:05:22 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 02F9E10006A5
- for <ltp@lists.linux.it>; Thu,  1 Feb 2024 08:46:35 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 78BD322168;
- Thu,  1 Feb 2024 07:46:34 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 58D8B13594;
- Thu,  1 Feb 2024 07:46:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id dXeiFFpMu2WrOwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Thu, 01 Feb 2024 07:46:34 +0000
-Date: Thu, 1 Feb 2024 08:46:33 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240201074633.GA58275@pevik>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 009F0100018C
+ for <ltp@lists.linux.it>; Thu,  1 Feb 2024 09:05:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1706774720;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YYkFCeR2Yr7yOeI8oxcfyeLkpf6qtRsHz+4pHZCr4OY=;
+ b=Iy28hxuIsiVDnC7JneI96uBurJupX8QA3HYRKWSnJQGlD3TMYefKMdy7Qk6N77Bi+rAWX7
+ kyvD5viDLPIvC2As4qYEo7aH3hcK9bDD63cbcDvWgKEihjpFtCiJKX8JbzBsWKZd0e90Ns
+ LwHTWYUYURR0skJcuaz0mEVROgbhAb0=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-286-DC_UWNMFPsS1XUI6uxId8Q-1; Thu, 01 Feb 2024 03:05:18 -0500
+X-MC-Unique: DC_UWNMFPsS1XUI6uxId8Q-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-290f607c1dfso560053a91.3
+ for <ltp@lists.linux.it>; Thu, 01 Feb 2024 00:05:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1706774717; x=1707379517;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=YYkFCeR2Yr7yOeI8oxcfyeLkpf6qtRsHz+4pHZCr4OY=;
+ b=nTNTF/WZipEJf2Zov5Ul9uTf8boJ8o+OIDu0T85i8e84HIR0QKp7n429ziFRUbpdgS
+ EQykyEQWcmIsCgiyAjYxBYdnT2FrlPeOPnIqKBQyA+6y5vW0yW6HOx0A3RlazwfpG2Wg
+ /kk4GlLArV+L8mgLHL/W3qN/bXPPRm36Ccyx3KG6Uen9bzvEL/qm478rcrxXkSrCDJD/
+ 7/wwKT5Nc/8Gcdm+F2F/6+SBhEw8ETi9l+xEQgVS60EdT3REVE2dgi9xDjwub/ft1Ny4
+ 1fwxoBwvxE8kRTRslD5nXT8seir5IRjvjo2zLfzPnyJ8kjBbRHrrWmxuUjyHPCacN6kE
+ GKjg==
+X-Gm-Message-State: AOJu0Yz4UXpYKehHgM+AVz0ZcJCeCoCe3ONggSS5m0Kn07nGBjw5xjdV
+ ZGRJgpPTpq5qdmYRw7k5iyoPVL7Tov+GARyxAvCNQkvp/Npj9dIgqdxdZ3RaVpkdtRm9quguWV7
+ Til97Eip+mcv++6RI3qtXInoMMPkD/y6yDpnmyJIxydyRq+YHHs65Gl2j1dYyDuJcW0s/1uSJDy
+ 4tQ5b2M6N0pp9d7m/BENWhv0TFudKZ568=
+X-Received: by 2002:a17:90a:cf16:b0:295:cfad:38cd with SMTP id
+ h22-20020a17090acf1600b00295cfad38cdmr3877427pju.35.1706774717026; 
+ Thu, 01 Feb 2024 00:05:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFUec8jfx/SS1Z9AhhxlS/ztO6hJLdkpNMoygEQ2FaCAR/13CIJPMLrarutiB0fm0/ZXG2cIzXnymIISn0+ENk=
+X-Received: by 2002:a17:90a:cf16:b0:295:cfad:38cd with SMTP id
+ h22-20020a17090acf1600b00295cfad38cdmr3877410pju.35.1706774716759; Thu, 01
+ Feb 2024 00:05:16 -0800 (PST)
+MIME-Version: 1.0
 References: <20240131102514.2739270-1-liwang@redhat.com>
  <20240131102514.2739270-8-liwang@redhat.com>
  <20240131173840.GA18869@pevik> <20240131185310.GA30901@pevik>
  <20240131190122.GB30901@pevik>
  <CAEemH2fVdZdTnRUZSWCrZrqKYyuVWvu8nNQ4A=d3h7389KO3+g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2fVdZdTnRUZSWCrZrqKYyuVWvu8nNQ4A=d3h7389KO3+g@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 78BD322168
+ <20240201074633.GA58275@pevik>
+In-Reply-To: <20240201074633.GA58275@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 1 Feb 2024 16:05:03 +0800
+Message-ID: <CAEemH2edphvbo4mRv+0Ukn9dMuzMaqvWYPrq56xGqc4UV3W18Q@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [Patch v6 7/8] swapon/off: enable all_filesystem in swap
  test
 X-BeenThere: ltp@lists.linux.it
@@ -76,29 +97,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBPbiBUaHUsIEZlYiAxLCAyMDI0IGF0IDM6MDHigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cgo+ID4gSGkgTGksCgo+ID4gYWxzbyBJIGdvdCBmYWlsdXJlcyBvbiBwcGM2
-NGxlIGluIG91ciBDSQoKPiA+ICogc3dhcG9mZjAxIDYuNy4yIGFuZCBvdGhlciB2ZXJzaW9ucyB1
-cCB0byA0LjEyIGJhc2VkIGtlcm5lbHMgb24gcHBjNjRsZQo+ID4gLi4uCj4gPiB0c3Rfc3VwcG9y
-dGVkX2ZzX3R5cGVzLmM6OTc6IFRJTkZPOiBLZXJuZWwgc3VwcG9ydHMgdG1wZnMKPiA+IHRzdF9z
-dXBwb3J0ZWRfZnNfdHlwZXMuYzo0OTogVElORk86IG1rZnMgaXMgbm90IG5lZWRlZCBmb3IgdG1w
-ZnMKPiA+IHRzdF90ZXN0LmM6MTcwMTogVElORk86ID09PSBUZXN0aW5nIG9uIGV4dDIgPT09Cj4g
-PiB0c3RfdGVzdC5jOjExMTc6IFRJTkZPOiBGb3JtYXR0aW5nIC9kZXYvbG9vcDAgd2l0aCBleHQy
-IG9wdHM9JycgZXh0cmEKPiA+IG9wdHM9JycKPiA+IG1rZTJmcyAxLjQ3LjAgKDUtRmViLTIwMjMp
-Cj4gPiB0c3RfdGVzdC5jOjExMzE6IFRJTkZPOiBNb3VudGluZyAvZGV2L2xvb3AwIHRvIC90bXAv
-TFRQX3N3YXp1MmZUbC9tbnRwb2ludAo+ID4gZnN0eXA9ZXh0MiBmbGFncz0wCj4gPiB0c3RfaW9j
-dGwuYzoyNjogVElORk86IEZJQk1BUCBpb2N0bCBpcyBzdXBwb3J0ZWQKPiA+IGxpYnN3YXAuYzox
-NDY6IFRCUk9LOiBGYWlsZWQgdG8gY3JlYXRlIHN3YXBmaWxlCgoKCj4gRXJyLCBJIHJlcHJvZHVj
-ZSBpdCB3aXRoIGFuIFJIRUw5IHBwYzY0bGUgdG9vLgo+IEkgZ3Vlc3MgaXQgZG9lcyBub3QgYWxs
-b3cgdG8gY3JlYXRlIGEgZmlsZSB0aGF0IHNpemUgbGVzcyB0aGFuIHBhZ2Vfc2l6ZS4KCj4gT25j
-ZSBJIHJlcGxhY2UgdGhlIGJsa19zaXplIHdpdGggcGFnZV9zaXplLCBhbGwgdGVzdHMgZ2V0IHBh
-c3NlZC4KCisxLCBncmVhdC4gRmVlbCBmcmVlIHRvIG1lcmdlIHRoZSByZXN0IHdpdGggbXkgYWNr
-LgoKS2luZCByZWdhcmRzLApQZXRyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+T24gVGh1LCBGZWIgMSwgMjAyNCBhdCAzOjQ24oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
+Y3o+IHdyb3RlOgoKCj4gPiBFcnIsIEkgcmVwcm9kdWNlIGl0IHdpdGggYW4gUkhFTDkgcHBjNjRs
+ZSB0b28uCj4gPiBJIGd1ZXNzIGl0IGRvZXMgbm90IGFsbG93IHRvIGNyZWF0ZSBhIGZpbGUgdGhh
+dCBzaXplIGxlc3MgdGhhbiBwYWdlX3NpemUuCj4KPiA+IE9uY2UgSSByZXBsYWNlIHRoZSBibGtf
+c2l6ZSB3aXRoIHBhZ2Vfc2l6ZSwgYWxsIHRlc3RzIGdldCBwYXNzZWQuCj4KPiArMSwgZ3JlYXQu
+IEZlZWwgZnJlZSB0byBtZXJnZSB0aGUgcmVzdCB3aXRoIG15IGFjay4KPgoKVGhhbmtzLCBwdXNo
+ZWQgd2l0aCB5b3VyIHN1Z2dlc3Rpb24gKGFuZCB0aW55IGZpeGVzKS4KCgotLSAKUmVnYXJkcywK
+TGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
+c3RpbmZvL2x0cAo=
