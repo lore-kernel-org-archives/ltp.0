@@ -4,84 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9937C4828D
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 07:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D6D6C48291
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 08:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1707122318; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=y10UWVBIcSec5FQQ9UkU2b/kGQ/TDjm561bhqCZ6VRQ=;
+ b=K+cZxV1GxCCQr/O5Vzee+czN1UkwmkGLNNbjX1QqnccF2z7VMG213kiDiygvu6atnwmXZ
+ MhZP9LN5yA430GNzzY+4W7bWWKdA1/9FtXM2eH6rR0YC1s3UGJ0PEq8XTDhJf5HeZnKTpXe
+ yQSYQuuUV1lRZm2QQb0Qf+Ry43MT8wM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0B4C43CC6AB
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 08:48:53 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 809773C90CF
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 09:38:38 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DAA123C8E42
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 08:48:36 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 94F733C90CF
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 09:38:16 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
+ helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
+ [207.54.90.137])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 93C61601B19
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 08:48:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1707119314;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DV5BSLtMC8E02RwYjBTZsuBGICZBsNX1QG4RIa5iMUg=;
- b=iAz9oYdnnFrRkfDEBykIj1/aIH/W9Sld+YsaKY5iZyVkS2BO9ttFXKH3PMaXoRv2vRJYir
- L2X8uvWLUtAmIEJoOYmG42IM9Ql2iZfRUqhY4I6h4rVCftwINGrHjvfiVmIsowIv9RDkFW
- eNpfCFz6Z+45PT0yNh3+26SgDyQ6Xt4=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-122-YW-aEqTZMiaO58rg3iM-Tg-1; Mon, 05 Feb 2024 02:48:32 -0500
-X-MC-Unique: YW-aEqTZMiaO58rg3iM-Tg-1
-Received: by mail-pl1-f200.google.com with SMTP id
- d9443c01a7336-1d9a6ce802cso7103135ad.0
- for <ltp@lists.linux.it>; Sun, 04 Feb 2024 23:48:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1707119310; x=1707724110;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=DV5BSLtMC8E02RwYjBTZsuBGICZBsNX1QG4RIa5iMUg=;
- b=c3RI3KjcLluS0gnhqxBOGh+x8s+mqIZGU/9zccKLg2ePXRKvUky+zubOvC4Zodq6N3
- AGXD1NY4ugaHoZ9JBpXp2OMpmjH3rBxMitB64GFdtlRoTbnakc6ZirJzksz9HnMB5Ith
- miPMxpqdXkojpG6QPXkYaPpH+1W+PX/oJuMfTHpp4Vv+7E+4c/7BuiSnO4UfZG4fKfdf
- J93gYhAXKyCKIco5HEA/JOcecpug7YPJeiyOFEEY5jT7tgOka6YHlo/4iBhofTWqycH/
- 0g01FBtiPVn3MolaJ7WAlS80S/o05dAPbXhnW+pmZwRhupxTymLoa/ijKk1jmg69Px3U
- 0xdQ==
-X-Gm-Message-State: AOJu0Yyl2JRSGvJmgKjoHrHBRKDAdMysTDSHcDmjgp7eXRu1CDHffa/k
- BYWTN/IBcw4aWRh/t+/+ziMEFrn3cr1B233RUbAtioUeTL359wJV9XH2SHGib4oxqle8l8KSOg9
- 7gfuLRbDYMewkNWMcMVRS41z0Uo3W1WoaUJWbj2IJR58yahswNrUdrq/CalJ6fcyyDtDRYQhbSO
- AWqEZa0tl5P4qIj2LxSR1L1YA0FWhZeqwosQ==
-X-Received: by 2002:a17:90a:bc81:b0:296:321c:9bdc with SMTP id
- x1-20020a17090abc8100b00296321c9bdcmr7309392pjr.13.1707119310366; 
- Sun, 04 Feb 2024 23:48:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHHh7J3f8vy1yNrq/WehXp03tacI5XFhd72GrOEmffZRoG0teZ509PHoKXFV9Ujkdh0r9W2N3TPDiYMhg4st8c=
-X-Received: by 2002:a17:90a:bc81:b0:296:321c:9bdc with SMTP id
- x1-20020a17090abc8100b00296321c9bdcmr7309382pjr.13.1707119309997; Sun, 04 Feb
- 2024 23:48:29 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 766B9140123D
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 09:38:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1707122296; x=1738658296;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=25VegtwNlIeqgRTP1Zd99x8gkbg4EKsQku3yy5a3cUw=;
+ b=JjYn4ilcstQ4mVTHwmBGppJEPZXUEd2SfZ9JZdxn7RxsX0Ic7ysLMP6a
+ pzvB+zo1rVOws8w4hV1hFzb/zABTzBdh4rlC/lPED8BTpwj1Hwe223piL
+ 1Wp71Ggx+w3GNuYRdPrG1YRhcrOCFMOb40AAKlxshvAOHQSU9ff3ncfNw
+ yjiz1OK+jccm6IfY19mmkQuHXtjRDTkALJlhMQDBmr5k7ojDhYZm4LZL5
+ QVPGJ7B2of9vrAZgKDL1SDXb+41JZ85hiYvPW6/vyDQ9a3KwLCb6q0vr4
+ edzwYjrWbALGUMKsipoS4MLfauOPcWbWO5+KkF/Cv7trP+f1jHNUuXUkw g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="127814328"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701097200"; d="scan'208";a="127814328"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Feb 2024 17:38:13 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 2D317D6270
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:10 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 70FCD49058
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:09 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 09E5A20098983
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:09 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 8F4FF1A006B;
+ Mon,  5 Feb 2024 16:38:08 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Mon,  5 Feb 2024 03:38:05 -0500
+Message-Id: <20240205083805.6713-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20240205022857.191692-1-pvorel@suse.cz>
- <20240205022857.191692-2-pvorel@suse.cz>
-In-Reply-To: <20240205022857.191692-2-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 5 Feb 2024 15:48:17 +0800
-Message-ID: <CAEemH2dZn4jRjQbEX492uhb4DMHCOMq+C4zvYeq_0N1x8X_mPA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28168.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28168.006
+X-TMASE-Result: 10--16.995300-10.000000
+X-TMASE-MatchedRID: wplI/emIzpfyq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
+ 7wkSW5bKbnRB47KLJ1QzLmfGY6iDkYF+91Q/EzGtN70wXhI0DX4yhLY8urUHvmvlGb+24NaZuJE
+ UmdYPGSW9o2p3dj0RfAeWR71HtRmwaEsmopAJRAldhZyafgPiqxeN9Hd3TB5Gg1CUneBzTgvzWM
+ gQWjC6I0nY0BEsuOT25rJNazxTXPIr7jXWQYK2DxlxrtI3TxRklKvhkP88iXTMB0kPsl40w9H8F
+ nB4FvBYMPDOmTHabb9qGk75BUN9yFWcCzOjQR80Ss47mbT7SAR+tO36GYDlsvRHUPIiGLuAZYH0
+ 5m0z0gAMf7Ce+LIFdiEGacf+qdGsEtsR9kNMgSyL3n8qdYJTdH0tCKdnhB589yM15V5aWpj6C0e
+ Ps7A07QKmARN5PTKc
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] swapon03: Swap is not supported on TMPFS on
- tmpfs
+Subject: [LTP] [PATCH] munlockall01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,38 +97,175 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dominique Leuenberger <dimstar@opensuse.org>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBGZWIgNSwgMjAyNCBhdCAxMDoyOeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gdHN0X3Rlc3QuYzoxNzAxOiBUSU5GTzogPT09IFRlc3Rpbmcgb24gZXh0
-NCA9PT0KPiB0c3RfdGVzdC5jOjExMTc6IFRJTkZPOiBGb3JtYXR0aW5nIC9kZXYvbG9vcDAgd2l0
-aCBleHQ0IG9wdHM9JycgZXh0cmEKPiBvcHRzPScnCj4gbWtlMmZzIDEuNDcuMCAoNS1GZWItMjAy
-MykKPiB0c3RfdGVzdC5jOjExMzE6IFRJTkZPOiBNb3VudGluZyAvZGV2L2xvb3AwIHRvIC90bXAv
-TFRQX3N3YW5JenRxNy9tbnRwb2ludAo+IGZzdHlwPWV4dDQgZmxhZ3M9MAo+IHRzdF9pb2N0bC5j
-OjI2OiBUSU5GTzogRklCTUFQIGlvY3RsIGlzIHN1cHBvcnRlZAo+IHN3YXBvbjAzLmM6MTY0OiBU
-V0FSTjogRmFpbGVkIHRvIGNyZWF0ZSBzd2FwZmlsZTogc3dhcGZpbGUwMjogRUlOVkFMICgyMikK
-PiBzd2Fwb24wMy5jOjE3NTogVEZBSUw6IEZhaWxlZCB0byBzZXR1cCBzd2Fwcwo+Cj4gQXQgbGVh
-c3Qgb24ga2VybmVsIDYuNy4KPgo+IEZpeGVzOiAwMDlhNDA3YTAgKCJzd2Fwb24vb2ZmOiBlbmFi
-bGUgYWxsX2ZpbGVzeXN0ZW0gaW4gc3dhcCB0ZXN0IikKPiBSZXBvcnRlZC1ieTogRG9taW5pcXVl
-IExldWVuYmVyZ2VyIDxkaW1zdGFyQG9wZW5zdXNlLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBQZXRy
-IFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9zd2Fwb24vc3dhcG9uMDMuYyB8IDMgKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlv
-bnMoKykKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9z
-d2Fwb24wMy5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMy5j
-Cj4gaW5kZXggM2RiY2Q1YmZkLi4zNzMxNGNjNjUgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDMuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvc3dhcG9uL3N3YXBvbjAzLmMKPiBAQCAtMjQ3LDYgKzI0Nyw5IEBAIHN0YXRpYyB2
-b2lkIHNldHVwKHZvaWQpCj4gICAgICAgICBpZiAoYWNjZXNzKCIvcHJvYy9zd2FwcyIsIEZfT0sp
-KQo+ICAgICAgICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAic3dhcCBub3Qgc3VwcG9ydGVkIGJ5
-IGtlcm5lbCIpOwo+Cj4gKyAgICAgICBpZiAodHN0X2ZzX3R5cGUoIi4iKSA9PSBUU1RfVE1QRlNf
-TUFHSUMpCj4gKyAgICAgICAgICAgICAgIHRzdF9icmsoVENPTkYsICJzd2FwIG5vdCBzdXBwb3J0
-ZWQgb24gdG1wZnMiKTsKPgoKSSBkaWRuJ3QgY2F0Y2ggdGhlIHBhdGNoIHBvaW50LCBpc24ndCB0
-aGUgZmFpbHVyZSBvbiBFWFQ0LCB3aHkgaGVyZSBza2lwCnRtcGZzPwpBbmQsIHNob3VsZG4ndCB0
-aGUgRlMgY2hlY2sgY29tcGxldGVkIGluIGlzX3N3YXBfc3VwcG9ydGVkKCk/CgoKCj4gKwo+ICAg
-ICAgICAgaXNfc3dhcF9zdXBwb3J0ZWQoVEVTVF9GSUxFKTsKPiAgfQo+Cj4gLS0KPiAyLjQzLjAK
-Pgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczov
-L2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ .../kernel/syscalls/munlockall/munlockall01.c | 140 ++----------------
+ 1 file changed, 15 insertions(+), 125 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/munlockall/munlockall01.c b/testcases/kernel/syscalls/munlockall/munlockall01.c
+index 51f731b65..f265e574f 100644
+--- a/testcases/kernel/syscalls/munlockall/munlockall01.c
++++ b/testcases/kernel/syscalls/munlockall/munlockall01.c
+@@ -1,134 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * Copyright (c) Linux Test Project, 2002-2024
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: munlockall01
+- *
+- *    EXECUTED BY	: root / superuser
+- *
+- *    TEST TITLE	: Basic test for munlockall(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: sowmya adiga<sowmya.adiga@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This is a phase I test for the munlockall(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
+- *
+- * 	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *        Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *	  Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  munlockall01 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+- *		where,		-c n : Run n copies concurrently
+- *	               		-e   : Turn on errno logging.
+- *				-h   : Show this help screen
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *                      	-P x : Pause for x seconds between iterations.
+- *                       	 t   : Turn on syscall timing.
+- *
+- * RESTRICTIONS
+- * Must be root/superuser to run it.
+- *****************************************************************************/
+-#include <errno.h>
+-#include <sys/mman.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "munlockall01";
+-int TST_TOTAL = 1;
+-
+-#if !defined(UCLINUX)
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+ 
+-	setup();
+-
+-	/* check looping state */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(munlockall());
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "munlockall() Failed with"
+-				 " return=%ld", TEST_RETURN);
+-		} else {
+-			tst_resm(TPASS, "munlockall() passed with"
+-				 " return=%ld ", TEST_RETURN);
+-
+-		}
+-	}
+-
+-	/* cleanup and exit */
+-	cleanup();
+-	tst_exit();
+-
+-}
+-
+-#else
+-
+-int main(void)
+-{
+-	tst_resm(TINFO, "test is not available on uClinux");
+-	tst_exit();
+-}
++/*
++ * [Description]
++ *
++ * Check the basic function of munlockall(2) system call.
++ */
+ 
+-#endif /* if !defined(UCLINUX) */
++#include <sys/mman.h>
++#include "tst_test.h"
+ 
+-/* setup() - performs all ONE TIME setup for this test. */
+-void setup(void)
++static void verify_munlockall(void)
+ {
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	TST_EXP_PASS(munlockall());
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.needs_root = 1,
++	.test_all  = verify_munlockall,
++};
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
