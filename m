@@ -4,111 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13C7C4828D
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 17:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5FB4C4828D
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 17:35:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 966763CF61C
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 18:21:20 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 14E203CF6FC
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 18:35:11 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A207B3C044A
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 18:21:06 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D7DA63C90CF
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 18:34:55 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AFB841000D39
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 18:21:05 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 211C7601A66
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 18:34:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C7C5822154;
- Mon,  5 Feb 2024 17:21:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 213C021ED6;
+ Mon,  5 Feb 2024 17:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707153662;
+ t=1707154494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KMJRHpQhJZYdncZEKk7qkpvWJNofb+Ut6qQfqFDesm4=;
- b=k79fsa9sJZFS/hi14B6TXGNkssSuddet1NxJAUQHXxrPQIxMugXvglZ6xanh3p/jOHjgiI
- QWtVoS5UF5DdFIcMTiTbhKXgZgkN/+FdkjrZ37M5g+wKmlQYMnsJAJOtL813IADxpggtzM
- Qxa5isfB4d/pkKjdlvUV/nZzi51IcaY=
+ bh=rVg+Ds3kO4SDO9UCQ6B+hMOEumK/afcXibkbRR1jIPk=;
+ b=l5E0ELKtKsPWE2GdIp0j3I/SAWVGPi4lv9pRiNkUsrgEp5MwJ13bS3zpIYOEpc2oGi7yx/
+ Gx0n+WPF3Er2NsMYGR+y3GsP6THodKlTLhaxXOtexAP57EsFev3bFY7s+eRAVCWWIRDWnl
+ XBm3uookzJ89rZIR2a9t1x/NeCZxbwk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707153662;
+ s=susede2_ed25519; t=1707154494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KMJRHpQhJZYdncZEKk7qkpvWJNofb+Ut6qQfqFDesm4=;
- b=uAaC/mRHikpSxqopKrPK5ghIg3BtkjKUG6BcGeVSEfVL/yuzF0xngw2EKL0aUBSdWxefOY
- ltHvSVo81n/CF5Ag==
+ bh=rVg+Ds3kO4SDO9UCQ6B+hMOEumK/afcXibkbRR1jIPk=;
+ b=pwa/hyh0cp4I7fjfprpj4oFg7XIof8X0TTO0I44psmMis6uQ5SU3+cxc0TQiQqAfpkZ8+e
+ 4huqo8BzFZ5/IkDA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707153662;
+ t=1707154494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KMJRHpQhJZYdncZEKk7qkpvWJNofb+Ut6qQfqFDesm4=;
- b=k79fsa9sJZFS/hi14B6TXGNkssSuddet1NxJAUQHXxrPQIxMugXvglZ6xanh3p/jOHjgiI
- QWtVoS5UF5DdFIcMTiTbhKXgZgkN/+FdkjrZ37M5g+wKmlQYMnsJAJOtL813IADxpggtzM
- Qxa5isfB4d/pkKjdlvUV/nZzi51IcaY=
+ bh=rVg+Ds3kO4SDO9UCQ6B+hMOEumK/afcXibkbRR1jIPk=;
+ b=l5E0ELKtKsPWE2GdIp0j3I/SAWVGPi4lv9pRiNkUsrgEp5MwJ13bS3zpIYOEpc2oGi7yx/
+ Gx0n+WPF3Er2NsMYGR+y3GsP6THodKlTLhaxXOtexAP57EsFev3bFY7s+eRAVCWWIRDWnl
+ XBm3uookzJ89rZIR2a9t1x/NeCZxbwk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707153662;
+ s=susede2_ed25519; t=1707154494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KMJRHpQhJZYdncZEKk7qkpvWJNofb+Ut6qQfqFDesm4=;
- b=uAaC/mRHikpSxqopKrPK5ghIg3BtkjKUG6BcGeVSEfVL/yuzF0xngw2EKL0aUBSdWxefOY
- ltHvSVo81n/CF5Ag==
+ bh=rVg+Ds3kO4SDO9UCQ6B+hMOEumK/afcXibkbRR1jIPk=;
+ b=pwa/hyh0cp4I7fjfprpj4oFg7XIof8X0TTO0I44psmMis6uQ5SU3+cxc0TQiQqAfpkZ8+e
+ 4huqo8BzFZ5/IkDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 746C3132DD;
- Mon,  5 Feb 2024 17:21:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0315D136F5;
+ Mon,  5 Feb 2024 17:34:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OK4oF/4YwWWoHgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 05 Feb 2024 17:21:02 +0000
-Date: Mon, 5 Feb 2024 18:21:00 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1oy3Oj0cwWUaIgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 05 Feb 2024 17:34:53 +0000
+Date: Mon, 5 Feb 2024 18:34:52 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20240205172100.GA218023@pevik>
-References: <534e6d05-fc91-43e4-b384-b7a43125961d@suse.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240205173452.GB218023@pevik>
+References: <20240130162813.20278-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <534e6d05-fc91-43e4-b384-b7a43125961d@suse.com>
-X-Spamd-Bar: /
+In-Reply-To: <20240130162813.20278-1-mdoucha@suse.cz>
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=k79fsa9s;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="uAaC/mRH"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.71 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; TO_DN_EQ_ADDR_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_THREE(0.00)[3]; DKIM_TRACE(0.00)[suse.cz:+];
- RCPT_COUNT_TWO(0.00)[2]; MX_GOOD(-0.01)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+	none
+X-Spamd-Result: default: False [0.70 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  MIME_GOOD(-0.10)[text/plain];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
  FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
  RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Queue-Id: C7C5822154
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] msgstress SysV IPC testing suite
+Subject: Re: [LTP] [PATCH] waitpid01: Test all standard deadly signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,56 +109,60 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Martin,
 
-> Hi all,
+first this change (merged as ed5ccf6c1 ("waitpid01: Test all standard deadly
+signals") is failing on 6.6 on Debian:
 
-> I was taking a look msgstress testing suite that is supposed to stress the
-> kernel SysV IPC.
-> It's a well known testing suite that used to randomly stuck or fail, due to
-> the poorly written code.
+ed5ccf6c1 ("waitpid01: Test all standard deadly signals")
 
-> I'm about to refactor its code, but I noticed that all 4 tests inside it
-> (msgstress01-04) are basically implementing the same concept, if not the
-> same code that looks copy-pasted.
+waitpid01.c:88: TINFO: Testing child: raise(sig)
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236064
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGIOT/SIGABRT
+waitpid01.c:143: TPASS: Child dumped core as expected
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236071
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGALRM
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236072
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGBUS
+waitpid01.c:143: TPASS: Child dumped core as expected
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236082
+waitpid01.c:113: TFAIL: WIFSIGNALED() not set in status (exited with 0)
+...
+waitpid01.c:88: TINFO: Testing child: kill(getpid(), sig)
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236165
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGIOT/SIGABRT
+waitpid01.c:143: TPASS: Child dumped core as expected
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236176
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGALRM
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236177
+waitpid01.c:118: TPASS: WIFSIGNALED() set in status
+waitpid01.c:126: TPASS: WTERMSIG() == SIGBUS
+waitpid01.c:143: TPASS: Child dumped core as expected
+waitpid01.c:109: TPASS: waitpid() returned correct pid 236187
+waitpid01.c:113: TFAIL: WIFSIGNALED() not set in status (exited with 0)
+...
 
-> We basically have 2 or more processes reading/writing messages into the SysV
-> IPC at the same time.
-> If all messages are correctly sent and received, the test passes. The only
-> difference is if these processes are spawned inside children or not.
+But it works on 6.8.0-rc1-2.gf4ba5db-default Tumbleweed, which I tested it
+before.
 
-> So I have a quite obvious observation: our main goal is to stress the SysV
-> IPC, so we can trigger a bug and it doesn't matter if this is done inside
-> children or not.
-
-I hope so. It also looks to me, that all 4 tests do very similar thing.
-
-Also test docs claims that msgstress03.c is msgstress01.c but reads
-/proc/sys/kernel/msgmni, similarly msgstress04.c is msgstress02.c but reads
-/proc/sys/kernel/msgmni. But I don't see that msgstress0[34].c would read
-/proc/sys/kernel/msgmni.  msgget03.c (already rewritten to new API) is the only
-test which reads it via .save_restore.
-
-I suppose get_used_msgqueues() (in libs/libltpipc/libipc.c) can still be kept in
-the old API and converted after all files are converted. But I would consider
-using /proc/sysvipc/msg instead of "ipcs -q".
-
-Thanks for looking this!
+Also patch does not apply. I had to patch waitpid01 myself, hopefully I did that
+correctly [1].
 
 Kind regards,
 Petr
 
-> I'm planning to remove all those tests and to write a new one following the
-> main concept, but without the actual redundancy. What do you think?
-
-> Regards,
-> Andrea Cervesato
+[1] https://github.com/pevik/ltp/blob/mdoucha/waitpid05/testcases/kernel/syscalls/waitpid/waitpid01.c
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
