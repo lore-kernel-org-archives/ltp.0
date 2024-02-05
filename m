@@ -4,94 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E39C4C4828F
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 02:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68086C48291
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 05:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1707109996; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=AsfIykIC49hqo4FjdLBJxhgv5Ky92YZkf+AyydGZtxs=;
+ b=YORhkxqiDTiMZl+bWU4WyQdD3YNGQE4JKkrcEOdlQS2pHqPfzL/stCzduvbNFcDSytQOm
+ ZFoSDCrUj1JnBYRUzWF1Ytan1eiZ/DTXMGVlCe0CjmmczK5xl9Tq5nkM/hNwscFYLvFsrxS
+ HZcbpR8kesPcNMelWbuohrOVidwlWWo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 24FCB3CC6CA
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 03:29:36 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 25CBB3CE057
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 06:13:16 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F0ED3C9968
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 03:29:06 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 7F5C53C90CF
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 06:12:54 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=68.232.139.130;
+ helo=esa5.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
+ [68.232.139.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8AE0B2000C2
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 03:29:05 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5C679220EC;
- Mon,  5 Feb 2024 02:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707100143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=HqGPKdYnMQ6qXm+O+7h/4mu14SPuoMxyyRRVQBzzRTc=;
- b=hpFhrWtT6G7Uic2GB5CQgODtPEnHDJR6bYwRTs0jL2gtHStNKxo8pho4zP3FtxejOKu07+
- O0b21Fw4VSfXI32q+bODeoQWDsgm2DcutT/59VBBjjHLnIhM/EessOU2Hb8aGj6WS6x738
- bt2AKUHQWqjDMyB+4SZDONhSdsToCIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707100143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=HqGPKdYnMQ6qXm+O+7h/4mu14SPuoMxyyRRVQBzzRTc=;
- b=ni8HxYzKqXzFI1MhrfdjYDUjbftMPw/OUXjIqIhE8MUAQJlZOWBwBLenYFLhDT88uetoRc
- 7uuY2RPCwwf41VBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707100142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=HqGPKdYnMQ6qXm+O+7h/4mu14SPuoMxyyRRVQBzzRTc=;
- b=kRAIcMqiak14VedBLaRBUPLOgDDGle1cBAENsVl+N6k4piRLXhWKmuOujfQKNRFux3d47b
- KDRZHu3S3HKLVBJmsQLHYHUwEoDO6CENg+yaa3MBwxteq7gFaqYK/7XIqQpLl0Yctr9Y4n
- PcCgGE3oa9NGLXJS/UAScK43ne7hras=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707100142;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=HqGPKdYnMQ6qXm+O+7h/4mu14SPuoMxyyRRVQBzzRTc=;
- b=HozBHKW2RNgn+GblTMzY1bHj3ZNOG5F/8bmsOrffLJfJxzOa16yI8DvcoZ7T99a0Q8vwwe
- l7xuNg2+ylf/VWCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37CEB132DD;
- Mon,  5 Feb 2024 02:29:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id rBCrDO5HwGUPRgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 05 Feb 2024 02:29:02 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6D2D31001F2B
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 06:12:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1707109973; x=1738645973;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=z+x1XHYBhlFkX/mOMwlQzpzR0KAMlQHVrkONCgtepxk=;
+ b=D99+jqnnuFkOxkcwqHl846+gdr+FoA0BU8fpWyi26LhN7UK8KDs1hw8l
+ xfNr3EdCDO1Ro8RREIkOFaa3t2tlBWHGy7zyGeGF6n15PE+kDOVRXB7HG
+ rgbLuNerdbWi6aSJ+cAVuv3lEEgIeJoG90QI5RQncX+DeMlGM0fdZDtjG
+ z7es5Zb+nvSXNOj1Ayqas1QFurBG2We+7cNDoae4wMHeH/DTcY2tWo5lD
+ LNQep/TmFV8/3IgJY8pgWSMEju7ksVG7aLDjTWpRUdXi3rjBBVVDD+ZHI
+ lPUyETWmxxi5VLBsrl8f+jZJeN17+MNQwSXZFo17NPOLOtt5LdizKoeas g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="147868664"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701097200"; d="scan'208";a="147868664"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+ by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Feb 2024 14:12:49 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id DE904124101
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:46 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2AACDD9681
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:46 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8E1A1200983C2
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:45 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 1F0981A009A;
+ Mon,  5 Feb 2024 13:12:45 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Mon,  5 Feb 2024 03:28:56 +0100
-Message-ID: <20240205022857.191692-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+Date: Mon,  5 Feb 2024 00:12:28 -0500
+Message-Id: <20240205051230.6272-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; R_MISSING_CHARSET(2.50)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; TO_DN_SOME(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28168.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28168.005
+X-TMASE-Result: 10--11.316000-10.000000
+X-TMASE-MatchedRID: rP3/tz83A4WhhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkIh+
+ mL+ciFCpbnRB47KLJ1QzLmfGY6iDkX5uUfhNvnKzOWUWxTQJdI8UZYubbUj2DLt4BAaULwAVJf5
+ otvavOZf9vT5evMX4tJhCh8+WImJUkto8AKCDbo7X3j/lf1V8LNhQO8CvZj/XfL8fHUCAmuv1ov
+ LD2i2bwoHA6IBd3vQswTgwAtrOMM4O9fZKTjt+zzz6L+U/pejxfb+ZO7kHlEgyiHqxwIX2MVOkR
+ ICTn8kKUjFinMvpgsNmlbstSGDENWULhS/RYteO3nHtGkYl/VpIvK4LrXs1aZsgafD1fXNh+03a
+ +MQ8RE1Zms6w/rdLbtCPpguQSWAlZ2OZE/lyQ29KzjuZtPtIBH607foZgOWyNAzT8I6i53DDRve
+ w35mZexdx1aMGhJ7URzLfMkqkPSlccQ8eam5EfRRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7nWGv6
+ KQdMpgzuQswPkhxDg3cYBcqBDyW4OMtU7OH3k7aAZk0sEcY14=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] swapon03: Cleanup
+Subject: [LTP] [PATCH 1/3] mremap02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,178 +98,236 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* There is no need to check for sprintf() return code.
-* Use tst_res() instead of printf and remove bogus comments.
-* Define EXPECTED_ERRNO as constant (not assigned).
-* Use SAFE_*() functions.
-* Fix remaining checkpack.pl warnings.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/swapon/swapon03.c | 63 ++++++++-------------
- 1 file changed, 25 insertions(+), 38 deletions(-)
+ testcases/kernel/syscalls/mremap/mremap02.c | 186 ++++----------------
+ 1 file changed, 37 insertions(+), 149 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 05fe2045f..3dbcd5bfd 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -24,14 +24,15 @@
+diff --git a/testcases/kernel/syscalls/mremap/mremap02.c b/testcases/kernel/syscalls/mremap/mremap02.c
+index 2dabc6847..ff46462d9 100644
+--- a/testcases/kernel/syscalls/mremap/mremap02.c
++++ b/testcases/kernel/syscalls/mremap/mremap02.c
+@@ -1,162 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) Linux Test Project, 2001-2024
+  */
  
- #define MNTPOINT	"mntpoint"
- #define TEST_FILE	MNTPOINT"/testswap"
-+#define EXPECTED_ERRNO EPERM
+-/*
+- * Test Name: mremap02
+- *
+- * Test Description:
+- *  Verify that,
+- *   mremap() fails when used to expand the existing virtual memory mapped
+- *   region to the requested size, if the virtual memory area previously
+- *   mapped was not page aligned or invalid argument specified.
+- *
+- * Expected Result:
+- *  mremap() should return -1 and set errno to EINVAL.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *	if errno set == expected errno
+- *		Issue sys call fails with expected return value and errno.
+- *	Otherwise,
+- *		Issue sys call fails with unexpected errno.
+- *   Otherwise,
+- *	Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
++/*\
++ * [Description]
+  *
+- * Usage:  <for command-line>
+- *  mremap02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *	       -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -p x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
++ * Test for EINVAL error.
+  *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- *      11/09/2001 Manoj Iyer (manjo@austin.ibm.com)
+- *      Modified.
+- *      - #include <linux/mman.h> should not be included as per man page for
+- *        mremap, #include <sys/mman.h> alone should do the job. But inorder
+- *        to include definition of MREMAP_MAYMOVE defined in bits/mman.h
+- *        (included by sys/mman.h) __USE_GNU needs to be defined.
+- *        There may be a more elegant way of doing this...
+- *
+- *
+- * RESTRICTIONS:
+- *  None.
++ * - mremap fail with virtual memory area previously mapped was not page aligned
++ *   or invalid argument specified.
+  */
++
+ #define _GNU_SOURCE
+-#include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+ #include <sys/mman.h>
++#include "tst_test.h"
  
- static int setup_swap(void);
- static int clean_swap(void);
- static int check_and_swapoff(const char *filename);
- 
- static int swapfiles;
-+static int testfiles = 3;
- 
--int testfiles = 3;
- static struct swap_testfile_t {
- 	char *filename;
- } swap_testfiles[] = {
-@@ -40,8 +41,6 @@ static struct swap_testfile_t {
- 	{"thirdswapfile"}
- };
- 
--int expected_errno = EPERM;
+-#include "test.h"
 -
- static void verify_swapon(void)
+-char *TCID = "mremap02";
+-int TST_TOTAL = 1;
+-char *addr;			/* addr of memory mapped region */
+-int memsize;			/* memory mapped size */
+-int newsize;			/* new size of virtual memory block */
++static char *addr;			/* addr of memory mapped region */
++static int memsize;			/* memory mapped size */
++static int newsize;			/* new size of virtual memory block */
+ 
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
+-
+-int main(int ac, char **av)
++static void verify_mremap(void)
  {
- 	if (setup_swap() < 0) {
-@@ -51,14 +50,14 @@ static void verify_swapon(void)
- 
- 	TEST(tst_syscall(__NR_swapon, swap_testfiles[0].filename, 0));
- 
--	if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
-+	if ((TST_RET == -1) && (TST_ERR == EXPECTED_ERRNO)) {
- 		tst_res(TPASS, "swapon(2) got expected failure (%d),",
--			expected_errno);
-+			EXPECTED_ERRNO);
- 	} else if (TST_RET < 0) {
- 		tst_res(TFAIL | TTERRNO,
- 			"swapon(2) failed to produce expected error "
- 			"(%d). System reboot recommended.",
--			expected_errno);
-+			EXPECTED_ERRNO);
- 	} else {
- 		/*
- 		 * Probably the system supports MAX_SWAPFILES > 30, let's try with
-@@ -78,19 +77,19 @@ static void verify_swapon(void)
- 			TEST(tst_syscall(__NR_swapon, swap_testfiles[2].filename, 0));
- 
- 			/* Check return code (should be an error) */
--			if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
-+			if ((TST_RET == -1) && (TST_ERR == EXPECTED_ERRNO)) {
- 				tst_res(TPASS,
- 					"swapon(2) got expected failure;"
- 					" Got errno = %d, probably your"
- 					" MAX_SWAPFILES is 32",
--					expected_errno);
-+					EXPECTED_ERRNO);
- 			} else {
- 				tst_res(TFAIL,
- 					"swapon(2) failed to produce"
- 					" expected error: %d, got %s."
- 					" System reboot after execution of LTP"
- 					" test suite is recommended.",
--					expected_errno, strerror(TST_ERR));
-+					EXPECTED_ERRNO, strerror(TST_ERR));
- 			}
- 		}
- 	}
-@@ -114,30 +113,24 @@ static int setup_swap(void)
- 	/* Find out how many swapfiles (1 line per entry) already exist */
- 	swapfiles = 0;
- 
--	if (seteuid(0) < 0)
--		tst_brk(TFAIL | TERRNO, "Failed to call seteuid");
-+	SAFE_SETEUID(0);
- 
--	/* This includes the first (header) line */
--	if ((fd = open("/proc/swaps", O_RDONLY)) == -1) {
--		tst_brk(TFAIL | TERRNO,
--			"Failed to find out existing number of swap files");
--	}
-+	fd = SAFE_OPEN("/proc/swaps", O_RDONLY);
- 	do {
- 		char *p = buf;
--		res = read(fd, buf, BUFSIZ);
--		if (res < 0) {
--			tst_brk(TFAIL | TERRNO,
--				 "Failed to find out existing number of swap files");
--		}
-+
-+		res = SAFE_READ(0, fd, buf, BUFSIZ);
- 		buf[res] = '\0';
- 		while ((p = strchr(p, '\n'))) {
- 			p++;
- 			swapfiles++;
- 		}
--	} while (BUFSIZ <= res);
--	close(fd);
-+	} while (res >= BUFSIZ);
-+	SAFE_CLOSE(fd);
-+
-+	/* don't count the /proc/swaps header */
- 	if (swapfiles)
--		swapfiles--;	/* don't count the /proc/swaps header */
-+		swapfiles--;
- 
- 	if (swapfiles < 0)
- 		tst_brk(TFAIL, "Failed to find existing number of swapfiles");
-@@ -146,36 +139,30 @@ static int setup_swap(void)
- 	swapfiles = MAX_SWAPFILES - swapfiles;
- 	if (swapfiles > MAX_SWAPFILES)
- 		swapfiles = MAX_SWAPFILES;
-+
- 	pid = SAFE_FORK();
- 	if (pid == 0) {
- 		/*create and turn on remaining swapfiles */
- 		for (j = 0; j < swapfiles; j++) {
+-	int lc;
 -
--			/* prepare filename for the iteration */
--			if (sprintf(filename, "swapfile%02d", j + 2) < 0) {
--				printf("sprintf() failed to create "
--				       "filename");
--				exit(1);
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	errno = 0;
++	addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
++	TST_ERR = errno;
+ 
+-		tst_count = 0;
++	/* Check for the return value of mremap() */
++	if (addr != MAP_FAILED) {
++		tst_res(TFAIL | TTERRNO,
++			 "mremap returned invalid value, expected: -1");
+ 
+-		/*
+-		 * Attempt to expand the existing mapped
+-		 * memory region (memsize) by newsize limits using
+-		 * mremap() should fail as old virtual address is not
+-		 * page aligned.
+-		 */
+-		errno = 0;
+-		addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
+-		TEST_ERRNO = errno;
+-
+-		/* Check for the return value of mremap() */
+-		if (addr != MAP_FAILED) {
+-			tst_resm(TFAIL,
+-				 "mremap returned invalid value, expected: -1");
+-
+-			/* Unmap the mapped memory region */
+-			if (munmap(addr, newsize) != 0) {
+-				tst_brkm(TBROK, cleanup, "munmap fails to "
+-					 "unmap the expanded memory region, "
+-					 "error=%d", errno);
 -			}
+-			continue;
+-		}
 -
--			/* Create the swapfile */
-+			sprintf(filename, "swapfile%02d", j + 2);
- 			make_swapfile(filename, 10, 0);
+-		if (errno == EINVAL) {
+-			tst_resm(TPASS, "mremap() Failed, 'invalid argument "
+-				 "specified' - errno %d", TEST_ERRNO);
+-		} else {
+-			tst_resm(TFAIL, "mremap() Failed, "
+-				 "'Unexpected errno %d", TEST_ERRNO);
+-		}
++		/* Unmap the mapped memory region */
++		SAFE_MUNMAP(addr, newsize);
+ 	}
  
- 			/* turn on the swap file */
- 			res = tst_syscall(__NR_swapon, filename, 0);
- 			if (res != 0) {
- 				if (errno == EPERM) {
--					printf("Successfully created %d swapfiles\n", j);
-+					tst_res(TINFO, "Successfully created %d swapfiles", j);
- 					break;
--				} else {
--					printf("Failed to create swapfile: %s\n", filename);
--					exit(1);
- 				}
-+
-+				tst_res(TWARN | TERRNO, "Failed to create swapfile: %s", filename);
-+				exit(1);
- 			}
- 		}
- 		exit(0);
--	} else
+-	cleanup();
+-	tst_exit();
+-
++	if (errno == EINVAL) {
++		tst_res(TPASS | TTERRNO, "mremap() Failed, 'invalid argument "
++			 "specified' - errno %d", TST_ERR);
 +	} else {
- 		waitpid(pid, &status, 0);
++		tst_res(TFAIL | TTERRNO, "mremap() Failed, "
++			 "'Unexpected errno %d", TST_ERR);
 +	}
+ }
  
- 	if (WEXITSTATUS(status))
- 		tst_brk(TFAIL, "Failed to setup swaps");
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- *
+- * Get system page size, Set the size of virtual memory area and the
+- * new size after resize, Set the virtual memory address such that it
+- * is not aligned.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+ 
++static void setup(void)
++{
+ 	/* Get the system page size */
+ 	if ((memsize = getpagesize()) < 0) {
+-		tst_brkm(TFAIL, NULL,
+-			 "getpagesize() fails to get system page size");
++		tst_brk(TBROK | TTERRNO, "getpagesize() fails to get system page size");
+ 	}
+ 
+ 	/* Get the New size of virtual memory block after resize */
+@@ -166,13 +60,7 @@ void setup(void)
+ 	addr = (char *)(addr + (memsize - 1));
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-	/* Exit the program */
+-
+-}
++static struct tst_test test = {
++	.test_all = verify_mremap,
++	.setup = setup,
++};
 -- 
 2.43.0
 
