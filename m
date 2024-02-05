@@ -4,93 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A78DC4828D
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 05:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1707110050; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=eWyGYPCXmiH9XTfkS8GFS/JM8x97EPLb8MAV57FQRSg=;
- b=n08j4RNagmU6/jd4r+RZVzjPq1NuwbKVEX5Ob1bA8510YjTvnjEhBwIDnq1XgHgc1t1hO
- Q1NZ7wYklk8Gj3BG7BJmftAtDb8dM/kuwjFEem6tnZibdb8uyuqoIroL689ie0SRwMpVOfM
- oxikrMLMYL/LOEik7C92w/fjoojCQ0o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9937C4828D
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 07:48:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ECEB83CE0EC
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 06:14:09 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0B4C43CC6AB
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 08:48:53 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19ADC3CD6E0
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 06:13:00 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.36.223;
- helo=esa9.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id DAA123C8E42
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 08:48:36 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
-Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
- [139.138.36.223])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6D096200A18
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 06:12:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1707109980; x=1738645980;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=dhhDXE27Oo+G77sH0VNgpEG5VR+4Hcnvm4d7z+yLWWE=;
- b=Ylfx9Yuso6RXpOui0bEs8PlTcWFGuyBbDluMPowrsV/7WQ6niBJ93OR2
- MdiLe+S21Iy3MJslIG+yPDAtLH1o5Fc3Vx5Np04lGD0mnkeSnEZDe5Rfi
- 4aZTs6o/m/1pKZXxt7UfL51w+W6xZjP+SQyY2K6R71Ks3q2VHyq84Oq/J
- 9TtGOkTFKp4wheRmbtZUGOTnhr1s6grv+tnGvhD3dkoDckS89fD3HOeu7
- K/pw1U1Ar2yNSyA7oe4WA9I1gSDgU0YQRPCImsWE4SKrhkjbEgjjZ/j8o
- rVouAHPAZFRWV5HjWU30zTlogeYYW/5GoT0Xb5nYj5eaHscGWWhRGh5Fd A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="136842501"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701097200"; d="scan'208";a="136842501"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
- by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Feb 2024 14:12:55 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 01A012F81F
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:54 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2321B24274A
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:48 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 9F82968957
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 14:12:47 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 4D4BA1A009A;
- Mon,  5 Feb 2024 13:12:47 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Mon,  5 Feb 2024 00:12:29 -0500
-Message-Id: <20240205051230.6272-2-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240205051230.6272-1-xuyang2018.jy@fujitsu.com>
-References: <20240205051230.6272-1-xuyang2018.jy@fujitsu.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 93C61601B19
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 08:48:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1707119314;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DV5BSLtMC8E02RwYjBTZsuBGICZBsNX1QG4RIa5iMUg=;
+ b=iAz9oYdnnFrRkfDEBykIj1/aIH/W9Sld+YsaKY5iZyVkS2BO9ttFXKH3PMaXoRv2vRJYir
+ L2X8uvWLUtAmIEJoOYmG42IM9Ql2iZfRUqhY4I6h4rVCftwINGrHjvfiVmIsowIv9RDkFW
+ eNpfCFz6Z+45PT0yNh3+26SgDyQ6Xt4=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-YW-aEqTZMiaO58rg3iM-Tg-1; Mon, 05 Feb 2024 02:48:32 -0500
+X-MC-Unique: YW-aEqTZMiaO58rg3iM-Tg-1
+Received: by mail-pl1-f200.google.com with SMTP id
+ d9443c01a7336-1d9a6ce802cso7103135ad.0
+ for <ltp@lists.linux.it>; Sun, 04 Feb 2024 23:48:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1707119310; x=1707724110;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=DV5BSLtMC8E02RwYjBTZsuBGICZBsNX1QG4RIa5iMUg=;
+ b=c3RI3KjcLluS0gnhqxBOGh+x8s+mqIZGU/9zccKLg2ePXRKvUky+zubOvC4Zodq6N3
+ AGXD1NY4ugaHoZ9JBpXp2OMpmjH3rBxMitB64GFdtlRoTbnakc6ZirJzksz9HnMB5Ith
+ miPMxpqdXkojpG6QPXkYaPpH+1W+PX/oJuMfTHpp4Vv+7E+4c/7BuiSnO4UfZG4fKfdf
+ J93gYhAXKyCKIco5HEA/JOcecpug7YPJeiyOFEEY5jT7tgOka6YHlo/4iBhofTWqycH/
+ 0g01FBtiPVn3MolaJ7WAlS80S/o05dAPbXhnW+pmZwRhupxTymLoa/ijKk1jmg69Px3U
+ 0xdQ==
+X-Gm-Message-State: AOJu0Yyl2JRSGvJmgKjoHrHBRKDAdMysTDSHcDmjgp7eXRu1CDHffa/k
+ BYWTN/IBcw4aWRh/t+/+ziMEFrn3cr1B233RUbAtioUeTL359wJV9XH2SHGib4oxqle8l8KSOg9
+ 7gfuLRbDYMewkNWMcMVRS41z0Uo3W1WoaUJWbj2IJR58yahswNrUdrq/CalJ6fcyyDtDRYQhbSO
+ AWqEZa0tl5P4qIj2LxSR1L1YA0FWhZeqwosQ==
+X-Received: by 2002:a17:90a:bc81:b0:296:321c:9bdc with SMTP id
+ x1-20020a17090abc8100b00296321c9bdcmr7309392pjr.13.1707119310366; 
+ Sun, 04 Feb 2024 23:48:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHHh7J3f8vy1yNrq/WehXp03tacI5XFhd72GrOEmffZRoG0teZ509PHoKXFV9Ujkdh0r9W2N3TPDiYMhg4st8c=
+X-Received: by 2002:a17:90a:bc81:b0:296:321c:9bdc with SMTP id
+ x1-20020a17090abc8100b00296321c9bdcmr7309382pjr.13.1707119309997; Sun, 04 Feb
+ 2024 23:48:29 -0800 (PST)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28168.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28168.004
-X-TMASE-Result: 10--13.074000-10.000000
-X-TMASE-MatchedRID: 7q1xkhOBgdehhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkIh+
- mL+ciFCpbnRB47KLJ1QzLmfGY6iDkX5uUfhNvnKzOWUWxTQJdI8UZYubbUj2DLt4BAaULwAVJf5
- otvavOZf9vT5evMX4tJhCh8+WImJUkto8AKCDbo7X3j/lf1V8LNhQO8CvZj/XfL8fHUCAmuv1ov
- LD2i2bwoHA6IBd3vQsIvabuzhmQeA9M2SZK+EIssQ4mpKyfkqZBGvINcfHqhcli8Y5a0svLxduD
- +Mmm6Q2gC3FH2GME0bQsefS5WLXU3hh1unvIp4BqNtC2YatSIkcsx3IH4sq3MgVyTd/p+/Io6yI
- pLdrAfgD+h7g3AV/au2m4eeglpGzlTFYj5iEM4VdhZyafgPiqxgff28UuvITNAzT8I6i53BjHxr
- OWebiVEPHgqX8A7utwTWpxY8/N9Pkht9v6t8rYxQ7ky03us3D7xa8TAoa4anoTJc0BP/XCqPFjJ
- EFr+olwXCBO/GKkVqOhzOa6g8KrRqoPcm7G6PadKpharxGzDMZloh3kgNoN+05g0YPOTF9WnhRV
- zNZJ6c=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+References: <20240205022857.191692-1-pvorel@suse.cz>
+ <20240205022857.191692-2-pvorel@suse.cz>
+In-Reply-To: <20240205022857.191692-2-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 5 Feb 2024 15:48:17 +0800
+Message-ID: <CAEemH2dZn4jRjQbEX492uhb4DMHCOMq+C4zvYeq_0N1x8X_mPA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mremap03: Convert to new API
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 2/2] swapon03: Swap is not supported on TMPFS on
+ tmpfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,255 +93,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yang Xu via ltp <ltp@lists.linux.it>
-Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Dominique Leuenberger <dimstar@opensuse.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/mremap/mremap03.c | 197 +++++---------------
- 1 file changed, 44 insertions(+), 153 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
-index 02b79bc47..b7497bc01 100644
---- a/testcases/kernel/syscalls/mremap/mremap03.c
-+++ b/testcases/kernel/syscalls/mremap/mremap03.c
-@@ -1,165 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) Linux Test Project, 2001-2024
-  */
- 
--/*
-- * Test Name: mremap03
-- *
-- * Test Description:
-- *  Verify that,
-- *   mremap() fails when used to expand the existing virtual memory mapped
-- *   region to the requested size, if there already exists mappings that
-- *   cover the whole address space requsted or the old address specified was
-- *   not mapped.
-- *
-- * Expected Result:
-- *  mremap() should return -1 and set errno to EFAULT.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-+/*\
-+ * [Description]
-  *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-+ * Test for EFAULT error.
-  *
-- * Usage:  <for command-line>
-- *  mremap03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -p x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- *      11/09/2001 Manoj Iyer (manjo@austin.ibm.com)
-- *      Modified.
-- *      - #include <linux/mman.h> should not be included as per man page for
-- *        mremap, #include <sys/mman.h> alone should do the job. But inorder
-- *        to include definition of MREMAP_MAYMOVE defined in bits/mman.h
-- *        (included by sys/mman.h) __USE_GNU needs to be defined.
-- *        There may be a more elegant way of doing this...
-- *
-- *
-- * RESTRICTIONS:
-- *  None.
-+ * - mremap fail with mapping covering the requested entire address space already exists
-+ *   or the old address specified was not mapped.
-  */
-+
- #define _GNU_SOURCE
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
- #include <sys/mman.h>
-+#include "tst_test.h"
- 
--#include "test.h"
--
--char *TCID = "mremap03";
--int TST_TOTAL = 1;
- static char *bad_addr;
--static char *addr;		/* addr of memory mapped region */
--int memsize;			/* memory mapped size */
--int newsize;			/* new size of virtual memory block */
-+static char *addr;              /* addr of memory mapped region */
-+static int memsize;             /* memory mapped size */
-+static int newsize;             /* new size of virtual memory block */
- 
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--
--int main(int ac, char **av)
-+static void verify_mremap(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+	errno = 0;
-+	addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
-+	TST_ERR = errno;
- 
--	setup();
-+	/* Check for the return value of mremap() */
-+	if (addr != MAP_FAILED) {
-+		tst_res(TFAIL | TTERRNO,
-+			"mremap returned invalid value, expected: -1");
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Attempt to expand the existing mapped
--		 * memory region (memsize) by newsize limits
--		 * using mremap() should fail as specified old
--		 * virtual address was not mapped.
--		 */
--		errno = 0;
--		addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
--		TEST_ERRNO = errno;
--
--		/* Check for the return value of mremap() */
--		if (addr != MAP_FAILED) {
--			tst_resm(TFAIL,
--				 "mremap returned invalid value, expected: -1");
--
--			/* Unmap the mapped memory region */
--			if (munmap(addr, newsize) != 0) {
--				tst_brkm(TFAIL, cleanup, "munmap fails to "
--					 "unmap the expanded memory region, "
--					 " error=%d", errno);
--			}
--			continue;
--		}
--
--		/* Check for the expected errno */
--		if (errno == EFAULT) {
--			tst_resm(TPASS, "mremap() Fails, 'old region not "
--				 "mapped', errno %d", TEST_ERRNO);
--		} else {
--			tst_resm(TFAIL, "mremap() Fails, "
--				 "'Unexpected errno %d", TEST_ERRNO);
--		}
-+		/* Unmap the mapped memory region */
-+		SAFE_MUNMAP(addr, newsize);
- 	}
- 
--	cleanup();
--	tst_exit();
--
-+	/* Check for the expected errno */
-+	if (errno == EFAULT) {
-+		tst_res(TPASS | TTERRNO, "mremap() Failed, 'old region not "
-+				"mapped' - errno %d", TST_ERR);
-+	} else {
-+		tst_res(TFAIL | TTERRNO, "mremap() Failed, "
-+				"'Unexpected errno %d", TST_ERR);
-+	}
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- *
-- * Get system page size.
-- * Set the old address point some high address which is not mapped.
-- */
- void setup(void)
- {
--	int page_sz;		/* system page size */
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	int page_sz;            /* system page size */
- 
--	TEST_PAUSE;
-+	page_sz = getpagesize();
- 
- 	/* Get the system page size */
--	if ((page_sz = getpagesize()) < 0) {
--		tst_brkm(TFAIL, NULL,
--			 "getpagesize() fails to get system page size");
-+	if (page_sz < 0) {
-+		tst_brk(TFAIL | TTERRNO,
-+			"getpagesize() fails to get system page size");
- 	}
- 
- 	/* Get the size of virtual memory area to be mapped */
-@@ -169,19 +66,13 @@ void setup(void)
- 	newsize = (memsize * 2);
- 
- 	/*
--	 * Set the old virtual address point to some address
--	 * which is not mapped.
--	 */
--	bad_addr = tst_get_bad_addr(cleanup);
-+	* Set the old virtual address point to some address
-+	* which is not mapped.
-+	*/
-+	bad_addr = tst_get_bad_addr(NULL);
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- */
--void cleanup(void)
--{
--
--	/* Exit the program */
--
--}
-+static struct tst_test test = {
-+	.test_all = verify_mremap,
-+	.setup = setup,
-+};
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBGZWIgNSwgMjAyNCBhdCAxMDoyOeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKCj4gdHN0X3Rlc3QuYzoxNzAxOiBUSU5GTzogPT09IFRlc3Rpbmcgb24gZXh0
+NCA9PT0KPiB0c3RfdGVzdC5jOjExMTc6IFRJTkZPOiBGb3JtYXR0aW5nIC9kZXYvbG9vcDAgd2l0
+aCBleHQ0IG9wdHM9JycgZXh0cmEKPiBvcHRzPScnCj4gbWtlMmZzIDEuNDcuMCAoNS1GZWItMjAy
+MykKPiB0c3RfdGVzdC5jOjExMzE6IFRJTkZPOiBNb3VudGluZyAvZGV2L2xvb3AwIHRvIC90bXAv
+TFRQX3N3YW5JenRxNy9tbnRwb2ludAo+IGZzdHlwPWV4dDQgZmxhZ3M9MAo+IHRzdF9pb2N0bC5j
+OjI2OiBUSU5GTzogRklCTUFQIGlvY3RsIGlzIHN1cHBvcnRlZAo+IHN3YXBvbjAzLmM6MTY0OiBU
+V0FSTjogRmFpbGVkIHRvIGNyZWF0ZSBzd2FwZmlsZTogc3dhcGZpbGUwMjogRUlOVkFMICgyMikK
+PiBzd2Fwb24wMy5jOjE3NTogVEZBSUw6IEZhaWxlZCB0byBzZXR1cCBzd2Fwcwo+Cj4gQXQgbGVh
+c3Qgb24ga2VybmVsIDYuNy4KPgo+IEZpeGVzOiAwMDlhNDA3YTAgKCJzd2Fwb24vb2ZmOiBlbmFi
+bGUgYWxsX2ZpbGVzeXN0ZW0gaW4gc3dhcCB0ZXN0IikKPiBSZXBvcnRlZC1ieTogRG9taW5pcXVl
+IExldWVuYmVyZ2VyIDxkaW1zdGFyQG9wZW5zdXNlLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBQZXRy
+IFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zd2Fwb24vc3dhcG9uMDMuYyB8IDMgKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlv
+bnMoKykKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9z
+d2Fwb24wMy5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMy5j
+Cj4gaW5kZXggM2RiY2Q1YmZkLi4zNzMxNGNjNjUgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDMuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc3dhcG9uL3N3YXBvbjAzLmMKPiBAQCAtMjQ3LDYgKzI0Nyw5IEBAIHN0YXRpYyB2
+b2lkIHNldHVwKHZvaWQpCj4gICAgICAgICBpZiAoYWNjZXNzKCIvcHJvYy9zd2FwcyIsIEZfT0sp
+KQo+ICAgICAgICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAic3dhcCBub3Qgc3VwcG9ydGVkIGJ5
+IGtlcm5lbCIpOwo+Cj4gKyAgICAgICBpZiAodHN0X2ZzX3R5cGUoIi4iKSA9PSBUU1RfVE1QRlNf
+TUFHSUMpCj4gKyAgICAgICAgICAgICAgIHRzdF9icmsoVENPTkYsICJzd2FwIG5vdCBzdXBwb3J0
+ZWQgb24gdG1wZnMiKTsKPgoKSSBkaWRuJ3QgY2F0Y2ggdGhlIHBhdGNoIHBvaW50LCBpc24ndCB0
+aGUgZmFpbHVyZSBvbiBFWFQ0LCB3aHkgaGVyZSBza2lwCnRtcGZzPwpBbmQsIHNob3VsZG4ndCB0
+aGUgRlMgY2hlY2sgY29tcGxldGVkIGluIGlzX3N3YXBfc3VwcG9ydGVkKCk/CgoKCj4gKwo+ICAg
+ICAgICAgaXNfc3dhcF9zdXBwb3J0ZWQoVEVTVF9GSUxFKTsKPiAgfQo+Cj4gLS0KPiAyLjQzLjAK
+Pgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczov
+L2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
