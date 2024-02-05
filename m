@@ -4,88 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D6D6C48291
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 08:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA7AC4828D
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 09:21:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1707122318; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=y10UWVBIcSec5FQQ9UkU2b/kGQ/TDjm561bhqCZ6VRQ=;
- b=K+cZxV1GxCCQr/O5Vzee+czN1UkwmkGLNNbjX1QqnccF2z7VMG213kiDiygvu6atnwmXZ
- MhZP9LN5yA430GNzzY+4W7bWWKdA1/9FtXM2eH6rR0YC1s3UGJ0PEq8XTDhJf5HeZnKTpXe
- yQSYQuuUV1lRZm2QQb0Qf+Ry43MT8wM=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1707124870; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=5Zm8iPMTbc5GE//h/2mQXsGMKAFhRftxAItL3Ps4L4Y=;
+ b=a8bY0XE9MGz1EotVY/zhCVIShSVo6ZWFklkjUVJFQmNlaUFMRqvBLa0U9I3TRcsoGW2mJ
+ rs60yxLkOXD4/48MXWtAW5G3xJfZq3tcgJAU9ctM39NioJD1V3hQMKHwWI4HHobs7mQPDGr
+ fwMSdSffp2/X6GqM3Y6LxcDrgJNMSOA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 809773C90CF
-	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 09:38:38 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 53D3A3CC6CE
+	for <ltp@archiver.kernel.org>; Mon,  5 Feb 2024 10:21:10 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 94F733C90CF
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 09:38:16 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 10FDB3C9799
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 10:20:47 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 766B9140123D
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 09:38:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1707122296; x=1738658296;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=25VegtwNlIeqgRTP1Zd99x8gkbg4EKsQku3yy5a3cUw=;
- b=JjYn4ilcstQ4mVTHwmBGppJEPZXUEd2SfZ9JZdxn7RxsX0Ic7ysLMP6a
- pzvB+zo1rVOws8w4hV1hFzb/zABTzBdh4rlC/lPED8BTpwj1Hwe223piL
- 1Wp71Ggx+w3GNuYRdPrG1YRhcrOCFMOb40AAKlxshvAOHQSU9ff3ncfNw
- yjiz1OK+jccm6IfY19mmkQuHXtjRDTkALJlhMQDBmr5k7ojDhYZm4LZL5
- QVPGJ7B2of9vrAZgKDL1SDXb+41JZ85hiYvPW6/vyDQ9a3KwLCb6q0vr4
- edzwYjrWbALGUMKsipoS4MLfauOPcWbWO5+KkF/Cv7trP+f1jHNUuXUkw g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="127814328"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701097200"; d="scan'208";a="127814328"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Feb 2024 17:38:13 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 2D317D6270
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:10 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 70FCD49058
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:09 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 09E5A20098983
- for <ltp@lists.linux.it>; Mon,  5 Feb 2024 17:38:09 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 8F4FF1A006B;
- Mon,  5 Feb 2024 16:38:08 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Mon,  5 Feb 2024 03:38:05 -0500
-Message-Id: <20240205083805.6713-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F1A801A00700
+ for <ltp@lists.linux.it>; Mon,  5 Feb 2024 10:20:46 +0100 (CET)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-40fc65783aeso25264585e9.2
+ for <ltp@lists.linux.it>; Mon, 05 Feb 2024 01:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1707124846; x=1707729646; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=Uo2G2GblDUMRw6SWrq1o/75afAcnJtgGVIv3FKTC0RE=;
+ b=CCKfjEoRaS/k+K+7AJSElvdJA6aw3SkXTIvJ2+/7gK/PDwD1Zh9cTa6R7paLijIu2F
+ GCenMZFPCEQa2xYKyZ1+lNtQQweCTRVqTB/8zT8UjFQkuweyU2O7J+QvjsSxMtZnzzp5
+ gbMxRLBpxcCtWuXzW9PioeZxAcKcfisDC9igHz9UUk4WAT8FNvnfOYdYvZGNykOxpatY
+ gN8iG+zykq76sOAEZAaSGvg+RWoFrCJu1L8a+PK0jHYmzWYZ6x+nApfO9O+tbPQsN2j8
+ DkXS4YvSaF1Wr4SWwUcbvFaU3Uv0RxTAxMYZkGZ+gBzlC90fGiOlajVsNKvXb7rSa3i0
+ dJBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1707124846; x=1707729646;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=Uo2G2GblDUMRw6SWrq1o/75afAcnJtgGVIv3FKTC0RE=;
+ b=inpnpAuNcZSmxtE4WSodOkdjRTb6vwmXxheuzCzHmXInOmTuRuYWs9lUB3m8U6oi53
+ NTfgwq5qhZx9dFwLpl7Ou0B7fKEO4i3K80GSqkeBaRIY7ewJOVRPjGQablBlmruG9Cas
+ qJgAG1xP2Fl4VAalQrOxxDf0n/ocgTDA45a8b2P0M6arXp8C0oiDB36iWOqCQmIXSQSz
+ 7C6OTYSOxfi+omTdJC/VQlDdnq8/qx8HyExa3Gf7a8XaocQWVnqUR6lmK8rTfPAIzfAf
+ NSWc83IjfFYERamV3UavVdK2NdtUlP404/8BDurR5d0JtqRGMR/xDItBDDzY2FXmBF6F
+ KSHA==
+X-Gm-Message-State: AOJu0YzBidra0YCHAMHKRk3sDcL/CH0tCsEKpnPau+MRPx3YwebryznP
+ NuZ1vGKYgFwCBPWicx50ccxFNJjH8zn765um6DDHYk16dgwhxEW+w3c5MiMMLB9cb1YYJ95ehPB
+ ltJk=
+X-Google-Smtp-Source: AGHT+IHUhi0+50IONlMey9KTEJeN7+Ed3w1GoolqQqQXh7JDUyXJ5tlD6vE2br7B48GhsiVEH1f8Zw==
+X-Received: by 2002:a05:600c:1550:b0:40e:c047:9348 with SMTP id
+ f16-20020a05600c155000b0040ec0479348mr3927044wmg.15.1707124845511; 
+ Mon, 05 Feb 2024 01:20:45 -0800 (PST)
+Received: from [10.232.133.56] ([88.128.88.40])
+ by smtp.gmail.com with ESMTPSA id
+ s10-20020a05600c044a00b0040efc268713sm7886139wmb.26.2024.02.05.01.20.45
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 05 Feb 2024 01:20:45 -0800 (PST)
+Message-ID: <137b0984-044d-458d-ade1-bc205f5c8bfd@suse.com>
+Date: Mon, 5 Feb 2024 10:20:44 +0100
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28168.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28168.006
-X-TMASE-Result: 10--16.995300-10.000000
-X-TMASE-MatchedRID: wplI/emIzpfyq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
- 7wkSW5bKbnRB47KLJ1QzLmfGY6iDkYF+91Q/EzGtN70wXhI0DX4yhLY8urUHvmvlGb+24NaZuJE
- UmdYPGSW9o2p3dj0RfAeWR71HtRmwaEsmopAJRAldhZyafgPiqxeN9Hd3TB5Gg1CUneBzTgvzWM
- gQWjC6I0nY0BEsuOT25rJNazxTXPIr7jXWQYK2DxlxrtI3TxRklKvhkP88iXTMB0kPsl40w9H8F
- nB4FvBYMPDOmTHabb9qGk75BUN9yFWcCzOjQR80Ss47mbT7SAR+tO36GYDlsvRHUPIiGLuAZYH0
- 5m0z0gAMf7Ce+LIFdiEGacf+qdGsEtsR9kNMgSyL3n8qdYJTdH0tCKdnhB589yM15V5aWpj6C0e
- Ps7A07QKmARN5PTKc
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: ltp@lists.linux.it
+References: <ZbjZxy4vbxoXUJ-i@yuki>
+Content-Language: en-US
+In-Reply-To: <ZbjZxy4vbxoXUJ-i@yuki>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] munlockall01: Convert to new API
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JANUARY 2024
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,174 +95,232 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yang Xu via ltp <ltp@lists.linux.it>
-Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- .../kernel/syscalls/munlockall/munlockall01.c | 140 ++----------------
- 1 file changed, 15 insertions(+), 125 deletions(-)
+Hi!
 
-diff --git a/testcases/kernel/syscalls/munlockall/munlockall01.c b/testcases/kernel/syscalls/munlockall/munlockall01.c
-index 51f731b65..f265e574f 100644
---- a/testcases/kernel/syscalls/munlockall/munlockall01.c
-+++ b/testcases/kernel/syscalls/munlockall/munlockall01.c
-@@ -1,134 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * Copyright (c) Linux Test Project, 2002-2024
-  */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: munlockall01
-- *
-- *    EXECUTED BY	: root / superuser
-- *
-- *    TEST TITLE	: Basic test for munlockall(2)
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    AUTHOR		: sowmya adiga<sowmya.adiga@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This is a phase I test for the munlockall(2) system call.
-- *	It is intended to provide a limited exposure of the system call.
-- *
-- * 	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *        Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *	  Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  munlockall01 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *		where,		-c n : Run n copies concurrently
-- *	               		-e   : Turn on errno logging.
-- *				-h   : Show this help screen
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *                      	-P x : Pause for x seconds between iterations.
-- *                       	 t   : Turn on syscall timing.
-- *
-- * RESTRICTIONS
-- * Must be root/superuser to run it.
-- *****************************************************************************/
--#include <errno.h>
--#include <sys/mman.h>
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "munlockall01";
--int TST_TOTAL = 1;
--
--#if !defined(UCLINUX)
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
- 
--	setup();
--
--	/* check looping state */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(munlockall());
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "munlockall() Failed with"
--				 " return=%ld", TEST_RETURN);
--		} else {
--			tst_resm(TPASS, "munlockall() passed with"
--				 " return=%ld ", TEST_RETURN);
--
--		}
--	}
--
--	/* cleanup and exit */
--	cleanup();
--	tst_exit();
--
--}
--
--#else
--
--int main(void)
--{
--	tst_resm(TINFO, "test is not available on uClinux");
--	tst_exit();
--}
-+/*
-+ * [Description]
-+ *
-+ * Check the basic function of munlockall(2) system call.
-+ */
- 
--#endif /* if !defined(UCLINUX) */
-+#include <sys/mman.h>
-+#include "tst_test.h"
- 
--/* setup() - performs all ONE TIME setup for this test. */
--void setup(void)
-+static void verify_munlockall(void)
- {
--	tst_require_root();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	TST_EXP_PASS(munlockall());
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.test_all  = verify_munlockall,
-+};
--- 
-2.43.0
+Thank you very much for your work guys!
+In particular, thanks to Petr Vorel and Cyril Hrubis who worked really 
+hard to make this release happen.
+
+Best regards,
+Andrea Cervesato
+
+On 1/30/24 12:13, Cyril Hrubis wrote:
+> Good news everyone,
+>
+> the Linux Test Project test suite stable release for *January 2024* has been
+> released.
+>
+> Since the last release 315 patches by 34 authors were merged.
+>
+> Patch review is what most of the projects struggle with and LTP is no
+> different. If you can spare some effort helping with the patch review is more
+> than welcomed.
+>
+> NOTABLE CHANGES
+> ===============
+>
+> * New tests
+>    - splice07, accept03, readahead01:
+>
+>      Tests that feeds the syscall all kinds of invalid file descriptors and
+>      checks that the syscall fails properly.
+>
+>     - proc_sched_rt01 a regression test for:
+>
+>       c1fc6484e1fb ("sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset")
+>       079be8fc6309 ("sched/rt: Disallow writing invalid values to sched_rt_period_us")
+>
+>    - ksm07 a test for KSM smart-scan.
+>
+>    - pathconf02 negative testcases for pathconf()
+>
+>    - pipe15 A regresson test for:
+>
+>      46c4c9d1beb7 ("pipe: increase minimum default pipe size to 2 pages")
+>
+>    - nft02 A regression test for:
+>
+>       515ad530795c ("netfilter: nf_tables: do not ignore genmask when looking up chain by id") aka CVE-2023-31248
+>
+>    - sched_setscheduler04 a test for SCHED_RESET_ON_FORK
+>
+>    - setsockopt10 2c02d41d71f9 ("net/ulp: prevent ULP without clone op from entering the LISTEN status") aka CVE-2023-0461
+>
+>    - gettid02 A basic gettid02 test.
+>
+>    - splice06 A test that splicing from a /proc files works.
+>
+> * Increased coverage
+>
+>     - ioctl02 cover more modern termios ioctls() as well.
+>
+>     - fanotify13 More test coverage for overlayfs.
+>
+>     - input* test now check UI_GET_NAME ioctl() too.
+>
+> * Removed tests
+>
+>     - fork12 Which was a naive fork bomb test, we do have other tests
+>              (setrlimit01.c, ...) that better cover this scenario.
+>
+>     - mongo test framework
+>
+>       Which was test reiser, ext2 and jfs unmaintained for a decade.
+>
+>     - simple_tracer.c Tracing test from 2009 that does not compile anymore.
+>
+>     - runtest/fsx-linux This is consolidation of runtest files, since these test
+>                         duplicated in ltp-aiodio.part3.
+>
+>     - testscripts/autofs{1,4}.sh, testscripts/sysfs.sh,
+>       testscripts/ltp-scsi_debug.sh, testscripts/ltpdmmapper.sh
+>
+>       These were unmaintained and unused scripts.
+>
+>     - scsi/* A testsuite with a custom kernel module for kernel 2.5 that didn't
+>              compile cleanly for decades.
+>
+>     - load_stress_all_kernel_modules.sh Broken for quite some time.
+>
+> * The LTP library now has a functions to iterate over different
+>    file descriptors. That allows us to easily implement more comprehensive tests
+>    that feed various syscalls all possible file descriptors and check that the
+>    syscall fails properly with invalid combinations. Most notable use of this
+>    library is the newly introduced splice07.c test.
+>
+> * The minimal size of the device for a few filesystem tests was increased to
+>    1GB because modern filesystems, most notably Btrfs does not work properly on
+>    smaller devices.
+>
+> * LTP now tests bcachefs if kernel support and bcache.mkfs is present
+>
+> * 30 testcases were converted to the new test library
+>
+> + The usual amount of fixes and cleanups
+>
+> NOTABLE CHANGES IN NETWORK TESTS
+> ================================
+> brought to you by Petr Vorel
+>
+> The performance tests in net.features can be now skipped by setting
+> LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1 which is useful when testing is
+> executed on VMs on a overloaded host or if we are running tests with a
+> background load.
+>
+> KIRK (previously RUNLTP-NG)
+> ===========================
+>
+> Kirk was updated to v1.2
+>
+> This version brings the following updates:
+>
+>   - show both stdout and stderr when executing tests on host
+>   - support for external commands on different SUTs
+>   - warning message when SUT doesn't support parallel execution
+>   - more stable epoll() communication with LTX
+>   - minor fixes
+>   - updated documentation
+>
+> DOWNLOAD AND LINKS
+> ==================
+>
+> The latest version of the test-suite contains 3000+ tests for the Linux
+> and can be downloaded at:
+>
+> https://github.com/linux-test-project/ltp/releases/tag/20240129
+>
+> The project pages as well as GIT repository are hosted on GitHub:
+>
+> https://github.com/linux-test-project/ltp
+> http://linux-test-project.github.io/
+>
+> If you ever wondered how to write a LTP testcase, don't miss our developer
+> documentation at:
+>
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+>
+> https://github.com/linux-test-project/ltp/wiki/C-Test-API
+>
+> https://github.com/linux-test-project/ltp/wiki/C-Test-Network-API
+>
+> https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
+>
+> https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+>
+> https://github.com/linux-test-project/ltp/wiki/Build-System
+>
+> Patches, new tests, bugs, comments or questions should go to to our mailing
+> list at ltp@lists.linux.it.
+>
+> CREDITS
+> =======
+>
+> Many thanks to the people contributing to this release:
+>
+> git shortlog -s -e -n 20230929..
+>
+>     147  Petr Vorel <pvorel@suse.cz>
+>      25  Yang Xu <xuyang2018.jy@fujitsu.com>
+>      21  Andrea Cervesato <andrea.cervesato@suse.com>
+>      18  Martin Doucha <mdoucha@suse.cz>
+>      12  Cyril Hrubis <chrubis@suse.cz>
+>      11  Marius Kittler <mkittler@suse.de>
+>       8  Wei Gao <wegao@suse.com>
+>       7  Amir Goldstein <amir73il@gmail.com>
+>       7  Richard Palethorpe <rpalethorpe@suse.com>
+>       6  Avinesh Kumar <akumar@suse.de>
+>       6  Edward Liaw <edliaw@google.com>
+>       6  Jan Kara <jack@suse.cz>
+>       5  Jan Stancek <jstancek@redhat.com>
+>       4  Hongchen Zhang <zhanghongchen@loongson.cn>
+>       4  Kevin Brodsky <kevin.brodsky@arm.com>
+>       4  Xiao Yang <yangx.jy@fujitsu.com>
+>       3  Shiyang Ruan <ruansy.fnst@fujitsu.com>
+>       2  Li Wang <liwang@redhat.com>
+>       2  Li Zhijian <lizhijian@fujitsu.com>
+>       2  Pengfei Xu <pengfei.xu@intel.com>
+>       2  Stefan Roesch <shr@devkernel.io>
+>       1  Alexander Kanavin <alex@linutronix.de>
+>       1  Brennan Ashton <bashton@brennanashton.com>
+>       1  Korobeynikov Gleb <mathkgd@mail.ru>
+>       1  Marcos Paulo de Souza <mpdesouza@suse.com>
+>       1  Mengchi Cheng <mengcc@amazon.com>
+>       1  Murphy Zhou <jencce.kernel@gmail.com>
+>       1  Shizhao Chen <shichen@redhat.com>
+>       1  Shoukui Zhang <zhangshoukui@xiaomi.com>
+>       1  Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+>       1  haopengxiang <haopengxiang@xiaomi.com>
+>       1  nietingting <nietingting@xiaomi.com>
+>       1  wangxuewen <wangxuewen@kylinos.cn>
+>       1  ybonatakis <ybonatakis@suse.com>
+>
+> And also thanks to patch reviewers:
+>
+> git log 20230929.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+>
+>      111 Petr Vorel <pvorel@suse.cz>
+>       70 Cyril Hrubis <chrubis@suse.cz>
+>       47 Li Wang <liwang@redhat.com>
+>       35 Richard Palethorpe <rpalethorpe@suse.com>
+>       14 Martin Doucha <mdoucha@suse.cz>
+>        8 Amir Goldstein <amir73il@gmail.com>
+>        7 Xiao Yang <yangx.jy@fujitsu.com>
+>        7 Marius Kittler <mkittler@suse.de>
+>        6 Jan Kara <jack@suse.cz>
+>        4 Avinesh Kumar <akumar@suse.de>
+>        3 Andrea Cervesato <andrea.cervesato@suse.com>
+>        3 Jan Stancek <jstancek@redhat.com>
+>        2 Yang Xu <xuyang2018.jy@fujitsu.com>
+>        1 Petr Vorel <petr.vorel@gmail.com>
+>        1 Christian Brauner <brauner@kernel.org>
+
 
 
 -- 
