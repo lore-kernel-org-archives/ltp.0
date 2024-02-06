@@ -4,103 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75CD6C4828D
-	for <ltp@archiver.kernel.org>; Tue,  6 Feb 2024 11:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 704D3C48297
+	for <ltp@archiver.kernel.org>; Tue,  6 Feb 2024 12:38:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BECB03CF5D7
-	for <ltp@archiver.kernel.org>; Tue,  6 Feb 2024 12:51:44 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 356623CF5DF
+	for <ltp@archiver.kernel.org>; Tue,  6 Feb 2024 13:38:26 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1E3E43C12A7
- for <ltp@lists.linux.it>; Tue,  6 Feb 2024 12:51:30 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id E50FF3C8921
+ for <ltp@lists.linux.it>; Tue,  6 Feb 2024 13:38:10 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4CA8C6018DC
- for <ltp@lists.linux.it>; Tue,  6 Feb 2024 12:51:28 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 02A0B200A04
+ for <ltp@lists.linux.it>; Tue,  6 Feb 2024 13:38:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 34822220CF;
- Tue,  6 Feb 2024 11:51:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B05F71FB7A;
+ Tue,  6 Feb 2024 12:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707220288;
+ t=1707223088;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/+Kt6G5iWif55W1qm4UkCGJeZNn6PbquMBsX+ooinvM=;
- b=R32gv/ZBxjN6jkbzn18oqw6vTtAzeF59/6KgFKp5qnDtF5RuXjjqr8nBjbANSShzVURRe1
- rAWHad/ZRtrpp1PQXhADU4qKnvCjhRGcyEeXig3zM7bDecX4FJBdBqW+lFOmhuPlG7aOmB
- n9tWvJayPCwAsB+M7sx2AoJ+pdFgW3k=
+ bh=U7FyjbQzWMAYz6r3vTpBanbQzJ3OrYv5Y2SG+4IycvY=;
+ b=ZDQp8MZ0h1O+k3QRVO+MtU/ByiwBNzmyO2ty6nl+aK48k6nQRJMAfbqFMzgj60pqapWE0B
+ df977tSVHkW7gQ7zoGHBF19p84PIUzRhmHeuDuDxIER8AhuFi1181jENoQhxXWqGDdzPtf
+ Djbb0iyUPnE4j1+SSqQrlJ/+MTbJ9LM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707220288;
+ s=susede2_ed25519; t=1707223088;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/+Kt6G5iWif55W1qm4UkCGJeZNn6PbquMBsX+ooinvM=;
- b=aVUVuqMc8SNXB6ysDoi00r9/zQj6pSmRC/GSruD/PTtCf4fddhm6hj73BXkXY9fu3RDC50
- hFztFBbG0y2xxeBA==
+ bh=U7FyjbQzWMAYz6r3vTpBanbQzJ3OrYv5Y2SG+4IycvY=;
+ b=+LHUtPtk0G+bBVd2uiWl6sf1o48UNt6zg9AMnf2sA9FakVCUj8xyh1FuqwwK6bI2AdZe7l
+ E/NFuGqZQodwirCA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1707220288;
+ t=1707223088;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/+Kt6G5iWif55W1qm4UkCGJeZNn6PbquMBsX+ooinvM=;
- b=R32gv/ZBxjN6jkbzn18oqw6vTtAzeF59/6KgFKp5qnDtF5RuXjjqr8nBjbANSShzVURRe1
- rAWHad/ZRtrpp1PQXhADU4qKnvCjhRGcyEeXig3zM7bDecX4FJBdBqW+lFOmhuPlG7aOmB
- n9tWvJayPCwAsB+M7sx2AoJ+pdFgW3k=
+ bh=U7FyjbQzWMAYz6r3vTpBanbQzJ3OrYv5Y2SG+4IycvY=;
+ b=ZDQp8MZ0h1O+k3QRVO+MtU/ByiwBNzmyO2ty6nl+aK48k6nQRJMAfbqFMzgj60pqapWE0B
+ df977tSVHkW7gQ7zoGHBF19p84PIUzRhmHeuDuDxIER8AhuFi1181jENoQhxXWqGDdzPtf
+ Djbb0iyUPnE4j1+SSqQrlJ/+MTbJ9LM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1707220288;
+ s=susede2_ed25519; t=1707223088;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/+Kt6G5iWif55W1qm4UkCGJeZNn6PbquMBsX+ooinvM=;
- b=aVUVuqMc8SNXB6ysDoi00r9/zQj6pSmRC/GSruD/PTtCf4fddhm6hj73BXkXY9fu3RDC50
- hFztFBbG0y2xxeBA==
+ bh=U7FyjbQzWMAYz6r3vTpBanbQzJ3OrYv5Y2SG+4IycvY=;
+ b=+LHUtPtk0G+bBVd2uiWl6sf1o48UNt6zg9AMnf2sA9FakVCUj8xyh1FuqwwK6bI2AdZe7l
+ E/NFuGqZQodwirCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 06046132DD;
- Tue,  6 Feb 2024 11:51:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86E87139D8;
+ Tue,  6 Feb 2024 12:38:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CfMqOz8dwmXXHAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 06 Feb 2024 11:51:27 +0000
-Date: Tue, 6 Feb 2024 12:51:26 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eUsAHzAowmXTLQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 06 Feb 2024 12:38:08 +0000
+Date: Tue, 6 Feb 2024 13:38:07 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240206115126.GF270992@pevik>
-References: <20240205102653.2789879-1-liwang@redhat.com>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20240206123807.GA292190@pevik>
+References: <20231026144812.6786-1-wegao@suse.com>
+ <20231027010528.12330-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240205102653.2789879-1-liwang@redhat.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.53 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_THREE(0.00)[3];
+In-Reply-To: <20231027010528.12330-1-wegao@suse.com>
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZDQp8MZ0;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+LHUtPtk
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.03)[57.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: B05F71FB7A
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] process_state: Enhancement of process state
- detection
+Subject: Re: [LTP] [PATCH v2] pwritev201: Add check for RWF_APPEND
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,66 +128,93 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li, Ian,
+Hi Wei,
 
-> The functions will be more robust against process names with
-> unusual characters and will correctly read the state character
-> from the /proc/[pid]/stat file. This is a necessary change
-> because the process name, which is a free-form string, can
-> contain spaces and other characters that would otherwise
-> disrupt the simple parsing logic of the original format string.
+according to man readv(2) RWF_APPEND was added in kernel 4.16 (to <linux/fs.h>,
+thus this fails openSUSE Leap 42.2 [1], we would need to add this to LAPI
+include/lapi/fs.h (as a separate patch) and use it in the test.
 
-> e.g.
->  $ cat /proc/792442/stat
->  792442 (Web Content) S 164213 4351 4351 0 -1 4194560 ...
+It also fails for the same reason on MUSL, which does not include <linux/fs.h>,
+I suppose adding <linux/fs.h> to the test would fix it on MUSL, which would be
+solved by previous change (because include/lapi/fs.h already includes
+<linux/fs.h>).
 
-> Reported-by: Ian Wienand <iwienand@redhat.com>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Chunyu Hu <chuhu@redhat.com>
+[1] https://github.com/pevik/ltp/actions/runs/7799206926/job/21269505359
+[2] https://github.com/pevik/ltp/actions/runs/7799206926/job/21269504848
+
+> Signed-off-by: Wei Gao <wegao@suse.com>
 > ---
->  lib/tst_process_state.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  .../kernel/syscalls/pwritev2/pwritev201.c     | 20 +++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
 
-> diff --git a/lib/tst_process_state.c b/lib/tst_process_state.c
-> index 08a9d0966..c15283c3d 100644
-> --- a/lib/tst_process_state.c
-> +++ b/lib/tst_process_state.c
-> @@ -22,7 +22,7 @@ int tst_process_state_wait(const char *file, const int lineno,
+> diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+> index eba45b7d3..1494e2925 100644
+> --- a/testcases/kernel/syscalls/pwritev2/pwritev201.c
+> +++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+> @@ -39,13 +39,15 @@ static struct tcase {
+>  	off_t write_off;
+>  	ssize_t size;
+>  	off_t exp_off;
+> +	int flag;
+>  } tcases[] = {
+> -	{0,     1, 0,          CHUNK, 0},
+> -	{CHUNK, 2, 0,          CHUNK, CHUNK},
+> -	{0,     1, CHUNK / 2,  CHUNK, 0},
+> -	{0,     1, -1,         CHUNK, CHUNK},
+> -	{0,     2, -1,         CHUNK, CHUNK},
+> -	{CHUNK, 1, -1,         CHUNK, CHUNK * 2},
+> +	{0,     1, 0,          CHUNK, 0, 0},
+> +	{CHUNK, 2, 0,          CHUNK, CHUNK, 0},
+> +	{0,     1, CHUNK / 2,  CHUNK, 0, 0},
+> +	{0,     1, -1,         CHUNK, CHUNK, 0},
+> +	{0,     2, -1,         CHUNK, CHUNK, 0},
+> +	{CHUNK, 1, -1,         CHUNK, CHUNK * 2, 0},
+> +	{CHUNK, 1, -1,         CHUNK, CHUNK * 3, RWF_APPEND},
 
->  	for (;;) {
->  		safe_file_scanf(file, lineno, cleanup_fn, proc_path,
-> -				"%*i %*s %c", &cur_state);
-> +				"%*[^)]%*c %c", &cur_state);
+I wonder how hard would be to cover more flags (man mentions 4 other flags).
+But on a first look only RWF_APPEND looks to be easy to be added (if
+complicated, it's probably better to have a separate test for them).
 
-Obviously correct, thanks.
+Also, while at it, maybe:
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+	TST_EXP_FD_SILENT(pwritev2(fd, wr_iovec, tc->count, tc->write_off, 0));
+	if (!TST_PASS)
+		return;
 
-But there is also the same issue in lib/tst_thread_state.c,
-I guess it applies to that. Li, could you please also fix it before merge?
+instead of:
 
-Also, Andrea, you added tst_thread_state_wait() and TST_THREAD_STATE_WAIT() for
-futex_waitv0[23] related tests [1], but it's now not used anywhere due Jan's
-changes [2] [3]. I wonder if it's still useful or whether we should remove it.
+	TEST(pwritev2(fd, wr_iovec, tc->count - 1, tc->write_off, 0));
+	if (TST_RET < 0) {
+		tst_res(TFAIL | TTERRNO, "pwritev2() failed");
+		return;
+	}
 
 Kind regards,
 Petr
 
-[1] https://lore.kernel.org/ltp/20220209091756.17245-2-andrea.cervesato@suse.de/
-[2] https://lore.kernel.org/ltp/6c5b161bc3bcf753cbda92954ca3f47cb268c68f.1663665637.git.jstancek@redhat.com/
-[3] https://lore.kernel.org/ltp/6bac7035adc2cfc8ab3800fe1d2d03223ec57ff5.1663662348.git.jstancek@redhat.com/
+>  };
 
->  		if (state == cur_state)
->  			break;
-> @@ -54,7 +54,7 @@ int tst_process_state_wait2(pid_t pid, const char state)
->  			return 1;
->  		}
+>  static void verify_pwritev2(unsigned int n)
+> @@ -57,7 +59,7 @@ static void verify_pwritev2(unsigned int n)
+>  	SAFE_PWRITE(1, fd, initbuf, sizeof(initbuf), 0);
+>  	SAFE_LSEEK(fd, tc->seek_off, SEEK_SET);
 
-> -		if (fscanf(f, "%*i %*s %c", &cur_state) != 1) {
-> +		if (fscanf(f, "%*[^)]%*c %c", &cur_state) != 1) {
->  			fclose(f);
->  			fprintf(stderr, "Failed to read '%s': %s\n",
->  				proc_path, strerror(errno));
+> -	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, 0));
+> +	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, tc->flag));
+>  	if (TST_RET < 0) {
+>  		tst_res(TFAIL | TTERRNO, "pwritev2() failed");
+>  		return;
+> @@ -76,7 +78,9 @@ static void verify_pwritev2(unsigned int n)
+
+>  	memset(preadbuf, 0, CHUNK);
+
+> -	if (tc->write_off != -1)
+> +	if (tc->flag == RWF_APPEND)
+> +		SAFE_PREAD(1, fd, preadbuf, tc->size, sizeof(initbuf));
+> +	else if (tc->write_off != -1)
+>  		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->write_off);
+>  	else
+>  		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->seek_off);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
