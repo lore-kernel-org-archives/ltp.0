@@ -4,87 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71FE8C4828F
-	for <ltp@archiver.kernel.org>; Wed,  7 Feb 2024 12:58:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1707310682; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=72u5zWMr7la8HMtpz/T4KdNVrfNT4OwkYEp+lbDD5F4=;
- b=Y0sX4XzOMq1ZSJPWGa0WaNuXFdylkt/I+dOWSXcsU+sE9lViYC2ZWFM6yXrLiQyiWCngd
- JeeYAtVz6voxh3Qtd0SIp7IAA+CyF3+YTmS8L4j0JixZjdbRO+qKObI/k30SPXDz3iHA1iU
- CsK4s+c+u8IJM+vKrcMlQVy6N2V1SR8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80DEBC4828F
+	for <ltp@archiver.kernel.org>; Wed,  7 Feb 2024 15:22:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 156403CF5A2
-	for <ltp@archiver.kernel.org>; Wed,  7 Feb 2024 13:58:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8A3583CF5BC
+	for <ltp@archiver.kernel.org>; Wed,  7 Feb 2024 16:22:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2A9C83C5AC4
- for <ltp@lists.linux.it>; Wed,  7 Feb 2024 13:57:39 +0100 (CET)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 153D03CA6D5
+ for <ltp@lists.linux.it>; Wed,  7 Feb 2024 16:21:58 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C121814044C4
- for <ltp@lists.linux.it>; Wed,  7 Feb 2024 13:57:38 +0100 (CET)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-4101eb5a115so1624465e9.1
- for <ltp@lists.linux.it>; Wed, 07 Feb 2024 04:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1707310658; x=1707915458; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=qWm8j8grqIWfvWt0gQL4z3/GZxu5cvqZwVIjvfcts6I=;
- b=AfN2QoQnvWLK5trlIAk+lLLa29cBtvWnthtIV8Psu4MNCx5/KRLHt/mbEyOo0HNd/+
- /3FLS1zg4pmC7WLP9tWv5E3RA95zujI9MD8DqDhX1A5HF+Tqbz4ckROrwoywj8QSyNcQ
- F5B+AkV8AgevrlerD6ZN1JfJrzSzXg7Y2Nl34alDB+XjEvdVRV4SmUKQq9SVoF2GxfKe
- m8Byx7o6T9qpfW8m/t+Tg3tZZHXcX4ydQ1JBL0hKyPl3W5BYZIlVObE7f2uBoYHwY3hm
- FtRfpG26fzeJOVRRsthV3Lq/ARqiS5YlSb2peEiODqGf3+l8WPPz4GXqAPHxvgRBruaD
- n/5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1707310658; x=1707915458;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=qWm8j8grqIWfvWt0gQL4z3/GZxu5cvqZwVIjvfcts6I=;
- b=l9NLgznB8HDX73lt4Dri2uDzizY3VUff/N5ysDzpmf/WmMxpqz88LYCGMToRfZELzo
- TAh1B6YeSut0q0KiBqMwtSouzJZ4F4Iwjp1g2n+nGGq373B2r04jQZG8KQMijviXYgp8
- V8v+KB5IeJtJkd97Od+Ojkc+K5gDd28612lNZWdg3icWAzjI6TOHihI54MLX8QYmEsOj
- eU9zWhP3G4PfNxLUcLmttmc+skm52LpwOhoi1cHuJ8eFFDJSiC2qDw/Ag3BjCnjwzTZw
- Ud3Si5JUCPP+BNyj6p8pNq/5iwKdQ3/WeR685oBA0opZNllS88G3znkKPtua7Ey+gmaA
- CRog==
-X-Gm-Message-State: AOJu0Yx0t2t2l2IVWvF+esZFYFyW1JpsP/6XJ3z6VVvq2emO6bS7BCVc
- ifW/ALswmR+Dr6KMw44DDquEObRrDfrlwCK3KQ0WBE7J+imGi4Cbd3RvtJS9aEs=
-X-Google-Smtp-Source: AGHT+IFAHxg/bw0ot5+VMeJPcSKwPVVBYXYLsGU/ahuUbqbN/Z4U1BNd7elps80d5vtwtlkkWPD8og==
-X-Received: by 2002:a5d:42cc:0:b0:33b:2fba:1ea8 with SMTP id
- t12-20020a5d42cc000000b0033b2fba1ea8mr3280974wrr.52.1707310658095; 
- Wed, 07 Feb 2024 04:57:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1;
- AJvYcCU4opTjp3tVmlviIIi0kLfIpgXYrQbKY/1ncM4KBIIyDXhKxT2U1OAxV01XCEW5860DFLh03l6NdtFLahQPoGeWe7I861mf2is=
-Received: from [10.232.133.56] ([88.128.88.93])
- by smtp.gmail.com with ESMTPSA id
- u10-20020a5d468a000000b0033b44b4da56sm1448871wrq.111.2024.02.07.04.57.37
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 07 Feb 2024 04:57:37 -0800 (PST)
-Message-ID: <271d0a7e-e61b-42f9-9276-96f3b5b6b17b@suse.com>
-Date: Wed, 7 Feb 2024 13:57:36 +0100
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 66E2E1BC1BEB
+ for <ltp@lists.linux.it>; Wed,  7 Feb 2024 16:21:57 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0FB39222CC;
+ Wed,  7 Feb 2024 15:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1707319317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iaPR3o/AVHzxl7ugitSndecoDKMOT7xdKZgzON9IXcY=;
+ b=j95/XSECnCl6zjak88u78kHYstWwh8VPxkWN1jOwn6GSBkEY7QZqt+u/KQraqyGM1F8VY0
+ gpDifXMlgFhyTmfFETCzjjT36E26k4PvJHUD9MHrMCvy6deMHdVcyuVHx6weEvm7oSC4Zl
+ lqBMkrpLNtAJSNdLBCa093bHKRER1WQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1707319317;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iaPR3o/AVHzxl7ugitSndecoDKMOT7xdKZgzON9IXcY=;
+ b=ooLeXSRvzXNaGDVblb/5lCYVN0YdVbrk8m4ZzBBGyXSr4uaNwMguaG3uuvRjk0pgHFHaE2
+ dhkBtyu6MrKD9SDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1707319317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iaPR3o/AVHzxl7ugitSndecoDKMOT7xdKZgzON9IXcY=;
+ b=j95/XSECnCl6zjak88u78kHYstWwh8VPxkWN1jOwn6GSBkEY7QZqt+u/KQraqyGM1F8VY0
+ gpDifXMlgFhyTmfFETCzjjT36E26k4PvJHUD9MHrMCvy6deMHdVcyuVHx6weEvm7oSC4Zl
+ lqBMkrpLNtAJSNdLBCa093bHKRER1WQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1707319317;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iaPR3o/AVHzxl7ugitSndecoDKMOT7xdKZgzON9IXcY=;
+ b=ooLeXSRvzXNaGDVblb/5lCYVN0YdVbrk8m4ZzBBGyXSr4uaNwMguaG3uuvRjk0pgHFHaE2
+ dhkBtyu6MrKD9SDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1B1C139B9;
+ Wed,  7 Feb 2024 15:21:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /Z5lJhSgw2VPPAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 07 Feb 2024 15:21:56 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Wed,  7 Feb 2024 16:21:55 +0100
+Message-Id: <20240207152155.10146-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240118153514.2436-1-andrea.cervesato@suse.de>
- <Zb0iHOdsiarQykNS@yuki>
-In-Reply-To: <Zb0iHOdsiarQykNS@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.90 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Add mkdir10 test
+Subject: [LTP] [PATCH v2] Add mkdir10 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,32 +101,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On 2/2/24 18:10, Cyril Hrubis wrote:
-> Hi!
->> +static void run(void)
->> +{
->> +	char *symname = "my_symlink0";
->> +
->> +	SAFE_SYMLINK(tst_get_tmpdir(), symname);
->> +	TST_EXP_FAIL(mkdir(symname, 0777), EEXIST);
-> This can be easily added into mkdir03.c as well as a few more different
-> cases (we can't overwrite named pipe, directory, device node, etc.) if
-> we wanted to.
->
-I would prefer to keep mkdir10 and add more cases rather than 
-complicating mkdir01 that seems more focusing on checking multiple errors.
+This test has been extracted from symlink01 and it verifies that
+mkdir() can't overwrite certain types of files, such as simlinks,
+directories, pipes, devices, etc.
 
-Andrea Cervesato
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                           |  2 +-
+ testcases/kernel/syscalls/mkdir/.gitignore |  1 +
+ testcases/kernel/syscalls/mkdir/mkdir10.c  | 57 ++++++++++++++++++++++
+ 3 files changed, 59 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/mkdir/mkdir10.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2af7ade9c..7f4edb901 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -757,8 +757,8 @@ mkdir02 mkdir02
+ mkdir03 mkdir03
+ mkdir04 mkdir04
+ mkdir05 mkdir05
+-mkdir05A symlink01 -T mkdir05
+ mkdir09 mkdir09
++mkdir10 mkdir10
+ 
+ #mkdirat test cases
+ mkdirat01 mkdirat01
+diff --git a/testcases/kernel/syscalls/mkdir/.gitignore b/testcases/kernel/syscalls/mkdir/.gitignore
+index 880ff50c0..416fbbd7c 100644
+--- a/testcases/kernel/syscalls/mkdir/.gitignore
++++ b/testcases/kernel/syscalls/mkdir/.gitignore
+@@ -3,3 +3,4 @@
+ /mkdir04
+ /mkdir05
+ /mkdir09
++/mkdir10
+diff --git a/testcases/kernel/syscalls/mkdir/mkdir10.c b/testcases/kernel/syscalls/mkdir/mkdir10.c
+new file mode 100644
+index 000000000..87f419916
+--- /dev/null
++++ b/testcases/kernel/syscalls/mkdir/mkdir10.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    Author: David Fenner
++ *    Copilot: Jon Hendrickson
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that mkdir() can't overwrite certain generated files, such
++ * as symlinks, pipes, devices, folders, etc.
++ */
++
++#include "tst_test.h"
++
++#define FILE_FOLDER "myfolder"
++#define FILE_MYFILE "myfile"
++#define FILE_FIFO "mypipe"
++#define FILE_SYMLINK "mylink"
++#define FILE_DEVICE "/dev/null"
++
++struct tcase {
++	char *file;
++	char *msg;
++};
++
++static struct tcase tcases[] = {
++	{FILE_FOLDER,	"folder already exists"},
++	{FILE_MYFILE,	"file already exists"},
++	{FILE_FIFO,		"fifo already exists"},
++	{FILE_SYMLINK,	"symlink already exists"},
++	{FILE_DEVICE,	"device already exists"},
++};
++
++static void run(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	TST_EXP_FAIL(mkdir(tc->file, 0777), EEXIST, "%s", tc->msg);
++}
++
++static void setup(void)
++{
++	SAFE_SYMLINK(tst_get_tmpdir(), FILE_SYMLINK);
++	SAFE_MKFIFO(FILE_FIFO, 0777);
++	SAFE_MKDIR(FILE_FOLDER, 0777);
++	SAFE_TOUCH(FILE_MYFILE, 0777, NULL);
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.needs_tmpdir = 1,
++};
+-- 
+2.35.3
 
 
 -- 
