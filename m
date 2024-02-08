@@ -4,111 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81ABDC48260
-	for <ltp@archiver.kernel.org>; Thu,  8 Feb 2024 09:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D3AAC4828F
+	for <ltp@archiver.kernel.org>; Thu,  8 Feb 2024 09:00:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0452A3CC497
-	for <ltp@archiver.kernel.org>; Thu,  8 Feb 2024 10:00:33 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A8E493CF547
+	for <ltp@archiver.kernel.org>; Thu,  8 Feb 2024 10:00:49 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A0FF3CC4AD
- for <ltp@lists.linux.it>; Thu,  8 Feb 2024 09:59:39 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 7268C3CC4B5
+ for <ltp@lists.linux.it>; Thu,  8 Feb 2024 09:59:40 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3B6D160010F
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D961360673C
  for <ltp@lists.linux.it>; Thu,  8 Feb 2024 09:59:38 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 298EB1FD8B;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0D98A1FD89;
  Thu,  8 Feb 2024 08:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1707382778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P6Q4tdoTvsv3FVK5xSRRuyZzLLHWGd3/RJcNHbIfKU0=;
- b=EX6ewzg1GbXrf/DrsvcGvxu3FVMdX8QOakNhr+ga49ywag++4nnc9z+Na+pyGtaHEMA9rg
- A/SUvIALR7g71Q2r1HRwpI3qtGKqC6n2/FDI56n5aVnYBTpGpNw+j/B8V0vGONM2Avr4Jc
- S2DMKQBcsZpS/FuZwxJoUOq+qmMwapE=
+ bh=/3uP134n2M902t2rF+yk9CBjBNyDi09XNDG4FcwW9VI=;
+ b=y1zrylsXLXj46Yu/szawTkZbsw+idc8eZk50Lv9Cn6IasLwkqAjAk9HzcXCXlobjNnvA2C
+ kNgAyDAr/N3X7pzbpg0f/dFuiJbG0YYltmXmHPg6Edat2eUWfgjwc6sGvmq1DCay3Smz/L
+ oOSAC+avbLxb/o0XrYdOLrY3C8DL8kc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1707382778;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P6Q4tdoTvsv3FVK5xSRRuyZzLLHWGd3/RJcNHbIfKU0=;
- b=sEz+egaX7GVK/e264016bpZc/6L978YFnd/rxf+XYaSw4fhEh+F5qGMN0bWSxQSvQIzF5L
- Ffa8RP0CWOdRM4Cg==
+ bh=/3uP134n2M902t2rF+yk9CBjBNyDi09XNDG4FcwW9VI=;
+ b=qafq0vUaJS5WX5sDiaTpIiJ/oyxkScttknfheQnsr+lMqKqRU72xV27wjF/HrIeqA638ap
+ ryyc4ixLoObaTSAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1707382778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P6Q4tdoTvsv3FVK5xSRRuyZzLLHWGd3/RJcNHbIfKU0=;
- b=EX6ewzg1GbXrf/DrsvcGvxu3FVMdX8QOakNhr+ga49ywag++4nnc9z+Na+pyGtaHEMA9rg
- A/SUvIALR7g71Q2r1HRwpI3qtGKqC6n2/FDI56n5aVnYBTpGpNw+j/B8V0vGONM2Avr4Jc
- S2DMKQBcsZpS/FuZwxJoUOq+qmMwapE=
+ bh=/3uP134n2M902t2rF+yk9CBjBNyDi09XNDG4FcwW9VI=;
+ b=y1zrylsXLXj46Yu/szawTkZbsw+idc8eZk50Lv9Cn6IasLwkqAjAk9HzcXCXlobjNnvA2C
+ kNgAyDAr/N3X7pzbpg0f/dFuiJbG0YYltmXmHPg6Edat2eUWfgjwc6sGvmq1DCay3Smz/L
+ oOSAC+avbLxb/o0XrYdOLrY3C8DL8kc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1707382778;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P6Q4tdoTvsv3FVK5xSRRuyZzLLHWGd3/RJcNHbIfKU0=;
- b=sEz+egaX7GVK/e264016bpZc/6L978YFnd/rxf+XYaSw4fhEh+F5qGMN0bWSxQSvQIzF5L
- Ffa8RP0CWOdRM4Cg==
+ bh=/3uP134n2M902t2rF+yk9CBjBNyDi09XNDG4FcwW9VI=;
+ b=qafq0vUaJS5WX5sDiaTpIiJ/oyxkScttknfheQnsr+lMqKqRU72xV27wjF/HrIeqA638ap
+ ryyc4ixLoObaTSAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 129791398A;
- Thu,  8 Feb 2024 08:59:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3C5513985;
+ Thu,  8 Feb 2024 08:59:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wMWtA/qXxGUoDgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 08 Feb 2024 08:59:38 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wDM6NvmXxGUoDgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 08 Feb 2024 08:59:37 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  8 Feb 2024 09:59:28 +0100
-Message-ID: <20240208085932.182167-3-pvorel@suse.cz>
+Date: Thu,  8 Feb 2024 09:59:27 +0100
+Message-ID: <20240208085932.182167-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240208085932.182167-1-pvorel@suse.cz>
 References: <20240208085932.182167-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Bar: /
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EX6ewzg1;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sEz+egaX
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.52 / 50.00]; ARC_NA(0.00)[];
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=y1zrylsX;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qafq0vUa
+X-Spamd-Result: default: False [0.69 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- TO_DN_SOME(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- RCVD_COUNT_THREE(0.00)[3];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_SHORT(-0.17)[-0.859];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 298EB1FD8B
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ MID_CONTAINS_FROM(1.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 0D98A1FD89
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/4] network: remove xinetd_tests.sh
+Subject: [LTP] [PATCH 1/4] network: Remove host01.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,171 +119,57 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-xinetd is nowadays replaced with systemd socket activation.
-Therefore remove the test.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- runtest/net.tcp_cmds                     |   1 -
- testcases/network/xinetd/Makefile        |  11 ---
- testcases/network/xinetd/xinetd_tests.sh | 113 -----------------------
- 3 files changed, 125 deletions(-)
- delete mode 100644 testcases/network/xinetd/Makefile
- delete mode 100755 testcases/network/xinetd/xinetd_tests.sh
-
-diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-index c63223763..83f7c5b78 100644
---- a/runtest/net.tcp_cmds
-+++ b/runtest/net.tcp_cmds
-@@ -21,4 +21,3 @@ dnsmasq dnsmasq_tests.sh
- iproute ip_tests.sh
- tracepath01 tracepath01.sh
- traceroute01 traceroute01.sh
--xinetd xinetd_tests.sh
-diff --git a/testcases/network/xinetd/Makefile b/testcases/network/xinetd/Makefile
-deleted file mode 100644
-index b789b2a3a..000000000
---- a/testcases/network/xinetd/Makefile
-+++ /dev/null
-@@ -1,11 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (C) 2009, Cisco Systems Inc.
--# Ngie Cooper, July 2009
--
--top_srcdir		?= ../../..
--
--include $(top_srcdir)/include/mk/env_pre.mk
--
--INSTALL_TARGETS		:= xinetd_tests.sh
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-deleted file mode 100755
-index 25ec91d26..000000000
---- a/testcases/network/xinetd/xinetd_tests.sh
-+++ /dev/null
-@@ -1,113 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
--# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
--# Copyright (c) International Business Machines  Corp., 2001
--
--TST_SETUP="setup"
--TST_CLEANUP="cleanup"
--TST_NEEDS_CMDS="diff telnet in.telnetd xinetd"
--TST_NEEDS_TMPDIR=1
--TST_TESTFUNC="do_test"
--TST_CNT=2
--
--. daemonlib.sh
--
--setup()
--{
--	[ -f "/usr/lib/systemd/system/telnet.socket" ] && \
--		tst_brk TCONF "xinetd doesn't manage telnet"
--
--	check_addr="127.0.0.1"
--	ip a | grep -q inet6 && check_addr="$check_addr ::1"
--
--	cat > tst_xinetd.conf.1 <<-EOF
--defaults
--{
--    instances      = 25
--    log_type       = FILE /var/log/servicelog
--    log_on_success = HOST PID
--    log_on_failure = HOST
--    disabled       = telnet
--}
--EOF
--
--	cat > tst_xinetd.conf.2 <<-EOF
--defaults
--{
--    instances      = 25
--    log_type       = FILE /var/log/servicelog
--    log_on_success = HOST PID
--    log_on_failure = HOST
--    # disabled       = telnet
--}
--
--service telnet
--{
--    socket_type     = stream
--    protocol        = tcp
--    wait            = no
--    user            = root
--    server          = /usr/sbin/in.telnetd
--    server_args     = -n
--    no_access       =
--    flags           = IPv6
--}
--EOF
--	ROD mv /etc/xinetd.conf xinetd.conf.orig
--}
--
--cleanup()
--{
--	[ -f xinetd.conf.orig ] && \
--		mv xinetd.conf.orig /etc/xinetd.conf
--
--	restart_daemon xinetd
--}
--
--restart_xinetd()
--{
--	tst_res TINFO "restart xinetd"
--	restart_daemon xinetd > tst_xinetd.out 2>&1
--	if [ $? -ne 0 ]; then
--		cat tst_xinetd.out
--		tst_brk TBROK "unable to restart service with telnet disabled"
--	fi
--
--	grep -qi "fail" tst_xinetd.out && \
--		tst_brk TBROK "xinetd failed to restart"
--}
--
--xinetd_test()
--{
--	local cnt=$1
--	local desc="$2"
--	local pattern="$3"
--	local a p
--
--	tst_res TINFO "install the new config file with telnet $desc"
--	ROD mv tst_xinetd.conf.$cnt /etc/xinetd.conf
--	restart_xinetd
--
--	for a in $check_addr; do
--		p=$(echo $pattern | sed "s/ADDR/$a/")
--		if ! echo '' | telnet $a 2>&1 | grep -qiE "$p"; then
--			tst_res TFAIL "not expected output for 'telnet $a'"
--			return
--		fi
--	done
--	tst_res TPASS "expected output with telnet $desc"
--}
--
--do_test()
--{
--	case $1 in
--	1) xinetd_test $1 "disabled" \
--			"telnet: (connect to address ADDR|Unable to connect to remote host): Connection refused";;
--	2) xinetd_test $1 "enabled" \
--			"Connection closed by foreign host";;
--	esac
--}
--
--. tst_net.sh
--tst_run
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+VGVzdGluZyBvbGQgaG9zdCBmdW5jdGlvbmFsaXR5IHJlcXVpcmVzIHByb3BlciBETlMgc2V0dXAu
+ClRoYXQgd291bGQgYmUgcXVpdGUgY29tcGxpY2F0ZWQgc2V0dXAgYW5kIHJlc3VsdCB3b3VsZCBi
+ZSB0byB0ZXN0CmJpbmQgcHJvamVjdCB1c2Vyc3BhY2UgdG9vbCBpbnN0ZWFkIG9mIGtlcm5lbCBp
+bnRlcm5hbHMuCgpUZXN0aW5nIHJlbW90ZSBob3N0IGUuZy4gaG9zdCBleGFtcGxlLm9yZyB3b3Vs
+ZCByZXF1aXJlIFNVVCBoYXZpbmcKaW50ZXJuZXQgY29ubmVjdGlvbi4KClRlc3RpbmcgaG9zdG5h
+bWVjdGwgd291bGQgbWFrZSBtb3JlIHNlbnNlIG5vd2FkYXlzLCB0aGVyZWZvcmUgcmVtb3ZlCnRo
+ZSB0ZXN0LgoKU2lnbmVkLW9mZi1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Ci0tLQog
+cnVudGVzdC9uZXQudGNwX2NtZHMgICAgICAgICAgICAgICAgICAgICAgfCAgMSAtCiB0ZXN0Y2Fz
+ZXMvbmV0d29yay90Y3BfY21kcy9ob3N0L01ha2VmaWxlICB8IDExIC0tLS0tLS0tCiB0ZXN0Y2Fz
+ZXMvbmV0d29yay90Y3BfY21kcy9ob3N0L2hvc3QwMS5zaCB8IDM0IC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCiAzIGZpbGVzIGNoYW5nZWQsIDQ2IGRlbGV0aW9ucygtKQogZGVsZXRlIG1vZGUgMTAw
+NjQ0IHRlc3RjYXNlcy9uZXR3b3JrL3RjcF9jbWRzL2hvc3QvTWFrZWZpbGUKIGRlbGV0ZSBtb2Rl
+IDEwMDc1NSB0ZXN0Y2FzZXMvbmV0d29yay90Y3BfY21kcy9ob3N0L2hvc3QwMS5zaAoKZGlmZiAt
+LWdpdCBhL3J1bnRlc3QvbmV0LnRjcF9jbWRzIGIvcnVudGVzdC9uZXQudGNwX2NtZHMKaW5kZXgg
+N2UxNDJkZTExLi5jNjMyMjM3NjMgMTAwNjQ0Ci0tLSBhL3J1bnRlc3QvbmV0LnRjcF9jbWRzCisr
+KyBiL3J1bnRlc3QvbmV0LnRjcF9jbWRzCkBAIC03LDcgKzcsNiBAQCBpcG5laWdoMDFfaXAgaXBu
+ZWlnaDAxLnNoIC1jIGlwCiBhcnBpbmcwMSBhcnBpbmcwMS5zaAogY2xvY2tkaWZmMDEgY2xvY2tk
+aWZmMDEuc2gKIGZ0cCBmdHAwMS5zaAotaG9zdCBob3N0MDEuc2gKIG5ldHN0YXQgbmV0c3RhdDAx
+LnNoCiBwaW5nMDEgcGluZzAxLnNoCiBwaW5nMDIgcGluZzAyLnNoCmRpZmYgLS1naXQgYS90ZXN0
+Y2FzZXMvbmV0d29yay90Y3BfY21kcy9ob3N0L01ha2VmaWxlIGIvdGVzdGNhc2VzL25ldHdvcmsv
+dGNwX2NtZHMvaG9zdC9NYWtlZmlsZQpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggNDUz
+OTUxZTBkLi4wMDAwMDAwMDAKLS0tIGEvdGVzdGNhc2VzL25ldHdvcmsvdGNwX2NtZHMvaG9zdC9N
+YWtlZmlsZQorKysgL2Rldi9udWxsCkBAIC0xLDExICswLDAgQEAKLSMgU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKLSMgQ29weXJpZ2h0IChDKSAyMDA5LCBDaXNjbyBT
+eXN0ZW1zIEluYy4KLSMgTmdpZSBDb29wZXIsIEp1bHkgMjAwOQotCi10b3Bfc3JjZGlyCQk/PSAu
+Li8uLi8uLi8uLgotCi1pbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9lbnZfcHJlLm1r
+Ci0KLUlOU1RBTExfVEFSR0VUUwkJOj0gaG9zdDAxLnNoCi0KLWluY2x1ZGUgJCh0b3Bfc3JjZGly
+KS9pbmNsdWRlL21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9uZXR3b3JrL3RjcF9jbWRzL2hvc3QvaG9zdDAxLnNoIGIvdGVzdGNhc2VzL25ldHdvcmsvdGNw
+X2NtZHMvaG9zdC9ob3N0MDEuc2gKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNzU1CmluZGV4IDllZDQ0
+YmFlMy4uMDAwMDAwMDAwCi0tLSBhL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9jbWRzL2hvc3QvaG9z
+dDAxLnNoCisrKyAvZGV2L251bGwKQEAgLTEsMzQgKzAsMCBAQAotIyEvYmluL3NoCi0jIFNQRFgt
+TGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCi0jIENvcHlyaWdodCAoYykgMjAy
+MCBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KLSMgQ29weXJpZ2h0IChjKSBLw7ZyeSBNYWlu
+Y2VudCA8a29yeS5tYWluY2VudEBib290bGluLmNvbT4gMjAyMAotIyBDb3B5cmlnaHQgKGMpIE1h
+bm9qIEl5ZXIgPG1hbmpvQG1haWwudXRleGFzLmVkdT4gMjAwMwotIyBDb3B5cmlnaHQgKGMpIFJv
+YmJpZSBXaWxsaWFtc29uIDxyb2JiaWV3QHVzLmlibS5jb20+IDIwMDEKLSMgQ29weXJpZ2h0IChj
+KSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzICBDb3JwLiwgMjAwMAotCi1UU1RfVEVT
+VEZVTkM9ImRvX3Rlc3QiCi1UU1RfTkVFRFNfQ01EUz0iYXdrIGdyZXAgaG9zdCBob3N0bmFtZSB0
+YWlsIgotCi0KLWRvX3Rlc3QoKQotewotCWxvY2FsIGxob3N0PSIke0hPU1ROQU1FOi0kKGhvc3Ru
+YW1lKX0iCi0JbG9jYWwgYWRkcgotCi0JdHN0X3JlcyBUSU5GTyAidGVzdCBiYXNpYyBmdW5jdGlv
+bmFsaXR5IG9mIHRoZSBob3N0IGNvbW1hbmQiCi0JdHN0X3JlcyBUSU5GTyAibGhvc3Q6ICRsaG9z
+dCIKLQotCWlmIGFkZHI9JChob3N0ICRsaG9zdCk7IHRoZW4KLQkJYWRkcj0kKGVjaG8gIiRhZGRy
+IiB8IGdyZXAgYWRkcmVzcyB8IHRhaWwgLTEgfCBhd2sgJ3twcmludCAkTkZ9JykKLQkJaWYgWyAt
+eiAiJGFkZHIiIF07IHRoZW4KLQkJCXRzdF9yZXMgVEZBSUwgImVtcHR5IGFkZHJlc3MiCi0JCQly
+ZXR1cm4KLQkJZmkKLQkJRVhQRUNUX1BBU1MgaG9zdCAkYWRkciBcPi9kZXYvbnVsbAotCWVsc2UK
+LQkJdHN0X3JlcyBURkFJTCAiaG9zdCAkbGhvc3Qgb24gbG9jYWwgbWFjaGluZSBmYWlsZWQiCi0J
+ZmkKLX0KLQotLiB0c3RfbmV0LnNoCi10c3RfcnVuCi0tIAoyLjQzLjAKCgotLSAKTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
