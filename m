@@ -4,83 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 786ADC48260
-	for <ltp@archiver.kernel.org>; Fri,  9 Feb 2024 01:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1707442083; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=y+/Y4XH5EtqM6O5pmzIXXN5LSepaNnARYctuG7Q7Gds=;
- b=U9tQUwL7WgD7G1kbX5fn5445m9U+CttbKO/Sv9K5xRi8aUvOBurMQmGwTSJVCai6OmjgD
- k8HOZ1YxXvpkMdGM96Evkn8jiwSqfoLfBc1u1mMUwBEeFFf0BwG3aG4t29V3c4EHbekI96A
- iQJWS0ZPGZXJR9Kq6bzVWVfylvm6hgA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03558C48297
+	for <ltp@archiver.kernel.org>; Fri,  9 Feb 2024 08:50:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 729D93CF558
-	for <ltp@archiver.kernel.org>; Fri,  9 Feb 2024 02:28:03 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 3112E3CC91B
+	for <ltp@archiver.kernel.org>; Fri,  9 Feb 2024 09:50:20 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 37B023C8DAE
- for <ltp@lists.linux.it>; Fri,  9 Feb 2024 02:27:38 +0100 (CET)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E6FDF3CC396
+ for <ltp@lists.linux.it>; Fri,  9 Feb 2024 09:50:04 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DA827201DA6
- for <ltp@lists.linux.it>; Fri,  9 Feb 2024 02:27:37 +0100 (CET)
-Received: by mail-lj1-x22f.google.com with SMTP id
- 38308e7fff4ca-2d066b532f0so6448261fa.1
- for <ltp@lists.linux.it>; Thu, 08 Feb 2024 17:27:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1707442056; x=1708046856; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=u348FKMgKqSC3T/qI0XXVHJ34QHESizDEGfe9Sv6IAA=;
- b=BsoHY4Jvs76ZLtVAThe1IzNjC6FtsFiZE+iQu6rMc6W3qZ7V1FF2m9pIBqAoOT8FxI
- njOJFaYTaD9nobGLqvuN+RJiPwKfEG7x1MVA5o/a3Pwf+1KmWB5Q7Ua3koXXxnTcuWg1
- lbR5m2c8edBrAZzjvztBJkMEEmVoIHKP3TX+M4lUiIFU92Evo7YcgLc8RV/xcwBGWxFd
- EFhJo9SNAVk/n8wEF7qeKuwx5kQey+th1/ry4PHmLN01yjhhj3z4IoOA0h+e23gwjtMy
- 5f5VVR9NQrtmuPWSuPfz0tx8guD7P9OL5nViRypVcveAQnteWx4+t+mDrh28/Q1rAYxY
- lLmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1707442056; x=1708046856;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=u348FKMgKqSC3T/qI0XXVHJ34QHESizDEGfe9Sv6IAA=;
- b=Y9IDqsr2ZA1FcZPR6GNjs/jQNR8vTCwPx47qgN9tvyVDU2O17bectqEQvOhA3izFtQ
- 94gU6PeNEZswA8+FSK3zIoInmfRWK4FqB4eZhoReJ57Y+fntgBct6ljszgWNG0hnylwQ
- kkREFxpnJRMT9jJQFZVjIdwWpo1M3BXlC3eN+TgjJqcb96vtLSrBVYBunHjIGUJ1zXZw
- JewerhaCnEPjOTfqcNHB8NjLXFtygG23CbZZIiebPxJ2+j6m9V928ZGjaLDxsSRv17NI
- +TO6uUU2lWYxLT7W7PPykr2LFG/opL8Vh2uSRBpclHgTURZ80p/VthOBbD2uCi7NazDB
- MeAw==
-X-Gm-Message-State: AOJu0YwE0n9umfBh2MLDoUFupBL3HT7NPixEM9gHKBt4w4S85rmjlJTE
- GQOBswGosIEaN4Vedq9gA6YJy5GlFT7ucPxCfxlSo3cs9hqmMhiJAYEYWNrVKOjDlX+/sCQmy1o
- =
-X-Google-Smtp-Source: AGHT+IFs7oM9LWRqMO7lW00IQ3h0x802pt5WWhSkvSG6vTnMz/wIXoYJx3zwL4ith4+nLMZTW1YzRQ==
-X-Received: by 2002:a05:651c:381:b0:2d0:b0f9:26db with SMTP id
- e1-20020a05651c038100b002d0b0f926dbmr160259ljp.37.1707442056454; 
- Thu, 08 Feb 2024 17:27:36 -0800 (PST)
-Received: from localhost ([223.72.87.18]) by smtp.gmail.com with ESMTPSA id
- d3-20020a056a0010c300b006e050c8f22bsm421271pfu.207.2024.02.08.17.27.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Feb 2024 17:27:36 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Thu,  8 Feb 2024 20:26:57 -0500
-Message-Id: <20240209012657.10797-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231203235117.29677-1-wegao@suse.com>
-References: <20231203235117.29677-1-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EE7D82146A5
+ for <ltp@lists.linux.it>; Fri,  9 Feb 2024 09:50:03 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 340A41F7F2;
+ Fri,  9 Feb 2024 08:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1707468600;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hrkT5D7RKxo1Y3Adx3pYafrSETejcNP6cyJZdXLHFb4=;
+ b=Y06A0fHPnaCvJaWPPaGazoLBHWhxUVqN4bHvjeh0uqFAGVvm0hVl5SH1+CjRgM1IVtS9gh
+ H+K+UXK7xJhWfB9pcBSyJkleTcJuc0ljQpM93Ihdz6OExfiNHeYhb5gpWGtEzHmBjVZswi
+ ZYZ6/3HMUAVyOlbAQ3xxnYSyP1aPH5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1707468600;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hrkT5D7RKxo1Y3Adx3pYafrSETejcNP6cyJZdXLHFb4=;
+ b=yF2eCexmDt0J6+z/ffMihJNpAR+BrF40nS3Ig61utzJLIyC2yHiLEmWzYniJiuYx4cSQ/q
+ sJdS2IbUHBTxY9BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1707468600;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hrkT5D7RKxo1Y3Adx3pYafrSETejcNP6cyJZdXLHFb4=;
+ b=Y06A0fHPnaCvJaWPPaGazoLBHWhxUVqN4bHvjeh0uqFAGVvm0hVl5SH1+CjRgM1IVtS9gh
+ H+K+UXK7xJhWfB9pcBSyJkleTcJuc0ljQpM93Ihdz6OExfiNHeYhb5gpWGtEzHmBjVZswi
+ ZYZ6/3HMUAVyOlbAQ3xxnYSyP1aPH5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1707468600;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hrkT5D7RKxo1Y3Adx3pYafrSETejcNP6cyJZdXLHFb4=;
+ b=yF2eCexmDt0J6+z/ffMihJNpAR+BrF40nS3Ig61utzJLIyC2yHiLEmWzYniJiuYx4cSQ/q
+ sJdS2IbUHBTxY9BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 993C01326D;
+ Fri,  9 Feb 2024 08:49:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zZdKIjfnxWUBBgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 09 Feb 2024 08:49:59 +0000
+Date: Fri, 9 Feb 2024 09:49:53 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240209084953.GA246045@pevik>
+References: <20240131151446.936281-1-pvorel@suse.cz>
+ <20240131151446.936281-5-pvorel@suse.cz>
+ <1ad65f0c-430c-4805-83eb-81198303a888@suse.cz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1ad65f0c-430c-4805-83eb-81198303a888@suse.cz>
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Y06A0fHP;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yF2eCexm
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.71 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ RCPT_COUNT_SEVEN(0.00)[10]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[25.14%]
+X-Rspamd-Queue-Id: 340A41F7F2
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Futex_waitv: Convert 32bit timespec struct to
- 64bit version for 32bit compatibility mode
+Subject: Re: [LTP] [PATCH 4/4] nfsstat01.sh: Run on all NFS versions,
+ TCP and UDP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,63 +122,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-nfs@vger.kernel.org, NeilBrown <neilb@suse.de>,
+ Jeff Layton <jlayton@kernel.org>, Steve Dickson <steved@redhat.com>,
+ Chuck Lever <chuck.lever@oracle.com>, Anna Schumaker <anna@kernel.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Futex_waitv can not accept old_timespec32 struct, so userspace should
-convert it from 32bit to 64bit before syscall in 32bit compatible mode.
+Hi Martin,
 
-Detail info you can refer following email thread:
-https://lkml.org/lkml/2023/11/23/13
+> Hi,
+> for the whole patchset:
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/futex/futex2test.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-diff --git a/testcases/kernel/syscalls/futex/futex2test.h b/testcases/kernel/syscalls/futex/futex2test.h
-index ce97f47c1..a3cd0ef5c 100644
---- a/testcases/kernel/syscalls/futex/futex2test.h
-+++ b/testcases/kernel/syscalls/futex/futex2test.h
-@@ -12,6 +12,14 @@
- #include <stdint.h>
- #include "lapi/syscalls.h"
- #include "futextest.h"
-+#include "lapi/abisize.h"
-+
-+#ifdef TST_ABI32
-+struct timespec64 {
-+	int64_t tv_sec;
-+	int64_t tv_nsec;
-+};
-+#endif
- 
- /**
-  * futex_waitv - Wait at multiple futexes, wake on any
-@@ -24,7 +32,16 @@ static inline int futex_waitv(volatile struct futex_waitv *waiters,
- 			      unsigned long nr_waiters, unsigned long flags,
- 			      struct timespec *timo, clockid_t clockid)
- {
-+#ifdef TST_ABI32
-+	struct timespec64 timo64 = {0};
-+
-+	timo64.tv_sec = timo->tv_sec;
-+	timo64.tv_nsec = timo->tv_nsec;
-+	return tst_syscall(__NR_futex_waitv, waiters, nr_waiters, flags, &timo64, clockid);
-+#else
- 	return tst_syscall(__NR_futex_waitv, waiters, nr_waiters, flags, timo, clockid);
-+
-+#endif
- }
- 
- #endif /* _FUTEX2TEST_H */
--- 
-2.35.3
+Thanks for your review, merged!
 
+Kind regards,
+Petr
+
+> On 31. 01. 24 16:14, Petr Vorel wrote:
+> > Due fix in previous version we can run nfsstat01.sh on all NFS versions
+> > (added NFSv4, NFSv4.1, NFSv4.2) and on TCP and UDP.
+
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> >   runtest/net.nfs | 11 ++++++++++-
+> >   1 file changed, 10 insertions(+), 1 deletion(-)
+
+> > diff --git a/runtest/net.nfs b/runtest/net.nfs
+> > index 463c95c37..9c1c5c63e 100644
+> > --- a/runtest/net.nfs
+> > +++ b/runtest/net.nfs
+> > @@ -94,7 +94,16 @@ nfslock01_v40_ip6t nfslock01.sh -6 -v 4 -t tcp
+> >   nfslock01_v41_ip6t nfslock01.sh -6 -v 4.1 -t tcp
+> >   nfslock01_v42_ip6t nfslock01.sh -6 -v 4.2 -t tcp
+> > -nfsstat01_v30 nfsstat01.sh -v 3
+> > +nfsstat01_v30_ip4u nfsstat01.sh -v 3 -t udp
+> > +nfsstat01_v30_ip4t nfsstat01.sh -v 3 -t tcp
+> > +nfsstat01_v40_ip4t nfsstat01.sh -v 4 -t tcp
+> > +nfsstat01_v41_ip4t nfsstat01.sh -v 4.1 -t tcp
+> > +nfsstat01_v42_ip4t nfsstat01.sh -v 4.2 -t tcp
+> > +nfsstat01_v30_ip6u nfsstat01.sh -6 -v 3 -t udp
+> > +nfsstat01_v30_ip6t nfsstat01.sh -6 -v 3 -t tcp
+> > +nfsstat01_v40_ip6t nfsstat01.sh -6 -v 4 -t tcp
+> > +nfsstat01_v41_ip6t nfsstat01.sh -6 -v 4.1 -t tcp
+> > +nfsstat01_v42_ip6t nfsstat01.sh -6 -v 4.2 -t tcp
+> >   fsx_v30_ip4u fsx.sh -v 3 -t udp
+> >   fsx_v30_ip4t fsx.sh -v 3 -t tcp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
