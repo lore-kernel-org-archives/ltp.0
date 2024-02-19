@@ -4,103 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A835DC48BF8
-	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 15:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8399AC48BC3
+	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 15:44:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D88B3D1385
-	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 16:32:14 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 02BA43D13A5
+	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 16:44:20 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BC853D0887
- for <ltp@lists.linux.it>; Mon, 19 Feb 2024 16:31:59 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 64E3C3D0476
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 16:44:04 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 795B81408728
- for <ltp@lists.linux.it>; Mon, 19 Feb 2024 16:31:57 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A1ADE200171
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 16:44:03 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A107C21FD2;
- Mon, 19 Feb 2024 15:31:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D0A51FD14
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 15:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1708356716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B7czCTePp4wArxSV9Pu6A+ndAaer5OVXVIdO+VpRJKM=;
- b=G24iHvzU4BTf583xm7AxS19pPlZ+MRULNXUWrIkLSYxYf2GL/ThAhuDHB+ffq0s78FS1Vq
- z97C1TOToQUo7xCUI0N/bjfSXhJ6UXDVXIrxoSys6EWF2LylMk4AZ2kbW3x4Zt5MAoaMFU
- sG8AK5tPMedDbmMEMmwLmkKoZ5focwA=
+ t=1708357442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IVFmgv/u6KjEW+kP38AKBD3Gjx87xF+SVmWwnYy74Eg=;
+ b=lrdHrJo8vrE1E26D1JeDJ6ghBqHaiaAD2MZbx7qKE2oZXgKiDrGqyr0GUKgzulglmPFT7Q
+ cEmY4oe8rJYn4dsEh9jHL2ej9Z9YoxZhoRiLzhWa0LJm5CDmrCoj5PMCJyHkvvg80J/cNs
+ PuO/sO9dC43JtR4JBi7A8/ZzxWDt200=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1708356716;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B7czCTePp4wArxSV9Pu6A+ndAaer5OVXVIdO+VpRJKM=;
- b=1JZ3NV6CYfczSWr1DkBp0fgYf/Za82fvvKIOXvD1uC4bxFe9Rf9WAWLTedUcwyjaKivbQ6
- 8x2V7zyEbZWUR4Dw==
+ s=susede2_ed25519; t=1708357442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IVFmgv/u6KjEW+kP38AKBD3Gjx87xF+SVmWwnYy74Eg=;
+ b=6P7rDWrRtXUZr0B/BR94ut44nM+oDCil0hTVk07XbADH6mTMbtPkKv7VZgCXX7lnWxo4pO
+ uHmiUFy0mDo1E6BA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1708356716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B7czCTePp4wArxSV9Pu6A+ndAaer5OVXVIdO+VpRJKM=;
- b=G24iHvzU4BTf583xm7AxS19pPlZ+MRULNXUWrIkLSYxYf2GL/ThAhuDHB+ffq0s78FS1Vq
- z97C1TOToQUo7xCUI0N/bjfSXhJ6UXDVXIrxoSys6EWF2LylMk4AZ2kbW3x4Zt5MAoaMFU
- sG8AK5tPMedDbmMEMmwLmkKoZ5focwA=
+ t=1708357442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IVFmgv/u6KjEW+kP38AKBD3Gjx87xF+SVmWwnYy74Eg=;
+ b=lrdHrJo8vrE1E26D1JeDJ6ghBqHaiaAD2MZbx7qKE2oZXgKiDrGqyr0GUKgzulglmPFT7Q
+ cEmY4oe8rJYn4dsEh9jHL2ej9Z9YoxZhoRiLzhWa0LJm5CDmrCoj5PMCJyHkvvg80J/cNs
+ PuO/sO9dC43JtR4JBi7A8/ZzxWDt200=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1708356716;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B7czCTePp4wArxSV9Pu6A+ndAaer5OVXVIdO+VpRJKM=;
- b=1JZ3NV6CYfczSWr1DkBp0fgYf/Za82fvvKIOXvD1uC4bxFe9Rf9WAWLTedUcwyjaKivbQ6
- 8x2V7zyEbZWUR4Dw==
+ s=susede2_ed25519; t=1708357442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IVFmgv/u6KjEW+kP38AKBD3Gjx87xF+SVmWwnYy74Eg=;
+ b=6P7rDWrRtXUZr0B/BR94ut44nM+oDCil0hTVk07XbADH6mTMbtPkKv7VZgCXX7lnWxo4pO
+ uHmiUFy0mDo1E6BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6FDFD13647;
- Mon, 19 Feb 2024 15:31:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F94E13647
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 15:44:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Om6ZGGx002XPcQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 19 Feb 2024 15:31:56 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id veHFA0J302WedAAAD6G6ig
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 15:44:02 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 19 Feb 2024 16:31:55 +0100
-Message-Id: <20240219153155.20527-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+Date: Mon, 19 Feb 2024 16:43:49 +0100
+Message-ID: <20240219154401.9136-1-akumar@suse.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207152836.1882-1-akumar@suse.de>
+References: <20240207152836.1882-1-akumar@suse.de>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=G24iHvzU;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=1JZ3NV6C
-X-Spamd-Result: default: False [1.69 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- RCVD_COUNT_THREE(0.00)[3];
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [8.80 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; BAYES_SPAM(5.10)[100.00%];
+ FROM_HAS_DN(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_ONE(0.00)[1];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ TO_DN_NONE(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
- MID_CONTAINS_FROM(1.00)[]; MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: A107C21FD2
-X-Spamd-Bar: +
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Add stat04 test
+Subject: [LTP] [PATCH v3] syscalls/mmap13: Rewrite the test using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,118 +120,211 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-This test has been extracted from symlink01 test and it checks that
-stat() executed on file provide the same information of symlink linking
-to it.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
-TST_EXP_PASS for stat() and SAFE_SYMLINK for symlink()
-Removed tests which were already tested by stat03
-Removed memory leak using tst_get_tmpdir()
 
- runtest/smoketest                         |  2 +-
- runtest/syscalls                          |  4 +-
- testcases/kernel/syscalls/stat/.gitignore |  2 +
- testcases/kernel/syscalls/stat/stat04.c   | 47 +++++++++++++++++++++++
- 4 files changed, 52 insertions(+), 3 deletions(-)
- create mode 100644 testcases/kernel/syscalls/stat/stat04.c
+changes v2->v3:
+Removed the diagram from the description, we can add it if we get
+author's permission.
 
-diff --git a/runtest/smoketest b/runtest/smoketest
-index 83eebfe7b..5608417f9 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -8,7 +8,7 @@ time01 time01
- wait02 wait02
- write01 write01
- symlink01 symlink01
--stat04 symlink01 -T stat04
-+stat04 stat04
- utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
- splice02 splice02 -s 20
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7794f1465..ef90076e4 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1529,8 +1529,8 @@ stat02 stat02
- stat02_64 stat02_64
- stat03 stat03
- stat03_64 stat03_64
--stat04 symlink01 -T stat04
--stat04_64 symlink01 -T stat04_64
-+stat04 stat04
-+stat04_64 stat04_64
- 
- statfs01 statfs01
- statfs01_64 statfs01_64
-diff --git a/testcases/kernel/syscalls/stat/.gitignore b/testcases/kernel/syscalls/stat/.gitignore
-index fa0a4ce9f..0a62dc6ee 100644
---- a/testcases/kernel/syscalls/stat/.gitignore
-+++ b/testcases/kernel/syscalls/stat/.gitignore
-@@ -4,3 +4,5 @@
- /stat02_64
- /stat03
- /stat03_64
-+/stat04
-+/stat04_64
-diff --git a/testcases/kernel/syscalls/stat/stat04.c b/testcases/kernel/syscalls/stat/stat04.c
-new file mode 100644
-index 000000000..bf2f34083
---- /dev/null
-+++ b/testcases/kernel/syscalls/stat/stat04.c
-@@ -0,0 +1,47 @@
+
+ testcases/kernel/syscalls/mmap/mmap13.c | 154 +++++++-----------------
+ 1 file changed, 45 insertions(+), 109 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mmap/mmap13.c b/testcases/kernel/syscalls/mmap/mmap13.c
+index c5a2058e9..7298f5de5 100644
+--- a/testcases/kernel/syscalls/mmap/mmap13.c
++++ b/testcases/kernel/syscalls/mmap/mmap13.c
+@@ -1,142 +1,78 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ *    Author: David Fenner
-+ *    Copilot: Jon Hendrickson
-+ * Copyright (C) 2024 Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
+ /*
+  * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) 2024 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Test Description:
+- *  Verify error signal SIGBUS.
+- *  "Attempted access to a portion of the buffer that does not correspond
+- *   to the file."
 +/*\
 + * [Description]
-+ *
-+ * This test checks that stat() executed on file provide the same information
-+ * of symlink linking to it.
-+ */
+  *
+- * Expected Result:
+- *  mmap() should succeed returning the address of the mapped region,
+- *  and an attempt to access the memory which does not correspond to the file
+- *  should rise the signal SIGBUS.
++ * Verify that, mmap() call succeeds to create a file mapping with length
++ * argument greater than the file size but any attempt to reference the
++ * memory region which does not correspond to the file causes SIGBUS signal.
+  */
+-#include <stdio.h>
 +
+ #include <stdlib.h>
+-#include <sys/types.h>
+-#include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/stat.h>
+-#include <sys/mman.h>
+ #include <setjmp.h>
+-
+-#include "test.h"
 +#include "tst_test.h"
-+
+ 
+ #define TEMPFILE	"mmapfile"
+-
+-char *TCID = "mmap13";
+-int TST_TOTAL = 1;
+-
+ static size_t page_sz;
+ static char *addr;
+-static int fildes;
++static int fd;
+ static volatile sig_atomic_t pass;
+ static sigjmp_buf env;
+ 
+-static void setup(void);
+-static void cleanup(void);
+-static void sig_handler(int sig);
+-
+-int main(int argc, char *argv[])
++static void sig_handler(int sig)
+ {
+-	int lc;
+-	char *ch;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		addr = mmap(NULL, page_sz * 2, PROT_READ | PROT_WRITE,
+-			    MAP_FILE | MAP_SHARED, fildes, 0);
+-
+-		if (addr == MAP_FAILED) {
+-			tst_resm(TFAIL | TERRNO, "mmap() failed on %s",
+-				 TEMPFILE);
+-			continue;
+-		}
+-
+-		if (sigsetjmp(env, 1) == 0) {
+-			ch = addr + page_sz + 1;
+-			*ch = 0;
+-		}
+-
+-		if (pass)
+-			tst_resm(TPASS, "Got SIGBUS "
+-					"as expected");
+-		else
+-			tst_resm(TFAIL, "Invalid access not "
+-						"rise SIGBUS");
+-
+-		if (munmap(addr, page_sz * 2) != 0)
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "failed to unmap the mmapped pages");
+-
+-		pass = 0;
++	if (sig == SIGBUS) {
++		pass = 1;
++		siglongjmp(env, 1);
+ 	}
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ static void setup(void)
+ {
+-	tst_sig(NOFORK, sig_handler, cleanup);
+-
+-	TEST_PAUSE;
++	SAFE_SIGNAL(SIGBUS, sig_handler);
+ 
+ 	page_sz = getpagesize();
+ 
+-	tst_tmpdir();
+-
+-	fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0766);
+-	if (fildes < 0)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "opening %s failed",
+-			 TEMPFILE);
+-
+-	if (ftruncate(fildes, page_sz / 2) == -1)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "ftruncate %s failed",
+-			 TEMPFILE);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
++	SAFE_FTRUNCATE(fd, page_sz / 2);
+ }
+ 
+-/*
+- *   This function gets executed when the test process receives
+- *   the signal SIGBUS while trying to access the memory which
+- *   does not correspond to the file.
+- */
+-static void sig_handler(int sig)
 +static void run(void)
-+{
-+	char *symname = "my_symlink0";
-+	char *tmpdir = tst_get_tmpdir();
+ {
+-	if (sig == SIGBUS) {
+-		pass = 1;
+-		siglongjmp(env, 1);
+-	} else {
+-		tst_brkm(TBROK, cleanup, "received an unexpected signal");
++	char *ch;
 +
-+	SAFE_SYMLINK(tmpdir, symname);
++	addr = mmap(0, page_sz * 2, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
++	if (addr == MAP_FAILED) {
++		tst_res(TFAIL | TERRNO, "mmap() of %s failed", TEMPFILE);
++		return;
+ 	}
 +
-+	struct stat path_stat;
-+	struct stat link_stat;
++	if (sigsetjmp(env, 1) == 0) {
++		ch = addr + page_sz + 1;
++		*ch = 0;
++	}
 +
-+	TST_EXP_PASS(stat(tmpdir, &path_stat));
-+	TST_EXP_PASS(stat(symname, &link_stat));
++	if (pass == 1)
++		tst_res(TPASS, "Received SIGBUS signal as expected");
++	else
++		tst_res(TFAIL, "SIGBUS signal not received");
 +
-+	TST_EXP_EQ_LI(path_stat.st_dev, link_stat.st_dev);
-+	TST_EXP_EQ_LI(path_stat.st_mode, link_stat.st_mode);
-+	TST_EXP_EQ_LI(path_stat.st_nlink, link_stat.st_nlink);
-+	TST_EXP_EQ_LI(path_stat.st_uid, link_stat.st_uid);
-+	TST_EXP_EQ_LI(path_stat.st_gid, link_stat.st_gid);
-+	TST_EXP_EQ_LI(path_stat.st_size, link_stat.st_size);
-+	TST_EXP_EQ_LI(path_stat.st_atime, link_stat.st_atime);
-+	TST_EXP_EQ_LI(path_stat.st_mtime, link_stat.st_mtime);
-+	TST_EXP_EQ_LI(path_stat.st_ctime, link_stat.st_ctime);
-+
-+	SAFE_UNLINK(symname);
-+}
++	SAFE_MUNMAP(addr, page_sz * 2);
+ }
+ 
+ static void cleanup(void)
+ {
+-	close(fildes);
+-	tst_rmdir();
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
 +
 +static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
 +	.test_all = run,
-+	.needs_tmpdir = 1,
++	.needs_tmpdir = 1
 +};
 -- 
-2.35.3
+2.43.0
 
 
 -- 
