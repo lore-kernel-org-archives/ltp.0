@@ -4,111 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CD62C48BF8
-	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 20:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4831FC48BF8
+	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 20:54:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D3A63D13A6
-	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 21:48:39 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B29A43D13B8
+	for <ltp@archiver.kernel.org>; Mon, 19 Feb 2024 21:54:14 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 28E493CEFB7
- for <ltp@lists.linux.it>; Mon, 19 Feb 2024 21:48:23 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 341483CEFB7
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 21:53:58 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 447591000480
- for <ltp@lists.linux.it>; Mon, 19 Feb 2024 21:48:22 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1B40A600CC2
+ for <ltp@lists.linux.it>; Mon, 19 Feb 2024 21:53:57 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 95D09221EA;
- Mon, 19 Feb 2024 20:48:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D69111F826;
+ Mon, 19 Feb 2024 20:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708375701;
+ t=1708376037;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8wBsvmQjGb0ZUDuEeyVBTgcpVkpHXaj1kQl+rRastDY=;
- b=Q5K4l0sSh3GMV6D984V21+jOlNcApDFYgQhY+1ou6DCHjQApRw9Sa0hzOgV7Gjq/iTW4Ca
- g9m1kWydZReffUMdD5aVgBoNILwPA2ZlG8BcdRcZP3wgBufPjudU4/3RJP2cSXPiqkCAT/
- hGL2edAVSp3szLaSQiPL6aQ5tYyhJZI=
+ bh=Qq/TMP/q4jgHtjJkq2zFzkDT3AjNcOENSgog9kAuA08=;
+ b=lVrNU3yeeqUr1dPXUOQI0qpyIAWoFw8DT1x3/OJzT5NZU/vt+TzH8YvruYctp+EAn64kQh
+ clQ8Sv/6qjGV88S6/0A9BFB67eYqeM5gYcxDRitw1S/BER6ZENu0sVRUZHYANFNO03p/14
+ UoIq4hOAPtTr753HErVF7hULG5Plvl0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708375701;
+ s=susede2_ed25519; t=1708376037;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8wBsvmQjGb0ZUDuEeyVBTgcpVkpHXaj1kQl+rRastDY=;
- b=uDZUHenSNjm2x6UZl8wkFUSaSqi3mrZMV5WgMCFPcec7FJoO0DNGI3lGNizz4L+e9Z+Bkc
- K8A7KyQQWnZ5oOBw==
+ bh=Qq/TMP/q4jgHtjJkq2zFzkDT3AjNcOENSgog9kAuA08=;
+ b=uh11t++CMzEJWuFyB53LQkChvcK7TgTKXSmSUdrZ/gYLYLlOhOBBsZ44w3vCv3S5itR+4v
+ GONIrKiUnPmYMjDQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708375701;
+ t=1708376036;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8wBsvmQjGb0ZUDuEeyVBTgcpVkpHXaj1kQl+rRastDY=;
- b=Q5K4l0sSh3GMV6D984V21+jOlNcApDFYgQhY+1ou6DCHjQApRw9Sa0hzOgV7Gjq/iTW4Ca
- g9m1kWydZReffUMdD5aVgBoNILwPA2ZlG8BcdRcZP3wgBufPjudU4/3RJP2cSXPiqkCAT/
- hGL2edAVSp3szLaSQiPL6aQ5tYyhJZI=
+ bh=Qq/TMP/q4jgHtjJkq2zFzkDT3AjNcOENSgog9kAuA08=;
+ b=dSRAzQ1TUqs0uNacJZ6pweSZJhlO4WR55QCbqJzHnRxpz7ThcdgCnIXkiVKmZCL2l3emd9
+ CLGKlpZ5Mg+TNv8S9d5LPrvqWfhq+8eYIR4nRU9WHL2MPvbOSx0fIJBSgARN1mm3YnObUw
+ 7mBNMk+tHs9zScH0KufqE7kNxVo3k50=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708375701;
+ s=susede2_ed25519; t=1708376036;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8wBsvmQjGb0ZUDuEeyVBTgcpVkpHXaj1kQl+rRastDY=;
- b=uDZUHenSNjm2x6UZl8wkFUSaSqi3mrZMV5WgMCFPcec7FJoO0DNGI3lGNizz4L+e9Z+Bkc
- K8A7KyQQWnZ5oOBw==
+ bh=Qq/TMP/q4jgHtjJkq2zFzkDT3AjNcOENSgog9kAuA08=;
+ b=UwVzR/frrbJG+kNDgrQuKeZ0E6a23cQLAqkD3qkj2M+SiUojU4ofi+BQg7roYPo3pytLMU
+ x/1i8bOsruTIqxAg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 64B55139F7;
- Mon, 19 Feb 2024 20:48:21 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E4ED139C6;
+ Mon, 19 Feb 2024 20:53:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id glUvFpW+02V/YQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 19 Feb 2024 20:48:21 +0000
-Date: Mon, 19 Feb 2024 21:48:19 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id WeqdGOS/02VvYgAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Mon, 19 Feb 2024 20:53:56 +0000
+Date: Mon, 19 Feb 2024 21:53:54 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240219204819.GA1057967@pevik>
-References: <20240219134030.12693-1-mdoucha@suse.cz>
- <20240219160922.GB1021019@pevik>
- <86169685-b118-4186-951f-7919796dcb93@suse.cz>
+Message-ID: <20240219205354.GB1057967@pevik>
+References: <20240219165506.19825-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <86169685-b118-4186-951f-7919796dcb93@suse.cz>
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Q5K4l0sS;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uDZUHenS
-X-Spamd-Result: default: False [-2.51 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+In-Reply-To: <20240219165506.19825-1-mdoucha@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ REPLY(-4.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 95D09221EA
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.00)[21.19%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open07: Convert to new API
+Subject: Re: [LTP] [PATCH] net.nfs: Fix nfs06.sh runfile entries
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,113 +119,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Martin,
 
-TL;DR: merged with fixes.
+>  nfs06_v30_v40_ip4  nfs06.sh -v "3,3,3,4,4,4" -t "udp,udp,tcp,tcp,tcp,tcp"
+> -nfs06_vall_ip4t nfs02_06 nfs06.sh -v "3,4,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
+> -nfs06_v4x_ip6t nfs03_ipv6_06 nfs06.sh -6 -v "4,4.1,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
+> +nfs06_vall_ip4t nfs06.sh -v "3,4,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
+> +nfs06_v4x_ip6t nfs06.sh -6 -v "4,4.1,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
 
-> On 19. 02. 24 17:09, Petr Vorel wrote:
-> > Hi Martin,
-
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> > Few minor things below, can be fixed before merge.
-
-> > ...
-> > >   #define _GNU_SOURCE		/* for O_NOFOLLOW */
-> > nit: This now works without _GNU_SOURCE (we compile with -std=gnu99 and it would
-> > work for whatever gnu*).
-
-> > > -#include <stdio.h>
-> > > -#include <errno.h>
-> > > -#include <sys/types.h>
-> > >   #include <sys/stat.h>
-> > nit: IMHO <sys/stat.h> was not needed even in the old API version.
-
-> Good catch x2. <sys/stat.h> is needed for umask() but it's included through
-> tst_safe_macros.h
-
-Ah, good point. I removed it before merge (I hope we never reorganize lib/*.c
-that much that we'd remove some includes in include/*.h, because quite a few
-tests depends on these indirect includes already).
-
-> > > -#include <fcntl.h>
-> > > -#include "test.h"
-> > > -#include "safe_macros.h"
-> > ...
-> > > +#include "tst_test.h"
-> > > +#include "tst_safe_macros.h"
-> > > +
-> > > +#define TESTFILE "testfile"
-> > > +#define TESTDIR "testdir"
-> > > +#define SYMFILE1 "symfile1"
-> > > +#define SYMFILE2 "symfile2"
-> > > +#define SYMDIR1 "symdir1"
-> > > +#define SYMDIR2 "symdir2"
-> > > +#define PASSFILE "symdir1/testfile"
-> > > +
-> > > +static int fd = -1;
-> > nit: any reason for -1? (We don't check the input.)
-
-> I planned to have a cleanup() where the fd would be checked and closed if
-> needed. But it wasn't needed in the end and I forgot to remove the
-> initialization. The variable can be moved inside setup(). Should I send v2?
-
-Nah, fixed before merge. +1 for pointing out it was for setup() only.
-
-> > > +static struct testcase {
-> > > +	const char *path;
-> > > +	int err;
-> > > +	const char *desc;
-> > > +} testcase_list[] = {
-> > > +	{SYMFILE1, ELOOP, "open(O_NOFOLLOW) a symlink to file"},
-> > > +	{SYMFILE2, ELOOP, "open(O_NOFOLLOW) a double symlink to file"},
-> > > +	{SYMDIR1, ELOOP, "open(O_NOFOLLOW) a symlink to directory"},
-> > > +	{SYMDIR2, ELOOP, "open(O_NOFOLLOW) a double symlink to directory"},
-> > > +	{PASSFILE, 0, "open(O_NOFOLLOW) a file in symlinked directory"},
-
-> > ...
-> > > +static void setup(void)
-> > >   {
-> > > -	char file1[100], file2[100];
-> > > -
-> > > -	sprintf(file1, "open11.3.%d", getpid());
-> > > -	sprintf(file2, "open12.4.%d", getpid());
-> > > -	SAFE_MKDIR(cleanup, file1, 00700);
-> > > +	umask(0);
-> > > +	fd = SAFE_CREAT(TESTFILE, 0644);
-> > > +	SAFE_CLOSE(fd);
-> > > +	SAFE_MKDIR(TESTDIR, 0755);
-
-> > > -	SAFE_SYMLINK(cleanup, file1, file2);
-> > > +	SAFE_SYMLINK(TESTFILE, SYMFILE1);
-> > > +	SAFE_SYMLINK(SYMFILE1, SYMFILE2);
-> > > +	SAFE_SYMLINK(TESTDIR, SYMDIR1);
-> > > +	SAFE_SYMLINK(SYMDIR1, SYMDIR2);
-
-> > > -	strcpy(TC[4].filename, file2);
-> > > -	strcat(TC[4].filename, "/");
-> > > +	fd = SAFE_CREAT(PASSFILE, 0644);
-> > > +	SAFE_CLOSE(fd);
-> > >   }
-
-> > > -static void setup(void)
-> > > +static void run(unsigned int n)
-> > >   {
-> > > -	umask(0);
-> > > +	const struct testcase *tc = testcase_list + n;
-
-> > > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> > > +	TST_RET = -1;
-> > nit: IMHO this is not needed (we have 0 for stdin, right? Therefore open()
-> > should not get 0 and check below is correct).
-
-> Zero is still a valid file descriptor whether it's used or not. On the other
-> hand, TST_RET will be set by open() in both branches below so the
-> initialization is not needed at all.
-
-+1
-
-Removed and merged.
-
-Thanks for taking care for these tiny details.
+Thanks for fixing my error, merged. I noticed some failure in CI, but overlook
+it's not nfs09_v30_ip6t (the new test which fails on all kernels).
 
 Kind regards,
 Petr
