@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6386DC48BC3
-	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 07:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DE8C48BC3
+	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 07:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1708415023; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1708415048; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=vIxMbpOWtd5i8lHwGVFqj+dSiGHe9xt46C2T/n/u4Ic=;
- b=jX6bBsHKuGIEABKC2+5mP49amMKWmFNSvl8uo7c/1qIlJ0uUJ1tSz/Xs1BJbWKmQYdUkt
- qxfiWvkQDy4svcNJ1jgX/NxKP60R+jaPNz/y5ZwKmQR8oLfErRYlyLPen2685unTFgezSeO
- /EyBGPyG14pwnIL20tNOCmCvRMr94/A=
+ bh=s/KaEoiiIJ1nQMhNERLfmVnmMq1Q6R8Fu060LC9OOhQ=;
+ b=a8lA6mVCmLbWP7Z4gLYQuUwc/Vx6/vEFQyhhyRvgKTPV/G9g+pAnWVqre++EWuNNKgl1O
+ yDeuzaC3itWDHmTXXlRJYS1LCDEo1Isy9e1IzvrpXEPK2pER2YylUDte+FPeQAstnCJQTtM
+ CrluixZfznUXqtDM5diBGUcLKN1/TtE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A07023CCDAE
-	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 08:43:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3A0763CEFAD
+	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 08:44:08 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02EEB3CF163
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 08:43:10 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
- helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id B0BDA3CEFB7
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 08:43:20 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=68.232.139.117;
+ helo=esa4.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
+Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com
+ [68.232.139.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A32C2200914
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 08:43:08 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 12A971400F25
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 08:43:19 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1708414989; x=1739950989;
+ t=1708414999; x=1739950999;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=G7zwVmiZgw+FwYq4VMuVMdFB74URbJ8cnDGf7wlANxw=;
- b=YA+4PoVqIMzmQkPklaxU/XWeeAMK58CWqsEl1xYM2XQRdqVT+qsUs6kG
- mdhIAISaxZBrkLRafJc+2Vca4+fH2bFtSNtUuRvxbCDOo7VUY+l0MAkKU
- melXUMZ7FDpckv1synukkd2pNiyaHbHxFqygiWVsF7kgS2Elg5Jt/DInX
- BJRfWEXMEIhaqxx5a7cKzkOoTqg6NOhGUadB3bUfLwID3seDWxEXeZxVR
- +iDZKN91LLMV4roE/czLxaWKk2m8Fz+3GF+WqeZEqNbIflRfUKvSImQEU
- R/ajiDS2JUAC0LmjWGq0sN00/q5gplndSHmOyDfZq1wUndG+KDWlFvLPn Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="137512045"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705330800"; d="scan'208";a="137512045"
-Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2024 16:43:07 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id D59B8D9AE2
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:04 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 1E934BF4A3
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:04 +0900 (JST)
+ bh=4xQn8dI7+B7uo7q/8otWwauoN6togCpngKi2iop8MTQ=;
+ b=nmsBc8Zz80weeWKMKJgC3WkU6CxZ6t9Qel1Nk3TWeWQHioCkYhzxYBa1
+ dQAR584vFLA/D/OxNSLgLPvgFICtk88RBxNhSNGqF1q2TdjUmJ9KoAQKd
+ vyQ4q1kbMZNChWhFLlk8nGK3R0vMFsgx0ByLA+1QmZw9SlB9qt1gEU9Q0
+ I6bb79r1FlNACk/bNZriV6ap5V9D9Uwgz39jgOT8/XAkpsS2+jxsv5//D
+ fKXyt23X+jBvkA0v3kjVh40FVTGA4ilz63VRkhAASNIOrwaNRW2LxJXQb
+ nGV4wtmA4d5MqTRcHLiG880x4wuVPVD/7msHhzG4hnPA++Z64sa/KlJCK Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="150164656"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705330800"; d="scan'208";a="150164656"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Feb 2024 16:43:17 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
+ [192.168.83.65])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id D9C722A457C
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:15 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 28C2DD5922
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:15 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 95BCF20097CE1
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:03 +0900 (JST)
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id A66C965FEA
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 16:43:14 +0900 (JST)
 Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 4A9D61A006B;
- Tue, 20 Feb 2024 15:43:03 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 505531A006B;
+ Tue, 20 Feb 2024 15:43:14 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Tue, 20 Feb 2024 02:42:13 -0500
-Message-Id: <20240220074218.13487-2-xuyang2018.jy@fujitsu.com>
+Date: Tue, 20 Feb 2024 02:42:14 -0500
+Message-Id: <20240220074218.13487-3-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240220074218.13487-1-xuyang2018.jy@fujitsu.com>
 References: <20240220074218.13487-1-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28202.005
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28202.006
 X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28202.005
-X-TMASE-Result: 10--8.247500-10.000000
-X-TMASE-MatchedRID: wrMmQdWyhqi9TGmwrVcPSwXtykVcrvpNCZa9cSpBObnAuQ0xDMaXkH4q
- tYI9sRE/Vztt14qydotC2s0bIz7TOS0+EsApCrRRutvHF25zoU9MVCcj56k8hq25ZjP2hWgveWw
- Yle3v1YxzzWLzuR3HAoAy6p60ZV62yA7duzCw6dLdB/CxWTRRu25FeHtsUoHuzujsnLTlnseY/h
- hlFx6P0p8RG48oJjOaYabljj5MfqFoBmTSwRxjXg==
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28202.006
+X-TMASE-Result: 10--7.893900-10.000000
+X-TMASE-MatchedRID: 90G6ca/P0SOe/kF8Pup4HKzGfgakLdjawTlc9CcHMZerwqxtE531VIPc
+ XuILVCbak2rNDhoFVtmq5anvU2i8LHk5VN4DJHKIh2VzUlo4HVM2LwvzxRX0gEA6+2WeJ60F8/e
+ HChOsjzqBx0ShwZLio0dHbFW6uX0ZNYwYTEoASsF1e7Xbb6Im2sLiFiL0BG1umyiLZetSf8nyb6
+ HMFK1qe3YJEUfDojP/IAcCikR3vq+QCP813fOn8QR+SAzrDIXKaiDM0c2NV7ZwnNoy92t4zUXZA
+ W5lT5Xv
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/7] libltpswap: alter tst_count_swaps api
+Subject: [LTP] [PATCH v4 3/7] syscalls/swapon03: use tst_max_swapfiles() and
+ GET_USED_SWAPFILES() api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,64 +106,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Like we count the ipc resource total, we can also add a
-similar api for swapfiles, so we can use it for swapon03 case.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/libswap.h         |  5 +++++
- libs/libltpswap/libswap.c | 27 +++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+ testcases/kernel/syscalls/swapon/swapon03.c | 40 ++++-----------------
+ 1 file changed, 6 insertions(+), 34 deletions(-)
 
-diff --git a/include/libswap.h b/include/libswap.h
-index 361d73175..76a3ed0c0 100644
---- a/include/libswap.h
-+++ b/include/libswap.h
-@@ -27,4 +27,9 @@ bool is_swap_supported(const char *filename);
-  */
- int tst_max_swapfiles(void);
+diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+index 2a0fc99e6..b0d70b4ad 100644
+--- a/testcases/kernel/syscalls/swapon/swapon03.c
++++ b/testcases/kernel/syscalls/swapon/swapon03.c
+@@ -19,7 +19,6 @@
  
-+/*
-+ * Get the used swapfiles number
-+ */
-+int tst_count_swaps(void);
-+
- #endif /* __LIBSWAP_H__ */
-diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
-index a404a4ada..1f9235f17 100644
---- a/libs/libltpswap/libswap.c
-+++ b/libs/libltpswap/libswap.c
-@@ -265,3 +265,30 @@ int tst_max_swapfiles(void)
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+-#include "swaponoff.h"
+ #include "libswap.h"
  
- 	return max_swapfile - swp_migration_num - swp_hwpoison_num - swp_device_num - swp_pte_marker_num;
- }
-+
-+/*
-+ * Get the used swapfiles number
-+ */
-+int tst_count_swaps(void)
-+{
-+	FILE *fp;
-+	int used = -1;
-+	char c;
-+
-+	fp = fopen("/proc/swaps", "r");
-+	if (fp == NULL) {
-+		return -1;
-+	}
-+
-+	while ((c = fgetc(fp)) != EOF) {
-+		if (c == '\n')
-+			used++;
-+	}
-+
-+	fclose(fp);
-+	if (used < 0) {
-+		tst_brk(TBROK, "can't read /proc/swaps to get used swapfiles resource total");
-+	}
-+
-+	return used;
-+}
+ #define MNTPOINT	"mntpoint"
+@@ -104,47 +103,20 @@ static void verify_swapon(void)
+ static int setup_swap(void)
+ {
+ 	pid_t pid;
+-	int j, fd;
+ 	int status;
++	int j, max_swapfiles, used_swapfiles;
+ 	int res = 0;
+ 	char filename[FILENAME_MAX];
+-	char buf[BUFSIZ + 1];
+-
+-	/* Find out how many swapfiles (1 line per entry) already exist */
+-	swapfiles = 0;
+ 
+ 	if (seteuid(0) < 0)
+ 		tst_brk(TFAIL | TERRNO, "Failed to call seteuid");
+ 
+-	/* This includes the first (header) line */
+-	if ((fd = open("/proc/swaps", O_RDONLY)) == -1) {
+-		tst_brk(TFAIL | TERRNO,
+-			"Failed to find out existing number of swap files");
+-	}
+-	do {
+-		char *p = buf;
+-		res = read(fd, buf, BUFSIZ);
+-		if (res < 0) {
+-			tst_brk(TFAIL | TERRNO,
+-				 "Failed to find out existing number of swap files");
+-		}
+-		buf[res] = '\0';
+-		while ((p = strchr(p, '\n'))) {
+-			p++;
+-			swapfiles++;
+-		}
+-	} while (BUFSIZ <= res);
+-	close(fd);
+-	if (swapfiles)
+-		swapfiles--;	/* don't count the /proc/swaps header */
+-
+-	if (swapfiles < 0)
+-		tst_brk(TFAIL, "Failed to find existing number of swapfiles");
+-
+ 	/* Determine how many more files are to be created */
+-	swapfiles = MAX_SWAPFILES - swapfiles;
+-	if (swapfiles > MAX_SWAPFILES)
+-		swapfiles = MAX_SWAPFILES;
++	max_swapfiles = tst_max_swapfiles();
++	used_swapfiles = tst_count_swaps();
++	swapfiles = max_swapfiles - used_swapfiles;
++	if (swapfiles > max_swapfiles)
++		swapfiles = max_swapfiles;
+ 	pid = SAFE_FORK();
+ 	if (pid == 0) {
+ 		/*create and turn on remaining swapfiles */
 -- 
 2.27.0
 
