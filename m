@@ -4,87 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15526C48BC3
-	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 12:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1708433642; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=xufIF/eDiYgf1jLaDU1PLIHjrdL9FZXPUyiFIQnHTuw=;
- b=eVPRxrFrY/cgOlN5sNcgPDe72E9T///UiUfYrCmgeDj5xKdjLYUZuh6hXWuf2KXamEO9S
- BkOmg9JA112gLXApELzGJrv6VKNsnAHI7oC6yO791V95u7ku4M9IUzBszpKeuzsU31tTPEL
- nlgpqDbcanEACJBUyVryXVa2a1yR5p0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3B19C48BC3
+	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 13:13:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78AD43CF1F2
-	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 13:54:02 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 3D0A33CF1E3
+	for <ltp@archiver.kernel.org>; Tue, 20 Feb 2024 14:13:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3630B3C06DF
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 13:53:40 +0100 (CET)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9E0CA3CDA3B
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 14:13:25 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0560C10124A8
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 13:53:38 +0100 (CET)
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-a3c1a6c10bbso696336666b.3
- for <ltp@lists.linux.it>; Tue, 20 Feb 2024 04:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1708433618; x=1709038418; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=vMTxFFoqdG4Zd0qEjrciOp4M5319KbeRghq+NH5Wd2E=;
- b=AMxqIMLOJ3nI+hB3d8e9BMUT3gVlWg73vlM/4YhoNmB+J6ftesMPUKY2Hzj9FwlT6G
- lt0p46SGi+NcgAnJzal6ehglYsGwn3ibVG0mw0+bRBYw5zVyNxFKa4R/2eC0SsETsfOF
- 883aX74+f1PEV7H0VumlXQ5sLE2kULJio66wlhCPeUmKvNAWW9eVg9QRIpVBVKrqEmlq
- sfSqP4ZaHPhUECWtTlPW6VFGIMD0BpsMhk8KqImSxgASq2CGhSbTKbhV3vqy4dZRg23C
- f/zvvhdnQhNcV5+1fugEFDVeToLxItfyWVPm/EdI7UQRVCP/47ioa5GgnR4LYAxrZMn9
- 4nTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1708433618; x=1709038418;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=vMTxFFoqdG4Zd0qEjrciOp4M5319KbeRghq+NH5Wd2E=;
- b=DO5CSv3pCkL2j43L6hBreqI4CTKGRdGRXwCbVauiu2iZbxyBGgSIZJsDpbfUqt64Xu
- 1hQosnmspGiOPFpYA/8yZGMuiZN116zMbRy8S6dt2t++2o1b7zyPhlYnSj65t2czRTTH
- I+RY4SeGnJWN/nkw6HKk6E7lfuRyLT940EVZDgYXDLczIZ2AgYaijDW8NILE76FnAkYO
- R703osTk5YB1txEvxHFDsN3ooBbWeKYOK0HmpywBgzUs8nBX3j7SvH3zd6APtIgs3feF
- Rf0FZA8eGcAzt1ni0jvxs1JhzyU6aVGqbChuO6nuzuNlikp59ncZ11zjz9u8nijmcZ8c
- W7kg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXSf/MEnky1yrl+5eXZd9f38cxWnJfcTWK3zZCbQ6iYBboWFoyB4aBnh1EFJFtjqXnDgNh4cbkhkMvYzQ3wZnZTFi4=
-X-Gm-Message-State: AOJu0Yz2AMIBizmNb9K8vL9iaIxib87Cvhsm+70jDY+girulUjCN53nr
- ByC1hAIWfm+ypkstFvDJqhsMleKUPnmuI3QibZ1N3g0sNiab1AJWlCm91PSTUABCBSx8w9JWtsC
- i00E=
-X-Google-Smtp-Source: AGHT+IF4JHRCW0LvqnTZKw9RgwqO4FMufTVUPE70lCeb8QeDVvLkmGOOsQb3gwJgA5H7apy1ZYeZOA==
-X-Received: by 2002:a17:906:8c4:b0:a3d:b6c2:fc58 with SMTP id
- o4-20020a17090608c400b00a3db6c2fc58mr8747736eje.2.1708433618417; 
- Tue, 20 Feb 2024 04:53:38 -0800 (PST)
-Received: from [10.232.133.61] ([88.128.88.10])
- by smtp.gmail.com with ESMTPSA id
- rg8-20020a1709076b8800b00a3e28471fa4sm3434738ejc.59.2024.02.20.04.53.37
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 20 Feb 2024 04:53:38 -0800 (PST)
-Message-ID: <b19a0003-5d5e-410b-ad23-3c0a982d2222@suse.com>
-Date: Tue, 20 Feb 2024 13:53:37 +0100
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 671D120D393
+ for <ltp@lists.linux.it>; Tue, 20 Feb 2024 14:13:25 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E40DB220DA;
+ Tue, 20 Feb 2024 13:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1708434803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0nLbEwsXYvXw62K5G/K/suoBx31Y5U+wDpOerpThLr8=;
+ b=pXmRHV46vFos3zaTRdODGGXFeMxDxR5Mf5yy+G3o+X6hqcyTQoHE0hzFJe8VJv58QW1KYg
+ oz9y9l/q07WpEUQTsMaytceCjcBI6mp6AlX49wBnxryTy2q+xO3jdkP69DQfZe3pVR39pp
+ Xeu/LXC+W5ENNfq1wdA8KkbVJCZFqWc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1708434803;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0nLbEwsXYvXw62K5G/K/suoBx31Y5U+wDpOerpThLr8=;
+ b=AT8LNd9g93s+J0Ohkgfs8mBlQIkBs9pXZ4SkZq4wWI/wTF2KjpS/EBN7sNXsxI+XWDExFH
+ CZSBOyBOtaU6t0Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1708434803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0nLbEwsXYvXw62K5G/K/suoBx31Y5U+wDpOerpThLr8=;
+ b=pXmRHV46vFos3zaTRdODGGXFeMxDxR5Mf5yy+G3o+X6hqcyTQoHE0hzFJe8VJv58QW1KYg
+ oz9y9l/q07WpEUQTsMaytceCjcBI6mp6AlX49wBnxryTy2q+xO3jdkP69DQfZe3pVR39pp
+ Xeu/LXC+W5ENNfq1wdA8KkbVJCZFqWc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1708434803;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0nLbEwsXYvXw62K5G/K/suoBx31Y5U+wDpOerpThLr8=;
+ b=AT8LNd9g93s+J0Ohkgfs8mBlQIkBs9pXZ4SkZq4wWI/wTF2KjpS/EBN7sNXsxI+XWDExFH
+ CZSBOyBOtaU6t0Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B0C1B139D0;
+ Tue, 20 Feb 2024 13:13:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OR1aKHOl1GXEIgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 20 Feb 2024 13:13:23 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 20 Feb 2024 14:13:19 +0100
+Message-Id: <20240220131319.11761-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20240119090713.13753-1-andrea.cervesato@suse.de>
-In-Reply-To: <20240119090713.13753-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [3.43 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.27)[73.95%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Add link01 test
+Subject: [LTP] [PATCH v2] Add chmod08 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,99 +104,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-please ignore this patch since the test case is covered by link02 already.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Andrea
+This test has been extracted from symlink01 and it verifies that
+chmod() is working correctly on symlink() generated files.
 
-On 1/19/24 10:07, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
->
-> This test verifies that link() is working correctly on symlink()
-> generated files, renaming the symbolic link and checking that
-> stat() information are preserved.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->   runtest/syscalls                        |  2 +-
->   testcases/kernel/syscalls/link/link01.c | 47 +++++++++++++++++++++++++
->   2 files changed, 48 insertions(+), 1 deletion(-)
->   create mode 100644 testcases/kernel/syscalls/link/link01.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 68460de0b..00a0dd87e 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -692,7 +692,7 @@ lchown03_16 lchown03_16
->   lgetxattr01 lgetxattr01
->   lgetxattr02 lgetxattr02
->   
-> -link01 symlink01 -T link01
-> +link01 link01
->   link02 link02
->   link04 link04
->   link05 link05
-> diff --git a/testcases/kernel/syscalls/link/link01.c b/testcases/kernel/syscalls/link/link01.c
-> new file mode 100644
-> index 000000000..e1cda7054
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/link/link01.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> + *    Author: David Fenner
-> + *    Copilot: Jon Hendrickson
-> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This test verifies that link() is working correctly on symlink()
-> + * generated files, renaming the symbolic link and checking that
-> + * stat() information are preserved.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run(void)
-> +{
-> +	struct stat oldlink_stat;
-> +	struct stat newlink_stat;
-> +	char *symname0 = "my_symlink0";
-> +	char *symname1 = "my_symlink1";
-> +
-> +	SAFE_SYMLINK(tst_get_tmpdir(), symname0);
-> +	SAFE_STAT(symname0, &oldlink_stat);
-> +
-> +	SAFE_LINK(symname0, symname1);
-> +	SAFE_STAT(symname1, &newlink_stat);
-> +
-> +	TST_EXP_EQ_LI(oldlink_stat.st_ino, newlink_stat.st_ino);
-> +	TST_EXP_EQ_LI(oldlink_stat.st_nlink, newlink_stat.st_nlink);
-> +
-> +	if (TST_RET == -1) {
-> +		SAFE_UNLINK(symname0);
-> +		remove(symname1);
-> +	} else {
-> +		SAFE_UNLINK(symname1);
-> +		remove(symname0);
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_tmpdir = 1,
-> +};
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/syscalls/chmod/chmod08.c | 61 +++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/chmod/chmod08.c
 
+diff --git a/testcases/kernel/syscalls/chmod/chmod08.c b/testcases/kernel/syscalls/chmod/chmod08.c
+new file mode 100644
+index 000000000..f9ca4e45a
+--- /dev/null
++++ b/testcases/kernel/syscalls/chmod/chmod08.c
+@@ -0,0 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    Author: David Fenner
++ *    Copilot: Jon Hendrickson
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that chmod() is working correctly on symlink()
++ * generated files.
++ */
++
++#include "tst_test.h"
++
++#define PERMS 01777
++#define TESTFILE "myobject"
++
++static char testfile[PATH_MAX];
++
++static void run(void)
++{
++	char *symname = "my_symlink0";
++	struct stat oldsym_stat;
++	struct stat newsym_stat;
++
++	SAFE_TOUCH(testfile, 0644, NULL);
++	SAFE_SYMLINK(testfile, symname);
++	SAFE_STAT(symname, &oldsym_stat);
++
++	TST_EXP_PASS(chmod(symname, PERMS));
++	SAFE_STAT(symname, &newsym_stat);
++
++	TST_EXP_EQ_LI(newsym_stat.st_mode & PERMS, PERMS);
++	TST_EXP_EXPR(oldsym_stat.st_mode != newsym_stat.st_mode,
++		"file mode has changed");
++
++	SAFE_UNLINK(symname);
++	remove(testfile);
++}
++
++static void setup(void)
++{
++	int tmplen;
++	char *tmpdir;
++
++	tmpdir = tst_get_tmpdir();
++	tmplen = strlen(tmpdir);
++
++	testfile[tmplen] = '/';
++	memcpy(testfile, tmpdir, tmplen);
++	memcpy(testfile + tmplen + 1, TESTFILE, strlen(TESTFILE));
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.needs_tmpdir = 1,
++};
+-- 
+2.35.3
 
 
 -- 
