@@ -4,109 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7383BC48BC3
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 09:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21570C48BC3
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 14:06:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B708F3D0353
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 10:37:42 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 79A6B3D0883
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 15:06:27 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B3AB3CC92D
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 10:37:26 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 10BE03C8EE0
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 15:06:10 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 09DE420119B
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 10:37:23 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7A7AB1A0111B
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 15:06:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4AC9C1FB4A;
- Wed, 21 Feb 2024 09:37:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 42BE721F90;
+ Wed, 21 Feb 2024 14:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708508242;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1708524367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5Qv6yfPXEdzAQIdJyEPjN0dQTaFxMDgsy98hbybjgzM=;
- b=vEFqjJm6XR2dDobZIYdYYRvcv7QEfGH8HFf+FcZAEp5hqb7UzIw0+DiAlCKw2k8ulqUl0O
- G+uG8QwX+ajV14YEWDdSFcQe+IWxUzzE8A1AnV66itePZn/YWffCqG64BcHS2zJQbtK5Ov
- 743Xrahf0efmScfPmZLnxHroHiyLS6s=
+ bh=9UNdB0EmbzBhaaBlnDLnNqwFS1ublojSRgyUN4wMX0o=;
+ b=Q9GYkxKRiaPO1ipUBYMZ5nwBgfksyOpML8PqSFvxxjxhy8sRohE4CHn1ReGMD1EMPWTcUt
+ geY9DVaZQcE4wKOYiI72/TjkJfmkP2QsuQwXhCad5oaphqjdo4/t7LIXBubJrIfv9JY/2w
+ TMphI0pRffS8qnrDRFhgD6J5dvAJ2eo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708508242;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1708524367;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5Qv6yfPXEdzAQIdJyEPjN0dQTaFxMDgsy98hbybjgzM=;
- b=JsMgA1o7wtYliKL72h+nlWAjxBcLfXMjtO48iabrS7/j94Bhi2bwdHae80HfmktWGzJ2Nx
- xf4NAL+Ci/FVbAAA==
+ bh=9UNdB0EmbzBhaaBlnDLnNqwFS1ublojSRgyUN4wMX0o=;
+ b=ivLqBmZTDhFuYl5yPofMGSBUTgYNXbRvuPeserl5sbaLAbHf/rb3zB96uOiUzz8P8M0Ydg
+ AZXqg0nm91uZsDAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708508242;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1708524367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5Qv6yfPXEdzAQIdJyEPjN0dQTaFxMDgsy98hbybjgzM=;
- b=vEFqjJm6XR2dDobZIYdYYRvcv7QEfGH8HFf+FcZAEp5hqb7UzIw0+DiAlCKw2k8ulqUl0O
- G+uG8QwX+ajV14YEWDdSFcQe+IWxUzzE8A1AnV66itePZn/YWffCqG64BcHS2zJQbtK5Ov
- 743Xrahf0efmScfPmZLnxHroHiyLS6s=
+ bh=9UNdB0EmbzBhaaBlnDLnNqwFS1ublojSRgyUN4wMX0o=;
+ b=Q9GYkxKRiaPO1ipUBYMZ5nwBgfksyOpML8PqSFvxxjxhy8sRohE4CHn1ReGMD1EMPWTcUt
+ geY9DVaZQcE4wKOYiI72/TjkJfmkP2QsuQwXhCad5oaphqjdo4/t7LIXBubJrIfv9JY/2w
+ TMphI0pRffS8qnrDRFhgD6J5dvAJ2eo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708508242;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1708524367;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5Qv6yfPXEdzAQIdJyEPjN0dQTaFxMDgsy98hbybjgzM=;
- b=JsMgA1o7wtYliKL72h+nlWAjxBcLfXMjtO48iabrS7/j94Bhi2bwdHae80HfmktWGzJ2Nx
- xf4NAL+Ci/FVbAAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ bh=9UNdB0EmbzBhaaBlnDLnNqwFS1ublojSRgyUN4wMX0o=;
+ b=ivLqBmZTDhFuYl5yPofMGSBUTgYNXbRvuPeserl5sbaLAbHf/rb3zB96uOiUzz8P8M0Ydg
+ AZXqg0nm91uZsDAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 347F213A25;
- Wed, 21 Feb 2024 09:37:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id ojg2C1LE1WW1CQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 21 Feb 2024 09:37:22 +0000
-Date: Wed, 21 Feb 2024 10:37:20 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20240221093720.GB1213466@pevik>
-References: <20240220074218.13487-1-xuyang2018.jy@fujitsu.com>
- <20240220074218.13487-3-xuyang2018.jy@fujitsu.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31F7D13A69;
+ Wed, 21 Feb 2024 14:06:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Aes9C08D1mXifAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 21 Feb 2024 14:06:07 +0000
+Date: Wed, 21 Feb 2024 15:04:59 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <ZdYDC7m7xJ_MbXR3@yuki>
+References: <20240219153012.3085-1-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240220074218.13487-3-xuyang2018.jy@fujitsu.com>
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vEFqjJm6;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JsMgA1o7
-X-Spamd-Result: default: False [-2.51 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20240219153012.3085-1-akumar@suse.de>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Q9GYkxKR;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ivLqBmZT
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_THREE(0.00)[3];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_GOOD(-0.10)[text/plain]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[]; DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
  RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 4AC9C1FB4A
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Rspamd-Queue-Id: 42BE721F90
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/7] syscalls/swapon03: use tst_max_swapfiles()
- and GET_USED_SWAPFILES() api
+Subject: Re: [LTP] [PATCH] msync01: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,78 +116,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+Hi!
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - *
+> - * Get system page size,
+> - * Creat a temporary directory and a file under it used for mapping.
+> - * Write 1 page size char data into file.
+> - * Initialize paged region (256 bytes) from the specified offset pos.
+> - */
+> -void setup(void)
+> +static void setup(void)
+>  {
+> -	size_t c_total = 0, nwrite = 0;	/* no. of bytes to be written */
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	page_sz = SAFE_SYSCONF(_SC_PAGESIZE);
+>  
+> -	page_sz = (size_t)getpagesize();
+> +	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
+>  
+> -	tst_tmpdir();
+> -
+> -	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
+> -
+> -	while (c_total < page_sz) {
+> -		nwrite = write(fildes, write_buf, sizeof(write_buf));
+> -		if (nwrite <= 0)
+> -			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
+> -		else
+> -			c_total += nwrite;
+> -	}
+> -
+> -	/*
+> -	 * Call mmap to map virtual memory (mul. of page size bytes) from the
+> -	 * beginning of temporary file (offset is 0) into memory.
+> -	 */
+> -	addr = mmap(0, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED,
+> -		    fildes, 0);
+> -
+> -	/* Check for the return value of mmap() */
+> -	if (addr == MAP_FAILED)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
+> -
+> -	/* Set 256 bytes, at 100 byte offset in the mapped region */
+> -	memset(addr + 100, 1, 256);
+> +	SAFE_LSEEK(fd, page_sz, SEEK_SET);
 
-I see swapon03 failures on aarch64 and ppc64le on SLES and openSUSE after this commit.
+Why the LSEEK here? If I'm reading the original code correctly it wrote
+page_size worth of bytes not a single byte at page size offset.
 
-Here is timeout after 31s:
+Also I guess that we have to rewrite the file on each iteration, i.e.
 
-# ./swapon03
-...
-tst_test.c:1701: TINFO: === Testing on ext2 ===
-tst_test.c:1117: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.47.0 (5-Feb-2023)
-tst_test.c:1131: TINFO: Mounting /dev/loop0 to /tmp/LTP_swaVqwa6f/mntpoint fstyp=ext2 flags=0
-tst_ioctl.c:26: TINFO: FIBMAP ioctl is supported
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-Test timeouted, sending SIGKILL!
-tst_test.c:1679: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-tst_test.c:1681: TBROK: Test killed! (timeout?)
+- write page_size bytes 'a'
+- mmap() that region and memset() to 'b'
+- msync() that region
+- read that back by read() and expect it to be changed to 'b'
 
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-### TEST swapon03 COMPLETE >>> 2.
+Also given the speed of current hardware I would make the size of the
+msynced() region to be configurable and set the default to a few
+megabytes (8 or 16) at least.
 
-I tried to run with .max_runtime = 60, but even then it fails after 1m 30s:
-...
-tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
-tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
-tst_test.c:1701: TINFO: === Testing on ext2 ===
-tst_test.c:1117: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.47.0 (5-Feb-2023)
-tst_test.c:1131: TINFO: Mounting /dev/loop0 to /tmp/LTP_swaQsjhAp/mntpoint fstyp=ext2 flags=0
-tst_ioctl.c:26: TINFO: FIBMAP ioctl is supported
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-Test timeouted, sending SIGKILL!
-tst_test.c:1679: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-tst_test.c:1681: TBROK: Test killed! (timeout?)
+> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, "a", 1);
+>  }
+>  
+> -void cleanup(void)
+> +static void cleanup(void)
+>  {
+> -	if (munmap(addr, page_sz) == -1)
+> -		tst_resm(TBROK | TERRNO, "munmap failed");
+> -
+> -	if (close(fildes) == -1)
+> -		tst_resm(TWARN | TERRNO, "close failed");
+> -
+> -	tst_rmdir();
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +	.needs_tmpdir = 1
+> +};
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-
-I'm trying with LTP_TIMEOUT_MUL=3.
-
-BTW there is still broken swapoff01 on master on ppc64le which I reported [1]:
-libswap.c:153: TBROK: Failed to create swapfile
-(obviously no change in this patchset)
-
-But I'll ping Li separately.
-
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/20240131190122.GB30901@pevik/
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
