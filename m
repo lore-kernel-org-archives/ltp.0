@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FBFC48BC3
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 15:26:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DCE4C48BEB
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 15:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1708529171; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1708530455; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=Wa+iaNBj/vYhOgn3Ptt/XjdiByAk4L2QBKVmaOYAoHo=;
- b=W3OiWUdJMxCkqPbpcajdgci9PjTKfWvRUnpiZWZJVsSX97g8FkQiQj9pdAOiNe1GQ0a3H
- WURfeij4lsQNvHMZjppRGxsgELTWQkMKoRqY95/ZLvxTddjzvTMX/T8J054nKn6IXJAXSjN
- cy4HcJXDUSmEBT/HE31mvTM/7zxys7k=
+ bh=N37UAppTHq/vXWiTyVPdp3NlN4yjb+UfYbvZO/x6Cs8=;
+ b=qnfSeGNTnf6fx+GhBcQVa6McVzaO0SU3wXyRsP4yRimlxOru5IFQFvQlJUbZhQsrIGaVw
+ UrClYpmofa61YiRkIACl34uGucYMF2iGuky6bJDS/eiDxZ2ecTRi/6WKk8RQAybqgmqLWAr
+ Z0YrJWJ0w5nzOC/81nqYRhmRvwy4Bsc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 467663D0B15
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:26:11 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8D3883D0883
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:47:35 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 690F13C8EE0
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:25:49 +0100 (CET)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+ by picard.linux.it (Postfix) with ESMTPS id 163703D0353
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:47:13 +0100 (CET)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AA4AB602A15
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:25:48 +0100 (CET)
-Received: by mail-ej1-x62c.google.com with SMTP id
- a640c23a62f3a-a3d484a58f6so103124366b.3
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 07:25:48 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C89BB60B05E
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:47:12 +0100 (CET)
+Received: by mail-ej1-x632.google.com with SMTP id
+ a640c23a62f3a-a3f3d0d2787so114023066b.3
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 07:47:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1708529147; x=1709133947; darn=lists.linux.it;
+ d=suse.com; s=google; t=1708530431; x=1709135231; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=LZ+VRj4bOs/50gJ5sa/vw6iaVdCnSgJUmLMYsayQ+ms=;
- b=H/k5Qv30Wuklil7tZWW0zlenJx8UIA3LMXzzD341ktL4Uoa95xP3BzqePqI9nXPLHi
- Uo0Xew8bjmyj1Qn8NoD/wOltNeerI8ETNlMlASYws1seJ+fTl7B+TIOowwxBnaHuUsoO
- DD12KnzJFi0kbIQjHPVlEVIMTBy+BnNlE04duBS+DfWWVoBAwtwhAb9AHTYmf9u3dOZ4
- t54iI+Sg5zVWUhgfATfvO7NyNo9e1gS5OqMmxrx9I6+Im8XhBsMI1kIlcSRP0Myi9VGk
- i6G7MuMLjtuCBL1HN/zUPMUgU1P7kuWIlH3626rGHnBVLAQ+rfvsi1hRMCNdIXRUhJcg
- YxNQ==
+ bh=myFLBQaugo1POv6o9n6uKoNiFUBHgZST0DNIs8viR74=;
+ b=NcX72spDMwVeYwczwK5tK7rwa12XzVLghBGuU8EhhVNE4TnPx2/5KNgVQW64d0WsLg
+ qqNjwgEwJZdcv/3phgbRE+2i+LJk4GIos8pdui8GVBjbViBS1TJ27dC5O1DDfWfuJ0Um
+ hy6P+5NqPY+yjN/X4bMKKY/gWEyDA3dF8lfp53TXs+N5aUCf0EadzkqlljRIkYKQoe3H
+ czVIXCyTFPAOld8Y7t/7i52HMhA+/7e26y53zOysP5+fkQTztlQdwMVKdepCDbsAh6PH
+ cBOEUK09CdCiIoM9EbfPIhSrxAMmyXCyWI4wsbCRkgzEMqwVj76u2Hx45duE0H1Zo7Gb
+ TSiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1708529147; x=1709133947;
+ d=1e100.net; s=20230601; t=1708530431; x=1709135231;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=LZ+VRj4bOs/50gJ5sa/vw6iaVdCnSgJUmLMYsayQ+ms=;
- b=LJnmU5mN54vYVJfkFSDWVs/B1PHsjFQUyLFyXmSlRaHkwj8avssLTmId7nCksxmP5Y
- rcckn41ZCkK4CHWXNE5x3DoFsGl1OjI3OByCICzqs5PcrmnhNW6kAHXd/Box5SXCz04M
- UGu4qanHeREBlsR1IVPnC18Jl/NvK5IENgbymuwyAyMICQr+REzzuTpbYGUk0i6wQrAM
- mwugMSiwsO2hRm0x32bVohHhISNUHdK4VVABGT1OfcG2kZ1JbmW/T0l3bu5N1R644YD7
- BQehsMCREiIJtynr6FWbWd+hKNcN9OyAlmAdf9+UHfMkjtx5k6iDNbm1UrnT4JBfHJC3
- Fqqg==
-X-Gm-Message-State: AOJu0YxnuRVjs1wx0oIne997cbJA74SIQ3RjAC5ZIAdlY5StMZ6XqYX9
- KETPFh/Lp0P+Wpq+MP6GzY9ndTTi78/7knNQdqZeHV8ieHF2yL0kfK4l60joSwZghDkFdrUph+R
- ioD0=
-X-Google-Smtp-Source: AGHT+IEGFyEZ5KqH3DQ4YCCbSOW2xGZpzyHGy5Zj13GkHfb5F/aDyMSl9TMw0cOvKdZt1vbYm4pKfw==
-X-Received: by 2002:a17:906:e085:b0:a3f:870:535c with SMTP id
- gh5-20020a170906e08500b00a3f0870535cmr2910462ejb.44.1708529147290; 
- Wed, 21 Feb 2024 07:25:47 -0800 (PST)
+ bh=myFLBQaugo1POv6o9n6uKoNiFUBHgZST0DNIs8viR74=;
+ b=EdjD6Je39Z5fVsxumpk0GLjCJt0Dd+vf1Mbp5XoqAJ+17xRz2xFcloxVZB/OafwD/0
+ YgvHs2dsfsRfobl+8FhLQyV8hZhxVY1VkkuZJXD4CtgPccHp/FBfL+A+pIQmfCy3CbLT
+ b11K23OWbCtMubVxiFDqIMAzmCAjL7gCnZi4mU6WT8xNbteX0/up/ani3V87AQk29glM
+ lUsf/SJ/9JfhrAl+hofj8fD7AWaEjpQzpH+CoEqWYnam5data7Qc+IeiPW7bZdNeXROU
+ DG+J/uKhfTkcg8MM8YH7nfSnCUMETvN7hmWoUuCzV5Esu+tzwsboCvIQnqYBdRiwj856
+ H6WQ==
+X-Gm-Message-State: AOJu0YwCha8vjVuDwaX7C829Q+MKNmao7Xi+M8JHA2u4nOiP54iIpVrR
+ fINOkMZNA/eRyZ7qDu6RTpGwQwPF1kgXjk9nto+jkC4wHBPeb773x6CpJx7dBAfx23lE1z8q/1F
+ 5OlI=
+X-Google-Smtp-Source: AGHT+IHmupMqzs084Pb5VRVKG1Kg0Mkq+vSg9TQoKe75eOvJnO9VXa+vJqZR2HBJMLpylFrUhxkmLw==
+X-Received: by 2002:a17:906:b191:b0:a3e:9b8b:bb16 with SMTP id
+ w17-20020a170906b19100b00a3e9b8bbb16mr5691361ejy.42.1708530431322; 
+ Wed, 21 Feb 2024 07:47:11 -0800 (PST)
 Received: from [10.232.133.81] ([88.128.88.5])
  by smtp.gmail.com with ESMTPSA id
- bh5-20020a170906a0c500b00a3ea6b5e4eesm2976703ejb.19.2024.02.21.07.25.46
+ h2-20020a1709062dc200b00a3cf8cb80c1sm5070920eji.156.2024.02.21.07.47.10
  for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 21 Feb 2024 07:25:46 -0800 (PST)
-Message-ID: <d3a85ff2-25f5-4b2c-ae53-c89647627717@suse.com>
-Date: Wed, 21 Feb 2024 16:25:46 +0100
+ Wed, 21 Feb 2024 07:47:11 -0800 (PST)
+Message-ID: <e9cc0cb2-7c47-4be9-9e4e-909a73399679@suse.com>
+Date: Wed, 21 Feb 2024 16:47:10 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
 To: ltp@lists.linux.it
 References: <20231222094455.3878-1-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <20231222094455.3878-1-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ <20231222094455.3878-3-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <20231222094455.3878-3-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] fchownat01: Convert to new API
+Subject: Re: [LTP] [PATCH v2 3/3] fchownat03: Add error tests for fchownat()
+ system call
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,198 +105,135 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
+This could be merged with fchownat01, by extending the tcase structure 
+and checking when exp_errno flag is defined or not.
+
+Regards,
+Andrea
+
 On 12/22/23 10:44, Yang Xu wrote:
+> A series of tests were added to test the negative results of fchownat()
+>
 > Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 > ---
->   .../kernel/syscalls/fchownat/fchownat01.c     | 163 +++++++-----------
->   1 file changed, 61 insertions(+), 102 deletions(-)
+>   runtest/syscalls                              |   1 +
+>   testcases/kernel/syscalls/fchownat/.gitignore |   1 +
+>   .../kernel/syscalls/fchownat/fchownat03.c     | 101 ++++++++++++++++++
+>   3 files changed, 103 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/fchownat/fchownat03.c
 >
-> diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
-> index 7771c111a..c00c6063e 100644
-> --- a/testcases/kernel/syscalls/fchownat/fchownat01.c
-> +++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
-> @@ -1,133 +1,92 @@
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index b7ceb25d3..589c2c9a3 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -275,6 +275,7 @@ fchown05_16 fchown05_16
+>   #fchownat test case
+>   fchownat01 fchownat01
+>   fchownat02 fchownat02
+> +fchownat03 fchownat03
+>   
+>   fcntl01 fcntl01
+>   fcntl01_64 fcntl01_64
+> diff --git a/testcases/kernel/syscalls/fchownat/.gitignore b/testcases/kernel/syscalls/fchownat/.gitignore
+> index 35c00345b..60fac7e69 100644
+> --- a/testcases/kernel/syscalls/fchownat/.gitignore
+> +++ b/testcases/kernel/syscalls/fchownat/.gitignore
+> @@ -1,2 +1,3 @@
+>   /fchownat01
+>   /fchownat02
+> +/fchownat03
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat03.c b/testcases/kernel/syscalls/fchownat/fchownat03.c
+> new file mode 100644
+> index 000000000..85591dd93
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat03.c
+> @@ -0,0 +1,101 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
->   /*
-> - *   Copyright (c) International Business Machines  Corp., 2006
-> - *   AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> + * Copyright (c) International Business Machines  Corp., 2006
+> +/*
 > + * Copyright (c) Linux Test Project, 2006-2023
-> + * Author: Yi Yang <yyangcdl@cn.ibm.com>
+> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
 > + */
 > +
 > +/*\
 > + * [Description]
->    *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> + * Check the basic functionality of the faccessat() system call.
->    *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software Foundation,
-> - *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> -/*
-> - * DESCRIPTION
-> - *	This test case will verify basic function of fchownat
-> - *	added by kernel 2.6.16 or up.
-> + * - fchownat() passes if dir_fd is file descriptor to the directory
-> + *   where the file is located and pathname is relative path of the file.
-> + * - fchownat() passes if pathname is absolute, then dirfd is ignored.
-> + * - fchownat() passes if pathname is relative and dirfd is the special
-> + *   value AT_FDCWD.
-> + * - fchownat() passes if pathname is an empty string, operate on the file
-> + *   referred to by dirfd.
-> + * - fchownat() passes if pathname is a symbolic link, operate on the link
-> + *   itself.
->    */
->   
->   #define _GNU_SOURCE
->   
-> -#include <sys/types.h>
-> -#include <sys/stat.h>
-> -#include <unistd.h>
->   #include <stdlib.h>
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -#include "lapi/fcntl.h"
+> + *
+> + * - fchownat() fails with ENOTDIR  if dir_fd is file descriptor to the file
+> + *   and pathname is relative path of the file.
+> + * - fchownat() fails with EBADF if dir_fd is invalid.
+> + * - fchownat() fails with EINVAL if flag is invalid.
+> + * - fchownat() fails with ENAMETOOLONG if pathname is too long.
+> + * - fchownat() fails with ELOOP if too many symbolic links were
+> + *   encountered while resolving path.
+> + * - fchownat() fails with ENOENT if the file does not exist.
+> + * - fchownat() fails with EFAULT if pathname points outside accessible
+> + *   address space.
+> + */
+> +
+> +#include <stdlib.h>
 > +#include "tst_test.h"
->   
-> -#define TESTFILE	"testfile"
-> -
-> -static void setup(void);
-> -static void cleanup(void);
-> +#define TESTFILE        "testfile"
-> +#define TESTFILE_LINK   "testfile_link"
->   
->   static int dir_fd;
-> -static int fd;
-> -static int no_fd = -1;
->   static int cu_fd = AT_FDCWD;
+> +
+> +#define TESTFILE  "testfile"
+> +#define TESTELOOP "test_eloop1"
+> +#define PATH_LEN (PATH_MAX + 2)
+> +
+> +static int dir_fd, fd;
+> +static int invalid_fd = -1;
 > +static char *testfile;
-> +static char *abspath;
-> +static char *symfile;
-> +static char *empty;
->   
-> -static struct test_case_t {
-> -	int exp_ret;
-> -	int exp_errno;
-> -	int flag;
+> +static char path[PATH_LEN];
+> +static char *long_path = path;
+> +static char *testeloop;
+> +static char *emptypath;
+> +static char *bad_path;
+> +
 > +static struct tcase {
->   	int *fds;
-> -	char *filenames;
-> -} test_cases[] = {
-> -	{0, 0, 0, &dir_fd, TESTFILE},
-> -	{-1, ENOTDIR, 0, &fd, TESTFILE},
-> -	{-1, EBADF, 0, &no_fd, TESTFILE},
-> -	{-1, EINVAL, 9999, &dir_fd, TESTFILE},
-> -	{0, 0, 0, &cu_fd, TESTFILE},
+> +	int *fds;
 > +	char **filenames;
 > +	int flag;
+> +	int exp_errno;
+> +	char *desc;
 > +} tcases[] = {
-> +	{&dir_fd, &testfile, 0},
-> +	{&dir_fd, &abspath, 0},
-> +	{&cu_fd, &testfile, 0},
-> +	{&cu_fd, &empty, AT_EMPTY_PATH},
-> +	{&dir_fd, &symfile, AT_SYMLINK_NOFOLLOW}
->   };
->   
-> -char *TCID = "fchownat01";
-> -int TST_TOTAL = ARRAY_SIZE(test_cases);
-> -static void fchownat_verify(const struct test_case_t *);
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -		for (i = 0; i < TST_TOTAL; i++)
-> -			fchownat_verify(&test_cases[i]);
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
->   static void setup(void)
->   {
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
+> +	{&fd, &testfile, 0, ENOTDIR, "path prefix is not a directory"},
+> +	{&invalid_fd, &testfile, 0, EBADF, "invalid fd"},
+> +	{&dir_fd, &testfile, -1, EINVAL, "invalid flag"},
+> +	{&dir_fd, &long_path, 0, ENAMETOOLONG, "pathname is too long"},
+> +	{&dir_fd, &testeloop, 0, ELOOP, "too many symbolic links"},
+> +	{&dir_fd, &emptypath, 0, ENOENT, "the file does not exist"},
+> +	{&dir_fd, &bad_path, 0, EFAULT, "inaccessible address space"},
+> +};
+> +
+> +static void setup(void)
+> +{
 > +	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
->   
-> -	tst_tmpdir();
+> +
 > +	SAFE_TOUCH(TESTFILE, 0600, NULL);
->   
-> -	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
-> +	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
->   
-> -	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
-> +	char *tmpdir = tst_get_tmpdir();
->   
-> -	fd = SAFE_OPEN(cleanup, "testfile2", O_CREAT | O_RDWR, 0600);
-> +	abspath = tst_aprintf("%s/" TESTFILE, tmpdir);
-> +	free(tmpdir);
->   }
->   
-> -static void fchownat_verify(const struct test_case_t *test)
+> +
+> +	fd = SAFE_OPEN("testfile2", O_CREAT | O_RDWR, 0600);
+> +
+> +	memset(path, 'a', PATH_LEN);
+> +
+> +	SAFE_SYMLINK("test_eloop1", "test_eloop2");
+> +	SAFE_SYMLINK("test_eloop2", "test_eloop1");
+> +
+> +	bad_path = tst_get_bad_addr(NULL);
+> +}
+> +
 > +static void fchownat_verify(unsigned int i)
->   {
-> -	TEST(fchownat(*(test->fds), test->filenames, geteuid(),
-> -		      getegid(), test->flag));
+> +{
 > +	struct tcase *tc = &tcases[i];
->   
-> -	if (TEST_RETURN != test->exp_ret) {
-> -		tst_resm(TFAIL | TTERRNO,
-> -			 "fchownat() returned %ld, expected %d, errno=%d",
-> -			 TEST_RETURN, test->exp_ret, test->exp_errno);
-> -		return;
-> -	}
-> -
-> -	if (TEST_ERRNO == test->exp_errno) {
-> -		tst_resm(TPASS | TTERRNO,
-> -			 "fchownat() returned the expected errno %d: %s",
-> -			 test->exp_ret, strerror(test->exp_errno));
-> -	} else {
-> -		tst_resm(TFAIL | TTERRNO,
-> -			 "fchownat() failed unexpectedly; expected: %d - %s",
-> -			 test->exp_errno, strerror(test->exp_errno));
-> -	}
-> +	TST_EXP_PASS(fchownat(*tc->fds, *tc->filenames, geteuid(), getegid(),
-> +		     tc->flag), "fchownat(%d, %s, %d, %d, %d)",
-> +		     *tc->fds, *tc->filenames, geteuid(), getegid(), tc->flag);
-I would call geteuid() and getegid() only once before the TST_EXP_PASS.
->   }
->   
->   static void cleanup(void)
->   {
-> -	if (fd > 0)
-> -		close(fd);
-> -
-> -	if (dir_fd > 0)
-> -		close(dir_fd);
-> -
-> -	tst_rmdir();
+> +
+> +	TST_EXP_FAIL(fchownat(*tc->fds, *tc->filenames, geteuid(), getegid(),
+> +		     tc->flag), tc->exp_errno, "fchownat() fails with %s",
+> +		     tc->desc);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd > -1)
+> +		SAFE_CLOSE(fd);
+> +
 > +	if (dir_fd > -1)
 > +		SAFE_CLOSE(dir_fd);
->   }
+> +}
 > +
 > +static struct tst_test test = {
 > +	.tcnt = ARRAY_SIZE(tcases),
@@ -304,16 +242,14 @@ I would call geteuid() and getegid() only once before the TST_EXP_PASS.
 > +	.cleanup = cleanup,
 > +	.bufs = (struct tst_buffers []) {
 > +		{&testfile, .str = TESTFILE},
-> +		{&empty, .str = ""},
-> +		{&symfile, .str = TESTFILE_LINK},
+> +		{&testeloop, .str = TESTELOOP},
+> +		{&emptypath, .str = ""},
 > +		{},
 > +	},
 > +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
 > +};
 
-Otherwise LGTM
-
-Andrea
 
 
 -- 
