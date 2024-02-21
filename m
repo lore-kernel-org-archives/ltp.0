@@ -4,97 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9623C48BC3
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 15:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FBFC48BC3
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 15:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1708529171; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=Wa+iaNBj/vYhOgn3Ptt/XjdiByAk4L2QBKVmaOYAoHo=;
+ b=W3OiWUdJMxCkqPbpcajdgci9PjTKfWvRUnpiZWZJVsSX97g8FkQiQj9pdAOiNe1GQ0a3H
+ WURfeij4lsQNvHMZjppRGxsgELTWQkMKoRqY95/ZLvxTddjzvTMX/T8J054nKn6IXJAXSjN
+ cy4HcJXDUSmEBT/HE31mvTM/7zxys7k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 510A63D0CC0
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:07:02 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 467663D0B15
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:26:11 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2AD9B3D015B
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:06:46 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 690F13C8EE0
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:25:49 +0100 (CET)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
+ [IPv6:2a00:1450:4864:20::62c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 161351A00A51
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:06:45 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B38D61FB61;
- Wed, 21 Feb 2024 15:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708528004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UhjArlG5hlISUMsMYUxML7AqjxMxibrWqtc6qsepCjg=;
- b=PYbF7wS8WQNTFprH8tFmUu3901QFy7EV6eS39GXB1WbODZbo1lW6SP+l79KcZoJEXD0b7J
- LkyfdIXgQz7jE0wj/R4+xEK4Ppqc3hvOFAeQXMGghP1qtaZggv0tXaJIL1nEg2bIQ+Njj7
- qWTgysILU/djS0/A0zBvSym4jraj5fQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708528004;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UhjArlG5hlISUMsMYUxML7AqjxMxibrWqtc6qsepCjg=;
- b=f3o/+0Q4hzJGpix2+L+jrgb9kR6O9kAcsMZBgXGPFwh8H9/EYOPFDYePytv8/I50lneYfm
- aG4Hm1aBXo1xLJDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708528004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UhjArlG5hlISUMsMYUxML7AqjxMxibrWqtc6qsepCjg=;
- b=PYbF7wS8WQNTFprH8tFmUu3901QFy7EV6eS39GXB1WbODZbo1lW6SP+l79KcZoJEXD0b7J
- LkyfdIXgQz7jE0wj/R4+xEK4Ppqc3hvOFAeQXMGghP1qtaZggv0tXaJIL1nEg2bIQ+Njj7
- qWTgysILU/djS0/A0zBvSym4jraj5fQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708528004;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UhjArlG5hlISUMsMYUxML7AqjxMxibrWqtc6qsepCjg=;
- b=f3o/+0Q4hzJGpix2+L+jrgb9kR6O9kAcsMZBgXGPFwh8H9/EYOPFDYePytv8/I50lneYfm
- aG4Hm1aBXo1xLJDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A38AA139D0;
- Wed, 21 Feb 2024 15:06:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /kPSJoQR1mV7DAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 21 Feb 2024 15:06:44 +0000
-Date: Wed, 21 Feb 2024 16:05:37 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZdYRQYw-XIPG5CNZ@yuki>
-References: <20240219154909.22937-1-andrea.cervesato@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AA4AB602A15
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 16:25:48 +0100 (CET)
+Received: by mail-ej1-x62c.google.com with SMTP id
+ a640c23a62f3a-a3d484a58f6so103124366b.3
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 07:25:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1708529147; x=1709133947; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=LZ+VRj4bOs/50gJ5sa/vw6iaVdCnSgJUmLMYsayQ+ms=;
+ b=H/k5Qv30Wuklil7tZWW0zlenJx8UIA3LMXzzD341ktL4Uoa95xP3BzqePqI9nXPLHi
+ Uo0Xew8bjmyj1Qn8NoD/wOltNeerI8ETNlMlASYws1seJ+fTl7B+TIOowwxBnaHuUsoO
+ DD12KnzJFi0kbIQjHPVlEVIMTBy+BnNlE04duBS+DfWWVoBAwtwhAb9AHTYmf9u3dOZ4
+ t54iI+Sg5zVWUhgfATfvO7NyNo9e1gS5OqMmxrx9I6+Im8XhBsMI1kIlcSRP0Myi9VGk
+ i6G7MuMLjtuCBL1HN/zUPMUgU1P7kuWIlH3626rGHnBVLAQ+rfvsi1hRMCNdIXRUhJcg
+ YxNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1708529147; x=1709133947;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=LZ+VRj4bOs/50gJ5sa/vw6iaVdCnSgJUmLMYsayQ+ms=;
+ b=LJnmU5mN54vYVJfkFSDWVs/B1PHsjFQUyLFyXmSlRaHkwj8avssLTmId7nCksxmP5Y
+ rcckn41ZCkK4CHWXNE5x3DoFsGl1OjI3OByCICzqs5PcrmnhNW6kAHXd/Box5SXCz04M
+ UGu4qanHeREBlsR1IVPnC18Jl/NvK5IENgbymuwyAyMICQr+REzzuTpbYGUk0i6wQrAM
+ mwugMSiwsO2hRm0x32bVohHhISNUHdK4VVABGT1OfcG2kZ1JbmW/T0l3bu5N1R644YD7
+ BQehsMCREiIJtynr6FWbWd+hKNcN9OyAlmAdf9+UHfMkjtx5k6iDNbm1UrnT4JBfHJC3
+ Fqqg==
+X-Gm-Message-State: AOJu0YxnuRVjs1wx0oIne997cbJA74SIQ3RjAC5ZIAdlY5StMZ6XqYX9
+ KETPFh/Lp0P+Wpq+MP6GzY9ndTTi78/7knNQdqZeHV8ieHF2yL0kfK4l60joSwZghDkFdrUph+R
+ ioD0=
+X-Google-Smtp-Source: AGHT+IEGFyEZ5KqH3DQ4YCCbSOW2xGZpzyHGy5Zj13GkHfb5F/aDyMSl9TMw0cOvKdZt1vbYm4pKfw==
+X-Received: by 2002:a17:906:e085:b0:a3f:870:535c with SMTP id
+ gh5-20020a170906e08500b00a3f0870535cmr2910462ejb.44.1708529147290; 
+ Wed, 21 Feb 2024 07:25:47 -0800 (PST)
+Received: from [10.232.133.81] ([88.128.88.5])
+ by smtp.gmail.com with ESMTPSA id
+ bh5-20020a170906a0c500b00a3ea6b5e4eesm2976703ejb.19.2024.02.21.07.25.46
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 21 Feb 2024 07:25:46 -0800 (PST)
+Message-ID: <d3a85ff2-25f5-4b2c-ae53-c89647627717@suse.com>
+Date: Wed, 21 Feb 2024 16:25:46 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240219154909.22937-1-andrea.cervesato@suse.de>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: ltp@lists.linux.it
+References: <20231222094455.3878-1-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <20231222094455.3878-1-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add lstat03 test
+Subject: Re: [LTP] [PATCH v2 1/3] fchownat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,143 +95,226 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> This test has been extracted from symlink01 test and it checks that
-> lstat() executed on file provide the same information of symlink
-> linking to it.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+On 12/22/23 10:44, Yang Xu wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 > ---
-> Remove test_lstat_no_path() test
-> TST_EXP_PASS for lstat() and SAFE_SYMLINK for symlink()
-> Removed memory leak using tst_get_tmpdir()
-
-The leak is stil there, as far as I can tell.
-
->  runtest/syscalls                           |  4 +-
->  testcases/kernel/syscalls/lstat/.gitignore |  2 +
->  testcases/kernel/syscalls/lstat/lstat03.c  | 50 ++++++++++++++++++++++
->  3 files changed, 54 insertions(+), 2 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/lstat/lstat03.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 7794f1465..a7f22d907 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -723,12 +723,12 @@ lseek02 lseek02
->  lseek07 lseek07
->  lseek11 lseek11
->  
-> -lstat01A symlink01 -T lstat01
-> -lstat01A_64 symlink01 -T lstat01_64
->  lstat01 lstat01
->  lstat01_64 lstat01_64
->  lstat02 lstat02
->  lstat02_64 lstat02_64
-> +lstat03 lstat03
-> +lstat03_64 lstat03_64
->  
->  mallinfo02 mallinfo02
->  
-> diff --git a/testcases/kernel/syscalls/lstat/.gitignore b/testcases/kernel/syscalls/lstat/.gitignore
-> index a497a445f..72cba871f 100644
-> --- a/testcases/kernel/syscalls/lstat/.gitignore
-> +++ b/testcases/kernel/syscalls/lstat/.gitignore
-> @@ -2,3 +2,5 @@
->  /lstat01_64
->  /lstat02
->  /lstat02_64
-> +/lstat03
-> +/lstat03_64
-> diff --git a/testcases/kernel/syscalls/lstat/lstat03.c b/testcases/kernel/syscalls/lstat/lstat03.c
-> new file mode 100644
-> index 000000000..30932f1fa
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/lstat/lstat03.c
-> @@ -0,0 +1,50 @@
+>   .../kernel/syscalls/fchownat/fchownat01.c     | 163 +++++++-----------
+>   1 file changed, 61 insertions(+), 102 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
+> index 7771c111a..c00c6063e 100644
+> --- a/testcases/kernel/syscalls/fchownat/fchownat01.c
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
+> @@ -1,133 +1,92 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> + *    Author: David Fenner
-> + *    Copilot: Jon Hendrickson
-> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
+>   /*
+> - *   Copyright (c) International Business Machines  Corp., 2006
+> - *   AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> + * Copyright (c) International Business Machines  Corp., 2006
+> + * Copyright (c) Linux Test Project, 2006-2023
+> + * Author: Yi Yang <yyangcdl@cn.ibm.com>
 > + */
 > +
 > +/*\
 > + * [Description]
-> + *
-> + * This test checks that lstat() executed on file provide the same information
-> + * of symlink linking to it.
-> + */
-> +
+>    *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> + * Check the basic functionality of the faccessat() system call.
+>    *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software Foundation,
+> - *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - */
+> -/*
+> - * DESCRIPTION
+> - *	This test case will verify basic function of fchownat
+> - *	added by kernel 2.6.16 or up.
+> + * - fchownat() passes if dir_fd is file descriptor to the directory
+> + *   where the file is located and pathname is relative path of the file.
+> + * - fchownat() passes if pathname is absolute, then dirfd is ignored.
+> + * - fchownat() passes if pathname is relative and dirfd is the special
+> + *   value AT_FDCWD.
+> + * - fchownat() passes if pathname is an empty string, operate on the file
+> + *   referred to by dirfd.
+> + * - fchownat() passes if pathname is a symbolic link, operate on the link
+> + *   itself.
+>    */
+>   
+>   #define _GNU_SOURCE
+>   
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -#include <unistd.h>
+>   #include <stdlib.h>
+> -#include <errno.h>
+> -#include <string.h>
+> -#include <signal.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "lapi/fcntl.h"
 > +#include "tst_test.h"
-> +
-> +static void run(void)
-> +{
-> +	char *symname = "my_symlink0";
+>   
+> -#define TESTFILE	"testfile"
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> +#define TESTFILE        "testfile"
+> +#define TESTFILE_LINK   "testfile_link"
+>   
+>   static int dir_fd;
+> -static int fd;
+> -static int no_fd = -1;
+>   static int cu_fd = AT_FDCWD;
+> +static char *testfile;
+> +static char *abspath;
+> +static char *symfile;
+> +static char *empty;
+>   
+> -static struct test_case_t {
+> -	int exp_ret;
+> -	int exp_errno;
+> -	int flag;
+> +static struct tcase {
+>   	int *fds;
+> -	char *filenames;
+> -} test_cases[] = {
+> -	{0, 0, 0, &dir_fd, TESTFILE},
+> -	{-1, ENOTDIR, 0, &fd, TESTFILE},
+> -	{-1, EBADF, 0, &no_fd, TESTFILE},
+> -	{-1, EINVAL, 9999, &dir_fd, TESTFILE},
+> -	{0, 0, 0, &cu_fd, TESTFILE},
+> +	char **filenames;
+> +	int flag;
+> +} tcases[] = {
+> +	{&dir_fd, &testfile, 0},
+> +	{&dir_fd, &abspath, 0},
+> +	{&cu_fd, &testfile, 0},
+> +	{&cu_fd, &empty, AT_EMPTY_PATH},
+> +	{&dir_fd, &symfile, AT_SYMLINK_NOFOLLOW}
+>   };
+>   
+> -char *TCID = "fchownat01";
+> -int TST_TOTAL = ARRAY_SIZE(test_cases);
+> -static void fchownat_verify(const struct test_case_t *);
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		for (i = 0; i < TST_TOTAL; i++)
+> -			fchownat_verify(&test_cases[i]);
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -}
+> -
+>   static void setup(void)
+>   {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
+>   
+> -	tst_tmpdir();
+> +	SAFE_TOUCH(TESTFILE, 0600, NULL);
+>   
+> -	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
+> +	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
+>   
+> -	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
 > +	char *tmpdir = tst_get_tmpdir();
-> +
-> +	SAFE_SYMLINK(tmpdir, symname);
-> +
-> +	struct stat path_stat;
-> +	struct stat link_stat;
-> +
-> +	TST_EXP_PASS(lstat(tmpdir, &path_stat));
-> +	TST_EXP_PASS(lstat(symname, &link_stat));
-> +
-> +	TST_EXP_EQ_LI(path_stat.st_dev, link_stat.st_dev);
-> +	TST_EXP_EQ_LI(path_stat.st_nlink, link_stat.st_nlink);
-> +	TST_EXP_EQ_LI(path_stat.st_uid, link_stat.st_uid);
-> +	TST_EXP_EQ_LI(path_stat.st_gid, link_stat.st_gid);
-> +	TST_EXP_EQ_LI(path_stat.st_atime, link_stat.st_atime);
-> +	TST_EXP_EQ_LI(path_stat.st_mtime, link_stat.st_mtime);
-> +	TST_EXP_EQ_LI(path_stat.st_ctime, link_stat.st_ctime);
-> +
-> +	TST_EXP_EXPR(path_stat.st_mode != link_stat.st_mode,
-> +		"object and symbolic link have different st_mode");
-> +	TST_EXP_EXPR(path_stat.st_size != link_stat.st_size,
-> +		"object and symbolic link have different st_size");
-
-Now shouldn't this be the other way around, i.e. we are doing stat on
-two different entities and we should concentrate on the parts that are
-different?
-
-I guess that one way would be to explicitly set different gid/uid for
-the symlink and then check that these values are not equal.
-
-Also if we fill the file with a megabyte of data I'm pretty sure that
-st_size will be different from the symlink st_size.
-
-I guess that the inode should differ.
-
-The same for the timestamps, if we go for the more granular timestaps
-the creation time would differ.
-
-It's mostly accidental that these values actually match.
-
-> +	SAFE_UNLINK(symname);
-> +}
+>   
+> -	fd = SAFE_OPEN(cleanup, "testfile2", O_CREAT | O_RDWR, 0600);
+> +	abspath = tst_aprintf("%s/" TESTFILE, tmpdir);
+> +	free(tmpdir);
+>   }
+>   
+> -static void fchownat_verify(const struct test_case_t *test)
+> +static void fchownat_verify(unsigned int i)
+>   {
+> -	TEST(fchownat(*(test->fds), test->filenames, geteuid(),
+> -		      getegid(), test->flag));
+> +	struct tcase *tc = &tcases[i];
+>   
+> -	if (TEST_RETURN != test->exp_ret) {
+> -		tst_resm(TFAIL | TTERRNO,
+> -			 "fchownat() returned %ld, expected %d, errno=%d",
+> -			 TEST_RETURN, test->exp_ret, test->exp_errno);
+> -		return;
+> -	}
+> -
+> -	if (TEST_ERRNO == test->exp_errno) {
+> -		tst_resm(TPASS | TTERRNO,
+> -			 "fchownat() returned the expected errno %d: %s",
+> -			 test->exp_ret, strerror(test->exp_errno));
+> -	} else {
+> -		tst_resm(TFAIL | TTERRNO,
+> -			 "fchownat() failed unexpectedly; expected: %d - %s",
+> -			 test->exp_errno, strerror(test->exp_errno));
+> -	}
+> +	TST_EXP_PASS(fchownat(*tc->fds, *tc->filenames, geteuid(), getegid(),
+> +		     tc->flag), "fchownat(%d, %s, %d, %d, %d)",
+> +		     *tc->fds, *tc->filenames, geteuid(), getegid(), tc->flag);
+I would call geteuid() and getegid() only once before the TST_EXP_PASS.
+>   }
+>   
+>   static void cleanup(void)
+>   {
+> -	if (fd > 0)
+> -		close(fd);
+> -
+> -	if (dir_fd > 0)
+> -		close(dir_fd);
+> -
+> -	tst_rmdir();
+> +	if (dir_fd > -1)
+> +		SAFE_CLOSE(dir_fd);
+>   }
 > +
 > +static struct tst_test test = {
-> +	.test_all = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = fchownat_verify,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&testfile, .str = TESTFILE},
+> +		{&empty, .str = ""},
+> +		{&symfile, .str = TESTFILE_LINK},
+> +		{},
+> +	},
 > +	.needs_tmpdir = 1,
 > +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Otherwise LGTM
+
+Andrea
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
