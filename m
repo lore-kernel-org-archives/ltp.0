@@ -4,103 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5C90C48BC3
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FA9C48BC3
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 16:28:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CA7E23D086F
-	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 17:19:29 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0E7293D086C
+	for <ltp@archiver.kernel.org>; Wed, 21 Feb 2024 17:28:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A4263CD900
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 17:19:13 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id B46783CD900
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 17:28:02 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A1600100158C
- for <ltp@lists.linux.it>; Wed, 21 Feb 2024 17:19:12 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 68EA4600C61
+ for <ltp@lists.linux.it>; Wed, 21 Feb 2024 17:28:00 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2412A22244;
- Wed, 21 Feb 2024 16:19:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 626251F385;
+ Wed, 21 Feb 2024 16:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708532349;
+ t=1708532880;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uXc9QyCnsPD5tFa0O3qTlqxNVx8T4eELNEQM5aJdDus=;
- b=Q8ct2O2lKN1F1dl5EbqicGyGMIjbXuRCYeykyIBCsk51e9gCKYpxxfe9vvZlM2Fk6mgI9k
- a1uW4vd1dVR3ErnEvOMAMqO1oQB6yNbyUUynUTJTL4WKxr1rIwGnYOEkC1zwa4jRbKiraF
- FoPwMT0yTB5Qdmrh/7PK05etlzSZB9A=
+ bh=ezF21mCvGiqcyxCeXQEJqxhTpcFakkttzT6WRRncEvU=;
+ b=M5JdTm3uNYdVzL0iAgANOcsmTGm/3vb8ZI1FwfmNNSiyBDakudHL5k6ExEpZO3WrprX8Va
+ tsYtqt8a5Ov7kn7vvSe+v58M0E0hRG4NJd9sHo/xCbSl4YIzEEItDE1K1qmoP7JVGsliXK
+ /uA6NoJPeRkPNFfoOj8wbizZDTWds4o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708532349;
+ s=susede2_ed25519; t=1708532880;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uXc9QyCnsPD5tFa0O3qTlqxNVx8T4eELNEQM5aJdDus=;
- b=rJAr5GFktQ6iuCKbOHbZ6l1wlt6ECOjxdQ7TqGAIzf/0ZjcxC65oZJQUgVWfaP/iwYr2jN
- 3XFo3UBvgbcvYFBQ==
+ bh=ezF21mCvGiqcyxCeXQEJqxhTpcFakkttzT6WRRncEvU=;
+ b=eqgsA1vyRSkJZUdno7/SajBORPuvB6WsflthlaplF2psJICH0dX+fMwKBwLVqMwzInC4Vc
+ EFW3omv0EbVqLMBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708532349;
+ t=1708532880;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uXc9QyCnsPD5tFa0O3qTlqxNVx8T4eELNEQM5aJdDus=;
- b=Q8ct2O2lKN1F1dl5EbqicGyGMIjbXuRCYeykyIBCsk51e9gCKYpxxfe9vvZlM2Fk6mgI9k
- a1uW4vd1dVR3ErnEvOMAMqO1oQB6yNbyUUynUTJTL4WKxr1rIwGnYOEkC1zwa4jRbKiraF
- FoPwMT0yTB5Qdmrh/7PK05etlzSZB9A=
+ bh=ezF21mCvGiqcyxCeXQEJqxhTpcFakkttzT6WRRncEvU=;
+ b=M5JdTm3uNYdVzL0iAgANOcsmTGm/3vb8ZI1FwfmNNSiyBDakudHL5k6ExEpZO3WrprX8Va
+ tsYtqt8a5Ov7kn7vvSe+v58M0E0hRG4NJd9sHo/xCbSl4YIzEEItDE1K1qmoP7JVGsliXK
+ /uA6NoJPeRkPNFfoOj8wbizZDTWds4o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708532349;
+ s=susede2_ed25519; t=1708532880;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uXc9QyCnsPD5tFa0O3qTlqxNVx8T4eELNEQM5aJdDus=;
- b=rJAr5GFktQ6iuCKbOHbZ6l1wlt6ECOjxdQ7TqGAIzf/0ZjcxC65oZJQUgVWfaP/iwYr2jN
- 3XFo3UBvgbcvYFBQ==
+ bh=ezF21mCvGiqcyxCeXQEJqxhTpcFakkttzT6WRRncEvU=;
+ b=eqgsA1vyRSkJZUdno7/SajBORPuvB6WsflthlaplF2psJICH0dX+fMwKBwLVqMwzInC4Vc
+ EFW3omv0EbVqLMBA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E6243139D1;
- Wed, 21 Feb 2024 16:19:08 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 48499139D1;
+ Wed, 21 Feb 2024 16:28:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id dFCCNXwi1mWAZAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 21 Feb 2024 16:19:08 +0000
-Date: Wed, 21 Feb 2024 17:19:07 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id C3O9D5Ak1mUzZgAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 21 Feb 2024 16:28:00 +0000
+Date: Wed, 21 Feb 2024 17:27:54 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>,
- Martin Doucha <martin.doucha@suse.com>
-Message-ID: <20240221161907.GA1266903@pevik>
-References: <20231204002623.17302-1-wegao@suse.com>
- <20240219134845.22171-1-wegao@suse.com>
- <20240220091837.GA1088847@pevik> <ZdW1UDq17nHx0eE2@wegao>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240221162754.GA1270838@pevik>
+References: <20240220091328.2946023-1-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZdW1UDq17nHx0eE2@wegao>
-Authentication-Results: smtp-out1.suse.de;
+In-Reply-To: <20240220091328.2946023-1-liwang@redhat.com>
+Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spamd-Result: default: False [-2.30 / 50.00]; ARC_NA(0.00)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- RCVD_COUNT_THREE(0.00)[3];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
  RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] tst_test.c: Set system default umaks to 0022
+Subject: Re: [LTP] [PATCH] move_pages12: compacting memory before each test
+ loop
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,79 +118,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Li,
 
-> On Tue, Feb 20, 2024 at 10:18:37AM +0100, Petr Vorel wrote:
-> > Hi Wei,
+> These simple steps are added to prepare the system's memory state
+> for the test, aiming to increase the test's reliability and
+> consistency by starting from a clean and defragmented memory state.
 
-> > >  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
+> To reduce accidental failures on small (1.5G) RAM system:
 
-> > > +	umask(0022);
+>   7 tst_test.c:1558: TINFO: Timeout per run is 0h 21m 00s
+>   8 move_pages12.c:273: TINFO: Free RAM 1542656 kB
+>   9 move_pages12.c:289: TINFO: Increasing 16384kB hugepages pool on node 0 to 4
+>   10 move_pages12.c:299: TINFO: Increasing 16384kB hugepages pool on node 1 to 4
+>   11 move_pages12.c:216: TINFO: Allocating and freeing 4 hugepages on node 0
+>   12 move_pages12.c:216: TINFO: Allocating and freeing 4 hugepages on node 1
+>   13 move_pages12.c:207: TPASS: Bug not reproduced
+>   14 move_pages12.c:106: TFAIL: madvise failed: ENOMEM (12)
+>   ...<repeats 741 times>...
+>   756 move_pages12.c:207: TPASS: Bug not reproduced
 
-> > I don't think this is a good idea. Changing umask() in the library can influent
-> > tests. Could you please instead add umask(0) (to reset umask) on the tests which
-> > need it? The way it's done in open07.c.
+> Note:
+>   This is a single hugetlb test without invoking the hugetlb-lib of LTP,
+>   so we add the compacting memory/cache steps additionally.
 
-First I thought that modifying umask (either with umask(0022) or just reset with
-umask(0)) is not a good idea, but now I'm not sure:
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/move_pages/move_pages12.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-1) We have quite a few tests, which will needs it:
-NEW API tests:
-$ git grep '^\s*umask(0' $(git grep -l tst_test.h) | wc -l
-15
+> diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+> index fd7017d79..c387a326f 100644
+> --- a/testcases/kernel/syscalls/move_pages/move_pages12.c
+> +++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+> @@ -154,6 +154,9 @@ static void do_test(unsigned int n)
+>  	pid_t cpid = -1;
+>  	int status;
 
-All tests:
-$ git grep '^\s*umask(0' testcases/ | wc -l
-34
+> +	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+> +	SAFE_FILE_PRINTF("/proc/sys/vm/compact_memory", "1");
 
-And for sure some other, which will fail when too restrictive umask is set.
+LGTM
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Wouldn't be better to have it in the library? Hopefully fewer tests would be
-influenced this setup (and would need to set different umask()).
-
-> cgroup_core01.c and statx07.c can use umask(0) in tests and i have updated the patch.
-
-> But chdir01 will still failed on vfat and exfat. Like following error msg:
-> chdir01.c:100: TFAIL: nobody: chdir("subdir") returned unexpected value -1: EACCES (13)
-
-FYI test fails on vfat and ntfs when umask is 0077 (because override file and
-directory permissions) (other filesystems are ok).
-
-> The reason is umask(0) should set before mount /dev/loop0 to /tmp/xxx/mntpoint, otherwise you 
-> have no chance modify permission of file. What's your suggestion?
-
-> susetest:/tmp/LTP_chd5JtblL/mntpoint # mount | grep loop0
-> /dev/loop0 on /tmp/LTP_chd5JtblL/mntpoint type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
-> /dev/loop0 on /var/tmp/LTP_chd5JtblL/mntpoint type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
-
-2) tests, which set .mount_device = 1 and have more restrictive umask will not
-work. Workaround would be to not use it and mount manually in the setup().
-Or, reset umask with umask(0).
-
-WDYT?
+BTW we clear cache with /proc/sys/vm/drop_caches in quite a few files,
+I wonder if it would make sense to add a helper for it. Likely not
+(it's oneliner).
 
 Kind regards,
 Petr
 
-> susetest:/tmp/LTP_chd5JtblL # chmod 777 mntpoint <<<< 
-> susetest:/tmp/LTP_chd5JtblL # ll
-> total 307216
-> drwx------ 4 root root     16384 Dec 31  1969 mntpoint  <<<<<<<< group and other has no any permission even try chmod
-> -rw------- 1 root root 314572800 Feb 19 04:51 test_dev.img
-
-> susetest:/tmp/LTP_chd5JtblL/mntpoint # touch aa
-> susetest:/tmp/LTP_chd5JtblL/mntpoint # ll
-> total 16
-> -rwx------ 1 root root    0a
-> drwx------ 2 root root 8192 Feb 19 04:50 keep_out
-> drwx------ 2 root root 8192 Feb 19 04:50 subdir
-> -rwx------ 1 root root    0 Feb 19 04:50 testfile <<<<<<
-
-> Thanks.
-
-
-> > Kind regards,
-> > Petr
+> +
+>  	addr = SAFE_MMAP(NULL, tcases[n].tpages * hpsz, PROT_READ | PROT_WRITE,
+>  		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
