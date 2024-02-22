@@ -4,99 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2D14C54788
-	for <ltp@archiver.kernel.org>; Thu, 22 Feb 2024 13:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF87C48BF8
+	for <ltp@archiver.kernel.org>; Thu, 22 Feb 2024 13:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1708610069; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ZW2jkVy8RF1UOe+BRelYiuEsCeB2C9fspfedHGdqdf8=;
+ b=lBClMI6on4UkAk1P3L5+njOJx1QaSqFaD7704Nf5Oi1fA8up4+qZxb3vfi/WvHchSgte8
+ r8Qgh9PnxkMyFl/DZ6gUs9A7DEkcDU389SL9EwCWyrZnhNaRzH0AAmiiCTOBqyf/KEV6xP5
+ XXv3QBs2Eu3N4zK1ohP9sHneIQ8kzjA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E4733CF9F2
-	for <ltp@archiver.kernel.org>; Thu, 22 Feb 2024 14:52:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 99DD53D0084
+	for <ltp@archiver.kernel.org>; Thu, 22 Feb 2024 14:54:29 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7EBA63CEFB9
- for <ltp@lists.linux.it>; Thu, 22 Feb 2024 14:51:51 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4C5D33CEFB9
+ for <ltp@lists.linux.it>; Thu, 22 Feb 2024 14:54:07 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CECD06018CF
- for <ltp@lists.linux.it>; Thu, 22 Feb 2024 14:51:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 609B71F7BA;
- Thu, 22 Feb 2024 13:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708609909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UW4kJC5C1ZUaFhqoAINGukdRURw5Y5rw/CJE+RhTCLc=;
- b=0m2pFbOOEUs3Wz/qvND59MTJsZJlg5mB9IHb76ACtcaEtH+zNy7vVY4MfuDxc2/Nh9szAX
- NEcOZcM/2DsXw0bgLcw05bVg2s4q9FNEH7X62UJvcn9rTbQCW+/KFX129yHoB3n7Ae4mpF
- Ee+0PJBnPjO1OgdVzPC4L8yz+M/qYz4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708609909;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UW4kJC5C1ZUaFhqoAINGukdRURw5Y5rw/CJE+RhTCLc=;
- b=Ttsb7lDAjGgIdLEWLgF4yTbOf+yT0bX5k0bOi5p+TbBefsb11ra7gu4O/bJes2bYh8VGAD
- +e4mStaJPOuLZwCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708609909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UW4kJC5C1ZUaFhqoAINGukdRURw5Y5rw/CJE+RhTCLc=;
- b=0m2pFbOOEUs3Wz/qvND59MTJsZJlg5mB9IHb76ACtcaEtH+zNy7vVY4MfuDxc2/Nh9szAX
- NEcOZcM/2DsXw0bgLcw05bVg2s4q9FNEH7X62UJvcn9rTbQCW+/KFX129yHoB3n7Ae4mpF
- Ee+0PJBnPjO1OgdVzPC4L8yz+M/qYz4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708609909;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UW4kJC5C1ZUaFhqoAINGukdRURw5Y5rw/CJE+RhTCLc=;
- b=Ttsb7lDAjGgIdLEWLgF4yTbOf+yT0bX5k0bOi5p+TbBefsb11ra7gu4O/bJes2bYh8VGAD
- +e4mStaJPOuLZwCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4250613A8C;
- Thu, 22 Feb 2024 13:51:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bS28DnVR12XoPwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 22 Feb 2024 13:51:49 +0000
-Date: Thu, 22 Feb 2024 14:50:38 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZddRLm8zpX-wKBGe@yuki>
-References: <20240222044119.28500-1-wegao@suse.com> <ZdcIT1WiEfV7MCQ-@rei>
- <ZddOKzhl1semChgB@wegao.166.144.58>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 51CDD10085F3
+ for <ltp@lists.linux.it>; Thu, 22 Feb 2024 14:54:06 +0100 (CET)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-33d28468666so1298457f8f.0
+ for <ltp@lists.linux.it>; Thu, 22 Feb 2024 05:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1708610046; x=1709214846; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=JJOxMliItX+x8cCfdTk+GObYT0ecM+aDnz7HHiPiesk=;
+ b=UZ9yIukETMkWxIUiH49BT4WBx7EFJ9yj/jbSP9RNpwvO12TA0rmjQOo5krADfh3D58
+ PzPKh6E6fN21lv4z8f5rgvQv4s8YM33peBGK2vkLeLvkveuPUIqifcG3kR8oE8m709sh
+ MxNRY46DneZ+4uuRQTOEOpWfLxLFp5hysXQNBBx3HpskV80JCGaMP/VhBU2jys5MbvFS
+ +x0hdNI8Wbg1triVcMPt1/Q04R9WzPJNUP2tB3I+c9G7b7/C4iVIYOkaRfmiMz4I3zMJ
+ MQfVKtrZPpe0In4sDzPOlqj4YezYpPNg5Al9iIXYA7GW8cGaYbtCXbH+LwN9IJUqb9Hh
+ v2wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1708610046; x=1709214846;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=JJOxMliItX+x8cCfdTk+GObYT0ecM+aDnz7HHiPiesk=;
+ b=VgAnKsir28HT9CFXGN6hY43zgB15+YK/yIBTonyCIphEIm76MN/vbW03SSRLP/imlc
+ KU/go1hXEmh5CueU2mik6/20ROKnrXKbBd6hfsgizIDplmbH9IrnFJZiW0ej407gkgkA
+ TjcVtxiHwmENlvTr75TM3UY0aIIXuamsePzHiubGQy9bVbIhmY19cEnAToW7SX01eY+x
+ YVufY+sDw6gz4tIrPS0Y/qC0MWZ4QdaEooeOPCDzJAviTJMSn6lGcH9o9tuApqg+X9Sv
+ FAA1o5ZkhxISHGLOWdrXN1k2v/dC2wgbeY3EXkHCgUFw5RDxZTNn5Iw+DMc66jANx04D
+ sjFw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCULy7Dsky9OF9DesAMuJmlGKxZ/gFQkdUrNzCKAvR6p0fx7HXqZXMWcJWNx7PZDtvX+fkpzkabLZHWMvl/HmJxLQys=
+X-Gm-Message-State: AOJu0YwPWqKK/bnbKtWnsFwYXbr18KWF6PyQ92j2IaNvmd38lDZLrAFY
+ K+BcqG3N2K2UqI7u5WUgM5ML10M6rcG408ln9/ZlncbJJwXzCI0MrQb+KCa/SA==
+X-Google-Smtp-Source: AGHT+IGMWaVB41d65OaF0EC7tP4xUTrR5KtWYVwnM9qGtATNm0XdpyqSK9ahQeacwIDPcGm9rQLL/w==
+X-Received: by 2002:a05:6000:10c6:b0:33d:7d88:bd3e with SMTP id
+ b6-20020a05600010c600b0033d7d88bd3emr3429379wrx.43.1708610045768; 
+ Thu, 22 Feb 2024 05:54:05 -0800 (PST)
+Received: from wegao.166.144.58 ([81.95.8.245])
+ by smtp.gmail.com with ESMTPSA id
+ h5-20020a05600016c500b0033d60cba289sm11532972wrf.68.2024.02.22.05.54.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 22 Feb 2024 05:54:05 -0800 (PST)
+Date: Thu, 22 Feb 2024 08:53:58 -0500
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZddR9k/Rk66XabBM@wegao.166.144.58>
+References: <20231204002623.17302-1-wegao@suse.com>
+ <20240219134845.22171-1-wegao@suse.com>
+ <20240220091837.GA1088847@pevik> <ZdW1UDq17nHx0eE2@wegao>
+ <20240221161907.GA1266903@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZddOKzhl1semChgB@wegao.166.144.58>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.80 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[37.27%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <20240221161907.GA1266903@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] swapoff01.c: Adjust blocks size base on
- pagesize
+Subject: Re: [LTP] [PATCH v2] tst_test.c: Set system default umaks to 0022
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,61 +96,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it, Martin Doucha <martin.doucha@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > Isn't this more about Btrfs though? Looking at the make_swapfile() we do
-> > use statvfs to get filesystem block size and if that is Btrfs with 64k
-> > blocks we end up with swapfile of a size of 4GB that sounds like a bit
-> > too much I guess.
-> > 
+On Wed, Feb 21, 2024 at 05:19:07PM +0100, Petr Vorel wrote:
+> Hi all,
 > 
-> Sorry for confusing. It should caused by block size instead of page size.
-> The code change should change like following, but i suppose you will not agree
-> on this solution, correct?
->
-> --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> @@ -12,6 +12,7 @@
->  #include <unistd.h>
->  #include <errno.h>
->  #include <stdlib.h>
-> +#include <sys/statvfs.h>
+> > On Tue, Feb 20, 2024 at 10:18:37AM +0100, Petr Vorel wrote:
+> > > Hi Wei,
 > 
->  #include "tst_test.h"
->  #include "lapi/syscalls.h"
-> @@ -44,8 +45,21 @@ static void setup(void)
->  {
->         is_swap_supported(TEST_FILE);
+> > > >  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
 > 
-> -       if (make_swapfile(SWAP_FILE, 65536, 1))
-> +       struct statvfs fs_info;
-> +       unsigned long blk_size;
-> +       if (statvfs(".", &fs_info) == -1)
-> +               tst_brk(TBROK, "Failed to get statvfs info");
-> +
-> +       blk_size = fs_info.f_bsize;
-> +
-> +       int blocks = 65535;
-> +
-> +       if (blk_size > 4096)
-> +               blocks = 65535 * 4096 / blk_size;
-> +
-> +       if (make_swapfile(SWAP_FILE, blocks, 1))
->                 tst_brk(TBROK, "Failed to create file for swap");
-> +
->  }
+> > > > +	umask(0022);
+> 
+> > > I don't think this is a good idea. Changing umask() in the library can influent
+> > > tests. Could you please instead add umask(0) (to reset umask) on the tests which
+> > > need it? The way it's done in open07.c.
+> 
+> First I thought that modifying umask (either with umask(0022) or just reset with
+> umask(0)) is not a good idea, but now I'm not sure:
+> 
+> 1) We have quite a few tests, which will needs it:
+> NEW API tests:
+> $ git grep '^\s*umask(0' $(git grep -l tst_test.h) | wc -l
+> 15
+> 
+> All tests:
+> $ git grep '^\s*umask(0' testcases/ | wc -l
+> 34
+> 
+> And for sure some other, which will fail when too restrictive umask is set.
+> 
+> Wouldn't be better to have it in the library? Hopefully fewer tests would be
+> influenced this setup (and would need to set different umask()).
+> 
+> > cgroup_core01.c and statx07.c can use umask(0) in tests and i have updated the patch.
+> 
+> > But chdir01 will still failed on vfat and exfat. Like following error msg:
+> > chdir01.c:100: TFAIL: nobody: chdir("subdir") returned unexpected value -1: EACCES (13)
+> 
+> FYI test fails on vfat and ntfs when umask is 0077 (because override file and
+> directory permissions) (other filesystems are ok).
+> 
+> > The reason is umask(0) should set before mount /dev/loop0 to /tmp/xxx/mntpoint, otherwise you 
+> > have no chance modify permission of file. What's your suggestion?
+> 
+> > susetest:/tmp/LTP_chd5JtblL/mntpoint # mount | grep loop0
+> > /dev/loop0 on /tmp/LTP_chd5JtblL/mntpoint type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
+> > /dev/loop0 on /var/tmp/LTP_chd5JtblL/mntpoint type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
+> 
+> 2) tests, which set .mount_device = 1 and have more restrictive umask will not
+> work. Workaround would be to not use it and mount manually in the setup().
+> Or, reset umask with umask(0).
+> 
+> WDYT?
 
-It may be easier to change the make_swapfile() function to accept
-megabytes instead of working around it like this.
+Currently i only need fix one case chdir01 so i will try to do workaround(mount mount manually in setup).
+If new fail happen in future then i suppose we need consider do umask in lib.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for your comments.
+
+> 
+> Kind regards,
+> Petr
+> 
+> > susetest:/tmp/LTP_chd5JtblL # chmod 777 mntpoint <<<< 
+> > susetest:/tmp/LTP_chd5JtblL # ll
+> > total 307216
+> > drwx------ 4 root root     16384 Dec 31  1969 mntpoint  <<<<<<<< group and other has no any permission even try chmod
+> > -rw------- 1 root root 314572800 Feb 19 04:51 test_dev.img
+> 
+> > susetest:/tmp/LTP_chd5JtblL/mntpoint # touch aa
+> > susetest:/tmp/LTP_chd5JtblL/mntpoint # ll
+> > total 16
+> > -rwx------ 1 root root    0a
+> > drwx------ 2 root root 8192 Feb 19 04:50 keep_out
+> > drwx------ 2 root root 8192 Feb 19 04:50 subdir
+> > -rwx------ 1 root root    0 Feb 19 04:50 testfile <<<<<<
+> 
+> > Thanks.
+> 
+> 
+> > > Kind regards,
+> > > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
