@@ -4,104 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34E14C48BC4
-	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 08:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9116DC48BC4
+	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 08:41:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4F8A53CF136
-	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 09:32:32 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D27323CF11B
+	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 09:41:13 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 859653CCBD1
- for <ltp@lists.linux.it>; Fri, 23 Feb 2024 09:32:16 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 13D023CCBD1
+ for <ltp@lists.linux.it>; Fri, 23 Feb 2024 09:40:58 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9011D600822
- for <ltp@lists.linux.it>; Fri, 23 Feb 2024 09:32:15 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 197CE1A000B0
+ for <ltp@lists.linux.it>; Fri, 23 Feb 2024 09:40:57 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3B3B12239D;
- Fri, 23 Feb 2024 08:32:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 095BB1F7B2;
+ Fri, 23 Feb 2024 08:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708677134;
+ t=1708677657;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IVpu/wPzkxLvDiMzBzZBYPCrwd+LIA79GePTigxANY0=;
- b=eaFEJgbm1KSdyt70Zc8f1iEQp0LL5RM31UOqJxnbCtHUgV4weiitG5WF+UPyA28/Nh1rSO
- Jp5QJrReu0gKCH9OsAHTymIif1isPqrEAAjTUjREH1FW9I0NuQT8016znWLU8xTF8/g5st
- omzFWMbszDeyW0Y0+jQYS4xjHYJujjk=
+ bh=Fyy/VlhcmMCiVa/b9TB3ssg+zRmnq+PaIBuOSB2z58A=;
+ b=psxqSw4K/oMb3iPk6pQ41XWHch8moIGdi0/2iNm3dMzL02wH/+EIfCoFP4OJEvH9QhwjaJ
+ d3HOSeXLUfAoTAx2ZqFMVIcGgiG4YWcyOtc1snGZCUw8u+oTxrGTAd72jtTdwJqKRjy36w
+ j3E9TjrPyRWqI8+tB63RbuFgn/eh6qk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708677134;
+ s=susede2_ed25519; t=1708677657;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IVpu/wPzkxLvDiMzBzZBYPCrwd+LIA79GePTigxANY0=;
- b=S8a22pYEPMkvB4j0uTljxxe+Hp6NGMfyKq3i+mVvO7B8dSs6ETFC+N9XuP37UwAD9Eyoj6
- 48rJDBp2xBsxsgDg==
+ bh=Fyy/VlhcmMCiVa/b9TB3ssg+zRmnq+PaIBuOSB2z58A=;
+ b=r8wmJnpMfn6OA/eCaTP7BkX5ZTiMaJVyBquH+Lsy2q0+SbZUmMO34FBPJ6blbZFBoQFgGt
+ oj5mluthpzOtDMDg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708677134;
+ t=1708677657;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IVpu/wPzkxLvDiMzBzZBYPCrwd+LIA79GePTigxANY0=;
- b=eaFEJgbm1KSdyt70Zc8f1iEQp0LL5RM31UOqJxnbCtHUgV4weiitG5WF+UPyA28/Nh1rSO
- Jp5QJrReu0gKCH9OsAHTymIif1isPqrEAAjTUjREH1FW9I0NuQT8016znWLU8xTF8/g5st
- omzFWMbszDeyW0Y0+jQYS4xjHYJujjk=
+ bh=Fyy/VlhcmMCiVa/b9TB3ssg+zRmnq+PaIBuOSB2z58A=;
+ b=psxqSw4K/oMb3iPk6pQ41XWHch8moIGdi0/2iNm3dMzL02wH/+EIfCoFP4OJEvH9QhwjaJ
+ d3HOSeXLUfAoTAx2ZqFMVIcGgiG4YWcyOtc1snGZCUw8u+oTxrGTAd72jtTdwJqKRjy36w
+ j3E9TjrPyRWqI8+tB63RbuFgn/eh6qk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708677134;
+ s=susede2_ed25519; t=1708677657;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IVpu/wPzkxLvDiMzBzZBYPCrwd+LIA79GePTigxANY0=;
- b=S8a22pYEPMkvB4j0uTljxxe+Hp6NGMfyKq3i+mVvO7B8dSs6ETFC+N9XuP37UwAD9Eyoj6
- 48rJDBp2xBsxsgDg==
+ bh=Fyy/VlhcmMCiVa/b9TB3ssg+zRmnq+PaIBuOSB2z58A=;
+ b=r8wmJnpMfn6OA/eCaTP7BkX5ZTiMaJVyBquH+Lsy2q0+SbZUmMO34FBPJ6blbZFBoQFgGt
+ oj5mluthpzOtDMDg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1713513419;
- Fri, 23 Feb 2024 08:32:14 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D699F13419;
+ Fri, 23 Feb 2024 08:40:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id YPGjBA5Y2GV7MwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Fri, 23 Feb 2024 08:32:14 +0000
-Date: Fri, 23 Feb 2024 09:32:12 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id CUY7Mxha2GWzNQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Fri, 23 Feb 2024 08:40:56 +0000
+Date: Fri, 23 Feb 2024 09:40:55 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20240223083212.GA1423688@pevik>
-References: <20240222044119.28500-1-wegao@suse.com> <ZdcIT1WiEfV7MCQ-@rei>
- <ZddOKzhl1semChgB@wegao.166.144.58>
- <CAEemH2dtarpDtPuzHgG6eeoB3Bhbfa1u9fjsb6dBFX-rPg-3dw@mail.gmail.com>
+Message-ID: <20240223084055.GB1423688@pevik>
+References: <20240223000543.1135129-1-edliaw@google.com>
+ <CAEemH2cLcpuagpy3EVJvuoLhMXPME1XXijLgjLSJYieVT+YiNw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2dtarpDtPuzHgG6eeoB3Bhbfa1u9fjsb6dBFX-rPg-3dw@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.50 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_THREE(0.00)[3];
- RCVD_VIA_SMTP_AUTH(0.00)[];
+In-Reply-To: <CAEemH2cLcpuagpy3EVJvuoLhMXPME1XXijLgjLSJYieVT+YiNw@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=psxqSw4K;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=r8wmJnpM
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.55 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.987];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MX_GOOD(-0.01)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[39.85%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.84)[85.23%]
+X-Rspamd-Queue-Id: 095BB1F7B2
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] swapoff01.c: Adjust blocks size base on
- pagesize
+Subject: Re: [LTP] [PATCH] tst_fd: Use raw syscall for fanotify_init
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,7 +118,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -122,41 +126,7 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi all,
 
-> Hi Wei, Cyril,
-
-
-> > > I do not think that this is a right solution though. Is there any reason
-> > > why we pass number of blocks to the make_swapfile instead of megabytes?
-
-> > @Li Wang, could you give some clue for above question(for why pass number
-> > of blocks instead of megabytes)?
-
-
-> I just keep the function interface like the original
-> (it wasn't designed by me:), but I guess the only
-> advantage is to test 1 block for different FS types.
-
-We use this function with 1 block, 10 blocks and 65536 blocks
-
-How about to have special function for 1 block and then other function which
-accepts MB? (e.g. 1 MB and 256 MB)?
-
-But could we first merge Yang Xu patchset so that he does not have to rebase it
-for ever?
-
-https://patchwork.ozlabs.org/project/ltp/list/?series=395713&state=*
-
-Also it'd be nice to have, but this can definitely wait after other things are
-solved.
-
--int make_swapfile(const char *swapfile, int blocks, int safe)
-+int _make_swapfile(const char *swapfile, int blocks, int safe)
-
-+#define MAKE_SWAPFILE(const char *swapfile, int blocks, int safe) \
-+	_make_swapfile(swapfile, blocks, 0)
-
-+#define SAFE_SWAPFILE(const char *swapfile, int blocks, int safe) \
-+	_make_swapfile(swapfile, blocks, 1)
+thanks, merged!
 
 Kind regards,
 Petr
