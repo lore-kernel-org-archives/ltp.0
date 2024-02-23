@@ -4,85 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B201AC5478C
-	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 12:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1708691405; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=tov2eUhweMG+ACFFv62qQnPMQ1gUOfcy5q+9WOMAH/g=;
- b=aan9mmBdVHVpv81PaonaI6uTTvCI43RXJwk34/F3oVXH57L5KC+4lTCuF0JNv4AREKsSA
- B9EtocgfqbASF37A91RYHS6CXg90Ytt/LOYKUI9BEhchD9JmT8OAOa9r92020x8Nl6iQhn4
- HJbBVM1XjaL5wQf9whqsGM1BQ6YYcEU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E420C54798
+	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 12:43:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F9193CF93E
-	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 13:30:05 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D07B13CF1B2
+	for <ltp@archiver.kernel.org>; Fri, 23 Feb 2024 13:43:42 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF7BE3CF5AB
- for <ltp@lists.linux.it>; Fri, 23 Feb 2024 13:29:42 +0100 (CET)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3BC4A3CE7BD
+ for <ltp@lists.linux.it>; Fri, 23 Feb 2024 13:43:27 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B65771401347
- for <ltp@lists.linux.it>; Fri, 23 Feb 2024 13:29:41 +0100 (CET)
-Received: by mail-ed1-x536.google.com with SMTP id
- 4fb4d7f45d1cf-5643eccad0bso1132220a12.1
- for <ltp@lists.linux.it>; Fri, 23 Feb 2024 04:29:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1708691381; x=1709296181; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=/o6j27JRJVJch9BU+cj87A77ZuojCFqZ4f8WSRR3Z5M=;
- b=M1X0eo1WGlUT+wbYv908ARp5Ch1bgeMo51BM8+9jodpGuRVMidNfu8jolNFDB7uNTb
- ZlkLjmOKbZ3qjosdO64yOOT2v+SHg5Yk5w6wSQmmZ52VnVRIE/tx9KeFarDehz1RuQtO
- yokr8cNXNaGf7LZ1pR+hI1WRykvztriGHxfiaSLwJN0YSBJicBaCf7E5ezP2hVCmhBpr
- w4ywGOBDzNosi4NG3gQQNlY8PHQC7/I93Vjh+akKbq3PbCmmi54s/u6pZmAkzzaaINfq
- kIVtenW52EJIpxfmVYFwdnqzKQ0uUk6u2gR6Pb9yHliGfWXXGHuJrtiLCNjZWWrObhfo
- N+7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1708691381; x=1709296181;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=/o6j27JRJVJch9BU+cj87A77ZuojCFqZ4f8WSRR3Z5M=;
- b=qxRbjYGvwkgVzZoKm5yuWH2i+uoai1H/1PnbmxyqI+oRJXn+52sjSXlUIwJ9dSYtfp
- Mxq4J08c/QK0kDkcAF58SaozIGMTloi1sYR13kFC+I31+vdK67OV3haLkO9zB/9oxrCa
- D/MYGvB09jd8T9+IcJsGjuJ6zr3Dlib1BM+AsXFAB7rqGTV31PGmZlyzO/b9F65OEZiJ
- Y2sXmrMyzo7VhkLnztD0Jvrfd8qMrEuzj04guGuYTyv5kcdICIGB7tU91OZBiJf+QL3G
- d3R+jlQ5nPBDvFaiNnvv4vDImy/EswSJvhE0YwLFQXidep62owVThakYzblBxLoz5Tq6
- WGLg==
-X-Gm-Message-State: AOJu0YyaZLiaN+SNx1Tcia4ZXsmkTVEiCwT6jbGmuEYaek3BqU4+Q0Fd
- T5+Q0dcyY348hFKLW3Z3B+RepSPR7bg3rUQmCT+GyZnYHbAqTop6zt9KJI7pBiQSHMKHiUTYb9e
- CEBk=
-X-Google-Smtp-Source: AGHT+IG4uTh52V5tAqBqFkp/mKI8mA9Kw9T5lCIf0NHSoN6Qtwcb6YgvWdaqENTCChDxKnGRmzxyrg==
-X-Received: by 2002:a17:906:dfe5:b0:a41:392d:e11c with SMTP id
- lc5-20020a170906dfe500b00a41392de11cmr108858ejc.26.1708691381140; 
- Fri, 23 Feb 2024 04:29:41 -0800 (PST)
-Received: from [10.232.133.81] ([88.128.88.88])
- by smtp.gmail.com with ESMTPSA id
- vh9-20020a170907d38900b00a3f1ea776a1sm2889622ejc.94.2024.02.23.04.29.40
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 23 Feb 2024 04:29:40 -0800 (PST)
-Message-ID: <b42a273b-5f57-4cd0-8dd9-03b14da9b7fd@suse.com>
-Date: Fri, 23 Feb 2024 13:29:39 +0100
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C9560600C5F
+ for <ltp@lists.linux.it>; Fri, 23 Feb 2024 13:43:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AE5281FC0C;
+ Fri, 23 Feb 2024 12:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1708692205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g0+x/uvv7oe0tbuq7VVwCmpcf5SC/oY1olCb2bQGHDc=;
+ b=qwzMSd5cNhQFFOE1j+H94RrwYyRPAw+osW89bUAL66LdY92o5E3ESv9RGGzqjCjGwqlH2e
+ mq67S1QP2IazVa+zgLAPncVGEkYK+lvDz9md5FywBIvoC17MCPw+ePfb/6qpRE5udeuJcb
+ jA/yTfiThz1dkmi7V4VEmHqDCqhaNas=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1708692205;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g0+x/uvv7oe0tbuq7VVwCmpcf5SC/oY1olCb2bQGHDc=;
+ b=+8bY/3ASS+3pXmOWd/2j7POjXESJvWz5YOKvxToK3QyljdmcHP/CeHAN8LH+YeD9EbX+96
+ 85SFlq0qFiKxIaAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1708692203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g0+x/uvv7oe0tbuq7VVwCmpcf5SC/oY1olCb2bQGHDc=;
+ b=1cc3PQ6tKejMnSuBh9tVLcm+v7cFhmGH295KzNK1Xpv16R5NKgY+WaHaWdACWhTRqtdY47
+ Sl7bhGbw6oDzngIpt0NVxh6Ba9N56+20hcy2bN5yaaaOF0EWaCoHjA4/pibkG3E6IieHAj
+ RyAPxBoVWFjH87s9LhLLdhBPyBJ1AmQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1708692203;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g0+x/uvv7oe0tbuq7VVwCmpcf5SC/oY1olCb2bQGHDc=;
+ b=QgV0wJ7CZHbZdNpqwDoSGoenMBb4PiH+D/kajVLQsRtmSecRepPPXCZ/9MgSkYYIVGLUA5
+ oxbeC9YqrdDQCbCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D146133DC;
+ Fri, 23 Feb 2024 12:43:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ABj0JOuS2GXLdwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 23 Feb 2024 12:43:23 +0000
+Date: Fri, 23 Feb 2024 13:42:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZdiSqReYgNf88ema@yuki>
+References: <20240104204614.1426027-1-pvorel@suse.cz>
+ <20240104204614.1426027-3-pvorel@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240222153648.2563-1-andrea.cervesato@suse.de>
- <20240222233614.GA1417479@pevik>
-In-Reply-To: <20240222233614.GA1417479@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240104204614.1426027-3-pvorel@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1cc3PQ6t;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QgV0wJ7C
+X-Spamd-Result: default: False [0.19 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[15.56%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: AE5281FC0C
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Add stat04 test
+Subject: Re: [LTP] [PATCH 2/9] metadata: parse.sh: Allow to pass list of
+ files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,147 +118,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
+> +if [ $# -gt 0 ]; then
+> +	tests=$*
+> +else
+> +	tests=$(find testcases/ -name '*.c' | sort)
+> +fi
 
-On 2/23/24 00:36, Petr Vorel wrote:
->> From: Andrea Cervesato <andrea.cervesato@suse.com>
->> This test has been extracted from symlink01 test and it checks that
->> stat() executed on file provide the same information of symlink linking
->> to it.
->> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
->> ---
->> free() tmpdir
->> rename link_stat into link
->> rename path_stat into path
->>   runtest/smoketest                         |  2 +-
->>   runtest/syscalls                          |  4 +-
->>   testcases/kernel/syscalls/stat/.gitignore |  2 +
->>   testcases/kernel/syscalls/stat/stat04.c   | 50 +++++++++++++++++++++++
->>   4 files changed, 55 insertions(+), 3 deletions(-)
->>   create mode 100644 testcases/kernel/syscalls/stat/stat04.c
->> diff --git a/runtest/smoketest b/runtest/smoketest
->> index 83eebfe7b..5608417f9 100644
->> --- a/runtest/smoketest
->> +++ b/runtest/smoketest
->> @@ -8,7 +8,7 @@ time01 time01
->>   wait02 wait02
->>   write01 write01
->>   symlink01 symlink01
->> -stat04 symlink01 -T stat04
->> +stat04 stat04
->>   utime01A symlink01 -T utime01
->>   rename01A symlink01 -T rename01
->>   splice02 splice02 -s 20
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index 7794f1465..ef90076e4 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -1529,8 +1529,8 @@ stat02 stat02
->>   stat02_64 stat02_64
->>   stat03 stat03
->>   stat03_64 stat03_64
->> -stat04 symlink01 -T stat04
->> -stat04_64 symlink01 -T stat04_64
->> +stat04 stat04
->> +stat04_64 stat04_64
->>   statfs01 statfs01
->>   statfs01_64 statfs01_64
->> diff --git a/testcases/kernel/syscalls/stat/.gitignore b/testcases/kernel/syscalls/stat/.gitignore
->> index fa0a4ce9f..0a62dc6ee 100644
->> --- a/testcases/kernel/syscalls/stat/.gitignore
->> +++ b/testcases/kernel/syscalls/stat/.gitignore
->> @@ -4,3 +4,5 @@
->>   /stat02_64
->>   /stat03
->>   /stat03_64
->> +/stat04
->> +/stat04_64
->> diff --git a/testcases/kernel/syscalls/stat/stat04.c b/testcases/kernel/syscalls/stat/stat04.c
->> new file mode 100644
->> index 000000000..aebfacf5a
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/stat/stat04.c
->> @@ -0,0 +1,50 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
->> + *    Author: David Fenner
->> + *    Copilot: Jon Hendrickson
-> very nit:
->   * Author: David Fenner, Jon Hendrickson
->
->> + * Copyright (C) 2024 Andrea Cervesato <andrea.cervesato@suse.com>
->> + */
->> +
->> +/*\
->> + * [Description]
->> + *
->> + * This test checks that stat() executed on file provide the same information
->> + * of symlink linking to it.
->> + */
->> +
->> +#include <stdlib.h>
->> +#include "tst_test.h"
->> +
->> +static void run(void)
->> +{
->> +	char *symname = "my_symlink0";
->> +	char *tmpdir = tst_get_tmpdir();
->> +
->> +	SAFE_SYMLINK(tmpdir, symname);
->> +
->> +	struct stat path;
->> +	struct stat link;
-> nit: maybe define struct at the top of the function?
-This is common in the first versions of C, but a good practice is to 
-define variables as close as possible where they are used in order to 
-improve readability.
->> +
->> +	TST_EXP_PASS(stat(tmpdir, &path));
->> +	free(tmpdir);
-> If SAFE_SYMLINK() fails, free() will not happen. I wonder if we should bother
-> (we'd have to set it NULL and add a cleanup function).
->
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> Kind regards,
-> Petr
->
->> +
->> +	TST_EXP_PASS(stat(symname, &link));
->> +
->> +	TST_EXP_EQ_LI(path.st_dev, link.st_dev);
->> +	TST_EXP_EQ_LI(path.st_mode, link.st_mode);
->> +	TST_EXP_EQ_LI(path.st_nlink, link.st_nlink);
->> +	TST_EXP_EQ_LI(path.st_uid, link.st_uid);
->> +	TST_EXP_EQ_LI(path.st_gid, link.st_gid);
->> +	TST_EXP_EQ_LI(path.st_size, link.st_size);
->> +	TST_EXP_EQ_LI(path.st_atime, link.st_atime);
->> +	TST_EXP_EQ_LI(path.st_mtime, link.st_mtime);
->> +	TST_EXP_EQ_LI(path.st_ctime, link.st_ctime);
->> +
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.test_all = run,
->> +	.needs_tmpdir = 1,
->> +};
+This unfortunately does not work when there are unexpected characters in
+the paths. Which shouldn't happen unless you pass an absoulte path to
+the script which contains for example space.
 
-According to Cyril suggestions we are probably done with this patch so 
-it can be merged. Isn't it?
+I do not think that we can safely pass a list in a variable without
+breaking it in that case. E.g. it works directly with $* or $@ if it's
+quoted properly as:
 
-Thanks,
-Andrea
+for test in "$@"; do
+	...
 
+But as long as you pass $@ indirectly it breaks on spaces.
+
+
+Note that the subshell $() with find has the same problem, but there is
+much less room for breaking something because that is passed relative
+paths inside of LTP.
+
+And yes I hate argument parsing in shell..
+
+> +for test in $tests; do
+>  	a=$($top_builddir/metadata/metaparse -Iinclude -Itestcases/kernel/syscalls/utils/ "$test")
+>  	if [ -n "$a" ]; then
+>  		if [ -z "$first" ]; then
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
