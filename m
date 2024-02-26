@@ -4,83 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F78C48BF6
-	for <ltp@archiver.kernel.org>; Sat, 24 Feb 2024 09:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1708767165; h=mime-version :
- date : message-id : references : in-reply-to : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=F1EhAZF1QenoRZXEocBd4W2QNhzwtJBGlgCZbsHKXEQ=;
- b=gpPs7llnkw52WlU6u0hoWWHQmM6oopKIp96gto4TDeA6x4uy6a7McelAmmX+/uR6cOOD3
- kZbyZMJPF9Uoe8heUYU5QfEpyJmBwXEsKkEfd9INl4YTsPW9mtG5mH9f7BDqxgk8mTzf4h3
- ezrDTnsFJzuehRjIuYjM+mo+gnEVXXY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ED84C48BF6
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 09:31:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5EA473CF0C8
-	for <ltp@archiver.kernel.org>; Sat, 24 Feb 2024 10:32:45 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 052ED3CEF96
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 10:31:07 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 797603CC92D
- for <ltp@lists.linux.it>; Sat, 24 Feb 2024 10:32:22 +0100 (CET)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 52BD53CAB65
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 10:30:51 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=vbabka@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 173EB602AC7
- for <ltp@lists.linux.it>; Sat, 24 Feb 2024 10:32:21 +0100 (CET)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-4129ed3d15aso896775e9.0
- for <ltp@lists.linux.it>; Sat, 24 Feb 2024 01:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1708767140; x=1709371940; darn=lists.linux.it;
- h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
- :from:content-transfer-encoding:from:to:cc:subject:date:message-id
- :reply-to; bh=JsUgdNEq9P5o7TeSkoLc0xLvLpR6wIZewnTevwQPjgs=;
- b=Ww0sTcOJqfwhj1OTi6eWI/j2YXVRZzhfEjQ5EPeVH5wGKi2o7U4wJPsn77nI9ncaY2
- 7ZJ8q6BFPsH7nXYmKc94cDJk72DvjkIhyZ2NyvDf/t7ySgPjHIrJ+CIoPQJiUltbPeHr
- L+hrbNPzuhImS38/iq9oQnyJj+JcaKP2GN5iJBEd84pnHMsN464ranKYZfvFFz4LrulW
- ba0D19MBVQNjPwaMfLCRTRKD8CylAxrYFNPA1iHcPAlFTJpn1s1ovqnBIYN1LcuGqWZB
- LW5qmJQb1HOpxo5Cn/nsHqSQq+10C0s3H7no3pWo/ILsSa8y6PvekzOMbz99mzdPq94b
- 3GAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1708767140; x=1709371940;
- h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
- :from:content-transfer-encoding:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=JsUgdNEq9P5o7TeSkoLc0xLvLpR6wIZewnTevwQPjgs=;
- b=eL71jWrNAXd3YPsCHgkc+k6pbc6Fird9zEXyeOLm6czj6XUehbVNjiGIXTyM8QPeVz
- UF30oyo7JYe/4wB3l4LCSEImLbJRb0cwcAlW5qTCz5NwdR4nsfzDYRKMfHTfma1hYLbf
- Nhv5zSGxNBhx94YzjjgjgD3Yl2aITZqUrCuHlnJXAd4LSTXwqSlvb/W+jPEXcNEp+arM
- n0rtgMQZ+obyYiDtZUFYkBTUQ3JhWBpPTI5CSL06bj9gRywwnaPXMC+YKAPQ5b2QZcWi
- Eks9EnIPFT5Gweum8/SB9m3jCJpsy2Jaadbu9W9EfiTKQs2KJNFJIf7weXiTcSM0oqGb
- PDwg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWgv3I5Df7I2whnMyOf5/MU76jVFbzWqo2W16A/tsbNkdC8XN7m8OUZQQrpVRXRLt7Azm5X+lBqx1DkKdJ1Row3Nf0=
-X-Gm-Message-State: AOJu0Yz/29vdIOo1hTPiY0fxXFdC1/x1qIXKI+Z5eeO8ZUVndmQEqbuh
- uvm2owYWuUZ1c860/t9muFJ1cLUVta7pZrk01WnMuerpab+tgpphzh20arpniI4=
-X-Google-Smtp-Source: AGHT+IGiKuJJiUm1uCYVWoo0iYORY8kavqnJPIdOuLSvdbBBY9PzOvbCJwUEMPd7T2ZjvoOHhCkPLQ==
-X-Received: by 2002:a05:600c:1989:b0:412:9dfc:f67a with SMTP id
- t9-20020a05600c198900b004129dfcf67amr574002wmq.12.1708767140497; 
- Sat, 24 Feb 2024 01:32:20 -0800 (PST)
-Received: from smtpclient.apple ([212.86.60.148])
- by smtp.gmail.com with ESMTPSA id
- h12-20020a05600c350c00b0041285ffec13sm1630277wmq.41.2024.02.24.01.32.20
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 24 Feb 2024 01:32:20 -0800 (PST)
-Mime-Version: 1.0 (1.0)
-Date: Sat, 24 Feb 2024 10:32:09 +0100
-Message-Id: <49150628-46DE-4F53-9D4C-E6631D8E61CC@suse.com>
-References: <20240223154732.GD1486515@pevik>
-In-Reply-To: <20240223154732.GD1486515@pevik>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mailer: iPhone Mail (21D61)
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 72E8B207A0B
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 10:30:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2EC4C2250B
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 09:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1708939847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4xnel4PnjKBhLbT6KkJuLXOXKs6ed5f1Zz3fl1n1apc=;
+ b=0EGhSKpHP4OdpOkx7EX/czdlkbAoxzaa/J9EOc4iXPnTqIKdaGM8emX0+rwcrND+NtVvfM
+ 7MXGntsPwoA4iklmNIl8DOzfDNVLH8KatT8NvHdreVEpr8exxhwC1zCJ8KtuHJi+GYQp4P
+ 0FKspATTj7sQOlL3O/LcirijA3yuVzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1708939847;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4xnel4PnjKBhLbT6KkJuLXOXKs6ed5f1Zz3fl1n1apc=;
+ b=yFqj1w0tP4nAshJAxWC/n5Sug1dRYHglcMAxVe1vowqg+NNNbu1+eI0qsErM9GfMZDZYh5
+ hUEywlEas3/ucGCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1708939847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4xnel4PnjKBhLbT6KkJuLXOXKs6ed5f1Zz3fl1n1apc=;
+ b=0EGhSKpHP4OdpOkx7EX/czdlkbAoxzaa/J9EOc4iXPnTqIKdaGM8emX0+rwcrND+NtVvfM
+ 7MXGntsPwoA4iklmNIl8DOzfDNVLH8KatT8NvHdreVEpr8exxhwC1zCJ8KtuHJi+GYQp4P
+ 0FKspATTj7sQOlL3O/LcirijA3yuVzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1708939847;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4xnel4PnjKBhLbT6KkJuLXOXKs6ed5f1Zz3fl1n1apc=;
+ b=yFqj1w0tP4nAshJAxWC/n5Sug1dRYHglcMAxVe1vowqg+NNNbu1+eI0qsErM9GfMZDZYh5
+ hUEywlEas3/ucGCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 262B013A3A
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 09:30:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BMzhCEda3GXsIQAAD6G6ig
+ (envelope-from <vbabka@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 09:30:47 +0000
+Message-ID: <b4c096fa-e7dd-49ec-a237-4c81498bb2ac@suse.cz>
+Date: Mon, 26 Feb 2024 10:30:46 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+References: <20240222215930.14637-2-vbabka@suse.cz>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+To: ltp@lists.linux.it
+In-Reply-To: <20240222215930.14637-2-vbabka@suse.cz>
+X-Forwarded-Message-Id: <20240222215930.14637-2-vbabka@suse.cz>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0EGhSKpH;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yFqj1w0t
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ XM_UA_NO_VERSION(0.01)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%];
+ MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ TO_DN_NONE(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,oracle.com:email];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]; MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Queue-Id: 2EC4C2250B
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Add stat04 test
+Subject: [LTP] Fwd: [PATCH v2] mm,
+ mmap: fix vma_merge() case 7 with vma_ops->close
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,42 +126,128 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgo+IE9uIDIzIEZlYiAyMDI0LCBhdCAxNjo0NywgUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgo+IAo+IO+7v0hpIEFuZHJlYSwKPiAKPj4+PiArICAgIGNoYXIgKnN5bW5hbWUg
-PSAibXlfc3ltbGluazAiOwo+Pj4+ICsgICAgY2hhciAqdG1wZGlyID0gdHN0X2dldF90bXBkaXIo
-KTsKPj4+PiArCj4+Pj4gKyAgICBTQUZFX1NZTUxJTksodG1wZGlyLCBzeW1uYW1lKTsKPj4+PiAr
-Cj4+Pj4gKyAgICBzdHJ1Y3Qgc3RhdCBwYXRoOwo+Pj4+ICsgICAgc3RydWN0IHN0YXQgbGluazsK
-Pj4+IG5pdDogbWF5YmUgZGVmaW5lIHN0cnVjdCBhdCB0aGUgdG9wIG9mIHRoZSBmdW5jdGlvbj8K
-Pj4gVGhpcyBpcyBjb21tb24gaW4gdGhlIGZpcnN0IHZlcnNpb25zIG9mIEMsIGJ1dCBhIGdvb2Qg
-cHJhY3RpY2UgaXMgdG8gZGVmaW5lCj4+IHZhcmlhYmxlcyBhcyBjbG9zZSBhcyBwb3NzaWJsZSB3
-aGVyZSB0aGV5IGFyZSB1c2VkIGluIG9yZGVyIHRvIGltcHJvdmUKPj4gcmVhZGFiaWxpdHkuCj4g
-Cj4gRmFpciBlbm91Z2guCj4gCj4+Pj4gKwo+Pj4+ICsgICAgVFNUX0VYUF9QQVNTKHN0YXQodG1w
-ZGlyLCAmcGF0aCkpOwo+Pj4+ICsgICAgZnJlZSh0bXBkaXIpOwo+Pj4gSWYgU0FGRV9TWU1MSU5L
-KCkgZmFpbHMsIGZyZWUoKSB3aWxsIG5vdCBoYXBwZW4uIEkgd29uZGVyIGlmIHdlIHNob3VsZCBi
-b3RoZXIKPj4+ICh3ZSdkIGhhdmUgdG8gc2V0IGl0IE5VTEwgYW5kIGFkZCBhIGNsZWFudXAgZnVu
-Y3Rpb24pLgo+IAo+Pj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pgo+
-IAo+Pj4gS2luZCByZWdhcmRzLAo+Pj4gUGV0cgo+IAo+IC4uLgo+IAo+PiBBY2NvcmRpbmcgdG8g
-Q3lyaWwgc3VnZ2VzdGlvbnMgd2UgYXJlIHByb2JhYmx5IGRvbmUgd2l0aCB0aGlzIHBhdGNoIHNv
-IGl0Cj4+IGNhbiBiZSBtZXJnZWQuIElzbid0IGl0Pwo+IAo+IFdlbGwgeW91IGZyZWUoKSBsYXRl
-ciBpbiB0aGUgZnVuY3Rpb24uIEJ1dCBDeXJpbCdzICBub3RlIHNvdW5kcyByZWFzb25hYmxlIGZv
-cgo+IG1lOgo+ICAgICJjYWxsIGl0IG9uY2UgaW4gdGhlIHRlc3Qgc2V0dXAoKSBvciB1c2UgIi4i
-IGluc3RlYWQuIgo+IAo+IENvdWxkIHlvdSBwbGVhc2UgZG8gaXQ/Cj4gCk1ha2VzIHNlbnNlLiBJ
-IHRoaW5rIHdlIHNob3VsZCBhZGFwdCBhbGwgb3RoZXIgdGVzdHMgYXMgd2VsbCBiZWNhdXNlIGl0
-4oCZcyBmdWxsIG9mIG1lbW9yeSBsZWFrYWdlIHdoZW4gaXQgY29tZXMgdG8gZ2V0IHRlbXBvcmFy
-eSBkaXJlY3RvcnkuCgo+IEFsc28gbW9zdCBvZiB0aGUgdGVzdHMgcmVhbGx5IHJ1biB0c3RfZ2V0
-X3RtcGRpcigpIGluIHRoZSBzZXR1cCgpIChvciBjbGVhbnVwKCksCj4gdGhlcmUgYXJlIGV4Y2Vw
-dGlvbnMgKG5ldyBBUEk6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcGF0aGNvbmYvcGF0aGNv
-bmYwMS5jLAo+IG9sZCBBUEk6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3ltbGluay9zeW1s
-aW5rMDEuYywKPiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDIuYyksIHdo
-aWNoIHNob3VsZCBiZSBmaXhlZC4KPiBJTUhPIHRlc3RzIHdoaWNoIGNhbGwgdHN0X2dldF90bXBk
-aXIoKSBpbiB0aGUgcnVuKCkKPiAKPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+IAo+PiBUaGFua3Ms
-Cj4+IEFuZHJlYQo+IAoKUmVnYXJkcywKQW5kcmVhCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi ltp,
+
+I assume you'd like to turn the reproducer (from Michal Hocko) to a LTP test?
+
+Cheers,
+Vlastimil
+
+-------- Forwarded Message --------
+Subject: [PATCH v2] mm, mmap: fix vma_merge() case 7 with vma_ops->close
+Date: Thu, 22 Feb 2024 22:59:31 +0100
+From: Vlastimil Babka <vbabka@suse.cz>
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Vlastimil Babka
+<vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, Liam R . Howlett
+<Liam.Howlett@oracle.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+stable@vger.kernel.org
+
+When debugging issues with a workload using SysV shmem, Michal Hocko has
+come up with a reproducer that shows how a series of mprotect()
+operations can result in an elevated shm_nattch and thus leak of the
+resource.
+
+The problem is caused by wrong assumptions in vma_merge() commit
+714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
+mergeability test"). The shmem vmas have a vma_ops->close callback
+that decrements shm_nattch, and we remove the vma without calling it.
+
+vma_merge() has thus historically avoided merging vma's with
+vma_ops->close and commit 714965ca8252 was supposed to keep it that way.
+It relaxed the checks for vma_ops->close in can_vma_merge_after()
+assuming that it is never called on a vma that would be a candidate for
+removal. However, the vma_merge() code does also use the result of this
+check in the decision to remove a different vma in the merge case 7.
+
+A robust solution would be to refactor vma_merge() code in a way that
+the vma_ops->close check is only done for vma's that are actually going
+to be removed, and not as part of the preliminary checks. That would
+both solve the existing bug, and also allow additional merges that the
+checks currently prevent unnecessarily in some cases.
+
+However to fix the existing bug first with a minimized risk, and for
+easier stable backports, this patch only adds a vma_ops->close check to
+the buggy case 7 specifically. All other cases of vma removal are
+covered by the can_vma_merge_before() check that includes the test for
+vma_ops->close.
+
+The reproducer code, adapted from Michal Hocko's code:
+
+int main(int argc, char *argv[]) {
+  int segment_id;
+  size_t segment_size = 20 * PAGE_SIZE;
+  char * sh_mem;
+  struct shmid_ds shmid_ds;
+
+  key_t key = 0x1234;
+  segment_id = shmget(key, segment_size,
+                      IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+  sh_mem = (char *)shmat(segment_id, NULL, 0);
+
+  mprotect(sh_mem + 2*PAGE_SIZE, PAGE_SIZE, PROT_NONE);
+
+  mprotect(sh_mem + PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
+
+  mprotect(sh_mem + 2*PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
+
+  shmdt(sh_mem);
+
+  shmctl(segment_id, IPC_STAT, &shmid_ds);
+  printf("nattch after shmdt(): %lu (expected: 0)\n", shmid_ds.shm_nattch);
+
+  if (shmctl(segment_id, IPC_RMID, 0))
+          printf("IPCRM failed %d\n", errno);
+  return (shmid_ds.shm_nattch) ? 1 : 0;
+}
+
+Fixes: 714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
+mergeability test")
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Reported-by: Michal Hocko <mhocko@suse.com>
+Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+v2: deduplicate code, per Lorenzo
+ mm/mmap.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index d89770eaab6b..3281287771c9 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -954,13 +954,21 @@ static struct vm_area_struct
+ 	} else if (merge_prev) {			/* case 2 */
+ 		if (curr) {
+ 			vma_start_write(curr);
+-			err = dup_anon_vma(prev, curr, &anon_dup);
+ 			if (end == curr->vm_end) {	/* case 7 */
++				/*
++				 * can_vma_merge_after() assumed we would not be
++				 * removing prev vma, so it skipped the check
++				 * for vm_ops->close, but we are removing curr
++				 */
++				if (curr->vm_ops && curr->vm_ops->close)
++					err = -EINVAL;
+ 				remove = curr;
+ 			} else {			/* case 5 */
+ 				adjust = curr;
+ 				adj_start = (end - curr->vm_start);
+ 			}
++			if (!err)
++				err = dup_anon_vma(prev, curr, &anon_dup);
+ 		}
+ 	} else { /* merge_next */
+ 		vma_start_write(next);
+-- 
+2.43.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
