@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BBBBC48BF6
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 15:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E533CC48BF6
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 15:38:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D18863CF003
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 16:38:30 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4419B3CEFE5
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 16:38:47 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A32E93CEFE5
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 16:37:58 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id ECEE83CEFF6
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 16:38:02 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2CD27601549
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 16:37:57 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 53124600870
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 16:38:02 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ED8071FB5F;
- Mon, 26 Feb 2024 15:37:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0F2BA225CD;
+ Mon, 26 Feb 2024 15:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1708961877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1708961881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yP/C/fdUXjYESHOcJQBO5lUCln7tnRf2e+Gw5Nsa4OI=;
- b=rXfcYMQZszlKwQDcjGA7L9OO6KL1AC4I4gTR3D2OuhcFN6QzpFi7aBSJjEPI1bLljlnql/
- c69k/xZ0kretrx2nGGTcuCjn7c7yvFHNjfb462XIhB6sC/Zg8HsDre9/Uxf97opz8t7DMJ
- 5FVP8IXWbSQ5Jc+S+m4MhHYlR+bPcZ0=
+ bh=IcSsSHhAxPUHHlbyQ7i4fQkp/bwfTgcvJlbgN78gKOs=;
+ b=fNmFw5dF05mwjcJlV1n7QCGhZAeFbm7adyJetLm7AXic7uutuH0rLMYsm6a/08nIkZZaOr
+ 0XyrPBd6LbxbJZlEY/T3qYAamN6XpoTD7JHU0bnxKSUgrAvmEWeXghZ+3lWM3Gcfan1whd
+ y9YemSadgGF/49yIVk2Sw45hja0StUU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1708961877;
+ s=susede2_ed25519; t=1708961881;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yP/C/fdUXjYESHOcJQBO5lUCln7tnRf2e+Gw5Nsa4OI=;
- b=isd3CIy9lyAH9iRipDoGu1Jj+XqLrlQkQUO93hQJSrg2YdB6XDedQR2QSA5hk89GFsl/VM
- TwNJGupG+j8ujtCQ==
+ bh=IcSsSHhAxPUHHlbyQ7i4fQkp/bwfTgcvJlbgN78gKOs=;
+ b=PWCIyLtp+i0HeDJuh9XKVqsMFDuhK06JeOOQxaAkYf//c4JaX0XtCWuf41d+bbEBhLUeJ9
+ IAtyEvCO2gA5XwAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1708961876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1708961881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yP/C/fdUXjYESHOcJQBO5lUCln7tnRf2e+Gw5Nsa4OI=;
- b=BfzywbJjhyT0y70qhwKx1lOE3zyu8qf8ohOZ6SNQDf0CCD8zkp5+QXFqEEdV4OYmHXuEuh
- 7oR8kmOYdATfYPzfszLJ2q4PRpmSTdmmhl0JPL6XdKvTOllfFWUemkZ9zV1uYepDMrQfC9
- NYzoGDdls76RzNteUFenQeyA76sJJ7o=
+ bh=IcSsSHhAxPUHHlbyQ7i4fQkp/bwfTgcvJlbgN78gKOs=;
+ b=fNmFw5dF05mwjcJlV1n7QCGhZAeFbm7adyJetLm7AXic7uutuH0rLMYsm6a/08nIkZZaOr
+ 0XyrPBd6LbxbJZlEY/T3qYAamN6XpoTD7JHU0bnxKSUgrAvmEWeXghZ+3lWM3Gcfan1whd
+ y9YemSadgGF/49yIVk2Sw45hja0StUU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1708961876;
+ s=susede2_ed25519; t=1708961881;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yP/C/fdUXjYESHOcJQBO5lUCln7tnRf2e+Gw5Nsa4OI=;
- b=g0qrRbrFGyKGAuoJZanbQWa7tUaT6pY3yYEeODTZxuO2GDeR9BHPu1GJX1pqwUBJnc3oYS
- OuD/2XhxuQ2qp7DQ==
+ bh=IcSsSHhAxPUHHlbyQ7i4fQkp/bwfTgcvJlbgN78gKOs=;
+ b=PWCIyLtp+i0HeDJuh9XKVqsMFDuhK06JeOOQxaAkYf//c4JaX0XtCWuf41d+bbEBhLUeJ9
+ IAtyEvCO2gA5XwAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB87813A3A;
- Mon, 26 Feb 2024 15:37:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C367A13A3A;
+ Mon, 26 Feb 2024 15:38:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4JtOK1Sw3GVGAgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 26 Feb 2024 15:37:56 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KOaNLFiw3GVGAgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 26 Feb 2024 15:38:00 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 26 Feb 2024 16:37:53 +0100
-Message-Id: <20240226153754.24998-2-andrea.cervesato@suse.de>
+Date: Mon, 26 Feb 2024 16:37:54 +0100
+Message-Id: <20240226153754.24998-3-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240226153754.24998-1-andrea.cervesato@suse.de>
 References: <20240226153754.24998-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [3.70 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
@@ -99,10 +100,10 @@ X-Spamd-Result: default: False [3.70 / 50.00]; ARC_NA(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.00)[10.64%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] Add SAFE_MPROTECT() macro
+Subject: [LTP] [PATCH v2 2/2] Add shmat04 SysV IPC bug reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,57 +122,180 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+This is an LTP port of a SysV bug reproducer provided by Michal Hocko.
+
+When debugging issues with a workload using SysV shmem, Michal Hocko has
+come up with a reproducer that shows how a series of mprotect()
+operations can result in an elevated shm_nattch and thus leak of the
+resource.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_safe_macros.h |  5 +++++
- lib/safe_macros.c         | 18 ++++++++++++++++++
- 2 files changed, 23 insertions(+)
+Simplified the algorithm
+Usage of SAFE_MPROTECT
+More TINFO messages
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index f2ce8919b..bd401f094 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -625,6 +625,11 @@ int safe_munlock(const char *file, const int lineno, const char *addr,
- 	size_t len);
- #define SAFE_MUNLOCK(addr, len) safe_munlock(__FILE__, __LINE__, (addr), (len))
+ runtest/syscalls                              |   1 +
+ runtest/syscalls-ipc                          |   1 +
+ .../kernel/syscalls/ipc/shmat/.gitignore      |   1 +
+ testcases/kernel/syscalls/ipc/shmat/shmat04.c | 115 ++++++++++++++++++
+ 4 files changed, 118 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/shmat/shmat04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 7794f1465..cc0144379 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1445,6 +1445,7 @@ setxattr03 setxattr03
+ shmat01 shmat01
+ shmat02 shmat02
+ shmat03 shmat03
++shmat04 shmat04
  
-+int safe_mprotect(const char *file, const int lineno, const char *addr,
-+	size_t len, int prot);
-+#define SAFE_MPROTECT(addr, len, prot) \
-+	safe_mprotect(__FILE__, __LINE__, (addr), (len), (prot))
+ shmctl01 shmctl01
+ shmctl02 shmctl02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index df41140a7..9860394de 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -49,6 +49,7 @@ semop03 semop03
+ 
+ shmat01 shmat01
+ shmat02 shmat02
++shmat04 shmat04
+ 
+ shmctl01 shmctl01
+ shmctl02 shmctl02
+diff --git a/testcases/kernel/syscalls/ipc/shmat/.gitignore b/testcases/kernel/syscalls/ipc/shmat/.gitignore
+index 2b972f8f2..5600b2742 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/.gitignore
++++ b/testcases/kernel/syscalls/ipc/shmat/.gitignore
+@@ -1,3 +1,4 @@
+ /shmat01
+ /shmat02
+ /shmat03
++/shmat04
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat04.c b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
+new file mode 100644
+index 000000000..63daaa73e
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 SUSE LLC
++ * Author: Michal Hocko <mhocko@suse.com>
++ * LTP port: Andrea Cervesato <andrea.cervesato@suse.com>
++ */
 +
- int safe_mincore(const char *file, const int lineno, void *start,
- 	size_t length, unsigned char *vec);
- #define SAFE_MINCORE(start, length, vec) \
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 951e1b064..69ca3eabc 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -1317,6 +1317,24 @@ int safe_munlock(const char *file, const int lineno, const void *addr,
- 	return rval;
- }
- 
-+int safe_mprotect(const char *file, const int lineno, const void *addr,
-+	size_t len, int prot)
++/*\
++ * [Description]
++ *
++ * When debugging issues with a workload using SysV shmem, Michal Hocko has
++ * come up with a reproducer that shows how a series of mprotect()
++ * operations can result in an elevated shm_nattch and thus leak of the
++ * resource.
++ *
++ * The problem is caused by wrong assumptions in vma_merge() commit
++ * 714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
++ * mergeability test"). The shmem vmas have a vma_ops->close callback
++ * that decrements shm_nattch, and we remove the vma without calling it.
++ *
++ * Patch: https://lore.kernel.org/all/20240222215930.14637-2-vbabka@suse.cz/
++ */
++
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
++
++static int segment_id = -1;
++static int key_id;
++static int page_size;
++static size_t segment_size;
++
++static void change_access(void *addr, int size, int prot)
 +{
-+	int rval;
-+
-+	rval = mprotect(addr, len, prot);
-+
-+	if (rval == -1) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+			"mprotect() failed");
-+	} else if (rval) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+			"Invalid mprotect() return value %d", rval);
++	switch (prot) {
++	case PROT_NONE:
++		tst_res(TINFO, "Disable memory access. addr: %p - size: %d",
++			addr, size);
++		break;
++	case PROT_WRITE:
++		tst_res(TINFO, "Enable write memory access. addr: %p - size: %d",
++			addr, size);
++		break;
++	default:
++		tst_res(TINFO, "Change memory access. addr: %p - size: %d",
++			addr, size);
++		break;
 +	}
 +
-+	return rval;
++	SAFE_MPROTECT(addr, size, prot);
 +}
 +
- int safe_mincore(const char *file, const int lineno, void *start,
- 	size_t length, unsigned char *vec)
- {
++static void run(void)
++{
++	struct shmid_ds shmid_ds;
++	void *sh_mem;
++
++	segment_id = SAFE_SHMGET(
++		key_id,
++		segment_size,
++		IPC_CREAT | IPC_EXCL | 0600);
++
++	sh_mem = SAFE_SHMAT(segment_id, NULL, 0);
++
++	tst_res(TINFO, "Attached at %p. key: %d - size: %lu",
++		sh_mem, segment_id, segment_size);
++
++	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
++
++	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
++
++	change_access(sh_mem + page_size, page_size, PROT_NONE);
++	change_access(sh_mem, 2 * page_size, PROT_WRITE);
++
++	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
++
++	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
++	tst_res(TINFO, "Delete attached memory");
++
++	SAFE_SHMDT(sh_mem);
++	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
++
++	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
++
++	SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
++	segment_id = -1;
++
++	if (shmid_ds.shm_nattch)
++		tst_res(TFAIL, "The system is affected by the SysV IPC bug");
++	else
++		tst_res(TPASS, "Test passed");
++}
++
++static void setup(void)
++{
++	key_id = GETIPCKEY();
++	page_size = getpagesize();
++
++	tst_res(TINFO, "Key id: %d", key_id);
++	tst_res(TINFO, "Page size: %d", page_size);
++
++	segment_size = 3 * page_size;
++}
++
++static void cleanup(void)
++{
++	if (segment_id != -1)
++		SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
 2.35.3
 
