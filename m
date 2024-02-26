@@ -4,98 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB774C54E49
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 11:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C744EC54E49
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 13:38:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5CA763CEFE5
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 12:58:24 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 320D03D03BC
+	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 14:38:48 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55C863C8223
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 12:58:09 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 680323CD0CB
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 14:38:32 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5D679600CF0
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 12:58:07 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5E040600D05
+ for <ltp@lists.linux.it>; Mon, 26 Feb 2024 14:38:31 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 383CB2257A;
- Mon, 26 Feb 2024 11:58:07 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7408E22125;
+ Mon, 26 Feb 2024 13:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708948687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1708954710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0ybl6oNs3MUCXkJvHurxUX7ivmxFZPbYDdSOvffd/YY=;
- b=fncjvctSor6dqVLzrSrjFZ3SsIpEktpuQ4j3tOlSmWNP9nXMxIGGsVvEt7HEr0UQxycie0
- /RnVbZxhEN332Dfp+f2RSs5g+gtBchssd2f3QzXokdwWuHgBmMaajhcNhSajSXbyiqhvc+
- vP6qE28YO9U4OZC3P0RBNiibWi66CEY=
+ bh=MqtWz13vrLW9v2qSlebV0/Cu8FMwWH1LhRvEMKq8cjQ=;
+ b=AGTEd22vUk1QfAilXXiyCgkVJAwcFEUKodBglAOUeljvf5bhEGlSpbf2eWM3yWzBvrhPjc
+ vtS30Xz4UBhJI6aZd+ocJiLL4G5Gghz0pCkxBPe4/O63Q3mrR6JCoSX6xl6NBCDlA7WIf1
+ l4bc9iydSOWOEbcFepGOA7wGOzMUbZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708948687;
+ s=susede2_ed25519; t=1708954710;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0ybl6oNs3MUCXkJvHurxUX7ivmxFZPbYDdSOvffd/YY=;
- b=WdaMb7MtW4mp7iKYw8o9ShCKQxtd0JvwESk4yfARIpayleXyEwhpPiE20O6vDshxJvhhV8
- W5qEfQUyQkptY0DA==
+ bh=MqtWz13vrLW9v2qSlebV0/Cu8FMwWH1LhRvEMKq8cjQ=;
+ b=6oBdr9TJ192wyYeqwZWTxWkpHhu3jWN8vFOAGEPKBvOgOagsSISSlr2KqOd+0b+BW7VYDM
+ csCXfoQaaBiryjCw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708948687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1708954710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0ybl6oNs3MUCXkJvHurxUX7ivmxFZPbYDdSOvffd/YY=;
- b=fncjvctSor6dqVLzrSrjFZ3SsIpEktpuQ4j3tOlSmWNP9nXMxIGGsVvEt7HEr0UQxycie0
- /RnVbZxhEN332Dfp+f2RSs5g+gtBchssd2f3QzXokdwWuHgBmMaajhcNhSajSXbyiqhvc+
- vP6qE28YO9U4OZC3P0RBNiibWi66CEY=
+ bh=MqtWz13vrLW9v2qSlebV0/Cu8FMwWH1LhRvEMKq8cjQ=;
+ b=AGTEd22vUk1QfAilXXiyCgkVJAwcFEUKodBglAOUeljvf5bhEGlSpbf2eWM3yWzBvrhPjc
+ vtS30Xz4UBhJI6aZd+ocJiLL4G5Gghz0pCkxBPe4/O63Q3mrR6JCoSX6xl6NBCDlA7WIf1
+ l4bc9iydSOWOEbcFepGOA7wGOzMUbZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708948687;
+ s=susede2_ed25519; t=1708954710;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0ybl6oNs3MUCXkJvHurxUX7ivmxFZPbYDdSOvffd/YY=;
- b=WdaMb7MtW4mp7iKYw8o9ShCKQxtd0JvwESk4yfARIpayleXyEwhpPiE20O6vDshxJvhhV8
- W5qEfQUyQkptY0DA==
+ bh=MqtWz13vrLW9v2qSlebV0/Cu8FMwWH1LhRvEMKq8cjQ=;
+ b=6oBdr9TJ192wyYeqwZWTxWkpHhu3jWN8vFOAGEPKBvOgOagsSISSlr2KqOd+0b+BW7VYDM
+ csCXfoQaaBiryjCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27F2713A3A;
- Mon, 26 Feb 2024 11:58:07 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 599E413A3A;
+ Mon, 26 Feb 2024 13:38:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ddbQCM983GU0RwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 26 Feb 2024 11:58:07 +0000
-Date: Mon, 26 Feb 2024 12:56:56 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jVhPFVaU3GU1YQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 26 Feb 2024 13:38:30 +0000
+Date: Mon, 26 Feb 2024 14:37:19 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Zdx8iMpbihN-lg9D@yuki>
-References: <20240226113510.29937-1-andrea.cervesato@suse.de>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <ZdyUD_rhoMTKMHFD@yuki>
+References: <20231009112047.2359-1-wegao@suse.com>
+ <20231227130555.29035-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240226113510.29937-1-andrea.cervesato@suse.de>
+In-Reply-To: <20231227130555.29035-1-wegao@suse.com>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-6.60 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [0.40 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TAGGED_RCPT(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_SOME(0.00)[];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+ FREEMAIL_CC(0.00)[lists.linux.it,gmail.com];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[41.15%]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Add shmat04 SysV IPC bug reproducer
+Subject: Re: [LTP] [PATCH v2] open15: allow restricted O_CREAT of FIFOs and
+ regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,166 +112,175 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: s.mesoraca16@gmail.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 7794f1465..cc0144379 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1445,6 +1445,7 @@ setxattr03 setxattr03
->  shmat01 shmat01
->  shmat02 shmat02
->  shmat03 shmat03
-> +shmat04 shmat04
->  
->  shmctl01 shmctl01
->  shmctl02 shmctl02
-> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-> index df41140a7..9860394de 100644
-> --- a/runtest/syscalls-ipc
-> +++ b/runtest/syscalls-ipc
-> @@ -49,6 +49,7 @@ semop03 semop03
->  
->  shmat01 shmat01
->  shmat02 shmat02
-> +shmat04 shmat04
->  
->  shmctl01 shmctl01
->  shmctl02 shmctl02
-> diff --git a/testcases/kernel/syscalls/ipc/shmat/.gitignore b/testcases/kernel/syscalls/ipc/shmat/.gitignore
-> index 2b972f8f2..5600b2742 100644
-> --- a/testcases/kernel/syscalls/ipc/shmat/.gitignore
-> +++ b/testcases/kernel/syscalls/ipc/shmat/.gitignore
-> @@ -1,3 +1,4 @@
->  /shmat01
->  /shmat02
->  /shmat03
-> +/shmat04
-> diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat04.c b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-> new file mode 100644
-> index 000000000..fb7857345
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 SUSE LLC
-> + * Author: Michal Hocko <mhocko@suse.com>
-> + * LTP port: Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
 > +/*\
 > + * [Description]
 > + *
-> + * When debugging issues with a workload using SysV shmem, Michal Hocko has
-> + * come up with a reproducer that shows how a series of mprotect()
-> + * operations can result in an elevated shm_nattch and thus leak of the
-> + * resource.
+> + * Verify disallows open of FIFOs or regular files not owned by the user in world
+> + * writable sticky directories
 > + *
-> + * The problem is caused by wrong assumptions in vma_merge() commit
-> + * 714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
-> + * mergeability test"). The shmem vmas have a vma_ops->close callback
-> + * that decrements shm_nattch, and we remove the vma without calling it.
-> + *
-> + * Patch: https://lore.kernel.org/all/20240222215930.14637-2-vbabka@suse.cz/
+> + * commit 30aba6656f61ed44cba445a3c0d38b296fa9e8f5
+> + * Author: Salvatore Mesoraca <s.mesoraca16@gmail.com>
+> + * Date:   Thu Aug 23 17:00:35 2018 -0700
+> + *     namei: allow restricted O_CREAT of FIFOs and regular files
 > + */
 > +
+> +#include <pwd.h>
+> +#include <stdlib.h>
 > +#include "tst_test.h"
-> +#include "tst_safe_sysv_ipc.h"
+> +#include "tst_safe_file_at.h"
 > +
-> +#define PAGE_SIZE 4096UL
-
-This has to be a variable initialized by getpagesize() in the test
-setup. There are several architectures out there that are using 64k
-pages some even by deafult and this will not work there.
-
-> +#define KEY_ID 0x1234
-
-Hardcoding keys does not work well either, we do have GETIPCKEY() in the
-libnewipc LTP library to make sure that tests does not collidate with
-any existing keys or possible other tests.
-
-> +#define MAGIC_ADDR 290816
-
-If anything this would be magic offset, since we are adding it to the
-pointer to the shared memory.
-
-Also this seems to be exactly 71 pages, so maybe this needs to be
-defined as a multiple of page size?
-
-> +static int segment_id = -1;
+> +#define  FILENAME  "setuid04_testfile"
+> +#define  DIR "ltp_tmp_check1"
+> +#define  TEST_FILE "test_file_1"
+> +#define  TEST_FIFO "test_fifo_1"
+> +#define  LTP_USR_UID1 1000
+> +#define  LTP_USR_UID2 1001
+> +#define  CONCAT(dir, filename) dir "/" filename
+> +#define  PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
+> +#define  PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
+> +
+> +static int dir_fd;
 > +
 > +static void run(void)
 > +{
-> +	char *sh_mem;
-> +	struct shmid_ds shmid_ds;
-> +	size_t segment_size = 16UL << 20;
+> +	int pid;
+> +
+> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 0);
+> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 0);
+> +
+> +	pid = SAFE_FORK();
 
-Does the segment size need to scale with the PAGE_SIZE as well? It seems
-to be long enough so maybe it does not, but I haven't checked the kernel
-to be sure.
+No need to store the pid if we are not using it. We can do instead just:
 
-> +	size_t addr_step = 4 * PAGE_SIZE;
+	if (!SAFE_FORK()) {
+
+> +	if (pid == 0) {
+> +		SAFE_SETUID(LTP_USR_UID1);
 > +
-> +	segment_id = SAFE_SHMGET(
-> +		KEY_ID,
-> +		segment_size,
-> +		IPC_CREAT | IPC_EXCL | 0600);
+> +		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
 > +
-> +	sh_mem = (char *)SAFE_SHMAT(segment_id, NULL, 0);
+> +		SAFE_CLOSE(fd);
+> +		fd = SAFE_MKFIFO(CONCAT(DIR, TEST_FIFO), 0777);
+> +		SAFE_CLOSE(fd);
+
+This part has to be done in the test setup() otherwise the test will
+fail with EEXIST with -i 2.
+
+> +		exit(0);
+> +	}
 > +
-> +	tst_res(TINFO, "Segment ID: %d - Segment Size: %lu", segment_id, segment_size);
-> +	tst_res(TINFO, "Attached at %p", sh_mem);
+> +	tst_reap_children();
 > +
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+> +	pid = SAFE_FORK();
 > +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-> +	tst_res(TINFO, "Disable memory access");
+> +	if (pid == 0) {
+> +		SAFE_SETUID(LTP_USR_UID2);
 > +
-> +	for (char *addr = sh_mem; addr < sh_mem + segment_size; addr += addr_step)
-> +		mprotect(addr, PAGE_SIZE, PROT_NONE);
+> +		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
 > +
-> +	tst_res(TINFO, "Write memory protection at %d", MAGIC_ADDR);
+> +		tst_res(TPASS, "check protect_regural == 0 pass");
+
+The TST_EXP_FD() should print TPASS message, there is no point in adding
+another.
+
+
+> +		SAFE_CLOSE(fd);
+
+This should be closed only if the fd is valid.
+
+> +		fd = SAFE_OPEN(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT);
+> +		tst_res(TPASS, "check protect_fifos == 0 pass");
+> +		SAFE_CLOSE(fd);
+
+Again this should be TST_EXP_FD().
+
+> +		exit(0);
+> +	}
 > +
-> +	/* This breaks it - anything but PROT_NONE */
-> +	mprotect(sh_mem + MAGIC_ADDR, 8192, PROT_WRITE);
+> +	tst_reap_children();
 > +
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 1);
+> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 1);
 > +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-> +	tst_res(TINFO, "Delete attached memory");
+> +	pid = SAFE_FORK();
 > +
-> +	SAFE_SHMDT(sh_mem);
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+> +	if (pid == 0) {
+> +		SAFE_SETUID(LTP_USR_UID2);
 > +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
+> +		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
 > +
-> +	SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
-> +	segment_id = -1;
+> +		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
 > +
-> +	if (shmid_ds.shm_nattch)
-> +		tst_res(TFAIL, "The system is affected by the SysV IPC bug");
-> +	else
-> +		tst_res(TPASS, "Test passed");
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +
+> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 2);
+> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 2);
+> +	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
+
+I suppose that this will break the test with -i 2 as well, you need to
+chmod the directory back at the end of the test.
+
+> +	pid = SAFE_FORK();
+> +
+> +	if (pid == 0) {
+> +		SAFE_SETUID(LTP_USR_UID2);
+> +
+> +		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
+> +
+> +		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
+> +
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	umask(0);
+> +	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
+> +
+> +	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
 > +}
 > +
 > +static void cleanup(void)
 > +{
-> +	if (segment_id != -1)
-> +		SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
+> +	SAFE_CLOSE(dir_fd);
 > +}
 > +
 > +static struct tst_test test = {
-> +	.test_all = run,
+> +	.setup = setup,
 > +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +	.save_restore = (const struct tst_path_val[]) {
+> +		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
+> +		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
+> +		{}
+> +	},
+> +	.needs_checkpoints = 1,
 
-And once the kernel patch hits the stable we should add the right tags
-here.
+This should have been removed.
+
+> +};
+> -- 
+> 2.35.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
