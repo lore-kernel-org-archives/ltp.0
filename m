@@ -4,90 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EA9AC5478C
-	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 08:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51A2AC54798
+	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 08:43:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1709023401; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=9POE7v19MA0gF7ZgfJRgDgX/ir1JCjab9J7ARFtDi00=;
- b=ER9aunR22Cyz4JAYx8U67O0F268hqil31HSyWIMCLmzLK3lV3WAXDf2Rbphyk/aepHXnG
- g5/DwPgl+DzvHmK2A55F6yXlVsmXhmRijND2/8bIUOAt3g0pTymAbbG8WnLJ1YocEjlzl7w
- 28odZ8FM+SA3uXn6SusOUSraL7+NKuQ=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709023429; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=IBQcmtaMa4KZdnxfL2GAraK6RhtiDvElW6wJVNGUal8=;
+ b=kNOTI9kyBJEl1hmCT82FdqzfMq2xR5rVgubMsLug6C77t60G1oGoPOzN5cKSIic7ytsap
+ iphA5/3DgnMtSWysEpJRamHyygNBMTxvc/eAOWu7I9rWW97CSmdgGIme4QmAZn0SRtk7gjL
+ 7Q9+6AJQCqG91yshFsf/gUiBgzNyRgk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6474E3CEEEF
-	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 09:43:21 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 9BFDC3CEF40
+	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 09:43:49 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2DF173CB971
- for <ltp@lists.linux.it>; Tue, 27 Feb 2024 09:42:59 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
- helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id CC0CB3CEF3C
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 09:43:07 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
+ helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
- [139.138.61.253])
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
+ [139.138.37.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6C08E207251
- for <ltp@lists.linux.it>; Tue, 27 Feb 2024 09:42:57 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E261A1401634
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 09:43:06 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1709023378; x=1740559378;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=D165jigxpeQTcVa1nzMsujW19g/innLQ/q6ZQzrIzGU=;
- b=JkpdA/C/dMYUs2VxCwyXj/L/+h3LQESbaMLffOnLivnBaI5uxcELKFgZ
- O6vRzdm8pNcHgWqe0BazQe2w2edspUHeEoDWX9D6rhONoJlGltWclwddN
- EkLujEeh2vdfMYgTB36mheFRMWCRa3MFI8qpOTn8zKF+lCLfz7u17zwVS
- zvXlLqn42rBoIewHIU3v9UpMCuMMXkiap8T6bTl7y6TNMsn7W/q+cNwi4
- uTFxgQi59JSEi2JyewmDxnVmPdRqR+flJgZ/IYXn3cKUbnMtl5pkEvwU+
- ybVULIHJrOpg+YwqAKyopN625R9VpQq5Ogo6G5N5mFYsdSYk9rYhlhWqY g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="138544654"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705330800"; d="scan'208";a="138544654"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Feb 2024 17:42:55 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 611FED4802
- for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:42:53 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 843C7D88A9
- for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:42:52 +0900 (JST)
+ t=1709023386; x=1740559386;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=c0yG5V5TUt1t2F3hiNeEEdffiRzedhWp/89WwB7angc=;
+ b=nwFj/UerplAxrMvJ68UMIW7+/KwCuQZnvrXqxIbxNGO2C9zA5f1xSHLs
+ A3HxF2kB9WrV3sC0PfMo6WaC86Alqe/PaZSZ/4na+Apf56vLFoAAnK6Et
+ kHEZWYf3b/l95jjjuaQ7tKd90sD1lPNwVO/dCT5C6ya0lpTJvEH5GFGhl
+ YubtDAt0ec3i0Elcw5DSX7b5zdnUHPYwMTSDDKPbTh3blxxBzNgsWCV2S
+ Tvjgu+OlnhNSvIOyBZhMhM2xJgYshc5nkc5ISoM1l73JzjrI/nGBTdJt6
+ 3fK8eBNbysqloOlO+qXfNByDN2kiSxHz1p+FMQT233XdcLI9Lppct2mgZ w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="129838175"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705330800"; d="scan'208";a="129838175"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Feb 2024 17:43:04 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
+ [192.168.83.67])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 04A062A0DEF
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:43:02 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 40AA9D7B6F
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:43:01 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 068F26BE7A
- for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:42:52 +0900 (JST)
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id C1E602008FF84
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 17:43:00 +0900 (JST)
 Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 817971A006A;
- Tue, 27 Feb 2024 16:42:51 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 406D91A006A;
+ Tue, 27 Feb 2024 16:43:00 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Tue, 27 Feb 2024 03:42:42 -0500
-Message-Id: <20240227084244.33662-1-xuyang2018.jy@fujitsu.com>
+Date: Tue, 27 Feb 2024 03:42:43 -0500
+Message-Id: <20240227084244.33662-2-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240227084244.33662-1-xuyang2018.jy@fujitsu.com>
+References: <20240227084244.33662-1-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28216.006
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28216.006
-X-TMASE-Result: 10--11.316000-10.000000
-X-TMASE-MatchedRID: rP3/tz83A4WhhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkIh+
+X-TMASE-Result: 10--13.074000-10.000000
+X-TMASE-MatchedRID: 7q1xkhOBgdehhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkIh+
  mL+ciFCpbnRB47KLJ1QzLmfGY6iDkX5uUfhNvnKzOWUWxTQJdI8UZYubbUj2DLt4BAaULwAVJf5
  otvavOZf9vT5evMX4tJhCh8+WImJUkto8AKCDbo7X3j/lf1V8LNhQO8CvZj/XfL8fHUCAmuv1ov
- LD2i2bwoHA6IBd3vQswTgwAtrOMM4O9fZKTjt+zzz6L+U/pejxfb+ZO7kHlEgyiHqxwIX2MVOkR
- ICTn8kKUjFinMvpgsNmlbstSGDENWULhS/RYteO3nHtGkYl/VpIvK4LrXs1aZsgafD1fXNh+03a
- +MQ8RE1Zms6w/rdLbtCPpguQSWAlZ2OZE/lyQ29KzjuZtPtIBH607foZgOWyNAzT8I6i53DDRve
- w35mZexdx1aMGhJ7URzLfMkqkPSlccQ8eam5EfRRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7k3Wac
- 5TPmZnTsbpQkYSD1VguBoo0HsmqvkUeNlBzTqdXwjihSrlWBo=
+ LD2i2bwoHA6IBd3vQsIvabuzhmQeA9M2SZK+EIssQ4mpKyfkqZBGvINcfHqhcli8Y5a0svLxduD
+ +Mmm6Q2gC3FH2GME0bQsefS5WLXU3hh1unvIp4BqNtC2YatSIkcsx3IH4sq3MgVyTd/p+/Io6yI
+ pLdrAfgD+h7g3AV/au2m4eeglpGzlTFYj5iEM4VdhZyafgPiqx+KaaVwAG43JLfQYoCQHFYTSjx
+ b4ZTfMJ6QSKvJTnodwTWpxY8/N9Pkht9v6t8rYxQ7ky03us3D7xa8TAoa4anoTJc0BP/XCqPFjJ
+ EFr+olwXCBO/GKkVqOhzOa6g8KrcN5HKs2rTzbbc80XJECKYhsJrgG9oG6nF4RRubAjLXFYluQl
+ 3unzhQ=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/3] mremap02: Convert to new API
+Subject: [LTP] [PATCH v2 2/3] mremap03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,14 +112,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/mremap/mremap02.c | 195 ++++----------------
- 1 file changed, 40 insertions(+), 155 deletions(-)
+ testcases/kernel/syscalls/mremap/mremap03.c | 201 ++++----------------
+ 1 file changed, 39 insertions(+), 162 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mremap/mremap02.c b/testcases/kernel/syscalls/mremap/mremap02.c
-index 2dabc6847..9e4a67c79 100644
---- a/testcases/kernel/syscalls/mremap/mremap02.c
-+++ b/testcases/kernel/syscalls/mremap/mremap02.c
-@@ -1,178 +1,63 @@
+diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
+index 02b79bc47..4e55dbda6 100644
+--- a/testcases/kernel/syscalls/mremap/mremap03.c
++++ b/testcases/kernel/syscalls/mremap/mremap03.c
+@@ -1,187 +1,64 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -140,16 +144,17 @@ index 2dabc6847..9e4a67c79 100644
   */
  
 -/*
-- * Test Name: mremap02
+- * Test Name: mremap03
 - *
 - * Test Description:
 - *  Verify that,
 - *   mremap() fails when used to expand the existing virtual memory mapped
-- *   region to the requested size, if the virtual memory area previously
-- *   mapped was not page aligned or invalid argument specified.
+- *   region to the requested size, if there already exists mappings that
+- *   cover the whole address space requsted or the old address specified was
+- *   not mapped.
 - *
 - * Expected Result:
-- *  mremap() should return -1 and set errno to EINVAL.
+- *  mremap() should return -1 and set errno to EFAULT.
 - *
 - * Algorithm:
 - *  Setup:
@@ -173,14 +178,14 @@ index 2dabc6847..9e4a67c79 100644
 + * [Description]
   *
 - * Usage:  <for command-line>
-- *  mremap02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  mremap03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *	       -e   : Turn on errno logging.
+- *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -p x : Pause for x seconds between iterations.
 - *	       -t   : Turn on syscall timing.
-+ * Test for EINVAL error.
++ * Test for EFAULT error.
   *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
@@ -196,30 +201,31 @@ index 2dabc6847..9e4a67c79 100644
 - *
 - * RESTRICTIONS:
 - *  None.
-+ * - mremap fail with virtual memory area previously mapped was not page aligned.
++ * - mremap fail with the old address specified was not mapped.
   */
 -#define _GNU_SOURCE
 -#include <errno.h>
 -#include <unistd.h>
 -#include <fcntl.h>
 -#include <sys/mman.h>
--
--#include "test.h"
  
--char *TCID = "mremap02";
--int TST_TOTAL = 1;
--char *addr;			/* addr of memory mapped region */
--int memsize;			/* memory mapped size */
--int newsize;			/* new size of virtual memory block */
+-#include "test.h"
 +#define _GNU_SOURCE
 +#include "tst_test.h"
  
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
+-char *TCID = "mremap03";
+-int TST_TOTAL = 1;
+ static char *bad_addr;
+-static char *addr;		/* addr of memory mapped region */
+-int memsize;			/* memory mapped size */
+-int newsize;			/* new size of virtual memory block */
 +static char *addr;
 +static int memsize;
 +static int newsize;
  
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
+-
 -int main(int ac, char **av)
 +static void verify_mremap(void)
  {
@@ -230,20 +236,20 @@ index 2dabc6847..9e4a67c79 100644
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
 +	errno = 0;
-+	addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
++	addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
 +	TST_ERR = errno;
  
--		tst_count = 0;
--
 -		/*
 -		 * Attempt to expand the existing mapped
--		 * memory region (memsize) by newsize limits using
--		 * mremap() should fail as old virtual address is not
--		 * page aligned.
+-		 * memory region (memsize) by newsize limits
+-		 * using mremap() should fail as specified old
+-		 * virtual address was not mapped.
 -		 */
 -		errno = 0;
--		addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
+-		addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
 -		TEST_ERRNO = errno;
 -
 -		/* Check for the return value of mremap() */
@@ -253,67 +259,72 @@ index 2dabc6847..9e4a67c79 100644
 -
 -			/* Unmap the mapped memory region */
 -			if (munmap(addr, newsize) != 0) {
--				tst_brkm(TBROK, cleanup, "munmap fails to "
+-				tst_brkm(TFAIL, cleanup, "munmap fails to "
 -					 "unmap the expanded memory region, "
--					 "error=%d", errno);
+-					 " error=%d", errno);
 -			}
 -			continue;
 -		}
 -
--		if (errno == EINVAL) {
--			tst_resm(TPASS, "mremap() Failed, 'invalid argument "
--				 "specified' - errno %d", TEST_ERRNO);
+-		/* Check for the expected errno */
+-		if (errno == EFAULT) {
+-			tst_resm(TPASS, "mremap() Fails, 'old region not "
+-				 "mapped', errno %d", TEST_ERRNO);
 -		} else {
--			tst_resm(TFAIL, "mremap() Failed, "
+-			tst_resm(TFAIL, "mremap() Fails, "
 -				 "'Unexpected errno %d", TEST_ERRNO);
 -		}
 +	if (addr != MAP_FAILED) {
 +		tst_res(TFAIL | TTERRNO,
-+			 "mremap returned invalid value, expected: -1");
++			"mremap returned invalid value, expected: -1");
  	}
  
 -	cleanup();
 -	tst_exit();
 -
-+	if (errno == EINVAL) {
-+		tst_res(TPASS | TTERRNO, "mremap() Failed, 'invalid argument "
-+			 "specified' - errno %d", TST_ERR);
++	if (errno == EFAULT) {
++		tst_res(TPASS | TTERRNO, "mremap() Failed, 'old region not "
++				"mapped' - errno %d", TST_ERR);
 +	} else {
 +		tst_res(TFAIL | TTERRNO, "mremap() Failed, "
-+			 "'Unexpected errno %d", TST_ERR);
++				"'Unexpected errno %d", TST_ERR);
 +	}
  }
  
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - *
-- * Get system page size, Set the size of virtual memory area and the
-- * new size after resize, Set the virtual memory address such that it
-- * is not aligned.
+- * Get system page size.
+- * Set the old address point some high address which is not mapped.
 - */
--void setup(void)
--{
- 
+ void setup(void)
+ {
+-	int page_sz;		/* system page size */
+-
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
--
++	int page_sz;
+ 
 -	/* Get the system page size */
--	if ((memsize = getpagesize()) < 0) {
+-	if ((page_sz = getpagesize()) < 0) {
 -		tst_brkm(TFAIL, NULL,
 -			 "getpagesize() fails to get system page size");
 -	}
 -
+-	/* Get the size of virtual memory area to be mapped */
++	page_sz = SAFE_SYSCONF(_SC_PAGESIZE);
+ 	memsize = (1000 * page_sz);
+-
 -	/* Get the New size of virtual memory block after resize */
-+static void setup(void)
-+{
-+	memsize = SAFE_SYSCONF(_SC_PAGESIZE);
-+	addr = SAFE_MMAP(NULL, memsize, PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
  	newsize = (memsize * 2);
 -
--	/* Set the old virtual memory address */
- 	addr = (char *)(addr + (memsize - 1));
+-	/*
+-	 * Set the old virtual address point to some address
+-	 * which is not mapped.
+-	 */
+-	bad_addr = tst_get_bad_addr(cleanup);
++	bad_addr = tst_get_bad_addr(NULL);
  }
  
 -/*
@@ -325,10 +336,11 @@ index 2dabc6847..9e4a67c79 100644
  {
 -
 -	/* Exit the program */
+-
 +	if (addr != MAP_FAILED)
 +		SAFE_MUNMAP(addr, newsize);
- 
  }
++
 +static struct tst_test test = {
 +	.test_all = verify_mremap,
 +	.setup = setup,
