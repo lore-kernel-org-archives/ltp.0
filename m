@@ -4,100 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13C3CC48BF6
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 16:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E57C54798
+	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 05:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709012556; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=RNCVbDszthOnL/bd7S5OWKwShc+zQbWmfrxKtP2458k=;
+ b=H39spaKuKchVnrU5PKXr8PKYp68M7OKSgzppymbidzuPS2ophHGYoo+ixiuF2nLtyROit
+ 5gejYKSn9fhALI/MnILD8HOBVpPBxSADslcWh/u65QshtloCxJaDm/luvG1WVZt7/jKVcUq
+ vs3wDFkpDbzopb2aN6iRB3CXkum8aWQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55C0A3CEFFD
-	for <ltp@archiver.kernel.org>; Mon, 26 Feb 2024 17:07:33 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id B687B3CD8BF
+	for <ltp@archiver.kernel.org>; Tue, 27 Feb 2024 06:42:36 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8DD8D3CBEED
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 17:07:13 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 66CDF3CB504
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 06:42:13 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
+ helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B0ADD140164E
- for <ltp@lists.linux.it>; Mon, 26 Feb 2024 17:07:12 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CA3061FD29;
- Mon, 26 Feb 2024 16:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708963631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9i+/6t+ITog0PfhAgD9sRsDJqGHsnDJcYTVcWvquMj8=;
- b=xIMJ5IXTunPNzombPf8c4eJf28rPXkjWnzTXzWXAyVaDlwuh+mmaaVjZGs3AhOrUl9erLU
- kyOdBrVChG5jnNRqOfpjxDhBxuzOGR3rMiuSr4Ld0+XRBq4fuxUReiTzL0W3scuSOEJF+P
- rlyFBK79sg/tkLLZenASoYOEqH8CrQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708963631;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9i+/6t+ITog0PfhAgD9sRsDJqGHsnDJcYTVcWvquMj8=;
- b=2zgoApwkuorIBZu9pbapNKsCdPh/XHwI/uc1Bzsq2olx3c9FDqHUcGgvtB48qeit/QQR9C
- YhHyQcdS6LfRTxCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1708963629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9i+/6t+ITog0PfhAgD9sRsDJqGHsnDJcYTVcWvquMj8=;
- b=Kh+IM6MLHrJLct0qOcoE27NAf7oTA9zLqfXpX+JClJlbZZ9ds0MmdFiG7gTKn8XbG+gXVc
- qVGyyxkpy5zVgCu6k9jwqgiK0A0jPzMQx1R5ExrWL9R67fCxnaKkapkK1wVPVrIEjw6+4D
- OtLXeYW4Kge77Mgb2dyrdVFWcCmnnP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1708963629;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9i+/6t+ITog0PfhAgD9sRsDJqGHsnDJcYTVcWvquMj8=;
- b=DvTaMbnO3o4CvO3l62He4/4+dQxH6hjyjfZCMhxd7LcEf7ENLmMilcgL6DFbctMCvpf1Xg
- EBGDxJssu5sfIwBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB3F913A3A;
- Mon, 26 Feb 2024 16:07:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id z72wLS233GXpCgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 26 Feb 2024 16:07:09 +0000
-Date: Mon, 26 Feb 2024 17:06:03 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Zdy26zz-_23brAlB@yuki>
-References: <20240226153754.24998-1-andrea.cervesato@suse.de>
- <20240226153754.24998-3-andrea.cervesato@suse.de>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 24C8A1400981
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 06:42:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1709012531; x=1740548531;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=NsxFA0hA/DKPFTWk8MLggZQ4Rg6lbeVp/mdBw+aIf30=;
+ b=d3rdl9JsJ5O7nM/4SjPMPlK9w32uEI74UDfwwc52bdNZTUz6tNKlexhM
+ NgA/V0VlCaAzsE7qUU0rAO8CKYWpq7VcRiueGNjF61jsiR0auP6iyXrmy
+ XUCzeIEwac55OcSJTv9ipp88q7wRqkdhOw4HiqDU7A064Ul+kZnFbGEQj
+ E13z/3HrXDjcitiySis+E74MJjZkz23sI3+f96aB8rbvQ55whMuBH4tMU
+ NccYHUL1jA4Ohn0HxqWbaQeMv+fidfMvifYhhUYlRYbqL5yX5cPff7nnJ
+ G7Km0X8GxPYXCBJ96nEi6fYFsDcywYcQcmfC6RiUot1WbNIvk2aP2iDmE w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="138521643"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705330800"; d="scan'208";a="138521643"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Feb 2024 14:42:08 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id A98341590F8
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 14:42:06 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id D8667D41B0
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 14:42:05 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6A2EB2008FF8F
+ for <ltp@lists.linux.it>; Tue, 27 Feb 2024 14:42:05 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 179A61A006A;
+ Tue, 27 Feb 2024 13:42:04 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Tue, 27 Feb 2024 00:41:44 -0500
+Message-Id: <20240227054144.27013-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240226153754.24998-3-andrea.cervesato@suse.de>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-4.80 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url,suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[42.95%]
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28216.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28216.005
+X-TMASE-Result: 10--16.995300-10.000000
+X-TMASE-MatchedRID: wplI/emIzpfyq/cli2hvDU7nLUqYrlslFIuBIWrdOeMnyU5/nZpxUL4q
+ 7wkSW5bKbnRB47KLJ1QzLmfGY6iDkYF+91Q/EzGtN70wXhI0DX4yhLY8urUHvmvlGb+24NaZuJE
+ UmdYPGSW9o2p3dj0RfAeWR71HtRmwaEsmopAJRAldhZyafgPiqxeN9Hd3TB5Gg1CUneBzTgvzWM
+ gQWjC6I0nY0BEsuOT25rJNazxTXPIr7jXWQYK2DxlxrtI3TxRklKvhkP88iXTMB0kPsl40w9H8F
+ nB4FvBYMPDOmTHabb9qGk75BUN9yFWcCzOjQR80Ss47mbT7SAR+tO36GYDlslQuGn5b9r2ZN/Z2
+ acZRUwnfJQwjclGDz+yFs1HYIL4NEtsR9kNMgSyL3n8qdYJTdH0tCKdnhB589yM15V5aWpj6C0e
+ Ps7A07QKmARN5PTKc
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] Add shmat04 SysV IPC bug reproducer
+Subject: [LTP] [PATCH v2] munlockall01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,129 +98,178 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void change_access(void *addr, int size, int prot)
-> +{
-> +	switch (prot) {
-> +	case PROT_NONE:
-> +		tst_res(TINFO, "Disable memory access. addr: %p - size: %d",
-> +			addr, size);
-> +		break;
-> +	case PROT_WRITE:
-> +		tst_res(TINFO, "Enable write memory access. addr: %p - size: %d",
-> +			addr, size);
-> +		break;
-> +	default:
-> +		tst_res(TINFO, "Change memory access. addr: %p - size: %d",
-> +			addr, size);
-> +		break;
-> +	}
-> +
-> +	SAFE_MPROTECT(addr, size, prot);
-> +}
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ .../kernel/syscalls/munlockall/munlockall01.c | 140 +++---------------
+ 1 file changed, 18 insertions(+), 122 deletions(-)
 
-Hmm, it's kind of ugly how we wrap the macro here like that...
-
-What about we instead add debugging messages to all the SAFE_MACROS()?
-
-Given that we added TDEBUG flag recently we can do soemthing as:
-
-	tst_res_(TDEBUG, file, lineno, "mprotect(%p, %d, %s)",
-	         addr, size, prot_to_str(prot));
-
-To the SAFE_MPROTECT() and get the verbose output for free with verbose
-flag passed to the test.
-
-We can do that with all SAFE_MACROS() then we do not have to print most
-of the messages in this test...
-
-> +
-> +static void run(void)
-> +{
-> +	struct shmid_ds shmid_ds;
-> +	void *sh_mem;
-> +
-> +	segment_id = SAFE_SHMGET(
-> +		key_id,
-> +		segment_size,
-> +		IPC_CREAT | IPC_EXCL | 0600);
-> +
-> +	sh_mem = SAFE_SHMAT(segment_id, NULL, 0);
-> +
-> +	tst_res(TINFO, "Attached at %p. key: %d - size: %lu",
-> +		sh_mem, segment_id, segment_size);
-> +
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-> +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-> +
-> +	change_access(sh_mem + page_size, page_size, PROT_NONE);
-> +	change_access(sh_mem, 2 * page_size, PROT_WRITE);
-> +
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-> +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-> +	tst_res(TINFO, "Delete attached memory");
-> +
-> +	SAFE_SHMDT(sh_mem);
-> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-> +
-> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-> +
-> +	SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
-> +	segment_id = -1;
-> +
-> +	if (shmid_ds.shm_nattch)
-> +		tst_res(TFAIL, "The system is affected by the SysV IPC bug");
-> +	else
-> +		tst_res(TPASS, "Test passed");
-
-These messages are not really that useful, we can as well do:
-
-TST_EXP_EQ_LU(shmid_ds.shm_nattach, 0);
-
-That will provide better message than "PASS: Test passed"
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	key_id = GETIPCKEY();
-> +	page_size = getpagesize();
-> +
-> +	tst_res(TINFO, "Key id: %d", key_id);
-> +	tst_res(TINFO, "Page size: %d", page_size);
-> +
-> +	segment_size = 3 * page_size;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (segment_id != -1)
-> +		SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/munlockall/munlockall01.c b/testcases/kernel/syscalls/munlockall/munlockall01.c
+index 51f731b65..9306cef11 100644
+--- a/testcases/kernel/syscalls/munlockall/munlockall01.c
++++ b/testcases/kernel/syscalls/munlockall/munlockall01.c
+@@ -1,134 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * Copyright (c) Linux Test Project, 2002-2024
++ * Author: sowmya adiga<sowmya.adiga@wipro.com>
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: munlockall01
+- *
+- *    EXECUTED BY	: root / superuser
+- *
+- *    TEST TITLE	: Basic test for munlockall(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: sowmya adiga<sowmya.adiga@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This is a phase I test for the munlockall(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
+- *
+- * 	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *        Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *	  Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  munlockall01 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+- *		where,		-c n : Run n copies concurrently
+- *	               		-e   : Turn on errno logging.
+- *				-h   : Show this help screen
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *                      	-P x : Pause for x seconds between iterations.
+- *                       	 t   : Turn on syscall timing.
+- *
+- * RESTRICTIONS
+- * Must be root/superuser to run it.
+- *****************************************************************************/
+-#include <errno.h>
+-#include <sys/mman.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "munlockall01";
+-int TST_TOTAL = 1;
+-
+-#if !defined(UCLINUX)
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	/* check looping state */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+ 
+-		TEST(munlockall());
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "munlockall() Failed with"
+-				 " return=%ld", TEST_RETURN);
+-		} else {
+-			tst_resm(TPASS, "munlockall() passed with"
+-				 " return=%ld ", TEST_RETURN);
+-
+-		}
+-	}
+-
+-	/* cleanup and exit */
+-	cleanup();
+-	tst_exit();
+-
+-}
++/*
++ * [Description]
++ *
++ * Check the basic function of munlockall(2) system call.
++ */
+ 
+-#else
++#include "tst_test.h"
+ 
+-int main(void)
++static void verify_munlockall(void)
+ {
+-	tst_resm(TINFO, "test is not available on uClinux");
+-	tst_exit();
++	TST_EXP_PASS(munlockall());
+ }
+ 
+-#endif /* if !defined(UCLINUX) */
+-
+-/* setup() - performs all ONE TIME setup for this test. */
+-void setup(void)
++static void setup(void)
+ {
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	mlockall(MCL_CURRENT);
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.needs_root = 1,
++	.setup = setup,
++	.test_all  = verify_munlockall,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
