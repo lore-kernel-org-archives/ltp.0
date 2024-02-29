@@ -4,81 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71271C54798
-	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 09:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6E10C54798
+	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 09:41:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 412013CEDFD
-	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 10:17:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 01D303CEDE0
+	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 10:41:20 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3BC1E3CDAD0
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 10:16:51 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 7A0AC3C26B9
+ for <ltp@lists.linux.it>; Thu, 29 Feb 2024 10:41:04 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1E67110124A5
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 10:16:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1709198208;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 82C761401181
+ for <ltp@lists.linux.it>; Thu, 29 Feb 2024 10:41:03 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 621DD1F7CB;
+ Thu, 29 Feb 2024 09:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709199662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ux9N/l7X8GvYho3QpW6uBluV1Qnz8KxJlrFNMl+lm7g=;
- b=E4s8/S5BTaaPgXswYp3U1BEU00R/SUj8pGIZxi5DfL5NL697WoGSj1FTNLWcI2X1JEf+jl
- Fu+d0CZJ9DHkoF9pglPnDAcDqfMuYsp3Fo4rJ8CZrGHad/Fgp3B4oRTM334dZ/SlP1Ufiz
- KffXpLE4i10C2SKPhRwrXbLLnh818FA=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-2iK59StYNIePnYxSFSmEvg-1; Thu, 29 Feb 2024 04:16:46 -0500
-X-MC-Unique: 2iK59StYNIePnYxSFSmEvg-1
-Received: by mail-pg1-f199.google.com with SMTP id
- 41be03b00d2f7-5dc992f8c8aso622771a12.3
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 01:16:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1709198205; x=1709803005;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Ux9N/l7X8GvYho3QpW6uBluV1Qnz8KxJlrFNMl+lm7g=;
- b=mehX0nAjfacylfN64yUoOowLZyQPzPaeznfZxe7qDBjIcQg+8oVxGmtFmOITv9jYCH
- onNrpvuUrfvvicr/02iBeRANe9qr+ZurDg6r/2ABavhTSAhpSbt67TSD04LbRa+43rv1
- PYQ9lmL/M8J5kL5KQZyh+Ku0cU6kTNGsqqVZjWlwCf4vUs1Vwo1PosWH1mMlJXdsxLgL
- HZbn93UHNyhqfNoCrpzatNZgnNMOndLOxyYXsp7yr/izqWIiqD92RFgJgW9IeJyMNkIh
- 9PcXA7e+rdfAGmaiTftYt5owmDS7wylRctEdzY94y6o7I2i4yv99PS+ZH2Yc4234Fqer
- 4pFQ==
-X-Gm-Message-State: AOJu0YyrmPUsegs5NaLHj1ieA26FxH6kZp7forVXfBBeXMS6lDGHiUV8
- Q0eyyNABtx1ibf3oMShzoRNQBLzFTFxaJ4eJaKUzH0pOB1BPefxdYc1LD6PxyzLJ7D9OfOaqt15
- ZFUcPsB0vG3bW4SCeZKvFwTwENYW+zOnK9ZO7+QPmrZf1u43hVm+/EelSUVlmjjjxpY1CX33nRR
- 4yRb5xd0LKLId7p+U/uUceCGw=
-X-Received: by 2002:a05:6a21:8794:b0:1a0:fc33:17a7 with SMTP id
- ph20-20020a056a21879400b001a0fc3317a7mr1427219pzb.27.1709198205589; 
- Thu, 29 Feb 2024 01:16:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEp07O168NgKWJSlYCCtru8NFO+CuXwI27CAp4aI37Hc1HnnIfskkj9Zpp/+qOwB6ru223dcZTIVh3NNyI4nmo=
-X-Received: by 2002:a05:6a21:8794:b0:1a0:fc33:17a7 with SMTP id
- ph20-20020a056a21879400b001a0fc3317a7mr1427207pzb.27.1709198205045; Thu, 29
- Feb 2024 01:16:45 -0800 (PST)
+ bh=5dQRAIJcz7rGlWpuZ4pP4xG0k0W8GUBvOOKc6UblaDs=;
+ b=0Rd2wlBvI1odH7Y0A+E/QdR9t5gKvZaxuck+D+ft1y/G+fTOUGNOfNf2uvNAJQNmAnw2rN
+ +Kp0gf1FkK/6ciVY+zVX4aerpHaN1AXBPlm67LcNn2SR8k34XnNHtj5Y892v0JIO1gTnK2
+ fgZuRF3xzm5jbVOV5J96GlN79CqBN0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709199662;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5dQRAIJcz7rGlWpuZ4pP4xG0k0W8GUBvOOKc6UblaDs=;
+ b=Fq3x1vkjZv26rXywihTVte29il4h3HCQVDNpbz3bukWU0/YxQy77M0gg3JE8EOqwCJX/nQ
+ fWueheMJnlYwnADA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709199662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5dQRAIJcz7rGlWpuZ4pP4xG0k0W8GUBvOOKc6UblaDs=;
+ b=0Rd2wlBvI1odH7Y0A+E/QdR9t5gKvZaxuck+D+ft1y/G+fTOUGNOfNf2uvNAJQNmAnw2rN
+ +Kp0gf1FkK/6ciVY+zVX4aerpHaN1AXBPlm67LcNn2SR8k34XnNHtj5Y892v0JIO1gTnK2
+ fgZuRF3xzm5jbVOV5J96GlN79CqBN0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709199662;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5dQRAIJcz7rGlWpuZ4pP4xG0k0W8GUBvOOKc6UblaDs=;
+ b=Fq3x1vkjZv26rXywihTVte29il4h3HCQVDNpbz3bukWU0/YxQy77M0gg3JE8EOqwCJX/nQ
+ fWueheMJnlYwnADA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56E9013503;
+ Thu, 29 Feb 2024 09:41:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3EnqFC5R4GWqXAAAD6G6ig
+ (envelope-from <akumar@suse.de>); Thu, 29 Feb 2024 09:41:02 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it, Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 29 Feb 2024 10:40:54 +0100
+Message-ID: <14365805.8JY2RFzSmD@localhost>
+Organization: SUSE
+In-Reply-To: <20240227054144.27013-1-xuyang2018.jy@fujitsu.com>
+References: <20240227054144.27013-1-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-References: <20240126062540.2596279-1-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20240126062540.2596279-1-ruansy.fnst@fujitsu.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 29 Feb 2024 17:16:33 +0800
-Message-ID: <CAEemH2eVpn1Y=W+W9LNFGoEZ-b1Wge6NLXpvreT7+KLUAwMd=g@mail.gmail.com>
-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0Rd2wlBv;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Fq3x1vkj
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.51 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ DWL_DNSWL_MED(-2.00)[suse.de:dkim]; HAS_ORG_HEADER(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 621DD1F7CB
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/2] fchownat01: Convert to new API
+Subject: Re: [LTP] [PATCH v2] munlockall01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,126 +120,188 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgU2hpeWFuZywKCk9uIEZyaSwgSmFuIDI2LCAyMDI0IGF0IDI6MjbigK9QTSBTaGl5YW5nIFJ1
-YW4gPHJ1YW5zeS5mbnN0QGZ1aml0c3UuY29tPgp3cm90ZToKCj4gU2lnbmVkLW9mZi1ieTogU2hp
-eWFuZyBSdWFuIDxydWFuc3kuZm5zdEBmdWppdHN1LmNvbT4KPiAtLS0KPiAgLi4uL2tlcm5lbC9z
-eXNjYWxscy9mY2hvd25hdC9mY2hvd25hdDAxLmMgICAgIHwgMTU0ICsrKysrKy0tLS0tLS0tLS0t
-LQo+ICAxIGZpbGUgY2hhbmdlZCwgNDkgaW5zZXJ0aW9ucygrKSwgMTA1IGRlbGV0aW9ucygtKQo+
-Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmNob3duYXQvZmNob3du
-YXQwMS5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZjaG93bmF0L2ZjaG93bmF0MDEu
-Ywo+IGluZGV4IDc3NzFjMTExYS4uMWE1YjY2ZDk5IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvZmNob3duYXQvZmNob3duYXQwMS5jCj4gKysrIGIvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9mY2hvd25hdC9mY2hvd25hdDAxLmMKPiBAQCAtMSwxMzMgKzEsNzcgQEAK
-PiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKPiAgLyoKPiAt
-ICogICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAu
-LCAyMDA2Cj4gLSAqICAgQVVUSE9SOiBZaSBZYW5nIDx5eWFuZ2NkbEBjbi5pYm0uY29tPgo+IC0g
-Kgo+IC0gKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3Ry
-aWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo+IC0gKiAgIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cj4gLSAqICAgdGhlIEZy
-ZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwg
-b3IKPiAtICogICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgo+IC0gKgo+IC0g
-KiAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwg
-YmUgdXNlZnVsLAo+IC0gKiAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZl
-biB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo+IC0gKiAgIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
-RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQo+IC0gKiAgIHRoZSBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+IC0gKgo+IC0gKiAgIFlvdSBzaG91
-bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
-Cj4gLSAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBG
-cmVlIFNvZnR3YXJlCj4gRm91bmRhdGlvbiwKPiAtICogICBJbmMuLCA1MSBGcmFua2xpbiBTdHJl
-ZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBCj4gKyAqIENvcHlyaWdo
-dCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDYKPiArICog
-Q29weXJpZ2h0IChjKSBMaW51eCBUZXN0IFByb2plY3QsIDIwMDctMjAyNAo+ICAgKi8KPiAtLyoK
-PiAtICogREVTQ1JJUFRJT04KPiAtICogICAgIFRoaXMgdGVzdCBjYXNlIHdpbGwgdmVyaWZ5IGJh
-c2ljIGZ1bmN0aW9uIG9mIGZjaG93bmF0Cj4gLSAqICAgICBhZGRlZCBieSBrZXJuZWwgMi42LjE2
-IG9yIHVwLgo+ICsKPiArLypcCj4gKyAqIFtEZXNjcmlwdGlvbl0KPiArICoKPiArICogVmVyaWZ5
-IGJhc2ljIGZ1bmN0aW9uIG9mIGZjaG93bmF0KCkgYWRkZWQgYnkga2VybmVsIDIuNi4xNiBvciB1
-cC4KPiAgICovCj4KPiAgI2RlZmluZSBfR05VX1NPVVJDRQo+IC0KPiAtI2luY2x1ZGUgPHN5cy90
-eXBlcy5oPgo+IC0jaW5jbHVkZSA8c3lzL3N0YXQuaD4KPiAtI2luY2x1ZGUgPHVuaXN0ZC5oPgo+
-IC0jaW5jbHVkZSA8c3RkbGliLmg+Cj4gLSNpbmNsdWRlIDxlcnJuby5oPgo+IC0jaW5jbHVkZSA8
-c3RyaW5nLmg+Cj4gLSNpbmNsdWRlIDxzaWduYWwuaD4KPiAtCj4gLSNpbmNsdWRlICJ0ZXN0Lmgi
-Cj4gLSNpbmNsdWRlICJzYWZlX21hY3Jvcy5oIgo+IC0jaW5jbHVkZSAibGFwaS9mY250bC5oIgo+
-ICsjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPgo+ICAjZGVmaW5lIFRFU1RGSUxFICAgICAgICJ0ZXN0
-ZmlsZSIKPiAtCj4gLXN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+IC1zdGF0aWMgdm9pZCBjbGVh
-bnVwKHZvaWQpOwo+ICsjZGVmaW5lIFRFU1RGSUxFMiAgICAgICJ0ZXN0ZmlsZTIiCj4KPiAgc3Rh
-dGljIGludCBkaXJfZmQ7Cj4gIHN0YXRpYyBpbnQgZmQ7Cj4gIHN0YXRpYyBpbnQgbm9fZmQgPSAt
-MTsKPiAgc3RhdGljIGludCBjdV9mZCA9IEFUX0ZEQ1dEOwo+Cj4gLXN0YXRpYyBzdHJ1Y3QgdGVz
-dF9jYXNlX3Qgewo+ICtzdGF0aWMgc3RydWN0IHRjYXNlIHsKPiAgICAgICAgIGludCBleHBfcmV0
-Owo+ICAgICAgICAgaW50IGV4cF9lcnJubzsKPiAgICAgICAgIGludCBmbGFnOwo+IC0gICAgICAg
-aW50ICpmZHM7Cj4gLSAgICAgICBjaGFyICpmaWxlbmFtZXM7Cj4gLX0gdGVzdF9jYXNlc1tdID0g
-ewo+IC0gICAgICAgezAsIDAsIDAsICZkaXJfZmQsIFRFU1RGSUxFfSwKPiAtICAgICAgIHstMSwg
-RU5PVERJUiwgMCwgJmZkLCBURVNURklMRX0sCj4gLSAgICAgICB7LTEsIEVCQURGLCAwLCAmbm9f
-ZmQsIFRFU1RGSUxFfSwKPiAtICAgICAgIHstMSwgRUlOVkFMLCA5OTk5LCAmZGlyX2ZkLCBURVNU
-RklMRX0sCj4gLSAgICAgICB7MCwgMCwgMCwgJmN1X2ZkLCBURVNURklMRX0sCj4gKyAgICAgICBp
-bnQgKmZkOwo+ICsgICAgICAgY2hhciAqZmlsZW5hbWU7Cj4gK30gdGNhc2VzW10gPSB7Cj4gKyAg
-ICAgICB7IDAsIDAsIDAsICZkaXJfZmQsIFRFU1RGSUxFIH0sCj4gKyAgICAgICB7IDAsIDAsIDAs
-ICZjdV9mZCwgVEVTVEZJTEUgfSwKPgoKCj4gKyAgICAgICB7IC0xLCBFTk9URElSLCAwLCAmZmQs
-IFRFU1RGSUxFIH0sCj4gKyAgICAgICB7IC0xLCBFQkFERiwgMCwgJm5vX2ZkLCBURVNURklMRSB9
-LAo+ICsgICAgICAgeyAtMSwgRUlOVkFMLCA5OTk5LCAmZGlyX2ZkLCBURVNURklMRSB9LAo+CgoK
-V2UgdHlwaWNhbGx5IGRpdmlkZSB0aGUgZXJyb3IgdGVzdCBpbnRvIGEgc2VwYXJhdGUgdGVzdCBm
-aWxlLgpUaGVuIGl0IGNvdWxkIGJlIGVhc3kgdG8gYWRkIG1vcmUgZXJyb3IgaXRlbXMuCgoKCj4g
-IH07Cj4KPiAtY2hhciAqVENJRCA9ICJmY2hvd25hdDAxIjsKPiAtaW50IFRTVF9UT1RBTCA9IEFS
-UkFZX1NJWkUodGVzdF9jYXNlcyk7Cj4gLXN0YXRpYyB2b2lkIGZjaG93bmF0X3ZlcmlmeShjb25z
-dCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7Cj4gLQo+IC1pbnQgbWFpbihpbnQgYWMsIGNoYXIgKiph
-dikKPiArc3RhdGljIHZvaWQgZmNob3duYXRfdmVyaWZ5KHVuc2lnbmVkIGludCBuKQo+ICB7Cj4g
-LSAgICAgICBpbnQgbGM7Cj4gLSAgICAgICBpbnQgaTsKPiAtCj4gLSAgICAgICB0c3RfcGFyc2Vf
-b3B0cyhhYywgYXYsIE5VTEwsIE5VTEwpOwo+IC0KPiAtICAgICAgIHNldHVwKCk7Cj4gLQo+IC0g
-ICAgICAgZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKPiAtICAgICAgICAg
-ICAgICAgdHN0X2NvdW50ID0gMDsKPiAtICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IFRT
-VF9UT1RBTDsgaSsrKQo+IC0gICAgICAgICAgICAgICAgICAgICAgIGZjaG93bmF0X3ZlcmlmeSgm
-dGVzdF9jYXNlc1tpXSk7Cj4gLSAgICAgICB9Cj4gLQo+IC0gICAgICAgY2xlYW51cCgpOwo+IC0g
-ICAgICAgdHN0X2V4aXQoKTsKPiArICAgICAgIHN0cnVjdCB0Y2FzZSAqdGMgPSAmdGNhc2VzW25d
-Owo+ICsgICAgICAgdWlkX3QgZXVpZCA9IGdldGV1aWQoKTsKPiArICAgICAgIGdpZF90IGVnaWQg
-PSBnZXRlZ2lkKCk7Cj4gKyAgICAgICBpbnQgZmQgPSAqdGMtPmZkOwo+ICsgICAgICAgaW50IGZs
-YWcgPSB0Yy0+ZmxhZzsKPiArICAgICAgIGNvbnN0IGNoYXIgKmZpbGVuYW1lID0gdGMtPmZpbGVu
-YW1lOwo+ICsKPiArICAgICAgIGlmICh0Yy0+ZXhwX3JldCA9PSAwKQo+ICsgICAgICAgICAgICAg
-ICBUU1RfRVhQX1BBU1MoZmNob3duYXQoZmQsIGZpbGVuYW1lLCBldWlkLCBlZ2lkLCBmbGFnKSwK
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICJmY2hvd25hdCglZCwgJXMsICVkLCAlZCwg
-JWQpIiwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZkLCBmaWxlbmFtZSwgZXVpZCwg
-ZWdpZCwgZmxhZyk7Cj4KCkNhbiB3ZSBwbGVhc2UgY2hlY2sgdGhlIGZpbGUncyBvd25lcnNoaXAg
-Y2hhbmdlZCBzdWNjZXNzZnVsbHk/CgoKCj4gKyAgICAgICBlbHNlCj4gKyAgICAgICAgICAgICAg
-IFRTVF9FWFBfRkFJTChmY2hvd25hdChmZCwgZmlsZW5hbWUsIGV1aWQsIGVnaWQsIGZsYWcpLAo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGMtPmV4cF9lcnJubywKPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICJmY2hvd25hdCglZCwgJXMsICVkLCAlZCwgJWQpIiwKPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGZkLCBmaWxlbmFtZSwgZXVpZCwgZWdpZCwgZmxhZyk7
-Cj4gIH0KPgo+ICBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ICB7Cj4gLSAgICAgICB0c3Rfc2ln
-KE5PRk9SSywgREVGX0hBTkRMRVIsIGNsZWFudXApOwo+IC0KPiAtICAgICAgIFRFU1RfUEFVU0U7
-Cj4gLQo+IC0gICAgICAgdHN0X3RtcGRpcigpOwo+IC0KPiAtICAgICAgIGRpcl9mZCA9IFNBRkVf
-T1BFTihjbGVhbnVwLCAiLi8iLCBPX0RJUkVDVE9SWSk7Cj4gLQo+IC0gICAgICAgU0FGRV9UT1VD
-SChjbGVhbnVwLCBURVNURklMRSwgMDYwMCwgTlVMTCk7Cj4gLQo+IC0gICAgICAgZmQgPSBTQUZF
-X09QRU4oY2xlYW51cCwgInRlc3RmaWxlMiIsIE9fQ1JFQVQgfCBPX1JEV1IsIDA2MDApOwo+IC19
-Cj4gLQo+IC1zdGF0aWMgdm9pZCBmY2hvd25hdF92ZXJpZnkoY29uc3Qgc3RydWN0IHRlc3RfY2Fz
-ZV90ICp0ZXN0KQo+IC17Cj4gLSAgICAgICBURVNUKGZjaG93bmF0KCoodGVzdC0+ZmRzKSwgdGVz
-dC0+ZmlsZW5hbWVzLCBnZXRldWlkKCksCj4gLSAgICAgICAgICAgICAgICAgICAgIGdldGVnaWQo
-KSwgdGVzdC0+ZmxhZykpOwo+IC0KPiAtICAgICAgIGlmIChURVNUX1JFVFVSTiAhPSB0ZXN0LT5l
-eHBfcmV0KSB7Cj4gLSAgICAgICAgICAgICAgIHRzdF9yZXNtKFRGQUlMIHwgVFRFUlJOTywKPiAt
-ICAgICAgICAgICAgICAgICAgICAgICAgImZjaG93bmF0KCkgcmV0dXJuZWQgJWxkLCBleHBlY3Rl
-ZCAlZCwgZXJybm89JWQiLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICBURVNUX1JFVFVSTiwg
-dGVzdC0+ZXhwX3JldCwgdGVzdC0+ZXhwX2Vycm5vKTsKPiAtICAgICAgICAgICAgICAgcmV0dXJu
-Owo+IC0gICAgICAgfQo+IC0KPiAtICAgICAgIGlmIChURVNUX0VSUk5PID09IHRlc3QtPmV4cF9l
-cnJubykgewo+IC0gICAgICAgICAgICAgICB0c3RfcmVzbShUUEFTUyB8IFRURVJSTk8sCj4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICJmY2hvd25hdCgpIHJldHVybmVkIHRoZSBleHBlY3RlZCBl
-cnJubyAlZDogJXMiLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICB0ZXN0LT5leHBfcmV0LCBz
-dHJlcnJvcih0ZXN0LT5leHBfZXJybm8pKTsKPiAtICAgICAgIH0gZWxzZSB7Cj4gLSAgICAgICAg
-ICAgICAgIHRzdF9yZXNtKFRGQUlMIHwgVFRFUlJOTywKPiAtICAgICAgICAgICAgICAgICAgICAg
-ICAgImZjaG93bmF0KCkgZmFpbGVkIHVuZXhwZWN0ZWRseTsgZXhwZWN0ZWQ6ICVkIC0KPiAlcyIs
-Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgIHRlc3QtPmV4cF9lcnJubywgc3RyZXJyb3IodGVz
-dC0+ZXhwX2Vycm5vKSk7Cj4gLSAgICAgICB9Cj4gKyAgICAgICBkaXJfZmQgPSBTQUZFX09QRU4o
-Ii4vIiwgT19ESVJFQ1RPUlkpOwo+ICsgICAgICAgU0FGRV9UT1VDSChURVNURklMRSwgMDYwMCwg
-TlVMTCk7Cj4gKyAgICAgICBmZCA9IFNBRkVfT1BFTihURVNURklMRTIsIE9fQ1JFQVQgfCBPX1JE
-V1IsIDA2MDApOwo+ICB9Cj4KPiAgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQo+ICB7Cj4gLSAg
-ICAgICBpZiAoZmQgPiAwKQo+IC0gICAgICAgICAgICAgICBjbG9zZShmZCk7Cj4gLQo+IC0gICAg
-ICAgaWYgKGRpcl9mZCA+IDApCj4gLSAgICAgICAgICAgICAgIGNsb3NlKGRpcl9mZCk7Cj4gLQo+
-IC0gICAgICAgdHN0X3JtZGlyKCk7Cj4gKyAgICAgICBTQUZFX0NMT1NFKGZkKTsKPiArICAgICAg
-IFNBRkVfQ0xPU0UoZGlyX2ZkKTsKPiAgfQo+ICsKPiArc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0
-ZXN0ID0gewo+ICsgICAgICAgLm5lZWRzX3RtcGRpciA9IDEsCj4gKyAgICAgICAudGVzdCA9IGZj
-aG93bmF0X3ZlcmlmeSwKPiArICAgICAgIC50Y250ID0gQVJSQVlfU0laRSh0Y2FzZXMpLAo+ICsg
-ICAgICAgLnNldHVwID0gc2V0dXAsCj4gKyAgICAgICAuY2xlYW51cCA9IGNsZWFudXAsCj4gK307
-Cj4gLS0KPiAyLjM0LjEKPgo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi,
+
+On Tuesday, February 27, 2024 6:41:44 AM CET Yang Xu via ltp wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  .../kernel/syscalls/munlockall/munlockall01.c | 140 +++---------------
+>  1 file changed, 18 insertions(+), 122 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/munlockall/munlockall01.c
+> b/testcases/kernel/syscalls/munlockall/munlockall01.c index
+> 51f731b65..9306cef11 100644
+> --- a/testcases/kernel/syscalls/munlockall/munlockall01.c
+> +++ b/testcases/kernel/syscalls/munlockall/munlockall01.c
+> @@ -1,134 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0
+should be "GPL-2.0-only"
+
+>  /*
+>   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> + * Copyright (c) Linux Test Project, 2002-2024
+> + * Author: sowmya adiga<sowmya.adiga@wipro.com>
+>   */
+> -/**************************************************************************
+> - *
+> - *    TEST IDENTIFIER	: munlockall01
+> - *
+> - *    EXECUTED BY	: root / superuser
+> - *
+> - *    TEST TITLE	: Basic test for munlockall(2)
+> - *
+> - *    TEST CASE TOTAL	: 1
+> - *
+> - *    AUTHOR		: sowmya adiga<sowmya.adiga@wipro.com>
+> - *
+> - *    SIGNALS
+> - * 	Uses SIGUSR1 to pause before test if option set.
+> - * 	(See the parse_opts(3) man page).
+> - *
+> - *    DESCRIPTION
+> - *	This is a phase I test for the munlockall(2) system call.
+> - *	It is intended to provide a limited exposure of the system call.
+> - *
+> - * 	Setup:
+> - *	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - * 	Test:
+> - *        Execute system call
+> - *	  Check return code, if system call failed (return=-1)
+> - *	  Log the errno and Issue a FAIL message.
+> - *	  Otherwise, Issue a PASS message.
+> - *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> - *
+> - * USAGE:  <for command-line>
+> - *  munlockall01 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+> - *		where,		-c n : Run n copies concurrently
+> - *	               		-e   : Turn on errno logging.
+> - *				-h   : Show this help screen
+> - *				-i n : Execute test n times.
+> - *				-I x : Execute test for x seconds.
+> - *				-p   : Pause for SIGUSR1 before starting
+> - *                      	-P x : Pause for x seconds between iterations.
+> - *                       	 t   : Turn on syscall timing.
+> - *
+> - * RESTRICTIONS
+> - * Must be root/superuser to run it.
+> -
+> ***************************************************************************
+> **/ -#include <errno.h>
+> -#include <sys/mman.h>
+> -#include "test.h"
+> -
+> -void setup();
+> -void cleanup();
+> -
+> -char *TCID = "munlockall01";
+> -int TST_TOTAL = 1;
+> -
+> -#if !defined(UCLINUX)
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	/* check looping state */
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> 
+> -		TEST(munlockall());
+> -
+> -		/* check return code */
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL | TTERRNO, "munlockall() Failed with"
+> -				 " return=%ld", TEST_RETURN);
+> -		} else {
+> -			tst_resm(TPASS, "munlockall() passed with"
+> -				 " return=%ld ", TEST_RETURN);
+> -
+> -		}
+> -	}
+> -
+> -	/* cleanup and exit */
+> -	cleanup();
+> -	tst_exit();
+> -
+> -}
+> +/*
+> + * [Description]
+> + *
+> + * Check the basic function of munlockall(2) system call.
+> + */
+> 
+> -#else
+> +#include "tst_test.h"
+> 
+> -int main(void)
+> +static void verify_munlockall(void)
+>  {
+> -	tst_resm(TINFO, "test is not available on uClinux");
+> -	tst_exit();
+> +	TST_EXP_PASS(munlockall());
+>  }
+> 
+> -#endif /* if !defined(UCLINUX) */
+> -
+> -/* setup() - performs all ONE TIME setup for this test. */
+> -void setup(void)
+> +static void setup(void)
+>  {
+> -	tst_require_root();
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	mlockall(MCL_CURRENT);
+
+I think this should be done in the main test function for each iteration.
+
+>  }
+> 
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *		completion or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.test_all  = verify_munlockall,
+> +};
+
+Thanks,
+Avinesh
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
