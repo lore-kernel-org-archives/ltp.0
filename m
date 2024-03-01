@@ -4,83 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03182C54E49
-	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 12:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 917F4C48BF6
+	for <ltp@archiver.kernel.org>; Fri,  1 Mar 2024 01:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709257869; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=wYsElXltk1dsLfw1zPHYvGvhn72US7SNBhaEj6TaAWY=;
+ b=Nxdia9/+D3clw4vHPiQSBPtaJiAqvyMIaWuVRfE2rBaNgR6jgm3iY5/ojnDlmXuA71SxL
+ I5IuHFhjAKQgRHrxni4YlF2YLdYxc73mkdr8E1N/dK7NxUs6MgjBtRNQWh16+ATAxTOCK9C
+ RfhtWnr6GqAsFTkF8DNJH+e0r+0FYOI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE0083D03C2
-	for <ltp@archiver.kernel.org>; Thu, 29 Feb 2024 13:47:32 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 6098E3D1954
+	for <ltp@archiver.kernel.org>; Fri,  1 Mar 2024 02:51:09 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 129493D032A
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 13:47:17 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 78A3D3C99B6
+ for <ltp@lists.linux.it>; Fri,  1 Mar 2024 02:50:47 +0100 (CET)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D11F41A0100A
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 13:47:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1709210835;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6D2JAzinXSfCXHcPgI9LhhMvAcr5KL9WqXA/ia+g5Vc=;
- b=KJ5Rpx9mWdlnzdVQa3vqQJgz4bUNwQh0A50APRJm4xoWGUtHfrJr1HkJLVcQ2kfDYZlkSd
- 4Jual6LHH6YkyYsBQIN3RlWfc6O2ODELOifBDuY4Pq1tdAGOBaNqi4dNZlVok2m2pc8a2b
- rpceHriPRvCrVuoRJs/9YCHFu+ku6/0=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-655-IRPZpW1XNomUJOaGh87pNg-1; Thu, 29 Feb 2024 07:47:13 -0500
-X-MC-Unique: IRPZpW1XNomUJOaGh87pNg-1
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-29a286028f0so586451a91.3
- for <ltp@lists.linux.it>; Thu, 29 Feb 2024 04:47:13 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 86D43201DC6
+ for <ltp@lists.linux.it>; Fri,  1 Mar 2024 02:50:46 +0100 (CET)
+Received: by mail-lj1-x233.google.com with SMTP id
+ 38308e7fff4ca-2d311081954so13018761fa.2
+ for <ltp@lists.linux.it>; Thu, 29 Feb 2024 17:50:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1709257845; x=1709862645; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=c8Qqa7EyubNcDAQZuQHuQdjxY3Sap1gvpc7syrfqEx8=;
+ b=cu+jgkWJW9VO51Io/iNeagucBuPxCN/f5TmFkxARcMtNp3JEZzvExvLzbc07reXKsg
+ VyTbp3qWGjdgZL571TOOPOk6zhekX2RRqWsu/yJF3GaG6k6Yo6XXPpdTZniGg5JnqriO
+ /rgeB+cOAZ0g6FeaIOQwkTAqtMLpSfT4zLamVdyd/xLIT64XyIdQnG6+H2i4Ov5hf2o2
+ yoVz26XAoYc+XK0F6j6XTmEANXiu0h8GQSeNIGvu6IbKZdAjULn7P/FVyuKupir0lshD
+ GPZ6SPV4iJUfkPU/NNm5vAQ5SlCxHpMBASPMbgbwahtvTx3vcex1Ajf+R7k2lRAm/dCw
+ 39Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1709210828; x=1709815628;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ d=1e100.net; s=20230601; t=1709257845; x=1709862645;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=6D2JAzinXSfCXHcPgI9LhhMvAcr5KL9WqXA/ia+g5Vc=;
- b=PeMRSSdjieLXTX3lZKMeSUjsFLaMfkTdFuOeOstZAZy+YSUZPe3LmCBAGG9DNKl5vC
- 2BLjCUWr6L7PFWXCPBrOJvc3JZ9rS/1s50xWxTB2vHoeh2lxPZ+KN1AvfCQGsL72ljsS
- O0WJw9KLgESpMt3Bj2nIFEqHB/ckD+YVvUPrIUJdWqagFcyLUHc31de5asl2n6a18U9Q
- FbLO/mnIzBu9QLSKOu042qWl0zFS+kNZh0Ev5/95o+bxsoBV/1e90IAU+ek60Zuu1Bg/
- h+XBLTO9JqSpLsmIVCtr1iOjlUiMXxUkdezzBY2gTw11bNzI9GiirKrzKWyPyt8Nf65J
- aGxQ==
-X-Gm-Message-State: AOJu0YxhrINZhHqMtquj5n8Xiarcx6fidf52T3fEUWNx2dTSkzMa+ZiN
- 3EuOFHnNZkdXw2xFJF4UXMLQHvl374Bb1Bby4zr/XhXVmpxTTVEWv/ucVEANnDV/gX9imLiUg0d
- MTeUuuQQ4fdoOD60RKua+/ofibm3I+lFRGK2Fev/vMaj4M9pSo1ptMPsSRjpDBE/qD7Dn1MjIDO
- o9wzm6MLI8/JsvkPPaYBG2eO8=
-X-Received: by 2002:a17:90b:48c:b0:299:344f:b3d5 with SMTP id
- bh12-20020a17090b048c00b00299344fb3d5mr2057155pjb.3.1709210828552; 
- Thu, 29 Feb 2024 04:47:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE2ReFicF91S6WNSm9qJNFU+3SDzPGG/EmQNgzoxPTJ4rrFu4C1J3mKvlaFKXLpNXNG7pIbm/bckERGRYJhxJs=
-X-Received: by 2002:a17:90b:48c:b0:299:344f:b3d5 with SMTP id
- bh12-20020a17090b048c00b00299344fb3d5mr2057134pjb.3.1709210828062; Thu, 29
- Feb 2024 04:47:08 -0800 (PST)
+ bh=c8Qqa7EyubNcDAQZuQHuQdjxY3Sap1gvpc7syrfqEx8=;
+ b=XD9UBiniOgtJOVNYyJT0CuVG7Vl48HaAWB7ryKnXyOCxoM240zuEWh2nLSfg5PipfJ
+ oDYvfttU4sVFjS9pBjwUbVHRAH1imgcOZ7rzAUGwnOmn2boddo6sNK/O/RSya97YDAsY
+ yAFdHR0xQRYXloMlLOAo1Fes4IYN/Zn8+Vy3to0fz3i+bPQ/WMrIC9lS5070VWjIIVVS
+ cNKwfNjINRUlRKbFiFrzvtppsLnnBQjKCOObDRFUqCUxGDwFKxJaia5sojTD2MCPKHML
+ D7hp9m1ufaml64qN+HLCtvRVSYandoaOA/fRmLqc+0NiMEk/6QpIi1XB+T+L4fu6WR6m
+ c8sA==
+X-Gm-Message-State: AOJu0YzbYOMQviYa2KXedZB9PPjkafpPZ6wxtaN77XdDWKuO/x2UkR+Q
+ x4W4uCcfUx2LqxNr3mFEiGOinxknWk6FcUW1xeGDqV2iZspC6Pmi9Aeq3VMvXwysJUQVcS7CRl0
+ =
+X-Google-Smtp-Source: AGHT+IGXrBGXwsP0qqAT5Ucy12NMfkO9hdCAinj4nbm08Ds24KYN1+HkIVfx036znQ+UapeqE63LxQ==
+X-Received: by 2002:a2e:9b87:0:b0:2d2:1a1f:ad77 with SMTP id
+ z7-20020a2e9b87000000b002d21a1fad77mr94231lji.13.1709257845052; 
+ Thu, 29 Feb 2024 17:50:45 -0800 (PST)
+Received: from localhost ([81.95.8.245]) by smtp.gmail.com with ESMTPSA id
+ p15-20020a05600c468f00b00412b0e51ef9sm3747986wmo.31.2024.02.29.17.50.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 29 Feb 2024 17:50:44 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Thu, 29 Feb 2024 20:50:37 -0500
+Message-Id: <20240301015037.22061-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20240126062540.2596279-1-ruansy.fnst@fujitsu.com>
- <20240126062540.2596279-2-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20240126062540.2596279-2-ruansy.fnst@fujitsu.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 29 Feb 2024 20:46:55 +0800
-Message-ID: <CAEemH2eU2e=A9nWigmTqBapSXBCpNNTtnreKqCafQNT_F0xQGQ@mail.gmail.com>
-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] fchownat02: Convert to new API
+Subject: [LTP] [PATCH v1] libswap.c: Check free space with correct mnt path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,121 +87,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBKYW4gMjYsIDIwMjQgYXQgMjoyNuKAr1BNIFNoaXlhbmcgUnVhbiA8cnVhbnN5LmZu
-c3RAZnVqaXRzdS5jb20+Cndyb3RlOgoKPiBTaWduZWQtb2ZmLWJ5OiBTaGl5YW5nIFJ1YW4gPHJ1
-YW5zeS5mbnN0QGZ1aml0c3UuY29tPgo+IC0tLQo+ICAuLi4va2VybmVsL3N5c2NhbGxzL2ZjaG93
-bmF0L2ZjaG93bmF0MDIuYyAgICAgfCAxMzMgKysrKystLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBj
-aGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspLCA5NiBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQg
-YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZjaG93bmF0L2ZjaG93bmF0MDIuYwo+IGIvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mY2hvd25hdC9mY2hvd25hdDAyLmMKPiBpbmRleCA2ZGQx
-ZTAyNGUuLmRiOGY2NjJkYyAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2ZjaG93bmF0L2ZjaG93bmF0MDIuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-ZmNob3duYXQvZmNob3duYXQwMi5jCj4gQEAgLTEsMTM1ICsxLDc2IEBACj4gKy8vIFNQRFgtTGlj
-ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCj4gIC8qCj4gICAqIENvcHlyaWdodCAo
-YykgMjAxNCBGdWppdHN1IEx0ZC4KPiAtICogQXV0aG9yOiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcu
-anlAY24uZnVqaXRzdS5jb20+Cj4gLSAqCj4gLSAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3
-YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5IGl0Cj4gLSAqIHVuZGVy
-IHRoZSB0ZXJtcyBvZiB2ZXJzaW9uIDIgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
-IGFzCj4gLSAqIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLgo+IC0g
-Kgo+IC0gKiBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3
-b3VsZCBiZSB1c2VmdWwsIGJ1dAo+IC0gKiBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBl
-dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCj4gLSAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
-RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4KPiAtICoKPiAtICogWW91IHNob3VsZCBoYXZl
-IHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxvbmcK
-PiAtICogd2l0aCB0aGlzIHByb2dyYW0uCj4gKyAqIENvcHlyaWdodCAoYykgTGludXggVGVzdCBQ
-cm9qZWN0LCAyMDE0LTIwMjQKPiAgICovCj4gLS8qCj4gLSAqIFRlc3QgRGVzY3JpcHRpb246Cj4g
-LSAqICAgVmVyaWZ5IHRoYXQsCj4gKwo+ICsvKlwKPiArICogW0Rlc2NyaXB0aW9uXQo+ICsgKgo+
-ICsgKiBWZXJpZnkgdGhhdCwKPiAgICogICBUaGUgZmxhZyBvZiBmY2hvd25hdCgpIGlzIEFUX1NZ
-TUxJTktfTk9GT0xMT1cgYW5kIHRoZSBwYXRobmFtZSB3b3VsZAo+ICAgKiAgIG5vdCBiZSBkZXJl
-ZmVyZW5jZWQgaWYgdGhlIHBhdGhuYW1lIGlzIGEgc3ltYm9saWMgbGluay4KPiAgICovCj4KPiAg
-I2RlZmluZSBfR05VX1NPVVJDRQo+IC0KPiAtI2luY2x1ZGUgPHN5cy90eXBlcy5oPgo+IC0jaW5j
-bHVkZSA8c3lzL3N0YXQuaD4KPiAtI2luY2x1ZGUgPHVuaXN0ZC5oPgo+IC0jaW5jbHVkZSA8c3Rk
-bGliLmg+Cj4gLSNpbmNsdWRlIDxlcnJuby5oPgo+IC0jaW5jbHVkZSA8c3RyaW5nLmg+Cj4gLSNp
-bmNsdWRlIDxzaWduYWwuaD4KPiAtI2luY2x1ZGUgInRlc3QuaCIKPiAtI2luY2x1ZGUgInNhZmVf
-bWFjcm9zLmgiCj4gLSNpbmNsdWRlICJsYXBpL2ZjbnRsLmgiCj4gKyNpbmNsdWRlICJ0c3RfdGVz
-dC5oIgo+Cj4gICNkZWZpbmUgVEVTVEZJTEUgICAgICAgInRlc3RmaWxlIgo+ICAjZGVmaW5lIFRF
-U1RGSUxFX0xJTksgICJ0ZXN0ZmlsZV9saW5rIgo+Cj4gLWNoYXIgKlRDSUQgPSAiZmNob3duYXQw
-MiI7Cj4gLWludCBUU1RfVE9UQUwgPSAxOwo+IC0KPiAgc3RhdGljIGludCBkaXJfZmQ7Cj4gIHN0
-YXRpYyB1aWRfdCBzZXRfdWlkID0gMTAwMDsKPiAgc3RhdGljIGdpZF90IHNldF9naWQgPSAxMDAw
-Owo+IC1zdGF0aWMgdm9pZCBzZXR1cCh2b2lkKTsKPiAtc3RhdGljIHZvaWQgY2xlYW51cCh2b2lk
-KTsKPiAtc3RhdGljIHZvaWQgdGVzdF92ZXJpZnkodm9pZCk7Cj4gLXN0YXRpYyB2b2lkIGZjaG93
-bmF0X3ZlcmlmeSh2b2lkKTsKPiAtCj4gLWludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+IC17
-Cj4gLSAgICAgICBpbnQgbGM7Cj4gLSAgICAgICBpbnQgaTsKPiAtCj4gLSAgICAgICB0c3RfcGFy
-c2Vfb3B0cyhhYywgYXYsIE5VTEwsIE5VTEwpOwo+IC0KPiAtICAgICAgIHNldHVwKCk7Cj4gLQo+
-IC0gICAgICAgZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKPiAtICAgICAg
-ICAgICAgICAgdHN0X2NvdW50ID0gMDsKPiAtICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8
-IFRTVF9UT1RBTDsgaSsrKQo+IC0gICAgICAgICAgICAgICAgICAgICAgIGZjaG93bmF0X3Zlcmlm
-eSgpOwo+IC0gICAgICAgfQo+IC0KPiAtICAgICAgIGNsZWFudXAoKTsKPiAtICAgICAgIHRzdF9l
-eGl0KCk7Cj4gLX0KPgo+ICBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ICB7Cj4gICAgICAgICBz
-dHJ1Y3Qgc3RhdCBjX2J1ZiwgbF9idWY7Cj4KPiAtICAgICAgIHRzdF9yZXF1aXJlX3Jvb3QoKTsK
-PiAtCj4gLSAgICAgICB0c3Rfc2lnKE5PRk9SSywgREVGX0hBTkRMRVIsIGNsZWFudXApOwo+IC0K
-PiAtICAgICAgIFRFU1RfUEFVU0U7Cj4gLQo+IC0gICAgICAgdHN0X3RtcGRpcigpOwo+IC0KPiAt
-ICAgICAgIGRpcl9mZCA9IFNBRkVfT1BFTihjbGVhbnVwLCAiLi8iLCBPX0RJUkVDVE9SWSk7Cj4g
-LQo+IC0gICAgICAgU0FGRV9UT1VDSChjbGVhbnVwLCBURVNURklMRSwgMDYwMCwgTlVMTCk7Cj4g
-LQo+IC0gICAgICAgU0FGRV9TWU1MSU5LKGNsZWFudXAsIFRFU1RGSUxFLCBURVNURklMRV9MSU5L
-KTsKPiAtCj4gLSAgICAgICBTQUZFX1NUQVQoY2xlYW51cCwgVEVTVEZJTEVfTElOSywgJmNfYnVm
-KTsKPiAtCj4gLSAgICAgICBTQUZFX0xTVEFUKGNsZWFudXAsIFRFU1RGSUxFX0xJTkssICZsX2J1
-Zik7Cj4gKyAgICAgICBkaXJfZmQgPSBTQUZFX09QRU4oIi4vIiwgT19ESVJFQ1RPUlkpOwo+ICsg
-ICAgICAgU0FGRV9UT1VDSChURVNURklMRSwgMDYwMCwgTlVMTCk7Cj4gKyAgICAgICBTQUZFX1NZ
-TUxJTksoVEVTVEZJTEUsIFRFU1RGSUxFX0xJTkspOwo+ICsgICAgICAgU0FGRV9TVEFUKFRFU1RG
-SUxFX0xJTkssICZjX2J1Zik7Cj4gKyAgICAgICBTQUZFX0xTVEFUKFRFU1RGSUxFX0xJTkssICZs
-X2J1Zik7Cj4KPiAgICAgICAgIGlmIChsX2J1Zi5zdF91aWQgPT0gc2V0X3VpZCB8fCBsX2J1Zi5z
-dF9naWQgPT0gc2V0X2dpZCkgewo+IC0gICAgICAgICAgICAgICB0c3RfYnJrbShUQlJPSyB8IFRF
-UlJOTywgY2xlYW51cCwKPiAtICAgICAgICAgICAgICAgICAgICAgICAgImxpbmtfdWlkKCVkKSA9
-PSBzZXRfdWlkKCVkKSBvciBsaW5rX2dpZCglZCkgPT0gIgo+IC0gICAgICAgICAgICAgICAgICAg
-ICAgICAic2V0X2dpZCglZCkiLCBsX2J1Zi5zdF91aWQsIHNldF91aWQsCj4gbF9idWYuc3RfZ2lk
-LAo+IC0gICAgICAgICAgICAgICAgICAgICAgICBzZXRfZ2lkKTsKPiArICAgICAgICAgICAgICAg
-dHN0X2JyayhUQlJPSyB8IFRFUlJOTywKPiArICAgICAgICAgICAgICAgICAgICAgICAibGlua191
-aWQoJWQpID09IHNldF91aWQoJWQpIG9yIGxpbmtfZ2lkKCVkKSA9PSAiCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgInNldF9naWQoJWQpIiwgbF9idWYuc3RfdWlkLCBzZXRfdWlkLCBsX2J1Zi5z
-dF9naWQsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgc2V0X2dpZCk7Cj4gICAgICAgICB9Cj4g
-IH0KPgo+IC1zdGF0aWMgdm9pZCBmY2hvd25hdF92ZXJpZnkodm9pZCkKPiAtewo+IC0gICAgICAg
-VEVTVChmY2hvd25hdChkaXJfZmQsIFRFU1RGSUxFX0xJTkssIHNldF91aWQsIHNldF9naWQsCj4g
-LSAgICAgICAgICAgICAgICAgICAgIEFUX1NZTUxJTktfTk9GT0xMT1cpKTsKPiAtCj4gLSAgICAg
-ICBpZiAoVEVTVF9SRVRVUk4gIT0gMCkgewo+IC0gICAgICAgICAgICAgICB0c3RfcmVzbShURkFJ
-TCB8IFRURVJSTk8sICJmY2hvd25hdCgpIGZhaWxlZCwgZXJybm89JWQgOgo+ICVzIiwKPiAtICAg
-ICAgICAgICAgICAgICAgICAgICAgVEVTVF9FUlJOTywgc3RyZXJyb3IoVEVTVF9FUlJOTykpOwo+
-IC0gICAgICAgfSBlbHNlIHsKPiAtICAgICAgICAgICAgICAgdGVzdF92ZXJpZnkoKTsKPiAtICAg
-ICAgIH0KPiAtfQo+IC0KPiAtc3RhdGljIHZvaWQgdGVzdF92ZXJpZnkodm9pZCkKPiArc3RhdGlj
-IHZvaWQgcnVuKHZvaWQpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBzdGF0IGNfYnVmLCBsX2J1ZjsK
-Pgo+IC0gICAgICAgU0FGRV9TVEFUKGNsZWFudXAsIFRFU1RGSUxFX0xJTkssICZjX2J1Zik7Cj4g
-KyAgICAgICBUU1RfRVhQX1BBU1NfU0lMRU5UKGZjaG93bmF0KGRpcl9mZCwgVEVTVEZJTEVfTElO
-Sywgc2V0X3VpZCwKPiBzZXRfZ2lkLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBBVF9TWU1MSU5LX05PRk9MTE9XKSk7Cj4KCldlIGNhbiB1c2UgQVRfRkRDV0QgaW5zdGVh
-ZCBvZiBkaXJfZmQsIGFuZCB0aGVuIGNhbmNlbCB0aGUKZGVmaW5pdGlvbiBvZiBnbG9iYWwgdmFy
-aWFibGUgZGlyX2ZkLgoKCgo+Cj4gLSAgICAgICBTQUZFX0xTVEFUKGNsZWFudXAsIFRFU1RGSUxF
-X0xJTkssICZsX2J1Zik7Cj4gKyAgICAgICBTQUZFX1NUQVQoVEVTVEZJTEVfTElOSywgJmNfYnVm
-KTsKPiArICAgICAgIFNBRkVfTFNUQVQoVEVTVEZJTEVfTElOSywgJmxfYnVmKTsKPgo+ICAgICAg
-ICAgaWYgKGNfYnVmLnN0X3VpZCAhPSBzZXRfdWlkICYmIGxfYnVmLnN0X3VpZCA9PSBzZXRfdWlk
-ICYmCj4gICAgICAgICAgICAgY19idWYuc3RfZ2lkICE9IHNldF9naWQgJiYgbF9idWYuc3RfZ2lk
-ID09IHNldF9naWQpIHsKPiAtICAgICAgICAgICAgICAgdHN0X3Jlc20oVFBBU1MsICJmY2hvd25h
-dCgpIHRlc3QgQVRfU1lNTElOS19OT0ZPTExPVwo+IHN1Y2Nlc3MiKTsKPiArICAgICAgICAgICAg
-ICAgdHN0X3JlcyhUUEFTUywgImZjaG93bmF0KCkgdGVzdCBBVF9TWU1MSU5LX05PRk9MTE9XCj4g
-c3VjY2VzcyIpOwo+ICAgICAgICAgfSBlbHNlIHsKPiAtICAgICAgICAgICAgICAgdHN0X3Jlc20o
-VEZBSUwsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICJmY2hvd25hdCgpIHRlc3QgQVRfU1lN
-TElOS19OT0ZPTExPVyBmYWlsIHdpdGgKPiB1aWQ9JWQgIgo+IC0gICAgICAgICAgICAgICAgICAg
-ICAgICAibGlua191aWQ9JWQgc2V0X3VpZD0lZCB8IGdpZD0lZCBsaW5rX2dpZD0lZCAiCj4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICJzZXRfZ2lkPSVkIiwgY19idWYuc3RfdWlkLCBsX2J1Zi5z
-dF91aWQsIHNldF91aWQsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgIGNfYnVmLnN0X2dpZCwg
-bF9idWYuc3RfZ2lkLCBzZXRfZ2lkKTsKPiArICAgICAgICAgICAgICAgdHN0X3JlcyhURkFJTCwK
-PiArICAgICAgICAgICAgICAgICAgICAgICAiZmNob3duYXQoKSB0ZXN0IEFUX1NZTUxJTktfTk9G
-T0xMT1cgZmFpbCB3aXRoCj4gdWlkPSVkICIKPiArICAgICAgICAgICAgICAgICAgICAgICAibGlu
-a191aWQ9JWQgc2V0X3VpZD0lZCB8IGdpZD0lZCBsaW5rX2dpZD0lZAo+IHNldF9naWQ9JWQiLAo+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGNfYnVmLnN0X3VpZCwgbF9idWYuc3RfdWlkLCBzZXRf
-dWlkLAo+ICsgICAgICAgICAgICAgICAgICAgICAgIGNfYnVmLnN0X2dpZCwgbF9idWYuc3RfZ2lk
-LCBzZXRfZ2lkKTsKPiAgICAgICAgIH0KPiAgfQo+Cj4gIHN0YXRpYyB2b2lkIGNsZWFudXAodm9p
-ZCkKPiAgewo+IC0gICAgICAgdHN0X3JtZGlyKCk7Cj4gKyAgICAgICBTQUZFX0NMT1NFKGRpcl9m
-ZCk7Cj4KCnJlbW92ZSBjbGVhbnVwKCkgZnVuY3Rpb24uCgoKCj4gIH0KPiArCj4gK3N0YXRpYyBz
-dHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKPiArICAgICAgIC5uZWVkc190bXBkaXIgPSAxLAo+ICsg
-ICAgICAgLm5lZWRzX3Jvb3QgPSAxLAo+ICsgICAgICAgLnRlc3RfYWxsID0gcnVuLAo+ICsgICAg
-ICAgLnNldHVwID0gc2V0dXAsCj4gKyAgICAgICAuY2xlYW51cCA9IGNsZWFudXAsCj4gK307Cj4g
-LS0KPiAyLjM0LjEKPgo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
-aW51eC5pdC9saXN0aW5mby9sdHAKPgo+IE90aGVyd2lzZSwgbG9va3MgZ29vZCB0byBtZS4KCgoK
-LS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+The tst_fs_has_free should check fs size of mnt point.
+But current code check ".", that means check /tmp/LTP_xxx
+instead of /tmp/LTP_xxx/mntpoint.
+
+Also tst_fs_has_free's "size" parameter's type is unsigned int,
+it will overflow if encounter big filesystem block size(such as Btrfs
+can use 64k).
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ include/tst_fs.h          | 6 +++---
+ lib/tst_fs_has_free.c     | 2 +-
+ libs/libltpswap/libswap.c | 4 +++-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 1dd7d32fc..99dbba4d1 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -60,7 +60,7 @@ enum {
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+  * the required free space is calculated by @size * @mult
+  */
+-int tst_fs_has_free_(void (*cleanup)(void), const char *path, unsigned int size,
++int tst_fs_has_free_(void (*cleanup)(void), const char *path, uint64_t size,
+ 		     unsigned int mult);
+ 
+ /*
+@@ -225,7 +225,7 @@ static inline long tst_fs_type(const char *path)
+ 	return tst_fs_type_(NULL, path);
+ }
+ 
+-static inline int tst_fs_has_free(const char *path, unsigned int size,
++static inline int tst_fs_has_free(const char *path, uint64_t size,
+ 				  unsigned int mult)
+ {
+ 	return tst_fs_has_free_(NULL, path, size, mult);
+@@ -252,7 +252,7 @@ static inline long tst_fs_type(void (*cleanup)(void), const char *path)
+ }
+ 
+ static inline int tst_fs_has_free(void (*cleanup)(void), const char *path,
+-				  unsigned int size, unsigned int mult)
++				  uint64_t size, unsigned int mult)
+ {
+ 	return tst_fs_has_free_(cleanup, path, size, mult);
+ }
+diff --git a/lib/tst_fs_has_free.c b/lib/tst_fs_has_free.c
+index e82dfa837..080d693ab 100644
+--- a/lib/tst_fs_has_free.c
++++ b/lib/tst_fs_has_free.c
+@@ -27,7 +27,7 @@
+ #include "tst_fs.h"
+ 
+ int tst_fs_has_free_(void (*cleanup)(void), const char *path,
+-		     unsigned int size, unsigned int mult)
++		     uint64_t size, unsigned int mult)
+ {
+ 	struct statfs sf;
+ 
+diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+index c8cbb8ea1..6c75d20fa 100644
+--- a/libs/libltpswap/libswap.c
++++ b/libs/libltpswap/libswap.c
+@@ -137,6 +137,7 @@ int make_swapfile(const char *swapfile, int blocks, int safe)
+ 	struct statvfs fs_info;
+ 	unsigned long blk_size, bs;
+ 	size_t pg_size = sysconf(_SC_PAGESIZE);
++	char mnt_path[100];
+ 
+ 	if (statvfs(".", &fs_info) == -1)
+ 		return -1;
+@@ -149,7 +150,8 @@ int make_swapfile(const char *swapfile, int blocks, int safe)
+ 	else
+ 		bs = blk_size;
+ 
+-	if (!tst_fs_has_free(".", bs * blocks, TST_BYTES))
++	sscanf(swapfile, "%[^/]", mnt_path);
++	if (!tst_fs_has_free(mnt_path, bs * blocks, TST_BYTES))
+ 		tst_brk(TCONF, "Insufficient disk space to create swap file");
+ 
+ 	/* create file */
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
