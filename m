@@ -4,110 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B4C5C5478C
-	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 18:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7787AC5478C
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 19:50:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 921733D0050
-	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 19:14:35 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id C7B553D025B
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 20:50:18 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 47B2F3CDC97
- for <ltp@lists.linux.it>; Mon,  4 Mar 2024 19:14:15 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 5F16C3CE03A
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 20:50:02 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9B5882010FA
- for <ltp@lists.linux.it>; Mon,  4 Mar 2024 19:14:14 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 50C6D1400DA5
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 20:50:00 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 41BE233AE4;
- Mon,  4 Mar 2024 18:14:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709576053;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B587433EC4;
+ Mon,  4 Mar 2024 19:49:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709581799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+x2mb+IadlOyrm1cHC7CRYGij3eMjjbRQ5L17stDVOA=;
- b=Bxeol1zmsENcN6a6unbL8VUA4hW6RLxig725CIPcJWzaDP/1m/3DEPBl/kjik/9Jia3rVi
- LFb4UaeRmN5j1H4wZRmKuJf2/xZuQ/JWX7UU4wyuuvc8pGRx3nuegB4d25oHzsbKiwklZM
- 3mBg38HxeSHfTlxASiaQCoImXapVycc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709576053;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=m3RdV1uoDDwkPHNfD7T9Bq1K9XZRL+Rvnj6vA2yjt/w=;
+ b=1OJzm/OMWq/pdFhBFJ0QCdjuBT+DqO8x7xXKjjx3kx101tL5nqjY9TMyp1OGqs6AyeHlBg
+ 6qMYuk3zhwWblBzsl2cdoRoiBRNIahN5PtpWtRMls42fH++0YCLqGBnVTdmWT7YHXmAEh7
+ ApxfwSg6uVJCKiIIbL3vq8F916w4NN8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709581799;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+x2mb+IadlOyrm1cHC7CRYGij3eMjjbRQ5L17stDVOA=;
- b=EMfTQNKeQ5alIvw7RGFrcu8z1/QPNGJGzpgDKEU48Y4+tZg/Ah7WfjM8Jfx+anyxvX2CJG
- zL7BQKor663ff2BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709576053;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=m3RdV1uoDDwkPHNfD7T9Bq1K9XZRL+Rvnj6vA2yjt/w=;
+ b=oflbDeSS0x3PIqtin7uV8dbyx1krNxEp3DCrOpzmOgzIuqxTAo4p/LvpyQClYDQz16xY5i
+ 4KcTgs5xEoDuetDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709581799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+x2mb+IadlOyrm1cHC7CRYGij3eMjjbRQ5L17stDVOA=;
- b=Bxeol1zmsENcN6a6unbL8VUA4hW6RLxig725CIPcJWzaDP/1m/3DEPBl/kjik/9Jia3rVi
- LFb4UaeRmN5j1H4wZRmKuJf2/xZuQ/JWX7UU4wyuuvc8pGRx3nuegB4d25oHzsbKiwklZM
- 3mBg38HxeSHfTlxASiaQCoImXapVycc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709576053;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=m3RdV1uoDDwkPHNfD7T9Bq1K9XZRL+Rvnj6vA2yjt/w=;
+ b=1OJzm/OMWq/pdFhBFJ0QCdjuBT+DqO8x7xXKjjx3kx101tL5nqjY9TMyp1OGqs6AyeHlBg
+ 6qMYuk3zhwWblBzsl2cdoRoiBRNIahN5PtpWtRMls42fH++0YCLqGBnVTdmWT7YHXmAEh7
+ ApxfwSg6uVJCKiIIbL3vq8F916w4NN8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709581799;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+x2mb+IadlOyrm1cHC7CRYGij3eMjjbRQ5L17stDVOA=;
- b=EMfTQNKeQ5alIvw7RGFrcu8z1/QPNGJGzpgDKEU48Y4+tZg/Ah7WfjM8Jfx+anyxvX2CJG
- zL7BQKor663ff2BA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ bh=m3RdV1uoDDwkPHNfD7T9Bq1K9XZRL+Rvnj6vA2yjt/w=;
+ b=oflbDeSS0x3PIqtin7uV8dbyx1krNxEp3DCrOpzmOgzIuqxTAo4p/LvpyQClYDQz16xY5i
+ 4KcTgs5xEoDuetDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 18669139C6;
- Mon,  4 Mar 2024 18:14:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id O9OhBHUP5mUqGgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 04 Mar 2024 18:14:13 +0000
-Date: Mon, 4 Mar 2024 19:14:11 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20240304181411.GC3191855@pevik>
-References: <20240119091612.17595-1-andrea.cervesato@suse.de>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2C1213A58;
+ Mon,  4 Mar 2024 19:49:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Nk0AJ+cl5mXRNAAAD6G6ig
+ (envelope-from <akumar@suse.de>); Mon, 04 Mar 2024 19:49:59 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Mon, 04 Mar 2024 20:49:59 +0100
+Message-ID: <2291379.OWHZQNyeAm@localhost>
+Organization: SUSE
+In-Reply-To: <20240227084244.33662-2-xuyang2018.jy@fujitsu.com>
+References: <20240227084244.33662-1-xuyang2018.jy@fujitsu.com>
+ <20240227084244.33662-2-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240119091612.17595-1-andrea.cervesato@suse.de>
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Bxeol1zm;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EMfTQNKe
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 41BE233AE4
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+	none
+X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_ORG_HEADER(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Add utime07 test
+Subject: Re: [LTP] [PATCH v2 2/3] mremap03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,164 +113,276 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Yang Xu,
+some comments below.
 
-> This test has been extracted from symlink01 test and it verifies that
-> utime() is working correctly on symlink() generated files.
-
-According to VFS doc [1] VFS does open(2), stat(2), read(2), write(2), chmod(2).
-Although the main comparison is done through stat(), it's about utime on
-symlink.  struct inode_operations described in the docs contain also symlink and
-update_time callbacks (filesystem specific). Wouldn't it make sense to run this
-on all_filesystems?
-
-[1] https://www.kernel.org/doc/html/latest/filesystems/vfs.html
-
-..
-> +++ b/runtest/smoketest
-> @@ -9,7 +9,7 @@ wait02 wait02
->  write01 write01
->  symlink01 symlink01
->  stat04 symlink01 -T stat04
-> -utime01A symlink01 -T utime01
-> +utime07 utime07
->  rename01A symlink01 -T rename01
->  splice02 splice02 -s 20
->  df01_sh df01.sh
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 6e2407879..5fd107e35 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1676,12 +1676,12 @@ ustat01 ustat01
->  ustat02 ustat02
-
->  utime01 utime01
-> -utime01A symlink01 -T utime01
->  utime02 utime02
->  utime03 utime03
->  utime04 utime04
->  utime05 utime05
->  utime06 utime06
-> +utime07 utime07
-
->  utimes01 utimes01
-
-> diff --git a/testcases/kernel/syscalls/utime/.gitignore b/testcases/kernel/syscalls/utime/.gitignore
-> index 94c0ae07c..403764521 100644
-> --- a/testcases/kernel/syscalls/utime/.gitignore
-> +++ b/testcases/kernel/syscalls/utime/.gitignore
-> @@ -4,3 +4,4 @@
->  /utime04
->  /utime05
->  /utime06
-> +/utime07
-> diff --git a/testcases/kernel/syscalls/utime/utime07.c b/testcases/kernel/syscalls/utime/utime07.c
-> new file mode 100644
-> index 000000000..eaf832099
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/utime/utime07.c
-> @@ -0,0 +1,78 @@
+On Tuesday, February 27, 2024 9:42:43 AM CET Yang Xu via ltp wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/mremap/mremap03.c | 201 ++++----------------
+>  1 file changed, 39 insertions(+), 162 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mremap/mremap03.c
+> b/testcases/kernel/syscalls/mremap/mremap03.c index 02b79bc47..4e55dbda6
+> 100644
+> --- a/testcases/kernel/syscalls/mremap/mremap03.c
+> +++ b/testcases/kernel/syscalls/mremap/mremap03.c
+> @@ -1,187 +1,64 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> + *    Author: David Fenner
-> + *    Copilot: Jon Hendrickson
-
-nit: original test is v2 only. But we are writing from scratch, using a previous
-just as an inspiration. I suppose we still need to use the original copyright
-and likely also the license v2 only.
-
-
-> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-> + */
-> +
+>  /*
+> - *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> 02110-1301 USA + * Copyright (c) International Business Machines  Corp.,
+> 2001
+> + * Copyright (c) Linux Test Project, 2001-2024
+> + * 07/2001 Ported by Wayne Boyer
+>   */
+> 
+> -/*
+> - * Test Name: mremap03
+> - *
+> - * Test Description:
+> - *  Verify that,
+> - *   mremap() fails when used to expand the existing virtual memory mapped
+> - *   region to the requested size, if there already exists mappings that
+> - *   cover the whole address space requsted or the old address specified
+> was - *   not mapped.
+> - *
+> - * Expected Result:
+> - *  mremap() should return -1 and set errno to EFAULT.
+> - *
+> - * Algorithm:
+> - *  Setup:
+> - *   Setup signal handling.
+> - *   Pause for SIGUSR1 if option specified.
+> - *
+> - *  Test:
+> - *   Loop if the proper options are given.
+> - *   Execute system call
+> - *   Check return code, if system call failed (return=-1)
+> - *	if errno set == expected errno
+> - *		Issue sys call fails with expected return value and errno.
+> - *	Otherwise,
+> - *		Issue sys call fails with unexpected errno.
+> - *   Otherwise,
+> - *	Issue sys call returns unexpected value.
+> - *
+> - *  Cleanup:
+> - *   Print errno log and/or timing stats if options given
 > +/*\
 > + * [Description]
-> + *
-> + * This test verifies that utime() is working correctly on symlink()
-> + * generated files.
-> + */
-> +
-> +#include <utime.h>
+>   *
+> - * Usage:  <for command-line>
+> - *  mremap03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -e   : Turn on errno logging.
+> - *	       -i n : Execute test n times.
+> - *	       -I x : Execute test for x seconds.
+> - *	       -p x : Pause for x seconds between iterations.
+> - *	       -t   : Turn on syscall timing.
+> + * Test for EFAULT error.
+>   *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
+> - *
+> - *      11/09/2001 Manoj Iyer (manjo@austin.ibm.com)
+> - *      Modified.
+> - *      - #include <linux/mman.h> should not be included as per man page
+> for - *        mremap, #include <sys/mman.h> alone should do the job. But
+> inorder - *        to include definition of MREMAP_MAYMOVE defined in
+> bits/mman.h - *        (included by sys/mman.h) __USE_GNU needs to be
+> defined. - *        There may be a more elegant way of doing this...
+> - *
+> - *
+> - * RESTRICTIONS:
+> - *  None.
+> + * - mremap fail with the old address specified was not mapped.
+>   */
+> -#define _GNU_SOURCE
+> -#include <errno.h>
+> -#include <unistd.h>
+> -#include <fcntl.h>
+> -#include <sys/mman.h>
+> 
+> -#include "test.h"
+> +#define _GNU_SOURCE
 > +#include "tst_test.h"
-> +
-> +static void test_utime(void)
-> +{
-> +	char *symname = "my_symlink0";
-> +	struct stat oldsym_stat;
-> +	struct stat newsym_stat;
-> +
-> +	SAFE_SYMLINK(tst_get_tmpdir(), symname);
-Original test actually also perform lstat() on the symlink
-and checks for S_IFLNK. You consider SAFE_SYMLINK() enough?
+> 
+> -char *TCID = "mremap03";
+> -int TST_TOTAL = 1;
+>  static char *bad_addr;
+> -static char *addr;		/* addr of memory mapped region */
+> -int memsize;			/* memory mapped size */
+> -int newsize;			/* new size of virtual memory block */
+> +static char *addr;
+> +static int memsize;
+> +static int newsize;
+> 
+> -void setup();			/* Main setup function of test */
+> -void cleanup();			/* cleanup function for the test */
+> -
+> -int main(int ac, char **av)
+> +static void verify_mremap(void)
+>  {
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> +	errno = 0;
+> +	addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
+> +	TST_ERR = errno;
+We can simplify by using TESTPTR() macro.
+> 
+> -		/*
+> -		 * Attempt to expand the existing mapped
+> -		 * memory region (memsize) by newsize limits
+> -		 * using mremap() should fail as specified old
+> -		 * virtual address was not mapped.
+> -		 */
+> -		errno = 0;
+> -		addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
+> -		TEST_ERRNO = errno;
+> -
+> -		/* Check for the return value of mremap() */
+> -		if (addr != MAP_FAILED) {
+> -			tst_resm(TFAIL,
+> -				 "mremap returned invalid value, expected: -1");
+> -
+> -			/* Unmap the mapped memory region */
+> -			if (munmap(addr, newsize) != 0) {
+> -				tst_brkm(TFAIL, cleanup, "munmap fails to "
+> -					 "unmap the expanded memory region, "
+> -					 " error=%d", errno);
+> -			}
+> -			continue;
+> -		}
+> -
+> -		/* Check for the expected errno */
+> -		if (errno == EFAULT) {
+> -			tst_resm(TPASS, "mremap() Fails, 'old region not "
+> -				 "mapped', errno %d", TEST_ERRNO);
+> -		} else {
+> -			tst_resm(TFAIL, "mremap() Fails, "
+> -				 "'Unexpected errno %d", TEST_ERRNO);
+> -		}
+> +	if (addr != MAP_FAILED) {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"mremap returned invalid value, expected: -1");
+>  	}
+> 
+> -	cleanup();
+> -	tst_exit();
+> -
+> +	if (errno == EFAULT) {
+> +		tst_res(TPASS | TTERRNO, "mremap() Failed, 'old region not "
+> +				"mapped' - errno %d", TST_ERR);
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO, "mremap() Failed, "
+> +				"'Unexpected errno %d", TST_ERR);
+> +	}
+>  }
+> 
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - *
+> - * Get system page size.
+> - * Set the old address point some high address which is not mapped.
+> - */
+>  void setup(void)
+missing static
+>  {
+> -	int page_sz;		/* system page size */
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	int page_sz;
+> 
+> -	/* Get the system page size */
+> -	if ((page_sz = getpagesize()) < 0) {
+> -		tst_brkm(TFAIL, NULL,
+> -			 "getpagesize() fails to get system page size");
+> -	}
+> -
+> -	/* Get the size of virtual memory area to be mapped */
+> +	page_sz = SAFE_SYSCONF(_SC_PAGESIZE);
+>  	memsize = (1000 * page_sz);
+> -
+> -	/* Get the New size of virtual memory block after resize */
+>  	newsize = (memsize * 2);
+> -
+> -	/*
+> -	 * Set the old virtual address point to some address
+> -	 * which is not mapped.
+> -	 */
+> -	bad_addr = tst_get_bad_addr(cleanup);
+> +	bad_addr = tst_get_bad_addr(NULL);
+This would not count as a not-mapped address becasue tst_get_bad_addr()
+creates a mapping with
+bad_addr =  mmap(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+which maps atleast one page.
 
-The rest LGTM.
+But mremap() is still failing because we are passing a different address
+range with old_size value as
+memsize = (1000 * page_sz);
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+If we simply use "memsize = page_sz" here mremap() doesn't fail.
 
-Kind regards,
-Petr
-
-> +	SAFE_STAT(symname, &oldsym_stat);
-> +
-> +	struct utimbuf utimes = {
-> +		.actime = oldsym_stat.st_atime + 100,
-> +		.modtime = oldsym_stat.st_mtime + 100
-> +	};
-> +
-> +	TST_EXP_PASS(utime(symname, &utimes));
-> +	SAFE_STAT(symname, &newsym_stat);
-> +
-> +	time_t temp, diff;
-> +
-> +	temp = newsym_stat.st_atime - oldsym_stat.st_atime;
-> +	diff = newsym_stat.st_mtime - oldsym_stat.st_mtime - temp;
-> +
-> +	TST_EXP_EQ_LI(diff, 0);
-> +
-> +	SAFE_UNLINK(symname);
-> +}
-> +
-> +static void test_utime_no_path(void)
-> +{
-> +	char *symname = "my_symlink1";
-> +	struct utimbuf utimes;
-> +
-> +	SAFE_SYMLINK("bc+eFhi!k", symname);
-> +	TST_EXP_FAIL(utime(symname, &utimes), ENOENT);
-> +
-> +	SAFE_UNLINK(symname);
-> +}
-> +
-> +static void test_utime_loop(void)
-> +{
-> +	char *symname = "my_symlink2";
-> +	struct utimbuf utimes;
-> +
-> +	SAFE_SYMLINK(symname, symname);
-> +	TST_EXP_FAIL(utime(symname, &utimes), ELOOP);
-> +
-> +	SAFE_UNLINK(symname);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	test_utime();
-> +	test_utime_no_path();
-> +	test_utime_loop();
-> +}
+So I think, to use and address which is not mapped in the process's address
+space, we can do a SAFE_MMAP() immediately followed by SAFE_MUNMAP() and
+use that address for mremap() call.
+>  }
+> 
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *             completion or premature exit.
+> - */
+> -void cleanup(void)
+> +static void cleanup(void)
+>  {
+> -
+> -	/* Exit the program */
+> -
+> +	if (addr != MAP_FAILED)
+> +		SAFE_MUNMAP(addr, newsize);
+>  }
 > +
 > +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_tmpdir = 1,
+> +	.test_all = verify_mremap,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
 > +};
+
+Regards,
+Avinesh
+
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
