@@ -4,88 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F9ABC48BF6
-	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 10:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 623F4C5478C
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 14:18:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709561884; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=vH8OVLTJJL+1j5ywICP/bnL9TvqogWsOH0NAmW4eDcw=;
+ b=nwWe1PYqBQPYmokdJE+MBDVJVDqjTHs+QpnOIFDemegLJ9AIdv3LYKGTGtI0BWdp9sg8v
+ 5Nbm2BKbwTWdilo8RHH3TNING4t6FzcB3a2opZDIbXmiTqVfQ33dgDLgs92kKyLvSeOf5tH
+ /wSjyAVZMjed9GP3ySmF22e9um1saJQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 93B6E3CCED6
-	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 11:04:43 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 550873CEBF8
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 15:18:04 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 46F563CCBCF
- for <ltp@lists.linux.it>; Mon,  4 Mar 2024 11:04:28 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6C1CA3CC4DA
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 15:17:43 +0100 (CET)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3DEAD601DBC
- for <ltp@lists.linux.it>; Mon,  4 Mar 2024 11:04:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1709546665;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BLsXw9+ozKoHNPAGeJ2IJHwZ7+7FhO2ws3cltUidmsg=;
- b=LnpC2/AyfOJwnp+9SW4i3CINzFnmEkXpX2D3ipbX8lVsp9ExKU1jusLa755ATPhcRg0NHd
- eWVYRZ6zsG/xjApmBNI4YEn86AonniLEPOEokG0hK0RBeJPkXtNKYBj1GbN+/++gaQCz3X
- WRWs7FxZLiW7gCwrpa0KvhuAHzKvsK8=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-0_L4hieRPGmwt3pOEf3vvg-1; Mon, 04 Mar 2024 05:04:21 -0500
-X-MC-Unique: 0_L4hieRPGmwt3pOEf3vvg-1
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-5c6245bc7caso3658655a12.3
- for <ltp@lists.linux.it>; Mon, 04 Mar 2024 02:04:21 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 046D120116E
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 15:17:41 +0100 (CET)
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-5649c25369aso6456645a12.2
+ for <ltp@lists.linux.it>; Mon, 04 Mar 2024 06:17:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1709561861; x=1710166661; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=c0y6ZbvRTkMxtt+EfccXSYbd2k776Lr/YM0GUp/oDh8=;
+ b=OxnEE/CNsHZzEH+bwNMd/gxakf3Co3S268BLOrjMlKbtyH4yCAhJWn4FsmFwB5oCK5
+ qmVn9r6nFrqmrRFmZPXBMZwDhwUf7VLrl4lsUhd6JKHxFwWNkh3DiDIYC92DOzA6I0K7
+ I070Sc5i/ArLWgTqerdEg1Fd/qxJ+g7v/0PMydR9qBsSNjtkjC5HWJIISwA4rqEtoHYa
+ 0I3/JYoiHYR3D+JfV1CxuVjgGIOwU0YrUEsAKJQqHCcplyYUUqy4v3I8vB4szbASpDkK
+ S0oGmnFkIN7wkd0mw653qUVcKVsCPn2kmltt3ufwbFLglWpK9Cd1FIbOlMMVSWO9Pvx7
+ sdaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1709546660; x=1710151460;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=BLsXw9+ozKoHNPAGeJ2IJHwZ7+7FhO2ws3cltUidmsg=;
- b=o5A8ZBa/WOl5OfyXQojsBHX/wI6lie8OWTzGJK90d8Nz+eBZ5zCVCTIXcP3ftaL8Rx
- 7Sl1sf7+h7cZiwRkQfbRHBXGAqqAYyueQPrfcLQA6+jnKrGoZPQgCPenh/CtsPRWIg2g
- UeqHJBVzMx158PPFdJidSNEDZX2qG/R9FuTLOJucejn/oWp7so1Dkw9lsj4AlF83uRFk
- uyQBEzFd4g1nP8uC1pQ9YIpkVCzOuaxCRNHDZgtoqSojwz/UYCaRuLok+e6SW01QI02H
- wK6N4HjJ5EN08634EaynWEj985LijVwq/MObC7cN3l62gQSiH/uAbx5cdxLoXHsLCswj
- 6xbg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXoj8o4e1nWK0I2W7uQYHIsQVvuo17IqqIwrAAcPCqsCI6Zw7dVQJ0vqjgnV0PWoWp0wcNdt8AVFozEKg9aPqZIK7Q=
-X-Gm-Message-State: AOJu0Yxo72KwKC2z6TgKAmjB7I5UA+H8ZqwvqpOHQ8C9suTFf3MH0O+g
- OOy1H26yrpplHk5moEhorR62qwRRLH+DZPMubszlq6G5L5OCZtP6BU3mv+rRovVO2jZ/okdQ7Q/
- aqJRvQQkCRgOTpCxKhevTBsQfes97OW8Xe6CoNXW/GUPWi/wAeuiQdTQ6svRULxDililN6C2HO+
- 4UHJhkCHd3F+nKmScI+LmNyIs=
-X-Received: by 2002:a05:6a20:3c90:b0:1a0:ea67:ecb2 with SMTP id
- b16-20020a056a203c9000b001a0ea67ecb2mr6380411pzj.12.1709546660703; 
- Mon, 04 Mar 2024 02:04:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEz1vtSLU2tCE1rDCgpDgmqNTDP+ch9kuT3NsZdDUfMyVtHmqxBtYM4nxUa5gxKt+JoVaicBindLnlS/UYko18=
-X-Received: by 2002:a05:6a20:3c90:b0:1a0:ea67:ecb2 with SMTP id
- b16-20020a056a203c9000b001a0ea67ecb2mr6380402pzj.12.1709546660350; Mon, 04
- Mar 2024 02:04:20 -0800 (PST)
+ d=1e100.net; s=20230601; t=1709561861; x=1710166661;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=c0y6ZbvRTkMxtt+EfccXSYbd2k776Lr/YM0GUp/oDh8=;
+ b=MaRQ1siYDmAT+G8DVoxBGzB5rb5wLgCLwGN/461ag4XdtdzpPu6hytzhN4M8/8c5SL
+ VAQLIcY8bfx4IrFKPaPhOCq/l+hJGxPKWv2/hAe/VYA/bYOaFSCPAeFCwqRIIYEg1CAe
+ /xopICdWc0wYpMIpptXEfOa+2Kg6MLihxb8hh1M61EU5c8NXj1AY6wl2KXPzB7sVTCGu
+ 9yk2i7UebpbqNEvWAnKdj5TPxPesrBoe3sg7jrzpVxy+7BXoGXKtPq86VpweJ1HsAzD9
+ qdsa54qnjkPUY8sVpTAvMbZwUrZbVcHhbj7zxEiwTjipQSpwiQ2kY2sI+3Q8iLNcpa4u
+ wH+g==
+X-Gm-Message-State: AOJu0Yw/rZBcZ86+6c8fYSprjCF0Z1a6WlOULiiD2/n6j4+bD1i/ncl1
+ FHtj1lAKisyzcd9LG0sfJAIYt7qOmhTdLtGWocLH8xAj8gzqIn1LIguOB3Iz3xH2WB8wILMr3mW
+ p
+X-Google-Smtp-Source: AGHT+IEA4FV2q5NBSbRmpSXpe5pQUmixuf4WHSPDJiJxDVtIOq/eNJ9jJBDT1UgsdM7JZlTsQFwYIg==
+X-Received: by 2002:a50:c94b:0:b0:565:6e57:fa3d with SMTP id
+ p11-20020a50c94b000000b005656e57fa3dmr5674148edh.10.1709561861380; 
+ Mon, 04 Mar 2024 06:17:41 -0800 (PST)
+Received: from [10.232.133.85] ([88.128.88.176])
+ by smtp.gmail.com with ESMTPSA id
+ dh18-20020a0564021d3200b0056760e830f0sm755750edb.81.2024.03.04.06.17.40
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 04 Mar 2024 06:17:40 -0800 (PST)
+Message-ID: <a1092d18-8f31-49d9-80b8-1436a0c9bd86@suse.com>
+Date: Mon, 4 Mar 2024 15:17:39 +0100
 MIME-Version: 1.0
-References: <20240301062716.3023-1-wegao@suse.com>
- <5681819a-2a3a-4c47-a1f1-3f9f49c994d9@fujitsu.com>
- <20240303131402.GC1856074@pevik>
- <CAEemH2eKts8X+tj1keU4Vqp5LwKRa8V1w7QdzGOPmC95F9JK7Q@mail.gmail.com>
- <c7f1510a-adf5-49b8-9f0e-45ad259be38d@fujitsu.com>
-In-Reply-To: <c7f1510a-adf5-49b8-9f0e-45ad259be38d@fujitsu.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 4 Mar 2024 18:04:08 +0800
-Message-ID: <CAEemH2e1yeu9yL2CbW3z0rVov67Oty_em0HmTrj86SUe0wMATw@mail.gmail.com>
-To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20240226153754.24998-1-andrea.cervesato@suse.de>
+ <20240226153754.24998-3-andrea.cervesato@suse.de> <Zdy26zz-_23brAlB@yuki>
+Content-Language: en-US
+In-Reply-To: <Zdy26zz-_23brAlB@yuki>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v1] libswap.c: Improve caculate swap dev number
+Subject: Re: [LTP] [PATCH v2 2/2] Add shmat04 SysV IPC bug reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,47 +94,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBNYXIgNCwgMjAyNCBhdCA1OjE54oCvUE0gWWFuZyBYdSAoRnVqaXRzdSkgPHh1eWFu
-ZzIwMTguanlAZnVqaXRzdS5jb20+Cndyb3RlOgoKPiBIaSAgTGnvvIwKPgo+ID4KPiA+Cj4gPiBP
-biBTdW4sIE1hciAzLCAyMDI0IGF0IDk6MTTigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5j
-ego+ID4gPG1haWx0bzpwdm9yZWxAc3VzZS5jej4+IHdyb3RlOgo+ID4KPiA+ICAgICBIaSBXZWks
-IFh1LAo+ID4KPiA+ICAgICAgPiBIaSAgV2VpCj4gPgo+ID4gICAgICA+ID4gSSBlbmNvdW50ZXIg
-YSBkZWFkIGxvb3Agb24gZm9sbG93aW5nIGNvZGUgaW4gb3VyIHRlc3Qgb24gcHBjNjQKPiA+ICAg
-ICBtYWNoaW5lOgo+ID4gICAgICA+ID4gd2hpbGUgKChjID0gZmdldGMoZnApKSAhPSBFT0YpCj4g
-Pgo+ID4gICAgICA+ID4gSSB0aGluayAiL3Byb2Mvc3dhcHMiIGlzIG5vdCBub3JtYWwgZmlsZSBh
-bmQgY2FuIG5vdCBnZXQgRU9GIGluCj4gPiAgICAgc29tZSBzaXR1YXRpb24sCj4gPiAgICAgID4g
-PiBzbyBpIHVzZSBmZ2V0cyBhIGxpbmUgYW5kIGNhY3VsYXRlIHN3YXAgZGV2IG51bWJlci4KPiA+
-Cj4gPiAgICAgSSBndWVzcyB0aGUgcHJvYmxlbSBoYXMgYmVlbiBmaXhlZCBieSBhbm90aGVyIHBh
-dGNoIFsxXSwgdGh1cwo+ID4gICAgIGNsb3NpbmcgaXQgaW4KPiA+ICAgICBwYXRjaHdvcmsuIFBs
-ZWFzZSBsZXQgbWUga25vdyBpZiBub3QuCj4gPgo+ID4KPiA+IFNlZW1zIG5vdCwgdGhlIHBhdGNo
-IFsxXSBiZWxvdyBpcyBtYWlubHkgdG8gY291bnQgdGhlIGZyZWUgZGlzayBzaXplLgo+ID4KPiA+
-IEJ1dCBXZWkncyB3b3JrIGhlcmUgaXMgdG8gY2FsY3VsYXRlIHN3YXAtZGV2IG51bWJlcnMgY29y
-cmVjdGx5Cj4gPiAoZXNwZWNpYWxseSBnZXQgcmlkIG9mIEVPRiBhZmZlY3Rpb24gdG8gc29tZSBk
-ZWdyZWUpLgo+ID4KPiA+IFh1IFlhbmcsIHdoYXQgZG8geW91IHRoaW5rPyBvciBkaWQgSSBtaXNz
-IGFueXRoaW5nIGhlcmU/Cj4gPgo+ID4KPgo+IEkgc3RpbGwgdGhpbmsgd2UgY2FuIHVzZSB0aGUg
-c2FtZSB3YXkgaW4gaXBjIGxpYnMgdG8gZ2V0IHJpZCBvZiB0aGUgRU9GCj4gcHJvYmxlbSBpbnN0
-ZWFkIG9mCj4gc2VhcmNoaW5nICJkZXYiIGtleXdvcmQuIFdlIGp1c3QgZG9uJ3QgbmVlZCB0byAg
-Y2FsY3VhbHRlICIvcHJvYy9zd2FwcyIKPiBoZWFkZXIuCj4KClNvdW5kcyBnb29kIHRvIG1lLiBB
-dCBsZWFzdCBpdCBjb3VudHMgcmlnaHQgbGluZXMuCgpJdCdkIGJlIGdyZWF0IHRvIGhhdmUgYSBw
-YXRjaCBieSB0aGF0IHdheS4KCgoKPgo+IGludCBnZXRfdXNlZF9zeXN2aXBjKGNvbnN0IGNoYXIg
-KmZpbGUsIGNvbnN0IGludCBsaW5lbm8sIGNvbnN0IGNoYXIKPiAqc3lzdmlwY19maWxlKQo+IHsK
-PiAgICAgICAgIEZJTEUgKmZwOwo+ICAgICAgICAgaW50IHVzZWQgPSAtMTsKPiAgICAgICAgIGNo
-YXIgYnVmW0JVRlNJWkVdOwo+Cj4gICAgICAgICBmcCA9IHNhZmVfZm9wZW4oZmlsZSwgbGluZW5v
-LCBOVUxMLCBzeXN2aXBjX2ZpbGUsICJyIik7Cj4KPiAgICAgICAgIHdoaWxlIChmZ2V0cyhidWYs
-IEJVRlNJWkUsIGZwKSAhPSBOVUxMKQo+ICAgICAgICAgICAgICAgICB1c2VkKys7Cj4KPiAgICAg
-ICAgIGZjbG9zZShmcCk7Cj4KPiAgICAgICAgIGlmICh1c2VkIDwgMCkgewo+ICAgICAgICAgICAg
-ICAgICB0c3RfYnJrKFRCUk9LLCAiY2FuJ3QgcmVhZCAlcyB0byBnZXQgdXNlZCBzeXN2aXBjIHJl
-c291cmNlCj4gdG90YWwgYXQgIgo+ICAgICAgICAgICAgICAgICAgICAgICAgICIlczolZCIsIHN5
-c3ZpcGNfZmlsZSwgZmlsZSwgbGluZW5vKTsKPiAgICAgICAgIH0KPgo+ICAgICAgICAgcmV0dXJu
-IHVzZWQ7Cj4gfQo+Cj4gQnV0IHdlIGRvbid0IGdldCB0aGUgYWN0dWFsIHJlYXNvbiwgSSBzdGls
-bCB3b25kZXIgd2h5IHRoaXMgZGVhZGxvb3AKPiBleGlzdHMgbyBwcGNjNjQgaW5zdGVhZCBvZgo+
-IG90aGVyIGFyY2hpdGVjdHVyZShpZSB4ODZfNjQpLgo+CgpPaywgSSB0aGluayB3ZSBjYW4ganVz
-dCBhcHBseSB5b3VyIHN1Z2dlc3RlZCBtZXRob2QgdG8gc2VlIGlmIHRoYXQgZGVhZGxvb3AKZGlz
-YXBwZWFycy4KCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi!
+
+On 2/26/24 17:06, Cyril Hrubis wrote:
+> Hi!
+>> +static void change_access(void *addr, int size, int prot)
+>> +{
+>> +	switch (prot) {
+>> +	case PROT_NONE:
+>> +		tst_res(TINFO, "Disable memory access. addr: %p - size: %d",
+>> +			addr, size);
+>> +		break;
+>> +	case PROT_WRITE:
+>> +		tst_res(TINFO, "Enable write memory access. addr: %p - size: %d",
+>> +			addr, size);
+>> +		break;
+>> +	default:
+>> +		tst_res(TINFO, "Change memory access. addr: %p - size: %d",
+>> +			addr, size);
+>> +		break;
+>> +	}
+>> +
+>> +	SAFE_MPROTECT(addr, size, prot);
+>> +}
+> Hmm, it's kind of ugly how we wrap the macro here like that...
+>
+> What about we instead add debugging messages to all the SAFE_MACROS()?
+>
+> Given that we added TDEBUG flag recently we can do soemthing as:
+>
+> 	tst_res_(TDEBUG, file, lineno, "mprotect(%p, %d, %s)",
+> 	         addr, size, prot_to_str(prot));
+>
+> To the SAFE_MPROTECT() and get the verbose output for free with verbose
+> flag passed to the test.
+>
+> We can do that with all SAFE_MACROS() then we do not have to print most
+> of the messages in this test...
+Is this comment related with the previous patch of the set?
+>> +
+>> +static void run(void)
+>> +{
+>> +	struct shmid_ds shmid_ds;
+>> +	void *sh_mem;
+>> +
+>> +	segment_id = SAFE_SHMGET(
+>> +		key_id,
+>> +		segment_size,
+>> +		IPC_CREAT | IPC_EXCL | 0600);
+>> +
+>> +	sh_mem = SAFE_SHMAT(segment_id, NULL, 0);
+>> +
+>> +	tst_res(TINFO, "Attached at %p. key: %d - size: %lu",
+>> +		sh_mem, segment_id, segment_size);
+>> +
+>> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+>> +
+>> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
+>> +
+>> +	change_access(sh_mem + page_size, page_size, PROT_NONE);
+>> +	change_access(sh_mem, 2 * page_size, PROT_WRITE);
+>> +
+>> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+>> +
+>> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
+>> +	tst_res(TINFO, "Delete attached memory");
+>> +
+>> +	SAFE_SHMDT(sh_mem);
+>> +	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
+>> +
+>> +	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
+>> +
+>> +	SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
+>> +	segment_id = -1;
+>> +
+>> +	if (shmid_ds.shm_nattch)
+>> +		tst_res(TFAIL, "The system is affected by the SysV IPC bug");
+>> +	else
+>> +		tst_res(TPASS, "Test passed");
+> These messages are not really that useful, we can as well do:
+>
+> TST_EXP_EQ_LU(shmid_ds.shm_nattach, 0);
+>
+> That will provide better message than "PASS: Test passed"
+>
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	key_id = GETIPCKEY();
+>> +	page_size = getpagesize();
+>> +
+>> +	tst_res(TINFO, "Key id: %d", key_id);
+>> +	tst_res(TINFO, "Page size: %d", page_size);
+>> +
+>> +	segment_size = 3 * page_size;
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (segment_id != -1)
+>> +		SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = run,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +};
+>> -- 
+>> 2.35.3
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+Andrea
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
