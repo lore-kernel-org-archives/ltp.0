@@ -4,103 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B5B2C48BF6
-	for <ltp@archiver.kernel.org>; Sun,  3 Mar 2024 13:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3243EC54E49
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 08:45:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EAD503CEC1C
-	for <ltp@archiver.kernel.org>; Sun,  3 Mar 2024 14:14:21 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id EFAF93CEB95
+	for <ltp@archiver.kernel.org>; Mon,  4 Mar 2024 09:45:05 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89DB73CCBCF
- for <ltp@lists.linux.it>; Sun,  3 Mar 2024 14:14:06 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id B82A73C972C
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 09:44:50 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D3B731A003D9
- for <ltp@lists.linux.it>; Sun,  3 Mar 2024 14:14:05 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 30D5E609D3;
- Sun,  3 Mar 2024 13:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709471644;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OLq18WS0b9DO5mm5/90pKBwn8NgHLqOFgUlu5nOKP2I=;
- b=qezblJIvKB52ujTb9j3PwaZSc6FVHHdZqOIH1IpEXPwA+ypFQvevzGiscstFaGE/HnPV6n
- VjYAmYgQacfgWZTS8dgoTf5MoSGUk7xrgQ3RtBn1NbX0exLOSA9sgKnX0v6Je34WXi1i5B
- lyeO3ZzBRfZJpj6GgfFxxIEZduWfiek=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709471644;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OLq18WS0b9DO5mm5/90pKBwn8NgHLqOFgUlu5nOKP2I=;
- b=DtBW5zqiob6r1oJEIVaJ5r9cRhI5Sk7yJc/VDnB761Zs1bUloUn7LXOAk33pzEQmuVb1QL
- V/qMDwURRWnydvBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709471644;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OLq18WS0b9DO5mm5/90pKBwn8NgHLqOFgUlu5nOKP2I=;
- b=qezblJIvKB52ujTb9j3PwaZSc6FVHHdZqOIH1IpEXPwA+ypFQvevzGiscstFaGE/HnPV6n
- VjYAmYgQacfgWZTS8dgoTf5MoSGUk7xrgQ3RtBn1NbX0exLOSA9sgKnX0v6Je34WXi1i5B
- lyeO3ZzBRfZJpj6GgfFxxIEZduWfiek=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709471644;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OLq18WS0b9DO5mm5/90pKBwn8NgHLqOFgUlu5nOKP2I=;
- b=DtBW5zqiob6r1oJEIVaJ5r9cRhI5Sk7yJc/VDnB761Zs1bUloUn7LXOAk33pzEQmuVb1QL
- V/qMDwURRWnydvBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 04B4B139D1;
- Sun,  3 Mar 2024 13:14:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id P1JMOpt35GWUNwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Sun, 03 Mar 2024 13:14:03 +0000
-Date: Sun, 3 Mar 2024 14:14:02 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
-Message-ID: <20240303131402.GC1856074@pevik>
-References: <20240301062716.3023-1-wegao@suse.com>
- <5681819a-2a3a-4c47-a1f1-3f9f49c994d9@fujitsu.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 84A5E1402F8E
+ for <ltp@lists.linux.it>; Mon,  4 Mar 2024 09:44:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1709541888;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type;
+ bh=mhbgG1JQD8XMX8BNUfT48SgnI/S2E90HWKR71NZDhGU=;
+ b=dQwPJGiH7oShKqr8vzTPudgsEqg26D+P8uQvi+bzAjhrbJxP3deaw5yWk1wPmKwjQ1nUj3
+ Ggp9GsF5FsFiHiiO6OiCBNFFWSAzXkvXpAcYGniSRxRshPXhoEO/F21eF4Sp+n+0RV1/YV
+ xZxfyRHwQRYViS46FuPb3gz1pFNBb5E=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-374-biYhB45zMOis_wDJDQ0DSQ-1; Mon, 04 Mar 2024 03:44:45 -0500
+X-MC-Unique: biYhB45zMOis_wDJDQ0DSQ-1
+Received: by mail-pj1-f69.google.com with SMTP id
+ 98e67ed59e1d1-29b3a63c589so1309800a91.3
+ for <ltp@lists.linux.it>; Mon, 04 Mar 2024 00:44:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1709541884; x=1710146684;
+ h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=mhbgG1JQD8XMX8BNUfT48SgnI/S2E90HWKR71NZDhGU=;
+ b=X2jEiZjeVHaocn60uljPMOIrWK/TarkUrFIpVjOJSIhZF7V/lAJbgi2iOZylsHV/QR
+ RsWukqGEuRnOTYy2359vw0cS+vODRWqB36RzgBvREYpO6RboN/5XGuGgo32F+MnWKzIU
+ n7KLzF6DCS3QXNxPzFEQ8Oq4ZGDpJgrXAyv8/vh0DwEs3aGVZQvRW3saWIfBYFnqbo8b
+ YRmfnwzgLr4VzfLfYDA3GIjlxk60lxhalwcR6XrT94shuNDGzYxK/c5L0aqH1GNSEvU4
+ yG73rvBLjDgwx2EI8dkJPCalhURBi86V/tjAs53LVswS6FLPzZkXvVxZE2jnWD0AdHuy
+ k7zw==
+X-Gm-Message-State: AOJu0YzE5bzNrI6SlKuUtH7y8YxV0A2aoypilks1rIUqPLcclz/mbAfP
+ yxhiSryVbrrA4UOunC1ao0PR1KU0biVGepcN4y+KarQN2EFWa7cUfuVjhDkQQ3Xxxk+z9hn04ak
+ MPtiuppZ1Ea0KHoAFEy3kDORKnBzd8zFbRuBOXT4WxVMhvd1RiEjlkvSr1cr77XOzzwG0ZpOEGH
+ rAQD9/n1+rJhPSDFlCg6aP/470hfQCg7mNoZkx
+X-Received: by 2002:a17:90a:9b84:b0:299:6c50:c2a0 with SMTP id
+ g4-20020a17090a9b8400b002996c50c2a0mr7044386pjp.23.1709541883858; 
+ Mon, 04 Mar 2024 00:44:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH7W5K18ncOI4c9dzITW/BSyqCuLcn4t/aeDyFr8X+wDOwxPmNU5mteFq5D2AVbrx1iZQipKPVz+rGwatYAOMM=
+X-Received: by 2002:a17:90a:9b84:b0:299:6c50:c2a0 with SMTP id
+ g4-20020a17090a9b8400b002996c50c2a0mr7044370pjp.23.1709541883375; Mon, 04 Mar
+ 2024 00:44:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5681819a-2a3a-4c47-a1f1-3f9f49c994d9@fujitsu.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-1.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; TO_DN_EQ_ADDR_SOME(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.80)[84.78%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 4 Mar 2024 16:44:31 +0800
+Message-ID: <CAEemH2e0Rmua9XimhfPHJ4xfEpidvYfXuDfsxRrA-VRv=YytQg@mail.gmail.com>
+To: LTP List <ltp@lists.linux.it>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] libswap.c: Improve caculate swap dev number
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] function tst_parse_cmdline exist?
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,30 +86,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei, Xu,
+Hi All,
 
-> Hi  Wei
+Do we have a funcion similar to tst_parse_cmdline() in LTP lib?
 
-> > I encounter a dead loop on following code in our test on ppc64 machine:
-> > while ((c = fgetc(fp)) != EOF)
+I asking this because recently people reached to me about the
+init_module01 failing on the system with ' module.sig_enforce=1'
+kernel parameter. That makes me think there are quite many
+various kernel parameter changes in some behavior when added in,
+so if not, I can help to create one to do such a thing.
 
-> > I think "/proc/swaps" is not normal file and can not get EOF in some situation,
-> > so i use fgets a line and caculate swap dev number.
+In a word, the main purpose is just to parse '/proc/cmdline' contents
+and export the necessary value to test case.
 
-I guess the problem has been fixed by another patch [1], thus closing it in
-patchwork. Please let me know if not.
+Or, any suggestions on the topic?
 
-Kind regards,
-Petr
+<<<test_output>>>
+tst_lockdown.c:82: TINFO: Kernel lockdown: off
+tst_lockdown.c:31: TINFO: SecureBoot sysfs file not available
+tst_test.c:1709: TINFO: LTP version: 20240129
+tst_test.c:1593: TINFO: Timeout per run is 0h 00m 30s
+finit_module01.c:35: TFAIL: finit_module(fd, "status=valid", 0) failed:
+EKEYREJECTED (129)
 
-[1] https://github.com/linux-test-project/ltp/commit/0f5d8c520d4e5b22325526eab41ed6bcad1847fc
+Summary:
+passed   0
+failed   1
+broken   0
+skipped  0
+warnings 0
+
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
