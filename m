@@ -4,131 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC38DC54E41
-	for <ltp@archiver.kernel.org>; Tue,  5 Mar 2024 17:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 193E7C54E41
+	for <ltp@archiver.kernel.org>; Tue,  5 Mar 2024 20:53:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 275D63D0CAB
-	for <ltp@archiver.kernel.org>; Tue,  5 Mar 2024 18:27:00 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3C8573D0BD2
+	for <ltp@archiver.kernel.org>; Tue,  5 Mar 2024 21:53:00 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B2E5C3D0B8D
- for <ltp@lists.linux.it>; Tue,  5 Mar 2024 18:26:44 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=dbrendel@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2F19B3CEB73
+ for <ltp@lists.linux.it>; Tue,  5 Mar 2024 21:52:45 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F3F7620098A
- for <ltp@lists.linux.it>; Tue,  5 Mar 2024 18:26:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1709659602;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
- bh=0l3GaMQ+etBsX8YeXP6TUAp0EwDioxP5V9rqEXPJ+cU=;
- b=ZWCU9exF2o6DbDnlV/7vm0UYZfd5jd70qq7vx5ikEpRE/UyxsGjUdfkI46o6qsi9/CIxvD
- hIurDZiR2e2s5EcdHZAn6V06KiIFukB5+HLBunvuvzQQTfvfZvFidYXsRWFPlzpX5xauzn
- tY8MlQvxXZi9JJsuHSIzr8ImhdW1Tzc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-124-pbSgMD7GNi2pWTp-qJGvKQ-1; Tue, 05 Mar 2024 12:26:40 -0500
-X-MC-Unique: pbSgMD7GNi2pWTp-qJGvKQ-1
-Received: by mail-ed1-f69.google.com with SMTP id
- 4fb4d7f45d1cf-564902d757bso3975311a12.1
- for <ltp@lists.linux.it>; Tue, 05 Mar 2024 09:26:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1709659599; x=1710264399;
- h=content-transfer-encoding:to:autocrypt:subject:from
- :content-language:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=0l3GaMQ+etBsX8YeXP6TUAp0EwDioxP5V9rqEXPJ+cU=;
- b=ll0CDfQpiR3n36nfqHOzvG5Zt96e4Fc1kitcCOz/OG9NYvaTww0p2GqFSlLX018jvE
- 9ae3W9tFKesinmGE2UZv0H3nLuEep6qAc0o0la3a98+Z5S3R0rE/gaMGAp5AHMW87Dfk
- sD/GKO/MXeDZW29/QLVfr1gwVmYm1N0y9bfiXMQDVT45Dw22NN4FOR3efKsPFoBDkKNi
- PkMe46j8S2MW+1C2PqiFziFthrfvHoHSCDpakrWqWqLo4gPhld6Ix+uo5aNgMzQkFHVI
- MiTxu/pNK0oRz+TnMFYtGGGtez0/l9o6j9e9b8Itl5HFbluou5Eq9YiMVCQ8Qg7uHkJK
- 4NYA==
-X-Gm-Message-State: AOJu0YxKXpFO+SByD+2fOKqTSm1M2oEgdj8YRmyKCbQ6eqJblWsaLrWg
- AiPGuOxf/zmkvTkobCrqqjYUf/nCEdW3Y7ohCv5zDhG1EQFBICQUHA1oF7JV9k+I0ug++EZ1QjY
- xS5UnyKCWulThRhhHol0bqDj0vu91u37e0hBHPKcaQS7rtrQXqvLU9Y25k9MJTA1vPhbFoq4aWX
- KTtWds6z4rIvW2Hq0jR6e/QUqFtUzJ/GQD
-X-Received: by 2002:a05:6402:5c2:b0:567:6a66:d103 with SMTP id
- n2-20020a05640205c200b005676a66d103mr3779434edx.0.1709659599359; 
- Tue, 05 Mar 2024 09:26:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH64bpV+yditFhk2P3iNHRhwikdzCyW+T5uy/4jPNKs2oDV6LuXlbfjDVCtiB5RT1yG3QMGvg==
-X-Received: by 2002:a05:6402:5c2:b0:567:6a66:d103 with SMTP id
- n2-20020a05640205c200b005676a66d103mr3779412edx.0.1709659598902; 
- Tue, 05 Mar 2024 09:26:38 -0800 (PST)
-Received: from ?IPV6:2a01:599:41b:652e:910f:1701:7713:77dc?
- ([2a01:599:41b:652e:910f:1701:7713:77dc])
- by smtp.gmail.com with ESMTPSA id
- cs4-20020a0564020c4400b00566a4dec01fsm5892625edb.11.2024.03.05.09.26.37
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Mar 2024 09:26:38 -0800 (PST)
-Message-ID: <6dfa210d-1c9a-4888-9408-eccc3068cd2a@redhat.com>
-Date: Tue, 5 Mar 2024 18:26:36 +0100
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 46B7D602211
+ for <ltp@lists.linux.it>; Tue,  5 Mar 2024 21:52:44 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0D1B93737E;
+ Tue,  5 Mar 2024 20:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709671964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ury9W2QBzwc4AvC7fkxs8mU6Rx7f65hoSebohvgvk0k=;
+ b=B9OGQYUubdPl9/eEAjO68OV+a6yojHmeX2W92+29FEjeOJ5GUsW/ynOao4u/m8FS2XVaJv
+ 8Diya2mbz+NV9J9vWHl9rt1JdkpV+hjn2LXzgoPREpzO00nmAJx6Qgy7sKablApW241SWj
+ Pc1O4sbo/f3V3AsxUgU+ZeMm+oepeoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709671964;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ury9W2QBzwc4AvC7fkxs8mU6Rx7f65hoSebohvgvk0k=;
+ b=pN5zVRsoiD4AIhcgOudL6eFxa7ZZD1ndfLSzIIbWrGFypgWzXr3U1dwStk+91vnIHC4O+m
+ 6xFKUGCrzfcRwtBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709671964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ury9W2QBzwc4AvC7fkxs8mU6Rx7f65hoSebohvgvk0k=;
+ b=B9OGQYUubdPl9/eEAjO68OV+a6yojHmeX2W92+29FEjeOJ5GUsW/ynOao4u/m8FS2XVaJv
+ 8Diya2mbz+NV9J9vWHl9rt1JdkpV+hjn2LXzgoPREpzO00nmAJx6Qgy7sKablApW241SWj
+ Pc1O4sbo/f3V3AsxUgU+ZeMm+oepeoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709671964;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ury9W2QBzwc4AvC7fkxs8mU6Rx7f65hoSebohvgvk0k=;
+ b=pN5zVRsoiD4AIhcgOudL6eFxa7ZZD1ndfLSzIIbWrGFypgWzXr3U1dwStk+91vnIHC4O+m
+ 6xFKUGCrzfcRwtBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D241F13A5B;
+ Tue,  5 Mar 2024 20:52:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wJd2LxuG52XVRAAAD6G6ig
+ (envelope-from <akumar@suse.de>); Tue, 05 Mar 2024 20:52:43 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Date: Tue, 05 Mar 2024 21:52:43 +0100
+Message-ID: <3561882.dWV9SEqChM@localhost>
+Organization: SUSE
+In-Reply-To: <20240121161159.4106646-2-ruansy.fnst@fujitsu.com>
+References: <20240121161159.4106646-1-ruansy.fnst@fujitsu.com>
+ <20240121161159.4106646-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Dennis Brendel <dbrendel@redhat.com>
-Autocrypt: addr=dbrendel@redhat.com; keydata=
- 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
-To: ltp@lists.linux.it
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-3.28 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_ORG_HEADER(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.18)[-0.902]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] munlockall: add test case that verifies memory has
- been unlocked
+Subject: Re: [LTP] [PATCH 2/2] getxattr01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -140,86 +112,288 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Changes to v1:
+Hi Shiyang,
+some comments below.
 
-- use a docparse comment
-- use tabs for indentation
-- report broken test and exit if any preparation/confirmation fails
-  by using tst_brk(TBROK, ...)
-- fix further violations reported by `make check`
+On Sunday, January 21, 2024 5:11:59 PM CET Shiyang Ruan wrote:
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  .../kernel/syscalls/getxattr/getxattr01.c     | 188 ++++++------------
+>  1 file changed, 61 insertions(+), 127 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c
+> b/testcases/kernel/syscalls/getxattr/getxattr01.c index
+> cec802a33..e11f00d46 100644
+> --- a/testcases/kernel/syscalls/getxattr/getxattr01.c
+> +++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+> @@ -1,28 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Copyright (C) 2011  Red Hat, Inc.
+> - *
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of version 2 of the GNU General Public
+> - * License as published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it
+> - * is free of the rightful claim of any third person regarding
+> - * infringement or the like.  Any license provided herein, whether
+> - * implied or otherwise, applies only to this software file.  Patent
+> - * licenses, if any, provided herein do not apply to combinations of
+> - * this program with other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> - * 02110-1301, USA.
+> + * Copyright (c) Linux Test Project, 2012-2024
+>   */
+> 
+> -/*
+> +/*\
+> + * [Description]
+> + *
+>   * Basic tests for getxattr(2) and make sure getxattr(2) handles error
+>   * conditions correctly.
+>   *
+> @@ -35,22 +19,11 @@
+>   * 4. Verify the attribute got by getxattr(2) is same as the value we set
+>   */
+> 
+> -#include "config.h"
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -#include <errno.h>
+> -#include <fcntl.h>
+> -#include <unistd.h>
+> -#include <stdio.h>
+>  #include <stdlib.h>
+> -#include <string.h>
+> +#include "tst_test.h"
+>  #ifdef HAVE_SYS_XATTR_H
+>  # include <sys/xattr.h>
+>  #endif
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -char *TCID = "getxattr01";
+> 
+>  #ifdef HAVE_SYS_XATTR_H
+>  #define XATTR_TEST_KEY "user.testkey"
+> @@ -58,85 +31,51 @@ char *TCID = "getxattr01";
+>  #define XATTR_TEST_VALUE_SIZE 20
+>  #define BUFFSIZE 64
+> 
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -char filename[BUFSIZ];
+> +static char filename[BUFSIZ];
+> 
+> -struct test_case {
+> +static struct tcase {
+>  	char *fname;
+>  	char *key;
+>  	char *value;
+>  	size_t size;
+>  	int exp_err;
+> -};
+> -struct test_case tc[] = {
+> -	{			/* case 00, get non-existing attribute */
+> -	 .fname = filename,
+> -	 .key = "user.nosuchkey",
+> -	 .value = NULL,
+> -	 .size = BUFFSIZE - 1,
+> -	 .exp_err = ENODATA,
+> -	 },
+> -	{			/* case 01, small value buffer */
+> -	 .fname = filename,
+> -	 .key = XATTR_TEST_KEY,
+> -	 .value = NULL,
+> -	 .size = 1,
+> -	 .exp_err = ERANGE,
+> -	 },
+> -	{			/* case 02, get existing attribute */
+> -	 .fname = filename,
+> -	 .key = XATTR_TEST_KEY,
+> -	 .value = NULL,
+> -	 .size = BUFFSIZE - 1,
+> -	 .exp_err = 0,
+> -	 },
+> +} tcases[] = {
+> +	/* case 00, get non-existing attribute */
+Can we please remove these comments, as we are describing the testcases
+in the description already.
+> +	{ filename, "user.nosuchkey", NULL, BUFFSIZE - 1, ENODATA },
+> +	/* case 01, small value buffer */
+> +	{ filename, XATTR_TEST_KEY, NULL, 1, ERANGE },
+> +	/* case 02, get existing attribute */
+> +	{ filename, XATTR_TEST_KEY, NULL, BUFFSIZE - 1, 0 },
+>  };
+> 
+> -int TST_TOTAL = sizeof(tc) / sizeof(tc[0]) + 1;
+> -
+> -int main(int argc, char *argv[])
+> +static void run(unsigned int n)
+>  {
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		for (i = 0; i < (int)ARRAY_SIZE(tc); i++) {
+> -			TEST(getxattr(tc[i].fname, tc[i].key, tc[i].value,
+> -				      tc[i].size));
+> -
+> -			if (TEST_ERRNO == tc[i].exp_err) {
+> -				tst_resm(TPASS | TTERRNO, "expected behavior");
+> -			} else {
+> -				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
+> -					 "- expected errno %d - Got",
+> -					 tc[i].exp_err);
+> -			}
+> -		}
+> -
+> -		if (TEST_RETURN != XATTR_TEST_VALUE_SIZE) {
+> -			tst_resm(TFAIL,
+> -				 "getxattr() returned wrong size %ld expected %d",
+> -				 TEST_RETURN, XATTR_TEST_VALUE_SIZE);
+> -			continue;
+> -		}
+> -
+> -		if (memcmp(tc[i - 1].value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
+> -			tst_resm(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
+> -				 XATTR_TEST_VALUE, tc[i - 1].value);
+> -		else
+> -			tst_resm(TPASS, "Got the right value");
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	TEST(getxattr(tc->fname, tc->key, tc->value, tc->size));
+> +	if (TST_ERR == tc->exp_err) {
+> +		tst_res(TPASS | TTERRNO, "expected behavior");
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO, "unexpected behavior"
+> +			"- expected errno %d - Got",
+> +			tc->exp_err);
+>  	}
+> 
+> -	cleanup();
+> -	tst_exit();
+> +	/* The last check:
+> +	 *  Verify the attribute got by getxattr(2) is same as the value we set
+> +	 */
+> +	if (n == ARRAY_SIZE(tcases) - 1) {
+Though ideally we separate the errno checking testcases and syscall success
+tests in different test files.
+But here we can simplify this using TST_EXP_* macros, maybe something like -
 
-I did not yet replace munlockall01.c because I am not familiar with
-that (legacy?) syntax and why uclinux needs special handling.
+if (tc->exp_err == 0) {
+	TST_EXP_VAL(getxattr(tc->fname, tc->key, tc->value, tc->size), XATTR_TEST_VALUE_SIZE);
+	if (memcmp(tc->value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
+		tst_res(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
+			XATTR_TEST_VALUE, tc->value);
+	else
+		tst_res(TPASS, "getxattr() retrieved expected value");
+} else {
+	TST_EXP_FAIL(getxattr(tc->fname, tc->key, tc->value, tc->size), tc->exp_err);
+}
 
----
- .../kernel/syscalls/munlockall/munlockall02.c | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 testcases/kernel/syscalls/munlockall/munlockall02.c
+> +		if (TST_RET != XATTR_TEST_VALUE_SIZE)
+> +			tst_res(TFAIL,
+> +				"getxattr() returned wrong size %ld expected %d",
+> +				TST_RET, XATTR_TEST_VALUE_SIZE);
+> +
+> +		if (memcmp(tc->value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
+> +			tst_res(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
+> +					XATTR_TEST_VALUE, tc->value);
+> +		else
+> +			tst_res(TPASS, "Got the right value");
+> +	}
+>  }
+> 
+>  static void setup(void)
+> @@ -144,41 +83,36 @@ static void setup(void)
+>  	int fd;
+>  	unsigned int i;
+> 
+> -	tst_require_root();
+> -
+> -	tst_tmpdir();
+> -
+>  	/* Create test file and setup initial xattr */
+>  	snprintf(filename, BUFSIZ, "getxattr01testfile");
+> -	fd = SAFE_CREAT(cleanup, filename, 0644);
+> +	fd = SAFE_CREAT(filename, 0644);
+>  	close(fd);
+we can use SAFE_CLOSE()
+> -	if (setxattr(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
+> -		     strlen(XATTR_TEST_VALUE), XATTR_CREATE) == -1) {
+> -		if (errno == ENOTSUP) {
+> -			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+> -				 "mount without user_xattr option");
+> -		}
+> -	}
+> 
+> -	/* Prepare test cases */
+> -	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+> -		tc[i].value = malloc(BUFFSIZE);
+> -		if (tc[i].value == NULL) {
+> -			tst_brkm(TBROK | TERRNO, cleanup,
+> -				 "Cannot allocate memory");
+> -		}
+> -	}
+> +	SAFE_SETXATTR(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
+> +		      strlen(XATTR_TEST_VALUE), XATTR_CREATE);
+> 
+> -	TEST_PAUSE;
+> +	for (i = 0; i < ARRAY_SIZE(tcases); i++)
+> +		tcases[i].value = SAFE_MALLOC(BUFFSIZE);
+>  }
+> 
+>  static void cleanup(void)
+>  {
+> -	tst_rmdir();
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tcases); i++)
+> +		if (tcases[i].value != NULL)
+> +			free(tcases[i].value);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = run,
+> +};
+> +
+>  #else /* HAVE_SYS_XATTR_H */
+> -int main(int argc, char *argv[])
+> -{
+> -	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
+> -}
+> +	TST_TEST_TCONF("<sys/xattr.h> does not exist.");
+>  #endif
 
-diff --git a/testcases/kernel/syscalls/munlockall/munlockall02.c b/testcases/kernel/syscalls/munlockall/munlockall02.c
-new file mode 100644
-index 000000000..06f781d86
---- /dev/null
-+++ b/testcases/kernel/syscalls/munlockall/munlockall02.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright Red Hat
-+ * Author: Dennis Brendel <dbrendel@redhat.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that munlockall(2) unlocks all previously locked memory
-+ */
-+
-+#include <sys/mman.h>
-+
-+#include "tst_test.h"
-+
-+static void verify_munlockall(void)
-+{
-+	size_t size = 0;
-+
-+	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
-+
-+	if (size != 0UL)
-+		tst_brk(TBROK, "Locked memory after init should be 0 but is "
-+			       "%ld", size);
-+
-+	if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0)
-+		tst_brk(TBROK, "Could not lock memory using mlockall()");
-+
-+	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
-+
-+	if (size == 0UL)
-+		tst_brk(TBROK, "Locked memory after mlockall() should be "
-+			       "greater than 0, but is %ld", size);
-+
-+	if (munlockall() != 0)
-+		tst_brk(TBROK, "Could not unlock memory using munlockall()");
-+
-+	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
-+
-+	if (size != 0UL) {
-+		tst_res(TFAIL, "Locked memory after munlockall() should be 0 "
-+			       "but is %ld", size);
-+	} else {
-+		tst_res(TPASS, "Test passed");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_munlockall,
-+};
--- 
-2.44.0
+Regards,
+Avinesh
 
 
 
