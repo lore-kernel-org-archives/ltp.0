@@ -4,101 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6DCBC5475B
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 12:46:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1657EC5475B
+	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 14:24:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A75653CEB73
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 13:46:55 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 680B03D0035
+	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 15:24:16 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E74CB3CD783
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 13:46:41 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C4F0C3CBE41
+ for <ltp@lists.linux.it>; Wed,  6 Mar 2024 15:24:00 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1D92140024E
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 13:46:40 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F3F19603225
+ for <ltp@lists.linux.it>; Wed,  6 Mar 2024 15:23:59 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1B97E76CF9;
- Wed,  6 Mar 2024 12:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709729200;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EC9536B3FC;
+ Wed,  6 Mar 2024 14:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709735039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6YvlUh7PDNETj2ZLNxM5HxZX5Um1DaDdDMMBXKbScdo=;
- b=xUsSiNL9PnLjctR90tPAsV07rxDWCMT+9MP+ZdMMGXIjEJZP1hDyUQG/p7kcbdHMCMuXOv
- HIlDLXLDqmoVWndtl4NQF4Qbin9BEm909uSOWBs+YCW92bhzZW+pZRbQNDBW8q2ta00tk2
- ERFzvr4bhdzUK6N8PNoPc7ro5nqm9j4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709729200;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=F6hieCeL4UloMZWliT8zm1gyuINgFLHQWpwecF6gdh8=;
+ b=sw/hYVv9ToUSaN15HuE1CWpTQGCqpjiN8m1dPyUa5zKc7aqM0j2XsXpbeW+jpnLFDYli+j
+ Wyc9YCt76k/9+v4P2Kv7BAkbOL2D2lEtuwMP095cg1kuye9eml5ZKgRtZaFGpA0QQg8Z9B
+ lHh7MX/tgI1SxtfNEdhjJDGGJ/Ych7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709735039;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6YvlUh7PDNETj2ZLNxM5HxZX5Um1DaDdDMMBXKbScdo=;
- b=I5lblUXLXkuZjjjwM5Lp3q7bhnV2hSM35+ZV4UQsvHjij4Ow4VFq96QqxBkaT+7sN3Py9Q
- oYUPrv8i+AFE9kCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709729200;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=F6hieCeL4UloMZWliT8zm1gyuINgFLHQWpwecF6gdh8=;
+ b=0yojmiTQ5w3/P3M6jqUfZ3Mz0itJDvDqvDD1QmpBgSgzXVK0vRXOXYaEMSaCvaTcDMWKwy
+ 0lepX9s6WfQPC2Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1709735038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6YvlUh7PDNETj2ZLNxM5HxZX5Um1DaDdDMMBXKbScdo=;
- b=xUsSiNL9PnLjctR90tPAsV07rxDWCMT+9MP+ZdMMGXIjEJZP1hDyUQG/p7kcbdHMCMuXOv
- HIlDLXLDqmoVWndtl4NQF4Qbin9BEm909uSOWBs+YCW92bhzZW+pZRbQNDBW8q2ta00tk2
- ERFzvr4bhdzUK6N8PNoPc7ro5nqm9j4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709729200;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=F6hieCeL4UloMZWliT8zm1gyuINgFLHQWpwecF6gdh8=;
+ b=wSv9cGoMcMkSCB7rQeQknVnDeYwMx0QzzreRH8qze3sVJDQRoWCzk/vpM1YZgIkShyuXn+
+ AxA/ElZmw2Lox5NQP0oGILMgv2gH12pjqAQ8TLX96sos19gvUmR0J6VbRLLaKNX8Oq3uiS
+ DK3DIy3CQx3KlBfa/iWSz1GFC9tTY60=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1709735038;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6YvlUh7PDNETj2ZLNxM5HxZX5Um1DaDdDMMBXKbScdo=;
- b=I5lblUXLXkuZjjjwM5Lp3q7bhnV2hSM35+ZV4UQsvHjij4Ow4VFq96QqxBkaT+7sN3Py9Q
- oYUPrv8i+AFE9kCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ bh=F6hieCeL4UloMZWliT8zm1gyuINgFLHQWpwecF6gdh8=;
+ b=V3ux+2/1cA3K+4WCHL8/tMtgzJwv6X6kQ21tsQfUeVKrF6TWsMQH7ihDwWvIyTrewpXHXE
+ 9Dx7RjAxezIZw8Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 02A611377D;
- Wed,  6 Mar 2024 12:46:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id +ZTIOq9l6GX0UgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 06 Mar 2024 12:46:39 +0000
-Date: Wed, 6 Mar 2024 13:46:38 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wenjie Xu <xuwenjie04@baidu.com>
-Message-ID: <20240306124638.GB746976@pevik>
-References: <20240301124129.GE1661970@pevik>
- <20240305072014.55145-1-xuwenjie04@baidu.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5FB813A67;
+ Wed,  6 Mar 2024 14:23:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id E5h7M3586GUMRAAAD6G6ig
+ (envelope-from <akumar@suse.de>); Wed, 06 Mar 2024 14:23:58 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 06 Mar 2024 15:23:58 +0100
+Message-ID: <1943239.7Z3S40VBb9@localhost>
+Organization: SUSE
+In-Reply-To: <20240227085641.33715-1-xuyang2018.jy@fujitsu.com>
+References: <20240227085641.33715-1-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240305072014.55145-1-xuwenjie04@baidu.com>
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [0.61 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+X-Spamd-Result: default: False [-0.31 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.09)[64.52%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ HAS_ORG_HEADER(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.01)[50.06%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pipe/pipe15.c: Adjust fd check for pipe creation
+Subject: Re: [LTP] [PATCH 1/2] iopl01: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,39 +112,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> > HI Wenjie, Marius,
+Hi,
 
-> > > A pipe occupies 2 fds, and considering 3 standard fds,
-> > > we should compare rlim_max with such *2+3 calculated value
-> > > to verify whether the maximum file descriptor configuration
-> > > of the current machine is sufficient.
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
+for both the patches.
 
-> > Indeed, 1024*2+3 is the lowest number which passes with non-default ulimit:
+@pvorel,
+Can you please also fix below typos when you merge this.
 
-> > ulimit -n $((1024*2+3)) && ./pipe15
+On Tuesday, February 27, 2024 9:56:40 AM CET Yang Xu via ltp wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/iopl/iopl01.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/iopl/iopl01.c
+> b/testcases/kernel/syscalls/iopl/iopl01.c index 70e2a7ff1..8eadc03c9 100644
+> --- a/testcases/kernel/syscalls/iopl/iopl01.c
+> +++ b/testcases/kernel/syscalls/iopl/iopl01.c
+> @@ -1,17 +1,18 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - *  Copyright (c) Linux Test Project, 2020
+> - *  Copyright (c) Wipro Technologies Ltd, 2002
+> + * Copyright (c) Linux Test Project, 2020
+> + * Copyright (c) Wipro Technologies Ltd, 2002
+> + * Author: Subhab Biswas <subhabrata.biswas@wipro.com>
+>   */
+> 
+> -/*
+> +/*\
+> + * [Description]
+> + *
+>   * This is a basic test for iopl(2) system call.
+>   *
+>   * Test the system call for possible privelege levels.
+s/privelege/privilege
+>   * As the privelge level for a normal process is 0, start by
+s/privelge/privilege
+>   * setting/changing the level to 0.
+> - *
+> - * Author: Subhab Biswas <subhabrata.biswas@wipro.com>
+>   */
+> 
+>  #include <errno.h>
 
-> > Therefore I merged, thank you!
 
-> > BTW I wonder how did you encounter this?
+Regards,
+Avinesh
 
-> In my test case, the system ulimit is set to 10240,
-> and the calculated pipe_count is also 10240, causing
-> the EMFILE failure when creating the pipe below.
 
-+1, thanks for info.
-Is it some embedded distro or a regular widely used distro?
-I'm just curious what kernels are tested by LTP and whether where the
-non-default setup comes from.
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
