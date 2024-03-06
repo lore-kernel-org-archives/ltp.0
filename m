@@ -4,154 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 224BEC54E49
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 01:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1709688769; h=to : date :
- message-id : references : in-reply-to : content-id : mime-version :
- subject : list-id : list-unsubscribe : list-archive : list-post :
- list-help : list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=BqZtUDvGInhrp6w0vKo0Zxljvi4srRNsfcon0Ky7VfI=;
- b=HYe3U6VllNtYKNT0t1LKD4vFeE4wfmQIo+lhAZlr6syjaxoD6YhvNgbErWBwyrLFYlEbm
- JEJQP2/mtt6DGEmll7qjuVw//p5Hjy3yvbaHC9KrE854rw6uADFmEjYKW5XeFCUYKXqXsvG
- MIokmxhIT8rW34odal5J0ADQLKPlI2w=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A53FC54E41
+	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 08:49:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 51B963CC53D
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 02:32:49 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 91BD03CE9D4
+	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 09:49:42 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 882213CC53D
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 02:32:26 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.151.212;
- helo=esa3.fujitsucc.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id 88DC63C2A69
+ for <ltp@lists.linux.it>; Wed,  6 Mar 2024 09:49:27 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=dbrendel@redhat.com;
  receiver=lists.linux.it)
-Received: from esa3.fujitsucc.c3s2.iphmx.com (esa3.fujitsucc.c3s2.iphmx.com
- [68.232.151.212])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 373EA200A1F
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 02:32:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1709688745; x=1741224745;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=74Hv1VmDkbQGU3UOWx3GPINYx45K/MrEtRybHkW0750=;
- b=gj0BcsbO/keG8D3r0pS0meUwdnEBmPSlYRD5HFnqg2F+9fdiPy92lgIJ
- J3uNUhf5Ckut31ZzT99vhqAyiupLh93eCiRrd9b2GOeLwsmkVRBVDyDYb
- b47tI5a4b8yvqozPlEgB9YI7Afts7rykrdn01HmSKwlWht/cjHywMLhRc
- WaqkYrw0Jn4yFbJy1wzjtkKnJsF83AIyP0Q0TcrLLn+h/V/++ro+uXkbO
- ndcIy65HvaDK67KrCGwzHi6RxVfUHLcEEFjDCKe6aFE3eNA/ckGO0jxP5
- H+pM64phV1/eG2tNVs8uUEf97qcFZsrpPDLkZQdVOZDFCW4NfgdVGNqIL w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="24262733"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705330800"; d="scan'208";a="24262733"
-Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Mar 2024 10:32:18 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SSS7m+uzlyESLJS1+OwJPvs9T+7QgLlWr5pcz0aZOLuoskVfxoB4R2u4vw8wMnaPnMsPL0P0LMV+GyRkAohw2CY37HR0c8F8JC3n+p6hTcRdpKgpzVgF9teMH31sb3IaDeAXd3aXhJ0jUWuHIiHZVTUJhsETTMPkGwPNvqQ99bsgWsTejYWXy5EgGGOwLvF8GOcQsKHhQY2h+lJzOeqWeV/Ju67zCKhb1zHx2lOYN/R99diAxS74+qvxaVWcKkux3nIzaPRWI2p+PdSpXuDD/ZDBZzZoipyKSeQSJsFuhAswE6QmvGINVLJ6AoMA8LNeXrLt/+49+Vt+pcd2jmIxEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=74Hv1VmDkbQGU3UOWx3GPINYx45K/MrEtRybHkW0750=;
- b=iGpYj6svn/4wngFeAacIlYW2yyIqX6cSfwFP8qZd9KL9yBqubcatrak0XW3DjuwMwdzULJ1198wxKwUzpIze6xKuDnL9TW3PUkOOx7tmbyanxDrxcNSWqJC/PO0i8rS2+9qLumS1OSwWE6W88Oh5Ig+yyyodEkW0GaZf4aIMUzMEpvKGyjQJ2y3jSk2uuveiaPAZM1vnNsSsPB7BDF21CnB1c9xadJEfRrr0mbcKBHV9G4JRnqO/esP8Pd+exWBTTyfqufhrhujBvw+lFA+HEuTg+36NX8ltgOsIKizouYvo0mePP+Lvl98T45rEN7YemxChdO6oHKQaUeYGmZtwbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYXPR01MB1584.jpnprd01.prod.outlook.com (2603:1096:403:d::21)
- by TYCPR01MB6158.jpnprd01.prod.outlook.com (2603:1096:400:4a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 01:32:15 +0000
-Received: from TYXPR01MB1584.jpnprd01.prod.outlook.com
- ([fe80::c9eb:72b8:f662:c9fd]) by TYXPR01MB1584.jpnprd01.prod.outlook.com
- ([fe80::c9eb:72b8:f662:c9fd%6]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
- 01:32:15 +0000
-To: Petr Vorel <pvorel@suse.cz>, Wei Gao <wegao@suse.com>
-Thread-Topic: [PATCH v2] libswap.c: Improve calculate swap dev number
-Thread-Index: AQHabwb5t0IKBnzey0W7Nn+BIuBNmbEpo1WAgABK14A=
-Date: Wed, 6 Mar 2024 01:32:15 +0000
-Message-ID: <b2525dbc-a863-477e-9499-82b8f3ad71a7@fujitsu.com>
-References: <20240301062716.3023-1-wegao@suse.com>
- <20240305141057.8754-1-wegao@suse.com> <20240305210421.GA44833@pevik>
-In-Reply-To: <20240305210421.GA44833@pevik>
-Accept-Language: ja-JP, zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYXPR01MB1584:EE_|TYCPR01MB6158:EE_
-x-ms-office365-filtering-correlation-id: 923b64e6-5025-4b0b-0b57-08dc3d7d4102
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Nzk+TOXUY9LFfw4RmhzrE29cX3MOup4RO1kQwdrMUE2DPPP4GLKwyBX5zPlQHpLLlkz7R1B6SmnifrCie4cpeWtldGf5dciragd+OtJAURyGdwkf/+7hr79/amaGpl8SdsU/WW7jcAbssLfEORg/ZxTFAbtLFBUGRrYUU9Xq6m4AI7RVyHBndWLtNOf2WcsXhwXtniNKT8H4Xw73I6aaiGxbAGF8bEQWb6NgJ8bQ/doaa1Ovk/5uKrC+TKe2JLFYEzLQPs70OPxUN70iZGEBPjTTxVjkml8SdhfhJ4JGoRq0vPvF0hWMx/myebZ+5fJJT+2fP1iCMgNUqTdFBF2W2OqWJkEurc2yb+jKKqs6mX/aBmMJDb6tOAkGGK2ReiyPpngKNmII/lvdPiwRh0rLq2UXxF4GKkBGYyPd1JOFRtglZfAKCl061mP8oAEi6a+2VibXmWPtFHIcvMkTNZQzpHSQtMxsT8jXVqWe7LD4igJmLW79JHHH6B9mJHTl8/Fv6x22/X8AE1Ba98qcNHlKYUbDbSIGHtDWGDykR5rfK4YT5c7XcK1Xq7IR2UsFde1vd5ZEUGEGNE5KmulQSWD6E+dfnWBvac7FpjgkT+4jU3AWOZGuw32ZPYg3UDHyNGx9OmlzCXXm9WEHWYOEQIiZLXrQcQaNmpcMzs9Nnvhf/ZAAI+EEH+3AxzQOyqpGJ74Z
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYXPR01MB1584.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(376005)(1580799018)(38070700009); DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YkJoTUY3NGxqMVBVTU1TVHhPZUtJbHdBdnFuczVWK3dJZHhtQnc4QzNSVUND?=
- =?utf-8?B?L0NrZXhEQTYwcmxjQTEwZlRMYmx2dHNhKzlpTFNrUWxHNjJxRVlETUc0UnBQ?=
- =?utf-8?B?UzlYcEx2U0Q2WFBuUjQ2NHJnSXBNamtRQW5KTHJVNTcrOTQ4dDZXQlFaRklu?=
- =?utf-8?B?ZXQ0WHJ4dlF5QVB1MTBUMFcwaERFa3R2eDl0dWlwOXZiVmR0MFJxeEJBTWFL?=
- =?utf-8?B?akl5ZlNsTFRpMm1PTTArSVZXUUNXbEwxOUNGdWlnTFBOak1xRzFXcGxhem1M?=
- =?utf-8?B?VjdVVG90OUV4Y05sNlV3U0tWd2p5bVFrZmpwTFIzRjZuY1FrSkVLTTVJMnZo?=
- =?utf-8?B?OUttQ3lBQUhOdW9ITUxNMHFXa0RDMGQ4cVdHbTVMaFpoR004M0FMYldHR2c0?=
- =?utf-8?B?VXFqQ0h1d0k1bmJaRENnV0JnaWtJTUNSVXF3R1RFbFI1L3d6UUpGYktxMGRZ?=
- =?utf-8?B?VXNWaDV0MFhuZW5xNEs2RDM5Z0RENTZ1YTFxUzhGdDBuOGlYYjhZTHliZnNx?=
- =?utf-8?B?THQvd3lVeW5vaXpCd1A5L1hkL20yN0sxVFlNdWpBeVZzTk5xSHVlY1QyWnNJ?=
- =?utf-8?B?emdsV3NJeVRqQzRScWZZb3J3VitkTk5IMDRwTnRnN1FkU0VxS0ZqaGQrVGdO?=
- =?utf-8?B?aVRpK21kamhrVmJEbUlkeUJsRFVPYkp4Z1IzbGNOQ2JReTdEL1ZjVyt2YVNw?=
- =?utf-8?B?emN1eXRUNkdOZ3hRWXU2dElHdWRPZ0xIaGJVMlE4Yk1kdjQzU2p2TGxTd2NC?=
- =?utf-8?B?M29pRjZQZHJ3a2MzM3docTlpSWFQQlFycFhOWThsSEZOcE81MDhoTEJlR1gx?=
- =?utf-8?B?di9TbVNtZ2lUbGRvU2VLYkNGQy92bFJvaWgyckJEZW5MM2RPNTZRMmFmbVpZ?=
- =?utf-8?B?WWRFWmIxMThaa01USWczNU9EM2ZFZ0RFNzJsczJUUXBuYW9ETDhPTnpvWjN5?=
- =?utf-8?B?bUVUa1lhQnhDS3ZWZ1BDQmk5cWJwbkxwcjVRUFB2azJXNWdXbVdwVktiU0JJ?=
- =?utf-8?B?WXJ6MXhiaktndWxuMnM1RlNBYm15a3dNQlU0b2tPYThVekMyVEMzY2pPTlJ4?=
- =?utf-8?B?T01ZVEFzMUZ3YXZqYXFxTmZpVlR1TG1wTUFxQkNyTXdhb04zM1ozQUtwUkJ4?=
- =?utf-8?B?d25kandqQldJc0szOTFwSWFmTll2U3M2bVdzMVRwemRnMy9HVEZFY0FQU3RX?=
- =?utf-8?B?MDYvSm42SjlYN0RiYTloN2U5OG9GZ2dzMHcxbDhLSm83dlE3b0szVmhSMk5q?=
- =?utf-8?B?Tjh3SndJVU9kSkd6WldJUTFKQXhJaFh2bW5NNmh4UmhZZ3pqZ2kraUZtdW12?=
- =?utf-8?B?U3IvVk96cWVJY2tPV244eE50Uk8vSWsxOXBKeTdWOU5sNlozV09KcVhyS0lN?=
- =?utf-8?B?VkQ0UVg4VVZTZEFSVjd5ejZqZlI0S1Z1dE12NHJDTm53R2RqQ0MxaDZQNmpF?=
- =?utf-8?B?NktmVHpTb0FFVnBvc0tSRVNNSVhkRE02Uis1QzBReUFrSDlzdTAwQlAxZ1Y4?=
- =?utf-8?B?aDNnRnRRNkVCYldYZUl1TS9ZVUhxeENjeXFaS2NhbFpBYXJ0RVJiVGdZR29V?=
- =?utf-8?B?TGVLMG1nVWM0SENaSmU1bHZqZVI4RDNKM1VFL1d4QmJ1VG9DUEQ0K21wbVNz?=
- =?utf-8?B?UkN0MndaY2RHdFBWMFBZSnVhZC8wTHBQcDA4cVlwRGJTZlJxZWoxME9kTmF6?=
- =?utf-8?B?WmttMlVYRGNCb2ZvUTR3d3NzT3V2R2Q3WmpmajdrcmJRRVZPbEg4L0RMdCtT?=
- =?utf-8?B?akkrVUFtQkFKSlNFa29jcHZoUmlHUFZVUmlpbkFYckRJdGI2aDBKVE5WbmJo?=
- =?utf-8?B?Z1pURCtqdCsvY1RoTmhXM0hjWENjNHdrN1Noc0hhU0NkdktkNEZZSktkU25M?=
- =?utf-8?B?ckNmYU05ajhlc0k3M2RvOXdRSUZRV3lLcnNIVkZsMmdDVmFqK09XWXIzTXhN?=
- =?utf-8?B?NmVWOHFOZEVBSlc3MUlzRkl3bVdHUExaaXpqSUFyZWlmWjl4TDZKNTNBU1VN?=
- =?utf-8?B?TEh6Qk5BK2NNTjNvcUJLM1pwRDJuR2tmejQ3MWQxcFZySXZyYklJZ1BLK2Zm?=
- =?utf-8?B?RC9ESE5HRjI1TmxQb0t1SmtXRHp1OWNVZWc1SnVpUkNicERHdGJQUFlsQzhR?=
- =?utf-8?B?SHZOQkkwYkpnSDllWm1JWmE3aDZ3WWNJS1FxOW5rUkdhU0ZmdHFaQ2xXM1ZH?=
- =?utf-8?B?alE9PQ==?=
-Content-ID: <58BDC02EE809994EBD9DE76433218C3D@jpnprd01.prod.outlook.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3A6DC600CF5
+ for <ltp@lists.linux.it>; Wed,  6 Mar 2024 09:49:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1709714964;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=FcI21iMKqu3RRnOZ981gMQxDcVZ3pnsYQv9OC9RLyE4=;
+ b=ek8NAF7LHmnuG+9MHMxT7AYJmpOXFpTUz1HhyTYA7qGNpTmtc/m2FE4wfEdxwGR/9mDMxD
+ Yq/MxM/nBJ3guOpkWq+ufJ1rm4FV/cYwjrN8y9ubPwpQi1/u7E4ZprVraTfVAPGxY5owhj
+ hKKLhv+PauT4qMU9y9H+USolg7gBai0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-395-hxnr8Y5NORGy7RiVulh_GQ-1; Wed, 06 Mar 2024 03:49:23 -0500
+X-MC-Unique: hxnr8Y5NORGy7RiVulh_GQ-1
+Received: by mail-qv1-f70.google.com with SMTP id
+ 6a1803df08f44-6904f4bc70bso86997046d6.1
+ for <ltp@lists.linux.it>; Wed, 06 Mar 2024 00:49:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1709714962; x=1710319762;
+ h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+ :to:content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=FcI21iMKqu3RRnOZ981gMQxDcVZ3pnsYQv9OC9RLyE4=;
+ b=IUp0Zpo/A+VVW3IGO3Sl6np3KtJqhAA1GGTIGvdS7ARnHrkv08FDu10Rt5rgmu4aXp
+ ma8lJFUB69r+NaWbNR0welHRAtU66aE25rvXQGvVdGfwxqiz7BwG92IQsmduuLrLH2k+
+ BAYeadDnKxXBHrSsDvd43ikWNcAgx5v3wVVIo+LJmbhFJhBLDV0BzgVl7MOtG7Eftagi
+ yG2W5hyrccTxky9xXrLD0L4SJDb9b+0hOwpX6A0wkcIxIN0+HXf+EHJw6vEY83tCW0DD
+ /jN7FiocyWq/2V6p/tifQSxD0+FHP1Ddyxh0WXVQQa5V+SnQ1nQjgopeaWZJjuq9o5yy
+ 0U+g==
+X-Gm-Message-State: AOJu0YxX3jsQut0H6pJOz8/DeHJ5hrZ2foT83WCRKJvs7ddsM1WCXsqr
+ JZ9ExnmP4mA96j1R6ebnOgU8u5cik5/N7HssjEAxZIBZ8FX9OI9/klwIXqHewZTsMxr3ynJ9C66
+ MovDfzfoHgeZjr7mlrPIe2pWq2jCEPeY78WrnYJRmQsWiDSVC
+X-Received: by 2002:ad4:4701:0:b0:68f:e80f:a285 with SMTP id
+ qb1-20020ad44701000000b0068fe80fa285mr4389942qvb.59.1709714962708; 
+ Wed, 06 Mar 2024 00:49:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGXXt7g49553qDxBaXIb5PMYKCn39FYmgRRyLRibdFikJdErx+9f2puuLmRlWjkgI0Z1LOsFg==
+X-Received: by 2002:ad4:4701:0:b0:68f:e80f:a285 with SMTP id
+ qb1-20020ad44701000000b0068fe80fa285mr4389927qvb.59.1709714962256; 
+ Wed, 06 Mar 2024 00:49:22 -0800 (PST)
+Received: from [192.168.176.20] (103-200-156-095.ip-addr.knet-kl.de.
+ [95.156.200.103]) by smtp.gmail.com with ESMTPSA id
+ dw19-20020a0562140a1300b0068fcaa599f6sm7089237qvb.67.2024.03.06.00.49.20
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 06 Mar 2024 00:49:21 -0800 (PST)
+Message-ID: <77587bec-7fe9-4337-b70b-3dff9ea6499f@redhat.com>
+Date: Wed, 6 Mar 2024 09:49:19 +0100
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: nC6nWwTPGh5CiDOR2QFScXyp6Mkqdl/WW5SLHnMHzAwrY4YovB2nRnnn+GrRki4zF3NVduXL7sIhgPcFIUxDwDtIFOIouYexgczsE/gLtI5zxoUXl4wigWKBP1RvQEXT5bDgvZvv4OvMmf12rBlEGFWX+Y9pH0CqfFVKwHPjcbTu0JCsrKKJnx71CWntRrP0X3URNSNfruqZiaMN3ZcajdQ2UvfJHtdI20/mpHrmXb/FwRL3X294JXTiPfXb7AQkrqgs/2etLZKAWUiPR0gIcPTpRbnmiN8HTwz9USZ1/CN4qyHMvtoCiQ91iyBcjIr5Ob5fuO+6VUHmaS2Ukb8XX/wvuphO7AQMDyxPvQfx8lxfpYIvyLTiPpqze/GJiq3SBM/3svennb2IDw9GA5R9MHZl2mkgvb+bk20C9NsnOuODRJKWqqvvia6gVqW+24r8Ylkzu4ByFr9McSbcqCqZGAgr2Zxcn1hqD9y+nX1qmoy8bJiMTJhvHnmvScO0ayKODLqMa63uF3k9wXqhmwcHDo4PN2wQ1Ydex8zd6KvGVQp0Za2CtQUylbzhoi6jZJOamwhON8SI9+JgWCO0jubl5WJTqk2LDQfN6ADPKARj/FU3vxaLa/oi8H3/cz+gQvJo
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYXPR01MB1584.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 923b64e6-5025-4b0b-0b57-08dc3d7d4102
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 01:32:15.0283 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WZLl9f/welfepoe0N94gcyqkMy161LRyKD8x/buQxsLcOrhUfYYWMIw5tSlYMsl6M9d3rnqgqUZoH/CoKpx6tIWTGE8D7S5gZDevKhKXgWo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6158
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <6dfa210d-1c9a-4888-9408-eccc3068cd2a@redhat.com>
+ <20240305213050.GB44833@pevik>
+From: Dennis Brendel <dbrendel@redhat.com>
+Autocrypt: addr=dbrendel@redhat.com; keydata=
+ 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
+In-Reply-To: <20240305213050.GB44833@pevik>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] libswap.c: Improve calculate swap dev number
+Subject: Re: [LTP] [PATCH v2] munlockall: add test case that verifies memory
+ has been unlocked
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -163,45 +142,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Yang Xu \(Fujitsu\) via ltp" <ltp@lists.linux.it>
-Reply-To: "Yang Xu \(Fujitsu\)" <xuyang2018.jy@fujitsu.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, all,
+Hi Petr,
 
+Thank you very much for your feedback! I'll send a v3 which considers your
+suggestions.
 
-> Hi Wei, all,
+Dennis
+
+On 3/5/24 22:30, Petr Vorel wrote:
+> Hi Dennis,
 > 
-> thanks, merged!
+> Generally LGTM, thanks!
 > 
-> FYI swapon03 with this patch still fails on SLES 12-SP5 (4.12 based kernel):
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 > 
-> tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-> swapon03.c:55: TFAIL: swapon(filename, 0) failed: EPERM (1)
-> swapon03.c:55: TFAIL: swapon(filename, 0) failed: EPERM (1)
+> you should also add test into .gitignore and to some file in runtest/ (in this
+> case into runtest/syscalls), if we don't simply replace your test with munlockall01.c
+> as Cyril suggested (I would also vote for replacing it).
 > 
-> But that's likely fails even without the patch (going to verify older SLES
-> releases).
+> FYI you can have look for what we check:
+> 
+> https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist
+> 
+>> Changes to v1:
+> 
+>> - use a docparse comment
+>> - use tabs for indentation
+>> - report broken test and exit if any preparation/confirmation fails
+>>   by using tst_brk(TBROK, ...)
+>> - fix further violations reported by `make check`
+> 
+>> I did not yet replace munlockall01.c because I am not familiar with
+> I guess Cyril meant just to replace munlockall01.c with what you wrote.
+> +1 for this, there is no point to keep original munlockall01.c.
+> And because you replace, you can delete the original copyright and can use
+> GPL-2.0-or-later (original test was GPL v2 only).
+> 
+>> that (legacy?) syntax and why uclinux needs special handling.
+> 
+> uclinux is for nommu, we don't support it in new API (and nobody from the
+> community standup for the support), it can be just deleted.
+> 
+>> ---
+>>  .../kernel/syscalls/munlockall/munlockall02.c | 51 +++++++++++++++++++
+>>  1 file changed, 51 insertions(+)
+>>  create mode 100644 testcases/kernel/syscalls/munlockall/munlockall02.c
+> 
+>> diff --git a/testcases/kernel/syscalls/munlockall/munlockall02.c b/testcases/kernel/syscalls/munlockall/munlockall02.c
+>> new file mode 100644
+>> index 000000000..06f781d86
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/munlockall/munlockall02.c
+>> @@ -0,0 +1,51 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright Red Hat
+>> + * Author: Dennis Brendel <dbrendel@redhat.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Verify that munlockall(2) unlocks all previously locked memory
+>> + */
+>> +
+>> +#include <sys/mman.h>
+>> +
+>> +#include "tst_test.h"
+>> +
+>> +static void verify_munlockall(void)
+>> +{
+>> +	size_t size = 0;
+>> +
+>> +	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
+>> +
+>> +	if (size != 0UL)
+>> +		tst_brk(TBROK, "Locked memory after init should be 0 but is "
+>> +			       "%ld", size);
+> nit: I would not split string (kernel source code also relaxed to 100 chars
+> instead of 8O).
+> 
+>> +
+>> +	if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0)
+>> +		tst_brk(TBROK, "Could not lock memory using mlockall()");
+> Maybe use tst_brk(TBROK | TERRNO, to get errno printed?
+>> +
+>> +	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
+>> +
+>> +	if (size == 0UL)
+>> +		tst_brk(TBROK, "Locked memory after mlockall() should be "
+>> +			       "greater than 0, but is %ld", size);
+> I suppose < 0 really means no memory locked, thus really safe to quit before
+> munlockall(), right?
+>> +
+>> +	if (munlockall() != 0)
+>> +		tst_brk(TBROK, "Could not unlock memory using munlockall()");
+> Also here use TBROK | TERRNO ?
+>> +
+>> +	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &size);
+>> +
+>> +	if (size != 0UL) {
+>> +		tst_res(TFAIL, "Locked memory after munlockall() should be 0 "
+>> +			       "but is %ld", size);
+> nit: also here I would join string to single line (still below 100 chars).
+>> +	} else {
+>> +		tst_res(TPASS, "Test passed");
+> nit maybe:
+> 		tst_res(TPASS, "Memory successfully locked and unlocked");
 > 
 > Kind regards,
 > Petr
+> 
+>> +	}
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = verify_munlockall,
+>> +};
+> 
 
-I guess SLES 12-SP5 has backported some patch that modified kernel 
-constant MAX_SWAPFILES value[1]. But ltp doesn't add fallback for SLES 
-like I did for RHEL9.
-
-I think you can paste your kernel code(include/linux/swap.h), then you 
-or we can figure out what cause this failure.
-
-[1]https://github.com/linux-test-project/ltp/commit/c1b8c011e447088b08787462e0c2ed50cd8c43f3
-
-Best Regards
-Yang Xu
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
