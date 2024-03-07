@@ -4,154 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F411FC54798
-	for <ltp@archiver.kernel.org>; Thu,  7 Mar 2024 16:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56E4FC54E4A
+	for <ltp@archiver.kernel.org>; Thu,  7 Mar 2024 23:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709853698; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=xe4xkAqA4i8HA+SwVzYQWwPcCHD9ySIKgD7Vj+/cylo=;
+ b=IbAAd3fKnR7rwK9mu4y6PUhvFOCmDpUfH/aQ8wztxbse1GGyTJBt4ZBIlmgQdxIVqXmIY
+ QlcCK7v1EYHrbNv24OkTYBPJjB1AmtiiNNnxlWTG9heIahr6NU8cHvxl8VFVflp1gBNB/h/
+ 8t/JYUMotLULkWr84gKfDXVd0dHVd3Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 127763D0019
-	for <ltp@archiver.kernel.org>; Thu,  7 Mar 2024 17:56:10 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3C29D3D0BC9
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 00:21:38 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 703DC3C08BD
- for <ltp@lists.linux.it>; Thu,  7 Mar 2024 17:55:53 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 401F33C3320
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 00:21:16 +0100 (CET)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4176614052D1
- for <ltp@lists.linux.it>; Thu,  7 Mar 2024 17:55:51 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 48D8F3FA5C;
- Thu,  7 Mar 2024 15:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709824715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3aUig5JVvtwgomybNHc9Ehep4mYq9vn9Ucbiginc8bk=;
- b=yZrfpBOf0Pt2Ii1DaKBAepGRCV3n4V1o0zXD/le0m36yhuZAoy+XjLZbTnMgInNjjI8Fxo
- lW4lLNuUIrul427DrZjLVztunxz5IlvNC/1827Pv/toi4KcfJsUZuu+/RYrMpPBzk/yBht
- ulFOCAPKTTMpcu34HX1l/QGdLfNSqcg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709824715;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3aUig5JVvtwgomybNHc9Ehep4mYq9vn9Ucbiginc8bk=;
- b=7WwICVJPbALCWSFSwBAelTmOj90bLqV3ycUKtty2b2WAEkZDSTwTwsHZUSbKvYXa4Aw/g/
- E72aAk4U2TlBtZBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709824715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3aUig5JVvtwgomybNHc9Ehep4mYq9vn9Ucbiginc8bk=;
- b=yZrfpBOf0Pt2Ii1DaKBAepGRCV3n4V1o0zXD/le0m36yhuZAoy+XjLZbTnMgInNjjI8Fxo
- lW4lLNuUIrul427DrZjLVztunxz5IlvNC/1827Pv/toi4KcfJsUZuu+/RYrMpPBzk/yBht
- ulFOCAPKTTMpcu34HX1l/QGdLfNSqcg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709824715;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3aUig5JVvtwgomybNHc9Ehep4mYq9vn9Ucbiginc8bk=;
- b=7WwICVJPbALCWSFSwBAelTmOj90bLqV3ycUKtty2b2WAEkZDSTwTwsHZUSbKvYXa4Aw/g/
- E72aAk4U2TlBtZBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FC3E136C7;
- Thu,  7 Mar 2024 15:18:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1Sk+D8va6WUJawAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Thu, 07 Mar 2024 15:18:35 +0000
-Message-ID: <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
-Date: Thu, 7 Mar 2024 16:18:35 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3788B1A0146F
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 00:21:15 +0100 (CET)
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-2d208be133bso2449381fa.2
+ for <ltp@lists.linux.it>; Thu, 07 Mar 2024 15:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1709853674; x=1710458474; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=H0fEYqCcaevbk/SRDWQxYm+qLgmqwkSDlSlDe0Q9AZs=;
+ b=QikWXMkR4rGw+NDwg7A6ZFTBId8ext3pC8joDDhfQNDrv1vmLaSNX2s4tSoLRkLjP8
+ yqgEp1tlYGPiKTwgeDTxedmXr22Fn/jFCtcd3dZa0tVkNyPXzBH599xmwyT9Je9Fqadh
+ HdTEAWOBbyB3zeyx/R4LJvG5dvqCe1+9xScLafkjwLfH8TV1/+KeqKy/xG8/+NVdZ5rd
+ Xbb7CyvrWRSX4BoFu8OFcFXclXfVignu5ihxtZQE/tN8h2HuYQx3timsoNjjgp6wvhfQ
+ Lkz58XATWuw9qsJdPoQ+OnEfZtrzhUcBnNpiwg+LyfwNnOQ5Ux3JYX735+/+XdEmGoFA
+ kAIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1709853674; x=1710458474;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=H0fEYqCcaevbk/SRDWQxYm+qLgmqwkSDlSlDe0Q9AZs=;
+ b=tH+EzrshpPAIsaLEoXqWjj1HyXH3XiPKINGr3N3bYPhlYuVuVC+2bngi267u1Me6p/
+ pIFJ1hHneKSqEBkbPQk5B705vVMkEY/6D4KUROuyyCFmWUDi6nLqFPNTfY2z1e+5h+w3
+ nUxZPueip+/0SsgreUX/bUcqW6jrn/kvDjbZ4bS363hwZHAuw0Ey5cP0nMl9+AdADVsk
+ lla1YQl7iQNDWdRp/mRVIC7qtV5F0Km6JCpOEz5q7ViWNhWNZ68qQ31spTI/gkn2Y/QR
+ IFIYYQp09eNcfR1K26BqJOCLXq+6k6Li060QgZzn3L1BQEJOoKknoJHtMlpVFdfPJN8B
+ x33g==
+X-Gm-Message-State: AOJu0Yz7gNJZUkm4qFJ2RSIafeLb6I20SCdaojGrCmL1dE6rZ39+XQxs
+ UQGJ3Pd93BB+eA/PXFM5D0N9pVP4ebixlpzd2jV77YtQhZu1h4plPJvLQst60XE3PjSWPd4O2xQ
+ =
+X-Google-Smtp-Source: AGHT+IG2e5BmEpj1nKHkknxGMgNKWeO2qAB+fKVLE5c1MLYEzlstQE7NRewdbVwVTUlWo2bI/xxo9A==
+X-Received: by 2002:a05:651c:2113:b0:2d2:329f:7a7e with SMTP id
+ a19-20020a05651c211300b002d2329f7a7emr2365177ljq.6.1709853674412; 
+ Thu, 07 Mar 2024 15:21:14 -0800 (PST)
+Received: from wegao ([223.72.60.77]) by smtp.gmail.com with ESMTPSA id
+ x189-20020a6263c6000000b006e48d5eb886sm13622198pfb.115.2024.03.07.15.21.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 Mar 2024 15:21:13 -0800 (PST)
+Date: Thu, 7 Mar 2024 18:21:06 -0500
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <ZepL4jcbj6zmc0E1@wegao>
 References: <20240306104609.17141-1-wegao@suse.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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
-In-Reply-To: <20240306104609.17141-1-wegao@suse.com>
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yZrfpBOf;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7WwICVJP
-X-Spamd-Result: default: False [-0.31 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- XM_UA_NO_VERSION(0.01)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- BAYES_HAM(-0.01)[48.98%]; MIME_GOOD(-0.10)[text/plain];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- MID_RHS_MATCH_FROM(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Queue-Id: 48D8F3FA5C
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] chdir01.c: set umask to 0 within setup
 X-BeenThere: ltp@lists.linux.it
@@ -165,81 +91,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-you're trying to fix a vfat mount quirk. We should fix that in the LTP 
-library instead, e.g. by setting umask(0) and then restoring the 
-original value inside safe_mount().
+On Thu, Mar 07, 2024 at 04:18:35PM +0100, Martin Doucha wrote:
+> Hi,
+> you're trying to fix a vfat mount quirk. We should fix that in the LTP
+> library instead, e.g. by setting umask(0) and then restoring the original
+> value inside safe_mount().
 
-On 06. 03. 24 11:46, Wei Gao via ltp wrote:
-> When system's default umask is 0077, this will trigger following issues:
-> chdir01.c:100: TFAIL: nobody: chdir("subdir") returned unexpected value -1: EACCES (13)
+Thanks for your feedback.
+
+For chdir case i just use Petr's below suggestion(Detail info you can check patch link 
+in below):
+
+"2) tests, which set .mount_device = 1 and have more restrictive umask will not
+work. Workaround would be to not use it and mount manually in the setup().
+Or, reset umask with umask(0)."
+
+https://patchwork.ozlabs.org/project/ltp/patch/20240219134845.22171-1-wegao@suse.com/
+
+
+BTW: for similar issues we also do fix within test file in stead of lib such as:
+https://patchwork.ozlabs.org/project/ltp/patch/20240303103105.13401-1-wegao@suse.com/
+https://patchwork.ozlabs.org/project/ltp/patch/20240301102347.3035546-1-liwang@redhat.com/
+
+
+> -- 
+> Martin Doucha   mdoucha@suse.cz
+> SW Quality Engineer
+> SUSE LINUX, s.r.o.
+> CORSO IIa
+> Krizikova 148/34
+> 186 00 Prague 8
+> Czech Republic
 > 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->   testcases/kernel/syscalls/chdir/chdir01.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-> index d50a8f50c..97a707199 100644
-> --- a/testcases/kernel/syscalls/chdir/chdir01.c
-> +++ b/testcases/kernel/syscalls/chdir/chdir01.c
-> @@ -56,12 +56,15 @@ static struct test_case {
->   
->   static void setup(void)
->   {
-> +	mode_t old_umask = umask(0);
-> +
-> +	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);Hi, 
-> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, 0);
-> +
->   	char *cwd;
->   	int fd;
->   	struct stat statbuf;
->   
-> -	umask(0);
-> -
->   	cwd = SAFE_GETCWD(NULL, 0);
->   	workdir = SAFE_MALLOC(strlen(cwd) + strlen(MNTPOINT) + 2);
->   	sprintf(workdir, "%s/%s", cwd, MNTPOINT);
-> @@ -89,6 +92,7 @@ static void setup(void)
->   
->   	if (!ltpuser)
->   		ltpuser = SAFE_GETPWNAM(TESTUSER);
-> +	umask(old_umask);
->   }
->   
->   static void check_result(const char *user, const char *name, int retval,
-> @@ -146,13 +150,14 @@ static void cleanup(void)
->   {
->   	SAFE_CHDIR("..");
->   	free(workdir);
-> +	SAFE_UMOUNT(MNTPOINT);
->   }
->   
->   static struct tst_test test = {
->   	.needs_root = 1,
-> -	.mount_device = 1,
->   	.mntpoint = MNTPOINT,
->   	.all_filesystems = 1,
-> +	.needs_device = 1,
->   	.test = run,
->   	.tcnt = ARRAY_SIZE(testcase_list),
->   	.setup = setup,
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
