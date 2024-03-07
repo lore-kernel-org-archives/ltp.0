@@ -4,102 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AB70C5475B
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 21:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0B7C5475B
+	for <ltp@archiver.kernel.org>; Thu,  7 Mar 2024 02:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709780145; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=AcMQ7CrmEeLQQxlh04yT2VNY7xyVJ2+DEC6aeDF6G+U=;
+ b=rVPjp5KbjCFRMq+DPlpfpDaGgfOe/QXq6PMrEIhRTt86zRglLijwu2F38r81X7mJRURx0
+ GLRVk3/NgMGKUvihWCNqS6D7mWsObbPsGEBQnSn1Zc8sZoy3XEp2G9DZfdhFDvEY1hCsyO7
+ 2OXSKS5gbw72sBcEdoIGPPEzRtGaDIQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 174A03D187D
-	for <ltp@archiver.kernel.org>; Wed,  6 Mar 2024 22:48:50 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 0A9E23CEC25
+	for <ltp@archiver.kernel.org>; Thu,  7 Mar 2024 03:55:45 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F65E3C2A69
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 22:48:33 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 51C8F3C3320
+ for <ltp@lists.linux.it>; Thu,  7 Mar 2024 03:55:22 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=baidu.com (client-ip=111.202.115.85; helo=baidu.com;
+ envelope-from=xuwenjie04@baidu.com; receiver=lists.linux.it)
+Received: from baidu.com (mx20.baidu.com [111.202.115.85])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F3D21200C34
- for <ltp@lists.linux.it>; Wed,  6 Mar 2024 22:48:32 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 73E0917043;
- Wed,  6 Mar 2024 21:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709761711;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=srLtQqcAjJTZB/z5Udtpwv8pkFrXUNtX9Je+JWlNHxs=;
- b=JDEb4teZufacUizeJ96QFLeAE3o9yr14N4YCOc800Y3nd9ZpPVAA4/bz5MT5kDFCnSBLud
- 3jaYbg/Xq8GRbliWqVbvUnM3WsFniB1lMSqxKVBPSgKwwVKuyXVcUuBcupNxgsO2hVqU4H
- F/a7vBR/NGy1ArAiFzkvuypyNbqfoKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709761711;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=srLtQqcAjJTZB/z5Udtpwv8pkFrXUNtX9Je+JWlNHxs=;
- b=g2OVE3EU6k2yGzVcOksNHeaxtCZhjhCei2M/FGA4u3UdGH6oxX4WlHIZBTVGCh0IrJ+wXG
- NQo7fK08i3BL/SCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709761711;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=srLtQqcAjJTZB/z5Udtpwv8pkFrXUNtX9Je+JWlNHxs=;
- b=JDEb4teZufacUizeJ96QFLeAE3o9yr14N4YCOc800Y3nd9ZpPVAA4/bz5MT5kDFCnSBLud
- 3jaYbg/Xq8GRbliWqVbvUnM3WsFniB1lMSqxKVBPSgKwwVKuyXVcUuBcupNxgsO2hVqU4H
- F/a7vBR/NGy1ArAiFzkvuypyNbqfoKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709761711;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=srLtQqcAjJTZB/z5Udtpwv8pkFrXUNtX9Je+JWlNHxs=;
- b=g2OVE3EU6k2yGzVcOksNHeaxtCZhjhCei2M/FGA4u3UdGH6oxX4WlHIZBTVGCh0IrJ+wXG
- NQo7fK08i3BL/SCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C179D13A79;
- Wed,  6 Mar 2024 21:48:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id DaX4Ja7k6GXGTgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 06 Mar 2024 21:48:30 +0000
-Date: Wed, 6 Mar 2024 22:48:21 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20240306214821.GA107948@pevik>
-References: <20240121161159.4106646-1-ruansy.fnst@fujitsu.com>
- <20240305212410.18978-1-akumar@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 232A7600EDC
+ for <ltp@lists.linux.it>; Thu,  7 Mar 2024 03:55:18 +0100 (CET)
+To: <pvorel@suse.cz>
+Date: Thu, 7 Mar 2024 10:55:07 +0800
+Message-ID: <20240307025507.55504-1-xuwenjie04@baidu.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240306124638.GB746976@pevik>
+References: <20240306124638.GB746976@pevik>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240305212410.18978-1-akumar@suse.de>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-2.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Originating-IP: [10.127.73.8]
+X-ClientProxiedBy: BJHW-Mail-Ex06.internal.baidu.com (10.127.64.16) To
+ BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43)
+X-FEAS-Client-IP: 172.31.51.13
+X-FE-Policy-ID: 15:10:21:SYSTEM
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] getxattr04,
- 05: Change to docparse comment and typo fixes
+Subject: Re: [LTP] [PATCH] pipe/pipe15.c: Adjust fd check for pipe creation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,76 +60,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Wenjie Xu via ltp <ltp@lists.linux.it>
+Reply-To: Wenjie Xu <xuwenjie04@baidu.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh, Shiyang,
+> > > HI Wenjie, Marius,
 
-I merged with following improvements below. Thanks!
+> > > > A pipe occupies 2 fds, and considering 3 standard fds,
+> > > > we should compare rlim_max with such *2+3 calculated value
+> > > > to verify whether the maximum file descriptor configuration
+> > > > of the current machine is sufficient.
 
-> +++ b/testcases/kernel/syscalls/getxattr/getxattr04.c
-> @@ -4,13 +4,15 @@
->   * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
->   */
+> > > Indeed, 1024*2+3 is the lowest number which passes with non-default ulimit:
 
-> -/*
-> +/*\
-> + * [Description]
-> + *
->   * This is a regression test for the race between getting an existing
->   * xattr and setting/removing a large xattr.  This bug leads to that
->   * getxattr() fails to get an existing xattr and returns ENOATTR in xfs
->   * filesystem.
->   *
-> - * Thie bug has been fixed in:
-> + * This bug has been fixed in:
->   *
->   * commit 5a93790d4e2df73e30c965ec6e49be82fc3ccfce
->   * Author: Brian Foster <bfoster@redhat.com>
-Just single line:
-* 5a93790d4e2d ("xfs: remove racy hasattr check from attr ops")
+> > > ulimit -n $((1024*2+3)) && ./pipe15
 
-> diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
-> index f12e2f813..069e2b3f9 100644
-> --- a/testcases/kernel/syscalls/getxattr/getxattr05.c
-> +++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
-> @@ -4,12 +4,14 @@
->   * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
->   */
+> > > Therefore I merged, thank you!
 
-> -/*
-> - * Description:
-> - * 1) Witout a user namespace, getxattr(2) should get same data when
-> - *    acquiring the value of system.posix_acl_access twice.
-> - * 2) With/Without mapped root UID in a user namespaces, getxattr(2) should
-> - *    get same data when acquiring the value of system.posix_acl_access twice.
-> +/*\
-> + * [Description]
-> + *
-> + * This test verifies that:
-Here still needs to be empty line, I haven't managed to send v2 of the change
-[1] which would allow to format it without empty line.
+> > > BTW I wonder how did you encounter this?
 
-> + * - Without a user namespace, getxattr(2) should get same data when
-> + *   acquiring the value of system.posix_acl_access twice.
-> + * - With/Without mapped root UID in a user namespaces, getxattr(2) should
-> + *   get same data when acquiring the value of system.posix_acl_access twice.
->   *
->   * This issue included by getxattr05 has been fixed in kernel:
->   * '82c9a927bc5d ("getxattr: use correct xattr length")'
-no quotes:
-    * 82c9a927bc5d ("getxattr: use correct xattr length")
+> > In my test case, the system ulimit is set to 10240,
+> > and the calculated pipe_count is also 10240, causing
+> > the EMFILE failure when creating the pipe below.
 
-+ I dared to use a 12 chars hash in "linux-git" (originally 11).
+> +1, thanks for info.
+> Is it some embedded distro or a regular widely used distro?
+> I'm just curious what kernels are tested by LTP and whether where the
+> non-default setup comes from.
 
-Kind regards,
-Petr
+> Kind regards,
+> Petr
 
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=388930&state=*
+This may come from the modification of the kernel and image 
+we maintain ourselves. The basic image is from CentOS 7.6.1810,
+and the kernel based on version 5.10.
+
+Regards,
+Xu Wenjie
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
