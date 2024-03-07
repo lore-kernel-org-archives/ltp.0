@@ -4,67 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB8AAC5475B
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 04:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FA47C5475B
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 05:32:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 456223D1D93
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 05:53:27 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 8B0463C803F
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 06:32:25 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D74A3D1868
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 05:52:42 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id BD7423CD4EE
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 06:32:07 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D7C976012A8
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 05:52:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1709873560;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1B889601A6C
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 06:32:06 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6EF1737857;
+ Thu,  7 Mar 2024 19:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1709840436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YO4g/X078Rgx0yR8fIjPrKlrZsdBctydie1yQ8x30DA=;
- b=CDUviz6MhK8M40F6V7eIhFsQ5pY0vEIbA0wXOMtBFzeCp9bdTiy+2iF7lhq2DhBaGMTAR8
- YNa2Fk40JchFh9gwE9SSGOeBf/D5O7OCeq5MrX9UKJ4km6Z06xDSVO9ipORQ6yajoNJ0wc
- qRhntNCqbRAcww4WVxn/xFqES/NnSag=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-203-1CK13DKxMoqJIZBfX5O6Ww-1; Thu, 07 Mar 2024 23:52:38 -0500
-X-MC-Unique: 1CK13DKxMoqJIZBfX5O6Ww-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
+ bh=DF+eMQXer21EDyUtHitR6FYwmHsrDR7cDDhkpId93nY=;
+ b=Jj9HJbsXi/UBfzEN6dDMvL0c+DIa3a1Zuo4OESmke+Q9PQ1dF703s16S1WoVv+DVKVDE0n
+ Rct7jIb8+9KE5ngCU4SwljHqbLNwd/rjqMYpeBdtas6yMLIF/7CWHW40nb+8f6gJFpLUl7
+ ejTdLbl49UtGwIBjT5lDDePqZDfGV9Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1709840436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DF+eMQXer21EDyUtHitR6FYwmHsrDR7cDDhkpId93nY=;
+ b=fDQVONFcebNizkOE7yWumOApobmoPx/sj02g89HdpUdM1/DT3Wuwr/irz/V0uxHn4rxax2
+ 2WZ8qsKO7x8iIEBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1709840436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DF+eMQXer21EDyUtHitR6FYwmHsrDR7cDDhkpId93nY=;
+ b=Jj9HJbsXi/UBfzEN6dDMvL0c+DIa3a1Zuo4OESmke+Q9PQ1dF703s16S1WoVv+DVKVDE0n
+ Rct7jIb8+9KE5ngCU4SwljHqbLNwd/rjqMYpeBdtas6yMLIF/7CWHW40nb+8f6gJFpLUl7
+ ejTdLbl49UtGwIBjT5lDDePqZDfGV9Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1709840436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DF+eMQXer21EDyUtHitR6FYwmHsrDR7cDDhkpId93nY=;
+ b=fDQVONFcebNizkOE7yWumOApobmoPx/sj02g89HdpUdM1/DT3Wuwr/irz/V0uxHn4rxax2
+ 2WZ8qsKO7x8iIEBg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A6834851780
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 04:52:38 +0000 (UTC)
-Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
- [10.66.145.229])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id BFEF3492BDC
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 04:52:37 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Fri,  8 Mar 2024 12:52:30 +0800
-Message-Id: <20240308045230.3106549-3-liwang@redhat.com>
-In-Reply-To: <20240308045230.3106549-1-liwang@redhat.com>
-References: <20240308045230.3106549-1-liwang@redhat.com>
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 79768132A4;
+ Thu,  7 Mar 2024 19:40:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id +2q8GTMY6mVBIgAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Thu, 07 Mar 2024 19:40:35 +0000
+Date: Thu, 7 Mar 2024 20:40:33 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240307194033.GA198717@pevik>
+References: <20240307074019.766020-1-dbrendel@redhat.com>
+ <CAEemH2fTCB8SB85DY1NUVsFK_hSmAXqaFHtsWngU7hPdkcHtMw@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fTCB8SB85DY1NUVsFK_hSmAXqaFHtsWngU7hPdkcHtMw@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.25 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-1.75)[93.48%]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] stack_clash: make use of tst_kcmdline_parse
+Subject: Re: [LTP] [PATCH v4] munlockall: re-write test case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,56 +109,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/cve/stack_clash.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Hi all,
 
-diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
-index 56b970a1b..ae70dd866 100644
---- a/testcases/cve/stack_clash.c
-+++ b/testcases/cve/stack_clash.c
-@@ -44,6 +44,7 @@
- #include <stdlib.h>
- 
- #include "tst_test.h"
-+#include "tst_kconfig.h"
- #include "tst_safe_stdio.h"
- #include "lapi/mmap.h"
- 
-@@ -272,19 +273,16 @@ void do_child(void)
- 
- void setup(void)
- {
--	char buf[4096], *p;
-+	char *p;
- 
- 	page_size = sysconf(_SC_PAGESIZE);
- 	page_mask = ~(page_size - 1);
- 
--	buf[4095] = '\0';
--	SAFE_FILE_SCANF("/proc/cmdline", "%4095[^\n]", buf);
-+	struct tst_kcmdline_param params = TST_KCMDLINE_INIT("stack_guard_gap");
-+	tst_kcmdline_parse(&params, 1);
- 
--	if ((p = strstr(buf, "stack_guard_gap=")) != NULL) {
--		if (sscanf(p, "stack_guard_gap=%ld", &GAP_PAGES) != 1) {
--			tst_brk(TBROK | TERRNO, "sscanf");
--			return;
--		}
-+	if (params.value[0] != '\0') {
-+		GAP_PAGES= atol(params.value);
- 		tst_res(TINFO, "stack_guard_gap = %ld", GAP_PAGES);
- 	}
- 
--- 
-2.40.1
+thanks a lot, merged!
 
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
