@@ -4,62 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38388C54798
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 01:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAFFCC54798
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 02:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1709865225; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=4EO0iEVaHdhgXUHy6DCLl/TnaZJTwRqov3alct11q4o=;
+ b=douMi8pLMDredHL2UwlZT5GnuDWZWxNWs1gsOltlw0mWcyweQ7I008tt7OAn7S7grc/5I
+ Z0n2BENZy/Ou/pdVSk0KELtjSqwj1I7/7y7F4YQyO1nMM3oIaxEl2c9yWMdiCjLodU/h2PS
+ qCyB73nRJ28s55S4KWY34OuHDJjAD7I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A0D3B3D1CCF
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 02:44:06 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 18A423D1C19
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 03:33:45 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 631F13CC129
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 02:43:51 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1D9D03CB8D1
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 03:33:23 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A25B9140077F
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 02:43:49 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 414235D851;
- Thu,  7 Mar 2024 21:33:37 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 188AE132A4;
- Thu,  7 Mar 2024 21:33:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id oc10BLEy6mXaNQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Thu, 07 Mar 2024 21:33:37 +0000
-Date: Thu, 7 Mar 2024 22:33:35 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240307213335.GA211890@pevik>
-References: <20240306104609.17141-1-wegao@suse.com>
- <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C0EC4600A1B
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 03:33:22 +0100 (CET)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-33e672e10cfso589805f8f.0
+ for <ltp@lists.linux.it>; Thu, 07 Mar 2024 18:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1709865201; x=1710470001; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=EiD5vJ99bnsZocl0Vqj+hhjQTzULB58Gf7R/G1e7Blo=;
+ b=REzWjkaihMsU2DjssS0tq6ADtj/VtRfTlASBYEGmqJDlhRHHZTPLjMcLvKAdqck65I
+ 3fc8dDYM6G7E0xa7GTbhkbSSbz13zMjmCyIaWVaMogPaaJfNtmg6yrnqLZUDlwmavzGg
+ kNr9Qbf7n/AV+jVrL+IRTkNR4WD846Ze888Wyz5axlnplv7ZL5oZ4UK/LYbaBdIzBPH+
+ d74I9Wq+aCCRiNqOYjr2KV6DgLxIGT300Efxjm3pP2zQwCs+zCZSw9l/dUb4HyPQALTN
+ euqA4o/dvCsMbi1FmxacDxWs6qyYP9MJNQ3ukdTCkIZtJBBh05vu+V8NK8p9/vFQyG/Z
+ BxlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1709865201; x=1710470001;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=EiD5vJ99bnsZocl0Vqj+hhjQTzULB58Gf7R/G1e7Blo=;
+ b=OVDsuLX9TBH7e7QywzHfVDjFwGZ0jdEUyobmVzitUbhbt+6qA1d8GoUSpVMNae4eD1
+ v95hWL7JUxARu4bP8n1D2pfDc8TD50ABE2KtAsDOpr4YtSIumb3FMzMZAneuPJ6YB4i3
+ WrIGNScPPy0ZSsG1G3WbOfrQWKWlOeJirxwMoPz6h7kayGzDSGYbUydg+BYXI31KgfyN
+ wBIRYHVieGkNwyJ298+qY7KFYTL3OKU7S2FjA7uXrxs8V0033Gqo+RwXYoimUEL68pa1
+ oPTlfBmzBLG7WPhT5bSAD1AMPIEk1NdGoKvIcKRcwTo3BdGNzBN/IaKPGIdzEDPmENcb
+ OU9Q==
+X-Gm-Message-State: AOJu0YxDxtzNR90XiqCLG30M2FsD0JNxIhFRK3794uMD0ljLbUs9hZNm
+ uRf9KYDAAZScmp+GFbox98S8CmYC9sa9yEX3zKSwML9p235pTjBRyyYTRS5p5b3u/rKE+NRLBPQ
+ =
+X-Google-Smtp-Source: AGHT+IHhpmC8526Y7ZQVRsLsdNd/jRWlt7KA+2vnjRV7rh2cuiDiBQe6/S89U9gwcFhdVgqHhRP6Cg==
+X-Received: by 2002:adf:b649:0:b0:33e:1f2a:d88a with SMTP id
+ i9-20020adfb649000000b0033e1f2ad88amr15414620wre.69.1709865201594; 
+ Thu, 07 Mar 2024 18:33:21 -0800 (PST)
+Received: from localhost ([81.95.8.245]) by smtp.gmail.com with ESMTPSA id
+ bx33-20020a5d5b21000000b0033cf4e47496sm216607wrb.51.2024.03.07.18.33.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 Mar 2024 18:33:21 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Thu,  7 Mar 2024 21:33:12 -0500
+Message-Id: <20240308023312.25449-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 414235D851
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] chdir01.c: set umask to 0 within setup
+Subject: [LTP] [PATCH v1] memcontrol03: Using clean page cache to avoid
+ dependency on IO rate
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,90 +89,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin, all,
+Bad IO situation(storage bandwidth ~10MB/sec) will lead background
+writeback has uncertain progress for dirty page. So system can not
+reclaim enough memory for new process and finally lead a unexpected
+OOM.
 
-> Hi,
-> you're trying to fix a vfat mount quirk. We should fix that in the LTP
-> library instead, e.g. by setting umask(0) and then restoring the original
-> value inside safe_mount().
+memcontrol03.c:218: TPASS: Expect: (A/B/E memory.current=0) ~= 0
+memcontrol03.c:116: TPASS: Child 1918 killed by OOM
+memcontrol03.c:224: TPASS: Expect: (A/B memory.current=52588544) ~= 52428800
+memcontrol03.c:129: TFAIL: Expected child 1944 to exit(0), but instead killed by SIGKILL
 
-This makes sense. FYI Wei first tried to adjust umask globally for all tests in
-the do_setup() [1], which I worried it would influence tests.
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/controllers/memcg/memcontrol03.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Later Li fixed problem in cgroup tests [2]. This is obviously more general
-solution, Wei please send a patch for it and to the commit message
-Suggested-by: Martin Doucha <mdoucha@suse.cz>
+diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
+index 9c6c808e0..9903ba82b 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol03.c
++++ b/testcases/kernel/controllers/memcg/memcontrol03.c
+@@ -201,6 +201,7 @@ static void test_memcg_min(void)
+ 		sleep(1);
+ 	}
+ 
++	sync();
+ 	alloc_anon_in_child(trunk_cg[G], MB(148), 0);
+ 
+ 	SAFE_CG_SCANF(trunk_cg[B], "memory.current", "%ld", c);
+@@ -217,6 +218,7 @@ static void test_memcg_min(void)
+ 	TST_EXP_EXPR(values_close(c[2], 0, 1),
+ 		     "(A/B/E memory.current=%ld) ~= 0", c[2]);
+ 
++	sync();
+ 	alloc_anon_in_child(trunk_cg[G], MB(170), 1);
+ 
+ 	SAFE_CG_SCANF(trunk_cg[B], "memory.current", "%ld", c);
+-- 
+2.35.3
 
-While we are fixing issues caused by too restrictive umask (Wei fixed e.g.
-statx07 [3]), just to let you know that some failures are kernel failures (at
-least creat09 which uses all_filesystems, had bug on XFS [4], which got fixed
-in the kernel).
-
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/20240219134845.22171-1-wegao@suse.com/
-[2] https://github.com/linux-test-project/ltp/commit/50626b4a1d01caacd418156ec997853bd4a9fc39
-[3] https://github.com/linux-test-project/ltp/commit/d95f453ac624dc159d3acddb62eadeb9a8215f0e
-[4] https://lore.kernel.org/ltp/62343BF2.1020006@fujitsu.com/
-
-> On 06. 03. 24 11:46, Wei Gao via ltp wrote:
-> > When system's default umask is 0077, this will trigger following issues:
-> > chdir01.c:100: TFAIL: nobody: chdir("subdir") returned unexpected value -1: EACCES (13)
-
-> > Signed-off-by: Wei Gao <wegao@suse.com>
-> > ---
-> >   testcases/kernel/syscalls/chdir/chdir01.c | 11 ++++++++---
-> >   1 file changed, 8 insertions(+), 3 deletions(-)
-
-> > diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-> > index d50a8f50c..97a707199 100644
-> > --- a/testcases/kernel/syscalls/chdir/chdir01.c
-> > +++ b/testcases/kernel/syscalls/chdir/chdir01.c
-> > @@ -56,12 +56,15 @@ static struct test_case {
-> >   static void setup(void)
-> >   {
-> > +	mode_t old_umask = umask(0);
-> > +
-> > +	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);Hi,
-> > +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, 0);
-> > +
-> >   	char *cwd;
-> >   	int fd;
-> >   	struct stat statbuf;
-> > -	umask(0);
-> > -
-> >   	cwd = SAFE_GETCWD(NULL, 0);
-> >   	workdir = SAFE_MALLOC(strlen(cwd) + strlen(MNTPOINT) + 2);
-> >   	sprintf(workdir, "%s/%s", cwd, MNTPOINT);
-> > @@ -89,6 +92,7 @@ static void setup(void)
-> >   	if (!ltpuser)
-> >   		ltpuser = SAFE_GETPWNAM(TESTUSER);
-> > +	umask(old_umask);
-> >   }
-> >   static void check_result(const char *user, const char *name, int retval,
-> > @@ -146,13 +150,14 @@ static void cleanup(void)
-> >   {
-> >   	SAFE_CHDIR("..");
-> >   	free(workdir);
-> > +	SAFE_UMOUNT(MNTPOINT);
-> >   }
-> >   static struct tst_test test = {
-> >   	.needs_root = 1,
-> > -	.mount_device = 1,
-> >   	.mntpoint = MNTPOINT,
-> >   	.all_filesystems = 1,
-> > +	.needs_device = 1,
-> >   	.test = run,
-> >   	.tcnt = ARRAY_SIZE(testcase_list),
-> >   	.setup = setup,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
