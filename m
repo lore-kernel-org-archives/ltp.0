@@ -4,111 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EC40C54798
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 02:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 935C1C54E41
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 04:52:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A329E3D186E
-	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 03:50:09 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C333C3D186E
+	for <ltp@archiver.kernel.org>; Fri,  8 Mar 2024 05:52:54 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35AC43CB8D1
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 03:49:54 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id EF1893CE9A1
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 05:52:39 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 98BF31000D27
- for <ltp@lists.linux.it>; Fri,  8 Mar 2024 03:49:53 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 27ACC6012A8
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 05:52:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1709873557;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=2bmZCMyJ3r1KuNoM+8VN3DinZ01T5lory1u+IW4r3PM=;
+ b=hzzCdixeW6xy/fkcZPlmyCLGgZbjEP9MhYc3Q7Q0OKevU3A+OwY3YazmPRf9SeKVXRcuPJ
+ xHf2WhVxhuX+7XWWIphFPDMd7Ubz0GR220OWGjC1eVVwdxRBJ8yBhtRSX4+UNTRzuqxWYM
+ BlzWpU9KhyERxM7T0hIigps3LU+VAoA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-394-T8lAsqi_NiCfHf0Oz7g0CQ-1; Thu, 07 Mar 2024 23:52:35 -0500
+X-MC-Unique: T8lAsqi_NiCfHf0Oz7g0CQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.10])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B4A2E4DF31;
- Thu,  7 Mar 2024 23:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709852906;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZXJAUF+82/Ak6fT6bYHbFilebLIFYG2d8JRacpZnGqA=;
- b=le6lp15ndSul2Uh9Kz9IDKuDFXhtT6fkEl8B/sOjeziYsun2Wl1DiiX8r4NRPF8+WFqwZd
- /jan+BIpx37ShI+7iIHMvoHilGyrkfFNm1cpOiQR49gSX/+hQbnsESlix6MSd4dhaiRXiB
- YzWrYsLT+fP2spBfWmwSIMiK+1rwr+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709852906;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZXJAUF+82/Ak6fT6bYHbFilebLIFYG2d8JRacpZnGqA=;
- b=7Bg2EgJmVYwvH0+UmR+D14E4O25j/c5ipq9Sv4ReZ+pigYJtK3GmO+moJUifcEBKVVbmnj
- XNmqGb+XyRHxAwCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1709852905;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZXJAUF+82/Ak6fT6bYHbFilebLIFYG2d8JRacpZnGqA=;
- b=pwpBTAd06KL9pkOefHUCiRT9rRJT341SVsuU4NwtNGmP44tDtyOm8Dt5YVVfxbtjFX69BU
- ueVQbM2yeoYVu4MAf6JFbG2bAMr2KJ0z+pIQd99g9gN6zwu/JUPIoGCvXAQQytR45SgFXr
- BcuSxHgxH0F+jBaf4dTOFKaRCtgsZZo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1709852905;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZXJAUF+82/Ak6fT6bYHbFilebLIFYG2d8JRacpZnGqA=;
- b=498GR23qGlu+DB2tzZ1Sv+5gna7qhWfUd63beyFDHn7fdRALIlNczy+yimxTV7V9d0EUve
- ndUZhuFrBu5a4ZDg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B18413997;
- Thu,  7 Mar 2024 23:08:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id B8tTIOlI6mXIRgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Thu, 07 Mar 2024 23:08:25 +0000
-Date: Fri, 8 Mar 2024 00:08:20 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>, Wei Gao <wegao@suse.com>,
- ltp@lists.linux.it, Li Wang <liwang@redhat.com>
-Message-ID: <20240307230820.GA225601@pevik>
-References: <20240306104609.17141-1-wegao@suse.com>
- <6285aaad-79ca-4d7c-8be0-6d846d165df2@suse.cz>
- <20240307213335.GA211890@pevik>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 226528007A2
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 04:52:35 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 3ACA0492BDC
+ for <ltp@lists.linux.it>; Fri,  8 Mar 2024 04:52:33 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Fri,  8 Mar 2024 12:52:28 +0800
+Message-Id: <20240308045230.3106549-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240307213335.GA211890@pevik>
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pwpBTAd0;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=498GR23q
-X-Spamd-Result: default: False [0.49 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[42.72%];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Rspamd-Queue-Id: B4A2E4DF31
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] chdir01.c: set umask to 0 within setup
+Subject: [LTP] [PATCH 1/3] kconfig: add funtion to parse /proc/cmdline
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,45 +74,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Martin, all,
+In tst_kconfig.c, it adds the tst_kcmdline_parse function to
+read and parse command-line parameters from /proc/cmdline.
+This function tokenizes the command line, matches keys with
+the provided parameter array, and stores the associated values.
+The update enhances the testing framework's ability to handle
+kernel configuration parameters dynamically.
 
-> > Hi,
-> > you're trying to fix a vfat mount quirk. We should fix that in the LTP
-> > library instead, e.g. by setting umask(0) and then restoring the original
-> > value inside safe_mount().
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/tst_kconfig.h | 23 +++++++++++++++++++++++
+ lib/tst_kconfig.c     | 41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
-> This makes sense. FYI Wei first tried to adjust umask globally for all tests in
-> the do_setup() [1], which I worried it would influence tests.
+diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+index 8b24a8380..0ecf2c0d1 100644
+--- a/include/tst_kconfig.h
++++ b/include/tst_kconfig.h
+@@ -64,4 +64,27 @@ void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
+  */
+ int tst_kconfig_check(const char *const kconfigs[]);
+ 
++/**
++ * Macro to initialize a tst_kcmdline_param structure with a specified parameter
++ * name and an empty value. This is useful for setting up an array of parameter
++ * structures before parsing the actual command-line arguments.
++ */
++#define TST_KCMDLINE_INIT(paraname) { \
++	.key = paraname, \
++	.value = "" \
++}
++
++/* Structure for storing command-line parameter key and its corresponding value */
++struct tst_kcmdline_param {
++	const char *key;
++	char value[128];
++};
++
++/**
++ * Parses command-line parameters from /proc/cmdline and stores them in params array
++ * params: The array of tst_kcmdline_param structures to be filled with parsed key-value pairs
++ * params_len: The length of the params array, indicating how many parameters to parse
++ */
++void tst_kcmdline_parse(struct tst_kcmdline_param params[], size_t params_len);
++
+ #endif	/* TST_KCONFIG_H__ */
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 595ea4b09..f79dea5c6 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -565,3 +565,44 @@ char tst_kconfig_get(const char *confname)
+ 
+ 	return var.choice;
+ }
++
++void tst_kcmdline_parse(struct tst_kcmdline_param params[], size_t params_len) {
++	FILE *proc_cmdline;
++	char cmdline[4096];
++	char *token, *key, *value;
++
++	proc_cmdline = fopen("/proc/cmdline", "r");
++	if (proc_cmdline == NULL)
++		tst_brk(TBROK | TERRNO, "Failed to open /proc/cmdline for reading");
++
++	if (fgets(cmdline, sizeof(cmdline), proc_cmdline) == NULL) {
++		fclose(proc_cmdline);
++
++		if (feof(proc_cmdline))
++			tst_brk(TBROK, "End-of-File reached on /proc/cmdline without reading any data");
++		else
++			tst_brk(TBROK | TERRNO, "Failed to read from /proc/cmdline");
++	}
++	fclose(proc_cmdline);
++
++	token = strtok(cmdline, " ");
++	while (token != NULL) {
++		key = token;
++		value = strchr(token, '=');
++
++		if (value != NULL) {
++			/* Split the token into key and value at '=' */
++			*value++ = '\0';
++
++			for (size_t i = 0; i < params_len; i++) {
++				if (strcmp(params[i].key, key) == 0) {
++					strncpy(params[i].value, value, sizeof(params[i].value) - 1);
++					params[i].value[sizeof(params[i].value) - 1] = '\0';
++					break;
++				}
++			}
++		}
++
++		token = strtok(NULL, " ");
++	}
++}
+-- 
+2.40.1
 
-Also, it would be good to update:
-
-https://github.com/linux-test-project/ltp/wiki/C-Test-API#21-umask
-
-Kind regards,
-Petr
-
-> Later Li fixed problem in cgroup tests [2]. This is obviously more general
-> solution, Wei please send a patch for it and to the commit message
-> Suggested-by: Martin Doucha <mdoucha@suse.cz>
-
-> While we are fixing issues caused by too restrictive umask (Wei fixed e.g.
-> statx07 [3]), just to let you know that some failures are kernel failures (at
-> least creat09 which uses all_filesystems, had bug on XFS [4], which got fixed
-> in the kernel).
-
-> Kind regards,
-> Petr
-
-> [1] https://lore.kernel.org/ltp/20240219134845.22171-1-wegao@suse.com/
-> [2] https://github.com/linux-test-project/ltp/commit/50626b4a1d01caacd418156ec997853bd4a9fc39
-> [3] https://github.com/linux-test-project/ltp/commit/d95f453ac624dc159d3acddb62eadeb9a8215f0e
-> [4] https://lore.kernel.org/ltp/62343BF2.1020006@fujitsu.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
