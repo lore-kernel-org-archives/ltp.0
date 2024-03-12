@@ -4,71 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88FD0C54E58
-	for <ltp@archiver.kernel.org>; Mon, 11 Mar 2024 16:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D111C54E60
+	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 12:08:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 773543CFD7B
-	for <ltp@archiver.kernel.org>; Mon, 11 Mar 2024 17:09:49 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6B3A83D0618
+	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 13:08:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EF4C3C803F
- for <ltp@lists.linux.it>; Mon, 11 Mar 2024 17:09:35 +0100 (CET)
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com
- [IPv6:2607:f8b0:4864:20::c31])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D19253CE7C6
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 13:08:38 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=meted@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6184C601BBE
- for <ltp@lists.linux.it>; Mon, 11 Mar 2024 17:09:34 +0100 (CET)
-Received: by mail-oo1-xc31.google.com with SMTP id
- 006d021491bc7-5a1f24cc010so884792eaf.1
- for <ltp@lists.linux.it>; Mon, 11 Mar 2024 09:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1710173373; x=1710778173; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=PILxDYflZgbCo+K0GUIJE4pbycGuy7hz4ex4c7fun/s=;
- b=GsoS681qfaaw30w8NJDcLgS6Yo8x0mESssRoRKgqOtWiTr2Cr9pdkgnGrk+FgUc2ct
- M67Y3XrXBADdXUC/xF5MxwASH8WsBjqxLEimFcEJ4MU8Ue55mpx6Cehg58Qap5sBOYyx
- i+T6GvF8G22eVjBsmhSfhw1GDyyZks8BpuEaJkGXSaB/fkW5xRciSlXlymshaW4ibThM
- 8Jc6Ox3+PcKKLSoJ8VnAp8dENN2zQoDFeFiTszTEeU4Qh6+h0cHPNTWdwF4eVEqBd+Ui
- O0v6TShxVMt41D6qY33ca9gjKApY5NZjMMKe2SxGCwNb5pltqugxmIXtH0Fp+jHI5B/O
- 9bNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1710173373; x=1710778173;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=PILxDYflZgbCo+K0GUIJE4pbycGuy7hz4ex4c7fun/s=;
- b=crWCrw09xhun0rQiuaJ3/GHUS/xUeLBiY1zau80cdN2RtVJ5FOoskhhyIO4SVeDj6V
- qdO4lLSZEYGgDHRg832R53eUdi2pXPh0/ROEi3ok4XdF/yV03L/41m1BY/PWuAqA4ufE
- wsa7wS6WG0+zQmCpyT9BP+p9KPxDGJCWEB/ivhIj3FztSJ+ulH5JF6cnxuRid6JKCivc
- qIzWfkJkH4i/UQdfROtswxDz0pvfNhaHLRytcXpND6XND/GjEHCZOQ9Niq9kP1ZpHk01
- V7D92t732hxBhRq9CYNwgCu6GgByehPxwDBNKWirAZKGqeJ03oOmf0ibRA3C4NwNdmzz
- Lo7w==
-X-Gm-Message-State: AOJu0YylABcSU2khaVjDzaJOgxLOL8KFEK5vvKCuQCUcGNfRZzCRP/2O
- Tq2p9/R6tfKD2R88BcHk03a1QoMjX6x8iU1N1sP2UUVlxpUNqsq1Yv0BoyRxASBo/NDDDpe+xon
- PdsMgZ30ZYnS/j/JMFu118ZiWwxc=
-X-Google-Smtp-Source: AGHT+IGUbZUUg1zg1w8U75DViX8fDgVkO9kGSae5xIZdmLhz8HDUk5G+3kaXL8t4rEqlPyWMsVpXKWHDTGEarKCKzZ8=
-X-Received: by 2002:a05:6358:39a2:b0:17b:b830:2809 with SMTP id
- b34-20020a05635839a200b0017bb8302809mr8605074rwe.19.1710173373113; Mon, 11
- Mar 2024 09:09:33 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B9F5F204735
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 13:08:36 +0100 (CET)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 42CBq6M2016935
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=PuhZ5nqiJZNfz6l+7+FY9HywlB9h63b4iFnyhXF0D3k=;
+ b=KcnwAU79Fp/CJTCLZ7S+eAHsqeO9FEbb9KwI+CbvMw5zpvprNPDcBVH25kQGOl77YGxy
+ gd90Vksodfij5X/j+GiqRNyjLNsSdMO1DveBxYvgZ2Nvu65V8ihJYq97RtXKGj0s5I/+
+ znPP4UgqIN+yi5VQ8JINSwon5rmy0rQYNn+0ByEjeMVX3ETfLEpA1cVY/Tm7K7WPGl6h
+ B8Pkzo2zz6DZnpfUYaCen/uNWbFJ5CyoJDhsem9kfNyyW0YsvRKP9W+rtmRmAHXJ6mlb
+ heyy8PJTMC6HT/CRbsGUjLdgexFtRedVj0bRJV520lD4/4RzuZa2UXE1Rhab33yg0960 ig== 
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtpj4gbr6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:34 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 42CAPUXo013169
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:33 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws4ak6hdn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:33 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 42CC8U3034472288
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:32 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2C65E2004D
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:30 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E15472004B
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:29 +0000 (GMT)
+Received: from lenovoibm.ibmuc.com (unknown [9.171.44.81])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 12:08:29 +0000 (GMT)
+From: Mete Durlu <meted@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 12 Mar 2024 13:08:28 +0100
+Message-ID: <20240312120829.178305-1-meted@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 MIME-Version: 1.0
-References: <20240307092603.16269-1-meted@linux.ibm.com>
- <CAOQ4uxhFB2Gv2+8N-sc9a1+Kz1KqW+bniJe0JhVSHsaMWnxrmQ@mail.gmail.com>
- <3700d7c9-2f7e-4946-be27-87f500ccb6dd@linux.ibm.com>
-In-Reply-To: <3700d7c9-2f7e-4946-be27-87f500ccb6dd@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 11 Mar 2024 18:08:53 +0200
-Message-ID: <CAOQ4uxgrGwiwpsLinWvVER-2W3AJxA0tR3qox-V4rxnt=OTTig@mail.gmail.com>
-To: Mete Durlu <meted@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a-mK5zMpbJ0gs0qFRgg0EbCqxjJJ8Ll0
+X-Proofpoint-ORIG-GUID: a-mK5zMpbJ0gs0qFRgg0EbCqxjJJ8Ll0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_08,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 malwarescore=0
+ impostorscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403120093
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] fanotify14: fix anonymous pipe testcases
+Subject: [LTP] [PATCH v2 0/1] fix fanotify anonymous pipe testcases
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,37 +99,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBNYXIgMTEsIDIwMjQgYXQgNDo1M+KAr1BNIE1ldGUgRHVybHUgPG1ldGVkQGxpbnV4
-LmlibS5jb20+IHdyb3RlOgo+Cj4gT24gMy84LzI0IDE0OjM5LCBBbWlyIEdvbGRzdGVpbiB3cm90
-ZToKPiA+IE9uIEZyaSwgTWFyIDgsIDIwMjQgYXQgMjo0M+KAr1BNIE1ldGUgRHVybHUgPG1ldGVk
-QGxpbnV4LmlibS5jb20+IHdyb3RlOgo+ID4+Cj4gPj4gV2hlbiBTRWxpbnV4IGlzIGNvbmZpZ3Vy
-ZWQgKGNvbWVzIG91dCBvZiB0aGUgYm94IG9uIG1vc3QgZGlzdHJvcykgYW5kCj4gPj4gaXMgY29u
-ZmlndXJlZCB0byBlbmZvcmNpbmcgKHRoZSBkZWZhdWx0IGNvbmZpZ3VyYXRpb24pLCB0ZXN0cyBy
-ZWxhdGVkCj4gPj4gdG8gYW5vbnltb3VzIHBpcGVzIHJldHVybiBFQUNDRVMgaW5zdGVhZCBvZiB0
-aGUgZXhwZWN0ZWQgZXJybm8gRUlOVkFMLgo+ID4+IEZpeCB0aGUgZmFpbHVyZXMgY2F1c2VkIGJ5
-IHRoZSBhYm92ZSBjb25kaXRpb24gYnkgY2hlY2tpbmcgdGhlIFNFbGludXgKPiA+PiBjb25maWd1
-cmF0aW9uIGFuZCBhZGp1c3RpbmcgdGhlIGVycm5vIGFjY29yZGluZ2x5Lgo+ID4KPiA+IEhpIE1l
-dGUsCj4gPgo+ID4gSXNuJ3QgdGhlIG91dGNvbWUgb2YgdGhlIHRlc3QgZGVwZW5kZW50IG9uIHRo
-ZSBTRXBvbGljeSBydWxlcz8KPiA+IE5vdCBvbmx5IGlmIGl0IGlzIGVuZm9yY2VkPwo+ID4KPiA+
-IFNvcnJ5IEkgaGF2ZSB2ZXJ5IGxpdHRsZSBleHBlcmllbmNlIHdpdGggU0VMaW51eC4KPiA+Cj4K
-PiBIaSBBbWlyLAo+Cj4gSSBkb24ndCBoYXZlIFNFbGludXggZXhwZXJpZW5jZSBlaXRoZXIsIG9u
-IG15IHByb3Bvc2VkIHBhdGNoIEkgb25seQo+IGNvbnNpZGVyZWQgdGhlIGRlZmF1bHQgYmVoYXZp
-b3IgYnV0IHlvdSBhcmUgcmlnaHQgZGlmZmVyZW50IFNFbGludXgKPiBjb25maWd1cmF0aW9ucyBt
-YXkgbGVhZCB0byBkaWZmZXJlbnQgb3V0Y29tZXMuIEkgc2tpbW1lZCBvdmVyIFNFbGludXgKPiB3
-aWtpIGEgbGl0dGxlIGFuZCBub3cgSSB0aGluayB0cnlpbmcgdG8gdmVyaWZ5IHRoZSBTRWxpbnV4
-IHBvbGljeSB3b3VsZAo+IGJlIHRvbyBjdW1iZXJzb21lLiBJbnN0ZWFkIEkgcHJvcG9zZSB0d28g
-ZGlmZmVyZW50IHNvbHV0aW9ucy4KPgo+IDEuIFdlIGNhbiBza2lwIHRoZSBhbm9ueW1vdXMgcGlw
-ZSB0ZXN0IGNhc2VzIHdoZW4gU0VsaW51eCBpcyBpbgo+ICAgICBlbmZvcmNpbmcgc3RhdGUuCj4K
-PiBvcgo+Cj4gMi4gV2UgY2FuIGFjY2VwdCBib3RoIEVBQ0VTUyBhbmQgRUlOVkFMIGFzIHZhbGlk
-IGVycm5vcyB3aGVuIFNFbGludXggaXMKPiAgICAgaW4gZW5mb3JjaW5nIHN0YXRlLgo+Cj4gUGVy
-c29uYWxseSBvcHRpb24gMiBzb3VuZHMgYmV0dGVyIHRvIG1lIHNpbmNlIHdlIHdvdWxkIGdldCBt
-b3JlIGNvdmVyYWdlCj4gdGhhdCB3YXkuIElmIGVpdGhlciB3YXkgc291bmRzIGdvb2QgSSBjYW4g
-c2VuZCBhIHYyIHJpZ2h0IGF3YXkuIEhvdyBkb2VzCj4gdGhhdCBzb3VuZD8KCm9wdGlvbiAyIHNv
-dW5kcyBnb29kIHRvIG1lLgoKVGhhbmtzLApBbWlyLgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
-dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+* v1 -> v2:
+- accept both EINVAL and EACCES when SElinux is configured.
+  Checking SElinux policies would be too much effort.
+- replace TST_EXP_FD_OR_FAIL with TST_EXP_FAIL since fanotify_mark()
+  returns 0 on success and -1 with errno on failure.
+
+* v0 -> v1:
+- sent wrong patch
+
+Mete Durlu (1):
+  fanotify14: fix anonymous pipe testcases
+
+ .../kernel/syscalls/fanotify/fanotify14.c     | 32 +++++++++++++++++--
+ 1 file changed, 29 insertions(+), 3 deletions(-)
+
+-- 
+2.44.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
