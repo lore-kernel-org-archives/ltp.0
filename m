@@ -4,85 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C005C54E58
-	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 15:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1710258323; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=CotO/2E775IJATq4XADnSJgM/FpBtEjEXjWRnzcVBew=;
- b=RLm1hmPHz4m75mG9WvUp/3XpmrVUJKBfZeh2mkll88RBNA2pW4TDJPI/zMrzgzcCv1uVK
- r2lmMydx+pXcRQ5PwBs7TvR+qj4a6meKff/C8P0iHu+1WO8Xzwppf3/46+RABQbfcjx2+WT
- xTFBjrKRyY8GJdprSiNVDUZ5g3SiIl8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4C7FC54E58
+	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 15:49:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE2823CFE10
-	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 16:45:23 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1DA863CFD6C
+	for <ltp@archiver.kernel.org>; Tue, 12 Mar 2024 16:49:07 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BCD83C7FFE
- for <ltp@lists.linux.it>; Tue, 12 Mar 2024 16:44:53 +0100 (CET)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 26F733C7FFE
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 16:48:50 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6185460A79C
- for <ltp@lists.linux.it>; Tue, 12 Mar 2024 16:44:52 +0100 (CET)
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-5687feeb1feso5116a12.2
- for <ltp@lists.linux.it>; Tue, 12 Mar 2024 08:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1710258292; x=1710863092; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=MLXWxevtUaOOerNT1FosmkVMFcdwN2HkM6Nedm3h+mE=;
- b=ReN4NzPvsHXSeyOZJB9TGgH9eejOpGfouq1OeiDKbEbgpQJB4Hki+8kum/BuIRB71Y
- HrwdZRRes7QmKf3Yn6vc7FUOEou4HxWdExAr3y48K7YGayut3ahqhKBSau2ZHWhECuTR
- +CGH/3nWYAmwGKXSJ0F7Fuj7cmI0x1eBosTJjs+ftxx+Mw0weyfiu7MFP2zRV861wD/F
- EGA8RXKxabSUGbTqofZ+0rfXwSpeXO9aR+scJGX5DJ9NAN2gu2QgUFHju/VrndAyCQ9e
- AUYcdVPF0WROjjByzX1d3Gdm9dk/kB8epc1eEDyHqHyvXzBVwW36BHGVNyUU1093Py2F
- GSwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1710258292; x=1710863092;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=MLXWxevtUaOOerNT1FosmkVMFcdwN2HkM6Nedm3h+mE=;
- b=K45guN36qtavN7WMFYBrqJ4sCX+SwKfBkEK5q5hrqkCNlmezNQzBkrzw8NJi+3scNG
- oFjsteo2mBn5oZN5PofD6SR9ySvDBuClbbULQzJzZyEvq+DIOxbB2nHGajPK29dMUtJo
- AwZZ/7XIV+M4OwHF/MQED69Z8GIJ6FfLcJ3HbVgDR+t/zyn79PeLlo+3xFu+pc00kEb9
- 3PCENSE0kBNzbkNCj00b8RGj8hbLd9U/5CxmgKw6/kq+Kyg60M0GcAThlSBjG7MHpm9n
- tDU/T4dcFFDMxbaVcEVK6ellz+EW7qMR/zByByZ17861vbbDLhCBdeaFg5YKzL04Ltfp
- Nl/g==
-X-Gm-Message-State: AOJu0YwlIKGWLPzlyFYOEcSb9NtUoiKDRRVi9SQPKxxXx4DUJDrfH4iz
- sh/YHsFkTV4GtvlyJ9es5tpJquny/6itUjg5HCjeE89ZvlpzVwIUpKLn0+jaKuw=
-X-Google-Smtp-Source: AGHT+IHeTI2PBA33QUtaig1UzLW/gg9i5ZEYVtVMm4SLxLbyUbJ2DdIk56LqvmjYS4V1mT89asLxWg==
-X-Received: by 2002:a50:d49b:0:b0:568:7abc:a857 with SMTP id
- s27-20020a50d49b000000b005687abca857mr1279490edi.39.1710258291777; 
- Tue, 12 Mar 2024 08:44:51 -0700 (PDT)
-Received: from [10.232.133.85] ([88.128.88.28])
- by smtp.gmail.com with ESMTPSA id
- gy4-20020a0564025bc400b0056820311668sm4056399edb.57.2024.03.12.08.44.51
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 12 Mar 2024 08:44:51 -0700 (PDT)
-Message-ID: <9ac3a0ea-4d4a-4588-9296-f1395601f096@suse.com>
-Date: Tue, 12 Mar 2024 16:44:50 +0100
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5EA0A60B029
+ for <ltp@lists.linux.it>; Tue, 12 Mar 2024 16:48:50 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6E48F5D6DE;
+ Tue, 12 Mar 2024 15:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1710258529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XmOU/jyw2H6OltGUYeHJtVAsI1QQidi21pFktKWmL8U=;
+ b=CTaZptrNCElqaGEWoMnbvV9ixEwFKW9ZeGWWECmQCs1xe3I1Ur/1aWOqBYlUWlgqHc5soU
+ j1w+vzKSAKNwWmWpr7NYAavL+ju2nSU3ILEV1EFTuInUlPf/WQbEnYoPyh4DuV32zQokhs
+ oSdaWcKYaiP5ACfHscaVV6gfhJ0o+ro=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1710258529;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XmOU/jyw2H6OltGUYeHJtVAsI1QQidi21pFktKWmL8U=;
+ b=aR61+F/Q+o5ha49BBmBm/jmU9KS65x8PMk/ZujnLDNaJ0k/ijn5p9qZJwQ0RuE2PnwjzuW
+ qjiyYKUw+to1qFBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1710258529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XmOU/jyw2H6OltGUYeHJtVAsI1QQidi21pFktKWmL8U=;
+ b=CTaZptrNCElqaGEWoMnbvV9ixEwFKW9ZeGWWECmQCs1xe3I1Ur/1aWOqBYlUWlgqHc5soU
+ j1w+vzKSAKNwWmWpr7NYAavL+ju2nSU3ILEV1EFTuInUlPf/WQbEnYoPyh4DuV32zQokhs
+ oSdaWcKYaiP5ACfHscaVV6gfhJ0o+ro=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1710258529;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XmOU/jyw2H6OltGUYeHJtVAsI1QQidi21pFktKWmL8U=;
+ b=aR61+F/Q+o5ha49BBmBm/jmU9KS65x8PMk/ZujnLDNaJ0k/ijn5p9qZJwQ0RuE2PnwjzuW
+ qjiyYKUw+to1qFBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F8A21364F;
+ Tue, 12 Mar 2024 15:48:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id D1zTCGF58GVDPwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 12 Mar 2024 15:48:49 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 12 Mar 2024 16:48:47 +0100
+Message-Id: <20240312154847.16379-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20231017114900.17690-1-andrea.cervesato@suse.de>
- <20231218115811.GA184666@pevik>
-In-Reply-To: <20231218115811.GA184666@pevik>
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CTaZptrN;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="aR61+F/Q"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.49 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 6E48F5D6DE
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Refactor fork14 using new LTP API
+Subject: [LTP] [PATCH v3] Refactor fork14 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,114 +109,252 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On 12/18/23 12:58, Petr Vorel wrote:
-> Hi Andrea,
->
->> From: Andrea Cervesato <andrea.cervesato@suse.com>
->> +#ifndef TST_ABI32
->> +#include <stdlib.h>
->> +#include <sys/wait.h>
->> +#include "tst_test.h"
-> This will fail on 32bit arch, where TST_TEST_TCONF() is used. You need to
-> include tst_test.h first.
->
-> ...
->> +static void run(void)
-> {
-> ...
->> +	for (i = 0; i < EXTENT; i++) {
->> +		mem = mmap(NULL, 1 * TST_GB,
->> +			PROT_READ | PROT_WRITE,
->> +			MAP_PRIVATE | MAP_ANONYMOUS,
->> +			0, 0);
-> We have SAFE_MMAP(), is there a reason not to use it?
-I think the original idea was to wait some memory was released by the 
-system, but now I see that the algorithm is just broken, since we are 
-not skipping any cycle if mmap fails. So I will just use SAFE_MMAP()
->
->> -		reproduced = fork_test();
->> -		if (reproduced == 0)
->> -			tst_resm(TPASS, "fork failed as expected.");
->> -	}
->> -	cleanup();
->> -	tst_exit();
->> -}
->> +		if (mem == MAP_FAILED) {
->> +			tst_res(TINFO, "mmap() failed");
-> ...
->> +			if (failures > 10) {
->> +				tst_brk(TCONF, "mmap() fails too many "
->> +					"times, so it's almost impossible to "
->> +					"get a vm_area_struct sized 16TB.");
-> I would join this into single string.
-This will go away if we use SAFE_MMAP()
->> +			}
->> +		}
->> -		case -1:
->> -			prev_failed = 1;
->> -		break;
->> -		case 0:
->> +		if (!pid)
->>   			exit(0);
->> -		default:
->> -			SAFE_WAITPID(cleanup, -1, NULL, 0);
->> -			if (prev_failed > 0 && i >= LARGE) {
->> -				tst_resm(TFAIL, "Fork succeeds incorrectly");
->> -				reproduced = 1;
->> -				goto clear_memory_map;
->> -			}
->> +		ret = waitpid(pid, NULL, 0);
->> +		if (ret == -1 && errno != ECHILD)
->> +			tst_brk(TBROK | TERRNO, "waitpid() error");
-> Why not use SAFE_WAITPID(). It was even used before.
-Because child might end before calling waitpid().
->
->> +
->> +		if (prev_failed && i >= LARGE) {
->> +			passed = 0;
->> +			break;
->>   		}
->> +
->> +		prev_failed = 0;
->> +
->> +		tst_res(TINFO, "fork() passed at %d attempt", i);
->> +	}
->> +
->> +	for (j = 0; j < i; j++) {
->> +		if (memvec[j])
->> +			SAFE_MUNMAP(memvec[j], 1 * TST_GB);
->>   	}
-> ...
->> +static void setup(void)
->> +{
->> +	memvec = SAFE_MALLOC(EXTENT * sizeof(char *));
->> +	memset(memvec, 0, EXTENT);
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	for (long i = 0; i < EXTENT; i++) {
->> +		if (memvec[i])
-> If malloc() in setup() fails (rare case, I know) bad thing happen here,
-> you should check for (memvec && memvec[i]) here
->> +			SAFE_MUNMAP(memvec[i], 1 * TST_GB);
->>   	}
-> Also here should be check if (memvec)
->> +	free(memvec);
-> Kind regards,
-> Petr
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+SAFE_MMAP() usage
+Check if memvec is NULL before munmap() and free()
 
-Andrea
+ testcases/kernel/syscalls/fork/fork14.c | 197 ++++++++++--------------
+ 1 file changed, 81 insertions(+), 116 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+index 93af2ebac..a1cf13c3e 100644
+--- a/testcases/kernel/syscalls/fork/fork14.c
++++ b/testcases/kernel/syscalls/fork/fork14.c
+@@ -1,143 +1,108 @@
+-/*********************************************************************
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
+  * Copyright (C) 2014  Red Hat, Inc.
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
+- *
+- * This test is a reporducer for this patch:
+- *              https://lkml.org/lkml/2012/4/24/328
++ * This test is a reporducer for this patch: https://lkml.org/lkml/2012/4/24/328
+  * Since vma length in dup_mmap is calculated and stored in a unsigned
+  * int, it will overflow when length of mmaped memory > 16 TB. When
+- * overflow occur, fork will  incorrectly succeed. The patch above
+- * fixed it.
+- ********************************************************************/
++ * overflow occur, fork will incorrectly succeed. The patch above fixed it.
++ */
+ 
+-#include <sys/mman.h>
+-#include <sys/wait.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "lapi/abisize.h"
++#include "tst_test.h"
+ 
+-char *TCID = "fork14";
+-int TST_TOTAL = 1;
++#ifndef TST_ABI32
+ 
+-#define GB		(1024 * 1024 * 1024L)
++#include <stdlib.h>
++#include <sys/wait.h>
+ 
+-/* set mmap threshold to 16TB */
+ #define LARGE		(16 * 1024)
+ #define EXTENT		(16 * 1024 + 10)
+ 
+-static char **pointer_vec;
+-
+-static void setup(void);
+-static void cleanup(void);
+-static int  fork_test(void);
++static char **memvec;
+ 
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc, reproduced;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-/*
+- * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
+- * Since a 32bit program can't mmap so many memory.
+- */
+-#ifdef TST_ABI32
+-	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
+-#endif
+-	setup();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	int i, j, ret;
++	pid_t pid;
++	void *mem;
++	int prev_failed = 0;
++	int passed = 1;
+ 
+-		reproduced = fork_test();
+-		if (reproduced == 0)
+-			tst_resm(TPASS, "fork failed as expected.");
+-	}
+-	cleanup();
+-	tst_exit();
+-}
++	for (i = 0; i < EXTENT; i++) {
++		mem = SAFE_MMAP(NULL, 1 * TST_GB,
++			PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS,
++			0, 0);
+ 
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++		memvec[i] = mem;
+ 
+-	pointer_vec = SAFE_MALLOC(cleanup, EXTENT * sizeof(char *));
+-}
++		pid = fork();
+ 
+-static void cleanup(void)
+-{
+-	free(pointer_vec);
+-}
+-
+-static int fork_test(void)
+-{
+-	int i, j, prev_failed = 0, fails = 0, cnt = 0;
+-	int reproduced = 0;
+-	void *addr;
+-
+-	for (i = 0; i < EXTENT; i++) {
+-		addr = mmap(NULL, 1 * GB, PROT_READ | PROT_WRITE,
+-			    MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-		if (addr == MAP_FAILED) {
+-			pointer_vec[i] = NULL;
+-			fails++;
+-			/*
+-			 * EXTENT is "16*1024+10", if fails count exceeds 10,
+-			 * we are almost impossible to get an vm_area_struct
+-			 * sized 16TB
++		if (pid == -1) {
++			/* keep track of the failed fork() and verify that next one
++			 * is failing as well.
+ 			 */
+-			if (fails == 11) {
+-				tst_brkm(TCONF, cleanup, "mmap() fails too many"
+-					 "times, so we are almost impossible to"
+-					 " get an vm_area_struct sized 16TB.");
+-			}
+-		} else {
+-			pointer_vec[i] = addr;
++			prev_failed = 1;
++			continue;
+ 		}
+-		cnt++;
+ 
+-		switch (tst_fork()) {
+-		case -1:
+-			prev_failed = 1;
+-		break;
+-		case 0:
++		if (!pid)
+ 			exit(0);
+-		default:
+-			SAFE_WAITPID(cleanup, -1, NULL, 0);
+-
+-			if (prev_failed > 0 && i >= LARGE) {
+-				tst_resm(TFAIL, "Fork succeeds incorrectly");
+-				reproduced = 1;
+-				goto clear_memory_map;
+-			}
++
++		ret = waitpid(pid, NULL, 0);
++		if (ret == -1 && errno != ECHILD)
++			tst_brk(TBROK | TERRNO, "waitpid() error");
++
++		if (prev_failed && i >= LARGE) {
++			passed = 0;
++			break;
+ 		}
++
++		prev_failed = 0;
++
++		tst_res(TINFO, "fork() passed at %d attempt", i);
+ 	}
+ 
+-clear_memory_map:
+-	for (j = 0; j < cnt; j++) {
+-		if (pointer_vec[j])
+-			SAFE_MUNMAP(cleanup, pointer_vec[j], 1 * GB);
++	for (j = 0; j < i; j++) {
++		if (memvec[j])
++			SAFE_MUNMAP(memvec[j], 1 * TST_GB);
+ 	}
+ 
+-	return reproduced;
++	if (passed)
++		tst_res(TPASS, "fork() failed as expected");
++	else
++		tst_res(TFAIL, "fork() succeeded incorrectly");
+ }
++
++static void setup(void)
++{
++	memvec = SAFE_MALLOC(EXTENT * sizeof(char *));
++	memset(memvec, 0, EXTENT);
++}
++
++static void cleanup(void)
++{
++	for (long i = 0; i < EXTENT; i++) {
++		if (memvec && memvec[i])
++			SAFE_MUNMAP(memvec[i], 1 * TST_GB);
++	}
++
++	if (memvec)
++		free(memvec);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++};
++
++#else /* TST_ABI32 */
++	TST_TEST_TCONF("Test doesn't supports 32bits architecture");
++#endif
+-- 
+2.35.3
 
 
 -- 
