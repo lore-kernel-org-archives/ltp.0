@@ -4,62 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB3AFC54791
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 11:50:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C55C54E58
+	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 11:55:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2A9663CFD26
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 12:50:22 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 695693CFD5A
+	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 12:55:12 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 204023CE770
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:50:05 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 944203C02E6
+ for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:54:55 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 46F161A027BE
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:50:03 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D495810060B6
+ for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:54:54 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B7B1F1F7A1;
- Wed, 13 Mar 2024 11:50:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0642821C75;
+ Wed, 13 Mar 2024 11:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1710330894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bMcOPq9mdHKBRr8YoHXjTBaOiR6pJUF+qBOpmB+lNEA=;
+ b=MnxGdAJWR8267ePa0A9HBdsI+gDhHGWc+R3jLcYrNm1DnPuLjSIyASfQ8pUkZfmZF9PMX4
+ UDgCtLtlu+QXBzFHx4ic6OCB6uU9nNTR9R8qIQ1a1XmCip3WyOkMVW98E7MucfcP+0x5+6
+ Nx3Al2HnQ7ZNESM9axNWEc3JIo3IvNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1710330894;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bMcOPq9mdHKBRr8YoHXjTBaOiR6pJUF+qBOpmB+lNEA=;
+ b=gL0OiXdCT3HG4/pzVsnBPXbCkdMxrRMg7j0EajaJykGGFqwMrI37fSNb1Fb7HZr9TBhOLv
+ zXEjXKo/weVYPNBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1710330894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bMcOPq9mdHKBRr8YoHXjTBaOiR6pJUF+qBOpmB+lNEA=;
+ b=MnxGdAJWR8267ePa0A9HBdsI+gDhHGWc+R3jLcYrNm1DnPuLjSIyASfQ8pUkZfmZF9PMX4
+ UDgCtLtlu+QXBzFHx4ic6OCB6uU9nNTR9R8qIQ1a1XmCip3WyOkMVW98E7MucfcP+0x5+6
+ Nx3Al2HnQ7ZNESM9axNWEc3JIo3IvNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1710330894;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bMcOPq9mdHKBRr8YoHXjTBaOiR6pJUF+qBOpmB+lNEA=;
+ b=gL0OiXdCT3HG4/pzVsnBPXbCkdMxrRMg7j0EajaJykGGFqwMrI37fSNb1Fb7HZr9TBhOLv
+ zXEjXKo/weVYPNBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A75441397F;
- Wed, 13 Mar 2024 11:50:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id FFfNJ+qS8WUVJwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 13 Mar 2024 11:50:02 +0000
-Date: Wed, 13 Mar 2024 12:49:04 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZfGSsIEG_k2htig8@yuki>
-References: <20240312151324.13236-1-andrea.cervesato@suse.de>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2C6F13998;
+ Wed, 13 Mar 2024 11:54:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EDiBLA2U8WWxKAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 13 Mar 2024 11:54:53 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 13 Mar 2024 12:54:46 +0100
+Message-Id: <20240313115448.7755-2-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240313115448.7755-1-andrea.cervesato@suse.de>
+References: <20240313115448.7755-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240312151324.13236-1-andrea.cervesato@suse.de>
-Authentication-Results: smtp-out2.suse.de;
-	none
+X-Spamd-Bar: +
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=MnxGdAJW;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gL0OiXdC
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: B7B1F1F7A1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Spamd-Result: default: False [1.49 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
+ DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[20.93%]
+X-Rspamd-Queue-Id: 0642821C75
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Refactor fork05 using new LTP API
+Subject: [LTP] [PATCH v6 1/3] Add SAFE_MPROTECT() macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,213 +122,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> + * On Friday, May 2, 2003 at 09:47:00AM MST, Ulrich Drepper wrote:
-> + * >Robert Williamson wrote:
-> + * >
-> + * >>   I'm getting a SIGSEGV with one of our tests, fork05.c, that apparently
-> + * >> you wrote (attached below).  The test passes on my 2.5.68 machine running
-> + * >> SuSE 8.0 (glibc 2.2.5 and Linuxthreads), however it segmentation faults on
-> + * >> RedHat 9 running 2.5.68.  The test seems to "break" when it attempts to run
-> + * >> the assembly code....could you take a look at it?
-> + * >
-> + * >There is no need to look at it, I know it cannot work anymore on recent
-> + * >systems.  Either change all uses of %gs to %fs or skip the entire patch
-> + * >if %gs has a nonzero value.
-> + * >
-> + * >- --
-> + * >- --------------.                        ,-.            444 Castro Street
-> + * >Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
-> + * >Red Hat         `--' drepper at redhat.com `---------------------------
->   *
-> + * On Sat, Aug 12, 2000 at 12:47:31PM -0700, Ulrich Drepper wrote:
-> + * > Ever since the %gs handling was fixed in the 2.3.99 series the
-> + * > appended test program worked.  Now with 2.4.0-test6 it's not working
-> + * > again.  Looking briefly over the patch from test5 to test6 I haven't
-> + * > seen an immediate candidate for the breakage.  It could be missing
-> + * > propagation of the LDT to the new process (and therefore an invalid
-> + * > segment descriptor) or simply clearing %gs.
-> + * >
-> + * > Anyway, this is what you should see and what you get with test5:
-> + * >
-> + * > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + * > a = 42
-> + * > %gs = 0x0007
-> + * > %gs = 0x0007
-> + * > a = 99
-> + * > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + * >
-> + * > This is what you get with test6:
-> + * >
-> + * > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + * > a = 42
-> + * > %gs = 0x0007
-> + * > %gs = 0x0000
-> + * > <SEGFAULT>
-> + * > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + * >
-> + * > If somebody is actually creating a test suite for the kernel, please
-> + * > add this program.  It's mostly self-contained.  The correct handling
-> + * > of %gs is really important since glibc 2.2 will make heavy use of it.
-> + * >
-> + * > - --
-> + * > - ---------------.                          ,-.   1325 Chesapeake Terrace
-> + * > Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-> + * > Red Hat          `--' drepper at redhat.com   `------------------------
-> + * >
-> + * > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   */
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Uff, this renders very ugly in the documentation. Can we at least drop
-the email signatures and rewrite the text a bit?
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+From malloc() to fixed array
 
-> -#include <stdio.h>
-> -#include <fcntl.h>
-> -#include <unistd.h>
-> -#include <stdlib.h>
-> -#include <sys/wait.h>
-> +#include <asm/ldt.h>
->  #include "lapi/syscalls.h"
-> -#include "test.h"
-> -
-> -char *TCID = "fork05";
-> -
-> -static char *environ_list[] = { "TERM", "NoTSetzWq", "TESTPROG" };
-> -
-> -#define NUMBER_OF_ENVIRON (sizeof(environ_list)/sizeof(char *))
-> -int TST_TOTAL = NUMBER_OF_ENVIRON;
-> +#include "tst_test.h"
->  
->  #if defined(linux) && defined(__i386__)
->  
-> -struct modify_ldt_ldt_s {
-> -	unsigned int entry_number;
-> -	unsigned long int base_addr;
-> -	unsigned int limit;
-> -	unsigned int seg_32bit:1;
-> -	unsigned int contents:2;
-> -	unsigned int read_exec_only:1;
-> -	unsigned int limit_in_pages:1;
-> -	unsigned int seg_not_present:1;
-> -	unsigned int useable:1;
-> -	unsigned int empty:25;
-> -};
-> -
-> -static int a = 42;
-> -
-> -static void modify_ldt(int func, struct modify_ldt_ldt_s *ptr, int bytecount)
-> +static void run(void)
->  {
-> -	tst_syscall(__NR_modify_ldt, func, ptr, bytecount);
-> -}
-> -
-> -int main(void)
-> -{
-> -	struct modify_ldt_ldt_s ldt0;
-> +	struct user_desc ldt0;
-> +	int base_addr = 42;
->  	int lo;
-> -	pid_t pid;
-> -	int res;
->  
->  	ldt0.entry_number = 0;
-> -	ldt0.base_addr = (long)&a;
-> +	ldt0.base_addr = (long)&base_addr;
->  	ldt0.limit = 4;
->  	ldt0.seg_32bit = 1;
->  	ldt0.contents = 0;
-> @@ -154,49 +90,34 @@ int main(void)
->  	ldt0.useable = 1;
->  	ldt0.empty = 0;
->  
-> -	modify_ldt(1, &ldt0, sizeof(ldt0));
-> +	tst_syscall(__NR_modify_ldt, 1, &ldt0, sizeof(ldt0));
->  
->  	asm volatile ("movw %w0, %%fs"::"q" (7));
-> -
->  	asm volatile ("movl %%fs:0, %0":"=r" (lo));
-> -	tst_resm(TINFO, "a = %d", lo);
-> +	tst_res(TINFO, "a = %d", lo);
->  
->  	asm volatile ("pushl %%fs; popl %0":"=q" (lo));
-> -	tst_resm(TINFO, "%%fs = %#06hx", lo);
-> +	tst_res(TINFO, "%%fs = %#06hx", lo);
->  
->  	asm volatile ("movl %0, %%fs:0"::"r" (99));
->  
-> -	pid = fork();
-> -
-> -	if (pid == 0) {
-> +	if (!SAFE_FORK()) {
->  		asm volatile ("pushl %%fs; popl %0":"=q" (lo));
-> -		tst_resm(TINFO, "%%fs = %#06hx", lo);
-> +		tst_res(TINFO, "%%fs = %#06hx", lo);
->  
->  		asm volatile ("movl %%fs:0, %0":"=r" (lo));
-> -		tst_resm(TINFO, "a = %d", lo);
-> +		tst_res(TINFO, "a = %d", lo);
-> +
-> +		TST_EXP_EQ_LI(lo, 99);
->  
-> -		if (lo != 99)
-> -			tst_resm(TFAIL, "Test failed");
-> -		else
-> -			tst_resm(TPASS, "Test passed");
+ include/tst_safe_macros.h | 58 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-Huh, why have you dropped the only TPASS/TFAIL in the test?
-
->  		exit(lo != 99);
-
-	This should be just exit(0).
-
-> -	} else {
-> -		waitpid(pid, &res, 0);
->  	}
-> -
-> -	return WIFSIGNALED(res);
-
-
-I guess that we can do waitpid() for the process and fail the test if we
-get SIGSEGV here as well.
-
-
->  }
->  
-> -#else /* if defined(linux) && defined(__i386__) */
-> -
-> -int main(void)
-> -{
-> -	tst_resm(TINFO, "%%fs test only for ix86");
-> -
-> -	/*
-> -	 * should be successful on all non-ix86 platforms.
-> -	 */
-> -	tst_exit();
-> -}
-> +static struct tst_test test = {
-> +	.run_all = run
-> +};
->  
-> -#endif /* if defined(linux) && defined(__i386__) */
-> +#else /* defined(linux) && defined(__i386__) */
-> +	TST_TEST_TCONF("Test only supports linux 32 bits");
-> +#endif
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 2d497f344..b17cba753 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -6,6 +6,7 @@
+ #ifndef TST_SAFE_MACROS_H__
+ #define TST_SAFE_MACROS_H__
+ 
++#include <stdlib.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ #include <sys/time.h>
+@@ -268,6 +269,36 @@ int safe_getgroups(const char *file, const int lineno, int size, gid_t list[]);
+  * -D_FILE_OFFSET_BITS=64 compile flag
+  */
+ 
++#define PROT_FLAG_STR(f) #f " | "
++
++static void prot_to_str(const int prot, char *buf)
++{
++	char *ptr = buf;
++
++	if (prot == PROT_NONE) {
++		strcpy(buf, "PROT_NONE");
++		return;
++	}
++
++	if (prot & PROT_READ) {
++		strcpy(ptr, PROT_FLAG_STR(PROT_READ));
++		ptr += sizeof(PROT_FLAG_STR(PROT_READ)) - 1;
++	}
++
++	if (prot & PROT_WRITE) {
++		strcpy(ptr, PROT_FLAG_STR(PROT_WRITE));
++		ptr += sizeof(PROT_FLAG_STR(PROT_WRITE)) - 1;
++	}
++
++	if (prot & PROT_EXEC) {
++		strcpy(ptr, PROT_FLAG_STR(PROT_EXEC));
++		ptr += sizeof(PROT_FLAG_STR(PROT_EXEC)) - 1;
++	}
++
++	if (buf != ptr)
++		ptr[-3] = 0;
++}
++
+ static inline void *safe_mmap(const char *file, const int lineno,
+                               void *addr, size_t length,
+                               int prot, int flags, int fd, off_t offset)
+@@ -287,6 +318,33 @@ static inline void *safe_mmap(const char *file, const int lineno,
+ 	safe_mmap(__FILE__, __LINE__, (addr), (length), (prot), \
+ 	(flags), (fd), (offset))
+ 
++static inline int safe_mprotect(const char *file, const int lineno,
++	char *addr, size_t len, int prot)
++{
++	int rval;
++	char prot_buf[512];
++
++	prot_to_str(prot, prot_buf);
++
++	tst_res_(file, lineno, TDEBUG,
++		"mprotect(%p, %ld, %s(%x))", addr, len, prot_buf, prot);
++
++	rval = mprotect(addr, len, prot);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"mprotect(%p, %ld, %s(%x))", addr, len, prot_buf, prot);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"mprotect(%p, %ld, %s(%x)) return value %d",
++			addr, len, prot_buf, prot, rval);
++	}
++
++	return rval;
++}
++#define SAFE_MPROTECT(addr, len, prot) \
++	safe_mprotect(__FILE__, __LINE__, (addr), (len), (prot))
++
+ static inline int safe_ftruncate(const char *file, const int lineno,
+                                  int fd, off_t length)
+ {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
