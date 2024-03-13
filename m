@@ -4,104 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF571C54791
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 11:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 961D0C54791
+	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 12:04:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D1B3D3CFD1A
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 12:56:09 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 118123CFD21
+	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 13:04:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EA1E03CFD24
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:54:55 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 38EEB3C02E6
+ for <ltp@lists.linux.it>; Wed, 13 Mar 2024 13:04:37 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 416146126E5
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 12:54:55 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 07DAF14088D9
+ for <ltp@lists.linux.it>; Wed, 13 Mar 2024 13:04:35 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9D04B1F7C0;
- Wed, 13 Mar 2024 11:54:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1710330894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5214B21C30;
+ Wed, 13 Mar 2024 12:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1710331474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FbOXQoRXT7FPHIG2tz5LEIC0MEmDiap+vKCL3LpneVQ=;
- b=Jm3K1NpuSsbICQRCdL9D3vOXn7PN1s8Yp9q2TI3wg28Wg0TQMHoOJFiWODRXBOm8PPy6N6
- P3uPTC9YYw7xmpS19Dzjdkn+7NAx5jhlxreTZBzVEG19/dcgpNmNuxABPjq3XO/tJIg0PY
- GQEPOPcZ2v1eHGE+1rlq7PswvJEim3g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1710330894;
+ bh=I3qylr81JMXN7Xr7Y1daBeKqZD15GEgBsclEOn1RPO4=;
+ b=DElgWXNbu6r7lnH21Vb8XziHVG96Cq4PlQQ6OGgATyI6kAFdDYiCpdfeakFz/deuZsezdU
+ IWzinB1uOqkS06k2gTyZY6Ze6BFvEdKySnxvzZzJ4dHZDUQg5RPiNvq1B65jo7A0J1eUX2
+ 184I568l9EQcAFF1GXqH3ZJVmLXiIco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1710331474;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FbOXQoRXT7FPHIG2tz5LEIC0MEmDiap+vKCL3LpneVQ=;
- b=KbBFC/lZqcUb7XhF2I8gaOFi8rUiTknPIXDP+tc8ClJBTzuIODEDSvqIoBMRvwGJM6GHYE
- nHap0dPIp9dHfFCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1710330894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ bh=I3qylr81JMXN7Xr7Y1daBeKqZD15GEgBsclEOn1RPO4=;
+ b=IzMhnEplpXuMZvQ4kKZ4fmdqH3Vjcs4zhVSE9KgHJ0Or/iwlC3u9nbX7oEcyZj4NIQquy2
+ j59R8lHkzXcgHSDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1710331474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FbOXQoRXT7FPHIG2tz5LEIC0MEmDiap+vKCL3LpneVQ=;
- b=Jm3K1NpuSsbICQRCdL9D3vOXn7PN1s8Yp9q2TI3wg28Wg0TQMHoOJFiWODRXBOm8PPy6N6
- P3uPTC9YYw7xmpS19Dzjdkn+7NAx5jhlxreTZBzVEG19/dcgpNmNuxABPjq3XO/tJIg0PY
- GQEPOPcZ2v1eHGE+1rlq7PswvJEim3g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1710330894;
+ bh=I3qylr81JMXN7Xr7Y1daBeKqZD15GEgBsclEOn1RPO4=;
+ b=DElgWXNbu6r7lnH21Vb8XziHVG96Cq4PlQQ6OGgATyI6kAFdDYiCpdfeakFz/deuZsezdU
+ IWzinB1uOqkS06k2gTyZY6Ze6BFvEdKySnxvzZzJ4dHZDUQg5RPiNvq1B65jo7A0J1eUX2
+ 184I568l9EQcAFF1GXqH3ZJVmLXiIco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1710331474;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FbOXQoRXT7FPHIG2tz5LEIC0MEmDiap+vKCL3LpneVQ=;
- b=KbBFC/lZqcUb7XhF2I8gaOFi8rUiTknPIXDP+tc8ClJBTzuIODEDSvqIoBMRvwGJM6GHYE
- nHap0dPIp9dHfFCQ==
+ bh=I3qylr81JMXN7Xr7Y1daBeKqZD15GEgBsclEOn1RPO4=;
+ b=IzMhnEplpXuMZvQ4kKZ4fmdqH3Vjcs4zhVSE9KgHJ0Or/iwlC3u9nbX7oEcyZj4NIQquy2
+ j59R8lHkzXcgHSDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66F1313998;
- Wed, 13 Mar 2024 11:54:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yEvgFQ6U8WWxKAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 13 Mar 2024 11:54:54 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 13 Mar 2024 12:54:48 +0100
-Message-Id: <20240313115448.7755-4-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240313115448.7755-1-andrea.cervesato@suse.de>
-References: <20240313115448.7755-1-andrea.cervesato@suse.de>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3687C1397F;
+ Wed, 13 Mar 2024 12:04:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iAxSDFKW8WUFLAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 13 Mar 2024 12:04:34 +0000
+Date: Wed, 13 Mar 2024 13:03:32 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZfGWFAYkcnxpNdww@yuki>
+References: <20240312154847.16379-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
+Content-Disposition: inline
+In-Reply-To: <20240312154847.16379-1-andrea.cervesato@suse.de>
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+X-Spamd-Result: default: False [-6.60 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ URIBL_BLOCKED(0.00)[lkml.org:url,linux.it:url,suse.cz:email,suse.com:email];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ REPLY(-4.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,linux.it:url,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 3/3] Add shmat04 SysV IPC bug reproducer
+Subject: Re: [LTP] [PATCH v3] Refactor fork14 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,163 +110,272 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> SAFE_MMAP() usage
+> Check if memvec is NULL before munmap() and free()
+> 
+>  testcases/kernel/syscalls/fork/fork14.c | 197 ++++++++++--------------
+>  1 file changed, 81 insertions(+), 116 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+> index 93af2ebac..a1cf13c3e 100644
+> --- a/testcases/kernel/syscalls/fork/fork14.c
+> +++ b/testcases/kernel/syscalls/fork/fork14.c
+> @@ -1,143 +1,108 @@
+> -/*********************************************************************
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+>   * Copyright (C) 2014  Red Hat, Inc.
+> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+>   *
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of version 2 of the GNU General Public
+> - * License as published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it
+> - * is free of the rightful claim of any third person regarding
+> - * infringement or the like.  Any license provided herein, whether
+> - * implied or otherwise, applies only to this software file.  Patent
+> - * licenses, if any, provided herein do not apply to combinations of
+> - * this program with other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> - * 02110-1301, USA.
+> - *
+> - * This test is a reporducer for this patch:
+> - *              https://lkml.org/lkml/2012/4/24/328
+> + * This test is a reporducer for this patch: https://lkml.org/lkml/2012/4/24/328
+>   * Since vma length in dup_mmap is calculated and stored in a unsigned
+>   * int, it will overflow when length of mmaped memory > 16 TB. When
+> - * overflow occur, fork will  incorrectly succeed. The patch above
+> - * fixed it.
+> - ********************************************************************/
+> + * overflow occur, fork will incorrectly succeed. The patch above fixed it.
+> + */
+>  
+> -#include <sys/mman.h>
+> -#include <sys/wait.h>
+> -#include <stdio.h>
+> -#include <unistd.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "lapi/abisize.h"
+> +#include "tst_test.h"
+>  
+> -char *TCID = "fork14";
+> -int TST_TOTAL = 1;
+> +#ifndef TST_ABI32
+>  
+> -#define GB		(1024 * 1024 * 1024L)
+> +#include <stdlib.h>
+> +#include <sys/wait.h>
+>  
+> -/* set mmap threshold to 16TB */
+>  #define LARGE		(16 * 1024)
+>  #define EXTENT		(16 * 1024 + 10)
+>  
+> -static char **pointer_vec;
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -static int  fork_test(void);
+> +static char **memvec;
+>  
+> -int main(int ac, char **av)
+> +static void run(void)
+>  {
+> -	int lc, reproduced;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -/*
+> - * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
+> - * Since a 32bit program can't mmap so many memory.
+> - */
+> -#ifdef TST_ABI32
+> -	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
+> -#endif
+> -	setup();
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> +	int i, j, ret;
+> +	pid_t pid;
+> +	void *mem;
+> +	int prev_failed = 0;
+> +	int passed = 1;
+>  
+> -		reproduced = fork_test();
+> -		if (reproduced == 0)
+> -			tst_resm(TPASS, "fork failed as expected.");
+> -	}
+> -	cleanup();
+> -	tst_exit();
+> -}
+> +	for (i = 0; i < EXTENT; i++) {
+> +		mem = SAFE_MMAP(NULL, 1 * TST_GB,
+> +			PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS,
+> +			0, 0);
 
-This is an LTP port of a SysV bug reproducer provided by Michal Hocko.
+I do not think that it's good to change the mmap() with explicit
+handling to SAFE_MMAP() here. We allocate absurdly large amount of
+memory and the previous code just produced TCONF if we failed too many
+times.
 
-When debugging issues with a workload using SysV shmem, Michal Hocko has
-come up with a reproducer that shows how a series of mprotect()
-operations can result in an elevated shm_nattch and thus leak of the
-resource.
+> -static void setup(void)
+> -{
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	TEST_PAUSE;
+> +		memvec[i] = mem;
+>  
+> -	pointer_vec = SAFE_MALLOC(cleanup, EXTENT * sizeof(char *));
+> -}
+> +		pid = fork();
+>  
+> -static void cleanup(void)
+> -{
+> -	free(pointer_vec);
+> -}
+> -
+> -static int fork_test(void)
+> -{
+> -	int i, j, prev_failed = 0, fails = 0, cnt = 0;
+> -	int reproduced = 0;
+> -	void *addr;
+> -
+> -	for (i = 0; i < EXTENT; i++) {
+> -		addr = mmap(NULL, 1 * GB, PROT_READ | PROT_WRITE,
+> -			    MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> -		if (addr == MAP_FAILED) {
+> -			pointer_vec[i] = NULL;
+> -			fails++;
+> -			/*
+> -			 * EXTENT is "16*1024+10", if fails count exceeds 10,
+> -			 * we are almost impossible to get an vm_area_struct
+> -			 * sized 16TB
+> +		if (pid == -1) {
+> +			/* keep track of the failed fork() and verify that next one
+> +			 * is failing as well.
+>  			 */
+> -			if (fails == 11) {
+> -				tst_brkm(TCONF, cleanup, "mmap() fails too many"
+> -					 "times, so we are almost impossible to"
+> -					 " get an vm_area_struct sized 16TB.");
+> -			}
+> -		} else {
+> -			pointer_vec[i] = addr;
+> +			prev_failed = 1;
+> +			continue;
+>  		}
+> -		cnt++;
+>  
+> -		switch (tst_fork()) {
+> -		case -1:
+> -			prev_failed = 1;
+> -		break;
+> -		case 0:
+> +		if (!pid)
+>  			exit(0);
+> -		default:
+> -			SAFE_WAITPID(cleanup, -1, NULL, 0);
+> -
+> -			if (prev_failed > 0 && i >= LARGE) {
+> -				tst_resm(TFAIL, "Fork succeeds incorrectly");
+> -				reproduced = 1;
+> -				goto clear_memory_map;
+> -			}
+> +
+> +		ret = waitpid(pid, NULL, 0);
+> +		if (ret == -1 && errno != ECHILD)
+> +			tst_brk(TBROK | TERRNO, "waitpid() error");
+> +
+> +		if (prev_failed && i >= LARGE) {
+> +			passed = 0;
+> +			break;
+>  		}
+> +
+> +		prev_failed = 0;
+> +
+> +		tst_res(TINFO, "fork() passed at %d attempt", i);
+>  	}
+>  
+> -clear_memory_map:
+> -	for (j = 0; j < cnt; j++) {
+> -		if (pointer_vec[j])
+> -			SAFE_MUNMAP(cleanup, pointer_vec[j], 1 * GB);
+> +	for (j = 0; j < i; j++) {
+> +		if (memvec[j])
+> +			SAFE_MUNMAP(memvec[j], 1 * TST_GB);
+>  	}
+>  
+> -	return reproduced;
+> +	if (passed)
+> +		tst_res(TPASS, "fork() failed as expected");
+> +	else
+> +		tst_res(TFAIL, "fork() succeeded incorrectly");
+>  }
+> +
+> +static void setup(void)
+> +{
+> +	memvec = SAFE_MALLOC(EXTENT * sizeof(char *));
+> +	memset(memvec, 0, EXTENT);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	for (long i = 0; i < EXTENT; i++) {
+> +		if (memvec && memvec[i])
+> +			SAFE_MUNMAP(memvec[i], 1 * TST_GB);
+> +	}
+> +
+> +	if (memvec)
+> +		free(memvec);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.forks_child = 1,
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                              |  1 +
- runtest/syscalls-ipc                          |  1 +
- .../kernel/syscalls/ipc/shmat/.gitignore      |  1 +
- testcases/kernel/syscalls/ipc/shmat/shmat04.c | 92 +++++++++++++++++++
- 4 files changed, 95 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ipc/shmat/shmat04.c
+This is apparently a regression test for:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fab870ace..4ed2b5602 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1444,6 +1444,7 @@ setxattr03 setxattr03
- shmat01 shmat01
- shmat02 shmat02
- shmat03 shmat03
-+shmat04 shmat04
- 
- shmctl01 shmctl01
- shmctl02 shmctl02
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index df41140a7..9860394de 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -49,6 +49,7 @@ semop03 semop03
- 
- shmat01 shmat01
- shmat02 shmat02
-+shmat04 shmat04
- 
- shmctl01 shmctl01
- shmctl02 shmctl02
-diff --git a/testcases/kernel/syscalls/ipc/shmat/.gitignore b/testcases/kernel/syscalls/ipc/shmat/.gitignore
-index 2b972f8f2..5600b2742 100644
---- a/testcases/kernel/syscalls/ipc/shmat/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/shmat/.gitignore
-@@ -1,3 +1,4 @@
- /shmat01
- /shmat02
- /shmat03
-+/shmat04
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat04.c b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-new file mode 100644
-index 000000000..ed03f8260
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 SUSE LLC
-+ * Author: Michal Hocko <mhocko@suse.com>
-+ * LTP port: Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * When debugging issues with a workload using SysV shmem, Michal Hocko has
-+ * come up with a reproducer that shows how a series of mprotect()
-+ * operations can result in an elevated shm_nattch and thus leak of the
-+ * resource.
-+ *
-+ * The problem is caused by wrong assumptions in vma_merge() commit
-+ * 714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
-+ * mergeability test"). The shmem vmas have a vma_ops->close callback
-+ * that decrements shm_nattch, and we remove the vma without calling it.
-+ *
-+ * Patch: https://lore.kernel.org/all/20240222215930.14637-2-vbabka@suse.cz/
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "libnewipc.h"
-+
-+static int segment_id = -1;
-+static int key_id;
-+static int page_size;
-+static size_t segment_size;
-+
-+static void run(void)
-+{
-+	struct shmid_ds shmid_ds;
-+	void *sh_mem;
-+
-+	segment_id = SAFE_SHMGET(
-+		key_id,
-+		segment_size,
-+		IPC_CREAT | IPC_EXCL | 0600);
-+
-+	sh_mem = SAFE_SHMAT(segment_id, NULL, 0);
-+
-+	tst_res(TINFO, "Attached at %p. key: %d - size: %lu",
-+		sh_mem, segment_id, segment_size);
-+
-+	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-+
-+	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-+
-+	SAFE_MPROTECT(sh_mem + page_size, page_size, PROT_NONE);
-+	SAFE_MPROTECT(sh_mem, 2 * page_size, PROT_WRITE);
-+
-+	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-+
-+	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-+	tst_res(TINFO, "Delete attached memory");
-+
-+	SAFE_SHMDT(sh_mem);
-+	SAFE_SHMCTL(segment_id, IPC_STAT, &shmid_ds);
-+
-+	tst_res(TINFO, "Number of attaches: %lu", shmid_ds.shm_nattch);
-+
-+	SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
-+	segment_id = -1;
-+
-+	TST_EXP_EQ_LU(shmid_ds.shm_nattch, 0);
-+}
-+
-+static void setup(void)
-+{
-+	key_id = GETIPCKEY() + 1;
-+	page_size = getpagesize();
-+
-+	tst_res(TINFO, "Key id: %d", key_id);
-+	tst_res(TINFO, "Page size: %d", page_size);
-+
-+	segment_size = 3 * page_size;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (segment_id != -1)
-+		SAFE_SHMCTL(segment_id, IPC_RMID, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
+7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
+
+let's add it to the metadata here.
+
+> +};
+> +
+> +#else /* TST_ABI32 */
+> +	TST_TEST_TCONF("Test doesn't supports 32bits architecture");
+> +#endif
+> -- 
+> 2.35.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
