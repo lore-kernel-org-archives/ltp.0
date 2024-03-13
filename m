@@ -4,64 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA77CC54E66
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 21:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D88C54E66
+	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 23:50:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 393623D05EB
-	for <ltp@archiver.kernel.org>; Wed, 13 Mar 2024 22:16:12 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 3AAB73D05FE
+	for <ltp@archiver.kernel.org>; Thu, 14 Mar 2024 00:50:51 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1BA53CE84D
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 22:15:57 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id E064A3C7FFE
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 00:50:35 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=canonical.com (client-ip=185.125.188.120;
+ helo=smtp-relay-canonical-0.canonical.com;
+ envelope-from=po-hsu.lin@canonical.com; receiver=lists.linux.it)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DD520140076F
- for <ltp@lists.linux.it>; Wed, 13 Mar 2024 22:15:56 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A0E8D1A00E62
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 00:50:34 +0100 (CET)
+Received: from Phocidae.conference (1.general.phlin.uk.vpn [10.172.194.38])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F032E1F7EF;
- Wed, 13 Mar 2024 21:15:55 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E54F139C2;
- Wed, 13 Mar 2024 21:15:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IeP9DIsX8mWEYgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 13 Mar 2024 21:15:55 +0000
-Date: Wed, 13 Mar 2024 22:15:49 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240313211549.GA616693@pevik>
-References: <20240102223935.1012840-1-pvorel@suse.cz>
- <20240102223935.1012840-2-pvorel@suse.cz>
- <460eb065-7a3c-44fd-a9fe-88a842ef4ff8@suse.cz>
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 379FF40EE7
+ for <ltp@lists.linux.it>; Wed, 13 Mar 2024 23:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1710373833;
+ bh=IR3ie2RZmvmr0mWP269rp4krI8AR0I4Y1st7Pm01yUU=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=o32ilPfhlltC041z1a6OpofNJ/sp0nI6wfvhpIsjJBzI94IeP+wZfYQT9YDzuOrxx
+ N8NkukjyQGd76RBQcCUJW5BInETkCJKMwLHenAppEHdEk550d3bnjDlvWNXyFX3SK1
+ GCNq57RBg8xcMeX7lp3Wvupe51R9FJvAlJ6XLmLkHeNZJ41g/aIrRkwegDbFbQXiPl
+ s5eKotMUWJ0lXAcJIvCFt5QDY+TBLE9EdqDQ3Eh9z6VlWjuBbo0GM5ASU5Y/1Cr6YI
+ DWxYh7vlDpAo7rkIsWAPKMEh5XovkNEyXSDky1J+RI1aLBx8U87QhQ0f7MB/8B4o8X
+ gJXi6l0B3vqsw==
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+To: ltp@lists.linux.it
+Date: Thu, 14 Mar 2024 07:50:11 +0800
+Message-Id: <20240313235011.1157132-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <460eb065-7a3c-44fd-a9fe-88a842ef4ff8@suse.cz>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: F032E1F7EF
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] tst_fs_setup.c: Add tst_ prefix to new API
- functions
+Subject: [LTP] [PATCH v1] scenario_groups/default: remove connectors test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,23 +63,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+The connectors test has been merged into kernel_misc with commit
+9b642d89c0 ("runtest: Merge runtest/connectors to kernel_misc").
 
-> Hi,
-> for both patches:
-> Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ scenario_groups/default | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks, merged!
+diff --git a/scenario_groups/default b/scenario_groups/default
+index f17b2061a..ec77d8fb8 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -16,7 +16,6 @@ controllers
+ filecaps
+ cap_bounds
+ fcntl-locktests
+-connectors
+ power_management_tests
+ hugetlb
+ commands
+-- 
+2.25.1
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
