@@ -4,104 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 419D2C54E5D
-	for <ltp@archiver.kernel.org>; Thu, 14 Mar 2024 08:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5384CC5475B
+	for <ltp@archiver.kernel.org>; Thu, 14 Mar 2024 10:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1710411260; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=uT44GMggDJNAXLKZ6+T68Fdy+zeiEnyu3qZBHIYIllw=;
+ b=in8sq4tNCa/LsmD7387EYGLxw1OQBFHaP4Lqj/MjtvHEDDHNMAwoxBPOThh/Kidhm+phl
+ x9rLIsWgLulfUjKsR7NnHK9G1iTGyJ1u4mVv0i3+VflpdXZ8NbkhJy151gAkddcN4f3uW66
+ wgHinrJLe8MgPkGdHSvESxddV7DgCFM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3233E3CFCE6
-	for <ltp@archiver.kernel.org>; Thu, 14 Mar 2024 09:57:00 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A4E3B3CFCED
+	for <ltp@archiver.kernel.org>; Thu, 14 Mar 2024 11:14:20 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 33F313CD7F4
- for <ltp@lists.linux.it>; Thu, 14 Mar 2024 09:56:44 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=meted@linux.ibm.com;
+ by picard.linux.it (Postfix) with ESMTPS id 651A33C81CC
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 11:13:58 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.49;
+ helo=esa3.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8CB44600447
- for <ltp@lists.linux.it>; Thu, 14 Mar 2024 09:56:42 +0100 (CET)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42E8Md2X017088; Thu, 14 Mar 2024 08:56:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=S3sa/G25T2O3uUHmgN8u9hhEIyoXLAlATuHh0TTlR1I=;
- b=C8kE5EV3qD6s2WbjjWIe655LJ4fZdhCJ7750USHgSSQgm8CDQN/kgoS5pf9+iVz1MifA
- GsYSuNasZzSnjQghROV6hgSe/8ZROwIpDzO3KXaHpAEgnddlmNe9FmyEujedcsO79ZbU
- 3vIOQ5Wmi8jiF2Gv3ws1xLMOY+66NcLDhJyuLUGFLy59kkmYaf6/VNRNTkY5B0enFSwT
- UO7eeRUBvZ69vbtKtXKXNvYKNEF3qBVAmU2lg4qcHn/+55HT9IuFzw2cFq6dPhps8FZi
- MncfPtlGc6FOtuOqcgo8ELwiNjcsDOELeMpxK7D5P4FwrfMa8QlhYWwJ2DBbDahEeXvp 9w== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wuwnure6r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 14 Mar 2024 08:56:40 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42E8n7vi001497;
- Thu, 14 Mar 2024 08:56:40 GMT
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wuwnure6k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 14 Mar 2024 08:56:40 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42E5pTU7018582; Thu, 14 Mar 2024 08:56:39 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws4t2bbwf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 14 Mar 2024 08:56:39 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
- [10.20.54.100])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 42E8uZcf30212384
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 14 Mar 2024 08:56:37 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A8CE32004D;
- Thu, 14 Mar 2024 08:56:35 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7E42E20040;
- Thu, 14 Mar 2024 08:56:35 +0000 (GMT)
-Received: from [9.152.212.129] (unknown [9.152.212.129])
- by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 14 Mar 2024 08:56:35 +0000 (GMT)
-Message-ID: <0ce23c2c-6fdb-4f6b-84e1-080ec443ab85@linux.ibm.com>
-Date: Thu, 14 Mar 2024 09:56:37 +0100
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-References: <20240307092603.16269-1-meted@linux.ibm.com>
- <CAOQ4uxhFB2Gv2+8N-sc9a1+Kz1KqW+bniJe0JhVSHsaMWnxrmQ@mail.gmail.com>
- <3700d7c9-2f7e-4946-be27-87f500ccb6dd@linux.ibm.com>
- <CAOQ4uxgrGwiwpsLinWvVER-2W3AJxA0tR3qox-V4rxnt=OTTig@mail.gmail.com>
- <20240312131024.GA472499@pevik>
-From: Mete Durlu <meted@linux.ibm.com>
-In-Reply-To: <20240312131024.GA472499@pevik>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zrWoDwzl_Qr4-Nvyjeb2PhCTKfC0D5NZ
-X-Proofpoint-ORIG-GUID: avIWlGL5QicVQ0IJ6XeVPDGy969ObIcL
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 06066143BB06
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 11:13:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1710411236; x=1741947236;
+ h=from:to:subject:date:message-id:in-reply-to:references:
+ mime-version:content-transfer-encoding;
+ bh=lSyNimui76nBC1XEHvK3XLy06PLNr17wGklABVQQ7H0=;
+ b=Ccdl3r34emye3xB5xV0+KIBY0iDNiDy9Obuxf4jL+SCbzgceyWMmnwtv
+ /UfqUVOZYnaTiWgPmsaw+mIXoPgFBey2Nq1t8KR6piw7BKnPEK3hewqQ5
+ nOWCJu0mnHUx3iYBcDAZWxoQr8ujrRWgd7oKSnxlp67wfKD5dhItIuild
+ I+1YpHIy3SqglS3BQlDU9NoMUrxC9o1ATwE+8cyHWUgxK595HXW4RpN3T
+ kocodYHFpuTAyjKHZxY2ffJ/+6hoCQ0VDgvcrj7C4ugdAXH4eZHoC3qqP
+ TCWU3f9bdjobRJEf08C4OyTSe6eQpuKMq61RRMZK2Gmi+0e82K8y006nz w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="152242664"
+X-IronPort-AV: E=Sophos;i="6.07,125,1708354800"; d="scan'208";a="152242664"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Mar 2024 19:13:48 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 31E479D107
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 19:13:46 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 72A974262F
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 19:13:45 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id F14AF6B4D4
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 19:13:44 +0900 (JST)
+Received: from irides.g08.fujitsu.local (unknown [10.167.226.114])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 7F7DF1A006B
+ for <ltp@lists.linux.it>; Thu, 14 Mar 2024 18:13:44 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Thu, 14 Mar 2024 18:13:44 +0800
+Message-Id: <20240314101344.4000544-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240121161159.4106646-2-ruansy.fnst@fujitsu.com>
+References: <20240121161159.4106646-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_07,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 spamscore=0
- phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403140061
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28250.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28250.006
+X-TMASE-Result: 10--18.096100-10.000000
+X-TMASE-MatchedRID: RDj/zJLQkPaGoQD3amn49Thk1eHxQ+sg4SkIdSwphgbebsVFPGXfZNi4
+ BFX4IEpYPJC+0dTlqwKw1m5gC0nDzR2P280ZiGmRrMZ+BqQt2NrBOVz0Jwcxl7SwC3zqzycU1rf
+ lznbz4mBudEHjsosnVDMuZ8ZjqIORgX73VD8TMa2TeuX4xo2DEFF3bcwsKRyO718py3auWMvPq4
+ pzlp2/ZQvfsX3t2PMVh2gypkR3gFeiSQnnYlpIfje9MF4SNA1+MoS2PLq1B75r5Rm/tuDWmbiRF
+ JnWDxklLP3vyLlaZAvHH37LPHLkkNBUMX40Rzs4vR08UROkEAdgg7HO8z2tNo5V1ACIyZtnsazE
+ WgN8IaA8fmBySkQxbwb1koAed1u/kMfljouhjsFM+xVFI1xtYzIuXFaFL1P2YUdWP7oX6siqzBk
+ 3OfQMkIR04YHrC/j2HzhZ+YT9aC+FWCPo3rDAcNEJQUcCarUj/vFScN1pmCxrRM6wvXgDaaQtHl
+ wwSfPRmiLgWTVbD0+AMuqetGVetksDkkP3zIjq3QfwsVk0UbslCGssfkpInQ==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] fanotify14: fix anonymous pipe testcases
+Subject: [LTP] [PATCH v2] getxattr01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,83 +102,271 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+From: Shiyang Ruan via ltp <ltp@lists.linux.it>
+Reply-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMy8xMi8yNCAxNDoxMCwgUGV0ciBWb3JlbCB3cm90ZToKPiBIaSBNZXRlLCBBbWlyLCBMaSwK
-PiAKPiBbIENjIExpIHdobyBrbm93cyBtb3JlIGFib3V0IFNFTGludXggOikgXQo+IAo+PiBPbiBN
-b24sIE1hciAxMSwgMjAyNCBhdCA0OjUz4oCvUE0gTWV0ZSBEdXJsdSA8bWV0ZWRAbGludXguaWJt
-LmNvbT4gd3JvdGU6Cj4gCj4+PiBPbiAzLzgvMjQgMTQ6MzksIEFtaXIgR29sZHN0ZWluIHdyb3Rl
-Ogo+Pj4+IE9uIEZyaSwgTWFyIDgsIDIwMjQgYXQgMjo0M+KAr1BNIE1ldGUgRHVybHUgPG1ldGVk
-QGxpbnV4LmlibS5jb20+IHdyb3RlOgo+IAo+Pj4+PiBXaGVuIFNFbGludXggaXMgY29uZmlndXJl
-ZCAoY29tZXMgb3V0IG9mIHRoZSBib3ggb24gbW9zdCBkaXN0cm9zKSBhbmQKPj4+Pj4gaXMgY29u
-ZmlndXJlZCB0byBlbmZvcmNpbmcgKHRoZSBkZWZhdWx0IGNvbmZpZ3VyYXRpb24pLCB0ZXN0cyBy
-ZWxhdGVkCj4+Pj4+IHRvIGFub255bW91cyBwaXBlcyByZXR1cm4gRUFDQ0VTIGluc3RlYWQgb2Yg
-dGhlIGV4cGVjdGVkIGVycm5vIEVJTlZBTC4KPj4+Pj4gRml4IHRoZSBmYWlsdXJlcyBjYXVzZWQg
-YnkgdGhlIGFib3ZlIGNvbmRpdGlvbiBieSBjaGVja2luZyB0aGUgU0VsaW51eAo+Pj4+PiBjb25m
-aWd1cmF0aW9uIGFuZCBhZGp1c3RpbmcgdGhlIGVycm5vIGFjY29yZGluZ2x5Lgo+IAo+Pj4+IEhp
-IE1ldGUsCj4gCj4+Pj4gSXNuJ3QgdGhlIG91dGNvbWUgb2YgdGhlIHRlc3QgZGVwZW5kZW50IG9u
-IHRoZSBTRXBvbGljeSBydWxlcz8KPj4+PiBOb3Qgb25seSBpZiBpdCBpcyBlbmZvcmNlZD8KPiAK
-Pj4+PiBTb3JyeSBJIGhhdmUgdmVyeSBsaXR0bGUgZXhwZXJpZW5jZSB3aXRoIFNFTGludXguCj4g
-Cj4gCj4+PiBIaSBBbWlyLAo+IAo+Pj4gSSBkb24ndCBoYXZlIFNFbGludXggZXhwZXJpZW5jZSBl
-aXRoZXIsIG9uIG15IHByb3Bvc2VkIHBhdGNoIEkgb25seQo+Pj4gY29uc2lkZXJlZCB0aGUgZGVm
-YXVsdCBiZWhhdmlvciBidXQgeW91IGFyZSByaWdodCBkaWZmZXJlbnQgU0VsaW51eAo+Pj4gY29u
-ZmlndXJhdGlvbnMgbWF5IGxlYWQgdG8gZGlmZmVyZW50IG91dGNvbWVzLiBJIHNraW1tZWQgb3Zl
-ciBTRWxpbnV4Cj4+PiB3aWtpIGEgbGl0dGxlIGFuZCBub3cgSSB0aGluayB0cnlpbmcgdG8gdmVy
-aWZ5IHRoZSBTRWxpbnV4IHBvbGljeSB3b3VsZAo+Pj4gYmUgdG9vIGN1bWJlcnNvbWUuIEluc3Rl
-YWQgSSBwcm9wb3NlIHR3byBkaWZmZXJlbnQgc29sdXRpb25zLgo+IAo+Pj4gMS4gV2UgY2FuIHNr
-aXAgdGhlIGFub255bW91cyBwaXBlIHRlc3QgY2FzZXMgd2hlbiBTRWxpbnV4IGlzIGluCj4+PiAg
-ICAgIGVuZm9yY2luZyBzdGF0ZS4KPiAKPj4+IG9yCj4gCj4+PiAyLiBXZSBjYW4gYWNjZXB0IGJv
-dGggRUFDRVNTIGFuZCBFSU5WQUwgYXMgdmFsaWQgZXJybm9zIHdoZW4gU0VsaW51eCBpcwo+Pj4g
-ICAgICBpbiBlbmZvcmNpbmcgc3RhdGUuCj4gCj4+PiBQZXJzb25hbGx5IG9wdGlvbiAyIHNvdW5k
-cyBiZXR0ZXIgdG8gbWUgc2luY2Ugd2Ugd291bGQgZ2V0IG1vcmUgY292ZXJhZ2UKPj4+IHRoYXQg
-d2F5LiBJZiBlaXRoZXIgd2F5IHNvdW5kcyBnb29kIEkgY2FuIHNlbmQgYSB2MiByaWdodCBhd2F5
-LiBIb3cgZG9lcwo+Pj4gdGhhdCBzb3VuZD8KPiAKPj4gb3B0aW9uIDIgc291bmRzIGdvb2QgdG8g
-bWUuCj4gCj4gWWVzLCBFQUNFU1MgZm9yIGVuZm9yY2VkIFNFTGludXggaXMgd2hhdCB3ZSB3YW50
-Lgo+IAo+IE1ldGUsIHRoYW5rIHlvdSBmb3IgaGFuZGxpbmcgdGhpcy4gSSBjYW4gY29uZmlybSBp
-dCdzIGEgcHJvYmxlbSBvbiBTRUxpbnV4Cj4gZW5mb3JjZWQuIEFuZCBJIHN1cHBvc2UgdGhlIGN1
-cnJlbnQgY29kZSB3b3JrcywgYnV0IHdlIG5lZWQgc29tZSBtb2RpZmljYXRpb25zCj4gKHBsZWFz
-ZSBsZXQgbWUga25vdyBpZiB5b3UgZG9uJ3QgaGF2ZSB0aW1lIGZvciB2Mik6CgpIaSwKCkkgd2Fz
-IGhvcGluZyB0byBzb2x2ZSB0aGlzIHdpdGggYSBxdWljay9zbWFsbCBmaXggYnV0IEkgZ3Vlc3Mg
-dGhlcmUgaXMKbW9yZSB0byBkby4KCj4gKiBQdXQgdHN0X3NlbGludXhfZW5mb3JjaW5nKCkgZnVu
-Y3Rpb24gaW50byBMVFAgbGlicmFyeTogeW91IG5lZWQgdG8gY3JlYXRlCj4gbGliL3RzdF9zZWxp
-bnV4LmMgYW5kIGluY2x1ZGUvdHN0X3NlbGludXguYy4gRm9yIGluc3BpcmF0aW9uIGhhdmUgbG9v
-ayBhdAo+IGxpYi90c3RfbG9ja2Rvd24uYyB2diBpbmNsdWRlL3RzdF9sb2NrZG93bi5oLiBUaGUg
-cmVhc29uIGlzIG9idmlvdXM6IHNvb25lciBvcgo+IGxhdGVyIHdlIHdpbGwgcmV1c2UgdGhpcyBm
-dW5jdGlvbmFsaXR5LgoKSWYgdGhlcmUgaXMgbm8gcnVzaCBmb3IgdGhpcyBJIGNhbiBhZGQgdGhp
-cyBpbiBhcyBhIHNlcGFyYXRlIHBhdGNoCnNlcmllcywgYnV0IEkgYW0gbm90IHN1cmUgd2hlbiBJ
-IGNhbiBzdGFydC4gSWYgdGhpcyBpcyB1cmdlbnQgdGhlbgpwcm9iYWJseSBzb21lb25lIGVsc2Ug
-c2hvdWxkIGRvIGl0LgoKPiAqIHVzZSBhY2Nlc3MoKSwgcHJpbnQgYWxzbyBUSU5GTyAoc2ltaWxh
-cmx5IHRvIGxpYi90c3RfbG9ja2Rvd24uYykKPiAKPiAqIC9zeXMvZnMvc2VsaW51eCB2cy4gL3Nl
-bGludXgsIHNlbGludXg9MSB2cy4gc2VjdXJpdHk9c2VsaW51eCAoL3Byb2MvY21kbGluZSkKPiBA
-TGk6IFRMO0RSOiByZWFkaW5nIGp1c3QgL3N5cy9mcy9zZWxpbnV4L2VuZm9yY2UgTEdUTSwgYnV0
-IHBsZWFzZSBjaGVjawo+IAo+IEkgc3VwcG9zZSB3ZSBjYW4gcmVseSBvbiBzZWxpbnV4ZnMgYmVp
-bmcgbW91bnRlZCBvbiAvc3lzL2ZzL3NlbGludXg6Cj4gCj4gJCBtb3VudCB8IGdyZXAgLWkgc2Vs
-aW51eAo+IHNlbGludXhmcyBvbiAvc3lzL2ZzL3NlbGludXggdHlwZSBzZWxpbnV4ZnMgKHJ3LG5v
-c3VpZCxub2V4ZWMscmVsYXRpbWUpCj4gCj4gTG9uZyB0aW1lIGFnbyB0aGUgZGlyZWN0b3J5IHdh
-cyBqdXN0IC9zZWxpbnV4IChSSEVMIDUgb3IgNj8pLCB0aGF0J3Mgd2h5IGl0J3MKPiBzdGlsbCBj
-aGVja2VkIGluIHNoZWxsIEFQSSB0ZXN0Y2FzZXMvbGliL3RzdF9zZWN1cml0eS5zaC4gVGhlc2Ug
-c3lzdGVtcyBhcmUKPiBxdWl0ZSBvbGQgdG8gcnVuIG5ld2VzdCBMVFAsIHJpZ2h0PyBGcm9tIGQ0
-MTQxNWViNWVkYWUgWzFdIEkgc2VlIGl0IHdhcyBrZXJuZWwKPiAzLjAgPT4gd2F5IHRvbyBvbGQg
-dG8gY29uc2lkZXIuCj4gCj4gSSBndWVzcyB3ZSBjYW5ub3QgcmVseSBvbiBzZWxpbnV4PTEgb3Ig
-c2VjdXJpdHk9c2VsaW51eCB0byBkZXRlY3QgZW5mb3JjZSBtb2RlLgo+IFRoZXJlIGlzIFNFQ1VS
-SVRZX1NFTElOVVhfQk9PVFBBUkFNLCB3aGVuIGRpc2FibGVkIHRodXMgdGhlcmUgaXMgbm8gc2Vs
-aW51eD0xCj4gdmFyaWFibGUgaW4gL3Byb2MvY21kbGluZSwgdGh1cyB3ZSBjYW5ub3QgcmVseSBv
-biBpdCAoaW5zdGVhZCBvZiB1c2luZwo+IC9zeXMvZnMvc2VsaW51eCkuCj4gCj4gQWxzbywga2Vy
-bmVsIDwgdjUuMSBoYWQgU0VDVVJJVFlfU0VMSU5VWF9CT09UUEFSQU1fVkFMVUUgKHJlbW92ZWQg
-aW4KPiBiZTZlYzg4ZjQxYmE5NCBpbiB2NS4xIFsyXSksIGFub3RoZXIgcmVhc29uIG5vdCB0byBy
-ZWx5IG9uIHNlbGludXggaW4KPiAvcHJvYy9jbWRsaW5lLgo+IE5PVEU6IGFzIEkgbm90ZWQgcHJl
-dmlvdXNseSB3ZSBoYXZlIHN1cHBvcnQgZm9yIFNFTGludXggKGFuZCBBcHBBcm1vcikgZGV0ZWN0
-aW9uCj4gaW4gc2hlbGwgQVBJIHRlc3RjYXNlcy9saWIvdHN0X3NlY3VyaXR5LnNoLCB3ZSBtaWdo
-dCBsYXRlciBjcmVhdGUgc2ltcGxlIEMKPiBiaW5hcnkgaW4gdGVzdGNhc2VzL2xpYi8gd2hpY2gg
-d2lsbCBjYWxsIGZ1bmN0aW9uIHlvdSBjcmVhdGUgaW4gQyBBUEkgKHNpbWlsYXJseQo+IHRvIHRl
-c3RjYXNlcy9saWIvdHN0X2xvY2tkb3duX2VuYWJsZWQuYyksIGJ1dCB3ZSBjYW4gaWdub3JlIGl0
-IG5vdy4KPiAKPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+IAo+IFsxXSBodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0
-Lz9pZD1kNDE0MTVlYjVlZGFlCj4gWzJdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9s
-aW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPWJlNmVjODhmNDFi
-YTk0Cj4gCj4+IFRoYW5rcywKPj4gQW1pci4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBz
-Oi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+---
+Changes since v1:
+1. removed comments above tcases;
+2. simplified check logic;
+3. replaced close() with SAFE_CLOSE();
+4. Description: merged the 4th point into the 3rd one according to
+   the check logic;
+
+Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+---
+ .../kernel/syscalls/getxattr/getxattr01.c     | 188 +++++-------------
+ 1 file changed, 54 insertions(+), 134 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
+index cec802a33..1564e7c28 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr01.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+@@ -1,28 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (C) 2011  Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * Copyright (c) Linux Test Project, 2012-2024
+  */
+ 
+-/*
++/*\
++ * [Description]
++ *
+  * Basic tests for getxattr(2) and make sure getxattr(2) handles error
+  * conditions correctly.
+  *
+@@ -31,112 +15,53 @@
+  *    getxattr(2) should return -1 and set errno to ENODATA
+  * 2. Buffer size is smaller than attribute value size,
+  *    getxattr(2) should return -1 and set errno to ERANGE
+- * 3. Get attribute, getxattr(2) should succeed
+- * 4. Verify the attribute got by getxattr(2) is same as the value we set
++ * 3. Get attribute, getxattr(2) should succeed, and the attribute got by
++ *    getxattr(2) should be same as the value we set
+  */
+ 
+-#include "config.h"
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-#include <stdio.h>
+ #include <stdlib.h>
+-#include <string.h>
++#include "tst_test.h"
+ #ifdef HAVE_SYS_XATTR_H
+ # include <sys/xattr.h>
+ #endif
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-char *TCID = "getxattr01";
+ 
+ #ifdef HAVE_SYS_XATTR_H
+-#define XATTR_TEST_KEY "user.testkey"
+-#define XATTR_TEST_VALUE "this is a test value"
+-#define XATTR_TEST_VALUE_SIZE 20
+-#define BUFFSIZE 64
+-
+-static void setup(void);
+-static void cleanup(void);
++#define XATTR_TEST_NOKEY	"user.nosuchkey"
++#define XATTR_TEST_KEY		"user.testkey"
++#define XATTR_TEST_VALUE	"this is a test value"
++#define XATTR_TEST_VALUE_SIZE	20
++#define BUFFSIZE		64
+ 
+-char filename[BUFSIZ];
++static char filename[BUFSIZ];
+ 
+-struct test_case {
++static struct tcase {
+ 	char *fname;
+ 	char *key;
+ 	char *value;
+ 	size_t size;
+ 	int exp_err;
++} tcases[] = {
++	{ filename, XATTR_TEST_NOKEY, NULL, BUFFSIZE - 1, ENODATA },
++	{ filename, XATTR_TEST_KEY, NULL, 1, ERANGE },
++	{ filename, XATTR_TEST_KEY, NULL, BUFFSIZE - 1, 0 },
+ };
+-struct test_case tc[] = {
+-	{			/* case 00, get non-existing attribute */
+-	 .fname = filename,
+-	 .key = "user.nosuchkey",
+-	 .value = NULL,
+-	 .size = BUFFSIZE - 1,
+-	 .exp_err = ENODATA,
+-	 },
+-	{			/* case 01, small value buffer */
+-	 .fname = filename,
+-	 .key = XATTR_TEST_KEY,
+-	 .value = NULL,
+-	 .size = 1,
+-	 .exp_err = ERANGE,
+-	 },
+-	{			/* case 02, get existing attribute */
+-	 .fname = filename,
+-	 .key = XATTR_TEST_KEY,
+-	 .value = NULL,
+-	 .size = BUFFSIZE - 1,
+-	 .exp_err = 0,
+-	 },
+-};
+-
+-int TST_TOTAL = sizeof(tc) / sizeof(tc[0]) + 1;
+ 
+-int main(int argc, char *argv[])
++static void run(unsigned int n)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < (int)ARRAY_SIZE(tc); i++) {
+-			TEST(getxattr(tc[i].fname, tc[i].key, tc[i].value,
+-				      tc[i].size));
+-
+-			if (TEST_ERRNO == tc[i].exp_err) {
+-				tst_resm(TPASS | TTERRNO, "expected behavior");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
+-					 "- expected errno %d - Got",
+-					 tc[i].exp_err);
+-			}
+-		}
+-
+-		if (TEST_RETURN != XATTR_TEST_VALUE_SIZE) {
+-			tst_resm(TFAIL,
+-				 "getxattr() returned wrong size %ld expected %d",
+-				 TEST_RETURN, XATTR_TEST_VALUE_SIZE);
+-			continue;
+-		}
+-
+-		if (memcmp(tc[i - 1].value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
+-			tst_resm(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
+-				 XATTR_TEST_VALUE, tc[i - 1].value);
++	struct tcase *tc = &tcases[n];
++
++	if (tc->exp_err == 0) {
++		TST_EXP_VAL(getxattr(tc->fname, tc->key, tc->value, tc->size),
++			    XATTR_TEST_VALUE_SIZE);
++		if (memcmp(tc->value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
++			tst_res(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
++				XATTR_TEST_VALUE, tc->value);
+ 		else
+-			tst_resm(TPASS, "Got the right value");
++			tst_res(TPASS, "getxattr() retrieved expected value");
++	} else {
++		TST_EXP_FAIL(getxattr(tc->fname, tc->key, tc->value, tc->size),
++			     tc->exp_err);
+ 	}
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ static void setup(void)
+@@ -144,41 +69,36 @@ static void setup(void)
+ 	int fd;
+ 	unsigned int i;
+ 
+-	tst_require_root();
+-
+-	tst_tmpdir();
+-
+ 	/* Create test file and setup initial xattr */
+ 	snprintf(filename, BUFSIZ, "getxattr01testfile");
+-	fd = SAFE_CREAT(cleanup, filename, 0644);
+-	close(fd);
+-	if (setxattr(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
+-		     strlen(XATTR_TEST_VALUE), XATTR_CREATE) == -1) {
+-		if (errno == ENOTSUP) {
+-			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+-				 "mount without user_xattr option");
+-		}
+-	}
++	fd = SAFE_CREAT(filename, 0644);
++	SAFE_CLOSE(fd);
+ 
+-	/* Prepare test cases */
+-	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+-		tc[i].value = malloc(BUFFSIZE);
+-		if (tc[i].value == NULL) {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "Cannot allocate memory");
+-		}
+-	}
++	SAFE_SETXATTR(filename, XATTR_TEST_KEY, XATTR_TEST_VALUE,
++		      strlen(XATTR_TEST_VALUE), XATTR_CREATE);
+ 
+-	TEST_PAUSE;
++	for (i = 0; i < ARRAY_SIZE(tcases); i++)
++		tcases[i].value = SAFE_MALLOC(BUFFSIZE);
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(tcases); i++)
++		if (tcases[i].value != NULL)
++			free(tcases[i].value);
+ }
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++};
++
+ #else /* HAVE_SYS_XATTR_H */
+-int main(int argc, char *argv[])
+-{
+-	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
+-}
++	TST_TEST_TCONF("<sys/xattr.h> does not exist.");
+ #endif
+-- 
+2.34.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
