@@ -4,114 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8634BC54E60
-	for <ltp@archiver.kernel.org>; Sun, 17 Mar 2024 21:10:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7860C54E60
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 03:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1710732079; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=GPgcVowFC19/h9x5L4MFCK+q3MSCk1QKnKz89t3uWHU=;
+ b=SrK2kQHX1qqWjhWxFTOtCgA4+Nn5Vc8MYW+L6lZtYwMvManuGGAXxoNa2BEMhkC/E+y1S
+ 4gMcMSgIA6Wnb4RozYMvZVMfhGprlI5TfIQaAPJjwqwcenSvmV6xImSegHaxr19NJeuNJSY
+ CmfHnSPEEZSlyl6aYxbC/lTpjFjGtxU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6FEFC3D05AA
-	for <ltp@archiver.kernel.org>; Sun, 17 Mar 2024 22:10:24 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A92233D00FE
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 04:21:19 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80B863CDC8A
- for <ltp@lists.linux.it>; Sun, 17 Mar 2024 22:10:08 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 48D7E3CCFB8
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 04:20:54 +0100 (CET)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7414F6005C3
- for <ltp@lists.linux.it>; Sun, 17 Mar 2024 22:10:06 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D49F15BD0E;
- Sun, 17 Mar 2024 21:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710709806;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RQJD8dG4TpkvpfsjHsoCKaZHtO3Y9Hpf9Ny05ne1S/E=;
- b=DJ+wHX37im86UU4YrJyS3icYi3NYYfLfrlxf+qTCHZSEmOi4D1D6fPwXVXVy3rJTvYj5FD
- yPRr4VOSbu4ytC0SK2jfLCC9A/P0QdpUntIiOtr1it8vbNzz6JwxsBZXNF22N9igqMox40
- u5A76Er4ATxDOcX+NyXSRkuh03n5njM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710709806;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RQJD8dG4TpkvpfsjHsoCKaZHtO3Y9Hpf9Ny05ne1S/E=;
- b=/qKiudv5o6s6aSTnHLyOGVyQil13N0pQddzRBIvfa7qR1wQrohCWFxzqOs9I2s19GA0/Yj
- AW+mg6SCDGSUIVBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710709803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RQJD8dG4TpkvpfsjHsoCKaZHtO3Y9Hpf9Ny05ne1S/E=;
- b=K2IHdm1Yb3Ooj8l97oXN2WQpV1vIDTwe0gsQFkvHeOn+80LeFfOmCsuYCJtuOLB93c0ruM
- Dq6/CRfM45BbINtrn+oeaaVpyiLD5WTAHTKuK+C6tzGTISfp1t3ashYEA83D0bsYOaa3sf
- Pgf46SAl7HZcM8RDbluphuUBHaWEHHM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710709803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RQJD8dG4TpkvpfsjHsoCKaZHtO3Y9Hpf9Ny05ne1S/E=;
- b=w6IsGiuSpeR9m1QRddcpugi8+Pq0wefvW2gWJDDaS/osM0ZP1JprD7FDBGRDUybbnGNVd3
- QlrJkBz+/xJWK4BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B78301349D;
- Sun, 17 Mar 2024 21:10:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1kzSKytc92V8BQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Sun, 17 Mar 2024 21:10:03 +0000
-Date: Sun, 17 Mar 2024 22:10:02 +0100
-From: Petr Vorel <pvorel@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B4B4B1000BE3
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 04:20:52 +0100 (CET)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-41413b42c8dso99635e9.1
+ for <ltp@lists.linux.it>; Sun, 17 Mar 2024 20:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1710732052; x=1711336852; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=qFmL4WdDXYwNYxI+xUYlX42g+5cmVE3I6JmQr6RTiRU=;
+ b=RHWw5QLAkvkHUilLy170Qu2SJRnTcLIN7/VyIH+WNShjPtVxt26V74uwoljlyRBx7V
+ s3v+q9Cd/9rD4hg7maO/c6qky79kxn/JqhTjtRKOmiHjLJ9yYzHfangvMdT+QCzo63ug
+ V+TnWQcn8EJ2OzYihVm9dh3YO95Z4YBHDrQC257IeA7PpgQLC7nlkOiAiG0UgJ5tZk5i
+ rnMmI/R4s24ztAEGg2WbOppkCDEdnLcwX1wgCMXGbD7Tdqayoyr/3HdtVOVwEenvKCOl
+ LPMSUgP3EndkdjY4f4SWIGFYMr+bbBfNCN8qWDV1XNCxO8vhYTfTf1YuViI0CbjUuW6e
+ rHDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1710732052; x=1711336852;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=qFmL4WdDXYwNYxI+xUYlX42g+5cmVE3I6JmQr6RTiRU=;
+ b=G8uyXU6Q0D8B9DihfbQsSvQqqrRsFUi10tgQLWQ3gGzqJ/+oq2igc3Tzyc87D/USiZ
+ TBeJCYgoleeI1L6u0rC8azT5LrFawQSf8WRW2eOtwslDf3N9oMFgOggTFFzR1mhwTTe5
+ qjO96XkiKKJZl/y6nk35QSv4qNt6+CZ2jJ05OD8J5QQQCp6xxLrfdSSWnXE04OdlFnKo
+ 9dKUyISBWAQaDluLaaReUZ9DIc76NmZOKq0Oxeg7/uUIPfT0bG6YmlQO1a0NwNRXX1aW
+ OksQ5wAGm/+Km2ygr91YNcYIgeUTkGX8jAcOy+hjZgnPHJD4HBr47iHgadMzuJz31zh/
+ +OmQ==
+X-Gm-Message-State: AOJu0Yz3t8dka9Ikn/1dTq31+AcqcWdhfaeNqDtNjDG8BQKS1zfjeRk+
+ Y4CexS2GjCeqKtAMEb3bUk5XJM+rKVVr1hT9IdB2iVnt8AZA2s7xgifQzdhdzw==
+X-Google-Smtp-Source: AGHT+IF6rblG7mtT9JeDWxnekYjlh0tKRf1Gy/Yh5riZT9hNzx5exP5JkdI6eQrSbXUlX4lZ0FKKpw==
+X-Received: by 2002:a05:600c:690f:b0:414:113b:36a6 with SMTP id
+ fo15-20020a05600c690f00b00414113b36a6mr744509wmb.25.1710732052023; 
+ Sun, 17 Mar 2024 20:20:52 -0700 (PDT)
+Received: from wegao.215.20.80 ([81.95.8.245])
+ by smtp.gmail.com with ESMTPSA id
+ dz18-20020a0560000e9200b0033e73c58678sm8713148wrb.15.2024.03.17.20.20.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 17 Mar 2024 20:20:51 -0700 (PDT)
+Date: Sun, 17 Mar 2024 23:20:45 -0400
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20240317211002.GB358991@pevik>
-References: <20240317093901.3212684-1-liwang@redhat.com>
- <20240317093901.3212684-2-liwang@redhat.com>
+Message-ID: <ZfezDUSKwUdoSamA@wegao.215.20.80>
+References: <CAEemH2cTzLuJ1uTBNbUB-E7kJPeHjx3sPi1crkqTCJ6h4DgSbg@mail.gmail.com>
+ <20240315062448.3181177-1-liwang@redhat.com>
+ <ZfP8YEwKpLGweAe1@wegao.29.253.26>
+ <CAEemH2e5BB=L6-uT25ppcjGnXqJu7U-MmTCNdFsu8FE3sGv=Lw@mail.gmail.com>
+ <ZfQoVC7xBfGHNsgI@wegao.157.234.177>
+ <CAEemH2d_DgJwFrnu2e91ip6FhdDPjYddCQNsqnf=dA5QjuW_qg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240317093901.3212684-2-liwang@redhat.com>
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=K2IHdm1Y;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=w6IsGiuS
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-7.21 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DWL_DNSWL_HI(-3.50)[suse.cz:dkim]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: D49F15BD0E
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+In-Reply-To: <CAEemH2d_DgJwFrnu2e91ip6FhdDPjYddCQNsqnf=dA5QjuW_qg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/3] kconfig: add funtion to parse /proc/cmdline
+Subject: Re: [LTP] [PATCH] swapon01: swapon01: prevent OOM happening in swap
+ process
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,89 +97,216 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGksCgo+IEEgbmV3IHN0cnVjdHVyZSB0c3Rfa2NtZGxpbmVfdmFyIGlzIGRlZmluZWQgdG8g
-aG9sZCBhIGNvbW1hbmQtbGluZQo+IGFyZ3VtZW50J3Mga2V5IGFuZCBhIGZpeGVkLXNpemUgdmFs
-dWUuIEZ1cnRoZXJtb3JlLCBmdW5jdGlvbgo+IHRzdF9rY21kbGluZV9wYXJzZSBpcyBhZGRlZCB0
-byB0aGUgY29ycmVzcG9uZGluZyAuYyBmaWxlLCB3aGljaAo+IHJlYWRzIGZyb20gL3Byb2MvY21k
-bGluZSwgcGFyc2VzIHRoZSBjb21tYW5kLWxpbmUgYXJndW1lbnRzLCBhbmQKPiBwb3B1bGF0ZXMg
-dGhlIHRzdF9rY21kbGluZV92YXIgYXJyYXkgd2l0aCB0aGUgb2J0YWluZWQga2V5LXZhbHVlCj4g
-cGFpcnMsIGVuc3VyaW5nIHNhZmUgZmlsZSBvcGVyYXRpb25zIGFuZCBidWZmZXIgc2l6ZSBjaGVj
-a3MuCgpOaWNlLiBKdXN0IGNvbXBpbGVyIHdhcm5pbmcgYW5kIGZvcm1hdHRpbmcgbml0cyBiZWxv
-dyAoanVzdCBmaXggdGhlbSBiZWZvcmUgbWVyZ2UpLgpUaGFua3MgYSBsb3QgZm9yIGFkZGluZyBh
-IHRlc3QuCgpSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cgo+IFNpZ25l
-ZC1vZmYtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgo+IC0tLQo+ICBpbmNsdWRlL3Rz
-dF9rY29uZmlnLmggICAgICAgICAgICAgfCAyOSArKysrKysrKysrKysrKwo+ICBsaWIvbmV3bGli
-X3Rlc3RzL3Rlc3Rfa2NvbmZpZzAzLmMgfCA0MCArKysrKysrKysrKysrKysrKysrCj4gIGxpYi90
-c3Rfa2NvbmZpZy5jICAgICAgICAgICAgICAgICB8IDY2ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAxMzUgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQgbGliL25ld2xpYl90ZXN0cy90ZXN0X2tjb25maWcwMy5jCgo+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL3RzdF9rY29uZmlnLmggYi9pbmNsdWRlL3RzdF9rY29uZmlnLmgKPiBpbmRl
-eCA4YjI0YTgzODAuLmJiYjg5OTc4NCAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL3RzdF9rY29uZmln
-LmgKPiArKysgYi9pbmNsdWRlL3RzdF9rY29uZmlnLmgKPiBAQCAtNiw2ICs2LDggQEAKPiAgI2lm
-bmRlZiBUU1RfS0NPTkZJR19IX18KPiAgI2RlZmluZSBUU1RfS0NPTkZJR19IX18KCj4gKyNpbmNs
-dWRlIDxzdGRib29sLmg+Cj4gKwo+ICAvKioKPiAgICogSW5pdGlhbGl6YXRpb24gaGVscGVyIG1h
-Y3JvIGZvciBzdHJ1Y3QgdHN0X2tjb25maWdfdmFyLiBSZXF1aXJlcyA8c3RyaW5nLmg+CnZlcnkg
-bmljOiBtaXNzaW5nIGRvdCBhdCB0aGUgZW5kLgo+ICAgKi8KPiBAQCAtNjQsNCArNjYsMzEgQEAg
-dm9pZCB0c3Rfa2NvbmZpZ19yZWFkKHN0cnVjdCB0c3Rfa2NvbmZpZ192YXIgdmFyc1tdLCBzaXpl
-X3QgdmFyc19sZW4pOwo+ICAgKi8KPiAgaW50IHRzdF9rY29uZmlnX2NoZWNrKGNvbnN0IGNoYXIg
-KmNvbnN0IGtjb25maWdzW10pOwoKPiArLyoqCj4gKyAqIE1hY3JvIHRvIGluaXRpYWxpemUgYSB0
-c3Rfa2NtZGxpbmVfdmFyIHN0cnVjdHVyZSB3aXRoIGEgc3BlY2lmaWVkIHBhcmFtZXRlcgo+ICsg
-KiBuYW1lIGFuZCBhbiBlbXB0eSB2YWx1ZS4gVGhpcyBpcyB1c2VmdWwgZm9yIHNldHRpbmcgdXAg
-YW4gYXJyYXkgb2YgcGFyYW1ldGVyCj4gKyAqIHN0cnVjdHVyZXMgYmVmb3JlIHBhcnNpbmcgdGhl
-IGFjdHVhbCBjb21tYW5kLWxpbmUgYXJndW1lbnRzLgo+ICsgKi8KPiArI2RlZmluZSBUU1RfS0NN
-RExJTkVfSU5JVChwYXJhbmFtZSkgeyBcCj4gKwkua2V5ID0gcGFyYW5hbWUsIFwKPiArCS52YWx1
-ZSA9ICIiLCBcCj4gKwkuZm91bmQgPSBmYWxzZSBcCj4gK30KPiArCj4gKy8qKgo+ICsgKiBTdHJ1
-Y3R1cmUgZm9yIHN0b3JpbmcgY29tbWFuZC1saW5lIHBhcmFtZXRlciBrZXkgYW5kIGl0cyBjb3Jy
-ZXNwb25kaW5nIHZhbHVlCmFuZCBoZXJlLgoKPiArICovCj4gK3N0cnVjdCB0c3Rfa2NtZGxpbmVf
-dmFyIHsKPiArCWNvbnN0IGNoYXIgKmtleTsKPiArCWNoYXIgdmFsdWVbMTI4XTsKPiArCWJvb2wg
-Zm91bmQ7Cj4gK307Cj4gKwo+ICsvKioKPiArICogUGFyc2VzIGNvbW1hbmQtbGluZSBwYXJhbWV0
-ZXJzIGZyb20gL3Byb2MvY21kbGluZSBhbmQgc3RvcmVzIHRoZW0gaW4gcGFyYW1zIGFycmF5Lgo+
-ICsgKiBwYXJhbXM6IFRoZSBhcnJheSBvZiB0c3Rfa2NtZGxpbmVfdmFyIHN0cnVjdHVyZXMgdG8g
-YmUgZmlsbGVkIHdpdGggcGFyc2VkIGtleS12YWx1ZSBwYWlycy4KPiArICogcGFyYW1zX2xlbjog
-VGhlIGxlbmd0aCBvZiB0aGUgcGFyYW1zIGFycmF5LCBpbmRpY2F0aW5nIGhvdyBtYW55IHBhcmFt
-ZXRlcnMgdG8gcGFyc2UuCj4gKyAqLwo+ICt2b2lkIHRzdF9rY21kbGluZV9wYXJzZShzdHJ1Y3Qg
-dHN0X2tjbWRsaW5lX3ZhciBwYXJhbXNbXSwgc2l6ZV90IHBhcmFtc19sZW4pOwo+ICsKPiAgI2Vu
-ZGlmCS8qIFRTVF9LQ09ORklHX0hfXyAqLwo+IGRpZmYgLS1naXQgYS9saWIvbmV3bGliX3Rlc3Rz
-L3Rlc3Rfa2NvbmZpZzAzLmMgYi9saWIvbmV3bGliX3Rlc3RzL3Rlc3Rfa2NvbmZpZzAzLmMKPiBu
-ZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMC4uOTM3YzJiMjljCj4gLS0tIC9k
-ZXYvbnVsbAo+ICsrKyBiL2xpYi9uZXdsaWJfdGVzdHMvdGVzdF9rY29uZmlnMDMuYwo+IEBAIC0w
-LDAgKzEsNDAgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0
-ZXIKPiArLyoKPiArICogQ29weXJpZ2h0IChjKSAyMDI0IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPgo+ICsgKi8KPiArCj4gKyNpbmNsdWRlICJ0c3RfdGVzdC5oIgo+ICsjaW5jbHVkZSAidHN0
-X2tjb25maWcuaCIKPiArCj4gK3N0YXRpYyBzdHJ1Y3QgdHN0X2tjbWRsaW5lX3ZhciBwYXJhbXNb
-XSA9IHsKPiArCVRTVF9LQ01ETElORV9JTklUKCJCT09UX0lNQUdFIiksCj4gKwlUU1RfS0NNRExJ
-TkVfSU5JVCgicm9vdCIpLAo+ICsJVFNUX0tDTURMSU5FX0lOSVQoImZvbyIpCj4gK307Cj4gKwo+
-ICtzdGF0aWMgdm9pZCBkb190ZXN0KHZvaWQpCj4gK3sKPiArCWludCBpLCBOOwo+ICsKPiArCU4g
-PSAoaW50KSBBUlJBWV9TSVpFKHBhcmFtcyk7Cj4gKwo+ICsJdHN0X2tjbWRsaW5lX3BhcnNlKHBh
-cmFtcywgTik7Cj4gKwo+ICsJZm9yIChpID0gMDsgaSA8IE47IGkrKykgewo+ICsJCWlmIChwYXJh
-bXNbaV0uZm91bmQpIHsKPiArCQkJaWYgKHBhcmFtc1tpXS52YWx1ZSkKCnRlc3Rfa2NvbmZpZzAz
-LmM6MjU6Mjk6IHdhcm5pbmc6IHRoZSBjb21wYXJpc29uIHdpbGwgYWx3YXlzIGV2YWx1YXRlIGFz
-IOKAmHRydWXigJkgZm9yIHRoZSBhZGRyZXNzIG9mIOKAmHZhbHVl4oCZIHdpbGwgbmV2ZXIgYmUg
-TlVMTCBbLVdhZGRyZXNzXQogICAyNSB8ICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChwYXJh
-bXNbaV0udmFsdWUpCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fgpJ
-biBmaWxlIGluY2x1ZGVkIGZyb20gdGVzdF9rY29uZmlnMDMuYzo3OgouLi8uLi9pbmNsdWRlL3Rz
-dF9rY29uZmlnLmg6ODU6MTQ6IG5vdGU6IOKAmHZhbHVl4oCZIGRlY2xhcmVkIGhlcmUKICAgODUg
-fCAgICAgICAgIGNoYXIgdmFsdWVbMTI4XTsKCkl0IG11c3QgYmU6CmlmIChwYXJhbXNbaV0udmFs
-dWVbMF0gIT0gJ1wwJykKCk9yIGp1c3Qgd2l0aG91dCBlbHNlIGF0IGFsbDoKCglmb3IgKGkgPSAw
-OyBpIDwgTjsgaSsrKSB7CgkJaWYgKHBhcmFtc1tpXS5mb3VuZCkgewoJCQl0c3RfcmVzKFRQQVNT
-LCAicGFyYW1zWyVkXSA9IHslcywgJXN9IiwgaSwgcGFyYW1zW2ldLmtleSwgcGFyYW1zW2ldLnZh
-bHVlKTsKCQl9IGVsc2UgewoJCQlpZiAoIXN0cmNtcChwYXJhbXNbaV0ua2V5LCAiZm9vIikpCgkJ
-CQl0c3RfcmVzKFRQQVNTLCAiJXMgaXMgbm90IGZvdW5kIGluIC9wcm9jL2NtZGxpbmUiLCBwYXJh
-bXNbaV0ua2V5KTsKCQkJZWxzZQoJCQkJdHN0X3JlcyhURkFJTCwgIiVzIGlzIG5vdCBmb3VuZCBp
-biAvcHJvYy9jbWRsaW5lIiwgcGFyYW1zW2ldLmtleSk7CgkJfQoKS2luZCByZWdhcmRzLApQZXRy
-Cgo+ICsJCQkJdHN0X3JlcyhUUEFTUywgInBhcmFtc1slZF0gPSB7JXMsICVzfSIsIGksIHBhcmFt
-c1tpXS5rZXksIHBhcmFtc1tpXS52YWx1ZSk7Cj4gKwkJCWVsc2UKPiArCQkJCXRzdF9yZXMoVFBB
-U1MsICJwYXJhbXNbJWRdID0geyVzLCBubyB2YWx1ZX0iLCBpLCBwYXJhbXNbaV0ua2V5KTsKPiAr
-CQl9IGVsc2Ugewo+ICsJCQlpZiAoIXN0cmNtcChwYXJhbXNbaV0ua2V5LCAiZm9vIikpCj4gKwkJ
-CQl0c3RfcmVzKFRQQVNTLCAiJXMgaXMgbm90IGZvdW5kIGluIC9wcm9jL2NtZGxpbmUiLCBwYXJh
-bXNbaV0ua2V5KTsKPiArCQkJZWxzZQo+ICsJCQkJdHN0X3JlcyhURkFJTCwgIiVzIGlzIG5vdCBm
-b3VuZCBpbiAvcHJvYy9jbWRsaW5lIiwgcGFyYW1zW2ldLmtleSk7Cj4gKwkJfQo+ICsJfQo+ICt9
-Ci4uLgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+On Sun, Mar 17, 2024 at 05:52:01PM +0800, Li Wang wrote:
+> Hi Wei,
+> 
+> Can you try this one and post the test log here?
+> 
+> And again, it'd be helpful to know the config of your SUT.
+> e.g. `free -h`  `lscpu`  `uname -r`  infoformation
+> 
+> 
+> --- a/testcases/kernel/syscalls/swapon/swapon01.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+> @@ -37,11 +37,20 @@ static void verify_swapon(void)
+> 
+>  static void setup(void)
+>  {
+> +       tst_enable_oom_protection(0);
+>         is_swap_supported(SWAP_FILE);
+> -       make_swapfile(SWAP_FILE, 10, 0);
+> +       make_swapfile(SWAP_FILE, 1024, 0);
+> 
+>         SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+>         SAFE_CG_PRINTF(tst_cg, "memory.max", "%lu", TESTMEM);
+> +
+> +       if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
+> +               SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%ld", TESTMEM *
+> 2);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +       tst_disable_oom_protection(0);
+>  }
+> 
+>  static struct tst_test test = {
+> @@ -51,5 +60,6 @@ static struct tst_test test = {
+>         .all_filesystems = 1,
+>         .needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+>         .test_all = verify_swapon,
+> -       .setup = setup
+> +       .setup = setup,
+> +       .cleanup = cleanup
+>  };
+> 
+> 
+localhost:~ # free -h <<<< before running case
+               total        used        free      shared  buff/cache   available
+Mem:           3.8Gi       478Mi       3.3Gi       9.0Mi       346Mi       3.4Gi
+Swap:             0B          0B          0B
+localhost:~ # lscpu
+Architecture:            x86_64
+  CPU op-mode(s):        32-bit, 64-bit
+  Address sizes:         46 bits physical, 48 bits virtual
+  Byte Order:            Little Endian
+CPU(s):                  2
+  On-line CPU(s) list:   0,1
+Vendor ID:               GenuineIntel
+  BIOS Vendor ID:        QEMU
+  Model name:            Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz
+    BIOS Model name:     pc-i440fx-7.1  CPU @ 2.0GHz
+    BIOS CPU family:     1
+    CPU family:          6
+    Model:               85
+    Thread(s) per core:  1
+    Core(s) per socket:  1
+    Socket(s):           2
+    Stepping:            7
+    BogoMIPS:            4190.15
+    Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1
+                         gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16
+                         pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnow
+                         prefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust b
+                         mi1 hle avx2 smep bmi2 erms invpcid rtm mpx avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512
+                         vl xsaveopt xsavec xgetbv1 xsaves arat vnmi umip pku ospke avx512_vnni md_clear arch_capabilities
+Virtualization features:
+  Virtualization:        VT-x
+  Hypervisor vendor:     KVM
+  Virtualization type:   full
+Caches (sum of all):
+  L1d:                   64 KiB (2 instances)
+  L1i:                   64 KiB (2 instances)
+  L2:                    8 MiB (2 instances)
+  L3:                    32 MiB (2 instances)
+NUMA:
+  NUMA node(s):          2
+  NUMA node0 CPU(s):     0
+  NUMA node1 CPU(s):     1
+Vulnerabilities:
+  Gather data sampling:  Unknown: Dependent on hypervisor status
+  Itlb multihit:         Not affected
+  L1tf:                  Not affected
+  Mds:                   Not affected
+  Meltdown:              Not affected
+  Mmio stale data:       Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown
+  Retbleed:              Mitigation; Enhanced IBRS
+  Spec rstack overflow:  Not affected
+  Spec store bypass:     Mitigation; Speculative Store Bypass disabled via prctl
+  Spectre v1:            Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+  Spectre v2:            Mitigation; Enhanced / Automatic IBRS, IBPB conditional, RSB filling, PBRSB-eIBRS SW sequence
+  Srbds:                 Not affected
+  Tsx async abort:       Mitigation; Clear CPU buffers; SMT Host state unknown
+localhost:~ # uname -r
+6.4.0-9-default
+
+swapon01                                                                                                                                      100%  851KB 386.5KB/s   00:02
+tst_device.c:97: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1741: TINFO: LTP version: 20240129-94-g8f14b06e0
+tst_test.c:1627: TINFO: Timeout per run is 0h 00m 30s
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:105: TINFO: Skipping bcachefs because of FUSE blacklist
+tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports exfat
+tst_supported_fs_types.c:58: TINFO: mkfs.exfat does not exist
+tst_supported_fs_types.c:128: TINFO: Filesystem ntfs is not supported
+tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1701: TINFO: === Testing on ext2 ===
+tst_test.c:1118: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.47.0 (5-Feb-2023)
+tst_test.c:1132: TINFO: Mounting /dev/loop0 to /tmp/LTP_swakWRRNY/mntpoint fstyp=ext2 flags=0
+tst_ioctl.c:26: TINFO: FIBMAP ioctl is supported
+swapon01.c:27: TPASS: tst_syscall(__NR_swapon, SWAP_FILE, 0) passed
+Test timeouted, sending SIGKILL!
+tst_test.c:1680: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1681: TBROK: Test killed! (timeout?)
+
+Summary:
+passed   1
+failed   0
+broken   1
+skipped  0
+warnings 0
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  1...
+tst_device.c:413: TINFO: Likely gvfsd-trash is probing newly mounted fs, kill it to speed up tests.
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  2...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  3...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  4...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  5...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  6...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  7...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  8...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try  9...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 10...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 11...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 12...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 13...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 14...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 15...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 16...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 17...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 18...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 19...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 20...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 21...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 22...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 23...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 24...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 25...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 26...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 27...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 28...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 29...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 30...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 31...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 32...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 33...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 34...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 35...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 36...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 37...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 38...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 39...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 40...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 41...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 42...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 43...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 44...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 45...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 46...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 47...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 48...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 49...
+tst_device.c:409: TINFO: umount('mntpoint') failed with EBUSY, try 50...
+tst_device.c:419: TWARN: Failed to umount('mntpoint') after 50 retries
+tst_device.c:264: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
+tst_tmpdir.c:343: TWARN: tst_rmdir: rmobj(/tmp/LTP_swakWRRNY) failed: unlink(/tmp/LTP_swakWRRNY/mntpoint/swapfile01) failed; errno=1: EPERM
+
+
+localhost:~ # free -h <<<< after running case
+               total        used        free      shared  buff/cache   available
+Mem:           3.8Gi       480Mi       3.3Gi        32Mi       395Mi       3.4Gi
+Swap:          3.0Mi          0B       3.0Mi
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
