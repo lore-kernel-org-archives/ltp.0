@@ -4,111 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6D16C54E58
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 15:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F15C54E5D
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 16:08:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 230683D09E1
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 16:59:43 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id ED4A13D09E5
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 17:08:09 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2327B3D00E1
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 16:59:27 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0BB423CFC46
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 17:07:54 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8519D1400BED
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 16:59:26 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E79B1000F21
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 17:07:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8D9F35C6FE;
- Mon, 18 Mar 2024 15:59:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8DC7B34C0A;
+ Mon, 18 Mar 2024 16:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710777565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1710778073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=STW7MYQ+YROtzLwDRBncQuRaWesOl40eo8FCpCKdiUrjL2VwlDgB2pWeydzZLjASiE6byX
- /35thjNOb73F/pOOEVUka6YKyZOgRUQT17GAypzTYjdTylaIWMr2tKzJdbO/9Qzn/QN839
- DC560YXH7k6rDTIQt3l64jPn7i/gls8=
+ bh=6ziis2pLnKwj1wahekse9pnAf6Z/fsUHGwlxXdMvYF8=;
+ b=dhcUF+nxzD/2RC8ap/zqawIbEXJRqqKmjRGLzXt7xsqJVtMLqNVYfziZDKceR0uM7onYAZ
+ dHnVA6qjsdxysg3fZuFq+23z3vk1IGXaOHOXElpp2JJWwupP75mwisw9bs3Kiif77JwFdz
+ gMFzZ5r5VZca7VttMlrWgCofwnsxJZM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710777565;
+ s=susede2_ed25519; t=1710778073;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=+KKLLIWcSrS9XRze5Y9HHkDPAXtx8NIOnHFy3e4PUwWBY93aOLuDJ/ymycWxK3gnDCzk8w
- e7sRIdu9RPjfKhBA==
+ bh=6ziis2pLnKwj1wahekse9pnAf6Z/fsUHGwlxXdMvYF8=;
+ b=uezC6eyj7aTHYJJXiz3p02bWFSB/WvNEGC0ODlA171nW/y2jQ1gkiUko8haZJIketLf7ys
+ KZyYu5qzbMtNkqCw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710777565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1710778073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=STW7MYQ+YROtzLwDRBncQuRaWesOl40eo8FCpCKdiUrjL2VwlDgB2pWeydzZLjASiE6byX
- /35thjNOb73F/pOOEVUka6YKyZOgRUQT17GAypzTYjdTylaIWMr2tKzJdbO/9Qzn/QN839
- DC560YXH7k6rDTIQt3l64jPn7i/gls8=
+ bh=6ziis2pLnKwj1wahekse9pnAf6Z/fsUHGwlxXdMvYF8=;
+ b=dhcUF+nxzD/2RC8ap/zqawIbEXJRqqKmjRGLzXt7xsqJVtMLqNVYfziZDKceR0uM7onYAZ
+ dHnVA6qjsdxysg3fZuFq+23z3vk1IGXaOHOXElpp2JJWwupP75mwisw9bs3Kiif77JwFdz
+ gMFzZ5r5VZca7VttMlrWgCofwnsxJZM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710777565;
+ s=susede2_ed25519; t=1710778073;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=+KKLLIWcSrS9XRze5Y9HHkDPAXtx8NIOnHFy3e4PUwWBY93aOLuDJ/ymycWxK3gnDCzk8w
- e7sRIdu9RPjfKhBA==
+ bh=6ziis2pLnKwj1wahekse9pnAf6Z/fsUHGwlxXdMvYF8=;
+ b=uezC6eyj7aTHYJJXiz3p02bWFSB/WvNEGC0ODlA171nW/y2jQ1gkiUko8haZJIketLf7ys
+ KZyYu5qzbMtNkqCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 739181349D;
- Mon, 18 Mar 2024 15:59:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DF3B136A8;
+ Mon, 18 Mar 2024 16:07:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JiLoGt1k+GVzWwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 18 Mar 2024 15:59:25 +0000
-Date: Mon, 18 Mar 2024 16:58:30 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UD11Hdlm+GWIXgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 18 Mar 2024 16:07:53 +0000
+Date: Mon, 18 Mar 2024 17:06:54 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <petr.vorel@gmail.com>
-Message-ID: <Zfhkpt1CVcSv3h3t@yuki>
+Message-ID: <ZfhmntA-tpbieR4J@yuki>
 References: <20240104211935.1438103-1-petr.vorel@gmail.com>
- <20240104211935.1438103-3-petr.vorel@gmail.com>
+ <20240104211935.1438103-4-petr.vorel@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240104211935.1438103-3-petr.vorel@gmail.com>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.58 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
+In-Reply-To: <20240104211935.1438103-4-petr.vorel@gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TAGGED_RCPT(0.00)[];
- MIME_GOOD(-0.10)[text/plain];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ MIME_GOOD(-0.10)[text/plain]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- NEURAL_HAM_LONG(-1.00)[-1.000]; FREEMAIL_TO(0.00)[gmail.com];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FREEMAIL_TO(0.00)[gmail.com]; FUZZY_BLOCKED(0.00)[rspamd.com];
  FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
  MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.57)[81.32%];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=STW7MYQ+;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+KKLLIWc
-X-Rspamd-Queue-Id: 8D9F35C6FE
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ BAYES_HAM(-3.00)[100.00%]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] make: Delete gitignore.mk
+Subject: Re: [LTP] [PATCH 3/3] Makefile: Improve 'make help'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,7 +117,56 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> index 49d91f4d5..7c9d1217a 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -216,8 +216,36 @@ test-metadata: metadata-all
+>  ## Help
+>  .PHONY: help
+>  help:
+> -	@echo "Please read the Configuration section in $(top_srcdir)/INSTALL"
+> -	@exit 1
+> +	@echo 'Cleaning:'
+> +	@echo '  clean              - delete all files created by build'
+> +	@echo '  distclean          - delete all non-source files'
+> +	@echo '  lib-clean          - delete all files created by build in lib directory (C API library and tests)'
+> +	@echo '  libs-clean         - delete all files created by build in libs directory (other libraries)'
+> +	@echo '  testcases-clean    - delete all files created by build in testcases directory (tests)'
+> +	@echo
+> +	@echo 'Build:'
+> +	@echo '  all                - build everything'
+> +	@echo '  autotools          - preparation for configure'
+> +	@echo '  lib-all            - build lib directory (C API library and tests)'
+> +	@echo '  libs-all           - build libs directory (other libraries)'
+> +	@echo '  testcases-all      - build testcases and their dependencies'
+> +	@echo
+> +	@echo 'Install:'
+> +	@echo '  install            - install all files created by build'
+> +	@echo '  install-lib        - install files in lib directory (C API library and tests)'
+> +	@echo '  install-libs       - install files in libs directory (other libraries)'
+> +	@echo '  install-testcases  - install testcases'
+
+I'm not sure if the sub-targets should be described in make help. I
+would say to stick to a simple set of clean, distclean, autotools, all,
+install, doc, check and be done with it.
+
+> +	@echo 'Documentation:'
+> +	@echo '  doc                - create test documentation (HTML and/or PDF, based on configuration)'
+> +	@echo
+> +	@echo 'Testing:'
+> +	@echo '  test               - run all tests'
+> +	@echo '  test-c             - run C API tests'
+> +	@echo '  test-metadata      - run documentation tests'
+> +	@echo '  test-shell         - run shell API tests'
+
+This is way to confusing, we shouldn't mention the internal testsuite
+here users will confuse that with actually running LTP tests.
+
+We should instead probably mention the make check.
+
+> +	@echo 'For more info please read the Configuration section in $(top_srcdir)/INSTALL'
+
+That file should be probably updated too.
 
 -- 
 Cyril Hrubis
