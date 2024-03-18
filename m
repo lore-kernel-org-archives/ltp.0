@@ -4,57 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C44C54E58
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 08:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78CF4C54E58
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 09:55:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 912D33CE6B1
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 09:48:12 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 77AC33CFC2E
+	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 10:54:59 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 418773CC8BF
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 09:47:57 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=brauner@kernel.org;
+ by picard.linux.it (Postfix) with ESMTPS id 4D7D83CD4DC
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 10:54:45 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9F283600D43
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 09:47:55 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id 13425CE09CB;
- Mon, 18 Mar 2024 08:47:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5EFC43390;
- Mon, 18 Mar 2024 08:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1710751670;
- bh=Ew2uVxn7vsJK/JFcU9zZaMqRiK9DDlzk08Afo0ps6tI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EzivUTTJsOVwzxrrjAi8avkIKYnbjeM4XRGeAWhECQodhvZC8kmFJWqaTzdz0pxWC
- P+u23knAXSnKZzwSijQvwcTp1Y6yj9Th6qF11ie0hubBxxB/lbWkBb8wG8INhF5gNt
- SD/6DmhfAK68FbBlHwoFcGYdsPbAjZTJXaQyWLRyUrU+DDiNfEIrK2L+dTACporQO1
- s0fBVumxqULEsAVUSP5Pg1kqLtxW7KR2VmNF4ZEemUk1fWUFSssa5XNq/GleRsKDdw
- aKUJD8WTFNE0x9UTeLrBts8E4bqGm+jegR21ZVPowPivX1mVBWpcVQmkp0orvcL5Oa
- eTYI7PqVNFLMw==
-Date: Mon, 18 Mar 2024 09:47:45 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240318-fegen-bezaubern-57b0a9c6f78b@brauner>
-References: <202403151507.5540b773-oliver.sang@intel.com>
- <20240315-neufahrzeuge-kennt-317f2a903605@brauner>
- <ZfRf36u7CH7bIEZ7@yuki>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B6DDA1A01982
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 10:54:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1710755682;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oRIyL6lH1vMjIqcwLrIGtTs2MnjK326J1cICjPtyu6E=;
+ b=GFLlF1B5sWtbUNgGcWvwxPvyOb80hh429H8Riz14Z1NfdfTIK9ndffPZxa3h/lbW6ZZdsI
+ tg4saQRU6cAziOIUCRsIUb0dm+XBOArl5KJGhRtyVMSyhCo0luqLYkHJc0cMreY+rRHszh
+ 5oSFp5D1EBUZmc4NyVyQihTcDaRXviU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-573-pd12wrbJMESqLnW-D3v9JQ-1; Mon, 18 Mar 2024 05:54:40 -0400
+X-MC-Unique: pd12wrbJMESqLnW-D3v9JQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0DA0B18002E0
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 09:54:40 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 1BB47200AFA3
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 09:54:38 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Mon, 18 Mar 2024 17:54:35 +0800
+Message-Id: <20240318095435.3226487-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZfRf36u7CH7bIEZ7@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linus:master] [pidfd]  cb12fd8e0d: ltp.readahead01.fail
+Subject: [LTP] [PATCH COMMITTED] lib/newlib_tests: add test_kconfig03 in
+ .gitignore
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,25 +74,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
- ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Mar 15, 2024 at 03:49:03PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > So I'd just remove that test. It's meaningless for pseudo fses.
-> 
-> Wouldn't it make more sense to actually return EINVAL instead of
-> ignoring the request if readahead() is not implemented?
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ lib/newlib_tests/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-It would change the return value for a whole bunch of stuff. I'm not
-sure that wouldn't cause regressions but is in any case a question for
-the readahead maintainers. For now I'd just remove that test for pidfds
-imho.
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index a69b29e24..3b57a7fcc 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -31,6 +31,7 @@ test_exec_child
+ test_kconfig
+ test_kconfig01
+ test_kconfig02
++test_kconfig03
+ variant
+ test_guarded_buf
+ tst_bool_expr
+-- 
+2.40.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
