@@ -4,104 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 531C0C54E5D
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 17:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A431C54E5D
+	for <ltp@archiver.kernel.org>; Tue, 19 Mar 2024 03:29:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA3593D00E1
-	for <ltp@archiver.kernel.org>; Mon, 18 Mar 2024 18:01:28 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 71CD03CE72F
+	for <ltp@archiver.kernel.org>; Tue, 19 Mar 2024 04:28:58 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5CC2B3CB2AC
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 18:01:13 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id CCFA53C4CE6
+ for <ltp@lists.linux.it>; Tue, 19 Mar 2024 04:28:43 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9C0931A01184
- for <ltp@lists.linux.it>; Mon, 18 Mar 2024 18:01:12 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 11BA434C9D;
- Mon, 18 Mar 2024 17:01:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710781271;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81AC1200243
+ for <ltp@lists.linux.it>; Tue, 19 Mar 2024 04:28:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1710818920;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RK+ftXkSXHr0PTk2Eny6wMAB2J7fSF1IaEMVy9YFvx8=;
- b=F6HmByIaHY26LLVjDQuHfH+0F4YNZUxaNslUcMoeUIFIqy4sSiYXCvOiMtYLt0KVIpuYaE
- jgf9WlTis1d8I6POzj00Ad7+XOti2kbarN5h8oCmdpxGPvlyQO/zYET1PJM8YxZfImWIsG
- 7PZozhZ+d3AAMaEF5JYRr7vtXyk2zM0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710781271;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RK+ftXkSXHr0PTk2Eny6wMAB2J7fSF1IaEMVy9YFvx8=;
- b=iy7AzoT8qRzOjPITr6GmtSPNveds4FvV1+9ar5e3gLhJx1+KYxNEwBXWK0f9t5WYejrcNQ
- m9Rwluv+kD0QjUCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710781269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RK+ftXkSXHr0PTk2Eny6wMAB2J7fSF1IaEMVy9YFvx8=;
- b=uiV+UbSOCZBRjNiqF/ajhNc6CWjhCCF/TCBcH125e6+AnqvF31mlEqX7ulpu/XM+7N4jGy
- IzBK8XHe9l71eW05EnrNwg7Mde+gZ/IQCJArnSu1yCDY+69moPKMAQ8NMaAkiEGITATRl+
- GBMUe4jdbKT/JHQQJgfVN3LDvxGJuVM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710781269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RK+ftXkSXHr0PTk2Eny6wMAB2J7fSF1IaEMVy9YFvx8=;
- b=uL1L+Ss4kqRc6x5PNmuj61sUYE/eRjwRoXXXzsrYLLrxXmD7HZSfLjn2nF+NTw+3qibUZh
- EZmz4IDIZApQsaCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED056136A5;
- Mon, 18 Mar 2024 17:01:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +kvvOFRz+GUOcgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 18 Mar 2024 17:01:08 +0000
-Date: Mon, 18 Mar 2024 18:01:07 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20240318170107.GC408613@pevik>
-References: <6868ae95-b004-4fb2-8aac-7ccf96b32f90@suse.com>
+ bh=CoEBPpURYac42xUUJN3kMKjP/ZXtg3JTpFveoFS9rFY=;
+ b=XtMjDgxPPUgufhsXYf/L1jzZlbUjQjNZmwDy8acCC50VikKAnC8cZBQlXQj85W4VSXtYrc
+ TpJ+WmC5jKsNo5hgnQpkMUCnO1TljLLOUtAkc/4cWx1PIepaS4sjow2Js++HI1UQlVvCTx
+ 1C12/VcKtU5k9jvnuetHL/LZAYpDfwc=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-CZMq1ECxN0Ou6XhUhI5n4g-1; Mon, 18 Mar 2024 23:28:35 -0400
+X-MC-Unique: CZMq1ECxN0Ou6XhUhI5n4g-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-29df180bedcso3271716a91.3
+ for <ltp@lists.linux.it>; Mon, 18 Mar 2024 20:28:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1710818914; x=1711423714;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=CoEBPpURYac42xUUJN3kMKjP/ZXtg3JTpFveoFS9rFY=;
+ b=Q3ERdCigih8KX2I7ohI25gCARDKq5E9VDlytVHgRk5SbI9mjI6iWQFgejdhAYGd38A
+ 3+9vOizr5L2Pxjfv/G8Z54fxJUTziaNfLVaIeL5AmLpmPUrwzlqZYxGWnnXqQaZIYRxF
+ JLt8YT3YgtGkrUB2VpXOian36srILf3ubVEv4vQHXed2dY7CwsBQcOydI4z6M7yZgsQS
+ 19cFtUcw0LO4MpsZarg4ITCa5sOmxx5naOAWVloYSJEv0HaG5qnBUeX0AjZIXi42l6Ok
+ gPqmup+005v5nghiLRAo2YfmFBPL2ATGWCNhrQWFNPDIfhIXKs5gsEv5djkpc+7cUsq5
+ jJPA==
+X-Gm-Message-State: AOJu0Yyuaf8Ukw3QJSDg9dfa4IFS2g38Z4l8Cjx2Hl1oYGM98Rx4kBag
+ kpOz2wREsgXA+GD82ANddC70n2tH6wlmxaAfYKwnbg1XHXCRXS5xWsmdPyFWZUpvU/iM5B3OfhJ
+ /xsF7dQ/aePc+rz7lfgSyPBu9SuRzpKVtNtEbJ0kWXNclsGzaWHO9wAM1LVHzaXKqMzOfCVI8cz
+ EJcYfpzqgZcgai6+YP4v8nK9U=
+X-Received: by 2002:a17:90b:1086:b0:29d:d77f:f893 with SMTP id
+ gj6-20020a17090b108600b0029dd77ff893mr10763414pjb.38.1710818914134; 
+ Mon, 18 Mar 2024 20:28:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHdKlrsxhL4iyJTtYgubONXjD2aUF/k88S4OrASp2JANOsWeMmuX7e5kZ7wf3sjv+ApnxheynMX1NnBKLn7/t4=
+X-Received: by 2002:a17:90b:1086:b0:29d:d77f:f893 with SMTP id
+ gj6-20020a17090b108600b0029dd77ff893mr10763403pjb.38.1710818913703; Mon, 18
+ Mar 2024 20:28:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6868ae95-b004-4fb2-8aac-7ccf96b32f90@suse.com>
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_DN_EQ_ADDR_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[ltp-acerv.readthedocs.io:url,readthedocs.com:url,linux-test-project.github.io:url,sphinx-doc.org:url];
- SUBJECT_ENDS_EXCLAIM(0.20)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <CAEemH2cTzLuJ1uTBNbUB-E7kJPeHjx3sPi1crkqTCJ6h4DgSbg@mail.gmail.com>
+ <20240315062448.3181177-1-liwang@redhat.com>
+ <ZfP8YEwKpLGweAe1@wegao.29.253.26>
+ <CAEemH2e5BB=L6-uT25ppcjGnXqJu7U-MmTCNdFsu8FE3sGv=Lw@mail.gmail.com>
+ <ZfQoVC7xBfGHNsgI@wegao.157.234.177>
+ <CAEemH2d_DgJwFrnu2e91ip6FhdDPjYddCQNsqnf=dA5QjuW_qg@mail.gmail.com>
+ <ZfezDUSKwUdoSamA@wegao.215.20.80>
+ <CAEemH2cLfO9nMnOdB3wTuK6bmkfsPJp_fdQOXSFU-SfHfdQSZA@mail.gmail.com>
+ <Zffm+yWYrGhyVTsf@wegao.213.190.243>
+ <CAEemH2e4iC1+dViTu4WgNz4-BOTg+f9+9sggy+WKhK+ZsCQmvQ@mail.gmail.com>
+ <Zfg2E59Pa1uF84di@wegao.115.61.67>
+In-Reply-To: <Zfg2E59Pa1uF84di@wegao.115.61.67>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 19 Mar 2024 11:28:21 +0800
+Message-ID: <CAEemH2c--aHRW5ZqvBZTP2AVuoiKcY4x6GAxcaMb1KgbXVUEDA@mail.gmail.com>
+To: Wei Gao <wegao@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] New LTP documentation!
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] swapon01: swapon01: prevent OOM happening in swap
+ process
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,90 +102,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea, all,
-
-First, thank you for doing this POC.
-
-> Hello everyone,
-
-> as already mentioned in the monthly LTP meeting, Linux Test Project lacks of
-> a nice and clean documentation that can be easily accessed by users,
-> developers and maintainers.
-
-This was from the start confusing for me, because we have docs in wiki and
-metadata documentation. But the text below explains the main advantage :).
-
-> The current LTP documentation is also not matching with our expectancy
-> towards the entire project, which is has been heavily refactored and it has
-> changed in the past years, providing a higher quality code and new testing
-> features.
-
-> For this reasons, we think it's time to move forward and to start working on
-> documentation, helping people to use, to develop and to maintain LTP in an
-> easier way, increasing quality of the overall project and to call more
-> developers in the community.
-
-> I started to work on documentation refactoring, re-organizing the overall
-> structure. The first prototype can be found here:
-
-> https://ltp-acerv.readthedocs.io/en/latest/index.html
-
-+1, nice POC. I see from your github LTP fork it's generated via
-.readthedocs.yml - +1 for docs sources staying in LTP main repository and
-generated as a result of simple push.
-
-I wonder what to make with our static page:
-
-https://linux-test-project.github.io/
-
-Could we somehow redirect it to our github URL or to docs on readthedocs.io?
-
-> The idea is to move documents from the current asciidoc format to RST
-> format, following the current kernel docs guide lines [1], and to move API
-> headers descriptions from regular C comments to Doxygen format.
-
-IMHO library docs generated with Doxygen is IMHO the main advantage.
-
-> By using the powerful readthedocs service [2], it's possible to deploy a
-> documentation website with one simple setup, using Sphinx [3] as the main
-> documentation framework.
-
-Maybe, we could later generate our metadata docs with Sphinx. To have single
-source
-
-Although markdown is supported elsewhere (if we one day want to migrate e.g. to
-gitlab), using readthedocs.
-
-> For now, website prototype is showing a couple of pages, but the overall
-> structure is there and ready to be filled.
-
-> The purpose of this email is to ask for feedback and ideas from the LTP
-> community, so we can make documentation even better. Let me know what you
-> think.
-
-+1
-
-I hope you plan to do the conversion and plan in the future to add Doxygen
-generated docs (to actually add more content than what we have now with github
-wiki).
-
-Kind regards,
-Petr
-
-> Have a good day,
-> Andrea Cervesato
-
-
-> [1] https://docs.kernel.org/doc-guide/sphinx.html#writing-documentation
-> [2] https://about.readthedocs.com/?ref=readthedocs.com
-> [3] https://www.sphinx-doc.org/en/master
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBNYXIgMTgsIDIwMjQgYXQgODo0MOKAr1BNIFdlaSBHYW8gPHdlZ2FvQHN1c2UuY29t
+PiB3cm90ZToKCgoKPgo+ID4gVGhhdCdzIGJlY2F1c2UgdGhlIGF2YWlsYWJsZSBzd2FwZmlsZSBv
+biB5b3VyIFNVVCBpcyB0b28gc21hbGwsCj4gPiB5b3UgY2FuIGFkanVzdCBpdCAodGhlbiByZXRl
+c3QgaXQpIGJ5IHlvdXJzZWxmIHRvIGZpbmQgYSBwcm9wZXIgc2l6ZS4KPiA+Cj4gPiBUaGlzIGlz
+IGZpbmUgYXMgbG9uZyBhcyB0aGUgc3dhcGZpbGUgc2l6ZSBpcyBsZXNzIHRoYW4gMzAwTUIsCj4g
+PiBvdGhlcndpc2Ugd2UgbmVlZCB0byBzZXQgLmRldl9taW5fc2l6ZSBsaWtlIHdoYXQgd2UgZGlk
+Cj4gPiBmb3Igc3dhcG9mZjAxLmMuCj4gPgo+ID4gQW5kLCBvbiB0aGUgb3RoZXIgc2lkZSwgd2Ug
+Y2FuJ3QgZ3VhcmFudGVlIHRoZSBzeXN0ZW0gU3dhcENhY2hlZAo+ID4gaGFwcGVuZWQgZXZlcnkg
+dGltZSwgaXQgZGVwZW5kcyBvbiB0aGUgc3lzdGVtJ3MgY29uZmlndXJhdGlvbi4KPiA+Cj4KPiAx
+MDBNIGlzIGdvb2QgZW5vdWdoIGZvciBjdXJyZW50IHN5c3RlbSwgY291bGQgeW91IGhlbHAgY2hl
+Y2sgZm9sbG93aW5nCj4gcGF0Y2g/Cj4KCkNhbiB3ZSByZXdyaXRlIHRoZSBtYWtlX3N3YXBmaWxl
+KCkgQVBJIHRvIHN1cHBvcnQgcGFzc2luZyBNQiBzaXplIGZvcgptYWtpbmcgdGhlIHN3YXBmaWxl
+PwoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
+aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
