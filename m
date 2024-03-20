@@ -4,102 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CBF5C6FD1F
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 16:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5287C54E58
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 16:22:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6E743CFFAF
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 17:22:28 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 20F813CFFAE
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 17:22:46 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B5A33CFBFB
+ by picard.linux.it (Postfix) with ESMTPS id 7715A3CFBF2
  for <ltp@lists.linux.it>; Wed, 20 Mar 2024 17:20:48 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2307603440
- for <ltp@lists.linux.it>; Wed, 20 Mar 2024 17:20:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ADA0D1401656
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 17:20:47 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 248DF5BF31;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7D5CB347BC;
  Wed, 20 Mar 2024 16:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1710951646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zfm0c0QAulBEbMKUX9g98rYni7ZO2qpRqx0tZrJzQ34=;
- b=0Rx3uZlCLTDHSvQRXCLprl/fdjzBO5/zaxhF9tfdyPSxliWVUWrZ2jQTW416CIK9o/bCW9
- StDCW/x2nVclp2XpHKANe/jwyjWsaZfpvFAeN98exWJkloiyK+Vuu40gFs6VgpZRwnlzj7
- i86l+u+RcapJ6f6HGWHX+zr8h3bOBuQ=
+ bh=mlXwFVT+vWCpD5d3q8zxHSociMM2lTUxgloHYCYIfeY=;
+ b=Bm+XBbicAJhkvZGGuKeQtkbef0X3zQsTuSm9Ln6qxLkwTZL6dcvzhK96c0Rjp0lvqur3oW
+ ZG080RFcJNtw8ZPzAbg1jPY0qW1hAxZ2aptj6skuh3/iQnfWfwlsFKk64sLGGba7rZ285u
+ p1zakzuYg8sNAA7yR3BRaHO2wjx42Zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1710951646;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zfm0c0QAulBEbMKUX9g98rYni7ZO2qpRqx0tZrJzQ34=;
- b=0iIiMoVQD/AyrQJH6pnjWXZp2JcXqWnO7bMjiLqG6ixEL+Rob/zn8HN2lnDo4mKyIsT8EX
- tXAotbCqYtcecMBw==
+ bh=mlXwFVT+vWCpD5d3q8zxHSociMM2lTUxgloHYCYIfeY=;
+ b=PfGUPTjCDGCqT0I97dxgxlqoElwgePxp01Tp/oHIJ8pRuLef/0t5PtulSi3vO0t72EzOtE
+ RQewz5wDoguBB2Aw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1710951646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zfm0c0QAulBEbMKUX9g98rYni7ZO2qpRqx0tZrJzQ34=;
- b=0Rx3uZlCLTDHSvQRXCLprl/fdjzBO5/zaxhF9tfdyPSxliWVUWrZ2jQTW416CIK9o/bCW9
- StDCW/x2nVclp2XpHKANe/jwyjWsaZfpvFAeN98exWJkloiyK+Vuu40gFs6VgpZRwnlzj7
- i86l+u+RcapJ6f6HGWHX+zr8h3bOBuQ=
+ bh=mlXwFVT+vWCpD5d3q8zxHSociMM2lTUxgloHYCYIfeY=;
+ b=Bm+XBbicAJhkvZGGuKeQtkbef0X3zQsTuSm9Ln6qxLkwTZL6dcvzhK96c0Rjp0lvqur3oW
+ ZG080RFcJNtw8ZPzAbg1jPY0qW1hAxZ2aptj6skuh3/iQnfWfwlsFKk64sLGGba7rZ285u
+ p1zakzuYg8sNAA7yR3BRaHO2wjx42Zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1710951646;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zfm0c0QAulBEbMKUX9g98rYni7ZO2qpRqx0tZrJzQ34=;
- b=0iIiMoVQD/AyrQJH6pnjWXZp2JcXqWnO7bMjiLqG6ixEL+Rob/zn8HN2lnDo4mKyIsT8EX
- tXAotbCqYtcecMBw==
+ bh=mlXwFVT+vWCpD5d3q8zxHSociMM2lTUxgloHYCYIfeY=;
+ b=PfGUPTjCDGCqT0I97dxgxlqoElwgePxp01Tp/oHIJ8pRuLef/0t5PtulSi3vO0t72EzOtE
+ RQewz5wDoguBB2Aw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 096361396E;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 692AB1396E;
  Wed, 20 Mar 2024 16:20:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0FQCAd4M+2U/ZgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kMpuGN4M+2U/ZgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 20 Mar 2024 16:20:46 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 20 Mar 2024 17:20:45 +0100
+Date: Wed, 20 Mar 2024 17:20:48 +0100
 MIME-Version: 1.0
-Message-Id: <20240320-new_website-v1-1-79b603c8aea1@suse.com>
+Message-Id: <20240320-new_website-v1-4-79b603c8aea1@suse.com>
 References: <20240320-new_website-v1-0-79b603c8aea1@suse.com>
 In-Reply-To: <20240320-new_website-v1-0-79b603c8aea1@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Spamd-Result: default: False [-4.30 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_COUNT_THREE(0.00)[3];
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url,linux.it:email,suse.com:email,gnu.org:url];
+ DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Bm+XBbic;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=PfGUPTjC
+X-Rspamd-Queue-Id: 7D5CB347BC
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 01/10] Add the new basics documentation
+Subject: [LTP] [PATCH 04/10] Refactor patch review guidelines documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,759 +126,190 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This is the first patch introducing the new LTP documentation. The
-new documentation is now using Sphinx as the main framework,
-providing a solid substitute to Github wiki pages.
-
-This patch is meant to be the starting point, where we start rewriting
-the old asciidoc documentation format.
-
-A .readthedocs.yaml configuration has been added to provide an initial
-documentation publish via readthedocs service.
+Patch review guidelines documentation has been refactored adding RST
+syntax and fixing a couple of typos.
 ---
- .readthedocs.yml                              |  15 +++
- doc_new/.gitignore                            |   1 +
- doc_new/Makefile                              |   5 +
- doc_new/_static/custom.css                    |   4 +
- doc_new/conf.py                               |  27 ++++++
- doc_new/developers/api_c_tests.rst            |   4 +
- doc_new/developers/api_kvm_tests.rst          |   4 +
- doc_new/developers/api_network_tests.rst      |   4 +
- doc_new/developers/api_shell_tests.rst        |   4 +
- doc_new/developers/build_system.rst           |   4 +
- doc_new/developers/debugging.rst              |  10 ++
- doc_new/developers/ltp_library.rst            |   4 +
- doc_new/developers/setup_mailinglist.rst      |   4 +
- doc_new/developers/test_case_tutorial.rst     |   4 +
- doc_new/developers/writing_tests.rst          |  20 ++++
- doc_new/index.rst                             | 124 +++++++++++++++++++++++++
- doc_new/maintainers/ltp_release_procedure.rst |   4 +
- doc_new/maintainers/patch_review.rst          |   4 +
- doc_new/requirements.txt                      |   1 +
- doc_new/users/quick_start.rst                 | 126 ++++++++++++++++++++++++++
- doc_new/users/setup_tests.rst                 | 104 +++++++++++++++++++++
- doc_new/users/supported_systems.rst           | 110 ++++++++++++++++++++++
- 22 files changed, 587 insertions(+)
+ doc_new/maintainers/patch_review.rst | 171 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 169 insertions(+), 2 deletions(-)
 
-diff --git a/.readthedocs.yml b/.readthedocs.yml
-new file mode 100644
-index 000000000..636e29c97
---- /dev/null
-+++ b/.readthedocs.yml
-@@ -0,0 +1,15 @@
-+version: 2
-+
-+build:
-+  os: "ubuntu-22.04"
-+  tools:
-+    python: "3.6"
-+
-+# Build from the docs/ directory with Sphinx
-+sphinx:
-+  configuration: doc_new/conf.py
-+
-+# Explicitly set the version of Python and its requirements
-+python:
-+  install:
-+    - requirements: doc_new/requirements.txt
-diff --git a/doc_new/.gitignore b/doc_new/.gitignore
-new file mode 100644
-index 000000000..5ccff1a6b
---- /dev/null
-+++ b/doc_new/.gitignore
-@@ -0,0 +1 @@
-+html/
-diff --git a/doc_new/Makefile b/doc_new/Makefile
-new file mode 100644
-index 000000000..aea89f641
---- /dev/null
-+++ b/doc_new/Makefile
-@@ -0,0 +1,5 @@
-+all:
-+	sphinx-build -b html . html
-+
-+clean:
-+	rm -rf html/
-diff --git a/doc_new/_static/custom.css b/doc_new/_static/custom.css
-new file mode 100644
-index 000000000..cb4d3821d
---- /dev/null
-+++ b/doc_new/_static/custom.css
-@@ -0,0 +1,4 @@
-+/* set multiline tables cells */
-+.wy-table-responsive table td {
-+    white-space: normal;
-+}
-diff --git a/doc_new/conf.py b/doc_new/conf.py
-new file mode 100644
-index 000000000..b333ebf2a
---- /dev/null
-+++ b/doc_new/conf.py
-@@ -0,0 +1,27 @@
-+# Configuration file for the Sphinx documentation builder.
-+#
-+# For the full list of built-in configuration values, see the documentation:
-+# https://www.sphinx-doc.org/en/master/usage/configuration.html
-+
-+# -- Project information -----------------------------------------------------
-+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-+
-+project = 'Linux Test Project'
-+copyright = '2024, Linux Test Project'
-+author = 'Linux Test Project'
-+release = '1.0'
-+
-+# -- General configuration ---------------------------------------------------
-+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-+
-+extensions = []
-+
-+
-+# -- Options for HTML output -------------------------------------------------
-+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-+
-+html_theme = 'sphinx_rtd_theme'
-+html_static_path = ['_static']
-+
-+def setup(app):
-+    app.add_css_file('custom.css')
-diff --git a/doc_new/developers/api_c_tests.rst b/doc_new/developers/api_c_tests.rst
-new file mode 100644
-index 000000000..c03f9caf1
---- /dev/null
-+++ b/doc_new/developers/api_c_tests.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Developing using C API
-+======================
-diff --git a/doc_new/developers/api_kvm_tests.rst b/doc_new/developers/api_kvm_tests.rst
-new file mode 100644
-index 000000000..1ef7ec452
---- /dev/null
-+++ b/doc_new/developers/api_kvm_tests.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Developing using KVM API
-+========================
-diff --git a/doc_new/developers/api_network_tests.rst b/doc_new/developers/api_network_tests.rst
-new file mode 100644
-index 000000000..4fe45f5f6
---- /dev/null
-+++ b/doc_new/developers/api_network_tests.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Developing using network API
-+============================
-diff --git a/doc_new/developers/api_shell_tests.rst b/doc_new/developers/api_shell_tests.rst
-new file mode 100644
-index 000000000..2fb2a5068
---- /dev/null
-+++ b/doc_new/developers/api_shell_tests.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Developing using shell API
-+==========================
-diff --git a/doc_new/developers/build_system.rst b/doc_new/developers/build_system.rst
-new file mode 100644
-index 000000000..cfcaf2d04
---- /dev/null
-+++ b/doc_new/developers/build_system.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Build system
-+============
-diff --git a/doc_new/developers/debugging.rst b/doc_new/developers/debugging.rst
-new file mode 100644
-index 000000000..18a4a67e9
---- /dev/null
-+++ b/doc_new/developers/debugging.rst
-@@ -0,0 +1,10 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Debugging
-+=========
-+
-+The new test library runs the actual test, i.e. the `test()` function in a
-+forked process. To get stack trace of a crashing test in gdb it's needed to
-+`set follow-fork-mode child <https://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_25.html>`_.
-+To trace the test, please use `strace -f` to enable tracing also for the
-+forked processes.
-diff --git a/doc_new/developers/ltp_library.rst b/doc_new/developers/ltp_library.rst
-new file mode 100644
-index 000000000..b780b6870
---- /dev/null
-+++ b/doc_new/developers/ltp_library.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+LTP Library development
-+=======================
-diff --git a/doc_new/developers/setup_mailinglist.rst b/doc_new/developers/setup_mailinglist.rst
-new file mode 100644
-index 000000000..b7320b9a2
---- /dev/null
-+++ b/doc_new/developers/setup_mailinglist.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Setting up the Mailing list
-+===========================
-diff --git a/doc_new/developers/test_case_tutorial.rst b/doc_new/developers/test_case_tutorial.rst
-new file mode 100644
-index 000000000..43563c234
---- /dev/null
-+++ b/doc_new/developers/test_case_tutorial.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Test case tutorial
-+==================
-diff --git a/doc_new/developers/writing_tests.rst b/doc_new/developers/writing_tests.rst
-new file mode 100644
-index 000000000..ba0188aee
---- /dev/null
-+++ b/doc_new/developers/writing_tests.rst
-@@ -0,0 +1,20 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Writing tests
-+=============
-+
-+Testing builds with GitHub Actions
-+----------------------------------
-+
-+Master branch is tested in `GitHub Actions <https://github.com/linux-test-project/ltp/actions>`_
-+to ensure LTP builds in various distributions, including old, current and
-+bleeding edge. ``gcc`` and ``clang`` toolchains are also tested for various
-+architectures using cross-compilation. For a full list of tested distros, please
-+check ``.github/workflows/ci.yml``.
-+
-+.. note::
-+
-+      Passing the GitHub Actions CI means that LTP compiles in a variety of
-+      different distributions on their **newest releases**.
-+      The CI also checks for code linting, running ``make check`` in the whole
-+      LTP project.
-diff --git a/doc_new/index.rst b/doc_new/index.rst
-new file mode 100644
-index 000000000..a8778b3d8
---- /dev/null
-+++ b/doc_new/index.rst
-@@ -0,0 +1,124 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Linux Test Project
-+==================
-+
-+Linux Test Project is a joint project started by SGI, OSDL and Bull developed
-+and maintained by SUSE, Red Hat, Fujitsu, IBM, Cisco, Oracle and others. The
-+project goal is to deliver tests to the open source community that validate
-+reliability, robustness, and stability of the Linux Kernel.
-+
-+The testing suites contain a collection of tools for testing the Linux kernel
-+and related features. Our goal is to improve the Linux kernel and system
-+libraries by bringing test automation.
-+
-+.. warning::
-+
-+   LTP tests shouldn't run in production systems. In particular,
-+   growfiles, doio, and iogen, stress the I/O capabilities of the systems and
-+   they are intended to find (or cause) problems.
-+
-+Some references:
-+
-+* `Source code <https://github.com/linux-test-project/ltp>`_
-+* `Releases <https://github.com/linux-test-project/ltp/releases>`_
-+* `Mailing List <http://lists.linux.it/listinfo/ltp>`_
-+* `Working patches (patchwork) <https://patchwork.ozlabs.org/project/ltp/list/>`_
-+* `Working patches (lore.kernel.org) <https://lore.kernel.org/ltp>`_
-+* `#ltp @ libera chat <https://libera.chat/>`_
-+
-+.. toctree::
-+   :maxdepth: 3
-+   :hidden:
-+   :caption: For users
-+
-+   users/quick_start
-+   users/setup_tests
-+   users/supported_systems
-+
-+.. toctree::
-+   :maxdepth: 3
-+   :hidden:
-+   :caption: For developers
-+
-+   developers/setup_mailinglist
-+   developers/writing_tests
-+   developers/test_case_tutorial
-+   developers/api_c_tests
-+   developers/api_shell_tests
-+   developers/api_network_tests
-+   developers/api_kvm_tests
-+   developers/ltp_library
-+   developers/build_system
-+   developers/debugging
-+
-+.. toctree::
-+   :maxdepth: 3
-+   :hidden:
-+   :caption: For maintainers
-+
-+   maintainers/patch_review
-+   maintainers/ltp_release_procedure
-+
-+For users
-+---------
-+
-+.. descriptions here are active
-+
-+:doc:`users/quick_start`
-+   How to build and use LTP framework in few steps
-+
-+:doc:`users/setup_tests`
-+   How to setup tests execution
-+
-+:doc:`users/supported_systems`
-+   A list of supported technologies by the LTP framework
-+
-+For developers
-+--------------
-+
-+.. descriptions here are active
-+
-+:doc:`developers/setup_mailinglist`
-+   How to configure git and to start sending patches via ``git send-email``
-+
-+:doc:`developers/writing_tests`
-+   Starting guide on writing tests
-+
-+:doc:`developers/test_case_tutorial`
-+   A tutorial showing how to write a test from scratch using C API
-+
-+:doc:`developers/api_c_tests`
-+   Walk through the C API features
-+
-+:doc:`developers/api_shell_tests`
-+   Walk through the Shell API features
-+
-+:doc:`developers/api_network_tests`
-+   Walk through the network API features
-+
-+:doc:`developers/api_kvm_tests`
-+   Walk through the KVM API features
-+
-+:doc:`developers/ltp_library`
-+   Developing new features in the LTP library
-+
-+:doc:`developers/build_system`
-+   Short introduction to the LTP build system
-+
-+:doc:`developers/debugging`
-+   How to debug LTP tests
-+
-+For maintainers
-+---------------
-+
-+:doc:`maintainers/patch_review`
-+   Steps to follow when reviewing patches
-+
-+:doc:`maintainers/ltp_release_procedure`
-+   Steps to follow for a new LTP release
-+
-+
-+Getting help
-+------------
-+To report a problem or suggest any feature, please write at ltp@lists.linux.it
-diff --git a/doc_new/maintainers/ltp_release_procedure.rst b/doc_new/maintainers/ltp_release_procedure.rst
-new file mode 100644
-index 000000000..808ff2211
---- /dev/null
-+++ b/doc_new/maintainers/ltp_release_procedure.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Release process
-+===============
 diff --git a/doc_new/maintainers/patch_review.rst b/doc_new/maintainers/patch_review.rst
-new file mode 100644
-index 000000000..1fb76b8bc
---- /dev/null
+index 1fb76b8bc..81d198532 100644
+--- a/doc_new/maintainers/patch_review.rst
 +++ b/doc_new/maintainers/patch_review.rst
-@@ -0,0 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Patch reviewing
-+===============
-diff --git a/doc_new/requirements.txt b/doc_new/requirements.txt
-new file mode 100644
-index 000000000..59709ec72
---- /dev/null
-+++ b/doc_new/requirements.txt
-@@ -0,0 +1 @@
-+sphinx-rtd-theme==2.0.0
-diff --git a/doc_new/users/quick_start.rst b/doc_new/users/quick_start.rst
-new file mode 100644
-index 000000000..40d8dd9c6
---- /dev/null
-+++ b/doc_new/users/quick_start.rst
-@@ -0,0 +1,126 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Installation and tests execution
-+================================
-+
-+Basics requirements to build LTP are the following:
-+
-+* git
-+* autoconf
-+* automake
-+* make
-+* gcc
-+* m4
-+* pkgconf / pkg-config
-+* libc headers
-+* linux headers
-+
-+.. code-block:: console
-+
-+   $ git clone https://github.com/linux-test-project/ltp.git
-+   $ cd ltp
-+   $ make autotools
-+   $ ./configure
-+
-+.. note::
-+
-+   For optional library dependencies, take a look at the scripts inside ``ci/``
-+   directory.
-+
-+Running single tests
-+--------------------
-+
-+LTP provides the possibility to build and run single tests:
-+
-+.. code-block:: console
-+
-+   $ cd testcases/kernel/syscalls/foo
-+   $ make
-+   $ PATH=$PATH:$PWD ./foo01
-+
-+Shell testcases are a bit more complicated, since they need to setup ``PATH``
-+as well as to compiled binary helpers:
-+
-+.. code-block:: console
-+
-+   $ cd testcases/lib
-+   $ make
-+   $ cd ../commands/foo
-+   $ PATH=$PATH:$PWD:$PWD/../../lib/ ./foo01.sh
-+
-+Open Posix Testsuite has it's own build system which needs Makefiles to be
-+generated first:
-+
-+.. code-block:: console
-+
-+   $ cd testcases/open_posix_testsuite/
-+   $ make generate-makefiles
-+   $ cd conformance/interfaces/foo
-+   $ make
-+   $ ./foo_1-1.run-test
-+
-+Compiling and installing all testcases
-+--------------------------------------
-+
-+To compile all tests is really simple:
-+
-+.. code-block:: console
-+
-+   $ make
-+
-+   $ # install LTP inside /opt/ltp by default
-+   $ make install
-+
-+.. note::
-+
-+   Some tests will be disabled if ``configure`` script won't find the build
-+   dependencies.
-+
-+Running tests
-+-------------
-+
-+To run all the test suites
-+
-+.. code-block:: console
-+
-+   $ cd /opt/ltp
-+
-+   $ # run syscalls testing suite
-+   $ ./kirk -f ltp -r syscalls
-+
-+.. note::
-+
-+   Many test cases have to be executed as root.
-+
-+Test suites (e.g. syscalls) are defined in the ``runtest`` directory. Each file
-+contains a list of test cases in a simple format.
-+
-+Each test case has its own executable or script that can directly executed:
-+
-+.. code-block:: console
-+
-+   $ testcases/bin/abort01
-+
-+   $ # some tests have arguments
-+   $ testcases/bin/mesgq_nstest -m none
-+
-+   $ # vast majority of tests have a help
-+   $ testcases/bin/ioctl01 -h
-+
-+   $ # Many require certain environment variables to be set
-+   $ LTPROOT=/opt/ltp PATH="$PATH:$LTPROOT/testcases/bin" testcases/bin/wc01.sh
-+
-+Most commonly, the ``PATH`` variable needs to be set and also ``LTPROOT``, but
-+there are a number of other variables which usually ``kirk`` sets for you.
-+
-+.. note::
-+
-+   All shell scripts need the ``PATH`` to be set. However, this is not limited
-+   to shell scripts and some C based tests need environment variables as well.
-+   They usually raise a configuration error when this is needed.
-+
-+Network tests
-+-------------
-+
-+Network tests usually require a certain setup that is described in
-+``testcases/network/README.md``.
-diff --git a/doc_new/users/setup_tests.rst b/doc_new/users/setup_tests.rst
-new file mode 100644
-index 000000000..910cc2315
---- /dev/null
-+++ b/doc_new/users/setup_tests.rst
-@@ -0,0 +1,104 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Tests setup
-+===========
-+
-+The internal LTP library provides a set of features that permits to customize
-+tests behaviour by setting environment variables and using specific tests
-+arguments.
-+
-+Library environment variables
-+-----------------------------
-+
-+Following environment variables are expected to be set by LTP users. Therefore,
-+with some exceptions, they have ``LTP_`` prefix. Environment variables with
-+``TST_`` prefix are used inside LTP shell API and should **not** be set by
-+users.
-+
-+.. list-table::
-+   :header-rows: 1
-+
-+   * - Variable
-+     - Note
-+
-+   * - KCONFIG_PATH
-+     - The path to the kernel config file, (if not set, it tries the usual paths
-+       ``/boot/config-RELEASE`` or ``/proc/config.gz``)
-+
-+   * - KCONFIG_SKIP_CHECK
-+     - Skip kernel config check if variable set (not set by default)
-+
-+   * - LTPROOT
-+     - Prefix for installed LTP.  **Should be always set**, since some tests
-+       need it to use data files (``LTP_DATAROOT``). LTP is by default installed
-+       into ``/opt/ltp``
-+
-+   * - LTP_COLORIZE_OUTPUT
-+     - By default LTP colorizes it's output unless it's redirected to a pipe or
-+       file. Force colorized output behaviour: ``y`` or ``1``: always colorize,
-+       ``n`` or ``0``: never colorize.
-+
-+   * - LTP_DEV
-+     - Path to the block device to be used. C Language: ``.needs_device = 1``.
-+       Shell language: ``TST_NEEDS_DEVICE=1``.
-+
-+   * - LTP_SINGLE_FS_TYPE
-+     - Testing only - specifies filesystem instead all supported
-+       (for tests with ``.all_filesystems``).
-+
-+   * - LTP_DEV_FS_TYPE
-+     - Filesystem used for testing (default: ``ext2``).
-+
-+   * - LTP_TIMEOUT_MUL
-+     - Multiplies timeout, must be number >= 0.1 (> 1 is useful for slow
-+       machines to avoid unexpected timeout).
-+
-+   * - LTP_RUNTIME_MUL
-+     - Multiplies maximal test iteration runtime. Tests that run for more than a
-+       second or two are capped on runtime. You can scale the default runtime
-+       both up and down with this multiplier. This is not yet implemented in the
-+       shell API.
-+
-+   * - LTP_VIRT_OVERRIDE
-+     - Overrides virtual machine detection in the test library. Setting it to
-+       empty string, tella the library that system is not a virtual machine.
-+       Other possible values are ``kvm``, ``xen``, ``zvm`` and ``microsoft``
-+       that describe different types supervisors.
-+
-+   * - PATH
-+     - It's required to addjust path: ``PATH="$PATH:$LTPROOT/testcases/bin"``
-+
-+   * - TMPDIR
-+     - Base directory for template directory (C language: ``.needs_tmpdir = 1``
-+       and shell: ``TST_NEEDS_TMPDIR=1``). Must be an absolute path (default:
-+       '/tmp').
-+
-+   * - LTP_NO_CLEANUP
-+     - Disable running test cleanup (defined in ``TST_CLEANUP``).
-+       Shell API only.
-+
-+   * - LTP_ENABLE_DEBUG
-+     - Enable debug info (value ``1`` or ``y``).
-+
-+Test execution time and timeout
-+-------------------------------
-+
-+The limit on how long a test can run does compose of two parts: ``max_runtime``
-+and ``timeout``. The limit does apply to a single test variant. That means, for
-+example, that tests which run for all available filesystems will apply this
-+limit for a single filesystem only.
-+
-+The ``max_runtime`` is a cap on how long the ``run()`` function can take and for
-+most testcases this part is set to zero. For tests that do run for more than a
-+second or two the ``max_runtime`` has to be defined and the ``run()`` function
-+has to check actively how much runtime is left.
-+
-+Test runtime can be scaled up and down with ``LTP_RUNTIME_MUL`` environment
-+variable or set on a commandline by the ``-I`` parameter. Hoewever,
-+setting the runtime too low will cause long running tests to exit prematurely,
-+possibly before having a chance to actually test anything.
-+
-+The timeout is a limit for test setup and cleanup and it's also a safety
-+margin for the runtime accounting. It's currently set to 30 seconds but it may
-+change later. If your target machine is too slow, it can be scaled up with the
-+``LTP_TIMEOUT_MUL`` environment variable.
-diff --git a/doc_new/users/supported_systems.rst b/doc_new/users/supported_systems.rst
-new file mode 100644
-index 000000000..6220a96e0
---- /dev/null
-+++ b/doc_new/users/supported_systems.rst
-@@ -0,0 +1,110 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Supported systems
-+=================
-+
-+Kernel version
-+--------------
-+
-+Minimal supported kernel version is **3.10**.
-+
-+Oldest tested distributions
-+---------------------------
-+
-+.. list-table::
-+    :header-rows: 1
-+
-+    * - Distro
-+      - Kernel
-+      - glibc
-+      - gcc
-+      - clang
-+
-+    * - openSUSE Leap 42.2
-+      - 4.4
-+      - 2.22
-+      - 4.8.5
-+      - \-
-+
-+    * - Ubuntu 18.04 LTS bionic
-+      - 4.15
-+      - 2.27
-+      - 7.3.0
-+      - \-
-+
-+    * - Debian 11 (bullseye)
-+      - 5.10
-+      - 2.31
-+      - 10.2.1
-+      - 11.0.1
-+
-+    * - RHEL-7.9 Maipo
-+      - 3.10
-+      - 4.8.5
-+      - 2.17
-+      - \-
-+
-+Older distributions are not officially supported, which means that it
-+may or may not work. It all depends on your luck. It should be possible
-+to compile latest LTP even on slightly older distributions than we
-+support with a few manual tweaks, e.g. disabling manually tests for
-+newly added syscalls, etc. **Trivial fixes/workarounds may be accepted,
-+but users are encouraged to move to a newer distro.**
-+
-+If latest LTP cannot be compiled even with some amount of workarounds,
-+you may result to older LTP releases, however these are **not** supported
-+in any way. Also if you are trying to run LTP on more than 10 years old
-+distribution you may as well reconsider you life choices.
-+
-+Tested architectures
-+--------------------
-+
-+.. list-table::
-+    :header-rows: 1
-+
-+    * - Architecture
-+      - Build
-+
-+    * - x86_64
-+      - native
-+
-+    * - x86 emulation
-+      - native
-+
-+    * - aarch64
-+      - cross compilation
-+
-+    * - ppc64le
-+      - cross compilation
-+
-+    * - s390x
-+      - cross compilation
-+
-+Supported C libraries
+@@ -1,4 +1,171 @@
+ .. SPDX-License-Identifier: GPL-2.0-or-later
+ 
+-Patch reviewing
+-===============
++Patch review
++============
++
++Anyone can and should review patches. It's the only way to get good at patch
++review and for the project to scale. For this reason, we have a short guide on
++what to do during the review process.
++
++Goals of patch review
 +---------------------
 +
-+.. list-table::
-+    :header-rows: 1
++#. Prevent false positive test results
++#. Prevent false negative test results
++#. Keep the code as simple as possible, but no simpler
 +
-+    * - C library
-+      - Note
++How to find clear errors
++------------------------
 +
-+    * - `glibc <https://www.gnu.org/software/libc/>`_
-+      - Targeted libc, tested both compilation and actual test results.
++A clear error is one where there is unlikely to be any argument if you
++provide evidence of it. Evidence being an error trace or logical proof
++that an error will occur in a common situation.
 +
-+    * - `uClibc-ng <https://uclibc-ng.org/>`_
-+      - Although not being tested, it should work as it attempt to maintain a glibc compatible interface.
++The following are examples and may not be appropriate for all tests.
 +
-+    * - `uClibc <https://www.uclibc.org/>`_
-+      - Older uClibc might have problems.
++* Merge the patch locally. It should apply cleanly to master.
++* Compile the patch with default and non-default configurations.
 +
-+    * - `musl <https://musl.libc.org/>`_
-+      - Not yet fully supported. Check ``ci/alpine.sh`` script.
++  * Use sanitizers e.g. undefined behaviour, address.
++  * Compile on non-x86
++  * Compile on x86 with ``-m32``
++  * Compile testing patches with GitHub Actions in LTP repo fork can cover
++    various distros/architectures
 +
-+    * - Android
-+      - Please use `AOSP fork <https://android.googlesource.com/platform/external/ltp>`_
++* Use ``make check``
++* Run effected tests in a VM
 +
-+C version
++  * Use single vCPU
++  * Use many vCPUs and enable NUMA
++  * Restrict RAM to < 1GB.
++
++* Run effected tests on an embedded device
++* Run effected tests on non-x86 machine in general
++* Run reproducers on a kernel where the bug is present
++* Run tests with ``-i0`` and ``-i2``
++* Compare usage of system calls with man page descriptions
++* Compare usage of system calls with kernel code
++* Double check commit message
++* Search the LTP library for existing helper functions
++* Check doc formatting, i.e. ``make doc && chromium docparse/metadata.html``
++
++How to find subtle errors
++-------------------------
++
++A subtle error is one where you can expect some argument because you
++do not have clear evidence of an error. It is best to state these as
++questions and not make assertions if possible.
++
++Although if it is a matter of style or "taste" then senior maintainers
++can assert what is correct to avoid bike shedding.
++
++* Ask what happens if there is an error, could it be debugged just
++  with the test output?
++* Are we testing undefined behavior?
++
++  * Could future kernel behaviour change without "breaking userland"?
++  * Does the kernel behave differently depending on hardware?
++  * Does it behave differently depending on kernel configuration?
++  * Does it behave differently depending on the compiler?
++  * Would it behave differently if the order of checks on syscall parameters
++    changed in the kernel?
++
++* Will it scale to tiny and huge systems?
++
++  * What happens if there are 100+ CPUs?
++  * What happens if each CPU core is very slow?
++  * What happens if there are 2TB of RAM?
++
++* Are we repeating a pattern that can be turned into a library function?
++* Is a single test trying to do too much?
++* Could multiple similar tests be merged?
++* Race conditions
++
++  * What happens if a process gets preempted?
++  * Could checkpoints or fuzzsync by used instead?
++  * Note, usually you can insert a sleep to prove a race condition
++    exists however finding them is hard
++
++* Is there a simpler way to achieve the same kernel coverage?
++
++How to get patches merged
++-------------------------
++
++Once you think a patch is good enough you should add your ``Reviewed-by``
++and/or ``Tested-by`` tags. This means you will get some credit for getting
++the patch merged. Also some blame if there are problems.
++
++If you ran the test you can add the ``Tested-by`` tag. If you read the
++code or used static analysis tools on it, you can add the Reviewed-by
++tag.
++
++In addition you can expect others to review your patches and add their
++tags. This will speed up the process of getting your patches merged.
++
++Maintainers Checklist
++---------------------
++
++Patchset should be tested locally and ideally also in maintainer's fork in
++GitHub Actions on GitHub.
++
++.. note::
++
++    GitHub Actions do only build testing, passing the CI means only that
++    the test compiles fine on variety of different distributions and releases.
++
++The test should be executed at least once locally and should PASS as well.
++
++Commit messages should have
++
++* Author's ``Signed-off-by`` tag
++* Committer's ``Reviewed-by`` or ``Signed-off-by`` tag
++* Check also mailing lists for other reviewers / testers tags, notes and failure
++  reports
++* ``Fixes: hash`` if it fixes particular LTP commit
++* ``Fixes: #N`` if it fixes github issue number N, so it's automatically closed
++* LTP documentation should be kept up to date.
++
++After patch is accepted or rejected, set correct state and archive in the
++`LTP patchwork instance <https://patchwork.ozlabs.org/project/ltp/list/>`_.
++
++New tests
 +---------
 +
-+LTP is compiled with ``-std=gnu99``.
++New test should
++
++* Have a record in runtest file
++* Test should work fine with more than one iteration (e.g. run with ``-i 100``)
++* Run with ``-i 0`` to check that setup and cleanup are coded properly
++  (no test is being run)
++* Have a brief description
++* License: the default license for new tests is GPL v2 or later, use
++  ``GPL-2.0-or-later``; the licence for test (e.g. GPL-2.0) should not change
++  unless test is completely rewritten
++* Old copyrights should be kept unless test is completely rewritten
++
++C tests
++~~~~~~~
++
++* Use the new C API, implementing ``struct tst_test``
++* Test binaries are added into corresponding ``.gitignore`` files
++* Check coding style with ``make check``
++* Docparse documentation
++* If a test is a regression test it should include ``.tags`` in the
++  ``struct tst_test`` definition
++* When rewriting old tests, `uClinux <https://en.wikipedia.org/wiki/%CE%9CClinux>`_
++  support should be removed (project has been discontinued).
++  E.g. remove ``#ifdef UCLINUX``, replace ``FORK_OR_VFORK()`` with simple
++  ``fork()`` or ``SAFE_FORK()``.
++
++Shell tests
++~~~~~~~~~~~
++
++* Use new shell API
++* Check coding style with ``make check``
++* If a test is a regression test it should include related kernel or glibc
++  commits as a comment
++
++LTP library
++~~~~~~~~~~~
++
++For patchset touching the LTP library, follow the LTP library guidelines.
 
 -- 
 2.35.3
