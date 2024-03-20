@@ -4,103 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3D7CC54E67
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 07:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED572C54E58
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 07:32:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DAC673CE6A4
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 08:31:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 632BD3CF23E
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 08:32:05 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 49AA33CD808
- for <ltp@lists.linux.it>; Wed, 20 Mar 2024 08:31:20 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id DEBC73CD808
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 08:31:51 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B82ED140514C
- for <ltp@lists.linux.it>; Wed, 20 Mar 2024 08:31:19 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6A8C6209C6;
- Wed, 20 Mar 2024 07:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710919878;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A71651405170
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 08:31:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1710919908;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wI3jUSbPZA4wRMMjHMZWWsejHiwrObP1wx+cv9lebDE=;
- b=khLbiePib6GHdjF2vYI/XS9b5uuI+ZAwK1ONoKMCWKMuWk/pLpOuzz3QV2kEGGOqfw8QTC
- UYghC2NVu2L3bgyU+tbvcu6IWMsnv9JVKWlvbU4ckDAm+iUR49YpPxibFyPiO2cNpTok8G
- n0fLm95gyVE+nQ/Td4S0Fm4TRNs5Vbo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710919878;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wI3jUSbPZA4wRMMjHMZWWsejHiwrObP1wx+cv9lebDE=;
- b=vd3V4Dzery6iSsRR+4JZwAaIfNXVignNC8rCeP1AXhBOoAJcguTeQukUlOllPzHgZuLLE1
- G/r1DKfZZc7EzhCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710919877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wI3jUSbPZA4wRMMjHMZWWsejHiwrObP1wx+cv9lebDE=;
- b=jbgupZ+3L4WwgLvARtLnEH2bxx3WX83IUjr8pZv4/0y9KIpGj+4fB4nXi7q94KMNNGlaQa
- qi/enIOotAp9m8eWpf6cJG+cDUwdKd3AIe5t5YKRImRh00UZVGD8Y7FJ/nLdn8VDRug78L
- Bv0seEzfPvrgyxW4dx7HeP2Elwepcxw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710919877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wI3jUSbPZA4wRMMjHMZWWsejHiwrObP1wx+cv9lebDE=;
- b=wlYMv5Kl3SJHffb+XCQ5/36YFjXmALQ7BBzSQANyKwUBGAdMGiNRN0Xf0Z5eXmucd8XCEo
- tpDcRz6X2rAbUnCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 587B5136CD;
- Wed, 20 Mar 2024 07:31:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hDYtFMWQ+mVJLQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 20 Mar 2024 07:31:17 +0000
-Date: Wed, 20 Mar 2024 08:31:16 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240320073116.GA452876@pevik>
-References: <20240319100822.3243785-1-liwang@redhat.com>
- <20240319100822.3243785-2-liwang@redhat.com>
+ bh=VAZxmdQBcDnHCO8IzOX3WDg3WUiV76pcgL1y9HYaerM=;
+ b=Yh+bZ6vBTzik1boaUlssgfY1RMzIVUB98ybPBHfst2MJ7l8s6/n15ekhT8I4RDhiWwNfhe
+ OoZYoG9W1h6dpM8RQyTCx5gQBZAXkednCXnNhxQ7hkyH4j1X+rFZFyc1vtkPKIGBPRIfOk
+ l6Yob3GlB8aN+il6b2ih0rztpf4vJnA=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-iGhiR8AUPCaoWXM1I-Fq-Q-1; Wed, 20 Mar 2024 03:31:47 -0400
+X-MC-Unique: iGhiR8AUPCaoWXM1I-Fq-Q-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-29de8002b0bso4410569a91.3
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 00:31:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1710919904; x=1711524704;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=VAZxmdQBcDnHCO8IzOX3WDg3WUiV76pcgL1y9HYaerM=;
+ b=pbk8NNu7LuwCTl+1EEPoHRzjQQ2hhPnO9+Yf4UQNeCZYdOxXhl+2dZwoElIAVOeVB1
+ VO45AbljUEJifamZ+loPCfbrhxJMhEKfLL/WM/p7/vQ8sgX37pZfcH62WmAsY7GpUjid
+ N7vhZ+3aBqyZNFIXOvnDLPcXVyPEWe/lGCRcX3saJQmeA1a6HiwTU7K+oZtdoL6IkoqF
+ VvWYCeVXLymaxQ9rPVXTEWVCseE11APasJMzkVFGlpxPBBXeSbX2Paw9xDL8exeEUVMQ
+ XZVI49UlnJleUeavRlVbPi6P4YVLw+pOZ4/Yn2k2e8vsrkEfeV88tZmLLeq3DlgNU5r/
+ rs3w==
+X-Gm-Message-State: AOJu0YwnfBmv3tsv3hr6RYL6wosku3tp5CJn16klV0mBiEf9xlTbT8Vy
+ cz5xUU45t0Z4AbGre1WOvOXDjIZi7dxKkfEnLR/22O7UsPNczcuactZspc6NK0GUlM1nM4ukrHP
+ wKPx9ZJbkLc8kj+3xrUEv7OtlaBAAIeffJvLXIME5vWPSqDT5rf9Igl/L1Vho4I3VSYKgBxIQe4
+ WSm35BLg1ZLT3tnSDnvrxGY3Bn47uq/6uoZJYf
+X-Received: by 2002:a17:90a:928e:b0:299:3f5d:b5e8 with SMTP id
+ n14-20020a17090a928e00b002993f5db5e8mr14390016pjo.20.1710919904643; 
+ Wed, 20 Mar 2024 00:31:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE23bVAug5ujnnTwkCMlcNx/Dy9KAnpY9Yc5FJnJkdg9+Dxqu5HJPFl8YyGE7qc2JNaNisTU9FCssX20k1ey+o=
+X-Received: by 2002:a17:90a:928e:b0:299:3f5d:b5e8 with SMTP id
+ n14-20020a17090a928e00b002993f5db5e8mr14390010pjo.20.1710919904350; Wed, 20
+ Mar 2024 00:31:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240319100822.3243785-2-liwang@redhat.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.50 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- BAYES_HAM(-3.00)[100.00%]; ARC_NA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]
+References: <20240320063218.449072-1-pvorel@suse.cz>
+In-Reply-To: <20240320063218.449072-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Mar 2024 15:31:32 +0800
+Message-ID: <CAEemH2eRspxMmD4LEQ-ospJES2BWAHLqhviX_1uSM=-eefnQug@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] libswap: add two methods to create swapfile
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 1/2] lib: Add tst_selinux_enforcing()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,100 +91,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mete Durlu <meted@linux.ibm.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
-
-Generally LGTM.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-...
->  /*
-> - * Make a swap file
-> + * Create a swapfile of a specified size or number of blocks.
->   */
-> -int make_swapfile(const char *swapfile, int blocks, int safe);
-> +int make_swapfile(const char *swapfile, unsigned int num,
-> +			int safe, enum swapfile_method method);
-I wonder if it would help to add const char *file, const int lineno here.
-
-> +
-> +#define MAKE_SWAPFILE_SIZE(swapfile, size, safe) \
-> +    make_swapfile(swapfile, size, safe, SWAPFILE_BY_SIZE)
-nit: I like the name but one have to search which units (kB vs. MB vs. GB) are used.
-
-> +
-> +#define MAKE_SWAPFILE_BLKS(swapfile, blocks, safe) \
-> +    make_swapfile(swapfile, blocks, safe, SWAPFILE_BY_BLKS)
-
-And we could also have SAFE_ variants.
-
-Therefore maybe rename make_swapfile() to make_swapfile_()
-(approach in LTP for functions to be wrapped) and define macros:
-
-int make_swapfile_(const char *file, const int lineno,
-	const char *swapfile, unsigned int num,
-	int safe, enum swapfile_method method);
-
-#define MAKE_SWAPFILE_SIZE(swapfile, size, safe) \
-    make_swapfile_(__FILE__, __LINE__, swapfile, size, 0, SWAPFILE_BY_SIZE)
-
-#define MAKE_SWAPFILE_BLKS(swapfile, blocks, safe) \
-    make_swapfile_(__FILE__, __LINE__, swapfile, blocks, 0, SWAPFILE_BY_BLKS)
-
-#define SAFE_MAKE_SWAPFILE_SIZE(swapfile, size, safe) \
-    make_swapfile_(__FILE__, __LINE__, swapfile, size, 1, SWAPFILE_BY_SIZE)
-
-#define SAFE_MAKE_SWAPFILE_BLKS(swapfile, blocks, safe) \
-    make_swapfile_(__FILE__, __LINE__, swapfile, blocks, 1, SWAPFILE_BY_BLKS)
-
-
->  /*
->   * Check swapon/swapoff support status of filesystems or files
-> diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
-> index a26ea25e4..0e2476ec2 100644
-> --- a/libs/libltpswap/libswap.c
-> +++ b/libs/libltpswap/libswap.c
-> @@ -133,18 +133,26 @@ out:
->  	return contiguous;
->  }
-
-> -int make_swapfile(const char *swapfile, int blocks, int safe)
-> +int make_swapfile(const char *swapfile, unsigned int num, int safe, enum swapfile_method method)
->  {
->  	struct statvfs fs_info;
->  	unsigned long blk_size, bs;
->  	size_t pg_size = sysconf(_SC_PAGESIZE);
->  	char mnt_path[100];
-> +	unsigned int blocks = 0;
-
->  	if (statvfs(".", &fs_info) == -1)
->  		return -1;
-
->  	blk_size = fs_info.f_bsize;
-
-> +	if (method == SWAPFILE_BY_SIZE)
-> +		blocks = num * 1024 * 1024 / blk_size;
-> +	else if (method == SWAPFILE_BY_BLKS)
-> +		blocks = num;
-> +	else
-> +		tst_brk(TBROK, "Invalid method, please see include/libswap.h");
-
-nit: I would print the method.
-
-Using const char *file, const int lineno and tst_brk_() would help
-later to point out which file actually contains wrong method.
-
-...
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGV0ciwKCk9uIFdlZCwgTWFyIDIwLCAyMDI0IGF0IDI6MzLigK9QTSBQZXRyIFZvcmVsIDxw
+dm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+IENvLWRldmVsb3BlZC1ieTogTWV0ZSBEdXJsdSA8bWV0
+ZWRAbGludXguaWJtLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
+ZS5jej4KPgoKVGhpcyBwYXRjaCBpcyBkb2luZyB0aGUgc2FtZSB3b3JrIGFzIHNlY3VyaXR5X2dl
+dGVuZm9yY2UoKSB3aGljaCBwcm92aWRlcwpieSAnc2VsaW51eC9zZWxpbnV4LmgnLCBidXQgaXQg
+aXMgc3RpbGwgd29ydGggaGF2aW5nIGl0IGJlY2F1c2Ugd2UgZG8gbm90CndhbnQgbHRwCmhhcyBt
+YW55IGV4dHJhIGRlcGVuZGVuY2llcyAoZS5nLiBsaWJzZWxpbnV4LWRldmVsKS4KClJldmlld2Vk
+LWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KCgoKPiAtLS0KPiBIaSwKPgo+IEBMaSwg
+Q3lyaWw6Cj4gMSkgSSBndWVzcyB3ZSB3YW50IHRvIGRpc3Rpbmd1aXNoIEVBQ0NFUyBmb3IgU0VM
+aW51eCBlbmZvcmNpbmcsIHJpZ2h0Pwo+IElmIG5vdCwgdGhpcyBjb21taXQgd291bGQgYmUgZHJv
+cHBlZCBhbmQgc2Vjb25kIGNvbW1pdCB3b3VsZCBqdXN0IHVzZQo+Cj4gICAgICAgICBjb25zdCBp
+bnQgZXhwX2VycnNbXSA9IHt0Yy0+ZXhwZWN0ZWRfZXJybm8sIEVBQ0NFU307Cj4KPiAgICAgICAg
+IFRTVF9FWFBfRkFJTF9BUlIoZmFub3RpZnlfbWFyayhmYW5vdGlmeV9mZCwgRkFOX01BUktfQURE
+IHwKPiB0Yy0+bWFyay5mbGFncywKPiAgICAgICAgICAgICAgICAgICAgICAgICAgdGMtPm1hc2su
+ZmxhZ3MsIGRpcmZkLCBwYXRoKSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgZXhwX2VycnMp
+Owo+Cj4gMikgU29tZSB0aW1lIGFnbyBJIHByb3Bvc2VkIHRvIG1lcmdlIHNvbWUgbGliLyouYyBm
+aWxlcywgbm90Cj4ganVzdCBoYXZlIHNvIG1hbnkgZmlsZXMgd2l0aCBzaW5nbGUgZnVuY3Rpb25z
+IGluIHRoZSBsaWJyYXJ5LiBFLmcuCj4gbGliL3RzdF9maXBzLmMsIGxpYi90c3Rfc2VsaW51eC5j
+LCBsaWIvdHN0X2xvY2tkb3duLmMgY291bGQgYmUgbWVyZ2VkCj4gaW50byBsaWIvdHN0X3NlY3Vy
+aXR5LmMuIE9yIGRvIHdlIHdhbnQgdG8gaGF2ZSB0aGVzZSBzZXBhcmF0ZT8KPgoKSSB0aGluayB0
+aGUgYW5zd2VyIGlzIFllcy4gVGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgbGliLyouYyBmaWxlcyB3
+aXRoCnNvbWUgdHJpdmlhbCBmZWF0dXJlcywgd2hpY2ggYnJpbmcgdHJvdWJsZXMgZm9yIHJlYWRp
+bmcvbWFuYWdpbmcgdGhlCmxpYnJhcnkuIEl0IGlzIG5lY2Vzc2FyeSB0byBhcmNoaXZlIGFuZCBt
+ZXJnZSB0aGUgc2FtZSB0aGluZy4KCgoKPgo+IFdoZW4gSSBwcm9wb3NlZCB0aGlzLCBJIHdhbnRl
+ZCB0byBtZXJnZSBmaWxlcywgd2hpY2ggaGF2ZSB0aGUgc2FtZSBuYW1lCj4gYXMgdGhlIHNpbmds
+ZSBmdW5jdGlvbiBpbiB0aGUgZmlsZSAoZS5nLiB0c3RfZGlyX2lzX2VtcHR5LmMsCj4gdHN0X3Bh
+dGhfaGFzX21udF9mbGFncy5jKSwgaGF2aW5nIHRoZW0gYXMgc2luZ2xlIGZpbGUgZG9lcyBub3Qg
+aGVscCBtdWNoCj4gd2l0aCBzZWFyY2hpbmcgZm9yIHRoZSBjb250ZW50Lgo+CgorMQoKQW5kIHRo
+ZSBtb3N0IGltcG9ydGFudCBpcyB3ZSBuZWVkIHRvIGdpdmUgYSBnb29kIG5hbWUgZm9yIHRoZQph
+Y2hpZXZlZCBoZWFkZXIgZmlsZS4KCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcg
+bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
