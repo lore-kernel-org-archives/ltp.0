@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCEBBC54E58
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 10:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 370ACC54E58
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 10:24:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 447573CF23E
-	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 11:23:42 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8AA2F3CFBEF
+	for <ltp@archiver.kernel.org>; Wed, 20 Mar 2024 11:24:04 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FF433CE668
- for <ltp@lists.linux.it>; Wed, 20 Mar 2024 11:22:56 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A4E4B3CE64F
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 11:22:59 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C542C600845
- for <ltp@lists.linux.it>; Wed, 20 Mar 2024 11:22:54 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 64B7F140871B
+ for <ltp@lists.linux.it>; Wed, 20 Mar 2024 11:22:55 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CBFAD341C0;
- Wed, 20 Mar 2024 10:22:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 07FC420C96;
+ Wed, 20 Mar 2024 10:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710930173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1710930174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cncJxq4o2DA4VSW+9sX28hhYF2WiaEKm5AgTzM2nyVc=;
- b=euQoPS97ehc+luYQkDgeJmAJr4kq7OsOQhwJTeRCQ+veSkK1kXhndALnLGX8zD1n+F34sU
- yqpDcjdCR0/fR9fckfMoE2m9K/hQvZh8EUcFxOD10HIb1S9Y8kyGojxk5Kj7WFFl838Pv5
- jl7wDL09WUx/T5olcYopW2E6SDGD4Cc=
+ bh=dlegKgozGHmgTzqcKPuSDgkptWq68VO+JL9QMXbzYek=;
+ b=1ruP9w31SC6Jzyo6f6hJUD5r490mhORvphxkcGOTCqiqkufZzfD1zBB1SLz9i0iYHTWmKL
+ 2HwY9jVkn0onfUO0xbE4eXhjKNg7r/FdaxoE7MPBe2gJhR6X/291fAftD+7c/P8kqcurlV
+ 2Kz8cjYYDIX6QpqtMkM7LnOxSIxL7iw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710930173;
+ s=susede2_ed25519; t=1710930174;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cncJxq4o2DA4VSW+9sX28hhYF2WiaEKm5AgTzM2nyVc=;
- b=BxCON6Sv4KvuWKcURmFwLm6RyhXFlsttbTHTQwqLy2n4kaOln1LluQ0eXghlWOSh7KK65w
- C7D+ongqSdTEp5DQ==
+ bh=dlegKgozGHmgTzqcKPuSDgkptWq68VO+JL9QMXbzYek=;
+ b=Qh4qyDOodbli+IcMp3eDhgsT6PxnAzTrjJiOJ58Q5zCscxVa+dH7PbCpUVKvrC5vPHYYRi
+ teH6SDLslqsDGXAg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1710930173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1710930174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cncJxq4o2DA4VSW+9sX28hhYF2WiaEKm5AgTzM2nyVc=;
- b=euQoPS97ehc+luYQkDgeJmAJr4kq7OsOQhwJTeRCQ+veSkK1kXhndALnLGX8zD1n+F34sU
- yqpDcjdCR0/fR9fckfMoE2m9K/hQvZh8EUcFxOD10HIb1S9Y8kyGojxk5Kj7WFFl838Pv5
- jl7wDL09WUx/T5olcYopW2E6SDGD4Cc=
+ bh=dlegKgozGHmgTzqcKPuSDgkptWq68VO+JL9QMXbzYek=;
+ b=1ruP9w31SC6Jzyo6f6hJUD5r490mhORvphxkcGOTCqiqkufZzfD1zBB1SLz9i0iYHTWmKL
+ 2HwY9jVkn0onfUO0xbE4eXhjKNg7r/FdaxoE7MPBe2gJhR6X/291fAftD+7c/P8kqcurlV
+ 2Kz8cjYYDIX6QpqtMkM7LnOxSIxL7iw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1710930173;
+ s=susede2_ed25519; t=1710930174;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cncJxq4o2DA4VSW+9sX28hhYF2WiaEKm5AgTzM2nyVc=;
- b=BxCON6Sv4KvuWKcURmFwLm6RyhXFlsttbTHTQwqLy2n4kaOln1LluQ0eXghlWOSh7KK65w
- C7D+ongqSdTEp5DQ==
+ bh=dlegKgozGHmgTzqcKPuSDgkptWq68VO+JL9QMXbzYek=;
+ b=Qh4qyDOodbli+IcMp3eDhgsT6PxnAzTrjJiOJ58Q5zCscxVa+dH7PbCpUVKvrC5vPHYYRi
+ teH6SDLslqsDGXAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7AB7D13942;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0E1A136D6;
  Wed, 20 Mar 2024 10:22:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AOjSHP24+mWyaAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SM9lMv24+mWyaAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Wed, 20 Mar 2024 10:22:53 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 20 Mar 2024 11:22:02 +0100
-Message-ID: <20240320102204.475230-2-pvorel@suse.cz>
+Date: Wed, 20 Mar 2024 11:22:03 +0100
+Message-ID: <20240320102204.475230-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240320102204.475230-1-pvorel@suse.cz>
 References: <20240320102204.475230-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=euQoPS97;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BxCON6Sv
-X-Spamd-Bar: /
-X-Spamd-Result: default: False [0.50 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1ruP9w31;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Qh4qyDOo
+X-Spamd-Result: default: False [3.50 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
@@ -103,14 +104,14 @@ X-Spamd-Result: default: False [0.50 / 50.00]; ARC_NA(0.00)[];
  MID_CONTAINS_FROM(1.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.19)[-0.934];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%];
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.19)[-0.962];
+ RCVD_TLS_ALL(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CBFAD341C0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: 07FC420C96
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/3] lib: Merge security related sources
+Subject: [LTP] [PATCH v2 2/3] lib: Add tst_selinux_enforcing()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,247 +129,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merge FIPS and lockdown related library sources to new tst_security.[ch]
-file to shorten number of the files in the library. More security
-related code will be added in next commit.
-
+Reviewed-by: Li Wang <liwang@redhat.com>
+Co-developed-by: Mete Durlu <meted@linux.ibm.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 changes v1->v2:
-* New commit: lib: Merge security related sources
+* Add selinux to tst_security.c instead of it's own C file.
 
-I'll send more cleanup in a different patchset.
+ include/tst_security.h |  1 +
+ lib/tst_security.c     | 18 ++++++++++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-Kind regards,
-Petr
-
- include/tst_fips.h                     | 15 ------
- include/tst_lockdown.h                 | 11 ----
- include/tst_security.h                 | 17 ++++++
- include/tst_test.h                     |  4 +-
- lib/tst_fips.c                         | 24 ---------
- lib/{tst_lockdown.c => tst_security.c} | 73 +++++++++++++++-----------
- 6 files changed, 62 insertions(+), 82 deletions(-)
- delete mode 100644 include/tst_fips.h
- delete mode 100644 include/tst_lockdown.h
- create mode 100644 include/tst_security.h
- delete mode 100644 lib/tst_fips.c
- rename lib/{tst_lockdown.c => tst_security.c} (86%)
-
-diff --git a/include/tst_fips.h b/include/tst_fips.h
-deleted file mode 100644
-index 881c32391..000000000
---- a/include/tst_fips.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-- */
--
--#ifndef TST_FIPS_H__
--#define TST_FIPS_H__
--
--/*
-- * Detect whether FIPS enabled
-- * @return 0: FIPS not enabled, 1: FIPS enabled
-- */
--int tst_fips_enabled(void);
--
--#endif /* TST_FIPS_H__ */
-diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
-deleted file mode 100644
-index 07e90c1af..000000000
---- a/include/tst_lockdown.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later
-- * Copyright (c) Linux Test Project, 2020-2021
-- */
--
--#ifndef TST_LOCKDOWN_H
--#define TST_LOCKDOWN_H
--
--int tst_secureboot_enabled(void);
--int tst_lockdown_enabled(void);
--
--#endif /* TST_LOCKDOWN_H */
 diff --git a/include/tst_security.h b/include/tst_security.h
-new file mode 100644
-index 000000000..438b16dbb
---- /dev/null
+index 438b16dbb..5d91f8a98 100644
+--- a/include/tst_security.h
 +++ b/include/tst_security.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ * Copyright (c) Linux Test Project, 2020-2024
-+ */
-+
-+#ifndef TST_SECURITY_H__
-+#define TST_SECURITY_H__
-+
-+/*
-+ * Detect whether FIPS enabled
-+ * @return 0: FIPS not enabled, 1: FIPS enabled
-+ */
-+int tst_fips_enabled(void);
-+
-+int tst_lockdown_enabled(void);
-+int tst_secureboot_enabled(void);
-+
-+#endif /* TST_SECURITY_H__ */
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 47b5902f9..98d74d82e 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -40,8 +40,8 @@
- #include "tst_capability.h"
- #include "tst_hugepage.h"
- #include "tst_assert.h"
--#include "tst_lockdown.h"
--#include "tst_fips.h"
-+#include "tst_security.h"
-+#include "tst_security.h"
- #include "tst_taint.h"
- #include "tst_memutils.h"
- #include "tst_arch.h"
-diff --git a/lib/tst_fips.c b/lib/tst_fips.c
-deleted file mode 100644
-index 82dafef7a..000000000
---- a/lib/tst_fips.c
-+++ /dev/null
-@@ -1,24 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-- */
--
--#define TST_NO_DEFAULT_MAIN
--
--#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
--
--#include "tst_test.h"
--#include "tst_safe_macros.h"
--#include "tst_fips.h"
--
--int tst_fips_enabled(void)
--{
--	int fips = 0;
--
--	if (access(PATH_FIPS, R_OK) == 0) {
--		SAFE_FILE_SCANF(PATH_FIPS, "%d", &fips);
--	}
--
--	tst_res(TINFO, "FIPS: %s", fips ? "on" : "off");
--	return fips;
--}
-diff --git a/lib/tst_lockdown.c b/lib/tst_security.c
-similarity index 86%
-rename from lib/tst_lockdown.c
-rename to lib/tst_security.c
-index 3126d67bd..0fc704dfa 100644
---- a/lib/tst_lockdown.c
+@@ -13,5 +13,6 @@ int tst_fips_enabled(void);
+ 
+ int tst_lockdown_enabled(void);
+ int tst_secureboot_enabled(void);
++int tst_selinux_enforcing(void);
+ 
+ #endif /* TST_SECURITY_H__ */
+diff --git a/lib/tst_security.c b/lib/tst_security.c
+index 0fc704dfa..7d929fafe 100644
+--- a/lib/tst_security.c
 +++ b/lib/tst_security.c
-@@ -1,12 +1,21 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) Linux Test Project, 2020-2023
-+ * Copyright (c) Linux Test Project, 2020-2024
-  */
+@@ -7,6 +7,7 @@
  
- #define TST_NO_DEFAULT_MAIN
- 
-+#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
+ #define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
  #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
++#define SELINUX_STATUS_PATH "/sys/fs/selinux/enforce"
  
-+#if defined(__powerpc64__) || defined(__ppc64__)
-+# define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
-+# define VAR_DATA_SIZE 4
-+#else
-+# define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
-+# define VAR_DATA_SIZE 5
-+#endif
-+
+ #if defined(__powerpc64__) || defined(__ppc64__)
+ # define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
+@@ -16,6 +17,7 @@
+ # define VAR_DATA_SIZE 5
+ #endif
+ 
++#include <fcntl.h>
  #include <stdio.h>
  #include <stdlib.h>
  #include <sys/mount.h>
-@@ -14,41 +23,19 @@
- #include "tst_test.h"
- #include "tst_safe_macros.h"
- #include "tst_safe_stdio.h"
--#include "tst_lockdown.h"
-+#include "tst_security.h"
- #include "tst_private.h"
- 
--#if defined(__powerpc64__) || defined(__ppc64__)
--# define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
--# define VAR_DATA_SIZE 4
--#else
--# define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
--# define VAR_DATA_SIZE 5
--#endif
--
--int tst_secureboot_enabled(void)
-+int tst_fips_enabled(void)
+@@ -30,11 +32,11 @@ int tst_fips_enabled(void)
  {
--	int fd;
--	char data[5];
-+	int fips = 0;
+ 	int fips = 0;
  
--	if (access(SECUREBOOT_VAR, F_OK)) {
--		tst_res(TINFO, "SecureBoot sysfs file not available");
--		return -1;
-+	if (access(PATH_FIPS, R_OK) == 0) {
-+		SAFE_FILE_SCANF(PATH_FIPS, "%d", &fips);
- 	}
- 
--	fd = open(SECUREBOOT_VAR, O_RDONLY);
--
--	if (fd == -1) {
--		tst_res(TINFO | TERRNO,
--			"Cannot open SecureBoot file");
--		return -1;
--	} else if (fd < 0) {
--		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
--		return -1;
+-	if (access(PATH_FIPS, R_OK) == 0) {
++	if (access(PATH_FIPS, R_OK) == 0)
+ 		SAFE_FILE_SCANF(PATH_FIPS, "%d", &fips);
 -	}
--	SAFE_READ(1, fd, data, VAR_DATA_SIZE);
--	SAFE_CLOSE(fd);
--	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
--	return data[VAR_DATA_SIZE - 1];
-+	tst_res(TINFO, "FIPS: %s", fips ? "on" : "off");
-+	return fips;
+ 
+ 	tst_res(TINFO, "FIPS: %s", fips ? "on" : "off");
++
+ 	return fips;
  }
  
- int tst_lockdown_enabled(void)
-@@ -86,3 +73,29 @@ int tst_lockdown_enabled(void)
- 
- 	return ret;
+@@ -99,3 +101,15 @@ int tst_secureboot_enabled(void)
+ 	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
+ 	return data[VAR_DATA_SIZE - 1];
  }
 +
-+int tst_secureboot_enabled(void)
++int tst_selinux_enforcing(void)
 +{
-+	int fd;
-+	char data[5];
++	int res = 0;
 +
-+	if (access(SECUREBOOT_VAR, F_OK)) {
-+		tst_res(TINFO, "SecureBoot sysfs file not available");
-+		return -1;
-+	}
++	if (access(SELINUX_STATUS_PATH, F_OK) == 0)
++		SAFE_FILE_SCANF(SELINUX_STATUS_PATH, "%d", &res);
 +
-+	fd = open(SECUREBOOT_VAR, O_RDONLY);
++	tst_res(TINFO, "SELinux enforcing: %s", res ? "on" : "off");
 +
-+	if (fd == -1) {
-+		tst_res(TINFO | TERRNO,
-+			"Cannot open SecureBoot file");
-+		return -1;
-+	} else if (fd < 0) {
-+		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
-+		return -1;
-+	}
-+	SAFE_READ(1, fd, data, VAR_DATA_SIZE);
-+	SAFE_CLOSE(fd);
-+	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
-+	return data[VAR_DATA_SIZE - 1];
++	return res;
 +}
 -- 
 2.43.0
