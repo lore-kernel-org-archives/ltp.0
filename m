@@ -4,104 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E282C54E58
-	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 13:28:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D3D4C6FD1F
+	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 18:14:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 696D53CFBD0
-	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 14:28:06 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6C3AE3CFBC6
+	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 19:14:52 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D04343CD3F7
- for <ltp@lists.linux.it>; Thu, 21 Mar 2024 14:27:51 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id D72B23C0E54
+ for <ltp@lists.linux.it>; Thu, 21 Mar 2024 19:14:37 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DB8011402E38
- for <ltp@lists.linux.it>; Thu, 21 Mar 2024 14:27:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C8048100159F
+ for <ltp@lists.linux.it>; Thu, 21 Mar 2024 19:14:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1711044875;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Fh+0nrrMkOv+0d0T69rbw0UsR/HS1O05QPE3oMrP5pY=;
+ b=fbq+cISnVcEE+0jtLKctmI2Ui5R4qREFyc54Va1ZNJ8zuRuVZ4PRsuBcOU64kIUaWylhlW
+ fQMuRuwaoTiDCpf/Y30nDqJ4UAXnvW4BXsVjbA4a5PeiLoulmKfRU0syZpHifmfH98bJIC
+ M96PtK9Mbr+qOXNijuHdpNWw5t8xAVc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-329-EC0oUJWYO7ixhGvlBXcXmg-1; Thu,
+ 21 Mar 2024 14:14:33 -0400
+X-MC-Unique: EC0oUJWYO7ixhGvlBXcXmg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 87AB23425F;
- Thu, 21 Mar 2024 13:27:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1711027668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F2f8dtzuTtdzULzYUG8k3j21JbqHC8RxeoqMCNkrxOI=;
- b=gvsedUfvol5gK0Npov1PzBmEIpGCQPue5iltVuwnMK9/lISIAVyMRsA8Sf+FxiEQPvEWwW
- A5SpjgWU9XhJzrIEuDyBdZSHxG5Gn65nbKK9udCS8WHeqd9M05wBzHV6AzqJsG4ry+rrhQ
- BpDlZ8lXuxeHR3C5nRWAZI4CjX9ACMA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1711027668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F2f8dtzuTtdzULzYUG8k3j21JbqHC8RxeoqMCNkrxOI=;
- b=nar+FjDGddcGJGn2jEndCuHFP+24Wmm4/FQRKHirgFBW0/Ozn79TVmlzEydnwKEeq1A5Qw
- WiNX40wYcu/IUQDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1711027668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F2f8dtzuTtdzULzYUG8k3j21JbqHC8RxeoqMCNkrxOI=;
- b=gvsedUfvol5gK0Npov1PzBmEIpGCQPue5iltVuwnMK9/lISIAVyMRsA8Sf+FxiEQPvEWwW
- A5SpjgWU9XhJzrIEuDyBdZSHxG5Gn65nbKK9udCS8WHeqd9M05wBzHV6AzqJsG4ry+rrhQ
- BpDlZ8lXuxeHR3C5nRWAZI4CjX9ACMA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1711027668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F2f8dtzuTtdzULzYUG8k3j21JbqHC8RxeoqMCNkrxOI=;
- b=nar+FjDGddcGJGn2jEndCuHFP+24Wmm4/FQRKHirgFBW0/Ozn79TVmlzEydnwKEeq1A5Qw
- WiNX40wYcu/IUQDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D02F136AD;
- Thu, 21 Mar 2024 13:27:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id udYSFtQ1/GUhWwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 21 Mar 2024 13:27:48 +0000
-Date: Thu, 21 Mar 2024 14:27:47 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20240321132747.GA562071@pevik>
-References: <20240227085641.33715-1-xuyang2018.jy@fujitsu.com>
- <1943239.7Z3S40VBb9@localhost>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E65729AB3F8
+ for <ltp@lists.linux.it>; Thu, 21 Mar 2024 18:14:33 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.226.24])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 95D4A3C20;
+ Thu, 21 Mar 2024 18:14:32 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 21 Mar 2024 19:14:00 +0100
+Message-Id: <fae6ad10f98ab50a1a3e362706d65ea13fdda3ff.1711044800.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1943239.7Z3S40VBb9@localhost>
-X-Spamd-Result: default: False [-1.95 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-1.45)[91.28%]
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] iopl01: Convert docs to docparse
+Subject: [LTP] [PATCH] syscalls/timer_getoverrun01: initialize timer variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,27 +73,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: liwan@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Testcase is failing on s390x, with glibc-2.39 and 6.9-rc0 (git commit
+a4145ce1e7bc). Userspace defines timer_t as void * (8 bytes), while
+__kernel_timer_t is defined as int (4 bytes).  This means that kernel
+only populates 4 bytes, and other 4 can remain uninitialized, possibly
+containing some non-zero garbage, e.g.:
 
-> Hi,
+  timer_create(CLOCK_REALTIME, {sigev_signo=SIGALRM, sigev_notify=SIGEV_SIGNAL},  <unfinished ...>
+  <... timer_create resumed>[0]) = 0
+  timer_getoverrun(1 <unfinished ...>
+  timer_getoverrun resumed>) = -1 EINVAL (Invalid argument)
+  timer_delete(1)    = -1 EINVAL (Invalid argument)
 
-> Reviewed-by: Avinesh Kumar <akumar@suse.de>
-> for both the patches.
+Initialize entire "timer" variable to 0.
 
-> @pvorel,
-> Can you please also fix below typos when you merge this.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks! Merged and fixed.
+diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+index 5c444857aaa7..897bf65a2480 100644
+--- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
++++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+@@ -25,6 +25,7 @@ static void run(void)
+ 	timer_t timer;
+ 	struct sigevent ev;
+ 
++	memset(&timer, 0, sizeof(timer_t));
+ 	ev.sigev_value = (union sigval) 0;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	ev.sigev_signo = SIGALRM;
+-- 
+2.39.3
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
