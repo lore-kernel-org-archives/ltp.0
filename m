@@ -4,113 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0C0C54E58
-	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 08:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81FC3C54E58
+	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 09:29:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F40933CE63D
-	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 09:57:15 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id BA39D3CFBBF
+	for <ltp@archiver.kernel.org>; Thu, 21 Mar 2024 10:29:44 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B732E3CBBBE
- for <ltp@lists.linux.it>; Thu, 21 Mar 2024 09:57:01 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 2CFF83CE639
+ for <ltp@lists.linux.it>; Thu, 21 Mar 2024 10:29:29 +0100 (CET)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 84D8A1000BDD
- for <ltp@lists.linux.it>; Thu, 21 Mar 2024 09:56:59 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0AF1910167F4
+ for <ltp@lists.linux.it>; Thu, 21 Mar 2024 10:29:28 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 82DC63537A;
- Thu, 21 Mar 2024 08:56:58 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E3706353C9;
+ Thu, 21 Mar 2024 09:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1711011418;
+ t=1711013368;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z751jNKeOaTWdnZnRaNbj7gKyF66OEbpiKksYH2RxP4=;
- b=ad/GrAg8z6EPx56DS/jLSQA7WtAcnEkPKUcvKCw2SllCh6zby6YArx5KkhTwuX7n8UDFZ5
- 15AEuY9SBWFsRYlrILq9dYJzPHdmp5nfWdQAjyq9BgNh1pMBWIz0cNP1NIwaDQR4g9bX9i
- QcsOt4xVoLQ8hqixWDb1Sbhaojraag4=
+ bh=tY4mGODYPMtLPPUsCusCLd3kE9lgSipuaIKWzjI/Etw=;
+ b=NayvFa0M8YSjo/wYD0hYbfylouWIidTrs66TyFLxkm8x3G0JY1ci3tuNlwv93xDp2295T0
+ PGNoB3a7YiquhZJNkQHqzlkI4NOTvTuS2j6DwMYs9uC+CtsNRNAdCBYa2vcwcREGLGRZ9v
+ Znip4kuNdp+Q11wMYvHG+br+srdgD7g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1711011418;
+ s=susede2_ed25519; t=1711013368;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z751jNKeOaTWdnZnRaNbj7gKyF66OEbpiKksYH2RxP4=;
- b=NeXvqNgSmGCDFQGl6+p0LhHh3mR9UpB61jS67Dfr57ixdhD+kXYVSeu4TAnFn95IM9C2Sd
- CqhE3TL8zH1rvBBA==
+ bh=tY4mGODYPMtLPPUsCusCLd3kE9lgSipuaIKWzjI/Etw=;
+ b=JivwyDhTqu0myLpdSDeA8LDZ/brT5dQTzpZbGj2Y/MXnPYFJ2lDZJ+2+hS1yj6KlxXSB1M
+ 81kDE1vSE/esTXAg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1711011418;
+ t=1711013367;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z751jNKeOaTWdnZnRaNbj7gKyF66OEbpiKksYH2RxP4=;
- b=ad/GrAg8z6EPx56DS/jLSQA7WtAcnEkPKUcvKCw2SllCh6zby6YArx5KkhTwuX7n8UDFZ5
- 15AEuY9SBWFsRYlrILq9dYJzPHdmp5nfWdQAjyq9BgNh1pMBWIz0cNP1NIwaDQR4g9bX9i
- QcsOt4xVoLQ8hqixWDb1Sbhaojraag4=
+ bh=tY4mGODYPMtLPPUsCusCLd3kE9lgSipuaIKWzjI/Etw=;
+ b=Bj+YIIjlcCzAd3zaXrrXWg/PdwrtSasxH+8whQR50tNmjbZ3VthsnK05HUkqFH6w9XJsQ2
+ Zvqr4JrVnv1bzw6HBtpgRSz9FGSa2HAC7AMxYwH+wG5uiLCwZ/o2s8I+030mT9TbLoiSKU
+ 0vEgrS2UevbDMvwHjq2+i1zHGONVKPk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1711011418;
+ s=susede2_ed25519; t=1711013367;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z751jNKeOaTWdnZnRaNbj7gKyF66OEbpiKksYH2RxP4=;
- b=NeXvqNgSmGCDFQGl6+p0LhHh3mR9UpB61jS67Dfr57ixdhD+kXYVSeu4TAnFn95IM9C2Sd
- CqhE3TL8zH1rvBBA==
+ bh=tY4mGODYPMtLPPUsCusCLd3kE9lgSipuaIKWzjI/Etw=;
+ b=ykzBTcDntIS1f0+S3UAz57Wy7TzxkQMtBpM/6mjflTilYlM0IIZbbZWKAvUv3hUksA0kuC
+ gP2q4ho021/YyMCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2552B136AD;
- Thu, 21 Mar 2024 08:56:58 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0F7B13976;
+ Thu, 21 Mar 2024 09:29:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AunCBFr2+2V6fAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 21 Mar 2024 08:56:58 +0000
-Date: Thu, 21 Mar 2024 09:56:56 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2gYTMvf9+2XKCQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 21 Mar 2024 09:29:27 +0000
+Date: Thu, 21 Mar 2024 10:29:22 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20240321085656.GA543531@pevik>
-References: <20240320-new_website-v1-0-79b603c8aea1@suse.com>
- <20240321082559.GA535362@pevik>
- <593a7a6a-f4dd-450e-9fbe-6f77ef62c6ff@suse.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240321092922.GA548078@pevik>
+References: <20240320095927.19973-1-chrubis@suse.cz>
+ <20240320095927.19973-2-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <593a7a6a-f4dd-450e-9fbe-6f77ef62c6ff@suse.com>
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="ad/GrAg8";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NeXvqNgS
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00];
+In-Reply-To: <20240320095927.19973-2-chrubis@suse.cz>
+X-Spamd-Result: default: False [-0.56 / 50.00];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ BAYES_HAM(-0.06)[61.74%]; ARC_NA(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- RCVD_COUNT_THREE(0.00)[3];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MX_GOOD(-0.01)[]; DKIM_TRACE(0.00)[suse.cz:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 82DC63537A
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out1.suse.de;
+	none
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/10] New LTP documentation
+Subject: Re: [LTP] [PATCH 1/2] syscalls: Add test for splicing from
+ /dev/zero and /dev/full
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,73 +121,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Cyril,
 
-> Hi Petr!
+> +static void test_splice(unsigned int bytes, int dev_fd)
+> +{
+> +	int pipefd[2];
+> +	char buf[bytes];
+> +	size_t i;
+> +	int fail = 0;
+> +
+> +	memset(buf, 0xff, sizeof(buf));
+> +
+> +	SAFE_PIPE(pipefd);
+> +
+> +	TST_EXP_POSITIVE(splice(dev_fd, NULL, pipefd[1], NULL, sizeof(buf), 0));
+> +
+> +	if (!TST_PASS)
+> +		goto ret;
+> +
+> +	SAFE_READ(1, pipefd[0], buf, sizeof(buf));
+> +
+> +	for (i = 0; i < sizeof(buf); i++) {
+> +		if (buf[i])
+> +			fail++;
+> +	}
+> +
+> +	if (fail)
+> +		tst_res(TFAIL, "Non-zero bytes spliced from /dev/zero");
+Maybe write how many fail we have?
 
-> On 3/21/24 09:25, Petr Vorel wrote:
-> > Hi Andrea,
+I also agree with Jan's comment about missing TST_RET, which is in splice09.
 
-> > > The new LTP documentation is meant to use Sphinx as the main
-> > > documentation framework, with ReconStructedText as the main language.
-> > > All the conversion has been done step-by-step, each chapter at time,
-> > > updating english syntax and fixing typos. There are minor improvements,
-> > > but overall the structure is the same.
-> > > C / Networking / KVM API are not documented yet, because they will be
-> > > probably integrated in the LTP library. C API documentation is already
-> > > on going, but the others not.
-> > > For a demo, please take a look at:
-> > > https://ltp-acerv.readthedocs.io/en/latest/index.html
-> > Out of curiosity, we need to register LTP on readthedocs.io.
-> > Then we need GitHub Action hook (including some secret for auth) for publishing.
-> > Correct?
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> > https://docs.readthedocs.io/en/stable/guides/setup/git-repo-manual.html
-> readthedocs works with any kind of git server. The only thing we need, it's
-> a .readthedocs.yaml file inside a specific branch (i.e. master).
-> So we need to create an account for the LTP team in readthedocs.com, then we
-> provide the git repo to readthedocs and site will be published
-> automatically.
-> ltp.readthedocs.io is available, so maybe we should create an account
-> already.
+> +	else
+> +		tst_res(TPASS, "All bytes spliced from /dev/zero are zeroed");
+> +
+> +ret:
+> +	SAFE_CLOSE(pipefd[0]);
+> +	SAFE_CLOSE(pipefd[1]);
+> +}
+> +
+> +static void verify_splice(unsigned int n)
+> +{
+> +	unsigned int bytes = 1009 * n;
 
-ack.
-
-> > I guess you now deploy to your fork manually, otherwise you would add GitHub
-> > Action config in the patchset.
-> It's automatic done by readthedocs and we don't need Github actions.
-
-> > Also, what I like (for the future) offline formats (PDF, ePub, HTML) are
-> > supported:
-
-> > https://docs.readthedocs.io/en/stable/downloadable-documentation.html
-> Sure we can try to generate it and see what happens. I never tried to do it
-> in sphinx.
-
-> > Also, I would prefer when this merged it would actually replace the old github
-> > docs (otherwise we maintainers endup maintaining both - getting fixes for both).
-> > E.g. in the final version first deleting the old docs + github update hook.
-> Sure, so let's finish the basics. I'm waiting for Cyril LTP library
-> documentation, since I don't have all the expertise which are requested. The
-> idea is that we will get rid of the current C-Test-API.asciidoc file and we
-> will only use documented headers.
-> Then we can proceed for sure.
-
-Cool (I can imagine it might take some time and energy).
-
-> > Kind regards,
-> > Petr
-
-> We also have networking/KVM/shell API documentation that should be placed
-> inside the headers. It would be nice to have a help on that.
-
-Yeah. It might be another challenge to get Sphinx working on shell API.
+Out of curiosity, why 1009 and not 1000?
 
 Kind regards,
 Petr
-
-> Regards,
-> Andrea
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
