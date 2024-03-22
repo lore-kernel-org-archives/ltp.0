@@ -4,84 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213C8C47DD9
-	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 01:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 755A8C54E58
+	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 03:02:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D29FF3CFBC0
-	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 02:33:26 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 20D4F3CFBD4
+	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 04:02:33 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35AA33C997B
- for <ltp@lists.linux.it>; Fri, 22 Mar 2024 02:33:08 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 6708C3CAB5B
+ for <ltp@lists.linux.it>; Fri, 22 Mar 2024 04:02:18 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EF1F62009E8
- for <ltp@lists.linux.it>; Fri, 22 Mar 2024 02:33:07 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 842A0600077
+ for <ltp@lists.linux.it>; Fri, 22 Mar 2024 04:02:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1711071186;
+ s=mimecast20190719; t=1711076535;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3gNJYWyHHwir6Y5aMfCtgFJsw4iye76FRG/K9oN/6R4=;
- b=YaqCb5qTcoDC2l57J4huA7wY7dQAO2roWDZFdNUGtU9Emf1WA+1ecV9/ZBMzUP13Fsf+Cs
- 1KvKlrE9Gsb3UNSn+HMY3TLTPC/uN4a8TbGDKF9/vgKMc7wBYfbkKFweYmAP/6L9A+y0pX
- OG16TAtbQj0rl+loA/3NZhMUUfZKyuk=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-240-wbu9tAjDMR67bZc-RP8JpA-1; Thu, 21 Mar 2024 21:33:03 -0400
-X-MC-Unique: wbu9tAjDMR67bZc-RP8JpA-1
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-29c7932c5f5so1070463a91.1
- for <ltp@lists.linux.it>; Thu, 21 Mar 2024 18:33:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1711071182; x=1711675982;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=3gNJYWyHHwir6Y5aMfCtgFJsw4iye76FRG/K9oN/6R4=;
- b=jiB0AWPwGmtzmq7PqL+l2jYI60nze+tkNXiwQSlQbtD/jDRR6pzCRTPS0kGiTGl2/k
- pzF15nf2+f8XfPSKFt6DDJY1PbkZFv+37zcRdPnU1Xk7tQomeFaEhcnseeTFNzuYbSrb
- 5hyGQESlRzDIpTu+0R1y2ga7shn1UzXud6eOip2ogD0pwSvq1ysbOO8IKABl+6ro88EG
- 0fmXb7Cudhj7j2wD1p7FBn80m2US0wgydRCDSIkWJXEx17AZ08KZAEkXUwV+E9DwYOEw
- e2SDXn72GqFofrxLu9wPczvprp4igNfWql44KUgzAQp+TRzGwhw+2MNFWXzk/C0t2uwg
- NSxQ==
-X-Gm-Message-State: AOJu0YxlO3VkMB+4Wz1JaSc2x0hyxpu64V8aSlCOZUVKUA0CaXp1fzAB
- sjbFE7+PR+Qzqrm5L4gMypnEPpbqxsJAnZ5U7LgxKP/jfRSwQo5Ng+BqKC3DSUh/2qzAavFN2Y0
- jfDLrhxZy4/7qMAg8KYKWhgHN6jj6zUCYUNbfTLLsFJPHBksOdP54XPTAjd7FA5eKd1I56B9mrk
- GLiF6F2OLdX+4z2UZUsozZ7ys=
-X-Received: by 2002:a17:90b:4d8b:b0:2a0:1dd8:ee with SMTP id
- oj11-20020a17090b4d8b00b002a01dd800eemr957205pjb.11.1711071182039; 
- Thu, 21 Mar 2024 18:33:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE+SCJ3AtBxT0RMctK5Os7Z8qH9zs1jzOEWbKzkgCeWwPg8y3h61/o51IBGhx1OIAY6wu+b1J/4B8AdPcss9pw=
-X-Received: by 2002:a17:90b:4d8b:b0:2a0:1dd8:ee with SMTP id
- oj11-20020a17090b4d8b00b002a01dd800eemr957188pjb.11.1711071181665; Thu, 21
- Mar 2024 18:33:01 -0700 (PDT)
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vMVWKHwziYODlmyLxg5M61Shsl+6UXl01wDosVYumBI=;
+ b=JhSz5PvZ9sAZr+4XnLofJoLLelPGNEyMp1/rq+kOcAPvjkyeGVjWCGGlAeJejfELWxIMPd
+ bQdp4DCHjG7Kr3SVxzH4Um5AXaHUfc5bJXLzzswzJ2YiYwbeIhtT13McdqceinjWQszvNm
+ 0o4O+39r6G/l+UPzh6+9TWxFyMw+DNw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-113-cNc0wrRxOpyCcuKPqJX5jA-1; Thu,
+ 21 Mar 2024 23:02:14 -0400
+X-MC-Unique: cNc0wrRxOpyCcuKPqJX5jA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.8])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B1AA61C07271;
+ Fri, 22 Mar 2024 03:02:13 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 2DFEFC1576F;
+ Fri, 22 Mar 2024 03:02:11 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Fri, 22 Mar 2024 11:02:07 +0800
+Message-Id: <20240322030208.3278120-1-liwang@redhat.com>
 MIME-Version: 1.0
-References: <fae6ad10f98ab50a1a3e362706d65ea13fdda3ff.1711044800.git.jstancek@redhat.com>
- <cf3287a8009ab6104a4dec45b7b8160f35a358b0.1711045522.git.jstancek@redhat.com>
-In-Reply-To: <cf3287a8009ab6104a4dec45b7b8160f35a358b0.1711045522.git.jstancek@redhat.com>
-From: Li Wang <liwan@redhat.com>
-Date: Fri, 22 Mar 2024 09:32:50 +0800
-Message-ID: <CAEemH2fg98s2JPAAJDo=V72eXxBi9pbNq_CeJSbW+cyb4PeBkA@mail.gmail.com>
-To: Jan Stancek <jstancek@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] syscalls/timer_getoverrun01: use
- kernel_timer_t type
+Subject: [LTP] [PATCH v3 1/2] libswap: add two methods to create swapfile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,40 +73,278 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBNYXIgMjIsIDIwMjQgYXQgMjoyNuKAr0FNIEphbiBTdGFuY2VrIDxqc3RhbmNla0By
-ZWRoYXQuY29tPiB3cm90ZToKCj4gVGVzdGNhc2UgaXMgZmFpbGluZyBvbiBzMzkweCwgd2l0aCBn
-bGliYy0yLjM5IGFuZCA2LjktcmMwIChnaXQgY29tbWl0Cj4gYTQxNDVjZTFlN2JjKS4gVXNlcnNw
-YWNlIGRlZmluZXMgdGltZXJfdCBhcyB2b2lkICogKDggYnl0ZXMpLCB3aGlsZQo+IF9fa2VybmVs
-X3RpbWVyX3QgaXMgZGVmaW5lZCBhcyBpbnQgKDQgYnl0ZXMpLiAgVGhpcyBtZWFucyB0aGF0IGtl
-cm5lbAo+IG9ubHkgcG9wdWxhdGVzIDQgYnl0ZXMsIGFuZCBvdGhlciA0IGNhbiByZW1haW4gdW5p
-bml0aWFsaXplZCwgcG9zc2libHkKPiBjb250YWluaW5nIHNvbWUgbm9uLXplcm8gZ2FyYmFnZSwg
-ZS5nLjoKPgo+ICAgdGltZXJfY3JlYXRlKENMT0NLX1JFQUxUSU1FLCB7c2lnZXZfc2lnbm89U0lH
-QUxSTSwKPiBzaWdldl9ub3RpZnk9U0lHRVZfU0lHTkFMfSwgIDx1bmZpbmlzaGVkIC4uLj4KPiAg
-IDwuLi4gdGltZXJfY3JlYXRlIHJlc3VtZWQ+WzBdKSA9IDAKPiAgIHRpbWVyX2dldG92ZXJydW4o
-MSA8dW5maW5pc2hlZCAuLi4+Cj4gICB0aW1lcl9nZXRvdmVycnVuIHJlc3VtZWQ+KSA9IC0xIEVJ
-TlZBTCAoSW52YWxpZCBhcmd1bWVudCkKPiAgIHRpbWVyX2RlbGV0ZSgxKSAgICA9IC0xIEVJTlZB
-TCAoSW52YWxpZCBhcmd1bWVudCkKPgo+IFNpbmNlIHdlIGFyZSBkZWFsaW5nIHdpdGggc3lzY2Fs
-bHMgZGlyZWN0bHksIHVzZSBrZXJuZWxfdGltZXJfdC4KPgo+IFNpZ25lZC1vZmYtYnk6IEphbiBT
-dGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgo+CgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3
-YW5nQHJlZGhhdC5jb20+CgotLS0KPiAgLi4uL2tlcm5lbC9zeXNjYWxscy90aW1lcl9nZXRvdmVy
-cnVuL3RpbWVyX2dldG92ZXJydW4wMS5jICAgICAgfCAzICsrLQo+ICAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0Cj4gYS90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL3RpbWVyX2dldG92ZXJydW4vdGltZXJfZ2V0b3ZlcnJ1bjAxLmMK
-PiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdGltZXJfZ2V0b3ZlcnJ1bi90aW1lcl9nZXRv
-dmVycnVuMDEuYwo+IGluZGV4IDVjNDQ0ODU3YWFhNy4uNTdjMjE0N2JmNDdmIDEwMDY0NAo+IC0t
-LSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdGltZXJfZ2V0b3ZlcnJ1bi90aW1lcl9nZXRv
-dmVycnVuMDEuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdGltZXJfZ2V0b3Zl
-cnJ1bi90aW1lcl9nZXRvdmVycnVuMDEuYwo+IEBAIC0xOSwxMCArMTksMTEgQEAKPiAgI2luY2x1
-ZGUgPHRpbWUuaD4KPiAgI2luY2x1ZGUgInRzdF9zYWZlX2Nsb2Nrcy5oIgo+ICAjaW5jbHVkZSAi
-bGFwaS9zeXNjYWxscy5oIgo+ICsjaW5jbHVkZSAibGFwaS9jb21tb25fdGltZXJzLmgiCj4KPiAg
-c3RhdGljIHZvaWQgcnVuKHZvaWQpCj4gIHsKPiAtICAgICAgIHRpbWVyX3QgdGltZXI7Cj4gKyAg
-ICAgICBrZXJuZWxfdGltZXJfdCB0aW1lcjsKPiAgICAgICAgIHN0cnVjdCBzaWdldmVudCBldjsK
-Pgo+ICAgICAgICAgZXYuc2lnZXZfdmFsdWUgPSAodW5pb24gc2lndmFsKSAwOwo+IC0tCj4gMi4z
-OS4zCj4KPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
-c3RpbmZvL2x0cAo=
+This introduces enhanced functionality within the libswap library,
+adding two versatile methods for creating a swapfile: by size in
+megabytes (MB) and by the number of file system blocks.
+
+The make_swapfile function now accepts an enum swapfile_method
+parameter, enabling the selection of the creation method. To
+facilitate ease of use, two macros are provided for each method:
+
+  MAKE_SWAPFILE_SIZE for creating swapfiles by size.
+  MAKE_SWAPFILE_BLKS for creating swapfiles by block count.
+
+Each method also includes a 'safe' macro variant that incorporates
+additional error handling:
+
+  SAFE_MAKE_SWAPFILE_SIZE for safely creating swapfiles by size.
+  SAFE_MAKE_SWAPFILE_BLKS for safely creating swapfiles by block count.
+
+The make_swapfile_ helper function has been updated to incorporate
+file and line number arguments, which aids in improved error reporting
+and debugging. This function is now used internally by the macros to
+streamline the swapfile creation process.
+
+The update to the make_swapfile function and the introduction of
+these new macros are designed to offer a more user-friendly and
+error-resistant approach to swapfile creation, catering to a variety
+of system configurations and user needs.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ include/libswap.h                             | 43 ++++++++++++++-
+ libs/libltpswap/libswap.c                     | 55 +++++++++++--------
+ testcases/kernel/syscalls/swapoff/swapoff01.c |  2 +-
+ testcases/kernel/syscalls/swapoff/swapoff02.c |  2 +-
+ testcases/kernel/syscalls/swapon/swapon01.c   |  2 +-
+ testcases/kernel/syscalls/swapon/swapon02.c   |  4 +-
+ testcases/kernel/syscalls/swapon/swapon03.c   |  4 +-
+ 7 files changed, 81 insertions(+), 31 deletions(-)
+
+diff --git a/include/libswap.h b/include/libswap.h
+index 8c75e20ae..96e718542 100644
+--- a/include/libswap.h
++++ b/include/libswap.h
+@@ -11,10 +11,49 @@
+ #ifndef __LIBSWAP_H__
+ #define __LIBSWAP_H__
+ 
++enum swapfile_method {
++    SWAPFILE_BY_SIZE,
++    SWAPFILE_BY_BLKS
++};
++
+ /*
+- * Make a swap file
++ * Create a swapfile of a specified size or number of blocks.
++ */
++int make_swapfile_(const char *file, const int lineno,
++			const char *swapfile, unsigned int num,
++			int safe, enum swapfile_method method);
++
++static inline int make_swapfile(const char *swapfile, unsigned int num,
++			int safe, enum swapfile_method method)
++{
++	return make_swapfile_(__FILE__, __LINE__, swapfile, num, safe, method);
++}
++
++/**
++ * Macro to create swapfile size in megabytes (MB).
++ */
++#define MAKE_SWAPFILE_SIZE(swapfile, size) \
++    make_swapfile(swapfile, size, 0, SWAPFILE_BY_SIZE)
++
++/**
++ * Macro to create swapfile size in block numbers.
++ */
++#define MAKE_SWAPFILE_BLKS(swapfile, blocks) \
++    make_swapfile(swapfile, blocks, 0, SWAPFILE_BY_BLKS)
++
++/**
++ * Macro to safely create swapfile size in megabytes (MB).
++ * Includes safety checks to handle potential errors.
++ */
++#define SAFE_MAKE_SWAPFILE_SIZE(swapfile, size) \
++    make_swapfile(swapfile, size, 1, SWAPFILE_BY_SIZE)
++
++/**
++ * Macro to safely create swapfile size in block numbers.
++ * Includes safety checks to handle potential errors.
+  */
+-int make_swapfile(const char *swapfile, int blocks, int safe);
++#define SAFE_MAKE_SWAPFILE_BLKS(swapfile, blocks) \
++    make_swapfile(swapfile, blocks, 1, SWAPFILE_BY_BLKS)
+ 
+ /*
+  * Check swapon/swapoff support status of filesystems or files
+diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+index a26ea25e4..a3c47e9e2 100644
+--- a/libs/libltpswap/libswap.c
++++ b/libs/libltpswap/libswap.c
+@@ -133,55 +133,66 @@ out:
+ 	return contiguous;
+ }
+ 
+-int make_swapfile(const char *swapfile, int blocks, int safe)
++int make_swapfile_(const char *file, const int lineno,
++			const char *swapfile, unsigned int num,
++			int safe, enum swapfile_method method)
+ {
+ 	struct statvfs fs_info;
+-	unsigned long blk_size, bs;
++	unsigned long blk_size;
++	unsigned int blocks = 0;
+ 	size_t pg_size = sysconf(_SC_PAGESIZE);
+-	char mnt_path[100];
++	char mnt_path[128];
+ 
+ 	if (statvfs(".", &fs_info) == -1)
+-		return -1;
++		tst_brk_(file, lineno, TBROK, "statvfs failed");
+ 
+ 	blk_size = fs_info.f_bsize;
+ 
++	if (method == SWAPFILE_BY_SIZE) {
++		tst_res(TINFO, "create a swapfile size of %u megabytes (MB)", num);
++		blocks = num * 1024 * 1024 / blk_size;
++	} else if (method == SWAPFILE_BY_BLKS) {
++		blocks = num;
++		tst_res(TINFO, "create a swapfile with %u block numbers", blocks);
++	} else {
++		tst_brk_(file, lineno, TBROK, "Invalid method, please see include/libswap.h");
++	}
++
+ 	/* To guarantee at least one page can be swapped out */
+-	if (blk_size * blocks < pg_size)
+-		bs = pg_size;
+-	else
+-		bs = blk_size;
++	if (blk_size * blocks < pg_size) {
++		tst_res(TWARN, "Swapfile size is less than the system page size. \
++			Using page size (%lu bytes) instead of block size (%lu bytes).",
++			(unsigned long)pg_size, blk_size);
++		blk_size = pg_size;
++	}
+ 
+ 	if (sscanf(swapfile, "%[^/]", mnt_path) != 1)
+-		tst_brk(TBROK, "sscanf failed");
++		tst_brk_(file, lineno, TBROK, "sscanf failed");
+ 
+-	if (!tst_fs_has_free(mnt_path, bs * blocks, TST_BYTES))
+-		tst_brk(TCONF, "Insufficient disk space to create swap file");
++	if (!tst_fs_has_free(mnt_path, blk_size * blocks, TST_BYTES))
++		tst_brk_(file, lineno, TCONF, "Insufficient disk space to create swap file");
+ 
+ 	/* create file */
+-	if (prealloc_contiguous_file(swapfile, bs, blocks) != 0)
+-		tst_brk(TBROK, "Failed to create swapfile");
++	if (prealloc_contiguous_file(swapfile, blk_size, blocks) != 0)
++		tst_brk_(file, lineno, TBROK, "Failed to create swapfile");
+ 
+ 	/* Fill the file if needed (specific to old xfs filesystems) */
+ 	if (tst_fs_type(swapfile) == TST_XFS_MAGIC) {
+-		if (tst_fill_file(swapfile, 0, bs, blocks) != 0)
+-			tst_brk(TBROK, "Failed to fill swapfile");
++		if (tst_fill_file(swapfile, 0, blk_size, blocks) != 0)
++			tst_brk_(file, lineno, TBROK, "Failed to fill swapfile");
+ 	}
+ 
+ 	/* make the file swapfile */
+-	const char *argv[2 + 1];
+-
+-	argv[0] = "mkswap";
+-	argv[1] = swapfile;
+-	argv[2] = NULL;
++	const char *argv[] = {"mkswap", swapfile, NULL};
+ 
+ 	return tst_cmd(argv, "/dev/null", "/dev/null", safe ?
+-				   TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING : 0);
++			TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING : 0);
+ }
+ 
+ bool is_swap_supported(const char *filename)
+ {
+ 	int i, sw_support = 0;
+-	int ret = make_swapfile(filename, 10, 1);
++	int ret = SAFE_MAKE_SWAPFILE_BLKS(filename, 10);
+ 	int fi_contiguous = file_is_contiguous(filename);
+ 	long fs_type = tst_fs_type(filename);
+ 	const char *fstype = tst_fs_type_name(fs_type);
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
+index 2a0b683c1..cf13907e7 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff01.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+@@ -44,7 +44,7 @@ static void setup(void)
+ {
+ 	is_swap_supported(TEST_FILE);
+ 
+-	if (make_swapfile(SWAP_FILE, 65536, 1))
++	if (SAFE_MAKE_SWAPFILE_BLKS(SWAP_FILE, 65536))
+ 		tst_brk(TBROK, "Failed to create file for swap");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
+index 52906848f..61536dda4 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff02.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+@@ -88,7 +88,7 @@ static void setup(void)
+ 
+ 	is_swap_supported(TEST_FILE);
+ 
+-	if (make_swapfile(SWAP_FILE, 10, 1))
++	if (SAFE_MAKE_SWAPFILE_BLKS(SWAP_FILE, 10))
+ 		tst_brk(TBROK, "Failed to create file for swap");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+index d406e4bd9..b986d97c4 100644
+--- a/testcases/kernel/syscalls/swapon/swapon01.c
++++ b/testcases/kernel/syscalls/swapon/swapon01.c
+@@ -38,7 +38,7 @@ static void verify_swapon(void)
+ static void setup(void)
+ {
+ 	is_swap_supported(SWAP_FILE);
+-	make_swapfile(SWAP_FILE, 10, 0);
++	MAKE_SWAPFILE_BLKS(SWAP_FILE, 10);
+ 
+ 	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lu", TESTMEM);
+diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+index 7e876d26a..e5e29b8e7 100644
+--- a/testcases/kernel/syscalls/swapon/swapon02.c
++++ b/testcases/kernel/syscalls/swapon/swapon02.c
+@@ -50,8 +50,8 @@ static void setup(void)
+ 	is_swap_supported(TEST_FILE);
+ 
+ 	SAFE_TOUCH(NOTSWAP_FILE, 0777, NULL);
+-	make_swapfile(SWAP_FILE, 10, 0);
+-	make_swapfile(USED_FILE, 10, 0);
++	MAKE_SWAPFILE_BLKS(SWAP_FILE, 10);
++	MAKE_SWAPFILE_BLKS(USED_FILE, 10);
+ 
+ 	if (tst_syscall(__NR_swapon, USED_FILE, 0))
+ 		tst_res(TWARN | TERRNO, "swapon(alreadyused) failed");
+diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+index 6f47fc01f..5295a6a73 100644
+--- a/testcases/kernel/syscalls/swapon/swapon03.c
++++ b/testcases/kernel/syscalls/swapon/swapon03.c
+@@ -49,7 +49,7 @@ static int setup_swap(void)
+ 
+ 			/* Create the swapfile */
+ 			snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, j + 2);
+-			make_swapfile(filename, 10, 0);
++			MAKE_SWAPFILE_BLKS(filename, 10);
+ 
+ 			/* turn on the swap file */
+ 			TST_EXP_PASS_SILENT(swapon(filename, 0));
+@@ -62,7 +62,7 @@ static int setup_swap(void)
+ 		tst_brk(TFAIL, "Failed to setup swap files");
+ 
+ 	tst_res(TINFO, "Successfully created %d swap files", swapfiles);
+-	make_swapfile(TEST_FILE, 10, 0);
++	MAKE_SWAPFILE_BLKS(TEST_FILE, 10);
+ 
+ 	return 0;
+ }
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
