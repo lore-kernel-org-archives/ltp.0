@@ -4,90 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69F5BC54E71
-	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 10:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0494FC47DD9
+	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 11:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1711105019; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1711106459; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=Kjqhu1o5fzqexyiaMmYUa7wZRdKDq72aIup9fYHbHW8=;
- b=nPGHqtgtnBdFP/redJv5+Z1CG8/DcyT1oD9uLCPj+WZYgSJf+dD104rXSwT4E4q3vTg8J
- VqwtReJlwINcVJFoEFLoQ9XFop4C2YLF329Tq2abbBU1r1XZxhWPhSZ6kyEy6emTe/48m3M
- CVjW53n47Bk3VCxb2vlUjmV/lzm/nDM=
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=tKDG8hozFa1e9DQMRyyu0+07Lu2oj4vTntRhQzaYlKk=;
+ b=O4klC+HiDK/tHAL6adfx+4eyVvnWewdqhh0deyZu77Aph6eDJQzcOJy6gJzwn1sQkK40X
+ 7BtYcQm86dbLE353C4iOmKKHtfp0gEQ8Fcp2rdVjFORrw8nnv4Y6q7fq6QIaxH4LBcI5xaw
+ rsy7yZnKiHK88yWZtzrQxstkDZkTiY8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C37B13CF22E
-	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 11:56:59 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2578C3CE62C
+	for <ltp@archiver.kernel.org>; Fri, 22 Mar 2024 12:20:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 05BB73C997A
- for <ltp@lists.linux.it>; Fri, 22 Mar 2024 11:56:36 +0100 (CET)
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
- [IPv6:2a00:1450:4864:20::643])
+ by picard.linux.it (Postfix) with ESMTPS id 724633CD61B
+ for <ltp@lists.linux.it>; Fri, 22 Mar 2024 12:20:38 +0100 (CET)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9DE72600BC0
- for <ltp@lists.linux.it>; Fri, 22 Mar 2024 11:56:35 +0100 (CET)
-Received: by mail-ej1-x643.google.com with SMTP id
- a640c23a62f3a-a46dd7b4bcbso261665366b.3
- for <ltp@lists.linux.it>; Fri, 22 Mar 2024 03:56:35 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E4CCC14060C7
+ for <ltp@lists.linux.it>; Fri, 22 Mar 2024 12:20:37 +0100 (CET)
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-56be4efb63fso539861a12.1
+ for <ltp@lists.linux.it>; Fri, 22 Mar 2024 04:20:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1711104995; x=1711709795; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=9ZhzXoym+aCKXyU5nMQkcuoGCicKqhzM7i0G8ctovzM=;
- b=cgt+Nq4DfvbgyfYMskr4b8ZHnr/zH8bvUBcx7U6mv604QHY5R4zODJQG1YBRWoIaf5
- 06u8u7sR//9kXOTN8GoPpg9bz65CtDMH7fbn91/sU2scO4pjtcY25GV5anOym8QXFynF
- uJWljNFZJAWtla/bvZ4Bgozle1EOQBTRh2s71NMDVUR7jqE2TcNNoTyywy1BAlyu9/DZ
- HXRTNxclA2j41RXJMXwBxRqQEfFlAoC1DIoMBt0ZY22CR+vRWE4iltbPJNnnFbizBnzu
- mZVzex5RmPw8EZzH3/kZrdovHUcGhFaYfR01I6/gzZiaNK05hZ578kvnJnfF333oJKtV
- IvLg==
+ d=suse.com; s=google; t=1711106437; x=1711711237; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=pCv3HyuYfKFqUa/HZM56bEofc8a6mkSdLBXLwTy8Rwo=;
+ b=MSaDb6bh+xe2AGgrD3fKtPOgDZbewCbYRHgFVqcMrzavoopTiqh3gMsg+jZOLR+yld
+ knxF2Vgv+uU/l/DCIu+VJpFvxRwNUvW2mY13q5czsEo1uvtqgRDgOBGXEQ9jExeU9ne/
+ 2MoyGtEsfz9d16MoLbCx6jF83GJ/WeiFuBHU0oGf7NEEMbWxHsThdgSlBWWZRzhyBVY9
+ Od2DCPRc2cp2w4ywWPbhh4e7BhqGjV5XcXIxHDVVS/I+08YyvovzzeFyMrF/iOm3YJPt
+ hvyWI4aC4dkI63R3WGwMCQH59hxzrro7h/G8gfb+CkByZ0LPliuZwJej/b4lEjmUKPKA
+ fIBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1711104995; x=1711709795;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=9ZhzXoym+aCKXyU5nMQkcuoGCicKqhzM7i0G8ctovzM=;
- b=XvBuTnyce6lR2QxSLG1kbAbHsIy5Bgz0XtyNVY3QBd1pBgZpVx3ZFiDvquYUA6l3sv
- oysOpBvV6H4yd7qLwDiaOfy7SE+QKMWHJ/bJYhcydWPjzaXP/vk9kAwN3jZ3rB78K/td
- j8XCZ9cMcjEds6OORX0P831yGsmM7xaCo7EBA2X3Ekueidjd/lLxOcV+m8chG2xh2/Hb
- T2LcrFjDFGFF2tSsHcnliVS4A8oLgj3BmMl4FzqW7gD0QIAwy+NvhQI6w1x36QvHBfkx
- mClsjOLUNIIDYr8ldwRiH7m6h52m9UqWSb4B27c0TZswtfMo3kMbvtDAogcPnXOCtF0D
- k32Q==
-X-Forwarded-Encrypted: i=1;
- AJvYcCV/+qFi5cZnqirh2eWC/ld72JtRIY+TU9tq0lLr4drKy3ml7gp4vxvTWFUUBKK4mFIxEzcwEopWtx/e1pXzCR2u2qw=
-X-Gm-Message-State: AOJu0Ywyqp/g0IANKX7kTaNArABYmL4UeuFzgw7ZULV+Z5MZBS1xQxIx
- knBIE2tOir7fI/ewFEakokGXeLjM/byRDa38/U55QgXx7F5UcYPgVhB2/6L4OR3qxdIOUgL0Zi0
- xysNIpKlmQOA=
-X-Google-Smtp-Source: AGHT+IHXOxtVLKy0Nkw4ok/wFELWIoll42madPTd0cw5fksAvdBsXzyMlq4ipfFl3UbsfLojUgE8mA==
-X-Received: by 2002:a17:907:9850:b0:a46:ec44:477c with SMTP id
- jj16-20020a170907985000b00a46ec44477cmr1370784ejc.41.1711104995035; 
- Fri, 22 Mar 2024 03:56:35 -0700 (PDT)
-Received: from [10.232.133.97] ([88.128.88.144])
- by smtp.gmail.com with ESMTPSA id
- q11-20020a056402032b00b0056b8f6e9386sm890446edw.68.2024.03.22.03.56.34
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 Mar 2024 03:56:34 -0700 (PDT)
-Message-ID: <bc843793-6d09-4a9a-8cf3-69a02bfa891e@suse.com>
-Date: Fri, 22 Mar 2024 11:56:34 +0100
+ d=1e100.net; s=20230601; t=1711106437; x=1711711237;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=pCv3HyuYfKFqUa/HZM56bEofc8a6mkSdLBXLwTy8Rwo=;
+ b=GxDgmWmfzGrO4thbC2hjUUtBYQbrwJ8WRgc7BGGzdnb93/CEuFVP7LHpwtYdOHEY5k
+ lYkxlZXWQ5Pa5ZzV7KUKDLeu0+bGbnZa8zhNwgN911iLt304kzXgeOzNLqOzlPJFSsmt
+ wCo2R3B2lhAFmNlyiUUyI7F05ZEDmqHZarg6pijSQg0kdQA8rUtWwZZb+zcR+S4NiJcX
+ ItF6zaIRM6d4YzSw7d9SqOCIfk0x36hqVovP6PgOf84TTwX+pWZxUncrawUvs/OGCBUN
+ OpCJOZpb7O/EH+dZBaScuQwGAfQoSRgrq56eFSQuEznEPbVyEt8fYvyPOxJuOfzxKi9t
+ C2Rg==
+X-Gm-Message-State: AOJu0Yw5jERbqCyMRKueg/cCJofY55XYV5FNker1DJxSyAWOiZTeNY6e
+ 23tECAdTXegfQeQQm5yc66n0N0JRje+GtAjert0ClQ/y3tXvoxtBsUNqaTD7/qhj3lT5ayYAgH4
+ =
+X-Google-Smtp-Source: AGHT+IHNtl0Puup4y6QlfjawFEvMiabX9kEpHPwjkpD/UMtnqTCKHJzw+UrRD/aAgukd0jJ5MPR1Xw==
+X-Received: by 2002:a50:a453:0:b0:568:b702:e0d3 with SMTP id
+ v19-20020a50a453000000b00568b702e0d3mr1415059edb.21.1711106436825; 
+ Fri, 22 Mar 2024 04:20:36 -0700 (PDT)
+Received: from localhost ([81.95.8.245]) by smtp.gmail.com with ESMTPSA id
+ fj26-20020a0564022b9a00b00568d2518105sm924304edb.12.2024.03.22.04.20.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 22 Mar 2024 04:20:36 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri, 22 Mar 2024 07:20:31 -0400
+Message-Id: <20240322112031.20939-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231228025537.28807-1-wegao@suse.com>
+References: <20231228025537.28807-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20240320-new_website-v1-0-79b603c8aea1@suse.com>
- <20240321082559.GA535362@pevik>
- <593a7a6a-f4dd-450e-9fbe-6f77ef62c6ff@suse.com>
- <20240321085656.GA543531@pevik> <Zf1htmFkRl8BIFOX@invisiblethingslab.com>
-In-Reply-To: <Zf1htmFkRl8BIFOX@invisiblethingslab.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/10] New LTP documentation
+Subject: [LTP] [PATCH v4] move_mount03: check allow to mount beneath top
+ mount
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,49 +93,202 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wojtek,
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ include/lapi/fsmount.h                        |   4 +
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/move_mount/.gitignore     |   1 +
+ .../kernel/syscalls/move_mount/move_mount03.c | 137 ++++++++++++++++++
+ 4 files changed, 143 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount03.c
 
-thanks for your suggestions. I will take a look at it.
-
-Kind regards,
-Andrea Cervesato
-
-On 3/22/24 11:47, Wojtek Porczyk wrote:
-> On Thu, Mar 21, 2024 at 09:56:56AM +0100, Petr Vorel wrote:
->>> On 3/21/24 09:25, Petr Vorel wrote:
->>>>> https://ltp-acerv.readthedocs.io/en/latest/index.html
->>>> Out of curiosity, we need to register LTP on readthedocs.io.
->>>> Then we need GitHub Action hook (including some secret for auth) for publishing.
->>>> Correct?
->>>> https://docs.readthedocs.io/en/stable/guides/setup/git-repo-manual.html
->>> readthedocs works with any kind of git server. The only thing we need, it's
->>> a .readthedocs.yaml file inside a specific branch (i.e. master).
->>> So we need to create an account for the LTP team in readthedocs.com, then we
->>> provide the git repo to readthedocs and site will be published
->>> automatically.
->>> ltp.readthedocs.io is available, so maybe we should create an account
->>> already.
->> ack.
->>
->>>> I guess you now deploy to your fork manually, otherwise you would add GitHub
->>>> Action config in the patchset.
->>> It's automatic done by readthedocs and we don't need Github actions.
-> If you're on GitHub on GitLab, may I recommend pull request previews:
-> https://docs.readthedocs.io/en/stable/pull-requests.html
-> https://docs.readthedocs.io/en/stable/guides/pull-requests.html
->
-> RTD will build partial (HTML-only) docs for each push to a PR. It's very nice
-> for online review, you won't need to push to your own ltp-something.rtfd.io
-> variant.
->
->
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 07eb42ffa..216e966c7 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -115,6 +115,10 @@ static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned i
+ }
+ #endif /* HAVE_MOUNT_SETATTR */
+ 
++#ifndef MOVE_MOUNT_BENEATH
++#define MOVE_MOUNT_BENEATH 		0x00000200
++#endif /* MOVE_MOUNT_BENEATH */
++
+ /*
+  * New headers added in kernel after 5.2 release, create them for old userspace.
+ */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b1125dd75..04b758fd9 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -824,6 +824,7 @@ mount_setattr01 mount_setattr01
+ 
+ move_mount01 move_mount01
+ move_mount02 move_mount02
++move_mount03 move_mount03
+ 
+ move_pages01 move_pages01
+ move_pages02 move_pages02
+diff --git a/testcases/kernel/syscalls/move_mount/.gitignore b/testcases/kernel/syscalls/move_mount/.gitignore
+index 83ae40145..ddfe10128 100644
+--- a/testcases/kernel/syscalls/move_mount/.gitignore
++++ b/testcases/kernel/syscalls/move_mount/.gitignore
+@@ -1,2 +1,3 @@
+ /move_mount01
+ /move_mount02
++/move_mount03
+diff --git a/testcases/kernel/syscalls/move_mount/move_mount03.c b/testcases/kernel/syscalls/move_mount/move_mount03.c
+new file mode 100644
+index 000000000..dfdad080e
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/move_mount03.c
+@@ -0,0 +1,137 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Christian Brauner <brauner@kernel.org>
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test allow to mount beneath top mount feature
++ */
++
++/*
++ * Test create for following commit:
++ * commit 6ac392815628f317fcfdca1a39df00b9cc4ebc8b
++ * Author: Christian Brauner <brauner@kernel.org>
++ * Date:   Wed May 3 13:18:42 2023 +0200
++ *     fs: allow to mount beneath top mount
++ *
++ * Above commit has heavily commented but i found following commit
++ * contain simple summary of this feature for easy understanding:
++ *
++ * commit c0a572d9d32fe1e95672f24e860776dba0750a38
++ * Author: Linus Torvalds <torvalds@linux-foundation.org>
++ *       TL;DR:
++ *
++ *         > mount -t ext4 /dev/sda /mnt
++ *           |
++ *           --/mnt    /dev/sda    ext4
++ *
++ *         > mount --beneath -t xfs /dev/sdb /mnt
++ *           |
++ *           --/mnt    /dev/sdb    xfs
++ *             --/mnt  /dev/sda    ext4
++ *
++ *         > umount /mnt
++ *           |
++ *           --/mnt    /dev/sdb    xfs
++ *
++ * So base above scenario design following scenario for LTP check:
++ *
++ *         > mount -t tmpfs /DIRA
++ *           |
++ *           --/DIRA(create A file within DIRA)
++ *
++ *         > mount -t tmpfs /DIRB
++ *           |
++ *           --/DIRA(create B file within DIRB)
++ *
++ *         > move_mount --beneath /DIRA /DIRB
++ *           |
++ *           --/mnt    /DIRA /DIRB
++ *             --/mnt  /DIRB
++ *
++ *         If you check content of /DIRB, you can see file B
++ *
++ *         > umount /DIRB
++ *           |
++ *           --/mnt    /DIRA /DIRB
++ *         Check content of /DIRB, you can see file A exist since
++ *         current /DIRB mount source is already become /DIRA
++ *
++ * See also:
++ * https://lwn.net/Articles/930591/
++ * https://github.com/brauner/move-mount-beneath
++ */
++
++#include <stdio.h>
++
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++#include "lapi/sched.h"
++
++#define DIRA "LTP_DIR_A"
++#define DIRB "LTP_DIR_B"
++
++static int fda = -1, fdb = -1;
++
++static void run(void)
++{
++	SAFE_MOUNT("none", DIRA, "tmpfs", 0, 0);
++	SAFE_MOUNT("none", DIRB, "tmpfs", 0, 0);
++	SAFE_TOUCH(DIRA "/A", 0, NULL);
++	SAFE_TOUCH(DIRB "/B", 0, NULL);
++
++	fda = open_tree(AT_FDCWD, DIRA, OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE);
++	if (fda == -1)
++		tst_brk(TBROK | TERRNO, "open_tree() failed");
++
++	fdb = SAFE_OPEN(DIRB, O_PATH | O_NOFOLLOW, 0666);
++	TST_EXP_PASS(move_mount(fda, "", fdb, "",
++				MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH |
++				MOVE_MOUNT_T_EMPTY_PATH));
++	SAFE_CLOSE(fda);
++	SAFE_CLOSE(fdb);
++
++	TST_EXP_PASS(access(DIRB "/B", F_OK));
++	SAFE_UMOUNT(DIRB);
++	TST_EXP_PASS(access(DIRB "/A", F_OK));
++
++	SAFE_UMOUNT(DIRB);
++	SAFE_UMOUNT(DIRA);
++}
++
++static void setup(void)
++{
++	SAFE_MKDIR(DIRA, 0777);
++	SAFE_MKDIR(DIRB, 0777);
++}
++
++static void cleanup(void)
++{
++
++	if (fda >= 0)
++		SAFE_CLOSE(fda);
++
++	if (fdb >= 0)
++		SAFE_CLOSE(fdb);
++
++	if (tst_is_mounted_at_tmpdir(DIRA))
++		SAFE_UMOUNT(DIRA);
++
++	if (tst_is_mounted_at_tmpdir(DIRB))
++		SAFE_UMOUNT(DIRB);
++
++	if (tst_is_mounted_at_tmpdir(DIRB))
++		SAFE_UMOUNT(DIRB);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_root = 1,
++	.min_kver = "6.5.0",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++};
+-- 
+2.35.3
 
 
 -- 
