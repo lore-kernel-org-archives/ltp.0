@@ -4,62 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9A19C54E64
-	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 11:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B39C54E58
+	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 11:51:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A19F83CFB9C
-	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 12:51:27 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 729013CFEC9
+	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 12:51:43 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7B763CFEC9
+ by picard.linux.it (Postfix) with ESMTPS id 57E473CFECF
  for <ltp@lists.linux.it>; Mon, 25 Mar 2024 12:50:43 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 67E75200C61
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7B17C600CE9
  for <ltp@lists.linux.it>; Mon, 25 Mar 2024 12:50:43 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1327F350C0;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 248105C61C;
  Mon, 25 Mar 2024 11:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1711367442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XIVP2IpKuRWgIHFrZNfwxga2Frmb3bcT73WhcNtAz9o=;
+ b=X52p75ppKzt0n9Mn3EiIu57yAffg2uOxCM5e4vYFVDDi7JEqKV/LrpgEmweV9TR0PxqetN
+ 5awv8rRv39CCznaEWKOxdpWoMDfwg63fML8hHHhWHG5E+sh2xbibbworPWy5vhEavP+RKh
+ 2mcXoCA+VZk5PUgCV53UL85EUDmNBpw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1711367442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XIVP2IpKuRWgIHFrZNfwxga2Frmb3bcT73WhcNtAz9o=;
+ b=Sp5wj9PHRQN+/Qri8tZH6oS0c+BzeGnwL/cxndtCx4uuAB8CFccvaeMSZDG8xb4J2mfA9V
+ Xm8bA8BhtM39aVDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1711367441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XIVP2IpKuRWgIHFrZNfwxga2Frmb3bcT73WhcNtAz9o=;
+ b=PB7jURGrHYK3YrtIg0VK/ASOsucQPzCCnOfed+diun+hPRJsBt1IoqpVQOIC9ytG5mO6Kp
+ jJ3Bp8UqdPr56wCI56GDYyEQ5veFcw2XON8ph64mTREUe6/v82sq6szauDWRYzuQf9Ou5G
+ sYa+u8sdx8eco2GmjKt3shenpZWgxh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1711367441;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XIVP2IpKuRWgIHFrZNfwxga2Frmb3bcT73WhcNtAz9o=;
+ b=c0FyARmVsM1E8QMxpYlbCnygmio1uc4IYJwlMrj6GwD0OXvyNkyXyBuW9EW/S1Yk5iQvlH
+ 1kJ2zdr/7v8uwhCA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E598513A2E;
- Mon, 25 Mar 2024 11:50:40 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C9A013ABC;
+ Mon, 25 Mar 2024 11:50:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id IJ2ONhBlAWZSCQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 25 Mar 2024 11:50:40 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id 6LDsARFlAWZSCQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Mon, 25 Mar 2024 11:50:41 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 25 Mar 2024 12:50:33 +0100
-Message-ID: <20240325115034.643892-3-pvorel@suse.cz>
+Date: Mon, 25 Mar 2024 12:50:34 +0100
+Message-ID: <20240325115034.643892-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240325115034.643892-1-pvorel@suse.cz>
 References: <20240325115034.643892-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-Authentication-Results: smtp-out1.suse.de;
+X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ SUBJECT_HAS_CURRENCY(1.00)[]; REPLY(-4.00)[];
+ BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Rspamd-Queue-Id: 1327F350C0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] lib: Add test for tst_tmpdir
+Subject: [LTP] [PATCH v2 3/3] lib: Improve doc related to $TMPDIR default
+ value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,81 +121,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Link C and shell API related parts to $TMPDIR.
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/newlib_tests/runtest.sh   |  2 +-
- lib/newlib_tests/tst_tmpdir.c | 49 +++++++++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+), 1 deletion(-)
- create mode 100644 lib/newlib_tests/tst_tmpdir.c
+ include/tst_defaults.h    | 3 ++-
+ testcases/lib/tst_test.sh | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-index 8f2a497b1..7bdc870bc 100755
---- a/lib/newlib_tests/runtest.sh
-+++ b/lib/newlib_tests/runtest.sh
-@@ -5,7 +5,7 @@ LTP_C_API_TESTS="${LTP_C_API_TESTS:-test05 test07 test09 test15 test_runtime01
- tst_needs_cmds01 tst_needs_cmds02 tst_needs_cmds03 tst_needs_cmds06
- tst_needs_cmds07 tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus
- tst_fuzzy_sync03 test_zero_hugepage.sh test_kconfig.sh test_kconfig03
--test_children_cleanup.sh}"
-+test_children_cleanup.sh tst_tmpdir}"
+diff --git a/include/tst_defaults.h b/include/tst_defaults.h
+index 083427b7e..abe1e6956 100644
+--- a/include/tst_defaults.h
++++ b/include/tst_defaults.h
+@@ -8,8 +8,9 @@
  
- LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh
- shell/tst_check_kconfig0[1-5].sh shell/tst_errexit.sh shell/net/*.sh}"
-diff --git a/lib/newlib_tests/tst_tmpdir.c b/lib/newlib_tests/tst_tmpdir.c
-new file mode 100644
-index 000000000..c34430fa6
---- /dev/null
-+++ b/lib/newlib_tests/tst_tmpdir.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 Petr Vorel <pvorel@suse.cz>
-+ */
-+
-+/*
-+ * Tests TMPDIR variable cleanup.
-+ */
-+
-+#include <stdlib.h>
-+#include "tst_defaults.h"
-+#include "tst_test.h"
-+
-+static struct tcase {
-+	const char *orig;
-+	const char *fixed;
-+	const char *desc;
-+} tcases[] = {
-+	{NULL, TEMPDIR, "default value"},
-+	{"/tmp/", "/tmp", "removing trailing slash"},
-+	{"/var//tmp", "/var/tmp", "removing duplicate slashes"},
-+	{"//var///tmp///", "/var/tmp", "removing too many slashes"},
-+};
-+
-+static void do_test(unsigned int nr)
-+{
-+	struct tcase *tc = &tcases[nr];
-+	const char *env_tmpdir;
-+
-+	tst_res(TINFO, "Testing TMPDIR='%s' (%s)", tc->orig, tc->desc);
-+
-+	if (tc->orig)
-+		SAFE_SETENV("TMPDIR", tc->orig, 1);
-+
-+	env_tmpdir = tst_get_tmpdir_root();
-+
-+	if (!env_tmpdir)
-+		tst_brk(TBROK, "Failed to get TMPDIR");
-+
-+	if (!strcmp(tc->fixed, env_tmpdir))
-+		tst_res(TPASS, "TMPDIR '%s' is '%s'", env_tmpdir, tc->fixed);
-+	else
-+		tst_res(TFAIL, "TMPDIR '%s' should be '%s'", env_tmpdir, tc->fixed);
-+}
-+
-+static struct tst_test test = {
-+	.test = do_test,
-+	.tcnt = ARRAY_SIZE(tcases),
-+};
+ /*
+  * This is the default temporary directory used by tst_tmpdir().
++ * used when TMPDIR env variable is not set.
+  *
+- * This is used when TMPDIR env variable is not set.
++ * If changed, update also shell API in testcases/lib/tst_test.sh.
+  */
+ #define TEMPDIR	"/tmp"
+ 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 0d2fccb95..b595bb5ea 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -734,6 +734,8 @@ tst_run()
+ 
+ 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+ 		if [ -z "$TMPDIR" ]; then
++			# Default value if TMPDIR not set.
++			# If changed, update also C API in tst_defaults.h.
+ 			export TMPDIR="/tmp"
+ 		fi
+ 
 -- 
 2.43.0
 
