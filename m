@@ -4,141 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BF23CD11DD
-	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 04:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D11FC54E58
+	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 06:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1711346573; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=adsh0tYlCEjmZUUQEU7DknP+MGQZAE+AVKu6Ofk1a+o=;
+ b=EcZZeRY/q37BfUHB9y6tGTnEkxy0f+hK2g6rzzCpgZGMRvVyUInFO4yEhdjobWTE0NVU7
+ W4z1SvuOAxE/ThgqOrYz0nAoFFownN8OZ46SFillUTfKoQWsmMCKL7BH/jaR3FidoVkX+dT
+ 12jc2AMYerdsmpYSbU9FGYIiSTAfTQU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 092A43D181A
-	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 05:31:46 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 842023CFB41
+	for <ltp@archiver.kernel.org>; Mon, 25 Mar 2024 07:02:53 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 08A393CD073
- for <ltp@lists.linux.it>; Mon, 25 Mar 2024 05:31:29 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E0ACA3CD929
+ for <ltp@lists.linux.it>; Mon, 25 Mar 2024 07:02:31 +0100 (CET)
 Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=198.175.65.15; helo=mgamail.intel.com;
- envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
+ helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 51FC41A00162
- for <ltp@lists.linux.it>; Mon, 25 Mar 2024 05:31:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1711341090; x=1742877090;
- h=date:from:to:cc:subject:message-id:mime-version;
- bh=sR7fSGILa+BQrHpjOXoM80koYNy9wa0B3U3bcnT1WdM=;
- b=ZD0Ygw2Kh67QbI/KvKrKF0CzYvH953QjZ+OnjdvaxYDj793gnSMXFAsg
- 1J2aAlF3Mht8Co2E40lDvEby5DUKjPIeKQqmBIaNojXcNhLzgfGirvjFI
- efVz5jVx5j3M0wjxUKqiNBXdwnDGagrXKAJSccMnjSEumxLta+sxWqFT2
- Kt064hd8YWRAB60Ghga1G7GolCUnQlQmNKolK57F59+wU2M1X/HcpBD3n
- N22L5sjvjToxfxEcDG0kqhWXlYxABL7tTohbDTghz03B4WhYfVD6okqcO
- dAYW0Mri2VKPFKf7zqAsJxCSrcq7ZwqF+CPW7x5QvPH0jCSpNHbOngLrH A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10119827"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; d="scan'208";a="10119827"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
- by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2024 21:31:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; d="scan'208";a="16152285"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
- by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 24 Mar 2024 21:31:24 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 21:31:23 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 24 Mar 2024 21:31:23 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 24 Mar 2024 21:31:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d9r9p3q4c5CIieoTi64DcOmi9Ni+BCCwUTDBVal/dbATPSHNpNJZTeFi+Ae2HwoYDIhZ3Q7uc1f4pKWzlEZ1X91pAFpTP521pcM237OSYlOCKD3KUFpN0OiyyUdVfXPK4C5X+jvqw4OiRAS6riUkjmtzBTnZE8hoPCbBjjJ3/ZcsicrkPSjVJ1sppvp6Y2gl5DjVt8+6JU0X/DdC/7GNrif1lZh8y9VI4GogvkEM0UZurOQyN3rx44jUz5joQVuQbZ88I7hzY45fRwNMQxabEEhpabrvjaSBWYcEt19ofqEnAzoT2AKqJagfSzCdC7LcleZqKCZP3Cc1hMUgP2dZww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IO4RYVsdCydfnxkuY65fvmvNWbtsrDLiGQsa5fXb6d8=;
- b=SwJyAsVCVJnv8RzcENyNGiqknZ8V1xU6BizgVhV6/tobpDjRhOfng8chbWNS/jTy6n2UA2S4K3O9BPEvOs9OOu+MC/rfKxOwqarPuJicoZwfEKIB/NDY4Hsor9x1dnXiGCC1oYRDVc/3MkH4wXTtYYUAgzzofO9vVdYCdPp5jYTroAvDw1+nRRBTeZBt2IOFhyREMjbUXwV2XnUK68l3sakBktlnXGm3zgAbaMLZZI9hTfWZsjanfx99rCj77HtrOZeSIibIHNd3kQ9AAjK/jvi48CM8mV4V+09okYX04eDhwCvXX1Yjyi63cavOu3yxqNKERf4lGuHmElakexOS8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by DS0PR11MB7649.namprd11.prod.outlook.com (2603:10b6:8:146::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 04:31:20 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 04:31:20 +0000
-Date: Mon, 25 Mar 2024 12:31:12 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Vishal Moola <vishal.moola@gmail.com>
-Message-ID: <202403251148.ecf856b-oliver.sang@intel.com>
-Content-Disposition: inline
-X-ClientProxiedBy: SI2PR01CA0029.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::8) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1F48E1A00E63
+ for <ltp@lists.linux.it>; Mon, 25 Mar 2024 07:02:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1711346549; x=1742882549;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=jMVwNm77PrDkoLKBsAayNFyCZqCUXtOKaCnnUCHPNzQ=;
+ b=WPIIFwmUAXJk/iNqsN/nRufauVzQmU9vZJ0+MKi3q9eTjj/64bN+fHpF
+ aXES8wdh83G9cQ/cWVh7TAei3uH+VkLFNRsd1mRxsTZt56euhFpMElAin
+ xYUM7g3913f3ulwvKJ5MJNINV2UxIs1y5SkR0TYxSzDRTYTs231EKbXV6
+ WgaOg4Td49a1/rjEXStI//B8ejLkjCiK864QCHAgt0GP0GVhGfHDvhZC5
+ Zediv0eyU1npNn75h1MNzWJyr/Z/0xVZGQNRqGn4l4yEDKHZ7YV3vIpFz
+ XETyCdLOPCz3LQwDK0TcsfLKiTt8/FV2zZuufd5QqUV4sRtdUDH07wKpz g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="141226055"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708354800"; d="scan'208";a="141226055"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2024 15:02:27 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 93AB3C6828
+ for <ltp@lists.linux.it>; Mon, 25 Mar 2024 15:02:25 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id A84F8CFA5C
+ for <ltp@lists.linux.it>; Mon, 25 Mar 2024 15:02:24 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 23CBE6B4C7
+ for <ltp@lists.linux.it>; Mon, 25 Mar 2024 15:02:24 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 8CEB41A006C;
+ Mon, 25 Mar 2024 14:02:23 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Mon, 25 Mar 2024 02:01:10 -0400
+Message-Id: <20240325060110.2278-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DS0PR11MB7649:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96048115-68ec-4da1-fe93-08dc4c846bc2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AEe3k97pwpmDjELSBcrhFDod8RAIxFGIftsvYMdrUorkJICzBmivLyEP/WvfQ/sghHclRluRX84ldWydtaORTPD2sg7AewpqJ4vzRjFgjKzzMTNr5KnEIF9Ff3mrmArNXeknE+pVk653bbq0qzhc96/nu1hh0+M38yX1rhPUb5fEzCY/Ns0+nZMp3jgbFxdOx9JxI80P+oaogiA8ghJxa9nsqkbNMouArEpcg1wzmArJk5hsMEzasqp0hpl0+LAVt9s1zawJEr2uW7XmZj4xpjrNeJuQT72qHtxlI05phg3eyZITNdLWBVkaAm8uDHxzNdPGRr0bXNJE1bmLwJT4HP3nwFTu5LcI0gecf1xfMJIym/pCa4mEhn6PHqmvkpSCEfi/uwDEfHmvq2oeII6iiT+WhArc8gORka+HBM59qcD6+scXm5MSHDIQ4xopEHFVZ8v+uIHLhDPyT1WeVVN6e6ULc6jsTnUl08dsD3+zXvZXPuN5IT24bCC8/6Dp7WmbxAsMR61IQYfGo/+We3gjEI5V8+1nYV9uR3wcTJEH3x9CMtwRX+vhDzkEwL1N/IpS9loNXZpILJLeDuCQJ6RVPYyDZmicx3mfdaeVfgHL807g8zQ/sdxd5Xq7WnkZnxnJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(376005)(1800799015)(366007); DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yBGzJXIOlmUg31AL40/gimrAFTStxfMN6h8HffEuVBhB7meerObYwX6a26gD?=
- =?us-ascii?Q?NISMZ3whI45YiM5lc+Az4DQqYfQh/BSfF7pLRHpJ4xPZ/ScC8W5GMVwtiT78?=
- =?us-ascii?Q?HRE6xrBZiSTVx8g5UY4bFWGWLpbJtRH9XeQRJu/Zr350CvT+1BPfRTnA/6Fk?=
- =?us-ascii?Q?q0QhwQKHaIxPXp2oHcU4B/DLzrYg1rPg0r+vm7qX+2tbhzFX3RkhGmQoFets?=
- =?us-ascii?Q?s4Gdbqu8zsRxlkl6STl/Q7kwGYxlIJtgn4jxmvKrrjYPKu2d8gKcu2atSJg+?=
- =?us-ascii?Q?fPCKB+rC6i8zVK1/PtGIxSkafF0ubluO1eFh8FSUP4Be0E3tjNX1TOfTfufj?=
- =?us-ascii?Q?PrjsoaQu0iy/KdYMf4gH/zmuLAT1Lgtkfp1h0pRVaBIrlUTsvwZQW8kuUniC?=
- =?us-ascii?Q?I3m4urbL9kY+0EaNfGn+K/8KHr/sb+22wMN040DybEQ/qVb9CjCtn0+i58mM?=
- =?us-ascii?Q?KA2Epn1dBbKusmNOqsJVGxEMskr5JvzLW8RUQPY4dhrytmsU3Ac3Dd25nF6g?=
- =?us-ascii?Q?8ZH1XBYGU3czNMO88kODGG/SXjhw6Po10WLZaQ7CywNGtJAQiarMeyKT7LtV?=
- =?us-ascii?Q?4tuZLseysa4yVN+QMu6FXTcOsRFsk6QJnC9wxRUFLwljNXiPHl7kVuAyXFmi?=
- =?us-ascii?Q?rw7srFklAMyn5uHDQfY1f9Nqmn4/7rRYPUYL6ZeP6bEwQE5hrku24Erb6J6N?=
- =?us-ascii?Q?sTFs3rk9TkiVSD1D2KCUNSMD0VhrV1gTTe+v1JS61DxcHQoTjkcdQ4thMZR6?=
- =?us-ascii?Q?DCsIBSDNX1Eh1NNeDACRspA78CP9G34rlInu71MWSghL9bUVd4bzeNRhn/EC?=
- =?us-ascii?Q?R0xHcHA49WWUDulTr7FcZuhJD0rPs4MXOzU9bnfHCFNd4smiNhZ32oUr4KyO?=
- =?us-ascii?Q?RB0xjPg1AhIECqre8Ra0THdyOcjliaS/yuidtGyX5WnPMYkLsN2DPE+3Bmz8?=
- =?us-ascii?Q?A5qRfjb5HKbH6aZgOMbUP/UphAn3a1yOFSx2MaM6cfOH3EHMnX32IcyLJk9I?=
- =?us-ascii?Q?YaDJLTmGLyX1Uh+UqSTFyUVhToSzWKxypDeqeSJfLFZmHTWpatW4qfjHna9u?=
- =?us-ascii?Q?rHSwyeQfK2BHdZ5tn3XqBKjmmpJm5ydZf20IFFeAJrEOKmdb7A0L+wBmy9CD?=
- =?us-ascii?Q?rzm0pZc6COkggqdSkZiRSQIcLUL7CuA5Wuwa7GBzw7e4YKQCS8fSSkLucQDa?=
- =?us-ascii?Q?+EpJYi8ljsfhuxGVTdLc4I4Utru4XV92X8fqZbB3CSPb5VyevYgPvjuCfGFE?=
- =?us-ascii?Q?zGHqw65ixaZehWVXumVv74zeqXaraBCRutCzqOf0y0mwjJ6vlNC4KBF1FHwo?=
- =?us-ascii?Q?+2kszCu5MiTP9qlhzPzjxG1lOH0LwdlTilFmVTqhnxBMWvpyNNfnubGXQy7d?=
- =?us-ascii?Q?r1QyOeCwg9QvK9P3WUHdJJCZ7wrydaYJVKHSjQE6k34VeQadYSE2SLlNx5d8?=
- =?us-ascii?Q?cnhDRXb9yT2zyGrKMd0dTRPdVC9trVsdQrGIiI6a6KjTor3W3nlDY7v3Qj6b?=
- =?us-ascii?Q?KOmyKvX8XvC5jurLeA21OjVxyvu5eHHIIbQA177IFqNfStOo+h5kBrTikYx/?=
- =?us-ascii?Q?ngzamoI8I4UXJwls2rC+fLHczNPkbefkxvFpgNzBS48UvDysMnArBLFHLiQH?=
- =?us-ascii?Q?ng=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96048115-68ec-4da1-fe93-08dc4c846bc2
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 04:31:20.7891 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zQMoqLlNP/1+PA6hkA2DWe41UrNoO/CR1j9vu4J1Ec1dfH03LuuZrsvScv1bYGsLdxicXrgDybBI+hVsPeaHow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7649
-X-OriginatorOrg: intel.com
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28272.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28272.005
+X-TMASE-Result: 10--12.214200-10.000000
+X-TMASE-MatchedRID: V4kZyBpe9RM+RdTI1lgp+grcxrzwsv5u9LMB0hXFSeg6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmLy9zcRSkKatS01VXlcjcCUtw+xHnsmQjNSJwEFeNPAEf+aPQT1cxlGVvB
+ 81KWQR0pudEHjsosnVDMuZ8ZjqIORfm5R+E2+crM5ZRbFNAl0jxRli5ttSPYMu3gEBpQvABUl/m
+ i29q85l/29Pl68xfi0P6Cg6XciWTS6dpS6QxcQWxMxKDqgAFSzNoSDavyLMJR/O89o908FMRskA
+ daEfeQKC1dAGS6ThH7HFK9wPwWae3yAL08NM00elRdhw/BBzadMVCcj56k8hkM6trnYZWLjF+jA
+ V5A5r0O9CBwBZco6FwkzzxpFMTuNNrsgG44+2ERdhZyafgPiqx+KaaVwAG43CM0aiAVpASztA5t
+ 34rpKTrx1FZnDV3+Ir8186pfsJcbIW5a7efE77eadXXcOleEbyJTy9ZwCrCOMltxkB8Rw030nA7
+ bbhJ+d/I+yd0mcY0W310iilwWxWkkjllSXrjtQFEUknJ/kEl7dB/CxWTRRu25FeHtsUoHuZLHaw
+ NhKAWV5M6EejXR4MgXzm0OM6sllaYMexsUq6HZoBmTSwRxjXg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [linus:master] [hugetlb]  7c43a55379: ltp.hugemmap10.fail
+Subject: [LTP] [PATCH] linkat01: Split into 2 cases and convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,117 +100,616 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, Muchun Song <muchun.song@linux.dev>,
- linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
- linux-mm@kvack.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
- Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Currently linkat01 includes both positive cases and failure cases. The logic
+contains many if-else statement and is a little complex.
 
-hi, Vishal Moola,
+Now linkat01 will be split into 2 cases: linkat01 and linkat03. The positive
+cases remain in linkat01 case, and failure cases move to linkat03 case. With
+new api TST_EXP_PASS() and TST_EXP_FAIL(), the logic is also simplified.
 
-we noticed you mentioned in commit message:
-    This patch may cause ltp hugemmap10 to "fail".
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/linkat/.gitignore |   1 +
+ testcases/kernel/syscalls/linkat/linkat01.c | 385 ++++++--------------
+ testcases/kernel/syscalls/linkat/linkat03.c | 120 ++++++
+ 4 files changed, 240 insertions(+), 267 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/linkat/linkat03.c
 
-this report is just FYI what we observed in our tests confirmed it. and the
-failure is persistent:
-
-9acad7ba3e25d11f 7c43a553792a1701affeef20959
----------------- ---------------------------
-       fail:runs  %reproduction    fail:runs
-           |             |             |
-           :6          100%           6:6     ltp.hugemmap10.fail
-
-
-below full report is just FYI.
-
-
-
-Hello,
-
-kernel test robot noticed "ltp.hugemmap10.fail" on:
-
-commit: 7c43a553792a1701affeef20959dfb2ccb26dcee ("hugetlb: allow faults to be handled under the VMA lock")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-
-in testcase: ltp
-version: ltp-x86_64-14c1f76-1_20240316
-with following parameters:
-
-	test: hugetlb/hugemmap10
-
-
-
-compiler: gcc-12
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz (Ivy Bridge) with 16G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202403251148.ecf856b-oliver.sang@intel.com
-
-
-
-Running tests.......
-<<<test_start>>>
-tag=hugemmap10 stime=1710711668
-cmdline="hugemmap10"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
-tst_test.c:1049: TINFO: Mounting none to /tmp/ltp-IEy6i3InfS/LTP_hughDiU47/hugetlbfs fstyp=hugetlbfs flags=0
-tst_test.c:1741: TINFO: LTP version: 20240129-104-g14c710cae
-tst_test.c:1625: TINFO: Timeout per run is 0h 00m 30s
-hugemmap10.c:388: TINFO: Base pool size: 0
-hugemmap10.c:315: TINFO: Clean...
-hugemmap10.c:366: TINFO: OK
-hugemmap10.c:315: TINFO: Untouched, shared...
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Total: expected 2, actual 1
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Free: expected 1, actual 0
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Surp: expected 2, actual 1
-
-Summary:
-passed   0
-failed   3
-broken   0
-skipped  0
-warnings 0
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=3 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=277
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20240129-104-g14c710cae
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20240129-104-g14c710cae
-       ###############################################################
-
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240325/202403251148.ecf856b-oliver.sang@intel.com
-
-
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4ed2b5602..771d654c8 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -701,6 +701,7 @@ link08 link08
+ #linkat test cases
+ linkat01 linkat01
+ linkat02 linkat02
++linkat03 linkat03
+ 
+ listen01 listen01
+ 
+diff --git a/testcases/kernel/syscalls/linkat/.gitignore b/testcases/kernel/syscalls/linkat/.gitignore
+index 1b307c9df..52b019e25 100644
+--- a/testcases/kernel/syscalls/linkat/.gitignore
++++ b/testcases/kernel/syscalls/linkat/.gitignore
+@@ -1,2 +1,3 @@
+ /linkat01
+ /linkat02
++/linkat03
+diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
+index 57cfbcfc6..1e77898d6 100644
+--- a/testcases/kernel/syscalls/linkat/linkat01.c
++++ b/testcases/kernel/syscalls/linkat/linkat01.c
+@@ -1,93 +1,44 @@
+-/******************************************************************************
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2006
++ * Copyright (c) Linux Test Project, 2006-2024
++ */
++
++/*\
++ * [Description]
+  *
+- *   Copyright (c) International Business Machines  Corp., 2006
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+- * NAME
+- *      linkat01.c
+- *
+- * DESCRIPTION
+- *	This test case will verify basic function of linkat
+- *	added by kernel 2.6.16 or up.
+- *
+- * USAGE:  <for command-line>
+- * linkat01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
+- * where:
+- *      -c n : Run n copies simultaneously.
+- *      -e   : Turn on errno logging.
+- *      -i n : Execute test n times.
+- *      -I x : Execute test for x seconds.
+- *      -p   : Pause for SIGUSR1 before starting
+- *      -P x : Pause for x seconds between iterations.
+- *      -t   : Turn on syscall timing.
+- *
+- * Author
+- *	Yi Yang <yyangcdl@cn.ibm.com>
+- *
+- * History
+- *      08/25/2006      Created first by Yi Yang <yyangcdl@cn.ibm.com>
+- *
+- *****************************************************************************/
++ * Check the basic function of linkat that normally returns.
++ */
+ 
+ #define _GNU_SOURCE
+ 
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/time.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <inttypes.h>
+-#include <limits.h>
+-#include "test.h"
++#include <stdio.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
+-
+-#ifndef AT_FDCWD
+-#define AT_FDCWD -100
+-#endif
+-#ifndef AT_SYMLINK_FOLLOW
+-#define AT_SYMLINK_FOLLOW 0x400
+-#endif
+-
+-struct test_struct;
+-static void setup();
+-static void cleanup();
+-static void setup_every_copy();
+-static void mylinkat_test(struct test_struct *desc);
++#include "lapi/fcntl.h"
+ 
+ #define TEST_DIR1 "olddir"
+ #define TEST_DIR2 "newdir"
+ #define TEST_DIR3 "deldir"
+ #define TEST_FILE1 "oldfile"
+-#define TEST_FILE2 "newfile"
+-#define TEST_FIFO "fifo"
+ 
+-#define DPATHNAME_FMT	"%s/" TEST_DIR2 "/" TEST_FILE1
+-#define SPATHNAME_FMT	"%s/" TEST_DIR1 "/" TEST_FILE1
++#define DPATHNAME_FMT "%s/" TEST_DIR2 "/" TEST_FILE1
++#define SPATHNAME_FMT "%s/" TEST_DIR1 "/" TEST_FILE1
+ 
+ static char dpathname[PATH_MAX];
+ static char spathname[PATH_MAX];
+-static int olddirfd, newdirfd = -1, cwd_fd = AT_FDCWD, stdinfd = 0, badfd =
+-    -1, deldirfd;
+-
+-struct test_struct {
++static int olddirfd;
++static int newdirfd = -1;
++static int cwd_fd = AT_FDCWD;
++static int stdinfd;
++static int badfd = -1;
++static int deldirfd;
++
++static struct tcase {
+ 	int *oldfd;
+ 	const char *oldfn;
+ 	int *newfd;
+@@ -95,222 +46,122 @@ struct test_struct {
+ 	int flags;
+ 	const char *referencefn1;
+ 	const char *referencefn2;
+-	int expected_errno;
+-} test_desc[] = {
++} tcases[] = {
+ 	/* 1. relative paths */
+-	{
+-	&olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 2. abs path at source */
+-	{
+-	&olddirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0},
+-	    /* 3. abs path at dst */
+-	{
+-	&olddirfd, TEST_FILE1, &newdirfd, dpathname, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 4. relative paths to cwd */
+-	{
+-	&cwd_fd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 5. relative paths to cwd */
+-	{
+-	&olddirfd, TEST_FILE1, &cwd_fd, TEST_DIR2 "/" TEST_FILE1, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 6. abs path at source */
+-	{
+-	&cwd_fd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0},
+-	    /* 7. abs path at dst */
+-	{
+-	&olddirfd, TEST_FILE1, &cwd_fd, dpathname, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 8. relative paths to invalid */
+-	{
+-	&stdinfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
+-		    0, 0, ENOTDIR},
+-	    /* 9. relative paths to invalid */
+-	{
+-	&olddirfd, TEST_FILE1, &stdinfd, TEST_DIR2 "/" TEST_FILE1, 0,
+-		    0, 0, ENOTDIR},
+-	    /* 10. abs path at source */
+-	{
+-	&stdinfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0},
+-	    /* 11. abs path at dst */
+-	{
+-	&olddirfd, TEST_FILE1, &stdinfd, dpathname, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 12. relative paths to bad */
+-	{
+-	&badfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
+-		    0, 0, EBADF},
+-	    /* 13. relative paths to bad */
+-	{
+-	&olddirfd, TEST_FILE1, &badfd, TEST_DIR2 "/" TEST_FILE1, 0,
+-		    0, 0, EBADF},
+-	    /* 14. abs path at source */
+-	{
+-	&badfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0},
+-	    /* 15. abs path at dst */
+-	{
+-	&olddirfd, TEST_FILE1, &badfd, dpathname, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 16. relative paths to deleted */
+-	{
+-	&deldirfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
+-		    0, 0, ENOENT},
+-	    /* 17. relative paths to deleted */
+-	{
+-	&olddirfd, TEST_FILE1, &deldirfd, TEST_DIR2 "/" TEST_FILE1, 0,
+-		    0, 0, ENOENT},
+-	    /* 18. abs path at source */
+-	{
+-	&deldirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0},
+-	    /* 19. abs path at dst */
+-	{
+-	&olddirfd, TEST_FILE1, &deldirfd, dpathname, 0,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* 20. x-device link */
+-	{
+-	&cwd_fd, "/proc/cpuinfo", &newdirfd, TEST_FILE1, 0, 0, 0, EXDEV},
+-	    /* 21. directory link */
+-	{
+-	&olddirfd, ".", &newdirfd, TEST_FILE1, 0, 0, 0, EPERM},
+-	    /* 22. invalid flag */
+-	{
+-	&olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 1, 0, 0, EINVAL},
+-	    /* 23. fifo link */
+-	    /* XXX (garrcoop): Removed because it hangs the overall test. Need to
+-	     * find a legitimate means to exercise this functionality, if in fact
+-	     * it's a valid testcase -- which it should be.
+-	     */
+-	    /* { &olddirfd, TEST_FIFO, &newdirfd, TEST_FILE1, 0,
+-	       TEST_DIR1"/"TEST_FIFO, TEST_DIR2"/"TEST_FILE1, 0 } */
++	{&olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 2. absolution path at source */
++	{&olddirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0},
++	/* 3. absolution path at destination */
++	{&olddirfd, TEST_FILE1, &newdirfd, dpathname, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 4. relative paths to cwd */
++	{&cwd_fd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 5. cwd to relative paths */
++	{&olddirfd, TEST_FILE1, &cwd_fd, TEST_DIR2 "/" TEST_FILE1, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 6. cwd to absolution paths */
++	{&cwd_fd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0},
++	/* 7. absolution paths to cwd */
++	{&olddirfd, TEST_FILE1, &cwd_fd, dpathname, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 8. invalid directory to absolution paths */
++	{&stdinfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0},
++	/* 9. absolution paths to invalid directory */
++	{&olddirfd, TEST_FILE1, &stdinfd, dpathname, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 10. bad fd to absolution paths */
++	{&badfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0},
++	/* 11. absolution paths to bad fd */
++	{&olddirfd, TEST_FILE1, &badfd, dpathname, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
++	/* 12. deleted to absolution paths */
++	{&deldirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0},
++	/* 13. absolution paths to deleted */
++	{&olddirfd, TEST_FILE1, &deldirfd, dpathname, 0,
++		TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1},
+ };
+ 
+-char *TCID = "linkat01";
+-int TST_TOTAL = sizeof(test_desc) / sizeof(*test_desc);
+-
+-static int mylinkat(int olddirfd, const char *oldfilename, int newdirfd,
+-		    const char *newfilename, int flags)
++static void setup(void)
+ {
+-	return tst_syscall(__NR_linkat, olddirfd, oldfilename, newdirfd,
+-		       newfilename, flags);
+-}
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	char *cwd;
++	int fd;
+ 
+-		tst_count = 0;
++	cwd = get_current_dir_name();
++	if (cwd == NULL) {
++		tst_brk(TFAIL | TERRNO,
++			"Failed to get current working directory.");
++	}
+ 
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			setup_every_copy();
+-			mylinkat_test(&test_desc[i]);
+-		}
++	SAFE_MKDIR(TEST_DIR1, 0700);
++	SAFE_MKDIR(TEST_DIR3, 0700);
++	olddirfd = SAFE_OPEN(TEST_DIR1, O_DIRECTORY);
++	deldirfd = SAFE_OPEN(TEST_DIR3, O_DIRECTORY);
++	fd = SAFE_OPEN(TEST_DIR1 "/" TEST_FILE1, O_CREAT | O_EXCL, 0600);
++	SAFE_CLOSE(fd);
+ 
+-	}
++	snprintf(dpathname, sizeof(dpathname), DPATHNAME_FMT, cwd);
++	snprintf(spathname, sizeof(spathname), SPATHNAME_FMT, cwd);
+ 
+-	cleanup();
+-	tst_exit();
++	free(cwd);
+ }
+ 
+-static void setup_every_copy(void)
++static void setup_every_case(void)
+ {
+ 	close(newdirfd);
+ 	unlink(dpathname);
+ 	rmdir(TEST_DIR2);
+ 
+-	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
+-	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
++	SAFE_MKDIR(TEST_DIR2, 0700);
++	newdirfd = SAFE_OPEN(TEST_DIR2, O_DIRECTORY);
+ }
+ 
+-static void mylinkat_test(struct test_struct *desc)
++static void verify_linkat(unsigned int i)
+ {
+-	int fd;
+-
+-	TEST(mylinkat
+-	     (*desc->oldfd, desc->oldfn, *desc->newfd, desc->newfn,
+-	      desc->flags));
+-
+-	if (TEST_ERRNO == desc->expected_errno) {
+-		if (TEST_RETURN == 0 && desc->referencefn1 != NULL) {
+-			int tnum = rand(), vnum = ~tnum;
+-			fd = SAFE_OPEN(cleanup, desc->referencefn1,
+-				       O_RDWR);
+-			SAFE_WRITE(cleanup, SAFE_WRITE_ALL, fd, &tnum,
+-				sizeof(tnum));
+-			SAFE_CLOSE(cleanup, fd);
++	struct tcase *tc = &tcases[i];
+ 
+-			fd = SAFE_OPEN(cleanup, desc->referencefn2,
+-				       O_RDONLY);
+-			SAFE_READ(cleanup, 1, fd, &vnum, sizeof(vnum));
+-			SAFE_CLOSE(cleanup, fd);
++	int fd;
+ 
+-			if (tnum == vnum)
+-				tst_resm(TPASS,
+-					 "linkat is functionality correct");
+-			else {
+-				tst_resm(TFAIL,
+-					 "The link file's content isn't "
+-					 "as same as the original file's "
+-					 "although linkat returned 0");
++	setup_every_case();
++
++	if (tc->referencefn1 != NULL) {
++		TST_EXP_PASS_SILENT(linkat(*tc->oldfd, tc->oldfn,
++			*tc->newfd, tc->newfn, tc->flags));
++		if (TST_PASS) {
++			int tnum = rand();
++			int vnum = ~tnum;
++
++			fd = SAFE_OPEN(tc->referencefn1, O_RDWR);
++			SAFE_WRITE(SAFE_WRITE_ALL, fd, &tnum, sizeof(tnum));
++			SAFE_CLOSE(fd);
++
++			fd = SAFE_OPEN(tc->referencefn2, O_RDONLY);
++			SAFE_READ(1, fd, &vnum, sizeof(vnum));
++			SAFE_CLOSE(fd);
++
++			if (tnum == vnum) {
++				tst_res(TPASS,
++					"linkat is functionality correct");
++			} else {
++				tst_res(TFAIL,
++					"The link file's content isn't "
++					"as same as the original file's "
++					"although linkat returned 0");
+ 			}
+ 		} else {
+-			if (TEST_RETURN == 0)
+-				tst_resm(TPASS,
+-					 "linkat succeeded as expected");
+-			else
+-				tst_resm(TPASS | TTERRNO,
+-					 "linkat failed as expected");
++			tst_res(TFAIL, "linkat failed");
+ 		}
+ 	} else {
+-		if (TEST_RETURN == 0)
+-			tst_resm(TFAIL, "linkat succeeded unexpectedly");
+-		else
+-			tst_resm(TFAIL | TTERRNO,
+-				 "linkat failed unexpectedly; expected %d - %s",
+-				 desc->expected_errno,
+-				 strerror(desc->expected_errno));
+-	}
+-}
+-
+-void setup(void)
+-{
+-	char *cwd;
+-	int fd;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+-	cwd = get_current_dir_name();
+-	if (cwd == NULL) {
+-		tst_brkm(TFAIL | TERRNO, cleanup,
+-			 "Failed to get current working directory");
++		TST_EXP_PASS(linkat(*tc->oldfd, tc->oldfn,
++			*tc->newfd, tc->newfn, tc->flags),
++			"linkat");
+ 	}
+-
+-	SAFE_MKDIR(cleanup, TEST_DIR1, 0700);
+-	SAFE_MKDIR(cleanup, TEST_DIR3, 0700);
+-	olddirfd = SAFE_OPEN(cleanup, TEST_DIR1, O_DIRECTORY);
+-	deldirfd = SAFE_OPEN(cleanup, TEST_DIR3, O_DIRECTORY);
+-	SAFE_RMDIR(cleanup, TEST_DIR3);
+-	fd = SAFE_OPEN(cleanup, TEST_DIR1 "/" TEST_FILE1, O_CREAT | O_EXCL, 0600);
+-	SAFE_CLOSE(cleanup, fd);
+-	SAFE_MKFIFO(cleanup, TEST_DIR1 "/" TEST_FIFO, 0600);
+-
+-	snprintf(dpathname, sizeof(dpathname), DPATHNAME_FMT, cwd);
+-	snprintf(spathname, sizeof(spathname), SPATHNAME_FMT, cwd);
+-
+-	free(cwd);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.test = verify_linkat,
++	.needs_tmpdir = 1,
++};
+diff --git a/testcases/kernel/syscalls/linkat/linkat03.c b/testcases/kernel/syscalls/linkat/linkat03.c
+new file mode 100644
+index 000000000..4ee25106e
+--- /dev/null
++++ b/testcases/kernel/syscalls/linkat/linkat03.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2006
++ * Copyright (c) Linux Test Project, 2006-2024
++ */
++
++/*\
++ * [Description]
++ *
++ * Check the basic function of linkat that returns error.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "lapi/syscalls.h"
++#include "lapi/fcntl.h"
++
++#define TEST_DIR1 "olddir"
++#define TEST_DIR2 "newdir"
++#define TEST_DIR3 "deldir"
++#define TEST_FILE1 "oldfile"
++
++static int olddirfd;
++static int newdirfd = -1;
++static int cwd_fd = AT_FDCWD;
++static int stdinfd;
++static int badfd = -1;
++static int deldirfd;
++
++static struct tcase {
++	int *oldfd;
++	const char *oldfn;
++	int *newfd;
++	const char *newfn;
++	int flags;
++	const char *referencefn1;
++	const char *referencefn2;
++	int expected_errno;
++} tcases[] = {
++	/* 1. invalid directory to relative paths */
++	{&stdinfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
++		0, 0, ENOTDIR},
++	/* 2. relative paths to invalid directory */
++	{&olddirfd, TEST_FILE1, &stdinfd, TEST_DIR2 "/" TEST_FILE1, 0,
++		0, 0, ENOTDIR},
++	/* 3. bad fd to relative paths */
++	{&badfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
++		0, 0, EBADF},
++	/* 4. relative paths to bad fd */
++	{&olddirfd, TEST_FILE1, &badfd, TEST_DIR2 "/" TEST_FILE1, 0,
++		0, 0, EBADF},
++	/* 5. deleted to relative paths */
++	{&deldirfd, TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1, 0,
++		0, 0, ENOENT},
++	/* 6. relative paths to deleted */
++	{&olddirfd, TEST_FILE1, &deldirfd, TEST_DIR2 "/" TEST_FILE1, 0,
++		0, 0, ENOENT},
++	/* 7. x-device link */
++	{&cwd_fd, "/proc/cpuinfo", &newdirfd, TEST_FILE1, 0, 0, 0, EXDEV},
++	/* 8. directory link */
++	{&olddirfd, ".", &newdirfd, TEST_FILE1, 0, 0, 0, EPERM},
++	/* 9. invalid flag */
++	{&olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 1, 0, 0, EINVAL},
++};
++
++static void setup(void)
++{
++	char *cwd;
++	int fd;
++
++	cwd = get_current_dir_name();
++	if (cwd == NULL) {
++		tst_brk(TFAIL | TERRNO,
++			"Failed to get current working directory.");
++	}
++
++	SAFE_MKDIR(TEST_DIR1, 0700);
++	SAFE_MKDIR(TEST_DIR3, 0700);
++	olddirfd = SAFE_OPEN(TEST_DIR1, O_DIRECTORY);
++	deldirfd = SAFE_OPEN(TEST_DIR3, O_DIRECTORY);
++	SAFE_RMDIR(TEST_DIR3);
++	fd = SAFE_OPEN(TEST_DIR1 "/" TEST_FILE1, O_CREAT | O_EXCL, 0600);
++	SAFE_CLOSE(fd);
++
++	free(cwd);
++}
++
++static void setup_every_case(void)
++{
++	close(newdirfd);
++	rmdir(TEST_DIR2);
++
++	SAFE_MKDIR(TEST_DIR2, 0700);
++	newdirfd = SAFE_OPEN(TEST_DIR2, O_DIRECTORY);
++}
++
++static void verify_linkat(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	setup_every_case();
++
++	TST_EXP_FAIL(linkat(*tc->oldfd, tc->oldfn, *tc->newfd,
++		tc->newfn, tc->flags),
++		tc->expected_errno,
++		"linkat failed as expected");
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.test = verify_linkat,
++	.needs_tmpdir = 1,
++};
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
 
 
 -- 
