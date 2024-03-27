@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3B6AC54E67
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 10:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CECDC47DD9
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 13:32:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C1733C039E
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 11:05:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id EA4AC3C05D8
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 14:32:22 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D6A53C0189
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 11:04:45 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id F0D123C031D
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 14:32:05 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
  helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
  receiver=lists.linux.it)
@@ -24,75 +23,74 @@ Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E143614052E0
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 11:04:41 +0100 (CET)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4526461336A
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 14:32:03 +0100 (CET)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42R9M1WT005521; Wed, 27 Mar 2024 10:04:39 GMT
+ 42RD8KH4029448; Wed, 27 Mar 2024 13:32:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=content-type :
- message-id : date : subject : to : cc : references : from : in-reply-to :
- mime-version; s=pp1; bh=Y2TfBd7NYu1XN2Zu5zCJxH/hCBMsDJg2QHN6eRrW1mo=;
- b=pvhugaTaDrXRk7n7BMoSAKGqf/VWX9sxqGO1umkxbNJfjlxMzfs4Lgfn6EVF3y3u3h6S
- jriKFokVhLryxMgkMj2t+k0vSEze3UwIhNLnCsUYGzx6m4n8Idfi07AbZOqoNIAHkqoY
- bT6fhNuQ6u/I5UezRYNvtqh+ldbeeghXqmbb/0W3C0Kw8t8cHOCAcBOu9FOIWO0BQZDT
- 24rIrUqW1NY3agIAJJKdlWb1bPM0m2nm8Qa/yv2Fug87fgsaofv5VB2KZJWtbW9fcZtK
- 5ygQSRLc5dqZbI3qcWOmhWTcIC3kIIhvAX5vP8ZScaaJxty6I4gs2wTMByT/mNLh2z61 lg== 
+ message-id : date : mime-version : subject : to : cc : references : from :
+ in-reply-to; s=pp1; bh=bXiVAA11NQM07wcl1R7OyQs+jztXhztq91gQsEZFjKc=;
+ b=Y9bY2g9F1+OCt+XP0ityGZBZWtp78qEm/IK0dvPdHcM95KoDW0CfP74DUh7UnH18QuUp
+ R/OK3PialJA8j6NzDbuC9hlhZeXyy4UKfGrWHowXXY1MmIaSD3vkM9aveNzEx89VvQz+
+ 4WzPEdNPWVP65tliDdGHmKQPyHOJu16B4ubTHi/Day0YfpPugHebwrrVti8PM0c7H5v7
+ U2HOWozm/S3s6nLf9982fXmNTBBy54AsIZrp57y/ZnZxMMia3LuKj6cAWTRyYiAalOGv
+ HX3Pjrnu6y8Su5XGBbvLUe1I41yKCTkI/AX3IhMt4Y8lVAbb8i3OPeC6KLap96teudfN dA== 
 Received: from ppma11.dal12v.mail.ibm.com
  (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4grug2xe-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4m2d029h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 10:04:39 +0000
+ Wed, 27 Mar 2024 13:32:00 +0000
 Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
  by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42R9Ch64003744; Wed, 27 Mar 2024 10:04:38 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42wbww-1
+ 42RCJRvX003767; Wed, 27 Mar 2024 13:31:41 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42xas3-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 10:04:38 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 42RA4YOt26870122
+ Wed, 27 Mar 2024 13:31:41 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
+ [10.20.54.102])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 42RDVbqi51118422
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 27 Mar 2024 10:04:36 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 79F7D201F9;
- Wed, 27 Mar 2024 10:04:34 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D65F1201FF;
- Wed, 27 Mar 2024 10:04:33 +0000 (GMT)
-Received: from [9.43.51.185] (unknown [9.43.51.185])
- by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 27 Mar 2024 10:04:33 +0000 (GMT)
-Message-ID: <8cdc9eba-d567-4f57-8731-bcf1497c3d1a@linux.ibm.com>
-Date: Wed, 27 Mar 2024 15:34:32 +0530
+ Wed, 27 Mar 2024 13:31:39 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5FD312004B;
+ Wed, 27 Mar 2024 13:31:37 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B982320040;
+ Wed, 27 Mar 2024 13:31:36 +0000 (GMT)
+Received: from [9.43.116.220] (unknown [9.43.116.220])
+ by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 27 Mar 2024 13:31:36 +0000 (GMT)
+Message-ID: <7c9bf212-bbd8-4889-ade9-9798cce3a29c@linux.ibm.com>
+Date: Wed, 27 Mar 2024 19:01:35 +0530
+MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>
-References: <20231003133703.98552-1-geetika@linux.ibm.com>
- <20231128115041.GB369141@pevik>
+To: rpalethorpe@suse.de
+References: <20230929083916.72813-1-geetika@linux.ibm.com>
+ <87leaf7euv.fsf@suse.de>
 Content-Language: en-US
 From: Geetika M <geetika@linux.ibm.com>
-In-Reply-To: <20231128115041.GB369141@pevik>
+In-Reply-To: <87leaf7euv.fsf@suse.de>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dw2PT63URG6bE_9Cn_SJ0MECXH_m9GFX
-X-Proofpoint-ORIG-GUID: dw2PT63URG6bE_9Cn_SJ0MECXH_m9GFX
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: ih3BLmu0vYPlK0DAbVxt6QVkfNxTqf1f
+X-Proofpoint-GUID: ih3BLmu0vYPlK0DAbVxt6QVkfNxTqf1f
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_05,2024-03-21_02,2023-05-22_02
+ definitions=2024-03-27_08,2024-03-27_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0
- mlxlogscore=947 mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403270068
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ suspectscore=0 clxscore=1011 spamscore=0 priorityscore=1501 bulkscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403270092
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] [PATCH] Migrating the
- libhugetlbfs/testcases/straddle_4GB.c
+Subject: Re: [LTP] [PATCH v2] Migrating the
+ libhugetlbfs/testcases/truncate_above_4GB.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,114 +103,72 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-
-On 28/11/23 5:20 pm, Petr Vorel wrote:
-> Hi Geetika,
->
-> Please have look at my comments at your previous patch [1] [2], these changes
-> apply a lot for your patches as well.
->
-> [1]https://lore.kernel.org/ltp/20231128111024.GA364870@pevik/
-> [2]https://lore.kernel.org/ltp/20231128112254.GA367506@pevik/
->
-Noted.
-I will apply whatever changes are applicable to this testcase in the 
-next version.
-
-...
->> +
->> +/*\
->> + * [Description]
->> + * This test tries to allocate hugepages to cover a memory range
->> + * that straddles the 4GB boundary.
->> + * Scenario 1 : mmap without MAP_FIXED
->> + * Scenario 2 : mmap with MAP_FIXED
-> This will be badly formatted (it will not be list, but inline).
->
-> How about:
->
-> /*\
->   * [Description]
->   *
->   * Test tries to allocate hugepages to cover a memory range that straddles the
->   * 4GB boundary, using mmap(2) with and without MAP_FIXED.
->   */
->> + */
->> +
->> +#define MAPS_BUF_SZ 4096
->> +#define FOURGB (1UL << 32)
->> +#define MNTPOINT "hugetlbfs/"
->> +#define HUGETLBFS_MAGIC	0x958458f6
-> Could you please add this magic definition to include/tst_fs.h
-> (as a separate patch), we store all magic there.
->
->> +#define _LARGEFILE64_SOURCE /* Need this for statfs64 */
-> We would probably define it in Makefile
->
-> hugemmap40: CFLAGS += -D_LARGEFILE64_SOURCE
-Noted.
-I will apply above changes with the next version.
-
-...
-
-> +
-> +static void run_test(void)
-> +{
-> +	void *p;
-> +
-> +	/* We first try to get the mapping without MAP_FIXED */
-> +	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
-> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-> +			MAP_SHARED, fd, 0);
-> +	if (p == (void *)straddle_addr) {
-> +		/* These tests irrelevant if we didn't get the straddle address*/
-> +		if (test_addr_huge(p) != 1) {
-> +			tst_brk(TFAIL, "1st Mapped address is not hugepage");
-> +			goto windup;
-> +		}
-> +		if (test_addr_huge(p + hpage_size) != 1) {
-> +			tst_brk(TFAIL, "2nd Mapped address is not hugepage");
-> +			goto windup;
-> +		}
-> +		memset(p, 0, hpage_size);
-> +		memset(p + hpage_size, 0, hpage_size);
-> +		tst_res(TPASS, "Mapping without MAP_FIXED at %lx... completed", straddle_addr);
-> +	} else {
-> +		tst_res(TINFO, "Got %p instead, never mind, let's move to mapping with MAP_FIXED\n", p);
-> +		munmap(p, 2*hpage_size);
-> +	}
-> +	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
-> Maybe use .tcnt = 2, in struct tst_test and separate these 2 cases into it's
-> wonf functions?
->
-> You would either use:
-> static void run_test(unsigned int n)
->
-> With that you would reduce code duplicity and make test function smaller.
->
-> Also, sometimes we use test struct (pointer to the function and description, see
-> e.g. testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c).
->
-> ...
-
-Can you suggest how we can handle the test exit upon failure inside one 
-of test cases then?
-
-Currently I am handling it by using label windup placed at the end of 
-function.
-In one of the other tests there was feedback to not use exit(0); then 
-how can we exit
-easily upon failure from one of the testcase?
-
-
-Thanks & Regards,
-Geetika
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGVsbG8gUmljaGFyZCwKCk9uIDMwLzExLzIzIDI6MzMgcG0sIFJpY2hhcmQgUGFsZXRob3JwZSB3
+cm90ZToKPiBIZWxsbywKPgo+IEdlZXRpa2E8Z2VldGlrYUBsaW51eC5pYm0uY29tPiAgd3JpdGVz
+Ogo+Ci4uLi4KPj4gKy8qXAo+PiArICpbRGVzY3JpcGl0b25dCj4+ICsgKgo+PiArICogQXQgb25l
+IHN0YWdlLCBhIG1pc2NvbnZlcnNpb24gb2YgaHVnZXRsYl92bXRydW5jYXRlX2xpc3QgdG8gYQo+
+PiArICogcHJpb190cmVlIG1lYW50IHRoYXQgb24gMzItYml0IG1hY2hpbmVzLCB0cnVuY2F0ZXMg
+YXQgb3IgYWJvdmUgNEdCCj4+ICsgKiBjb3VsZCB0cnVuY2F0ZSBsb3dlciBwYWdlcywgcmVzdWx0
+aW5nIGluIEJVR19PTigpcy4KPj4gKyAqCj4+ICsgKiBXQVJOSU5HOiBUaGUgb2Zmc2V0cyBhbmQg
+YWRkcmVzc2VzIHVzZWQgd2l0aGluIGFyZSBzcGVjaWZpY2FsbHkKPj4gKyAqIGNhbGN1bGF0ZWQg
+dG8gdHJpZ2dlciB0aGUgYnVnIGFzIGl0IGV4aXN0ZWQuICBEb24ndCBtZXNzIHdpdGggdGhlbQo+
+PiArICogdW5sZXNzIHlvdSAqcmVhbGx5KiBrbm93IHdoYXQgeW91J3JlIGRvaW5nLgo+PiArICoK
+Pj4gKyAqLwo+PiArCj4+ICsjZGVmaW5lIF9HTlVfU09VUkNFCj4+ICsjZGVmaW5lIF9MQVJHRUZJ
+TEU2NF9TT1VSQ0UKPj4gKyNkZWZpbmUgRk9VUkdJRyAoKG9mZjY0X3QpMHgxMDAwMDAwMDBVTEwp
+Cj4+ICsjZGVmaW5lIE1OVFBPSU5UICJodWdldGxiZnMvIgo+PiArCj4+ICsjaW5jbHVkZSA8c2ln
+bmFsLmg+Cj4+ICsjaW5jbHVkZSA8c2V0am1wLmg+Cj4+ICsjaW5jbHVkZSAiaHVnZXRsYi5oIgo+
+PiArCj4+ICtzdGF0aWMgaW50IHBhZ2Vfc2l6ZTsKPj4gK3N0YXRpYyBsb25nIGhwYWdlX3NpemU7
+Cj4+ICtzdGF0aWMgaW50IGZkID0gLTE7Cj4+ICtzdGF0aWMgdm9sYXRpbGUgaW50IHRlc3RfcGFz
+czsKPj4gK3N0YXRpYyBpbnQgZXJyOwo+PiArc3RhdGljIGludCBzaWdidXNfY291bnQ7Cj4+ICtz
+dGF0aWMgc2lnam1wX2J1ZiBzaWdfZXNjYXBlOwo+PiArCj4+ICtzdGF0aWMgdm9pZCBzaWdidXNf
+aGFuZGxlcl9mYWlsKGludCBzaWdudW0sIHNpZ2luZm9fdCAqc2ksIHZvaWQgKnVjKQo+PiArewo+
+PiArCXNpZ2xvbmdqbXAoc2lnX2VzY2FwZSwgMTcpOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9p
+ZCBzaWdidXNfaGFuZGxlcl9wYXNzKGludCBzaWdudW0sIHNpZ2luZm9fdCAqc2ksIHZvaWQgKnVj
+KQo+PiArewo+PiArCXRlc3RfcGFzcyA9IDE7Cj4+ICsJc2lnbG9uZ2ptcChzaWdfZXNjYXBlLCAx
+Nyk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIHJ1bl90ZXN0KHZvaWQpCj4+ICt7Cj4+ICsJ
+bG9uZyBsb25nIGJ1Z2d5X29mZnNldCwgdHJ1bmNhdGVfcG9pbnQ7Cj4+ICsJdm9pZCAqcCwgKnE7
+Cj4+ICsJdm9sYXRpbGUgdW5zaWduZWQgaW50ICpwaSwgKnFpOwo+PiArCj4+ICsJc3RydWN0IHNp
+Z2FjdGlvbiBzYV9wYXNzID0gewo+PiArCQkuc2Ffc2lnYWN0aW9uID0gc2lnYnVzX2hhbmRsZXJf
+cGFzcywKPj4gKwkJLnNhX2ZsYWdzID0gU0FfU0lHSU5GTywKPj4gKwl9Owo+PiArCj4+ICsJc3Ry
+dWN0IHNpZ2FjdGlvbiBzYV9mYWlsID0gewo+PiArCQkuc2Ffc2lnYWN0aW9uID0gc2lnYnVzX2hh
+bmRsZXJfcGFzcywKPj4gKwkJLnNhX2ZsYWdzID0gU0FfU0lHSU5GTywKPj4gKwl9Owo+PiArCj4+
+ICsJc2lnYnVzX2NvdW50ID0gMDsKPj4gKwl0ZXN0X3Bhc3MgPSAwOwo+PiArCj4+ICsJYnVnZ3lf
+b2Zmc2V0ID0gdHJ1bmNhdGVfcG9pbnQgLyAoaHBhZ2Vfc2l6ZSAvIHBhZ2Vfc2l6ZSk7Cj4+ICsJ
+YnVnZ3lfb2Zmc2V0ID0gUEFMSUdOKGJ1Z2d5X29mZnNldCwgaHBhZ2Vfc2l6ZSk7Cj4+ICsKPj4g
+KwkvKiBGaXJzdCBnZXQgYXJlbmEgb2YgdGhyZWUgaHBhZ2VzIHNpemUsIGF0IGZpbGUgb2Zmc2V0
+IDRHQiAqLwo+PiArCXEgPSBtbWFwNjQoTlVMTCwgMypocGFnZV9zaXplLCBQUk9UX1JFQUR8UFJP
+VF9XUklURSwKPj4gKwkJIE1BUF9QUklWQVRFLCBmZCwgdHJ1bmNhdGVfcG9pbnQpOwo+PiArCWlm
+IChxID09IE1BUF9GQUlMRUQpCj4+ICsJCXRzdF9icmsoVEJST0ssICJtbWFwKCkgb2Zmc2V0IDRH
+QjogJXMiLCBzdHJlcnJvcihlcnJubykpOwo+IEluIG11c2wgbW1hcDY0IGlzIGp1c3QgZGVmaW5l
+ZCBhcyBtbWFwIG9yIG5vdCBhdCBhbGwgaWYgX0dOVV9TT1VSQ0UgaXMKPiBhYnNlbnQuIFNvIGRv
+IHdlIHJlYWxseSBuZWVkIGl0PyBJdCBzZWVtcyBsaWtlbHkgdG8gY2F1c2UgY29tcGlsYXRpb24K
+PiBmYWlsdXJlcy4KPgo+IEluc3RlYWQgd2UgY291bGQganVzdCB1c2UgU0FGRV9NTUFQLgo+Cj4g
+U2FtZSBnb2VzIGZvciB0cnVuY2F0ZTY0IGV0Yy4KPgo+IFRoZXJlIGFyZSBhIGxvdCBvZiB3YXJu
+aW5ncyB3aGVuIGNvbXBpbGluZyB0aGlzLCB3ZSBkb24ndCB3YW50IHRvCj4gaW50cm9kdWNlIG1v
+cmUgd2FybmluZ3MuCj4KVGhlICJtbWFwNjQiIGZ1bmN0aW9uIGlzIHVzZWQgaW5zdGVhZCBvZiAi
+bW1hcCIgaW4gdGhpcyB0ZXN0IGJlY2F1c2UgaXQgCmFsbG93cyBmb3IgbWFwcGluZyBtZW1vcnkg
+ZnJvbSBmaWxlcyB0aGF0IGFyZSBsYXJnZXIgdGhhbiAyIGdpZ2FieXRlcyAKaW50byB0aGUgcHJv
+Y2VzcyBtZW1vcnkuCgpJbiBhIDY0LWJpdCBzeXN0ZW0sICJtbWFwIiBhbmQgIm1tYXA2NCIgbWln
+aHQgYmVoYXZlIHRoZSBzYW1lIHdheS4gCkhvd2V2ZXIsIHRoZSBrZXkgZGlmZmVyZW5jZSBsaWVz
+IGluIHRoZSBvZmZzZXQgcGFyYW1ldGVyLiBUaGUgIm1tYXAiIApmdW5jdGlvbiB1c2VzICJvZmZf
+dCIgdHlwZSBmb3IgdGhlIG9mZnNldCBwYXJhbWV0ZXIsIHdoaWNoIGlzIGEgMzItYml0IAp0eXBl
+IG9uIHNvbWUgc3lzdGVtcywgbGltaXRpbmcgdGhlIGZpbGUgc2l6ZSB0byAyR0IuIE9uIHRoZSBv
+dGhlciBoYW5kLCAKIm1tYXA2NCIgdXNlcyAib2ZmNjRfdCIgZm9yIHRoZSBvZmZzZXQgcGFyYW1l
+dGVyLCB3aGljaCBpcyBhIDY0LWJpdCAKdHlwZSwgYWxsb3dpbmcgZm9yIGxhcmdlciBmaWxlIHNp
+emVzLgoKVGhpcyB0ZXN0IGNhc2UgaXMgZm9yIDMyYml0IHN5c3RlbXMuIE9uIGEgMzItYml0IHN5
+c3RlbSwgbW1hcCBhbmQgbW1hcDY0IApzZXJ2ZSBzaW1pbGFyIHB1cnBvc2VzLCBidXQgbW1hcDY0
+IGlzIHNwZWNpZmljYWxseSBkZXNpZ25lZCB0byBoYW5kbGUgCmZpbGVzIGxhcmdlciB0aGFuIDJH
+Qi7CoCBJbiB0ZXN0IHByb2dyYW0gd2UgYXJlIG1hcHBpbmcgYXQgZmlsZSBvZmZzZXQgCjRHQsKg
+IHNvIHdlIHNob3VsZCB1c2UgbW1hcDY0IHdpdGggX0xBUkdFRklMRTY0X1NPVVJDRSBtYWNyby4g
+Cl9MQVJHRUZJTEU2NF9TT1VSQ0UgaXMgYWxyZWFkeSBkZWZpbmVkIGluIHRoZSB0ZXN0IHByb2dy
+YW0gc28gb24gMzJiaXQgCnN5c3RlbXMgaXQgd2lsbCB0YWtlIG1tYXA2NCBwYXRoIG5vdCBtbWFw
+IHBhdGguCgpIZW5jZSB3ZSBjYW5ub3QgdXNlIFNBRkVfTU1BUCBoZXJlLgoKSSBjYW4gd29yayBv
+biBmaXhpbmcgd2FybmluZ3MgcmVsYXRlZCB0byB1bnVzZWQgcGFyYW1ldGVycy4KCkFyZSB0aGVy
+ZSBhbnkgb3RoZXIgd2FybmluZ3MgdGhhdCB5b3Ugc2VlIHdpdGggdGhpcyBjb2RlPwoKVGhhbmtz
+ICYgUmVnYXJkcywKR2VldGlrYQoKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
