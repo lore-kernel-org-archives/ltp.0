@@ -4,18 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CECDC47DD9
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 13:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8845DC47DD9
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 15:02:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA4AC3C05D8
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 14:32:22 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id BCD6C3C05D8
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 16:02:33 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F0D123C031D
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 14:32:05 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id 75E4C3C0294
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 16:02:17 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
  helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
  receiver=lists.linux.it)
@@ -23,74 +24,69 @@ Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4526461336A
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 14:32:03 +0100 (CET)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8B29B602ACD
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 16:02:15 +0100 (CET)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42RD8KH4029448; Wed, 27 Mar 2024 13:32:01 GMT
+ 42RE2LoD018185; Wed, 27 Mar 2024 15:02:12 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=content-type :
- message-id : date : mime-version : subject : to : cc : references : from :
- in-reply-to; s=pp1; bh=bXiVAA11NQM07wcl1R7OyQs+jztXhztq91gQsEZFjKc=;
- b=Y9bY2g9F1+OCt+XP0ityGZBZWtp78qEm/IK0dvPdHcM95KoDW0CfP74DUh7UnH18QuUp
- R/OK3PialJA8j6NzDbuC9hlhZeXyy4UKfGrWHowXXY1MmIaSD3vkM9aveNzEx89VvQz+
- 4WzPEdNPWVP65tliDdGHmKQPyHOJu16B4ubTHi/Day0YfpPugHebwrrVti8PM0c7H5v7
- U2HOWozm/S3s6nLf9982fXmNTBBy54AsIZrp57y/ZnZxMMia3LuKj6cAWTRyYiAalOGv
- HX3Pjrnu6y8Su5XGBbvLUe1I41yKCTkI/AX3IhMt4Y8lVAbb8i3OPeC6KLap96teudfN dA== 
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4m2d029h-1
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=1A0sYIp/y7D/wxK+tEyXX+CQFuAdbZtdz/STaKr9OIA=;
+ b=fkGU/eHXFeOcngPAnvCVOoXAld1rvP/oWfkihZY1laKFjlPwHST78sFspEU9EtW5TZKX
+ shAwOJ6WrhK8focyClDOdyDupto5l5dn7bibbUkPGvIEeXuLxRDBledgnz95+Kf6hPmW
+ 1GcZeK9csROrTCc0d0oNkn3wK7ebzEk1mmCgPikR9b4JjT97dUCbZBMoZl0dPIYW8WKn
+ imYLdEeDdqovh1Mq7JwVZZXmQdkUCdHnF9EyZN0k0/qHhpZSpIQ1RHmt7TTiGTzgHkgJ
+ RPfSkFmXf1/Ky4bl+SlI+//LrKayqDBmmcUdH/uebuoBg3Utbz/THrjDVJK07m8a8W2X 1Q== 
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4mv4g507-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 13:32:00 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42RCJRvX003767; Wed, 27 Mar 2024 13:31:41 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42xas3-1
+ Wed, 27 Mar 2024 15:02:12 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 42RC33G5016572; Wed, 27 Mar 2024 15:02:11 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29du7kv3-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 13:31:41 +0000
+ Wed, 27 Mar 2024 15:02:11 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 42RDVbqi51118422
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 42RExbtb41615652
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 27 Mar 2024 13:31:39 GMT
+ Wed, 27 Mar 2024 14:59:40 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5FD312004B;
- Wed, 27 Mar 2024 13:31:37 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id C9B6620040;
+ Wed, 27 Mar 2024 14:59:37 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B982320040;
- Wed, 27 Mar 2024 13:31:36 +0000 (GMT)
-Received: from [9.43.116.220] (unknown [9.43.116.220])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 27 Mar 2024 13:31:36 +0000 (GMT)
-Message-ID: <7c9bf212-bbd8-4889-ade9-9798cce3a29c@linux.ibm.com>
-Date: Wed, 27 Mar 2024 19:01:35 +0530
+ by IMSVA (Postfix) with ESMTP id 4D1E02004D;
+ Wed, 27 Mar 2024 14:59:36 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.116.220])
+ by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Wed, 27 Mar 2024 14:59:36 +0000 (GMT)
+From: Geetika <geetika@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Wed, 27 Mar 2024 20:29:25 +0530
+Message-Id: <20240327145925.18922-1-geetika@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: rpalethorpe@suse.de
-References: <20230929083916.72813-1-geetika@linux.ibm.com>
- <87leaf7euv.fsf@suse.de>
-Content-Language: en-US
-From: Geetika M <geetika@linux.ibm.com>
-In-Reply-To: <87leaf7euv.fsf@suse.de>
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ih3BLmu0vYPlK0DAbVxt6QVkfNxTqf1f
-X-Proofpoint-GUID: ih3BLmu0vYPlK0DAbVxt6QVkfNxTqf1f
+X-Proofpoint-GUID: SSEP5x8RR7gXnrBQ5BzR5rFjBMUFDW5s
+X-Proofpoint-ORIG-GUID: SSEP5x8RR7gXnrBQ5BzR5rFjBMUFDW5s
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_08,2024-03-27_01,2023-05-22_02
+ definitions=2024-03-27_12,2024-03-27_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
- suspectscore=0 clxscore=1011 spamscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403270092
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ spamscore=0 suspectscore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=693 bulkscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403270103
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] Migrating the
- libhugetlbfs/testcases/truncate_above_4GB.c test
+Subject: [LTP] [PATCH v2] Migrating the
+ libhugetlbfs/testcases/fallocate_stress.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,73 +98,280 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: rpalethorpe@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8gUmljaGFyZCwKCk9uIDMwLzExLzIzIDI6MzMgcG0sIFJpY2hhcmQgUGFsZXRob3JwZSB3
-cm90ZToKPiBIZWxsbywKPgo+IEdlZXRpa2E8Z2VldGlrYUBsaW51eC5pYm0uY29tPiAgd3JpdGVz
-Ogo+Ci4uLi4KPj4gKy8qXAo+PiArICpbRGVzY3JpcGl0b25dCj4+ICsgKgo+PiArICogQXQgb25l
-IHN0YWdlLCBhIG1pc2NvbnZlcnNpb24gb2YgaHVnZXRsYl92bXRydW5jYXRlX2xpc3QgdG8gYQo+
-PiArICogcHJpb190cmVlIG1lYW50IHRoYXQgb24gMzItYml0IG1hY2hpbmVzLCB0cnVuY2F0ZXMg
-YXQgb3IgYWJvdmUgNEdCCj4+ICsgKiBjb3VsZCB0cnVuY2F0ZSBsb3dlciBwYWdlcywgcmVzdWx0
-aW5nIGluIEJVR19PTigpcy4KPj4gKyAqCj4+ICsgKiBXQVJOSU5HOiBUaGUgb2Zmc2V0cyBhbmQg
-YWRkcmVzc2VzIHVzZWQgd2l0aGluIGFyZSBzcGVjaWZpY2FsbHkKPj4gKyAqIGNhbGN1bGF0ZWQg
-dG8gdHJpZ2dlciB0aGUgYnVnIGFzIGl0IGV4aXN0ZWQuICBEb24ndCBtZXNzIHdpdGggdGhlbQo+
-PiArICogdW5sZXNzIHlvdSAqcmVhbGx5KiBrbm93IHdoYXQgeW91J3JlIGRvaW5nLgo+PiArICoK
-Pj4gKyAqLwo+PiArCj4+ICsjZGVmaW5lIF9HTlVfU09VUkNFCj4+ICsjZGVmaW5lIF9MQVJHRUZJ
-TEU2NF9TT1VSQ0UKPj4gKyNkZWZpbmUgRk9VUkdJRyAoKG9mZjY0X3QpMHgxMDAwMDAwMDBVTEwp
-Cj4+ICsjZGVmaW5lIE1OVFBPSU5UICJodWdldGxiZnMvIgo+PiArCj4+ICsjaW5jbHVkZSA8c2ln
-bmFsLmg+Cj4+ICsjaW5jbHVkZSA8c2V0am1wLmg+Cj4+ICsjaW5jbHVkZSAiaHVnZXRsYi5oIgo+
-PiArCj4+ICtzdGF0aWMgaW50IHBhZ2Vfc2l6ZTsKPj4gK3N0YXRpYyBsb25nIGhwYWdlX3NpemU7
-Cj4+ICtzdGF0aWMgaW50IGZkID0gLTE7Cj4+ICtzdGF0aWMgdm9sYXRpbGUgaW50IHRlc3RfcGFz
-czsKPj4gK3N0YXRpYyBpbnQgZXJyOwo+PiArc3RhdGljIGludCBzaWdidXNfY291bnQ7Cj4+ICtz
-dGF0aWMgc2lnam1wX2J1ZiBzaWdfZXNjYXBlOwo+PiArCj4+ICtzdGF0aWMgdm9pZCBzaWdidXNf
-aGFuZGxlcl9mYWlsKGludCBzaWdudW0sIHNpZ2luZm9fdCAqc2ksIHZvaWQgKnVjKQo+PiArewo+
-PiArCXNpZ2xvbmdqbXAoc2lnX2VzY2FwZSwgMTcpOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9p
-ZCBzaWdidXNfaGFuZGxlcl9wYXNzKGludCBzaWdudW0sIHNpZ2luZm9fdCAqc2ksIHZvaWQgKnVj
-KQo+PiArewo+PiArCXRlc3RfcGFzcyA9IDE7Cj4+ICsJc2lnbG9uZ2ptcChzaWdfZXNjYXBlLCAx
-Nyk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIHJ1bl90ZXN0KHZvaWQpCj4+ICt7Cj4+ICsJ
-bG9uZyBsb25nIGJ1Z2d5X29mZnNldCwgdHJ1bmNhdGVfcG9pbnQ7Cj4+ICsJdm9pZCAqcCwgKnE7
-Cj4+ICsJdm9sYXRpbGUgdW5zaWduZWQgaW50ICpwaSwgKnFpOwo+PiArCj4+ICsJc3RydWN0IHNp
-Z2FjdGlvbiBzYV9wYXNzID0gewo+PiArCQkuc2Ffc2lnYWN0aW9uID0gc2lnYnVzX2hhbmRsZXJf
-cGFzcywKPj4gKwkJLnNhX2ZsYWdzID0gU0FfU0lHSU5GTywKPj4gKwl9Owo+PiArCj4+ICsJc3Ry
-dWN0IHNpZ2FjdGlvbiBzYV9mYWlsID0gewo+PiArCQkuc2Ffc2lnYWN0aW9uID0gc2lnYnVzX2hh
-bmRsZXJfcGFzcywKPj4gKwkJLnNhX2ZsYWdzID0gU0FfU0lHSU5GTywKPj4gKwl9Owo+PiArCj4+
-ICsJc2lnYnVzX2NvdW50ID0gMDsKPj4gKwl0ZXN0X3Bhc3MgPSAwOwo+PiArCj4+ICsJYnVnZ3lf
-b2Zmc2V0ID0gdHJ1bmNhdGVfcG9pbnQgLyAoaHBhZ2Vfc2l6ZSAvIHBhZ2Vfc2l6ZSk7Cj4+ICsJ
-YnVnZ3lfb2Zmc2V0ID0gUEFMSUdOKGJ1Z2d5X29mZnNldCwgaHBhZ2Vfc2l6ZSk7Cj4+ICsKPj4g
-KwkvKiBGaXJzdCBnZXQgYXJlbmEgb2YgdGhyZWUgaHBhZ2VzIHNpemUsIGF0IGZpbGUgb2Zmc2V0
-IDRHQiAqLwo+PiArCXEgPSBtbWFwNjQoTlVMTCwgMypocGFnZV9zaXplLCBQUk9UX1JFQUR8UFJP
-VF9XUklURSwKPj4gKwkJIE1BUF9QUklWQVRFLCBmZCwgdHJ1bmNhdGVfcG9pbnQpOwo+PiArCWlm
-IChxID09IE1BUF9GQUlMRUQpCj4+ICsJCXRzdF9icmsoVEJST0ssICJtbWFwKCkgb2Zmc2V0IDRH
-QjogJXMiLCBzdHJlcnJvcihlcnJubykpOwo+IEluIG11c2wgbW1hcDY0IGlzIGp1c3QgZGVmaW5l
-ZCBhcyBtbWFwIG9yIG5vdCBhdCBhbGwgaWYgX0dOVV9TT1VSQ0UgaXMKPiBhYnNlbnQuIFNvIGRv
-IHdlIHJlYWxseSBuZWVkIGl0PyBJdCBzZWVtcyBsaWtlbHkgdG8gY2F1c2UgY29tcGlsYXRpb24K
-PiBmYWlsdXJlcy4KPgo+IEluc3RlYWQgd2UgY291bGQganVzdCB1c2UgU0FGRV9NTUFQLgo+Cj4g
-U2FtZSBnb2VzIGZvciB0cnVuY2F0ZTY0IGV0Yy4KPgo+IFRoZXJlIGFyZSBhIGxvdCBvZiB3YXJu
-aW5ncyB3aGVuIGNvbXBpbGluZyB0aGlzLCB3ZSBkb24ndCB3YW50IHRvCj4gaW50cm9kdWNlIG1v
-cmUgd2FybmluZ3MuCj4KVGhlICJtbWFwNjQiIGZ1bmN0aW9uIGlzIHVzZWQgaW5zdGVhZCBvZiAi
-bW1hcCIgaW4gdGhpcyB0ZXN0IGJlY2F1c2UgaXQgCmFsbG93cyBmb3IgbWFwcGluZyBtZW1vcnkg
-ZnJvbSBmaWxlcyB0aGF0IGFyZSBsYXJnZXIgdGhhbiAyIGdpZ2FieXRlcyAKaW50byB0aGUgcHJv
-Y2VzcyBtZW1vcnkuCgpJbiBhIDY0LWJpdCBzeXN0ZW0sICJtbWFwIiBhbmQgIm1tYXA2NCIgbWln
-aHQgYmVoYXZlIHRoZSBzYW1lIHdheS4gCkhvd2V2ZXIsIHRoZSBrZXkgZGlmZmVyZW5jZSBsaWVz
-IGluIHRoZSBvZmZzZXQgcGFyYW1ldGVyLiBUaGUgIm1tYXAiIApmdW5jdGlvbiB1c2VzICJvZmZf
-dCIgdHlwZSBmb3IgdGhlIG9mZnNldCBwYXJhbWV0ZXIsIHdoaWNoIGlzIGEgMzItYml0IAp0eXBl
-IG9uIHNvbWUgc3lzdGVtcywgbGltaXRpbmcgdGhlIGZpbGUgc2l6ZSB0byAyR0IuIE9uIHRoZSBv
-dGhlciBoYW5kLCAKIm1tYXA2NCIgdXNlcyAib2ZmNjRfdCIgZm9yIHRoZSBvZmZzZXQgcGFyYW1l
-dGVyLCB3aGljaCBpcyBhIDY0LWJpdCAKdHlwZSwgYWxsb3dpbmcgZm9yIGxhcmdlciBmaWxlIHNp
-emVzLgoKVGhpcyB0ZXN0IGNhc2UgaXMgZm9yIDMyYml0IHN5c3RlbXMuIE9uIGEgMzItYml0IHN5
-c3RlbSwgbW1hcCBhbmQgbW1hcDY0IApzZXJ2ZSBzaW1pbGFyIHB1cnBvc2VzLCBidXQgbW1hcDY0
-IGlzIHNwZWNpZmljYWxseSBkZXNpZ25lZCB0byBoYW5kbGUgCmZpbGVzIGxhcmdlciB0aGFuIDJH
-Qi7CoCBJbiB0ZXN0IHByb2dyYW0gd2UgYXJlIG1hcHBpbmcgYXQgZmlsZSBvZmZzZXQgCjRHQsKg
-IHNvIHdlIHNob3VsZCB1c2UgbW1hcDY0IHdpdGggX0xBUkdFRklMRTY0X1NPVVJDRSBtYWNyby4g
-Cl9MQVJHRUZJTEU2NF9TT1VSQ0UgaXMgYWxyZWFkeSBkZWZpbmVkIGluIHRoZSB0ZXN0IHByb2dy
-YW0gc28gb24gMzJiaXQgCnN5c3RlbXMgaXQgd2lsbCB0YWtlIG1tYXA2NCBwYXRoIG5vdCBtbWFw
-IHBhdGguCgpIZW5jZSB3ZSBjYW5ub3QgdXNlIFNBRkVfTU1BUCBoZXJlLgoKSSBjYW4gd29yayBv
-biBmaXhpbmcgd2FybmluZ3MgcmVsYXRlZCB0byB1bnVzZWQgcGFyYW1ldGVycy4KCkFyZSB0aGVy
-ZSBhbnkgb3RoZXIgd2FybmluZ3MgdGhhdCB5b3Ugc2VlIHdpdGggdGhpcyBjb2RlPwoKVGhhbmtz
-ICYgUmVnYXJkcywKR2VldGlrYQoKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+This test stress tests fallocate. This test starts three threads.
+First thread will continually punch/fill holes via falloc.
+Second thread will continually fault in those same pages.
+Third thread will continually mmap/munmap that page range.
+
+Verified that test runs with multiple iterations.
+
+Verified that test has no warnings.
+
+Signed-off-by: Geetika <geetika@linux.ibm.com>
+---
+Changes in v2:
+- Added the origin of testcase in the description
+- Removed 'arg'  wherever applicable
+- Added TERRNO wherever applicable instead of strerror
+- Printed the seed value
+- Used tst_get_hugepage_size to get the hugepage size
+- Fixed other warnings
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../hugetlb/hugefallocate/hugefallocate03.c   | 211 ++++++++++++++++++
+ 3 files changed, 213 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 299c07ac9..eb09c7598 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,5 +1,6 @@
+ hugefallocate01 hugefallocate01
+ hugefallocate02 hugefallocate02
++hugefallocate03 hugefallocate03
+ 
+ hugefork01 hugefork01
+ hugefork02 hugefork02
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 7258489ed..e9d3562cb 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -1,6 +1,7 @@
+ /cpuset/cpuset01
+ /hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugefallocate/hugefallocate02
++/hugetlb/hugefallocate/hugefallocate03
+ /hugetlb/hugefork/hugefork01
+ /hugetlb/hugefork/hugefork02
+ /hugetlb/hugemmap/hugemmap01
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+new file mode 100644
+index 000000000..e5848a3b3
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+@@ -0,0 +1,211 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2015 Oracle Corporation
++ * Author: Mike Kravetz
++ */
++
++/*\
++ * [Description]
++ *
++ * Stress test fallocate.  This test starts three threads.
++ * Thread one will continually punch/fill holes via falloc.
++ * Thread two will continually fault in those same pages.
++ * Thread three will continually mmap/munmap that page range.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <sys/mount.h>
++#include <limits.h>
++#include <sys/param.h>
++#include <sys/types.h>
++#include <pthread.h>
++
++#include "hugetlb.h"
++#include "lapi/fallocate.h"
++#include "tst_safe_pthread.h"
++
++#define MNTPOINT "hugetlbfs/"
++#define min(a, b) (((a) < (b)) ? (a) : (b))
++#define MAX_PAGES_TO_USE 100
++#define FALLOCATE_ITERATIONS 100000
++
++static int  fd = -1;
++static long nr_hpages_free;
++static unsigned long max_hpages;
++static int err;
++static long hpage_size;
++static unsigned long free_before, free_after;
++static unsigned long rsvd_before, rsvd_after;
++
++static void *thread_fallocate(void *)
++{
++	int i, err;
++	long tpage;
++
++	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
++		tpage = ((long long)random()) % (max_hpages);
++		err = fallocate(fd,
++				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++				tpage * hpage_size, hpage_size);
++		if (err)
++			tst_res(TFAIL|TERRNO, "fallocate():");
++		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
++		if (err)
++			tst_res(TFAIL|TERRNO, "fallocate():");
++	}
++	return NULL;
++}
++
++static void *fault_mmap_addr;
++
++static void thread_fault_cleanup(void *)
++{
++	if (fault_mmap_addr)
++		munmap(fault_mmap_addr, max_hpages * hpage_size);
++}
++
++static void *thread_fault(void *)
++{
++	long tpage;
++	char foo;
++	struct timespec ts;
++
++	fault_mmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
++			PROT_READ | PROT_WRITE, MAP_SHARED,
++			fd, 0);
++
++	pthread_cleanup_push(thread_fault_cleanup, NULL);
++
++	ts.tv_sec = 0;
++	ts.tv_nsec = 0;
++
++	while (1) {
++		tpage = ((long long)random()) % (max_hpages);
++		foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
++		*((char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
++
++		nanosleep(&ts, NULL); /* thread cancellation point */
++	}
++
++	pthread_cleanup_pop(1);
++
++	return NULL;
++}
++
++static void *mmap_munmap_addr;
++
++static void thread_mmap_munmap_cleanup(void *)
++{
++	if (mmap_munmap_addr)
++		munmap(mmap_munmap_addr, max_hpages * hpage_size);
++}
++
++static void *thread_mmap_munmap(void *)
++{
++	struct timespec ts;
++
++	pthread_cleanup_push(thread_mmap_munmap_cleanup, NULL);
++
++	ts.tv_sec = 0;
++	ts.tv_nsec = 0;
++
++	while (1) {
++		mmap_munmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
++				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++		SAFE_MUNMAP(mmap_munmap_addr, max_hpages * hpage_size);
++		mmap_munmap_addr = NULL;
++
++		nanosleep(&ts, NULL);   /* thread cancellation point */
++	}
++	pthread_cleanup_pop(1);
++	return NULL;
++}
++
++static void run_test(void)
++{
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++	pthread_t falloc_th, fault_th, mmap_munmap_th;
++	void *falloc_th_ret, *fault_th_ret, *mmap_munmap_th_ret;
++
++	unsigned int seed = (int)getpid() * time(NULL);
++
++	srandom(seed);
++	tst_res(TINFO, "Seed = %d", seed);
++	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	max_hpages = min(nr_hpages_free, MAX_PAGES_TO_USE);
++	free_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	/* First preallocate file with max_hpages pages */
++	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
++	if (err) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "fallocate() Operation is not supported");
++		if (err) {
++			tst_res(TFAIL|TERRNO, "fallocate():");
++			goto windup;
++		}
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_before - free_after != max_hpages) {
++		tst_res(TFAIL, "fallocate did not preallocate %ld huge pages\n",
++				max_hpages);
++		goto windup;
++	}
++
++	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
++
++	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
++
++	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
++
++	SAFE_PTHREAD_JOIN(falloc_th, &falloc_th_ret);
++
++	if (falloc_th_ret) {
++		tst_res(TFAIL, "thread_fallocate unexpected exit code");
++		goto windup;
++	}
++
++	SAFE_PTHREAD_CANCEL(fault_th);
++
++	SAFE_PTHREAD_JOIN(fault_th, &fault_th_ret);
++
++	SAFE_PTHREAD_CANCEL(mmap_munmap_th);
++
++	SAFE_PTHREAD_JOIN(mmap_munmap_th, &mmap_munmap_th_ret);
++
++windup:
++	SAFE_CLOSE(fd);
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	if (free_after != free_before || rsvd_after != rsvd_before)
++		tst_res(TFAIL, "free or reserve counts incorrect after fallocate stress test");
++	else
++		tst_res(TPASS, "fallocate stress test passed");
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
++};
+-- 
+2.39.3 (Apple Git-146)
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
