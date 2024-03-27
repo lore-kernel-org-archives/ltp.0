@@ -4,85 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3676C47DD9
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 03:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1711511472; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=mqcAsy3k8XHeITMU/sm4YgBT0svAaUfSM/NG0Rp6gi4=;
- b=cNJHzkM6mC1V4zccDJ0HkuJSkYdDYR4C98tUDICivGpa7uhy5FxUsbxrcKk2og9pTL1Uk
- beiJKkK/XOfQIBfoHOlY8QzJCQfgUA37qXyvnYBQwPx3MOvE6uSIPKglE3Pxu7m08ZHI/c5
- wwEDpr2+U3CkcNSZOYicxDwv+5ZdcSc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD6D7C47DD9
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 05:24:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3AACA3C136F
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 04:51:12 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 52D183D17FD
+	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 06:24:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B5DCA3D0ED3
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 04:49:53 +0100 (CET)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
- [IPv6:2a00:1450:4864:20::12f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 7B2AD3CD2B8
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 06:23:59 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C827960111B
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 04:49:52 +0100 (CET)
-Received: by mail-lf1-x12f.google.com with SMTP id
- 2adb3069b0e04-513d599dbabso8106600e87.1
- for <ltp@lists.linux.it>; Tue, 26 Mar 2024 20:49:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1711511391; x=1712116191; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=lygzVklXC5UvKVAd8TquwDYdnA9XcM2zYL5oxyYhF44=;
- b=SFSc61RDGKGja+vpPlmyKiObpRUjd8BSznct+KbGAQXkHKw++uBCewkbX+rDn/O+5H
- B6/dabyGkC00v2Bc/qLJVDS2iNW2dOKMD0X9PB7kP6iA2ytqZ9tqqmyrufs79ZU+VmMP
- uAb7/GuzlA9e1yRXxBRZfRjal3Tjh+8CHcS8s4RTJ8RLtb4gWSADDymfgXCFoacclyhK
- nxXYFM+h503cvWSDZg3+rGO6gg4Bq25KKcMr1Y2iNyrrrCmHK2sAZtmsbRckaCMY/1Aw
- 9MYY1p1fUz/3W/6ubtwHska8WJd1/ew6agO7IC73y0bf4L6Eu1BePw1lnzgxJJQaOWro
- gacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1711511391; x=1712116191;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=lygzVklXC5UvKVAd8TquwDYdnA9XcM2zYL5oxyYhF44=;
- b=aYO9li7w3IIKq3WTph5CcRWfPq1DFVpxghs4Rt4djzxGSFg2Qx9M/QyeBHbwy89Q+S
- aOoJgfm24iofxtAnIMLadpaZTjbt4wiogby4j4BPokfxorEHEM++tqtTzvStWDqPqKBs
- fyMwODrScrMDkQWzRu8RyCQpIbwqPz7WQpix00K0kUE2p3tgTAaBeQAyC7MeBRg90Yp4
- MmN/SAdpA2vtfV2cXYj8mZEyNX0Fi9VAU8pAuOsgD7aI4o6zQ2/4KUKPlpStl7+RzRIL
- Jou9hgiLHSuV2JUbpFp8yAtCKzV5/mfDz7Ddv9aBYKi9PMycxJWa6994g5OBnzjbwa8X
- mgJw==
-X-Gm-Message-State: AOJu0Yz0StTd0dvinnTgJAZ/zAofgTmwu2QYMkqyOF1fpDq+SAI1EbXE
- nEsHVz4uAXO9jzFhZ+S7tHuhEVDPikxMKPB1cCNTSsfV5b1mJBwZqru62b17bh5eq5RpUT9+Mq8
- =
-X-Google-Smtp-Source: AGHT+IF33dSVmWW6zcUI5v7yj0Qc0LPEdPKwb93h2jhihmztkUEg5l7IzX5U58v+2EktrgJZwv1ELw==
-X-Received: by 2002:a05:6512:3745:b0:513:db34:7caf with SMTP id
- a5-20020a056512374500b00513db347cafmr7476845lfs.17.1711511391255; 
- Tue, 26 Mar 2024 20:49:51 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- q7-20020a1709060f8700b00a46faaf7427sm4882995ejj.121.2024.03.26.20.49.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Mar 2024 20:49:51 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 26 Mar 2024 23:49:23 -0400
-Message-Id: <20240327034923.30987-4-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240327034923.30987-1-wegao@suse.com>
-References: <20240208013224.859-1-wegao@suse.com>
- <20240327034923.30987-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 43327608A88
+ for <ltp@lists.linux.it>; Wed, 27 Mar 2024 06:23:56 +0100 (CET)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 42R3Mwrc021147; Wed, 27 Mar 2024 05:23:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=hwGraWDMeRNCW3vc+81fIlRabpiqvpwXa7hmybKNg3g=;
+ b=ickzv8xIHIUPnUODSORWv2P0Ncqf1wGlr+XytUbXhGHUZLSqjEiCYV5eDiE2PCSLn34v
+ C59nykE8Z0vGG0oE7VvNsQlHIvt+1HmD0rzx74XXtbRf23zBWsgm+sekmuCExsqkXzsN
+ XZzqNcSfsZpkOH3A2jWdHrDOdBUgBWtBn/8Rm1XjTylcOKifpGWecX1fHnoRPQg8iawh
+ E0iDNKgqioV7qwxRgZTm4LZcZOoPZIwbMOmudAI1AGbZnxmgH0AjBRRYdcGdgocMCl70
+ VxRevXpQizj/AIHvn7axjX8nJ3uab3IJBgHVPY+67hwZq7zOIIFQIh/wyMuSlHOYkvxH ww== 
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4bg3r5h3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 27 Mar 2024 05:23:54 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 42R30BrT016605; Wed, 27 Mar 2024 05:22:15 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29du4x0m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 27 Mar 2024 05:22:15 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 42R5MCuS42402096
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 27 Mar 2024 05:22:14 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3370420040;
+ Wed, 27 Mar 2024 05:22:12 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9FBC62004E;
+ Wed, 27 Mar 2024 05:22:11 +0000 (GMT)
+Received: from [9.43.51.185] (unknown [9.43.51.185])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 27 Mar 2024 05:22:11 +0000 (GMT)
+Message-ID: <9e339bbd-0fda-4b44-bbcf-20c0303f494a@linux.ibm.com>
+Date: Wed, 27 Mar 2024 10:52:10 +0530
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <20230928074624.67065-1-geetika@linux.ibm.com>
+ <20231128112511.GB364870@pevik>
+Content-Language: en-US
+From: Geetika M <geetika@linux.ibm.com>
+In-Reply-To: <20231128112511.GB364870@pevik>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: njP3T33_UDMztoRbURxlStkUEGRba_h1
+X-Proofpoint-ORIG-GUID: njP3T33_UDMztoRbURxlStkUEGRba_h1
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_02,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 clxscore=1011
+ mlxscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2403210000 definitions=main-2403270034
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 3/3] realpath01.c: use TST_EXP_FAIL_PTR_NULL
+Subject: Re: [LTP] [PATCH] Hugetlb: Migrating libhugetlbfs test
+ truncate_reserve_wraparound.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,43 +103,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/realpath/realpath01.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/realpath/realpath01.c b/testcases/kernel/syscalls/realpath/realpath01.c
-index c0381e9cb..c4c603609 100644
---- a/testcases/kernel/syscalls/realpath/realpath01.c
-+++ b/testcases/kernel/syscalls/realpath/realpath01.c
-@@ -24,16 +24,7 @@ static void setup(void)
- 
- static void run(void)
- {
--	TESTPTR(realpath(".", NULL));
--
--	if (TST_ERR != ENOENT) {
--		tst_res(TFAIL | TTERRNO, "returned unexpected errno");
--	} else	if (TST_RET_PTR != NULL) {
--		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
--				(char *)TST_RET_PTR);
--	} else {
--		tst_res(TPASS, "bug not reproduced");
--	}
-+	TST_EXP_FAIL_PTR_NULL(realpath(".", NULL), ENOENT);
- }
- 
- static struct tst_test test = {
--- 
-2.35.3
+On 28/11/23 4:55 pm, Petr Vorel wrote:
+> Hi,
+>
+> Please have look at my comments at your colleague patch [1] [2], these changes
+> apply a lot for your patches as well.
+>
+> [1] https://lore.kernel.org/ltp/20231128111024.GA364870@pevik/
+> [2] https://lore.kernel.org/ltp/20231128112254.GA367506@pevik/
+
+I will have a look at both of these and apply the changes that apply to 
+this
+testcase and send the next version.
+
+> ...
+>> +++ b/runtest/hugetlb
+>> @@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+>>   hugemmap30 hugemmap30
+>>   hugemmap31 hugemmap31
+>>   hugemmap32 hugemmap32
+>> +hugemmap38 hugemmap38
+> nit: Why not hugemmap34? (your colleague used hugemmap33 for his patch [1].
+We already have:
+
+hugemmap34 : 
+https://lore.kernel.org/ltp/20230913082214.8453-1-samir@linux.vnet.ibm.com/
+hugemmap36 : 
+https://lore.kernel.org/ltp/20230912064126.3350-1-samir@linux.vnet.ibm.com/
+hugemmap35 : 
+https://lore.kernel.org/all/20230908121135.245296-1-sachinpb@linux.vnet.ibm.com/
+hugemmap37 : 
+https://lore.kernel.org/ltp/20230929075435.72172-1-geetika@linux.ibm.com/
+
+Hence hugemmap38!
+>>   hugemmap05_1 hugemmap05 -m
+>>   hugemmap05_2 hugemmap05 -s
+>>   hugemmap05_3 hugemmap05 -s -m
+> ...
+>
+> Kind regards,
+> Petr
+
+Thanks & Regards,
+Geetika
 
 
 -- 
