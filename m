@@ -4,89 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8845DC47DD9
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 15:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E496C54E64
+	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 08:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1711614866; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=jhfiBRzLiN11Qb7scr0l04RBRUJ4lqbHBv2mT17qx1w=;
+ b=qXCpp7no7tdfgaPUDACgbHkmvShhaNCNky0oynXU075u0kds6Y+YxnQJq3micG1488yPm
+ dXd6bHfAqEtMbf9+GChHiQN9WF7krlwOWUw3/xsmYCfiC4gFTfsl0hm52eE4sTVDYoVrsxe
+ gTtoTW8rhWkrfgQ8dlr+DMsagPahw+Q=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BCD6C3C05D8
-	for <ltp@archiver.kernel.org>; Wed, 27 Mar 2024 16:02:33 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 462593C1AC0
+	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 09:34:26 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 75E4C3C0294
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 16:02:17 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 61EEA3C08AA
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:34:02 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=andestech.com (client-ip=60.248.80.70; helo=atcsqr.andestech.com;
+ envelope-from=minachou@andestech.com; receiver=lists.linux.it)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8B29B602ACD
- for <ltp@lists.linux.it>; Wed, 27 Mar 2024 16:02:15 +0100 (CET)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42RE2LoD018185; Wed, 27 Mar 2024 15:02:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=1A0sYIp/y7D/wxK+tEyXX+CQFuAdbZtdz/STaKr9OIA=;
- b=fkGU/eHXFeOcngPAnvCVOoXAld1rvP/oWfkihZY1laKFjlPwHST78sFspEU9EtW5TZKX
- shAwOJ6WrhK8focyClDOdyDupto5l5dn7bibbUkPGvIEeXuLxRDBledgnz95+Kf6hPmW
- 1GcZeK9csROrTCc0d0oNkn3wK7ebzEk1mmCgPikR9b4JjT97dUCbZBMoZl0dPIYW8WKn
- imYLdEeDdqovh1Mq7JwVZZXmQdkUCdHnF9EyZN0k0/qHhpZSpIQ1RHmt7TTiGTzgHkgJ
- RPfSkFmXf1/Ky4bl+SlI+//LrKayqDBmmcUdH/uebuoBg3Utbz/THrjDVJK07m8a8W2X 1Q== 
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x4mv4g507-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 15:02:12 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 42RC33G5016572; Wed, 27 Mar 2024 15:02:11 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29du7kv3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Mar 2024 15:02:11 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
- [10.20.54.102])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 42RExbtb41615652
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 27 Mar 2024 14:59:40 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C9B6620040;
- Wed, 27 Mar 2024 14:59:37 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4D1E02004D;
- Wed, 27 Mar 2024 14:59:36 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.43.116.220])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Wed, 27 Mar 2024 14:59:36 +0000 (GMT)
-From: Geetika <geetika@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Wed, 27 Mar 2024 20:29:25 +0530
-Message-Id: <20240327145925.18922-1-geetika@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0AED21B60EC8
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:33:58 +0100 (CET)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 42S8XoJE089791
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 16:33:50 +0800 (+08)
+ (envelope-from minachou@andestech.com)
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
+ Thu, 28 Mar 2024 16:33:50 +0800
+To: <ltp@lists.linux.it>
+Date: Thu, 28 Mar 2024 16:33:44 +0800
+Message-ID: <20240328083344.277502-1-minachou@andestech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SSEP5x8RR7gXnrBQ5BzR5rFjBMUFDW5s
-X-Proofpoint-ORIG-GUID: SSEP5x8RR7gXnrBQ5BzR5rFjBMUFDW5s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_12,2024-03-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 suspectscore=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0 malwarescore=0
- adultscore=0 mlxlogscore=693 bulkscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403270103
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Originating-IP: [10.0.15.183]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 42S8XoJE089791
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Migrating the
- libhugetlbfs/testcases/fallocate_stress.c
+Subject: [LTP] [PATCH] syscalls/setitimer: Pass the kernel-defined struct
+ __kernel_old_itimerval to sys_setitimer().
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,279 +65,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: rpalethorpe@suse.de
+From: Hui Min Mina Chou via ltp <ltp@lists.linux.it>
+Reply-To: Hui Min Mina Chou <minachou@andestech.com>
+Cc: minachou@andestech.com, tim609@andestech.com, cynthia@andestech.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test stress tests fallocate. This test starts three threads.
-First thread will continually punch/fill holes via falloc.
-Second thread will continually fault in those same pages.
-Third thread will continually mmap/munmap that page range.
+The setitimer01 tests fail on RV32 due to incompatible parameter
+definitions. 'value' and 'ovalue' are defined by glibc as itimerval
+(64-bit time_t on RV32), while the kernel expects __kernel_old_itimerval
+(32-bit time_t on RV32) for the setitimer syscall[1]. This discrepancy
+leads to incorrect 'ovalue' and test failures. Thus, the kernel-defined
+__kernel_old_itimerval should be used.
 
-Verified that test runs with multiple iterations.
-
-Verified that test has no warnings.
-
-Signed-off-by: Geetika <geetika@linux.ibm.com>
+[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=a51e03588937ad804a9f583ea3d0fc0a4d088c33
+Signed-off-by: Hui Min Mina Chou <minachou@andestech.com>
 ---
-Changes in v2:
-- Added the origin of testcase in the description
-- Removed 'arg'  wherever applicable
-- Added TERRNO wherever applicable instead of strerror
-- Printed the seed value
-- Used tst_get_hugepage_size to get the hugepage size
-- Fixed other warnings
----
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../hugetlb/hugefallocate/hugefallocate03.c   | 211 ++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+ configure.ac                                      |  3 ++-
+ include/tst_timer.h                               | 12 ++++++++++++
+ testcases/kernel/syscalls/setitimer/setitimer01.c |  8 ++------
+ testcases/kernel/syscalls/setitimer/setitimer02.c | 12 ++++--------
+ 4 files changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 299c07ac9..eb09c7598 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,5 +1,6 @@
- hugefallocate01 hugefallocate01
- hugefallocate02 hugefallocate02
-+hugefallocate03 hugefallocate03
+diff --git a/configure.ac b/configure.ac
+index 1d7e862d88fb..8de6239a55f5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -219,7 +219,8 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
+ ])
  
- hugefork01 hugefork01
- hugefork02 hugefork02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 7258489ed..e9d3562cb 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,6 +1,7 @@
- /cpuset/cpuset01
- /hugetlb/hugefallocate/hugefallocate01
- /hugetlb/hugefallocate/hugefallocate02
-+/hugetlb/hugefallocate/hugefallocate03
- /hugetlb/hugefork/hugefork01
- /hugetlb/hugefork/hugefork02
- /hugetlb/hugemmap/hugemmap01
-diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
-new file mode 100644
-index 000000000..e5848a3b3
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
-@@ -0,0 +1,211 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2015 Oracle Corporation
-+ * Author: Mike Kravetz
-+ */
+ AC_CHECK_TYPES([struct __kernel_old_timeval, struct __kernel_old_timespec, struct __kernel_timespec,
+-                struct __kernel_old_itimerspec, struct __kernel_itimerspec],,,[#include <sys/socket.h>])
++                struct __kernel_old_itimerspec, struct __kernel_itimerspec,
++                struct __kernel_old_itimerval],,,[#include <sys/socket.h>])
+ 
+ AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
+ AC_CHECK_TYPES([struct mount_attr],,,[
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index 703f03294eae..6fb9400206b8 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -135,6 +135,13 @@ struct __kernel_itimerspec {
+ 	struct __kernel_timespec it_value;       /* timer expiration */
+ };
+ #endif
 +
-+/*\
-+ * [Description]
-+ *
-+ * Stress test fallocate.  This test starts three threads.
-+ * Thread one will continually punch/fill holes via falloc.
-+ * Thread two will continually fault in those same pages.
-+ * Thread three will continually mmap/munmap that page range.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+#include <pthread.h>
-+
-+#include "hugetlb.h"
-+#include "lapi/fallocate.h"
-+#include "tst_safe_pthread.h"
-+
-+#define MNTPOINT "hugetlbfs/"
-+#define min(a, b) (((a) < (b)) ? (a) : (b))
-+#define MAX_PAGES_TO_USE 100
-+#define FALLOCATE_ITERATIONS 100000
-+
-+static int  fd = -1;
-+static long nr_hpages_free;
-+static unsigned long max_hpages;
-+static int err;
-+static long hpage_size;
-+static unsigned long free_before, free_after;
-+static unsigned long rsvd_before, rsvd_after;
-+
-+static void *thread_fallocate(void *)
-+{
-+	int i, err;
-+	long tpage;
-+
-+	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
-+		tpage = ((long long)random()) % (max_hpages);
-+		err = fallocate(fd,
-+				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+				tpage * hpage_size, hpage_size);
-+		if (err)
-+			tst_res(TFAIL|TERRNO, "fallocate():");
-+		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
-+		if (err)
-+			tst_res(TFAIL|TERRNO, "fallocate():");
-+	}
-+	return NULL;
-+}
-+
-+static void *fault_mmap_addr;
-+
-+static void thread_fault_cleanup(void *)
-+{
-+	if (fault_mmap_addr)
-+		munmap(fault_mmap_addr, max_hpages * hpage_size);
-+}
-+
-+static void *thread_fault(void *)
-+{
-+	long tpage;
-+	char foo;
-+	struct timespec ts;
-+
-+	fault_mmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
-+			PROT_READ | PROT_WRITE, MAP_SHARED,
-+			fd, 0);
-+
-+	pthread_cleanup_push(thread_fault_cleanup, NULL);
-+
-+	ts.tv_sec = 0;
-+	ts.tv_nsec = 0;
-+
-+	while (1) {
-+		tpage = ((long long)random()) % (max_hpages);
-+		foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
-+		*((char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
-+
-+		nanosleep(&ts, NULL); /* thread cancellation point */
-+	}
-+
-+	pthread_cleanup_pop(1);
-+
-+	return NULL;
-+}
-+
-+static void *mmap_munmap_addr;
-+
-+static void thread_mmap_munmap_cleanup(void *)
-+{
-+	if (mmap_munmap_addr)
-+		munmap(mmap_munmap_addr, max_hpages * hpage_size);
-+}
-+
-+static void *thread_mmap_munmap(void *)
-+{
-+	struct timespec ts;
-+
-+	pthread_cleanup_push(thread_mmap_munmap_cleanup, NULL);
-+
-+	ts.tv_sec = 0;
-+	ts.tv_nsec = 0;
-+
-+	while (1) {
-+		mmap_munmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
-+				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+		SAFE_MUNMAP(mmap_munmap_addr, max_hpages * hpage_size);
-+		mmap_munmap_addr = NULL;
-+
-+		nanosleep(&ts, NULL);   /* thread cancellation point */
-+	}
-+	pthread_cleanup_pop(1);
-+	return NULL;
-+}
-+
-+static void run_test(void)
-+{
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	pthread_t falloc_th, fault_th, mmap_munmap_th;
-+	void *falloc_th_ret, *fault_th_ret, *mmap_munmap_th_ret;
-+
-+	unsigned int seed = (int)getpid() * time(NULL);
-+
-+	srandom(seed);
-+	tst_res(TINFO, "Seed = %d", seed);
-+	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	max_hpages = min(nr_hpages_free, MAX_PAGES_TO_USE);
-+	free_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+
-+	/* First preallocate file with max_hpages pages */
-+	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
-+	if (err) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF, "fallocate() Operation is not supported");
-+		if (err) {
-+			tst_res(TFAIL|TERRNO, "fallocate():");
-+			goto windup;
-+		}
-+	}
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_before - free_after != max_hpages) {
-+		tst_res(TFAIL, "fallocate did not preallocate %ld huge pages\n",
-+				max_hpages);
-+		goto windup;
-+	}
-+
-+	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
-+
-+	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
-+
-+	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
-+
-+	SAFE_PTHREAD_JOIN(falloc_th, &falloc_th_ret);
-+
-+	if (falloc_th_ret) {
-+		tst_res(TFAIL, "thread_fallocate unexpected exit code");
-+		goto windup;
-+	}
-+
-+	SAFE_PTHREAD_CANCEL(fault_th);
-+
-+	SAFE_PTHREAD_JOIN(fault_th, &fault_th_ret);
-+
-+	SAFE_PTHREAD_CANCEL(mmap_munmap_th);
-+
-+	SAFE_PTHREAD_JOIN(mmap_munmap_th, &mmap_munmap_th_ret);
-+
-+windup:
-+	SAFE_CLOSE(fd);
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	if (free_after != free_before || rsvd_after != rsvd_before)
-+		tst_res(TFAIL, "free or reserve counts incorrect after fallocate stress test");
-+	else
-+		tst_res(TPASS, "fallocate stress test passed");
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = tst_get_hugepage_size();
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
++#ifndef HAVE_STRUCT___KERNEL_OLD_ITIMERVAL
++struct __kernel_old_itimerval {
++	struct __kernel_old_timeval it_interval;	/* timer interval */
++	struct __kernel_old_timeval it_value;		/* current value */
 +};
++#endif
+ #endif
+ 
+ enum tst_ts_type {
+@@ -370,6 +377,11 @@ static inline int sys_timerfd_settime64(int fd, int flags, void *its,
+ 	return tst_syscall(__NR_timerfd_settime64, fd, flags, its, old_its);
+ }
+ 
++static inline int sys_setitimer(int which, void *new_value, void *old_value)
++{
++	return tst_syscall(__NR_setitimer, which, new_value, old_value);
++}
++
+ /*
+  * Returns tst_ts seconds.
+  */
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+index d12abe904f1c..94ee51c6a667 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -20,9 +20,10 @@
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ #include "tst_safe_clocks.h"
++#include "tst_timer.h"
+ 
+ static struct timeval tv;
+-static struct itimerval *value, *ovalue;
++static struct __kernel_old_itimerval *value, *ovalue;
+ static volatile unsigned long sigcnt;
+ static long time_step;
+ static long time_sec;
+@@ -38,11 +39,6 @@ static struct tcase {
+ 	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
+ };
+ 
+-static int sys_setitimer(int which, void *new_value, void *old_value)
+-{
+-	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+-}
+-
+ static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+ {
+ 	sigcnt++;
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
+index b012d71fa7bd..c545f6288bbb 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer02.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
+@@ -19,13 +19,9 @@
+ #include <stdlib.h>
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
++#include "tst_timer.h"
+ 
+-static struct itimerval *value, *ovalue;
+-
+-static int sys_setitimer(int which, void *new_value, void *old_value)
+-{
+-	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+-}
++static struct __kernel_old_itimerval *value, *ovalue;
+ 
+ static void verify_setitimer(unsigned int i)
+ {
+@@ -55,8 +51,8 @@ static struct tst_test test = {
+ 	.test = verify_setitimer,
+ 	.setup = setup,
+ 	.bufs = (struct tst_buffers[]) {
+-		{&value,  .size = sizeof(struct itimerval)},
+-		{&ovalue, .size = sizeof(struct itimerval)},
++		{&value,  .size = sizeof(struct __kernel_old_itimerval)},
++		{&ovalue, .size = sizeof(struct __kernel_old_itimerval)},
+ 		{}
+ 	}
+ };
 -- 
-2.39.3 (Apple Git-146)
+2.34.1
 
 
 -- 
