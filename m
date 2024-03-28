@@ -4,28 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E496C54E64
-	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 08:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 832BAC54E67
+	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 08:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1711614866; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1711615235; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=jhfiBRzLiN11Qb7scr0l04RBRUJ4lqbHBv2mT17qx1w=;
- b=qXCpp7no7tdfgaPUDACgbHkmvShhaNCNky0oynXU075u0kds6Y+YxnQJq3micG1488yPm
- dXd6bHfAqEtMbf9+GChHiQN9WF7krlwOWUw3/xsmYCfiC4gFTfsl0hm52eE4sTVDYoVrsxe
- gTtoTW8rhWkrfgQ8dlr+DMsagPahw+Q=
+ from; bh=rigXjAaBre8zhv0GzTxgNpaLXCQwC4k6zviXjQP5adE=;
+ b=kMznbeljYkZ55LYYbhe+w6acusVqfj3lVsW1gwpA55QAgdv5shJTqSJILj3Kd4u0Lhr+e
+ BGA9PT6yXAquDvgb5/ClJy19ne4cOwhs6iSav1MelUdQYYMxb78NqewlRM+Uzf9y/7Courw
+ fEV5c12AQcsE2jKEqEa0ixE15qB7L4I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 462593C1AC0
-	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 09:34:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id CC6A73C19D9
+	for <ltp@archiver.kernel.org>; Thu, 28 Mar 2024 09:40:35 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61EEA3C08AA
- for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:34:02 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id DB2633C013E
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:40:13 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=andestech.com (client-ip=60.248.80.70; helo=atcsqr.andestech.com;
  envelope-from=minachou@andestech.com; receiver=lists.linux.it)
 Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
@@ -33,27 +32,27 @@ Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0AED21B60EC8
- for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:33:58 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AA014617610
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 09:40:09 +0100 (CET)
 Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 42S8XoJE089791
- for <ltp@lists.linux.it>; Thu, 28 Mar 2024 16:33:50 +0800 (+08)
+ by Atcsqr.andestech.com with ESMTP id 42S8e5Rw091666
+ for <ltp@lists.linux.it>; Thu, 28 Mar 2024 16:40:05 +0800 (+08)
  (envelope-from minachou@andestech.com)
 Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
  (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
- Thu, 28 Mar 2024 16:33:50 +0800
+ Thu, 28 Mar 2024 16:40:06 +0800
 To: <ltp@lists.linux.it>
-Date: Thu, 28 Mar 2024 16:33:44 +0800
-Message-ID: <20240328083344.277502-1-minachou@andestech.com>
+Date: Thu, 28 Mar 2024 16:40:00 +0800
+Message-ID: <20240328084000.320291-1-minachou@andestech.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-Originating-IP: [10.0.15.183]
 X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 42S8XoJE089791
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-MAIL: Atcsqr.andestech.com 42S8e5Rw091666
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/setitimer: Pass the kernel-defined struct
- __kernel_old_itimerval to sys_setitimer().
+Subject: [LTP] [PATCH] waitid10: Set the core dump file location to
+ temporary directory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,124 +72,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The setitimer01 tests fail on RV32 due to incompatible parameter
-definitions. 'value' and 'ovalue' are defined by glibc as itimerval
-(64-bit time_t on RV32), while the kernel expects __kernel_old_itimerval
-(32-bit time_t on RV32) for the setitimer syscall[1]. This discrepancy
-leads to incorrect 'ovalue' and test failures. Thus, the kernel-defined
-__kernel_old_itimerval should be used.
+Reference to madvise08, set the core dump file location to
+temporary directory, and restore default value after testing.
 
-[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=a51e03588937ad804a9f583ea3d0fc0a4d088c33
+ # ./waitid10
+ tst_buffers.c:56: TINFO: Test is using guarded buffers
+ tst_test.c:1709: TINFO: LTP version: 20240129-45-g69537563d16a
+ tst_test.c:1593: TINFO: Timeout per run is 0h 05m 00s
+ waitid10.c:60: TINFO: Temporary core pattern is '/tmp/LTP_waiTF0QR3/core'
+ waitid10.c:73: TINFO: Raising RLIMIT_CORE rlim_cur=0 -> 0
+ waitid10.c:38: TPASS: waitid(P_ALL, 0, infop, WEXITED) passed
+ waitid10.c:39: TPASS: infop->si_pid == pidchild (304)
+ waitid10.c:40: TPASS: infop->si_status == SIGFPE (8)
+ waitid10.c:41: TPASS: infop->si_signo == SIGCHLD (17)
+ waitid10.c:44: TPASS: infop->si_code == CLD_DUMPED (3)
+
 Signed-off-by: Hui Min Mina Chou <minachou@andestech.com>
 ---
- configure.ac                                      |  3 ++-
- include/tst_timer.h                               | 12 ++++++++++++
- testcases/kernel/syscalls/setitimer/setitimer01.c |  8 ++------
- testcases/kernel/syscalls/setitimer/setitimer02.c | 12 ++++--------
- 4 files changed, 20 insertions(+), 15 deletions(-)
+ testcases/kernel/syscalls/waitid/waitid10.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index 1d7e862d88fb..8de6239a55f5 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -219,7 +219,8 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
- ])
- 
- AC_CHECK_TYPES([struct __kernel_old_timeval, struct __kernel_old_timespec, struct __kernel_timespec,
--                struct __kernel_old_itimerspec, struct __kernel_itimerspec],,,[#include <sys/socket.h>])
-+                struct __kernel_old_itimerspec, struct __kernel_itimerspec,
-+                struct __kernel_old_itimerval],,,[#include <sys/socket.h>])
- 
- AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
- AC_CHECK_TYPES([struct mount_attr],,,[
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 703f03294eae..6fb9400206b8 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -135,6 +135,13 @@ struct __kernel_itimerspec {
- 	struct __kernel_timespec it_value;       /* timer expiration */
- };
- #endif
-+
-+#ifndef HAVE_STRUCT___KERNEL_OLD_ITIMERVAL
-+struct __kernel_old_itimerval {
-+	struct __kernel_old_timeval it_interval;	/* timer interval */
-+	struct __kernel_old_timeval it_value;		/* current value */
-+};
-+#endif
- #endif
- 
- enum tst_ts_type {
-@@ -370,6 +377,11 @@ static inline int sys_timerfd_settime64(int fd, int flags, void *its,
- 	return tst_syscall(__NR_timerfd_settime64, fd, flags, its, old_its);
- }
- 
-+static inline int sys_setitimer(int which, void *new_value, void *old_value)
-+{
-+	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-+}
-+
- /*
-  * Returns tst_ts seconds.
-  */
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
-index d12abe904f1c..94ee51c6a667 100644
---- a/testcases/kernel/syscalls/setitimer/setitimer01.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
-@@ -20,9 +20,10 @@
+diff --git a/testcases/kernel/syscalls/waitid/waitid10.c b/testcases/kernel/syscalls/waitid/waitid10.c
+index e55e88c2325e..3e48f52d0ea8 100644
+--- a/testcases/kernel/syscalls/waitid/waitid10.c
++++ b/testcases/kernel/syscalls/waitid/waitid10.c
+@@ -16,6 +16,8 @@
+ #include <sys/prctl.h>
  #include "tst_test.h"
- #include "lapi/syscalls.h"
- #include "tst_safe_clocks.h"
-+#include "tst_timer.h"
  
- static struct timeval tv;
--static struct itimerval *value, *ovalue;
-+static struct __kernel_old_itimerval *value, *ovalue;
- static volatile unsigned long sigcnt;
- static long time_step;
- static long time_sec;
-@@ -38,11 +39,6 @@ static struct tcase {
- 	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
- };
++#define CORE_PATTERN "/proc/sys/kernel/core_pattern"
++
+ static siginfo_t *infop;
+ static int core_dumps = 1;
  
--static int sys_setitimer(int which, void *new_value, void *old_value)
--{
--	return tst_syscall(__NR_setitimer, which, new_value, old_value);
--}
--
- static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+@@ -48,9 +50,16 @@ static void setup(void)
  {
- 	sigcnt++;
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
-index b012d71fa7bd..c545f6288bbb 100644
---- a/testcases/kernel/syscalls/setitimer/setitimer02.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
-@@ -19,13 +19,9 @@
- #include <stdlib.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
-+#include "tst_timer.h"
+ 	struct rlimit rlim;
+ 	char c;
++	char cwd[1024];
++	char tmpcpattern[1048];
  
--static struct itimerval *value, *ovalue;
--
--static int sys_setitimer(int which, void *new_value, void *old_value)
--{
--	return tst_syscall(__NR_setitimer, which, new_value, old_value);
--}
-+static struct __kernel_old_itimerval *value, *ovalue;
+ 	SAFE_GETRLIMIT(RLIMIT_CORE, &rlim);
+-	SAFE_FILE_SCANF("/proc/sys/kernel/core_pattern", "%c", &c);
++
++	SAFE_GETCWD(cwd, sizeof(cwd));
++	snprintf(tmpcpattern, sizeof(tmpcpattern), "%s/core", cwd);
++	tst_res(TINFO, "Temporary core pattern is '%s'", tmpcpattern);
++	SAFE_FILE_PRINTF(CORE_PATTERN, "%s", tmpcpattern);
++	SAFE_FILE_SCANF(CORE_PATTERN, "%c", &c);
  
- static void verify_setitimer(unsigned int i)
- {
-@@ -55,8 +51,8 @@ static struct tst_test test = {
- 	.test = verify_setitimer,
- 	.setup = setup,
- 	.bufs = (struct tst_buffers[]) {
--		{&value,  .size = sizeof(struct itimerval)},
--		{&ovalue, .size = sizeof(struct itimerval)},
-+		{&value,  .size = sizeof(struct __kernel_old_itimerval)},
-+		{&ovalue, .size = sizeof(struct __kernel_old_itimerval)},
- 		{}
- 	}
+ 	if (rlim.rlim_cur)
+ 		return;
+@@ -76,4 +85,9 @@ static struct tst_test test = {
+ 		{&infop, .size = sizeof(*infop)},
+ 		{},
+ 	},
++	.needs_tmpdir = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{CORE_PATTERN, NULL, TST_SR_TCONF},
++		{}
++	},
  };
 -- 
 2.34.1
