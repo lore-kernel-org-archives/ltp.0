@@ -4,82 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E875C6FD1F
-	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 02:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1711851474; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=Xb8Wets/F9sz8ocsK6wds4y5hHV1UmtRhmV24XuzzoQ=;
- b=rCGDX6O2/Ym6ILT+pxt2NFHwXokwihySAuIT0FdlmhBkQA402ePnhxMGNmBkyL0WfF+kV
- a1iVtSJLium7L8+gt6YKrmQlP8dMMxRk0RrTkFJSsOdPXZMVZ1psc6ettqBUM1Rhnx2Ntzk
- 9ItSAZ66YaiOJwsWrwyv1LWhC60Su5Q=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A741ACD1284
+	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 15:11:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48B473C7612
-	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 04:17:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id B574B3C782A
+	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 17:11:48 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 59F573C0185
- for <ltp@lists.linux.it>; Sun, 31 Mar 2024 04:17:30 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B9C073C0318
+ for <ltp@lists.linux.it>; Sun, 31 Mar 2024 17:11:31 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=intel.com (client-ip=192.198.163.9; helo=mgamail.intel.com;
+ envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 379E31400FA3
- for <ltp@lists.linux.it>; Sun, 31 Mar 2024 04:17:30 +0200 (CEST)
-Received: by mail-lj1-x235.google.com with SMTP id
- 38308e7fff4ca-2d6fc3adaacso43944081fa.2
- for <ltp@lists.linux.it>; Sat, 30 Mar 2024 19:17:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1711851449; x=1712456249; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=OsBGagSls3QtqUJ5Ug3i2mimZAyJA3slmybc43arygc=;
- b=aKNiqqvEeIWUeJ83kWl8cxc+sZ0u9Ik5UaxSrI8YXbBXJzv2A+fjhwETSpCKgxl82e
- 4pfJ1G7zB4VjKkj7Yas/2ObtkZoCZGGo8+QB7Thr117wx+WZbWalPkqf34fou0+WgTPs
- a6tX3bKg9dKQA5IBTvCpFm5ApKJHzORbOonHQJt6tJX079E+4T9hMwmu3bZGrPNASma7
- 0jbVj/DKTBfubt8fsPpprGA0mJdhIuDNtNPJ8F/gY2gN4JtNOZWZuQytWJrTB52b0DE1
- Y5YHLwV6KWkG+z4eZbHt9I20gCsvTggQEvOwKPpTdxHokrV3FSB/5VWyCtWIEYRwLNwY
- UUMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1711851449; x=1712456249;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=OsBGagSls3QtqUJ5Ug3i2mimZAyJA3slmybc43arygc=;
- b=jvBJkfRB8YlPNzhaP5L/iwhWeLjwQXuN52tt1AO9UqKLAJANCLowCQcHcm+dIInuzj
- 8+S16+zdnnbPk+9nwBMpcTRwfWhz36YpHf0QzK5opLm1fJJ/bXMyUXcOh4ZItnAkDgtb
- +CUIDa6h7s1VLaKOfjvQNwoCHn6bGp1EWUKNgUKswvivhand4w914yr4un5HRVCFPoYi
- J5dNF9bNqlI4G6YY4jmgiZbHIMMnBZc3TalUBHTvJG+qGhjDoocBCNC63hYDmiHcrsK7
- a5XaMhWZLW3NCiIlGHPHp1DM6ynWk0CajLdNyZtxgtwhYtMko4i/MQvt5TK8OEh9fZEA
- gdQQ==
-X-Gm-Message-State: AOJu0YxpH5qcFU+kAy791kGly14PVj5ohuVi9ZTLda31uGsIjmMyybpM
- e8Tq/Oy0bo/ilW9gmEQ/JPA/WBZqWR4Xl2xGaT1Yw8WfNHo8p8EaLnrh9LGb8G8MQuDEw7Z8O+U
- =
-X-Google-Smtp-Source: AGHT+IGBdalmTM6DEhD/43E6thxZm7ZCTUOz7w+Fn3XTuIY71URsVdrgmeTNWhpfkBdJ9ztuGo1DgQ==
-X-Received: by 2002:a2e:9c82:0:b0:2d3:ba98:473 with SMTP id
- x2-20020a2e9c82000000b002d3ba980473mr3421813lji.19.1711851448730; 
- Sat, 30 Mar 2024 19:17:28 -0700 (PDT)
-Received: from localhost ([223.72.39.109]) by smtp.gmail.com with ESMTPSA id
- h5-20020a056a00230500b006ead792b6f2sm5192551pfh.1.2024.03.30.19.17.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 30 Mar 2024 19:17:28 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Sat, 30 Mar 2024 22:17:20 -0400
-Message-Id: <20240331021720.9527-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240118073215.10026-1-wegao@suse.com>
-References: <20240118073215.10026-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 88A5E600697
+ for <ltp@lists.linux.it>; Sun, 31 Mar 2024 17:11:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1711897890; x=1743433890;
+ h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
+ bh=TNl522M15Nfi3zuWalAlAxNNnhH/pJBR8sRyHQOKMDI=;
+ b=NcfY04zBjAbypKvLD8YbIexhZBJcMUTh7s+B/6FzMNbNDTmcuXHWFM4M
+ 6yaiti4TpuIeofhj+ozCkoMTjbbN2pdfFb8dGmJcZwX2v07YCZW0uPh3i
+ JsxpODE/Bp3IW9UCs+82D3R5cllWspft06h0ae2TxWkTY2xWNCLAG0ENf
+ zkH+aPWiE0wm14hYyl8h3Wri4qG87vYeskF9fdVag9qhyMbM+fnPqYexj
+ WS7Q1ELVhFrsbTkUOTWJZlqZOTJyCOEVuagJl69GIM2wxZFS7P6Ju4gJQ
+ d6oK+kBa+h7vmkvfCsgdE4vPTuqFZ3bNgiVVdzDkJe0ZzMzWYf7n/Qv2o Q==;
+X-CSE-ConnectionGUID: FEY4YJtwRpqWuCQLJ9CWZA==
+X-CSE-MsgGUID: mamygKIISEmNXGAiGtlNag==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17753302"
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; d="scan'208";a="17753302"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+ by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Mar 2024 08:11:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; d="scan'208";a="54942227"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+ by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 31 Mar 2024 08:11:24 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jXtbqMDTw3HGkGJA3fcgJ2w5aHkx2apI81Azq6W6TC1gD1fk4qOjIg7fic7v1xRyQiJudtcBwm/QjqUDH3R9UGD+NdhS8QxNuAMUOKYojHAUqEIrVFxdOduK1O+5smJGbgWLvGrAdWDKZlxqzF/i4y+AlGHKksZFwhsynbaeUsM5tAkB/oV93oV3y+hMfvLPCqpteVEVB+79zuvIhebVsGTNq6P1HaDpVadWJwbIzuK6WvGCgBJgWL3FrHLtDT5dLGifUZiT8kkZ/05v5dBGWpNQlIgF4h86x5ShdbcPnNWrdxjvIdo6d4J+dxu/GMxWvMZjQNT1Ib6qcxjsonDlmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WAmFu84ktMzQztWEd3Ywi5qFZWUU5w0qh+wIZh/jJa0=;
+ b=Lvn393NvLfDSmMPAqr5HqXtIZaEREH1ti1ANmbujUPT8QBQSSpr61K3G3sy9dM0bjosFolPSZ9I74n8SfNB0aFQWdm/XR1qFXd4op7dNGvY1L0HQ1gRdC8wThq7dMsWfGpAbPNjpezRQLCmYXzW03n5xfLMBODgWIK8xyPQMJisUE92wTrz+vwhShvXtZvXWX0AZAglGKJs4Y21St+bCtUWzI9qhpJydrao6IOFt+YPGLYml50bWb4tICjeVg9AYsI6pooCwPjC6GDygW5ot/VrWhnjIgpvhPzElx+XLCjuinJIUHTLRvqQWm7GC3y4C6sI177g0DoGM2IK7OBqfig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by CY8PR11MB7012.namprd11.prod.outlook.com (2603:10b6:930:54::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.24; Sun, 31 Mar
+ 2024 15:11:21 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7452.019; Sun, 31 Mar 2024
+ 15:11:21 +0000
+Date: Sun, 31 Mar 2024 23:11:10 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Message-ID: <202403312344.c0d273ab-oliver.sang@intel.com>
+Content-Disposition: inline
+In-Reply-To: <20240321142448.1645400-8-willy@infradead.org>
+X-ClientProxiedBy: SG2PR02CA0073.apcprd02.prod.outlook.com
+ (2603:1096:4:90::13) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CY8PR11MB7012:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fC1jc3w84ybQVFrjE7A1mN7s0Qp34oC9lz0OHAHW515wsIqB1hY2rxkOJddW7oCbCzUppmdWdU97vDuDwplQA+mmeBwYc0nYUFYjTwh/XMIOjsfyLTgFP1IT0K2KQkOE3EM1KI5Vrm3m7w2q+l8QupvoLPxcsGBldDDT5Lh7sbtbkDsqoaMW/F11u/CXdaVPwgJW6SIspqT0jpVpLpgygy36MvZ1a8WZPFnV2y73Qd2a//TxJSN+9UjNHZnLqcmBUChHSrrppeDF47oiy+jaaoM0NWfLYTWXJUWRWSXi21cwwycmjg2b5ROQ6rnlUXnqZ27R+0E1gLoRVr6rCU6mRSiWCKBgOb107CnqvVnHVjJCWPxuknu5T8dbEH6QsxBMv2B+aOpx5NW8/JF1fIc4dEtkWph0yf6YZbhdho6osqXqUgmRd58cSvA4zWfg9zArzFkdxcf+3snEOzVSrsPpdX2JC8awGuHuOmhPjBYzaShN6dstG4p7WBeDpaVqX0vPBRoU2BZlf2wpA1fwQuE6bWBX1AddKnyUhh0CzLZEvfaRjqaQNCVLwP2bjlBQWutZf4cqsgRzhz1qOvjn2ehzT28Rnq33P6kUAadOwe0jG+uCPMA6Uc/dorMLr1iJN3QB
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(376005)(7416005)(1800799015)(366007); DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M1YwEyQ3GGwlQuDEQ5bnNBNEoZ1N3/UpWGC4ZwmTaamhV4VO+PKDsx1r2cY/?=
+ =?us-ascii?Q?1+DJH7tgWeocY4oMwz4NuKQseNOSi7iZxEi01m57H5Z5V+08IsafpiSYVDpS?=
+ =?us-ascii?Q?P4LyyGcZyq8ZgL9IneSUhtVhvpPtuTLDVzLJcUAblcSjo0ORtcdq+8ZHPZf9?=
+ =?us-ascii?Q?H6rXURSIYnGZVlz0+WzOMibWWZwk2VyYs/EGUFPLUdXnWY3LwpUlBxbdZRzy?=
+ =?us-ascii?Q?JzxyhvC/HQ8LWU1fP/o7fYWdOXAcCa8Bv5ho7FIwgNvZRKTvcFAStQqL+yAO?=
+ =?us-ascii?Q?vYsqkQUjFM4deGuoY7qzFCCw3PGFVLkZrsc28jmuWxBTTqvUVwfm0uXmUW3Z?=
+ =?us-ascii?Q?80k3dnsOkgKwTWt0iTh8zIrMrEY23iAWA+GDe5lzP5H5LxCKrzN7CGKw+mbQ?=
+ =?us-ascii?Q?TuMOOFAkeSzvv4BcsvZu4F9VJematlOc4RuUN75eGDlNHIvjOiPwtVvC5wkV?=
+ =?us-ascii?Q?IY4WCQ0idMeAsPe5ZfEl5t0CFOKUMJumuplELQn+VeeMEOy6coc2VVGg9hcE?=
+ =?us-ascii?Q?za3hlQz/5wfPo3wipSoe6wBf9MuM+qdpic6vyDXVEV7R9T/HCz4vgx4T1bjB?=
+ =?us-ascii?Q?rSpWc03UevNZCvmZaj27wLaaNFX5wE5JR0h5xROYUtGyFic4l0LLS8mO6zCf?=
+ =?us-ascii?Q?aIhZem3zV0SyUAgv+JgpVccmnSxmaZB0Fk7wAPsxreza1tP8cFj8Cf6N847b?=
+ =?us-ascii?Q?LrIh7mwcyz1GYqjbLGrKB5FduEcpRCufACUZL0M7ZGlOpIOwJtpGHvXDOJXY?=
+ =?us-ascii?Q?xokFU6Z8jLVxfyk7zyS2Ihtt7BBdkPO+5gTz4//6KSMr3+z8/wPDSa2lV5BB?=
+ =?us-ascii?Q?UhtKNRktHs0CMm60dX7gb/oF8IHS7phQ2Y7m1d7kfKK0dQtz/cseUrNwGIet?=
+ =?us-ascii?Q?rprsZOhmToUQ8UPKDkkYSsA676zG7F3I1qftCr2iNHqMeVY9dEFMcGrBY0XH?=
+ =?us-ascii?Q?am+40JxKTT2aapY3f6b0nRPtOK0hK8C1+sJFEVaaGN1bpsDy8RiykWVrXqlx?=
+ =?us-ascii?Q?SK7BUCQNo64XZFgx/stOhBI8+e5LRI6c2kdQgyGL6Ncd1PFo98/FamvkD2O7?=
+ =?us-ascii?Q?CRivaClTslLJ/xNReXQmnyg11RO15+Cka/Obe4FIOjKi2hpmDmWGYXxBtQVM?=
+ =?us-ascii?Q?ko3VjfcZhGS8pAPYYw2Xd9hp3hsSAbfQWKKuZ/BKTmfuSF7PSppogKPO1aja?=
+ =?us-ascii?Q?R36gKwuQLqpHu7c3YmWt3PLH2eJAvzMVkxj9pMlYucXmzlMkEeQIbsaYtoya?=
+ =?us-ascii?Q?RWrCu94LByG784bGTDWgpBcrYlw/B9IkrLSecR/+Fa8F1LgoZ5lDFLkrHghU?=
+ =?us-ascii?Q?+v71myOBZDWsuzqctdD70/nv22IC3Ra/qy1161Eb9ZbVKjSA7I0SseTxFPy3?=
+ =?us-ascii?Q?oy0eBSJnRstfN3lIpQGUgwV2JgoBhMKV3H9x9vhYPeIa8Om266KT3btlWPJ+?=
+ =?us-ascii?Q?FUpVPd2TlMXpnh5sOud2VEgJMYbyAduShWiRqEwYeOJuFaL2ulHO3p18UpmW?=
+ =?us-ascii?Q?NMAzLgTg9uSrd2+73S4n0xeHbertlAPmSeii9tz7y916c82atRC89sTpoSXI?=
+ =?us-ascii?Q?VL2BdDsUgeTBGMlMSsqD7ggANVzIbmpAli0jBDNq4WBrEdXVW1gC0G4nuN4T?=
+ =?us-ascii?Q?vg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 342990e7-8c5f-46fe-09d1-08dc5194d271
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2024 15:11:21.0728 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DPII/pRYF/bpMibhGsERR99ElNs9dcf4cjD4JDJ6CaU3Xgjg9kCEkMJGhjkULPxBeZxDqGNB7IyUSejWyw5xPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7012
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] ioctl_fiemap01: New test for fiemap ioctl()
+Subject: Re: [LTP] [PATCH 7/9] mm: Free up PG_slab
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,163 +153,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>, lkp@intel.com,
+ David Hildenbrand <david@redhat.com>, Muchun
+ Song <muchun.song@linux.dev>, linux-kernel@vger.kernel.org, "Matthew
+ Wilcox \(Oracle\)" <willy@infradead.org>, linux-mm@kvack.org,
+ oliver.sang@intel.com, Vlastimil Babka <vbabka@suse.cz>,
+ oe-lkp@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
+ Oscar Salvador <osalvador@suse.de>, ltp@lists.linux.it,
+ linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #535
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_fiemap01.c    | 110 ++++++++++++++++++
- 3 files changed, 113 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6e2407879..4e6ce5aef 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -589,6 +589,8 @@ ioctl_ns07 ioctl_ns07
- 
- ioctl_sg01 ioctl_sg01
- 
-+ioctl_fiemap01 ioctl_fiemap01
-+
- inotify_init1_01 inotify_init1_01
- inotify_init1_02 inotify_init1_02
- 
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 5fff7a61d..64adcdfe6 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -22,3 +22,4 @@
- /ioctl_ns06
- /ioctl_ns07
- /ioctl_sg01
-+/ioctl_fiemap01
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-new file mode 100644
-index 000000000..b81842c6a
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify basic fiemap ioctl.
-+ */
-+
-+#include <linux/fs.h>
-+#include <linux/fiemap.h>
-+#include <stdlib.h>
-+#include <sys/statvfs.h>
-+
-+#include "tst_test.h"
-+
-+#define TMPDIR "mntdir"
-+#define TESTFILE "testfile"
-+#define NUM_EXTENT 3
-+
-+static void print_extens(struct fiemap *fiemap)
-+{
-+	tst_res(TDEBUG, "File extent count: %u", fiemap->fm_mapped_extents);
-+
-+	for (unsigned int i = 0; i < fiemap->fm_mapped_extents; ++i) {
-+		tst_res(TDEBUG, "Extent %u: Logical offset: %llu, Physical offset: %llu, flags: %u, Length: %llu",
-+				i + 1,
-+				fiemap->fm_extents[i].fe_logical,
-+				fiemap->fm_extents[i].fe_physical,
-+				fiemap->fm_extents[i].fe_flags,
-+				fiemap->fm_extents[i].fe_length);
-+	}
-+}
-+
-+static void check_extent(struct fiemap *fiemap, unsigned int fm_mapped_extents, int index_extents, int fe_flags, unsigned int min_fe_physical, unsigned int fe_length)
-+{
-+	TST_EXP_EXPR(fiemap->fm_mapped_extents == fm_mapped_extents,
-+		"Check extent fm_mapped_extents is %d", fm_mapped_extents);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_flags & fe_flags,
-+		"Check fe_flags is %d", fe_flags);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_physical >= min_fe_physical,
-+		"Check fe_physical > %d", min_fe_physical);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_length == fe_length,
-+		"Check fe_length is %d", fe_length);
-+}
-+
-+static void verify_ioctl(void)
-+{
-+	int fd;
-+	struct fiemap *fiemap;
-+	struct statvfs fs_info;
-+	unsigned long blk_size;
-+
-+	SAFE_CHDIR(TMPDIR);
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+
-+	TST_EXP_PASS(statvfs(".", &fs_info));
-+
-+	blk_size = fs_info.f_bsize;
-+
-+	fiemap = SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent) * NUM_EXTENT);
-+	fiemap->fm_start = 0;
-+	fiemap->fm_length = ~0ULL;
-+	fiemap->fm_extent_count = 1;
-+
-+	fiemap->fm_flags =  -1;
-+	TST_EXP_FAIL(ioctl(fd, FS_IOC_FIEMAP, fiemap), EBADR);
-+
-+	fiemap->fm_flags =  0;
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	TST_EXP_EXPR(fiemap->fm_mapped_extents == 0,
-+		"Check extent fm_mapped_extents is 0");
-+
-+	char *buf = SAFE_MALLOC(blk_size);
-+
-+	SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, blk_size);
-+	fiemap->fm_flags = FIEMAP_FLAG_SYNC;
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	check_extent(fiemap, 1, 0, FIEMAP_EXTENT_LAST, 1, blk_size);
-+
-+	fiemap->fm_extent_count = NUM_EXTENT;
-+	SAFE_LSEEK(fd, 2 * blk_size, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-+	SAFE_LSEEK(fd, 4 * blk_size, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	check_extent(fiemap, NUM_EXTENT, NUM_EXTENT - 1, FIEMAP_EXTENT_LAST, 1, blk_size);
-+
-+	free(buf);
-+	free(fiemap);
-+	SAFE_CLOSE(fd);
-+	unlink(TESTFILE);
-+}
-+
-+static struct tst_test test = {
-+	.mount_device = 1,
-+	.mntpoint = TMPDIR,
-+	.all_filesystems = 1,
-+	.skip_filesystems = (const char *const[]) {
-+		"exfat", "vfat", "fuse", "ntfs", "tmpfs", NULL
-+	},
-+	.test_all = verify_ioctl,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
+Hello,
+
+kernel test robot noticed "UBSAN:shift-out-of-bounds_in_fs/proc/page.c" on:
+
+commit: 30e5296811312a13938b83956a55839ac1e3aa40 ("[PATCH 7/9] mm: Free up PG_slab")
+url: https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/mm-Always-initialise-folio-_deferred_list/20240321-222800
+base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 23956900041d968f9ad0f30db6dede4daccd7aa9
+patch link: https://lore.kernel.org/all/20240321142448.1645400-8-willy@infradead.org/
+patch subject: [PATCH 7/9] mm: Free up PG_slab
+
+in testcase: ltp
+version: ltp-x86_64-14c1f76-1_20240323
+with following parameters:
+
+	disk: 1HDD
+	fs: ext4
+	test: fs-00
+
+
+
+compiler: gcc-12
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202403312344.c0d273ab-oliver.sang@intel.com
+
+
+kern  :warn  : [  528.627387] ------------[ cut here ]------------
+kern  :err   : [  528.627589] UBSAN: shift-out-of-bounds in fs/proc/page.c:107:18
+kern  :err   : [  528.627884] shift exponent 4096 is too large for 64-bit type 'long long unsigned int'
+kern  :warn  : [  528.628200] CPU: 0 PID: 4703 Comm: proc01 Tainted: G S                 6.8.0-11774-g30e529681131 #1
+kern  :warn  : [  528.628446] Hardware name: Hewlett-Packard p6-1451cx/2ADA, BIOS 8.15 02/05/2013
+kern  :warn  : [  528.628659] Call Trace:
+kern  :warn  : [  528.628814]  <TASK>
+kern :warn : [  528.628960] dump_stack_lvl (lib/dump_stack.c:117 (discriminator 1)) 
+kern :warn : [  528.629134] __ubsan_handle_shift_out_of_bounds (lib/ubsan.c:218 lib/ubsan.c:454) 
+kern :warn : [  528.629360] stable_page_flags.part.0.cold (include/linux/page-flags.h:284 fs/proc/page.c:184) 
+kern :warn : [  528.629506] kpageflags_read (fs/proc/page.c:238 fs/proc/page.c:250) 
+kern :warn : [  528.629623] vfs_read (fs/read_write.c:474) 
+kern :warn : [  528.629737] ? do_sys_openat2 (fs/open.c:1415) 
+kern :warn : [  528.629898] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
+kern :warn : [  528.630063] ? __pfx_vfs_read (fs/read_write.c:457) 
+kern :warn : [  528.630225] ? do_sys_openat2 (fs/open.c:1415) 
+kern :warn : [  528.630388] ? __pfx_do_sys_openat2 (fs/open.c:1392) 
+kern :warn : [  528.630552] ? __do_sys_newfstatat (fs/stat.c:464) 
+kern :warn : [  528.630717] ? __fget_light (include/linux/atomic/atomic-arch-fallback.h:479 include/linux/atomic/atomic-instrumented.h:50 fs/file.c:1145) 
+kern :warn : [  528.630888] ksys_read (fs/read_write.c:619) 
+kern :warn : [  528.631051] ? __pfx_ksys_read (fs/read_write.c:609) 
+kern :warn : [  528.631216] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
+kern :warn : [  528.631415] do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
+kern :warn : [  528.631555] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
+kern  :warn  : [  528.631756] RIP: 0033:0x7f90bf2ba19d
+kern :warn : [ 528.631913] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d 66 54 0a 00 e8 49 ff 01 00 66 0f 1f 84 00 00 00 00 00 80 3d 41 24 0e 00 00 74 17 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
+All code
+========
+   0:	31 c0                	xor    %eax,%eax
+   2:	e9 c6 fe ff ff       	jmpq   0xfffffffffffffecd
+   7:	50                   	push   %rax
+   8:	48 8d 3d 66 54 0a 00 	lea    0xa5466(%rip),%rdi        # 0xa5475
+   f:	e8 49 ff 01 00       	callq  0x1ff5d
+  14:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  1b:	00 00 
+  1d:	80 3d 41 24 0e 00 00 	cmpb   $0x0,0xe2441(%rip)        # 0xe2465
+  24:	74 17                	je     0x3d
+  26:	31 c0                	xor    %eax,%eax
+  28:	0f 05                	syscall 
+  2a:*	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax		<-- trapping instruction
+  30:	77 5b                	ja     0x8d
+  32:	c3                   	retq   
+  33:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  3a:	00 00 00 
+  3d:	48                   	rex.W
+  3e:	83                   	.byte 0x83
+  3f:	ec                   	in     (%dx),%al
+
+Code starting with the faulting instruction
+===========================================
+   0:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax
+   6:	77 5b                	ja     0x63
+   8:	c3                   	retq   
+   9:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  10:	00 00 00 
+  13:	48                   	rex.W
+  14:	83                   	.byte 0x83
+  15:	ec                   	in     (%dx),%al
+kern  :warn  : [  528.632309] RSP: 002b:00007ffe2eb3c008 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+kern  :warn  : [  528.632540] RAX: ffffffffffffffda RBX: 00007ffe2eb3d1b0 RCX: 00007f90bf2ba19d
+kern  :warn  : [  528.632757] RDX: 0000000000000400 RSI: 000055e284e68c40 RDI: 0000000000000005
+kern  :warn  : [  528.632960] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000073
+kern  :warn  : [  528.633156] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
+kern  :warn  : [  528.633399] R13: 000055e284e68c40 R14: 000055e2a975f8cb R15: 00007ffe2eb3d1b0
+kern  :warn  : [  528.633645]  </TASK>
+kern  :warn  : [  528.633813] ---[ end trace ]---
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240331/202403312344.c0d273ab-oliver.sang@intel.com
+
+
+
 -- 
-2.35.3
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
 -- 
