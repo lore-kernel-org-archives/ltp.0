@@ -4,144 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A741ACD1284
-	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 15:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4838CD1284
+	for <ltp@archiver.kernel.org>; Mon,  1 Apr 2024 03:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1711941869; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=RRPyWtR1/Z5KjnhNgpEnPPz4k0C80fF2gwocNgZRJGM=;
+ b=NfI0CTnSrO+KOhRCjI6uxIMZE8BODDTVqJyNM03+cm2rXR6dh3x9v1ml0Z3r03M6Zazm5
+ B/iZuFTtDWJf7d8wTbc/3CcJ8Uh/2uh4Oy1K5y7cDADACzFqC8vFG5qcFaQ79JpChgB7YVG
+ xUnFKD1/5n7JOKVVdQokBQj8QwoXt9c=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B574B3C782A
-	for <ltp@archiver.kernel.org>; Sun, 31 Mar 2024 17:11:48 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 384F13CB93A
+	for <ltp@archiver.kernel.org>; Mon,  1 Apr 2024 05:24:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B9C073C0318
- for <ltp@lists.linux.it>; Sun, 31 Mar 2024 17:11:31 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.198.163.9; helo=mgamail.intel.com;
- envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+ by picard.linux.it (Postfix) with ESMTPS id BA8D63CB08E
+ for <ltp@lists.linux.it>; Mon,  1 Apr 2024 05:24:07 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=68.232.139.139;
+ helo=esa6.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com
+ [68.232.139.139])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 88A5E600697
- for <ltp@lists.linux.it>; Sun, 31 Mar 2024 17:11:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1711897890; x=1743433890;
- h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
- bh=TNl522M15Nfi3zuWalAlAxNNnhH/pJBR8sRyHQOKMDI=;
- b=NcfY04zBjAbypKvLD8YbIexhZBJcMUTh7s+B/6FzMNbNDTmcuXHWFM4M
- 6yaiti4TpuIeofhj+ozCkoMTjbbN2pdfFb8dGmJcZwX2v07YCZW0uPh3i
- JsxpODE/Bp3IW9UCs+82D3R5cllWspft06h0ae2TxWkTY2xWNCLAG0ENf
- zkH+aPWiE0wm14hYyl8h3Wri4qG87vYeskF9fdVag9qhyMbM+fnPqYexj
- WS7Q1ELVhFrsbTkUOTWJZlqZOTJyCOEVuagJl69GIM2wxZFS7P6Ju4gJQ
- d6oK+kBa+h7vmkvfCsgdE4vPTuqFZ3bNgiVVdzDkJe0ZzMzWYf7n/Qv2o Q==;
-X-CSE-ConnectionGUID: FEY4YJtwRpqWuCQLJ9CWZA==
-X-CSE-MsgGUID: mamygKIISEmNXGAiGtlNag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17753302"
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; d="scan'208";a="17753302"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
- by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2024 08:11:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; d="scan'208";a="54942227"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
- by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 31 Mar 2024 08:11:24 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 31 Mar 2024 08:11:23 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jXtbqMDTw3HGkGJA3fcgJ2w5aHkx2apI81Azq6W6TC1gD1fk4qOjIg7fic7v1xRyQiJudtcBwm/QjqUDH3R9UGD+NdhS8QxNuAMUOKYojHAUqEIrVFxdOduK1O+5smJGbgWLvGrAdWDKZlxqzF/i4y+AlGHKksZFwhsynbaeUsM5tAkB/oV93oV3y+hMfvLPCqpteVEVB+79zuvIhebVsGTNq6P1HaDpVadWJwbIzuK6WvGCgBJgWL3FrHLtDT5dLGifUZiT8kkZ/05v5dBGWpNQlIgF4h86x5ShdbcPnNWrdxjvIdo6d4J+dxu/GMxWvMZjQNT1Ib6qcxjsonDlmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WAmFu84ktMzQztWEd3Ywi5qFZWUU5w0qh+wIZh/jJa0=;
- b=Lvn393NvLfDSmMPAqr5HqXtIZaEREH1ti1ANmbujUPT8QBQSSpr61K3G3sy9dM0bjosFolPSZ9I74n8SfNB0aFQWdm/XR1qFXd4op7dNGvY1L0HQ1gRdC8wThq7dMsWfGpAbPNjpezRQLCmYXzW03n5xfLMBODgWIK8xyPQMJisUE92wTrz+vwhShvXtZvXWX0AZAglGKJs4Y21St+bCtUWzI9qhpJydrao6IOFt+YPGLYml50bWb4tICjeVg9AYsI6pooCwPjC6GDygW5ot/VrWhnjIgpvhPzElx+XLCjuinJIUHTLRvqQWm7GC3y4C6sI177g0DoGM2IK7OBqfig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by CY8PR11MB7012.namprd11.prod.outlook.com (2603:10b6:930:54::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.24; Sun, 31 Mar
- 2024 15:11:21 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7452.019; Sun, 31 Mar 2024
- 15:11:21 +0000
-Date: Sun, 31 Mar 2024 23:11:10 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Message-ID: <202403312344.c0d273ab-oliver.sang@intel.com>
-Content-Disposition: inline
-In-Reply-To: <20240321142448.1645400-8-willy@infradead.org>
-X-ClientProxiedBy: SG2PR02CA0073.apcprd02.prod.outlook.com
- (2603:1096:4:90::13) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AEEF620004E
+ for <ltp@lists.linux.it>; Mon,  1 Apr 2024 05:24:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1711941847; x=1743477847;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=KQ1QCXgJCpgIaQdtt0SGJfLi9qEXqEhGFOU916I5kxw=;
+ b=Vq/5JPejw3QqArt4NtEbvYP3WGk/oEeMzmNCVivApK+YokMUaIZ2P5vw
+ 5MSawC9zBHvhnJ9WcQMbkfOMZTGgkjc9YRSQcMgRXdBvmfSshcvQK9LRe
+ HvUhmN3zfp5EankwvzrP1MFiDCXy8W0G/hZNanZ4at1otxVHGQghLtubi
+ cHwhG74OTAgTnpDthOShIdgh7m3Bk14qzzkgQK3dCVOK12h/h+6Yg4Z8s
+ a1EqIMaDDMk9PPrUlwjVK3+DTH/ISwrmvOxiQlzvte5QwJQRuCeSMAi9n
+ o9KrvIagx37h0Z0iBD5cmWkMXZdTFtyGNvRXjGOSt10hmRPantQRmYq+8 Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="156081773"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708354800"; d="scan'208";a="156081773"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Apr 2024 12:24:03 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
+ [192.168.87.58])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 7B997105A1
+ for <ltp@lists.linux.it>; Mon,  1 Apr 2024 12:24:00 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 6946DC520A
+ for <ltp@lists.linux.it>; Mon,  1 Apr 2024 12:23:59 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 026ED20074736
+ for <ltp@lists.linux.it>; Mon,  1 Apr 2024 12:23:59 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 9DA721A0002;
+ Mon,  1 Apr 2024 11:23:58 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Sun, 31 Mar 2024 22:49:48 -0400
+Message-Id: <20240401024948.8703-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CY8PR11MB7012:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fC1jc3w84ybQVFrjE7A1mN7s0Qp34oC9lz0OHAHW515wsIqB1hY2rxkOJddW7oCbCzUppmdWdU97vDuDwplQA+mmeBwYc0nYUFYjTwh/XMIOjsfyLTgFP1IT0K2KQkOE3EM1KI5Vrm3m7w2q+l8QupvoLPxcsGBldDDT5Lh7sbtbkDsqoaMW/F11u/CXdaVPwgJW6SIspqT0jpVpLpgygy36MvZ1a8WZPFnV2y73Qd2a//TxJSN+9UjNHZnLqcmBUChHSrrppeDF47oiy+jaaoM0NWfLYTWXJUWRWSXi21cwwycmjg2b5ROQ6rnlUXnqZ27R+0E1gLoRVr6rCU6mRSiWCKBgOb107CnqvVnHVjJCWPxuknu5T8dbEH6QsxBMv2B+aOpx5NW8/JF1fIc4dEtkWph0yf6YZbhdho6osqXqUgmRd58cSvA4zWfg9zArzFkdxcf+3snEOzVSrsPpdX2JC8awGuHuOmhPjBYzaShN6dstG4p7WBeDpaVqX0vPBRoU2BZlf2wpA1fwQuE6bWBX1AddKnyUhh0CzLZEvfaRjqaQNCVLwP2bjlBQWutZf4cqsgRzhz1qOvjn2ehzT28Rnq33P6kUAadOwe0jG+uCPMA6Uc/dorMLr1iJN3QB
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(376005)(7416005)(1800799015)(366007); DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M1YwEyQ3GGwlQuDEQ5bnNBNEoZ1N3/UpWGC4ZwmTaamhV4VO+PKDsx1r2cY/?=
- =?us-ascii?Q?1+DJH7tgWeocY4oMwz4NuKQseNOSi7iZxEi01m57H5Z5V+08IsafpiSYVDpS?=
- =?us-ascii?Q?P4LyyGcZyq8ZgL9IneSUhtVhvpPtuTLDVzLJcUAblcSjo0ORtcdq+8ZHPZf9?=
- =?us-ascii?Q?H6rXURSIYnGZVlz0+WzOMibWWZwk2VyYs/EGUFPLUdXnWY3LwpUlBxbdZRzy?=
- =?us-ascii?Q?JzxyhvC/HQ8LWU1fP/o7fYWdOXAcCa8Bv5ho7FIwgNvZRKTvcFAStQqL+yAO?=
- =?us-ascii?Q?vYsqkQUjFM4deGuoY7qzFCCw3PGFVLkZrsc28jmuWxBTTqvUVwfm0uXmUW3Z?=
- =?us-ascii?Q?80k3dnsOkgKwTWt0iTh8zIrMrEY23iAWA+GDe5lzP5H5LxCKrzN7CGKw+mbQ?=
- =?us-ascii?Q?TuMOOFAkeSzvv4BcsvZu4F9VJematlOc4RuUN75eGDlNHIvjOiPwtVvC5wkV?=
- =?us-ascii?Q?IY4WCQ0idMeAsPe5ZfEl5t0CFOKUMJumuplELQn+VeeMEOy6coc2VVGg9hcE?=
- =?us-ascii?Q?za3hlQz/5wfPo3wipSoe6wBf9MuM+qdpic6vyDXVEV7R9T/HCz4vgx4T1bjB?=
- =?us-ascii?Q?rSpWc03UevNZCvmZaj27wLaaNFX5wE5JR0h5xROYUtGyFic4l0LLS8mO6zCf?=
- =?us-ascii?Q?aIhZem3zV0SyUAgv+JgpVccmnSxmaZB0Fk7wAPsxreza1tP8cFj8Cf6N847b?=
- =?us-ascii?Q?LrIh7mwcyz1GYqjbLGrKB5FduEcpRCufACUZL0M7ZGlOpIOwJtpGHvXDOJXY?=
- =?us-ascii?Q?xokFU6Z8jLVxfyk7zyS2Ihtt7BBdkPO+5gTz4//6KSMr3+z8/wPDSa2lV5BB?=
- =?us-ascii?Q?UhtKNRktHs0CMm60dX7gb/oF8IHS7phQ2Y7m1d7kfKK0dQtz/cseUrNwGIet?=
- =?us-ascii?Q?rprsZOhmToUQ8UPKDkkYSsA676zG7F3I1qftCr2iNHqMeVY9dEFMcGrBY0XH?=
- =?us-ascii?Q?am+40JxKTT2aapY3f6b0nRPtOK0hK8C1+sJFEVaaGN1bpsDy8RiykWVrXqlx?=
- =?us-ascii?Q?SK7BUCQNo64XZFgx/stOhBI8+e5LRI6c2kdQgyGL6Ncd1PFo98/FamvkD2O7?=
- =?us-ascii?Q?CRivaClTslLJ/xNReXQmnyg11RO15+Cka/Obe4FIOjKi2hpmDmWGYXxBtQVM?=
- =?us-ascii?Q?ko3VjfcZhGS8pAPYYw2Xd9hp3hsSAbfQWKKuZ/BKTmfuSF7PSppogKPO1aja?=
- =?us-ascii?Q?R36gKwuQLqpHu7c3YmWt3PLH2eJAvzMVkxj9pMlYucXmzlMkEeQIbsaYtoya?=
- =?us-ascii?Q?RWrCu94LByG784bGTDWgpBcrYlw/B9IkrLSecR/+Fa8F1LgoZ5lDFLkrHghU?=
- =?us-ascii?Q?+v71myOBZDWsuzqctdD70/nv22IC3Ra/qy1161Eb9ZbVKjSA7I0SseTxFPy3?=
- =?us-ascii?Q?oy0eBSJnRstfN3lIpQGUgwV2JgoBhMKV3H9x9vhYPeIa8Om266KT3btlWPJ+?=
- =?us-ascii?Q?FUpVPd2TlMXpnh5sOud2VEgJMYbyAduShWiRqEwYeOJuFaL2ulHO3p18UpmW?=
- =?us-ascii?Q?NMAzLgTg9uSrd2+73S4n0xeHbertlAPmSeii9tz7y916c82atRC89sTpoSXI?=
- =?us-ascii?Q?VL2BdDsUgeTBGMlMSsqD7ggANVzIbmpAli0jBDNq4WBrEdXVW1gC0G4nuN4T?=
- =?us-ascii?Q?vg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 342990e7-8c5f-46fe-09d1-08dc5194d271
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2024 15:11:21.0728 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DPII/pRYF/bpMibhGsERR99ElNs9dcf4cjD4JDJ6CaU3Xgjg9kCEkMJGhjkULPxBeZxDqGNB7IyUSejWyw5xPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7012
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28290.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28290.004
+X-TMASE-Result: 10--17.193400-10.000000
+X-TMASE-MatchedRID: a3KJLn6RIiJSuJfEWZSQfB1kSRHxj+Z59LMB0hXFSeg6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmLy9zcRSkKatS01VXlcjcCUCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
+ z3CH3vCeIuA1iha0SDkeDPyqIAshAuo7vrkTNm7UF7cpFXK76TRdoyFlJ5UUMWSYg69K24my/jz
+ 9RTmfNFGWdS71W+uwVMBbXb6klnc03KXWd30Ii3RRFJJyf5BJe3QfwsVk0UbslCGssfkpInQ==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 7/9] mm: Free up PG_slab
+Subject: [LTP] [PATCH] unlink: Add error tests for EPERM and EROFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -153,131 +94,138 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Miaohe Lin <linmiaohe@huawei.com>, lkp@intel.com,
- David Hildenbrand <david@redhat.com>, Muchun
- Song <muchun.song@linux.dev>, linux-kernel@vger.kernel.org, "Matthew
- Wilcox \(Oracle\)" <willy@infradead.org>, linux-mm@kvack.org,
- oliver.sang@intel.com, Vlastimil Babka <vbabka@suse.cz>,
- oe-lkp@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
- Oscar Salvador <osalvador@suse.de>, ltp@lists.linux.it,
- linux-trace-kernel@vger.kernel.org
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Add negative cases for unlink(), when errno is EPERM or EROFS.
 
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/unlink/.gitignore |  1 +
+ testcases/kernel/syscalls/unlink/unlink09.c | 86 +++++++++++++++++++++
+ 3 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/unlink/unlink09.c
 
-Hello,
-
-kernel test robot noticed "UBSAN:shift-out-of-bounds_in_fs/proc/page.c" on:
-
-commit: 30e5296811312a13938b83956a55839ac1e3aa40 ("[PATCH 7/9] mm: Free up PG_slab")
-url: https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/mm-Always-initialise-folio-_deferred_list/20240321-222800
-base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 23956900041d968f9ad0f30db6dede4daccd7aa9
-patch link: https://lore.kernel.org/all/20240321142448.1645400-8-willy@infradead.org/
-patch subject: [PATCH 7/9] mm: Free up PG_slab
-
-in testcase: ltp
-version: ltp-x86_64-14c1f76-1_20240323
-with following parameters:
-
-	disk: 1HDD
-	fs: ext4
-	test: fs-00
-
-
-
-compiler: gcc-12
-test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202403312344.c0d273ab-oliver.sang@intel.com
-
-
-kern  :warn  : [  528.627387] ------------[ cut here ]------------
-kern  :err   : [  528.627589] UBSAN: shift-out-of-bounds in fs/proc/page.c:107:18
-kern  :err   : [  528.627884] shift exponent 4096 is too large for 64-bit type 'long long unsigned int'
-kern  :warn  : [  528.628200] CPU: 0 PID: 4703 Comm: proc01 Tainted: G S                 6.8.0-11774-g30e529681131 #1
-kern  :warn  : [  528.628446] Hardware name: Hewlett-Packard p6-1451cx/2ADA, BIOS 8.15 02/05/2013
-kern  :warn  : [  528.628659] Call Trace:
-kern  :warn  : [  528.628814]  <TASK>
-kern :warn : [  528.628960] dump_stack_lvl (lib/dump_stack.c:117 (discriminator 1)) 
-kern :warn : [  528.629134] __ubsan_handle_shift_out_of_bounds (lib/ubsan.c:218 lib/ubsan.c:454) 
-kern :warn : [  528.629360] stable_page_flags.part.0.cold (include/linux/page-flags.h:284 fs/proc/page.c:184) 
-kern :warn : [  528.629506] kpageflags_read (fs/proc/page.c:238 fs/proc/page.c:250) 
-kern :warn : [  528.629623] vfs_read (fs/read_write.c:474) 
-kern :warn : [  528.629737] ? do_sys_openat2 (fs/open.c:1415) 
-kern :warn : [  528.629898] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
-kern :warn : [  528.630063] ? __pfx_vfs_read (fs/read_write.c:457) 
-kern :warn : [  528.630225] ? do_sys_openat2 (fs/open.c:1415) 
-kern :warn : [  528.630388] ? __pfx_do_sys_openat2 (fs/open.c:1392) 
-kern :warn : [  528.630552] ? __do_sys_newfstatat (fs/stat.c:464) 
-kern :warn : [  528.630717] ? __fget_light (include/linux/atomic/atomic-arch-fallback.h:479 include/linux/atomic/atomic-instrumented.h:50 fs/file.c:1145) 
-kern :warn : [  528.630888] ksys_read (fs/read_write.c:619) 
-kern :warn : [  528.631051] ? __pfx_ksys_read (fs/read_write.c:609) 
-kern :warn : [  528.631216] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
-kern :warn : [  528.631415] do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
-kern :warn : [  528.631555] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
-kern  :warn  : [  528.631756] RIP: 0033:0x7f90bf2ba19d
-kern :warn : [ 528.631913] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d 66 54 0a 00 e8 49 ff 01 00 66 0f 1f 84 00 00 00 00 00 80 3d 41 24 0e 00 00 74 17 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
-All code
-========
-   0:	31 c0                	xor    %eax,%eax
-   2:	e9 c6 fe ff ff       	jmpq   0xfffffffffffffecd
-   7:	50                   	push   %rax
-   8:	48 8d 3d 66 54 0a 00 	lea    0xa5466(%rip),%rdi        # 0xa5475
-   f:	e8 49 ff 01 00       	callq  0x1ff5d
-  14:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
-  1b:	00 00 
-  1d:	80 3d 41 24 0e 00 00 	cmpb   $0x0,0xe2441(%rip)        # 0xe2465
-  24:	74 17                	je     0x3d
-  26:	31 c0                	xor    %eax,%eax
-  28:	0f 05                	syscall 
-  2a:*	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax		<-- trapping instruction
-  30:	77 5b                	ja     0x8d
-  32:	c3                   	retq   
-  33:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-  3a:	00 00 00 
-  3d:	48                   	rex.W
-  3e:	83                   	.byte 0x83
-  3f:	ec                   	in     (%dx),%al
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax
-   6:	77 5b                	ja     0x63
-   8:	c3                   	retq   
-   9:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-  10:	00 00 00 
-  13:	48                   	rex.W
-  14:	83                   	.byte 0x83
-  15:	ec                   	in     (%dx),%al
-kern  :warn  : [  528.632309] RSP: 002b:00007ffe2eb3c008 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-kern  :warn  : [  528.632540] RAX: ffffffffffffffda RBX: 00007ffe2eb3d1b0 RCX: 00007f90bf2ba19d
-kern  :warn  : [  528.632757] RDX: 0000000000000400 RSI: 000055e284e68c40 RDI: 0000000000000005
-kern  :warn  : [  528.632960] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000073
-kern  :warn  : [  528.633156] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-kern  :warn  : [  528.633399] R13: 000055e284e68c40 R14: 000055e2a975f8cb R15: 00007ffe2eb3d1b0
-kern  :warn  : [  528.633645]  </TASK>
-kern  :warn  : [  528.633813] ---[ end trace ]---
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240331/202403312344.c0d273ab-oliver.sang@intel.com
-
-
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4ed2b5602..b99ce7170 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1651,6 +1651,7 @@ unlink01 symlink01 -T unlink01
+ unlink05 unlink05
+ unlink07 unlink07
+ unlink08 unlink08
++unlink09 unlink09
+ 
+ #unlinkat test cases
+ unlinkat01 unlinkat01
+diff --git a/testcases/kernel/syscalls/unlink/.gitignore b/testcases/kernel/syscalls/unlink/.gitignore
+index 2e783580d..6038cc29d 100644
+--- a/testcases/kernel/syscalls/unlink/.gitignore
++++ b/testcases/kernel/syscalls/unlink/.gitignore
+@@ -1,3 +1,4 @@
+ /unlink05
+ /unlink07
+ /unlink08
++/unlink09
+diff --git a/testcases/kernel/syscalls/unlink/unlink09.c b/testcases/kernel/syscalls/unlink/unlink09.c
+new file mode 100644
+index 000000000..b7ff94ee6
+--- /dev/null
++++ b/testcases/kernel/syscalls/unlink/unlink09.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify that unlink(2) fails with
++ *
++ * - EPERM when target file is marked as immutable or append-only
++ * - EROFS when target file is on a read-only filesystem.
++ */
++
++#include <errno.h>
++#include <unistd.h>
++#include <sys/ioctl.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "lapi/fs.h"
++
++#define TEST_EPERM_IMMUTABLE "test_eperm_immutable"
++#define TEST_EPERM_APPEND_ONLY "test_eperm_append_only"
++#define DIR_EROFS "erofs"
++#define TEST_EROFS "erofs/test_erofs"
++
++static int fd_immutable;
++static int fd_append_only;
++
++static struct test_case_t {
++	char *filename;
++	int expected_errno;
++	char *desc;
++} tcases[] = {
++	{TEST_EPERM_IMMUTABLE, EPERM, "target file is immutable"},
++	{TEST_EPERM_APPEND_ONLY, EPERM, "target file is append-only"},
++	{TEST_EROFS, EROFS, "target file in read-only filesystem"},
++};
++
++static void setup(void)
++{
++	int attr;
++
++	fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
++	ioctl(fd_immutable, FS_IOC_GETFLAGS, &attr);
++	attr |= FS_IMMUTABLE_FL;
++	ioctl(fd_immutable, FS_IOC_SETFLAGS, &attr);
++
++	fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
++	ioctl(fd_append_only, FS_IOC_GETFLAGS, &attr);
++	attr |= FS_APPEND_FL;
++	ioctl(fd_append_only, FS_IOC_SETFLAGS, &attr);
++}
++
++static void cleanup(void)
++{
++	int attr;
++
++	ioctl(fd_immutable, FS_IOC_GETFLAGS, &attr);
++	attr &= ~FS_IMMUTABLE_FL;
++	ioctl(fd_immutable, FS_IOC_SETFLAGS, &attr);
++	SAFE_CLOSE(fd_immutable);
++
++	ioctl(fd_append_only, FS_IOC_GETFLAGS, &attr);
++	attr &= ~FS_APPEND_FL;
++	ioctl(fd_append_only, FS_IOC_SETFLAGS, &attr);
++	SAFE_CLOSE(fd_append_only);
++}
++
++static void verify_unlink(unsigned int i)
++{
++	struct test_case_t *tc = &tcases[i];
++
++	TST_EXP_FAIL(unlink(tc->filename), tc->expected_errno, "%s", tc->desc);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.cleanup = cleanup,
++	.test = verify_unlink,
++	.needs_rofs = 1,
++	.mntpoint = DIR_EROFS,
++	.needs_root = 1,
++};
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
 
 
 -- 
