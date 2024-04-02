@@ -4,81 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1F83CD1292
-	for <ltp@archiver.kernel.org>; Mon,  1 Apr 2024 15:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3906ECD1284
+	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 05:26:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A145A3CC7D6
-	for <ltp@archiver.kernel.org>; Mon,  1 Apr 2024 17:00:39 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1E5413C8658
+	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 07:26:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03DD33C7992
- for <ltp@lists.linux.it>; Mon,  1 Apr 2024 17:00:23 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=oracle.com (client-ip=205.220.177.32;
- helo=mx0b-00069f02.pphosted.com;
- envelope-from=samasth.norway.ananda@oracle.com; receiver=lists.linux.it)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
- [205.220.177.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A2C573C84C3
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 07:26:18 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=none (no SPF record) smtp.mailfrom=infradead.org
+ (client-ip=2001:8b0:10b:1236::1; helo=casper.infradead.org;
+ envelope-from=willy@infradead.org; receiver=lists.linux.it)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A5F2A10006AD
- for <ltp@lists.linux.it>; Mon,  1 Apr 2024 17:00:20 +0200 (CEST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 4318i54X007624 for <ltp@lists.linux.it>; Mon, 1 Apr 2024 15:00:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=/lUd/XKYTE+jW9Us7H6vJ/1OFrNCJm0/mVdnwnPBSx4=;
- b=iMhQ7j3alCgE0SAmcp8E8XIhP8t1f03a/0ZUDP1BbfATe4Jbt5JuYIxS4Cjc62HNbOg7
- oCZsP7XxqeRIAp7JxdX4N4fbmiYfDRzkmXROdvtS4dexUDBo/ZHB7iVB9Wty52/q+sOK
- wzjkVYqX3qqcRaO6Xuf0oS1fiEjP8hvU8DVGBK7qvmMsUX44bIuRWAwelXKV/qqATsmv
- jgdt8KxSWhYeJCnQMxZFbzg9h1wC9q5AwB+apLVDPaCH25DVp0Jy2SsrJrhaf0KbcbPu
- R5YbiQjGaODS63IaEIz+8CdTYRcYSI75GA7iERZ3Su/t3WkiUw6TbS8EGR2CdSjzPOu7 IQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com
- (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
- by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x695ejjd2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Mon, 01 Apr 2024 15:00:18 +0000
-Received: from pps.filterd
- (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
- by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 431DhS1H011621
- for <ltp@lists.linux.it>; Mon, 1 Apr 2024 15:00:17 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
- 3x696c06m9-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Mon, 01 Apr 2024 15:00:17 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com
- (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 431F0HHr010991
- for <ltp@lists.linux.it>; Mon, 1 Apr 2024 15:00:17 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
- [10.129.136.47])
- by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id
- 3x696c06jr-1; Mon, 01 Apr 2024 15:00:17 +0000
-From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-To: ltp@lists.linux.it
-Date: Mon,  1 Apr 2024 08:00:15 -0700
-Message-ID: <20240401150015.301640-1-samasth.norway.ananda@oracle.com>
-X-Mailer: git-send-email 2.43.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A16CB6005FC
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 07:26:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=7t2WjsmH8l5lF/Pmb1Te6bnqZx4BXhCY++fg2NjSv5c=; b=krFd6x850goqIRx5xWkc8LQbPX
+ L1dVt9sISoRBhDUDFdjSOa+piX61bhGbbqw9U0isYl17RkNU8lWzACm/gP/t2y6ANPlSuHGH5aNxa
+ 4g/8D1C2AHt5QAzmbLYw+HSLhkvlnuD1V+feTdMOCwfZdZX4UCL33os5bnrdVnHIiM/GOosC+VvdT
+ KBibFwG2gIRfqLeaB4LCXAauvUp7WgKgOD1wcsbz2/amhCfiz71r3erRdjAVppW28F3YMBivo9g9x
+ VqfGKcCzgQI3TRVb0RtvEMFjDlTKEtQP1WO6aE2p0dLKjQKlwTUwZjKzjt1E/QptSTmaP6bWy/WUn
+ dbRihOuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red
+ Hat Linux)) id 1rrWev-00000002HaX-2ykM;
+ Tue, 02 Apr 2024 05:26:10 +0000
+Date: Tue, 2 Apr 2024 06:26:09 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: kernel test robot <oliver.sang@intel.com>
+Message-ID: <ZguW8RtudvsJaHLq@casper.infradead.org>
+References: <20240321142448.1645400-8-willy@infradead.org>
+ <202403312344.c0d273ab-oliver.sang@intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-01_10,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- suspectscore=0
- phishscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404010106
-X-Proofpoint-GUID: NPrNNTKGbwJBXQG-8KIuoSxF2fyPhVS2
-X-Proofpoint-ORIG-GUID: NPrNNTKGbwJBXQG-8KIuoSxF2fyPhVS2
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <202403312344.c0d273ab-oliver.sang@intel.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mremap06: fallocate is not supported on nfsv3
+Subject: Re: [LTP] [PATCH 7/9] mm: Free up PG_slab
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,43 +62,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: calum.mackay@oracle.com
+Cc: Miaohe Lin <linmiaohe@huawei.com>, lkp@intel.com,
+ David Hildenbrand <david@redhat.com>, Muchun Song <muchun.song@linux.dev>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Vlastimil Babka <vbabka@suse.cz>, oe-lkp@lists.linux.dev,
+ Andrew Morton <akpm@linux-foundation.org>, Oscar Salvador <osalvador@suse.de>,
+ ltp@lists.linux.it, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The function fallocate() is not supported on nfsv3. Thus when we run the
-mremap06 test over a nfsv3 filesystem the test fails.
+On Sun, Mar 31, 2024 at 11:11:10PM +0800, kernel test robot wrote:
+> kernel test robot noticed "UBSAN:shift-out-of-bounds_in_fs/proc/page.c" on:
+> 
+> commit: 30e5296811312a13938b83956a55839ac1e3aa40 ("[PATCH 7/9] mm: Free up PG_slab")
 
-Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
----
- testcases/kernel/syscalls/mremap/mremap06.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Quite right.  Spotted another one while I was at it.  Not able to test
+right now, but this should do the trick:
 
-diff --git a/testcases/kernel/syscalls/mremap/mremap06.c b/testcases/kernel/syscalls/mremap/mremap06.c
-index 3bbaf441a..362b03e19 100644
---- a/testcases/kernel/syscalls/mremap/mremap06.c
-+++ b/testcases/kernel/syscalls/mremap/mremap06.c
-@@ -104,8 +104,14 @@ static void setup(void)
- 	fd = SAFE_OPEN("testfile", O_CREAT | O_RDWR | O_TRUNC, 0600);
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index 5bc82828c6aa..55b01535eb22 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -175,6 +175,8 @@ u64 stable_page_flags(const struct page *page)
+ 		u |= 1 << KPF_OFFLINE;
+ 	if (PageTable(page))
+ 		u |= 1 << KPF_PGTABLE;
++	if (folio_test_slab(folio))
++		u |= 1 << KPF_SLAB;
  
- 	ret = fallocate(fd, 0, 0, mmap_size);
--	if (ret == -1)
-+	if (ret != 0) {
-+		if (errno == EOPNOTSUPP || errno == ENOSYS) {
-+			tst_brk(TCONF,
-+				"fallocate system call is not implemented");
-+		}
- 		tst_brk(TBROK, "fallocate() failed");
-+		return;
-+	}
+ #if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
+ 	u |= kpf_copy_bit(k, KPF_IDLE,          PG_idle);
+@@ -184,7 +186,6 @@ u64 stable_page_flags(const struct page *page)
+ #endif
  
- 	buf = SAFE_MMAP(0, mmap_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+ 	u |= kpf_copy_bit(k, KPF_LOCKED,	PG_locked);
+-	u |= kpf_copy_bit(k, KPF_SLAB,		PG_slab);
+ 	u |= kpf_copy_bit(k, KPF_ERROR,		PG_error);
+ 	u |= kpf_copy_bit(k, KPF_DIRTY,		PG_dirty);
+ 	u |= kpf_copy_bit(k, KPF_UPTODATE,	PG_uptodate);
+diff --git a/tools/cgroup/memcg_slabinfo.py b/tools/cgroup/memcg_slabinfo.py
+index 1d3a90d93fe2..270c28a0d098 100644
+--- a/tools/cgroup/memcg_slabinfo.py
++++ b/tools/cgroup/memcg_slabinfo.py
+@@ -146,12 +146,11 @@ def detect_kernel_config():
  
--- 
-2.43.0
-
+ 
+ def for_each_slab(prog):
+-    PGSlab = 1 << prog.constant('PG_slab')
+-    PGHead = 1 << prog.constant('PG_head')
++    PGSlab = ~prog.constant('PG_slab')
+ 
+     for page in for_each_page(prog):
+         try:
+-            if page.flags.value_() & PGSlab:
++            if page.page_type.value_() == PGSlab:
+                 yield cast('struct slab *', page)
+         except FaultError:
+             pass
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
