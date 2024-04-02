@@ -4,55 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC4F6CD1284
-	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 12:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD699C6FD1F
+	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 16:42:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4A2BC3CC966
-	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 14:00:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A7C4B3CD09F
+	for <ltp@archiver.kernel.org>; Tue,  2 Apr 2024 18:42:48 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80E0F3CB2B8
- for <ltp@lists.linux.it>; Tue,  2 Apr 2024 13:44:20 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linuxfoundation.org (client-ip=139.178.84.217;
- helo=dfw.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
- receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ by picard.linux.it (Postfix) with ESMTPS id 5B2B43C867B
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 18:42:33 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 274AA60025A
- for <ltp@lists.linux.it>; Tue,  2 Apr 2024 13:44:18 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id DFCDF60F37;
- Tue,  2 Apr 2024 11:44:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A7EC43390;
- Tue,  2 Apr 2024 11:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1712058256;
- bh=DpQ1x3R3SARZhczID3H+l6QkUcoWZQNWBI3Aop4zjd4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=keTjQP/TuNEFmuDJ/ndqUWVWzKYfOvgfFKfqNN1VFR3mFZpD/bcMF19oRva66l40J
- TP/WZx/xGTr8svgzpHSpdKh5uRIaL6B1pdxeAPF1TKw+E7yTlclI8Iukm0ycrapwyk
- tHj9SQQbNxN8roAmHWpZH3e6duGhE77ioZFxRHhk=
-Date: Tue, 2 Apr 2024 13:44:12 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Message-ID: <2024040258-disk-smokiness-5baf@gregkh>
-References: <20240401152547.867452742@linuxfoundation.org>
- <CA+G9fYvewkbwR_i07HHTM=8E2yS-0wRhOT-C45LP3SNtzgd+4Q@mail.gmail.com>
- <29a7a1e5-da67-47fc-b1fd-ef65902ec252@wetzel-home.de>
- <1d1071f3-641a-4b7c-bd35-a629ba8d5a7b@moroto.mountain>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9F5CF1000F1B
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 18:42:32 +0200 (CEST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6F9F25C00A
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 16:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1712076150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=cTTXxSqfxgI7YSvOb8rfsfPgwBRVYYdt4S79XtNRDS0=;
+ b=u2nUR2hfwkrFrJ1Gr3EVzXErWrxFW0dPmQ8YUA3E5J4yfLWaO3N5jZObVrU+GUfPZAz72R
+ LnkIjJYb8DMu8nW13L5pTJbyJ4RfN/P5VFHMkhOrgjrOuelLuRQAOpK9F0sLZVm8UtE2bV
+ W/QwwyA/SNIXt/QSKEt/w9mlb2XFmGw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1712076150;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=cTTXxSqfxgI7YSvOb8rfsfPgwBRVYYdt4S79XtNRDS0=;
+ b=/FpU4iMaOtcSdiaLlaEMhKDwmRUDeVSc9hwgyyQj0GNnjyk3MGPqxZG4S8iztZ189ClXHo
+ UgY35McXcV5B9nAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B2BC13357
+ for <ltp@lists.linux.it>; Tue,  2 Apr 2024 16:42:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id PzT2FXY1DGajFwAAn2gu4w
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 02 Apr 2024 16:42:30 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue,  2 Apr 2024 18:41:29 +0200
+Message-ID: <20240402164131.12535-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.43.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1d1071f3-641a-4b7c-bd35-a629ba8d5a7b@moroto.mountain>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [3.38 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_DN_NONE(0.00)[];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
+ NEURAL_HAM_SHORT(-0.03)[-0.144]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; BAYES_HAM(-0.49)[79.67%];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MID_CONTAINS_FROM(1.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 02 Apr 2024 13:59:52 +0200
-Subject: Re: [LTP] [PATCH 6.6 000/396] 6.6.24-rc1 review
+Subject: [LTP] [PATCH v2 0/2] doc: Add generated API docs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,86 +92,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org, patches@lists.linux.dev,
- Alexander Wetzel <alexander@wetzel-home.de>, stable@vger.kernel.org,
- shuah@kernel.org, f.fainelli@gmail.com, Bart Van Assche <bvanassche@acm.org>,
- jonathanh@nvidia.com, patches@kernelci.org, linux@roeck-us.net,
- Arnd Bergmann <arnd@arndb.de>, srw@sladewatkins.net, broonie@kernel.org,
- LTP List <ltp@lists.linux.it>,
- "Martin K. Petersen" <martin.petersen@oracle.com>, rwarsow@gmx.de,
- pavel@denx.de, allen.lkml@gmail.com, conor@kernel.org,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Apr 02, 2024 at 01:37:50PM +0300, Dan Carpenter wrote:
-> On Mon, Apr 01, 2024 at 09:22:52PM +0200, Alexander Wetzel wrote:
-> > 
-> > > Following kernel warnings have been noticed on qemu-x86_64 while running LTP
-> > > cve ioctl_sg01 tests the kernel with stable-rc 6.6.24-rc1, 6.7.12-rc1 and
-> > > 6.8.3-rc1.
-> > > 
-> > > We have started bi-secting this issue.
-> > > Always reproduced.
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
-> > > ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg0
-> > > ------------[ cut here ]------------
-> > > [   36.606841] WARNING: CPU: 0 PID: 8 at drivers/scsi/sg.c:2237
-> > > sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.609445] Modules linked in:
-> > > [   36.610793] CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.24-rc1 #1
-> > > [   36.611568] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> > > BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> > > [   36.612872] Workqueue: events sg_remove_sfp_usercontext
-> > > [   36.613691] RIP: 0010:sg_remove_sfp_usercontext+0x145/0x150
-> > > 
-> > > <trim>
-> > > 
-> > > [   36.621539] Call Trace:
-> > > [   36.621953]  <TASK>
-> > > [   36.622444]  ? show_regs+0x69/0x80
-> > > [   36.622819]  ? __warn+0x8d/0x150
-> > > [   36.623078]  ? sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.623558]  ? report_bug+0x171/0x1a0
-> > > [   36.623881]  ? handle_bug+0x42/0x80
-> > > [   36.624070]  ? exc_invalid_op+0x1c/0x70
-> > > [   36.624491]  ? asm_exc_invalid_op+0x1f/0x30
-> > > [   36.624897]  ? sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.625408]  process_one_work+0x141/0x300
-> > > [   36.625769]  worker_thread+0x2f6/0x430
-> > > [   36.626073]  ? __pfx_worker_thread+0x10/0x10
-> > > [   36.626529]  kthread+0x105/0x140
-> > > [   36.626778]  ? __pfx_kthread+0x10/0x10
-> > > [   36.627059]  ret_from_fork+0x41/0x60
-> > > [   36.627441]  ? __pfx_kthread+0x10/0x10
-> > > [   36.627735]  ret_from_fork_asm+0x1b/0x30
-> > > [   36.628293]  </TASK>
-> > > [   36.628604] ---[ end trace 0000000000000000 ]---
-> > > ioctl_sg01.c:122: TPASS: Output buffer is empty, no data leaked
-> > > 
-> > > Suspecting commit:
-> > > -----
-> > > scsi: sg: Avoid sg device teardown race
-> > > commit 27f58c04a8f438078583041468ec60597841284d upstream.
-> > > 
-> > 
-> > Correct. The issue is already been worked on.
-> > 
-> > commit 27f58c04a8f4 ("scsi: sg: Avoid sg device teardown race") fixed a real
-> > issue. But also added an incorrect WARN_ON_ONCE(). Thus the scary - but
-> > otherwise harmless - error message.
-> 
-> If you have Reboot on Oops turned on (apparently Android enables this)
-> then WARN() will reboot the system so it can be pretty annoying.
+This applies over the new doc patchset from Andrea and converts
+documentation in headers into a linuxdoc format.
 
-Agreed, I've dropped this stable change for now because of this.
+This is a v2 with spelling fixes hopefully all the easily caught
+mistakes are fixed now.
 
-greg k-h
+If you have a bit of time please read the changes through and report any
+problems.
+
+Cyril Hrubis (2):
+  doc: Add more to spelling_wordlist
+  include: doc: Convert comments into linuxdoc
+
+ doc_new/developers/api_c_tests.rst |  26 ++
+ doc_new/spelling_wordlist          |  40 +++
+ include/tst_buffers.h              |  86 +++--
+ include/tst_capability.h           |  80 ++++-
+ include/tst_checkpoint.h           |  64 +++-
+ include/tst_compiler.h             |  20 ++
+ include/tst_hugepage.h             |   2 +
+ include/tst_parse.h                |  65 ++++
+ include/tst_res_flags.h            |  72 +++-
+ include/tst_test.h                 | 509 +++++++++++++++++++++--------
+ 10 files changed, 762 insertions(+), 202 deletions(-)
+ create mode 100644 include/tst_compiler.h
+ create mode 100644 include/tst_parse.h
+
+-- 
+2.43.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
