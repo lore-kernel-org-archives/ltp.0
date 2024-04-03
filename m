@@ -4,87 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AD37CD128A
-	for <ltp@archiver.kernel.org>; Wed,  3 Apr 2024 14:25:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F31CD1288
+	for <ltp@archiver.kernel.org>; Wed,  3 Apr 2024 14:31:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9184E3CE1AF
-	for <ltp@archiver.kernel.org>; Wed,  3 Apr 2024 16:24:59 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 645DE3CE1B6
+	for <ltp@archiver.kernel.org>; Wed,  3 Apr 2024 16:31:21 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9B1AF3C1835
- for <ltp@lists.linux.it>; Wed,  3 Apr 2024 16:24:43 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E12683C1A04
+ for <ltp@lists.linux.it>; Wed,  3 Apr 2024 16:31:06 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E25DB208DF7
- for <ltp@lists.linux.it>; Wed,  3 Apr 2024 16:24:42 +0200 (CEST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D2D74200938
+ for <ltp@lists.linux.it>; Wed,  3 Apr 2024 16:31:05 +0200 (CEST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CDA4E5CD74;
- Wed,  3 Apr 2024 14:24:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 59BBD22BB8;
+ Wed,  3 Apr 2024 14:31:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712154280;
+ t=1712154663;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vS7p8LFpJI5Yx/FDcoAg/Kpx4O0NgN9toQ9y0p9UIhc=;
- b=bLp72QuDJ+QiOyMa3U2ojF/n+htvtHtbuQaIUoNSnR1z1JecK9YwaShprybz85EZ3ZYYXF
- CrXBVBGk8Leq0pF69YIlKL341ox45Q4QPhI6fJJroIwJt7PJ4Nfpj2bUK7jSo24z2ctKBa
- PQk/D/I1FOfb/JNe10HV68u0CW9aWMQ=
+ bh=oK4VlootyxQsk11mfsAgrUVoXvo8DB//CIaKdCQ5aEY=;
+ b=lgkM00LXg7YjxX2+z4/y4AJL9G2EAhUA8zi3IB7n1rTjmjYJV/VThzFbV/r2zQALjbF5ws
+ xL1RhJTuYPjYuk9dJc4Y/BOp/jF7X9pSjM91lm7UvoSyalrhiZ9u3+LMdzPTE3Jwded6cU
+ R42elXaqlTXpKaj5AANZoHCn/GqOXjU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712154280;
+ s=susede2_ed25519; t=1712154663;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vS7p8LFpJI5Yx/FDcoAg/Kpx4O0NgN9toQ9y0p9UIhc=;
- b=JHZIrHDTOaX/wofVc/WG0eDBKYARD5B+T5M51CA5Ug15yax8Tx8WHA5hmfQ4NOthV3dEU1
- tizd7suub2ZbGOAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=oK4VlootyxQsk11mfsAgrUVoXvo8DB//CIaKdCQ5aEY=;
+ b=kzB5o3QZ1UUTdxWiBImMu+baurR0Uo14u+1B/cUH/VkzZsaRmdLLj88YQknZ3yGaBrfmpQ
+ T2aHDmgKYF6m/xAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 925691331E;
- Wed,  3 Apr 2024 14:24:40 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 19EBB13357;
+ Wed,  3 Apr 2024 14:31:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap2.dmz-prg2.suse.org with ESMTPSA id gW3wIahmDWYyXwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 03 Apr 2024 14:24:40 +0000
-Date: Wed, 3 Apr 2024 16:24:31 +0200
+ by imap2.dmz-prg2.suse.org with ESMTPSA id 3wsXBSdoDWZ1YQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 03 Apr 2024 14:31:03 +0000
+Date: Wed, 3 Apr 2024 16:30:53 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240403142431.GA452858@pevik>
-References: <20220817204015.31420-1-pvorel@suse.cz> <YwX7r5VWrGRzaXoa@pevik>
- <CAEemH2e_t5XdGNFPOw0suGgAEbWLYPuX-tnZCoxQ1oZJZ9H2pg@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
+Message-ID: <20240403143053.GA450357@pevik>
+References: <fd34e495-75cd-4db2-bbf6-975f3697cd51@suse.com>
+ <36d410f8-1946-4a0f-8c30-9810994954ed@suse.com>
+ <20240326082629.GA684723@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2e_t5XdGNFPOw0suGgAEbWLYPuX-tnZCoxQ1oZJZ9H2pg@mail.gmail.com>
-X-Spamd-Result: default: False [-2.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.986]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo];
- FUZZY_BLOCKED(0.00)[rspamd.com];
+In-Reply-To: <20240326082629.GA684723@pevik>
+X-Spamd-Bar: /
+X-Spamd-Result: default: False [0.62 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[7]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_SEVEN(0.00)[7]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.57)[81.29%];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 59BBD22BB8
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] API: Allow to use xfs filesystems < 300 MB
+Subject: Re: [LTP] Open monthly meeting 4th of April 09:00 UTC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,85 +107,70 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
- LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi,
 
-> Hi Petr, All,
+> Hi all,
 
+> > Hi all!
 
-> Petr Vorel <pvorel@suse.cz> wrote:
+> > Possible discussions for the meeting:
+> > - current project status
+> > - new LTP documentation website
+> > - API documentation
 
-> > Hi all,
+> +1
 
-> > Could we in the end accept this patch?
+> > Please, feel free to add more topics :-)
 
-> > It'd fix the issue for now and I could set size of the XFS loop device
-> > smaller
-> > than 300 MB (better for embedded). i.e. 16 MB (or 32 or 64 MB or anything
-> > higher
-> > if XFS developers are convinced it's needed).
+More topic (if we have time):
 
+- require 2FA for LTP github, would it be acceptable for you? [1]
 
-> I personally think YES!
-> (sorry for replying so late, I was on vacation last week)
+Looking at our members [2], only one of the active developers does not have it. I'll let him
+know privately.
 
-I still plan to implement 
+The reason is obvious - learn from xz/liblzma backdoor (CVE-2024-3094).
 
-Old thread thus recap Cyril's original proposal [1]
+- minimal size per filesystem - do we want it?
+Old proposal [3], I posted update [4].
 
-	I'm starting to wonder if we should start tracking minimal FS size per
-	filesystem since btrfs and xfs will likely to continue to grow and with
-	that we will end up disabling the whole fs related testing on embedded
-	boards with a little disk space. If we tracked that per filesystem we
-	would be able to skip a subset of filesystems when there is not enough
-	space. The downside is obviously that we would have to add a bit more
-	complexity to the test library.
+> > On 3/26/24 08:53, Andrea Cervesato wrote:
+> > > Hello everyone,
 
-I'm willing to implement this Cyril's proposal, but what puts me off is that
-Btrfs and XFS developers are already complaining that testing on minimal size is
-not a realistic testing. fstests are testing on realistic sizes, Darrick J. Wong
-[2]:
+> > > this is a friendly reminder for the LTP mailing list about monthly
+> > > meeting.
+> > > As previously discussed.
 
-	... In the ideal world we'll some day get around to restructuring
-	all the xfstests that do tricky things with sub-500M filesystems, but
-	that's the unfortunate part of removing support for small disks.
+> > > Next meeting will be on the 4th of April 09:00 UTC.
+> > > Platform: https://meet.google.com/jon-gytf-uei
 
-	Most of the fstests don't care about the fs size and so they'll run with
-	the configured storage (some tens or millions of gigabytes) so we're
-	mostly using the same fs sizes that users are expected to have.
+> FYI the meeting is not on Wednesday (as usually), but on Thursday
+> (Andrea does not have time on Wednesday). Hope it's ok for you.
 
-Geert Uytterhoeven suggested [3]:
-Yeah, we used to have ext2 root file systems that fit on 1440 KiB floppies.
-IIRC, ext3 does have a minimum size of 32 MiB or so.
+FYI Andrea created meeting for Thursday the 4th, but there was a discussion
+afterwards for Friday:
 
-> > As I wrote before I plan to suggest sizes:
-> > btrfs 110 MB
-> > the rest (ext[234], xfs, ntfs, vfat, exfat, tmpfs): 16 MB
+https://lore.kernel.org/ltp/CAEemH2cft19JByyEOc24_TVQZwTGkzaSPQ70T60Q=LmHKLuGDg@mail.gmail.com/
 
-Maybe safer would be (from more realistic point of testing)
-* Btrfs, XFS: 300 MB (keep the current size for Btrfs)
-* Maybe raise ext4 to 32 MB (more realistic?)
-* others: 16 MB
+Also Li suggested to be only on listen only mode (due travelling).
 
-> +1 thanks for finding the minimal size.
-
-Also Amir noted [4] that we have squashfs01.c asks for .dev_min_size = 1, but we
-do the minimal default (300 MB now, it would be 16 MB). Do we want to force
-.dev_min_size in this case or use the default minimal?
+I suggest to postpone to the third week to get all people back.
 
 Kind regards,
 Petr
 
-[1] https://lore.kernel.org/ltp/Yv4MBF79PnJKJbwm@yuki/
-[2] https://lore.kernel.org/ltp/Yv2A9Ggkv%2FNBrTd4@magnolia/
-[3] https://lore.kernel.org/ltp/CAMuHMdUMBjCTwPu7wxrnagXnbyVxxmXN+vHmML0Lr=SyrTw0nQ@mail.gmail.com/
-[4] https://lore.kernel.org/ltp/CAOQ4uxjMEHYQwO25dhs5WtzbOkJcee0HofQDTT3cD-qXJn7xQw@mail.gmail.com/
+[1] https://docs.github.com/en/organizations/keeping-your-organization-secure/managing-two-factor-authentication-for-your-organization/requiring-two-factor-authentication-in-your-organization
+[2] https://github.com/orgs/linux-test-project/people
+[3] https://lore.kernel.org/ltp/Yv4MBF79PnJKJbwm@yuki/
+[4] https://lore.kernel.org/ltp/20240403142431.GA452858@pevik/
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
