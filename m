@@ -4,85 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 390CACD1292
-	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 12:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FF99CD1284
+	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 12:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1712232923; h=message-id :
+ date : mime-version : to : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-transfer-encoding : content-type : sender : from;
+ bh=iabrzSCmCE4s9bdATmQOAWMarCt2oZB7RoKiv+uiT7c=;
+ b=DF6za8O8DpU67TFofKAHF1g0csVmVk/PFZVNpSkf3HXBfKa1ca8D5aNSGqWa+k6KPMmJb
+ 9oDZWf0PaP/g20hm/lG6rrtTLSUEeFdZck0iWLT69c1yN/MjlUOnQOfqkIMCvPKqMsC57cN
+ MKUO7GvL5BC7njip7RdYPp6BWuNfFxQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 283E03CE3BE
-	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 14:09:29 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 061133C13BE
+	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 14:15:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EB153CE2C6
- for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:09:13 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F109B3CE0AD
+ for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:15:00 +0200 (CEST)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
+ [IPv6:2a00:1450:4864:20::542])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0D4371B61045
- for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:09:11 +0200 (CEST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AF87637B5B;
- Thu,  4 Apr 2024 12:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712232548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wqHx3IggTqZPQBuvDGiroIgM95UZj9X6wfb6QKLfptc=;
- b=CtMAY9OiU/g/2MGkHfAc5+2rKYx6AtWumVoMFmonyTymXFNHvLH4ZtlmB8tBxdCSlz4mt6
- fJZRvP8TOhnrsonNYCo/8k0wUkLAvUF2az8qc66YgDjKWSVG4z/wR3cNv3tDqLbE6TTIum
- x4DOVR3rXRJufgfqhFtzmHkceyKnmMM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712232548;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wqHx3IggTqZPQBuvDGiroIgM95UZj9X6wfb6QKLfptc=;
- b=1F3k49PxsZlZuLASkJYEKf5wSIOo+rCIRPQoa1rSrVbBahbPzGl6e7JTG98H2y6WgVHLbf
- gOH/UcI0PXtAsIBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FF9713298;
- Thu,  4 Apr 2024 12:09:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap2.dmz-prg2.suse.org with ESMTPSA id vDfxJWSYDma9WQAAn2gu4w
- (envelope-from <chrubis@suse.cz>); Thu, 04 Apr 2024 12:09:08 +0000
-Date: Thu, 4 Apr 2024 14:08:15 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Geetika <geetika@linux.ibm.com>
-Message-ID: <Zg6YLwXmggjN2l51@yuki>
-References: <20240403163419.90388-1-geetika@linux.ibm.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9E536200CEF
+ for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:14:59 +0200 (CEST)
+Received: by mail-ed1-x542.google.com with SMTP id
+ 4fb4d7f45d1cf-56e2119cffeso511870a12.3
+ for <ltp@lists.linux.it>; Thu, 04 Apr 2024 05:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1712232898; x=1712837698; darn=lists.linux.it;
+ h=content-transfer-encoding:subject:from:to:content-language
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=D9Hj15i4b4zTNySH/FRCXj3xKqayL6XhGFkwBfc5G5s=;
+ b=fzAt8UfzWMDyP3Sb9PFZjdCDfedLjtjbuIA4sbO6rgmyuoOBf8z6jJ8pzQjy8/JVsm
+ Ro9eEZMnCmEQX8xywnOsthVjMBsQhZgmGBa9mtNao/If7uSVEPngg+krZiMKcuVtzOWh
+ aqvPlL9ZkBeepFZHBGUxVwnmpGUfV6BDj3AE2+/N13hyFo+nsDKb1uxY33Xui7QndBpa
+ Am8Q7DABT8bdkLWjcU6on6h6QPX5fNvzUVQpqxm6GOM18cg3JninDEAE9aKUSY+U6dvP
+ fc+pSEUP8MI22YiFIW81d6BNMPQK5yYqCp8jANXGa9e24S9npcJpoH3o9ERVtzJzoKsa
+ 77Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1712232898; x=1712837698;
+ h=content-transfer-encoding:subject:from:to:content-language
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=D9Hj15i4b4zTNySH/FRCXj3xKqayL6XhGFkwBfc5G5s=;
+ b=TRylbGOZiTixw7d90ol3p9tPfkCiDlH79y0C+y3NdYvO12VDPnm4pss/I1nzvksRg+
+ 0ViEtK2n9muMgDBxO3gAX6LJO3/pmhnjsM4Z5NDIxTz+nltHISCXhm/qY7koJyS1OD7O
+ QRpPDtrjiH/2Eb6eIzJOl1pru0KLL4jIq3iW3ixooIkwtEiWh0EdtZLS28d3L5515PWc
+ H9zW9BW81BQysVTr1Uf37g+wcQAO5pO2JvKsA+B7daMw5vPb8aEHbwJ1DWxV8Eu3i+p0
+ 46r9iXnh2KCUJP+0KM+XiDnflH78QT0wP/TlsA0AXZ6CzrQ2KL38IcyhxPE50lyWxsyw
+ 5sVw==
+X-Gm-Message-State: AOJu0YxgNcALMfF4DRcJFTOUByVvISSanGvjbFOxBuIpWpBWxGXonlTA
+ bxpqIo+bbkYzu23Ym1ZedjyjXotNK5YUBOTdy473Y9pHvoBA9F7rE/wgP/oeS4UM9H7WkXSiCSN
+ s7Hy7BjnB
+X-Google-Smtp-Source: AGHT+IEKoMAZutFCHpqZ1I6K72ZmvUHoUc7PmsqOtjyIGkQxltj0YG7lYh/wiT1/h/GRu0+6xEdldw==
+X-Received: by 2002:a50:f611:0:b0:56e:5d4:92bb with SMTP id
+ c17-20020a50f611000000b0056e05d492bbmr1826184edn.9.1712232898342; 
+ Thu, 04 Apr 2024 05:14:58 -0700 (PDT)
+Received: from ?IPV6:2a02:a31b:843f:e00:d596:e8e:78c7:ff41?
+ ([2a02:a31b:843f:e00:d596:e8e:78c7:ff41])
+ by smtp.gmail.com with ESMTPSA id
+ dn20-20020a05640222f400b0056dfda8eef3sm2247048edb.54.2024.04.04.05.14.57
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 04 Apr 2024 05:14:58 -0700 (PDT)
+Message-ID: <c4fef6d0-8460-498c-8f67-8c3d16e25b1c@suse.com>
+Date: Thu, 4 Apr 2024 14:14:57 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240403163419.90388-1-geetika@linux.ibm.com>
-X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,
- imap2.dmz-prg2.suse.org:helo, suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add hugemmap42,
- migrated task-size-overrun.c from libhugetlbfs
+Subject: [LTP] April meeting summary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,196 +92,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: donettom@linux.ibm.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-> + */
-> +
-> +/*\
-> + *[Descripiton]
-> + *
-> + * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/task-size-overrun.c
-> + *
-> + * This test verifies the behavior of mmap across the TASK_SIZE boundary.
-> + * It checks whether mmap with and without MAP_FIXED correctly handles
-> + * mappings that straddle the TASK_SIZE boundary.
-> + *
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <sys/mman.h>
-> +#include <errno.h>
-> +#include <assert.h>
-> +
-> +#include "hugetlb.h"
-> +#include "tst_test.h"
-> +#include "tst_safe_stdio.h"
-> +#include "tst_safe_macros.h"
-> +
-> +#define MAPS_BUF_SZ 4096
-> +#define _LARGEFILE64_SOURCE
-> +#define MNTPOINT "hugetlbfs/"
-> +#define ALIGN(x, a) (((x) + (a) - 1) & ~((a) - 1))
-> +
-> +static long hpage_size;
-> +static int fd;
-> +static char line[MAPS_BUF_SZ];
-> +static char *tmp;
-> +static unsigned long start, end, off, ino;
-> +static FILE *f;
-> +static void *p;
-> +static unsigned long task_size;
-> +static unsigned long straddle_addr;
 
-Most of these are used only in a single function, some even shadowed by
-another declaration inside of these functions. We should really create
-global variables only for things that are used in several functions. As
-far as I can these are only hpage_size and fd.
+Thanks to all participants of our monthly LTP meeting. A short summary 
+on what we talked about:
 
-> +static unsigned long find_last_mapped(void)
-> +{
-> +	f = SAFE_FOPEN("/proc/self/maps", "r");
-> +	do {
-> +		tmp = fgets(line, MAPS_BUF_SZ, f);
-                                   ^
-				   sizeof(line) is a bit better
-> +	} while (tmp);
-> +	SAFE_FCLOSE(f);
-> +
-> +	tst_res(TINFO, "Last map: %s", line);
-> +	SAFE_SSCANF(line, "%lx-%lx %*s %lx %*s %ld %*s", &start, &end, &off, &ino);
-> +	tst_res(TINFO, "Last map: at 0x%lx-0x%lx\n", start, end);
-> +	return end;
-> +}
-> +
-> +static unsigned long find_task_size(void)
-> +{
-> +	unsigned long low, high; /* PFNs */
-> +	void *p;
-> +
-> +	low = find_last_mapped();
-> +	if (!low || ((low % getpagesize()) != 0))
-> +		tst_brk(TBROK, "Bogus stack end address, 0x%lx!?", low);
-> +	low = low / getpagesize();
-> +
-> +	/* This sum should get us (2^(wordsize) - 2 pages) */
-> +	high = (unsigned long)(-2 * getpagesize()) / tst_get_hugepage_size();
-> +	tst_res(TINFO, "Binary searching for task size PFNs 0x%lx..0x%lx\n", low, high);
-> +
-> +	while (high > low + 1) {
-> +		unsigned long pfn = (low + high) / 2;
-> +		unsigned long addr = pfn * getpagesize();
-> +
-> +		assert((pfn >= low) && (pfn <= high));
-> +
-> +		p = mmap((void *)addr, getpagesize(), PROT_READ,
-> +			   MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED, -1, 0);
-> +		if (p == MAP_FAILED) {
-> +			tst_res(TINFO | TERRNO, "Map failed at 0x%lx", addr);
-> +			high = pfn;
-> +		} else {
-> +			tst_res(TINFO, "Map succeeded at 0x%lx\n", addr);
-> +			SAFE_MUNMAP(p, getpagesize());
-> +			low = pfn;
-> +		}
-> +	}
-> +
-> +	return low * getpagesize();
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +	task_size = find_task_size();
-> +	tst_res(TINFO, "TASK_SIZE = 0x%lx\n", task_size);
-> +
-> +	straddle_addr = task_size - hpage_size;
-> +	straddle_addr = ALIGN(straddle_addr, hpage_size);
-> +
-> +	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
-> +	errno = 0;
-> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-> +		 MAP_SHARED, fd, 0);
-> +	tst_res(TINFO | TERRNO, "Error encountered");
+- we have a new LTP documentation that will be merged soon. Its 
+development will be incremental, starting from a sphinx generated 
+documentation and introducing API usage step by step
 
-This is misleading, we are printing "error" encountered even that the
-call is supposed to work.
+- we will ask to enable 2FA for all LTP developers. If you are part of 
+the development team and you are not using 2FA, you will receive an 
+e-mail asking to enable it
 
-> +	if (p == (void *)straddle_addr) {
-> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
-> +		goto windup;
-> +	}
-> +
-> +	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
-> +	errno = 0;
-> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-> +		 MAP_SHARED|MAP_FIXED, fd, 0);
-> +	tst_res(TINFO | TERRNO, "Error encountered");
-> +	if (p != MAP_FAILED) {
-> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
-> +		goto windup;
-> +	}
+- there's a discussion going on about disabling GitHub PR. There are 
+some pros while using it, such as its popularity and easy small patches 
+merge, but at the same time it duplicates review workflow. Perhaps, new 
+documentation will explain how to properly use mailing list, which will 
+make ML easier to use for everybody
 
-We should use the newly indroduced macro TST_EXP_FAIL_PTR_VOID() from:
+- nowadays some filesystems require a minimal size, introducing the risk 
+of receiving bug reports if we don't handle these cases: 
+https://lore.kernel.org/ltp/20240403142431.GA452858@pevik/
 
-http://patchwork.ozlabs.org/project/ltp/patch/20240403032859.3826-2-wegao@suse.com/
 
-I will have a look at that patchset later on, but I guess that it will
-be accepted soon enough so that you can use it here.
+Thanks for all the suggestions and improvements.
+Have a good day and see you the next month!
 
-Also I will have a look into adding TST_EXP_PASS_PTR_VOID() so that we
-can use it in the first case above.
+Best regards,
+Andrea Cervesato
 
-> +
-> +	tst_res(TPASS, "Test passed!");
-> +
-> +windup:
-> +	tst_res(TINFO, "Test Completed.");
 
-Can we please not to print this message, it's a bit useless.
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = getpagesize();
-> +	fd = tst_creat_unlinked(MNTPOINT, 0);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {3, TST_NEEDS},
-> +};
-> -- 
-> 2.39.3 (Apple Git-146)
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
