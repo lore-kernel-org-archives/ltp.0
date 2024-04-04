@@ -4,18 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B274BCD1292
-	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 12:56:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89B2BCD1292
+	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 13:05:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2CD8A3CE3F3
-	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 14:56:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B36A63CD088
+	for <ltp@archiver.kernel.org>; Thu,  4 Apr 2024 15:05:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B9E9B3CE386
- for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:56:22 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id BA86F3C111A
+ for <ltp@lists.linux.it>; Thu,  4 Apr 2024 15:05:41 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
@@ -24,84 +25,46 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 13B4C200C79
- for <ltp@lists.linux.it>; Thu,  4 Apr 2024 14:56:21 +0200 (CEST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EEEEA6008D7
+ for <ltp@lists.linux.it>; Thu,  4 Apr 2024 15:05:40 +0200 (CEST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 805625D976;
- Thu,  4 Apr 2024 12:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712235380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GXKXERHAbmSU6SneIzS5/ZBSu4FU8LrgK2P5YlJxnpw=;
- b=Jn08qyBnde154Fl9AqmOEJW5DL4WzfVp2axAi/4K0giCjz3pQ5up2+Sggiquzt8ETPHRp4
- /tGmCzejV1372NvP6smfWdbU8xq0n5Q2mhRgRczoG34SFX8gG5AO6ywHwqTvliYdhgLN98
- Muy3pIfEyb7axnsMT9+cMzjF6j4ZE4Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712235380;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GXKXERHAbmSU6SneIzS5/ZBSu4FU8LrgK2P5YlJxnpw=;
- b=Q3Ay3kCt0LQrNMGlJuTW/iWWRJUu84yBCa5+RW45qbOcsqzJrs20hwJ239iOijjx1ZXCwe
- bCHrfXP8u5EwcgCg==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1DFC55D993;
+ Thu,  4 Apr 2024 13:05:39 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712235379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GXKXERHAbmSU6SneIzS5/ZBSu4FU8LrgK2P5YlJxnpw=;
- b=LKb60lra0yeB26ov0Prlacraf5sFT7syYAva25err/aDgd5I5orM9TeHQRzCUjR1oSZ4Gd
- shHQEVQ4hUL7fJKnnoSNArImjub9SB0Q6WtZVOmZ6UgowGFSRQ11anc2BcqMzZhuPGkBos
- aW93DCZOI59Ro2oIbKQLr5p+lAcTm5I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712235379;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GXKXERHAbmSU6SneIzS5/ZBSu4FU8LrgK2P5YlJxnpw=;
- b=i21mOHbGpN1XD0u4+V8TToOsc8txgrCmnIHz8XnTXIImgWxhg1hN+fMD2YztVb4yT4dXgC
- L4YocmPIP5WWLVDA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6392D139E8;
- Thu,  4 Apr 2024 12:56:19 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 06453139E8;
+ Thu,  4 Apr 2024 13:05:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap2.dmz-prg2.suse.org with ESMTPSA id TlEiFnOjDmZeaQAAn2gu4w
- (envelope-from <chrubis@suse.cz>); Thu, 04 Apr 2024 12:56:19 +0000
-Date: Thu, 4 Apr 2024 14:55:21 +0200
+ by imap2.dmz-prg2.suse.org with ESMTPSA id b25uAKOlDmZ4bAAAn2gu4w
+ (envelope-from <chrubis@suse.cz>); Thu, 04 Apr 2024 13:05:39 +0000
+Date: Thu, 4 Apr 2024 15:04:45 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Zg6jOZjxGGHKkS-0@yuki>
-References: <20240403082618.5829-1-chrubis@suse.cz>
- <20240403082618.5829-3-chrubis@suse.cz>
- <20240404125124.GC503552@pevik>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <Zg6lbcX3_8LYj3k6@yuki>
+References: <20240404121521.22483-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240404125124.GC503552@pevik>
-X-Spamd-Result: default: False [-4.80 / 50.00]; REPLY(-4.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- BAYES_HAM(-0.00)[30.78%]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,
- imap2.dmz-prg2.suse.org:rdns, suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20240404121521.22483-1-andrea.cervesato@suse.de>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 1DFC55D993
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] include: doc: Convert comments into
- linuxdoc
+Subject: Re: [LTP] [PATCH v2] New LTP documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,47 +83,39 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Very nit: I would prefer if the formatting would not force the indent, e.g.:
-> 
->  * @tcnt: A number of tests. If set the test() callback is called tcnt times
->  * and each time passed an increasing counter value.
-> 
-> Because variables with long name will require more lines, but feel free to
-> ignore it.
+Can we please fix the spelling errors before this patchset is applied?
 
-I do not have a strong opinion here, but I guess that we should add at
-least a single space before the subsequent lines so that it's clear that
-it's a continuation.
+$ make spelling
+...
+WARNING: developers/build_system.rst:134: : Spell check: Explaination: Explaination.
+WARNING: developers/test_case_tutorial.rst:136: : Spell check: initialisation: initialisation code. It is important to note that this is a completely.
+WARNING: developers/test_case_tutorial.rst:378: : Spell check: internalising: ABI (Application Binary Interface), rather than internalising actual.
+WARNING: developers/test_case_tutorial.rst:638: : Spell check: dependants: dependants before their dependencies..
+WARNING: developers/test_case_tutorial.rst:663: : Spell check: organisational: We are about to make some organisational changes to the test, so now would be.
+WARNING: developers/test_case_tutorial.rst:1004: : Spell check: organisational: Style and organisational issues are best left to after you have found logical.
+WARNING: developers/test_case_tutorial.rst:1030: : Spell check: synchronising: also various helper functions for synchronising and forking processes..
+WARNING: developers/writing_tests.rst:51: : Spell check: overcomment: Do not overcomment.
+WARNING: developers/writing_tests.rst:67: : Spell check: highlevel: paragraph with highlevel test description at the beginning of the file right.
+WARNING: developers/writing_tests.rst:89: : Spell check: vendored: uses (among other checks) our vendored version of.
+WARNING: developers/writing_tests.rst:162: : Spell check: vendored: It uses (among other checks) our vendored version of.
+WARNING: developers/writing_tests.rst:303: : Spell check: Subexecutables: Subexecutables.
+WARNING: maintainers/patch_review.rst:29: : Spell check: behaviour: Use sanitizers e.g. undefined behaviour, address..
+WARNING: maintainers/patch_review.rst:66: : Spell check: behaviour: Could future kernel behaviour change without "breaking userland"?.
+WARNING: maintainers/patch_review.rst:141: : Spell check: licence: ; the licence for test (e.g. GPL-2.0) should not change.
+WARNING: users/setup_tests.rst:7: : Spell check: behaviour: tests behaviour by setting environment variables and using specific tests.
+WARNING: users/setup_tests.rst:38: : Spell check: behaviour: file. Force colorized output behaviour: .
+WARNING: users/setup_tests.rst:64: : Spell check: tella: empty string, tella the library that system is not a virtual machine..
+WARNING: users/setup_tests.rst:69: : Spell check: addjust: It's required to addjust path: .
+WARNING: users/setup_tests.rst:97: : Spell check: commandline: variable or set on a commandline by the .
+WARNING: users/setup_tests.rst:96: : Spell check: Hoewever:  parameter. Hoewever,.
+WARNING: Found 21 misspelled words
+build succeeded, 22 warnings.
 
-Does anyone else have an opinion on this?
+Most of these are actually valid typos.
 
-> > + * @options: An NULL optstr terminated array of struct tst_option.
-> > + *
-> > + * @min_kver: A minimal kernel version the test can run on. e.g. "3.10".
-> > + *
-> > + * @supported_archs: A NULL terminated array of architectures the test runs on
-> > + *                   e.g. {"x86_64, "x86", NULL}. Calls tst_is_on_arch() to
-> > + *                   check if current CPU architecture is supported and exits
-> > + *                   the test with TCONF if it's not.
-> > + *
-> 
-> ...
-> >  	void (*setup)(void);
-> >  	void (*cleanup)(void);
-> > -
-> >  	void (*test)(unsigned int test_nr);
-> >  	void (*test_all)(void);
-> 
-> > -	/* Syscall name used by the timer measurement library */
-> We decided to drop this comment. Isn't it useful?
-> >  	const char *scall;
-> > -
-> > -	/* Sampling function for timer measurement testcases */
-> >  	int (*sample)(int clk_id, long long usec);
-> And this one as well.
+Other than that:
 
-The sampling is a kind of hack, I would like to rethink it a bit if it
-can't be done in a cleaner way before documenting it.
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
