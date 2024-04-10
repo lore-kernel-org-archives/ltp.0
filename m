@@ -4,68 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91E46C67861
-	for <ltp@archiver.kernel.org>; Tue,  9 Apr 2024 10:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F30CD11C2
+	for <ltp@archiver.kernel.org>; Wed, 10 Apr 2024 08:45:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4AC3D3CF66F
-	for <ltp@archiver.kernel.org>; Tue,  9 Apr 2024 12:18:20 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id AF8AB3CF75B
+	for <ltp@archiver.kernel.org>; Wed, 10 Apr 2024 10:45:16 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B28363C00E4
- for <ltp@lists.linux.it>; Tue,  9 Apr 2024 12:18:04 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 32CB13CAB59
+ for <ltp@lists.linux.it>; Wed, 10 Apr 2024 10:45:01 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 238B9100E339
- for <ltp@lists.linux.it>; Tue,  9 Apr 2024 12:18:01 +0200 (CEST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 48BC833920;
- Tue,  9 Apr 2024 10:17:59 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2284313253;
- Tue,  9 Apr 2024 10:17:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id gU9eBtcVFWZjUQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 09 Apr 2024 10:17:59 +0000
-Date: Tue, 9 Apr 2024 12:17:53 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: samasth.norway.ananda@oracle.com
-Message-ID: <20240409101753.GA107959@pevik>
-References: <20240401150015.301640-1-samasth.norway.ananda@oracle.com>
- <Zg_oLGuLcssY-rYY@yuki>
- <e2368059-647c-4d98-8c90-2cc5f3bb34a4@oracle.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2234514011B4
+ for <ltp@lists.linux.it>; Wed, 10 Apr 2024 10:44:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1712738698;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GiKtabtvEDkcueC+l+CFCdwdB8I4kIOeCg0YdxPJhBY=;
+ b=bC4XXDXszDimpDHCb8cZJbC0n5RiKl5E/xbSrEvW9s2d/Izq1OgajEoBY/ioL4BchNc1B0
+ kNd+gYucNS+dNZ7EZX80ad0y61trjcF0xuLmDmNyIvkybn4WfbSzH7uYen35cEqXTNt4iW
+ 2bV8f7T/4tCpZisQcdYUPDq8vFCtOME=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-355--2Se4Kv9Paqfpn_SndRAkQ-1; Wed, 10 Apr 2024 04:44:56 -0400
+X-MC-Unique: -2Se4Kv9Paqfpn_SndRAkQ-1
+Received: by mail-pg1-f198.google.com with SMTP id
+ 41be03b00d2f7-5ca5b61c841so5304485a12.3
+ for <ltp@lists.linux.it>; Wed, 10 Apr 2024 01:44:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1712738695; x=1713343495;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=GiKtabtvEDkcueC+l+CFCdwdB8I4kIOeCg0YdxPJhBY=;
+ b=TxkVJB8K1kMnuULa+l5A39wBy1EMhmVBVYN8mt3ji9HkpY7who/6waEgGxN+Vj4vNx
+ xMky7LBEe55H1ATbTy85P9kfQ7hqw9EaTuGRJfv9kXcf+2Nl18gm3o7mAgOtDFeByZGT
+ IlgypUfcWBFr1TrQMhkx/f8t/4/hkrfqv0ChMp6BjwpWIYXJrdxh5716xHYImjJWb1K5
+ w4faZ9oqPhYZXrZQZOUYM/Vu4iJITSGcnLf0spjZkqG8R96Cvs4TgL1SyeZiY3FDisf/
+ aOIRpn4LYtS7GiH6UtSkNYmOGKRizQGvuZ7wLi2m473IInyVsKjqEL3IMU5aLhFsae5q
+ +iXg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUlWd+DsQl/+mtaglTftf6CDM4weJ4gggLRL6j4J2tvM6WKXvEfJfvPDrLNp4hahbJ4ErQ2L6kbwChACg4qmr/nNnE=
+X-Gm-Message-State: AOJu0YxRmxuS83hgpyc32gFq86RsFHKIMX04VbNUfqajLP5P4Kv2RVyt
+ REJgV8qtDgkICmx9nyTDu/+nNfFZDzs9F+WfH5G9L3GY0fVpk/Ekk8QpHRrXct7xGiVq08/ISE+
+ PujwzBxYtIRguASlQo0s67pvE9lhivQ9vuYkJ1RAy6ZIOWNE0+r7ndkJsnnn3uyLfB4ous97ROO
+ 9m1p9BHM1ExKAjDXjpxlwzFkQ=
+X-Received: by 2002:a05:6a20:1059:b0:1a3:57b4:ed1c with SMTP id
+ gt25-20020a056a20105900b001a357b4ed1cmr1950492pzc.25.1712738695339; 
+ Wed, 10 Apr 2024 01:44:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEcxzMMAUn8IAttAuk0/yImXmC7qPXHHwk8+sfBucaXB4slcZVTqzrlhUukdxXmN+QmTsJ35Ht1z4VYA9grFvA=
+X-Received: by 2002:a05:6a20:1059:b0:1a3:57b4:ed1c with SMTP id
+ gt25-20020a056a20105900b001a357b4ed1cmr1950481pzc.25.1712738694967; Wed, 10
+ Apr 2024 01:44:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e2368059-647c-4d98-8c90-2cc5f3bb34a4@oracle.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 48BC833920
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <20240329180742.384709-1-gregory.price@memverge.com>
+ <CAEemH2eZiJgM83z12eReH+2nrNiH9VkbK0F+iPk3sAZYhPoMRg@mail.gmail.com>
+ <ZhXR7gdhKIFVEdvS@memverge.com>
+In-Reply-To: <ZhXR7gdhKIFVEdvS@memverge.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 10 Apr 2024 16:44:43 +0800
+Message-ID: <CAEemH2fSFBw92+3jHuCsMSg0R+8JvPpQwv2xBE9NaWFaNrrCCw@mail.gmail.com>
+To: Gregory Price <gregory.price@memverge.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mremap06: fallocate is not supported on nfsv3
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] mempolicy/mbind: update syscall tests for
+ weighted interleave
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,91 +95,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: calum.mackay@oracle.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it, Gregory Price <gourry.memverge@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
-
-> On 4/5/24 5:01 AM, Cyril Hrubis wrote:
-> > Hi!
-> > > The function fallocate() is not supported on nfsv3. Thus when we run the
-> > > mremap06 test over a nfsv3 filesystem the test fails.
-
-> > Can we rather than this just skip the test on nfsv3?
-
-> > If we want to skip the test on nfs in generall we can just set
-> > .skip_filesystems = {"nfs", NULL} in the tst_test structure.
-
-> > I'm not sure if we can easily detect the nfs version. The test library
-> > does that by checking the NFS_SUPER_MAGIC againts stat, but there is a
-> > single SUPER_MAGIC for all nfs versions.
-
-Yeah, include/uapi/linux/magic.h in kernel contains only single magic. BTW I
-wonder if magic is stored to the disk or there is some other complication which
-prevent to have more magic values which would allow to distinguish version.
-
-I wonder if it makes sense to add support to detect NFS version (read vers
-parameter in /proc/mounts). The only reason why to do that would be to make sure
-NFS v4.2 did not lost fallocate support by bug/regression. If we don't care,
-checking errno is better option (will reflect kernel changes without a need to
-adapt LTP test).
-
-> > So if we want to keep the test enabled for nfsv4 we can exit with TCONF
-> > when the call fails only when we are on NFS with tst_fs_type() and check
-> > that against TST_NFS_MAGIC.
-
-
-> Hi Cyril,
-
-> Wanted to mention that fallocate() is only supported over NFSv4.2 in
-> particular. it's not supported over NFSv3, v4.0 or v4.1.
-> I could even see on the fallocate ltp tests that it is handled the same
-> manner.
-
-Yeah, these tests have it:
-testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c
-testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-testcases/kernel/syscalls/fallocate/fallocate01.c
-testcases/kernel/syscalls/fallocate/fallocate02.c
-testcases/kernel/syscalls/fallocate/fallocate03.c
-testcases/kernel/syscalls/fallocate/fallocate04.c
-
-I guess we should write SAFE_FALLOCATE(). @Samasth any change you would write
-it (as a separate effort).
-
-> Thanks,
-> Samasth.
-
-> > > Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-> > > ---
-> > >   testcases/kernel/syscalls/mremap/mremap06.c | 8 +++++++-
-> > >   1 file changed, 7 insertions(+), 1 deletion(-)
-
-> > > diff --git a/testcases/kernel/syscalls/mremap/mremap06.c b/testcases/kernel/syscalls/mremap/mremap06.c
-> > > index 3bbaf441a..362b03e19 100644
-> > > --- a/testcases/kernel/syscalls/mremap/mremap06.c
-> > > +++ b/testcases/kernel/syscalls/mremap/mremap06.c
-> > > @@ -104,8 +104,14 @@ static void setup(void)
-> > >   	fd = SAFE_OPEN("testfile", O_CREAT | O_RDWR | O_TRUNC, 0600);
-> > >   	ret = fallocate(fd, 0, 0, mmap_size);
-> > > -	if (ret == -1)
-> > > +	if (ret != 0) {
-> > > +		if (errno == EOPNOTSUPP || errno == ENOSYS) {
-> > > +			tst_brk(TCONF,
-> > > +				"fallocate system call is not implemented");
-> > > +		}
-> > >   		tst_brk(TBROK, "fallocate() failed");
-> > > +		return;
-
-I suggest to merge this now, without return (it can be removed before merge).
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgR3JlZ29yeSwKCk9uIFdlZCwgQXByIDEwLCAyMDI0IGF0IDc6NDDigK9BTSBHcmVnb3J5IFBy
+aWNlIDxncmVnb3J5LnByaWNlQG1lbXZlcmdlLmNvbT4Kd3JvdGU6Cgo+IE9uIE1vbiwgQXByIDA4
+LCAyMDI0IGF0IDAzOjQwOjM4UE0gKzA4MDAsIExpIFdhbmcgd3JvdGU6Cj4gPiBIaSBHcmVnb3J5
+LAo+ID4KPiA+IFRoYW5rIHlvdSBmb3Igc3RhcnRpbmcgdGhpcywgY29tbWVudHMgYXJlIGlubGlu
+ZSBiZWxvdy4KPiA+Cj4gPiA+ICsjZGVmaW5lIE1QT0xfV0VJR0hURURfSU5URVJMRUFWRSA2Cj4g
+PiA+ICsjZW5kaWYKPiA+ID4KPiA+Cj4gPiBBbmQgY2FuIHdlIG1vdmUgdGhpcyBjb21tb24gcGFy
+dCBpbnRvIGluY2x1ZGUvbGFwaS9udW1haWYuaCwKPiA+IHRvIGF2b2lkIGRlZmluaW5nIHRoaXMg
+YWdhaW4gYW5kIGFnYWluIGluIHRlc3QgY2FzZXM/Cj4gPgo+Cj4gSSBoYXZlIGEgcGVuZGluZyBw
+YXRjaCB0byBkbyBqdXN0IHRoYXQsIGJ1dCBpdCBpcyBub3QgdXBzdHJlYW0geWV0Lgo+Cj4gVGhp
+cyB3YXMgYSBjb21tZW50IGluIHRoZSBjaGFuZ2Vsb2c6Cj4KPiA+ID4gTVBPTF9XRUlHSFRFRF9J
+TlRFUkxFQVZFIGlzIGlmZGVmIGRlZmluZWQgYmVjYXVzZSBpdCBpcyBub3QgdXBzdHJlYW0KPiA+
+ID4gaW4gbGlibnVtYSB5ZXQsIHNvIHRoaXMgZW5zdXJlcyBjb21waWxhdGlvbi4KPgo+IFRob3Vn
+aHQgaXQgd2FzIHVzZWZ1bCB0byBzaG9vdCBvdXQgYSB2ZXJzaW9uIG9mIHRoaXMgYmVmb3JlIGl0
+IGFsbCBsYW5kcwo+IGZvciB0aGUgc2FrZSBvZiBnZXR0aW5nIGFoZWFkIG9mIHRoZSBjdXJ2ZSBh
+IGJpdC4KPgo+ID4KPiA+IEZpcnN0LCB3ZSBkbyBub3Qgc3VnZ2VzdCBhZGRpbmcgYW55IG5ldyB0
+ZXN0cyBieSBhcHBseWluZyBvbmUgImJpZyIKPiA+IHBhdGNoIGVzcGVjaWFsbHkgc2luY2UgdGhp
+cyBjb250YWlucyB0b28gbWFueSBvdGhlciBpcnJlbGV2YW50Cj4gPiBtb2RpZmljYXRpb25zLgo+
+ID4gV2UnZCBiZXR0ZXIgc2VwYXJhdGUgdGhlbSBpbiBzaW5nbGUgdG8gZ3VhcmFudGVlIGV2ZXJ5
+dGhpbmcgZ29lcwo+ID4gd2VsbCBmb3IgdHJhY2VhYmlsaXR5IG9mIHRoZSBjb21taXQuCj4gPgo+
+Cj4gV2lsbCBkby4KPgo+ID4gU2Vjb25kLCBJIGRvbid0IHNlZSBhbnkgbmV3IGNvZGUgaW4gc2V0
+X21lbXBvbGljeTA2LzA3LCBzaW5jZSB5b3UKPiA+IG9ubHkgY29waWVkIHRoZW0gZnJvbSBzZXRf
+bWVtcG9saWN5MDIvMDQsIGV2ZW4gd2l0aG91dCBhbnkgY2hhbmdlIG9mIHRoZQo+ID4gY29tbWVu
+dHMsIHRoaXMgaXMgYmFkIGZvciB0ZXN0IG1haW50ZW5hbmNlIHdvcmsgYW5kIGludm9sdmVzIHJl
+ZHVuZGFudAo+ID4gc3R1ZmYuCj4gPgo+Cj4gdGhlIG9ubHkgbWFqb3IgZGlmZmVyZW5jZXMgYmV0
+d2VlbiB0aGUgdGVzdHMsIHByZXNlbnRseSwgYXJlIHRoYXQgdGhlCj4gcG9saWN5IGFwcGxpZWQg
+aXMgd2VpZ2h0ZWQgaW50ZXJsZWF2ZQo+Cj4gVEVTVChzZXRfbWVtcG9saWN5KE1QT0xfV0VJR0hU
+RURfSU5URVJMRUFWRSwgYm0tPm1hc2twLCBibS0+c2l6ZSsxKSk7Cj4gICAgICAgICAgICAgICAg
+ICAgIF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXgo+Cj4gSW4gdHJ1dGgsIHRoaXMgdGVzdCBpc24n
+dCByZWFsbHkgY29tcGxldGVseSwgYXMgaXQgc2hvdWxkIGFsc286Cj4KPiAxKSBTZXQgdGhlIHN5
+c2ZzIHZhbHVlcyBsb2NhdGVkIGF0Cj4gL3N5cy9rZXJuZWwvbW0vbWVtcG9saWN5L3dlaWdodGVk
+X2ludGVybGVhdmUvCj4KPiAyKSBWYWxpZGF0ZSBhbGxvY2F0aW9ucyBhY3R1YWxseSBtYXRjaCB0
+aG9zZSBzZXR0aW5ncwo+Cj4gSG93ZXZlciwgdGhpcyB0ZXN0IGlzIHF1aXRlIGNvbXBsaWNhdGVk
+IHRvIHdyaXRlIGFuZCBtYWtlIGZ1bGx5Cj4gcmVsaWFibGUsIGFzIHlvdSBhbHNvIG5lZWQgdG8g
+a25vdwo+Cj4gMSkgVGhlIGVudmlyb25tZW50IChhdmFpbGFibGUgbm9kZXMsIGNwdSBub2Rlcywg
+bWVtb3J5LW9ubHkgbm9kZXMpCj4gMikgVGhlIG5vZGUgdGhlIHRlc3Qgd2lsbCBiZSBydW4gb24g
+KHdoaWNoIGNhbiBiZSBmb3JjZWQpCj4gMykgV2hlcmUgYWxsb2NhdGlvbnMgd2lsbCBzdGFydCBm
+cm9tIChub2RlIFggb3Igbm9kZSBZKSBhcyB0aGlzIGNhbgo+ICAgIHVsdGltYXRlbHkgYWZmZWN0
+IHRoZSBmaW5hbCBkaXN0cmlidXRpb24uCj4KPiBJbiBteSB0ZXN0cyBzZXBhcmF0ZWx5LCB0aGUg
+dGVzdCBpdHNlbGYgY2FuIGFsc28gY2F1c2UgYWxsb2NhdGlvbgo+IChzdGFjaywgb3RoZXIgcmVn
+aW9ucykgd2hpY2ggbWF5IHJlc3VsdCBpbiBhbiB1bmV4cGVjdGVkIGRpc3RyaWJ1dGlvbiBvZgo+
+IG1lbW9yeSBvbiB0aGUgdGFyZ2V0IHJlZ2lvbi4gIFRoaXMgaXMgYmVjYXVzZSB0aG9zZSBhbGxv
+Y2F0aW9ucyBhcmUKPiBjcmVkaXRlZCBhcyBwYXJ0IG9mIHRoZSBpbnRlcmxlYXZpbmcsIGJ1dCB0
+aGUgZXhpc3RpbmcgY29kZSBvZiB0aGUgdGVzdAo+IGNhbm5vdCBhZGp1c3QgZm9yIHRoYXQuIFRo
+aXMgbWF5IGNhdXNlIGZhaWx1cmVzIGZvciBubyBvYnZpb3VzIHJlYXNvbi4KPgo+IFRoaXMgaXMg
+dWx0aW1hdGVseSB3aHkgSSBsZWZ0IHRoZSB0ZXN0cyBtb3N0bHkgdW5jaGFuZ2VkLCBiZWNhdXNl
+IEkKPiBmb3VuZCBpdCBvbmx5IHJlYXNvbmFibGUgdG8gdGVzdCB0aGUgZGVmYXVsdCBiZWhhdmlv
+ci4KPgo+ID4gVGhlIHJlY29tbWVuZGVkIHdheSBpcyB0byBhZGQgTVBPTF9XRUlHSFRFRF9JTlRF
+UkxFQVZFIGluCj4gPiB0aGUgb3JpZ2luYWwgY2FzZSBpZiB5b3UganVzdCB3YW50IHRvIHZhbGlk
+YXRlIHRoZSBiZWhhdmlvciBzaW1pbGFybHkKPiB3aXRoCj4gPiBNUE9MX0lOVEVSTEVBVkUuCj4g
+Pgo+ID4gQnV0IGlmIHlvdSB3YW50IHRvIHRlc3Qgc29tZXRoaW5nIHNwZWNpYWwvbmV3IG9mCj4g
+TVBPTF9XRUlHSFRFRF9JTlRFUkxFQVZFLAo+ID4gSSB0aGluayB0aGF0J3MgbmVjZXNzYXJ5IHRv
+IGNyZWF0ZSBzZXRfbWVtcG9saWN5MDYvMDcsIGFuZCBkbyBzb21ldGhpbmcKPiA+IHZhbGlkYXRl
+IHRoYXQgaW50ZXJsZWF2aW5nIGJlaGF2aW9yIGlzIGV4ZWN1dGVkIGJhc2VkIG9uIHdlaWdodHMg
+c2V0IGluICcKPiA+IC9zeXMva2VybmVsL21tL21lbXBvbGljeS93ZWlnaHRlZF9pbnRlcmxlYXZl
+LycuCj4gPgo+Cj4gV2FzIGhvcGluZyB0byBnZXQgaW5wdXQgb24gdGhpcy4gIEkgdGhpbmsgcHJv
+YmFibHkgdHJ5aW5nIHRvIHdyaXRlIGEKPiB0ZXN0IHRvIHRyYWNrIHBhZ2UtZGlzdHJpYnV0aW9u
+IG9mIHJlYWwgd2VpZ2h0ZWQgaW50ZXJsZWF2ZSB3aWxsIGJlCj4gZGlmZmljdWx0IHRvIG1ha2Ug
+cmVsaWFibGUsIHNvIG1heWJlIEkgc2hvdWxkIGp1c3QgZm9sZCB0aGVzZSB0ZXN0cyBiYWNrCj4g
+aW50byB0aGUgb3JpZ2luYWwgYW5kIG5vdGUgdGhhdCB0aGlzIHNpbXBseSB0ZXN0cyB0aGUgZGVm
+YXVsdCBiZWhhdmlvcgo+ICh3aGljaCBpcyBlcXVpdmFsZW50IHRvIE1QT0xfSU5URVJMRUFWRSku
+Cj4KCk9rLCBzdXJlLiBJZiBzbyBtZXJnZSB0aGUgTVBPTF9XRUlHSFRFRF9JTlRFUkxFQVZFIGlu
+dG8KTVBPTF9JTlRFUkxFQVZFIHRlc3Qgc2hvdWxkIGJlIGVub3VnaC4KCgoKPgo+IFRoYXQgbWF5
+IHJlcXVpcmUgY2hhbmdpbmcgdGhlIG9yaWdpbmFsIHRlc3RzIHRvIGVuc3VyZSB0aGUgc3lzZnMg
+ZmlsZXMKPiBhcmUgc2V0IHRvIDEgdG8gZXhwbGljaXRseSBhdm9pZCBmYWlsdXJlcy4gIEJ1dCBJ
+IHdhc24ndCBzdXJlIGlmIHRoYXQKPiB3YXMgb2sgc2luY2UgaXQgd291bGQgYmUgbWFraW5nIHNp
+bGVudCBzeXN0ZW0td2lkZSBjaGFuZ2VzLCBhbmQgd291bGQKPiByZXF1aXJlIHJvb3QuCj4KCkxU
+UCBsaWIgcHJvdmlkZXMgYSB3YXkgdG8gc2F2ZS9yZXN0b3JlIHRoZSAnL3Byb2MgfCAvc3lzJyB2
+YWx1ZQpiZWZvcmUgYW5kIGFmdGVyIGRvaW5nIHRoZSB0ZXN0LCBzbyBpdCB3b3VsZCBub3QgYmUg
+ZGlmZmljdWx0IHRvCnNhdGlzZnkgdGhlIHJlcXVpcmVtZW50IGlmIGl0IGlzIGp1c3Qgc2V0IDEg
+dG8gYSByZWxhdGl2ZSBmaWxlLgoKc2VlOgpodHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1w
+cm9qZWN0L2x0cC9ibG9iL21hc3Rlci9kb2Mvb2xkL0MtVGVzdC1BUEkuYXNjaWlkb2MjMTI3LXNh
+dmluZy0tcmVzdG9yaW5nLXByb2NzeXMtdmFsdWVzCgpPciwgdXNlIHRzdF9zeXNfY29uZl9zYXZl
+KCkgc2VwYXJhdGVseSB0byB0cmF2ZXJzZSBhbmQgc2F2ZSB0aGUgdmFsdWUgb2YKIm1lbXBvbGlj
+eS93ZWlnaHRlZF9pbnRlcmxlYXZlL25vZGUqIiBmaWxlIGlmIHdlIGFyZSB1bnN1cmUgaG93IG1h
+bnkgbm9kZXMKYXJlIG9uIHRoZSBzeXN0ZW0sIHRoZW4gc2V0IHRoZSB2YWx1ZSB2aWE6CiAgICBT
+QUZFX0ZJTEVfUFJJTlRGKCIuLi93ZWlnaHRlZF9pbnRlcmxlYXZlL25vZGUqIiwgIiVkIiwgMSk7
+ClVsdGltYXRlbHksIExUUCBsaWIgd2lsbCByZXN0b3JlIGFsbCBvZiB0aGUgdmFsdWVzIHRvIHRo
+ZSBvcmlnaW5hbC4KCkFuZCBzZXQgIi5uZWVkc19yb290ID0gMSwiIGluIHRoZSBzdHJ1Y3QgdHN0
+X3Rlc3Qgd2lsbCBiZSB0aGUgcmVxdWVzdGVkCnJvb3QgcGVybWlzc2lvbi4KCgotLSAKUmVnYXJk
+cywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
