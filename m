@@ -4,76 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDBDAC4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 18:19:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1712859546; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=KoJXdTjS86vxQL1gaenET8PAMftUotrmrk3WxgbMVbo=;
- b=AXg1y4at0ZfWwW+Z/41GXSj+OikHzeV3keqLrn9NhhBFKwV3XYQApHUt9VO7fnPfTXh6v
- hnJsQph7fj1N9hvA+KK2s/xl/bYdjM/f9SV9hzOTzT4m2HAv/oCGLaCuDAviLik+Ym9dEM4
- a+J9RfTRkODEkvL8QASI0XltjnYg3MI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2E29C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 20:46:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 122463CF866
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 20:19:06 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 1A5503CF875
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 22:46:52 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D35E3CAB64
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 20:18:43 +0200 (CEST)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com
- [IPv6:2607:f8b0:4864:20::114a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4D8373C60FA
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 22:46:36 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E4008200C63
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 20:18:42 +0200 (CEST)
-Received: by mail-yw1-x114a.google.com with SMTP id
- 00721157ae682-61807bac417so589247b3.3
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 11:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1712859521; x=1713464321; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=Xo6LzM0FG1avLH3im9nNmpveOG1ygT5D71uX+1H4mqY=;
- b=kE4rIgva6l/xLIa7FgUfchexScURUC4UASGh196mIvxTOeVXE3HwHDgDm7VsEzxEsc
- 9L7ZtUndsWWWZ1+LM0tz8ssiQMkcHJU9maf42C2ZPS8RkLuvMHYZmHq4P7uVsYAN2uIj
- 2P1hxIUnYDU2a5qicWMg7QLR6mmP0IKJackS9qMWepVhhJsHD6rcsvF5ifrrG5CxZIZr
- IUSharxhEmw06ZQx7rwwGdsqDe5BP+LaJrR+W5IyngfxnLOlKSvEAA0Wwx15PsR+L/rP
- 7JQ+ievLSgbqDwR3qZGfCzzc9DcC8kCLL2ZuDat6h4Vyc6r/IcsN3g6ma0E61vWqChJP
- +0+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1712859521; x=1713464321;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=Xo6LzM0FG1avLH3im9nNmpveOG1ygT5D71uX+1H4mqY=;
- b=R2/SKZ8+NRkCYEfcDkah5q9tWF1+2lMi7fHgzGnQcqorWVKU/e8L8a4Sw20gktKMf7
- +6z2X2NKT1KhJccf3XIQYPf0zUYBTCFK42oEaJZSV4gpZ3G7Nfa/aQN2/SDe7UUsrWs4
- a4wpfNG4ODW9mX9Rg8CMZV/t9gEyouxjwH+6Ps8NEncOJSYInADFogbFpDHL6LKpcf4e
- DkYYq18ABbjljC2fADcmJ6olKuQYzxpOAVnLRYQxvl3Drsq1A0/XAcWm80/uQSt3tFDQ
- 1iAJ1brNWz8hBDcezEIh9gNTZsZm7JUUKI/zT8ytCC30hcfXYMmhU4VWI7YVeFgswTT3
- VCBg==
-X-Gm-Message-State: AOJu0YysLvtMIqpgzhoBwXgW1U9Hr3DQsz5GfEDINlwffHyT3sxq7PIz
- Nh3dPINkl23ZlubIYWqgnlViRU0lmtlVpBvyMLQm/5DM4CuqTPjSV4hJ9nLR1gfkyx4ZO+nTjio
- ChVJJkUXOIq4wkhHIxca0izTX9trnjn4VgESI7LQleyUGTpn2BB5x5PW85DBmRK52ttRWg13CAp
- Tf0QjbtyN8I7RJsrGuosoKY8DiM6Q=
-X-Google-Smtp-Source: AGHT+IEldJwMISWsbsCicP9eSlt4R6veDTFfnGTGYisz1jLiYj6LJK2fpJWhwlSHXkKkc0OxY8lAlOVwVPI=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a0d:cbd4:0:b0:618:1202:3220 with SMTP id
- n203-20020a0dcbd4000000b0061812023220mr48924ywd.7.1712859521581; Thu, 11 Apr
- 2024 11:18:41 -0700 (PDT)
-Date: Thu, 11 Apr 2024 18:18:38 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240411181838.4157368-1-edliaw@google.com>
-To: ltp@lists.linux.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1EACD200DCA
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 22:46:35 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A90B95D530;
+ Thu, 11 Apr 2024 20:46:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1712868392;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=STHIqlDet/gcqGSD0e3T4nGhoJQJE/OMIjFyJETr8xw=;
+ b=anLBTvEYu+3o3pSUf9pqcZqOupnnpenoL9LuMf4Yi5sKZHg2PgNYLMEDoqKv/UErIFqdhS
+ IY+sy7AMHEU3FaJPcHAIXMOfR5OedPy2UZulVC308IBh4GjHqkg+5yl109eLTzjz0eWVAj
+ JoJcF++9x7o71sqXRJnplxQaUioBffw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1712868392;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=STHIqlDet/gcqGSD0e3T4nGhoJQJE/OMIjFyJETr8xw=;
+ b=tPamP5rBRxUKbCg8tGRP2nzxFFt8QOzbzhc+y8ke9hqNt/fJhX4+GfUsHswg7WAkUUfQOD
+ yiTGgK0BdCZeoyDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1712868392;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=STHIqlDet/gcqGSD0e3T4nGhoJQJE/OMIjFyJETr8xw=;
+ b=anLBTvEYu+3o3pSUf9pqcZqOupnnpenoL9LuMf4Yi5sKZHg2PgNYLMEDoqKv/UErIFqdhS
+ IY+sy7AMHEU3FaJPcHAIXMOfR5OedPy2UZulVC308IBh4GjHqkg+5yl109eLTzjz0eWVAj
+ JoJcF++9x7o71sqXRJnplxQaUioBffw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1712868392;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=STHIqlDet/gcqGSD0e3T4nGhoJQJE/OMIjFyJETr8xw=;
+ b=tPamP5rBRxUKbCg8tGRP2nzxFFt8QOzbzhc+y8ke9hqNt/fJhX4+GfUsHswg7WAkUUfQOD
+ yiTGgK0BdCZeoyDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A6CA1368B;
+ Thu, 11 Apr 2024 20:46:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id peGFHyhMGGZ6PAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 20:46:32 +0000
+Date: Thu, 11 Apr 2024 22:46:31 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240411204631.GA368229@pevik>
+References: <20240411143025.352507-1-pvorel@suse.cz>
+ <20240411143025.352507-8-pvorel@suse.cz> <Zhf6wC7Cxa4-Zs--@yuki>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Zhf6wC7Cxa4-Zs--@yuki>
+X-Spamd-Result: default: False [-7.49 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-2.99)[99.96%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] controllers: remove use of LINE_MAX
+Subject: Re: [LTP] [PATCH 07/31] tlibio.c: Remove UCLINUX
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,81 +114,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LINE_MAX is not defined in Android's bionic and seems to be a leftover
-of POSIX standards.  In this case, replace the use of fgets with
-getline, which will resize the line buffer if needed.  Also, drop some
-unnecessarily exported variables.
+Hi Cyril,
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- .../kernel/controllers/libcontrollers/libcontrollers.c    | 8 +++++---
- .../kernel/controllers/libcontrollers/libcontrollers.h    | 2 --
- 2 files changed, 5 insertions(+), 5 deletions(-)
+> Hi!
+> > +#ifndef __UCLIBC__
 
-diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-index e9917271c..18f7257cc 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-@@ -39,11 +39,9 @@ char fullpath[PATH_MAX];
- int FLAG;
- volatile int timer_expired = 0;
- int retval;
--unsigned int num_line;
- unsigned int current_shares;
- unsigned int total_shares;
- unsigned int *shares_pointer;
--char target[LINE_MAX];
- struct dirent *dir_pointer;
- 
- /*
-@@ -133,6 +131,9 @@ int read_file(char *filepath, int action, unsigned int *value)
- 	int num_line = 0;
- 	FILE *fp;
- 	int tmp;
-+	size_t len;
-+	char *target = NULL;
-+
- 	switch (action) {
- 	case GET_SHARES:
- 		tmp = read_shares_file(filepath);
-@@ -147,8 +148,9 @@ int read_file(char *filepath, int action, unsigned int *value)
- 			error_function("Could not open file", filepath);
- 			return -1;
- 		}
--		while (fgets(target, LINE_MAX, fp) != NULL)
-+		while (getline(&target, &len, fp) != -1)
- 			num_line++;
-+		free(target);
- 		*value = (unsigned int)num_line;
- 		if (fclose(fp)) {
- 			error_function("Could not close file", filepath);
-diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-index 7d7b8324b..548743225 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-@@ -46,11 +46,9 @@ extern char fullpath[PATH_MAX];
- extern int FLAG;
- extern volatile int timer_expired;
- extern int retval;
--extern unsigned int num_line;
- extern unsigned int current_shares;
- extern unsigned int total_shares;
- extern unsigned int *shares_pointer;
--extern char target[LINE_MAX];
- extern struct dirent *dir_pointer;
- 
- enum{
--- 
-2.44.0.683.g7961c838ac-goog
+> The UCLIBC should be removed as well, since that was libc for uCLinux.
 
+IMHO you are wrong here. IMHO uCLinux-ng [1], still used libc (used in Buildroot
+and openembedded). And log in e5e938f4b7 (2009) suggests that it's about libc.
+But the question is whether it's still needed. I could try to remove these and
+test, but as a separate effort.
+
+We have few of them:
+
+$ git grep -l  __UCLIBC__
+include/old/tlibio.h
+lib/tlibio.c
+testcases/kernel/syscalls/fmtmsg/fmtmsg01.c
+utils/benchmark/ebizzy-0.3/ebizzy.h
+
+Kind regards,
+Petr
+
+[1] https://cgit.uclibc-ng.org/cgi/cgit/uclibc-ng.git/tree/include/features.h#n185
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
