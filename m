@@ -4,53 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0530AC4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:39:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F9C1C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:39:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EBAA63CF858
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:39:30 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BA53C3CF820
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:39:47 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E5003CF83A
+ by picard.linux.it (Postfix) with ESMTPS id 783563CF83E
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:36 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 92EAB1A0435A
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 52F4010103C1
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:35 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 789085CD1D;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D175B5CD1B;
  Thu, 11 Apr 2024 14:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1712845834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/TmWDLbG1VUQtU6KoSVbcpGyzNrsxBujBTLepW0dOI=;
- b=QprQ/2GSyambnhh74dtCFr0YpcNyohwtf1WMBRi08e7e9PZoM79EPn8g8K84tSRraxkrPb
- zqf1QBOV2rfuus2Awyy/HdVpxvTcCrgQSKVtJaTWjXi7+AgV7ea0RcSCBIeoAV8MnRVYcK
- hPBcMTYwTEzqlPDbtSbubniI7JafsRQ=
+ bh=T4gEqYO83js+SXkoa2eF8atnsmfGlF3M7a9ZdcEZHtE=;
+ b=kC2BqGdV1PCEW4TwB4HgWVYQ4cmEwQoggts92Bl3t0T0jfH8P7+U4m4uV0Pb8yIp+DMKtu
+ 7IWN76aumo555k5+280fJvMWeV/Fs/A/uSCWGidvNbSxsYtBAjAn6s76eR/dyckqfbiJ5j
+ rUuvEHT5RXXZMOtBX+BvU6HWOF2S9iU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1712845834;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/TmWDLbG1VUQtU6KoSVbcpGyzNrsxBujBTLepW0dOI=;
- b=J8KLpEyjYByEVQXN0JDWenxFWOMvd76ctvqa9FZyMsl7Md7oBkh185BIKbaJP2O97LyRFh
- NR8sHSRTSgyxL9Dw==
+ bh=T4gEqYO83js+SXkoa2eF8atnsmfGlF3M7a9ZdcEZHtE=;
+ b=jzTr4gYhRgHz6bf+uJISV6KAkdvSA/O9rGklM0wY65nLEQWiJUZD/0kVyDHrtDzfzJBYOE
+ yj5R8zrtDePrnHBw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -58,32 +56,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/TmWDLbG1VUQtU6KoSVbcpGyzNrsxBujBTLepW0dOI=;
- b=QprQ/2GSyambnhh74dtCFr0YpcNyohwtf1WMBRi08e7e9PZoM79EPn8g8K84tSRraxkrPb
- zqf1QBOV2rfuus2Awyy/HdVpxvTcCrgQSKVtJaTWjXi7+AgV7ea0RcSCBIeoAV8MnRVYcK
- hPBcMTYwTEzqlPDbtSbubniI7JafsRQ=
+ bh=T4gEqYO83js+SXkoa2eF8atnsmfGlF3M7a9ZdcEZHtE=;
+ b=kC2BqGdV1PCEW4TwB4HgWVYQ4cmEwQoggts92Bl3t0T0jfH8P7+U4m4uV0Pb8yIp+DMKtu
+ 7IWN76aumo555k5+280fJvMWeV/Fs/A/uSCWGidvNbSxsYtBAjAn6s76eR/dyckqfbiJ5j
+ rUuvEHT5RXXZMOtBX+BvU6HWOF2S9iU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1712845834;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/TmWDLbG1VUQtU6KoSVbcpGyzNrsxBujBTLepW0dOI=;
- b=J8KLpEyjYByEVQXN0JDWenxFWOMvd76ctvqa9FZyMsl7Md7oBkh185BIKbaJP2O97LyRFh
- NR8sHSRTSgyxL9Dw==
+ bh=T4gEqYO83js+SXkoa2eF8atnsmfGlF3M7a9ZdcEZHtE=;
+ b=jzTr4gYhRgHz6bf+uJISV6KAkdvSA/O9rGklM0wY65nLEQWiJUZD/0kVyDHrtDzfzJBYOE
+ yj5R8zrtDePrnHBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18D691386E;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 904971386D;
  Thu, 11 Apr 2024 14:30:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gHVHBAr0F2ZZRgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UMx9Hwr0F2ZZRgAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 14:30:34 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 11 Apr 2024 16:30:23 +0200
-Message-ID: <20240411143025.352507-30-pvorel@suse.cz>
+Date: Thu, 11 Apr 2024 16:30:24 +0200
+Message-ID: <20240411143025.352507-31-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
 References: <20240411143025.352507-1-pvorel@suse.cz>
@@ -100,9 +98,9 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 29/31] lib: Remove -C option and self_exec.c
+Subject: [LTP] [PATCH 30/31] Remove doc/old/nommu-notes.txt
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,307 +117,194 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It was added only for UCLINUX.
+UCLINUX is dead and it's support has been removed from LTP.
 
-These unused functions were removed:
-
-void maybe_run_child(void (*child)(), const char *fmt, ...);
-int self_exec(const char *argv0, const char *fmt, ...);
+Although Documentation/admin-guide/mm/nommu-mmap.rst still exists in
+kernel tree, there is nobody really using it.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/old/test.h |   4 -
- lib/self_exec.c    | 225 ---------------------------------------------
- lib/tst_test.c     |  15 ---
- 3 files changed, 244 deletions(-)
- delete mode 100644 lib/self_exec.c
+ doc/old/nommu-notes.txt | 171 ----------------------------------------
+ 1 file changed, 171 deletions(-)
+ delete mode 100644 doc/old/nommu-notes.txt
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 7394a365e..0e210e4ef 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -167,10 +167,6 @@ extern int tst_count;
- /* lib/tst_sig.c */
- void tst_sig(int fork_flag, void (*handler)(), void (*cleanup)());
- 
--/* lib/self_exec.c */
--void maybe_run_child(void (*child)(), const char *fmt, ...);
--int self_exec(const char *argv0, const char *fmt, ...);
--
- /* lib/tst_mkfs.c
-  *
-  * @dev: path to a device
-diff --git a/lib/self_exec.c b/lib/self_exec.c
+diff --git a/doc/old/nommu-notes.txt b/doc/old/nommu-notes.txt
 deleted file mode 100644
-index de7d09517..000000000
---- a/lib/self_exec.c
+index 4baeff3b2..000000000
+--- a/doc/old/nommu-notes.txt
 +++ /dev/null
-@@ -1,225 +0,0 @@
--/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: t -*- */
--/*
-- * self_exec.c: self_exec magic required to run child functions on uClinux
-- *
-- * Copyright (C) 2005 Paul J.Y. Lahaie <pjlahaie-at-steamballoon.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version 2
-- * of the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-- *
-- * This software was produced by Steamballoon Incorporated
-- * 55 Byward Market Square, 2nd Floor North, Ottawa, ON K1N 9C3, Canada
-- */
+@@ -1,171 +0,0 @@
+--------------
+---- Intro ---
+--------------
 -
--#define _GNU_SOURCE		/* for asprintf */
+-Linux running on processors without a memory management unit place certain
+-restrictions on the userspace programs.  Here we will provide some guidelines
+-for people who are not familiar with such systems.
 -
--#include "config.h"
+-If you are not familiar with virtual memory, you might want to review some
+-background such as:
+-	http://en.wikipedia.org/wiki/Virtual_Memory
+-	/usr/src/linux/Documentation/nommu-mmap.txt
 -
--#ifdef UCLINUX
+-----------------------------
+---- No memory protection ---
+-----------------------------
 -
--#include <stdarg.h>
--#include <string.h>
--#include <stdio.h>
--#include "test.h"
--#include "safe_macros.h"
+-By virtue of every process getting its own virtual memory space, applications
+-are protected from each other.  So a bad memory access in one will not affect
+-the memory of another.  When processors forgo virtual memory, they typically
+-do not add memory protection back in to the hardware.  There are one or two
+-exceptions to this rule, but for now, we'll assume no one supports it.
 -
--/* Set from parse_opts.c: */
--char *child_args;		/* Arguments to child when -C is used */
+-In practical terms, this means you cannot dereference bad pointers directly
+-and expect the kernel to catch and kill your application.  However, you can
+-expect the kernel to catch some bad pointers when given to system calls.
 -
--static char *start_cwd;		/* Stores the starting directory for self_exec */
+-For example, this will "work" in the sense that no signal will be sent:
+-	char *foo = NULL;
+-	foo[0] = 'a';
+-	foo[1] = 'b';
 -
--int asprintf(char **app, const char *fmt, ...)
--{
--	va_list ptr;
--	int rv;
--	char *p;
+-However, the kernel should return errors when using "standard" bad pointers
+-with system calls.  Such as:
+-	char *foo = NULL;
+-	write(1, foo, 10);
+-	-> kernel will return EFAULT or similar
+-The other bad pointer you can rely on in your tests is -1:
+-	char *foo = (void *)-1;
+-	read(0, foo, 10);
+-	-> kernel will return EFAULT or similar
 -
--	/*
--	 * First iteration - find out size of buffer required and allocate it.
--	 */
--	va_start(ptr, fmt);
--	rv = vsnprintf(NULL, 0, fmt, ptr);
--	va_end(ptr);
+-Otherwise, no bad pointer may reliably be tested, either directly or
+-indirectly via the kernel.  This tends to be a large part of the UCLINUX
+-ifdef code that shows up in LTP.
 -
--	p = malloc(++rv);	/* allocate the buffer */
--	*app = p;
--	if (!p) {
--		return -1;
--	}
+-----------------
+---- No forks ---
+-----------------
 -
--	/*
--	 * Second iteration - actually produce output.
--	 */
--	va_start(ptr, fmt);
--	rv = vsnprintf(p, rv, fmt, ptr);
--	va_end(ptr);
+-The ubiquitous fork() function relies completely on the Copy On Write (COW)
+-functionality provided by virtual memory to share pages between processes.
+-Since this isn't feasible without virtual memory, there is no fork() function.
+-You will either get a linker error (undefined reference to fork) or you will
+-get a runtime failure of ENOSYS.
 -
--	return rv;
--}
+-Typically, fork() is used for very few programming paradigms:
+-	- daemonization
+-	- run a program
+-	- parallelism
 -
--void maybe_run_child(void (*child) (), const char *fmt, ...)
--{
--	va_list ap;
--	char *child_dir;
--	char *p, *tok;
--	int *iptr, i, j;
--	char *s;
--	char **sptr;
--	char *endptr;
+-For the daemonization functionality, simply use the daemon() function.  This
+-works under both MMU and NOMMU systems.
 -
--	/* Store the current directory for later use. */
--	start_cwd = getcwd(NULL, 0);
+-To run a program, simply use vfork() followed by an exec-style function.
+-And change the error handler in the child from exit() to _exit().  This too
+-works under both MMU and NOMMU systems.  But be aware of vfork() semantics --
+-since the parent and child share the same memory process, the child has to be
+-careful in what it does.  This is why the recommended construct is simply:
+-	pid_t child = vfork();
+-	if (vfork == 0)
+-		_exit(execl(....));
 -
--	if (child_args) {
--		char *args = strdup(child_args);
+-For parallelism where processes use IPC to work together, you have to options,
+-neither of which are easy.  You can rewrite to use threads, or you can re-exec
+-yourself with special flags to pass along updated runtime state.  This is what
+-the self_exec() helper function in LTP is designed for.
 -
--		child_dir = strtok(args, ",");
--		if (strlen(child_dir) == 0) {
--			tst_brkm(TBROK, NULL,
--				 "Could not get directory from -C option");
--			return;
--		}
+--------------------------
+---- No overcommitting ---
+--------------------------
 -
--		va_start(ap, fmt);
+-Virtual memory allows people to do malloc(128MiB) and get back a buffer that
+-big.  But that buffer is only of virtual memory, not physical.  On a NOMMU
+-system, the memory comes immediately from physical memory and takes it away
+-from anyone else.
 -
--		for (p = fmt; *p; p++) {
--			tok = strtok(NULL, ",");
--			if (!tok || strlen(tok) == 0) {
--				tst_brkm(TBROK, NULL,
--					 "Invalid argument to -C option");
--				return;
--			}
+-Avoid large mallocs.
 -
--			switch (*p) {
--			case 'd':
--				iptr = va_arg(ap, int *);
--				i = strtol(tok, &endptr, 10);
--				if (*endptr != '\0') {
--					tst_brkm(TBROK, NULL,
--						 "Invalid argument to -C option");
--					return;
--				}
--				*iptr = i;
--				break;
--			case 'n':
--				j = va_arg(ap, int);
--				i = strtol(tok, &endptr, 10);
--				if (*endptr != '\0') {
--					tst_brkm(TBROK, NULL,
--						 "Invalid argument to -C option");
--					return;
--				}
--				if (j != i) {
--					va_end(ap);
--					free(args);
--					return;
--				}
--				break;
--			case 's':
--				s = va_arg(ap, char *);
--				if (!strncpy(s, tok, strlen(tok) + 1)) {
--					tst_brkm(TBROK, NULL,
--						 "Could not strncpy for -C option");
--					return;
--				}
--				break;
--			case 'S':
--				sptr = va_arg(ap, char **);
--				*sptr = strdup(tok);
--				if (!*sptr) {
--					tst_brkm(TBROK, NULL,
--						 "Could not strdup for -C option");
--					return;
--				}
--				break;
--			default:
--				tst_brkm(TBROK, NULL,
--					 "Format string option %c not implemented",
--					 *p);
--				return;
--			}
--		}
+----------------------
+---- Fragmentation ---
+----------------------
 -
--		va_end(ap);
--		free(args);
--		SAFE_CHDIR(NULL, child_dir);
+-On a MMU system, when physical memory gets fragmented, things slow down.  But
+-they keep working.  This is because every new process gets a clean virtual
+-memory address space.  While processes can fragment their own virtual address
+-space, this usually takes quite a long time and a lot of effort, so generally
+-it is not a problem people hit.
 -
--		(*child) ();
--		tst_resm(TWARN, "Child function returned unexpectedly");
--		/* Exit here? or exit silently? */
--	}
--}
+-On a NOMMU system, when physical memory gets fragmented, access to large
+-contiguous blocks becomes unavailable which means requests fail.  Even if your
+-system has 40MiB _total_ free, the largest contiguous block might only be 1MiB
+-which means that allocations larger than that will always fail.
 -
--int self_exec(const char *argv0, const char *fmt, ...)
--{
--	va_list ap;
--	char *p;
--	char *tmp_cwd;
--	char *arg;
--	int ival;
--	char *str;
+-Break up your large memory allocations when possible.  Generally speaking,
+-single allocations under 2MiB aren't a problem.
 -
--	if ((tmp_cwd = getcwd(NULL, 0)) == NULL) {
--		tst_resm(TBROK, "Could not getcwd()");
--		return -1;
--	}
+------------------
+---- No paging ---
+------------------
 -
--	arg = strdup(tmp_cwd);
--	if (arg == NULL) {
--		tst_resm(TBROK, "Could not produce self_exec string");
--		return -1;
--	}
+-No virtual memory means you can't mmap() a file and only have the pages read in
+-(paged) on the fly.  So if you use mmap() on a file, the kernel must allocate
+-memory for it and read in all the contents immediately.
 -
--	va_start(ap, fmt);
+----------------------
+---- No swap space ---
+----------------------
 -
--	for (p = fmt; *p; p++) {
--		switch (*p) {
--		case 'd':
--		case 'n':
--			ival = va_arg(ap, int);
--			if (asprintf(&arg, "%s,%d", arg, ival) < 0) {
--				tst_resm(TBROK,
--					 "Could not produce self_exec string");
--				return -1;
--			}
--			break;
--		case 's':
--		case 'S':
--			str = va_arg(ap, char *);
--			if (asprintf(&arg, "%s,%s", arg, str) < 0) {
--				tst_resm(TBROK,
--					 "Could not produce self_exec string");
--				return -1;
--			}
--			break;
--		default:
--			tst_resm(TBROK,
--				 "Format string option %c not implemented", *p);
--			return -1;
--			break;
--		}
--	}
+-See the "No paging" section above.  For the same reason, there is no support
+-for swap partitions.  Plus, nommu typically means embedded which means flash
+-based storage which means limited storage space and limited number of times
+-you can write it.
 -
--	va_end(ap);
+--------------------------
+---- No dynamic stacks ---
+--------------------------
 -
--	if (chdir(start_cwd) < 0) {
--		tst_resm(TBROK, "Could not change to %s for self_exec",
--			 start_cwd);
--		return -1;
--	}
+-No virtual memory means that applications can't all have their stacks at the
+-top of memory and allowed to grown "indefinitely" downwards.  Stack space is
+-fixed at process creation time (when it is first executed) and cannot grow.
+-While the fixed size may be increased, it's best to avoid stack pressure in
+-the first place.
 -
--	return execlp(argv0, argv0, "-C", arg, (char *)NULL);
--}
+-Avoid the alloca() function and use malloc()/free() instead.
 -
--#endif /* UCLINUX */
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index edb42f7f4..c5d853e22 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -520,7 +520,6 @@ static struct option {
- 	{"I:", "-I x     Execute test for n seconds"},
- 	{"D",  "-D       Prints debug information"},
- 	{"V",  "-V       Prints LTP version"},
--	{"C:", "-C ARG   Run child process with ARG arguments (used internally)"},
- };
- 
- static void print_help(void)
-@@ -660,11 +659,6 @@ static void parse_topt(unsigned int topts_len, int opt, char *optarg)
- 	*(toptions[i].arg) = optarg ? optarg : "";
- }
- 
--/* see self_exec.c */
--#ifdef UCLINUX
--extern char *child_args;
--#endif
+-Avoid declaring large buffers on the stack.  Some people like to do things
+-such as:
+-	char buf[PATH_MAX];
+-This will most likely smash the stack on nommu systems !  Use global variables
+-(the bss), or use malloc()/free() type functions.
 -
- static void parse_opts(int argc, char *argv[])
- {
- 	unsigned int i, topts_len = count_options();
-@@ -704,15 +698,6 @@ static void parse_opts(int argc, char *argv[])
- 			else
- 				duration = SAFE_STRTOF(optarg, 0.1, HUGE_VALF);
- 		break;
--		case 'V':
--			fprintf(stderr, "LTP version: " LTP_VERSION "\n");
--			exit(0);
--		break;
--		case 'C':
--#ifdef UCLINUX
--			child_args = optarg;
--#endif
--		break;
- 		default:
- 			parse_topt(topts_len, opt, optarg);
- 		}
+--------------------------------
+---- No dynamic data segment ---
+--------------------------------
+-
+-No virtual memory means that mappings cannot arbitrarily be extended.  Another
+-process might have its own mapping right after yours!  This is where the brk()
+-and sbrk() functions come into play.  These are most often used to dynamically
+-increase the heap space via the C library, but a few people use these manually.
+-
+-Best if you simply avoid them, and if you're writing tests to exercise these
+-functions specifically, make them nops/XFAIL for nommu systems.
+-
+--------------------------------
+---- Limited shared mappings ---
+--------------------------------
+-
+-No virtual memory means files cannot be mmapped in and have writes to it
+-written back out to disk on the fly.  So you cannot use MAP_SHARED when
+-mmapping a file.
+-
+--------------------------
+---- No fixed mappings ---
+--------------------------
+-
+-The MAP_FIXED option to mmap() is not supported.  It doesn't even really work
+-all that well under MMU systems.
+-
+-Best if you simply avoid it, and if you're writing tests to exercise this
+-option specifically, make them nops/XFAIL for nommu systems.
 -- 
 2.43.0
 
