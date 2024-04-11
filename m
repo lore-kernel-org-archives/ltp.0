@@ -4,16 +4,17 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1011C4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32275C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:36:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 43BE33CF806
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:36:37 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B44693CF826
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:36:52 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 84DE53CF828
+ by picard.linux.it (Postfix) with ESMTPS id 863263CF82C
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:34 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
@@ -24,72 +25,75 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 93E391000C16
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A36E0100118F
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 44F63375B0;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9D058375B1;
  Thu, 11 Apr 2024 14:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1712845832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=arBRVNXcWZGabQNKK7WfgIx/uMDz7ozyLvE3GJ8knaY=;
- b=AksdatYJGa/z4Pg3ayrbe8EMufUapCP4JvYKvhTjrnY57CXe3/GEJWzfHzc4dsFquNxM/o
- wA2gktIC+doZZtMsWlSRNJbE2ldIxI8FgcQca4bbTmgBFc5t9F2AbzOrI03rGMbdqQfopK
- FF1A9Klkp70EMFrp6P4f7T+isFY98f4=
+ bh=NolSkLhHsH4HzO8RKR0jCTARfny2W50e1+RhmVv8D80=;
+ b=JSmOd4aDJ4LkrxK2eXCoy1+D011JNRD3mrPwdAePDhRax5X+Ui4JmlqpdNuqS1moMcBKFS
+ 8wZAgJdqXAuYMp6cXOJJ7gvCWJ1AOH6T83EKRZZZI8by3smvCk/1+krplBDlBfz9BcEdqE
+ /crQw5Vaefyx7Y2KLTs7oOBu7QnPDeU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1712845832;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=arBRVNXcWZGabQNKK7WfgIx/uMDz7ozyLvE3GJ8knaY=;
- b=tugoD5mns/VyHUCQgi0yLSW4aLyqrqVAEh1LHEwy+IW6/uccqRFiJ122CXMUZvDi0ToKSY
- 63Nk9wuEx2WfRhCA==
+ bh=NolSkLhHsH4HzO8RKR0jCTARfny2W50e1+RhmVv8D80=;
+ b=8YfrqGGxpj6UJHJKDPMGpBxd2Oks8OVNW32P12jATsZ67CHrmiyjE5EAmQ4SPO+86Q/2zE
+ 7S5IIrCLM26YvGAg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AksdatYJ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tugoD5mn
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JSmOd4aD;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8YfrqGGx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1712845832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=arBRVNXcWZGabQNKK7WfgIx/uMDz7ozyLvE3GJ8knaY=;
- b=AksdatYJGa/z4Pg3ayrbe8EMufUapCP4JvYKvhTjrnY57CXe3/GEJWzfHzc4dsFquNxM/o
- wA2gktIC+doZZtMsWlSRNJbE2ldIxI8FgcQca4bbTmgBFc5t9F2AbzOrI03rGMbdqQfopK
- FF1A9Klkp70EMFrp6P4f7T+isFY98f4=
+ bh=NolSkLhHsH4HzO8RKR0jCTARfny2W50e1+RhmVv8D80=;
+ b=JSmOd4aDJ4LkrxK2eXCoy1+D011JNRD3mrPwdAePDhRax5X+Ui4JmlqpdNuqS1moMcBKFS
+ 8wZAgJdqXAuYMp6cXOJJ7gvCWJ1AOH6T83EKRZZZI8by3smvCk/1+krplBDlBfz9BcEdqE
+ /crQw5Vaefyx7Y2KLTs7oOBu7QnPDeU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1712845832;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=arBRVNXcWZGabQNKK7WfgIx/uMDz7ozyLvE3GJ8knaY=;
- b=tugoD5mns/VyHUCQgi0yLSW4aLyqrqVAEh1LHEwy+IW6/uccqRFiJ122CXMUZvDi0ToKSY
- 63Nk9wuEx2WfRhCA==
+ bh=NolSkLhHsH4HzO8RKR0jCTARfny2W50e1+RhmVv8D80=;
+ b=8YfrqGGxpj6UJHJKDPMGpBxd2Oks8OVNW32P12jATsZ67CHrmiyjE5EAmQ4SPO+86Q/2zE
+ 7S5IIrCLM26YvGAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 248981386D;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8322C1386E;
  Thu, 11 Apr 2024 14:30:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wAj5Bgj0F2ZZRgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wEcaHwj0F2ZZRgAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 14:30:32 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 11 Apr 2024 16:30:10 +0200
-Message-ID: <20240411143025.352507-17-pvorel@suse.cz>
+Date: Thu, 11 Apr 2024 16:30:13 +0200
+Message-ID: <20240411143025.352507-20-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
 References: <20240411143025.352507-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 9D058375B1
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.00 / 50.00]; BAYES_HAM(-2.99)[99.94%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -103,12 +107,9 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 44F63375B0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 16/31] munmap: Remove UCLINUX
+Subject: [LTP] [PATCH 19/31] pause: Remove UCLINUX
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,100 +128,68 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/munmap/munmap01.c | 18 ++----------------
- testcases/kernel/syscalls/munmap/munmap02.c | 18 ------------------
- 2 files changed, 2 insertions(+), 34 deletions(-)
+ testcases/kernel/syscalls/pause/pause02.c |  9 ---------
+ testcases/kernel/syscalls/pause/pause03.c | 11 +----------
+ 2 files changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/munmap/munmap01.c b/testcases/kernel/syscalls/munmap/munmap01.c
-index 7d10c0eac..dfd81fa2b 100644
---- a/testcases/kernel/syscalls/munmap/munmap01.c
-+++ b/testcases/kernel/syscalls/munmap/munmap01.c
-@@ -114,13 +114,7 @@ int main(int ac, char **av)
- 				 TEST_ERRNO, strerror(TEST_ERRNO));
- 			continue;
- 		}
--#ifdef UCLINUX
--		/*
--		 * No SIGSEGV on uClinux since
--		 * MMU not implemented on uClinux
--		 */
--		tst_resm(TPASS, "call succedded");
--#else
-+
- 		/*
- 		 * Check whether further reference is possible
- 		 * to the unmapped memory region by writing
-@@ -130,9 +124,7 @@ int main(int ac, char **av)
- 		*addr = 50;
+diff --git a/testcases/kernel/syscalls/pause/pause02.c b/testcases/kernel/syscalls/pause/pause02.c
+index 335bb3b35..0853232fd 100644
+--- a/testcases/kernel/syscalls/pause/pause02.c
++++ b/testcases/kernel/syscalls/pause/pause02.c
+@@ -45,10 +45,6 @@ int main(int ac, char **av)
  
- 		/* This message is printed if no SIGSEGV */
--		tst_resm(TFAIL, "process succeeds to refer unmapped "
--			 "memory region");
+ 	tst_parse_opts(ac, av, NULL, NULL);
+ 
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
 -#endif
-+		tst_resm(TFAIL, "process succeeds to refer unmapped memory region");
+-
+ 	setup();
  
- 		cleanup();
- 
-@@ -195,14 +187,8 @@ void setup(void)
- 	 * into the calling process's address space at the system choosen
- 	 * with read/write permissions to the mapped region.
- 	 */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -60,12 +56,7 @@ int main(int ac, char **av)
+ 			tst_brkm(TBROK, cleanup, "fork() failed");
+ 		break;
+ 		case 0:
 -#ifdef UCLINUX
--	/* MAP_SHARED is not implemented on uClinux */
--	addr = mmap(0, map_len, PROT_READ | PROT_WRITE,
--		    MAP_FILE | MAP_PRIVATE, fildes, 0);
+-			if (self_exec(av[0], "") < 0)
+-				tst_brkm(TBROK, cleanup, "self_exec failed");
 -#else
- 	addr = mmap(0, map_len, PROT_READ | PROT_WRITE,
- 		    MAP_FILE | MAP_SHARED, fildes, 0);
+ 			do_child();
+-#endif
+ 		break;
+ 		default:
+ 		break;
+diff --git a/testcases/kernel/syscalls/pause/pause03.c b/testcases/kernel/syscalls/pause/pause03.c
+index 4c30d9614..459222045 100644
+--- a/testcases/kernel/syscalls/pause/pause03.c
++++ b/testcases/kernel/syscalls/pause/pause03.c
+@@ -44,9 +44,6 @@ int main(int ac, char **av)
+ 	int status;
+ 
+ 	tst_parse_opts(ac, av, NULL, NULL);
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
 -#endif
  
- 	/* check for the return value of mmap system call */
- 	if (addr == (char *)MAP_FAILED) {
-diff --git a/testcases/kernel/syscalls/munmap/munmap02.c b/testcases/kernel/syscalls/munmap/munmap02.c
-index cd85d9436..311c0ea14 100644
---- a/testcases/kernel/syscalls/munmap/munmap02.c
-+++ b/testcases/kernel/syscalls/munmap/munmap02.c
-@@ -92,8 +92,6 @@ void setup();			/* Main setup function of test */
- void cleanup();			/* cleanup function for the test */
- void sig_handler();		/* signal catching function */
+ 	setup();
  
--#ifndef UCLINUX
--
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -136,16 +134,6 @@ int main(int ac, char **av)
- 	tst_exit();
- }
+@@ -56,14 +53,8 @@ int main(int ac, char **av)
+ 		if ((cpid = tst_fork()) == -1)
+ 			tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
  
--#else
--
--int main(void)
--{
--	tst_resm(TINFO, "munmap02 test is not available on uClinux");
--	tst_exit();
--}
--
--#endif /* ifndef UCLINUX */
--
- /*
-  * setup() - performs all ONE TIME setup for this test.
-  * Setup signal handler to catch SIGSEGV.
-@@ -199,14 +187,8 @@ void setup(void)
- 	 * into the calling process's address space at the system choosen
- 	 * with read/write permissions to the mapped region.
- 	 */
+-		if (cpid == 0) {
 -#ifdef UCLINUX
--	/* mmap() doesn't support MAP_SHARED on uClinux */
--	addr = mmap(0, map_len, PROT_READ | PROT_WRITE,
--		    MAP_FILE | MAP_PRIVATE, fildes, 0);
+-			if (self_exec(av[0], "") < 0)
+-				tst_brkm(TBROK, cleanup, "self_exec failed");
 -#else
- 	addr = mmap(0, map_len, PROT_READ | PROT_WRITE,
- 		    MAP_FILE | MAP_SHARED, fildes, 0);
++		if (cpid == 0)
+ 			do_child();
 -#endif
+-		}
  
- 	/* check for the return value of mmap system call */
- 	if (addr == (char *)MAP_FAILED) {
+ 		TST_PROCESS_STATE_WAIT(cleanup, cpid, 'S');
+ 
 -- 
 2.43.0
 
