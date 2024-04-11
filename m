@@ -4,70 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A092CD11C2
-	for <ltp@archiver.kernel.org>; Wed, 10 Apr 2024 13:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3103FCD1297
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 04:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1712810837; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=YQlAeKRfvfKfbXN3ZEKrqBB7rl/kGm+k6eKsTN1d4Qw=;
+ b=fX6D/13gGTsO6mZNELQ4cSjoE/WpwJckeEFNzYPiDb0TBwUMLeHc5nD5582QPGkE+IiJW
+ c6b+YxhTgyuIDPjjJZZGqc8aWdPfk71W9pZ8xnUKmG4qITcoRq03HrqY66xo+JcxH0Rcmja
+ /ouUdbxMt5uitq/L0qIVV3iTp086KRY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC4A63CF7D3
-	for <ltp@archiver.kernel.org>; Wed, 10 Apr 2024 15:34:05 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 29C5F3CF7CB
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 06:47:17 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 103DC3CEE6F
- for <ltp@lists.linux.it>; Wed, 10 Apr 2024 15:33:48 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3F8033CB493
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 06:46:56 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C500F1A00FA4
- for <ltp@lists.linux.it>; Wed, 10 Apr 2024 15:33:47 +0200 (CEST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DFCF95CE33;
- Wed, 10 Apr 2024 13:33:46 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B72941390D;
- Wed, 10 Apr 2024 13:33:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id EfPpKjqVFmbmGAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 10 Apr 2024 13:33:46 +0000
-Date: Wed, 10 Apr 2024 15:33:37 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240410133337.GA205337@pevik>
-References: <20240401150015.301640-1-samasth.norway.ananda@oracle.com>
- <Zg_oLGuLcssY-rYY@yuki>
- <e2368059-647c-4d98-8c90-2cc5f3bb34a4@oracle.com>
- <20240409101753.GA107959@pevik> <ZhZcL9cH5bVDWL_k@yuki>
- <20240410094621.GA184706@pevik> <ZhZlEz8MjZ2KOiR4@yuki>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3AF2D208E11
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 06:46:55 +0200 (CEST)
+Received: by mail-lj1-x234.google.com with SMTP id
+ 38308e7fff4ca-2d6fc3adaacso91827841fa.2
+ for <ltp@lists.linux.it>; Wed, 10 Apr 2024 21:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1712810814; x=1713415614; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=3rCmH0kzEV60+bD5w47AJTG0t8xg0TAlViDU3+du+vU=;
+ b=TtuQEZoGG6uye0kGkaO/FeBTPERqcRFflYXGYuvKosjF32BlXJ7HKt0JK5uVXtCxHX
+ IM9NDi25sly1tSdyVqlP03EnYwotZPUEBXMB9HX75bB7iQzIOHtIXD9w2Uz2Pa7lnQyg
+ fmjMwF7Uia7Dkl/mkg/J+BDikX3eZ9B26SL4o2il8X6qbpeOR+uzfs/5DXhWyvWUlG3G
+ aIfGK8tQvhp7fSAymnLsh+zH9HHx12gUbFbadT20VBr2oqDMCUXibnlRenMVPa5rfN6r
+ FnjqhjNKOSSwPR9egY9FTMR+e2dw2UNRlvzIpXME7mMnr65bLpknwGdK5eXJH1jGGqzL
+ KLhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1712810814; x=1713415614;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=3rCmH0kzEV60+bD5w47AJTG0t8xg0TAlViDU3+du+vU=;
+ b=GKsCt+3vqA8w+EpwBeGbXx0mG5jccRm4dNfmRubx/e+9ypD1UZRLUiAtjLOLnTSQ1N
+ HGbuOEZrCOQGE4SoJ+G7Fy04Dx4BaAbJ33hJKV7pWMDiChzBY7t4A+BqyCTvTjjgGHaD
+ skVN+kdOx7dcLuiPxFsi31GngaCpErEfWWu8U11j0fXld55CA38WrcLiKCtoLYvBceTN
+ +pq9GDpUwbFnvPUCteS8rdQYRwfWAWH43yJTOUx2MOOlYGa0IV4ibhqtLPU9OcyZPveZ
+ lwQp/QbcD17OzD1RN/bqxAbKiMlrla+CCNVGvbYGnSrIIW0WY+0DUoWISSp4SQPf8mJj
+ Nc8Q==
+X-Gm-Message-State: AOJu0YxK+z/uuma5tZT2+sQsLQK0qAkFYJKjuD6/mFsJwKsrOjfy/pKm
+ Nw5kN+U1kp5vM9yQQWEk3ytNhugODcUJvDYOPn5G9yBILPecRgrfxjerfkZR60N/iA/uNR/1dRg
+ =
+X-Google-Smtp-Source: AGHT+IEwQVN/eIQIWOSn6uocXEe/4/Y96ozJLHS2xzBXmXDgiBGDwyu1SqrUmMA9TiZrL1/TlW8rnA==
+X-Received: by 2002:a05:651c:1543:b0:2d8:d972:67e0 with SMTP id
+ y3-20020a05651c154300b002d8d97267e0mr2597790ljp.10.1712810814147; 
+ Wed, 10 Apr 2024 21:46:54 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ di7-20020a0560000ac700b003439d2a5f99sm822546wrb.55.2024.04.10.21.46.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 10 Apr 2024 21:46:53 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 11 Apr 2024 00:46:45 -0400
+Message-Id: <20240411044645.29938-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZhZlEz8MjZ2KOiR4@yuki>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: DFCF95CE33
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mremap06: fallocate is not supported on nfsv3
+Subject: [LTP] [PATCH v1] zram01.sh: Increase timeout for
+ check_read_mem_used_total
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,55 +89,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: calum.mackay@oracle.com, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > The solution would be to at least check for tst_fs_type(".") == TST_NFS_MAGIC.
+Increase timeout value to let case pass on our low ppc64le
+machine.
 
-> I would go for this at the moment, that is the easiest fix at the
-> moment.
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/device-drivers/zram/zram01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So you mean we risk we lost fallocate support in NFSv4.2 for the simplicity. OK
-for me.
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index 0c100b706..959dab217 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -155,7 +155,7 @@ zram_fill_fs()
+ 			continue
+ 		fi
+ 
+-		TST_RETRY_FUNC "check_read_mem_used_total /sys/block/zram$i/mm_stat" 0
++		TST_RETRY_FN_EXP_BACKOFF "check_read_mem_used_total /sys/block/zram$i/mm_stat" 0 10
+ 		mem_used_total=$(read_mem_used_total /sys/block/zram$i/mm_stat)
+ 		tst_res TINFO "mem_used_total: $mem_used_total"
+ 
+-- 
+2.35.3
 
-> > Perfect solution would IMHO be to check for NFS version (e.g. in /proc/mounts)
-> > and TCONF only on NFSv3.
-
-> And is nfsv4 enough, wasn't it added in nfsv4.2? Do we need to parse
-> /proc/net/rpc/nfs to figure out if nfs fallocate() is supported?
-
-Yes. First, I got confused 95d871f03cae ("nfsd: Add ALLOCATE support") [1] which is
-not mentioning NFS version, because it's for nfsd. But looking other commits,
-e.g. 95d871f03cae ("nfsd: Add ALLOCATE support") [2], 624bd5b7b683 ("nfs: Add
-DEALLOCATE support") [3] and the docs from merge commit in 3.19 [4] and
-kernelnewbies [5], it's clear: it's for NFSv4.2.
-
-BTW is that whole fallocate() support? [4] mentions "NFSv4.2 client support for
-hole punching and preallocation.", commit [3]: "This patch adds support for
-using the NFS v4.2 operation DEALLOCATE to punch holes in a file.", commit
-b0cb9085239a ("nfsd: Add DEALLOCATE support") [6] uses FALLOC_FL_PUNCH_HOLE
-flag. All that IMHO means it's adding just FALLOC_FL_PUNCH_HOLE support into
-NFSv4.2. Thus other (basic) fallocate() might work in all NFS versions, right?
-
-That would suggest when addin safe_fallocate() we should check for NFS
-(tst_fs_type(".") == TST_NFS_MAGIC) only when FALLOC_FL_PUNCH_HOLE is used.
-(I got from your answer we ignore missing support for older filesystems,
-we can always add the check once somebody reports invalid error).
-
-Kind regards,
-Petr
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=95d871f03cae6b49de040265cf88cbe2a16b9f05
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4ac1674f5da420ef17896f0f222c5215ebcde80
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=624bd5b7b683c978c6d5f4e9f6142cfb3470983d
-[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e20db597b6264de55ea6636fc79b1e4aaa89d129
-[5] https://kernelnewbies.org/Linux_3.19#NFSv4.2_support_for_hole_punching_and_preallocation
-[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b0cb9085239a20b7482ddd4839dd1d5476801dfa
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
