@@ -4,105 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E207C4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 513B6C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:38:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF02F3C0333
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:38:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DABED3CF820
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:38:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7ED0F3CF82A
+ by picard.linux.it (Postfix) with ESMTPS id 016063CF832
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:35 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0E5C9209071
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 931CC1A05C9C
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:35 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0DE42375AD;
- Thu, 11 Apr 2024 14:30:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1C954375A8;
+ Thu, 11 Apr 2024 14:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712845834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1712845835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
- b=2drqLti2eDNftYquZz9mQVUMYrZOYzss/qc29pojylq3NG2elKPiiyVClvYMn2sAZtEcaC
- qDVLEHv1SY+ru82P4m16e3DdfdRHoONujyh6LnnNTcU8dhijkr74Q4ktkr5ghwbKJodshs
- 9M4QR0sJNvRnD0S+36FfQYYtL55xJOo=
+ bh=fIw/fDYXWZAL78pMJbS9anG1GRvFWT3Lf9kw153tY/U=;
+ b=w+8l8lVyJL/eJxDTlK1oqIn6pKl65+3nAlHHCXZWycaHncMfDhT7dHg+G/RXxTGJD/6YD5
+ AF/v1h8CVHZ4W77DQGdohux/jzhLMYytO9vWsddRX479kgB8+2WIHk3/84N2lLS2Zn0x93
+ J6xT0H3aExUiiZXFU2p4txcXmc54qDg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712845834;
+ s=susede2_ed25519; t=1712845835;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
- b=bUWSfGY7n7m+bQ+6nWmTZXDJ/hqIxVfe23QCtd/XrvIsP+STKQg+ja2WKhQuXh2FnzBRSW
- AE6+UistkXrcLxDQ==
+ bh=fIw/fDYXWZAL78pMJbS9anG1GRvFWT3Lf9kw153tY/U=;
+ b=FkbsrKoJOL6FwDJgidB2hKTO1q3/TJc0omOC4/OfxccI8fmSzJrbMSqUMqBYxX3ylHH2vc
+ re5/u8EcSKV3WBAQ==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=w+8l8lVy;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FkbsrKoJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712845834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1712845835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
- b=2drqLti2eDNftYquZz9mQVUMYrZOYzss/qc29pojylq3NG2elKPiiyVClvYMn2sAZtEcaC
- qDVLEHv1SY+ru82P4m16e3DdfdRHoONujyh6LnnNTcU8dhijkr74Q4ktkr5ghwbKJodshs
- 9M4QR0sJNvRnD0S+36FfQYYtL55xJOo=
+ bh=fIw/fDYXWZAL78pMJbS9anG1GRvFWT3Lf9kw153tY/U=;
+ b=w+8l8lVyJL/eJxDTlK1oqIn6pKl65+3nAlHHCXZWycaHncMfDhT7dHg+G/RXxTGJD/6YD5
+ AF/v1h8CVHZ4W77DQGdohux/jzhLMYytO9vWsddRX479kgB8+2WIHk3/84N2lLS2Zn0x93
+ J6xT0H3aExUiiZXFU2p4txcXmc54qDg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712845834;
+ s=susede2_ed25519; t=1712845835;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
- b=bUWSfGY7n7m+bQ+6nWmTZXDJ/hqIxVfe23QCtd/XrvIsP+STKQg+ja2WKhQuXh2FnzBRSW
- AE6+UistkXrcLxDQ==
+ bh=fIw/fDYXWZAL78pMJbS9anG1GRvFWT3Lf9kw153tY/U=;
+ b=FkbsrKoJOL6FwDJgidB2hKTO1q3/TJc0omOC4/OfxccI8fmSzJrbMSqUMqBYxX3ylHH2vc
+ re5/u8EcSKV3WBAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA99A1386D;
- Thu, 11 Apr 2024 14:30:33 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E25A91386E;
+ Thu, 11 Apr 2024 14:30:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2PPSMwn0F2ZZRgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 14:30:33 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cHzANAr0F2ZZRgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 14:30:34 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 11 Apr 2024 16:30:22 +0200
-Message-ID: <20240411143025.352507-29-pvorel@suse.cz>
+Date: Thu, 11 Apr 2024 16:30:25 +0200
+Message-ID: <20240411143025.352507-32-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
 References: <20240411143025.352507-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.74 / 50.00]; BAYES_HAM(-2.94)[99.73%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 1C954375A8
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 28/31] ustat02: Remove UCLINUX
+Subject: [LTP] [PATCH 31/31] doc: UCLINUX has been removed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,23 +127,39 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/ustat/ustat02.c | 2 --
- 1 file changed, 2 deletions(-)
+ doc/maintainers/patch_review.rst                   | 4 ----
+ doc/old/Maintainer-Patch-Review-Checklist.asciidoc | 3 ---
+ 2 files changed, 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-index 965766698..84becaa1f 100644
---- a/testcases/kernel/syscalls/ustat/ustat02.c
-+++ b/testcases/kernel/syscalls/ustat/ustat02.c
-@@ -30,9 +30,7 @@ static struct test_case_t {
- 	struct ustat *buf;
- } tc[] = {
- 	{"Invalid parameter", EINVAL, "EINVAL", &invalid_dev, &ubuf},
--#ifndef UCLINUX
- 	{"Bad address", EFAULT, "EFAULT", &root_dev, (void*)-1}
--#endif
- };
+diff --git a/doc/maintainers/patch_review.rst b/doc/maintainers/patch_review.rst
+index 3ff8122a8..0561ffd9d 100644
+--- a/doc/maintainers/patch_review.rst
++++ b/doc/maintainers/patch_review.rst
+@@ -152,10 +152,6 @@ C tests
+ * Docparse documentation
+ * If a test is a regression test it should include ``.tags`` in the
+   ``struct tst_test`` definition
+-* When rewriting old tests, `uClinux <https://en.wikipedia.org/wiki/%CE%9CClinux>`_
+-  support should be removed (project has been discontinued).
+-  E.g. remove ``#ifdef UCLINUX``, replace ``FORK_OR_VFORK()`` with simple
+-  ``fork()`` or ``SAFE_FORK()``.
  
- int TST_TOTAL = ARRAY_SIZE(tc);
+ Shell tests
+ ~~~~~~~~~~~
+diff --git a/doc/old/Maintainer-Patch-Review-Checklist.asciidoc b/doc/old/Maintainer-Patch-Review-Checklist.asciidoc
+index 9cd8606f9..8977b7585 100644
+--- a/doc/old/Maintainer-Patch-Review-Checklist.asciidoc
++++ b/doc/old/Maintainer-Patch-Review-Checklist.asciidoc
+@@ -127,9 +127,6 @@ New test should
+ * Docparse documentation
+ * If a test is a regression test it should include tags
+   (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2238-test-tags[Test tags])
+-* When rewriting old tests, https://en.wikipedia.org/wiki/%CE%9CClinux[uClinux]
+-  support should be removed (project has been discontinued).
+-  E.g. remove `#ifdef UCLINUX`, replace `tst_fork()` with simple `fork()` or `SAFE_FORK()`.
+ 
+ ### Shell tests
+ * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#23-writing-a-testcase-in-shell[shell API]
 -- 
 2.43.0
 
