@@ -4,102 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E8EC4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 15:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED5B1C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:03:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1080B3CF85A
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 17:38:15 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 629B53CF840
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 18:03:50 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 93D263C6DA3
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 17:37:58 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A1DC23C195B
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 18:03:35 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A9EE461337F
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 17:37:57 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A23F3600869
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 18:03:34 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D27605D145;
- Thu, 11 Apr 2024 15:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712849876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KWnYZUKZC/xHPQO+sKVgLbiujXGtXaioBJ87BtJiRAc=;
- b=GxpDt2VJ79xkdbtqBnM72ReGu+iGtbRPDMn+fXBP1nKKbpLjC7HcaKOZm5W5WlGq/3wUzR
- ScolZ6MRR+mwa67HHQ+fg2+4G8CzQK3SSW/36dHhDKKSfWq1SwWCfAx5itWgXCopSju0U5
- +ga62zpj3IBUXRtOO3v2AQnTz93nXPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712849876;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KWnYZUKZC/xHPQO+sKVgLbiujXGtXaioBJ87BtJiRAc=;
- b=FoPVgKOme1tqsbbeYHsf6Zs908aa44a//O1tZntTgQtFV3KRlhI+bg5EAQUh4bkli9zgk6
- itIPXUtKkMU6i6Cg==
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BFD3A3769C;
+ Thu, 11 Apr 2024 16:03:33 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712849875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KWnYZUKZC/xHPQO+sKVgLbiujXGtXaioBJ87BtJiRAc=;
- b=AIU9kobX0fvyq0gqsMCvhjY0uismbHIv84LlnIzS8uR//sX3KzRoM1C4WZZaFY64zSROCj
- 2pDBpUpJdwxokNlisOr2vJ5THQLDywmZ/DdPIMvvrh0Wid06SkR+oI3Z+mvGbdvCptqB4K
- DTWBqqtCfdlnmKHj8AI+1o855x9ucM4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712849875;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KWnYZUKZC/xHPQO+sKVgLbiujXGtXaioBJ87BtJiRAc=;
- b=eNUbzgQTQ1L40MBCzRr5AOcu59QDarVm2sttTX+XWX+1ShZ4Xic0Yo2H/5G5xtWVlnWeEX
- HQEYRgzeOfps4qDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3D0B1368B;
- Thu, 11 Apr 2024 15:37:55 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B0A681368B;
+ Thu, 11 Apr 2024 16:03:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fPC5LdMDGGb0XgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 11 Apr 2024 15:37:55 +0000
-Date: Thu, 11 Apr 2024 17:37:01 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id s6ghKtUJGGZfZwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 11 Apr 2024 16:03:33 +0000
+Date: Thu, 11 Apr 2024 18:02:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZhgDnR6A9oMjOr0w@yuki>
+Message-ID: <ZhgJo2DJW4QjFFfd@yuki>
 References: <20240411143025.352507-1-pvorel@suse.cz>
- <20240411143025.352507-15-pvorel@suse.cz>
+ <20240411143025.352507-30-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240411143025.352507-15-pvorel@suse.cz>
-X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+In-Reply-To: <20240411143025.352507-30-pvorel@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: BFD3A3769C
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 14/31] madvise02: Remove UCLINUX
+Subject: Re: [LTP] [PATCH 29/31] lib: Remove -C option and self_exec.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,60 +83,28 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/kernel/syscalls/madvise/madvise02.c | 25 ++++++++-----------
->  1 file changed, 11 insertions(+), 14 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
-> index 90c0431c5..793bda98d 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise02.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise02.c
-> @@ -65,17 +65,17 @@ static struct tcase {
->  	int exp_errno;
->  	int skip;
->  } tcases[] = {
-> -	{MADV_NORMAL,      "MADV_NORMAL",      &nonalign, EINVAL, 0},
-> -	{1212,             "MADV_NORMAL",      &file1,    EINVAL, 0},
-> -	{MADV_REMOVE,      "MADV_REMOVE",      &file1,    EINVAL, 0},
-> -	{MADV_DONTNEED,    "MADV_DONTNEED",    &file1,    EINVAL, 1},
-> -	{MADV_MERGEABLE,   "MADV_MERGEABLE",   &file1,    EINVAL, 0},
-> -	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", &file1,    EINVAL, 0},
-> -	{MADV_NORMAL,      "MADV_NORMAL",      &file2,    ENOMEM, 0},
-> -	{MADV_WILLNEED,    "MADV_WILLNEED",    &file2,    ENOMEM, 0},
-> -	{MADV_WILLNEED,    "MADV_WILLNEED",    &tmp_addr,  EBADF, 0},
-> -	{MADV_FREE,        "MADV_FREE",        &file1,    EINVAL, 0},
-> -	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &file1,    EINVAL, 0},
-> +	{MADV_NORMAL,      "MADV_NORMAL",      &nonalign, EINVAL},
-> +	{1212,             "MADV_NORMAL",      &file1,    EINVAL},
-> +	{MADV_REMOVE,      "MADV_REMOVE",      &file1,    EINVAL},
-> +	{MADV_DONTNEED,    "MADV_DONTNEED",    &file1,    EINVAL},
-> +	{MADV_MERGEABLE,   "MADV_MERGEABLE",   &file1,    EINVAL},
-> +	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", &file1,    EINVAL},
-> +	{MADV_NORMAL,      "MADV_NORMAL",      &file2,    ENOMEM},
-> +	{MADV_WILLNEED,    "MADV_WILLNEED",    &file2,    ENOMEM},
-> +	{MADV_WILLNEED,    "MADV_WILLNEED",    &tmp_addr,  EBADF},
-> +	{MADV_FREE,        "MADV_FREE",        &file1,    EINVAL},
-> +	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &file1,    EINVAL},
->  	{MADV_WIPEONFORK,  "MADV_WIPEONFORK shared_anon", &shared_anon, EINVAL, 0},
->  	{MADV_WIPEONFORK,  "MADV_WIPEONFORK private file backed", &file3, EINVAL, 0},
-
-You should have removed these two zeroes as well, it's a bit confusing
-that they stayed in there.
-
->  };
-> @@ -89,11 +89,8 @@ static void tcases_filter(void)
->  
->  		switch (tc->advice) {
->  		case MADV_DONTNEED:
-> -#if !defined(UCLINUX)
->  			if (mlock(file1, st.st_size) < 0)
->  				tst_brk(TBROK | TERRNO, "mlock failed");
-> -			tc->skip = 0;
-> -#endif /* if !defined(UCLINUX) */
+>  static void parse_opts(int argc, char *argv[])
+>  {
+>  	unsigned int i, topts_len = count_options();
+> @@ -704,15 +698,6 @@ static void parse_opts(int argc, char *argv[])
+>  			else
+>  				duration = SAFE_STRTOF(optarg, 0.1, HUGE_VALF);
 >  		break;
->  		case MADV_MERGEABLE:
->  		case MADV_UNMERGEABLE:
+> -		case 'V':
+> -			fprintf(stderr, "LTP version: " LTP_VERSION "\n");
+> -			exit(0);
+> -		break;
+
+This should stay.
+
+> -		case 'C':
+> -#ifdef UCLINUX
+> -			child_args = optarg;
+> -#endif
+> -		break;
+>  		default:
+>  			parse_topt(topts_len, opt, optarg);
+>  		}
 > -- 
 > 2.43.0
 > 
