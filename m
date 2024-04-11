@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 012A8C4345F
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E207C4345F
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 14:38:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 888A33CF861
-	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:38:15 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DF02F3C0333
+	for <ltp@archiver.kernel.org>; Thu, 11 Apr 2024 16:38:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 446A53CF82A
+ by picard.linux.it (Postfix) with ESMTPS id 7ED0F3CF82A
  for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:35 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -25,70 +25,70 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 32FB1140873C
- for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:34 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0E5C9209071
+ for <ltp@lists.linux.it>; Thu, 11 Apr 2024 16:30:35 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 37FEB375A9;
- Thu, 11 Apr 2024 14:30:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0DE42375AD;
+ Thu, 11 Apr 2024 14:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712845833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1712845834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nlOa9I8x6zjz8wOM/nujEBnkguka4XsTtTw4/GvtGi0=;
- b=HCeZ1XmB6nprJ3a4prufDaz8LzwY7rIGE50UhPLRHv9M9IFeY0sv88m0D77NhHh6wMvEb+
- aii6L2QakENhK3U5UVpGxvSsghUpIpmj5co71b/WqBC9KnrzrpRgC9VN6p3GKxLVCkRPrG
- FEe/+p/SsSay+gt/JeBTxdEcBUfH+Ow=
+ bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
+ b=2drqLti2eDNftYquZz9mQVUMYrZOYzss/qc29pojylq3NG2elKPiiyVClvYMn2sAZtEcaC
+ qDVLEHv1SY+ru82P4m16e3DdfdRHoONujyh6LnnNTcU8dhijkr74Q4ktkr5ghwbKJodshs
+ 9M4QR0sJNvRnD0S+36FfQYYtL55xJOo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712845833;
+ s=susede2_ed25519; t=1712845834;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nlOa9I8x6zjz8wOM/nujEBnkguka4XsTtTw4/GvtGi0=;
- b=H2lM/5mW60hDIYfuXCXd06HXUSa84MFD5IFVo/pfdpFW2d1P8uQjROL93VQ1Tn6+nRes0D
- GzUHPnVlilTz+MDQ==
+ bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
+ b=bUWSfGY7n7m+bQ+6nWmTZXDJ/hqIxVfe23QCtd/XrvIsP+STKQg+ja2WKhQuXh2FnzBRSW
+ AE6+UistkXrcLxDQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1712845833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1712845834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nlOa9I8x6zjz8wOM/nujEBnkguka4XsTtTw4/GvtGi0=;
- b=HCeZ1XmB6nprJ3a4prufDaz8LzwY7rIGE50UhPLRHv9M9IFeY0sv88m0D77NhHh6wMvEb+
- aii6L2QakENhK3U5UVpGxvSsghUpIpmj5co71b/WqBC9KnrzrpRgC9VN6p3GKxLVCkRPrG
- FEe/+p/SsSay+gt/JeBTxdEcBUfH+Ow=
+ bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
+ b=2drqLti2eDNftYquZz9mQVUMYrZOYzss/qc29pojylq3NG2elKPiiyVClvYMn2sAZtEcaC
+ qDVLEHv1SY+ru82P4m16e3DdfdRHoONujyh6LnnNTcU8dhijkr74Q4ktkr5ghwbKJodshs
+ 9M4QR0sJNvRnD0S+36FfQYYtL55xJOo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1712845833;
+ s=susede2_ed25519; t=1712845834;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nlOa9I8x6zjz8wOM/nujEBnkguka4XsTtTw4/GvtGi0=;
- b=H2lM/5mW60hDIYfuXCXd06HXUSa84MFD5IFVo/pfdpFW2d1P8uQjROL93VQ1Tn6+nRes0D
- GzUHPnVlilTz+MDQ==
+ bh=XZsQTufrzTadyZmYGIG9bHP33Qy50KIT5mE2slNfDA0=;
+ b=bUWSfGY7n7m+bQ+6nWmTZXDJ/hqIxVfe23QCtd/XrvIsP+STKQg+ja2WKhQuXh2FnzBRSW
+ AE6+UistkXrcLxDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F9731386E;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA99A1386D;
  Thu, 11 Apr 2024 14:30:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aBo2Bgn0F2ZZRgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2PPSMwn0F2ZZRgAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 11 Apr 2024 14:30:33 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 11 Apr 2024 16:30:17 +0200
-Message-ID: <20240411143025.352507-24-pvorel@suse.cz>
+Date: Thu, 11 Apr 2024 16:30:22 +0200
+Message-ID: <20240411143025.352507-29-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
 References: <20240411143025.352507-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-2.99)[99.97%];
+X-Spamd-Result: default: False [-2.74 / 50.00]; BAYES_HAM(-2.94)[99.73%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
  MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
@@ -100,9 +100,9 @@ X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-2.99)[99.97%];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 23/31] read02: Remove UCLINUX
+Subject: [LTP] [PATCH 28/31] ustat02: Remove UCLINUX
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,34 +121,23 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/read/read02.c | 4 ----
- 1 file changed, 4 deletions(-)
+ testcases/kernel/syscalls/ustat/ustat02.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/read/read02.c b/testcases/kernel/syscalls/read/read02.c
-index 9199a95f6..3b4af1643 100644
---- a/testcases/kernel/syscalls/read/read02.c
-+++ b/testcases/kernel/syscalls/read/read02.c
-@@ -52,9 +52,7 @@ static struct tcase {
- } tcases[] = {
- 	{&badfd, &bufaddr, 1, EBADF},
- 	{&fd2, &bufaddr, 1, EISDIR},
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index 965766698..84becaa1f 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -30,9 +30,7 @@ static struct test_case_t {
+ 	struct ustat *buf;
+ } tc[] = {
+ 	{"Invalid parameter", EINVAL, "EINVAL", &invalid_dev, &ubuf},
 -#ifndef UCLINUX
- 	{&fd3, &outside_buf, 1, EFAULT},
+ 	{"Bad address", EFAULT, "EFAULT", &root_dev, (void*)-1}
 -#endif
- 	{&fd4, &addr4, 1, EINVAL},
- 	{&fd4, &addr5, 4096, EINVAL},
  };
-@@ -98,10 +96,8 @@ static void setup(void)
  
- 	fd3 = SAFE_OPEN("test_file", O_RDWR);
- 
--#if !defined(UCLINUX)
- 	outside_buf = SAFE_MMAP(0, 1, PROT_NONE,
- 				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
--#endif
- 
- 	addr4 = SAFE_MEMALIGN(getpagesize(), (4096 * 10));
- 	addr5 = addr4 + 1;
+ int TST_TOTAL = ARRAY_SIZE(tc);
 -- 
 2.43.0
 
