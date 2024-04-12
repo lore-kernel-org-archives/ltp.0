@@ -4,95 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35543C4345F
-	for <ltp@archiver.kernel.org>; Fri, 12 Apr 2024 10:08:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DD4FC4345F
+	for <ltp@archiver.kernel.org>; Fri, 12 Apr 2024 11:29:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A6653CF8DB
-	for <ltp@archiver.kernel.org>; Fri, 12 Apr 2024 12:07:59 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7BC7E3CF911
+	for <ltp@archiver.kernel.org>; Fri, 12 Apr 2024 13:29:37 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E678B3CF81A
- for <ltp@lists.linux.it>; Fri, 12 Apr 2024 12:07:43 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 441D93C0E52
+ for <ltp@lists.linux.it>; Fri, 12 Apr 2024 13:29:21 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 74B5D1000C27
- for <ltp@lists.linux.it>; Fri, 12 Apr 2024 12:07:41 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A66271A0120D
+ for <ltp@lists.linux.it>; Fri, 12 Apr 2024 13:29:20 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CBD0D5FB38;
- Fri, 12 Apr 2024 10:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1712916460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Td+XYzXyj9LjFm94pQveiZs72tzg57MFK8PO5gTeT9w=;
- b=1OLupHeINf8/usCsfdL+QvisAkyO/4HvZcGQOUr5hCPZWXDNlUDx7FxeVwTrGrSTvyyj21
- +ugxKYYP1xtJURh2j0sHt8kMkPdkUTiWHn/XmnQ4EedE6AGExMRvQFqxbc86ZfLS7lZNUC
- 10oo9PN4jSFsRSX+rWlc8k4ryffl9MA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1712916460;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 49904381FB;
+ Fri, 12 Apr 2024 11:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1712921359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bHY4VLl9D4t5P7+wprK7153qM6JIIi5lvOAU2fLXoU=;
+ b=AbFxFBVBKZXIWb8+X0DoPqYqw6CYB0hUSy68YsZyn+Z9GmsAiGYoZDtlpmltXuO7a/lSVL
+ 7zia31zobN1weZsG0o4zgIGuQbq6QectNBNAqdvw/GAXAgT3cR5D5WmfM6Opgh3p0i4xLZ
+ i8cOXbEc2/zhUFzStTBZ/OKzW7xCFC8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1712921359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Td+XYzXyj9LjFm94pQveiZs72tzg57MFK8PO5gTeT9w=;
- b=Uux25yFq4knDIgOkoO9Ag9MLA1pTtbCjxCBDQKJmWOXqK+Au9GChmTVmzJhW9RlMQb+0Jf
- 0GKDyZYUzUN1WUAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1712916460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Td+XYzXyj9LjFm94pQveiZs72tzg57MFK8PO5gTeT9w=;
- b=1OLupHeINf8/usCsfdL+QvisAkyO/4HvZcGQOUr5hCPZWXDNlUDx7FxeVwTrGrSTvyyj21
- +ugxKYYP1xtJURh2j0sHt8kMkPdkUTiWHn/XmnQ4EedE6AGExMRvQFqxbc86ZfLS7lZNUC
- 10oo9PN4jSFsRSX+rWlc8k4ryffl9MA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1712916460;
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bHY4VLl9D4t5P7+wprK7153qM6JIIi5lvOAU2fLXoU=;
+ b=ewVTooJpqCcIgBdakTsb6cQcGOQs7AwAwthkVjv33/pdDLaMpXGDziQ6dA01yHfO7Jy0wh
+ 7FG9vLmdODa2VQAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AbFxFBVB;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ewVTooJp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1712921359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bHY4VLl9D4t5P7+wprK7153qM6JIIi5lvOAU2fLXoU=;
+ b=AbFxFBVBKZXIWb8+X0DoPqYqw6CYB0hUSy68YsZyn+Z9GmsAiGYoZDtlpmltXuO7a/lSVL
+ 7zia31zobN1weZsG0o4zgIGuQbq6QectNBNAqdvw/GAXAgT3cR5D5WmfM6Opgh3p0i4xLZ
+ i8cOXbEc2/zhUFzStTBZ/OKzW7xCFC8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1712921359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Td+XYzXyj9LjFm94pQveiZs72tzg57MFK8PO5gTeT9w=;
- b=Uux25yFq4knDIgOkoO9Ag9MLA1pTtbCjxCBDQKJmWOXqK+Au9GChmTVmzJhW9RlMQb+0Jf
- 0GKDyZYUzUN1WUAg==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bHY4VLl9D4t5P7+wprK7153qM6JIIi5lvOAU2fLXoU=;
+ b=ewVTooJpqCcIgBdakTsb6cQcGOQs7AwAwthkVjv33/pdDLaMpXGDziQ6dA01yHfO7Jy0wh
+ 7FG9vLmdODa2VQAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A43AD13942;
- Fri, 12 Apr 2024 10:07:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CRUDJuwHGWYjHwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 12 Apr 2024 10:07:40 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 12 Apr 2024 12:07:39 +0200
-Message-Id: <20240412100739.1169-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AA0E13942;
+ Fri, 12 Apr 2024 11:29:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xpwvDQ8bGWazOAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 12 Apr 2024 11:29:19 +0000
+Date: Fri, 12 Apr 2024 13:28:25 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Samir Mulani <samir@linux.vnet.ibm.com>
+Message-ID: <Zhka2TEpvdMhiBNO@yuki>
+References: <20240407102425.65452-1-samir@linux.vnet.ibm.com>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- ARC_NA(0.00)[]; RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+Content-Disposition: inline
+In-Reply-To: <20240407102425.65452-1-samir@linux.vnet.ibm.com>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_MATCH_ENVRCPT_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:email]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 49904381FB
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] doc: Documentation usage and development
+Subject: Re: [LTP] [PATCH v3] Migrating the
+ libhugetlbfs/testcases/stack_grow_into_huge.c test.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,103 +119,146 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: rpalethorpe@suse.de, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> +#if defined(__powerpc__) || defined(__powerpc64__)
 
-This patch adds a section for developers, explaining how to use and
-build the new LTP documentation.
+We have supported_archs array in the tst_test structure now so instead
+of ifdefing out the whole test we should add:
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- doc/developers/documentation.rst | 49 ++++++++++++++++++++++++++++++++
- doc/index.rst                    |  4 +++
- 2 files changed, 53 insertions(+)
- create mode 100644 doc/developers/documentation.rst
+	.supported_archs = {"ppc", "ppc64", NULL},
 
-diff --git a/doc/developers/documentation.rst b/doc/developers/documentation.rst
-new file mode 100644
-index 000000000..5b112bcaf
---- /dev/null
-+++ b/doc/developers/documentation.rst
-@@ -0,0 +1,49 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Documentation
-+=============
-+
-+This section explains how to use and develop the LTP documentation. The current
-+documentation format is written using
-+`reStructedText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-+and it's built on top of `Sphinx <https://www.sphinx-doc.org/en/master/>`_.
-+
-+Building documentation
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+First of all, to build the documentation we must be sure that all dependences
-+have been installed (please check ``doc/requirements.txt`` file). Sometimes the
-+Linux distros are providing them, but the best way is to use ``virtualenv``
-+command as following:
-+
-+.. code-block:: bash
-+
-+    cd doc
-+
-+    # prepare virtual enviroment
-+    python -m virtualenv .venv
-+    source .venv/bin/activate
-+
-+    pip install sphinx
-+    pip install -r requirements.txt
-+
-+    # build documentation
-+    make
-+
-+Once the procedure has been completed, documentation will be visible at
-+``doc/html/index.html``.
-+
-+.. warning::
-+
-+    The current ``.readthedocs.yml`` workflow is using ``Python 3.6`` because
-+    other Python versions were causing issues. No other version has been tested,
-+    but it should work anyway.
-+
-+Validating spelling
-+~~~~~~~~~~~~~~~~~~~
-+
-+To check documentation words spelling, we provide support for
-+`aspell <http://aspell.net/>`_, so make sure that it's installed. The
-+documentation can be tested via ``make spelling`` command. Output will be
-+visible in the ``doc/build`` folder and, if any error will be found, a warning
-+message will be shown.
-diff --git a/doc/index.rst b/doc/index.rst
-index 80820ab51..653449cc4 100644
---- a/doc/index.rst
-+++ b/doc/index.rst
-@@ -27,6 +27,7 @@
-    developers/ltp_library
-    developers/build_system
-    developers/debugging
-+   developers/documentation
- 
- .. toctree::
-    :maxdepth: 3
-@@ -88,6 +89,9 @@ For developers
- :doc:`developers/debugging`
-    How to debug LTP tests
- 
-+:doc:`developers/documentation`
-+   How to use and develop LTP documentation
-+
- For maintainers
- ---------------
- 
+> +#ifdef __LP64__
+> +#define STACK_ALLOCATION_SIZE	(256*1024*1024)
+> +#else
+> +#define STACK_ALLOCATION_SIZE	(16*1024*1024)
+> +#endif
+> +#define PALIGN(p, a) ((void *)LTP_ALIGN((unsigned long)(p), (a)))
+> +#define MNTPOINT "hugetlbfs/"
+> +static int  fd = -1;
+> +static unsigned long long hpage_size;
+> +static int page_size;
+> +
+> +
+> +void do_child(void *stop_address)
+> +{
+> +	struct rlimit r;
+> +	volatile int *x;
+> +
+> +	/* corefile from this process is not interesting and limiting
+> +	 * its size can save a lot of time. '1' is a special value,
+> +	 * that will also abort dumping via pipe, which by default
+> +	 * sets limit to RLIM_INFINITY.
+> +	 */
+> +	r.rlim_cur = 1;
+> +	r.rlim_max = 1;
+> +	SAFE_SETRLIMIT(RLIMIT_CORE, &r);
+> +
+> +	do {
+> +		x = alloca(STACK_ALLOCATION_SIZE);
+> +		*x = 1;
+> +	} while ((void *)x >= stop_address);
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	int pid, status;
+> +	void *stack_address, *mmap_address, *heap_address, *map;
+> +
+> +	stack_address = alloca(0);
+> +	heap_address = sbrk(0);
+> +
+> +	/*
+> +	 * paranoia: start mapping two hugepages below the start of the stack,
+> +	 * in case the alignment would cause us to map over something if we
+> +	 * only used a gap of one hugepage.
+> +	 */
+> +	mmap_address = PALIGN(stack_address - 2 * hpage_size, hpage_size);
+> +	do {
+> +		map = mmap(mmap_address, hpage_size, PROT_READ|PROT_WRITE,
+> +				MAP_SHARED | MAP_FIXED_NOREPLACE, fd, 0);
+> +		if (map == MAP_FAILED) {
+> +			if (errno == ENOMEM) {
+> +				tst_res(TCONF, "There is no enough memory in the system to do mmap");
+> +				exit(-1);
+
+This should be just return;
+
+> +			}
+> +		}
+> +		mmap_address -= hpage_size;
+> +		/*
+> +		 * if we get all the way down to the heap, stop trying
+> +		 */
+> +	} while (mmap_address <= heap_address);
+> +	pid = SAFE_FORK();
+> +	if (pid == 0)
+> +		do_child(mmap_address);
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+> +		tst_res(TPASS, "Child killed by %s as expected", tst_strsig(SIGSEGV));
+> +	else
+> +		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
+> +}
+> +
+> +void setup(void)
+> +{
+> +	struct rlimit r;
+> +
+> +	page_size = getpagesize();
+> +	hpage_size = tst_get_hugepage_size();
+> +	/*
+> +	 * Setting the stack size to unlimited.
+> +	 */
+> +	r.rlim_cur = RLIM_INFINITY;
+> +	r.rlim_max = RLIM_INFINITY;
+> +	SAFE_SETRLIMIT(RLIMIT_STACK, &r);
+> +	SAFE_GETRLIMIT(RLIMIT_STACK, &r);
+> +	if (r.rlim_cur != RLIM_INFINITY)
+> +		tst_brk(TCONF, "Stack rlimit must be 'unlimited'");
+> +	fd = tst_creat_unlinked(MNTPOINT, 0);
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tags = (struct tst_tag[]) {
+> +		{"linux-git", "0d59a01bc461"},
+> +		{}
+> +	},
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {1, TST_NEEDS},
+> +	.forks_child = 1,
+> +};
+> +#else
+> +TST_TEST_TCONF("stack_grow_into_huge dosen't support on other architecture");
+> +#endif
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
