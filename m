@@ -4,84 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556B8C4345F
-	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 11:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713181642; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=uePA90qwA55Tqq3l9ynFj+JYJOQtkixqosycTKzjLwY=;
- b=jTgv8AzkJtHFzn+WgV8Ykx/uGPsISUdlJnQ6YqkN9yG0uEZAs3MhmCbxi9j3FpWhUSemR
- bppuDQIzudzGqm2Pda4avjc5Ygwzv4Tlb4zHFZjlP2NFDw6xXfMn936gNrd/TZ9OlQrNIUG
- 6wFGYkgtwDaLpL22ggMiadMZnenUBpM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AEABC4345F
+	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 12:17:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77EA53CF85D
-	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 13:47:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 0E1EB3CF9FC
+	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 14:17:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16A913C0F50
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 13:46:59 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7A9EB3CF759
+ for <ltp@lists.linux.it>; Mon, 15 Apr 2024 14:17:26 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E1A1C200078
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 13:46:58 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-347aa00e3c8so539580f8f.1
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 04:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1713181618; x=1713786418; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=I4cHY2MgGxQeeuKIVGIA5+kiQOnxg7UbLeogdmqhvKQ=;
- b=NxoafYNxbu2+6uWg+O4nLGBMwCCADRxw58GwivwSmSdc5Y41zH+4vD6B/3InOPitko
- aiyXOXr/SIBJwUCWat+Ye0UytqJNH/mlcyGtZw+TgjVKIaK6Gnz2SQVctR8wsYy3kWCH
- K2ymCLQVeVnibjVObnQxGQ8SWZ4s2j9ddlYoB4rmvDS/q+yuLZHR6uL4khbVFQzEgEmB
- dNqLEmzzQs6laPyiFg41Vd+FFW1CEblPruxlsYBvAbbZX2cobZlPuUDkZFjPoi6zBzdR
- v9h3G64Fboy2rznUQFD8mxUASgNng46JCc3tVqQYm47ZNhJ3Zq4B5a5obFMWbEf5BHZp
- u7tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713181618; x=1713786418;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=I4cHY2MgGxQeeuKIVGIA5+kiQOnxg7UbLeogdmqhvKQ=;
- b=Z3F/3Yh7ypL4On8yT8plC+ylqBjfimAzkV/zMLSQMNk0aQCxeg0Cp9xwTiopLGZ63w
- s04qSSbwC7kSOPGL4Q+junok1kWImb75dHWAghG2Fj4JtgFOtwtnxlsJmjesHq+AyQuD
- /qrCQyGXeCmU6QBStk0447hvl8NcIFJj56Xhnc6r20TyKdtpDGbuyZfQa4Nq5rWwbAtF
- D1bsMoAU8lSxSlonyGRobZdmDsyLZ51bO4gEbS1poER9zIPAz4ccwGZVToWf65dtdhjr
- llqIjdtEmIf6w1zA3qyRZst5fQMedaMlgNDi1t5Kx4CO0LxwBUlmXJnA5gtseCsglq73
- FpLQ==
-X-Gm-Message-State: AOJu0Yxp4dQJV7GdnoqtiXK0ksF1ujpFPB8pfAlk7PGjs40Q2M+ji7Gj
- 1xVsA/RG8EA9yKFc9kVTlxoa/ORu+ocg0EQ5C1h4cwJX/eCK7aBdyIxKtFXiE9+cBgVpwbGfja0
- =
-X-Google-Smtp-Source: AGHT+IF3uzYBrM+eJjMDuSyZHc/zwaw3YwtUs1OnjitgAzPgd9L65+O775fBMtWWd0Gt2GA+0yh5cQ==
-X-Received: by 2002:a05:6000:1952:b0:347:2b13:bb8 with SMTP id
- e18-20020a056000195200b003472b130bb8mr7356746wry.0.1713181617668; 
- Mon, 15 Apr 2024 04:46:57 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- j23-20020a05600c1c1700b0041880a0e8ecsm200111wms.43.2024.04.15.04.46.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Apr 2024 04:46:57 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CA2C2600796
+ for <ltp@lists.linux.it>; Mon, 15 Apr 2024 14:17:25 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C4DBB21B61;
+ Mon, 15 Apr 2024 12:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713183444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UKp5aDl10SqNC519gE9ZAZ6Yc0bHfhoLXfD+TZ4dysc=;
+ b=JLAWKkMxWCnI3DfqIV2Oo8aAL+FigVa7IyrW+A8QLVvfDok+q+aXEXVbjSba9xT17JzVTU
+ o/BKXXt85tLvN7leXoqLMXn0/ohk2uz3jHuulRnIrOEXh2sTP5aTDlYl0OvR2ZuCr4Z6sO
+ i88FFLq+Y1KLedwveaFvx0J9FQlgYSQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713183444;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UKp5aDl10SqNC519gE9ZAZ6Yc0bHfhoLXfD+TZ4dysc=;
+ b=eAHbjxpbweDJApHM6/9DRqnRIZNtiWq3fxB42b7VtQbT1GMyX3fKI/SxdV8wtsU+LKGLSC
+ xmGMbvgsUI0oemAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713183444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UKp5aDl10SqNC519gE9ZAZ6Yc0bHfhoLXfD+TZ4dysc=;
+ b=JLAWKkMxWCnI3DfqIV2Oo8aAL+FigVa7IyrW+A8QLVvfDok+q+aXEXVbjSba9xT17JzVTU
+ o/BKXXt85tLvN7leXoqLMXn0/ohk2uz3jHuulRnIrOEXh2sTP5aTDlYl0OvR2ZuCr4Z6sO
+ i88FFLq+Y1KLedwveaFvx0J9FQlgYSQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713183444;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UKp5aDl10SqNC519gE9ZAZ6Yc0bHfhoLXfD+TZ4dysc=;
+ b=eAHbjxpbweDJApHM6/9DRqnRIZNtiWq3fxB42b7VtQbT1GMyX3fKI/SxdV8wtsU+LKGLSC
+ xmGMbvgsUI0oemAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D6CA1386E;
+ Mon, 15 Apr 2024 12:17:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rrtzJNQaHWbVeAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Apr 2024 12:17:24 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 15 Apr 2024 07:46:52 -0400
-Message-Id: <20240415114652.22687-1-wegao@suse.com>
+Date: Mon, 15 Apr 2024 14:17:19 +0200
+Message-Id: <20240415121719.3798-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240331021720.9527-1-wegao@suse.com>
-References: <20240331021720.9527-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] ioctl_fiemap01: New test for fiemap ioctl()
+Subject: [LTP] [PATCH v1] doc: Add new API conversion stats
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,161 +103,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #535
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+Show inside documentation what's the status of the current LTP
+refactoring plan that aims to convert all tests into the new API.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_fiemap01.c    | 110 ++++++++++++++++++
- 3 files changed, 113 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
+ doc/.gitignore      |  1 +
+ doc/conf.py         | 48 +++++++++++++++++++++++++++++++++++++++++++++
+ doc/users/stats.rst |  1 +
+ 3 files changed, 50 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6e2407879..4e6ce5aef 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -589,6 +589,8 @@ ioctl_ns07 ioctl_ns07
+diff --git a/doc/.gitignore b/doc/.gitignore
+index 173179852..ab979ad18 100644
+--- a/doc/.gitignore
++++ b/doc/.gitignore
+@@ -1,4 +1,5 @@
+ html/
+ build/
+ _static/syscalls.rst
++_static/old_api.rst
+ syscalls.tbl
+diff --git a/doc/conf.py b/doc/conf.py
+index fb3e83cf2..2cec90a64 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -39,6 +39,53 @@ html_theme = 'sphinx_rtd_theme'
+ html_static_path = ['_static']
  
- ioctl_sg01 ioctl_sg01
  
-+ioctl_fiemap01 ioctl_fiemap01
++def generate_old_api_stats(_):
++    """
++    Generate statistics for old API tests. We enter the tests folder and we
++    count all tests implementations using old API. The way we count them, is to
++    open every *.c file and to verify that "#include <test.h>" directive is
++    present.
++    """
++    output = '_static/old_api.rst'
 +
- inotify_init1_01 inotify_init1_01
- inotify_init1_02 inotify_init1_02
++    old_regex = re.compile(r'#include.*[<"\']test\.h[>"\']')
++    new_regex = re.compile(r'#include.*[<"\']tst_test\.h[>"\']')
++
++    old_tests = 0
++    new_tests = 0
++
++    for root, _, files in os.walk('../testcases'):
++        for fname in files:
++            if not fname.endswith('.c'):
++                continue
++
++            path = os.path.join(root, fname)
++            with open(path, 'r', errors='ignore') as fdata:
++                for line in fdata:
++                    if old_regex.match(line):
++                        old_tests += 1
++                        break
++
++                    if new_regex.match(line):
++                        new_tests += 1
++                        break
++
++    if old_tests == 0 and new_tests == 0:
++        return
++
++    text = [
++        'New API conversion status\n',
++        '-------------------------\n\n',
++        'The current LTP refactoring plan aims to convert all LTP test\n',
++        f'cases using the new LTP API. There are currently **{old_tests}** tests\n',
++        f'which need to be converted and **{new_tests}** have been converted\n',
++        'already.\n',
++    ]
++
++    with open(output, 'w+') as stats:
++        stats.writelines(text)
++
++
+ def generate_syscalls_stats(_):
+     """
+     Generate statistics for syscalls. We fetch the syscalls list from the kernel
+@@ -198,4 +245,5 @@ def generate_syscalls_stats(_):
  
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 5fff7a61d..64adcdfe6 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -22,3 +22,4 @@
- /ioctl_ns06
- /ioctl_ns07
- /ioctl_sg01
-+/ioctl_fiemap01
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-new file mode 100644
-index 000000000..1b3f80ed9
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify basic fiemap ioctl.
-+ */
-+
-+#include <linux/fs.h>
-+#include <linux/fiemap.h>
-+#include <stdlib.h>
-+#include <sys/statvfs.h>
-+
-+#include "tst_test.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define TESTFILE "testfile"
-+#define NUM_EXTENT 3
-+
-+static void print_extens(struct fiemap *fiemap)
-+{
-+	tst_res(TDEBUG, "File extent count: %u", fiemap->fm_mapped_extents);
-+
-+	for (unsigned int i = 0; i < fiemap->fm_mapped_extents; ++i) {
-+		tst_res(TDEBUG, "Extent %u: Logical offset: %llu, Physical offset: %llu, flags: %u, Length: %llu",
-+				i + 1,
-+				fiemap->fm_extents[i].fe_logical,
-+				fiemap->fm_extents[i].fe_physical,
-+				fiemap->fm_extents[i].fe_flags,
-+				fiemap->fm_extents[i].fe_length);
-+	}
-+}
-+
-+static void check_extent(struct fiemap *fiemap, unsigned int fm_mapped_extents, int index_extents, int fe_flags, unsigned int min_fe_physical, unsigned int fe_length)
-+{
-+	TST_EXP_EXPR(fiemap->fm_mapped_extents == fm_mapped_extents,
-+		"Check extent fm_mapped_extents is %d", fm_mapped_extents);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_flags & fe_flags,
-+		"Check fe_flags is %d", fe_flags);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_physical >= min_fe_physical,
-+		"Check fe_physical > %d", min_fe_physical);
-+	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_length == fe_length,
-+		"Check fe_length is %d", fe_length);
-+}
-+
-+static void verify_ioctl(void)
-+{
-+	int fd;
-+	struct fiemap *fiemap;
-+	struct statvfs fs_info;
-+	unsigned long blk_size;
-+
-+	SAFE_CHDIR(MNTPOINT);
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+
-+	if (statvfs(".", &fs_info) != 0)
-+		tst_brk(TBROK, "statvfs failed");
-+
-+	blk_size = fs_info.f_bsize;
-+
-+	fiemap = SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent) * NUM_EXTENT);
-+	fiemap->fm_start = 0;
-+	fiemap->fm_length = ~0ULL;
-+	fiemap->fm_extent_count = 1;
-+
-+	fiemap->fm_flags = -1;
-+	TST_EXP_FAIL(ioctl(fd, FS_IOC_FIEMAP, fiemap), EBADR);
-+
-+	fiemap->fm_flags =  0;
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	TST_EXP_EXPR(fiemap->fm_mapped_extents == 0,
-+		"Check extent fm_mapped_extents is 0");
-+
-+	char *buf = SAFE_MALLOC(blk_size);
-+
-+	SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, blk_size);
-+	fiemap->fm_flags = FIEMAP_FLAG_SYNC;
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	check_extent(fiemap, 1, 0, FIEMAP_EXTENT_LAST, 1, blk_size);
-+
-+	fiemap->fm_extent_count = NUM_EXTENT;
-+	SAFE_LSEEK(fd, 2 * blk_size, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-+	SAFE_LSEEK(fd, 4 * blk_size, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-+	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-+	print_extens(fiemap);
-+	check_extent(fiemap, NUM_EXTENT, NUM_EXTENT - 1, FIEMAP_EXTENT_LAST, 1, blk_size);
-+
-+	free(buf);
-+	free(fiemap);
-+	SAFE_CLOSE(fd);
-+	SAFE_UNLINK(TESTFILE);
-+}
-+
-+static struct tst_test test = {
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.skip_filesystems = (const char *const[]) {
-+		"exfat", "vfat", "ntfs", "tmpfs", NULL
-+	},
-+	.test_all = verify_ioctl,
-+	.needs_root = 1,
-+};
+ def setup(app):
+     app.add_css_file('custom.css')
++    app.connect('builder-inited', generate_old_api_stats)
+     app.connect('builder-inited', generate_syscalls_stats)
+diff --git a/doc/users/stats.rst b/doc/users/stats.rst
+index 7073442aa..a8b322b5f 100644
+--- a/doc/users/stats.rst
++++ b/doc/users/stats.rst
+@@ -6,4 +6,5 @@ Statistics
+ In this section we collect some statistics related to the current state of
+ LTP tests.
+ 
++.. include:: ../_static/old_api.rst
+ .. include:: ../_static/syscalls.rst
 -- 
 2.35.3
 
