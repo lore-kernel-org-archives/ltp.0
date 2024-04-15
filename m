@@ -4,80 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59CC7C4345F
-	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 02:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713149495; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=yAIwH2wCAEn2t+R2dOyPJEh11QXISl/xHNTRUpJgB3Q=;
- b=VbLtHEmyUOCRKsAOMdCLD77fAxiNiR011SqOQ2CfijNIJN0jguL35MJpq/KXdvwLR/Fit
- ZO4N4T82Nunx5cUHPExaB2RlFNi9ue40P2HspJxpsL5+Nu2DPKDejuFegqwv0OjWUMphGkV
- 92No6BCDIrIyv7WWoqaO2+3C9FIGV9o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A47E9C04FF9
+	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 09:18:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 61CA33CF98D
-	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 04:51:35 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id A59DC3CF9EF
+	for <ltp@archiver.kernel.org>; Mon, 15 Apr 2024 11:18:26 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFF343CC3F4
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 04:51:13 +0200 (CEST)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C924B3CC3F4
+ for <ltp@lists.linux.it>; Mon, 15 Apr 2024 11:18:10 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7812B1A00812
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 04:51:12 +0200 (CEST)
-Received: by mail-lj1-x231.google.com with SMTP id
- 38308e7fff4ca-2da63269e75so6906501fa.1
- for <ltp@lists.linux.it>; Sun, 14 Apr 2024 19:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1713149471; x=1713754271; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=6e+JmtKjQhhpSjduuf6FU0x0jm9dmVMgHRsb0qUgLEQ=;
- b=dA7TlyqX89ryg6ItuTQoN5UUuBs0B4LcXWomkHsS4Xty7TCahROD9R5bVDgJc9Z1oq
- FfvTZRTNJk+MWuHXxm7ClCXGuhLxAf3ytIq/R58bKq0LKbmjUSKp8o6IBeKuOPB4Ahur
- vWIBp7xR0DTIcQSRAYDyBWrNMvrv21VomecXiVxcrr/p0zZHCfJSYbDlvp4zqvZ18p/S
- 69BFfbpBe49/91hIEUNNZ42jij4kDHdF5EQzn7yCNypFUVHxM5+dxz3+sxEuAou8c5BB
- tLOjWJ5bRdx352n4VS73QxdOn9hryGhrNj3VSFFAseu0tnGZoPD+bgG5be4TYkXoB1+5
- nrCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713149471; x=1713754271;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=6e+JmtKjQhhpSjduuf6FU0x0jm9dmVMgHRsb0qUgLEQ=;
- b=wuUY5nyN3TnWXAKyl3dEk4NBQTCAY3eVU8OUlQbvIAZ4D1MWoO2Nv8POLmochWw7Qo
- IUtcA+9lTfTLaHSEb2PiTe+TotJkbVbt10iLXnaLOC3GB+m9d2E06atA5YPTDd1yEnIZ
- 3gkF652M9axzY07V9XqjSRSarQiE6ZwfUMNVLdxtLUAGpIqVi6mx8D2Tc960qtO1zZT9
- /VffAMdFIZfgFe3gS6Y6XiidQdCz9R2eFt87BzH3z3TUbp/uDTZ/VCRCaUVxkXN2pLTm
- LRmep2d7SGJzETWJqBXYhYYe7/7kDOeei1SzRQp4MY7V5bsJD+NkNTz9r5Rj07HjIcin
- hM+A==
-X-Gm-Message-State: AOJu0Yy1rNgIpY5DxsHPxh+TSKLOie5F7MFGpVGD0mJX/TOwZWLnYrpA
- TuopmljwS1Pb7jCoBChFDTN8Eu0TzIU3r3NR8LmSj5VAeMOpixNOkGS5tFT0J+DhcNlw3DnkTHg
- =
-X-Google-Smtp-Source: AGHT+IHaHnUo5mMhWjD33N3zFxb5rJ8xdkGLRzcuEAc1NtTczS4L2CDl+qiD6KU9XHdEarWVlHtvcA==
-X-Received: by 2002:a05:651c:11d4:b0:2d8:eaff:8a38 with SMTP id
- z20-20020a05651c11d400b002d8eaff8a38mr5211543ljo.46.1713149470983; 
- Sun, 14 Apr 2024 19:51:10 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- l35-20020a05600c1d2300b004161af729f4sm14469217wms.31.2024.04.14.19.51.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 14 Apr 2024 19:51:10 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 39BDE1A01143
+ for <ltp@lists.linux.it>; Mon, 15 Apr 2024 11:18:09 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EAC4122B10;
+ Mon, 15 Apr 2024 09:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713172689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9yNkdPFBuhCu/AKiPi4RZxfg7TVu7XxcO+oqi734L6c=;
+ b=GYzAY+lVYgxwfXtAeVrTfQJyboycprsyzjS8C73C4k1Lu/jAndC0sgC3F87t6YO+Pj7gIS
+ LBmhOwhbh/Ih1bKHPBYVf4ruc5oZffsPoiqCITAWfhbGxmbNaNrCBE0HmAGuLtb50ysqrj
+ TyFfeA6ru9vlkmuGKjMWUiJzudEAnp8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713172689;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9yNkdPFBuhCu/AKiPi4RZxfg7TVu7XxcO+oqi734L6c=;
+ b=i8IQgQtA8NIJKaQHg75Q/b6s8SiAYrMVE+FZIbw39R94KjKLC+aIDqJxTAO4R9+LCkiIdo
+ x7FI0yKG50I5lcDg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713172688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9yNkdPFBuhCu/AKiPi4RZxfg7TVu7XxcO+oqi734L6c=;
+ b=XvysLDZXqKLCqY3fFP4QYvcH8g3yPPohPgMQXzGC6dLm7XNU/NPK/OcO0h+81gkFsF6oZm
+ gqvobYVevpTz3S3fyPc5X68nSCqZEE+/G9wunVd5jIrI4elyu+qwG9R19OUTQdK1Cun7nF
+ y3GyDY4x2nciTJPRM8+RcSLGnU5n78I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713172688;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9yNkdPFBuhCu/AKiPi4RZxfg7TVu7XxcO+oqi734L6c=;
+ b=RIIDhWiGI13hBWxHf9WFcBfiaJzRVZR5bF7XA4h7B2TyPUUbdHU48ns7HMExoNDfWq2+RF
+ ftzYOl/PtgxJP3Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E7871368B;
+ Mon, 15 Apr 2024 09:18:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id T4BKINDwHGbkOgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Apr 2024 09:18:08 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Sun, 14 Apr 2024 22:51:00 -0400
-Message-Id: <20240415025100.2103-1-wegao@suse.com>
+Date: Mon, 15 Apr 2024 11:18:06 +0200
+Message-Id: <20240415091806.18556-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
+X-Spamd-Result: default: False [-2.75 / 50.00]; BAYES_HAM(-2.95)[99.77%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] lib: Add TST_EXP_PASS_PTR_{NULL,VOID} macros
+Subject: [LTP] [PATCH v1] doc: Add section for C API documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,96 +103,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- include/tst_test_macros.h               | 41 +++++++++++++++++++++++++
- testcases/kernel/syscalls/sbrk/sbrk01.c |  7 +----
- 2 files changed, 42 insertions(+), 6 deletions(-)
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index 22b39fb14..2668758fb 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -178,6 +178,28 @@ extern void *TST_RET_PTR;
-                                                                                \
- 	} while (0)
- 
-+#define TST_EXP_PASS_SILENT_PTR_(SCALL, SSCALL, FAIL_PTR_VAL, ...)             \
-+	do {                                                                   \
-+		TESTPTR(SCALL);                                                \
-+		                                                               \
-+		TST_PASS = 0;                                                  \
-+		                                                               \
-+		if (TST_RET_PTR == FAIL_PTR_VAL) {                             \
-+			TST_MSG_(TFAIL | TTERRNO, " failed",                   \
-+			         SSCALL, ##__VA_ARGS__);                       \
-+		        break;                                                 \
-+		}                                                              \
-+		                                                               \
-+		if (TST_RET != 0) {                                            \
-+			TST_MSGP_(TFAIL | TTERRNO, " invalid retval %ld",      \
-+			          TST_RET, SSCALL, ##__VA_ARGS__);             \
-+			break;                                                 \
-+		}                                                              \
-+                                                                               \
-+		TST_PASS = 1;                                                  \
-+                                                                               \
-+	} while (0)
+Added information about the C API documentation format and the way
+it's supported in Sphinx.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ doc/developers/documentation.rst | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/doc/developers/documentation.rst b/doc/developers/documentation.rst
+index 5b112bcaf..30dacd384 100644
+--- a/doc/developers/documentation.rst
++++ b/doc/developers/documentation.rst
+@@ -47,3 +47,11 @@ To check documentation words spelling, we provide support for
+ documentation can be tested via ``make spelling`` command. Output will be
+ visible in the ``doc/build`` folder and, if any error will be found, a warning
+ message will be shown.
 +
- #define TST_EXP_PASS_SILENT(SCALL, ...) TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__)
- 
- #define TST_EXP_PASS(SCALL, ...)                                               \
-@@ -188,6 +210,25 @@ extern void *TST_RET_PTR;
- 			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
- 	} while (0)                                                            \
- 
-+#define TST_EXP_PASS_PTR_(SCALL, SSCALL, FAIL_PTR_VAL, ...)                    \
-+	do {                                                                   \
-+		TST_EXP_PASS_SILENT_PTR_(SCALL, SSCALL,                        \
-+					FAIL_PTR_VAL, ##__VA_ARGS__);          \
-+		                                                               \
-+		if (TST_PASS)                                                  \
-+			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
-+	} while (0)
++C API documentation
++~~~~~~~~~~~~~~~~~~~
 +
-+#define TST_EXP_PASS_PTR_NULL(SCALL, ...)                                      \
-+       do {                                                                    \
-+               TST_EXP_PASS_PTR_(SCALL, #SCALL, NULL, ##__VA_ARGS__);          \
-+       } while (0)
-+
-+#define TST_EXP_PASS_PTR_VOID(SCALL, ...)                                      \
-+       do {                                                                    \
-+               TST_EXP_PASS_PTR_(SCALL, #SCALL, (void *)-1, ##__VA_ARGS__);    \
-+       } while (0)
-+
- /*
-  * Returns true if err is in the exp_err array.
-  */
-diff --git a/testcases/kernel/syscalls/sbrk/sbrk01.c b/testcases/kernel/syscalls/sbrk/sbrk01.c
-index bb78d9a7b..2d2244a35 100644
---- a/testcases/kernel/syscalls/sbrk/sbrk01.c
-+++ b/testcases/kernel/syscalls/sbrk/sbrk01.c
-@@ -26,12 +26,7 @@ static void run(unsigned int i)
- {
- 	struct tcase *tc = &tcases[i];
- 
--	TESTPTR(sbrk(tc->increment));
--
--	if (TST_RET_PTR == (void *) -1)
--		tst_res(TFAIL | TTERRNO, "sbrk(%ld) failed", tc->increment);
--	else
--		tst_res(TPASS, "sbrk(%ld) returned %p", tc->increment, TST_RET_PTR);
-+	TST_EXP_PASS_PTR_VOID(sbrk(tc->increment), "sbrk(%ld) returned %p", tc->increment, TST_RET_PTR);
- }
- 
- static struct tst_test test = {
++The C API documentation is written using
++`kernel-doc <https://return42.github.io/linuxdoc/linuxdoc-howto/kernel-doc-syntax.html>`_
++syntax which is supported by Sphinx via
++`linuxdoc <https://pypi.org/project/linuxdoc/>`_ extension.
 -- 
 2.35.3
 
