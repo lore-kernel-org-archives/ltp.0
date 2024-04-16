@@ -4,86 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C168C4345F
-	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 06:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6536BC4345F
+	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 08:12:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 573B73CFA9B
-	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 08:35:49 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1DBB73CFA94
+	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 10:12:09 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF3D73CFA35
- for <ltp@lists.linux.it>; Tue, 16 Apr 2024 08:35:33 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id E7D713CF78D
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:11:53 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=shirisha@linux.ibm.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 98293201741
- for <ltp@lists.linux.it>; Tue, 16 Apr 2024 08:35:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1713249330;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WwZUnfVR7b2FLp+dhKSKCC0kG7MsiDvxLr7j41QnlUg=;
- b=L+cClE/tq4q8C4AyjHa9coKcx0bVTDbQ2eOcZZML+U44S/RtGWrG43pm2pYHTvqLemvKjp
- +kGQpMar1JUDGr1RO8t4bPOawTgTc0XwOk5WRBBoDp8pl8tD6g7TgKRpz7hlfI36k2WmXP
- wKGGISyYoNpxHizNHZ3n9WkPK3lEWOw=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-628-Q2WAaT1DMv6Xf3X3qiXIhA-1; Tue, 16 Apr 2024 02:35:28 -0400
-X-MC-Unique: Q2WAaT1DMv6Xf3X3qiXIhA-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2a2d197ac0aso3818305a91.2
- for <ltp@lists.linux.it>; Mon, 15 Apr 2024 23:35:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713249327; x=1713854127;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=WwZUnfVR7b2FLp+dhKSKCC0kG7MsiDvxLr7j41QnlUg=;
- b=OQ1/kfZpWbEyRKry/kPztuKaWGmlGK9zGJVMHdAvVI4Xd05Z68K4VmppYbbwGj7mp1
- /sxnO9wDmtnOZjV+pqIt3+y2s5UCu5ivU2FYe39gV5H+5CP0JGNUgnLD/aRc4uyrKaXM
- FeYFZ/WXN6otSYXxn8vxVJNvBXUD0SPisHii9ZCk7tGpCDnGPEOnNAh/tHVhO+Im1Q5t
- F7rKQrXrv4/Y9foUrk7sPpFdueM/gEJvojm/0LvPM+3aUkWf6ENR1ceTn8hBqlkCNAuI
- C9ibcwqNhi7oSLqdi85CsKRlASAQ8TYl6FA5J/YYu5yMu8MMiOgChsDDRAqXgPvquumm
- TS0Q==
-X-Gm-Message-State: AOJu0YzMbIA2OI0D3nBM2iN93xSsbu0YQxBtU55+v3S5PGMQ2GhKH0TP
- Y/qUyjfjrg2OcxTlYNwO95ri2yjnu6X7BAqWWyXSzV/AlMBQUe84jTFZQ+wKzm+Ugsu97xJqdT2
- K93/rFdr43t/kgLucn6WKyr42923hbCwuWhGXLjo80OvX3ZXFaPxn6zKx7xt14RJmi/Z/FQqRTc
- zFek78EfHvMCNq6+0+jWWWlIo=
-X-Received: by 2002:a17:90a:b28c:b0:2a2:5457:d34e with SMTP id
- c12-20020a17090ab28c00b002a25457d34emr8989818pjr.13.1713249326990; 
- Mon, 15 Apr 2024 23:35:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFnMPKW8N0cGh/WHr3KXf5IfRyLGLM+QofKlCKlFzxHFsHud1A2butZk/A7Dmzu45nAh8zbnIpZL0rIJ6FWRo=
-X-Received: by 2002:a17:90a:b28c:b0:2a2:5457:d34e with SMTP id
- c12-20020a17090ab28c00b002a25457d34emr8989805pjr.13.1713249326626; Mon, 15
- Apr 2024 23:35:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240322030208.3278120-1-liwang@redhat.com>
- <20240322050046.GA572447@pevik>
- <CAEemH2c3SNktFnPpsnbXvtTvfEv84byRrNmjcz3YyQHem9mcGg@mail.gmail.com>
- <20240322053217.GA588706@pevik>
- <CAEemH2fjNisDjZjRn60534rK1AHefbXPEUPS1FS0EA0OcfFrtQ@mail.gmail.com>
- <20240415152043.GA541530@pevik>
-In-Reply-To: <20240415152043.GA541530@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 16 Apr 2024 14:35:14 +0800
-Message-ID: <CAEemH2ev62JxH7-DA5Sc2LjMKrquYqt927ATHZefNPAOiXb5qA@mail.gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8764B1001F4C
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:11:51 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 43G82M6I016708; Tue, 16 Apr 2024 08:11:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Y6X3cNqecHz1qLfdaAGEWslIWHXwoGjmYkhFlVkZr8w=;
+ b=GleyJnJgAbKXGbynvm/+d+uoTJjj7orTKy7+IxZYFce+8ZfbE9p502EVK41W6Uzywc6m
+ x97OfedsRMKmnpTSCSWXrEn5VpmH+ThwjWXg5+eWIT+sXC1xOmdjUKeL7E3wHxaBVIxb
+ gQxd5+8ikwijjOPrY86RqyosN330S+r1KbD4RGnVEGzk5GWOvis7nCFGDEE59vcPQOsZ
+ 1fMAaRlhrbBfYjvkVJqwkYReD29QBx3bUSdi1raMYNpgb6oxPftYnXc7AMn9BhzvLXrZ
+ J55bzYHj0wTmO/9Lmvli8Pw7miXQ7qd5y+6i6xYrMPvN/XzMNWRy2CyvvA67JR9ZwLkD 8Q== 
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhnf9r0qc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 16 Apr 2024 08:11:49 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 43G5NW84027323; Tue, 16 Apr 2024 08:11:48 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg4ryw3hc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 16 Apr 2024 08:11:48 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 43G8Biiv41353588
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 16 Apr 2024 08:11:46 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4AA6F2004F;
+ Tue, 16 Apr 2024 08:11:44 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9B0C520043;
+ Tue, 16 Apr 2024 08:11:43 +0000 (GMT)
+Received: from li-d12addcc-2792-11b2-a85c-bd8df30615ab.ibm.com (unknown
+ [9.199.152.158])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 16 Apr 2024 08:11:43 +0000 (GMT)
+Message-ID: <8125158bc5b44f8cc3328939d6f321008064a0fd.camel@linux.ibm.com>
+From: Shirisha ganta <shirisha@linux.ibm.com>
 To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Date: Tue, 16 Apr 2024 13:41:42 +0530
+In-Reply-To: <20240219221811.GC1067220@pevik>
+References: <20231213084753.61762-1-shirisha@linux.ibm.com>
+ <20240219221811.GC1067220@pevik>
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: F8jwaD8LtY7l5L2GvudgMB1DYnBa70h_
+X-Proofpoint-GUID: F8jwaD8LtY7l5L2GvudgMB1DYnBa70h_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_06,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 suspectscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ priorityscore=1501 clxscore=1011 lowpriorityscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404160049
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v3 1/2] libswap: add two methods to create swapfile
+Subject: Re: [LTP] [PATCH] Add hugemmap41(Migrating the
+ libhugetlbfs/testcases/slbpacaflush.c test)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,29 +103,86 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKClRoYW5rcyBmb3IgcmVwb3J0aW5nIHRoaXMuCgpPbiBNb24sIEFwciAxNSwgMjAy
-NCBhdCAxMToyMOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCj4gSGkg
-TGksCj4KPiA+IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKPgo+ID4gPiA+IFRo
-YW5rcywgSSB3b3VsZCBnaXZlIHRoZSBwYXRjaCBzZXQgbW9yZSB0aW1lIGluIGNhc2Ugb3RoZXJz
-IGhhdmUKPiA+ID4gY29tbWVudHMuCj4KPiA+ID4gU3VyZS4gVGhhbmtzIGZvciBhIG5pY2Ugd29y
-ayEKPgo+Cj4gPiBQYXRjaCBzZXQgYXBwbGllZC4KPgo+IEZZSSBpdCBsb29rcyBsaWtlIHRoaXMg
-cGF0Y2ggbWVyZ2UgYXM6Cj4KPiBmOTg3ZmZmZjUgKCJsaWJzd2FwOiBhZGQgdHdvIG1ldGhvZHMg
-dG8gY3JlYXRlIHN3YXBmaWxlIikKPgo+IGludHJvZHVjZWQgVFdBUk4gb24gYWxsIHRlc3RzIHdo
-aWNoIHRvdWNoZWQ6IHN3YXBvZmYwWzEyXSwgc3dhcG9uMFsxLTNdIG9uCj4gb3BlblNVU0UgVHVt
-Ymxld2VlZAo+IG9uIHBwYzY0bGUgKGUuZy4gdmVyeSBjbG9zZSB0byBtYWlubGluZSBzdGFibGUg
-a2VybmVsczogNi44LngpLiBIYXZlIHlvdQo+IG5vdGljZWQKPiB0aGlzIG9uIEZlZG9yYSBhcyB3
-ZWxsPyAgSSBob3BlIHRvIG1hbmFnZSB0byBoYXZlIGxvb2sgb24gaXQgc29vbiwgYnV0Cj4gbWF5
-YmUKPiBpdCdzIG9idmlvdXMgdG8geW91IGFscmVhZHkuCj4KPiBsaWJzd2FwLmM6MTYzOiBUV0FS
-TjogU3dhcGZpbGUgc2l6ZSBpcyBsZXNzIHRoYW4gdGhlIHN5c3RlbSBwYWdlIHNpemUuCj4gVXNp
-bmcgcGFnZSBzaXplICg2NTUzNiBieXRlcykgaW5zdGVhZCBvZiBibG9jayBzaXplICg0MDk2IGJ5
-dGVzKS4KPgoKWWVzLCB0aGF0IGlzIGV4cGVjdGVkIG9uIGEgc3lzdGVtIHdpdGggYSBsYXJnZXIg
-cGFnZSBzaXplLCBzbyBpdCBjb3VsZApndWFyYW50ZWUgYXQgbGVhc3Qgb25lIHBhZ2UgY2FuIGJl
-IHN3YXBwZWQgb3V0LgoKRG8geW91IHdhbnQgdG8gc3dpdGNoIHRvIHVzaW5nIFRJTkZPIGZvciB0
-aGUgY2hvaWNlPyBUQkggaXQKZG9lc24ndCBtYXR0ZXIgdG8gcmVwb3J0IHRoYXQgV0FSTklORyBt
-ZXNzYWdlLgoKCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Mon, 2024-02-19 at 23:18 +0100, Petr Vorel wrote:
+> Hi Shirisha,
+> 
+> > +void check_online_cpus(int online_cpus[], int nr_cpus_needed)
+> > +{
+> > +	char cpu_state, path_buf[64];
+> > +	int total_cpus, cpu_idx, fd, ret, i;
+> > +
+> > +	total_cpus = get_nprocs_conf();
+> > +	cpu_idx = 0;
+> > +
+> > +	if (get_nprocs() < nr_cpus_needed)
+> > +		tst_res(TFAIL, "Atleast online %d cpus are required",
+> > nr_cpus_needed);
+> s/Atleast/At least/
+> (or better: "minimum %d online cpus" ..., but I'm not a native
+> speaker.)
+will take care in V2
+> 
+> Also test should exit when not enough online CPU, right? (it's a test
+> requirement not a subject of testing). Therefore tst_brk(TCONF, ...)
+> should be
+> used instead of tst_res(TFAIL).
+will take care in V2
+> 
+> And shouldn't this be a setup function (i.e. run only once, before
+> test starts -
+> test itself can be run more times, eg 3x with -i3).
+I think not because of successive iterations the online cpus state
+might change
+> 
+> > +
+> > +	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
+> > +		errno = 0;
+> > +		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
+> > +		fd = open(path_buf, O_RDONLY);
+> > +		if (fd < 0) {
+> > +			/* If 'online' is absent, the cpu cannot be
+> > offlined */
+> > +			if (errno == ENOENT) {
+> > +				online_cpus[cpu_idx] = i;
+> > +				cpu_idx++;
+> > +				continue;
+> > +			} else {
+> > +				tst_res(TFAIL, "Unable to open %s: %s",
+> > path_buf,
+> > +				     strerror(errno));
+> > +			}
+> > +		}
+> > +
+> > +		ret = read(fd, &cpu_state, 1);
+> > +		if (ret < 1)
+> > +			tst_res(TFAIL, "Unable to read %s: %s",
+> > path_buf,
+> > +			     strerror(errno));
+> > +
+> > +		if (cpu_state == '1') {
+> > +			online_cpus[cpu_idx] = i;
+> > +			cpu_idx++;
+> > +		}
+> > +
+> > +		if (fd >= 0)
+> > +			SAFE_CLOSE(fd);
+> > +	}
+> > +
+> > +	if (cpu_idx < nr_cpus_needed)
+> > +		tst_res(TFAIL, "Atleast %d online cpus were not found",
+> > nr_cpus_needed);
+> Also here tst_brk(TCONF, ...)
+will take care in V2
+> > +}
+> 
+> Kind regards,
+> Petr
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
