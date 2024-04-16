@@ -4,95 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1755CC4345F
-	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 08:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B075C4345F
+	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 08:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713256581; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=aoXXt4HqFy7o4ABU6FvYs3V4Q9sqvzYA0MCszy+yz3k=;
+ b=ik2Unx1+8N9M9HZ35wShdyhjfqWj3IA9kFBYPcMKlfp+HSOdVdqbzwbqYBRFg7FRu6l96
+ aXLoyBj0Rf3eVdFqGAKxkaKPsY9N69fh2+5noYvtH8V+iOzfaTJUNfpx91u9B42Cy83Tck3
+ l3fI1N5bJG3SKqwUtYsR353Cmf3Lc/o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5EACF3CFAA9
-	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 10:30:32 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AEAEB3CFA90
+	for <ltp@archiver.kernel.org>; Tue, 16 Apr 2024 10:36:21 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D0483CFA81
- for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:30:16 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=shirisha@linux.ibm.com;
+ by picard.linux.it (Postfix) with ESMTPS id 672E83CFA81
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:35:59 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.47;
+ helo=esa1.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
+ [207.54.90.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2B7D9601BAC
- for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:30:14 +0200 (CEST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 43G8Rads027044; Tue, 16 Apr 2024 08:30:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=o8xHtTxhMTQESjvEYA64bNjv4xsRFmkzDIc8PdkVSs4=;
- b=qp3Tyc/XaSTR95IsHkckt2UY+ZGfGBu5nNpJ4GFrPndUXKQB8xNBtiW7KHdGDJf9Btjb
- GLCgfVHPU1w+BqZJtyyR3ffncjuKT2W7FFHbUOL+BdTDTbbxvx3nEHv9N1WpmUeCERRd
- Xi0q5SUlZmw7h3UchNydKeNU65bnOBBPYrwEd+raGYdbjxsWNNL+ckC6kE/cQVoBMHCL
- s8tADxq6T9ZhkKI7P5jzXN64/7DM8HQcR564tXIyx3R/DDc5MwwmQOd5RRXo6IHK91ur
- oNS531k0O92B94GB4UHERYM685YS/hZTO8kFa3NSaAmzEOvDydUtUYTolfD0Wt1Ya5gL VQ== 
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhnu6r046-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 16 Apr 2024 08:30:12 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 43G7ChCQ011111; Tue, 16 Apr 2024 08:30:11 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg732ck4j-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 16 Apr 2024 08:30:11 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
- [10.20.54.100])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 43G8U7VN33817210
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 16 Apr 2024 08:30:09 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B3E9A20063;
- Tue, 16 Apr 2024 08:30:07 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1F54F20040;
- Tue, 16 Apr 2024 08:30:07 +0000 (GMT)
-Received: from li-d12addcc-2792-11b2-a85c-bd8df30615ab.ibm.com (unknown
- [9.199.152.158])
- by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 16 Apr 2024 08:30:06 +0000 (GMT)
-Message-ID: <aa89d429ac7351195c4e1411c81ed77bd978da17.camel@linux.ibm.com>
-From: Shirisha ganta <shirisha@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 16 Apr 2024 14:00:06 +0530
-In-Reply-To: <20240219221047.GB1067220@pevik>
-References: <20231213084753.61762-1-shirisha@linux.ibm.com>
- <20240219221047.GB1067220@pevik>
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jKncciOgW72LmVjMn8cHkXiBuk4iLip3
-X-Proofpoint-ORIG-GUID: jKncciOgW72LmVjMn8cHkXiBuk4iLip3
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3B32F600A5B
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 10:35:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1713256559; x=1744792559;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=lnytVn3RFcbvkTdAdw128QxK7/vCEwODMVK90ubqMAI=;
+ b=pU+eBX9WlaJcvINKMoMA9rzViMmu4NbEe1L09IySYBYMknZ4hXG0HR+D
+ noPfZROsc2oIPhY0BcJWTYLDyMQ6o+rQGl5vCgiLEGx4n4NZJws6AVklS
+ avsMOWrnV8LBAtfv1zoaLuNR9MA8AtrRtfcSjjDkaPLECZr2hQBsz/Vr4
+ oOW5lN7E+uMlh9M1ecvSacU48LYuphOVYNV2eAeo8C/z8MQVXHkzw+tZ8
+ cShwnu/DpHWRWqhW1aNwagA4d87D3u3cfi7nzR5kyitIvnRRlIaz0iHBN
+ HkNcuF4W9MQpatnRr5QJF2iKbfobSRbx9qlLqaiZ4cM8z0gd2T/Ods8Ya g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="155607426"
+X-IronPort-AV: E=Sophos;i="6.07,205,1708354800"; d="scan'208";a="155607426"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Apr 2024 17:35:55 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 78176C68B4
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 17:35:53 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id AD9BE11C70
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 17:35:52 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 353DC6B5E9
+ for <ltp@lists.linux.it>; Tue, 16 Apr 2024 17:35:52 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id D92E11A000A;
+ Tue, 16 Apr 2024 16:35:51 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Tue, 16 Apr 2024 04:01:41 -0400
+Message-Id: <20240416080141.22616-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_06,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0
- spamscore=0 clxscore=1015 adultscore=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404160051
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28324.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28324.006
+X-TMASE-Result: 10--14.949700-10.000000
+X-TMASE-MatchedRID: SzbEz7SZt2tSuJfEWZSQfAXtykVcrvpN2FA7wK9mP9dgPgeggVwCFnU3
+ oKSu0J1xUh5maKIJAx/mn3xyPJAJoh2P280ZiGmRCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
+ z3CH3vCeIuA1iha0SDuWYSIzA/m69pYuGZa3i+E6qh5pv1eDPz5fau+Sc1iUTa9jb7ypNKp5VcX
+ P3eMLfF/yPsndJnGNFHRfAWehAV7AfE8yM4pjsDwtuKBGekqUpI/NGWt0UYPCJ1gw8aZd/mU/CY
+ buk1n1sdXKAZpMNY8FaIah/TcyTupNEOnMbeTr1
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add hugemmap41(Migrating the
- libhugetlbfs/testcases/slbpacaflush.c test)
+Subject: [LTP] [PATCH] execve: Add negative test for execve
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,281 +96,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, 2024-02-19 at 23:10 +0100, Petr Vorel wrote:
-> Hi Shirisha,
-> 
-> > We are verifying ppc64 kernels prior to 2.6.15-rc5 exhibit a bug in
-> > the
-> Test is from 2005, for 2.6.15-rc5. Is it really relevant now?
-yes
-> 
-> > hugepage SLB flushing path. When opening new hugetlb areas,
-> > updating masks
-> > in the thread_struct and copying to the PACA only occurs on the CPU
-> > where
-> > segments are opened, leading to potential stale copies in other
-> > CPUs.
-> > This bug can be triggered by multiple threads sharing the mm or a
-> > single thread
-> > migrating between CPUs, particularly evident in a close-to-idle
-> > system,
-> > as other processes may flush the SLB and prevent the bug from
-> > manifesting.
-> 
-> Please run  make check-hugemmap41 in the test directory and fix
-> formatting.
-will take care in V2
-> 
-> > Original test originates from 
-> > https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/slbpacaflush.c
-> > Signed-off-by: Shirisha G <shirisha@linux.ibm.com>
-> > ---
-> >  runtest/hugetlb                               |   1 +
-> >  testcases/kernel/mem/.gitignore               |   1 +
-> >  .../kernel/mem/hugetlb/hugemmap/hugemmap41.c  | 144
-> > ++++++++++++++++++
-> >  3 files changed, 146 insertions(+)
-> >  create mode 100644
-> > testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-> > diff --git a/runtest/hugetlb b/runtest/hugetlb
-> > index 299c07ac9..d956866ac 100644
-> > --- a/runtest/hugetlb
-> > +++ b/runtest/hugetlb
-> > @@ -35,6 +35,7 @@ hugemmap29 hugemmap29
-> >  hugemmap30 hugemmap30
-> >  hugemmap31 hugemmap31
-> >  hugemmap32 hugemmap32
-> > +hugemmap41 hugemmap41
-> nit: Any reason why not add it as hugemmap33? You don't want to clash
-> with other
-> sent test, right?
-yes
-> 
-> >  hugemmap05_1 hugemmap05 -m
-> >  hugemmap05_2 hugemmap05 -s
-> >  hugemmap05_3 hugemmap05 -s -m
-> > diff --git a/testcases/kernel/mem/.gitignore
-> > b/testcases/kernel/mem/.gitignore
-> > index c96fe8bfc..b7e108956 100644
-> > --- a/testcases/kernel/mem/.gitignore
-> > +++ b/testcases/kernel/mem/.gitignore
-> > @@ -34,6 +34,7 @@
-> >  /hugetlb/hugemmap/hugemmap30
-> >  /hugetlb/hugemmap/hugemmap31
-> >  /hugetlb/hugemmap/hugemmap32
-> > +/hugetlb/hugemmap/hugemmap41
-> >  /hugetlb/hugeshmat/hugeshmat01
-> >  /hugetlb/hugeshmat/hugeshmat02
-> >  /hugetlb/hugeshmat/hugeshmat03
-> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-> > b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-> > new file mode 100644
-> > index 000000000..3b3388c68
-> > --- /dev/null
-> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-> > @@ -0,0 +1,144 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (C) 2005-2006 IBM Corporation.
-> > + * Author: David Gibson & Adam Litke
-> > + */
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * ppc64 kernels (prior to 2.6.15-rc5) have a bug in the hugepage
-> > SLB
-> > + * flushing path.  After opening new hugetlb areas, we update the
-> > + * masks in the thread_struct, copy to the PACA, then do slbies on
-> > + * each CPU.  The trouble is we only copy to the PACA on the CPU
-> > where
-> > + * we're opening the segments, which can leave a stale copy in the
-> > + * PACAs on other CPUs.
-> > + *
-> > + * This can be triggered either with multiple threads sharing the
-> > mm,
-> > + * or with a single thread which is migrated from one CPU, to
-> > another
-> > + * (where the mapping occurs), then back again (where we touch the
-> > + * stale SLB).  We use the second method in this test, since it's
-> > + * easier to force (using sched_setaffinity).  However it relies
-> > on a
-> > + * close-to-idle system, if any process other than a kernel thread
-> > + * runs on the first CPU between runs of the test process, the SLB
-> > + * will be flushed and we won't trigger the bug, hence the
-> > + * PASS_INCONCLUSIVE().  Obviously, this test won't work on a 1-
-> > cpu
-> > + * system (should get CONFIG() on the sched_setaffinity)
-> > + *
-> > + */
-> > +#define _GNU_SOURCE
-> > +#include "hugetlb.h"
-> > +#define SYSFS_CPU_ONLINE_FMT	"/sys/devices/system/cpu/cpu%d/
-> > online"
-> > +#define MNTPOINT "hugetlbfs/"
-> Could you please have these 2 #define above _GNU_SOURCE?
-> (readablility)
-will take care in V2
-> > +
-> > +
-> > +#include <stdio.h>
-> > +#include <sched.h>
-> > +
-> > +
-> > +long hpage_size;
-> > +int fd;
-> > +void *p;
-> > +volatile unsigned long *q;
-> > +int online_cpus[2], err;
-> > +cpu_set_t cpu0, cpu1;
-> > +
-> > +
-> > +
-> Please remove these blank lines above.
-Sure.will take care in V2
-> 
-> > +void check_online_cpus(int online_cpus[], int nr_cpus_needed)
-> > +{
-> > +	char cpu_state, path_buf[64];
-> > +	int total_cpus, cpu_idx, fd, ret, i;
-> > +
-> > +	total_cpus = get_nprocs_conf();
-> > +	cpu_idx = 0;
-> > +
-> > +	if (get_nprocs() < nr_cpus_needed)
-> > +		tst_res(TFAIL, "Atleast online %d cpus are required",
-> > nr_cpus_needed);
-> > +
-> > +	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
-> nit: Maybe just use get_nprocs_conf() directly?
-Sure.
-> 
-> > +		errno = 0;
-> Is it errno reset really needed?
-Since based on the error number we are failing the testcase so need it
-> 
-> > +		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
-> > +		fd = open(path_buf, O_RDONLY);
-> > +		if (fd < 0) {
-> > +			/* If 'online' is absent, the cpu cannot be
-> > offlined */
-> > +			if (errno == ENOENT) {
-> > +				online_cpus[cpu_idx] = i;
-> > +				cpu_idx++;
-> > +				continue;
-> > +			} else {
-> > +				tst_res(TFAIL, "Unable to open %s: %s",
-> > path_buf,
-> > +				     strerror(errno));
-> We have TERRNO:
-> 				tst_res(TFAIL | TERRNO, "Unable to open
-> %s: %s", path_buf);
-will take care in V2
-> > +			}
-> > +		}
-> > +
-> > +		ret = read(fd, &cpu_state, 1);
-> > +		if (ret < 1)
-> > +			tst_res(TFAIL, "Unable to read %s: %s",
-> > path_buf,
-> > +			     strerror(errno));
-> Maybe use SAFE_READ() ?
-Am using read here because unable to read may potentially indicate a
-test failure
-> > +
-> > +		if (cpu_state == '1') {
-> > +			online_cpus[cpu_idx] = i;
-> > +			cpu_idx++;
-> > +		}
-> > +
-> > +		if (fd >= 0)
-> > +			SAFE_CLOSE(fd);
-> > +	}
-> > +
-> > +	if (cpu_idx < nr_cpus_needed)
-> > +		tst_res(TFAIL, "Atleast %d online cpus were not found",
-> > nr_cpus_needed);
-> > +}
-> > +
-> > +
-> > +static void run_test(void)
-> > +{
-> > +	check_online_cpus(online_cpus, 2);
-> > +	CPU_ZERO(&cpu0);
-> > +	CPU_SET(online_cpus[0], &cpu0);
-> > +	CPU_ZERO(&cpu1);
-> > +	CPU_SET(online_cpus[1], &cpu1);
-> > +
-> > +	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu0);
-> > +	if (err != 0)
-> > +		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s",
-> > online_cpus[0],
-> > +				strerror(errno));
-> Again, please use TTERRNO.
-Sure. will take care in V2
-> > +
-> > +	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu1);
-> Maybe define CPU_SETSIZE/8 at the top?
-Sure.will take care in V2
-> > +
-> > +	if (err != 0)
-> > +		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s",
-> > online_cpus[1],
-> > +				strerror(errno));
-> > +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE,
-> > MAP_SHARED, fd, 0);
-> > +
-> > +	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu0);
-> > +	if (err != 0)
-> > +		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s",
-> > online_cpus[0],
-> > +				strerror(errno));
-> > +	q = (volatile unsigned long *)(p + getpagesize());
-> > +	*q = 0xdeadbeef;
-> Why to set the address before end of testing? (yes, the original does
-> it, but
-> why?). Wouldn't be better to use guarded buffers instead?
-> 
-> https://github.com/linux-test-project/ltp/wiki/C-Test-API#131-guarded-buffers
-We are trying to access and write into a memory location within the
-mapped segment by adding the huge page size to the mapped address and
-casting it to a volatile unsigned long pointer to ensure things work
-fine.
-> 
-> Kind regards,
-> Petr
-> 
-> > +
-> > +	tst_res(TPASS, "Test Passed inconclusive");
-> > +}
-> > +
-> > +static void setup(void)
-> > +{
-> > +	hpage_size = tst_get_hugepage_size();
-> > +	fd = tst_creat_unlinked(MNTPOINT, 0);
-> > +}
-> > +
-> > +void cleanup(void)
-> > +{
-> > +	if (fd > 0)
-> > +		SAFE_CLOSE(fd);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.needs_root = 1,
-> > +	.mntpoint = MNTPOINT,
-> > +	.needs_hugetlbfs = 1,
-> > +	.needs_tmpdir = 1,
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.test_all = run_test,
-> > +	.hugepages = {1, TST_NEEDS},
-> > +};
+Add negative case for execve, when errno is ELOOP
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/execve/.gitignore |  1 +
+ testcases/kernel/syscalls/execve/execve07.c | 51 +++++++++++++++++++++
+ 3 files changed, 53 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/execve/execve07.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cb2c001a0..9578e991a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -210,6 +210,7 @@ execve03 execve03
+ execve04 execve04
+ execve05 execve05 -i 5 -n 32
+ execve06 execve06
++execve07 execve07
+ execvp01 execvp01
+ execveat01 execveat01
+ execveat02 execveat02
+diff --git a/testcases/kernel/syscalls/execve/.gitignore b/testcases/kernel/syscalls/execve/.gitignore
+index fee81faf7..881f75486 100644
+--- a/testcases/kernel/syscalls/execve/.gitignore
++++ b/testcases/kernel/syscalls/execve/.gitignore
+@@ -7,3 +7,4 @@
+ /execve06
+ /execve06_child
+ /execve_child
++/execve07
+diff --git a/testcases/kernel/syscalls/execve/execve07.c b/testcases/kernel/syscalls/execve/execve07.c
+new file mode 100644
+index 000000000..6571846b9
+--- /dev/null
++++ b/testcases/kernel/syscalls/execve/execve07.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify that execve(2) fails with
++ *
++ * - ELOOP when too many symbolic links are encountered in filename
++ */
++
++#include "tst_test.h"
++
++#define TEST_ELOOP "test_eloop"
++#define TEST_ELOOP2 "test_eloop2"
++
++static struct test_case_t {
++	char *filename;
++	int expected_errno;
++	int user;
++	char *desc;
++} tcases[] = {
++	{TEST_ELOOP, ELOOP, 0,
++		"too many symbolic links are encountered in filename"},
++};
++
++static void setup(void)
++{
++	SAFE_SYMLINK(TEST_ELOOP, TEST_ELOOP2);
++	SAFE_SYMLINK(TEST_ELOOP2, TEST_ELOOP);
++}
++
++static void verify_execve(unsigned int i)
++{
++	struct test_case_t *tc = &tcases[i];
++	char *argv[2] = {tc->filename, NULL};
++
++	TST_EXP_FAIL(execve(tc->filename, argv, NULL), tc->expected_errno,
++		"%s", tc->desc);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_execve,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
+-- 
+2.39.3
 
 
 -- 
