@@ -4,84 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298A3C4345F
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 07:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713339780; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=GnqCnPSaOC0ldF0qEC0+ntqgdxLP/MQGiSNaqE8yeIk=;
- b=NUkWqIm75/AZbum8fDHYrXnfClV5oLrHBdc/snb9bE2essyNZhrPp+JKhi/JBCWu+iZ7Z
- FLclSwd3eHjua4MTfWh+AzCQTcg/XVNbhbyJlLaaLd2F7swYzbiWf9tJz/JIOTsBX/BBFQA
- wk/72kJXz/aV3bcK/v4GhGpYg8A++Ao=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F638C4345F
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 08:14:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2560F3CFB1E
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 09:43:00 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 01A873CFB26
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 10:14:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C1093CFAF4
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 09:42:38 +0200 (CEST)
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C9D643CFAFB
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 10:14:17 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1D2C01009BFA
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 09:42:38 +0200 (CEST)
-Received: by mail-lj1-x242.google.com with SMTP id
- 38308e7fff4ca-2db17e876abso4681201fa.1
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 00:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1713339757; x=1713944557; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=tDlaRT0+PmKVOX4J3oDJGoJ7OeZAt0x5Qlw5YSpGQgU=;
- b=Zf+fvSqFAlj1N8s/a5MRVxA/Liwbq3JG9xV7iO7+dbruiuI/uFoom0Uk3kXUaACHpA
- AZ1vBHllgNquK6COe6whwfa9hhFJyoy1HVxPMsJZjJPP5hpiv9QpkAvj3Suet1V9HfXB
- GykhOMUzdEoXr8d2RxoMce3fMNuf1SfpSzJ+yQHUYskBwWWDtOHzpuze1mLQ0ExPjdp3
- YUspryz7TTZoJqqkNTq6jv9Zw7k8nL1UsONCtRgXX82gFLVcBZ4KdJNrRaJLc++o2vzT
- XEt+seHc6NtWlJi0bYWQKiIjcHm0AZKMMh6tzBg65rNltb0i41DDo+XM2n1xzAr3OvE3
- L6DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713339757; x=1713944557;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=tDlaRT0+PmKVOX4J3oDJGoJ7OeZAt0x5Qlw5YSpGQgU=;
- b=NFW1tPOeYhVtMbOQCYRj3FJVg5ZEl7va9u772mREEawGMDRQPpbGqWB+1HRLaK+eSo
- 8XTsK9OMEjvgflQoYg/rqaV25xNeVissaaUVhRF3z/K+Ra/Q48Vcfx8Y46c8h3IlZj1g
- D/ErckeNBR5zC5Q0ztyRKr9R9IrdaSvT3qvsLrAqV7ZF+r+93TNGQoXZa5FfKfGzAhsB
- x2Vfmm6KccSEjHm2Rxlmz6JU9vHcvTVaktCR0NVyeRuuV3XE8rPFonu22lS7UVZrEeP5
- 0hX9KfZbw4zJtHNkSn9d3Ytl9/+CI5n2sAsS/hNK5PGZwLZz9jyQ/hhlIsBaPSV+eUAt
- Fl7w==
-X-Gm-Message-State: AOJu0Yzy6xhzWCCivepjESDk/hQXE31l+yvOcY6XF29X+kIvLkmHBPvz
- ZSPQdu5ALpJpjEF7XrNpfsyrXaUawCE393J7tA8QsSXmTgXXg71LQydAE/Bg7u3BgFN0hazlSlR
- 0vyaY3JSK
-X-Google-Smtp-Source: AGHT+IGP1wpcoqG4B1mlPFi3I8J+4TGE4iDGiM6+iaXVkcT1KZTezEi9e6p80XTr+vVb5F8vd2BAZw==
-X-Received: by 2002:a2e:be04:0:b0:2d8:da4c:5909 with SMTP id
- z4-20020a2ebe04000000b002d8da4c5909mr10377632ljq.51.1713339756663; 
- Wed, 17 Apr 2024 00:42:36 -0700 (PDT)
-Received: from [10.232.133.111] ([88.128.88.72])
- by smtp.gmail.com with ESMTPSA id
- m26-20020a05600c3b1a00b00415dfa709dasm1678392wms.15.2024.04.17.00.42.36
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 17 Apr 2024 00:42:36 -0700 (PDT)
-Message-ID: <e2966eda-b250-4033-a7ff-0ec8dce9d333@suse.com>
-Date: Wed, 17 Apr 2024 09:42:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F163C1400DBD
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 10:14:16 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3BCDF228AC;
+ Wed, 17 Apr 2024 08:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713341655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jq3Zc3RIwRCpNTQZ0sHfzUCEQsapcN03Lc+q8ymIt+c=;
+ b=1GkwDz455Jtz7hCKaJgsPNne2E9qnKMhKdQQ1BtaBJAk8S/LAHReH0FedFxlIGlcRNzJzS
+ rLS7NFIcRgxyPIZotMWBBiUdF59HePQOCyplm742wkakxz0nPSSQd2d9xnZEK/SCHaR71G
+ Zu62EmOwq8imhk/Yh3vvP3XWS9Nyo+w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713341655;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jq3Zc3RIwRCpNTQZ0sHfzUCEQsapcN03Lc+q8ymIt+c=;
+ b=A4hFLDty5luj6BOquJtcCw/Q9p+SUWn7L4cjbWAEjMogbuc7ll7dE+OMiFXdBpsQb/SuCJ
+ QjxZjCk7FL10NwAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713341655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jq3Zc3RIwRCpNTQZ0sHfzUCEQsapcN03Lc+q8ymIt+c=;
+ b=1GkwDz455Jtz7hCKaJgsPNne2E9qnKMhKdQQ1BtaBJAk8S/LAHReH0FedFxlIGlcRNzJzS
+ rLS7NFIcRgxyPIZotMWBBiUdF59HePQOCyplm742wkakxz0nPSSQd2d9xnZEK/SCHaR71G
+ Zu62EmOwq8imhk/Yh3vvP3XWS9Nyo+w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713341655;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jq3Zc3RIwRCpNTQZ0sHfzUCEQsapcN03Lc+q8ymIt+c=;
+ b=A4hFLDty5luj6BOquJtcCw/Q9p+SUWn7L4cjbWAEjMogbuc7ll7dE+OMiFXdBpsQb/SuCJ
+ QjxZjCk7FL10NwAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27CB31384C;
+ Wed, 17 Apr 2024 08:14:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4uPMCNeEH2bBPAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 17 Apr 2024 08:14:15 +0000
+Date: Wed, 17 Apr 2024 10:13:27 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Luigi Pellecchia <lpellecc@redhat.com>
+Message-ID: <Zh-Ep88ZAMngLbpf@yuki>
 References: <CAE3MqZyt47uc=h1P2tryBJsXeoEEzNnHSX5A02hM=RR0goxJKg@mail.gmail.com>
-Content-Language: en-US
+MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <CAE3MqZyt47uc=h1P2tryBJsXeoEEzNnHSX5A02hM=RR0goxJKg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
+ MIME_GOOD(-0.10)[text/plain]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, linkedin.com:url, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] Identify current test coverage and clarify contribution
  opportunities
@@ -96,58 +111,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Luigi,
-
-On 4/17/24 08:32, Luigi Pellecchia wrote:
-> Hi all,
+Hi!
 > I'm Luigi Pellecchia, a Principal SW Quality Engineer at Red Hat.
 > I developed an Open Source Software Quality Management Tool, named "BASIL
 > The FuSa Spice" that can help the LTP keep track of the test case coverage
 > against man pages and to clarify contribution opportunities to new members.
 > I prepared an initial demo I shared on LinkedIn at
 > https://www.linkedin.com/posts/luigi-pellecchia_how-basil-can-help-linux-test-project-to-activity-7186248090129956864-d-vC?utm_source=share&utm_medium=member_desktop
-Thanks for sharing. I watched the demo and it can be useful in certain 
-circumstances, but in others it could be tricky. I will explain myself 
-at the end of the email.
 > This tool is under the hood of ELISA (Linux Foundation) github at
 > https://github.com/elisa-tech/BASIL
->
+> 
 > Any feedback will be greatly appreciated
->
-> Please let me know if you have any questions, or if you'd like to see a
-> live demo of the tool.
->
-> Regards
->
-> --
-> Luigi
->
-One of the things we noticed is that man pages are not updated too often 
-and some kernel features are not covered by the manuals. This would be 
-an issue when it comes to calculate tests coverage and some of us think 
-that this approach could be hard to follow.
 
-Also, LTP has a lack of men power nowadays (especially when it comes to 
-reviews) which means coverage report is good to track LTP status, but we 
-would take ages to implement remaining kernel tests. There's an internal 
-discussion in LTP about bringing more people inside the project and we 
-are trying to move forward to achieve this goal (see new documentation). 
-That would help the whole project.
+Sorry to break it to you but this is not going to work at all for a
+couple of reasons.
 
-We have a monthly LTP meeting. The next will probably be the 8th of may 
-(I need to send the email yet). It's public, so feel free to join if you 
-want.
+Firstly man pages are not complete enough and majority of the kernel
+interfaces are completely undocumented and this is not going to get
+fixed anytime soon. So any metric based on man pages is doomed to fail.
 
-Best regards,
-Andrea Cervesato
+Secondly from the demo it looks like there is a major manual effort
+required to pair man page snippets with testcases, which needs to be
+redone each time any of them changes. There are thousands of tests in
+LTP, going over them would take years of manpower, that is better spend
+elsewhere. We have very obvious gaps in coverage so writing new tests
+for subsystem that are sparsely covered is way better than trying to
+identify minor coverage gaps in existing tests.
 
+Thirdly writing tests to cover API specification is not exactly the best
+strategy, it has been tried before and it didn't produce resonable
+results. That may work for very simple libraries but for anything more
+complex the reality is more tricky and useful tests often require clever
+thinking. The prime example of this is the open posix testsuite inside
+LTP where they tried to write tests for each assertion from POSIX. That
+often lead to nonsensical tests and we are stil trying to clean up the
+fallout from that. Also if you look at any kernel regression tests,
+which are the most useful ones, the code does not follow any assertions
+from man pages, it usuall does wild stuff that is not documented
+anywhere. The most useful tests we have were written with thinking
+outside of the box, which is not something you can achieve when trying
+to adhere pedantically to a specification.
+
+Also if you look at the example from your presentation, you pointed out
+that nanosleep() is not tested againts EFAULT, which is not really
+useful to be honest. Sure we should add that testcase, but in 99% of the
+cases the userspace buffers are copied to kernel by a common function.
+That means that it's very unlikely that we wouldn't catch a problem in
+that function since we have thousands of tests that actually check for
+EFAULT handling in syscalls. Do you see how pedantic comparsion of
+manual pages against tests can easily lead you to something that is
+not that useful?
+
+To sum it up, this does not look very useful and has potential to divert
+manpower from where it's needed most i.e. actuall test writing.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
