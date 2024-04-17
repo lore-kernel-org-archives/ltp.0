@@ -4,86 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0993FC4345F
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 10:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0B1C4345F
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 10:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713348017; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713348049; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=+TqpHYO902z3U0EwEM8dbazpwM2yz/jr6gZT2q8vvl4=;
- b=GbgjD9DmjyQEu4i+kVNGL9vzXJoGzSYr2Qbs9dqZykyRlDQdB1Odl4SNTQEhslsA1xLPx
- UpVKNCb0FqxjupVtWwP91wGovAx20ZJ89u0JsLvm9ATeZsOI7/wUXa99CSU8tei0K+L9EuM
- uHmVu0wy1UweewxjY0lIazfjIw2uMQY=
+ bh=Vjz3G2qYUK/dthWCkf0rwY9zn5oxidPKWYIuqTQKY2Q=;
+ b=C/Jvq81cYhM9fJEZ0CFehxDny3Lskzl0S509TXDSnVLc6UBHav6rBGEe+wzHnyBR5sQQg
+ 3h6Msa0fzVhhIGgkQDzEqMQVEuoNYGXvHogMR80B3OobSAoXqt/qGusU6JPPwDuMcBHv20X
+ fV09Iayp/bA4Gavn11VF2zIGosLOFrQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95F4A3CFB96
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 12:00:17 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 26E453CFB22
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 12:00:49 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 524CF3CFB5D
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 11:59:54 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.130;
- helo=esa5.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id 1177A3CFB97
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 12:00:24 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.49;
+ helo=esa3.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
- [68.232.139.130])
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 15CE460311C
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 11:59:52 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4D3C62095E1
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 12:00:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1713347993; x=1744883993;
+ t=1713348024; x=1744884024;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=4x4a0ageP5ytsc1HjvdxSFeIe7RtEYYrJnLZ2KIyLWM=;
- b=AEJIPMSU4plj+O+i5QZwkYpAdauvLOmzETj63cvMCxwWp/iIdEV7w2Iz
- BV+VhYUuXwNhS+52KC/7iMfP6KUgvLxkhklWnWeKKw+9BQXjqZ5JCXnpv
- AVAx1xk6mWoZrNnU5N/2IfDoPy5veGzYeiEN+sW8Gw7EhxQMp3oJGNTeK
- RAINjLgYd4oa4LoFEOgz6xviKLxLD5cbut9IY0+5mmZq1coYajMY32imp
- vO4tQgF/HylT3m4dAaiVXT+J1M/XNwoG6xZnPYDiZs1sVVvwyiybTOvMI
- Ck5SDnLlWJ2Ch1yY0HP2kLcXs+HSec7L7O2cXU8k4gFbeAXX028ZVXjdr A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="155298013"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708354800"; d="scan'208";a="155298013"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Apr 2024 18:59:51 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 9AA3BD4802
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 18:59:48 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id CDA9DFD77B
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 18:59:47 +0900 (JST)
+ bh=OIc1TPaKeq7QspWnZc7DvTLGNAJpt/pVK0jBxCZZzLo=;
+ b=FzYRH91g1QfKZEN8BQh9KKL1vluX1peyhACWWpRoKS27lrIgrONDgZiC
+ f6dpTHFLG8DDfgbhWsVUSLxq5wltflykX7q5H8UwzEkNP5Ea8W8GIRDLP
+ 8ugxvtrLbodhuj8CUwhoegf90xFGSh8K65iwwk3g4D+s+JbPW1V3J9k5s
+ 7vvl+gGXvmdVMb5qyQIzzq6O2JY6/Ha8I7dhBHXVWHeKErmdgqBU6P15V
+ gn6THBV8fNPVfwwS+klspiecCwhwZAWEsnXN8cy4+bCjPzY+HDlNodBKA
+ KMzv6R0TLio2TVHCXpZYUTPckvdJ7EywBCRMh/gy0DkD4VcMInqAfDRhl w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="155841793"
+X-IronPort-AV: E=Sophos;i="6.07,208,1708354800"; d="scan'208";a="155841793"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Apr 2024 19:00:21 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 15B79E0803
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 19:00:18 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 3E0D222D81
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 19:00:17 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 5F25A6BEE2
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 18:59:47 +0900 (JST)
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id D11272008FF92
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 19:00:16 +0900 (JST)
 Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 0CB121A000A;
- Wed, 17 Apr 2024 17:59:47 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 692CB1A000A;
+ Wed, 17 Apr 2024 18:00:16 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Wed, 17 Apr 2024 05:25:36 -0400
-Message-Id: <20240417092536.23635-1-xuyang2018.jy@fujitsu.com>
+Date: Wed, 17 Apr 2024 05:26:05 -0400
+Message-Id: <20240417092605.23645-1-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28326.006
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28326.006
-X-TMASE-Result: 10--18.097400-10.000000
-X-TMASE-MatchedRID: GQw6Xh/XS6VSuJfEWZSQfB1kSRHxj+Z59LMB0hXFSeg6FHRWx2FGsI3c
- eRXYSJoDIvrftAIhWmLy9zcRSkKatS01VXlcjcCUCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
- z3CH3vCeIuA1iha0SDkeDPyqIAshAuo7vrkTNm7UF7cpFXK76TRdoyFlJ5UUMcfnL37UR/joYnR
- Q/QDMQFaVhoFhOJKHxS8AxUE03d7D9u77cJ0N/QJ4CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyOk/y
- 0w7JiZo
+X-TMASE-Result: 10--21.599100-10.000000
+X-TMASE-MatchedRID: ViBM8e+kg1tSuJfEWZSQfKzGfgakLdjaTJDl9FKHbrk6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmJ8eC2pVr1wb6/Elphzpf1LGYJhRh6ssesfimmlcABuNyfJTn+dmnFQGmV
+ udEhnpoTXFQkvS/0vibjp8M1JUHNNXhvAA0pOb6LkKCFOKwAEzF7OZ6hrwwnzRaSpfGgYItc7ET
+ vuQ225CeK7iWl7pVxurWabj9w4QrbOLLwxlMO5Pb9A3Bl1/DcV+VJ6lZyB0s/PhbT/QiIN5YY+d
+ 4I4WCpEGPUqcyv3m0IhRIvYJaL9ihccs8336rx5hdD+G7U5X/SOVGny5q72hrq7tRXXP55Go8WM
+ kQWv6iXBcIE78YqRWo6HM5rqDwqtlExlQIQeRG0=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] unlink: Add error tests for EPERM and EROFS
+Subject: [LTP] [PATCH v3] unlinkat: Add negative tests for unlinkat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,43 +104,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add negative cases for unlink(), when errno is EPERM or EROFS.
+Add negative cases for unlink(), including following errnos:
+EACCES, EFAULT, EISDIR, ENAMETOOLONG ENOENT, ENOTDIR, EPERM, EROFS, EBADF,
+EINVAL
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/unlink/.gitignore |   1 +
- testcases/kernel/syscalls/unlink/unlink09.c | 102 ++++++++++++++++++++
- 3 files changed, 104 insertions(+)
- create mode 100644 testcases/kernel/syscalls/unlink/unlink09.c
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/unlinkat/.gitignore |   1 +
+ .../kernel/syscalls/unlinkat/unlinkat02.c     | 234 ++++++++++++++++++
+ 3 files changed, 236 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/unlinkat/unlinkat02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 010a1a752..000c9e536 100644
+index 000c9e536..3521047f4 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1651,6 +1651,7 @@ unlink01 symlink01 -T unlink01
- unlink05 unlink05
- unlink07 unlink07
- unlink08 unlink08
-+unlink09 unlink09
+@@ -1655,6 +1655,7 @@ unlink09 unlink09
  
  #unlinkat test cases
  unlinkat01 unlinkat01
-diff --git a/testcases/kernel/syscalls/unlink/.gitignore b/testcases/kernel/syscalls/unlink/.gitignore
-index 2e783580d..6038cc29d 100644
---- a/testcases/kernel/syscalls/unlink/.gitignore
-+++ b/testcases/kernel/syscalls/unlink/.gitignore
-@@ -1,3 +1,4 @@
- /unlink05
- /unlink07
- /unlink08
-+/unlink09
-diff --git a/testcases/kernel/syscalls/unlink/unlink09.c b/testcases/kernel/syscalls/unlink/unlink09.c
++unlinkat02 unlinkat02
+ 
+ unshare01 unshare01
+ unshare02 unshare02
+diff --git a/testcases/kernel/syscalls/unlinkat/.gitignore b/testcases/kernel/syscalls/unlinkat/.gitignore
+index 76ed551f2..450063051 100644
+--- a/testcases/kernel/syscalls/unlinkat/.gitignore
++++ b/testcases/kernel/syscalls/unlinkat/.gitignore
+@@ -1 +1,2 @@
+ /unlinkat01
++/unlinkat02
+diff --git a/testcases/kernel/syscalls/unlinkat/unlinkat02.c b/testcases/kernel/syscalls/unlinkat/unlinkat02.c
 new file mode 100644
-index 000000000..cc4b4a07e
+index 000000000..1256bbc57
 --- /dev/null
-+++ b/testcases/kernel/syscalls/unlink/unlink09.c
-@@ -0,0 +1,102 @@
++++ b/testcases/kernel/syscalls/unlinkat/unlinkat02.c
+@@ -0,0 +1,234 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
@@ -148,87 +150,218 @@ index 000000000..cc4b4a07e
 +/*\
 + * [Description]
 + *
-+ * Verify that unlink(2) fails with
++ * Verify that unlinkat(2) fails with
 + *
-+ * - EPERM when target file is marked as immutable or append-only
-+ * - EROFS when target file is on a read-only filesystem.
++ * - EACCES when write access to the directory containing pathname not allowed
++ * - EACCES when one of directories in pathname did not allow search permission
++ * - EFAULT when pathname points outside acessible address space
++ * - EISDIR when pathname refers to a directory
++ * - ENAMETOOLONG when pathname is too long
++ * - ENOENT when a component of the pathname does not exist
++ * - ENOENT when pathname is empty
++ * - ENOTDIR when a component of pathname used as dicrectory is not a directory
++ * - EPERM when file to be unlinked is marked immutable
++ * - EPERM when file to be unlinked is marked append-only
++ * - EROFS when pathname refers to a file on a read-only filesystem
++ * - EBADF when pathname is relative but dirfd is neither AT_FDCWD nor valid
++ * - EINVAL when an invalid flag is specified
++ * - ENOTDIR when pathname is relative and dirfd refers to a file
 + */
 +
++#define _GNU_SOURCE
++
++#include <fcntl.h>
++#include <pwd.h>
 +#include <sys/ioctl.h>
 +#include "tst_test.h"
 +#include "lapi/fs.h"
 +
++#define DIR_EACCES_NOWRITE "nowrite"
++#define DIR_EACCES_NOSEARCH "nosearch"
++#define TEST_EACCES "test_eacces"
++#define DIR_NORMAL "normal"
++#define TEST_NORMAL "test_normal"
++#define TEST_EFAULT "test_efault"
++#define DIR_EISDIR "isdir"
++#define TEST_ENOENT_NOTEXIST "test_enoent_notexist"
++#define TEST_ENOENT_FILE "test_enoent_file"
++#define TEST_ENOTDIR "enotdir/file"
++#define DIR_ENOTDIR "enotdir"
 +#define TEST_EPERM_IMMUTABLE "test_eperm_immutable"
 +#define TEST_EPERM_APPEND_ONLY "test_eperm_append_only"
 +#define DIR_EROFS "erofs"
-+#define TEST_EROFS "erofs/test_erofs"
++#define TEST_EROFS "test_erofs"
++#define DIR_EBADF "ebadf"
++#define TEST_EBADF "test_ebadf"
++#define DIR_ENOTDIR2 "enotdir2"
++#define TEST_ENOTDIR2 "test_enotdir2"
 +
++static struct passwd *pw;
++static char longfilename[PATH_MAX + 1];
 +static int fd_immutable;
 +static int fd_append_only;
 +
 +static struct test_case_t {
++	char *dirname;
 +	char *filename;
 +	int *fd;
-+	int flag;
++	int ioctl_flag;
++	int flags;
++	int user;
 +	int expected_errno;
 +	char *desc;
 +} tcases[] = {
-+	{TEST_EPERM_IMMUTABLE, &fd_immutable, FS_IMMUTABLE_FL, EPERM,
-+		"target file is immutable"},
-+	{TEST_EPERM_APPEND_ONLY, &fd_append_only, FS_APPEND_FL, EPERM,
-+		"target file is append-only"},
-+	{TEST_EROFS, NULL, 0, EROFS, "target file in read-only filesystem"},
++	{DIR_EACCES_NOWRITE, TEST_EACCES, NULL, 0, 0, 1, EACCES,
++		"unlinkat() in directory with no write access"},
++	{DIR_EACCES_NOSEARCH, TEST_EACCES, NULL, 0, 0, 1, EACCES,
++		"unlinkat() in directory with no search access"},
++	{DIR_NORMAL, NULL, NULL, 0, 0, 0, EFAULT,
++		"unlinkat() access pathname outside address space"},
++	{DIR_NORMAL, DIR_EISDIR, NULL, 0, 0, 0, EISDIR,
++		"unlinkat() pathname is a directory"},
++	{DIR_NORMAL, longfilename, NULL, 0, 0, 0, ENAMETOOLONG,
++		"unlinkat() pathname is too long"},
++	{DIR_NORMAL, TEST_ENOENT_NOTEXIST, NULL, 0, 0, 0, ENOENT,
++		"unlinkat() pathname does not exist"},
++	{DIR_NORMAL, "", NULL, 0, 0, 0, ENOENT,
++		"unlinkat() pathname is a empty"},
++	{DIR_NORMAL, TEST_ENOTDIR, NULL, 0, 0, 0, ENOTDIR,
++		"unlinkat() component of pathname used as directory "
++		"is not directory"},
++	{DIR_NORMAL, TEST_EPERM_IMMUTABLE, &fd_immutable, FS_IMMUTABLE_FL,
++		0, 0, EPERM,
++		"unlinkat() pathname is immutable"},
++	{DIR_NORMAL, TEST_EPERM_APPEND_ONLY, &fd_append_only, FS_APPEND_FL,
++		0, 0, EPERM,
++		"unlinkat() pathname is append-only"},
++	{DIR_EROFS, TEST_EROFS, NULL, 0, 0, 0, EROFS,
++		"unlinkat() pathname in read-only filesystem"},
++	{DIR_EBADF, TEST_EBADF, NULL, 0, 0, 0, EBADF,
++		"unlinkat() dirfd is not valid"},
++	{DIR_NORMAL, TEST_NORMAL, NULL, 0, -1, 0, EINVAL,
++		"unlinkat() flag is not valid"},
++	{DIR_ENOTDIR2, TEST_ENOTDIR2, NULL, 0, 0, 0, ENOTDIR,
++		"unlinkat() dirfd is not a directory"},
 +};
 +
 +static void setup(void)
 +{
 +	int attr;
 +
-+	fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
++	pw = SAFE_GETPWNAM("nobody");
++
++	SAFE_MKDIR(DIR_EACCES_NOWRITE, 0777);
++	SAFE_TOUCH(DIR_EACCES_NOWRITE "/" TEST_EACCES, 0777, NULL);
++	SAFE_CHMOD(DIR_EACCES_NOWRITE, 0555);
++
++	SAFE_MKDIR(DIR_EACCES_NOSEARCH, 0777);
++	SAFE_TOUCH(DIR_EACCES_NOSEARCH "/" TEST_EACCES, 0777, NULL);
++	SAFE_CHMOD(DIR_EACCES_NOSEARCH, 0666);
++
++	SAFE_MKDIR(DIR_NORMAL, 0777);
++	SAFE_TOUCH(DIR_NORMAL "/" TEST_NORMAL, 0777, NULL);
++	SAFE_TOUCH(DIR_NORMAL "/" TEST_EFAULT, 0777, NULL);
++
++	SAFE_MKDIR(DIR_NORMAL "/" DIR_EISDIR, 0777);
++
++	memset(longfilename, '1', PATH_MAX + 1);
++
++	SAFE_TOUCH(DIR_NORMAL "/" DIR_ENOTDIR, 0777, NULL);
++
++	fd_immutable = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_IMMUTABLE,
++			O_CREAT, 0777);
 +	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
 +	attr |= FS_IMMUTABLE_FL;
 +	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
++	SAFE_CLOSE(fd_immutable);
 +
-+	fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
++	fd_append_only = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_APPEND_ONLY,
++			O_CREAT, 0777);
 +	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
 +	attr |= FS_APPEND_FL;
 +	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
++	SAFE_CLOSE(fd_append_only);
++
++	SAFE_TOUCH(DIR_ENOTDIR2, 0777, NULL);
 +}
 +
 +static void cleanup(void)
 +{
 +	int attr;
 +
++	fd_immutable = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_IMMUTABLE,
++			O_RDONLY, 0777);
 +	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
 +	attr &= ~FS_IMMUTABLE_FL;
 +	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
 +	SAFE_CLOSE(fd_immutable);
 +
++	fd_append_only = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_APPEND_ONLY,
++			O_RDONLY, 0777);
 +	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
 +	attr &= ~FS_APPEND_FL;
 +	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
 +	SAFE_CLOSE(fd_append_only);
 +}
 +
-+static void verify_unlink(unsigned int i)
++static void do_unlinkat(struct test_case_t *tc)
 +{
-+	struct test_case_t *tc = &tcases[i];
 +	int attr;
++	char fullpath[PATH_MAX];
++	int dirfd = open(tc->dirname, O_DIRECTORY);
 +
-+	TST_EXP_FAIL(unlink(tc->filename), tc->expected_errno, "%s", tc->desc);
++	if (dirfd < 0) {
++		if (tc->expected_errno != EBADF) {
++			/* Special situation: dirfd refers to a file */
++			if (errno == ENOTDIR)
++				dirfd = SAFE_OPEN(tc->dirname, O_APPEND);
++			else {
++				tst_res(TFAIL | TERRNO, "Cannot open dirfd");
++				return;
++			}
++		}
++	}
 +
-+	/* If unlink() succeeded unexpectedly, test file should be restored. */
++	TST_EXP_FAIL(unlinkat(dirfd, tc->filename, tc->flags),
++		tc->expected_errno,
++		"%s", tc->desc);
++
++	/* If unlinkat() succeeded unexpectedly, test file should be restored */
 +	if (!TST_RET) {
++		snprintf(fullpath, sizeof(fullpath), "%s/%s", tc->dirname,
++			tc->filename);
 +		if (tc->fd) {
-+			*(tc->fd) = SAFE_OPEN(tc->filename, O_CREAT, 0600);
-+			if (tc->flag) {
++			*(tc->fd) = SAFE_OPEN(fullpath, O_CREAT, 0600);
++			if (tc->ioctl_flag) {
 +				SAFE_IOCTL(*(tc->fd), FS_IOC_GETFLAGS, &attr);
-+				attr |= tc->flag;
++				attr |= tc->ioctl_flag;
 +				SAFE_IOCTL(*(tc->fd), FS_IOC_SETFLAGS, &attr);
 +			}
++			SAFE_CLOSE(*(tc->fd));
 +		} else {
-+			SAFE_TOUCH(tc->filename, 0600, 0);
++			SAFE_TOUCH(fullpath, 0777, 0);
 +		}
++	}
++
++	if (dirfd > 0)
++		SAFE_CLOSE(dirfd);
++}
++
++static void verify_unlinkat(unsigned int i)
++{
++	struct test_case_t *tc = &tcases[i];
++	pid_t pid;
++
++	if (tc->user) {
++		pid = SAFE_FORK();
++		if (!pid) {
++			SAFE_SETUID(pw->pw_uid);
++			do_unlinkat(tc);
++			exit(0);
++		}
++		SAFE_WAITPID(pid, NULL, 0);
++	} else {
++		do_unlinkat(tc);
 +	}
 +}
 +
@@ -236,10 +369,11 @@ index 000000000..cc4b4a07e
 +	.setup = setup,
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.cleanup = cleanup,
-+	.test = verify_unlink,
++	.test = verify_unlinkat,
 +	.needs_rofs = 1,
 +	.mntpoint = DIR_EROFS,
 +	.needs_root = 1,
++	.forks_child = 1,
 +};
 -- 
 2.39.3
