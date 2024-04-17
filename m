@@ -4,77 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3909C4345F
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 06:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298A3C4345F
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 07:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713339780; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=GnqCnPSaOC0ldF0qEC0+ntqgdxLP/MQGiSNaqE8yeIk=;
+ b=NUkWqIm75/AZbum8fDHYrXnfClV5oLrHBdc/snb9bE2essyNZhrPp+JKhi/JBCWu+iZ7Z
+ FLclSwd3eHjua4MTfWh+AzCQTcg/XVNbhbyJlLaaLd2F7swYzbiWf9tJz/JIOTsBX/BBFQA
+ wk/72kJXz/aV3bcK/v4GhGpYg8A++Ao=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 401103CFB61
-	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 08:32:45 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2560F3CFB1E
+	for <ltp@archiver.kernel.org>; Wed, 17 Apr 2024 09:43:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E0A5C3CFB09
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 08:32:29 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=lpellecc@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1C1093CFAF4
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 09:42:38 +0200 (CEST)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
+ [IPv6:2a00:1450:4864:20::242])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0429D140517E
- for <ltp@lists.linux.it>; Wed, 17 Apr 2024 08:32:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1713335547;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type;
- bh=DFhLX/X76iKKUDWUU92Y9dKqSUEIwfIXkU5VxqbgnTY=;
- b=Fc9wb44F2ahPVm2DacAFz71dkGGwjlymRR6ZhIKQFSmJrXXTvaemY0Bs5LY7o1gIyx1xa6
- gHva4lRhVSBq3TrOQA4Tba7d4Mcl4akfOyy4Oo/dDhChlS9L2mVrNAlo0E90EgsT7vxEDj
- Ijz8UP59zRdixZhaO8knd4V9LkGuFvk=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-D9RXu2gKNyaxZf0MmAvy-g-1; Wed, 17 Apr 2024 02:32:24 -0400
-X-MC-Unique: D9RXu2gKNyaxZf0MmAvy-g-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 38308e7fff4ca-2dad964fadbso12680591fa.0
- for <ltp@lists.linux.it>; Tue, 16 Apr 2024 23:32:24 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1D2C01009BFA
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 09:42:38 +0200 (CEST)
+Received: by mail-lj1-x242.google.com with SMTP id
+ 38308e7fff4ca-2db17e876abso4681201fa.1
+ for <ltp@lists.linux.it>; Wed, 17 Apr 2024 00:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1713339757; x=1713944557; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=tDlaRT0+PmKVOX4J3oDJGoJ7OeZAt0x5Qlw5YSpGQgU=;
+ b=Zf+fvSqFAlj1N8s/a5MRVxA/Liwbq3JG9xV7iO7+dbruiuI/uFoom0Uk3kXUaACHpA
+ AZ1vBHllgNquK6COe6whwfa9hhFJyoy1HVxPMsJZjJPP5hpiv9QpkAvj3Suet1V9HfXB
+ GykhOMUzdEoXr8d2RxoMce3fMNuf1SfpSzJ+yQHUYskBwWWDtOHzpuze1mLQ0ExPjdp3
+ YUspryz7TTZoJqqkNTq6jv9Zw7k8nL1UsONCtRgXX82gFLVcBZ4KdJNrRaJLc++o2vzT
+ XEt+seHc6NtWlJi0bYWQKiIjcHm0AZKMMh6tzBg65rNltb0i41DDo+XM2n1xzAr3OvE3
+ L6DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713335543; x=1713940343;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=DFhLX/X76iKKUDWUU92Y9dKqSUEIwfIXkU5VxqbgnTY=;
- b=ddtxrPdKjgr8M7zk6NVJ2bvNiP7zjJDlyaP8sWOw2ffYWVIJmht4VM+wrgNCBAald4
- lnb0RYf9yJ53PeEUxPJtW04Xp5FdsXQh1OjzNxkevwKGgRvT6qn9S0aPl5roaPjPC8Wp
- DAj10b1hggoVdEU5k7/zEjdqFdHRpV3y+ghmO82d/bkbp/SFtrj356CiQufYlh5TOXxK
- DVtxdFY8CoVzikCbZOkPDA81RNG1A9iQoDQeKREqAoPqoFMDVzSAc5X1hC0z4hNjg6oP
- H5XJ9BzUlcScpgVl9+CzFZRmHdUc0ucrtcgXEJBlg4Ifx8GMLcma/xUe5Mj3RREOrOey
- WAPw==
-X-Gm-Message-State: AOJu0YzXOM5nxRc4v8c6AODtq7APJBB4AofC0a+kZ7VDTx2xKE1a9BOF
- HXS/WWyTe9UZG1JUXz3p/PRikP+gvdvadh75qa2r1zCFywmk90hsaysKw7b4pnsjLpfGhDkaFPs
- 4dS95exresExalYRaGJTM8JKJbc3FowZw4CvMkeDk6loy75F4+DVumYiPbnpOYYFVnUzWTL45wQ
- 9VI65h8Y0IWXJTsOqqEMP5Ixk41DhpGaY7u2RW
-X-Received: by 2002:a05:6512:98f:b0:516:cd83:a96a with SMTP id
- w15-20020a056512098f00b00516cd83a96amr8989397lft.37.1713335542828; 
- Tue, 16 Apr 2024 23:32:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEtIm4N93njasJTpgW9ypO3UizpBleBK0YC7wQCt348Gp5uBPUUodXRPa5ZvXLHfzz9wF4I4/P804AT4fdJcAQ=
-X-Received: by 2002:a05:6512:98f:b0:516:cd83:a96a with SMTP id
- w15-20020a056512098f00b00516cd83a96amr8989386lft.37.1713335542365; Tue, 16
- Apr 2024 23:32:22 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1713339757; x=1713944557;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=tDlaRT0+PmKVOX4J3oDJGoJ7OeZAt0x5Qlw5YSpGQgU=;
+ b=NFW1tPOeYhVtMbOQCYRj3FJVg5ZEl7va9u772mREEawGMDRQPpbGqWB+1HRLaK+eSo
+ 8XTsK9OMEjvgflQoYg/rqaV25xNeVissaaUVhRF3z/K+Ra/Q48Vcfx8Y46c8h3IlZj1g
+ D/ErckeNBR5zC5Q0ztyRKr9R9IrdaSvT3qvsLrAqV7ZF+r+93TNGQoXZa5FfKfGzAhsB
+ x2Vfmm6KccSEjHm2Rxlmz6JU9vHcvTVaktCR0NVyeRuuV3XE8rPFonu22lS7UVZrEeP5
+ 0hX9KfZbw4zJtHNkSn9d3Ytl9/+CI5n2sAsS/hNK5PGZwLZz9jyQ/hhlIsBaPSV+eUAt
+ Fl7w==
+X-Gm-Message-State: AOJu0Yzy6xhzWCCivepjESDk/hQXE31l+yvOcY6XF29X+kIvLkmHBPvz
+ ZSPQdu5ALpJpjEF7XrNpfsyrXaUawCE393J7tA8QsSXmTgXXg71LQydAE/Bg7u3BgFN0hazlSlR
+ 0vyaY3JSK
+X-Google-Smtp-Source: AGHT+IGP1wpcoqG4B1mlPFi3I8J+4TGE4iDGiM6+iaXVkcT1KZTezEi9e6p80XTr+vVb5F8vd2BAZw==
+X-Received: by 2002:a2e:be04:0:b0:2d8:da4c:5909 with SMTP id
+ z4-20020a2ebe04000000b002d8da4c5909mr10377632ljq.51.1713339756663; 
+ Wed, 17 Apr 2024 00:42:36 -0700 (PDT)
+Received: from [10.232.133.111] ([88.128.88.72])
+ by smtp.gmail.com with ESMTPSA id
+ m26-20020a05600c3b1a00b00415dfa709dasm1678392wms.15.2024.04.17.00.42.36
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 17 Apr 2024 00:42:36 -0700 (PDT)
+Message-ID: <e2966eda-b250-4033-a7ff-0ec8dce9d333@suse.com>
+Date: Wed, 17 Apr 2024 09:42:35 +0200
 MIME-Version: 1.0
-From: Luigi Pellecchia <lpellecc@redhat.com>
-Date: Tue, 16 Apr 2024 23:32:11 -0700
-Message-ID: <CAE3MqZyt47uc=h1P2tryBJsXeoEEzNnHSX5A02hM=RR0goxJKg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 To: ltp@lists.linux.it
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <CAE3MqZyt47uc=h1P2tryBJsXeoEEzNnHSX5A02hM=RR0goxJKg@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAE3MqZyt47uc=h1P2tryBJsXeoEEzNnHSX5A02hM=RR0goxJKg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] Identify current test coverage and clarify contribution
+Subject: Re: [LTP] Identify current test coverage and clarify contribution
  opportunities
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -87,30 +96,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
-I'm Luigi Pellecchia, a Principal SW Quality Engineer at Red Hat.
-I developed an Open Source Software Quality Management Tool, named "BASIL
-The FuSa Spice" that can help the LTP keep track of the test case coverage
-against man pages and to clarify contribution opportunities to new members.
-I prepared an initial demo I shared on LinkedIn at
-https://www.linkedin.com/posts/luigi-pellecchia_how-basil-can-help-linux-test-project-to-activity-7186248090129956864-d-vC?utm_source=share&utm_medium=member_desktop
-This tool is under the hood of ELISA (Linux Foundation) github at
-https://github.com/elisa-tech/BASIL
+Hi Luigi,
 
-Any feedback will be greatly appreciated
+On 4/17/24 08:32, Luigi Pellecchia wrote:
+> Hi all,
+> I'm Luigi Pellecchia, a Principal SW Quality Engineer at Red Hat.
+> I developed an Open Source Software Quality Management Tool, named "BASIL
+> The FuSa Spice" that can help the LTP keep track of the test case coverage
+> against man pages and to clarify contribution opportunities to new members.
+> I prepared an initial demo I shared on LinkedIn at
+> https://www.linkedin.com/posts/luigi-pellecchia_how-basil-can-help-linux-test-project-to-activity-7186248090129956864-d-vC?utm_source=share&utm_medium=member_desktop
+Thanks for sharing. I watched the demo and it can be useful in certain 
+circumstances, but in others it could be tricky. I will explain myself 
+at the end of the email.
+> This tool is under the hood of ELISA (Linux Foundation) github at
+> https://github.com/elisa-tech/BASIL
+>
+> Any feedback will be greatly appreciated
+>
+> Please let me know if you have any questions, or if you'd like to see a
+> live demo of the tool.
+>
+> Regards
+>
+> --
+> Luigi
+>
+One of the things we noticed is that man pages are not updated too often 
+and some kernel features are not covered by the manuals. This would be 
+an issue when it comes to calculate tests coverage and some of us think 
+that this approach could be hard to follow.
 
-Please let me know if you have any questions, or if you'd like to see a
-live demo of the tool.
+Also, LTP has a lack of men power nowadays (especially when it comes to 
+reviews) which means coverage report is good to track LTP status, but we 
+would take ages to implement remaining kernel tests. There's an internal 
+discussion in LTP about bringing more people inside the project and we 
+are trying to move forward to achieve this goal (see new documentation). 
+That would help the whole project.
 
-Regards
+We have a monthly LTP meeting. The next will probably be the 8th of may 
+(I need to send the email yet). It's public, so feel free to join if you 
+want.
 
---
-Luigi
+Best regards,
+Andrea Cervesato
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
