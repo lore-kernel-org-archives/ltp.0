@@ -4,54 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E671C4345F
-	for <ltp@archiver.kernel.org>; Thu, 18 Apr 2024 11:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F79DC4345F
+	for <ltp@archiver.kernel.org>; Thu, 18 Apr 2024 11:25:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8626C3CFC09
-	for <ltp@archiver.kernel.org>; Thu, 18 Apr 2024 13:24:14 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DC0293CFBDA
+	for <ltp@archiver.kernel.org>; Thu, 18 Apr 2024 13:25:21 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 58A203CF517
- for <ltp@lists.linux.it>; Thu, 18 Apr 2024 13:23:59 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id BEBFC3CF517
+ for <ltp@lists.linux.it>; Thu, 18 Apr 2024 13:25:06 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C98A71410636
- for <ltp@lists.linux.it>; Thu, 18 Apr 2024 13:23:58 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 20C4260142F
+ for <ltp@lists.linux.it>; Thu, 18 Apr 2024 13:25:05 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D508E34E14;
- Thu, 18 Apr 2024 11:23:56 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D19D95C961;
+ Thu, 18 Apr 2024 11:25:04 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8AE81384C;
- Thu, 18 Apr 2024 11:23:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B91871384C;
+ Thu, 18 Apr 2024 11:25:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id J7ESLMwCIWakYQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 18 Apr 2024 11:23:56 +0000
-Date: Thu, 18 Apr 2024 13:23:10 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gsv6KxADIWYCYgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 18 Apr 2024 11:25:04 +0000
+Date: Thu, 18 Apr 2024 13:24:10 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZiECnkppW0EGpi2y@yuki>
+Message-ID: <ZiEC2hDF-RTJaLu5@yuki>
 References: <20240417123113.731780-1-pvorel@suse.cz>
+ <20240417123113.731780-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240417123113.731780-1-pvorel@suse.cz>
+In-Reply-To: <20240417123113.731780-2-pvorel@suse.cz>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Pre-Result: action=no action; module=replies;
@@ -60,10 +62,10 @@ X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: D508E34E14
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Rspamd-Queue-Id: D19D95C961
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] libswap: Move file & line macros to macros
+Subject: Re: [LTP] [PATCH 2/2] libswap: Use tst_res_() instead of tst_res()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,7 +84,7 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by; Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
