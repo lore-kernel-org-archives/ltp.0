@@ -4,86 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70EF6C4345F
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 09:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713517230; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=02H53CpR0IzCRHf03c5BTltlOsDEkEgEH4yTnHV69po=;
- b=N2gRLZkdSi2ZXdtIDe2SRg90z/efwtnqvir7K5bQJDru1AnWxgWPmpjhgzMXyGS1+HjWj
- h5PBnJwXPjV+91yD2VxLcK+gRR7DWfOWsWZJdtuziT3W0nf1jQgZWAONMwLg0qbhC8grALf
- ORXw5KWOIKhKL8PLbkeacH2nMIDVvso=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF61C4345F
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 09:40:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77F003CFD75
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 11:00:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 669973CFD4A
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 11:40:55 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4BE953CFBA7
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 11:00:08 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A22893CF3FC
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 11:40:40 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6CAF3601144
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 11:00:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1713517208; x=1745053208;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=ASPhN6XlU5zwf6d5Ab/FNzdfAjttxEm5cAtQ4oT8V2o=;
- b=c2HjXCn7/4jbGJfs/LWiYMsDLvf6qGEireTxtDYIwMPQzOFcCIAdM82C
- bkqIH1RvM09pQRg3rHfb9rw1vKOlIpEpYyOPwMU/hFO2mq7CtzV17AkaA
- /hxacBtV0coli9DbX6rr+ZqWuL2liAPMP5ISwqDkXfd6u34EXCCnLOSbf
- vTTSTeuxVhA1P8Zh/VPiBHFR/XCHqZr52gsMtgcPVaFhv5ZGI7ccrRS8Z
- LxRC30q3FARX7wgEaxFUmql7dmnWmy7ZTToSbzreq3vv479epovis6LzU
- 1tcBcUk+i5zr8Gd8BDqawyiKXAhUBKs4yrXDgXW3SAoCP6FLQvSiCsRo0 w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="135472289"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708354800"; d="scan'208";a="135472289"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2024 18:00:05 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 22C50D6861
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 18:00:02 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 5096BD3F31
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 18:00:01 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id BFC06223FC1
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 18:00:00 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 5C4211A000A;
- Fri, 19 Apr 2024 17:00:00 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Fri, 19 Apr 2024 04:25:49 -0400
-Message-Id: <20240419082549.25476-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03720208E0D
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 11:40:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DDF6034713;
+ Fri, 19 Apr 2024 09:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713519639;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XSaL897Hj7ZdXBzQoVEFwgNZThIAHSfOXHWHZaPN3Kw=;
+ b=JUGP4OvSZrbS1JqouDOUHsLjNWpAvGCtpPJOkHdAL9Fqjwbmcf4vpnds9rlSGWlNUkEKrt
+ +5weDu3EtlH4s3j59sYMZS/xj2jGYenDHbRLmr6pd4PcL4MXtHpFTaRNfbAo8624mdoqmy
+ QZRiqTQg7Cg/RoujVoEP4yqwYyH6igg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713519639;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XSaL897Hj7ZdXBzQoVEFwgNZThIAHSfOXHWHZaPN3Kw=;
+ b=aQpNqu2OYchvNePHaklmB1SZirREIWn2fXCbvCS4uIYqlmplMs3JDazDMwGxt+/unw1stk
+ C8f/trCInpOvuRCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713519637;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XSaL897Hj7ZdXBzQoVEFwgNZThIAHSfOXHWHZaPN3Kw=;
+ b=PqaebfNwNRID5IYKzD0y914ClkXl3Kjw0dYNhOFOOgNc9Lvg+nUWd81a8FhgYQCG+D2IZA
+ DPA81OC9alF55x3OMWSW+CBUUPuhBi4FfzC8pMvm+pgwC+S9MgPw5xf4/erqi6leVZfnxz
+ 7aas4iUpuXCps/0Pmbm5Kwh/cea9cww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713519637;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XSaL897Hj7ZdXBzQoVEFwgNZThIAHSfOXHWHZaPN3Kw=;
+ b=k391k7Vj0cj07dgrce90zxC2H7h6QykPDaa0bYkFKGBoOQnYLn5QBJ3eGZIH+RdpilHYKI
+ tGceIO/GZVdtMMCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0D3A1398B;
+ Fri, 19 Apr 2024 09:40:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qDT5LBU8ImY2BQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 19 Apr 2024 09:40:37 +0000
+Date: Fri, 19 Apr 2024 11:40:27 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240419094027.GA149169@pevik>
+References: <20240418185210.132137-1-pvorel@suse.cz>
+ <20240418185210.132137-2-pvorel@suse.cz>
+ <CAEemH2dw83UCUg7tXnVuKqwDZtFfc8zEWq=SvLuRtzcA_4AV=w@mail.gmail.com>
+ <CAEemH2fr5+L0UK4McWf7Aos9TciME7wHMQmVujNX8xQtZYUsqQ@mail.gmail.com>
+ <20240419061206.GA143961@pevik>
+ <CAEemH2fOvSCmnQfS2+w_mWxm6cxMy_-EVjT0-c6WL_w6krNF4Q@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28330.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28330.006
-X-TMASE-Result: 10--12.900700-10.000000
-X-TMASE-MatchedRID: 54gb2yeIOXRSuJfEWZSQfB1kSRHxj+Z5TJDl9FKHbrlgPgeggVwCFnU3
- oKSu0J1xUh5maKIJAx/mn3xyPJAJoimyf2R1E4xpGYJhRh6ssesfimmlcABuNyfJTn+dmnFQGmV
- udEhnpoS1/NE2jc9NGGvtvwKw8+1BR+vpYbhOH1q/QNwZdfw3FX0tCKdnhB589yM15V5aWpj6C0
- ePs7A07fUrOTjR0Rj1JdFu2iuU7XrrQBhjZUQ2qDdlL4rXp7hTR25yp5PApX8=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fOvSCmnQfS2+w_mWxm6cxMy_-EVjT0-c6WL_w6krNF4Q@mail.gmail.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] gethostname: Add negative test for gethostname
+Subject: Re: [LTP] [PATCH v2 1/2] libswap: Add {SAFE_,
+ }MAKE_MINIMAL_SWAPFILE() macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,82 +122,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yang Xu via ltp <ltp@lists.linux.it>
-Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add negative cases for gethostname(), when errno is ENAMETOOLONG
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/gethostname/.gitignore    |  1 +
- .../syscalls/gethostname/gethostname02.c      | 31 +++++++++++++++++++
- 3 files changed, 33 insertions(+)
- create mode 100644 testcases/kernel/syscalls/gethostname/gethostname02.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index de4f5a633..cc1e39c05 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -477,6 +477,7 @@ gethostbyname_r01 gethostbyname_r01
- gethostid01 gethostid01
- 
- gethostname01 gethostname01
-+gethostname02 gethostname02
- 
- getitimer01 getitimer01
- getitimer02 getitimer02
-diff --git a/testcases/kernel/syscalls/gethostname/.gitignore b/testcases/kernel/syscalls/gethostname/.gitignore
-index d09d5d288..d6e4cffcb 100644
---- a/testcases/kernel/syscalls/gethostname/.gitignore
-+++ b/testcases/kernel/syscalls/gethostname/.gitignore
-@@ -1 +1,2 @@
- /gethostname01
-+/gethostname02
-diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
-new file mode 100644
-index 000000000..250e5f2fd
---- /dev/null
-+++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that gethostname(2) fails with
-+ *
-+ * - ENAMETOOLONG when len is smaller than the actual size
-+ */
-+
-+#include "tst_test.h"
-+
-+static void verify_gethostname(void)
-+{
-+	char hostname[HOST_NAME_MAX];
-+	int real_length;
-+
-+	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
-+	real_length = strlen(hostname);
-+
-+	TST_EXP_FAIL(gethostname(hostname, real_length - 1), ENAMETOOLONG,
-+		"len is smaller than the actual size");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_gethostname,
-+};
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBPbiBGcmksIEFwciAxOSwgMjAyNCBhdCAyOjEy4oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1
+c2UuY3o+IHdyb3RlOgoKPiA+ID4gT24gRnJpLCBBcHIgMTksIDIwMjQgYXQgOTo1MOKAr0FNIExp
+IFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPiB3cm90ZToKCj4gPiA+ID4gSGkgUGV0ciwgQ3lyaWws
+Cgo+ID4gPiA+IFRoZSBwYXRjaHNldCBnZW5lcmFsbHkgbG9va3MgZ29vZC4KCj4gPiA+ID4gQnV0
+IEkgaGF2ZSBhIGNvbmNlcm4gYWJvdXQgdGhlIG1hY3JvIG5hbWUgIk1JTklNQUwiIHdvcmQsCj4g
+PiA+ID4gd2hpY2ggbWlzbGVkIHBlb3BsZSB0byB0aGluayB0aGF0IGlzIHRoZSBtaW5pbWFsIHN3
+YXBmaWxlIHNpemUgd2UKPiA+ID4gPiBjYW4gbWFrZSBvbiB0aGUgc3lzdGVtLCBidXQgb2J2aW91
+c2x5IGl0IGlzIG5vdCwgd2UgY291bGQgZXZlbgo+ID4gPiA+IGNyZWF0ZSBhIHNtYWxsZXIgb25l
+LCByaWdodD8KCj4gPiA+ID4gQ2FuIHdlIHJlbmFtZSBpdCB3aXRoIGEgYmV0dGVyIG9uZT8KCgo+
+ID4gPiBXaGF0IGFib3V0IE1BS0VfREVGQVVMVF9TV0FQRklMRSwgb3IgTUFLRV9URVNUX1NXQVBG
+SUxFPwoKPiA+IEkgd2FudCB0byBzb21laG93IGV4cHJlc3MgdGhhdCBpdCdzIGEgcmVhbGx5IHNt
+YWxsIHN3YXAgZmlsZQo+ID4gKGFsdGhvdWdoIHN1cmUsIG5vdCBtaW5pbWFsKS4gU3VyZSwgaXQg
+Y2FuIGJlICJkZWZhdWx0IiBvciAidGVzdCIsCj4gPiBidXQgaXQgZG9lcyBub3Qgc2F5IGFueXRo
+aW5nIGFib3V0IHRoZSBzaXplLgoKCj4gV2h5IGRvIHdlIGhhdmUgdG8gZW1waGFzaXplIHRoZSAi
+c21hbGwiIHN3YXAgZmlsZT8KClRvIG1ha2Ugb2J2aW91cyBvbiBhIGZpcnN0IGxvb2sgdGhhdCB3
+ZSBhcmUgdGVzdGluZyBzb21ldGhpbmcgd2hpY2ggaXMgbm90CnR5cGljYWwgdXNlIGNhc2UgKHdo
+byBjcmVhdGVzIDFNQiBzd2FwIGZpbGUgaW4gcmVhbGl0eT8pLgoKV2UgaGF2ZSA1IHN3YXAgdGVz
+dHM6IDJ4IG5vdCB0aGF0IGJpZyBidXQgaXQgY291bGQgYmUgcmVhbCBzd2FwIHVzYWdlICg2NTUz
+NgpibG9ja3MgfiAyNjIgTUIgd2hlbiA0a2IgYW5kIDEyOCBNQikgYW5kIHRoZSByZXN0IGlzIDV4
+IHRoYXQgMTAgYmxvY2tzLCB3aGljaAp3b3VsZCBiZSBub3cgY2hhbmdlZCAxIE1CLiBUaGVyZWZv
+cmUgbW9zdCBvZiB0aGVtIGFyZSBzbWFsbCwgbm90IHJlYWxseQpyZWFsaXN0aWMgc2l6ZS4gVGhl
+cmVmb3JlIGl0J2QgYmUgZ29vZCB0byBtYWtlIGl0IG9idmlvdXMgYWxyZWFkeSBmcm9tIHRoZSB0
+ZXN0CnNvdXJjZS4KCktpbmQgcmVnYXJkcywKUGV0cgoKPiBJZiB3ZSBjaG9vc2UgdG8gdXNlIG9m
+ICJkZWZhdWx0IiAxTUIgZm9yIExUUCB0ZXN0IGJ1dCBub3QKPiBleHBsaWNpdGx5IGRlY2xhcmFu
+dCBpbiB0aGUgbmFtZSwgdGhhdCdzIG9rYXksIHBlb3BsZSBjYW4KPiBjaGVjayB0aGUgZGVmaW5l
+ZCB2YWx1ZSBpZiB0aGV5IGFyZSBpbnRlcmVzdGVkLgoKCgoKPiA+IEtpbmQgcmVnYXJkcywKPiA+
+IFBldHIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0
+aW5mby9sdHAK
