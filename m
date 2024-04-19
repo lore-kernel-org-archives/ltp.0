@@ -4,116 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BEC2C4345F
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 13:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91F9EC4345F
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 13:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713532749; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=1RyHBvAcjQwUImULq35gDU/vmL9R0hnjonghXVgpFHc=;
+ b=eeDSH0IDwaZ43mZcMT9+mnNimIxdO+3cZviM3SxTPltEFJtnRRXzh/SvZtAtMwYMyRNYq
+ 1/CI0RleX40gWMcrx/LR0EFUIj6CGrEiZEzCMw7FoRJ4/qBFDdTPS35P01vwWkvTigFmTbt
+ 6K2mUzHiZy5YMQP9ffPq591IsiD3nxs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0C5E3CFD8E
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:12:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 000763CFD84
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:19:08 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BFF83CEFF0
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:12:15 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 31DCB3CF511
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:18:46 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BCFE760DB57
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:12:14 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 352B45D6F7;
- Fri, 19 Apr 2024 13:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713532333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
- b=0sBHJN19cARBqVlEw4zBmsAZ98rYt7F+IIaxCjz152F5P8CUmQA/2ACzZ8m1Ig5YXt2FHZ
- lNCRSKQ3ipgYlXo2WmTFkN4kGi8dV3miOwpSoA8mMWq9YT1K2F7O7JL++He9gq0Oe/zzSV
- jejtJoiyYHWqsXe/FbTPf76fqlhI7pM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713532333;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
- b=OXf3BwBDCB8QUNbQ3lofpseinFvlmWqPVqemifXt827kyytgpIycs9xZXYpuysjGMvpkCO
- AKc6zFxVjRLd5yBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0sBHJN19;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OXf3BwBD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713532333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
- b=0sBHJN19cARBqVlEw4zBmsAZ98rYt7F+IIaxCjz152F5P8CUmQA/2ACzZ8m1Ig5YXt2FHZ
- lNCRSKQ3ipgYlXo2WmTFkN4kGi8dV3miOwpSoA8mMWq9YT1K2F7O7JL++He9gq0Oe/zzSV
- jejtJoiyYHWqsXe/FbTPf76fqlhI7pM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713532333;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
- b=OXf3BwBDCB8QUNbQ3lofpseinFvlmWqPVqemifXt827kyytgpIycs9xZXYpuysjGMvpkCO
- AKc6zFxVjRLd5yBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 230331395B;
- Fri, 19 Apr 2024 13:12:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gzueBq1tImY7UAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 19 Apr 2024 13:12:13 +0000
-Date: Fri, 19 Apr 2024 15:11:27 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Message-ID: <ZiJtf07WGFJPb_w2@yuki>
-References: <20231207194011.273027-1-pvorel@suse.cz>
- <20231207194011.273027-4-pvorel@suse.cz>
- <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
- <ZZvIBO-a1b_nIHJ8@yuki>
- <gjfjylr4bdytdot7ywjispswvgpvjtkdmtsinsbcbc42ik2y3d@ws4tjmwqywrb>
- <ZZ0guBd48WXYapPL@yuki>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DE019101543B
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:18:45 +0200 (CEST)
+Received: by mail-wm1-x342.google.com with SMTP id
+ 5b1f17b1804b1-4196c62bb4eso3268375e9.2
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 06:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1713532725; x=1714137525; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=p7U/c6ikGpTuIo2U8GtLPK9bnOR48VNVUU+JSBJnRCU=;
+ b=ERKIC04lk1lRq5nkxa55D3YO7f6rMmL6/HdoNNFGoGscYRl2y9ZLiu8UKZzAdvDd/v
+ sJJB7tjlh+5Nsjy858s+lPo7U7Ha1wqzCfIC8RjFiVb3dj1lcNRmfKRL09X3ujA+NzzW
+ 8l41I8PVflaE02FBbjBtq/gMjdROZoUWfWZhT5HerxkuDPJYjibmMX23a+OroQmlIjA3
+ FuJ8MavWn4ORscfqad53YJOCa4HZcPwlyN2C4Y+vFIlskg6JFNG59t2iL/Kxnlyl5AUv
+ OdYzYOgxyjipgBPnlHna+uDIKt8Yz2ZMCG439UKzSj7Ybiukq2foBScKHUjm+Yi+UAKO
+ jzRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1713532725; x=1714137525;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=p7U/c6ikGpTuIo2U8GtLPK9bnOR48VNVUU+JSBJnRCU=;
+ b=FtxoIXs31cql0jsRX150HVCGBRYxQyL0hfpWTXlvfUzrZRWtL1moloOPRbd/3BXbSd
+ xXF4BnU42bWncp29KyTH1MoSSdDcDRYXB/SdmOuaJ9KbvTDRGRcjNx1a3Om6yj6KSx+g
+ BTDpuso0OJbfvc32CAGcbSZXYfqGdQC279BP9MzPqRqx3AAC7g3zFP/WEAWsFKpkAutZ
+ YrqIjNzNZMNcQKD6ggdRK87M7zw13ybW1PCzwwKDL9m5HYamfg4jpfgX+LDTb1YN6Zky
+ jSc7QCrP9YT3YlPJbMl+B19NCFMeBbRS9pjnZi5jR3u2qwtCIPKBrLwYVWLpRoW/XTBQ
+ z+Qg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUz988qBUaOjtQNm9j5X9ofRGOSFPBxCNYrzG7/KjQ5BA4mZcVdbr4KTaT2S5Pg4AtqqJjO1Z7le1P64oZw+NNzWUw=
+X-Gm-Message-State: AOJu0YzITnhBciiirtZkF3+1KAPSWCRiFqU3YWCyKEEI+XmE33/gnZDZ
+ zXCZJCichXXU6kyYJNxpnwmQphCifl+sB2riro/8UD7zwaIIPYDP24InPMAOFgg=
+X-Google-Smtp-Source: AGHT+IHLKo+CDscyJdqO+HZSce6m6BHHKJOhtlZm6HXa5G9MCNNu+gtrDiUy+o51x9yvOnNHSd8rLg==
+X-Received: by 2002:a05:600c:1988:b0:418:bbb6:95b3 with SMTP id
+ t8-20020a05600c198800b00418bbb695b3mr1701268wmq.0.1713532725225; 
+ Fri, 19 Apr 2024 06:18:45 -0700 (PDT)
+Received: from [10.232.133.111] ([88.128.88.180])
+ by smtp.gmail.com with ESMTPSA id
+ ay15-20020a05600c1e0f00b004189a5ada3asm10340745wmb.19.2024.04.19.06.18.44
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 19 Apr 2024 06:18:45 -0700 (PDT)
+Message-ID: <0df81a8e-d450-4806-b425-82867ca8da3d@suse.com>
+Date: Fri, 19 Apr 2024 15:18:43 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZZ0guBd48WXYapPL@yuki>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 352B45D6F7
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.97 / 50.00]; BAYES_HAM(-2.96)[99.84%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20240419124221.207445-1-pvorel@suse.cz>
+ <20240419124221.207445-2-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20240419124221.207445-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on
- Bcachefs
+Subject: Re: [LTP] [PATCH 2/3] doc: Clarify that the only public CI testing
+ is build only
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,40 +97,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, Brian Foster <bfoster@redhat.com>,
- fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > > Quite likely, other filesystems does have an inode flag that is set when
-> > > file has been compressed and simply report that in the foo_getattr()
-> > > callback. Looking at bcachefs I supose that we need to figure out if the
-> > > inode is v3 and then unpack the v3 info to get to the compressed flag,
-> > > you probably know best how to do that.
-> > 
-> > I'm still not clear how we want to map STATX_ATTR_COMPRESSED, since it's
-> > extents that are compressed, not entire files - and just reporting the
-> > compression option is probably not what we want since it can be flipped
-> > off, and existing data will still be compressed.
-> > 
-> > Do you know anything about the intended use case?
-> 
-> As far as I understand the flag it's a hint that the file I/O may be
-> slower/need more memory because of the compression.
 
-Ping.
+On 4/19/24 14:42, Petr Vorel wrote:
+> Also convert .github/workflows/ci.yml as link to github
+> (unfortunately that remove code formatting).
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>   doc/developers/writing_tests.rst | 4 ++--
+>   doc/users/supported_systems.rst  | 9 +++++++++
+>   2 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+> index 032fbcbd5..3db56a558 100644
+> --- a/doc/developers/writing_tests.rst
+> +++ b/doc/developers/writing_tests.rst
+> @@ -346,8 +346,8 @@ Testing builds with GitHub Actions
+>   Master branch is tested in `GitHub Actions <https://github.com/linux-test-project/ltp/actions>`_
+>   to ensure LTP builds in various distributions, including old, current and
+>   bleeding edge. ``gcc`` and ``clang`` toolchains are also tested for various
+> -architectures using cross-compilation. For a full list of tested distros, please
+> -check ``.github/workflows/ci.yml``.
+> +architectures using cross-compilation. For a full list of tested distros, please check
+> +`.github/workflows/ci.yml <https://github.com/linux-test-project/ltp/blob/master/.github/workflows/ci.yml>`_.
+Maybe we can store github link into a variable and use it around the 
+documentation.
+I'm not sure if it works, but eventually take a look at: 
+https://groups.google.com/g/sphinx-users/c/OitnjX8SIA4/m/7_kUL0TaCwAJ
+>   
+>   .. note::
+>   
+> diff --git a/doc/users/supported_systems.rst b/doc/users/supported_systems.rst
+> index 82774c2ef..a9086f4d8 100644
+> --- a/doc/users/supported_systems.rst
+> +++ b/doc/users/supported_systems.rst
+> @@ -3,6 +3,12 @@
+>   Supported systems
+>   =================
+>   
+> +Build testing is done with `GitHub Actions <https://github.com/linux-test-project/ltp/actions>`_.
+> +
+> +.. note::
+> +
+> +      There is no CI testing of the actual tests run.
+> +
+>   Kernel version
+>   --------------
+>   
+> @@ -38,6 +44,9 @@ Oldest tested distributions
+>         - 10.2.1
+>         - 11.0.1
+>   
+> +For a full list of tested distros, please tested distros, please check
+> +`.github/workflows/ci.yml <https://github.com/linux-test-project/ltp/blob/master/.github/workflows/ci.yml>`_.
+> +
+>   Older distributions are not officially supported, which means that it
+>   may or may not work. It all depends on your luck. It should be possible
+>   to compile latest LTP even on slightly older distributions than we
 
-Kent we are getting closer to a next LTP release, are you going to add
-the compressed flag support into bcachefs or should we add bcachefs to
-the test skiplist?
+Andrea
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
