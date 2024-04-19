@@ -4,94 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 796B1C4345F
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 12:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98157C4345F
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 13:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713532098; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=+711LgsSrNNjAvkI+wHkmvmQlX6FXdBG+irJmp6hFAQ=;
+ b=C6zsGt/aNKNBiqxFoXuE+FGKDdB/CpiTtmq8fpaL3S/s/Xi/Jem/vjT7e+gh17y5Fcsk7
+ N5V4Mkic73S6zUs9bKQ7BQkpCY0OfIis+XlKkK1pLQTc1JhI9tkjF3Hp2ewy7D0Ah3xDLnY
+ 3NzdjyjI3Gx3H7oP/WixOyxanroUhe8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 101F23CFD6B
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 14:43:15 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EAC983CFD7B
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:08:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D99C3CF511
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 14:42:26 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D58FF3CEFF0
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:07:55 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 078FE1A0C24F
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 14:42:25 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F1EE221A09;
- Fri, 19 Apr 2024 12:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713530545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=A+F6U9jtG7momZBR7aimDpuDWn+B72YXuUfKhugqlew=;
- b=jOWi22YcZPCC25O+6H89ixoiUtzRM4V+CkwIEW88zi6oCXkjaAHl1sfGljxiSMDbnG0Xha
- Dc4J0oUO9urw8r4xUxFJfpayFJWbkjurpgAocyzD1AT+1t2cUvuJAQxdC5GDqXooK7NToT
- WTKn5Zb24V/2nXrsKxwqSAmx7VPee+k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713530545;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=A+F6U9jtG7momZBR7aimDpuDWn+B72YXuUfKhugqlew=;
- b=lRFz9EHXnXvWey1quqBYd3PbY51GGn0iKMZ47Yo1LZOkxJWjVabBQrlz+3lP//iJPSkOjO
- XlXyC1MlJbq2QBBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713530544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=A+F6U9jtG7momZBR7aimDpuDWn+B72YXuUfKhugqlew=;
- b=g9ap0GBp/XCvtwplaotkPPXHIUGC6vZrNuZMOXWtcQvvi/N/1FK60djDYkxPpHXeszfgJU
- EU4bTrTumv9CDKGFy5PJPMx689vcZV6nAebpTB3bfWz7CixYeqR/ToxScniQSb1n1LbjKj
- ONbHKHL2OqRni3pJVTxTETajQVJowFo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713530544;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=A+F6U9jtG7momZBR7aimDpuDWn+B72YXuUfKhugqlew=;
- b=CLQDCkgB0788ghcD7SMoWuFGgxAYvGh5W9955ODj80/2QVYWGUPhHzeeotaymt02tHcyOj
- JGdKSESyJnhfDpAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FEF313687;
- Fri, 19 Apr 2024 12:42:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5wx/C7BmImZNRQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 19 Apr 2024 12:42:24 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 19 Apr 2024 14:42:19 +0200
-Message-ID: <20240419124221.207445-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C177F14060AA
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 15:07:54 +0200 (CEST)
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-343f1957ffcso1158700f8f.0
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 06:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1713532074; x=1714136874; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=P5hoWazsLl8MDoh98ez0sPHwRyIXeYbTWzMszfwUnBE=;
+ b=B50xfx/Px3kYAVihowA/o/v4P0K3mn8B46tgndzJgZvdfWQw8hvTgbhHGqtFYT7aH/
+ DjjPafQd5HrNDr5J0U2MqHGsHwFsD1EbR3wdn+wX51OMxD0FkKKt/Pcya/1xaHB5IsyK
+ lPt09cE7vQJUj31NqqtzIWdTdHU5SsEJ2IBzhT4NMIY7BgO4Z8XJK+4GAQNXfzw0gQld
+ VPVrtegBvE2a/8As3OgAWjcaNOcEbdLReBInMyOBhyUIr3QaCFM6EE0yWlaIypoD1jsS
+ +B6bGH9+CEDc66oDXWDFm59jGR9rt+DitkEoiG+GHRpSIUASiEQxIWFQnz+13hq54r2x
+ cadA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1713532074; x=1714136874;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=P5hoWazsLl8MDoh98ez0sPHwRyIXeYbTWzMszfwUnBE=;
+ b=oInCqnCcNJy8RLJ/ohwXbLTY7s9nZ9liHQtT3nviKtsFX92RABp+akqHbtB+nwajg9
+ +Vya3PrRdQMAGZkD+pM/srAkSlHNs0P+6IU58gCGDlXXZDdoOkv/FuJYx2Jq3tQzKHCW
+ TremKY3V/e38cMBzY3XHzQyfr5PKP0GgJD7i9W4rQoO+h1+zh3qe6bdru1iMiF2hYtYB
+ h/Pc1rNaE/YbH7Oy1Gj1j/yNu3YcCNwE52GdylOU9WzGVu9qWa/yi5sIPwKbyVK6h4lK
+ jfqJZUEPf2majogXizjERQrAodo3BOg2uaP/Zz2ghmkxI3k8A7T5/EI7wgGr8f/oC6h1
+ RXew==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUR7WVgUeDdZydypuNza0lx3nLvODzqCK8z1cUjTYHhC60lFd/g4gZiKrMaaKLG9in8nrshh5TxKErpnmR/IoZ027A=
+X-Gm-Message-State: AOJu0YwfGHNKe4xiPz+ugzMOOZNLRTYsYOCh0BEo5jXKp4UO0Jil4XA7
+ WNpwWqF/lB7/273UQ5NhGG3xjE09jhDV2qfgiPauhgSkoiJEf3+C237L2kQesE/5xENd3rNgvvV
+ 3asBpIw==
+X-Google-Smtp-Source: AGHT+IHkshOXv2x77n6jZRpjsnXFs2Ty/tES4EIU77agf8GYpLvMUgyP6Fcali+kKABopBWhb4c/ug==
+X-Received: by 2002:a5d:4a8e:0:b0:343:ce15:fd3f with SMTP id
+ o14-20020a5d4a8e000000b00343ce15fd3fmr4720451wrq.29.1713532073978; 
+ Fri, 19 Apr 2024 06:07:53 -0700 (PDT)
+Received: from [10.232.133.111] ([88.128.88.180])
+ by smtp.gmail.com with ESMTPSA id
+ e5-20020adfa445000000b0034a572b6fd2sm1660228wra.14.2024.04.19.06.07.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 19 Apr 2024 06:07:53 -0700 (PDT)
+Message-ID: <2aab8a6d-c793-41f4-aaf3-585848631fc9@suse.com>
+Date: Fri, 19 Apr 2024 15:07:52 +0200
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_SEVEN(0.00)[9];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20240419124221.207445-1-pvorel@suse.cz>
+ <20240419124221.207445-3-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20240419124221.207445-3-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] doc: Bump minimal supported kernel to 4.4
+Subject: Re: [LTP] [PATCH 3/3] doc: Update building docs section
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,101 +97,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-and remove RHEL-7.9 Maipo from the list.
+Hi!
 
-kernel 3.10 was supported by CentOS 7 build, which was removed in
-360927080. AFAIK all distros which use 3.10 kernel (or kernel < 4.4)
-by SUSE/RHEL/whatever distro are using older LTP (including RHEL-7.9
-Maipoi). Thus we should not claim we are build testing 3.10.
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-4.4 is kept because is still used for old SLES 12-SP3 (4.4 based).
+On 4/19/24 14:42, Petr Vorel wrote:
+> * Use python3 as a binary (most of distros still have python reserved for
+>    python2).
+> * Mention sphinx can be used from package.
+> * While at it, replace 'source' with '.' (shorter, although most of the
+>    developers use shell which support source bashism, let's not encourage
+>    to use it).
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>   doc/developers/documentation.rst | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/doc/developers/documentation.rst b/doc/developers/documentation.rst
+> index 825495c50..0fbf5d49b 100644
+> --- a/doc/developers/documentation.rst
+> +++ b/doc/developers/documentation.rst
+> @@ -21,10 +21,10 @@ command as following:
+>       cd doc
+>   
+>       # prepare virtual enviroment
+> -    python -m virtualenv .venv
+> -    source .venv/bin/activate
+> +    python3 -m virtualenv .venv
+> +    . .venv/bin/activate
+>   
+> -    pip install sphinx
+> +    pip install sphinx # usually packaged in distros
+>       pip install -r requirements.txt
+>   
+>       # build documentation
 
-This update is safe for upstream stable releases (the oldest stable
-kernel is 4.19).
-
-Update also old docs to prevent users / search engines got confused.
-
-Fixes: 360927080 ("doc/support: Update the oldest tested distros")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi all,
-
-NOTE: if we ack this, we could remove various checks for 3.x kernels:
-
-$ git grep 'kvercmp(3'
-testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c:                       tkeys[i].good = tst_kvercmp(3, 15, 0) < 0;
-testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c:               if (hier != 0 && tst_kvercmp(3, 15, 0) < 0)
-testcases/kernel/syscalls/fallocate/fallocate04.c:      if (tst_kvercmp(3, 15, 0) < 0) {
-testcases/kernel/syscalls/recv/recv01.c:                        if ((tst_kvercmp(3, 17, 0) < 0)
-testcases/kernel/syscalls/recvfrom/recvfrom01.c:                        if ((tst_kvercmp(3, 17, 0) < 0)
-testcases/kernel/syscalls/recvmsg/recvmsg01.c:  if ((tst_kvercmp(3, 17, 0) < 0)
-testcases/kernel/syscalls/renameat2/renameat201.c:      if ((tst_kvercmp(3, 15, 0)) < 0) {
-testcases/kernel/syscalls/renameat2/renameat202.c:      if ((tst_kvercmp(3, 15, 0)) < 0) {
-testcases/kernel/syscalls/sched_getattr/sched_getattr01.c:      if ((tst_kvercmp(3, 14, 0)) < 0)
-testcases/kernel/syscalls/sched_getattr/sched_getattr02.c:      if ((tst_kvercmp(3, 14, 0)) < 0)
-testcases/kernel/syscalls/sched_setattr/sched_setattr01.c:      if ((tst_kvercmp(3, 14, 0)) < 0)
-testcases/network/netstress/netstress.c:        if (busy_poll >= 0 && tst_kvercmp(3, 11, 0) < 0)
-
-$ git grep TST_MIN_KVER=.3
-testcases/kernel/controllers/cpuset/cpuset_regression_test.sh:TST_MIN_KVER="3.18"
-testcases/network/busy_poll/busy_poll_lib.sh:TST_MIN_KVER="3.11"
-testcases/network/tcp_cc/dctcp01.sh:TST_MIN_KVER="3.18"
-testcases/network/tcp_fastopen/tcp_fastopen_run.sh:TST_MIN_KVER="3.7"
-
-Kind regards,
-Petr
-
- .../Supported-kernel,-libc,-toolchain-versions.asciidoc   | 2 +-
- doc/users/supported_systems.rst                           | 8 +-------
- 2 files changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/doc/old/Supported-kernel,-libc,-toolchain-versions.asciidoc b/doc/old/Supported-kernel,-libc,-toolchain-versions.asciidoc
-index 511b9e14b..252b7a4be 100644
---- a/doc/old/Supported-kernel,-libc,-toolchain-versions.asciidoc
-+++ b/doc/old/Supported-kernel,-libc,-toolchain-versions.asciidoc
-@@ -54,7 +54,7 @@ distribution you may as well reconsider you life choices.
- 1.3 Minimal supported kernel version
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--Minimal supported kernel version is 3.10.
-+Minimal supported kernel version is 4.4.
- 
- 1.4 Supported libc
- ~~~~~~~~~~~~~~~~~~
-diff --git a/doc/users/supported_systems.rst b/doc/users/supported_systems.rst
-index 6220a96e0..82774c2ef 100644
---- a/doc/users/supported_systems.rst
-+++ b/doc/users/supported_systems.rst
-@@ -6,7 +6,7 @@ Supported systems
- Kernel version
- --------------
- 
--Minimal supported kernel version is **3.10**.
-+Minimal supported kernel version is **4.4**.
- 
- Oldest tested distributions
- ---------------------------
-@@ -38,12 +38,6 @@ Oldest tested distributions
-       - 10.2.1
-       - 11.0.1
- 
--    * - RHEL-7.9 Maipo
--      - 3.10
--      - 4.8.5
--      - 2.17
--      - \-
--
- Older distributions are not officially supported, which means that it
- may or may not work. It all depends on your luck. It should be possible
- to compile latest LTP even on slightly older distributions than we
--- 
-2.43.0
+Andrea
 
 
 -- 
