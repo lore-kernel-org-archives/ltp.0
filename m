@@ -4,73 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E81DCC04FF6
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:35:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB2A6C4345F
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:47:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0FDCA3CFDA4
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 17:35:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4CB263CFDB2
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 17:47:04 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EA1B3CFD7A
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:33:11 +0200 (CEST)
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
- [IPv6:2607:f8b0:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1EF253CFD7A
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:46:48 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7FA42602213
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:33:10 +0200 (CEST)
-Received: by mail-pf1-x436.google.com with SMTP id
- d2e1a72fcca58-6ed04c91c46so2099392b3a.0
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 08:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1713540789; x=1714145589; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=b40QOyhk2866YOHg3SwHtQWIIYLiZJBBMHiGdD1NIEE=;
- b=SjEo3B1/cZqA84CNb3Ecv78RnCnc7VOYym0a+8AyFxqGyJd7K45mYyzGi9aYsJK83Q
- z5I1EZKqPBrcu1C41OpI9NGcEkh/WDZaVTLRdx07YiASXw4g7piHDWXLsRJsMcvbwT6L
- 9eHBEbMs+zOsw0jX8EarCuBJjKk0qQkXrWxJy64s7+r94OPJ/0VSbIQ1m21Jg1/Aguk3
- u7wn6VDepZDMyvPYTiUhO+V7AT5oFCJcbUlpktl0bHjwlOYZRdjgghfP/KBy2ph94+2U
- gSQk4uGXDK49SuL5DTsyE8CJY8tpW1OuDFwxBEEMLqoGlJxIuJDEu9D6Dt7tN8pBiDV2
- wsxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713540789; x=1714145589;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=b40QOyhk2866YOHg3SwHtQWIIYLiZJBBMHiGdD1NIEE=;
- b=EYZteEk4n31FCFhC4lIfUXYDfFGTsQGSPT9E09EZFEYZp+1CsOThjGnE3F25/NAofx
- ssVMmotPkHZViTRIuXFda5Q6RfVgess224vLXWEtkKKzWjWvLgFsFEon36VocqGSXLUY
- 9gj/C1pfSnXVyIOO0ATTKMgJOPzyDgI5AtWdPSCB0vCuansBRiLyOE6KlRUuPzznx3Tc
- YgQ7I6nXsN6GkJCYVQi3ZP2+mnZtkRSjcdBvy5QxOoPWFxjEQzEDk0Gj9LqwQ+RBjUyO
- ajytT05zKN9j0UPjefEg4FX9OxMOm/cAHZN+tc1hcxZWId1n4UcwQyKa6bB0Px83B5po
- QAOQ==
-X-Gm-Message-State: AOJu0YybaDCqoovmojskY7wPDqygLKeA2DAfgmQfpYgBQ9WE5CF9hbl9
- +kcaU/z2wrQsqPiKiG6wA+omoGmUJ+J1D06PE3AwJNN/85dgq6nD4jBQ8w==
-X-Google-Smtp-Source: AGHT+IFg/Y+fTA+7E4WeLawqrbOiMEvqZw0rcVw959dMoflb+nqxsFPhP+JFeiY7jmzOieVF/71sGw==
-X-Received: by 2002:a05:6a00:2355:b0:6ed:cd4c:cc21 with SMTP id
- j21-20020a056a00235500b006edcd4ccc21mr3291113pfj.13.1713540788485; 
- Fri, 19 Apr 2024 08:33:08 -0700 (PDT)
-Received: from localhost.localdomain (123-193-217-197.dynamic.kbronet.com.tw.
- [123.193.217.197]) by smtp.gmail.com with ESMTPSA id
- l5-20020a654485000000b005d8b2f04eb7sm2828960pgq.62.2024.04.19.08.33.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 19 Apr 2024 08:33:07 -0700 (PDT)
-From: Yiwei Lin <s921975628@gmail.com>
-To: ltp@lists.linux.it
-Date: Fri, 19 Apr 2024 23:32:55 +0800
-Message-Id: <20240419153255.16187-1-s921975628@gmail.com>
-X-Mailer: git-send-email 2.34.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6838A1A00A2E
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:46:48 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 41F5A5D858;
+ Fri, 19 Apr 2024 15:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713541607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YE+xGAv17IDxe2XM8gTT4L9LO9z1WCz24+7GXnB7i4Q=;
+ b=aLMMFfnlZMBP8pig0lMgQv9Ytu8Tsyc7bUzMyB7imiAZ+nmfv5D5HJXfVs5qAXjmjVhcmS
+ J3bZeiZzSg47PQpvJCPdaCj2/0nXx8Zj2a0y7g3h8kT54ZldqzMpXIlPPikq6+Wiv1VwEZ
+ BH/ekJnNAyF4q/rnHcHFzwl28ZabVFI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713541607;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YE+xGAv17IDxe2XM8gTT4L9LO9z1WCz24+7GXnB7i4Q=;
+ b=EcFHQEnqzW383WTBWVTwYYRAfSCt3WzGHxmnYV5aJpu54FBITa2zRe8i4APMQtY49i2BxO
+ K7+wgyom1y2tnIBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1713541606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YE+xGAv17IDxe2XM8gTT4L9LO9z1WCz24+7GXnB7i4Q=;
+ b=Bp2HQdK30/KXD0KPK5wrBKNlNq/MWTWTJZ69doFvPb5llUdYupXYFJJKjrnDzBZhinBaeG
+ 9ggPl/dE84xt64yXI2deCloQpa13MXcR00GfvxjQ+hBtUXC5ZoTMYT3q9zYx8OG1NKcaN9
+ taIy5DRxRBnovYhSlhKLmWf0rt2+Vtw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1713541606;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YE+xGAv17IDxe2XM8gTT4L9LO9z1WCz24+7GXnB7i4Q=;
+ b=+iClnmQhaAKBTduJmxhM85RLo7eYtGt9v20ohVIgQrED9Cn7aEX6wT6LCTVXiCRHuRRwMV
+ vELZqPNK/abTedCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26A46136CF;
+ Fri, 19 Apr 2024 15:46:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cpQ5COaRImahBwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 19 Apr 2024 15:46:46 +0000
+Date: Fri, 19 Apr 2024 17:46:00 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: lufei <lufei@uniontech.com>
+Message-ID: <ZiKRuBi8tfoGeS0c@yuki>
+References: <20240419070717.2506101-1-lufei@uniontech.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240419070717.2506101-1-lufei@uniontech.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[uniontech.com:email, suse.cz:email,
+ configure.ac:url, linux.it:url, imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 19 Apr 2024 17:35:07 +0200
-Subject: [LTP] [PATCH] cputhotplug/doc: Reflect change of cpuhotplug test in
- doc
+Subject: Re: [LTP] [PATCH v2] Add case about arch_prctl syscall.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,136 +109,157 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Yiwei Lin <s921975628@gmail.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The series of cpu_hotplug tests has changed a lot compared to
-its first version. However, the part of docs which briefly
-describe the test behavior are rarely updated
-correspondly. This could confuse people who want to read it
-when they use the test for the first time. Update the docs to
-make them useful.
+Hi!
+First of all do 'make check' in the directory with the test source and
+fix all errors and warnings.
 
-Signed-off-by: Yiwei Lin <s921975628@gmail.com>
----
- .../hotplug/cpu_hotplug/doc/hotplug05.txt     | 46 ++++++++-----------
- .../hotplug/cpu_hotplug/doc/hotplug06.txt     | 33 ++-----------
- 2 files changed, 23 insertions(+), 56 deletions(-)
+> Signed-off-by: Lu Fei <lufei@uniontech.com>
+> ---
+>  configure.ac                                  |  1 +
+>  .../kernel/syscalls/arch_prctl/.gitignore     |  1 +
+>  testcases/kernel/syscalls/arch_prctl/Makefile |  8 +++
+>  .../kernel/syscalls/arch_prctl/arch_prctl01.c | 56 +++++++++++++++++++
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
-index 26fd59612..67f8198d9 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
-+++ b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
-@@ -1,35 +1,29 @@
--# Test Case 5 - Pseudocode
-+Testcase 05
-+-----------
- 
--# This test looks for memory leaks or deadlocks
-+It's been found that sometimes onlining and offlining CPUs confuse some
-+of the various system tools.  We found that sar wouldn't register the change
-+in newly available cpus that weren't there when it started. This
-+test case seeks to exercise this known error cases and verify that
-+they behave correctly now.
- 
--# "mm_struct slab leak (affected only some architectures)"
-+Algorithm - Sar
-+===============
-+Given a CPU to test that exists
- 
--INTERVAL=30
--THRESHHOLD='xxx'
-+Make sure the specified cpu is offline
- 
--# TODO:  Start monitoring memory usage via vmstat and sar
-+Loop until done:
-+  Start up sar writing to a temp log and give it a little time to run
- 
--# TODO:  Start dbt2, running for at least 4 hours
-+  Verify that SAR has correctly displayed all fields of CPU statistics
-+  as '0.00' for the offlined CPU or just not displayed it in its tmp log
- 
--while [ 1 ]; do
--    last if workload has completed
-+  Online the specified cpu
- 
--    select a cpu at random
--    if cpu is online
--        offline it
--    else
--        online it
--    fi
-+  Take another timestamp and another count of offlined CPUs
- 
--    measure current throughput
--    # TODO:  Mary and Mark will better define how to detect
--    # the threshhold and what to do in response
--    if [ throughput falls below $THRESHHOLD ]; then
--        echo "Throughput has fallen below threshhold."
--    fi
-+  Verify SAR registered the change in CPU online/offline states
- 
--    sleep $INTERVAL
--done
--
--# Analyze system statistics to determine memory leaks
--# Analyze drops in activities
-+When exiting:
-+  Kill the sar process
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
-index 0cccc871c..d7d6c1814 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
-+++ b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
-@@ -2,11 +2,9 @@ Testcase 06
- -----------
- 
- It's been found that sometimes onlining and offlining CPUs confuse some
--of the various system tools.  In particular, we found it caused top to
--crash, and found that sar wouldn't register newly available cpus that
--weren't there when it started.  This test case seeks to exercise these
--known error cases and verify that they behave correctly now.
--
-+of the various system tools.  We found it caused top to
-+crash.  This test case seeks to exercise this known error cases and
-+verify that they behave correctly now.
- 
- Algorithm - Top
- ===============
-@@ -29,28 +27,3 @@ When exiting:
-   Restore all CPUs to their initial state
- 
- 
--Algorithm - Sar
--===============
--Given a CPU to test that exists
--
--Make sure the specified cpu is offline
--
--Loop until done:
--  Start up sar writing to a temp log and give it a little time to run
--
--  Verify that SAR has correctly listed the missing CPU as 'nan' in its
--  tmp log
--
--  Take a timestamp and count how many CPUs sar is reporting to be
--  offline
--
--  Online the specified cpu
--
--  Take another timestamp and another count of offlined CPUs.
--
--  Verify that the number of CPUs offline has changed
--
--When exiting:
--  Kill the sar process
--
--
+This is missing a runtest entry, i.e. line in the runtest/syscalls file
+that tells the test execution framework to run the test.
+
+>  4 files changed, 66 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/arch_prctl/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/arch_prctl/Makefile
+>  create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 1d7e862d8..0dcaddc0f 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -41,6 +41,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
+>  
+>  AC_CHECK_HEADERS_ONCE([ \
+>      asm/ldt.h \
+> +    asm/prctl.h \
+>      cpuid.h \
+>      emmintrin.h \
+>      ifaddrs.h \
+> diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
+> new file mode 100644
+> index 000000000..24871e249
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
+> @@ -0,0 +1 @@
+> +/arch_prctl01
+> diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
+> new file mode 100644
+> index 000000000..272949d57
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/arch_prctl/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) UnionTech Software Technology Co.,Ltd. 2024
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+> new file mode 100644
+> index 000000000..06b3d99b8
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+> @@ -0,0 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/* 
+> + * Copyright (c) UnionTech Software Technology Co.,Ltd., 2024
+> + * Author: Lu Fei <lufei@uniontech.com>
+> + */
+> +
+> +/* 
+
+This has to be /*\ so that the docparse comment gets picked up by the
+documentation parser and shows up in docparse/metadata.html
+
+> + * [Description]
+> + *
+> + * Simple test on arch_prctl to set and get cpuid instruction of test thread.
+> + */
+> +
+> +# include "tst_test.h"
+> +# include "lapi/syscalls.h"
+> +# include <stdlib.h>
+> +# ifdef HAVE_ASM_PRCTL_H
+> +# include <asm/prctl.h>
+
+No spaces after # here please.
+
+> +static int arch_prctl_get(int code, unsigned long *addr) {
+> +	return tst_syscall(__NR_arch_prctl, code, *addr);
+> +}
+> +
+> +static int arch_prctl_set(int code, unsigned long addr) {
+> +	return tst_syscall(__NR_arch_prctl, code, addr);
+> +}
+> +
+> +static int tc[] = {0,1};
+> +
+> +static void run(unsigned int index){
+> +
+> +	unsigned long *addr = malloc(sizeof(long));
+
+This does not need to be allocated, we can just do unsigned long addr
+and pass &addr to the calls.
+
+> +	TEST(arch_prctl_set(ARCH_SET_CPUID, tc[index]));
+> +
+> +	if (TST_RET == 0)
+> +		tst_res(TPASS, "set %s cpuid",tc[index] ? "enable" : "disable");
+> +	else
+> +		tst_res(TFAIL, "failed to set cpuid");
+
+This should use TST_EXP_PASS(arch_prctl_set(...))
+
+> +	TEST(arch_prctl_get(ARCH_GET_CPUID, addr));
+
+This as well.
+
+> +	if (TST_RET == tc[index])
+
+This is wrong, the value should be stored the addr parameter, TST_RET
+should be 0 on success.
+
+
+> +		tst_res(TPASS, "get cpuid succeed.");
+> +	else
+> +		tst_res(TFAIL, "get cpuid failed.");
+> +}
+> +
+> +static struct tst_test test = {
+> +    .test = run,
+> +    .tcnt = 2,
+> +    .min_kver = "4.11",
+
+This should have .supported_archs = {"x86", "x86-64", NULL},
+
+> +};
+> +
+> +#else /* HAVE_ASM_PRCTL_H */
+> +TST_TEST_TCONF("missing <asm/prctl.h>");
+> +#endif
+> -- 
+> 2.39.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.34.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
