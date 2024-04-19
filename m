@@ -4,104 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 965C9C4345F
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 14:08:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E81DCC04FF6
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 15:35:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0BC293CFD8B
-	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 16:08:12 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0FDCA3CFDA4
+	for <ltp@archiver.kernel.org>; Fri, 19 Apr 2024 17:35:23 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD4EB3CFC99
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 16:07:55 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2EA1B3CFD7A
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:33:11 +0200 (CEST)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E94001015447
- for <ltp@lists.linux.it>; Fri, 19 Apr 2024 16:07:54 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7890E22615;
- Fri, 19 Apr 2024 14:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1713535673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5jxcPoozDwIOK11D9iUDVF5XU4gM/9dPWEQv/6EMlt4=;
- b=0CJiVSltsxkYs43NMvNfNokvZk9W/bAbr8rtCi60BbSV34vL0a9FuHZE7JKiKvWg3aQ8az
- 1MieK17QD5yCZywSi8qWJRvVRzPBKUrgfy22I2Y8b4PLgfJqlDYgM0J5xygjxvDKbFXfTs
- P3w63v6RuN1eDEI/O/OWoDBjPwmglvM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1713535673;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5jxcPoozDwIOK11D9iUDVF5XU4gM/9dPWEQv/6EMlt4=;
- b=lNq/ewxIwvduUaUrbvxoxCM+k+BZ45mquhRrSEk1YoVi7XxujdeOE0E4Pbxs6KZs1g7HNw
- KqxXg4Rv7bbtyvBg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0CJiVSlt;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="lNq/ewxI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1713535673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5jxcPoozDwIOK11D9iUDVF5XU4gM/9dPWEQv/6EMlt4=;
- b=0CJiVSltsxkYs43NMvNfNokvZk9W/bAbr8rtCi60BbSV34vL0a9FuHZE7JKiKvWg3aQ8az
- 1MieK17QD5yCZywSi8qWJRvVRzPBKUrgfy22I2Y8b4PLgfJqlDYgM0J5xygjxvDKbFXfTs
- P3w63v6RuN1eDEI/O/OWoDBjPwmglvM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1713535673;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5jxcPoozDwIOK11D9iUDVF5XU4gM/9dPWEQv/6EMlt4=;
- b=lNq/ewxIwvduUaUrbvxoxCM+k+BZ45mquhRrSEk1YoVi7XxujdeOE0E4Pbxs6KZs1g7HNw
- KqxXg4Rv7bbtyvBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53568136CF;
- Fri, 19 Apr 2024 14:07:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Pr1pErl6ImaWZAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 19 Apr 2024 14:07:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7FA42602213
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 17:33:10 +0200 (CEST)
+Received: by mail-pf1-x436.google.com with SMTP id
+ d2e1a72fcca58-6ed04c91c46so2099392b3a.0
+ for <ltp@lists.linux.it>; Fri, 19 Apr 2024 08:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1713540789; x=1714145589; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=b40QOyhk2866YOHg3SwHtQWIIYLiZJBBMHiGdD1NIEE=;
+ b=SjEo3B1/cZqA84CNb3Ecv78RnCnc7VOYym0a+8AyFxqGyJd7K45mYyzGi9aYsJK83Q
+ z5I1EZKqPBrcu1C41OpI9NGcEkh/WDZaVTLRdx07YiASXw4g7piHDWXLsRJsMcvbwT6L
+ 9eHBEbMs+zOsw0jX8EarCuBJjKk0qQkXrWxJy64s7+r94OPJ/0VSbIQ1m21Jg1/Aguk3
+ u7wn6VDepZDMyvPYTiUhO+V7AT5oFCJcbUlpktl0bHjwlOYZRdjgghfP/KBy2ph94+2U
+ gSQk4uGXDK49SuL5DTsyE8CJY8tpW1OuDFwxBEEMLqoGlJxIuJDEu9D6Dt7tN8pBiDV2
+ wsxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1713540789; x=1714145589;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=b40QOyhk2866YOHg3SwHtQWIIYLiZJBBMHiGdD1NIEE=;
+ b=EYZteEk4n31FCFhC4lIfUXYDfFGTsQGSPT9E09EZFEYZp+1CsOThjGnE3F25/NAofx
+ ssVMmotPkHZViTRIuXFda5Q6RfVgess224vLXWEtkKKzWjWvLgFsFEon36VocqGSXLUY
+ 9gj/C1pfSnXVyIOO0ATTKMgJOPzyDgI5AtWdPSCB0vCuansBRiLyOE6KlRUuPzznx3Tc
+ YgQ7I6nXsN6GkJCYVQi3ZP2+mnZtkRSjcdBvy5QxOoPWFxjEQzEDk0Gj9LqwQ+RBjUyO
+ ajytT05zKN9j0UPjefEg4FX9OxMOm/cAHZN+tc1hcxZWId1n4UcwQyKa6bB0Px83B5po
+ QAOQ==
+X-Gm-Message-State: AOJu0YybaDCqoovmojskY7wPDqygLKeA2DAfgmQfpYgBQ9WE5CF9hbl9
+ +kcaU/z2wrQsqPiKiG6wA+omoGmUJ+J1D06PE3AwJNN/85dgq6nD4jBQ8w==
+X-Google-Smtp-Source: AGHT+IFg/Y+fTA+7E4WeLawqrbOiMEvqZw0rcVw959dMoflb+nqxsFPhP+JFeiY7jmzOieVF/71sGw==
+X-Received: by 2002:a05:6a00:2355:b0:6ed:cd4c:cc21 with SMTP id
+ j21-20020a056a00235500b006edcd4ccc21mr3291113pfj.13.1713540788485; 
+ Fri, 19 Apr 2024 08:33:08 -0700 (PDT)
+Received: from localhost.localdomain (123-193-217-197.dynamic.kbronet.com.tw.
+ [123.193.217.197]) by smtp.gmail.com with ESMTPSA id
+ l5-20020a654485000000b005d8b2f04eb7sm2828960pgq.62.2024.04.19.08.33.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 19 Apr 2024 08:33:07 -0700 (PDT)
+From: Yiwei Lin <s921975628@gmail.com>
 To: ltp@lists.linux.it
-Date: Fri, 19 Apr 2024 16:07:52 +0200
-Message-Id: <20240419140752.18003-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+Date: Fri, 19 Apr 2024 23:32:55 +0800
+Message-Id: <20240419153255.16187-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 7890E22615
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- DWL_DNSWL_LOW(-1.00)[suse.de:dkim]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] doc: introduce sphinx extlinks
+X-Mailman-Approved-At: Fri, 19 Apr 2024 17:35:07 +0200
+Subject: [LTP] [PATCH] cputhotplug/doc: Reflect change of cpuhotplug test in
+ doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,163 +82,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Yiwei Lin <s921975628@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+The series of cpu_hotplug tests has changed a lot compared to
+its first version. However, the part of docs which briefly
+describe the test behavior are rarely updated
+correspondly. This could confuse people who want to read it
+when they use the test for the first time. Update the docs to
+make them useful.
 
-With sphinx extlinks we are now able to avoid duplication of the
-github repo link inside documentation. The patch introduces two new
-directives which can be used: :repo: and :master:, which are used to
-replace repo static link and repo master static link respectively.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Yiwei Lin <s921975628@gmail.com>
 ---
- doc/conf.py                               |  7 ++++++-
- doc/developers/test_case_tutorial.rst     |  5 ++---
- doc/developers/writing_tests.rst          |  4 ++--
- doc/maintainers/ltp_release_procedure.rst | 18 ++++++++----------
- doc/users/quick_start.rst                 |  2 +-
- doc/users/supported_systems.rst           |  4 +++-
- 6 files changed, 22 insertions(+), 18 deletions(-)
+ .../hotplug/cpu_hotplug/doc/hotplug05.txt     | 46 ++++++++-----------
+ .../hotplug/cpu_hotplug/doc/hotplug06.txt     | 33 ++-----------
+ 2 files changed, 23 insertions(+), 56 deletions(-)
 
-diff --git a/doc/conf.py b/doc/conf.py
-index fb3e83cf2..9408ee46e 100644
---- a/doc/conf.py
-+++ b/doc/conf.py
-@@ -22,10 +22,15 @@ release = '1.0'
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
+index 26fd59612..67f8198d9 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
++++ b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug05.txt
+@@ -1,35 +1,29 @@
+-# Test Case 5 - Pseudocode
++Testcase 05
++-----------
  
- extensions = [
-     'linuxdoc.rstKernelDoc',
--    'sphinxcontrib.spelling'
-+    'sphinxcontrib.spelling',
-+    'sphinx.ext.extlinks'
- ]
+-# This test looks for memory leaks or deadlocks
++It's been found that sometimes onlining and offlining CPUs confuse some
++of the various system tools.  We found that sar wouldn't register the change
++in newly available cpus that weren't there when it started. This
++test case seeks to exercise this known error cases and verify that
++they behave correctly now.
  
- exclude_patterns = ["html*", '_static*']
-+extlinks = {
-+    'repo': ('https://github.com/linux-test-project/ltp/%s', '%s'),
-+    'master': ('https://github.com/linux-test-project/ltp/blob/master/%s', '%s')
-+}
+-# "mm_struct slab leak (affected only some architectures)"
++Algorithm - Sar
++===============
++Given a CPU to test that exists
  
- spelling_lang = "en_US"
- spelling_warning = True
-diff --git a/doc/developers/test_case_tutorial.rst b/doc/developers/test_case_tutorial.rst
-index fc56ae58c..71777cffc 100644
---- a/doc/developers/test_case_tutorial.rst
-+++ b/doc/developers/test_case_tutorial.rst
-@@ -627,9 +627,8 @@ again on the hard-link, then ``stat`` the file".
+-INTERVAL=30
+-THRESHHOLD='xxx'
++Make sure the specified cpu is offline
  
- Because we are now opening a file, we need a ``cleanup`` function to close the
- file descriptors. We have to manually close the files to ensure the temporary
--directory is deleted by the test harness (see the
--https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines[test
--writing guidelines] for details).
-+directory is deleted by the test harness (see the test writing guidelines for
-+details).
+-# TODO:  Start monitoring memory usage via vmstat and sar
++Loop until done:
++  Start up sar writing to a temp log and give it a little time to run
  
- As a matter of good practice, the file descriptors are closed in reverse
- order. In some circumstances the order which ``cleanup`` is performed is
-diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
-index 032fbcbd5..2eaf5f9e5 100644
---- a/doc/developers/writing_tests.rst
-+++ b/doc/developers/writing_tests.rst
-@@ -343,11 +343,11 @@ of the stable kernel ABI, the associated test must be moved out of staging.
- Testing builds with GitHub Actions
- ----------------------------------
+-# TODO:  Start dbt2, running for at least 4 hours
++  Verify that SAR has correctly displayed all fields of CPU statistics
++  as '0.00' for the offlined CPU or just not displayed it in its tmp log
  
--Master branch is tested in `GitHub Actions <https://github.com/linux-test-project/ltp/actions>`_
-+Master branch is tested in GitHub :repo:`actions`
- to ensure LTP builds in various distributions, including old, current and
- bleeding edge. ``gcc`` and ``clang`` toolchains are also tested for various
- architectures using cross-compilation. For a full list of tested distros, please
--check ``.github/workflows/ci.yml``.
-+check :repo:`.github/workflows/ci.yml`.
+-while [ 1 ]; do
+-    last if workload has completed
++  Online the specified cpu
  
- .. note::
+-    select a cpu at random
+-    if cpu is online
+-        offline it
+-    else
+-        online it
+-    fi
++  Take another timestamp and another count of offlined CPUs
  
-diff --git a/doc/maintainers/ltp_release_procedure.rst b/doc/maintainers/ltp_release_procedure.rst
-index f0bc01cee..53eb02855 100644
---- a/doc/maintainers/ltp_release_procedure.rst
-+++ b/doc/maintainers/ltp_release_procedure.rst
-@@ -44,9 +44,9 @@ Tag the git and push changes to github
+-    measure current throughput
+-    # TODO:  Mary and Mark will better define how to detect
+-    # the threshhold and what to do in response
+-    if [ throughput falls below $THRESHHOLD ]; then
+-        echo "Throughput has fallen below threshhold."
+-    fi
++  Verify SAR registered the change in CPU online/offline states
  
- The string ``YYYYMMDD`` should be substituted to the current date.
+-    sleep $INTERVAL
+-done
+-
+-# Analyze system statistics to determine memory leaks
+-# Analyze drops in activities
++When exiting:
++  Kill the sar process
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
+index 0cccc871c..d7d6c1814 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
++++ b/testcases/kernel/hotplug/cpu_hotplug/doc/hotplug06.txt
+@@ -2,11 +2,9 @@ Testcase 06
+ -----------
  
--You can use `tools/tag-release.sh <https://github.com/linux-test-project/ltp/blob/master/tools/tag-release.sh>`_
--script to have the above automated process.
--It allows you to verify the tag before pushing it and does other checks.
-+You can use :master:`tools/tag-release.sh` script to have the above automated
-+process. It allows you to verify the tag before pushing it and does other
-+checks.
+ It's been found that sometimes onlining and offlining CPUs confuse some
+-of the various system tools.  In particular, we found it caused top to
+-crash, and found that sar wouldn't register newly available cpus that
+-weren't there when it started.  This test case seeks to exercise these
+-known error cases and verify that they behave correctly now.
+-
++of the various system tools.  We found it caused top to
++crash.  This test case seeks to exercise this known error cases and
++verify that they behave correctly now.
  
- .. code-block:: bash
+ Algorithm - Top
+ ===============
+@@ -29,28 +27,3 @@ When exiting:
+   Restore all CPUs to their initial state
  
-@@ -121,9 +121,9 @@ metadata documentation:
-     make -C metadata
-     cp -v docparse/metadata.html ../metadata.YYYYMMDD.html
  
--You can use `tools/create-tarballs-metadata.sh <https://github.com/linux-test-project/ltp/blob/master/tools/create-tarballs-metadata.sh>`_
--script to have the above procedure automated. All generated files are placed
--in the ``ltp-release-YYYYMMDD`` directory.
-+You can use :master:`tools/create-tarballs-metadata.sh` script to have the above
-+procedure automated. All generated files are placed in the
-+``ltp-release-YYYYMMDD`` directory.
- 
- .. code-block:: bash
- 
-@@ -149,10 +149,8 @@ in the ``ltp-release-YYYYMMDD`` directory.
- Upload the generated files to GitHub
- ------------------------------------
- 
--Click on `Releases <https://github.com/linux-test-project/ltp/releases>`_, then
--switch to `Tags <https://github.com/linux-test-project/ltp/tags>`_. Click on
--'Add release notes'.  There should be 'Attach binaries ...' link at the
--bottom of the page.
-+Go to :repo:`tags`. Click on ``Add release notes``. 
-+There should be ``Attach binaries ...`` link at the bottom of the page.
- 
- Don't forget to upload checksums for the tarballs and metadata documentation
- as well.
-diff --git a/doc/users/quick_start.rst b/doc/users/quick_start.rst
-index 40d8dd9c6..69792999b 100644
---- a/doc/users/quick_start.rst
-+++ b/doc/users/quick_start.rst
-@@ -24,7 +24,7 @@ Basics requirements to build LTP are the following:
- 
- .. note::
- 
--   For optional library dependencies, take a look at the scripts inside ``ci/``
-+   For optional library dependencies, take a look at the scripts inside :master:`ci/`
-    directory.
- 
- Running single tests
-diff --git a/doc/users/supported_systems.rst b/doc/users/supported_systems.rst
-index 6220a96e0..4ac2bb08c 100644
---- a/doc/users/supported_systems.rst
-+++ b/doc/users/supported_systems.rst
-@@ -44,6 +44,8 @@ Oldest tested distributions
-       - 2.17
-       - \-
- 
-+For a full list of tested distros, please check :master:`.github/workflows/ci.yml`.
-+
- Older distributions are not officially supported, which means that it
- may or may not work. It all depends on your luck. It should be possible
- to compile latest LTP even on slightly older distributions than we
-@@ -99,7 +101,7 @@ Supported C libraries
-       - Older uClibc might have problems.
- 
-     * - `musl <https://musl.libc.org/>`_
--      - Not yet fully supported. Check ``ci/alpine.sh`` script.
-+      - Not yet fully supported. Check :master:`ci/alpine.sh` script.
- 
-     * - Android
-       - Please use `AOSP fork <https://android.googlesource.com/platform/external/ltp>`_
+-Algorithm - Sar
+-===============
+-Given a CPU to test that exists
+-
+-Make sure the specified cpu is offline
+-
+-Loop until done:
+-  Start up sar writing to a temp log and give it a little time to run
+-
+-  Verify that SAR has correctly listed the missing CPU as 'nan' in its
+-  tmp log
+-
+-  Take a timestamp and count how many CPUs sar is reporting to be
+-  offline
+-
+-  Online the specified cpu
+-
+-  Take another timestamp and another count of offlined CPUs.
+-
+-  Verify that the number of CPUs offline has changed
+-
+-When exiting:
+-  Kill the sar process
+-
+-
 -- 
-2.35.3
+2.34.1
 
 
 -- 
