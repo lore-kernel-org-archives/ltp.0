@@ -4,117 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C353C4345F
-	for <ltp@archiver.kernel.org>; Sat, 20 Apr 2024 08:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5A02C4345F
+	for <ltp@archiver.kernel.org>; Sun, 21 Apr 2024 06:26:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EBB13CFDF9
-	for <ltp@archiver.kernel.org>; Sat, 20 Apr 2024 10:55:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DE1F93CF97D
+	for <ltp@archiver.kernel.org>; Sun, 21 Apr 2024 08:26:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B7ADA3CE4DB
- for <ltp@lists.linux.it>; Sat, 20 Apr 2024 10:54:47 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 13E303CAB3F
+ for <ltp@lists.linux.it>; Sun, 21 Apr 2024 08:26:03 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=uniontech.com (client-ip=54.243.244.52;
+ helo=smtpbguseast3.qq.com; envelope-from=lufei@uniontech.com;
+ receiver=lists.linux.it)
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EED636126D1
- for <ltp@lists.linux.it>; Sat, 20 Apr 2024 10:54:45 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A26B03819A;
- Sat, 20 Apr 2024 08:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713603284;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ClJ+Vks2d4pRefHIr2E9ETZ8VQQC6bkGAHqmy4LhnWU=;
- b=nHt0hLb1C/9gugGCUKETpB98q5B91u4wlYobfuu5k/c9+a9woE/8v7bfAue45UUJ1yKYGM
- 4IJvrm+T9f4WqHMNnL8BDqBbF9JU6Ei9mK4FrufxFplM9M04pqtwMHPLZbpyOhgTyWl3oI
- MKmlMI75opoATxZ+gGZ7Ebxf0iLEeFg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713603284;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ClJ+Vks2d4pRefHIr2E9ETZ8VQQC6bkGAHqmy4LhnWU=;
- b=WVqRxLFK1LZVX/QlJE0xTh7Kg7/HAJhTqRYH04QPE4fF/zHUKVSjhzyD7Lk17kbWus6ri6
- ygtoGZe6JqWZjQDw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VwA92ok6;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=S6g3hHXD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1713603283;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ClJ+Vks2d4pRefHIr2E9ETZ8VQQC6bkGAHqmy4LhnWU=;
- b=VwA92ok6LvqTyR7VANcFIc7kBAtqHAJplfCH4TRnPn5qd1TMMvEPmSe+bVcVicFgWTnjAc
- sDg9wheVa9yEWv+AT+KRG/kw8diZxkImD8pS1a2OSVOpiO+3TfbQgfd8tiJBKtlJhu8v//
- Q6Lve7JSt7eTFAj+02SCYgcd90r4lgE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1713603283;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ClJ+Vks2d4pRefHIr2E9ETZ8VQQC6bkGAHqmy4LhnWU=;
- b=S6g3hHXD4uGHkGdxFYoYl+R0Ve2iW7L4UN3vuk90GXFz96XKngN4py2aC00Jj4S4NzuSUM
- P/MpkMXIrLObPnCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A4C013931;
- Sat, 20 Apr 2024 08:54:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cvzyC9OCI2Z9IAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Sat, 20 Apr 2024 08:54:43 +0000
-Date: Sat, 20 Apr 2024 10:54:37 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240420085437.GA66478@pevik>
-References: <20240419110230.191809-1-pvorel@suse.cz>
- <CAEemH2eZNO=P5c_igqNKSva-q37y7GSK=d44wUHd=Ua=DTUNDw@mail.gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F3EB0600BAD
+ for <ltp@lists.linux.it>; Sun, 21 Apr 2024 08:25:59 +0200 (CEST)
+X-QQ-mid: bizesmtp80t1713680752t2cii9g7
+X-QQ-Originating-IP: 5oMPms3Bu6YnpUK3BFSgjiOOTGovlTwhud4z2Agf5hU=
+Received: from localhost.localdomain ( [125.76.217.162])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Sun, 21 Apr 2024 14:25:50 +0800 (CST)
+X-QQ-SSF: 01400000000000C0B000000A0000000
+X-QQ-FEAT: LE7C6P2vL8Q0MSQCGnsPkzoafJsU+Jh6w7C64dUns4GDr06fsyEzvbQDjdrMr
+ 9z2nEdTuoYocHjXlAYHHllOT4XAA+hyPlcKh7Kps6jvu6V5bKpMyew5n1Qz4rlhZOq9K1B8
+ 14/6LD2lnip7sJDwzBX4ZROHosea8r1LBQ1RhI8i01YiQhtmzRpQvMec63ynxdqQ43RRQif
+ MoYzHHMEnazemQ0l0jCr4jMVp18zfjjKUDS3oO18XORDx8q+Ugkp6FlRWs6X85oaiORpG54
+ iuTx3nsXJFBqVrNTgdpQp4nzUQVd+jSYfya2Un5a0/w9f2DYGIOf3/hDjDLNR5pMaIxjvhh
+ T/EEYjyy0sVkiHM7z/Pvcb8VtGSpJfGtiKHlnQaRLM2DLH7zA4VjdSXvm4i0nFwksOvVmlm
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 13129781283229474048
+From: lufei <lufei@uniontech.com>
+To: chrubis@suse.cz,
+	ltp@lists.linux.it
+Date: Sun, 21 Apr 2024 14:25:29 +0800
+Message-Id: <20240421062529.2546977-1-lufei@uniontech.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240419070717.2506101-1-lufei@uniontech.com>
+References: <20240419070717.2506101-1-lufei@uniontech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2eZNO=P5c_igqNKSva-q37y7GSK=d44wUHd=Ua=DTUNDw@mail.gmail.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A26B03819A
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,suse.cz:replyto];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] libs: Remove 'libltp' prefix from libs source
- directories
+Subject: [LTP] [PATCH v2] Add case about arch_prctl syscall.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,37 +64,133 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: lufei <lufei@uniontech.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGksIEN5cmlsLAoKPiBIaSBQZXRyLCBDeXJpbCwKCj4gT24gRnJpLCBBcHIgMTksIDIwMjQg
-YXQgNzowMuKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCj4gPiBMVFAg
-aW50ZXJuYWwgbGlicmFyaWVzIGFyZSBsb2NhdGVkIGluIGxpYnMvIGRpcmVjdG9yeS4gVGhlcmUg
-aXMgbm8gbmVlZAo+ID4gdG8ga2VlcCAnbGlibHRwJyBwcmVmaXggaW4gdGhlaXIgb3duIGRpcmVj
-dG9yaWVzLiBOT1RFOiByZXN1bHRlZAo+ID4gbGlicmFyaWVzICgqLmEpIGtlZXAgZXhwZWN0ZWQg
-J2xpYmx0cCcgcHJlZml4LgoKPiA+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBz
-dXNlLmN6Pgo+ID4gLS0tCj4gPiBIaSBMaSwgQ3lyaWwsCgo+ID4gSSBrbm93IHJlbmFtaW5nIGZp
-bGVzIGlzIG5vdCBvcHRpbWFsLiBCdXQgaGlzdG9yeSB3aWxsIGJlIGtlcHQsIHdoZW4KPiA+IGJy
-b3dzaW5nIHdpdGggZ2l0ayBvciBnaXQgZ3VpLgoKPiA+IEltcHJvdmVtZW50OiBsZXNzIHR5cGlu
-ZyB3aGVuIGNkIHRvIHRoZSBkaXJlY3RvcnkuCgoKPiArMSBJIGFncmVlIHdpdGggdGhpcywgYW5k
-IEkgYWx3YXlzIGhhdmUgYSBxdWVzdGlvbiwgd2h5Cj4gd2UgaGF2ZSBhZGRpdGlvbmFsIGxpYnMv
-IHBhcmFsbGVsIHdpdGggbGliLywgaXMgdGhlcmUgYW55IHJvb3QKCmxpYi8gc291cmNlcyByZXN1
-bHRzIGluIGxpYmx0cC5hLCB0aGUgb3RoZXJzIHJlc3VsdHMgaW4gdGhlaXIgb3duIGxpYnMuCgpB
-bHRob3VnaCBsaWIvIHZzIGxpYnMvIGlzIGEgYml0IHN0cmFuZ2UsIGtlcHQgdGhlc2UgbGlicmFy
-aWVzIHNlcGFyYXRlCihpLmUuIG5vIG1vdmUgbGlicy8qLyBpbnRvIGxpYi8pLCBiZWNhdXNlIHRo
-ZXNlIGxpYnJhcmllcyBhcmUgYnVpbHQgb25seSB3aGVuCnRoZXkgYXJlIG5lZWRlZC4gSS5lLiBm
-b3IgdGVzdGluZyByYW5kb20gdGVzdCBvbmUgZG9lcyBub3QgbmVlZCB0byB3YWl0IGZvcgpidWls
-ZGluZyB0aGVzZSBhZGRpdGlvbmFsIGxpYnJhcmllcyAoYWx0aG91Z2ggYnVpbGRpbmcgdGhlbSBk
-b2VzIG5vdCB0YWtlIGxvbmcsCmJ1aWxkaW5nIExUUCBtYWluIGxpYnJhcnkgYW5kIHRlc3RzIHRh
-a2VzIG11Y2ggbG9uZ2VyKS4gQnV0IGlmIHdlIHdhbnQsIHdlIGNhbgptb3ZlIHRoZW0gdG8gbGli
-LyAoYXMgYSBzZXBhcmF0ZSBlZmZvcnQsIGV2ZW4gdGhpcyBtaWdodCBtYWtlIHNvbWUgcGF0Y2hl
-cyBpbgpNTCB1bmFwcGxpY2FibGUgd2l0aG91dCBwYXRjaCBtb2RpZmljYXRpb24pLgoKPiBkaWZm
-ZXJlbmNlIGJldHdlZW4gdGhlbT8gb3IganVzdCBhIGhpc3RvcmljYWwgaXNzdWU/Cgo+IEFueXdh
-eSwgdGhpcyBwYXRjaCBsb29rcyBnb29kIHRvIG1lLgoKVGhhbmtzIQoKS2luZCByZWdhcmRzLApQ
-ZXRyCgo+ID4gVGVzdGVkOgo+ID4gaHR0cHM6Ly9naXRodWIuY29tL3BldmlrL2x0cC9hY3Rpb25z
-L3J1bnMvODc1MjA0ODQ1MQoKPiA+IEtpbmQgcmVnYXJkcywKPiA+IFBldHIKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Add testcase about arch_prctl syscall.
+
+Signed-off-by: Lu Fei <lufei@uniontech.com>
+---
+ configure.ac                                  |  1 +
+ runtest/syscalls                              |  2 +
+ .../kernel/syscalls/arch_prctl/.gitignore     |  1 +
+ testcases/kernel/syscalls/arch_prctl/Makefile |  8 +++
+ .../kernel/syscalls/arch_prctl/arch_prctl01.c | 52 +++++++++++++++++++
+ 5 files changed, 64 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/arch_prctl/.gitignore
+ create mode 100644 testcases/kernel/syscalls/arch_prctl/Makefile
+ create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+
+diff --git a/configure.ac b/configure.ac
+index 1d7e862d8..0dcaddc0f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -41,6 +41,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
+ 
+ AC_CHECK_HEADERS_ONCE([ \
+     asm/ldt.h \
++    asm/prctl.h \
+     cpuid.h \
+     emmintrin.h \
+     ifaddrs.h \
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 7794f1465..505b4243d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -31,6 +31,8 @@ alarm05 alarm05
+ alarm06 alarm06
+ alarm07 alarm07
+ 
++arch_prctl01 arch_prctl01
++
+ bind01 bind01
+ bind02 bind02
+ bind03 bind03
+diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
+new file mode 100644
+index 000000000..24871e249
+--- /dev/null
++++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
+@@ -0,0 +1 @@
++/arch_prctl01
+diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
+new file mode 100644
+index 000000000..272949d57
+--- /dev/null
++++ b/testcases/kernel/syscalls/arch_prctl/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) UnionTech Software Technology Co.,Ltd. 2024
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+new file mode 100644
+index 000000000..a3d3b35d5
+--- /dev/null
++++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) UnionTech Software Technology Co.,Ltd., 2024
++ * Author: Lu Fei <lufei@uniontech.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Simple test on arch_prctl to set and get cpuid instruction of test thread.
++ */
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include <stdlib.h>
++#ifdef HAVE_ASM_PRCTL_H
++#include <asm/prctl.h>
++
++static int arch_prctl_get(int code, unsigned long *addr)
++{
++	return tst_syscall(__NR_arch_prctl, code, *addr);
++}
++
++static int arch_prctl_set(int code, unsigned long addr)
++{
++	return tst_syscall(__NR_arch_prctl, code, addr);
++}
++
++static void run(unsigned int index)
++{
++	unsigned long *addr = malloc(sizeof(long));
++
++	// index == 0 for disable cpuid, 1 for enable cpuid.
++	TST_EXP_PASS(arch_prctl_set(ARCH_SET_CPUID, index));
++
++	TEST(arch_prctl_get(ARCH_GET_CPUID, addr));
++
++	if (TST_RET == index)
++		tst_res(TPASS, "get cpuid succeed.");
++	else
++		tst_res(TFAIL, "get cpuid failed.");
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = 2,
++	.min_kver = "4.12",
++};
++
++#else /* HAVE_ASM_PRCTL_H */
++TST_TEST_TCONF("missing <asm/prctl.h>");
++#endif
+-- 
+2.39.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
