@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25B68C4345F
-	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 09:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94D57C07C79
+	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 12:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713777097; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=+Lx+VH9Zl68Ia4qsYYtuTVBywTdozPZDrylnrD+Gl0g=;
- b=FxmTKuCiz/GnmJIir8naeKzfDtz0goQ5KUJNtbNqPKlNMkvWhxmIZSakbBQM95ZjkINr0
- +suPkOhse0/VvRfygmMlM1vwlZGdLWxmEmNe8SltMI2nSyVav4viGjyb1m5qiIbATk79Aj4
- sjUasQJ1NrzisUjI9/b6kuW/khXijsY=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713789610; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=/PVMnbrM/O0DrYLDo4HIaUxHcvzNWpj9xTt1ajIyKVs=;
+ b=G61LVjopNn5QJc2xYYzqNJcaLGj/Vc6NkkvVM+vmyGIywG9E8pvt5bmvZqzn5W1I8xkRr
+ p62hC80FYL3zO7iREOt3TD8LEExURN8BJazwE2XoPTdn8iJ1rxAtpP+d3c9uewgSE8eWh3o
+ eAMKP8iAB4VlzQJcude6EwT16ySB6uM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C0DB3CFE59
-	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 11:11:37 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EBB2A3CFF2A
+	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 14:40:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0E9093CFA0D
- for <ltp@lists.linux.it>; Mon, 22 Apr 2024 11:11:14 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.130;
- helo=esa5.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
- [68.232.139.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 409293C006F
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 14:39:48 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7C7261400F92
- for <ltp@lists.linux.it>; Mon, 22 Apr 2024 11:11:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1713777075; x=1745313075;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=6yABOFeFkhyh4A7ubhcNdGKPjx9GL1EsosVaqkdBBVI=;
- b=JMUyo6+cs5bP9zRiHS0DF80P3i/ME5tyP+Wp9KX5zakMbELgJiuxJpi7
- mztEVOqK1VHSlBwWyCJrrwBBMfeUgSE3rzkHnuAMJGdBUuZ183bGsuH1L
- WvadwtpXLi0B+EPnKjmBhcvOvq/cuyQ7lI/UKssOg1f77pMnRAVBawzIJ
- GKMgh7fvvq5BQbgSjp5+DUmOxcLwNu+FSazs3h3mf1QOehgi/N4J3aFa1
- ovXu+jg/Tu61uUKo7BaFZwQXNqB6I03ORtgfys194aaka8hikQ1f2HUbh
- OBRK79NzQZ//+gdVkjdFbMcKnS77pCeM2YqcT1B3kqAiBS236Jm7efWNj g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="155754005"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708354800"; d="scan'208";a="155754005"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2024 18:11:13 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
- [192.168.87.61])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id ED5B1E8FBD
- for <ltp@lists.linux.it>; Mon, 22 Apr 2024 18:11:09 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 28A8ED4C0F
- for <ltp@lists.linux.it>; Mon, 22 Apr 2024 18:11:09 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id BF6C46BA78
- for <ltp@lists.linux.it>; Mon, 22 Apr 2024 18:11:08 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 626661A000B;
- Mon, 22 Apr 2024 17:11:08 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Mon, 22 Apr 2024 04:36:57 -0400
-Message-Id: <20240422083657.28363-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 565A6200C73
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 14:39:47 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-41a7ae25d53so4017135e9.1
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 05:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1713789587; x=1714394387; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=HqTcA0CsRAO/OA6cV57CQcGlAgfwqnerbB1zuqnX+9A=;
+ b=KUItJJn4V9Zo6lwWvMl+KnLcI+MTln+uKKTOksBr1Fza0BMAqKubdHxes7LWO1XxA8
+ fPOJV+0WIh9LzMUjcpiqjZNjfG5sMCp1ojNroOJj2srPZaw2yx4Jt8/uRntzx2xpyj6f
+ fem8bxoLRnUdpN+9wp5by389iz1C5Htvc1EjKq8D3gnRJFkrrqGVYUIVwTv1adgwIBzu
+ WofPOcCspzdYPtjUyslBmod0anifw3SWrHdjccA3CJFpp5sabMQ0els4yDJ9+QSIs/au
+ CnI2xaBHslWwq1tUH7IZx3f2+L4ZnFi+9Np8sHG+eHNZ9+saEsd5tZivwl89wlctbF+8
+ wSRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1713789587; x=1714394387;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HqTcA0CsRAO/OA6cV57CQcGlAgfwqnerbB1zuqnX+9A=;
+ b=GElXbLe6KfvHuCYhc2Q5BzNlwMZMrTZ3Boq7IufFEgOkBnKqr09MCcYlxQ4mRFZb+L
+ Ux7aB+rrD45S6gv8kmIjXBn7pysqaZ/3UXfCYITz0boPLCbAn07hte+O8K6ZHjvXKHf6
+ NpZP/wJ2i5M3xlKosrf9FvVQREMDDw7OU7M3KZpzvglECCJmABOFKevz9uILpkriDQAZ
+ /gTYqs7lFef9HqOcR7xPJJ2JSRHrb/mZywiSg7m9+5DQ/sbO3m4ryeCqvepfWRIsS//r
+ FsWnoU8d1zGkQdly4vqbaWw81ceiFmX3Ec+EODAlmBRTR+73SkO+hY9OB7ce6W5Y8GBr
+ aLrQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWLnYHz+QwXaWleBquQJi5xxx/lQv7kCKYAkdigs9sKe9HWJNRVzcSe78XNEJKi9HTfBD8xtvxLyT6X+gGzWgfFwZU=
+X-Gm-Message-State: AOJu0YwhSd7JM/AA/LiiGbAvbJAmu776oF5187hw0rLtDXkMdYx8MVpk
+ +WSOQrKaF7J29Jd2HNntZ09HRusAby/IWm0j7bJgQypoB+BKMxCJg58YiAsCOw==
+X-Google-Smtp-Source: AGHT+IGOPCigKaEhBzn/GhhSZBQyY/iSCMUGYnEPtyOOJgOnlYtzhaP5viGinMEdTE3t+uvRGv+iNw==
+X-Received: by 2002:a05:600c:3c95:b0:419:f126:a46d with SMTP id
+ bg21-20020a05600c3c9500b00419f126a46dmr4528938wmb.30.1713789586748; 
+ Mon, 22 Apr 2024 05:39:46 -0700 (PDT)
+Received: from wegao.133.226.142 ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ r14-20020a05600c458e00b00417e5b71188sm16586328wmo.34.2024.04.22.05.39.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 22 Apr 2024 05:39:46 -0700 (PDT)
+Date: Mon, 22 Apr 2024 08:39:41 -0400
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <ZiZajWz20Gm9Iwjl@wegao.133.226.142>
+References: <20240418071422.10221-1-wegao@suse.com> <ZiFLikOzOFDwfR2d@yuki>
+ <cef1a016-f47c-4785-adea-c9eb9cd88f4c@suse.com>
+ <ZiItA8Rm0hFzTSAd@yuki>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28336.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28336.006
-X-TMASE-Result: 10--4.739900-10.000000
-X-TMASE-MatchedRID: Dkfyeyxtv0bX54Vmcx7RYAXtykVcrvpNKQNhMboqZlpgPgeggVwCFr8F
- Hrw7frluf146W0iUu2uD0fiPNa0yFtqoygGFfC1Gqoeab9Xgz885wZ3E8gtLAHepM/I+teqco8W
- MkQWv6iXBcIE78YqRWo6HM5rqDwqt7md1XybQdTrRrIfcAOqkzxDqvYA54nbAt5ZNwkBbOTQjeV
- IEKbTFig/qoQShF7O3aubTeLSu433inVzvzCmkOt0ltvkCaeX/FcG3+ZRETICP9kUX1Z+buE3Lu
- mkbQiNwVCqTSPu8tVR7AxIEOt4h2Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZiItA8Rm0hFzTSAd@yuki>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getsockopt01: Add case for errno EINVAL
+Subject: Re: [LTP] [PATCH v1] swapping01.c: Add sleeps in the loop that
+ dirties the memory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,63 +96,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yang Xu via ltp <ltp@lists.linux.it>
-Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently there is no case for EINVAL, so a new case is added.
+On Fri, Apr 19, 2024 at 10:36:19AM +0200, Cyril Hrubis wrote:
+> Hi!
+> > Yeah I proposed you can try to reduce the sleep time/frequency to basically
+> > to lowest value (with some margin) that resolves the issue reliably in your
+> > testing. That 10ms per MB was just a possible starting point.
+> 
+> The usuall practice we do in LTP is to measure the minimal value
+> required for the test to pass and then double that for the final value.
+> But even with that I suppose that the value should be less than 10s.
+> 
+> Wei can you please try to measure how long are the shortest sleeps we
+> need in order to make the test pass?
+>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/getsockopt/getsockopt01.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Run 500 times on same build for each measurement.
 
-diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt01.c b/testcases/kernel/syscalls/getsockopt/getsockopt01.c
-index 4da9bd0ea..05f2be890 100644
---- a/testcases/kernel/syscalls/getsockopt/getsockopt01.c
-+++ b/testcases/kernel/syscalls/getsockopt/getsockopt01.c
-@@ -15,6 +15,7 @@
-  * - ENOTSOCK on a file descriptor not linked to a socket
-  * - EFAULT on invalid address of value or length
-  * - EOPNOTSUPP on invalid option name or protocol
-+ * - EINVAL on an invalid optlen
-  */
- 
- #include "tst_test.h"
-@@ -24,6 +25,7 @@ static struct sockaddr_in sin0;
- static int sinlen;
- static int optval;
- static socklen_t optlen;
-+static socklen_t optleninval;
- 
- static struct test_case {
- 	int *sockfd;
-@@ -56,7 +58,10 @@ static struct test_case {
- 	.optlen = &optlen, .experrno = ENOPROTOOPT, .desc =  "invalid option name (IP)"},
- 
- 	{.sockfd = &sock_bind, .level = IPPROTO_TCP, .optname = -1, .optval = &optval,
--	.optlen = &optlen, .experrno = ENOPROTOOPT, .desc = "invalid option name (TCP)"}
-+	.optlen = &optlen, .experrno = ENOPROTOOPT, .desc = "invalid option name (TCP)"},
-+
-+	{.sockfd = &sock_bind, .level = SOL_SOCKET, .optname = SO_OOBINLINE, .optval = &optval,
-+	.optlen = &optleninval, .experrno = EINVAL, .desc = "invalid optlen"},
- };
- 
- 
-@@ -79,6 +84,7 @@ static void setup(void)
- 	SAFE_BIND(sock_bind, (struct sockaddr *)&sin0, sizeof(sin0));
- 	sinlen = sizeof(sin0);
- 	optlen = sizeof(optval);
-+	optleninval = -1;
- }
- 
- static struct tst_test test = {
--- 
-2.39.3
+1) No any sleep, 17 case will failed
+https://openqa.suse.de/tests/14111469#next_previous
 
+2) sleep 1ms, no failed case happen
+https://openqa.suse.de/tests/14110476#next_previous
+
+3) sleep 0.5ms, 1 failed case happen 
+https://openqa.suse.de/tests/14110476#next_previous
+
+So currently 1ms is good candidate. I will sent second patch.
+
+
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
