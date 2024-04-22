@@ -4,91 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD6A6C4345F
-	for <ltp@archiver.kernel.org>; Sun, 21 Apr 2024 10:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14C87C4345F
+	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 05:36:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 335623CFA9A
-	for <ltp@archiver.kernel.org>; Sun, 21 Apr 2024 12:24:52 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 2AA6D3CFEEC
+	for <ltp@archiver.kernel.org>; Mon, 22 Apr 2024 07:36:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C4F8E3C0F50
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 12:24:36 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
+ by picard.linux.it (Postfix) with ESMTPS id E8AC63CFE55
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 07:36:21 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EF970600ECF
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 12:24:34 +0200 (CEST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 43LAFFDH002700
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 10:24:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=CkAF9UAH+TYyPvQ512C9KvLQuTnIP3Xw9GCXBJkZzIE=;
- b=D8RNXASj9lGaq7S4pSQppHrKpGqVumhyeC8RLs6/RnXoo7YFZ1HQFjgy+sBNJEZZ3Ymq
- lqhRfLDBbo9ZyGgxDMfdPHlirwTmpK1eoay3juvIajGfgRw1igfliWGEi2g98ssSZXpj
- igeJpK4QbFctLoK7byoDtWehGmeq04DiemnXZdZvgWSRrftBzJ5awLur4WStyCk/AjOl
- +Ne0Ne4wTmy4ZFiLdspx5beWivMBdboUN64LRPKFtJ1wYfxuQYbwo0yYTey4eLakTxVP
- 207tt9uNUgwo7tF+y/QapSNdeuo1lLz0BjCik30o0fBmT2CKNFziQerviVmUuokQidKe LA== 
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xn0u880au-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 10:24:31 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 43L7QH2D028740
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 10:24:31 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmtr21gjc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sun, 21 Apr 2024 10:24:30 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 43LAOPBU49218000
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 21 Apr 2024 10:24:27 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A6AD920043;
- Sun, 21 Apr 2024 10:24:25 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A815820040;
- Sun, 21 Apr 2024 10:24:24 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.43.123.5])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Sun, 21 Apr 2024 10:24:24 +0000 (GMT)
-From: Geetika <geetika@linux.ibm.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D586B2005F8
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 07:36:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1713764179;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=CVFjLstDb3i53y5BnMmQJQb+vWB8PxvTTaHjAr9lIuQ=;
+ b=J+Ad5L5zmkhIT0T9YvJFZmduCXY6l5OrpiCj1zyanSw7ILEK4Br/mcj3iXLWZRcLZsfc7h
+ lT/EDA94AOggmVDiodcl06Ti/Po2Ficn2MbOy6QkVYvqQdW6Vhm1+DqVutuxqC+744sLB4
+ rpgqLOgX9huEmNFHoEYr+BWYD9eFDI0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-137-He1D9Yt3M8aaB_SZSgwYxQ-1; Mon, 22 Apr 2024 01:36:16 -0400
+X-MC-Unique: He1D9Yt3M8aaB_SZSgwYxQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 06A2018065AA
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 05:36:16 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C392151EF
+ for <ltp@lists.linux.it>; Mon, 22 Apr 2024 05:36:14 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Sun, 21 Apr 2024 15:54:20 +0530
-Message-Id: <20240421102420.97060-1-geetika@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1DZN24_555JX8Yq0G7CzeUzIdARR7uuF
-X-Proofpoint-ORIG-GUID: 1DZN24_555JX8Yq0G7CzeUzIdARR7uuF
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Date: Mon, 22 Apr 2024 13:36:11 +0800
+Message-Id: <20240422053611.3581473-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-21_10,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 adultscore=0 spamscore=0 phishscore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404210066
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add hugeshmmisc01,
- migrated shm-getraw.c from libhugetlbfs
+Subject: [LTP] [PATCH] kallsyms01: Utilize ksymbol table for unauthorized
+ address access
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,115 +74,229 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhpcyB0ZXN0IGlzIG1pZ3JhdGVkIGZyb20gOgpodHRwczovL2dpdGh1Yi5jb20vbGliaHVnZXRs
-YmZzL2xpYmh1Z2V0bGJmcy9ibG9iL21hc3Rlci90ZXN0cy9zaG0tZ2V0cmF3LmMKClRoZSB0ZXN0
-IGNyZWF0ZXMgYSBzaGFyZWQgbWVtb3J5IHNlZ21lbnQsIHRoZW4gYXR0YWNoZXMgaXQgdG8gdGhl
-IHByb2Nlc3PigJlzCmFkZHJlc3Mgc3BhY2UuIEl0IHdyaXRlcyBhIHN0cmluZyB0byB0aGUgc2hh
-cmVkIG1lbW9yeSBmcm9tIHJhdyBkZXZpY2UgYW5kCmRldGFjaGVzIHRoZSBzaGFyZWQgbWVtb3J5
-IHNlZ21lbnQgYW5kIGZpbmFsbHkgcmVtb3ZlcyBpdC4KVGhlIHB1cnBvc2Ugb2YgdGhpcyB0ZXN0
-IGlzIHRvIGVuc3VyZSB0aGF0IHRoZSBzaGFyZWQgbWVtb3J5IHN1YnN5c3RlbSBpcwp3b3JraW5n
-IGNvcnJlY3RseSB3aXRoIGh1Z2VwYWdlcy4gSXQgY2hlY2tzIHRoYXQgc2hhcmVkIG1lbW9yeSBz
-ZWdtZW50cyBjYW4KYmUgY3JlYXRlZCwgYXR0YWNoZWQsIHdyaXR0ZW4gdG8sIHJlYWQgZnJvbSwg
-ZGV0YWNoZWQsIGFuZCByZW1vdmVkIHdpdGhvdXQgZXJyb3JzLgoKU2lnbmVkLW9mZi1ieTogR2Vl
-dGlrYSA8Z2VldGlrYUBsaW51eC5pYm0uY29tPgotLS0KIHJ1bnRlc3QvaHVnZXRsYiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiB0ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0
-aWdub3JlICAgICAgICAgICAgICAgfCAgIDEgKwogLi4uL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdl
-c2htbWlzYy9NYWtlZmlsZSAgIHwgICA5ICsrCiAuLi4vbWVtL2h1Z2V0bGIvaHVnZXNobW1pc2Mv
-aHVnZXNobW1pc2MwMS5jICAgfCAxMzQgKysrKysrKysrKysrKysrKysrCiA0IGZpbGVzIGNoYW5n
-ZWQsIDE0NiBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5l
-bC9tZW0vaHVnZXRsYi9odWdlc2htbWlzYy9NYWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRl
-c3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobW1pc2MvaHVnZXNobW1pc2MwMS5jCgpk
-aWZmIC0tZ2l0IGEvcnVudGVzdC9odWdldGxiIGIvcnVudGVzdC9odWdldGxiCmluZGV4IDI5OWMw
-N2FjOS4uZWExOGY2ZWY2IDEwMDY0NAotLS0gYS9ydW50ZXN0L2h1Z2V0bGIKKysrIGIvcnVudGVz
-dC9odWdldGxiCkBAIC01NSwzICs1NSw1IEBAIGh1Z2VzaG1nZXQwMSBodWdlc2htZ2V0MDEgLWkg
-MTAKIGh1Z2VzaG1nZXQwMiBodWdlc2htZ2V0MDIgLWkgMTAKIGh1Z2VzaG1nZXQwMyBodWdlc2ht
-Z2V0MDMgLWkgMTAKIGh1Z2VzaG1nZXQwNSBodWdlc2htZ2V0MDUgLWkgMTAKKworaHVnZXNobW1p
-c2MwMSBodWdlc2htbWlzYzAxCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0
-aWdub3JlIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vLmdpdGlnbm9yZQppbmRleCBjOTZmZThiZmMu
-LjQ5MzY3OWFlNiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vLmdpdGlnbm9yZQor
-KysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0aWdub3JlCkBAIC00Nyw2ICs0Nyw3IEBACiAv
-aHVnZXRsYi9odWdlc2htZ2V0L2h1Z2VzaG1nZXQwMgogL2h1Z2V0bGIvaHVnZXNobWdldC9odWdl
-c2htZ2V0MDMKIC9odWdldGxiL2h1Z2VzaG1nZXQvaHVnZXNobWdldDA1CisvaHVnZXRsYi9odWdl
-c2htbWlzYy9odWdlc2htbWlzYzAxCiAva3NtL2tzbTAxCiAva3NtL2tzbTAyCiAva3NtL2tzbTAz
-CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1taXNjL01h
-a2VmaWxlIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlc2htbWlzYy9NYWtlZmls
-ZQpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAuLjg0NzE1YzdiNQotLS0gL2Rl
-di9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobW1pc2MvTWFr
-ZWZpbGUKQEAgLTAsMCArMSw5IEBACisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4w
-LW9yLWxhdGVyCisjIENvcHlyaWdodCAoQykgMjAwOSwgQ2lzY28gU3lzdGVtcyBJbmMuCisjIE5n
-aWUgQ29vcGVyLCBKdWx5IDIwMDkKKwordG9wX3NyY2RpciAgICAgICAgICAgICAgPz0gLi4vLi4v
-Li4vLi4vLi4KKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1r
-CitpbmNsdWRlICQoYWJzX3NyY2RpcikvLi4vTWFrZWZpbGUuaW5jCitpbmNsdWRlICQodG9wX3Ny
-Y2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFyZ2V0Lm1rCmRpZmYgLS1naXQgYS90ZXN0
-Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1taXNjL2h1Z2VzaG1taXNjMDEuYyBiL3Rl
-c3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobW1pc2MvaHVnZXNobW1pc2MwMS5jCm5l
-dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMC4uMTU4NjdmMjUxCi0tLSAvZGV2L251
-bGwKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlc2htbWlzYy9odWdlc2ht
-bWlzYzAxLmMKQEAgLTAsMCArMSwxMzQgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBM
-R1BMLTIuMS1vci1sYXRlcgorLyoKKyAqIENvcHlyaWdodCAoQykgMjAwNS0yMDA2IERhdmlkIEdp
-YnNvbiAmIEFkYW0gTGl0a2UsIElCTSBDb3Jwb3JhdGlvbi4KKyAqLworCisvKlwKKyAqW0Rlc2Ny
-aXBpdG9uXQorICoKKyAqIE9yaWdpbjogaHR0cHM6Ly9naXRodWIuY29tL2xpYmh1Z2V0bGJmcy9s
-aWJodWdldGxiZnMvYmxvYi9tYXN0ZXIvdGVzdHMvc2htLWdldHJhdy5jCisgKgorICogVGhlIHRl
-c3QgY3JlYXRlcyBhIHNoYXJlZCBtZW1vcnkgc2VnbWVudCwgdGhlbiBhdHRhY2hlcyBpdCB0byB0
-aGUgcHJvY2Vzc+KAmXMgYWRkcmVzcyBzcGFjZS4KKyAqIEl0IHdyaXRlcyBhIHN0cmluZyB0byB0
-aGUgc2hhcmVkIG1lbW9yeSBmcm9tIHJhdyBkZXZpY2UgYW5kIGRldGFjaGVzIHRoZSBzaGFyZWQg
-bWVtb3J5CisgKiBzZWdtZW50IGFuZCBmaW5hbGx5IHJlbW92ZXMgaXQuCisgKiBUaGUgcHVycG9z
-ZSBvZiB0aGlzIHRlc3QgaXMgdG8gZW5zdXJlIHRoYXQgdGhlIHNoYXJlZCBtZW1vcnkgc3Vic3lz
-dGVtIGlzIHdvcmtpbmcgY29ycmVjdGx5CisgKiB3aXRoIGh1Z2VwYWdlcy4gSXQgY2hlY2tzIHRo
-YXQgc2hhcmVkIG1lbW9yeSBzZWdtZW50cyBjYW4gYmUgY3JlYXRlZCwgYXR0YWNoZWQsIHdyaXR0
-ZW4gdG8sCisgKiByZWFkIGZyb20sIGRldGFjaGVkLCBhbmQgcmVtb3ZlZCB3aXRob3V0IGVycm9y
-cworICoKKyAqLworCisjaW5jbHVkZSA8c3RkaW8uaD4KKyNpbmNsdWRlIDxzdGRsaWIuaD4KKyNp
-bmNsdWRlIDxzdHJpbmcuaD4KKyNpbmNsdWRlIDx1bmlzdGQuaD4KKyNpbmNsdWRlIDxzeXMvbW1h
-bi5oPgorI2luY2x1ZGUgPGVycm5vLmg+CisjaW5jbHVkZSA8YXNzZXJ0Lmg+CisjaW5jbHVkZSA8
-c3lzL3R5cGVzLmg+CisjaW5jbHVkZSA8c3lzL3NobS5oPgorI2luY2x1ZGUgPHN5cy90eXBlcy5o
-PgorI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CisjaW5jbHVkZSA8dW5pc3RkLmg+CisjaW5jbHVkZSA8
-ZmNudGwuaD4KKworI2luY2x1ZGUgImh1Z2V0bGIuaCIKKyNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2
-X2lwYy5oIgorCisjZGVmaW5lIE1OVFBPSU5UICJodWdldGxiZnMvIgorI2RlZmluZSBTQUZFX0ZS
-RUUocCkgeyBpZiAocCkgeyBmcmVlKHApOyAocCkgPSBOVUxMOyB9IH0KKyNkZWZpbmUgTlJfSFVH
-RVBBR0VTIDIKKworc3RhdGljIGludCBzaG1pZCA9IC0xOworc3RhdGljIHNpemVfdCBzaXplOwor
-c3RhdGljIHNpemVfdCBpOworc3RhdGljIHNpemVfdCByZXQ7CisKK3N0YXRpYyB2b2xhdGlsZSBj
-aGFyICpzaG1hZGRyOworc3RhdGljIGNoYXIgKmJ1ZmZlcjsKK3N0YXRpYyBpbnQgcmF3X2ZkOwor
-c3RhdGljIGxvbmcgaHBhZ2Vfc2l6ZTsKK3N0YXRpYyBpbnQgZmQ7CisKK3N0YXRpYyB2b2lkIHNl
-dHVwKHZvaWQpCit7CisJaHBhZ2Vfc2l6ZSA9IHRzdF9nZXRfaHVnZXBhZ2Vfc2l6ZSgpOworCWZk
-ID0gdHN0X2NyZWF0X3VubGlua2VkKE1OVFBPSU5ULCAwKTsKK30KKworc3RhdGljIHZvaWQgY2xl
-YW51cCh2b2lkKQoreworCWlmIChzaG1pZCA+PSAwKQorCQlTQUZFX1NITUNUTChzaG1pZCwgSVBD
-X1JNSUQsIE5VTEwpOworCWlmIChmZCA+IDApCisJCVNBRkVfQ0xPU0UoZmQpOworfQorCitzdGF0
-aWMgdm9pZCBjaGVja19odWdldGxiX3NobV9ncm91cCh2b2lkKQoreworCWNoYXIgZ2lkX2J1ZmZl
-cls2NF0gPSB7MH07CisJZ2lkX3QgaHVnZXRsYl9zaG1fZ3JvdXA7CisJZ2lkX3QgZ2lkID0gZ2V0
-Z2lkKCk7CisJdWlkX3QgdWlkID0gZ2V0dWlkKCk7CisKKwkvKiByb290IGlzIGFuIGV4Y2VwdGlv
-biAqLworCWlmICh1aWQgPT0gMCkKKwkJcmV0dXJuOworCisJZmQgPSBTQUZFX09QRU4oIi9wcm9j
-L3N5cy92bS9odWdldGxiX3NobV9ncm91cCIsIE9fUkRPTkxZKTsKKwlyZXQgPSBTQUZFX1JFQUQo
-MCwgZmQsICZnaWRfYnVmZmVyLCBzaXplb2YoZ2lkX2J1ZmZlcikpOworCWh1Z2V0bGJfc2htX2dy
-b3VwID0gYXRvaShnaWRfYnVmZmVyKTsKKwlTQUZFX0NMT1NFKGZkKTsKKwlpZiAoaHVnZXRsYl9z
-aG1fZ3JvdXAgIT0gZ2lkKQorCQl0c3RfYnJrKFRDT05GLCAiRG8gbm90IGhhdmUgcGVybWlzc2lv
-biB0byB1c2UgU0hNX0hVR0VUTEIiKTsKK30KKworc3RhdGljIHZvaWQgcnVuX3Rlc3Qodm9pZCkK
-K3sKKwljaGVja19odWdldGxiX3NobV9ncm91cCgpOworCWJ1ZmZlciA9IFNBRkVfTUFMTE9DKGhw
-YWdlX3NpemUqc2l6ZW9mKGNoYXIpKTsKKwlyYXdfZmQgPSBTQUZFX09QRU4oIi9kZXYvZnVsbCIs
-IE9fUkRPTkxZKTsKKwlzaXplID0gaHBhZ2Vfc2l6ZSAqIE5SX0hVR0VQQUdFUzsKKwl0c3RfcmVz
-KFRJTkZPLCAiUmVxdWVzdGluZyAlenUgYnl0ZXNcbiIsIHNpemUpOworCisJc2htaWQgPSBzaG1n
-ZXQoMiwgc2l6ZSwgU0hNX0hVR0VUTEJ8SVBDX0NSRUFUfFNITV9SfFNITV9XKTsKKwlpZiAoc2ht
-aWQgPCAwKSB7CisJCXRzdF9yZXMoVEZBSUwgfCBURVJSTk8sICJzaG1nZXQoKSBmYWlsZWQgd2l0
-aCBlcnJvciAiKTsKKwkJZ290byB3aW5kdXA7CisJfSBlbHNlCisJCXRzdF9yZXMoVElORk8sICJz
-aG1pZDogMHgleFxuIiwgc2htaWQpOworCisJc2htYWRkciA9IHNobWF0KHNobWlkLCAwLCBTSE1f
-Uk5EKTsKKwlpZiAoc2htYWRkciA9PSBNQVBfRkFJTEVEKSB7CisJCXRzdF9yZXMoVEZBSUwgfCBU
-RVJSTk8sICJzaG1hdCgpIGZhaWxlZCB3aXRoIGVycm9yICIpOworCQlnb3RvIHdpbmR1cDsKKwl9
-IGVsc2UKKwkJdHN0X3JlcyhUSU5GTywgInNobWFkZHI6ICVwXG4iLCBzaG1hZGRyKTsKKworCS8q
-IFJlYWQgYSBwYWdlIGZyb20gZGV2aWNlIGFuZCB3cml0ZSB0byBzaG0gc2VnbWVudCAqLworCWZv
-ciAoaSA9IDA7IGkgPCBzaXplOyBpICs9IGhwYWdlX3NpemUpIHsKKwkJaWYgKCFyZWFkKHJhd19m
-ZCwgYnVmZmVyLCBocGFnZV9zaXplKSkgeworCQkJdHN0X3JlcyhURkFJTCB8IFRFUlJOTywgIkNh
-bid0IHJlYWQgZnJvbSByYXcgZGV2aWNlISIpOworCQkJZ290byB3aW5kdXA7CisJCX0KKwkJbWVt
-Y3B5KChjaGFyICopKHNobWFkZHIgKyBpKSwgYnVmZmVyLCBocGFnZV9zaXplKTsKKwl9CisKKwlp
-ZiAoc2htZHQoKGNvbnN0IHZvaWQgKilzaG1hZGRyKSAhPSAwKSB7CisJCXRzdF9yZXMoVEZBSUwg
-fCBURVJSTk8sICJzaG1kdCgpIGZhaWxlZCIpOworCQlnb3RvIHdpbmR1cDsKKwl9CisKKwl0c3Rf
-cmVzKFRQQVNTLCAiVGVzdCBQYXNzZWQhIik7Cit3aW5kdXA6CisJU0FGRV9GUkVFKGJ1ZmZlcik7
-Cit9CisKK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKKwkubmVlZHNfcm9vdCA9IDEs
-CisJLm1udHBvaW50ID0gTU5UUE9JTlQsCisJLm5lZWRzX2h1Z2V0bGJmcyA9IDEsCisJLnNldHVw
-ID0gc2V0dXAsCisJLmNsZWFudXAgPSBjbGVhbnVwLAorCS50ZXN0X2FsbCA9IHJ1bl90ZXN0LAor
-CS5odWdlcGFnZXMgPSB7MiwgVFNUX05FRURTfSwKK307Ci0tIAoyLjM5LjMgKEFwcGxlIEdpdC0x
-NDYpCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+Access the system symbols with root permission to test whether it's
+possible to read and write the memory addresses of kernel-space
+from user-space. This helps in identifying potential vulnerabilities
+where user-space processes can inappropriately access kernel memory.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/mm                                    |   2 +
+ testcases/kernel/security/kallsyms/.gitignore |   1 +
+ testcases/kernel/security/kallsyms/Makefile   |   6 +
+ testcases/kernel/security/kallsyms/kallsyms.c | 161 ++++++++++++++++++
+ 4 files changed, 170 insertions(+)
+ create mode 100644 testcases/kernel/security/kallsyms/.gitignore
+ create mode 100644 testcases/kernel/security/kallsyms/Makefile
+ create mode 100644 testcases/kernel/security/kallsyms/kallsyms.c
+
+diff --git a/runtest/mm b/runtest/mm
+index d859b331c..6a8cd0b9d 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -58,6 +58,8 @@ mmap10_2 mmap10 -s
+ mmap10_3 mmap10 -a -s
+ mmap10_4 mmap10 -a -s -i 60
+ 
++kallsyms kallsyms
++
+ ksm01 ksm01
+ ksm01_1 ksm01 -u 128
+ ksm02 ksm02
+diff --git a/testcases/kernel/security/kallsyms/.gitignore b/testcases/kernel/security/kallsyms/.gitignore
+new file mode 100644
+index 000000000..7074d4e24
+--- /dev/null
++++ b/testcases/kernel/security/kallsyms/.gitignore
+@@ -0,0 +1 @@
++kallsyms
+diff --git a/testcases/kernel/security/kallsyms/Makefile b/testcases/kernel/security/kallsyms/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/security/kallsyms/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/security/kallsyms/kallsyms.c b/testcases/kernel/security/kallsyms/kallsyms.c
+new file mode 100644
+index 000000000..83622dea7
+--- /dev/null
++++ b/testcases/kernel/security/kallsyms/kallsyms.c
+@@ -0,0 +1,161 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2024 Red Hat, Inc.
++ */
++
++/*\
++ * [Description]
++ *
++ *  Utilize kernel's symbol table for unauthorized address access.
++ *
++ *  Access the system symbols with root permission to test whether it's
++ *  possible to read and write the memory addresses of kernel-space
++ *  from user-space. This helps in identifying potential vulnerabilities
++ *  where user-space processes can inappropriately access kernel memory.
++ *
++ * Steps:
++ *  1. Start a process that reads all symbols and their addresses from
++ *     '/proc/kallsyms' and stores them in a linked list.
++ *
++ *  2. Attempt to write to each kernel address found in the linked list.
++ *     The expectation is that each attempt will fail with a SIGSEGV
++ *     (segmentation fault), indicating that the user-space process
++ *     cannot write to kernel memory.
++ *
++ *  3. Handle each SIGSEGV using a signal handler that sets a flag and
++ *     long jumps out of the faulting context.
++ *
++ *  4. If any write operation does not result in a SIGSEGV, log this as
++ *     a potential security vulnerability.
++ *
++ *  5. Observe and log the behavior and any system responses to these
++ *     unauthorized access attempts.
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <assert.h>
++#include <unistd.h>
++#include <string.h>
++#include <setjmp.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++
++struct kallsym {
++	unsigned long addr;
++	char type;
++	char name[128];
++};
++
++struct ksymstbl {
++	struct kallsym symbol;
++	struct ksymstbl *next;
++};
++
++static struct ksymstbl *sym_table;
++static unsigned int nr_symbols;
++static sigjmp_buf jmpbuf;
++volatile sig_atomic_t segv_caught = 0;
++
++static void segv_handler(int sig)
++{
++	if (sig == SIGSEGV)
++		segv_caught++;
++	else
++		tst_res(TFAIL, "Unexpected signal %s", strsignal(sig));
++
++	siglongjmp(jmpbuf, 1);
++}
++
++static struct ksymstbl *read_kallsyms(unsigned int *nr_symbols)
++{
++	FILE *stream;
++	char *line = NULL;
++	size_t len = 0;
++	unsigned int nr_syms = 0;
++	struct ksymstbl *head, *item, *i;
++
++	item = head = calloc(1, sizeof(*head));
++	if (head == NULL)
++		goto out;
++
++	stream = SAFE_FOPEN("/proc/kallsyms", "r");
++
++	while (getline(&line, &len, stream) != -1) {
++		i = item;
++
++		sscanf(line, "%lx %c %s",
++				&i->symbol.addr, &i->symbol.type, i->symbol.name);
++
++		item = calloc(1, sizeof(*i));
++		if (item == NULL)
++			tst_brk(TBROK, "In calloc[]");
++
++		i->next = item;
++		nr_syms += 1;
++	}
++
++	*nr_symbols = nr_syms;
++	SAFE_FCLOSE(stream);
++out:
++	return head;
++}
++
++static void setup(void)
++{
++	sym_table = read_kallsyms(&nr_symbols);
++	if (!sym_table)
++		tst_brk(TBROK, "Failed to read kernel symbols");
++}
++
++static void access_ksymbols_address(struct ksymstbl *sym_table)
++{
++	if (sigsetjmp(jmpbuf, 1) == 0) {
++		*(volatile unsigned long *)sym_table->symbol.addr = 0;
++
++		tst_res(TFAIL, "Successfully accessed kernel addr 0x%lx (%s)",
++			sym_table->symbol.addr, sym_table->symbol.name);
++	}
++
++}
++
++static void test_access_kernel_address(void)
++{
++	struct ksymstbl *current;
++	struct sigaction sa;
++
++	memset(&sa, 0, sizeof(sa));
++	sa.sa_handler = segv_handler;
++	sigaction(SIGSEGV, &sa, NULL);
++
++	current = sym_table;
++	while (current->next != NULL) {
++		access_ksymbols_address(current);
++		current = current->next;
++	}
++
++	if (segv_caught == (sig_atomic_t)nr_symbols)
++		tst_res(TPASS, "Caught %d times SIGSEGV in access ksymbols addr", segv_caught);
++}
++
++static void cleanup(void)
++{
++	while (sym_table != NULL) {
++		struct ksymstbl *temp = sym_table;
++		sym_table = sym_table->next;
++		free(temp);
++	}
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.max_runtime = 60,
++	.test_all = test_access_kernel_address,
++};
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
