@@ -4,81 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2800CC4345F
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 12:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A674EC4345F
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 12:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1713961345; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=KW3zKKyFcVKV8+YBBohAgxsMGKij4mQoGCcwrqY/ky0=;
- b=C/13BOJTFaW0N9e4ScmUBH17gqqbTmDFM61svuBhJP93TiuSyT7ZWNif0Ki/JqLkyG7Zt
- ONQxcgO0lJHUFxRbMguTxvMYOTh7Nndr3rwnG875idYjb8jQvBCUV3d/aDuZ6ywIuSFpztW
- ocrOI6N39bbzmwPWTlN0ezzOutJxwUY=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713961369; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=nqaagS2Wl3i9yM93JcdIxbMSzaq/BE2s6+49mFb1TKA=;
+ b=jWXewYAszeK2cef3RXaFEhM8k6eWwpOmSTvzY/F3D6JhALetYMYzxdcQHxkJZqbZnv/J9
+ CbUiFTxdTu1zUwhlbTDb5oo8FDCj1jaXrlMc6L9HF8sdIvURMzlw9YBuI23h8WZGHNlfwpT
+ Iaetywqf0yxKQlJ13X+SKKd1KT0oyZU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E5FF3D0019
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 14:22:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 293CC3D0036
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 14:22:49 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50AEC3CFA6F
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:30 +0200 (CEST)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
+ by picard.linux.it (Postfix) with ESMTPS id 516823CFA6F
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:28 +0200 (CEST)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
+ [IPv6:2607:f8b0:4864:20::649])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A2C296006D7
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:29 +0200 (CEST)
-Received: by mail-yb1-xb49.google.com with SMTP id
- 3f1490d57ef6-dc6b2682870so11082499276.0
- for <ltp@lists.linux.it>; Tue, 23 Apr 2024 15:58:29 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 555502005D6
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:28 +0200 (CEST)
+Received: by mail-pl1-x649.google.com with SMTP id
+ d9443c01a7336-1e3c2fbc920so2185335ad.0
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 15:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1713913108; x=1714517908; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=mUabKwQ6pkEL5HnBx7JpYwffqD3CqZ31cx+tz1JLzHA=;
- b=Nw4ZzfSVNoFHEltL8v0NtP7gON2tCpkQ9Sf44xXT7zl6ly9AoAVSRhihwGgqi8hako
- QozVScAfOwsgv6gjJk2HoFDGBPUTwellfPzDGHUdY4+efIjhfBQc7Ocec10QsSss6FQP
- RNc0wMuE6pz5lx4IEkp+pkycklz7TL2NBilKYx9s0Xklqjet++yXe604ByQFxuTnWX7J
- UVgdCvHzjRl3IO5Y1k7r1N/9RWRHjnj/H/hRQsb9uUywI+7IinEH+ACJ48ZutFiTdCk8
- g3UU9f7l9NZca6bgKRmDs9v5Hu3zFFD0qSgMwA4VxeYyinnmsv9Ohh4KcEWY/7+DzcE7
- /u9g==
+ d=google.com; s=20230601; t=1713913107; x=1714517907; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=IBcDGjWKXokMjPsghOEAM9h/qxapVnoPg0MA16oLO+A=;
+ b=fGRig12TDn62WF8GwQNjClz6Bb/oEK4EDXKeyqYnvUZXR3tZiy7X/+ZaLn7/oVrkRQ
+ hsUGUqiq5ecFfuZCLQOTjitvEMM8D4A+Mvkvl4xe/5hA4wgJ1W34c5QQMHSrlwtjy5T9
+ 183og2eTFdInnokY6I891I65FbTgcRYapmrTssJszzq9S4OTGbDPOW7HgOn9GTe6OSGk
+ 0iYs8vUzj71bRY+fS708DH1TW+1GZ2tYK1kVjrWMpLipWOU5i36a7HphkLAmFUsV+nia
+ m6J6RhcGMcCtJodIG2IT9gZNWcqiAShFl01Pbu0kMWJkYiNG+tsg4BFYNArkAMIio9Ei
+ 4BzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713913108; x=1714517908;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=mUabKwQ6pkEL5HnBx7JpYwffqD3CqZ31cx+tz1JLzHA=;
- b=pCd9KGJ+REzduLMUx6kp5sL98Nlz026VciIxoTPMR7dW/KTyS37H4dGar2CEWq93Ag
- FKIZmCaYOjkTCJXOiddO4ZuD+zkUeUm69f908CgS+uO46cm/D90WtXzDd2OVd4MVCzRn
- gdTt5lO5xSssH/usR/9zRr2+B0WNV509wpvIUFdCzi8IWwLTnxq9SXUQw92OHPP8HQpj
- kZK6K2GWOppyEM9i8wtAn9fn7+DcVqFTq4WXWhWqa2BtZNroT0m96X/M7zcqE7ofEKCL
- Kvon3TDBq2e53OJIsgW1Rj8mEruHv1NG8vY4NIgHAcmrRzcvb40bixhB+TWBY1BiLuBy
- i9jQ==
-X-Gm-Message-State: AOJu0Yymb7xl4E+iarBaGsN2ueWac6X/meTGN6IyY53DC5qKJZsxJqbj
- kRIIpikK1S4CKed1/0i3vB55A4ktoNda08wvDo+FuaHCCKhBvzgP4ihHrjpYSHQmkbkh/kL51U7
- UjFQLXVj9AWbHVY38k4EXSaeiHxHZQb6SMnRnwSBR0PvGC7YZ/yUgVwejtG4ZUeeQwUIMgPTBEX
- LMm2ZwKv6bQvoQMJpZOUGZMq8XItWnzG0=
-X-Google-Smtp-Source: AGHT+IH+tue3sjCZ3NHnjORp3DAOTdVr6uH6WzV3glygQLb0xfpPY3AXeYCii2VUjgCdEg5Popilu97Xa6gY
+ d=1e100.net; s=20230601; t=1713913107; x=1714517907;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=IBcDGjWKXokMjPsghOEAM9h/qxapVnoPg0MA16oLO+A=;
+ b=paHNSdQxIkydpH13wMueXf2Bkrd3h2cYv8d7mK/ottkr6wO5FDDz4ALqzlpXm48d3g
+ LH/0axYPdbgKjoKOqk7d3zqtdwClzZvocUZGraPJMziWDgn2SuExGU8p20sTUg2P+e7n
+ B3Aqv737c+toVuhz/F2xVCQfDuqa3W4Qi+wMTmBC3GhI3iDKQN5x+5FK/jUaUbR2CL0H
+ npOHex3NFEVJiuHTkm7huK8wGJd2RF+hCX8IiVwz5gM7KWPGzALkkqBDhUp12I5F6J9F
+ CjKbBpnShVg5XXxpZX/QetL0c1659lhJmLyBjrl4q2198mY9PlgxK1nJx1yojFc3AzME
+ Df1Q==
+X-Gm-Message-State: AOJu0Yz5Y/FKpU3wH4DTiMHUt6uZGlj3raWhe5OC16UA2PnrXD9knQoo
+ ClKLqrzjVOHM/Bkf9Q9j0XF09fd+aFly+6aPX0Lkp++XgDC5lOxPWVw8YkMLvAExtY638IsCY9J
+ krlMUyOBlLlqK1QBIYARCIbitBGlFabSvrMAfLkX6DfZFE29Isxv9a3X2oJarKiMOUktVAPVLuu
+ jrZBJOBXSwm4XkB4d+Fw+ldqyF1UxCVm4=
+X-Google-Smtp-Source: AGHT+IGpKjKTJQ2Ews2jKk4AIIorRKEpX8URIejrQPEyhkajXBx19wSSI4rf/7riRetx590XxJkNWVi1/DH1
 X-Received: from jstultz-noogler2.c.googlers.com
  ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:10c2:b0:dd9:3a6b:11f8 with SMTP
- id w2-20020a05690210c200b00dd93a6b11f8mr315331ybu.5.1713913108060; Tue, 23
- Apr 2024 15:58:28 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:57:58 -0700
-In-Reply-To: <20240423225821.4003538-1-jstultz@google.com>
+ (user=jstultz job=sendgmr) by 2002:a17:902:8486:b0:1e5:56e8:7bbd with SMTP id
+ c6-20020a170902848600b001e556e87bbdmr14288plo.1.1713913106142; Tue, 23 Apr
+ 2024 15:58:26 -0700 (PDT)
+Date: Tue, 23 Apr 2024 15:57:57 -0700
 Mime-Version: 1.0
-References: <20240423225821.4003538-1-jstultz@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240423225821.4003538-2-jstultz@google.com>
+Message-ID: <20240423225821.4003538-1-jstultz@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Wed, 24 Apr 2024 14:22:03 +0200
-Subject: [LTP] [PATCH 1/6] sched_football: Drop use of sched_yeild()
+Subject: [LTP] [PATCH 0/6] sched_football: Re-add crazy fans and other
+ cleanups
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,56 +97,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-sched_yeild() just causes the SCHED_FIFO tasks to behave like
-SCHED_RR which makes analysis of the behavior more difficult to
-follow. So lets drop the calls.
+Just the other day (~18 years ago), I had implemented the
+sched_football test to validate the RT scheduling invariant that
+we always run the top NR_CPU priority tasks at any time. 
 
-Also fixes up some whitespace inconsistencies in the header comment.
+That early version of the test included crazy fans, which
+disrupted the scheduling of the defensive threads. This was
+later removed from the test, likely due to occasional failures
+seen with it.
+
+Recently, in testing the behavior of a scheduler patch I was
+working on I started tinkering with this test again, and found
+when I re-added the crazy fans, I could reproduce an actual
+scheduling problem with the vanilla kernel.
+
+So I wanted to submit these changes to re-add the crazy fans
+along with some other cleanups and improvements to make it
+easier to use with tracing, so that the test can be used by
+others to reproduce this problem.
+
+Feedback would be appreciated!
+
+thanks
+-john
 
 Cc: kernel-team@android.com
 Cc: Darren Hart <darren@os.amperecomputing.com>
-Signed-off-by: John Stultz <jstultz@google.com>
----
- .../realtime/func/sched_football/sched_football.c      | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-index 6f075aea3..1e205219d 100644
---- a/testcases/realtime/func/sched_football/sched_football.c
-+++ b/testcases/realtime/func/sched_football/sched_football.c
-@@ -32,12 +32,12 @@
-  *       - Create a fixed number of offense threads (lower priority)
-  *       - Create a referee thread (highest priority)
-  *       - Once everyone is on the field, the offense thread increments the
-- *	 value of 'the_ball' and yields. The defense thread tries to block
-- *	 the ball by never letting the offense players get the CPU (it just
-- * 	   does a sched_yield).
-+ *         value of 'the_ball'. The defense thread tries to block
-+ *         the ball by never letting the offense players get the CPU (it just
-+ *         spins).
-  *       - The refree threads wakes up regularly to check if the game is over :)
-  *       - In the end, if the value of 'the_ball' is >0, the test is considered
-- *	 to have failed.
-+ *         to have failed.
-  *
-  * USAGE:
-  *      Use run_auto.sh script in current directory to build and run test.
-@@ -113,7 +113,6 @@ void *thread_defense(void *arg)
- 	atomic_inc(&players_ready);
- 	/*keep the ball from being moved */
- 	while (1) {
--		sched_yield();	/* let other defenders run */
- 	}
- 	return NULL;
- }
-@@ -124,7 +123,6 @@ void *thread_offense(void *arg)
- 	atomic_inc(&players_ready);
- 	while (1) {
- 		the_ball++;	/* move the ball ahead one yard */
--		sched_yield();	/* let other offensive players run */
- 	}
- 	return NULL;
- }
+John Stultz (6):
+  sched_football: Drop use of sched_yeild()
+  sched_football: Use atomic for ball
+  sched_football: Re-add the crazy fans to interrupt everyone
+  sched_football: Add a sleep before the game begins to get into steady
+    state
+  sched_football: Add prctrl calls to set thread comms
+  sched_football: Add trace_marker messages if we're tracing
+
+ .../func/sched_football/sched_football.c      | 94 +++++++++++++++----
+ 1 file changed, 78 insertions(+), 16 deletions(-)
+
 -- 
 2.44.0.769.g3c40516874-goog
 
