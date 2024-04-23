@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1B13C4345F
-	for <ltp@archiver.kernel.org>; Tue, 23 Apr 2024 08:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FD05C4345F
+	for <ltp@archiver.kernel.org>; Tue, 23 Apr 2024 09:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713863524; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=KbTp7lRT20JZZ+v0w2YAVfsGIe6PK83GkXRvFrWUfLs=;
+ b=FjJsOncbjMZb6shwnb6fVq8/57Dc8p1Vxs3XUlq3wcR5LBNp3N6BnlyauNe++r2iBjK0L
+ 8MQ0AZULmq+NOtYFNX07PCikqK3VhkslKu30oz3KSjXg8wQh4l+y5EYG/JJYjNwsPA9ZxmI
+ swr+Jpo1ZQ0eQXsJEhjcyhgYWuBamg4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 25BEA3CFFA7
-	for <ltp@archiver.kernel.org>; Tue, 23 Apr 2024 10:21:46 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 688803CFFA2
+	for <ltp@archiver.kernel.org>; Tue, 23 Apr 2024 11:12:04 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 750193CFD75
- for <ltp@lists.linux.it>; Tue, 23 Apr 2024 10:21:30 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EF4ED3CFEB3
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 11:11:42 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
+ helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
+ [139.138.36.225])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7A4E41400069
- for <ltp@lists.linux.it>; Tue, 23 Apr 2024 10:21:29 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D590B37C0C;
- Tue, 23 Apr 2024 08:21:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1713860486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5683tD4WETb1vQrQlIQz8k0bDr3gr4CmZdvBxPxPzvE=;
- b=Zu2/ifqT7M/GSlv0CqvnFv5RLM9vPLFnnCSzi6TyZjFEj+q6yxSJkOvyM50snZmjUrEs45
- /X5pLclKPZdftftK6Zn+uiDBjtLgSv0cVuhatRqfnC/0rziCKwWJa/7e1EEQyFr+NIS2Up
- 8n1An7XV0hZLXCfut2/Dc4sdPU+tskI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1713860486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5683tD4WETb1vQrQlIQz8k0bDr3gr4CmZdvBxPxPzvE=;
- b=/V0MQBaf8JYEPbxt2PtSV8ajF7f9v7WAM8DMLwnfpZhtcH3bWo/+cvLrEz74FuwCd9YYf8
- vAcCRaWbWyZm/ICw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1713860486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5683tD4WETb1vQrQlIQz8k0bDr3gr4CmZdvBxPxPzvE=;
- b=Zu2/ifqT7M/GSlv0CqvnFv5RLM9vPLFnnCSzi6TyZjFEj+q6yxSJkOvyM50snZmjUrEs45
- /X5pLclKPZdftftK6Zn+uiDBjtLgSv0cVuhatRqfnC/0rziCKwWJa/7e1EEQyFr+NIS2Up
- 8n1An7XV0hZLXCfut2/Dc4sdPU+tskI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1713860486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5683tD4WETb1vQrQlIQz8k0bDr3gr4CmZdvBxPxPzvE=;
- b=/V0MQBaf8JYEPbxt2PtSV8ajF7f9v7WAM8DMLwnfpZhtcH3bWo/+cvLrEz74FuwCd9YYf8
- vAcCRaWbWyZm/ICw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 73BDD13929;
- Tue, 23 Apr 2024 08:21:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +ePXFoZvJ2YqCQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 23 Apr 2024 08:21:26 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3B976200B9A
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 11:11:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1713863501; x=1745399501;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=evUWc+ZZNUahK7m0WWvhxtAZwjI3Xv92JdHTtpoVcfU=;
+ b=lH8t5L0LhCkiFTdErI0xZTJ+LBGr1/b4Ki5ZvTKehUMAaCpdtPo0B4Ep
+ 8n4HppXNJXPBBEyjaU1XXXw3P75j786yIUoMv0wRWZ+qRywnGgPrC6fX7
+ 25L4RwXHUO9DAt/fBsn6PT17IZzcu2DG9vcvZUqgDK1f98qCRV/NlNneW
+ rQhHIWBLqmILF/UrfCxOIc17wOcmW9k6ZK45ktI96Julo2PG0tbGjM/UH
+ VIfbGr/opLbdfhuPsSbm8LiSrg357VVyC1GbIAGh8WwtmgDFM6JX6C2Gc
+ /PEXOSxwyq5PS2wqpGkC+mc1FoFliFdVxnb31Yp7gzh6MbQFIYxU8ru+U Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="144032430"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708354800"; d="scan'208";a="144032430"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Apr 2024 18:11:38 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id AD204D4C2E
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 18:11:36 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id DBE2FD53E0
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 18:11:35 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 78343E4775
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 18:11:35 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 27DC51A000A;
+ Tue, 23 Apr 2024 17:11:35 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Tue, 23 Apr 2024 10:21:19 +0200
-Message-Id: <20240423082119.16117-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+Date: Tue, 23 Apr 2024 04:37:23 -0400
+Message-Id: <20240423083723.66575-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- ARC_NA(0.00)[]; RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28338.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28338.006
+X-TMASE-Result: 10--7.745700-10.000000
+X-TMASE-MatchedRID: RtHHqK+8YWNSuJfEWZSQfGvOwg12ikVS0bdjqKOoG3f1xrH5kKK/rj13
+ GoPFA1HFIvrftAIhWmLy9zcRSkKatcfdkIlEiI2k8Jb881FGn9l9v5k7uQeUSGs/r1mvxNjTo8W
+ MkQWv6iUoTQl7wNH8Pg1fA1QHegDv3QfwsVk0UbtuRXh7bFKB7sy/Y1DqsddXDOdgXlBYh7zZTa
+ cEnPOKXFwZSrGtY+vtS4W/MRhJ1X4=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] doc: update syscalls statistics
+Subject: [LTP] [PATCH] unlink09: Add _GNU_SOURCE feature macro to workaround
+ the compile error
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,79 +95,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Yang Xu via ltp <ltp@lists.linux.it>
+Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+In CI environment, unlink09 compiling failed on alpine/latest because loff_t
+type is not declared. Add _GNU_SOURCE feature macro to enable GNU extension
+to solve the problem.
 
-This patch black-list a few syscalls which are not implemented in the
-kernel, untestable or either really old (=< 2.6 kernel version), as well
-as defining already tested syscalls.
-Also fixed an index issue with table generation.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- doc/conf.py | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/unlink/unlink09.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/doc/conf.py b/doc/conf.py
-index 9408ee46e..d0f185b28 100644
---- a/doc/conf.py
-+++ b/doc/conf.py
-@@ -76,14 +76,31 @@ def generate_syscalls_stats(_):
-         'io_uring_register',
-         'epoll_pwait2',
-         'quotactl_fd',
-+        'pread64',
-+        'pwrite64',
-+        'fadvise64',
-+        'getmsg',
-+        'getpmsg',
-+        'putmsg',
-+        'putpmsg',
-     ]
+diff --git a/testcases/kernel/syscalls/unlink/unlink09.c b/testcases/kernel/syscalls/unlink/unlink09.c
+index cc4b4a07e..1472e9134 100644
+--- a/testcases/kernel/syscalls/unlink/unlink09.c
++++ b/testcases/kernel/syscalls/unlink/unlink09.c
+@@ -13,6 +13,8 @@
+  * - EROFS when target file is on a read-only filesystem.
+  */
  
--    # populate with non-syscalls which are present in the kernel sources
--    # syscalls file
-+    # populate with not implemented, reserved, unmaintained syscalls defined
-+    # inside the syscalls file
-     black_list = [
-         'reserved177',
-         'reserved193',
--        'rseq'
-+        'rseq',
-+        '_newselect',
-+        '_sysctl',
-+        'create_module',
-+        'get_kernel_syms',
-+        'query_module',
-+        'nfsservctl',
-+        'afs_syscall',
-+        'sysmips',
-+        'mq_getsetattr',
-+        'vserver',
-     ]
- 
-     # fetch syscalls file
-@@ -184,12 +201,12 @@ def generate_syscalls_stats(_):
- 
-     left = index_tested % 3
-     if left > 0:
--        for index in range(0, left + 1):
-+        for index in range(0, 3 - left):
-             table_tested.append(f'      -\n')
- 
-     left = index_untest % 3
-     if left > 0:
--        for index in range(0, left + 1):
-+        for index in range(0, 3 - left):
-             table_untest.append(f'      -\n')
- 
-     text.extend(table_tested)
++#define _GNU_SOURCE
++
+ #include <sys/ioctl.h>
+ #include "tst_test.h"
+ #include "lapi/fs.h"
 -- 
-2.35.3
+2.39.3
 
 
 -- 
