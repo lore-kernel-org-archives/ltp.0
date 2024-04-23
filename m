@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD0EC07E8E
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 12:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2800CC4345F
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 12:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1713961345; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=KW3zKKyFcVKV8+YBBohAgxsMGKij4mQoGCcwrqY/ky0=;
+ b=C/13BOJTFaW0N9e4ScmUBH17gqqbTmDFM61svuBhJP93TiuSyT7ZWNif0Ki/JqLkyG7Zt
+ ONQxcgO0lJHUFxRbMguTxvMYOTh7Nndr3rwnG875idYjb8jQvBCUV3d/aDuZ6ywIuSFpztW
+ ocrOI6N39bbzmwPWTlN0ezzOutJxwUY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DC663CFFF5
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 14:17:58 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 8E5FF3D0019
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 14:22:25 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB67B3CE530
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 14:17:43 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 50AEC3CFA6F
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:30 +0200 (CEST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E6D6A60B02D
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 14:17:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 676A93F118;
- Wed, 24 Apr 2024 12:17:41 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4CB581393C;
- Wed, 24 Apr 2024 12:17:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ACwrEmX4KGbfagAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 24 Apr 2024 12:17:41 +0000
-Date: Wed, 24 Apr 2024 14:17:40 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20240424121740.GA227922@pevik>
-References: <20240423132823.194179-1-pvorel@suse.cz>
- <20240423132823.194179-2-pvorel@suse.cz>
- <CAASaF6wWtdmG6nWpWcTv=AnzJn8vSe71RQsSkcF-1wHbPb_Mjw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAASaF6wWtdmG6nWpWcTv=AnzJn8vSe71RQsSkcF-1wHbPb_Mjw@mail.gmail.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 676A93F118
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A2C296006D7
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:58:29 +0200 (CEST)
+Received: by mail-yb1-xb49.google.com with SMTP id
+ 3f1490d57ef6-dc6b2682870so11082499276.0
+ for <ltp@lists.linux.it>; Tue, 23 Apr 2024 15:58:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1713913108; x=1714517908; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=mUabKwQ6pkEL5HnBx7JpYwffqD3CqZ31cx+tz1JLzHA=;
+ b=Nw4ZzfSVNoFHEltL8v0NtP7gON2tCpkQ9Sf44xXT7zl6ly9AoAVSRhihwGgqi8hako
+ QozVScAfOwsgv6gjJk2HoFDGBPUTwellfPzDGHUdY4+efIjhfBQc7Ocec10QsSss6FQP
+ RNc0wMuE6pz5lx4IEkp+pkycklz7TL2NBilKYx9s0Xklqjet++yXe604ByQFxuTnWX7J
+ UVgdCvHzjRl3IO5Y1k7r1N/9RWRHjnj/H/hRQsb9uUywI+7IinEH+ACJ48ZutFiTdCk8
+ g3UU9f7l9NZca6bgKRmDs9v5Hu3zFFD0qSgMwA4VxeYyinnmsv9Ohh4KcEWY/7+DzcE7
+ /u9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1713913108; x=1714517908;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=mUabKwQ6pkEL5HnBx7JpYwffqD3CqZ31cx+tz1JLzHA=;
+ b=pCd9KGJ+REzduLMUx6kp5sL98Nlz026VciIxoTPMR7dW/KTyS37H4dGar2CEWq93Ag
+ FKIZmCaYOjkTCJXOiddO4ZuD+zkUeUm69f908CgS+uO46cm/D90WtXzDd2OVd4MVCzRn
+ gdTt5lO5xSssH/usR/9zRr2+B0WNV509wpvIUFdCzi8IWwLTnxq9SXUQw92OHPP8HQpj
+ kZK6K2GWOppyEM9i8wtAn9fn7+DcVqFTq4WXWhWqa2BtZNroT0m96X/M7zcqE7ofEKCL
+ Kvon3TDBq2e53OJIsgW1Rj8mEruHv1NG8vY4NIgHAcmrRzcvb40bixhB+TWBY1BiLuBy
+ i9jQ==
+X-Gm-Message-State: AOJu0Yymb7xl4E+iarBaGsN2ueWac6X/meTGN6IyY53DC5qKJZsxJqbj
+ kRIIpikK1S4CKed1/0i3vB55A4ktoNda08wvDo+FuaHCCKhBvzgP4ihHrjpYSHQmkbkh/kL51U7
+ UjFQLXVj9AWbHVY38k4EXSaeiHxHZQb6SMnRnwSBR0PvGC7YZ/yUgVwejtG4ZUeeQwUIMgPTBEX
+ LMm2ZwKv6bQvoQMJpZOUGZMq8XItWnzG0=
+X-Google-Smtp-Source: AGHT+IH+tue3sjCZ3NHnjORp3DAOTdVr6uH6WzV3glygQLb0xfpPY3AXeYCii2VUjgCdEg5Popilu97Xa6gY
+X-Received: from jstultz-noogler2.c.googlers.com
+ ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
+ (user=jstultz job=sendgmr) by 2002:a05:6902:10c2:b0:dd9:3a6b:11f8 with SMTP
+ id w2-20020a05690210c200b00dd93a6b11f8mr315331ybu.5.1713913108060; Tue, 23
+ Apr 2024 15:58:28 -0700 (PDT)
+Date: Tue, 23 Apr 2024 15:57:58 -0700
+In-Reply-To: <20240423225821.4003538-1-jstultz@google.com>
+Mime-Version: 1.0
+References: <20240423225821.4003538-1-jstultz@google.com>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240423225821.4003538-2-jstultz@google.com>
+To: ltp@lists.linux.it
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lapi/fs: Include lapi/fcntl.h + define
- _GNU_SOURCE
+X-Mailman-Approved-At: Wed, 24 Apr 2024 14:22:03 +0200
+Subject: [LTP] [PATCH 1/6] sched_football: Drop use of sched_yeild()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,70 +90,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: John Stultz via ltp <ltp@lists.linux.it>
+Reply-To: John Stultz <jstultz@google.com>
+Cc: kernel-team@android.com, John Stultz <jstultz@google.com>,
+ Darren Hart <darren@os.amperecomputing.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgSmFuLAoKPiBPbiBUdWUsIEFwciAyMywgMjAyNCBhdCAzOjI44oCvUE0gUGV0ciBWb3JlbCA8
-cHZvcmVsQHN1c2UuY3o+IHdyb3RlOgoKPiA+IFRoaXMgZml4ZXMgYnVpbGQgZXJyb3Igb24gbXVz
-bCAoYWxwaW5lKToKCj4gPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gdW5saW5rMDkuYzoxODoKPiA+
-IC4uLy4uLy4uLy4uL2luY2x1ZGUvbGFwaS9mcy5oOjU4OjE1OiBlcnJvcjogdW5rbm93biB0eXBl
-IG5hbWUgJ2xvZmZfdCcKPiA+ICAgIDU4IHwgc3RhdGljIGlubGluZSBsb2ZmX3QgdHN0X21heF9s
-ZnNfZmlsZXNpemUodm9pZCkKCj4gPiBsb2ZmX3QgaXMgZGVmaW5lZCBpbiA8ZmNudGwuaD4gKGJ1
-dCBndWFyZGVkIF9HTlVfU09VUkNFKSwgYnV0IGp1c3QgZm9yCj4gPiBzYWZldHkgaW5jbHVkZSBs
-YXBpL2ZjbnRsLmggaW4gY2FzZSBsYXBpL2ZzLmggaXMgaW5jbHVkZWQgaW4gdGVzdCB3aGljaAo+
-ID4gbmVlZHMgZmFsbGJhY2sgZGVmaW5pdGlvbnMgZnJvbSBsYXBpL2ZzLmguCgo+IFlvdSBwcm9i
-YWJseSBtZWFudCBsYXBpL2ZjbnRsLmggaGVyZSBeXgoKKzEKCj4gPiBCZWNhdXNlIHdlIHJlcXVp
-cmUgX0dOVV9TT1VSQ0UgZGVmaW5pdGlvbiBmb3IgY29kZSBpbiBsYXBpL2ZzLmgsIHRoYXQncwo+
-ID4gd2h5IHRoZXJlIGlzIHRoZSBkZWZpbml0aW9uIGluIGJvdGggdW5saW5rMDkuYyAodGhlIGFj
-dHVhbCBmaXgpIGFuZAo+ID4gbGFwaS9mcy5oIGZvciB2aXNpYmlsaXR5IG9mIHRoZSBwcm9ibGVt
-LgoKPiA+IEZpeGVzOiAyY2Y3OGY0N2EgKCJ1bmxpbms6IEFkZCBlcnJvciB0ZXN0cyBmb3IgRVBF
-Uk0gYW5kIEVST0ZTIikKPiA+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6Pgo+ID4gLS0tCj4gPiAjZGVmaW5lIF9HTlVfU09VUkNFIHBhaW4gYWdhaW4uIFdvdWxkIHlv
-dSBzb2x2ZSBpdCBkaWZmZXJlbnRseT8KCj4gSSdkIGxpa2VseSBnbyBzaW1pbGFyIHJvdXRlLCBi
-dXQgSSdkIGRyb3AgdGhlIGh1bmsgZnJvbSB1bmxpbmswOS5jLgo+IFRoZSB0ZXN0IGlzIG5vdCB1
-c2luZyBsb2ZmX3QgZGlyZWN0bHksIGl0IGluY2x1ZGVzIGEgaGVhZGVyLCBzbyBpdAo+IHNob3Vs
-ZCBiZSB1cCB0bwoKRmlyc3QsIHRoYW5rcyBhIGxvdCBmb3IgeW91ciByZXZpZXchCgpPSywgdGhp
-cyB3aWxsIHdvcmssIGp1c3QgbGFwaS9mcy5oIG11c3QgYmUgbG9hZGVkIGJlZm9yZSB0c3RfdGVz
-dC5oLApvdGhld2lzZSBpdCB3b3VsZCBmYWlsIG9uIEFscGluZToKCkluIGZpbGUgaW5jbHVkZWQg
-ZnJvbSB1bmxpbmswOS5jOjIwOgouLi8uLi8uLi8uLi9pbmNsdWRlL2xhcGkvZnMuaDo2MToxNTog
-ZXJyb3I6IHVua25vd24gdHlwZSBuYW1lICdsb2ZmX3QnCiAgIDYxIHwgc3RhdGljIGlubGluZSBs
-b2ZmX3QgdHN0X21heF9sZnNfZmlsZXNpemUodm9pZCkKICAgICAgfCAgICAgICAgICAgICAgIF5+
-fn5+fgouLi8uLi8uLi8uLi9pbmNsdWRlL2xhcGkvZnMuaDogSW4gZnVuY3Rpb24gJ3RzdF9tYXhf
-bGZzX2ZpbGVzaXplJzoKLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzLmg6NjQ6MTc6IGVycm9y
-OiAnbG9mZl90JyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik7IGRpZCB5
-b3UgbWVhbiAnb2ZmX3QnPwogICA2NCB8ICAgICAgICAgcmV0dXJuIChsb2ZmX3QpTExPTkdfTUFY
-OwogICAgICB8ICAgICAgICAgICAgICAgICBefn5+fn4KICAgICAgfCAgICAgICAgICAgICAgICAg
-b2ZmX3QKLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzLmg6NjQ6MTc6IG5vdGU6IGVhY2ggdW5k
-ZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZSBmb3IgZWFjaCBmdW5jdGlv
-biBpdCBhcHBlYXJzIGluCi4uLy4uLy4uLy4uL2luY2x1ZGUvbGFwaS9mcy5oOjY0OjI0OiBlcnJv
-cjogZXhwZWN0ZWQgJzsnIGJlZm9yZSBudW1lcmljIGNvbnN0YW50CiAgIDY0IHwgICAgICAgICBy
-ZXR1cm4gKGxvZmZfdClMTE9OR19NQVg7CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICBe
-CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICA7Cm1ha2U6ICoqKiBbLi4vLi4vLi4vLi4v
-aW5jbHVkZS9tay9ydWxlcy5tazo0NTogdW5saW5rMDldIEVycm9yIDEKCihnbGliYyBoaWRlcyBs
-b2ZmX3QgYmVoaW5kIF9fVVNFX01JU0MsIHdoaWNoIEkgdGhvdWdodCBpdCBpdCdzIGluIHRoZSBl
-bmQKX0dOVV9TT1VSQ0UsIGJ1dCBvYnZpb3VzbHkgbm90KS4KCkFuZCB1c2luZyBpbmNsdWRlL2xh
-cGkvZnMuaCBhbmQgbW9zdCBvZiBsYXBpIGhlYWRlcnMgaXQncyBvayB0byB1c2UgdGhlbSBiZWZv
-cmUKdHN0X3Rlc3QuaCAoc29tZSBvZiB0aGVtIGFyZSBzdGlsbCB1c2VkIGZvciB0aGUgb2xkIEFQ
-SSkuIEJ1dAppbmNsdWRlL2xhcGkvZ2V0cmFuZG9tLmggd2lsbCBicmVhayB0aGlzIGFzc3VtcHRp
-b24gYW5kIGl0IGNhbiBjYXVzZSB0aGUKdHJvdWJsZXMgaWYgaW5jbHVkZS9sYXBpL2dldHJhbmRv
-bS5oIG5lZWRzIGluY2x1ZGUvbGFwaS9mY250bC5oIG9yIDxmY250bC5oPikuCgpBbHNvIG15IG5v
-dC15ZXQtZmluaXNoZWQgZWZmb3J0IHdpdGggc2FmZV9mYWxsb2NhdGUoKSBbMV0gaGFkIHRoaXMg
-cHJvYmxlbQoocmVxdWlyZXMgPGZjbnRsLmg+KSwgYnV0IEknbGwgc29sdmUgdGhpcyB3aXRoIHBy
-b3ZpZGluZyBmYWxsb2NhdGUoKSBkZWNsYXJhdGlvbgphcyB5b3Ugc3VnZ2VzdGVkLgoKPiB0aGF0
-IGhlYWRlciB0byB3b3JrIHdpdGhvdXQgcHJlLWV4aXN0aW5nIGRlZmluZXMuCgoKPiA+ICBpbmNs
-dWRlL2xhcGkvZnMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgNSArKysrLQo+ID4gIHRl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5saW5rL3VubGluazA5LmMgfCAyICsrCj4gPiAgMiBm
-aWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCj4gPiBkaWZmIC0t
-Z2l0IGEvaW5jbHVkZS9sYXBpL2ZzLmggYi9pbmNsdWRlL2xhcGkvZnMuaAo+ID4gaW5kZXggYzE5
-ZWU4MjFkLi40NjgwZjAwOTAgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2xhcGkvZnMuaAo+ID4g
-KysrIGIvaW5jbHVkZS9sYXBpL2ZzLmgKPiA+IEBAIC05LDE1ICs5LDE4IEBACj4gPiAgI2lmbmRl
-ZiBMQVBJX0ZTX0hfXwo+ID4gICNkZWZpbmUgTEFQSV9GU19IX18KCj4gPiArI2RlZmluZSBfR05V
-X1NPVVJDRSAvKiBsb2ZmX3QgaW4gPGZjbnRsLmg+ICovCgo+IEknZCBhbHNvIGFkZCB0byBjb21t
-ZW50IGhlcmUgdGhhdCBpdCdzIGluY2x1ZGVkIHZpYSBsYXBpL2ZjbnRsLmgKCisxCgpLaW5kIHJl
-Z2FyZHMsClBldHIKClsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNDA0MTIxMTQ2
-MTYuR0I0Mjc3NDZAcGV2aWsvCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+sched_yeild() just causes the SCHED_FIFO tasks to behave like
+SCHED_RR which makes analysis of the behavior more difficult to
+follow. So lets drop the calls.
+
+Also fixes up some whitespace inconsistencies in the header comment.
+
+Cc: kernel-team@android.com
+Cc: Darren Hart <darren@os.amperecomputing.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+---
+ .../realtime/func/sched_football/sched_football.c      | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
+index 6f075aea3..1e205219d 100644
+--- a/testcases/realtime/func/sched_football/sched_football.c
++++ b/testcases/realtime/func/sched_football/sched_football.c
+@@ -32,12 +32,12 @@
+  *       - Create a fixed number of offense threads (lower priority)
+  *       - Create a referee thread (highest priority)
+  *       - Once everyone is on the field, the offense thread increments the
+- *	 value of 'the_ball' and yields. The defense thread tries to block
+- *	 the ball by never letting the offense players get the CPU (it just
+- * 	   does a sched_yield).
++ *         value of 'the_ball'. The defense thread tries to block
++ *         the ball by never letting the offense players get the CPU (it just
++ *         spins).
+  *       - The refree threads wakes up regularly to check if the game is over :)
+  *       - In the end, if the value of 'the_ball' is >0, the test is considered
+- *	 to have failed.
++ *         to have failed.
+  *
+  * USAGE:
+  *      Use run_auto.sh script in current directory to build and run test.
+@@ -113,7 +113,6 @@ void *thread_defense(void *arg)
+ 	atomic_inc(&players_ready);
+ 	/*keep the ball from being moved */
+ 	while (1) {
+-		sched_yield();	/* let other defenders run */
+ 	}
+ 	return NULL;
+ }
+@@ -124,7 +123,6 @@ void *thread_offense(void *arg)
+ 	atomic_inc(&players_ready);
+ 	while (1) {
+ 		the_ball++;	/* move the ball ahead one yard */
+-		sched_yield();	/* let other offensive players run */
+ 	}
+ 	return NULL;
+ }
+-- 
+2.44.0.769.g3c40516874-goog
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
