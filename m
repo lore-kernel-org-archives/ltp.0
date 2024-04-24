@@ -4,84 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B8A2C4345F
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 07:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA6BC4345F
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 09:24:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E7B53CFFD5
-	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 09:59:35 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 44B983CFFD2
+	for <ltp@archiver.kernel.org>; Wed, 24 Apr 2024 11:24:16 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CF6413CFFC9
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 09:59:20 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id E38043CF915
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 11:24:01 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8F3BA6008A3
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 09:59:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1713945557;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QvKyUh/KRqBMf8i80lBAdTgn7Sw1aTecj7sr/3DcaY0=;
- b=VFY5VxvsbOWW40kN4wzCWDi0ggGwbBnuPYxLDapTUjOOBSLSDNtG1LoTMQfTU7a8GNi0up
- ahu49KJhmgUQT6wo/ayy0JT/qVLwPs58e0cV0FhDgtVCFgOmu2PdoS3F7iDvXHn9GMdh8s
- GbWfUAC37G9KwCxPLbStPkkOXsjzhJQ=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-187-qswNRugvMIy_ZTN3o7In_Q-1; Wed, 24 Apr 2024 03:59:14 -0400
-X-MC-Unique: qswNRugvMIy_ZTN3o7In_Q-1
-Received: by mail-oo1-f71.google.com with SMTP id
- 006d021491bc7-5ac8b684f26so9488730eaf.2
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 00:59:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713945553; x=1714550353;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=QvKyUh/KRqBMf8i80lBAdTgn7Sw1aTecj7sr/3DcaY0=;
- b=cOi1SAkl10dee775ygyIv8bzgGVQVCNigq2IzwvtobnuoiHp6LoD6uEx8cVnJdEAQe
- ko+8hKM+j9ganLbqmSB/q2jaL3OwmOVIRju399nSQZSPpPrl8/A9GPEepKuZip0lt+my
- lVCgrBOcMNYElcEhDk2heTrU5u/SpFX4bTLTtedHamAo8X4hHltDfCzFYTBPyteWs8ts
- cR96wf6akYg22oRLyItc2/6HHOWUJfzinq9wD7wAUzRwe4ej3rzdNP/iDSuSJdw8EtQk
- DY/i0C4fORSmKpdShZlMXauU3UyAYiAo6nCzlfES3SAU9Ql/KTg8WOMo2J14jrBwCdfu
- ynBQ==
-X-Gm-Message-State: AOJu0YxXAiGSKAQMddDI2Ln/zX907dF89Fksl6K/eJyudmUiHK3YttOy
- TOWbbNgyDUwQxAwvC4nCctlUVJV9VBXWMdCOB9swktQ5lSVAq7lbGV7u/eqGFqoICRHw5X172Yc
- Yy+uS86K/jDk9tEq64fHvW7FycPLhtF8doW4yNPr16JRP44qbX2doaNrFmb49ajUPntMrDWS6hZ
- ig0DckhQ6/LDBHsJXpSPyOW93Cv69YeNM=
-X-Received: by 2002:a4a:54c2:0:b0:5aa:6a28:27ea with SMTP id
- t185-20020a4a54c2000000b005aa6a2827eamr1739491ooa.6.1713945553336; 
- Wed, 24 Apr 2024 00:59:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFci9+XyUROqF50vJjAZH0UQTFr39naNPJkyjK7ray3JNm4iwxMKsn5fxvJoOVV3bSNd/v6LWhSx3xnb9MKIjo=
-X-Received: by 2002:a4a:54c2:0:b0:5aa:6a28:27ea with SMTP id
- t185-20020a4a54c2000000b005aa6a2827eamr1739478ooa.6.1713945553131; Wed, 24
- Apr 2024 00:59:13 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 258A2207A04
+ for <ltp@lists.linux.it>; Wed, 24 Apr 2024 11:24:00 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9BD2E612BB;
+ Wed, 24 Apr 2024 09:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713950638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Tdcx1pv4roPGKTjyT1OwhGCLJJNlufHcfqzmPyB0CWQ=;
+ b=OAFlxQaeQhpzT357DmhOSNWpUW7kXssP/gx2A7O/RklflnOB3yhzoEdVi4KDHDR+TQKVA+
+ dhzzRD7ERlNVe4FbsF83Jn6vYNmGsutBTsWYUeF3rtiz/W4Vns6T+2m1xGBis1ruNMpOKW
+ 2C9mMRXHefRTC0Dmr+XgAimmXc+a7UI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713950638;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Tdcx1pv4roPGKTjyT1OwhGCLJJNlufHcfqzmPyB0CWQ=;
+ b=C7t8gmzD8q6AhnlVnjs9jDz4QvGLEs5kA9U7x/m8wkCbkfTgcy3YQuMUg4gCFMO7S/Pzqa
+ zgdZVaCS7lnsGyCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1713950638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Tdcx1pv4roPGKTjyT1OwhGCLJJNlufHcfqzmPyB0CWQ=;
+ b=OAFlxQaeQhpzT357DmhOSNWpUW7kXssP/gx2A7O/RklflnOB3yhzoEdVi4KDHDR+TQKVA+
+ dhzzRD7ERlNVe4FbsF83Jn6vYNmGsutBTsWYUeF3rtiz/W4Vns6T+2m1xGBis1ruNMpOKW
+ 2C9mMRXHefRTC0Dmr+XgAimmXc+a7UI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1713950638;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Tdcx1pv4roPGKTjyT1OwhGCLJJNlufHcfqzmPyB0CWQ=;
+ b=C7t8gmzD8q6AhnlVnjs9jDz4QvGLEs5kA9U7x/m8wkCbkfTgcy3YQuMUg4gCFMO7S/Pzqa
+ zgdZVaCS7lnsGyCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 767C513690;
+ Wed, 24 Apr 2024 09:23:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id vWIAG67PKGbvNwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 24 Apr 2024 09:23:58 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 24 Apr 2024 11:23:57 +0200
+Message-Id: <20240424092357.11207-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20240423132823.194179-1-pvorel@suse.cz>
- <20240423132823.194179-2-pvorel@suse.cz>
-In-Reply-To: <20240423132823.194179-2-pvorel@suse.cz>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 24 Apr 2024 09:59:44 +0200
-Message-ID: <CAASaF6wWtdmG6nWpWcTv=AnzJn8vSe71RQsSkcF-1wHbPb_Mjw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lapi/fs: Include lapi/fcntl.h + define
- _GNU_SOURCE
+Subject: [LTP] [PATCH v2] Add rename15 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,52 +103,184 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBBcHIgMjMsIDIwMjQgYXQgMzoyOOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IFRoaXMgZml4ZXMgYnVpbGQgZXJyb3Igb24gbXVzbCAoYWxwaW5lKToK
-Pgo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSB1bmxpbmswOS5jOjE4Ogo+IC4uLy4uLy4uLy4uL2lu
-Y2x1ZGUvbGFwaS9mcy5oOjU4OjE1OiBlcnJvcjogdW5rbm93biB0eXBlIG5hbWUgJ2xvZmZfdCcK
-PiAgICA1OCB8IHN0YXRpYyBpbmxpbmUgbG9mZl90IHRzdF9tYXhfbGZzX2ZpbGVzaXplKHZvaWQp
-Cj4KPiBsb2ZmX3QgaXMgZGVmaW5lZCBpbiA8ZmNudGwuaD4gKGJ1dCBndWFyZGVkIF9HTlVfU09V
-UkNFKSwgYnV0IGp1c3QgZm9yCj4gc2FmZXR5IGluY2x1ZGUgbGFwaS9mY250bC5oIGluIGNhc2Ug
-bGFwaS9mcy5oIGlzIGluY2x1ZGVkIGluIHRlc3Qgd2hpY2gKPiBuZWVkcyBmYWxsYmFjayBkZWZp
-bml0aW9ucyBmcm9tIGxhcGkvZnMuaC4KCllvdSBwcm9iYWJseSBtZWFudCBsYXBpL2ZjbnRsLmgg
-aGVyZSBeXgoKPgo+IEJlY2F1c2Ugd2UgcmVxdWlyZSBfR05VX1NPVVJDRSBkZWZpbml0aW9uIGZv
-ciBjb2RlIGluIGxhcGkvZnMuaCwgdGhhdCdzCj4gd2h5IHRoZXJlIGlzIHRoZSBkZWZpbml0aW9u
-IGluIGJvdGggdW5saW5rMDkuYyAodGhlIGFjdHVhbCBmaXgpIGFuZAo+IGxhcGkvZnMuaCBmb3Ig
-dmlzaWJpbGl0eSBvZiB0aGUgcHJvYmxlbS4KPgo+IEZpeGVzOiAyY2Y3OGY0N2EgKCJ1bmxpbms6
-IEFkZCBlcnJvciB0ZXN0cyBmb3IgRVBFUk0gYW5kIEVST0ZTIikKPiBTaWduZWQtb2ZmLWJ5OiBQ
-ZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiAtLS0KPiAjZGVmaW5lIF9HTlVfU09VUkNFIHBh
-aW4gYWdhaW4uIFdvdWxkIHlvdSBzb2x2ZSBpdCBkaWZmZXJlbnRseT8KCkknZCBsaWtlbHkgZ28g
-c2ltaWxhciByb3V0ZSwgYnV0IEknZCBkcm9wIHRoZSBodW5rIGZyb20gdW5saW5rMDkuYy4KVGhl
-IHRlc3QgaXMgbm90IHVzaW5nIGxvZmZfdCBkaXJlY3RseSwgaXQgaW5jbHVkZXMgYSBoZWFkZXIs
-IHNvIGl0CnNob3VsZCBiZSB1cCB0bwp0aGF0IGhlYWRlciB0byB3b3JrIHdpdGhvdXQgcHJlLWV4
-aXN0aW5nIGRlZmluZXMuCgo+Cj4gIGluY2x1ZGUvbGFwaS9mcy5oICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCA1ICsrKystCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5saW5rL3Vu
-bGluazA5LmMgfCAyICsrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAxIGRl
-bGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL2ZzLmggYi9pbmNsdWRlL2xh
-cGkvZnMuaAo+IGluZGV4IGMxOWVlODIxZC4uNDY4MGYwMDkwIDEwMDY0NAo+IC0tLSBhL2luY2x1
-ZGUvbGFwaS9mcy5oCj4gKysrIGIvaW5jbHVkZS9sYXBpL2ZzLmgKPiBAQCAtOSwxNSArOSwxOCBA
-QAo+ICAjaWZuZGVmIExBUElfRlNfSF9fCj4gICNkZWZpbmUgTEFQSV9GU19IX18KPgo+ICsjZGVm
-aW5lIF9HTlVfU09VUkNFIC8qIGxvZmZfdCBpbiA8ZmNudGwuaD4gKi8KCkknZCBhbHNvIGFkZCB0
-byBjb21tZW50IGhlcmUgdGhhdCBpdCdzIGluY2x1ZGVkIHZpYSBsYXBpL2ZjbnRsLmgKCj4gKwo+
-ICAjaW5jbHVkZSAiY29uZmlnLmgiCj4gKwo+ICAjaWZuZGVmIEhBVkVfTU9VTlRfU0VUQVRUUgo+
-ICAjIGlmZGVmIEhBVkVfTElOVVhfRlNfSAo+ICAjICBpbmNsdWRlIDxsaW51eC9mcy5oPgo+ICAj
-IGVuZGlmCj4gICNlbmRpZgo+Cj4gLSNpbmNsdWRlIDxzeXMvdXNlci5oPgo+ICAjaW5jbHVkZSA8
-bGltaXRzLmg+Cj4gKyNpbmNsdWRlICJsYXBpL2ZjbnRsLmgiCj4gICNpbmNsdWRlICJsYXBpL2Fi
-aXNpemUuaCIKPgo+ICAjaWZuZGVmIEZTX0lPQ19HRVRGTEFHUwo+IGRpZmYgLS1naXQgYS90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL3VubGluay91bmxpbmswOS5jIGIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy91bmxpbmsvdW5saW5rMDkuYwo+IGluZGV4IGNjNGI0YTA3ZS4uN2UzZmZmZTVj
-IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5saW5rL3VubGluazA5
-LmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3VubGluay91bmxpbmswOS5jCj4g
-QEAgLTEzLDYgKzEzLDggQEAKPiAgICogLSBFUk9GUyB3aGVuIHRhcmdldCBmaWxlIGlzIG9uIGEg
-cmVhZC1vbmx5IGZpbGVzeXN0ZW0uCj4gICAqLwo+Cj4gKyNkZWZpbmUgX0dOVV9TT1VSQ0UgLyog
-bG9mZl90IGluIDxmY250bC5oPiAqLwo+ICsKPiAgI2luY2x1ZGUgPHN5cy9pb2N0bC5oPgo+ICAj
-aW5jbHVkZSAidHN0X3Rlc3QuaCIKPiAgI2luY2x1ZGUgImxhcGkvZnMuaCIKPiAtLQo+IDIuNDMu
-MAo+CgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This test has been extracted from symlink01 and it verifies that
+rename() is working correctly on symlink() generated files, renaming
+symbolic link and checking if stat() information are preserved.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Added 2 more tests
+* Test rename() on symlink pointing to a non-existent path
+* Test rename() on symlink pointing to a path created lately
+
+Usage of macros for file names
+Resolve tmpdir memory leakage
+
+ runtest/smoketest                           |   2 +-
+ runtest/syscalls                            |   2 +-
+ testcases/kernel/syscalls/rename/.gitignore |   1 +
+ testcases/kernel/syscalls/rename/rename15.c | 100 ++++++++++++++++++++
+ 4 files changed, 103 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/rename/rename15.c
+
+diff --git a/runtest/smoketest b/runtest/smoketest
+index 83eebfe7b..19fa257d6 100644
+--- a/runtest/smoketest
++++ b/runtest/smoketest
+@@ -10,7 +10,7 @@ write01 write01
+ symlink01 symlink01
+ stat04 symlink01 -T stat04
+ utime01A symlink01 -T utime01
+-rename01A symlink01 -T rename01
++rename15 rename15
+ splice02 splice02 -s 20
+ df01_sh df01.sh
+ shell_test01 echo "SUCCESS" | shell_pipe01.sh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b9dd9fec6..f515d46aa 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1156,7 +1156,6 @@ removexattr01 removexattr01
+ removexattr02 removexattr02
+ 
+ rename01 rename01
+-rename01A symlink01 -T rename01
+ rename03 rename03
+ rename04 rename04
+ rename05 rename05
+@@ -1169,6 +1168,7 @@ rename11 rename11
+ rename12 rename12
+ rename13 rename13
+ rename14 rename14
++rename15 rename15
+ 
+ #renameat test cases
+ renameat01 renameat01
+diff --git a/testcases/kernel/syscalls/rename/.gitignore b/testcases/kernel/syscalls/rename/.gitignore
+index f95cf7d21..d17b80f09 100644
+--- a/testcases/kernel/syscalls/rename/.gitignore
++++ b/testcases/kernel/syscalls/rename/.gitignore
+@@ -11,3 +11,4 @@
+ /rename12
+ /rename13
+ /rename14
++/rename15
+diff --git a/testcases/kernel/syscalls/rename/rename15.c b/testcases/kernel/syscalls/rename/rename15.c
+new file mode 100644
+index 000000000..d410758a2
+--- /dev/null
++++ b/testcases/kernel/syscalls/rename/rename15.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    Author: David Fenner
++ *    Copilot: Jon Hendrickson
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that rename() is working correctly on symlink()
++ * generated files.
++ */
++
++#include <stdlib.h>
++#include "tst_test.h"
++
++#define OLDNAME "msymlink0"
++#define NEWNAME "asymlink0"
++
++static char *tmpdir;
++
++static void test_existing(void)
++{
++	tst_res(TINFO, "Test rename() on symlink pointing to an existent path");
++
++	struct stat oldsym_stat;
++	struct stat newsym_stat;
++
++	SAFE_SYMLINK(tmpdir, OLDNAME);
++	SAFE_STAT(OLDNAME, &oldsym_stat);
++
++	SAFE_RENAME(OLDNAME, NEWNAME);
++	SAFE_STAT(NEWNAME, &newsym_stat);
++
++	TST_EXP_EQ_LI(oldsym_stat.st_ino, newsym_stat.st_ino);
++	TST_EXP_EQ_LI(oldsym_stat.st_dev, newsym_stat.st_dev);
++
++	SAFE_UNLINK(NEWNAME);
++}
++
++static void test_non_existing(void)
++{
++	tst_res(TINFO, "Test rename() on symlink pointing to a non-existent path");
++
++	struct stat path_stat;
++
++	SAFE_SYMLINK("this_path_doesnt_exist", OLDNAME);
++	TST_EXP_FAIL(stat(OLDNAME, &path_stat), ENOENT);
++
++	SAFE_RENAME(OLDNAME, NEWNAME);
++	TST_EXP_FAIL(stat(NEWNAME, &path_stat), ENOENT);
++
++	SAFE_UNLINK(NEWNAME);
++}
++
++static void test_creat(void)
++{
++	tst_res(TINFO, "Test rename() on symlink pointing to a path created lately");
++
++	char *objpath = "object";
++	struct stat path_stat;
++
++	SAFE_SYMLINK(objpath, OLDNAME);
++	TST_EXP_FAIL(stat(OLDNAME, &path_stat), ENOENT);
++
++	tst_res(TINFO, "Create object file");
++
++	SAFE_CREAT(objpath, 0700);
++	SAFE_RENAME(OLDNAME, NEWNAME);
++	TST_EXP_PASS(stat(NEWNAME, &path_stat));
++
++	SAFE_UNLINK(objpath);
++	SAFE_UNLINK(NEWNAME);
++}
++
++static void run(void)
++{
++	test_existing();
++	test_creat();
++	test_non_existing();
++}
++
++static void setup(void)
++{
++	tmpdir = tst_get_tmpdir();
++}
++
++static void cleanup(void)
++{
++	free(tmpdir);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_tmpdir = 1,
++};
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
