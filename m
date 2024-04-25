@@ -4,85 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36FA9C4345F
-	for <ltp@archiver.kernel.org>; Thu, 25 Apr 2024 02:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1714010709; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=FlVwGnO1iE3Hy/Q/8g6mRwzSxGZaX4grK8XGLg1gN9g=;
- b=LG3utjjY4RRK3yje7BbXfYBEb2L/ktj1BpkNpvc8ob4n1FUfm+WxJC3JRDScxF4uFQegd
- /IuY3ws9z+8Rmq3YkWiTPdjq2iUhI628rfHSCoOEsWTSpjvGW2xJxGIel+jnNE7b1DDJn8u
- 0HIb9im64CBWBl1AsU9runs77bNNb6w=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0201DC4345F
+	for <ltp@archiver.kernel.org>; Thu, 25 Apr 2024 11:40:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B07F3D007D
-	for <ltp@archiver.kernel.org>; Thu, 25 Apr 2024 04:05:09 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BC8A93CFE72
+	for <ltp@archiver.kernel.org>; Thu, 25 Apr 2024 13:40:33 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F5133D0095
- for <ltp@lists.linux.it>; Thu, 25 Apr 2024 04:03:47 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 137353CC614
+ for <ltp@lists.linux.it>; Thu, 25 Apr 2024 13:40:17 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E43C61A00CA1
- for <ltp@lists.linux.it>; Thu, 25 Apr 2024 04:03:46 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-41af670185fso3977075e9.0
- for <ltp@lists.linux.it>; Wed, 24 Apr 2024 19:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1714010626; x=1714615426; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=hthddeXdDX4HlLtL2gO6Ql5wzxDqoyVRkLEcC4crn/E=;
- b=IMkWZWTUsWU7+uID+nBYdtdbpeYCAvG2Ibbh6DRT8ZZYWoQQiTzxkLZ4F4ipcDl6C3
- iUGAM8dj8diQToiE0OivWAVHbowOEeaOeYypua+7A//+pqdAslV6Vfz5rZ5xo/NdOipz
- IfqFNaPm2fp7LtUyiU1W+9pKMkp00NyevjHDRbpexRDgi7+Q+Nqpbuqf8ncB17TmwnBG
- LLmMYZmDgiGM3injPD+G/qHO3Y4zJ8l/eIJY3nFr5oUTJ6DXvfPrFeercWQxMG+0hYP4
- M/YAmNoiJZ0cs0g52jAPZf1rJI4hUXpRBBlMJ8tUCxw90R3GxgQb2U1u0y61v5SflDIn
- ALFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1714010626; x=1714615426;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=hthddeXdDX4HlLtL2gO6Ql5wzxDqoyVRkLEcC4crn/E=;
- b=fkyh6qGKBAyfhmQZzI+BM/AboaQL7CZysH1uBwTCkzMZWgSHJ8KRXo5DxkgmD45oOt
- 8kC840tQIug29ckgEcMa7JIW9iycpGlqjnn1x0Iuo3IZXW1uH+/aKlyZaTuZaZ6sRpAQ
- ft7B5NQPn5L5DVsM9FyQ/+QgZ3cXQLt+9pvDOIvFf0WaGhRCTWIc7WL7qHXNK8W5OeeE
- 0/rl6WCvM65PP6R5DNOHmYQhpTruBmeUo8IUin6ZXDwlKn25BYP1HjuimIsTRUjaWKs8
- JkOxQlSenN0iujaU9Sp6QsF8SGB70IZzTbLjo+BHBystEcx2emn69H9vIXBV2eOSki5w
- hwJg==
-X-Gm-Message-State: AOJu0YxBl7SmNF67/wfkZPgoEua5kE/fclPERNwmpFJJG26pF9UGrP7a
- bjmdwHMlGY+PNFP12eXETSVtftFBWNGCEPS8vsjDaLZTvDcPrHquV9VV4aDIYV+4gUIY+4LbeKU
- =
-X-Google-Smtp-Source: AGHT+IFq+6zzTtn5CZA8P/XMroG9sGPfZEUfzv8jwMV6ixHzO8ExyhnofhhEU7rjl0QKJahFH0ENzQ==
-X-Received: by 2002:a05:6000:d10:b0:345:edfd:9529 with SMTP id
- dt16-20020a0560000d1000b00345edfd9529mr2894384wrb.29.1714010625948; 
- Wed, 24 Apr 2024 19:03:45 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- t10-20020a5d49ca000000b0034bfc32a4f6sm743948wrs.48.2024.04.24.19.03.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Apr 2024 19:03:45 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 24 Apr 2024 22:03:08 -0400
-Message-Id: <20240425020308.25367-4-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240425020308.25367-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 70F841A00FA8
+ for <ltp@lists.linux.it>; Thu, 25 Apr 2024 13:40:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3F20F20A39;
+ Thu, 25 Apr 2024 11:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1714045216;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ODM9o7a3yLBBJSEr/1ha67UCaROdeiMB4rsZnKdl+rw=;
+ b=plI3qFj9b1dJVAC7lHMCb8ydPocJeJFSnaR0sQFKQqt/BuGKCtKwTIipyelBaFKtm8IAX4
+ 89VYOWwcLFPG+saA1oiRjyXkvIjOGsRsALD/LT96TlWyCygZW4KMOuzaR9golh1sTAiNVZ
+ O9ENkGP9kqBx9McqSrLpR9VcJvVCcAw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1714045216;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ODM9o7a3yLBBJSEr/1ha67UCaROdeiMB4rsZnKdl+rw=;
+ b=K2vaYVtyP2KgrFxD+tbzuXB2kHhWo1868BsavEDi2tbUDbkkDDMsn05uKEAGKaCRjswGyy
+ mAe/ns7zpGQm8aCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1714045215;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ODM9o7a3yLBBJSEr/1ha67UCaROdeiMB4rsZnKdl+rw=;
+ b=0W9zJvqTUsZTKYSu38Mej8MRV/xUZkq6LmqNgCUHLFbZnruzxH+KzvPedlR0T7gr5S0yli
+ vAoLaMAYExr7STgnDUmkh5rJhseSgUj/yTIgYkAAr3tamnjDVyNBiirB2dwLodlX35/tVP
+ migsCdx64ehgxT6Q/bBV+GIMqzgSNis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1714045215;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ODM9o7a3yLBBJSEr/1ha67UCaROdeiMB4rsZnKdl+rw=;
+ b=L7ErU+hpEDoFZv8AOA0j3yqrOm+cSb9gTC7n17QKx4rPNL2eBTJS5bnrsDsFgRFlmPeUmF
+ FM2euU/FTVwwBHDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D2E51393C;
+ Thu, 25 Apr 2024 11:40:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2MU1Bh9BKmbgUgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 25 Apr 2024 11:40:15 +0000
+Date: Thu, 25 Apr 2024 13:40:13 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20240425114013.GA284406@pevik>
 References: <20240415025100.2103-1-wegao@suse.com>
  <20240425020308.25367-1-wegao@suse.com>
+ <20240425020308.25367-2-wegao@suse.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240425020308.25367-2-wegao@suse.com>
+X-Spamd-Result: default: False [-3.49 / 50.00]; BAYES_HAM(-2.99)[99.96%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] sbrk02.c: Use TST_EXP_FAIL_PTR_VOID
+Subject: Re: [LTP] [PATCH v2 1/3] lib: Add TST_EXP_PASS_PTR_{NULL,
+ VOID} macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,49 +114,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/sbrk/sbrk02.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+Hi Wei,
 
-diff --git a/testcases/kernel/syscalls/sbrk/sbrk02.c b/testcases/kernel/syscalls/sbrk/sbrk02.c
-index dc344577e..08cbdf367 100644
---- a/testcases/kernel/syscalls/sbrk/sbrk02.c
-+++ b/testcases/kernel/syscalls/sbrk/sbrk02.c
-@@ -19,21 +19,8 @@ static long increment = INC;
- 
- static void run(void)
- {
--	TESTPTR(sbrk(increment));
--
--	if (TST_RET_PTR != (void *)-1) {
--		tst_res(TFAIL, "sbrk(%ld) unexpectedly passed and returned %p, "
--						"expected (void *)-1 with errno=%d",
--						increment, TST_RET_PTR, ENOMEM);
--		return;
--	}
--
--	if (TST_ERR == ENOMEM)
--		tst_res(TPASS | TTERRNO, "sbrk(%ld) failed as expected", increment);
--	else
--		tst_res(TFAIL | TTERRNO, "sbrk(%ld) failed but unexpected errno, "
--								"expected errno=%d - %s",
--								increment, ENOMEM, strerror(ENOMEM));
-+	TST_EXP_FAIL_PTR_VOID(sbrk(increment), ENOMEM,
-+		"sbrk(%ld) returned %p", increment, TST_RET_PTR);
- }
- 
- static void setup(void)
--- 
-2.35.3
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  include/tst_test_macros.h | 45 +++++++++++++++++++++++++++++++++------
+>  1 file changed, 39 insertions(+), 6 deletions(-)
 
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 22b39fb14..1fb133dd3 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -178,6 +178,28 @@ extern void *TST_RET_PTR;
+>                                                                                 \
+>  	} while (0)
+
+> +#define TST_EXP_PASS_SILENT_PTR_(SCALL, SSCALL, FAIL_PTR_VAL, ...)             \
+> +	do {                                                                   \
+> +		TESTPTR(SCALL);                                                \
+> +		                                                               \
+> +		TST_PASS = 0;                                                  \
+> +		                                                               \
+> +		if (TST_RET_PTR == FAIL_PTR_VAL) {                             \
+> +			TST_MSG_(TFAIL | TTERRNO, " failed",                   \
+> +			         SSCALL, ##__VA_ARGS__);                       \
+> +		        break;                                                 \
+> +		}                                                              \
+> +		                                                               \
+> +		if (TST_RET != 0) {                                            \
+> +			TST_MSGP_(TFAIL | TTERRNO, " invalid retval %ld",      \
+> +			          TST_RET, SSCALL, ##__VA_ARGS__);             \
+> +			break;                                                 \
+> +		}                                                              \
+> +                                                                               \
+> +		TST_PASS = 1;                                                  \
+> +                                                                               \
+> +	} while (0)
+> +
+>  #define TST_EXP_PASS_SILENT(SCALL, ...) TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__)
+
+>  #define TST_EXP_PASS(SCALL, ...)                                               \
+> @@ -188,6 +210,21 @@ extern void *TST_RET_PTR;
+>  			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
+>  	} while (0)                                                            \
+
+> +#define TST_EXP_PASS_PTR_(SCALL, SSCALL, FAIL_PTR_VAL, ...)                    \
+> +	do {                                                                   \
+> +		TST_EXP_PASS_SILENT_PTR_(SCALL, SSCALL,                        \
+> +					FAIL_PTR_VAL, ##__VA_ARGS__);          \
+> +		                                                               \
+> +		if (TST_PASS)                                                  \
+> +			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
+> +	} while (0)
+> +
+> +#define TST_EXP_PASS_PTR_NULL(SCALL, ...)                                      \
+> +               TST_EXP_PASS_PTR_(SCALL, #SCALL, NULL, ##__VA_ARGS__);
+
+I'm still not sure whether add TST_EXP_PASS_PTR_NULL, which is not used.
+I wonder what others think (it can be removed before merge).
+
+> +
+> +#define TST_EXP_PASS_PTR_VOID(SCALL, ...)                                      \
+> +               TST_EXP_PASS_PTR_(SCALL, #SCALL, (void *)-1, ##__VA_ARGS__);
+> +
+>  /*
+>   * Returns true if err is in the exp_err array.
+>   */
+> @@ -301,10 +338,8 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	} while (0)
+
+>  #define TST_EXP_FAIL_PTR_NULL_ARR(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)      \
+> -	do {                                                                   \
+>  		TST_EXP_FAIL_PTR_(SCALL, #SCALL, NULL,                         \
+> -			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);        \
+> -	} while (0)
+> +			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);
++1
+
+>  #define TST_EXP_FAIL_PTR_VOID(SCALL, EXP_ERR, ...)                         \
+>  	do {                                                                   \
+> @@ -314,10 +349,8 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	} while (0)
+
+>  #define TST_EXP_FAIL_PTR_VOID_ARR(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)      \
+> -	do {                                                                   \
+>  		TST_EXP_FAIL_PTR_(SCALL, #SCALL, (void *)-1,                   \
+> -			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);        \
+> -	} while (0)
+> +			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);
++1
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+>  #define TST_EXP_FAIL2(SCALL, EXP_ERR, ...)                                     \
+>  	do {                                                                   \
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
