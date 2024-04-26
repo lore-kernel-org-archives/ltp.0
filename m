@@ -4,91 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77ECAC4345F
-	for <ltp@archiver.kernel.org>; Thu, 25 Apr 2024 22:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63D6AC4345F
+	for <ltp@archiver.kernel.org>; Fri, 26 Apr 2024 02:32:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C999C3CFE89
-	for <ltp@archiver.kernel.org>; Fri, 26 Apr 2024 00:23:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D29543CFE97
+	for <ltp@archiver.kernel.org>; Fri, 26 Apr 2024 04:32:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 05DDD3CE531
- for <ltp@lists.linux.it>; Fri, 26 Apr 2024 00:23:38 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D0E093CE955
+ for <ltp@lists.linux.it>; Fri, 26 Apr 2024 04:32:14 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F2F521A009A4
- for <ltp@lists.linux.it>; Fri, 26 Apr 2024 00:23:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F0E561FDFF;
- Thu, 25 Apr 2024 22:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1714083816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Lr2dZ8tBAEgl+AlG0IE/yp0qmxlSHQ1G2/Rrp9bODQM=;
- b=IScK5ccBnNllIEbq3bPXmZkeOTefcwS2fyzqsnw0VFIGhAytM+SXtUZMenOZtlRx2iSRdd
- tdVmLOrIrJlgu7wo98ir2mPvVYfjtSb1VS2x2dir3DsXU3SduPtYcyjqdRj/qGHd3mwbiJ
- f43mjZQrA3mh/wNd5QbS0Gz3VjEIaTw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1714083816;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Lr2dZ8tBAEgl+AlG0IE/yp0qmxlSHQ1G2/Rrp9bODQM=;
- b=dnRbTJBCjUewkrZDSHrqRsnZeXs6kLvs3y/F40q0q/+FsB9RY8gzeh/8kyNd9SNVwPerZ/
- 5tkTTrjQpuQCsMDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1714083815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Lr2dZ8tBAEgl+AlG0IE/yp0qmxlSHQ1G2/Rrp9bODQM=;
- b=QVXkWAH2c37/CnjaPzQPcFVU21sQsTPokYrnDb077Pyi4uKKhgQ1dnNg/BZaLJ2KNLPFx5
- hNLClMuQFb0V1/Rh32xxALulf/cWXX0rlsr3ap7v0kAJlthyxs1z2yb9qAmYXIKPUEFZji
- OhVcK3k46us/oy5BXg14Z+LmRgUGyuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1714083815;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Lr2dZ8tBAEgl+AlG0IE/yp0qmxlSHQ1G2/Rrp9bODQM=;
- b=RUVbgDOZ5cN3d1/4qT1g/x9MX9W72HlOzPD9RXL9bOQUm8mJeefTyoPhf7CyFneQ/H4C+o
- NPRfSJ0Ipn6nz8Ag==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D436A13991;
- Thu, 25 Apr 2024 22:23:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id L/kuM+fXKma6egAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 25 Apr 2024 22:23:35 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 26 Apr 2024 00:23:31 +0200
-Message-ID: <20240425222331.315701-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2348E6009DA
+ for <ltp@lists.linux.it>; Fri, 26 Apr 2024 04:32:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1714098732;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VRUKfnBcWBUutS8b1QTgD0ktmbN+HTHXmiAxaTvGtzc=;
+ b=GadFsklhdN/vLTit4Z0u8r9X5rszBZk14HBODyjMwZflwehQ2jgGLUi16YRjiu9iGCCwIE
+ 7g+kESHP29uXh7RPWwmAix1Spz+wtPIDn4nTZEfrU2bxinu4+l/suCZwAcJw+FMD+ODqts
+ NpUZHJeegA+mhaa33UNUOZ/HHaxl9mc=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-eNtlHnJHNsCrQR0x5UDYGg-1; Thu, 25 Apr 2024 22:32:09 -0400
+X-MC-Unique: eNtlHnJHNsCrQR0x5UDYGg-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-2a5c5e69461so2057710a91.2
+ for <ltp@lists.linux.it>; Thu, 25 Apr 2024 19:32:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1714098729; x=1714703529;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=VRUKfnBcWBUutS8b1QTgD0ktmbN+HTHXmiAxaTvGtzc=;
+ b=ccnufaqeI72LqsPEqGtzNTjuJbbkaijiqJ/wr+Dp+RqFat+OYDZXa+dzQYMJvHtD5Q
+ 6Fx4dMq81aUtmWNWbJjgq8Fr375fkR+GeeQiy767TYqfKF+ME/TTuEU4JJhNOLGE7IfQ
+ c5ijN5zcH+Yz8ArwG8GYV//9m8LNkxItxlesDBy8mLR0k9itjAMOH/ybGMoxtvIcv/BL
+ y7GiJ0b9r0cFhMiFarmdj9BvrGmmtvLQ9ebYJ3cYVDaWA/NPZfrEDGbc75sKF9VZgeJd
+ H1cAZpOrGSH9D22bNmmz1GRA1ifBX4He3MndI4CJt8017Jqmv8VUf6cmftmOFM8B0kfG
+ qy5A==
+X-Gm-Message-State: AOJu0Yy82nyFOZFhsVgwb6mj2rq5bhAjEWdkaJq/9sp/IUQUjBp18otj
+ DjT2Ipva3xD0v7pDMQ/k8aecpC9GwcKpQJTQrtauCpQIv2xG6LY27LUB4VS296XJpB7GfVAJYzs
+ 09PnKgDFZ91aGTgbFQ1kgS+YQZ6koUikJTocm8qwA00V+hAnUJHzKyljYIX7ZH6v/PqZ3MRcYok
+ aFGY0jqoI9EAWA0ySRfkeO+sQ=
+X-Received: by 2002:a17:90a:7408:b0:2ae:7e7b:ac with SMTP id
+ a8-20020a17090a740800b002ae7e7b00acmr1559352pjg.13.1714098728878; 
+ Thu, 25 Apr 2024 19:32:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFshG7CLEN+WyUDHtWS6JKqZlC78Tvlmbb4mzrm5dWt9T1NFNCHO/3maRfoM9knnuF9tZ8ZJuVXDriZdU033VQ=
+X-Received: by 2002:a17:90a:7408:b0:2ae:7e7b:ac with SMTP id
+ a8-20020a17090a740800b002ae7e7b00acmr1559340pjg.13.1714098728572; Thu, 25 Apr
+ 2024 19:32:08 -0700 (PDT)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[5];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <20240425211042.299714-1-pvorel@suse.cz>
+ <20240425211042.299714-2-pvorel@suse.cz>
+In-Reply-To: <20240425211042.299714-2-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 26 Apr 2024 10:31:56 +0800
+Message-ID: <CAEemH2ekBY=-DR0ksjB2SjK6di_9hDpnrE58AA+vwxix0R8chw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] doc: Link file/directory names to GitHub sources
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v3 1/2] libswap: Add {SAFE_,
+ }MAKE_SMALL_SWAPFILE() macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,172 +92,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Convert all the files/directory names which actually points to real
-files/directories to the links to GitHub sources. Exception is
-datafiles/Makefile and some examples.
-
-For now we use link to the master, maybe we want to change that if we
-ever generate stable docs.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/conf.py                           |  2 +-
- doc/developers/test_case_tutorial.rst | 18 +++++++++---------
- doc/developers/writing_tests.rst      | 22 +++++++++++-----------
- doc/users/quick_start.rst             |  2 +-
- 4 files changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/doc/conf.py b/doc/conf.py
-index d0f185b28..80f6df99b 100644
---- a/doc/conf.py
-+++ b/doc/conf.py
-@@ -162,7 +162,7 @@ def generate_syscalls_stats(_):
- 
-     # generate the statistics file
-     tested_syscalls = [key for key, val in syscalls.items() if val]
--    text.append('syscalls which are tested under **testcases/kernel/syscalls**:\n\n')
-+    text.append('syscalls which are tested under :master:`testcases/kernel/syscalls`:\n\n')
-     text.append(f'* kernel syscalls: {len(ker_syscalls)}\n')
-     text.append(f'* tested syscalls: {len(tested_syscalls)}\n\n')
- 
-diff --git a/doc/developers/test_case_tutorial.rst b/doc/developers/test_case_tutorial.rst
-index 6ec618b9b..6c38fdbf1 100644
---- a/doc/developers/test_case_tutorial.rst
-+++ b/doc/developers/test_case_tutorial.rst
-@@ -56,7 +56,7 @@ test. At the time of writing there is no test for this call which was
- introduced in Linux kernel version 4.11.
- 
- Linux system call specific tests are primarily contained in
--``testcases/kernel/syscalls``, but you should also ``git grep`` the entire LTP
-+:master:`testcases/kernel/syscalls`, but you should also ``git grep`` the entire LTP
- repository to check for any existing usages of a system call.
- 
- One way to find a system call which is not currently tested by the LTP is to
-@@ -195,7 +195,7 @@ following line after ``testcases.mk``.
- 
-     statx01: CFLAGS += -pthread
- 
--Assuming you are in the test's subdirectory ``testcases/kernel/syscalls/statx``,
-+Assuming you are in the test's subdirectory :master:`testcases/kernel/syscalls/statx`,
- please do:
- 
- .. code-block:: bash
-@@ -204,10 +204,10 @@ please do:
-     ./statx01
- 
- This should build the test and then run it. However, even though the test is
--in the ``syscalls`` directory it won't be automatically ran as part of the
--syscalls test group (e.g. ``./runltp -f syscalls``).
--For this we need to add it to the ``runtest`` file. So open
--``runtest/syscalls`` and add the lines starting with a ``+``.
-+in :master:`testcases/kernel/syscalls/` directory it won't be automatically ran
-+as part of the syscalls test group (e.g. not run via ``kirk -r math`` or
-+``./runltp -f syscalls``). For this we need to add it to the runtest file. So
-+open :master:`runtest/syscalls` and add the lines starting with a ``+``.
- 
- .. code-block::
- 
-@@ -219,9 +219,9 @@ For this we need to add it to the ``runtest`` file. So open
-     stime01 stime01
-     stime02 stime02
- 
--The ``runtest`` files are in a two column format. The first column is the test
--name, which is mainly used by test runners for reporting and filtering. It is
--just a single string of text with no spaces. The second column, which can
-+The :master:`runtest` files are in a two column format. The first column is the
-+test name, which is mainly used by test runners for reporting and filtering. It
-+is just a single string of text with no spaces. The second column, which can
- contain spaces, is passed to the shell in order to execute the test. Often it
- is just the executable name, but some tests also take arguments (the LTP has a
- library for argument parsing, by the way).
-diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
-index daaa4b9f8..85a7a1d8a 100644
---- a/doc/developers/writing_tests.rst
-+++ b/doc/developers/writing_tests.rst
-@@ -211,7 +211,7 @@ There are several types of checks we use:
- 
- * Sometimes it makes sense to define a few macros instead of creating a
-   configure test. One example is Linux specific POSIX clock ids in
--  ``include/lapi/posix_clocks.h``
-+  :master:`include/lapi/posix_clocks.h`.
- 
- Dealing with messed up legacy code
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -242,11 +242,11 @@ portable shell or C. The test gets a configuration via environment variables
- and/or command line parameters, it prints additional information into the
- stdout and reports overall success/failure via the exit value.
- 
--Tests are generally placed under the ``testcases/`` directory. Everything that
-+Tests are generally placed under the :master:`testcases/` directory. Everything that
- is a syscall or (slightly confusingly) libc syscall wrapper, goes under
--``testcases/kernel/syscalls/``.
-+:master:`testcases/kernel/syscalls/`.
- 
--There is also ``testcases/open_posix_testsuite/`` which is a well maintained
-+There is also :master:`testcases/open_posix_testsuite/` which is a well maintained
- fork of the Open POSIX testsuite project, that has been dead since 2005.
- 
- We also have a number of directories with tests for more specific features, such
-@@ -256,8 +256,8 @@ Runtest Files
- ~~~~~~~~~~~~~
- 
- The list of tests to be executed is stored in runtest files under the
--``runtest/`` directory. The default set of runtest files to be executed is
--stored in ``scenario_groups/default``. When you add a test, you should add
-+:master:`runtest/` directory. The default set of runtest files to be executed is
-+stored in :master:`scenario_groups/default`. When you add a test, you should add
- corresponding entries into some runtest file(s) as well.
- 
- Each line of runtest file contains one test. The first item is the test name.
-@@ -270,9 +270,9 @@ All other items, separated by space will be executed as a command.
- 
- Blank lines and lines starting with a ``#`` (comments) are ignored.
- 
--Syscalls tests, placed under ``testcases/kernel/syscalls/``, use
--``runtest/syscalls`` file. For kernel related tests for memory management we
--have ``runtest/mm``, etc.
-+Syscalls tests, placed under :master:`testcases/kernel/syscalls/`, use
-+:master:`runtest/syscalls` file. For kernel related tests for memory management we
-+have :master:`runtest/mm`, etc.
- 
- .. note::
- 
-@@ -286,7 +286,7 @@ Datafiles
- If your test needs data files, these should be put into a subdirectory
- named ``datafiles`` and installed into the ``testcases/data/$TCID`` directory.
- This will require to add ``INSTALL_DIR := testcases/data/TCID`` into
--``datafiles/Makefile``.
-+correspondent ``datafiles/Makefile``.
- 
- You can obtain path to datafiles via ``$TST_DATAROOT`` provided by ``test.sh``
- or via C function ``tst_dataroot()`` provided by libltp:
-@@ -337,7 +337,7 @@ Testing pre-release kernel features
- -----------------------------------
- 
- Tests for features not yet in the mainline kernel release are accepted. However,
--they must be added only to the **staging** runtest file. Once a feature is part
-+they must be added only to :master:`runtest/staging`. Once a feature is part
- of the stable kernel ABI, the associated test must be moved out of staging.
- 
- Testing builds with GitHub Actions
-diff --git a/doc/users/quick_start.rst b/doc/users/quick_start.rst
-index 69792999b..4a48745be 100644
---- a/doc/users/quick_start.rst
-+++ b/doc/users/quick_start.rst
-@@ -123,4 +123,4 @@ Network tests
- -------------
- 
- Network tests usually require a certain setup that is described in
--``testcases/network/README.md``.
-+:master:`testcases/network/README.md`.
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBBcHIgMjYsIDIwMjQgYXQgNToyNuKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKCj4gNjU1MzYgYnl0ZXMgdHJpZ2dlcmVkIHdhcm5pbmcgb24gc3lzdGVtcyB3
+aXRoIDY0IGtiIHBhZ2Ugc2l6ZSAoZS5nLiBvbgo+IGFhcmNoNjQgd2l0aCBDT05GSUdfQVJNNjRf
+NjRLX1BBR0VTPXkgb3Igb24gcHBjNjRsZSB3aXRoCj4gQ09ORklHX1BBR0VfU0laRV82NEtCPXkp
+Ogo+Cj4gICAgIFRXQVJOOiBTd2FwZmlsZSBzaXplIGlzIGxlc3MgdGhhbiB0aGUgc3lzdGVtIHBh
+Z2Ugc2l6ZS4gVXNpbmcgcGFnZSBzaXplCj4gICAgICg2NTUzNiBieXRlcykgaW5zdGVhZCBvZiBi
+bG9jayBzaXplICg0MDk2IGJ5dGVzKS4KPgo+IDEgTUIgc2hvdWxkIGJlIG9rIGZvciBtb3N0IG9m
+IHRoZSBzeXN0ZW1zLgo+Cj4gU3VnZ2VzdGVkLWJ5OiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3Vz
+ZS5jej4KPiBTaWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPgoKIFJl
+dmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KCi0tLQo+ICBpbmNsdWRlL2xp
+YnN3YXAuaCB8IDE4ICsrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5z
+ZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlic3dhcC5oIGIvaW5jbHVkZS9s
+aWJzd2FwLmgKPiBpbmRleCA4N2UzMjMyOGUuLmY3NTcwNzNjYyAxMDA2NDQKPiAtLS0gYS9pbmNs
+dWRlL2xpYnN3YXAuaAo+ICsrKyBiL2luY2x1ZGUvbGlic3dhcC5oCj4gQEAgLTIzLDYgKzIzLDI0
+IEBAIGludCBtYWtlX3N3YXBmaWxlKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBsaW5lbm8s
+Cj4gICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqc3dhcGZpbGUsIHVuc2lnbmVk
+IGludCBudW0sCj4gICAgICAgICAgICAgICAgICAgICAgICAgaW50IHNhZmUsIGVudW0gc3dhcGZp
+bGVfbWV0aG9kIG1ldGhvZCk7Cj4KPiArLyoqIDY1NTM2IGJ5dGVzIGlzIG1pbmltdW0gZm9yIDY0
+a2IgcGFnZSBzaXplLCBsZXQncyB1c2UgMSBNQiAqLwo+ICsjZGVmaW5lIE1JTklNQUxfU1dBUF9T
+SVpFX01CIDEKPiArCj4gKy8qKgo+ICsgKiBNYWNybyB0byBjcmVhdGUgbWluaW1hbCBzd2FwZmls
+ZS4KPiArICovCj4gKyNkZWZpbmUgTUFLRV9TTUFMTF9TV0FQRklMRShzd2FwZmlsZSkgXAo+ICsg
+ICAgbWFrZV9zd2FwZmlsZShfX0ZJTEVfXywgX19MSU5FX18sIHN3YXBmaWxlLCBNSU5JTUFMX1NX
+QVBfU0laRV9NQiwgMCwgXAo+ICsgICAgICAgICAgICAgICAgIFNXQVBGSUxFX0JZX1NJWkUpCj4g
+Kwo+ICsvKioKPiArICogTWFjcm8gdG8gY3JlYXRlIG1pbmltYWwgc3dhcGZpbGUuCj4gKyAqIElu
+Y2x1ZGVzIHNhZmV0eSBjaGVja3MgdG8gaGFuZGxlIHBvdGVudGlhbCBlcnJvcnMuCj4gKyAqLwo+
+ICsjZGVmaW5lIFNBRkVfTUFLRV9TTUFMTF9TV0FQRklMRShzd2FwZmlsZSkgXAo+ICsgICAgbWFr
+ZV9zd2FwZmlsZShfX0ZJTEVfXywgX19MSU5FX18sIHN3YXBmaWxlLCBNSU5JTUFMX1NXQVBfU0la
+RV9NQiwgMSwgXAo+ICsgICAgICAgICAgICAgICAgIFNXQVBGSUxFX0JZX1NJWkUpCj4gKwo+ICAv
+KioKPiAgICogTWFjcm8gdG8gY3JlYXRlIHN3YXBmaWxlIHNpemUgaW4gbWVnYWJ5dGVzIChNQiku
+Cj4gICAqLwo+IC0tCj4gMi40My4wCj4KPgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWls
+aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
