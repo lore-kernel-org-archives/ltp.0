@@ -4,112 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DEC8C4345F
-	for <ltp@archiver.kernel.org>; Mon, 29 Apr 2024 09:18:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD627C4345F
+	for <ltp@archiver.kernel.org>; Mon, 29 Apr 2024 09:52:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 817D13D03DA
-	for <ltp@archiver.kernel.org>; Mon, 29 Apr 2024 11:18:37 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1555C3D03FB
+	for <ltp@archiver.kernel.org>; Mon, 29 Apr 2024 11:52:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F8643C62EE
- for <ltp@lists.linux.it>; Mon, 29 Apr 2024 11:18:22 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 272363D0323
+ for <ltp@lists.linux.it>; Fri, 26 Apr 2024 15:48:11 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=fstornio@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A19FF204B54
- for <ltp@lists.linux.it>; Mon, 29 Apr 2024 11:18:20 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7A12B2041F;
- Mon, 29 Apr 2024 09:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1714382299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eiXFPu/MhkfMAAnj5QGad2fghlX+iJrV6K0tOioZrNw=;
- b=bLR3KTUyDsEKi9f6EvnPlEzQKZXuBajVc/AhcHgbwezgroeH/nBAOIzZiMaG1qFAY1gX40
- njt0FnXEOqFlbDfKklf8NdPL8a/PK9AgoC+Zv95yd2rj2Z+NlUznCfbFDu5hC3+tio8rU2
- nt5Lk5lGemNYvXtmbRN0asl4lH/U7DQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1714382299;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eiXFPu/MhkfMAAnj5QGad2fghlX+iJrV6K0tOioZrNw=;
- b=pebJ8acNNpXzU5tuorLLzfY6YEHrW+rlZ6GFhq+mLpt+ZiE5JZfDnp8CZD51KY+tsC9TmX
- zxzSXtNnDma+JyDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hARk6Xvp;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qqobzeka
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1714382298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eiXFPu/MhkfMAAnj5QGad2fghlX+iJrV6K0tOioZrNw=;
- b=hARk6XvpzrP7gTKj99PwFc5eBxuuDfowPE52mk4NOt1sKSQ/TQO/8Ht+VDK0R4hoTXugz7
- JsjNBpPVi6QoSoYu9tn0YCGxhYkMlGF97ngumRvJQiyyvmiRN+yS3TdJCeN2CIJosQanrD
- s5JtHdzXCLI1HUJOACHUqlgmA0vrrCw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1714382298;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eiXFPu/MhkfMAAnj5QGad2fghlX+iJrV6K0tOioZrNw=;
- b=qqobzekaMCjHMGwTF7jnn/3swG2LMZ51AmWalvlTq3DTXtCnd5m3012Rn5j+3LcS+aFKK4
- C+pQp/GsDqalqGCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61764138A7;
- Mon, 29 Apr 2024 09:18:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5cDYFtplL2Z8HAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 29 Apr 2024 09:18:18 +0000
-Date: Mon, 29 Apr 2024 11:17:23 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: John Stultz <jstultz@google.com>
-Message-ID: <Zi9lo1ubVkGJHzrF@yuki>
-References: <20240423225821.4003538-1-jstultz@google.com>
- <20240423225821.4003538-7-jstultz@google.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0993320172D
+ for <ltp@lists.linux.it>; Fri, 26 Apr 2024 15:48:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1714139289;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=l/M09QdNtQPgUiNo1H6FwIu5Ec5EJMdtE+7cuUy75Lw=;
+ b=V/WYQ4ifFRz4G0XW4HlN7UiSX0XLkZHCIJYCnu21iDnh32ksYy+5CNUHT4LkcrLYGh9puV
+ mEqx9CXi3hWsgPm6UJXJc/0fiDCmC6Qo7q0V9t8h4TKEKvIQqUKnt0cTOzGjoEMEcWmwW0
+ 5r/2gKDZMYVy+bw8d3c4GvNvWTjRpSo=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-327-FUthokGHOoO3TSRAQwtrgw-1; Fri, 26 Apr 2024 09:48:08 -0400
+X-MC-Unique: FUthokGHOoO3TSRAQwtrgw-1
+Received: by mail-qt1-f197.google.com with SMTP id
+ d75a77b69052e-4393e712cd5so26924641cf.3
+ for <ltp@lists.linux.it>; Fri, 26 Apr 2024 06:48:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1714139287; x=1714744087;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=l/M09QdNtQPgUiNo1H6FwIu5Ec5EJMdtE+7cuUy75Lw=;
+ b=qcD2dmI1CYOdivJh0N+MCqhUpDoZhRkvcxeWNzeVkAzGCSZaHsFlzMrWwtuxDJ1GM1
+ ZH29OyNbemJEpfw9iypC9MnRMz4fPZrNxfjvn8Lki3ClcPe+8cRr3KbRM9n+mplgHGsd
+ OHItedGTFaeLPRcOej24lT5X+mT7Oaf4HoMfteAWrfhRWVRmULIhwfix4kzhQjZCngxv
+ e6+RCgv/JbpKyB1kYaPJhUEkseTOC3yz0rCv/jijnqvALrKUl+Gd58fSommbDLpKMRJm
+ qRaJAgnA044OShXDMrYoPssyGynjsSURWluXKZA+GOtTizSAVJXPC3whv/3DcfC6CieF
+ jDvQ==
+X-Gm-Message-State: AOJu0Yxehr7ui5QIyiu0nk1UNEwUIgLyoNk07kxlnPXbIcit/v2cDEHM
+ G4zRtH/mVWVoL71JyNsMmhUFGHnXpB6+fmw332VF+BmOaRyTnft5qYZA4K7U5OqlNea/CSXUHHb
+ YcfZ+J/chwur9hjNFEZgh56yhUBPYS91SP1gIuMaukpTYRUTz+/gFdklTdHTscrDPJgPFdxAzTd
+ 3zaVUki+1DQ+Bxr1oPpovi+8c1p27XNTVS
+X-Received: by 2002:ac8:584e:0:b0:439:db10:84f5 with SMTP id
+ h14-20020ac8584e000000b00439db1084f5mr3362851qth.28.1714139287136; 
+ Fri, 26 Apr 2024 06:48:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+fHwkUdo4xfiQFY38g0D16AdiFeMrZcwqq2Cy9ZJtDeFyf6b8gvGHszt3SjTI1WcRsX54bA==
+X-Received: by 2002:ac8:584e:0:b0:439:db10:84f5 with SMTP id
+ h14-20020ac8584e000000b00439db1084f5mr3362822qth.28.1714139286730; 
+ Fri, 26 Apr 2024 06:48:06 -0700 (PDT)
+Received: from fstornio-thinkpadx1carbongen11.remote.csb
+ (host-79-50-126-211.retail.telecomitalia.it. [79.50.126.211])
+ by smtp.gmail.com with ESMTPSA id
+ ev14-20020a05622a510e00b0043971e215a7sm5902290qtb.60.2024.04.26.06.48.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 26 Apr 2024 06:48:06 -0700 (PDT)
+From: Filippo Storniolo <fstornio@redhat.com>
+To: ltp@lists.linux.it
+Date: Fri, 26 Apr 2024 15:48:02 +0200
+Message-ID: <20240426134802.2607150-1-fstornio@redhat.com>
+X-Mailer: git-send-email 2.44.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240423225821.4003538-7-jstultz@google.com>
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- MISSING_XM_UA(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns, linux.it:url]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 7A12B2041F
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/6] sched_football: Add trace_marker messages if
- we're tracing
+X-Mailman-Approved-At: Mon, 29 Apr 2024 11:52:22 +0200
+Subject: [LTP] [PATCH] syscalls/mlock05: add mlock test for locking and
+ pre-faulting of memory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,94 +97,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel-team@android.com, Darren Hart <darren@os.amperecomputing.com>,
- ltp@lists.linux.it
+Cc: Filippo Storniolo <fstornio@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Cc: kernel-team@android.com
-> Cc: Darren Hart <darren@os.amperecomputing.com>
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
->  .../realtime/func/sched_football/sched_football.c    | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-> index 45fbf6766..ca44584b0 100644
-> --- a/testcases/realtime/func/sched_football/sched_football.c
-> +++ b/testcases/realtime/func/sched_football/sched_football.c
-> @@ -67,6 +67,7 @@
->  #include <pthread.h>
->  #include <sched.h>
->  #include <errno.h>
-> +#include <fcntl.h>
->  #include <sys/syscall.h>
->  #include <unistd.h>
->  #include <sys/prctl.h>
-> @@ -167,10 +168,14 @@ void *thread_offense(void *arg)
->  	return NULL;
->  }
->  
-> +#define BUF_LEN 256
->  int referee(int game_length)
->  {
->  	struct timeval start, now;
-> +	char buf[BUF_LEN];
->  	int final_ball;
-> +	int fd = open("/sys/kernel/tracing/trace_marker", O_RDWR, 0);
-> +	int ret;
->  
->  	prctl(PR_SET_NAME, "referee", 0, 0, 0);
->  	printf("Game On (%d seconds)!\n", game_length);
-> @@ -178,14 +183,19 @@ int referee(int game_length)
->  	gettimeofday(&start, NULL);
->  	now = start;
->  
-> +	sprintf(buf, "I|%i|Game_Started!\n", getpid());
->  	/* Start the game! */
->  	atomic_set(0, &the_ball);
-> -
-> +	if (fd > 0)
-> +		ret = write(fd, buf, strnlen(buf, BUF_LEN));
->  	/* Watch the game */
->  	while ((now.tv_sec - start.tv_sec) < game_length) {
->  		sleep(1);
->  		gettimeofday(&now, NULL);
->  	}
-> +	sprintf(buf, "I|%i|Game_Over!\n", getpid());
-> +	if (fd > 0)
-> +		ret = write(fd, buf, strnlen(buf, BUF_LEN));
+check VmRSS and VmLck variables from /proc/$pid/status.
+VmRSS size should at least as big as the memory allocation.
+VmLck size should be equal to the size of the memory allocation.
 
-I know that we havre only two usages now, but it would be a bit cleaner
-and readable to have a function to print the messages, e.g.
+Co-developed-by: Dennis Brendel <dbrendel@redhat.com>
+Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
+---
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/mlock/.gitignore |  1 +
+ testcases/kernel/syscalls/mlock/mlock05.c  | 69 ++++++++++++++++++++++
+ 3 files changed, 71 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mlock/mlock05.c
 
-static void tracer_write(const char *msg);
-
-And we would do:
-
-	tracer_write("Game_Started!");
-
-It would be a good idea to add the test name to the message as well,
-maybe as:
-
-	sprintf(buf, "sched_football|%i|%s\n", getpid(), msg);
-
->  	final_ball = atomic_get(&the_ball);
->  	/* Blow the whistle */
->  	printf("Game Over!\n");
-> -- 
-> 2.44.0.769.g3c40516874-goog
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 252123d8b..05a52fc8f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -781,6 +781,7 @@ mlock01 mlock01
+ mlock02 mlock02
+ mlock03 mlock03 -i 20
+ mlock04 mlock04
++mlock05 mlock05
+ 
+ mlock201 mlock201
+ mlock202 mlock202
+diff --git a/testcases/kernel/syscalls/mlock/.gitignore b/testcases/kernel/syscalls/mlock/.gitignore
+index 306574bbc..1872229b8 100644
+--- a/testcases/kernel/syscalls/mlock/.gitignore
++++ b/testcases/kernel/syscalls/mlock/.gitignore
+@@ -2,3 +2,4 @@
+ /mlock02
+ /mlock03
+ /mlock04
++/mlock05
+diff --git a/testcases/kernel/syscalls/mlock/mlock05.c b/testcases/kernel/syscalls/mlock/mlock05.c
+new file mode 100644
+index 000000000..e67cd1e03
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock/mlock05.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright Red Hat
++ * Author: Filippo Storniolo <fstornio@redhat.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify mlock() causes pre-faulting of PTEs and prevent memory to be swapped out.
++ *
++ * Checks the variables VmRSS and VmLck in /proc/$pid/status after the
++ * mlock syscall:
++ * - VmRSS size should be at least as big as the memory allocation
++ * - VmLck size should be equal to the size of the memory allocation
++ */
++
++#include "tst_test.h"
++
++#define MMAPLEN			(1UL<<20)
++
++static void verify_mlock(void)
++{
++	unsigned long VmRSS_before;
++	unsigned long VmRSS_after;
++	unsigned long VmLck_before;
++	unsigned long VmLck_after;
++	unsigned long VmRSS;
++	unsigned long VmLck;
++	char *buf;
++
++	buf = SAFE_MMAP(NULL, MMAPLEN, PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmRSS: %lu", &VmRSS_before);
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %lu", &VmLck_before);
++
++	SAFE_MLOCK(buf, MMAPLEN);
++
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmRSS: %lu", &VmRSS_after);
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %lu", &VmLck_after);
++
++	VmRSS = VmRSS_after - VmRSS_before;
++	VmLck = VmLck_after - VmLck_before;
++
++	// Convertion from KiB to B
++	VmRSS *= 1024;
++	VmLck *= 1024;
++
++	if (VmRSS >= MMAPLEN) {
++		tst_res(TPASS, "Pre-allocation functionality of mlock() successful");
++	} else {
++		tst_brk(TBROK, "Expected pre-allocation of %lu bytes, "
++					"get %lu pre-allocated", MMAPLEN, VmRSS);
++	}
++
++	if (VmLck == MMAPLEN) {
++		tst_res(TPASS, "Locking functionality of mlock() successful");
++	} else {
++		tst_brk(TBROK, "Expected locking of %lu bytes, "
++					"get %lu locked", MMAPLEN, VmLck);
++	}
++
++	SAFE_MUNLOCK(buf, MMAPLEN);
++	SAFE_MUNMAP(buf, MMAPLEN);
++}
++
++static struct tst_test test = {
++	.test_all = verify_mlock,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.44.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
