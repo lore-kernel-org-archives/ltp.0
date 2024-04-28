@@ -4,86 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A105C4345F
-	for <ltp@archiver.kernel.org>; Sun, 28 Apr 2024 02:04:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1714269883; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=T/NQTwMULcvwKTwztToocqXQXBZVqXKnnsDQdQBk0hs=;
- b=LSmHC/XG7WF7/dtQVbYnu8V6yNvaNPyBWen1YZVfoWc3MhPmkyd/4h89oHnfE26LYYlu3
- X7WC3QfL5a3uu78zJJRKiokB0DISmqWgMlOivTSmPcMvHPbEaDYmqboA3Bw4h+bj1c0CHvy
- xmMYCL9sEIo9S5F6VmBYy9rQFS+rR+w=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5D59C4345F
+	for <ltp@archiver.kernel.org>; Sun, 28 Apr 2024 07:16:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 38F7A3CFF64
-	for <ltp@archiver.kernel.org>; Sun, 28 Apr 2024 04:04:43 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9F0943D03AD
+	for <ltp@archiver.kernel.org>; Sun, 28 Apr 2024 09:16:47 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA6453CBDD0
- for <ltp@lists.linux.it>; Sun, 28 Apr 2024 04:04:20 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.117;
- helo=esa4.hc1455-7.c3s2.iphmx.com; envelope-from=xuyang2018.jy@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com
- [68.232.139.117])
+ by picard.linux.it (Postfix) with ESMTPS id 2AF853C0343
+ for <ltp@lists.linux.it>; Sun, 28 Apr 2024 09:16:31 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=uniontech.com (client-ip=18.194.254.142; helo=smtpbgeu2.qq.com;
+ envelope-from=lufei@uniontech.com; receiver=lists.linux.it)
+Received: from smtpbgeu2.qq.com (smtpbgeu2.qq.com [18.194.254.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 71447602BD5
- for <ltp@lists.linux.it>; Sun, 28 Apr 2024 04:04:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1714269859; x=1745805859;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=ZCadwkSRXYMSdcREJfY+Vss+AbThxGXkqFNMCttn4r0=;
- b=Sq7OqqEtIJIYWeT6HdtcgwcA9XNxJfecFWj4rPauYX+wDkCm7nFtdMK7
- lEHEQb3wPIWppGxdvRHJV2Eee756oeyhClgTK+UIJRwqD1dg6p/lyiXh8
- JhnfJR6XYTuxDMR4f4s4cWF8jzVwPfqxwfJ0SFEVDNRhWuSiXnU6Ztx+J
- fR+ghQ+ycjQh3QR4pktQ6+GLaSX6t9O8C6H+nEwNuUAYcTspV4GRhnpXd
- vdvHK8/kY+CAj6gNEKv0OF1q+4k7b6rD0eBSkfmRIt7pPOX27QiGa/Yho
- TeU0T8TPThXZFHkPJ1tGGA8iZEWROgaJJacTqLAMppPD3X1tmAU/h9ewL A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="157243828"
-X-IronPort-AV: E=Sophos;i="6.07,236,1708354800"; d="scan'208";a="157243828"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Apr 2024 11:04:15 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id EE2C7C68FD
- for <ltp@lists.linux.it>; Sun, 28 Apr 2024 11:04:13 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2D2074D28E
- for <ltp@lists.linux.it>; Sun, 28 Apr 2024 11:04:13 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id A5EDB20093274
- for <ltp@lists.linux.it>; Sun, 28 Apr 2024 11:04:12 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 413E51A0002;
- Sun, 28 Apr 2024 10:04:12 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Thu, 25 Apr 2024 01:25:36 -0400
-Message-Id: <20240425052536.68290-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28348.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28348.004
-X-TMASE-Result: 10--18.790600-10.000000
-X-TMASE-MatchedRID: NGDYxnKYxb1SuJfEWZSQfDyjd/AizytB2FA7wK9mP9dgPgeggVwCFnU3
- oKSu0J1xUh5maKIJAx/mn3xyPJAJoh2P280ZiGmRCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
- z3CH3vCeIuA1iha0SDjpOcMxD4/Db2L0urcUf+APkKCFOKwAEzEi8rgutezVpS7NxD4SLUR24kR
- SZ1g8ZJaH3E3UlyJO9hBax1yAmf0oXHLPN9+q8ed9JA2lmQRNUHhysWPN3OzibKItl61J/yZ+in
- TK0bC9eKrauXd3MZDUD/dHyT/Xh7Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 624291000998
+ for <ltp@lists.linux.it>; Sun, 28 Apr 2024 09:16:19 +0200 (CEST)
+X-QQ-FEAT: WrHAvg6vvPLBXliPgUK6/jbjfod+8UQSydVyzkqoVOb4F8vrh55RAsv03F2Go
+ ksPGC+jXFFG4o/oqEuB0eMq5ytDuq1hhE1W8yyp8iJzbcbkkhecJz4QmJEQGoVx+Y2bRlPl
+ c4fj9jUiOaRs8k5yIwPqpW/EoQLWEb50TXoe+AfFSyaXQUVQQOy8T/7o/Ud7aLh3kpq9NQu
+ lvq1v+fN1ff/YCl6nE1GapUnc+v2m+SOO+suk5DEcwVc63IhDGLyqnJIcG3Dhvcn+T7de8B
+ oOGRBgcoyzQRTo6k6b7fTjcPjNf7EkaE6ru754D3X/uApcbnZdPbKrbJUcvm4ZVQJqvhtsW
+ d7TC2kNVd6ac2GkxJH+Bmequl1HHB5CtvaHfxMSPxy7SWfRaJqkVULd9FrGfw==
+X-QQ-SSF: 00400000000000F0
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+X-QQ-WAPMAIL: 1
+X-QQ-BUSINESS-ORIGIN: 2
+X-QQ-Originating-IP: 3AFDznxqsFIqdj518BKXTqRsb29mhYrkDDstidY2Cx0=
+X-Originating-IP: 223.104.44.240
+References: <tencent_048887541FB562D43FE2D104@qq.com>
+X-QQ-STYLE: 
+X-QQ-mid: cset2gz6a-0t1714288570t71f34d
+From: "=?gb18030?B?wrfssw==?=" <lufei@uniontech.com>
+To: "=?gb18030?B?Q3lyaWwgSHJ1Ymlz?=" <chrubis@suse.cz>
+Mime-Version: 1.0
+Date: Sun, 28 Apr 2024 15:16:09 +0800
+X-Priority: 3
+Message-ID: <tencent_2EA161BC4D09C87A5126A494@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+X-QQ-ReplyHash: 348657175
+X-BIZMAIL-ID: 15521827400658996240
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1]) by smtp.qq.com (ESMTP) with SMTP
+ id ; Sun, 28 Apr 2024 15:16:12 +0800 (CST)
+Feedback-ID: cset:uniontech.com:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lseek: Add negative tests for lseek
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] (no subject)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,133 +68,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yang Xu via ltp <ltp@lists.linux.it>
-Reply-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: =?gb18030?B?bHRw?= <ltp@lists.linux.it>
+Content-Type: text/plain; charset="gb18030"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add negative tests for lseek(), when errno is ENXIO
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                           |  1 +
- testcases/kernel/syscalls/lseek/.gitignore |  1 +
- testcases/kernel/syscalls/lseek/lseek12.c  | 80 ++++++++++++++++++++++
- 3 files changed, 82 insertions(+)
- create mode 100644 testcases/kernel/syscalls/lseek/lseek12.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 62eb4c1cd..7575b27b1 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -726,6 +726,7 @@ lseek01 lseek01
- lseek02 lseek02
- lseek07 lseek07
- lseek11 lseek11
-+lseek12 lseek12
- 
- lstat01A symlink01 -T lstat01
- lstat01A_64 symlink01 -T lstat01_64
-diff --git a/testcases/kernel/syscalls/lseek/.gitignore b/testcases/kernel/syscalls/lseek/.gitignore
-index 1dc1465ee..c49728607 100644
---- a/testcases/kernel/syscalls/lseek/.gitignore
-+++ b/testcases/kernel/syscalls/lseek/.gitignore
-@@ -2,3 +2,4 @@
- /lseek02
- /lseek07
- /lseek11
-+/lseek12
-diff --git a/testcases/kernel/syscalls/lseek/lseek12.c b/testcases/kernel/syscalls/lseek/lseek12.c
-new file mode 100644
-index 000000000..9d80e632b
---- /dev/null
-+++ b/testcases/kernel/syscalls/lseek/lseek12.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that lseek(2) fails with
-+ *
-+ * - ENXIO when whence is SEEK_DATA, file offset is beyond the end of the file
-+ * - ENXIO when whence is SEEK_HOLE, file offset is beyond the end of the file
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/types.h>
-+#include "tst_test.h"
-+#include "lapi/seek.h"
-+
-+#define TEST_ENXIO "test_enxio"
-+
-+static int fd_enxio;
-+
-+static struct test_case_t {
-+	int *fd;
-+	off_t offset;
-+	int whence;
-+	int expected_errno;
-+	char *desc;
-+} tcases[] = {
-+	{&fd_enxio, 10, SEEK_DATA, ENXIO,
-+		"whence is SEEK_DATA, "
-+		"file offset is beyond the end of the file"},
-+	{&fd_enxio, 10, SEEK_HOLE, ENXIO,
-+		"whence is SEEK_HOLE, "
-+		"file offset is beyond the end of the file"},
-+};
-+
-+static void setup(void)
-+{
-+	SAFE_TOUCH(TEST_ENXIO, 0777, NULL);
-+	fd_enxio = SAFE_OPEN(TEST_ENXIO, O_RDWR, 0777);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(fd_enxio);
-+}
-+
-+static void verify_lseek(unsigned int i)
-+{
-+	struct test_case_t *tc = &tcases[i];
-+	off_t offset;
-+
-+	offset = lseek(*(tc->fd), tc->offset, tc->whence);
-+	if (offset == -1) {
-+		if (errno == EINVAL) {
-+			tst_res(TCONF, "SEEK_DATA/SEEK_HOLE are not supported");
-+		} else {
-+			if (errno == tc->expected_errno) {
-+				tst_res(TPASS | TERRNO, tc->desc);
-+			} else {
-+				tst_res(TFAIL | TERRNO,
-+					"lseek() failed unexpectedly");
-+			}
-+		}
-+	} else {
-+		tst_res(TFAIL, "lseek() succeeded unexpectedly");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_lseek,
-+	.needs_tmpdir = 1,
-+};
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SXShr3MgZmF1bHQgaW4gbXkgY29kZS4gc3VwcG9ydGVkX2FyY2hzIGp1c3Qgd29ya3MgZmluZS4N
+Cg0KDQpTb3JyeS4NCiANCg0KIAktLS0tLS0tLS0tUmVwbHkgdG8gTWVzc2FnZS0tLS0tLS0tLS0N
+CiAJT24gRnJpLCBBcHIgMjYsIDIwMjQgNjozMCBQTSBDeXJpbCBIcnViaXMgPGNocnViaXNAc3Vz
+ZS5jeiZndDsgd3JvdGU6DQogICAgICAJCUhpIQ0KJmd0OyBJIHRyaWVkIHVzaW5nIE5VTEwsIGJ1
+dCBtZXQgYFRCUk9LOiBUZXN0IGtpbGxlZCBieSBTSUdTRUdWIWAuJmFtcDtuYnNwOw0KDQpUaGF0
+IG1lYW5zIHRoYXQgdGhlIG1hbnVhbCBwYWdlIGlzIHdyb25nIGFuZCB0aGUgYWRkcmVzcyBpcyBu
+b3QgaWdub3JlZC4NCg0KJmd0OyBBbmQgdGhlIGxhc3QgdGltZSB5b3UgbWVudGlvbmVkIGluIHJl
+c3BvbnNlIHRvIHVzaW5nDQomZ3Q7IGBzdXBwb3J0ZWRfYXJjaHNgLCB0aGlzIHNlZW1zIG5vdCB3
+b3JrIHByb3Blcmx5IGJ5IG5vdywgdGhlIGx0cA0KJmd0OyBkb2N1bWVudChzZWN0aW9uIG9mIHdy
+aXRpbmdfdGVzdHMpIHNheXMgIm5vdCBhcHBsaWNhYmxlIi4NCg0KVGhlIHN1cHBvcnRlZF9hcmNo
+cyBpcyBzdXBwb3NlZCB0byB3b3JrLiBIb3cgZGlkIHlvdSBzZXQgaXQgKHRoZSB2YWx1ZSkNCmFu
+ZCB3aGF0IGhhcHBlbmVkPw0KDQotLSANCkN5cmlsIEhydWJpcw0KY2hydWJpc0BzdXNlLmN6Cgot
+LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
+Cg==
