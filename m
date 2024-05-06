@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB09DC25B4F
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 14:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3A19C25B5F
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 15:54:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5F783CD94B
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 16:55:53 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EC8E53CD5F4
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 17:54:31 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6AC4F3CB850
- for <ltp@lists.linux.it>; Mon,  6 May 2024 16:55:38 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A3BEC3C1B47
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 17:54:15 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
@@ -24,69 +24,68 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B90031413CF2
- for <ltp@lists.linux.it>; Mon,  6 May 2024 16:55:37 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DE5C91020306
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 17:54:14 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A36B05FED0;
- Mon,  6 May 2024 14:55:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 31D2A1F396;
+ Mon,  6 May 2024 15:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715007335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1715010853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=x2XZAMuk0b9dEE4jwIAxdz/GeCAb4YTZMUoDLTIG9/A=;
- b=2x8PWSRkoUseFo+6jEybcjbWpQaJ3iGEMIHy/hzg+tY40yQ7uezN9ldCH6KfdvHpGI1mHL
- rJEyYTN32R0ogXc2Jvf1kzzqqa2eQkYIIbqx7dmovAjHeo7ykreU3RsAuH0mkDQHU+OqhK
- nxOx8DfNRJ9B7rpsufrBNL8QD1AIcW0=
+ bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
+ b=uOwGcA50RpEdzBFFpmA/wMYozURP485/sUIzF0UFA3At1T85pYk4rrHMMOMv7o73X1ebHO
+ Dp5X4JMqFLPqCj4MFRKVITfN0RrRZ1bCPIJQkCsiY9GlZDUKDTqxExjpafrfggHFqYnLSb
+ mcudohB/kV34xFSLw+sfenfiQwCQ5mc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715007335;
+ s=susede2_ed25519; t=1715010853;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=x2XZAMuk0b9dEE4jwIAxdz/GeCAb4YTZMUoDLTIG9/A=;
- b=FDSgbxThA/BUp8W4XinK+eE4tusMFFkmiSW+0YqWJPX6PHEekFt9IVt5KbCGtnX9ELmYb/
- jto6z4J2Sn8mquDQ==
+ bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
+ b=+4pScxSaxvWWLJnHw+u1/s6RGtyYpC6mP4CIPoLYupcIuOy6hSYTVx+LLs27L0ImmEp7Bg
+ fkYSIIuBEhOW3lBg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715007335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1715010853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=x2XZAMuk0b9dEE4jwIAxdz/GeCAb4YTZMUoDLTIG9/A=;
- b=2x8PWSRkoUseFo+6jEybcjbWpQaJ3iGEMIHy/hzg+tY40yQ7uezN9ldCH6KfdvHpGI1mHL
- rJEyYTN32R0ogXc2Jvf1kzzqqa2eQkYIIbqx7dmovAjHeo7ykreU3RsAuH0mkDQHU+OqhK
- nxOx8DfNRJ9B7rpsufrBNL8QD1AIcW0=
+ bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
+ b=uOwGcA50RpEdzBFFpmA/wMYozURP485/sUIzF0UFA3At1T85pYk4rrHMMOMv7o73X1ebHO
+ Dp5X4JMqFLPqCj4MFRKVITfN0RrRZ1bCPIJQkCsiY9GlZDUKDTqxExjpafrfggHFqYnLSb
+ mcudohB/kV34xFSLw+sfenfiQwCQ5mc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715007335;
+ s=susede2_ed25519; t=1715010853;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=x2XZAMuk0b9dEE4jwIAxdz/GeCAb4YTZMUoDLTIG9/A=;
- b=FDSgbxThA/BUp8W4XinK+eE4tusMFFkmiSW+0YqWJPX6PHEekFt9IVt5KbCGtnX9ELmYb/
- jto6z4J2Sn8mquDQ==
+ bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
+ b=+4pScxSaxvWWLJnHw+u1/s6RGtyYpC6mP4CIPoLYupcIuOy6hSYTVx+LLs27L0ImmEp7Bg
+ fkYSIIuBEhOW3lBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 97C401386E;
- Mon,  6 May 2024 14:55:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 243F013A25;
+ Mon,  6 May 2024 15:54:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0F+aJGfvOGYyeQAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Mon, 06 May 2024 14:55:35 +0000
-Message-ID: <7de3ea33-b6ea-4361-9303-a34d831ada4f@suse.cz>
-Date: Mon, 6 May 2024 16:55:35 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id pakMCCX9OGY1DwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Mon, 06 May 2024 15:54:13 +0000
+Message-ID: <435e976a-9749-48c3-aa0b-1e956d84124e@suse.cz>
+Date: Mon, 6 May 2024 17:54:12 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20240325115034.643892-1-pvorel@suse.cz>
- <20240325115034.643892-2-pvorel@suse.cz>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>, ltp@lists.linux.it
+References: <20240412080557.18922-1-xuyang2018.jy@fujitsu.com>
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
  xsFNBF1D6M0BEAC5BHC0NuN/v+UBXDYuwuYeAJA4leuKz0H76YBevziJKUtnzMsBA+GT9vdH
@@ -131,7 +130,7 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  Rz4zFhW8KQ9+zrae5rL/6vwz3d/MpEeOmDm9uutE6xyzXRl/RxeFZ8P7KlACXWm7VjSyc74E
  eCNL6GOOeqzE77fDcBf4HvNGn8w7IX/FvNzmu78wzT2MDwMi8ug8T4KEKzIYUIRibe7cl0LG
  2dSj02pOT7E5/x4gKQB/OZqnTTQxJ0OL8BJKNFeSYqaMzKFKiYaArwuFkGnCknwh5A==
-In-Reply-To: <20240325115034.643892-2-pvorel@suse.cz>
+In-Reply-To: <20240412080557.18922-1-xuyang2018.jy@fujitsu.com>
 X-Spamd-Result: default: False [-4.29 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -142,12 +141,11 @@ X-Spamd-Result: default: False [-4.29 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] lib/tst_tmpdir: Normalize user defined
- TMPDIR
+Subject: Re: [LTP] [PATCH] bind: Add negative tests for bind
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,68 +163,129 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
-I don't like the approach of directly modifying the process environment. 
-Also, if TMPDIR variable is not set, the newly added strdup() will lead 
-to a memory leak because the function is called multiple times.
+wouldn't it be better to add these testcases to bind01?
 
-I recommend adding a static pointer that'll hold the cleaned up path and 
-the string cleanup will run only once on the first call. Then the 
-pointer will be free()d during library cleanup.
+Also, why .needs_root = 1?
 
-On 25. 03. 24 12:50, Petr Vorel wrote:
-> Follow the changes to shell API 273c49793 ("tst_test.sh: Remove possible
-> double/trailing slashes from TMPDIR") and remove: 1) trailing slash
-> 2) double slashes.
+On 12. 04. 24 10:05, Yang Xu via ltp wrote:
+> Add negative cases for bind(), when errno is EBADF or ENOTDIR
 > 
-> This is needed, because some tests compare file path of files which are
-> in TMPDIR with strcmp() or and extra slashes break it (e.g. chdir01A,
-> ioctl_loop0[12], mount0[67]).
-> 
-> Co-developed-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 > ---
->   lib/tst_tmpdir.c | 20 ++++++++++++++++++--
->   1 file changed, 18 insertions(+), 2 deletions(-)
+>   runtest/syscalls                          |  1 +
+>   testcases/kernel/syscalls/bind/.gitignore |  1 +
+>   testcases/kernel/syscalls/bind/bind07.c   | 81 +++++++++++++++++++++++
+>   3 files changed, 83 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/bind/bind07.c
 > 
-> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-> index b73b5c66f..b6e51ba0a 100644
-> --- a/lib/tst_tmpdir.c
-> +++ b/lib/tst_tmpdir.c
-> @@ -124,16 +124,32 @@ char *tst_get_tmpdir(void)
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 3521047f4..71579cde4 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -37,6 +37,7 @@ bind03 bind03
+>   bind04 bind04
+>   bind05 bind05
+>   bind06 bind06
+> +bind07 bind07
 >   
->   const char *tst_get_tmpdir_root(void)
->   {
-> -	const char *env_tmpdir = getenv("TMPDIR");
-> +	char *env_tmpdir = getenv("TMPDIR");
-> +	char prev_c = 0;
-> +	size_t k = 0;
->   
->   	if (!env_tmpdir)
-> -		env_tmpdir = TEMPDIR;
-> +		env_tmpdir = strdup(TEMPDIR);
->   
->   	if (env_tmpdir[0] != '/') {
->   		tst_brkm(TBROK, NULL, "You must specify an absolute "
->   				"pathname for environment variable TMPDIR");
->   		return NULL;
->   	}
+>   bpf_map01 bpf_map01
+>   bpf_prog01 bpf_prog01
+> diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
+> index c85774441..8aff2456f 100644
+> --- a/testcases/kernel/syscalls/bind/.gitignore
+> +++ b/testcases/kernel/syscalls/bind/.gitignore
+> @@ -4,3 +4,4 @@
+>   /bind04
+>   /bind05
+>   /bind06
+> +/bind07
+> diff --git a/testcases/kernel/syscalls/bind/bind07.c b/testcases/kernel/syscalls/bind/bind07.c
+> new file mode 100644
+> index 000000000..dda6e8ad4
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/bind/bind07.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
+> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+> + */
 > +
-> +	for (int i = 0; env_tmpdir[i] != '\0'; i++) {
-> +		if (i)
-> +			prev_c = env_tmpdir[i-1];
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that bind(2) fails with
+> + *
+> + * - EBADF when sockfd is not a valid file descriptor
+> + * - ENOTDIR when a component of addr prefix is not a directory
+> + */
 > +
-> +        if (env_tmpdir[i] != '/' || prev_c != '/')
-> +            env_tmpdir[k++] = env_tmpdir[i];
-> +	}
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include "tst_test.h"
+> +#include "libbind.h"
 > +
-> +	env_tmpdir[k] = '\0';
+> +#define TEST_EBADF "test_ebadf"
+> +#define DIR_ENOTDIR "dir_enotdir"
+> +#define TEST_ENOTDIR "test_enotdir"
 > +
-> +	if (env_tmpdir[k-1] == '/')
-> +		env_tmpdir[k-1] = '\0';
+> +static struct sockaddr_in sock_ebadf;
+> +static struct sockaddr_un sock_enotdir;
 > +
->   	return env_tmpdir;
->   }
->   
+> +static struct test_case_t {
+> +	int sockfd;
+> +	struct sockaddr *addr;
+> +	socklen_t addrlen;
+> +	char *sockfile;
+> +	int type;
+> +	int protocol;
+> +	int expected_errno;
+> +	char *desc;
+> +} tcases[] = {
+> +	{-1, (struct sockaddr *)&sock_ebadf, sizeof(sock_ebadf), TEST_EBADF,
+> +		SOCK_STREAM, IPPROTO_TCP, EBADF,
+> +		"bind() sockfd is not a valid file descriptor"},
+> +	{0, (struct sockaddr *)&sock_enotdir, sizeof(sock_enotdir),
+> +		DIR_ENOTDIR "/" TEST_ENOTDIR, SOCK_STREAM, 0, ENOTDIR,
+> +		"bind() a component of addr prefix is not a directory"},
+> +};
+> +
+> +static void setup(void)
+> +{
+> +	tst_init_sockaddr_inet(&sock_ebadf, IPV4_ADDRESS, 0);
+> +
+> +	SAFE_TOUCH(DIR_ENOTDIR, 0777, NULL);
+> +	sock_enotdir.sun_family = AF_UNIX;
+> +	strncpy(sock_enotdir.sun_path, DIR_ENOTDIR "/" TEST_ENOTDIR,
+> +		sizeof(sock_enotdir.sun_path));
+> +}
+> +
+> +static void verify_bind(unsigned int i)
+> +{
+> +	struct test_case_t *tc = &tcases[i];
+> +
+> +	int sockfd = tc->sockfd;
+> +
+> +	if (!sockfd)
+> +		sockfd = SAFE_SOCKET(tc->addr->sa_family, tc->type,
+> +			tc->protocol);
+> +
+> +	TST_EXP_FAIL(bind(sockfd, tc->addr, tc->addrlen), tc->expected_errno,
+> +		"%s", tc->desc);
+> +
+> +	if (sockfd > 0)
+> +		SAFE_CLOSE(sockfd);
+> +	if (!TST_RET)
+> +		SAFE_UNLINK(tc->sockfile);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = verify_bind,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +};
 
 -- 
 Martin Doucha   mdoucha@suse.cz
