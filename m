@@ -4,105 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 108B0C25B4F
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 19:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B152C25B10
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 19:42:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48A033CD970
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 21:18:02 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 007523CDA1F
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 21:42:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B2C03CBB7E
- for <ltp@lists.linux.it>; Mon,  6 May 2024 21:17:44 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 96BB93CB5B3
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 21:42:02 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1CF6D1400F8F
- for <ltp@lists.linux.it>; Mon,  6 May 2024 21:17:43 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F0AC31B61042
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 21:42:01 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 615E9225C3;
- Mon,  6 May 2024 19:17:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9142521B41;
+ Mon,  6 May 2024 19:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715023061;
+ t=1715024520;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=b7S6rk1wmSfjGH3w4O6ba2All7wxvcnT2dRwnVhtFZg=;
- b=cYxxvhvFE0H4yy9HIgtTaDBUu6mVDpWgxzogYBxB4ADC2LmHd1FT2+jLQNrNjTb+uZcMYC
- I5laHasiPsLjLyqOyzf3RaupoRPfTvITaq3+DHmtfNrsBdNQwsKqG9H9GkCTUlJjZ17/VA
- mA23Q1tDvgDOCaTTCXvqSTY3PvAJfyg=
+ bh=rk4bVsx9+MXVuclOF3LvsaynE2zbVEPAknfaScJSADs=;
+ b=ynxqG7siyjbK6bslSwdPhr/yNVhdc+45EZT4d3lkXGNr+oGAiLOPeu4kekkEKRsnZhBjBj
+ peI+ddt6sRXUGktVzSyp4B7u437uq8wfqpuzrm27+e96zuowNjKvh9aN/i07f6Tw853MYg
+ cbmCBNrTVchfiuGZks2f5uY472iyK8g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715023061;
+ s=susede2_ed25519; t=1715024520;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=b7S6rk1wmSfjGH3w4O6ba2All7wxvcnT2dRwnVhtFZg=;
- b=Q/axu60pU09hHY2M+Uu3868xFMcjQb0kdM4ufpmh3iBgWqsR3RBlPUMX8/uR/f9Q6Z52/a
- YtMJhuKl94W+OYBA==
+ bh=rk4bVsx9+MXVuclOF3LvsaynE2zbVEPAknfaScJSADs=;
+ b=/bj+6I+Wzu2Lx/z//e1QpM816kIYBhgWgSKkWWZDD7m4V0NLYDE+Qakuukw2JjT6o5tyl6
+ 9h8u3Nmn9RIV/kAw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715023061;
+ t=1715024520;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=b7S6rk1wmSfjGH3w4O6ba2All7wxvcnT2dRwnVhtFZg=;
- b=cYxxvhvFE0H4yy9HIgtTaDBUu6mVDpWgxzogYBxB4ADC2LmHd1FT2+jLQNrNjTb+uZcMYC
- I5laHasiPsLjLyqOyzf3RaupoRPfTvITaq3+DHmtfNrsBdNQwsKqG9H9GkCTUlJjZ17/VA
- mA23Q1tDvgDOCaTTCXvqSTY3PvAJfyg=
+ bh=rk4bVsx9+MXVuclOF3LvsaynE2zbVEPAknfaScJSADs=;
+ b=ynxqG7siyjbK6bslSwdPhr/yNVhdc+45EZT4d3lkXGNr+oGAiLOPeu4kekkEKRsnZhBjBj
+ peI+ddt6sRXUGktVzSyp4B7u437uq8wfqpuzrm27+e96zuowNjKvh9aN/i07f6Tw853MYg
+ cbmCBNrTVchfiuGZks2f5uY472iyK8g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715023061;
+ s=susede2_ed25519; t=1715024520;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=b7S6rk1wmSfjGH3w4O6ba2All7wxvcnT2dRwnVhtFZg=;
- b=Q/axu60pU09hHY2M+Uu3868xFMcjQb0kdM4ufpmh3iBgWqsR3RBlPUMX8/uR/f9Q6Z52/a
- YtMJhuKl94W+OYBA==
+ bh=rk4bVsx9+MXVuclOF3LvsaynE2zbVEPAknfaScJSADs=;
+ b=/bj+6I+Wzu2Lx/z//e1QpM816kIYBhgWgSKkWWZDD7m4V0NLYDE+Qakuukw2JjT6o5tyl6
+ 9h8u3Nmn9RIV/kAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1025B13A25;
- Mon,  6 May 2024 19:17:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A13113A25;
+ Mon,  6 May 2024 19:41:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id e+GQO9QsOWaTTwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 19:17:40 +0000
-Date: Mon, 6 May 2024 21:17:39 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 79Z8C4cyOWZZVgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 19:41:59 +0000
+Date: Mon, 6 May 2024 21:41:56 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240506191739.GA36275@pevik>
-References: <20220421123351.17645-1-mdoucha@suse.cz>
- <20220421123351.17645-3-mdoucha@suse.cz>
+Message-ID: <20240506194156.GA38981@pevik>
+References: <20240430122208.13043-1-mdoucha@suse.cz>
+ <20240430122208.13043-2-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220421123351.17645-3-mdoucha@suse.cz>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240430122208.13043-2-mdoucha@suse.cz>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] Add test for CVE 2021-38198
+Subject: Re: [LTP] [PATCH 1/9] KVM: Disable EBP register use in 32bit code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,52 +119,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin, Cyril,
+Hi Martin,
 
-> --- /dev/null
-> +++ b/testcases/kernel/kvm/kvm_pagefault01.c
-...
-> +static void setup(void)
-> +{
-> +	disable_tdp();
-> +	tst_kvm_setup();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = tst_kvm_run,
-> +	.setup = setup,
-> +	.cleanup = tst_kvm_cleanup,
-> +	.needs_root = 1,
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-This test was merged some time ago.
+> The EBP register points to the stack segment by default but GCC uses
+> it to access data segment without the proper prefix. This works fine
+> on most systems because the stack and data segments are usually
+> identical. However, KVM environment intentionally enforces strict
+> limits on the stack segment and access to the data segment using
+> unprefixed EBP would trigger stack segment fault exception in 32bit
+> LTP builds (stack segment limits are ignored in 64bit mode).
 
-FYI this .needs_root generates -Wsingle-bit-bitfield-constant-conversion error.
-Nothing important, maybe you see an easy way to fix it.
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/kernel/kvm/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-kvm_pagefault01.c:218:16: warning: implicit truncation from 'int' to a one-bit wide bit-field changes value from 1 to -1 [-Wsingle-bit-bitfield-constant-conversion]
-        .needs_root = 1,
-                      ^
-1 warning generated.
+> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+> index ce4a5ede2..c85790e11 100644
+> --- a/testcases/kernel/kvm/Makefile
+> +++ b/testcases/kernel/kvm/Makefile
+> @@ -22,7 +22,7 @@ ifeq ($(HOST_CPU),x86_64)
+>  endif
+
+>  ifeq ($(HOST_CPU),x86)
+> -	GUEST_CFLAGS += -m32
+> +	GUEST_CFLAGS += -m32 -ffixed-ebp
+
+FYI this will fail on 32 bit build on clang:
+
+clang: error: unknown argument: '-ffixed-ebp'
+
+I don't want to block this patchset which brings important test, but it'd be
+great to fix it.
+
+Is there clang equivalent? Or is it even needed for clang?
+
+Either way, we need to detect clang. I don't think simple
+
+ifeq ($(CXX),clang)
+
+would be enough, because cc can be alias to clang.
+
+Maybe wrap it with version detection:
+
+ifeq ($(shell $(CC) -v 2>&1 | grep "clang version"), 1)
+	GUEST_CFLAGS += -ffixed-ebp
+endif
 
 Kind regards,
 Petr
 
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{"?/sys/module/kvm/parameters/tdp_mmu", "0"},
-> +		{}
-> +	},
-> +	.supported_archs = (const char *const []) {
-> +		"x86_64",
-> +		NULL
-> +	},
-> +	.tags = (struct tst_tag[]){
-> +		{"linux-git", "b1bd5cba3306"},
-> +		{"CVE", "2021-38198"},
-> +		{}
-> +	}
-> +};
-> +
-> +#endif /* COMPILE_PAYLOAD */
+>  	ASFLAGS += --32
+>  endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
