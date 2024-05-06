@@ -4,148 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3A19C25B5F
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 15:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48608C25B4F
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 19:04:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC8E53CD5F4
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 17:54:31 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B3DCB3CD970
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 21:04:09 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A3BEC3C1B47
- for <ltp@lists.linux.it>; Mon,  6 May 2024 17:54:15 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 307053CB7BC
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 21:03:53 +0200 (CEST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
+ [IPv6:2607:f8b0:4864:20::431])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DE5C91020306
- for <ltp@lists.linux.it>; Mon,  6 May 2024 17:54:14 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 31D2A1F396;
- Mon,  6 May 2024 15:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715010853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
- b=uOwGcA50RpEdzBFFpmA/wMYozURP485/sUIzF0UFA3At1T85pYk4rrHMMOMv7o73X1ebHO
- Dp5X4JMqFLPqCj4MFRKVITfN0RrRZ1bCPIJQkCsiY9GlZDUKDTqxExjpafrfggHFqYnLSb
- mcudohB/kV34xFSLw+sfenfiQwCQ5mc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715010853;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
- b=+4pScxSaxvWWLJnHw+u1/s6RGtyYpC6mP4CIPoLYupcIuOy6hSYTVx+LLs27L0ImmEp7Bg
- fkYSIIuBEhOW3lBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715010853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
- b=uOwGcA50RpEdzBFFpmA/wMYozURP485/sUIzF0UFA3At1T85pYk4rrHMMOMv7o73X1ebHO
- Dp5X4JMqFLPqCj4MFRKVITfN0RrRZ1bCPIJQkCsiY9GlZDUKDTqxExjpafrfggHFqYnLSb
- mcudohB/kV34xFSLw+sfenfiQwCQ5mc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715010853;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=dX4vnNgtzm3Iqn+1ocnlVpFBWIZ295aCKCYrM4dBUuc=;
- b=+4pScxSaxvWWLJnHw+u1/s6RGtyYpC6mP4CIPoLYupcIuOy6hSYTVx+LLs27L0ImmEp7Bg
- fkYSIIuBEhOW3lBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 243F013A25;
- Mon,  6 May 2024 15:54:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id pakMCCX9OGY1DwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Mon, 06 May 2024 15:54:13 +0000
-Message-ID: <435e976a-9749-48c3-aa0b-1e956d84124e@suse.cz>
-Date: Mon, 6 May 2024 17:54:12 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7AA67140FB35
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 21:03:53 +0200 (CEST)
+Received: by mail-pf1-x431.google.com with SMTP id
+ d2e1a72fcca58-6f44bcbaae7so1760571b3a.2
+ for <ltp@lists.linux.it>; Mon, 06 May 2024 12:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1715022231; x=1715627031; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=jLuzzTsCnvYiZrslxaSVNQq/auaMXvnphd6qse1U8Yg=;
+ b=Gg1ZaEuFkM7yaOQPkALLEydmXErcg8Ryr6k3VrIgQuuojrhmNymqCBXB6zvEMv5OAq
+ f1JHuScQXOx4Eu38VD17NkVT2eS5T7j3jrwH2CIfKTuBSNOIVRDdVnUFe3l+MSyJtlqi
+ 5CEuCZXkjhp3sr5BrdlGXXd7orggtLXvELRk4xOvoxXzvOOKn/WL/X6mEE8apq86w7Oa
+ PY1DN1UMxgWaYvwXvq+EByDJ4c4Q8evn9yd5KIYWwlElhR2KcM2h7XRMq8Y03fs5tejt
+ Nj9PuXaS1twIX1eX7B7S1Hw7cNVZEiqZd5oCK9IOLqg9cfafV9j9x/mHkGn8HkFHyvzl
+ 57Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1715022231; x=1715627031;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=jLuzzTsCnvYiZrslxaSVNQq/auaMXvnphd6qse1U8Yg=;
+ b=lnHHHQH8immy5GAtScOHKp2OPRjgga9BqgScGbSMxUAtAj/ZHjiz72/VaYyxmZIZbs
+ dskoSja9hBpyegxY9MQs2/ixyDeB5PcK4xLMXfrplC0G/IkSdhY96f5aRcM1CR9EduGV
+ voBzt99wHekjKghovea9pSXtzn8W54fWOb1x/j3I9KbneLQp5BfWvydF0cB64CGf1qjj
+ TToqkOrGJep8sXliCMfJ6Gf/m2hFfUiOkSFkjoyJuoZeEXI2ta9DG5uMn1lIyD2dujW9
+ OwZND4CmSeqeWYomNKHaUCgG8/QKTSrOZXj9jBykgyk8ynb2kvdeaWrXbypcJycX9zMP
+ BT1w==
+X-Gm-Message-State: AOJu0Yx78CQEg8DMNNzhsJ2d6YJ7VFtNaHK1L53buAVCjusjo2/q2pVj
+ UDk7TXl0cEc81m5MWZyhMYs0Ey31y22ndPrvK++deJo7IQ4SZBJRP+oU7SQG
+X-Google-Smtp-Source: AGHT+IG1usVmLsMmz67aHZUepeaSfM+JdAxQTMtnwWYVyXjvrd/u9vjRG1Zttl7bnkL1hhOuHNv9cg==
+X-Received: by 2002:a05:6a00:1a8d:b0:6f3:f30a:19b with SMTP id
+ e13-20020a056a001a8d00b006f3f30a019bmr10519893pfv.18.1715022231284; 
+ Mon, 06 May 2024 12:03:51 -0700 (PDT)
+Received: from apollo.hsd1.ca.comcast.net ([2601:646:9d80:4380::cf93])
+ by smtp.gmail.com with ESMTPSA id
+ h11-20020a63df4b000000b005f807af5156sm8457010pgj.41.2024.05.06.12.03.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 06 May 2024 12:03:51 -0700 (PDT)
+From: Khem Raj <raj.khem@gmail.com>
+To: ltp@lists.linux.it
+Date: Mon,  6 May 2024 12:03:48 -0700
+Message-ID: <20240506190348.1448707-1-raj.khem@gmail.com>
+X-Mailer: git-send-email 2.45.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Yang Xu <xuyang2018.jy@fujitsu.com>, ltp@lists.linux.it
-References: <20240412080557.18922-1-xuyang2018.jy@fujitsu.com>
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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
-In-Reply-To: <20240412080557.18922-1-xuyang2018.jy@fujitsu.com>
-X-Spamd-Result: default: False [-4.29 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- XM_UA_NO_VERSION(0.01)[]; MID_RHS_MATCH_FROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] bind: Add negative tests for bind
+Subject: [LTP] [PATCH] sched_stress: Use time_t instead of long for type
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -157,144 +79,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Khem Raj <raj.khem@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-wouldn't it be better to add these testcases to bind01?
+This ensures it works across different architectures
+Fixes
 
-Also, why .needs_root = 1?
+| sched_driver.c:744:43: error: passing argument 1 of 'ctime' from incompatible pointer type [-Wincompatible-pointer-types]
+|   744 |         printf("\nend time = %s\n", ctime(&end_time));
+|       |                                           ^~~~~~~~~
 
-On 12. 04. 24 10:05, Yang Xu via ltp wrote:
-> Add negative cases for bind(), when errno is EBADF or ENOTDIR
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->   runtest/syscalls                          |  1 +
->   testcases/kernel/syscalls/bind/.gitignore |  1 +
->   testcases/kernel/syscalls/bind/bind07.c   | 81 +++++++++++++++++++++++
->   3 files changed, 83 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/bind/bind07.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3521047f4..71579cde4 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -37,6 +37,7 @@ bind03 bind03
->   bind04 bind04
->   bind05 bind05
->   bind06 bind06
-> +bind07 bind07
->   
->   bpf_map01 bpf_map01
->   bpf_prog01 bpf_prog01
-> diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
-> index c85774441..8aff2456f 100644
-> --- a/testcases/kernel/syscalls/bind/.gitignore
-> +++ b/testcases/kernel/syscalls/bind/.gitignore
-> @@ -4,3 +4,4 @@
->   /bind04
->   /bind05
->   /bind06
-> +/bind07
-> diff --git a/testcases/kernel/syscalls/bind/bind07.c b/testcases/kernel/syscalls/bind/bind07.c
-> new file mode 100644
-> index 000000000..dda6e8ad4
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/bind/bind07.c
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that bind(2) fails with
-> + *
-> + * - EBADF when sockfd is not a valid file descriptor
-> + * - ENOTDIR when a component of addr prefix is not a directory
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/socket.h>
-> +#include "tst_test.h"
-> +#include "libbind.h"
-> +
-> +#define TEST_EBADF "test_ebadf"
-> +#define DIR_ENOTDIR "dir_enotdir"
-> +#define TEST_ENOTDIR "test_enotdir"
-> +
-> +static struct sockaddr_in sock_ebadf;
-> +static struct sockaddr_un sock_enotdir;
-> +
-> +static struct test_case_t {
-> +	int sockfd;
-> +	struct sockaddr *addr;
-> +	socklen_t addrlen;
-> +	char *sockfile;
-> +	int type;
-> +	int protocol;
-> +	int expected_errno;
-> +	char *desc;
-> +} tcases[] = {
-> +	{-1, (struct sockaddr *)&sock_ebadf, sizeof(sock_ebadf), TEST_EBADF,
-> +		SOCK_STREAM, IPPROTO_TCP, EBADF,
-> +		"bind() sockfd is not a valid file descriptor"},
-> +	{0, (struct sockaddr *)&sock_enotdir, sizeof(sock_enotdir),
-> +		DIR_ENOTDIR "/" TEST_ENOTDIR, SOCK_STREAM, 0, ENOTDIR,
-> +		"bind() a component of addr prefix is not a directory"},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +	tst_init_sockaddr_inet(&sock_ebadf, IPV4_ADDRESS, 0);
-> +
-> +	SAFE_TOUCH(DIR_ENOTDIR, 0777, NULL);
-> +	sock_enotdir.sun_family = AF_UNIX;
-> +	strncpy(sock_enotdir.sun_path, DIR_ENOTDIR "/" TEST_ENOTDIR,
-> +		sizeof(sock_enotdir.sun_path));
-> +}
-> +
-> +static void verify_bind(unsigned int i)
-> +{
-> +	struct test_case_t *tc = &tcases[i];
-> +
-> +	int sockfd = tc->sockfd;
-> +
-> +	if (!sockfd)
-> +		sockfd = SAFE_SOCKET(tc->addr->sa_family, tc->type,
-> +			tc->protocol);
-> +
-> +	TST_EXP_FAIL(bind(sockfd, tc->addr, tc->addrlen), tc->expected_errno,
-> +		"%s", tc->desc);
-> +
-> +	if (sockfd > 0)
-> +		SAFE_CLOSE(sockfd);
-> +	if (!TST_RET)
-> +		SAFE_UNLINK(tc->sockfile);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = verify_bind,
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +};
+With gcc-14
 
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ testcases/kernel/sched/sched_stress/sched_driver.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/sched/sched_stress/sched_driver.c b/testcases/kernel/sched/sched_stress/sched_driver.c
+index 61573d788..5b8c187fe 100644
+--- a/testcases/kernel/sched/sched_stress/sched_driver.c
++++ b/testcases/kernel/sched/sched_stress/sched_driver.c
+@@ -136,7 +136,7 @@ int debug = 0;
+ /*
+  * Function prototypes
+  */
+-void startup(long);
++void startup(time_t);
+ int start_testcase(char *, char *, char *, char *, char *, char *);
+ int process_slots_in_use();
+ int available_user_process_slots();
+@@ -251,7 +251,7 @@ int main(int argc, char **argv)
+  * information to the screen and .  It also initializes the	 *
+  * process id list and other global variables.	 			 *
+  *-----------------------------------------------------------------------*/
+-void startup(long start_time)
++void startup(time_t start_time)
+ {
+ 	char tempbuffer[50];	/* temporary buffer to hold names */
+ 
+@@ -734,7 +734,7 @@ void kill_short_term_testcases()
+ void finishup(start_time)
+ long start_time;		/* starting time to calculate elapsed time */
+ {
+-	long end_time;		/* time when program finished */
++	time_t end_time;		/* time when program finished */
+ 
+ 	/*
+ 	 * Get the end time and calculate elapsed time; write all this out
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.45.0
 
 
 -- 
