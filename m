@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA08AC25B10
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 21:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFE06C25B10
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 21:31:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 28F763CDABE
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 23:27:53 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 5D61F3CDA86
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 23:31:43 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 022233C8960
- for <ltp@lists.linux.it>; Mon,  6 May 2024 23:27:38 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 61E1E3C0311
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 23:31:29 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,84 +23,86 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15AE6607156
- for <ltp@lists.linux.it>; Mon,  6 May 2024 23:27:37 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 53D7165192C
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 23:31:28 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E672B2293E;
- Mon,  6 May 2024 21:27:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6408A2295D;
+ Mon,  6 May 2024 21:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715030857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PQuB3HDowwevUMAMERiQns8BVPFRYvbq9qBAut6XkPw=;
- b=LBmIvV6OOxgr1besK/LBI1AAzuB7kjEttn0TrxiHb0JvoZzuxJBvtORIS5+G7rK6amPGmN
- 9JD77sZvE0KT3yoMp6T1KtZ5Ft7HxCjgFk5S4ZWgMlRNQuOaeC6VD1Je6CtI0YdFZ3YYPZ
- BHK7UotvRGAHm0y0c/4kbc5JxWxWCzc=
+ t=1715031087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dlkXP8zOhROkHPIj4bxLsc/0jApIzJ53iP4aZY5PGRA=;
+ b=xZUj+ZCofxcxNYKtIuIHouVQ50fJLmJpyM2XzD6kF9n7dKzmkpY/d7ygMDrUAPgntnEpyy
+ EbrfaWsqFNbEHKItC8XquNVFo4GBzTxB8Ck3ONghGkRDHhUbPCnPBcjPDfExZl50TT2taL
+ WhQkViz2TXNqNOmO0tqmfRu+A4YBs/Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715030857;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PQuB3HDowwevUMAMERiQns8BVPFRYvbq9qBAut6XkPw=;
- b=TxC6fxH1CtrV//jcAYqjpsw1jZrUY1z1OfrM8pRqzWL7ewwTbFfolS04WVn5KSZtMiXwBE
- UwBTGxELyYUcRwDw==
+ s=susede2_ed25519; t=1715031087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dlkXP8zOhROkHPIj4bxLsc/0jApIzJ53iP4aZY5PGRA=;
+ b=3KdonEQLerHRECzZ4l+d+d9yDj6l7p9NqXx5YHXikO3vlfk9SBZvOc+LeWl4zYIXbRgLKd
+ 8PTZqIT+8y/go3Ag==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EQjTOaGJ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=T5wkZIyW
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715030856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PQuB3HDowwevUMAMERiQns8BVPFRYvbq9qBAut6XkPw=;
- b=EQjTOaGJ6V6M37yG5YBWhcDB6j1uQhIkVRbVQNGJI00Y+SdqCujnNOoXgP4Qv5t+WbkQS3
- 1OrAjJ1pIXJAXtcMjD5kyZC0quEf1PjEl9wg/EWM7OkF2qKuhPy5iVdi+AO9wg3J2NLbK8
- Tu8BVMmG2r5eFuS1WAqWu6NnRBE5Bg4=
+ t=1715031086;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dlkXP8zOhROkHPIj4bxLsc/0jApIzJ53iP4aZY5PGRA=;
+ b=UWD1K5OZ6C3UcNCmabXSZDf5OZ7G8fr3B30xokU8xBlNpz9a/mXbS3oDPf9+oPzp6t5xuK
+ 0611VHRXt6q7sxK0fRmg5AH2hUHAHBo4g7Xuv9BiCIBMzdKgg9GscoaKbAjRlm+2VZcwAb
+ 3d4VkDBMbz61IbmMLYhjeh1Tiifu+kk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715030856;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PQuB3HDowwevUMAMERiQns8BVPFRYvbq9qBAut6XkPw=;
- b=T5wkZIyWYymS1j0KUJfVMYIKaWFW8rNEGzTuVvFJBgRqfCafKwho+jt4iFxcPzTNN2ZXGa
- dUoKSu4WK9wGp0AA==
+ s=susede2_ed25519; t=1715031086;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dlkXP8zOhROkHPIj4bxLsc/0jApIzJ53iP4aZY5PGRA=;
+ b=RgEm90uOXYOY2JxenSg+UrTNWs2MppILuju9kycWYt8fFCAhPSVABNG1mXNHHXvYjZ/hc2
+ 0u0ZtrdGNn39ctAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0E3213A25;
- Mon,  6 May 2024 21:27:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E28213A25;
+ Mon,  6 May 2024 21:31:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UORuJUhLOWb0dAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 21:27:36 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1fObCS5MOWYadgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 21:31:26 +0000
+Date: Mon, 6 May 2024 23:31:24 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon,  6 May 2024 23:27:34 +0200
-Message-ID: <20240506212734.71279-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240506213124.GA71396@pevik>
+References: <20240325115034.643892-1-pvorel@suse.cz>
+ <20240325115034.643892-2-pvorel@suse.cz>
+ <7de3ea33-b6ea-4361-9303-a34d831ada4f@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: E672B2293E
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+Content-Disposition: inline
+In-Reply-To: <7de3ea33-b6ea-4361-9303-a34d831ada4f@suse.cz>
+X-Spamd-Result: default: False [-7.40 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-2.90)[99.55%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] ci: Add spinx related job
+Subject: Re: [LTP] [PATCH v2 1/3] lib/tst_tmpdir: Normalize user defined
+ TMPDIR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,77 +114,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Because by default we don't build doc at all.
+Hi Martin,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+> Hi,
+> I don't like the approach of directly modifying the process environment.
+> Also, if TMPDIR variable is not set, the newly added strdup() will lead to a
+> memory leak because the function is called multiple times.
 
-Tested: https://github.com/pevik/ltp/actions/runs/8976016156
+> I recommend adding a static pointer that'll hold the cleaned up path and the
+> string cleanup will run only once on the first call. Then the pointer will
+> be free()d during library cleanup.
 
-NOTE: it'd be nice to add make install target
-(I'm not sure how to get prefix, hopefully including
-include/mk/config.mk could be enough).
-
-Also, I'd rename (in a separate commit) .github/workflows/ci.yml
-to .github/workflows/ci-docker-build.yml to make it more obvious.
+Good, point, thanks!
 
 Kind regards,
 Petr
-
- .github/workflows/ci-sphinx-doc.yml | 35 +++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 .github/workflows/ci-sphinx-doc.yml
-
-diff --git a/.github/workflows/ci-sphinx-doc.yml b/.github/workflows/ci-sphinx-doc.yml
-new file mode 100644
-index 000000000..4bde5cbc8
---- /dev/null
-+++ b/.github/workflows/ci-sphinx-doc.yml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2024 Petr Vorel <pvorel@suse.cz>
-+
-+name: "Test building sphinx doc"
-+
-+on: [push, pull_request]
-+
-+permissions: {}
-+
-+jobs:
-+  sphinx:
-+    runs-on: ubuntu-latest
-+    steps:
-+      - name: Checkout LTP
-+        uses: actions/checkout@v2
-+        with:
-+          path: ltp
-+
-+      - name: Install spinx
-+        run: |
-+          sudo apt update
-+          sudo apt install python3-sphinx python3-virtualenv
-+
-+      - name: Install spinx dependencies
-+        run: |
-+          cd "$GITHUB_WORKSPACE/ltp/doc/"
-+          python3 -m virtualenv .venv
-+          . .venv/bin/activate
-+          pip install -r requirements.txt
-+
-+      - name: Build doc
-+        run: |
-+          cd "$GITHUB_WORKSPACE/ltp/doc/"
-+          . .venv/bin/activate
-+          make
--- 
-2.43.0
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
