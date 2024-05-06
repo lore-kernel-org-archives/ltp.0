@@ -4,104 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E45F6C25B10
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 20:02:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F7DC25B10
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 20:06:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6322D3CDB56
-	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 22:02:28 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5E1A03CD985
+	for <ltp@archiver.kernel.org>; Mon,  6 May 2024 22:06:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 87CAD3CD961
- for <ltp@lists.linux.it>; Mon,  6 May 2024 22:02:13 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 629B93C0831
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 22:06:06 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D4FE322657F
- for <ltp@lists.linux.it>; Mon,  6 May 2024 22:02:12 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9227E63AA77
+ for <ltp@lists.linux.it>; Mon,  6 May 2024 22:06:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CEEB81FD55;
- Mon,  6 May 2024 20:02:11 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 047E21FD6A;
+ Mon,  6 May 2024 20:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715025731;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4npifJTp1LPdtVL9pD9QWSRw3967mV8I2eIxXf+KKj8=;
- b=wUTbuXoIuDQUA4zaMxvzRCp4T0Rw+W+dhhqhErhrwfSqr23GFfdsMVyYlJYWlQdR5yNtRQ
- YAIBvykcLxu0sxJdntDJQG/Cb6KBN3hxhydlEQT/mhCiwhNqDadzu9xIPnoDjhtiZB0wTf
- VjLD/a3ChKDvddfBcQXAOlhBdm/tkmg=
+ t=1715025964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p1zJTKF1TFpVeFzamGqQR/ymbZ2ZitbSmnJPOKhSGMg=;
+ b=dnDSz18CcE/aL/mqS5F8zniRBZ/ve0TynawDfCJuUpcfdVNpJdYkvcJ+nCG6AKgbH0qncE
+ EC71Msuf5nCNGWNTCiXF6Hykbul6NyhXcDxNRxjJmcDH0Y32FXX27IRYVCk0gW9YL5zvNp
+ N86Z3jl+yG4cGHDQ9M0iFBuV2fPvdtw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715025731;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4npifJTp1LPdtVL9pD9QWSRw3967mV8I2eIxXf+KKj8=;
- b=jQXZSIC+JiWHKk2pJIIsvPZr+aHHKBupTPjsmlIvTOuek290i230V9MsoKecvJ/2pnMGQd
- jyhVISM7TgMcm6Dw==
+ s=susede2_ed25519; t=1715025964;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p1zJTKF1TFpVeFzamGqQR/ymbZ2ZitbSmnJPOKhSGMg=;
+ b=MMYilQ+hCwDxw28B+WShJY9eANWveoCMmZyDKZer9+6N5o3r04fnSThtNAgNUMO2Rmddv9
+ Oc9RiqTt2WNZHPAA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dnDSz18C;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MMYilQ+h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715025731;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4npifJTp1LPdtVL9pD9QWSRw3967mV8I2eIxXf+KKj8=;
- b=wUTbuXoIuDQUA4zaMxvzRCp4T0Rw+W+dhhqhErhrwfSqr23GFfdsMVyYlJYWlQdR5yNtRQ
- YAIBvykcLxu0sxJdntDJQG/Cb6KBN3hxhydlEQT/mhCiwhNqDadzu9xIPnoDjhtiZB0wTf
- VjLD/a3ChKDvddfBcQXAOlhBdm/tkmg=
+ t=1715025964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p1zJTKF1TFpVeFzamGqQR/ymbZ2ZitbSmnJPOKhSGMg=;
+ b=dnDSz18CcE/aL/mqS5F8zniRBZ/ve0TynawDfCJuUpcfdVNpJdYkvcJ+nCG6AKgbH0qncE
+ EC71Msuf5nCNGWNTCiXF6Hykbul6NyhXcDxNRxjJmcDH0Y32FXX27IRYVCk0gW9YL5zvNp
+ N86Z3jl+yG4cGHDQ9M0iFBuV2fPvdtw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715025731;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4npifJTp1LPdtVL9pD9QWSRw3967mV8I2eIxXf+KKj8=;
- b=jQXZSIC+JiWHKk2pJIIsvPZr+aHHKBupTPjsmlIvTOuek290i230V9MsoKecvJ/2pnMGQd
- jyhVISM7TgMcm6Dw==
+ s=susede2_ed25519; t=1715025964;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p1zJTKF1TFpVeFzamGqQR/ymbZ2ZitbSmnJPOKhSGMg=;
+ b=MMYilQ+hCwDxw28B+WShJY9eANWveoCMmZyDKZer9+6N5o3r04fnSThtNAgNUMO2Rmddv9
+ Oc9RiqTt2WNZHPAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B01CE13A25;
- Mon,  6 May 2024 20:02:11 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3A9113A25;
+ Mon,  6 May 2024 20:06:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YR2EKUM3OWZiXAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 20:02:11 +0000
-Date: Mon, 6 May 2024 22:02:10 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id bcM8Mis4OWZ7XQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 06 May 2024 20:06:03 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>, ltp@lists.linux.it
-Message-ID: <20240506200210.GB38981@pevik>
-References: <20220421123351.17645-1-mdoucha@suse.cz>
- <20220421123351.17645-3-mdoucha@suse.cz>
- <20240506191739.GA36275@pevik>
+To: ltp@lists.linux.it
+Date: Mon,  6 May 2024 22:06:00 +0200
+Message-ID: <20240506200600.47895-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240506191739.GA36275@pevik>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 047E21FD6A
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.95 / 50.00]; BAYES_HAM(-2.94)[99.75%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] Add test for CVE 2021-38198
+Subject: [LTP] [PATCH 1/1] tst_test.h: Turn 1 bit tst_test members to
+ unsigned
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,44 +111,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin, Cyril,
+This fixes clang warning:
 
-> Hi Martin, Cyril,
+    test22.c:33:17: warning: implicit truncation from 'int' to a one-bit
+    wide bit-field changes value from 1 to -1
+    [-Wsingle-bit-bitfield-constant-conversion]
 
-> > +static struct tst_test test = {
-> > +	.test_all = tst_kvm_run,
-> > +	.setup = setup,
-> > +	.cleanup = tst_kvm_cleanup,
-> > +	.needs_root = 1,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_test.h | 40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-> This test was merged some time ago.
+diff --git a/include/tst_test.h b/include/tst_test.h
+index be09bce27..69587917f 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -476,26 +476,26 @@ struct tst_ulimit_val {
+ 
+ 	const char *tconf_msg;
+ 
+-	int needs_tmpdir:1;
+-	int needs_root:1;
+-	int forks_child:1;
+-	int needs_device:1;
+-	int needs_checkpoints:1;
+-	int needs_overlay:1;
+-	int format_device:1;
+-	int mount_device:1;
+-	int needs_rofs:1;
+-	int child_needs_reinit:1;
+-	int needs_devfs:1;
+-	int restore_wallclock:1;
+-
+-	int all_filesystems:1;
+-
+-	int skip_in_lockdown:1;
+-	int skip_in_secureboot:1;
+-	int skip_in_compat:1;
+-
+-	int needs_hugetlbfs:1;
++	unsigned int needs_tmpdir:1;
++	unsigned int needs_root:1;
++	unsigned int forks_child:1;
++	unsigned int needs_device:1;
++	unsigned int needs_checkpoints:1;
++	unsigned int needs_overlay:1;
++	unsigned int format_device:1;
++	unsigned int mount_device:1;
++	unsigned int needs_rofs:1;
++	unsigned int child_needs_reinit:1;
++	unsigned int needs_devfs:1;
++	unsigned int restore_wallclock:1;
++
++	unsigned int all_filesystems:1;
++
++	unsigned int skip_in_lockdown:1;
++	unsigned int skip_in_secureboot:1;
++	unsigned int skip_in_compat:1;
++
++	unsigned int needs_hugetlbfs:1;
+ 
+ 	const char *const *skip_filesystems;
+ 
+-- 
+2.43.0
 
-> FYI this .needs_root generates -Wsingle-bit-bitfield-constant-conversion error.
-> Nothing important, maybe you see an easy way to fix it.
-
-> kvm_pagefault01.c:218:16: warning: implicit truncation from 'int' to a one-bit wide bit-field changes value from 1 to -1 [-Wsingle-bit-bitfield-constant-conversion]
->         .needs_root = 1,
->                       ^
-> 1 warning generated.
-
-I'm sorry, this is not specific to KVM tests (and indeed, I was not able to find
-how this could be specific), but to any test built with clang (gcc simply does
-not issue this error). Obviously the problem is for any 1 bit field member in
-struct tst_test. The fix is quite simple - turn them to unsigned int.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?id=eab9100d9898cbd37882b04415b12156f8942f18
-
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
