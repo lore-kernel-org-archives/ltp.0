@@ -4,82 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 655D7C10F1A
-	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 12:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA58C10F1A
+	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 12:51:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA0413CDB74
-	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 14:18:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 318863CDCD5
+	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 14:51:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 777F83C068B
- for <ltp@lists.linux.it>; Tue,  7 May 2024 14:17:47 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 9A8CE3CDB74
+ for <ltp@lists.linux.it>; Tue,  7 May 2024 14:51:14 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 56F401000DE6
- for <ltp@lists.linux.it>; Tue,  7 May 2024 14:17:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1715084264;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0D972600069
+ for <ltp@lists.linux.it>; Tue,  7 May 2024 14:51:13 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CE0F9209FF;
+ Tue,  7 May 2024 12:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715086272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hCcGwem4fu562iv8nato4RasxM+Yx616J1OQnw6fh9s=;
- b=Pz591lrY5dTSC/MaJdZEvVyW9Y3Umj9gmppfI55VGmKiHIwdtyt8tQPUkXb/Vvpmd8OzO3
- KqiQn1qj1Be1tu9N+I9eB5VxSzYRQKaj25bk14ZWif/BiMp0nQGg0YXb63q3izIwqCxLKw
- FUXt/ECqfalzV7etOC1AOb5OWeieJFw=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-hONXOO3TPUK7bWR64Z3Ryw-1; Tue, 07 May 2024 08:17:42 -0400
-X-MC-Unique: hONXOO3TPUK7bWR64Z3Ryw-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2b4330e5119so2589245a91.3
- for <ltp@lists.linux.it>; Tue, 07 May 2024 05:17:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1715084262; x=1715689062;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=hCcGwem4fu562iv8nato4RasxM+Yx616J1OQnw6fh9s=;
- b=WwiuRYwzB+7pLW503RlRyKPbdWbX3YgUPp23aMS6DPE6G48mrVwLKzarAdsoGjvGPO
- qbE0YS9qHrYQwuPd6cAxXgRy1mwx/46+RudNUIWYTqxiW4prlbbP0ZhmWKWuElFfiqWF
- A0jRLGcOJGPjOM/1xeHAaeBImZuRa66w3rz1ptJUAYt5zU05O8aYaRH6gnw+pLKVwiId
- 5v81KCXC0Okme5I8s07Y2rcKVnAMr2ADe0Vb9mBbnwCwD6p6OqKL+ZCbH3StUysc0z7W
- irIL7j0B4XhtB4NpLhcmU1sMjghljLk7NDDO7yKS4yt4TO1yILxTJwCHBwLOqUr4FYO4
- WuzQ==
-X-Gm-Message-State: AOJu0Yz2Jcp/50o2RSvv97768YeRd31tXKVPvOaUkKX//XyzBa5Y2qbD
- hVtvMpstTl5S9luzuQ2e/sWJEuuyqTA2nYlpBESlYj/SRQpoNdwFUuASyW47ZlmfHy5IDxVL5lz
- J8w3kPxGyA3hPSv8Kh4U8lBioTgwwyvGvgy05D5Ui3RntkBHgQtzPT26UbvGhY+rGa1ZT+RUP8o
- 3CSXnhIWVQV4xh9Ns/DNQdnKA=
-X-Received: by 2002:a17:90b:1889:b0:2b2:88f7:1f7f with SMTP id
- mn9-20020a17090b188900b002b288f71f7fmr10832500pjb.10.1715084260618; 
- Tue, 07 May 2024 05:17:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFwQq3XiQxPcaO3RAJoDZMTTxaqu0jrU/X5CuAW5cQuoV3oBVyT+UVgHPbXn1D/ZYi5wXnncQhahRr94qAymMg=
-X-Received: by 2002:a17:90b:1889:b0:2b2:88f7:1f7f with SMTP id
- mn9-20020a17090b188900b002b288f71f7fmr10832479pjb.10.1715084260144; Tue, 07
- May 2024 05:17:40 -0700 (PDT)
+ bh=38Sps/8QdE/3k1QUSt0AoqAaStWtIQ9VOCOrWKZpEr8=;
+ b=kkLb3jqNrFOYL3dHb4pTwVHbwodVtxYJYpnd5wVtWVtSh9zdDdOdSh/vsP10SqXtMK2eQj
+ Qv1ujVg87aLxMmPW5y++tFL7CL+GLc38hqDR/e3uHhz80B4nHZsrE0Q/JOW4E9bUlIRYT4
+ o7M+Uz+FY4KuYPIJngZowzT/XyQM4Ok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715086272;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=38Sps/8QdE/3k1QUSt0AoqAaStWtIQ9VOCOrWKZpEr8=;
+ b=gXMsKaK+qkTXUP2O3Ssa+QqwqTrLS7leAKD7fsxeBZeVGPPDnTjRIrlG5WAkObe7iGeuPU
+ zU+WIc7M9ZPYPBAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715086272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=38Sps/8QdE/3k1QUSt0AoqAaStWtIQ9VOCOrWKZpEr8=;
+ b=kkLb3jqNrFOYL3dHb4pTwVHbwodVtxYJYpnd5wVtWVtSh9zdDdOdSh/vsP10SqXtMK2eQj
+ Qv1ujVg87aLxMmPW5y++tFL7CL+GLc38hqDR/e3uHhz80B4nHZsrE0Q/JOW4E9bUlIRYT4
+ o7M+Uz+FY4KuYPIJngZowzT/XyQM4Ok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715086272;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=38Sps/8QdE/3k1QUSt0AoqAaStWtIQ9VOCOrWKZpEr8=;
+ b=gXMsKaK+qkTXUP2O3Ssa+QqwqTrLS7leAKD7fsxeBZeVGPPDnTjRIrlG5WAkObe7iGeuPU
+ zU+WIc7M9ZPYPBAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BE1C2139CB;
+ Tue,  7 May 2024 12:51:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id QO1RLcAjOmZNGwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 07 May 2024 12:51:12 +0000
+Date: Tue, 7 May 2024 14:50:25 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: lufei <lufei@uniontech.com>
+Message-ID: <ZjojkXpTTleALvrQ@yuki>
+References: <20240506070336.2711930-2-lufei@uniontech.com>
+ <20240507043235.1692-1-lufei@uniontech.com>
+ <20240507043235.1692-2-lufei@uniontech.com>
 MIME-Version: 1.0
-References: <20240507095859.20802-1-chrubis@suse.cz>
- <CAEemH2cZ1bsBRGWrVXjRT3+b8i_M3dn=99yjRfs8=WHzQ9OkAA@mail.gmail.com>
-In-Reply-To: <CAEemH2cZ1bsBRGWrVXjRT3+b8i_M3dn=99yjRfs8=WHzQ9OkAA@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 7 May 2024 20:17:27 +0800
-Message-ID: <CAEemH2e3EFdwSwwNe=yroKw++Ux=TFBdKGuHOgQN1BHpP_o8og@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240507043235.1692-2-lufei@uniontech.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] testcases: realtime: Get rid of autotools
+Subject: Re: [LTP] [PATCH] Add case about arch_prctl syscall.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,49 +111,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: John Stultz <jstultz@google.com>, kernel-team@android.com,
- Darren Hart <darren@os.amperecomputing.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBNYXkgNywgMjAyNCBhdCA4OjEx4oCvUE0gTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5j
-b20+IHdyb3RlOgoKPgo+IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PiB3cm90ZToKPgo+
-IFRoZSBhdXRvdG9vbHMgY2hlY2tzIGFyZSBvdXRkYXRlZCBhbmQgbm90IG5lZWRlZCBhbnltb3Jl
-Lgo+Pgo+PiAodW50ZXN0ZWQgYnV0IHNob3VsZCB3b3JrIGZpbmUpCj4+Cj4+IFNpZ25lZC1vZmYt
-Ynk6IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6Pgo+PiAtLS0KPj4gIHRlc3RjYXNlcy9y
-ZWFsdGltZS9NYWtlZmlsZSAgICAgICAgICAgIHwgNjQgKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KPj4gIHRlc3RjYXNlcy9yZWFsdGltZS9jb25maWd1cmUuYWMgICAgICAgIHwgNDIgLS0tLS0t
-LS0tLS0tLS0tLS0KPj4gIHRlc3RjYXNlcy9yZWFsdGltZS9pbmNsdWRlL2xpYnJ0dGVzdC5oIHwg
-IDkgKy0tLQo+PiAgdGVzdGNhc2VzL3JlYWx0aW1lL2xpYi9saWJzdGF0cy5jICAgICAgfCAgNiAt
-LS0KPj4gIHRlc3RjYXNlcy9yZWFsdGltZS9tNC8uZ2l0aWdub3JlICAgICAgIHwgIDEgLQo+PiAg
-dGVzdGNhc2VzL3JlYWx0aW1lL200L0dOVW1ha2VmaWxlICAgICAgfCAzNyAtLS0tLS0tLS0tLS0t
-LS0KPj4gIHRlc3RjYXNlcy9yZWFsdGltZS9tNC9NYWtlZmlsZS5hbSAgICAgIHwgIDEgLQo+PiAg
-dGVzdGNhc2VzL3JlYWx0aW1lL200L2NoZWNrLm00ICAgICAgICAgfCAxNCAtLS0tLS0KPj4gIDgg
-ZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxNzIgZGVsZXRpb25zKC0pCj4+ICBkZWxl
-dGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL3JlYWx0aW1lL2NvbmZpZ3VyZS5hYwo+PiAgZGVsZXRl
-IG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9yZWFsdGltZS9tNC8uZ2l0aWdub3JlCj4+ICBkZWxldGUg
-bW9kZSAxMDA2NDQgdGVzdGNhc2VzL3JlYWx0aW1lL200L0dOVW1ha2VmaWxlCj4+ICBkZWxldGUg
-bW9kZSAxMDA2NDQgdGVzdGNhc2VzL3JlYWx0aW1lL200L01ha2VmaWxlLmFtCj4+ICBkZWxldGUg
-bW9kZSAxMDA2NDQgdGVzdGNhc2VzL3JlYWx0aW1lL200L2NoZWNrLm00Cj4+Cj4KPiBTZWVtcyB3
-ZSBoYXZlIHRvIHJlbW92ZSB0aGUgcmVsYXRlZCBsaW5lIGluIGF1dG9tYWtlLm1rIGFzIHdlbGws
-Cj4gb3RoZXJ3aXNlIGJ1aWxkIGJyb2tlbiBpbiAnbWFrZSAtQyB0ZXN0Y2FzZXMvcmVhbHRpbWUg
-YXV0b3Rvb2xzJy4KPgo+IC0tLSBhL2luY2x1ZGUvbWsvYXV0b21ha2UubWsKPiArKysgYi9pbmNs
-dWRlL21rL2F1dG9tYWtlLm1rCj4gQEAgLTI3LDcgKzI3LDYgQEAgQVVUT0hFQURFUiAgICA/PSBh
-dXRvaGVhZGVyCj4gIEFVVE9NQUtFICAgICAgID89IGF1dG9tYWtlCj4KPiAgQVVUT0NPTkZFRF9T
-VUJESVJTICAgICA9IFwKPiAtICAgICAgICAgICAgICAgICAgICAgICB0ZXN0Y2FzZXMvcmVhbHRp
-bWUgXAo+ICAgICAgICAgICAgICAgICAgICAgICAgIHRlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
-dWl0ZQo+CgoKQWgsIGluY2x1ZGVzIG1vcmUgbGluZXMgcmVsYXRlZCBiZWxvdzoKCi0tLSBhL2lu
-Y2x1ZGUvbWsvYXV0b21ha2UubWsKKysrIGIvaW5jbHVkZS9tay9hdXRvbWFrZS5tawpAQCAtMjcs
-MTUgKzI3LDEwIEBAIEFVVE9IRUFERVIgID89IGF1dG9oZWFkZXIKIEFVVE9NQUtFICAgICAgID89
-IGF1dG9tYWtlCgogQVVUT0NPTkZFRF9TVUJESVJTICAgICA9IFwKLSAgICAgICAgICAgICAgICAg
-ICAgICAgdGVzdGNhc2VzL3JlYWx0aW1lIFwKICAgICAgICAgICAgICAgICAgICAgICAgdGVzdGNh
-c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlCgogIyBXZSB3YW50IHRvIHJ1biB0aGlzIGV2ZXJ5IHNp
-bmdsZSB0aW1lIHRvIGVuc3VyZSB0aGF0IGFsbCBvZiB0aGUgcHJlcmVxCmZpbGVzCiAjIGFyZSB0
-aGVyZS4KLS5QSE9OWTogdGVzdGNhc2VzL3JlYWx0aW1lL2NvbmZpZ3VyZQotdGVzdGNhc2VzL3Jl
-YWx0aW1lL2NvbmZpZ3VyZToKLSAgICAgICAkKE1BS0UpIC1DICQoQEQpIGF1dG90b29scwotCiAu
-UEhPTlk6IHRlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25maWd1cmUKIHRlc3RjYXNl
-cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25maWd1cmU6CiAgICAgICAgJChNQUtFKSAtQyAkKEBE
-KSBhdXRvdG9vbHMKCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
-OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> +static void run(unsigned int index)
+> +{
+> +	struct tcase tc = tcases[index];
+> +
+> +	TEST(arch_prctl_set(ARCH_SET_CPUID, tc.input));
+> +
+> +	if (TST_RET == tc.set_exp)
+> +		if (tc.set_exp == -1)
+> +			tst_res((TST_ERR == tc.tst_errno ? TPASS : TFAIL),
+> +				"set cpuid, expect: %s, get: %s",
+> +				tst_strerrno(tc.tst_errno),
+> +				tst_strerrno(TST_ERR));
+> +		else
+> +			tst_res(TPASS, "set cpuid succeed.");
+> +	else
+> +		tst_res(TFAIL, "set cpuid failed.");
+
+This is kind of ugly, why can't we just do:
+
+	if (tag)
+		TST_EXP_PASS(arch_prctl_set(ARCH_SET_CPUID, index));
+	else
+		TST_EXP_FAIL(arch_prctl_set(ARCH_SET_CPUID, index), ENODEV);
+
+> +	TEST(arch_prctl_get(ARCH_GET_CPUID));
+> +
+> +	if (TST_RET == tc.get_exp)
+> +		tst_res(TPASS, "get cpuid succeed.");
+> +	else
+> +		tst_res(TFAIL, "get cpuid failed.");
+
+
+We have to check the errno here as well, just branch on the tag as well:
+
+	if (tag) {
+		TEST(arch_prctl_get(ARCH_GET_CPUID));
+
+		if (TST_RET == index)
+			tst_res(TPASS, "...");
+		else
+			tst_res(FAIL, "...");
+	} else {
+		TST_EXP_FAIL(arch_prctl_get(ARCH_GET_CPUID), ENODEV);
+	}
+
+Generally the use of TST_EXP_FAIL() is prefered whenever possible.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.setup = setup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.min_kver = "4.12",
+> +	.supported_archs = (const char *const []){"x86_64", "x86", NULL}
+> +};
+> +
+> +#else /* HAVE_ASM_PRCTL_H */
+> +TST_TEST_TCONF("missing <asm/prctl.h>");
+> +#endif
+> -- 
+> 2.39.3
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
