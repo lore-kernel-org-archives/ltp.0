@@ -4,56 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7913C10F1A
-	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 04:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF5D8C10F1A
+	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 06:41:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD6673CDBBA
-	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 06:33:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DE4F23CDB41
+	for <ltp@archiver.kernel.org>; Tue,  7 May 2024 08:41:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 025CF3C0562
- for <ltp@lists.linux.it>; Tue,  7 May 2024 06:33:02 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=54.204.34.130;
- helo=smtpbguseast2.qq.com; envelope-from=lufei@uniontech.com;
- receiver=lists.linux.it)
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7391C3C81B3
+ for <ltp@lists.linux.it>; Tue,  7 May 2024 08:41:14 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F2441208DF2
- for <ltp@lists.linux.it>; Tue,  7 May 2024 06:32:56 +0200 (CEST)
-X-QQ-mid: bizesmtp85t1715056369ty89zu2k
-X-QQ-Originating-IP: i2vvEm2roVVMWkXQ/MPTRB9yGLNSR++WYCgC200afn4=
-Received: from localhost.localdomain ( [125.76.217.162])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 07 May 2024 12:32:44 +0800 (CST)
-X-QQ-SSF: 01400000000000C0B000000A0000000
-X-QQ-FEAT: 7Lv6dviieSToyMp8DVYrre01UoEzotcLsAiGO8toH0sFl+PVFnsxrSVnZ89w9
- 36dXNZVtWFk0bgi1omdzRh9M2HA8/XsIgrjI4riZKRnvn/d26OCLoPWAYhNKcAyV4uNu1dY
- y7sHYnFkEJ1kBvCYI3xBlJaaaFxjsJ4oF+VdQLmuQm4/lQuE2SBMfsmOJaSvGUK+J40jORQ
- go/KPy4Zo/legfiIU0KjL+f8hkdaqcvcEYkwSP2LWhvbvHP7Wi+6miBa4lqmHCwSZ9NGzEi
- aMH2n3/65H1hQLXkIDcuO6/VwNRCQYqZ7lJPM0u4cth3eHpfaNi8GDmHx9/EsUXPS3YPUkg
- 9HqLdNB1zV8B0IOAWAcvbu13xett0mj/S3dyEOyGTNhJIIp6Y654up//bUZ/72oegxgifyI
- K+D3/mAPtbA=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 12567400672246159846
-From: lufei <lufei@uniontech.com>
-To: chrubis@suse.cz,
-	ltp@lists.linux.it
-Date: Tue,  7 May 2024 12:32:35 +0800
-Message-Id: <20240507043235.1692-2-lufei@uniontech.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240507043235.1692-1-lufei@uniontech.com>
-References: <20240506070336.2711930-2-lufei@uniontech.com>
- <20240507043235.1692-1-lufei@uniontech.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 69E76140EBFD
+ for <ltp@lists.linux.it>; Tue,  7 May 2024 08:41:12 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C112F33A52;
+ Tue,  7 May 2024 06:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715064070;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=no0Wyhn+FyieX6hroAMAwjZh0taxl8mxxjvXP+h8Ah8=;
+ b=oiq18PnQan0RRYIpWGqkIOBDFu2qvAHmMbqfYyjAJQm9BN9nlrORzD8iKx5jcPYblsIfYY
+ KBgw6aDDjpA7FDvAYgNbk1q9YgQmp/DBdG85LoPSEE2ATMQ7f1Jvj+G7q/51oRl4LVAJBJ
+ IZpA03WtCjCneVRR/CRW3xaGjRINkEY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715064070;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=no0Wyhn+FyieX6hroAMAwjZh0taxl8mxxjvXP+h8Ah8=;
+ b=EfbFnfdjGxkOl1q0Bnp5GRyzezsuNo/7UQpB2mDT9FDzJY8Tc+GinkVRrDHKHjiJOwzjtp
+ ugOOG4fOdTsqtlAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oiq18PnQ;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EfbFnfdj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715064070;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=no0Wyhn+FyieX6hroAMAwjZh0taxl8mxxjvXP+h8Ah8=;
+ b=oiq18PnQan0RRYIpWGqkIOBDFu2qvAHmMbqfYyjAJQm9BN9nlrORzD8iKx5jcPYblsIfYY
+ KBgw6aDDjpA7FDvAYgNbk1q9YgQmp/DBdG85LoPSEE2ATMQ7f1Jvj+G7q/51oRl4LVAJBJ
+ IZpA03WtCjCneVRR/CRW3xaGjRINkEY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715064070;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=no0Wyhn+FyieX6hroAMAwjZh0taxl8mxxjvXP+h8Ah8=;
+ b=EfbFnfdjGxkOl1q0Bnp5GRyzezsuNo/7UQpB2mDT9FDzJY8Tc+GinkVRrDHKHjiJOwzjtp
+ ugOOG4fOdTsqtlAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81BFA139CB;
+ Tue,  7 May 2024 06:41:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EOZUGwbNOWY5EwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 07 May 2024 06:41:10 +0000
+Date: Tue, 7 May 2024 08:41:09 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
+Message-ID: <20240507064109.GA84245@pevik>
+References: <20240411044645.29938-1-wegao@suse.com>
+ <20240418142202.GA100561@pevik>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240418142202.GA100561@pevik>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: C112F33A52
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:email,suse.cz:replyto];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add case about arch_prctl syscall.
+Subject: Re: [LTP] [PATCH v1] zram01.sh: Increase timeout for
+ check_read_mem_used_total
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,184 +127,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lufei <lufei@uniontech.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add testcase about arch_prctl syscall.
+Hi all,
+> Hi all,
 
-Signed-off-by: Lu Fei <lufei@uniontech.com>
----
- configure.ac                                  |   1 +
- runtest/syscalls                              |   2 +
- .../kernel/syscalls/arch_prctl/.gitignore     |   1 +
- testcases/kernel/syscalls/arch_prctl/Makefile |   8 ++
- .../kernel/syscalls/arch_prctl/arch_prctl01.c | 103 ++++++++++++++++++
- 5 files changed, 115 insertions(+)
- create mode 100644 testcases/kernel/syscalls/arch_prctl/.gitignore
- create mode 100644 testcases/kernel/syscalls/arch_prctl/Makefile
- create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+...
+> > diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+> > index 0c100b706..959dab217 100755
+> > --- a/testcases/kernel/device-drivers/zram/zram01.sh
+> > +++ b/testcases/kernel/device-drivers/zram/zram01.sh
+> > @@ -155,7 +155,7 @@ zram_fill_fs()
+> >  			continue
+> >  		fi
 
-diff --git a/configure.ac b/configure.ac
-index 1d7e862d8..0dcaddc0f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -41,6 +41,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     asm/ldt.h \
-+    asm/prctl.h \
-     cpuid.h \
-     emmintrin.h \
-     ifaddrs.h \
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7794f1465..505b4243d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -31,6 +31,8 @@ alarm05 alarm05
- alarm06 alarm06
- alarm07 alarm07
- 
-+arch_prctl01 arch_prctl01
-+
- bind01 bind01
- bind02 bind02
- bind03 bind03
-diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
-new file mode 100644
-index 000000000..24871e249
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
-@@ -0,0 +1 @@
-+/arch_prctl01
-diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
-new file mode 100644
-index 000000000..272949d57
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) UnionTech Software Technology Co.,Ltd. 2024
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-new file mode 100644
-index 000000000..cce204f2d
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) UnionTech Software Technology Co.,Ltd., 2024
-+ * Author: Lu Fei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Simple test on arch_prctl to set and get cpuid instruction of test thread.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/syscalls.h"
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#ifdef HAVE_ASM_PRCTL_H
-+#include <asm/prctl.h>
-+
-+static int arch_prctl_get(int code)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, NULL);
-+}
-+
-+static int arch_prctl_set(int code, unsigned long addr)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, addr);
-+}
-+
-+static struct tcase {
-+	const int input;
-+	int set_exp;
-+	int get_exp;
-+	const int tst_errno;
-+} tcases[] = {
-+	{0, 0, 0, ENODEV},
-+	{1, 0, 1, ENODEV},
-+};
-+
-+static void setup(void)
-+{
-+	FILE *f;
-+	char flag_mid[] = " cpuid_fault ";
-+	char flag_end[] = " cpuid_fault\n";
-+	char *line = NULL;
-+	size_t len = 0;
-+	bool tag = 0;
-+
-+	f = SAFE_FOPEN("/proc/cpuinfo", "r");
-+
-+	while (getline(&line, &len, f) != -1)
-+		if (strncmp(line, "flags", strlen("flags")) == 0 &&
-+				(strstr(line, flag_mid) != NULL ||
-+				 strstr(line, flag_end) != NULL)) {
-+			tag = 1;
-+			break;
-+		}
-+	if (!tag)
-+		for (unsigned long i = 0; i < ARRAY_SIZE(tcases); i++) {
-+			tcases[i].set_exp = -1;
-+			// get default value
-+			tcases[i].get_exp = 1;
-+		}
-+}
-+
-+static void run(unsigned int index)
-+{
-+	struct tcase tc = tcases[index];
-+
-+	TEST(arch_prctl_set(ARCH_SET_CPUID, tc.input));
-+
-+	if (TST_RET == tc.set_exp)
-+		if (tc.set_exp == -1)
-+			tst_res((TST_ERR == tc.tst_errno ? TPASS : TFAIL),
-+				"set cpuid, expect: %s, get: %s",
-+				tst_strerrno(tc.tst_errno),
-+				tst_strerrno(TST_ERR));
-+		else
-+			tst_res(TPASS, "set cpuid succeed.");
-+	else
-+		tst_res(TFAIL, "set cpuid failed.");
-+
-+	TEST(arch_prctl_get(ARCH_GET_CPUID));
-+
-+	if (TST_RET == tc.get_exp)
-+		tst_res(TPASS, "get cpuid succeed.");
-+	else
-+		tst_res(TFAIL, "get cpuid failed.");
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "4.12",
-+	.supported_archs = (const char *const []){"x86_64", "x86", NULL}
-+};
-+
-+#else /* HAVE_ASM_PRCTL_H */
-+TST_TEST_TCONF("missing <asm/prctl.h>");
-+#endif
--- 
-2.39.3
+> > -		TST_RETRY_FUNC "check_read_mem_used_total /sys/block/zram$i/mm_stat" 0
+> > +		TST_RETRY_FN_EXP_BACKOFF "check_read_mem_used_total /sys/block/zram$i/mm_stat" 0 10
 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> Sounds ok for me to avoid timeout.
+> @Cyril, @Li WDYT? Or do you smell bug we try to cover?
+
+FYI merged. Thanks!
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
+
+> >  		mem_used_total=$(read_mem_used_total /sys/block/zram$i/mm_stat)
+> >  		tst_res TINFO "mem_used_total: $mem_used_total"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
