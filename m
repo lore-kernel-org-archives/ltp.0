@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 647DFC10F1A
-	for <ltp@archiver.kernel.org>; Wed,  8 May 2024 01:59:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4137FC10F1A
+	for <ltp@archiver.kernel.org>; Wed,  8 May 2024 02:29:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3DB33CDE05
-	for <ltp@archiver.kernel.org>; Wed,  8 May 2024 03:59:45 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6B2E83CDC2C
+	for <ltp@archiver.kernel.org>; Wed,  8 May 2024 04:29:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC0F13CBEF0
- for <ltp@lists.linux.it>; Wed,  8 May 2024 03:59:28 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=18.132.163.193; helo=smtpbg150.qq.com;
+ by picard.linux.it (Postfix) with ESMTPS id 420EE3CD806
+ for <ltp@lists.linux.it>; Wed,  8 May 2024 04:29:10 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=uniontech.com (client-ip=13.245.218.24; helo=smtpbg153.qq.com;
  envelope-from=lufei@uniontech.com; receiver=lists.linux.it)
-Received: from smtpbg150.qq.com (smtpbg150.qq.com [18.132.163.193])
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BDE73634A38
- for <ltp@lists.linux.it>; Wed,  8 May 2024 03:59:25 +0200 (CEST)
-X-QQ-mid: bizesmtpsz8t1715133558t6q27id
-X-QQ-Originating-IP: sT9Qad+zcJXGnL8OP7XtDartcxTVn0+ZBONLdrT3m5M=
-Received: from localhost.localdomain ( [125.76.217.162])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Wed, 08 May 2024 09:59:03 +0800 (CST)
-X-QQ-SSF: 01400000000000C0B000000A0000000
-X-QQ-FEAT: MqaDhgBJ9QpuLAYjyl2aGOCQcM9w3HNXjP5PPC6sGuJQg2uc7UzKSMvr1Xygh
- gD1+GVIO56O+VDomVHmWtDm0mH9kJxL9hPRYwT0jGjnm/RcN07zQDJjG6XMtvkUBnDe0xGd
- TlcXdQ8DFXJ9vK2KOwkC1dQlpaRZJINsKSrqhByq5rr+BWyAYdyCMZiaHvK7oXxWQ8RbOD5
- CIKCaZ6dNWFGMTCIdFv6yt/Rst6JhG1pp4pbVnLl8B87/kqBQvNwvfxNIx9q1sfsqnAz9RY
- xpLKbHTneA3sU1rLoWYsTe/eAGse/Oc7ekflj95rrtpDfSx0JBBljLfAdefIG7ymAQa2eJU
- 8I/+amMBOzx87UtUGUUg89JhcnbSrSd2zSK6aRG7E/CicMvTb+C2h8nCoCiPuzt78Wv39Y+
- q9Dn+paXos8=
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 617D21A00EA5
+ for <ltp@lists.linux.it>; Wed,  8 May 2024 04:29:07 +0200 (CEST)
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9208710240694505904
-From: lufei <lufei@uniontech.com>
-To: ltp@lists.linux.it
-Date: Wed,  8 May 2024 09:58:52 +0800
-Message-Id: <20240508015852.3362-2-lufei@uniontech.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240508015852.3362-1-lufei@uniontech.com>
-References: <20240507043235.1692-2-lufei@uniontech.com>
- <20240508015852.3362-1-lufei@uniontech.com>
-MIME-Version: 1.0
+X-QQ-SSF: 00400000000000F0
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-QQ-FEAT: cIAm9Ti9Z0wwIqFVxQia/M0tAIjUQxfcFtHOTePdP0DyzqAyVDJ9nA5H4fioa
+ UR9rK/Rejvv/5GP3olUKCnErx1+KphSEpWCMRUfX3ZW85kKjNAd4dnIJD3sRqn6QkxCYXtD
+ Xwv2rqUpE/992Wnjprsquz8x72aXWhKryP7aZeYxmDvS1BLQ3kggtm171KB1JR0WoeP82pq
+ tejAPohHvJoCo7kSYxgX5tC6h8CBsC3Gce25AQ3/lG7IVveWDHranLDAB1Ezy3Whi8KFTw2
+ CEZU702RMMRwhvudNEP9UYtYHa7S95JSSm1uJiFLy3px/XFh+GZilMbcWv/+c04oUGkB9V5
+ vVTJQ3/6Xr3QVqAxAC2wAOviLGFzK502+N1AzuyJ2fHNIzsWhzV4HX/mnlgUTKFBqJA7eVt
+X-QQ-BUSINESS-ORIGIN: 2
+X-QQ-Originating-IP: dgXQoQruKC5j057Wphi8dWquFMHY20TmhSWtXUDzkPU=
+X-Originating-IP: 125.76.39.228
+X-QQ-STYLE: 
+X-QQ-mid: t5gz6a-3t1715135340t4009128
+From: "=?utf-8?B?6Lev5paQ?=" <lufei@uniontech.com>
+To: "=?utf-8?B?Q3lyaWwgSHJ1Ymlz?=" <chrubis@suse.cz>
+Mime-Version: 1.0
+Date: Wed, 8 May 2024 02:29:00 +0000
+X-Priority: 3
+Message-ID: <tencent_60EAD0C87B6992E152F29F11@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20240506070336.2711930-2-lufei@uniontech.com>
+ <20240507043235.1692-1-lufei@uniontech.com>
+ <20240507043235.1692-2-lufei@uniontech.com> <ZjojkXpTTleALvrQ@yuki>
+In-Reply-To: <ZjojkXpTTleALvrQ@yuki>
+X-QQ-ReplyHash: 2604727230
+X-BIZMAIL-ID: 14731648227307992163
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Received: from qq.com (unknown [127.0.0.1]) by smtp.qq.com (ESMTP) with SMTP
+ id ; Wed, 08 May 2024 10:29:02 +0800 (CST)
+Feedback-ID: t:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-1
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add case about arch_prctl syscall.
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] Add case about arch_prctl syscall.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,163 +72,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lufei <lufei@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: =?utf-8?B?bHRw?= <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add testcase about arch_prctl syscall.
-
-Signed-off-by: Lu Fei <lufei@uniontech.com>
----
- configure.ac                                  |  1 +
- runtest/syscalls                              |  2 +
- .../kernel/syscalls/arch_prctl/.gitignore     |  1 +
- testcases/kernel/syscalls/arch_prctl/Makefile |  8 ++
- .../kernel/syscalls/arch_prctl/arch_prctl01.c | 82 +++++++++++++++++++
- 5 files changed, 94 insertions(+)
- create mode 100644 testcases/kernel/syscalls/arch_prctl/.gitignore
- create mode 100644 testcases/kernel/syscalls/arch_prctl/Makefile
- create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-
-diff --git a/configure.ac b/configure.ac
-index 1d7e862d8..0dcaddc0f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -41,6 +41,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     asm/ldt.h \
-+    asm/prctl.h \
-     cpuid.h \
-     emmintrin.h \
-     ifaddrs.h \
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7794f1465..505b4243d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -31,6 +31,8 @@ alarm05 alarm05
- alarm06 alarm06
- alarm07 alarm07
- 
-+arch_prctl01 arch_prctl01
-+
- bind01 bind01
- bind02 bind02
- bind03 bind03
-diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
-new file mode 100644
-index 000000000..24871e249
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
-@@ -0,0 +1 @@
-+/arch_prctl01
-diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
-new file mode 100644
-index 000000000..272949d57
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) UnionTech Software Technology Co.,Ltd. 2024
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-new file mode 100644
-index 000000000..e30b5667a
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) UnionTech Software Technology Co.,Ltd., 2024
-+ * Author: Lu Fei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Simple test on arch_prctl to set and get cpuid instruction of test thread.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/syscalls.h"
-+#include <stdlib.h>
-+#include <string.h>
-+#ifdef HAVE_ASM_PRCTL_H
-+#include <asm/prctl.h>
-+
-+static int arch_prctl_get(int code)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, NULL);
-+}
-+
-+static int arch_prctl_set(int code, unsigned long addr)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, addr);
-+}
-+
-+static bool tag;
-+
-+static void setup(void)
-+{
-+	FILE *f;
-+	char flag_mid[] = " cpuid_fault ";
-+	char flag_end[] = " cpuid_fault\n";
-+	char *line = NULL;
-+	size_t len = 0;
-+
-+	tag = false;
-+
-+	f = SAFE_FOPEN("/proc/cpuinfo", "r");
-+
-+	while (getline(&line, &len, f) != -1)
-+		if (strncmp(line, "flags", strlen("flags")) == 0 &&
-+				(strstr(line, flag_mid) != NULL ||
-+				 strstr(line, flag_end) != NULL)) {
-+			tag = true;
-+			break;
-+		}
-+}
-+
-+static void run(unsigned int index)
-+{
-+	if (tag)
-+		TST_EXP_PASS(arch_prctl_set(ARCH_SET_CPUID, index));
-+	else
-+		TST_EXP_FAIL(arch_prctl_set(ARCH_SET_CPUID, index), ENODEV);
-+
-+	// if cpu has cpuid_fault flag, ARCH_GET_CPUID returns what has been
-+	// set: index, otherwise, returns default status: 1
-+	int exp = tag ? index : 1;
-+
-+	TEST(arch_prctl_get(ARCH_GET_CPUID));
-+	if (TST_RET == exp)
-+		tst_res(TPASS, "get cpuid succeed.");
-+	else
-+		tst_res(TFAIL, "get wrong cpuid status");
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.setup = setup,
-+	.tcnt = 2,
-+	.min_kver = "4.12",
-+	.supported_archs = (const char *const []){"x86_64", "x86", NULL}
-+};
-+
-+#else /* HAVE_ASM_PRCTL_H */
-+TST_TEST_TCONF("missing <asm/prctl.h>");
-+#endif
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGksIEN5cmlsLiZuYnNwOw0KVGhhbmtzIGFnYWluIHZlcnkgbXVjaC4NCg0KDQpBcyB3cml0dGVu
+IGluIG1hbiBwYWdlLCZuYnNwO0VOT0RFViBzZWVtcyBvbmx5IGZvciBBUkNIX1NFVF9DUFVJRCwg
+c28gSSBkaWRuJ3QgdXNlIFRTVF9FWFBfRkFJTCBpbiBBUkNIX0dFVF9DUFVJRCBjaGVjay4gQVJD
+SF9HRVRfQ1BVSUQgYWx3YXlzIHN1Y2Nlc3Mgd2l0aCByZXR1cm5pbmcgY3B1aWQgc3RhdHVzLCBJ
+J3ZlIHRlc3RlZCB0aGlzIG9uIGEgSW50ZWwmbmJzcDtKMTkwMCBtYWNoaW5lIHdpdGNoIGhhcyBu
+byBjcHVpZF9mYXVsdCBmbGFnLiBJJ3ZlIHJlc2VudCB0aGUgcGF0Y2guDQoNCkx1IEZlaQ0Kc2l0
+Ze+8mnd3dy51bmlvbnRlY2guY29tDQp0ZWzvvJooKzg2KTE4NTAxMDEyMzUyDQphZGRyOiBYaSdh
+biwgQ2hpbmEmbmJzcDsNCg0KDQoNCiZuYnNwOw0KJm5ic3A7DQotLS0tLS0tLS0tLS0tLS0tLS0m
+bmJzcDtPcmlnaW5hbCZuYnNwOy0tLS0tLS0tLS0tLS0tLS0tLQ0KRnJvbTogJm5ic3A7IkN5cmls
+Jm5ic3A7SHJ1YmlzIjxjaHJ1YmlzQHN1c2UuY3omZ3Q7Ow0KRGF0ZTogJm5ic3A7VHVlLCBNYXkg
+NywgMjAyNCAxMjo1MSBQTQ0KVG86ICZuYnNwOyJsdWZlaSI8bHVmZWlAdW5pb250ZWNoLmNvbSZn
+dDs7IA0KQ2M6ICZuYnNwOyJsdHAiPGx0cEBsaXN0cy5saW51eC5pdCZndDs7ICJqc3RhbmNlayI8
+anN0YW5jZWtAcmVkaGF0LmNvbSZndDs7IA0KU3ViamVjdDogJm5ic3A7UmU6IFtQQVRDSF0gQWRk
+IGNhc2UgYWJvdXQgYXJjaF9wcmN0bCBzeXNjYWxsLg0KDQombmJzcDsNCg0KSGkhDQomZ3Q7ICtz
+dGF0aWMgdm9pZCBydW4odW5zaWduZWQgaW50IGluZGV4KQ0KJmd0OyArew0KJmd0OyArCXN0cnVj
+dCB0Y2FzZSB0YyA9IHRjYXNlc1tpbmRleF07DQomZ3Q7ICsNCiZndDsgKwlURVNUKGFyY2hfcHJj
+dGxfc2V0KEFSQ0hfU0VUX0NQVUlELCB0Yy5pbnB1dCkpOw0KJmd0OyArDQomZ3Q7ICsJaWYgKFRT
+VF9SRVQgPT0gdGMuc2V0X2V4cCkNCiZndDsgKwkJaWYgKHRjLnNldF9leHAgPT0gLTEpDQomZ3Q7
+ICsJCQl0c3RfcmVzKChUU1RfRVJSID09IHRjLnRzdF9lcnJubyA/IFRQQVNTIDogVEZBSUwpLA0K
+Jmd0OyArCQkJCSJzZXQgY3B1aWQsIGV4cGVjdDogJXMsIGdldDogJXMiLA0KJmd0OyArCQkJCXRz
+dF9zdHJlcnJubyh0Yy50c3RfZXJybm8pLA0KJmd0OyArCQkJCXRzdF9zdHJlcnJubyhUU1RfRVJS
+KSk7DQomZ3Q7ICsJCWVsc2UNCiZndDsgKwkJCXRzdF9yZXMoVFBBU1MsICJzZXQgY3B1aWQgc3Vj
+Y2VlZC4iKTsNCiZndDsgKwllbHNlDQomZ3Q7ICsJCXRzdF9yZXMoVEZBSUwsICJzZXQgY3B1aWQg
+ZmFpbGVkLiIpOw0KDQpUaGlzIGlzIGtpbmQgb2YgdWdseSwgd2h5IGNhbid0IHdlIGp1c3QgZG86
+DQoNCglpZiAodGFnKQ0KCQlUU1RfRVhQX1BBU1MoYXJjaF9wcmN0bF9zZXQoQVJDSF9TRVRfQ1BV
+SUQsIGluZGV4KSk7DQoJZWxzZQ0KCQlUU1RfRVhQX0ZBSUwoYXJjaF9wcmN0bF9zZXQoQVJDSF9T
+RVRfQ1BVSUQsIGluZGV4KSwgRU5PREVWKTsNCg0KJmd0OyArCVRFU1QoYXJjaF9wcmN0bF9nZXQo
+QVJDSF9HRVRfQ1BVSUQpKTsNCiZndDsgKw0KJmd0OyArCWlmIChUU1RfUkVUID09IHRjLmdldF9l
+eHApDQomZ3Q7ICsJCXRzdF9yZXMoVFBBU1MsICJnZXQgY3B1aWQgc3VjY2VlZC4iKTsNCiZndDsg
+KwllbHNlDQomZ3Q7ICsJCXRzdF9yZXMoVEZBSUwsICJnZXQgY3B1aWQgZmFpbGVkLiIpOw0KDQoN
+CldlIGhhdmUgdG8gY2hlY2sgdGhlIGVycm5vIGhlcmUgYXMgd2VsbCwganVzdCBicmFuY2ggb24g
+dGhlIHRhZyBhcyB3ZWxsOg0KDQoJaWYgKHRhZykgew0KCQlURVNUKGFyY2hfcHJjdGxfZ2V0KEFS
+Q0hfR0VUX0NQVUlEKSk7DQoNCgkJaWYgKFRTVF9SRVQgPT0gaW5kZXgpDQoJCQl0c3RfcmVzKFRQ
+QVNTLCAiLi4uIik7DQoJCWVsc2UNCgkJCXRzdF9yZXMoRkFJTCwgIi4uLiIpOw0KCX0gZWxzZSB7
+DQoJCVRTVF9FWFBfRkFJTChhcmNoX3ByY3RsX2dldChBUkNIX0dFVF9DUFVJRCksIEVOT0RFVik7
+DQoJfQ0KDQpHZW5lcmFsbHkgdGhlIHVzZSBvZiBUU1RfRVhQX0ZBSUwoKSBpcyBwcmVmZXJlZCB3
+aGVuZXZlciBwb3NzaWJsZS4NCg0KJmd0OyArfQ0KJmd0OyArDQomZ3Q7ICtzdGF0aWMgc3RydWN0
+IHRzdF90ZXN0IHRlc3QgPSB7DQomZ3Q7ICsJLnRlc3QgPSBydW4sDQomZ3Q7ICsJLnNldHVwID0g
+c2V0dXAsDQomZ3Q7ICsJLnRjbnQgPSBBUlJBWV9TSVpFKHRjYXNlcyksDQomZ3Q7ICsJLm1pbl9r
+dmVyID0gIjQuMTIiLA0KJmd0OyArCS5zdXBwb3J0ZWRfYXJjaHMgPSAoY29uc3QgY2hhciAqY29u
+c3QgW10peyJ4ODZfNjQiLCAieDg2IiwgTlVMTH0NCiZndDsgK307DQomZ3Q7ICsNCiZndDsgKyNl
+bHNlIC8qIEhBVkVfQVNNX1BSQ1RMX0ggKi8NCiZndDsgK1RTVF9URVNUX1RDT05GKCJtaXNzaW5n
+IDxhc20vcHJjdGwuaCZndDsiKTsNCiZndDsgKyNlbmRpZg0KJmd0OyAtLSANCiZndDsgMi4zOS4z
+DQomZ3Q7IA0KDQotLSANCkN5cmlsIEhydWJpcw0KY2hydWJpc0BzdXNlLmN6CgotLSAKTWFpbGlu
+ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
