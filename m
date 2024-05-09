@@ -4,100 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5FB1C10F1A
-	for <ltp@archiver.kernel.org>; Thu,  9 May 2024 12:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B01C10F1A
+	for <ltp@archiver.kernel.org>; Thu,  9 May 2024 12:57:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30A003CE22C
-	for <ltp@archiver.kernel.org>; Thu,  9 May 2024 14:51:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 592F93CE235
+	for <ltp@archiver.kernel.org>; Thu,  9 May 2024 14:57:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2CA983CE0E7
- for <ltp@lists.linux.it>; Thu,  9 May 2024 14:51:16 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8A2BC3CE0E7
+ for <ltp@lists.linux.it>; Thu,  9 May 2024 14:57:18 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 992C01000A00
- for <ltp@lists.linux.it>; Thu,  9 May 2024 14:51:15 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A1F4C1000F1A
+ for <ltp@lists.linux.it>; Thu,  9 May 2024 14:57:17 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 24299202D3;
- Thu,  9 May 2024 12:51:14 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A87F4385AC;
+ Thu,  9 May 2024 12:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715259074;
+ t=1715259436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tabX1KYBqFloMKU135TL98T743dvl3qtEZ925qkWEiI=;
- b=bEuQF35vt6q6TkRpXgDEer33F4zC/zFph2Xr+t1iul2Lv0Au+ilMmO6CIqh6GCpOsq5zAc
- DVO/doMjIK1Yo6Fef+yynuWQJ/QiXNFHxe0ohr/LB4U/c1BKsG9pWr4DXiS3Y4Wj5z9RFD
- zektVwYjLIlxyVQYpVWDsEenrOUrbyE=
+ bh=jT7jpd70ZrOkgd/fod50GBbx7D2t0aUn+LZ+mbUF8KM=;
+ b=ZldLC8WxlJ/h6z0R4vV72ZGhEv2c4g4rGeK5uS7ViacQQRIBXIl/VZ8RxU1Pw/p8hKsgCo
+ ArUUSviUBaIqu4AtsxQV8xl8HOwfTelnJXCcwQEaHCEDrr2NuZOJQ3dH7hieQx7woEX8qp
+ IQ1aqh5R4WjPidWBi5Cj0US74tHIMJM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715259074;
+ s=susede2_ed25519; t=1715259436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tabX1KYBqFloMKU135TL98T743dvl3qtEZ925qkWEiI=;
- b=ahKezl2fja7krtUJ6KA6MG1hLz9U8MDn3FiQar0ZpUs79CzDoFhg1sN3DRhfC9ChlvlF8j
- aDGhBYtSnyGmpUBg==
-Authentication-Results: smtp-out2.suse.de;
+ bh=jT7jpd70ZrOkgd/fod50GBbx7D2t0aUn+LZ+mbUF8KM=;
+ b=KYrrphMXIGStHbdwR9JLB02YnRrCe8n9m+ZRsq1gpLMABrJXHo1RQwjgh/oRxPjGL5eOU6
+ ph9IDvl2i8ntMzCA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715259074;
+ t=1715259436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tabX1KYBqFloMKU135TL98T743dvl3qtEZ925qkWEiI=;
- b=bEuQF35vt6q6TkRpXgDEer33F4zC/zFph2Xr+t1iul2Lv0Au+ilMmO6CIqh6GCpOsq5zAc
- DVO/doMjIK1Yo6Fef+yynuWQJ/QiXNFHxe0ohr/LB4U/c1BKsG9pWr4DXiS3Y4Wj5z9RFD
- zektVwYjLIlxyVQYpVWDsEenrOUrbyE=
+ bh=jT7jpd70ZrOkgd/fod50GBbx7D2t0aUn+LZ+mbUF8KM=;
+ b=ZldLC8WxlJ/h6z0R4vV72ZGhEv2c4g4rGeK5uS7ViacQQRIBXIl/VZ8RxU1Pw/p8hKsgCo
+ ArUUSviUBaIqu4AtsxQV8xl8HOwfTelnJXCcwQEaHCEDrr2NuZOJQ3dH7hieQx7woEX8qp
+ IQ1aqh5R4WjPidWBi5Cj0US74tHIMJM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715259074;
+ s=susede2_ed25519; t=1715259436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tabX1KYBqFloMKU135TL98T743dvl3qtEZ925qkWEiI=;
- b=ahKezl2fja7krtUJ6KA6MG1hLz9U8MDn3FiQar0ZpUs79CzDoFhg1sN3DRhfC9ChlvlF8j
- aDGhBYtSnyGmpUBg==
+ bh=jT7jpd70ZrOkgd/fod50GBbx7D2t0aUn+LZ+mbUF8KM=;
+ b=KYrrphMXIGStHbdwR9JLB02YnRrCe8n9m+ZRsq1gpLMABrJXHo1RQwjgh/oRxPjGL5eOU6
+ ph9IDvl2i8ntMzCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3F9B13A24;
- Thu,  9 May 2024 12:51:13 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BC1F13A24;
+ Thu,  9 May 2024 12:57:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 229+OsHGPGb0ZgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 09 May 2024 12:51:13 +0000
-Date: Thu, 9 May 2024 14:51:12 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0auFICzIPGaZaAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 09 May 2024 12:57:16 +0000
+Date: Thu, 9 May 2024 14:57:14 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <20240509125112.GE243374@pevik>
+Message-ID: <20240509125714.GA291089@pevik>
 References: <20240418071422.10221-1-wegao@suse.com>
  <20240422124050.3598-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20240422124050.3598-1-wegao@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,suse.com:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] swapping01.c: Add sleeps in the loop that
@@ -122,16 +123,68 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-> In our test env this case failed sporadically, we suspect swapout speed not fast enough
-> in some situation.
+> +++ b/testcases/kernel/mem/swapping/swapping01.c
+> @@ -47,6 +47,7 @@
+>  #define COE_DELTA       1
+>  /* will try to alloc 1.3 * phy_mem */
+>  #define COE_SLIGHT_OVER 0.3
+> +#define MEM_SIZE 1024 * 1024
 
-> Detail info please check following comments;
-> https://bugzilla.suse.com/show_bug.cgi?id=1217850#c34
+>  static void init_meminfo(void);
+>  static void do_alloc(int allow_raise);
+> @@ -101,6 +102,13 @@ static void init_meminfo(void)
+>  				swap_free_init, mem_over_max);
+>  }
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> +static void memset_blocks(char *ptr, int mem_count, int sleep_time_ms) {
+> +	for (int i = 0; i < mem_count / 1024; i++) {
+> +		memset(ptr + (i * MEM_SIZE), 1, MEM_SIZE);
+> +		usleep(sleep_time_ms * 1000);
+> +	}
+> +}
+> +
+>  static void do_alloc(int allow_raise)
+>  {
+>  	long mem_count;
+> @@ -115,7 +123,7 @@ static void do_alloc(int allow_raise)
+>  	if (allow_raise == 1)
+>  		tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
+>  	s = SAFE_MALLOC(mem_count * 1024);
+> -	memset(s, 1, mem_count * 1024);
+> +	memset_blocks(s, mem_count, 1);
+nit: Actually when we have custom function used on single place, we might want
+to avoid the last parameter 1, right? We could usleep(1000) directly.
 
-Kind regards,
-Petr
+We use MEM_SIZE definition outside of the function anyway.
+
+I can change it before merge:
+
+diff --git testcases/kernel/mem/swapping/swapping01.c testcases/kernel/mem/swapping/swapping01.c
+index 79dd2b4d5..09820e3d9 100644
+--- testcases/kernel/mem/swapping/swapping01.c
++++ testcases/kernel/mem/swapping/swapping01.c
+@@ -102,10 +102,10 @@ static void init_meminfo(void)
+ 				swap_free_init, mem_over_max);
+ }
+ 
+-static void memset_blocks(char *ptr, int mem_count, int sleep_time_ms) {
++static void memset_blocks(char *ptr, int mem_count) {
+ 	for (int i = 0; i < mem_count / 1024; i++) {
+ 		memset(ptr + (i * MEM_SIZE), 1, MEM_SIZE);
+-		usleep(sleep_time_ms * 1000);
++		usleep(1000);
+ 	}
+ }
+ 
+@@ -123,7 +123,7 @@ static void do_alloc(int allow_raise)
+ 	if (allow_raise == 1)
+ 		tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
+ 	s = SAFE_MALLOC(mem_count * 1024);
+-	memset_blocks(s, mem_count, 1);
++	memset_blocks(s, mem_count);
+ 
+ 	if ((allow_raise == 1) && (raise(SIGSTOP) == -1)) {
+ 		tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
