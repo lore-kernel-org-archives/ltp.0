@@ -4,112 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E550C25B10
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 15:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 920F1C25B10
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 16:09:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9946D3CE49E
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 17:31:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 971533CE4EF
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 18:09:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 145593CAEB6
- for <ltp@lists.linux.it>; Fri, 10 May 2024 17:31:08 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id BE0E53CE499
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 18:09:38 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E9D9C603EB8
- for <ltp@lists.linux.it>; Fri, 10 May 2024 17:31:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 888B8100C21C
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 18:09:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 526893F2B5;
- Fri, 10 May 2024 15:31:05 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5FCC866DEC;
+ Fri, 10 May 2024 16:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715355065;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1715357376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qndJEoyCiR2pUjAeIUau0dN4DFLqfvCq/7fr/oeyfEw=;
- b=p3sr2bSZHJEvz0Q7mNvXgbDVPBRI+Ca6bDC9pClgCV+5qysYThaVNm+ke434molTF9t5zl
- QsAVID9chj3F2rCKpG1cssS9LgJ2a1Qmfp6m5jyKLNWiU9ce9PsVZU/ov2wXWZmG4/ft8f
- 6L5K8Q1JPcdq+H/zDji8NvopZNQHxZA=
+ bh=Cp7JpMVpznBRQrcKx/GSva4Am59aVBRt6qw5sUOCNF4=;
+ b=XawZZ9ZbqLMsUh7YJZ52zfSVk0olZevlF6InWJDnbXKxs+HI3FwlDd/5wlEHbnr68QucEw
+ nU0xN5eb/fjodOz4nU95DmBZpmWDQFnabeByfGdHX8WtoYJnIweyE8ad9cwu8Xocxttevt
+ XB/Nx6YOMls6TJTBlC71/ViyczySqNk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715355065;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1715357376;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qndJEoyCiR2pUjAeIUau0dN4DFLqfvCq/7fr/oeyfEw=;
- b=n9/DEE968zpW9b0L6LYNE/VLNYaAt2lhBUCkFPu4/Kj6uoMJ6q5qD0PHWE2mGDGg6dLskK
- e3eTsjQFWPGlC7CQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=p3sr2bSZ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="n9/DEE96"
+ bh=Cp7JpMVpznBRQrcKx/GSva4Am59aVBRt6qw5sUOCNF4=;
+ b=yztR7VhTtwwan2vpoPfOn56NvSZbtPWkRmtoiL8ZGb6xpVsyuZKa0YcryZPgTdnWZ7Nnig
+ Zezj2umNc32mH1Dg==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715355065;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1715357376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qndJEoyCiR2pUjAeIUau0dN4DFLqfvCq/7fr/oeyfEw=;
- b=p3sr2bSZHJEvz0Q7mNvXgbDVPBRI+Ca6bDC9pClgCV+5qysYThaVNm+ke434molTF9t5zl
- QsAVID9chj3F2rCKpG1cssS9LgJ2a1Qmfp6m5jyKLNWiU9ce9PsVZU/ov2wXWZmG4/ft8f
- 6L5K8Q1JPcdq+H/zDji8NvopZNQHxZA=
+ bh=Cp7JpMVpznBRQrcKx/GSva4Am59aVBRt6qw5sUOCNF4=;
+ b=XawZZ9ZbqLMsUh7YJZ52zfSVk0olZevlF6InWJDnbXKxs+HI3FwlDd/5wlEHbnr68QucEw
+ nU0xN5eb/fjodOz4nU95DmBZpmWDQFnabeByfGdHX8WtoYJnIweyE8ad9cwu8Xocxttevt
+ XB/Nx6YOMls6TJTBlC71/ViyczySqNk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715355065;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1715357376;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qndJEoyCiR2pUjAeIUau0dN4DFLqfvCq/7fr/oeyfEw=;
- b=n9/DEE968zpW9b0L6LYNE/VLNYaAt2lhBUCkFPu4/Kj6uoMJ6q5qD0PHWE2mGDGg6dLskK
- e3eTsjQFWPGlC7CQ==
+ bh=Cp7JpMVpznBRQrcKx/GSva4Am59aVBRt6qw5sUOCNF4=;
+ b=yztR7VhTtwwan2vpoPfOn56NvSZbtPWkRmtoiL8ZGb6xpVsyuZKa0YcryZPgTdnWZ7Nnig
+ Zezj2umNc32mH1Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11928139AA;
- Fri, 10 May 2024 15:31:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eIpgArk9PmZhLQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 10 May 2024 15:31:05 +0000
-Date: Fri, 10 May 2024 17:31:03 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Hui Min Mina Chou <minachou@andestech.com>
-Message-ID: <20240510153103.GA448405@pevik>
-References: <20240328083344.277502-1-minachou@andestech.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FC5A1386E;
+ Fri, 10 May 2024 16:09:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id lBFtEsBGPmbvOQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 10 May 2024 16:09:36 +0000
+Date: Fri, 10 May 2024 18:08:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Geetika <geetika@linux.ibm.com>
+Message-ID: <Zj5GkgilzCDx3D2m@yuki>
+References: <20240327145925.18922-1-geetika@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240328083344.277502-1-minachou@andestech.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240327145925.18922-1-geetika@linux.ibm.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- REPLYTO_EQ_FROM(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim]; RCVD_TLS_ALL(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 526893F2B5
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCPT_COUNT_THREE(0.00)[3]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/setitimer: Pass the kernel-defined
- struct __kernel_old_itimerval to sys_setitimer().
+Subject: Re: [LTP] [PATCH v2] Migrating the
+ libhugetlbfs/testcases/fallocate_stress.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,141 +108,280 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: tim609@andestech.com, cynthia@andestech.com, ltp@lists.linux.it
+Cc: rpalethorpe@suse.de, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
-
-> +++ b/configure.ac
-> @@ -219,7 +219,8 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
->  ])
-
->  AC_CHECK_TYPES([struct __kernel_old_timeval, struct __kernel_old_timespec, struct __kernel_timespec,
-> -                struct __kernel_old_itimerspec, struct __kernel_itimerspec],,,[#include <sys/socket.h>])
-> +                struct __kernel_old_itimerspec, struct __kernel_itimerspec,
-> +                struct __kernel_old_itimerval],,,[#include <sys/socket.h>])
-
-@Hui following is unrelated to your patchset (we can sort it later, it should
-not block your effort).
-
-@Cyril the original code prior this patchset in 203ee275c ("Fix struct
-__kernel_old_timeval redefinition on 64bit sparc") did not include
-<linux/time_types.h> for some reason IMHO fallbacks were always used.
-I wonder why and whether we still don't want to use <linux/time_types.h>.
-
-Then Fabrice's fix in 12986b755 ("include/tst_timer.h: avoid redefinition of
-kernel structures") add autotools check just for uncommon toolchain (sh4 from
-Texas Instruments). It's somehow hidden (due missing comment it looks like we
-mostly get the definitions from header, but obviously not when we include
-<sys/socket.h>.
-
->  AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
->  AC_CHECK_TYPES([struct mount_attr],,,[
-> diff --git a/include/tst_timer.h b/include/tst_timer.h
-> index 703f03294eae..6fb9400206b8 100644
-> --- a/include/tst_timer.h
-> +++ b/include/tst_timer.h
-> @@ -135,6 +135,13 @@ struct __kernel_itimerspec {
->  	struct __kernel_timespec it_value;       /* timer expiration */
->  };
->  #endif
+Hi!
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 299c07ac9..eb09c7598 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -1,5 +1,6 @@
+>  hugefallocate01 hugefallocate01
+>  hugefallocate02 hugefallocate02
+> +hugefallocate03 hugefallocate03
+>  
+>  hugefork01 hugefork01
+>  hugefork02 hugefork02
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index 7258489ed..e9d3562cb 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -1,6 +1,7 @@
+>  /cpuset/cpuset01
+>  /hugetlb/hugefallocate/hugefallocate01
+>  /hugetlb/hugefallocate/hugefallocate02
+> +/hugetlb/hugefallocate/hugefallocate03
+>  /hugetlb/hugefork/hugefork01
+>  /hugetlb/hugefork/hugefork02
+>  /hugetlb/hugemmap/hugemmap01
+> diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+> new file mode 100644
+> index 000000000..e5848a3b3
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+> @@ -0,0 +1,211 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2015 Oracle Corporation
+> + * Author: Mike Kravetz
+> + */
 > +
-> +#ifndef HAVE_STRUCT___KERNEL_OLD_ITIMERVAL
-> +struct __kernel_old_itimerval {
-> +	struct __kernel_old_timeval it_interval;	/* timer interval */
-> +	struct __kernel_old_timeval it_value;		/* current value */
-> +};
-> +#endif
->  #endif
+> +/*\
+> + * [Description]
+> + *
+> + * Stress test fallocate.  This test starts three threads.
+> + * Thread one will continually punch/fill holes via falloc.
+> + * Thread two will continually fault in those same pages.
+> + * Thread three will continually mmap/munmap that page range.
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <sys/mount.h>
+> +#include <limits.h>
+> +#include <sys/param.h>
+> +#include <sys/types.h>
+> +#include <pthread.h>
+> +
+> +#include "hugetlb.h"
+> +#include "lapi/fallocate.h"
+> +#include "tst_safe_pthread.h"
+> +
+> +#define MNTPOINT "hugetlbfs/"
+> +#define min(a, b) (((a) < (b)) ? (a) : (b))
 
->  enum tst_ts_type {
-> @@ -370,6 +377,11 @@ static inline int sys_timerfd_settime64(int fd, int flags, void *its,
->  	return tst_syscall(__NR_timerfd_settime64, fd, flags, its, old_its);
->  }
+LTP has MIN() macro please use that instead.
 
-> +static inline int sys_setitimer(int which, void *new_value, void *old_value)
+> +#define MAX_PAGES_TO_USE 100
+> +#define FALLOCATE_ITERATIONS 100000
+> +
+> +static int  fd = -1;
+              ^
+	      just single space here
+
+> +static long nr_hpages_free;
+> +static unsigned long max_hpages;
+> +static int err;
+> +static long hpage_size;
+> +static unsigned long free_before, free_after;
+> +static unsigned long rsvd_before, rsvd_after;
+> +
+> +static void *thread_fallocate(void *)
 > +{
-> +	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-> +}
-
-+1 adding function to the common place.
-
-IMHO we slightly prefer to add C functions to C file (e.g. lib/tst_timer.c,
-there are other functions) + adding signature to tst_timer.h.
-
-With that:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
+> +	int i, err;
+> +	long tpage;
 > +
->  /*
->   * Returns tst_ts seconds.
->   */
-> diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
-> index d12abe904f1c..94ee51c6a667 100644
-> --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
-> +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
-> @@ -20,9 +20,10 @@
->  #include "tst_test.h"
->  #include "lapi/syscalls.h"
->  #include "tst_safe_clocks.h"
-> +#include "tst_timer.h"
+> +	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
+> +		tpage = ((long long)random()) % (max_hpages);
+> +		err = fallocate(fd,
+> +				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
+> +				tpage * hpage_size, hpage_size);
+> +		if (err)
+> +			tst_res(TFAIL|TERRNO, "fallocate():");
+> +		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
+> +		if (err)
+> +			tst_res(TFAIL|TERRNO, "fallocate():");
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static void *fault_mmap_addr;
+> +
+> +static void thread_fault_cleanup(void *)
+> +{
+> +	if (fault_mmap_addr)
+> +		munmap(fault_mmap_addr, max_hpages * hpage_size);
+> +}
+> +
+> +static void *thread_fault(void *)
+> +{
+> +	long tpage;
+> +	char foo;
+> +	struct timespec ts;
+> +
+> +	fault_mmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
+> +			PROT_READ | PROT_WRITE, MAP_SHARED,
+> +			fd, 0);
+> +
+> +	pthread_cleanup_push(thread_fault_cleanup, NULL);
+> +
+> +	ts.tv_sec = 0;
+> +	ts.tv_nsec = 0;
 
->  static struct timeval tv;
-> -static struct itimerval *value, *ovalue;
-> +static struct __kernel_old_itimerval *value, *ovalue;
->  static volatile unsigned long sigcnt;
->  static long time_step;
->  static long time_sec;
-> @@ -38,11 +39,6 @@ static struct tcase {
->  	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
->  };
+This could be done at the declaration with:
 
-> -static int sys_setitimer(int which, void *new_value, void *old_value)
-> -{
-> -	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-> -}
-> -
->  static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
->  {
->  	sigcnt++;
-> diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
-> index b012d71fa7bd..c545f6288bbb 100644
-> --- a/testcases/kernel/syscalls/setitimer/setitimer02.c
-> +++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
-> @@ -19,13 +19,9 @@
->  #include <stdlib.h>
->  #include "tst_test.h"
->  #include "lapi/syscalls.h"
-> +#include "tst_timer.h"
+	struct timespec ts = {};
 
-> -static struct itimerval *value, *ovalue;
-> -
-> -static int sys_setitimer(int which, void *new_value, void *old_value)
-> -{
-> -	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-> -}
-> +static struct __kernel_old_itimerval *value, *ovalue;
+> +	while (1) {
+> +		tpage = ((long long)random()) % (max_hpages);
+> +		foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
+> +		*((char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
+> +
+> +		nanosleep(&ts, NULL); /* thread cancellation point */
+> +	}
+> +
+> +	pthread_cleanup_pop(1);
 
->  static void verify_setitimer(unsigned int i)
->  {
-> @@ -55,8 +51,8 @@ static struct tst_test test = {
->  	.test = verify_setitimer,
->  	.setup = setup,
->  	.bufs = (struct tst_buffers[]) {
-> -		{&value,  .size = sizeof(struct itimerval)},
-> -		{&ovalue, .size = sizeof(struct itimerval)},
-> +		{&value,  .size = sizeof(struct __kernel_old_itimerval)},
-> +		{&ovalue, .size = sizeof(struct __kernel_old_itimerval)},
->  		{}
->  	}
->  };
+So we pop the cleanup but do not unmap the memory?
+
+> +	return NULL;
+> +}
+> +
+> +static void *mmap_munmap_addr;
+> +
+> +static void thread_mmap_munmap_cleanup(void *)
+> +{
+> +	if (mmap_munmap_addr)
+> +		munmap(mmap_munmap_addr, max_hpages * hpage_size);
+> +}
+> +
+> +static void *thread_mmap_munmap(void *)
+> +{
+> +	struct timespec ts;
+> +
+> +	pthread_cleanup_push(thread_mmap_munmap_cleanup, NULL);
+> +
+> +	ts.tv_sec = 0;
+> +	ts.tv_nsec = 0;
+
+Here as well.
+
+> +	while (1) {
+> +		mmap_munmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
+> +				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> +		SAFE_MUNMAP(mmap_munmap_addr, max_hpages * hpage_size);
+> +		mmap_munmap_addr = NULL;
+> +
+> +		nanosleep(&ts, NULL);   /* thread cancellation point */
+> +	}
+> +	pthread_cleanup_pop(1);
+> +	return NULL;
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	fd = tst_creat_unlinked(MNTPOINT, 0);
+> +	pthread_t falloc_th, fault_th, mmap_munmap_th;
+> +	void *falloc_th_ret, *fault_th_ret, *mmap_munmap_th_ret;
+> +
+> +	unsigned int seed = (int)getpid() * time(NULL);
+> +
+> +	srandom(seed);
+> +	tst_res(TINFO, "Seed = %d", seed);
+> +	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	max_hpages = min(nr_hpages_free, MAX_PAGES_TO_USE);
+> +	free_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
+> +
+> +	/* First preallocate file with max_hpages pages */
+> +	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
+> +	if (err) {
+> +		if (errno == EOPNOTSUPP)
+> +			tst_brk(TCONF, "fallocate() Operation is not supported");
+> +		if (err) {
+> +			tst_res(TFAIL|TERRNO, "fallocate():");
+> +			goto windup;
+> +		}
+> +	}
+> +
+> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	if (free_before - free_after != max_hpages) {
+> +		tst_res(TFAIL, "fallocate did not preallocate %ld huge pages\n",
+> +				max_hpages);
+> +		goto windup;
+> +	}
+> +
+> +	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
+> +
+> +	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
+> +
+> +	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
+> +
+> +	SAFE_PTHREAD_JOIN(falloc_th, &falloc_th_ret);
+> +
+> +	if (falloc_th_ret) {
+> +		tst_res(TFAIL, "thread_fallocate unexpected exit code");
+> +		goto windup;
+> +	}
+
+We do not propagate a failure via the return value anymore, so this part
+is never true.
+
+> +	SAFE_PTHREAD_CANCEL(fault_th);
+> +
+> +	SAFE_PTHREAD_JOIN(fault_th, &fault_th_ret);
+> +
+> +	SAFE_PTHREAD_CANCEL(mmap_munmap_th);
+> +
+> +	SAFE_PTHREAD_JOIN(mmap_munmap_th, &mmap_munmap_th_ret);
+> +
+> +windup:
+> +	SAFE_CLOSE(fd);
+> +
+> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
+> +	if (free_after != free_before || rsvd_after != rsvd_before)
+> +		tst_res(TFAIL, "free or reserve counts incorrect after fallocate stress test");
+> +	else
+> +		tst_res(TPASS, "fallocate stress test passed");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	hpage_size = tst_get_hugepage_size();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {2, TST_NEEDS},
+> +};
+> -- 
+> 2.39.3 (Apple Git-146)
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
