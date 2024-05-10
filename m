@@ -4,94 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 437F0C25B5F
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 14:07:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A55CBC25B10
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 14:10:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 336B13CE4F6
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 16:07:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D89AB3CE49E
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 16:10:54 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 45CED3CC2F5
- for <ltp@lists.linux.it>; Fri, 10 May 2024 16:06:44 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=spoorthy@linux.ibm.com;
+ by picard.linux.it (Postfix) with ESMTPS id 3BE6C3C02C0
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 16:10:40 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=spoorthy@linux.ibm.com;
  receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A78D86032A8
- for <ltp@lists.linux.it>; Fri, 10 May 2024 16:06:42 +0200 (CEST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7605E1A027C5
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 16:10:38 +0200 (CEST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 44ADQJ8R026194
- for <ltp@lists.linux.it>; Fri, 10 May 2024 14:06:40 GMT
+ 44ADCvvs001708
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 14:10:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=r6DVyB9SfC1nhheok/C3KJRcAxNglZTyql22IczI0v4=;
- b=jKszrphbOHJ5jsMN4PdCvoD/fZ7jb4O8qgRhkfCN/F2ZW8mBmnd99Y6NEjdI+VvnTnXK
- f5VaqDbMOzm+bsjNpUGIbcXdz3ROe0k6x3omykvIfOkNp5OG/lqZNGrPaPCaNb6rxz5d
- AgufppKXS/c2lCmUcnVuvwbTheBZ89w+uvOqRzlT5s3p9ESNn+tdHYc+3DsovE5xLulh
- /33AHDrJv1muoMHeICm6xt+9+rvL6m0uoIofOMjbvdUXm70NwCWMX1hWxunYfHAf19oH
- IjJlJfiN+l3T4ii9EA5H4hyEx70AzMLlr/bpbOLi6LAyyvRi+bWKCdSYVxYqBXWSuH35 uA== 
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3y1mf2g3ec-1
+ bh=dgT3H6j4277yFG1gt/RzSYedRiyD+rvrGSQd03SLyJY=;
+ b=ETyVdtE4oIaPDygwrXGtZIgQDJGJDoReeu9fu8RGBm8lHTS0XqkvGgdKcnASxWqKZhhB
+ AdLTSkrN4ai6TVLRaHXxRwh7Ibk5iPOuEQSGZQK63r3pu/Hc2Uzysb4GQ3c70IQQq/xy
+ lm0UgtoeUWOCZ3j4Ka4IsrghnWBT5C+RvWw8JzxBTvKQ5nqqzA/tti4cm7VfNnbcCokt
+ OCPQFjF2pUnVDUKqnhKfuZZ2EuQEyBAvQm33xOgZeczBKAeEkq7djw2Jn8XosAvdK2lq
+ +YkIRu3ipYv7VxPia+OIz+zQ2Ikc/fF0uXUF6TPfYRj0HljiNJQJ27Cr1CJw+cPfMEhO /g== 
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3y1m8r861h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Fri, 10 May 2024 14:06:40 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 44AB3cK6009218
- for <ltp@lists.linux.it>; Fri, 10 May 2024 14:06:39 GMT
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 14:10:36 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 44AAxeq1009823
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 14:10:35 GMT
 Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xyshthjdy-1
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xyshv1jj6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Fri, 10 May 2024 14:06:39 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
- [10.20.54.100])
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 14:10:35 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
  by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 44AE6XFM55443758
+ 44AEAU7b32440742
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 10 May 2024 14:06:35 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 89D7E20040;
- Fri, 10 May 2024 14:06:33 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id ADAEA2004B;
- Fri, 10 May 2024 14:06:32 +0000 (GMT)
+ Fri, 10 May 2024 14:10:32 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5011D2004E;
+ Fri, 10 May 2024 14:10:30 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 78C472004D;
+ Fri, 10 May 2024 14:10:29 +0000 (GMT)
 Received: from li-c3823c75-1373-11ec-80f0-84a93810363e.ibm.com.com (unknown
- [9.43.57.9]) by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Fri, 10 May 2024 14:06:32 +0000 (GMT)
+ [9.43.57.9]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 10 May 2024 14:10:29 +0000 (GMT)
 From: Spoorthy <spoorthy@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri, 10 May 2024 19:36:14 +0530
-Message-Id: <20240510140614.188795-1-spoorthy@linux.ibm.com>
+Date: Fri, 10 May 2024 19:40:20 +0530
+Message-Id: <20240510141020.189065-1-spoorthy@linux.ibm.com>
 X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: tnXpfdSzvDtwQTZe0zxnh-aFpHl6hCtp
-X-Proofpoint-GUID: tnXpfdSzvDtwQTZe0zxnh-aFpHl6hCtp
+X-Proofpoint-GUID: zjQFFLZoBegFazWbnuhCfaFc17zzr3XR
+X-Proofpoint-ORIG-GUID: zjQFFLZoBegFazWbnuhCfaFc17zzr3XR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-05-10_10,2024-05-10_02,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 phishscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2405010000 definitions=main-2405100100
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ phishscore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 impostorscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2405100101
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Test Description: Tests the behavior of shared
- memory when multiple threads attach to a segment with different
- permissions. At one stage,
- the reservation accounting of free hugepages allocated to parent and child's
- process may mess up during the memory operations.
+Subject: [LTP] [PATCH v2] [PATCH] Hugetlb: Migrating libhugetlbfs shm-perms
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,6 +103,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
+
+Test Description: Tests the behavior of shared memory when
+multiple threads attach to a segment with different permissions. At one
+stage, the reservation accounting of free hugepages allocated to parent and
+child's process may mess up during the memory operations.
 
 Creates 4 hugepages in parent and a shared memory segment of size segment_size with 0640 permission,
 The segment attaches to process address space and it is partially initialized by filling four parts of the segment with a pattern(0x55).
