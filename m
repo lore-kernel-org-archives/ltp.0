@@ -4,106 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6747C25B10
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 10:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4622AC25B10
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 11:35:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 209043CE3A0
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 12:45:22 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 511223CE3BE
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 13:35:35 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 731C53CE2FB
- for <ltp@lists.linux.it>; Fri, 10 May 2024 12:45:06 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id B355B3CD1CA
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 13:35:19 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AB02E1009BCC
- for <ltp@lists.linux.it>; Fri, 10 May 2024 12:45:05 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 962BF140836B
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 13:35:18 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E9B736137F;
- Fri, 10 May 2024 10:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715337904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mMWBr8SIAROuNzS0Yipg9pieufNc+1fOqTx3z93YQ18=;
- b=KMn5Hk7y0DTmxgcWkT9BIOlbnfOV3AsFE3zeDwTi55pBzsKvi6sOBl+ZTFbzT4nM90pFPc
- fF06EhylmhTlgWVmDB2oSZPQs3MExAJlfHwT/OhxrMUV4APHTmTonqVxzA+g8O42DMYiKs
- BQCOnwkktOuzewaPJmD9Jx90EGCG6Zc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715337904;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mMWBr8SIAROuNzS0Yipg9pieufNc+1fOqTx3z93YQ18=;
- b=ub3aTdzyaIRutG2ex6ENW/11aBOmAOdIITyFIx8BT3WsD3wKZi7YDymZ8DZxKoID8Dzf4I
- 3lxZnP4+MvvIMACA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0CA9E61469;
+ Fri, 10 May 2024 11:35:16 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ObS7TmEN;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9rnar5k+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715337902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mMWBr8SIAROuNzS0Yipg9pieufNc+1fOqTx3z93YQ18=;
- b=ObS7TmENcRF+IgJK008WfPLR8D3HdNgj6fwdtIoypKPxTjoapD1sB6dEV5OxmysQnEXjdi
- QNctqICfEOy/SlkK7hJuky3wAK2URVTLg4w4GI5Hg+HbDk0jpwewx9J0Y/UF092wiMqCCL
- 70t9l483zoGEYUmwdPsM286wWmHlvIc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715337902;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mMWBr8SIAROuNzS0Yipg9pieufNc+1fOqTx3z93YQ18=;
- b=9rnar5k+D4JaieLA40cwC8tND+nk2X7ibdT99PFe62gyZwpyLqdCHQYqEeNubJhyGR9Uzz
- NL8Q3ssyhC6pRACw==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DACDD1386E;
- Fri, 10 May 2024 10:45:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id vZZrNK76PWaeTgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 10 May 2024 10:45:02 +0000
-Date: Fri, 10 May 2024 12:44:17 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Sachin P Bappalige <sachinpb@linux.vnet.ibm.com>
-Message-ID: <Zj36gf1qMvdZfFcm@yuki>
-References: <20240307084513.109829-1-sachinpb@linux.vnet.ibm.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E4867139AA;
+ Fri, 10 May 2024 11:35:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UTbQNnMGPmZ4XwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 10 May 2024 11:35:15 +0000
+Date: Fri, 10 May 2024 13:35:14 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20240510113514.GA417271@pevik>
+References: <20240510002331.31431-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240307084513.109829-1-sachinpb@linux.vnet.ibm.com>
+In-Reply-To: <20240510002331.31431-1-wegao@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: E9B736137F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 0CA9E61469
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Migrating the
- libhugetlbfs/testcases/shm-gettest.c test
+Subject: Re: [LTP] [PATCH v1] chmod02.c: Block mode changes of symlinks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,133 +76,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2005-2006, IBM Corporation.
-> + * Author: David Gibson & Adam Litke
-> + */
-> +
+Hi Wei,
+
+...
+>  testcases/kernel/syscalls/chmod/chmod02.c  | 68 ++++++++++++++++++++++
+nit: original chmod02.c was removed in eab36ea01, now you are using this
+filename again. I don't remember if there is any consensus about reusing test
+name (maybe it's ok), but I would prefer to create new file (i.e. chmod08.c),
+because reusing names can lead to confusion (people may not notice when looking
+into git history that these 2 tests are completely unrelated. If nothing,
+different GPL version can be taken by mistake (e.g. original chmod02.c used GPL
+2 only license).
+
+...
 > +/*\
-> + * DESCRIPTION
-
-This should be [Description]
-
-> + *	hugeshmget06 -
-
-This shouldn't be there.
-
-> + * This testcase creates shared memory segments backed by hugepages,
-> + * writes specific patterns to each segment, verifies pattern,
-> + * and detaches a shared memory segments in a loop.
-> + * It ensures that the hugepage backed shared memory functionalities
-> + * works correctly by validating the data written to segment.
+> + * [Description]
+> + *
+> + * Test for kernel commit 5d1f903f75a80daa4dfb3d84e114ec8ecbf29956
+> + * "attr: block mode changes of symlinks".
+nit: 5d1f903f75a8 ("attr: block mode changes of symlinks")
+> + *
+nit: please remove this blank line above.
 > + */
 > +
-> +#include "hugetlb.h"
-> +#include "tst_safe_sysv_ipc.h"
+> +#include "lapi/fcntl.h"
+> +#include "tst_test.h"
 > +
-> +#define MNTPOINT "hugetlbfs/"
-> +#define NR_HUGEPAGES 4
+> +#define MODE 0644
+> +#define TESTFILE "testfile"
+> +#define TESTFILE_SYMLINK "testfile_symlink"
 > +
-> +static long hpage_size;
-> +static int shmid = -1, key = -1;
-> +
-> +static void do_shmtest(void)
+> +static void run(void)
 > +{
-> +	size_t i, j;
-> +	char pattern;
-> +	char *shmaddr;
+> +	struct stat stat_file, stat_sym;
+> +	int mode = 0;
+> +	char fd_path[100];
 > +
-> +	shmaddr = SAFE_SHMAT(shmid, 0, SHM_RND);
-> +	tst_res(TINFO, "shmaddr: %p\n", shmaddr);
+> +	int fd = SAFE_OPEN(TESTFILE_SYMLINK, O_PATH | O_NOFOLLOW);
 > +
-> +	for (i = 0; i < NR_HUGEPAGES; i++) {
-> +		pattern = 65 + (i % 26);
-> +		tst_res(TINFO, "Touching %p with %c\n",
-> +		shmaddr + (i * hpage_size), pattern);
-
-Please do not add newlines in the tst_res() format strings. Also this
-
-> +		memset(shmaddr + (i * hpage_size), pattern, hpage_size);
+> +	sprintf(fd_path, "/proc/self/fd/%d", fd);
+> +
+> +	TST_EXP_FAIL(chmod(fd_path, mode), ENOTSUP, "chmod(%s, %04o)",
+> +			TESTFILE_SYMLINK, mode);
+> +
+> +	SAFE_STAT(TESTFILE, &stat_file);
+> +	SAFE_LSTAT(TESTFILE_SYMLINK, &stat_sym);
+> +
+> +	stat_file.st_mode &= ~S_IFREG;
+> +	stat_sym.st_mode &= ~S_IFLNK;
+> +
+> +	if (stat_file.st_mode == (unsigned int)mode) {
+> +		tst_res(TFAIL, "stat(%s) mode=%04o",
+> +				TESTFILE, stat_file.st_mode);
+> +	} else {
+> +		tst_res(TPASS, "stat(%s) mode=%04o",
+> +				TESTFILE, stat_file.st_mode);
 > +	}
+Maybe using TST_EXP_EXPR() to not repeat yourself?
 > +
-> +	for (i = 0; i < NR_HUGEPAGES; i++) {
-> +		pattern = 65 + (i % 26);
-> +		tst_res(TINFO, "Verifying %p\n", (shmaddr + (i * hpage_size)));
-
-Here as well.
-
-> +		for (j = 0; j < (size_t)hpage_size; j++)
-> +			if (*(shmaddr + (i * hpage_size) + j) != pattern) {
-> +				tst_res(TFAIL, "Got wrong byte 0x%02x expected 0x%02x",
-> +						*(shmaddr + (i * hpage_size) + j),
-> +						pattern);
-> +				return;
-> +			}
+> +	if (stat_sym.st_mode == (unsigned int)mode) {
+> +		tst_res(TFAIL, "stat(%s) mode=%04o",
+> +				TESTFILE_SYMLINK, stat_sym.st_mode);
+> +	} else {
+> +		tst_res(TPASS, "stat(%s) mode=%04o",
+> +				TESTFILE_SYMLINK, stat_sym.st_mode);
 > +	}
-> +	SAFE_SHMDT((const void *)shmaddr);
-> +	tst_res(TPASS, "shm hugepages works correctly");
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +	do_shmtest();
+And here as well?
 
-What is the point of this indirection?
-
-Just put the test code in the do_test() function instead.
+Missing SAFE_CLOSE(fd); causes EMFILE (Too many open files) failure on high -i
+(e.g. -i 1100).
 
 > +}
 > +
 > +static void setup(void)
 > +{
-> +	hpage_size = tst_get_hugepage_size();
-> +	tst_res(TINFO, "hugepage size is  %ld", hpage_size);
-                                        ^
-					Just one space here.
-
-> +	shmid = SAFE_SHMGET(key, NR_HUGEPAGES * hpage_size, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
-> +	tst_res(TINFO, "shmid: 0x%x\n", shmid);
-                                    ^
-Here as well, no newlines.
-
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (shmid >= 0)
-> +		SAFE_SHMCTL(shmid, IPC_RMID, NULL);
+> +	SAFE_TOUCH(TESTFILE, MODE, NULL);
+> +	SAFE_SYMLINK(TESTFILE, TESTFILE_SYMLINK);
 > +}
 > +
 > +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-
-The test does not use the hugetlbfs, no need to mount it at all.
-
 > +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {NR_HUGEPAGES, TST_NEEDS},
-> +};
-> -- 
-> 2.43.0
-> 
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.min_kver = "6.6",
+Looking into kernel commit [1] it's in VFS therefore it should be safe to test
+it on single filesystem which is in TMPDIR (i.e. not using .all_filesystems).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+But "If this causes any regressions" and "It's a simple patch that can be easily
+reverted." suggests that we should think twice when not running it with
+.all_filesystems (if used, exfat and vfat fails with EPERM, but it works
+on NTFS).
+
+Kind regards,
+Petr
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d1f903f75a80daa4dfb3d84e114ec8ecbf29956
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
