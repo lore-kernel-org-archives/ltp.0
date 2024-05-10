@@ -4,83 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C58AC10F1A
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 02:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AD27C25B10
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 06:38:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1715323095; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=pmHf/6xHiYUVTBYPRF2+wec9VxKsgLmToQZOt81Doz4=;
+ b=deHg0VqzYC67AqGbzR9hRZbVG2oq/5sgSh7TzSkc/1kvL3MGP8whKDaCrss8I+SUpLfFK
+ bWDem7s3jooBNZvP2XOxDwTbxZ7GofyNnuCPrbuxWMIHZiWULDJNhmF7TJzLGeSEHbsJGo4
+ sa4hi48iNelQae1AXK//xhJCg9A40yc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2703A3CE2EC
-	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 04:37:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 20CE53CE340
+	for <ltp@archiver.kernel.org>; Fri, 10 May 2024 08:38:15 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA6213CC524
- for <ltp@lists.linux.it>; Fri, 10 May 2024 04:37:07 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 504143CE2EE
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 08:37:52 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=andestech.com (client-ip=60.248.80.70; helo=atcsqr.andestech.com;
+ envelope-from=minachou@andestech.com; receiver=lists.linux.it)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0BE1F605655
- for <ltp@lists.linux.it>; Fri, 10 May 2024 04:37:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1715308625;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SEbxaWISBgHaxK3BMoTGs2OcEaoekzeSeBFLF+OhhRE=;
- b=MyBx0xHPZmaNASbX3jjnM7dadpn3wPsnfQ4JWTQX7UYFWqwluP7hoVshnanxGaU1LYvUXo
- m2gPfWt5P6IGYsDA6LD6YKwUh3lqlAq7SuKQiYGmGX7FKuWbqx8sGR0DeKzwkc9UqihrAS
- HHFcPxJWUYyyAWONwgqYVwHIYPYcD0Y=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678-9qH7LfijOJmyXM5AuY_nxQ-1; Thu, 09 May 2024 22:37:03 -0400
-X-MC-Unique: 9qH7LfijOJmyXM5AuY_nxQ-1
-Received: by mail-pg1-f200.google.com with SMTP id
- 41be03b00d2f7-61dc66c4989so1504606a12.0
- for <ltp@lists.linux.it>; Thu, 09 May 2024 19:37:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1715308622; x=1715913422;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=SEbxaWISBgHaxK3BMoTGs2OcEaoekzeSeBFLF+OhhRE=;
- b=JE/G9dS40vFVJPqZFIbBIKYxMXBdJBvEGzW0Qs+4ULL+ggRfgqFWxF48op+hNEmSNy
- oQrKUPUfTCxqnbyLPzWB9KIevfAmWGwFAKZ/oEuy5EGcd5aB+h8auCiHcYil71gpYgOC
- vWOCVFjC8c9fv25PeOOMdVKrqTdBTkGpoX6iK8s4DJzZOZpcPb0Y26DFlZqNKJaBMglk
- izOcTJiYm1y7424CvnBD4bDHsYzxLEY9Ej9+yNjgK0wLwZM8PmPgq2kiZmywdSTDZrWM
- uwFwEp3rRn03/BrZTUEdSvlBvdh1RwR1NeYcF1lqncwKS4dRyffGWeTR9Qf6bK06SmoJ
- RfvQ==
-X-Gm-Message-State: AOJu0YxIcKO5TI9bGmrR/z2MIB1mrW+chijThRLD1Xl/QjBt1FlgiWmV
- GWDgTcSWOuRV42ZgpxIgnmMwbhEZ/eYItbBAKLpK5J50gbfep6z1lxoNIxGGmbk51gJ7d6XVtL/
- 2wH1xDTIR10ATiaE1dSV251j5eqD2Dt3Z4Kal0GS7b3Us2bIobeyehJygau9H5otVb444Yi6fsg
- acNAp6G/FcB19PONptDzSt6cYTxpcUHMINFw==
-X-Received: by 2002:a05:6a20:9c89:b0:1af:ad0e:c917 with SMTP id
- adf61e73a8af0-1afde2008a4mr1841646637.46.1715308621903; 
- Thu, 09 May 2024 19:37:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGPtOKKtgAuc6IOC7T8YtCKRV7d5ELi5V1rVVYmlut1wqkn8z0UoMpdFMRSrtE97yHiNtHkCeN4ktZmsblSNBI=
-X-Received: by 2002:a05:6a20:9c89:b0:1af:ad0e:c917 with SMTP id
- adf61e73a8af0-1afde2008a4mr1841636637.46.1715308621594; Thu, 09 May 2024
- 19:37:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240509102802.20091-1-liwang@redhat.com>
- <20240509134029.GA300682@pevik>
-In-Reply-To: <20240509134029.GA300682@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 10 May 2024 10:36:49 +0800
-Message-ID: <CAEemH2ezk6Q5UEW8vq-461D6Q-1uU=zgManic6Gf4o3qHvs_rg@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E0CE91405162
+ for <ltp@lists.linux.it>; Fri, 10 May 2024 08:37:48 +0200 (CEST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 44A6bZPo094640;
+ Fri, 10 May 2024 14:37:35 +0800 (+08)
+ (envelope-from minachou@andestech.com)
+Received: from swlinux02 (10.0.15.183) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.498.0;
+ Fri, 10 May 2024 14:37:32 +0800
+Date: Fri, 10 May 2024 14:37:29 +0800
 To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Message-ID: <Zj3AqaAyuDp5YMGb@swlinux02>
+References: <20240509090717.1342778-1-minachou@andestech.com>
+ <20240509095439.GA263661@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240509095439.GA263661@pevik>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Originating-IP: [10.0.15.183]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 44A6bZPo094640
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] madvise11: ignore EBUSY for MADV_SOFT_OFFLINE
+Subject: Re: [LTP] [RESEND] [PATCH] hugemmap15: Support RISC-V to do
+ __cache_flush.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,24 +69,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Luis Goncalves <lgoncalv@redhat.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mina Chou via ltp <ltp@lists.linux.it>
+Reply-To: Mina Chou <minachou@andestech.com>
+Cc: tim609@andestech.com, cynthia@andestech.com, az70021@gmail.com,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-UGF0Y2ggbWVyZ2VkLCB0aGFuayB5b3UuCgpPbiBUaHUsIE1heSA5LCAyMDI0IGF0IDk6NDDigK9Q
-TSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+IEhpIExpLAo+Cj4gLi4uCj4g
-PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21hZHZpc2UvbWFkdmlzZTExLmMKPiA+
-IEBAIC0xMjgsNiArMTI4LDggQEAgc3RhdGljIGludCBhbGxvY2F0ZV9vZmZsaW5lKGludCB0bnVt
-KQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC0xOwo+Cj4gPiAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKG1hZHZpc2UocHRyc1tudW1fYWxsb2NdLCBwYWdlc2l6ZSwK
-PiBNQURWX1NPRlRfT0ZGTElORSkgPT0gLTEpIHsKPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGlmIChlcnJubyA9PSBFQlVTWSkKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgY29udGludWU7Cj4KPiBMR1RNCj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwg
-PHB2b3JlbEBzdXNlLmN6Pgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPiA+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGlmIChlcnJubyAhPSBFSU5WQUwpCj4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHRzdF9yZXMoVEZBSUwgfCBURVJSTk8sICJtYWR2aXNl
-Cj4gZmFpbGVkIik7Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoZXJybm8g
-PT0gRUlOVkFMKQo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGlu
-Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Thu, May 09, 2024 at 11:54:39AM +0200, Petr Vorel wrote:
+> [EXTERNAL MAIL]
+> 
+> Hi Hui,
+> 
+> thanks, merged!
+> 
+> BTW how are the other RISC-V results in syscalls?
+> Do you run other runtest files?
+> 
+> Kind regards,
+> Petr
+Hi Petr,
+
+We ran all the runtest and found an issue with setitimer in syscalls. 
+we've submitted a patch earlier[1] and is awaiting review ~~~
+
+Another issue is hugemmap24, fails because the mmap address exceeds
+TASK_SIZE. The test was designed for powerpc, but 1TB far exceeds
+the riscv's TASK_SIZE=256G. The author hinted at a possible redesign[2], 
+so we're ignoring this issue.
+
+[1]: https://patchwork.ozlabs.org/project/ltp/patch/20240328083344.277502-1-minachou@andestech.com/
+[2]: https://patchwork.ozlabs.org/project/ltp/patch/20230427034039.46512-1-liwang@redhat.com/
+
+Thanks,
+Mina
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
