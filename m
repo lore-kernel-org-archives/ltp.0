@@ -4,110 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10ECC25B74
-	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 15:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D468C25B75
+	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 20:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1715632123; h=mime-version :
+ message-id : to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Ry+sO/URzuodQ26A43bOB6w33UI0EVQu2RMdPrP1scE=;
+ b=I3yQOrQIPPajFWmtjkjoo9bQArz7iB5NLzBE/wtit/lfdw9APbclBXrpcbVJjZkuA0WiH
+ j3VdoTHSj8oXarakOz9EdqnAjUmjKGlcFDFFITmkQpPJd+ntZVv3L5/V35yzFl9hw7o1m9e
+ 5P7sT6Lqsm5ZdUST4dARWNMDbYUgOmw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 453473CF105
-	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 17:40:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4E25E3CF180
+	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 22:28:43 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D007B3CE8A5
- for <ltp@lists.linux.it>; Mon, 13 May 2024 17:40:18 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 956313CDEBC
+ for <ltp@lists.linux.it>; Mon, 13 May 2024 22:28:19 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=web.de
+ (client-ip=212.227.17.12; helo=mout.web.de; envelope-from=wine.dev@web.de;
+ receiver=lists.linux.it)
+Received: from mout.web.de (mout.web.de [212.227.17.12])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A89F6600901
- for <ltp@lists.linux.it>; Mon, 13 May 2024 17:40:17 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EAE8334E58;
- Mon, 13 May 2024 15:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715614816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
- b=wyP7JfSsK0+UcG2olEXOxD7fsLsC36dH92zz2jikk6BVVkwmekWrx8Qxog1isMitcgnacJ
- AZP2cuf+xSyvOL22NUmWJ8PkYoUt4S4nJ1RBcHdP+aLcBYR7Vb4W/oN0R+9VbCnAPwbGi9
- ajl8sWzBUmm4FHF8G2ZvOE6O+7ywZI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715614816;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
- b=UBDRZJUWU1TEIYt4e5pkcaKl9c0eAE4J2FhCCZnMitYYC6SQkHIFmlBnuu1brOSh1QzCvm
- 1RN3y9p8EmsxTjAQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Mjcm6nHO;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dh2kAc3G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715614815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
- b=Mjcm6nHOMzTqlR1d1yGud69TKrrMYJoWdKrOSSEkEUKWMrg8J9yKBW0a+xG+OgB+QvtNTr
- 9dRtvUDoveTVceLNj/WZ/a+Pp2ByPHlGpYgmAI03R87ce1WwVkP5xgP7tnrg7GEj0HJZ1a
- 5j497dEeXYhSjVCR5dyRahbm29IDVEA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715614815;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
- b=dh2kAc3G/j0brk13VIBFfjj7qcP8VTmWsPcTPIEw8E97KwcidvVRUfP5g4vrcUQzO9KMmA
- zDtJOzvqCqiS0aDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DAE9813A52;
- Mon, 13 May 2024 15:40:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fBmrNF80QmbxVQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 13 May 2024 15:40:15 +0000
-Date: Mon, 13 May 2024 17:39:27 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZkI0L9xkrsJ-mhPN@yuki>
-References: <20240328083344.277502-1-minachou@andestech.com>
- <20240510153103.GA448405@pevik>
+ key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6DD811400B6F
+ for <ltp@lists.linux.it>; Mon, 13 May 2024 22:28:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+ s=s29768273; t=1715632097; x=1716236897; i=wine.dev@web.de;
+ bh=uvLZtRkey8BrWHZHBUCA65JkDg/HJ1KjYETP607CDY8=;
+ h=X-UI-Sender-Class:MIME-Version:Message-ID:From:To:Subject:
+ Content-Type:Date:cc:content-transfer-encoding:content-type:date:
+ from:message-id:mime-version:reply-to:subject:to;
+ b=EHpPSnRCCGW9dNPy6eeK8+K1VTxTY25CMwSMsyb9ungY9vGmCeWOkQdFpfEkXXDU
+ TAVxe2o217YjxEr6MW16iIJcpaMxbk379TWxU74eLKkwHgIyakspzizmZQgaEPxef
+ UMS1V4IlLqJ9OMTwBj9M8da9hm0sw8I1AWiW8D/k4xMXTR+MRGK/UsJDI9+6fNJOd
+ kvQhTNUnfhoXBg7WyFT4QhPt83QMRnVq0FyNzbatLUOYkWnrrkxfHWpjMsEAgYjeE
+ LQ7n1DC7sit5XFrp2AL51Vk6hVkIzQ/g9BJhW4uMwJnPBDQL6D9J+jezqodnHQ8fW
+ qRrud6IeKmtavfBHAA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [84.188.37.204] ([84.188.37.204]) by web-mail.web.de
+ (3c-app-webde-bap30.server.lan [172.19.172.30]) (via HTTP); Mon, 13 May
+ 2024 22:28:16 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240510153103.GA448405@pevik>
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:email]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: EAE8334E58
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Message-ID: <trinity-126eb986-5945-4f40-a313-c68bcc2c16cb-1715632096898@3c-app-webde-bap30>
+To: ltp@lists.linux.it
+Date: Mon, 13 May 2024 22:28:16 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:7wVG6ETgPTZrhTv1EGokAPrpe6vPlCIs9r9gMD7Y927MHfgyS8OxjcCnDD1wDuYUlxrp3
+ tWmgHp7N/CSJkgvAZgLGlYwvsMvxD1eF8Xiba4NMInnF47DCDYXX05uU8rBvYE9v6vXtlh9N8Ihv
+ 6xCsWfnH60ISuM1Wa31cYBYtoOU4aR+OnGRb5Bb55s8E26nVvKKWXDnCSmj8pQXY/oAOip54RKQV
+ EcdZJZQiz7RnWH4w39gh8pFqd+VTkBuIi4cZ0pT563fUtgC7QHWq4H3JQcjOAXxMvVKtdA6mb3Hf
+ bM=
+UI-OutboundReport: notjunk:1;M01:P0:S3LxSwdQ+nU=;9g54ouZwobCMmSgboiCgJisjZc+
+ ida7n+a52hODEkrkRDbHyLeczdiyY0mFV80/+plo10HmEkPvW+G9bwbsjd9OLGg4UnpeH+Nwv
+ IIc3rV0bznjG+/cb9Gf+1SGrLjnacBR60fThpPBQFloJE5V6Jte2NO2qv5Ls1A5CmCZHaCRe1
+ HfN4W20PmSXQbExAqVB/lur2Ays6YFoVNyoph5/795c38iSHNPR1tFYYmRFdDPuLidovhDyeh
+ kyieSHOZA0VKvm4rodiOCy0eyg+U/MivV+Z4Y8yPBMQ10tIe9EZrxLh9drMe+h6tViq0rjxOo
+ UbuawRCX5Wa70hm3MkCnyG/DD3DuyU0ERxFuV6zGen+6nL2cdeYh16aLl5TrHF/2c7hSjjgFU
+ 8quJRJqPSx6th7zFDUL/IJ/XyGF0Fhv4/t2nvYvCElJzVW6kAQM6jy3FCD0ZurPMliNKys671
+ eltfFNkOEsQvJm3/i13YJJFo8EhqHmjwy9HLEDQ5V3X5rAtqUSxSwNpbjiHyQDUspzFTyDEWR
+ +hYz18ZzaGnJrcfJ4kVNCnrvNPjuWakDdPlnw3a+rHt/nEMaUxw5MEKdnoJ82vY0qsQbjQfC9
+ MqtHas76VpmDDsTaHIYtRni9ZmwSGOFNG3O3pKbfDnPmBtw90QqtGuMlJCypxFbMXztqyHLvJ
+ hiEjM7F4qS4v1Yr+opmyEwR9jJFcAIra3JnapcgTKMg+OhMPQkuF1iWzL+o26E4=
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/setitimer: Pass the kernel-defined
- struct __kernel_old_itimerval to sys_setitimer().
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] [PATCH] open_posix_testsuite: Replace old -W commandline
+ argument
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,90 +89,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Hui Min Mina Chou <minachou@andestech.com>, tim609@andestech.com,
- cynthia@andestech.com, ltp@lists.linux.it
+From: Detlef Riekenberg via ltp <ltp@lists.linux.it>
+Reply-To: Detlef Riekenberg <wine.dev@web.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> @Cyril the original code prior this patchset in 203ee275c ("Fix struct
-> __kernel_old_timeval redefinition on 64bit sparc") did not include
-> <linux/time_types.h> for some reason IMHO fallbacks were always used.
-> I wonder why and whether we still don't want to use <linux/time_types.h>.
 
-I suppose that this is broken on some old distro, try to run that
-through CI and if that passes we can do so.
+The Open Posix testsuite calls the compiler with the old
+gcc commandline argument "-W", but that breaks other compiler
 
-> Then Fabrice's fix in 12986b755 ("include/tst_timer.h: avoid redefinition of
-> kernel structures") add autotools check just for uncommon toolchain (sh4 from
-> Texas Instruments). It's somehow hidden (due missing comment it looks like we
-> mostly get the definitions from header, but obviously not when we include
-> <sys/socket.h>.
-
-I guess that it depends on architecture/libc/kernel headers and it's a
-big mess...
-
-> >  AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
-> >  AC_CHECK_TYPES([struct mount_attr],,,[
-> > diff --git a/include/tst_timer.h b/include/tst_timer.h
-> > index 703f03294eae..6fb9400206b8 100644
-> > --- a/include/tst_timer.h
-> > +++ b/include/tst_timer.h
-> > @@ -135,6 +135,13 @@ struct __kernel_itimerspec {
-> >  	struct __kernel_timespec it_value;       /* timer expiration */
-> >  };
-> >  #endif
-> > +
-> > +#ifndef HAVE_STRUCT___KERNEL_OLD_ITIMERVAL
-> > +struct __kernel_old_itimerval {
-> > +	struct __kernel_old_timeval it_interval;	/* timer interval */
-> > +	struct __kernel_old_timeval it_value;		/* current value */
-> > +};
-> > +#endif
-> >  #endif
+This patch renames the old "-W" to the more common "-Wextra"
+(as suggested by LTP mailing list members).
 
 
-I've been staring at the kernel and libc code for a while and it seems
-that there is not itimerval64 syscall and interval timers are limited to
-32bit on 32bit architectures. In reality I suppose that it does not
-matter since nobody is going to use intervals that actually need 64bit
-amount of seconds anyways.
+Reference:
+https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
 
-So libc takes 64bit itimer, converts it to 32bit and kernel does
-the oposite conversion.
+gcc 3.4 renamed "-W" to "-Wextra" in 2004:
+https://gcc.gnu.org/gcc-3.4/changes.html
 
-Also we should really add tests for the libc wrapper as well, since that
-is actually more likely to get broken by the double conversion on 32bit
-arch, but that should be done in an subsequent patches.
+--
+Regards ... Detlef
 
-> >  enum tst_ts_type {
-> > @@ -370,6 +377,11 @@ static inline int sys_timerfd_settime64(int fd, int flags, void *its,
-> >  	return tst_syscall(__NR_timerfd_settime64, fd, flags, its, old_its);
-> >  }
-> 
-> > +static inline int sys_setitimer(int which, void *new_value, void *old_value)
-> > +{
-> > +	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-> > +}
-> C
-> +1 adding function to the common place.
-> 
-> IMHO we slightly prefer to add C functions to C file (e.g. lib/tst_timer.c,
-> there are other functions) + adding signature to tst_timer.h.
+Signed-off-by: Detlef Riekenberg <wine.dev@web.de>
+---
+ testcases/open_posix_testsuite/include/mk/config.mk.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I would say that there is no point to do that for a single line fuctions
-like this and actually I guess that this would break the line numbers
-and filenames for the tst_sycall() so it's better this way.
-
-So for the patch as it is:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
