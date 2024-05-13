@@ -4,85 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AA81C25B74
-	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 15:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10ECC25B74
+	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 15:40:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DF413CF11A
-	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 17:14:35 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 453473CF105
+	for <ltp@archiver.kernel.org>; Mon, 13 May 2024 17:40:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D55E3CEFD4
- for <ltp@lists.linux.it>; Mon, 13 May 2024 17:14:19 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=fstornio@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id D007B3CE8A5
+ for <ltp@lists.linux.it>; Mon, 13 May 2024 17:40:18 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BF22C208196
- for <ltp@lists.linux.it>; Mon, 13 May 2024 17:14:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1715613257;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=ZAfVMjs+hq/FYsOaFgfjENfDdzd2xi3xJD06ME7NEm4=;
- b=D22T3vm3Rgx0d/UJrDNwgRmOgLopvRtA8315FqxtdYgDb03ds3odho8FWEA/chU44Ycuzx
- Kc5zhCksl+UzGml7WrDf6B6ACEmRYxxY458QJqS0Dr4csRrmDtQPHdttyXLx/JbLm8NNfS
- +Nj45AIyE1ZNkwaOKIMf59skllVZKvM=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-319-sTZnjlfNMsOtfurq9GxAbQ-1; Mon, 13 May 2024 11:14:15 -0400
-X-MC-Unique: sTZnjlfNMsOtfurq9GxAbQ-1
-Received: by mail-oa1-f71.google.com with SMTP id
- 586e51a60fabf-23d18580177so6809061fac.0
- for <ltp@lists.linux.it>; Mon, 13 May 2024 08:14:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1715613254; x=1716218054;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=ZAfVMjs+hq/FYsOaFgfjENfDdzd2xi3xJD06ME7NEm4=;
- b=WgVQWQKcBhu+TCp5aKxUdrheeApgvtG/TO8UNJm9kiV3iItsfN9d4zbZdivkKq13PR
- d2MmWCuPQJ0/k2/YlbcgBFtRxEaN8RwgZ5s9rcvEwLKjP8b8NGb26hB2eddp/tHbTYDz
- feV376K4gjIfmqyRi+l2eDxlGoXEBUvIgz1eB0hdRskAwfJ5cCHWHU03jjkSq2DGtS+z
- PKe4MxXZYAxv+mq1XI9ur4FB1e9ndLqUUpjSSKxnQrC2jqv0YVt4IgJHVHUp5gi4F6m0
- PyL3ghkDYRsnPsPVAOhJBMR2WNMhcsBimhUZzCI+rLwZESTZhZe0fDhd0P5ehTfFns6i
- 0VMQ==
-X-Gm-Message-State: AOJu0YxiV81bmEtkPGJTEh+K0kC9pYv7ik603iyUbgHH5Xn77EPgnGM5
- JjEX/57AOS9z9bec/WBNTXyhKYYSBpkh7hE0VEPIIJ1cwHf2Aqo0q/toFyTuto01fsrBBA8buL/
- 8SYtYjM6tnTL7UVCen3G04iE/U2tF8yDj6S5dg85O2Cu82ACkMINIA2Uou/Sdvie9sbK/xEj/jE
- aIKkgXiyAq5GQm/iDjnquoZWkbE7UJHYV+
-X-Received: by 2002:a05:6871:891:b0:23c:3afb:eceb with SMTP id
- 586e51a60fabf-24172a4d896mr16458570fac.1.1715613254305; 
- Mon, 13 May 2024 08:14:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IERkux0avhA6d7N/ZVVbpU9HmIznBFaVNPzpE35FNl6hbpNMZaX5LLkAypyl3iqgW2sBpd2pQ==
-X-Received: by 2002:a05:6871:891:b0:23c:3afb:eceb with SMTP id
- 586e51a60fabf-24172a4d896mr16458545fac.1.1715613253851; 
- Mon, 13 May 2024 08:14:13 -0700 (PDT)
-Received: from fstornio-thinkpadx1carbongen11.remote.csb ([78.208.179.227])
- by smtp.gmail.com with ESMTPSA id
- af79cd13be357-792e36d8d9esm70356085a.110.2024.05.13.08.14.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 May 2024 08:14:13 -0700 (PDT)
-From: Filippo Storniolo <fstornio@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 13 May 2024 17:14:08 +0200
-Message-ID: <20240513151408.237675-1-fstornio@redhat.com>
-X-Mailer: git-send-email 2.44.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A89F6600901
+ for <ltp@lists.linux.it>; Mon, 13 May 2024 17:40:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EAE8334E58;
+ Mon, 13 May 2024 15:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715614816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
+ b=wyP7JfSsK0+UcG2olEXOxD7fsLsC36dH92zz2jikk6BVVkwmekWrx8Qxog1isMitcgnacJ
+ AZP2cuf+xSyvOL22NUmWJ8PkYoUt4S4nJ1RBcHdP+aLcBYR7Vb4W/oN0R+9VbCnAPwbGi9
+ ajl8sWzBUmm4FHF8G2ZvOE6O+7ywZI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715614816;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
+ b=UBDRZJUWU1TEIYt4e5pkcaKl9c0eAE4J2FhCCZnMitYYC6SQkHIFmlBnuu1brOSh1QzCvm
+ 1RN3y9p8EmsxTjAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Mjcm6nHO;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dh2kAc3G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715614815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
+ b=Mjcm6nHOMzTqlR1d1yGud69TKrrMYJoWdKrOSSEkEUKWMrg8J9yKBW0a+xG+OgB+QvtNTr
+ 9dRtvUDoveTVceLNj/WZ/a+Pp2ByPHlGpYgmAI03R87ce1WwVkP5xgP7tnrg7GEj0HJZ1a
+ 5j497dEeXYhSjVCR5dyRahbm29IDVEA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715614815;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b66hgS6JXEMziAyMQJUYN0Ug7Irq12svSZhLNkxVvKU=;
+ b=dh2kAc3G/j0brk13VIBFfjj7qcP8VTmWsPcTPIEw8E97KwcidvVRUfP5g4vrcUQzO9KMmA
+ zDtJOzvqCqiS0aDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DAE9813A52;
+ Mon, 13 May 2024 15:40:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fBmrNF80QmbxVQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 13 May 2024 15:40:15 +0000
+Date: Mon, 13 May 2024 17:39:27 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZkI0L9xkrsJ-mhPN@yuki>
+References: <20240328083344.277502-1-minachou@andestech.com>
+ <20240510153103.GA448405@pevik>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240510153103.GA448405@pevik>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:email]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: EAE8334E58
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] syscalls/mlock05: add mlock test for locking and
- pre-faulting of memory
+Subject: Re: [LTP] [PATCH] syscalls/setitimer: Pass the kernel-defined
+ struct __kernel_old_itimerval to sys_setitimer().
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,170 +119,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Filippo Storniolo <fstornio@redhat.com>
+Cc: Hui Min Mina Chou <minachou@andestech.com>, tim609@andestech.com,
+ cynthia@andestech.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-check Rss and Locked variables from /proc/$pid/smaps of the
-the new memory mapping.
-Rss and Locked size should be equal to the size
-of the memory allocation.
+Hi!
+> @Cyril the original code prior this patchset in 203ee275c ("Fix struct
+> __kernel_old_timeval redefinition on 64bit sparc") did not include
+> <linux/time_types.h> for some reason IMHO fallbacks were always used.
+> I wonder why and whether we still don't want to use <linux/time_types.h>.
 
-Co-developed-by: Dennis Brendel <dbrendel@redhat.com>
-Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
----
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/mlock/.gitignore |   1 +
- testcases/kernel/syscalls/mlock/mlock05.c  | 114 +++++++++++++++++++++
- 3 files changed, 116 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mlock/mlock05.c
+I suppose that this is broken on some old distro, try to run that
+through CI and if that passes we can do so.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 252123d8b..05a52fc8f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -781,6 +781,7 @@ mlock01 mlock01
- mlock02 mlock02
- mlock03 mlock03 -i 20
- mlock04 mlock04
-+mlock05 mlock05
- 
- mlock201 mlock201
- mlock202 mlock202
-diff --git a/testcases/kernel/syscalls/mlock/.gitignore b/testcases/kernel/syscalls/mlock/.gitignore
-index 306574bbc..1872229b8 100644
---- a/testcases/kernel/syscalls/mlock/.gitignore
-+++ b/testcases/kernel/syscalls/mlock/.gitignore
-@@ -2,3 +2,4 @@
- /mlock02
- /mlock03
- /mlock04
-+/mlock05
-diff --git a/testcases/kernel/syscalls/mlock/mlock05.c b/testcases/kernel/syscalls/mlock/mlock05.c
-new file mode 100644
-index 000000000..8e805736d
---- /dev/null
-+++ b/testcases/kernel/syscalls/mlock/mlock05.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright Red Hat
-+ * Author: Filippo Storniolo <fstornio@redhat.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify mlock() causes pre-faulting of PTEs and prevent memory to be swapped out.
-+ *
-+ * Find the new mapping in /proc/$pid/smaps and check Rss and Locked fields after
-+ * mlock syscall:
-+ * Rss and Locked size should be equal to the size of the memory allocation
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+
-+#define MMAPLEN			(1UL<<20)
-+#define LINELEN			256
-+
-+static void get_proc_smaps_info(unsigned long desired_mapping_address, unsigned long *Rss, unsigned long *Locked)
-+{
-+	bool mapping_found = false;
-+	bool Locked_found = false;
-+	bool Rss_found = false;
-+	char buffer[LINELEN];
-+	FILE *fp;
-+	int ret;
-+
-+	fp = SAFE_FOPEN("/proc/self/smaps", "r");
-+
-+	while (fgets(buffer, LINELEN, fp) != NULL) {
-+		unsigned long mapping_address;
-+
-+		ret = sscanf(buffer, "%lx[^-]", &mapping_address);
-+		if ((ret == 1) && (mapping_address == desired_mapping_address)) {
-+			mapping_found = true;
-+			break;
-+		}
-+	}
-+
-+	if (!mapping_found) {
-+		SAFE_FCLOSE(fp);
-+		tst_brk(TBROK, "Mapping %lx not found in /proc/self/smaps", desired_mapping_address);
-+		return;
-+	}
-+
-+	while (fgets(buffer, LINELEN, fp) != NULL) {
-+		unsigned long possible_starting_mapping;
-+		unsigned long possible_ending_mapping;
-+
-+		ret = sscanf(buffer, "%lx-%lx", &possible_starting_mapping, &possible_ending_mapping);
-+		if (ret == 2)
-+			break;
-+
-+		if (strncmp(buffer, "Rss", strlen("Rss")) == 0) {
-+			ret = sscanf(buffer, "%*[^:]:%lu kB", Rss);
-+			if (ret != 1) {
-+				SAFE_FCLOSE(fp);
-+				tst_brk(TBROK, "failure occurred while reading field Rss");
-+				return;
-+			}
-+
-+			Rss_found = true;
-+		}
-+
-+		if (strncmp(buffer, "Locked", strlen("Locked")) == 0) {
-+			ret = sscanf(buffer, "%*[^:]:%lu kB", Locked);
-+			if (ret != 1) {
-+				SAFE_FCLOSE(fp);
-+				tst_brk(TBROK, "failure occurred while reading field Locked");
-+				return;
-+			}
-+
-+			Locked_found =  true;
-+		}
-+
-+		if (Rss_found && Locked_found) {
-+			SAFE_FCLOSE(fp);
-+			return;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+	tst_brk(TBROK, "cannot find both Rss and Locked in mapping %lx", desired_mapping_address);
-+}
-+
-+static void verify_mlock(void)
-+{
-+	unsigned long Locked;
-+	unsigned long Rss;
-+	char *buf;
-+
-+	buf = SAFE_MMAP(NULL, MMAPLEN, PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MLOCK(buf, MMAPLEN);
-+
-+	get_proc_smaps_info((unsigned long)buf, &Rss, &Locked);
-+
-+	// Convertion from KiB to B
-+	Rss *= 1024;
-+	Locked *= 1024;
-+
-+	TST_EXP_EQ_LU(Rss, MMAPLEN);
-+	TST_EXP_EQ_LU(Locked, MMAPLEN);
-+
-+	SAFE_MUNLOCK(buf, MMAPLEN);
-+	SAFE_MUNMAP(buf, MMAPLEN);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_mlock,
-+};
+> Then Fabrice's fix in 12986b755 ("include/tst_timer.h: avoid redefinition of
+> kernel structures") add autotools check just for uncommon toolchain (sh4 from
+> Texas Instruments). It's somehow hidden (due missing comment it looks like we
+> mostly get the definitions from header, but obviously not when we include
+> <sys/socket.h>.
+
+I guess that it depends on architecture/libc/kernel headers and it's a
+big mess...
+
+> >  AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
+> >  AC_CHECK_TYPES([struct mount_attr],,,[
+> > diff --git a/include/tst_timer.h b/include/tst_timer.h
+> > index 703f03294eae..6fb9400206b8 100644
+> > --- a/include/tst_timer.h
+> > +++ b/include/tst_timer.h
+> > @@ -135,6 +135,13 @@ struct __kernel_itimerspec {
+> >  	struct __kernel_timespec it_value;       /* timer expiration */
+> >  };
+> >  #endif
+> > +
+> > +#ifndef HAVE_STRUCT___KERNEL_OLD_ITIMERVAL
+> > +struct __kernel_old_itimerval {
+> > +	struct __kernel_old_timeval it_interval;	/* timer interval */
+> > +	struct __kernel_old_timeval it_value;		/* current value */
+> > +};
+> > +#endif
+> >  #endif
+
+
+I've been staring at the kernel and libc code for a while and it seems
+that there is not itimerval64 syscall and interval timers are limited to
+32bit on 32bit architectures. In reality I suppose that it does not
+matter since nobody is going to use intervals that actually need 64bit
+amount of seconds anyways.
+
+So libc takes 64bit itimer, converts it to 32bit and kernel does
+the oposite conversion.
+
+Also we should really add tests for the libc wrapper as well, since that
+is actually more likely to get broken by the double conversion on 32bit
+arch, but that should be done in an subsequent patches.
+
+> >  enum tst_ts_type {
+> > @@ -370,6 +377,11 @@ static inline int sys_timerfd_settime64(int fd, int flags, void *its,
+> >  	return tst_syscall(__NR_timerfd_settime64, fd, flags, its, old_its);
+> >  }
+> 
+> > +static inline int sys_setitimer(int which, void *new_value, void *old_value)
+> > +{
+> > +	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+> > +}
+> C
+> +1 adding function to the common place.
+> 
+> IMHO we slightly prefer to add C functions to C file (e.g. lib/tst_timer.c,
+> there are other functions) + adding signature to tst_timer.h.
+
+I would say that there is no point to do that for a single line fuctions
+like this and actually I guess that this would break the line numbers
+and filenames for the tst_sycall() so it's better this way.
+
+So for the patch as it is:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 -- 
-2.44.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
