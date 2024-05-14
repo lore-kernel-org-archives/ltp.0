@@ -4,66 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A539C25B75
-	for <ltp@archiver.kernel.org>; Tue, 14 May 2024 13:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEF78C04FFE
+	for <ltp@archiver.kernel.org>; Tue, 14 May 2024 13:02:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F3FD73CF280
-	for <ltp@archiver.kernel.org>; Tue, 14 May 2024 15:01:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C920F3CF2AD
+	for <ltp@archiver.kernel.org>; Tue, 14 May 2024 15:02:51 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D4CF3CE185
- for <ltp@lists.linux.it>; Tue, 14 May 2024 15:01:00 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D7E563CE185
+ for <ltp@lists.linux.it>; Tue, 14 May 2024 15:02:36 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=jv-coder.de (client-ip=5.9.79.73; helo=mail.jv-coder.de;
+ envelope-from=lkml@jv-coder.de; receiver=lists.linux.it)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 65FA8140118D
- for <ltp@lists.linux.it>; Tue, 14 May 2024 15:01:00 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AA7EF60C42;
- Tue, 14 May 2024 13:00:59 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6ED381372E;
- Tue, 14 May 2024 13:00:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Qcs+GItgQ2ZtIgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 14 May 2024 13:00:59 +0000
-Date: Tue, 14 May 2024 15:00:53 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240514130053.GA134619@pevik>
-References: <20240505061746.77510-1-xuyang2018.jy@fujitsu.com>
- <962e26d8-6333-477a-9b03-dc2308779a57@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DDE6960344D
+ for <ltp@lists.linux.it>; Tue, 14 May 2024 15:02:35 +0200 (CEST)
+Received: from [10.40.94.1] (unknown [91.26.40.236])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 69BBD9F778;
+ Tue, 14 May 2024 13:02:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1715691754; bh=O5/4U5qqyVr0p1KPoE/5ihbaabSYWbAdHeKfGkJShto=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=dyWwvm9H4+19YOFoZU0qBjUGZHbI/Eg/kxWJByURWPFiWarbT26IciGJvDm/D6dne
+ WAQwZXPMusruFgSTJTKK6RD853kjs9risO7k6Y5v/SIjITmA9ZfCS5tFcYos2Q0X/I
+ FrHZyvlMmkisAKNJc9nueJffM1Eun3jN7u6kRa5I=
+Message-ID: <58c5dbe8-5647-4019-a883-31a155669111@jv-coder.de>
+Date: Tue, 14 May 2024 15:02:34 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <962e26d8-6333-477a-9b03-dc2308779a57@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: AA7EF60C42
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, Cyril Hrubis <chrubis@suse.cz>
+References: <trinity-74891c6d-f969-45be-ab73-89e340d7f6d3-1715633259373@3c-app-webde-bap30>
+ <ZkMgEkifrsjZIOXR@yuki> <20240514121557.GA88586@pevik>
+Content-Language: en-US
+From: Joerg Vehlow <lkml@jv-coder.de>
+Organization: AOX Technologies GmbH
+In-Reply-To: <20240514121557.GA88586@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] bind: Add negative tests for bind
+Subject: Re: [LTP] [PATCH] open_posix_testsuite: Replace old -W commandline
+ argument
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,22 +60,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Reply-To: Joerg.Vehlow@aox.de
+Cc: Detlef Riekenberg <wine.dev@web.de>, Joerg Vehlow <joerg.vehlow@aox.de>,
+ LTP <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi,
 
-> Hi,
-> small nit below, otherwise looks good to me.
+Am 5/14/2024 um 2:15 PM schrieb Petr Vorel:
+> Hi all,
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> @Joerg I plan to merge this, can I add your Reviewed-by tag?
+Sure:
+Reviewed-by: Joerg Vehlow <joerg.vehlow@aox.de>
 
-Good catch, fixed and merged!
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
