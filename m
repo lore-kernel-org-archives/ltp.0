@@ -4,56 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A88C25B79
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78E3C25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:38:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 597D53CF8D6
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 15:32:34 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 47B7B3CF8C0
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 15:38:58 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2009D3CDB83
- for <ltp@lists.linux.it>; Wed, 15 May 2024 15:22:08 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=lee@kernel.org;
- receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ by picard.linux.it (Postfix) with ESMTPS id EFAB23CDB83
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 15:38:32 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A8B37600743
- for <ltp@lists.linux.it>; Wed, 15 May 2024 15:22:06 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id E47A1CE136C;
- Wed, 15 May 2024 13:21:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CEEBC116B1;
- Wed, 15 May 2024 13:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1715779314;
- bh=lXr/y9xDsNC4dk/9G+rOjHitHx6injR2gFHkh+OuI9A=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uNhv+r2Raye6ICgXvIAQPVyZGwwA0J/Nhcl+CgKQ6u8ib5QvYH1XxL1Z185BlRjll
- FcL7I+zaAtpb2qush+8PL+7jG6EZX/TdlCsh8bBtwuGWn9eJWhBpAEEF64+wfyebqI
- fLK+utEMiG+5cipsMjSa9GFP6Kc91gsgLtdQkDRG1bt1zliR2NVmsboQm2/H+Zx1N4
- Fv3qCQVem1jE59tEFODK6Nz4z3DMgy4JYssDoJUG6BWMVn1jCwC70xWzEKcQdyzLf9
- rH3mtWHd4PyRPYiEOt/T4ep9IJPq4ZlmgI2noaUw6A7UxKLkptHrMwlV/F1xV1OSB4
- yhoK6jsH2FnQA==
-Date: Wed, 15 May 2024 14:21:51 +0100
-From: Lee Jones <lee@kernel.org>
-To: Murphy Zhou <jencce.kernel@gmail.com>
-Message-ID: <20240515132151.GA557949@google.com>
-References: <20240423070643.38577-1-jencce.kernel@gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 56352604820
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 15:38:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D900920710;
+ Wed, 15 May 2024 13:38:29 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C7F171372E;
+ Wed, 15 May 2024 13:38:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wu70L9W6RGZydAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Wed, 15 May 2024 13:38:29 +0000
+Message-ID: <97937ba2-02b0-4682-baf9-0d97f678cb99@suse.cz>
+Date: Wed, 15 May 2024 15:38:29 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240423070643.38577-1-jencce.kernel@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>, Cyril Hrubis <chrubis@suse.cz>
+References: <20240515094753.1072-1-mdoucha@suse.cz>
+ <20240515101511.GA211618@pevik> <ZkSUG0EtSyu6GvvW@yuki>
+ <20240515130355.GA222948@pevik>
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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
+In-Reply-To: <20240515130355.GA222948@pevik>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: D900920710
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 15 May 2024 15:32:18 +0200
-Subject: Re: [LTP] [PATCH] readahead01: pass on pidfd
+Subject: Re: [LTP] [PATCH] tcindex01: Pass if the tcindex module is
+ blacklisted
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,29 +124,32 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCAyMyBBcHIgMjAyNCwgTXVycGh5IFpob3Ugd3JvdGU6Cgo+IExpbnV4IGtlcm5lbCBh
-ZGRlZCBwaWRmcyB2aWEgY29tbWl0IGI1NjgzYTM3Yzg4MSBpbiB2Ni45LXJjMQo+IHJlbGVhc2Uu
-IFRoaXMgcGF0Y2hzZXQgaWdub3JlcyByZWFkYWhlYWQgcmVxdWVzdCBpbnN0ZWFkIG9mCj4gcmV0
-dXJuaW5nIEVJTlZBTCwgc28gbWFyayB0aGUgdGVzdCBwYXNzLgo+IAo+IGh0dHBzOi8vbGttbC5p
-dS5lZHUvaHlwZXJtYWlsL2xpbnV4L2tlcm5lbC8yNDAzLjIvMDA3NjIuaHRtbAo+IAo+IFNpZ25l
-ZC1vZmYtYnk6IE11cnBoeSBaaG91IDxqZW5jY2Uua2VybmVsQGdtYWlsLmNvbT4KPiAtLS0KPiAg
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZWFkYWhlYWQvcmVhZGFoZWFkMDEuYyB8IDEgKwo+
-ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9yZWFkYWhlYWQvcmVhZGFoZWFkMDEuYyBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvcmVhZGFoZWFkL3JlYWRhaGVhZDAxLmMKPiBpbmRleCBkNGIzZjMwNmYu
-LmFlZDhlN2YzMSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3JlYWRh
-aGVhZC9yZWFkYWhlYWQwMS5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZWFk
-YWhlYWQvcmVhZGFoZWFkMDEuYwo+IEBAIC01Myw2ICs1Myw3IEBAIHN0YXRpYyB2b2lkIHRlc3Rf
-aW52YWxpZF9mZChzdHJ1Y3QgdHN0X2ZkICpmZCkKPiAgCWNhc2UgVFNUX0ZEX01FTUZEOgo+ICAJ
-Y2FzZSBUU1RfRkRfTUVNRkRfU0VDUkVUOgo+ICAJY2FzZSBUU1RfRkRfUFJPQ19NQVBTOgo+ICsJ
-Y2FzZSBUU1RfRkRfUElERkQ6Cj4gIAkJcmV0dXJuOwo+ICAJZGVmYXVsdDoKPiAgCQlicmVhazsK
-CkFueSBtb3ZlbWVudCBvbiB0aGlzPwoKQW5kcm9pZCBwcmUtc3VibWl0IENJIHRlc3RpbmcgaXMg
-ZmFpbGluZyBkdWUgdG8gdGhlIG5ldyB1bmNvbmRpdGlvbmFsCmVuYWJsZSBvZiBQSURGRC4gIEkg
-YmVsaWV2ZSB0aGlzIHBhdGNoIGlzIHJlcXVpcmVkIGluIG9yZGVyIHRvIGJyaW5nIGl0CmJhY2sg
-dG8gYSBwYXNzaW5nIHN0YXRlLgoKLS0gCkxlZSBKb25lcyBb5p2O55C85pavXQoKLS0gCk1haWxp
-bmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+On 15. 05. 24 15:03, Petr Vorel wrote:
+>>>> +
+>>>> +	if (!ret && TST_ERR == ENOENT) {
+>>>> +		tst_res(TPASS | TTERRNO,
+>>>> +			"tcindex module is blacklisted or unavailable");
+> 
+> Why not TCONF? We are testing if removing tcindex does not cause bug,
+> right?
+
+Blacklisting the module is intended as a partial CVE fix so TPASS is 
+more appropriate than TCONF.
+
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
