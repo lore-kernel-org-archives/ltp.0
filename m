@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE5ABC25B78
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 09:35:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F97C25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 09:36:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4915A3CF7F2
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 11:35:56 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id AB1623CF421
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 11:36:18 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 65CEC3CD986
+ by picard.linux.it (Postfix) with ESMTPS id ABD6D3CF672
  for <ltp@lists.linux.it>; Wed, 15 May 2024 11:33:58 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
@@ -24,67 +24,67 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B11EF10009E2
- for <ltp@lists.linux.it>; Wed, 15 May 2024 11:33:57 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0B0702095EE
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 11:33:58 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 25339339F0;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EDF8B339F3;
  Wed, 15 May 2024 09:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1715765636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1715765637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
- b=of0bwz8VwDmLywKjeeVwLeRH7coi+7eMQMXzo3wZ+1l63bY00Y1v8pktBuTvUDXl/sD1Yn
- BfVHnA1dAlUKRhuzPzA82z+ERxatw6Gd7RrMuQxZ6q895VdHxSdrjIz5UZHB/jNfglLlNR
- Mgnz2XzjP+60nOunt4TQUbYxAAU0g6w=
+ bh=6FBwUiHxgGuJToDPCl/CxD15WUb4m4zjOr/qjrAZEQA=;
+ b=TH95tkKNx4x6wzVuBlVhZ4BcbvDwWHFzCxODSQV4t+YmtjwsFYrVmC0NescDYoLpGSEHgs
+ d8LGRHv5J/jI7cBe6zd467+7ooLfNkK9Q5h04M6dirGZpZ5tFQ7/pXfenjDJKuSKMFzi4K
+ CYDmbtvyjS2gT97+hYDP/Dclj+1w9T4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1715765636;
+ s=susede2_ed25519; t=1715765637;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
- b=/7EotKSNeawi3E0Yuc4N1RJSVRMf2bF5Ke3bwxhoQ2J81NDYuScUoKhOeLFJY1GK5mrT0y
- X14XB6hZO/e1e3Cw==
+ bh=6FBwUiHxgGuJToDPCl/CxD15WUb4m4zjOr/qjrAZEQA=;
+ b=pAjrjuIg6CxOaA96CqkbNmz1YUwXP0BnNcMkDTPVdMSCXoDHHwD4VfEGlT7xyO8ijcTQDZ
+ okRopRRapORe9mDw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=of0bwz8V;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="/7EotKSN"
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=u6ehjyWe;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="8w/6wL8z"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1715765636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
- b=of0bwz8VwDmLywKjeeVwLeRH7coi+7eMQMXzo3wZ+1l63bY00Y1v8pktBuTvUDXl/sD1Yn
- BfVHnA1dAlUKRhuzPzA82z+ERxatw6Gd7RrMuQxZ6q895VdHxSdrjIz5UZHB/jNfglLlNR
- Mgnz2XzjP+60nOunt4TQUbYxAAU0g6w=
+ bh=6FBwUiHxgGuJToDPCl/CxD15WUb4m4zjOr/qjrAZEQA=;
+ b=u6ehjyWeWVcpgPW7AL6ZyRX9JjR+SM/+7HejaRBadR7D/vjc/Px7jiiR4qvOMmPH9L5Er2
+ ThNKguCzBqpiY1qDPpekocSTCV3RExo58awniDtkNHJDWN3RlUn4OISfDcgbqawElk4Arf
+ BPxGd0Ye7F9rfsdzFLbHjYLGhWZqn60=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1715765636;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
- b=/7EotKSNeawi3E0Yuc4N1RJSVRMf2bF5Ke3bwxhoQ2J81NDYuScUoKhOeLFJY1GK5mrT0y
- X14XB6hZO/e1e3Cw==
+ bh=6FBwUiHxgGuJToDPCl/CxD15WUb4m4zjOr/qjrAZEQA=;
+ b=8w/6wL8zUUCMp0dvJhsd9YIDGpkVsPhSwi8F+X6z17SPdgseZAV0Q/9cZCZKFlkMCbz3zc
+ 493bsEltfODTQjDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 002B31372E;
- Wed, 15 May 2024 09:33:55 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C86161372E;
+ Wed, 15 May 2024 09:33:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kAutOYOBRGb1TwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 15 May 2024 09:33:55 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wMH5LoSBRGb1TwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 15 May 2024 09:33:56 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 15 May 2024 11:33:42 +0200
-Message-Id: <20240515093349.7347-4-andrea.cervesato@suse.de>
+Date: Wed, 15 May 2024 11:33:46 +0200
+Message-Id: <20240515093349.7347-8-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240515093349.7347-1-andrea.cervesato@suse.de>
 References: <20240515093349.7347-1-andrea.cervesato@suse.de>
@@ -97,22 +97,23 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MX_GOOD(-0.01)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
  RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  DKIM_TRACE(0.00)[suse.de:+]
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 25339339F0
+X-Rspamd-Queue-Id: EDF8B339F3
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 03/10] Add listmount01 test
+Subject: [LTP] [PATCH v1 07/10] Add statmount03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,93 +132,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This test verifies that listmount() is properly recognizing a mounted
-root directory using LSMT_ROOT flag.
+This test verifies that statmount() is correctly reading mount
+information (mount id, parent mount id, mount attributes etc.)
+using STATMOUNT_MNT_BASIC.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                              |  2 +
- .../kernel/syscalls/listmount/.gitignore      |  1 +
- testcases/kernel/syscalls/listmount/Makefile  |  7 ++
- .../kernel/syscalls/listmount/listmount.h     | 26 ++++++++
- .../kernel/syscalls/listmount/listmount01.c   | 66 +++++++++++++++++++
- 5 files changed, 102 insertions(+)
- create mode 100644 testcases/kernel/syscalls/listmount/.gitignore
- create mode 100644 testcases/kernel/syscalls/listmount/Makefile
- create mode 100644 testcases/kernel/syscalls/listmount/listmount.h
- create mode 100644 testcases/kernel/syscalls/listmount/listmount01.c
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/statmount/.gitignore      |  1 +
+ .../kernel/syscalls/statmount/statmount03.c   | 99 +++++++++++++++++++
+ 3 files changed, 101 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/statmount/statmount03.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index d9cf37510..8fd4a9a0a 100644
+index 5f1df42ca..116106521 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -706,6 +706,8 @@ linkat02 linkat02
+@@ -1539,6 +1539,7 @@ stat04_64 symlink01 -T stat04_64
  
- listen01 listen01
+ statmount01 statmount01
+ statmount02 statmount02
++statmount03 statmount03
  
-+listmount01 listmount01
-+
- listxattr01 listxattr01
- listxattr02 listxattr02
- listxattr03 listxattr03
-diff --git a/testcases/kernel/syscalls/listmount/.gitignore b/testcases/kernel/syscalls/listmount/.gitignore
+ statfs01 statfs01
+ statfs01_64 statfs01_64
+diff --git a/testcases/kernel/syscalls/statmount/.gitignore b/testcases/kernel/syscalls/statmount/.gitignore
+index a30b9565f..2a02bf721 100644
+--- a/testcases/kernel/syscalls/statmount/.gitignore
++++ b/testcases/kernel/syscalls/statmount/.gitignore
+@@ -1,2 +1,3 @@
+ statmount01
+ statmount02
++statmount03
+diff --git a/testcases/kernel/syscalls/statmount/statmount03.c b/testcases/kernel/syscalls/statmount/statmount03.c
 new file mode 100644
-index 000000000..5257b298c
+index 000000000..6140940bd
 --- /dev/null
-+++ b/testcases/kernel/syscalls/listmount/.gitignore
-@@ -0,0 +1 @@
-+listmount01
-diff --git a/testcases/kernel/syscalls/listmount/Makefile b/testcases/kernel/syscalls/listmount/Makefile
-new file mode 100644
-index 000000000..8cf1b9024
---- /dev/null
-+++ b/testcases/kernel/syscalls/listmount/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/listmount/listmount.h b/testcases/kernel/syscalls/listmount/listmount.h
-new file mode 100644
-index 000000000..93766cd33
---- /dev/null
-+++ b/testcases/kernel/syscalls/listmount/listmount.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+#ifndef LISTMOUNT_H
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+#include "lapi/mount.h"
-+#include "lapi/syscalls.h"
-+
-+static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
-+			 uint64_t list[], size_t num, unsigned int flags)
-+{
-+	struct mnt_id_req req = {
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = mnt_id,
-+		.param = last_mnt_id,
-+	};
-+
-+	return tst_syscall(__NR_listmount, &req, list, num, flags);
-+}
-+
-+#endif
-diff --git a/testcases/kernel/syscalls/listmount/listmount01.c b/testcases/kernel/syscalls/listmount/listmount01.c
-new file mode 100644
-index 000000000..20cc90507
---- /dev/null
-+++ b/testcases/kernel/syscalls/listmount/listmount01.c
-@@ -0,0 +1,66 @@
++++ b/testcases/kernel/syscalls/statmount/statmount03.c
+@@ -0,0 +1,99 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
@@ -226,36 +178,52 @@ index 000000000..20cc90507
 +/**
 + * [Description]
 + *
-+ * This test verifies that listmount() is properly recognizing a mounted
-+ * root directory using LSMT_ROOT flag.
++ * This test verifies that statmount() is correctly reading mount information
++ * (mount id, parent mount id, mount attributes etc.) using STATMOUNT_MNT_BASIC.
 + *
 + * [Algorithm]
 + *
-+ * * move into a new unshared namespace
-+ * * mount() a root inside temporary folder and get its mount ID
-+ * * get list of mounted IDs using listmount(LSMT_ROOT, ..)
-+ * * verify that the root mount ID is the only mount ID present inside the list
++ * * create a mount point
++ * * create a new parent folder inside the mount point and obtain its mount info
++ * * create the new "/" mount folder and obtain its mount info
++ * * run statmount() on the mount point using STATMOUNT_MNT_BASIC
++ * * read results and check if mount info are correct
 + */
 +
-+#include "listmount.h"
++#include "statmount.h"
 +#include "lapi/stat.h"
 +#include "lapi/sched.h"
 +
 +#define MNTPOINT "mntpoint"
-+#define LISTSIZE 32
++#define MYPARENT MNTPOINT "/myroot"
 +
 +static uint64_t root_id;
++static uint64_t root_id_old;
++static uint64_t parent_id;
++static uint64_t parent_id_old;
++static struct statmount *st_mount;
 +
 +static void run(void)
 +{
-+	uint64_t list[LISTSIZE];
++	memset(st_mount, 0, sizeof(struct statmount));
 +
-+	TST_EXP_POSITIVE(listmount(LSMT_ROOT, 0, list, LISTSIZE, 0));
++	TST_EXP_PASS(statmount(
++		root_id,
++		STATMOUNT_MNT_BASIC,
++		st_mount,
++		sizeof(struct statmount),
++		0));
++
 +	if (TST_RET == -1)
 +		return;
 +
-+	TST_EXP_EQ_LI(TST_RET, 1);
-+	TST_EXP_EQ_LI(list[0], root_id);
++	TST_EXP_EQ_LI(st_mount->mask, STATMOUNT_MNT_BASIC);
++	TST_EXP_EQ_LI(st_mount->size, sizeof(struct statmount));
++	TST_EXP_EQ_LI(st_mount->mnt_id, root_id);
++	TST_EXP_EQ_LI(st_mount->mnt_id_old, root_id_old);
++	TST_EXP_EQ_LI(st_mount->mnt_parent_id, parent_id);
++	TST_EXP_EQ_LI(st_mount->mnt_parent_id_old, parent_id_old);
++	TST_EXP_EQ_LI(st_mount->mnt_propagation, MS_PRIVATE);
 +}
 +
 +static void setup(void)
@@ -263,19 +231,32 @@ index 000000000..20cc90507
 +	struct statx sx;
 +
 +	SAFE_UNSHARE(CLONE_NEWNS);
++	SAFE_MKDIR(MYPARENT, 0700);
 +
-+	SAFE_CHROOT(MNTPOINT);
++	SAFE_STATX(AT_FDCWD, MYPARENT, 0, STATX_MNT_ID_UNIQUE, &sx);
++	parent_id = sx.stx_mnt_id;
++
++	SAFE_STATX(AT_FDCWD, MYPARENT, 0, STATX_MNT_ID, &sx);
++	parent_id_old = sx.stx_mnt_id;
++
 +	SAFE_MOUNT("", "/", NULL, MS_REC | MS_PRIVATE, NULL);
-+	SAFE_STATX(AT_FDCWD, "/", 0, STATX_MNT_ID_UNIQUE, &sx);
++	SAFE_MOUNT(MYPARENT, MYPARENT, NULL, MS_BIND, NULL);
++	SAFE_CHROOT(MYPARENT);
++	SAFE_CHDIR("/");
 +
++	SAFE_STATX(AT_FDCWD, "/", 0, STATX_MNT_ID_UNIQUE, &sx);
 +	root_id = sx.stx_mnt_id;
++
++	SAFE_STATX(AT_FDCWD, "/", 0, STATX_MNT_ID, &sx);
++	root_id_old = sx.stx_mnt_id;
 +}
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
-+	.forks_child = 1,
 +	.min_kver = "6.8",
++	.needs_tmpdir = 1,
++	.format_device = 1,
 +	.mount_device = 1,
 +	.mntpoint = MNTPOINT,
 +	.all_filesystems = 1,
@@ -283,6 +264,10 @@ index 000000000..20cc90507
 +		"fuse",
 +		NULL
 +	},
++	.bufs = (struct tst_buffers []) {
++		{&st_mount, .size = sizeof(struct statmount)},
++		{}
++	}
 +};
 -- 
 2.35.3
