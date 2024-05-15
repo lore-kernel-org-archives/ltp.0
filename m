@@ -4,90 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AB4BC25B78
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 10:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C78EC25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 11:34:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB7A43CF7F6
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 12:56:27 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id CEAF23CF7F6
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:34:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E32F3CD986
- for <ltp@lists.linux.it>; Wed, 15 May 2024 11:25:21 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=sachinpb@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E4AD63CF75A
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 13:33:49 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B6E19603E83
- for <ltp@lists.linux.it>; Wed, 15 May 2024 11:25:19 +0200 (CEST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 44F8vR2V002331; Wed, 15 May 2024 09:25:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=FsqDUafVawhpSqi4Dfe83eQjbtox1GGW3O/f84FIyjE=;
- b=Ui7LpUnV2wy0PYBDktFB/+FTiQxoJmvQfcCEOZ/2XiHe3eZalKUUnDpGDI/oe0f5CYCn
- 7FfxTpiVjizHBz3C5tDaNTUTDiPKOntm3Al/JODDhCVVi47y8g7Z5h0RPIiocduFZgWC
- TQjtdpk74YXTR9cQXqrhTIdrZZvmHgaEtzYYYP4VOahNnzv6jZGQs/DrM4xWNSnW439w
- gh1YJsHKLqdKRjVMKUXdsUXE6UA6HX1fkDgEeUOAc2j3Gm11ujKBt/1ukONSUzyNL7C1
- aqq7gEa2YHTj18QT7JpX/LH29CN6KbK9/xiFek16Sqg3UJ4+eirNZXWAoiPtmIjOjzro +A== 
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3y4t0502en-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 15 May 2024 09:25:16 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 44F7t8LL020367; Wed, 15 May 2024 09:25:15 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3y2kd02xyr-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 15 May 2024 09:25:15 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 44F9P9xO52691396
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 15 May 2024 09:25:11 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 21B992004D;
- Wed, 15 May 2024 09:25:09 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5D65A2004E;
- Wed, 15 May 2024 09:25:08 +0000 (GMT)
-Received: from ltcden9-lp4.aus.stglabs.ibm.com (unknown [9.53.174.133])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 15 May 2024 09:25:08 +0000 (GMT)
-From: Sachin P Bappalige <sachinpb@linux.ibm.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 52EBC1A0C278
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 13:33:49 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DFE9133ADE;
+ Wed, 15 May 2024 11:33:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1715772828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
+ b=XUudth+ozauxLcJ8FN/HufOmhpq8jLtYkPgcSf7aLqbZ9WOpFRDERhXnPJBPuJsauBzl3q
+ zRgNHxuAyNsnnE4wMadf3saK5FRQSJo0KPhdv+WnMvpCeuPdE4NDU5eWqCK5h4MH4ubOPZ
+ UOlo1HFQF8qfwO6DnK/KAiCEl4tPNi8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1715772828;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
+ b=LUv2dyhAl7dRmk61bgee2sypAZniwWaSnXQcsAqj2G+PTKWL+4ANtRIaorLE/WPYXbDYXU
+ oepwRalPgyBG4KAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1715772828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
+ b=XUudth+ozauxLcJ8FN/HufOmhpq8jLtYkPgcSf7aLqbZ9WOpFRDERhXnPJBPuJsauBzl3q
+ zRgNHxuAyNsnnE4wMadf3saK5FRQSJo0KPhdv+WnMvpCeuPdE4NDU5eWqCK5h4MH4ubOPZ
+ UOlo1HFQF8qfwO6DnK/KAiCEl4tPNi8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1715772828;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bFp1ujAIA/zECwSOzdfpYjXhDcjJ+Dn3X0D6RjX8hSs=;
+ b=LUv2dyhAl7dRmk61bgee2sypAZniwWaSnXQcsAqj2G+PTKWL+4ANtRIaorLE/WPYXbDYXU
+ oepwRalPgyBG4KAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9F1113A66;
+ Wed, 15 May 2024 11:33:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0Hh3K5ydRGbwNAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 15 May 2024 11:33:48 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 15 May 2024 04:24:56 -0500
-Message-ID: <20240515092456.3180-1-sachinpb@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
+Date: Wed, 15 May 2024 13:33:31 +0200
+Message-Id: <20240515113338.554-4-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240515113338.554-1-andrea.cervesato@suse.de>
+References: <20240515113338.554-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fEBnj1Zn7z7la7nGaVyu6_24FRicgaUa
-X-Proofpoint-GUID: fEBnj1Zn7z7la7nGaVyu6_24FRicgaUa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-15_04,2024-05-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 clxscore=1015 malwarescore=0 bulkscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405150063
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 15 May 2024 12:55:32 +0200
-Subject: [LTP] [PATCH v4] Migrating the libhugetlbfs/testcases/shm-gettest.c
- test
+Subject: [LTP] [PATCH v2 03/10] Add listmount01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,138 +113,168 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sachinpb@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test Description: This testcase creates shared memory segments
-backed by hugepages, writes specific patterns to each segment,
-verifies pattern and detaches a shared memory segments in a loop.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This looping test was added to verify the functionality of
-large page backed shared memory segments. A segment is created,
-written, verified, and detached for specified number of times.
+This test verifies that listmount() is properly recognizing a mounted
+root directory using LSMT_ROOT flag.
 
--Updated 'kernel/mem/.gitignore'
--Updated 'runtest/hugetlb' for number of iterations with -i 10
-
-Signed-off-by: Sachin P Bappalige <sachinpb@linux.ibm.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget06.c     | 78 +++++++++++++++++++
- 3 files changed, 80 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
+ runtest/syscalls                              |  2 +
+ .../kernel/syscalls/listmount/.gitignore      |  1 +
+ testcases/kernel/syscalls/listmount/Makefile  |  7 ++
+ .../kernel/syscalls/listmount/listmount.h     | 26 ++++++++
+ .../kernel/syscalls/listmount/listmount01.c   | 66 +++++++++++++++++++
+ 5 files changed, 102 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/listmount/.gitignore
+ create mode 100644 testcases/kernel/syscalls/listmount/Makefile
+ create mode 100644 testcases/kernel/syscalls/listmount/listmount.h
+ create mode 100644 testcases/kernel/syscalls/listmount/listmount01.c
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 299c07ac9..f294e9aaa 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -55,3 +55,4 @@ hugeshmget01 hugeshmget01 -i 10
- hugeshmget02 hugeshmget02 -i 10
- hugeshmget03 hugeshmget03 -i 10
- hugeshmget05 hugeshmget05 -i 10
-+hugeshmget06 hugeshmget06 -i 10
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index c96fe8bfc..d88484fa1 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -47,6 +47,7 @@
- /hugetlb/hugeshmget/hugeshmget02
- /hugetlb/hugeshmget/hugeshmget03
- /hugetlb/hugeshmget/hugeshmget05
-+/hugetlb/hugeshmget/hugeshmget06
- /ksm/ksm01
- /ksm/ksm02
- /ksm/ksm03
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
+diff --git a/runtest/syscalls b/runtest/syscalls
+index d9cf37510..8fd4a9a0a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -706,6 +706,8 @@ linkat02 linkat02
+ 
+ listen01 listen01
+ 
++listmount01 listmount01
++
+ listxattr01 listxattr01
+ listxattr02 listxattr02
+ listxattr03 listxattr03
+diff --git a/testcases/kernel/syscalls/listmount/.gitignore b/testcases/kernel/syscalls/listmount/.gitignore
 new file mode 100644
-index 000000000..85a731113
+index 000000000..5257b298c
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
-@@ -0,0 +1,78 @@
++++ b/testcases/kernel/syscalls/listmount/.gitignore
+@@ -0,0 +1 @@
++listmount01
+diff --git a/testcases/kernel/syscalls/listmount/Makefile b/testcases/kernel/syscalls/listmount/Makefile
+new file mode 100644
+index 000000000..8cf1b9024
+--- /dev/null
++++ b/testcases/kernel/syscalls/listmount/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/listmount/listmount.h b/testcases/kernel/syscalls/listmount/listmount.h
+new file mode 100644
+index 000000000..93766cd33
+--- /dev/null
++++ b/testcases/kernel/syscalls/listmount/listmount.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++#ifndef LISTMOUNT_H
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "lapi/mount.h"
++#include "lapi/syscalls.h"
++
++static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
++			 uint64_t list[], size_t num, unsigned int flags)
++{
++	struct mnt_id_req req = {
++		.size = MNT_ID_REQ_SIZE_VER0,
++		.mnt_id = mnt_id,
++		.param = last_mnt_id,
++	};
++
++	return tst_syscall(__NR_listmount, &req, list, num, flags);
++}
++
++#endif
+diff --git a/testcases/kernel/syscalls/listmount/listmount01.c b/testcases/kernel/syscalls/listmount/listmount01.c
+new file mode 100644
+index 000000000..20cc90507
+--- /dev/null
++++ b/testcases/kernel/syscalls/listmount/listmount01.c
+@@ -0,0 +1,66 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2005-2006, IBM Corporation.
-+ * Author: David Gibson & Adam Litke
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
-+/*\
++/**
 + * [Description]
-+ * This testcase creates shared memory segments backed by hugepages,
-+ * writes specific patterns to each segment, verifies pattern,
-+ * and detaches a shared memory segments in a loop.
-+ * It ensures that the hugepage backed shared memory functionalities
-+ * works correctly by validating the data written to segment.
++ *
++ * This test verifies that listmount() is properly recognizing a mounted
++ * root directory using LSMT_ROOT flag.
++ *
++ * [Algorithm]
++ *
++ * * move into a new unshared namespace
++ * * mount() a root inside temporary folder and get its mount ID
++ * * get list of mounted IDs using listmount(LSMT_ROOT, ..)
++ * * verify that the root mount ID is the only mount ID present inside the list
 + */
 +
-+#include "hugetlb.h"
-+#include "tst_safe_sysv_ipc.h"
++#include "listmount.h"
++#include "lapi/stat.h"
++#include "lapi/sched.h"
 +
-+#define MNTPOINT "hugetlbfs/"
-+#define NR_HUGEPAGES 4
++#define MNTPOINT "mntpoint"
++#define LISTSIZE 32
 +
-+static long hpage_size;
-+static int shmid = -1, key = -1;
++static uint64_t root_id;
 +
-+static void run_test(void)
++static void run(void)
 +{
-+	size_t i, j;
-+	char pattern;
-+	char *shmaddr;
++	uint64_t list[LISTSIZE];
 +
-+	shmaddr = SAFE_SHMAT(shmid, 0, SHM_RND);
-+	tst_res(TINFO, "shmaddr: %p", shmaddr);
++	TST_EXP_POSITIVE(listmount(LSMT_ROOT, 0, list, LISTSIZE, 0));
++	if (TST_RET == -1)
++		return;
 +
-+	for (i = 0; i < NR_HUGEPAGES; i++) {
-+		pattern = 65 + (i % 26);
-+		tst_res(TINFO, "Touching %p with %c",
-+		shmaddr + (i * hpage_size), pattern);
-+		memset(shmaddr + (i * hpage_size), pattern, hpage_size);
-+	}
-+
-+	for (i = 0; i < NR_HUGEPAGES; i++) {
-+		pattern = 65 + (i % 26);
-+		tst_res(TINFO, "Verifying %p", (shmaddr + (i * hpage_size)));
-+		for (j = 0; j < (size_t)hpage_size; j++)
-+			if (*(shmaddr + (i * hpage_size) + j) != pattern) {
-+				tst_res(TFAIL, "Got wrong byte 0x%02x expected 0x%02x",
-+						*(shmaddr + (i * hpage_size) + j),
-+						pattern);
-+				return;
-+			}
-+	}
-+	SAFE_SHMDT((const void *)shmaddr);
-+	tst_res(TPASS, "shm hugepages works correctly");
++	TST_EXP_EQ_LI(TST_RET, 1);
++	TST_EXP_EQ_LI(list[0], root_id);
 +}
 +
 +static void setup(void)
 +{
-+	hpage_size = tst_get_hugepage_size();
-+	tst_res(TINFO, "hugepage size is %ld", hpage_size);
-+	shmid = SAFE_SHMGET(key, NR_HUGEPAGES * hpage_size, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
-+	tst_res(TINFO, "shmid: 0x%x", shmid);
-+}
++	struct statx sx;
 +
-+static void cleanup(void)
-+{
-+	if (shmid >= 0)
-+		SAFE_SHMCTL(shmid, IPC_RMID, NULL);
++	SAFE_UNSHARE(CLONE_NEWNS);
++
++	SAFE_CHROOT(MNTPOINT);
++	SAFE_MOUNT("", "/", NULL, MS_REC | MS_PRIVATE, NULL);
++	SAFE_STATX(AT_FDCWD, "/", 0, STATX_MNT_ID_UNIQUE, &sx);
++
++	root_id = sx.stx_mnt_id;
 +}
 +
 +static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 0,
++	.test_all = run,
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {NR_HUGEPAGES, TST_NEEDS},
++	.forks_child = 1,
++	.min_kver = "6.8",
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.skip_filesystems = (const char *const []) {
++		"fuse",
++		NULL
++	},
 +};
 -- 
-2.43.0
+2.35.3
 
 
 -- 
