@@ -4,115 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0CCCC25B75
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 11:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E318C25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 11:44:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5366A3CF7CB
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:37:06 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9C4DC3CF8CD
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:44:05 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 081533CF85A
- for <ltp@lists.linux.it>; Wed, 15 May 2024 13:33:58 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A4A6A3CF7BF
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 13:43:48 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5D6FB6067C0
- for <ltp@lists.linux.it>; Wed, 15 May 2024 13:33:49 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D38AC2079E8
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 13:43:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AE387205DE;
- Wed, 15 May 2024 11:33:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 51ADF205F8;
+ Wed, 15 May 2024 11:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1715772828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e8gMqyoX+j4jyjVTOX4f33XCpw7DAsOHvXUBGu/ivDk=;
- b=oBIlAOEprhQqEfBQTwT+aBzQQAqI5oV54rxoqfRKpuPAUhmks0T1blzQGvbPjSitxTP5uI
- 7C58JE2py6fldOWS9aUpsO8w+CR5RFrR6LqG41NFnlNJV9XzkS8aGWoqZAIbJKrU3YTwDf
- VnEC7exVlsGCdHjb0kB7Op8ecu+jYpM=
+ t=1715773425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lrnq80bBStzftz9FNgXRhjO11ScCSYdsS4SDC2a0Lk0=;
+ b=iNJ1P4TcRhGKwDyzFgJ79g9Nwb71thgONsFE+HsfZF3VYIGWh9wqFWUVcRRAf0jn0fYerP
+ F9lFZPcWw4/CZYPjq0wMkA3226/+moll9xOquAkNWWuP1t8jgW22qY/00G9IluQWlyhCXH
+ 2Bw+WhjhTuqDiUWZMhiMdjNrpXwhiZ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1715772828;
+ s=susede2_ed25519; t=1715773425;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e8gMqyoX+j4jyjVTOX4f33XCpw7DAsOHvXUBGu/ivDk=;
- b=JkmfBS+0eWoX5y4QcNIquL88grOak45zhOQKIl2UCFZVU30Kc7/0H++f1C7TLQlXr0lW0/
- P9+6noVyRyj9zaCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lrnq80bBStzftz9FNgXRhjO11ScCSYdsS4SDC2a0Lk0=;
+ b=Q5ioWphvwHNiaJ5cY+PHNM1vEu4en3DXTrDdpdXrgshPJFfmqwhCnzQUXm5PC5lJ2ISx/q
+ 0Rqe0FB02WyrTLAw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=oBIlAOEp;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JkmfBS+0
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1715772828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e8gMqyoX+j4jyjVTOX4f33XCpw7DAsOHvXUBGu/ivDk=;
- b=oBIlAOEprhQqEfBQTwT+aBzQQAqI5oV54rxoqfRKpuPAUhmks0T1blzQGvbPjSitxTP5uI
- 7C58JE2py6fldOWS9aUpsO8w+CR5RFrR6LqG41NFnlNJV9XzkS8aGWoqZAIbJKrU3YTwDf
- VnEC7exVlsGCdHjb0kB7Op8ecu+jYpM=
+ t=1715773425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lrnq80bBStzftz9FNgXRhjO11ScCSYdsS4SDC2a0Lk0=;
+ b=iNJ1P4TcRhGKwDyzFgJ79g9Nwb71thgONsFE+HsfZF3VYIGWh9wqFWUVcRRAf0jn0fYerP
+ F9lFZPcWw4/CZYPjq0wMkA3226/+moll9xOquAkNWWuP1t8jgW22qY/00G9IluQWlyhCXH
+ 2Bw+WhjhTuqDiUWZMhiMdjNrpXwhiZ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1715772828;
+ s=susede2_ed25519; t=1715773425;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e8gMqyoX+j4jyjVTOX4f33XCpw7DAsOHvXUBGu/ivDk=;
- b=JkmfBS+0eWoX5y4QcNIquL88grOak45zhOQKIl2UCFZVU30Kc7/0H++f1C7TLQlXr0lW0/
- P9+6noVyRyj9zaCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lrnq80bBStzftz9FNgXRhjO11ScCSYdsS4SDC2a0Lk0=;
+ b=Q5ioWphvwHNiaJ5cY+PHNM1vEu4en3DXTrDdpdXrgshPJFfmqwhCnzQUXm5PC5lJ2ISx/q
+ 0Rqe0FB02WyrTLAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86C651372E;
- Wed, 15 May 2024 11:33:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 20CDC1372E;
+ Wed, 15 May 2024 11:43:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +AkHH5ydRGbwNAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 15 May 2024 11:33:48 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rHMIBvGfRGZVcQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 15 May 2024 11:43:45 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 15 May 2024 13:33:30 +0200
-Message-Id: <20240515113338.554-3-andrea.cervesato@suse.de>
+Date: Wed, 15 May 2024 13:43:39 +0200
+Message-Id: <20240515114339.19708-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240515113338.554-1-andrea.cervesato@suse.de>
-References: <20240515113338.554-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: AE387205DE
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.de:dkim,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns, configure.ac:url]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 02/10] Add listmount/statmount fallback declarations
+Subject: [LTP] [PATCH v3] Rewrite fcnt14 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,363 +110,1433 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+This test has been changed in order to generate testcases at runtime.
+
+The new algorithm sets a random starting position on file using
+lseek(), it randomly generates fcntl() parameters for parent and
+child and it verifies that fcntl() will raise a blocking error on
+child when it's supposed to.
+
+The runtest file has been modified so we can run test with or without
+mandatory locking using the new -l flag.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- configure.ac                       |  5 +++
- include/lapi/mount.h               | 70 ++++++++++++++++++++++++++++++
- include/lapi/stat.h                | 10 ++++-
- include/lapi/syscalls/aarch64.in   |  2 +
- include/lapi/syscalls/arc.in       |  2 +
- include/lapi/syscalls/arm.in       |  2 +
- include/lapi/syscalls/hppa.in      |  2 +
- include/lapi/syscalls/i386.in      |  2 +
- include/lapi/syscalls/ia64.in      |  2 +
- include/lapi/syscalls/loongarch.in |  2 +
- include/lapi/syscalls/mips_n32.in  |  2 +
- include/lapi/syscalls/mips_n64.in  |  2 +
- include/lapi/syscalls/mips_o32.in  |  2 +
- include/lapi/syscalls/powerpc.in   |  2 +
- include/lapi/syscalls/powerpc64.in |  2 +
- include/lapi/syscalls/s390.in      |  2 +
- include/lapi/syscalls/s390x.in     |  2 +
- include/lapi/syscalls/sh.in        |  2 +
- include/lapi/syscalls/sparc.in     |  2 +
- include/lapi/syscalls/sparc64.in   |  2 +
- include/lapi/syscalls/x86_64.in    |  2 +
- 21 files changed, 120 insertions(+), 1 deletion(-)
+Renamed tst_results into tc_results
 
-diff --git a/configure.ac b/configure.ac
-index 1f7aa70bd..95c91c6af 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -113,6 +113,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     io_uring_register \
-     io_uring_enter \
-     kcmp \
-+    listmount \
-     mallinfo \
-     mallinfo2 \
-     mallopt \
-@@ -142,6 +143,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     setns \
-     sigpending \
-     splice \
-+    statmount \
-     statx \
-     stime \
-     sync_file_range \
-@@ -232,6 +234,9 @@ AC_CHECK_TYPES([struct mount_attr],,,[
- #endif
- ])
- 
-+AC_CHECK_TYPES([struct mnt_id_req],,,[#include <linux/mount.h>])
-+AC_CHECK_TYPES([struct statmount],,,[#include <linux/mount.h>])
-+
- # Tools knobs
- 
- # Bash
-diff --git a/include/lapi/mount.h b/include/lapi/mount.h
-index c1af944fe..01a0fd2d6 100644
---- a/include/lapi/mount.h
-+++ b/include/lapi/mount.h
-@@ -2,12 +2,15 @@
+ runtest/syscalls                          |    6 +-
+ testcases/kernel/syscalls/fcntl/fcntl14.c | 1335 +++++----------------
+ 2 files changed, 276 insertions(+), 1065 deletions(-)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf06ee563..52977634d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -303,8 +303,10 @@ fcntl12 fcntl12
+ fcntl12_64 fcntl12_64
+ fcntl13 fcntl13
+ fcntl13_64 fcntl13_64
+-fcntl14 fcntl14
+-fcntl14_64 fcntl14_64
++fcntl14_01 fcntl14
++fcntl14_01_64 fcntl14_64
++fcntl14_02 fcntl14 -l
++fcntl14_02_64 fcntl14_64 -l
+ fcntl15 fcntl15
+ fcntl15_64 fcntl15_64
+ fcntl16 fcntl16
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl14.c b/testcases/kernel/syscalls/fcntl/fcntl14.c
+index d38220951..66609b7cb 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl14.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl14.c
+@@ -1,1115 +1,324 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) Linux Test Project, 2015-2022
-  * Copyright (c) 2015 Cui Bixuan <cuibixuan@huawei.com>
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *     07/2001 Ported by Wayne Boyer
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
   */
  
- #ifndef LAPI_MOUNT_H__
- #define LAPI_MOUNT_H__
- 
-+#include <stdint.h>
- #include <sys/mount.h>
-+#include "config.h"
- 
- #ifndef MS_REC
- # define MS_REC 16384
-@@ -37,4 +40,71 @@
- # define MS_NOSYMFOLLOW 256
+-/*
+- * NAME
+- *	fcntl14.c
++/*\
++ * [Description]
+  *
+- * DESCRIPTION
+- *	File locking test cases for fcntl. In Linux, S_ENFMT is not implemented
+- *	in the kernel. However all standard Unix kernels define S_ENFMT as
+- *	S_ISGID. So this test defines S_ENFMT as S_ISGID.
+- *
+- * ALGORITHM
+- *	Various test cases are used to lock a file opened without mandatory
+- *	locking, with mandatory locking and mandatory locking with NOBLOCK
+- *
+- * USAGE
+- *	fcntl14
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	None
++ * This test is checking fcntl() syscall locking mechanism between two
++ * processes.
++ * The test sets a random starting position on file using lseek(), it randomly
++ * generates fcntl() parameters for parent and child and it verifies that
++ * fcntl() will raise a blocking error on child when it's supposed to.
+  */
+-#define _GNU_SOURCE 1
++
+ #include <fcntl.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <signal.h>
+-#include <errno.h>
+-#include <sys/wait.h>
+-#include <inttypes.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-#define SKIP 0x0c00
+-#if SKIP == F_RDLCK || SKIP== F_WRLCK
+-#error invalid value for SKIP, must be distinct from F_RDLCK and F_WRLCK
+-#endif
++#include <stdlib.h>
++#include "tst_test.h"
++
+ #ifndef S_ENFMT
+-#define S_ENFMT S_ISGID
++# define S_ENFMT S_ISGID
  #endif
  
-+#ifndef HAVE_STRUCT_MNT_ID_REQ
-+struct mnt_id_req {
-+	uint32_t size;
-+	uint32_t spare;
-+	uint64_t mnt_id;
-+	uint64_t param;
-+};
-+#endif
+-/* NOBLOCK - immediate success */
+-#define NOBLOCK 2
+-
+-/* WILLBLOCK - blocks, then succeeds (parent must unlock records) */
+-#define WILLBLOCK 3
+-
+-#define TIME_OUT 60
+-
+-typedef struct {
+-	short a_type;
+-	short a_whence;
+-	long a_start;
+-	long a_len;
+-	short b_type;		/* SKIP means suppress fcntl call */
+-	short b_whence;
+-	long b_start;
+-	long b_len;
+-	short c_type;
+-	int c_whence;
+-	long c_start;
+-	long c_len;
+-	short c_flag;
+-} testcase;
+-
+-static testcase testcases[] = {
+-	/* Test cases: entire boundary */
+-	/* #1 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock on entire file */
+-	 F_RDLCK, 0, 0L, 0L, WILLBLOCK},
+-
+-	/* #2 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock on entire file */
+-	 F_WRLCK, 0, 0L, 0L, WILLBLOCK},
+-
+-	/* #3 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock on entire file */
+-	 F_RDLCK, 0, 0L, 0L, NOBLOCK},
+-
+-	/* #4 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock on entire file */
+-	 F_WRLCK, 0, 0L, 0L, WILLBLOCK},
+-
+-	/* Test case: start boundary */
+-	/* #5 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a read lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_RDLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/* #6 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a write lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_WRLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/* #7 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a read lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_RDLCK, 0, 0L, 5L, NOBLOCK},
+-
+-	/* #8 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a write lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_WRLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/* Test cases: end boundary */
+-	/* #9 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 7 to end of file */
+-	 F_RDLCK, 0, 7L, 0L, WILLBLOCK},
+-
+-	/* #10 Parent making a write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 7 to end of file */
+-	 F_WRLCK, 0, 7L, 0L, WILLBLOCK},
+-
+-	/* #11 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 7 to end of file */
+-	 F_RDLCK, 0, 7L, 0L, NOBLOCK},
+-
+-	/* #12 Parent making a read lock on entire file */
+-	{F_RDLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 7 to end of file */
+-	 F_WRLCK, 0, 7L, 0L, WILLBLOCK},
+-
+-	/* Test cases: entire boundary ( less than entire file) */
+-	/*
+-	 * #13 Parent making a write lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a read lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_RDLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/*
+-	 * #14 Parent making a write lock from beginning of file
+-	 * for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a write lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_WRLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/*
+-	 * #15 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a read lock from beginning of
+-	  * file for 5 bytes
+-	  */
+-	 F_RDLCK, 0, 0L, 5L, NOBLOCK},
+-
+-	/*
+-	 * #16 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /*
+-	  * Child attempting a write lock from beginning
+-	  * of file for 5 bytes
+-	  */
+-	 F_WRLCK, 0, 0L, 5L, WILLBLOCK},
+-
+-	/* Test cases: inside boundary */
+-	/*
+-	 * #17 Parent making a write lock from beginning
+-	 * of file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 2 to byte 4 */
+-	 F_RDLCK, 0, 1L, 3L, WILLBLOCK},
+-
+-	/*
+-	 * #18 Parent making a write lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 2 to byte 4 */
+-	 F_WRLCK, 0, 1L, 3L, WILLBLOCK},
+-
+-	/*
+-	 * #19 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 2 to byte 4 */
+-	 F_RDLCK, 0, 1L, 3L, NOBLOCK},
+-
+-	/*
+-	 * #20 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 2 to byte 4 */
+-	 F_WRLCK, 0, 1L, 3L, WILLBLOCK},
+-
+-	/* Test cases: cross boundary (inside to after) */
+-	/*
+-	 * #21 Parent making a write lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 3 to byte 7 */
+-	 F_RDLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/*
+-	 * #22 Parent making a write lock from beginning
+-	 * of file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 3 to byte 7 */
+-	 F_WRLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/*
+-	 * #23 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 3 to byte 7 */
+-	 F_RDLCK, 0, 2L, 5L, NOBLOCK},
+-
+-	/*
+-	 * #24 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 3 to byte 7 */
+-	 F_WRLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/* Test cases: outside boundary (after) */
+-
+-	/*
+-	 * #25 Parent making a write lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /*  Child attempting a read lock from byte 7 to end of file */
+-	 F_RDLCK, 0, 6L, 0L, NOBLOCK},
+-
+-	/*
+-	 * #26 Parent making a write lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_WRLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 7 to end of file */
+-	 F_WRLCK, 0, 6L, 0L, NOBLOCK},
+-
+-	/*
+-	 * #27 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 7 to end of file */
+-	 F_RDLCK, 0, 6L, 0L, NOBLOCK},
+-
+-	/*
+-	 * #28 Parent making a read lock from beginning of
+-	 * file for 5 bytes
+-	 */
+-	{F_RDLCK, 0, 0L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 7 to end of file */
+-	 F_WRLCK, 0, 6L, 0L, NOBLOCK},
+-
+-	/* Test cases: outside boundary (before) */
+-
+-	/* #29 Parent making a write lock from byte 3 to byte 7 */
+-	{F_WRLCK, 0, 2L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from beginning of file to byte 2 */
+-	 F_RDLCK, 0, 0L, 2L, NOBLOCK},
+-
+-	/* #30 Parent making a write lock from byte 3 to byte 7 */
+-	{F_WRLCK, 0, 2L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from beginning of file to byte 2 */
+-	 F_WRLCK, 0, 0L, 2L, NOBLOCK},
+-
+-	/* #31 Parent making a write lock from byte 3 to byte 7 */
+-	{F_RDLCK, 0, 2L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from beginning of file to byte 2 */
+-	 F_RDLCK, 0, 0L, 2L, NOBLOCK},
+-
+-	/* #32 Parent making a write lock from byte 3 to byte 7 */
+-	{F_RDLCK, 0, 2L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from beginning of file to byte 2 */
+-	 F_WRLCK, 0, 0L, 2L, NOBLOCK},
+-
+-	/* Test cases: cross boundary (before to inside) */
+-	/* #33 Parent making a write lock from byte 5 to end of file */
+-	{F_WRLCK, 0, 4L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 3 to byte 7 */
+-	 F_RDLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/* #34 Parent making a write lock from byte 5 to end of file */
+-	{F_WRLCK, 0, 4L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 3 to byte 7 */
+-	 F_WRLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/* #35 Parent making a read lock from byte 5 to end of file */
+-	{F_RDLCK, 0, 4L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a read lock from byte 3 to byte 7 */
+-	 F_RDLCK, 0, 2L, 5L, NOBLOCK},
+-
+-	/* #36 Parent making a read lock from byte 5 to end of file */
+-	{F_RDLCK, 0, 4L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting a write lock from byte 3 to byte 7 */
+-	 F_WRLCK, 0, 2L, 5L, WILLBLOCK},
+-
+-	/* Start of negative L_start and L_len test cases */
+-	/*
+-	 * #37 Parent making write lock from byte 2 to byte 3
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 1 */
+-	 F_WRLCK, 0, 1L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #38 Parent making write lock from byte 2 to byte 3
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 4 */
+-	 F_WRLCK, 0, 4L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #39 Parent making write lock from byte 2 to byte 3
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 2 */
+-	 F_WRLCK, 0, 2L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #40 Parent making write lock from byte 2 to byte 3
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 3 */
+-	 F_WRLCK, 0, 3L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #41 Parent making write lock from byte 2 to byte 6
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 1 */
+-	 F_WRLCK, 0, 1L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #42 Parent making write lock from byte 2 to byte 6
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 7 */
+-	 F_WRLCK, 0, 1L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #43 Parent making write lock from byte 2 to byte 6
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 2 */
+-	 F_WRLCK, 0, 2L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #44 Parent making write lock from byte 2 to byte 6
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 5 */
+-	 F_WRLCK, 0, 5L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #45 Parent making write lock from byte 2 to byte 6
+-	 * with L_start = -3
+-	 */
+-	{F_WRLCK, 1, -3L, 5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 6 */
+-	 F_WRLCK, 0, 6L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #46 Parent making write lock from byte 2 to byte 3 with
+-	 * L_start = -2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, 2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 1 */
+-	 F_WRLCK, 0, 1L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #47 Parent making write lock from byte 2 to byte 3 with
+-	 * L_start = -2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, -2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 4 */
+-	 F_WRLCK, 0, 4L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #48 Parent making write lock from byte 2 to byte 3 with
+-	 * L_start = -2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, -2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 2 */
+-	 F_WRLCK, 0, 2L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #49 Parent making write lock from byte 2 to byte 3 with
+-	 * L_start = -2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, -2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 3 */
+-	 F_WRLCK, 0, 3L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #50 Parent making write lock from byte 6 to byte 7 with
+-	 * L_start = 2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, 2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 5 */
+-	 F_WRLCK, 0, 5L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #51 Parent making write lock from byte 6 to byte 7 with
+-	 * L_start = 2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, 2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 8 */
+-	 F_WRLCK, 0, 8L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #52 Parent making write lock from byte 6 to byte 7 with
+-	 * L_start = 2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, 2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 6 */
+-	 F_WRLCK, 0, 6L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #53 Parent making write lock from byte 6 to byte 7 with
+-	 * L_start = 2 and L_len = -2
+-	 */
+-	{F_WRLCK, 1, 2L, -2L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 7 */
+-	 F_WRLCK, 0, 7L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #54 Parent making write lock from byte 3 to byte 7 with
+-	 * L_start = 2 and L_len = -5
+-	 */
+-	{F_WRLCK, 1, 2L, -5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 2 */
+-	 F_WRLCK, 0, 2L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #55 Parent making write lock from byte 3 to byte 7 with
+-	 * L_start = 2 and L_len = -5
+-	 */
+-	{F_WRLCK, 1, 2L, -5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 8 */
+-	 F_WRLCK, 0, 8L, 1L, NOBLOCK},
+-
+-	/*
+-	 * #56 Parent making write lock from byte 3 to byte 7 with
+-	 * L_start = 2 and L_len = -5
+-	 */
+-	{F_WRLCK, 1, 2L, -5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 3 */
+-	 F_WRLCK, 0, 3L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #57 Parent making write lock from byte 3 to byte 7 with
+-	 * L_start = 2 and L_len = -5
+-	 */
+-	{F_WRLCK, 1, 2L, -5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 5 */
+-	 F_WRLCK, 0, 5L, 1L, WILLBLOCK},
+-
+-	/*
+-	 * #58 Parent making write lock from byte 3 to byte 7 with
+-	 * L_start = 2 and L_len = -5
+-	 */
+-	{F_WRLCK, 1, 2L, -5L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 7 */
+-	 F_WRLCK, 0, 7L, 1L, WILLBLOCK},
+-
+-	/* Test case for block 4 */
+-	/* #59 Parent making write lock on entire file */
+-	{F_WRLCK, 0, 0L, 0L, SKIP, 0, 0L, 0L,
+-	 /* Child attempting write lock on byte 15 to end of file */
+-	 F_WRLCK, 0, 15L, 0L, WILLBLOCK},
++#define CHECK_EQ_SILENT_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS, FAILED) do {\
++	TYPE tst_tmp_a__ = VAL_A; \
++	TYPE tst_tmp_b__ = VAL_B; \
++	if (tst_tmp_a__ != tst_tmp_b__) { \
++		tst_res(TFAIL, \
++			SVAL_A " == " SVAL_B " (" PFS ")", tst_tmp_a__); \
++			*FAILED = 1; \
++	} \
++} while (0)
 +
-+#ifndef HAVE_STRUCT_STATMOUNT
-+struct statmount {
-+	uint32_t size;
-+	uint32_t __spare1;
-+	uint64_t mask;
-+	uint32_t sb_dev_major;
-+	uint32_t sb_dev_minor;
-+	uint64_t sb_magic;
-+	uint32_t sb_flags;
-+	uint32_t fs_type;
-+	uint64_t mnt_id;
-+	uint64_t mnt_parent_id;
-+	uint32_t mnt_id_old;
-+	uint32_t mnt_parent_id_old;
-+	uint64_t mnt_attr;
-+	uint64_t mnt_propagation;
-+	uint64_t mnt_peer_group;
-+	uint64_t mnt_master;
-+	uint64_t propagate_from;
-+	uint32_t mnt_root;
-+	uint32_t mnt_point;
-+	uint64_t __spare2[50];
-+	char str[];
-+};
-+#endif
++#define CHECK_EQ_SILENT(VAL_A, VAL_B, FAILED) \
++		CHECK_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli", FAILED)
 +
-+#ifndef MNT_ID_REQ_SIZE_VER0
-+# define MNT_ID_REQ_SIZE_VER0 24
-+#endif
-+
-+#ifndef STATMOUNT_SB_BASIC
-+# define STATMOUNT_SB_BASIC 0x00000001U
-+#endif
-+
-+#ifndef STATMOUNT_MNT_BASIC
-+# define STATMOUNT_MNT_BASIC 0x00000002U
-+#endif
-+
-+#ifndef STATMOUNT_PROPAGATE_FROM
-+# define STATMOUNT_PROPAGATE_FROM 0x00000004U
-+#endif
-+
-+#ifndef STATMOUNT_MNT_ROOT
-+# define STATMOUNT_MNT_ROOT 0x00000008U
-+#endif
-+
-+#ifndef STATMOUNT_MNT_POINT
-+# define STATMOUNT_MNT_POINT 0x00000010U
-+#endif
-+
-+#ifndef STATMOUNT_FS_TYPE
-+# define STATMOUNT_FS_TYPE 0x00000020U
-+#endif
-+
-+#ifndef LSMT_ROOT
-+# define LSMT_ROOT 0xffffffffffffffff
-+#endif
-+
- #endif /* LAPI_MOUNT_H__ */
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index 3606c9eb0..84dc76faf 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -95,7 +95,11 @@ struct statx {
- 	uint32_t	stx_dev_major;
- 	uint32_t	stx_dev_minor;
- 	/* 0x90 */
--	uint64_t	__spare2[14];
-+	__u64	stx_mnt_id;
-+	__u32	stx_dio_mem_align;
-+	__u32	stx_dio_offset_align;
-+	/* 0xa0 */
-+	__u64	__spare3[12];
- 	/* 0x100 */
++struct file_conf {
++	short type;
++	short whence;
++	long start;
++	long len;
  };
- #endif
-@@ -229,4 +233,8 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_ATTR_VERITY	0x00100000
- #endif
  
-+#ifndef STATX_MNT_ID_UNIQUE
-+# define STATX_MNT_ID_UNIQUE  0x00004000U
-+#endif
+-static testcase *thiscase;
++struct testcase {
++	struct file_conf parent;           /* parent parameters for fcntl() */
++	struct file_conf child;            /* child parameters for fcntl() */
++	short blocking;                    /* blocking/non-blocking flag */
++	long pos;                          /* starting file position */
++};
 +
- #endif /* LAPI_STAT_H__ */
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 2cb6c2d87..3b32a3b2a 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -297,4 +297,6 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-index 3e2ee9061..1a3a908e4 100644
---- a/include/lapi/syscalls/arc.in
-+++ b/include/lapi/syscalls/arc.in
-@@ -317,3 +317,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 7bdbca533..78d84549f 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -395,3 +395,5 @@ faccessat2 (__NR_SYSCALL_BASE+439)
- epoll_pwait2 (__NR_SYSCALL_BASE+441)
- quotactl_fd (__NR_SYSCALL_BASE+443)
- futex_waitv (__NR_SYSCALL_BASE+449)
-+statmount (__NR_SYSCALL_BASE+457)
-+listmount (__NR_SYSCALL_BASE+458)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index 8ebdafafb..1f01a4a0c 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -44,3 +44,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 1472631c4..f4e6589ab 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -431,3 +431,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 0ea6e9722..dd8b8c79f 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -344,3 +344,5 @@ faccessat2 1463
- epoll_pwait2 1465
- quotactl_fd 1467
- futex_waitv 1473
-+statmount 1481
-+listmount 1482
-diff --git a/include/lapi/syscalls/loongarch.in b/include/lapi/syscalls/loongarch.in
-index 301f611f6..f48c0658c 100644
---- a/include/lapi/syscalls/loongarch.in
-+++ b/include/lapi/syscalls/loongarch.in
-@@ -305,3 +305,5 @@ memfd_secret 447
- process_mrelease 448
- futex_waitv 449
- set_mempolicy_home_node 450
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
-index e818c9d92..af5928c0e 100644
---- a/include/lapi/syscalls/mips_n32.in
-+++ b/include/lapi/syscalls/mips_n32.in
-@@ -371,3 +371,5 @@ epoll_pwait2 6441
- mount_setattr 6442
- quotactl_fd 6443
- futex_waitv 6449
-+statmount 6457
-+listmount 6458
-diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
-index 6e15f43b3..a6d83e2e0 100644
---- a/include/lapi/syscalls/mips_n64.in
-+++ b/include/lapi/syscalls/mips_n64.in
-@@ -347,3 +347,5 @@ epoll_pwait2 5441
- mount_setattr 5442
- quotactl_fd 5443
- futex_waitv 5449
-+statmount 5457
-+listmount 5458
-diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
-index 921d5d331..eda7388a3 100644
---- a/include/lapi/syscalls/mips_o32.in
-+++ b/include/lapi/syscalls/mips_o32.in
-@@ -417,3 +417,5 @@ epoll_pwait2 4441
- mount_setattr 4442
- quotactl_fd 4443
- futex_waitv 4449
-+statmount 4457
-+listmount 4458
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 545d9d3d6..1b40ea53d 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -424,3 +424,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 545d9d3d6..1b40ea53d 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -424,3 +424,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 7213ac5f8..6593a4ff7 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -411,3 +411,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 879012e2b..b98e727d6 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -359,3 +359,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 7d5192a27..59178113e 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -405,3 +405,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 91d2fb1c2..56a244ceb 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -410,3 +410,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 1f2fc59b7..84051a600 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -375,3 +375,5 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index dc61aa56e..935c5d7bc 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -352,6 +352,8 @@ faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+statmount 457
-+listmount 458
- rt_sigaction 512
- rt_sigreturn 513
- ioctl 514
++struct tc_results {
++	int num_pass;
++	int last_failed;
++};
++
++static const char filepath[] = "unlocked.txt";
++static const char filedata[] = "Here some bytes!";
+ static struct flock flock;
+-static int parent, child, status, fail = 0;
+-static int got1 = 0;
+-static int fd;
+-static int test;
+-static char tmpname[40];
++static char *str_op_nums;
++static char *locking_file;
++static int op_nums = 5000;
++static int file_mode = 0777;
++static struct tc_results *results;
+ 
+-#define FILEDATA	"ten bytes!"
++static void dochild(struct testcase *tc, const int fd, const pid_t parent_pid)
++{
++	results->last_failed = 0;
+ 
+-void catch1(int sig);
+-void catch_alarm(int sig);
++	flock.l_type = tc->child.type;
++	flock.l_whence = tc->child.whence;
++	flock.l_start = tc->child.start;
++	flock.l_len = tc->child.len;
++	flock.l_pid = 0;
+ 
+-char *TCID = "fcntl14";
+-int TST_TOTAL = 1;
+-int NO_NFS = 1;
++	SAFE_FCNTL(fd, F_GETLK, &flock);
+ 
+-void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++	if (tc->blocking) {
++		tst_res(TDEBUG, "Child: expecting blocked file by parent");
+ 
+-void setup(void)
+-{
+-	struct sigaction act;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	signal(SIGHUP, SIG_IGN);
+-	umask(0);
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-	parent = getpid();
+-
+-	sprintf(tmpname, "fcntl2.%d", parent);
+-
+-	/* setup signal handler for signal from child */
+-	memset(&act, 0, sizeof(act));
+-	act.sa_handler = catch1;
+-	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGUSR1);
+-	if ((sigaction(SIGUSR1, &act, NULL)) < 0) {
+-		tst_resm(TFAIL, "SIGUSR1 signal setup failed, errno = %d",
+-			 errno);
+-		cleanup();
+-	}
++		CHECK_EQ_SILENT(flock.l_pid, parent_pid, &results->last_failed);
++		if (results->last_failed)
++			return;
+ 
+-	memset(&act, 0, sizeof(act));
+-	act.sa_handler = catch_alarm;
+-	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGALRM);
+-	if ((sigaction(SIGALRM, &act, NULL)) < 0) {
+-		tst_resm(TFAIL, "SIGALRM signal setup failed");
+-		cleanup();
+-	}
+-}
++		CHECK_EQ_SILENT(flock.l_type, tc->parent.type, &results->last_failed);
++		if (results->last_failed)
++			return;
+ 
+-void wake_parent(void)
+-{
+-	if ((kill(parent, SIGUSR1)) < 0) {
+-		tst_resm(TFAIL, "Attempt to send signal to parent " "failed");
+-		tst_resm(TFAIL, "Test case %d, errno = %d", test + 1, errno);
+-		fail = 1;
++		flock.l_type = tc->child.type;
++		flock.l_whence = tc->child.whence;
++		flock.l_start = tc->child.start;
++		flock.l_len = tc->child.len;
++		flock.l_pid = 0;
++
++		TST_EXP_FAIL_SILENT(fcntl(fd, F_SETLK, &flock), EWOULDBLOCK);
++		if (TST_RET != -1)
++			results->last_failed = 1;
++	} else {
++		tst_res(TDEBUG, "Child: expecting no blocking errors");
++
++		CHECK_EQ_SILENT(flock.l_type, F_UNLCK, &results->last_failed);
++		if (results->last_failed)
++			return;
++
++		CHECK_EQ_SILENT(flock.l_whence, tc->child.whence, &results->last_failed);
++		if (results->last_failed)
++			return;
++
++		CHECK_EQ_SILENT(flock.l_start, tc->child.start, &results->last_failed);
++		if (results->last_failed)
++			return;
++
++		CHECK_EQ_SILENT(flock.l_len, tc->child.len, &results->last_failed);
++		if (results->last_failed)
++			return;
++
++		CHECK_EQ_SILENT(flock.l_pid, 0, &results->last_failed);
++		if (results->last_failed)
++			return;
++
++		TST_EXP_PASS_SILENT(fcntl(fd, F_SETLK, &flock));
++		if (TST_RET == -1)
++			results->last_failed = 1;
+ 	}
+ }
+ 
+-void do_usleep_child(void)
++static void run_testcase(struct testcase *tc, const int file_mode)
+ {
+-	usleep(100000);		/* XXX how long is long enough? */
+-	wake_parent();
+-	exit(0);
+-}
++	pid_t parent_pid;
++	pid_t child_pid;
++	int fd;
+ 
+-void dochild(void)
+-{
+-	int rc;
+-	pid_t pid;
++	tst_res(TDEBUG, "Parent: locking file");
+ 
+-	flock.l_type = thiscase->c_type;
+-	flock.l_whence = thiscase->c_whence;
+-	flock.l_start = thiscase->c_start;
+-	flock.l_len = thiscase->c_len;
++	/* open file and move cursor according with the test */
++	fd = SAFE_OPEN(filepath, O_RDWR, file_mode);
++	SAFE_LSEEK(fd, tc->pos, 0);
++
++	/* set the initial parent lock on the file */
++	flock.l_type = tc->parent.type;
++	flock.l_whence = tc->parent.whence;
++	flock.l_start = tc->parent.start;
++	flock.l_len = tc->parent.len;
+ 	flock.l_pid = 0;
+-	fail = 0;
+-
+-	/*
+-	 * Check to see if child lock will succeed. If it will, FLOCK
+-	 * structure will return with l_type changed to F_UNLCK. If it will
+-	 * not, the parent pid will be returned in l_pid and the type of
+-	 * lock that will block it in l_type.
+-	 */
+-	if ((rc = fcntl(fd, F_GETLK, &flock)) < 0) {
+-		tst_resm(TFAIL, "Attempt to check lock status failed");
+-		tst_resm(TFAIL, "Test case %d, errno = %d", test + 1, errno);
+-		fail = 1;
+-	} else {
+ 
+-		if ((thiscase->c_flag) == NOBLOCK) {
+-			if (flock.l_type != F_UNLCK) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: type = %d, "
+-					 "%d was expected", test + 1,
+-					 flock.l_type, F_UNLCK);
+-				fail = 1;
+-			}
+-
+-			if (flock.l_whence != thiscase->c_whence) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: whence = %d, "
+-					 "should have remained %d", test + 1,
+-					 flock.l_whence, thiscase->c_whence);
+-				fail = 1;
+-			}
+-
+-			if (flock.l_start != thiscase->c_start) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: start = %" PRId64
+-					 ", " "should have remained %" PRId64,
+-					 test + 1, (int64_t) flock.l_start,
+-					 (int64_t) thiscase->c_start);
+-				fail = 1;
+-			}
+-
+-			if (flock.l_len != thiscase->c_len) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: len = %" PRId64
+-					 ", " "should have remained %" PRId64,
+-					 test + 1, (int64_t) flock.l_len,
+-					 (int64_t) thiscase->c_len);
+-				fail = 1;
+-			}
+-
+-			if (flock.l_pid != 0) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: pid = %d, "
+-					 "should have remained 0", test + 1,
+-					 flock.l_pid);
+-				fail = 1;
+-			}
+-		} else {
+-			if (flock.l_pid != parent) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: pid = %d, "
+-					 "should be parent's id of %d",
+-					 test + 1, flock.l_pid, parent);
+-				fail = 1;
+-			}
+-
+-			if (flock.l_type != thiscase->a_type) {
+-				tst_resm(TFAIL,
+-					 "Test case %d, GETLK: type = %d, "
+-					 "should be parent's first lock type of %d",
+-					 test + 1, flock.l_type,
+-					 thiscase->a_type);
+-				fail = 1;
+-			}
+-		}
++	SAFE_FCNTL(fd, F_SETLK, &flock);
++
++	/* set the child lock on the file */
++	parent_pid = getpid();
++	child_pid = SAFE_FORK();
++
++	if (!child_pid) {
++		dochild(tc, fd, parent_pid);
++		exit(0);
+ 	}
+ 
+-	/*
+-	 * now try to set the lock, nonblocking
+-	 * This will succeed for NOBLOCK,
+-	 * fail for WILLBLOCK
+-	 */
+-	flock.l_type = thiscase->c_type;
+-	flock.l_whence = thiscase->c_whence;
+-	flock.l_start = thiscase->c_start;
+-	flock.l_len = thiscase->c_len;
++	tst_reap_children();
++
++	flock.l_type = F_UNLCK;
++	flock.l_whence = 0;
++	flock.l_start = 0;
++	flock.l_len = 0;
+ 	flock.l_pid = 0;
+ 
+-	if ((rc = fcntl(fd, F_SETLK, &flock)) < 0) {
+-		if ((thiscase->c_flag) == NOBLOCK) {
+-			tst_resm(TFAIL, "Attempt to set child NONBLOCKING "
+-				 "lock failed");
+-			tst_resm(TFAIL, "Test case %d, errno = %d",
+-				 test + 1, errno);
+-			fail = 1;
+-		}
+-	}
++	SAFE_FCNTL(fd, F_SETLK, &flock);
++	SAFE_CLOSE(fd);
++}
+ 
+-	if ((thiscase->c_flag) == WILLBLOCK) {
+-		if (rc != -1 || (errno != EACCES && errno != EAGAIN)) {
+-			tst_resm(TFAIL,
+-				 "SETLK: rc = %d, errno = %d, -1/EAGAIN or EACCES "
+-				 "was expected", rc, errno);
+-			fail = 1;
+-		}
+-		if (rc == 0) {
+-			/* accidentally got the lock */
+-			/* XXX how to clean up? */
+-			(void)fcntl(fd, F_UNLCK, &flock);
+-		}
+-		/*
+-		 * Lock should succeed after blocking and parent releases
+-		 * lock, tell the parent to release the locks.
+-		 * Do the lock in this process, send the signal in a child
+-		 * process, so that the SETLKW actually uses the blocking
+-		 * mechanism in the kernel.
+-		 *
+-		 * XXX inherent race: we want to wait until the
+-		 * F_SETLKW has started, but we don't have a way to
+-		 * check that reliably in the child.  (We'd
+-		 * need some way to have fcntl() atomically unblock a
+-		 * signal and wait for the lock.)
+-		 */
+-		pid = tst_fork();
+-		switch (pid) {
+-		case -1:
+-			tst_resm(TFAIL, "Fork failed");
+-			fail = 1;
+-			break;
+-		case 0:
+-			do_usleep_child();
+-			break;
+-
+-		default:
+-			if ((rc = fcntl(fd, F_SETLKW, &flock)) < 0) {
+-				tst_resm(TFAIL, "Attempt to set child BLOCKING "
+-					 "lock failed");
+-				tst_resm(TFAIL, "Test case %d, errno = %d",
+-					 test + 1, errno);
+-				fail = 1;
+-			}
+-			waitpid(pid, &status, 0);
+-			break;
+-		}
+-	}
+-	if (fail) {
+-		exit(1);
++static void genconf(struct file_conf *conf, const int size, const long pos)
++{
++	conf->type = rand() % 2 ? F_RDLCK : F_WRLCK;
++	conf->whence = SEEK_CUR;
++
++	if (pos > 0 && (rand() % 2)) {
++		conf->start = -(rand() % pos);
++		conf->len = rand() % (size + conf->start - 1) + 1;
+ 	} else {
+-		exit(0);
++		conf->start = rand() % (size - 1);
++		conf->len = rand() % (size - conf->start - 1) + 1;
+ 	}
+ }
+ 
+-void run_test(int file_flag, int file_mode, int seek, int start, int end)
++static short fcntl_overlap(
++	struct file_conf *parent,
++	struct file_conf *child,
++	const long pos)
+ {
+-	fail = 0;
+-
+-	for (test = start; test < end; test++) {
+-		fd = SAFE_OPEN(cleanup, tmpname, file_flag, file_mode);
+-
+-		if (write(fd, FILEDATA, 10) < 0)
+-			tst_brkm(TBROK, cleanup, "write() failed");
+-
+-		if (seek) {
+-			SAFE_LSEEK(cleanup, fd, seek, 0);
+-		}
+-
+-		thiscase = &testcases[test];
+-		flock.l_type = thiscase->a_type;
+-		flock.l_whence = thiscase->a_whence;
+-		flock.l_start = thiscase->a_start;
+-		flock.l_len = thiscase->a_len;
+-
+-		/* set the initial parent lock on the file */
+-		if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-			tst_resm(TFAIL, "First parent lock failed");
+-			tst_resm(TFAIL, "Test case %d, errno = %d",
+-				 test + 1, errno);
+-			fail = 1;
+-		}
+-
+-		if ((thiscase->b_type) != SKIP) {
+-			flock.l_type = thiscase->b_type;
+-			flock.l_whence = thiscase->b_whence;
+-			flock.l_start = thiscase->b_start;
+-			flock.l_len = thiscase->b_len;
+-
+-			/* set the second parent lock */
+-			if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-				tst_resm(TFAIL, "Second parent lock failed");
+-				tst_resm(TFAIL, "Test case %d, errno = %d",
+-					 test + 1, errno);
+-				fail = 1;
+-			}
+-		}
+-		if ((thiscase->c_type) == SKIP) {
+-			close(fd);
+-			tst_resm(TINFO, "skipping test %d", test + 1);
+-			continue;
+-		}
+-
+-		/* Mask SIG_USR1 before forking child, to avoid race */
+-		(void)sighold(SIGUSR1);
+-
+-		/* flush the stdout to avoid garbled output */
+-		fflush(stdout);
+-
+-		if ((child = tst_fork()) == 0)
+-			dochild();
+-
+-		if (child < 0)
+-			tst_brkm(TBROK|TERRNO, cleanup, "Fork failed");
+-
+-		if ((thiscase->c_flag) == WILLBLOCK) {
+-			/*
+-			 * Wait for a signal from the child then remove
+-			 * blocking lock. Set a 60 second alarm to break the
+-			 * pause just in case the child never signals us.
+-			 */
+-			alarm(TIME_OUT);
+-			sigpause(SIGUSR1);
+-
+-			/* turn off the alarm timer */
+-			alarm((unsigned)0);
+-			if (got1 != 1)
+-				tst_resm(TINFO, "Pause terminated without "
+-					 "signal SIGUSR1 from child");
+-			got1 = 0;
+-
+-			/*
+-			 * setup lock structure for parent to delete
+-			 * blocking lock then wait for child to exit
+-			 */
+-			flock.l_type = F_UNLCK;
+-			flock.l_whence = 0;
+-			flock.l_start = 0L;
+-			flock.l_len = 0L;
+-			if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-				tst_resm(TFAIL, "Attempt to release parent "
+-					 "lock failed");
+-				tst_resm(TFAIL, "Test case %d, errno = %d",
+-					 test + 1, errno);
+-				fail = 1;
+-			}
+-		}
+-		/*
+-		 * set a 60 second alarm to break the wait just in case the
+-		 * child doesn't terminate on its own accord
+-		 */
+-		alarm(TIME_OUT);
+-
+-		/* wait for the child to terminate and close the file */
+-		waitpid(child, &status, 0);
+-		/* turn off the alarm clock */
+-		alarm((unsigned)0);
+-		if (status != 0) {
+-			tst_resm(TFAIL, "tchild returned status 0x%x", status);
+-			fail = 1;
+-		}
+-		close(fd);
+-		if (fail)
+-			tst_resm(TFAIL, "testcase:%d FAILED", test + 1);
+-		else
+-			tst_resm(TPASS, "testcase:%d PASSED", test + 1);
++	long start[2];
++	long length[2];
++	short overlap = 0;
++
++	if (parent->start > child->start) {
++		start[0] = pos + child->start;
++		start[1] = pos + parent->start;
++		length[0] = child->len;
++		length[1] = parent->len;
++	} else {
++		start[0] = pos + parent->start;
++		start[1] = pos + child->start;
++		length[0] = parent->len;
++		length[1] = child->len;
+ 	}
+-	unlink(tmpname);
++
++	overlap = start[0] <= start[1] && start[1] < (start[0] + length[0]);
++
++	if (overlap)
++		tst_res(TDEBUG, "child/parent fcntl() configurations overlap");
++
++	return overlap;
+ }
+ 
+-void catch_alarm(int sig)
++static void gentestcase(struct testcase *tc)
+ {
+-	/*
+-	 * Timer has runout and child has not signaled, need
+-	 * to kill off the child as it appears it will not
+-	 * on its own accord. Check that it is still around
+-	 * as it may have terminated abnormally while parent
+-	 * was waiting for SIGUSR1 signal from it.
+-	 */
+-	if (kill(child, 0) == 0) {
+-		kill(child, SIGKILL);
+-		perror("The child didnot terminate on its own accord");
+-	}
++	struct file_conf *parent = &tc->parent;
++	struct file_conf *child = &tc->child;
++	int size;
++
++	size = strlen(filedata);
++	tc->pos = rand() % size;
++
++	genconf(parent, size, tc->pos);
++	genconf(child, size, tc->pos);
++
++	tc->blocking = fcntl_overlap(parent, child, tc->pos);
++
++	if (parent->type == F_RDLCK && child->type == F_RDLCK)
++		tc->blocking = 0;
+ }
+ 
+-void catch1(int sig)
++static void print_testcase(struct testcase *tc)
+ {
+-	struct sigaction act;
+-
+-	/*
+-	 * Set flag to let parent know that child is ready to have lock
+-	 * removed
+-	 */
+-	memset(&act, 0, sizeof(act));
+-	act.sa_handler = catch1;
+-	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGUSR1);
+-	sigaction(SIGUSR1, &act, NULL);
+-	got1++;
++	tst_res(TDEBUG, "Starting read/write position: %ld", tc->pos);
++
++	tst_res(TDEBUG,
++		"Parent: type=%s whence=%s start=%ld len=%ld",
++		tc->parent.type == F_RDLCK ? "F_RDLCK" : "F_WRLCK",
++		tc->parent.whence == SEEK_SET ? "SEEK_SET" : "SEEK_CUR",
++		tc->parent.start,
++		tc->parent.len);
++
++	tst_res(TDEBUG,
++		"Child: type=%s whence=%s start=%ld len=%ld",
++		tc->child.type == F_RDLCK ? "F_RDLCK" : "F_WRLCK",
++		tc->child.whence == SEEK_SET ? "SEEK_SET" : "SEEK_CUR",
++		tc->child.start,
++		tc->child.len);
++
++	tst_res(TDEBUG, "Expencted %s test",
++		tc->blocking ? "blocking" : "non-blocking");
+ }
+ 
+-static void testcheck_end(int check_fail, char *msg)
++static void run(void)
+ {
+-	if (check_fail)
+-		tst_resm(TFAIL, "%s FAILED", msg);
+-	else
+-		tst_resm(TPASS, "%s PASSED", msg);
++	struct testcase tc;
++
++	results->num_pass = 0;
++
++	for (int i = 0; i < op_nums; i++) {
++		gentestcase(&tc);
++		print_testcase(&tc);
++
++		tst_res(TDEBUG, "Running test #%u", i);
++		run_testcase(&tc, file_mode);
++
++		if (results->last_failed)
++			return;
++
++		results->num_pass++;
++	}
++
++	if (results->num_pass == op_nums)
++		tst_res(TPASS, "All %d test file operations passed", op_nums);
+ }
+ 
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
+-		NO_NFS = 0;
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-/* //block1: */
+-		tst_resm(TINFO, "Enter block 1: without mandatory locking");
+-		fail = 0;
+-		/*
+-		 * try various file locks on an ordinary file without
+-		 * mandatory locking
+-		 */
+-		(void)run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 0, 0, 36);
+-		testcheck_end(fail, "Block 1, test 1");
+-
+-		/* Now try with negative values for L_start and L_len */
+-		(void)run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 5, 36, 45);
+-		testcheck_end(fail, "Block 1, test 2");
+-
+-		tst_resm(TINFO, "Exit block 1");
+-
+-/* //block2: */
+-		/*
+-		 * Skip block2 if test on NFS, since NFS does not support
+-		 * mandatory locking
+-		 */
+-		tst_resm(TINFO, "Enter block 2: with mandatory locking");
+-		if (NO_NFS) {
+-			fail = 0;
+-			/*
+-			 * Try various locks on a file with mandatory
+-			 * record locking this should behave the same
+-			 * as an ordinary file
+-			 */
+-			(void)run_test(O_CREAT | O_RDWR | O_TRUNC,
+-				S_ENFMT | S_IRUSR | S_IWUSR, 0, 0, 36);
+-			testcheck_end(fail, "Block 2, test 1");
+-
+-			/* Now try negative values for L_start and L_len */
+-			(void)run_test(O_CREAT | O_RDWR | O_TRUNC,
+-				S_ENFMT | S_IRUSR | S_IWUSR, 5, 36, 45);
+-			testcheck_end(fail, "Block 2, test 2");
+-		} else {
+-			tst_resm(TCONF, "Skip block 2 as NFS does not"
+-				" support mandatory locking");
+-		}
+-
+-		tst_resm(TINFO, "Exit block 2");
+-
+-/* //block3: */
+-		tst_resm(TINFO, "Enter block 3");
+-		fail = 0;
+-		/*
+-		 * Check that proper error status is returned when invalid
+-		 * argument used for WHENCE (negative value)
+-		 */
+-
+-		fd = SAFE_OPEN(cleanup, tmpname, O_CREAT | O_RDWR | O_TRUNC,
+-			       0777);
+-
+-		if (write(fd, FILEDATA, 10) < 0)
+-			tst_brkm(TBROK, cleanup, "write failed");
+-
+-		flock.l_type = F_WRLCK;
+-		flock.l_whence = -1;
+-		flock.l_start = 0L;
+-		flock.l_len = 0L;
+-
+-		if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-			if (errno != EINVAL) {
+-				tst_resm(TFAIL, "Expected %d got %d",
+-					 EINVAL, errno);
+-				fail = 1;
+-			}
+-		} else {
+-			tst_resm(TFAIL, "Lock succeeded when it should have "
+-				 "failed");
+-			fail = 1;
+-		}
+-
+-		close(fd);
+-		unlink(tmpname);
+-
+-		testcheck_end(fail, "Test with negative whence locking");
+-		tst_resm(TINFO, "Exit block 3");
+-
+-/* //block4: */
+-		tst_resm(TINFO, "Enter block 4");
+-		fail = 0;
+-		/*
+-		 * Check that a lock on end of file is still valid when
+-		 * additional data is appended to end of file and a new
+-		 * process attempts to lock new data
+-		 */
+-		fd = SAFE_OPEN(cleanup, tmpname, O_CREAT | O_RDWR | O_TRUNC,
+-			       0777);
+-
+-		if (write(fd, FILEDATA, 10) < 0)
+-			tst_brkm(TBROK, cleanup, "write failed");
+-
+-		thiscase = &testcases[58];
+-		flock.l_type = thiscase->a_type;
+-		flock.l_whence = thiscase->a_whence;
+-		flock.l_start = thiscase->a_start;
+-		flock.l_len = thiscase->a_len;
+-
+-		/* Set the initial parent lock on the file */
+-		if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-			tst_resm(TFAIL, "First parent lock failed");
+-			tst_resm(TFAIL, "Test case %d, errno = %d", 58, errno);
+-			fail = 1;
+-		}
+-
+-		/* Write some additional data to end of file */
+-		if (write(fd, FILEDATA, 10) < 0)
+-			tst_brkm(TBROK, cleanup, "write failed");
+-
+-		/* Mask signal to avoid race */
+-		if (sighold(SIGUSR1) < 0)
+-			tst_brkm(TBROK, cleanup, "sighold failed");
+-
+-		if ((child = tst_fork()) == 0)
+-			dochild();
+-
+-		if (child < 0)
+-			tst_brkm(TBROK|TERRNO, cleanup, "Fork failed");
+-
+-		/*
+-		 * Wait for a signal from the child then remove blocking lock.
+-		 * Set a 60 sec alarm to break the pause just in case the
+-		 * child doesn't terminate on its own accord
+-		 */
+-		(void)alarm(TIME_OUT);
+-
+-		(void)sigpause(SIGUSR1);
+-
+-		/* turn off the alarm timer */
+-		(void)alarm((unsigned)0);
+-		if (got1 != 1) {
+-			tst_resm(TINFO, "Pause terminated without signal "
+-				 "SIGUSR1 from child");
+-		}
+-		got1 = 0;
+-
+-		/*
+-		 * Set up lock structure for parent to delete
+-		 * blocking lock then wait for child to exit
+-		 */
+-		flock.l_type = F_UNLCK;
+-		flock.l_whence = 0;
+-		flock.l_start = 0L;
+-		flock.l_len = 0L;
+-		if ((fcntl(fd, F_SETLK, &flock)) < 0) {
+-			tst_resm(TFAIL, "Attempt to release parent lock "
+-				 "failed");
+-			tst_resm(TFAIL, "Test case %d, errno = %d", test + 1,
+-				 errno);
+-			fail = 1;
+-		}
+-
+-		/*
+-		 * set a 60 sec alarm to break the wait just in case the
+-		 * child doesn't terminate on its own accord
+-		 */
+-		(void)alarm(TIME_OUT);
+-
+-		waitpid(child, &status, 0);
+-		if (WEXITSTATUS(status) != 0) {
+-			fail = 1;
+-			tst_resm(TFAIL, "child returned bad exit status");
+-		}
+-
+-		/* turn off the alarm clock */
+-		(void)alarm((unsigned)0);
+-		if (status != 0) {
+-			tst_resm(TFAIL, "child returned status 0x%x", status);
+-			fail = 1;
+-		}
+-		close(fd);
+-		unlink(tmpname);
+-
+-		testcheck_end(fail, "Test of locks on file");
+-		tst_resm(TINFO, "Exit block 4");
++	int fd;
++
++	if (tst_parse_int(str_op_nums, &op_nums, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of operations '%s'", str_op_nums);
++
++	if (locking_file) {
++		tst_res(TINFO, "Requested mandatory locking");
++
++		file_mode = S_ENFMT | 0600;
+ 	}
+-	cleanup();
+-	tst_exit();
++
++	fd = SAFE_OPEN(filepath, O_CREAT | O_RDWR | O_TRUNC, 0777);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, filedata, strlen(filedata));
++	SAFE_CLOSE(fd);
++
++	srand(time(0));
++
++	results = SAFE_MMAP(
++		NULL,
++		sizeof(struct tc_results),
++	    PROT_READ | PROT_WRITE,
++		MAP_ANONYMOUS | MAP_SHARED,
++		-1, 0);
+ }
++
++static void cleanup(void)
++{
++	if (results)
++		SAFE_MUNMAP(results, sizeof(struct tc_results));
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.options = (struct tst_option[]) {
++		{ "n:", &str_op_nums, "Total # operations to do (default 5000)" },
++		{ "l", &locking_file, "Set locking flag on file" },
++		{},
++	},
++	.skip_filesystems = (const char *const []) {
++		"nfs",
++		NULL
++	},
++};
 -- 
 2.35.3
 
