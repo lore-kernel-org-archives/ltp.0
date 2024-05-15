@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6D97C25B79
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:46:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0F3BC25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 13:53:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 571133CF7DF
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 15:46:57 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2895F3CF7F6
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 15:53:58 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB7743CF7B3
- for <ltp@lists.linux.it>; Wed, 15 May 2024 15:46:42 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0A9D73C1B47
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 15:53:43 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
@@ -25,45 +25,90 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 829681A0C6B4
- for <ltp@lists.linux.it>; Wed, 15 May 2024 15:46:42 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5C9D11015451
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 15:53:42 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 630262072B;
- Wed, 15 May 2024 13:46:41 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9A0872074A;
+ Wed, 15 May 2024 13:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715781221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pxSoQJZ2YGYInl7rvebQIjsFMmB3J2cWf+wXVfZP14A=;
+ b=wH1qcPv6WdCpy+oqCwldPPKXPxmjknrfrbfbpEihbBwJ0tcyyAP1IQYTJXWDNSn41EbcTA
+ rRNi8vnGmEPqODeHIiYlfGNUA0d6ptGVc/or4FuULyBEgq80Yd6JMk85G4CJNNtJoHcZBt
+ 1sdixVyMIrI/AeZh/REsgoRtW1SvNQY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715781221;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pxSoQJZ2YGYInl7rvebQIjsFMmB3J2cWf+wXVfZP14A=;
+ b=G8iJUCYP8bnH4HjcHgwahv8j5vyeaXBDQy2vAeIyshP7SrSaAWz87NXhieJ1HE0ZJLyrRq
+ C4kcHau+RX7sKdBQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MkQSL9nC;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xXbXuhvB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715781220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pxSoQJZ2YGYInl7rvebQIjsFMmB3J2cWf+wXVfZP14A=;
+ b=MkQSL9nCrq4cbOZlZTQH9ev37Yw69+/XB3pRd3f9Vhbvl4DwLf2RMvkmzf0L4QWwo0bC7x
+ auqsOF1o8bJBVUGyt4Tc/NDJahF3m5arByI/TZeZPintBqCAdN/+81djf6IrXMG5/Ia/yT
+ JIdw+Kk5aWK6y7NbegqSp4m1GsXq5IY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715781220;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pxSoQJZ2YGYInl7rvebQIjsFMmB3J2cWf+wXVfZP14A=;
+ b=xXbXuhvBNl9Sm8tO7TpGcWcfnQzg/QG44yvS4c4i78uq5yFw+b2n5ODUbjNiGQXoRpWrk/
+ NK5OmKskR4/duODA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 479961372E;
- Wed, 15 May 2024 13:46:41 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 820E91372E;
+ Wed, 15 May 2024 13:53:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MU/5D8G8RGYnEQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 15 May 2024 13:46:41 +0000
-Date: Wed, 15 May 2024 15:45:58 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4/2qHmS+RGaIFQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 15 May 2024 13:53:40 +0000
+Date: Wed, 15 May 2024 15:52:57 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Lee Jones <lee@kernel.org>
-Message-ID: <ZkS8ltmsSXvd4g8o@yuki>
+To: Murphy Zhou <jencce.kernel@gmail.com>
+Message-ID: <ZkS-OejkgJ812-VD@yuki>
 References: <20240423070643.38577-1-jencce.kernel@gmail.com>
- <20240515132151.GA557949@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240515132151.GA557949@google.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- TAGGED_RCPT(0.00)[]
-X-Rspamd-Queue-Id: 630262072B
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+In-Reply-To: <20240423070643.38577-1-jencce.kernel@gmail.com>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ SINGLE_SHORT_PART(0.00)[]; TAGGED_RCPT(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:email]
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Rspamd-Queue-Id: 9A0872074A
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] readahead01: pass on pidfd
 X-BeenThere: ltp@lists.linux.it
@@ -83,15 +128,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Any movement on this?
-> 
-> Android pre-submit CI testing is failing due to the new unconditional
-> enable of PIDFD.  I believe this patch is required in order to bring it
-> back to a passing state.
 
-I guess that it's time to accept that kernel will allow strange
-operations on pidfs and apply this patch. Thanks for the reminder.
+Hi!
+Applied, thanks.
 
 -- 
 Cyril Hrubis
