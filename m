@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5913AC25B75
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 10:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22C49C25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 10:15:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B8813CF76D
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 12:12:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B04E83CF757
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 12:15:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D6893C4CE4
- for <ltp@lists.linux.it>; Wed, 15 May 2024 12:12:27 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 295D83CF72F
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 12:15:15 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F1DB12095F4
- for <ltp@lists.linux.it>; Wed, 15 May 2024 12:12:26 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E9D0F600961
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 12:15:14 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 19EBD204F5;
- Wed, 15 May 2024 10:12:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 973321FE3A;
+ Wed, 15 May 2024 10:15:13 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A856139B3;
- Wed, 15 May 2024 10:12:26 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 527B0139B3;
+ Wed, 15 May 2024 10:15:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3lWAAYqKRGYtKgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 15 May 2024 10:12:26 +0000
-Date: Wed, 15 May 2024 12:11:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ip4DDjGLRGZ/XgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 15 May 2024 10:15:13 +0000
+Date: Wed, 15 May 2024 12:15:11 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <ZkSKXjFayALEdnl8@yuki>
-References: <Zitm2aUAcydofMlF@yuki>
- <4c039089-2ac4-4c27-8969-cbac320ae90b@suse.cz>
+Message-ID: <20240515101511.GA211618@pevik>
+References: <20240515094753.1072-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4c039089-2ac4-4c27-8969-cbac320ae90b@suse.cz>
+In-Reply-To: <20240515094753.1072-1-mdoucha@suse.cz>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 973321FE3A
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 19EBD204F5
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release planning
+Subject: Re: [LTP] [PATCH] tcindex01: Pass if the tcindex module is
+ blacklisted
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,32 +77,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > As usuall we are supposed to produce a release at the end of the next
-> > month, so let me start with the call for patches that should be
-> > included. I do plan to look at the patchwork next week and try to review
-> > and merge as much as possible, however if there is anything that I
-> > shouldn't really miss, please let me know.
-> 
-> Hi, I've just sent a small update to the tcindex01 test that fixes test 
-> failures due to blacklisted tcindex module. It'd be nice to have it in 
-> the next release.
+Hi Martin,
 
-Will have a look.
+> The tcindex01 test currently fails if the tcindex module is enabled
+> in kernel config but cannot be autoloaded. Some distros chose
+> to blacklist the module rather than remove it completely, thus
+> check for autoload failure and pass in that case.
 
-Also I do plan to start with the git freeze and pre-release testing next
-week, so if there is anything else that should be considered for the
-release, please make know ASAP.
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/cve/tcindex01.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> diff --git a/testcases/cve/tcindex01.c b/testcases/cve/tcindex01.c
+> index 70e5639f1..07239f9c0 100644
+> --- a/testcases/cve/tcindex01.c
+> +++ b/testcases/cve/tcindex01.c
+> @@ -106,8 +106,19 @@ static void run(void)
+>  	NETDEV_ADD_QDISC(DEVNAME, AF_UNSPEC, TC_H_ROOT, qd_handle, "htb",
+>  		qd_config);
+>  	NETDEV_ADD_TRAFFIC_CLASS(DEVNAME, qd_handle, clsid, "htb", cls_config);
+> -	NETDEV_ADD_TRAFFIC_FILTER(DEVNAME, qd_handle, 10, ETH_P_IP, 1,
+> -		"tcindex", f_config);
+> +	ret = tst_netdev_add_traffic_filter(__FILE__, __LINE__, 0, DEVNAME,
+
+nit: we now don't use NETDEV_ADD_TRAFFIC_FILTER() macro any more. I guess it can
+stay because you sooner or later will use it.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> +		qd_handle, 10, ETH_P_IP, 1, "tcindex", f_config);
+> +	TST_ERR = tst_netlink_errno;
+Out of curriosity, I suppose you save tst_netlink_errno to TST_ERR because it
+would be overwritten later in other LTP netlink API functions.
+
+> +
+> +	if (!ret && TST_ERR == ENOENT) {
+> +		tst_res(TPASS | TTERRNO,
+> +			"tcindex module is blacklisted or unavailable");
+> +		return;
+> +	}
+
+Kind regards,
+Petr
+> +
+> +	if (!ret)
+> +		tst_brk(TBROK | TTERRNO, "Cannot add tcindex filter");
+> +
+>  	NETDEV_REMOVE_TRAFFIC_FILTER(DEVNAME, qd_handle, 10, ETH_P_IP,
+>  		1, "tcindex");
+>  	ret = tst_netdev_add_traffic_filter(__FILE__, __LINE__, 0, DEVNAME,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
