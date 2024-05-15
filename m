@@ -4,86 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2067C25B75
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 10:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1715769132; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=AqwYrwFvZa/bsFz+nzjEQHVSJCXnehtFbLiMYJ9AkQ8=;
- b=ebzQGZoQVyG5p48Ym/uz7CqIfe/D5jTYV/V7fIdsvTJvvgh/cTr3/d2vLkqPzN/gRSIig
- N3f938RBYTEFyDvzeZGoAeRidfNzMomwP1auLkf830DlrRht7UkXVBNbQ/5ev4aag7E5xm0
- URtAjsOF/raYNwj7Ug6+vPdqQWGGBLM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA15DC25B75
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 10:54:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 652A23CF79D
-	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 12:32:12 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 18C2B3CF772
+	for <ltp@archiver.kernel.org>; Wed, 15 May 2024 12:54:21 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4567D3C70AC
- for <ltp@lists.linux.it>; Wed, 15 May 2024 12:31:50 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6D6373C04BB
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 12:54:05 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F0C501A0C26B
- for <ltp@lists.linux.it>; Wed, 15 May 2024 12:31:48 +0200 (CEST)
-Received: by mail-ed1-x52d.google.com with SMTP id
- 4fb4d7f45d1cf-574b3d6c0f3so1594002a12.0
- for <ltp@lists.linux.it>; Wed, 15 May 2024 03:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1715769108; x=1716373908; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=BXLam58JY9aqk9pYUTi1N59zkvwgrk9kdV6IXhH9qOE=;
- b=Qqq12yAwWhEss3gHaFUq21fKIEJV2OFscHxVyvm1uTOi8K5zV50oCoQ7m2S2mVPZcp
- z7MEQCAyVKdd+D4ROEKBqEfXmvXeGSenG4wfUbecNE+PvMExm2N6O2v4cn1MruAlTdVX
- 1F2yNgmB0A7wVTC3TAX80ShM1kDQdzV07GHu67EHy5j2VXr63d4plP+4NInZxKOVzYRB
- WATxZ0BymGwewqbtu1uB1hsbZcXonFvYUd/r7SUW1eKAfqJ8JawPvDP3szAkOlS0+bRS
- nYKI3HDj1m4sD0zT3ufyvWmqSWBSdm+JM8fwHoSZKo/P6RQiAijnTEKun1d22GVrVGsp
- +RgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1715769108; x=1716373908;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=BXLam58JY9aqk9pYUTi1N59zkvwgrk9kdV6IXhH9qOE=;
- b=BNIcHvao5FQN3ZxR+TlLa3nbwXgrR2rr6GLqbJWIFOp9NIgj9CJ8dYs37XQWiap3v2
- 0nJHMwNn7pPIYvGtNjz628jM1xToVsdaVUmdkQWJ6JeNVPoG9tdlwXTzh9LkXltsl9v4
- 92v3GkK6B7w11P2pSGqBbZDE0FdPU4JFfVCRwtJz1AwogW8p+bKFRwlWSV5LEoDIWD/9
- /FA+IFfE+lph7kCXwcO9JVhrDyUm9VzT8FWkew8lefC38PtVPuwi+BEtcA8oeqhtqrhK
- U6++Bj8DrohRZrQpz6vo801pNwOnJs/3Ec69TOBfrd5lG4VP4VCYObqmyOjr0MuQshFk
- VaRw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVoYd0tb+7FWl9QvdANU7H8G8pdj4gn0RQe0zaHPrOiBOCkUBGRrYvxijR/GD+ZVRzYa+S0mP5Tny7x2QCpattMF6c=
-X-Gm-Message-State: AOJu0Yx7wrTHVysF19F4RBj0snog66KCn25kVsb+CtdcpLwnMB7ABcGa
- xRxgOmFUfW9SOUr6PXCZFcPKmuxvkIjBArLmbdPXDXWYHHw0SZOm8jB9V+XFqcndXG+6uboRdAg
- hIP0=
-X-Google-Smtp-Source: AGHT+IHDxCqBTI0U0+qZz1nE23qRwBEy42vTkz3QwI7seZtkU6PVUU1SDeoBAr3CNr0qGgDvcw3dtA==
-X-Received: by 2002:a17:907:72d0:b0:a5a:5ecd:3744 with SMTP id
- a640c23a62f3a-a5a5ecd37damr759364166b.64.1715769108083; 
- Wed, 15 May 2024 03:31:48 -0700 (PDT)
-Received: from [10.232.133.118] ([88.128.88.179])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a5a17892444sm836479566b.76.2024.05.15.03.31.47
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 May 2024 03:31:47 -0700 (PDT)
-Message-ID: <a259548f-b340-4d1f-80f2-c64f295bf518@suse.com>
-Date: Wed, 15 May 2024 12:31:46 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C62DD1007CB6
+ for <ltp@lists.linux.it>; Wed, 15 May 2024 12:54:04 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E0F0521BF0;
+ Wed, 15 May 2024 10:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715770443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=I6pe99eivygr0uehIhBbpbNgQoAhlzZaqFBU2eaAHmQ=;
+ b=yUGdNZjfCTO4HR3KB8gSwM2Tn2ycCG7ab0+xVowHzz51WkJ7lXF6qSXv3AX3mCoU7zNXLt
+ WasU+I/lCo49K0wMOuyxDN46E9WPYkt5KulaaY3uza9we5dZoNArn7/dHM/+uG24kva2+Z
+ MHpTtn47arSYKE/VtAv7FuJjEAjffGw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715770443;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=I6pe99eivygr0uehIhBbpbNgQoAhlzZaqFBU2eaAHmQ=;
+ b=vqgWOfXpDy0Ztq66yk5Hj13FzVte45K+OICJ9jT2xk2MtCe6gbBejMDkxp+4LweVbsfwua
+ obJsEAXOtTRLaBBA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FgvV2G0x;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Lpc8wJmy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715770442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=I6pe99eivygr0uehIhBbpbNgQoAhlzZaqFBU2eaAHmQ=;
+ b=FgvV2G0xxL3b5cSezMX+LtgqeL/uUsXCtVCR2PuHQEAQBrCHBq2uLL9HQBVi/XYqVl+a3P
+ 6q/tHEN9IxLc36mhGJzhDz88jUYy7WiVlErjmxR/9paAGMjlv24nop23bRV4DYsgBbvYe/
+ JCeS0y9AVu8uqclaxX8iQNio/J1BuQU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715770442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=I6pe99eivygr0uehIhBbpbNgQoAhlzZaqFBU2eaAHmQ=;
+ b=Lpc8wJmymubLzclItl4TecbKaZAU4Oexd/H6y72MDdvmWVWHXpS2BF8+4Y8XiHXZZcYIdh
+ 8xsfKi57PhSSH6Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C52C6139B3;
+ Wed, 15 May 2024 10:54:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id p702L0qURGZDQAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 15 May 2024 10:54:02 +0000
+Date: Wed, 15 May 2024 12:53:15 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZkSUG0EtSyu6GvvW@yuki>
+References: <20240515094753.1072-1-mdoucha@suse.cz>
+ <20240515101511.GA211618@pevik>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20240515093349.7347-1-andrea.cervesato@suse.de>
-Content-Language: en-US
-In-Reply-To: <20240515093349.7347-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240515101511.GA211618@pevik>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ MISSING_XM_UA(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E0F0521BF0
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 00/10] statmount/listmount testing suites
+Subject: Re: [LTP] [PATCH] tcindex01: Pass if the tcindex module is
+ blacklisted
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,102 +119,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> > diff --git a/testcases/cve/tcindex01.c b/testcases/cve/tcindex01.c
+> > index 70e5639f1..07239f9c0 100644
+> > --- a/testcases/cve/tcindex01.c
+> > +++ b/testcases/cve/tcindex01.c
+> > @@ -106,8 +106,19 @@ static void run(void)
+> >  	NETDEV_ADD_QDISC(DEVNAME, AF_UNSPEC, TC_H_ROOT, qd_handle, "htb",
+> >  		qd_config);
+> >  	NETDEV_ADD_TRAFFIC_CLASS(DEVNAME, qd_handle, clsid, "htb", cls_config);
+> > -	NETDEV_ADD_TRAFFIC_FILTER(DEVNAME, qd_handle, 10, ETH_P_IP, 1,
+> > -		"tcindex", f_config);
+> > +	ret = tst_netdev_add_traffic_filter(__FILE__, __LINE__, 0, DEVNAME,
 
-I need to send a second version because I noticed that it's not building 
-for all supported distros
-due to missing headers inclusion.
+I do not like that much that we add the __FILE__ and __LINE__ into the
+test by hand. Maybe just add another macro
+NETDEV_ADD_TRAFIC_FILTER_RET() so that we don't have to write these into
+the testcases?
 
-On 5/15/24 11:33, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
->
-> This patch-set is adding new testing suites for statmount() and listmount()
-> syscalls, which have been recently added in kernel v6.8.
-> To find out more information, please read the following documentation since
-> there's no man pages yet:
->
-> https://lwn.net/Articles/950569/
-> https://lore.kernel.org/lkml/170474400576.2602.7882507604401153304.pr-tracker-bot@kernel.org/T/
->
-> Along with kernel source code:
->
-> https://github.com/torvalds/linux/blob/1b294a1f35616977caddaddf3e9d28e576a1adbc/include/uapi/linux/mount.h#L155
-> https://github.com/torvalds/linux/blob/1b294a1f35616977caddaddf3e9d28e576a1adbc/tools/testing/selftests/filesystems/statmount/statmount_test.c
->
-> Andrea Cervesato (10):
->    Add SAFE_STATX macro
->    Add listmount/statmount fallback declarations
->    Add listmount01 test
->    Add listmount02 test
->    Add stamount01 test
->    Add statmount02 test
->    Add statmount03 test
->    Add statmount04 test
->    Add statmount05 test
->    Add statmount06 test
->
->   configure.ac                                  |   5 +
->   include/lapi/mount.h                          |  67 +++++++++
->   include/lapi/stat.h                           |  10 +-
->   include/lapi/syscalls/aarch64.in              |   2 +
->   include/lapi/syscalls/arc.in                  |   2 +
->   include/lapi/syscalls/arm.in                  |   2 +
->   include/lapi/syscalls/hppa.in                 |   2 +
->   include/lapi/syscalls/i386.in                 |   2 +
->   include/lapi/syscalls/ia64.in                 |   2 +
->   include/lapi/syscalls/loongarch.in            |   2 +
->   include/lapi/syscalls/mips_n32.in             |   2 +
->   include/lapi/syscalls/mips_n64.in             |   2 +
->   include/lapi/syscalls/mips_o32.in             |   2 +
->   include/lapi/syscalls/powerpc.in              |   2 +
->   include/lapi/syscalls/powerpc64.in            |   2 +
->   include/lapi/syscalls/s390.in                 |   2 +
->   include/lapi/syscalls/s390x.in                |   2 +
->   include/lapi/syscalls/sh.in                   |   2 +
->   include/lapi/syscalls/sparc.in                |   2 +
->   include/lapi/syscalls/sparc64.in              |   2 +
->   include/lapi/syscalls/x86_64.in               |   2 +
->   include/tst_safe_macros.h                     |   7 +
->   lib/tst_safe_macros.c                         |  21 +++
->   runtest/syscalls                              |  10 ++
->   .../kernel/syscalls/listmount/.gitignore      |   2 +
->   testcases/kernel/syscalls/listmount/Makefile  |   7 +
->   .../kernel/syscalls/listmount/listmount.h     |  26 ++++
->   .../kernel/syscalls/listmount/listmount01.c   |  66 +++++++++
->   .../kernel/syscalls/listmount/listmount02.c   | 106 ++++++++++++++
->   .../kernel/syscalls/statmount/.gitignore      |   6 +
->   testcases/kernel/syscalls/statmount/Makefile  |   7 +
->   .../kernel/syscalls/statmount/statmount.h     |  26 ++++
->   .../kernel/syscalls/statmount/statmount01.c   |  69 +++++++++
->   .../kernel/syscalls/statmount/statmount02.c   |  76 ++++++++++
->   .../kernel/syscalls/statmount/statmount03.c   |  99 +++++++++++++
->   .../kernel/syscalls/statmount/statmount04.c   | 133 +++++++++++++++++
->   .../kernel/syscalls/statmount/statmount05.c   | 138 ++++++++++++++++++
->   .../kernel/syscalls/statmount/statmount06.c   |  73 +++++++++
->   38 files changed, 989 insertions(+), 1 deletion(-)
->   create mode 100644 testcases/kernel/syscalls/listmount/.gitignore
->   create mode 100644 testcases/kernel/syscalls/listmount/Makefile
->   create mode 100644 testcases/kernel/syscalls/listmount/listmount.h
->   create mode 100644 testcases/kernel/syscalls/listmount/listmount01.c
->   create mode 100644 testcases/kernel/syscalls/listmount/listmount02.c
->   create mode 100644 testcases/kernel/syscalls/statmount/.gitignore
->   create mode 100644 testcases/kernel/syscalls/statmount/Makefile
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount.h
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount01.c
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount02.c
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount03.c
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount04.c
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount05.c
->   create mode 100644 testcases/kernel/syscalls/statmount/statmount06.c
->
+> nit: we now don't use NETDEV_ADD_TRAFFIC_FILTER() macro any more. I guess it can
+> stay because you sooner or later will use it.
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> > +		qd_handle, 10, ETH_P_IP, 1, "tcindex", f_config);
+> > +	TST_ERR = tst_netlink_errno;
+> Out of curriosity, I suppose you save tst_netlink_errno to TST_ERR because it
+> would be overwritten later in other LTP netlink API functions.
 
+Because he wants to print it with TTERRNO later.
+
+> > +
+> > +	if (!ret && TST_ERR == ENOENT) {
+> > +		tst_res(TPASS | TTERRNO,
+> > +			"tcindex module is blacklisted or unavailable");
+> > +		return;
+> > +	}
+
+I guess that our .needs_drivers does not take blacklists into account,
+otherwise we could have just added tcindex into .needs_drivers.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
