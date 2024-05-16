@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE105C25B75
-	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 00:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E328C25B75
+	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 00:57:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0C483CF90C
-	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 02:57:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AD20B3CF982
+	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 02:57:23 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F3293CF7CB
- for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:13 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 9AA313CF91F
+ for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:16 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8B532200BC9
- for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:12 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 01F006181D7
+ for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1943920E5F;
- Thu, 16 May 2024 00:56:12 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E22E220E5E;
+ Thu, 16 May 2024 00:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1715820972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
- b=Xv5xTZOIse2gof4rvdxqJ2aKeVSavQSlBInIpbssB9pJ1/OXelZ2JInj3P2TOLayN1+XVN
- QBy+aZpObDrzawtZRYKKvKxaDmoPxYToodbonpMHGFGWKj+YKF/xCdDZ6FyyCufMoNe2w8
- 7b2cwFvvDoUXKHrxzmYA8j/K5qc2C90=
+ bh=6PZGmnRdYfrMMXgylBCRJiYTjdK2VZB7G8h2H/OzQUc=;
+ b=xPZj2X04VOtdwKyEsPAoQLABpsuLCSOWjcGw1nwp0FQ7yIxUFF3lPXRTNznMi6AV0wQ4rd
+ gMEvGkGBtXojw8SdvepO3WOhNN1y/luuNDDcBS4W8CjlH6vNds6J6tHeDn1liy7sReimmE
+ 4FUifyJaVNBFtW/WRX5NNDmAAYCcq3I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1715820972;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
- b=jcDKymAzRYToafLN28DZgc7Oj9v8MU8UvkFE7ULOqvtvoAmvf26e489DHpfNHYJc+5g04W
- wADYVvleYDapbaCw==
+ bh=6PZGmnRdYfrMMXgylBCRJiYTjdK2VZB7G8h2H/OzQUc=;
+ b=UzczyxdXBDE21hHZBXwd/c1/OrYm+px8wvTViewJbT8v36e0ikRUVFSi/22Cy/o2H7hA+j
+ C48j/LRZfk0XLGAg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1715820972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1715820971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
- b=Xv5xTZOIse2gof4rvdxqJ2aKeVSavQSlBInIpbssB9pJ1/OXelZ2JInj3P2TOLayN1+XVN
- QBy+aZpObDrzawtZRYKKvKxaDmoPxYToodbonpMHGFGWKj+YKF/xCdDZ6FyyCufMoNe2w8
- 7b2cwFvvDoUXKHrxzmYA8j/K5qc2C90=
+ bh=6PZGmnRdYfrMMXgylBCRJiYTjdK2VZB7G8h2H/OzQUc=;
+ b=W9gCyKbl2Z0C8VnpYvpujgAP3swx8B8rKZW6HjwXKO856n+7yhqu07L5qdc7UJsWfaxKE/
+ 5cLjLtZKPi2vbRrVro8YZBCmYLtQOf9xnc7+mF6saq64OrHh1PiL4fvZEoua1OzjsROPC+
+ sm0szqDXFgTRUqrtkvBd+FkkFiIXDew=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1715820972;
+ s=susede2_ed25519; t=1715820971;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
- b=jcDKymAzRYToafLN28DZgc7Oj9v8MU8UvkFE7ULOqvtvoAmvf26e489DHpfNHYJc+5g04W
- wADYVvleYDapbaCw==
+ bh=6PZGmnRdYfrMMXgylBCRJiYTjdK2VZB7G8h2H/OzQUc=;
+ b=TlNdErFJ6f6rVTT1cAr1a9FH5Zr2wzu1Ux0T3wxZemgCImwsGzwbXxyLsbzsDesr5GVwZl
+ VqZmLKjoqz0BNTDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E93AB13A5D;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB296137C3;
  Thu, 16 May 2024 00:56:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uP8oOKtZRWbNJAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MAn+LKtZRWbNJAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 16 May 2024 00:56:11 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 16 May 2024 02:55:58 +0200
-Message-ID: <20240516005558.253199-4-pvorel@suse.cz>
+Date: Thu, 16 May 2024 02:55:57 +0200
+Message-ID: <20240516005558.253199-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240516005558.253199-1-pvorel@suse.cz>
 References: <20240516005558.253199-1-pvorel@suse.cz>
@@ -95,13 +95,13 @@ X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 3/3] Refactor fork14 using new LTP API
+Subject: [LTP] [PATCH 2/3] lib: Add .skip_in_32bit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,263 +118,139 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-[ pvorel: replace .skip_in_compat with .skip_in_32bit ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Changes v6->v7:
-* replace .skip_in_compat with .skip_in_32bit
+ include/tst_kernel.h | 13 +++++++++++++
+ include/tst_test.h   |  6 +++++-
+ lib/tst_kernel.c     | 11 +++++++++++
+ lib/tst_test.c       |  5 ++++-
+ 4 files changed, 33 insertions(+), 2 deletions(-)
 
- testcases/kernel/syscalls/fork/fork14.c | 209 +++++++++++-------------
- 1 file changed, 95 insertions(+), 114 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
-index 93af2ebac..bcfa8816d 100644
---- a/testcases/kernel/syscalls/fork/fork14.c
-+++ b/testcases/kernel/syscalls/fork/fork14.c
-@@ -1,143 +1,124 @@
--/*********************************************************************
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-  * Copyright (C) 2014  Red Hat, Inc.
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
+diff --git a/include/tst_kernel.h b/include/tst_kernel.h
+index e0ce7ce46..e3fadbeb0 100644
+--- a/include/tst_kernel.h
++++ b/include/tst_kernel.h
+@@ -1,10 +1,13 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later
+  * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) Linux Test Project, 2018-2024
+  */
+ 
+ #ifndef TST_KERNEL_H__
+ #define TST_KERNEL_H__
+ 
++#include <stdbool.h>
 +
-+/*\
-+ * [Description]
+ /**
+  * tst_kernel_bits() - Detect if running on 32bit or 64bit kernel.
   *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-+ * This test is a reproducer for kernel 3.5:
-+ * 7edc8b0ac16c ("mm/fork: fix overflow in vma length when copying mmap on clone")
-  *
-- * This test is a reporducer for this patch:
-- *              https://lkml.org/lkml/2012/4/24/328
-- * Since vma length in dup_mmap is calculated and stored in a unsigned
-+ * Since VMA length in dup_mmap() is calculated and stored in a unsigned
-  * int, it will overflow when length of mmaped memory > 16 TB. When
-- * overflow occur, fork will  incorrectly succeed. The patch above
-- * fixed it.
-- ********************************************************************/
-+ * overflow occurs, fork will incorrectly succeed. The patch above fixed it.
+@@ -23,6 +26,16 @@ int tst_kernel_bits(void);
+  */
+ int tst_is_compat_mode(void);
+ 
++/**
++ * tst_is_32bit() - Detect if compiled for 32bit target.
++ *
++ * Detect if compiled for 32bit target (regardless if the test process is
++ * running on 32bit or 64bit kernel).
++ *
++ * Return: true if compiled for 32bit target or false otherwise.
 + */
- 
--#include <sys/mman.h>
-+#include "tst_test.h"
-+#include <stdlib.h>
- #include <sys/wait.h>
--#include <stdio.h>
--#include <unistd.h>
--#include "test.h"
--#include "safe_macros.h"
--#include "lapi/abisize.h"
--
--char *TCID = "fork14";
--int TST_TOTAL = 1;
--
--#define GB		(1024 * 1024 * 1024L)
- 
--/* set mmap threshold to 16TB */
- #define LARGE		(16 * 1024)
- #define EXTENT		(16 * 1024 + 10)
- 
--static char **pointer_vec;
-+static char **memvec;
- 
--static void setup(void);
--static void cleanup(void);
--static int  fork_test(void);
--
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc, reproduced;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--/*
-- * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
-- * Since a 32bit program can't mmap so many memory.
-- */
--#ifdef TST_ABI32
--	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
--#endif
--	setup();
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		reproduced = fork_test();
--		if (reproduced == 0)
--			tst_resm(TPASS, "fork failed as expected.");
--	}
--	cleanup();
--	tst_exit();
--}
-+	int i, j, ret;
-+	pid_t pid;
-+	void *mem;
-+	int prev_failed = 0;
-+	int passed = 1;
-+	int failures = 0;
- 
--static void setup(void)
--{
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
-+	memset(memvec, 0, EXTENT);
- 
--	pointer_vec = SAFE_MALLOC(cleanup, EXTENT * sizeof(char *));
--}
-+	for (i = 0; i < EXTENT; i++) {
-+		mem = mmap(NULL, 1 * TST_GB,
-+			PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS,
-+			0, 0);
- 
--static void cleanup(void)
--{
--	free(pointer_vec);
--}
-+		if (mem == MAP_FAILED) {
-+			failures++;
- 
--static int fork_test(void)
--{
--	int i, j, prev_failed = 0, fails = 0, cnt = 0;
--	int reproduced = 0;
--	void *addr;
-+			tst_res(TINFO, "mmap() failed");
- 
--	for (i = 0; i < EXTENT; i++) {
--		addr = mmap(NULL, 1 * GB, PROT_READ | PROT_WRITE,
--			    MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
--		if (addr == MAP_FAILED) {
--			pointer_vec[i] = NULL;
--			fails++;
--			/*
--			 * EXTENT is "16*1024+10", if fails count exceeds 10,
--			 * we are almost impossible to get an vm_area_struct
--			 * sized 16TB
--			 */
--			if (fails == 11) {
--				tst_brkm(TCONF, cleanup, "mmap() fails too many"
--					 "times, so we are almost impossible to"
--					 " get an vm_area_struct sized 16TB.");
-+			if (failures > 10) {
-+				tst_brk(TCONF, "mmap() fails too many "
-+					"times, so it's almost impossible to "
-+					"get a vm_area_struct sized 16TB");
- 			}
--		} else {
--			pointer_vec[i] = addr;
++bool tst_is_32bit(void);
 +
-+			continue;
- 		}
--		cnt++;
+ /**
+  * tst_check_builtin_driver() - Check if the kernel module is built-in.
+  *
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 69587917f..018249503 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+  * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+- * Copyright (c) Linux Test Project, 2016-2019
++ * Copyright (c) Linux Test Project, 2016-2024
+  */
  
--		switch (tst_fork()) {
--		case -1:
-+		memvec[i] = mem;
-+
-+		pid = fork();
-+
-+		if (pid == -1) {
-+			/* keep track of the failed fork() and verify that next one
-+			 * is failing as well.
-+			 */
- 			prev_failed = 1;
--		break;
--		case 0:
-+			continue;
-+		}
-+
-+		if (!pid)
- 			exit(0);
--		default:
--			SAFE_WAITPID(cleanup, -1, NULL, 0);
+ #ifndef TST_TEST_H__
+@@ -328,6 +328,9 @@ struct tst_ulimit_val {
+  * @skip_in_compat: Skip the test if we are executing 32bit binary on a 64bit
+  *                  kernel, i.e. we are testing the kernel compat layer.
+  *
++ * @skip_in_32bit: Skip the test if compiled for 32bit target (regardless if
++ *                 the test process is running on 32bit or 64bit kernel).
++ *
+  * @needs_hugetlbfs: If set hugetlbfs is mounted at tst_test.mntpoint.
+  *
+  * @skip_filesystems: A NULL terminated array of unsupported file systems. The
+@@ -494,6 +497,7 @@ struct tst_ulimit_val {
+ 	unsigned int skip_in_lockdown:1;
+ 	unsigned int skip_in_secureboot:1;
+ 	unsigned int skip_in_compat:1;
++	unsigned int skip_in_32bit:1;
  
--			if (prev_failed > 0 && i >= LARGE) {
--				tst_resm(TFAIL, "Fork succeeds incorrectly");
--				reproduced = 1;
--				goto clear_memory_map;
--			}
-+		ret = waitpid(pid, NULL, 0);
-+		if (ret == -1 && errno != ECHILD)
-+			tst_brk(TBROK | TERRNO, "waitpid() error");
-+
-+		if (prev_failed && i >= LARGE) {
-+			passed = 0;
-+			break;
- 		}
-+
-+		prev_failed = 0;
-+
-+		tst_res(TDEBUG, "fork() passed at %d attempt", i);
- 	}
+ 	unsigned int needs_hugetlbfs:1;
  
--clear_memory_map:
--	for (j = 0; j < cnt; j++) {
--		if (pointer_vec[j])
--			SAFE_MUNMAP(cleanup, pointer_vec[j], 1 * GB);
-+	for (j = 0; j < i; j++) {
-+		if (memvec[j])
-+			SAFE_MUNMAP(memvec[j], 1 * TST_GB);
- 	}
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 7fd1af871..ada8d104b 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
+  * Copyright (c) 2020-2021 Petr Vorel <pvorel@suse.cz>
++ * Copyright (c) Linux Test Project, 2017-2024
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -18,6 +19,7 @@
  
--	return reproduced;
-+	if (passed)
-+		tst_res(TPASS, "fork() failed as expected");
-+	else
-+		tst_res(TFAIL, "fork() succeeded incorrectly");
+ #include <sys/personality.h>
+ #include <sys/utsname.h>
++#include <stdbool.h>
+ #include <limits.h>
+ 
+ #include "test.h"
+@@ -96,6 +98,15 @@ int tst_is_compat_mode(void)
+ 	return TST_ABI != tst_kernel_bits();
  }
-+
-+static void setup(void)
+ 
++bool tst_is_32bit(void)
 +{
-+	memvec = SAFE_MALLOC(EXTENT * sizeof(char *));
++#ifdef TST_ABI32
++	return true;
++#else
++	return false;
++#endif
 +}
 +
-+static void cleanup(void)
-+{
-+	for (long i = 0; i < EXTENT; i++) {
-+		if (memvec && memvec[i])
-+			SAFE_MUNMAP(memvec[i], 1 * TST_GB);
-+	}
+ static int tst_search_driver_(const char *driver, const char *file)
+ {
+ 	struct stat st;
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 686ee428d..c35dc12b3 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+- * Copyright (c) Linux Test Project, 2016-2021
++ * Copyright (c) Linux Test Project, 2016-2024
+  */
+ 
+ #include <limits.h>
+@@ -1209,6 +1209,9 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->skip_in_compat && tst_is_compat_mode())
+ 		tst_brk(TCONF, "Not supported in 32-bit compat mode");
+ 
++	if (tst_test->skip_in_32bit && tst_is_32bit())
++		tst_brk(TCONF, "Not supported in 32-bit");
 +
-+	if (memvec)
-+		free(memvec);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.skip_in_32bit = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "7edc8b0ac16c"},
-+		{}
-+	}
-+};
+ 	if (tst_test->needs_cmds) {
+ 		const char *cmd;
+ 		int i;
 -- 
 2.43.0
 
