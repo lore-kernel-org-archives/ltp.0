@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C272C25B75
-	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 00:56:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE105C25B75
+	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 00:57:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A9703CF905
-	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 02:56:45 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id B0C483CF90C
+	for <ltp@archiver.kernel.org>; Thu, 16 May 2024 02:57:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 231DC3CF7CB
+ by picard.linux.it (Postfix) with ESMTPS id 8F3293CF7CB
  for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:13 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,46 +24,84 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7DBB61400073
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8B532200BC9
  for <ltp@lists.linux.it>; Thu, 16 May 2024 02:56:12 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C195420E5D;
- Thu, 16 May 2024 00:56:11 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1943920E5F;
+ Thu, 16 May 2024 00:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715820972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
+ b=Xv5xTZOIse2gof4rvdxqJ2aKeVSavQSlBInIpbssB9pJ1/OXelZ2JInj3P2TOLayN1+XVN
+ QBy+aZpObDrzawtZRYKKvKxaDmoPxYToodbonpMHGFGWKj+YKF/xCdDZ6FyyCufMoNe2w8
+ 7b2cwFvvDoUXKHrxzmYA8j/K5qc2C90=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715820972;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
+ b=jcDKymAzRYToafLN28DZgc7Oj9v8MU8UvkFE7ULOqvtvoAmvf26e489DHpfNHYJc+5g04W
+ wADYVvleYDapbaCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1715820972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
+ b=Xv5xTZOIse2gof4rvdxqJ2aKeVSavQSlBInIpbssB9pJ1/OXelZ2JInj3P2TOLayN1+XVN
+ QBy+aZpObDrzawtZRYKKvKxaDmoPxYToodbonpMHGFGWKj+YKF/xCdDZ6FyyCufMoNe2w8
+ 7b2cwFvvDoUXKHrxzmYA8j/K5qc2C90=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1715820972;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=b+Ubq4RAQ0XLHHZaxNfNu8Jp+AqcMAzHv/W7FwUPYwg=;
+ b=jcDKymAzRYToafLN28DZgc7Oj9v8MU8UvkFE7ULOqvtvoAmvf26e489DHpfNHYJc+5g04W
+ wADYVvleYDapbaCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B01613A5D;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E93AB13A5D;
  Thu, 16 May 2024 00:56:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eEH5JKtZRWbNJAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uP8oOKtZRWbNJAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 16 May 2024 00:56:11 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 16 May 2024 02:55:56 +0200
-Message-ID: <20240516005558.253199-2-pvorel@suse.cz>
+Date: Thu, 16 May 2024 02:55:58 +0200
+Message-ID: <20240516005558.253199-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240516005558.253199-1-pvorel@suse.cz>
 References: <20240516005558.253199-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: C195420E5D
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_CONTAINS_FROM(1.00)[]; R_MISSING_CHARSET(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] tst_kernel.h: Convert docs to sphinx
+Subject: [LTP] [PATCH v7 3/3] Refactor fork14 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,95 +118,263 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+[ pvorel: replace .skip_in_compat with .skip_in_32bit ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/developers/api_c_tests.rst |  2 ++
- include/tst_kernel.h           | 43 +++++++++++++++++++++-------------
- 2 files changed, 29 insertions(+), 16 deletions(-)
+Changes v6->v7:
+* replace .skip_in_compat with .skip_in_32bit
 
-diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
-index ec53ab33c..2a9f3e7b9 100644
---- a/doc/developers/api_c_tests.rst
-+++ b/doc/developers/api_c_tests.rst
-@@ -1,4 +1,5 @@
- .. SPDX-License-Identifier: GPL-2.0-or-later
-+.. Copyright (c) Linux Test Project, 2024
- 
- .. Include headers in this file with:
- .. .. kernel-doc:: ../../include/tst_test.h
-@@ -11,6 +12,7 @@ Core LTP API
- 
- .. kernel-doc:: ../../include/tst_res_flags.h
- .. kernel-doc:: ../../include/tst_test.h
-+.. kernel-doc:: ../../include/tst_kernel.h
- 
- Option parsing
- --------------
-diff --git a/include/tst_kernel.h b/include/tst_kernel.h
-index 89de79928..e0ce7ce46 100644
---- a/include/tst_kernel.h
-+++ b/include/tst_kernel.h
-@@ -5,33 +5,44 @@
- #ifndef TST_KERNEL_H__
- #define TST_KERNEL_H__
- 
--/*
-- * Returns 32 if we are running on 32bit kernel and 64 if on 64bit kernel.
-+/**
-+ * tst_kernel_bits() - Detect if running on 32bit or 64bit kernel.
-+ *
-+ * Return: 32 if the test process is running on 32bit kernel and 64 if on 64bit
-+ * kernel.
-  */
- int tst_kernel_bits(void);
- 
--/*
-- * Returns non-zero if the test process is running in compat mode.
-+/**
-+ * tst_is_compat_mode() - Detect if running in compat mode.
-+ *
-+ * Detect if the test is 32bit binary executed on a 64bit kernel,
-+ * i.e. we are testing the kernel compat layer.
-+ *
-+ * Return: non-zero if the test process is running in compat mode.
-  */
- int tst_is_compat_mode(void);
- 
--/*
-- * Checks if the kernel module is built-in.
-+/**
-+ * tst_check_builtin_driver() - Check if the kernel module is built-in.
+ testcases/kernel/syscalls/fork/fork14.c | 209 +++++++++++-------------
+ 1 file changed, 95 insertions(+), 114 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+index 93af2ebac..bcfa8816d 100644
+--- a/testcases/kernel/syscalls/fork/fork14.c
++++ b/testcases/kernel/syscalls/fork/fork14.c
+@@ -1,143 +1,124 @@
+-/*********************************************************************
++// SPDX-License-Identifier: GPL-2.0-only
++/*
+  * Copyright (C) 2014  Red Hat, Inc.
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
   *
-- * @param driver The name of the driver.
-- * @return Returns 0 if builtin driver
-- * -1 when driver is missing or config file not available.
-- * On Android *always* 0 (always expect the driver is available).
-+ * @driver: the name of the driver.
-+ *
-+ * Return: 0 if builtin driver or -1 when driver is missing or config file not
-+ * available. On Android *always* 0 (always expect the driver is available).
-  */
- int tst_check_builtin_driver(const char *driver);
- 
--/*
-- * Checks support for the kernel module (both built-in and loadable).
-+/**
-+ * tst_check_driver() - Check support for the kernel module.
-+ *
-+ * Check support for the kernel module (both built-in and loadable).
-+ *
-+ * @driver: the name of the driver.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * This test is a reproducer for kernel 3.5:
++ * 7edc8b0ac16c ("mm/fork: fix overflow in vma length when copying mmap on clone")
   *
-- * @param driver The name of the driver.
-- * @return Returns 0 if the kernel has the driver,
-- * -1 when driver is missing or config file not available.
-- * On Android *always* 0 (always expect the driver is available).
-+ * Return: 0 if the kernel has the driver, -1 when driver is missing or config
-+ * file not available. On Android *always* 0 (always expect the driver is
-+ * available).
-  */
- int tst_check_driver(const char *driver);
+- * This test is a reporducer for this patch:
+- *              https://lkml.org/lkml/2012/4/24/328
+- * Since vma length in dup_mmap is calculated and stored in a unsigned
++ * Since VMA length in dup_mmap() is calculated and stored in a unsigned
+  * int, it will overflow when length of mmaped memory > 16 TB. When
+- * overflow occur, fork will  incorrectly succeed. The patch above
+- * fixed it.
+- ********************************************************************/
++ * overflow occurs, fork will incorrectly succeed. The patch above fixed it.
++ */
  
+-#include <sys/mman.h>
++#include "tst_test.h"
++#include <stdlib.h>
+ #include <sys/wait.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "lapi/abisize.h"
+-
+-char *TCID = "fork14";
+-int TST_TOTAL = 1;
+-
+-#define GB		(1024 * 1024 * 1024L)
+ 
+-/* set mmap threshold to 16TB */
+ #define LARGE		(16 * 1024)
+ #define EXTENT		(16 * 1024 + 10)
+ 
+-static char **pointer_vec;
++static char **memvec;
+ 
+-static void setup(void);
+-static void cleanup(void);
+-static int  fork_test(void);
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc, reproduced;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-/*
+- * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
+- * Since a 32bit program can't mmap so many memory.
+- */
+-#ifdef TST_ABI32
+-	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
+-#endif
+-	setup();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		reproduced = fork_test();
+-		if (reproduced == 0)
+-			tst_resm(TPASS, "fork failed as expected.");
+-	}
+-	cleanup();
+-	tst_exit();
+-}
++	int i, j, ret;
++	pid_t pid;
++	void *mem;
++	int prev_failed = 0;
++	int passed = 1;
++	int failures = 0;
+ 
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++	memset(memvec, 0, EXTENT);
+ 
+-	pointer_vec = SAFE_MALLOC(cleanup, EXTENT * sizeof(char *));
+-}
++	for (i = 0; i < EXTENT; i++) {
++		mem = mmap(NULL, 1 * TST_GB,
++			PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS,
++			0, 0);
+ 
+-static void cleanup(void)
+-{
+-	free(pointer_vec);
+-}
++		if (mem == MAP_FAILED) {
++			failures++;
+ 
+-static int fork_test(void)
+-{
+-	int i, j, prev_failed = 0, fails = 0, cnt = 0;
+-	int reproduced = 0;
+-	void *addr;
++			tst_res(TINFO, "mmap() failed");
+ 
+-	for (i = 0; i < EXTENT; i++) {
+-		addr = mmap(NULL, 1 * GB, PROT_READ | PROT_WRITE,
+-			    MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-		if (addr == MAP_FAILED) {
+-			pointer_vec[i] = NULL;
+-			fails++;
+-			/*
+-			 * EXTENT is "16*1024+10", if fails count exceeds 10,
+-			 * we are almost impossible to get an vm_area_struct
+-			 * sized 16TB
+-			 */
+-			if (fails == 11) {
+-				tst_brkm(TCONF, cleanup, "mmap() fails too many"
+-					 "times, so we are almost impossible to"
+-					 " get an vm_area_struct sized 16TB.");
++			if (failures > 10) {
++				tst_brk(TCONF, "mmap() fails too many "
++					"times, so it's almost impossible to "
++					"get a vm_area_struct sized 16TB");
+ 			}
+-		} else {
+-			pointer_vec[i] = addr;
++
++			continue;
+ 		}
+-		cnt++;
+ 
+-		switch (tst_fork()) {
+-		case -1:
++		memvec[i] = mem;
++
++		pid = fork();
++
++		if (pid == -1) {
++			/* keep track of the failed fork() and verify that next one
++			 * is failing as well.
++			 */
+ 			prev_failed = 1;
+-		break;
+-		case 0:
++			continue;
++		}
++
++		if (!pid)
+ 			exit(0);
+-		default:
+-			SAFE_WAITPID(cleanup, -1, NULL, 0);
+ 
+-			if (prev_failed > 0 && i >= LARGE) {
+-				tst_resm(TFAIL, "Fork succeeds incorrectly");
+-				reproduced = 1;
+-				goto clear_memory_map;
+-			}
++		ret = waitpid(pid, NULL, 0);
++		if (ret == -1 && errno != ECHILD)
++			tst_brk(TBROK | TERRNO, "waitpid() error");
++
++		if (prev_failed && i >= LARGE) {
++			passed = 0;
++			break;
+ 		}
++
++		prev_failed = 0;
++
++		tst_res(TDEBUG, "fork() passed at %d attempt", i);
+ 	}
+ 
+-clear_memory_map:
+-	for (j = 0; j < cnt; j++) {
+-		if (pointer_vec[j])
+-			SAFE_MUNMAP(cleanup, pointer_vec[j], 1 * GB);
++	for (j = 0; j < i; j++) {
++		if (memvec[j])
++			SAFE_MUNMAP(memvec[j], 1 * TST_GB);
+ 	}
+ 
+-	return reproduced;
++	if (passed)
++		tst_res(TPASS, "fork() failed as expected");
++	else
++		tst_res(TFAIL, "fork() succeeded incorrectly");
+ }
++
++static void setup(void)
++{
++	memvec = SAFE_MALLOC(EXTENT * sizeof(char *));
++}
++
++static void cleanup(void)
++{
++	for (long i = 0; i < EXTENT; i++) {
++		if (memvec && memvec[i])
++			SAFE_MUNMAP(memvec[i], 1 * TST_GB);
++	}
++
++	if (memvec)
++		free(memvec);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.skip_in_32bit = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "7edc8b0ac16c"},
++		{}
++	}
++};
 -- 
 2.43.0
 
