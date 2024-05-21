@@ -4,111 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F207C25B74
-	for <ltp@archiver.kernel.org>; Tue, 21 May 2024 18:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A67B4C25B74
+	for <ltp@archiver.kernel.org>; Tue, 21 May 2024 20:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1716323125; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=86vlqW2AKPPSbMjB6tNif0Nq9F9yxcRDCQIPadSaCWs=;
+ b=Ng+bQW+msLich05jQXd8cFhPi4qe4OduXyyX7tFSCyzm/HjpsykoYqUtfKw2KLTDrhMZt
+ qpRP7EymO+XgDJVyQWzW17K6fsA31OKzcDXwAo2KJeSL5IQeCV6KSWOHkLeHTDXcxuoqoIU
+ e/IB/sfYxNPm+LsR0J2e4Guwd2sBsbM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D50573D00A7
-	for <ltp@archiver.kernel.org>; Tue, 21 May 2024 20:44:17 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D30763D00AF
+	for <ltp@archiver.kernel.org>; Tue, 21 May 2024 22:25:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF8E63C0311
- for <ltp@lists.linux.it>; Tue, 21 May 2024 20:44:01 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2280A3C18A9
+ for <ltp@lists.linux.it>; Tue, 21 May 2024 22:25:04 +0200 (CEST)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
+ [IPv6:2a00:1450:4864:20::12e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BEDA02010F7
- for <ltp@lists.linux.it>; Tue, 21 May 2024 20:44:00 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7850B22B4D;
- Tue, 21 May 2024 18:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716317037;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1s9TaM1S1ExBfN8xwKxy/FKEUw/5bKOUUZHC0zLpD4M=;
- b=EN+d8zV1uCQ0w7Dr77w83z7yS7e9g5a+neqKsqra3HGFymp0c3oFwx072giGfoU2ouyP3X
- 5P7Plz8Gc6qDpLrFDclUQjxxggUMbrUBsD/YnGOwv4fVrNed+L8JNeRkWNUtebwTIXOoVH
- O0XU0UFhKGksbQGd1KTgIcu+/o5PP5M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716317037;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1s9TaM1S1ExBfN8xwKxy/FKEUw/5bKOUUZHC0zLpD4M=;
- b=m5hom3jGWpLl8fzOvk1MWu/oIJ0dGpjekaKkIEnHiwYgaArQZIGOj/D7yYT7cLb/rrAjpz
- bGKyoF0rWFDDhpBw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eJnzEtoR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZoWljwJO
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716317036;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1s9TaM1S1ExBfN8xwKxy/FKEUw/5bKOUUZHC0zLpD4M=;
- b=eJnzEtoRy3BZ/79JRFtbWo/rKt0UeHeD+qaJ8PMXpEXsKt1dPMMPjc+0pcuWBLZKlhLYHy
- R46O+7z/Ggs3zfJGLI0X8b/wNAcSp8Q3sZksvwPBnHV7G67BCdr+uX8r6z/HyNDcCCL8d8
- wbM+Ser3ODPwy//gNDVykrLnS1mwngM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716317036;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1s9TaM1S1ExBfN8xwKxy/FKEUw/5bKOUUZHC0zLpD4M=;
- b=ZoWljwJO89iVIS1MEMAaLW32ssFoMr3cHnuhW7gboQ5IjQb8CVCNBirvFljT+exo+iZJHu
- q4FKHaLxdNx1PzCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D6D813A1E;
- Tue, 21 May 2024 18:43:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WwBcFWzrTGbvZAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 21 May 2024 18:43:56 +0000
-Date: Tue, 21 May 2024 20:43:54 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20240521184354.GB207312@pevik>
-References: <20240119092909.22806-1-andrea.cervesato@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 961C06012A8
+ for <ltp@lists.linux.it>; Tue, 21 May 2024 22:25:03 +0200 (CEST)
+Received: by mail-lf1-x12e.google.com with SMTP id
+ 2adb3069b0e04-5238b5c080cso7282235e87.1
+ for <ltp@lists.linux.it>; Tue, 21 May 2024 13:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1716323103; x=1716927903; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=0D8+FAPfdvLHVUslUkDqNY9Q7Q+ft1fha2BE9i86aD0=;
+ b=IhUl2MZMNcdt1Jd+b7UIMuIbGBAKpZlVWOzumfRajYhRuWsmy42FqwLj+zlr6p2xqd
+ s3pwQOEMohSNOm4Swm/wCOKknl8P/M5FTF9LI9PH7f/BAj5qz1Vhpow9Q33G+8uB5g/f
+ KYvz3FAXs5Ys7QuCfIITd4GiLDrmErxm5GzZWvCo/YD6VLL8CRds3tnnJsbaa7UflNMH
+ ShMlNCRCtr5gbsfEoKT+H9kZ0B6WFOuYr6UvhRrfiz602bPPmYrKxpGm3P1/jFUTWBJa
+ 2c2jnjG4Q9HQUpmmObK6jRYOe+BqCgdccVTLdsxotI8ny3rvixyi9DgWiMfz7tOQGpvF
+ wVMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1716323103; x=1716927903;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=0D8+FAPfdvLHVUslUkDqNY9Q7Q+ft1fha2BE9i86aD0=;
+ b=E3OhN+KmpZo4ivTAOy5vN5h9yc3Ove9sRymRjFj0AAJBiJWyZCrbOJZvga9C7/pgFl
+ /gciHBacoNk9HvXIMTjx883wgns9C+Mz0vQIxIKVgmvrTNOyNEFxjYbX6x1e16+Ny+iP
+ kWExAAaEUGahY1ZyTK9VMvwaiCvPqi3VwqOA7f5c8hb3rXb6VS5KvDNgnjTmAdv9JpRg
+ PEcQW3aDXyjE3UHOQXVghNKCfbizcnyr7UMBNAUw/7GZgIydhJWNdhTVYqV5uPoSLT2+
+ FliQUMyz5ZbrI1L0kC80L4LhQCKh/uaz0yZ5E+ddtJsu15TAYItfK139D7HFcHhACeoz
+ yR2Q==
+X-Gm-Message-State: AOJu0Yxt+whVzkC122BjoTaP3d7jPBank52xsfHpBPVoOxmdoC0hS7aR
+ +op0sHorIQ//hJIZo/tLj5zZpFnPvRFDmGCykQrexPGFmJDXkhblW1GcJfo4QVQ=
+X-Google-Smtp-Source: AGHT+IG8DVT1IPh2AGZDnuHLPLtgeU5pckDZHrM918GJNS6x6F3LSahxGVPrPhk+fUlb1DsPiBz7IQ==
+X-Received: by 2002:a05:6512:138e:b0:520:5261:9cd0 with SMTP id
+ 2adb3069b0e04-5221006cc86mr24739359e87.57.1716323102810; 
+ Tue, 21 May 2024 13:25:02 -0700 (PDT)
+Received: from ?IPV6:2a02:a31b:843f:e00:d596:e8e:78c7:ff41?
+ ([2a02:a31b:843f:e00:d596:e8e:78c7:ff41])
+ by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-521f38d8bafsm4770708e87.235.2024.05.21.13.25.02
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 21 May 2024 13:25:02 -0700 (PDT)
+Message-ID: <1299f2f7-cd20-41df-8c68-1e2b59a0c3a7@suse.com>
+Date: Tue, 21 May 2024 22:25:01 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240119092909.22806-1-andrea.cervesato@suse.de>
-X-Spamd-Result: default: False [-3.70 / 50.00]; BAYES_HAM(-2.99)[99.96%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto,suse.com:email];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 7850B22B4D
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20240119092909.22806-1-andrea.cervesato@suse.de>
+ <20240521184354.GB207312@pevik>
+Content-Language: en-US
+In-Reply-To: <20240521184354.GB207312@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] Rewritten symlink01 test
 X-BeenThere: ltp@lists.linux.it
@@ -122,32 +95,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi,
 
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+On 5/21/24 20:43, Petr Vorel wrote:
+> Hi Andrea,
+>
+>> From: Andrea Cervesato <andrea.cervesato@suse.com>
+>> This test has been split and rewritten. Now it verifies the following
+> I had to think twice to realize that the code has been moved to other tests in
+> different commits. Putting short hashes (e.g. 3fe59efe4, d824f59a2, but there
+> were more) would help 1) to review this 2) help anybody who tries to dig into
+> the history in the future.
+Yes, this patch-set was a mess since the beginning. Won't happen again.
+>
+> Kind regards,
+> Petr
+>
+>> symlink() syscall features:
+>> - symbolic link is created from a non-existing folder
+>> - symbolic link is created from existing folder
+>> - syscall raises EEXIST when symbolic link already exists
+>> - syscall raises ENAMETOOLONG when path name is PATH_MAX long (or above)
 
-> This test has been split and rewritten. Now it verifies the following
-I had to think twice to realize that the code has been moved to other tests in
-different commits. Putting short hashes (e.g. 3fe59efe4, d824f59a2, but there
-were more) would help 1) to review this 2) help anybody who tries to dig into
-the history in the future.
+Andrea
 
-Kind regards,
-Petr
-
-> symlink() syscall features:
-
-> - symbolic link is created from a non-existing folder
-> - symbolic link is created from existing folder
-> - syscall raises EEXIST when symbolic link already exists
-> - syscall raises ENAMETOOLONG when path name is PATH_MAX long (or above)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
