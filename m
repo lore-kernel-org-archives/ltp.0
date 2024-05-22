@@ -4,80 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9F4DC25B77
-	for <ltp@archiver.kernel.org>; Wed, 22 May 2024 12:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1716382106; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=HLRoiCo+VdDyk/JVXgrwT1f7ZsHpV8qHVqa0FEZ1qDk=;
- b=QaiFbNu1qxr5jpQxL1Eeg9tWxAhMVWXx5/XuRzNlbu6oJQOYbgm5kjlOUduW/xznLCEN3
- 2kGYSkx6bnEjs5CFMsFtbtvkXCNpwNvj2w+X+WoqZe6TQutQv0b4jaKiZbRlIzUo3VLEznl
- y3hv3mSKK0pe55Fu0iuooqgjjidd55I=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A46AC25B7A
+	for <ltp@archiver.kernel.org>; Wed, 22 May 2024 14:34:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BEFF3CB704
-	for <ltp@archiver.kernel.org>; Wed, 22 May 2024 14:48:26 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 0312E3D00F9
+	for <ltp@archiver.kernel.org>; Wed, 22 May 2024 16:33:59 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 833EE3CB704
- for <ltp@lists.linux.it>; Wed, 22 May 2024 14:48:04 +0200 (CEST)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A9CE23CEB69
+ for <ltp@lists.linux.it>; Wed, 22 May 2024 16:33:44 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 70150602BD1
- for <ltp@lists.linux.it>; Wed, 22 May 2024 14:48:03 +0200 (CEST)
-Received: by mail-ed1-x534.google.com with SMTP id
- 4fb4d7f45d1cf-578338936cbso1108194a12.0
- for <ltp@lists.linux.it>; Wed, 22 May 2024 05:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1716382082; x=1716986882; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=B4WR1yHqr7DAliJlEVEEFhR9hdnYOfADpNyjzlMGjtE=;
- b=fM8ys5tDKZK45f6Jl7crKqrtZ7Jbnsfc9gk/AcL8KZpT/nnfTzcHyAsMkQdqfER38s
- Gk5RjuCpApWk0tTbQboGb1dmRDry3FX7rjr3DKFVQB9jY3YurNxyyiRscVfzHUMTjLgr
- DCMaBDd5rCagKRq/udl3s35xBtzEsvxpke9eF4ud2ezCF4/hCGv7d+r140OrwZI0gy4h
- 7qYDMGqWnQSNUEo1lWVE2O6DDwTj464UeIBDgPfB+wL0hpFhuDtxmgZ5gr2XQgfrxJo6
- ka9A90uxjMrW9YIS2Cdu6kPklOmG1G5J0TscgTkzFMwkGdHdqO9B1xP1J59L99fYkQnk
- vIWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1716382082; x=1716986882;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=B4WR1yHqr7DAliJlEVEEFhR9hdnYOfADpNyjzlMGjtE=;
- b=T+yLJMFXnj9aoMNtXVEbeYemuwp7MFfgNfmRiPz+lc/Ks0G1Xv30gadQ+WIBX/LFHG
- NsTUmRkDE4RJD/z65hXCNw8EuSMRXtGsi0XPUJoPLXxyxhvUtJ5GOQXJEU9K6hHFpLLY
- mfs+9OS89YISdQUQDhGQ79yPyqYJOfVPEWf0VoaIT8yQrmDN+mv05/8fS3nUsm6wIzYJ
- G6Z/1LqJheDO86e0DYjFmDo3GC2N+24VlM1swi1RqKe7S7tTKRLTbXa6ZswIGHunRlXD
- me8F3NyUkP71Gg3+6HrDF9sAJQ+XI1lyIsMHqvjdpsZFEnMpM2L1Wo6FWdxYstrgdWb9
- 0l2w==
-X-Gm-Message-State: AOJu0YwIoBSnjanCxb67QPrahSKdtHoQW/hFGcU+gQeFo2U8Ry6WLgsF
- b2PruGGt1+4WxfCXqRRhyM84F5CuDxcAH8VUJP0SGlRwf7tKsg3CD0+24pI5cECoe0KLaftBvtY
- =
-X-Google-Smtp-Source: AGHT+IEEEPCQxbdcAaMuN44HATh3byZTWge/b555vMejOc8eTqjLNDAkmK2Yu6yeuo6ysOoseRRz+g==
-X-Received: by 2002:a17:906:3791:b0:a5c:dce0:9f4e with SMTP id
- a640c23a62f3a-a5d5ecdc434mr1090815766b.28.1716382082199; 
- Wed, 22 May 2024 05:48:02 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a5a179c7d87sm1777378566b.104.2024.05.22.05.48.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 May 2024 05:48:01 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 22 May 2024 08:47:54 -0400
-Message-Id: <20240522124754.9599-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D275A2079EB
+ for <ltp@lists.linux.it>; Wed, 22 May 2024 16:33:43 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5CA2A22C10;
+ Wed, 22 May 2024 14:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1716388423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=rkVIitkWTj5uQPtzz9FkVhu9WG1Fm8C+7Jsq5Qy2qQw=;
+ b=ES/pMQOeSuQ/S0ZyIgbIfQ4YtT64fyxkniOu425kcvVjZpvkmKPOdYtx0aENJUVaEp7gLe
+ AyaLGIBGiL+ONF6Lnli8i56p+x7DAiqPiuotZx77o0vwyvxTrgf21Y+UtZy+KHMtPp9dtd
+ i8V2Rn2k5ik+q1yqZ0DV2f4mGn2wut4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1716388423;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=rkVIitkWTj5uQPtzz9FkVhu9WG1Fm8C+7Jsq5Qy2qQw=;
+ b=wol33jxN4xYw+lGwkea8E6VuKadZpXQuRqrbbMwwbLMcDWIiqc3EbjDsgf2cy/g0+uFDzf
+ PkyzhgJH3itWjqAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="ES/pMQOe";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wol33jxN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1716388423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=rkVIitkWTj5uQPtzz9FkVhu9WG1Fm8C+7Jsq5Qy2qQw=;
+ b=ES/pMQOeSuQ/S0ZyIgbIfQ4YtT64fyxkniOu425kcvVjZpvkmKPOdYtx0aENJUVaEp7gLe
+ AyaLGIBGiL+ONF6Lnli8i56p+x7DAiqPiuotZx77o0vwyvxTrgf21Y+UtZy+KHMtPp9dtd
+ i8V2Rn2k5ik+q1yqZ0DV2f4mGn2wut4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1716388423;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=rkVIitkWTj5uQPtzz9FkVhu9WG1Fm8C+7Jsq5Qy2qQw=;
+ b=wol33jxN4xYw+lGwkea8E6VuKadZpXQuRqrbbMwwbLMcDWIiqc3EbjDsgf2cy/g0+uFDzf
+ PkyzhgJH3itWjqAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3637E13A6B;
+ Wed, 22 May 2024 14:33:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id IMCrCkcCTmaJOwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 22 May 2024 14:33:43 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 22 May 2024 16:33:06 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Message-Id: <20240522-process_mrelease-v1-2-41fe2fa44194@suse.com>
+References: <20240522-process_mrelease-v1-0-41fe2fa44194@suse.com>
+In-Reply-To: <20240522-process_mrelease-v1-0-41fe2fa44194@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4406;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=PwLcQfkUrQekE664H1X+AYTSyOCsurlB+3xweaAIpXw=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmTgJG7W/ERy7eMd76iGJPYNCsXP+u2rNbbCr2U
+ K63lmQYkG+JAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZk4CRgAKCRDLzBqyILPm
+ RhcKC/wLfJFiBYY+EyPWGRKbaJ+wQRUaD9PZsM6VZ9YJBAFOQ3wh6gETnGgRgxA94+nbjEeDvU+
+ wHd+1ZtJ5AKrn1IU8fR/n2r8+9BCgXza8kn3dwlZx4Dnx3aktnGQfYW1rQrs/zmz83o7mJj3Gpj
+ vLz7A8gLfIJbYKBedDxKcaLziH9YmL82rNsfkU9zL7DBzZfBImjsz4JuOomrNAZRUSeHsuusuIy
+ kHPQTDgPAWprxctrhR+tI7cfKjVaDgsD2DKaNX5Cn3jAnUfnsbRgnlFVeHKeklVAVvpCoITbTvw
+ 4k2CTIkYp1BSMbzkziWuc2LuvWLpqZrW7J3I9Mq8z2U9YRCdA0WtQeg08x4X4sxtMk4rVzRuJ4U
+ A+1uOhXYWIQreZ3klFQEHm2V41MDWTGvEodLNggVv1DT/QASc9XM7vf+c3UduAuyg5MWnIbb6Da
+ 2Dga+rdVIA2XbGCsRqazQGgkxzBeeSZyWzGU7HyprIb3ZLMwSs+4mbxu3tV+ZoDDMgS3g=
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 5CA2A22C10
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.de:dkim];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] msync04: Check disk content if dirty bit check
- failed
+Subject: [LTP] [PATCH 2/3] Add process_mrelease01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,76 +135,182 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-msync04 test is inherently racy and nothing guarantees that the page
-is not written out before get_dirty_page() manages to read the page state.
-Hence the test should be reworked to verify the page contents is on disk
-when it finds dirty bit isn't set anymore...
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+This test verifies that process_mrelease() syscall is releasing memory
+from a killed process with memory allocation pending.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/msync/msync04.c | 34 ++++++++++++++---------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ runtest/syscalls                                   |   2 +
+ .../kernel/syscalls/process_mrelease/.gitignore    |   1 +
+ .../kernel/syscalls/process_mrelease/Makefile      |   7 ++
+ .../syscalls/process_mrelease/process_mrelease01.c | 118 +++++++++++++++++++++
+ 4 files changed, 128 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-index 72ddc27a4..c296c8b20 100644
---- a/testcases/kernel/syscalls/msync/msync04.c
-+++ b/testcases/kernel/syscalls/msync/msync04.c
-@@ -46,6 +46,7 @@ uint64_t get_dirty_bit(void *data)
- static void test_msync(void)
- {
- 	uint64_t dirty;
-+	char buffer[20];
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf06ee563..46a85fd31 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1050,6 +1050,8 @@ preadv203_64 preadv203_64
  
- 	test_fd = SAFE_OPEN("msync04/testfile", O_CREAT | O_TRUNC | O_RDWR,
- 		0644);
-@@ -56,20 +57,27 @@ static void test_msync(void)
- 	mmaped_area[8] = 'B';
- 	dirty = get_dirty_bit(mmaped_area);
- 	if (!dirty) {
--		tst_res(TFAIL, "Expected dirty bit to be set after writing to"
--				" mmap()-ed area");
--		goto clean;
--	}
--	if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
--		tst_res(TFAIL | TERRNO, "msync() failed");
--		goto clean;
-+		tst_res(TINFO, "Not see dirty bit so we check content of file instead");
-+		test_fd = SAFE_OPEN("msync04/testfile", O_RDONLY);
-+		SAFE_READ(0, test_fd, buffer, 9);
-+		if (buffer[8] == 'B')
-+			tst_res(TCONF, "write file ok but msync couldn't be tested"
-+				" because the storage was written to too quickly");
-+		else
-+			tst_res(TFAIL, "write file failed");
-+	} else {
-+		if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
-+			tst_res(TFAIL | TERRNO, "msync() failed");
-+			goto clean;
-+		}
-+		dirty = get_dirty_bit(mmaped_area);
-+		if (dirty)
-+			tst_res(TFAIL, "msync() failed to write dirty page despite"
-+					" succeeding");
-+		else
-+			tst_res(TPASS, "msync() working correctly");
+ profil01 profil01
+ 
++process_mrelease01 process_mrelease01
 +
- 	}
--	dirty = get_dirty_bit(mmaped_area);
--	if (dirty)
--		tst_res(TFAIL, "msync() failed to write dirty page despite"
--				" succeeding");
--	else
--		tst_res(TPASS, "msync() working correctly");
- 
- clean:
- 	SAFE_MUNMAP(mmaped_area, pagesize);
+ process_vm_readv01 process_vm01 -r
+ process_vm_readv02 process_vm_readv02
+ process_vm_readv03 process_vm_readv03
+diff --git a/testcases/kernel/syscalls/process_mrelease/.gitignore b/testcases/kernel/syscalls/process_mrelease/.gitignore
+new file mode 100644
+index 000000000..673983858
+--- /dev/null
++++ b/testcases/kernel/syscalls/process_mrelease/.gitignore
+@@ -0,0 +1 @@
++/process_mrelease01
+diff --git a/testcases/kernel/syscalls/process_mrelease/Makefile b/testcases/kernel/syscalls/process_mrelease/Makefile
+new file mode 100644
+index 000000000..8cf1b9024
+--- /dev/null
++++ b/testcases/kernel/syscalls/process_mrelease/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c b/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c
+new file mode 100644
+index 000000000..aa7c9960c
+--- /dev/null
++++ b/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c
+@@ -0,0 +1,118 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that process_mrelease() syscall is releasing memory from
++ * a killed process with memory allocation pending.
++ */
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++#define CHUNK (1 * TST_MB)
++#define MAX_SIZE_MB (128 * TST_MB)
++
++static void *mem;
++static volatile int *mem_size;
++
++static void do_child(int size)
++{
++	tst_res(TINFO, "Child: allocate %d bytes", size);
++
++	mem = SAFE_MMAP(NULL,
++		size,
++		PROT_READ | PROT_WRITE,
++		MAP_PRIVATE | MAP_ANON,
++		0, 0);
++
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++
++	tst_res(TINFO, "Child: releasing memory");
++
++	SAFE_MUNMAP(mem, size);
++}
++
++static void run(void)
++{
++	int ret;
++	int pidfd;
++	int status;
++	pid_t pid;
++	volatile int restart;
++
++	for (*mem_size = CHUNK; *mem_size < MAX_SIZE_MB; *mem_size += CHUNK) {
++		restart = 0;
++
++		pid = SAFE_FORK();
++		if (!pid) {
++			do_child(*mem_size);
++			exit(0);
++		}
++
++		TST_CHECKPOINT_WAIT(0);
++
++		tst_disable_oom_protection(pid);
++
++		pidfd = SAFE_PIDFD_OPEN(pid, 0);
++
++		tst_res(TINFO, "Parent: killing child with PID=%d", pid);
++
++		SAFE_KILL(pid, SIGKILL);
++
++		ret = tst_syscall(__NR_process_mrelease, pidfd, 0);
++		if (ret == -1) {
++			if (errno == ESRCH) {
++				tst_res(TINFO, "Parent: child terminated before process_mrelease()."
++					" Increase memory size and restart test");
++
++				restart = 1;
++			} else {
++				tst_res(TFAIL | TERRNO, "process_mrelease(%d,0) error", pidfd);
++			}
++		} else {
++			tst_res(TPASS, "process_mrelease(%d,0) passed", pidfd);
++		}
++
++		SAFE_WAITPID(-1, &status, 0);
++		SAFE_CLOSE(pidfd);
++
++		if (!restart)
++			break;
++	}
++}
++
++static void setup(void)
++{
++	mem_size = SAFE_MMAP(
++		NULL,
++		sizeof(int),
++		PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS,
++		-1, 0);
++}
++
++static void cleanup(void)
++{
++	if (mem)
++		SAFE_MUNMAP(mem, *mem_size);
++
++	if (mem_size)
++		SAFE_MUNMAP((void *)mem_size, sizeof(int));
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_root = 1,
++	.forks_child = 1,
++	.min_kver = "5.15",
++	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_MMU=y",
++	},
++};
+
 -- 
 2.35.3
 
