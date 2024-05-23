@@ -4,86 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 511F7C25B75
-	for <ltp@archiver.kernel.org>; Thu, 23 May 2024 13:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1716471659; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=bF0agQMdfeX6913V8cZkjVqW3uZgppauziK1jQ9IvvQ=;
- b=FIImI6EGZm1f8vtAcuiJEweyCfnWOWdXiqmxb0GmbblWbWx/NTkxR4nXn0kE9w/njK782
- +NlLzMXbZDid4Wm7sjVnujjmZITtztIVI5r4MxN7xWYbaW84+c6W7+m2iX2XEy4IPpbodkG
- uDU+tndorg3OOAraajHF82FUsSFB4jY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B667C25B75
+	for <ltp@archiver.kernel.org>; Thu, 23 May 2024 14:38:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C8743D0185
-	for <ltp@archiver.kernel.org>; Thu, 23 May 2024 15:40:59 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9048C3D018E
+	for <ltp@archiver.kernel.org>; Thu, 23 May 2024 16:38:03 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D00773C0B8E
- for <ltp@lists.linux.it>; Thu, 23 May 2024 15:40:37 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9B8023D0116
+ for <ltp@lists.linux.it>; Thu, 23 May 2024 16:37:48 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E708C600D55
- for <ltp@lists.linux.it>; Thu, 23 May 2024 15:40:36 +0200 (CEST)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-a5cec2c2981so481123266b.1
- for <ltp@lists.linux.it>; Thu, 23 May 2024 06:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1716471636; x=1717076436; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=k+W1PE4QPmE1Fy7CQfijgzpKkH1oWAiBk1TUerZmVe4=;
- b=IhwQat+kzyaoemurSQeh9K7rqCOupIjCYY3Gky4TOhPeSGUidn/ePaFgN6Dm3GrMFR
- 0NXRkhW2RzLMfILeZHeKQK41FfKddl+tHbZXxJ4g6xcJD6AkhhnnB09uuyfjwIWsYHCi
- tkZZKYdTHyZ4/FF/uMwntuxF/Ojjfn2byGSBAyOXAHHfAF0GsNji1KJaPKT8JvmrNnh5
- 0E8mEC4ZN26gN/dWpnLfLTq0CSOBPt89+ZGVEM939qkS4Pf+KZP/CLHAOwp/X5PFPnHV
- PQNgBLTcaiW7UdXTXzXILKlFm02wz31JuHQCc4y9nHFyHaJ0uUTWzILMDgIwPyhSbO9X
- 7eDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1716471636; x=1717076436;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=k+W1PE4QPmE1Fy7CQfijgzpKkH1oWAiBk1TUerZmVe4=;
- b=MnggjNhg12xKIXS7NMB8+EaizKFbNCRqu+XWOGea9pxcyAcRrTZCHTEEmSxARsFcC9
- mtstab7iRDTIfSf3m6AjloFrih5lUKGRYZZ58Hy0Bug0cxUTDOIBIqX8bbZ9vEnsc0lY
- 3RkTZPQY600iBIN4meA1HR9+gbCYOBGhVfhma/L8KpryHKMxjfD2VHu6SLSjRsT+g/vo
- cZ5cWVqIw9mByPRBqQnigsRvhqyDhk//jfxSovsLaHpfzqa03xLh99d9WwFzLDZ84fuG
- SM5OFwAyzXe8E58M7jZNyeGflCA6sABZl8ldWqaZCz33LlrIf3FqeSegLcr8bnM2hDCP
- 9Czg==
-X-Gm-Message-State: AOJu0YwJXn5YZd1W+E4YA0gHQjSBd/gUt1WNnQ5XIakE1m84Bv4Vxa/7
- zVJiV4n0G7S87mafiRrmGNEOf9RyN2MmXU5kdnJPTXLNL+hOve5xEdEOzicBt0ZdtV5WtNDCzgH
- B
-X-Google-Smtp-Source: AGHT+IFonRZkwCGiCvRa9pm31S5ydBHG7zxd8FtfOCLsJwDYyi7SCeTwDlv5Z1KrKlaX9b6jR5q0Gg==
-X-Received: by 2002:a05:6402:358b:b0:578:3420:4ed6 with SMTP id
- 4fb4d7f45d1cf-578342052d6mr4770293a12.1.1716471636051; 
- Thu, 23 May 2024 06:40:36 -0700 (PDT)
-Received: from [192.168.1.108] ([151.51.151.29])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-57843c098d1sm1323008a12.69.2024.05.23.06.40.35
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 23 May 2024 06:40:35 -0700 (PDT)
-Message-ID: <dfb56b3f-127e-412d-9653-da655af76a4b@suse.com>
-Date: Thu, 23 May 2024 15:40:34 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E769F1415303
+ for <ltp@lists.linux.it>; Thu, 23 May 2024 16:37:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7986522843;
+ Thu, 23 May 2024 14:37:46 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7076E13A6B;
+ Thu, 23 May 2024 14:37:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ygQXG7pUT2avYQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Thu, 23 May 2024 14:37:46 +0000
+Message-ID: <bdcd318e-d71d-420b-bf96-e2571831078e@suse.cz>
+Date: Thu, 23 May 2024 16:37:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
-References: <20240523133132.13978-1-chrubis@suse.cz>
- <20240523133132.13978-2-chrubis@suse.cz>
 Content-Language: en-US
-In-Reply-To: <20240523133132.13978-2-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20240523133132.13978-1-chrubis@suse.cz>
+ <20240523133132.13978-3-chrubis@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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
+In-Reply-To: <20240523133132.13978-3-chrubis@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 7986522843
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/msgstress01: Fix the stop logic
+Subject: Re: [LTP] [PATCH 2/2] syscalls/msgstress01: Fix timeouts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,82 +120,188 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
+for both patches:
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-LGTM.
-
-Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-On 5/23/24 15:31, Cyril Hrubis wrote:
-> The stop flag didn't really work because:
->
-> - if queue is full msgsnd() will block in the kernel
-> - if queue is empty msgrcv() will block in the kernel
->
-> And if the other process from the reader-writer pair exits the queue
-> will be never changed and the test will get stuck and killed by watchdog
-> timer.
->
-> What we need to do is to use IPC_NOWAIT, retry manually (after short
-> usleep) and handle errors manually as well. In that case no processes
-> will sleep in kernel and setting the stop flag will actually stop the
-> test.
->
+On 23. 05. 24 15:31, Cyril Hrubis wrote:
+> Make the test exit if runtime has been exhausted before we finished the
+> requested amount of iterations.
+> 
+> For that to happen we let the main test process to loop while checking
+> the runtime and set the stop flag if runtime was exhausted. We also need
+> to separte the stop and fail flag and add counter for finished children.
+> 
+> Also if we exhaust our runtime during the initial fork phase we print a
+> warning, since we hardly did a meaningful testing in that case.
+> 
+> The changes can be tested with -I parameter, e.g. -I 5 should trigger
+> the TWARN message and you should be able to get the test to stop in the
+> message sending phase with larger -I value.
+> 
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 > ---
->   .../syscalls/ipc/msgstress/msgstress01.c      | 23 ++++++++++++++++---
->   1 file changed, 20 insertions(+), 3 deletions(-)
->
+>   .../syscalls/ipc/msgstress/msgstress01.c      | 53 ++++++++++++++++---
+>   1 file changed, 47 insertions(+), 6 deletions(-)
+> 
 > diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-> index 5c84957b3..62ffcf63b 100644
+> index 62ffcf63b..fb1d4263d 100644
 > --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
 > +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-> @@ -101,8 +101,17 @@ static void writer(const int id, const int pos)
->   	struct sysv_data *buff = &ipc_data[pos];
->   	int iter = num_iterations;
+> @@ -50,6 +50,9 @@ static char *str_num_iterations;
+>   static int num_messages = 1000;
+>   static int num_iterations = MAXNREPS;
+>   static volatile int *stop;
+> +static volatile int *fail;
+> +static int *finished;
+> +static int *flags;
 >   
-> -	while (--iter >= 0 && !(*stop))
-> -		SAFE_MSGSND(id, &buff->msg, 100, 0);
-> +	while (--iter >= 0 && !(*stop)) {
-> +		int size = msgsnd(id, &buff->msg, 100, IPC_NOWAIT);
-> +		if (size < 0) {
-> +			if (errno == EAGAIN) {
-> +				usleep(10);
-> +				continue;
-> +			}
+>   static int get_used_sysvipc(void)
+>   {
+> @@ -77,6 +80,10 @@ static void reset_messages(void)
+>   
+>   	for (int i = 0; i < num_messages; i++)
+>   		ipc_data[i].id = -1;
 > +
-> +			tst_brk(TBROK | TERRNO, "msgsnd() failed");
-> +		}
-> +	}
+> +	*stop = 0;
+> +	*fail = 0;
+> +	*finished = 0;
+>   }
+>   
+>   static int create_message(const int id)
+> @@ -112,6 +119,8 @@ static void writer(const int id, const int pos)
+>   			tst_brk(TBROK | TERRNO, "msgsnd() failed");
+>   		}
+>   	}
+> +
+> +	tst_atomic_inc(finished);
 >   }
 >   
 >   static void reader(const int id, const int pos)
-> @@ -115,7 +124,15 @@ static void reader(const int id, const int pos)
->   	while (--iter >= 0 && !(*stop)) {
->   		memset(&msg_recv, 0, sizeof(struct sysv_msg));
->   
-> -		size = SAFE_MSGRCV(id, &msg_recv, 100, MSGTYPE, 0);
-> +		size = msgrcv(id, &msg_recv, 100, MSGTYPE, IPC_NOWAIT);
-> +		if (size < 0) {
-> +			if (errno == ENOMSG) {
-> +				usleep(10);
-> +				continue;
-> +			}
-> +
-> +			tst_brk(TBROK | TERRNO, "msgrcv() failed");
-> +		}
->   
->   		if (msg_recv.type != buff->msg.type) {
+> @@ -138,6 +147,7 @@ static void reader(const int id, const int pos)
 >   			tst_res(TFAIL, "Received the wrong message type");
+>   
+>   			*stop = 1;
+> +			*fail = 1;
+>   			return;
+>   		}
+>   
+> @@ -145,6 +155,7 @@ static void reader(const int id, const int pos)
+>   			tst_res(TFAIL, "Received the wrong message data length");
+>   
+>   			*stop = 1;
+> +			*fail = 1;
+>   			return;
+>   		}
+>   
+> @@ -155,6 +166,7 @@ static void reader(const int id, const int pos)
+>   					buff->msg.data.pbytes[i]);
+>   
+>   				*stop = 1;
+> +				*fail = 1;
+>   				return;
+>   			}
+>   		}
+> @@ -163,6 +175,8 @@ static void reader(const int id, const int pos)
+>   		tst_res(TDEBUG, "msg_recv.type = %ld", msg_recv.type);
+>   		tst_res(TDEBUG, "msg_recv.data.len = %d", msg_recv.data.len);
+>   	}
+> +
+> +	tst_atomic_inc(finished);
+>   }
+>   
+>   static void remove_queues(void)
+> @@ -196,12 +210,37 @@ static void run(void)
+>   
+>   		if (*stop)
+>   			break;
+> +
+> +		if (!tst_remaining_runtime()) {
+> +			tst_res(TWARN, "Out of runtime during forking...");
+> +			*stop = 1;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!(*stop))
+> +		tst_res(TINFO, "All processes running.");
+> +
+> +	for (;;) {
+> +		if (tst_atomic_load(finished) == 2 * num_messages)
+> +			break;
+> +
+> +		if (*stop)
+> +			break;
+> +
+> +		if (!tst_remaining_runtime()) {
+> +			tst_res(TINFO, "Out of runtime, stopping processes...");
+> +			*stop = 1;
+> +			break;
+> +		}
+> +
+> +		sleep(1);
+>   	}
+>   
+>   	tst_reap_children();
+>   	remove_queues();
+>   
+> -	if (!(*stop))
+> +	if (!(*fail))
+>   		tst_res(TPASS, "Test passed. All messages have been received");
+>   }
+>   
+> @@ -242,14 +281,16 @@ static void setup(void)
+>   		MAP_SHARED | MAP_ANONYMOUS,
+>   		-1, 0);
+>   
+> -	stop = SAFE_MMAP(
+> +	flags = SAFE_MMAP(
+>   		NULL,
+> -		sizeof(int),
+> +		sizeof(int) * 3,
+>   		PROT_READ | PROT_WRITE,
+>   		MAP_SHARED | MAP_ANONYMOUS,
+>   		-1, 0);
+>   
+> -	reset_messages();
+> +	stop = &flags[0];
+> +	fail = &flags[1];
+> +	finished = &flags[2];
+>   }
+>   
+>   static void cleanup(void)
+> @@ -260,7 +301,7 @@ static void cleanup(void)
+>   	remove_queues();
+>   
+>   	SAFE_MUNMAP(ipc_data, sizeof(struct sysv_data) * num_messages);
+> -	SAFE_MUNMAP((void *)stop, sizeof(int));
+> +	SAFE_MUNMAP(flags, sizeof(int) * 3);
+>   }
+>   
+>   static struct tst_test test = {
+> @@ -271,7 +312,7 @@ static struct tst_test test = {
+>   	.max_runtime = 180,
+>   	.options = (struct tst_option[]) {
+>   		{"n:", &str_num_messages, "Number of messages to send (default: 1000)"},
+> -		{"l:", &str_num_iterations, "Number iterations per message (default: 10000)"},
+> +		{"l:", &str_num_iterations, "Number iterations per message (default: " TST_TO_STR(MAXNREPS) ")"},
+>   		{},
+>   	},
+>   };
 
-Andrea
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
