@@ -4,96 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32B54C25B79
-	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 06:38:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C14E0C25B79
+	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 06:38:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BCC3B3D0323
-	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 08:38:00 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4B6F43D038D
+	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 08:38:22 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D4643D0324
+ by picard.linux.it (Postfix) with ESMTPS id 305A63D0340
  for <ltp@lists.linux.it>; Mon, 27 May 2024 08:33:59 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A198920006E
- for <ltp@lists.linux.it>; Mon, 27 May 2024 08:33:58 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 492481400F97
+ for <ltp@lists.linux.it>; Mon, 27 May 2024 08:33:59 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A170821CBD;
- Mon, 27 May 2024 06:33:57 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 420FF1FB65;
+ Mon, 27 May 2024 06:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716791637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1716791638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3AXt7eQ6iwkBYM8Hu96Z17q6fwelZ2rxSg6dUsSReIk=;
- b=f4pyK6mR8CtUloZ3/mzfAaBR3u7DbMwWZ4ktJR9bi6THVP/SauKCXNIfYNHmFIV50S5b0T
- bxFugcWO2G1G1lBLZK+9mQN2Wz6eFYJzFHYFBcA+I7RuJarDlG4nxHA3C2wrBwCyFwG2Xr
- iQUEZ4ybFOxtf0AYS/OCS7CLyS9fDxg=
+ bh=ik5FZ9sJ4GOGCyKDwlMqDI1Mp94G7iZFsxoCRyFYEx0=;
+ b=SejhSTTvNarp2Oz+wJP/jnkechU3pSDkXqZDyrEAm4R0sSrcDl7v+9bIqNfHg3wrA02Z6V
+ ebiKI40MA+Wd7fk0O6AW+uITGwUe/YEZ9e0sqrbcovggGxT5CNe1R7e9ElflrKxYJD3kjQ
+ Jd+topp2UbpNyF9/czLmWGkFWf/ilQ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716791637;
+ s=susede2_ed25519; t=1716791638;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3AXt7eQ6iwkBYM8Hu96Z17q6fwelZ2rxSg6dUsSReIk=;
- b=c7JNIXaqE4gw48Nk+IoabdTAdGAXQL+xTKUGHm/GKJ/aj7oEsJ+B0WBSAyFC9WUceSymqu
- 7Q3tvUCRgnfOMcCw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=f4pyK6mR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=c7JNIXaq
+ bh=ik5FZ9sJ4GOGCyKDwlMqDI1Mp94G7iZFsxoCRyFYEx0=;
+ b=jf0F4/QPNK2XWm+TfzLPPPxhfNVLpwR4DNAnXc4tGY6ATyV58b9s5HWLEEJLgGRVHp9QPK
+ lv07E+tPwc97r/BQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SejhSTTv;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="jf0F4/QP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716791637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1716791638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3AXt7eQ6iwkBYM8Hu96Z17q6fwelZ2rxSg6dUsSReIk=;
- b=f4pyK6mR8CtUloZ3/mzfAaBR3u7DbMwWZ4ktJR9bi6THVP/SauKCXNIfYNHmFIV50S5b0T
- bxFugcWO2G1G1lBLZK+9mQN2Wz6eFYJzFHYFBcA+I7RuJarDlG4nxHA3C2wrBwCyFwG2Xr
- iQUEZ4ybFOxtf0AYS/OCS7CLyS9fDxg=
+ bh=ik5FZ9sJ4GOGCyKDwlMqDI1Mp94G7iZFsxoCRyFYEx0=;
+ b=SejhSTTvNarp2Oz+wJP/jnkechU3pSDkXqZDyrEAm4R0sSrcDl7v+9bIqNfHg3wrA02Z6V
+ ebiKI40MA+Wd7fk0O6AW+uITGwUe/YEZ9e0sqrbcovggGxT5CNe1R7e9ElflrKxYJD3kjQ
+ Jd+topp2UbpNyF9/czLmWGkFWf/ilQ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716791637;
+ s=susede2_ed25519; t=1716791638;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3AXt7eQ6iwkBYM8Hu96Z17q6fwelZ2rxSg6dUsSReIk=;
- b=c7JNIXaqE4gw48Nk+IoabdTAdGAXQL+xTKUGHm/GKJ/aj7oEsJ+B0WBSAyFC9WUceSymqu
- 7Q3tvUCRgnfOMcCw==
+ bh=ik5FZ9sJ4GOGCyKDwlMqDI1Mp94G7iZFsxoCRyFYEx0=;
+ b=jf0F4/QPNK2XWm+TfzLPPPxhfNVLpwR4DNAnXc4tGY6ATyV58b9s5HWLEEJLgGRVHp9QPK
+ lv07E+tPwc97r/BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8AF8D13A56;
- Mon, 27 May 2024 06:33:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27E2B13A56;
+ Mon, 27 May 2024 06:33:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +BfPIFUpVGZAFgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 27 May 2024 06:33:57 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CP/CCFYpVGZAFgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 27 May 2024 06:33:58 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 27 May 2024 08:33:42 +0200
-Message-ID: <20240527063346.289771-12-pvorel@suse.cz>
+Date: Mon, 27 May 2024 08:33:46 +0200
+Message-ID: <20240527063346.289771-16-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527063346.289771-1-pvorel@suse.cz>
 References: <20240527063346.289771-1-pvorel@suse.cz>
 MIME-Version: 1.0
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A170821CBD
+X-Rspamd-Queue-Id: 420FF1FB65
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -106,10 +106,9 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 11/15] tcp_fastopen: Remove kernel >= 3.7 and 3.16
- check
+Subject: [LTP] [PATCH 15/15] cgroup_xattr: Remove kernel >= 3.15 check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,32 +129,39 @@ Since 9e9654cf2 LTP supports kernel >= 4.4.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/tcp_fastopen/tcp_fastopen_run.sh | 5 -----
- 1 file changed, 5 deletions(-)
+ .../kernel/controllers/cgroup_xattr/cgroup_xattr.c     | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
-index 88438c3e1..a3dad55ac 100755
---- a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
-+++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
-@@ -7,7 +7,6 @@ TST_SETUP="setup"
- TST_TESTFUNC="test"
- TST_CNT=2
- TST_CLEANUP="cleanup"
--TST_MIN_KVER="3.7"
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
- TST_NEEDS_CMDS="tc"
-@@ -38,10 +37,6 @@ cleanup()
+diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+index a870118f5..0d016b583 100644
+--- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
++++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+@@ -151,11 +151,8 @@ void setup(int argc, char *argv[])
+ 		tst_brkm(TCONF, NULL, "Kernel doesn't support cgroups");
  
- setup()
- {
--	if tst_kvcmp -lt "3.16" && [ "$TST_IPV6" ]; then
--		tst_brk TCONF "test must be run with kernel 3.16 or newer"
--	fi
--
- 	ROD tc qdisc add dev $(tst_iface) root netem delay 100
- }
+ 	for (i = 0; i < ARRAY_SIZE(tkeys); ++i) {
+-		if (!strcmp(tkeys[i].name, "security.")) {
+-			tkeys[i].good = tst_kvercmp(3, 15, 0) < 0;
+-		} else if (!strcmp(tkeys[i].name, "trusted.")) {
++		if (!strcmp(tkeys[i].name, "trusted."))
+ 			tkeys[i].good = tst_kvercmp(4, 5, 0) < 0;
+-		}
+ 	}
  
+ 	int value_size = DEFAULT_VALUE_SIZE;
+@@ -269,12 +266,7 @@ int mount_cgroup(void)
+ 		 * additional "xattr" option. In that case, mount will succeed,
+ 		 * but xattr won't be supported in the new mount anyway.
+ 		 * Should be removed as soon as a fix committed to upstream.
+-		 *
+-		 * But not applicable for kernels >= 3.15 where xattr supported
+-		 * natively.
+ 		 */
+-		if (hier != 0 && tst_kvercmp(3, 15, 0) < 0)
+-			continue;
+ 
+ 		int i, found = 0;
+ 		for (i = 0; i < cgrp_opt_num; ++i) {
 -- 
 2.43.0
 
