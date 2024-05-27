@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72108C25B79
-	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 06:36:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C2DC25B79
+	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 06:37:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0CEF13D0350
-	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 08:36:58 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B04F63D0340
+	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 08:37:13 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7ECB3D0323
+ by picard.linux.it (Postfix) with ESMTPS id E228C3D032B
  for <ltp@lists.linux.it>; Mon, 27 May 2024 08:33:58 +0200 (CEST)
 Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1DF99600694
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 57747600A29
  for <ltp@lists.linux.it>; Mon, 27 May 2024 08:33:58 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C3D2D21CB4;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3D91E1FB69;
  Mon, 27 May 2024 06:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1716791637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NKRlHlPi70KmkG4L1Zl6+of3HYBTYh4sCDiM6UQTgwU=;
- b=jfh45fVrM/iFsQX6VjkNOsalplCsvsMZYgQs0ixRLVZW4xTywDjNu76ZvJAANXeRuTCcri
- 1liU1whP6faxG5+Tt0h9jjX9IOdwmvT70Ga+yCbLE3GYMi5rYpsg3M6DhStqEeOrUKyTsD
- FI3tBQJ3cqapln3MLc9irORp8hx3aEo=
+ bh=brGlP+VGh7c6McEStlXiDcVeophTfdF8PQx9YEbYZ+g=;
+ b=vNpgd0wAyYLT0pAK3fB3JwRlEEJd7WriPV5Am8ECopzEXaH8yoG2wHku1/jIwqy+w7bWtU
+ dO29tTGTCC0HBYxeSdeXJTaiozgClVLa6qwT9IZnQ2XH487ywI/Dfh3FyfMrOX2EChlv3w
+ XxhLgTQ+rrnbHYO2ZTnbmon6IRoWfTo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1716791637;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NKRlHlPi70KmkG4L1Zl6+of3HYBTYh4sCDiM6UQTgwU=;
- b=2b+Y1KZZ9vbgmlSjvPb/W/rJmaUnTOWY+jv5S9MS+rvvudF9r6ZilUPQIH1iYg1PMUYmr5
- DqbxlYlnw5D9cuAA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=brGlP+VGh7c6McEStlXiDcVeophTfdF8PQx9YEbYZ+g=;
+ b=Yun1ojKpvUIFVRxs2lqgG0kcTfuW8LnXc03xs6hmVUHCw0DUAQb1dtHu06hGuLUs7pyVBB
+ b2S6WrQbYtop75Dg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1716791637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NKRlHlPi70KmkG4L1Zl6+of3HYBTYh4sCDiM6UQTgwU=;
- b=jfh45fVrM/iFsQX6VjkNOsalplCsvsMZYgQs0ixRLVZW4xTywDjNu76ZvJAANXeRuTCcri
- 1liU1whP6faxG5+Tt0h9jjX9IOdwmvT70Ga+yCbLE3GYMi5rYpsg3M6DhStqEeOrUKyTsD
- FI3tBQJ3cqapln3MLc9irORp8hx3aEo=
+ bh=brGlP+VGh7c6McEStlXiDcVeophTfdF8PQx9YEbYZ+g=;
+ b=vNpgd0wAyYLT0pAK3fB3JwRlEEJd7WriPV5Am8ECopzEXaH8yoG2wHku1/jIwqy+w7bWtU
+ dO29tTGTCC0HBYxeSdeXJTaiozgClVLa6qwT9IZnQ2XH487ywI/Dfh3FyfMrOX2EChlv3w
+ XxhLgTQ+rrnbHYO2ZTnbmon6IRoWfTo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1716791637;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NKRlHlPi70KmkG4L1Zl6+of3HYBTYh4sCDiM6UQTgwU=;
- b=2b+Y1KZZ9vbgmlSjvPb/W/rJmaUnTOWY+jv5S9MS+rvvudF9r6ZilUPQIH1iYg1PMUYmr5
- DqbxlYlnw5D9cuAA==
+ bh=brGlP+VGh7c6McEStlXiDcVeophTfdF8PQx9YEbYZ+g=;
+ b=Yun1ojKpvUIFVRxs2lqgG0kcTfuW8LnXc03xs6hmVUHCw0DUAQb1dtHu06hGuLUs7pyVBB
+ b2S6WrQbYtop75Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABBD413A6C;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F68013A6C;
  Mon, 27 May 2024 06:33:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cHPRJ1UpVGZAFgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sJ2wBlUpVGZAFgAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Mon, 27 May 2024 06:33:57 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 27 May 2024 08:33:43 +0200
-Message-ID: <20240527063346.289771-13-pvorel@suse.cz>
+Date: Mon, 27 May 2024 08:33:39 +0200
+Message-ID: <20240527063346.289771-9-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527063346.289771-1-pvorel@suse.cz>
 References: <20240527063346.289771-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
  MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -99,7 +100,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 12/15] fcntl{34,36}: Remove kernel >= 3.15 check
+Subject: [LTP] [PATCH 08/15] dctcp01.sh: Remove kernel >= 3.18 check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,34 +121,21 @@ Since 9e9654cf2 LTP supports kernel >= 4.4.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/fcntl/fcntl34.c | 1 -
- testcases/kernel/syscalls/fcntl/fcntl36.c | 1 -
- 2 files changed, 2 deletions(-)
+ testcases/network/tcp_cc/dctcp01.sh | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
-index 45e693fe6..7c3cea05f 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl34.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
-@@ -125,7 +125,6 @@ static void test01(void)
- }
+diff --git a/testcases/network/tcp_cc/dctcp01.sh b/testcases/network/tcp_cc/dctcp01.sh
+index fbce6f4a0..a9e09d131 100755
+--- a/testcases/network/tcp_cc/dctcp01.sh
++++ b/testcases/network/tcp_cc/dctcp01.sh
+@@ -7,7 +7,6 @@
+ TST_SETUP="setup"
+ TST_TESTFUNC="do_test"
+ TST_CLEANUP="cleanup"
+-TST_MIN_KVER="3.18"
  
- static struct tst_test test = {
--	.min_kver = "3.15.0",
- 	.needs_tmpdir = 1,
- 	.test_all = test01,
- 	.setup = setup
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
-index e84b7ed0c..fabdbe905 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl36.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
-@@ -387,7 +387,6 @@ static void tests(unsigned int i)
- }
- 
- static struct tst_test test = {
--	.min_kver = "3.15",
- 	.needs_tmpdir = 1,
- 	.test = tests,
- 	.tcnt = ARRAY_SIZE(tcases),
+ cleanup()
+ {
 -- 
 2.43.0
 
