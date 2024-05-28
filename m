@@ -4,54 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96ED7C25B75
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 15:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17A2EC27C43
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 15:00:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E86883D06F8
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 17:00:06 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A018F3D06C5
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 17:00:22 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 855B83D0254
- for <ltp@lists.linux.it>; Tue, 28 May 2024 12:13:18 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=54.204.34.129;
- helo=smtpbguseast1.qq.com; envelope-from=mataotao@uniontech.com;
- receiver=lists.linux.it)
-Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 9626A3C00E4
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 22:37:08 +0200 (CEST)
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com
+ [209.85.216.50])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4955A1A010D1
- for <ltp@lists.linux.it>; Tue, 28 May 2024 12:13:15 +0200 (CEST)
-X-QQ-mid: bizesmtp80t1716891186tr79gag3
-X-QQ-Originating-IP: mU0ZiUJy80utszFOjSRGw/KmQ96TUsnle7H6edTT+0Y=
-Received: from localhost.localdomain ( [125.76.217.162])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 28 May 2024 18:13:04 +0800 (CST)
-X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: q+yjhizk/eKeBdHYvfHXAuDEITnVQO1x40zo+W3OTiV+pHJM0LXYJWBes689A
- XbftF6fLzpb6RCapUb2UI4uk3Ky67/AmBMDqPuZHSFucD5Z57kOumWxnG5EDFq7elL8ZFeP
- /gMMiRzv9bRGleQ2+lvXqYa53dtDkmpCOV9757zY56PODL69TjH54W9elknRMjg5zX+/4Yl
- UQ+3puaP7RpUqzMGZEH7/G7nSfB9cFBapUlJSl9SwXcLe9B/tMG2EHU8yWmbbknU2VBMs0Y
- ZUUj4ftMoH9OUz9AWrWvi74hVBcIKTulmnZL8eoi6vraqKfep2FYy1RH4PmmU6rxduwETZR
- 6eXo5kbpfmUEh08sQ+EpFlkS82RoU/88z9/IVYnilz5FNPxAFOUAEnefRuCu3onWNKbtOpH
- b0ptRQ75d6A=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 11514926355899452521
-From: mataotao <mataotao@uniontech.com>
-To: ltp@lists.linux.it
-Date: Tue, 28 May 2024 18:13:03 +0800
-Message-Id: <20240528101303.17143-1-mataotao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 99978601104
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 22:37:07 +0200 (CEST)
+Received: by mail-pj1-f50.google.com with SMTP id
+ 98e67ed59e1d1-2bdf69d387eso1056104a91.0
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 13:37:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1716928626; x=1717533426;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=ocGhciDIymjtV72cJYX7TD5dK3LYFKmjLW2hh9YZxCU=;
+ b=iSTzypGEUclWml909bgvdQM4OZ6Z08dlVhbJvhmJbVnfO/9q9OPoEngEdYNTudGXIG
+ cJs02MoeldkjfuAmtUlTRK2C3o2KWVwJpROMFwHRVTgYSIeY0FqeFzu0yKSRnhOkep/8
+ LJ1mZ1p/pqA8ztq3zU/467UHGQNtA0RuFuwqKweXHYqPaJpcnyjlaIoo6Iy7rS2iamVI
+ YzsB2ifIYUqobc0pU5W3DN0f9b8QL4JaUipM7lXNyX8mEyrqDc1Vj1BrtxfFSznLdKup
+ cT/cmKt+RFFud0cOSlY3w6HwVrEdqmkkyKGj3gt9ejgH6PpQmQ8JO4BLYAY4Y2+LfqhW
+ hocg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUE4v30uyaXW0RDs8/AI0vw/gq+UFuLiqgDEGQi0Jk0BuT4kkRAWqKszZ0KttVK1yFLew3wimEzVCBxZclGjLS+2rg=
+X-Gm-Message-State: AOJu0Yy//x90OFA7hdjkV2mr88CZjeR8OfBudCzFYfF9jPTN+/FHNTT6
+ 4Z52K/dd42gQ+cwuz8fNylROj3sjVXv13o1WhbH9KmFXOY5fBs8E
+X-Google-Smtp-Source: AGHT+IGkLYLgbQKRVPQzy0nbn4TlmHHj/65jHN2jLz0MG1BUJjlY4P+swh2Vt91PtfsBBifZf+g61Q==
+X-Received: by 2002:a17:90b:f89:b0:2bd:92e7:c305 with SMTP id
+ 98e67ed59e1d1-2bf5f10a44bmr13066160a91.21.1716928625840; 
+ Tue, 28 May 2024 13:37:05 -0700 (PDT)
+Received: from snowbird ([136.25.84.117]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-2bf5f50c3fdsm8267619a91.18.2024.05.28.13.37.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 28 May 2024 13:37:05 -0700 (PDT)
+Date: Tue, 28 May 2024 13:37:02 -0700
+From: Dennis Zhou <dennis@kernel.org>
+To: Mateusz Guzik <mjguzik@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <ZlZAbkjOylfZC5Os@snowbird>
+References: <202405281421.127ddddf-oliver.sang@intel.com>
+ <pywb7wcml44gzgidn7mtwwr23mybbilakckchk4777wfibtruj@n4yiwwpvglf7>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <pywb7wcml44gzgidn7mtwwr23mybbilakckchk4777wfibtruj@n4yiwwpvglf7>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Wed, 29 May 2024 16:59:19 +0200
-Subject: [LTP] [PATCH] shell: add echo command check
+Subject: Re: [LTP] [dennis-percpu:for-6.11] [percpu_counter] 05dbad003f:
+ ltp.getrusage03.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,120 +75,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mataotao <mataotao@uniontech.com>
+Cc: oe-lkp@lists.linux.dev, linux-mm@kvack.org, ltp@lists.linux.it,
+ lkp@intel.com, Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
----
- runtest/commands                      |  1 +
- testcases/commands/echo/Makefile      | 11 +++++
- testcases/commands/echo/echo_tests.sh | 62 +++++++++++++++++++++++++++
- 3 files changed, 74 insertions(+)
- create mode 100644 testcases/commands/echo/Makefile
- create mode 100644 testcases/commands/echo/echo_tests.sh
+On Tue, May 28, 2024 at 11:05:54AM +0200, Mateusz Guzik wrote:
+> On Tue, May 28, 2024 at 02:45:35PM +0800, kernel test robot wrote:
+> > Hello,
+> > 
+> > kernel test robot noticed "ltp.getrusage03.fail" on:
+> > 
+> > commit: 05dbad003f2b2ececb1cc7428bfa8f470cc34b95 ("percpu_counter: add a cmpxchg-based _add_batch variant")
+> > https://git.kernel.org/cgit/linux/kernel/git/dennis/percpu.git for-6.11
+> > 
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20240525
+> > with following parameters:
+> > 
+> > 	disk: 1HDD
+> > 	fs: xfs
+> > 	test: syscalls-03/getrusage03
+> > 
+> > 
+> > 
+> > Running tests.......
+> > <<<test_start>>>
+> > tag=getrusage03 stime=1716734654
+> > cmdline="getrusage03"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > tst_test.c:1733: TINFO: LTP version: 20240524-4-g22004c7db
+> > tst_test.c:1617: TINFO: Timeout per run is 0h 02m 30s
+> > getrusage03.c:43: TPASS: initial.self ~= child.self
+> > getrusage03.c:59: TFAIL: initial.children = 0, expected 102400
+> > getrusage03.c:66: TPASS: child.children == 0
+> > getrusage03.c:86: TFAIL: child.children = 0, expected 307200
+> > getrusage03.c:104: TPASS: initial.children ~= pre_wait.children
+> > getrusage03.c:114: TFAIL: post_wait.children = 0, expected 409600
+> > getrusage03.c:133: TPASS: initial.children ~= after_zombie.children
+> > getrusage03_child.c:57: TPASS: initial.self ~= exec.self
+> > getrusage03_child.c:62: TPASS: initial.children ~= exec.children
+> > 
+> 
+> I confirm this patch broke things, thanks for the report.
+> 
+> Make sure to sit before you take a look at the fix:
+> 
+> commit 6e8b4caf667fb6fad1c63b061e303faab6d917ef
+> Author: Mateusz Guzik <mjguzik@gmail.com>
+> Date:   Tue May 28 04:52:10 2024 -0400
+> 
+>     lol
+> 
+> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
+> index c3140276bb36..51bc5246986d 100644
+> --- a/lib/percpu_counter.c
+> +++ b/lib/percpu_counter.c
+> @@ -97,7 +97,7 @@ void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount, s32 batch)
+> 
+>         count = this_cpu_read(*fbc->counters);
+>         do {
+> -               if (unlikely(abs(count + amount)) >= batch) {
+> +               if (unlikely(abs(count + amount) >= batch)) {
+>                         raw_spin_lock_irqsave(&fbc->lock, flags);
+>                         /*
+>                          * Note: by now we might have migrated to another CPU
+> 
+> 
+> Dennis, do I need to submit a v4? Given that this is a trivial one line
+> fixup perhaps it would be handier if you massaged the stuff on your
+> branch. I'm fine either way.
+> 
 
-diff --git a/runtest/commands b/runtest/commands
-index 5ec2c3b69..570b81262 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -12,6 +12,7 @@ gzip01_sh gzip_tests.sh
- cp01_sh cp_tests.sh
- ln01_sh ln_tests.sh
- mkdir01_sh mkdir_tests.sh
-+echo_tests_sh echo_tests.sh
- mv01_sh mv_tests.sh
- du01_sh du01.sh
- df01_sh df01.sh
-diff --git a/testcases/commands/echo/Makefile b/testcases/commands/echo/Makefile
-new file mode 100644
-index 000000000..20fbab421
---- /dev/null
-+++ b/testcases/commands/echo/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2024 UnionTech Ltd.
-+# Author: Taotao Ma <mataotao@uniontech.com>
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+INSTALL_TARGETS		:= echo_tests.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/echo/echo_tests.sh b/testcases/commands/echo/echo_tests.sh
-new file mode 100644
-index 000000000..0223cbf5b
---- /dev/null
-+++ b/testcases/commands/echo/echo_tests.sh
-@@ -0,0 +1,62 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2024
-+# Copyright (c) 2024 UnionTech Ltd.
-+# Author: Taotao Ma <mataotao@uniontech.com>
-+#
-+# Test basic functionality of lsmod command.
-+
-+TST_CNT=4
-+TST_TESTFUNC=do_test
-+TST_NEEDS_TMPDIR=1
-+TST_NEEDS_CMDS="echo"
-+. tst_test.sh
-+
-+echo_test()
-+{
-+    local echo_opt=$1
-+    local echo_content=$2
-+
-+    local echo_cmd="echo $echo_opt $echo_content"
-+
-+    $echo_cmd > temp 2>&1
-+    if [ $? -ne 0 ]; then
-+        grep -q -E "unknown option|invalid option" temp
-+        if [ $? -eq 0 ]; then
-+            tst_res TCONF "$echo_cmd not supported."
-+        else
-+            tst_res TFAIL "$echo_cmd failed."
-+        fi
-+        return
-+    fi
-+
-+    line=$(wc -l temp | awk '{print $1}')
-+
-+    if [ -z "$echo_opt" ];then
-+        if [ "$line" -ne 1 ];then
-+            tst_res TFAIL "$echo_cmd failed."
-+            return
-+        fi
-+    else
-+        if [ "$echo_opt" = "-e" ];then
-+            if [ "$line" -ne 2 ];then
-+                tst_res TFAIL "$echo_cmd failed."
-+                return
-+            fi
-+        fi
-+    fi
-+
-+    tst_res TPASS "echo passed with $echo_opt option."
-+}
-+
-+do_test()
-+{
-+    case $1 in
-+        1) echo_test "" "hello\nworld";;
-+        2) echo_test "-e" "hello\nworld";;
-+        3) echo_test "--help";;
-+        4) echo_test "--version";;
-+    esac
-+}
-+
-+tst_run
-\ No newline at end of file
--- 
-2.20.1
+Well that's awkward.. Can you please send a v4?
+
+> That said this really should have been reported by something.
+
+That's fair. I think I starred at parenthesis for too long that day so I
+missed it too. The nice thing is these branches get longer running CI so
+we can track these things.
+
+Thanks,
+Dennis
+
 
 
 -- 
