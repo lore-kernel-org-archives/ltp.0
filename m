@@ -4,115 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE3C7C25B7C
-	for <ltp@archiver.kernel.org>; Mon, 27 May 2024 23:18:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E772C25B78
+	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 03:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1716868072; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Fmt50AeANs7zzatgfblUSeZIZ7Q3hV0S09c/72F6mTM=;
+ b=Umb/is2fEux5bk9k035QkrK465F2uVCqvLojnowSjH+tnHIiAlVr+yBiY35Eve35vLrZe
+ KgHVIbWyalhLCS1aD8YX9GAdO1Rl4c9Z3lDCuXN8qnLQzRxlyDvhPSzJlC0QuYrE3OJW46c
+ PwyxzozbL3mlCbCXJiSW/QQtoW2E/68=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 499C83D03EE
-	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 01:18:36 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 125243D04F8
+	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 05:47:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EFF8A3CDEBC
- for <ltp@lists.linux.it>; Tue, 28 May 2024 01:18:20 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 429AC3D0293
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 05:47:28 +0200 (CEST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1B7901400261
- for <ltp@lists.linux.it>; Tue, 28 May 2024 01:18:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6894621BA3;
- Mon, 27 May 2024 23:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716851898;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n0BjRYyXTPhTk3DF83/iBWNisVOGjn27Cm6VKf4m2uI=;
- b=faLk9XJ/QP1CDR75e/oK53BQAZUonQjpokIuUCbvrxsPmH/oThbbjo4SJRiYy26KG3wGQ1
- VK0mCMaa6X0iWq1zaxDhA8kGNyRHeWhe9GswnMXgWLHMvh6d9CScv9o9Fg0auwz1HYJvPt
- D932+81fi8tPPResz6MBSMqRjSylhGY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716851898;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n0BjRYyXTPhTk3DF83/iBWNisVOGjn27Cm6VKf4m2uI=;
- b=mi45sTgqE//lmmqt6XsXz+vopL3XuGakaX6qsSF6rWqBDn+bkgtBa7NcxZ8wQfUoVpZqcc
- B3XS9/WbXu3wj6BA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uLLTbndR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dFs1YqQG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1716851897;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n0BjRYyXTPhTk3DF83/iBWNisVOGjn27Cm6VKf4m2uI=;
- b=uLLTbndRgEm3FvlKXfC+66CCBIAT/fOKojVPM3Rwrf5ZzXUpsv92ZoHvU32ouDNF5gwsMl
- 7Hhtxd6LQ9iFhWNVZg+ORm+YlF3YLJ2ZA7RtLTxuo/ItfFpoHg9FKtbnSMlTc49CJjDft2
- ReovVPM5bF7AenAiBJLV/yt5EOnSPzs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1716851897;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n0BjRYyXTPhTk3DF83/iBWNisVOGjn27Cm6VKf4m2uI=;
- b=dFs1YqQGNSbCOa/zEj2dJpKpaW7aJio0nFSjc/UO0uLJdVQjxWduDOJyg3N7m7Jtr5bgtK
- UnSsDz/ScAnITqAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 03F7213A56;
- Mon, 27 May 2024 23:18:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NJElObgUVWZ4MQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 27 May 2024 23:18:16 +0000
-Date: Tue, 28 May 2024 01:18:07 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20240527231807.GB375669@pevik>
-References: <20240522124754.9599-1-wegao@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2FB2F60063A
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 05:47:27 +0200 (CEST)
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-5785199e0d6so408568a12.2
+ for <ltp@lists.linux.it>; Mon, 27 May 2024 20:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1716868046; x=1717472846; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=KaRSzrSvomNSeUZ7yy46XXoHH9zcPUI6RBxZV9fn4JM=;
+ b=YZAKy4DhTsETmcGa9ik0HIyShMeqbtKtMSJHEZKBlPthhExfORhwcdQ2NKwrntbHws
+ 1Fzb3IT1HsUdez6E5ULY6+PF8/sTl16mHfrABx20yqZ1TC7MDZBss9QNtfrlENHGVZOu
+ zsF6gldlg5jRDCIgOolxFJMz/7EnxOYZLKwpIfPe87j/g7XUnElq2JviAGcCV4sDgY6f
+ JcVLXk6nqeqQdLOkyLkdk7gNv1rqV6msuaQPvTaLImaWnV75goUR/fEHQeXOZBZs9sb3
+ Lt3b8YGSNeMu+9nS01SiJIgrJpAwUbyiTp5QwkRlQDgbovgDvUnLeVEcQpyeXVeiDe4a
+ RhdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1716868046; x=1717472846;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=KaRSzrSvomNSeUZ7yy46XXoHH9zcPUI6RBxZV9fn4JM=;
+ b=gfknUTH8NEh0EMDtE4OsO5j5REDyP2oIPREDlSg0g3FTXfCn+tDtmIBVYddU3ehl8r
+ TVQZYKIqLhNz+nuLhebYrt9LNsyPUsbFR+NSI882Wxb7nXkRk0nia3wSPXdlVucpUqQs
+ qmhOSjr2RnUfexrlnOPk8AMoah0B/mnh1z9RqNa8e//ONRHZxNiwB2xtqzDppKG+/vls
+ RUnYjjHAjw3wTM2hDar6/8Q4KBqSXg8SIKUn+1EE7pgqcYdWewMgzS2+5h0wvmUfOIQB
+ DrRVv43K74nT+6FzSDMFlLFTEW+Uf7zO+ubTCl/NyjoeXLoal0qQ1TXrzol/tgpoWEBx
+ ARwA==
+X-Gm-Message-State: AOJu0Yz1hwlCiThLOGEMvvNWv9rlG958JjkgIEPBYJ95tDLTVVzBeI8M
+ MadwB+ocpuakplc2pgE7QyRHVH1CNit7ozbEhSevfnDIu9Z8WIQWTsLiVMePCZ4aXTratcEcw/k
+ =
+X-Google-Smtp-Source: AGHT+IGcZ7iuj3pKPfHMnqeFHTzribYcD8nNONOhHMwRFscUNJmKcR6MmomFv2LMKifNqpn8lXWsdw==
+X-Received: by 2002:a50:d59d:0:b0:578:6782:578a with SMTP id
+ 4fb4d7f45d1cf-57867825ecfmr8820407a12.2.1716868046066; 
+ Mon, 27 May 2024 20:47:26 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-579daf4b7ddsm1608132a12.3.2024.05.27.20.47.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 27 May 2024 20:47:25 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 27 May 2024 23:47:18 -0400
+Message-Id: <20240528034718.31798-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240522124754.9599-1-wegao@suse.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto,suse.cz:email,suse.com:url,suse.com:email];
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 6894621BA3
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] msync04: Check disk content if dirty bit check
- failed
+Subject: [LTP] [PATCH v1] pwritev201.c: Add check for RWF_APPEND flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,115 +89,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ .../kernel/syscalls/pwritev2/pwritev201.c     | 35 ++++++++++++-------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-> msync04 test is inherently racy and nothing guarantees that the page
-> is not written out before get_dirty_page() manages to read the page state.
-> Hence the test should be reworked to verify the page contents is on disk
-> when it finds dirty bit isn't set anymore...
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+index 987412ba8..cb329d8fc 100644
+--- a/testcases/kernel/syscalls/pwritev2/pwritev201.c
++++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+  * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
++ * Copyright (c) 2024 SUSE LLC <wegao@suse.com>
+  */
+ 
+ /*\
+@@ -15,6 +16,9 @@
+  * - If the file offset argument is -1, pwritev2() should succeed in
+  *   writing the expected content of data and the current file offset
+  *   is used and changed after writing.
++ * - If the file flag argument is RWF_APPEND, pwritev2() should succeed in
++ *   writing the expected content to end of file. The offset argument does
++ *   not changed after writing except offset argument is -1.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -42,13 +46,16 @@ static struct tcase {
+ 	off_t write_off;
+ 	ssize_t size;
+ 	off_t exp_off;
++	int flag;
+ } tcases[] = {
+-	{0,     1, 0,          CHUNK, 0},
+-	{CHUNK, 2, 0,          CHUNK, CHUNK},
+-	{0,     1, CHUNK / 2,  CHUNK, 0},
+-	{0,     1, -1,         CHUNK, CHUNK},
+-	{0,     2, -1,         CHUNK, CHUNK},
+-	{CHUNK, 1, -1,         CHUNK, CHUNK * 2},
++	{0,     1, 0,          CHUNK, 0, 0},
++	{CHUNK, 2, 0,          CHUNK, CHUNK, 0},
++	{0,     1, CHUNK / 2,  CHUNK, 0, 0},
++	{0,     1, -1,         CHUNK, CHUNK, 0},
++	{0,     2, -1,         CHUNK, CHUNK, 0},
++	{CHUNK, 1, -1,         CHUNK, CHUNK * 2, 0},
++	{CHUNK, 1, CHUNK,      CHUNK, CHUNK, RWF_APPEND},
++	{CHUNK, 1, -1,         CHUNK, CHUNK * 2, RWF_APPEND},
+ };
+ 
+ static void verify_pwritev2(unsigned int n)
+@@ -60,7 +67,7 @@ static void verify_pwritev2(unsigned int n)
+ 	SAFE_PWRITE(1, fd, initbuf, sizeof(initbuf), 0);
+ 	SAFE_LSEEK(fd, tc->seek_off, SEEK_SET);
+ 
+-	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, 0));
++	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, tc->flag));
+ 	if (TST_RET < 0) {
+ 		tst_res(TFAIL | TTERRNO, "pwritev2() failed");
+ 		return;
+@@ -72,17 +79,21 @@ static void verify_pwritev2(unsigned int n)
+ 		return;
+ 	}
+ 
+-	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != tc->exp_off) {
++	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != tc->exp_off && !(tc->flag == RWF_APPEND && tc->write_off == -1)) {
+ 		tst_res(TFAIL, "pwritev2() had changed file offset");
+ 		return;
+ 	}
+ 
+ 	memset(preadbuf, 0, CHUNK);
+ 
+-	if (tc->write_off != -1)
+-		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->write_off);
+-	else
+-		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->seek_off);
++	if (tc->flag == RWF_APPEND)
++		SAFE_PREAD(1, fd, preadbuf, tc->size, sizeof(initbuf));
++	else {
++		if (tc->write_off != -1)
++			SAFE_PREAD(1, fd, preadbuf, tc->size, tc->write_off);
++		else
++			SAFE_PREAD(1, fd, preadbuf, tc->size, tc->seek_off);
++	}
+ 
+ 	for (i = 0; i < tc->size; i++) {
+ 		if (preadbuf[i] != 0x61)
+-- 
+2.35.3
 
-It's nice habit to add Jan's credit :)
-
-He did it [1], thus one would add:
-Suggested-by: Jan Kara <jack@suse.cz>
-
-+ Add a ticket:
-Implements: https://github.com/linux-test-project/ltp/issues/1157
-
-[1] https://bugzilla.suse.com/show_bug.cgi?id=1224201#c13
-[2] https://lore.kernel.org/ltp/20220125121746.wrs4254pfs2mwexb@quack3.lan/
-
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/syscalls/msync/msync04.c | 34 ++++++++++++++---------
->  1 file changed, 21 insertions(+), 13 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-> index 72ddc27a4..c296c8b20 100644
-> --- a/testcases/kernel/syscalls/msync/msync04.c
-> +++ b/testcases/kernel/syscalls/msync/msync04.c
-> @@ -46,6 +46,7 @@ uint64_t get_dirty_bit(void *data)
->  static void test_msync(void)
->  {
->  	uint64_t dirty;
-While at it, could you please remove dirty variable and use get_dirty_bit(...)
-directly?
-
-> +	char buffer[20];
-
->  	test_fd = SAFE_OPEN("msync04/testfile", O_CREAT | O_TRUNC | O_RDWR,
->  		0644);
-> @@ -56,20 +57,27 @@ static void test_msync(void)
->  	mmaped_area[8] = 'B';
->  	dirty = get_dirty_bit(mmaped_area);
->  	if (!dirty) {
- 	if (!get_dirty_bit(mmaped_area)) {
-
-> -		tst_res(TFAIL, "Expected dirty bit to be set after writing to"
-> -				" mmap()-ed area");
-> -		goto clean;
-> -	}
-> -	if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
-> -		tst_res(TFAIL | TERRNO, "msync() failed");
-> -		goto clean;
-> +		tst_res(TINFO, "Not see dirty bit so we check content of file instead");
-> +		test_fd = SAFE_OPEN("msync04/testfile", O_RDONLY);
-> +		SAFE_READ(0, test_fd, buffer, 9);
-> +		if (buffer[8] == 'B')
-> +			tst_res(TCONF, "write file ok but msync couldn't be tested"
-> +				" because the storage was written to too quickly");
-> +		else
-> +			tst_res(TFAIL, "write file failed");
-> +	} else {
-> +		if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
-> +			tst_res(TFAIL | TERRNO, "msync() failed");
-I know you copy old code, but it would deserve to fix: -1 is failure, anything
-different than 0 or -1 is invalid value.  And you get this for free if you use
-TST_EXP_PASS_SILENT().
-
-> +			goto clean;
-
-nit: Having if and else part in it's own functions (verify_mmaped(),
-verify_dirty() would allow to get rid of goto and produced slightly nicer code
-(less indentation => less split lines):
-
-	if (!get_dirty_bit(mmaped_area))
-		verify_mmaped();
-	else
-		verify_dirty();
-
-	SAFE_MUNMAP(mmaped_area, pagesize);
-	mmaped_area = NULL;
-
-> +		}
-> +		dirty = get_dirty_bit(mmaped_area);
-> +		if (dirty)
-		if (get_dirty_bit(mmaped_area)) {
-
-> +			tst_res(TFAIL, "msync() failed to write dirty page despite"
-> +					" succeeding");
-I would keep this string separate
-> +		else
-> +			tst_res(TPASS, "msync() working correctly");
-> +
-
->  	}
-> -	dirty = get_dirty_bit(mmaped_area);
-> -	if (dirty)
-> -		tst_res(TFAIL, "msync() failed to write dirty page despite"
-> -				" succeeding");
-> -	else
-> -		tst_res(TPASS, "msync() working correctly");
-
->  clean:
->  	SAFE_MUNMAP(mmaped_area, pagesize);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
