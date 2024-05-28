@@ -4,87 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5673C25B78
-	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 11:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1716895888; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=sGjfAlO9KsVOpvNjWQYVZDKw6iegdzwSU9MSyFdOc6w=;
- b=fcyECemiCqdNVg6c/z3hmbH77RyKHoYOqELO7Y87Z7ylVZPMEo1OcFlSP/CQZ+3BVtGUk
- uHlhvNbfNCIxSTGvnp85ije9c6DHjy0Ouo+rbZpLLIS9+ENVDFBYTV0nRIGV/V2vh8kqKoX
- Se4689WkRaqidWkyLCCTaJqFGKwVoNU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFD6EC25B78
+	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 12:06:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D01EC3D053A
-	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 13:31:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 20EC03D052A
+	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 14:06:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7FC163CFCD7
- for <ltp@lists.linux.it>; Tue, 28 May 2024 13:31:07 +0200 (CEST)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9A7763C67E5
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 14:06:02 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 95C86601BC1
- for <ltp@lists.linux.it>; Tue, 28 May 2024 13:31:06 +0200 (CEST)
-Received: by mail-ed1-x534.google.com with SMTP id
- 4fb4d7f45d1cf-57857e0f464so981278a12.0
- for <ltp@lists.linux.it>; Tue, 28 May 2024 04:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1716895866; x=1717500666; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ycQB1WGw9yj5JgkkKXGN8PNHOa5tW3znWt4ebkkKszw=;
- b=bWszQKZ8d5bT/AH6CqEg4Kuys1QcLuSnpNhelgItlvb/kKEbJ+EeJ97O06obvdNXxb
- 4IDAIogYlN4KlM0wDCh0gtYnGedS46wCcn1Pk0PsJdY+YRbAQmb2yXrJhr1zaX/rbw+e
- xSto1zCI68sEvFWci9uzMcDrlloGZDgb+FVOQdu1Fo7rK52Z6L9d1LuFyzh2gl8bLuq9
- nJCzcpmKJWUhIUINVtwzPYtcs/d+2kwsznMnYTXIf6MywRubt0nuyuj8kRIDpM9bgdzG
- Wh+0VFy5aOy33pgXQMtfB8t440PGXe4WuwuS9GQbawlJk5IFXc+XbZFogQBfVuqkXYoL
- px1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1716895866; x=1717500666;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ycQB1WGw9yj5JgkkKXGN8PNHOa5tW3znWt4ebkkKszw=;
- b=KaoLWCNROae5/rZ+rijS0g2pzQ2yTJ46OzNQ3SocrjrczIFiZcFPy92jEET0+Iu7+h
- FAyVJI90Wld8FTpvgj3s5V2RTJhXwVsaTPjfpuDmszDAwgIlOC30nqKUtBB6BuaCFCTB
- CVKpcAFYkPD+IMinmfJtK0zodPINePrn9OgzHHvbproeKoY416qQmdmPIWYFQ6IygMIU
- y5DfLTRJ0HFu3SnM/dGGAA3huO9CUGVofcWQXNBUy0CMohfTiK0Y5rpcp34wx/5v//bE
- gqo17p9x+QrxGgT1miXoKnscFhYhU+HNH97WF6PrlNufu1rCU0qvL6xpcqaVTfDC7Qx7
- fWIQ==
-X-Gm-Message-State: AOJu0Yz4sQPETNidnXqLNieIPwebuxd7NqT0tk4U7nLwC/SCLh68GdWI
- wvdwmeWT6SvvSfUb6xBmE0p4HxG01lULmyloh0ziqlifnijalo5dl+y0sRlIuc+wVtYAT5VuXSm
- U
-X-Google-Smtp-Source: AGHT+IHcZ0gO6p67k3DwYkIl+pU4jeVdOLtqCwAXbVZP9Qg5bOaq/vEqvuhP/Z2eu6p9rkbsyfs3Pg==
-X-Received: by 2002:a17:906:d8d2:b0:a62:c02:425a with SMTP id
- a640c23a62f3a-a626525d448mr849541466b.74.1716895865640; 
- Tue, 28 May 2024 04:31:05 -0700 (PDT)
-Received: from [192.168.1.29] ([151.51.162.26])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a626c93a84bsm598995466b.72.2024.05.28.04.31.05
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 28 May 2024 04:31:05 -0700 (PDT)
-Message-ID: <8a4a1452-0d8b-473e-be89-c0d4fb286abd@suse.com>
-Date: Tue, 28 May 2024 13:31:04 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E7DEE1A01104
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 14:06:01 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 10D2D20282;
+ Tue, 28 May 2024 12:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1716897961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=X3+1oQ3mD6iaTU0MtwahBBsw71OEU4CyBgPYbWz4jc0=;
+ b=j7NTlZpnVrx+FJtRUvy8FN2IrQln9WsQwTkj9UGyUVtqiZDYoxzhpNJ/GM+3PiWfXBn7w4
+ t2lVRBWhID5yUgA/KSNXEBXzBluFiv04BP32fr8hEys1ijR0+eQyiUTcfzKurTpotz4r4f
+ MOfugqByDHfsg76+0TWH57cHxSH+22w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1716897961;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=X3+1oQ3mD6iaTU0MtwahBBsw71OEU4CyBgPYbWz4jc0=;
+ b=zycxYa9al81V5WqCsCxwXn+iT6fZdez75axrIWBIupDlUx7F+DY+ZqSVSBB633nTM0W/fU
+ qttJen3oDdq/HwDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1716897961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=X3+1oQ3mD6iaTU0MtwahBBsw71OEU4CyBgPYbWz4jc0=;
+ b=j7NTlZpnVrx+FJtRUvy8FN2IrQln9WsQwTkj9UGyUVtqiZDYoxzhpNJ/GM+3PiWfXBn7w4
+ t2lVRBWhID5yUgA/KSNXEBXzBluFiv04BP32fr8hEys1ijR0+eQyiUTcfzKurTpotz4r4f
+ MOfugqByDHfsg76+0TWH57cHxSH+22w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1716897961;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=X3+1oQ3mD6iaTU0MtwahBBsw71OEU4CyBgPYbWz4jc0=;
+ b=zycxYa9al81V5WqCsCxwXn+iT6fZdez75axrIWBIupDlUx7F+DY+ZqSVSBB633nTM0W/fU
+ qttJen3oDdq/HwDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D264F13A83;
+ Tue, 28 May 2024 12:06:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WCOjMajIVWYjTQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 28 May 2024 12:06:00 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-References: <20240528103114.2311-1-maxj.fnst@fujitsu.com>
- <20240528103258.2390-2-maxj.fnst@fujitsu.com>
-Content-Language: en-US
-In-Reply-To: <20240528103258.2390-2-maxj.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Date: Tue, 28 May 2024 14:05:53 +0200
+Message-ID: <20240528120554.433874-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240528120554.433874-1-pvorel@suse.cz>
+References: <20240528120554.433874-1-pvorel@suse.cz>
+MIME-Version: 1.0
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] signalfd: Add negative tests
+Subject: [LTP] [PATCH 1/2] lib: Add TINFO_WARN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,173 +112,143 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+When replaced tst_res(TINFO, "WARNING: ...") with tst_res(TINFO_WARN,
+"..."), then:
 
-Please take into account the same considerations made in signalfd01 test 
-refactoring.
+- output message is magenta (the same as for TWARN => more visible),
+- "WARNING" is printed by the library (unification),
 
-Regards,
-Andrea Cervesato
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_res_flags.h          |  6 +++++-
+ include/tst_test.h               |  2 +-
+ lib/newlib_tests/tst_res_flags.c |  1 +
+ lib/tst_ansi_color.c             |  1 +
+ lib/tst_res.c                    | 12 ++++++++----
+ lib/tst_test.c                   |  3 +++
+ 6 files changed, 19 insertions(+), 6 deletions(-)
 
-On 5/28/24 12:33, Ma Xinjian via ltp wrote:
-> Add negative cases for signalfd(), when errno is EBADF or EINVAL
->
-> Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
-> ---
->   runtest/syscalls                              |   1 +
->   testcases/kernel/syscalls/signalfd/.gitignore |   1 +
->   .../kernel/syscalls/signalfd/signalfd02.c     | 115 ++++++++++++++++++
->   3 files changed, 117 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/signalfd/signalfd02.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index a06b046ac..2dac79798 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1487,6 +1487,7 @@ signal05 signal05
->   signal06 signal06
->   
->   signalfd01 signalfd01
-> +signalfd02 signalfd02
->   
->   signalfd4_01 signalfd4_01
->   signalfd4_02 signalfd4_02
-> diff --git a/testcases/kernel/syscalls/signalfd/.gitignore b/testcases/kernel/syscalls/signalfd/.gitignore
-> index 3c9ed737c..959022f41 100644
-> --- a/testcases/kernel/syscalls/signalfd/.gitignore
-> +++ b/testcases/kernel/syscalls/signalfd/.gitignore
-> @@ -1 +1,2 @@
->   /signalfd01
-> +/signalfd02
-> diff --git a/testcases/kernel/syscalls/signalfd/signalfd02.c b/testcases/kernel/syscalls/signalfd/signalfd02.c
-> new file mode 100644
-> index 000000000..9ca943942
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/signalfd/signalfd02.c
-> @@ -0,0 +1,115 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-> + * Author: Ma Xinjian <maxj.fnst@fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that signalfd(2) fails with
-> + *
-> + * - EBADF when fd is invalid
-> + * - EINVAL when fd is not a valid signalfd file descriptor
-> + * - EINVAL when flags are invalid
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <signal.h>
-> +#include "tst_test.h"
-> +#include "config.h"
-> +
-> +#ifndef HAVE_SIGNALFD
-> +#define USE_STUB
-> +#endif
-> +
-> +#ifdef HAVE_SYS_SIGNALFD_H
-> +#include <sys/signalfd.h>
-> +#elif defined HAVE_LINUX_SIGNALFD_H
-> +#include <linux/signalfd.h>
-> +#define USE_OWNIMPL
-> +#else
-> +#define USE_STUB
-> +#endif /* HAVE_SYS_SIGNALFD_H */
-> +
-> +#ifndef HAVE_STRUCT_SIGNALFD_SIGINFO_SSI_SIGNO
-> +#define USE_STUB
-> +#endif /* HAVE_STRUCT_SIGNALFD_SIGINFO_SSI_SIGNO */
-> +
-> +#ifdef USE_STUB
-> +TST_TEST_TCONF("This system does not support signalfd()");
-> +#else /* USE_STUB */
-> +#if defined USE_OWNIMPL
-> +#include "lapi/syscalls.h"
-> +int signalfd(int fd, const sigset_t *mask, int flags)
-> +{
-> +	return tst_syscall(__NR_signalfd, fd, mask, flags);
-> +}
-> +#endif /* USE_OWNIMPL */
-> +
-> +#define SIGNAL_FILE "signal_file"
-> +
-> +static int fd_ebadf = -2;
-> +static int fd_einval1;
-> +static int fd_einval2 = -1;
-> +
-> +static sigset_t mask1;
-> +static sigset_t mask2;
-> +static sigset_t mask3;
-> +
-> +static struct test_case_t {
-> +	int *fd;
-> +	sigset_t *mask;
-> +	int flags;
-> +	int expected_errno;
-> +	char *desc;
-> +} tcases[] = {
-> +	{&fd_ebadf, &mask1, 0, EBADF, "fd is invalid"},
-> +	{&fd_einval1, &mask2, 0, EINVAL,
-> +		"fd is not a valid signalfd file descriptor"},
-> +	{&fd_einval2, &mask3, -1, EINVAL, "flags are invalid"},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_SIGEMPTYSET(&mask1);
-> +	SAFE_SIGADDSET(&mask1, SIGUSR1);
-> +	SAFE_SIGPROCMASK(SIG_BLOCK, &mask1, NULL);
-> +	SAFE_SIGEMPTYSET(&mask2);
-> +	SAFE_SIGADDSET(&mask2, SIGUSR2);
-> +	SAFE_SIGPROCMASK(SIG_BLOCK, &mask2, NULL);
-> +	SAFE_SIGEMPTYSET(&mask2);
-> +	SAFE_SIGADDSET(&mask3, SIGUSR2);
-> +	SAFE_SIGPROCMASK(SIG_BLOCK, &mask3, NULL);
-> +
-> +	fd_einval1 = SAFE_OPEN(SIGNAL_FILE, O_CREAT, 0777);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd_ebadf > 0)
-> +		SAFE_CLOSE(fd_ebadf);
-> +	if (fd_einval1 > 0)
-> +		SAFE_CLOSE(fd_einval1);
-> +	if (fd_einval2 > 0)
-> +		SAFE_CLOSE(fd_einval2);
-> +}
-> +
-> +static void verify_signalfd(unsigned int i)
-> +{
-> +	struct test_case_t *tc = &tcases[i];
-> +
-> +	TST_EXP_FAIL2(signalfd(*(tc->fd), tc->mask, tc->flags),
-> +		tc->expected_errno, "%s", tc->desc);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = verify_signalfd,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +};
-> +
-> +#endif /* USE_STUB */
-
+diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
+index 806940e0d..bb2f38c93 100644
+--- a/include/tst_res_flags.h
++++ b/include/tst_res_flags.h
+@@ -22,6 +22,9 @@
+  * @TINFO: Prints an additional information, it does not change the test result
+  *         counters but unlike TDEBUG the message is always displayed.
+  *
++ * @TINFO_WARN: Reports a single warning, but it does not change the test result
++ *              counters like TINFO.
++ *
+  * @TCONF: Reports unsupported configuration. When tests produce this result at
+  *         least a subset of test was skipped, because it couldn't run. The
+  *         usual reasons are, missing kernel modules or CONFIG options.
+@@ -55,12 +58,13 @@ enum tst_res_flags {
+ 	TDEBUG = 8,
+ 	TINFO = 16,
+ 	TCONF = 32,
++	TINFO_WARN = 64,
+ 	TERRNO = 0x100,
+ 	TTERRNO = 0x200,
+ 	TRERRNO	= 0x400,
+ };
+ 
+ #define TTYPE_RESULT(ttype)	((ttype) & TTYPE_MASK)
+-#define TTYPE_MASK 0x3f
++#define TTYPE_MASK 0x7f
+ 
+ #endif /* TST_RES_FLAGS_H */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 8dc20d110..6c1f7bce1 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -69,7 +69,7 @@ void tst_res_(const char *file, const int lineno, int ttype,
+ 	({									\
+ 		TST_RES_SUPPORTS_TCONF_TDEBUG_TFAIL_TINFO_TPASS_TWARN(\
+ 			!((TTYPE_RESULT(ttype) ?: TCONF) & \
+-			(TCONF | TDEBUG | TFAIL | TINFO | TPASS | TWARN)));				\
++			(TCONF | TDEBUG | TFAIL | TINFO | TPASS | TWARN | TINFO_WARN)));	\
+ 		tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+ 	})
+ 
+diff --git a/lib/newlib_tests/tst_res_flags.c b/lib/newlib_tests/tst_res_flags.c
+index a14f0df2c..7d3bc3785 100644
+--- a/lib/newlib_tests/tst_res_flags.c
++++ b/lib/newlib_tests/tst_res_flags.c
+@@ -20,6 +20,7 @@ static struct tcase {
+ 	{FLAG(TBROK)},
+ 	{FLAG(TCONF)},
+ 	{FLAG(TWARN)},
++	{FLAG(TINFO_WARN)},
+ 	{FLAG(TINFO)},
+ 	{FLAG(TDEBUG), " (printed only with -D or LTP_ENABLE_DEBUG=1)"},
+ };
+diff --git a/lib/tst_ansi_color.c b/lib/tst_ansi_color.c
+index 98041c0af..7d1dca516 100644
+--- a/lib/tst_ansi_color.c
++++ b/lib/tst_ansi_color.c
+@@ -26,6 +26,7 @@ char* tst_ttype2color(int ttype)
+ 		return ANSI_COLOR_YELLOW;
+ 	break;
+ 	case TWARN:
++	case TINFO_WARN:
+ 		return ANSI_COLOR_MAGENTA;
+ 	break;
+ 	case TINFO:
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 7c66d2f6c..d28c0b4f4 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -174,13 +174,16 @@ static void tst_res__(const char *file, const int lineno, int ttype,
+ 	int len = 0;
+ 	int ttype_result = TTYPE_RESULT(ttype);
+ 
+-	if (ttype_result == TDEBUG) {
+-		printf("%s: %i: TDEBUG is not supported\n", __func__, __LINE__);
++	if (ttype_result == TDEBUG || ttype_result == TINFO_WARN) {
++		printf("%s: %i: %s is not supported\n", __func__, __LINE__,
++		       strttype(ttype));
+ 		abort();
+ 	}
+ 
+-	if (file && (ttype_result != TPASS && ttype_result != TINFO))
++	if (file && (ttype_result != TPASS && ttype_result != TINFO
++		     && ttype_result != TINFO_WARN)) {
+ 		len = sprintf(tmesg, "%s:%d: ", file, lineno);
++	}
+ 	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG - len);
+ 
+ 	/*
+@@ -198,7 +201,8 @@ static void tst_res__(const char *file, const int lineno, int ttype,
+ 	 * Set the test case number and print the results, depending on the
+ 	 * display type.
+ 	 */
+-	if (ttype_result == TWARN || ttype_result == TINFO) {
++	if (ttype_result == TWARN || ttype_result == TINFO ||
++	    ttype_result == TINFO_WARN) {
+ 		tst_print(TCID, 0, ttype, tmesg);
+ 	} else {
+ 		if (tst_count < 0)
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 8c212c983..ef5148c0f 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -225,6 +225,9 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 	case TINFO:
+ 		res = "TINFO";
+ 	break;
++	case TINFO_WARN:
++		res = "TINFO WARNING";
++	break;
+ 	case TDEBUG:
+ 		res = "TDEBUG";
+ 	break;
+-- 
+2.43.0
 
 
 -- 
