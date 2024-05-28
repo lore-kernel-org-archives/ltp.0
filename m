@@ -4,48 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF2D2C27C43
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 14:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96ED7C25B75
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 15:00:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D50E13D06C2
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 16:59:50 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E86883D06F8
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 17:00:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EEA053D0512
- for <ltp@lists.linux.it>; Tue, 28 May 2024 11:56:24 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=15.184.224.54; helo=smtpbg154.qq.com;
- envelope-from=mataotao@uniontech.com; receiver=lists.linux.it)
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+ by picard.linux.it (Postfix) with ESMTPS id 855B83D0254
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 12:13:18 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=uniontech.com (client-ip=54.204.34.129;
+ helo=smtpbguseast1.qq.com; envelope-from=mataotao@uniontech.com;
+ receiver=lists.linux.it)
+Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5FA001000DE0
- for <ltp@lists.linux.it>; Tue, 28 May 2024 11:56:22 +0200 (CEST)
-X-QQ-mid: bizesmtp83t1716890174tju01bh7
-X-QQ-Originating-IP: 7GhZUbfEctMO7OEYF8hX5rM6DncCTZIaapXl8vfag3c=
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4955A1A010D1
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 12:13:15 +0200 (CEST)
+X-QQ-mid: bizesmtp80t1716891186tr79gag3
+X-QQ-Originating-IP: mU0ZiUJy80utszFOjSRGw/KmQ96TUsnle7H6edTT+0Y=
 Received: from localhost.localdomain ( [125.76.217.162])
  by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 28 May 2024 17:56:12 +0800 (CST)
+ id ; Tue, 28 May 2024 18:13:04 +0800 (CST)
 X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: y5ttDAKJaXM7SqbWGZQcrKwaQhI81L3FbpC1jqKI1+JjJosgsIQA4/2kGpG+1
- ZxtKXmzGXPPuP/JJGd2EYflDwK/TJGm/pRnMShDJrdh3IAH/IpI/hDntciQWpkCZLytxJdx
- wbO5vbDL8p1L9JyWI8p9MExBo42eTB3ivRFv/9AKJIyikHqPrvBzBzWl8p4V6ipDMTZwEVo
- qqyAT2PDH1nKVDTJjbQVMrdaNcVAy32iaMJMr+SDTmIvP+GkycjIbLWv+XkQ/hjzxtq5VxI
- YF6gotE2y5KKUeNeFYxz40ed87ahU6O4I+HiH0hYOmMmTq/7mDRC/CJBfNOiB2S7DgFk7K/
- 0SD2e/XCgOhO3Kum0BgOipP4dccEkqS+KIFtnf3nyiooPow4rLtOaZu5rhZEQ==
+X-QQ-FEAT: q+yjhizk/eKeBdHYvfHXAuDEITnVQO1x40zo+W3OTiV+pHJM0LXYJWBes689A
+ XbftF6fLzpb6RCapUb2UI4uk3Ky67/AmBMDqPuZHSFucD5Z57kOumWxnG5EDFq7elL8ZFeP
+ /gMMiRzv9bRGleQ2+lvXqYa53dtDkmpCOV9757zY56PODL69TjH54W9elknRMjg5zX+/4Yl
+ UQ+3puaP7RpUqzMGZEH7/G7nSfB9cFBapUlJSl9SwXcLe9B/tMG2EHU8yWmbbknU2VBMs0Y
+ ZUUj4ftMoH9OUz9AWrWvi74hVBcIKTulmnZL8eoi6vraqKfep2FYy1RH4PmmU6rxduwETZR
+ 6eXo5kbpfmUEh08sQ+EpFlkS82RoU/88z9/IVYnilz5FNPxAFOUAEnefRuCu3onWNKbtOpH
+ b0ptRQ75d6A=
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 3983941061773417949
+X-BIZMAIL-ID: 11514926355899452521
 From: mataotao <mataotao@uniontech.com>
 To: ltp@lists.linux.it
-Date: Tue, 28 May 2024 17:56:10 +0800
-Message-Id: <20240528095610.11282-1-mataotao@uniontech.com>
+Date: Tue, 28 May 2024 18:13:03 +0800
+Message-Id: <20240528101303.17143-1-mataotao@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Wed, 29 May 2024 16:59:19 +0200
 Subject: [LTP] [PATCH] shell: add echo command check
