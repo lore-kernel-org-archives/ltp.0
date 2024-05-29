@@ -4,108 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3AF9C27C43
-	for <ltp@archiver.kernel.org>; Tue, 28 May 2024 23:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D773DC25B75
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 06:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1716962662; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=fHx2jG+D20DSwzZUUuG5QZ6obOZiJ42vP2pu4zUFzIA=;
+ b=piOPxO3wsYT3POevgHSVf7G7ZnnY4obqWOhPdPoGs4L5sZMDZ7dC4eMjAWSrtjoOuEQNm
+ 7mTRWUxAK4QBOQkm7ocIOAhOBQblurK0TIb+JXU0AmMqQYpYKhi7E/Y8NVxqeQhAMyqA9oH
+ GRB11zkzPVAJDbrlre5Cb2CuiKBik8E=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF24A3D0620
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 01:12:04 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C1A313D0646
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 08:04:22 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 95CD33CFD28
- for <ltp@lists.linux.it>; Wed, 29 May 2024 01:11:49 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=neilb@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A56F73D063B
+ for <ltp@lists.linux.it>; Wed, 29 May 2024 08:04:00 +0200 (CEST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CE9611400BCA
- for <ltp@lists.linux.it>; Wed, 29 May 2024 01:11:48 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 798962048F;
- Tue, 28 May 2024 23:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1716937907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=d1xqmsHesKNSciEDfpS+I8mFJOg6lBIUMD8j40NmKSw=;
- b=g/NYpOVjbrdfn4O6dgStOLYbVgetLazT5DM1EJUCgpLbUysPZ7wBW+d4fvBgp+eXq6DNe7
- hFgT8lhXFyYBrJ6kohxi7LLPUjjJr3GhAvl6YE1WHABnyHtbO7pm8nN53Nptbc7LQ5fsc2
- PRvSlFkfGQYu47wbO9bcXTDno1OsKqQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1716937907;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=d1xqmsHesKNSciEDfpS+I8mFJOg6lBIUMD8j40NmKSw=;
- b=f3wWKC1PnTSwhP34GDnKLrZunQI2LVxxGgyCJ97xfSjDdR0BJbo25EeGOOZssZFJJMIZ8x
- 3y1H3ozSRAWefPAA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="g/NYpOVj";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=f3wWKC1P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1716937907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=d1xqmsHesKNSciEDfpS+I8mFJOg6lBIUMD8j40NmKSw=;
- b=g/NYpOVjbrdfn4O6dgStOLYbVgetLazT5DM1EJUCgpLbUysPZ7wBW+d4fvBgp+eXq6DNe7
- hFgT8lhXFyYBrJ6kohxi7LLPUjjJr3GhAvl6YE1WHABnyHtbO7pm8nN53Nptbc7LQ5fsc2
- PRvSlFkfGQYu47wbO9bcXTDno1OsKqQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1716937907;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=d1xqmsHesKNSciEDfpS+I8mFJOg6lBIUMD8j40NmKSw=;
- b=f3wWKC1PnTSwhP34GDnKLrZunQI2LVxxGgyCJ97xfSjDdR0BJbo25EeGOOZssZFJJMIZ8x
- 3y1H3ozSRAWefPAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CE4C13A6B;
- Tue, 28 May 2024 23:11:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bC15CLBkVmZsAgAAD6G6ig
- (envelope-from <neilb@suse.de>); Tue, 28 May 2024 23:11:44 +0000
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 877291400159
+ for <ltp@lists.linux.it>; Wed, 29 May 2024 08:03:59 +0200 (CEST)
+Received: by mail-ed1-x52f.google.com with SMTP id
+ 4fb4d7f45d1cf-578626375ffso1821100a12.3
+ for <ltp@lists.linux.it>; Tue, 28 May 2024 23:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1716962639; x=1717567439; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=S9NF7DmixSHyykPubMmi+fDGnwNijGJdWF/OzS908q0=;
+ b=f6coGhaOwjh0v/t6LQyARu4cKNPHUQUln/zR0xjm8MuhOzTTLHPAkMz924DYSjz3QX
+ WRHnhoxbzP2yGyDSeGO0NAhCutJfWIaD0YO8nTR/pWRc3HusjVA0gZ9qJQpPfTBYchBU
+ a6a19jm0T035sfmC3dn6AfRnvj7aZg1ww2/BX1GQLpqik+aVV5bLWiByK3Sp+tNmzWU8
+ /yd38sO0V5REM5V6V2MnqNnKtPOrA+D/NVGNYTIPRuIYfoxorGw2T7j8TyjlXO8U1IPx
+ bGOTnDM0jpDeC1vcOz/RPBwTjzk7sTBkEsud9GqlqlT9f//LZdKo0spcRnYaYnzbnagP
+ PgUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1716962639; x=1717567439;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=S9NF7DmixSHyykPubMmi+fDGnwNijGJdWF/OzS908q0=;
+ b=VZuAPMYphqYPZbhv6uVjfgG6CFPqHGFUT47ETZ4cQemqn4aEJ3dOlxeKKDhHug+RsJ
+ NgLg4o9b5o9iw/hoELiE44jqqjEZ/8l4fpoVeIkeGy+bjVVLRRJxY2wNqMPrRbz429Mh
+ BA4tHuwEmkCqCoXiUukFCwGFVVyLPRda2mgzmvpsNdcMIQuHT/uChQOPPJBDuZxeQzTm
+ srZOT3L0zRuK1ToZlbN6gZOeDANrNObLqXiBNQH483j9Q/YZd6tdF0/RQGD4CLzHryYx
+ 4fG2jf+UCQ/7Z8RW1gvio5o7zfkhiwsetf5q1QptSzoz+f9HcFOPBb4ZEJpZ01AtREWd
+ lBWw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUA3fhKiDl9zUQNlmgMV8L6hSF3bOqorJrMRuleqFoOAMINPUFEuAX8jClgr6X96ansD1mjC1yQACexnD3VJ/9uLdk=
+X-Gm-Message-State: AOJu0Yx4N5lL1WiPnDQR5RQF0XY9z0FNXSMg+jwHXQMap6HjoFuuiZcZ
+ 2a0gjxORHjmyQ5rYmJ6YlH72WhcgdKCEdSVF660mVRxkzNH/b22xBprsU+aF6R+81z91ks+zasg
+ =
+X-Google-Smtp-Source: AGHT+IHtd2bqUvBEIqs0E1URmBemH3JPbVaqU8bpY2UG4cowuxkagodLnBfW0SQcM9uUg1tR4Xo2HA==
+X-Received: by 2002:a17:906:abd0:b0:a5a:896f:9be0 with SMTP id
+ a640c23a62f3a-a62642eb70bmr1075632666b.27.1716962638825; 
+ Tue, 28 May 2024 23:03:58 -0700 (PDT)
+Received: from wegao.185.172.241 ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a6556c5240dsm6368366b.59.2024.05.28.23.03.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 28 May 2024 23:03:58 -0700 (PDT)
+Date: Wed, 29 May 2024 02:03:52 -0400
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZlbFSIp6h+sB5Oqt@wegao.185.172.241>
+References: <20240522124754.9599-1-wegao@suse.com>
+ <20240527231636.GA375669@pevik>
+ <20240528095030.valplwc5t3m3betn@quack3>
+ <20240528123945.GC435237@pevik>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: Trond Myklebust <trond.myklebust@hammerspace.com>,
- Anna Schumaker <anna@kernel.org>
-Date: Wed, 29 May 2024 09:11:36 +1000
-Message-id: <171693789645.27191.13475059024941012614@noble.neil.brown.name>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 798962048F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.98%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[7]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
+Content-Disposition: inline
+In-Reply-To: <20240528123945.GC435237@pevik>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] NFS: abort nfs_atomic_open_v23 if name is too long.
+Subject: Re: [LTP] [PATCH v1] msync04: Check disk content if dirty bit check
+ failed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,46 +97,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Aishwarya.TCV@arm.com, broonie@kernel.org, ltp@lists.linux.it,
- linux-nfs@vger.kernel.org
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On Tue, May 28, 2024 at 02:39:45PM +0200, Petr Vorel wrote:
+> > Hi Petr!
+> 
+> > Overall this looks correct. But what this test really does is that it
+> > verifies msync(2) is clearing dirty page bits. That is not very useful
+> > verification from userspace point of view (as IMO it leans too much on
+> > internal kernel implementation details). msync(2) is really a data
+> > integrity operation so ideally its tests would verify data integrity
+> > guarantees are met after a power failure - that is what userspace is
+> > interested in. But probably these test are more within the realm of fstests
+> > (where we do similar tests) as LTP lacks necessary infrastructure to do
+> > this low-level filesystem manipulation so I guess what you have is fine.
+> 
+> Thanks for having a deeper look and explanation! I guess we take it and we can
+> think how hard would be to implement the hard way (abort fs), as Cyril wanted we
+> do it.  Or we at least add direct IO. (update that in the ticket:
+> https://github.com/linux-test-project/ltp/issues/1157).
+> And sure, if anybody adds msync() support to fstests, that would be the best.
+> 
+> But for now I merged it with your RBT (I'm sorry if I was too inventive to add
+> it) to get some improvement (hope that without direct IO we did not actually
+> turned it into false negative).
+> 
+> @Wei: feel free to further improve it.
+Thanks Petr and Jan's feedback, i will continue do improve on this case such as
+add direct IO firstly.
 
-An attempt to open a file with a name longer than NFS3_MAXNAMLEN will
-trigger a WARN_ON_ONCE in encode_filename3() because
-nfs_atomic_open_v23() doesn't have the test on ->d_name.len that
-nfs_atomic_open() has.
-
-So add that test.
-
-Reported-by: James Clark <james.clark@arm.com>
-Closes: https://lore.kernel.org/all/20240528105249.69200-1-james.clark@arm.com/
-Fixes: 7c6c5249f061 ("NFS: add atomic_open for NFSv3 to handle O_TRUNC correctly.")
-Signed-off-by: NeilBrown <neilb@suse.de>
----
- fs/nfs/dir.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 342930996226..2b09b5416ef1 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -2255,6 +2255,9 @@ int nfs_atomic_open_v23(struct inode *dir, struct dentry *dentry,
- 	 */
- 	int error = 0;
- 
-+	if (dentry->d_name.len > NFS_SERVER(dir)->namelen)
-+		return -ENAMETOOLONG;
-+
- 	if (open_flags & O_CREAT) {
- 		file->f_mode |= FMODE_CREATED;
- 		error = nfs_do_create(dir, dentry, mode, open_flags);
--- 
-2.44.0
-
+> 
+> Kind regards,
+> Petr
+> 
+> > 								Honza
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
