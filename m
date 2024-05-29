@@ -4,66 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17A2EC27C43
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 15:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17068C25B75
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 15:11:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A018F3D06C5
-	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 17:00:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 37B0F3D067C
+	for <ltp@archiver.kernel.org>; Wed, 29 May 2024 17:11:11 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9626A3C00E4
- for <ltp@lists.linux.it>; Tue, 28 May 2024 22:37:08 +0200 (CEST)
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com
- [209.85.216.50])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9FCF93C07A6
+ for <ltp@lists.linux.it>; Wed, 29 May 2024 17:10:55 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 99978601104
- for <ltp@lists.linux.it>; Tue, 28 May 2024 22:37:07 +0200 (CEST)
-Received: by mail-pj1-f50.google.com with SMTP id
- 98e67ed59e1d1-2bdf69d387eso1056104a91.0
- for <ltp@lists.linux.it>; Tue, 28 May 2024 13:37:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1716928626; x=1717533426;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ocGhciDIymjtV72cJYX7TD5dK3LYFKmjLW2hh9YZxCU=;
- b=iSTzypGEUclWml909bgvdQM4OZ6Z08dlVhbJvhmJbVnfO/9q9OPoEngEdYNTudGXIG
- cJs02MoeldkjfuAmtUlTRK2C3o2KWVwJpROMFwHRVTgYSIeY0FqeFzu0yKSRnhOkep/8
- LJ1mZ1p/pqA8ztq3zU/467UHGQNtA0RuFuwqKweXHYqPaJpcnyjlaIoo6Iy7rS2iamVI
- YzsB2ifIYUqobc0pU5W3DN0f9b8QL4JaUipM7lXNyX8mEyrqDc1Vj1BrtxfFSznLdKup
- cT/cmKt+RFFud0cOSlY3w6HwVrEdqmkkyKGj3gt9ejgH6PpQmQ8JO4BLYAY4Y2+LfqhW
- hocg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUE4v30uyaXW0RDs8/AI0vw/gq+UFuLiqgDEGQi0Jk0BuT4kkRAWqKszZ0KttVK1yFLew3wimEzVCBxZclGjLS+2rg=
-X-Gm-Message-State: AOJu0Yy//x90OFA7hdjkV2mr88CZjeR8OfBudCzFYfF9jPTN+/FHNTT6
- 4Z52K/dd42gQ+cwuz8fNylROj3sjVXv13o1WhbH9KmFXOY5fBs8E
-X-Google-Smtp-Source: AGHT+IGkLYLgbQKRVPQzy0nbn4TlmHHj/65jHN2jLz0MG1BUJjlY4P+swh2Vt91PtfsBBifZf+g61Q==
-X-Received: by 2002:a17:90b:f89:b0:2bd:92e7:c305 with SMTP id
- 98e67ed59e1d1-2bf5f10a44bmr13066160a91.21.1716928625840; 
- Tue, 28 May 2024 13:37:05 -0700 (PDT)
-Received: from snowbird ([136.25.84.117]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-2bf5f50c3fdsm8267619a91.18.2024.05.28.13.37.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 May 2024 13:37:05 -0700 (PDT)
-Date: Tue, 28 May 2024 13:37:02 -0700
-From: Dennis Zhou <dennis@kernel.org>
-To: Mateusz Guzik <mjguzik@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <ZlZAbkjOylfZC5Os@snowbird>
-References: <202405281421.127ddddf-oliver.sang@intel.com>
- <pywb7wcml44gzgidn7mtwwr23mybbilakckchk4777wfibtruj@n4yiwwpvglf7>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8C671A00268
+ for <ltp@lists.linux.it>; Wed, 29 May 2024 17:10:54 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 19E24336C7;
+ Wed, 29 May 2024 15:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1716995452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kDKqZK7Dz0LfNLt+UZOoKKLiT64MG10NllnGxh5aE4o=;
+ b=saW4OVLSSPzODPrfqG7aDvS1lMDG/hesiZ8YxMcWHGC3Q4RFFPOsknq05ex3zhiEuxnGJ5
+ P61PepC8GyYXEZbhdpYEuueSQ3iJWZMU/vLLBWk1CELTYgZnvh9+wTi5OS0l7a8/aEmQS5
+ YXJSYiYxtC3vNe6IvavgN+Cn762LWxM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1716995452;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kDKqZK7Dz0LfNLt+UZOoKKLiT64MG10NllnGxh5aE4o=;
+ b=xU3pBuS2BhShFJYPsKKI5rANjelj0fOx7AMC340+VTcdt8jYSXwjMlfOHP1zoBw8kE7nhz
+ e1qIn58tNVxCU3AA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=saW4OVLS;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xU3pBuS2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1716995452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kDKqZK7Dz0LfNLt+UZOoKKLiT64MG10NllnGxh5aE4o=;
+ b=saW4OVLSSPzODPrfqG7aDvS1lMDG/hesiZ8YxMcWHGC3Q4RFFPOsknq05ex3zhiEuxnGJ5
+ P61PepC8GyYXEZbhdpYEuueSQ3iJWZMU/vLLBWk1CELTYgZnvh9+wTi5OS0l7a8/aEmQS5
+ YXJSYiYxtC3vNe6IvavgN+Cn762LWxM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1716995452;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kDKqZK7Dz0LfNLt+UZOoKKLiT64MG10NllnGxh5aE4o=;
+ b=xU3pBuS2BhShFJYPsKKI5rANjelj0fOx7AMC340+VTcdt8jYSXwjMlfOHP1zoBw8kE7nhz
+ e1qIn58tNVxCU3AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B0C813A6B;
+ Wed, 29 May 2024 15:10:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yGWbAXxFV2ZNbgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 29 May 2024 15:10:52 +0000
+Date: Wed, 29 May 2024 17:10:35 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZldFa-3CXXbVKmVW@yuki>
+References: <20240527222947.374475-1-pvorel@suse.cz>
+ <37603272-8ea2-4828-96df-4b6381cc26ad@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <pywb7wcml44gzgidn7mtwwr23mybbilakckchk4777wfibtruj@n4yiwwpvglf7>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <37603272-8ea2-4828-96df-4b6381cc26ad@suse.com>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 19E24336C7
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 29 May 2024 16:59:19 +0200
-Subject: Re: [LTP] [dennis-percpu:for-6.11] [percpu_counter] 05dbad003f:
- ltp.getrusage03.fail
+Subject: Re: [LTP] [PATCH 0/2] lib: Add TINFO_WARN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,94 +121,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: oe-lkp@lists.linux.dev, linux-mm@kvack.org, ltp@lists.linux.it,
- lkp@intel.com, Vlastimil Babka <vbabka@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, May 28, 2024 at 11:05:54AM +0200, Mateusz Guzik wrote:
-> On Tue, May 28, 2024 at 02:45:35PM +0800, kernel test robot wrote:
-> > Hello,
-> > 
-> > kernel test robot noticed "ltp.getrusage03.fail" on:
-> > 
-> > commit: 05dbad003f2b2ececb1cc7428bfa8f470cc34b95 ("percpu_counter: add a cmpxchg-based _add_batch variant")
-> > https://git.kernel.org/cgit/linux/kernel/git/dennis/percpu.git for-6.11
-> > 
-> > in testcase: ltp
-> > version: ltp-x86_64-14c1f76-1_20240525
-> > with following parameters:
-> > 
-> > 	disk: 1HDD
-> > 	fs: xfs
-> > 	test: syscalls-03/getrusage03
-> > 
-> > 
-> > 
-> > Running tests.......
-> > <<<test_start>>>
-> > tag=getrusage03 stime=1716734654
-> > cmdline="getrusage03"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > tst_test.c:1733: TINFO: LTP version: 20240524-4-g22004c7db
-> > tst_test.c:1617: TINFO: Timeout per run is 0h 02m 30s
-> > getrusage03.c:43: TPASS: initial.self ~= child.self
-> > getrusage03.c:59: TFAIL: initial.children = 0, expected 102400
-> > getrusage03.c:66: TPASS: child.children == 0
-> > getrusage03.c:86: TFAIL: child.children = 0, expected 307200
-> > getrusage03.c:104: TPASS: initial.children ~= pre_wait.children
-> > getrusage03.c:114: TFAIL: post_wait.children = 0, expected 409600
-> > getrusage03.c:133: TPASS: initial.children ~= after_zombie.children
-> > getrusage03_child.c:57: TPASS: initial.self ~= exec.self
-> > getrusage03_child.c:62: TPASS: initial.children ~= exec.children
-> > 
+Hi!
+> I'm not sure about this. Why not enabling TINFO + TWARN combination instead?
 > 
-> I confirm this patch broke things, thanks for the report.
-> 
-> Make sure to sit before you take a look at the fix:
-> 
-> commit 6e8b4caf667fb6fad1c63b061e303faab6d917ef
-> Author: Mateusz Guzik <mjguzik@gmail.com>
-> Date:   Tue May 28 04:52:10 2024 -0400
-> 
->     lol
-> 
-> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-> index c3140276bb36..51bc5246986d 100644
-> --- a/lib/percpu_counter.c
-> +++ b/lib/percpu_counter.c
-> @@ -97,7 +97,7 @@ void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount, s32 batch)
-> 
->         count = this_cpu_read(*fbc->counters);
->         do {
-> -               if (unlikely(abs(count + amount)) >= batch) {
-> +               if (unlikely(abs(count + amount) >= batch)) {
->                         raw_spin_lock_irqsave(&fbc->lock, flags);
->                         /*
->                          * Note: by now we might have migrated to another CPU
-> 
-> 
-> Dennis, do I need to submit a v4? Given that this is a trivial one line
-> fixup perhaps it would be handier if you massaged the stuff on your
-> branch. I'm fine either way.
-> 
+> tst_res(TINFO | TWARN, "my message");
 
-Well that's awkward.. Can you please send a v4?
+That's even more confusing. Does that propagate into results or not?
 
-> That said this really should have been reported by something.
+To be honest we even have problem deciding if we should use TINFO or
+TWARN in some cases and adding third variant would make things even
+worse, sicne we would have three options.
 
-That's fair. I think I starred at parenthesis for too long that day so I
-missed it too. The nice thing is these branches get longer running CI so
-we can track these things.
+So I would really keep just TINFO which is something that is printed by
+default but does not propagate into results and TWARN that is printed as
+well but propagates into results.
 
-Thanks,
-Dennis
+Maybe it would be even better to actually remove TWARN. That way we
+would have only TFAIL and TBROK that propagate into results since TWARN
+is kind of lesser TBROK anyways...
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
