@@ -4,101 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA16C25B74
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 10:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3EBCC25B74
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 10:53:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D9CB93D0734
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 12:50:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 78EB23D0734
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 12:53:00 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF1583D067C
- for <ltp@lists.linux.it>; Thu, 30 May 2024 12:50:08 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 16D903D067C
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 12:52:44 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15BFD60DDDC
- for <ltp@lists.linux.it>; Thu, 30 May 2024 12:50:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D93B11A0BC5B
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 12:52:43 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEC6E3384B;
- Thu, 30 May 2024 10:50:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 757FA20786;
+ Thu, 30 May 2024 10:52:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717066204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717066362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=mOvPbkFxe3tIT4Sw9C+67Dg7ndSzsz+A17rYk8nTtDWCdls/7aAEK6/Y/5QPvFXrfe3Jfw
- XO0Mx7C2hDEw8rRqQjwSXqnEAnUw/lCefWXFZSe9HevsvH+uGCcAGWziGTb6zgi4XsWixi
- GOVXM0qVpyl7Z6ciMz81Fylck8V1ly8=
+ bh=5j7Rs9O1gx1OcRX5/3bc7UjXBbZijyRRwWpqFp0cWKA=;
+ b=DHjXfwmoOW4p6QdP8nwkHz9lzIUH6lf59jqKSoP599nhk1JmXyPtJoLq3KMrrxTgSlOTRV
+ HxDGPnbQf1kPq5qlYc07MyMK34fk//7Yyd/1kJ4S/T0DA+zmxSkrM/5Yb83/xiCjymarcq
+ 07h4EGLhH6pxgzHEJN+ABdYVnZ4VMWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717066204;
+ s=susede2_ed25519; t=1717066362;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=TX7PW8ayLWu9GV0VUnIWXw7hlp+5dDRTFisVFX9WWdhD309If3pp1WajiK2eJ+3i/6mZXu
- O2ppMOitSvxZVWCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=5j7Rs9O1gx1OcRX5/3bc7UjXBbZijyRRwWpqFp0cWKA=;
+ b=nJMg5KJIkyivbSMXfGjXSSceihnQ/a0LfUn35NIWAMckH3XJa6vVZ4TTCYQkFvyX1wwGrt
+ yZiHkPoHzZ6d4wBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DHjXfwmo;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nJMg5KJI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717066204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717066362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=mOvPbkFxe3tIT4Sw9C+67Dg7ndSzsz+A17rYk8nTtDWCdls/7aAEK6/Y/5QPvFXrfe3Jfw
- XO0Mx7C2hDEw8rRqQjwSXqnEAnUw/lCefWXFZSe9HevsvH+uGCcAGWziGTb6zgi4XsWixi
- GOVXM0qVpyl7Z6ciMz81Fylck8V1ly8=
+ bh=5j7Rs9O1gx1OcRX5/3bc7UjXBbZijyRRwWpqFp0cWKA=;
+ b=DHjXfwmoOW4p6QdP8nwkHz9lzIUH6lf59jqKSoP599nhk1JmXyPtJoLq3KMrrxTgSlOTRV
+ HxDGPnbQf1kPq5qlYc07MyMK34fk//7Yyd/1kJ4S/T0DA+zmxSkrM/5Yb83/xiCjymarcq
+ 07h4EGLhH6pxgzHEJN+ABdYVnZ4VMWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717066204;
+ s=susede2_ed25519; t=1717066362;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=TX7PW8ayLWu9GV0VUnIWXw7hlp+5dDRTFisVFX9WWdhD309If3pp1WajiK2eJ+3i/6mZXu
- O2ppMOitSvxZVWCg==
+ bh=5j7Rs9O1gx1OcRX5/3bc7UjXBbZijyRRwWpqFp0cWKA=;
+ b=nJMg5KJIkyivbSMXfGjXSSceihnQ/a0LfUn35NIWAMckH3XJa6vVZ4TTCYQkFvyX1wwGrt
+ yZiHkPoHzZ6d4wBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B09E913A42;
- Thu, 30 May 2024 10:50:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61CDD13A42;
+ Thu, 30 May 2024 10:52:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id B9/wKdxZWGayMAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 30 May 2024 10:50:04 +0000
-Date: Thu, 30 May 2024 12:49:52 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id B8QlF3paWGZKMQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 30 May 2024 10:52:42 +0000
+Date: Thu, 30 May 2024 12:52:34 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZlhZ0Na1LtFVPvNi@yuki>
+Message-ID: <ZlhacuOD8hYVLYS6@yuki>
 References: <20240530-ioctl_ficlone-v1-0-fa96f07d0fca@suse.com>
- <20240530-ioctl_ficlone-v1-2-fa96f07d0fca@suse.com>
+ <20240530-ioctl_ficlone-v1-3-fa96f07d0fca@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240530-ioctl_ficlone-v1-2-fa96f07d0fca@suse.com>
-X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+In-Reply-To: <20240530-ioctl_ficlone-v1-3-fa96f07d0fca@suse.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 757FA20786
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] Add ioctl_ficlone02 test
+Subject: Re: [LTP] [PATCH 3/3] Add ioctl_ficlone03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,7 +123,59 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+>  inotify_init1_01 inotify_init1_01
+>  inotify_init1_02 inotify_init1_02
+> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
+> index 3d25fdfb2..d0b470714 100644
+> --- a/testcases/kernel/syscalls/ioctl/.gitignore
+> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
+> @@ -24,3 +24,4 @@
+>  /ioctl_sg01
+>  /ioctl_ficlone01
+>  /ioctl_ficlone02
+> +/ioctl_ficlone03
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> new file mode 100644
+> index 000000000..c6f9806a3
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> @@ -0,0 +1,96 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * This test verifies that ioctl() FICLONE feature correctly raises exceptions
+> + * when it's supposed to.
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/fs.h"
+> +
+> +#define MNTPOINT "mnt"
+> +
+> +static int invalid_fd = -1;
+> +static int rw_file = -1;
+> +static int ro_file = -1;
+> +static int wo_file = -1;
+> +static int dir_fd = -1;
+> +static int immut_fd = -1;
+> +static int mnt_file = -1;
+> +
+> +static struct tcase {
+> +	int *src_fd;
+> +	int *dst_fd;
+> +	int errno_exp;
+> +	char *msg;
+> +} tcases[] = {
+> +	{&invalid_fd, &rw_file, EBADF, "invalid source"},
+> +	{&rw_file, &invalid_fd, EBADF, "invalid destination"},
+
+Can we move these invalid_fd tests into a separate test and use tst_fd
+to loop over all kinds of invalid input and output file descriptors?
 
 -- 
 Cyril Hrubis
