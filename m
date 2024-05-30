@@ -4,51 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B563C25B75
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 02:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 123FCC25B74
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 04:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1717044061; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=wXnVT/oMGlM7sC4g5nMuNYXgMRSU+5S2Qr/hqfKvBBg=;
+ b=PIAsgCaQRiEb4gjiDRb0qXi8gggxZVZsmOQK9hEVzceRn6LPQH29Nc/P6NHTTERdnBxjT
+ mZ9Z2PWLMwSIIdXH3muyHA0WKLmLX7jphvPVhxFYAxh2pAHBr8VbpsPuEcUMUsKA2HXRDkD
+ lsmHtie3gozmKc2u4RpHipru50qHtZ4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12B183D0700
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 04:33:44 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1B2163D06F9
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 06:41:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 52A0A3C60BA
- for <ltp@lists.linux.it>; Thu, 30 May 2024 04:33:24 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=18.169.211.239; helo=smtpbg151.qq.com;
- envelope-from=mataotao@uniontech.com; receiver=lists.linux.it)
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 05A773CB6F5
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 06:40:37 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 82C176024AF
- for <ltp@lists.linux.it>; Thu, 30 May 2024 04:33:21 +0200 (CEST)
-X-QQ-mid: bizesmtp78t1717036394ts76e9i2
-X-QQ-Originating-IP: meT2uoyEfgfUvz5DWoEDyrRMKjrezfMVcVAgeAW6CNg=
-Received: from localhost.localdomain ( [125.76.217.162])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Thu, 30 May 2024 10:33:12 +0800 (CST)
-X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: jXjag1m6xl4+lBoL7NB5lT47tt1RG0byyAXuhWGeeG9wKWgRa83sCzMGfodaS
- yQiVCXZtAA1GOZPgGNA7TZMUOSHw+x8JZhE9+zqEA8hJ1Kzn14xFM/cGPofS3Mm+6p7BZiw
- p0Df0tUG/zCNCNX6pdtfVoLi9FC/gyokndEug2DLCI57WO6kUTyRtEARUKQZBXFSXutEB4A
- v31I9vx7nUnz7xlBAjA+zTEq1YJZe+KB+Ru7fS4qVjsqdw1nKxJIsO6fjycRuXBGYqzrm5n
- 6tEIR537gbgH3QKhkTUOlt7yrm9RNavTNMgobylV8xasIrjhpZd55UhAFvdUrAB2AHWi6Gp
- GVn+c3V0c0PcuMBvKgHQ37XQ7l0Rg/khteHqM6H5bML+d7WRlloEQ/hEoQZhQ==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 12521841084230576013
-From: mataotao <mataotao@uniontech.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AE0F61401354
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 06:40:36 +0200 (CEST)
+Received: by mail-lj1-x236.google.com with SMTP id
+ 38308e7fff4ca-2e95a60dfcdso4876481fa.1
+ for <ltp@lists.linux.it>; Wed, 29 May 2024 21:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1717044035; x=1717648835; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=DnVvL+HSaNv0zKFh4dhiE1eKagOjl8Wr6achMpknAuI=;
+ b=GL+XEt0Tk53lp/J02nTIVrLHD8Vk8W+J7wMtyXswQ0fnf1DTY3DuRJPQcTyGVcru+d
+ pg3xVnrWe96eGtuaW8+SAjeAFu0ptJUC5C7/MSE9dLsHZcUkBZECXwQM4tUmD7yUO2p2
+ YF4gvmEeUbaSGz62bg/DX9sUcH4ISTOrxjz500vLg0r04bLROZaFIO2qYYysJbpwFV4k
+ RpSxMnQp0p4HwhKOve6/TQ8k+3Fsh7q4bAI66nCjhnooI1hV5BUjKCp57eX2tCMUm6Hk
+ c0zA5zHg5M11nZR6aZJIvc7YU+fsQ23Fwb/IMB8zRrW+WYoWbIxOZ1GHLb/u4nUCB5c7
+ Su1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1717044035; x=1717648835;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=DnVvL+HSaNv0zKFh4dhiE1eKagOjl8Wr6achMpknAuI=;
+ b=sZUgJ+MfZJspkyrn65V8wzINfURKtdJmmR3MHuMwk6hGdZihKvUsYaNKD6Voah5DnY
+ vzlkp/OPjg1eVrwTjGwLthvOIZF8aMuix5sG4b5uuwNRL3H2TfOtqa1eHnutZfYSfSXF
+ p8p5HLLczQXuDm3fX+T+k8rPazAkj7XdEGJZOBPrJob/M21G3oIl+GYQmTHIsNFDB7/J
+ 9vmU/kGYmXg67F8Odk9QoEl0MZ39b+hOboP290Mou4WfaFpgQPK3QuzONC64bVxpPNs1
+ 3YXJ5VfVaiLWPX05e4telhaxpKd0wQNE3BFmcoOGwW1r+diMvpUu0ibqCBSmIJ4RZIZf
+ OYYA==
+X-Gm-Message-State: AOJu0YzkIH2n2NRUR/ySeLcKCq3pDRC3NjDftuxb+37cCwLhRYm8t4cZ
+ NY7zK6p/iRUZ7MPMvPCxCftoI64p6pC0TnM9g7umo+2dqG1fzqss24aA6n8642XsJa//s78Vftg
+ =
+X-Google-Smtp-Source: AGHT+IHvrPBkNQsKmgcaDBlhnokuS/Qc8r5bEzzjrVL3pyyiv3EPQYQ26knf9Sd39syJrTGPUz7nDA==
+X-Received: by 2002:a2e:b5d8:0:b0:2d3:4b73:7b40 with SMTP id
+ 38308e7fff4ca-2ea847ed798mr3305701fa.17.1717044035022; 
+ Wed, 29 May 2024 21:40:35 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5785234a7efsm9386034a12.4.2024.05.29.21.40.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 May 2024 21:40:34 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu, 30 May 2024 10:33:10 +0800
-Message-Id: <20240530023310.4058-1-mataotao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+Date: Thu, 30 May 2024 00:40:29 -0400
+Message-Id: <20240530044029.15474-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] shell: add chmod command check
+Subject: [LTP] [PATCH v1] msync04.c: Use direct IO to verify the data is
+ stored on disk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,140 +89,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mataotao <mataotao@uniontech.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Signed-off-by: Wei Gao <wegao@suse.com>
+Suggested-by: Jan Kara <jack@suse.cz>
 ---
- runtest/commands                        |  1 +
- testcases/commands/chmod/Makefile       | 11 ++++
- testcases/commands/chmod/chmod_tests.sh | 83 +++++++++++++++++++++++++
- 3 files changed, 95 insertions(+)
- create mode 100644 testcases/commands/chmod/Makefile
- create mode 100644 testcases/commands/chmod/chmod_tests.sh
+ testcases/kernel/syscalls/msync/msync04.c | 56 +++++++++++++----------
+ 1 file changed, 33 insertions(+), 23 deletions(-)
 
-diff --git a/runtest/commands b/runtest/commands
-index 570b81262..6066d3289 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -13,6 +13,7 @@ cp01_sh cp_tests.sh
- ln01_sh ln_tests.sh
- mkdir01_sh mkdir_tests.sh
- echo_tests_sh echo_tests.sh
-+chmod_tests_sh chmod_tests.sh
- mv01_sh mv_tests.sh
- du01_sh du01.sh
- df01_sh df01.sh
-diff --git a/testcases/commands/chmod/Makefile b/testcases/commands/chmod/Makefile
-new file mode 100644
-index 000000000..da8115d71
---- /dev/null
-+++ b/testcases/commands/chmod/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2024 UnionTech Ltd.
-+# Author: Taotao Ma <mataotao@uniontech.com>
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+INSTALL_TARGETS		:= chmod_tests.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/chmod/chmod_tests.sh b/testcases/commands/chmod/chmod_tests.sh
-new file mode 100644
-index 000000000..469ba70d4
---- /dev/null
-+++ b/testcases/commands/chmod/chmod_tests.sh
-@@ -0,0 +1,83 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2024
-+# Copyright (c) 2024 UnionTech Ltd.
-+# Author: Taotao Ma <mataotao@uniontech.com>
-+#
-+# Test basic functionality of chmod command.
-+
-+TST_CNT=7
-+TST_TESTFUNC=do_test
-+TST_SETUP=setup
-+TST_NEEDS_TMPDIR=1
-+
-+create_tree()
+diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
+index 1718bd7dc..c0580d1b0 100644
+--- a/testcases/kernel/syscalls/msync/msync04.c
++++ b/testcases/kernel/syscalls/msync/msync04.c
+@@ -11,6 +11,7 @@
+  * is no longer dirty after msync() call.
+  */
+ 
++#define _GNU_SOURCE
+ #include <errno.h>
+ #include "tst_test.h"
+ 
+@@ -43,10 +44,35 @@ static uint64_t get_dirty_bit(void *data)
+ 	return pageflag_entry & (1ULL << 4);
+ }
+ 
+-static void test_msync(void)
++static void verify_mmaped(void)
 +{
-+  local dirname=$1
-+  local dircnt=$2
-+  local filecnt=$3
++	void *buffer = SAFE_MEMALIGN(getpagesize(), getpagesize());
 +
-+  tst_res TINFO "Creating $dircnt directories."
-+  tst_res TINFO "Filling each dir with $filecnt files".
-+  while [ $dircnt -gt 0 ]; do
-+      dirname=$dirname/dir$dircnt
-+          ROD mkdir -p $dirname
++	tst_res(TINFO, "Not see dirty bit so we check content of file instead");
++	test_fd = SAFE_OPEN("msync04/testfile", O_RDONLY | O_DIRECT);
++	SAFE_READ(0, test_fd, buffer, getpagesize());
 +
-+      local fcnt=0
-+          while [ $fcnt -lt $filecnt ]; do
-+          ROD touch $dirname/file$fcnt
-+          fcnt=$((fcnt+1))
-+      done
-+      dircnt=$((dircnt-1))
-+  done
++	char *char_buffer = (char *)buffer;
++
++	if (char_buffer[8] == 'B')
++		tst_res(TCONF, "write file ok but msync couldn't be tested"
++				" because the storage was written to too quickly");
++	else
++		tst_res(TFAIL, "write file failed");
 +}
 +
-+setup()
-+{
-+  create_tree "dir" 3 3
-+  ROD echo LTP > file
++static void verify_dirty(void)
+ {
+-	char buffer[20];
++	TST_EXP_PASS_SILENT(msync(mmaped_area, pagesize, MS_SYNC));
++
++	if (TST_RET == 0 && !get_dirty_bit(mmaped_area))
++		tst_res(TPASS, "msync() verify dirty page ok");
++	else
++		tst_res(TFAIL, "msync() verify dirty page failed");
 +}
-+
-+compare()
+ 
++static void test_msync(void)
 +{
-+  local act_auth="$1"
-+  local exp_auth="$2"
+ 	test_fd = SAFE_OPEN("msync04/testfile", O_CREAT | O_TRUNC | O_RDWR,
+ 		0644);
+ 	SAFE_WRITE(SAFE_WRITE_ANY, test_fd, STRING_TO_WRITE, sizeof(STRING_TO_WRITE) - 1);
+@@ -55,27 +81,11 @@ static void test_msync(void)
+ 	SAFE_CLOSE(test_fd);
+ 	mmaped_area[8] = 'B';
+ 
+-	if (!get_dirty_bit(mmaped_area)) {
+-		tst_res(TINFO, "Not see dirty bit so we check content of file instead");
+-		test_fd = SAFE_OPEN("msync04/testfile", O_RDONLY);
+-		SAFE_READ(0, test_fd, buffer, 9);
+-		if (buffer[8] == 'B')
+-			tst_res(TCONF, "write file ok but msync couldn't be tested"
+-				" because the storage was written to too quickly");
+-		else
+-			tst_res(TFAIL, "write file failed");
+-	} else {
+-		if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
+-			tst_res(TFAIL | TERRNO, "msync() failed");
+-			goto clean;
+-		}
+-		if (get_dirty_bit(mmaped_area))
+-			tst_res(TFAIL, "msync() failed to write dirty page despite succeeding");
+-		else
+-			tst_res(TPASS, "msync() working correctly");
+-	}
+-
+-clean:
++	if (!get_dirty_bit(mmaped_area))
++		verify_mmaped();
++	else
++		verify_dirty();
 +
-+  act="$(stat -c "%a" "$act_auth")"
-+  tst_res TINFO "$act"
-+  if [ "$act" = "$exp_auth" ]; then
-+      tst_res TPASS "Files $act_auth  authority Modified successfully"
-+  else
-+      tst_res TFAIL "Files $act_auth  authority Modified failed"
-+  fi
-+}
-+
-+chmod_test()
-+{
-+  local args="$1"
-+  local auth="$2"
-+  local src="$3"
-+  local check="$4"
-+  if [[ -n $auth ]]; then
-+    EXPECT_PASS chmod $args $auth $src
-+    compare "$src" "$check"
-+  else
-+    compare "$src" "$check"
-+  fi
-+}
-+
-+do_test()
-+{
-+  case $1 in
-+  1) chmod_test "-R" "775" "dir/dir3/dir2/dir1" "775";;
-+  2) chmod_test ""  "" "dir/dir3/dir2/dir1/file0" "775";;
-+  3) chmod_test ""  "" "dir/dir3/dir2/dir1/file1" "775";;
-+  4) chmod_test "" "go+rwx" "dir/dir3/file0" "677";;
-+  5) chmod_test "" "777" "dir/dir3/file1" "777";;
-+  6) chmod_test "" "g-r" "dir/dir3/dir2/file0" "604";;
-+  7) chmod_test "" "g-r" "dir/dir3/file0" "637";;
-+  esac
-+}
-+
-+. tst_test.sh
-+tst_run
+ 	SAFE_MUNMAP(mmaped_area, pagesize);
+ 	mmaped_area = NULL;
+ }
 -- 
-2.20.1
+2.35.3
 
 
 -- 
