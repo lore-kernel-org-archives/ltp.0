@@ -4,67 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E04D7C25B74
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 10:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA16C25B74
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 10:50:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E87F73D073B
-	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 12:49:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D9CB93D0734
+	for <ltp@archiver.kernel.org>; Thu, 30 May 2024 12:50:23 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0E0583D067C
- for <ltp@lists.linux.it>; Thu, 30 May 2024 12:48:51 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id AF1583D067C
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 12:50:08 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 007E7204B64
- for <ltp@lists.linux.it>; Thu, 30 May 2024 12:48:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15BFD60DDDC
+ for <ltp@lists.linux.it>; Thu, 30 May 2024 12:50:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 05DED20785;
- Thu, 30 May 2024 10:48:50 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CEC6E3384B;
+ Thu, 30 May 2024 10:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717066204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=mOvPbkFxe3tIT4Sw9C+67Dg7ndSzsz+A17rYk8nTtDWCdls/7aAEK6/Y/5QPvFXrfe3Jfw
+ XO0Mx7C2hDEw8rRqQjwSXqnEAnUw/lCefWXFZSe9HevsvH+uGCcAGWziGTb6zgi4XsWixi
+ GOVXM0qVpyl7Z6ciMz81Fylck8V1ly8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717066204;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=TX7PW8ayLWu9GV0VUnIWXw7hlp+5dDRTFisVFX9WWdhD309If3pp1WajiK2eJ+3i/6mZXu
+ O2ppMOitSvxZVWCg==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717066204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=mOvPbkFxe3tIT4Sw9C+67Dg7ndSzsz+A17rYk8nTtDWCdls/7aAEK6/Y/5QPvFXrfe3Jfw
+ XO0Mx7C2hDEw8rRqQjwSXqnEAnUw/lCefWXFZSe9HevsvH+uGCcAGWziGTb6zgi4XsWixi
+ GOVXM0qVpyl7Z6ciMz81Fylck8V1ly8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717066204;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=TX7PW8ayLWu9GV0VUnIWXw7hlp+5dDRTFisVFX9WWdhD309If3pp1WajiK2eJ+3i/6mZXu
+ O2ppMOitSvxZVWCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E25A613A42;
- Thu, 30 May 2024 10:48:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B09E913A42;
+ Thu, 30 May 2024 10:50:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ginYNZFZWGZaMAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 30 May 2024 10:48:49 +0000
-Date: Thu, 30 May 2024 12:48:41 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id B9/wKdxZWGayMAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 30 May 2024 10:50:04 +0000
+Date: Thu, 30 May 2024 12:49:52 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZlhZiZBUsEnmtwNT@yuki>
+Message-ID: <ZlhZ0Na1LtFVPvNi@yuki>
 References: <20240530-ioctl_ficlone-v1-0-fa96f07d0fca@suse.com>
- <20240530-ioctl_ficlone-v1-1-fa96f07d0fca@suse.com>
+ <20240530-ioctl_ficlone-v1-2-fa96f07d0fca@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240530-ioctl_ficlone-v1-1-fa96f07d0fca@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 05DED20785
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20240530-ioctl_ficlone-v1-2-fa96f07d0fca@suse.com>
+X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] Add ioctl_ficlone01 test
+Subject: Re: [LTP] [PATCH 2/3] Add ioctl_ficlone02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,150 +117,7 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This test verifies that ioctl() FICLONE feature clones file content from
-> + * one file to an another.
-> + *
-> + * [Algorithm]
-> + *
-> + * * populate source file
-> + * * clone source content inside destination file
-> + * * verify that source content has been cloned inside destination file
-> + * * write a single byte inside destination file
-> + * * verify that source content didn't change while destination did
-
-This is very minor but I find dashes to be a better choice for lists
-inside of C comments.
-
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "lapi/fs.h"
-> +
-> +#define MNTPOINT "mnt"
-> +#define SRCPATH MNTPOINT "/file0"
-> +#define DSTPATH MNTPOINT "/file1"
-> +
-> +#define FILEDATA "qwerty"
-> +#define FILESIZE sizeof(FILEDATA)
-> +
-> +static int src_fd = -1;
-> +static int dst_fd = -1;
-> +
-> +static void run(void)
-> +{
-> +	char buff[FILESIZE];
-> +	struct stat src_stat;
-> +	struct stat dst_stat;
-> +
-> +	src_fd = SAFE_OPEN(SRCPATH, O_CREAT | O_RDWR, 0640);
-> +	dst_fd = SAFE_OPEN(DSTPATH, O_CREAT | O_RDWR, 0640);
-> +
-> +	tst_res(TINFO, "Writing data inside src file");
-> +
-> +	SAFE_WRITE(1, src_fd, FILEDATA, FILESIZE);
-> +	SAFE_FSYNC(src_fd);
-> +
-> +	TST_EXP_PASS(ioctl(dst_fd, FICLONE, src_fd));
-> +	if (TST_RET == -1)
-> +		return;
-> +
-> +	SAFE_FSYNC(dst_fd);
-> +
-> +	tst_res(TINFO, "Verifing that data is cloned between files");
-> +
-> +	SAFE_FSTAT(src_fd, &src_stat);
-> +	SAFE_FSTAT(dst_fd, &dst_stat);
-> +
-> +	TST_EXP_EXPR(src_stat.st_ino != dst_stat.st_ino,
-> +		"inode is different. %lu != %lu",
-> +		src_stat.st_ino,
-> +		dst_stat.st_ino);
-> +
-> +	TST_EXP_EQ_LI(src_stat.st_size, dst_stat.st_size);
-> +
-> +	SAFE_READ(0, dst_fd, buff, FILESIZE);
-> +
-> +	TST_EXP_EXPR(!strncmp(buff, FILEDATA, FILESIZE),
-> +		"dst file has the src file content (\"%s\" - %ld bytes)",
-> +		buff,
-> +		FILESIZE);
-> +
-> +	tst_res(TINFO, "Writing a byte inside dst file");
-> +
-> +	SAFE_WRITE(SAFE_WRITE_ALL, dst_fd, "a", 1);
-> +	SAFE_FSYNC(dst_fd);
-> +
-> +	tst_res(TINFO, "Verifing that src file content didn't change");
-> +
-> +	SAFE_FSTAT(src_fd, &src_stat);
-> +	SAFE_FSTAT(dst_fd, &dst_stat);
-> +
-> +	TST_EXP_EQ_LI(dst_stat.st_size, src_stat.st_size + 1);
-> +
-> +	SAFE_READ(0, src_fd, buff, FILESIZE);
-> +
-> +	TST_EXP_EXPR(!strncmp(buff, FILEDATA, FILESIZE),
-> +		"src file content didn't change");
-
-So you append to the file but then only read the initial part? That does
-not sound right. I guess that easiest solution is to seek to the start
-of the file or od pwrite() so that we overwrite the first byte rather
-than appending.
-
-Or at least check the return value from the read.
-
-> +	SAFE_CLOSE(src_fd);
-> +	SAFE_CLOSE(dst_fd);
-> +	src_fd = -1;
-> +	dst_fd = -1;
-
-This is not needed, the SAFE_CLOSE() macro sets the fd to -1.
-
-> +	remove(SRCPATH);
-> +	remove(DSTPATH);
-
-Please use SAFE_UNLINK() instead.
-
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (src_fd != -1)
-> +		SAFE_CLOSE(src_fd);
-> +
-> +	if (dst_fd != -1)
-> +		SAFE_CLOSE(dst_fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.cleanup = cleanup,
-> +	.min_kver = "4.5",
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.dev_fs_type = "btrfs",
-
-
-I suppose that we need .use_filesystems or similar and convert the
-dev_fs_type to an array so that we can run this test on xfs as well...
-
-> +};
-> 
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
