@@ -4,86 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04332C41513
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 13:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1717422570; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=vvNYDA3pTydQ4B42D1Qvp8OmCUAzbVl9vdFfwGUd1VY=;
- b=Hb0032QxxG/SxcAUvH70ShUbll+J5P4HE/s088Nx5hPAD2cIfuVMVQ4y706reb1FXeYyA
- /5Np+VBaDUGcglcqbmieD19QROlNhRKgpBes2m9Ldp4SwJepCgA5BVlWa/+GcfsiA3wLKuX
- nKs1G1VaJmzEoWMlI28PtcDivcifi44=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48AC7C25B76
+	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 14:16:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E0BFD3D08F6
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 15:49:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A35E23D08E7
+	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 16:16:19 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C15B3D08A7
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 15:49:08 +0200 (CEST)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
+ by picard.linux.it (Postfix) with ESMTPS id 9EAE23C2B89
+ for <ltp@lists.linux.it>; Mon,  3 Jun 2024 16:16:03 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 18CD6140112E
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 15:49:08 +0200 (CEST)
-Received: by mail-lj1-x22f.google.com with SMTP id
- 38308e7fff4ca-2e724bc46c4so49874551fa.2
- for <ltp@lists.linux.it>; Mon, 03 Jun 2024 06:49:08 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DD0641A00922
+ for <ltp@lists.linux.it>; Mon,  3 Jun 2024 16:16:02 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-42135a45e2aso15301335e9.3
+ for <ltp@lists.linux.it>; Mon, 03 Jun 2024 07:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1717422547; x=1718027347; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=Jf0pANbywJXzv+3QfaL3mpN3TnjJYwkdu9Mssiv+pXU=;
- b=RCoZXeeIkO0AJ+YGs8n+KlgSN47A4Gys+oPsqO50VwODOK8dciHm/Y2x5ockSuo+ty
- tb9es1EpsbJjfWdeEHXFH4s2vhPK0nQPAUeZOgxbgPKlCMsUlP2nk5BuEkMNpAb8vnJw
- 7ah4cf8eTJvkhS8l1CgAAVb0JwdL1k04eseu4G69c+9eF75HwjBAfjfWPVnWiGU1a8cY
- fcND+5OfhCmrKixyUBlJrW5TC5hRwccNqbje5v24cPBNkwLFOyML61Wp8/8ICvdosWZY
- rXxSq3dXG5EhZWBOHAsqkrXfcUN6nhWCHcoKQxLXO/5gMF+E/Dmvp9LAzKZ8VuCMFiQe
- pnVQ==
+ d=gmail.com; s=20230601; t=1717424162; x=1718028962; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=YBDKzJzfL/kisf7mX2QsAYw1VZ+9j8Trx6m3G0+ZVko=;
+ b=GNV4Su5mQs+u/ZD5l6Yb8f2tXgViZL0F+2R9psVzhCyXc9xKDE8I3Gu0uBxum0ZnGL
+ RWntkr5Pr/ePfCNBkIc8hYAruHqDI0j82eKEeBJneb29V3Pi1s42IWGpk27wjFToWa0k
+ gPJRQ16ZjzZkUbOtcA4zQJ3kfw6bxMvpCBjcg3jCTZoeYIzr2CTvFBic4lEIPx41aMND
+ WbgUmB8g+8kYTpGp0Aie7hyxW2G3/PgdE2l2oUMcbTgr0YNdtVoKQiHDufgPduHqTZTn
+ Ro+PsfMODJwzGH/c0PJmnNPfCrrkOyzEa0+bqcnqZBOkNGpkd0Yla40Lf0aUzUYK2U8U
+ LgaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1717422547; x=1718027347;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Jf0pANbywJXzv+3QfaL3mpN3TnjJYwkdu9Mssiv+pXU=;
- b=wUnEMTk86SZMa0C6iXXELlWwfrU9Zhpd1XVDSBEGI29lmr8QO9n6K4dESeZAsQZe4r
- xAigrojnYQBnq46UJjqaK3q3it+3TVWRhHZgxfIywynbTTLF6UgBl8O/GchpZS20Km8I
- BSTF6rb+oh9cFDtwWooRugxQr4A8Ztb1xGfKSBaGKpz0iRousfFIG6XKEGp7ujDuI8iE
- 3IkE0EE0OrpwgeEtCU6K+B+ztpr08n1L8HxFP8/VFH0EMX4yZwTAsq5HEL9Cj/RcyeFN
- b71XfViXmgmpiJJDlCbacv9TmPI2DZTnpSfz+ecH93TZ+aFIfCGSXKnmhbfKsTUxi5Dw
- ha0w==
-X-Gm-Message-State: AOJu0Ywz0yHjjKC9Pkw12FwU2YyZAgbwRdkgybvVbYqoraUtCc7IcdQM
- 0K4KVUQDggJGTqQL7U+BogV02v7QG1SLk78m94tVx/Y5a3MaRxv5YmrDVKq5WpNiM5DSKsfO+yb
- m
-X-Google-Smtp-Source: AGHT+IEtrlq0SFsPV1bNIqGHqdzKJdutIVLAxhGZzGXkL3aTIBvstXucOpNljQM+j/6mLbnSd9OkcQ==
-X-Received: by 2002:a2e:980d:0:b0:2d8:67a0:61b2 with SMTP id
- 38308e7fff4ca-2ea9512c01dmr51595851fa.20.1717422547016; 
- Mon, 03 Jun 2024 06:49:07 -0700 (PDT)
-Received: from [10.232.133.118] ([88.128.88.99])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-7027e4a7d5dsm204031b3a.49.2024.06.03.06.49.04
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 03 Jun 2024 06:49:06 -0700 (PDT)
-Message-ID: <1c82db37-4c4b-4679-9c18-618c57ec6a0a@suse.com>
-Date: Mon, 3 Jun 2024 15:48:59 +0200
+ d=1e100.net; s=20230601; t=1717424162; x=1718028962;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=YBDKzJzfL/kisf7mX2QsAYw1VZ+9j8Trx6m3G0+ZVko=;
+ b=l0G6s7anbWby0/vueDBDWNPv9iDnkgkVFS0syH6takKw7ALrlNCV35hIzyFjb0yQcI
+ +Ges4Y+EaXCl35M9+IEqNXBA2F+gxR4CW27I2SgQ0sTQnjgQjo+mxK5AjIUMUfs4oLri
+ 3TbpnNhd+Tzk2tmW+f+8Lf3gcqqK2VNCq9fA7EsfV5U/LnY1agY2j2MXiA5BELoUBm8o
+ d59e6GKZzbBT7O74IgUlbe06YwSHg0lSolVubeMiNHAsLRR1G+J8d48sa6b+WN607rBl
+ 7DCccdPjvQD4JM6n/9FqUad5fxuOQlPES7Eylwp7LspdOmpL4LCHmit9de6B/c2Gqp5v
+ 7QBg==
+X-Gm-Message-State: AOJu0YyJw1/KmNJiKTVI3coSB66i0dDmBX7y7SPLUXLoO22stFtw68xG
+ dnG/bmtkhuLCKYOmiCT+F95dcj3k7w+1eg272UZI3+lX4c3VfkOdoZxP2XQf7udPgPJ58Ayxw50
+ nvAzHmzKtm8bna9XEb0bdPy1gfSU=
+X-Google-Smtp-Source: AGHT+IGY+EvQcy49e709K3vzE3ETL4Wdv3maZIEQn0Y4A8NoxHNp0I351LzeE52h/tDeTC1PX8kuQ6bQu8rROcaYF/k=
+X-Received: by 2002:a05:600c:45d3:b0:41b:cb18:e24b with SMTP id
+ 5b1f17b1804b1-4212e04fe7amr62423425e9.9.1717424162101; Mon, 03 Jun 2024
+ 07:16:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
 References: <CAJCsO8fTwOsVwhCdBksStaPVjXHBi8m3g+_b-ZAnKByUR3cqyA@mail.gmail.com>
  <20240603124653.31967-1-akumar@suse.de>
-Content-Language: en-US
-In-Reply-To: <20240603124653.31967-1-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ <1c82db37-4c4b-4679-9c18-618c57ec6a0a@suse.com>
+In-Reply-To: <1c82db37-4c4b-4679-9c18-618c57ec6a0a@suse.com>
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+Date: Mon, 3 Jun 2024 16:15:49 +0200
+Message-ID: <CAJCsO8e9CCMhXhRk5Kf1LiUO1_HwQ0E2E6-p0pjyz1EZu8Y7eA@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH] unlink09: Fix open syscall flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -96,64 +79,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
++1
 
-thanks for fixing the commit message and the test. According with the 
-open() documentation an access flag
-is a must and that's one thing that makes this test wrong.
+Reviewed-by: Sebastian Chlad <sebastianchlad@gmail.com>
 
-LGTM
+On Mon, 3 Jun 2024 at 15:49, Andrea Cervesato via ltp <ltp@lists.linux.it>
+wrote:
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-On 6/3/24 14:46, Avinesh Kumar wrote:
-> In the SAFE_OPEN() calls, we missed to include any of the mandatory
-> flags for open syscall:  O_RDONLY,  O_WRONLY,  or  O_RDWR
+> Hi!
 >
-> Fixes: 2cf78f47a6 (unlink: Add error tests for EPERM and EROFS)
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->   testcases/kernel/syscalls/unlink/unlink09.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+> thanks for fixing the commit message and the test. According with the
+> open() documentation an access flag
+> is a must and that's one thing that makes this test wrong.
 >
-> diff --git a/testcases/kernel/syscalls/unlink/unlink09.c b/testcases/kernel/syscalls/unlink/unlink09.c
-> index cc4b4a07e..405deb05f 100644
-> --- a/testcases/kernel/syscalls/unlink/unlink09.c
-> +++ b/testcases/kernel/syscalls/unlink/unlink09.c
-> @@ -43,12 +43,12 @@ static void setup(void)
->   {
->   	int attr;
->   
-> -	fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
-> +	fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_RDWR | O_CREAT, 0600);
->   	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
->   	attr |= FS_IMMUTABLE_FL;
->   	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
->   
-> -	fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
-> +	fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_RDWR | O_CREAT, 0600);
->   	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
->   	attr |= FS_APPEND_FL;
->   	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> @@ -79,7 +79,7 @@ static void verify_unlink(unsigned int i)
->   	/* If unlink() succeeded unexpectedly, test file should be restored. */
->   	if (!TST_RET) {
->   		if (tc->fd) {
-> -			*(tc->fd) = SAFE_OPEN(tc->filename, O_CREAT, 0600);
-> +			*(tc->fd) = SAFE_OPEN(tc->filename, O_RDWR | O_CREAT, 0600);
->   			if (tc->flag) {
->   				SAFE_IOCTL(*(tc->fd), FS_IOC_GETFLAGS, &attr);
->   				attr |= tc->flag;
-
-Andrea
-
+> LGTM
+>
+> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> On 6/3/24 14:46, Avinesh Kumar wrote:
+> > In the SAFE_OPEN() calls, we missed to include any of the mandatory
+> > flags for open syscall:  O_RDONLY,  O_WRONLY,  or  O_RDWR
+> >
+> > Fixes: 2cf78f47a6 (unlink: Add error tests for EPERM and EROFS)
+> > Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> > ---
+> >   testcases/kernel/syscalls/unlink/unlink09.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/unlink/unlink09.c
+> b/testcases/kernel/syscalls/unlink/unlink09.c
+> > index cc4b4a07e..405deb05f 100644
+> > --- a/testcases/kernel/syscalls/unlink/unlink09.c
+> > +++ b/testcases/kernel/syscalls/unlink/unlink09.c
+> > @@ -43,12 +43,12 @@ static void setup(void)
+> >   {
+> >       int attr;
+> >
+> > -     fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
+> > +     fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_RDWR | O_CREAT,
+> 0600);
+> >       SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
+> >       attr |= FS_IMMUTABLE_FL;
+> >       SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
+> >
+> > -     fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
+> > +     fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_RDWR |
+> O_CREAT, 0600);
+> >       SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
+> >       attr |= FS_APPEND_FL;
+> >       SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
+> > @@ -79,7 +79,7 @@ static void verify_unlink(unsigned int i)
+> >       /* If unlink() succeeded unexpectedly, test file should be
+> restored. */
+> >       if (!TST_RET) {
+> >               if (tc->fd) {
+> > -                     *(tc->fd) = SAFE_OPEN(tc->filename, O_CREAT, 0600);
+> > +                     *(tc->fd) = SAFE_OPEN(tc->filename, O_RDWR |
+> O_CREAT, 0600);
+> >                       if (tc->flag) {
+> >                               SAFE_IOCTL(*(tc->fd), FS_IOC_GETFLAGS,
+> &attr);
+> >                               attr |= tc->flag;
+>
+> Andrea
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
