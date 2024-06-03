@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B70CFC25B76
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 10:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0432C25B76
+	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 10:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1717411012; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1717411038; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=5/qU2FzrqPBaRtHArKeE7SUHA1mvY76izCW/ODUkYC0=;
- b=RYcs1WzaIAgmOkXT1ikZg1fEeULdE4I6m+P64t7+0TFELy0Mqj8hRiFTCV+MnahsCXcgT
- 31GHVNkFkNk8hiBjnq7DhIM0t6bTvguiADfpid+sTgWKfwSL4yQaETeujziIiVHHfjCMZzC
- h0EbAB1ny5sbs/hAH0sow+Cuo170++g=
+ bh=QQjZB1kvxvEwFZQZOpuhS0Ug72oZ+USWXwL54RqhGcw=;
+ b=bwyjC18mJnqRIbRZvtJPedxeoRWJzRH6t3LE1+uwu2tBqQVo1OnoA6nXFTNsha6sDlgn6
+ x0MN311pi/yT6GjvSryh0PbsJHdGuPKNiQcTIciY2lI7HFd06c/Z+Wiuxz8FOL96TDiT8MZ
+ bsR+G82v4iZNAs/eOPxBdHvnIRkhGGs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 427B13D08E7
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 12:36:52 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0C7393D08EC
+	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 12:37:18 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B0ED3D08D0
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 12:36:16 +0200 (CEST)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+ by picard.linux.it (Postfix) with ESMTPS id 06D7B3D08E3
+ for <ltp@lists.linux.it>; Mon,  3 Jun 2024 12:36:26 +0200 (CEST)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
+ [IPv6:2a00:1450:4864:20::22c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3E483100126A
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 12:36:15 +0200 (CEST)
-Received: by mail-lj1-x22d.google.com with SMTP id
- 38308e7fff4ca-2eaa794eb9fso20775941fa.2
- for <ltp@lists.linux.it>; Mon, 03 Jun 2024 03:36:15 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 108111401216
+ for <ltp@lists.linux.it>; Mon,  3 Jun 2024 12:36:26 +0200 (CEST)
+Received: by mail-lj1-x22c.google.com with SMTP id
+ 38308e7fff4ca-2e964acff1aso45598981fa.0
+ for <ltp@lists.linux.it>; Mon, 03 Jun 2024 03:36:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1717410974; x=1718015774; darn=lists.linux.it;
+ d=suse.com; s=google; t=1717410985; x=1718015785; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=RdgDwgylJwfk4x3jafz3408ZhIuZycTJPgNfNwlQTSI=;
- b=aYVF5maGBRue6/gj0P/tnkSGJKd4ChbIoSYr2vaTy3yb7oHImiv7I1CvRFPtpgdSyR
- 8jbLKvKeKZOdvAKAcWDt1IXsMGgbCxu/vBKmpVHkhC7meWfjj2HVIQOiVjfK6PjO3cub
- s2DacD+GFlbHr1+REwfIjXFaM9hIs4K3wi8WCB0yJD3Og4uRH6F4TpItiBlBXQ++GNGz
- zh7NmAc3EJJE/C32qTQ4zMenhOB11AWAA98wv/VBQf5r3vlZGeXgFCnu0ciAF3UVex1L
- bFOBbhjk0Gmf2byVJq5oZXAdB4dae0puvdgL4UT1HddcUP+uOPemFBKB6FyZkz1buOXR
- 1OrA==
+ bh=zQ4zfKTRDQBRqSU6vUxNFwBooRPvqYoQUVUwS8pd1qU=;
+ b=BA+phRA6LZOdjhPkY9UEB8A6+r9j9alGTzlG13Re5AVrHAp9Knfu81FC8/+KPUzQvj
+ 2NRWwtiB15jfKYiT936PfcjegRH9r6qF4rbANQdG9fUyuf5uDEkHAvhmMlRU/wHWyiVs
+ NsCJn8dWTeZrL/gTX7thw+dxHvKYu/CCp32IvJESIlDli/dX/duwnwH2oPMnFTxx/cpW
+ YnOaCW790qqrJ8T4+sSb0EOShQpmo4Uy1yP9KAKplQobyNbl7qmUYCQpZjfJwDfslieS
+ 01MTuedwnjceVoP8axXjPrM34WbS/PdZ1C27Ss0LVeCf+VspvvRpCuqK4bM7sLfdH1bU
+ 4D6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1717410974; x=1718015774;
+ d=1e100.net; s=20230601; t=1717410985; x=1718015785;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=RdgDwgylJwfk4x3jafz3408ZhIuZycTJPgNfNwlQTSI=;
- b=g9XWa7KVULz9cdU2ZPfnQL9tTexgXSBGixaUqzsb28wTURxi4zAB1qowdxcyRGbUZo
- Q2HI4PY89UVza0hc39OHl7SJyUa3yGITVvbR+rJp+W2Vju3vfkDk7I8ycDh8Gtw5O/Mh
- o9SLp2TAb11IZs9YctYHfXSG2xsMg2zsEb3+KTP/lkakBE3+xuEgeb+UAoV2dIOXQ84U
- pwvnbChYUJBth+s+628yt4w0s/Y7lNzEoRS+dwJleUBrm/IoW9D2s5BnFKmIWYazQzU/
- iJAC1N8UFbJSwgtcsq2Nfzse6YVhInkLTeWhiiRGSaImE94R81GPfuzJgBCGl/agJesW
- lScA==
-X-Gm-Message-State: AOJu0Yw1lrkqGKG7XgZwtD972TjsIK+vvSSB1rkE7pM/X91zsCX2cyGq
- qtr9Cd8uuSgn4W8Q2ESOQlz85Bv9yGkxPFdEhrBnXazyS0/rCyGUjvdEBn450g8h5IYvjffsKvk
+ bh=zQ4zfKTRDQBRqSU6vUxNFwBooRPvqYoQUVUwS8pd1qU=;
+ b=qNhWlDPXaGm1BPUx2/Lsxu+Pvg0LOIAvTxQQP3wWCTV5MJW4tgMyOPO6HfWC50Eid3
+ gEVQVcGkgXroD6GVkwrpqGV5q4IRT4m7HwOoWV2iHxChnsTBh9OEOMe47e82r9ke374Q
+ MHswZAOM7OLqkLvUNbCWzL3w1XUo0NKDl/0fJvaem1TeQoPpZJ0bpxec+bqCA89xOJDw
+ vC6Rohi2cv5WthzfZrd/d5RJ8suO+cnHommmYhHgIXT7Al/Exs6A4i0BVJH2hBVlN/1q
+ i+FXX17R7lD+gSdvfM03EoUINRgtcB/blU7fwTHQAcmxaDHZTtTjdMA4zlveD2YRI6aF
+ SMcw==
+X-Gm-Message-State: AOJu0YwDsxbcSJ6Nr6huYHbhmdyJX7xEwnwvSM33FHoeADKlYvyIhKL8
+ jGNUuUu+7x/K2+76hxa1wg2he1rm280WvagnTDQiKM0SfXQfsDOgP09n4rKe2OEJYILdM01Ffss
  =
-X-Google-Smtp-Source: AGHT+IFSe30Vy3Tdes83oAOaC/22vWSG4H7ZszAWRrtpOhkmcTd5jRnpD+JbiGu3/yP9UENTqNxJxg==
-X-Received: by 2002:a2e:870d:0:b0:2e9:8a16:fe31 with SMTP id
- 38308e7fff4ca-2ea950aee36mr64560801fa.2.1717410974225; 
- Mon, 03 Jun 2024 03:36:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHiSOUStERMu2CJCeoI3UR0ntunHbUxfHbSZfJA2pOuwM3JfZDRyO6aviWV+hJtF3aYYsEz/g==
+X-Received: by 2002:a05:651c:212:b0:2e9:870c:de1d with SMTP id
+ 38308e7fff4ca-2ea951e08d1mr57100381fa.39.1717410984957; 
+ Mon, 03 Jun 2024 03:36:24 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
  by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-6c35937a4c5sm4253262a12.68.2024.06.03.03.36.12
+ 98e67ed59e1d1-2c23b09b3e3sm1418202a91.49.2024.06.03.03.36.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 03 Jun 2024 03:36:13 -0700 (PDT)
+ Mon, 03 Jun 2024 03:36:24 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Mon,  3 Jun 2024 06:35:52 -0400
-Message-Id: <20240603103553.8318-2-wegao@suse.com>
+Date: Mon,  3 Jun 2024 06:35:53 -0400
+Message-Id: <20240603103553.8318-3-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240603103553.8318-1-wegao@suse.com>
 References: <20231201005902.15630-1-wegao@suse.com>
  <20240603103553.8318-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] ptrace05: Refactor the test using new LTP API
+Subject: [LTP] [PATCH v3 2/2] ptrace06: Refactor the test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,259 +102,422 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/syscalls/ptrace/ptrace05.c | 215 ++++++--------------
- 1 file changed, 67 insertions(+), 148 deletions(-)
+ testcases/kernel/syscalls/ptrace/ptrace06.c   | 326 ++++++++++--------
+ .../kernel/syscalls/ptrace/ptrace06_child.c   |  16 +
+ 2 files changed, 202 insertions(+), 140 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace06_child.c
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
-index 541018393..33432f186 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace05.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
-@@ -1,178 +1,97 @@
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace06.c b/testcases/kernel/syscalls/ptrace/ptrace06.c
+index a1db3bab8..de9335355 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace06.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace06.c
+@@ -1,29 +1,28 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- ******************************************************************************
-- *
-- *   ptrace05 - an app which ptraces itself as per arbitrarily specified signals,
-- *   over a user specified range.
-- *
-- *   Copyright (C) 2009, Ngie Cooper
-- *
-- *   This program is free software; you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *   GNU General Public License for more details.
-+ * Copyright (c) Linux Test Project, 2009-2019
-+ * Copyright (C) 2009, Ngie Cooper
++ * Copyright (c) 2008 Analog Devices Inc.
++ * Copyright (c) Linux Test Project, 2009-2022
 + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
 + */
 +
 +/*\
 + * [Description]
-  *
-- *   You should have received a copy of the GNU General Public License along
-- *   with this program; if not, write to the Free Software Foundation, Inc.,
-- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ * This test ptraces itself as per arbitrarily specified signals,
-+ * over 0 to SIGRTMAX range.
-  *
-- ******************************************************************************
++ *
+  * check out-of-bound/unaligned addresses given to
++ *
+  *  - {PEEK,POKE}{DATA,TEXT,USER}
+  *  - {GET,SET}{,FG}REGS
+  *  - {GET,SET}SIGINFO
+- *
+- * Copyright (c) 2008 Analog Devices Inc.
+- *
+- * Licensed under the GPL-2 or later
   */
  
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <signal.h>
+-#define _GNU_SOURCE
+-
 -#include <errno.h>
--#include <libgen.h>
--#include <math.h>
- #include <stdlib.h>
+-#include <stdbool.h>
 -#include <stdio.h>
--#include <string.h>
+ #include <stdlib.h>
 -#include <unistd.h>
  #include <sys/ptrace.h>
 -
 -#include "test.h"
- #include "lapi/signal.h"
+-#include "spawn_ptrace_child.h"
 +#include "tst_test.h"
  
--char *TCID = "ptrace05";
--int TST_TOTAL = 0;
+ /* this should be sizeof(struct user), but that info is only found
+  * in the kernel asm/user.h which is not exported to userspace.
+  */
++
+ #if defined(__i386__)
+ #define SIZEOF_USER 284
+ #elif defined(__x86_64__)
+@@ -32,168 +31,215 @@
+ #define SIZEOF_USER 0x1000	/* just pick a big number */
+ #endif
+ 
+-char *TCID = "ptrace06";
 -
--int usage(const char *);
--
--int usage(const char *argv0)
--{
--	fprintf(stderr, "usage: %s [start-signum] [end-signum]\n", argv0);
--	return 1;
--}
--
--int main(int argc, char **argv)
+-struct test_case_t {
++static struct test_case_t {
+ 	int request;
+ 	long addr;
+ 	long data;
+ } test_cases[] = {
+-	{
+-	PTRACE_PEEKDATA,.addr = 0}, {
+-	PTRACE_PEEKDATA,.addr = 1}, {
+-	PTRACE_PEEKDATA,.addr = 2}, {
+-	PTRACE_PEEKDATA,.addr = 3}, {
+-	PTRACE_PEEKDATA,.addr = -1}, {
+-	PTRACE_PEEKDATA,.addr = -2}, {
+-	PTRACE_PEEKDATA,.addr = -3}, {
+-	PTRACE_PEEKDATA,.addr = -4}, {
+-	PTRACE_PEEKTEXT,.addr = 0}, {
+-	PTRACE_PEEKTEXT,.addr = 1}, {
+-	PTRACE_PEEKTEXT,.addr = 2}, {
+-	PTRACE_PEEKTEXT,.addr = 3}, {
+-	PTRACE_PEEKTEXT,.addr = -1}, {
+-	PTRACE_PEEKTEXT,.addr = -2}, {
+-	PTRACE_PEEKTEXT,.addr = -3}, {
+-	PTRACE_PEEKTEXT,.addr = -4}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_PEEKUSER,.addr = -1}, {
+-	PTRACE_PEEKUSER,.addr = -2}, {
+-	PTRACE_PEEKUSER,.addr = -3}, {
+-	PTRACE_PEEKUSER,.addr = -4}, {
+-	PTRACE_POKEDATA,.addr = 0}, {
+-	PTRACE_POKEDATA,.addr = 1}, {
+-	PTRACE_POKEDATA,.addr = 2}, {
+-	PTRACE_POKEDATA,.addr = 3}, {
+-	PTRACE_POKEDATA,.addr = -1}, {
+-	PTRACE_POKEDATA,.addr = -2}, {
+-	PTRACE_POKEDATA,.addr = -3}, {
+-	PTRACE_POKEDATA,.addr = -4}, {
+-	PTRACE_POKETEXT,.addr = 0}, {
+-	PTRACE_POKETEXT,.addr = 1}, {
+-	PTRACE_POKETEXT,.addr = 2}, {
+-	PTRACE_POKETEXT,.addr = 3}, {
+-	PTRACE_POKETEXT,.addr = -1}, {
+-	PTRACE_POKETEXT,.addr = -2}, {
+-	PTRACE_POKETEXT,.addr = -3}, {
+-	PTRACE_POKETEXT,.addr = -4}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_POKEUSER,.addr = -1}, {
+-	PTRACE_POKEUSER,.addr = -2}, {
+-	PTRACE_POKEUSER,.addr = -3}, {
+-	PTRACE_POKEUSER,.addr = -4},
++	{PTRACE_PEEKDATA, .addr = 0},
++	{PTRACE_PEEKDATA, .addr = 1},
++	{PTRACE_PEEKDATA, .addr = 2},
++	{PTRACE_PEEKDATA, .addr = 3},
++	{PTRACE_PEEKDATA, .addr = -1},
++	{PTRACE_PEEKDATA, .addr = -2},
++	{PTRACE_PEEKDATA, .addr = -3},
++	{PTRACE_PEEKDATA, .addr = -4},
++	{PTRACE_PEEKTEXT, .addr = 0},
++	{PTRACE_PEEKTEXT, .addr = 1},
++	{PTRACE_PEEKTEXT, .addr = 2},
++	{PTRACE_PEEKTEXT, .addr = 3},
++	{PTRACE_PEEKTEXT, .addr = -1},
++	{PTRACE_PEEKTEXT, .addr = -2},
++	{PTRACE_PEEKTEXT, .addr = -3},
++	{PTRACE_PEEKTEXT, .addr = -4},
++	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 1},
++	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 2},
++	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 3},
++	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 4},
++	{PTRACE_PEEKUSER, .addr = -1},
++	{PTRACE_PEEKUSER, .addr = -2},
++	{PTRACE_PEEKUSER, .addr = -3},
++	{PTRACE_PEEKUSER, .addr = -4},
++	{PTRACE_POKEDATA, .addr = 0},
++	{PTRACE_POKEDATA, .addr = 1},
++	{PTRACE_POKEDATA, .addr = 2},
++	{PTRACE_POKEDATA, .addr = 3},
++	{PTRACE_POKEDATA, .addr = -1},
++	{PTRACE_POKEDATA, .addr = -2},
++	{PTRACE_POKEDATA, .addr = -3},
++	{PTRACE_POKEDATA, .addr = -4},
++	{PTRACE_POKETEXT, .addr = 0},
++	{PTRACE_POKETEXT, .addr = 1},
++	{PTRACE_POKETEXT, .addr = 2},
++	{PTRACE_POKETEXT, .addr = 3},
++	{PTRACE_POKETEXT, .addr = -1},
++	{PTRACE_POKETEXT, .addr = -2},
++	{PTRACE_POKETEXT, .addr = -3},
++	{PTRACE_POKETEXT, .addr = -4},
++	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 1},
++	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 2},
++	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 3},
++	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 4},
++	{PTRACE_POKEUSER, .addr = -1},
++	{PTRACE_POKEUSER, .addr = -2},
++	{PTRACE_POKEUSER, .addr = -3},
++	{PTRACE_POKEUSER, .addr = -4},
+ #ifdef PTRACE_GETREGS
+-	{
+-	PTRACE_GETREGS,.data = 0}, {
+-	PTRACE_GETREGS,.data = 1}, {
+-	PTRACE_GETREGS,.data = 2}, {
+-	PTRACE_GETREGS,.data = 3}, {
+-	PTRACE_GETREGS,.data = -1}, {
+-	PTRACE_GETREGS,.data = -2}, {
+-	PTRACE_GETREGS,.data = -3}, {
+-	PTRACE_GETREGS,.data = -4},
++	{PTRACE_GETREGS, .data = 0},
++	{PTRACE_GETREGS, .data = 1},
++	{PTRACE_GETREGS, .data = 2},
++	{PTRACE_GETREGS, .data = 3},
++	{PTRACE_GETREGS, .data = -1},
++	{PTRACE_GETREGS, .data = -2},
++	{PTRACE_GETREGS, .data = -3},
++	{PTRACE_GETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_GETFGREGS
+-	{
+-	PTRACE_GETFGREGS,.data = 0}, {
+-	PTRACE_GETFGREGS,.data = 1}, {
+-	PTRACE_GETFGREGS,.data = 2}, {
+-	PTRACE_GETFGREGS,.data = 3}, {
+-	PTRACE_GETFGREGS,.data = -1}, {
+-	PTRACE_GETFGREGS,.data = -2}, {
+-	PTRACE_GETFGREGS,.data = -3}, {
+-	PTRACE_GETFGREGS,.data = -4},
++	{PTRACE_GETFGREGS, .data = 0},
++	{PTRACE_GETFGREGS, .data = 1},
++	{PTRACE_GETFGREGS, .data = 2},
++	{PTRACE_GETFGREGS, .data = 3},
++	{PTRACE_GETFGREGS, .data = -1},
++	{PTRACE_GETFGREGS, .data = -2},
++	{PTRACE_GETFGREGS, .data = -3},
++	{PTRACE_GETFGREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETREGS
+-	{
+-	PTRACE_SETREGS,.data = 0}, {
+-	PTRACE_SETREGS,.data = 1}, {
+-	PTRACE_SETREGS,.data = 2}, {
+-	PTRACE_SETREGS,.data = 3}, {
+-	PTRACE_SETREGS,.data = -1}, {
+-	PTRACE_SETREGS,.data = -2}, {
+-	PTRACE_SETREGS,.data = -3}, {
+-	PTRACE_SETREGS,.data = -4},
++	{PTRACE_SETREGS, .data = 0},
++	{PTRACE_SETREGS, .data = 1},
++	{PTRACE_SETREGS, .data = 2},
++	{PTRACE_SETREGS, .data = 3},
++	{PTRACE_SETREGS, .data = -1},
++	{PTRACE_SETREGS, .data = -2},
++	{PTRACE_SETREGS, .data = -3},
++	{PTRACE_SETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETFGREGS
+-	{
+-	PTRACE_SETFGREGS,.data = 0}, {
+-	PTRACE_SETFGREGS,.data = 1}, {
+-	PTRACE_SETFGREGS,.data = 2}, {
+-	PTRACE_SETFGREGS,.data = 3}, {
+-	PTRACE_SETFGREGS,.data = -1}, {
+-	PTRACE_SETFGREGS,.data = -2}, {
+-	PTRACE_SETFGREGS,.data = -3}, {
+-	PTRACE_SETFGREGS,.data = -4},
++	{PTRACE_SETFGREGS, .data = 0},
++	{PTRACE_SETFGREGS, .data = 1},
++	{PTRACE_SETFGREGS, .data = 2},
++	{PTRACE_SETFGREGS, .data = 3},
++	{PTRACE_SETFGREGS, .data = -1},
++	{PTRACE_SETFGREGS, .data = -2},
++	{PTRACE_SETFGREGS, .data = -3},
++	{PTRACE_SETFGREGS, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_GETSIGINFO
+-	{
+-	PTRACE_GETSIGINFO,.data = 0}, {
+-	PTRACE_GETSIGINFO,.data = 1}, {
+-	PTRACE_GETSIGINFO,.data = 2}, {
+-	PTRACE_GETSIGINFO,.data = 3}, {
+-	PTRACE_GETSIGINFO,.data = -1}, {
+-	PTRACE_GETSIGINFO,.data = -2}, {
+-	PTRACE_GETSIGINFO,.data = -3}, {
+-	PTRACE_GETSIGINFO,.data = -4},
++	{PTRACE_GETSIGINFO, .data = 0},
++	{PTRACE_GETSIGINFO, .data = 1},
++	{PTRACE_GETSIGINFO, .data = 2},
++	{PTRACE_GETSIGINFO, .data = 3},
++	{PTRACE_GETSIGINFO, .data = -1},
++	{PTRACE_GETSIGINFO, .data = -2},
++	{PTRACE_GETSIGINFO, .data = -3},
++	{PTRACE_GETSIGINFO, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_SETSIGINFO
+-	{
+-	PTRACE_SETSIGINFO,.data = 0}, {
+-	PTRACE_SETSIGINFO,.data = 1}, {
+-	PTRACE_SETSIGINFO,.data = 2}, {
+-	PTRACE_SETSIGINFO,.data = 3}, {
+-	PTRACE_SETSIGINFO,.data = -1}, {
+-	PTRACE_SETSIGINFO,.data = -2}, {
+-	PTRACE_SETSIGINFO,.data = -3}, {
+-	PTRACE_SETSIGINFO,.data = -4},
++	{PTRACE_SETSIGINFO, .data = 0},
++	{PTRACE_SETSIGINFO, .data = 1},
++	{PTRACE_SETSIGINFO, .data = 2},
++	{PTRACE_SETSIGINFO, .data = 3},
++	{PTRACE_SETSIGINFO, .data = -1},
++	{PTRACE_SETSIGINFO, .data = -2},
++	{PTRACE_SETSIGINFO, .data = -3},
++	{PTRACE_SETSIGINFO, .data = -4},
+ #endif
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
++#define SPT(x)[PTRACE_##x] = #x,
++static char *strings[] = {
++	SPT(TRACEME)
++	SPT(PEEKTEXT)
++	SPT(PEEKDATA)
++	SPT(PEEKUSER)
++	SPT(POKETEXT)
++	SPT(POKEDATA)
++	SPT(POKEUSER)
++#ifdef PTRACE_GETREGS
++	SPT(GETREGS)
++#endif
++#ifdef PTRACE_SETREGS
++	SPT(SETREGS)
++#endif
++#ifdef PTRACE_GETSIGINFO
++	SPT(GETSIGINFO)
++#endif
++#ifdef PTRACE_SETSIGINFO
++	SPT(SETSIGINFO)
++#endif
++#ifdef PTRACE_GETFGREGS
++	SPT(GETFGREGS)
++#endif
++#ifdef PTRACE_SETFGREGS
++	SPT(SETFGREGS)
++#endif
++	SPT(KILL)
++	SPT(SINGLESTEP)
++};
++
++static inline char *strptrace(int request)
++{
++	return strings[request];
++}
++
++static void child(void)
++{
+ 
+-int main(int argc, char *argv[])
++	char path[512];
++
++	SAFE_PTRACE(PTRACE_TRACEME, 0, NULL, NULL);
++
++	if (tst_get_path("ptrace06_child", path, sizeof(path)))
++		tst_brk(TCONF, "Couldn't find ptrace06_child in $PATH");
++
++	TEST(execl(path, "ptrace06_child", "", NULL));
++	tst_brk(TFAIL | TTERRNO,
++			"Failed to execute execl01_child");
++	exit(0);
++}
++
 +static void run(void)
  {
--
--	int end_signum = -1;
--	int signum;
--	int start_signum = -1;
-+	int signum = 0;
- 	int status;
--
- 	pid_t child;
+ 	size_t i;
+-	long ret;
+-	int saved_errno;
++	int pid;
++	int status;
  
 -	tst_parse_opts(argc, argv, NULL, NULL);
--
--	if (start_signum == -1) {
--		start_signum = 0;
--	}
--	if (end_signum == -1) {
--		end_signum = SIGRTMAX;
--	}
--
--	for (signum = start_signum; signum <= end_signum; signum++) {
--
-+	for (signum = 0; signum <= SIGRTMAX; signum++) {
- 		if (signum >= __SIGRTMIN && signum < SIGRTMIN)
- 			continue;
++	pid = SAFE_FORK();
  
--		switch (child = fork()) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
--		case 0:
-+		child = SAFE_FORK();
- 
--			if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != -1) {
--				tst_resm(TINFO, "[child] Sending kill(.., %d)",
--					 signum);
--				if (kill(getpid(), signum) < 0) {
--					tst_resm(TINFO | TERRNO,
--						 "[child] kill(.., %d) failed.",
--						 signum);
--				}
-+		if (child == 0) {
-+			TEST(ptrace(PTRACE_TRACEME, 0, NULL, NULL));
-+			if (TST_RET != -1) {
-+				tst_res(TINFO, "[child] Sending kill(.., %d)",
-+						signum);
-+				SAFE_KILL(getpid(), signum);
- 			} else {
--
--				/*
--				 * This won't increment the TST_COUNT var.
--				 * properly, but it'll show up as a failure
--				 * nonetheless.
--				 */
--				tst_resm(TFAIL | TERRNO,
--					 "Failed to ptrace(PTRACE_TRACEME, ...) "
--					 "properly");
--
-+				tst_brk(TFAIL | TERRNO,
-+						"Failed to ptrace(PTRACE_TRACEME, ...) "
-+						"properly");
- 			}
+-	make_a_baby(argc, argv);
++	if (!pid)
++		child();
 +
- 			/* Shouldn't get here if signum == 0. */
- 			exit((signum == 0 ? 0 : 2));
--			break;
--
--		default:
-+		}
++	SAFE_WAIT(&status);
++
++	if (!WIFSTOPPED(status))
++		tst_brk(TBROK, "child %d was not stopped", pid);
  
--			waitpid(child, &status, 0);
-+		SAFE_WAITPID(child, &status, 0);
+ 	for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
+ 		struct test_case_t *tc = &test_cases[i];
  
--			switch (signum) {
--			case 0:
--				if (WIFEXITED(status)
--				    && WEXITSTATUS(status) == 0) {
--					tst_resm(TPASS,
--						 "kill(.., 0) exited "
--						 "with 0, as expected.");
--				} else {
--					tst_resm(TFAIL,
--						 "kill(.., 0) didn't exit "
--						 "with 0.");
--				}
--				break;
--			case SIGKILL:
--				if (WIFSIGNALED(status)) {
--					/* SIGKILL must be uncatchable. */
--					if (WTERMSIG(status) == SIGKILL) {
--						tst_resm(TPASS,
--							 "Killed with SIGKILL, "
--							 "as expected.");
--					} else {
--						tst_resm(TPASS,
--							 "Didn't die with "
--							 "SIGKILL (?!) ");
--					}
--				} else if (WIFEXITED(status)) {
--					tst_resm(TFAIL,
--						 "Exited unexpectedly instead "
--						 "of dying with SIGKILL.");
--				} else if (WIFSTOPPED(status)) {
--					tst_resm(TFAIL,
--						 "Stopped instead of dying "
--						 "with SIGKILL.");
--				}
--				break;
--				/* All other processes should be stopped. */
--			default:
--				if (WIFSTOPPED(status)) {
--					tst_resm(TPASS, "Stopped as expected");
-+		switch (signum) {
-+		case 0:
-+			if (WIFEXITED(status)
-+					&& WEXITSTATUS(status) == 0) {
-+				tst_res(TPASS,
-+						"kill(.., 0) exited with 0, as expected.");
-+			} else {
-+				tst_brk(TFAIL | TERRNO,
-+						"kill(.., 0) didn't exit with 0.");
-+			}
-+			break;
-+		case SIGKILL:
-+			if (WIFSIGNALED(status)) {
-+				/* SIGKILL must be uncatchable. */
-+				if (WTERMSIG(status) == SIGKILL) {
-+					tst_res(TPASS,
-+							"Killed with SIGKILL, as expected.");
- 				} else {
--					tst_resm(TFAIL, "Didn't stop as "
--						 "expected.");
--					if (kill(child, 0)) {
--						tst_resm(TINFO,
--							 "Is still alive!?");
--					} else if (WIFEXITED(status)) {
--						tst_resm(TINFO,
--							 "Exited normally");
--					} else if (WIFSIGNALED(status)) {
--						tst_resm(TINFO,
--							 "Was signaled with "
--							 "signum=%d",
--							 WTERMSIG(status));
--					}
--
-+					tst_brk(TFAIL | TERRNO,
-+							"Didn't die with SIGKILL (?!) ");
- 				}
--
--				break;
--
-+			} else if (WIFEXITED(status)) {
-+				tst_res(TFAIL | TERRNO,
-+						"Exited unexpectedly instead of dying with SIGKILL.");
-+			} else if (WIFSTOPPED(status)) {
-+				tst_res(TFAIL | TERRNO,
-+						"Stopped instead of dying with SIGKILL.");
- 			}
--
-+			break;
-+			/* All other processes should be stopped. */
-+		default:
-+			if (WIFSTOPPED(status))
-+				tst_res(TPASS, "Stopped as expected");
-+			else
-+				tst_res(TFAIL | TERRNO, "Didn't stop as expected.");
-+			break;
- 		}
--		/* Make sure the child dies a quick and painless death ... */
--		kill(child, 9);
- 
-+		if (signum != 0 && signum != SIGKILL)
-+			SAFE_PTRACE(PTRACE_CONT, child, NULL, NULL);
+-		errno = 0;
+-		ret =
+-		    ptrace(tc->request, pid, (void *)tc->addr,
+-			   (void *)tc->data);
+-		saved_errno = errno;
+-		if (ret != -1)
+-			tst_resm(TFAIL,
++		TEST(ptrace(tc->request, pid, (void *)tc->addr,
++					(void *)tc->data));
++		if (TST_RET != -1)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) returned %li instead of -1",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 ret);
+-		else if (saved_errno != EIO && saved_errno != EFAULT)
+-			tst_resm(TFAIL,
++				 TST_RET);
++		else if (TST_ERR != EIO && TST_ERR != EFAULT)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) expected errno EIO or EFAULT; actual: %i (%s)",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 saved_errno, strerror(saved_errno));
++				 TST_ERR, strerror(TST_ERR));
+ 		else
+-			tst_resm(TPASS,
++			tst_res(TPASS,
+ 				 "ptrace(%s, ..., %li, %li) failed as expected",
+ 				 strptrace(tc->request), tc->addr, tc->data);
  	}
--
+ 
+-	/* hopefully this worked */
+-	ptrace(PTRACE_KILL, pid, NULL, NULL);
++	SAFE_PTRACE(PTRACE_CONT, pid, NULL, NULL);
+ 
 -	tst_exit();
--
  }
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.forks_child = 1,
 +};
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace06_child.c b/testcases/kernel/syscalls/ptrace/ptrace06_child.c
+new file mode 100644
+index 000000000..350b0e8df
+--- /dev/null
++++ b/testcases/kernel/syscalls/ptrace/ptrace06_child.c
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 Linux Test Project
++ * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
++ */
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++int main(int argc, char *argv[])
++{
++
++	tst_res(TPASS, "%s executed", argv[0]);
++
++	return 0;
++}
 -- 
 2.35.3
 
