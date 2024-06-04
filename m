@@ -4,70 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48AC7C25B76
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 14:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E559C25B7E
+	for <ltp@archiver.kernel.org>; Tue,  4 Jun 2024 11:44:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A35E23D08E7
-	for <ltp@archiver.kernel.org>; Mon,  3 Jun 2024 16:16:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 46E093D094C
+	for <ltp@archiver.kernel.org>; Tue,  4 Jun 2024 13:44:52 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9EAE23C2B89
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 16:16:03 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 54D353D00B8
+ for <ltp@lists.linux.it>; Tue,  4 Jun 2024 13:44:35 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DD0641A00922
- for <ltp@lists.linux.it>; Mon,  3 Jun 2024 16:16:02 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-42135a45e2aso15301335e9.3
- for <ltp@lists.linux.it>; Mon, 03 Jun 2024 07:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1717424162; x=1718028962; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=YBDKzJzfL/kisf7mX2QsAYw1VZ+9j8Trx6m3G0+ZVko=;
- b=GNV4Su5mQs+u/ZD5l6Yb8f2tXgViZL0F+2R9psVzhCyXc9xKDE8I3Gu0uBxum0ZnGL
- RWntkr5Pr/ePfCNBkIc8hYAruHqDI0j82eKEeBJneb29V3Pi1s42IWGpk27wjFToWa0k
- gPJRQ16ZjzZkUbOtcA4zQJ3kfw6bxMvpCBjcg3jCTZoeYIzr2CTvFBic4lEIPx41aMND
- WbgUmB8g+8kYTpGp0Aie7hyxW2G3/PgdE2l2oUMcbTgr0YNdtVoKQiHDufgPduHqTZTn
- Ro+PsfMODJwzGH/c0PJmnNPfCrrkOyzEa0+bqcnqZBOkNGpkd0Yla40Lf0aUzUYK2U8U
- LgaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1717424162; x=1718028962;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=YBDKzJzfL/kisf7mX2QsAYw1VZ+9j8Trx6m3G0+ZVko=;
- b=l0G6s7anbWby0/vueDBDWNPv9iDnkgkVFS0syH6takKw7ALrlNCV35hIzyFjb0yQcI
- +Ges4Y+EaXCl35M9+IEqNXBA2F+gxR4CW27I2SgQ0sTQnjgQjo+mxK5AjIUMUfs4oLri
- 3TbpnNhd+Tzk2tmW+f+8Lf3gcqqK2VNCq9fA7EsfV5U/LnY1agY2j2MXiA5BELoUBm8o
- d59e6GKZzbBT7O74IgUlbe06YwSHg0lSolVubeMiNHAsLRR1G+J8d48sa6b+WN607rBl
- 7DCccdPjvQD4JM6n/9FqUad5fxuOQlPES7Eylwp7LspdOmpL4LCHmit9de6B/c2Gqp5v
- 7QBg==
-X-Gm-Message-State: AOJu0YyJw1/KmNJiKTVI3coSB66i0dDmBX7y7SPLUXLoO22stFtw68xG
- dnG/bmtkhuLCKYOmiCT+F95dcj3k7w+1eg272UZI3+lX4c3VfkOdoZxP2XQf7udPgPJ58Ayxw50
- nvAzHmzKtm8bna9XEb0bdPy1gfSU=
-X-Google-Smtp-Source: AGHT+IGY+EvQcy49e709K3vzE3ETL4Wdv3maZIEQn0Y4A8NoxHNp0I351LzeE52h/tDeTC1PX8kuQ6bQu8rROcaYF/k=
-X-Received: by 2002:a05:600c:45d3:b0:41b:cb18:e24b with SMTP id
- 5b1f17b1804b1-4212e04fe7amr62423425e9.9.1717424162101; Mon, 03 Jun 2024
- 07:16:02 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 73E5F2010FC
+ for <ltp@lists.linux.it>; Tue,  4 Jun 2024 13:44:33 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B1A2C21A11;
+ Tue,  4 Jun 2024 11:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717501471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NkMIL8YsCXpJ9EvLukyd2TrVgbLJyNl2watFD8YWXqg=;
+ b=2++fG7qX2EjXbAd6nK65j3Qax9Cty9HdKbYtgobptReZCXDOM2csNFOhfnXcOz2+K4y0NP
+ Nu8rBLQjtWmQyMvA0Q13FFg/Su9rIfkL/1O5NZUCGuy0Selo5J3x5yNuh1pelmDjAz+S+S
+ L3DdcwBTc64oFSf6mFp+G04cVVaNlnY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717501471;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NkMIL8YsCXpJ9EvLukyd2TrVgbLJyNl2watFD8YWXqg=;
+ b=hopCjddK3qEHw64mP5dB1oVki+3rrSm5MDynUPRyNJjYZriSfJ3BrV8CEZ1MzUfM+gBF7B
+ vSjeVzAexiTbsLCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717501471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NkMIL8YsCXpJ9EvLukyd2TrVgbLJyNl2watFD8YWXqg=;
+ b=2++fG7qX2EjXbAd6nK65j3Qax9Cty9HdKbYtgobptReZCXDOM2csNFOhfnXcOz2+K4y0NP
+ Nu8rBLQjtWmQyMvA0Q13FFg/Su9rIfkL/1O5NZUCGuy0Selo5J3x5yNuh1pelmDjAz+S+S
+ L3DdcwBTc64oFSf6mFp+G04cVVaNlnY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717501471;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NkMIL8YsCXpJ9EvLukyd2TrVgbLJyNl2watFD8YWXqg=;
+ b=hopCjddK3qEHw64mP5dB1oVki+3rrSm5MDynUPRyNJjYZriSfJ3BrV8CEZ1MzUfM+gBF7B
+ vSjeVzAexiTbsLCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9CE7C13AB8;
+ Tue,  4 Jun 2024 11:44:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id vDq0JB/+Xma1WAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 04 Jun 2024 11:44:31 +0000
+Date: Tue, 4 Jun 2024 13:44:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Zl7-FehzfYbRxhcy@yuki>
+References: <20240528121715.436013-1-pvorel@suse.cz>
 MIME-Version: 1.0
-References: <CAJCsO8fTwOsVwhCdBksStaPVjXHBi8m3g+_b-ZAnKByUR3cqyA@mail.gmail.com>
- <20240603124653.31967-1-akumar@suse.de>
- <1c82db37-4c4b-4679-9c18-618c57ec6a0a@suse.com>
-In-Reply-To: <1c82db37-4c4b-4679-9c18-618c57ec6a0a@suse.com>
-From: Sebastian Chlad <sebastianchlad@gmail.com>
-Date: Mon, 3 Jun 2024 16:15:49 +0200
-Message-ID: <CAJCsO8e9CCMhXhRk5Kf1LiUO1_HwQ0E2E6-p0pjyz1EZu8Y7eA@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240528121715.436013-1-pvorel@suse.cz>
+X-Spamd-Result: default: False [-3.73 / 50.00]; BAYES_HAM(-2.93)[99.70%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] unlink09: Fix open syscall flags
+Subject: Re: [LTP] [PATCH 1/1] sparse-ltp: Fix bogus warning
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,74 +114,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-+1
+Hi!
+> tst_tmpdir.c:347:6: warning: Symbol 'tst_purge_dir' has no prototype or
+> library ('tst_') prefix. Should it be static?
 
-Reviewed-by: Sebastian Chlad <sebastianchlad@gmail.com>
+Actually this is a correct check. The idea is a bit different, we are
+trying to make sure that there is a prototype in the headers for the
+function. If that is true, the sym->same_symbol points to that symbol
+instance and the check exists before it reaches that warning.
 
-On Mon, 3 Jun 2024 at 15:49, Andrea Cervesato via ltp <ltp@lists.linux.it>
-wrote:
+So the actuall problem here is that the prototype is in a strange place,
+i.e. tst_device.h which is not included into tst_tmpdir.c.
 
-> Hi!
->
-> thanks for fixing the commit message and the test. According with the
-> open() documentation an access flag
-> is a must and that's one thing that makes this test wrong.
->
-> LGTM
->
-> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
->
-> On 6/3/24 14:46, Avinesh Kumar wrote:
-> > In the SAFE_OPEN() calls, we missed to include any of the mandatory
-> > flags for open syscall:  O_RDONLY,  O_WRONLY,  or  O_RDWR
-> >
-> > Fixes: 2cf78f47a6 (unlink: Add error tests for EPERM and EROFS)
-> > Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> > ---
-> >   testcases/kernel/syscalls/unlink/unlink09.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/unlink/unlink09.c
-> b/testcases/kernel/syscalls/unlink/unlink09.c
-> > index cc4b4a07e..405deb05f 100644
-> > --- a/testcases/kernel/syscalls/unlink/unlink09.c
-> > +++ b/testcases/kernel/syscalls/unlink/unlink09.c
-> > @@ -43,12 +43,12 @@ static void setup(void)
-> >   {
-> >       int attr;
-> >
-> > -     fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
-> > +     fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_RDWR | O_CREAT,
-> 0600);
-> >       SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> >       attr |= FS_IMMUTABLE_FL;
-> >       SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
-> >
-> > -     fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
-> > +     fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_RDWR |
-> O_CREAT, 0600);
-> >       SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
-> >       attr |= FS_APPEND_FL;
-> >       SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> > @@ -79,7 +79,7 @@ static void verify_unlink(unsigned int i)
-> >       /* If unlink() succeeded unexpectedly, test file should be
-> restored. */
-> >       if (!TST_RET) {
-> >               if (tc->fd) {
-> > -                     *(tc->fd) = SAFE_OPEN(tc->filename, O_CREAT, 0600);
-> > +                     *(tc->fd) = SAFE_OPEN(tc->filename, O_RDWR |
-> O_CREAT, 0600);
-> >                       if (tc->flag) {
-> >                               SAFE_IOCTL(*(tc->fd), FS_IOC_GETFLAGS,
-> &attr);
-> >                               attr |= tc->flag;
->
-> Andrea
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+Obvious fix would be including tst_device.h into tst_tmpdir.c however
+I'm not sure that the function to purge the directory belongs to the
+tst_device.h to begin with. Maybe we should add just tst_tmpdir.h with
+that function and include it into right places, i.e. tst_test.h and
+tst_tmpdir.c.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
