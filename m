@@ -4,92 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13995C25B76
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 10:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D02D9C25B76
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 10:59:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1717585192; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ppN0E33jPoxor4rm/Z/bIVEPrlU1qW/j7G1ZZQTH97g=;
+ b=c2daDqqOl5fDPR+JJQM6cKAxnj89CX0TX8K9ZfAmo1X73HbOmDwSoz3tY99Pv9InzPFVL
+ mXlmfXAV8P3RbmVlxYZnGfQEGOixawV8rTrdu+jR91RFXw7A01FM8AX4Tzu2OoHKHo2McOc
+ FExKlTfWkzAXlgxl+g+uQ68XrdhoRyo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 767BD3D0987
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 12:45:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 3137D3D0984
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 12:59:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCBA43CFFBF
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 12:45:20 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7F4A93D091C
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 12:59:30 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CEF0510103A4
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 12:45:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1C6071F7F1;
- Wed,  5 Jun 2024 10:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717584318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=BTVAdH3S991fBZ+WoG6k+emkXIi2VnSJjsgRPO08S4Y=;
- b=fvlLlpKtZqlvlViorukgA8eaLIpfQj7raY/j6BIPNwzt+JJgqazrHENQ1YA0vrc9zcIzkp
- YcgyuBCArDdoPM8j9QdK1YBRpqoV4W1a4iVMx0r+hs344McUz2EwS7goo6LqADogY278ir
- AVRK2qNW4KSDOEBaCFs/b3YC1CUGYwU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717584318;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=BTVAdH3S991fBZ+WoG6k+emkXIi2VnSJjsgRPO08S4Y=;
- b=COjIAFp84jjudXUSg/xZrQ4HdxKc4b5k6BaMNl83OZOsVjh1Bj5t9GbryC96c1rtXneDi4
- 5UHgY/zHqYIk3nBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717584318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=BTVAdH3S991fBZ+WoG6k+emkXIi2VnSJjsgRPO08S4Y=;
- b=fvlLlpKtZqlvlViorukgA8eaLIpfQj7raY/j6BIPNwzt+JJgqazrHENQ1YA0vrc9zcIzkp
- YcgyuBCArDdoPM8j9QdK1YBRpqoV4W1a4iVMx0r+hs344McUz2EwS7goo6LqADogY278ir
- AVRK2qNW4KSDOEBaCFs/b3YC1CUGYwU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717584318;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=BTVAdH3S991fBZ+WoG6k+emkXIi2VnSJjsgRPO08S4Y=;
- b=COjIAFp84jjudXUSg/xZrQ4HdxKc4b5k6BaMNl83OZOsVjh1Bj5t9GbryC96c1rtXneDi4
- 5UHgY/zHqYIk3nBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B14C13AA1;
- Wed,  5 Jun 2024 10:45:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1l2/Ab5BYGa8ZQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 05 Jun 2024 10:45:18 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2CA2B1B61055
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 12:59:29 +0200 (CEST)
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-2e73441edf7so71033811fa.1
+ for <ltp@lists.linux.it>; Wed, 05 Jun 2024 03:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1717585168; x=1718189968; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=mfSQnmM9WjxbLXw9rBZ3E1rKL9Porl+2gE5rMxdM+XY=;
+ b=CFVNQ+2MoZniRoO+ecP3kUlv6Di65/etjgW06jisKV0IE2nVm9TL5+t8pUlxN08l84
+ bvoUCVzI1zbDXx9Efy7f4Pq5JFux+u8zbZmXHKH15XJfFzTZhoSSGOTKlLXDbW0p3xsy
+ WX10CdaS4R/KUNiqGikwMse826KnyHw9VnTYKmWWlVtL43/yEgceTEqrDvYz6ou9Nc6w
+ iJHkEYfGXZb07yDCyhdoBlyVhhtfmNaiU0XD/LycK7ZppfMuDiV0iNe5r0Hb0VJX7ykJ
+ rqZOyxi+T+A9zhHhmUTLEWAa9EjhqO2wAEud3jMMv7jKBJI+KSehDiFltwTYpb4WX9P8
+ aIMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1717585168; x=1718189968;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=mfSQnmM9WjxbLXw9rBZ3E1rKL9Porl+2gE5rMxdM+XY=;
+ b=G0Bc5d4JUxus1WVIMaoAb/78qbu5ZCCMrrvSpggleovPiWH9Z2W7twdqHfQenZp+uV
+ KsLorD5GVSE8i+hHR7GJkfgZlrT6mGt8/alNhVDRiyKMnfmU73JOMqN9QkYOzIDBJuMz
+ 4+adtMP6xBEmf7FV0HppZeg85eKeRFApyEcnZx66CQLCP2FIEEbJX2QdsXuDV6Ki3AMl
+ YxnTz68fD22fciS4kmhZV5P2xPKkZFmjfPMA2zLSZOMOWt+dZIc2k0DjKnTKUlujF0gA
+ mtELxbfOm2P11oPyodATkz86qTmIFl6bVtoFj4JnTd5tZshN6vx5eKMnKkC6ShHlrQrt
+ bGMg==
+X-Gm-Message-State: AOJu0YzIAVsz2queU1qGx9Q50Z/f2GrLvO0P/jdQ5y5SXTVVbqG9wfI+
+ mxE9OHW8x0vS7+y6bTHdLbGZV2wrjIGSyRHduzM6y6n/qEL9NRZH+kUQzJITcOcADaUF3V0Sqrw
+ =
+X-Google-Smtp-Source: AGHT+IEI4UQ/K6zbfGzFP/FURUbeTYNq2vvu8LiUWRPALpouMLLzDzK51L8ulWOVHod+cMATU1apRw==
+X-Received: by 2002:a2e:7302:0:b0:2ea:8456:fc93 with SMTP id
+ 38308e7fff4ca-2eac79c342amr12536031fa.9.1717585168095; 
+ Wed, 05 Jun 2024 03:59:28 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-1f6323f6da2sm99229015ad.227.2024.06.05.03.59.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 05 Jun 2024 03:59:27 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Wed,  5 Jun 2024 12:45:12 +0200
-Message-ID: <20240605104512.18296-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.44.2
+Date: Wed,  5 Jun 2024 06:59:19 -0400
+Message-Id: <20240605105919.10123-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240322112031.20939-1-wegao@suse.com>
+References: <20240322112031.20939-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_THREE(0.00)[3];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] testcases: realtime: Get rid of autotools
+Subject: [LTP] [PATCH v5] move_mount03: check allow to mount beneath top
+ mount
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,315 +93,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: John Stultz <jstultz@google.com>,
- Darren Hart <darren@os.amperecomputing.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The autotools checks are outdated and not needed anymore.
-
-CC: John Stultz <jstultz@google.com>
-CC: Darren Hart <darren@os.amperecomputing.com>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
+ include/lapi/fsmount.h                        |   4 +
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/move_mount/.gitignore     |   1 +
+ .../kernel/syscalls/move_mount/move_mount03.c | 145 ++++++++++++++++++
+ 4 files changed, 151 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount03.c
 
-Changes in v2:
-
-Removed realtime from mk/automake.mk as well.
-
-CI run https://github.com/metan-ucw/ltp/actions/runs/9382597033
-
- include/mk/automake.mk                 |  5 --
- testcases/realtime/Makefile            | 64 +-------------------------
- testcases/realtime/configure.ac        | 42 -----------------
- testcases/realtime/include/librttest.h |  9 +---
- testcases/realtime/lib/libstats.c      |  6 ---
- testcases/realtime/m4/.gitignore       |  1 -
- testcases/realtime/m4/GNUmakefile      | 37 ---------------
- testcases/realtime/m4/Makefile.am      |  1 -
- testcases/realtime/m4/check.m4         | 14 ------
- 9 files changed, 2 insertions(+), 177 deletions(-)
- delete mode 100644 testcases/realtime/configure.ac
- delete mode 100644 testcases/realtime/m4/.gitignore
- delete mode 100644 testcases/realtime/m4/GNUmakefile
- delete mode 100644 testcases/realtime/m4/Makefile.am
- delete mode 100644 testcases/realtime/m4/check.m4
-
-diff --git a/include/mk/automake.mk b/include/mk/automake.mk
-index 3ecdd3144..0fa059f11 100644
---- a/include/mk/automake.mk
-+++ b/include/mk/automake.mk
-@@ -27,15 +27,10 @@ AUTOHEADER	?= autoheader
- AUTOMAKE	?= automake
- 
- AUTOCONFED_SUBDIRS	= \
--			testcases/realtime \
- 			testcases/open_posix_testsuite
- 
- # We want to run this every single time to ensure that all of the prereq files
- # are there.
--.PHONY: testcases/realtime/configure
--testcases/realtime/configure:
--	$(MAKE) -C $(@D) autotools
--
- .PHONY: testcases/open_posix_testsuite/configure
- testcases/open_posix_testsuite/configure:
- 	$(MAKE) -C $(@D) autotools
-diff --git a/testcases/realtime/Makefile b/testcases/realtime/Makefile
-index 61663bfd9..b90ecf8c4 100644
---- a/testcases/realtime/Makefile
-+++ b/testcases/realtime/Makefile
-@@ -22,74 +22,12 @@
- 
- top_srcdir		?= ../..
- 
--# Override these variables to use non-system available tools.
--ACLOCAL			?= aclocal
--AUTOCONF		?= autoconf
--AUTOHEADER		?= autoheader
--AUTOMAKE		?= automake
--
- include $(top_srcdir)/include/mk/env_pre.mk
--# Ensure that this error / warning only applies for build targets.
--#
--# NOTE (garrcoop): this criterium should be in-sync with include/mk/env_pre.mk
--# (minus help as that's only invoked in the top-level Makefile).
--ifeq ($(filter autotools %clean .gitignore gitignore.%,$(MAKECMDGOALS)),)
--include $(abs_srcdir)/config.mk
--endif
- 
- LIBDIR			:= lib
--FILTER_OUT_DIRS		:= $(LIBDIR) m4
-+FILTER_OUT_DIRS		:= $(LIBDIR)
- LIB			:= $(LIBDIR)/librealtime.a
- 
--# START autotools junk
--AUTOGENERATED_FILES	= \
--			m4/Makefile
--
--AUTOMAKE_FILES := config.guess config.sub install-sh missing stamp-h1
--
--.PHONY: autotools aclocal autoconf autoheader automake
--autotools: aclocal autoconf autoheader automake
--
--.PHONY: ac-clean ac-distclean ac-maintainer-clean
--ac-clean::
--	$(RM) -rf autom4te.cache
--	$(RM) -f aclocal.m4 config.log config.status
--	$(RM) -f include/realtime_config.h include/stamp-h1
--
--ac-distclean:: ac-clean
--ac-maintainer-clean:: ac-distclean
--	$(RM) -f aclocal.m4 configure $(AUTOMAKE_FILES) m4/Makefile.in
--	$(RM) -f include/realtime_config.h.in
--
--aclocal.m4:
--	$(ACLOCAL) -I $(abs_srcdir)/m4
--
--autoconf: configure
--
--include/realtime_config.h.in: configure.ac $(wildcard m4/*.m4) aclocal.m4
--	$(AUTOHEADER)
--
--configure: configure.ac aclocal.m4
--	$(AUTOCONF)
--automake: $(AUTOMAKE_FILES)
--$(AUTOMAKE_FILES): m4/Makefile.in
--m4/Makefile.in: m4/Makefile.am aclocal.m4
--	$(AUTOMAKE) -c -a
--
--.PHONY: autoheader
--autoheader: include/realtime_config.h.in
--	$(AUTOHEADER)
--
--distclean:: %: clean ac-distclean
--	$(RM) -f $(AUTOGENERATED_FILES)
--
--maintainer-clean:: distclean ac-maintainer-clean
--
--$(AUTOGENERATED_FILES): $(top_builddir)/config.status
--	$(SHELL) $^
--
--# END autotools junk
--
- $(LIBDIR):
- 	mkdir -p "$@"
- 
-diff --git a/testcases/realtime/configure.ac b/testcases/realtime/configure.ac
-deleted file mode 100644
-index 6f50f1490..000000000
---- a/testcases/realtime/configure.ac
-+++ /dev/null
-@@ -1,42 +0,0 @@
--AC_PREREQ(2.61)
--AC_INIT([realtime],[realtime-20090930],[ltp-results@lists.sourceforge.net])
--AC_CONFIG_AUX_DIR([.])
--AM_INIT_AUTOMAKE
--AC_CONFIG_HEADERS([include/realtime_config.h])
--AC_CONFIG_FILES([   \
--	m4/Makefile \
--])
--AC_CHECK_HEADERS_ONCE([ \
--	pthread.h \
--])
--AC_CANONICAL_HOST
--
--AC_PROG_CC
--# <= autoconf 2.61 doesn't have AC_PROG_AR, but 2.63 has it. Not sure about
--# 2.62.
--AC_DEFUN([AC_PROG_AR], [AC_CHECK_TOOL(AR, ar, :)])
--AC_PROG_AR
--AC_PROG_RANLIB
--
--AC_MSG_CHECKING([for __sync_add_and_fetch gcc builtin function])
--AC_LINK_IFELSE([AC_LANG_SOURCE([
--#ifndef _GNU_SOURCE
--#define _GNU_SOURCE
--#endif
--#include <stdlib.h>
--int main(void) {
--	char *c;
--	return __sync_add_and_fetch(c, 1);
--}])],[has___sync_add_and_fetch=yes])
--if test "x$has___sync_add_and_fetch" = xyes; then
--	AC_DEFINE(HAVE___SYNC_ADD_AND_FETCH,1,[Define to 1 if you have the __sync_add_and_fetch gcc builtin function])
--	AC_MSG_RESULT(yes)
--else
--	AC_MSG_RESULT(no)
--fi
--
--AC_CHECK_LIB([m], [exp10], [AC_DEFINE([HAVE_EXP10], 1, [Define to 1 if you have exp10 function])])
--
--REALTIME_CHECK_PRIO_INHERIT
--
--AC_OUTPUT
-diff --git a/testcases/realtime/include/librttest.h b/testcases/realtime/include/librttest.h
-index 8e3421869..8733479e7 100644
---- a/testcases/realtime/include/librttest.h
-+++ b/testcases/realtime/include/librttest.h
-@@ -56,7 +56,6 @@
- #include <time.h>
- #include <unistd.h>
- #include "list.h"
--#include "realtime_config.h"
- 
- extern void setup(void);
- extern void cleanup(int i);
-@@ -113,15 +112,9 @@ extern double pass_criteria;
-  */
- static inline int atomic_add(int i, atomic_t *v)
- {
--	/* XXX (garrcoop): only available in later versions of gcc */
--#if HAVE___SYNC_ADD_AND_FETCH
- 	return __sync_add_and_fetch(&v->counter, i);
--#else
--	printf("%s: %s\n", __func__, strerror(ENOSYS));
--	exit(1);
--	return -1;
--#endif
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 07eb42ffa..216e966c7 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -115,6 +115,10 @@ static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned i
  }
+ #endif /* HAVE_MOUNT_SETATTR */
+ 
++#ifndef MOVE_MOUNT_BENEATH
++#define MOVE_MOUNT_BENEATH 		0x00000200
++#endif /* MOVE_MOUNT_BENEATH */
 +
- /* atomic_inc: atomically increment the integer passed by reference
-  */
- static inline int atomic_inc(atomic_t *v)
-diff --git a/testcases/realtime/lib/libstats.c b/testcases/realtime/lib/libstats.c
-index f12d618f4..96090bd15 100644
---- a/testcases/realtime/lib/libstats.c
-+++ b/testcases/realtime/lib/libstats.c
-@@ -46,12 +46,6 @@
- #include <libstats.h>
- #include <librttest.h>
+ /*
+  * New headers added in kernel after 5.2 release, create them for old userspace.
+ */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b1125dd75..04b758fd9 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -824,6 +824,7 @@ mount_setattr01 mount_setattr01
  
--#include "../include/realtime_config.h"
--
--#ifndef HAVE_EXP10
--# define exp10(x) (exp((x) * log(10)))
--#endif
--
- int save_stats = 0;
+ move_mount01 move_mount01
+ move_mount02 move_mount02
++move_mount03 move_mount03
  
- /* static helper functions */
-diff --git a/testcases/realtime/m4/.gitignore b/testcases/realtime/m4/.gitignore
-deleted file mode 100644
-index 5fc607b9e..000000000
---- a/testcases/realtime/m4/.gitignore
-+++ /dev/null
-@@ -1 +0,0 @@
--/Makefile
-diff --git a/testcases/realtime/m4/GNUmakefile b/testcases/realtime/m4/GNUmakefile
-deleted file mode 100644
-index 2a5b4c613..000000000
---- a/testcases/realtime/m4/GNUmakefile
-+++ /dev/null
-@@ -1,37 +0,0 @@
--#
--#    m4 Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--# Ngie Cooper, July 2009
--#
--
--top_srcdir		?= ../../..
--
--include $(top_srcdir)/include/mk/env_pre.mk
--
--M4MACROS		:= $(notdir $(wildcard *.m4))
--
--INSTALL_DIR		:= $(datarootdir)/aclocal
--
--INSTALL_MODE		:= 00644
--
--INSTALL_TARGETS		:= $(M4_MACROS)
--
--MAKE_TARGETS		:=
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/m4/Makefile.am b/testcases/realtime/m4/Makefile.am
-deleted file mode 100644
-index 87c304b42..000000000
---- a/testcases/realtime/m4/Makefile.am
-+++ /dev/null
-@@ -1 +0,0 @@
--# bogus makefile to appease automake
-diff --git a/testcases/realtime/m4/check.m4 b/testcases/realtime/m4/check.m4
-deleted file mode 100644
-index d04a2cc73..000000000
---- a/testcases/realtime/m4/check.m4
-+++ /dev/null
-@@ -1,14 +0,0 @@
--AC_DEFUN([REALTIME_CHECK_PRIO_INHERIT],[
--AC_MSG_CHECKING([for PTHREAD_PRIO_INHERIT])
--AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
--#include <pthread.h>]], [[int main(void) {
--	pthread_mutexattr_t attr;
--	return pthread_mutexattr_setprotocol(&attr, PTHREAD_PRIO_INHERIT);
--}]])],[has_priority_inherit="yes"],[])
--if test "x$has_priority_inherit" = "xyes" ; then
--	AC_DEFINE(HAS_PRIORITY_INHERIT,1,[Define to 1 if you have PTHREAD_PRIO_INHERIT])
--	AC_MSG_RESULT(yes)
--else
--	AC_MSG_RESULT(no)
--fi
--])
+ move_pages01 move_pages01
+ move_pages02 move_pages02
+diff --git a/testcases/kernel/syscalls/move_mount/.gitignore b/testcases/kernel/syscalls/move_mount/.gitignore
+index 83ae40145..ddfe10128 100644
+--- a/testcases/kernel/syscalls/move_mount/.gitignore
++++ b/testcases/kernel/syscalls/move_mount/.gitignore
+@@ -1,2 +1,3 @@
+ /move_mount01
+ /move_mount02
++/move_mount03
+diff --git a/testcases/kernel/syscalls/move_mount/move_mount03.c b/testcases/kernel/syscalls/move_mount/move_mount03.c
+new file mode 100644
+index 000000000..ad5c8b9ed
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/move_mount03.c
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Christian Brauner <brauner@kernel.org>
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test allow to mount beneath top mount feature added in kernel 6.5:
++ * 6ac392815628 ("fs: allow to mount beneath top mount")
++ *
++ * Test based on:
++ * https://github.com/brauner/move-mount-beneath
++ *
++ * See also:
++ * https://lore.kernel.org/all/20230202-fs-move-mount-replace-v4-0-98f3d80d7eaa@kernel.org/
++ * https://lwn.net/Articles/930591/
++ * https://github.com/brauner/move-mount-beneath
++ */
++
++/*
++ * Test create for following commit:
++ * commit 6ac392815628f317fcfdca1a39df00b9cc4ebc8b
++ * Author: Christian Brauner <brauner@kernel.org>
++ * Date:   Wed May 3 13:18:42 2023 +0200
++ *     fs: allow to mount beneath top mount
++ *
++ * Above commit has heavily commented but i found following commit
++ * contain simple summary of this feature for easy understanding:
++ *
++ * commit c0a572d9d32fe1e95672f24e860776dba0750a38
++ * Author: Linus Torvalds <torvalds@linux-foundation.org>
++ *       TL;DR:
++ *
++ *         > mount -t ext4 /dev/sda /mnt
++ *           |
++ *           --/mnt    /dev/sda    ext4
++ *
++ *         > mount --beneath -t xfs /dev/sdb /mnt
++ *           |
++ *           --/mnt    /dev/sdb    xfs
++ *             --/mnt  /dev/sda    ext4
++ *
++ *         > umount /mnt
++ *           |
++ *           --/mnt    /dev/sdb    xfs
++ *
++ * So base above scenario design following scenario for LTP check:
++ *
++ *         > mount -t tmpfs /DIRA
++ *           |
++ *           --/DIRA(create A file within DIRA)
++ *
++ *         > mount -t tmpfs /DIRB
++ *           |
++ *           --/DIRA(create B file within DIRB)
++ *
++ *         > move_mount --beneath /DIRA /DIRB
++ *           |
++ *           --/mnt    /DIRA /DIRB
++ *             --/mnt  /DIRB
++ *
++ *         If you check content of /DIRB, you can see file B
++ *
++ *         > umount /DIRB
++ *           |
++ *           --/mnt    /DIRA /DIRB
++ *         Check content of /DIRB, you can see file A exist since
++ *         current /DIRB mount source is already become /DIRA
++ *
++ */
++
++#include <stdio.h>
++
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++#include "lapi/sched.h"
++
++#define DIRA "LTP_DIR_A"
++#define DIRB "LTP_DIR_B"
++
++static int fda = -1, fdb = -1;
++
++static void run(void)
++{
++	SAFE_MOUNT("none", DIRA, "tmpfs", 0, 0);
++	SAFE_MOUNT("none", DIRB, "tmpfs", 0, 0);
++	SAFE_TOUCH(DIRA "/A", 0, NULL);
++	SAFE_TOUCH(DIRB "/B", 0, NULL);
++
++	fda = open_tree(AT_FDCWD, DIRA, OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE);
++	if (fda == -1)
++		tst_brk(TBROK | TERRNO, "open_tree() failed");
++
++	fdb = SAFE_OPEN(DIRB, O_PATH | O_NOFOLLOW, 0666);
++	TST_EXP_PASS(move_mount(fda, "", fdb, "",
++				MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH |
++				MOVE_MOUNT_T_EMPTY_PATH));
++	SAFE_CLOSE(fda);
++	SAFE_CLOSE(fdb);
++
++	TST_EXP_PASS(access(DIRB "/B", F_OK));
++	TST_EXP_PASS(access(DIRA "/A", F_OK));
++	TST_EXP_FAIL(access(DIRB "/A", F_OK), ENOENT, "A should not exist");
++
++	SAFE_UMOUNT(DIRB);
++	TST_EXP_PASS(access(DIRB "/A", F_OK));
++
++	SAFE_UMOUNT(DIRB);
++	SAFE_UMOUNT(DIRA);
++}
++
++static void setup(void)
++{
++	SAFE_MKDIR(DIRA, 0777);
++	SAFE_MKDIR(DIRB, 0777);
++}
++
++static void cleanup(void)
++{
++	if (fda >= 0)
++		SAFE_CLOSE(fda);
++
++	if (fdb >= 0)
++		SAFE_CLOSE(fdb);
++
++	if (tst_is_mounted_at_tmpdir(DIRA))
++		SAFE_UMOUNT(DIRA);
++
++	if (tst_is_mounted_at_tmpdir(DIRB))
++		SAFE_UMOUNT(DIRB);
++
++	if (tst_is_mounted_at_tmpdir(DIRB))
++		SAFE_UMOUNT(DIRB);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_root = 1,
++	.min_kver = "6.5",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
-2.44.2
+2.35.3
 
 
 -- 
