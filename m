@@ -4,74 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A4B6C27C53
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 13:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1263DC27C53
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:12:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C52B93D0992
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 15:54:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4978B3D0998
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 16:12:41 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB2AC3CD671
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 15:54:08 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 017D83D083A
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 16:12:25 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0F73C140121D
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 15:54:08 +0200 (CEST)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-a68f1017170so258937766b.0
- for <ltp@lists.linux.it>; Wed, 05 Jun 2024 06:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1717595647; x=1718200447; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=QTYnKO28j3YI9ux1Zgv39qkSZnMjwNV2K+hqhI8JYnc=;
- b=u5MYloNRqEdWGMyjHHirx1ukxmFOdFD2JLE3YKxD19XQ1TRplNFMnFfOdwe6hZJuFM
- hAT1IH9Qfnz70+n+qyTGTVHNUcyKQaBL5WJ5ZyIv8qlVyu3zKt/V9yXGxueLHxGOQL7H
- 7+ApXUbEzCy5SXfpx/yycK/e30zJPiug+tdf1bWY12rEDTkmVKNZavI0Mm+VHsd0BdSA
- 95QYIT/vIe2Qn3WBrC/6XWICH3btIsD0zRfAFOOBxya1Vq+UAccGbu37FTg+nYs/c0pX
- F5+76iojcahLQt0zt+GcSG5u5caHXjxesvn3QDEN/cNnhpBpgft0V4HQEfcq3QNNa6Eq
- X0fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1717595647; x=1718200447;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=QTYnKO28j3YI9ux1Zgv39qkSZnMjwNV2K+hqhI8JYnc=;
- b=ZENNZz0SyPR+maA5NKSsutvwNqBKq7aOFp/rOIW9ptgCcWKL9fKhtGO7EgOQZWyLes
- pzX2mSvQs0Mdmxnk7pGuc18qFHITYMAJKmH5DQANOmrlyAwiQhoawTzz5x3Vu6eGFPj0
- leBvjrtnvm0RrlSPHX/upbxdO9g9gPT0d+CsCMyyIU2x3m2Exmg2E8IphunBeeVRkKAQ
- U7TyWVNOBwICIp5yfqlUeZHodqJWwqu6SyS673JKyVSRLdOPy9rYhskSIeN3oi+yPX6u
- oEccLTGyZH5nAWINxrm16jjdlIyv3s0TLCJtsbPMRZ6yBdzkQaS723hSmYTDaWz5ktn5
- uw8Q==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWRkmvqQzhggObi36ljz+cu0RFjoR2zOPZ7sAHymcIV09soNMfgljSKiJ/Gl7Qi+c23kYUP8lBOjAeMwmVPGhyIuuY=
-X-Gm-Message-State: AOJu0Yycv2tDqQfHqcHk2D6xoQfY6dtQmrPbt7zRel6oiICexyTc/qBq
- VJUNH+oWt6gz5OIoJ90yf3Be9DrUcmKM+30X/ncI8XteJrQNwrsBdoQF55p+C6Y=
-X-Google-Smtp-Source: AGHT+IFdZN11IhO+Wzyc/C0Q4Y5W12qxkiMbqEoJ7pPfnvvovPjrkZuFmtGBH6F4gxxBTXjxG8vPLQ==
-X-Received: by 2002:a17:906:2750:b0:a68:f1ca:a8df with SMTP id
- a640c23a62f3a-a69a0016ed5mr163026566b.71.1717595647239; 
- Wed, 05 Jun 2024 06:54:07 -0700 (PDT)
-Received: from localhost ([102.222.70.76]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a68b7b8c33asm642098566b.69.2024.06.05.06.54.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 Jun 2024 06:54:06 -0700 (PDT)
-Date: Wed, 5 Jun 2024 16:53:58 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Message-ID: <ec11cd23-18a8-443c-8dc4-bb444a15b35b@moroto.mountain>
-References: <CA+G9fYuzd9Cz2Ndwc7HFOimJPRZL7w376N=2R2cV-d0mjzT+nw@mail.gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 62ABD1018999
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 16:12:24 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5A6411F821;
+ Wed,  5 Jun 2024 14:12:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717596744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmXIF5HLf4IWffvZ0QN7N4H4uh/E8W8DEg5v7uxiFgY=;
+ b=Bb0UDMZy9ab6IzNuxt8szsKD9I1yx+j0KRQnRE6yUPkVrDEcrRsv2vjXNchOpOCaP3c7TB
+ Zlr8MLVrNwgDzxY8rJS5ERrK0vob7oGU5y8GS98ggljrBynB9am52+unxbjEApumB/zEJs
+ i/qEAi6poOwJq8UMX2feag4GgchlZWM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717596744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmXIF5HLf4IWffvZ0QN7N4H4uh/E8W8DEg5v7uxiFgY=;
+ b=pxdPJdv/GV4POAkyQ3Aak+AKJuHADTGZ6SEUofW6ldEKRet6hHSxL8FB3b0beMDQ0UbP6C
+ qo3KjqdRukZW3iCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717596744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmXIF5HLf4IWffvZ0QN7N4H4uh/E8W8DEg5v7uxiFgY=;
+ b=Bb0UDMZy9ab6IzNuxt8szsKD9I1yx+j0KRQnRE6yUPkVrDEcrRsv2vjXNchOpOCaP3c7TB
+ Zlr8MLVrNwgDzxY8rJS5ERrK0vob7oGU5y8GS98ggljrBynB9am52+unxbjEApumB/zEJs
+ i/qEAi6poOwJq8UMX2feag4GgchlZWM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717596744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmXIF5HLf4IWffvZ0QN7N4H4uh/E8W8DEg5v7uxiFgY=;
+ b=pxdPJdv/GV4POAkyQ3Aak+AKJuHADTGZ6SEUofW6ldEKRet6hHSxL8FB3b0beMDQ0UbP6C
+ qo3KjqdRukZW3iCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2739913A24;
+ Wed,  5 Jun 2024 14:12:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oZC8CEhyYGbeLQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 05 Jun 2024 14:12:24 +0000
+Date: Wed, 5 Jun 2024 16:12:22 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240605141222.GA389506@pevik>
+References: <20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com>
+ <20240605065755.GB348321@pevik> <20240605073806.GA355314@pevik>
+ <8aef8014-e4ea-407d-9b88-423449612665@suse.cz>
+ <20240605121142.GA387399@pevik> <20240605122741.GB387399@pevik>
+ <ad6558e0-e834-4b35-923a-7b519384f436@suse.cz>
+ <20240605132134.GA393734@pevik> <ZmBro_t3U02xDNTe@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYuzd9Cz2Ndwc7HFOimJPRZL7w376N=2R2cV-d0mjzT+nw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <ZmBro_t3U02xDNTe@yuki>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] WARNING: at fs/nfs/nfs3xdr.c:188 encode_filename3 on
- rk3399
+Subject: Re: [LTP] [PATCH] Fix unlink09 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,47 +116,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-nfs@vger.kernel.org, kasong@tencent.com,
- Linux Regressions <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
- NeilBrown <neilb@suse.de>, open list <linux-kernel@vger.kernel.org>,
- lkft-triage@lists.linaro.org, Anna Schumaker <anna@kernel.org>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- LTP List <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Sebastian Chlad <schlad@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, May 30, 2024 at 06:54:05PM +0530, Naresh Kamboju wrote:
-> The following kernel warning has been noticed while running LTP statvfs01
-> testcase on arm64 device rk3399-rock-pi-4b with NFS mounted test setup and
-> started from Linux next-20240522 tag and till next-20240529.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Test log:
-> -----
-> mke2fs 1.47.0 (5-Feb-2023)
-> tst_test.c:1131: TINFO: Mounting /dev/loop0 to /scratch/ltp-9gvw[
-> 5211.161721] EXT4-fs (loop0): mounting ext2 file system using the ext4
-> subsystem
-> F2L8n6/LTP_stadLH0F7/mntpoint fstyp=ext2 flags=0
-> [ 5211.169391] EXT4-fs (loop0): mounted filesystem
-> af9dfac2-88f6-453d-9d02-c14cc888a51d r/w without journal. Quota mode:
-> none.
-> statvfs01.c:32: TPASS: statvfs(TEST_PATH, &buf) passed
-> [ 5211.175518] ------------[ cut here ]------------
-> statvfs01.c:44: TPASS: creat(valid_fname, 0444) returned fd 3
-> [ 5211.175938] WARNING: CPU: 5 PID: 786885 at fs/nfs/nfs3xdr.c:188
-> encode_filename3+0x4c/0x60
+> Hi!
+> > > It would be useful and prepare_device() implements everything that's needed
+> > > for it but there's a bug in do_setup() which creates a conflict between the
+> > > two attributes. The .all_filesystems attribute forces .needs_device but a
+> > > few lines below that is a check that .needs_rofs and .needs_device are not
+> > > set at the same time. This can be fixed.
 
-I believe this was be fixed by Neil's patch which was merged:
+> > Thanks for info, I'll have look into it.
 
-https://lore.kernel.org/all/171693789645.27191.13475059024941012614@noble.neil.brown.name/
+> It may not be needed. The counter argument is that if you mix a read
+> only filesystem tests and all_filesystems in one test you are combining
+> two unrelated things that are probably better to be done in a separate
+> tests.
 
-regards,
-dan carpenter
+I thought that we have use case for testing all (or most) filesystems in read
+only mode, instead testing just whatever is in the default /tmp. But sure,
+I'll will not do that unless others think it's an useful feature.
 
+So does it mean that all read only filesystems behave the same?
+So far we have 14 tests with .needs_rofs
+testcases/kernel/syscalls/access/access04.c
+testcases/kernel/syscalls/acct/acct01.c
+testcases/kernel/syscalls/chmod/chmod06.c
+testcases/kernel/syscalls/chown/chown04.c
+testcases/kernel/syscalls/creat/creat06.c
+testcases/kernel/syscalls/fchmod/fchmod06.c
+testcases/kernel/syscalls/fchown/fchown04.c
+testcases/kernel/syscalls/link/link08.c
+testcases/kernel/syscalls/mkdir/mkdir03.c
+testcases/kernel/syscalls/mkdirat/mkdirat02.c
+testcases/kernel/syscalls/rmdir/rmdir02.c
+testcases/kernel/syscalls/unlink/unlink09.c
+testcases/kernel/syscalls/utime/utime06.c
+testcases/kernel/syscalls/utimes/utimes01.c
+
+From these at least mkdir, rmdir, link, unlink have member in struct
+inode_operations [1] (thus custom operation per filesystem, right?)
+I suppose update_time might be related to utime* tests.
+There are other members, but for these we IMHO don't test wit rofs.
+
+Then, there is struct file_operations with open, read, write,
+{compat,unlocked}_ioctl, llseek, ... operations which (at least open) are used
+in various tests.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/fs.h#n2062
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
