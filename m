@@ -4,127 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2692C25B76
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EB40C27C53
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:41:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4957B3D099A
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 16:41:34 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1FA713D09A3
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 16:41:50 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A87803D0981
+ by picard.linux.it (Postfix) with ESMTPS id B350D3D0982
  for <ltp@lists.linux.it>; Wed,  5 Jun 2024 16:41:18 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 03C6E10189A7
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 099CE201169
  for <ltp@lists.linux.it>; Wed,  5 Jun 2024 16:41:17 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4C31B219D0;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 896B21F825;
  Wed,  5 Jun 2024 14:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1717598477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717598476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UuOuqNVILg97C+CdNJAbocjC3KK7PLmvkqA2N9ypy7g=;
- b=B1dwYmArzlIDkCNjPJte7AibA54RcRAE0j9h6cdO/rcJT7jkNhE8sjc353bG14rZWFaWKm
- YCIgBF5fCE9DZB3kYl5wOU+DKWMxZhWmHEEgA/3PfhSKRvCQ2YEAiuUIpBLf6HgNeJcip+
- VZOY2RpKJkLeqRI7nJQerpMT46EItj0=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=woPQv/Qo1VK32GCV1S0QwIjrG4oqR5Z6wYYjSl22mHE=;
+ b=umM9K0eHzLdNCoZaO2vMhQYswDJ/1lAklSOK6hTih5GmWgSjF6HZHIWvF/nHEE5+f1qsQK
+ BIHDLcFeaIjvas1cuZyC1DepFURMv7DmR9OR3MS86Y8udwP39MNY2O8SFTP5LBuxfj7a8R
+ P1lGmPYbzSCHoYWA8r7JvmdjFDdsK/I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1717598477;
+ s=susede2_ed25519; t=1717598476;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UuOuqNVILg97C+CdNJAbocjC3KK7PLmvkqA2N9ypy7g=;
- b=aMRB4dx2UDTpwAM2wS5HnkFqKeeCcHm0DBoY1yz9Xt1K/WxULuQJ06/HOpS90MwwpiXeSU
- fqI7kGfxl4OuKqBQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="0+s/I4IX";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TrIRmcBY
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=woPQv/Qo1VK32GCV1S0QwIjrG4oqR5Z6wYYjSl22mHE=;
+ b=Wdt6VSIonujpEJ1LMNYuMHzf4g/N/PUybGj8+UzZrjpEp7L+5G4078urgNJy7vgTDid5Nl
+ 9RHwpuJypxNaKcDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1717598475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UuOuqNVILg97C+CdNJAbocjC3KK7PLmvkqA2N9ypy7g=;
- b=0+s/I4IX9+WD2DRwm8B/2oToDyvADTE2FiiWT57zLkYiQEJMKPD1Mz2JNBUi/fr4U2f1Y1
- sNMi2mIeGEnnbh/mcfIIWt8PKZRRe0ivr/Oz0ROlBvKnkGLsk7xct33a+i3hawRkEO35SY
- RX6bQ0tjBAPbxceooL3Ayxvtfruc1r8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=woPQv/Qo1VK32GCV1S0QwIjrG4oqR5Z6wYYjSl22mHE=;
+ b=eJJt2O6SjLj3htGk8vP8HeEyz7kphg84c2oxcmoUThsoPyHcDBG3+MTQXOGxC7pq7MiXtB
+ EyX9WXuEeiWXavDYLltWLaiM9fAu6qM4lfkZ/BALGTZrxoo8mh5Keg+S7jQ+l7bIChE3Zn
+ 5BN/86IZ7prvEG5snHeF2tdFVrQ/4a8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1717598475;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UuOuqNVILg97C+CdNJAbocjC3KK7PLmvkqA2N9ypy7g=;
- b=TrIRmcBYkLOp0E2/abQToT0L7WisqulSALrJKwvfxO5nriqhtDCv0rrdHsJOlnyv6OBK+d
- VnUSYm65si/5qeBw==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=woPQv/Qo1VK32GCV1S0QwIjrG4oqR5Z6wYYjSl22mHE=;
+ b=6AUeeqyLNaGifPO9kt5UacRGQZM4+m4lHY1yB23uDaUdvmPyfBJCCl9lhQSzGLKBb51pAS
+ I/S7Pe/9VjfR/MDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 369A813A42;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6DE2A13A99;
  Wed,  5 Jun 2024 14:41:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id PiEODAt5YGY/NwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aGSIGQt5YGY/NwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 05 Jun 2024 14:41:15 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 05 Jun 2024 16:40:37 +0200
-Message-Id: <20240605-unlink09-v2-0-bfa0bbdc8753@suse.com>
+Date: Wed, 05 Jun 2024 16:40:39 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOV4YGYC/23MQQ7CIBCF4as0sxYDSJS68h6mCwuDnahgGEs0D
- XcXu3b5v7x8CzBmQoZjt0DGQkwpttCbDtx0iVcU5FuDltrIvTRijneKN9kL74yVOtiDDj20+zN
- joPdKnYfWE/Er5c8qF/Vb/yBFCSV88BZ3qNyoxxPPjFuXHjDUWr+NzEBnnwAAAA==
+Message-Id: <20240605-unlink09-v2-2-bfa0bbdc8753@suse.com>
+References: <20240605-unlink09-v2-0-bfa0bbdc8753@suse.com>
+In-Reply-To: <20240605-unlink09-v2-0-bfa0bbdc8753@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1124;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2031;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=1ikCOTjCvdZadTce/WlujuSe1281KaTcyMG9UeDx6vc=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmYHjt200ERjlFVWAECo0qqek3LSEI2rImBqB5a
- bBt+BHqifCJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZmB47QAKCRDLzBqyILPm
- RpMVC/9+oN5jPLDnyjHpXnXM6GC6YvmAo3SWFEb8OWCFxEDWO1IgOhWwQRa0wnWEnKf2ahJn1pT
- XZZsTCZn/tAbT+OJotfHnJigkthrSdSPp91mTGUIqUO4Kjv7Lgp+LThHhMrktD5BjEwerAjlWJr
- PnlEhlV3JUKcZsetFOgRHSV66L0UEyFCoQpz/SapFCeyrF+6o+tFhj+p5pIzbJ5wR3HFGIwCW1L
- j0I6Tk9RqivuhFzfKrKCx2JwfzmZh4Bj9N+IDB43VJRfIlhk/d6B7CVmAAGS6hB8Z+njjyVgnXX
- hvVKFowGJsRxizZL9ZKhspfPidSWwFtcXcriJvhn5egXrDo9JIDTzP89BIMiZwXJyFo/sg8Ofxw
- 5ElTAoBdLfOiQOq7TWenSmij2H7OLrkI1b+GyfPzhrO5H/Eq9iFh9YgYNNUeWS4WjEOxaUSl8DA
- 27SRBGCj79BBH6PbrXhL1R+fVRhy18Ru2xOaJgu6Te87XrF6iSR0MBDUAm1zQ6Lcd0VEc=
+ bh=0oFVU3Zed+tKZVs6LpNgxrPXnWT4ukMfqZ9kVTbqd0I=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmYHkLtvsHqosJL420s+Q8g8JaKsPETWB7cAJpz
+ oMubhzzsreJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZmB5CwAKCRDLzBqyILPm
+ RnQCDACytD1WTiMX167dJqNC6kT+gjDNafhLSEu314Sj0x6fGpnWD+G1fD+IUxKtSe8C1+TtZ9Y
+ aqbaytCyXprAvUpCIVbNSWst+kxyoKSLhYI1dHlR4Z4sgbewgmFEiJDOha64/jOwZdIZxbeb9Xx
+ 6A9pX5SJQZ6ySzeb0Lq75U3iYRTOs/byrfZ24RdWZg+u41qsGT+9gGLOa9890mQKK+BqPkC77q/
+ 5Et8DWk+6MxJcnug6EJRGCz6wNxB5Hg/+pisJJfMDncRzwmt0sopAZ+uOpAAjtOxLnZFvotWia/
+ ZfrLVUeqQ6LbALPN60ARaqv//aJJyjwEJ40XUveWustAmb6+M0mZaKaAd5L1K7So5fRkhHA49UQ
+ Bi2QZQkEYwOvm/8BOl41xl9Wm9t9ZJVNsMracC3xVBMidC8Wet9YxV7rPKyD5JQQxZNC6LkO8ab
+ VI2Dnduaak8J78+0l6IumXSfAKVfqOJ4ESg/6jZYUZQw1KmIvq4uI03miJ/GpNIuL+h5Y=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4C31B219D0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-6.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.de:dkim];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[fujitsu.com:email, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] Fix unlink09 test
+Subject: [LTP] [PATCH v2 2/2] Add unlink10 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -141,36 +132,81 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This will fix the 2cf78f47a6 and resolve issues on filesystems
-which are not supporting inode attributes. Split unlink09 read-only
-check and move it into unlink10.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This test verifies that unlink(2) fails with EROFS when target file
+is on a read-only filesystem.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- moved read-only FS check out of unlink09 and created unlink10
-- check when FS doesn't support inode attributes and print a TBROK
-- simplified inode attributes setup by adding a common function
-- added .all_filesystems support
-- Link to v1: https://lore.kernel.org/r/20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com
-
----
-Andrea Cervesato (2):
-      Fix unlink09 test
-      Add unlink10 test
-
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/unlink/.gitignore |  1 +
- testcases/kernel/syscalls/unlink/unlink09.c | 94 +++++++++++++++--------------
- testcases/kernel/syscalls/unlink/unlink10.c | 33 ++++++++++
- 4 files changed, 85 insertions(+), 44 deletions(-)
----
-base-commit: 66517b89141fc455ed807f3b95e5260dcf9fb90f
-change-id: 20240604-unlink09-dc4802f872f9
+ testcases/kernel/syscalls/unlink/unlink10.c | 33 +++++++++++++++++++++++++++++
+ 3 files changed, 35 insertions(+)
 
-Best regards,
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf06ee563..b59b64314 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1655,6 +1655,7 @@ unlink05 unlink05
+ unlink07 unlink07
+ unlink08 unlink08
+ unlink09 unlink09
++unlink10 unlink10
+ 
+ #unlinkat test cases
+ unlinkat01 unlinkat01
+diff --git a/testcases/kernel/syscalls/unlink/.gitignore b/testcases/kernel/syscalls/unlink/.gitignore
+index 6038cc29d..4fc24059a 100644
+--- a/testcases/kernel/syscalls/unlink/.gitignore
++++ b/testcases/kernel/syscalls/unlink/.gitignore
+@@ -2,3 +2,4 @@
+ /unlink07
+ /unlink08
+ /unlink09
++/unlink10
+diff --git a/testcases/kernel/syscalls/unlink/unlink10.c b/testcases/kernel/syscalls/unlink/unlink10.c
+new file mode 100644
+index 000000000..861f24a50
+--- /dev/null
++++ b/testcases/kernel/syscalls/unlink/unlink10.c
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify that unlink(2) fails with EROFS when target file is on a read-only
++ * filesystem.
++ */
++
++#include <sys/ioctl.h>
++#include "tst_test.h"
++#include "lapi/fs.h"
++
++#define MNTPOINT "erofs"
++#define FILENAME MNTPOINT"/file"
++
++static void run(void)
++{
++	TST_EXP_FAIL(unlink(FILENAME), EROFS,
++		"%s", "target file in read-only filesystem");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_rofs = 1,
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++};
+
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.35.3
 
 
 -- 
