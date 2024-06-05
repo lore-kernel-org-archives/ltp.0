@@ -4,108 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0668C25B76
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 12:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F02C25B76
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 12:28:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B3683D096D
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:22:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A68323D0993
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:28:07 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E866D3D096D
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:22:29 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id CFE0B3D096D
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:27:48 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 17ECC201DB6
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:22:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9C5DC1A0118E
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:27:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 89E6F1F7F1;
- Wed,  5 Jun 2024 12:22:27 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AF8F421A75;
+ Wed,  5 Jun 2024 12:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717590466;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U+XCAUrlfZy6K7PS+/kmySJFBggdCM+ZdSljKcL1oIs=;
+ b=MHL9hqAVQBwejZqGqX+cSsrgufDaGuwz0F3DLBRsU+GoLhL8syUVVrns1XuRp+ZxjMRR8k
+ LYQbIMa+llgd0RvMmYurgeWh6g2OdEZoM3eduFxEWDJxwiRQ6TddD30FGq6yOwn4CpvC05
+ wQHQsxEXafk8tVRsor20UWsJ4jE7pVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717590466;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U+XCAUrlfZy6K7PS+/kmySJFBggdCM+ZdSljKcL1oIs=;
+ b=mHW0Zepams4oReenJ+2ATMB02oW9UPmxpi/6qYTqAbHiuEfrZb6tN8e93mbHCbl+ZDC7Zh
+ nqMttUkVvKVXhoAA==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1717590466;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U+XCAUrlfZy6K7PS+/kmySJFBggdCM+ZdSljKcL1oIs=;
+ b=MHL9hqAVQBwejZqGqX+cSsrgufDaGuwz0F3DLBRsU+GoLhL8syUVVrns1XuRp+ZxjMRR8k
+ LYQbIMa+llgd0RvMmYurgeWh6g2OdEZoM3eduFxEWDJxwiRQ6TddD30FGq6yOwn4CpvC05
+ wQHQsxEXafk8tVRsor20UWsJ4jE7pVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1717590466;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U+XCAUrlfZy6K7PS+/kmySJFBggdCM+ZdSljKcL1oIs=;
+ b=mHW0Zepams4oReenJ+2ATMB02oW9UPmxpi/6qYTqAbHiuEfrZb6tN8e93mbHCbl+ZDC7Zh
+ nqMttUkVvKVXhoAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81AC013A24;
- Wed,  5 Jun 2024 12:22:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8280B13A24;
+ Wed,  5 Jun 2024 12:27:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ke1kH4NYYGYUCAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Wed, 05 Jun 2024 12:22:27 +0000
-Message-ID: <6c8492c4-57fe-44b4-84b9-7fc31e473957@suse.cz>
-Date: Wed, 5 Jun 2024 14:22:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +rIdHsJZYGbkCQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 05 Jun 2024 12:27:46 +0000
+Date: Wed, 5 Jun 2024 14:27:41 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>,
+ Andrea Cervesato <andrea.cervesato@suse.de>,
+ Sebastian Chlad <schlad@suse.de>, ltp@lists.linux.it,
+ Avinesh Kumar <akumar@suse.de>
+Message-ID: <20240605122741.GB387399@pevik>
 References: <20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com>
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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
-In-Reply-To: <20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 89E6F1F7F1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ <20240605065755.GB348321@pevik> <20240605073806.GA355314@pevik>
+ <8aef8014-e4ea-407d-9b88-423449612665@suse.cz>
+ <20240605121142.GA387399@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240605121142.GA387399@pevik>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[6];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] Fix unlink09 test
 X-BeenThere: ltp@lists.linux.it
@@ -119,122 +118,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-actually, there's one more invalid SAFE_OPEN() in verify_unlink() that 
-also needs to be fixed by this patch. It'd be best to move the 
-SAFE_CREATE()+ioctl() to a special function that'll take just a filename 
-and the inode flag that needs to be set. Please send a v2.
+Hi Martin,
 
-On 04. 06. 24 15:44, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> This patch will fix unlink09 test by checking for filesystems which
-> are not supporting inode attributes.
-> 
-> Fixes: 2cf78f47a6 (unlink: Add error tests for EPERM and EROFS)
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> This will fix the 2cf78f47a6 and resolve issues on filesystems
-> which are not supporting inode attributes.
-> ---
->   testcases/kernel/syscalls/unlink/unlink09.c | 38 +++++++++++++++++++----------
->   1 file changed, 25 insertions(+), 13 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/unlink/unlink09.c b/testcases/kernel/syscalls/unlink/unlink09.c
-> index cc4b4a07e..ed6f0adc3 100644
-> --- a/testcases/kernel/syscalls/unlink/unlink09.c
-> +++ b/testcases/kernel/syscalls/unlink/unlink09.c
-> @@ -11,6 +11,8 @@
->    *
->    * - EPERM when target file is marked as immutable or append-only
->    * - EROFS when target file is on a read-only filesystem.
-> + *
-> + * Test won't be executed if inode attributes are not supported.
->    */
->   
->   #include <sys/ioctl.h>
-> @@ -22,8 +24,8 @@
->   #define DIR_EROFS "erofs"
->   #define TEST_EROFS "erofs/test_erofs"
->   
-> -static int fd_immutable;
-> -static int fd_append_only;
-> +static int fd_immutable = -1;
-> +static int fd_append_only = -1;
->   
->   static struct test_case_t {
->   	char *filename;
-> @@ -43,12 +45,18 @@ static void setup(void)
->   {
->   	int attr;
->   
-> -	fd_immutable = SAFE_OPEN(TEST_EPERM_IMMUTABLE, O_CREAT, 0600);
-> -	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> +	fd_immutable = SAFE_CREAT(TEST_EPERM_IMMUTABLE, 0600);
-> +	TEST(ioctl(fd_immutable, FS_IOC_GETFLAGS, &attr));
-> +
-> +	if (TST_RET == -1 && TST_ERR == ENOTTY) {
-> +		SAFE_CLOSE(fd_immutable);
-> +		tst_brk(TCONF | TTERRNO, "Inode attributes not supported");
-> +	}
-> +
->   	attr |= FS_IMMUTABLE_FL;
->   	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
->   
-> -	fd_append_only = SAFE_OPEN(TEST_EPERM_APPEND_ONLY, O_CREAT, 0600);
-> +	fd_append_only = SAFE_CREAT(TEST_EPERM_APPEND_ONLY, 0600);
->   	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
->   	attr |= FS_APPEND_FL;
->   	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> @@ -58,15 +66,19 @@ static void cleanup(void)
->   {
->   	int attr;
->   
-> -	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> -	attr &= ~FS_IMMUTABLE_FL;
-> -	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
-> -	SAFE_CLOSE(fd_immutable);
-> +	if (fd_immutable != -1) {
-> +		SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> +		attr &= ~FS_IMMUTABLE_FL;
-> +		SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
-> +		SAFE_CLOSE(fd_immutable);
-> +	}
->   
-> -	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
-> -	attr &= ~FS_APPEND_FL;
-> -	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> -	SAFE_CLOSE(fd_append_only);
-> +	if (fd_append_only != -1) {
-> +		SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
-> +		attr &= ~FS_APPEND_FL;
-> +		SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> +		SAFE_CLOSE(fd_append_only);
-> +	}
->   }
->   
->   static void verify_unlink(unsigned int i)
-> 
-> ---
-> base-commit: 66517b89141fc455ed807f3b95e5260dcf9fb90f
-> change-id: 20240604-unlink09-dc4802f872f9
-> 
-> Best regards,
+> Hi Martin,
 
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> > On 05. 06. 24 9:38, Petr Vorel wrote:
+> > > BTW shouldn't this test use .all_filesystems = 1 ? Or is it unlink() really VFS
+> > > only code? I see some specific functions in fs/*/, e.g. btrfs_unlink() or
+> > > ext4_unlink(), which are used for struct inode_operations unlink member.
+> > > Then, obviously also Andrea's check would be needed (otherwise is unlikely that
+> > > somebody would have TMPDIR on vfat or exfat).
 
+> > AFAICT, .all_filesystems and .needs_rofs are mutually exclusive at the
+> > moment.
+
+Also I wonder if having functionality for .all_filesystems + .needs_rofs
+wouldn't be useful. @Cyril @Martin WDYT?
+
+Also, there is fallback when prepare_and_mount_ro_fs() fails to use block
+device. Although, I don't see the read only mount flags added in this fallback,
+IMHO MS_RDONLY is only in prepare_and_mount_ro_fs(), therefore the fallback is
+read write and we even didn't get TWARN, just plain TINFO (it should be either
+TWARN or TINFO with "WARNING:" at least).
+
+Kind regards,
+Petr
+
+lib/tst_test.c
+
+static void prepare_device(void)
+{
+	...
+	if (tst_test->needs_rofs) {
+		/* If we failed to mount read-only tmpfs. Fallback to
+		 * using a device with read-only filesystem.
+		 */
+		if (prepare_and_mount_ro_fs(NULL, tst_test->mntpoint, "tmpfs")) {
+			tst_res(TINFO, "Can't mount tmpfs read-only, "
+				"falling back to block device...");
+			tst_test->needs_device = 1;
+			tst_test->format_device = 1;
+		}
+	}
+
+static int prepare_and_mount_ro_fs(const char *dev, const char *mntpoint,
+				   const char *fs_type)
+{
+	char buf[PATH_MAX];
+
+	if (mount(dev, mntpoint, fs_type, 0, NULL)) {
+		tst_res(TINFO | TERRNO, "Can't mount %s at %s (%s)",
+			dev, mntpoint, fs_type);
+		return 1;
+	}
+
+	mntpoint_mounted = 1;
+
+	snprintf(buf, sizeof(buf), "%s/dir/", mntpoint);
+	SAFE_MKDIR(buf, 0777);
+
+	snprintf(buf, sizeof(buf), "%s/file", mntpoint);
+	SAFE_FILE_PRINTF(buf, "file content");
+	SAFE_CHMOD(buf, 0777);
+
+	SAFE_MOUNT(dev, mntpoint, fs_type, MS_REMOUNT | MS_RDONLY, NULL);
+
+	return 0;
+}
+
+> Good point, I completely overlook .needs_rofs. That makes things clearer.
+
+> ATM we have 3 other tests in syscalls/unlink. Not sure if all are filesystem
+> specific (I would say yes, but not sure), but at least unlink05.c (tests
+> deleting with unlink()) should be tested .all_filesystems. unlink07.c and
+> unlink08.c test errno.
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
