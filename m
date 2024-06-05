@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1364C25B76
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 11:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 927D1C25B76
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 12:03:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 736D43D099A
-	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 13:54:12 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C30753D09A6
+	for <ltp@archiver.kernel.org>; Wed,  5 Jun 2024 14:03:01 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF3D33D0983
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 13:53:56 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 2DB1C3CF9DE
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:02:47 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CC2812010F1
- for <ltp@lists.linux.it>; Wed,  5 Jun 2024 13:53:55 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 709FB6030F9
+ for <ltp@lists.linux.it>; Wed,  5 Jun 2024 14:02:45 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1372621A6B;
- Wed,  5 Jun 2024 11:53:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7061521A72;
+ Wed,  5 Jun 2024 12:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717588433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717588965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=O4OkFGLnLRT9CGcPdp1fBWG2YCKqMKpbI4UZWmx5T0E=;
- b=JHmjeZmXRX6w58URfL6rViKkb3xEUqwH/Bjl/w/ukh+O71PjWyD0r6uxvcYzCY5fZTR/H7
- zutUtQIrxobXJzJgLir2SRkC6D/6hhY87mUAZDj1W1ip4svyJ60uBVD0h2H/7yNVYxLbYO
- 2PYX4Sz+xUcCOBgm5lnaKLpcxeMQ+qM=
+ bh=EaKEtlS+v2ZnSIT50yZp9jZ8YqMIMieA5BAAG1ZdOWc=;
+ b=gh9iOQAMHNJAh1Dmb5kW13h0WCHGzx7KCpnj4Sx7P73BiCQQNbAhF2jntvT7f2dSBsV8yH
+ MRJs1lgPFS2nXoHYEKUU0bs7rJQI4afBTd+GHgY/7SpT+qM+HTSItosiAt4yrGgX/5rppu
+ SuprXEMdf4EuL4oISEWvO6+hNux2nz8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717588433;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1717588965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=O4OkFGLnLRT9CGcPdp1fBWG2YCKqMKpbI4UZWmx5T0E=;
- b=Y188r370GNW2ttdaJXx3VSlQWOxfLhMjISx09R/O8btM9pPMWE4Y12QsfrrNQ44pxnP+0T
- 9dKmpbzlnG/bJzDQ==
+ bh=EaKEtlS+v2ZnSIT50yZp9jZ8YqMIMieA5BAAG1ZdOWc=;
+ b=OxMJ4HAB+tRUl9dtdueZUEzWlkPt6tkBt1QgxD1FBOGKIEz3ymqwh8tM6ZjF8Lus8tU9wC
+ ElIiBQjLjBgnRODA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717588433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717588965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=O4OkFGLnLRT9CGcPdp1fBWG2YCKqMKpbI4UZWmx5T0E=;
- b=JHmjeZmXRX6w58URfL6rViKkb3xEUqwH/Bjl/w/ukh+O71PjWyD0r6uxvcYzCY5fZTR/H7
- zutUtQIrxobXJzJgLir2SRkC6D/6hhY87mUAZDj1W1ip4svyJ60uBVD0h2H/7yNVYxLbYO
- 2PYX4Sz+xUcCOBgm5lnaKLpcxeMQ+qM=
+ bh=EaKEtlS+v2ZnSIT50yZp9jZ8YqMIMieA5BAAG1ZdOWc=;
+ b=gh9iOQAMHNJAh1Dmb5kW13h0WCHGzx7KCpnj4Sx7P73BiCQQNbAhF2jntvT7f2dSBsV8yH
+ MRJs1lgPFS2nXoHYEKUU0bs7rJQI4afBTd+GHgY/7SpT+qM+HTSItosiAt4yrGgX/5rppu
+ SuprXEMdf4EuL4oISEWvO6+hNux2nz8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717588433;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1717588965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=O4OkFGLnLRT9CGcPdp1fBWG2YCKqMKpbI4UZWmx5T0E=;
- b=Y188r370GNW2ttdaJXx3VSlQWOxfLhMjISx09R/O8btM9pPMWE4Y12QsfrrNQ44pxnP+0T
- 9dKmpbzlnG/bJzDQ==
+ bh=EaKEtlS+v2ZnSIT50yZp9jZ8YqMIMieA5BAAG1ZdOWc=;
+ b=OxMJ4HAB+tRUl9dtdueZUEzWlkPt6tkBt1QgxD1FBOGKIEz3ymqwh8tM6ZjF8Lus8tU9wC
+ ElIiBQjLjBgnRODA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 08C3113A24;
- Wed,  5 Jun 2024 11:53:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6202E13A24;
+ Wed,  5 Jun 2024 12:02:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /c2cAdFRYGZifAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Wed, 05 Jun 2024 11:53:53 +0000
-Message-ID: <6f826895-6d41-4ae0-9ebc-614090e43301@suse.cz>
-Date: Wed, 5 Jun 2024 13:53:48 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id JJi0DeVTYGa3fwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Wed, 05 Jun 2024 12:02:45 +0000
+Message-ID: <8aef8014-e4ea-407d-9b88-423449612665@suse.cz>
+Date: Wed, 5 Jun 2024 14:02:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com>
- <ZmAdqhv-VCWqJ3yf@rei>
 Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>, 
+ Sebastian Chlad <schlad@suse.de>, ltp@lists.linux.it,
+ Avinesh Kumar <akumar@suse.de>
+References: <20240604-unlink09-v1-1-dfd8e3e1cb2b@suse.com>
+ <20240605065755.GB348321@pevik> <20240605073806.GA355314@pevik>
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
  xsFNBF1D6M0BEAC5BHC0NuN/v+UBXDYuwuYeAJA4leuKz0H76YBevziJKUtnzMsBA+GT9vdH
@@ -131,20 +132,20 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  Rz4zFhW8KQ9+zrae5rL/6vwz3d/MpEeOmDm9uutE6xyzXRl/RxeFZ8P7KlACXWm7VjSyc74E
  eCNL6GOOeqzE77fDcBf4HvNGn8w7IX/FvNzmu78wzT2MDwMi8ug8T4KEKzIYUIRibe7cl0LG
  2dSj02pOT7E5/x4gKQB/OZqnTTQxJ0OL8BJKNFeSYqaMzKFKiYaArwuFkGnCknwh5A==
-In-Reply-To: <ZmAdqhv-VCWqJ3yf@rei>
+In-Reply-To: <20240605073806.GA355314@pevik>
 X-Spamd-Result: default: False [-8.29 / 50.00]; REPLY(-4.00)[];
  BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.990]; MIME_GOOD(-0.10)[text/plain];
- XM_UA_NO_VERSION(0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ XM_UA_NO_VERSION(0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[5];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MID_RHS_MATCH_FROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] Fix unlink09 test
 X-BeenThere: ltp@lists.linux.it
@@ -158,33 +159,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 05. 06. 24 10:11, Cyril Hrubis wrote:
-> Hi!
->> +	fd_immutable = SAFE_CREAT(TEST_EPERM_IMMUTABLE, 0600);
->> +	TEST(ioctl(fd_immutable, FS_IOC_GETFLAGS, &attr));
->> +
->> +	if (TST_RET == -1 && TST_ERR == ENOTTY) {
->> +		SAFE_CLOSE(fd_immutable);
->> +		tst_brk(TCONF | TTERRNO, "Inode attributes not supported");
->> +	}
-> 
-> I see one problem with this approach. If kernel accidentally removes a
-> support for immutable files for a certain filesystem this test will be
-> green. And the filesystems that miss this support are very unlikely to
-> gain it, e.g. will vfat get support for immutable files? That would be
-> an argument for explicit skiplist in the form of
-> tst_test->skip_filesystems.
+On 05. 06. 24 9:38, Petr Vorel wrote:
+> BTW shouldn't this test use .all_filesystems = 1 ? Or is it unlink() really VFS
+> only code? I see some specific functions in fs/*/, e.g. btrfs_unlink() or
+> ext4_unlink(), which are used for struct inode_operations unlink member.
+> Then, obviously also Andrea's check would be needed (otherwise is unlikely that
+> somebody would have TMPDIR on vfat or exfat).
 
-This condition doesn't check support of only the immutable flag, though. 
-It checks that the filesystem supports querying and setting inode flags 
-in general. We should add a new test for ioctl(FS_IOC_FLAGS) into the 
-ioctl test directory, this is not the appropriate place for it.
+AFAICT, .all_filesystems and .needs_rofs are mutually exclusive at the 
+moment.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
