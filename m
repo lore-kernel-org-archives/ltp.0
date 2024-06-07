@@ -4,103 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93CDBC27C53
-	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 14:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 315ECC27C5F
+	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 14:25:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D71BB3CFBD1
-	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 16:24:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9A8AD3D0AB4
+	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 16:25:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A5C8D3CFBD1
+ by picard.linux.it (Postfix) with ESMTPS id 211BE3CFBD1
  for <ltp@lists.linux.it>; Fri,  7 Jun 2024 16:24:31 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E2D75600F2F
- for <ltp@lists.linux.it>; Fri,  7 Jun 2024 16:24:30 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4810E616620
+ for <ltp@lists.linux.it>; Fri,  7 Jun 2024 16:24:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 07B0221B55;
- Fri,  7 Jun 2024 14:24:30 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C326E1FBA4;
+ Fri,  7 Jun 2024 14:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717770270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UhyqkrRwYAsNw1QQ+q7dWClBFjN0K+umflMxjQCIyGc=;
- b=1mxYOOF07a47nZLbpYAx2nCupG9eDE/jFkGx+KwtkZ9TgeTohdn8SeC3TumivzWkPgqkKq
- iPPmpVMiVAYXaKcNavpSC4iGnQLWYpL+0kmxLdigdXZqgsadx9kkS9UzWHpw52PId0rEDR
- aJZwxKYcy90QGy9J59VeDhoXo74UC9g=
+ t=1717770269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IpOiMO4qlQdMNTQFARf9RHoS03JuONYEnMqujexpzKs=;
+ b=QWePxkfZbfgqPIHg48YFwPXJSE/syJb39ffT44ReTLvvSOPOWl6GFR1eCcV+MlnGWYlLY+
+ +6cBR1xxY6DwMgNiRd/wB1Kl6JsaYb2VWYPNs2EI5r2hrCXhN86m1MIvYG3OhOHCRssjPj
+ Np1Sptk+JdAmPlBDdwZ+LwUTCaEQD8E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717770270;
+ s=susede2_ed25519; t=1717770269;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UhyqkrRwYAsNw1QQ+q7dWClBFjN0K+umflMxjQCIyGc=;
- b=R84OBRUDuFvo5DNh393CLNaW8cqhDyzjc/jPEn4aLUhEnm2aEPTikaIq5Swx1w138qRJmz
- 6JHIvy4Wc2ctLgAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IpOiMO4qlQdMNTQFARf9RHoS03JuONYEnMqujexpzKs=;
+ b=sPCMjN2sUK6bsmJvO81iHFA9Yk5zs5uZ2goNnHZl3BpKAil+qH8GrnZ9KlJDB+QyAMQaua
+ 8MM6wSIcRBXyqKCA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QWePxkfZ;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sPCMjN2s
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717770270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UhyqkrRwYAsNw1QQ+q7dWClBFjN0K+umflMxjQCIyGc=;
- b=1mxYOOF07a47nZLbpYAx2nCupG9eDE/jFkGx+KwtkZ9TgeTohdn8SeC3TumivzWkPgqkKq
- iPPmpVMiVAYXaKcNavpSC4iGnQLWYpL+0kmxLdigdXZqgsadx9kkS9UzWHpw52PId0rEDR
- aJZwxKYcy90QGy9J59VeDhoXo74UC9g=
+ t=1717770269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IpOiMO4qlQdMNTQFARf9RHoS03JuONYEnMqujexpzKs=;
+ b=QWePxkfZbfgqPIHg48YFwPXJSE/syJb39ffT44ReTLvvSOPOWl6GFR1eCcV+MlnGWYlLY+
+ +6cBR1xxY6DwMgNiRd/wB1Kl6JsaYb2VWYPNs2EI5r2hrCXhN86m1MIvYG3OhOHCRssjPj
+ Np1Sptk+JdAmPlBDdwZ+LwUTCaEQD8E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717770270;
+ s=susede2_ed25519; t=1717770269;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UhyqkrRwYAsNw1QQ+q7dWClBFjN0K+umflMxjQCIyGc=;
- b=R84OBRUDuFvo5DNh393CLNaW8cqhDyzjc/jPEn4aLUhEnm2aEPTikaIq5Swx1w138qRJmz
- 6JHIvy4Wc2ctLgAQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IpOiMO4qlQdMNTQFARf9RHoS03JuONYEnMqujexpzKs=;
+ b=sPCMjN2sUK6bsmJvO81iHFA9Yk5zs5uZ2goNnHZl3BpKAil+qH8GrnZ9KlJDB+QyAMQaua
+ 8MM6wSIcRBXyqKCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C826413A42;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D4AD133F3;
  Fri,  7 Jun 2024 14:24:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iGt4Lx0YY2a0CAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rcWlIB0YY2a0CAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Fri, 07 Jun 2024 14:24:29 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  7 Jun 2024 16:24:21 +0200
-Message-ID: <20240607142423.116285-2-pvorel@suse.cz>
+Date: Fri,  7 Jun 2024 16:24:20 +0200
+Message-ID: <20240607142423.116285-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20240607142423.116285-1-pvorel@suse.cz>
-References: <20240607142423.116285-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-2.99)[99.94%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_SEVEN(0.00)[8];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_SEVEN(0.00)[8];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: C326E1FBA4
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH 1/3] runltp: Deprecate, add info about kirk
+Subject: [LTP] [RFC PATCH 0/3] Deprecate runltp (please use kirk)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,48 +120,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-kirk is not perfect but already much better than old runltp script.
-Let's deprecate runltp and propagate kirk.
+Petr Vorel (3):
+  runltp: Deprecate, add info about kirk
+  ltpmenu: Remove legacy script
+  doc/old: Remove man pages
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- runltp | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ Makefile                         |   6 -
+ doc/old/Makefile                 |  11 -
+ doc/old/man1/Makefile            |  27 --
+ doc/old/man1/doio.1              |  70 ----
+ doc/old/man1/iogen.1             |  78 -----
+ doc/old/man1/ltp-bump.1          |  80 -----
+ doc/old/man1/ltp-pan.1           | 262 ---------------
+ doc/old/man3/Makefile            |  27 --
+ doc/old/man3/parse_opts.3        | 179 ----------
+ doc/old/man3/parse_ranges.3      | 169 ----------
+ doc/old/man3/random_range.3      | 114 -------
+ doc/old/man3/random_range_seed.3 | 114 -------
+ doc/old/man3/tst_res.3           | 313 ------------------
+ doc/old/man3/tst_sig.3           | 141 --------
+ doc/old/man3/tst_tmpdir.3        |  76 -----
+ doc/old/man3/usctest.3           | 164 ---------
+ ltpmenu                          | 548 -------------------------------
+ runltp                           |  13 +
+ 18 files changed, 13 insertions(+), 2379 deletions(-)
+ delete mode 100644 doc/old/Makefile
+ delete mode 100644 doc/old/man1/Makefile
+ delete mode 100644 doc/old/man1/doio.1
+ delete mode 100644 doc/old/man1/iogen.1
+ delete mode 100644 doc/old/man1/ltp-bump.1
+ delete mode 100644 doc/old/man1/ltp-pan.1
+ delete mode 100644 doc/old/man3/Makefile
+ delete mode 100644 doc/old/man3/parse_opts.3
+ delete mode 100644 doc/old/man3/parse_ranges.3
+ delete mode 100644 doc/old/man3/random_range.3
+ delete mode 100644 doc/old/man3/random_range_seed.3
+ delete mode 100644 doc/old/man3/tst_res.3
+ delete mode 100644 doc/old/man3/tst_sig.3
+ delete mode 100644 doc/old/man3/tst_tmpdir.3
+ delete mode 100644 doc/old/man3/usctest.3
+ delete mode 100755 ltpmenu
 
-diff --git a/runltp b/runltp
-index 62ab66871..4b0bd08f1 100755
---- a/runltp
-+++ b/runltp
-@@ -68,9 +68,19 @@
- #################################################################################
- 
- 
-+deprecated()
-+{
-+    echo "-------------------------------------------"
-+    echo "INFO: runltp script is deprecated, try kirk"
-+    echo "https://github.com/linux-test-project/kirk"
-+    echo "-------------------------------------------"
-+}
-+
- 
- setup()
- {
-+    deprecated
-+
-     cd `dirname $0` || \
-     {
-         echo "FATAL: unable to change directory to $(dirname $0)"
-@@ -921,6 +931,9 @@ EOF
- 
- 	EOF
-     }
-+
-+    deprecated
-+
-     exit $VALUE
- }
- 
 -- 
 2.45.1
 
