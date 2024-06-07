@@ -4,106 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CA37C27C53
-	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 16:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E52A6C27C53
+	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 16:48:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 983993D0A9D
-	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 18:36:11 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6676B3D0AB2
+	for <ltp@archiver.kernel.org>; Fri,  7 Jun 2024 18:48:40 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80C3F3C23B7
- for <ltp@lists.linux.it>; Fri,  7 Jun 2024 18:35:55 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 6137A3CBDEF
+ for <ltp@lists.linux.it>; Fri,  7 Jun 2024 18:48:27 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C35A3140096D
- for <ltp@lists.linux.it>; Fri,  7 Jun 2024 18:35:54 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9185F1A00927
+ for <ltp@lists.linux.it>; Fri,  7 Jun 2024 18:48:26 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2421721B75;
- Fri,  7 Jun 2024 16:35:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E614A1FBA6;
+ Fri,  7 Jun 2024 16:48:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717778153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717778904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i+LcV98nNLL8OeJvT1rV5u+64AgQfGjrtaYNDHAeD+M=;
- b=wDHUj58k8OS9oYcDSPHvhBObTC0JyfAtAAYpgZ4QeEDQa4FV6XcBeYIoil9vaNuQXojpcD
- rPgt7RZh/PmiGG3MMQjUd0c+ZxZCQl363PWYt0Ax5hLzAHsbVK3WZfVx5dEks4BxuB6H2O
- cdhK4+r2VIX4v54OU+gnu+WUAF8MGaI=
+ bh=DqBRYUchN9h/56GEqasXWBUlF8vCqUGO/niIQ1ZAxjA=;
+ b=qBU+/XU2sfmxLyl+JeEljc3lMP6QIGnrDUhONdhRAb3ApTg4xyT9SIdnpShrkKwRG1Syvz
+ FkgerUIzwX9kUrsbkk3L/g13HXAgqp51njIiDh1d4Brymg36pVV7wapZ8D0mS4MNALlW1Q
+ ZrX1wqg8748ZJRKEJK+fJFkTyRHSWOk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717778153;
+ s=susede2_ed25519; t=1717778904;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i+LcV98nNLL8OeJvT1rV5u+64AgQfGjrtaYNDHAeD+M=;
- b=+7R794vnTo4Tyg0OdZUHePJHZGfEy4D1DxEwyPuCH6tQm9MdQAeW9fRQmH4VGz+tCMUUtX
- 4We9kctjVdny0vBw==
-Authentication-Results: smtp-out1.suse.de;
+ bh=DqBRYUchN9h/56GEqasXWBUlF8vCqUGO/niIQ1ZAxjA=;
+ b=owQi7HUAdDvSGt+5+F9a6NpVIMKiSCttwHlSSGgjcR12asMvv2hR6KFDTbzXU5x083K4RA
+ MjIM+eoWiuUOE2Dg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1717778153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1717778903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i+LcV98nNLL8OeJvT1rV5u+64AgQfGjrtaYNDHAeD+M=;
- b=wDHUj58k8OS9oYcDSPHvhBObTC0JyfAtAAYpgZ4QeEDQa4FV6XcBeYIoil9vaNuQXojpcD
- rPgt7RZh/PmiGG3MMQjUd0c+ZxZCQl363PWYt0Ax5hLzAHsbVK3WZfVx5dEks4BxuB6H2O
- cdhK4+r2VIX4v54OU+gnu+WUAF8MGaI=
+ bh=DqBRYUchN9h/56GEqasXWBUlF8vCqUGO/niIQ1ZAxjA=;
+ b=ZPx3EC4IeaojJaI3grPLSNQkGTWzg1ADYCWGu5cu4lrRoMB+CUv7MaRO/dpr7waflHCMKo
+ juH/QbGZNTQ94qv4q500PgZOw2ehMbYH0We5azwHrfGrFC2yBx8wzYQijbXsMTg4PQq13O
+ Im2CD/OghH/ax9WRSYXTXMXrRgPFSlA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1717778153;
+ s=susede2_ed25519; t=1717778903;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i+LcV98nNLL8OeJvT1rV5u+64AgQfGjrtaYNDHAeD+M=;
- b=+7R794vnTo4Tyg0OdZUHePJHZGfEy4D1DxEwyPuCH6tQm9MdQAeW9fRQmH4VGz+tCMUUtX
- 4We9kctjVdny0vBw==
+ bh=DqBRYUchN9h/56GEqasXWBUlF8vCqUGO/niIQ1ZAxjA=;
+ b=DngntAxhsB8v5H5LQ6FBcFMyxWWFtG35DlneOi2FusTF8YZYbO4SZpYcCAtZV0A3Yf9j5g
+ dRXZrZka0hDV3NBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D52C133F3;
- Fri,  7 Jun 2024 16:35:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3B10133F3;
+ Fri,  7 Jun 2024 16:48:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wuvhAuk2Y2bUMgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 07 Jun 2024 16:35:53 +0000
-Date: Fri, 7 Jun 2024 18:35:48 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id lYxjM9c5Y2acNgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 07 Jun 2024 16:48:23 +0000
+Date: Fri, 7 Jun 2024 18:48:11 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Purdie <richard.purdie@linuxfoundation.org>
-Message-ID: <ZmM25L0EmJufsS-f@yuki>
+To: Tim Bird <tim.bird@sony.com>
+Message-ID: <ZmM5y3a4xNCsRTT-@yuki>
 References: <20240607142423.116285-1-pvorel@suse.cz>
  <20240607142423.116285-2-pvorel@suse.cz>
  <8043628a6eed94e788f9fedbf6c8b264ebfbae15.camel@linuxfoundation.org>
  <ZmMrBnkIXKfrF8Xv@yuki>
  <c8d4ee181809c4bbf5e21bf355c241eeb540e9a5.camel@linuxfoundation.org>
+ <SA3PR13MB6372C183B9989156CF692F5CFDFB2@SA3PR13MB6372.namprd13.prod.outlook.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <c8d4ee181809c4bbf5e21bf355c241eeb540e9a5.camel@linuxfoundation.org>
-X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[9];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- FROM_HAS_DN(0.00)[];
+In-Reply-To: <SA3PR13MB6372C183B9989156CF692F5CFDFB2@SA3PR13MB6372.namprd13.prod.outlook.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_SEVEN(0.00)[9];
+ ARC_NA(0.00)[]; TO_DN_EQ_ADDR_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [Automated-testing] [RFC PATCH 1/3] runltp: Deprecate,
  add info about kirk
@@ -118,80 +114,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > > This does therefore worry me a little bit, there appears to be a lot
-> > > of complexity in kirk we don't need.
-> > =
+> I'm in the same position as Richard here.  Fuego uses runltp on the target (device under test),
+> and has it's own mechanisms for detecting timeouts or kernel crashes, gathering test output,
+> restarting targets, etc. from a test host.  These same mechanisms are used for other tests.
+> Fuego also has mechanisms for running individual LTP tests on the device (by installing the
+> individual test, executing it, gathering results remotely, and removing the test and test artifacts).
+> This is used in cases where the overhead of installing and running runltp is too big.  I haven't
+> investigated kirk yet (but it was on my list of things to do).
 
-> > I would say that there is a complexity that you do not think that you
-> > need but in reality you do. First of all the assumption that you can
-> > have the test runner that keeps the results and overall state on the
-> > same machine that runs the tests is the most flawed of them all. So
-> > running the tests over some kind of connection is the basis design
-> > principle of kirk. That allows us to easily and safely detect when we
-> > crash kernels with our tests, which tend to happen more often than most
-> > people think. And I can go about all the things that are there because
-> > of a good reasons for hours.
-> =
+If you are executing a single test you do not need runltp. The current
+added value of runltp is that it loops over all tests in a set of
+runtest files, collects the results and saves overall status. If you
+want to run a single test, you need to set up a few environment
+variables and you are good to go.
 
-> I think you misunderstand my point. Yocto project already has code to
-> handle setting up qemu instances, connecting to them, collecting data
-> from them etc. and we use that with ltp in the same way we use it for
-> lots of other tests. So yes, I agree with you that you need a
-> connection but we already have a solution for that.=A0
-> =
+> Will kirk and/or LTP provide a simple mechanism for quick install and execution of
+> individual tests or small sets of tests (and itself)?  Fuego's model of testing is geared towards
+> testing of production devices, where no test artifacts are pre-installed on the target,
+> and full cleanup (removal of tests and test artifacts) is done between tests.
 
-> We probably don't want some tests doing this with kirk and everything
-> else doing it differently. I suspect we wouldn't want to switch
-> everything we're doing over to kirk either as that wouldn't work for us
-> or the kirk maintainers due to differing needs and expectations.
+Currently installation is completely out of scope for kirk. The workflow
+we have expects LTP installed and first step kirk does is to download
+runtest files and metadata from the device under test.
 
-This may actually work, since we are trying to make kirk flexible enough
-to run other testsuites, I think that we already run subset of selftest
-with kirk in our environment.
+And I'm perfectly aware that single workflow will not fit everybody,
+that's why my initial idea was a set of reusable components rather than
+a full solution.
 
-> > That being said, the current kirk implementation ended up more complex
-> > than I would like it, and that is something to improve over the
-> > deprecation period. The general idea is to allow users to experiment
-> > with kirk, even when it's not perfect to get feedback and ideally make
-> > it usable for most usecases before we get rid of runltp for good.
-> =
-
-> It sounds like we need to switch to kirk and use it simply as a direct
-> run host driver, but we are going to have a lot of complexity in there
-> we aren't in need of.
-
-I'm afraid that's not a good solution either. The end goal for kirk is
-to have a small binary locked in RAM and with realtime priority to
-execute tests and send back logs, in case of qemu over virtio, to the
-kirk. That is to make sure that logs are collected properly even when
-kernel is out of memory and in a similar situations.
-
-If you run kirk on the VM, reporting is not going to be reliable.
-
-My initial idea was to build the new generation testrunner as a set of
-building blocks, that could be reused separately, but the current desing
-does not make it easy.
-
-We do have the ltx binary, which is the small dispatcher supposed to run
-on the VM. And in an ideal world we would have a python library that
-talks to it on the other end, as a part of kirk, that could be reused
-separately. And the same for building lists of test to execute, ideally
-we would have a python library that would export a simple interface so
-that everyone could integrate the blocks that they really need into
-their solution.
-
--- =
-
+-- 
 Cyril Hrubis
 chrubis@suse.cz
 
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
