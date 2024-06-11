@@ -4,72 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1AB9C27C5E
-	for <ltp@archiver.kernel.org>; Tue, 11 Jun 2024 06:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFBCCC25B76
+	for <ltp@archiver.kernel.org>; Tue, 11 Jun 2024 07:39:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B71D3CFD5F
-	for <ltp@archiver.kernel.org>; Tue, 11 Jun 2024 08:45:18 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E18F33D0B79
+	for <ltp@archiver.kernel.org>; Tue, 11 Jun 2024 09:39:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 961A03CFD5F
- for <ltp@lists.linux.it>; Tue, 11 Jun 2024 08:45:01 +0200 (CEST)
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com
- [IPv6:2607:f8b0:4864:20::736])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 111B73D0888
+ for <ltp@lists.linux.it>; Tue, 11 Jun 2024 09:38:46 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 01A6A14013BA
- for <ltp@lists.linux.it>; Tue, 11 Jun 2024 08:45:01 +0200 (CEST)
-Received: by mail-qk1-x736.google.com with SMTP id
- af79cd13be357-7955841fddaso193443085a.1
- for <ltp@lists.linux.it>; Mon, 10 Jun 2024 23:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1718088300; x=1718693100; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Ibwqh6e/GoRugzf5zBN3rzGPL1kig847TWzldURPLtM=;
- b=kt1uvsp41gmGmWetwdm1bTRt5ff2G81kjwBXc3kh1+5+eqMTqBpnIyRwBoweG4NCVz
- nZT3f5tj9kwCi0ayD7gWBAyK+qyt107vCVA/68Qg6Qs7lS40vesxo8cKzDpFOpDCZ43J
- a9/761mk/eNh7F3i1LTUkQx1bVekon36bhzt1Qk3/Z12UeYjgiVrwlDbX6o+jN8G3zZA
- WBpyyrgcjX5DLckZMyEuirnEH8R3ASVFBjZkpcVF37hNFU27Rd3fy0V8JVidk+Qn4ijA
- 6zKMz1Wo4sNzIwXXl0vg4bcGrlLYl7tCyyMu3nmyMrHCI6hS5Toyc4JrNPXefAWs5Hjy
- NzZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1718088300; x=1718693100;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Ibwqh6e/GoRugzf5zBN3rzGPL1kig847TWzldURPLtM=;
- b=aRdceMkr6gyEqriYy+eVYjcxAsZ1WqC8encQm1wVQzo9oGaEqvsPN5QCXwSR8wAT5x
- vrUKsUOITF7aY7MVLSnh+k9oc4+vvIr6jlT3ujKEMKbAaUg5aRgfoF1dKY9/1dwGSL1h
- mnXZ/OiHUdbOqSTCYyqiiv3npR2aW3hA5eG5QNN9FsejiCfIW9Q7ODL/tVI8aP6NAKyP
- N5mAiKlas/Rmln7xyXhTdgvqvqRO1PDr0RrE29IHIyubIGrGw5fTQcArlOpAeLSjuK0a
- sYdscxadnNBtYiL+QnUuzoVKZgv7+EOEQPbV6uw0YamLDvpi3Z2gkj/3Rv84tPwRLcHa
- rulw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWBXPqJ9am5FOETvpTQudwH0pzge9x0Kx4suJwTOdCPjjJ0hAn6P4l6hGlYf1A0zbp2UJnqBlavEWBe+2Hfnanrx6E=
-X-Gm-Message-State: AOJu0YxY74Wuf0jRUlUZkTWfc6M+dxxPdixL9V6KlOOJuwKzlqM+4MoC
- pLGjTSIIIMNKLoyidSse7xWxxvzmdygsNyIwo0PVVcnXO2lRJivVjeZMXbHwatgVyIHhX9f7nqA
- A2afbXp3h4zTbifypIjCOqMwO7zM=
-X-Google-Smtp-Source: AGHT+IEfp3dy3AaWljYOEwEi/cZ6ahQhL57bZI6bGcJEEGULpwveVDal8dxKJoK6xMk0/9lPZHZvNAJtSsBa6nT/NvM=
-X-Received: by 2002:a05:620a:4094:b0:796:5fd7:5219 with SMTP id
- af79cd13be357-797c2d9fffcmr274353385a.20.1718088299568; Mon, 10 Jun 2024
- 23:44:59 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C7DA16000F6
+ for <ltp@lists.linux.it>; Tue, 11 Jun 2024 09:38:45 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 270BF21F4C;
+ Tue, 11 Jun 2024 07:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1718091524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=6zLEAsDS43VU+wmWM/TWNOIBbX6sRZP1q/xdNi7yUoE=;
+ b=kLiDAXikRAKZqyvu7FopyYAUgas77KgGDkmleLdKRtVILy1mD9pTktrXLTLTgO3edhNf6B
+ lDI2RkNomJTu0G+KNQqbDGfEZqUJsQQMr3F1Y5+cLrqQV8ZMn8f4PCWkcdxMIgQU6qFcPq
+ UtBWSpMZOzwI0fpET11kjEusLMOcAfk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1718091524;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=6zLEAsDS43VU+wmWM/TWNOIBbX6sRZP1q/xdNi7yUoE=;
+ b=qw3Lb79Onh+4/cMYWSuzfmw3degz4Ba7lNFVfyW9fz+3IcL28fmi4BX2ZT1czRmExjU7ew
+ p3iSpUwCSp8hPzCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1718091524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=6zLEAsDS43VU+wmWM/TWNOIBbX6sRZP1q/xdNi7yUoE=;
+ b=kLiDAXikRAKZqyvu7FopyYAUgas77KgGDkmleLdKRtVILy1mD9pTktrXLTLTgO3edhNf6B
+ lDI2RkNomJTu0G+KNQqbDGfEZqUJsQQMr3F1Y5+cLrqQV8ZMn8f4PCWkcdxMIgQU6qFcPq
+ UtBWSpMZOzwI0fpET11kjEusLMOcAfk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1718091524;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=6zLEAsDS43VU+wmWM/TWNOIBbX6sRZP1q/xdNi7yUoE=;
+ b=qw3Lb79Onh+4/cMYWSuzfmw3degz4Ba7lNFVfyW9fz+3IcL28fmi4BX2ZT1czRmExjU7ew
+ p3iSpUwCSp8hPzCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 087C713A55;
+ Tue, 11 Jun 2024 07:38:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OmEWAAT/Z2aRTgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 11 Jun 2024 07:38:44 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 11 Jun 2024 09:38:39 +0200
 MIME-Version: 1.0
-References: <01c3bf2e-eb1f-4b7f-a54f-d2a05dd3d8c8@arm.com>
- <171807298283.14261.13687949173694068461@noble.neil.brown.name>
-In-Reply-To: <171807298283.14261.13687949173694068461@noble.neil.brown.name>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 11 Jun 2024 09:44:48 +0300
-Message-ID: <CAOQ4uxip8tD8H691qTcA8YFkcT78_iwQXy17=mJzyv6WWUaunQ@mail.gmail.com>
-To: NeilBrown <neilb@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Message-Id: <20240611-seccomp-v2-1-14dfc432bf6c@suse.com>
+X-B4-Tracking: v=1; b=H4sIAP7+Z2YC/z3MQQ7CIBCF4as0sxYDVKh25T1MF0gHOwtLwyjRN
+ NxdbKLLf+blW4ExETL0zQoJMzHFuYbeNeAnN99Q0FgbtNQHaWUrGL2P90VIG9QRT8aoMUBdLwk
+ DvTbpMtSeiB8xvTc4q+/1Z3R/IyuhRCelbQM6Y67uzE/Gff3BUEr5AN2NBcmdAAAA
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8129;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=GOC+A0LClokC2LtHECm/KrkS3imjXbfy7HpbX+b5nPE=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmZ/8AQFTFj6I9xSJOmUZ7rknxiO59DPkg8IcU6
+ 0Jjay4Jst2JAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZmf/AAAKCRDLzBqyILPm
+ RgF1C/4hR7sYZMb22JHixToW3/x/knmFs56pYSPgmW6oNizMoUUOcMN0DEVm1NuniqBKVogrIux
+ I3fijPHN7QrtC6+N8p5C9FGjPF9XGPyrT7mPnOSujx4BLV3nEgTcx1GfYi0HR3uyfYGi7/048gj
+ fbwHf48njx7KIUOgJD6bDE2eZgMsMVgCJ/v0vfq8Xgp2n0hr56ZpneWZdaBxydLo3UJXrJUqOI7
+ NKdCVa5Tce8/Qvkb4zr3GmD8nA6S98WqWw0DEW4R8DsiLotkskZ4EE6vlFvyq1dvvhtFlpjxbaL
+ pVrbyMpsx/QrXkMMStQtIQFBGs8nvdbps+y3B/0VYLnUhuFFZbsji3yipThX1dgjaNXEhI/Hkei
+ rZq8cgG/TPqXhqSE+iqY0zrwT5ePHhv8ynAdcBh6UJLRiphnwHDlIVPnZqu+zlEkfemrB2+gqiP
+ F6uWsWy1I9Km3tiseWLNBV4P20jr4b1pPbucE5ZX8Hz3ia5gKWq5lQ9rZqOY7B0D9w0MM=
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] NFS: add atomic_open for NFSv3 to handle O_TRUNC
- correctly.
+Subject: [LTP] [PATCH v2] Move prctl04 in seccomp testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,51 +123,269 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Aishwarya.TCV@arm.com, Jan Kara <jack@suse.cz>, linux-nfs@vger.kernel.org,
- broonie@kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdW4gMTEsIDIwMjQgYXQgNTozMOKAr0FNIE5laWxCcm93biA8bmVpbGJAc3VzZS5k
-ZT4gd3JvdGU6Cj4KPiBPbiBGcmksIDA3IEp1biAyMDI0LCBKYW1lcyBDbGFyayB3cm90ZToKPiA+
-Cj4gPiBIaSBOZWlsLAo+ID4KPiA+IE5vdyB0aGF0IHlvdXIgZml4IGlzIGluIGxpbnV4LW5leHQg
-dGhlIHN0YXR2ZnMwMSB0ZXN0IGlzIHBhc3NpbmcgYWdhaW4uCj4gPiBIb3dldmVyIGlub3RpZnkw
-MiBpcyBzdGlsbCBmYWlsaW5nLgo+ID4KPiA+IFRoaXMgaXMgYmVjYXVzZSB0aGUgdGVzdCBleHBl
-Y3RzIHRoZSBJTl9DUkVBVEUgYW5kIElOX09QRU4gZXZlbnRzIHRvCj4gPiBjb21lIGluIHRoYXQg
-b3JkZXIgYWZ0ZXIgY2FsbGluZyBjcmVhdCgpLCBidXQgbm93IHRoZXkgYXJlIHJldmVyc2VkLiBU
-bwo+ID4gbWUgaXQgc2VlbXMgbGlrZSBpdCBjb3VsZCBiZSBhIHRlc3QgaXNzdWUgYW5kIHRoZSB0
-ZXN0IHNob3VsZCBoYW5kbGUKPiA+IHRoZW0gaW4gZWl0aGVyIG9yZGVyPyBPciBtYXliZSB0aGVy
-ZSBzaG91bGQgYmUgYSBzaW5nbGUgaW5vdGlmeSBldmVudAo+ID4gd2l0aCBib3RoIGZsYWdzIHNl
-dCBmb3IgdGhlIGF0b21pYyBvcGVuPwo+Cj4gSW50ZXJlc3RpbmcuLi4uICBJIGRvbid0IHNlZSBo
-b3cgYW55IGZpbGVzeXN0ZW0gdGhhdCB1c2VzIC0+YXRvbWljX29wZW4KPiB3b3VsZCBnZXQgdGhl
-c2UgaW4gdGhlICJyaWdodCIgb3JkZXIgLSBhbmQgSSBkbyB0aGluayBJTl9DUkVBVEUgc2hvdWxk
-Cj4gY29tZSBiZWZvcmUgSU5fT1BFTi4KCkNvcnJlY3QuCgo+Cj4gRG9lcyBORlN2NCBwYXNzIHRo
-aXMgdGVzdD8KClByb2JhYmx5IG5vdC4KCj4KPiBJTl9PUEVOIGlzIGdlbmVyYXRlZCAoYnkgZnNu
-b3RpZnlfb3BlbigpKSB3aGVuIGZpbmlzaF9vcGVuKCkgaXMgY2FsbGVkLAo+IHdoaWNoIG11c3Qg
-YmUgKGFuZCBpcykgY2FsbGVkIGJ5IGFsbCBhdG9taWNfb3BlbiBmdW5jdGlvbnMuCj4gSU5fQ1JF
-QVRFIGlzIGdlbmVyYXRlZCAoYnkgZnNub3RpZnlfY3JlYXRlKCkpIHdoZW4gb3Blbl9sYXN0X2xv
-b2t1cHMoKQo+IGRldGVjdHMgdGhhdCBGTU9ERV9DUkVBVEUgd2FzIHNldCBhbmQgdGhhdCBoYXBw
-ZW5zICphZnRlciogbG9va3VwX29wZW4oKQo+IGlzIGNhbGxlZCwgd2hpY2ggY2FsbHMgYXRvbWlj
-X29wZW4oKS4KPgo+IEZvciBmaWxlc3lzdGVtcyB0aGF0IGRvbid0IHVzZSBhdG9taWNfb3Blbiwg
-dGhlIElOX09QRU4gaXMgZ2VuZXJhdGVkIGJ5Cj4gdGhlIGNhbGwgdG8gZG9fb3BlbigpIHdoaWNo
-IGhhcHBlbnMgKmFmdGVyKiBvcGVuX2xhc3RfbG9va3VwcygpLCBub3QKPiBpbnNpZGUgaXQuCgpD
-b3JyZWN0LgoKPgo+IFNvIHRoZSBsdHAgdGVzdCBtdXN0IGFscmVhZHkgZmFpbCBmb3IgTkZTdjQs
-IDlwIGNlcGggZnVzZSBnZnMyIG50ZnMzCj4gb3ZlcmxheWZzIHNtYi4KPgoKaW5vdGlmeTAyIGRv
-ZXMgbm90IHJ1biBvbiBhbGxfZmlsZXN5c3RlbXMsIG9ubHkgb24gdGhlIG1haW4gdGVzdCBmcywK
-d2hpY2ggaXMgbm90IHZlcnkgb2Z0ZW4gb25lIG9mIHRoZSBhYm92ZS4KClRoaXMgaXMgaG93IEkg
-YXZlcnRlZCB0aGUgcHJvYmxlbSBpbiBmYW5vdGlmeTE2ICh3aGljaCBkb2VzIHJ1biBvbgphbGxf
-ZmlsZXN5c3RlbXMpOgoKY29tbWl0IDkwNjI4MjRhNzBiOGRhNzRhYTViMWRiMDg3MTBkMDAxOGI0
-ODA3MmUKQXV0aG9yOiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgpEYXRlOiAg
-IFR1ZSBOb3YgMjEgMTI6NTI6NDcgMjAyMyArMDIwMAoKICAgIGZhbm90aWZ5MTY6IEZpeCB0ZXN0
-IGZhaWx1cmUgb24gRlVTRQoKICAgIFNwbGl0IFNBRkVfQ1JFQVQoKSBpbnRvIGV4cGxpY2l0IFNB
-RkVfTUtOT0QoKSBhbmQgU0FGRV9PUEVOKCksCiAgICBiZWNhdXNlIHdpdGggYXRvbWljIG9wZW4g
-KGUuZy4gZnVzZSksIFNBRkVfQ1JFQVQoKSBnZW5lcmF0ZXMgRkFOX09QRU4KICAgIGJlZm9yZSBG
-QU5fQ1JFQVRFICh0ZXN0ZWQgd2l0aCBudGZzLTNnKSwgd2hpY2ggaXMgaW5jb25zaXN0ZW50IHdp
-dGgKICAgIHRoZSBvcmRlciBvZiBldmVudHMgZXhwZWN0ZWQgZnJvbSBvdGhlciBmaWxlc3lzdGVt
-cy4KCmlub3RpZnkwMiBzaG91bGQgYmUgZml4ZWQgc2ltaWxhcmx5LgoKSSBkaWQgbm90IGZpbmQg
-YW55IG90aGVyIGlub3RpZnkgdGVzdCB0aGF0IHdhdGNoZXMgSU5fQ1JFQVRFLgpJIGRpZCBub3Qg
-ZmluZCBhbnkgb3RoZXIgZmFub3RpZnkgdGVzdCB0aGF0IHdhdGNoZXMgYm90aCBGQU5fQ1JFQVRF
-CmFuZCBGQU5fT1BFTi4KClRoYW5rcywKQW1pci4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
-cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+prictl04 has been renamed as seccomp01 and a test variant has been added
+in order to support the seccomp() syscall, that is currently equivalent
+to prctl(PR_SET_SECCOMP).
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+This testing suite is aiming to test seccomp() syscall which is
+supposed to wrap prctl(PR_SET_SECCOMP). Some parts have been moved from
+prctl tesitng suite to a new seccomp testing suite and added a test
+variant.
+---
+Changes in v2:
+- more information about the current running variant 
+- Link to v1: https://lore.kernel.org/r/20240607-seccomp-v1-1-70063fea55ba@suse.com
+---
+ runtest/syscalls                                   |  3 +-
+ testcases/kernel/syscalls/prctl/.gitignore         |  1 -
+ testcases/kernel/syscalls/seccomp/.gitignore       |  1 +
+ testcases/kernel/syscalls/seccomp/Makefile         |  7 ++
+ .../{prctl/prctl04.c => seccomp/seccomp01.c}       | 85 +++++++++++++---------
+ 5 files changed, 61 insertions(+), 36 deletions(-)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf06ee563..a6614141a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1021,7 +1021,6 @@ ppoll01 ppoll01
+ prctl01 prctl01
+ prctl02 prctl02
+ prctl03 prctl03
+-prctl04 prctl04
+ prctl05 prctl05
+ prctl06 prctl06
+ prctl07 prctl07
+@@ -1239,6 +1238,8 @@ sched_setattr01 sched_setattr01
+ sched_getattr01 sched_getattr01
+ sched_getattr02 sched_getattr02
+ 
++seccomp01 seccomp01
++
+ select01 select01
+ select02 select02
+ select03 select03
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 50ee4bf60..8bcc22f98 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -1,7 +1,6 @@
+ /prctl01
+ /prctl02
+ /prctl03
+-/prctl04
+ /prctl05
+ /prctl06
+ /prctl06_execve
+diff --git a/testcases/kernel/syscalls/seccomp/.gitignore b/testcases/kernel/syscalls/seccomp/.gitignore
+new file mode 100644
+index 000000000..9196906cf
+--- /dev/null
++++ b/testcases/kernel/syscalls/seccomp/.gitignore
+@@ -0,0 +1 @@
++seccomp01
+diff --git a/testcases/kernel/syscalls/seccomp/Makefile b/testcases/kernel/syscalls/seccomp/Makefile
+new file mode 100644
+index 000000000..8cf1b9024
+--- /dev/null
++++ b/testcases/kernel/syscalls/seccomp/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/prctl/prctl04.c b/testcases/kernel/syscalls/seccomp/seccomp01.c
+similarity index 73%
+rename from testcases/kernel/syscalls/prctl/prctl04.c
+rename to testcases/kernel/syscalls/seccomp/seccomp01.c
+index 8b135d611..73ee09c1d 100644
+--- a/testcases/kernel/syscalls/prctl/prctl04.c
++++ b/testcases/kernel/syscalls/seccomp/seccomp01.c
+@@ -2,12 +2,14 @@
+ /*
+  * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+  * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
+ 
+ /*\
+  * [Description]
+  *
+- * Test PR_GET_SECCOMP and PR_SET_SECCOMP of prctl(2).
++ * Test PR_GET_SECCOMP and PR_SET_SECCOMP with both prctl(2) and seccomp().
++ * The second one is called via __NR_seccomp using tst_syscall().
+  *
+  * - If PR_SET_SECCOMP sets the SECCOMP_MODE_STRICT for the calling thread,
+  *   the only system call that the thread is permitted to make are read(2),
+@@ -35,6 +37,7 @@
+ #include <stdlib.h>
+ #include <stddef.h>
+ #include "tst_test.h"
++#include "tst_kconfig.h"
+ #include "lapi/syscalls.h"
+ #include "lapi/prctl.h"
+ #include "config.h"
+@@ -62,11 +65,11 @@ static const struct sock_fprog  strict = {
+ 	.filter = (struct sock_filter *)strict_filter
+ };
+ 
+-static void check_strict_mode(int);
+-static void check_filter_mode(int);
++static void check_strict_mode(int mode);
++static void check_filter_mode(int mode);
+ 
+ static struct tcase {
+-	void (*func_check)();
++	void (*func_check)(int mode);
+ 	int pass_flag;
+ 	int val;
+ 	int exp_signal;
+@@ -94,8 +97,8 @@ static struct tcase {
+ 	"SECCOMP_MODE_FILTER doesn't permit exit()"}
+ };
+ 
+-
+-static int mode_filter_not_supported;
++static int strict_not_supported;
++static int filter_not_supported;
+ 
+ static void check_filter_mode_inherit(void)
+ {
+@@ -122,13 +125,20 @@ static void check_strict_mode(int val)
+ 	int fd;
+ 	char buf[2];
+ 
++	if (strict_not_supported)
++		return;
++
+ 	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
+ 
+-	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT));
+-	if (TST_RET == -1) {
+-		tst_res(TFAIL | TTERRNO,
+-			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT failed");
+-		return;
++	if (tst_variant == 1) {
++		TEST(tst_syscall(__NR_seccomp, SECCOMP_SET_MODE_STRICT, 0, NULL));
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "seccomp(SECCOMP_SET_MODE_STRICT) error");
++	} else {
++		TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT, 0, NULL));
++
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "prctl(SECCOMP_MODE_STRICT) error");
+ 	}
+ 
+ 	switch (val) {
+@@ -158,18 +168,20 @@ static void check_filter_mode(int val)
+ {
+ 	int fd;
+ 
+-	if (mode_filter_not_supported == 1) {
+-		tst_res(TCONF, "kernel doesn't support SECCOMP_MODE_FILTER");
++	if (filter_not_supported)
+ 		return;
+-	}
+ 
+ 	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
+ 
+-	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
+-	if (TST_RET == -1) {
+-		tst_res(TFAIL | TERRNO,
+-			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER failed");
+-		return;
++	if (tst_variant == 1) {
++		TEST(tst_syscall(__NR_seccomp, SECCOMP_SET_MODE_FILTER, 0, &strict));
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "seccomp(SECCOMP_SET_MODE_FILTER) error");
++	} else {
++		TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
++
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "prctl(SECCOMP_MODE_FILTER) error");
+ 	}
+ 
+ 	switch (val) {
+@@ -213,7 +225,7 @@ static void verify_prctl(unsigned int n)
+ 			return;
+ 		}
+ 
+-		if (tc->pass_flag == 2 && mode_filter_not_supported == 0)
++		if (tc->pass_flag == 2)
+ 			tst_res(TFAIL,
+ 				"SECCOMP_MODE_FILTER permits exit() unexpectedly");
+ 	}
+@@ -221,31 +233,36 @@ static void verify_prctl(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	TEST(prctl(PR_GET_SECCOMP));
+-	if (TST_RET == 0) {
+-		tst_res(TINFO, "kernel supports PR_GET/SET_SECCOMP");
++	static const char * const kconf_strict[] = {"CONFIG_SECCOMP=y", NULL};
++	static const char * const kconf_filter[] = {"CONFIG_SECCOMP_FILTER=y", NULL};
+ 
+-		TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, NULL));
+-		if (TST_RET == -1 && TST_ERR == EINVAL) {
+-			mode_filter_not_supported = 1;
+-			return;
+-		}
++	tst_res(TINFO, "Testing variant: %s",
++		tst_variant == 1 ? "seccomp()" : "pctrl(PR_SET_SECCOMP)");
+ 
+-		tst_res(TINFO, "kernel supports SECCOMP_MODE_FILTER");
+-		return;
++	if (tst_kconfig_check(kconf_strict)) {
++		tst_brk(TCONF, "kernel doesn't support SECCOMP_MODE_STRICT. "
++				"Skipping CONFIG_SECCOMP tests");
++
++		strict_not_supported = 1;
++	} else {
++		tst_res(TINFO, "kernel supports SECCOMP_MODE_STRICT");
+ 	}
+ 
+-	if (TST_ERR == EINVAL)
+-		tst_brk(TCONF, "kernel doesn't support PR_GET/SET_SECCOMP");
++	if (tst_kconfig_check(kconf_filter)) {
++		tst_brk(TCONF, "kernel doesn't support SECCOMP_MODE_FILTER. "
++				"Skipping CONFIG_SECCOMP_FILTER tests");
+ 
+-	tst_brk(TBROK | TTERRNO,
+-		"current environment doesn't permit PR_GET/SET_SECCOMP");
++		filter_not_supported = 1;
++	} else {
++		tst_res(TINFO, "kernel supports SECCOMP_MODE_FILTER");
++	}
+ }
+ 
+ static struct tst_test test = {
+ 	.setup = setup,
+ 	.test = verify_prctl,
+ 	.tcnt = ARRAY_SIZE(tcases),
++	.test_variants = 2,
+ 	.forks_child = 1,
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+
+---
+base-commit: 66517b89141fc455ed807f3b95e5260dcf9fb90f
+change-id: 20240603-seccomp-06f18e9551df
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
