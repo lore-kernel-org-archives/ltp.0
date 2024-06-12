@@ -4,107 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD734C27C79
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 02:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF99FC27C78
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 02:58:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2D1E63D0BA9
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 04:56:05 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DEB0C3D0BA9
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 04:57:59 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB80E3C006F
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 04:55:49 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=neilb@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id CE9E83C006F
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 04:57:43 +0200 (CEST)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sgaapc01olkn20819.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:feab::819])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B773F140075B
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 04:55:48 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CBEE620E49;
- Wed, 12 Jun 2024 02:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1718160947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=a/btJp52x6H5kgv/jR8z+3XSQ/4SH6/WdXpxSMLKM3U=;
- b=HnBguCffpXlQE5lNoNrD1iAZCzOx7MKcBvU13zSgMPlBdzyXItj3sG317S71ShPfLLJVUS
- ygDf53cBGHafhqz4C3mcq9hDS+CujKgDEMit4EOF61ItG9zjqZC/yLFMLmP3lbPtYxRi1D
- YAe6/0TAJhbtOJ4DBxrHaoVAdle+Flw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1718160947;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=a/btJp52x6H5kgv/jR8z+3XSQ/4SH6/WdXpxSMLKM3U=;
- b=P+G7PaQI9wQ69zlBmPm3tK1W9z0tIcijUFV4TAu06akCknpdoUcjp7PrSe7Ua4W46plY/u
- qeva8bmxWc6UaZAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1718160947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=a/btJp52x6H5kgv/jR8z+3XSQ/4SH6/WdXpxSMLKM3U=;
- b=HnBguCffpXlQE5lNoNrD1iAZCzOx7MKcBvU13zSgMPlBdzyXItj3sG317S71ShPfLLJVUS
- ygDf53cBGHafhqz4C3mcq9hDS+CujKgDEMit4EOF61ItG9zjqZC/yLFMLmP3lbPtYxRi1D
- YAe6/0TAJhbtOJ4DBxrHaoVAdle+Flw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1718160947;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=a/btJp52x6H5kgv/jR8z+3XSQ/4SH6/WdXpxSMLKM3U=;
- b=P+G7PaQI9wQ69zlBmPm3tK1W9z0tIcijUFV4TAu06akCknpdoUcjp7PrSe7Ua4W46plY/u
- qeva8bmxWc6UaZAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FDDD137DF;
- Wed, 12 Jun 2024 02:55:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tv4oLS8OaWZPCgAAD6G6ig
- (envelope-from <neilb@suse.de>); Wed, 12 Jun 2024 02:55:43 +0000
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7D569600C2B
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 04:57:42 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F+oyn6uBS7iZSAYXZiN9lmx6YLDnes4ERKPBvaP19cKpP1PAKVUD5YPiJZsoRJgbE72gfVPWUdN7PcfsSJf65NqolN66LKxa4nvUK3PIuz/zP45p97eLocwesan1ok+aQrEJJ2NMJdoHgfR/F8BmxIHwoYWK92UZjl0K/xSFk3xNWt3/TyeOD48igrstwE/vNAVpAIlgdvLs5vA0/+J93NU9d2rXk0m0wl3sia2c22hnvdRQMa23huVeBme3v3x0qK25CfNOYAwqD0pOtvdggX8MFJnlFGWeV5qVYK+P8P4rR1qbqUH31U6L4fKpJ8CP/Wxo0XHxcxzpCOwl093l4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c8ZHlB7s5e90HXmr/1qtNvHKvzZTSvLHmwn3mi6hFfA=;
+ b=Ubo76vd+0aKGvKv0whkQJa8Ko/ZPBm5/fDADuNRx2PH0+qcghxT2rmyxTHY3cDudjHIHXn/HdHCbA5XH4iU5vbkx6p3j5UediRMQbFvJX9R/8ooWR5TaQipxk6rEadObaAqQz6N3PMGQkdTPwbpThZJyeYq7pevv5NwdFGy3XbKrR52dXZGeHN3SHvZlrKSIctClIX4a8GsEAUN+S1Q8zlW+bCR550A7ngIcWMIkqBlRDyLdNwwiF4PY7gdZdbjkVlpQcxfJBU7O4VUlJ323iCfdcdeZlZKyBZFSxc4BLFwaF5L2WvhtqB4Z11xS3qPkeZfZWaozQGvv7OHUROhYLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c8ZHlB7s5e90HXmr/1qtNvHKvzZTSvLHmwn3mi6hFfA=;
+ b=UWDWzFbyqkow73NjaCXjuzqCIxq0gt642gr7ETzBUdhk3R5qBhq2MwnWi1Bvj7R9PGB5ZGXL6NeqSqI+RF3qcWWolBDmMRRJn0S0ObGGjYGAll326NH3li0qMoMkP6SwXTX7TRXsLINlZc8CxHnZnoXcreIWrtF80CQGlgIaylN72mFH0yiaYAklxrvix7FGKA/Pw9/snvztweHJQPc6fMbzdTTfA7fMqlcqfxNjK/PqlOvRsjszDCHairnvHkHiPXEqHPtPwioT4G/F/6kzD8qH60Zmx6phNzu5Vkf95GGMOfUqA6AM9DP1/1TWRoN7TBX7Ao+KvVvPjnYs/0LX5Q==
+Received: from SEZPR01MB4527.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:76::5) by SEZPR01MB5715.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:196::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.36; Wed, 12 Jun
+ 2024 02:57:33 +0000
+Received: from SEZPR01MB4527.apcprd01.prod.exchangelabs.com
+ ([fe80::653b:3492:9140:d2bf]) by SEZPR01MB4527.apcprd01.prod.exchangelabs.com
+ ([fe80::653b:3492:9140:d2bf%2]) with mapi id 15.20.7633.037; Wed, 12 Jun 2024
+ 02:57:37 +0000
+From: Jiwei Sun <sunjw10@outlook.com>
+To: ltp@lists.linux.it
+Date: Wed, 12 Jun 2024 10:57:24 +0800
+Message-ID: <SEZPR01MB4527D71946F457A41C66C8ABA8C02@SEZPR01MB4527.apcprd01.prod.exchangelabs.com>
+X-Mailer: git-send-email 2.34.1
+X-TMN: [W9SsJzYkhZSXYhjvRWrYVlRAqr8IrwRu]
+X-ClientProxiedBy: SI2P153CA0012.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::15) To SEZPR01MB4527.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:76::5)
+X-Microsoft-Original-Message-ID: <20240612025724.68239-1-sunjw10@outlook.com>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Al Viro" <viro@zeniv.linux.org.uk>
-In-reply-to: <20240612023748.GG1629371@ZenIV>
-References: <171815791109.14261.10223988071271993465@noble.neil.brown.name>,
- <20240612023748.GG1629371@ZenIV>
-Date: Wed, 12 Jun 2024 12:55:40 +1000
-Message-id: <171816094008.14261.10304380583720747013@noble.neil.brown.name>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_SEVEN(0.00)[9]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[kernel.org,suse.cz,gmail.com,arm.com,lists.linux.it,vger.kernel.org];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR01MB4527:EE_|SEZPR01MB5715:EE_
+X-MS-Office365-Filtering-Correlation-Id: e175149e-5881-4976-bde8-08dc8a8b6a94
+X-Microsoft-Antispam: BCL:0;
+ ARA:14566002|461199020|3412199017|3430499026|3420499026|440099020; 
+X-Microsoft-Antispam-Message-Info: lDCSU7/4Bu+BuACxjhh1Y4vC8b5rqy0kEbrXTR1fdtv3erjotiZdcIVxnUxZxiapJzgO0CSIGv9se3tlj3p5xLXeGF0Uj56afy2BsxqdlYxON6oQG8yOcI+W/m6aykDPzJCycGh94b2JabvTcdQnDnoFNLZon1boSMrWIBDC5/RqZh53ugxK0DKITdu6DIJiNtLXh99SMjHQawelpEY8VhvOLp+xEvLbNfJ3oY24fSh8K15MHQHaZT97MDHninJvgphebihrTF9hHrjf9+hYuPM7nBcIWRM1WM/l6tDWsQs56+XoP1zqPVJERgeqpH6Lfqi73R57AecWoKC7+g8SmIwrauUtqIMkMwomAGIu2+rrwblv7tMk6ax3CZdp4Vgjc5+BX6k2sJZ+V9wGHt8aoFo1D1/CpNRDMQaliKW4uhst2opkuXCwfruH9twTtzpkFiaY+NW7x7bKXvkehHuymnBsc4SSChgjPJGko4urE0ul29jSKK2Z9XpJl4kIwvpD20Rlliy62IB09Wc4FqsqhZHjElQk9LGEA8XqbmBbpsOZpOQKtXjDNl7M/ftQhulJ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KOdnolmJ7dYZo1auiEwiFHUSdZi6mvrmwrhpGAJlK+fbjtHGaA90ZuuoAQbw?=
+ =?us-ascii?Q?GYZ3Jh0t1ZETX0SKEvLodmyqiTmC6YRhvSLan9DBDsekebUaIiN/4Y/eZAe4?=
+ =?us-ascii?Q?rvj7HjL+Ev3ZaHmpVJDTaCnc1ZXNufEqdC2K8jVx/kdmL6Ab/Mp8Nx96T1p6?=
+ =?us-ascii?Q?lsPahfkiViG71rdaPLkYpPvw7mNrJViMknQgaq5pE+zXHxHV2AFhla0K0355?=
+ =?us-ascii?Q?8Cn+dRqyRht2iICjqENg5ONolL0Uwxjv4Bme4Bhym95HqU2J4Vg0MvIM6P1e?=
+ =?us-ascii?Q?rAtLojW3MhQDutAOi7JQ1fLMlT/RHkV2k5Sgo61+x+UIaH4dNWbHk9zqx0l3?=
+ =?us-ascii?Q?UJ3uYra24Rh7+hYWQTuqyl0vx/Cu/CpK75v9Ow41ijFMcoSN8qHTMhxM7Xks?=
+ =?us-ascii?Q?Ywye/xCd1lBNSlO5FvRl2wHusCoK/UEUVIqucf0B6Swwp5yaOQZvDUnXucqc?=
+ =?us-ascii?Q?z+sVjcp3C4QB123bIKdn/5f6nydAuzy/7dRli3eE92DSZ0M3kkXYUkC+XSDN?=
+ =?us-ascii?Q?sa+mthJlvgmTgTXNCNPEHbaxeTSeQPP8xAy63gG0xcovha3PjdTPZ4rvPfoA?=
+ =?us-ascii?Q?R5555s3D/UXR6Y8YfDJjuu55MDKxRS18C/afZ8EYFjUY7XsK7QR49gTaR1MU?=
+ =?us-ascii?Q?LnHbkLuck2W287Goifg6IcVruAPTIfIAMJXqdlc9g7j2sICgONFCzihwtUIt?=
+ =?us-ascii?Q?2ubLketNf3nrjF1nqxsB4DooRHC3KBhQ42ZohypGcs8P/lvh5rIUjb4tS8Wt?=
+ =?us-ascii?Q?xUwyeC9uY5yvsuJ/YRQ942Ar2vdLZY+T9+VaktxI4pU6sg3PCW9CSgxJM2sd?=
+ =?us-ascii?Q?6FCWCw1CxYYmWVRGi+o+e3XAv0rsSf+lIQdIOfT3CuSY3S+I6Qe6Vmt6tLl6?=
+ =?us-ascii?Q?07K7qBldpYqYzIudAt/84eccAvPWewUeDG+q0LKuZItVX8LJg25xKRdXzFM0?=
+ =?us-ascii?Q?rhsy/VwpcJfRKYEhlZ+WsXW5rHQ6foAR+t9bEnqGfcwiWExs0xX41wp6fxvV?=
+ =?us-ascii?Q?Gsk1Yn3b5pJRvvTsGt+fZ02B/AigETrkBHhxKTKA7KLi54rGNcInMWS+BJoR?=
+ =?us-ascii?Q?6Z0xRsBvKRpTKGZfL0TOyozMUD0D7iliry6fb09d6vEN8zYyOjld4eoPvR3p?=
+ =?us-ascii?Q?9f+3u9i9fodDa7EThh/J24wWha5KaxG77HqcfcoXLs6dWeB5IaI47pmPB5So?=
+ =?us-ascii?Q?75V7cS7WN0HGz2sRdHtfmeJI7FuknWprHS3Jtg4HS8H87aXJePlpqJQBVIg?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e175149e-5881-4976-bde8-08dc8a8b6a94
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR01MB4527.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2024 02:57:37.6653 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR01MB5715
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] VFS: generate FS_CREATE before FS_OPEN when
- ->atomic_open used.
+Subject: [LTP] [PATCH v2] genload: fix memory corruption in hogvm()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,73 +109,112 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
+Cc: ahuang12@lenovo.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 12 Jun 2024, Al Viro wrote:
-> On Wed, Jun 12, 2024 at 12:05:11PM +1000, NeilBrown wrote:
-> 
-> > For finish_open() there are three cases:
-> >  - finish_open is used in ->atomic_open handlers.  For these we add a
-> >    call to fsnotify_open() in do_open() if FMODE_OPENED is set - which
-> >    means do_dentry_open() has been called. This happens after fsnotify_create().
-> 
-> 	Hummm....  There's a bit of behaviour change; in case we fail in
-> may_open(), we used to get fsnotify_open()+fsnotify_close() and with that
-> patch we's get fsnotify_close() alone.
+From: Jiwei Sun <sunjw10@lenovo.com>
 
-True.  Presumably we could fix that by doing
-diff --git a/fs/namei.c b/fs/namei.c
-index 37fb0a8aa09a..6fd04c9046fa 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3645,6 +3645,8 @@ static int do_open(struct nameidata *nd,
- 			return error;
- 		do_truncate = true;
- 	}
-+	if (file->f_mode & FMODE_OPENED)
-+		fsnotify_open(file);
- 	error = may_open(idmap, &nd->path, acc_mode, open_flag);
- 	if (!error && !(file->f_mode & FMODE_OPENED))
- 		error = vfs_open(&nd->path, file);
-@@ -3702,6 +3704,7 @@ int vfs_tmpfile(struct mnt_idmap *idmap,
- 	dput(child);
- 	if (error)
- 		return error;
-+	fsnotify_open(file);
- 	/* Don't check for other permissions, the inode was just created */
- 	error = may_open(idmap, &file->f_path, 0, file->f_flags);
- 	if (error)
+When running memory stress test with the following commands,
 
-instead, but it seems a little weird sending an OPEN notification if
-may_open() fails.
+  # ./genload -v --vm 10 --vm-chunks 4 --vm-bytes 1073741824
 
-> 
-> 	IF we don't care about that, we might as well take fsnotify_open()
-> out of vfs_open() and, for do_open()/do_tmpfile()/do_o_path(), into
-> path_openat() itself.  I mean, having
->         if (likely(!error)) {
->                 if (likely(file->f_mode & FMODE_OPENED)) {
-> 			fsnotify_open(file);
->                         return file;
-> 		}
-> in there would be a lot easier to follow...  It would lose fsnotify_open()
-> in a few more failure exits, but if we don't give a damn about having it
-> paired with fsnotify_close()...
-> 
+or
 
-Should we have fsnotify_open() set a new ->f_mode flag, and
-fsnotify_close() abort if it isn't set (and clear it if it is)?
-Then we would be guaranteed a balance - which does seem like a good
-idea.
+  # ./genload -v --vm 10 --vm-chunks 0 --vm-bytes 1073741824
 
-Thanks,
-NeilBrown
+The following error log will be shown,
+
+  malloc(): corrupted top size
+
+The root cause of the issue is that allocated memory for ptr is less
+than what is actually needed.
+
+Reviewed-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Jiwei Sun <sunjw10@lenovo.com>
+---
+v2 changes:
+ - Delete excess "* 2" when allocate memory for ptr
+ - Adjust "chunks" from 0 to 1
+
+ tools/genload/genload.c | 15 ++++++++++-----
+ tools/genload/stress.c  | 15 ++++++++++-----
+ 2 files changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/tools/genload/genload.c b/tools/genload/genload.c
+index 7f56d5272..a19d519fd 100644
+--- a/tools/genload/genload.c
++++ b/tools/genload/genload.c
+@@ -641,9 +641,16 @@ int hogvm(long long forks, long long chunks, long long bytes)
+ 			/* Use a backoff sleep to ensure we get good fork throughput.  */
+ 			usleep(backoff);
+ 
++			/* If chunks is 0, ptr will allocate 0 bytes's
++			 * memory, it will cause the process to crash
++			 * during runtime, so adjust to 1 */
++			if (chunks == 0)
++				chunks = 1;
++
+ 			while (1) {
+-				ptr = (char **)malloc(chunks * 2);
+-				for (j = 0; chunks == 0 || j < chunks; j++) {
++				ptr = (char **)malloc(chunks *
++						sizeof(char *));
++				for (j = 0; j < chunks; j++) {
+ 					if ((ptr[j] =
+ 					     (char *)malloc(bytes *
+ 							    sizeof(char)))) {
+@@ -674,10 +681,8 @@ int hogvm(long long forks, long long chunks, long long bytes)
+ 				if (retval == 0) {
+ 					dbg(stdout,
+ 					    "hogvm worker freeing memory and starting over\n");
+-					for (j = 0; chunks == 0 || j < chunks;
+-					     j++) {
++					for (j = 0; j < chunks; j++)
+ 						free(ptr[j]);
+-					}
+ 					free(ptr);
+ 					continue;
+ 				}
+diff --git a/tools/genload/stress.c b/tools/genload/stress.c
+index 7f56d5272..a19d519fd 100644
+--- a/tools/genload/stress.c
++++ b/tools/genload/stress.c
+@@ -641,9 +641,16 @@ int hogvm(long long forks, long long chunks, long long bytes)
+ 			/* Use a backoff sleep to ensure we get good fork throughput.  */
+ 			usleep(backoff);
+ 
++			/* If chunks is 0, ptr will allocate 0 bytes's
++			 * memory, it will cause the process to crash
++			 * during runtime, so adjust to 1 */
++			if (chunks == 0)
++				chunks = 1;
++
+ 			while (1) {
+-				ptr = (char **)malloc(chunks * 2);
+-				for (j = 0; chunks == 0 || j < chunks; j++) {
++				ptr = (char **)malloc(chunks *
++						sizeof(char *));
++				for (j = 0; j < chunks; j++) {
+ 					if ((ptr[j] =
+ 					     (char *)malloc(bytes *
+ 							    sizeof(char)))) {
+@@ -674,10 +681,8 @@ int hogvm(long long forks, long long chunks, long long bytes)
+ 				if (retval == 0) {
+ 					dbg(stdout,
+ 					    "hogvm worker freeing memory and starting over\n");
+-					for (j = 0; chunks == 0 || j < chunks;
+-					     j++) {
++					for (j = 0; j < chunks; j++)
+ 						free(ptr[j]);
+-					}
+ 					free(ptr);
+ 					continue;
+ 				}
+-- 
+2.27.0
 
 
 -- 
