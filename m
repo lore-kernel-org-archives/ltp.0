@@ -4,82 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7563EC27C53
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 12:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38F9CC27C77
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 13:53:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 627D83D0BBD
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 14:31:51 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 591F93D0BD8
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 15:53:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B336B3D00C7
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:31:33 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 609603D0905
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 15:53:16 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=kernel.org (client-ip=2604:1380:4641:c500::1;
+ helo=dfw.source.kernel.org; envelope-from=brauner@kernel.org;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5924F200D02
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:31:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1718195490;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GT+E3G2c0V0FzGfFMO7Fw9xwfcsNC6+V/aUou0vOhrQ=;
- b=JAdtwiL5fH8FT8dWhAf2BRsPe18NeNjpwS+2ILawr/KvZEtUCimAJMzoTyx9qCyUub7PZu
- qmf8I9oQbnvjuagxZ2RcdiTpJjR55zmeelwyV74EwtH8bmO2wbZ9REmkhRKJvwfrPyJE4h
- AhGVawxkVN2KcpiH4AWzmGK/UHGRK7k=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-154-PQPxNqavMK2OyOo5FhqpJA-1; Wed, 12 Jun 2024 08:31:28 -0400
-X-MC-Unique: PQPxNqavMK2OyOo5FhqpJA-1
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-649731dd35bso5308319a12.0
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 05:31:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1718195488; x=1718800288;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GT+E3G2c0V0FzGfFMO7Fw9xwfcsNC6+V/aUou0vOhrQ=;
- b=QXC6hHq9Y4MlQ2+gG1Vu4ZHWVDNnlk5ErztNQZyPiTRfMzeyM/zOnD/itzkov7gxnP
- MDwjGfyXhqtyJGi/RroA2RBJW8QMSGyLsUqZMDBLII9rgEffYBeKRN3bEvwVA3yUNhU3
- kpPEUqahugE7ZPwJ7ReFGSDVUDksYpYwQ5V2pHQp78sraOxog1iJ/TfrDV3+iJsSqcrG
- sREgUR9XnSDMkEPF8YNKGw2ek5fdtTWfc0bTnFNVKpFJyJRWRaVU+dWH5mqIL4C0NV1F
- 6S+5ocHu7mJR3VcwvpM26foHCu7uzXUd4FVcSddFDquzs9gwtd0TtASXO1g/sJDDmgtY
- DmBg==
-X-Gm-Message-State: AOJu0YxK0KjoE6gWJUIILiadShua8T22uuEG9Q77n/miDhpixAO1yzkc
- ixN7nndG9rWko5u5bTxfHU6GvfxF1hTiVCLeNRa/NxBuWZA3ThWxWkQqc1qdxn3IwA0yrkmj0O6
- E33cUtKxKqATzIaS14GwURuoXuQt2S6LjRHMzYAMYmh5PDWp3PuorW59/HUun4dn0LH4CvD7Aae
- zSHPcMsMtUnylbuRxptJZ+2uk=
-X-Received: by 2002:a05:6a20:2588:b0:1b8:3fc6:ab84 with SMTP id
- adf61e73a8af0-1b8a9c88664mr2068588637.58.1718195487755; 
- Wed, 12 Jun 2024 05:31:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHSWfK8jrMQ0sdaeqoqVE+IwxQS6lKX+OPBk32pB1Qtb9t8horWSUPbftbjLKwxVeepMD9k37Fl/gU6sHCZiAY=
-X-Received: by 2002:a05:6a20:2588:b0:1b8:3fc6:ab84 with SMTP id
- adf61e73a8af0-1b8a9c88664mr2068556637.58.1718195487331; Wed, 12 Jun 2024
- 05:31:27 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1038260025A
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 15:53:15 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by dfw.source.kernel.org (Postfix) with ESMTP id 86CCA6148E;
+ Wed, 12 Jun 2024 13:53:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27E7AC4AF4D;
+ Wed, 12 Jun 2024 13:53:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1718200393;
+ bh=9ZhMiQb8F+YQkrSmW/uvqq+sOj8IhPHHedOkJlMaFF4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=fvKnVWA67l2XCec23FfIZmoq1TS+spuTVbQympdCm7UMttUJCZLZZLe64EqSf6FXI
+ 8SCU86o5e5aoAixswN3wUaJ9u6l7ri5xkVbcLVW9bKm/5jiyPilSe5xkPiYXKmwTis
+ NtSzPwrdd/y9XD64ii4OrGOevxIt0b3ekkUY846QVMYQnINaBz9qk+4D3+o9V5Ql2q
+ IFHVXcjOrFJi/a6jiLCUYoxUEV5tPmGfvBAInTaRGLW8plyEHBDjz2GPCXSQ06H6TE
+ t7Lgu1AcIMYvUQUtQseFJiMcExfYzQi8SHvi6GCrBOQaWL5mV533wS4UAq6Eh618B6
+ 4jbj+ACrX4XAg==
+Date: Wed, 12 Jun 2024 15:53:08 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: NeilBrown <neilb@suse.de>
+Message-ID: <20240612-nennung-ungnade-ae9bdc5f8c4c@brauner>
+References: <171817619547.14261.975798725161704336@noble.neil.brown.name>
 MIME-Version: 1.0
-References: <20240605104512.18296-1-chrubis@suse.cz>
-In-Reply-To: <20240605104512.18296-1-chrubis@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 12 Jun 2024 20:31:14 +0800
-Message-ID: <CAEemH2fAjnF=TFqJ=yvYi86phvcMVAE_rFzLpgbZA1aCO1DNQw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <171817619547.14261.975798725161704336@noble.neil.brown.name>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] testcases: realtime: Get rid of autotools
+Subject: Re: [LTP] [PATCH v2] VFS: generate FS_CREATE before FS_OPEN when
+ ->atomic_open used.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,20 +65,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: John Stultz <jstultz@google.com>,
- Darren Hart <darren@os.amperecomputing.com>, ltp@lists.linux.it
+Cc: linux-nfs@vger.kernel.org, Jan Kara <jack@suse.cz>,
+ LKML <linux-kernel@vger.kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-V2 looks good, thanks!
+On Wed, Jun 12, 2024 at 05:09:55PM +1000, NeilBrown wrote:
+> 
+> When a file is opened and created with open(..., O_CREAT) we get
+> both the CREATE and OPEN fsnotify events and would expect them in that
+> order.   For most filesystems we get them in that order because
+> open_last_lookups() calls fsnofify_create() and then do_open() (from
+> path_openat()) calls vfs_open()->do_dentry_open() which calls
+> fsnotify_open().
+> 
+> However when ->atomic_open is used, the
+>    do_dentry_open() -> fsnotify_open()
+> call happens from finish_open() which is called from the ->atomic_open
+> handler in lookup_open() which is called *before* open_last_lookups()
+> calls fsnotify_create.  So we get the "open" notification before
+> "create" - which is backwards.  ltp testcase inotify02 tests this and
+> reports the inconsistency.
+> 
+> This patch lifts the fsnotify_open() call out of do_dentry_open() and
+> places it higher up the call stack.  There are three callers of
+> do_dentry_open().
+> 
+> For vfs_open() and kernel_file_open() the fsnotify_open() is placed
+> directly in that caller so there should be no behavioural change.
+> 
+> For finish_open() there are two cases:
+>  - finish_open is used in ->atomic_open handlers.  For these we add a
+>    call to fsnotify_open() at the top of do_open() if FMODE_OPENED is
+>    set - which means do_dentry_open() has been called.
+>  - finish_open is used in ->tmpfile() handlers.  For these a similar
+>    call to fsnotify_open() is added to vfs_tmpfile()
+> 
+> With this patch NFSv3 is restored to its previous behaviour (before
+> ->atomic_open support was added) of generating CREATE notifications
+> before OPEN, and NFSv4 now has that same correct ordering that is has
+> not had before.  I haven't tested other filesystems.
+> 
+> Fixes: 7c6c5249f061 ("NFS: add atomic_open for NFSv3 to handle O_TRUNC correctly.")
+> Reported-by: James Clark <james.clark@arm.com>
+> Closes: https://lore.kernel.org/all/01c3bf2e-eb1f-4b7f-a54f-d2a05dd3d8c8@arm.com
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+We should take this is a bugfix because it doesn't change behavior.
 
--- 
-Regards,
-Li Wang
+But then we should follow this up with a patch series that tries to
+rectify the open/close imbalance because I find that pretty ugly. That's
+at least my opinion.
+
+We should aim to only generate an open event when may_open() succeeds
+and don't generate a close event when the open has failed. Maybe:
+
++#ifdef CONFIG_FSNOTIFY
++#define file_nonotify(f) ((f)->f_mode |= __FMODE_NONOTIFY)
++#else
++#define file_nonotify(f) ((void)(f))
++#endif
+
+will do.
+
+Basic open permissions failing should count as failure to open and thus
+also turn of a close event.
+
+The somewhat ugly part is imho that security hooks introduce another
+layer of complexity. While we do count security_file_permission() as
+a failure to open we wouldn't e.g., count security_file_post_open() as a
+failure to open (Though granted here that "*_post_open()" makes it
+easier.). But it is really ugly that LSMs get to say "no" _after_ the
+file has been opened. I suspect this is some IMA or EVM thing where they
+hash the contents or something but it's royally ugly and I complained
+about this before. But maybe such things should just generate an LSM
+layer event via fsnotify in the future (FSNOTIFY_MAC) or something...
+Then userspace can see "Hey, the VFS said yes but then the MAC stuff
+said no."
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
