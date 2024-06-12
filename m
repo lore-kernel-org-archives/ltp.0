@@ -4,107 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1749C27C53
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 12:12:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F38FC27C53
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 12:21:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48E503D0BEC
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 14:12:21 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B76963D0BB8
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 14:21:40 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 006683D0BD9
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:11:30 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 064803D0905
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:21:24 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E5E6100609D
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:11:29 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1A816100B782
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 14:21:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A1719343F0
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 12:11:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0AE653440F;
+ Wed, 12 Jun 2024 12:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718194288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1718194883;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Lt2HLbvMfnzUJbgvylDJtcOqqi1b7jhTfLuJ5OL8O1k=;
- b=1hVPlbmTw8miiFIHZ5xD4IIxXppYlJcjEEc6QMm4lVh/nv9iGitqsCiRN56cl0uk9vsRfj
- JDC1K3eI8ix/zI/OO58Z2+i6qQrrBYuqooYl6CGORhE2JAmzO6A6L+oQykY5QueSdLNquD
- eOSFzgaKPfsnWKRf8mcVcIjNOXwpgL4=
+ bh=sMzHJ8Guo753YnV6R+wuCLJsw4D0rZ9XqmjXArjTqfI=;
+ b=aXVerSzEoe/5wQFD42BzqKFIVsWIH8EcxBMSvROK7HVM9yc1edzMXQBYl51dcI11IOYVfL
+ 8OdWSrLfcTXsEzsYw4Bqoq69gtbGI+rhZ6HOOASVFi8PPHVxjiibnIuJSuZYiiINVolc7m
+ DgHGHOAuyefwFBjFJJiasEY5JXp1xtU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718194288;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1718194883;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Lt2HLbvMfnzUJbgvylDJtcOqqi1b7jhTfLuJ5OL8O1k=;
- b=wgV2GbXgI9C+st06BMCNDAT+Pl5X6K3iO/1lN2ogr8vyObteeDBSY5KcnlADCA/bC6zZVa
- dcF6Am6IluqnqUAA==
+ bh=sMzHJ8Guo753YnV6R+wuCLJsw4D0rZ9XqmjXArjTqfI=;
+ b=m8M79whxfLC2nSCPr+OY2nQ4YxQJGSbuJ1/+i5XAH4vj+AhmRDToLsZ+kb4fA0kADBJmjL
+ cAJMWCcUYwnD7PDQ==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=aXVerSzE;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=m8M79whx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718194288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1718194883;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Lt2HLbvMfnzUJbgvylDJtcOqqi1b7jhTfLuJ5OL8O1k=;
- b=1hVPlbmTw8miiFIHZ5xD4IIxXppYlJcjEEc6QMm4lVh/nv9iGitqsCiRN56cl0uk9vsRfj
- JDC1K3eI8ix/zI/OO58Z2+i6qQrrBYuqooYl6CGORhE2JAmzO6A6L+oQykY5QueSdLNquD
- eOSFzgaKPfsnWKRf8mcVcIjNOXwpgL4=
+ bh=sMzHJ8Guo753YnV6R+wuCLJsw4D0rZ9XqmjXArjTqfI=;
+ b=aXVerSzEoe/5wQFD42BzqKFIVsWIH8EcxBMSvROK7HVM9yc1edzMXQBYl51dcI11IOYVfL
+ 8OdWSrLfcTXsEzsYw4Bqoq69gtbGI+rhZ6HOOASVFi8PPHVxjiibnIuJSuZYiiINVolc7m
+ DgHGHOAuyefwFBjFJJiasEY5JXp1xtU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718194288;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1718194883;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Lt2HLbvMfnzUJbgvylDJtcOqqi1b7jhTfLuJ5OL8O1k=;
- b=wgV2GbXgI9C+st06BMCNDAT+Pl5X6K3iO/1lN2ogr8vyObteeDBSY5KcnlADCA/bC6zZVa
- dcF6Am6IluqnqUAA==
+ bh=sMzHJ8Guo753YnV6R+wuCLJsw4D0rZ9XqmjXArjTqfI=;
+ b=m8M79whxfLC2nSCPr+OY2nQ4YxQJGSbuJ1/+i5XAH4vj+AhmRDToLsZ+kb4fA0kADBJmjL
+ cAJMWCcUYwnD7PDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90AE91372E
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 12:11:28 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C1EA41372E;
+ Wed, 12 Jun 2024 12:21:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id EpxqInCQaWZIIQAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 12:11:28 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 12 Jun 2024 14:11:06 +0200
-Message-ID: <20240612121106.11127-3-chrubis@suse.cz>
-X-Mailer: git-send-email 2.44.2
-In-Reply-To: <20240612121106.11127-1-chrubis@suse.cz>
-References: <20240612121106.11127-1-chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LOmYK8KSaWZmJAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 12 Jun 2024 12:21:22 +0000
+Date: Wed, 12 Jun 2024 14:21:20 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240612122120.GA118569@pevik>
+References: <20240612112311.10334-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
+Content-Disposition: inline
+In-Reply-To: <20240612112311.10334-1-chrubis@suse.cz>
+X-Rspamd-Queue-Id: 0AE653440F
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[]
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls: quotactl: Move mkfs opts into
- tst_test
+Subject: Re: [LTP] [PATCH v2] sched: starvation: Autocallibrate the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,128 +121,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Steve <xufeifei1@oppo.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../kernel/syscalls/quotactl/quotactl04.c     | 19 +++++++++----------
- .../kernel/syscalls/quotactl/quotactl08.c     | 19 ++++++++-----------
- 2 files changed, 17 insertions(+), 21 deletions(-)
+Hi Cyril,
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-index 7fdff6502..91f15eb5d 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -32,7 +32,7 @@
- #define FMTID QFMT_VFS_V1
- 
- static int32_t fmt_id = FMTID;
--static int test_id, mount_flag;
-+static int test_id;
- static struct dqblk set_dq = {
- 	.dqb_bsoftlimit = 100,
- 	.dqb_valid = QIF_BLIMITS
-@@ -98,12 +98,8 @@ static struct tcase {
- 
- static void setup(void)
- {
--	const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
--
- 	quotactl_info();
--	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
--	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
--	mount_flag = 1;
-+
- 	fd = SAFE_OPEN(MNTPOINT, O_RDONLY);
- 
- 	TEST(do_quotactl(fd, QCMD(Q_GETNEXTQUOTA, PRJQUOTA), tst_device->dev,
-@@ -116,8 +112,6 @@ static void cleanup(void)
- {
- 	if (fd > -1)
- 		SAFE_CLOSE(fd);
--	if (mount_flag && tst_umount(MNTPOINT))
--		tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
- }
- 
- static void verify_quota(unsigned int n)
-@@ -161,9 +155,14 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.needs_device = 1,
-+	.mount_device = 1,
- 	.filesystems = (struct tst_fs []) {
--		{.type = "ext4"},
-+		{
-+			.type = "ext4",
-+			.mkfs_opts = (const char *const[]) {
-+				"-I 256", "-O quota,project", NULL
-+			},
-+		},
- 		{}
- 	},
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
-index aafb1cd2b..85a2f4731 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl08.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
-@@ -44,7 +44,7 @@
- #define MNTPOINT	"mntpoint"
- 
- static int32_t fmt_id = QFMT_VFS_V1;
--static int test_id, mount_flag;
-+static int test_id;
- static struct dqblk set_dq = {
- 	.dqb_bsoftlimit = 100,
- 	.dqb_valid = QIF_BLIMITS
-@@ -153,14 +153,8 @@ static struct tcase {
- 
- static void setup(void)
- {
--	const char *const fs_opts[] = { "-O quota", NULL};
--
- 	quotactl_info();
- 
--	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
--	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
--	mount_flag = 1;
--
- 	fd = SAFE_OPEN(MNTPOINT, O_RDONLY);
- 	TEST(do_quotactl(fd, QCMD(Q_GETNEXTQUOTA, USRQUOTA), tst_device->dev,
- 		0, (void *) &res_ndq));
-@@ -172,8 +166,6 @@ static void cleanup(void)
- {
- 	if (fd > -1)
- 		SAFE_CLOSE(fd);
--	if (mount_flag && tst_umount(MNTPOINT))
--		tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
- }
- 
- static void verify_quota(unsigned int n)
-@@ -217,10 +209,15 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.mntpoint = MNTPOINT,
- 	.filesystems = (struct tst_fs []) {
--		{.type = "ext4"},
-+		{
-+			.type = "ext4",
-+			.mkfs_opts = (const char *const[]){
-+				"-O quota", NULL
-+			},
-+		},
- 		{}
- 	},
--	.needs_device = 1,
-+	.mount_device = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_variants = QUOTACTL_SYSCALL_VARIANTS,
--- 
-2.44.2
+> Instead of hardcoding the values we attempt to measure the CPU speed and
+> set the timeout accordingly. Given that the difference in the duration
+> of the test when the kernel is buggy is about 30x we do not have to have
+> a precise callibration, just very rough estimate if we are running on a
+> server or small ARM board would suffice.
 
+> So we attempt to measure how long does a bussy loop take and base the
+s/bussy/busy/
+
+> default timeout on that. On x86_64 CPUs the resulting timeout is about
+> double of the value of the actual test runtime and works fine, but we
+> need to make sure that the coeficient we divide the result from
+> callibrate works for small boards too. So please run the test on as many
+> machines as you can and report if we need to make the dividor smaller or
+> not.
+
+This looks much better: ppc64le has Timeout per run is 0h 00m 30s (1m 10s
+runtime), others (x68_64, s390x, aarch64) have ~ 1 min or less.
+
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+...
+> +static int callibrate(void)
+> +{
+> +	int i;
+> +	struct timespec start, stop;
+> +	long long diff;
+> +
+> +	for (i = 0; i < CALLIBRATE_LOOPS; i++) {
+> +		__asm__ __volatile__ ("" : "+g" (i) : :);
+> +	}
+> +
+> +	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &start);
+> +
+> +	for (i = 0; i < CALLIBRATE_LOOPS; i++) {
+> +		__asm__ __volatile__ ("" : "+g" (i) : :);
+> +	}
+> +
+> +	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &stop);
+> +
+> +	diff = tst_timespec_diff_us(stop, start);
+> +
+> +	tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
+> +
+> +	return diff;
+> +}
+
+>  static int wait_for_pid(pid_t pid)
+>  {
+> @@ -59,8 +88,11 @@ static void setup(void)
+>  	if (tst_parse_long(str_loop, &loop, 1, LONG_MAX))
+>  		tst_brk(TBROK, "Invalid number of loop number '%s'", str_loop);
+
+> -	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
+> +	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX)) {
+nit: {} brackets are not needed.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+>  		tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
+> +	} else {
+> +		timeout = callibrate() / 1000;
+> +	}
+
+>  	tst_set_max_runtime(timeout);
+>  }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
