@@ -4,92 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF37DC27C77
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 09:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3D74C27C75
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 10:28:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00F3B3D0BB8
-	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 11:13:33 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 4D9EC3D0BFA
+	for <ltp@archiver.kernel.org>; Wed, 12 Jun 2024 12:28:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BD033D00C7
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 11:13:17 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 307033D0B64
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 12:28:07 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B37221001193
- for <ltp@lists.linux.it>; Wed, 12 Jun 2024 11:13:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 57C8E34180;
- Wed, 12 Jun 2024 09:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718183593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=90ZwcvEZKy/dY2kGggFt342GF0yjYtRFjzPylze3urU=;
- b=EsVJ1N7S6zrDTCkwTwBZxuXQIaljw9v2GFG9mmwHBpgVY5FRJHZTLMLk7UddPZwKDajy3y
- Uti1pkUjdsatQsihzxif5kHiA0y4Oc9WbRM4ZnRBv0/M3Q7SsYaYhDf0L+h8F/NnQtBbbb
- FOMrSTflwL7s8KNjxEOW3A5nHPyN7Ps=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718183593;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=90ZwcvEZKy/dY2kGggFt342GF0yjYtRFjzPylze3urU=;
- b=T+cihgL88HReyymeu6c3tojVeh9Ax518ROawU32gTMWCqwyVzOwHQFjwjE6b27ntg2Plfg
- jE2eXn0TdpAS23AA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718183592; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=90ZwcvEZKy/dY2kGggFt342GF0yjYtRFjzPylze3urU=;
- b=UL9xQ66SypKgqZnPLXHN4O3v6cJc5IlEtlOkfkQfk3HbYoXqhmO8DpfOwJQ6nZr7RHXDy0
- XspFA1H+Rzk0FaoNKibljADkOwlie7Ax9C1sBZx6wbOLaT31xLzIvl33o9xpTFLVJtt5/I
- stx8sGA1pDI2HAdUQKQZ5K0X9c5G6uc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718183592;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=90ZwcvEZKy/dY2kGggFt342GF0yjYtRFjzPylze3urU=;
- b=nxBN4+M2WYm7ixUzEu9ZxVFXTKP/vCpyHZ36Hftyo4MsIJUq0OsRlhfWUA4D0eXntM0Sr0
- /Ia5K0mGscfvPkAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 418EC137DF;
- Wed, 12 Jun 2024 09:13:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xw6PDqhmaWbAaQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 12 Jun 2024 09:13:12 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 12 Jun 2024 11:12:56 +0200
-Message-ID: <20240612091256.4931-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.44.2
+ spf=pass (sender SPF authorized) smtp.mailfrom=arm.com
+ (client-ip=217.140.110.172; helo=foss.arm.com;
+ envelope-from=james.clark@arm.com; receiver=lists.linux.it)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTP id 3AFFF1000A16
+ for <ltp@lists.linux.it>; Wed, 12 Jun 2024 12:28:05 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8498A1595;
+ Wed, 12 Jun 2024 03:28:28 -0700 (PDT)
+Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id
+ D3A4F3F73B; Wed, 12 Jun 2024 03:28:02 -0700 (PDT)
+Message-ID: <2c5c43b0-c3ad-4536-b839-cfd1f5b8911b@arm.com>
+Date: Wed, 12 Jun 2024 11:27:50 +0100
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[]
+User-Agent: Mozilla Thunderbird
+To: NeilBrown <neilb@suse.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
+References: <171817619547.14261.975798725161704336@noble.neil.brown.name>
+Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <171817619547.14261.975798725161704336@noble.neil.brown.name>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC] [PATCH] sched: starvation: Autocallibrate the timeout
+Subject: Re: [LTP] [PATCH v2] VFS: generate FS_CREATE before FS_OPEN when
+ ->atomic_open used.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,97 +54,133 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Steve <xufeifei1@oppo.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Instead of hardcoding the values we attempt to measure the CPU speed and
-set the timeout accordingly. Given that the difference in the duration
-of the test when the kernel is buggy is about 30x we do not have to have
-a precise callibration, just very rough estimate if we are running on a
-server or small ARM board would suffice.
 
-So we attempt to measure how long does a bussy loop take and base the
-default timeout on that. On x86_64 CPUs the resulting timeout is about
-double of the value of the actual test runtime and works fine, but we
-need to make sure that the coeficient we divide the result from
-callibrate works for small boards too. So please run the test on as many
-machines as you can and report if we need to make the dividor smaller or
-not.
 
-CC: Steve <xufeifei1@oppo.com>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../kernel/sched/cfs-scheduler/starvation.c   | 40 +++++++++++++++++--
- 1 file changed, 37 insertions(+), 3 deletions(-)
+On 12/06/2024 08:09, NeilBrown wrote:
+> 
+> When a file is opened and created with open(..., O_CREAT) we get
+> both the CREATE and OPEN fsnotify events and would expect them in that
+> order.   For most filesystems we get them in that order because
+> open_last_lookups() calls fsnofify_create() and then do_open() (from
+> path_openat()) calls vfs_open()->do_dentry_open() which calls
+> fsnotify_open().
+> 
+> However when ->atomic_open is used, the
+>    do_dentry_open() -> fsnotify_open()
+> call happens from finish_open() which is called from the ->atomic_open
+> handler in lookup_open() which is called *before* open_last_lookups()
+> calls fsnotify_create.  So we get the "open" notification before
+> "create" - which is backwards.  ltp testcase inotify02 tests this and
+> reports the inconsistency.
+> 
+> This patch lifts the fsnotify_open() call out of do_dentry_open() and
+> places it higher up the call stack.  There are three callers of
+> do_dentry_open().
+> 
+> For vfs_open() and kernel_file_open() the fsnotify_open() is placed
+> directly in that caller so there should be no behavioural change.
+> 
+> For finish_open() there are two cases:
+>  - finish_open is used in ->atomic_open handlers.  For these we add a
+>    call to fsnotify_open() at the top of do_open() if FMODE_OPENED is
+>    set - which means do_dentry_open() has been called.
+>  - finish_open is used in ->tmpfile() handlers.  For these a similar
+>    call to fsnotify_open() is added to vfs_tmpfile()
+> 
+> With this patch NFSv3 is restored to its previous behaviour (before
+> ->atomic_open support was added) of generating CREATE notifications
+> before OPEN, and NFSv4 now has that same correct ordering that is has
+> not had before.  I haven't tested other filesystems.
+> 
+> Fixes: 7c6c5249f061 ("NFS: add atomic_open for NFSv3 to handle O_TRUNC correctly.")
+> Reported-by: James Clark <james.clark@arm.com>
+> Closes: https://lore.kernel.org/all/01c3bf2e-eb1f-4b7f-a54f-d2a05dd3d8c8@arm.com
+> Signed-off-by: NeilBrown <neilb@suse.de>
 
-diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
-index eb9fd6ff5..94175fdd1 100644
---- a/testcases/kernel/sched/cfs-scheduler/starvation.c
-+++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
-@@ -21,11 +21,42 @@
- #include <sched.h>
- 
- #include "tst_test.h"
-+#include "tst_safe_clocks.h"
-+#include "tst_timer.h"
- 
- static char *str_loop;
--static long loop = 2000000;
-+static long loop = 1000000;
- static char *str_timeout;
--static int timeout = 240;
-+static int timeout;
-+
-+#define CALLIBRATE_LOOPS 100000000
-+
-+static int callibrate(void)
-+{
-+	volatile int counter;
-+	struct timespec start, stop;
-+	long long diff;
-+
-+	counter = CALLIBRATE_LOOPS;
-+	do
-+		counter--;
-+	while (counter > 0);
-+
-+	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &start);
-+
-+	counter = CALLIBRATE_LOOPS;
-+	do
-+		counter--;
-+	while (counter > 0);
-+
-+	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &stop);
-+
-+	diff = tst_timespec_diff_us(stop, start);
-+
-+	tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
-+
-+	return diff;
-+}
- 
- static int wait_for_pid(pid_t pid)
- {
-@@ -59,8 +90,11 @@ static void setup(void)
- 	if (tst_parse_long(str_loop, &loop, 1, LONG_MAX))
- 		tst_brk(TBROK, "Invalid number of loop number '%s'", str_loop);
- 
--	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
-+	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX)) {
- 		tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
-+	} else {
-+		timeout = callibrate() / 1000;
-+	}
- 
- 	tst_set_max_runtime(timeout);
- }
--- 
-2.44.2
+That's passing for me now on NFSv3:
 
+Tested-by: James Clark <james.clark@arm.com>
+
+> ---
+>  fs/namei.c |  5 +++++
+>  fs/open.c  | 19 ++++++++++++-------
+>  2 files changed, 17 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 37fb0a8aa09a..057afacc4b60 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3612,6 +3612,9 @@ static int do_open(struct nameidata *nd,
+>  	int acc_mode;
+>  	int error;
+>  
+> +	if (file->f_mode & FMODE_OPENED)
+> +		fsnotify_open(file);
+> +
+>  	if (!(file->f_mode & (FMODE_OPENED | FMODE_CREATED))) {
+>  		error = complete_walk(nd);
+>  		if (error)
+> @@ -3700,6 +3703,8 @@ int vfs_tmpfile(struct mnt_idmap *idmap,
+>  	mode = vfs_prepare_mode(idmap, dir, mode, mode, mode);
+>  	error = dir->i_op->tmpfile(idmap, dir, file, mode);
+>  	dput(child);
+> +	if (file->f_mode & FMODE_OPENED)
+> +		fsnotify_open(file);
+>  	if (error)
+>  		return error;
+>  	/* Don't check for other permissions, the inode was just created */
+> diff --git a/fs/open.c b/fs/open.c
+> index 89cafb572061..970f299c0e77 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -1004,11 +1004,6 @@ static int do_dentry_open(struct file *f,
+>  		}
+>  	}
+>  
+> -	/*
+> -	 * Once we return a file with FMODE_OPENED, __fput() will call
+> -	 * fsnotify_close(), so we need fsnotify_open() here for symmetry.
+> -	 */
+> -	fsnotify_open(f);
+>  	return 0;
+>  
+>  cleanup_all:
+> @@ -1085,8 +1080,17 @@ EXPORT_SYMBOL(file_path);
+>   */
+>  int vfs_open(const struct path *path, struct file *file)
+>  {
+> +	int ret;
+> +
+>  	file->f_path = *path;
+> -	return do_dentry_open(file, NULL);
+> +	ret = do_dentry_open(file, NULL);
+> +	if (!ret)
+> +		/*
+> +		 * Once we return a file with FMODE_OPENED, __fput() will call
+> +		 * fsnotify_close(), so we need fsnotify_open() here for symmetry.
+> +		 */
+> +		fsnotify_open(file);
+> +	return ret;
+>  }
+>  
+>  struct file *dentry_open(const struct path *path, int flags,
+> @@ -1178,7 +1182,8 @@ struct file *kernel_file_open(const struct path *path, int flags,
+>  	if (error) {
+>  		fput(f);
+>  		f = ERR_PTR(error);
+> -	}
+> +	} else
+> +		fsnotify_open(f);
+>  	return f;
+>  }
+>  EXPORT_SYMBOL_GPL(kernel_file_open);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
