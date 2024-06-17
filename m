@@ -4,128 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68C5DC27C79
-	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 16:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A418C27C79
+	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 17:10:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00F3B3D0D4C
-	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 18:23:57 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id AFF883D0D5D
+	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 19:10:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A7773CB74E
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 18:23:06 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=jack@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 874EF3D0CFE
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 19:10:25 +0200 (CEST)
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CED23600CE9
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 18:23:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 56A9838429;
- Mon, 17 Jun 2024 16:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718641384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1anhizFEnvyM/S85aKmx5I6FDHIEr1cY/Q+pEqXx8Bo=;
- b=1RJioJ/J7YsgfAZx9t+wg8UFkA3PqYXaqhV07puw7bkSGxpYUsbYeyaWHA0wJcRG0lCs1g
- 8xCTIjjYuA0sYDAjguY/mRCtD6MyuRkw+ZwZpy4lw/o0/DlK/nYNJ3QN8ENu74fP+NFjJ1
- 8x1bBfNCR3kg+GSsA+um2FWKf+8nHJk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718641384;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1anhizFEnvyM/S85aKmx5I6FDHIEr1cY/Q+pEqXx8Bo=;
- b=Dyq75lOMIeXfejQX0teG93F89TH2ZhnpyBXwT2WJ3cwbhEUMQLRbWfxDwN2IhGOFa/v9OF
- 7VI31rK9t6EA3QBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="1RJioJ/J";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Dyq75lOM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718641384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1anhizFEnvyM/S85aKmx5I6FDHIEr1cY/Q+pEqXx8Bo=;
- b=1RJioJ/J7YsgfAZx9t+wg8UFkA3PqYXaqhV07puw7bkSGxpYUsbYeyaWHA0wJcRG0lCs1g
- 8xCTIjjYuA0sYDAjguY/mRCtD6MyuRkw+ZwZpy4lw/o0/DlK/nYNJ3QN8ENu74fP+NFjJ1
- 8x1bBfNCR3kg+GSsA+um2FWKf+8nHJk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718641384;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1anhizFEnvyM/S85aKmx5I6FDHIEr1cY/Q+pEqXx8Bo=;
- b=Dyq75lOMIeXfejQX0teG93F89TH2ZhnpyBXwT2WJ3cwbhEUMQLRbWfxDwN2IhGOFa/v9OF
- 7VI31rK9t6EA3QBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4753E13AC0;
- Mon, 17 Jun 2024 16:23:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KgtoEehicGaqfAAAD6G6ig
- (envelope-from <jack@suse.cz>); Mon, 17 Jun 2024 16:23:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id E4509A088B; Mon, 17 Jun 2024 18:23:03 +0200 (CEST)
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Date: Mon, 17 Jun 2024 18:23:01 +0200
-Message-Id: <20240617162303.1596-2-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240617161828.6718-1-jack@suse.cz>
-References: <20240617161828.6718-1-jack@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE1B01000D15
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 19:10:24 +0200 (CEST)
+Received: by mail-qk1-x72f.google.com with SMTP id
+ af79cd13be357-7955dc86cacso264687085a.0
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 10:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1718644224; x=1719249024; darn=lists.linux.it;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=7Ez6wONf2/2cmZH1p6FhYRBtC2vHp1WfaArV/rCGFFw=;
+ b=l0mJ5PpaIqiSzeEFuo55LylZkRP5WWbadzoHuRNsZBsZj38DUQDlxK07nIF95w5VOc
+ u7aMzeTEtrGaFTAA9s/JykZCr5QxBsyfqHo3BCaD7oYRrYQ+miwRrtVR2voVy2RmDrR8
+ ZBOrfafZUtXNM31seYWuD4OEPAvLSxH2WOnQyFkWLQZzoGit9v7nO0zNAfVX8ainQEs2
+ X9WOmw1UXnlR9qpJnbY4lK83tiyJDiK5chk91x3+KuQ2ShNDwtUXuW+o6z5F9xTlHn/W
+ DNjPmi3eeq7FDqBeA+l/NGzpkltSryG2Y5qkI8H/rdNxiUoqnyoHk3/LKgetkyMf+BFA
+ 50SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1718644224; x=1719249024;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=7Ez6wONf2/2cmZH1p6FhYRBtC2vHp1WfaArV/rCGFFw=;
+ b=e78g+8zLLsEDzUwZlz8MIoEO9LHvoidd5ZqLHBpyrH2/+4hWSk0Vkcm+46Ck0Mlun5
+ Te4x7r6gudJLqQxCzGFP5KbXH1LJM/10USFMrkmE0fnwe/anFuBJUZ0A7UxhYvP87BNH
+ I3G4OZlltRpRwSn6CnQzGmfFI9vAg7n3DPqvY2KCO9KZSCyWAH4KTEVzKv5XNJkzM55N
+ 5NXOVOR7nGIrUaZWzcQP/PBRYdXbv/L2yzTJjpnqh+4zRrcWVIJv3urT0A+rn2cXRAGH
+ 977cF9eXNHgbDM68fujuszUoYD4sDsP25yKBjTJU+px3ugVa5DVTaVsaBxq5zIA2Zx7Z
+ l+PQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV/2dBuTYS1uLYBgN/ELOJXaYqYM+RGMx7PurtlAUW0fB67O5FgTIR1oobvv3G0yVUbI2jqQZ61+OYmmqdEFu52iN8=
+X-Gm-Message-State: AOJu0YyYna2JcicdQXcip3Qq7XT4yQNjdE5IaFh/UkQtDHYNM4Yu482Z
+ WasjdTI9Gjt1wmdIqNUihPjuCzx7gxwwgCBEG0v3d8hpSj365IjZD3IP69yTVkRC0RDYKG2VWuu
+ RSU2r88gF61oscRbXjqpn1hDAZBU=
+X-Google-Smtp-Source: AGHT+IE9bI2jvgejW/jzxrWszTj6tPjedhG1vNzpswD5en5Ch8uMMStXbN2LpP+ohG6igpZ+tMRJAOhxZlXkWeXTLZs=
+X-Received: by 2002:a05:620a:4687:b0:795:4a03:8032 with SMTP id
+ af79cd13be357-798d258afc8mr1338207985a.52.1718644223569; Mon, 17 Jun 2024
+ 10:10:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4588; i=jack@suse.cz;
- h=from:subject; bh=GxaNhBeRx5idz+8KjyGD8k7UN3frer7HIzF6ygSJENc=;
- b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBmcGLl+xkvGqyWDDbo2jaWDcPMgSI4sb1VM8pKQw30
- hRt4G/yJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZnBi5QAKCRCcnaoHP2RA2blTCA
- CULkkAkvozmszKYw1LzcnRzTR4OuCIlByiyGcE+mQBtp6L86ZvjE2QjoR9AGlWZxHFmegw9jzJ0tuB
- S9vfvYQWart7nojoVFP6UZXb4WT4qNxBP1H2+ItqHQJ5vYyGCBeRPb2K+VSstHhwpQKtYdkDa+zjz1
- aNNVNJnkrHqUK6eLyJ98Y+Jgbp9TnRWgaKC8+I493cRed4u4oq5i/nmDWzZK7JxpuTws4JZuDnUtbP
- a4iM9RAyyByNQ8jowBNsL841qwuyQfNl/0JmMYqU8/5TB9mW3GEwCONdf7yWFNacf25wluuBlpAM9G
- GmBIu8mMHs1gOOHzo9AjAA3Oq0nw0T
-X-Developer-Key: i=jack@suse.cz; a=openpgp;
- fpr=93C6099A142276A28BBE35D815BC833443038D8C
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[arm.com:email,suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[9]; RCVD_COUNT_THREE(0.00)[3];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,arm.com,suse.de,ZenIV.linux.org.uk,lists.linux.it,suse.cz];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_LAST(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 56A9838429
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <20240617161828.6718-1-jack@suse.cz>
+ <20240617162303.1596-1-jack@suse.cz>
+In-Reply-To: <20240617162303.1596-1-jack@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 17 Jun 2024 20:10:11 +0300
+Message-ID: <CAOQ4uxhYuvs5_q+jqL-OAXzfPJv_NJTQpkGPzysGhq4i+WSjPw@mail.gmail.com>
+To: Jan Kara <jack@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] vfs: generate FS_CREATE before FS_OPEN when
- ->atomic_open used.
+Subject: Re: [LTP] [PATCH 1/2] fsnotify: Do not generate events for O_PATH
+ file descriptors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -137,144 +81,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-nfs@vger.kernel.org, Jan Kara <jack@suse.cz>,
- NeilBrown <neilb@suse.de>, linux-fsdevel@vger.kernel.org, ltp@lists.linux.it,
- Al Viro <viro@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Christian Brauner <brauner@kernel.org>, NeilBrown <neilb@suse.de>,
+ linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, ltp@lists.linux.it,
+ Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: NeilBrown <neilb@suse.de>
-
-When a file is opened and created with open(..., O_CREAT) we get
-both the CREATE and OPEN fsnotify events and would expect them in that
-order.   For most filesystems we get them in that order because
-open_last_lookups() calls fsnofify_create() and then do_open() (from
-path_openat()) calls vfs_open()->do_dentry_open() which calls
-fsnotify_open().
-
-However when ->atomic_open is used, the
-   do_dentry_open() -> fsnotify_open()
-call happens from finish_open() which is called from the ->atomic_open
-handler in lookup_open() which is called *before* open_last_lookups()
-calls fsnotify_create.  So we get the "open" notification before
-"create" - which is backwards.  ltp testcase inotify02 tests this and
-reports the inconsistency.
-
-This patch lifts the fsnotify_open() call out of do_dentry_open() and
-places it higher up the call stack.  There are three callers of
-do_dentry_open().
-
-For vfs_open() and kernel_file_open() the fsnotify_open() is placed
-directly in that caller so there should be no behavioural change.
-
-For finish_open() there are two cases:
- - finish_open is used in ->atomic_open handlers.  For these we add a
-   call to fsnotify_open() at open_last_lookups() if FMODE_OPENED is
-   set - which means do_dentry_open() has been called.
- - finish_open is used in ->tmpfile() handlers.  For these a similar
-   call to fsnotify_open() is added to vfs_tmpfile()
-
-With this patch NFSv3 is restored to its previous behaviour (before
-->atomic_open support was added) of generating CREATE notifications
-before OPEN, and NFSv4 now has that same correct ordering that is has
-not had before.  I haven't tested other filesystems.
-
-Fixes: 7c6c5249f061 ("NFS: add atomic_open for NFSv3 to handle O_TRUNC correctly.")
-Reported-by: James Clark <james.clark@arm.com>
-Closes: https://lore.kernel.org/all/01c3bf2e-eb1f-4b7f-a54f-d2a05dd3d8c8@arm.com
-Signed-off-by: NeilBrown <neilb@suse.de>
-Link: https://lore.kernel.org/r/171817619547.14261.975798725161704336@noble.neil.brown.name
-Fixes: 7b8c9d7bb457 ("fsnotify: move fsnotify_open() hook into do_dentry_open()")
-Tested-by: James Clark <james.clark@arm.com>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/namei.c | 10 ++++++++--
- fs/open.c  | 22 +++++++++++++++-------
- 2 files changed, 23 insertions(+), 9 deletions(-)
-
-diff --git a/fs/namei.c b/fs/namei.c
-index 37fb0a8aa09a..1e05a0f3f04d 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3572,8 +3572,12 @@ static const char *open_last_lookups(struct nameidata *nd,
- 	else
- 		inode_lock_shared(dir->d_inode);
- 	dentry = lookup_open(nd, file, op, got_write);
--	if (!IS_ERR(dentry) && (file->f_mode & FMODE_CREATED))
--		fsnotify_create(dir->d_inode, dentry);
-+	if (!IS_ERR(dentry)) {
-+		if (file->f_mode & FMODE_CREATED)
-+			fsnotify_create(dir->d_inode, dentry);
-+		if (file->f_mode & FMODE_OPENED)
-+			fsnotify_open(file);
-+	}
- 	if (open_flag & O_CREAT)
- 		inode_unlock(dir->d_inode);
- 	else
-@@ -3700,6 +3704,8 @@ int vfs_tmpfile(struct mnt_idmap *idmap,
- 	mode = vfs_prepare_mode(idmap, dir, mode, mode, mode);
- 	error = dir->i_op->tmpfile(idmap, dir, file, mode);
- 	dput(child);
-+	if (file->f_mode & FMODE_OPENED)
-+		fsnotify_open(file);
- 	if (error)
- 		return error;
- 	/* Don't check for other permissions, the inode was just created */
-diff --git a/fs/open.c b/fs/open.c
-index 89cafb572061..f1607729acb9 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1004,11 +1004,6 @@ static int do_dentry_open(struct file *f,
- 		}
- 	}
- 
--	/*
--	 * Once we return a file with FMODE_OPENED, __fput() will call
--	 * fsnotify_close(), so we need fsnotify_open() here for symmetry.
--	 */
--	fsnotify_open(f);
- 	return 0;
- 
- cleanup_all:
-@@ -1085,8 +1080,19 @@ EXPORT_SYMBOL(file_path);
-  */
- int vfs_open(const struct path *path, struct file *file)
- {
-+	int ret;
-+
- 	file->f_path = *path;
--	return do_dentry_open(file, NULL);
-+	ret = do_dentry_open(file, NULL);
-+	if (!ret) {
-+		/*
-+		 * Once we return a file with FMODE_OPENED, __fput() will call
-+		 * fsnotify_close(), so we need fsnotify_open() here for
-+		 * symmetry.
-+		 */
-+		fsnotify_open(file);
-+	}
-+	return ret;
- }
- 
- struct file *dentry_open(const struct path *path, int flags,
-@@ -1177,8 +1183,10 @@ struct file *kernel_file_open(const struct path *path, int flags,
- 	error = do_dentry_open(f, NULL);
- 	if (error) {
- 		fput(f);
--		f = ERR_PTR(error);
-+		return ERR_PTR(error);
- 	}
-+
-+	fsnotify_open(f);
- 	return f;
- }
- EXPORT_SYMBOL_GPL(kernel_file_open);
--- 
-2.35.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBKdW4gMTcsIDIwMjQgYXQgNzoyM+KAr1BNIEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+
+IHdyb3RlOgo+Cj4gQ3VycmVudGx5IHdlIHdpbGwgbm90IGdlbmVyYXRlIEZTX09QRU4gZXZlbnRz
+IGZvciBPX1BBVEggZmlsZQo+IGRlc2NyaXB0b3JzIGJ1dCB3ZSB3aWxsIGdlbmVyYXRlIEZTX0NM
+T1NFIGV2ZW50cyBmb3IgdGhlbS4gVGhpcyBpcwo+IGFzeW1tZXRyeSBpcyBjb25mdXNpbmcuIEFy
+Z3VhYmx5IG5vIGZzbm90aWZ5IGV2ZW50cyBzaG91bGQgYmUgZ2VuZXJhdGVkCj4gZm9yIE9fUEFU
+SCBmaWxlIGRlc2NyaXB0b3JzIGFzIHRoZXkgY2Fubm90IGJlIHVzZWQgdG8gYWNjZXNzIG9yIG1v
+ZGlmeQo+IGZpbGUgY29udGVudCwgdGhleSBhcmUganVzdCBjb252ZW5pZW50IGhhbmRsZXMgdG8g
+ZmlsZSBvYmplY3RzIGxpa2UKPiBwYXRocy4gU28gZml4IHRoZSBhc3ltbWV0cnkgYnkgc3RvcHBp
+bmcgdG8gZ2VuZXJhdGUgRlNfQ0xPU0UgZm9yIE9fUEFUSAo+IGZpbGUgZGVzY3JpcHRvcnMuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBKYW4gS2FyYSA8amFja0BzdXNlLmN6PgoKTG9va3MgZ29vZC4KClJl
+dmlld2VkLWJ5OiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgoKPiAtLS0KPiAg
+aW5jbHVkZS9saW51eC9mc25vdGlmeS5oIHwgOCArKysrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwg
+NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
+aW51eC9mc25vdGlmeS5oIGIvaW5jbHVkZS9saW51eC9mc25vdGlmeS5oCj4gaW5kZXggNGRhODBl
+OTJmODA0Li4yNzg2MjBlMDYzYWIgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9mc25vdGlm
+eS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9mc25vdGlmeS5oCj4gQEAgLTExMiw3ICsxMTIsMTMg
+QEAgc3RhdGljIGlubGluZSBpbnQgZnNub3RpZnlfZmlsZShzdHJ1Y3QgZmlsZSAqZmlsZSwgX191
+MzIgbWFzaykKPiAgewo+ICAgICAgICAgY29uc3Qgc3RydWN0IHBhdGggKnBhdGg7Cj4KPiAtICAg
+ICAgIGlmIChmaWxlLT5mX21vZGUgJiBGTU9ERV9OT05PVElGWSkKPiArICAgICAgIC8qCj4gKyAg
+ICAgICAgKiBGTU9ERV9OT05PVElGWSBhcmUgZmRzIGdlbmVyYXRlZCBieSBmYW5vdGlmeSBpdHNl
+bGYgd2hpY2ggc2hvdWxkIG5vdAo+ICsgICAgICAgICogZ2VuZXJhdGUgbmV3IGV2ZW50cy4gV2Ug
+YWxzbyBkb24ndCB3YW50IHRvIGdlbmVyYXRlIGV2ZW50cyBmb3IKPiArICAgICAgICAqIEZNT0RF
+X1BBVEggZmRzIChpbnZvbHZlcyBvcGVuICYgY2xvc2UgZXZlbnRzKSBhcyB0aGV5IGFyZSBqdXN0
+Cj4gKyAgICAgICAgKiBoYW5kbGUgY3JlYXRpb24gLyBkZXN0cnVjdGlvbiBldmVudHMgYW5kIG5v
+dCAicmVhbCIgZmlsZSBldmVudHMuCj4gKyAgICAgICAgKi8KPiArICAgICAgIGlmIChmaWxlLT5m
+X21vZGUgJiAoRk1PREVfTk9OT1RJRlkgfCBGTU9ERV9QQVRIKSkKPiAgICAgICAgICAgICAgICAg
+cmV0dXJuIDA7Cj4KPiAgICAgICAgIHBhdGggPSAmZmlsZS0+Zl9wYXRoOwo+IC0tCj4gMi4zNS4z
+Cj4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
+by9sdHAK
