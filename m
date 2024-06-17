@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF4EC27C77
-	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 03:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79D1FC27C79
+	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 03:34:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CBD903D0D1D
-	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 05:24:26 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id ECEFF3D0D09
+	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 05:34:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80A223CD7F4
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 05:24:11 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ by picard.linux.it (Postfix) with ESMTPS id 49F1D3CB74E
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 05:34:08 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
  helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9CAFB1400777
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 05:24:10 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 88E83600BF9
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 05:34:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1718594649;
+ s=mimecast20190719; t=1718595245;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=ojp5xG4CBBYPhNMh3QF2Rev4cZirGt1Tdt7L9O03qJU=;
- b=Iah6VWoU0ruRCqTW72nBEM4wMYjZxRulYstusvhh6XBruC/zlJzRPGdLSIQf4IPGHh46CF
- X3ClJgkZoe+gvaxe8/M0/rR+6S0wMkO8aA/VQQ511LH1vaSl2TzzLMFTYG74bWVD5qIQ3P
- y/057/38Qv/A3g3l/qCKFKEqUTtPavo=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ bh=cjSAgovHeUFrQpNNcdKBcTW3LJ0pAp43yav2TTmHXW0=;
+ b=gX+m6WrVeXuZPVaaIdSw9W0pirH9JSqqkRtak5ss1HejdMpcqEzM6Kj9T84xznNyKGXf8o
+ tAlmPv0cZPNTG+TuIVA7g2V/bsy1brb/rrU1rWlM6sxqEYaM75UunZ2VvZzS2ItC9a7Jfe
+ YGEMKLwb80efhx5ATengBsePxx4guCc=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-94-J4CCv6lWPU2qfCN1nOOwlw-1; Sun,
- 16 Jun 2024 23:24:07 -0400
-X-MC-Unique: J4CCv6lWPU2qfCN1nOOwlw-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-687-9rqEav0GNb-lUgYPlk127Q-1; Sun,
+ 16 Jun 2024 23:34:04 -0400
+X-MC-Unique: 9rqEav0GNb-lUgYPlk127Q-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id A563B1956080
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 03:24:06 +0000 (UTC)
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 4F54319560B4
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 03:34:03 +0000 (UTC)
 Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
  (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 5EE801955E83
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 03:24:04 +0000 (UTC)
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 0B50019560AE
+ for <ltp@lists.linux.it>; Mon, 17 Jun 2024 03:34:01 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Mon, 17 Jun 2024 11:24:00 +0800
-Message-ID: <20240617032400.298906-1-liwang@redhat.com>
+Date: Mon, 17 Jun 2024 11:33:56 +0800
+Message-ID: <20240617033356.299491-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] rpc_svc_1: Fix incompatible pointer type error
+Subject: [LTP] [PATCH] quotactl07: add _GNU_SOURCE define
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,24 +81,22 @@ Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VG8gZ2V0IHJpZCBvZiB0aGUgY29tcGlsZSBlcnJvciB3aXRoIEdDQy0xNDoKCnJwY19zdmNfMS5j
-OjEwOToxMjogZXJyb3I6IGFzc2lnbm1lbnQgdG8g4oCYc3RydWN0IHNvY2thZGRyX2luICrigJkg
-ZnJvbQppbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlIOKAmHN0cnVjdCBzb2NrYWRkcl9pbjYgKuKA
-mQpbLVdpbmNvbXBhdGlibGUtcG9pbnRlci10eXBlc10KICAxMDkgfCAgICAgICAgIHNhID0gc3Zj
-X2dldGNhbGxlcih0cmFuc3ApOwogICAgICAgIHwgICAgICAgICAgICBeCgpTaWduZWQtb2ZmLWJ5
-OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KLS0tCiAuLi4vbmV0d29yay9ycGMvcnBjLXRp
-cnBjL3Rlc3RzX3BhY2svcnBjX3N2Y18xL3JwY19zdmNfMS5jICAgICAgfCAyICstCiAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS90ZXN0
-Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRpcnBjL3Rlc3RzX3BhY2svcnBjX3N2Y18xL3JwY19zdmNf
-MS5jIGIvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy90ZXN0c19wYWNrL3JwY19zdmNf
-MS9ycGNfc3ZjXzEuYwppbmRleCBkMWM0ZGY5N2YuLmQzNjc2OTFjNCAxMDA2NDQKLS0tIGEvdGVz
-dGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy90ZXN0c19wYWNrL3JwY19zdmNfMS9ycGNfc3Zj
-XzEuYworKysgYi90ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRpcnBjL3Rlc3RzX3BhY2svcnBj
-X3N2Y18xL3JwY19zdmNfMS5jCkBAIC0xMDYsNyArMTA2LDcgQEAgY2hhciAqc3ZjX2dldGNhbGxl
-cl90ZXN0KHVuaW9uIHVfYXJndW1lbnQgKmluVmFyLCBTVkNYUFJUICogdHJhbnNwKQogCXN0cnVj
-dCBzb2NrYWRkcl9pbiAqc2EgPSBOVUxMOwogCXN0YXRpYyBpbnQgcmVzdWx0OwogCi0Jc2EgPSBz
-dmNfZ2V0Y2FsbGVyKHRyYW5zcCk7CisJc2EgPSAoc3RydWN0IHNvY2thZGRyX2luICopIHN2Y19n
-ZXRjYWxsZXIodHJhbnNwKTsKIAkvL0lmIHRoZSByZXN1bHQgaXMgbm90IE5VTEwgd2UgY29uc2lk
-ZXIgdGhhdCBmdW5jdGlvbiBjYWxsIHN1Y2NlZWRzCiAJLy9zbyByZXR1cm5zIDAgKFBBU1MpCiAJ
-cmVzdWx0ID0gKHNhICE9IE5VTEwpID8gMCA6IDE7Ci0tIAoyLjQ1LjIKCgotLSAKTWFpbGluZyBs
-aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+VG8gZ2V0IHJpZCBvZiBlcnJvciBvbiBpbXBsaWNpdCBkZWNsYXJhdGlvbiAoZ2xpYmMtMi4zOSk6
+CgogL3Vzci9pbmNsdWRlL3hmcy9saW51eC5oOjE4ODoxNTogZXJyb3I6IGltcGxpY2l0IGRlY2xh
+cmF0aW9uIG9mIGZ1bmN0aW9uCiDigJhmYWxsb2NhdGXigJk7IGRpZCB5b3UgbWVhbiDigJhhbGxv
+Y2HigJk/IFstV2ltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogMTg4IHwgICAgICAgICBy
+ZXQgPSBmYWxsb2NhdGUoZmQsIEZBTExPQ19GTF9aRVJPX1JBTkdFLCBzdGFydCwgbGVuKTsKICAg
+ICB8ICAgICAgICAgICAgICAgXn5+fn5+fn5+CiAgICAgfCAgICAgICAgICAgICAgIGFsbG9jYQog
+bWFrZTogKioqIFsuLi8uLi8uLi8uLi9pbmNsdWRlL21rL3J1bGVzLm1rOjQ1OiBxdW90YWN0bDA3
+XQogRXJyb3IgMQoKU2lnbmVkLW9mZi1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+Ci0t
+LQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9xdW90YWN0bC9xdW90YWN0bDA3LmMgfCAyICsr
+CiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9xdW90YWN0bC9xdW90YWN0bDA3LmMgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL3F1b3RhY3RsL3F1b3RhY3RsMDcuYwppbmRleCAzNGZmMjcwNWQuLmQ4YWQzNzYw
+YSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9xdW90YWN0bC9xdW90YWN0
+bDA3LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9xdW90YWN0bC9xdW90YWN0bDA3
+LmMKQEAgLTEzLDYgKzEzLDggQEAKICAqICgieGZzOiBTYW5pdHkgY2hlY2sgZmxhZ3Mgb2YgUV9Y
+UVVPVEFSTSBjYWxsIikuCiAgKi8KIAorI2RlZmluZSBfR05VX1NPVVJDRQorI2luY2x1ZGUgPGZj
+bnRsLmg+CiAjaW5jbHVkZSA8ZXJybm8uaD4KICNpbmNsdWRlIDx1bmlzdGQuaD4KICNpbmNsdWRl
+IDxzdGRpby5oPgotLSAKMi40NS4yCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
+c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
