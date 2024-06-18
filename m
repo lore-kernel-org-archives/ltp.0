@@ -4,83 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42609C27C79
-	for <ltp@archiver.kernel.org>; Mon, 17 Jun 2024 23:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1718666869; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Lxv3AUs28gk7HAoJnVJB4ifjz55UYUMSjccfw/BoCE4=;
- b=hvJuAZA0Pg9PFP4z+bzWF9jsKTHmRcRKU2yEOTne6UcUKIlceYqGdu5LuRR3moxwot0Lb
- rXOu3jgKzySlZYCNsIo9PYtjXALT9+w1xeMNDS98nlLMtIT/xA7XDdw10wDeNt3OS1WTsKF
- fUZoGN5fpGWglIpcQXJHJlrwg1IbF0o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA8B3C27C4F
+	for <ltp@archiver.kernel.org>; Tue, 18 Jun 2024 09:10:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 613233D0D3C
-	for <ltp@archiver.kernel.org>; Tue, 18 Jun 2024 01:27:49 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 85AA13D0D35
+	for <ltp@archiver.kernel.org>; Tue, 18 Jun 2024 11:10:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DE2293C02E7
- for <ltp@lists.linux.it>; Tue, 18 Jun 2024 01:27:27 +0200 (CEST)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
- [IPv6:2a00:1450:4864:20::12f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3EF6A3C02E7
+ for <ltp@lists.linux.it>; Tue, 18 Jun 2024 11:09:59 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=toshiba.co.jp (client-ip=210.130.202.132;
+ helo=mo-csw.securemx.jp; envelope-from=nobuhiro1.iwamatsu@toshiba.co.jp;
+ receiver=lists.linux.it)
+Received: from mo-csw.securemx.jp (mo-csw1121.securemx.jp [210.130.202.132])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2B0AE1A008BB
- for <ltp@lists.linux.it>; Tue, 18 Jun 2024 01:27:27 +0200 (CEST)
-Received: by mail-lf1-x12f.google.com with SMTP id
- 2adb3069b0e04-52bc274f438so5171100e87.0
- for <ltp@lists.linux.it>; Mon, 17 Jun 2024 16:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1718666846; x=1719271646; darn=lists.linux.it;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :mime-version:references:message-id:subject:cc:to:from:date:from:to
- :cc:subject:date:message-id:reply-to;
- bh=NlqYt8wEPiR/Knz/Qr9RX/tWipWCyUqOtNerP7QgnO0=;
- b=JGLJKcabuPCiHFHka1o6oPgQmKV8cxd1IHyHoc+kpcD4qWTQ8BESfYq/FUcDkuRU4v
- J9OSNA34TAArRbWCLac5FFoceM2s49pC0v8lbJsLCgWYDh5H5zCj6vomgj0qtsEwZuGe
- qfO7jx+Be6sn4AU85ZiqNdiwzaunZO1HGHLOivQrdAIvJIC6xU3onjEbYQzndqmpMVze
- ak4TKNqjN8q8vZYlL6XeYVFFoXaN0CHLcyLIvQ5QplMaC+f9LQ1gZ3GQcH7vkeoCyLFZ
- H7j8o7WG7AH68o/4UHrV60U/NZG0g5nJIDHS/ukv4FK5T4i0Gpl02JiHPwz0KkGHAHWD
- RQpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1718666846; x=1719271646;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :mime-version:references:message-id:subject:cc:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=NlqYt8wEPiR/Knz/Qr9RX/tWipWCyUqOtNerP7QgnO0=;
- b=WN2ZwePOcues1lWraAd3AbcX/33823UpWqraH2Hti9kuTPNRo5Ce154eHzxlf3fNOE
- NQcUnx+qRH2ftW3J0CwBnjkW3tC9+CWazEUR+53eNDjyAx6hZ2wWYs6gZpDO1WINxshm
- 8+gllTgjT4HfCSszTieTFLQz+0GYzDiRrSKoS2DLmJFaXBDscKl/fgOfcXl2GII/H3bR
- tpV7vVGlRTviCGqdqKg5lzgDRz4j5Txm4SkYbecH831B4Wye92CAHF3v6E2XqMplmwOR
- nLPSusenX5SygLZGjF9VOA4dhysT6/4cffurUxPTvU706AhEfiML2DLCYwY9wfgdEpeo
- BzcQ==
-X-Gm-Message-State: AOJu0YxHKgTPWRZqtDX04wtK+1PLwPPdIHpHiIEBLQy6P01UVvsehsoN
- CvmMhW4c8bgoXs6kVbvFpb6ngIbYyn/6B1pk91PelNy46BMPoy2DK0SYdhWma0c4X54HgVdAZUg
- =
-X-Google-Smtp-Source: AGHT+IGZt+xVgch7wT4JK1koURVMlr18rDAwfcQJCs0tU6ByJYzWMABKPAiVapJGOsT3hDuv5bmnpw==
-X-Received: by 2002:ac2:4c02:0:b0:52c:943e:9ecd with SMTP id
- 2adb3069b0e04-52ca6e6436dmr8002198e87.16.1718666846344; 
- Mon, 17 Jun 2024 16:27:26 -0700 (PDT)
-Received: from wegao.248.176.137 ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6f56db62c3sm558982966b.76.2024.06.17.16.27.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 Jun 2024 16:27:26 -0700 (PDT)
-Date: Mon, 17 Jun 2024 19:27:20 -0400
-To: Li Wang <liwang@redhat.com>
-Message-ID: <ZnDGWE/Jr8W4OoRc@wegao.248.176.137>
-References: <20240617032400.298906-1-liwang@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240617032400.298906-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 07EF71002039
+ for <ltp@lists.linux.it>; Tue, 18 Jun 2024 11:09:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toshiba.co.jp;
+ h=From:To:Cc
+ :Subject:Date:Message-Id;i=nobuhiro1.iwamatsu@toshiba.co.jp;s=key2.smx;t=
+ 1718701789; x=1719911389; bh=22rDbj2uUxAKtXpP1r73nQQfzeAbLWfMqEd5yFlyUlo=;
+ b=BAh
+ FzIoTtCcVZNcJVThCGCFM1DSSyOdlsr9iq0xQ3kEn1QsQBdVhFRVfDTSlhAAsy7ksLuSTt1UtWuJP
+ eLASCGas2h6ClCOpIUeccXAL0b7lEZvC+ZMv+C3rD5vL7W3CBmDIRdTNYr0fWwhEIG1VHD3OZbY1Q
+ BDxwE3V7E1I9HqiYLMrU6e8PvL0Ms0V95UysAgInTvueWqzq07ybkjJDr7UU+ckpPMaTtgcpQxZcx
+ 8v+430AUwrjXcX8K6KnTO1Dms3P3JZ7FWfPw4Ygr9itxISa2mRpYsRJxt7MHm0JiVkB7ptj0KDcrt
+ O5kQVhnyqHV4fmzu9wz4IUJnDc6EHRQ==;
+Received: by mo-csw.securemx.jp (mx-mo-csw1121) id 45I99mCL1926247;
+ Tue, 18 Jun 2024 18:09:49 +0900
+X-Iguazu-Qid: 2rWhGbqYjXvP6FZZ6i
+X-Iguazu-QSIG: v=2; s=0; t=1718701788; q=2rWhGbqYjXvP6FZZ6i;
+ m=EjzZGlAazqojNXiztMf4n1eOQbseT6R0u6cWakAjg2M=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+ by relay.securemx.jp (mx-mr1122) id 45I99lb7058588
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+ Tue, 18 Jun 2024 18:09:47 +0900
+From: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To: ltp@lists.linux.it
+Date: Tue, 18 Jun 2024 18:09:42 +0900
+X-TSB-HOP2: ON
+Message-Id: <1718701782-18077-1-git-send-email-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] rpc_svc_1: Fix incompatible pointer type error
+Subject: [LTP] [PATCH] lib: tst_fd: Add kernel version check to memfd_secret
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,36 +65,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBKdW4gMTcsIDIwMjQgYXQgMTE6MjQ6MDBBTSArMDgwMCwgTGkgV2FuZyB3cm90ZToK
-PiBUbyBnZXQgcmlkIG9mIHRoZSBjb21waWxlIGVycm9yIHdpdGggR0NDLTE0Ogo+IAo+IHJwY19z
-dmNfMS5jOjEwOToxMjogZXJyb3I6IGFzc2lnbm1lbnQgdG8g4oCYc3RydWN0IHNvY2thZGRyX2lu
-ICrigJkgZnJvbQo+IGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUg4oCYc3RydWN0IHNvY2thZGRy
-X2luNiAq4oCZCj4gWy1XaW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCj4gICAxMDkgfCAgICAg
-ICAgIHNhID0gc3ZjX2dldGNhbGxlcih0cmFuc3ApOwo+ICAgICAgICAgfCAgICAgICAgICAgIF4K
-PiAKPiBTaWduZWQtb2ZmLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KPiAtLS0KPiAg
-Li4uL25ldHdvcmsvcnBjL3JwYy10aXJwYy90ZXN0c19wYWNrL3JwY19zdmNfMS9ycGNfc3ZjXzEu
-YyAgICAgIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
-b24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy90
-ZXN0c19wYWNrL3JwY19zdmNfMS9ycGNfc3ZjXzEuYyBiL3Rlc3RjYXNlcy9uZXR3b3JrL3JwYy9y
-cGMtdGlycGMvdGVzdHNfcGFjay9ycGNfc3ZjXzEvcnBjX3N2Y18xLmMKPiBpbmRleCBkMWM0ZGY5
-N2YuLmQzNjc2OTFjNCAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRp
-cnBjL3Rlc3RzX3BhY2svcnBjX3N2Y18xL3JwY19zdmNfMS5jCj4gKysrIGIvdGVzdGNhc2VzL25l
-dHdvcmsvcnBjL3JwYy10aXJwYy90ZXN0c19wYWNrL3JwY19zdmNfMS9ycGNfc3ZjXzEuYwo+IEBA
-IC0xMDYsNyArMTA2LDcgQEAgY2hhciAqc3ZjX2dldGNhbGxlcl90ZXN0KHVuaW9uIHVfYXJndW1l
-bnQgKmluVmFyLCBTVkNYUFJUICogdHJhbnNwKQo+ICAJc3RydWN0IHNvY2thZGRyX2luICpzYSA9
-IE5VTEw7Cj4gIAlzdGF0aWMgaW50IHJlc3VsdDsKPiAgCj4gLQlzYSA9IHN2Y19nZXRjYWxsZXIo
-dHJhbnNwKTsKPiArCXNhID0gKHN0cnVjdCBzb2NrYWRkcl9pbiAqKSBzdmNfZ2V0Y2FsbGVyKHRy
-YW5zcCk7Cj4gIAkvL0lmIHRoZSByZXN1bHQgaXMgbm90IE5VTEwgd2UgY29uc2lkZXIgdGhhdCBm
-dW5jdGlvbiBjYWxsIHN1Y2NlZWRzCj4gIAkvL3NvIHJldHVybnMgMCAoUEFTUykKPiAgCXJlc3Vs
-dCA9IChzYSAhPSBOVUxMKSA/IDAgOiAxOwo+IC0tIAo+IDIuNDUuMgo+IAo+IAo+IC0tIAo+IE1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cApSZXZp
-ZXdlZC1ieTogV2VpIEdhbyA8d2VnYW9Ac3VzZS5jb20+CgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+memfd_secret is a syscall added since 5.14. On earlier kernels, tests such
+as accept03, readahead01 and splice07 that use memfd_secret fail.
+This adds a kernel version check to the tst_fd library when running tests using
+memfd_secret.
+
+Test log on linux-5.10.162/arm32 with version 20240524:
+```
+$ ./testcases/kernel/syscalls/accept/accept03
+tst_test.c:1733: TINFO: LTP version: 20240524
+tst_test.c:1617: TINFO: Timeout per run is 0h 00m 30s
+accept03.c:58: TPASS: accept() on file : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on O_PATH file : EBADF (9)
+accept03.c:58: TPASS: accept() on directory : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on /dev/zero : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on /proc/self/maps : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on pipe read end : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on pipe write end : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on epoll : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on eventfd : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on signalfd : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on timerfd : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on pidfd : ENOTSOCK (88)
+tst_fd.c:151: TCONF: Skipping fanotify: ENOSYS (38)
+accept03.c:58: TPASS: accept() on inotify : ENOTSOCK (88)
+tst_fd.c:170: TCONF: Skipping userfaultfd: ENOSYS (38)
+accept03.c:58: TPASS: accept() on perf event : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on io uring : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on bpf map : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on fsopen : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on fspick : ENOTSOCK (88)
+accept03.c:58: TPASS: accept() on open_tree : EBADF (9)
+accept03.c:58: TPASS: accept() on memfd : ENOTSOCK (88)
+tst_test.c:1677: TBROK: Test killed by SIGILL!
+
+Summary:
+passed   20
+failed   0
+broken   1
+skipped  2
+warnings 0
+```
+
+Closed: #1145
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+---
+ lib/tst_fd.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/lib/tst_fd.c b/lib/tst_fd.c
+index 6538a098c..53f583fa0 100644
+--- a/lib/tst_fd.c
++++ b/lib/tst_fd.c
+@@ -255,8 +255,16 @@ static void open_memfd(struct tst_fd *fd)
+ 
+ static void open_memfd_secret(struct tst_fd *fd)
+ {
++	if ((tst_kvercmp(5, 14, 0)) < 0) {
++		tst_res(TINFO, "accept() on %s: Linux kernel version is before than v5.14", tst_fd_desc(fd));
++		errno = ENOSYS;
++		goto skip;
++	}
++
+ 	fd->fd = syscall(__NR_memfd_secret, 0);
++
+ 	if (fd->fd < 0) {
++skip:
+ 		tst_res(TCONF | TERRNO,
+ 			"Skipping %s", tst_fd_desc(fd));
+ 	}
+-- 
+2.43.0
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
