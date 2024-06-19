@@ -4,67 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3FF2C27C53
-	for <ltp@archiver.kernel.org>; Wed, 19 Jun 2024 07:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DB9C27C53
+	for <ltp@archiver.kernel.org>; Wed, 19 Jun 2024 07:47:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6D8723D0DB0
-	for <ltp@archiver.kernel.org>; Wed, 19 Jun 2024 09:34:14 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 44D4A3D0DA9
+	for <ltp@archiver.kernel.org>; Wed, 19 Jun 2024 09:47:22 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D17393D0D99
- for <ltp@lists.linux.it>; Wed, 19 Jun 2024 09:33:58 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 983403D0D99
+ for <ltp@lists.linux.it>; Wed, 19 Jun 2024 09:47:06 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A76BD14011BF
- for <ltp@lists.linux.it>; Wed, 19 Jun 2024 09:33:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1718782435;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=NfSfpC6658KyPm4vvRRh9bYXHpVI5YyGWL6s3aHT/7Q=;
- b=QWF6XnVtC41aSL3o1c88ja0TKibo4hYXuj3065F/jYthOnIGf0aIcdhZpFCkUb3OkYhNJM
- ZodQXdsbiBvgp0psd3BxMyBD34SKZmoXrJYl6Sax7mdlCbSN4ySWfPdQbPi7VC5642E/bO
- Kqq3XEOKi7uKPNNawFlR0pr9kRxQLLg=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-563-cqSIZvKrP6uS7ButKWTukw-1; Wed,
- 19 Jun 2024 03:33:53 -0400
-X-MC-Unique: cqSIZvKrP6uS7ButKWTukw-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BC82C6023E2
+ for <ltp@lists.linux.it>; Wed, 19 Jun 2024 09:47:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 6B85619560AD; Wed, 19 Jun 2024 07:33:52 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 8BB8A19560B2; Wed, 19 Jun 2024 07:33:49 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it,
-	pvorel@suse.cz
-Date: Wed, 19 Jun 2024 15:33:45 +0800
-Message-ID: <20240619073345.326108-1-liwang@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 747851F804;
+ Wed, 19 Jun 2024 07:47:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1718783224;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=MM1iugd8w79JCzPPBwKJPlHbBy3O7tMAh9Dfmkw8B7g=;
+ b=sE1OpRU+IZB8xuuu7lxX4oHAxfst9oBlMJclAIiT0CFUTz0vJVRbh3xabuwWIrj/4yqyMe
+ Cxu/pmFIMVT76pKgk42Y7Y6Cxpr+KWpxpARwSGSKbnTkSJ9bN2hc+LUeIhSmuVy7Xki8t2
+ AgMkkuwVNgYr9STuSBm+k1CyjJoFwQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1718783224;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=MM1iugd8w79JCzPPBwKJPlHbBy3O7tMAh9Dfmkw8B7g=;
+ b=etSjCktR+qkGXrZa1bPcUGy5pk6B0UYQXKcInMGIUTOED4zkM7rfJ9kjVoxxdeve2661R1
+ FS2KHZLsHUIeCoDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1718783224;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=MM1iugd8w79JCzPPBwKJPlHbBy3O7tMAh9Dfmkw8B7g=;
+ b=sE1OpRU+IZB8xuuu7lxX4oHAxfst9oBlMJclAIiT0CFUTz0vJVRbh3xabuwWIrj/4yqyMe
+ Cxu/pmFIMVT76pKgk42Y7Y6Cxpr+KWpxpARwSGSKbnTkSJ9bN2hc+LUeIhSmuVy7Xki8t2
+ AgMkkuwVNgYr9STuSBm+k1CyjJoFwQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1718783224;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=MM1iugd8w79JCzPPBwKJPlHbBy3O7tMAh9Dfmkw8B7g=;
+ b=etSjCktR+qkGXrZa1bPcUGy5pk6B0UYQXKcInMGIUTOED4zkM7rfJ9kjVoxxdeve2661R1
+ FS2KHZLsHUIeCoDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59AAD13AC3;
+ Wed, 19 Jun 2024 07:47:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id pWS2FPiMcmYgDwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 19 Jun 2024 07:47:04 +0000
+Date: Wed, 19 Jun 2024 09:47:03 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240619074703.GA410266@pevik>
+References: <20240619073345.326108-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240619073345.326108-1-liwang@redhat.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_kconfig: Avoid buffer overflow when parsing
+Subject: Re: [LTP] [PATCH] tst_kconfig: Avoid buffer overflow when parsing
  /proc/cmdline
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -77,39 +112,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When the test is run with a kernel booting with many parameters, the
-buffer size is often not large enough to store the complete command
-line. This results in a buffer overflow and the test complains with
-the following message:
+> When the test is run with a kernel booting with many parameters, the
+> buffer size is often not large enough to store the complete command
+> line. This results in a buffer overflow and the test complains with
+> the following message:
 
-  tst_kconfig.c:609: TWARN: Buffer overflowed while parsing /proc/cmdline
+>   tst_kconfig.c:609: TWARN: Buffer overflowed while parsing /proc/cmdline
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- lib/tst_kconfig.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the fix!
 
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index e16ca1400..be3842c2d 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -569,7 +569,7 @@ char tst_kconfig_get(const char *confname)
- 
- void tst_kcmdline_parse(struct tst_kcmdline_var params[], size_t params_len)
- {
--	char buf[128], line[512];
-+	char buf[512], line[512];
- 	size_t b_pos = 0,l_pos =0, i;
- 	int var_id = -1;
- 
--- 
-2.45.2
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Fixes: 180834982 ("kconfig: add funtion to parse /proc/cmdline")
 
+NOTE tst_kconfig_read() has char line[128], also struct tst_kcmdline_var member
+has this length. The longest line on some on my systems is 109, it's still OK,
+hopefully it stays :).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
