@@ -4,54 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED3CC2BB85
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20401C27C4F
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:01:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D05B3D0E8A
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:01:06 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6A38C3D0EA5
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:01:23 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 81EA63CB74E
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:23:43 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=arnd@kernel.org;
+ by picard.linux.it (Postfix) with ESMTPS id A77723CB74E
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:23:45 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=kernel.org (client-ip=2604:1380:4641:c500::1;
+ helo=dfw.source.kernel.org; envelope-from=arnd@kernel.org;
  receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 524F6601B2B
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:23:41 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 127641A01940
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:23:44 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id A6190CE274D;
- Thu, 20 Jun 2024 16:23:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C294C32786;
- Thu, 20 Jun 2024 16:23:28 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTP id BBACF62097;
+ Thu, 20 Jun 2024 16:23:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2418C4AF09;
+ Thu, 20 Jun 2024 16:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1718900615;
- bh=c2+3nT3Fz2YE3y2yTCQ/lqf84edhGpnQvBt5hH6hrrc=;
- h=From:To:Cc:Subject:Date:From;
- b=XC1XYPkSMkLHnz9abDPwB+ZF9PlO95SQ+oHvZ5uCctS66b+uYGD9F2IRJX7pEtMkc
- tv1ySBBzxr5W7wpTOSPmwFLPSaG8DZ+VHBfx2P4XohH/2B5Ig5ZAdTDxK0UXwPOa9f
- kgG01VSndf2XvLA6qgkIX+rPcLDIj4cedf9ebxSx7WytcpCCbPGct3kqyatbZdmobi
- VeFKF+urVmNd2v+/KXJBz8itdjWMHDfq1hlwgrSDbn0Mq69GGfKJxQF+5Zd1+MyiaZ
- tJ0Pd6jm0rAgBQhogByTNSzjJmQ0Xpzjvie1YBoPoSwU/RqtdxmBuhM5TomoNaluGz
- sj55VopFCAeAw==
+ s=k20201202; t=1718900622;
+ bh=CGFeZxnM99WO8CUQsmcPRyeSqTluGP6wK4tt26wo7MA=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=qFPMZFuIa5R0Glf5ENc2BYFqZfPhYo8QIZnyrdimQlTBKvaHbuCtPvrIfomllEd9/
+ JpLNq2SDbtHqlJyuLH0dQP8moKiF8uhmumJYs9o2sBsCPGtMQKxsjkvFceJbD2sCe5
+ iqYfcls+BOXFi8S8pRjY7giMA82l1MsB4/7AAhWDtByCl8OAAtDGML8o/+To3bUkRa
+ PuTTC4pDoNbmyoCTObOuXs8R+JSz0u0eYIhSXe0Dmh5XnqLbr+7IhR9P908xkYXNwP
+ ZamhH6pESgfZ6DKzg3bZRZInz7WGQ0gGLigYJa47XVNNvrSHskhf5n0cIAxbD+morq
+ YgXJDRrkqY+ZA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Date: Thu, 20 Jun 2024 18:23:01 +0200
-Message-Id: <20240620162316.3674955-1-arnd@kernel.org>
+Date: Thu, 20 Jun 2024 18:23:02 +0200
+Message-Id: <20240620162316.3674955-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240620162316.3674955-1-arnd@kernel.org>
+References: <20240620162316.3674955-1-arnd@kernel.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 21 Jun 2024 11:00:07 +0200
-Subject: [LTP] [PATCH 00/15] linux system call fixes
+Subject: [LTP] [PATCH 01/15] ftruncate: pass a signed offset
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,8 +77,9 @@ Cc: Rich Felker <dalias@libc.org>, Andreas Larsson <andreas@gaisler.com>,
  Brian Cain <bcain@quicinc.com>, Christian Brauner <brauner@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org,
  linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+ stable@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -84,102 +87,73 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-I'm working on cleanup series for Linux system call handling, trying to
-unify some of the architecture specific code there among other things.
+The old ftruncate() syscall, using the 32-bit off_t misses a sign
+extension when called in compat mode on 64-bit architectures.  As a
+result, passing a negative length accidentally succeeds in truncating
+to file size between 2GiB and 4GiB.
 
-In the process, I came across a number of bugs that are ABI relevant,
-so I'm trying to merge these first. I found all of these by inspection,
-not by running the code, so any extra review would help. I assume some
-of the issues were already caught by existing LTP tests, while for others
-we could add a test. Again, I did not check what is already there.
+Changing the type of the compat syscall to the signed compat_off_t
+changes the behavior so it instead returns -EINVAL.
 
-The sync_file_range and fadvise64_64 changes on sh, csky and hexagon
-are likely to also require changes in the libc implementation.
+The native entry point, the truncate() syscall and the corresponding
+loff_t based variants are all correct already and do not suffer
+from this mistake.
 
-Once the patches are reviewed, I plan to merge my changes as bugfixes
-through the asm-generic tree, but architecture maintainers can also
-pick them up directly to speed up the bugfix.
+Fixes: 3f6d078d4acc ("fix compat truncate/ftruncate")
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/open.c                | 4 ++--
+ include/linux/compat.h   | 2 +-
+ include/linux/syscalls.h | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-     Arnd
-
-Cc: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Andreas Larsson <andreas@gaisler.com>
-Cc: sparclinux@vger.kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Brian Cain <bcain@quicinc.com>
-Cc: linux-hexagon@vger.kernel.org
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-csky@vger.kernel.org
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: linux-sh@vger.kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: libc-alpha@sourceware.org
-Cc: musl@lists.openwall.com
-Cc: ltp@lists.linux.it
-
-Arnd Bergmann (15):
-  ftruncate: pass a signed offset
-  syscalls: fix compat_sys_io_pgetevents_time64 usage
-  mips: fix compat_sys_lseek syscall
-  sparc: fix old compat_sys_select()
-  sparc: fix compat recv/recvfrom syscalls
-  parisc: use correct compat recv/recvfrom syscalls
-  parisc: use generic sys_fanotify_mark implementation
-  powerpc: restore some missing spu syscalls
-  sh: rework sync_file_range ABI
-  csky, hexagon: fix broken sys_sync_file_range
-  hexagon: fix fadvise64_64 calling conventions
-  s390: remove native mmap2() syscall
-  syscalls: mmap(): use unsigned offset type consistently
-  asm-generic: unistd: fix time32 compat syscall handling
-  linux/syscalls.h: add missing __user annotations
-
- arch/arm64/include/asm/unistd32.h         |   2 +-
- arch/csky/include/uapi/asm/unistd.h       |   1 +
- arch/csky/kernel/syscall.c                |   2 +-
- arch/hexagon/include/asm/syscalls.h       |   6 +
- arch/hexagon/include/uapi/asm/unistd.h    |   1 +
- arch/hexagon/kernel/syscalltab.c          |   7 +
- arch/loongarch/kernel/syscall.c           |   2 +-
- arch/microblaze/kernel/sys_microblaze.c   |   2 +-
- arch/mips/kernel/syscalls/syscall_n32.tbl |   2 +-
- arch/mips/kernel/syscalls/syscall_o32.tbl |   4 +-
- arch/parisc/Kconfig                       |   1 +
- arch/parisc/kernel/sys_parisc32.c         |   9 -
- arch/parisc/kernel/syscalls/syscall.tbl   |   6 +-
- arch/powerpc/kernel/syscalls/syscall.tbl  |   6 +-
- arch/riscv/kernel/sys_riscv.c             |   4 +-
- arch/s390/kernel/syscall.c                |  27 ---
- arch/s390/kernel/syscalls/syscall.tbl     |   2 +-
- arch/sh/kernel/sys_sh32.c                 |  11 ++
- arch/sh/kernel/syscalls/syscall.tbl       |   3 +-
- arch/sparc/kernel/sys32.S                 | 221 ----------------------
- arch/sparc/kernel/syscalls/syscall.tbl    |   8 +-
- arch/x86/entry/syscalls/syscall_32.tbl    |   2 +-
- fs/open.c                                 |   4 +-
- include/asm-generic/syscalls.h            |   2 +-
- include/linux/compat.h                    |   2 +-
- include/linux/syscalls.h                  |  20 +-
- include/uapi/asm-generic/unistd.h         | 146 +++++++++-----
- 27 files changed, 160 insertions(+), 343 deletions(-)
- create mode 100644 arch/hexagon/include/asm/syscalls.h
-
+diff --git a/fs/open.c b/fs/open.c
+index 89cafb572061..50e45bc7c4d8 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -202,13 +202,13 @@ long do_sys_ftruncate(unsigned int fd, loff_t length, int small)
+ 	return error;
+ }
+ 
+-SYSCALL_DEFINE2(ftruncate, unsigned int, fd, unsigned long, length)
++SYSCALL_DEFINE2(ftruncate, unsigned int, fd, off_t, length)
+ {
+ 	return do_sys_ftruncate(fd, length, 1);
+ }
+ 
+ #ifdef CONFIG_COMPAT
+-COMPAT_SYSCALL_DEFINE2(ftruncate, unsigned int, fd, compat_ulong_t, length)
++COMPAT_SYSCALL_DEFINE2(ftruncate, unsigned int, fd, compat_off_t, length)
+ {
+ 	return do_sys_ftruncate(fd, length, 1);
+ }
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 233f61ec8afc..56cebaff0c91 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -608,7 +608,7 @@ asmlinkage long compat_sys_fstatfs(unsigned int fd,
+ asmlinkage long compat_sys_fstatfs64(unsigned int fd, compat_size_t sz,
+ 				     struct compat_statfs64 __user *buf);
+ asmlinkage long compat_sys_truncate(const char __user *, compat_off_t);
+-asmlinkage long compat_sys_ftruncate(unsigned int, compat_ulong_t);
++asmlinkage long compat_sys_ftruncate(unsigned int, compat_off_t);
+ /* No generic prototype for truncate64, ftruncate64, fallocate */
+ asmlinkage long compat_sys_openat(int dfd, const char __user *filename,
+ 				  int flags, umode_t mode);
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 9104952d323d..ba9337709878 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -418,7 +418,7 @@ asmlinkage long sys_listmount(const struct mnt_id_req __user *req,
+ 			      u64 __user *mnt_ids, size_t nr_mnt_ids,
+ 			      unsigned int flags);
+ asmlinkage long sys_truncate(const char __user *path, long length);
+-asmlinkage long sys_ftruncate(unsigned int fd, unsigned long length);
++asmlinkage long sys_ftruncate(unsigned int fd, off_t length);
+ #if BITS_PER_LONG == 32
+ asmlinkage long sys_truncate64(const char __user *path, loff_t length);
+ asmlinkage long sys_ftruncate64(unsigned int fd, loff_t length);
 -- 
 2.39.2
 
