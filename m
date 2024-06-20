@@ -4,122 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB310C27C79
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 11:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91C9CC27C79
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 13:25:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E3BA3D0E2C
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 13:25:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id C7FD93D0E32
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 15:25:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E3A03D0E0C
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 13:25:23 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 91CA13CB74E
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 15:25:15 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BD1182010F9
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 13:25:22 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 780B3206C25
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 15:25:14 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5708B21AD0;
- Thu, 20 Jun 2024 11:25:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 435A921923;
+ Thu, 20 Jun 2024 13:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718882721;
+ t=1718889913;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K86fdCCsr+Q2BgGfKoJyIIIximjPRwaaar2Z5/scDhU=;
- b=1qiXg8R0y4RCbfJR+OBlLlw6ymChlqPlGDlSEqoQfH8dOwgCsnPn88iK4BGFdxfzHiyKWo
- 1sXytQoVkDomE0D7RM+LbYPACOWMqXGd681P6CZi+Qas6NFW0gS5yGCNIVhNu3wfHNjN01
- P/z8RUnY7qB/vZeMnSOY8aW/r7qBozk=
+ bh=RxyrtF/UVy5asl/hYes5gia2+dPYW2HdRkxcxdBHNQo=;
+ b=D74xxNktFhog8zMeHt8yqszvqoV4iB+lcFSu0wS7r/mJV0qsC33VlBPU2RvXcOTii7O5AF
+ MDAJxFvoXxqdMLJPL8uC5n2UN7dvqMPspuVvO8dn8OC9u6oblQpJVjpyE/jmKZV7xzJkRZ
+ pk3EjsPF1645vtZCCjhrmdKHcow0OPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718882721;
+ s=susede2_ed25519; t=1718889913;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K86fdCCsr+Q2BgGfKoJyIIIximjPRwaaar2Z5/scDhU=;
- b=kNUa2kd/GHaBjQQdu8Bog82kdjyCLZbGbRGw7f/jBYzchFyAk8z3ZmDVeP0WvGfbqaZfrM
- l6u9+t27m/2ufFBg==
+ bh=RxyrtF/UVy5asl/hYes5gia2+dPYW2HdRkxcxdBHNQo=;
+ b=nY6qjvVJwMj0MV4W7gmqAVbLvIuHhzU79wWhzz20EzHeIGkIEooTXtKh3BcMEKL0FKquVM
+ nubUC3qpycKjdGDA==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ekKOier9;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IlGC14pO
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718882720;
+ t=1718889913;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K86fdCCsr+Q2BgGfKoJyIIIximjPRwaaar2Z5/scDhU=;
- b=ekKOier9jqaVwAVMO4grQ0zBFiQSLU3lVGcX6JgAK2GSXStxj+6/Mv4VKC+8urSJMnXcPC
- oFOpgQnFqxxEZkfWP8+6AieqEBbu2ifMJWFSAAxap0VGgc1YEcNicTLWEUGIi91LWhYsOJ
- xse9ZwAnaR97eXr/2dTDQ/r62IdZN+Y=
+ bh=RxyrtF/UVy5asl/hYes5gia2+dPYW2HdRkxcxdBHNQo=;
+ b=D74xxNktFhog8zMeHt8yqszvqoV4iB+lcFSu0wS7r/mJV0qsC33VlBPU2RvXcOTii7O5AF
+ MDAJxFvoXxqdMLJPL8uC5n2UN7dvqMPspuVvO8dn8OC9u6oblQpJVjpyE/jmKZV7xzJkRZ
+ pk3EjsPF1645vtZCCjhrmdKHcow0OPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718882720;
+ s=susede2_ed25519; t=1718889913;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K86fdCCsr+Q2BgGfKoJyIIIximjPRwaaar2Z5/scDhU=;
- b=IlGC14pOi5p4/fSAmsZ6BFZ1CuBqWTZAWZarmr53TjuUBpW8HymiXRR8xr8M2DALqxZKx7
- 8sBQScqZeA+buPDQ==
+ bh=RxyrtF/UVy5asl/hYes5gia2+dPYW2HdRkxcxdBHNQo=;
+ b=nY6qjvVJwMj0MV4W7gmqAVbLvIuHhzU79wWhzz20EzHeIGkIEooTXtKh3BcMEKL0FKquVM
+ nubUC3qpycKjdGDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0204313AC1;
- Thu, 20 Jun 2024 11:25:19 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F54213AC1;
+ Thu, 20 Jun 2024 13:25:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +JaVN58RdGY5IAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Jun 2024 11:25:19 +0000
-Date: Thu, 20 Jun 2024 13:25:14 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id egMUAbktdGaESQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Jun 2024 13:25:13 +0000
+Date: Thu, 20 Jun 2024 15:25:11 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240620112514.GB594613@pevik>
-References: <20240527222947.374475-1-pvorel@suse.cz>
- <37603272-8ea2-4828-96df-4b6381cc26ad@suse.com>
- <ZldFa-3CXXbVKmVW@yuki> <20240620053618.GD537887@pevik>
- <CAEemH2cnB0QAAz1CqZPdRWm5R8GP4sqqA9mw-owHkL1ASXTkMQ@mail.gmail.com>
+To: nobuhiro1.iwamatsu@toshiba.co.jp
+Message-ID: <20240620132511.GA599458@pevik>
+References: <1718700544-17304-1-git-send-email-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <ZnFeWJJldj_ggKnq@yuki>
+ <OS3PR01MB639110A9BC48CA10A9D97FEC92CF2@OS3PR01MB6391.jpnprd01.prod.outlook.com>
+ <20240619173324.GA504021@pevik>
+ <OS0PR01MB6388E3415F131E666FFC337892C82@OS0PR01MB6388.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2cnB0QAAz1CqZPdRWm5R8GP4sqqA9mw-owHkL1ASXTkMQ@mail.gmail.com>
-X-Rspamd-Queue-Id: 5708B21AD0
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <OS0PR01MB6388E3415F131E666FFC337892C82@OS0PR01MB6388.jpnprd01.prod.outlook.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:replyto,toshiba.co.jp:email];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
  REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] lib: Add TINFO_WARN
+Subject: Re: [LTP] [PATCH] lib: tst_fd: Add kernel version check to
+ memfd_secret
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,47 +118,224 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-arm-kernel@lists.infradead.org, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBIaSBQZXRyLCBBbGwsCgo+IE9uIFRodSwgSnVuIDIwLCAyMDI0IGF0IDE6MzbigK9QTSBQZXRy
-IFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+ID4gPiBIaSEKPiA+ID4gPiBJJ20gbm90
-IHN1cmUgYWJvdXQgdGhpcy4gV2h5IG5vdCBlbmFibGluZyBUSU5GTyArIFRXQVJOIGNvbWJpbmF0
-aW9uCj4gPiBpbnN0ZWFkPwoKPiA+ID4gPiB0c3RfcmVzKFRJTkZPIHwgVFdBUk4sICJteSBtZXNz
-YWdlIik7Cgo+ID4gPiBUaGF0J3MgZXZlbiBtb3JlIGNvbmZ1c2luZy4gRG9lcyB0aGF0IHByb3Bh
-Z2F0ZSBpbnRvIHJlc3VsdHMgb3Igbm90PwoKPiA+ID4gVG8gYmUgaG9uZXN0IHdlIGV2ZW4gaGF2
-ZSBwcm9ibGVtIGRlY2lkaW5nIGlmIHdlIHNob3VsZCB1c2UgVElORk8gb3IKPiA+ID4gVFdBUk4g
-aW4gc29tZSBjYXNlcyBhbmQgYWRkaW5nIHRoaXJkIHZhcmlhbnQgd291bGQgbWFrZSB0aGluZ3Mg
-ZXZlbgo+ID4gPiB3b3JzZSwgc2ljbmUgd2Ugd291bGQgaGF2ZSB0aHJlZSBvcHRpb25zLgoKPiA+
-ID4gU28gSSB3b3VsZCByZWFsbHkga2VlcCBqdXN0IFRJTkZPIHdoaWNoIGlzIHNvbWV0aGluZyB0
-aGF0IGlzIHByaW50ZWQgYnkKPiA+ID4gZGVmYXVsdCBidXQgZG9lcyBub3QgcHJvcGFnYXRlIGlu
-dG8gcmVzdWx0cyBhbmQgVFdBUk4gdGhhdCBpcyBwcmludGVkIGFzCj4gPiA+IHdlbGwgYnV0IHBy
-b3BhZ2F0ZXMgaW50byByZXN1bHRzLgoKPiA+ID4gTWF5YmUgaXQgd291bGQgYmUgZXZlbiBiZXR0
-ZXIgdG8gYWN0dWFsbHkgcmVtb3ZlIFRXQVJOLiBUaGF0IHdheSB3ZQo+ID4gPiB3b3VsZCBoYXZl
-IG9ubHkgVEZBSUwgYW5kIFRCUk9LIHRoYXQgcHJvcGFnYXRlIGludG8gcmVzdWx0cyBzaW5jZSBU
-V0FSTgo+ID4gPiBpcyBraW5kIG9mIGxlc3NlciBUQlJPSyBhbnl3YXlzLi4uCgo+ID4gVW5kZXJz
-dGFuZCB0byB5b3VyIHBvaW50cy4gQnV0IHRzdF9yZXMgVFdBUk4gaXMgcXVpdGUgdW5kZXJzdGFu
-ZGFibGUKPiA+IChzaW1wbGUgd2FybmluZywgd2hpY2ggcHJvcGFnYXRlcyksIElNSE8gYmV0dGVy
-IHRvIHVzZSB0aGFuCj4gPiB0c3RfcmVzIFRCUk9LLiBCdXQgc3VyZSwgZmVlbCBmcmVlIHRvIGdv
-IGFoZWFkIGFuZCBzZW5kIGEgcGF0Y2ggdG8gcmVtb3ZlCj4gPiBUV0FSTi4KCgo+ICsxIHRvIHJl
-bW92ZSBUV0FSTi4KCgo+ID4gQlRXIEkgd2FzIGFsc28gc3VycHJpc2VkIGhvdyBtYW55IHRlc3Rz
-IHVzZSB0c3RfcmVzbSBUQlJPSyAuLi4gLwo+ID4gdHN0X3Jlc20oVEJST0ssCj4gPiAuLi4pIGZv
-bGxvd2VkIGJ5IGV4aXQgMSAvIGV4aXQoMSkuIFRoZXNlIHNob3VsZCBiZSBjb252ZXJ0ZWQgdG8g
-dHN0X2Jya20KPiA+IFRCUk9LIC8KPiA+IHRzdF9yZXNtKFRCUk9LLCAuLi4pLgoKPiA+IE90aGVy
-IHRoaW5nIGlzLCB0aGF0IEkgd291bGQgcHJlZmVyIHRvIGhhdmUgbWFjcm8gZm9yIHRzdF9yZXMo
-VElORk8sCj4gPiAiV0FSTklORzogLi4uIikKPiA+IGUuZy4gV0FSTklORyguLi4pIHdvdWxkIHBy
-b2R1Y2UgdHN0X3JlcyhUSU5GTywgIldBUk5JTkc6IC4uLiIpIGZyb20gc2ltcGxlCj4gPiBwb2lu
-dCBJCj4gPiBkb24ndCBsaWtlIHRvIGhhcmR3aXJlIHRleHQgKHRoZXJlIGNhbiBiZSB0eXBvcyku
-IEJUVyBtb3JlIHRoYW4gZm9yIHRoaXMKPiA+IHJhcmUKPiA+IGNhc2UgSSB3b3VsZCBwcmVmZXIg
-dG8gaGF2ZSBtYWNyb3MgZm9yIC50YWdzLCBlLmcuIExJTlVYX0dJVCg0M2E2Njg0NTE5YWIpCj4g
-PiB3b3VsZAo+ID4gcHJvZHVjZSB7ImxpbnV4LWdpdCIsICI0M2E2Njg0NTE5YWIifSBDVkUoMjAx
-Ny0yNjcxKSB3b3VsZCBwcm9kdWNlIHsiQ1ZFIiwKPiA+ICIyMDE3LTI2NzEifQo+ID4gKGFnYWlu
-LCB0eXBvcykuCgoKPiBXaGF0IGFib3V0IGRlZmluaW5nIG5ldyBMVFAgbWFjcm9zIGxpa2UKPiAg
-IFRTVF9SRVNfVElORk8oKSwKPiAgIFRTVF9SRVNfVEZBSUwoKSwKPiAgIC4uLgo+ICAgVFNUX1JF
-U19XQVJOSU5HKCksCj4gc28gdGhhdCB3ZSBjYW4gc2F2ZSB0aW1lIG9uIGlucHV0dGluZyB0aGUg
-VEZBSUwvVElORk8ga2V5d29yZHMgZXZlcnkgdGltZe+8nwoKPiBhbHNvIFRTVF9MSU5VWF9HSVQo
-KSwgVFNUX0NWRSgpID8KCisxCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+> Hi!
+
+> Thanks for your comment.
+
+> > > > > $ ./testcases/kernel/syscalls/accept/accept03
+> > > > > tst_test.c:1733: TINFO: LTP version: 20240524
+> > > > > tst_test.c:1617: TINFO: Timeout per run is 0h 00m 30s
+> > > > > accept03.c:58: TPASS: accept() on file : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on O_PATH file : EBADF (9)
+> > > > > accept03.c:58: TPASS: accept() on directory : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on /dev/zero : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on /proc/self/maps : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on pipe read end : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on pipe write end : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on epoll : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on eventfd : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on signalfd : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on timerfd : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on pidfd : ENOTSOCK (88)
+> > > > > tst_fd.c:151: TCONF: Skipping fanotify: ENOSYS (38)
+> > > > > accept03.c:58: TPASS: accept() on inotify : ENOTSOCK (88)
+> > > > > tst_fd.c:170: TCONF: Skipping userfaultfd: ENOSYS (38)
+> > > > > accept03.c:58: TPASS: accept() on perf event : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on io uring : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on bpf map : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on fsopen : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on fspick : ENOTSOCK (88)
+> > > > > accept03.c:58: TPASS: accept() on open_tree : EBADF (9)
+> > > > > accept03.c:58: TPASS: accept() on memfd : ENOTSOCK (88)
+> > > > > tst_test.c:1677: TBROK: Test killed by SIGILL!
+
+> > > > This looks like a bug either in kernel or libc.
+
+> > > This is caused by __NR_memfd_secure being defined as -1 (0xffffffff)and
+> > "Illegal instruction"
+> > > occurs when syscall() is executed. And this problem does not occur on
+> > x86_64.
+> > > I cannot decide if this is a bug or not. I can't decide if this is a
+> > > bug or not, because this behavior has existed for a long time.
+
+> > Interesting. But it'd be good to discuss it, right? In case there is something to
+> > improve. Cc linux-arm-kernel ML.
+
+> Indeed, Thank you.
+
+
+> > > > > Summary:
+> > > > > passed   20
+> > > > > failed   0
+> > > > > broken   1
+> > > > > skipped  2
+> > > > > warnings 0
+> > > > > ```
+
+> > > > > Closed: #1145
+> > > > > Signed-off-by: Nobuhiro Iwamatsu
+> > > > > <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > > > > ---
+> > > > >  lib/tst_fd.c | 8 ++++++++
+> > > > >  1 file changed, 8 insertions(+)
+
+> > > > > diff --git a/lib/tst_fd.c b/lib/tst_fd.c index
+> > > > > 6538a098c..53f583fa0
+> > > > > 100644
+> > > > > --- a/lib/tst_fd.c
+> > > > > +++ b/lib/tst_fd.c
+> > > > > @@ -255,8 +255,16 @@ static void open_memfd(struct tst_fd *fd)
+
+> > > > >  static void open_memfd_secret(struct tst_fd *fd)  {
+> > > > > +	if ((tst_kvercmp(5, 14, 0)) < 0) {
+> > > > > +		tst_res(TINFO, "accept() on %s: Linux kernel version
+> > is before
+> > > > than v5.14", tst_fd_desc(fd));
+
+
+> > > > > +		errno = ENOSYS;
+> > > > > +		goto skip;
+> > > > > +	}
+> > > > > +
+> > > > >  	fd->fd = syscall(__NR_memfd_secret, 0);
+> > > > > +
+> > > > >  	if (fd->fd < 0) {
+> > > > > +skip:
+> > > > >  		tst_res(TCONF | TERRNO,
+> > > > >  			"Skipping %s", tst_fd_desc(fd));
+> > > > >  	}
+
+> > > > And this looks like you are working around the bug.
+
+> > > Your point is correct...
+> > > I would suggest using tst_syscall() to check for syscall undefined
+> > > instead
+
+> > Well, I guess we don't want to use tst_syscall() otherwise it would call tst_brk().
+> > I proposed similar patch some time ago [1], I suppose you told me privately
+> > exactly this.
+
+> > [1]
+> > https://patchwork.ozlabs.org/project/ltp/patch/20240124142108.303782-1-p
+> > vorel@suse.cz/]
+
+> I see, I understand.
+
+
+> > > of this modification. How about this modification?
+
+> > > ```
+> > > --- a/lib/tst_fd.c
+> > > +++ b/lib/tst_fd.c
+> > > @@ -255,7 +255,8 @@ static void open_memfd(struct tst_fd *fd)
+
+> > >  static void open_memfd_secret(struct tst_fd *fd)  {
+> > > -       fd->fd = syscall(__NR_memfd_secret, 0);
+> > > +       fd->fd = tst_syscall(__NR_memfd_secret, 0);
+> > >         if (fd->fd < 0) {
+> > >                 tst_res(TCONF | TERRNO,
+> > >                         "Skipping %s", tst_fd_desc(fd));
+
+
+> > Therefore how about this?
+
+> > 	if ((tst_kvercmp(5, 14, 0)) < 0) {
+> > 		tst_res(TCONF, "accept() on %s: skipping due old kernel",
+> > tst_fd_desc(fd));
+> > 		return;
+> > 	}
+
+
+> I did not explain well enough.
+> The memfd_secret syscall itself is supported in 5.14, but is implemented on i386, x86_64, s390, and s390x with latest kernel.
+> Other architectures are not supported. The above patch causes the same problem with the latest kernel.
+> So, I create with the following patch based on your comments. How about this?
+
+> --- a/lib/tst_fd.c
+> +++ b/lib/tst_fd.c
+> @@ -255,11 +255,20 @@ static void open_memfd(struct tst_fd *fd)
+
+>  static void open_memfd_secret(struct tst_fd *fd)
+>  {
+> +#if defined(__i386__) || defined(__x86_64__) || defined(__s390__) || defined(__s390x__)
+
+Well, I would prefer to detect syscall support via ENOSYS (or whichever errno it
+uses on the archs which does not implement it), otherwise it will always TCONF
+regardless some arch may get support in the future. E.g. use the same approach
+as tst_syscall(), but just use tst_res() instead of tst_brk() (first run the
+syscall and then do the check - expect that errno != ENOSYS on these 4 archs on
+kernel >= 5.14.
+
+FYI We have usually this approach: we try to explicitly check whether certain
+functionality works if arch or filesystem dependent (e.g. some arch supports
+something), but sure still keep in mind that particular support can be extended
+(to other archs or filesystems).
+
+Also according to 1507f51255c9f ("mm: introduce memfd_secret system call to
+create "secret" memory areas") [1] it's a configurable option (hidden via
+CONFIG_EXPERT, but it can be disabled). Therefore the functionality can be
+detected via check for CONFIG_SECRETMEM:
+
+tst_kconfig_get("CONFIG_SECRETMEM") == 'y';
+
+Therefore something like this?
+
+static void open_memfd_secret(struct tst_fd *fd)
+{
+	fd->fd = syscall(__NR_memfd_secret, 0);
+
+	if (errno == ENOSYS) {
+		if (tst_kconfig_get("CONFIG_SECRETMEM") == 'y') {
+			tst_brk(TBROK | TERRNO, "Broken memfd_secret() functionality");
+		} else {
+			tst_res(TCONF | TERRNO, "Skipping %s due missing memfd_secret()",
+				tst_fd_desc(fd));
+			return;
+		}
+	}
+
+	if (fd->fd < 0)
+		tst_res(TCONF | TERRNO, "Skipping %s", tst_fd_desc(fd));
+}
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1507f51255c9ff07d75909a84e7c0d7f3c4b2f49
+
+Therefore the original approach looked better to me.
+
+Kind regards,
+Petr
+
+> +       if ((tst_kvercmp(5, 14, 0)) < 0) {
+> +               tst_res(TCONF, "%s: skipping due old kernel", tst_fd_desc(fd));
+> +               return;
+> +       }
+> +
+>         fd->fd = syscall(__NR_memfd_secret, 0);
+>         if (fd->fd < 0) {
+>                 tst_res(TCONF | TERRNO,
+>                         "Skipping %s", tst_fd_desc(fd));
+>         }
+> +#else
+> +       tst_res(TCONF, "%s not supported on this architecture", tst_fd_desc(fd));
+> +#endif
+>  }
+
+>  static struct tst_fd_desc fd_desc[] = {
+> @@ -287,7 +296,7 @@ static struct tst_fd_desc fd_desc[] = {
+>         [TST_FD_FSPICK] = {.open_fd = open_fspick, .desc = "fspick"},
+>         [TST_FD_OPEN_TREE] = {.open_fd = open_open_tree, .desc = "open_tree"},
+>         [TST_FD_MEMFD] = {.open_fd = open_memfd, .desc = "memfd"},
+> -       [TST_FD_MEMFD_SECRET] = {.open_fd = open_memfd_secret, .desc = "memfd secret"},
+> +       [TST_FD_MEMFD_SECRET] = {.open_fd = open_memfd_secret, .desc = "memfd_secret"},
+
+> Best regards,
+>   Nobuhiro
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
