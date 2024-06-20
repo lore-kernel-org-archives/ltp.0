@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EC09C27C79
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 05:36:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEA44C27C79
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 05:50:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F32D3CF2D7
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 07:36:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 28C683D0DF8
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 07:50:24 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A11283CF2D7
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 07:36:23 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 32E963CF2D7
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 07:50:07 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -25,85 +24,62 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E3769201117
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 07:36:22 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 618061A0123C
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 07:50:06 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1820821AC0;
- Thu, 20 Jun 2024 05:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718861781;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZR8AsRivQ9/WqLcPMSrJCHWAKNf+AOL95Zr6ZyLbtcg=;
- b=mH1pQU422SNvfk3UWdabW8ZssqGLm4Jq0AK0ZFf9TUasAB8RVAEbv3hbyGeIXrt6Qq4+Vo
- GTrKY7AYGPClA9h1NrPCLmGz01TV8ZAhQY9tBqlH91UJy6gdMSPCA9boyqkuHu48Q6d6je
- 3HcIHT9gLHfwTGheVOGW4MQ1wXKVkAk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718861781;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZR8AsRivQ9/WqLcPMSrJCHWAKNf+AOL95Zr6ZyLbtcg=;
- b=SXCwwKsZCeAshr+QRW7DQxwRa7SJs/uGEmvIAgvXvEMP5QhNuL3UNzWL1A4c3CN5gGwNXB
- 80/nNAj8V9L4G9Aw==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D577721AA1;
+ Thu, 20 Jun 2024 05:50:05 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1718861780;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1718862605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZR8AsRivQ9/WqLcPMSrJCHWAKNf+AOL95Zr6ZyLbtcg=;
- b=A2IUK+Plij9MWwKu0fWXn9ymlfbKLQACmXgvNcsjaetwyikAnkuFgoGX6za0QYf46kxw4B
- Mk66EI4UE4qynwT4gpNexdYTL8NJaE/Y4mipWb/zL+rV1cKkeFABm6siVKhTOM2Z4M5eYB
- HCSsiQcL5428ukVgFQD919nBSApZqo8=
+ bh=u2eFbK5v5dqaorftDJqPpBH2Hyya0If51NLsYmQpSbU=;
+ b=H5UDgLN0xOAOFKovfBKgCPeG3LFlPx+N6LaIrJ5rnbInPdiQPfi2tS2mxXoyoa1tsF1MRu
+ E5j6RErzvdxMAFp+1Ny+pryRIg+aTS90RwH1d5+176oZNnsPbFCZzL19nIIz0vKalBUpgd
+ zsCxjSTzSpQirbRHGj4QDxx/1yaiqHY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1718861780;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1718862605;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZR8AsRivQ9/WqLcPMSrJCHWAKNf+AOL95Zr6ZyLbtcg=;
- b=mtrBficikdsTLTEVGpxxV+TM+tEfW/LVpjfiNf6n9ooOE7aC8rQsM9hgN9EKt9g9ndIw+z
- omUObboAzFagHGBA==
+ bh=u2eFbK5v5dqaorftDJqPpBH2Hyya0If51NLsYmQpSbU=;
+ b=Ahiv7BnN+PTIxc26IdZ3miOWuF5nfNZtHch2lZ43BG77MrCfis/9VSDhGbLkdmkyRLS8P2
+ j+sWrUHYAVyYuYDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8FD513AC1;
- Thu, 20 Jun 2024 05:36:19 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAC4B13AC1;
+ Thu, 20 Jun 2024 05:50:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MbnxMtO/c2b7LQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Jun 2024 05:36:19 +0000
-Date: Thu, 20 Jun 2024 07:36:18 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EMq8LA3Dc2aZMQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Jun 2024 05:50:05 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240620053618.GD537887@pevik>
-References: <20240527222947.374475-1-pvorel@suse.cz>
- <37603272-8ea2-4828-96df-4b6381cc26ad@suse.com>
- <ZldFa-3CXXbVKmVW@yuki>
+To: ltp@lists.linux.it
+Date: Thu, 20 Jun 2024 07:49:58 +0200
+Message-ID: <20240620054958.554319-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.45.1
+In-Reply-To: <20240620054958.554319-1-pvorel@suse.cz>
+References: <20240620054958.554319-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZldFa-3CXXbVKmVW@yuki>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: D577721AA1
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] lib: Add TINFO_WARN
+Subject: [LTP] [PATCH 2/2] lib: Create tst_tmpdir.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,49 +91,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > I'm not sure about this. Why not enabling TINFO + TWARN combination instead?
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_device.h |  6 +-----
+ include/tst_tmpdir.h | 15 +++++++++++++++
+ lib/tst_tmpdir.c     |  1 +
+ 3 files changed, 17 insertions(+), 5 deletions(-)
+ create mode 100644 include/tst_tmpdir.h
 
-> > tst_res(TINFO | TWARN, "my message");
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 36258f436..391fb4e56 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2016-2019 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) Linux Test Project, 2019-2024
+  */
+ 
+ #ifndef TST_DEVICE_H__
+@@ -101,11 +102,6 @@ int tst_dev_sync(int fd);
+  */
+ unsigned long tst_dev_bytes_written(const char *dev);
+ 
+-/*
+- * Wipe the contents of given directory but keep the directory itself
+- */
+-void tst_purge_dir(const char *path);
+-
+ /*
+  * Find the file or path belongs to which block dev
+  * @path       Path to find the backing dev
+diff --git a/include/tst_tmpdir.h b/include/tst_tmpdir.h
+new file mode 100644
+index 000000000..b4f95b666
+--- /dev/null
++++ b/include/tst_tmpdir.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) 2020 Martin Doucha <mdoucha@suse.cz>
++ */
++
++#ifndef TST_TMPDIR_H__
++#define TST_TMPDIR_H__
++
++/*
++ * Wipe the contents of given directory but keep the directory itself
++ */
++void tst_purge_dir(const char *path);
++
++#endif /* TST_TMPDIR_H__ */
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index bcc788390..0f1b15ca4 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -72,6 +72,7 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
++#include "tst_tmpdir.h"
+ #include "ltp_priv.h"
+ #include "lapi/futex.h"
+ 
+-- 
+2.45.1
 
-> That's even more confusing. Does that propagate into results or not?
-
-> To be honest we even have problem deciding if we should use TINFO or
-> TWARN in some cases and adding third variant would make things even
-> worse, sicne we would have three options.
-
-> So I would really keep just TINFO which is something that is printed by
-> default but does not propagate into results and TWARN that is printed as
-> well but propagates into results.
-
-> Maybe it would be even better to actually remove TWARN. That way we
-> would have only TFAIL and TBROK that propagate into results since TWARN
-> is kind of lesser TBROK anyways...
-
-Understand to your points. But tst_res TWARN is quite understandable
-(simple warning, which propagates), IMHO better to use than
-tst_res TBROK. But sure, feel free to go ahead and send a patch to remove TWARN.
-
-BTW I was also surprised how many tests use tst_resm TBROK ... / tst_resm(TBROK,
-...) followed by exit 1 / exit(1). These should be converted to tst_brkm TBROK /
-tst_resm(TBROK, ...).
-
-Other thing is, that I would prefer to have macro for tst_res(TINFO, "WARNING: ...")
-e.g. WARNING(...) would produce tst_res(TINFO, "WARNING: ...") from simple point I
-don't like to hardwire text (there can be typos). BTW more than for this rare
-case I would prefer to have macros for .tags, e.g. LINUX_GIT(43a6684519ab) would
-produce {"linux-git", "43a6684519ab"} CVE(2017-2671) would produce {"CVE", "2017-2671"}
-(again, typos).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
