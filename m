@@ -4,58 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EF7C27C4F
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:02:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 521D3C27C4F
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:03:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 52C5E3D0EB3
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:02:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DFFE13D0ED2
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:03:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E623A3CB74E
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:24:21 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=arnd@kernel.org;
+ by picard.linux.it (Postfix) with ESMTPS id 087EB3D0E06
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 14:30:04 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linuxfoundation.org (client-ip=145.40.73.55;
+ helo=sin.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0E0221A05C9C
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 18:24:20 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4F6E02064F9
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 14:30:02 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id B171BCE274F;
- Thu, 20 Jun 2024 16:24:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F7DDC4AF0A;
- Thu, 20 Jun 2024 16:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1718900656;
- bh=SxsG/TmKgeAvUmRAEjqsJKtLdqJlcUTp92xZHqYPbCE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OMV332YN3UjvJEF4PnM8J7A3bK1CfCxAJvquL4L87vNJ73iww9j8NMyNmkVNBsvmV
- oELQxErXhDcG6P1rKt8y5lu6a2LtBjPDcBah6AiMLmVxYXeGEBhJxOd4/D1epMMzGZ
- R142uU7a0qh37b/GbHePGcf2G6lBDkIXJDHA3VULLtdkpyqDFbxpJJwYBlv8bNnybT
- NRdb50Ap1szpwu+NWMfOfVqEAO3pAtzZW5KC2NWeEgPMl+6NXwN5MlGV9mMt/0P1So
- DLVL2wKXmHzpfpxUnklRuzv1N+j+tSSs3o7VuHKcFzF8ECtFLmrSwZtTUw4SUAvjB1
- Yb913TxCniLxA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Date: Thu, 20 Jun 2024 18:23:07 +0200
-Message-Id: <20240620162316.3674955-7-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240620162316.3674955-1-arnd@kernel.org>
-References: <20240620162316.3674955-1-arnd@kernel.org>
+ by sin.source.kernel.org (Postfix) with ESMTP id 1FEA1CE0F8F;
+ Thu, 20 Jun 2024 12:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB8B8C2BD10;
+ Thu, 20 Jun 2024 12:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1718886596;
+ bh=TbXzmIvEO7TjjoHW3NdmWzbgPUbd6HxMNpznqg0zLUI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=uyYxtf5f9af/GSBjoWdLh0kD+eKh3XfeErWbdm7wMgVmh8r0tFM3nTNhzKLG8PitN
+ h+uA3y2BoOThihevb1dlLDH/vGEfgWNdggjpfzcP48aUZw52muSvTR8XMmI6VHu6Cy
+ 8IL8J8nDCkw5OkKiWYylDmD2Qv2/Yxs6uVMQLxQ8=
+Date: Thu, 20 Jun 2024 14:29:53 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Message-ID: <2024062028-caloric-cost-2ab9@gregkh>
+References: <20240619125609.836313103@linuxfoundation.org>
+ <CA+G9fYtPV3kskAyc4NQws68-CpBrV+ohxkt1EEaAN54Dh6J6Uw@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtPV3kskAyc4NQws68-CpBrV+ohxkt1EEaAN54Dh6J6Uw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 21 Jun 2024 11:00:08 +0200
-Subject: [LTP] [PATCH 06/15] parisc: use correct compat recv/recvfrom
- syscalls
+Subject: Re: [LTP] [PATCH 6.9 000/281] 6.9.6-rc1 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,64 +62,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Rich Felker <dalias@libc.org>, Andreas Larsson <andreas@gaisler.com>,
- Guo Ren <guoren@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
- linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
- linux-sh@vger.kernel.org, linux-csky@vger.kernel.org,
- "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- musl@lists.openwall.com, Nicholas Piggin <npiggin@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, ltp@lists.linux.it,
- Brian Cain <bcain@quicinc.com>, Christian Brauner <brauner@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org,
- linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+Cc: Miaohe Lin <linmiaohe@huawei.com>, David Hildenbrand <david@redhat.com>,
+ lkft-triage@lists.linaro.org, patches@lists.linux.dev,
+ linux-mm <linux-mm@kvack.org>, stable@vger.kernel.org, jbeulich@suse.com,
+ shuah@kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+ f.fainelli@gmail.com, jonathanh@nvidia.com, patches@kernelci.org,
+ linux@roeck-us.net, Arnd Bergmann <arnd@arndb.de>, srw@sladewatkins.net,
+ broonie@kernel.org, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Cgroups <cgroups@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
+ rwarsow@gmx.de, pavel@denx.de, allen.lkml@gmail.com, conor@kernel.org,
+ linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+ torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Jun 20, 2024 at 05:21:09PM +0530, Naresh Kamboju wrote:
+> On Wed, 19 Jun 2024 at 18:41, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.9.6 release.
+> > There are 281 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 21 Jun 2024 12:55:11 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.9.6-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.9.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> There are two major issues on arm64 Juno-r2 on Linux stable-rc 6.9.6-rc1
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> 1)
+> The LTP controllers cgroup_fj_stress test cases causing kernel crash
+> on arm64 Juno-r2 with
+> compat mode testing with stable-rc 6.9 kernel.
+> 
+> In the recent past I have reported this issues on Linux mainline.
+> 
+> LTP: fork13: kernel panic on rk3399-rock-pi-4 running mainline 6.10.rc3
+>   - https://lore.kernel.org/all/CA+G9fYvKmr84WzTArmfaypKM9+=Aw0uXCtuUKHQKFCNMGJyOgQ@mail.gmail.com/
+> 
+> it goes like this,
+>   Unable to handle kernel NULL pointer dereference at virtual address
+>   ...
+>   Insufficient stack space to handle exception!
+>   end Kernel panic - not syncing: kernel stack overflow
+> 
+> 2)
+> The LTP controllers cgroup_fj_stress test suite causing kernel oops on
+> arm64 Juno-r2 (with the clang-night build toolchain).
+>   Unable to handle kernel NULL pointer dereference at virtual address
+> 0000000000000009
+>   Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
+>   pc : xprt_alloc_slot+0x54/0x1c8
+>   lr : xprt_alloc_slot+0x30/0x1c8
 
-Johannes missed parisc back when he introduced the compat version
-of these syscalls, so receiving cmsg messages that require a compat
-conversion is still broken.
+And these are regressions?  Any chance to run 'git bisect'?
 
-Use the correct calls like the other architectures do.
+thanks,
 
-Fixes: 1dacc76d0014 ("net/compat/wext: send different messages to compat tasks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/parisc/kernel/syscalls/syscall.tbl | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index b13c21373974..39e67fab7515 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -108,7 +108,7 @@
- 95	common	fchown			sys_fchown
- 96	common	getpriority		sys_getpriority
- 97	common	setpriority		sys_setpriority
--98	common	recv			sys_recv
-+98	common	recv			sys_recv			compat_sys_recv
- 99	common	statfs			sys_statfs			compat_sys_statfs
- 100	common	fstatfs			sys_fstatfs			compat_sys_fstatfs
- 101	common	stat64			sys_stat64
-@@ -135,7 +135,7 @@
- 120	common	clone			sys_clone_wrapper
- 121	common	setdomainname		sys_setdomainname
- 122	common	sendfile		sys_sendfile			compat_sys_sendfile
--123	common	recvfrom		sys_recvfrom
-+123	common	recvfrom		sys_recvfrom			compat_sys_recvfrom
- 124	32	adjtimex		sys_adjtimex_time32
- 124	64	adjtimex		sys_adjtimex
- 125	common	mprotect		sys_mprotect
--- 
-2.39.2
-
+greg k-h
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
