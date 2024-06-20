@@ -4,57 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ADBBC27C4F
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE39BC2BA1A
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:00:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E89A3CFE8B
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:00:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A93733D0E74
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:00:48 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E03B3C02E7
- for <ltp@lists.linux.it>; Tue, 18 Jun 2024 10:49:24 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=toshiba.co.jp (client-ip=210.130.202.158;
- helo=mo-csw.securemx.jp; envelope-from=nobuhiro1.iwamatsu@toshiba.co.jp;
- receiver=lists.linux.it)
-Received: from mo-csw.securemx.jp (mo-csw1122.securemx.jp [210.130.202.158])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 400F03CFE8B
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 13:51:23 +0200 (CEST)
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com
+ [IPv6:2607:f8b0:4864:20::e30])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AD964609A4C
- for <ltp@lists.linux.it>; Tue, 18 Jun 2024 10:49:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toshiba.co.jp;
- h=From:To:Cc
- :Subject:Date:Message-Id;i=nobuhiro1.iwamatsu@toshiba.co.jp;s=key2.smx;t=
- 1718700553; x=1719910153; bh=22rDbj2uUxAKtXpP1r73nQQfzeAbLWfMqEd5yFlyUlo=;
- b=Dc2
- BL3Gci1H2YJN596CoGMHfg327XAaE2yZtvPldD0QUTGoToLzPP36rd9FakaXSSihP9JSSCT//XbsQ
- nUuDOjJ5uDdAkvABveW5nQ151OpNYvE4NC5hS3wLPU/5t0c9ckTTHSoGP7MT05didHBKeXp6vLMvr
- /Jp8q3sz79itGHPNW9DsqPG6PHkAJi1OSxxr9baEbt8g/qpQgLX3nMrQ71jVFvyEJnScxL+32Xdos
- cy1u2GWGnNbBUQUy0xx6YjWwvHRJeoSKQp/C19EwX7dIPlXB0vKkzyvKTlABUSizKoQZ0eIC/L/Rw
- CFU2plzxatAicoCD1GcOOzWLjXtJ2VQ==;
-Received: by mo-csw.securemx.jp (mx-mo-csw1122) id 45I8nBqO2311352;
- Tue, 18 Jun 2024 17:49:13 +0900
-X-Iguazu-Qid: 2rWhYYPQFmWE2Srhvs
-X-Iguazu-QSIG: v=2; s=0; t=1718700550; q=2rWhYYPQFmWE2Srhvs;
- m=2ZPxrgQCg4sMCAVQNAu2gRiHT+ijGZOTyz3fYlTWgSk=
-Received: from imx12-a.toshiba.co.jp ([38.106.60.135])
- by relay.securemx.jp (mx-mr1121) id 45I8n8Sa3896642
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
- Tue, 18 Jun 2024 17:49:10 +0900
-From: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To: ltp@lists.linux.it
-Date: Tue, 18 Jun 2024 17:49:04 +0900
-X-TSB-HOP2: ON
-Message-Id: <1718700544-17304-1-git-send-email-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.7.4
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22660600797
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 13:51:22 +0200 (CEST)
+Received: by mail-vs1-xe30.google.com with SMTP id
+ ada2fe7eead31-48e56ae9ac7so291515137.3
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 04:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1718884281; x=1719489081; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=2bgNJiFTvXzfd9V1Bu90Pdh0gTgubeWAK8jGjDQQDkY=;
+ b=K/hDkGxq+9ueq9jHk4cR4rZ52XTxwEh8XlTYqtBYP4P8+5+Zzu/q76Ndr7hDC+tZ1u
+ MdxTLFupb+SEFrEvJIXhgIO0lGDLTdd70YtnrerQCoTM7xkV3W2vdBpDdEwVWpA6AmbF
+ KS1HDUAnsOmC77/rHHBxFjOFlxXjdZcPwWV1PPwhDj95YMeQuS0UN6/ylBow2NGszZ7p
+ gOsl8zJycPP3MJlpWCfa67EQkZikuH0R8kmJy0JD9U6bDF6UkYY2p0Ga7WkXZLOEqW/8
+ 9hzOZLF8iof9W69LOh3yod0Mz/Odt8DfvGfxPzVLD8CIIMT72IXyx45EWbv23iT8WTas
+ PaLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1718884281; x=1719489081;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=2bgNJiFTvXzfd9V1Bu90Pdh0gTgubeWAK8jGjDQQDkY=;
+ b=bVmW0Eh0rV6fmTf1jOzPlthg4FHC38RO41vkEvpapP1cA9WYlWhVyvPu+id8N02Omr
+ PwCAzjX+P+zU62Ddyx+9XIzQz0DRlyFDx92oqTI5GSEgnbZgrxZfxgxZXB0Q4bBJ8DQP
+ Kh5Q06YkMcj/dmODsjGlLKT5kerQKHpyDDuetIPbxYycFilYi0xWZINC0YeVBkcDpZx1
+ wmgozdrARASZRM74pe9pto1o/dgv6zQKB9vmJ7/B0SbWKDP89tV89NJmAhAjQ6CtZXT7
+ OBFs7gTajnI1NOhosp02Gvgwq7SnOPpU1hfc8xTHAcRHRHqzTgSkM3yaCZxiRbgnTF38
+ A27g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXBV/Vcz2TvvemDqKG86ZzJpv5KktVZz82j2SjfyliA7akdL3qHxxEazrSpMiytfoNh5gJV4MFbk9CFw2eu5mC8358=
+X-Gm-Message-State: AOJu0YzGs3d5cJ4C01Dn6/HFGEOoavY0CFNVMeuF9MXB5Y1f0ZInzfxX
+ 2vp+iHNQg+lPjaPA7gj6Ni+z23C8/WA2EWCvi4WAs4VrfV6NgLRD12FK9sN08Psq/u6jc+2ub16
+ ez4lwCopawd+trfqgX39lbuKOLw4Hu0hhH8QApg==
+X-Google-Smtp-Source: AGHT+IGZfPkWsM7N3Gsj51E+988dSB/D/Zg80mWbI0dZpf/96I1y1F/MMX2R+yCoqRRbh8zOr1KuVEtFD2at1ZvS9fM=
+X-Received: by 2002:a05:6102:743:b0:48f:205e:9b8 with SMTP id
+ ada2fe7eead31-48f205e0aafmr2808952137.34.1718884280677; Thu, 20 Jun 2024
+ 04:51:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20240619125609.836313103@linuxfoundation.org>
+In-Reply-To: <20240619125609.836313103@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 20 Jun 2024 17:21:09 +0530
+Message-ID: <CA+G9fYtPV3kskAyc4NQws68-CpBrV+ohxkt1EEaAN54Dh6J6Uw@mail.gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 21 Jun 2024 11:00:08 +0200
-Subject: [LTP] [PATCH] lib: tst_fd: Add kernel version check to memfd_secret
+Subject: Re: [LTP] [PATCH 6.9 000/281] 6.9.6-rc1 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,85 +79,244 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
+Cc: Miaohe Lin <linmiaohe@huawei.com>, David Hildenbrand <david@redhat.com>,
+ lkft-triage@lists.linaro.org, patches@lists.linux.dev,
+ linux-mm <linux-mm@kvack.org>, stable@vger.kernel.org, jbeulich@suse.com,
+ shuah@kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+ f.fainelli@gmail.com, jonathanh@nvidia.com, patches@kernelci.org,
+ linux@roeck-us.net, Arnd Bergmann <arnd@arndb.de>, srw@sladewatkins.net,
+ broonie@kernel.org, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Cgroups <cgroups@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
+ rwarsow@gmx.de, pavel@denx.de, allen.lkml@gmail.com, conor@kernel.org,
+ linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+ torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-memfd_secret is a syscall added since 5.14. On earlier kernels, tests such
-as accept03, readahead01 and splice07 that use memfd_secret fail.
-This adds a kernel version check to the tst_fd library when running tests using
-memfd_secret.
+On Wed, 19 Jun 2024 at 18:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.9.6 release.
+> There are 281 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 21 Jun 2024 12:55:11 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.9.6-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Test log on linux-5.10.162/arm32 with version 20240524:
-```
-$ ./testcases/kernel/syscalls/accept/accept03
-tst_test.c:1733: TINFO: LTP version: 20240524
-tst_test.c:1617: TINFO: Timeout per run is 0h 00m 30s
-accept03.c:58: TPASS: accept() on file : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on O_PATH file : EBADF (9)
-accept03.c:58: TPASS: accept() on directory : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on /dev/zero : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on /proc/self/maps : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on pipe read end : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on pipe write end : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on epoll : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on eventfd : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on signalfd : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on timerfd : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on pidfd : ENOTSOCK (88)
-tst_fd.c:151: TCONF: Skipping fanotify: ENOSYS (38)
-accept03.c:58: TPASS: accept() on inotify : ENOTSOCK (88)
-tst_fd.c:170: TCONF: Skipping userfaultfd: ENOSYS (38)
-accept03.c:58: TPASS: accept() on perf event : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on io uring : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on bpf map : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on fsopen : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on fspick : ENOTSOCK (88)
-accept03.c:58: TPASS: accept() on open_tree : EBADF (9)
-accept03.c:58: TPASS: accept() on memfd : ENOTSOCK (88)
-tst_test.c:1677: TBROK: Test killed by SIGILL!
+There are two major issues on arm64 Juno-r2 on Linux stable-rc 6.9.6-rc1
 
-Summary:
-passed   20
-failed   0
-broken   1
-skipped  2
-warnings 0
-```
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Closed: #1145
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- lib/tst_fd.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+1)
+The LTP controllers cgroup_fj_stress test cases causing kernel crash
+on arm64 Juno-r2 with
+compat mode testing with stable-rc 6.9 kernel.
 
-diff --git a/lib/tst_fd.c b/lib/tst_fd.c
-index 6538a098c..53f583fa0 100644
---- a/lib/tst_fd.c
-+++ b/lib/tst_fd.c
-@@ -255,8 +255,16 @@ static void open_memfd(struct tst_fd *fd)
- 
- static void open_memfd_secret(struct tst_fd *fd)
- {
-+	if ((tst_kvercmp(5, 14, 0)) < 0) {
-+		tst_res(TINFO, "accept() on %s: Linux kernel version is before than v5.14", tst_fd_desc(fd));
-+		errno = ENOSYS;
-+		goto skip;
-+	}
-+
- 	fd->fd = syscall(__NR_memfd_secret, 0);
-+
- 	if (fd->fd < 0) {
-+skip:
- 		tst_res(TCONF | TERRNO,
- 			"Skipping %s", tst_fd_desc(fd));
- 	}
--- 
-2.43.0
+In the recent past I have reported this issues on Linux mainline.
+
+LTP: fork13: kernel panic on rk3399-rock-pi-4 running mainline 6.10.rc3
+  - https://lore.kernel.org/all/CA+G9fYvKmr84WzTArmfaypKM9+=Aw0uXCtuUKHQKFCNMGJyOgQ@mail.gmail.com/
+
+it goes like this,
+  Unable to handle kernel NULL pointer dereference at virtual address
+  ...
+  Insufficient stack space to handle exception!
+  end Kernel panic - not syncing: kernel stack overflow
+
+2)
+The LTP controllers cgroup_fj_stress test suite causing kernel oops on
+arm64 Juno-r2 (with the clang-night build toolchain).
+  Unable to handle kernel NULL pointer dereference at virtual address
+0000000000000009
+  Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
+  pc : xprt_alloc_slot+0x54/0x1c8
+  lr : xprt_alloc_slot+0x30/0x1c8
 
 
+Details of crash log:
+1)
+Crash log:
+-----------
+cgroup_fj_stress 1 TINFO: Running: cgroup_fj_stress.sh cpuacct 200 1 none
+cgroup_fj_stress 1 TINFO: timeout per run is 0h 50m 0s
+tst_cgroup.c:764: TINFO: Mounted V1 cpuacct CGroup on
+/scratch/ltp-iiltEE0UOm/cgroup_cpuacct
+cgroup_fj_stress 1 TINFO: test starts with cgroup version 1
+cgroup_fj_stress 1 TINFO: Creating subgroups ...
+[ 1785.477847] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000070
+[ 1785.486682] Mem abort info:
+[ 1785.489477]   ESR = 0x0000000096000004
+[ 1785.493232]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 1785.498555]   SET = 0, FnV = 0
+[ 1785.501613]   EA = 0, S1PTW = 0
+[ 1785.504757]   FSC = 0x04: level 0 translation fault
+[ 1785.509643] Data abort info:
+[ 1785.512526]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[ 1785.518021]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[ 1785.523082]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+..
+[ 1786.235715] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000070
+..
+[ 1786.286238] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000070
+..
+[ 1786.336761] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000070
+[ 1786.345564] Mem abort info:
+[ 1786.348359]   ESR = 0x0000000096000004
+[ 1786.352112]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 1786.357434]   SET = 0, FnV = 0
+[ 1786.360492]   EA = 0, S1PTW = 0
+[ 1786.363637]   FSC = 0x04: level 0 translation fault
+[ 1786.368523] Data abort info:
+[ 1786.371405]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[ 1786.376900]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[ 1786.381960]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[ 1786.387284] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000070
+[ 1786.387293] Insufficient stack space to handle exception!
+[ 1786.387296] ESR: 0x0000000096000047 -- DABT (current EL)
+[ 1786.387302] FAR: 0xffff80008399ffe0
+[ 1786.387306] Task stack:     [0xffff8000839a0000..0xffff8000839a4000]
+[ 1786.387312] IRQ stack:      [0xffff8000837f8000..0xffff8000837fc000]
+[ 1786.387319] Overflow stack: [0xffff00097ec95320..0xffff00097ec96320]
+[ 1786.387327] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 6.9.6-rc1 #1
+[ 1786.387338] Hardware name: ARM Juno development board (r2) (DT)
+[ 1786.387344] pstate: a00003c5 (NzCv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 1786.387355] pc : _prb_read_valid (kernel/printk/printk_ringbuffer.c:2109)
+[ 1786.387374] lr : prb_read_valid (kernel/printk/printk_ringbuffer.c:2183)
+[ 1786.387385] sp : ffff80008399ffe0
+[ 1786.387390] x29: ffff8000839a0030 x28: ffff000800365f00 x27: ffff800082530008
+[ 1786.387407] x26: ffff8000834e33b8 x25: ffff8000839a00b0 x24: 0000000000000001
+[ 1786.387423] x23: ffff8000839a00a8 x22: ffff8000830e3e40 x21: 0000000000001e9e
+[ 1786.387438] x20: 0000000000000000 x19: ffff8000839a01c8 x18: 0000000000000010
+[ 1786.387453] x17: 72646461206c6175 x16: 7472697620746120 x15: 65636e6572656665
+[ 1786.387468] x14: 726564207265746e x13: 3037303030303030 x12: 3030303030303030
+[ 1786.387483] x11: 2073736572646461 x10: ffff800083151ea0 x9 : ffff80008014273c
+[ 1786.387498] x8 : ffff8000839a0120 x7 : 0000000000000000 x6 : 0000000000000e9f
+[ 1786.387512] x5 : ffff8000839a00c8 x4 : ffff8000837157c0 x3 : 0000000000000000
+[ 1786.387526] x2 : ffff8000839a00b0 x1 : 0000000000000000 x0 : ffff8000830e3f58
+[ 1786.387542] Kernel panic - not syncing: kernel stack overflow
+[ 1786.387549] SMP: stopping secondary CPUs
+[ 1787.510055] SMP: failed to stop secondary CPUs 0,4
+[ 1787.510065] Kernel Offset: disabled
+[ 1787.510068] CPU features: 0x4,00001061,e0100000,0200421b
+[ 1787.510076] Memory Limit: none
+[ 1787.680436] ---[ end Kernel panic - not syncing: kernel stack overflow ]---
+
+2) Kernel oops log:
+-----------
+[ 1094.253182]  __secondary_switched+0xb8/0xc0
+[ 1094.258306] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000009
+[ 1094.267132] Mem abort info:
+[ 1094.269938]   ESR = 0x0000000096000044
+[ 1094.273701]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 1094.279031]   SET = 0, FnV = 0
+[ 1094.282097]   EA = 0, S1PTW = 0
+[ 1094.285242]   FSC = ranslation fault
+[ 1094.290136] Data abort info:
+[ 1094.293019]   ISV = 0, ISS = 0x00000044, ISS2 = 0x00000000
+[ 1094.298523]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
+[ 1094.303592]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[ 1094.308921] user pgtable: 4k bit VAs, pgdp=00000008a2a34000
+[ 1094.315383] [0000000000000009] pgd=0000000000000000, p4d=0000000000000000
+[ 1094.322211] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
+[ 1094.328489] Modules linked in: btrfs xor xor_neon raid6_pq
+zstd_compress libcrc38x hdlcd cec drm_dma_helper onboard_usb_hub
+crct10dif_ce drm_kms_helper fuse drm backlight dm_mod ip_tables
+x_tables
+[ 1094.346744] CPU: 1 PID: 161 Comm: systemd-journal Tainted: G
+W          6.9.6-rc1 #1
+[ 1094.355112] Hardware name: ARM Juno development board (r2) (DT)
+[ 1094.361038] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 1094.368013] pc : xprt_alloc_slot+0x54/0x1c8
+[ 1094.372208] lr : xprt_alloc_slot+0x30/0x1c8
+[ 1094.376398] sp : ffff800082dc37e0
+[ 1094.379713] x29: ffff800082dc37e0 x28: ffff8000814d31c8 x27: 0000000000008080
+[ 1094.386868] x26: ffff8000825da000 x25: 0000000000000001 x24: 0000000000440100
+[ 1094.394022] x23: ffff000821759300 x22: 0000000000002102 x21: ffff00082d39d000
+[ 1094.401176] x20: ffff00082201f800 x19: ffff0008225bf400 x18: 0000000000000000
+[ 1094.408329] x17: 0000000000000000 x16: 0000000000000800 x15: 8080008000000000
+[ 1094.415483] x14: 0000ff0064656873 x13: ffff800082dc0000 x12: 0000000000000022
+[ 1094.422636] x11: dead000000000100 x10: 0000000000000001 x9 : 0000000000000000
+[ 1094.429790] x8 : ffff00082d39d0c8 x7 : 0000000000000000 x6 : 0000000000000000
+[ 1094.436942] x5 : 0000000000000000 x4 : ffff00097ec4c530 x3 : ffff800082dc3790
+[ 1094.444096] x2 : ffff000821759300 x1 : 0000000000000000 x0 : ffff800081583770
+[ 1094.451249] Call trace:
+[ 1094.453694]  xprt_alloc_slot+0x54/0x1c8
+[ 1094.457536]  xprt_reserve+0x6c/0xe8
+[ 1094.461029]  call_reserve+0x2c/0x40
+[ 1094.464522]  __rpc_execute+0x124/0x640
+[ 1094.468280]  rpc_execute+0x100/0x280
+[ 1094.471862]  rpc_run_task+0x124/0x1e8
+[ 1094.475528]  rpc_call_sync+0x58/0xc0
+[ 1094.479106]  nfs3_proc_getattr+0x94/0xf8
+[ 1094.483037]  __nfs_revalidate_inode+0x13c/0x310
+[ 1094.487575]  nfs_access_get_cached+0x23c/0x3b8
+[ 1094.492024]  nfs_do_access+0x74/0x2b8
+[ 1094.495689]  nfs_permission+0xb8/0x1e0
+[ 1094.499441]  inode_permission+0xc4/0x170
+[ 1094.503371]  link_path_walk+0x100/0x3e0
+[ 1094.507215]  path_lookupat+0x74/0x130
+[ 1094.510882]  filename_lookup+0xdc/0x1d8
+[ 1094.514724]  user_path_at_empty+0x58/0x108
+[ 1094.518828]  do_faccessat+0x178/0x330
+[ 1094.522495]  __arm64_sys_faccessat+0x30/0x48
+[ 1094.526771]  invoke_syscall+0x4c/0x118
+[ 1094.530528]  el0_svc_common+0x8c/0xf0
+[ 1094.534197]  do_el0_svc+0x28/0x40
+[ 1094.537518]  el0_svc+0x40/0x88
+[ 1094.540576]  el0t_64_sync_handler+0x90/0x100
+[ 1094.544853]  el0t_64_sync+0x190/0x198
+[ 1094.548522] Code: d280200b f2fbd5ab 5280044c d1032115 (f9000549)
+[ 1094.554623] ---[ end trace 0000000000000000 ]---
+[ 1094.559268] note: systemd-journal[161] exited with preempt_count 1
+[ 1115.569495] rcu: INFO: rcu_preempt self-detected stall on CPU
+
+
+Links:
+------
+1)
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6.9.5-282-g93f303762da5/testrun/24410131/suite/log-parser-test/test/check-kernel-panic/log
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6.9.5-282-g93f303762da5/testrun/24410131/suite/log-parser-test/test/check-kernel-panic-a44367e5836148d6e94412d6de8ab7a0ca37c18d2bfb6a639947ecd2704ad6b1/details/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2i6h1Ah6I8CP7ABUzTl9shfaW60
+ - https://lkft.validation.linaro.org/scheduler/job/7687060#L23314
+
+2)
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6.9.5-282-g93f303762da5/testrun/24410890/suite/log-parser-test/test/check-kernel-oops/log
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6.9.5-282-g93f303762da5/testrun/24410890/suite/log-parser-test/test/check-kernel-exception-55b962f42ea3dfdcb5c7b6c7ceee184b48ae8d479f430f7b31241f220adcb542/details/
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6.9.5-282-g93f303762da5/testrun/24410890/suite/log-parser-test/tests/
+ - https://lkft.validation.linaro.org/scheduler/job/7688690#L16336
+
+
+Build details:
+-------
+* kernel: 6.9.6-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.9.y
+* git commit: 93f303762da5a9d9c2c72cac615d4d092ce42b1f
+* git describe: v6.9.5-282-g93f303762da5
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
