@@ -4,146 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73B0CC2BA1A
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C2EFC27C4F
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1718960843; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=WBruxvBoHRVApflybNxfpoWr5ZEk1eyNA6oc4SG2Kbs=;
+ b=mT2D1M1GwTfu3EOrqg2zoto+6gKxpsqtUVR8BEbKjVXEzmlAN2Ie3+s9W9gcos+7Uk4Do
+ nzzXWs6zAsuAEfju7ub0Ue77QzWSCxf5pp/o8wg/od+HkDoXrpQw6/2EHmhKJL8XVQwdcpq
+ tyNveo7zW03eEKmeN0AVlXkej2azA+s=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1100F3D0FAA
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:07:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A697F3D0F7B
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:07:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D7ED43CFE8B
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 21:31:25 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=david@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 4C5E43CB74E
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 23:23:06 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=gmx.de
+ (client-ip=212.227.15.15; helo=mout.gmx.net; envelope-from=deller@gmx.de;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 055DE6022DA
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 21:31:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1718911883;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=G45UoON6v+it5Xc8gJfipBY0/k2jsQBfWJWN4FYkCH0=;
- b=TenbyDuUgh2cO+ibZvTMVSXuU3kiOzlJ59qt1HGvcZaLcLTDXUnsSTJJ0V9zHeeCkWjCcL
- gUbzm3UUMf821rB/OcFYL3NNSZTVbogEmA/NJLUIppRdPkf0VqqWhX8Tz7QV7sT2WG2Jvo
- y+P738UsJCtabzy0hC6DZtLjVgl6QbY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-2UJTRY3WPKqDmq1k0N-fPA-1; Thu, 20 Jun 2024 15:31:20 -0400
-X-MC-Unique: 2UJTRY3WPKqDmq1k0N-fPA-1
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-362763f8d2eso608883f8f.3
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 12:31:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1718911879; x=1719516679;
- h=content-transfer-encoding:in-reply-to:organization:autocrypt
- :content-language:from:references:cc:to:subject:user-agent
- :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to;
- bh=G45UoON6v+it5Xc8gJfipBY0/k2jsQBfWJWN4FYkCH0=;
- b=GpoM3ho20VpCgd1W9k0YIbdj+KXXl/UFOS1DMAMTy7yCZN1KLS0osW3pMVHFXXmUlV
- ++T/yjReNtWyyzk8n1E0M2Gj310pStAe4G/cWYHrZRHk8PNREW5fPYTUlkD8GIOd/dhz
- mCO3MtDXpGsIIpf4ubjC9Wx07SWgW2OvD0gPpOaeJ8lbZtHVlqEz67YPWV+Qy1ohIBpq
- 33oTXqqwOx1e8hI3/J9KEOnKef9kLid1NTory5psnK3PWimJV6yuT+Y8uimYVZy2/WBD
- SgjuHckYfCJ6IPfoiOMPXOxMH6xFg4BX9F6f6LT8OtszNmJ6cpt2xY7R7KPlJj8dAeLm
- n+YQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWMYCYcygOO7QMZcYJT6gfAaIuRUee9UM0yepW14MGP5YZe/gTFxESBm3Pj3Xd7V93+onSZXMeSCbc9KgubKYE035Y=
-X-Gm-Message-State: AOJu0YxXOMABCOeyUA59f46Tdm9qUzzv3YwT2Wrm5b25w88RA1RVXn6a
- xlkbNKAziMc1mWrp4/lfSF6U1JS/uySfhdzEQ1qKrIyUYo56yyQ7Uo/2JsUDMjNB7Ul7BwSjA0S
- Okb4ZoGlJa3sRLKL2RQD2ehcC5Ecy3xwaMFwZP4xO7wZ2UWpx
-X-Received: by 2002:a05:6000:459e:b0:35f:f90:f383 with SMTP id
- ffacd0b85a97d-363195b1a17mr3954398f8f.56.1718911879368; 
- Thu, 20 Jun 2024 12:31:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFPX9p5DHYoAnqSxI/KYGBLxNvxCKZJ9fr0+v5glAOA4M8Akmwl58KZHLYUyco+zkPvuXAjw==
-X-Received: by 2002:a05:6000:459e:b0:35f:f90:f383 with SMTP id
- ffacd0b85a97d-363195b1a17mr3954365f8f.56.1718911878933; 
- Thu, 20 Jun 2024 12:31:18 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c719:5b00:61af:900f:3aef:3af3?
- (p200300cbc7195b0061af900f3aef3af3.dip0.t-ipconnect.de.
- [2003:cb:c719:5b00:61af:900f:3aef:3af3])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3615d7a1a0csm8022368f8f.23.2024.06.20.12.31.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 20 Jun 2024 12:31:18 -0700 (PDT)
-Message-ID: <d961070e-d261-4227-b044-dc73f9f8ca16@redhat.com>
-Date: Thu, 20 Jun 2024 21:31:16 +0200
+ key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4B24C2002DE
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 23:23:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+ s=s31663417; t=1718918524; x=1719523324; i=deller@gmx.de;
+ bh=6VCd1TqwAbp3zAEcjaKM6L/q747d5LQnckUw8HW0fKQ=;
+ h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+ References:From:In-Reply-To:Content-Type:
+ Content-Transfer-Encoding:cc:content-transfer-encoding:
+ content-type:date:from:message-id:mime-version:reply-to:subject:
+ to;
+ b=KnHLzNaETegScDXA4KLTbpOouNlDC5HK80KPxpnpc40DX4T77w59Ss3e/HCAWSye
+ B5FFpnXjd36IThbLSgp9AsD1FIjyapMoaXduiedhffga9f8izZAcQieP/arXioZr1
+ JKTwkwKglRCGFTD34YyX5mgixXE+4SieRCr0oc2R4CDSn++J7hULKoKmY/5cX3jPf
+ Uotwdjhj0gZS3ylvnDgxiDkmmDvNJtaAk2YPeg837491xS6QrhgubQkxJhTUMX/O8
+ vU+csoxYJ8FEp1YyPi6pumi5ketDs80L0fdIZ88ioSMXKu5/pWdh1iQEghPUO2QQU
+ E6PtQWx0ll+p+Yvz5g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([109.250.63.133]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MJmKh-1s5LBS43M9-00LsXl; Thu, 20
+ Jun 2024 23:22:04 +0200
+Message-ID: <e80809ba-ee81-47a5-9b08-54b11f118a78@gmx.de>
+Date: Thu, 20 Jun 2024 23:21:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20240619125609.836313103@linuxfoundation.org>
- <CA+G9fYtPV3kskAyc4NQws68-CpBrV+ohxkt1EEaAN54Dh6J6Uw@mail.gmail.com>
- <2024062028-caloric-cost-2ab9@gregkh>
- <CA+G9fYsr0=_Yzew1uyUtrZ7ayZFYqmaNzAwFZJPjFnDXZEwYcQ@mail.gmail.com>
- <36a38846-0250-4ac2-b2d0-c72e00d6898d@redhat.com>
- <CA+G9fYv4fZiB-pL7=4SNfudh2Aqknf5+OXo1RFAFRhJFZMsEsg@mail.gmail.com>
- <3cd2cdca-5c89-447e-b6f1-f68112cf3f7b@redhat.com>
- <CA+G9fYutNa9ziuj7aayhukaMdxKFU9+81qKAjZbQ=dQa3fwYYg@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CA+G9fYutNa9ziuj7aayhukaMdxKFU9+81qKAjZbQ=dQa3fwYYg@mail.gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+To: Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240620162316.3674955-1-arnd@kernel.org>
+ <20240620162316.3674955-8-arnd@kernel.org>
 Content-Language: en-US
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20240620162316.3674955-8-arnd@kernel.org>
+X-Provags-ID: V03:K1:cTOmKaZgB4+8zdTJJh1n5TDacfeJ38i7AgNBdwGwc4CoHa/X8U4
+ bE+1vJy0vhvQ2uWD+vixAMUbThDwHKmI1c65UoVWRiM/nQoMEdjbqq1otbBNx+OGkFQx4fn
+ mgJ5rTZYpK+2fKlwVnN5rHKZd/pen/VHbL9pcK3jqJcyR3UYVt4o8k+0GGaMmIGz+hI3M7M
+ mxH58vLwhXQKSSi6vLPJg==
+UI-OutboundReport: notjunk:1;M01:P0:x5UQlMD/2YU=;CsNl/nTOJkYUZhki9fDs6q9vDdf
+ oM+hcHUSHc2ExRaAv7sWxiFIV8RJgpM+0H30e2S+d0xjY5m5CFKsoiphUxhHCh4nDQzy9j4f/
+ CAskEQ1LAWY63KLspKWj1iGcZmCy15ITifFhVoSXQpQDvhWolZHd+sZ/FWzC9Jskhw58xC3St
+ zCb4lTQHRcOW3K1ff+yoDOzakZ+eIJFBCtjWod6xoF7MIYAl1aLPFkYJTwRNB2/I9SmW27sg4
+ lO6OtLdS7MW2LW5Z51kQkGtA8pg1iScpKIwu9GRxCU4nEvo+WsH0N+ANLqOcuQUexTYTNBMVo
+ grsDY67nIhqyh2iE5ily0sSTCby/JVN9stnKQW+s0gbtMpxa2VT6zy4UvXaTolnHPmzaX1z9+
+ E/8tW6ZOsyl9AFn0H+Uh1HmbcHDxK0yVbK8WU3bVEcpJ63PUlFdD70l1k7BrQ57p6yNrWKR+e
+ w0mlz7jE2kn5yoCFlcZjPKc3Wy5/aGfcXSBOT92fvinOiFkULNI76JsjwtbKefoj8xeEj1Ife
+ EI9MfxKRMepPXxJ5+zkDukmniYaJihem8WojdMAe1HdqPseztXPpwCEhMVIB6vTlJGNuofmIQ
+ yLv4eyDDE2Y2CIdo2MYGlDlXh0hvgYVjJSDwEDyBEZmo37kVFpruNTpwigw3f8pTFtIj3GS3J
+ WRTi/Qd3p8WceIYbj3c2sSF4dSzle72ZmdOqSRxapMn5CasyJmt8R9AW5ygWmr+mivL1X4F/1
+ fBo8Go3QBJop+BznMDn+WSuee6eImhKYr1ixjpi5z4KOmxDsWMfflgHzm21WPAGAqegbt8keP
+ y6o3DzmUma2nfAV/lB6gdbPyBEkpAuZoY91r3fqj87H6I=
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 21 Jun 2024 11:00:08 +0200
-Subject: Re: [LTP] [PATCH 6.9 000/281] 6.9.6-rc1 review
+Subject: Re: [LTP] [PATCH 07/15] parisc: use generic sys_fanotify_mark
+ implementation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,38 +140,136 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Miaohe Lin <linmiaohe@huawei.com>, lkft-triage@lists.linaro.org,
- patches@lists.linux.dev, linux-mm <linux-mm@kvack.org>, stable@vger.kernel.org,
- jbeulich@suse.com, shuah@kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
- f.fainelli@gmail.com, jonathanh@nvidia.com, patches@kernelci.org,
- linux@roeck-us.net, Arnd Bergmann <arnd@arndb.de>, srw@sladewatkins.net,
- broonie@kernel.org, Baolin Wang <baolin.wang@linux.alibaba.com>,
- Cgroups <cgroups@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
- rwarsow@gmx.de, pavel@denx.de, allen.lkml@gmail.com, conor@kernel.org,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- akpm@linux-foundation.org, torvalds@linux-foundation.org,
- sudipm.mukherjee@gmail.com
+From: Helge Deller via ltp <ltp@lists.linux.it>
+Reply-To: Helge Deller <deller@gmx.de>
+Cc: Rich Felker <dalias@libc.org>, Andreas Larsson <andreas@gaisler.com>,
+ Guo Ren <guoren@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+ linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+ linux-sh@vger.kernel.org, linux-csky@vger.kernel.org,
+ "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ musl@lists.openwall.com, Nicholas Piggin <npiggin@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, ltp@lists.linux.it,
+ Brian Cain <bcain@quicinc.com>, Christian Brauner <brauner@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org,
+ linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+ Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+ linux-hexagon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On 6/20/24 18:23, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The sys_fanotify_mark() syscall on parisc uses the reverse word order
+> for the two halves of the 64-bit argument compared to all syscalls on
+> all 32-bit architectures. As far as I can tell, the problem is that
+> the function arguments on parisc are sorted backwards (26, 25, 24, 23,
+> ...) compared to everyone else,
 
->>>>
->> Trying to connect the dots here, can you enlighten me how this is
->> related to the fork13 mainline report?
-> 
-> I am not sure about the relation between these two reports.
-> But as a common practice I have shared that report information.
+r26 is arg0, r25 is arg1, and so on.
+I'm not sure I would call this "sorted backwards".
+I think the reason is simply that hppa is the only 32-bit big-endian
+arch left...
 
-Yes, I was just briefly concerned that we are seeing the same issue as 
-we saw once on 6.10-rc3 also on a 6.9 kernel -- also because the patch 
-list don't contain that much MM stuff.
+> so the calling conventions of using an
+> even/odd register pair in native word order result in the lower word
+> coming first in function arguments, matching the expected behavior
+> on little-endian architectures. The system call conventions however
+> ended up matching what the other 32-bit architectures do.
+>
+> A glibc cleanup in 2020 changed the userspace behavior in a way that
+> handles all architectures consistently, but this inadvertently broke
+> parisc32 by changing to the same method as everyone else.
 
--- 
-Cheers,
+I appreciate such cleanups to make arches consistent.
+But it's bad if breakages aren't noticed or reported then...
 
-David / dhildenb
+> The change made it into glibc-2.35 and subsequently into debian 12
+> (bookworm), which is the latest stable release. This means we
+> need to choose between reverting the glibc change or changing the
+> kernel to match it again, but either hange will leave some systems
+> broken.
+>
+> Pick the option that is more likely to help current and future
+> users and change the kernel to match current glibc.
+
+Agreed (assuming we have really a problem on parisc).
+
+> This also
+> means the behavior is now consistent across architectures, but
+> it breaks running new kernels with old glibc builds before 2.35.
+>
+> Link: https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=d150181d73d9
+> Link: https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/arch/parisc/kernel/sys_parisc.c?h=57b1dfbd5b4a39d
+> Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I found this through code inspection, please double-check to make
+> sure I got the bug and the fix right.
+
+The patch looks good at first sight.
+I'll pick it up in my parisc git tree and will do some testing the
+next few days and then push forward for 6.11 when it opens....
+
+Thank you!!
+
+Helge
+
+> The alternative is to fix this by reverting glibc back to the
+> unusual behavior.
+> ---
+>   arch/parisc/Kconfig                     | 1 +
+>   arch/parisc/kernel/sys_parisc32.c       | 9 ---------
+>   arch/parisc/kernel/syscalls/syscall.tbl | 2 +-
+>   3 files changed, 2 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index daafeb20f993..dc9b902de8ea 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -16,6 +16,7 @@ config PARISC
+>   	select ARCH_HAS_UBSAN
+>   	select ARCH_HAS_PTE_SPECIAL
+>   	select ARCH_NO_SG_CHAIN
+> +	select ARCH_SPLIT_ARG64 if !64BIT
+>   	select ARCH_SUPPORTS_HUGETLBFS if PA20
+>   	select ARCH_SUPPORTS_MEMORY_FAILURE
+>   	select ARCH_STACKWALK
+> diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
+> index 2a12a547b447..826c8e51b585 100644
+> --- a/arch/parisc/kernel/sys_parisc32.c
+> +++ b/arch/parisc/kernel/sys_parisc32.c
+> @@ -23,12 +23,3 @@ asmlinkage long sys32_unimplemented(int r26, int r25, int r24, int r23,
+>       	current->comm, current->pid, r20);
+>       return -ENOSYS;
+>   }
+> -
+> -asmlinkage long sys32_fanotify_mark(compat_int_t fanotify_fd, compat_uint_t flags,
+> -	compat_uint_t mask0, compat_uint_t mask1, compat_int_t dfd,
+> -	const char  __user * pathname)
+> -{
+> -	return sys_fanotify_mark(fanotify_fd, flags,
+> -			((__u64)mask1 << 32) | mask0,
+> -			 dfd, pathname);
+> -}
+> diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+> index 39e67fab7515..66dc406b12e4 100644
+> --- a/arch/parisc/kernel/syscalls/syscall.tbl
+> +++ b/arch/parisc/kernel/syscalls/syscall.tbl
+> @@ -364,7 +364,7 @@
+>   320	common	accept4			sys_accept4
+>   321	common	prlimit64		sys_prlimit64
+>   322	common	fanotify_init		sys_fanotify_init
+> -323	common	fanotify_mark		sys_fanotify_mark		sys32_fanotify_mark
+> +323	common	fanotify_mark		sys_fanotify_mark		compat_sys_fanotify_mark
+>   324	32	clock_adjtime		sys_clock_adjtime32
+>   324	64	clock_adjtime		sys_clock_adjtime
+>   325	common	name_to_handle_at	sys_name_to_handle_at
 
 
 -- 
