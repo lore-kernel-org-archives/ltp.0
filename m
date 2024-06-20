@@ -4,85 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E083DC27C53
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 03:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ABA9C27C79
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 03:29:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 159163D0DFC
-	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 05:13:29 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6D6773D0DFC
+	for <ltp@archiver.kernel.org>; Thu, 20 Jun 2024 05:29:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF3263CB74E
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 05:13:11 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=canonical.com (client-ip=185.125.188.123;
- helo=smtp-relay-internal-1.canonical.com;
+ by picard.linux.it (Postfix) with ESMTPS id BE9B53D0DBB
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 05:29:09 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=canonical.com (client-ip=185.125.188.120;
+ helo=smtp-relay-canonical-0.canonical.com;
  envelope-from=po-hsu.lin@canonical.com; receiver=lists.linux.it)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2CD1B600839
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 05:13:09 +0200 (CEST)
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B7AC41001295
+ for <ltp@lists.linux.it>; Thu, 20 Jun 2024 05:29:08 +0200 (CEST)
+Received: from Phocidae.conference (1.general.phlin.uk.vpn [10.172.194.38])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id ADD7D3F0E4
- for <ltp@lists.linux.it>; Thu, 20 Jun 2024 03:13:08 +0000 (UTC)
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6A4C53F2E2; 
+ Thu, 20 Jun 2024 03:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1718853188;
- bh=Jdbzgpr2eoB78XZODohowR6w4ayULnKIBHA5bx4Zq+U=;
- h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
- To:Cc:Content-Type;
- b=IbEfp8UhhQowl2bnHHbbzibWZUYFOo+caqocus2GT2+FW0/UuTo85f792xPa5S6Cp
- g+gjNNpDgnOZC1vZz4K3QIVxv9TIzZgkn4HNNTW7pUwLIuW3YuOEKu/jWJj6NbYoQU
- krUJatl2gTRsKJs1ePC3fEPvy+T2pz0UKaGXRjOHQ+SQFEXFp+mx344F8PKLcBPm/V
- MQwnvaESVQ0oRiCBsa0cvAMKR+55Zz3XfxM5Jc86zgC9tlm6qPRgr75vgtXK5LgjmC
- PLQoq07ezBV1Ws9roB86Wz6okgHoOb03Bd5whh7YRQQfh/6g3pJpm36Hv7c+BAkJrF
- oN002a1BjXihQ==
-Received: by mail-ej1-f69.google.com with SMTP id
- a640c23a62f3a-a6ef9e87ef1so13577966b.3
- for <ltp@lists.linux.it>; Wed, 19 Jun 2024 20:13:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1718853188; x=1719457988;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Jdbzgpr2eoB78XZODohowR6w4ayULnKIBHA5bx4Zq+U=;
- b=j/cnXntvQ1o1DJt9d7C2UgnqXhbEpckYwxXKNgfaz5ckojdx+I3ATb8zUYT4nBhK3h
- qepKu2p/ogDYtwccNRudYzZSZWm1joS3R1kdQdLwQYjy4UEDCtQF9F+DveYaSPBzb1a0
- HGDeGLrF6gJeEkw776qhF8Zqr5xD9e7Uo4SCQVkIUxlzW2Z2QdmL4dEeG0iX7rH7bnMV
- jd6kr1hwxZMdf8EFz/QE1/wX+5+LGJMj9sbKyxA5Z+zmCiatZHtKANQ+1ncJM6/4RFeC
- XU+eUa/GyBLS1m4rgrbaANn8djhUdmgUx7kXIuC0Odlq33m3WakbQnGDcp21NfGDev5e
- VONg==
-X-Gm-Message-State: AOJu0YwCYWHYQJiCnrAGZM1EQZeQ7zjwmTMDDZLFHCyfWsrIRKO62Ddo
- qvckCG5/n5IHSBGT6oI3a7maImhiwXYbHvFIw6WB+26HoU90xCmXzzEnEHXRDQcJ1Azi8V3JmQa
- 3BIQS4KLqn6X5o4mqnsQ2uyMtjCZeU942yFcMxICNQQCU9Lpk/YrkcrsDPPsBiRTKONkIHMqWjb
- rTX2Frhi1bXbZ7vdpk9MqTNxHF8O45N7FHG4KcUQ==
-X-Received: by 2002:a17:907:1601:b0:a6f:af31:6f5 with SMTP id
- a640c23a62f3a-a6faf31087amr228738466b.22.1718853188252; 
- Wed, 19 Jun 2024 20:13:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFr7Z8IZLGs/q5lbv0QZL2qmG1n847CaUC63IefbEQH4igX+QprGmotLmI8i9t1/SMxyrpeniomHpP6xMhqy+w=
-X-Received: by 2002:a17:907:1601:b0:a6f:af31:6f5 with SMTP id
- a640c23a62f3a-a6faf31087amr228737866b.22.1718853187898; Wed, 19 Jun 2024
- 20:13:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240613075348.696575-1-po-hsu.lin@canonical.com>
- <20240619163126.GA493392@pevik>
-In-Reply-To: <20240619163126.GA493392@pevik>
+ s=20210705; t=1718854147;
+ bh=UWr2N75G9KYz+mzgf4e9eupyA5moCKkvd+0vrPjT7B4=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=UJ/dO1MSjzb6UtzWTgAhgMFpKnfxIBal0P/9mKYC3hiWY6JwiMZc7TttSX2zx9q1i
+ eJFsjHepflc6DPitcAgSwKcRaH6PMPWHKhx8sNVw4kIfQ6CXELK4Y0LK1YRsd+Qz8H
+ wYGt80kYQERcAiWj1xozhKvHwQ8tNHYHgU/ieJ9jb2jZBbZ4eoUSkRj2X1bEEZhRKC
+ P9KHyBudK7SBA1fD+Oq89dpaB0eL+oE840I/bw5mRcDOaXp5tmmXqcLWsLTi5peTzK
+ vbXAnqgo8M7IOSBvMnAkDr/V6LD/0h5v/m5x2tyJ4X15rmcOP+xhP5KXG9X1RGnZu9
+ ynGcfzqQ6eqeQ==
 From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Thu, 20 Jun 2024 11:12:50 +0800
-Message-ID: <CAMy_GT-HKng4hxBXVQjVKd++CHAwp54chVauodMCNmwNgCqGsA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+To: ltp@lists.linux.it
+Date: Thu, 20 Jun 2024 11:27:37 +0800
+Message-Id: <20240620032737.1421923-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] logrotate: fix permission issue on Ubuntu
+Subject: [LTP] [PATCHv2] logrotate: fix permission issue for test2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,108 +63,95 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: po-hsu.lin@canonical.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKdW4gMjAsIDIwMjQgYXQgMTI6MzHigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cgo+ID4gV2hlbiBydW5uaW5nIHRoaXMgbG9ncm90YXRlIHRlc3Qgb24gVWJ1
-bnR1LCB0aGUgdGVzdCB3aWxsIGZhaWwgd2l0aDoKPiA+ICAgbG9ncm90YXRlX3Rlc3RzIDIgVElO
-Rk86IHNsZWVwIDEgbWluIHRvIHdhaXQgZm9yIHJvdGF0aW5nIGxvZ3MKPiA+ICAgbG9ncm90YXRl
-X3Rlc3RzIDIgVEZBSUw6IFsgLWYgL3Zhci9sb2cvdHN0X2xhcmdlbG9nZmlsZS4xLmd6IF0gZmFp
-bGVkCj4gdW5leHBlY3RlZGx5Cj4gPiAgIGxvZ3JvdGF0ZV90ZXN0cyAyIFRGQUlMOiBGYWlsZWQg
-dG8gY3JlYXRlIGEgY29tcHJlc3NlZCBmaWxlCj4KPiA+IExvb2sgbW9yZSBjbG9zZWx5IHRvIHdo
-YXQgdGhpcyB0ZXN0IGlzIHRyeWluZyB0byBkbyB3ZSB3aWxsIHNlZSB0aGVyZQo+ID4gYXJlIHR3
-byBpc3N1ZXMgaGVyZSBpbiB0aGUgdHN0X2xhcmdlbG9nLmNvbmY6Cj4KPiA+IDEuICJpbmNsdWRl
-IC9ldGMvbG9ncm90YXRlLmQiCj4gPiBUaGlzIHdpbGwgcm90YXRlIG90aGVyIGxvZyBmaWxlcyBk
-ZWZpbmVkIGhlcmUsIHNpbmNlIHdlIGFyZSBqdXN0IHRlc3RpbmcKPiA+IHRoZSBsb2cgcm90YXRp
-b24gY2FwaWJpbGl0eSBJIHRoaW5rIHRoZXJlIGlzIG5vIG5lZWQgdG8gcm90YXRlIGxvZyBmaWxl
-cwo+ID4gb3RoZXIgdGhhbiB0aGUgb25lIGZvciB0aGlzIHRlc3QuCj4KPiA+IDIuIFBlcm1pc3Np
-b24gaXNzdWUgb24gVWJ1bnR1Cj4gSXMgaXQgb25seSBVYnVudHUgb3IgYWxzbyBEZWJpYW4/IE9y
-LCB3b3VsZG4ndCBiZSBiZXR0ZXIgdG8gYWRkIHBlcm1pc3Npb25zCj4gcmVnYXJkbGVzcyB0aGUg
-c3lzdGVtPwo+Cj4gSGVsbG8sCnRoYW5rcyBmb3IgdGhlIGRldGFpbGVkIGZlZWRiYWNrLAp5ZXMg
-SSB0aGluayBpdCdzIGJldHRlciB0byBhZGQgdGhpcyByZWdhcmRsZXNzIHRoZSBzeXN0ZW0sIEkg
-d2lsbCBleHBsYWluCmxhdGVyLgoKCj4gPiBUcnlpbmcgdG8gcm90YXRlIHRoZSB0YXJnZXQgZmls
-ZSBvbiBVYnVudHUgd2lsbCBjYXVzZSB0aGUgZm9sbG93aW5nCj4gZXJyb3I6Cj4gPiAgIGVycm9y
-OiBza2lwcGluZyAiL3Zhci9sb2cvdHN0X2xhcmdlbG9nZmlsZSIgYmVjYXVzZSBwYXJlbnQgZGly
-ZWN0b3J5Cj4gaGFzCj4gPiAgICAgICAgICBpbnNlY3VyZSBwZXJtaXNzaW9ucyAoSXQncyB3b3Js
-ZCB3cml0YWJsZSBvciB3cml0YWJsZSBieSBncm91cAo+IHdoaWNoCj4gPiAgICAgICAgICBpcyBu
-b3QgInJvb3QiKSBTZXQgInN1IiBkaXJlY3RpdmUgaW4gY29uZmlnIGZpbGUgdG8gdGVsbAo+IGxv
-Z3JvdGF0ZQo+ID4gICAgICAgICAgd2hpY2ggdXNlci9ncm91cCBzaG91bGQgYmUgdXNlZCBmb3Ig
-cm90YXRpb24uCj4KPiA+IFNvbHV0aW9uIGlzIHRvIGFkZCBhbiBleHRyYSBsaW5lIHdpdGggdGhl
-IHVzZXIgYW5kIGdyb3VwIGluZm9ybWF0aW9uIG9mCj4gPiB0aGUgL3Zhci9sb2cgZGlyZWN0b3J5
-LiBUaGlzIGNoYW5nZSBoYXMgYmVlbiBsaW1pdGVkIHRvIFVidW50dSB0byBwcmV2ZW50Cj4gPiBj
-YXVzaW5nIHJlZ3Jlc3Npb24gb24gb3RoZXIgT1MuCj4KPiA+IFNpZ25lZC1vZmYtYnk6IFBvLUhz
-dSBMaW4gPHBvLWhzdS5saW5AY2Fub25pY2FsLmNvbT4KPiA+IC0tLQo+ID4gIHRlc3RjYXNlcy9j
-b21tYW5kcy9sb2dyb3RhdGUvbG9ncm90YXRlX3Rlc3RzLnNoIHwgNyArKysrKy0tCj4gPiAgMSBm
-aWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPgo+ID4gZGlmZiAt
-LWdpdCBhL3Rlc3RjYXNlcy9jb21tYW5kcy9sb2dyb3RhdGUvbG9ncm90YXRlX3Rlc3RzLnNoCj4g
-Yi90ZXN0Y2FzZXMvY29tbWFuZHMvbG9ncm90YXRlL2xvZ3JvdGF0ZV90ZXN0cy5zaAo+ID4gaW5k
-ZXggMWYzZTYxMjk0Li40NTA2YWI1YzYgMTAwNzU1Cj4gPiAtLS0gYS90ZXN0Y2FzZXMvY29tbWFu
-ZHMvbG9ncm90YXRlL2xvZ3JvdGF0ZV90ZXN0cy5zaAo+ID4gKysrIGIvdGVzdGNhc2VzL2NvbW1h
-bmRzL2xvZ3JvdGF0ZS9sb2dyb3RhdGVfdGVzdHMuc2gKPiA+IEBAIC05MCwxNCArOTAsMTcgQEAg
-dGVzdDEoKQo+Cj4gPiAgdGVzdDIoKQo+ID4gIHsKPiA+ICsgICAgIHBlcm1pc3Npb249IiIKPiBt
-aXNzaW5nIGtleWJvYXJkIGxvY2FsIChpdC5kIGJlIGxvY2FsIHBlcm1pc3Npb24sID0iIiBub3Qg
-bmVlZGVkKS4gQnV0IGl0J3MKPiBiZXR0ZXIgdG8gcHV0IGl0IGludG8gc2V0dXAgZnVuY3Rpb24g
-dG8gYmUgZXhlY3V0ZWQgb25seSBvbmNlIChvbmUgY2FuIHJ1bgo+IGtpbmQKPiBvZiBzdHJlc3Mg
-dGVzdHMgd2l0aCAtaTEwMDAsIHBlcm1pc3Npb24gZGV0ZWN0aW9uIHdpbGwgYmUgbmVlZGVkIG9u
-bHkgb25jZS4KPgo+ID4gKyAgICAgaWYgYGdyZXAgLXEgJ05BTUU9IlVidW50dSInIC9ldGMvb3Mt
-cmVsZWFzZSAyPi9kZXYvbnVsbGA7IHRoZW4KPiBgYCBhcmUgbm90IG5lZWRlZC4gQWxzbyBncmVw
-cGluZyBJRCB3b3VsZCBiZSBzbGlnaHRseSBtb3JlIHJlYWRhYmxlOgo+Cj4gPiArICAgICAgICAg
-ICAgIHBlcm1pc3Npb249InN1IGBzdGF0IC1jICIlVSAlRyIgL3Zhci9sb2dgIgo+IERvIHdlIHJl
-YWxseSBuZWVkIHRvIHVzZSBzdT8gSXQgd291bGQgaGF2ZSB0byBiZSBpbnN0YWxsZWQgYW5kIGNv
-bmZpZ3VyZWQuCj4gSU1ITyBpdCBzaG91bGQgYmUgT0sgdG8gdG8gcnVuIHN0YXQgd2l0aG91dCBz
-dS4KPgpUaGUgc3UgaGVyZSBpcyBub3QgZm9yIHJ1bm5pbmcgdGhlIHN0YXQgY29tbWFuZC4gSXQn
-cyBmb3IgY29tcG9zaW5nIHRoZSAic3UiCmRpcmVjdGl2ZSByZXF1aXJlZCBmb3IgdGhlIGxvZ3Jv
-dGF0ZS4KCkkgdGhpbmsgd2UgY2FuIGRyb3AgdGhlIG9zLXJlbGVhc2UgZGV0ZWN0aW9uLCBieSBs
-b29raW5nIGludG8gdGhpcyB0ZXN0IG1vcmUKY2xvc2VseSBJIG5vdGljZWQgdGhhdCB0aGVyZSBp
-cyBhIHNpbWlsYXIgY29tbWl0IDNkN2JjODk5YmQKKCJjb21tYW5kcy9sb2dyb3RhdGVfdGVzdHMu
-c2g6IEZpeCBtaXNzaW5nIHN5c2xvZyBncm91cCBvbiBzb21lIHN5c3RlbXMiKQpmb3IgdGVzdDEu
-CgpTaW5jZSBpdCdzIGJlZW4gdGhlcmUgZm9yIGEgd2hpbGUsIEkgdGhpbmsgdGhpcyB3b3JrcyBm
-b3IgZGlmZmVyZW50IE9TLgoKSSB3aWxsIG1ha2UgYW4gaWRlbnRpY2FsIGNoYW5nZSwgYnV0IHV0
-aWxpemUgc2V0dXAoKSBhcyB5b3Ugc3VnZ2VzdGVkIHRvCnByZXZlbnQgZHVwbGljYXRpbmcgY29k
-ZXMuClRoYW5rIHlvdQpQby1Ic3UKCgo+ID4gKyAgICAgZmkKPgo+Cj4gPiAgICAgICBjYXQgPnRz
-dF9sYXJnZWxvZy5jb25mIDw8LUVPRgo+ID4gICAgICAgICAgIyBjcmVhdGUgbmV3IChlbXB0eSkg
-bG9nIGZpbGVzIGFmdGVyIHJvdGF0aW5nIG9sZCBvbmVzCj4gPiAgICAgICAgICBjcmVhdGUKPiA+
-ICAgICAgICAgICMgY29tcHJlc3MgdGhlIGxvZyBmaWxlcwo+ID4gICAgICAgICAgY29tcHJlc3MK
-PiA+IC0gICAgICAgICMgUlBNIHBhY2thZ2VzIGRyb3AgbG9nIHJvdGF0aW9uIGluZm9ybWF0aW9u
-IGludG8gdGhpcyBkaXJlY3RvcnkKPiA+IC0gICAgICAgIGluY2x1ZGUgL2V0Yy9sb2dyb3RhdGUu
-ZAo+ID4gICAgICAgICAgL3Zhci9sb2cvdHN0X2xhcmdlbG9nZmlsZSB7Cj4gPiArICAgICAgICAg
-ICAgJHBlcm1pc3Npb24KPiA+ICAgICAgICAgICAgICByb3RhdGUgNQo+ID4gICAgICAgICAgICAg
-IHNpemU9MmsKPiA+ICAgICAgICAgIH0KPgo+IEkgcHJvcG9zZSB0aGVzZSBjaGFuZ2VzIG92ZXIg
-eW91ciBwYXRjaC4gQ291bGQgeW91IHBsZWFzZSB0ZXN0IGl0Pwo+Cj4gKysrIHRlc3RjYXNlcy9j
-b21tYW5kcy9sb2dyb3RhdGUvbG9ncm90YXRlX3Rlc3RzLnNoCj4gQEAgLTI1LDggKzI1LDE4IEBA
-IFRTVF9ORUVEU19DTURTPSJjcm9udGFiIGZpbGUgZ3JlcCBsb2dyb3RhdGUiCj4gIFRTVF9URVNU
-RlVOQz10ZXN0Cj4gIFRTVF9ORUVEU19UTVBESVI9MQo+ICBUU1RfQ05UPTIKPiArVFNUX1NFVFVQ
-PXNldHVwCj4gIFRTVF9DTEVBTlVQPWNsZWFudXAKPgo+ICtQRVJNSVNTSU9OPQo+ICsKPiArc2V0
-dXAoKQo+ICt7Cj4gKyAgICAgICBpZiBncmVwICdJRD11YnVudHUnIC9ldGMvb3MtcmVsZWFzZSAy
-Pi9kZXYvbnVsbDsgdGhlbgo+ICsgICAgICAgICAgICAgICBQRVJNSVNTSU9OPSIkKHN0YXQgLWMg
-IiVVICVHIiAvdmFyL2xvZykiCj4gKyAgICAgICBmaQo+ICt9Cj4gKwo+ICBjbGVhbnVwKCkKPiAg
-ewo+ICAgICAgICAgKGNyb250YWIgLWwgfCBncmVwIC12IHRzdF9sYXJnZWxvZykgfCBjcm9udGFi
-IC0KPiBAQCAtOTAsMTcgKzEwMCwxMyBAQCB0ZXN0MSgpCj4KPiAgdGVzdDIoKQo+ICB7Cj4gLSAg
-ICAgICBwZXJtaXNzaW9uPSIiCj4gLSAgICAgICBpZiBgZ3JlcCAtcSAnTkFNRT0iVWJ1bnR1Iicg
-L2V0Yy9vcy1yZWxlYXNlIDI+L2Rldi9udWxsYDsgdGhlbgo+IC0gICAgICAgICAgICAgICBwZXJt
-aXNzaW9uPSJzdSBgc3RhdCAtYyAiJVUgJUciIC92YXIvbG9nYCIKPiAtICAgICAgIGZpCj4gICAg
-ICAgICBjYXQgPnRzdF9sYXJnZWxvZy5jb25mIDw8LUVPRgo+ICAgICAgICAgICMgY3JlYXRlIG5l
-dyAoZW1wdHkpIGxvZyBmaWxlcyBhZnRlciByb3RhdGluZyBvbGQgb25lcwo+ICAgICAgICAgIGNy
-ZWF0ZQo+ICAgICAgICAgICMgY29tcHJlc3MgdGhlIGxvZyBmaWxlcwo+ICAgICAgICAgIGNvbXBy
-ZXNzCj4gICAgICAgICAgL3Zhci9sb2cvdHN0X2xhcmdlbG9nZmlsZSB7Cj4gLSAgICAgICAgICAg
-ICRwZXJtaXNzaW9uCj4gKyAgICAgICAgICAgICRQRVJNSVNTSU9OCj4gICAgICAgICAgICAgIHJv
-dGF0ZSA1Cj4gICAgICAgICAgICAgIHNpemU9MmsKPiAgICAgICAgICB9Cj4gLS0tCj4KPiBPciwg
-ZXZlbiB3aXRob3V0IGNvbmRpdGlvbiBvbiBQRVJNSVNTSU9OLgo+Cj4gV2l0aCB0aGVzZSBjaGFu
-Z2VzLCB5b3UgbWF5IGFkZC4KPgo+IFJldmlld2VkLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4KPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiArKysgdGVzdGNhc2VzL2NvbW1hbmRz
-L2xvZ3JvdGF0ZS9sb2dyb3RhdGVfdGVzdHMuc2gKPiBAQCAtMjEsNyArMjEsNyBAQAo+ICAjIC0g
-QWRkIG1lc3NhZ2VzIHRvIHRoZSBsb2dmaWxlIHVudGlsIGl0IGdldHMgcm90YXRlZCB3aGVuIGEK
-PiByZS1kaXR0ZXJtaW5lZCBzaXplCj4gICMgICBpcyByZWFjaGVkLgo+Cj4gLVRTVF9ORUVEU19D
-TURTPSJjcm9udGFiIGZpbGUgZ3JlcCBsb2dyb3RhdGUiCj4gK1RTVF9ORUVEU19DTURTPSJjcm9u
-dGFiIGZpbGUgZ3JlcCBsb2dyb3RhdGUgc3RhdCIKPiAgVFNUX1RFU1RGVU5DPXRlc3QKPiAgVFNU
-X05FRURTX1RNUERJUj0xCj4gIFRTVF9DTlQ9Mgo+IEBAIC0zMiw5ICszMiw3IEBAIFBFUk1JU1NJ
-T049Cj4KPiAgc2V0dXAoKQo+ICB7Cj4gLSAgICAgICBpZiBncmVwICdJRD11YnVudHUnIC9ldGMv
-b3MtcmVsZWFzZSAyPi9kZXYvbnVsbDsgdGhlbgo+IC0gICAgICAgICAgICAgICBQRVJNSVNTSU9O
-PSIkKHN0YXQgLWMgIiVVICVHIiAvdmFyL2xvZykiCj4gLSAgICAgICBmaQo+ICsgICAgICAgUEVS
-TUlTU0lPTj0iJChzdGF0IC1jICIlVSAlRyIgL3Zhci9sb2cpIgo+ICB9Cj4KPiAgY2xlYW51cCgp
-Cj4KPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+When running this logrotate test on Ubuntu, this test will fail with:
+  logrotate_tests 2 TINFO: sleep 1 min to wait for rotating logs
+  logrotate_tests 2 TFAIL: [ -f /var/log/tst_largelogfile.1.gz ] failed unexpectedly
+  logrotate_tests 2 TFAIL: Failed to create a compressed file
+
+Look more closely to what this test is trying to do we will see there
+are two issues here in the tst_largelog.conf:
+
+1. "include /etc/logrotate.d"
+This will rotate other log files defined here, since we are just testing
+the log rotation capability I think there is no need to rotate log files
+other than the testfile itself.
+
+2. Permission issue
+Trying to rotate the target file on Ubuntu will cause the following error:
+  error: skipping "/var/log/tst_largelogfile" because parent directory has
+         insecure permissions (It's world writable or writable by group which
+         is not "root") Set "su" directive in config file to tell logrotate
+         which user/group should be used for rotation.
+
+Fix these by removing the extra include, reuse the existing user/group
+setting for test1 with setup() as suggested by Petr Vorel.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ .../commands/logrotate/logrotate_tests.sh      | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+index 1f3e61294..c382fd1e4 100755
+--- a/testcases/commands/logrotate/logrotate_tests.sh
++++ b/testcases/commands/logrotate/logrotate_tests.sh
+@@ -25,7 +25,16 @@ TST_NEEDS_CMDS="crontab file grep logrotate"
+ TST_TESTFUNC=test
+ TST_NEEDS_TMPDIR=1
+ TST_CNT=2
++TST_SETUP=setup
+ TST_CLEANUP=cleanup
++PERMISSION=
++
++setup()
++{
++	local group="syslog"
++	grep -q $group /etc/group || group="root"
++	PERMISSION="su root $group"
++}
+ 
+ cleanup()
+ {
+@@ -47,10 +56,6 @@ check_log()
+ 
+ test1()
+ {
+-	local group="syslog"
+-
+-	grep -q $group /etc/group || group="root"
+-
+ 	cat >tst_logrotate.conf <<-EOF
+         #****** Begin Config file *******
+         # create new (empty) log files after rotating old ones
+@@ -60,7 +65,7 @@ test1()
+         compress
+ 
+         /var/log/tst_logfile {
+-                su root $group
++                $PERMISSION
+                 rotate 5
+                 weekly
+         }
+@@ -95,9 +100,8 @@ test2()
+         create
+         # compress the log files
+         compress
+-        # RPM packages drop log rotation information into this directory
+-        include /etc/logrotate.d
+         /var/log/tst_largelogfile {
++            $PERMISSION
+             rotate 5
+             size=2k
+         }
+-- 
+2.25.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
