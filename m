@@ -4,17 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0946C27C4F
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91755C27C4F
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 09:09:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F31253D0F7D
-	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:08:55 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2BF273D0EC7
+	for <ltp@archiver.kernel.org>; Fri, 21 Jun 2024 11:09:13 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C00FE3C8B52
- for <ltp@lists.linux.it>; Fri, 21 Jun 2024 10:45:04 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id ED7553C8B52
+ for <ltp@lists.linux.it>; Fri, 21 Jun 2024 10:52:23 +0200 (CEST)
 Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=zedat.fu-berlin.de (client-ip=130.133.4.66;
  helo=outpost1.zedat.fu-berlin.de; envelope-from=glaubitz@zedat.fu-berlin.de;
@@ -24,39 +25,39 @@ Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE7986002E8
- for <ltp@lists.linux.it>; Fri, 21 Jun 2024 10:45:03 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0C0FF60004C
+ for <ltp@lists.linux.it>; Fri, 21 Jun 2024 10:52:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
  Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
  :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=vnRm0j85otx50gSN5LqFcKunoR/H3ua98B1Wub0g2Lg=; t=1718959503; x=1719564303; 
- b=UHyxa/0IkQl8D7l0PkhKie19Z6JJM74A03yApoBy71GPxHtpP3cfgqyAPhBrqw4eRR2Hbmc2ET+
- Ne+k552j3hZsfo8nZ8u64lSeJgV1E1reAxkj1pOWazllXrc5SeGn0Jqrn2RVm9ZBP1fhSqe1D1o4p
- TzYstoFiUigWvxCKxX/FXXoPg0DT2pcC3uuNrXVvESgIKqWeZGMhVvFL0thibQOwszFqv+s+nLZ5X
- Ab3WmwYwd+s1cjLWSvDvx/pdISlMp0f07cfDrMKQ0Ei2l6Ck9EXnNuzZU2/QtbmcP4mCymR8H6M+B
- CurCvQpuvd/gtjSUbi3UX8xj2tzzXqaGQEtw==;
+ bh=E4Wi5d7bXBV7z5XVlT8JIza/vfQrRm742lmMk6jnmUc=; t=1718959943; x=1719564743; 
+ b=NRCLkao+nB4Yoqza7Izz1dUT74TUhaR5S9m1kpiXMYfQ5XXXhfx3dP+bgA4sHGMNOQxBiHb/Lqq
+ Vxk55l6FY2WEZzlRwg/ZzmAts4tW6JO31TBIvtOD9gjhV/w8kv1YO8u04u1JIWccJ4W/uIOCbbQO2
+ wQRov8YoReJH4cLsQykC+xEf0d0Z3HBP7CafKqMYDVLAkhoIcUkHgksK4DdHYcLyYFqdpoRVMa0Gx
+ Y7KRXyn+6tUO74xMiQn6YjqEs7S5ZRcgE/KsXqGPeDewsiZPfCsiyP9+p4hTyF+cjonNHJGehLq4q
+ DQKf3+CdmyHpI7eGbostV2u/vZGu7lHNQjnw==;
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
  by outpost.zedat.fu-berlin.de (Exim 4.97) with esmtps (TLS1.3)
  tls TLS_AES_256_GCM_SHA384
  (envelope-from <glaubitz@zedat.fu-berlin.de>)
- id 1sKZsu-00000001rSo-3cOK; Fri, 21 Jun 2024 10:44:41 +0200
+ id 1sKa09-00000001yDB-3V13; Fri, 21 Jun 2024 10:52:10 +0200
 Received: from p5b13a475.dip0.t-ipconnect.de ([91.19.164.117]
- helo=suse-laptop-2.fritz.box)
- by inpost2.zedat.fu-berlin.de (Exim 4.97) with esmtpsa (TLS1.3)
- tls TLS_AES_256_GCM_SHA384
+ helo=[192.168.178.20]) by inpost2.zedat.fu-berlin.de (Exim 4.97)
+ with esmtpsa (TLS1.3) tls TLS_AES_256_GCM_SHA384
  (envelope-from <glaubitz@physik.fu-berlin.de>)
- id 1sKZsv-00000001cr3-0HzV; Fri, 21 Jun 2024 10:44:41 +0200
-Message-ID: <366548c1a0d9749e42c0d0c993414a353c9b0b02.camel@physik.fu-berlin.de>
+ id 1sKa0A-00000001dsi-0AE7; Fri, 21 Jun 2024 10:52:10 +0200
+Message-ID: <1537113c4396cd043a08a72bdca80cccfa2d54d9.camel@physik.fu-berlin.de>
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Date: Fri, 21 Jun 2024 10:44:39 +0200
-In-Reply-To: <20240620162316.3674955-10-arnd@kernel.org>
+To: Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@kernel.org>, 
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 21 Jun 2024 10:52:08 +0200
+In-Reply-To: <e80809ba-ee81-47a5-9b08-54b11f118a78@gmx.de>
 References: <20240620162316.3674955-1-arnd@kernel.org>
- <20240620162316.3674955-10-arnd@kernel.org>
+ <20240620162316.3674955-8-arnd@kernel.org>
+ <e80809ba-ee81-47a5-9b08-54b11f118a78@gmx.de>
 User-Agent: Evolution 3.52.2 
 MIME-Version: 1.0
 X-Original-Sender: glaubitz@physik.fu-berlin.de
@@ -65,7 +66,8 @@ X-ZEDAT-Hint: PO
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 21 Jun 2024 11:00:08 +0200
-Subject: Re: [LTP] [PATCH 09/15] sh: rework sync_file_range ABI
+Subject: Re: [LTP] [PATCH 07/15] parisc: use generic sys_fanotify_mark
+ implementation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,105 +90,27 @@ Cc: Rich Felker <dalias@libc.org>, Andreas Larsson <andreas@gaisler.com>,
  Brian Cain <bcain@quicinc.com>, Christian Brauner <brauner@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org,
  linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- stable@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- "David S. Miller" <davem@davemloft.net>
+ Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+ linux-hexagon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Arnd,
+Hi Helge and Arnd,
 
-thanks for your patch!
+On Thu, 2024-06-20 at 23:21 +0200, Helge Deller wrote:
+> The patch looks good at first sight.
+> I'll pick it up in my parisc git tree and will do some testing the
+> next few days and then push forward for 6.11 when it opens....
 
-On Thu, 2024-06-20 at 18:23 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The unusual function calling conventions on superh ended up causing
-                                              ^^^^^^
-                                       It's spelled SuperH
+Isn't this supposed to go in as one series or can arch maintainers actually
+pick the patches for their architecture and merge them individually?
 
-> sync_file_range to have the wrong argument order, with the 'flags'
-> argument getting sorted before 'nbytes' by the compiler.
-> 
-> In userspace, I found that musl, glibc, uclibc and strace all expect the
-> normal calling conventions with 'nbytes' last, so changing the kernel
-> to match them should make all of those work.
-> 
-> In order to be able to also fix libc implementations to work with existing
-> kernels, they need to be able to tell which ABI is used. An easy way
-> to do this is to add yet another system call using the sync_file_range2
-> ABI that works the same on all architectures.
-> 
-> Old user binaries can now work on new kernels, and new binaries can
-> try the new sync_file_range2() to work with new kernels or fall back
-> to the old sync_file_range() version if that doesn't exist.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 75c92acdd5b1 ("sh: Wire up new syscalls.")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/sh/kernel/sys_sh32.c           | 11 +++++++++++
->  arch/sh/kernel/syscalls/syscall.tbl |  3 ++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/sh/kernel/sys_sh32.c b/arch/sh/kernel/sys_sh32.c
-> index 9dca568509a5..d5a4f7c697d8 100644
-> --- a/arch/sh/kernel/sys_sh32.c
-> +++ b/arch/sh/kernel/sys_sh32.c
-> @@ -59,3 +59,14 @@ asmlinkage int sys_fadvise64_64_wrapper(int fd, u32 offset0, u32 offset1,
->  				 (u64)len0 << 32 | len1, advice);
->  #endif
->  }
-> +
-> +/*
-> + * swap the arguments the way that libc wants it instead of
+If yes, I would prefer to do that for the SuperH patch as well as I usually
+prefer merging SuperH patches in my own tree.
 
-I think "swap the arguments to the order that libc wants them" would
-be easier to understand here.
-
-> + * moving flags ahead of the 64-bit nbytes argument
-> + */
-> +SYSCALL_DEFINE6(sh_sync_file_range6, int, fd, SC_ARG64(offset),
-> +                SC_ARG64(nbytes), unsigned int, flags)
-> +{
-> +        return ksys_sync_file_range(fd, SC_VAL64(loff_t, offset),
-> +                                    SC_VAL64(loff_t, nbytes), flags);
-> +}
-> diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-> index bbf83a2db986..c55fd7696d40 100644
-> --- a/arch/sh/kernel/syscalls/syscall.tbl
-> +++ b/arch/sh/kernel/syscalls/syscall.tbl
-> @@ -321,7 +321,7 @@
->  311	common	set_robust_list			sys_set_robust_list
->  312	common	get_robust_list			sys_get_robust_list
->  313	common	splice				sys_splice
-> -314	common	sync_file_range			sys_sync_file_range
-> +314	common	sync_file_range			sys_sh_sync_file_range6
-                                                                 ^^^^^^ Why the suffix 6 here?
-
->  315	common	tee				sys_tee
->  316	common	vmsplice			sys_vmsplice
->  317	common	move_pages			sys_move_pages
-> @@ -395,6 +395,7 @@
->  385	common	pkey_alloc			sys_pkey_alloc
->  386	common	pkey_free			sys_pkey_free
->  387	common	rseq				sys_rseq
-> +388	common	sync_file_range2		sys_sync_file_range2
->  # room for arch specific syscalls
->  393	common	semget				sys_semget
->  394	common	semctl				sys_semctl
-
-I wonder how you discovered this bug. Did you look up the calling convention on SuperH
-and compare the argument order for the sys_sync_file_range system call documented there
-with the order in the kernel?
-
-Did you also check what order libc uses? I would expect libc on SuperH misordering the
-arguments as well unless I am missing something. Or do we know that the code is actually
-currently broken?
-
-Thanks,
 Adrian
 
 -- 
