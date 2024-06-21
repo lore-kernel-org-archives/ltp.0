@@ -4,137 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4714DC3064D
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 09:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719480241; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=SAmjgwVCltzSABKyDCz7CSgs8OIWRs/9DLPvuUiQUPw=;
- b=e42geIEOrQm93yxYNGF5XzXGVojjbaMa/TbyM/R+4voC3JTQW+3NOakXWt5NDMNvE0vvs
- fP7lIE89/48oZY0aggwvjC0cWW++yi1P3RabnLC860yOMJGQW7nNobq6wAjikTmDq0p4cuF
- 9fYAfuZD1jOvxuHFmcOcvkRGTkDV2bI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 867C5C2BD09
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 09:24:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B72E3D1234
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 11:24:01 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DAAD03D122C
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 11:24:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9DF4F3CF91F
- for <ltp@lists.linux.it>; Fri, 21 Jun 2024 18:30:20 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=gmx.de
- (client-ip=212.227.17.22; helo=mout.gmx.net; envelope-from=deller@gmx.de;
+ by picard.linux.it (Postfix) with ESMTPS id 97EB23C721F
+ for <ltp@lists.linux.it>; Fri, 21 Jun 2024 21:57:05 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=aerifal.cx (client-ip=2001:19f0:5:42::1;
+ helo=brightrain.aerifal.cx; envelope-from=dalias@aerifal.cx;
  receiver=lists.linux.it)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0C5216013ED
- for <ltp@lists.linux.it>; Fri, 21 Jun 2024 18:30:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
- s=s31663417; t=1718987346; x=1719592146; i=deller@gmx.de;
- bh=TaVSF8Wo6axT8++84WQ+MyVXhldB4MqulOKt1aiG610=;
- h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
- References:From:In-Reply-To:Content-Type:
- Content-Transfer-Encoding:cc:content-transfer-encoding:
- content-type:date:from:message-id:mime-version:reply-to:subject:
- to;
- b=dGyJ89S3Mtnb3qCeqKQ7dNrV2AX+MBvXvpFOS5qdU5StBNeSfBhj3npOOzwCrL2I
- OWu4Iw7nLS7C7FqGCqb9jP0mHnSAWNDp/B7oOpqNyH+7RhIwXCY7R/TwxqQG61hYm
- /IvwIpeBjt0GepWOMNkDAIUg6eRs65R2+nmi0nxpCsYyDq2gK2tPySnYyWpVG8S43
- ZvQEf501RrASQFyXuehQg5sXe2oBtvJ5uLn25WBdeSp2PKuSAq3KMcugDsB48Eqww
- CywDG9/PCKvur0T1ok3M2r3j5b7JRp7HrudYWXhNrBq8o2LuvA8pkp74qNhDfJjtS
- rCoZwjkgBr8NtnIQgA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([109.250.63.133]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MfHEJ-1srq1Z2d4N-00ddIK; Fri, 21
- Jun 2024 18:29:06 +0200
-Message-ID: <cd7fdd76-8da0-4d43-9d1c-c93aed4c0f5d@gmx.de>
-Date: Fri, 21 Jun 2024 18:28:58 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Arnd Bergmann <arnd@arndb.de>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Arnd Bergmann <arnd@kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-kernel@vger.kernel.org
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx
+ [IPv6:2001:19f0:5:42::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B52076020C4
+ for <ltp@lists.linux.it>; Fri, 21 Jun 2024 21:57:02 +0200 (CEST)
+Date: Fri, 21 Jun 2024 15:57:23 -0400
+From: Rich Felker <dalias@libc.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <20240621195723.GB10433@brightrain.aerifal.cx>
 References: <20240620162316.3674955-1-arnd@kernel.org>
- <20240620162316.3674955-8-arnd@kernel.org>
- <e80809ba-ee81-47a5-9b08-54b11f118a78@gmx.de>
- <1537113c4396cd043a08a72bdca80cccfa2d54d9.camel@physik.fu-berlin.de>
- <ba14c4fb-e6a7-46b3-a030-081482264a99@app.fastmail.com>
- <a623c1979ac494d01977abe6dfc22e8381dc6e4f.camel@physik.fu-berlin.de>
- <83613d85-53f9-4644-be68-4f438abe2e52@app.fastmail.com>
-Content-Language: en-US
-Autocrypt: addr=deller@gmx.de; keydata=
- xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
- HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
- r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
- CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
- 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
- dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
- Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
- GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
- aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
- 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
- ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
- uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
- uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
- REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
- qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
- iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
- gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
- Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
- qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
- 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
- dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
- rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
- UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
- eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
- ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
- dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
- lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
- 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
- xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
- wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
- fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
- Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
- l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
- RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
- BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
- Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
- XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
- MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
- FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
- 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
- ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
-In-Reply-To: <83613d85-53f9-4644-be68-4f438abe2e52@app.fastmail.com>
-X-Provags-ID: V03:K1:qzcGugqMcbMY+YWYJmVsNMJLSzXL1IFC+qPqRPEqwIjeHu1j8dW
- eKrd9zTKO8WqTBd1atZ9gk73fhgOsLFzmyt55jQz2EE0lv7OLTEi8eH1tERMhO+XealwSx1
- UGgBBAPSpMfKRXJChZsTA9t/N/bEd9WMNnHEwTU1TsTs3cyh1vRWNfUsERYHddYMxe16B2C
- 4cE95QxNZt3dO/ZdT1fcQ==
-UI-OutboundReport: notjunk:1;M01:P0:qkvA0SU8VBk=;7/QatZvg+BRxv1QkYdIagec8md0
- /gpUIUeNoh2h5Zc2DzrKSZAqUU/Uw+GnsiaAaeHEHI+myLKBBKPB0CZ4PI9GoNYcjlvRwC+Dt
- cj4SKrgECYJdrasgoF20T9r9P8F4BOUJuHY7LfSfBt6aBQXc93SxHPI1b2yssJl0RJaoaYxmY
- oLb2/KG/hDplIAs8CJ6xU8ciG5YfyKU1j1+jkWw1MQPFc3+e4aIxLiTSvFRncW/p38cwcMayq
- jza45P6I18yIb0lDFwYxfYx7JtvcYmz49tEM+mRNWRo0sqZOKrDutFk2bIfcxantsC9mqHxQs
- 5a3j94hFYF0GycjrDV+oesj7qYVBuU6oYunEsd60beMeznHHR3ImzBXx0U+lZ1yg5DwK5B7CI
- QesCueVCEB/qYbWnjOn2wcuR9pB1PIHB4z/V43nmRFpwUH1vi3CFARq2AflaUsICu5nwLy9Xf
- Qkf/FIQ2HAWc3Nz8D7NpxmuEdmmXn1uUlfNkFMEIMvZS08xsLcvFw7HawfxyG3k0NSKzQBLpm
- ja62fYS6SAKuF+UBiwKzX5eFg26Sbjq3sh26tyiYHSDDdClW4X5tok+KvIYORgrjWs4GT9uCM
- 6aaMHjRJ+tik9fPg2gVvQPbCJ7BZasXiujTtGovW47pMTNieoSrWh7Q3faXOlVgg6VgWPvFQn
- dRdHVRBA7/oVEYpoz4lYuxsnHQfksXpjaFITA0DK0Gs+syZDYB8Aqpcri4MPk01+eWrlM5X8c
- 1YVFCGgstmmLXXu2b3Sj6ehNnDt85oZyT/Iy1bR4HWd48jJY/zu80u6vzoZmdVbwkKjEt+2ip
- ExQiXgsj0tPfrUnUe2j3FBUQbV3FxfoNfx2osTCe+13E8=
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ <20240620162316.3674955-10-arnd@kernel.org>
+ <366548c1a0d9749e42c0d0c993414a353c9b0b02.camel@physik.fu-berlin.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <366548c1a0d9749e42c0d0c993414a353c9b0b02.camel@physik.fu-berlin.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 27 Jun 2024 11:23:38 +0200
-Subject: Re: [LTP] [PATCH 07/15] parisc: use generic sys_fanotify_mark
- implementation
+X-Mailman-Approved-At: Thu, 27 Jun 2024 11:23:37 +0200
+Subject: Re: [LTP] [musl] Re: [PATCH 09/15] sh: rework sync_file_range ABI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -146,58 +51,130 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Helge Deller via ltp <ltp@lists.linux.it>
-Reply-To: Helge Deller <deller@gmx.de>
-Cc: Rich Felker <dalias@libc.org>, Andreas Larsson <andreas@gaisler.com>,
- guoren <guoren@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+Cc: Andreas Larsson <andreas@gaisler.com>, linux-mips@vger.kernel.org,
+ Guo Ren <guoren@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
  "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
- linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
- linux-sh@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "musl@lists.openwall.com" <musl@lists.openwall.com>,
- Nicholas Piggin <npiggin@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
- LTP List <ltp@lists.linux.it>, Brian Cain <bcain@quicinc.com>,
- Christian Brauner <brauner@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Xi Ruoyao <libc-alpha@sourceware.org>, linux-parisc@vger.kernel.org,
- linux-mips@vger.kernel.org,
- Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
- linux-hexagon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, "David S . Miller" <davem@davemloft.net>
+ linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+ Michael Ellerman <mpe@ellerman.id.au>, linux-sh@vger.kernel.org,
+ linux-csky@vger.kernel.org, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+ musl@lists.openwall.com, Nicholas Piggin <npiggin@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, ltp@lists.linux.it,
+ Arnd Bergmann <arnd@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org,
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 6/21/24 11:52, Arnd Bergmann wrote:
-> On Fri, Jun 21, 2024, at 11:03, John Paul Adrian Glaubitz wrote:
->> On Fri, 2024-06-21 at 10:56 +0200, Arnd Bergmann wrote:
->>> Feel free to pick up the sh patch directly, I'll just merge whatever
->>> is left in the end. I mainly want to ensure we can get all the bugfixes
->>> done for v6.10 so I can build my longer cleanup series on top of it
->>> for 6.11.
->>
->> This series is still for 6.10?
->
-> Yes, these are all the bugfixes that I think we want to backport
-> to stable kernels, so it makes sense to merge them as quickly as
-> possible. The actual stuff I'm working on will come as soon as
-> I have it in a state for public review and won't need to be
-> backported.
+On Fri, Jun 21, 2024 at 10:44:39AM +0200, John Paul Adrian Glaubitz wrote:
+> Hi Arnd,
+> 
+> thanks for your patch!
+> 
+> On Thu, 2024-06-20 at 18:23 +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > The unusual function calling conventions on superh ended up causing
+>                                               ^^^^^^
+>                                        It's spelled SuperH
+> 
+> > sync_file_range to have the wrong argument order, with the 'flags'
+> > argument getting sorted before 'nbytes' by the compiler.
+> > 
+> > In userspace, I found that musl, glibc, uclibc and strace all expect the
+> > normal calling conventions with 'nbytes' last, so changing the kernel
+> > to match them should make all of those work.
+> > 
+> > In order to be able to also fix libc implementations to work with existing
+> > kernels, they need to be able to tell which ABI is used. An easy way
+> > to do this is to add yet another system call using the sync_file_range2
+> > ABI that works the same on all architectures.
+> > 
+> > Old user binaries can now work on new kernels, and new binaries can
+> > try the new sync_file_range2() to work with new kernels or fall back
+> > to the old sync_file_range() version if that doesn't exist.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 75c92acdd5b1 ("sh: Wire up new syscalls.")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  arch/sh/kernel/sys_sh32.c           | 11 +++++++++++
+> >  arch/sh/kernel/syscalls/syscall.tbl |  3 ++-
+> >  2 files changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/sh/kernel/sys_sh32.c b/arch/sh/kernel/sys_sh32.c
+> > index 9dca568509a5..d5a4f7c697d8 100644
+> > --- a/arch/sh/kernel/sys_sh32.c
+> > +++ b/arch/sh/kernel/sys_sh32.c
+> > @@ -59,3 +59,14 @@ asmlinkage int sys_fadvise64_64_wrapper(int fd, u32 offset0, u32 offset1,
+> >  				 (u64)len0 << 32 | len1, advice);
+> >  #endif
+> >  }
+> > +
+> > +/*
+> > + * swap the arguments the way that libc wants it instead of
+> 
+> I think "swap the arguments to the order that libc wants them" would
+> be easier to understand here.
+> 
+> > + * moving flags ahead of the 64-bit nbytes argument
+> > + */
+> > +SYSCALL_DEFINE6(sh_sync_file_range6, int, fd, SC_ARG64(offset),
+> > +                SC_ARG64(nbytes), unsigned int, flags)
+> > +{
+> > +        return ksys_sync_file_range(fd, SC_VAL64(loff_t, offset),
+> > +                                    SC_VAL64(loff_t, nbytes), flags);
+> > +}
+> > diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+> > index bbf83a2db986..c55fd7696d40 100644
+> > --- a/arch/sh/kernel/syscalls/syscall.tbl
+> > +++ b/arch/sh/kernel/syscalls/syscall.tbl
+> > @@ -321,7 +321,7 @@
+> >  311	common	set_robust_list			sys_set_robust_list
+> >  312	common	get_robust_list			sys_get_robust_list
+> >  313	common	splice				sys_splice
+> > -314	common	sync_file_range			sys_sync_file_range
+> > +314	common	sync_file_range			sys_sh_sync_file_range6
+>                                                                  ^^^^^^ Why the suffix 6 here?
+> 
+> >  315	common	tee				sys_tee
+> >  316	common	vmsplice			sys_vmsplice
+> >  317	common	move_pages			sys_move_pages
+> > @@ -395,6 +395,7 @@
+> >  385	common	pkey_alloc			sys_pkey_alloc
+> >  386	common	pkey_free			sys_pkey_free
+> >  387	common	rseq				sys_rseq
+> > +388	common	sync_file_range2		sys_sync_file_range2
+> >  # room for arch specific syscalls
+> >  393	common	semget				sys_semget
+> >  394	common	semctl				sys_semctl
+> 
+> I wonder how you discovered this bug. Did you look up the calling convention on SuperH
+> and compare the argument order for the sys_sync_file_range system call documented there
+> with the order in the kernel?
+> 
+> Did you also check what order libc uses? I would expect libc on SuperH misordering the
+> arguments as well unless I am missing something. Or do we know that the code is actually
+> currently broken?
 
-Ah, OK.... in that case would you please keep the two parisc
-patches in your git tree? I didn't plan to send a new pull
-request during v6.10, so it's easier for me if you keep them
-and send them together with your other remaining patches.
-(I'll drop them now from the parisc tree)
+No, there's no reason libc would misorder them because syscalls aren't
+function calls, and aren't subject to function call ABI. We have to
+explicitly bind the arguments to registers and make a syscall
+instruction.
 
-I tested both patches, so you may add:
-Tested-by: Helge Deller <deller@gmx.de>
-Acked-by: Helge Deller <deller@gmx.de>
+The only reason this bug happened on the kernel side is that someone
+thought it would be a smart idea to save maybe 10 instructions by
+treating the register state on entry as directly suitable to jump from
+asm to a C function rather than explicitly marshalling the arguments
+out of the user-kernel syscall ABI positions into actual arguments to
+a C function call.
 
-Thank you!
-Helge
+Rich
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
