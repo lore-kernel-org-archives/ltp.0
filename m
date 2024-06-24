@@ -4,100 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 659DFC2BD05
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 11:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6915EC2BD09
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 12:23:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C41B53D0F97
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 13:57:41 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id AD4613D0DA4
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 14:23:18 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A4653D0DA4
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:57:25 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 69CC83CFB81
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:23:03 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4BFD91A00099
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:57:24 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 649691000640
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:23:01 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 56F311F80A;
- Mon, 24 Jun 2024 11:57:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 303E5219FC;
+ Mon, 24 Jun 2024 12:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719230243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719231781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
- b=vU/NU/OOf8wgdRrkg0kui6DqkWtxnNjohgzy6Zz50Cu07pJmMb40QLu7PapaFHPlu3Kj8n
- NMSvcG8In8gmcjTmb8wVvhFzQ6BxmJiR2yUJznCfR+JiXbRDnJIlc1TCYnab1xd9HIvvsg
- JmcMv0aPn2teAC/zvqsQfX6UK1OnN6c=
+ bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
+ b=sDd3GMiwCPM6q+x06bFYjF42cn/znr/VkhmxSeS+cinjdiPDyx3GMDmjWRxsqIZ9NMaRt2
+ RnNGcBkA5vlQyLLH0Di9J6J6qK60DQFbdc8sOv3tnQfLs0fKlkLvGzV+w5lImkzcFfBhpq
+ DGVkHQtGmu/UKGkfP893vHKebaZ1B2U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719230243;
+ s=susede2_ed25519; t=1719231781;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
- b=AdNdt+XcZRu1S4WkT3a6b4pLvyLmoTy03VEp5uKu+CaEyR0Qnw+dcZsTi/yngAirA3/1OZ
- dDGMIS+BnsY6kMCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
+ b=R7E4EaQEvMcVC0NpZnno1b3yZMRxIF//7Mu8Se5scGcWQrpYJhRTWWITlPn/u8Vkz/aKTp
+ SKRvzF/CcNwl6KDQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sDd3GMiw;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=R7E4EaQE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719230243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719231781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
- b=vU/NU/OOf8wgdRrkg0kui6DqkWtxnNjohgzy6Zz50Cu07pJmMb40QLu7PapaFHPlu3Kj8n
- NMSvcG8In8gmcjTmb8wVvhFzQ6BxmJiR2yUJznCfR+JiXbRDnJIlc1TCYnab1xd9HIvvsg
- JmcMv0aPn2teAC/zvqsQfX6UK1OnN6c=
+ bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
+ b=sDd3GMiwCPM6q+x06bFYjF42cn/znr/VkhmxSeS+cinjdiPDyx3GMDmjWRxsqIZ9NMaRt2
+ RnNGcBkA5vlQyLLH0Di9J6J6qK60DQFbdc8sOv3tnQfLs0fKlkLvGzV+w5lImkzcFfBhpq
+ DGVkHQtGmu/UKGkfP893vHKebaZ1B2U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719230243;
+ s=susede2_ed25519; t=1719231781;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
- b=AdNdt+XcZRu1S4WkT3a6b4pLvyLmoTy03VEp5uKu+CaEyR0Qnw+dcZsTi/yngAirA3/1OZ
- dDGMIS+BnsY6kMCQ==
+ bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
+ b=R7E4EaQEvMcVC0NpZnno1b3yZMRxIF//7Mu8Se5scGcWQrpYJhRTWWITlPn/u8Vkz/aKTp
+ SKRvzF/CcNwl6KDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4423B1384C;
- Mon, 24 Jun 2024 11:57:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 156741384C;
+ Mon, 24 Jun 2024 12:23:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id A1JZECNfeWZCVwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 11:57:23 +0000
-Date: Mon, 24 Jun 2024 13:57:13 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id prw+BCVleWaTXwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 12:23:01 +0000
+Date: Mon, 24 Jun 2024 14:22:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Shirisha G <shirisha@linux.ibm.com>
-Message-ID: <ZnlfGVAO9-53sQ8z@yuki>
-References: <20240416091107.783352-1-shirisha@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZnllGpZEj6TOsWqB@yuki>
+References: <20240417144409.11411-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240416091107.783352-1-shirisha@linux.ibm.com>
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240417144409.11411-1-andrea.cervesato@suse.de>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 303E5219FC
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Migrating the
- libhugetlbfs/testcases/slbpacaflush.c test
+Subject: Re: [LTP] [PATCH v5] Add stat04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,150 +121,75 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +#define _GNU_SOURCE
-> +#define SYSFS_CPU_ONLINE_FMT "/sys/devices/system/cpu/cpu%d/online"
-> +#define MNTPOINT "hugetlbfs/"
-> +#define SINGLE_CPU (CPU_SETSIZE/8)
-> +#include "hugetlb.h"
+> +/*\
+> + * [Description]
+> + *
+> + * This test checks that stat() executed on file provide the same information
+> + * of symlink linking to it.
+> + */
 > +
+> +#include <stdlib.h>
+> +#include "tst_test.h"
 > +
-> +#include <stdio.h>
-> +#include <sched.h>
+> +static char *tmpdir;
 > +
-> +
-> +long hpage_size;
-> +int fd;
-> +void *p;
-> +volatile unsigned long *q;
-> +int online_cpus[2], err;
-> +cpu_set_t cpu0, cpu1;
-
-All these should be static.
-
-> +void check_online_cpus(int online_cpus[], int nr_cpus_needed)
+> +static void run(void)
 > +{
-> +	char cpu_state, path_buf[64];
-> +	int cpu_idx, fd, ret, i;
+> +	char *symname = "my_symlink0";
 > +
-> +	cpu_idx = 0;
+> +	SAFE_SYMLINK(tmpdir, symname);
 > +
-> +	if (get_nprocs() < nr_cpus_needed)
-> +		tst_brk(TCONF, "minimum  %d online cpus are required", nr_cpus_needed);
+> +	struct stat path;
+> +	struct stat link;
 > +
-> +	for (i = 0; i < get_nprocs_conf() && cpu_idx < nr_cpus_needed; i++) {
-> +		errno = 0;
-> +		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
-> +		fd = open(path_buf, O_RDONLY);
-> +		if (fd < 0) {
-> +			/* If 'online' is absent, the cpu cannot be offlined */
-> +			if (errno == ENOENT) {
-> +				online_cpus[cpu_idx] = i;
-> +				cpu_idx++;
-> +				continue;
-> +			} else {
-> +				tst_res(TFAIL | TERRNO, "Unable to open %s", path_buf);
-> +			}
-> +		}
+> +	TST_EXP_PASS(stat(tmpdir, &path));
+> +	TST_EXP_PASS(stat(symname, &link));
 > +
-> +		ret = read(fd, &cpu_state, 1);
-> +		if (ret < 1)
-> +			tst_res(TFAIL | TERRNO, "Unable to read %s", path_buf);
-> +
-> +		if (cpu_state == '1') {
-> +			online_cpus[cpu_idx] = i;
-> +			cpu_idx++;
-> +		}
-> +
-> +		if (fd >= 0)
-> +			SAFE_CLOSE(fd);
-> +	}
-> +
-> +	if (cpu_idx < nr_cpus_needed)
-> +		tst_brk(TCONF, "minimum %d online cpus were not found", nr_cpus_needed);
-> +}
+> +	TST_EXP_EQ_LI(path.st_dev, link.st_dev);
+> +	TST_EXP_EQ_LI(path.st_mode, link.st_mode);
+> +	TST_EXP_EQ_LI(path.st_nlink, link.st_nlink);
+> +	TST_EXP_EQ_LI(path.st_uid, link.st_uid);
+> +	TST_EXP_EQ_LI(path.st_gid, link.st_gid);
+> +	TST_EXP_EQ_LI(path.st_size, link.st_size);
+> +	TST_EXP_EQ_LI(path.st_atime, link.st_atime);
+> +	TST_EXP_EQ_LI(path.st_mtime, link.st_mtime);
+> +	TST_EXP_EQ_LI(path.st_ctime, link.st_ctime);
 
-There seems to be an easier method, recently we needed to find online
-CPU for the startvation tests and all you need to do is to get the
-current thread affinity and then look for non-zero bits in that, see
-commit:
+Looking at these, most of the would be the same both for the link and
+the actual target. Maybe we should do some extra work in the test setup
+to make sure they differ. I would create a file in the temporary
+directory as a target for the symlink and use chown() to set a different
+owner and group, we can use utime() to change access and modification
+time to the beginning of the unix epoch. If we write a megabyte or so to
+the file the size should differ as well. If we link() the file it's
+nlink counter should increase. And I suppose that if we create either
+the file or the symlink on a mounted loop device, it will have different
+dev number as well.
 
-commit 1800e635783b69cacdce9f654ecd730a8f30915b
-Author: Edward Liaw via ltp <ltp@lists.linux.it>
-Date:   Wed Jun 19 16:28:07 2024 +0000
+I think that the only part that is not changed easily is the creation
+time (also called birth time), the rest should be under our control.
 
-And I suppose that it would make sense to put this function in the test
-library so taht we do not have to repeat it over in tests, but we would
-have to make it return the actual number of CPUs found and do the
-tst_brk(TCONF, ...) in the tests instead, so we would add:
-
-unsigned int tst_get_online_cpus(int online_cpus[], unsigned int online_cpus_cnt);
-
-And the test would do:
-
-	if (tst_get_online_cpus(online_cpus, 2) != 2)
-		tst_brK(TCONF, "Require at least 2 online CPUs.");
-
-> +static void run_test(void)
-> +{
-> +	check_online_cpus(online_cpus, 2);
-> +	CPU_ZERO(&cpu0);
-> +	CPU_SET(online_cpus[0], &cpu0);
-> +	CPU_ZERO(&cpu1);
-> +	CPU_SET(online_cpus[1], &cpu1);
-> +
-> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu0);
-> +	if (err != 0)
-> +		tst_res(TFAIL | TERRNO, "sched_setaffinity(cpu%d)", online_cpus[0]);
-> +
-> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu1);
-> +
-> +	if (err != 0)
-> +		tst_res(TFAIL | TERRNO, "sched_setaffinity(cpu%d)", online_cpus[1]);
-> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-> +
-> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu0);
-> +	if (err != 0)
-> +		tst_res(TFAIL, "sched_setaffinity(cpu%d)", online_cpus[0]);
-> +	q = (volatile unsigned long *)(p + getpagesize());
-> +	*q = 0xdeadbeef;
-
-I suppose that the test crashes here, when the entries are not
-propagated, right?
-
-> +	tst_res(TPASS, "Test Passed inconclusive");
-
-We usually print something as tst_res(TPASS, "Nothing bad happend, probably");
-in the case that we haven't managed to crash the system.
-
-Also we have to unmap the p here so that the test works properly with -i
-parameter.
-
+> +	SAFE_UNLINK(symname);
 > +}
 > +
 > +static void setup(void)
 > +{
-> +	hpage_size = tst_get_hugepage_size();
-> +	fd = tst_creat_unlinked(MNTPOINT, 0);
+> +	tmpdir = tst_get_tmpdir();
 > +}
 > +
-> +void cleanup(void)
+> +static void cleanup(void)
 > +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
+> +	free(tmpdir);
 > +}
 > +
 > +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.needs_tmpdir = 1,
+> +	.test_all = run,
 > +	.setup = setup,
 > +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {1, TST_NEEDS},
+> +	.needs_tmpdir = 1,
 > +};
 > -- 
-> 2.39.3
+> 2.35.3
 > 
 > 
 > -- 
