@@ -4,109 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B632AC2BD05
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 11:13:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 659DFC2BD05
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 11:57:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEDF53D0F85
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 13:13:27 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C41B53D0F97
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 13:57:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01A7A3CFCF8
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:13:11 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 6A4653D0DA4
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:57:25 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 351AD10004A0
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:13:10 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4BFD91A00099
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 13:57:24 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7BAD421A56;
- Mon, 24 Jun 2024 11:13:08 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 56F311F80A;
+ Mon, 24 Jun 2024 11:57:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719227588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719230243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=o4sVhctIRSWbbdE+2LseMRsEiM22sTWpyISJ61J5vOQ=;
- b=WM5A5gkGq0FdPb989dm257KTvFRE2cbwvw0TU6J2RkYLtEWoFJV5qYAaH7kaElLsOK8k/T
- pNwIzxf22ur5c978Si+TJSPcwu+jIAs7Ru3k25/impwM2UQj7cNKuMw/suFWfmaSulRSw5
- K1HwZiX9C0RCPo4IDT7bjBmc+I/LOGc=
+ bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
+ b=vU/NU/OOf8wgdRrkg0kui6DqkWtxnNjohgzy6Zz50Cu07pJmMb40QLu7PapaFHPlu3Kj8n
+ NMSvcG8In8gmcjTmb8wVvhFzQ6BxmJiR2yUJznCfR+JiXbRDnJIlc1TCYnab1xd9HIvvsg
+ JmcMv0aPn2teAC/zvqsQfX6UK1OnN6c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719227588;
+ s=susede2_ed25519; t=1719230243;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=o4sVhctIRSWbbdE+2LseMRsEiM22sTWpyISJ61J5vOQ=;
- b=uk/1ph5X+s3XNfiqEfT+zHP4zlT7A8SoDDbLDrezvvXP7Xnlr+5bkh/vnK0PhYax7vfwCp
- 5bP6j7dNvW0qybDA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WM5A5gkG;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="uk/1ph5X"
+ bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
+ b=AdNdt+XcZRu1S4WkT3a6b4pLvyLmoTy03VEp5uKu+CaEyR0Qnw+dcZsTi/yngAirA3/1OZ
+ dDGMIS+BnsY6kMCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719227588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719230243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=o4sVhctIRSWbbdE+2LseMRsEiM22sTWpyISJ61J5vOQ=;
- b=WM5A5gkGq0FdPb989dm257KTvFRE2cbwvw0TU6J2RkYLtEWoFJV5qYAaH7kaElLsOK8k/T
- pNwIzxf22ur5c978Si+TJSPcwu+jIAs7Ru3k25/impwM2UQj7cNKuMw/suFWfmaSulRSw5
- K1HwZiX9C0RCPo4IDT7bjBmc+I/LOGc=
+ bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
+ b=vU/NU/OOf8wgdRrkg0kui6DqkWtxnNjohgzy6Zz50Cu07pJmMb40QLu7PapaFHPlu3Kj8n
+ NMSvcG8In8gmcjTmb8wVvhFzQ6BxmJiR2yUJznCfR+JiXbRDnJIlc1TCYnab1xd9HIvvsg
+ JmcMv0aPn2teAC/zvqsQfX6UK1OnN6c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719227588;
+ s=susede2_ed25519; t=1719230243;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=o4sVhctIRSWbbdE+2LseMRsEiM22sTWpyISJ61J5vOQ=;
- b=uk/1ph5X+s3XNfiqEfT+zHP4zlT7A8SoDDbLDrezvvXP7Xnlr+5bkh/vnK0PhYax7vfwCp
- 5bP6j7dNvW0qybDA==
+ bh=exHNU43CzO9nWEFu/sQY06dR6lHGyFoWIlg6cAZwAqA=;
+ b=AdNdt+XcZRu1S4WkT3a6b4pLvyLmoTy03VEp5uKu+CaEyR0Qnw+dcZsTi/yngAirA3/1OZ
+ dDGMIS+BnsY6kMCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 69D5413AA4;
- Mon, 24 Jun 2024 11:13:08 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4423B1384C;
+ Mon, 24 Jun 2024 11:57:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id i6eTGcRUeWbkSAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 11:13:08 +0000
-Date: Mon, 24 Jun 2024 13:12:58 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id A1JZECNfeWZCVwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 11:57:23 +0000
+Date: Mon, 24 Jun 2024 13:57:13 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <ZnlUusezUjDQKIGN@yuki>
-References: <20240417092605.23645-1-xuyang2018.jy@fujitsu.com>
+To: Shirisha G <shirisha@linux.ibm.com>
+Message-ID: <ZnlfGVAO9-53sQ8z@yuki>
+References: <20240416091107.783352-1-shirisha@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240417092605.23645-1-xuyang2018.jy@fujitsu.com>
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240416091107.783352-1-shirisha@linux.ibm.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7BAD421A56
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] unlinkat: Add negative tests for unlinkat
+Subject: Re: [LTP] [PATCH v2] Migrating the
+ libhugetlbfs/testcases/slbpacaflush.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,164 +116,147 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Can we move the three negative tests from the unlikat01.c here as well,
-so that we have all the negative tests in a single place?
+> +#define _GNU_SOURCE
+> +#define SYSFS_CPU_ONLINE_FMT "/sys/devices/system/cpu/cpu%d/online"
+> +#define MNTPOINT "hugetlbfs/"
+> +#define SINGLE_CPU (CPU_SETSIZE/8)
+> +#include "hugetlb.h"
+> +
+> +
+> +#include <stdio.h>
+> +#include <sched.h>
+> +
+> +
+> +long hpage_size;
+> +int fd;
+> +void *p;
+> +volatile unsigned long *q;
+> +int online_cpus[2], err;
+> +cpu_set_t cpu0, cpu1;
 
+All these should be static.
+
+> +void check_online_cpus(int online_cpus[], int nr_cpus_needed)
+> +{
+> +	char cpu_state, path_buf[64];
+> +	int cpu_idx, fd, ret, i;
+> +
+> +	cpu_idx = 0;
+> +
+> +	if (get_nprocs() < nr_cpus_needed)
+> +		tst_brk(TCONF, "minimum  %d online cpus are required", nr_cpus_needed);
+> +
+> +	for (i = 0; i < get_nprocs_conf() && cpu_idx < nr_cpus_needed; i++) {
+> +		errno = 0;
+> +		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
+> +		fd = open(path_buf, O_RDONLY);
+> +		if (fd < 0) {
+> +			/* If 'online' is absent, the cpu cannot be offlined */
+> +			if (errno == ENOENT) {
+> +				online_cpus[cpu_idx] = i;
+> +				cpu_idx++;
+> +				continue;
+> +			} else {
+> +				tst_res(TFAIL | TERRNO, "Unable to open %s", path_buf);
+> +			}
+> +		}
+> +
+> +		ret = read(fd, &cpu_state, 1);
+> +		if (ret < 1)
+> +			tst_res(TFAIL | TERRNO, "Unable to read %s", path_buf);
+> +
+> +		if (cpu_state == '1') {
+> +			online_cpus[cpu_idx] = i;
+> +			cpu_idx++;
+> +		}
+> +
+> +		if (fd >= 0)
+> +			SAFE_CLOSE(fd);
+> +	}
+> +
+> +	if (cpu_idx < nr_cpus_needed)
+> +		tst_brk(TCONF, "minimum %d online cpus were not found", nr_cpus_needed);
+> +}
+
+There seems to be an easier method, recently we needed to find online
+CPU for the startvation tests and all you need to do is to get the
+current thread affinity and then look for non-zero bits in that, see
+commit:
+
+commit 1800e635783b69cacdce9f654ecd730a8f30915b
+Author: Edward Liaw via ltp <ltp@lists.linux.it>
+Date:   Wed Jun 19 16:28:07 2024 +0000
+
+And I suppose that it would make sense to put this function in the test
+library so taht we do not have to repeat it over in tests, but we would
+have to make it return the actual number of CPUs found and do the
+tst_brk(TCONF, ...) in the tests instead, so we would add:
+
+unsigned int tst_get_online_cpus(int online_cpus[], unsigned int online_cpus_cnt);
+
+And the test would do:
+
+	if (tst_get_online_cpus(online_cpus, 2) != 2)
+		tst_brK(TCONF, "Require at least 2 online CPUs.");
+
+> +static void run_test(void)
+> +{
+> +	check_online_cpus(online_cpus, 2);
+> +	CPU_ZERO(&cpu0);
+> +	CPU_SET(online_cpus[0], &cpu0);
+> +	CPU_ZERO(&cpu1);
+> +	CPU_SET(online_cpus[1], &cpu1);
+> +
+> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu0);
+> +	if (err != 0)
+> +		tst_res(TFAIL | TERRNO, "sched_setaffinity(cpu%d)", online_cpus[0]);
+> +
+> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu1);
+> +
+> +	if (err != 0)
+> +		tst_res(TFAIL | TERRNO, "sched_setaffinity(cpu%d)", online_cpus[1]);
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+> +
+> +	err = sched_setaffinity(getpid(), SINGLE_CPU, &cpu0);
+> +	if (err != 0)
+> +		tst_res(TFAIL, "sched_setaffinity(cpu%d)", online_cpus[0]);
+> +	q = (volatile unsigned long *)(p + getpagesize());
+> +	*q = 0xdeadbeef;
+
+I suppose that the test crashes here, when the entries are not
+propagated, right?
+
+> +	tst_res(TPASS, "Test Passed inconclusive");
+
+We usually print something as tst_res(TPASS, "Nothing bad happend, probably");
+in the case that we haven't managed to crash the system.
+
+Also we have to unmap the p here so that the test works properly with -i
+parameter.
+
+> +}
+> +
 > +static void setup(void)
 > +{
-> +	int attr;
-> +
-> +	pw = SAFE_GETPWNAM("nobody");
-> +
-> +	SAFE_MKDIR(DIR_EACCES_NOWRITE, 0777);
-> +	SAFE_TOUCH(DIR_EACCES_NOWRITE "/" TEST_EACCES, 0777, NULL);
-> +	SAFE_CHMOD(DIR_EACCES_NOWRITE, 0555);
-
-Can't we pass the 0555 directly to the SAFE_TOUCH()?
-
-> +	SAFE_MKDIR(DIR_EACCES_NOSEARCH, 0777);
-> +	SAFE_TOUCH(DIR_EACCES_NOSEARCH "/" TEST_EACCES, 0777, NULL);
-> +	SAFE_CHMOD(DIR_EACCES_NOSEARCH, 0666);
-
-Here as well?
-
-> +	SAFE_MKDIR(DIR_NORMAL, 0777);
-> +	SAFE_TOUCH(DIR_NORMAL "/" TEST_NORMAL, 0777, NULL);
-> +	SAFE_TOUCH(DIR_NORMAL "/" TEST_EFAULT, 0777, NULL);
-> +
-> +	SAFE_MKDIR(DIR_NORMAL "/" DIR_EISDIR, 0777);
-> +
-> +	memset(longfilename, '1', PATH_MAX + 1);
-> +
-> +	SAFE_TOUCH(DIR_NORMAL "/" DIR_ENOTDIR, 0777, NULL);
-> +
-> +	fd_immutable = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_IMMUTABLE,
-> +			O_CREAT, 0777);
-> +	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> +	attr |= FS_IMMUTABLE_FL;
-> +	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
-> +	SAFE_CLOSE(fd_immutable);
-
-This should be put into a function
-
-static void set_fs_flags(int fd, int flags); and possibly put into the
-test library, because this pattern is repeated in several tests.
-
-> +	fd_append_only = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_APPEND_ONLY,
-> +			O_CREAT, 0777);
-> +	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
-> +	attr |= FS_APPEND_FL;
-> +	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> +	SAFE_CLOSE(fd_append_only);
-> +
-> +	SAFE_TOUCH(DIR_ENOTDIR2, 0777, NULL);
+> +	hpage_size = tst_get_hugepage_size();
+> +	fd = tst_creat_unlinked(MNTPOINT, 0);
 > +}
 > +
-> +static void cleanup(void)
+> +void cleanup(void)
 > +{
-> +	int attr;
-> +
-> +	fd_immutable = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_IMMUTABLE,
-> +			O_RDONLY, 0777);
-> +	SAFE_IOCTL(fd_immutable, FS_IOC_GETFLAGS, &attr);
-> +	attr &= ~FS_IMMUTABLE_FL;
-> +	SAFE_IOCTL(fd_immutable, FS_IOC_SETFLAGS, &attr);
-> +	SAFE_CLOSE(fd_immutable);
-
-Same here, this should be put into clear_fs_flags(int fd, int flags)
-function.
-
-Or maybe just one function for both:
-
-tst_change_fs_flags(int fd, int flags, bool set);
-
-Where the set will switch between set and clear operations.
-
-> +	fd_append_only = SAFE_OPEN(DIR_NORMAL "/" TEST_EPERM_APPEND_ONLY,
-> +			O_RDONLY, 0777);
-> +	SAFE_IOCTL(fd_append_only, FS_IOC_GETFLAGS, &attr);
-> +	attr &= ~FS_APPEND_FL;
-> +	SAFE_IOCTL(fd_append_only, FS_IOC_SETFLAGS, &attr);
-> +	SAFE_CLOSE(fd_append_only);
-> +}
-> +
-> +static void do_unlinkat(struct test_case_t *tc)
-> +{
-> +	int attr;
-> +	char fullpath[PATH_MAX];
-> +	int dirfd = open(tc->dirname, O_DIRECTORY);
-> +
-> +	if (dirfd < 0) {
-> +		if (tc->expected_errno != EBADF) {
-> +			/* Special situation: dirfd refers to a file */
-> +			if (errno == ENOTDIR)
-> +				dirfd = SAFE_OPEN(tc->dirname, O_APPEND);
-> +			else {
-> +				tst_res(TFAIL | TERRNO, "Cannot open dirfd");
-> +				return;
-> +			}
-> +		}
-> +	}
-
-Can't we pass the flags in the testcase structure as well? That way we
-would do just:
-
-	dirfd = open(tc->dirname, tc->open_flags);
-
-> +	TST_EXP_FAIL(unlinkat(dirfd, tc->filename, tc->flags),
-> +		tc->expected_errno,
-> +		"%s", tc->desc);
-> +
-> +	/* If unlinkat() succeeded unexpectedly, test file should be restored */
-> +	if (!TST_RET) {
-> +		snprintf(fullpath, sizeof(fullpath), "%s/%s", tc->dirname,
-> +			tc->filename);
-> +		if (tc->fd) {
-> +			*(tc->fd) = SAFE_OPEN(fullpath, O_CREAT, 0600);
-> +			if (tc->ioctl_flag) {
-> +				SAFE_IOCTL(*(tc->fd), FS_IOC_GETFLAGS, &attr);
-> +				attr |= tc->ioctl_flag;
-> +				SAFE_IOCTL(*(tc->fd), FS_IOC_SETFLAGS, &attr);
-> +			}
-> +			SAFE_CLOSE(*(tc->fd));
-> +		} else {
-> +			SAFE_TOUCH(fullpath, 0777, 0);
-> +		}
-> +	}
-
-Hmm, I'm not sure if this recovery is worth the extra code.
-
-> +	if (dirfd > 0)
-> +		SAFE_CLOSE(dirfd);
-> +}
-> +
-> +static void verify_unlinkat(unsigned int i)
-> +{
-> +	struct test_case_t *tc = &tcases[i];
-> +	pid_t pid;
-> +
-> +	if (tc->user) {
-> +		pid = SAFE_FORK();
-> +		if (!pid) {
-> +			SAFE_SETUID(pw->pw_uid);
-> +			do_unlinkat(tc);
-> +			exit(0);
-> +		}
-> +		SAFE_WAITPID(pid, NULL, 0);
-> +	} else {
-> +		do_unlinkat(tc);
-> +	}
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
 > +}
 > +
 > +static struct tst_test test = {
-> +	.setup = setup,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.cleanup = cleanup,
-> +	.test = verify_unlinkat,
-> +	.needs_rofs = 1,
-> +	.mntpoint = DIR_EROFS,
 > +	.needs_root = 1,
-> +	.forks_child = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {1, TST_NEEDS},
 > +};
 > -- 
 > 2.39.3
