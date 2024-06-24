@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6915EC2BD09
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 12:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6423AC2BD09
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 12:31:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD4613D0DA4
-	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 14:23:18 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CF4AC3D0F87
+	for <ltp@archiver.kernel.org>; Mon, 24 Jun 2024 14:31:53 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69CC83CFB81
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:23:03 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 90AC43CD84E
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:31:37 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
@@ -24,85 +23,81 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 649691000640
- for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:23:01 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C9F421400196
+ for <ltp@lists.linux.it>; Mon, 24 Jun 2024 14:31:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 303E5219FC;
- Mon, 24 Jun 2024 12:23:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AB86421A68;
+ Mon, 24 Jun 2024 12:31:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719231781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719232295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
- b=sDd3GMiwCPM6q+x06bFYjF42cn/znr/VkhmxSeS+cinjdiPDyx3GMDmjWRxsqIZ9NMaRt2
- RnNGcBkA5vlQyLLH0Di9J6J6qK60DQFbdc8sOv3tnQfLs0fKlkLvGzV+w5lImkzcFfBhpq
- DGVkHQtGmu/UKGkfP893vHKebaZ1B2U=
+ bh=1keOtDKRdp06YlsB+b1qYeFGxAQDRqIqDXH4EUB4xik=;
+ b=EdVNdUk+uLInojMRq6qnekot0+/kaO7F1AdxqUG+LCxI9oq14mufoZH/jJ3fDffkKz7mlC
+ impwPQrXu6i9jsy0FozJgZHyvYN2falDfn0wu9XAy2Y3y9tud6VnHp71Q9LG4n4K/7JZx6
+ 15xbULQ9ZZS+5RbIAy9eRX5REPDVVNc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719231781;
+ s=susede2_ed25519; t=1719232295;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
- b=R7E4EaQEvMcVC0NpZnno1b3yZMRxIF//7Mu8Se5scGcWQrpYJhRTWWITlPn/u8Vkz/aKTp
- SKRvzF/CcNwl6KDQ==
+ bh=1keOtDKRdp06YlsB+b1qYeFGxAQDRqIqDXH4EUB4xik=;
+ b=NgT7CiuHmUnKHkhBSFZi7wm5YDWGcOyrbdcFZQMjIDD8JvFY6l0w+WV/6b+WQ+q41GkQmp
+ aT7MnAp8Vv6QASCw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sDd3GMiw;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=R7E4EaQE
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1719231781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1719232294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
- b=sDd3GMiwCPM6q+x06bFYjF42cn/znr/VkhmxSeS+cinjdiPDyx3GMDmjWRxsqIZ9NMaRt2
- RnNGcBkA5vlQyLLH0Di9J6J6qK60DQFbdc8sOv3tnQfLs0fKlkLvGzV+w5lImkzcFfBhpq
- DGVkHQtGmu/UKGkfP893vHKebaZ1B2U=
+ bh=1keOtDKRdp06YlsB+b1qYeFGxAQDRqIqDXH4EUB4xik=;
+ b=HyE3BAZY0jSfgWGAZArHUlkqE4hGZgiQZt2AKsxrzD+dmpn1jqvyw02TgAkcp10kvKkgts
+ gOclCn+Q17yGgWz+XTXhKzW3S7C3aFEIY8WW5YcHleE8s6L2doqe+21TKag6RtWAfAMzLw
+ LLKBcLIFcj1A4ksUasi3Y71T+juglYU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1719231781;
+ s=susede2_ed25519; t=1719232294;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/Qd2EmL1U4TTo7TUfKXmfrjvHNuecaGnbTn8Ba57IrQ=;
- b=R7E4EaQEvMcVC0NpZnno1b3yZMRxIF//7Mu8Se5scGcWQrpYJhRTWWITlPn/u8Vkz/aKTp
- SKRvzF/CcNwl6KDQ==
+ bh=1keOtDKRdp06YlsB+b1qYeFGxAQDRqIqDXH4EUB4xik=;
+ b=lVkqsT8nELQQ9NpWh5D2MPRdQFWgMRC5MFjytiiMs1AsYK2SIgoPelVybf5ebnAHf9jsZW
+ 8bp6+zrOY76rApCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 156741384C;
- Mon, 24 Jun 2024 12:23:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BE571384C;
+ Mon, 24 Jun 2024 12:31:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id prw+BCVleWaTXwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 12:23:01 +0000
-Date: Mon, 24 Jun 2024 14:22:50 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id A8XsJCZneWZrYgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Jun 2024 12:31:34 +0000
+Date: Mon, 24 Jun 2024 14:31:24 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZnllGpZEj6TOsWqB@yuki>
-References: <20240417144409.11411-1-andrea.cervesato@suse.de>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <ZnlnHOGlHDOyhImb@yuki>
+References: <20240419110230.191809-1-pvorel@suse.cz>
+ <CAEemH2eZNO=P5c_igqNKSva-q37y7GSK=d44wUHd=Ua=DTUNDw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240417144409.11411-1-andrea.cervesato@suse.de>
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <CAEemH2eZNO=P5c_igqNKSva-q37y7GSK=d44wUHd=Ua=DTUNDw@mail.gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 303E5219FC
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] Add stat04 test
+Subject: Re: [LTP] [PATCH 1/1] libs: Remove 'libltp' prefix from libs source
+ directories
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,79 +116,29 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*\
-> + * [Description]
-> + *
-> + * This test checks that stat() executed on file provide the same information
-> + * of symlink linking to it.
-> + */
-> +
-> +#include <stdlib.h>
-> +#include "tst_test.h"
-> +
-> +static char *tmpdir;
-> +
-> +static void run(void)
-> +{
-> +	char *symname = "my_symlink0";
-> +
-> +	SAFE_SYMLINK(tmpdir, symname);
-> +
-> +	struct stat path;
-> +	struct stat link;
-> +
-> +	TST_EXP_PASS(stat(tmpdir, &path));
-> +	TST_EXP_PASS(stat(symname, &link));
-> +
-> +	TST_EXP_EQ_LI(path.st_dev, link.st_dev);
-> +	TST_EXP_EQ_LI(path.st_mode, link.st_mode);
-> +	TST_EXP_EQ_LI(path.st_nlink, link.st_nlink);
-> +	TST_EXP_EQ_LI(path.st_uid, link.st_uid);
-> +	TST_EXP_EQ_LI(path.st_gid, link.st_gid);
-> +	TST_EXP_EQ_LI(path.st_size, link.st_size);
-> +	TST_EXP_EQ_LI(path.st_atime, link.st_atime);
-> +	TST_EXP_EQ_LI(path.st_mtime, link.st_mtime);
-> +	TST_EXP_EQ_LI(path.st_ctime, link.st_ctime);
+> > I know renaming files is not optimal. But history will be kept, when
+> > browsing with gitk or git gui.
+> >
+> > Improvement: less typing when cd to the directory.
+> >
 
-Looking at these, most of the would be the same both for the link and
-the actual target. Maybe we should do some extra work in the test setup
-to make sure they differ. I would create a file in the temporary
-directory as a target for the symlink and use chown() to set a different
-owner and group, we can use utime() to change access and modification
-time to the beginning of the unix epoch. If we write a megabyte or so to
-the file the size should differ as well. If we link() the file it's
-nlink counter should increase. And I suppose that if we create either
-the file or the symlink on a mounted loop device, it will have different
-dev number as well.
+I do not have a strong opinion on this, feel free to push the change
+with my:
 
-I think that the only part that is not changed easily is the creation
-time (also called birth time), the rest should be under our control.
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
-> +	SAFE_UNLINK(symname);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tmpdir = tst_get_tmpdir();
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	free(tmpdir);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> +1 I agree with this, and I always have a question, why
+> we have additional libs/ parallel with lib/, is there any root
+> difference between them? or just a historical issue?
+
+The idea is exactly how it was described by Peter, these are usually
+libraries used only by a few tests e.g. functions to deal with swap or
+linux input, while lib/ has functions that are used by most of
+the tests with more generic functionalities.
+
+Apart from small speedup it makes things a bit easier to navigate, at
+least I think so. Or do you think that this would be better with all the
+files in a single directory?
 
 -- 
 Cyril Hrubis
