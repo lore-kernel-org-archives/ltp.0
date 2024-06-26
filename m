@@ -4,80 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B92EC2BBCA
-	for <ltp@archiver.kernel.org>; Tue, 25 Jun 2024 23:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17027C2BBCA
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 01:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719359762; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=DLcqG5NGqEDrX5fUcWgM8i+ircYkPp6oCUPI11KXQJc=;
- b=LzfnQAHD+9478zyUkRaHKZJqas85OMVUKzeXFoM70rEXZMKtCTvypqds49YDcxZqLiELB
- 4I8hKtgDEBCmAAFFogUBzpZ3ktGrU+rZH6rSSwz5W3/NyDnHh2YBwGkj9OPDb9rpOiBp5gf
- kphMmU/18owL0orE9EhRpKVLD5+3jSs=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1719363962; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=5Q5xfZ7fP7Xz9UEgnhPVRKtKGjluH+H1MIweo+l2GEM=;
+ b=bF/6Hqx6eUftqYvGARaCSGAWz29Bgw93mYbQNQsZBTNCx5hZG4m79YktRK368Ya4AGRtt
+ fmDDvfHTh1GpUwTnf2fkBcmBeG0hpaDOb0eVGdflBBI/IWuHFct1HCYnf5FAzZZ06Dixi10
+ XKr6tg5a662YoO59pWnRmo7S67zmPII=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E63853D1197
-	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 01:56:02 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 59B9A3D1157
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 03:06:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 283E73D1141
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:53:07 +0200 (CEST)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
- [IPv6:2607:f8b0:4864:20::44a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E88783CE7BC
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 03:05:39 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=oracle.com (client-ip=205.220.165.32;
+ helo=mx0a-00069f02.pphosted.com;
+ envelope-from=samasth.norway.ananda@oracle.com; receiver=lists.linux.it)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
+ [205.220.165.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 989C3208188
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:53:06 +0200 (CEST)
-Received: by mail-pf1-x44a.google.com with SMTP id
- d2e1a72fcca58-706645f6ef3so5436766b3a.0
- for <ltp@lists.linux.it>; Tue, 25 Jun 2024 16:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1719359585; x=1719964385; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=n08fHnAR3SdcuUTo8d/rWTb5o0Cgqg/50Gn4XFRGS34=;
- b=q1QulyW7QjJOPVgmUshbqg/QwAorL0ChdPUFryU4uK3P1XgcvpFEV5bRNgXA2Udt9C
- dZuyZH8ue4DaOosJZks3WT7So89iweOGqvDqASNUUl0+N3YqScAluFLRFDPnSb4BVdSN
- IBvqH+fCEctLdW17pcA7zzd8KG9JJrjY60LF+y6QFJJSf6Dn37UUIZlnYTgy+A+igywp
- Ik6hrtSpUZD2Rp2t/HpcRZW2jPdD7wTm3lBIf52arYGq93XInUpQR0ZE1PkyJfu6PU/I
- yOs/lGdjeKIr9jA7vjj70p26spRStT8o6EbAdRlTCNUmBpwP4SA/Fx14Ttn+4Dx0i9Ix
- baYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719359585; x=1719964385;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=n08fHnAR3SdcuUTo8d/rWTb5o0Cgqg/50Gn4XFRGS34=;
- b=W9TR1ee8R1WK4K7qTFASKiUwI4RT2ydSxcsJlcFqg5Q7c/AwTBZue7ct3xPRf9iL0o
- q9iXBrzVHxt+wx+vN5W2qqzoNN8FfM9sQ1yUCjB6TiN8JE05lN/vr6ZR7kTilPgdLlKf
- EwsSVj0QIo97z1JblEdM8ObNwA+MGerkGI2jU5rEDPoM7LhFWsyDj/S3f0ciU17QWfaC
- WoFDIpIx7eb102zJG620as2S9JS4hakwj2ziR+K9PVwb4DnVAQKlk2TRzBcFFcoTy2Xx
- Rt7Sv5TYrYktAlOU12mpgU4ZVWKQnt8HDuf0+zpaos3Tg+dMxFyQGDhZbO+tj9faeroI
- zYYg==
-X-Gm-Message-State: AOJu0YxH2x8HkNQykZuaOlaiNodHgJ1pKrZyra+nHU4ZuDLMpgqBPKgj
- L3r8lYd3E5j5brTiLGrV7JD6dRFR4/jsefH45j16qPCmSRR2woWBDFYiW6u9lqj4J/hr+HLsMsy
- Y8UGFE9UgOBsui7chv1YAHpKZJmfSZdvm9OQ28eKBdh1Xaj8B1VnF7fZTNCjfyxf69tvWheTvL/
- xZGqYLsmPNR0Rtnv2TiRXoobfZJGAmCyc=
-X-Google-Smtp-Source: AGHT+IEjFHmbNA3gkoVR/ojMYDMZbK9dGOs1LfYwnsvnrX1NBmgqzmoCRNOwFEAACz0zCMIGnZAAjanK+PHg
-X-Received: from jstultz-noogler2.c.googlers.com
- ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6a00:420b:b0:706:5e9c:96d2 with SMTP
- id d2e1a72fcca58-70674374177mr149605b3a.0.1719359584741; Tue, 25 Jun 2024
- 16:53:04 -0700 (PDT)
-Date: Tue, 25 Jun 2024 16:52:35 -0700
-In-Reply-To: <20240625235245.2106313-1-jstultz@google.com>
-Mime-Version: 1.0
-References: <20240625235245.2106313-1-jstultz@google.com>
-X-Mailer: git-send-email 2.45.2.741.gdbec12cfda-goog
-Message-ID: <20240625235245.2106313-7-jstultz@google.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C0034600468
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 03:05:36 +0200 (CEST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45PMBTZF006916
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+ from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=corp-2023-11-20; bh=YrIZ/dXI08ia0W
+ Un3tQ6KqMsZzf6fbqv1EmYW4dlPJ8=; b=hw4qB0I3Xj39Q6FgIF/Qxv3h0xu1O2
+ t/SCJavK8nJNg1AMierue5E5Djum76VRurFCB1JZj/CqHqKwNyLX7+zehT684v3U
+ 2Wvd54W3pi5QyvJOk1ZlLNmwYSGOTR7MQF0p6T56eWSaIW8TtgcRQ2jbPWf4aZTV
+ O79dipEaLamSl79hqvgwrKBPm2pTDKQ20sD4ZstrVYXfuu6gwXoOfsF9/2s98o0B
+ GeVVSODy2oYGO6EVi7UDvBmzMBzv6FyWZrdolwIfPrJTsw7OfwA6Ffe2JhT2snvX
+ tQuSixx69r6/aO83ocUzYTiYHUZTQ6/FeYqEFEMGLtNitA5NpBZnKrxg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ywn70a1k4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 +0000 (GMT)
+Received: from pps.filterd
+ (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+ by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
+ with ESMTP id 45PMPNtb017801
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
+ 3ywn28a7c7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:33 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45Q15X8j025094
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:33 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
+ [10.129.136.47])
+ by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id
+ 3ywn28a7c3-1; Wed, 26 Jun 2024 01:05:33 +0000
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Date: Tue, 25 Jun 2024 18:05:32 -0700
+Message-ID: <20240626010532.2845919-1-samasth.norway.ananda@oracle.com>
+X-Mailer: git-send-email 2.45.2
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-25_19,2024-06-25_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ malwarescore=0 adultscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
+ definitions=main-2406260007
+X-Proofpoint-ORIG-GUID: g2n5gkpeyfyAgb2mh8SibJl0jms8gmHA
+X-Proofpoint-GUID: g2n5gkpeyfyAgb2mh8SibJl0jms8gmHA
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/6] sched_football: Add trace_marker messages if
- we're tracing
+Subject: [LTP] [PATCH] fallocate03: FALLOC_FL_PUNCH_HOLE must be used with
+ FALLOC_FL_KEEP_SIZE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,130 +100,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: John Stultz via ltp <ltp@lists.linux.it>
-Reply-To: John Stultz <jstultz@google.com>
-Cc: kernel-team@android.com, John Stultz <jstultz@google.com>,
- Darren Hart <darren@os.amperecomputing.com>
+From: Samasth Norway Ananda via ltp <ltp@lists.linux.it>
+Reply-To: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To further help with tracing, add trace_marker messages so we
-can see exactly when the game starts and ends in the tracelog.
+The fallocate03 ltp test fails with "failed: EOPNOTSUPP" if we just use
+FALLOC_FL_KEEP_SIZE for the mode instead of ORing it with
+FALLOC_FL_PUNCH_HOLE.
 
-Cc: kernel-team@android.com
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Cc: Darren Hart <darren@os.amperecomputing.com>
-Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
 ---
-v2:
-* Pulled trace marker writing out into librttest helper functions
-  as suggested by Cyril
----
- .../func/sched_football/sched_football.c      |  5 +++
- testcases/realtime/include/librttest.h        | 13 ++++++++
- testcases/realtime/lib/librttest.c            | 32 +++++++++++++++++++
- 3 files changed, 50 insertions(+)
+ testcases/kernel/syscalls/fallocate/fallocate03.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-index 40496cc22..b6ae692af 100644
---- a/testcases/realtime/func/sched_football/sched_football.c
-+++ b/testcases/realtime/func/sched_football/sched_football.c
-@@ -66,6 +66,7 @@
- #include <pthread.h>
- #include <sched.h>
- #include <errno.h>
-+#include <fcntl.h>
- #include <sys/syscall.h>
- #include <unistd.h>
- #include <sys/prctl.h>
-@@ -171,17 +172,21 @@ int referee(int game_length)
- 	prctl(PR_SET_NAME, "referee", 0, 0, 0);
- 	printf("Game On (%d seconds)!\n", game_length);
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate03.c b/testcases/kernel/syscalls/fallocate/fallocate03.c
+index b3e6b3817..20ce13cd4 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate03.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate03.c
+@@ -30,10 +30,10 @@ static struct test_case {
+ 	{DEFAULT_MODE, BLOCKS_WRITTEN},
+ 	{DEFAULT_MODE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 - 1},
+ 	{DEFAULT_MODE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 1},
+-	{FALLOC_FL_KEEP_SIZE, 2},
+-	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN},
+-	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 + 1},
+-	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 2}
++	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, 2},
++	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN},
++	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 + 1},
++	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 2}
+ };
  
-+	/* open trace marker early to avoid latency with the first message */
-+	trace_marker_prep();
- 	gettimeofday(&start, NULL);
- 	now = start;
- 
- 	/* Start the game! */
- 	tst_atomic_store(0, &the_ball);
-+	atrace_marker_write("sched_football", "Game_started!");
- 
- 	/* Watch the game */
- 	while ((now.tv_sec - start.tv_sec) < game_length) {
- 		sleep(1);
- 		gettimeofday(&now, NULL);
- 	}
-+	atrace_marker_write("sched_football", "Game_Over!");
- 	final_ball = tst_atomic_load(&the_ball);
- 	/* Blow the whistle */
- 	printf("Game Over!\n");
-diff --git a/testcases/realtime/include/librttest.h b/testcases/realtime/include/librttest.h
-index 8733479e7..0a1bb0540 100644
---- a/testcases/realtime/include/librttest.h
-+++ b/testcases/realtime/include/librttest.h
-@@ -342,4 +342,17 @@ void latency_trace_stop(void);
-  */
- void latency_trace_print(void);
- 
-+/* trace_marker_prep: open trace_marker file (optional)
-+ */
-+void trace_marker_prep(void);
-+
-+/* trace_marker_write: write buf to trace_marker.
-+ * Will open trace_marker file if not already open
-+ */
-+int trace_marker_write(char *buf, int len);
-+
-+/* atrace_marker_write: write atrace format message to trace_marker
-+ */
-+int atrace_marker_write(char *tag, char *msg);
-+
- #endif /* LIBRTTEST_H */
-diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/librttest.c
-index eaa623b72..191c667a1 100644
---- a/testcases/realtime/lib/librttest.c
-+++ b/testcases/realtime/lib/librttest.c
-@@ -732,3 +732,35 @@ void latency_trace_print(void)
- {
- 	read_and_print("/proc/latency_trace", STDOUT_FILENO);
+ static int block_size;
+@@ -82,7 +82,7 @@ static void verify_fallocate(unsigned int nr)
+ 	TST_EXP_PASS(
+ 		fallocate(fd, tc->mode, tc->offset * block_size, block_size),
+ 		"fallocate(fd, %s, %ld, %d)",
+-		tc->mode ? "FALLOC_FL_KEEP_SIZE" : "DEFAULT_MODE",
++		tc->mode ? "FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE" : "DEFAULT_MODE",
+ 		tc->offset * block_size, block_size);
  }
-+
-+static int trace_marker_fd = -1;
-+
-+void trace_marker_prep(void)
-+{
-+	if (trace_marker_fd != -1)
-+		return;
-+	trace_marker_fd = open("/sys/kernel/tracing/trace_marker", O_RDWR, 0);
-+}
-+
-+int trace_marker_write(char *buf, int len)
-+{
-+	if (trace_marker_fd == -1)
-+		trace_marker_prep();
-+
-+	if (trace_marker_fd < 0)
-+		return -1;
-+
-+	return write(trace_marker_fd, buf, len);
-+}
-+
-+#define TRACE_BUF_LEN 256
-+static char trace_buf[TRACE_BUF_LEN];
-+
-+int atrace_marker_write(char *tag, char *msg)
-+{
-+	/* Uses atrace format perfetto can visualize */
-+	snprintf(trace_buf, TRACE_BUF_LEN, "I|%i|%s: %s\n", getpid(), tag, msg);
-+	return trace_marker_write(trace_buf,
-+				  strnlen(trace_buf, TRACE_BUF_LEN));
-+}
-+
+ 
 -- 
-2.45.2.741.gdbec12cfda-goog
+2.45.2
 
 
 -- 
