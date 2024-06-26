@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17027C2BBCA
-	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 01:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719363962; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=5Q5xfZ7fP7Xz9UEgnhPVRKtKGjluH+H1MIweo+l2GEM=;
- b=bF/6Hqx6eUftqYvGARaCSGAWz29Bgw93mYbQNQsZBTNCx5hZG4m79YktRK368Ya4AGRtt
- fmDDvfHTh1GpUwTnf2fkBcmBeG0hpaDOb0eVGdflBBI/IWuHFct1HCYnf5FAzZZ06Dixi10
- XKr6tg5a662YoO59pWnRmo7S67zmPII=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C76BEC30658
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 02:26:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 59B9A3D1157
-	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 03:06:02 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AA1DA3D1159
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 04:26:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E88783CE7BC
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 03:05:39 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=oracle.com (client-ip=205.220.165.32;
- helo=mx0a-00069f02.pphosted.com;
- envelope-from=samasth.norway.ananda@oracle.com; receiver=lists.linux.it)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 008E93CF09B
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 04:26:22 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C0034600468
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 03:05:36 +0200 (CEST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45PMBTZF006916
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=corp-2023-11-20; bh=YrIZ/dXI08ia0W
- Un3tQ6KqMsZzf6fbqv1EmYW4dlPJ8=; b=hw4qB0I3Xj39Q6FgIF/Qxv3h0xu1O2
- t/SCJavK8nJNg1AMierue5E5Djum76VRurFCB1JZj/CqHqKwNyLX7+zehT684v3U
- 2Wvd54W3pi5QyvJOk1ZlLNmwYSGOTR7MQF0p6T56eWSaIW8TtgcRQ2jbPWf4aZTV
- O79dipEaLamSl79hqvgwrKBPm2pTDKQ20sD4ZstrVYXfuu6gwXoOfsF9/2s98o0B
- GeVVSODy2oYGO6EVi7UDvBmzMBzv6FyWZrdolwIfPrJTsw7OfwA6Ffe2JhT2snvX
- tQuSixx69r6/aO83ocUzYTiYHUZTQ6/FeYqEFEMGLtNitA5NpBZnKrxg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
- by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ywn70a1k4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 +0000 (GMT)
-Received: from pps.filterd
- (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 45PMPNtb017801
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
- 3ywn28a7c7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:33 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45Q15X8j025094
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 01:05:33 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
- [10.129.136.47])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id
- 3ywn28a7c3-1; Wed, 26 Jun 2024 01:05:33 +0000
-To: ltp@lists.linux.it
-Date: Tue, 25 Jun 2024 18:05:32 -0700
-Message-ID: <20240626010532.2845919-1-samasth.norway.ananda@oracle.com>
-X-Mailer: git-send-email 2.45.2
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 798571A0078A
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 04:26:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1719368779;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wKOJL+BFL3pSgliVrqrje0sjwUJcWFgfME9TqZipDdQ=;
+ b=HwAm21XeX1JHRPHDd9fJV9i/5+t7nLdI3Oek8GJiYm6ioIgSLSGNTs4CfMOE9wmjJOJqf0
+ x/gB8fDxa5BQENejJ4LkQlMp0RAoEGIr7/CQL0120uYfShBYq+/2f+ErvpoMz09Gf3C3+8
+ uUo1CVCuL6vSSkU2z/2s9UsuIYbUilc=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-BjbujbyiNl2dUnFUVIsWUg-1; Tue, 25 Jun 2024 22:26:14 -0400
+X-MC-Unique: BjbujbyiNl2dUnFUVIsWUg-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-2c7a8949243so7689520a91.0
+ for <ltp@lists.linux.it>; Tue, 25 Jun 2024 19:26:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1719368773; x=1719973573;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=wKOJL+BFL3pSgliVrqrje0sjwUJcWFgfME9TqZipDdQ=;
+ b=DK5jj0bDcdLoRLEPoTOJ9Ao1iiVPWSwaFKLOSKwMpjFxxjzeMk/LtfgzF2mFNw/k7w
+ 5w4ZHqRVzQUwM0KKEdhTT7KnHLtDGT9riCBrM0ia/seOPWzG06O0kiuwgFJerlMw3XTu
+ QmAy+p7lgEeqWvPOKoyQca+qvzmvbPaoMAcvxFtoKB1m6CmP6KdL9Kk5N/pxSrRwbigU
+ opkuIOzp8YlCcE9OO3lt2H19XFibxX8nqOI/XMH0o1txmDSPtGwXPnRWO9uk2dnYH63Y
+ lw9Co97cRN8FrN0/lpKz0h58X5f1uBq1dk+hV8MK6Br+VlSH3xLBJiXgrFfGMvajnPRG
+ Tetw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVay2lF+cQ5pPuVitmdssS1UoO2wzt9Rz/24gWggALY62fnrFXOdWSFmXKdWwcAjZlBPV+Z8Im6fqPNJswVlwQmq/c=
+X-Gm-Message-State: AOJu0Yzqpk7SIJdCh6ygwuGqwGMSXrMfnhIYxzEBM0h7Hcf9DOOnLD7X
+ Js/vT64NyIfoYOw8y5mrr2z1ZXe6FPKT07q9kbCseHfaSCz+JA32mXYmiAk6FrG14B31VN5FLU9
+ QSxS4VcGEQBrIX2n8ObWgSv6eVCsi3gWTU4NGE+gDLthHvm50dwcxhq+v1ciQMAwDabyGOZHTGM
+ Z9zT07ono8EUieTCV2/k8dYis=
+X-Received: by 2002:a17:90b:17d2:b0:2c7:a8ca:90fb with SMTP id
+ 98e67ed59e1d1-2c8613db271mr7998592a91.29.1719368773502; 
+ Tue, 25 Jun 2024 19:26:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFCQXWRCTKk+kiIabIiopMm4DZ5fhc+rqkeKFAqtf8QltdattS1Sg1dPI5dN8puEjIP6nU8VDWWYVNzdoC9eZU=
+X-Received: by 2002:a17:90b:17d2:b0:2c7:a8ca:90fb with SMTP id
+ 98e67ed59e1d1-2c8613db271mr7998579a91.29.1719368773074; Tue, 25 Jun 2024
+ 19:26:13 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-25_19,2024-06-25_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- malwarescore=0 adultscore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
- definitions=main-2406260007
-X-Proofpoint-ORIG-GUID: g2n5gkpeyfyAgb2mh8SibJl0jms8gmHA
-X-Proofpoint-GUID: g2n5gkpeyfyAgb2mh8SibJl0jms8gmHA
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <20240423225821.4003538-1-jstultz@google.com>
+ <20240423225821.4003538-3-jstultz@google.com>
+ <Zi9jL1jycx6oo37g@yuki>
+ <CANDhNCq__ZY9w3Nse-+K+d9gyXhrOe_6oZ=X01x_HufZwQ_6ig@mail.gmail.com>
+ <Zjn1-1YRyZGIUtEP@yuki> <ZnlORS6RGTAA4UhS@yuki>
+ <CANDhNCqk-3o+Bu_c9PbqoxSacGQaGUrdTM5VDoZCOipEttXKLw@mail.gmail.com>
+ <CAEemH2fT2NsoZfRvNrhRrstF=dhzF8Y90HqVQSCf1VxqpNHgEw@mail.gmail.com>
+ <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
+In-Reply-To: <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 26 Jun 2024 10:26:01 +0800
+Message-ID: <CAEemH2cUj4U4Z=G437fduyQA6-UrnhE4b1_QtRB0kmPn5OMgAA@mail.gmail.com>
+To: John Stultz <jstultz@google.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fallocate03: FALLOC_FL_PUNCH_HOLE must be used with
- FALLOC_FL_KEEP_SIZE
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 2/6] sched_football: Use atomic for ball
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,53 +100,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Samasth Norway Ananda via ltp <ltp@lists.linux.it>
-Reply-To: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+Cc: Darren Hart <darren@os.amperecomputing.com>, kernel-team@android.com,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The fallocate03 ltp test fails with "failed: EOPNOTSUPP" if we just use
-FALLOC_FL_KEEP_SIZE for the mode instead of ORing it with
-FALLOC_FL_PUNCH_HOLE.
+Hi John,
 
-Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
----
- testcases/kernel/syscalls/fallocate/fallocate03.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+John Stultz <jstultz@google.com> wrote:
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate03.c b/testcases/kernel/syscalls/fallocate/fallocate03.c
-index b3e6b3817..20ce13cd4 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate03.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate03.c
-@@ -30,10 +30,10 @@ static struct test_case {
- 	{DEFAULT_MODE, BLOCKS_WRITTEN},
- 	{DEFAULT_MODE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 - 1},
- 	{DEFAULT_MODE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 1},
--	{FALLOC_FL_KEEP_SIZE, 2},
--	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN},
--	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 + 1},
--	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 2}
-+	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, 2},
-+	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN},
-+	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS / 2 + 1},
-+	{FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, BLOCKS_WRITTEN + HOLE_SIZE_IN_BLOCKS + 2}
- };
- 
- static int block_size;
-@@ -82,7 +82,7 @@ static void verify_fallocate(unsigned int nr)
- 	TST_EXP_PASS(
- 		fallocate(fd, tc->mode, tc->offset * block_size, block_size),
- 		"fallocate(fd, %s, %ld, %d)",
--		tc->mode ? "FALLOC_FL_KEEP_SIZE" : "DEFAULT_MODE",
-+		tc->mode ? "FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE" : "DEFAULT_MODE",
- 		tc->offset * block_size, block_size);
- }
- 
+> Try this:
+> >
+> > # cd ltp dir/
+> > # make autotools
+> > #  ./configure
+> > #  make -C testcases/realtime/
+>
+> Thank you! That does indeed work.
+>
+> > See:
+> https://linux-test-project.readthedocs.io/en/latest/users/quick_start.html
+>
+> Should the old --with-realtime-testsuite option be removed then?
+>
+
+No, we need it.
+
+When configuring LTP without the --with-realtime-testsuite option, it will
+skip building the stuff under testcases/realtime/ by default.
+
+Unless you build it manually like: make -C testcase/realtime/.
+
 -- 
-2.45.2
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
