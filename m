@@ -4,91 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C76BEC30658
-	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 02:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3573C3064D
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 06:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1719384814; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=fhjJ8geF04mg6vAIIBLBLPzHch+JBfprs1g6xKlHLVA=;
+ b=E9U/P5hkFUtt0iq+FbbIyvDtXoOUftJzkeNUcLpq6xVkjLQY2DqcHpJVsf3c9fCyMRorf
+ bUVajlqBrsT6wO5bmAT01CNXMEPn7ZZeptsN940fqA/rGeuAQy8ooo1Xsa+DbdPntLC8fGC
+ f8YgHz1ueJtzdrKD+hLc/3kUZddMNbQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA1DA3D1159
-	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 04:26:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 663333D10CF
+	for <ltp@archiver.kernel.org>; Wed, 26 Jun 2024 08:53:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 008E93CF09B
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 04:26:22 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A437E3D1091
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 08:53:10 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 798571A0078A
- for <ltp@lists.linux.it>; Wed, 26 Jun 2024 04:26:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1719368779;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wKOJL+BFL3pSgliVrqrje0sjwUJcWFgfME9TqZipDdQ=;
- b=HwAm21XeX1JHRPHDd9fJV9i/5+t7nLdI3Oek8GJiYm6ioIgSLSGNTs4CfMOE9wmjJOJqf0
- x/gB8fDxa5BQENejJ4LkQlMp0RAoEGIr7/CQL0120uYfShBYq+/2f+ErvpoMz09Gf3C3+8
- uUo1CVCuL6vSSkU2z/2s9UsuIYbUilc=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-345-BjbujbyiNl2dUnFUVIsWUg-1; Tue, 25 Jun 2024 22:26:14 -0400
-X-MC-Unique: BjbujbyiNl2dUnFUVIsWUg-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2c7a8949243so7689520a91.0
- for <ltp@lists.linux.it>; Tue, 25 Jun 2024 19:26:14 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 46F16609A35
+ for <ltp@lists.linux.it>; Wed, 26 Jun 2024 08:53:09 +0200 (CEST)
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-2eaea28868dso83561941fa.3
+ for <ltp@lists.linux.it>; Tue, 25 Jun 2024 23:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1719384788; x=1719989588; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=4KXbnaSUT68sUxgKnTX9GjliXQeJahroRVyX3ddkFM8=;
+ b=giBjVR3wBSyiO5bdcRUdxpE1WOsGWcVRLPX36RFyov879OdHztWw+vZqmvbTohE5+P
+ 9H56t2mJjqRxasWri0RyrNz1ZTDkXZQNIjwBJCdJndvJMJJKQtiSbmmhmYxjOx0QKr1M
+ YtEOm+Mz5aHoOQLk4AmZq7xe0oA9nKQ31FLmYGMuluX5NUFx6qgnnEKVhorfn+9FGSJF
+ eGIXo8zUMQHqC7wgQLRqAzZgY4Hx/rHICp2h0fRzp8lBIiPDdeeju448+VajZW754Ia3
+ 1V2Kvnp4YfuNMCrjrLzzspLdVvdQ7LdJEEvttc29WQcDHite9cnSf6Zo4b7PCZgXG4Jm
+ vZVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719368773; x=1719973573;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ d=1e100.net; s=20230601; t=1719384788; x=1719989588;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=wKOJL+BFL3pSgliVrqrje0sjwUJcWFgfME9TqZipDdQ=;
- b=DK5jj0bDcdLoRLEPoTOJ9Ao1iiVPWSwaFKLOSKwMpjFxxjzeMk/LtfgzF2mFNw/k7w
- 5w4ZHqRVzQUwM0KKEdhTT7KnHLtDGT9riCBrM0ia/seOPWzG06O0kiuwgFJerlMw3XTu
- QmAy+p7lgEeqWvPOKoyQca+qvzmvbPaoMAcvxFtoKB1m6CmP6KdL9Kk5N/pxSrRwbigU
- opkuIOzp8YlCcE9OO3lt2H19XFibxX8nqOI/XMH0o1txmDSPtGwXPnRWO9uk2dnYH63Y
- lw9Co97cRN8FrN0/lpKz0h58X5f1uBq1dk+hV8MK6Br+VlSH3xLBJiXgrFfGMvajnPRG
- Tetw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVay2lF+cQ5pPuVitmdssS1UoO2wzt9Rz/24gWggALY62fnrFXOdWSFmXKdWwcAjZlBPV+Z8Im6fqPNJswVlwQmq/c=
-X-Gm-Message-State: AOJu0Yzqpk7SIJdCh6ygwuGqwGMSXrMfnhIYxzEBM0h7Hcf9DOOnLD7X
- Js/vT64NyIfoYOw8y5mrr2z1ZXe6FPKT07q9kbCseHfaSCz+JA32mXYmiAk6FrG14B31VN5FLU9
- QSxS4VcGEQBrIX2n8ObWgSv6eVCsi3gWTU4NGE+gDLthHvm50dwcxhq+v1ciQMAwDabyGOZHTGM
- Z9zT07ono8EUieTCV2/k8dYis=
-X-Received: by 2002:a17:90b:17d2:b0:2c7:a8ca:90fb with SMTP id
- 98e67ed59e1d1-2c8613db271mr7998592a91.29.1719368773502; 
- Tue, 25 Jun 2024 19:26:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFCQXWRCTKk+kiIabIiopMm4DZ5fhc+rqkeKFAqtf8QltdattS1Sg1dPI5dN8puEjIP6nU8VDWWYVNzdoC9eZU=
-X-Received: by 2002:a17:90b:17d2:b0:2c7:a8ca:90fb with SMTP id
- 98e67ed59e1d1-2c8613db271mr7998579a91.29.1719368773074; Tue, 25 Jun 2024
- 19:26:13 -0700 (PDT)
+ bh=4KXbnaSUT68sUxgKnTX9GjliXQeJahroRVyX3ddkFM8=;
+ b=B+CylHz2tTkytQ1jydacTZ0YJm9i14Pno/P0oiGVwtalCJG3LEzCZB2safsPEvxVt+
+ D5Dl8kj1L+89mtyhvhhQw/L8p+oDE6YQLmdB7BWOm8abBVBsvn2AoWESIAX3JkIDpiuJ
+ oFNlLXRYEUw7Au6YjzlUoex7+91Xi1SsAF18Ch5jJnRN+bmSCpHDNd6Ga2wzdiGkfDao
+ m5D/cxgSnu8n/A6ljFZUeVdRHXtFanRzbinQLfKREEETK8Qt5lGAH6CwdOTW4J8fmXlq
+ wYwFN8nv7f6d0/KngHoaxnxWz1AEa1cd45/dRosHxztGotEkGdeVSIg6IaHXBDOr19Ow
+ 35hw==
+X-Gm-Message-State: AOJu0YwMWwF4UWGL/3JEpFduoOngdUMEhucpf9BsG055FDm2YsAh/Uhx
+ fwHo6pxGho1lV1DBcYIWkhn04VwoEonWUVtmg3KAB1CosHZWTgTIHxGuHi71Zo/SCA4zHVDRQe4
+ =
+X-Google-Smtp-Source: AGHT+IFqIbwgSBopeELsen3Gdcgc3UsVi88NIfmphoa3iat7Fh3CkORZmV2fSkXrWdZC1EpkT9FQ8A==
+X-Received: by 2002:a2e:87c8:0:b0:2ec:a022:880c with SMTP id
+ 38308e7fff4ca-2eca022884fmr15346931fa.22.1719384787778; 
+ Tue, 25 Jun 2024 23:53:07 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:dc1a:df90:dc1a:df90])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-7069d59dce1sm2218264b3a.169.2024.06.25.23.53.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 Jun 2024 23:53:07 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 26 Jun 2024 02:52:57 -0400
+Message-Id: <20240626065257.14367-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20240423225821.4003538-1-jstultz@google.com>
- <20240423225821.4003538-3-jstultz@google.com>
- <Zi9jL1jycx6oo37g@yuki>
- <CANDhNCq__ZY9w3Nse-+K+d9gyXhrOe_6oZ=X01x_HufZwQ_6ig@mail.gmail.com>
- <Zjn1-1YRyZGIUtEP@yuki> <ZnlORS6RGTAA4UhS@yuki>
- <CANDhNCqk-3o+Bu_c9PbqoxSacGQaGUrdTM5VDoZCOipEttXKLw@mail.gmail.com>
- <CAEemH2fT2NsoZfRvNrhRrstF=dhzF8Y90HqVQSCf1VxqpNHgEw@mail.gmail.com>
- <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
-In-Reply-To: <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 26 Jun 2024 10:26:01 +0800
-Message-ID: <CAEemH2cUj4U4Z=G437fduyQA6-UrnhE4b1_QtRB0kmPn5OMgAA@mail.gmail.com>
-To: John Stultz <jstultz@google.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/6] sched_football: Use atomic for ball
+Subject: [LTP] [PATCH v1] cgroup_fj_common.sh: Disable cgroup controller in
+ cleanup function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,42 +89,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Darren Hart <darren@os.amperecomputing.com>, kernel-team@android.com,
- ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi John,
+If you run "cgroup_fj_function.sh cpuset;cpuset_base_ops_testset.sh"
+you will encounter following error and cpuset_base_ops will be skipped:
+cpuset_base_ops 1 TCONF: Could not mount cgroup filesystem with cpuset on /dev/cpuset
 
-John Stultz <jstultz@google.com> wrote:
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> Try this:
-> >
-> > # cd ltp dir/
-> > # make autotools
-> > #  ./configure
-> > #  make -C testcases/realtime/
->
-> Thank you! That does indeed work.
->
-> > See:
-> https://linux-test-project.readthedocs.io/en/latest/users/quick_start.html
->
-> Should the old --with-realtime-testsuite option be removed then?
->
-
-No, we need it.
-
-When configuring LTP without the --with-realtime-testsuite option, it will
-skip building the stuff under testcases/realtime/ by default.
-
-Unless you build it manually like: make -C testcase/realtime/.
-
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+index 6d5586534..e866641ba 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+@@ -76,6 +76,8 @@ common_cleanup()
+     [ -d "$start_path" ] && find "$start_path" -depth -type d -exec rmdir '{}' \;
+ 
+     cgroup_cleanup
++
++    [ "$cgroup_version" = "2" ] && ROD echo "-$subsystem" \> "/sys/fs/cgroup/cgroup.subtree_control"
+ }
+ 
+ . cgroup_lib.sh
 -- 
-Regards,
-Li Wang
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
