@@ -4,89 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6CE2C30658
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 13:30:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BC56C30658
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 13:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719927044; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1719927182; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=7VQLEcjyzz8znNCUTdl/ShKceE495BOLVhyGroNUEAQ=;
- b=Y8m+mBiY3oSuIhARIzkrNXVXFijWLNGI8Yxhb4VC7r3siVpHNeu+cWR23rlQSdUe9RgVf
- A6nlqTN0Qwpkea/21RiEln4EJlGs6YQ7ao3m3Fp//5WGafH9jbs1NPdU3dm/4F042MdAD94
- drdHYFolvzct5os9ImNKxD6SU3Rv+ac=
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=rWiiAYf4MgS89aT/tKv9J1C0nlcyiq8g1AhVA3B5+Ss=;
+ b=IDvBFvNp8CE9nhvocn3Rt3+GYnwnut1KIqFCSDviRuiVXc8f06NDut16nGX1gWyRCwypx
+ zu8US0TMDaEYIaAEOJAjF7jaHlCgoFQBEd8tzilfe4rHLMCk8GeTF9DrRaMPIlX3PdnEJqR
+ id+/+V9SbSR3g5yq3Qi+kYLUMtloEaE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5002B3D3EC8
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 15:30:44 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 001193D0F6E
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 15:33:01 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2BD9D3D0F6E
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 15:30:22 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CC8E03D0FAF
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 11:29:14 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=mediatek.com (client-ip=210.61.82.184;
+ helo=mailgw02.mediatek.com; envelope-from=joe.liu@mediatek.com;
+ receiver=lists.linux.it)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B1912600045
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 15:30:21 +0200 (CEST)
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-52ce6c8db7bso6392020e87.1
- for <ltp@lists.linux.it>; Tue, 02 Jul 2024 06:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1719927021; x=1720531821; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=vyjtl8RAWxGYsOXAgTA3t4Tl38Bsk8ehrsLDwnClwVE=;
- b=SrAgkGdpuMKQerShkLT45s+wGeg22x5MfjhwNX6c0kds7mFQ4OAHYkWrnxlkhp4Yk0
- YcJBotMVg14kClpimnv5JiLbbemOgCD09iERbZ7gSc9BEpEPO3oC+liR1FLg0sEGjC6Z
- pxg8WSLAPBTpK00ULb2lBuDnf0Bzrnot/odqLtAAAWdrrxfS8BYeb7+lqZnOwW4sQDQL
- 8D7LZAa1zVsrH1COJ4zgMehaZDOdh/PTvycZPe0fwXbYXTYbXdk75Y2P5sNhfaMr9Sv+
- XQiAsp0coVsVL3v8RqI0bHa1ErIvOYEQkHOuzICEHBrOytX1A3lchXQJ49k6Llfwy1p3
- Qpxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719927021; x=1720531821;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=vyjtl8RAWxGYsOXAgTA3t4Tl38Bsk8ehrsLDwnClwVE=;
- b=TuQLm2cKBtxqPpyn4nto68FWEOl2TY1VV4MMPgydhAIFaBaxKwOY/JcRFKCfsRnmni
- cWbFU/5h8O+GY9zmD8l+2yfeAl9xwtJr+gR/i5F29WFmr75ZXs3MDBeQA5Ob7wCkswEZ
- kUKHoCl9tZVkbQIKlNWSdEBc3NOTTTIdmbcxDJE2HscrOdZXweVAab88DPvchc8SJ9cb
- pnzxUll+ucVKKsUDWoPP2F2RZzVT2xxR+YBqoV47r/DqSiZ4e2OCv2uWhNUCKSeeysFP
- BJDT8uYy/m2crf7ros6I/Ql1w871v1xNoGqBzG3FbSWbtOexXwS+SYjeYZJe127C5jNf
- CmOQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVl2TxJq+HDQuyvrFy2Q7qMyfg6lNHpd5BRYpampC02j7b0j7qSdd272iWwFYx0I8QJ48fec/xO46EiHklWD3y4aac=
-X-Gm-Message-State: AOJu0Yyl4lv80QWxPljkgrqu3VQuQNR2cDfReEXNxyye7WQwj8yH4eCR
- 4TXWxrNhay5LldX9sdl8y8KXZGaRBgPe8FtIaYQQPvY74qB3YZSz0xGs7X4ArB488WcCM+ENhde
- p1Tw=
-X-Google-Smtp-Source: AGHT+IFfSraSkSw1HUd3lQsA076FWDyrR4Yem8LB27SF3L0gd4wMN7Rgv4FDFM5hBKI29H0Cer80dw==
-X-Received: by 2002:a2e:7309:0:b0:2eb:f31e:9e7b with SMTP id
- 38308e7fff4ca-2ee5e35729amr54251361fa.14.1719927018448; 
- Tue, 02 Jul 2024 06:30:18 -0700 (PDT)
-Received: from [10.232.133.69] ([88.128.88.9])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-708045a9f52sm8743368b3a.177.2024.07.02.06.30.15
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 02 Jul 2024 06:30:17 -0700 (PDT)
-Message-ID: <948a7035-130b-4e4d-ac88-e5b9e37cc54c@suse.com>
-Date: Tue, 2 Jul 2024 15:30:01 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A918F101BB81
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 11:29:10 +0200 (CEST)
+X-UUID: b16b2a72346711ef99dc3f8fac2c3230-20240627
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=Gxa2od1bo4v1XSQBSppUzWH9nMviGTGaNw/uaMfAIII=; 
+ b=mqV9U364AIAM2/11BYsrL6/EcUJ91gsdiS9pKim/VDZwMEaLUCskIPD9o0tFflG7GA7jZG0LXiF2XhqyG9el7QR4QpzV8Xp1AWy+I8WIFsCkVa0pXL2M6ma7bITMZ4bgIEjR+hvgaVMOd/OP2y4jhvkhUKpvMt4s39EOYmnxOdU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.39, REQID:3eae0b92-779b-4bf7-966e-b9be4d5b65e9, IP:0,
+ U
+ RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+ release,TS:0
+X-CID-META: VersionHash:393d96e, CLOUDID:6ab61989-8d4f-477b-89d2-1e3bdbef96d1,
+ B
+ ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+ SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 1,FCT
+X-CID-BAS: 1,FCT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: b16b2a72346711ef99dc3f8fac2c3230-20240627
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by
+ mailgw02.mediatek.com (envelope-from <joe.liu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 1166797311; Thu, 27 Jun 2024 17:29:03 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 27 Jun 2024 17:29:00 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 27 Jun 2024 17:29:00 +0800
+To: <chrubis@suse.cz>
+Date: Thu, 27 Jun 2024 17:28:59 +0800
+Message-ID: <20240627092900.20985-1-joe.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240612112311.10334-1-chrubis@suse.cz>
+References: <20240612112311.10334-1-chrubis@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20240417144409.11411-1-andrea.cervesato@suse.de>
- <ZnllGpZEj6TOsWqB@yuki> <9b70179d-2bfa-47e3-8ae3-5cbb971bd5c3@suse.com>
- <ZoP_-6z9LPTn8Yac@yuki>
-Content-Language: en-US
-In-Reply-To: <ZoP_-6z9LPTn8Yac@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--2.093100-8.000000
+X-TMASE-MatchedRID: VPleTT1nwdQ4HKI/yaqRm+qwWVBfMuvoe7Z0UyQO5TNh7WbOnt2TBzUi
+ 2rTIOxGG4iklOQCWq9JyxlmD3MM49eU6SuqUlqe6syw+ZJnFumQHdYH++bm0GAPYDdySm+X3ra4
+ hwGeKbvKObIAKMbDdIOwtXQyQB91DMdoq6niTi6K4jAucHcCqnTul9KNGwPY6BthzL1hCXp5Iw5
+ I+N6KsBKA8+iTsk6pAgDLqnrRlXrZ8nn9tnqel2MprJP8FBOIaimkn+s9We/F9X5QEAPKzPWPnO
+ AY0+21Z4lrKw+SpCh5FqU5d6p8JTuCokWcm+5o7At/doGVYVeNRp5EVkVADgL44wH2gofHDndCR
+ kxk0cZt0BNB20+SxH7f8mJY57oZddJaBDYald1mHO0tVYDV4T0MMprcbiest
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.093100-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 5F87BA15394603AC5F02BF8598FDCE00E13A602E603CC6198653FD5B97D1CBBD2000:8
+X-MTK: N
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] Add stat04 test
+X-Mailman-Approved-At: Tue, 02 Jul 2024 15:32:40 +0200
+Subject: Re: [LTP] [PATCH v2] sched: starvation: Autocallibrate the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,39 +103,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+From: "joe.liu via ltp" <ltp@lists.linux.it>
+Reply-To: "joe.liu" <joe.liu@mediatek.com>
+Cc: alix.wu@mediatek.com, xufeifei1@oppo.com, ltp@lists.linux.it,
+ joe.liu@mediatek.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Cyril,
 
-yes I got lost in the code and missed the point. I think I need more sleep..
-Thanks for the reply,
+> Instead of hardcoding the values we attempt to measure the CPU speed and
+> set the timeout accordingly. Given that the difference in the duration
+> of the test when the kernel is buggy is about 30x we do not have to have
+> a precise callibration, just very rough estimate if we are running on a
+> server or small ARM board would suffice.
 
-Andrea
+> So we attempt to measure how long does a bussy loop take and base the
+> default timeout on that. On x86_64 CPUs the resulting timeout is about
+> double of the value of the actual test runtime and works fine, but we
+> need to make sure that the coeficient we divide the result from
+> callibrate works for small boards too. So please run the test on as many
+> machines as you can and report if we need to make the dividor smaller or
+> not.
 
-On 7/2/24 15:26, Cyril Hrubis wrote:
-> Hi!
->> This test is basically a clone of the lstat03 test. I'm wondering if it
->> makes sense to have both, when we already have that one.
-> You are stil missing the point of this test, the end result we expect is
-> different for stat() and lstat(). The point I'm trying to make is that
-> we should:
->
-> 1. Make sure that as many attributes are diffent for the symlink and the
->     symlink target for *both* stat() and lstat() tests, since if they are
->     not made different the test does results are not conclusive at all
->
-> 2. For stat() you should get same result on the file and symlink since
->     stat actually follows the symlink then gets the data
->
-> 3. For lstat() you should get different result on the file and symlink
->     since lstat() *does not* follow the symlink before it gets the data
->
+While applying this new patch, the test result of 32bit kernel is still failed. Please refers following log:
+
+external/ltp/lib/tst_test.c:1690: TINFO: LTP version: 20230929
+external/ltp/lib/tst_test.c:1576: TINFO: Timeout per run is 0h 00m 30s
+external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:90: TPASS: sched_setaffinity(0, sizeof(mask), &mask) returned 0
+external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:58: TINFO: CPU did 100000000 loops in 198306us
+external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:99: TINFO: cal timeout: 198
+external/ltp/lib/tst_test.c:1583: TINFO: Updating max runtime to 0h 03m 18s
+external/ltp/lib/tst_test.c:1576: TINFO: Timeout per run is 0h 03m 48s
+Test timeouted, sending SIGKILL!
+
+After using "time ./starvation" to check the timecost, we can see the timecost is about 26 mins and 48 seconds
 
 
 -- 
