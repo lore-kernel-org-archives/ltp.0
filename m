@@ -4,111 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB974C3064D
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 13:47:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C6ACC2BD09
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 18:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1719511352; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=zxTwx3shWNOUSBPreMbM2vWqO2tEryfm6Ihj+gtE0dc=;
+ b=ivMD7EvwU902Vuu+qYxbMhx7b5ImATH2Lq0OBNHgc3s7TOLhZGpuQrFwElYphHKW+8xLr
+ KS6IU952hxN6aEqMaHxGLvv3BecvoQk/R/DsGQgmcz6+aG2dMYNXwev5Ri2xyn95Uvmck8+
+ BvdmKpxrV56J3JqKfKvWNZwUZisoGDg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D82A3D1228
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 15:47:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 1B21A3D1228
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 20:02:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F3AAE3D1228
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 15:47:07 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3C22D3D107E
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 20:02:09 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E0BD31402FB2
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 15:47:06 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6EAEC1FBF2;
- Thu, 27 Jun 2024 13:47:05 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F552137DF;
- Thu, 27 Jun 2024 13:47:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ipmOFlltfWabZwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Thu, 27 Jun 2024 13:47:05 +0000
-Message-ID: <e2a4ae50-eaa4-49e9-9d5c-5a0d5adc365e@suse.cz>
-Date: Thu, 27 Jun 2024 15:47:05 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8AC99601085
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 20:02:08 +0200 (CEST)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-4255f915611so6165e9.0
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 11:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1719511328; x=1720116128; darn=lists.linux.it;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=fy/O/d1qpQZ182ubN+3NhvsaTqtyXxTBNIRdvmlN6ok=;
+ b=0gp6Nogx/bdy/yHHrUVzJvf5kYx4X8uUO+lRgXQUbqCDFfDdMEQD3zOmeg7cnN4eQ4
+ 3gH7r4VYUpY4WIzzdjlopVod7TxR5yiVOrkFG4ciDpGcbP2fZKhATRsk6a2wW1cpnmP4
+ BAFqhimb4YIAe6bKlfptZDgZTRBauJFTQvS4IxcD0szvc3PSH4lhLMYcoFkt3sEqzu76
+ GRg43Rjp5da+keQcHu3UenTXeeISP9WeIihKAYOs97ORPcPmUx1ANncF99DG6kr66o8u
+ CbX+8HBZ57UCU8JY0e9hG06A+PBiHYbz2SU3IqTaIkjxr4VTM6oH7Uf56EW4/iE/ay66
+ 0q3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1719511328; x=1720116128;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=fy/O/d1qpQZ182ubN+3NhvsaTqtyXxTBNIRdvmlN6ok=;
+ b=Xn3XRM0Bqi8noT9SU5Nz4i3C/Ymta36wF+AKmIO+dqWPGcxhglpgyQGMPVH/j1moxn
+ A+ylEcF3bYamCxabjzOVZIqhVMjIAIEarStPCZABTfekTfHLEppmmDP+yVbC7nX6Kqxe
+ 9+FT4uD7vRBYmL7fw+h/DDaYWox45+RVfXAIbN1StahlQxL2Xgu8y62gwTaphG8yqbeA
+ iA734FRyUBAkX3RskHcSR1kGp6Lsa74TZHXjlrL0ZI48XQBrDUpPkTj/BIAFRNpPMT9i
+ 6Q0EUnBdwnPoBeRvp5R1bmMG3YpG+xrCT73KojP7i/FCIozYb3roFVutjlN4OS5GMyqw
+ qCRA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXrkQuB9OsaOqjUyDhYOXA/EYq5Wi9mtVTFqDpEg10HUAzmZS6WkBzQwL0lyB7UCljLQDohauwcN1mjWTEtyJMnBAw=
+X-Gm-Message-State: AOJu0Yw7rNajpH+qGGshnmMJ5x0jc4Xxh3Bouruhux+tEWAS5oDDuldh
+ mnWlJiKy8IBIVAnXZvDxAIsjERWSkN3ZJGDf6D7uioO2f5I1c9Zx2GGN593kRm70/d+eirF9oMn
+ BQjVX90mVdYifjuOq7Hw0a3Nq2JUpkcISXtQ=
+X-Google-Smtp-Source: AGHT+IHcAG8SrFAupdR7vU6LEFwf4oAvJNM5u+awlL2otoPwvQ/306X8Lngxj7M3euQQAkwVgl2LxIRvI67UX1qPims=
+X-Received: by 2002:a05:600c:3b9b:b0:424:891e:a9fe with SMTP id
+ 5b1f17b1804b1-4256b77e8aamr71775e9.1.1719511327827; Thu, 27 Jun 2024 11:02:07
+ -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <20240627133456.11327-1-chrubis@suse.cz>
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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
-In-Reply-To: <20240627133456.11327-1-chrubis@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 6EAEC1FBF2
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <20240423225821.4003538-1-jstultz@google.com>
+ <20240423225821.4003538-3-jstultz@google.com>
+ <Zi9jL1jycx6oo37g@yuki>
+ <CANDhNCq__ZY9w3Nse-+K+d9gyXhrOe_6oZ=X01x_HufZwQ_6ig@mail.gmail.com>
+ <Zjn1-1YRyZGIUtEP@yuki> <ZnlORS6RGTAA4UhS@yuki>
+ <CANDhNCqk-3o+Bu_c9PbqoxSacGQaGUrdTM5VDoZCOipEttXKLw@mail.gmail.com>
+ <CAEemH2fT2NsoZfRvNrhRrstF=dhzF8Y90HqVQSCf1VxqpNHgEw@mail.gmail.com>
+ <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
+ <CAEemH2cUj4U4Z=G437fduyQA6-UrnhE4b1_QtRB0kmPn5OMgAA@mail.gmail.com>
+ <CANDhNCpYjncxr-fn8o5vDDYScf4zvVmH_w_Ms1Jhg9tsn-UgDQ@mail.gmail.com>
+ <CAEemH2eQwPSQrHKY3AxT03Nf9Y7NoKpY3y+XE8donjLhHYbP2Q@mail.gmail.com>
+In-Reply-To: <CAEemH2eQwPSQrHKY3AxT03Nf9Y7NoKpY3y+XE8donjLhHYbP2Q@mail.gmail.com>
+Date: Thu, 27 Jun 2024 11:01:54 -0700
+Message-ID: <CANDhNCqWvQ9DCwXtdMW81OoZ0qULk8-6PCYwVeF_Ep+b4Kkg2A@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] include/tst_timer: Add TST_NO_LIBLTP
+Subject: Re: [LTP] [PATCH 2/6] sched_football: Use atomic for ball
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,90 +99,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel-team@android.com, John Stultz <jstultz@google.com>,
- Darren Hart <darren@os.amperecomputing.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+From: John Stultz via ltp <ltp@lists.linux.it>
+Reply-To: John Stultz <jstultz@google.com>
+Cc: Darren Hart <darren@os.amperecomputing.com>, kernel-team@android.com,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-this is a lot of unnecessary code to fix a problem that didn't exist in 
-the original sched_football patch. I'd prefer one of two other solutions:
-1) go back to using ts_delta() from the original patch
-2) fully port the test to new LTP API
-
-On 27. 06. 24 15:34, Cyril Hrubis wrote:
-> Older compilers (gcc-4.8) are not smart enough to eliminate the
-> impossible branch with tst_brk() early enough and the sched_football
-> compilation fails due to the unresolved function.
-> 
-> Add TST_NO_LIBLTP macro that adds tst_brk_() inline implementaiont that
-> prints the message and calls abort() and make use of it in sched_football.
-> 
-> Cc: kernel-team@android.com
-> Cc: Darren Hart <darren@os.amperecomputing.com>
-> Cc: John Stultz <jstultz@google.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->   include/tst_test.h                            | 23 +++++++++++++++++++
->   .../func/sched_football/sched_football.c      |  1 +
->   2 files changed, 24 insertions(+)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 8dc20d110..9bd1b363d 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -648,4 +648,27 @@ int main(int argc, char *argv[])
->   #define TST_TEST_TCONF(message)                                 \
->           static struct tst_test test = { .tconf_msg = message  } \
->   
-> +/*
-> + * Fallback for cases where we do not want to link against ltp library.
-> + *
-> + * This allows us for instance to use tst_timer.h without LTP library.
-> + */
-> +#ifdef TST_NO_LIBLTP
-> +__attribute__ ((format (printf, 4, 5)))
-> +inline void tst_brk_(const char *file, const int lineno, int ttype,
-> +                     const char *fmt, ...)
-> +{
-> +	va_list va;
-> +
-> +	(void) ttype;
-> +
-> +	fprintf(stderr, "%s: %i: ", file, lineno);
-> +	va_start(va, fmt);
-> +	vfprintf(stderr, fmt, va);
-> +	va_end(va);
-> +
-> +	abort();
-> +}
-> +#endif
-> +
->   #endif	/* TST_TEST_H__ */
-> diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-> index b6ae692af..6846978f4 100644
-> --- a/testcases/realtime/func/sched_football/sched_football.c
-> +++ b/testcases/realtime/func/sched_football/sched_football.c
-> @@ -74,6 +74,7 @@
->   #include <librttest.h>
->   #include <tst_atomic.h>
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_LIBLTP
->   #include <tst_timer.h>
->   
->   
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBKdW4gMjYsIDIwMjQgYXQgODozMuKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
+Y29tPiB3cm90ZToKPiBPbiBUaHUsIEp1biAyNywgMjAyNCBhdCAxOjAx4oCvQU0gSm9obiBTdHVs
+dHogPGpzdHVsdHpAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4+IE9uIFR1ZSwgSnVuIDI1LCAyMDI0IGF0
+IDc6MjbigK9QTSBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cj4+ID4gSm9obiBT
+dHVsdHogPGpzdHVsdHpAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4+ID4+Cj4+ID4+IFNob3VsZCB0aGUg
+b2xkIC0td2l0aC1yZWFsdGltZS10ZXN0c3VpdGUgb3B0aW9uIGJlIHJlbW92ZWQgdGhlbj8KPj4g
+Pgo+PiA+Cj4+ID4gTm8sIHdlIG5lZWQgaXQuCj4+ID4KPj4gPiBXaGVuIGNvbmZpZ3VyaW5nIExU
+UCB3aXRob3V0IHRoZSAtLXdpdGgtcmVhbHRpbWUtdGVzdHN1aXRlIG9wdGlvbiwgaXQgd2lsbAo+
+PiA+IHNraXAgYnVpbGRpbmcgdGhlIHN0dWZmIHVuZGVyIHRlc3RjYXNlcy9yZWFsdGltZS8gYnkg
+ZGVmYXVsdC4KPj4KPj4gUmlnaHQuIEJ1dCBhcyBJIG1lbnRpb25lZCBlYXJsaWVyLCBidWlsZGlu
+ZyB3aXRoIGl0IHNlZW1zIHRvIGJlIGJyb2tlbgo+PiBjdXJyZW50bHk/Cj4KPgo+IE5vdCBicm9r
+ZW4sIHRoYXQncyBiZWNhdXNlIHlvdSBkaWRuJ3QgYnVpbGQgaW4gY29ycmVjdCB3YXkuCj4gJ21h
+a2UgYXV0b3Rvb2xzJyBpcyB0aGUgZmlyc3QgbmVjZXNzYXJ5IHN0ZXAgZm9yIHRoZSBidWlsZC4K
+PgoKT2ssIGJ1dCBldmVuIGFmdGVyIGRvaW5nIHRoYXQgYXMgeW91IHN1Z2dlc3RlZCwgYnVpbGRp
+bmcgd2l0aCB0aGUKZm9sbG93aW5nIGZhaWxzIGZvciBtZToKCm1ha2UgYXV0b3Rvb2xzCi4vY29u
+ZmlndXJlIC1DIHRlc3RjYXNlcy9yZWFsdGltZS8KbWFrZSAtagouLi4KbWFrZVszXTogKioqIE5v
+IHJ1bGUgdG8gbWFrZSB0YXJnZXQgJ01ha2VmaWxlLmFtJywgbmVlZGVkIGJ5CidNYWtlZmlsZS5p
+bicuICBTdG9wLgptYWtlWzJdOiAqKiogWy4uLy4uL2luY2x1ZGUvbWsvZ2VuZXJpY190cnVua190
+YXJnZXQuaW5jOjEwODogYWxsXSBFcnJvciAyCm1ha2VbMV06ICoqKiBbLi4vaW5jbHVkZS9tay9n
+ZW5lcmljX3RydW5rX3RhcmdldC5pbmM6MTA4OiBhbGxdIEVycm9yIDIKbWFrZTogKioqIFtNYWtl
+ZmlsZTo4NTogdGVzdGNhc2VzLWFsbF0gRXJyb3IgMgoKU28gaXQgZG9lcyAqc2VlbSogbGlrZSBz
+b21ldGhpbmcgaXMgYnJva2VuLiA6KQoKdGhhbmtzCi1qb2huCgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
