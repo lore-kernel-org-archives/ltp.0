@@ -4,86 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E4AC2BD09
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 12:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CD21C2BD09
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 12:54:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D1943D12BF
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 14:15:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 04EF83D1293
+	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 14:54:07 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6EFD23D1242
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 14:15:40 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id D4AE93D1236
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 14:53:51 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CF71C2069E1
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 14:15:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1719490538;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LsOXAoDn5bffQyRIqPDYdPxHZP/hsS5xsGS5YUwoaVg=;
- b=BcNYuKZf07bSCLtWhl0CNXY0MDI5gswRDny1ITaBzVtL11399oSgL/2Kwg/y3s5TpTPxes
- sZrkR426u3BOY0T3SkAP6gbAocETG5mwUhq/J6x3XDx3tUoS5DFIzr6zbnHH6eBzyxO2ho
- gyYPeqRf4n7Tf/erLJpIwaDhVxe5Czw=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-528-jzORiPmgMYG5sNCGPsXHzg-1; Thu, 27 Jun 2024 08:15:36 -0400
-X-MC-Unique: jzORiPmgMYG5sNCGPsXHzg-1
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2c7a8fa8013so9450726a91.2
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 05:15:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719490533; x=1720095333;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=LsOXAoDn5bffQyRIqPDYdPxHZP/hsS5xsGS5YUwoaVg=;
- b=h9j9Z7Df62lawUb/8eloLkr+oRrZLt4bPuC8tirm6ppAE+bzdGC5nwYeiK2kw9piyg
- RFKB7gYfojGdF7LyVNPywU1p20PpFnmHykpa/6c7MS66N7KEkrwXWjV7d03otjjy322f
- KW56R5FfS+6+y8HAYhGE/PdN+lKs9ErvKpCZygPIi0iR5PH83urTIKztsdiAFvy8VdYm
- gHmOdP5e5zY9MfmUPmo8j5MxtGaHKm6XjreKh63vGgz98hSsuzzcxME3ZIpqI+fcMYJK
- POrvljE8g4URxbB5IWXNKYn1Fzc78XXkogU6d93VjZgiGbdm8ByyG6YcgawaM7UTI6HF
- e3hQ==
-X-Gm-Message-State: AOJu0YxbbU7D2Rg0J6n2hjnDGde2k1YkEvbwHgtCorh6JLiP/1efnKLB
- vx3KMykemqdcfvhwigz+eDyemCZwZZG17bwFc2H+Vl6IdZmcIsrxt/aI+2S06wi+v9B8xoIYk/d
- Nkbzm5gDX6BkMpZGfrYqFkUt6qlyhHxq2CUvb8QjF6EoHHw5B8TykuO4F4IPBK4BQ5CVUgGJ691
- SmdoLhwn0UwLhHZ1OD9CIiQWjo7SgyEFn7u81r
-X-Received: by 2002:a17:90a:fe0c:b0:2c8:647:216 with SMTP id
- 98e67ed59e1d1-2c8581e6bb8mr12852235a91.20.1719490533496; 
- Thu, 27 Jun 2024 05:15:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEjRSKstkUsdXwCpV8RW4MWkNAGfP1XHn1KGILI9lX6lIyyCmhmypORsMLixaY8NH7zvZniQIN3DQsckQa4hxQ=
-X-Received: by 2002:a17:90a:fe0c:b0:2c8:647:216 with SMTP id
- 98e67ed59e1d1-2c8581e6bb8mr12852215a91.20.1719490532995; Thu, 27 Jun 2024
- 05:15:32 -0700 (PDT)
-MIME-Version: 1.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 418C960193F
+ for <ltp@lists.linux.it>; Thu, 27 Jun 2024 14:53:50 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 29A3721B0B;
+ Thu, 27 Jun 2024 12:53:50 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07BA51384C;
+ Thu, 27 Jun 2024 12:53:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Av3jAN5gfWaIVwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 27 Jun 2024 12:53:50 +0000
+Date: Thu, 27 Jun 2024 14:53:35 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Zn1gzzTTnm32jeE6@yuki>
 References: <CAEemH2fsBssjDyyozHnFt4T5y7LCWFEDqfN3nE7t3kyd19FjLg@mail.gmail.com>
  <20240627031440.799114-1-liwang@redhat.com> <Zn1PluxR0lVO1qdn@yuki>
  <CAEemH2eh3kDZ7xLPp94buH1f9b3Z3JgiVaRVEzvgiGw8mv3mow@mail.gmail.com>
  <Zn1RbDki07G3_yJB@yuki>
  <CAEemH2dr-UMbVQo9EVcr8mbW-PpVJ6mvv33GoKnRLVWq2ez77w@mail.gmail.com>
  <Zn1VawzZsbkirhjN@yuki>
-In-Reply-To: <Zn1VawzZsbkirhjN@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 27 Jun 2024 20:15:20 +0800
-Message-ID: <CAEemH2erMqJD37nZ6AoWp_5pvE3ADd0+muxGd3fM_y7xdNd0XA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ <CAEemH2erMqJD37nZ6AoWp_5pvE3ADd0+muxGd3fM_y7xdNd0XA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2erMqJD37nZ6AoWp_5pvE3ADd0+muxGd3fM_y7xdNd0XA@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 29A3721B0B
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH v2] msgstress01: remove TWARN from runtime
  remaining
 X-BeenThere: ltp@lists.linux.it
@@ -103,43 +87,25 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi!
+>         if (!(*fail))
+> -               tst_res(TPASS, "Test passed. All messages have been
+> received");
+> +               tst_res(TPASS, "Some messages received");
 
-This is not the number of messages though, it's incremented by writer
-> threads once they send num_iteration messages. So most of the time it
-> will either be 0 if we had to stop the execution because of runtime, or
-> 2 * num_messages, if we managed finish in time.
->
+We could have done:
 
-Make sense!
+		if (*stop)
+			tst_res(TPASS, "Some messages received");
+		else
+			tst_res(TPASS, "All messages received");
 
-I modified the patch and pushed it like this:
-
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-@@ -214,7 +214,7 @@ static void run(void)
-                        break;
-
-                if (!tst_remaining_runtime()) {
--                       tst_res(TWARN, "Out of runtime during forking...");
-+                       tst_res(TCONF, "Out of runtime during forking...");
-                        *stop = 1;
-                        break;
-                }
-@@ -243,7 +243,7 @@ static void run(void)
-        remove_queues();
-
-        if (!(*fail))
--               tst_res(TPASS, "Test passed. All messages have been
-received");
-+               tst_res(TPASS, "Some messages received");
- }
-
-
+But I guess that in the end nobody will read the logs as long as the
+test succeeds...
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
