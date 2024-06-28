@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 836B8C2BBCA
-	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 05:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5140CC30659
+	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 05:44:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E83F3D436A
-	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 07:40:07 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id CC39C3D435E
+	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 07:44:05 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9B1B53CD7AD
- for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:39:52 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.198.163.17; helo=mgamail.intel.com;
+ by picard.linux.it (Postfix) with ESMTPS id 7088D3CD7AD
+ for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:43:49 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=intel.com (client-ip=198.175.65.14; helo=mgamail.intel.com;
  envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A78101000D1D
- for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:39:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CC6296022B2
+ for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:43:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1719553191; x=1751089191;
+ t=1719553428; x=1751089428;
  h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
- bh=trKeLPO3t7kCb65fZdIVXE/qY6qBJJ5j6oLRwNfeW+4=;
- b=jltmhMVjFUjzOtwi9dY15LfcNrpKJTA0Ou033W12mOvP+VmekIW/uVMj
- XcPe6zS89an/HH/d12fxO+UIBfIBUVSII1WuQV+2K1/Z2HPIgZ34t8anV
- jcVuPwaFbuN7vbWpEK1ATcD6p+6XVREzi1+a52U06hMtWYCCBSkCobLRE
- SI0g898dHxHt74hvhMH68CtE7rJ0pMKuqllE9p7cZ1wF9XovQByqSCXHd
- d6rmcMu0boz+juxp8srpqdirOzy80ETInc11Ms5OHiTVQluUVIsaUOPTN
- 07+8yvGqJ+71yD9FYmJfTDhzivejwsWdQi9SqP5+tlRl/H8da5e7Gu3a3 g==;
-X-CSE-ConnectionGUID: wy1MGfZ/TwqauuJ9VVZJOQ==
-X-CSE-MsgGUID: 1yNoa2gvTKmV7oxxyYMEdQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11116"; a="16602322"
-X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="16602322"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
- by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jun 2024 22:39:45 -0700
-X-CSE-ConnectionGUID: CYWx2q5kQTKYULuaDUOx0w==
-X-CSE-MsgGUID: zaAOGpx7Tl+egLNMm0Ociw==
+ bh=q3+eW8ZpS51aCoA5ujzraynzqyqjYDEOZJTGfux93R0=;
+ b=BzwGkJxTlgx4xhvqiwORhR9mVCItDKsZT7ce6hhk62medDuiuqkIuGEY
+ NXpqCgtsPVPp0c8DQKhaTmCtEPIAX6S53DnwerAxMcHr7ZXUeEojHVQ9E
+ T4ElUx7rvfJUjhMniEm8vMNQJIhdPs83I0iluR40tzPaLXarxUPw4agpt
+ qHcBs06ptG+CQnnxYJtZUPfO2CmdNqO6Q3IHvmLU/4HhB8ZytJ6q+65mD
+ dsu20b5OIsHJUJ21gUYNiO0YSwfJe3nS4t/OcgmlXr0W3LIcjUtFGsasA
+ 0kyxw4RLcMA3MW7IvmfQwq42qRI6Qw8GLjmmZ2ZTDRvg4WHmahkxXX3aZ Q==;
+X-CSE-ConnectionGUID: nw8/XmP4TxahsQyY++OEGA==
+X-CSE-MsgGUID: 1pZ6eQxFT42+B4JWQ9pgXg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11116"; a="20537225"
+X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="20537225"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+ by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2024 22:43:44 -0700
+X-CSE-ConnectionGUID: DBV5tHqMSjGyu/361legZg==
+X-CSE-MsgGUID: g2rmGb77QIGonqjUj9c9Cg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="45263985"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
- by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 27 Jun 2024 22:39:45 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="44466194"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+ by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 27 Jun 2024 22:43:43 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 27 Jun 2024 22:39:45 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ 15.1.2507.39; Thu, 27 Jun 2024 22:43:43 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 27 Jun 2024 22:39:45 -0700
+ 15.1.2507.39; Thu, 27 Jun 2024 22:43:42 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 27 Jun 2024 22:43:42 -0700
 Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 27 Jun 2024 22:39:44 -0700
+ 15.1.2507.39; Thu, 27 Jun 2024 22:43:42 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cESV9wH+1uzxSpXXAgYklsOZOuhA49MaF2wE4rSEZ46qaSgisSk7NRDy5HrGoSZnQ7zp8K77YdsZofUDSTNpIu4te0cMG5HGrZCq4Q5/YZAXsGa+z7RyMbUIf+0bauHF7jbnIsNejU6ZdFjzeZS9eyw4mt1+ZeSy+2pA0Mx+SQ6dcenfsBIC89PJ/WrSWezI88fBKDWI1x3l+IfGlkBUDslWghvE5Lmh1ubqZS4pUJ7rdrBGKVwxF4mQAwyqPuQXW3hBiFAZYeAvrA1GvGKCymtbunSsCmFyK8/VV9DNlNUg/x7Dm6JyGK6FAVmgjlRHbUHEEfcLzeprpCw0H+mV3w==
+ b=bjJ0sdRQqTW40aOJVypSrQNbnyUMSeDlbLnlx/RfZPGNuEp3FTniwfxbFl7qRvNdq4qAZgq+zd4ykR2ZcpVfSACVOBvPdjzlAZyTQS21JehLVEgzLLnYx4Nks/FuNRKkhaEfWcoUVVSzr2za66dnUmdCTttncd+unyg7lzD1Z0LN27Ysk9mGdA1lI1q+YwpbI8YVnEz7m5Q0m5pI513OEgttTJ5ouWzyRoX30k+q7SUGabIT4TmH1ncOjjSGydbXRImtHvsE9+rkEruwJQiBJLRJ5VlU9WXgE8TZzD5HbVce2peI1I/msf2VTHv3aaOth9JFRn1JjpwLyumq1lP7zg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R46z/GPcRkh+dII0m7k8soedT0OLTNN+A6/Cg3wo0Rw=;
- b=JPK8284umsiyegYTsSClKz+ljX9eyyPdZOPopF9EurWyKar1pviTMtXWOwnpYf+umcrbwpxLTFIiClrn131hBvnIYa6SPtpSajpTmjZU6Zd/Ul51eUd3VHkIfI/HTFf2TxPTXyvO3ne6XEqE8+CIhu2QFUCSjaUkp74GM7fFOEZta9UxjZKrHF04Omi+BDQlOWBiY9kr5Zg/c2Os9bKbEhZ+ddBi/zW9prOBaVCCRkfdjXqZzFfLhFT3hVvUgHEYfleyzS3z41FekjGllJ6Lwm/YAqPzHgfGyq+CjNinZceGuYgnkOqSHWGLmh1H6ILSqX2pWBNrLOglhOeSA4sbZg==
+ bh=4BPON241UZr+SOVTSOZZSU8YcYqVky6iygP8RkzYH6k=;
+ b=JEWzNkuxCAwcklxjNTWQ9te5fq3yiQqfoPBNglx3X6XbW8cDzi1qEyJUHWx7DLkNykOVkc1oF6UPgOsJiie8WYcCBaJ5+QyLn1uYWmMRkJ7QC5J/7qCGNBcGodXUJLG6U+Rbg+NqGLAJM+fyeZJgLv1wNbke5Ys0icqE/bFe+TMzOfYOKnvTvBbPr+d904YjF+idNgo1VMxoUf4iOQLDexVAmG5jcTiVz9Re49PNF5AwKecm8lM5Kwo5gOxw9gJ6r7eP9wIrGtEDeoTzlSsAErY2UkyLMRlZMJFsucZuUPhPZxPv74QlZnZa7am9ZgxckQYZa3ySNTl8OIrEYuVoEA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -76,96 +81,96 @@ Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
  by SA1PR11MB6805.namprd11.prod.outlook.com (2603:10b6:806:24c::8)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.32; Fri, 28 Jun
- 2024 05:39:36 +0000
+ 2024 05:43:40 +0000
 Received: from LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::4622:29cf:32b:7e5c%2]) with mapi id 15.20.7719.022; Fri, 28 Jun 2024
- 05:39:36 +0000
-Date: Fri, 28 Jun 2024 13:39:26 +0800
+ 05:43:40 +0000
+Date: Fri, 28 Jun 2024 13:43:29 +0800
 From: kernel test robot <oliver.sang@intel.com>
-To: Gulam Mohamed <gulam.mohamed@oracle.com>
-Message-ID: <202406281350.b7298127-oliver.sang@intel.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Message-ID: <202406281321.6026952-oliver.sang@intel.com>
 Content-Disposition: inline
-In-Reply-To: <20240618164042.343777-1-gulam.mohamed@oracle.com>
-X-ClientProxiedBy: SI2PR06CA0002.apcprd06.prod.outlook.com
- (2603:1096:4:186::10) To LV3PR11MB8603.namprd11.prod.outlook.com
+In-Reply-To: <87iky5fu6y.fsf_-_@email.froward.int.ebiederm.org>
+X-ClientProxiedBy: SG2PR01CA0134.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::14) To LV3PR11MB8603.namprd11.prod.outlook.com
  (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA1PR11MB6805:EE_
-X-MS-Office365-Filtering-Correlation-Id: 789c3517-f366-44a0-0823-08dc9734b23a
+X-MS-Office365-Filtering-Correlation-Id: e3b443c8-b51b-4c76-04b9-08dc97354370
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?/K2yf83XApbjluLoMwsS5hs3owzsH6QbzA4KRpKDoaNgEe39hD0DfYUruLZL?=
- =?us-ascii?Q?1zpjId67Q6MJ2PZ7JZpA+RKQOW2n+/23mL2SCbfNkGFp/NIOsdziLbKpZs+F?=
- =?us-ascii?Q?8j5sq45lkr6OXqwDI5dyP3WBrFe3HzpKznzJyrDE/jzuVYJFq+8iSd/+xvxc?=
- =?us-ascii?Q?9akzlNfYioPLjaY20Jgd3K8wWI4HZ8Y3UMROJal5eLJAtKpa+bDGKuw8+Bvu?=
- =?us-ascii?Q?OZ4JPSpNNUa8sQjStuj+00rkACLB/pMfehzy2qXJT5ithGogYqHCyKpVKZPd?=
- =?us-ascii?Q?rtsLi/lGo4j32FdhowdSTQHPU2gDuoEUjchRIG9DFBnTu7UCudQMTgob4LgV?=
- =?us-ascii?Q?1qdPDmVYWW12p/CPFb+Mw2/189QdG6SK0aLo6ahUYiAbgoCkDxANEc3YlciV?=
- =?us-ascii?Q?+GuZC4S5O5y9RyGfBozkc3+A+5NonFYZBYxeuHc8pE/vEhWm4CyHyB2qyaBP?=
- =?us-ascii?Q?YOHwBorVkkwxfkblFTYifs0l8lIYUMt0p8GP+ctxUEYqF3/o8VZWwpLk7npk?=
- =?us-ascii?Q?JxpgQT/tsAuS3GbEv4F+uxZtqdPtu4k5I07Pq6zL3weCQsav9gyAFbPfI5yJ?=
- =?us-ascii?Q?1TakPUwBSJ6LXxfyNCUQFhKG0ZwZ4mQkSaM590b9VYxu5PPneHWW1wn/b9+2?=
- =?us-ascii?Q?nwTM1HwzjO4Bc3jKURUnx8RJqh/hO0nM1MagONF/xbWCZcN3l9OSEkW3YnJc?=
- =?us-ascii?Q?/pc1Z0kBeNAGe+OkK2nVxQCz1V+seWQS27uttb2M8q2ot25TKDJxy8iame8T?=
- =?us-ascii?Q?51tME3ORcPJ2e6BbWi9nf5Y9g2kLYkexKT85C31AqkF0yHkcic6tKpmK752y?=
- =?us-ascii?Q?UZjnI+HlmXSu2Qxxv2yts0Wh2kA+MdDTe3AzjR93114r5RYXGtjIGcHb6osm?=
- =?us-ascii?Q?tXgBZYzjQ1u6yd7pibN6vQ4kdaStrLwSLqPinLarxGCDenBAUWmntp9WkT3O?=
- =?us-ascii?Q?IBBh33ujIKHo0I2C80QhxRuwilpNxd2I16NOzvfqAdysJXgVyOyqu5APzLoc?=
- =?us-ascii?Q?7OSichON9sr7LyvGUk0hvXqm2PgNTbTWMbBo6LLPnTdbCf0Qo8q2pVqmuVo8?=
- =?us-ascii?Q?XnefU9VEIfs1OeKeJxQPTV8i52PJW5dV/fESpyZMl/DBujtr0nAptpU0gSpz?=
- =?us-ascii?Q?INjKQqOx8lA91nbMVzjZENEoyi8c8wZ/CVqQJoJLy9W6oo7J2BPQIidDlIay?=
- =?us-ascii?Q?da9d93yHR4ARmrrxU7mkDdqCYEboUQH+W+VV8LeNAExUH1SYb8rB8jSGAPA3?=
- =?us-ascii?Q?iObBmcVLZUoCurwq+EaqKXQWAAH74EPSGxv8eTy2f7asyH8bPLzZ65kYnZmJ?=
- =?us-ascii?Q?z24m99mv2iSuHDC9HlARZJvF?=
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?nlAc7KCJyurSRY6cinnu5TPbKp4WzKUP/WETQiZ/92VH7F8MxOH6GF7cEge6?=
+ =?us-ascii?Q?FaIAFUHk0SnwRhARJX6grVmf6SfAdlowQHtCkH0AyqYAJLYnFCe4/t5PhrnC?=
+ =?us-ascii?Q?kv3i+vU5D4N5VH/5ocWv5IIYnl+kWHUf7Yh4tPrzbhr0gLdLAAbyWeQ1WV4N?=
+ =?us-ascii?Q?aTHybq6g5d5i+tkB4JYDnDbqqOWIYJcnwaiFZc/dnWH06Thbn+A+Bwq4V6eJ?=
+ =?us-ascii?Q?rUFHiLikVnxYFnv4/7RX/EqjknD3r3mt0n7+qxPQHJ0EqPpUj5FesGULjf09?=
+ =?us-ascii?Q?l67jWl7u3cNm208+iNqB4BTxsFPDEaWparqaLHwvjWQoqy3+uYIgq3R8bMu0?=
+ =?us-ascii?Q?ndV4o+dWQrs4YJvw/hx707OsmsKCLWZ99ycMJ0MPRFVduXm2Qei4JU5kZv+u?=
+ =?us-ascii?Q?qgzvDCpnlAEW3+c9syK0rvktkbnm+JRnQxlWR4Albi6GAZjei57PJvE0qrDA?=
+ =?us-ascii?Q?9stvJXEq+TfBjsFJ2cDT4mLeAWb+r+40izh/f4S+7BiEL96U6P8wAHvN4Nhz?=
+ =?us-ascii?Q?eufb+zejyINzlS9JSxuofHeN2nYV+edkjojKCnepKl6yQHWyQBRPFBd8f3AB?=
+ =?us-ascii?Q?ihBFaQhoiqFGsxBnCIGtOSpGVIAzIC2df3ym+/F034It+Fr8/jVxSQW/KW85?=
+ =?us-ascii?Q?PhTBHCL8I1IH8JI/fCAjxIDbaAhKuhq1bS0BSCeAzxQTLmFe4mPMZvPqEbcN?=
+ =?us-ascii?Q?mKNI8/8Ny0+rjxGfMaWKgdZKVp5zEIWz9Os8+XJJLOcbcLGHDz/6Jfxc5YPZ?=
+ =?us-ascii?Q?1yZcPpYr60TrJv1ErcyEXBeHMO6hCTUKKZutdJSlp57cBJkxBnnjOctcT5Az?=
+ =?us-ascii?Q?Mrg7AZzY63yX7BZkgOoDsQegP4no8RYsJD6Q5Hs7GCEcPtDNk9MCL5eeLNxQ?=
+ =?us-ascii?Q?9/qd4NnJVAxZYVKE8qH0Xtn12ShgkGMeY1r6eq2eeGo4qI0c5GLN0nZluo6Q?=
+ =?us-ascii?Q?7iDWYHDCC5licUBKo8Pjome7AXFLN24cXSiIFUdbaXwY/m2xMOvow0hKQNCn?=
+ =?us-ascii?Q?fclaHixOjVfCW2K8SiI83aPogPuediSqhj3333j2mtOy+cW5c04GjIDoVmqV?=
+ =?us-ascii?Q?MtusHyyUZ7IGoz758HSrLS5tNYeIBOaVQiC6Ex6qsExh2trN670RtWoVF13U?=
+ =?us-ascii?Q?AGWMFgs946x1X6JO4aXAJ7a5cPf4d1kvO8KW2MiIyXdh73fVLHNKvUg/HjOA?=
+ =?us-ascii?Q?omfUm5HiVBcy/UlG164JRgnYG8wsqudlvI9XwVpekrCmQTAA5S7ejSwW82wA?=
+ =?us-ascii?Q?StSNadgycDVx/shaK6zU5vqa/F8zcj627f4GELODQxMFb9Hy3DD6ZOQbvEW7?=
+ =?us-ascii?Q?0iE=3D?=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(13230040)(366016)(376014)(1800799024); DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WJrnUxH8KmU2sGTFXxLhGORtvBR8HSWpfHauYZzu8VhWukC8c23RPUtLYAj8?=
- =?us-ascii?Q?7ClnDnucDrBl/OJPluPMCatLjuSEStyuUdTFF/fuc1QXQTC5ECok9EsTggYh?=
- =?us-ascii?Q?sliBz6u6A30D8/7volfujonj0pJ5nptQ+YJkpYp8cccjtiE2tRbYr8dQiLtn?=
- =?us-ascii?Q?N09+b7esZZ7o+EhdHIIMrUBUYtnTIGt3Ma1S6RxTMokI8W3diWAP+z651eMg?=
- =?us-ascii?Q?EeeE5k2ydomoLRK2c9OK8jnC93hsVIw9tOSnsbcvppKiw3eb3yUz7a/0o4xj?=
- =?us-ascii?Q?9qV340lVzT2g/Kq6IGsGLVz5HcZe+ol15LOnlta92jexpwN12khLWsZfVzdB?=
- =?us-ascii?Q?dMcZMgXx2/O7q5ff1wl8T81GUk0H/ryny28KpF8z8k5fQmHVyWJA/RePPks/?=
- =?us-ascii?Q?Kk9qXAB3Gp9iE5FmLQW//FgSxHzA4dBM5Q3Ns9qa6P6sK78bMMMo6l9JODm8?=
- =?us-ascii?Q?kWEQ7RWqayCkBwq6zYmxWkc5PW5MZ+fMMxWNm+1ayljfGCRkbSq1QBlCY6y/?=
- =?us-ascii?Q?kYD8H6Ec4l0fzngtrm2SZ13QC/ML+j+nm0JDsSe0ovZwgTlBO12kYWNMupYc?=
- =?us-ascii?Q?LZnVax4ULxBrOqTWfwoemPMx5/gqzy6V3Kc6TyXFddBTYqquR+GG7YBCVVKK?=
- =?us-ascii?Q?xyvt1TV9ANZ7X9Fs/8w8hHIYmB61b2At1UV1Rt+FEZfUdmk9ybKXtOyXEHHI?=
- =?us-ascii?Q?2NIQ661Lj4j+cetMfK99f7WYVN1l58C+Csu1gvknT6MNWiKm19KyzpBgmyRs?=
- =?us-ascii?Q?aAzT5qMf5U4JUpqQmH3dr8Dhm/LIxdYog60t4f/EecBVKTVSyJ1C2Tnbx88K?=
- =?us-ascii?Q?LMx/YB/8Dyia0SokY7dvFTobGWqdpEz0h9BDqvB7swNs9AfDCS294A1fi8ox?=
- =?us-ascii?Q?fjW+j/ItjNwTYCTNsXAlOMK0UWMdAw8udd0+RhFGjp15jIoTh4E/Wkdqrky4?=
- =?us-ascii?Q?6kA+p3wyWPsieeAe+QY+cY5BFsXsE1mx/MdcPdHSymiqDsRTjt9BViLztWzA?=
- =?us-ascii?Q?wVMbOjtx6nlcnwYZZx69u9CWzQ0jAasmKRQd7vil+xp2N5Jcqkp/LvFopL20?=
- =?us-ascii?Q?zbOzpUG7Y6xomihPpjP7WrbV7JZq76Zi44kcY6lcJk5cOTzIMJKdAIGBmNyN?=
- =?us-ascii?Q?3mx+VBOplRHApHrHyEexURKlsl9PSIYLiWgzHZVdIchFbR+HH5W3Wa6KSmcM?=
- =?us-ascii?Q?yuG1wM9QLL7yYMxQUZ0ukES3V+7hny2dUSRYXAdXjSZwgoguO+a0BrbSFarO?=
- =?us-ascii?Q?JO3SkDkkX9pVIT2nTbyGCZ2ksnVMmhoY73enAs6sQiklEtojdUiIYy6On9EN?=
- =?us-ascii?Q?1zuJ9lZTVHPO85zAx6fqE3wVqZxRcaunwdZW1sAEjplKhRQL8Ktm0SQ6aS9X?=
- =?us-ascii?Q?mVmfDM6zFUDxj2N7J8qWCXAYM3ikjO6wdkX5hjfpPI9hEWDzSFH8FOMkHwRB?=
- =?us-ascii?Q?UpYdqy5mVf2RQ7/cueCmOPXRtOkWi5uxOocyzByRg0XD08nPawvn+iC0C7fg?=
- =?us-ascii?Q?SMfGX+PknOrId0zGGZA/e5GivKSR5JrBm2JLFR91SG0EJaCUOQkSPQgxFHOe?=
- =?us-ascii?Q?TGvr84lsEGiQcQ0kTLquFZRwsosG6bSUm2Nhjj3HJo94UtQ+Iq6K4EFiBkYu?=
- =?us-ascii?Q?tg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 789c3517-f366-44a0-0823-08dc9734b23a
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fHFMYmzQKl4kboqxoyM1maUgDUHgtIBe6FMqp0/sIZwNqSYHIt6L1+aL8SyT?=
+ =?us-ascii?Q?i4r/Lycm00r+6ES3Ip6z1D39gxTqRpYzZESACDWBOunDlz3KO3P8ucQ2qju5?=
+ =?us-ascii?Q?/Sgw29LUMcfuYSK5MS14E0GgM0jFYe9cm6FurV0Bi7Zwek4tC5jiuE57wU+w?=
+ =?us-ascii?Q?xt2S53Fo5kxqiBgzHCQ4CFUlBBhXtiyxSOlM/RZDnAijqO1Dz6HYqFcaL3sx?=
+ =?us-ascii?Q?WZvNDijlBWBHs/6SxthW8Ez03c/r4QHItBSmbZyF8NA6slQanACY9OpnLv00?=
+ =?us-ascii?Q?Vno5usP1IugrQW0CYHX4W5a6aA2h77KNEN6WFUSCy+yaRVyWf0CR2HvcWKXB?=
+ =?us-ascii?Q?WLaebF3wJFhazDE0q5/tyXA5XQTSL/ZCmdOLnScqbcbxG/Kx0j9ckMYDl8xl?=
+ =?us-ascii?Q?dBWyPAKXgz81Evf7wQo0TqYoyDx9E3NKeDCK11cnvzb++1kplSt1rwAiw0Fv?=
+ =?us-ascii?Q?EyNN7J3bvZocNbHGsgVC0zmwe9v+4A8omWzSjEedrGeQClCKY/kj5lNb5Brz?=
+ =?us-ascii?Q?jQRgfWqiTW0UqC5Rp9jEi80AETJMRZm7A0QXn6bDuKWK8DwKlIHp9HTD5Lxb?=
+ =?us-ascii?Q?HdoHhB2ezZBhuVxmOr/Dbh9Ht2yFGsYAWcMvDxF9g8R7ZXVQ4JAiLVn0rK6e?=
+ =?us-ascii?Q?/4w8HPukOAFZkunMmDkRwcKsihkcoaFUyx6rfc7tETRjfZFX1QDRJjPfMCWt?=
+ =?us-ascii?Q?IuHEjQzt7S/v4hftwIGrgePwO6vMgkAlHeYm2Tpf2/Y0AzTTkGokgEm/iSaL?=
+ =?us-ascii?Q?9rUgu3/cHINXEz1izQ0BvYe+BgNz69jF11C+/EuWUPHZoccbS6ICY90UUkLM?=
+ =?us-ascii?Q?AFd/A5n4UovxkZe0rECc/jpu4GK+KDB5AfDPvnsl2QYOS6VDt9I/xCWBv1UU?=
+ =?us-ascii?Q?YKpV4n+agp5leKvSkyu+TK211s5Xvy7iRTNYEspgS/8zySYDuUyhT6tsEAJl?=
+ =?us-ascii?Q?7Vjg/M22fzGNKhXkgMbHpMMqrGSr4+IKQIqGGFzbJ56PHQ1u1jpRiYxnm1TN?=
+ =?us-ascii?Q?L/fH0E59Mabz7SojtceHzGB3d8ogjkNrqn97JKhn+F0PD5vXuHmLO0f6mvev?=
+ =?us-ascii?Q?DuoxOlOQTwJKOo8Ud7ck5eoFA5nQXWM+YJdZqonfgl7dytsZy+ANdvhdnXKx?=
+ =?us-ascii?Q?ulyveWspz5hJVGVkNtiBnjxPUw8rg9S4FiJbWYUvrKDgxohbQ/6zDSdXSgAq?=
+ =?us-ascii?Q?L/GJ4VH7vvDX7Xnrm8XFck5a9ULk/P+Kz6w7j79OBORdm9/xYms25ZtPTtdb?=
+ =?us-ascii?Q?S71Fnyzj/hJzEpXW/vXlNHv4diCu9RWwS/OsHv8c8BioYl+gS6FvFHwbulrx?=
+ =?us-ascii?Q?xLV2lMb4ALvNURV3QeBpBZhlmRpj7wy/y2iAPIVeJ/offYTNgcBuxpxmlBCc?=
+ =?us-ascii?Q?dR8iFcwN/bIvWEQYf1RjOYty7x7zN2FDtabyJ6BFSxfhRALXd7rLQLDTSw5o?=
+ =?us-ascii?Q?DksILf2X52Xyy834sOHl6W9jlVvxktUaHkbr/hgD/KYa/pTt8BvzR7g6OuP0?=
+ =?us-ascii?Q?1M6FW1/ynWI58O0FSlrYDao7IlI84sAoL/vUI5LphpMNw4JiXLzpM9UoNGq2?=
+ =?us-ascii?Q?0HlD5D4n/l73/qPavp81s3sBtT6ArkmO68IahBe3AX5aZQps/KomWg0obmRA?=
+ =?us-ascii?Q?XQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3b443c8-b51b-4c76-04b9-08dc97354370
 X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2024 05:39:36.7285 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2024 05:43:40.4855 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4YuEoqh6sYS0C6zva6QTCARBEl07BBjeYGkuuknR6tg76IITddTAqZfOePE04X8lbkhwNPJZUjZmsv04iGGuXg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: kIGVlJzmvCtNSZxBp6BVPeiN0J6UylXBOZztaKnT5k0XegUWxEoSScnN03bxY5GwIMISyZcHT43hjDavf1/N6w==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6805
 X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH V6 for-6.11/block] loop: Fix a race between loop
- detach and loop open
+Subject: Re: [LTP] [PATCH 13/17] signal: Stop skipping current in
+ do_group_exit & get_signal
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -177,9 +182,10 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: axboe@kernel.dk, lkp@intel.com, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, yukuai1@huaweicloud.com, oliver.sang@intel.com,
- oe-lkp@lists.linux.dev, hch@lst.de, ltp@lists.linux.it
+Cc: lkp@intel.com, Oleg Nesterov <oleg@redhat.com>,
+ linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, oliver.sang@intel.com,
+ oe-lkp@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -189,21 +195,21 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-kernel test robot noticed "ltp.ioctl_loop06.fail" on:
+kernel test robot noticed "ltp.acct02.fail" on:
 
-commit: a167a9996e22ae0d108307fbc66b811d821ffbe7 ("[PATCH V6 for-6.11/block] loop: Fix a race between loop detach and loop open")
-url: https://github.com/intel-lab-lkp/linux/commits/Gulam-Mohamed/loop-Fix-a-race-between-loop-detach-and-loop-open/20240619-004334
-base: https://git.kernel.org/cgit/linux/kernel/git/axboe/linux-block.git for-next
-patch link: https://lore.kernel.org/all/20240618164042.343777-1-gulam.mohamed@oracle.com/
-patch subject: [PATCH V6 for-6.11/block] loop: Fix a race between loop detach and loop open
+commit: 6d882a729c098fb5c94db8e203a9498b79e846ca ("[PATCH 13/17] signal: Stop skipping current in do_group_exit & get_signal")
+url: https://github.com/intel-lab-lkp/linux/commits/Eric-W-Biederman/signal-Make-SIGKILL-during-coredumps-an-explicit-special-case/20240619-121513
+base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git c793a62823d1ce8f70d9cfc7803e3ea436277cda
+patch link: https://lore.kernel.org/all/87iky5fu6y.fsf_-_@email.froward.int.ebiederm.org/
+patch subject: [PATCH 13/17] signal: Stop skipping current in do_group_exit & get_signal
 
 in testcase: ltp
 version: ltp-x86_64-14c1f76-1_20240615
 with following parameters:
 
 	disk: 1HDD
-	fs: f2fs
-	test: syscalls-01/ioctl_loop06
+	fs: ext4
+	test: syscalls-06/acct02
 
 
 
@@ -218,43 +224,43 @@ test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy B
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202406281350.b7298127-oliver.sang@intel.com
+| Closes: https://lore.kernel.org/oe-lkp/202406281321.6026952-oliver.sang@intel.com
 
 
 
 Running tests.......
 <<<test_start>>>
-tag=ioctl_loop06 stime=1719063458
-cmdline="ioctl_loop06"
+tag=acct02 stime=1719055971
+cmdline="acct02"
 contacts=""
 analysis=exit
 <<<test_output>>>
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
 tst_test.c:1734: TINFO: LTP version: 20240524-41-g248223546
 tst_test.c:1618: TINFO: Timeout per run is 0h 02m 30s
-tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg < 512
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg != power_of_2
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size < 512
-ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
-ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size != power_of_2
-ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+acct02.c:63: TINFO: CONFIG_BSD_PROCESS_ACCT_V3=y
+acct02.c:240: TINFO: Verifying using 'struct acct_v3'
+acct02.c:193: TINFO: == entry 1 ==
+acct02.c:84: TINFO: ac_comm != 'acct02_helper' ('acct02')
+acct02.c:133: TINFO: ac_exitcode != 32768 (0)
+acct02.c:141: TINFO: ac_ppid != 3859 (3856)
+acct02.c:183: TFAIL: end of file reached
+
+HINT: You _MAY_ be missing kernel fixes:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4d9570158b626
 
 Summary:
-passed   3
-failed   3
+passed   0
+failed   1
 broken   0
 skipped  0
 warnings 0
 incrementing stop
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
+duration=1 termination_type=exited termination_id=1 corefile=no
 cutime=0 cstime=3
 <<<test_end>>>
 INFO: ltp-pan reported some tests FAIL
@@ -270,7 +276,7 @@ LTP Version: 20240524-41-g248223546
 
 
 The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240628/202406281350.b7298127-oliver.sang@intel.com
+https://download.01.org/0day-ci/archive/20240628/202406281321.6026952-oliver.sang@intel.com
 
 
 
