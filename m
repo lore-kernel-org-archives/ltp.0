@@ -4,91 +4,168 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9781CC2BD09
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 18:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719511421; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=v5Wgt3vVJnFcvh9vZzWzeTS4GG4mBNfMckFSXzvcoiU=;
- b=oOCLslPIgV/8I9z40UwDacCp4xYmdDh0baNAHfV4tXNf6l6sMK+d+Bzp5rlch9DYlQQ+u
- BfqYyhb8hEbAkwDV+LOhHhw2I+BoSltXj9Mep9Hk9UlVsl1wl9hqbBD264DI+aXlgVag2Hl
- nTwspstzV1OtGE9KWUXvqPWpepJuFGk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 836B8C2BBCA
+	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 05:40:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 240203D1320
-	for <ltp@archiver.kernel.org>; Thu, 27 Jun 2024 20:03:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8E83F3D436A
+	for <ltp@archiver.kernel.org>; Fri, 28 Jun 2024 07:40:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5D423D107E
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 20:03:18 +0200 (CEST)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9B1B53CD7AD
+ for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:39:52 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=intel.com (client-ip=192.198.163.17; helo=mgamail.intel.com;
+ envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0BA28600BD8
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 20:03:18 +0200 (CEST)
-Received: by mail-ed1-x534.google.com with SMTP id
- 4fb4d7f45d1cf-57d00a51b71so1582a12.0
- for <ltp@lists.linux.it>; Thu, 27 Jun 2024 11:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1719511397; x=1720116197; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=+/SnY4T7Jvxbij8lFazzbBKTczWtwkgGL5sBcZfOrek=;
- b=mPoNsJtbPwYnMhAk7QNHeYeMWXV1jwPRlsJN1muYxZeNwxrTZwI94sFROckzdtSx5/
- tBgSmGSIK9w6Ij8F1SDm25bFo+/c4TFxarzCKxtC/Jc6vVhVRO5Vc/XRqw4smqya4H2S
- BT62SpSqr/AIqvqSbJj9CEphg/jgmpT2r4YvKUzgdJyUw5DnxP4Ofv3jAb+7lE8Iqr4Y
- E+5UROd/atZn68UDto/QyD6PpBHzNBK/7c0PfFA6eg2HCGAjIac0jmL2ahP+qVowgPQ0
- ZGxvQ6MHH9EAHVGTjRtL+EAGZTmVTKlhsTLdtdg5K27JzixOiWdgduHKkknLhWQCl8FP
- pCxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719511397; x=1720116197;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=+/SnY4T7Jvxbij8lFazzbBKTczWtwkgGL5sBcZfOrek=;
- b=p/FSmRWHyniFyUOzrmdFty+g7ZwceA+NL1SEjWygAKFj0vu1oflwDC6S7R+E8t05SL
- 2QUnGTEae+AKCJF+mirNMjLg5dwCkeIvp7dLEsZ38Hge6X07O7suOfzwDo3rES8ve7Ff
- YZiwdrEkmtBV3wKKp8bn5rEiD9GbW2yI209VXNNAtrJlyWtggTA7O7FNrBkF2JQwLW43
- xQhYfwjtuZ/3VTg/aZWcZ5eA2o6EW8huURw+2McvQzdvSKr7Z2+tphQO/qgR+Y569gwN
- w7EI0evrOhypS2mBPKP+XrycbkqGxdI5jaIl0LM7tZpbLi9ERtSKjO1u28GfmFYjyuCi
- hcYw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXHqmMQdegvWZtUfzvMkLoBaktXu7Mz5ix3GPebZQ+vnUuAgZ5mDAHwHiEoUr+g9Ud8C9R78k258ajGoB7Gv/si/kM=
-X-Gm-Message-State: AOJu0YwflWf6SSXmtLS7ClCqjtdj6I6UvdfOxMcag0DmUQHTqZfEbrUD
- Y0PCitFO8pI+60VrdFMvIOkYTyuOD/z/KHD2+2rBQ+Et9TaAjtSmkxDRyOQfhFzq7itCgeGIzAM
- yaLc18wOckTwYhFqTWgnftVxMsaYnaV0S7xY=
-X-Google-Smtp-Source: AGHT+IHXCIN+qZcqapwt83fZWBiRnCTHvQVTqx8Q/o/ixG9L+LsWWAKhdyaEFCZ6g8LwcAoZ7rNd7EZDK6s+VPu2nTw=
-X-Received: by 2002:a50:954b:0:b0:57c:d1dd:e645 with SMTP id
- 4fb4d7f45d1cf-5860c6462abmr7226a12.5.1719511397227; Thu, 27 Jun 2024 11:03:17
- -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A78101000D1D
+ for <ltp@lists.linux.it>; Fri, 28 Jun 2024 07:39:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1719553191; x=1751089191;
+ h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
+ bh=trKeLPO3t7kCb65fZdIVXE/qY6qBJJ5j6oLRwNfeW+4=;
+ b=jltmhMVjFUjzOtwi9dY15LfcNrpKJTA0Ou033W12mOvP+VmekIW/uVMj
+ XcPe6zS89an/HH/d12fxO+UIBfIBUVSII1WuQV+2K1/Z2HPIgZ34t8anV
+ jcVuPwaFbuN7vbWpEK1ATcD6p+6XVREzi1+a52U06hMtWYCCBSkCobLRE
+ SI0g898dHxHt74hvhMH68CtE7rJ0pMKuqllE9p7cZ1wF9XovQByqSCXHd
+ d6rmcMu0boz+juxp8srpqdirOzy80ETInc11Ms5OHiTVQluUVIsaUOPTN
+ 07+8yvGqJ+71yD9FYmJfTDhzivejwsWdQi9SqP5+tlRl/H8da5e7Gu3a3 g==;
+X-CSE-ConnectionGUID: wy1MGfZ/TwqauuJ9VVZJOQ==
+X-CSE-MsgGUID: 1yNoa2gvTKmV7oxxyYMEdQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11116"; a="16602322"
+X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="16602322"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+ by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2024 22:39:45 -0700
+X-CSE-ConnectionGUID: CYWx2q5kQTKYULuaDUOx0w==
+X-CSE-MsgGUID: zaAOGpx7Tl+egLNMm0Ociw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; d="scan'208";a="45263985"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+ by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 27 Jun 2024 22:39:45 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 27 Jun 2024 22:39:45 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 27 Jun 2024 22:39:45 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 27 Jun 2024 22:39:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cESV9wH+1uzxSpXXAgYklsOZOuhA49MaF2wE4rSEZ46qaSgisSk7NRDy5HrGoSZnQ7zp8K77YdsZofUDSTNpIu4te0cMG5HGrZCq4Q5/YZAXsGa+z7RyMbUIf+0bauHF7jbnIsNejU6ZdFjzeZS9eyw4mt1+ZeSy+2pA0Mx+SQ6dcenfsBIC89PJ/WrSWezI88fBKDWI1x3l+IfGlkBUDslWghvE5Lmh1ubqZS4pUJ7rdrBGKVwxF4mQAwyqPuQXW3hBiFAZYeAvrA1GvGKCymtbunSsCmFyK8/VV9DNlNUg/x7Dm6JyGK6FAVmgjlRHbUHEEfcLzeprpCw0H+mV3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R46z/GPcRkh+dII0m7k8soedT0OLTNN+A6/Cg3wo0Rw=;
+ b=JPK8284umsiyegYTsSClKz+ljX9eyyPdZOPopF9EurWyKar1pviTMtXWOwnpYf+umcrbwpxLTFIiClrn131hBvnIYa6SPtpSajpTmjZU6Zd/Ul51eUd3VHkIfI/HTFf2TxPTXyvO3ne6XEqE8+CIhu2QFUCSjaUkp74GM7fFOEZta9UxjZKrHF04Omi+BDQlOWBiY9kr5Zg/c2Os9bKbEhZ+ddBi/zW9prOBaVCCRkfdjXqZzFfLhFT3hVvUgHEYfleyzS3z41FekjGllJ6Lwm/YAqPzHgfGyq+CjNinZceGuYgnkOqSHWGLmh1H6ILSqX2pWBNrLOglhOeSA4sbZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SA1PR11MB6805.namprd11.prod.outlook.com (2603:10b6:806:24c::8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.32; Fri, 28 Jun
+ 2024 05:39:36 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%2]) with mapi id 15.20.7719.022; Fri, 28 Jun 2024
+ 05:39:36 +0000
+Date: Fri, 28 Jun 2024 13:39:26 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Gulam Mohamed <gulam.mohamed@oracle.com>
+Message-ID: <202406281350.b7298127-oliver.sang@intel.com>
+Content-Disposition: inline
+In-Reply-To: <20240618164042.343777-1-gulam.mohamed@oracle.com>
+X-ClientProxiedBy: SI2PR06CA0002.apcprd06.prod.outlook.com
+ (2603:1096:4:186::10) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
-References: <20240423225821.4003538-1-jstultz@google.com>
- <20240423225821.4003538-3-jstultz@google.com>
- <Zi9jL1jycx6oo37g@yuki>
- <CANDhNCq__ZY9w3Nse-+K+d9gyXhrOe_6oZ=X01x_HufZwQ_6ig@mail.gmail.com>
- <Zjn1-1YRyZGIUtEP@yuki> <ZnlORS6RGTAA4UhS@yuki>
- <CANDhNCqk-3o+Bu_c9PbqoxSacGQaGUrdTM5VDoZCOipEttXKLw@mail.gmail.com>
- <CAEemH2fT2NsoZfRvNrhRrstF=dhzF8Y90HqVQSCf1VxqpNHgEw@mail.gmail.com>
- <CANDhNCr4-cE7_Uy86Pa3kjzFG_EOOB38C_mSGSfZtc=vd7L5yQ@mail.gmail.com>
- <CAEemH2cUj4U4Z=G437fduyQA6-UrnhE4b1_QtRB0kmPn5OMgAA@mail.gmail.com>
- <CANDhNCpYjncxr-fn8o5vDDYScf4zvVmH_w_Ms1Jhg9tsn-UgDQ@mail.gmail.com>
- <CAEemH2eQwPSQrHKY3AxT03Nf9Y7NoKpY3y+XE8donjLhHYbP2Q@mail.gmail.com>
- <CANDhNCqWvQ9DCwXtdMW81OoZ0qULk8-6PCYwVeF_Ep+b4Kkg2A@mail.gmail.com>
-In-Reply-To: <CANDhNCqWvQ9DCwXtdMW81OoZ0qULk8-6PCYwVeF_Ep+b4Kkg2A@mail.gmail.com>
-Date: Thu, 27 Jun 2024 11:03:05 -0700
-Message-ID: <CANDhNCo8C7mXQgwhWcukHjwLTks6SzpKxB8tXzmAA6qaRu+8TA@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA1PR11MB6805:EE_
+X-MS-Office365-Filtering-Correlation-Id: 789c3517-f366-44a0-0823-08dc9734b23a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?/K2yf83XApbjluLoMwsS5hs3owzsH6QbzA4KRpKDoaNgEe39hD0DfYUruLZL?=
+ =?us-ascii?Q?1zpjId67Q6MJ2PZ7JZpA+RKQOW2n+/23mL2SCbfNkGFp/NIOsdziLbKpZs+F?=
+ =?us-ascii?Q?8j5sq45lkr6OXqwDI5dyP3WBrFe3HzpKznzJyrDE/jzuVYJFq+8iSd/+xvxc?=
+ =?us-ascii?Q?9akzlNfYioPLjaY20Jgd3K8wWI4HZ8Y3UMROJal5eLJAtKpa+bDGKuw8+Bvu?=
+ =?us-ascii?Q?OZ4JPSpNNUa8sQjStuj+00rkACLB/pMfehzy2qXJT5ithGogYqHCyKpVKZPd?=
+ =?us-ascii?Q?rtsLi/lGo4j32FdhowdSTQHPU2gDuoEUjchRIG9DFBnTu7UCudQMTgob4LgV?=
+ =?us-ascii?Q?1qdPDmVYWW12p/CPFb+Mw2/189QdG6SK0aLo6ahUYiAbgoCkDxANEc3YlciV?=
+ =?us-ascii?Q?+GuZC4S5O5y9RyGfBozkc3+A+5NonFYZBYxeuHc8pE/vEhWm4CyHyB2qyaBP?=
+ =?us-ascii?Q?YOHwBorVkkwxfkblFTYifs0l8lIYUMt0p8GP+ctxUEYqF3/o8VZWwpLk7npk?=
+ =?us-ascii?Q?JxpgQT/tsAuS3GbEv4F+uxZtqdPtu4k5I07Pq6zL3weCQsav9gyAFbPfI5yJ?=
+ =?us-ascii?Q?1TakPUwBSJ6LXxfyNCUQFhKG0ZwZ4mQkSaM590b9VYxu5PPneHWW1wn/b9+2?=
+ =?us-ascii?Q?nwTM1HwzjO4Bc3jKURUnx8RJqh/hO0nM1MagONF/xbWCZcN3l9OSEkW3YnJc?=
+ =?us-ascii?Q?/pc1Z0kBeNAGe+OkK2nVxQCz1V+seWQS27uttb2M8q2ot25TKDJxy8iame8T?=
+ =?us-ascii?Q?51tME3ORcPJ2e6BbWi9nf5Y9g2kLYkexKT85C31AqkF0yHkcic6tKpmK752y?=
+ =?us-ascii?Q?UZjnI+HlmXSu2Qxxv2yts0Wh2kA+MdDTe3AzjR93114r5RYXGtjIGcHb6osm?=
+ =?us-ascii?Q?tXgBZYzjQ1u6yd7pibN6vQ4kdaStrLwSLqPinLarxGCDenBAUWmntp9WkT3O?=
+ =?us-ascii?Q?IBBh33ujIKHo0I2C80QhxRuwilpNxd2I16NOzvfqAdysJXgVyOyqu5APzLoc?=
+ =?us-ascii?Q?7OSichON9sr7LyvGUk0hvXqm2PgNTbTWMbBo6LLPnTdbCf0Qo8q2pVqmuVo8?=
+ =?us-ascii?Q?XnefU9VEIfs1OeKeJxQPTV8i52PJW5dV/fESpyZMl/DBujtr0nAptpU0gSpz?=
+ =?us-ascii?Q?INjKQqOx8lA91nbMVzjZENEoyi8c8wZ/CVqQJoJLy9W6oo7J2BPQIidDlIay?=
+ =?us-ascii?Q?da9d93yHR4ARmrrxU7mkDdqCYEboUQH+W+VV8LeNAExUH1SYb8rB8jSGAPA3?=
+ =?us-ascii?Q?iObBmcVLZUoCurwq+EaqKXQWAAH74EPSGxv8eTy2f7asyH8bPLzZ65kYnZmJ?=
+ =?us-ascii?Q?z24m99mv2iSuHDC9HlARZJvF?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(376014)(1800799024); DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WJrnUxH8KmU2sGTFXxLhGORtvBR8HSWpfHauYZzu8VhWukC8c23RPUtLYAj8?=
+ =?us-ascii?Q?7ClnDnucDrBl/OJPluPMCatLjuSEStyuUdTFF/fuc1QXQTC5ECok9EsTggYh?=
+ =?us-ascii?Q?sliBz6u6A30D8/7volfujonj0pJ5nptQ+YJkpYp8cccjtiE2tRbYr8dQiLtn?=
+ =?us-ascii?Q?N09+b7esZZ7o+EhdHIIMrUBUYtnTIGt3Ma1S6RxTMokI8W3diWAP+z651eMg?=
+ =?us-ascii?Q?EeeE5k2ydomoLRK2c9OK8jnC93hsVIw9tOSnsbcvppKiw3eb3yUz7a/0o4xj?=
+ =?us-ascii?Q?9qV340lVzT2g/Kq6IGsGLVz5HcZe+ol15LOnlta92jexpwN12khLWsZfVzdB?=
+ =?us-ascii?Q?dMcZMgXx2/O7q5ff1wl8T81GUk0H/ryny28KpF8z8k5fQmHVyWJA/RePPks/?=
+ =?us-ascii?Q?Kk9qXAB3Gp9iE5FmLQW//FgSxHzA4dBM5Q3Ns9qa6P6sK78bMMMo6l9JODm8?=
+ =?us-ascii?Q?kWEQ7RWqayCkBwq6zYmxWkc5PW5MZ+fMMxWNm+1ayljfGCRkbSq1QBlCY6y/?=
+ =?us-ascii?Q?kYD8H6Ec4l0fzngtrm2SZ13QC/ML+j+nm0JDsSe0ovZwgTlBO12kYWNMupYc?=
+ =?us-ascii?Q?LZnVax4ULxBrOqTWfwoemPMx5/gqzy6V3Kc6TyXFddBTYqquR+GG7YBCVVKK?=
+ =?us-ascii?Q?xyvt1TV9ANZ7X9Fs/8w8hHIYmB61b2At1UV1Rt+FEZfUdmk9ybKXtOyXEHHI?=
+ =?us-ascii?Q?2NIQ661Lj4j+cetMfK99f7WYVN1l58C+Csu1gvknT6MNWiKm19KyzpBgmyRs?=
+ =?us-ascii?Q?aAzT5qMf5U4JUpqQmH3dr8Dhm/LIxdYog60t4f/EecBVKTVSyJ1C2Tnbx88K?=
+ =?us-ascii?Q?LMx/YB/8Dyia0SokY7dvFTobGWqdpEz0h9BDqvB7swNs9AfDCS294A1fi8ox?=
+ =?us-ascii?Q?fjW+j/ItjNwTYCTNsXAlOMK0UWMdAw8udd0+RhFGjp15jIoTh4E/Wkdqrky4?=
+ =?us-ascii?Q?6kA+p3wyWPsieeAe+QY+cY5BFsXsE1mx/MdcPdHSymiqDsRTjt9BViLztWzA?=
+ =?us-ascii?Q?wVMbOjtx6nlcnwYZZx69u9CWzQ0jAasmKRQd7vil+xp2N5Jcqkp/LvFopL20?=
+ =?us-ascii?Q?zbOzpUG7Y6xomihPpjP7WrbV7JZq76Zi44kcY6lcJk5cOTzIMJKdAIGBmNyN?=
+ =?us-ascii?Q?3mx+VBOplRHApHrHyEexURKlsl9PSIYLiWgzHZVdIchFbR+HH5W3Wa6KSmcM?=
+ =?us-ascii?Q?yuG1wM9QLL7yYMxQUZ0ukES3V+7hny2dUSRYXAdXjSZwgoguO+a0BrbSFarO?=
+ =?us-ascii?Q?JO3SkDkkX9pVIT2nTbyGCZ2ksnVMmhoY73enAs6sQiklEtojdUiIYy6On9EN?=
+ =?us-ascii?Q?1zuJ9lZTVHPO85zAx6fqE3wVqZxRcaunwdZW1sAEjplKhRQL8Ktm0SQ6aS9X?=
+ =?us-ascii?Q?mVmfDM6zFUDxj2N7J8qWCXAYM3ikjO6wdkX5hjfpPI9hEWDzSFH8FOMkHwRB?=
+ =?us-ascii?Q?UpYdqy5mVf2RQ7/cueCmOPXRtOkWi5uxOocyzByRg0XD08nPawvn+iC0C7fg?=
+ =?us-ascii?Q?SMfGX+PknOrId0zGGZA/e5GivKSR5JrBm2JLFR91SG0EJaCUOQkSPQgxFHOe?=
+ =?us-ascii?Q?TGvr84lsEGiQcQ0kTLquFZRwsosG6bSUm2Nhjj3HJo94UtQ+Iq6K4EFiBkYu?=
+ =?us-ascii?Q?tg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 789c3517-f366-44a0-0823-08dc9734b23a
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2024 05:39:36.7285 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4YuEoqh6sYS0C6zva6QTCARBEl07BBjeYGkuuknR6tg76IITddTAqZfOePE04X8lbkhwNPJZUjZmsv04iGGuXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6805
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/6] sched_football: Use atomic for ball
+Subject: Re: [LTP] [PATCH V6 for-6.11/block] loop: Fix a race between loop
+ detach and loop open
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,39 +177,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: John Stultz via ltp <ltp@lists.linux.it>
-Reply-To: John Stultz <jstultz@google.com>
-Cc: Darren Hart <darren@os.amperecomputing.com>, kernel-team@android.com,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: axboe@kernel.dk, lkp@intel.com, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, yukuai1@huaweicloud.com, oliver.sang@intel.com,
+ oe-lkp@lists.linux.dev, hch@lst.de, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKdW4gMjcsIDIwMjQgYXQgMTE6MDHigK9BTSBKb2huIFN0dWx0eiA8anN0dWx0ekBn
-b29nbGUuY29tPiB3cm90ZToKPgo+IE9uIFdlZCwgSnVuIDI2LCAyMDI0IGF0IDg6MzLigK9QTSBM
-aSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cj4gPiBPbiBUaHUsIEp1biAyNywgMjAy
-NCBhdCAxOjAx4oCvQU0gSm9obiBTdHVsdHogPGpzdHVsdHpAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4g
-Pj4gT24gVHVlLCBKdW4gMjUsIDIwMjQgYXQgNzoyNuKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRo
-YXQuY29tPiB3cm90ZToKPiA+PiA+IEpvaG4gU3R1bHR6IDxqc3R1bHR6QGdvb2dsZS5jb20+IHdy
-b3RlOgo+ID4+ID4+Cj4gPj4gPj4gU2hvdWxkIHRoZSBvbGQgLS13aXRoLXJlYWx0aW1lLXRlc3Rz
-dWl0ZSBvcHRpb24gYmUgcmVtb3ZlZCB0aGVuPwo+ID4+ID4KPiA+PiA+Cj4gPj4gPiBObywgd2Ug
-bmVlZCBpdC4KPiA+PiA+Cj4gPj4gPiBXaGVuIGNvbmZpZ3VyaW5nIExUUCB3aXRob3V0IHRoZSAt
-LXdpdGgtcmVhbHRpbWUtdGVzdHN1aXRlIG9wdGlvbiwgaXQgd2lsbAo+ID4+ID4gc2tpcCBidWls
-ZGluZyB0aGUgc3R1ZmYgdW5kZXIgdGVzdGNhc2VzL3JlYWx0aW1lLyBieSBkZWZhdWx0Lgo+ID4+
-Cj4gPj4gUmlnaHQuIEJ1dCBhcyBJIG1lbnRpb25lZCBlYXJsaWVyLCBidWlsZGluZyB3aXRoIGl0
-IHNlZW1zIHRvIGJlIGJyb2tlbgo+ID4+IGN1cnJlbnRseT8KPiA+Cj4gPgo+ID4gTm90IGJyb2tl
-biwgdGhhdCdzIGJlY2F1c2UgeW91IGRpZG4ndCBidWlsZCBpbiBjb3JyZWN0IHdheS4KPiA+ICdt
-YWtlIGF1dG90b29scycgaXMgdGhlIGZpcnN0IG5lY2Vzc2FyeSBzdGVwIGZvciB0aGUgYnVpbGQu
-Cj4gPgo+Cj4gT2ssIGJ1dCBldmVuIGFmdGVyIGRvaW5nIHRoYXQgYXMgeW91IHN1Z2dlc3RlZCwg
-YnVpbGRpbmcgd2l0aCB0aGUKPiBmb2xsb3dpbmcgZmFpbHMgZm9yIG1lOgo+Cj4gbWFrZSBhdXRv
-dG9vbHMKPiAuL2NvbmZpZ3VyZSAtQyB0ZXN0Y2FzZXMvcmVhbHRpbWUvCgpPaCwgc29ycnksIEkg
-Y3Jvc3Mgd2lyZXMgdHlwaW5nIHRoaXMgb3V0LiBJdCB3YXMKLi9jb25maWd1cmUgLS13aXRoLXJl
-YWx0aW1lLXRlc3RzdWl0ZQoKPiBtYWtlIC1qCj4gLi4uCj4gbWFrZVszXTogKioqIE5vIHJ1bGUg
-dG8gbWFrZSB0YXJnZXQgJ01ha2VmaWxlLmFtJywgbmVlZGVkIGJ5Cj4gJ01ha2VmaWxlLmluJy4g
-IFN0b3AuCj4gbWFrZVsyXTogKioqIFsuLi8uLi9pbmNsdWRlL21rL2dlbmVyaWNfdHJ1bmtfdGFy
-Z2V0LmluYzoxMDg6IGFsbF0gRXJyb3IgMgo+IG1ha2VbMV06ICoqKiBbLi4vaW5jbHVkZS9tay9n
-ZW5lcmljX3RydW5rX3RhcmdldC5pbmM6MTA4OiBhbGxdIEVycm9yIDIKPiBtYWtlOiAqKiogW01h
-a2VmaWxlOjg1OiB0ZXN0Y2FzZXMtYWxsXSBFcnJvciAyCj4KPiBTbyBpdCBkb2VzICpzZWVtKiBs
-aWtlIHNvbWV0aGluZyBpcyBicm9rZW4uIDopCj4KPiB0aGFua3MKPiAtam9obgoKLS0gCk1haWxp
-bmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+
+
+Hello,
+
+kernel test robot noticed "ltp.ioctl_loop06.fail" on:
+
+commit: a167a9996e22ae0d108307fbc66b811d821ffbe7 ("[PATCH V6 for-6.11/block] loop: Fix a race between loop detach and loop open")
+url: https://github.com/intel-lab-lkp/linux/commits/Gulam-Mohamed/loop-Fix-a-race-between-loop-detach-and-loop-open/20240619-004334
+base: https://git.kernel.org/cgit/linux/kernel/git/axboe/linux-block.git for-next
+patch link: https://lore.kernel.org/all/20240618164042.343777-1-gulam.mohamed@oracle.com/
+patch subject: [PATCH V6 for-6.11/block] loop: Fix a race between loop detach and loop open
+
+in testcase: ltp
+version: ltp-x86_64-14c1f76-1_20240615
+with following parameters:
+
+	disk: 1HDD
+	fs: f2fs
+	test: syscalls-01/ioctl_loop06
+
+
+
+compiler: gcc-13
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202406281350.b7298127-oliver.sang@intel.com
+
+
+
+Running tests.......
+<<<test_start>>>
+tag=ioctl_loop06 stime=1719063458
+cmdline="ioctl_loop06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1734: TINFO: LTP version: 20240524-41-g248223546
+tst_test.c:1618: TINFO: Timeout per run is 0h 02m 30s
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg < 512
+ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
+ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
+ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
+ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg != power_of_2
+ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
+ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size < 512
+ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
+ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
+ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
+ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size != power_of_2
+ioctl_loop06.c:67: TFAIL: Set block size failed expected EINVAL got: EBUSY (16)
+
+Summary:
+passed   3
+failed   3
+broken   0
+skipped  0
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=3
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20240524-41-g248223546
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20240524-41-g248223546
+       ###############################################################
+
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240628/202406281350.b7298127-oliver.sang@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
