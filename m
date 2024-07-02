@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A7C7C30658
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 12:23:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96867C30658
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 13:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1719925877; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=PKL2zkfi3qFRhgKcjPbnMDoQaFbwrq4Hdw5dDi8n/X8=;
+ b=gxTh5x14rEaToZCIDyG7HP0eAWxrM0/wXeanAsUG9gzJdwr22pgu28NRLoeFD2b8/sZxL
+ YK1ZdVXt/9MwT8JU9PwLSpjypzSPITsSqSCfG/AZeZTM7ac/2ub2RFXO2xo9h8IqM7PK88u
+ 6nfXF8mksDCLmpEdOD+ehGloCrOxquA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 832083D3EC8
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 14:23:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0570A3D3ED1
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 15:11:17 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 705FA3D3E89
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 14:23:09 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 03B403D0F60
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 15:10:55 +0200 (CEST)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 53AA214044D1
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 14:23:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1719922985;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B1RZ0UxB1hla/r3fqOA1FLE0D7zLTLjcAAiogHByEaA=;
- b=gVM6Wr57Q/eLIaZgGtT8tD6pBySKYoPuWr0F1tR13mUPqg49daR3GWyok5fFC7+w78BhTG
- mhdygZppduHkcH14vjAqsi0xdQE9pAm5CL5WdRSSXuhPKU9ZefIQKGTJ92nbkL5zi+SaW6
- /f5vPdpz/xoWnrMO4NZYINZkRn/ik8s=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-WeFxSrvIP6y1k1-QKsFESQ-1; Tue, 02 Jul 2024 08:23:03 -0400
-X-MC-Unique: WeFxSrvIP6y1k1-QKsFESQ-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2c924a5edaaso3775562a91.2
- for <ltp@lists.linux.it>; Tue, 02 Jul 2024 05:23:03 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 88644200AEF
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 15:10:54 +0200 (CEST)
+Received: by mail-lj1-x231.google.com with SMTP id
+ 38308e7fff4ca-2ebec2f11b7so47304691fa.2
+ for <ltp@lists.linux.it>; Tue, 02 Jul 2024 06:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1719925854; x=1720530654; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=N5S4KKpfKx/swgMSnQIyK11r0SRK6Yk81BAk7irGZfg=;
+ b=Tb5Sf/dkjDRgHbbFUQC9L45vD0RkfH2hawzxspFEXu6ZlFtwWRY0Uwl7UBkIYjh2i1
+ nQ38qIm53MNNf73K7OI+BUtVrftjg9vxoL41AfNNtxjRugrrbLrbPxBW77XXNXCCKGoo
+ hYirEnI7ad54afgmBUEpwTX1nNtJGIpRm0RYCIili8qNF2bm4pXAzDMoQoBDh9epu+G7
+ /+FiEjHSf2WIR8JDRJBn7wS0WrMxOTeUdmu5D3uWsefu06M2vA53rq6oblIJW+rO7IEm
+ Q6RAUNaaCtX+tGIpPUwaUHBLcU+NTl5PP9LCw3zcZGOw+p54R4h9iyHjNF903A9cfSiy
+ RajA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719922981; x=1720527781;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=B1RZ0UxB1hla/r3fqOA1FLE0D7zLTLjcAAiogHByEaA=;
- b=py2x4JpZSPNLUI6k8I+IxESP9Z9pRkxGenallZCvFq4OQcN5jjJCs3/s3AI9VWbS2f
- UUoxYf6kdnCcPSnimiUdI6aDVd+X+G9Vlb7JW/uygrI5mwjl7MhZuYFjcWMvA1qCAz2r
- +OtejiGUoPnjfI5iI+LSZLQFTHGtYgCZcpczlJfzKZPcRqHOl/8NPLXumRES6yI+SBuo
- nqQLjLgHaYFYEN+CrY97L8xfMEe+fPJGMauuwS5mPfyCSGiWAnUggjiycdz7x57zcrQF
- UCGHvrf+Fs/+uGb8LmYtb7wjzCW/eOIqLZCPdifz0HihqgZ3YKEN7yl0maQq+Go7cItG
- XGDA==
-X-Gm-Message-State: AOJu0YwY/qaAakF53guioBChuoHHaHKEWNlOL4MmgUevACsEG8fSVGyt
- iXweSgUPh3D+nHJKOuhmFSv2jR3djvo4nU+k0d6C0EAvcxT9Ag7XvrjX+Hh/Z8idoqArxbudgqm
- mGBKm+ZneuEi5SG87jnwpv0hGfTidRAGHjUTKCBGjSA0ajLe6BQwnH5FjJu6ujwluYMNAoL266H
- WBpsEiZjl+pX1i1HXs2FddNYPjjo/eONxVEqz0
-X-Received: by 2002:a17:90a:c28d:b0:2c9:6278:27bd with SMTP id
- 98e67ed59e1d1-2c962782978mr839175a91.3.1719922981342; 
- Tue, 02 Jul 2024 05:23:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWrIamqccCauKu0MCjaYuuyyVmOitEx8DoVOw7KL+aWfS5feNcdX/VnSsuG7ZbXS81bsPATWv893cRxEhKd7o=
-X-Received: by 2002:a17:90a:c28d:b0:2c9:6278:27bd with SMTP id
- 98e67ed59e1d1-2c962782978mr839165a91.3.1719922980989; Tue, 02 Jul 2024
- 05:23:00 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1719925854; x=1720530654;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=N5S4KKpfKx/swgMSnQIyK11r0SRK6Yk81BAk7irGZfg=;
+ b=QXzYJqsEDE0TYrJsT1b/EODsQ1Yr2w6NSSt8RHXFggjcj0dxpeFtitVv2zrGH/IooF
+ LejwrSk5gdzRbjROnz7LWxu2cDUuBVHH1c4neTL6vxFDfDcYovITxDoUpAliNehD4pUi
+ D5o2/2POmwo7EgeBYhvaNK9cwAGzvV/JeM6s1uDQnJNS+OUIM/B5XMbNYW/adK2rrlRb
+ 5YMyLTavyYdnxBPvIY7ifHphHeaw2mEt+lGZhikcnEKz9WLxA/+WnqsilhFmRMROAX61
+ xOwogR033IHsEP9a2CygDTKo7iWIRu2/v+9ZgQ6e9wM2muKvFqEyFFCpciBRXpnEOmEP
+ zUHA==
+X-Gm-Message-State: AOJu0Yx+005nPleUelpM5xVlX2b4pmWhJzsBXnns1L6WaqXJRB4Cveap
+ 1kc896pUlAOGs0UHJXW9Xo2gpIVq1e+AqPZS1LL+30Yd/dDgY6mkjsenFmSZC2vIfMNFMux2MYP
+ mun8=
+X-Google-Smtp-Source: AGHT+IH15longLV8ZkZllZ5E4q6GeLnKs+MbjjN2ifGqPGKeJ7iBzlESnrLdSdPs0pnF96AN1/zrNg==
+X-Received: by 2002:a05:651c:154c:b0:2ec:5dfc:a64e with SMTP id
+ 38308e7fff4ca-2ee5e2a8a4dmr76943731fa.0.1719925853289; 
+ Tue, 02 Jul 2024 06:10:53 -0700 (PDT)
+Received: from [10.232.133.69] ([88.128.88.9])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-1fac15b890asm83652745ad.301.2024.07.02.06.10.49
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 02 Jul 2024 06:10:52 -0700 (PDT)
+Message-ID: <9b70179d-2bfa-47e3-8ae3-5cbb971bd5c3@suse.com>
+Date: Tue, 2 Jul 2024 15:10:35 +0200
 MIME-Version: 1.0
-References: <20240701-landlock-v1-0-58e9af649a72@suse.com>
- <20240701-landlock-v1-8-58e9af649a72@suse.com>
- <CAEemH2f_Tq0W46x61FokVYwv4sK=8NhwfM5SY-gj1znbGnAmFg@mail.gmail.com>
-In-Reply-To: <CAEemH2f_Tq0W46x61FokVYwv4sK=8NhwfM5SY-gj1znbGnAmFg@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 2 Jul 2024 20:22:48 +0800
-Message-ID: <CAEemH2cM6DMQZ-3j3sQ-0b1zD-rfeaCRTefO00wMnGqYeLn+Pw@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20240417144409.11411-1-andrea.cervesato@suse.de>
+ <ZnllGpZEj6TOsWqB@yuki>
+Content-Language: en-US
+In-Reply-To: <ZnllGpZEj6TOsWqB@yuki>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 08/10] Add landlock04 test
+Subject: Re: [LTP] [PATCH v5] Add stat04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,58 +94,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdWwgMiwgMjAyNCBhdCA0OjAw4oCvUE0gTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5j
-b20+IHdyb3RlOgoKPgo+Cj4gT24gTW9uLCBKdWwgMSwgMjAyNCBhdCAxMTo0NOKAr1BNIEFuZHJl
-YSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5kZT4KPiB3cm90ZToKPgo+PiBGcm9t
-OiBBbmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+Pgo+PiBUaGlz
-IHRlc3QgdmVyaWZpZXMgdGhhdCBhbGwgbGFuZGxvY2sgcnVsZXMgYXJlIHdvcmtpbmcgcHJvcGVy
-bHkuCj4+IFRoZSB3YXkgd2UgZG8gaXQgaXMgdG8gdmVyaWZ5IHRoYXQgYWxsIGRpc2FibGVkIHN5
-c2NhbGxzIGFyZSBub3QKPj4gd29ya2luZyBidXQgdGhlIG9uZSB3ZSBlbmFibGVkIHZpYSBzcGVj
-aWZjIGxhbmRsb2NrIHJ1bGVzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBBbmRyZWEgQ2VydmVzYXRv
-IDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+PiAtLS0KPj4gIHJ1bnRlc3Qvc3lzY2FsbHMg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPj4gIHRlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svLmdpdGlnbm9yZSAgICAgIHwgICAyICsKPj4gIHRlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svTWFrZWZpbGUgICAgICAgIHwgICA1ICsKPj4g
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svbGFuZGxvY2swNC5jICAgIHwgMTQz
-ICsrKysrKysrKwo+PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9sYW5kbG9jay9sYW5kbG9j
-a19leGVjLmMgfCAgIDkgKwo+PiAgLi4uL2tlcm5lbC9zeXNjYWxscy9sYW5kbG9jay9sYW5kbG9j
-a190ZXN0ZXIuaCAgICAgfCAzNTAKPj4gKysrKysrKysrKysrKysrKysrKysrCj4+ICA2IGZpbGVz
-IGNoYW5nZWQsIDUxMCBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9ydW50ZXN0L3N5
-c2NhbGxzIGIvcnVudGVzdC9zeXNjYWxscwo+PiBpbmRleCAxZTJkNjgyZTMuLjlhY2RhZjc2MCAx
-MDA2NDQKPj4gLS0tIGEvcnVudGVzdC9zeXNjYWxscwo+PiArKysgYi9ydW50ZXN0L3N5c2NhbGxz
-Cj4+IEBAIC02ODcsNiArNjg3LDcgQEAga2lsbDEzIGtpbGwxMwo+PiAgbGFuZGxvY2swMSBsYW5k
-bG9jazAxCj4+ICBsYW5kbG9jazAyIGxhbmRsb2NrMDIKPj4gIGxhbmRsb2NrMDMgbGFuZGxvY2sw
-Mwo+PiArbGFuZGxvY2swNCBsYW5kbG9jazA0Cj4+Cj4+ICBsY2hvd24wMSBsY2hvd24wMQo+PiAg
-bGNob3duMDFfMTYgbGNob3duMDFfMTYKPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvbGFuZGxvY2svLmdpdGlnbm9yZQo+PiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbGFuZGxvY2svLmdpdGlnbm9yZQo+PiBpbmRleCBmNzljZDA5MGIuLjRmZThkN2NiYSAxMDA2
-NDQKPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9sYW5kbG9jay8uZ2l0aWdub3Jl
-Cj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svLmdpdGlnbm9yZQo+
-PiBAQCAtMSwzICsxLDUgQEAKPj4gK2xhbmRsb2NrX2V4ZWMKPj4gIGxhbmRsb2NrMDEKPj4gIGxh
-bmRsb2NrMDIKPj4gIGxhbmRsb2NrMDMKPj4gK2xhbmRsb2NrMDQKPj4gZGlmZiAtLWdpdCBhL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svTWFrZWZpbGUKPj4gYi90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL2xhbmRsb2NrL01ha2VmaWxlCj4+IGluZGV4IDRiM2UzZmQ4Zi4uYmRj
-NmJkMmQ0IDEwMDY0NAo+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2xhbmRsb2Nr
-L01ha2VmaWxlCj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGFuZGxvY2svTWFr
-ZWZpbGUKPj4gQEAgLTgsMyArOCw4IEBAIGluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21r
-L3Rlc3RjYXNlcy5tawo+PiAgTERMSUJTICs9IC1sYwo+Pgo+PiAgaW5jbHVkZSAkKHRvcF9zcmNk
-aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawo+PiArCj4+ICsjIHRoZSByZWFz
-b24gd2h5IGxhbmRsb2NrX2V4ZWMgdGVzdCBiaW5hcnkgaXMgc3RhdGljYWxseSBsaW5rZWQsIGlz
-IHRoYXQKPj4gKyMgd2UgY2FuJ3QgcmVhZCBsaWJjIG91dCBvZiB0aGUgc2FuZGJveGVkIGZvbGRl
-ciBvbmNlCj4+IExBTkRMT0NLX0FDQ0VTU19GU19FWEVDVVRFCj4+ICsjIGhhcyBiZWVuIGFjdGl2
-YXRlZAo+PiArbGFuZGxvY2tfZXhlYzogTERMSUJTICs9IC1zdGF0aWMgLWZQSUMKPj4KPgpBbmQs
-IGlmIHdlIGRlY2lkZWQgdG8gYnVpbGQgdGhlIHByb2dyYW0gYXMgc3RhdGljLCB3ZSdkIGJldHRl
-cgphZGRpbmcgZ2xpYmMtc3RhdGljIGludG8gdGhlIGRlcGVuZGVuY3kgbGlzdCwgb3RoZXJ3aXNl
-IGl0IGFsd2F5cwpmYWlsZWQgdG8gbGluayB0aGUgYmluYXJ5IG9uIFJIRUwgZGlzdHJpYnV0aW9u
-cy4KCi0tLSBhL2NpL2ZlZG9yYS5zaAorKysgYi9jaS9mZWRvcmEuc2gKQEAgLTE3LDYgKzE3LDcg
-QEAgJHl1bSBcCiAgICAgICAgbnVtYWN0bC1kZXZlbCBcCiAgICAgICAgbGlidGlycGMgXAogICAg
-ICAgIGxpYnRpcnBjLWRldmVsIFwKKyAgICAgICBsaWJjLXN0YXRpYyBcCiAgICAgICAgcGVybC1K
-U09OIFwKICAgICAgICBwZXJsLWxpYnd3dy1wZXJsIFwKICAgICAgICBwa2ctY29uZmlnIFwKCgoK
-LS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi!
+
+This test is basically a clone of the lstat03 test. I'm wondering if it 
+makes sense to have both, when we already have that one.
+
+Andrea
+
+On 6/24/24 14:22, Cyril Hrubis wrote:
+> Hi!
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * This test checks that stat() executed on file provide the same information
+>> + * of symlink linking to it.
+>> + */
+>> +
+>> +#include <stdlib.h>
+>> +#include "tst_test.h"
+>> +
+>> +static char *tmpdir;
+>> +
+>> +static void run(void)
+>> +{
+>> +	char *symname = "my_symlink0";
+>> +
+>> +	SAFE_SYMLINK(tmpdir, symname);
+>> +
+>> +	struct stat path;
+>> +	struct stat link;
+>> +
+>> +	TST_EXP_PASS(stat(tmpdir, &path));
+>> +	TST_EXP_PASS(stat(symname, &link));
+>> +
+>> +	TST_EXP_EQ_LI(path.st_dev, link.st_dev);
+>> +	TST_EXP_EQ_LI(path.st_mode, link.st_mode);
+>> +	TST_EXP_EQ_LI(path.st_nlink, link.st_nlink);
+>> +	TST_EXP_EQ_LI(path.st_uid, link.st_uid);
+>> +	TST_EXP_EQ_LI(path.st_gid, link.st_gid);
+>> +	TST_EXP_EQ_LI(path.st_size, link.st_size);
+>> +	TST_EXP_EQ_LI(path.st_atime, link.st_atime);
+>> +	TST_EXP_EQ_LI(path.st_mtime, link.st_mtime);
+>> +	TST_EXP_EQ_LI(path.st_ctime, link.st_ctime);
+> Looking at these, most of the would be the same both for the link and
+> the actual target. Maybe we should do some extra work in the test setup
+> to make sure they differ. I would create a file in the temporary
+> directory as a target for the symlink and use chown() to set a different
+> owner and group, we can use utime() to change access and modification
+> time to the beginning of the unix epoch. If we write a megabyte or so to
+> the file the size should differ as well. If we link() the file it's
+> nlink counter should increase. And I suppose that if we create either
+> the file or the symlink on a mounted loop device, it will have different
+> dev number as well.
+>
+> I think that the only part that is not changed easily is the creation
+> time (also called birth time), the rest should be under our control.
+>
+>> +	SAFE_UNLINK(symname);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	tmpdir = tst_get_tmpdir();
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	free(tmpdir);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = run,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.needs_tmpdir = 1,
+>> +};
+>> -- 
+>> 2.35.3
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
