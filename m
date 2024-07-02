@@ -4,124 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D47EC2BD09
-	for <ltp@archiver.kernel.org>; Mon,  1 Jul 2024 15:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41D14C3064D
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 07:30:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DCD383D4029
-	for <ltp@archiver.kernel.org>; Mon,  1 Jul 2024 17:46:04 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DFF263D3EAE
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 09:30:53 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 37C383D3FE1
- for <ltp@lists.linux.it>; Mon,  1 Jul 2024 17:42:58 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id D33D63D10A7
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 09:30:38 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6675720118F
- for <ltp@lists.linux.it>; Mon,  1 Jul 2024 17:42:55 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1AD7C1FB51;
- Mon,  1 Jul 2024 15:42:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1719848574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 525DB6010FD
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 09:30:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1719905434;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=As8ay3HIm5emxm7z55JrjZ4UHlYQ0h3j0G6QPGOqSPg=;
- b=W8PaKJKB09Avmo/dmH6Mkh1oUMTC/u+3fZjkLB2GPNJovRFTnSI+a4NupiODy6jIZL49p8
- Ob6hYhOkDc8SO1EWkJvFYTOenE4oBqR+kfoYM/4THXs/QPLwpbSu3fDrl4qDHCBNOhjYmr
- wuBqwQAGM9iqCrMUDEsQ6xWtCrpG9ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1719848574;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=As8ay3HIm5emxm7z55JrjZ4UHlYQ0h3j0G6QPGOqSPg=;
- b=jBnJm9CmZAacYqUK6iLs7fNbxuDl0Q25clIP6M/dfrKZdFQtUKQigTMvHFjTpboGLHcPqc
- Skka0B/ra2VjqiDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=W8PaKJKB;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=jBnJm9Cm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1719848574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=As8ay3HIm5emxm7z55JrjZ4UHlYQ0h3j0G6QPGOqSPg=;
- b=W8PaKJKB09Avmo/dmH6Mkh1oUMTC/u+3fZjkLB2GPNJovRFTnSI+a4NupiODy6jIZL49p8
- Ob6hYhOkDc8SO1EWkJvFYTOenE4oBqR+kfoYM/4THXs/QPLwpbSu3fDrl4qDHCBNOhjYmr
- wuBqwQAGM9iqCrMUDEsQ6xWtCrpG9ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1719848574;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=As8ay3HIm5emxm7z55JrjZ4UHlYQ0h3j0G6QPGOqSPg=;
- b=jBnJm9CmZAacYqUK6iLs7fNbxuDl0Q25clIP6M/dfrKZdFQtUKQigTMvHFjTpboGLHcPqc
- Skka0B/ra2VjqiDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB7DA13A92;
- Mon,  1 Jul 2024 15:42:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uD5jN33OgmZfCAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 01 Jul 2024 15:42:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 01 Jul 2024 17:42:06 +0200
+ bh=26KJ1xcZA55gMohzs39JjT4xu1lSUjbg/0vsclr3DNo=;
+ b=L6jbNuhM3DZA0fi1UmC2J4pw6xE3PdqulXcy389nXDHrzhbC/2UDAfDobD5hOQNaBONoKN
+ kdpN0rN4GK7w28CrZ5VYuqth61+Jr4tB0XbIsowiMljpTcJyK5q1A/kra7iZIBNU89E0UR
+ t35eTGZnCo29/YGm5fm/SsaXdNySpZU=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-26-025oBK3PM9KUc8jqci8akg-1; Tue, 02 Jul 2024 03:30:32 -0400
+X-MC-Unique: 025oBK3PM9KUc8jqci8akg-1
+Received: by mail-pj1-f69.google.com with SMTP id
+ 98e67ed59e1d1-2c7dc8e6ccdso2784945a91.1
+ for <ltp@lists.linux.it>; Tue, 02 Jul 2024 00:30:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1719905432; x=1720510232;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=26KJ1xcZA55gMohzs39JjT4xu1lSUjbg/0vsclr3DNo=;
+ b=PaBRnCtKgi4wFYhLvQWadhEZ1ZDOkJn3Jh7cuUOAIj8r34HCkYsFRJse+E8BQLjobm
+ y9D99QFmT4V6lD6FE5tKPq1zm3ty40ouU7csex1pPhzCc8KO38Cf6Wd/SviC8BxW96Z4
+ GahpIEgjSn3mTfxU3X+3G4wIqU+lriM6LQ/6mR/b2iY+o2q7XZtbNbrLAm8++yyP3M/r
+ Ifc6fpaDyTSqiyx6uVJAstX/H10Hg1Ecw/EElgOwCAv1sw1CxgAXgRKk5ATRWs/UFrJ9
+ 35qhnLJIdXVumksTZ0bN3P+jMTAC74roMZC6kUohvWnbSjQzuY3VeFY7AYmaSQWFPbYF
+ 2T7Q==
+X-Gm-Message-State: AOJu0Ywisvm5d/N26rsviKL/+GF90ywZkOogH4qL2as9oBpskbvK84va
+ vq73Majw4dKH3XSW2lSBunDv0XC9v8MhvkM9N+7lqz5GvRMjm0xRRkSeSGDzl7hNDWvYthYKDtW
+ Xuhe/eblYgSfHXiZ6+mciFaWT1ynVRNXzwoxa+Z0lOfT8XCCZOWmMaHxlSLvgBaW7hP3mRCG9Ni
+ m0Di/XYzY8cuFf5SWOKTfxQxk=
+X-Received: by 2002:a17:90b:1bc1:b0:2c8:7ea:8f45 with SMTP id
+ 98e67ed59e1d1-2c93d771f4cmr4469155a91.35.1719905429949; 
+ Tue, 02 Jul 2024 00:30:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0wcsDHLlAWNbbEisoh9BMOn70h0n91OxNzVKgsaSvxe0jK+kcYZM8pXyQT+HCxLNVXIwN9/zeSgXD6vLBO44=
+X-Received: by 2002:a17:90b:1bc1:b0:2c8:7ea:8f45 with SMTP id
+ 98e67ed59e1d1-2c93d771f4cmr4469142a91.35.1719905429339; Tue, 02 Jul 2024
+ 00:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <20240701-landlock-v1-1-58e9af649a72@suse.com>
 References: <20240701-landlock-v1-0-58e9af649a72@suse.com>
-In-Reply-To: <20240701-landlock-v1-0-58e9af649a72@suse.com>
-To: ltp@lists.linux.it
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7662;
- i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=U0omUv1OaYCChlqTr9cV14UoTcJ6DOVonEFFqTckFbA=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmgs50uw/IdDn0BNJiWfC/iEcxKKZ90+tnfBxF2
- 7xndpw1hkCJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZoLOdAAKCRDLzBqyILPm
- RhkmC/42Uz8ZhU3Y0mnjqki0J9vILwMQeUmFbcHILkB7r5rFaLMhVI0C0laV0NZj9T48OxgeMhO
- bhLMIcc3dxlFbX2Qmo0VrMYth5ZBIRrNrU+u7bXGJN6XNrLVZ80DIVYXLl/Hl5hwqVuCHBeL70N
- dexZrPjK6N4hMZl3werGwgxT3tiXLo9muiu69xdQkwSlO2v1zlfjXB9CG215WT1Wz5I7Rqv4gbR
- F6E+k+uFySuJj5fTbft10xwBpu1m5Ck2Bcus5vTvEyHE2mu6EpE+hwbK6ZPhjhgx9ScWjJ4gJtA
- WPhaEQeiWLiE5Pre/ftWgiqhXE4gcxvyJPQvKCX2vGNxW2t/iDxFOUIrO1wOt7ySbX7VbaolD5V
- H8UMfum2ELKfInVxLyW6gjNVom62svNPPk+9FVDv/nY6i+rAGOeJEn6w+2fVuiPHdBfjHRnGLJQ
- 0KYoOOxqwc277ISRSjm636f11dOvsGn2dVeAwAV432j7w9CaIUm5MhmspA6PvT5uoPHX4=
-X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
- fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Rspamd-Queue-Id: 1AD7C1FB51
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:email];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ <20240701-landlock-v1-1-58e9af649a72@suse.com>
+In-Reply-To: <20240701-landlock-v1-1-58e9af649a72@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Jul 2024 15:30:17 +0800
+Message-ID: <CAEemH2d3D_CE4QRBxZ8G7Uy_S-nhgJUm=jbF5XC8JOn1D8W-xg@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 01/10] Add landlock syscalls definitions
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 01/10] Add landlock syscalls definitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,245 +92,154 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- include/lapi/syscalls/aarch64.in   | 3 +++
- include/lapi/syscalls/arc.in       | 3 +++
- include/lapi/syscalls/arm.in       | 3 +++
- include/lapi/syscalls/hppa.in      | 3 +++
- include/lapi/syscalls/i386.in      | 3 +++
- include/lapi/syscalls/ia64.in      | 3 +++
- include/lapi/syscalls/mips_n32.in  | 3 +++
- include/lapi/syscalls/mips_n64.in  | 3 +++
- include/lapi/syscalls/mips_o32.in  | 3 +++
- include/lapi/syscalls/powerpc.in   | 3 +++
- include/lapi/syscalls/powerpc64.in | 3 +++
- include/lapi/syscalls/s390.in      | 3 +++
- include/lapi/syscalls/s390x.in     | 3 +++
- include/lapi/syscalls/sh.in        | 3 +++
- include/lapi/syscalls/sparc.in     | 3 +++
- include/lapi/syscalls/sparc64.in   | 3 +++
- include/lapi/syscalls/x86_64.in    | 3 +++
- 17 files changed, 51 insertions(+)
-
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 2cb6c2d87..3e7797718 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -296,5 +296,8 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-index 3e2ee9061..7fde1d263 100644
---- a/include/lapi/syscalls/arc.in
-+++ b/include/lapi/syscalls/arc.in
-@@ -316,4 +316,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 7bdbca533..693644f83 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -394,4 +394,7 @@ pidfd_getfd (__NR_SYSCALL_BASE+438)
- faccessat2 (__NR_SYSCALL_BASE+439)
- epoll_pwait2 (__NR_SYSCALL_BASE+441)
- quotactl_fd (__NR_SYSCALL_BASE+443)
-+landlock_create_ruleset (__NR_SYSCALL_BASE+444)
-+landlock_add_rule (__NR_SYSCALL_BASE+445)
-+landlock_restrict_self (__NR_SYSCALL_BASE+446)
- futex_waitv (__NR_SYSCALL_BASE+449)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index 8ebdafafb..60c02aff2 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -43,4 +43,7 @@ close_range 436
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 1472631c4..31ec1ecb2 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -430,4 +430,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 0ea6e9722..2e56da7f9 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -343,4 +343,7 @@ pidfd_getfd 1462
- faccessat2 1463
- epoll_pwait2 1465
- quotactl_fd 1467
-+landlock_create_ruleset 1468
-+landlock_add_rule 1469
-+landlock_restrict_self 1470
- futex_waitv 1473
-diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
-index e818c9d92..5f0fe65eb 100644
---- a/include/lapi/syscalls/mips_n32.in
-+++ b/include/lapi/syscalls/mips_n32.in
-@@ -370,4 +370,7 @@ process_madvise 6440
- epoll_pwait2 6441
- mount_setattr 6442
- quotactl_fd 6443
-+landlock_create_ruleset 6444
-+landlock_add_rule 6445
-+landlock_restrict_self 6446
- futex_waitv 6449
-diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
-index 6e15f43b3..f81c60e66 100644
---- a/include/lapi/syscalls/mips_n64.in
-+++ b/include/lapi/syscalls/mips_n64.in
-@@ -346,4 +346,7 @@ process_madvise 5440
- epoll_pwait2 5441
- mount_setattr 5442
- quotactl_fd 5443
-+landlock_create_ruleset 5444
-+landlock_add_rule 5445
-+landlock_restrict_self 5446
- futex_waitv 5449
-diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
-index 921d5d331..c2beffb75 100644
---- a/include/lapi/syscalls/mips_o32.in
-+++ b/include/lapi/syscalls/mips_o32.in
-@@ -416,4 +416,7 @@ process_madvise 4440
- epoll_pwait2 4441
- mount_setattr 4442
- quotactl_fd 4443
-+landlock_create_ruleset 4444
-+landlock_add_rule 4445
-+landlock_restrict_self 4446
- futex_waitv 4449
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 545d9d3d6..5460e4197 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -423,4 +423,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 545d9d3d6..5460e4197 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -423,4 +423,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 7213ac5f8..275b27f47 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -410,4 +410,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 879012e2b..c200d02b2 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -358,4 +358,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 7d5192a27..6f482a77b 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -404,4 +404,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 91d2fb1c2..7181e80a0 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -409,4 +409,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 1f2fc59b7..c96ab2021 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -374,4 +374,7 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index dc61aa56e..3082ca110 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -351,6 +351,9 @@ pidfd_getfd 438
- faccessat2 439
- epoll_pwait2 441
- quotactl_fd 443
-+landlock_create_ruleset 444
-+landlock_add_rule 445
-+landlock_restrict_self 446
- futex_waitv 449
- rt_sigaction 512
- rt_sigreturn 513
-
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBKdWwgMSwgMjAyNCBhdCAxMTo0NuKAr1BNIEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJl
+YS5jZXJ2ZXNhdG9Ac3VzZS5kZT4Kd3JvdGU6Cgo+IEZyb206IEFuZHJlYSBDZXJ2ZXNhdG8gPGFu
+ZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZWEgQ2VydmVz
+YXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+CgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8
+bGl3YW5nQHJlZGhhdC5jb20+CgoKLS0tCj4gIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9hYXJjaDY0
+LmluICAgfCAzICsrKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJjLmluICAgICAgIHwgMyAr
+KysKPiAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2FybS5pbiAgICAgICB8IDMgKysrCj4gIGluY2x1
+ZGUvbGFwaS9zeXNjYWxscy9ocHBhLmluICAgICAgfCAzICsrKwo+ICBpbmNsdWRlL2xhcGkvc3lz
+Y2FsbHMvaTM4Ni5pbiAgICAgIHwgMyArKysKPiAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2lhNjQu
+aW4gICAgICB8IDMgKysrCj4gIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX24zMi5pbiAgfCAz
+ICsrKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlwc19uNjQuaW4gIHwgMyArKysKPiAgaW5j
+bHVkZS9sYXBpL3N5c2NhbGxzL21pcHNfbzMyLmluICB8IDMgKysrCj4gIGluY2x1ZGUvbGFwaS9z
+eXNjYWxscy9wb3dlcnBjLmluICAgfCAzICsrKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93
+ZXJwYzY0LmluIHwgMyArKysKPiAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3MzOTAuaW4gICAgICB8
+IDMgKysrCj4gIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkweC5pbiAgICAgfCAzICsrKwo+ICBp
+bmNsdWRlL2xhcGkvc3lzY2FsbHMvc2guaW4gICAgICAgIHwgMyArKysKPiAgaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL3NwYXJjLmluICAgICB8IDMgKysrCj4gIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9z
+cGFyYzY0LmluICAgfCAzICsrKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMveDg2XzY0LmluICAg
+IHwgMyArKysKPiAgMTcgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAt
+LWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hYXJjaDY0LmluIGIvaW5jbHVkZS9sYXBpL3N5
+c2NhbGxzLwo+IGFhcmNoNjQuaW4KPiBpbmRleCAyY2I2YzJkODcuLjNlNzc5NzcxOCAxMDA2NDQK
+PiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYWFyY2g2NC5pbgo+ICsrKyBiL2luY2x1ZGUv
+bGFwaS9zeXNjYWxscy9hYXJjaDY0LmluCj4gQEAgLTI5Niw1ICsyOTYsOCBAQCBwaWRmZF9nZXRm
+ZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9m
+ZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0Cj4gK2xhbmRsb2NrX2FkZF9ydWxl
+IDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIDQ0Ngo+ICBmdXRleF93YWl0diA0NDkKPiAg
+X3N5c2N0bCAxMDc4Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hcmMuaW4g
+Yi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJjLmluCj4gaW5kZXggM2UyZWU5MDYxLi43ZmRlMWQy
+NjMgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2FyYy5pbgo+ICsrKyBiL2lu
+Y2x1ZGUvbGFwaS9zeXNjYWxscy9hcmMuaW4KPiBAQCAtMzE2LDQgKzMxNiw3IEBAIHBpZGZkX2dl
+dGZkIDQzOAo+ICBmYWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3Rs
+X2ZkIDQ0Mwo+ICtsYW5kbG9ja19jcmVhdGVfcnVsZXNldCA0NDQKPiArbGFuZGxvY2tfYWRkX3J1
+bGUgNDQ1Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0X3NlbGYgNDQ2Cj4gIGZ1dGV4X3dhaXR2IDQ0OQo+
+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJtLmluIGIvaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL2FybS5pbgo+IGluZGV4IDdiZGJjYTUzMy4uNjkzNjQ0ZjgzIDEwMDY0NAo+IC0t
+LSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hcm0uaW4KPiArKysgYi9pbmNsdWRlL2xhcGkvc3lz
+Y2FsbHMvYXJtLmluCj4gQEAgLTM5NCw0ICszOTQsNyBAQCBwaWRmZF9nZXRmZCAoX19OUl9TWVND
+QUxMX0JBU0UrNDM4KQo+ICBmYWNjZXNzYXQyIChfX05SX1NZU0NBTExfQkFTRSs0MzkpCj4gIGVw
+b2xsX3B3YWl0MiAoX19OUl9TWVNDQUxMX0JBU0UrNDQxKQo+ICBxdW90YWN0bF9mZCAoX19OUl9T
+WVNDQUxMX0JBU0UrNDQzKQo+ICtsYW5kbG9ja19jcmVhdGVfcnVsZXNldCAoX19OUl9TWVNDQUxM
+X0JBU0UrNDQ0KQo+ICtsYW5kbG9ja19hZGRfcnVsZSAoX19OUl9TWVNDQUxMX0JBU0UrNDQ1KQo+
+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIChfX05SX1NZU0NBTExfQkFTRSs0NDYpCj4gIGZ1dGV4
+X3dhaXR2IChfX05SX1NZU0NBTExfQkFTRSs0NDkpCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFw
+aS9zeXNjYWxscy9ocHBhLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2hwcGEuaW4KPiBpbmRl
+eCA4ZWJkYWZhZmIuLjYwYzAyYWZmMiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2Fs
+bHMvaHBwYS5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9ocHBhLmluCj4gQEAgLTQz
+LDQgKzQzLDcgQEAgY2xvc2VfcmFuZ2UgNDM2Cj4gIGZhY2Nlc3NhdDIgNDM5Cj4gIGVwb2xsX3B3
+YWl0MiA0NDEKPiAgcXVvdGFjdGxfZmQgNDQzCj4gK2xhbmRsb2NrX2NyZWF0ZV9ydWxlc2V0IDQ0
+NAo+ICtsYW5kbG9ja19hZGRfcnVsZSA0NDUKPiArbGFuZGxvY2tfcmVzdHJpY3Rfc2VsZiA0NDYK
+PiAgZnV0ZXhfd2FpdHYgNDQ5Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9p
+Mzg2LmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2kzODYuaW4KPiBpbmRleCAxNDcyNjMxYzQu
+LjMxZWMxZWNiMiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvaTM4Ni5pbgo+
+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9pMzg2LmluCj4gQEAgLTQzMCw0ICs0MzAsNyBA
+QCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+
+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0Cj4gK2xhbmRs
+b2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIDQ0Ngo+ICBmdXRleF93
+YWl0diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2lhNjQuaW4gYi9p
+bmNsdWRlL2xhcGkvc3lzY2FsbHMvaWE2NC5pbgo+IGluZGV4IDBlYTZlOTcyMi4uMmU1NmRhN2Y5
+IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9pYTY0LmluCj4gKysrIGIvaW5j
+bHVkZS9sYXBpL3N5c2NhbGxzL2lhNjQuaW4KPiBAQCAtMzQzLDQgKzM0Myw3IEBAIHBpZGZkX2dl
+dGZkIDE0NjIKPiAgZmFjY2Vzc2F0MiAxNDYzCj4gIGVwb2xsX3B3YWl0MiAxNDY1Cj4gIHF1b3Rh
+Y3RsX2ZkIDE0NjcKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgMTQ2OAo+ICtsYW5kbG9ja19h
+ZGRfcnVsZSAxNDY5Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0X3NlbGYgMTQ3MAo+ICBmdXRleF93YWl0
+diAxNDczCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX24zMi5pbiBi
+L2luY2x1ZGUvbGFwaS9zeXNjYWxscy8KPiBtaXBzX24zMi5pbgo+IGluZGV4IGU4MThjOWQ5Mi4u
+NWYwZmU2NWViIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX24zMi5p
+bgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX24zMi5pbgo+IEBAIC0zNzAsNCAr
+MzcwLDcgQEAgcHJvY2Vzc19tYWR2aXNlIDY0NDAKPiAgZXBvbGxfcHdhaXQyIDY0NDEKPiAgbW91
+bnRfc2V0YXR0ciA2NDQyCj4gIHF1b3RhY3RsX2ZkIDY0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1
+bGVzZXQgNjQ0NAo+ICtsYW5kbG9ja19hZGRfcnVsZSA2NDQ1Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0
+X3NlbGYgNjQ0Ngo+ICBmdXRleF93YWl0diA2NDQ5Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFw
+aS9zeXNjYWxscy9taXBzX242NC5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy8KPiBtaXBzX242
+NC5pbgo+IGluZGV4IDZlMTVmNDNiMy4uZjgxYzYwZTY2IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUv
+bGFwaS9zeXNjYWxscy9taXBzX242NC5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9t
+aXBzX242NC5pbgo+IEBAIC0zNDYsNCArMzQ2LDcgQEAgcHJvY2Vzc19tYWR2aXNlIDU0NDAKPiAg
+ZXBvbGxfcHdhaXQyIDU0NDEKPiAgbW91bnRfc2V0YXR0ciA1NDQyCj4gIHF1b3RhY3RsX2ZkIDU0
+NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNTQ0NAo+ICtsYW5kbG9ja19hZGRfcnVsZSA1
+NDQ1Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0X3NlbGYgNTQ0Ngo+ICBmdXRleF93YWl0diA1NDQ5Cj4g
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX28zMi5pbiBiL2luY2x1ZGUv
+bGFwaS9zeXNjYWxscy8KPiBtaXBzX28zMi5pbgo+IGluZGV4IDkyMWQ1ZDMzMS4uYzJiZWZmYjc1
+IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX28zMi5pbgo+ICsrKyBi
+L2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX28zMi5pbgo+IEBAIC00MTYsNCArNDE2LDcgQEAg
+cHJvY2Vzc19tYWR2aXNlIDQ0NDAKPiAgZXBvbGxfcHdhaXQyIDQ0NDEKPiAgbW91bnRfc2V0YXR0
+ciA0NDQyCj4gIHF1b3RhY3RsX2ZkIDQ0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0
+NAo+ICtsYW5kbG9ja19hZGRfcnVsZSA0NDQ1Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0X3NlbGYgNDQ0
+Ngo+ICBmdXRleF93YWl0diA0NDQ5Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxs
+cy9wb3dlcnBjLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzLwo+IHBvd2VycGMuaW4KPiBpbmRl
+eCA1NDVkOWQzZDYuLjU0NjBlNDE5NyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2Fs
+bHMvcG93ZXJwYy5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9wb3dlcnBjLmluCj4g
+QEAgLTQyMyw0ICs0MjMsNyBAQCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAg
+ZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1
+bGVzZXQgNDQ0Cj4gK2xhbmRsb2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9z
+ZWxmIDQ0Ngo+ICBmdXRleF93YWl0diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5
+c2NhbGxzL3Bvd2VycGM2NC5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy8KPiBwb3dlcnBjNjQu
+aW4KPiBpbmRleCA1NDVkOWQzZDYuLjU0NjBlNDE5NyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xh
+cGkvc3lzY2FsbHMvcG93ZXJwYzY0LmluCj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3Bv
+d2VycGM2NC5pbgo+IEBAIC00MjMsNCArNDIzLDcgQEAgcGlkZmRfZ2V0ZmQgNDM4Cj4gIGZhY2Nl
+c3NhdDIgNDM5Cj4gIGVwb2xsX3B3YWl0MiA0NDEKPiAgcXVvdGFjdGxfZmQgNDQzCj4gK2xhbmRs
+b2NrX2NyZWF0ZV9ydWxlc2V0IDQ0NAo+ICtsYW5kbG9ja19hZGRfcnVsZSA0NDUKPiArbGFuZGxv
+Y2tfcmVzdHJpY3Rfc2VsZiA0NDYKPiAgZnV0ZXhfd2FpdHYgNDQ5Cj4gZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkwLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3MzOTAu
+aW4KPiBpbmRleCA3MjEzYWM1ZjguLjI3NWIyN2Y0NyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xh
+cGkvc3lzY2FsbHMvczM5MC5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkwLmlu
+Cj4gQEAgLTQxMCw0ICs0MTAsNyBAQCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkK
+PiAgZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRl
+X3J1bGVzZXQgNDQ0Cj4gK2xhbmRsb2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmlj
+dF9zZWxmIDQ0Ngo+ICBmdXRleF93YWl0diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL3MzOTB4LmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzLwo+IHMzOTB4LmluCj4g
+aW5kZXggODc5MDEyZTJiLi5jMjAwZDAyYjIgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5
+c2NhbGxzL3MzOTB4LmluCj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3MzOTB4LmluCj4g
+QEAgLTM1OCw0ICszNTgsNyBAQCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAg
+ZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1
+bGVzZXQgNDQ0Cj4gK2xhbmRsb2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9z
+ZWxmIDQ0Ngo+ICBmdXRleF93YWl0diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5
+c2NhbGxzL3NoLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmluCj4gaW5kZXggN2Q1MTky
+YTI3Li42ZjQ4MmE3N2IgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmlu
+Cj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmluCj4gQEAgLTQwNCw0ICs0MDQsNyBA
+QCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+
+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0Cj4gK2xhbmRs
+b2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIDQ0Ngo+ICBmdXRleF93
+YWl0diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NwYXJjLmluIGIv
+aW5jbHVkZS9sYXBpL3N5c2NhbGxzLwo+IHNwYXJjLmluCj4gaW5kZXggOTFkMmZiMWMyLi43MTgx
+ZTgwYTAgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NwYXJjLmluCj4gKysr
+IGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NwYXJjLmluCj4gQEAgLTQwOSw0ICs0MDksNyBAQCBw
+aWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+ICBx
+dW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0Cj4gK2xhbmRsb2Nr
+X2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIDQ0Ngo+ICBmdXRleF93YWl0
+diA0NDkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NwYXJjNjQuaW4gYi9p
+bmNsdWRlL2xhcGkvc3lzY2FsbHMvCj4gc3BhcmM2NC5pbgo+IGluZGV4IDFmMmZjNTliNy4uYzk2
+YWIyMDIxIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYzY0LmluCj4g
+KysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NwYXJjNjQuaW4KPiBAQCAtMzc0LDQgKzM3NCw3
+IEBAIHBpZGZkX2dldGZkIDQzOAo+ICBmYWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQx
+Cj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+ICtsYW5kbG9ja19jcmVhdGVfcnVsZXNldCA0NDQKPiArbGFu
+ZGxvY2tfYWRkX3J1bGUgNDQ1Cj4gK2xhbmRsb2NrX3Jlc3RyaWN0X3NlbGYgNDQ2Cj4gIGZ1dGV4
+X3dhaXR2IDQ0OQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMveDg2XzY0Lmlu
+IGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzLwo+IHg4Nl82NC5pbgo+IGluZGV4IGRjNjFhYTU2ZS4u
+MzA4MmNhMTEwIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy94ODZfNjQuaW4K
+PiArKysgYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMveDg2XzY0LmluCj4gQEAgLTM1MSw2ICszNTEs
+OSBAQCBwaWRmZF9nZXRmZCA0MzgKPiAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0
+MQo+ICBxdW90YWN0bF9mZCA0NDMKPiArbGFuZGxvY2tfY3JlYXRlX3J1bGVzZXQgNDQ0Cj4gK2xh
+bmRsb2NrX2FkZF9ydWxlIDQ0NQo+ICtsYW5kbG9ja19yZXN0cmljdF9zZWxmIDQ0Ngo+ICBmdXRl
+eF93YWl0diA0NDkKPiAgcnRfc2lnYWN0aW9uIDUxMgo+ICBydF9zaWdyZXR1cm4gNTEzCj4KPiAt
+LQo+IDIuNDMuMAo+Cj4KPiAtLQo+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
+bnV4Lml0L2xpc3RpbmZvL2x0cAo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGlu
+ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
