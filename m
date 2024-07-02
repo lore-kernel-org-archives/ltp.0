@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D718C3065C
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 09:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1719913953; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=JPsD2srlYZy0Gud2mxPB+5Ivu4zJ+2Zs4vaKvu5JeS0=;
- b=Bt/EU8mXk7Y44pFRMzL+zhehTSvJmn8S9XC7JVepkFtb5G4T5cmfqzvxciWmZLAUU3JUp
- VU1WAoFKLP14hqRacYVg+FW4aIeNMvmxb4GcrhNXupozLHcZcm7xxEjs4nCVRq5ylIRbtDc
- xcJRsLbvHSPKsX21YS9WC8zLJGOYyds=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E7A9C30658
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 09:54:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D8F33D3EBD
-	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 11:52:33 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CD6093D3EC4
+	for <ltp@archiver.kernel.org>; Tue,  2 Jul 2024 11:54:55 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7E5B43D3E93
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 11:52:12 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 35D363D3EAD
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 11:54:42 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2BECC1009BE6
- for <ltp@lists.linux.it>; Tue,  2 Jul 2024 11:52:11 +0200 (CEST)
-Received: by mail-lj1-x234.google.com with SMTP id
- 38308e7fff4ca-2ec1ac1aed2so46448641fa.3
- for <ltp@lists.linux.it>; Tue, 02 Jul 2024 02:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1719913930; x=1720518730; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=jErwJfxgsbdcwDuSWpz6tl3SYkizBamcwITgPpfZ6LA=;
- b=Ik+kDk89qcAd5aZ+4H5qbPxXuKUXPQvYucRCVzJ43PSRl5eti/YVbnQyFGvQVp21qx
- pg78FfgDD2I3nxeYxaBnNJdM1HjjxbNTNBhBj4Iaygn0ReAmeuaEi4S5mZB1DdNdf02D
- 7apMRWRzg04i8GCemDY8R+D8EwXTmm/Mni38cTcNbaEngg7NJnUhNDkR0+egrVUtSqUG
- Ov5sA3Sd7yrFdhsSEp8Gtt3TQ/mHcCGe+wE6UI2Bm9Yf4M9vwll6YOJE4kc36gIuoBNs
- xEX+dBiosxlEfEnMMZTmfR6KTEjrcwG55Qii6HOxtIZHzF+PQBLFeaEdBAGLGpNNnFi9
- F1Sw==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 51F682081B6
+ for <ltp@lists.linux.it>; Tue,  2 Jul 2024 11:54:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1719914078;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QxovMaYxD13vuYDdzcCT0nHSwCjr+Ja4FwUJEohz9oU=;
+ b=QdhFV8+MwJ7QFUiutZ99W2CfqXTeCPSVUW0IwYiNoho4z5or/zfAATWKz/OMvge4m54oet
+ 7Fnn6zUwCfPyHpWfqkAocYrFDuPL0mazGJ7QR/WYFoN73hkCTR+OMDBOuCmeWhQQWxZt1r
+ aArNj4rw1MD6ZEPSj5rOLmgeTov5Rgg=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-364-P88wv1zWON6O6edEY-X60Q-1; Tue, 02 Jul 2024 05:54:32 -0400
+X-MC-Unique: P88wv1zWON6O6edEY-X60Q-1
+Received: by mail-pj1-f69.google.com with SMTP id
+ 98e67ed59e1d1-2c7a8fa8013so3679690a91.2
+ for <ltp@lists.linux.it>; Tue, 02 Jul 2024 02:54:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1719913930; x=1720518730;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=jErwJfxgsbdcwDuSWpz6tl3SYkizBamcwITgPpfZ6LA=;
- b=QHIl8bCk47eE4e1jBOKbVP2s1Ahb9DkuOdnZ3NhSrIOzx/SsyT23hT96qIwKXDBkja
- 0uzzOUtbAxaSnvR4sa9vlCwwSJh5///aRLqX9ucpXLPcNTzqgSwTkKZ8M5UmogNX5siO
- RS9yDJRxUEs0biDrOGovye+oEHRipzwjuQGxGf0p9hwhiWY3qqdcE6619evL848j8whG
- T2KTnCF5vdOq3k0dHgd76jJXIC8yI2RutjKeNsJdONVm5Eta6PJlmdAnZuzh2+GOQS1v
- 4vOwc6TD2tXDPCTpj+YgYGUzZ+a525xE22ScO3AK7PRGxYlWAPlvoM1jm5dyMJku8fXa
- 2lsQ==
-X-Gm-Message-State: AOJu0YxHtqTDgAjmQTPd8Lr6329iM34BGXPjFBXZ6Iji2xRupTRFbtvk
- f1y0Q8Ea+5E/Tu0PHUWUWRbm4jJpYATBg/XFw0BN+yZEnbk/7KMEtD0+lUtudJ8=
-X-Google-Smtp-Source: AGHT+IEdLSfgOXXhcWMrd4ht8uzHeHJLC9a06HXt5eAb7pcvVZ8bLlVQeKbpR1ncFkN+ILGmyyW8Fg==
-X-Received: by 2002:a2e:a786:0:b0:2ec:5075:83d2 with SMTP id
- 38308e7fff4ca-2ee5e392a0emr57716391fa.22.1719913929862; 
- Tue, 02 Jul 2024 02:52:09 -0700 (PDT)
-Received: from [10.232.133.69] ([88.128.88.138])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-1fac10c8f1asm79995995ad.48.2024.07.02.02.52.07
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 02 Jul 2024 02:52:09 -0700 (PDT)
-Message-ID: <a5905244-ec46-4e5f-9f1b-dbf641a2535a@suse.com>
-Date: Tue, 2 Jul 2024 11:51:53 +0200
+ d=1e100.net; s=20230601; t=1719914071; x=1720518871;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=QxovMaYxD13vuYDdzcCT0nHSwCjr+Ja4FwUJEohz9oU=;
+ b=L32ZaS6mJcX+fJaSuImfgYA+zSyYXQU6BvslWguxCVAECOh4uW1DTrdJ3m208qmmz0
+ gqpM7rseJxePmAZ5xsNCyklOUQU59Su5+ZNucDlfoM9bzUQZsqp4VofIcXArpmDuS2JJ
+ JyEeByayzJqhFFlOvqHh62ZCuKDHkfmpfNfNT1SC/fGMOKKBdR4m0c0PFHMUMQvStqE7
+ 4hp4/sA/y7Nac3rhEiT5oKhutYzHOenuIKnM1ssRpK8J1LKFvJcj8ozwA2s3WYv741CH
+ JcjNAUXrgYBAbqqAJUq/ao6iX+5HQRDzW7sWEydelYWWjrNHLQvNYZL21qevWrmMPPPj
+ Ratw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVOgoq2trKeTeTZzF3pzPIg71OiNqwLcU7B14KVfMfm39elyoQuuZbTDm0J5qthlfLGqYGGqAEGgdM5o7ngK3tTgJY=
+X-Gm-Message-State: AOJu0Yz15HOSpW3we5zXv9inX6zXHxHX/7nNfJMqg7LTiIlBB+MbOHmO
+ s6+PVxYnskB9/phe/42wYrX7S86Ag0lchGCcIEvZdNwAvij1nS6jgDyAkfh26TUapwHP9spdVW+
+ ACYolBh97Bz6Bh2VaRxpNUtPRSso9/5YD9/V+hpE9FkxwuNhsq/4gmJ53AmW1mwmEhkKAgAFejx
+ GPsHb3vtxY8RgnbNIMFgDDsQQ=
+X-Received: by 2002:a17:90a:b112:b0:2c4:b32f:4fd2 with SMTP id
+ 98e67ed59e1d1-2c93d714e83mr6229940a91.29.1719914070948; 
+ Tue, 02 Jul 2024 02:54:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFk0G06NiARGPrqD2F5DvJGvPPuAbxNddLhj3o9HUrI4hj9UAc7nl4CNWAdmDnLD3mPSar6n6+r6WPxtB0v/Us=
+X-Received: by 2002:a17:90a:b112:b0:2c4:b32f:4fd2 with SMTP id
+ 98e67ed59e1d1-2c93d714e83mr6229930a91.29.1719914070456; Tue, 02 Jul 2024
+ 02:54:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240419123137.6731-1-andrea.cervesato@suse.de>
- <Znl4ozB8fGrAcvtD@yuki>
-Content-Language: en-US
-In-Reply-To: <Znl4ozB8fGrAcvtD@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <20240701-landlock-v1-0-58e9af649a72@suse.com>
+ <20240701-landlock-v1-5-58e9af649a72@suse.com>
+ <CAEemH2esa-BzXw5nqQRiR+Gq05YpFKUMnZmxoix3tqCcwXTqbQ@mail.gmail.com>
+ <CAEemH2ffXRAgdWm1UZhU6E7zhaHU7qX9w3Rgox2DzD=1FUA+rw@mail.gmail.com>
+ <d6278557-4839-4c8b-8056-3e2b1201f60b@suse.com>
+In-Reply-To: <d6278557-4839-4c8b-8056-3e2b1201f60b@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Jul 2024 17:54:17 +0800
+Message-ID: <CAEemH2egCksmZ1+Y4j-DPV2eqWwK4mPokyr2QbMKV56BU3t+kg@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Add lstat03 test
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 05/10] Add landlock01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,308 +96,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Andrea Cervesato <andrea.cervesato@suse.com> wrote:
 
-On 6/24/24 15:46, Cyril Hrubis wrote:
-> Hi!
->> diff --git a/testcases/kernel/syscalls/lstat/.gitignore b/testcases/kernel/syscalls/lstat/.gitignore
->> index a497a445f..72cba871f 100644
->> --- a/testcases/kernel/syscalls/lstat/.gitignore
->> +++ b/testcases/kernel/syscalls/lstat/.gitignore
->> @@ -2,3 +2,5 @@
->>   /lstat01_64
->>   /lstat02
->>   /lstat02_64
->> +/lstat03
->> +/lstat03_64
->> diff --git a/testcases/kernel/syscalls/lstat/lstat03.c b/testcases/kernel/syscalls/lstat/lstat03.c
->> new file mode 100644
->> index 000000000..af852169f
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/lstat/lstat03.c
->> @@ -0,0 +1,204 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
->> + *    Author: David Fenner, Jon Hendrickson
->> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
->> + */
->> +
->> +/*\
->> + * [Description]
->> + *
->> + * This test verifies that lstat() provides correct information according
->> + * with device, access time, block size, ownership, etc.
->> + * The implementation provides a set of tests which are specific for each one
->> + * of the `struct stat` used to read file and symlink information.
->> + */
->> +
->> +#include "tst_test.h"
->> +
->> +#define MNTPOINT "mntpoint"
->> +
->> +static void test_dev(void)
->> +{
->> +	char *filename = "file_dev";
->> +	char *symname = MNTPOINT"/sym_dev";
->> +
->> +	tst_res(TINFO, "Test symlink device");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
->> +	SAFE_SYMLINK(filename, symname);
-> I suppose that I missed part of the discussion, but why isn't it
-> possible to create a single file that has as many things different as
-> possible in the test setup and simply use it in all tests?
->
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EXPR(path.st_dev != link.st_dev, "path.st_dev != link.st_dev");
->> +	TST_EXP_EXPR(path.st_ino != link.st_ino, "path.st_ino != link.st_ino");
-> Hmm, the TST_EXP_EXPR() does not seem to do the stringification as the
-> rest of the macros and we have to repeat the arguments here. I suppose
-> that we need:
->
-> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-> index 22b39fb14..5e83eeaca 100644
-> --- a/include/tst_test_macros.h
-> +++ b/include/tst_test_macros.h
-> @@ -340,8 +340,9 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
->                          &tst_exp_err__, 1, ##__VA_ARGS__);                     \
->          } while (0)
->   
-> -#define TST_EXP_EXPR(EXPR, FMT, ...)                                           \
-> -       tst_res_(__FILE__, __LINE__, (EXPR) ? TPASS : TFAIL, "Expect: " FMT, ##__VA_ARGS__);
-> +#define TST_EXP_EXPR(EXPR, ...)                                                    \
-> +       tst_res_(__FILE__, __LINE__, (EXPR) ? TPASS : TFAIL, "Expect: "     \
-> +                TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, #EXPR), __VA_ARGS__))
->   
->   #define TST_EXP_EQ_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS) do {\
->          TYPE tst_tmp_a__ = VAL_A; \
-> diff --git a/testcases/kernel/syscalls/fork/fork04.c b/testcases/kernel/syscalls/fork/fork04.c
-> index b0c6bebe0..413cd5eb4 100644
-> --- a/testcases/kernel/syscalls/fork/fork04.c
-> +++ b/testcases/kernel/syscalls/fork/fork04.c
-> @@ -29,7 +29,7 @@ static void run_child(void)
->   
->          TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
->                  "%s environ variable has been inherited by the child",
-> -               ENV_KEY)
-> +               ENV_KEY);
->   
->          tst_res(TINFO, "Unset %s environ variable inside child", ENV_KEY);
->   
-> @@ -72,7 +72,7 @@ static void run(void)
->          } else {
->                  TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
->                          "%s environ variable is still present inside parent",
-> -                       ENV_KEY)
-> +                       ENV_KEY);
->          }
->   
->          TST_CHECKPOINT_WAKE_AND_WAIT(0);
-> @@ -85,7 +85,7 @@ static void run(void)
->          else {
->                  TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
->                          "%s environ variable didn't change inside parent",
-> -                       ENV_KEY)
-> +                       ENV_KEY);
->          }
->   }
->
->
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void test_nlink(void)
->> +{
->> +	char *filename = "file_nlink";
->> +	char *symname = "sym_nlink";
->> +
->> +	tst_res(TINFO, "Test symlink hard link");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
-> We should link the filename to a different name here.
->
->> +	SAFE_SYMLINK(filename, symname);
->> +
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EQ_LI(path.st_nlink, link.st_nlink);
-> And then this would be actually different, which is what we should test
-> for.
-Indeed, this is the case of link(), not symlink(). Since we are testing 
-symlink syscall, I will remove this part of the test.
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void test_ownership(void)
->> +{
->> +	char *filename = "file_all";
->> +	char *symname = "sym_ownership";
->> +
->> +	tst_res(TINFO, "Test symlink ownership");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
->> +	SAFE_SYMLINK(filename, symname);
->> +
->> +	SAFE_CHOWN(symname, 1000, 1000);
->> +
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EXPR(path.st_uid != link.st_uid, "path.st_uid != link.st_uid");
->> +	TST_EXP_EXPR(path.st_gid != link.st_gid, "path.st_gid != link.st_gid");
->> +
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void test_filesize(void)
->> +{
->> +	char *filename = "file_size";
->> +	char *symname = "sym_size";
->> +	int fd;
->> +
->> +	tst_res(TINFO, "Test symlink filesize");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
->> +
->> +	fd = SAFE_OPEN(filename, O_WRONLY, 0777);
->> +	tst_fill_fd(fd, 'a', TST_KB, 500);
->> +	SAFE_CLOSE(fd);
->> +
->> +	SAFE_SYMLINK(filename, symname);
->> +
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EXPR(path.st_size != link.st_size, "path.st_size != link.st_size");
->> +	TST_EXP_EXPR(path.st_blocks != link.st_blocks, "path.st_blocks != link.st_blocks");
->> +
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void test_blksize(void)
->> +{
->> +	char *filename = "file_blksize";
->> +	char *symname = MNTPOINT"/sym_blksize";
->> +
->> +	tst_res(TINFO, "Test symlink blksize");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
->> +	SAFE_SYMLINK(filename, symname);
->> +
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EXPR(path.st_blksize != link.st_blksize, "path.st_blksize != link.st_blksize");
->> +
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void test_timestamp(void)
->> +{
->> +	char *filename = "file_timestamp";
->> +	char *symname = "sym_timestamp";
->> +
->> +	tst_res(TINFO, "Test symlink timestamp");
->> +
->> +	SAFE_TOUCH(filename, 0777, NULL);
->> +
->> +	/* we wait a bit before creating symlink in order to obtain
->> +	 * different timestamp values
->> +	 */
->> +	sleep(1);
->> +	SAFE_SYMLINK(filename, symname);
-> This should really be done in the test setup, since as it is now the
-> test would sleep for 1 second for each iteration with -i.
->
->> +	struct stat path;
->> +	struct stat link;
->> +
->> +	TST_EXP_PASS(lstat(filename, &path));
->> +	TST_EXP_PASS(lstat(symname, &link));
->> +
->> +	TST_EXP_EXPR(path.st_atime != link.st_atime, "path.st_atime != link.st_atime");
->> +	TST_EXP_EXPR(path.st_mtime != link.st_mtime, "path.st_mtime != link.st_mtime");
->> +	TST_EXP_EXPR(path.st_ctime != link.st_ctime, "path.st_ctime != link.st_ctime");
->> +
->> +	SAFE_UNLINK(symname);
->> +}
->> +
->> +static void run(void)
->> +{
->> +	test_dev();
->> +	test_nlink();
->> +	test_ownership();
->> +	test_filesize();
->> +	test_blksize();
->> +	test_timestamp();
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	char opt_bsize[32];
->> +	const char *const fs_opts[] = {opt_bsize, NULL};
->> +	struct stat sb;
->> +	int pagesize;
->> +
->> +	SAFE_STAT(".", &sb);
->> +	pagesize = sb.st_blksize == 4096 ? 1024 : 4096;
->> +
->> +	snprintf(opt_bsize, sizeof(opt_bsize), "-b %i", pagesize);
->> +	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
->> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, 0);
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	if (tst_is_mounted(MNTPOINT))
->> +		SAFE_UMOUNT(MNTPOINT);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.cleanup = cleanup,
->> +	.test_all = run,
->> +	.needs_root = 1,
->> +	.needs_tmpdir = 1,
->> +	.needs_device = 1,
->> +	.mntpoint = MNTPOINT,
->> +};
->> -- 
->> 2.35.3
+
+> +static void setup(void)
+>>> +{
+>>> +       verify_landlock_is_enabled();
+>>> +
+>>> +       rule_size = sizeof(struct landlock_ruleset_attr);
+>>> +
+>>> +       rule_small_size = rule_size - 1;
+>>>
 >>
+>> Here minus 1 is not enough, we have to decrease more than 8
+>> otherwise it just returns ENOMSG.
 >>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>     landlock01.c:49: TFAIL: Size is too small expected EINVAL: ENOMSG (42)
+>>
+>>   rule_small_size = rule_size - 9;
+>>
+>> or, we use a small enough type:
+>>
+>>   rule_small_size = sizeof(int);
+>>
+>> my test kernel is 6.9.6-200.fc40.x86_64.
+>>
+>> I haven't figured out that's why, but maybe inside the
+>> landlock_create_ruleset()
+>> syscall compare the size unprecisely. Something like invoke the
+>> copy_min_struct_from_user.
+>>
+>> 199         err = copy_min_struct_from_user(&ruleset_attr,
+>> sizeof(ruleset_attr),
+>> 200
+>> offsetofend(typeof(ruleset_attr),
+>> 201                                          handled_access_fs),
+>> 202                                          attr, size);
+>>
+>> ...
+>>
+>> 32 #define offsetofend(TYPE, MEMBER) \
+>>  33         (offsetof(TYPE, MEMBER) + sizeof_field(TYPE, MEMBER))
+>>
+>> This needs more investigation...
+>>
+>
+> I guess I found the reason, kernel commit fff69fb03dde1df introducing a new
+> field 'handled_access_net' in the structure, but in the
+> landlock_create_ruleset(),
+> it still uses the first field 'handled_access_fs' to count min size, so
+> that why
+> decrease 1 is useless in your test.
+>
+> I will send out a RFC patch to LKML for that. Thanks!
+>
+> --- a/security/landlock/syscalls.c
+> +++ b/security/landlock/syscalls.c
+> @@ -198,7 +198,7 @@ SYSCALL_DEFINE3(landlock_create_ruleset,
+>         /* Copies raw user space buffer. */
+>         err = copy_min_struct_from_user(&ruleset_attr,
+> sizeof(ruleset_attr),
+>                                         offsetofend(typeof(ruleset_attr),
+> -                                                   handled_access_fs),
+> +                                                   handled_access_net),
+>                                         attr, size);
+>         if (err)
+>                 return err;
+>
+>>
+>
+> --
+> Regards,
+> Li Wang
+>
+> First of all, thanks for the review. Super for the bug in the landlock
+> code.
+>
+No problem, but that's maybe on purpose set only one field for
+the structure's minimal size, if so, we have to adjust your testcase
+to decrese 9.
 
-Andrea
+Let's see what the author thinks about my proposal patch[1].
 
+[1] https://lists.linux.it/pipermail/ltp/2024-July/039073.html
+
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
