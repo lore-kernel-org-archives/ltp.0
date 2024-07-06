@@ -4,42 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 555C4C3271E
-	for <ltp@archiver.kernel.org>; Fri,  5 Jul 2024 20:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9002C3271E
+	for <ltp@archiver.kernel.org>; Sat,  6 Jul 2024 03:43:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 567A73D3C71
-	for <ltp@archiver.kernel.org>; Fri,  5 Jul 2024 22:34:31 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 52F063D0768
+	for <ltp@archiver.kernel.org>; Sat,  6 Jul 2024 05:43:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8DCA43D1198
- for <ltp@lists.linux.it>; Fri,  5 Jul 2024 22:34:17 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=altlinux.org (client-ip=194.107.17.57;
- helo=vmicros1.altlinux.org; envelope-from=vt@altlinux.org;
+ by picard.linux.it (Postfix) with ESMTPS id D17523C00FB
+ for <ltp@lists.linux.it>; Sat,  6 Jul 2024 05:43:41 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 6EC781000B44
- for <ltp@lists.linux.it>; Fri,  5 Jul 2024 22:34:15 +0200 (CEST)
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
- by vmicros1.altlinux.org (Postfix) with ESMTP id 2A91B72C8CC;
- Fri,  5 Jul 2024 23:34:14 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
- by imap.altlinux.org (Postfix) with ESMTPSA id BEDB736D0174;
- Fri,  5 Jul 2024 23:34:13 +0300 (MSK)
-Date: Fri, 5 Jul 2024 23:34:13 +0300
-From: Vitaly Chikunov <vt@altlinux.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hari Bathini <hbathini@linux.ibm.com>
-Message-ID: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 955F01400441
+ for <ltp@lists.linux.it>; Sat,  6 Jul 2024 05:43:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1720237418;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bshogGUhgYAz4W+BRr2mngK47NdcUSIgFb7cht366fA=;
+ b=Dr5n944Wxkh8M3CfMq+awuBpHG8IgPwggqM3TFGoOD5+E3OlmabntXeZ4GB97oDE/IgzjK
+ 5xQM6RCkL7laB6f89ifyz7EIOqYI5f97KKy8+a47UUr9Jm38cfwq7M5wt1fMJF7AooaKSX
+ UYCKuZVFWFr4kmAj5pPhwKxUpxbYsVo=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-179-BBPHpt_MP4Cp66gJw1xezA-1; Fri, 05 Jul 2024 23:43:36 -0400
+X-MC-Unique: BBPHpt_MP4Cp66gJw1xezA-1
+Received: by mail-oo1-f70.google.com with SMTP id
+ 006d021491bc7-5c41551a445so1695516eaf.3
+ for <ltp@lists.linux.it>; Fri, 05 Jul 2024 20:43:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1720237416; x=1720842216;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=bshogGUhgYAz4W+BRr2mngK47NdcUSIgFb7cht366fA=;
+ b=MpEvNjbTMJfiprgTQTMbeE5083a0pmwXQQatcW+q7638lYJRQraVsxplK+CbCki3f7
+ 8PuogBK+EEDk8eiWoFfcx9scQWtRI5c3Brt3HZmfUK/FSnkIOHs3VED+0/1V3wscbWzV
+ /+O1Z1lEpwKkSXrZc8HwWJOTDpCeuMA0DfBbfurU/e9+H6Jz6UdF3/XH0//g0qIQXcSJ
+ gm64X+A45USjgWZzvXbbhqBu82lbA32fj/fEDBUFkLbUQSLLci5NKYoVMIRkHfhe596J
+ yGTzjYjDvxm+etZpumIZwt2XS9zGECw3nt8JYGW2WE2zPNL8kmaBBgZEwLGtT88IfcC9
+ 11Ng==
+X-Gm-Message-State: AOJu0YzVjbuPoCDP1PvyOQV4XVxpVsDXknJ5xFTlVUPPX+SEmrWvqNjm
+ uzO6D3z7JeLKFDOXlme24+BCVBl6p89dRTavsNWoXAYceZ4DWgJNlAkmgFiH8q2SJ+e61h3BryA
+ obj8WJkI38ASmSDj45lvzWUCxBSWVpxes5DRKeYw1jLacgK7fO+bgsVjywjO7cNqlhm5TJSbVQN
+ C1aCL+PvNBqiFWEbvG4CgTt0A=
+X-Received: by 2002:a05:6358:611e:b0:1aa:b9f2:a0d2 with SMTP id
+ e5c5f4694b2df-1aab9f2aaefmr29070755d.10.1720237415749; 
+ Fri, 05 Jul 2024 20:43:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE3Vcc5dZIb8MvvNtHpqfdB5QgKe7cBiW5Pqik6Av2FqGgkfaiKuF58s3HpaKnkWr3UGNIONvapKxOWyzl3Xpg=
+X-Received: by 2002:a05:6358:611e:b0:1aa:b9f2:a0d2 with SMTP id
+ e5c5f4694b2df-1aab9f2aaefmr29069555d.10.1720237415305; Fri, 05 Jul 2024
+ 20:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <IA1PR10MB724059C5A7A69CE2A4AF257698DF2@IA1PR10MB7240.namprd10.prod.outlook.com>
+In-Reply-To: <IA1PR10MB724059C5A7A69CE2A4AF257698DF2@IA1PR10MB7240.namprd10.prod.outlook.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 6 Jul 2024 11:43:23 +0800
+Message-ID: <CAEemH2fLGJY6D+GAgmFcoCk5jSw7-K5VkoDb1CEqTbwqfKw+Wg@mail.gmail.com>
+To: Gulam Mohamed <gulam.mohamed@oracle.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree() bad
- address (00000000453be747)
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] Request for Modification of test cases
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -51,187 +91,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- stable@vger.kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-
-There is new WARNING and Oops on ppc64le in v6.6.37 when running LTP tests:
-bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt below. I
-see there is 1 commit in v6.6.36..v6.6.37 with call to
-bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
-
-  f99feda5684a powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
-
-Log:
-
- [    8.822079] LTP: starting bpf_prog01
- [    8.841853] ------------[ cut here ]------------
- [    8.841946] Trying to vfree() bad address (00000000453be747)
- [    8.842024] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2700 remove_vm_area+0xb4/0xf0
- [    8.842103] Modules linked in: virtio_rng rng_core virtio_net net_failover failover sd_mod ata_generic ata_piix libata scsi_mod scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
- [    8.842323] CPU: 6 PID: 689 Comm: bpf_prog01 Not tainted 6.6.37-un-def-alt1 #1
- [    8.842396] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
- [    8.842519] NIP:  c0000000004faf04 LR: c0000000004faf00 CTR: 0000000000000000
- [    8.842598] REGS: c000000009b6f250 TRAP: 0700   Not tainted  (6.6.37-un-def-alt1)
- [    8.842669] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002822  XER: 00000000
- [    8.842748] CFAR: c00000000015df94 IRQMASK: 0 
- [    8.842748] GPR00: 0000000000000000 c000000009b6f4f0 c000000001ac7f00 0000000000000000 
- [    8.842748] GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.842748] GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.842748] GPR12: 0000000000000000 c00000003fff7a00 0000000000000000 0000000000000000 
- [    8.842748] GPR16: 0000000000000012 0000000000000000 000000000000008c 0000000000000000 
- [    8.842748] GPR20: c008000000040a40 0000000000000002 c0000000022a7560 c008000000040a4c 
- [    8.842748] GPR24: c000000005716480 0000000000000000 c000000002155698 c0000000022a7680 
- [    8.842748] GPR28: c000000002155688 c008000000040a40 c008000000040a40 c008000000040a40 
- [    8.843347] NIP [c0000000004faf04] remove_vm_area+0xb4/0xf0
- [    8.843398] LR [c0000000004faf00] remove_vm_area+0xb0/0xf0
- [    8.843448] Call Trace:
- [    8.843484] [c000000009b6f4f0] [c0000000004faf00] remove_vm_area+0xb0/0xf0 (unreliable)
- [    8.843559] [c000000009b6f560] [c0000000004fb360] vfree+0x60/0x2a0
- [    8.843621] [c000000009b6f5e0] [c000000000269c6c] module_memfree+0x3c/0x60
- [    8.843685] [c000000009b6f600] [c00000000038cf60] bpf_jit_free_exec+0x20/0x40
- [    8.843759] [c000000009b6f620] [c00000000038f518] bpf_prog_pack_free+0x2f8/0x390
- [    8.843832] [c000000009b6f6b0] [c00000000038f878] bpf_jit_binary_pack_finalize+0x98/0xd0
- [    8.843906] [c000000009b6f6e0] [c000000000118240] bpf_int_jit_compile+0x2c0/0x710
- [    8.843979] [c000000009b6f830] [c00000000038ef64] bpf_prog_select_runtime+0x154/0x1b0
- [    8.844053] [c000000009b6f880] [c000000000398edc] bpf_prog_load+0x94c/0xe90
- [    8.844114] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
- [    8.844176] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
- [    8.844237] [c000000009b6fae0] [c000000000030230] system_call_exception+0x190/0x390
- [    8.844312] [c000000009b6fe50] [c00000000000c7d4] system_call_common+0xf4/0x258
- [    8.844386] --- interrupt: c00 at 0x7fffb0839ad4
- [    8.844437] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR: 0000000000000000
- [    8.844524] REGS: c000000009b6fe80 TRAP: 0c00   Not tainted  (6.6.37-un-def-alt1)
- [    8.844596] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002240  XER: 00000000
- [    8.844690] IRQMASK: 0 
- [    8.844690] GPR00: 0000000000000169 00007fffd8534200 00007fffb0936d00 0000000000000005 
- [    8.844690] GPR04: 00007fffb06aff90 0000000000000070 000000012a0538a0 0000000000000001 
- [    8.844690] GPR08: 000000012a0801f4 0000000000000000 0000000000000000 0000000000000000 
- [    8.844690] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 0000000000000000 
- [    8.844690] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.844690] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 0000000000000000 
- [    8.844690] GPR24: 000000012a0801f4 00007fffb06ce000 0000000000000000 00000000000f4240 
- [    8.844690] GPR28: 00007fffb06aff90 00007fffb09e3550 0000000000000001 0000000000001118 
- [    8.845267] NIP [00007fffb0839ad4] 0x7fffb0839ad4
- [    8.845315] LR [000000012a027fb4] 0x12a027fb4
- [    8.845363] --- interrupt: c00
- [    8.845399] Code: 38000000 38800000 39200000 4e800020 60000000 60000000 60420000 3c62ffa2 7fe4fb78 3863e698 4bc62f8d 60000000 <0fe00000> 38210070 3bc00000 e8010010 
- [    8.845550] ---[ end trace 0000000000000000 ]---
- [    8.845603] ------------[ cut here ]------------
- [    8.845651] Trying to vfree() nonexistent vm area (00000000453be747)
- [    8.845714] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2835 vfree+0x1d8/0x2a0
- [    8.845776] Modules linked in: virtio_rng rng_core virtio_net net_failover failover sd_mod ata_generic ata_piix libata scsi_mod scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
- [    8.845989] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W          6.6.37-un-def-alt1 #1
- [    8.846072] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
- [    8.846177] NIP:  c0000000004fb4d8 LR: c0000000004fb4d4 CTR: 0000000000000000
- [    8.846248] REGS: c000000009b6f2c0 TRAP: 0700   Tainted: G        W           (6.6.37-un-def-alt1)
- [    8.846330] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002222  XER: 00000000
- [    8.846408] CFAR: c00000000015df94 IRQMASK: 0 
- [    8.846408] GPR00: 0000000000000000 c000000009b6f560 c000000001ac7f00 0000000000000000 
- [    8.846408] GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.846408] GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.846408] GPR12: 0000000000000000 c00000003fff7a00 0000000000000000 0000000000000000 
- [    8.846408] GPR16: 0000000000000012 0000000000000000 000000000000008c 0000000000000000 
- [    8.846408] GPR20: c008000000040a40 0000000000000002 c0000000022a7560 c008000000040a4c 
- [    8.846408] GPR24: c000000005716480 0000000000000000 c000000002155698 c0000000022a7680 
- [    8.846408] GPR28: c000000002155688 0000000000000000 c008000000040a40 0000000000000000 
- [    8.851030] NIP [c0000000004fb4d8] vfree+0x1d8/0x2a0
- [    8.851085] LR [c0000000004fb4d4] vfree+0x1d4/0x2a0
- [    8.851135] Call Trace:
- [    8.851160] [c000000009b6f560] [c0000000004fb4d4] vfree+0x1d4/0x2a0 (unreliable)
- [    8.851234] [c000000009b6f5e0] [c000000000269c6c] module_memfree+0x3c/0x60
- [    8.851297] [c000000009b6f600] [c00000000038cf60] bpf_jit_free_exec+0x20/0x40
- [    8.851371] [c000000009b6f620] [c00000000038f518] bpf_prog_pack_free+0x2f8/0x390
- [    8.851445] [c000000009b6f6b0] [c00000000038f878] bpf_jit_binary_pack_finalize+0x98/0xd0
- [    8.851529] [c000000009b6f6e0] [c000000000118240] bpf_int_jit_compile+0x2c0/0x710
- [    8.851602] [c000000009b6f830] [c00000000038ef64] bpf_prog_select_runtime+0x154/0x1b0
- [    8.851675] [c000000009b6f880] [c000000000398edc] bpf_prog_load+0x94c/0xe90
- [    8.851737] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
- [    8.851798] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
- [    8.851860] [c000000009b6fae0] [c000000000030230] system_call_exception+0x190/0x390
- [    8.851934] [c000000009b6fe50] [c00000000000c7d4] system_call_common+0xf4/0x258
- [    8.852007] --- interrupt: c00 at 0x7fffb0839ad4
- [    8.852057] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR: 0000000000000000
- [    8.852128] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W           (6.6.37-un-def-alt1)
- [    8.852212] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002240  XER: 00000000
- [    8.852307] IRQMASK: 0 
- [    8.852307] GPR00: 0000000000000169 00007fffd8534200 00007fffb0936d00 0000000000000005 
- [    8.852307] GPR04: 00007fffb06aff90 0000000000000070 000000012a0538a0 0000000000000001 
- [    8.852307] GPR08: 000000012a0801f4 0000000000000000 0000000000000000 0000000000000000 
- [    8.852307] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 0000000000000000 
- [    8.852307] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.852307] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 0000000000000000 
- [    8.852307] GPR24: 000000012a0801f4 00007fffb06ce000 0000000000000000 00000000000f4240 
- [    8.852307] GPR28: 00007fffb06aff90 00007fffb09e3550 0000000000000001 0000000000001118 
- [    8.852889] NIP [00007fffb0839ad4] 0x7fffb0839ad4
- [    8.852938] LR [000000012a027fb4] 0x12a027fb4
- [    8.852986] --- interrupt: c00
- [    8.853022] Code: 4e800020 60420000 3949ffff 4bffff0c 38210080 ebe1fff8 4bfffd68 3c62ffa2 7fc4f378 3863e6f0 4bc629b9 60000000 <0fe00000> eba10068 4bffff8c 2c080000 
- [    8.853164] ---[ end trace 0000000000000000 ]---
- [    8.856619] kernel tried to execute exec-protected page (c008000000040a4c) - exploit attempt? (uid: 0)
- [    8.856717] BUG: Unable to handle kernel instruction fetch
- [    8.856763] Faulting instruction address: 0xc008000000040a4c
- [    8.856825] Oops: Kernel access of bad area, sig: 11 [#1]
- [    8.856875] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
- [    8.856937] Modules linked in: virtio_rng rng_core virtio_net net_failover failover sd_mod ata_generic ata_piix libata scsi_mod scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
- [    8.857154] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W          6.6.37-un-def-alt1 #1
- [    8.857236] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
- [    8.857342] NIP:  c008000000040a4c LR: c000000000ed25d0 CTR: c008000000040a4c
- [    8.857413] REGS: c000000009b6f6f0 TRAP: 0400   Tainted: G        W           (6.6.37-un-def-alt1)
- [    8.857510] MSR:  8000000010009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28008286  XER: 00000000
- [    8.857588] CFAR: c000000000ed25cc IRQMASK: 0 
- [    8.857588] GPR00: c000000000ed25a8 c000000009b6f990 c000000001ac7f00 c000000006130400 
- [    8.857588] GPR04: c008000000920048 0000000000000001 0000000000000000 0000000000000000 
- [    8.857588] GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.857588] GPR12: c008000000040a4c c00000003fff7a00 0000000000000000 0000000000000000 
- [    8.857588] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.857588] GPR20: 7fffffffffffffff 0000000000000000 0000000000000001 0000000000000000 
- [    8.857588] GPR24: c000000006130400 c000000006510a00 c000000006510f00 c0000000041a9000 
- [    8.857588] GPR28: 0000000000000001 c000000006130400 0000000000000000 c008000000920000 
- [    8.858184] NIP [c008000000040a4c] bpf_prog_2fb4fda3a3499517+0x0/0x8c
- [    8.858245] LR [c000000000ed25d0] sk_filter_trim_cap+0xc0/0x370
- [    8.858308] Call Trace:
- [    8.858333] [c000000009b6f990] [c000000000ed2574] sk_filter_trim_cap+0x64/0x370 (unreliable)
- [    8.858421] [c000000009b6fa10] [c000000001068b64] unix_dgram_sendmsg+0x214/0xb10
- [    8.858511] [c000000009b6fad0] [c000000000e4c59c] sock_write_iter+0x19c/0x1e0
- [    8.858586] [c000000009b6fb80] [c0000000005b1b58] vfs_write+0x258/0x4e0
- [    8.858648] [c000000009b6fc40] [c0000000005b21d4] ksys_write+0x114/0x170
- [    8.858711] [c000000009b6fc90] [c000000000030230] system_call_exception+0x190/0x390
- [    8.858785] [c000000009b6fe50] [c00000000000c7d4] system_call_common+0xf4/0x258
- [    8.858859] --- interrupt: c00 at 0x7fffb082b884
- [    8.858908] NIP:  00007fffb082b884 LR: 000000012a02ab70 CTR: 0000000000000000
- [    8.858979] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W           (6.6.37-un-def-alt1)
- [    8.859060] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28002281  XER: 00000000
- [    8.859153] IRQMASK: 0 
- [    8.859153] GPR00: 0000000000000004 00007fffd85341f0 00007fffb0936d00 0000000000000005 
- [    8.859153] GPR04: 00007fffb068fffa 0000000000000006 0000000000000001 0000000000000005 
- [    8.859153] GPR08: 00007fffb068fffa 0000000000000000 0000000000000000 0000000000000000 
- [    8.859153] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 0000000000000000 
- [    8.859153] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
- [    8.859153] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 0000000000000000 
- [    8.859153] GPR24: 000000012a053698 000000000000008b 0000000000000000 0000000000000001 
- [    8.859153] GPR28: 00007fffb068fffa 0000000000000005 0000000000000006 000000012a053698 
- [    8.859738] NIP [00007fffb082b884] 0x7fffb082b884
- [    8.859786] LR [000000012a02ab70] 0x12a02ab70
- [    8.859836] --- interrupt: c00
- [    8.859872] Code: 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 <7fe00008> 7fe00008 7fe00008 7fe00008 
- [    8.860013] ---[ end trace 0000000000000000 ]---
- [    8.863088] pstore: backend (nvram) writing error (-1)
- [    8.863141] 
- [    8.863166] note: bpf_prog01[689] exited with irqs disabled
-
-And so on. Temporary build/test log is at
-https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
-
-Other stable/longterm branches or other architectures does not exhibit this.
-
-Thanks,
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgR3VsYW0sCgpPbiBTYXQsIEp1bCA2LCAyMDI0IGF0IDM6NDjigK9BTSBHdWxhbSBNb2hhbWVk
+IHZpYSBsdHAgPGx0cEBsaXN0cy5saW51eC5pdD4Kd3JvdGU6Cgo+IEhpIFRlYW0sCj4KPiAgICAg
+VGhpcyBpcyByZWdhcmRpbmcgdGhlIGNoYW5nZSBpbiBrZXJuZWwgYmVoYXZpb3IgYWJvdXQgdGhl
+IHdheSB0aGUgbG9vcAo+IGRldmljZSBpcyBkZXRhY2hlZC4KPgo+ICAgICAgICAgICAgICAgQ3Vy
+cmVudCBiZWhhdmlvcgo+ICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAg
+ICAgICAgICAgICAgIFdoZW4gdGhlIExPT1BfQ0xSX0ZEIGlvY3RsIGNvbW1hbmQgaXMgc2VudCB0
+byBkZXRhY2ggdGhlCj4gbG9vcCBkZXZpY2UsIHRoZSBlYXJsaWVyIGJlaGF2aW9yIHdhcyB0aGF0
+IHRoZSBsb29wICAgICBkZXZpY2UgdXNlZCB0byBiZQo+IGRldGFjaGVkIGF0IHRoYXQgaW5zdGFu
+Y2UgaXRzZWxmIGlmIHRoZXJlIHdhcyBhIHNpbmdsZSBvcGVuZXIgb25seS4gSWYKPiAgICAgICAg
+ICAgICAgICB0aGVyZSB3ZXJlIG11bHRpcGxlIG9wZW5lcnMgb2YgdGhlIGxvb3AgZGV2aWNlLCB0
+aGUKPiBiZWhhdmlvciB3YXMgdG8gZGVmZXIgdGhlIGRldGFjaCBvcGVyYXRpb24gYXQgdGhlIGxh
+c3QgY2xvc2Ugb2YgdGhlIGRldmljZS4KPgo+ICAgICAgICAgICAgICAgTmV3IGJlaGF2aW9yCj4g
+ICAgICAgICAgICAgICAtLS0tLS0tLS0tLS0tLS0tLS0KPiAgICAgICAgICAgICAgIEFzIHBlciB0
+aGUgbmV3IGJlaGF2aW9yLCBpcnJlc3BlY3RpdmUgb2Ygd2hldGhlciB0aGVyZSBhcmUKPiBhbnkg
+b3BlbmVycyBvZiB0aGUgbG9vcCBkZXZpY2Ugb3Igbm90LCB0aGUgZGV0YWNoIG9wZXJhdGlvbiBp
+cyBkZWZlcnJlZCB0bwo+IHRoZSBsYXN0IGNsb3NlIG9mIHRoZSBkZXZpY2UuIFRoaXMgd2FzIGRv
+bmUgdG8gYWRkcmVzcyBhbiBpc3N1ZSwgZHVlCj4gICAgICAgICAgICAgICB0byByYWNlIGNvZGl0
+aW9ucywgcmVjZW50bHkgd2UgaGFkIGluIGtlcm5lbC4KPgo+ICAgICAgICAgICAgICAgV2l0aCB0
+aGUgbmV3IGtlcm5lbCBiZWhhdmlvciBpbiBwbGFjZSwgc29tZSBvZiB0aGUgTFRQIHRlc3QKPiBj
+YXNlcyBpbiAidGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb2N0bC8iIGFyZSBmYWlsaW5nIGFz
+IHRoZSBkZXZpY2UgaXMKPiBjbG9zZWQgYXQgdGhlIGVuZCBvZiB0aGUgdGVzdCBhbmQgdGhlIHRl
+c3QgY2FzZXMgYXJlIGV4cGVjdGluZyBmb3IgdGhlCj4gICAgICAgICAgICAgICAgcmVzdWx0cyB3
+aGljaCBjYW4gb2NjdXIgYWZ0ZXIgdGhlIGRldmljZSBpcyBkZXRhY2hlZC4gU29tZQo+IG9mIHRo
+ZSB0ZXN0IGNhc2VzIHdoaWNoIGFyZSBmYWlsaW5nIGFyZToKPgo+ICAgICAgICAgICAgICAgMS4g
+aW9jdGwwNCwgaW9jdGwwNSwgaW9jdGwwNiwgaW9jdGwwNywgaW9jdGwwOQo+ICAgICAgICAgICAg
+ICAgMi4gaW9jdGxfbG9vcDAxLCBpb2N0bF9sb29wMDIsIGlvY3RsX2xvb3AwMywgaW9jdGxfbG9v
+cDA0LAo+IGlvY3RsX2xvb3AwNSwgaW9jdGxfbG9vcDA2LCBpb2N0bF9sb29wMDcKPgo+ICAgICAg
+ICAgICAgICAgVGhlIG1haW4gcm9vdCBjYXVzZSBvZiB0aGUgbW9zdCBvZiB0aGUgdGVzdCBmYWls
+dXJlcywgaXMgdGhlCj4gZnVuY3Rpb24gInRzdF9kZXRhY2hfZGV2aWNlX2J5X2ZkKCkiIHdoZXJl
+IHRoZSBmdW5jdGlvbiBpcyBleHBlY3RpbmcgZXJyb3IKPiBFTlhJTyB3aGljaCBpcyByZXR1cm5l
+ZCBvbmx5IGFmdGVyIHRoZSBkZXZpY2UgaXMgZGV0YWNoZWQuIEJ1dAo+ICAgICAgICAgICAgICAg
+ZGV0YWNoLCBhcyBwZXIgbmV3IGJlaGF2aW9yLCBoYXBwZW5zIG9ubHkgYWZ0ZXIgdGhlIGxhc3QK
+PiBjbG9zZSAoaS5lIGFmdGVyIHRoaXMgZnVuY3Rpb24gaXMgcmV0dXJuZWQpLCB0aGUgdGVzdCB3
+aWxsIGZhaWwgd2l0aAo+IGZvbGxvd2luZyBlcnJvcjoKPgo+ICAgICAgICAgICAgICAgImlvY3Rs
+KC9kZXYvbG9vcDAsIExPT1BfQ0xSX0ZELCAwKSBubyBFTlhJTyBmb3IgdG9vIGxvbmciCj4KPiAg
+ICAgICAgICAgICAgIFNpbWlsYXJseSwgc29tZSBvdGhlciB0ZXN0IGNhc2VzIGFyZSBleHBlY3Rp
+bmcgcmVzdWx0cyB3aGljaAo+IGFyZSByZXR1cm5lZCBhZnRlciB0aGUgZGV0YWNoIG9wZXJhdGlv
+biwgYnV0IGFzIHRoZSBkZXRhY2ggZGlkIG5vdCBoYXBwZW4sCj4gdW5leHBlY3RlZCB2YWx1ZXMg
+YXJlIHJldHVybmVkIHJlc3VsdGluZyBpbiB0aGUgdGVzdCBmYWlsdXJlLgo+Cj4gICAgICAgICAg
+ICAgICBTbywgY2FuIExUUCBtYWludGFpbmVycyB0ZWFtIGNoYW5nZSB0aGUgaW1wYWN0ZWQgdGVz
+dCBjYXNlcwo+IHRvIGFjY29tbW9kYXRlIHRoZSBuZXcgYmVoYXZpb3Igb2Yga2VybmVsIGZvciB0
+aGUgZGV0YWNoIG9wZXJhdGlvbiBvZiB0aGUKPiBsb29wIGRldmljZT8KPgoKClRoYW5rcyBmb3Ig
+aGlnaGxpZ2h0aW5nIHRoZSBpc3N1ZSwgY2FuIHlvdSB0ZWxsIHdoaWNoIGtlcm5lbCB2ZXJzaW9u
+Cihjb21taXQgPykKaW50cm9kdWNlZCB0aGF0IGNoYW5nZSwgdGhlbiB3ZSBjb3VsZCBhZGp1c3Qg
+dGhlIHRlc3QgYWdhaW5zdCB0aGUgZGlmZmVyZW50Cmtlcm5lbHMuCgoKLS0gClJlZ2FyZHMsCkxp
+IFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0
+aW5mby9sdHAK
