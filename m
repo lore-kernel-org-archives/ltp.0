@@ -4,107 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C80AAC3271E
-	for <ltp@archiver.kernel.org>; Mon,  8 Jul 2024 08:54:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A72EC3DA42
+	for <ltp@archiver.kernel.org>; Mon,  8 Jul 2024 09:27:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 36A753D3A01
-	for <ltp@archiver.kernel.org>; Mon,  8 Jul 2024 10:54:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E34303D3A14
+	for <ltp@archiver.kernel.org>; Mon,  8 Jul 2024 11:27:18 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B44113D115C
- for <ltp@lists.linux.it>; Mon,  8 Jul 2024 10:54:38 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 4BEFB3CBA12
+ for <ltp@lists.linux.it>; Mon,  8 Jul 2024 11:27:05 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C7B161000233
- for <ltp@lists.linux.it>; Mon,  8 Jul 2024 10:54:37 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1D4AB14044C9
+ for <ltp@lists.linux.it>; Mon,  8 Jul 2024 11:27:03 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EFB11219AD;
- Mon,  8 Jul 2024 08:54:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7E7B0219D7;
+ Mon,  8 Jul 2024 09:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720428877;
+ t=1720430822;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IwNGfprEIWiWiw3170NC+4E+1z/2/MW41eLYrUjzCLM=;
- b=1iBrVG9vK5sCtofb1jaZshTiXdb+88aCg+tZAkjDuDQsT0SH4iNETRYo3aP7WF0rUVeK3f
- JUEScU4Y11Irn82MyR4GOpyLkZG4T5oiVMFQalnoY/r8jHwhCbwpCIj8oqEa/r52vDpryu
- 8b1IRuE44KKRg82/ruyUWrrixU5qjjw=
+ bh=/lZ4TPQ7un8pkq8AhMfc3iI/MWbAhzcjN0qI443aw2Y=;
+ b=EJyF6SqEec5fijA+5Al77F9/cchQCsX8n1UmTTvFCYHylaR7kE9mdKmKHHansk+S47Tzpp
+ dg35U4khrXKThrW6G/UuF8l+xWQMaqrYcDS+wxlUOChm5IQvNbYSNyaE2F1ZEujVrWr0PR
+ XTNDfoGGyDiKhLrdOiVtOfj/D5A70dA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720428877;
+ s=susede2_ed25519; t=1720430822;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IwNGfprEIWiWiw3170NC+4E+1z/2/MW41eLYrUjzCLM=;
- b=XqGXYE6wPzmCgf9KnCKpu3XTQfb/vyXHZm5QIAiiedZGbAd8rt/kDoe7eIXTxPIiNJymy8
- GIuvZWVlFagB5GDw==
+ bh=/lZ4TPQ7un8pkq8AhMfc3iI/MWbAhzcjN0qI443aw2Y=;
+ b=Vf11r5nnzV42v/jcvPboqL+FDPONRc1k2g6uofF37adlkaUUUv+4jCPRLjT21pXoj24Obe
+ epC/ljH7b8PolJAQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720428876;
+ t=1720430822;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IwNGfprEIWiWiw3170NC+4E+1z/2/MW41eLYrUjzCLM=;
- b=pmAD7tlvKphYFPzqQ7EAKHgbM84DFMKtQr7QdTSzmtDn5T+AEI4RA/HSKZcM3MgtUKyKg+
- I99VnMveI3WKmTX23dQLOCHXBpZZbDSovE21j/ajlc98Ca5cqjjNij3HPZRXgjDKKHSB0U
- pU0JprOPvJdDtHRuZWKgOwLaG12LaVU=
+ bh=/lZ4TPQ7un8pkq8AhMfc3iI/MWbAhzcjN0qI443aw2Y=;
+ b=EJyF6SqEec5fijA+5Al77F9/cchQCsX8n1UmTTvFCYHylaR7kE9mdKmKHHansk+S47Tzpp
+ dg35U4khrXKThrW6G/UuF8l+xWQMaqrYcDS+wxlUOChm5IQvNbYSNyaE2F1ZEujVrWr0PR
+ XTNDfoGGyDiKhLrdOiVtOfj/D5A70dA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720428876;
+ s=susede2_ed25519; t=1720430822;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IwNGfprEIWiWiw3170NC+4E+1z/2/MW41eLYrUjzCLM=;
- b=B0aYoDjpoIplC8W/Xn/csmoq7FdrkkBX/kJYW30rpfWSn3/vrY6bpXM+4KGzPHnIXhXIJr
- 8ySn0pVZmgC7YLAA==
+ bh=/lZ4TPQ7un8pkq8AhMfc3iI/MWbAhzcjN0qI443aw2Y=;
+ b=Vf11r5nnzV42v/jcvPboqL+FDPONRc1k2g6uofF37adlkaUUUv+4jCPRLjT21pXoj24Obe
+ epC/ljH7b8PolJAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2C811396E;
- Mon,  8 Jul 2024 08:54:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4501213A7F;
+ Mon,  8 Jul 2024 09:27:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wQajMUypi2bXKgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 08 Jul 2024 08:54:36 +0000
-Date: Mon, 8 Jul 2024 10:54:30 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ECr5D+awi2YrNgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 08 Jul 2024 09:27:02 +0000
+Date: Mon, 8 Jul 2024 11:26:56 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: =?utf-8?B?6Lev5paQ?= <lufei@uniontech.com>
-Message-ID: <20240708085430.GA122879@pevik>
-References: <20240606065506.1686-1-lufei@uniontech.com>
- <20240624015245.54968-1-lufei@uniontech.com>
- <20240624015245.54968-2-lufei@uniontech.com>
- <20240708042318.GA119348@pevik>
- <tencent_3E63AE5B3A162AF97E6505AD@qq.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240708092656.GA124018@pevik>
+References: <20240607142423.116285-2-pvorel@suse.cz>
+ <8043628a6eed94e788f9fedbf6c8b264ebfbae15.camel@linuxfoundation.org>
+ <ZmMrBnkIXKfrF8Xv@yuki>
+ <c8d4ee181809c4bbf5e21bf355c241eeb540e9a5.camel@linuxfoundation.org>
+ <ZmM25L0EmJufsS-f@yuki>
+ <ee1e4c128c12200d6f55f2afe34a44cd110c33e2.camel@linuxfoundation.org>
+ <ZmNEW_Q20Cf7hnUr@yuki>
+ <SA3PR13MB637235EB7D225D1D68AA2CCEFDFB2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <17D79A236EC1FFC3.15678@lists.yoctoproject.org>
+ <ZmlT9Dgcx3FkZLVr@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <tencent_3E63AE5B3A162AF97E6505AD@qq.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <ZmlT9Dgcx3FkZLVr@rei>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[10];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] acct01: add EFAULT errno check.
+Subject: Re: [LTP] [Automated-testing] [RFC PATCH 1/3] runltp: Deprecate,
+ add info about kirk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,65 +125,36 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP <ltp@lists.linux.it>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Lu,
+Hi Cyril, Andrea,
 
-> Hi Petr, Cyril.
-> Really thanks for the advises. Each of them makes me learned.
+> Hi!
+> > I did a talk at SUSE Labs conference when I tried to explain when we are
+> > heading and it was recorded, unfortunately it wasn't uploaded to youtube
+> > yet, I will post the link here once it's there.
 
-You're welcome. Also looking at XHTML entity '&gt;' and '&nbsp;' in your reply below,
-it would be great if you could set your email client (MUA) which you use for LTP
-mailing list to use plain text (not XHTML).
+> And it's finally uploaded:
 
-Here are some tips:
-https://www.kernel.org/doc/html/latest/process/email-clients.html
+> https://www.youtube.com/watch?v=T1ImuNr9Oxo
+
+Great. As I wrote It'd be great to summarize kirk + ltx architecture in LTP docs.
+For the start it could be just a very short article + link to this video.
+
+FYI there are some Debian users who would appreciate have kirk published via
+pypi, see Anders's effort:
+
+https://github.com/linux-test-project/kirk/pull/20
+(Probably better to move related discussion to the ticket.)
 
 Kind regards,
 Petr
-
-> Sorry for the patches not so good I've sent, I'm trying to make it better in the future.
-> I will make warnings clearnup patches after this one merged.
-
-
-> Best reguards.
-> Lu Fei
-> &nbsp;
-> ------------------&nbsp;Original&nbsp;------------------
-> From: &nbsp;"Petr&nbsp;Vorel"<pvorel@suse.cz&gt;;
-> Date: &nbsp;Mon, Jul 8, 2024 04:23 AM
-> To: &nbsp;"ltp"<ltp@lists.linux.it&gt;; "lufei"<lufei@uniontech.com&gt;; 
-> Cc: &nbsp;"Cyril Hrubis"<chrubis@suse.cz&gt;; 
-> Subject: &nbsp;Re: [LTP] [PATCH] acct01: add EFAULT errno check.
-
-> &nbsp;
-
-> Hi 
-> &gt; Add EFAULT errno check in acct01 testcase.
-
-> &gt; Signed-off-by: lufei <lufei@uniontech.com&gt;
-
-> I guess you don't mind if I change this to following before merge:
-> Signed-off-by: Lu Fei <lufei@uniontech.com&gt;
-
-> &gt; ---
-> &gt;&nbsp; testcases/kernel/syscalls/acct/acct01.c | 13 +++++++++++++
-> &gt;&nbsp; 1 file changed, 13 insertions(+)
-
-> &gt; diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-> &gt; index 1b53a32f2..ed1817bc5 100644
-> &gt; --- a/testcases/kernel/syscalls/acct/acct01.c
-> &gt; +++ b/testcases/kernel/syscalls/acct/acct01.c
-> &gt; @@ -33,6 +33,7 @@
-> &gt;&nbsp; #define FILE_TMPFILE		"./tmpfile"
-> &gt;&nbsp; #define FILE_ELOOP		"test_file_eloop1"
-> &gt;&nbsp; #define FILE_EROFS		"ro_mntpoint/file"
-> &gt; +#define FILE_EFAULT		"/tmp/invalid/file/name"
-....
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
