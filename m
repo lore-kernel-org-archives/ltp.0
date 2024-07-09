@@ -4,66 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71BEEC2BD09
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 389F8C2BD09
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:35:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 558693D393D
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:19:12 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 94AEA3D3934
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:35:35 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE2193D2BB5
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:18:57 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 59B4B3CE10E
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:35:20 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8D6B8600689
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:18:56 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0F0E21A00901
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:35:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1720527535;
+ s=mimecast20190719; t=1720528518;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=/zZ2FxPzU+JyqgtP/lxk/xXpRBrgS++lRxGTxXGfnUQ=;
- b=fAZGAkIXDozMddZJs0NlGUt0deF4wmmBOizStTei38nQzRwaxC7zF9hpLU12b8BsVL9Eu7
- v31TLS+0U5pc8sdGazwCOdWTLAQfC9RU7vkxKJqC32y1PeyzDHntyMdhZ4KdI+qiOAfuQ0
- 29B4x0eGi/8KXHiL7PwQxTcsPTIajFE=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-503-BqXvYNSVMKqAnm7J-of2gA-1; Tue,
- 09 Jul 2024 08:18:51 -0400
-X-MC-Unique: BqXvYNSVMKqAnm7J-of2gA-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id EB7741954B31
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 12:18:49 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.224.7])
- by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 471071955F3B; Tue,  9 Jul 2024 12:18:47 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue,  9 Jul 2024 14:18:38 +0200
-Message-Id: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
+ in-reply-to:in-reply-to:references:references;
+ bh=32vdHegLBBPXe4k2HOep2fU0D4Oe84LkPgzWTgbrYGs=;
+ b=jEo6vMhVfG9JaI664GCZXGU/eP3vQBooRSvYlMmgXIpVDApgn34jZc8lNO14JnPKGvKkwC
+ woazVs/4QRrxDd0UiofIzOhmtHXSDkt6DNSoE2YPo3VPwZoH9x2M/blNUvv7+dTU95lmyI
+ K7v7fkYkTvYj/8tS+qkzrOmRs1W1Zs8=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-534-E-Km_jvNOFuFWN_1BnTyyw-1; Tue, 09 Jul 2024 08:35:16 -0400
+X-MC-Unique: E-Km_jvNOFuFWN_1BnTyyw-1
+Received: by mail-pg1-f197.google.com with SMTP id
+ 41be03b00d2f7-6c559235c6eso4088621a12.2
+ for <ltp@lists.linux.it>; Tue, 09 Jul 2024 05:35:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1720528514; x=1721133314;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=32vdHegLBBPXe4k2HOep2fU0D4Oe84LkPgzWTgbrYGs=;
+ b=JKUaP4E6MdaI5Yw6BZP1bfYRBLec4YHJwQ+IJuD2umxWpabHiWDWtliRGnYb5m8CgO
+ rouVAqJ3GygL8tJCYEjx//UUaV2YMp1wGaDLvcvp2S7Ym8IfC8I4O5EqyBEICGJY/HKS
+ cziAvOZ8ZSMFd6p9f/Ro0wD30cELewU9nNbaoDQSk7hITgKt77ViTRxuLDJzBuVMz1EZ
+ aWuFS3b4gI/BATMlKM/4vDDKzrPe5ERqiPSE3PxeStVpPXFDJKm2TBRro8M97rpGoNNp
+ wdTRO9HkBv75m8jWeTm5wmkMw4EFUUrMbzPKt5jcF4W6G3HpmJvpwCm4p94deK/wIxkj
+ gFDw==
+X-Gm-Message-State: AOJu0YyuffIwpA6peV++tJvuc0xTbfbWzQdUVP00TQjC0rxZiasjQw+Q
+ I2pvMuW+oUKwUmgpUIskwc1UnHvJv3oD8J8WXEEbFUWDAc21csBclaSEvSgVJS/F3Am01ewSR0q
+ BPyHqEc1lvE37anZxkIxJ5mDJ/NXNCC3MfKT8437zO6TrAKsuXoPkcsxucAsxqSmS1K1hy7IxwY
+ 2hcaCqkG+oxKMhj1FC1/HYCZ3HDOaSlGy2uOdi
+X-Received: by 2002:a05:6a20:2588:b0:1c0:eba5:e187 with SMTP id
+ adf61e73a8af0-1c2981ff8c9mr3199765637.6.1720528514094; 
+ Tue, 09 Jul 2024 05:35:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsrjuYJx0TZmeFPrQAjuMPM1cduSMPWJfYOZVzXGdX3JFY3DL+y/8X0kZtoHPkWPCJ7lNSTcjH3IyI66hMmrs=
+X-Received: by 2002:a05:6a20:2588:b0:1c0:eba5:e187 with SMTP id
+ adf61e73a8af0-1c2981ff8c9mr3199748637.6.1720528513782; Tue, 09 Jul 2024
+ 05:35:13 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
+In-Reply-To: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
+From: Li Wang <liwan@redhat.com>
+Date: Tue, 9 Jul 2024 20:34:59 +0800
+Message-ID: <CAEemH2e88FUiY7GbPgtxc+7NfP_xDFamMnACV7H6H_N39=SMrQ@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] kallsyms: skip user-space mapped addresses
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] kallsyms: skip user-space mapped addresses
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,145 +90,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: liwan@redhat.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RHEL9 s390x with KPTI enabled has been observed to sporadically
-use same address ranges for user-space libraries as the ones
-occupied by kallsyms while in kernel-space.
-
-The test currently (wrongly) assumes, that a write to kallsym
-address should fail and doesn't take into account that same
-memory ranges could be mapped differently in user vs. kernel-space.
-
-Add a check to see if a kallsym address is already mapped by user-space,
-and if it is, skip it to avoid false positives.
-
-Before:
-    13	kallsyms.c:115: TFAIL: Successfully accessed kernel addr 0x3ff8060787d (r) (__kstrtabns_nfs3_set_ds_client)
-    14	kallsyms.c:115: TFAIL: Successfully accessed kernel addr 0x3ff806007a0 (t) (nfs_init_server_aclclient)
-    15	kallsyms.c:115: TFAIL: Successfully accessed kernel addr 0x3ff8060a058 (d) (nfsacl_version)
-    16	kallsyms.c:115: TFAIL: Successfully accessed kernel addr 0x3ff8060a078 (d) (nfsacl_rpcstat)
-    ...
-    kallsyms.c:130: TFAIL: Caught 103102 SIGSEGV but expected 153738
-
-After:
-    kallsyms.c:175: TDEBUG: Skipping userspace mapped address 0x3ff80220024
-    kallsyms.c:175: TDEBUG: Skipping userspace mapped address 0x3ff8022003c
-    kallsyms.c:175: TDEBUG: Skipping userspace mapped address 0x3ff80213b20
-    ...
-    kallsyms.c:184: TPASS: Caught 103473 SIGSEGV in access ksymbols addr, skipped 27234
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/security/kallsyms/kallsyms.c | 68 +++++++++++++++++--
- 1 file changed, 63 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/security/kallsyms/kallsyms.c b/testcases/kernel/security/kallsyms/kallsyms.c
-index 2a5cbaa325ea..b07cb9cda268 100644
---- a/testcases/kernel/security/kallsyms/kallsyms.c
-+++ b/testcases/kernel/security/kallsyms/kallsyms.c
-@@ -54,6 +54,8 @@ static struct kallsym *sym_table;
- static unsigned int nr_symbols;
- static sigjmp_buf jmpbuf;
- volatile sig_atomic_t segv_caught;
-+static unsigned long *ranges;
-+static int ranges_size, ranges_len;
- 
- static void segv_handler(int sig)
- {
-@@ -89,6 +91,49 @@ static unsigned int read_kallsyms(struct kallsym *table, unsigned int table_size
- 	return nr_syms;
- }
- 
-+static void read_proc_self_maps(void)
-+{
-+	FILE *fp;
-+
-+	ranges_len = 0;
-+	fp = fopen("/proc/self/maps", "r");
-+	if (fp == NULL)
-+		tst_brk(TBROK | TERRNO, "Failed to open /proc/self/maps.");
-+
-+	while (!feof(fp)) {
-+		unsigned long start, end;
-+		int ret;
-+
-+		ret = fscanf(fp, "%lx-%lx %*[^\n]\n", &start, &end);
-+		if (ret != 2) {
-+			fclose(fp);
-+			tst_brk(TBROK | TERRNO, "Couldn't parse /proc/self/maps line.");
-+		}
-+
-+		if (ranges_size < ranges_len + 1) {
-+			ranges_size += 128;
-+			ranges = realloc(ranges, 2*ranges_size*sizeof(unsigned long));
-+		}
-+		ranges[ranges_len*2] = start;
-+		ranges[ranges_len*2 + 1] = end;
-+
-+		ranges_len++;
-+	}
-+
-+	fclose(fp);
-+}
-+
-+static int is_address_mapped(unsigned long addr)
-+{
-+	int i;
-+
-+	for (i = 0; i < ranges_len; i++) {
-+		if (ranges[i*2] <= addr && addr < ranges[i*2 + 1])
-+			return 1;
-+	}
-+	return 0;
-+}
-+
- static void setup(void)
- {
- 	struct sigaction sa;
-@@ -117,17 +162,30 @@ static void access_ksymbols_address(struct kallsym *table)
- 	}
- }
- 
-+
- static void test_access_kernel_address(void)
- {
--	segv_caught = 0;
-+	int skipped = 0;
- 
--	for (unsigned int i = 0; i < nr_symbols; i++)
-+	segv_caught = 0;
-+	read_proc_self_maps();
-+
-+	for (unsigned int i = 0; i < nr_symbols; i++) {
-+		if (is_address_mapped(sym_table[i].addr)) {
-+			tst_res(TDEBUG, "Skipping userspace mapped address 0x%lx",
-+				sym_table[i].addr);
-+			skipped++;
-+			continue;
-+		}
- 		access_ksymbols_address(&sym_table[i]);
-+	}
- 
--	if (segv_caught == (sig_atomic_t)nr_symbols)
--		tst_res(TPASS, "Caught %d SIGSEGV in access ksymbols addr", segv_caught);
-+	if (segv_caught == (sig_atomic_t)nr_symbols - skipped)
-+		tst_res(TPASS, "Caught %d SIGSEGV in access ksymbols addr, skipped %d",
-+			segv_caught, skipped);
- 	else
--		tst_res(TFAIL, "Caught %d SIGSEGV but expected %d", segv_caught, nr_symbols);
-+		tst_res(TFAIL, "Caught %d SIGSEGV but expected %d, skipped %d",
-+			segv_caught, nr_symbols-skipped, skipped);
- }
- 
- static void cleanup(void)
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBKdWwgOSwgMjAyNCBhdCA4OjE44oCvUE0gSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJl
+ZGhhdC5jb20+IHdyb3RlOgoKPiBSSEVMOSBzMzkweCB3aXRoIEtQVEkgZW5hYmxlZCBoYXMgYmVl
+biBvYnNlcnZlZCB0byBzcG9yYWRpY2FsbHkKPiB1c2Ugc2FtZSBhZGRyZXNzIHJhbmdlcyBmb3Ig
+dXNlci1zcGFjZSBsaWJyYXJpZXMgYXMgdGhlIG9uZXMKPiBvY2N1cGllZCBieSBrYWxsc3ltcyB3
+aGlsZSBpbiBrZXJuZWwtc3BhY2UuCj4KClRoYW5rcyBmb3IgdGhlIHByb3Bvc2FsIGZpeCwgZG8g
+eW91IHRoaW5rIHdlIG5lZWQgdG8gYWRkCmEgY2hlY2sgdG8gc2VlIGlmIEtQVEkgaXMgZXhwbGlj
+aXRseSBlbmFibGVkIGJlZm9yZSBkb2luZyB0aGF0CmlzX2FkZHJlc3NfbWFwcGVkPwoob3IsIGNo
+ZWNrIHRoZSBjb25maWd1cmF0aW9uIGZvciBDT05GSUdfUEFHRV9UQUJMRV9JU09MQVRJT04pCgoK
+Cj4gVGhlIHRlc3QgY3VycmVudGx5ICh3cm9uZ2x5KSBhc3N1bWVzLCB0aGF0IGEgd3JpdGUgdG8g
+a2FsbHN5bQo+IGFkZHJlc3Mgc2hvdWxkIGZhaWwgYW5kIGRvZXNuJ3QgdGFrZSBpbnRvIGFjY291
+bnQgdGhhdCBzYW1lCj4gbWVtb3J5IHJhbmdlcyBjb3VsZCBiZSBtYXBwZWQgZGlmZmVyZW50bHkg
+aW4gdXNlciB2cy4ga2VybmVsLXNwYWNlLgo+Cj4gQWRkIGEgY2hlY2sgdG8gc2VlIGlmIGEga2Fs
+bHN5bSBhZGRyZXNzIGlzIGFscmVhZHkgbWFwcGVkIGJ5IHVzZXItc3BhY2UsCj4gYW5kIGlmIGl0
+IGlzLCBza2lwIGl0IHRvIGF2b2lkIGZhbHNlIHBvc2l0aXZlcy4KCgo+IEJlZm9yZToKPiAgICAg
+MTMgIGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBh
+ZGRyCj4gMHgzZmY4MDYwNzg3ZCAocikgKF9fa3N0cnRhYm5zX25mczNfc2V0X2RzX2NsaWVudCkK
+PiAgICAgMTQgIGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtl
+cm5lbCBhZGRyCj4gMHgzZmY4MDYwMDdhMCAodCkgKG5mc19pbml0X3NlcnZlcl9hY2xjbGllbnQp
+Cj4gICAgIDE1ICBrYWxsc3ltcy5jOjExNTogVEZBSUw6IFN1Y2Nlc3NmdWxseSBhY2Nlc3NlZCBr
+ZXJuZWwgYWRkcgo+IDB4M2ZmODA2MGEwNTggKGQpIChuZnNhY2xfdmVyc2lvbikKPiAgICAgMTYg
+IGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBhZGRy
+Cj4gMHgzZmY4MDYwYTA3OCAoZCkgKG5mc2FjbF9ycGNzdGF0KQo+ICAgICAuLi4KPiAgICAga2Fs
+bHN5bXMuYzoxMzA6IFRGQUlMOiBDYXVnaHQgMTAzMTAyIFNJR1NFR1YgYnV0IGV4cGVjdGVkIDE1
+MzczOAo+Cj4gQWZ0ZXI6Cj4gICAgIGthbGxzeW1zLmM6MTc1OiBUREVCVUc6IFNraXBwaW5nIHVz
+ZXJzcGFjZSBtYXBwZWQgYWRkcmVzcyAweDNmZjgwMjIwMDI0Cj4gICAgIGthbGxzeW1zLmM6MTc1
+OiBUREVCVUc6IFNraXBwaW5nIHVzZXJzcGFjZSBtYXBwZWQgYWRkcmVzcyAweDNmZjgwMjIwMDNj
+Cj4gICAgIGthbGxzeW1zLmM6MTc1OiBUREVCVUc6IFNraXBwaW5nIHVzZXJzcGFjZSBtYXBwZWQg
+YWRkcmVzcyAweDNmZjgwMjEzYjIwCj4gICAgIC4uLgo+ICAgICBrYWxsc3ltcy5jOjE4NDogVFBB
+U1M6IENhdWdodCAxMDM0NzMgU0lHU0VHViBpbiBhY2Nlc3Mga3N5bWJvbHMgYWRkciwKPiBza2lw
+cGVkIDI3MjM0Cj4KPiBTaWduZWQtb2ZmLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0
+LmNvbT4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9rYWxsc3ltcy9rYWxsc3lt
+cy5jIHwgNjggKysrKysrKysrKysrKysrKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgNjMgaW5zZXJ0
+aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
+L3NlY3VyaXR5L2thbGxzeW1zL2thbGxzeW1zLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJp
+dHkva2FsbHN5bXMva2FsbHN5bXMuYwo+IGluZGV4IDJhNWNiYWEzMjVlYS4uYjA3Y2I5Y2RhMjY4
+IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkva2FsbHN5bXMva2FsbHN5
+bXMuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkva2FsbHN5bXMva2FsbHN5bXMu
+Ywo+IEBAIC01NCw2ICs1NCw4IEBAIHN0YXRpYyBzdHJ1Y3Qga2FsbHN5bSAqc3ltX3RhYmxlOwo+
+ICBzdGF0aWMgdW5zaWduZWQgaW50IG5yX3N5bWJvbHM7Cj4gIHN0YXRpYyBzaWdqbXBfYnVmIGpt
+cGJ1ZjsKPiAgdm9sYXRpbGUgc2lnX2F0b21pY190IHNlZ3ZfY2F1Z2h0Owo+ICtzdGF0aWMgdW5z
+aWduZWQgbG9uZyAqcmFuZ2VzOwo+ICtzdGF0aWMgaW50IHJhbmdlc19zaXplLCByYW5nZXNfbGVu
+Owo+Cj4gIHN0YXRpYyB2b2lkIHNlZ3ZfaGFuZGxlcihpbnQgc2lnKQo+ICB7Cj4gQEAgLTg5LDYg
+KzkxLDQ5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgcmVhZF9rYWxsc3ltcyhzdHJ1Y3Qga2FsbHN5
+bQo+ICp0YWJsZSwgdW5zaWduZWQgaW50IHRhYmxlX3NpemUKPiAgICAgICAgIHJldHVybiBucl9z
+eW1zOwo+ICB9Cj4KPiArc3RhdGljIHZvaWQgcmVhZF9wcm9jX3NlbGZfbWFwcyh2b2lkKQo+ICt7
+Cj4gKyAgICAgICBGSUxFICpmcDsKPiArCj4gKyAgICAgICByYW5nZXNfbGVuID0gMDsKPiArICAg
+ICAgIGZwID0gZm9wZW4oIi9wcm9jL3NlbGYvbWFwcyIsICJyIik7Cj4gKyAgICAgICBpZiAoZnAg
+PT0gTlVMTCkKPiArICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgIkZhaWxl
+ZCB0byBvcGVuIC9wcm9jL3NlbGYvbWFwcy4iKTsKPiArCj4gKyAgICAgICB3aGlsZSAoIWZlb2Yo
+ZnApKSB7Cj4gKyAgICAgICAgICAgICAgIHVuc2lnbmVkIGxvbmcgc3RhcnQsIGVuZDsKPiArICAg
+ICAgICAgICAgICAgaW50IHJldDsKPiArCj4gKyAgICAgICAgICAgICAgIHJldCA9IGZzY2FuZihm
+cCwgIiVseC0lbHggJSpbXlxuXVxuIiwgJnN0YXJ0LCAmZW5kKTsKPiArICAgICAgICAgICAgICAg
+aWYgKHJldCAhPSAyKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZmNsb3NlKGZwKTsKPiAr
+ICAgICAgICAgICAgICAgICAgICAgICB0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiQ291bGRuJ3Qg
+cGFyc2UKPiAvcHJvYy9zZWxmL21hcHMgbGluZS4iKTsKPiArICAgICAgICAgICAgICAgfQo+ICsK
+PiArICAgICAgICAgICAgICAgaWYgKHJhbmdlc19zaXplIDwgcmFuZ2VzX2xlbiArIDEpIHsKPiAr
+ICAgICAgICAgICAgICAgICAgICAgICByYW5nZXNfc2l6ZSArPSAxMjg7Cj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgcmFuZ2VzID0gcmVhbGxvYyhyYW5nZXMsCj4gMipyYW5nZXNfc2l6ZSpzaXpl
+b2YodW5zaWduZWQgbG9uZykpOwo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAg
+IHJhbmdlc1tyYW5nZXNfbGVuKjJdID0gc3RhcnQ7Cj4gKyAgICAgICAgICAgICAgIHJhbmdlc1ty
+YW5nZXNfbGVuKjIgKyAxXSA9IGVuZDsKPiArCj4gKyAgICAgICAgICAgICAgIHJhbmdlc19sZW4r
+KzsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBmY2xvc2UoZnApOwo+ICt9Cj4gKwo+ICtzdGF0
+aWMgaW50IGlzX2FkZHJlc3NfbWFwcGVkKHVuc2lnbmVkIGxvbmcgYWRkcikKPiArewo+ICsgICAg
+ICAgaW50IGk7Cj4gKwo+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IHJhbmdlc19sZW47IGkrKykg
+ewo+ICsgICAgICAgICAgICAgICBpZiAocmFuZ2VzW2kqMl0gPD0gYWRkciAmJiBhZGRyIDwgcmFu
+Z2VzW2kqMiArIDFdKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAxOwo+ICsgICAg
+ICAgfQo+ICsgICAgICAgcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyB2b2lkIHNldHVwKHZv
+aWQpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBzaWdhY3Rpb24gc2E7Cj4gQEAgLTExNywxNyArMTYy
+LDMwIEBAIHN0YXRpYyB2b2lkIGFjY2Vzc19rc3ltYm9sc19hZGRyZXNzKHN0cnVjdCBrYWxsc3lt
+Cj4gKnRhYmxlKQo+ICAgICAgICAgfQo+ICB9Cj4KPiArCj4gIHN0YXRpYyB2b2lkIHRlc3RfYWNj
+ZXNzX2tlcm5lbF9hZGRyZXNzKHZvaWQpCj4gIHsKPiAtICAgICAgIHNlZ3ZfY2F1Z2h0ID0gMDsK
+PiArICAgICAgIGludCBza2lwcGVkID0gMDsKPgo+IC0gICAgICAgZm9yICh1bnNpZ25lZCBpbnQg
+aSA9IDA7IGkgPCBucl9zeW1ib2xzOyBpKyspCj4gKyAgICAgICBzZWd2X2NhdWdodCA9IDA7Cj4g
+KyAgICAgICByZWFkX3Byb2Nfc2VsZl9tYXBzKCk7Cj4gKwo+ICsgICAgICAgZm9yICh1bnNpZ25l
+ZCBpbnQgaSA9IDA7IGkgPCBucl9zeW1ib2xzOyBpKyspIHsKPiArICAgICAgICAgICAgICAgaWYg
+KGlzX2FkZHJlc3NfbWFwcGVkKHN5bV90YWJsZVtpXS5hZGRyKSkgewo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIHRzdF9yZXMoVERFQlVHLCAiU2tpcHBpbmcgdXNlcnNwYWNlIG1hcHBlZCBhZGRy
+ZXNzCj4gMHglbHgiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3ltX3RhYmxl
+W2ldLmFkZHIpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHNraXBwZWQrKzsKPiArICAgICAg
+ICAgICAgICAgICAgICAgICBjb250aW51ZTsKPiArICAgICAgICAgICAgICAgfQo+ICAgICAgICAg
+ICAgICAgICBhY2Nlc3Nfa3N5bWJvbHNfYWRkcmVzcygmc3ltX3RhYmxlW2ldKTsKPiArICAgICAg
+IH0KPgo+IC0gICAgICAgaWYgKHNlZ3ZfY2F1Z2h0ID09IChzaWdfYXRvbWljX3QpbnJfc3ltYm9s
+cykKPiAtICAgICAgICAgICAgICAgdHN0X3JlcyhUUEFTUywgIkNhdWdodCAlZCBTSUdTRUdWIGlu
+IGFjY2VzcyBrc3ltYm9scwo+IGFkZHIiLCBzZWd2X2NhdWdodCk7Cj4gKyAgICAgICBpZiAoc2Vn
+dl9jYXVnaHQgPT0gKHNpZ19hdG9taWNfdClucl9zeW1ib2xzIC0gc2tpcHBlZCkKPiArICAgICAg
+ICAgICAgICAgdHN0X3JlcyhUUEFTUywgIkNhdWdodCAlZCBTSUdTRUdWIGluIGFjY2VzcyBrc3lt
+Ym9scyBhZGRyLAo+IHNraXBwZWQgJWQiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgIHNlZ3Zf
+Y2F1Z2h0LCBza2lwcGVkKTsKPiAgICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgdHN0X3Jl
+cyhURkFJTCwgIkNhdWdodCAlZCBTSUdTRUdWIGJ1dCBleHBlY3RlZCAlZCIsCj4gc2Vndl9jYXVn
+aHQsIG5yX3N5bWJvbHMpOwo+ICsgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiQ2F1Z2h0
+ICVkIFNJR1NFR1YgYnV0IGV4cGVjdGVkICVkLCBza2lwcGVkCj4gJWQiLAo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIHNlZ3ZfY2F1Z2h0LCBucl9zeW1ib2xzLXNraXBwZWQsIHNraXBwZWQpOwo+
+ICB9Cj4KPiAgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQo+IC0tCj4gMi4zOS4zCj4KPgoKLS0g
+Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
