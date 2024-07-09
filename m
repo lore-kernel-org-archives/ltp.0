@@ -4,114 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5D9DC2BD09
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 06:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BFDDC2BD09
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 06:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1720507317; h=mime-version :
+ date : to : in-reply-to : references : message-id : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=KHwkc3dFEnabdxJh3GOEy0JXsZ/+tEhE/0amLiZNLQo=;
+ b=aqokU1Ka80hREMh+0iC6AII3BU6ODwT3TF1UkNNjkziDObsfEYw1v5rq8rW+Qih3L58nS
+ zXNFLJVzSB/MODyEbUrs8h3iV3eVu2cel87CymKKAmpG/sKQgexTcnWadFK8LctMjID/b8K
+ bTa5gEdTSudt/6VrTkFze65der48DGk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E7A0B3D3921
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 08:16:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 69E423D391A
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 08:41:57 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F0343D3905
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 08:16:03 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 296D23D121E
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 05:17:15 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=matoro.tk (client-ip=104.188.251.153; helo=matoro.tk;
+ envelope-from=matoro_mailinglist_kernel@matoro.tk; receiver=lists.linux.it)
+Received: from matoro.tk (matoro.tk [104.188.251.153])
+ (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CB154200757
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 08:15:59 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 33A77219F2;
- Tue,  9 Jul 2024 06:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1720505758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nLUs9DaeGdbqwOqJEYRR8uPusR2d99H5zg7CwXPSU1Q=;
- b=JL9w64m5JHDopt7LbSJ7SGl4h4Wi9Df56uOuslX2PbaHZuvArSCtJXxxsCxrYhbIGlwBc5
- 4IvrSTCGMy8ZFrIO5+w+CLEOAgF0wvqLDs0iK7wVZC7ckitqo5Q6GZg7YDcfJ0Gufui5We
- BrVXTYKQgeFIWbuM81a//9EI3QuQphc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1720505758;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nLUs9DaeGdbqwOqJEYRR8uPusR2d99H5zg7CwXPSU1Q=;
- b=vWkXMOcv8sHPsEdTR4GqF4+7+bOKxAFa+KiRk7PzbfNuIpmUMn2oNiI/JlSjYof9knm2hL
- G3DipCO+S3wgkzAg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=JL9w64m5;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vWkXMOcv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1720505758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nLUs9DaeGdbqwOqJEYRR8uPusR2d99H5zg7CwXPSU1Q=;
- b=JL9w64m5JHDopt7LbSJ7SGl4h4Wi9Df56uOuslX2PbaHZuvArSCtJXxxsCxrYhbIGlwBc5
- 4IvrSTCGMy8ZFrIO5+w+CLEOAgF0wvqLDs0iK7wVZC7ckitqo5Q6GZg7YDcfJ0Gufui5We
- BrVXTYKQgeFIWbuM81a//9EI3QuQphc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1720505758;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nLUs9DaeGdbqwOqJEYRR8uPusR2d99H5zg7CwXPSU1Q=;
- b=vWkXMOcv8sHPsEdTR4GqF4+7+bOKxAFa+KiRk7PzbfNuIpmUMn2oNiI/JlSjYof9knm2hL
- G3DipCO+S3wgkzAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 243911369A;
- Tue,  9 Jul 2024 06:15:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BPgaCJ7VjGayfgAAD6G6ig
- (envelope-from <akumar@suse.de>); Tue, 09 Jul 2024 06:15:58 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 09 Jul 2024 08:15:57 +0200
-Message-ID: <2701829.vuYhMxLoTh@localhost>
-Organization: SUSE
-In-Reply-To: <20240516-listmount_statmount-v3-2-2ff4ba29bba7@suse.com>
-References: <20240516-listmount_statmount-v3-0-2ff4ba29bba7@suse.com>
- <20240516-listmount_statmount-v3-2-2ff4ba29bba7@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AF77B140032B
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 05:16:59 +0200 (CEST)
+DKIM-Signature: a=rsa-sha256; bh=rx00TmCRleNaYNwU6VNaTFY0rZMBsUNLwYKIOGlxchU=; 
+ c=relaxed/relaxed; d=matoro.tk;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
+ i=@matoro.tk; s=20240626; t=1720495009; v=1; x=1720927009;
+ b=XVm9ESgxplkXKLhbJmny9221iGi6HOJqQ6Ybh5Zf7pjmsdL8727CrhLmuQm8Rn9f2VXgIKbc
+ M23xXjySR6nsBuAyft4LMR+1qIj55Z78X3pmBhTV8R2ELTL7bWMiCBfCoVChWb9iQ+tyv7YPFNe
+ xFGtcfSysHqjAAuA8eXEMrGjZjQu1ZiBqjonY9OwcHF9WgZHpKU8pJ4Ayl96kopStLzDYSK2IYk
+ RHagsXWQwj/RhDnWR2wJdG7KJyXG6VGTbPsr4lwWCw9qH/74sBLjNOtos05wkuR30rk1777wwhE
+ jJzFCvTStWHU1iIQNzcp1FGiBHm7LrqlvOfuuhlZvgJJMH5qMBbhaqAwsS/k/xPnN+vxQrqcCGW
+ 2AcQ5rjztDiD8wRGCDv7l+EMEzcBGfhEOi5cXUfPtt7Qh1SvRJjapLZyZp3rLJCX22nDsOM7mgU
+ Jg7IS9oKX14QgCR4hYHxMV24Wzvly38HUGfR+U/2sAbKhPd71KZx+jtsGujjCqic6+hhqKVsrKk
+ QtbEGCquLaLHY03H1tEsidsgDZVWg/x8d/IXQfkoWQqAC40sb/tmUF8VXT0HlS8+PtF4Rx9LWld
+ /4E0N7h1nVEptoFCgBHldj3HVqFB83RhitjSf646iN+Q20HxpYckFeKxOeTIc3xaojvQx0YAXj0
+ LpFHPpQoTY4=
+Received: by matoro.tk (envelope-sender
+ <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id 89b59a13; Mon, 08 Jul
+ 2024 23:16:49 -0400
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 33A77219F2
-X-Spamd-Result: default: False [-5.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- DWL_DNSWL_LOW(-1.00)[suse.de:dkim]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; HAS_ORG_HEADER(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Date: Mon, 08 Jul 2024 23:16:48 -0400
+To: Vitaly Chikunov <vt@altlinux.org>
+In-Reply-To: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+Message-ID: <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
+X-Sender: matoro_mailinglist_kernel@matoro.tk
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 02/11] Add listmount/statmount syscalls
+X-Mailman-Approved-At: Tue, 09 Jul 2024 08:41:34 +0200
+Subject: Re: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree()
+ bad address (00000000453be747)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,136 +75,314 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: matoro via ltp <ltp@lists.linux.it>
+Reply-To: matoro <matoro_mailinglist_kernel@matoro.tk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, ltp@lists.linux.it
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgpSZXZpZXdlZC1ieTogQXZpbmVzaCBLdW1hciA8YWt1bWFyQHN1c2UuZGU+CgoKT24gVGh1
-cnNkYXksIE1heSAxNiwgMjAyNCAyOjI5OjEw4oCvUE0gR01UKzIgQW5kcmVhIENlcnZlc2F0byB3
-cm90ZToKPiBGcm9tOiBBbmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29t
-Pgo+IAo+IC0tLQo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvYWFyY2g2NC5pbiAgIHwgMiArKwo+
-ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJjLmluICAgICAgIHwgMiArKwo+ICBpbmNsdWRlL2xh
-cGkvc3lzY2FsbHMvYXJtLmluICAgICAgIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMv
-aHBwYS5pbiAgICAgIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvaTM4Ni5pbiAgICAg
-IHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvaWE2NC5pbiAgICAgIHwgMiArKwo+ICBp
-bmNsdWRlL2xhcGkvc3lzY2FsbHMvbG9vbmdhcmNoLmluIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkv
-c3lzY2FsbHMvbWlwc19uMzIuaW4gIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlw
-c19uNjQuaW4gIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlwc19vMzIuaW4gIHwg
-MiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93ZXJwYy5pbiAgIHwgMiArKwo+ICBpbmNs
-dWRlL2xhcGkvc3lzY2FsbHMvcG93ZXJwYzY0LmluIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lz
-Y2FsbHMvczM5MC5pbiAgICAgIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5MHgu
-aW4gICAgIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvc2guaW4gICAgICAgIHwgMiAr
-Kwo+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvc3BhcmMuaW4gICAgIHwgMiArKwo+ICBpbmNsdWRl
-L2xhcGkvc3lzY2FsbHMvc3BhcmM2NC5pbiAgIHwgMiArKwo+ICBpbmNsdWRlL2xhcGkvc3lzY2Fs
-bHMveDg2XzY0LmluICAgIHwgMiArKwo+ICAxOCBmaWxlcyBjaGFuZ2VkLCAzNiBpbnNlcnRpb25z
-KCspCj4gCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hYXJjaDY0LmluIGIv
-aW5jbHVkZS9sYXBpL3N5c2NhbGxzL2FhcmNoNjQuaW4KPiBpbmRleCAyY2I2YzJkODcuLjNiMzJh
-M2IyYSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYWFyY2g2NC5pbgo+ICsr
-KyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hYXJjaDY0LmluCj4gQEAgLTI5Nyw0ICsyOTcsNiBA
-QCBmYWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+
-ICBmdXRleF93YWl0diA0NDkKPiArc3RhdG1vdW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4gIF9z
-eXNjdGwgMTA3OAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJjLmluIGIv
-aW5jbHVkZS9sYXBpL3N5c2NhbGxzL2FyYy5pbgo+IGluZGV4IDNlMmVlOTA2MS4uMWEzYTkwOGU0
-IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hcmMuaW4KPiArKysgYi9pbmNs
-dWRlL2xhcGkvc3lzY2FsbHMvYXJjLmluCj4gQEAgLTMxNywzICszMTcsNSBAQCBmYWNjZXNzYXQy
-IDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+ICBmdXRleF93YWl0
-diA0NDkKPiArc3RhdG1vdW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4gZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvbGFwaS9zeXNjYWxscy9hcm0uaW4gYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJtLmlu
-Cj4gaW5kZXggN2JkYmNhNTMzLi43OGQ4NDU0OWYgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBp
-L3N5c2NhbGxzL2FybS5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9hcm0uaW4KPiBA
-QCAtMzk1LDMgKzM5NSw1IEBAIGZhY2Nlc3NhdDIgKF9fTlJfU1lTQ0FMTF9CQVNFKzQzOSkKPiAg
-ZXBvbGxfcHdhaXQyIChfX05SX1NZU0NBTExfQkFTRSs0NDEpCj4gIHF1b3RhY3RsX2ZkIChfX05S
-X1NZU0NBTExfQkFTRSs0NDMpCj4gIGZ1dGV4X3dhaXR2IChfX05SX1NZU0NBTExfQkFTRSs0NDkp
-Cj4gK3N0YXRtb3VudCAoX19OUl9TWVNDQUxMX0JBU0UrNDU3KQo+ICtsaXN0bW91bnQgKF9fTlJf
-U1lTQ0FMTF9CQVNFKzQ1OCkKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2hw
-cGEuaW4gYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvaHBwYS5pbgo+IGluZGV4IDhlYmRhZmFmYi4u
-MWYwMWE0YTBjIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9ocHBhLmluCj4g
-KysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2hwcGEuaW4KPiBAQCAtNDQsMyArNDQsNSBAQCBm
-YWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+ICBm
-dXRleF93YWl0diA0NDkKPiArc3RhdG1vdW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4gZGlmZiAt
-LWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9pMzg2LmluIGIvaW5jbHVkZS9sYXBpL3N5c2Nh
-bGxzL2kzODYuaW4KPiBpbmRleCAxNDcyNjMxYzQuLmY0ZTY1ODlhYiAxMDA2NDQKPiAtLS0gYS9p
-bmNsdWRlL2xhcGkvc3lzY2FsbHMvaTM4Ni5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9pMzg2LmluCj4gQEAgLTQzMSwzICs0MzEsNSBAQCBmYWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9w
-d2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+ICBmdXRleF93YWl0diA0NDkKPiArc3RhdG1v
-dW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNj
-YWxscy9pYTY0LmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2lhNjQuaW4KPiBpbmRleCAwZWE2
-ZTk3MjIuLmRkOGI4Yzc5ZiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvaWE2
-NC5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9pYTY0LmluCj4gQEAgLTM0NCwzICsz
-NDQsNSBAQCBmYWNjZXNzYXQyIDE0NjMKPiAgZXBvbGxfcHdhaXQyIDE0NjUKPiAgcXVvdGFjdGxf
-ZmQgMTQ2Nwo+ICBmdXRleF93YWl0diAxNDczCj4gK3N0YXRtb3VudCAxNDgxCj4gK2xpc3Rtb3Vu
-dCAxNDgyCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9sb29uZ2FyY2guaW4g
-Yi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvbG9vbmdhcmNoLmluCj4gaW5kZXggMzAxZjYxMWY2Li5m
-NDhjMDY1OGMgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2xvb25nYXJjaC5p
-bgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9sb29uZ2FyY2guaW4KPiBAQCAtMzA1LDMg
-KzMwNSw1IEBAIG1lbWZkX3NlY3JldCA0NDcKPiAgcHJvY2Vzc19tcmVsZWFzZSA0NDgKPiAgZnV0
-ZXhfd2FpdHYgNDQ5Cj4gIHNldF9tZW1wb2xpY3lfaG9tZV9ub2RlIDQ1MAo+ICtzdGF0bW91bnQg
-NDU3Cj4gK2xpc3Rtb3VudCA0NTgKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxz
-L21pcHNfbjMyLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL21pcHNfbjMyLmluCj4gaW5kZXgg
-ZTgxOGM5ZDkyLi5hZjU5MjhjMGUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxz
-L21pcHNfbjMyLmluCj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL21pcHNfbjMyLmluCj4g
-QEAgLTM3MSwzICszNzEsNSBAQCBlcG9sbF9wd2FpdDIgNjQ0MQo+ICBtb3VudF9zZXRhdHRyIDY0
-NDIKPiAgcXVvdGFjdGxfZmQgNjQ0Mwo+ICBmdXRleF93YWl0diA2NDQ5Cj4gK3N0YXRtb3VudCA2
-NDU3Cj4gK2xpc3Rtb3VudCA2NDU4Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9taXBzX242NC5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX242NC5pbgo+IGluZGV4
-IDZlMTVmNDNiMy4uYTZkODNlMmUwIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9taXBzX242NC5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX242NC5pbgo+
-IEBAIC0zNDcsMyArMzQ3LDUgQEAgZXBvbGxfcHdhaXQyIDU0NDEKPiAgbW91bnRfc2V0YXR0ciA1
-NDQyCj4gIHF1b3RhY3RsX2ZkIDU0NDMKPiAgZnV0ZXhfd2FpdHYgNTQ0OQo+ICtzdGF0bW91bnQg
-NTQ1Nwo+ICtsaXN0bW91bnQgNTQ1OAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2Fs
-bHMvbWlwc19vMzIuaW4gYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlwc19vMzIuaW4KPiBpbmRl
-eCA5MjFkNWQzMzEuLmVkYTczODhhMyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2Fs
-bHMvbWlwc19vMzIuaW4KPiArKysgYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlwc19vMzIuaW4K
-PiBAQCAtNDE3LDMgKzQxNyw1IEBAIGVwb2xsX3B3YWl0MiA0NDQxCj4gIG1vdW50X3NldGF0dHIg
-NDQ0Mgo+ICBxdW90YWN0bF9mZCA0NDQzCj4gIGZ1dGV4X3dhaXR2IDQ0NDkKPiArc3RhdG1vdW50
-IDQ0NTcKPiArbGlzdG1vdW50IDQ0NTgKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2Nh
-bGxzL3Bvd2VycGMuaW4gYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93ZXJwYy5pbgo+IGluZGV4
-IDU0NWQ5ZDNkNi4uMWI0MGVhNTNkIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9wb3dlcnBjLmluCj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3Bvd2VycGMuaW4KPiBA
-QCAtNDI0LDMgKzQyNCw1IEBAIGZhY2Nlc3NhdDIgNDM5Cj4gIGVwb2xsX3B3YWl0MiA0NDEKPiAg
-cXVvdGFjdGxfZmQgNDQzCj4gIGZ1dGV4X3dhaXR2IDQ0OQo+ICtzdGF0bW91bnQgNDU3Cj4gK2xp
-c3Rtb3VudCA0NTgKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3Bvd2VycGM2
-NC5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9wb3dlcnBjNjQuaW4KPiBpbmRleCA1NDVkOWQz
-ZDYuLjFiNDBlYTUzZCAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93ZXJw
-YzY0LmluCj4gKysrIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3Bvd2VycGM2NC5pbgo+IEBAIC00
-MjQsMyArNDI0LDUgQEAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90
-YWN0bF9mZCA0NDMKPiAgZnV0ZXhfd2FpdHYgNDQ5Cj4gK3N0YXRtb3VudCA0NTcKPiArbGlzdG1v
-dW50IDQ1OAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5MC5pbiBiL2lu
-Y2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkwLmluCj4gaW5kZXggNzIxM2FjNWY4Li42NTkzYTRmZjcg
-MTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3MzOTAuaW4KPiArKysgYi9pbmNs
-dWRlL2xhcGkvc3lzY2FsbHMvczM5MC5pbgo+IEBAIC00MTEsMyArNDExLDUgQEAgZmFjY2Vzc2F0
-MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9mZCA0NDMKPiAgZnV0ZXhfd2Fp
-dHYgNDQ5Cj4gK3N0YXRtb3VudCA0NTcKPiArbGlzdG1vdW50IDQ1OAo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5MHguaW4gYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5
-MHguaW4KPiBpbmRleCA4NzkwMTJlMmIuLmI5OGU3MjdkNiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRl
-L2xhcGkvc3lzY2FsbHMvczM5MHguaW4KPiArKysgYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5
-MHguaW4KPiBAQCAtMzU5LDMgKzM1OSw1IEBAIGZhY2Nlc3NhdDIgNDM5Cj4gIGVwb2xsX3B3YWl0
-MiA0NDEKPiAgcXVvdGFjdGxfZmQgNDQzCj4gIGZ1dGV4X3dhaXR2IDQ0OQo+ICtzdGF0bW91bnQg
-NDU3Cj4gK2xpc3Rtb3VudCA0NTgKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxz
-L3NoLmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmluCj4gaW5kZXggN2Q1MTkyYTI3Li41
-OTE3ODExM2UgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmluCj4gKysr
-IGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3NoLmluCj4gQEAgLTQwNSwzICs0MDUsNSBAQCBmYWNj
-ZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0Mwo+ICBmdXRl
-eF93YWl0diA0NDkKPiArc3RhdG1vdW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4gZGlmZiAtLWdp
-dCBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYy5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9zcGFyYy5pbgo+IGluZGV4IDkxZDJmYjFjMi4uNTZhMjQ0Y2ViIDEwMDY0NAo+IC0tLSBhL2lu
-Y2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYy5pbgo+ICsrKyBiL2luY2x1ZGUvbGFwaS9zeXNjYWxs
-cy9zcGFyYy5pbgo+IEBAIC00MTAsMyArNDEwLDUgQEAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxf
-cHdhaXQyIDQ0MQo+ICBxdW90YWN0bF9mZCA0NDMKPiAgZnV0ZXhfd2FpdHYgNDQ5Cj4gK3N0YXRt
-b3VudCA0NTcKPiArbGlzdG1vdW50IDQ1OAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lz
-Y2FsbHMvc3BhcmM2NC5pbiBiL2luY2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYzY0LmluCj4gaW5k
-ZXggMWYyZmM1OWI3Li44NDA1MWE2MDAgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL3N5c2Nh
-bGxzL3NwYXJjNjQuaW4KPiArKysgYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMvc3BhcmM2NC5pbgo+
-IEBAIC0zNzUsMyArMzc1LDUgQEAgZmFjY2Vzc2F0MiA0MzkKPiAgZXBvbGxfcHdhaXQyIDQ0MQo+
-ICBxdW90YWN0bF9mZCA0NDMKPiAgZnV0ZXhfd2FpdHYgNDQ5Cj4gK3N0YXRtb3VudCA0NTcKPiAr
-bGlzdG1vdW50IDQ1OAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3lzY2FsbHMveDg2XzY0
-LmluIGIvaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3g4Nl82NC5pbgo+IGluZGV4IGRjNjFhYTU2ZS4u
-OTM1YzVkN2JjIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zeXNjYWxscy94ODZfNjQuaW4K
-PiArKysgYi9pbmNsdWRlL2xhcGkvc3lzY2FsbHMveDg2XzY0LmluCj4gQEAgLTM1Miw2ICszNTIs
-OCBAQCBmYWNjZXNzYXQyIDQzOQo+ICBlcG9sbF9wd2FpdDIgNDQxCj4gIHF1b3RhY3RsX2ZkIDQ0
-Mwo+ICBmdXRleF93YWl0diA0NDkKPiArc3RhdG1vdW50IDQ1Nwo+ICtsaXN0bW91bnQgNDU4Cj4g
-IHJ0X3NpZ2FjdGlvbiA1MTIKPiAgcnRfc2lncmV0dXJuIDUxMwo+ICBpb2N0bCA1MTQKPiAKPiAK
-ClJlZ2FyZHMsCkF2aW5lc2gKCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+On 2024-07-05 16:34, Vitaly Chikunov wrote:
+> Hi,
+> 
+> There is new WARNING and Oops on ppc64le in v6.6.37 when running LTP tests:
+> bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt below. 
+> I
+> see there is 1 commit in v6.6.36..v6.6.37 with call to
+> bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
+> 
+>   f99feda5684a powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+> 
+> Log:
+> 
+>  [    8.822079] LTP: starting bpf_prog01
+>  [    8.841853] ------------[ cut here ]------------
+>  [    8.841946] Trying to vfree() bad address (00000000453be747)
+>  [    8.842024] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2700 
+> remove_vm_area+0xb4/0xf0
+>  [    8.842103] Modules linked in: virtio_rng rng_core virtio_net 
+> net_failover failover sd_mod ata_generic ata_piix libata scsi_mod 
+> scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev 
+> virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+>  [    8.842323] CPU: 6 PID: 689 Comm: bpf_prog01 Not tainted 
+> 6.6.37-un-def-alt1 #1
+>  [    8.842396] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 
+> 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+>  [    8.842519] NIP:  c0000000004faf04 LR: c0000000004faf00 CTR: 
+> 0000000000000000
+>  [    8.842598] REGS: c000000009b6f250 TRAP: 0700   Not tainted  
+> (6.6.37-un-def-alt1)
+>  [    8.842669] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002822  
+> XER: 00000000
+>  [    8.842748] CFAR: c00000000015df94 IRQMASK: 0
+>  [    8.842748] GPR00: 0000000000000000 c000000009b6f4f0 c000000001ac7f00 
+> 0000000000000000
+>  [    8.842748] GPR04: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.842748] GPR08: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.842748] GPR12: 0000000000000000 c00000003fff7a00 0000000000000000 
+> 0000000000000000
+>  [    8.842748] GPR16: 0000000000000012 0000000000000000 000000000000008c 
+> 0000000000000000
+>  [    8.842748] GPR20: c008000000040a40 0000000000000002 c0000000022a7560 
+> c008000000040a4c
+>  [    8.842748] GPR24: c000000005716480 0000000000000000 c000000002155698 
+> c0000000022a7680
+>  [    8.842748] GPR28: c000000002155688 c008000000040a40 c008000000040a40 
+> c008000000040a40
+>  [    8.843347] NIP [c0000000004faf04] remove_vm_area+0xb4/0xf0
+>  [    8.843398] LR [c0000000004faf00] remove_vm_area+0xb0/0xf0
+>  [    8.843448] Call Trace:
+>  [    8.843484] [c000000009b6f4f0] [c0000000004faf00] 
+> remove_vm_area+0xb0/0xf0 (unreliable)
+>  [    8.843559] [c000000009b6f560] [c0000000004fb360] vfree+0x60/0x2a0
+>  [    8.843621] [c000000009b6f5e0] [c000000000269c6c] 
+> module_memfree+0x3c/0x60
+>  [    8.843685] [c000000009b6f600] [c00000000038cf60] 
+> bpf_jit_free_exec+0x20/0x40
+>  [    8.843759] [c000000009b6f620] [c00000000038f518] 
+> bpf_prog_pack_free+0x2f8/0x390
+>  [    8.843832] [c000000009b6f6b0] [c00000000038f878] 
+> bpf_jit_binary_pack_finalize+0x98/0xd0
+>  [    8.843906] [c000000009b6f6e0] [c000000000118240] 
+> bpf_int_jit_compile+0x2c0/0x710
+>  [    8.843979] [c000000009b6f830] [c00000000038ef64] 
+> bpf_prog_select_runtime+0x154/0x1b0
+>  [    8.844053] [c000000009b6f880] [c000000000398edc] 
+> bpf_prog_load+0x94c/0xe90
+>  [    8.844114] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
+>  [    8.844176] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
+>  [    8.844237] [c000000009b6fae0] [c000000000030230] 
+> system_call_exception+0x190/0x390
+>  [    8.844312] [c000000009b6fe50] [c00000000000c7d4] 
+> system_call_common+0xf4/0x258
+>  [    8.844386] --- interrupt: c00 at 0x7fffb0839ad4
+>  [    8.844437] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR: 
+> 0000000000000000
+>  [    8.844524] REGS: c000000009b6fe80 TRAP: 0c00   Not tainted  
+> (6.6.37-un-def-alt1)
+>  [    8.844596] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  
+> CR: 22002240  XER: 00000000
+>  [    8.844690] IRQMASK: 0
+>  [    8.844690] GPR00: 0000000000000169 00007fffd8534200 00007fffb0936d00 
+> 0000000000000005
+>  [    8.844690] GPR04: 00007fffb06aff90 0000000000000070 000000012a0538a0 
+> 0000000000000001
+>  [    8.844690] GPR08: 000000012a0801f4 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.844690] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 
+> 0000000000000000
+>  [    8.844690] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.844690] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 
+> 0000000000000000
+>  [    8.844690] GPR24: 000000012a0801f4 00007fffb06ce000 0000000000000000 
+> 00000000000f4240
+>  [    8.844690] GPR28: 00007fffb06aff90 00007fffb09e3550 0000000000000001 
+> 0000000000001118
+>  [    8.845267] NIP [00007fffb0839ad4] 0x7fffb0839ad4
+>  [    8.845315] LR [000000012a027fb4] 0x12a027fb4
+>  [    8.845363] --- interrupt: c00
+>  [    8.845399] Code: 38000000 38800000 39200000 4e800020 60000000 60000000 
+> 60420000 3c62ffa2 7fe4fb78 3863e698 4bc62f8d 60000000 <0fe00000> 38210070 
+> 3bc00000 e8010010
+>  [    8.845550] ---[ end trace 0000000000000000 ]---
+>  [    8.845603] ------------[ cut here ]------------
+>  [    8.845651] Trying to vfree() nonexistent vm area (00000000453be747)
+>  [    8.845714] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2835 
+> vfree+0x1d8/0x2a0
+>  [    8.845776] Modules linked in: virtio_rng rng_core virtio_net 
+> net_failover failover sd_mod ata_generic ata_piix libata scsi_mod 
+> scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev 
+> virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+>  [    8.845989] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W         
+>  6.6.37-un-def-alt1 #1
+>  [    8.846072] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 
+> 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+>  [    8.846177] NIP:  c0000000004fb4d8 LR: c0000000004fb4d4 CTR: 
+> 0000000000000000
+>  [    8.846248] REGS: c000000009b6f2c0 TRAP: 0700   Tainted: G        W      
+>      (6.6.37-un-def-alt1)
+>  [    8.846330] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002222  
+> XER: 00000000
+>  [    8.846408] CFAR: c00000000015df94 IRQMASK: 0
+>  [    8.846408] GPR00: 0000000000000000 c000000009b6f560 c000000001ac7f00 
+> 0000000000000000
+>  [    8.846408] GPR04: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.846408] GPR08: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.846408] GPR12: 0000000000000000 c00000003fff7a00 0000000000000000 
+> 0000000000000000
+>  [    8.846408] GPR16: 0000000000000012 0000000000000000 000000000000008c 
+> 0000000000000000
+>  [    8.846408] GPR20: c008000000040a40 0000000000000002 c0000000022a7560 
+> c008000000040a4c
+>  [    8.846408] GPR24: c000000005716480 0000000000000000 c000000002155698 
+> c0000000022a7680
+>  [    8.846408] GPR28: c000000002155688 0000000000000000 c008000000040a40 
+> 0000000000000000
+>  [    8.851030] NIP [c0000000004fb4d8] vfree+0x1d8/0x2a0
+>  [    8.851085] LR [c0000000004fb4d4] vfree+0x1d4/0x2a0
+>  [    8.851135] Call Trace:
+>  [    8.851160] [c000000009b6f560] [c0000000004fb4d4] vfree+0x1d4/0x2a0 
+> (unreliable)
+>  [    8.851234] [c000000009b6f5e0] [c000000000269c6c] 
+> module_memfree+0x3c/0x60
+>  [    8.851297] [c000000009b6f600] [c00000000038cf60] 
+> bpf_jit_free_exec+0x20/0x40
+>  [    8.851371] [c000000009b6f620] [c00000000038f518] 
+> bpf_prog_pack_free+0x2f8/0x390
+>  [    8.851445] [c000000009b6f6b0] [c00000000038f878] 
+> bpf_jit_binary_pack_finalize+0x98/0xd0
+>  [    8.851529] [c000000009b6f6e0] [c000000000118240] 
+> bpf_int_jit_compile+0x2c0/0x710
+>  [    8.851602] [c000000009b6f830] [c00000000038ef64] 
+> bpf_prog_select_runtime+0x154/0x1b0
+>  [    8.851675] [c000000009b6f880] [c000000000398edc] 
+> bpf_prog_load+0x94c/0xe90
+>  [    8.851737] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
+>  [    8.851798] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
+>  [    8.851860] [c000000009b6fae0] [c000000000030230] 
+> system_call_exception+0x190/0x390
+>  [    8.851934] [c000000009b6fe50] [c00000000000c7d4] 
+> system_call_common+0xf4/0x258
+>  [    8.852007] --- interrupt: c00 at 0x7fffb0839ad4
+>  [    8.852057] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR: 
+> 0000000000000000
+>  [    8.852128] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W      
+>      (6.6.37-un-def-alt1)
+>  [    8.852212] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  
+> CR: 22002240  XER: 00000000
+>  [    8.852307] IRQMASK: 0
+>  [    8.852307] GPR00: 0000000000000169 00007fffd8534200 00007fffb0936d00 
+> 0000000000000005
+>  [    8.852307] GPR04: 00007fffb06aff90 0000000000000070 000000012a0538a0 
+> 0000000000000001
+>  [    8.852307] GPR08: 000000012a0801f4 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.852307] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 
+> 0000000000000000
+>  [    8.852307] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.852307] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 
+> 0000000000000000
+>  [    8.852307] GPR24: 000000012a0801f4 00007fffb06ce000 0000000000000000 
+> 00000000000f4240
+>  [    8.852307] GPR28: 00007fffb06aff90 00007fffb09e3550 0000000000000001 
+> 0000000000001118
+>  [    8.852889] NIP [00007fffb0839ad4] 0x7fffb0839ad4
+>  [    8.852938] LR [000000012a027fb4] 0x12a027fb4
+>  [    8.852986] --- interrupt: c00
+>  [    8.853022] Code: 4e800020 60420000 3949ffff 4bffff0c 38210080 ebe1fff8 
+> 4bfffd68 3c62ffa2 7fc4f378 3863e6f0 4bc629b9 60000000 <0fe00000> eba10068 
+> 4bffff8c 2c080000
+>  [    8.853164] ---[ end trace 0000000000000000 ]---
+>  [    8.856619] kernel tried to execute exec-protected page 
+> (c008000000040a4c) - exploit attempt? (uid: 0)
+>  [    8.856717] BUG: Unable to handle kernel instruction fetch
+>  [    8.856763] Faulting instruction address: 0xc008000000040a4c
+>  [    8.856825] Oops: Kernel access of bad area, sig: 11 [#1]
+>  [    8.856875] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+>  [    8.856937] Modules linked in: virtio_rng rng_core virtio_net 
+> net_failover failover sd_mod ata_generic ata_piix libata scsi_mod 
+> scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev 
+> virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+>  [    8.857154] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W         
+>  6.6.37-un-def-alt1 #1
+>  [    8.857236] Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 
+> 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+>  [    8.857342] NIP:  c008000000040a4c LR: c000000000ed25d0 CTR: 
+> c008000000040a4c
+>  [    8.857413] REGS: c000000009b6f6f0 TRAP: 0400   Tainted: G        W      
+>      (6.6.37-un-def-alt1)
+>  [    8.857510] MSR:  8000000010009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28008286  
+> XER: 00000000
+>  [    8.857588] CFAR: c000000000ed25cc IRQMASK: 0
+>  [    8.857588] GPR00: c000000000ed25a8 c000000009b6f990 c000000001ac7f00 
+> c000000006130400
+>  [    8.857588] GPR04: c008000000920048 0000000000000001 0000000000000000 
+> 0000000000000000
+>  [    8.857588] GPR08: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.857588] GPR12: c008000000040a4c c00000003fff7a00 0000000000000000 
+> 0000000000000000
+>  [    8.857588] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.857588] GPR20: 7fffffffffffffff 0000000000000000 0000000000000001 
+> 0000000000000000
+>  [    8.857588] GPR24: c000000006130400 c000000006510a00 c000000006510f00 
+> c0000000041a9000
+>  [    8.857588] GPR28: 0000000000000001 c000000006130400 0000000000000000 
+> c008000000920000
+>  [    8.858184] NIP [c008000000040a4c] bpf_prog_2fb4fda3a3499517+0x0/0x8c
+>  [    8.858245] LR [c000000000ed25d0] sk_filter_trim_cap+0xc0/0x370
+>  [    8.858308] Call Trace:
+>  [    8.858333] [c000000009b6f990] [c000000000ed2574] 
+> sk_filter_trim_cap+0x64/0x370 (unreliable)
+>  [    8.858421] [c000000009b6fa10] [c000000001068b64] 
+> unix_dgram_sendmsg+0x214/0xb10
+>  [    8.858511] [c000000009b6fad0] [c000000000e4c59c] 
+> sock_write_iter+0x19c/0x1e0
+>  [    8.858586] [c000000009b6fb80] [c0000000005b1b58] vfs_write+0x258/0x4e0
+>  [    8.858648] [c000000009b6fc40] [c0000000005b21d4] ksys_write+0x114/0x170
+>  [    8.858711] [c000000009b6fc90] [c000000000030230] 
+> system_call_exception+0x190/0x390
+>  [    8.858785] [c000000009b6fe50] [c00000000000c7d4] 
+> system_call_common+0xf4/0x258
+>  [    8.858859] --- interrupt: c00 at 0x7fffb082b884
+>  [    8.858908] NIP:  00007fffb082b884 LR: 000000012a02ab70 CTR: 
+> 0000000000000000
+>  [    8.858979] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W      
+>      (6.6.37-un-def-alt1)
+>  [    8.859060] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  
+> CR: 28002281  XER: 00000000
+>  [    8.859153] IRQMASK: 0
+>  [    8.859153] GPR00: 0000000000000004 00007fffd85341f0 00007fffb0936d00 
+> 0000000000000005
+>  [    8.859153] GPR04: 00007fffb068fffa 0000000000000006 0000000000000001 
+> 0000000000000005
+>  [    8.859153] GPR08: 00007fffb068fffa 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.859153] GPR12: 0000000000000000 00007fffb09ea540 0000000000000000 
+> 0000000000000000
+>  [    8.859153] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+> 0000000000000000
+>  [    8.859153] GPR20: 00007fffd85344b0 0000000000000000 0000000000000001 
+> 0000000000000000
+>  [    8.859153] GPR24: 000000012a053698 000000000000008b 0000000000000000 
+> 0000000000000001
+>  [    8.859153] GPR28: 00007fffb068fffa 0000000000000005 0000000000000006 
+> 000000012a053698
+>  [    8.859738] NIP [00007fffb082b884] 0x7fffb082b884
+>  [    8.859786] LR [000000012a02ab70] 0x12a02ab70
+>  [    8.859836] --- interrupt: c00
+>  [    8.859872] Code: 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 
+> 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 <7fe00008> 7fe00008 
+> 7fe00008 7fe00008
+>  [    8.860013] ---[ end trace 0000000000000000 ]---
+>  [    8.863088] pstore: backend (nvram) writing error (-1)
+>  [    8.863141]
+>  [    8.863166] note: bpf_prog01[689] exited with irqs disabled
+> 
+> And so on. Temporary build/test log is at
+> https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
+> 
+> Other stable/longterm branches or other architectures does not exhibit this.
+> 
+> Thanks,
+
+Hi all - this just took down a production server for me, on POWER9 bare 
+metal.  Not running tests, just booting normally, before services even came 
+up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also 
+running 64k kernel, unsure if it's better on 4k kernel.
+
+In case it's helpful, here's the log from my boot:  
+https://dpaste.org/Gyxxg/raw
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
