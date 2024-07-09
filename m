@@ -4,83 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A859BC2BD09
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:00:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90731C2BD09
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:00:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C98B3D3940
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:00:29 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id F3EA43D3948
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:00:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BEAA53D2BB5
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:00:11 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3432B3D0681
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 11:34:46 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ smtp.mailfrom=kernel.org (client-ip=145.40.73.55; helo=sin.source.kernel.org;
+ envelope-from=naveen@kernel.org; receiver=lists.linux.it)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2E433200A1E
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:00:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1720526409;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/AivoL9gpie0Rj0U76svclzQ2UE43GUo6N7vH2TzAAs=;
- b=g/lsb+3ENxhsJhCM1Xh6eSLvGASMFSJ95d0o/mPVDX8CgNIgmSxo+UasjI1A0szd1jh3u7
- ai5Ect2c5tB4VHRIcrUVy7LQwwudp5scv5ibArxMH2gxFEGyPYKhsREIWAdN/m1Nc82yeT
- wAJkAbRqA5u7PuVYncW9xol+0aH7Sd4=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-468-BfKAIQWpNSesHB-wRi2Byw-1; Tue, 09 Jul 2024 08:00:07 -0400
-X-MC-Unique: BfKAIQWpNSesHB-wRi2Byw-1
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2c975c0c765so3963800a91.0
- for <ltp@lists.linux.it>; Tue, 09 Jul 2024 05:00:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1720526406; x=1721131206;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=/AivoL9gpie0Rj0U76svclzQ2UE43GUo6N7vH2TzAAs=;
- b=a1j4Egv1/CpPMSInid1ryRxI0HY0n9g3iVZTyx26CWK0fUAJYu/rt7tO37xKX2B10C
- Qz4vC90PHradYiuUFsroQJAo474R06GooHZW4Tt5AL9vuWBmrKRXCuBJVRIMRzmZO40o
- QihZdOGkTAL0Lh3cnGlaiUResCAGaHjG6BHs12RUk3TYZ/y5Y13FEY44GAaHSIIWX2Xg
- mJfnQpBt8wPVUehTuYHY25SDPP0joJmfiHrU/ZybBYJWlxUgYH3V6ZfGdV/zquOG1CXz
- ezu3oMI+J3I2ucPcc/yFqbcZ4IdTcsvDHBPl4h47X2VhZ08g9xHSweNbet3IzZBkEqMW
- hNBw==
-X-Gm-Message-State: AOJu0YzR+F3+B96U4uUnRyOh06PE2uqtnV8u3irwOEd4WVzodliJNGJE
- OcUGjY2ipFYW4eBwfKAeQipYRhmouQv0uNvTskLVTuOSeehhPOfpF35i/Zb0H4ZdcTYOQ6YNEXG
- I7NbgvQOZWsSpDL/1eUkdmNTvt/iO+cKLgz7VAZEQzIgLuAKIz5xXC5rpNqWr59FwQH0ueQFzDB
- 1nISHNnQmvYzqFjOqOwN0uYmI=
-X-Received: by 2002:a17:90a:3047:b0:2c8:f3b4:425 with SMTP id
- 98e67ed59e1d1-2ca35c694ecmr1965878a91.23.1720526406107; 
- Tue, 09 Jul 2024 05:00:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGmp7O2rSXY+ltVwETC0z2cZA5umF8LzQaFm1KXkySt+fXKZpiV9DPpJAoEGJ+y8z8idfuwiaWKwJaXAkRGMA=
-X-Received: by 2002:a17:90a:3047:b0:2c8:f3b4:425 with SMTP id
- 98e67ed59e1d1-2ca35c694ecmr1965862a91.23.1720526405819; Tue, 09 Jul 2024
- 05:00:05 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 61826200046
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 11:34:44 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sin.source.kernel.org (Postfix) with ESMTP id 6D3EACE0FB9;
+ Tue,  9 Jul 2024 09:34:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F481C3277B;
+ Tue,  9 Jul 2024 09:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1720517681;
+ bh=P0Tg5HgvkrsbncakOIEEZ4alS4fkZKeRhddMQDXL43c=;
+ h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+ b=he1zNqLljVoU8atGAg/yb/t+komzyYSyUY+npj0LJK4bw+LtwG11R0MmXeAwmqJVN
+ Gq2dFw2iLKQw4byk3Jns1oIitgwh5VE3CeSemr9ul5IDq1N/fs8QPsVGGzHAXiL+gE
+ 3UZnQ54m426HhEP1xEhMFfkflU9qC3krY+KILGS0EzD5qvw5SHqPlXOIOr8/jV1Gru
+ jYvW8eSkQPg/CJxlcbfxZBdTxpt89kvJ78Eed5vR6EsWNw7cxMdLNCnX4W53UCak3D
+ rCRrUuoCATcNZqAmlzOexTCha0d8M49L3Rot3QU4UoktF/cV4sVw3liGPk+RE6qkGp
+ QDJDM1x9covzQ==
+Date: Tue, 09 Jul 2024 15:02:13 +0530
+From: Naveen N Rao <naveen@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, matoro
+ <matoro_mailinglist_kernel@matoro.tk>
+References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+ <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
+ <2024070904-cod-bobcat-a0d0@gregkh>
+In-Reply-To: <2024070904-cod-bobcat-a0d0@gregkh>
 MIME-Version: 1.0
-References: <20240709-stat04-v2-0-2693a473a2ab@suse.com>
- <20240709-stat04-v2-3-2693a473a2ab@suse.com>
-In-Reply-To: <20240709-stat04-v2-3-2693a473a2ab@suse.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 9 Jul 2024 19:59:53 +0800
-Message-ID: <CAEemH2e3qwHmDU89P3s8UmDi6CBhXLz0bN28Af2ZRnR-rzoqfQ@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+User-Agent: astroid/0.16.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1720516964.n61e0dnv80.naveen@kernel.org>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 3/5] Add lstat03 test
+X-Mailman-Approved-At: Tue, 09 Jul 2024 14:00:39 +0200
+Subject: Re: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree()
+ bad address (00000000453be747)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,17 +66,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: stable@vger.kernel.org, Hari Bathini <hbathini@linux.ibm.com>,
+ bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Greg Kroah-Hartman wrote:
+> On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
+>> On 2024-07-05 16:34, Vitaly Chikunov wrote:
+>> > Hi,
+>> > 
+>> > There is new WARNING and Oops on ppc64le in v6.6.37 when running LTP tests:
+>> > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
+>> > below. I
+>> > see there is 1 commit in v6.6.36..v6.6.37 with call to
+>> > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
+>> > 
+>> >   f99feda5684a powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+>> > 
 
--- 
-Regards,
-Li Wang
+<snip>
+
+>> > 
+>> > And so on. Temporary build/test log is at
+>> > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
+>> > 
+>> > Other stable/longterm branches or other architectures does not exhibit this.
+>> > 
+>> > Thanks,
+>> 
+>> Hi all - this just took down a production server for me, on POWER9 bare
+>> metal.  Not running tests, just booting normally, before services even came
+>> up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also
+>> running 64k kernel, unsure if it's better on 4k kernel.
+>> 
+>> In case it's helpful, here's the log from my boot:
+>> https://dpaste.org/Gyxxg/raw
+> 
+> Ok, this isn't good, something went wrong with my backports here.  Let
+> me go revert them all and push out a new 6.6.y release right away.
+
+I think the problem is that the series adding support for bpf prog_pack 
+was partially backported. In particular, the below patches are missing 
+from stable v6.6:
+465cabc97b42 powerpc/code-patching: introduce patch_instructions()
+033ffaf0af1f powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
+6efc1675acb8 powerpc/bpf: implement bpf_arch_text_copy
+
+It should be sufficient to revert commit f99feda5684a (powerpc/bpf: use 
+bpf_jit_binary_pack_[alloc|finalize|free]) to allow the above to apply 
+cleanly, followed by cherry picking commit 90d862f370b6 (powerpc/bpf: 
+use bpf_jit_binary_pack_[alloc|finalize|free]) from upstream.
+
+Alternately, commit f99feda5684a (powerpc/bpf: use 
+bpf_jit_binary_pack_[alloc|finalize|free]) can be reverted.
+
+
+- Naveen
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
