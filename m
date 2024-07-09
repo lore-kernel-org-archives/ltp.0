@@ -4,86 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7FF4C2BD09
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BC29C2BD09
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:52:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1ED2D3D3948
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:52:33 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8D1FF3D3955
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:52:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A555D3D391C
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:52:18 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id B83E83D394E
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:52:27 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=ellerman.id.au (client-ip=150.107.74.76; helo=mail.ozlabs.org;
+ envelope-from=mpe@ellerman.id.au; receiver=lists.linux.it)
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0AFF61400B8D
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:52:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1720529536;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=svdFDJs2g/WFSAVd3T1ObrRMyn+uOEivdo16ASNJqRc=;
- b=b5hpK2X4TSrY/3vLPr8/hJDuKyQFDLlkTmw74bxkwIChbX3dFP0+PzGz3TobuJHFbGNN14
- /Xn1x/HdLIyAYvp07QmMhjP5icJQ9UFHlaATSD1D8Wg10zCcEiYQm4Ys36Qw0UB3/XyRXv
- Qc1xMIt+qhXTfTnQC6gcSDsy4J/VJlc=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-669-mhJvfwO7Ncih0Jfd16ZY9w-1; Tue, 09 Jul 2024 08:52:14 -0400
-X-MC-Unique: mhJvfwO7Ncih0Jfd16ZY9w-1
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-2c96a0c27fcso3805183a91.0
- for <ltp@lists.linux.it>; Tue, 09 Jul 2024 05:52:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1720529533; x=1721134333;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=svdFDJs2g/WFSAVd3T1ObrRMyn+uOEivdo16ASNJqRc=;
- b=FCJtI1jAZRS4L0LgALPwMFdzLQbIKKrvsDsF3utNndIbIqkqUh9If7Y3xtXcnGq3JM
- ttCEiDdbHRkIsXjnYh9U1y+1NPKqgC+CC/ifVZgJvAAk4MEoFWJ0CBN5KtHIHQlqW1iy
- MoyanFiGOdWoFP4uqiH966vY7701tHvdHYsF5997E4bzvCmgWhMaueNNLOo4ePSNVhgZ
- jPL9OpIxPb7MB9D/sldjd4e59ZdDuGRGibSJg3IULrY26gKpAeOphpR4qQXAMT1SP1cS
- 82eKmo5cZvl6pBsMqlLdE8a4uMBWkn18DSVCEUql9eyovjf3wEh8FWbT8vQIqKU1eAME
- ilHQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVWtED1xxZ43eBb/pnuTwlaIMDsfuPd7Ujc8oDa7a5H/WjpIJAqy55OGNT9xcSiDPIX3PPR8DSo/3Swel/rSvl8ckE=
-X-Gm-Message-State: AOJu0Yz6Ou4zJGNV+O2BNXx9A3qhsXha4JuBdL6aw+34jF8eiqQto1I+
- cjZD7rAAs91DT6wyplrD4+g+CKtplgHPeQEW7cO3SUvRxoQTltJ9A8HoDFInxyr9k8rb+NQ5ZFo
- XIUgX5kpAlN1R5zLLBVcih4Mqy4YGWRgyYOigxv4mCuVv7EsVM8nb6NrjeT6Ze4JQnznVfmB1I2
- DbwseMmVGNY3eQNKBejN1qf/+WmQQl+DwOuw==
-X-Received: by 2002:a17:90a:c097:b0:2c9:6cf4:8453 with SMTP id
- 98e67ed59e1d1-2ca35d392e0mr2131824a91.31.1720529533108; 
- Tue, 09 Jul 2024 05:52:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHJvMkOBx/upqSrFg8ppvTiyZTn5x//xAI5AqoKI7vkI2w+XSjLK3m29HfijAhpgxoGb4WQUtdyVDT3F/GrXOg=
-X-Received: by 2002:a17:90a:c097:b0:2c9:6cf4:8453 with SMTP id
- 98e67ed59e1d1-2ca35d392e0mr2131811a91.31.1720529532767; Tue, 09 Jul 2024
- 05:52:12 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E7EE4600660
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:52:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+ s=201909; t=1720529535;
+ bh=9EMrWwiwjkAmc8Lp2/P3hrtiQWOommhCyJibucD2H7Y=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=a2eLobqoSmFtoLTwgo4SDAaokj7GKB8kB6fADXGo3UFNB/amLpcva0vkvZpdRfvY/
+ Y4dRSRBeM1MleK+nc/jiB8NnYpczuwPLbVlbWbfU7oZZZAC3bJftuXjOZeXQk9Sf25
+ zm9GTqy+ILWfhJ5BnSdHAsJo+nQMmJSDT8ioFWBrEfghEiALeS2ThhjnpjyzEBQ2+s
+ wUUhVzOiYPjjJERAljkAtpYWU3GqKekZ/GmqwNikKw1mcDHGriVUJA+o6fclFDwbZt
+ NOxUK42xWbJMuGmfRMdh/M2FBCDWdX5VgFei+8qOb0isoYxSC4CIl+jS6LN/jZJmV5
+ 3C1yGyaZHU1AQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 4WJLVR26bFz4wnx;
+ Tue,  9 Jul 2024 22:52:15 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Naveen N Rao
+ <naveen@kernel.org>
+In-Reply-To: <87sewi68q4.fsf@mail.lhotse>
+References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+ <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
+ <2024070904-cod-bobcat-a0d0@gregkh>
+ <1720516964.n61e0dnv80.naveen@kernel.org>
+ <2024070958-plant-prozac-6a33@gregkh> <87sewi68q4.fsf@mail.lhotse>
+Date: Tue, 09 Jul 2024 22:52:14 +1000
+Message-ID: <87msmq683l.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <20240709-stat04-v2-0-2693a473a2ab@suse.com>
- <20240709-stat04-v2-2-2693a473a2ab@suse.com>
- <20240709124830.GC198566@pevik>
-In-Reply-To: <20240709124830.GC198566@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 9 Jul 2024 20:52:00 +0800
-Message-ID: <CAEemH2cHVu9ZX55qUzgL7PBwQ=FHJLzE_i+zi+=FaZemChTaGA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 2/5] Fix TST_EXP_EXTR() stringification
+Subject: Re: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree()
+ bad address (00000000453be747)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,28 +67,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: matoro <matoro_mailinglist_kernel@matoro.tk>, stable@vger.kernel.org,
+ Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> wrote:
-
-merged this commit (obvious fix).
-> Thanks!
+Michael Ellerman <mpe@ellerman.id.au> writes:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> On Tue, Jul 09, 2024 at 03:02:13PM +0530, Naveen N Rao wrote:
+>>> Greg Kroah-Hartman wrote:
+>>> > On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
+>>> > > On 2024-07-05 16:34, Vitaly Chikunov wrote:
+>>> > > > Hi,
+>>> > > > > There is new WARNING and Oops on ppc64le in v6.6.37 when running
+>>> > > LTP tests:
+>>> > > > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
+>>> > > > below. I
+>>> > > > see there is 1 commit in v6.6.36..v6.6.37 with call to
+>>> > > > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
+>>> > > > >   f99feda5684a powerpc/bpf: use
+>>> > > bpf_jit_binary_pack_[alloc|finalize|free]
+>>> > > >
+>>> 
+>>> <snip>
+>>> 
+>>> > > > > And so on. Temporary build/test log is at
+>>> > > > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
+>>> > > > > Other stable/longterm branches or other architectures does not
+>>> > > exhibit this.
+>>> > > > > Thanks,
+>>> > > 
+>>> > > Hi all - this just took down a production server for me, on POWER9 bare
+>>> > > metal.  Not running tests, just booting normally, before services even came
+>>> > > up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also
+>>> > > running 64k kernel, unsure if it's better on 4k kernel.
+>>> > > 
+>>> > > In case it's helpful, here's the log from my boot:
+>>> > > https://dpaste.org/Gyxxg/raw
+>>> > 
+>>> > Ok, this isn't good, something went wrong with my backports here.  Let
+>>> > me go revert them all and push out a new 6.6.y release right away.
+>>> 
+>>> I think the problem is that the series adding support for bpf prog_pack was
+>>> partially backported. In particular, the below patches are missing from
+>>> stable v6.6:
+>>> 465cabc97b42 powerpc/code-patching: introduce patch_instructions()
+>>> 033ffaf0af1f powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
+>>> 6efc1675acb8 powerpc/bpf: implement bpf_arch_text_copy
+>>> 
+>>> It should be sufficient to revert commit f99feda5684a (powerpc/bpf: use
+>>> bpf_jit_binary_pack_[alloc|finalize|free]) to allow the above to apply
+>>> cleanly, followed by cherry picking commit 90d862f370b6 (powerpc/bpf: use
+>>> bpf_jit_binary_pack_[alloc|finalize|free]) from upstream.
+>>> 
+>>> Alternately, commit f99feda5684a (powerpc/bpf: use
+>>> bpf_jit_binary_pack_[alloc|finalize|free]) can be reverted.
+>>
+>> I'm dropping them all now, if you want to submit a working series for
+>> this, I'll be glad to queue them all up.
 >
+> Thanks, revert is good for now.
+>
+> With the revert there will be a build warning/error, only in stable,
+> which I think can be fixed with the diff below.
 
-Thank you Petr.
+Oh I see you also reverted the commit that introduces that warning, so
+the build should be OK now.
 
-I think it's safe to merge 1/5 to 4/5, but yes we can wait for more
-comments if you like.
-(Only 5/5 has a tiny issue I pointed out there)
-
-
--- 
-Regards,
-Li Wang
+cheers
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
