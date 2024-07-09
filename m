@@ -4,81 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 389F8C2BD09
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56433C3DA41
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:39:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94AEA3D3934
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:35:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id CAE9D3D3938
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:39:14 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 59B4B3CE10E
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:35:20 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 599BC3D3921
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:38:59 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=ellerman.id.au (client-ip=150.107.74.76; helo=mail.ozlabs.org;
+ envelope-from=mpe@ellerman.id.au; receiver=lists.linux.it)
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0F0E21A00901
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:35:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1720528518;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=32vdHegLBBPXe4k2HOep2fU0D4Oe84LkPgzWTgbrYGs=;
- b=jEo6vMhVfG9JaI664GCZXGU/eP3vQBooRSvYlMmgXIpVDApgn34jZc8lNO14JnPKGvKkwC
- woazVs/4QRrxDd0UiofIzOhmtHXSDkt6DNSoE2YPo3VPwZoH9x2M/blNUvv7+dTU95lmyI
- K7v7fkYkTvYj/8tS+qkzrOmRs1W1Zs8=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-534-E-Km_jvNOFuFWN_1BnTyyw-1; Tue, 09 Jul 2024 08:35:16 -0400
-X-MC-Unique: E-Km_jvNOFuFWN_1BnTyyw-1
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-6c559235c6eso4088621a12.2
- for <ltp@lists.linux.it>; Tue, 09 Jul 2024 05:35:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1720528514; x=1721133314;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=32vdHegLBBPXe4k2HOep2fU0D4Oe84LkPgzWTgbrYGs=;
- b=JKUaP4E6MdaI5Yw6BZP1bfYRBLec4YHJwQ+IJuD2umxWpabHiWDWtliRGnYb5m8CgO
- rouVAqJ3GygL8tJCYEjx//UUaV2YMp1wGaDLvcvp2S7Ym8IfC8I4O5EqyBEICGJY/HKS
- cziAvOZ8ZSMFd6p9f/Ro0wD30cELewU9nNbaoDQSk7hITgKt77ViTRxuLDJzBuVMz1EZ
- aWuFS3b4gI/BATMlKM/4vDDKzrPe5ERqiPSE3PxeStVpPXFDJKm2TBRro8M97rpGoNNp
- wdTRO9HkBv75m8jWeTm5wmkMw4EFUUrMbzPKt5jcF4W6G3HpmJvpwCm4p94deK/wIxkj
- gFDw==
-X-Gm-Message-State: AOJu0YyuffIwpA6peV++tJvuc0xTbfbWzQdUVP00TQjC0rxZiasjQw+Q
- I2pvMuW+oUKwUmgpUIskwc1UnHvJv3oD8J8WXEEbFUWDAc21csBclaSEvSgVJS/F3Am01ewSR0q
- BPyHqEc1lvE37anZxkIxJ5mDJ/NXNCC3MfKT8437zO6TrAKsuXoPkcsxucAsxqSmS1K1hy7IxwY
- 2hcaCqkG+oxKMhj1FC1/HYCZ3HDOaSlGy2uOdi
-X-Received: by 2002:a05:6a20:2588:b0:1c0:eba5:e187 with SMTP id
- adf61e73a8af0-1c2981ff8c9mr3199765637.6.1720528514094; 
- Tue, 09 Jul 2024 05:35:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsrjuYJx0TZmeFPrQAjuMPM1cduSMPWJfYOZVzXGdX3JFY3DL+y/8X0kZtoHPkWPCJ7lNSTcjH3IyI66hMmrs=
-X-Received: by 2002:a05:6a20:2588:b0:1c0:eba5:e187 with SMTP id
- adf61e73a8af0-1c2981ff8c9mr3199748637.6.1720528513782; Tue, 09 Jul 2024
- 05:35:13 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 246321400510
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:38:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+ s=201909; t=1720528725;
+ bh=GmUsmLNBIQmHW+JpWrHCwH01WEhfM5xgRbqsJMF93No=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=TKfDXVnq4T0Yt94cqUje8f+e8cqlm1eOR4zpw3mH0J+WJjdedfiXukVb0N0USQBzl
+ an+2rjHqTgzz0S+/C7bw91G2WylXJ1V9T+H3v99ZKbNndLSVQzKzwCcwX2PxQzxcvy
+ yWCpk9oxrmS0eKemK6VJcaNzm8zRZA+O4GQ/eqAyMrGQ1RwGGwaS4wuRxI2lkgv3BJ
+ QPxXbiLXVDgwm1kuSlAftov88xNcM5RQlSLxk0IJEcpTCjEbvGpHAtVE5rtFIODAdj
+ UvUw+ig522m7IoDZWue+Hv7OeiTGl5qKxdw02iSUSfQemOLOH+1ElGonthCgdVSUHi
+ 6N+F+0H4Tspxg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 4WJLBq3Qzqz4wcl;
+ Tue,  9 Jul 2024 22:38:43 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Naveen N Rao
+ <naveen@kernel.org>
+In-Reply-To: <2024070958-plant-prozac-6a33@gregkh>
+References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+ <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
+ <2024070904-cod-bobcat-a0d0@gregkh>
+ <1720516964.n61e0dnv80.naveen@kernel.org>
+ <2024070958-plant-prozac-6a33@gregkh>
+Date: Tue, 09 Jul 2024 22:38:43 +1000
+Message-ID: <87sewi68q4.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
-In-Reply-To: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
-From: Li Wang <liwan@redhat.com>
-Date: Tue, 9 Jul 2024 20:34:59 +0800
-Message-ID: <CAEemH2e88FUiY7GbPgtxc+7NfP_xDFamMnACV7H6H_N39=SMrQ@mail.gmail.com>
-To: Jan Stancek <jstancek@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] kallsyms: skip user-space mapped addresses
+Subject: Re: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree()
+ bad address (00000000453be747)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,103 +68,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: matoro <matoro_mailinglist_kernel@matoro.tk>, stable@vger.kernel.org,
+ Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdWwgOSwgMjAyNCBhdCA4OjE44oCvUE0gSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJl
-ZGhhdC5jb20+IHdyb3RlOgoKPiBSSEVMOSBzMzkweCB3aXRoIEtQVEkgZW5hYmxlZCBoYXMgYmVl
-biBvYnNlcnZlZCB0byBzcG9yYWRpY2FsbHkKPiB1c2Ugc2FtZSBhZGRyZXNzIHJhbmdlcyBmb3Ig
-dXNlci1zcGFjZSBsaWJyYXJpZXMgYXMgdGhlIG9uZXMKPiBvY2N1cGllZCBieSBrYWxsc3ltcyB3
-aGlsZSBpbiBrZXJuZWwtc3BhY2UuCj4KClRoYW5rcyBmb3IgdGhlIHByb3Bvc2FsIGZpeCwgZG8g
-eW91IHRoaW5rIHdlIG5lZWQgdG8gYWRkCmEgY2hlY2sgdG8gc2VlIGlmIEtQVEkgaXMgZXhwbGlj
-aXRseSBlbmFibGVkIGJlZm9yZSBkb2luZyB0aGF0CmlzX2FkZHJlc3NfbWFwcGVkPwoob3IsIGNo
-ZWNrIHRoZSBjb25maWd1cmF0aW9uIGZvciBDT05GSUdfUEFHRV9UQUJMRV9JU09MQVRJT04pCgoK
-Cj4gVGhlIHRlc3QgY3VycmVudGx5ICh3cm9uZ2x5KSBhc3N1bWVzLCB0aGF0IGEgd3JpdGUgdG8g
-a2FsbHN5bQo+IGFkZHJlc3Mgc2hvdWxkIGZhaWwgYW5kIGRvZXNuJ3QgdGFrZSBpbnRvIGFjY291
-bnQgdGhhdCBzYW1lCj4gbWVtb3J5IHJhbmdlcyBjb3VsZCBiZSBtYXBwZWQgZGlmZmVyZW50bHkg
-aW4gdXNlciB2cy4ga2VybmVsLXNwYWNlLgo+Cj4gQWRkIGEgY2hlY2sgdG8gc2VlIGlmIGEga2Fs
-bHN5bSBhZGRyZXNzIGlzIGFscmVhZHkgbWFwcGVkIGJ5IHVzZXItc3BhY2UsCj4gYW5kIGlmIGl0
-IGlzLCBza2lwIGl0IHRvIGF2b2lkIGZhbHNlIHBvc2l0aXZlcy4KCgo+IEJlZm9yZToKPiAgICAg
-MTMgIGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBh
-ZGRyCj4gMHgzZmY4MDYwNzg3ZCAocikgKF9fa3N0cnRhYm5zX25mczNfc2V0X2RzX2NsaWVudCkK
-PiAgICAgMTQgIGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtl
-cm5lbCBhZGRyCj4gMHgzZmY4MDYwMDdhMCAodCkgKG5mc19pbml0X3NlcnZlcl9hY2xjbGllbnQp
-Cj4gICAgIDE1ICBrYWxsc3ltcy5jOjExNTogVEZBSUw6IFN1Y2Nlc3NmdWxseSBhY2Nlc3NlZCBr
-ZXJuZWwgYWRkcgo+IDB4M2ZmODA2MGEwNTggKGQpIChuZnNhY2xfdmVyc2lvbikKPiAgICAgMTYg
-IGthbGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBhZGRy
-Cj4gMHgzZmY4MDYwYTA3OCAoZCkgKG5mc2FjbF9ycGNzdGF0KQo+ICAgICAuLi4KPiAgICAga2Fs
-bHN5bXMuYzoxMzA6IFRGQUlMOiBDYXVnaHQgMTAzMTAyIFNJR1NFR1YgYnV0IGV4cGVjdGVkIDE1
-MzczOAo+Cj4gQWZ0ZXI6Cj4gICAgIGthbGxzeW1zLmM6MTc1OiBUREVCVUc6IFNraXBwaW5nIHVz
-ZXJzcGFjZSBtYXBwZWQgYWRkcmVzcyAweDNmZjgwMjIwMDI0Cj4gICAgIGthbGxzeW1zLmM6MTc1
-OiBUREVCVUc6IFNraXBwaW5nIHVzZXJzcGFjZSBtYXBwZWQgYWRkcmVzcyAweDNmZjgwMjIwMDNj
-Cj4gICAgIGthbGxzeW1zLmM6MTc1OiBUREVCVUc6IFNraXBwaW5nIHVzZXJzcGFjZSBtYXBwZWQg
-YWRkcmVzcyAweDNmZjgwMjEzYjIwCj4gICAgIC4uLgo+ICAgICBrYWxsc3ltcy5jOjE4NDogVFBB
-U1M6IENhdWdodCAxMDM0NzMgU0lHU0VHViBpbiBhY2Nlc3Mga3N5bWJvbHMgYWRkciwKPiBza2lw
-cGVkIDI3MjM0Cj4KPiBTaWduZWQtb2ZmLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0
-LmNvbT4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9rYWxsc3ltcy9rYWxsc3lt
-cy5jIHwgNjggKysrKysrKysrKysrKysrKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgNjMgaW5zZXJ0
-aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
-L3NlY3VyaXR5L2thbGxzeW1zL2thbGxzeW1zLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJp
-dHkva2FsbHN5bXMva2FsbHN5bXMuYwo+IGluZGV4IDJhNWNiYWEzMjVlYS4uYjA3Y2I5Y2RhMjY4
-IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkva2FsbHN5bXMva2FsbHN5
-bXMuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkva2FsbHN5bXMva2FsbHN5bXMu
-Ywo+IEBAIC01NCw2ICs1NCw4IEBAIHN0YXRpYyBzdHJ1Y3Qga2FsbHN5bSAqc3ltX3RhYmxlOwo+
-ICBzdGF0aWMgdW5zaWduZWQgaW50IG5yX3N5bWJvbHM7Cj4gIHN0YXRpYyBzaWdqbXBfYnVmIGpt
-cGJ1ZjsKPiAgdm9sYXRpbGUgc2lnX2F0b21pY190IHNlZ3ZfY2F1Z2h0Owo+ICtzdGF0aWMgdW5z
-aWduZWQgbG9uZyAqcmFuZ2VzOwo+ICtzdGF0aWMgaW50IHJhbmdlc19zaXplLCByYW5nZXNfbGVu
-Owo+Cj4gIHN0YXRpYyB2b2lkIHNlZ3ZfaGFuZGxlcihpbnQgc2lnKQo+ICB7Cj4gQEAgLTg5LDYg
-KzkxLDQ5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgcmVhZF9rYWxsc3ltcyhzdHJ1Y3Qga2FsbHN5
-bQo+ICp0YWJsZSwgdW5zaWduZWQgaW50IHRhYmxlX3NpemUKPiAgICAgICAgIHJldHVybiBucl9z
-eW1zOwo+ICB9Cj4KPiArc3RhdGljIHZvaWQgcmVhZF9wcm9jX3NlbGZfbWFwcyh2b2lkKQo+ICt7
-Cj4gKyAgICAgICBGSUxFICpmcDsKPiArCj4gKyAgICAgICByYW5nZXNfbGVuID0gMDsKPiArICAg
-ICAgIGZwID0gZm9wZW4oIi9wcm9jL3NlbGYvbWFwcyIsICJyIik7Cj4gKyAgICAgICBpZiAoZnAg
-PT0gTlVMTCkKPiArICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgIkZhaWxl
-ZCB0byBvcGVuIC9wcm9jL3NlbGYvbWFwcy4iKTsKPiArCj4gKyAgICAgICB3aGlsZSAoIWZlb2Yo
-ZnApKSB7Cj4gKyAgICAgICAgICAgICAgIHVuc2lnbmVkIGxvbmcgc3RhcnQsIGVuZDsKPiArICAg
-ICAgICAgICAgICAgaW50IHJldDsKPiArCj4gKyAgICAgICAgICAgICAgIHJldCA9IGZzY2FuZihm
-cCwgIiVseC0lbHggJSpbXlxuXVxuIiwgJnN0YXJ0LCAmZW5kKTsKPiArICAgICAgICAgICAgICAg
-aWYgKHJldCAhPSAyKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZmNsb3NlKGZwKTsKPiAr
-ICAgICAgICAgICAgICAgICAgICAgICB0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiQ291bGRuJ3Qg
-cGFyc2UKPiAvcHJvYy9zZWxmL21hcHMgbGluZS4iKTsKPiArICAgICAgICAgICAgICAgfQo+ICsK
-PiArICAgICAgICAgICAgICAgaWYgKHJhbmdlc19zaXplIDwgcmFuZ2VzX2xlbiArIDEpIHsKPiAr
-ICAgICAgICAgICAgICAgICAgICAgICByYW5nZXNfc2l6ZSArPSAxMjg7Cj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgcmFuZ2VzID0gcmVhbGxvYyhyYW5nZXMsCj4gMipyYW5nZXNfc2l6ZSpzaXpl
-b2YodW5zaWduZWQgbG9uZykpOwo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAg
-IHJhbmdlc1tyYW5nZXNfbGVuKjJdID0gc3RhcnQ7Cj4gKyAgICAgICAgICAgICAgIHJhbmdlc1ty
-YW5nZXNfbGVuKjIgKyAxXSA9IGVuZDsKPiArCj4gKyAgICAgICAgICAgICAgIHJhbmdlc19sZW4r
-KzsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBmY2xvc2UoZnApOwo+ICt9Cj4gKwo+ICtzdGF0
-aWMgaW50IGlzX2FkZHJlc3NfbWFwcGVkKHVuc2lnbmVkIGxvbmcgYWRkcikKPiArewo+ICsgICAg
-ICAgaW50IGk7Cj4gKwo+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IHJhbmdlc19sZW47IGkrKykg
-ewo+ICsgICAgICAgICAgICAgICBpZiAocmFuZ2VzW2kqMl0gPD0gYWRkciAmJiBhZGRyIDwgcmFu
-Z2VzW2kqMiArIDFdKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAxOwo+ICsgICAg
-ICAgfQo+ICsgICAgICAgcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyB2b2lkIHNldHVwKHZv
-aWQpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBzaWdhY3Rpb24gc2E7Cj4gQEAgLTExNywxNyArMTYy
-LDMwIEBAIHN0YXRpYyB2b2lkIGFjY2Vzc19rc3ltYm9sc19hZGRyZXNzKHN0cnVjdCBrYWxsc3lt
-Cj4gKnRhYmxlKQo+ICAgICAgICAgfQo+ICB9Cj4KPiArCj4gIHN0YXRpYyB2b2lkIHRlc3RfYWNj
-ZXNzX2tlcm5lbF9hZGRyZXNzKHZvaWQpCj4gIHsKPiAtICAgICAgIHNlZ3ZfY2F1Z2h0ID0gMDsK
-PiArICAgICAgIGludCBza2lwcGVkID0gMDsKPgo+IC0gICAgICAgZm9yICh1bnNpZ25lZCBpbnQg
-aSA9IDA7IGkgPCBucl9zeW1ib2xzOyBpKyspCj4gKyAgICAgICBzZWd2X2NhdWdodCA9IDA7Cj4g
-KyAgICAgICByZWFkX3Byb2Nfc2VsZl9tYXBzKCk7Cj4gKwo+ICsgICAgICAgZm9yICh1bnNpZ25l
-ZCBpbnQgaSA9IDA7IGkgPCBucl9zeW1ib2xzOyBpKyspIHsKPiArICAgICAgICAgICAgICAgaWYg
-KGlzX2FkZHJlc3NfbWFwcGVkKHN5bV90YWJsZVtpXS5hZGRyKSkgewo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgIHRzdF9yZXMoVERFQlVHLCAiU2tpcHBpbmcgdXNlcnNwYWNlIG1hcHBlZCBhZGRy
-ZXNzCj4gMHglbHgiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3ltX3RhYmxl
-W2ldLmFkZHIpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHNraXBwZWQrKzsKPiArICAgICAg
-ICAgICAgICAgICAgICAgICBjb250aW51ZTsKPiArICAgICAgICAgICAgICAgfQo+ICAgICAgICAg
-ICAgICAgICBhY2Nlc3Nfa3N5bWJvbHNfYWRkcmVzcygmc3ltX3RhYmxlW2ldKTsKPiArICAgICAg
-IH0KPgo+IC0gICAgICAgaWYgKHNlZ3ZfY2F1Z2h0ID09IChzaWdfYXRvbWljX3QpbnJfc3ltYm9s
-cykKPiAtICAgICAgICAgICAgICAgdHN0X3JlcyhUUEFTUywgIkNhdWdodCAlZCBTSUdTRUdWIGlu
-IGFjY2VzcyBrc3ltYm9scwo+IGFkZHIiLCBzZWd2X2NhdWdodCk7Cj4gKyAgICAgICBpZiAoc2Vn
-dl9jYXVnaHQgPT0gKHNpZ19hdG9taWNfdClucl9zeW1ib2xzIC0gc2tpcHBlZCkKPiArICAgICAg
-ICAgICAgICAgdHN0X3JlcyhUUEFTUywgIkNhdWdodCAlZCBTSUdTRUdWIGluIGFjY2VzcyBrc3lt
-Ym9scyBhZGRyLAo+IHNraXBwZWQgJWQiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgIHNlZ3Zf
-Y2F1Z2h0LCBza2lwcGVkKTsKPiAgICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgdHN0X3Jl
-cyhURkFJTCwgIkNhdWdodCAlZCBTSUdTRUdWIGJ1dCBleHBlY3RlZCAlZCIsCj4gc2Vndl9jYXVn
-aHQsIG5yX3N5bWJvbHMpOwo+ICsgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiQ2F1Z2h0
-ICVkIFNJR1NFR1YgYnV0IGV4cGVjdGVkICVkLCBza2lwcGVkCj4gJWQiLAo+ICsgICAgICAgICAg
-ICAgICAgICAgICAgIHNlZ3ZfY2F1Z2h0LCBucl9zeW1ib2xzLXNraXBwZWQsIHNraXBwZWQpOwo+
-ICB9Cj4KPiAgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQo+IC0tCj4gMi4zOS4zCj4KPgoKLS0g
-Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> On Tue, Jul 09, 2024 at 03:02:13PM +0530, Naveen N Rao wrote:
+>> Greg Kroah-Hartman wrote:
+>> > On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
+>> > > On 2024-07-05 16:34, Vitaly Chikunov wrote:
+>> > > > Hi,
+>> > > > > There is new WARNING and Oops on ppc64le in v6.6.37 when running
+>> > > LTP tests:
+>> > > > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
+>> > > > below. I
+>> > > > see there is 1 commit in v6.6.36..v6.6.37 with call to
+>> > > > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
+>> > > > >   f99feda5684a powerpc/bpf: use
+>> > > bpf_jit_binary_pack_[alloc|finalize|free]
+>> > > >
+>> 
+>> <snip>
+>> 
+>> > > > > And so on. Temporary build/test log is at
+>> > > > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
+>> > > > > Other stable/longterm branches or other architectures does not
+>> > > exhibit this.
+>> > > > > Thanks,
+>> > > 
+>> > > Hi all - this just took down a production server for me, on POWER9 bare
+>> > > metal.  Not running tests, just booting normally, before services even came
+>> > > up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also
+>> > > running 64k kernel, unsure if it's better on 4k kernel.
+>> > > 
+>> > > In case it's helpful, here's the log from my boot:
+>> > > https://dpaste.org/Gyxxg/raw
+>> > 
+>> > Ok, this isn't good, something went wrong with my backports here.  Let
+>> > me go revert them all and push out a new 6.6.y release right away.
+>> 
+>> I think the problem is that the series adding support for bpf prog_pack was
+>> partially backported. In particular, the below patches are missing from
+>> stable v6.6:
+>> 465cabc97b42 powerpc/code-patching: introduce patch_instructions()
+>> 033ffaf0af1f powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
+>> 6efc1675acb8 powerpc/bpf: implement bpf_arch_text_copy
+>> 
+>> It should be sufficient to revert commit f99feda5684a (powerpc/bpf: use
+>> bpf_jit_binary_pack_[alloc|finalize|free]) to allow the above to apply
+>> cleanly, followed by cherry picking commit 90d862f370b6 (powerpc/bpf: use
+>> bpf_jit_binary_pack_[alloc|finalize|free]) from upstream.
+>> 
+>> Alternately, commit f99feda5684a (powerpc/bpf: use
+>> bpf_jit_binary_pack_[alloc|finalize|free]) can be reverted.
+>
+> I'm dropping them all now, if you want to submit a working series for
+> this, I'll be glad to queue them all up.
+
+Thanks, revert is good for now.
+
+With the revert there will be a build warning/error, only in stable,
+which I think can be fixed with the diff below. I'll get it tested and
+submit it properly.
+
+cheers
+
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index 5f57a8ba3cc8..cdd9db8f8684 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -205,7 +205,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+
+        bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
+        if (!fp->is_func || extra_pass) {
+-               bpf_jit_binary_lock_ro(bpf_hdr);
++               if (bpf_jit_binary_lock_ro(bpf_hdr)) {
++                       fp = org_fp;
++                       goto out_addrs;
++               }
+                bpf_prog_fill_jited_linfo(fp, addrs);
+ out_addrs:
+                kfree(addrs);
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
