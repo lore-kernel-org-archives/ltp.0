@@ -4,59 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56433C3DA41
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D67A7C2BD09
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 12:41:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CAE9D3D3938
-	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:39:14 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 37E1B3D3943
+	for <ltp@archiver.kernel.org>; Tue,  9 Jul 2024 14:41:55 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 599BC3D3921
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:38:59 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=ellerman.id.au (client-ip=150.107.74.76; helo=mail.ozlabs.org;
- envelope-from=mpe@ellerman.id.au; receiver=lists.linux.it)
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+ by picard.linux.it (Postfix) with ESMTPS id 9ED703D3926
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:41:40 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 246321400510
- for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:38:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
- s=201909; t=1720528725;
- bh=GmUsmLNBIQmHW+JpWrHCwH01WEhfM5xgRbqsJMF93No=;
- h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
- b=TKfDXVnq4T0Yt94cqUje8f+e8cqlm1eOR4zpw3mH0J+WJjdedfiXukVb0N0USQBzl
- an+2rjHqTgzz0S+/C7bw91G2WylXJ1V9T+H3v99ZKbNndLSVQzKzwCcwX2PxQzxcvy
- yWCpk9oxrmS0eKemK6VJcaNzm8zRZA+O4GQ/eqAyMrGQ1RwGGwaS4wuRxI2lkgv3BJ
- QPxXbiLXVDgwm1kuSlAftov88xNcM5RQlSLxk0IJEcpTCjEbvGpHAtVE5rtFIODAdj
- UvUw+ig522m7IoDZWue+Hv7OeiTGl5qKxdw02iSUSfQemOLOH+1ElGonthCgdVSUHi
- 6N+F+0H4Tspxg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by mail.ozlabs.org (Postfix) with ESMTPSA id 4WJLBq3Qzqz4wcl;
- Tue,  9 Jul 2024 22:38:43 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Naveen N Rao
- <naveen@kernel.org>
-In-Reply-To: <2024070958-plant-prozac-6a33@gregkh>
-References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
- <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
- <2024070904-cod-bobcat-a0d0@gregkh>
- <1720516964.n61e0dnv80.naveen@kernel.org>
- <2024070958-plant-prozac-6a33@gregkh>
-Date: Tue, 09 Jul 2024 22:38:43 +1000
-Message-ID: <87sewi68q4.fsf@mail.lhotse>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F321E1A005EC
+ for <ltp@lists.linux.it>; Tue,  9 Jul 2024 14:41:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1720528898;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=woBMWpByVqyVbm58c1b0CBOXnR3mO5uSLkhxbah2pog=;
+ b=QqEOGCVOMnUMYe3JVnyaM1rZ5i/oah12ximfKQ2SbxG9I9nmEqqk0HJz9nXri4rUOg714q
+ b7SwGgOtf5YTt7b5UhrfpDM5v2UrBCtNXOMPAyIykHs1xlM1pghLXesO/U/uOapiXxBO7W
+ Y6QV3yTtVf8RWuSIVTZMKduS9rxeQ9c=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-500-SEOukwFHNnqRenm-gN8e2g-1; Tue, 09 Jul 2024 08:41:36 -0400
+X-MC-Unique: SEOukwFHNnqRenm-gN8e2g-1
+Received: by mail-oi1-f200.google.com with SMTP id
+ 5614622812f47-3d92e7e6a23so1923712b6e.0
+ for <ltp@lists.linux.it>; Tue, 09 Jul 2024 05:41:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1720528896; x=1721133696;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=woBMWpByVqyVbm58c1b0CBOXnR3mO5uSLkhxbah2pog=;
+ b=u+6v2SB3mD2N4vbyzOfkXuW2ihB+rchgb/l5mjWgTRySJcDzS7afFDF869Vgz0N21y
+ ZqPPO0jg6faq3V67TftXUzcEMD8xm5bBqN9N5J7GoN60fmJ1ZJQ8QWZKejYTrjGLb6XY
+ JUe9jhIKnYbNWO11+638m9Oev5ZhXxhqM6uQlIBM0GsbxUePvemrx+FH3t2uUslRiZZ4
+ /sXtg5SaZKHri81MwdYjd4GezrQV5TDwEvTvUhgsUdx0W0YUMWgBGB1QczJUc929XY73
+ nSNrzBw9OjfWJiKhru9Rbsk/SBtKjaP7/YTngl/ZM6xeQATjP6hllD14jdnXzC5/TLpB
+ uahg==
+X-Gm-Message-State: AOJu0YyhyHcMuTaV15dKgSDP8GTRQpbJGkAhu7aIPDeZfq+zL5ULxVln
+ GswO0igRSupe0OJECB3Q7A7l/MYwTWjjNkR1qOiA/xxl4Gx2Kw3kIIaus21Nv0APxnBSEfxx6yo
+ jr55nMT8hKtelQZP7BVd47JkK31cqjS54q3gpj6gBEkwTcmvKSqlp0rFWw7Xtjr3VnMM2H1D9ER
+ CgM+PuqN270yHyziaN7Km9/4k=
+X-Received: by 2002:a05:6808:4493:b0:3d9:24f8:7dd2 with SMTP id
+ 5614622812f47-3d93c0393e3mr2982958b6e.6.1720528895883; 
+ Tue, 09 Jul 2024 05:41:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH7GMglyASEs0n7eopJsIIMAQMY2pmMYg9Y1Qyy1xjZmgyEst+dGI/Q2i6S0ySFM/Y5EKybCZJjsvtx7l3eEuM=
+X-Received: by 2002:a05:6808:4493:b0:3d9:24f8:7dd2 with SMTP id
+ 5614622812f47-3d93c0393e3mr2982946b6e.6.1720528895432; Tue, 09 Jul 2024
+ 05:41:35 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <09c8813ad86c4a8034e3e35a183355c4f887f1b4.1720527432.git.jstancek@redhat.com>
+ <CAEemH2e88FUiY7GbPgtxc+7NfP_xDFamMnACV7H6H_N39=SMrQ@mail.gmail.com>
+In-Reply-To: <CAEemH2e88FUiY7GbPgtxc+7NfP_xDFamMnACV7H6H_N39=SMrQ@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 9 Jul 2024 14:41:19 +0200
+Message-ID: <CAASaF6yidJu66ScuKOLyftZ81ejt0SnZvOO46+Nj8yuvvOFemw@mail.gmail.com>
+To: Li Wang <liwan@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree()
- bad address (00000000453be747)
+Subject: Re: [LTP] [PATCH] kallsyms: skip user-space mapped addresses
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,91 +91,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: matoro <matoro_mailinglist_kernel@matoro.tk>, stable@vger.kernel.org,
- Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> On Tue, Jul 09, 2024 at 03:02:13PM +0530, Naveen N Rao wrote:
->> Greg Kroah-Hartman wrote:
->> > On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
->> > > On 2024-07-05 16:34, Vitaly Chikunov wrote:
->> > > > Hi,
->> > > > > There is new WARNING and Oops on ppc64le in v6.6.37 when running
->> > > LTP tests:
->> > > > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
->> > > > below. I
->> > > > see there is 1 commit in v6.6.36..v6.6.37 with call to
->> > > > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
->> > > > >   f99feda5684a powerpc/bpf: use
->> > > bpf_jit_binary_pack_[alloc|finalize|free]
->> > > >
->> 
->> <snip>
->> 
->> > > > > And so on. Temporary build/test log is at
->> > > > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
->> > > > > Other stable/longterm branches or other architectures does not
->> > > exhibit this.
->> > > > > Thanks,
->> > > 
->> > > Hi all - this just took down a production server for me, on POWER9 bare
->> > > metal.  Not running tests, just booting normally, before services even came
->> > > up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also
->> > > running 64k kernel, unsure if it's better on 4k kernel.
->> > > 
->> > > In case it's helpful, here's the log from my boot:
->> > > https://dpaste.org/Gyxxg/raw
->> > 
->> > Ok, this isn't good, something went wrong with my backports here.  Let
->> > me go revert them all and push out a new 6.6.y release right away.
->> 
->> I think the problem is that the series adding support for bpf prog_pack was
->> partially backported. In particular, the below patches are missing from
->> stable v6.6:
->> 465cabc97b42 powerpc/code-patching: introduce patch_instructions()
->> 033ffaf0af1f powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
->> 6efc1675acb8 powerpc/bpf: implement bpf_arch_text_copy
->> 
->> It should be sufficient to revert commit f99feda5684a (powerpc/bpf: use
->> bpf_jit_binary_pack_[alloc|finalize|free]) to allow the above to apply
->> cleanly, followed by cherry picking commit 90d862f370b6 (powerpc/bpf: use
->> bpf_jit_binary_pack_[alloc|finalize|free]) from upstream.
->> 
->> Alternately, commit f99feda5684a (powerpc/bpf: use
->> bpf_jit_binary_pack_[alloc|finalize|free]) can be reverted.
->
-> I'm dropping them all now, if you want to submit a working series for
-> this, I'll be glad to queue them all up.
-
-Thanks, revert is good for now.
-
-With the revert there will be a build warning/error, only in stable,
-which I think can be fixed with the diff below. I'll get it tested and
-submit it properly.
-
-cheers
-
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index 5f57a8ba3cc8..cdd9db8f8684 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -205,7 +205,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-
-        bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
-        if (!fp->is_func || extra_pass) {
--               bpf_jit_binary_lock_ro(bpf_hdr);
-+               if (bpf_jit_binary_lock_ro(bpf_hdr)) {
-+                       fp = org_fp;
-+                       goto out_addrs;
-+               }
-                bpf_prog_fill_jited_linfo(fp, addrs);
- out_addrs:
-                kfree(addrs);
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBKdWwgOSwgMjAyNCBhdCAyOjM14oCvUE0gTGkgV2FuZyA8bGl3YW5AcmVkaGF0LmNv
+bT4gd3JvdGU6Cj4KPgo+Cj4gT24gVHVlLCBKdWwgOSwgMjAyNCBhdCA4OjE44oCvUE0gSmFuIFN0
+YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+IHdyb3RlOgo+Pgo+PiBSSEVMOSBzMzkweCB3aXRo
+IEtQVEkgZW5hYmxlZCBoYXMgYmVlbiBvYnNlcnZlZCB0byBzcG9yYWRpY2FsbHkKPj4gdXNlIHNh
+bWUgYWRkcmVzcyByYW5nZXMgZm9yIHVzZXItc3BhY2UgbGlicmFyaWVzIGFzIHRoZSBvbmVzCj4+
+IG9jY3VwaWVkIGJ5IGthbGxzeW1zIHdoaWxlIGluIGtlcm5lbC1zcGFjZS4KPgo+Cj4gVGhhbmtz
+IGZvciB0aGUgcHJvcG9zYWwgZml4LCBkbyB5b3UgdGhpbmsgd2UgbmVlZCB0byBhZGQKPiBhIGNo
+ZWNrIHRvIHNlZSBpZiBLUFRJIGlzIGV4cGxpY2l0bHkgZW5hYmxlZCBiZWZvcmUgZG9pbmcgdGhh
+dAo+IGlzX2FkZHJlc3NfbWFwcGVkPwo+IChvciwgY2hlY2sgdGhlIGNvbmZpZ3VyYXRpb24gZm9y
+IENPTkZJR19QQUdFX1RBQkxFX0lTT0xBVElPTikKCkl0IHNob3VsZG4ndCBiZSBuZWVkZWQuIEl0
+J3MgYSBzbWFsbCBvcHRpbWl6YXRpb24sIGJ1dCB0aGUgdGVzdCBydW4gbG9va3MKZmFzdCBlbm91
+Z2ggKGF0IGxlYXN0IG9uIHMzOTB4IEkgdHJpZWQpLgoKPgo+Cj4+Cj4+IFRoZSB0ZXN0IGN1cnJl
+bnRseSAod3JvbmdseSkgYXNzdW1lcywgdGhhdCBhIHdyaXRlIHRvIGthbGxzeW0KPj4gYWRkcmVz
+cyBzaG91bGQgZmFpbCBhbmQgZG9lc24ndCB0YWtlIGludG8gYWNjb3VudCB0aGF0IHNhbWUKPj4g
+bWVtb3J5IHJhbmdlcyBjb3VsZCBiZSBtYXBwZWQgZGlmZmVyZW50bHkgaW4gdXNlciB2cy4ga2Vy
+bmVsLXNwYWNlLgo+Pgo+PiBBZGQgYSBjaGVjayB0byBzZWUgaWYgYSBrYWxsc3ltIGFkZHJlc3Mg
+aXMgYWxyZWFkeSBtYXBwZWQgYnkgdXNlci1zcGFjZSwKPj4gYW5kIGlmIGl0IGlzLCBza2lwIGl0
+IHRvIGF2b2lkIGZhbHNlIHBvc2l0aXZlcy4KPj4KPj4KPj4gQmVmb3JlOgo+PiAgICAgMTMgIGth
+bGxzeW1zLmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBhZGRyIDB4
+M2ZmODA2MDc4N2QgKHIpIChfX2tzdHJ0YWJuc19uZnMzX3NldF9kc19jbGllbnQpCj4+ICAgICAx
+NCAga2FsbHN5bXMuYzoxMTU6IFRGQUlMOiBTdWNjZXNzZnVsbHkgYWNjZXNzZWQga2VybmVsIGFk
+ZHIgMHgzZmY4MDYwMDdhMCAodCkgKG5mc19pbml0X3NlcnZlcl9hY2xjbGllbnQpCj4+ICAgICAx
+NSAga2FsbHN5bXMuYzoxMTU6IFRGQUlMOiBTdWNjZXNzZnVsbHkgYWNjZXNzZWQga2VybmVsIGFk
+ZHIgMHgzZmY4MDYwYTA1OCAoZCkgKG5mc2FjbF92ZXJzaW9uKQo+PiAgICAgMTYgIGthbGxzeW1z
+LmM6MTE1OiBURkFJTDogU3VjY2Vzc2Z1bGx5IGFjY2Vzc2VkIGtlcm5lbCBhZGRyIDB4M2ZmODA2
+MGEwNzggKGQpIChuZnNhY2xfcnBjc3RhdCkKPj4gICAgIC4uLgo+PiAgICAga2FsbHN5bXMuYzox
+MzA6IFRGQUlMOiBDYXVnaHQgMTAzMTAyIFNJR1NFR1YgYnV0IGV4cGVjdGVkIDE1MzczOAo+Pgo+
+PiBBZnRlcjoKPj4gICAgIGthbGxzeW1zLmM6MTc1OiBUREVCVUc6IFNraXBwaW5nIHVzZXJzcGFj
+ZSBtYXBwZWQgYWRkcmVzcyAweDNmZjgwMjIwMDI0Cj4+ICAgICBrYWxsc3ltcy5jOjE3NTogVERF
+QlVHOiBTa2lwcGluZyB1c2Vyc3BhY2UgbWFwcGVkIGFkZHJlc3MgMHgzZmY4MDIyMDAzYwo+PiAg
+ICAga2FsbHN5bXMuYzoxNzU6IFRERUJVRzogU2tpcHBpbmcgdXNlcnNwYWNlIG1hcHBlZCBhZGRy
+ZXNzIDB4M2ZmODAyMTNiMjAKPj4gICAgIC4uLgo+PiAgICAga2FsbHN5bXMuYzoxODQ6IFRQQVNT
+OiBDYXVnaHQgMTAzNDczIFNJR1NFR1YgaW4gYWNjZXNzIGtzeW1ib2xzIGFkZHIsIHNraXBwZWQg
+MjcyMzQKPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5j
+b20+Cj4+IC0tLQo+PiAgdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9rYWxsc3ltcy9rYWxsc3lt
+cy5jIHwgNjggKysrKysrKysrKysrKysrKystLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDYzIGluc2Vy
+dGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
+bmVsL3NlY3VyaXR5L2thbGxzeW1zL2thbGxzeW1zLmMgYi90ZXN0Y2FzZXMva2VybmVsL3NlY3Vy
+aXR5L2thbGxzeW1zL2thbGxzeW1zLmMKPj4gaW5kZXggMmE1Y2JhYTMyNWVhLi5iMDdjYjljZGEy
+NjggMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkva2FsbHN5bXMva2Fs
+bHN5bXMuYwo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2thbGxzeW1zL2thbGxz
+eW1zLmMKPj4gQEAgLTU0LDYgKzU0LDggQEAgc3RhdGljIHN0cnVjdCBrYWxsc3ltICpzeW1fdGFi
+bGU7Cj4+ICBzdGF0aWMgdW5zaWduZWQgaW50IG5yX3N5bWJvbHM7Cj4+ICBzdGF0aWMgc2lnam1w
+X2J1ZiBqbXBidWY7Cj4+ICB2b2xhdGlsZSBzaWdfYXRvbWljX3Qgc2Vndl9jYXVnaHQ7Cj4+ICtz
+dGF0aWMgdW5zaWduZWQgbG9uZyAqcmFuZ2VzOwo+PiArc3RhdGljIGludCByYW5nZXNfc2l6ZSwg
+cmFuZ2VzX2xlbjsKPj4KPj4gIHN0YXRpYyB2b2lkIHNlZ3ZfaGFuZGxlcihpbnQgc2lnKQo+PiAg
+ewo+PiBAQCAtODksNiArOTEsNDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCByZWFkX2thbGxzeW1z
+KHN0cnVjdCBrYWxsc3ltICp0YWJsZSwgdW5zaWduZWQgaW50IHRhYmxlX3NpemUKPj4gICAgICAg
+ICByZXR1cm4gbnJfc3ltczsKPj4gIH0KPj4KPj4gK3N0YXRpYyB2b2lkIHJlYWRfcHJvY19zZWxm
+X21hcHModm9pZCkKPj4gK3sKPj4gKyAgICAgICBGSUxFICpmcDsKPj4gKwo+PiArICAgICAgIHJh
+bmdlc19sZW4gPSAwOwo+PiArICAgICAgIGZwID0gZm9wZW4oIi9wcm9jL3NlbGYvbWFwcyIsICJy
+Iik7Cj4+ICsgICAgICAgaWYgKGZwID09IE5VTEwpCj4+ICsgICAgICAgICAgICAgICB0c3RfYnJr
+KFRCUk9LIHwgVEVSUk5PLCAiRmFpbGVkIHRvIG9wZW4gL3Byb2Mvc2VsZi9tYXBzLiIpOwo+PiAr
+Cj4+ICsgICAgICAgd2hpbGUgKCFmZW9mKGZwKSkgewo+PiArICAgICAgICAgICAgICAgdW5zaWdu
+ZWQgbG9uZyBzdGFydCwgZW5kOwo+PiArICAgICAgICAgICAgICAgaW50IHJldDsKPj4gKwo+PiAr
+ICAgICAgICAgICAgICAgcmV0ID0gZnNjYW5mKGZwLCAiJWx4LSVseCAlKlteXG5dXG4iLCAmc3Rh
+cnQsICZlbmQpOwo+PiArICAgICAgICAgICAgICAgaWYgKHJldCAhPSAyKSB7Cj4+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIGZjbG9zZShmcCk7Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHRz
+dF9icmsoVEJST0sgfCBURVJSTk8sICJDb3VsZG4ndCBwYXJzZSAvcHJvYy9zZWxmL21hcHMgbGlu
+ZS4iKTsKPj4gKyAgICAgICAgICAgICAgIH0KPj4gKwo+PiArICAgICAgICAgICAgICAgaWYgKHJh
+bmdlc19zaXplIDwgcmFuZ2VzX2xlbiArIDEpIHsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+cmFuZ2VzX3NpemUgKz0gMTI4Owo+PiArICAgICAgICAgICAgICAgICAgICAgICByYW5nZXMgPSBy
+ZWFsbG9jKHJhbmdlcywgMipyYW5nZXNfc2l6ZSpzaXplb2YodW5zaWduZWQgbG9uZykpOwo+PiAr
+ICAgICAgICAgICAgICAgfQo+PiArICAgICAgICAgICAgICAgcmFuZ2VzW3Jhbmdlc19sZW4qMl0g
+PSBzdGFydDsKPj4gKyAgICAgICAgICAgICAgIHJhbmdlc1tyYW5nZXNfbGVuKjIgKyAxXSA9IGVu
+ZDsKPj4gKwo+PiArICAgICAgICAgICAgICAgcmFuZ2VzX2xlbisrOwo+PiArICAgICAgIH0KPj4g
+Kwo+PiArICAgICAgIGZjbG9zZShmcCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbnQgaXNfYWRk
+cmVzc19tYXBwZWQodW5zaWduZWQgbG9uZyBhZGRyKQo+PiArewo+PiArICAgICAgIGludCBpOwo+
+PiArCj4+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IHJhbmdlc19sZW47IGkrKykgewo+PiArICAg
+ICAgICAgICAgICAgaWYgKHJhbmdlc1tpKjJdIDw9IGFkZHIgJiYgYWRkciA8IHJhbmdlc1tpKjIg
+KyAxXSkKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7Cj4+ICsgICAgICAgfQo+
+PiArICAgICAgIHJldHVybiAwOwo+PiArfQo+PiArCj4+ICBzdGF0aWMgdm9pZCBzZXR1cCh2b2lk
+KQo+PiAgewo+PiAgICAgICAgIHN0cnVjdCBzaWdhY3Rpb24gc2E7Cj4+IEBAIC0xMTcsMTcgKzE2
+MiwzMCBAQCBzdGF0aWMgdm9pZCBhY2Nlc3Nfa3N5bWJvbHNfYWRkcmVzcyhzdHJ1Y3Qga2FsbHN5
+bSAqdGFibGUpCj4+ICAgICAgICAgfQo+PiAgfQo+Pgo+PiArCj4+ICBzdGF0aWMgdm9pZCB0ZXN0
+X2FjY2Vzc19rZXJuZWxfYWRkcmVzcyh2b2lkKQo+PiAgewo+PiAtICAgICAgIHNlZ3ZfY2F1Z2h0
+ID0gMDsKPj4gKyAgICAgICBpbnQgc2tpcHBlZCA9IDA7Cj4+Cj4+IC0gICAgICAgZm9yICh1bnNp
+Z25lZCBpbnQgaSA9IDA7IGkgPCBucl9zeW1ib2xzOyBpKyspCj4+ICsgICAgICAgc2Vndl9jYXVn
+aHQgPSAwOwo+PiArICAgICAgIHJlYWRfcHJvY19zZWxmX21hcHMoKTsKPj4gKwo+PiArICAgICAg
+IGZvciAodW5zaWduZWQgaW50IGkgPSAwOyBpIDwgbnJfc3ltYm9sczsgaSsrKSB7Cj4+ICsgICAg
+ICAgICAgICAgICBpZiAoaXNfYWRkcmVzc19tYXBwZWQoc3ltX3RhYmxlW2ldLmFkZHIpKSB7Cj4+
+ICsgICAgICAgICAgICAgICAgICAgICAgIHRzdF9yZXMoVERFQlVHLCAiU2tpcHBpbmcgdXNlcnNw
+YWNlIG1hcHBlZCBhZGRyZXNzIDB4JWx4IiwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBzeW1fdGFibGVbaV0uYWRkcik7Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHNraXBw
+ZWQrKzsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7Cj4+ICsgICAgICAgICAg
+ICAgICB9Cj4+ICAgICAgICAgICAgICAgICBhY2Nlc3Nfa3N5bWJvbHNfYWRkcmVzcygmc3ltX3Rh
+YmxlW2ldKTsKPj4gKyAgICAgICB9Cj4+Cj4+IC0gICAgICAgaWYgKHNlZ3ZfY2F1Z2h0ID09IChz
+aWdfYXRvbWljX3QpbnJfc3ltYm9scykKPj4gLSAgICAgICAgICAgICAgIHRzdF9yZXMoVFBBU1Ms
+ICJDYXVnaHQgJWQgU0lHU0VHViBpbiBhY2Nlc3Mga3N5bWJvbHMgYWRkciIsIHNlZ3ZfY2F1Z2h0
+KTsKPj4gKyAgICAgICBpZiAoc2Vndl9jYXVnaHQgPT0gKHNpZ19hdG9taWNfdClucl9zeW1ib2xz
+IC0gc2tpcHBlZCkKPj4gKyAgICAgICAgICAgICAgIHRzdF9yZXMoVFBBU1MsICJDYXVnaHQgJWQg
+U0lHU0VHViBpbiBhY2Nlc3Mga3N5bWJvbHMgYWRkciwgc2tpcHBlZCAlZCIsCj4+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIHNlZ3ZfY2F1Z2h0LCBza2lwcGVkKTsKPj4gICAgICAgICBlbHNlCj4+
+IC0gICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiQ2F1Z2h0ICVkIFNJR1NFR1YgYnV0IGV4
+cGVjdGVkICVkIiwgc2Vndl9jYXVnaHQsIG5yX3N5bWJvbHMpOwo+PiArICAgICAgICAgICAgICAg
+dHN0X3JlcyhURkFJTCwgIkNhdWdodCAlZCBTSUdTRUdWIGJ1dCBleHBlY3RlZCAlZCwgc2tpcHBl
+ZCAlZCIsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHNlZ3ZfY2F1Z2h0LCBucl9zeW1ib2xz
+LXNraXBwZWQsIHNraXBwZWQpOwo+PiAgfQo+Pgo+PiAgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lk
+KQo+PiAtLQo+PiAyLjM5LjMKPj4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
