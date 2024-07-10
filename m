@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67C1BC3DA41
-	for <ltp@archiver.kernel.org>; Wed, 10 Jul 2024 15:53:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C7EC3DA41
+	for <ltp@archiver.kernel.org>; Wed, 10 Jul 2024 15:55:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E90593D3863
-	for <ltp@archiver.kernel.org>; Wed, 10 Jul 2024 17:53:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C75053D3872
+	for <ltp@archiver.kernel.org>; Wed, 10 Jul 2024 17:55:44 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C95F23D073A
- for <ltp@lists.linux.it>; Wed, 10 Jul 2024 17:53:13 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id C14023CE830
+ for <ltp@lists.linux.it>; Wed, 10 Jul 2024 17:55:28 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A5EB960192F
- for <ltp@lists.linux.it>; Wed, 10 Jul 2024 17:53:12 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EB31720723C
+ for <ltp@lists.linux.it>; Wed, 10 Jul 2024 17:55:27 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C35FA1F83C;
- Wed, 10 Jul 2024 15:53:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 079561F83C;
+ Wed, 10 Jul 2024 15:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720626790;
+ t=1720626927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hnUw+vMJdWSQQ6K2c11PtUkzE/Q78qdNewEu1qRRy3w=;
- b=ox+mEN38+8CC+LJVDVqP4MEe/9tvV8KcXe1HPnFu63HpnsG5Won9L63t0YAlLgDa9BmYsp
- YIXLLnEAXeencZYCP5rHbgUla8/pfIila1OcEKjoce7wcu9xtippumPgFZfOcWSeiKMgdY
- oOAIm2B/99KnLQOli8zaaVhuLF5smEc=
+ bh=2uSXwoOwcbJPE6Yd/HGAgr92HQelpkWyFazHBW0ppuI=;
+ b=WIutUH98kuR72yrbfMQeUGsJ9XVup4isSOy/4iGayfGLyvzmQe4kIIOEfz6pmp4kCX4p4Q
+ x5Rpnupwil7g5qhjnixMyB2jmypWGna3WXHqYWJzmK5kzwU4EkRklmMpdHUYsC0OJXMbxP
+ GIFaTMiBGUSnFmV0cSba7tcYtugRVHI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720626790;
+ s=susede2_ed25519; t=1720626927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hnUw+vMJdWSQQ6K2c11PtUkzE/Q78qdNewEu1qRRy3w=;
- b=L7ZAPz0u65WNXQ/4ajI0ZKh3eZAv12SrAcNIxqkV/RPZuQ7cw6ILKWffPuYKOp7T0lYJUa
- aW88J9WgVzGh70Dw==
+ bh=2uSXwoOwcbJPE6Yd/HGAgr92HQelpkWyFazHBW0ppuI=;
+ b=DnaPPwJYZQeh7wMuLTxYgrOZHrlY/rHxcGyJ6TLJnTD1LGJC3/x+OK3ekm8l3VJyyEANbd
+ TWa9zCqLQ5E/AOCg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ox+mEN38;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=L7ZAPz0u
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WIutUH98;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DnaPPwJY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720626790;
+ t=1720626927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hnUw+vMJdWSQQ6K2c11PtUkzE/Q78qdNewEu1qRRy3w=;
- b=ox+mEN38+8CC+LJVDVqP4MEe/9tvV8KcXe1HPnFu63HpnsG5Won9L63t0YAlLgDa9BmYsp
- YIXLLnEAXeencZYCP5rHbgUla8/pfIila1OcEKjoce7wcu9xtippumPgFZfOcWSeiKMgdY
- oOAIm2B/99KnLQOli8zaaVhuLF5smEc=
+ bh=2uSXwoOwcbJPE6Yd/HGAgr92HQelpkWyFazHBW0ppuI=;
+ b=WIutUH98kuR72yrbfMQeUGsJ9XVup4isSOy/4iGayfGLyvzmQe4kIIOEfz6pmp4kCX4p4Q
+ x5Rpnupwil7g5qhjnixMyB2jmypWGna3WXHqYWJzmK5kzwU4EkRklmMpdHUYsC0OJXMbxP
+ GIFaTMiBGUSnFmV0cSba7tcYtugRVHI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720626790;
+ s=susede2_ed25519; t=1720626927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hnUw+vMJdWSQQ6K2c11PtUkzE/Q78qdNewEu1qRRy3w=;
- b=L7ZAPz0u65WNXQ/4ajI0ZKh3eZAv12SrAcNIxqkV/RPZuQ7cw6ILKWffPuYKOp7T0lYJUa
- aW88J9WgVzGh70Dw==
+ bh=2uSXwoOwcbJPE6Yd/HGAgr92HQelpkWyFazHBW0ppuI=;
+ b=DnaPPwJYZQeh7wMuLTxYgrOZHrlY/rHxcGyJ6TLJnTD1LGJC3/x+OK3ekm8l3VJyyEANbd
+ TWa9zCqLQ5E/AOCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6511E137D2;
- Wed, 10 Jul 2024 15:53:10 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C827C137D2;
+ Wed, 10 Jul 2024 15:55:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KIBuF2aujmZBVwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 10 Jul 2024 15:53:10 +0000
-Date: Wed, 10 Jul 2024 17:53:08 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4L+1L+6ujmbgVwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Jul 2024 15:55:26 +0000
+Date: Wed, 10 Jul 2024 17:55:21 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20240710155308.GB300896@pevik>
-References: <20240701-landlock-v1-0-58e9af649a72@suse.com>
- <20240701-landlock-v1-3-58e9af649a72@suse.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240710155521.GC300896@pevik>
+References: <20240612112311.10334-1-chrubis@suse.cz>
+ <20240701095032.18930-1-joe.liu@mediatek.com>
+ <ZoQTD_QLwP8w9sPe@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240701-landlock-v1-3-58e9af649a72@suse.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <ZoQTD_QLwP8w9sPe@yuki>
+X-Rspamd-Queue-Id: 079561F83C
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -97,19 +98,18 @@ X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  FUZZY_BLOCKED(0.00)[rspamd.com]; REPLYTO_EQ_FROM(0.00)[];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: C35FA1F83C
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 03/10] Add landlock SAFE_* macros
+Subject: Re: [LTP] [PATCH v2] sched: starvation: Autocallibrate the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,32 +122,55 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: alix.wu@mediatek.com, "joe.liu" <joe.liu@mediatek.com>, ltp@lists.linux.it,
+ xufeifei1@oppo.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea, Li,
+Hi Cyril,
+all,
 
-...
-> +++ b/include/tst_safe_macros.h
-> @@ -14,6 +14,7 @@
->  #include <sys/stat.h>
->  #include <sys/vfs.h>
->  #include <sys/sysinfo.h>
-> +#include <linux/landlock.h>
+> Hi!
+> > > What kernel version do you use?
+> > We are now using kernel 5.15
 
-This will break build for more than half of the distros:
+> > > Do you run LTP with background tasks to keep the CPU bussy?
+> > Yes, we are testing LTP with Android VTS. And the test environment is under Android Launcher.
 
-https://github.com/pevik/ltp/actions/runs/9876952862
+> > > Do you have any custom patches for kernel scheduller applied?
+> > I think there is no any patch applied for kernel scheduller.
 
-It's mostly due missing <linux/landlock.h> on old distros, but there were also
-redefinition of 'landlock_net_port_attr' at least on Fedora.
+> > > It really looks like something unexpected is happening at your end.
 
-You even have some fixed version in your CI where only Leap 42 fails due
-different problem), please send it (or post a diff here).
-https://github.com/acerv/ltp/actions/runs/9778823237
+> > Actually, the same kernel version using 64bit kernel can pass the ltp test.
+
+
+
+> > 1. for 32bit kernel, we have this log
+
+> > 32bit kernel
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:161: TINFO: do_test by pid 4523
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:166: TINFO: main pid is 4523
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:167: TINFO: child pid is 4524
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:166: TINFO: main pid is 4524
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:167: TINFO: child pid is 0
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:176: TINFO: go loop, current pid is 4523
+> > external/ltp/testcases/kernel/sched/cfs-scheduler/starvation.c:145: TINFO: current ppid is 4523, current pid is 4524, go to child() start
+
+> > main pid is 4523, child pid is 4524, and we only see child pid is working (checking by top)
+
+> > 4524 root         20   0  14M 472K    0 R 85.7   0.0   0:14.93 starvation_v4 -t 1000000 -l 1000000 <-- cpu_load by top
+
+> So this looks like we managed to reproduce the issue the test was trying
+> to catch. The child is hogging the CPU and the parent process cannot
+> proceed. And I suppose that this happens only on 32bit because 32bit is
+> less tested these days.
+
+I guess we can merge this, right?
+Or we still not sure whether this is really kernel bug not related to the
+change?
 
 Kind regards,
 Petr
