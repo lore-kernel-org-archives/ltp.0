@@ -4,102 +4,214 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DDE2C2BD09
-	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 13:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA07EC3DA4B
+	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 14:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1720793041; h=to : date :
+ message-id : references : in-reply-to : content-id : mime-version :
+ subject : list-id : list-unsubscribe : list-archive : list-post :
+ list-help : list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=KhdV9j8uQ5f8RqVnbhjHY9qOfTgStDBJP2qLyd+aQIg=;
+ b=SC3JNsCsncur/orLxGNpCHAwexHhTSfiazgz9kPcvg72+B5n7h0MHhF+PaM04Hh0wWRP3
+ 6JchvNfD7QIjTuGeAV4AzhEhjoMqxDdybJhZ96KRskDgOwEDrr+8DN/LCQE1WnM6Qt82aa2
+ XwjKTGkPXhv1/uIqTPBDXWdZFwc+RYs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0025E3D19A7
-	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 15:41:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 184143D19B7
+	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 16:04:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E70173CBA12
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 15:41:37 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id AECA13D1993
+ for <ltp@lists.linux.it>; Fri, 12 Jul 2024 16:03:38 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=oracle.com (client-ip=205.220.165.32;
+ helo=mx0a-00069f02.pphosted.com; envelope-from=chuck.lever@oracle.com;
+ receiver=lists.linux.it)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
+ [205.220.165.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5B9D5100112D
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 15:41:35 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5A80A1FB8B
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 13:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720791695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Us3tHO18VK4mF8foUsrb77s2wSR5VdSs9JaBt68uD6k=;
- b=F8eqMw5jCvIe0nEf6+hpq171rM4ySLQpGlehJ96EOt03FESbgfOo0+r3XGODa21q0WdSdS
- 93oxRwa26GKTtpEWb9hgUuHn+Wb8lb401+UsOAs2V+TXXVLKqF6sbXM5KQmAQX4tRAfchA
- eno/RsF2CBNYsPoV8Q/b0J0jImlOFs0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720791695;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Us3tHO18VK4mF8foUsrb77s2wSR5VdSs9JaBt68uD6k=;
- b=XT366k4/x45/E5N2fXcq0B8IQbvv0u+fGmcSDfmFJZVXcurT24NHyBhCUgkzu1hMkTDvNp
- 9lfDXa9fxSVGvVDg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=F8eqMw5j;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="XT366k4/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720791695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Us3tHO18VK4mF8foUsrb77s2wSR5VdSs9JaBt68uD6k=;
- b=F8eqMw5jCvIe0nEf6+hpq171rM4ySLQpGlehJ96EOt03FESbgfOo0+r3XGODa21q0WdSdS
- 93oxRwa26GKTtpEWb9hgUuHn+Wb8lb401+UsOAs2V+TXXVLKqF6sbXM5KQmAQX4tRAfchA
- eno/RsF2CBNYsPoV8Q/b0J0jImlOFs0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720791695;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Us3tHO18VK4mF8foUsrb77s2wSR5VdSs9JaBt68uD6k=;
- b=XT366k4/x45/E5N2fXcq0B8IQbvv0u+fGmcSDfmFJZVXcurT24NHyBhCUgkzu1hMkTDvNp
- 9lfDXa9fxSVGvVDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA5F213686
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 13:41:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +gS9K44ykWajagAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 13:41:34 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 12 Jul 2024 15:44:11 +0200
-Message-ID: <20240712134412.30853-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.44.2
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6DA9D1400758
+ for <ltp@lists.linux.it>; Fri, 12 Jul 2024 16:03:36 +0200 (CEST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46CDIhge023482;
+ Fri, 12 Jul 2024 14:03:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+ from:to:cc:subject:date:message-id:references:in-reply-to
+ :content-type:content-id:content-transfer-encoding:mime-version;
+ s=corp-2023-11-20; bh=EYdqFPe8zvEOab0md6vDQk+qHv4sNsacnyroFz2hE
+ UQ=; b=nH67vYS61kIfZmHAh+6l/vxOqmTlQD0Tjw4muxi2gZvNiTn5Y3JX55M/l
+ MIUxMUQFK0cx4x8/+5fh25cJuLAfMWMm30nbhHhZEh6s02cMjsFpjxfbb7XbV4Bs
+ kQofsLvPbo0VDOXVfG3Chx2Hp/IsqZlHb6GcG6H75vDOLhICtiwC95ftG3si8gPb
+ knq2aGz9Qfa2v1gQc0cmUIrgHRfmLODaYcFT7jNyFUMEq17VsBDqpIrmviG5myDS
+ R+9jzONZR3iHycuJkjVwpIRi04uEwVdOSVx9wG+lxR0c1oSQ7K2FNNAFa+qQC6xn
+ 3J610MnQ5/5VzL6xGZojfbfEEtevA==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com
+ (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 406wgq41wg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 12 Jul 2024 14:03:21 +0000 (GMT)
+Received: from pps.filterd
+ (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+ by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
+ with ESMTP id 46CDUrUM010954; Fri, 12 Jul 2024 14:03:20 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com
+ (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+ by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
+ 409vv74m9k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 12 Jul 2024 14:03:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WtAO2FoGncgFsMzcT2685eu76Sr7JQEVMAmlYLZdgdjNr7xovB7SX8aiWADaVkr3jpReVqaS2BtUjtGgUo7D2VW8zg1LiMIJYlfhoozzeHDHIWvQvjMd9gfUciTG3qpjh+zzPkpiY0Eykze117r3TsaDHFq1wTeNRTR+HFPQz7ilfEByhIQ1k9w4aXvzqIQh1MYGeM2myEX76l1+a+mAjv4EmbyS+5B3LGPgtFVgbJb+z6D2MTB9RR4lNxy3sr48PyYxbsQBQGW1XB9dfcdGsbjxWGqDBxmLak897LoReq44Ip7L4JI89Kd4QtoCSc+A8867qQ60ddXJ6nFYv4JysA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EYdqFPe8zvEOab0md6vDQk+qHv4sNsacnyroFz2hEUQ=;
+ b=RzCrGDXgCxGnUr1ol0l/vt0FNQV/MJVWu3/F+IwOulJU5EazHTukgZjw1ZN1phOlzf+Dx4xr/9gXWSbV1+504MXYnfuKxlmBxqZy0Asp3WTh/CSl/wvyyWjubJVoVjKStbq9VJ0lC+Tb1UXJRRKExVRm7Yn3sOmNS1Gk9+uXIpLb2rrar1toMLCka5N0suD7w9+blOBtmeDGtjf+2+wG6JkCQab0HohSSfWzrbQ6z4tjGUPEGPQj0EM8rvwLt1udt7rY/l5I6Gk6MqIutLnh2QnqQlxbje32Hf7ZICAoZmvBnidAR62X966XOVYvJheuQBuhlQjmy+aFM+UObLYwGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EYdqFPe8zvEOab0md6vDQk+qHv4sNsacnyroFz2hEUQ=;
+ b=d+U2pMSJKaoV2RUfZnPqIOvTW9ecccwImFvJD2Rbu821CyZiEHkA7zjuzBr+pig3gJVJq0kiCTFO+U+ICPXd3DRN7wRamDyR/Qd7Y6d9gc/q0j6kpEmdt3pFuzaASqqICp/i3YPeAHfNHsk5GDfKmcFRCPITyVGK9akbSbewyUQ=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by IA1PR10MB7213.namprd10.prod.outlook.com (2603:10b6:208:3f2::6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.23; Fri, 12 Jul
+ 2024 14:03:09 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90%6]) with mapi id 15.20.7762.024; Fri, 12 Jul 2024
+ 14:03:09 +0000
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH 1/1] nfsstat01: Update client RPC calls for kernel
+ 6.9
+Thread-Index: AQHazKCp5HoPbCA8x0icX5uCFQ/MP7HkDKAAgAQmtoCAARq9gIAACdiAgANUOoCAAHkFAIAE8XQAgAAbvoCAABy1AIAAXJcAgABEQACAAA4ygIAAMQoA
+Date: Fri, 12 Jul 2024 14:03:08 +0000
+Message-ID: <4E783F34-7638-439A-AEAD-4F2E6EAB1CC2@oracle.com>
+References: <d8e74e544880a85a35656e296bf60ce5f186a333.camel@kernel.org>
+ <172076474233.15471.345629269384872391@noble.neil.brown.name>
+ <f74754b59ffc564ef882566beda87b3f354da48c.camel@kernel.org>
+ <20240712110727.GB118354@pevik>
+In-Reply-To: <20240712110727.GB118354@pevik>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3774.600.62)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|IA1PR10MB7213:EE_
+x-ms-office365-filtering-correlation-id: f9528dd3-dc83-426a-20a2-08dca27b5c22
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+ ARA:13230040|1800799024|366016|376014|7416014|38070700018; 
+x-microsoft-antispam-message-info: =?utf-8?B?M3UzNjNrelJ0a0tWRHZvS000cWkvSlFrNS9vQmRlcXQ2N296S1FycXp1WXlj?=
+ =?utf-8?B?TzhWWWpEUU5aUHZHTTBDOFNEYUZWTlRtdmRvdTNTc2xybklJZ2lhQ1FiT2Vj?=
+ =?utf-8?B?UStuV1pEYTJZS3dPcXFqclk1YmFleERyVDdrQXQ2Zi9BRE5iZ295MGk5N3pq?=
+ =?utf-8?B?ODBRMXNCWXlmVXRydGxnYmFjd25KNGRkRUlqYnZ0eXpkRFFoQnFDM2JiRzlY?=
+ =?utf-8?B?UUVyNE9TditJTllSRmhNUkhnd2VDbVVIQXliRVVZT1JzMVN2SitoeXpNREcy?=
+ =?utf-8?B?UWlOOVZiZ3c2TjZFUGQ3b0JqT3lUbUdJS281VjdpeWV4Mmtmd1VzU2pPMXVV?=
+ =?utf-8?B?YUhjaFl4bkwzb1RRdnE5MWY0MkNScUgrN3pKT1NzdjFSL0VhRnQxTGpaVzdj?=
+ =?utf-8?B?ZFhmQ0h4TGRPVEE1MlJYMUEzcVlHWlZsWXJWTEpkLzNsRjZGTkllQ0xNTmQw?=
+ =?utf-8?B?cWdCZ1RSNmcvNk9CMGovRjkxQkNyKy94cjY4d2pSOUhsS2Z0cmZncFAvTHFu?=
+ =?utf-8?B?MFlGbTNwRzR1ZFAwV2QxN05ZbHRGeHJwOFZNS21MUGJESnZHVnZOOU1hYi9z?=
+ =?utf-8?B?c1F5Qkl5V1JiaEFrU3ZiZEpTRjlkNXBaVnQzeUlLWDg4d1d1dGZJVENhcjZE?=
+ =?utf-8?B?ZitUa0ZjTXB3RGJIMzNNSVhIQXVBdm1KS0JOMGQ5ellKd1ltYUlZOEZidEI0?=
+ =?utf-8?B?YWY3cXRDVHh2WjdmblhnVnFaZGlUNHRVdm84RG9FOTdlTzFGbjQzdVJzaVdk?=
+ =?utf-8?B?OTZZMGJLV2tZcm9Kd0lMN0xjMnNsWU0zVW01MUl0Z2wyT0hrRGNYTHBlaW5O?=
+ =?utf-8?B?aFhtTG9mQWd5aHRVdWI2TEZMUW9CNS95eGhKYlZ5Rll0QkRsOHJES0d2bnJv?=
+ =?utf-8?B?VGVqWCtVVEIxNTdxU1lSd25MRUNBWGFVQW9rZEl3M3NKdmFwRDZGRkI5eVM1?=
+ =?utf-8?B?WjdLY3BqT1c0SE9OQlVlaUpyTWRzcmFoZ3JmT0srZWd1ZS9ONzRLL2MzMUI3?=
+ =?utf-8?B?UjRXRm1NMElWU0pIdUFtSkQyQ1VjNjZqQWdQNXJIQmNXZi9FaHVETGhkZHVN?=
+ =?utf-8?B?SXdqdC8rNWxzZURXSzVDellGclNxU3BhU2NRbWE0cC9hZFNaNEpsSnlrYUNY?=
+ =?utf-8?B?NHkxZEx2ZmUwQmdmOXY4TXdVOVJwVHBJUG1IdTBiN1Zhamt5UUcrOUFMZnNn?=
+ =?utf-8?B?c1lTM0lVSkdTUDlMb1hvcm5EalpVK0djUHhjbUxEaGlORGhyRmxRcHRvU1NT?=
+ =?utf-8?B?Ry9GZ2hmMkFzSERGTDBlZGsvZmlFbVpjOEZaQmV6TEdhaGkyUmxWY2tlVVNr?=
+ =?utf-8?B?ditmazgyVkdvV3RmOEx0RTZEdGExNXlsUWlKMkxrUnJQS2diNkh0OCtyNW9U?=
+ =?utf-8?B?TFI2YzBGcVdhdDd6a0M2bEtQV0lqVHppSXE2cktmSElKUm9UdmZ3RzFRU0My?=
+ =?utf-8?B?MEw1NU5YbGhYM1RSa2wwZWNQc0FEazhqUTBvemc1UVphYkNXd0g0bDdEOUhK?=
+ =?utf-8?B?OFlzWkJSZ29KM3JmQm5TbFhSY21DWFg2dDBKZGZSakZhM0JRMFJzUWRjdW5z?=
+ =?utf-8?B?dHdXQkE1SEE1UlpCdTgzaEdxVkNrazlJcjk3NzJ2bXFKQ2J5cllRRytFakJN?=
+ =?utf-8?B?dVE3aDBmcEhjSTFrWE44VG5SZFlBbVZPUFc5eUQvdVJMUWNvQm0yK3hGdkZy?=
+ =?utf-8?B?RUduNXBJSmVlejZTcGpxNFVGT0pYUVJ3eWYzenFCN1EwTG5IdTdkWTZONk45?=
+ =?utf-8?B?WDJvT3dwbnNxeDZmc2pzc28yeVhra2NzVkZpUUI5V1ZCWk9aRnRTaCtPb3RT?=
+ =?utf-8?B?RFdLOGVDMFdzd2tMaFU0cFJWdW1aQXNheVJ6bElVcllOUCtUc2d0QlNMSXJR?=
+ =?utf-8?B?S0JJWndvUnJsMnNaZWQzWS90TDFjUjhIekx4VTFxd3ZmRGc9PQ==?=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BN0PR10MB5128.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(1800799024)(366016)(376014)(7416014)(38070700018); DIR:OUT;
+ SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3JuZXIvdm12cHVucHBrd2trTjlza1BDb2EvREVHYmFQQlhWdjJ0d0lQTVFz?=
+ =?utf-8?B?OVg1dGJ4WldGOUhDeDdxTzRvL05PbnpFdktFKzFISW1Bd0l6VXI2aUpJYnNW?=
+ =?utf-8?B?MjdUV0V4SU5LcmRXQzBnbGMvbERDMWlqSmE3aWZvRENqTlRBajlDcGFwK0tN?=
+ =?utf-8?B?UzhGVTNLb0tUV0JMMjBnMHVGb1VRMWZGeW95eGdnL1J6cW1mVHhudU4wWHQv?=
+ =?utf-8?B?TGYyV1pMRHBHREo4clY2VzNCVDVQdnlmRnB5VnpNK3EvMHo2N3BzSTJ0TDRI?=
+ =?utf-8?B?ZG05dlhwbGdwK3dzb2hCQldaQ1FYSEFOL1BPYndYcXo4LzVJY3NuVDhiMGla?=
+ =?utf-8?B?aXp6VnQ1c1YxOWtKS2ZDbmNTR1J0UlBEZzNKbk15eTNwZzd4VTJqT2dudjJU?=
+ =?utf-8?B?YlJzSWY5dFVZc1MxeVp1T1FVYXBUbHplcjJ4aVpGVjlVNWRZa0FBajBiaEFQ?=
+ =?utf-8?B?RWtxSnhPVFVNSjlRaW9vbHRZRVEyNnY1clFaMldabzN2cG5XTEdUR3FyM0Ir?=
+ =?utf-8?B?enFyeG50bDVhK0J1c1VLUXBzZTd6TndvUDNhclE2eCsrVGtPdHNnWDgzdjRG?=
+ =?utf-8?B?UUV6enI4MGJxTTVkT1d2cGVjRkJmUzhiNTA5UlhYYUR2LzVqQkN1emNqS3lG?=
+ =?utf-8?B?SDBTbHQralptWURHKzhnc2lBa1VQMVJtY2hCSldNeVFhV25qVUpuRDQyNUxD?=
+ =?utf-8?B?ZVZFSFhOMXlQcFdYL0pXU2pSc3VycVVldjZIQ2lOM01NVStZZDcxWkp5NEhY?=
+ =?utf-8?B?MG1DeU9JY3JKdHlRU0pNU2grOEFLbStwT1o1ajZnUlpEMTZ0R0pZUjdIOHNh?=
+ =?utf-8?B?L05jcVI0UU1RRFh1U1NyUjBCaS8zN3NWSEZTQytHd1hzU2VDZ3dFQ2thMThY?=
+ =?utf-8?B?aUNIK2Vra0lkbUYvdUU5MEhuVWF6dVQ0NFJoTTJSd1Y2TURzV0xvNmg1QjlE?=
+ =?utf-8?B?M2Z5RnVoRVgrdnM4V1F4UG1ieDJ2eStTVmpaSWZ3NmcrK0FCY2xGaG52MWNL?=
+ =?utf-8?B?Vmp1OFJBaHBPdGw1WktjT3daN1NvaDZWdDNTZStBZHIyK2VBVXBRS3d4Wjc0?=
+ =?utf-8?B?M0VRcHpsQmg2L0RvQnZsdEtkaTY1aUhFeE45cHBGK3ZKRkhnSVlBNk10MXFD?=
+ =?utf-8?B?enF6ZUtzMG5oaUZGOHNoMHRoQys1SW5EaXR6MXlHWHd3R3plcWNJZnhYVG5N?=
+ =?utf-8?B?Qkl0NE1YNHJqWW5yRWpzUkRCL1ppcGVUWGlHQUVlQU9CQURGamUyaUZoRGFS?=
+ =?utf-8?B?enhvMlZzQzVLeVBBckRBWU5oTWpmeUpkSlY2NXpHWWQzUnZlYTkxbWZsaEhj?=
+ =?utf-8?B?dmhGcFMrU0p1R3ZZdGlGRm1zQ0lFZEhwZlZSYlBxQTAzZS9mcmY3N2dVRnh2?=
+ =?utf-8?B?L2VQMXdCLzJqVmRWQWRNZ3Fmbm9kbzZrWjlFWE8zbkw4SGVYblFQRVY0V3FV?=
+ =?utf-8?B?c2RGTy9ySUJJRktlKzJoWHZyZk1aYXd4amc3aUdqMVhHaStjMU1LZzdyaUZN?=
+ =?utf-8?B?S2lnUENVYmYvbkFsc3ZFdVArU2Y1WHA1dFNRc0tBUWRvdUg4SllRRnJsaFg4?=
+ =?utf-8?B?VThZOHdQL0lPWTBYdXgzWHlxSWhXV3ZJUGhyY1EweXZjUkxVRU9rMDJDWThM?=
+ =?utf-8?B?MVZ4MGdJU1JYS3FMbzRFeXc5TDQ2MEJyR0RTMUNUZFcyZGxRdW1HaktqNU5J?=
+ =?utf-8?B?d3lsTUhNWkZQcEk2U0FFcS9RaEFJTmR4SGlDVjFOMFplaFJsbHJYeWRKQjFp?=
+ =?utf-8?B?NE9SRVBrT3RoVHVlTjdwbmwwWmRybW55cXRXUXE2WE0rN3U0Z0hXZUVzelRN?=
+ =?utf-8?B?bHEvVGZhMk5ILzVRWlNtOXBIK2kzdGI1VWJjRElZYzZnUlY0QVRBaGV4Z2kr?=
+ =?utf-8?B?L0Z1SElERi90azNxWVJxYTJ2dkRzWFhrZ1QraXEzeCtPamlVWmJNWkl2cjlD?=
+ =?utf-8?B?NUdSZUozL1R1N3B1WUQ0MVdLcnhPZlNkN2RaemtPU1dORWdxWHFuT2gxRDRO?=
+ =?utf-8?B?dTJiT1BNOEYrRHdRN3V3TVVNS1dsUzBqeldJbjhaQVAvNmlrR21LNWpEV0FR?=
+ =?utf-8?B?c1ZoVlJpQ0RPbm9JOHI3MnRvWVAxcERWaWJPcmE4bUoyMTZDcWo3ZGYvd1Jk?=
+ =?utf-8?B?cDU0Z3R6eXRQRDF2aTI5eWhLSnBWS3JqTWwwb0s0aHQySExFcHFxeG15R1hh?=
+ =?utf-8?B?Z0E9PQ==?=
+Content-ID: <C23169CD8266DE4DBD744D4562ADD577@namprd10.prod.outlook.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 5A80A1FB8B
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.99 / 50.00]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_NONE(0.00)[]; ARC_NA(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Spamd-Bar: /
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: RPwRQApsGUFnPveikdopKQMoNN6DDb8trJtMuooOV0+7ze/mYqBW8zDHRu4SrZj28dvjfd6afLLf7M8SiLrzWeckscySQ7VKH1gho8s8WmgdD+86RgENqp7AOtOQU2jGXa4nI/eC2DbO3JLoxfzfU3Jzq1iFDFur9Mxz5+qxH+7lH+/BwNaqB16mrZ5QDcwCL/hLWQFp3ntxlYhlIjYndmQVnuzF4QjVI89hb5Kz5Fj5XVwL1toaPE9kIUYzARVOC9uz2XB6HXi0zKHiic13NQSJtODy0DRP5shjYC789+TdZ9O9BvX6MVcTwmASKDzsC2ALLJyZBuM6jF3VZfBReTeVPJmob84N9a/HtfmI6cT0HMHuCmds3NVOj+y3SBoYJhx/8w5FeIV2GV/3VCAbZK6CjvC7WGST+H9PEpmvN6n3M8trpIdX7zEnNeavQwSe/bZ3xyEB2dAgIOirlMhiZnJ0CAwAf+Jy7gJyFO43Ejd1m7Urc23hs4aJJoAfbgiZa02Nnoe43qgVmPHkbJsJfVzPgX2PnsT0XiZ1jqEHNOFtq1Kzfo4S8Qadm4UDngO4aJG/EoaAyStCcWBL3ZLEZrJ4ngbTDGaPDgGGTDvqHVw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9528dd3-dc83-426a-20a2-08dca27b5c22
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2024 14:03:08.9639 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m+IQcvKlT5BoJkA0I8Ruh+78FyWv8t8Qy9mnBhGaxhe6Zoy4VPR2rfn583HUmdAIZe3CwCzYLliEE1Jscft/xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7213
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-12_10,2024-07-11_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ malwarescore=0 phishscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
+ definitions=main-2407120095
+X-Proofpoint-ORIG-GUID: Cu_GDPnMkVDdLQNdvwCvbR213jBdv-cd
+X-Proofpoint-GUID: Cu_GDPnMkVDdLQNdvwCvbR213jBdv-cd
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add tst_tmpdir_path() and tst_tmpdir_mkpath()
+Subject: Re: [LTP] [PATCH 1/1] nfsstat01: Update client RPC calls for kernel
+ 6.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,807 +223,233 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Chuck Lever III via ltp <ltp@lists.linux.it>
+Reply-To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Neil Brown <neilb@suse.de>, Greg KH <greg@kroah.com>,
+ Jeff Layton <jlayton@kernel.org>, Sherry Yang <sherry.yang@oracle.com>,
+ linux-stable <stable@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+ "Linux regression
+ tracking \(Thorsten Leemhuis\)" <regressions@leemhuis.info>,
+ Anna Schumaker <anna@kernel.org>, Trond Myklebust <trondmy@hammerspace.com>,
+ Calum Mackay <calum.mackay@oracle.com>,
+ "kernel-team@fb.com" <kernel-team@fb.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- tst_tmpdir_path() creates a singleton string copy of the library
-  internal path and returns pointer to it on all subsequent calls.
-
-- tst_tmpdir_mkpath() constructs a path from the temporary directory
-  path and printf-like format paramters.
-
-- both functions use guarded buffers to allocate the memory, which
-  especially means that there is no reason to free these strings at
-  the program end.
-
-- all new library tests are converted to the new API
-
-+ macro is added for new library that fails compilation if old API
-  function is used
-
-This should solve the absolute temporary directory path handling once
-for all.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_test.h                            |  5 ---
- include/tst_tmpdir.h                          | 37 ++++++++++++++++++-
- lib/newlib_tests/tst_device.c                 |  5 +--
- lib/tst_tmpdir.c                              | 37 +++++++++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap01.c  |  2 +-
- .../kernel/mem/hugetlb/hugemmap/hugemmap02.c  |  2 +-
- .../kernel/mem/hugetlb/hugemmap/hugemmap04.c  |  2 +-
- testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  1 -
- testcases/kernel/syscalls/chroot/chroot01.c   |  8 +---
- testcases/kernel/syscalls/chroot/chroot02.c   |  8 +---
- testcases/kernel/syscalls/creat/creat08.c     |  6 +--
- .../kernel/syscalls/faccessat/faccessat01.c   |  5 +--
- .../kernel/syscalls/faccessat2/faccessat201.c |  5 +--
- .../kernel/syscalls/fchmodat/fchmodat01.c     |  5 +--
- .../kernel/syscalls/io_uring/io_uring02.c     |  3 +-
- .../kernel/syscalls/ioctl/ioctl_loop01.c      |  5 ++-
- .../kernel/syscalls/ioctl/ioctl_loop02.c      | 11 +++---
- .../kernel/syscalls/ioctl/ioctl_loop05.c      |  5 ++-
- testcases/kernel/syscalls/mkdir/mkdir03.c     |  4 +-
- testcases/kernel/syscalls/mount/mount06.c     | 19 +++++-----
- testcases/kernel/syscalls/mount/mount07.c     | 18 +++------
- testcases/kernel/syscalls/open/open10.c       |  6 +--
- .../kernel/syscalls/pathconf/pathconf01.c     |  8 +---
- .../kernel/syscalls/pathconf/pathconf02.c     |  7 +---
- .../kernel/syscalls/readlinkat/readlinkat01.c |  5 +--
- testcases/kernel/syscalls/rename/rename09.c   | 10 +----
- testcases/kernel/syscalls/stat/stat04.c       | 13 +------
- testcases/kernel/syscalls/statx/statx07.c     |  7 +---
- testcases/kernel/syscalls/utime/utime07.c     |  2 +-
- 29 files changed, 122 insertions(+), 129 deletions(-)
-
-diff --git a/include/tst_test.h b/include/tst_test.h
-index a5fd9a00e..517c8d032 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -629,11 +629,6 @@ void tst_set_max_runtime(int max_runtime);
-  */
- int tst_creat_unlinked(const char *path, int flags);
- 
--/*
-- * Returns path to the test temporary directory in a newly allocated buffer.
-- */
--char *tst_get_tmpdir(void);
--
- /*
-  * Returns path to the test temporary directory root (TMPDIR).
-  */
-diff --git a/include/tst_tmpdir.h b/include/tst_tmpdir.h
-index e6c5d962c..c0a0ad31f 100644
---- a/include/tst_tmpdir.h
-+++ b/include/tst_tmpdir.h
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2017-2024 Cyril Hrubis <chrubis@suse.cz>
-  * Copyright (c) 2020 Martin Doucha <mdoucha@suse.cz>
-  */
- 
-@@ -16,4 +16,39 @@
-  */
- void tst_purge_dir(const char *path);
- 
-+/**
-+ * tst_tmpdir_path - Returns a pointer to a tmpdir path.
-+ *
-+ * The returned path is allocated and initialized the first time this function is
-+ * called, each subsequent call will return the same pointer.
-+ *
-+ * @return A newly allocated path. The memory is freed automatically at the end
-+ *         of the test. If allocation fails the function calls tst_brk() and
-+ *         exits the test.
-+ */
-+char *tst_tmpdir_path(void);
-+
-+/**
-+ * tst_tmpdir_mkpath - Construct an absolute path pointing to a file inside tmpdir.
-+ *
-+ * Constructs a path inside tmpdir i.e. adds a prefix pointing to the current
-+ * test tmpdir to the string build by the printf-like format.
-+ *
-+ * @fmt A printf-like format string.
-+ * @... A printf-like parameter list.
-+ *
-+ * @return A newly allocated path. The memory is freed automatically at the end
-+ *         of the test. If allocation fails the function calls tst_brk() and
-+ *         exits the test.
-+ */
-+char *tst_tmpdir_mkpath(const char *fmt, ...)
-+	__attribute__((format(printf, 1, 2)));
-+
-+/*
-+ * Make sure nobody uses old API functions in new code.
-+ */
-+#ifndef LTPLIB
-+# define tst_get_tmpdir #error Use tst_tmpdir_path()!
-+#endif
-+
- #endif /* TST_TMPDIR_H__ */
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index 53099f9bc..ef69728f4 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -28,11 +28,8 @@ static int set_block_size(int fd)
- static void setup(void)
- {
- 	int fd;
--	int ret;
- 
--	ret = asprintf(&mntpoint, "%s/mnt", tst_get_tmpdir());
--	if (ret < 0)
--		tst_brk(TBROK, "asprintf failure");
-+	mntpoint = tst_tmpdir_mkpath("mnt");
- 
- 	fd = SAFE_OPEN(tst_device->dev, O_RDONLY);
- 
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 0f1b15ca4..1fb1bd698 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -71,6 +71,7 @@
- #include <fcntl.h>
- 
- #include "test.h"
-+#include "tst_buffers.h"
- #include "safe_macros.h"
- #include "tst_tmpdir.h"
- #include "ltp_priv.h"
-@@ -352,3 +353,39 @@ void tst_purge_dir(const char *path)
- 	if (purge_dir(path, &err))
- 		tst_brkm(TBROK, NULL, "%s: %s", __func__, err);
- }
-+
-+char *tst_tmpdir_path(void)
-+{
-+	static char *tmpdir;
-+
-+	if (tmpdir)
-+		return tmpdir;
-+
-+	tmpdir = tst_strdup(TESTDIR);
-+
-+	return tmpdir;
-+}
-+
-+char *tst_tmpdir_mkpath(const char *fmt, ...)
-+{
-+	size_t testdir_len = strlen(TESTDIR);
-+	size_t path_len = testdir_len;
-+	va_list va, vac;
-+	char *ret;
-+
-+	va_start(va, fmt);
-+	va_copy(vac, va);
-+	path_len += vsnprintf(NULL, 0, fmt, va) + 2;
-+	va_end(va);
-+
-+	ret = tst_alloc(path_len);
-+
-+	strcpy(ret, TESTDIR);
-+
-+	ret[testdir_len] = '/';
-+
-+	vsprintf(ret + testdir_len + 1, fmt, vac);
-+	va_end(vac);
-+
-+	return ret;
-+}
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-index 3fc730002..de5133381 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-@@ -75,7 +75,7 @@ void setup(void)
- 		tst_brk(TCONF, "Not enough hugepages for testing.");
- 
- 	if (!Hopt)
--		Hopt = tst_get_tmpdir();
-+		Hopt = tst_tmpdir_path();
- 	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
- 
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index e818cd5a3..b788aeafb 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -122,7 +122,7 @@ static void setup(void)
- 		tst_brk(TCONF, "Not enough hugepages for testing.");
- 
- 	if (!Hopt)
--		Hopt = tst_get_tmpdir();
-+		Hopt = tst_tmpdir_path();
- 	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
- 
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index 6af032aa5..f52747e68 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -93,7 +93,7 @@ void setup(void)
- 		tst_brk(TCONF, "Not enough hugepages for testing!");
- 
- 	if (!Hopt)
--		Hopt = tst_get_tmpdir();
-+		Hopt = tst_tmpdir_path();
- 	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
- 
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-index 34fe08c24..a694514d2 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-@@ -17,7 +17,6 @@
- #include <errno.h>
- #include <sys/wait.h>
- #include "tst_test.h"
--#include "old_tmpdir.h"
- #include "mem.h"
- 
- #define PALIGN(p, a) ((void *)LTP_ALIGN((unsigned long)(p), (a)))
-diff --git a/testcases/kernel/syscalls/chroot/chroot01.c b/testcases/kernel/syscalls/chroot/chroot01.c
-index febf064db..60f3f609c 100644
---- a/testcases/kernel/syscalls/chroot/chroot01.c
-+++ b/testcases/kernel/syscalls/chroot/chroot01.c
-@@ -27,18 +27,12 @@ static void setup(void)
- {
- 	struct passwd *ltpuser;
- 
--	path = tst_get_tmpdir();
-+	path = tst_tmpdir_path();
- 	ltpuser = SAFE_GETPWNAM("nobody");
- 	SAFE_SETEUID(ltpuser->pw_uid);
- }
- 
--static void cleanup(void)
--{
--	free(path);
--}
--
- static struct tst_test test = {
--	.cleanup = cleanup,
- 	.setup = setup,
- 	.test_all = verify_chroot,
- 	.needs_root = 1,
-diff --git a/testcases/kernel/syscalls/chroot/chroot02.c b/testcases/kernel/syscalls/chroot/chroot02.c
-index ad33abdcc..b01a87660 100644
---- a/testcases/kernel/syscalls/chroot/chroot02.c
-+++ b/testcases/kernel/syscalls/chroot/chroot02.c
-@@ -37,17 +37,11 @@ static void verify_chroot(void)
- 
- static void setup(void)
- {
--	path = tst_get_tmpdir();
-+	path = tst_tmpdir_path();
- 	SAFE_TOUCH(TMP_FILENAME, 0666, NULL);
- }
- 
--static void cleanup(void)
--{
--	free(path);
--}
--
- static struct tst_test test = {
--	.cleanup = cleanup,
- 	.setup = setup,
- 	.test_all = verify_chroot,
- 	.needs_root = 1,
-diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
-index 91581dbf8..011753ac5 100644
---- a/testcases/kernel/syscalls/creat/creat08.c
-+++ b/testcases/kernel/syscalls/creat/creat08.c
-@@ -29,7 +29,6 @@
- #define NOSETGID_B	DIR_B "/nosetgid"
- #define ROOT_SETGID	DIR_B "/root_setgid"
- 
--static char *tmpdir;
- static uid_t orig_uid, nobody_uid;
- static gid_t nobody_gid, free_gid;
- static int fd = -1;
-@@ -44,7 +43,6 @@ static void setup(void)
- 	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)nobody_uid,
- 		(int)nobody_gid);
- 	free_gid = tst_get_free_gid(nobody_gid);
--	tmpdir = tst_get_tmpdir();
- }
- 
- static void file_test(const char *name, mode_t mode, int sgid, gid_t gid)
-@@ -125,15 +123,13 @@ static void run(void)
- 	file_test(ROOT_SETGID, MODE_SGID, 1, free_gid);
- 
- 	/* Cleanup between loops */
--	tst_purge_dir(tmpdir);
-+	tst_purge_dir(tst_tmpdir_path());
- }
- 
- static void cleanup(void)
- {
- 	if (fd >= 0)
- 		SAFE_CLOSE(fd);
--
--	free(tmpdir);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/faccessat/faccessat01.c b/testcases/kernel/syscalls/faccessat/faccessat01.c
-index 557d7eb4c..d429cdd14 100644
---- a/testcases/kernel/syscalls/faccessat/faccessat01.c
-+++ b/testcases/kernel/syscalls/faccessat/faccessat01.c
-@@ -55,10 +55,7 @@ static void verify_faccessat(unsigned int i)
- 
- static void setup(void)
- {
--	char *tmpdir_path = tst_get_tmpdir();
--
--	abs_path = tst_aprintf("%s/%s", tmpdir_path, FILEPATH);
--	free(tmpdir_path);
-+	abs_path = tst_tmpdir_mkpath(FILEPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0700);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/faccessat2/faccessat201.c b/testcases/kernel/syscalls/faccessat2/faccessat201.c
-index 012091752..bbe441b51 100644
---- a/testcases/kernel/syscalls/faccessat2/faccessat201.c
-+++ b/testcases/kernel/syscalls/faccessat2/faccessat201.c
-@@ -56,10 +56,7 @@ static void verify_faccessat2(unsigned int i)
- 
- static void setup(void)
- {
--	char *tmpdir_path = tst_get_tmpdir();
--
--	abs_path = tst_aprintf("%s/%s", tmpdir_path, RELPATH);
--	free(tmpdir_path);
-+	abs_path = tst_tmpdir_mkpath(RELPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0777);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-index bf3812738..97ba31763 100644
---- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-+++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-@@ -60,10 +60,7 @@ static void verify_fchmodat(unsigned int i)
- 
- static void setup(void)
- {
--	char *tmpdir_path = tst_get_tmpdir();
--
--	abs_path = tst_aprintf("%s/%s", tmpdir_path, FILEPATH);
--	free(tmpdir_path);
-+	abs_path = tst_tmpdir_mkpath(FILEPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0700);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring02.c b/testcases/kernel/syscalls/io_uring/io_uring02.c
-index c9d4bbcb1..50206cf1f 100644
---- a/testcases/kernel/syscalls/io_uring/io_uring02.c
-+++ b/testcases/kernel/syscalls/io_uring/io_uring02.c
-@@ -64,13 +64,12 @@ static struct msghdr beef_header = {
- 
- static void setup(void)
- {
--	char *tmpdir = tst_get_tmpdir();
-+	char *tmpdir = tst_tmpdir_path();
- 	int ret;
- 
- 	addr.sun_family = AF_UNIX;
- 	ret = snprintf(addr.sun_path, sizeof(addr.sun_path), "%s/%s", tmpdir,
- 		SOCK_NAME);
--	free(tmpdir);
- 
- 	if (ret >= (int)sizeof(addr.sun_path))
- 		tst_brk(TBROK, "Tempdir path is too long");
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index 734d803d5..a4d191a2e 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -27,7 +27,8 @@
- #include "lapi/loop.h"
- #include "tst_test.h"
- 
--static char dev_path[1024], backing_path[1024], backing_file_path[1024];
-+static char dev_path[1024], backing_path[1024];
-+static char *backing_file_path;
- static int dev_num, attach_flag, dev_fd, parted_sup;
- 
- /*
-@@ -124,7 +125,7 @@ static void setup(void)
- 	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
- 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
- 	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", dev_num, dev_num);
--	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
-+	backing_file_path = tst_tmpdir_mkpath("test.img");
- 	sprintf(loop_partpath, "%sp1", dev_path);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- }
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-index 12d4e8230..380fd1006 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-@@ -27,7 +27,9 @@
- #include "tst_test.h"
- 
- static int file_fd, file_change_fd, file_fd_invalid;
--static char backing_path[1024], backing_file_path[1024], backing_file_change_path[1024];
-+static char backing_path[1024];
-+static char *backing_file_path;
-+static char *backing_file_change_path;
- static int attach_flag, dev_fd, loop_configure_sup = 1;
- static char loop_ro_path[1024], dev_path[1024];
- static struct loop_config loopconfig;
-@@ -109,7 +111,6 @@ static void setup(void)
- 	int dev_num;
- 	int ret;
- 
--	char *tmpdir = tst_get_tmpdir();
- 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
- 	if (dev_num < 0)
- 		tst_brk(TBROK, "Failed to find free loop device");
-@@ -119,12 +120,10 @@ static void setup(void)
- 	tst_fill_file("test2.img", 0, 2048, 20);
- 
- 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
--	sprintf(backing_file_path, "%s/test.img", tmpdir);
--	sprintf(backing_file_change_path, "%s/test1.img", tmpdir);
-+	backing_file_path = tst_tmpdir_mkpath("test.img");
-+	backing_file_change_path = tst_tmpdir_mkpath("test1.img");
- 	sprintf(loop_ro_path, "/sys/block/loop%d/ro", dev_num);
- 
--	free(tmpdir);
--
- 	file_change_fd = SAFE_OPEN("test1.img", O_RDWR);
- 	file_fd_invalid = SAFE_OPEN("test2.img", O_RDWR);
- 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index 3a5d5afef..6f19280cc 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -37,7 +37,8 @@
- #define DIO_MESSAGE "In dio mode"
- #define NON_DIO_MESSAGE "In non dio mode"
- 
--static char dev_path[1024], sys_loop_diopath[1024], backing_file_path[1024];
-+static char dev_path[1024], sys_loop_diopath[1024];
-+static char *backing_file_path;
- static int dev_num, dev_fd, block_devfd, attach_flag, logical_block_size;
- 
- static void check_dio_value(int flag)
-@@ -124,7 +125,7 @@ static void setup(void)
- 	 *   size of loop is bigger than the backing device's and the loop
- 	 *   needn't transform transfer.
- 	 */
--	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
-+	backing_file_path = tst_tmpdir_mkpath("test.img");
- 	tst_find_backing_dev(backing_file_path, bd_path, sizeof(bd_path));
- 	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
- 	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir03.c b/testcases/kernel/syscalls/mkdir/mkdir03.c
-index 20089c9c9..85d46801e 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir03.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir03.c
-@@ -85,10 +85,8 @@ static void verify_mkdir(unsigned int n)
- static void setup(void)
- {
- 	unsigned int i;
--	char *tmpdir = tst_get_tmpdir();
- 
--	SAFE_SYMLINK(tmpdir, TST_SYMLINK);
--	free(tmpdir);
-+	SAFE_SYMLINK(tst_tmpdir_path(), TST_SYMLINK);
- 
- 	SAFE_MKFIFO(TST_PIPE, 0777);
- 	SAFE_MKDIR(TST_FOLDER, 0777);
-diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
-index 2376deab3..8028dc5ec 100644
---- a/testcases/kernel/syscalls/mount/mount06.c
-+++ b/testcases/kernel/syscalls/mount/mount06.c
-@@ -27,14 +27,14 @@
- #define MNTPOINT_DST "mntpoint2"
- 
- static char *tmppath;
--static char mntpoint_src[PATH_MAX];
--static char mntpoint_dst[PATH_MAX];
--static char tstfiles_src[PATH_MAX];
--static char tstfiles_dst[PATH_MAX];
-+static char *mntpoint_src;
-+static char *mntpoint_dst;
-+static char *tstfiles_src;
-+static char *tstfiles_dst;
- 
- static void setup(void)
- {
--	tmppath = tst_get_tmpdir();
-+	tmppath = tst_tmpdir_path();
- 
- 	/*
- 	 * Turn current dir into a private mount point being a parent
-@@ -43,11 +43,10 @@ static void setup(void)
- 	SAFE_MOUNT(tmppath, tmppath, "none", MS_BIND, NULL);
- 	SAFE_MOUNT("none", tmppath, "none", MS_PRIVATE, NULL);
- 
--	snprintf(mntpoint_src, PATH_MAX, "%s/%s", tmppath, MNTPOINT_SRC);
--	snprintf(mntpoint_dst, PATH_MAX, "%s/%s", tmppath, MNTPOINT_DST);
--
--	snprintf(tstfiles_src, PATH_MAX, "%s/%s/testfile", tmppath, MNTPOINT_SRC);
--	snprintf(tstfiles_dst, PATH_MAX, "%s/%s/testfile", tmppath, MNTPOINT_DST);
-+	mntpoint_src = tst_tmpdir_mkpath(MNTPOINT_SRC);
-+	mntpoint_dst = tst_tmpdir_mkpath(MNTPOINT_DST);
-+	tstfiles_src = tst_tmpdir_mkpath("%s/testfile", MNTPOINT_SRC);
-+	tstfiles_dst = tst_tmpdir_mkpath("%s/testfile", MNTPOINT_DST);
- 
- 	SAFE_MKDIR(mntpoint_dst, 0750);
- }
-diff --git a/testcases/kernel/syscalls/mount/mount07.c b/testcases/kernel/syscalls/mount/mount07.c
-index eb3fb55a0..495777067 100644
---- a/testcases/kernel/syscalls/mount/mount07.c
-+++ b/testcases/kernel/syscalls/mount/mount07.c
-@@ -31,9 +31,9 @@
- 
- #define MNTPOINT "mntpoint"
- 
--static char test_file[PATH_MAX];
--static char link_file[PATH_MAX];
--static char temp_link_file[PATH_MAX];
-+static char *test_file;
-+static char *link_file;
-+static char *temp_link_file;
- static int flag;
- 
- static void setup_symlink(void)
-@@ -114,15 +114,9 @@ static void test_statfs(bool nosymfollow)
- 
- static void setup(void)
- {
--	char *tmpdir = tst_get_tmpdir();
--
--	snprintf(test_file, PATH_MAX, "%s/%s/test_file", tst_get_tmpdir(),
--			MNTPOINT);
--	snprintf(link_file, PATH_MAX, "%s/%s/link_file", tst_get_tmpdir(),
--			MNTPOINT);
--	snprintf(temp_link_file, PATH_MAX, "%s/%s/temp_link_file",
--			tst_get_tmpdir(), MNTPOINT);
--	free(tmpdir);
-+	test_file = tst_tmpdir_mkpath("%s/test_file", MNTPOINT);
-+	link_file = tst_tmpdir_mkpath("%s/link_file", MNTPOINT);
-+	temp_link_file = tst_tmpdir_mkpath("%s/temp_link_file", MNTPOINT);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/open/open10.c b/testcases/kernel/syscalls/open/open10.c
-index d2d3729d2..916357158 100644
---- a/testcases/kernel/syscalls/open/open10.c
-+++ b/testcases/kernel/syscalls/open/open10.c
-@@ -27,7 +27,6 @@
- #define NOSETGID_B	DIR_B "/nosetgid"
- #define ROOT_SETGID	DIR_B "/root_setgid"
- 
--static char *tmpdir;
- static uid_t orig_uid, nobody_uid;
- static gid_t nobody_gid, free_gid;
- static int fd = -1;
-@@ -42,7 +41,6 @@ static void setup(void)
- 	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)nobody_uid,
- 		(int)nobody_gid);
- 	free_gid = tst_get_free_gid(nobody_gid);
--	tmpdir = tst_get_tmpdir();
- }
- 
- static void file_test(const char *name, mode_t mode, int sgid, gid_t gid)
-@@ -123,15 +121,13 @@ static void run(void)
- 	file_test(ROOT_SETGID, MODE_SGID, 1, free_gid);
- 
- 	/* Cleanup between loops */
--	tst_purge_dir(tmpdir);
-+	tst_purge_dir(tst_tmpdir_path());
- }
- 
- static void cleanup(void)
- {
- 	if (fd >= 0)
- 		SAFE_CLOSE(fd);
--
--	free(tmpdir);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/pathconf/pathconf01.c b/testcases/kernel/syscalls/pathconf/pathconf01.c
-index 66b8d1fc1..280709a91 100644
---- a/testcases/kernel/syscalls/pathconf/pathconf01.c
-+++ b/testcases/kernel/syscalls/pathconf/pathconf01.c
-@@ -45,7 +45,7 @@ static void verify_pathconf(unsigned int i)
- {
- 	struct tcase *tc = &tcases[i];
- 
--	path = tst_get_tmpdir();
-+	path = tst_tmpdir_path();
- 
- 	TEST(pathconf(path, tc->value));
- 
-@@ -55,14 +55,8 @@ static void verify_pathconf(unsigned int i)
- 		tst_res(TPASS, "pathconf(%s, %s)", path, tc->name);
- }
- 
--static void cleanup(void)
--{
--	free(path);
--}
--
- static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.test = verify_pathconf,
- 	.tcnt = ARRAY_SIZE(tcases),
--	.cleanup = cleanup,
- };
-diff --git a/testcases/kernel/syscalls/pathconf/pathconf02.c b/testcases/kernel/syscalls/pathconf/pathconf02.c
-index 3fb2cdbe8..42b97dc93 100644
---- a/testcases/kernel/syscalls/pathconf/pathconf02.c
-+++ b/testcases/kernel/syscalls/pathconf/pathconf02.c
-@@ -70,12 +70,9 @@ static void setup(void)
- 
- 	SAFE_TOUCH("testfile", 0777, NULL);
- 
--	char *tmpdir =  tst_get_tmpdir();
-+	abs_path = tst_tmpdir_mkpath(FILEPATH);
- 
--	abs_path = tst_aprintf("%s/%s", tmpdir, FILEPATH);
--
--	SAFE_CHMOD(tmpdir, 0);
--	free(tmpdir);
-+	SAFE_CHMOD(tst_tmpdir_path(), 0);
- 
- 	memset(path, 'a', PATH_LEN);
- 
-diff --git a/testcases/kernel/syscalls/readlinkat/readlinkat01.c b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-index b1214c3ae..cd78ba134 100644
---- a/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-+++ b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-@@ -66,10 +66,7 @@ static void verify_readlinkat(unsigned int i)
- 
- static void setup(void)
- {
--	char *tmpdir = tst_get_tmpdir();
--
--	abspath = tst_aprintf("%s/" TEST_SYMLINK, tmpdir);
--	free(tmpdir);
-+	abspath = tst_tmpdir_mkpath(TEST_SYMLINK);
- 
- 	file_fd = SAFE_OPEN(TEST_FILE, O_CREAT, 0600);
- 	SAFE_SYMLINK(TEST_FILE, TEST_SYMLINK);
-diff --git a/testcases/kernel/syscalls/rename/rename09.c b/testcases/kernel/syscalls/rename/rename09.c
-index 368a436c2..927b36f27 100644
---- a/testcases/kernel/syscalls/rename/rename09.c
-+++ b/testcases/kernel/syscalls/rename/rename09.c
-@@ -27,14 +27,12 @@
- #define PERMS    0700
- 
- static uid_t orig_uid, test_users[2];
--static char *tmpdir;
- 
- static void setup(void)
- {
- 	umask(0);
- 	orig_uid = getuid();
- 	tst_get_uids(test_users, 0, 2);
--	tmpdir = tst_get_tmpdir();
- }
- 
- static void run(void)
-@@ -54,18 +52,12 @@ static void run(void)
- 
- 	/* Cleanup between loops */
- 	SAFE_SETEUID(orig_uid);
--	tst_purge_dir(tmpdir);
--}
--
--static void cleanup(void)
--{
--	free(tmpdir);
-+	tst_purge_dir(tst_tmpdir_path());
- }
- 
- static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
--	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
- };
-diff --git a/testcases/kernel/syscalls/stat/stat04.c b/testcases/kernel/syscalls/stat/stat04.c
-index a9c86ba89..04ddcd2d1 100644
---- a/testcases/kernel/syscalls/stat/stat04.c
-+++ b/testcases/kernel/syscalls/stat/stat04.c
-@@ -44,16 +44,13 @@ static void run(void)
- static void setup(void)
- {
- 	char opt_bsize[32];
--	char *tmpdir;
- 	const char *const fs_opts[] = {opt_bsize, NULL};
- 	struct stat sb;
- 	int pagesize;
- 	int fd;
- 
--	tmpdir = tst_get_tmpdir();
--	SAFE_ASPRINTF(&file_path, "%s/%s", tmpdir, FILENAME);
--	SAFE_ASPRINTF(&symb_path, "%s/%s", tmpdir, SYMBNAME);
--	free(tmpdir);
-+	file_path = tst_tmpdir_mkpath(FILENAME);
-+	symb_path = tst_tmpdir_mkpath(SYMBNAME);
- 
- 	/* change st_blksize / st_dev */
- 	SAFE_STAT(".", &sb);
-@@ -84,12 +81,6 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	if (file_path)
--		free(file_path);
--
--	if (symb_path)
--		free(symb_path);
--
- 	if (tst_is_mounted(MNTPOINT))
- 		SAFE_UMOUNT(MNTPOINT);
- }
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index 7b02cfae7..968174330 100644
---- a/testcases/kernel/syscalls/statx/statx07.c
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -54,7 +54,6 @@
- #define SERV_FORCE_SYNC "server/force_sync_file"
- #define SERV_DONT_SYNC "server/dont_sync_file"
- 
--static char *cwd;
- static char cmd[BUFF_SIZE];
- static int mounted;
- static int exported;
-@@ -116,8 +115,6 @@ static void setup(void)
- 	int ret;
- 	char server_path[BUFF_SIZE];
- 
--	cwd = tst_get_tmpdir();
--
- 	mode_t old_umask = umask(0);
- 
- 	SAFE_MKDIR(SERV_PATH, DEFAULT_MODE);
-@@ -127,7 +124,7 @@ static void setup(void)
- 
- 	umask(old_umask);
- 
--	snprintf(server_path, sizeof(server_path), ":%s/%s", cwd, SERV_PATH);
-+	snprintf(server_path, sizeof(server_path), ":%s/%s", tst_tmpdir_path(), SERV_PATH);
- 
- 	snprintf(cmd, sizeof(cmd),
- 		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check,fsid=%d *%.1024s",
-@@ -155,7 +152,7 @@ static void cleanup(void)
- 	if (!exported)
- 		return;
- 	snprintf(cmd, sizeof(cmd),
--		 "exportfs -u *:%s/%s", cwd, SERV_PATH);
-+		 "exportfs -u *:%s/%s", tst_tmpdir_path(), SERV_PATH);
- 
- 	if (tst_system(cmd) == -1)
- 		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
-diff --git a/testcases/kernel/syscalls/utime/utime07.c b/testcases/kernel/syscalls/utime/utime07.c
-index 3aff2c8ef..8889b3a6d 100644
---- a/testcases/kernel/syscalls/utime/utime07.c
-+++ b/testcases/kernel/syscalls/utime/utime07.c
-@@ -43,7 +43,7 @@ static void test_utime(void)
- 
- 	tst_res(TINFO, "Test if utime() changes access time");
- 
--	create_symlink(tst_get_tmpdir(), symname);
-+	create_symlink(tst_tmpdir_path(), symname);
- 	SAFE_STAT(symname, &oldsym_stat);
- 
- 	struct utimbuf utimes = {
--- 
-2.44.2
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+DQoNCj4gT24gSnVsIDEyLCAyMDI0LCBhdCA3OjA34oCvQU0sIFBldHIgVm9yZWwgPHB2b3JlbEBz
+dXNlLmN6PiB3cm90ZToNCj4gDQo+IEhpIGFsbCwNCj4gDQo+PiBPbiBGcmksIDIwMjQtMDctMTIg
+YXQgMTY6MTIgKzEwMDAsIE5laWxCcm93biB3cm90ZToNCj4+PiBPbiBGcmksIDEyIEp1bCAyMDI0
+LCBKZWZmIExheXRvbiB3cm90ZToNCj4+Pj4gT24gRnJpLCAyMDI0LTA3LTEyIGF0IDA4OjU4ICsx
+MDAwLCBOZWlsQnJvd24gd3JvdGU6DQo+Pj4+PiBPbiBGcmksIDEyIEp1bCAyMDI0LCBKZWZmIExh
+eXRvbiB3cm90ZToNCj4+Pj4+PiBPbiBNb24sIDIwMjQtMDctMDggYXQgMTc6NDkgKzAwMDAsIENo
+dWNrIExldmVyIElJSSB3cm90ZToNCj4gDQo+Pj4+Pj4+PiBPbiBKdWwgOCwgMjAyNCwgYXQgNjoz
+NuKAr0FNLCBHcmVnIEtIIDxncmVnQGtyb2FoLmNvbT4gd3JvdGU6DQo+IA0KPj4+Pj4+Pj4gT24g
+U2F0LCBKdWwgMDYsIDIwMjQgYXQgMDc6NDY6MTlBTSArMDAwMCwgU2hlcnJ5IFlhbmcgd3JvdGU6
+DQo+IA0KPiANCj4+Pj4+Pj4+Pj4gT24gSnVsIDYsIDIwMjQsIGF0IDEyOjEx4oCvQU0sIEdyZWcg
+S0ggPGdyZWdAa3JvYWguY29tPiB3cm90ZToNCj4gDQo+Pj4+Pj4+Pj4+IE9uIEZyaSwgSnVsIDA1
+LCAyMDI0IGF0IDAyOjE5OjE4UE0gKzAwMDAsIENodWNrIExldmVyIElJSSB3cm90ZToNCj4gDQo+
+IA0KPj4+Pj4+Pj4+Pj4+IE9uIEp1bCAyLCAyMDI0LCBhdCA2OjU14oCvUE0sIENhbHVtIE1hY2th
+eSA8Y2FsdW0ubWFja2F5QG9yYWNsZS5jb20+IHdyb3RlOg0KPiANCj4+Pj4+Pj4+Pj4+PiBUbyBj
+bGFyaWZ54oCmDQo+IA0KPj4+Pj4+Pj4+Pj4+IE9uIDAyLzA3LzIwMjQgNTo1NCBwbSwgQ2FsdW0g
+TWFja2F5IHdyb3RlOg0KPj4+Pj4+Pj4+Pj4+PiBoaSBQZXRyLA0KPj4+Pj4+Pj4+Pj4+PiBJIG5v
+dGljZWQgeW91ciBMVFAgcGF0Y2ggWzFdWzJdIHdoaWNoIGFkanVzdHMgdGhlIG5mc3N0YXQwMSB0
+ZXN0IG9uIHY2Ljkga2VybmVscywgdG8gYWNjb3VudCBmb3IgSm9zZWYncyBjaGFuZ2VzIFszXSwg
+d2hpY2ggcmVzdHJpY3QgdGhlIE5GUy9SUEMgc3RhdHMgcGVyLW5hbWVzcGFjZS4NCj4+Pj4+Pj4+
+Pj4+Pj4gSSBzZWUgdGhhdCBKb3NlZidzIGNoYW5nZXMgd2VyZSBiYWNrcG9ydGVkLCBhcyBmYXIg
+YmFjayBhcyBsb25ndGVybSB2NS40LA0KPiANCj4+Pj4+Pj4+Pj4+PiBTb3JyeSwgdGhhdCdzIG5v
+dCBxdWl0ZSBhY2N1cmF0ZS4NCj4gDQo+Pj4+Pj4+Pj4+Pj4gSm9zZWYncyBORlMgY2xpZW50IGNo
+YW5nZXMgd2VyZSBhbGwgYmFja3BvcnRlZCBmcm9tIHY2LjksIGFzIGZhciBhcyBsb25ndGVybSB2
+NS40Lnk6DQo+IA0KPj4+Pj4+Pj4+Pj4+IDIwNTdhNDhkMGRkMCBzdW5ycGM6IGFkZCBhIHN0cnVj
+dCBycGNfc3RhdHMgYXJnIHRvIHJwY19jcmVhdGVfYXJncw0KPj4+Pj4+Pj4+Pj4+IGQ0NzE1MWI3
+OWUzMiBuZnM6IGV4cG9zZSAvcHJvYy9uZXQvc3VucnBjL25mcyBpbiBuZXQgbmFtZXNwYWNlcw0K
+Pj4+Pj4+Pj4+Pj4+IDE1NDgwMzZlZjEyMCBuZnM6IG1ha2UgdGhlIHJwY19zdGF0IHBlciBuZXQg
+bmFtZXNwYWNlDQo+IA0KPiANCj4+Pj4+Pj4+Pj4+PiBPZiBKb3NlZidzIE5GUyBzZXJ2ZXIgY2hh
+bmdlcywgZm91ciB3ZXJlIGJhY2twb3J0ZWQgZnJvbSB2Ni45IHRvIHY2Ljg6DQo+IA0KPj4+Pj4+
+Pj4+Pj4+IDQxOGI5Njg3ZGVjZSBzdW5ycGM6IHVzZSB0aGUgc3RydWN0IG5ldCBhcyB0aGUgc3Zj
+IHByb2MgcHJpdmF0ZQ0KPj4+Pj4+Pj4+Pj4+IGQ5ODQxNmNjMjE1NCBuZnNkOiByZW5hbWUgTkZT
+RF9ORVRfKiB0byBORlNEX1NUQVRTXyoNCj4+Pj4+Pj4+Pj4+PiA5MzQ4M2FjNWZlYzYgbmZzZDog
+ZXhwb3NlIC9wcm9jL25ldC9zdW5ycGMvbmZzZCBpbiBuZXQgbmFtZXNwYWNlcw0KPj4+Pj4+Pj4+
+Pj4+IDRiMTQ4ODU0MTFmNyBuZnNkOiBtYWtlIGFsbCBvZiB0aGUgbmZzZCBzdGF0cyBwZXItbmV0
+d29yayBuYW1lc3BhY2UNCj4gDQo+Pj4+Pj4+Pj4+Pj4gYW5kIHRoZSBvdGhlcnMgcmVtYWluZWQg
+b25seSBpbiB2Ni45Og0KPiANCj4+Pj4+Pj4+Pj4+PiBhYjQyZjRkOWEyNmYgc3VucnBjOiBkb24n
+dCBjaGFuZ2UgLT5zdl9zdGF0cyBpZiBpdCBkb2Vzbid0IGV4aXN0DQo+Pj4+Pj4+Pj4+Pj4gYTIy
+MTRlZDU4OGZiIG5mc2Q6IHN0b3Agc2V0dGluZyAtPnBnX3N0YXRzIGZvciB1bnVzZWQgc3RhdHMN
+Cj4+Pj4+Pj4+Pj4+PiBmMDk0MzIzODY3NjYgc3VucnBjOiBwYXNzIGluIHRoZSBzdl9zdGF0cyBz
+dHJ1Y3QgdGhyb3VnaCBzdmNfY3JlYXRlX3Bvb2xlZA0KPj4+Pj4+Pj4+Pj4+IDNmNmVmMTgyZjE0
+NCBzdW5ycGM6IHJlbW92ZSAtPnBnX3N0YXRzIGZyb20gc3ZjX3Byb2dyYW0NCj4+Pj4+Pj4+Pj4+
+PiBlNDFlZTQ0Y2M2YTQgbmZzZDogcmVtb3ZlIG5mc2Rfc3RhdHMsIG1ha2UgdGhfY250IGEgZ2xv
+YmFsIGNvdW50ZXINCj4+Pj4+Pj4+Pj4+PiAxNmZiOTgwOGFiMmMgbmZzZDogbWFrZSBzdmNfc3Rh
+dCBwZXItbmV0d29yayBuYW1lc3BhY2UgaW5zdGVhZCBvZiBnbG9iYWwNCj4gDQo+IA0KPiANCj4+
+Pj4+Pj4+Pj4+PiBJJ20gd29uZGVyaW5nIGlmIHRoaXMgZGlmZmVyZW5jZSBiZXR3ZWVuIE5GUyBj
+bGllbnQsIGFuZCBORlMgc2VydmVyLCBzdGF0IGJlaGF2aW91ciwgYWNyb3NzIGtlcm5lbCB2ZXJz
+aW9ucywgbWF5IHBlcmhhcHMgY2F1c2Ugc29tZSB1c2VyIGNvbmZ1c2lvbj8NCj4gDQo+Pj4+Pj4+
+Pj4+PiBBcyBhIHJlZnJlc2hlciBmb3IgdGhlIHN0YWJsZSBmb2xrZW4sIEpvc2VmJ3MgY2hhbmdl
+cyBtYWtlDQo+Pj4+Pj4+Pj4+PiBuZnNzdGF0cyBzaWxvJ2QsIHNvIHRoZXkgbm8gbG9uZ2VyIHNo
+b3cgY291bnRzIGZyb20gdGhlIHdob2xlDQo+Pj4+Pj4+Pj4+PiBzeXN0ZW0sIGJ1dCBvbmx5IGZv
+ciBORlMgb3BlcmF0aW9ucyByZWxhdGluZyB0byB0aGUgbG9jYWwgbmV0DQo+Pj4+Pj4+Pj4+PiBu
+YW1lc3BhY2UuIFRoYXQgaXMgYSBzdXJwcmlzaW5nIGNoYW5nZSBmb3Igc29tZSB1c2VycywgdG9v
+bHMsDQo+Pj4+Pj4+Pj4+PiBhbmQgdGVzdGluZy4NCj4gDQo+Pj4+Pj4+Pj4+PiBJJ20gbm90IGNs
+ZWFyIG9uIHdoZXRoZXIgdGhlcmUgYXJlIGFueSBydWxlcy9ndWlkZWxpbmVzIGFyb3VuZA0KPj4+
+Pj4+Pj4+Pj4gTFRTIGJhY2twb3J0cyBjYXVzaW5nIGJlaGF2aW9yIGNoYW5nZXMgdGhhdCB1c2Vy
+IHRvb2xzLCBsaWtlDQo+Pj4+Pj4+Pj4+PiBuZnNzdGF0LCBtaWdodCBiZSBpbXBhY3RlZCBieS4N
+Cj4gDQo+Pj4+Pj4+Pj4+IFRoZSBzYW1lIHJ1bGVzIHRoYXQgYXBwbHkgZm9yIExpbnVzJ3MgdHJl
+ZSAoaS5lLiBubyB1c2Vyc3BhY2UNCj4+Pj4+Pj4+Pj4gcmVncmVzc2lvbnMuKQ0KPiANCj4+Pj4+
+Pj4+PiBHaXZlbiB0aGUgY3VycmVudCBkYXRhIHdlIGhhdmUsIExUUCBuZnNzdGF0MDFbMV0gZmFp
+bGVkIG9uIExUUyB2NS40LjI3OCBiZWNhdXNlIG9mIGtlcm5lbCBjb21taXQgMTU0ODAzNmVmMTIw
+NCAoIm5mczoNCj4+Pj4+Pj4+PiBtYWtlIHRoZSBycGNfc3RhdCBwZXIgbmV0IG5hbWVzcGFjZSIp
+IFsyXS4gT3RoZXIgTFRTIHdoaWNoIGJhY2twb3J0ZWQgdGhlIHNhbWUgY29tbWl0IGFyZSB2ZXJ5
+IGxpa2VseSB0cm91YmxlZCB3aXRoIHRoZSBzYW1lIExUUCB0ZXN0IGZhaWx1cmUuDQo+IA0KPj4+
+Pj4+Pj4+IFRoZSBmb2xsb3dpbmcgYXJlIHRoZSBMVFAgbmZzc3RhdDAxIGZhaWx1cmUgb3V0cHV0
+DQo+IA0KPj4+Pj4+Pj4+ID09PT09PT09DQo+Pj4+Pj4+Pj4gbmV0d29yayAxIFRJTkZPOiBpbml0
+aWFsaXplICdsaG9zdCcgJ2x0cF9uc192ZXRoMicgaW50ZXJmYWNlDQo+Pj4+Pj4+Pj4gbmV0d29y
+ayAxIFRJTkZPOiBhZGQgbG9jYWwgYWRkciAxMC4wLjAuMi8yNA0KPj4+Pj4+Pj4+IG5ldHdvcmsg
+MSBUSU5GTzogYWRkIGxvY2FsIGFkZHIgZmQwMDoxOjE6MTo6Mi82NA0KPj4+Pj4+Pj4+IG5ldHdv
+cmsgMSBUSU5GTzogaW5pdGlhbGl6ZSAncmhvc3QnICdsdHBfbnNfdmV0aDEnIGludGVyZmFjZQ0K
+Pj4+Pj4+Pj4+IG5ldHdvcmsgMSBUSU5GTzogYWRkIHJlbW90ZSBhZGRyIDEwLjAuMC4xLzI0DQo+
+Pj4+Pj4+Pj4gbmV0d29yayAxIFRJTkZPOiBhZGQgcmVtb3RlIGFkZHIgZmQwMDoxOjE6MTo6MS82
+NA0KPj4+Pj4+Pj4+IG5ldHdvcmsgMSBUSU5GTzogTmV0d29yayBjb25maWcgKGxvY2FsIC0tIHJl
+bW90ZSk6DQo+Pj4+Pj4+Pj4gbmV0d29yayAxIFRJTkZPOiBsdHBfbnNfdmV0aDIgLS0gbHRwX25z
+X3ZldGgxDQo+Pj4+Pj4+Pj4gbmV0d29yayAxIFRJTkZPOiAxMC4wLjAuMi8yNCAtLSAxMC4wLjAu
+MS8yNA0KPj4+Pj4+Pj4+IG5ldHdvcmsgMSBUSU5GTzogZmQwMDoxOjE6MTo6Mi82NCAtLSBmZDAw
+OjE6MToxOjoxLzY0DQo+Pj4+Pj4+Pj4gPDw8dGVzdF9zdGFydD4+Pg0KPj4+Pj4+Pj4+IHRhZz12
+ZXRofG5mc3N0YXQzXzAxIHN0aW1lPTE3MTk5NDM1ODYNCj4+Pj4+Pj4+PiBjbWRsaW5lPSJuZnNz
+dGF0MDEiDQo+Pj4+Pj4+Pj4gY29udGFjdHM9IiINCj4+Pj4+Pj4+PiBhbmFseXNpcz1leGl0DQo+
+Pj4+Pj4+Pj4gPDw8dGVzdF9vdXRwdXQ+Pj4NCj4+Pj4+Pj4+PiBpbmNyZW1lbnRpbmcgc3RvcA0K
+Pj4+Pj4+Pj4+IG5mc3N0YXQwMSAxIFRJTkZPOiB0aW1lb3V0IHBlciBydW4gaXMgMGggMjBtIDBz
+DQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDEgVElORk86IHNldHVwIE5GU3YzLCBzb2NrZXQgdHlwZSB1
+ZHANCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBUSU5GTzogTW91bnRpbmcgTkZTOiBtb3VudCAtdCBu
+ZnMgLW8gcHJvdG89dWRwLHZlcnM9MyAxMC4wLjAuMjovdG1wL25ldHBhbi00NTc3L0xUUF9uZnNz
+dGF0MDEubHo2emhnUUhvVi8zL3VkcCAvdG1wL25ldHBhbi00NTc3L0xUUF9uZnNzdGF0MDEubHo2
+emhnUUhvVi8zLzANCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBUSU5GTzogY2hlY2tpbmcgUlBDIGNh
+bGxzIGZvciBzZXJ2ZXIvY2xpZW50DQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDEgVElORk86IGNhbGxz
+IDk4LzANCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBUSU5GTzogQ2hlY2tpbmcgZm9yIHRyYWNraW5n
+IG9mIFJQQyBjYWxscyBmb3Igc2VydmVyL2NsaWVudA0KPj4+Pj4+Pj4+IG5mc3N0YXQwMSAxIFRJ
+TkZPOiBuZXcgY2FsbHMgMTAyLzANCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBUUEFTUzogc2VydmVy
+IFJQQyBjYWxscyBpbmNyZWFzZWQNCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBURkFJTDogY2xpZW50
+IFJQQyBjYWxscyBub3QgaW5jcmVhc2VkDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDEgVElORk86IGNo
+ZWNraW5nIE5GUyBjYWxscyBmb3Igc2VydmVyL2NsaWVudA0KPj4+Pj4+Pj4+IG5mc3N0YXQwMSAx
+IFRJTkZPOiBjYWxscyAyLzINCj4+Pj4+Pj4+PiBuZnNzdGF0MDEgMSBUSU5GTzogQ2hlY2tpbmcg
+Zm9yIHRyYWNraW5nIG9mIE5GUyBjYWxscyBmb3Igc2VydmVyL2NsaWVudA0KPj4+Pj4+Pj4+IG5m
+c3N0YXQwMSAxIFRJTkZPOiBuZXcgY2FsbHMgMy8zDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDEgVFBB
+U1M6IHNlcnZlciBORlMgY2FsbHMgaW5jcmVhc2VkDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDEgVFBB
+U1M6IGNsaWVudCBORlMgY2FsbHMgaW5jcmVhc2VkDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDIgVElO
+Rk86IENsZWFuaW5nIHVwIHRlc3RjYXNlDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDIgVElORk86IFNF
+TGludXggZW5hYmxlZCBpbiBlbmZvcmNpbmcgbW9kZSwgdGhpcyBtYXkgYWZmZWN0IHRlc3QgcmVz
+dWx0cw0KPj4+Pj4+Pj4+IG5mc3N0YXQwMSAyIFRJTkZPOiBpdCBjYW4gYmUgZGlzYWJsZWQgd2l0
+aCBUU1RfRElTQUJMRV9TRUxJTlVYPTEgKHJlcXVpcmVzIHN1cGVyL3Jvb3QpDQo+Pj4+Pj4+Pj4g
+bmZzc3RhdDAxIDIgVElORk86IGluc3RhbGwgc2VpbmZvIHRvIGZpbmQgdXNlZCBTRUxpbnV4IHBy
+b2ZpbGVzDQo+Pj4+Pj4+Pj4gbmZzc3RhdDAxIDIgVElORk86IGxvYWRlZCBTRUxpbnV4IHByb2Zp
+bGVzOiBub25lDQo+IA0KPj4+Pj4+Pj4+IFN1bW1hcnk6DQo+Pj4+Pj4+Pj4gcGFzc2VkIDMNCj4+
+Pj4+Pj4+PiBmYWlsZWQgMQ0KPj4+Pj4+Pj4+IHNraXBwZWQgMA0KPj4+Pj4+Pj4+IHdhcm5pbmdz
+IDANCj4+Pj4+Pj4+PiA8PDxleGVjdXRpb25fc3RhdHVzPj4+DQo+Pj4+Pj4+Pj4gaW5pdGlhdGlv
+bl9zdGF0dXM9Im9rIg0KPj4+Pj4+Pj4+IGR1cmF0aW9uPTEgdGVybWluYXRpb25fdHlwZT1leGl0
+ZWQgdGVybWluYXRpb25faWQ9MSBjb3JlZmlsZT1ubw0KPj4+Pj4+Pj4+IGN1dGltZT0xMSBjc3Rp
+bWU9MTYNCj4+Pj4+Pj4+PiA8PDx0ZXN0X2VuZD4+Pg0KPj4+Pj4+Pj4+IGx0cC1wYW4gcmVwb3J0
+ZWQgRkFJTA0KPj4+Pj4+Pj4+ID09PT09PT09DQo+IA0KPj4+Pj4+Pj4+IFdlIGNhbiBvYnNlcnZl
+IHRoZSBudW1iZXIgb2YgUlBDIGNsaWVudCBjYWxscyBpcyAwLCB3aGljaCBpcyB3aXJlZC4gQW5k
+IHRoaXMgaGFwcGVucyBmcm9tIHRoZSBrZXJuZWwgY29tbWl0IDU3ZDFjZTk2ZDc2NTUgKCJuZnM6
+IG1ha2UgdGhlIHJwY19zdGF0IHBlciBuZXQgbmFtZXNwYWNl4oCdKS4gU28gbm93IHdl4oCZcmUg
+bm90IHN1cmUgdGhlIGtlcm5lbCBiYWNrcG9ydCBvZiBuZnMgY2xpZW50IGNoYW5nZXMgaXMgcHJv
+cGVyLCBvciB0aGUgTFRQIHRlc3RzIC8gdXNlcnNwYWNlIG5lZWQgdG8gYmUgbW9kaWZpZWQuDQo+
+IA0KPj4+Pj4+Pj4+IElmIG5vIHVzZXJzcGFjZSByZWdyZXNzaW9uLCBzaG91bGQgd2UgcmV2ZXJ0
+IHRoZSBKb3NlZuKAmXMgTkZTIGNsaWVudC1zaWRlIGNoYW5nZXMgb24gTFRTPw0KPiANCj4+Pj4+
+Pj4+IFRoaXMgc291bmRzIGxpa2UgYSByZWdyZXNzaW9uIGluIExpbnVzJ3MgdHJlZSB0b28sIHNv
+IHdoeSBpc24ndCBpdA0KPj4+Pj4+Pj4gcmV2ZXJ0ZWQgdGhlcmUgZmlyc3Q/DQo+IA0KPj4+Pj4+
+PiBUaGVyZSBpcyBhIGNoYW5nZSBpbiBiZWhhdmlvciBpbiB0aGUgdXBzdHJlYW0gY29kZSwgYnV0
+IEpvc2VmJ3MNCj4+Pj4+Pj4gcGF0Y2hlcyBmaXggYW4gaW5mb3JtYXRpb24gbGVhayBhbmQgbWFr
+ZSB0aGUgc3RhdGlzdGljcyBtb3JlDQo+Pj4+Pj4+IHNlbnNpYmxlIGluIGNvbnRhaW5lciBlbnZp
+cm9ubWVudHMuIEknbSBub3QgY2VydGFpbiB0aGF0DQo+Pj4+Pj4+IHNob3VsZCBiZSBjb25zaWRl
+cmVkIGEgcmVncmVzc2lvbiwgYnV0IGNvbmZlc3MgSSBkb24ndCBrbm93DQo+Pj4+Pj4+IHRoZSBy
+ZWdyZXNzaW9uIHJ1bGVzIHRvIHRoaXMgZmluZSBhIGRlZ3JlZSBvZiBkZXRhaWwuDQo+IA0KPj4+
+Pj4+PiBJZiBpdCBpcyBpbmRlZWQgYSByZWdyZXNzaW9uLCBob3cgY2FuIHdlIGdvIGFib3V0IHJl
+dGFpbmluZw0KPj4+Pj4+PiBib3RoIGJlaGF2aW9ycyAoc2VsZWN0YWJsZSBieSBLY29uZmlnIG9y
+IHBlcmhhcHMgYWRtaW5pc3RyYXRpdmUNCj4+Pj4+Pj4gVUkpPw0KPiANCj4gDQo+Pj4+Pj4gSSdk
+IGFyZ3VlIHRoYXQgdGhlIG9sZCBiZWhhdmlvciB3YXMgYSBidWcsIGFuZCB0aGF0IEpvc2VmIGZp
+eGVkDQo+Pj4+Pj4gaXQuIFRoZXNlIHN0YXRzIHNob3VsZCBwcm9iYWJseSBoYXZlIGJlZW4gbWFk
+ZSBwZXItbmV0IHdoZW4gYWxsIG9mIHRoZQ0KPj4+Pj4+IG9yaWdpbmFsIG5mc2QgbmFtZXNwYWNl
+IHdvcmsgd2FzIGRvbmUsIGJ1dCBubyBvbmUgbm90aWNlZCB1bnRpbA0KPj4+Pj4+IHJlY2VudGx5
+LiBXaG9vcHMuIA0KPiANCj4+Pj4+PiBBIGNvdXBsZSBvZiBoYWNreSBpZGVhcyBmb3IgaG93IHdl
+IG1pZ2h0IGRlYWwgd2l0aCB0aGlzOg0KPiANCj4+Pj4+PiAxLyBhZGQgYSBuZXcgbGluZSB0byB0
+aGUgb3V0cHV0IG9mIC9wcm9jL25ldC9ycGMvbmZzZC4gSXQgY291bGQganVzdA0KPj4+Pj4+IHNh
+eSAicGVyLW5ldFxuIiBvciAicGVyLW5ldCA8bmV0bnNfaWRfbnVtYmVyPlxuIiBvciBzb21ldGhp
+bmcuIG5mc3N0YXQNCj4+Pj4+PiBzaG91bGQgaWdub3JlIGl0LCBidXQgTFRQIHRlc3QgY291bGQg
+bG9vayBmb3IgaXQgYW5kIGhhbmRsZSBpdA0KPj4+Pj4+IGFwcHJvcHJpYXRlbHkuIFRoYXQgY291
+bGQgZXZlbiBiZSB1c2VmdWwgbGF0ZXIgZm9yIG5mc3N0YXQgdG9vIEkgZ3Vlc3MuDQo+IA0KPj4+
+Pj4+IDIvIG1vdmUgdGhlIGZpbGUgdG8gYSBuZXcgbmFtZSBhbmQgbWFrZSB0aGUgb2xkIGZpbGVu
+YW1lIGJlIGEgc3ltbGluaw0KPj4+Pj4+IHRvIHRoZSBuZXcgb25lLiBuZnNzdGF0IHdvdWxkIHN0
+aWxsIHdvcmssIGJ1dCBMVFAgd291bGQgYmUgYWJsZSB0byBzZWUNCj4+Pj4+PiB3aGV0aGVyIGl0
+IHdhcyBhIHN5bWxpbmsgdG8gZGV0ZWN0IHRoZSBkaWZmZXJlbmNlLi4ub3IgY291bGQganVzdCBt
+YWtlDQo+Pj4+Pj4gYSBuZXcgc3ltbGluayB0aGF0IHBvaW50cyB0byB0aGUgZmlsZSBhbmQgTFRQ
+IGNvdWxkIGxvb2sgZm9yIGl0cw0KPj4+Pj4+IHByZXNlbmNlLg0KPiANCj4+Pj4+IEkgZG9uJ3Qg
+dGhpbmsgaXQgbWFrZXMgc2Vuc2UgdG8gcHJlc2VudCBhIHNvbHV0aW9uIHdoaWNoIHJlcXVpcmVz
+DQo+Pj4+PiBMVFAgdG8gYmUgbW9kaWZpZWQuICBJZiB3ZSBhcmUgd2lsbGluZyB0byBtb2RpZnkg
+TFRQLCB0aGVuIHdlIHNob3VsZA0KPj4+Pj4gbW9kaWZ5IGl0IHRvIHdvcmsgd2l0aCB0aGUgcGVy
+LW5ldCBzdGF0cy4NCj4gDQo+Pj4+PiBJIHRoaW5rIHdlIG5lZWQgdG8gY3JlYXRlIGEgbmV3IGlu
+dGVyZmFjZSBmb3IgdGhlIHBlci1uZXQgc3RhdHMsIHRoZW4NCj4+Pj4+IGRlcHJlY2F0ZSB0aGUg
+b2xkIGludGVyZmFjZSBhbmQgcmVtb3ZlIGl0IGluIChzYXkpIDIgeWVhcnMuICBUaGF0IGdpdmVu
+DQo+Pj4+PiBMVFAgdGltZSB0byB1cGRhdGUsIGFuZCBtZWFucyB0aGF0IGFuIG9sZCBMVFAgd29u
+J3QgZ2l2ZSBpbmNvcnJlY3QNCj4+Pj4+IG51bWJlcnMsIGl0IHdpbGwgc2ltcGx5IGZhaWwuDQo+
+IA0KPj4+Pj4gQWxsIHdlIG5lZWQgdG8gZG8gaXMgYmlrZXNoZWQgdGhlIG5ldyBpbnRlcmZhY2Uu
+DQo+Pj4+PiAgbmV0bGluayA/DQo+Pj4+PiAgL3Byb2MvbmV0L3JwYy1wZXJuZXQvbmZzZCA/DQo+
+IA0KPj4+Pj4gVGhpcyBtZWFucyB0aGF0IHdlIHN0aWxsIG5lZWQgdG8ga2VlcCB0aGUgY29tYmlu
+ZWQgc3RhdHMsIG9yIHRvIGNvbWJpbmUNCj4+Pj4+IGFsbCB0aGUgcGVyLW5ldCBzdGF0cyBvbiBl
+YWNoIGFjY2Vzcy4NCj4gDQo+IA0KPj4+PiBIb3cgbXVjaCBvZiB0aGlzIGZ1bmN0aW9uYWxpdHkg
+d291bGQgd2UgbmVlZCB0byByZXN0b3JlPw0KPiANCj4+Pj4gUHJpb3IgdG8gSm9zZWYncyBwYXRj
+aGVzLCB5b3Ugd291bGQgZ2V0IGluZm8gYWJvdXQgZ2xvYmFsIHN0YXRzIGZyb20NCj4+Pj4gcmVs
+ZXZhbnQgc3RhdHMgcHJvY2ZpbGVzIGluIGEgY29udGFpbmVyLiBUaGF0IHNlZW1zIGxpa2UgYW4g
+aW5mb3JtYXRpb24NCj4+Pj4gbGVhayB0byBtZSwgYnV0IGZpeGluZyB0aGF0IGlzIHByb2JhYmx5
+IGdvaW5nIHRvIGJyZWFrIF9zb21lYm9keV8uDQo+Pj4+IFdoZXJlIGRvIHdlIGRyYXcgdGhlIGxp
+bmUgYW5kIHdoeT8NCj4gDQo+Pj4+IExUUCBpcyBqdXN0IGEgdGVzdHN1aXRlLiBBc2tpbmcgdGhl
+bSB0byBhbHRlciB0ZXN0cyBpbiBvcmRlciB0byBjb3BlDQo+Pj4+IHdpdGggYSBidWdmaXggc2Vl
+bXMgZW50aXJlbHkgcmVhc29uYWJsZSB0byBtZS4gSWYgc29tZW9uZSBjYW4gbWFrZSBhDQo+Pj4+
+IGNhc2UgZm9yIHJlYWwtd29ybGQgYXBwbGljYXRpb25zIHRoYXQgcmVseSBvbiB0aGUgb2xkIHNl
+bWFudGljcywgdGhlbg0KPj4+PiBJJ2QgYmUgbW9yZSBvcGVuIHRvIGNoYW5naW5nIHRoaXMsIGJ1
+dCBJIGp1c3QgZG9uJ3Qgc2VlIHRoZSB1cHNpZGUgb2YNCj4+Pj4gcmVzdG9yaW5nIGxlZ2FjeSBi
+ZWhhdmlvciBoZXJlLg0KPiANCj4gKzEuIEFsc28gcGVvcGxlIHdobyB0ZXN0IHdpdGggTFRQIGFy
+ZSBhZHZpc2VkIHRvIHVzZSBhdCBsZWFzdCB0aGUgbGF0ZXN0IHJlbGVhc2UNCj4gKHdlIHJlbGVh
+c2UgZXZlcnkgMyBtb250aHMpIG9yIHRoZSBjdXJyZW50IG1hc3RlciBicmFuY2ggKGxpbnV4LW5l
+eHQgYW5kIGtlcm5lbA0KPiByYyB0ZXN0ZXJzIHNob3VsZCBwcm9iYWJseSB1c2UgbWFzdGVyIGJy
+YW5jaCkuDQo+IA0KPj4+IElmIGl0IGlzIE9LIHRvIGFzayB0aGVtIHRvIGFsdGVyIHRoZSB0ZXN0
+cywgYXNrIHRoZW0gdG8gYWx0ZXIgdGhlIHRlc3RzDQo+Pj4gdG8gd29yayB3aXRoIHRvZGF5J3Mg
+a2VybmVsIGFuZCBkb24ndCBtYWtlIGFueSBjaGFuZ2UgdG8gdGhlIGtlcm5lbC4NCj4+PiBNYXli
+ZSB0aGUgdGVzdHMgd2lsbCBoYXZlIHRvIGJlIGZpeGVkIHRvICJQQVNTIiBib3RoIHRoZSBvbGQg
+YW5kIHRoZSBuZXcNCj4+PiByZXN1bHRzLCBidXQgdGhhdCBwcm9iYWJseSBpc24ndCByb2NrZXQg
+c2NpZW5jZS4NCj4gDQo+Pj4gTXkgcG9pbnQgaXMgdGhhdCBpZiB3ZSBhcmUgZ29pbmcgdG8gY2hh
+bmdlIHRoZSBrZXJuZWwgdG8gYWNjb21tb2RhdGUgTFRQDQo+Pj4gYXQgYWxsLCB3ZSBzaG91bGQg
+YWNjb21tb2RhdGUgTFRQIGFzIGl0IGlzIHRvZGF5LiAgSWYgd2UgYXJlIGdvaW5nIHRvDQo+Pj4g
+Y2hhbmdlIExUUCB0byBhY2NvbW1vZGF0ZSB0aGUga2VybmVsLCB0aGVuIGl0IHNob3VsZCBhY2Nv
+bW1vZGF0ZSB0aGUNCj4+PiBrZXJuZWwgYXMgaXQgaXMgdG9kYXkuDQo+IA0KPiANCj4+IFRoZSBw
+cm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gd2F5IGZvciB1c2VybGFuZCB0ZWxsIHRoZSBkaWZm
+ZXJlbmNlDQo+PiBiZXR3ZWVuIHRoZSBvbGRlciBhbmQgbmV3ZXIgYmVoYXZpb3IuIFRoYXQgd2Fz
+IHdoYXQgSSB3YXMgc3VnZ2VzdGluZyB3ZQ0KPj4gYWRkLg0KPiANCj4+IFRvIGJlIGNsZWFyLCBJ
+IGhvbGQgdGhpcyBvcGluaW9uIGxvb3NlbHkuIElmIHRoZSBjb25zZW5zdXMgaXMgdGhhdCB3ZQ0K
+Pj4gbmVlZCB0byByZXZlcnQgdGhpbmdzIHRoZW4gc28gYmUgaXQuIEkganVzdCBkb24ndCBzZWUg
+dGhlIHZhbHVlIG9mDQo+PiBkb2luZyB0aGF0IGluIHRoaXMgcGFydGljdWxhciBzaXR1YXRpb24u
+DQo+IA0KPiBJIGFsc28gdGhpbmsgdGhhdCBmcm9tIGNvbnRhaW5lciBQT1YgaXQgZml4ZWQgYW4g
+aW5mb3JtYXRpb24gbGVhay4NCg0KSSB3b3VsZCB2YXN0bHkgcHJlZmVyIHRoYXQgdGhlIGluZm9y
+bWF0aW9uIGxlYWsgaXMgZml4ZWQNCm5vdCBvbmx5IGluIHVwc3RyZWFtIGtlcm5lbHMsIGJ1dCBh
+bHNvIGluIExUUyBrZXJuZWxzLg0KDQpOZWlsJ3Mgc3VnZ2VzdGlvbiBvZiBpbnRyb2R1Y2luZyBh
+IG5ldyBrZXJuZWwvdXNlcnNwYWNlDQpBUEkgaXMgdGhlIHVzdWFsIGFwcHJvYWNoIGZvciBBUEkg
+Y2hhbmdlcywgYnV0IGRvZXMgbm90DQphZGRyZXNzIHRoZSBpbmZvcm1hdGlvbiBsZWFrIGF0IGFs
+bCB1bnRpbCB0aGUgb2xkIEFQSSBpcw0KcmVtb3ZlZCBpbiAyKyB5ZWFycy4NCg0KV2hhdCBJIHdv
+dWxkIGxpa2UgdG8gc2VlIGhhcHBlbiBpczoNCg0KIC0tIGxlYXZlIEpvc2VmJ3MgcGF0Y2hlcyBp
+biB0aGUgdXBzdHJlYW0ga2VybmVsDQoNCiAtLSBiYWNrcG9ydCB0aGUgbWlzc2luZyBwYXJ0cyBv
+ZiB0aGF0IHNlcmllcyB0byBMVFMNCiAgICBrZXJuZWxzIChhbmQgSSB2b2x1bnRlZXIgdG8gaGFu
+ZGxlIHRoYXQpDQoNCiAtLSBUYWtlIE5laWwncyBhZHZpY2Ugb2YgZml4aW5nIGx0cCBpbiBhIHdh
+eSB0aGF0DQogICAgZG9lcyBub3QgcmVseSBvbiBrZXJuZWwgcmVsZWFzZSBpbmZvcm1hdGlvbg0K
+DQpJIGNhbiB3YWl0IGZvciBQZXRlciB0byBhY2tub3dsZWRnZSB0aGF0IE5laWwncyBhZHZpY2UN
+CndpbGwgd29yayBmb3IgbHRwIChhbmQgb2YgY291cnNlLCBhbnkgb3RoZXIgdGhvdWdodHMNCmZy
+b20gdGhlIFRvOiBvciBDYzogbGlzdCkuDQoNCg0KVGhvcnN0ZW4gc2F5czoNCj4gU28gbWF5YmUN
+Cj4gcHJvdmlkaW5nIHRoZSBuZXdlciBmb3JtYXQgaW4gYSBkaWZmZXJlbnQgZmlsZSBhbmQgYWxs
+b3dpbmcgdG8gZGlzYWJsZQ0KPiB0aGUgb2xkZXIgb25lIHRob3VnaCBhIEtjb25maWcgc2V0dGlu
+ZyBtaWdodCBiZSB0aGUgYmVzdCB3YXkgZm9yd2FyZC4NCg0KDQpUaGF0IGlzIHRoZSAiaWRlYWwi
+IHNvbHV0aW9uLCBidXQgdGhlIGRvd25zaWRlIGlzIGhvdw0KbG9uZyBpdCB3b3VsZCB0YWtlIHRv
+IHJlYWNoIGFsbCBrZXJuZWxzIGFuZCBkaXN0cm9zLg0KDQpJJ20gaGFwcHkgdG8gcmVjb25zaWRl
+ciB0aGlzIGFwcHJvYWNoIGlmIHdlIHJlY2VpdmUNCm1vcmUgdGhhbiBhIHJlcG9ydCBvZiB0ZXN0
+IGNhc2UgYnJlYWthZ2UuLi4gdGhhdCB3YXMNCmNyaXRlcmlhIEkgZGlkIG5vdCBoYXZlIGVhcmxp
+ZXIuDQoNCg0KLS0NCkNodWNrIExldmVyDQoNCg0KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
