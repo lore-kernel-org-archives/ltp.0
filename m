@@ -4,98 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D809C3DA4A
-	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 11:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD051C3DA4D
+	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 13:22:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C16373D1995
-	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 13:19:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 45DAF3D199E
+	for <ltp@archiver.kernel.org>; Fri, 12 Jul 2024 15:22:29 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8BF5F3D198F
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 13:18:53 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id E732D3CBA12
+ for <ltp@lists.linux.it>; Fri, 12 Jul 2024 15:22:12 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8B0441001593
- for <ltp@lists.linux.it>; Fri, 12 Jul 2024 13:18:52 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0DF11601417
+ for <ltp@lists.linux.it>; Fri, 12 Jul 2024 15:22:11 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BC0471FB7A;
- Fri, 12 Jul 2024 11:18:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720783132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rtBd+DnUo/M43aEth0UA31AHPxbtyqTZDODXKbsXkH4=;
- b=VwKShCqlTSxJdGS3KiD0Uy1gTao9Z2lfcPDhJtP3FbBnrBHHhFt/+lOHMf25/Qk+w+Ysnd
- V9Y/4Z9fxVsed19rsZwto8j7TwMHKHsjIGAEb7aoFELBKy+VwCqAuQ5eaJ6eZqvHE6cEpO
- vBNjZhac5ACOJQiOAoSEsTacbxWZFMQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720783132;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rtBd+DnUo/M43aEth0UA31AHPxbtyqTZDODXKbsXkH4=;
- b=apipy90uUbj9Z4HSMSifPGgwkai7OYdDh7Su72WYyGNQcPdzkMW8wPglWWG1MZi4OYXg2O
- fOJgPAAfx20h62Aw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D1351FCF9;
+ Fri, 12 Jul 2024 13:22:11 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1720783130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rtBd+DnUo/M43aEth0UA31AHPxbtyqTZDODXKbsXkH4=;
- b=CqPSEpHTdNTj4JSTYQgsnqgMqMTKBF4CvcQA8i6hugtpPSH8LRYy9aNxl1l9glgH2jqFKX
- 261a1TNc78eHFb+8LqCMIl0Bmp0BwR1H3DHH2lOWtgZfHB5K7x+5vG3HSX5sNH7rgYEUPp
- UUGI0GOA8fZN1BXUL2u8t635hw7xpCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1720783130;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rtBd+DnUo/M43aEth0UA31AHPxbtyqTZDODXKbsXkH4=;
- b=3LdWSEAFnyfiIzK8MmXoA0xZMRobkTYrq3tP00gNUwwahe3rGJ2YJBt4WQfWK539aBklnI
- GIAKLPUMSjz9sbDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD11213686;
- Fri, 12 Jul 2024 11:18:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D80AF13686;
+ Fri, 12 Jul 2024 13:22:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kyc+KRoRkWaFOwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 12 Jul 2024 11:18:50 +0000
-Date: Fri, 12 Jul 2024 13:21:24 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZpERtIxWiodTJiYS@rei>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RQIiMwIukWZrZAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 12 Jul 2024 13:22:10 +0000
+Date: Fri, 12 Jul 2024 15:22:05 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240712132205.GA145191@pevik>
 References: <20240711104400.63355-1-pvorel@suse.cz>
- <20240711104400.63355-2-pvorel@suse.cz>
+ <20240711104400.63355-2-pvorel@suse.cz> <ZpERtIxWiodTJiYS@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240711104400.63355-2-pvorel@suse.cz>
-X-Spamd-Result: default: False [0.20 / 50.00]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_FIVE(0.00)[6];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <ZpERtIxWiodTJiYS@rei>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 1D1351FCF9
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH 2/2] sched_football: Rewrite into new API
 X-BeenThere: ltp@lists.linux.it
@@ -109,29 +75,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: John Stultz <jstultz@google.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Combining LTP librealtime (librttest.c) and LTP library is somehow
-> experimental. -lltp was needed to be added to CFLAGS but yet on musl
-> it fails to find the function on runtime:
-> tst_test.c:985: TBROK: No test function specified
+Hi Cyril,
 
-That should not happen, you get this message something went horribly
-wrong and the test_all function pointer ended up NULL in the test
-library. Which gcc version was it, I would expect that this would be
-more compiler specific than libc specific.
+First, thanks for having a look.
 
-Otherwise the conversion looks pretty straightforward, mostly about
-option parsing and printf vs tst_res().
+> Hi!
+> > Combining LTP librealtime (librttest.c) and LTP library is somehow
+> > experimental. -lltp was needed to be added to CFLAGS but yet on musl
+> > it fails to find the function on runtime:
+> > tst_test.c:985: TBROK: No test function specified
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> That should not happen, you get this message something went horribly
+> wrong and the test_all function pointer ended up NULL in the test
+> library. Which gcc version was it, I would expect that this would be
+> more compiler specific than libc specific.
+
+$ gcc -v
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-alpine-linux-musl/13.2.1/lto-wrapper
+Target: x86_64-alpine-linux-musl
+Configured with: /home/buildozer/aports/main/gcc/src/gcc-13-20231014/configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --build=x86_64-alpine-linux-musl --host=x86_64-alpine-linux-musl --target=x86_64-alpine-linux-musl --enable-checking=release --disable-cet --disable-fixed-point --disable-libstdcxx-pch --disable-multilib --disable-nls --disable-werror --disable-symvers --enable-__cxa_atexit --enable-default-pie --enable-default-ssp --enable-languages=c,c++,d,objc,go,fortran,ada --enable-link-serialization=2 --enable-linker-build-id --disable-libssp --disable-libsanitizer --enable-shared --enable-threads --enable-tls --with-bugurl=https://gitlab.alpinelinux.org/alpine/aports/-/issues --with-system-zlib --with-linker-hash-style=gnu --with-pkgversion='Alpine 13.2.1_git20231014'
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 13.2.1 20231014 (Alpine 13.2.1_git20231014)
+
+Hm, after doing make clean of the library everything magically worked. I'm sorry
+for the noise.
+
+$ make V=1
+gcc -I/home/foo/ltp/testcases/realtime/include -I/home/foo/ltp/testcases/realtime/include -I../../../../include -I../../../../include -I../../../../include/old/ -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -std=gnu99 -D_GNU_SOURCE -L/home/foo/ltp/testcases/realtime/lib -L../../../../lib sched_football.c  -lrealtime -lpthread -lrt -lm -lltp -o sched_football
+
+# ./sched_football
+tst_test.c:1806: TINFO: LTP version: 20240524-81-g562d1b39b
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+sched_football.c:159: TINFO: players_per_team: 2 game_length: 5
+sched_football.c:171: TINFO: Starting 2 offense threads at priority 15
+sched_football.c:182: TINFO: Starting 2 defense threads at priority 30
+sched_football.c:193: TINFO: Starting 2 fan threads at priority 50
+sched_football.c:120: TINFO: Starting referee thread
+sched_football.c:123: TINFO: Starting the game (5 sec)
+sched_football.c:143: TINFO: Final ball position: 0
+sched_football.c:145: TPASS: Expect: final_ball == 0
+
+=> main problem solved, but there are 2 others.
+
+1) realtime suite does not trigger libltp dependency (build system fix required):
+
+/usr/lib/gcc/x86_64-alpine-linux-musl/13.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: cannot find -lltp: No such file or directory
+
+I wonder if we should get rid of LTP realtime library for this file. Fixing it
+would be obviously better.
+
+2) Running with -i is broken (everywhere, also on glibc)
+
+./sched_football -i2
+tst_test.c:1806: TINFO: LTP version: 20240524-93-g17c91c528
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+sched_football.c:159: TINFO: players_per_team: 2 game_length: 5
+sched_football.c:171: TINFO: Starting 2 offense threads at priority 15
+sched_football.c:182: TINFO: Starting 2 defense threads at priority 30
+sched_football.c:193: TINFO: Starting 2 fan threads at priority 50
+sched_football.c:120: TINFO: Starting referee thread
+sched_football.c:123: TINFO: Starting the game (5 sec)
+sched_football.c:143: TINFO: Final ball position: 0
+sched_football.c:145: TPASS: Expect: final_ball == 0
+sched_football.c:159: TINFO: players_per_team: 2 game_length: 5
+sched_football.c:171: TINFO: Starting 2 offense threads at priority 15
+Test timeouted, sending SIGKILL!
+
+Something needs to be reset for each run and it's not?
+ball is reset: tst_atomic_store(0, &ball);
+
+Kind regards,
+Petr
+
+> Otherwise the conversion looks pretty straightforward, mostly about
+> option parsing and printf vs tst_res().
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
