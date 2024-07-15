@@ -4,88 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886DEC3DA59
-	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 12:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1721045703; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=Z5/gm0o9GXd6qDhVXhDqMQcm9rkUWujC2nH2AA36jfA=;
- b=bZZ4sM9FRUf8HOvGhkWNaUAofzcfu9wntAxw12vW0CQ+gjfzsAGIYA8XCpH21nPD+44gk
- SI/tXxHcIMQ2FX36SC0pZW/XRYo3LJqiIAwFj7HyQLDKpxI8u7iUxX3hCG7Gmn7bcGJzXed
- IIIARdWSE7qcpB/9leMk80m11C+Aolw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E32AC3DA4B
+	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 12:19:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 644223D1A3C
-	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 14:15:03 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 96A743D1A37
+	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 14:19:12 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E76073D1A0E
- for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:14:41 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 524F53D1A0C
+ for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:18:57 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F384F201161
- for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:14:40 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-3679f806223so3103816f8f.0
- for <ltp@lists.linux.it>; Mon, 15 Jul 2024 05:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1721045680; x=1721650480; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=+UkuJUbT30rqMlMfnfIh8u1zI9dLPVEBF+QzhBOxya8=;
- b=K3I5iII3qn27wtbtryVduaO7kknoau/y/v1VQq/MrjRrzCLqy2WPA7iT3+sk2RkIO2
- QMWCkM9LfkmsDHR+N3f5gyIUZmxoYhZOoFfpx5nTf6YJU7YBPG4e0dYP+bg7TOxperPm
- 6VmXw/4qLSY3Lm1L+IgcposTa7Al7QZxZx6fOkBk9aeNmP060/CIQlAEdHuq+jfs2hWB
- eAjnmluPLffGNU0eZO5Y92h3XvW/71sRgKLKMfv77NI5AexLRm1fjged2Kuho+rMatg1
- oOmuJJiFtA0W91Cg+3CgTzDw3jpNyyOe30i0b4Php3+Ym7voJd/4alnR23QDeUcoFuHh
- k3XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1721045680; x=1721650480;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=+UkuJUbT30rqMlMfnfIh8u1zI9dLPVEBF+QzhBOxya8=;
- b=mtmwN2O2euv/KQAabIDhvujbwEzrjWdYb4mFC83FLvokAyby6jEmXQsmsPRGQkGA4B
- 7g7xW4NWGg+wqhQicYjL2ftk0NgWxkhoqHKYtFQFsZptykVgppORKg4CKmkFKGqHJ1Gy
- efPf2DZsaHzr1S3f/+XywFIogXlVfjf3PRkB9A/uZ8g0T0ovqTYu8bCccqiu9ogroJTM
- d3wcQs4S+TyEF1diblDNNz50GRVyi3BJ6EkRnuRer+m8NlnBtKw00oobMH7KeuBMioN0
- Gm6/l0meIPnWqQWuWUe9pTBPP20/s4gkOb9zT12abSG3nOGgq+yOdpaILUvP1SR9mNo7
- 6Ydw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCU8l2jKTCsIvFBZwrwDtv+BhXUO01E/J1UmLMnXTpiU1utOAPpYm9IsM4TQ4n9xz/HhO63TD7GJsSw3QkzJhcQehrQ=
-X-Gm-Message-State: AOJu0YwCvJUgU6bqfjxar+oKsNtgT1CthLaPywMrYGZ8a5I4wFkpzsxk
- TEEnHwcpi7Ey9+LSPj5j7HhgT9vdgKecX+5ZJwhRgombMOtq7fC7+K7CQT22XrFZzUAd7fCXiPO
- +OpE=
-X-Google-Smtp-Source: AGHT+IEaqEm8Fv7ma2i3OSDEtd00tSlQ0z9t4gz3tNWTC+5KC8tbXhsfyC7gGN6fv/Kc/DUzZRFFpw==
-X-Received: by 2002:adf:f1d0:0:b0:366:eadc:573f with SMTP id
- ffacd0b85a97d-367ff70cc15mr7939167f8f.27.1721045680069; 
- Mon, 15 Jul 2024 05:14:40 -0700 (PDT)
-Received: from [192.168.178.49] ([178.20.93.127])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-1fc0b9a0f78sm40694865ad.0.2024.07.15.05.14.37
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 15 Jul 2024 05:14:39 -0700 (PDT)
-Message-ID: <f903dd6e-6d5a-48f0-825e-71e4f216b5aa@suse.com>
-Date: Mon, 15 Jul 2024 14:14:20 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 972661000F38
+ for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:18:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DFAC21F813;
+ Mon, 15 Jul 2024 12:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1721045935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4WOJW7LuJ52jJkZF4C5+XgTQmsxjSdfaLqVyHU6Vhto=;
+ b=s99TAFoaj6Xst6qtvwajLoiaTUqzslVltKyl7nnK4oW5ZrVnKiMNKk3nhJWpt7GW8hYHfj
+ MDBQcMjpAemmCi+N1cggOUQbk8ZAWs4eHFZp4YQ+we87HowPMEIVXOlaN2cFfEre3gQVnA
+ LJpVHqe6CA9uoOpuq6lxP//FKt+t5mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1721045935;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4WOJW7LuJ52jJkZF4C5+XgTQmsxjSdfaLqVyHU6Vhto=;
+ b=BMGL+PGwH7a9rFQPzlGUF+T7xqpPJdutM+DNyBG2f1tcQR+2JsrICrtwkO9ooB8+jvk2LB
+ biTSxAbl0JcTtADg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1721045935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4WOJW7LuJ52jJkZF4C5+XgTQmsxjSdfaLqVyHU6Vhto=;
+ b=s99TAFoaj6Xst6qtvwajLoiaTUqzslVltKyl7nnK4oW5ZrVnKiMNKk3nhJWpt7GW8hYHfj
+ MDBQcMjpAemmCi+N1cggOUQbk8ZAWs4eHFZp4YQ+we87HowPMEIVXOlaN2cFfEre3gQVnA
+ LJpVHqe6CA9uoOpuq6lxP//FKt+t5mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1721045935;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4WOJW7LuJ52jJkZF4C5+XgTQmsxjSdfaLqVyHU6Vhto=;
+ b=BMGL+PGwH7a9rFQPzlGUF+T7xqpPJdutM+DNyBG2f1tcQR+2JsrICrtwkO9ooB8+jvk2LB
+ biTSxAbl0JcTtADg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C99B8137EB;
+ Mon, 15 Jul 2024 12:18:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OEPwL68TlWbpQAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Jul 2024 12:18:55 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 15 Jul 2024 14:18:34 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20240516104227.25381-1-andrea.cervesato@suse.de>
- <Zov59BQ_7j-1080J@yuki> <e3f88888-2a5e-4515-9805-bc605e081f52@suse.com>
- <ZpURPV6wv26kpXOb@yuki>
-Content-Language: en-US
-In-Reply-To: <ZpURPV6wv26kpXOb@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Message-Id: <20240715-cachestat-v2-3-55817ad1a408@suse.com>
+References: <20240715-cachestat-v2-0-55817ad1a408@suse.com>
+In-Reply-To: <20240715-cachestat-v2-0-55817ad1a408@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3315;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=cHojzUTc1f1nP7NN2CScfhWqNz3Yq3zuwvGcNHKXrrg=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmlROheEeWRDjLj9V4R5GTXr7EEROLo1tmxKSZt
+ sXg69RF1BiJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZpUToQAKCRDLzBqyILPm
+ RlZnC/99y2qx39E535D4TLPbFWUgn8+kQ6x4/J9w6Omo1boRSRMzkwml5Uk4wVHzG764GB3Nyy3
+ +8Dh6QfiwGXJE2WjwARcpa1WFI6tTkv7kjfMVvBjDI5lfWXEv36p/mXxN1MWTrlJ6CVwPJDk1zh
+ 3Chuk2nZ31v2gayMzlenCFX8dbetVea4ikUcOdgo6f/23l0xU+SKValga7NUPmZkY5n424Ou0m5
+ 97Dl3VVgUcf7swNIIGkDpQ4fe2kaRF42RQAtuyHYTLUlHslRyeL6LtG0vPuAXg+WgH+sPC29mU0
+ qVZ10TmsWYWw6Rc+zzWbVRZVXZ65ZQTKw8tERoPKDMBza4+QfqXv8gG77XjnOTg2lp1Oo7srGzg
+ 6JTXXz0GBEYLLYcWjGuuE7SvbnsAsTNFmapAWnxy3FEVDdcbrSEWHO4NpoWu1jkHuAv6dMSwilR
+ JWOED040oal19Y94mgM+vJnzW6CmiW+P9a+deY68BgayVDHV+YbodDC64p7AFS+7DXo0w=
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 0/3] cachestat testing suite
+Subject: [LTP] [PATCH v2 3/4] Add cachestat02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,25 +125,140 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 7/15/24 14:08, Cyril Hrubis wrote:
-> Hi!
->> And another thing....the kselftests only check for EBADF and now I
->> understand why: basically cachestat() seems to always pass but when file
->> descriptor is invalid....
-> That smells like a kernel bug.
->
-I had to go through the cachestat code and maybe i found the solution. I 
-will send the tests soon.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Andrea
+This test verifies that cachestat() syscall is properly counting cached
+pages written inside a shared memory.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/cachestat/.gitignore    |  1 +
+ testcases/kernel/syscalls/cachestat/cachestat02.c | 89 +++++++++++++++++++++++
+ 3 files changed, 91 insertions(+)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9a1827e88..887ac217b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -63,6 +63,7 @@ capset04 capset04
+ cacheflush01 cacheflush01
+ 
+ cachestat01 cachestat01
++cachestat02 cachestat02
+ 
+ chdir01 chdir01
+ chdir01A symlink01 -T chdir01
+diff --git a/testcases/kernel/syscalls/cachestat/.gitignore b/testcases/kernel/syscalls/cachestat/.gitignore
+index daea1f4be..0f70fb801 100644
+--- a/testcases/kernel/syscalls/cachestat/.gitignore
++++ b/testcases/kernel/syscalls/cachestat/.gitignore
+@@ -1 +1,2 @@
+ cachestat01
++cachestat02
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat02.c b/testcases/kernel/syscalls/cachestat/cachestat02.c
+new file mode 100644
+index 000000000..d71f5dab5
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/cachestat02.c
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that cachestat() syscall is properly counting cached pages
++ * written inside a shared memory.
++ *
++ * [Algorithm]
++ *
++ * - create a shared memory with a specific amount of pages
++ * - monitor file with cachestat()
++ * - check if the right amount of pages have been moved into cache
++ */
++
++#include "cachestat.h"
++
++#define FILENAME "myfile.bin"
++
++static int page_size;
++static char *page_data;
++static struct cachestat *cs;
++static struct cachestat_range *cs_range;
++
++static void test_cached_pages(const int num_pages)
++{
++	int fd, file_size;
++
++	tst_res(TINFO, "Number of pages: %d", num_pages);
++
++	memset(cs, 0, sizeof(struct cachestat));
++
++	fd = shm_open(FILENAME, O_RDWR | O_CREAT, 0600);
++	if (fd < 0)
++		tst_brk(TBROK | TERRNO, "shm_open error");
++
++	file_size = page_size * num_pages;
++
++	cs_range->off = 0;
++	cs_range->len = file_size;
++
++	SAFE_FTRUNCATE(fd, file_size);
++	for (int i = 0; i < num_pages; i++)
++		SAFE_WRITE(0, fd, page_data, page_size);
++
++	TST_EXP_PASS(cachestat(fd, cs_range, cs, 0));
++	print_cachestat(cs);
++
++	TST_EXP_EQ_LI(cs->nr_cache + cs->nr_evicted, num_pages);
++
++	SAFE_CLOSE(fd);
++	shm_unlink(FILENAME);
++}
++
++static void run(void)
++{
++	for (int i = 0; i < 10; i++)
++		test_cached_pages(1 << i);
++}
++
++static void setup(void)
++{
++	page_size = (int)sysconf(_SC_PAGESIZE);
++
++	page_data = SAFE_MALLOC(page_size);
++	memset(page_data, 'a', page_size);
++}
++
++static void cleanup(void)
++{
++	if (page_data)
++		free(page_data);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++	.min_kver = "6.5",
++	.bufs = (struct tst_buffers []) {
++		{&cs, .size = sizeof(struct cachestat)},
++		{&cs_range, .size = sizeof(struct cachestat_range)},
++		{}
++	},
++};
+
+-- 
+2.43.0
 
 
 -- 
