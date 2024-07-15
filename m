@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CC4FC3DA4B
-	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 12:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31C41C3DA59
+	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 12:19:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 285CC3D1A34
-	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 14:19:29 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0D4863D1A36
+	for <ltp@archiver.kernel.org>; Mon, 15 Jul 2024 14:19:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B7F23D1A0E
+ by picard.linux.it (Postfix) with ESMTPS id 669BB3D1A1A
  for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:18:57 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
@@ -24,97 +23,108 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9D6FB60045F
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B1FB1400F53
  for <ltp@lists.linux.it>; Mon, 15 Jul 2024 14:18:56 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 07BF021BAE;
- Mon, 15 Jul 2024 12:18:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C645B21BAC;
+ Mon, 15 Jul 2024 12:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1721045936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721045935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4K0nEUyEmtTt+/JvQVlIhkJwVXBIDzK2IBU2Ewqwx2E=;
- b=FvqUpZvV9XJ1IcK/ls4zQZXJCfWceIKI5noSEiTFRlsKcSq7eyyPk2A+MfLeM+usGhcfe+
- e9W9KhvmVkBcVfPHv5h+TzvecdzHKxXUtVGFwEDRZaCMjYEb3PWE0TQAY5LhRR7dclH/4J
- VLaaY6kvHOMbuLZ3pgIcecyXhY/6rA4=
+ bh=6noSyKEmLlKMtB5lz0RpacqF7sOAOZZNw/gLPdVk4+8=;
+ b=UeHP1BAIJwG/5Et80Tok1c9JZci71k2QzHZzFRUwb4WX72nX09kZ7pVvKttoVlPAPUPRdQ
+ BhKoCUPi5+yXQ8Wo1TtzOPRjiEo3gQmTo/tdjq57Ca3HmBJ0a0+lL5rFw+izAoTSy3EsMD
+ cr3nhun9ZXbWfV4t0Etq8YIrv2rwJoA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1721045936;
+ s=susede2_ed25519; t=1721045935;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4K0nEUyEmtTt+/JvQVlIhkJwVXBIDzK2IBU2Ewqwx2E=;
- b=yQEAVLomjwCfqibHDZRXMRNxDGe8yNOXDyHS25rtI9L3z1Hhpt15pYm9JR75AkjPt/5Y44
- GDZKcIcxTel2LpCw==
+ bh=6noSyKEmLlKMtB5lz0RpacqF7sOAOZZNw/gLPdVk4+8=;
+ b=jUHJCM0ogAn3FnBg33Sy7pHQCOsx19U95/SZCKI2SPDst4J+Ner8VbViWEU7s1JTUw4XVr
+ UUFUcqIMmB68wIAA==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=UeHP1BAI;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=jUHJCM0o
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1721045936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721045935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4K0nEUyEmtTt+/JvQVlIhkJwVXBIDzK2IBU2Ewqwx2E=;
- b=FvqUpZvV9XJ1IcK/ls4zQZXJCfWceIKI5noSEiTFRlsKcSq7eyyPk2A+MfLeM+usGhcfe+
- e9W9KhvmVkBcVfPHv5h+TzvecdzHKxXUtVGFwEDRZaCMjYEb3PWE0TQAY5LhRR7dclH/4J
- VLaaY6kvHOMbuLZ3pgIcecyXhY/6rA4=
+ bh=6noSyKEmLlKMtB5lz0RpacqF7sOAOZZNw/gLPdVk4+8=;
+ b=UeHP1BAIJwG/5Et80Tok1c9JZci71k2QzHZzFRUwb4WX72nX09kZ7pVvKttoVlPAPUPRdQ
+ BhKoCUPi5+yXQ8Wo1TtzOPRjiEo3gQmTo/tdjq57Ca3HmBJ0a0+lL5rFw+izAoTSy3EsMD
+ cr3nhun9ZXbWfV4t0Etq8YIrv2rwJoA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1721045936;
+ s=susede2_ed25519; t=1721045935;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4K0nEUyEmtTt+/JvQVlIhkJwVXBIDzK2IBU2Ewqwx2E=;
- b=yQEAVLomjwCfqibHDZRXMRNxDGe8yNOXDyHS25rtI9L3z1Hhpt15pYm9JR75AkjPt/5Y44
- GDZKcIcxTel2LpCw==
+ bh=6noSyKEmLlKMtB5lz0RpacqF7sOAOZZNw/gLPdVk4+8=;
+ b=jUHJCM0ogAn3FnBg33Sy7pHQCOsx19U95/SZCKI2SPDst4J+Ner8VbViWEU7s1JTUw4XVr
+ UUFUcqIMmB68wIAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E69811395F;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ADEF51396E;
  Mon, 15 Jul 2024 12:18:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cHnzNq8TlWbpQAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4EUVKa8TlWbpQAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Jul 2024 12:18:55 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 15 Jul 2024 14:18:35 +0200
+Date: Mon, 15 Jul 2024 14:18:33 +0200
 MIME-Version: 1.0
-Message-Id: <20240715-cachestat-v2-4-55817ad1a408@suse.com>
+Message-Id: <20240715-cachestat-v2-2-55817ad1a408@suse.com>
 References: <20240715-cachestat-v2-0-55817ad1a408@suse.com>
 In-Reply-To: <20240715-cachestat-v2-0-55817ad1a408@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3627;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5371;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=uWyT0tGPyEZgkpMYto9J2ify1VaBQunLO5B2qOFv8cg=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmlROhEc61M2Z3+fFq4f/oRYytX5eY7MlkSMiPv
- Oc6t3/sqGWJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZpUToQAKCRDLzBqyILPm
- RiHwDAC1vDh0rVmHZVONLEdrXavrCwUX6svODy4F1qAqGHJ/FEeJU5Xm6Y4jWpZ81vkpRwDjtdC
- /cTBYPAeCgEFpRfLFt6vJwAHbXuPjHMJ+foBCc8bm7j8qAstoIiYMW0DUi2vVbv7cRdybSQSjvF
- DlWMLuPEF1JQV45IFLX2TPX5uXa38QnX+tEOHV3iR8sjbJbnThAxUeFMa1TJFmPUgdo4pZzlM86
- a2Z5pgwdfWNcwnedsFotkidU320+lf55DGH/AARb3qR/V+uXNoHIbMUMAHp8h7hwnS6KIZTXwEL
- QKyVQkjJEAXS5XHLiDgKfOnq3bpHxgDF9StmCEj3UXk91r4oTkSxn6zAUvd3O2VwKh2Ut2nr50D
- hb1eKayFNQZV1TPOUdSB+B9WqjlavX78Z01t4FUmJFKkHF1i+Sc3lHlMIc0zElO70yhQHcGZcCH
- pPBDrWUbpID6IiwpcapFY9ho30Y95WcptzMPsPq0GzLofXfDs0wr9vaAXm9uMT4rSIKi8=
+ bh=YAIU2MG2YQlXMwj3T9mJqXxru//ySlRPGssw2JOLGgQ=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmlROggzdjGmBlz7MQTw1vEGo4hBuV7++7NdTxc
+ gaU/OboqzqJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZpUToAAKCRDLzBqyILPm
+ RrXVC/9Qkv/lmYBBI/FibXEdSJNyp1woMmm+T0dG8L41xFQJ8CiZ+SKfKjt5T4L9Qo4e70nJyeB
+ DZcpYRNo6mRVHmiM6kDrRagG+CHDR7BBe/FS84iQp33uDJ9SDnV9JsCXlb+nAZDGu91cZfFAjyf
+ uKroPJqUScdPNwtFpQq8RFbdavf3KX8SGp4EgdOdKJ113SZsUOOkkti0E3fMksvJmznyC/Qrvoo
+ QovQkIl0SEQEKtIGNbvqQPLTxkhmtRxIM4XBOIU4Ne6X4IDOR7BH6qbFfKIRyZ7eaBYn5mMFR/l
+ 3Tgw+u4B6NwEL2RCc2NPZdoRtJS07OS2SlODcI+Qxznk50S/luIfGnPvkTL/QVhRDRWwrUOd8X0
+ mL2RTneJNh86zsOU/+ClgzkRhxQdHQAQmglBF0Yzr7xSF1PZ55TQZ4vPWc3Yf4lAX0TlDy0gyTf
+ ZhuBDYeNMm4PbKEUMxc9EemJttlO8SOJzzxTtHTdLr8n4x7G3icA1iEBdzXRSnHOdlP/A=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com];
+X-Rspamd-Queue-Id: C645B21BAC
+X-Spamd-Result: default: False [-1.51 / 50.00];
+ DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/4] Add cachestat03 test
+Subject: [LTP] [PATCH v2 2/4] Add cachestat01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,47 +143,94 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This test verifies that cachestat() syscall is properly failing with
-relative error codes according to input parameters.
-
-- EFAULT: cstat or cstat_range points to an illegal address
-- EINVAL: invalid flags
-- EBADF: invalid file descriptor
-- EOPNOTSUPP: file descriptor is of a hugetlbfs file
+This test verifies that cachestat() syscall is properly counting
+cached pages written inside a file. If storage device synchronization
+is requested, test will check if the number of dirty pages is zero.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                                  |  1 +
- testcases/kernel/syscalls/cachestat/.gitignore    |  1 +
- testcases/kernel/syscalls/cachestat/cachestat03.c | 80 +++++++++++++++++++++++
- 3 files changed, 82 insertions(+)
+ runtest/syscalls                                  |   2 +
+ testcases/kernel/syscalls/cachestat/.gitignore    |   1 +
+ testcases/kernel/syscalls/cachestat/Makefile      |  10 +++
+ testcases/kernel/syscalls/cachestat/cachestat.h   |  27 ++++++
+ testcases/kernel/syscalls/cachestat/cachestat01.c | 105 ++++++++++++++++++++++
+ 5 files changed, 145 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 887ac217b..de5a21749 100644
+index 136fd03fa..9a1827e88 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -64,6 +64,7 @@ cacheflush01 cacheflush01
+@@ -62,6 +62,8 @@ capset04 capset04
  
- cachestat01 cachestat01
- cachestat02 cachestat02
-+cachestat03 cachestat03
+ cacheflush01 cacheflush01
  
++cachestat01 cachestat01
++
  chdir01 chdir01
  chdir01A symlink01 -T chdir01
+ chdir04 chdir04
 diff --git a/testcases/kernel/syscalls/cachestat/.gitignore b/testcases/kernel/syscalls/cachestat/.gitignore
-index 0f70fb801..6cfa3fa10 100644
---- a/testcases/kernel/syscalls/cachestat/.gitignore
-+++ b/testcases/kernel/syscalls/cachestat/.gitignore
-@@ -1,2 +1,3 @@
- cachestat01
- cachestat02
-+cachestat03
-diff --git a/testcases/kernel/syscalls/cachestat/cachestat03.c b/testcases/kernel/syscalls/cachestat/cachestat03.c
 new file mode 100644
-index 000000000..35f6bdfb3
+index 000000000..daea1f4be
 --- /dev/null
-+++ b/testcases/kernel/syscalls/cachestat/cachestat03.c
-@@ -0,0 +1,80 @@
++++ b/testcases/kernel/syscalls/cachestat/.gitignore
+@@ -0,0 +1 @@
++cachestat01
+diff --git a/testcases/kernel/syscalls/cachestat/Makefile b/testcases/kernel/syscalls/cachestat/Makefile
+new file mode 100644
+index 000000000..62b00d2f4
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/Makefile
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++LDLIBS += -lrt
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat.h b/testcases/kernel/syscalls/cachestat/cachestat.h
+new file mode 100644
+index 000000000..efce6dc7f
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/cachestat.h
+@@ -0,0 +1,27 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++#ifndef CACHESTAT_H__
++#define CACHESTAT_H__
++
++#include "tst_test.h"
++#include "lapi/mman.h"
++
++static inline void print_cachestat(struct cachestat *cs)
++{
++	tst_res(TDEBUG,
++		"nr_cache=%lu "
++		"nr_dirty=%lu "
++		"nr_writeback=%lu "
++		"nr_evicted=%lu "
++		"nr_recently_evicted=%lu",
++		cs->nr_cache,
++		cs->nr_dirty,
++		cs->nr_writeback,
++		cs->nr_evicted,
++		cs->nr_recently_evicted);
++}
++
++#endif
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
+new file mode 100644
+index 000000000..2e44b2507
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
+@@ -0,0 +1,105 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
@@ -182,72 +239,97 @@ index 000000000..35f6bdfb3
 +/*\
 + * [Description]
 + *
-+ * This test verifies that cachestat() syscall is properly failing with relative
-+ * error codes according to input parameters.
++ * This test verifies that cachestat() syscall is properly counting cached pages
++ * written inside a file. If storage device synchronization is requested, test
++ * will check if the number of dirty pages is zero.
 + *
-+ * - EFAULT: cstat or cstat_range points to an illegal address
-+ * - EINVAL: invalid flags
-+ * - EBADF: invalid file descriptor
-+ * - EOPNOTSUPP: file descriptor is of a hugetlbfs file
++ * [Algorithm]
++ *
++ * - create a file with specific amount of pages
++ * - synchronize storage device, if needed
++ * - monitor file with cachestat()
++ * - check if the right amount of pages have been moved into cache
++ * - if storage device synchronization is requested, check that dirty pages is
++ *    zero
 + */
-+
-+#define MNTPOINT "mnt"
 +
 +#include "cachestat.h"
 +
-+static int fd;
-+static int fd_hugepage;
-+static int invalid_fd = -1;
++#define MNTPOINT "mntpoint"
++#define FILENAME MNTPOINT "/myfile.bin"
++
++static int page_size;
++static char *page_data;
 +static struct cachestat *cs;
-+static struct cachestat *cs_null;
 +static struct cachestat_range *cs_range;
-+static struct cachestat_range *cs_range_null;
 +
-+static struct tcase {
-+	int *fd;
-+	struct cachestat_range **range;
-+	struct cachestat **data;
-+	int flags;
-+	int exp_errno;
-+	char *msg;
-+} tcases[] = {
-+	{&invalid_fd, &cs_range, &cs, 0, EBADF, "Invalid fd (-1)"},
-+	{&fd, &cs_range_null, &cs, 0, EFAULT, "Invalid range (NULL)"},
-+	{&fd, &cs_range, &cs_null, 0, EFAULT, "Invalid data (NULL)"},
-+	{&fd, &cs_range, &cs, -1, EINVAL, "Invalid args (-1)"},
-+	{&fd_hugepage, &cs_range, &cs, 0, EOPNOTSUPP, "Unsupported hugetlbfs"},
-+};
-+
-+static void run(unsigned int i)
++static void test_cached_pages(const unsigned int use_sync, const int num_pages)
 +{
-+	struct tcase *tc = &tcases[i];
++	int fd;
 +
-+	TST_EXP_FAIL(cachestat(*tc->fd, *tc->range, *tc->data, tc->flags),
-+		tc->exp_errno, "%s", tc->msg);
++	tst_res(TINFO, "%s file synchronization", use_sync ? "Enable" : "Disable");
++	tst_res(TINFO, "Number of pages: %d", num_pages);
++
++	memset(cs, 0, sizeof(struct cachestat));
++
++	fd = SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, 0600);
++
++	for (int i = 0; i < num_pages; i++)
++		SAFE_WRITE(0, fd, page_data, page_size);
++
++	if (use_sync)
++		fsync(fd);
++
++	cs_range->off = 0;
++	cs_range->len = page_size * num_pages;
++
++	TST_EXP_PASS(cachestat(fd, cs_range, cs, 0));
++	print_cachestat(cs);
++
++	TST_EXP_EQ_LI(cs->nr_cache + cs->nr_evicted, num_pages);
++
++	if (use_sync)
++		TST_EXP_EQ_LI(cs->nr_dirty, 0);
++
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK(FILENAME);
++}
++
++static void run(unsigned int use_sync)
++{
++	for (int i = 0; i < 15; i++)
++		test_cached_pages(use_sync, 1 << i);
 +}
 +
 +static void setup(void)
 +{
-+	fd = SAFE_OPEN("test", O_CREAT | O_RDWR, 0700);
-+	fd_hugepage = SAFE_OPEN(MNTPOINT"/test", O_CREAT | O_RDWR, 0700);
++	page_size = (int)sysconf(_SC_PAGESIZE);
++
++	page_data = SAFE_MALLOC(page_size);
++	memset(page_data, 'a', page_size);
 +}
 +
 +static void cleanup(void)
 +{
-+	SAFE_CLOSE(fd);
-+	SAFE_CLOSE(fd_hugepage);
++	if (page_data)
++		free(page_data);
 +}
 +
 +static struct tst_test test = {
 +	.test = run,
++	.tcnt = 2,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.hugepages = {1, TST_NEEDS},
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "6.5",
 +	.needs_tmpdir = 1,
++	.min_kver = "6.5",
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.skip_filesystems = (const char *const []) {
++		"fuse",
++		"tmpfs",
++		NULL
++	},
 +	.bufs = (struct tst_buffers []) {
 +		{&cs, .size = sizeof(struct cachestat)},
 +		{&cs_range, .size = sizeof(struct cachestat_range)},
