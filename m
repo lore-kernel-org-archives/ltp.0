@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 234E6C3DA42
-	for <ltp@archiver.kernel.org>; Wed, 17 Jul 2024 08:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68AF8C3DA42
+	for <ltp@archiver.kernel.org>; Wed, 17 Jul 2024 08:50:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A6FAA3D1AC4
-	for <ltp@archiver.kernel.org>; Wed, 17 Jul 2024 10:39:02 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E9AAB3D1AB9
+	for <ltp@archiver.kernel.org>; Wed, 17 Jul 2024 10:50:06 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69B683D0C40
- for <ltp@lists.linux.it>; Wed, 17 Jul 2024 10:38:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 881C63D0C40
+ for <ltp@lists.linux.it>; Wed, 17 Jul 2024 10:49:52 +0200 (CEST)
 Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
@@ -25,78 +25,78 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BA3A01A0BC31
- for <ltp@lists.linux.it>; Wed, 17 Jul 2024 10:38:47 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8CBF61A0BC31
+ for <ltp@lists.linux.it>; Wed, 17 Jul 2024 10:49:51 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3BD4321BE7;
- Wed, 17 Jul 2024 08:38:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EE86521991;
+ Wed, 17 Jul 2024 08:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721205526; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721206190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nw04W8GBL7QiS/CyqKjGGb/5myzwz/SbXRSuomr/5ZM=;
- b=FVWMWn5Qt/VLHQjkJCduHG0dCVLFIkQJhLVkvk8gN/oK5OXjBQjDvAkdpG7C1Dk4ArJDW4
- ES+RDVvjMkGq5COGPLeuRR/XEJiQxNomkeYgy4kCebjfpWHLWCrbuym1TQkAql3F72quy2
- WjqwE6k9BclJRJGd5+dpJAaD9HcTc3I=
+ bh=JPpGIeZvFpAfN+ZR9t4R7deq7OX6k9nccrTCy3Uq3s8=;
+ b=Rh6+i9FFCxyteaVcEzbltep+NYHdaL3N8RMG3xfij8klqihkciYCJpdyRPZ63oZ91UvL0Y
+ 1SbQfgnJ7ftvo1rW5wvWpaoTAx14YMFYPyOJR3quVA729fpbaK2E6prGxxo3AILGt7C6+o
+ mpOX5G/Cnf6CDDVBw5GPMp4nh/hi+YI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721205526;
+ s=susede2_ed25519; t=1721206190;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nw04W8GBL7QiS/CyqKjGGb/5myzwz/SbXRSuomr/5ZM=;
- b=FgF/sqoccbytAohiYgXtPrkPrn0lZaXwyApjKCYWkba96hb2VvwFtkX8P+WXZLkfW4FZxD
- X7+YIx81YSVNwYCw==
+ bh=JPpGIeZvFpAfN+ZR9t4R7deq7OX6k9nccrTCy3Uq3s8=;
+ b=kfAX3/cX1lFyKe2WN4mdUWSBoStoDq1bkSLW39gaaNFeLbwXbnU0OqBXvqI3g+U53Cj9BE
+ LGiuXqHDmxnKeUDA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721205526; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721206189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nw04W8GBL7QiS/CyqKjGGb/5myzwz/SbXRSuomr/5ZM=;
- b=FVWMWn5Qt/VLHQjkJCduHG0dCVLFIkQJhLVkvk8gN/oK5OXjBQjDvAkdpG7C1Dk4ArJDW4
- ES+RDVvjMkGq5COGPLeuRR/XEJiQxNomkeYgy4kCebjfpWHLWCrbuym1TQkAql3F72quy2
- WjqwE6k9BclJRJGd5+dpJAaD9HcTc3I=
+ bh=JPpGIeZvFpAfN+ZR9t4R7deq7OX6k9nccrTCy3Uq3s8=;
+ b=E0rrxn4A1FA3c4CgtmwHcRexaw7Ufa12XrOrucXD508rJNzEeUeNUbEV6VmA6t5uU01Okx
+ 7XOe4fgRQdFfGtYR2hwdA59tf85CLgrBxmJ056sRR7CqZiQaaeIHrpz9hb3cMXGg8Xgmj1
+ 1VrJbJOBoADDXVTDk+/qTmBf86pSIFo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721205526;
+ s=susede2_ed25519; t=1721206189;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nw04W8GBL7QiS/CyqKjGGb/5myzwz/SbXRSuomr/5ZM=;
- b=FgF/sqoccbytAohiYgXtPrkPrn0lZaXwyApjKCYWkba96hb2VvwFtkX8P+WXZLkfW4FZxD
- X7+YIx81YSVNwYCw==
+ bh=JPpGIeZvFpAfN+ZR9t4R7deq7OX6k9nccrTCy3Uq3s8=;
+ b=1vAzWGG99DKuVVG7w1PGQ9bX3p7V5TfuH48A7+KDC2LAne/TPdtVZonpl7Pb8stR8MP9dJ
+ Sdk+v0GYpCCl8kAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C22B1368F;
- Wed, 17 Jul 2024 08:38:46 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD9F21368F;
+ Wed, 17 Jul 2024 08:49:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +b63CRaDl2ZzFgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 17 Jul 2024 08:38:46 +0000
-Date: Wed, 17 Jul 2024 10:41:19 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 60gNNa2Fl2baGQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 17 Jul 2024 08:49:49 +0000
+Date: Wed, 17 Jul 2024 10:52:22 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <ZpeDr1IvoI1e-nOF@rei>
+Message-ID: <ZpeGRluc-U1NHjNY@rei>
 References: <20240716153604.22984-1-chrubis@suse.cz>
  <20240716153604.22984-2-chrubis@suse.cz>
  <CAEemH2cAfjhGLv3GWPA_5xgsFNYiRf-oQwyLPhbWWSPKn=yAhw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <CAEemH2cAfjhGLv3GWPA_5xgsFNYiRf-oQwyLPhbWWSPKn=yAhw@mail.gmail.com>
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.991]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+ RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH 1/2] Add support for mixing C and shell code
@@ -118,16 +118,20 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> tst_res_.c:52:9: error: format not a string literal and no format arguments
-> [-Werror=format-security]
->    52 |         tst_res_(argv[1], atoi(argv[2]), type, msg);
->       |         ^~~~~~~~
+> Since execvpe() is a GNU extension, we need to ensure that
+> we are compiling with GNU extensions enabled.
+> 
+> add this line into the head of tst_test.c:
+> #define _GNU_SOURCE
 
-Right, this needs:
+As for the execvpe() I've used that for the prototype but I'm unsure if
+it could be used in the final product, since this is the test library it
+has to compile on all kinds of libc out there. It looks like musl does
+support it but I haven't checked Android bionic.
 
-tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
-
-I wonder why I didn't get warning at my end.
+So we may need to write our own implemtantion on the top of the execve()
+syscall. But that should be as easy as getting the path to the script
+before we pass it to execve().
 
 -- 
 Cyril Hrubis
