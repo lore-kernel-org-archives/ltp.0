@@ -4,88 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7DC1C3DA60
-	for <ltp@archiver.kernel.org>; Thu, 18 Jul 2024 06:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1721285789; h=to : date :
- message-id : in-reply-to : references : subject : list-id :
- list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=F3sVfa46oR4YJqkzU+4+qrKU5ljNvqgthiH1sjSPyr0=;
- b=k0Dwz1/hP6yWo9Hst2Zm0IyhurYZ8ODg9rNGHZFfHZeMmoNgDvyW6TdhebIzYsDhG5nnF
- BhrvqAxSIc9Fy8lsxBUh9aG+6zdW9Ds5bFVVq2mI9mk9CRmCE5CEasK744Uj8Dd8n17inEG
- HI7rV/eP0piuvaIQeqdQxfPpFsmcn+o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F78C3DA49
+	for <ltp@archiver.kernel.org>; Thu, 18 Jul 2024 08:20:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC87D3D1AF8
-	for <ltp@archiver.kernel.org>; Thu, 18 Jul 2024 08:56:29 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D67B13D1AF7
+	for <ltp@archiver.kernel.org>; Thu, 18 Jul 2024 10:20:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 578A93C221F
- for <ltp@lists.linux.it>; Thu, 18 Jul 2024 08:56:07 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.47;
- helo=esa1.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
- [207.54.90.47])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 82BF73D0C9E
+ for <ltp@lists.linux.it>; Thu, 18 Jul 2024 10:19:47 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C28351A00FD7
- for <ltp@lists.linux.it>; Thu, 18 Jul 2024 08:56:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1721285767; x=1752821767;
- h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=SBX6Tu+moY+kBg8VFOgnmnzc9qhCRrHe+liWR24YAnk=;
- b=lH14rcpNLXWire/+V5AUxKMSZ0bf+VorHUREPhIkPexgh5K+yYBEQ26I
- GDCdOo9FtyfQhLKz9EiosuQEerPh86SlFxqwRjOMlznGBaABXMmPZRjjS
- OC3poN6eWjvbRxC+SIIG3bpTr4CXBEmYdFKGfitp+WE5l3kOTUtL84cVv
- xCD8fmABsfQbWV6yhk0ZKwvRIMFDG3hfbITajoRQNQk5P4TaDzoQSoZdr
- ddYwpawlMEc6dcwWG7AHuR3pogh3iTGZ4ElLoq/IMD1Laq9Xj7dkdwvOP
- KyyJxnS3FJ42eXyzXEfQwx/xyt3VP/5rlR0X4rgctITgjzjVoYlZbfapx g==;
-X-IronPort-AV: E=McAfee;i="6700,10204,11136"; a="167678978"
-X-IronPort-AV: E=Sophos;i="6.09,217,1716217200"; d="scan'208";a="167678978"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jul 2024 15:56:04 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
- [192.168.83.66])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 4130EC68E1
- for <ltp@lists.linux.it>; Thu, 18 Jul 2024 15:56:02 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8B9D4D97F4
- for <ltp@lists.linux.it>; Thu, 18 Jul 2024 15:56:01 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 16B496BB7D
- for <ltp@lists.linux.it>; Thu, 18 Jul 2024 15:56:01 +0900 (JST)
-Received: from localhost (unknown [10.167.226.69])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id AD2681A000A;
- Thu, 18 Jul 2024 14:56:00 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Thu, 18 Jul 2024 14:55:32 +0800
-Message-Id: <20240718065532.20188-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <ZpfOqJaIO5mr__CW@rei>
-References: <ZpfOqJaIO5mr__CW@rei>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28536.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28536.005
-X-TMASE-Result: 10--12.429400-10.000000
-X-TMASE-MatchedRID: 4RkzoBnX1FukSoeAfA+QP6oXHZz/dXlxBMdp5178zSNgPgeggVwCFnU3
- oKSu0J1xUh5maKIJAx/mn3xyPJAJoh2P280ZiGmRCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
- z3CH3vCeP9u+1+GFcS2+n5v/ArhNPWUOK5XsuMf7FVAV8vDjN/0i8rgutezVpnWFz7KRtHPr6sR
- z1g/tlo+LzNWBegCW2EKNtpnMeXG3aqT6lqWS9QsRB0bsfrpPIqxB32o9eGcm1ywT+7plDG9af3
- ns3TUaAMnEfuxvHV39J/HVeLtlfZM6C/xvBSwWu
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C0CA5600637
+ for <ltp@lists.linux.it>; Thu, 18 Jul 2024 10:19:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B3DC31F8B0;
+ Thu, 18 Jul 2024 08:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721290785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qMp9EyRERMlamfzSWXgVjDWPD8tl7v0fIvFRhSBPEF4=;
+ b=WnM9xrww0DJ8C04s27X5VLtSGCplFIFvj//y3bDWBa+0X6Lorp49I3b7zyvflOsRKZHCaJ
+ EYa/UGPu+Joqe3XYZY36blrnf5zWIcdCyxPCirWavZRLrRm9Zn0rJnfN95LjU6WDOmRSy8
+ B2J5VG7dObWVdHVeeI1JihAk5TIV4P0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721290785;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qMp9EyRERMlamfzSWXgVjDWPD8tl7v0fIvFRhSBPEF4=;
+ b=w0Z5t5DkTuS+bcaRMcL3UMEJlv2UNC8GJBnep+eWxv44szyG1Z2Fs+fg/NeMYuRH2c9Kdi
+ i5fJpWB5d+ThVmAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yhTOZq6q;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=W5ROb+xm
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721290784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qMp9EyRERMlamfzSWXgVjDWPD8tl7v0fIvFRhSBPEF4=;
+ b=yhTOZq6qhPIYA4JdYI6SCU7YjfAr32KPkhZ1iYT2NIfRSB75SnUpzZY463Uxe9pAW5+/Oo
+ q481WugFd3QZ/Vhhfor1qZ7+RBn2xRB2WYn235lOlTccobjlyHnltJGGSwz0Cia+xv3YR9
+ Qg1Mo2FhB80rXJ9oH5kA98Hgwnw5E+M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721290784;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qMp9EyRERMlamfzSWXgVjDWPD8tl7v0fIvFRhSBPEF4=;
+ b=W5ROb+xmvAKcuxMyS7ZzMxm76TucSt6RWLyxqJu9Jy6sLBjXUJcFbU/hnAxji3dmqrDsas
+ IVax9Y/gG+UZV9DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99BE31379D;
+ Thu, 18 Jul 2024 08:19:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id YGudJCDQmGaPIQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 18 Jul 2024 08:19:44 +0000
+Date: Thu, 18 Jul 2024 10:22:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZpjQuY0_oZWg2s8o@rei>
+References: <20240717171713.687339-1-pvorel@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240717171713.687339-1-pvorel@suse.cz>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: B3DC31F8B0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] getcpu: Add testcase for EFAULT
+Subject: Re: [LTP] [PATCH 0/6] sched_football in runtest/sched + configure
+ cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,84 +117,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a testcase with the arguments point to an invalid address.
+Hi!
+Whole patchset looks good.
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/getcpu/.gitignore |  1 +
- testcases/kernel/syscalls/getcpu/getcpu02.c | 32 +++++++++++++++++++++
- 3 files changed, 34 insertions(+)
- create mode 100644 testcases/kernel/syscalls/getcpu/getcpu02.c
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 136fd03fa..31922bc9f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -440,6 +440,7 @@ futimesat01 futimesat01
- getcontext01 getcontext01
- 
- getcpu01 getcpu01
-+getcpu02 getcpu02
- 
- getcwd01 getcwd01
- getcwd02 getcwd02
-diff --git a/testcases/kernel/syscalls/getcpu/.gitignore b/testcases/kernel/syscalls/getcpu/.gitignore
-index 31fec5d35..cd3022bbb 100644
---- a/testcases/kernel/syscalls/getcpu/.gitignore
-+++ b/testcases/kernel/syscalls/getcpu/.gitignore
-@@ -1 +1,2 @@
- /getcpu01
-+/getcpu02
-diff --git a/testcases/kernel/syscalls/getcpu/getcpu02.c b/testcases/kernel/syscalls/getcpu/getcpu02.c
-new file mode 100644
-index 000000000..81a8dd871
---- /dev/null
-+++ b/testcases/kernel/syscalls/getcpu/getcpu02.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2024
-+ * Author: Ma Xinjian <maxj.fnst@fujitsu.com>
-+ *
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that getcpu(2) fails with
-+ *
-+ * - EFAULT arguments point outside the calling process's address
-+ *          space.
-+ */
-+
-+#define _GNU_SOURCE
-+#include "tst_test.h"
-+#include "lapi/sched.h"
-+
-+static void run(void)
-+{
-+	unsigned int cpu_id, node_id = 0;
-+
-+	TST_EXP_FAIL(getcpu(tst_get_bad_addr(NULL), &node_id), EFAULT);
-+	TST_EXP_FAIL(getcpu(&cpu_id, tst_get_bad_addr(NULL)), EFAULT);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
 -- 
-2.18.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
