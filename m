@@ -4,76 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C5EDC3DA5D
-	for <ltp@archiver.kernel.org>; Fri, 19 Jul 2024 20:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DB7EC3DA5D
+	for <ltp@archiver.kernel.org>; Mon, 22 Jul 2024 09:00:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 909733D1B54
-	for <ltp@archiver.kernel.org>; Fri, 19 Jul 2024 22:21:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id AC8933D1BD2
+	for <ltp@archiver.kernel.org>; Mon, 22 Jul 2024 11:00:32 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 227663D1A76
- for <ltp@lists.linux.it>; Fri, 19 Jul 2024 22:21:31 +0200 (CEST)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
- [IPv6:2607:f8b0:4864:20::62f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4EE4E3D1BC9
+ for <ltp@lists.linux.it>; Mon, 22 Jul 2024 11:00:16 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de; envelope-from=jack@suse.cz;
+ receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5509C60132C
- for <ltp@lists.linux.it>; Fri, 19 Jul 2024 22:21:30 +0200 (CEST)
-Received: by mail-pl1-x62f.google.com with SMTP id
- d9443c01a7336-1fc5c0c65bcso2266415ad.2
- for <ltp@lists.linux.it>; Fri, 19 Jul 2024 13:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1721420489; x=1722025289;
- darn=lists.linux.it; 
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=7TdICET9y2kBW1nT7B+XzjYYxpouKddOEs+h65MAYd8=;
- b=iqrHwCi/EakY875R5sBfIpOrd5ue6rhgqTr0Ls3Qxi9TBFoWtT4EfWLEDSY3+ayk3f
- tWzTlbOJbijNkKZ2RM5LN5t4vzznku2Aao4qkIJ3hb1JSys5kiuaBrBBPqER1LRmdmvJ
- ZptfffBSnWrbQFI7IDetkIgLeAtD0ZreVyk/Yo/0KXq+74ugTBWbykHrFbtpNhQAG080
- ywhbNiSe3pjcInbKPbx7Z6DKHH/TIY0locfWlo9K366jtOf0VNRw/qlx3y5WQlrntzHi
- +3cCaVXauIJQS690P+e/EJIwRiOFH7q+vE2DjstC/JQG32osGe6OXcV1IFpg6sSsVeMw
- HJ/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1721420489; x=1722025289;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=7TdICET9y2kBW1nT7B+XzjYYxpouKddOEs+h65MAYd8=;
- b=N+f1xG1kJiqEFy5gSAFocigE6Hk6WFXveM3VbHaQxAE4XnyBjDdqRsCSBwq0sFGxM8
- FCVrHg1ZrGEuHtKLGjxN5znD3sJVWvy1Eo/W1NTB/Z8gwisB7pAiZtymMAnD95V+E4xW
- yk5nm1jqUej/4itl5WJp5cuk5XLygHKC5hyqu5cYNtsDUmHfgVCnDntERXB8j6sib8Zt
- kYHdWAToGZ10DQ+FqjuZhcUkGHC9L5Em+++220VLAHfqty4PazPRn0Mp7+5mtJmVSz+C
- jY7fz+oly2Gktisr5uFbhgljPWv2ULGHwJ3/vwch8T2EZIvTgjkAgcQeoG5qJcDkVhcI
- 0ivQ==
-X-Gm-Message-State: AOJu0YxEcuRAXpIWzROMZd+lVpekOhQiQMnpXErboPSrTJZboKFhGIdI
- UmkaiaJxR2GbqvFnHE7BgN6zfVfoz7j5GVbGOsIOv4doF29mt5DAVK6kDClRFeQ=
-X-Google-Smtp-Source: AGHT+IFBmO+K7zL/agidVg2Z92TSxmmwPsuaZhiJ7FdU+invzsnYzP+ED6r48gQMg6agGpkBHJtLpw==
-X-Received: by 2002:a05:6a21:6e4b:b0:1c3:b106:d293 with SMTP id
- adf61e73a8af0-1c42287e800mr783432637.3.1721420488617; 
- Fri, 19 Jul 2024 13:21:28 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-70cff552c39sm1565712b3a.136.2024.07.19.13.21.26
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 19 Jul 2024 13:21:27 -0700 (PDT)
-Message-ID: <173c7d32-2fae-40e4-a1d8-490cee3bba15@kernel.dk>
-Date: Fri, 19 Jul 2024 14:21:25 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C8A35140119D
+ for <ltp@lists.linux.it>; Mon, 22 Jul 2024 11:00:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BB88E1FB57;
+ Mon, 22 Jul 2024 09:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721638814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DJB5XV0FFOvBs4JvmakQ5Jf3QQ6Nlki0oGRThRpQx04=;
+ b=ZerB9KeAoC/Qb6ux5YuIWdkGVTGZ0eNBykK9nNkxOan4r4dZ6YcS012m1g91qpbfJR1p6l
+ 35vKs/jJZwNnXkKYAUASi3lg0QflYQRTQxpUQNr43WSmdQ3IkP7J81DFd3ZaDKjzGvlOUr
+ 5WSGhoLR/lc6xib3O31gRqXZTmq8AQk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721638814;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DJB5XV0FFOvBs4JvmakQ5Jf3QQ6Nlki0oGRThRpQx04=;
+ b=Dz9WzWKj4/yPCQUOjpYkL8hs+ulr1qns8Z434ZHFkJGRRoBha4gvt8eLvUDODX/fpwvYND
+ T9u9baF40+454cAA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EO+BcFlt;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kq0XYAPn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721638812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DJB5XV0FFOvBs4JvmakQ5Jf3QQ6Nlki0oGRThRpQx04=;
+ b=EO+BcFltopxN5MEedbkTKXtfdPWF2jvEATCLj5+tozALURZIQTBcMPrtVeLyt5uroMBjLs
+ 0cYEO2HgX9flK++3wTBgpNlm/pyLJKzs0ASZ5JEsoDfVeUcbCIzBM66Tik49qEH3rfJFbd
+ oWjdomn/u68xQlkGmbk/n3IgF+pU2WM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721638812;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DJB5XV0FFOvBs4JvmakQ5Jf3QQ6Nlki0oGRThRpQx04=;
+ b=kq0XYAPn5xIieWgtgglBQPLp8GIOShK4lUhS1c+IgrCExk9iKk2qA3mi88koLszv8U7P8I
+ z0iih/bIIPaW2PBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD4E2136A9;
+ Mon, 22 Jul 2024 09:00:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Lx9FKpwfnmbpZAAAD6G6ig
+ (envelope-from <jack@suse.cz>); Mon, 22 Jul 2024 09:00:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 29ED1A08BD; Mon, 22 Jul 2024 11:00:12 +0200 (CEST)
+Date: Mon, 22 Jul 2024 11:00:12 +0200
+From: Jan Kara <jack@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <20240722090012.mlvkaenuxar2x3vr@quack3>
 References: <20240719174325.GA775414@pevik>
- <a59b75dd-8e82-4508-a34e-230827557dcb@kernel.dk>
- <20240719201352.GA782769@pevik>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240719201352.GA782769@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240719174325.GA775414@pevik>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BB88E1FB57
+X-Spamd-Result: default: False [-3.81 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; RCPT_COUNT_TWELVE(0.00)[14];
+ MIME_TRACE(0.00)[0:+]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RCVD_TLS_LAST(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ FREEMAIL_CC(0.00)[lists.linux.it,vger.kernel.org,kernel.dk,suse.cz,suse.com,gmail.com,suse.de];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC] Slow down of LTP tests aiodio_sparse.c and
  dio_sparse.c in kernel 6.6
@@ -88,56 +124,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, Jan Kara <jack@suse.cz>, fstests@vger.kernel.org,
- linux-block@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
- ltp@lists.linux.it, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
+ Jan Kara <jack@suse.cz>, fstests@vger.kernel.org, linux-block@vger.kernel.org,
+ Filipe Manana <fdmanana@suse.com>, ltp@lists.linux.it,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 7/19/24 2:13 PM, Petr Vorel wrote:
-> Hi Jens, all,
-> 
->> On 7/19/24 11:43 AM, Petr Vorel wrote:
->>> Hi all,
-> 
->>> LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3]) slowed
->>> down on kernel 6.6 on Btrfs and XFS, when run with default parameters. These
->>> tests create 100 MB sparse file and write zeros (using libaio or O_DIRECT) while
->>> 16 other processes reads the buffer and check only zero is there.
-> 
->>> Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
->>> same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
->>> (Non default parameter creates much smaller file, thus the change is not that
->>> obvious).
-> 
->>> Because the slowdown has been here for few kernel releases I suppose nobody
->>> complained and the test is somehow artificial (nobody uses this in a real world).
->>> But still it'd be good to double check the problem. I can bisect a particular
->>> commit.
-> 
->>> Because 2 filesystems affected, could be "Improve asynchronous iomap DIO
->>> performance" [4] block layer change somehow related?
-> 
->> No, because that got disabled before release for unrelated reasons. Why
->> don't you just bisect it, since you have a simple test case?
-> 
-> Jens, thanks for info. Sure, I'll bisect next week and report.
-> 
-> The reason I reported before bisecting is because it wouldn't be the
-> first time the test was "artificial" and therefore reported problem
-> was not fixed. If it's a real problem I would expect it would be also
-> caught by other people or even by fstests.
+Hi!
 
-Didn't look at the test cases, so yeah may very well be bogus. But it
-also may not... And a bisection may help shine some light on that too,
-outside of just highlighting what commit made it slower.
+On Fri 19-07-24 19:43:25, Petr Vorel wrote:
+> LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3])
+> slowed down on kernel 6.6 on Btrfs and XFS, when run with default
+> parameters. These tests create 100 MB sparse file and write zeros (using
+> libaio or O_DIRECT) while 16 other processes reads the buffer and check
+> only zero is there.
 
+So the performance of this test is irrelevant because combining buffered
+reads with direct IO writes was always in "better don't do it" territory.
+Definitely not if you care about perfomance.
+
+> Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
+> same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
+> (Non default parameter creates much smaller file, thus the change is not that
+> obvious).
+
+But still it's kind of curious what caused the 9x slow down. So I'd be
+curious to know the result of the bisection :). Thanks for report!
+
+								Honza
 -- 
-Jens Axboe
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
