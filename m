@@ -4,101 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5074C3DA63
-	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 07:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B4D2C3DA49
+	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 07:16:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 27BF83D1C10
-	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 09:16:21 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 415113D0C66
+	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 09:16:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EE323D0C66
- for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:33 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 509443CC2E7
+ for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:34 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18016601627
- for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:32 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B11B91405141
+ for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2232021BB8;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7A52F1F807;
  Tue, 23 Jul 2024 07:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1721718932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pQ9X/15gGlO9X/ac88LXlwOSpVa8MQtMD1Hb4UKO6Cg=;
- b=fAq8/JDcuYbqBojr7I0om9JRgmUz+hWHxP+PRsrrZe9n4qx2T1avptfGZrByfxjOUB2L+l
- NBPTRALTCL7JfLuXcXNlSJh2rsPW6qeQPzemambfpNODj7ShRHb181cXgbX+sSaNC09g5g
- z0AHkzJoBwgOyCZqemvC6dIOE3l/GxA=
+ bh=Sto91udM28HY+m14d9S53g/gYPf/4FuEhrcXEX6dbt0=;
+ b=uc3mPb/CaXp6k4gBGhhZ2gAbu8U85jGXB+m+iOoc2w7rK6daRcWHkY6FcmpnRKyjmfz2k3
+ yVV0E873a2xUTezsDskB7RuzowBeDCra0vX9BfWybQDmM1LgB9AVNKOyIrTeswpEwcWx+w
+ H5leyiByZpUezpDoB116VJTqaEGimk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1721718932;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pQ9X/15gGlO9X/ac88LXlwOSpVa8MQtMD1Hb4UKO6Cg=;
- b=BoSF8rV9qAsZx/RXuldDxBaNXQc8ejAvuRkD2GVHS9T444dEFN6VoGcjmp9UguIWKiDF6c
- 2vn5cSHYqwk8+WBA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=Sto91udM28HY+m14d9S53g/gYPf/4FuEhrcXEX6dbt0=;
+ b=SAoQDS5OoOhqZ9yL3/UHbBrkr61OBhPO0TnGHX/wK9VijCXL1qh7W9XWsmRwsGotteHFRX
+ h/1sU4ysFdUtbKCg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1721718932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pQ9X/15gGlO9X/ac88LXlwOSpVa8MQtMD1Hb4UKO6Cg=;
- b=fAq8/JDcuYbqBojr7I0om9JRgmUz+hWHxP+PRsrrZe9n4qx2T1avptfGZrByfxjOUB2L+l
- NBPTRALTCL7JfLuXcXNlSJh2rsPW6qeQPzemambfpNODj7ShRHb181cXgbX+sSaNC09g5g
- z0AHkzJoBwgOyCZqemvC6dIOE3l/GxA=
+ bh=Sto91udM28HY+m14d9S53g/gYPf/4FuEhrcXEX6dbt0=;
+ b=uc3mPb/CaXp6k4gBGhhZ2gAbu8U85jGXB+m+iOoc2w7rK6daRcWHkY6FcmpnRKyjmfz2k3
+ yVV0E873a2xUTezsDskB7RuzowBeDCra0vX9BfWybQDmM1LgB9AVNKOyIrTeswpEwcWx+w
+ H5leyiByZpUezpDoB116VJTqaEGimk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1721718932;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pQ9X/15gGlO9X/ac88LXlwOSpVa8MQtMD1Hb4UKO6Cg=;
- b=BoSF8rV9qAsZx/RXuldDxBaNXQc8ejAvuRkD2GVHS9T444dEFN6VoGcjmp9UguIWKiDF6c
- 2vn5cSHYqwk8+WBA==
+ bh=Sto91udM28HY+m14d9S53g/gYPf/4FuEhrcXEX6dbt0=;
+ b=SAoQDS5OoOhqZ9yL3/UHbBrkr61OBhPO0TnGHX/wK9VijCXL1qh7W9XWsmRwsGotteHFRX
+ h/1sU4ysFdUtbKCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0497C13874;
- Tue, 23 Jul 2024 07:15:31 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CDB913874;
+ Tue, 23 Jul 2024 07:15:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0HDFOpNYn2bKUQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 23 Jul 2024 07:15:31 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aKWwFJRYn2bKUQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 23 Jul 2024 07:15:32 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 23 Jul 2024 09:15:02 +0200
+Date: Tue, 23 Jul 2024 09:15:04 +0200
 MIME-Version: 1.0
-Message-Id: <20240723-ioctl_ficlone-v2-2-33075bbc117f@suse.com>
+Message-Id: <20240723-ioctl_ficlone-v2-4-33075bbc117f@suse.com>
 References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
 In-Reply-To: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4223;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4533;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=A3aY+2ROZ8UGIaCslI7NxXQ2Y8xnhQkfcQoAXoeBqz8=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmn1h+pvCFio9U+psVAF/zueps+SZoV2rvG/7a2
- s3nen/xMXOJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZp9YfgAKCRDLzBqyILPm
- RmSPC/4hqjYsuPqz2Dk6BpsXm/IQv/Cbpf/xeQKPQKwMy50vdfagyOG9weOqao/8DdFrvm6s0qm
- d79POBBtOSy/6/vKklW9PlWy/miEkXFXk5qRbVo2IFHI1oh/6ER1m1RijBJgf1dN/jbONz8zpUj
- QGYSBtuPxbq0zDItmvKrah1dlP+0h8jUKWahySEyO2nkbqZ5+BCZEhXJCwW7IALeJIJkijgnjLk
- NUQtlNiA6104DyYR8RRuMqotTTU+IjxFynvNiBQPl7K8XRxTJFTpdEoHVAWTFmO3u0FPXFkM/g+
- k7z8+5GsgdvDdGUIDPpzYoUpXyRPlwHV9HHRURfrqEmc1OCdPwX5fEminx1+idSJqYtlinK4Z04
- DSHqVDv7Tj85beJNCuqnQBr4g8s4JFa6S908Zp7xbdE1ZG3DBmDe9oiJTKWJZFX0U/ApFKuCUgn
- TJU6n0GCMc93k2V9IWrRNoirmPPiCOXfCc9DIbalooTab+wngz/RxAb7Cdo+WMDwcCHAc=
+ bh=WUxOVIjCXPYVfWzBUOlajaotdBMyrDT6nKAb1/u07gc=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmn1h+R+XNa6zyNhfaYDOn4BdHFkFndwUFiyssR
+ mZBE2FtD8yJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZp9YfgAKCRDLzBqyILPm
+ Ro+1C/9zKcTJV9CptA/fV7+WS81K0D8ok+nVF6BIgbEYiMuaYHOoKqrDtGEbKpiwiRJ1yZJKTWz
+ ucBbMpryGa7EXjatepnhv5/bm8j6tnDBxMkBUjbnfsqX4raj9zawF5GddrINbdYqUMo1oiwjQmT
+ Sa8WZc/mpDryd4SVr5vPjySdKfDnGM6gD1LNKprwFAVpcP+bos08K6Ia2SNLrEH1LNgXJndhwy2
+ BaAkrtnLBiM32qnTF2SxFwkpO+T2JLFREVQ6g8+yEIlIMt5WaKe9pyh8IbPxypWo9+fdxVU7yCl
+ j1nnLGUPgpCxk+iWOb5tbPP1DUbVgYdxmkfOLe9+kmEeL9EjdneoxkvmqpdTU+QNnT0ehQ2y+mc
+ WhxWpeYMmm8wNsTg3HGCmAJzMkd+grHyoIs4ccICwUv94mHVKWmQriMAPFQXBujz20VvIfTrGqg
+ hHSggzL9gMSXwfjigYU4+++spXTikH82aIMx4PU7vVMSyEWSLb/kSEFGDmRi/MuUaKiEw=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
 X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -111,9 +112,9 @@ X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/7] Add ioctl_ficlone01 test
+Subject: [LTP] [PATCH v2 4/7] Add ioctl_ficlone03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,44 +133,43 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This test verifies that ioctl() FICLONE feature clones file content
-from one file to an another.
+This test verifies that ioctl() FICLONE/FICLONERANGE feature correctly
+raises exceptions when it's supposed to.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                                  |   2 +
+ runtest/syscalls                                  |   1 +
  testcases/kernel/syscalls/ioctl/.gitignore        |   1 +
- testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c | 122 ++++++++++++++++++++++
- 3 files changed, 125 insertions(+)
+ testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c | 124 ++++++++++++++++++++++
+ 3 files changed, 126 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 27eb9a86b..f05386ba2 100644
+index 48fe85c97..5aef2b97e 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -592,6 +592,8 @@ ioctl_ns07 ioctl_ns07
+@@ -594,6 +594,7 @@ ioctl_sg01 ioctl_sg01
  
- ioctl_sg01 ioctl_sg01
+ ioctl_ficlone01 ioctl_ficlone01
+ ioctl_ficlone02 ioctl_ficlone02
++ioctl_ficlone03 ioctl_ficlone03
  
-+ioctl_ficlone01 ioctl_ficlone01
-+
  inotify_init1_01 inotify_init1_01
  inotify_init1_02 inotify_init1_02
- 
 diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 5fff7a61d..5404aa93f 100644
+index 3d25fdfb2..d0b470714 100644
 --- a/testcases/kernel/syscalls/ioctl/.gitignore
 +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -22,3 +22,4 @@
- /ioctl_ns06
- /ioctl_ns07
+@@ -24,3 +24,4 @@
  /ioctl_sg01
-+/ioctl_ficlone01
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
+ /ioctl_ficlone01
+ /ioctl_ficlone02
++/ioctl_ficlone03
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
 new file mode 100644
-index 000000000..bb3dc8c6c
+index 000000000..be069836a
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
-@@ -0,0 +1,122 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+@@ -0,0 +1,124 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
@@ -178,106 +178,104 @@ index 000000000..bb3dc8c6c
 +/*\
 + * [Description]
 + *
-+ * This test verifies that ioctl() FICLONE feature clones file content from
-+ * one file to an another.
-+ *
-+ * [Algorithm]
-+ *
-+ * - populate source file
-+ * - clone source content inside destination file
-+ * - verify that source content has been cloned inside destination file
-+ * - write a single byte inside destination file
-+ * - verify that source content didn't change while destination did
++ * This test verifies that ioctl() FICLONE/FICLONERANGE feature correctly raises
++ * exceptions when it's supposed to.
 + */
 +
 +#include "tst_test.h"
 +#include "lapi/fs.h"
 +
 +#define MNTPOINT "mnt"
-+#define SRCPATH MNTPOINT "/file0"
-+#define DSTPATH MNTPOINT "/file1"
 +
-+#define FILEDATA "qwerty"
-+#define FILESIZE sizeof(FILEDATA)
++static struct file_clone_range *clone_range;
 +
-+static int src_fd = -1;
-+static int dst_fd = -1;
++static int invalid_fd = -1;
++static int rw_file = -1;
++static int ro_file = -1;
++static int wo_file = -1;
++static int dir_fd = -1;
++static int immut_fd = -1;
++static int mnt_file = -1;
 +
-+static void run(void)
++static struct tcase {
++	int *src_fd;
++	int *dst_fd;
++	int errno_exp;
++	char *msg;
++} tcases[] = {
++	{&invalid_fd, &rw_file, EBADF, "invalid source"},
++	{&rw_file, &invalid_fd, EBADF, "invalid destination"},
++	{&rw_file, &ro_file, EBADF, "read-only destination"},
++	{&wo_file, &rw_file, EBADF, "write-only source"},
++	{&rw_file, &dir_fd, EISDIR, "source is a directory"},
++	{&dir_fd, &rw_file, EISDIR, "destination is a directory"},
++	{&rw_file, &immut_fd, EPERM, "destination is immutable"},
++	{&rw_file, &mnt_file, EXDEV, "destination is on a different mount"},
++	{&mnt_file, &rw_file, EXDEV, "source is on a different mount"},
++};
++
++static void run(unsigned int n)
 +{
-+	char buff[FILESIZE];
-+	struct stat src_stat;
-+	struct stat dst_stat;
++	struct tcase *tc = &tcases[n];
 +
-+	src_fd = SAFE_OPEN(SRCPATH, O_CREAT | O_RDWR, 0640);
-+	dst_fd = SAFE_OPEN(DSTPATH, O_CREAT | O_RDWR, 0640);
++	TST_EXP_FAIL(ioctl(*tc->dst_fd, FICLONE, *tc->src_fd),
++		tc->errno_exp,
++		"%s", tc->msg);
 +
-+	tst_res(TINFO, "Writing data inside src file");
++	clone_range->src_fd = *tc->src_fd;
 +
-+	SAFE_WRITE(1, src_fd, FILEDATA, FILESIZE);
-+	SAFE_FSYNC(src_fd);
++	TST_EXP_FAIL(ioctl(*tc->dst_fd, FICLONERANGE, clone_range),
++		tc->errno_exp,
++		"%s", tc->msg);
++}
 +
-+	TST_EXP_PASS(ioctl(dst_fd, FICLONE, src_fd));
-+	if (TST_RET == -1)
-+		return;
++static void setup(void)
++{
++	int attr;
++	struct stat sb;
 +
-+	SAFE_FSYNC(dst_fd);
++	rw_file = SAFE_OPEN("ok_only", O_CREAT | O_RDWR, 0640);
++	ro_file = SAFE_OPEN("rd_only", O_CREAT | O_RDONLY, 0640);
++	wo_file = SAFE_OPEN("rw_only", O_CREAT | O_WRONLY, 0640);
 +
-+	tst_res(TINFO, "Verifing that data is cloned between files");
++	if (access("mydir", F_OK) == -1)
++		SAFE_MKDIR("mydir", 0640);
 +
-+	SAFE_FSTAT(src_fd, &src_stat);
-+	SAFE_FSTAT(dst_fd, &dst_stat);
++	dir_fd = SAFE_OPEN("mydir", O_DIRECTORY, 0640);
 +
-+	TST_EXP_EXPR(src_stat.st_ino != dst_stat.st_ino,
-+		"inode is different. %lu != %lu",
-+		src_stat.st_ino,
-+		dst_stat.st_ino);
++	attr = FS_IMMUTABLE_FL;
++	immut_fd = SAFE_OPEN("immutable", O_CREAT | O_RDWR, 0640);
++	SAFE_IOCTL(immut_fd, FS_IOC_SETFLAGS, &attr);
 +
-+	TST_EXP_EQ_LI(src_stat.st_size, dst_stat.st_size);
++	mnt_file = SAFE_OPEN(MNTPOINT"/file", O_CREAT | O_RDWR, 0640);
 +
-+	SAFE_READ(0, dst_fd, buff, FILESIZE);
++	SAFE_STAT(MNTPOINT, &sb);
 +
-+	TST_EXP_EXPR(!strncmp(buff, FILEDATA, FILESIZE),
-+		"dst file has the src file content (\"%s\" - %ld bytes)",
-+		buff,
-+		FILESIZE);
-+
-+	tst_res(TINFO, "Writing a byte inside dst file");
-+
-+	SAFE_LSEEK(dst_fd, 0, SEEK_SET);
-+	SAFE_WRITE(SAFE_WRITE_ALL, dst_fd, "+", 1);
-+	SAFE_FSYNC(dst_fd);
-+
-+	tst_res(TINFO, "Verifing that src file content didn't change");
-+
-+	SAFE_FSTAT(src_fd, &src_stat);
-+	SAFE_FSTAT(dst_fd, &dst_stat);
-+
-+	TST_EXP_EQ_LI(dst_stat.st_size, src_stat.st_size);
-+
-+	SAFE_READ(0, src_fd, buff, FILESIZE);
-+
-+	TST_EXP_EXPR(!strncmp(buff, FILEDATA, FILESIZE),
-+		"src file content didn't change");
-+
-+	SAFE_CLOSE(src_fd);
-+	SAFE_CLOSE(dst_fd);
-+
-+	SAFE_UNLINK(SRCPATH);
-+	SAFE_UNLINK(DSTPATH);
++	clone_range->src_offset = 0;
++	clone_range->src_length = sb.st_blksize;
++	clone_range->dest_offset = 0;
 +}
 +
 +static void cleanup(void)
 +{
-+	if (src_fd != -1)
-+		SAFE_CLOSE(src_fd);
++	int attr;
 +
-+	if (dst_fd != -1)
-+		SAFE_CLOSE(dst_fd);
++	SAFE_IOCTL(immut_fd, FS_IOC_GETFLAGS, &attr);
++	attr &= ~FS_IMMUTABLE_FL;
++	SAFE_IOCTL(immut_fd, FS_IOC_SETFLAGS, &attr);
++	SAFE_CLOSE(immut_fd);
++
++	SAFE_CLOSE(rw_file);
++	SAFE_CLOSE(ro_file);
++	SAFE_CLOSE(wo_file);
++	SAFE_CLOSE(dir_fd);
++	SAFE_CLOSE(mnt_file);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
 +	.cleanup = cleanup,
 +	.min_kver = "4.5",
 +	.needs_root = 1,
@@ -290,6 +288,10 @@ index 000000000..bb3dc8c6c
 +			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
 +		},
 +		{}
++	},
++	.bufs = (struct tst_buffers []) {
++		{&clone_range, .size = sizeof(struct file_clone_range)},
++		{},
 +	}
 +};
 
