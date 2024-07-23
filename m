@@ -4,125 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C82BFC3DA63
-	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 07:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C85FC3DA63
+	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 08:42:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5597B3D1C4A
-	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 09:17:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EDA9F3D1BE9
+	for <ltp@archiver.kernel.org>; Tue, 23 Jul 2024 10:42:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 30A913CC2E7
- for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:34 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 904D93D0EA8
+ for <ltp@lists.linux.it>; Tue, 23 Jul 2024 10:41:45 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5FED31A0117A
- for <ltp@lists.linux.it>; Tue, 23 Jul 2024 09:15:34 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 83C0F200C20
+ for <ltp@lists.linux.it>; Tue, 23 Jul 2024 10:41:44 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CA77021996;
- Tue, 23 Jul 2024 07:15:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 94CF121A2C;
+ Tue, 23 Jul 2024 08:41:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1721718932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721724103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nCt4k51NgHdw8W27r8ckmBUNOz+ftqrBMqgeWwNbXO8=;
- b=ZkG+CEuf4WfDSDM/GGbj/2dvTBU5zpbrslzZWaNlj5LF0VfYtkEFZ5zkqmlONQxCQmwhw2
- qz2JAf8poz+3YV4mG8NMiFpSuWSjuc8ZCFZd7ATwKIZA5/0EzdYqK0quyePbX3NhhD/0Nj
- R775KehuysrDmfCcWiGPFkkChpP411w=
+ bh=ya02vQd1nEA4mGaGa7onRjvL4CyoFsJ+P9pTJXVK9Qg=;
+ b=Ks/LtZammjURxhXNdht828dDmnYenK7uKw5F8WKz0SV3n5xDXGcmoiDhAOtI9c1tlTmZhR
+ MAFL9bE4A+hmSrobJGguyF7q+e1g0HFHDXwtjd9BDMgyuUmlE7FwgVLAQuNR8JGYYe4K4i
+ ulpJ7AY6O/XZ2Nos5tDpMpkD7gQbtgc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1721718932;
+ s=susede2_ed25519; t=1721724103;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nCt4k51NgHdw8W27r8ckmBUNOz+ftqrBMqgeWwNbXO8=;
- b=c46Urj6x6EYuY5PjuNjBrD1ZvqyqdmmHRs7hVRdFTYa4bf3H8Jka+0Au55oEXBb/w1ey9G
- PxtDpaRj3e2R4iBA==
+ bh=ya02vQd1nEA4mGaGa7onRjvL4CyoFsJ+P9pTJXVK9Qg=;
+ b=Sd0s2EFLoMAGGn0vTtLwGn7/wd0nkBjuM2IiGeCk7zBo0PavjsC0ZqTSzS3iFO6tMBwB/T
+ 8TjiftsRim72/DDg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZkG+CEuf;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=c46Urj6x
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="Ks/LtZam";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Sd0s2EFL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1721718932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1721724103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nCt4k51NgHdw8W27r8ckmBUNOz+ftqrBMqgeWwNbXO8=;
- b=ZkG+CEuf4WfDSDM/GGbj/2dvTBU5zpbrslzZWaNlj5LF0VfYtkEFZ5zkqmlONQxCQmwhw2
- qz2JAf8poz+3YV4mG8NMiFpSuWSjuc8ZCFZd7ATwKIZA5/0EzdYqK0quyePbX3NhhD/0Nj
- R775KehuysrDmfCcWiGPFkkChpP411w=
+ bh=ya02vQd1nEA4mGaGa7onRjvL4CyoFsJ+P9pTJXVK9Qg=;
+ b=Ks/LtZammjURxhXNdht828dDmnYenK7uKw5F8WKz0SV3n5xDXGcmoiDhAOtI9c1tlTmZhR
+ MAFL9bE4A+hmSrobJGguyF7q+e1g0HFHDXwtjd9BDMgyuUmlE7FwgVLAQuNR8JGYYe4K4i
+ ulpJ7AY6O/XZ2Nos5tDpMpkD7gQbtgc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1721718932;
+ s=susede2_ed25519; t=1721724103;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nCt4k51NgHdw8W27r8ckmBUNOz+ftqrBMqgeWwNbXO8=;
- b=c46Urj6x6EYuY5PjuNjBrD1ZvqyqdmmHRs7hVRdFTYa4bf3H8Jka+0Au55oEXBb/w1ey9G
- PxtDpaRj3e2R4iBA==
+ bh=ya02vQd1nEA4mGaGa7onRjvL4CyoFsJ+P9pTJXVK9Qg=;
+ b=Sd0s2EFLoMAGGn0vTtLwGn7/wd0nkBjuM2IiGeCk7zBo0PavjsC0ZqTSzS3iFO6tMBwB/T
+ 8TjiftsRim72/DDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AEB5713874;
- Tue, 23 Jul 2024 07:15:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 737501393E;
+ Tue, 23 Jul 2024 08:41:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CHm/KJRYn2bKUQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 23 Jul 2024 07:15:32 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SL9RGsdsn2Z/bAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 23 Jul 2024 08:41:43 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 23 Jul 2024 09:15:06 +0200
+Date: Tue, 23 Jul 2024 10:41:11 +0200
 MIME-Version: 1.0
-Message-Id: <20240723-ioctl_ficlone-v2-6-33075bbc117f@suse.com>
-References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
-In-Reply-To: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
+Message-Id: <20240723-mseal-v2-1-5aa872d611bc@suse.com>
+References: <20240723-mseal-v2-0-5aa872d611bc@suse.com>
+In-Reply-To: <20240723-mseal-v2-0-5aa872d611bc@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3833;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6824;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=nih3vRDA29JCH0mcQgEQH3KzIjKf8XCRKAFRvxlx11E=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmn1h+mqny9Fqvhg0B4JYZvpZ2fvl4EPyvOAnJT
- W1RCeV6E6OJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZp9YfgAKCRDLzBqyILPm
- RltAC/0RZGzhN1dfriQL/Z4BHU91gdw6DdgTG33pepWykinP0wezx5F4w9AZ2CVsMqOwQbiYq5T
- oInCkF32DpAeumm8rKc3JfMxhoAB33ibe9FmSzLJNinSLTOC4BwuWxOySVAJzp81PzZuqnhnVD6
- UPLx1I56cKzdNSgYikKVuM7spo5LdPhyKuTYqMfNu+5c+YdP21OXOTyQx9cbt6fm56pUcK7bhBi
- lkPbSbPn9idkIX4oLM0NUg+qrHYhLfvcR5elACJZ+BCpOaE7Hp5vlmDclxGU4gPUOHfAXdhSKif
- Q/tfnECxvjAdRc44MkUtikPVkqlO4B6DP4T72AB1W2ldR1+UxJ1/+/FV/ubHZ+Nkj+XYcfFBHVj
- /ZUrMu9xe1QUIHCwnX85HsNr3MIY744QeGcjzt4rCAMttnjeF1OSg0f1IqhW0v/NCNfkjJ5DXp6
- swvNafGynYb0IWeA+BbjJFO1wCgQNgA6gd1/tU+ApPMKQjPs5GOlS45LUoDZaUHzp6PzU=
+ bh=Rp+gZdHPDYQ191A0vSLk3Us3Gy6UFV/9joFm44kcHqI=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmn2yy6PX1hotJ8p0Aj9VUg2bqWJixxuTiqmmLv
+ Z8gMw7e4kCJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZp9ssgAKCRDLzBqyILPm
+ RpchC/9oCOq4skShd/g4DEKHC/8PDAbnVt/O+i/m20F+Zo9vvodgTAt5B1A8fvrcFrQnOlfBTKA
+ +4hqGPKeYQrTg2w3vVz0/H8cmFSMOs0OC8qeey0JGaF5a6tQx7xHqlYxjivbW2DgXiTsn0kAnlH
+ a08uREsbF0lGbohKUOK3Sd6vx2P4tY7Tp8TO0ea8HsgHyaRq6WaBudd1SJlFpo2Mp4svksua+lY
+ ocafKhiXGdZXV41JB2kTCfEcmiI8ek9vlKgXzwUquHga680ECGeLIriAUqTPyez6AXirIdHfQVI
+ 5YtzsN7jTAjNY3wIL5NyeXzSy0nZR9B1uyk7Nc0julFKl5wjKHJ2rVI4qJbmevujXyAqpiPR7kX
+ /J68YdPqzIjy1jrK0pSVJLaigkzxzB6Zieqg4Wk62bSrWScrDxE32yE51AAcKQ1spzKmy/dpcdP
+ 4dWW3Agdo4Hao+TKcn+ciMKss15BAeKdASD+O4nQVlFk/dbSx3gjZc1ADdrSa7A8chWWs=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CA77021996
-X-Spamd-Result: default: False [-6.31 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+X-Rspamd-Queue-Id: 94CF121A2C
+X-Spamd-Result: default: False [-4.31 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email];
  RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/7] Add ioctl_ficlonerange02 test
+Subject: [LTP] [PATCH v2 1/2] Add mseal() syscall declaration
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -141,142 +138,193 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This test verifies that ioctl() FICLONERANGE feature correctly raises
-EINVAL when:
-- filesystem does not support overlapping reflink ranges in the same file
-- filesystem does not support reflinking on bad blocks alignment
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                                   |  1 +
- testcases/kernel/syscalls/ioctl/.gitignore         |  1 +
- .../kernel/syscalls/ioctl/ioctl_ficlonerange02.c   | 97 ++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
+ include/lapi/syscalls/aarch64.in   | 1 +
+ include/lapi/syscalls/arc.in       | 1 +
+ include/lapi/syscalls/arm.in       | 1 +
+ include/lapi/syscalls/hppa.in      | 1 +
+ include/lapi/syscalls/i386.in      | 1 +
+ include/lapi/syscalls/ia64.in      | 1 +
+ include/lapi/syscalls/loongarch.in | 1 +
+ include/lapi/syscalls/mips_n32.in  | 1 +
+ include/lapi/syscalls/mips_n64.in  | 1 +
+ include/lapi/syscalls/mips_o32.in  | 1 +
+ include/lapi/syscalls/powerpc.in   | 1 +
+ include/lapi/syscalls/powerpc64.in | 1 +
+ include/lapi/syscalls/s390.in      | 1 +
+ include/lapi/syscalls/s390x.in     | 1 +
+ include/lapi/syscalls/sh.in        | 1 +
+ include/lapi/syscalls/sparc.in     | 1 +
+ include/lapi/syscalls/sparc64.in   | 1 +
+ include/lapi/syscalls/x86_64.in    | 1 +
+ 18 files changed, 18 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 1f050c5f5..4a73852e8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -596,6 +596,7 @@ ioctl_ficlone01 ioctl_ficlone01
- ioctl_ficlone02 ioctl_ficlone02
- ioctl_ficlone03 ioctl_ficlone03
- ioctl_ficlonerange01 ioctl_ficlonerange01
-+ioctl_ficlonerange02 ioctl_ficlonerange02
- 
- inotify_init1_01 inotify_init1_01
- inotify_init1_02 inotify_init1_02
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 08c015928..9f995b1ad 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -26,3 +26,4 @@
- /ioctl_ficlone02
- /ioctl_ficlone03
- /ioctl_ficlonerange01
-+/ioctl_ficlonerange02
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-new file mode 100644
-index 000000000..24666ebcc
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test verifies that ioctl() FICLONERANGE feature correctly raises
-+ * EINVAL when:
-+ * - filesystem does not support overlapping reflink ranges in the same file
-+ * - filesystem does not support reflinking on bad blocks alignment
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/fs.h"
-+
-+#define MNTPOINT "mnt"
-+#define SRCPATH MNTPOINT "/file0"
-+#define DSTPATH MNTPOINT "/file1"
-+#define CHUNKS 10
-+
-+static struct file_clone_range *clone_range;
-+static int filesize;
-+static int alignment;
-+static char *data;
-+
-+static void run(void)
-+{
-+	int src_fd;
-+	int dst_fd;
-+
-+	src_fd = SAFE_OPEN(SRCPATH, O_CREAT | O_RDWR, 0640);
-+	SAFE_WRITE(SAFE_WRITE_ALL, src_fd, data, filesize);
-+	SAFE_FSYNC(src_fd);
-+
-+	dst_fd = SAFE_OPEN(DSTPATH, O_CREAT | O_RDWR, 0640);
-+
-+	clone_range->src_fd = dst_fd;
-+	clone_range->src_offset = 0;
-+	clone_range->src_length = filesize;
-+	clone_range->dest_offset = 0;
-+
-+	TST_EXP_FAIL(ioctl(dst_fd, FICLONERANGE, clone_range), EINVAL,
-+		"overlapping reflink ranges in the same file");
-+
-+	clone_range->src_fd = src_fd;
-+	clone_range->src_offset = 0;
-+	clone_range->src_length = alignment - 1;
-+	clone_range->dest_offset = 0;
-+
-+	TST_EXP_FAIL(ioctl(dst_fd, FICLONERANGE, clone_range), EINVAL,
-+		"bad blocks alignment");
-+
-+	SAFE_CLOSE(src_fd);
-+	SAFE_CLOSE(dst_fd);
-+}
-+
-+static void setup(void)
-+{
-+	struct stat sb;
-+
-+	SAFE_STAT(MNTPOINT, &sb);
-+
-+	alignment = sb.st_blksize;
-+	filesize = alignment * CHUNKS;
-+
-+	data = (char *)SAFE_MALLOC(filesize);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (data)
-+		free(data);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.5",
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.filesystems = (struct tst_fs []) {
-+		{.type = "btrfs"},
-+		{
-+			.type = "xfs",
-+			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
-+		},
-+		{}
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&clone_range, .size = sizeof(struct file_clone_range)},
-+		{},
-+	}
-+};
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 3e7797718..7e08c63f3 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -300,4 +300,5 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
+index 7fde1d263..94ae09a4b 100644
+--- a/include/lapi/syscalls/arc.in
++++ b/include/lapi/syscalls/arc.in
+@@ -320,3 +320,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 8e76ad164..95c7b20f9 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -399,3 +399,4 @@ landlock_add_rule (__NR_SYSCALL_BASE+445)
+ landlock_restrict_self (__NR_SYSCALL_BASE+446)
+ memfd_secret (__NR_SYSCALL_BASE+447)
+ futex_waitv (__NR_SYSCALL_BASE+449)
++mseal (__NR_SYSCALL_BASE+462)
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index 60c02aff2..a16bb74d8 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -47,3 +47,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 31ec1ecb2..99e7aa5ba 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -434,3 +434,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 2e56da7f9..6cdd161ad 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -347,3 +347,4 @@ landlock_create_ruleset 1468
+ landlock_add_rule 1469
+ landlock_restrict_self 1470
+ futex_waitv 1473
++mseal 1486
+diff --git a/include/lapi/syscalls/loongarch.in b/include/lapi/syscalls/loongarch.in
+index 301f611f6..0215e9cd5 100644
+--- a/include/lapi/syscalls/loongarch.in
++++ b/include/lapi/syscalls/loongarch.in
+@@ -305,3 +305,4 @@ memfd_secret 447
+ process_mrelease 448
+ futex_waitv 449
+ set_mempolicy_home_node 450
++mseal 462
+diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
+index 5f0fe65eb..199295b9b 100644
+--- a/include/lapi/syscalls/mips_n32.in
++++ b/include/lapi/syscalls/mips_n32.in
+@@ -374,3 +374,4 @@ landlock_create_ruleset 6444
+ landlock_add_rule 6445
+ landlock_restrict_self 6446
+ futex_waitv 6449
++mseal 6462
+diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
+index f81c60e66..49f875a9e 100644
+--- a/include/lapi/syscalls/mips_n64.in
++++ b/include/lapi/syscalls/mips_n64.in
+@@ -350,3 +350,4 @@ landlock_create_ruleset 5444
+ landlock_add_rule 5445
+ landlock_restrict_self 5446
+ futex_waitv 5449
++mseal 5462
+diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
+index c2beffb75..b379e52c7 100644
+--- a/include/lapi/syscalls/mips_o32.in
++++ b/include/lapi/syscalls/mips_o32.in
+@@ -420,3 +420,4 @@ landlock_create_ruleset 4444
+ landlock_add_rule 4445
+ landlock_restrict_self 4446
+ futex_waitv 4449
++mseal 4462
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index 5460e4197..e35e114ad 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -427,3 +427,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 5460e4197..e35e114ad 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -427,3 +427,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 275b27f47..1207551cb 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -414,3 +414,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index c200d02b2..503419282 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -362,3 +362,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index 6f482a77b..060ab613c 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -408,3 +408,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 7181e80a0..6821f053c 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -413,3 +413,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index c96ab2021..661db0cae 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -378,3 +378,4 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 3082ca110..af6ab689f 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -355,6 +355,7 @@ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
++mseal 462
+ rt_sigaction 512
+ rt_sigreturn 513
+ ioctl 514
 
 -- 
 2.43.0
