@@ -4,108 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 637C5C3DA63
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 16:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC203C3DA61
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 16:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1721838688; h=message-id :
+ to : date : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=gwISe/WWDfI726pilOESg+4KOZ0i1VMZhrWUK5FONLs=;
+ b=hauxs2y1pKEsJluXZBGisw1QgStNJu3iQo449/E/zm5iS4R0tOf1vJF6CTKQKlfyqZ0dS
+ gIiq19URMfOgNlATZdyjePS74rBuEE6RJB5LMyo2MHwID3x8eyunTytnAkOxsIXmSrBawDd
+ RiBywtG1wvzNifr/G2IYQGJUiYS69HU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 704B83D1C2B
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 18:29:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 704503D1C3E
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 18:31:28 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B67C43D0FA8
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:32 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 9CECA3D0FA8
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:21 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=gmx.de
+ (client-ip=212.227.17.21; helo=mout.gmx.net; envelope-from=efault@gmx.de;
+ receiver=lists.linux.it)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E2DE2616145
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4C297219A8;
- Wed, 24 Jul 2024 16:29:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721838570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fMy6ErJHStMNK+e0IAakkeeBRV7jrtYlp7zaoyJiR0g=;
- b=QNf0XqPPHfzawE9Oe6XyC67t3inY3hh5GmpCM8pX/kL40NCpJaSEzG41Do5QGAGPPuDpFR
- xwjc/fzDIQ/tieXw0vB3obk/SLKbQRyvuZBWYaFIfqvQmB3MDdMkQ17Y1GUkFEb6wdIxmH
- Ujlf60Lnz0qPUm4PIHOtej8k0CrnGtQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721838570;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fMy6ErJHStMNK+e0IAakkeeBRV7jrtYlp7zaoyJiR0g=;
- b=BEJiBwb2cPrGqr8k57inFVfV+kv+qQJJ+swbCj/DbAP1Lh9gBTLd9t7mzxad/CVPLcjsYA
- UVs65ZNg6YBw88Bg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QNf0XqPP;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BEJiBwb2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721838570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fMy6ErJHStMNK+e0IAakkeeBRV7jrtYlp7zaoyJiR0g=;
- b=QNf0XqPPHfzawE9Oe6XyC67t3inY3hh5GmpCM8pX/kL40NCpJaSEzG41Do5QGAGPPuDpFR
- xwjc/fzDIQ/tieXw0vB3obk/SLKbQRyvuZBWYaFIfqvQmB3MDdMkQ17Y1GUkFEb6wdIxmH
- Ujlf60Lnz0qPUm4PIHOtej8k0CrnGtQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721838570;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fMy6ErJHStMNK+e0IAakkeeBRV7jrtYlp7zaoyJiR0g=;
- b=BEJiBwb2cPrGqr8k57inFVfV+kv+qQJJ+swbCj/DbAP1Lh9gBTLd9t7mzxad/CVPLcjsYA
- UVs65ZNg6YBw88Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 295A013411;
- Wed, 24 Jul 2024 16:29:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yFM1COoroWazSwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 24 Jul 2024 16:29:30 +0000
-Date: Wed, 24 Jul 2024 18:29:00 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZqErzC4PMRrrk929@yuki>
-References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
- <20240723-ioctl_ficlone-v2-1-33075bbc117f@suse.com>
+ key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F35C51A00E08
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+ s=s31663417; t=1721838555; x=1722443355; i=efault@gmx.de;
+ bh=BYZjEGc4YVudcgENM058UCy6tfpRPmI4j7O72IWha4A=;
+ h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+ References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+ content-transfer-encoding:content-type:date:from:message-id:
+ mime-version:reply-to:subject:to;
+ b=GNvjCnR+JCF6N019EuyhqS7GZJiqw7uI/WKHdu7OeitiiAlnPSpS84ai86Qkg5cI
+ 9kV0VjlBd/dKiF0SIHXv2TXbgWCNC8T6TlnO+k5twJ1JGQfxG0AkHkT7dN6uuvGb8
+ GZehGSPho95lNhXipBnF/28lg51a6lhhLMDaFb+JdioDXY/zdzy/uyMwADJNah1J5
+ eRGRHIz6vUyGuznJZdNTdv1ikJhhK9I43E8gcTePdlKLjTQ4ENBwoC3igl8xlEFTY
+ kwbKG3XHmhzLfredYsnRWHC53UcCXZe53DGThUv0RsRUxBZ9M6SiGI5lUp7pfexqq
+ gyAxanys1DiMtE8mkA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from homer.fritz.box ([185.221.149.162]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2mFY-1s9j6N2Sy4-00v2W4; Wed, 24
+ Jul 2024 18:29:15 +0200
+Message-ID: <684a1811297c210c6efd46c4e3c7b35e26b03b19.camel@gmx.de>
+To: Petr Vorel <pvorel@suse.cz>, Jan Kara <jack@suse.cz>
+Date: Wed, 24 Jul 2024 18:29:12 +0200
+In-Reply-To: <20240724131816.GA950793@pevik>
+References: <20240719174325.GA775414@pevik>
+ <20240722090012.mlvkaenuxar2x3vr@quack3> <20240724131816.GA950793@pevik>
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240723-ioctl_ficlone-v2-1-33075bbc117f@suse.com>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4C297219A8
-X-Spamd-Result: default: False [-3.81 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Provags-ID: V03:K1:UWBOdxjNJyiHG2TMf8ox0PHfBtgY/mgi9HVdGVCVaJ6bAC2k80K
+ pJX+y2qWZIMkIrApXkmlHL43njiMk1SVnqwxHjR1mD6s2CHI4CYeAWedhJsoj9N/TsKqKIA
+ /o+NP34ZIctcH8qSVkRTCL8jD3myGESZWtJYStR9jfaZYoSh2uWVLUpNF6QOc34v1hPkaAP
+ rlhhj3zSmQb/XRHBskIhg==
+UI-OutboundReport: notjunk:1;M01:P0:w/bY2nrEeWs=;AiIwYn2wc/FW9jI/FqFfCpdARMX
+ iqoRMTZi0UIEylmBl1YaRGGgPFmdn2SCXblzuV7oMvTzAKZ/kvcjPNGMONGQgv1hxfJyr+4Mo
+ muDAcszKsTb2gi4E+fRsRExATUhgvw/dglYk6yTrzntZX5WzkEzS3yY8wRCvH4yBYz+dPv6td
+ rqlqAeLj/iXUk3U1S46ur/yeDNAEdw2YcBNksl4FjjMKS4FuwtGYSageoV/aJcirrknlRGsLr
+ f4kDKLCwhj4K5A/tz7DeKjYvbksXCHqASW0aSBAibZO/2df9CpEelRRlwXjRetMZ+xIXKJPDU
+ ThqJr5UDC2NGZYnf47zhPuyvyDOaJBYzkfaracARc+LfVFolWob5aM5YF2T5Xcg1t+8sQh79A
+ j5Kf6QEZFnr8j5ZAJxaDNRn9AXMCXfFMhWLSg0JLyBFlunHzlKrmuYf6069W5ZQJm4LGbYwL2
+ k5FfrlwZe3LTU2/TsWfy90muX416/VIYHp8JAkD9m2h3jLuKlG6Qd8FQSarRV5ndC+GPfyVqo
+ C1SOb9yIp+tvDxjHgPEIujGd3PBZE1yolF+zJbsVL5HI1SGBEP7bbWKzObzS41eX5M1+LYXD6
+ dJe0w9S/Ps0A8sFdOGFqsb18yj63DsN/1AAfYmMKREdM0Ozl6S31Bowklcij9EaymWOJX8U/l
+ 3djLfIQTZFO1SJTxR3Ub/DggNZXf9nNKJBjiftM2fNQg5u3q4HH/viKd52zYtH7Kxerh5R/vG
+ 6DPIN2PfAsJsRtibe8zhiAhuvSdKgmZ0z52ZvVG52qf9icwwHgiu695mdhQu+KUQhxAqvxwF5
+ +ZgeF1LO/BWulqYdRMbx+ErA==
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/7] Add fallback definitions for lapi/fs.h
+X-Mailman-Approved-At: Wed, 24 Jul 2024 18:31:07 +0200
+Subject: Re: [LTP] [RFC] Slow down of LTP tests aiodio_sparse.c and
+ dio_sparse.c in kernel 6.6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,75 +93,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Mike Galbraith via ltp <ltp@lists.linux.it>
+Reply-To: Mike Galbraith <efault@gmx.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, fstests@vger.kernel.org,
+ linux-block@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+ ltp@lists.linux.it, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/configure.ac b/configure.ac
-> index 1f8796c87..4d466f052 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -177,6 +177,7 @@ AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
->  AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
->  AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_error,
->  		struct fanotify_event_info_header, struct fanotify_event_info_pidfd],,,[#include <sys/fanotify.h>])
-> +AC_CHECK_TYPES([struct file_clone_range],,,[#include <linux/fs.h>])
->  AC_CHECK_TYPES([struct file_dedupe_range],,,[#include <linux/fs.h>])
->  
->  AC_CHECK_TYPES([struct file_handle],,,[
-> diff --git a/include/lapi/fs.h b/include/lapi/fs.h
-> index 635979b02..0e8d646d8 100644
-> --- a/include/lapi/fs.h
-> +++ b/include/lapi/fs.h
-> @@ -20,6 +20,15 @@
->  #include <limits.h>
->  #include "lapi/abisize.h"
->  
-> +#ifndef HAVE_FILE_CLONE_RANGE
-> +struct file_clone_range {
-> +	int64_t src_fd;
-> +	uint64_t src_offset;
-> +	uint64_t src_length;
-> +	uint64_t dest_offset;
-> +};
-> +#endif
+On Wed, 2024-07-24 at 15:18 +0200, Petr Vorel wrote:
+> Hi all,
+>
+>
+> [ Cc Peter and Mike ]
+> > Hi!
+>
+> > On Fri 19-07-24 19:43:25, Petr Vorel wrote:
+> > > LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3])
+> > > slowed down on kernel 6.6 on Btrfs and XFS, when run with default
+> > > parameters. These tests create 100 MB sparse file and write zeros (using
+> > > libaio or O_DIRECT) while 16 other processes reads the buffer and check
+> > > only zero is there.
+>
+> > So the performance of this test is irrelevant because combining buffered
+> > reads with direct IO writes was always in "better don't do it" territory.
+> > Definitely not if you care about perfomance.
+>
+> > > Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
+> > > same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
+> > > (Non default parameter creates much smaller file, thus the change is not that
+> > > obvious).
+>
+> > But still it's kind of curious what caused the 9x slow down. So I'd be
+> > curious to know the result of the bisection :). Thanks for report!
+>
+> It looks to be the slowdown was introduced by commit 63304558ba5d
+> ("sched/eevdf: Curb wakeup-preemption") [1] from v6.6-rc1.
 
-Sigh, this is still horribly broken even when I fixed the macro to
-HAVE_STRUCT_FILE_CLONE_RANGE that is because:
+That's not good, I'd rather not have over-zealous preemption back, my
+box doesn't miss that one tiny bit.
 
-commit b857f8723f30a4b9554bf6b0ff8fa52fd07e8b60
-Author: Li Wang <liwang@redhat.com>
-Date:   Fri Aug 5 14:34:01 2022 +0800
+Hrm... have you tried Peter's eevdf queue?  The DELAY_DEQUEUE feature
+therein does good things for tbench, restoring pre-eevdf throughput.
 
-    lapi/fsmount: resolve conflict in different header files
+	-Mike
 
-
-However the CI seems to work fine if I remove the HAVE_MOUNT_SETATTR
-check with:
-
- #define LAPI_FS_H__
-
- #include "config.h"
--#ifndef HAVE_MOUNT_SETATTR
--# ifdef HAVE_LINUX_FS_H
--#  include <linux/fs.h>
--# endif
-+
-+#ifdef HAVE_LINUX_FS_H
-+# include <linux/fs.h>
- #endif
-
- #include <sys/user.h>
-
-
-@Li do we still need that ifdef or can we get rid of it?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
