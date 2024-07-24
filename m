@@ -4,87 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24940C3DA63
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 19:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1721849837; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=Q88zilhghMdaiUSZIYM8BcuBSJ24iOB9mWRBHsMhRow=;
- b=LAaRFFm//D+7fupjRHr2tF9Y+lStYqOWfy/sAyF8X+GKnT4Pd6owI0pX5KAYYYpydFcLY
- b6SSHFshjLibRCWtjAz+p3S8ydqeK0hGJAalx+LH3lPZMV7wsVfaiq5R7oTvXUa0xe9PPaA
- irnDB0n3lmMkVrcCrPNMOM/V+P61blE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C776DC3DA61
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 20:02:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89E993D1C4F
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 21:37:17 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 84D483D1C4F
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 22:02:56 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CDC43D1C30
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 21:36:54 +0200 (CEST)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 446FA3D0895
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 22:02:41 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D557A1A0079C
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 21:36:53 +0200 (CEST)
-Received: by mail-lf1-x132.google.com with SMTP id
- 2adb3069b0e04-52efd855adbso82045e87.2
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 12:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1721849813; x=1722454613; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=OQws/QKdH2KabLSTrCyZrgSjwfQrJJS9w+sZB/xHh0c=;
- b=SxvmtaQ2fCPbApwct/QKUDPxcHNkP/MQe1YPBOG5o7Qsiw0WAdK64mPkFqX+WVkBUP
- IV/UIyiQAzwRuuYDsbO4tXGT2qEEXB6CSBf5zVngFuQLhsyH+pJcbjcH+PKDweb4HHWV
- azMBojeccMbP0I7vQdhvVVIlVzaStSHXPY6LgyQfhc2+sUGEglOQ3X8+3v6kNJNJ01Cv
- d8vW7rroXlRyZFIDFij2/4clnDhtSpDoWZjMCfpeYHF1bDTv8rauSEZJkdhSyj3U+EnQ
- gafUAY+GHPb70ImaNFZ6DLRYyfkOXzhuttGnfj9pTkEYIez5ZFJsWTsiwb/8cyxclok4
- Lzeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1721849813; x=1722454613;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=OQws/QKdH2KabLSTrCyZrgSjwfQrJJS9w+sZB/xHh0c=;
- b=khmS41yeHwKWom/YqfyP8kRrXxxuxWD1B/X2pGn+hZIgCWBojHgDQ1eXcGf9Kqoa14
- 5aMRvBjxHWHghYCzi5dR8TJaAPcICRcu+sdLo0TtoH6t4vcvdDPPJmU9W8+oB0nEaDSI
- f0qBzX1hMWP2lGVHaDHDSMOU+eDEiSqG2LS7hXyuT0EB1lXqorHD31bJzNYNcZghqMpN
- 0b7gYDYoqX9MUCXpztwG4Y5R78FggFG6POYkrJjqykt1knf+FzcuCmZEq3d1/k4UszNi
- MFZ6r9WPsn8Lef8WLFGlNZCPt5v++2FPIYF3ul4QaMdelxrN7XDm7eqzmNIYb2zz/BuL
- OVBw==
-X-Gm-Message-State: AOJu0Yz7N2EBvt5b5EgWYAJjQPBkq8PVrzyVzrh9nH9M52YX/qnM3nBj
- rX4wmQF9G7fk1ZDuJJrGUOR60gF5dA1FLl+FiW3tQNELUnYCyt2Kbt226YkrbkdyWttCSfSjFy9
- jnz7Lwg==
-X-Google-Smtp-Source: AGHT+IEmDNXitGzU70cXwsS4WMKYwEoG0h55KyQqo/qjLAwB6URVuZQdHA4r5KPHeHU9o07h6c/vEA==
-X-Received: by 2002:a05:6512:2254:b0:52c:e050:452a with SMTP id
- 2adb3069b0e04-52fd3f7e032mr535973e87.37.1721849812169; 
- Wed, 24 Jul 2024 12:36:52 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662?
- ([2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662])
- by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-52f02ba063asm1256837e87.226.2024.07.24.12.36.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 24 Jul 2024 12:36:51 -0700 (PDT)
-Message-ID: <3c2626c4-5c26-4112-9c74-4cf9b4ecc3e0@suse.com>
-Date: Wed, 24 Jul 2024 21:36:21 +0200
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 39E3020118B
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 22:02:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8FFD821998;
+ Wed, 24 Jul 2024 20:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1721851358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4UpyhWv6/q1DfqiOm8ckuXgWF46Ac5Ebfa9ZGbVIlvc=;
+ b=L2X4t3AMy+fK64drmxidNZf5D9IuDji8AniBbWfaD4ubqjbfDZFHguSfSGdTArOkquQftB
+ AZuRUA+CEOow0/4P9veXHubelKzgZkX1f9XcN0y4FgZ1tTNtc32Kce9y5nlTa+dD/P8x7d
+ tETcNohAazLDbqAiGRZ3id1QqxHaAiE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1721851358;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4UpyhWv6/q1DfqiOm8ckuXgWF46Ac5Ebfa9ZGbVIlvc=;
+ b=WA00eBWUm6mKvibe6TO5XJofqpobcctUTN3dlWRVvyrAmT5TyrAPWntuoQc8BjfqtKafrQ
+ Ouitk39ViH+GxoDg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=L2X4t3AM;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=WA00eBWU
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1721851358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4UpyhWv6/q1DfqiOm8ckuXgWF46Ac5Ebfa9ZGbVIlvc=;
+ b=L2X4t3AMy+fK64drmxidNZf5D9IuDji8AniBbWfaD4ubqjbfDZFHguSfSGdTArOkquQftB
+ AZuRUA+CEOow0/4P9veXHubelKzgZkX1f9XcN0y4FgZ1tTNtc32Kce9y5nlTa+dD/P8x7d
+ tETcNohAazLDbqAiGRZ3id1QqxHaAiE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1721851358;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4UpyhWv6/q1DfqiOm8ckuXgWF46Ac5Ebfa9ZGbVIlvc=;
+ b=WA00eBWUm6mKvibe6TO5XJofqpobcctUTN3dlWRVvyrAmT5TyrAPWntuoQc8BjfqtKafrQ
+ Ouitk39ViH+GxoDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 548DB1324F;
+ Wed, 24 Jul 2024 20:02:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Zi8GEd5doWaKewAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 24 Jul 2024 20:02:38 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 24 Jul 2024 22:02:11 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
- <20240723-ioctl_ficlone-v2-7-33075bbc117f@suse.com> <ZqEg7SD35ejRYCsX@yuki>
-Content-Language: en-US
-In-Reply-To: <ZqEg7SD35ejRYCsX@yuki>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Message-Id: <20240724-ioctl_ficlone-v3-1-bdf7551380ee@suse.com>
+X-B4-Tracking: v=1; b=H4sIAMJdoWYC/13M0QqCMBTG8VeRXbc425rDrnqPiNB5lgfMxWajE
+ N+9KUHh5ffB/zexiIEwsmMxsYCJIvkhD7UrmO3q4Yac2ryZBHkALStO3o791ZHt/YC80rYE5Yx
+ otWK5eQR09Fq98yXvjuLow3vlk1jer6RgIyXBgbu6Kh2YFpytT/EZcW/9nS1Qkr/YSLWNZY6VA
+ qObxgph3F88z/MHV9IUQ+YAAAA=
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3014;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=WlVSvEEeeP9erNQwWSUptBJhjlKSOPH1L5h7CTH6ZFs=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmoV3F6Fg9fLS/Z6kiSzfRCsV26WBsVY3XRbmNR
+ Aeo5y6l+L+JAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqFdxQAKCRDLzBqyILPm
+ RrG2DACjzXDVNOL3xUZ5jAVLDBUxc8bTA4aabJfWuefmMTWlu/pMLzWk1N3qmd1VvG16r2h/xmv
+ kpM/sKhnFQTJ7+9sFXR96OWvBZsdS55I0gElG8frRZOC9Pezs6vcKrt+O3HjlOw9ZNTwnJkDlVW
+ 9PkGfOITYszkjLdwSFG90sokktTWAzn/SLGR695uY60ARp581XF7ScEuBiIX6/4pB0+P8S44owO
+ 5xyENgKvqI2GdOkSbzNKbHqD8Qir3kNCT1HCBYP92q1Ff0cu6mWOrq0saosQIxooYvqr3Fxaq6z
+ aNwLJFDx4myY1ECnJKYJeQtGzZV0FBQlN2emfRekcM2YIsZUpS2VJBGVk+mmc+voSdCiuA+SxYz
+ wfJvNNBgXZMmrGqrX2sI+MxZlRCK8j3dwrqjeAg1i2VqJ8JGvIhVkGZ7f6baSQ/0FSZYVlhJ/N6
+ 79MaaoLAXouR447hSLO8UcUaZqlmTdY0h6TpFv+SUaaK2jcVKICqdyS1ZhGNFn19S293A=
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.31 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8FFD821998
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 7/7] Add ioctl_ficlone04 test
+Subject: [LTP] [PATCH v3] Add ioctl_ficlone04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,59 +134,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Cc: jack@suse.cz
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 7/24/24 17:42, Cyril Hrubis wrote:
-> Hi!
->> +	switch (fd_src->type) {
->> +	case TST_FD_DEV_ZERO:
->> +	case TST_FD_PROC_MAPS:
->> +	case TST_FD_PIPE_READ:
->> +	case TST_FD_PIPE_WRITE:
->> +	case TST_FD_UNIX_SOCK:
->> +	case TST_FD_INET_SOCK:
->> +	case TST_FD_EPOLL:
->> +	case TST_FD_EVENTFD:
->> +	case TST_FD_SIGNALFD:
->> +	case TST_FD_TIMERFD:
->> +	case TST_FD_PIDFD:
->> +	case TST_FD_FANOTIFY:
->> +	case TST_FD_INOTIFY:
->> +	case TST_FD_USERFAULTFD:
->> +	case TST_FD_PERF_EVENT:
->> +	case TST_FD_IO_URING:
->> +	case TST_FD_BPF_MAP:
->> +	case TST_FD_FSOPEN:
->> +	case TST_FD_FSPICK:
->> +	case TST_FD_OPEN_TREE:
->> +	case TST_FD_MEMFD:
->> +	case TST_FD_MEMFD_SECRET:
->> +		return;
->> +	default:
->> +		break;
->> +	}
-> Why do we skip all these cases?
->
-I can't understand what's the best way to test all the combinations. As 
-you can see there are many flags, which means the amount of permutations 
-is big.
-Most of those flags are handled (indeed) in the wrong way, since most of 
-their permutations return EXDEV. The point is that the syscall has many 
-error codes, so it's complex to write a code that covers all possible 
-results.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-My idea would be to have an array of errors to give to 
-TST_EXP_FAIL2_ARR() and to avoid any statement around fd_src/fd_dst, 
-because the amount of if/switch-case might explode with the number of 
-permutations.
+This test verifies that ioctl() FICLONE/FICLONERANGE feature raises
+the right error according with bad file descriptors.
 
-Andrea
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+This testing suite is testing ioctl() FICLONE and FICLONERANGE
+functionalities. In particular, file clone and error codes.
+---
+Changes in v3:
+- ioctl_ficlone04: use a generic array for expected errors
+- Link to v2: https://lore.kernel.org/r/20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com
+
+Changes in v2:
+- add fallback definitions
+- algorithm steps using '-'
+- avoid assigning -1 to file descriptors after close()
+- use SAFE_UNLINK() instead of remove()
+- enable both xfs and btrs for all tests
+- Link to v1: https://lore.kernel.org/r/20240530-ioctl_ficlone-v1-0-fa96f07d0fca@suse.com
+---
+ testcases/kernel/syscalls/ioctl/.gitignore        |  1 +
+ testcases/kernel/syscalls/ioctl/ioctl_ficlone04.c | 55 +++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
+index 9f995b1ad..1f099ff95 100644
+--- a/testcases/kernel/syscalls/ioctl/.gitignore
++++ b/testcases/kernel/syscalls/ioctl/.gitignore
+@@ -25,5 +25,6 @@
+ /ioctl_ficlone01
+ /ioctl_ficlone02
+ /ioctl_ficlone03
++/ioctl_ficlone04
+ /ioctl_ficlonerange01
+ /ioctl_ficlonerange02
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone04.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone04.c
+new file mode 100644
+index 000000000..8420c269c
+--- /dev/null
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone04.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that ioctl() FICLONE/FICLONERANGE feature raises the right
++ * error according with bad file descriptors.
++ */
++
++#include "tst_test.h"
++#include "lapi/fs.h"
++
++static void test_bad_fd(struct tst_fd *fd_src, struct tst_fd *fd_dst)
++{
++	if (fd_src->type == TST_FD_FILE && fd_src->type == fd_dst->type) {
++		tst_res(TCONF, "Skipping file: SUCCESS");
++		return;
++	}
++
++	if (fd_src->type == TST_FD_MEMFD && fd_src->type == fd_dst->type) {
++		tst_res(TCONF, "Skipping memory: EOPNOTSUPP");
++		return;
++	}
++
++	int exp_errnos[] = {
++		EISDIR,
++		EBADF,
++		EINVAL,
++		EXDEV,
++	};
++
++	TST_EXP_FAIL2_ARR(ioctl(fd_dst->fd, FICLONE, fd_src->fd),
++		exp_errnos, ARRAY_SIZE(exp_errnos),
++		"ioctl(%s, FICLONE, %s)",
++		tst_fd_desc(fd_src),
++		tst_fd_desc(fd_dst));
++}
++
++static void run(void)
++{
++	TST_FD_FOREACH(fd_src) {
++		TST_FD_FOREACH(fd_dst)
++			test_bad_fd(&fd_src, &fd_dst);
++	}
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.min_kver = "4.5",
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
+
+---
+base-commit: c68112b0774bf4f13bfb7b121ecc6671d15d133e
+change-id: 20240529-ioctl_ficlone-95c603f71d53
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
