@@ -4,84 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC203C3DA61
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 16:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24940C3DA63
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 19:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1721838688; h=message-id :
- to : date : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1721849837; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=gwISe/WWDfI726pilOESg+4KOZ0i1VMZhrWUK5FONLs=;
- b=hauxs2y1pKEsJluXZBGisw1QgStNJu3iQo449/E/zm5iS4R0tOf1vJF6CTKQKlfyqZ0dS
- gIiq19URMfOgNlATZdyjePS74rBuEE6RJB5LMyo2MHwID3x8eyunTytnAkOxsIXmSrBawDd
- RiBywtG1wvzNifr/G2IYQGJUiYS69HU=
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=Q88zilhghMdaiUSZIYM8BcuBSJ24iOB9mWRBHsMhRow=;
+ b=LAaRFFm//D+7fupjRHr2tF9Y+lStYqOWfy/sAyF8X+GKnT4Pd6owI0pX5KAYYYpydFcLY
+ b6SSHFshjLibRCWtjAz+p3S8ydqeK0hGJAalx+LH3lPZMV7wsVfaiq5R7oTvXUa0xe9PPaA
+ irnDB0n3lmMkVrcCrPNMOM/V+P61blE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 704503D1C3E
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 18:31:28 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 89E993D1C4F
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 21:37:17 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9CECA3D0FA8
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:21 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=gmx.de
- (client-ip=212.227.17.21; helo=mout.gmx.net; envelope-from=efault@gmx.de;
- receiver=lists.linux.it)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F35C51A00E08
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 18:29:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
- s=s31663417; t=1721838555; x=1722443355; i=efault@gmx.de;
- bh=BYZjEGc4YVudcgENM058UCy6tfpRPmI4j7O72IWha4A=;
- h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
- References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
- content-transfer-encoding:content-type:date:from:message-id:
- mime-version:reply-to:subject:to;
- b=GNvjCnR+JCF6N019EuyhqS7GZJiqw7uI/WKHdu7OeitiiAlnPSpS84ai86Qkg5cI
- 9kV0VjlBd/dKiF0SIHXv2TXbgWCNC8T6TlnO+k5twJ1JGQfxG0AkHkT7dN6uuvGb8
- GZehGSPho95lNhXipBnF/28lg51a6lhhLMDaFb+JdioDXY/zdzy/uyMwADJNah1J5
- eRGRHIz6vUyGuznJZdNTdv1ikJhhK9I43E8gcTePdlKLjTQ4ENBwoC3igl8xlEFTY
- kwbKG3XHmhzLfredYsnRWHC53UcCXZe53DGThUv0RsRUxBZ9M6SiGI5lUp7pfexqq
- gyAxanys1DiMtE8mkA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.221.149.162]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2mFY-1s9j6N2Sy4-00v2W4; Wed, 24
- Jul 2024 18:29:15 +0200
-Message-ID: <684a1811297c210c6efd46c4e3c7b35e26b03b19.camel@gmx.de>
-To: Petr Vorel <pvorel@suse.cz>, Jan Kara <jack@suse.cz>
-Date: Wed, 24 Jul 2024 18:29:12 +0200
-In-Reply-To: <20240724131816.GA950793@pevik>
-References: <20240719174325.GA775414@pevik>
- <20240722090012.mlvkaenuxar2x3vr@quack3> <20240724131816.GA950793@pevik>
-User-Agent: Evolution 3.42.4 
+ by picard.linux.it (Postfix) with ESMTPS id 3CDC43D1C30
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 21:36:54 +0200 (CEST)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
+ [IPv6:2a00:1450:4864:20::132])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D557A1A0079C
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 21:36:53 +0200 (CEST)
+Received: by mail-lf1-x132.google.com with SMTP id
+ 2adb3069b0e04-52efd855adbso82045e87.2
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 12:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1721849813; x=1722454613; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=OQws/QKdH2KabLSTrCyZrgSjwfQrJJS9w+sZB/xHh0c=;
+ b=SxvmtaQ2fCPbApwct/QKUDPxcHNkP/MQe1YPBOG5o7Qsiw0WAdK64mPkFqX+WVkBUP
+ IV/UIyiQAzwRuuYDsbO4tXGT2qEEXB6CSBf5zVngFuQLhsyH+pJcbjcH+PKDweb4HHWV
+ azMBojeccMbP0I7vQdhvVVIlVzaStSHXPY6LgyQfhc2+sUGEglOQ3X8+3v6kNJNJ01Cv
+ d8vW7rroXlRyZFIDFij2/4clnDhtSpDoWZjMCfpeYHF1bDTv8rauSEZJkdhSyj3U+EnQ
+ gafUAY+GHPb70ImaNFZ6DLRYyfkOXzhuttGnfj9pTkEYIez5ZFJsWTsiwb/8cyxclok4
+ Lzeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1721849813; x=1722454613;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=OQws/QKdH2KabLSTrCyZrgSjwfQrJJS9w+sZB/xHh0c=;
+ b=khmS41yeHwKWom/YqfyP8kRrXxxuxWD1B/X2pGn+hZIgCWBojHgDQ1eXcGf9Kqoa14
+ 5aMRvBjxHWHghYCzi5dR8TJaAPcICRcu+sdLo0TtoH6t4vcvdDPPJmU9W8+oB0nEaDSI
+ f0qBzX1hMWP2lGVHaDHDSMOU+eDEiSqG2LS7hXyuT0EB1lXqorHD31bJzNYNcZghqMpN
+ 0b7gYDYoqX9MUCXpztwG4Y5R78FggFG6POYkrJjqykt1knf+FzcuCmZEq3d1/k4UszNi
+ MFZ6r9WPsn8Lef8WLFGlNZCPt5v++2FPIYF3ul4QaMdelxrN7XDm7eqzmNIYb2zz/BuL
+ OVBw==
+X-Gm-Message-State: AOJu0Yz7N2EBvt5b5EgWYAJjQPBkq8PVrzyVzrh9nH9M52YX/qnM3nBj
+ rX4wmQF9G7fk1ZDuJJrGUOR60gF5dA1FLl+FiW3tQNELUnYCyt2Kbt226YkrbkdyWttCSfSjFy9
+ jnz7Lwg==
+X-Google-Smtp-Source: AGHT+IEmDNXitGzU70cXwsS4WMKYwEoG0h55KyQqo/qjLAwB6URVuZQdHA4r5KPHeHU9o07h6c/vEA==
+X-Received: by 2002:a05:6512:2254:b0:52c:e050:452a with SMTP id
+ 2adb3069b0e04-52fd3f7e032mr535973e87.37.1721849812169; 
+ Wed, 24 Jul 2024 12:36:52 -0700 (PDT)
+Received: from ?IPV6:2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662?
+ ([2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662])
+ by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-52f02ba063asm1256837e87.226.2024.07.24.12.36.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 24 Jul 2024 12:36:51 -0700 (PDT)
+Message-ID: <3c2626c4-5c26-4112-9c74-4cf9b4ecc3e0@suse.com>
+Date: Wed, 24 Jul 2024 21:36:21 +0200
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:UWBOdxjNJyiHG2TMf8ox0PHfBtgY/mgi9HVdGVCVaJ6bAC2k80K
- pJX+y2qWZIMkIrApXkmlHL43njiMk1SVnqwxHjR1mD6s2CHI4CYeAWedhJsoj9N/TsKqKIA
- /o+NP34ZIctcH8qSVkRTCL8jD3myGESZWtJYStR9jfaZYoSh2uWVLUpNF6QOc34v1hPkaAP
- rlhhj3zSmQb/XRHBskIhg==
-UI-OutboundReport: notjunk:1;M01:P0:w/bY2nrEeWs=;AiIwYn2wc/FW9jI/FqFfCpdARMX
- iqoRMTZi0UIEylmBl1YaRGGgPFmdn2SCXblzuV7oMvTzAKZ/kvcjPNGMONGQgv1hxfJyr+4Mo
- muDAcszKsTb2gi4E+fRsRExATUhgvw/dglYk6yTrzntZX5WzkEzS3yY8wRCvH4yBYz+dPv6td
- rqlqAeLj/iXUk3U1S46ur/yeDNAEdw2YcBNksl4FjjMKS4FuwtGYSageoV/aJcirrknlRGsLr
- f4kDKLCwhj4K5A/tz7DeKjYvbksXCHqASW0aSBAibZO/2df9CpEelRRlwXjRetMZ+xIXKJPDU
- ThqJr5UDC2NGZYnf47zhPuyvyDOaJBYzkfaracARc+LfVFolWob5aM5YF2T5Xcg1t+8sQh79A
- j5Kf6QEZFnr8j5ZAJxaDNRn9AXMCXfFMhWLSg0JLyBFlunHzlKrmuYf6069W5ZQJm4LGbYwL2
- k5FfrlwZe3LTU2/TsWfy90muX416/VIYHp8JAkD9m2h3jLuKlG6Qd8FQSarRV5ndC+GPfyVqo
- C1SOb9yIp+tvDxjHgPEIujGd3PBZE1yolF+zJbsVL5HI1SGBEP7bbWKzObzS41eX5M1+LYXD6
- dJe0w9S/Ps0A8sFdOGFqsb18yj63DsN/1AAfYmMKREdM0Ozl6S31Bowklcij9EaymWOJX8U/l
- 3djLfIQTZFO1SJTxR3Ub/DggNZXf9nNKJBjiftM2fNQg5u3q4HH/viKd52zYtH7Kxerh5R/vG
- 6DPIN2PfAsJsRtibe8zhiAhuvSdKgmZ0z52ZvVG52qf9icwwHgiu695mdhQu+KUQhxAqvxwF5
- +ZgeF1LO/BWulqYdRMbx+ErA==
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
+ <20240723-ioctl_ficlone-v2-7-33075bbc117f@suse.com> <ZqEg7SD35ejRYCsX@yuki>
+Content-Language: en-US
+In-Reply-To: <ZqEg7SD35ejRYCsX@yuki>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 24 Jul 2024 18:31:07 +0200
-Subject: Re: [LTP] [RFC] Slow down of LTP tests aiodio_sparse.c and
- dio_sparse.c in kernel 6.6
+Subject: Re: [LTP] [PATCH v2 7/7] Add ioctl_ficlone04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,54 +96,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Mike Galbraith via ltp <ltp@lists.linux.it>
-Reply-To: Mike Galbraith <efault@gmx.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, fstests@vger.kernel.org,
- linux-block@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
- ltp@lists.linux.it, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 2024-07-24 at 15:18 +0200, Petr Vorel wrote:
-> Hi all,
+On 7/24/24 17:42, Cyril Hrubis wrote:
+> Hi!
+>> +	switch (fd_src->type) {
+>> +	case TST_FD_DEV_ZERO:
+>> +	case TST_FD_PROC_MAPS:
+>> +	case TST_FD_PIPE_READ:
+>> +	case TST_FD_PIPE_WRITE:
+>> +	case TST_FD_UNIX_SOCK:
+>> +	case TST_FD_INET_SOCK:
+>> +	case TST_FD_EPOLL:
+>> +	case TST_FD_EVENTFD:
+>> +	case TST_FD_SIGNALFD:
+>> +	case TST_FD_TIMERFD:
+>> +	case TST_FD_PIDFD:
+>> +	case TST_FD_FANOTIFY:
+>> +	case TST_FD_INOTIFY:
+>> +	case TST_FD_USERFAULTFD:
+>> +	case TST_FD_PERF_EVENT:
+>> +	case TST_FD_IO_URING:
+>> +	case TST_FD_BPF_MAP:
+>> +	case TST_FD_FSOPEN:
+>> +	case TST_FD_FSPICK:
+>> +	case TST_FD_OPEN_TREE:
+>> +	case TST_FD_MEMFD:
+>> +	case TST_FD_MEMFD_SECRET:
+>> +		return;
+>> +	default:
+>> +		break;
+>> +	}
+> Why do we skip all these cases?
 >
->
-> [ Cc Peter and Mike ]
-> > Hi!
->
-> > On Fri 19-07-24 19:43:25, Petr Vorel wrote:
-> > > LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3])
-> > > slowed down on kernel 6.6 on Btrfs and XFS, when run with default
-> > > parameters. These tests create 100 MB sparse file and write zeros (using
-> > > libaio or O_DIRECT) while 16 other processes reads the buffer and check
-> > > only zero is there.
->
-> > So the performance of this test is irrelevant because combining buffered
-> > reads with direct IO writes was always in "better don't do it" territory.
-> > Definitely not if you care about perfomance.
->
-> > > Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
-> > > same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
-> > > (Non default parameter creates much smaller file, thus the change is not that
-> > > obvious).
->
-> > But still it's kind of curious what caused the 9x slow down. So I'd be
-> > curious to know the result of the bisection :). Thanks for report!
->
-> It looks to be the slowdown was introduced by commit 63304558ba5d
-> ("sched/eevdf: Curb wakeup-preemption") [1] from v6.6-rc1.
+I can't understand what's the best way to test all the combinations. As 
+you can see there are many flags, which means the amount of permutations 
+is big.
+Most of those flags are handled (indeed) in the wrong way, since most of 
+their permutations return EXDEV. The point is that the syscall has many 
+error codes, so it's complex to write a code that covers all possible 
+results.
 
-That's not good, I'd rather not have over-zealous preemption back, my
-box doesn't miss that one tiny bit.
+My idea would be to have an array of errors to give to 
+TST_EXP_FAIL2_ARR() and to avoid any statement around fd_src/fd_dst, 
+because the amount of if/switch-case might explode with the number of 
+permutations.
 
-Hrm... have you tried Peter's eevdf queue?  The DELAY_DEQUEUE feature
-therein does good things for tbench, restoring pre-eevdf throughput.
-
-	-Mike
+Andrea
 
 
 -- 
