@@ -4,86 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73839C3DA61
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 13:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C896AC3DA61
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 13:18:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 021D73D1C3A
-	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 15:06:17 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E69213D1C2D
+	for <ltp@archiver.kernel.org>; Wed, 24 Jul 2024 15:18:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B052D3C60BA
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 15:06:01 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=fstornio@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id AC7703D0895
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 15:18:23 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B4F4B14104E4
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 15:06:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1721826358;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=bV+Xxz+Z+lsvp+hRe3yjOuMKn58BqIl5HDQAWw+RNy0=;
- b=f1zEI0a3bR0XY+iHDEG/qBQxi9AcXoq24eMvw4K1VDwTMTznaC0RCJcWevUIGi8iGvokA/
- 401FMiIwZpvM8HeQF1uaRvN0u4pPcgcl2O7UIEoSA8pD7HRFaWwQNFlprgA5WaHsZafDia
- ZHZ/Mmlmko8omeesNh+0oI28uHEX1sI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-XVE2s9tGObejTZzAXnqDKg-1; Wed, 24 Jul 2024 09:05:57 -0400
-X-MC-Unique: XVE2s9tGObejTZzAXnqDKg-1
-Received: by mail-ej1-f71.google.com with SMTP id
- a640c23a62f3a-a7ab50e6735so24837766b.0
- for <ltp@lists.linux.it>; Wed, 24 Jul 2024 06:05:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1721826356; x=1722431156;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=bV+Xxz+Z+lsvp+hRe3yjOuMKn58BqIl5HDQAWw+RNy0=;
- b=iiHRYziMOobeOytOQWK1hC1VqR4YLUMd5vIlVtaF4HWRX63iY13snFszcjzma25Wjv
- N/W3jfYsRedF79uzX9ksnY4HqE1QVL3RBiEUCvY7VUW/S3DDmYCvPtVa4ljE2WzcmMgV
- ORbVn4XB+EqtBJpT+PPOUVZSo6P9KSUBO2LcHfZ8IlEl7cuzvLl0O93xji0TBqB0nSqu
- Mr/UdluOm1/hBctXR9VzmAQjvv8Oa+ymO/jf33MRelZraf9m0HWYoWWUAaDso+Gqt6QG
- sgX0UEBd27nd1bw77G8Tp2G3eQ5yRHIl7rJN0LPqqoQkJ9D2NZqYUzVSaF32DYwr+95+
- Iueg==
-X-Gm-Message-State: AOJu0Yz+dKsmiL4aHFjmeMas5hkwcCBYw2Igf4AU5oVyQ6ZVIJxpoQkC
- 4d3Yy7jqX/vQ24bvSghmnooHwGHLy9QC/mqW2RwXqVZ2N/bCoJnOls3hB10d36f1fx4X7SCPF+Q
- ZmOkQ15VcDK0JpvItjbdy2UP4nhj2N1AVzSyv9HFlZSN9/Sd0CQOjHOKWErlBDVCTaXd5gGvzii
- WC1z73qf6PqJeYhTpWTpsgGaAHsV68aGDZ
-X-Received: by 2002:a17:907:96a0:b0:a7a:b9dd:775f with SMTP id
- a640c23a62f3a-a7ab9dd788amr94043166b.55.1721826355978; 
- Wed, 24 Jul 2024 06:05:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsPoYYGsh4zVKLQmoHz/KZO8UAzNwHTd4aycoPtkoq1YGWeo8ChZemFESqRoj0p1g5cer4xg==
-X-Received: by 2002:a17:907:96a0:b0:a7a:b9dd:775f with SMTP id
- a640c23a62f3a-a7ab9dd788amr94039966b.55.1721826355259; 
- Wed, 24 Jul 2024 06:05:55 -0700 (PDT)
-Received: from fstornio-thinkpadx1carbongen11.remote.csb
- (host-79-26-112-228.retail.telecomitalia.it. [79.26.112.228])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a7a3c7bea7esm644450066b.83.2024.07.24.06.05.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Jul 2024 06:05:54 -0700 (PDT)
-From: Filippo Storniolo <fstornio@redhat.com>
-To: ltp@lists.linux.it,
-	f.storniolo95@gmail.com
-Date: Wed, 24 Jul 2024 15:05:53 +0200
-Message-ID: <20240724130553.126252-1-fstornio@redhat.com>
-X-Mailer: git-send-email 2.44.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B4B0D1000D58
+ for <ltp@lists.linux.it>; Wed, 24 Jul 2024 15:18:22 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BEF7D1F7A1;
+ Wed, 24 Jul 2024 13:18:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721827100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
+ b=FuBQFIif1Yc1oeaBaLW8lYkBmLdefhslLAjPwWKBZbbVN5sjFwRfwigAdgW5tiVqWpummx
+ DTB9pwhyVNO18d0Y60YgB+rwgvkBLAcpLA0bhGMGMOWwOVzKG3/ZCsKOLKbqo0M1GG7oCw
+ 0xTOW2S/R5iNPlqQ6qvgOSW2wD+1dXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721827100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
+ b=PHN8vmjIum5QrnGQwAC7nE4RlXzg3zgNLTPQcaz+P3mWJGTWTtJ5fKrjHLBSb9vudv11Mh
+ 7uxDRJLj0Sko68Dw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FuBQFIif;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PHN8vmjI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721827100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
+ b=FuBQFIif1Yc1oeaBaLW8lYkBmLdefhslLAjPwWKBZbbVN5sjFwRfwigAdgW5tiVqWpummx
+ DTB9pwhyVNO18d0Y60YgB+rwgvkBLAcpLA0bhGMGMOWwOVzKG3/ZCsKOLKbqo0M1GG7oCw
+ 0xTOW2S/R5iNPlqQ6qvgOSW2wD+1dXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721827100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
+ b=PHN8vmjIum5QrnGQwAC7nE4RlXzg3zgNLTPQcaz+P3mWJGTWTtJ5fKrjHLBSb9vudv11Mh
+ 7uxDRJLj0Sko68Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10A741324F;
+ Wed, 24 Jul 2024 13:18:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id noIPARz/oGbdEwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 24 Jul 2024 13:18:20 +0000
+Date: Wed, 24 Jul 2024 15:18:16 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Message-ID: <20240724131816.GA950793@pevik>
+References: <20240719174325.GA775414@pevik>
+ <20240722090012.mlvkaenuxar2x3vr@quack3>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240722090012.mlvkaenuxar2x3vr@quack3>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: BEF7D1F7A1
+X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWELVE(0.00)[15]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ FREEMAIL_CC(0.00)[lists.linux.it,vger.kernel.org,kernel.dk,suse.com,gmail.com,suse.cz,suse.de,infradead.org];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mlock05: add log details about the success/failure
+Subject: Re: [LTP] [RFC] Slow down of LTP tests aiodio_sparse.c and
+ dio_sparse.c in kernel 6.6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,48 +125,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Filippo Storniolo <fstornio@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, fstests@vger.kernel.org,
+ linux-block@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+ Mike Galbraith <umgwanakikbuti@gmail.com>, ltp@lists.linux.it,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In some testing environments, such as those related to safety
-critical requirements, more detailed logs are needed when
-the executed test passes or fails.
-This format already exists in other LTP tests, such as
-kernel/security/kallsyms/kallsyms.c
+Hi all,
 
-Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
----
- testcases/kernel/syscalls/mlock/mlock05.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock05.c b/testcases/kernel/syscalls/mlock/mlock05.c
-index 8e805736d..8b217beb5 100644
---- a/testcases/kernel/syscalls/mlock/mlock05.c
-+++ b/testcases/kernel/syscalls/mlock/mlock05.c
-@@ -102,8 +102,15 @@ static void verify_mlock(void)
- 	Rss *= 1024;
- 	Locked *= 1024;
- 
--	TST_EXP_EQ_LU(Rss, MMAPLEN);
--	TST_EXP_EQ_LU(Locked, MMAPLEN);
-+	if (Rss == MMAPLEN)
-+		tst_res(TPASS, "Pre-faulted %lu bytes and expected %lu", Rss, MMAPLEN);
-+	else
-+		tst_res(TFAIL, "Pre-faulted %lu bytes but expected %lu", Rss, MMAPLEN);
-+
-+	if (Locked == MMAPLEN)
-+		tst_res(TPASS, "Locked %lu bytes and expected %lu", Locked, MMAPLEN);
-+	else
-+		tst_res(TFAIL, "Locked %lu bytes but expected %lu", Locked, MMAPLEN);
- 
- 	SAFE_MUNLOCK(buf, MMAPLEN);
- 	SAFE_MUNMAP(buf, MMAPLEN);
--- 
-2.44.0
+[ Cc Peter and Mike ]
+> Hi!
 
+> On Fri 19-07-24 19:43:25, Petr Vorel wrote:
+> > LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3])
+> > slowed down on kernel 6.6 on Btrfs and XFS, when run with default
+> > parameters. These tests create 100 MB sparse file and write zeros (using
+> > libaio or O_DIRECT) while 16 other processes reads the buffer and check
+> > only zero is there.
+
+> So the performance of this test is irrelevant because combining buffered
+> reads with direct IO writes was always in "better don't do it" territory.
+> Definitely not if you care about perfomance.
+
+> > Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
+> > same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
+> > (Non default parameter creates much smaller file, thus the change is not that
+> > obvious).
+
+> But still it's kind of curious what caused the 9x slow down. So I'd be
+> curious to know the result of the bisection :). Thanks for report!
+
+It looks to be the slowdown was introduced by commit 63304558ba5d
+("sched/eevdf: Curb wakeup-preemption") [1] from v6.6-rc1.
+
+I also compiled current next (next-20240724), it's also slow  and reverting
+commit from it returns the original speed on both Btrfs and XFS.
+
+Kind regards,
+Petr
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=63304558ba5dcaaff9e052ee43cfdcc7f9c29e85
+
+> 								Honza
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
