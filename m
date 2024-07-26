@@ -4,83 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C0C3C3DA7F
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 10:35:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1721990155; h=message-id :
- date : mime-version : to : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-transfer-encoding : content-type : sender : from;
- bh=1qMWxQBumpOEYCnu1NylhEQ4a2hO9kxKFUv+l16rr8g=;
- b=oojOzJckkZjLuvmgL0TG9FFMKNdiYzTOGYPrzSuWTNH9TTh+csDKCEO0lhus81zENA3RU
- tCx8Gk+ABKIvo53Tp01o4laTYvaPm+Jr8H9jL//a6on9A6NrouG1/JOksNCWR8zzTIbWsfI
- Mvh9UMcE1IXa7MSU1Cd2P9Lt6IxcTeg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1E2FC3DA49
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 10:47:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DC94D3D1C67
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 12:35:55 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DA17B3D1C62
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 12:46:58 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9EB93C0350
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 12:35:33 +0200 (CEST)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 18D723C60BA
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 12:46:43 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 87F1E609699
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 12:35:32 +0200 (CEST)
-Received: by mail-ed1-x531.google.com with SMTP id
- 4fb4d7f45d1cf-5afa207b8bfso158411a12.0
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 03:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1721990132; x=1722594932; darn=lists.linux.it;
- h=content-transfer-encoding:subject:from:to:content-language
- :user-agent:mime-version:date:message-id:from:to:cc:subject:date
- :message-id:reply-to;
- bh=gGgzgBzlJKYiVn0zp7l2gzhB2+Yn+5h2/SLPHLi3MwM=;
- b=PrI8P0CdvDXVyTkXcqlXn/X7hhbY9gR6XmNxrciYFUq2PQG6IRHzjfCHPtG+6xOLSN
- 9kt3tdlroB+M/JS2VyUprOuL/FIKX8+RhDPdcIV+1OxSBIPOAbvcYq5+KHnQZrNCr2EU
- AaTAD+0PH2SDNN8t6yTrVbGuHcZYb23M4GuIEa6JFuZC9IKzYWJigT343PBvEnYqfEoG
- t5+g30GupSMrBwQM8JcoIM2xTr07gSUrcTTgJg2FKl48QThitL76ghcVMZSQWN2i271+
- GBOkRokDwwUjeHbgi3Up7RyU0eLgxJt9x3QnTOaTk+CviGLlVYPyjgkUzT3ajll4nMOX
- a8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1721990132; x=1722594932;
- h=content-transfer-encoding:subject:from:to:content-language
- :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=gGgzgBzlJKYiVn0zp7l2gzhB2+Yn+5h2/SLPHLi3MwM=;
- b=Eehzed+Q0J1iJO2fZ4GJnLEyLH0px8hR0PN0dDmbix3prufYIjgBC3YQI5/FkUPhNa
- zpjaMa4+nfOzEzEuyy11g5ZCQROlB2Hpcw7EYRprqZ30qxpyj1AGannv0pDag1GpqJpI
- nOz7PtOai1O3xGlX5afxO7JP5AoyGumJTZFpDLg34QjnKLa58TSYrL7ij5GYM1t/K8Zm
- X/CTO7xTUT/qIn3K44QrfwAwKMjh/UedyNygqDTsj8nNTWthGavY8xB43OZoocznD5Af
- VwTXz+YAeK50HVgulfswVOeNCIoGspVi7OEenzRd2WkMp72218K2313UPXxbVrE81ML5
- BAaw==
-X-Gm-Message-State: AOJu0Ywc7mxMJyh1wV4d29mFFvzMs4Cnu3QIzMkaER+5p01pnnpqGYeU
- /Kg8GCe6YL/ZPf5a4V/+r+Kj7q6A5MiFTkA1VRyX7+uxd16S3O+2OKY5+RpeynM4DzoV86EP+Ov
- x
-X-Google-Smtp-Source: AGHT+IGpRTGGbZ32Gx5jeMlYSYcbw5kPRjAVuJ8EcC4RuDIVu/z5JKqwU7uPFoQdA4/RHNuQ7i6y+g==
-X-Received: by 2002:a50:aa94:0:b0:5a7:464a:ab9 with SMTP id
- 4fb4d7f45d1cf-5ac629fbf1amr2978090a12.21.1721990131271; 
- Fri, 26 Jul 2024 03:35:31 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662?
- ([2a02:a31b:84a1:b780:b3c4:a558:3bdc:9662])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5ac63590e7esm1730853a12.36.2024.07.26.03.35.30
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 26 Jul 2024 03:35:31 -0700 (PDT)
-Message-ID: <2a6d16a7-0d43-496a-a6c1-579b9e751254@suse.com>
-Date: Fri, 26 Jul 2024 12:35:08 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 56904100112F
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 12:46:42 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A661621981;
+ Fri, 26 Jul 2024 10:46:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721990801;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5jvd5y4wcXgaPiLJvo3N4AwT8hhLJE75iBlguWW5eW4=;
+ b=PEuS0y8V4YejTMGBBdxbzzabJv1DPqAiVS+40cP2bIsh5eicUoqgXbs1rLwgYUMt7W9uwr
+ /Z5dMEQgadzb5joHHaQqn2kkLHjKAGXHdoAt3GZJSzdeyeaPqh08RVVoA5rcoYI9LUpHj2
+ +wz5u527rAof9jypZN5/bSo2YdiPEsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721990801;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5jvd5y4wcXgaPiLJvo3N4AwT8hhLJE75iBlguWW5eW4=;
+ b=RAQe8XW/dqoh5Dt2cGL44YuBsmXwLw1Yn1JpBRmeRZlTdYwWKMcV7jFlKssiX1LHEXfG2p
+ HyiPi18lCITXzmDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1721990801;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5jvd5y4wcXgaPiLJvo3N4AwT8hhLJE75iBlguWW5eW4=;
+ b=PEuS0y8V4YejTMGBBdxbzzabJv1DPqAiVS+40cP2bIsh5eicUoqgXbs1rLwgYUMt7W9uwr
+ /Z5dMEQgadzb5joHHaQqn2kkLHjKAGXHdoAt3GZJSzdeyeaPqh08RVVoA5rcoYI9LUpHj2
+ +wz5u527rAof9jypZN5/bSo2YdiPEsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1721990801;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5jvd5y4wcXgaPiLJvo3N4AwT8hhLJE75iBlguWW5eW4=;
+ b=RAQe8XW/dqoh5Dt2cGL44YuBsmXwLw1Yn1JpBRmeRZlTdYwWKMcV7jFlKssiX1LHEXfG2p
+ HyiPi18lCITXzmDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25A2B138A7;
+ Fri, 26 Jul 2024 10:46:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id NRaOB5F+o2aQXAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 26 Jul 2024 10:46:41 +0000
+Date: Fri, 26 Jul 2024 12:46:29 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20240726104629.GA1063546@pevik>
+References: <2a6d16a7-0d43-496a-a6c1-579b9e751254@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <2a6d16a7-0d43-496a-a6c1-579b9e751254@suse.com>
+X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_EQ_ADDR_SOME(0.00)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ FREEMAIL_CC(0.00)[lists.linux.it,lists.yoctoproject.org,linaro.org,sony.com,linuxfoundation.org,gmail.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] kirk can be now installed via pip
+Subject: Re: [LTP] kirk can be now installed via pip
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,15 +118,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Tim Orling <ticotimo@gmail.com>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ automated-testing@lists.yoctoproject.org
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgYWxsLAoKa2lyaywgb3VyIG9mZmljaWFsIExUUCBydW5uZXIsIGlzIG5vdyBhdmFpbGFibGUg
-aW4gcHlwaS5vcmdbMV0gYW5kIGl0IApjYW4gYmUgaW5zdGFsbGVkIHZpYSBwaXAgY29tbWFuZDoK
-CiDCoMKgwqAgcGlwIGluc3RhbGwga2lyawoKSGF2ZSBmdW4hCgoKQmVzdCByZWdhcmRzLApBbmRy
-ZWEgQ2VydmVzYXRvCgpbMV0gaHR0cHM6Ly9weXBpLm9yZy9wcm9qZWN0L2tpcmsvCgoKLS0gCk1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi all,
+
+[ maybe more people interested :) ]
+
+> Hi all,
+
+> kirk, our official LTP runner, is now available in pypi.org[1] and it can=
+ be
+> installed via pip command:
+
+> =A0=A0=A0 pip install kirk
+
+> Have fun!
+
+
+> Best regards,
+> Andrea Cervesato
+
+> [1] https://pypi.org/project/kirk/
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
