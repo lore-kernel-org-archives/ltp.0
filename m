@@ -4,83 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94E22C3DA4A
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 16:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1722011140; h=mime-version :
- date : message-id : references : in-reply-to : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=5WT++jcbjFUCzNeLnfGN6faYKWcrpsSIN8fYGAfrUfQ=;
- b=agpL9REZc3fk7j5S2mWpKpSGFsWeQzx86nXkYsM66bNnEwa1q312OZyeH4kU6SNFBFFC2
- LljApT01LWSfUmcLhRnUBAus7JdVPC3KhyxPH0qG0UWIfJuaCofG8daxuuUspdHOoviDPDB
- T40z1AFozj1nV4aqhPkF7aiYTf3tJp4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8809C3DA4A
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 16:31:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D4B13D1CC9
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 18:25:40 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6EF513D1CC0
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 18:31:35 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA3C63CF2B3
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 18:25:17 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 40BA23CF2B3
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 18:31:18 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 635F81A02382
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 18:25:17 +0200 (CEST)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-a7a94478a4eso327079566b.1
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 09:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1722011117; x=1722615917; darn=lists.linux.it;
- h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
- :from:content-transfer-encoding:from:to:cc:subject:date:message-id
- :reply-to; bh=fNk/Q+gdHd/wtmrRQ/u8qzATkby8S/HE3RYTd94yHjU=;
- b=eLkKGPfQaJfc2+gf/02LZV5OJl+TArAG0eUT3xlLlaq+/2nYOFJeEOZtpLfaL3xdEs
- 8LNOeEw9i0WyIQ9AmLgoyJnyKGx47ufFWsu1qFKoJWr8/79A0uWLvqwtbgAHURzaLWAb
- qFhntXqVmnRjeCYiM2xClUHkUhCjJ44qaSqlsROonS2ohJC4lWw0zCVYGuvrPRSQkZP8
- BdZTZAD989sZdv5UIcJ0pxxNj2QMaqskGk8SKDA0G3M9IATjd95Zj3khyULoR4w27ovm
- JAWuZ/UGj+408nIwKTsh/h1t5txBljJyjrRlmKTVbqPpROA25jekwBVDUTK+hw9i22qD
- f4sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1722011117; x=1722615917;
- h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
- :from:content-transfer-encoding:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=fNk/Q+gdHd/wtmrRQ/u8qzATkby8S/HE3RYTd94yHjU=;
- b=GKQ53CDi4x3IDLzTQrQuOy4bALvP7MOETywZjGHUf09mkGU+OhC44wyW5GH/OGU6Sv
- S6aXq+stmgeXeDO2MaaKTjpZ9YijZmUengeY7WqsoVAUEKsjpNUnrRyelRvYDWOK2Uwq
- FsqdlJGurZ2qsLexl9zhSdlq1qBCWBvpyzsc4JycU3oyi7tyIDIpf867OKLUZmiQ6sIT
- 8gPjOxQyNOQ1l9LvaKDEnFtTTdJW5g+RMUsgZnquzpQkbgO7dftclY6Vi2XXlv65HXAp
- vx2rfcLzimFN8o919uxSQMoF+caJQEZbFuuKbsdYVr84RzSKgVQ2mauvGWSvRsS4HyZJ
- 0PjA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXQihdDbXvBmy4Fxw046C5ou+yl5TUspFe1NyR8BMzgFOKVRZ069uPAIbw9VcgCyxhwQa3hcozFHza+6l5T5y1Sx00=
-X-Gm-Message-State: AOJu0YzsTJGyj7tm+iP5nqh3z5cI3+/NMP4jAFxgSnExtKraHuZ0H8kY
- 4mbFackOSrlWv3/ZwXXW870ya6yv2D4/ramkD4/aTIfuFnEN2Et0HlWrfZy8SO0=
-X-Google-Smtp-Source: AGHT+IHi+UznP3wWZgz9bpj85tgku8mfxtaVtj6dC0xWSlVJK3P3zus1TjtF7gnrSM8lzhjN7JsBkg==
-X-Received: by 2002:a17:907:7d8c:b0:a77:c051:36a9 with SMTP id
- a640c23a62f3a-a7d3f86be00mr10973966b.9.1722011115873; 
- Fri, 26 Jul 2024 09:25:15 -0700 (PDT)
-Received: from smtpclient.apple ([2a02:a31b:84a1:b780:642a:14cb:fb0a:e823])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a7acab4de06sm192837466b.71.2024.07.26.09.25.15
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 26 Jul 2024 09:25:15 -0700 (PDT)
-Mime-Version: 1.0 (1.0)
-Date: Fri, 26 Jul 2024 18:25:04 +0200
-Message-Id: <BB880A72-58CB-48B8-B7F7-3304744CE366@suse.com>
-References: <ZqPFF7BovWnpZu8T@yuki>
-In-Reply-To: <ZqPFF7BovWnpZu8T@yuki>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mailer: iPhone Mail (21F90)
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D09D6233F6
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 18:31:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8D3EE21BFF;
+ Fri, 26 Jul 2024 16:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722011473;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iDtQNA8cnxoJkDpudJAd5K8oTv2+ox1mdhrCcoEI44c=;
+ b=U57tgNCC5pYcd63wC8Uu5sarHgFzkARBV6BcajV40A4+lR25Zo580JIy75gO/xd4O3FWhl
+ fzNfwrRdmjozlKWrKa7LLFFepwTcS2al7Vlha5dyWsm5gIjsbMf53dup7XDar+Y9BgcMfp
+ 91G8lI6UIzOMg+P80Dz+sVAihsJFAEw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722011473;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iDtQNA8cnxoJkDpudJAd5K8oTv2+ox1mdhrCcoEI44c=;
+ b=hAzfPJdIc4BLOJTOcXnxoQDLuZxLqKoFDWz2fKnn3QLfJZd7rBg/ELMOsWcNIZgD6BUUX4
+ CvBYJQYn/W6hOLAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=U57tgNCC;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hAzfPJdI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722011473;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iDtQNA8cnxoJkDpudJAd5K8oTv2+ox1mdhrCcoEI44c=;
+ b=U57tgNCC5pYcd63wC8Uu5sarHgFzkARBV6BcajV40A4+lR25Zo580JIy75gO/xd4O3FWhl
+ fzNfwrRdmjozlKWrKa7LLFFepwTcS2al7Vlha5dyWsm5gIjsbMf53dup7XDar+Y9BgcMfp
+ 91G8lI6UIzOMg+P80Dz+sVAihsJFAEw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722011473;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iDtQNA8cnxoJkDpudJAd5K8oTv2+ox1mdhrCcoEI44c=;
+ b=hAzfPJdIc4BLOJTOcXnxoQDLuZxLqKoFDWz2fKnn3QLfJZd7rBg/ELMOsWcNIZgD6BUUX4
+ CvBYJQYn/W6hOLAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 639D8138A7;
+ Fri, 26 Jul 2024 16:31:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id q3M9F1HPo2a5QQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 26 Jul 2024 16:31:13 +0000
+Date: Fri, 26 Jul 2024 18:31:06 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20240726163106.GC1107201@pevik>
+References: <20240725-landlock-v4-0-66f5a1c0c693@suse.com>
+ <20240725-landlock-v4-3-66f5a1c0c693@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240725-landlock-v4-3-66f5a1c0c693@suse.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8D3EE21BFF
+X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
+ RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Rewritten symlink01 test
+Subject: Re: [LTP] [PATCH v4 3/5] Add landlock04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,38 +121,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: mic@digikod.net, gnoack@google.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhhdOKAmXMgYSBtZXNzIGR1ZSB0byBtdWx0aXBsZSBwYXRjaGVzIHZzLiBzaW5nbGUgcGF0Y2gg
-c2V0LiBJIGNoZXJyeS1waWNrZWQgaW4gYjQgYnJhbmNoIGFsbCBwcmV2aW91cyBzaW5nbGUgcGF0
-Y2hlcyBpbnRvIG9uZSBwYXRjaCBzZXQsIGZvcmdldHRpbmcgdG8gdXBkYXRlIHRoZSBzeW1saW5r
-MDEuCgpJIHdpbGwgZml4IGl0IG9uY2UgSeKAmW0gYmFjayBmcm9tIHZhY2F0aW9uLgoKQW5kcmVh
-Cgo+IE9uIDI2IEp1bCAyMDI0LCBhdCAxNzo0OCwgQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2Uu
-Y3o+IHdyb3RlOgo+IAo+IO+7v0hpIQo+PiBUaGlzIHRlc3QgaGFzIGJlZW4gc3BsaXQgYW5kIHJl
-d3JpdHRlbi4gTm93IGl0IHZlcmlmaWVzIHRoZSBmb2xsb3dpbmcKPj4gc3ltbGluaygpIHN5c2Nh
-bGwgZmVhdHVyZXM6Cj4+IAo+PiAtIHN5bWJvbGljIGxpbmsgaXMgY3JlYXRlZCBmcm9tIGEgbm9u
-LWV4aXN0aW5nIGZvbGRlcgo+PiAtIHN5bWJvbGljIGxpbmsgaXMgY3JlYXRlZCBmcm9tIGV4aXN0
-aW5nIGZvbGRlcgo+PiAtIHN5c2NhbGwgcmFpc2VzIEVFWElTVCB3aGVuIHN5bWJvbGljIGxpbmsg
-YWxyZWFkeSBleGlzdHMKPj4gLSBzeXNjYWxsIHJhaXNlcyBFTkFNRVRPT0xPTkcgd2hlbiBwYXRo
-IG5hbWUgaXMgUEFUSF9NQVggbG9uZyAob3IgYWJvdmUpCj4gCj4gSSBoYWQgYSBxdWljayBsb29r
-IGF0IHRoZSBzdGF0dXMgb2YgdGhpcyBhbmQgaXQgc2VlbXMgdGhhdCB0aGVyZSBhcmUKPiBzdGls
-bCBhIGZldyBtaXNzaW5nIHBhcnRzLCBuYW1lbHk6Cj4gCj4gJCBnaXQgZ3JlcCBzeW1saW5rMDEg
-cnVudGVzdC8KPiAKPiBydW50ZXN0L3N5c2NhbGxzOmNoZGlyMDFBIHN5bWxpbmswMSAtVCBjaGRp
-cjAxCj4gcnVudGVzdC9zeXNjYWxsczpjaG1vZDAxQSBzeW1saW5rMDEgLVQgY2htb2QwMQo+IHJ1
-bnRlc3Qvc3lzY2FsbHM6bGluazAxIHN5bWxpbmswMSAtVCBsaW5rMDEKPiBydW50ZXN0L3N5c2Nh
-bGxzOnJlYWRsaW5rMDFBIHN5bWxpbmswMSAtVCByZWFkbGluazAxCj4gcnVudGVzdC9zeXNjYWxs
-czpyZW5hbWUwMUEgc3ltbGluazAxIC1UIHJlbmFtZTAxCj4gcnVudGVzdC9zeXNjYWxsczpybWRp
-cjAzQSBzeW1saW5rMDEgLVQgcm1kaXIwMwo+IHJ1bnRlc3Qvc3lzY2FsbHM6c3ltbGluazAxIHN5
-bWxpbmswMQo+IHJ1bnRlc3Qvc3lzY2FsbHM6dW5saW5rMDEgc3ltbGluazAxIC1UIHVubGluazAx
-Cj4gCj4gQW5kIHRoZSBvbmx5IHBhdGNoIGFwYXJ0IGZyb20gc3ltbGluazAxIGNvbnZlcnNpb24g
-b24gcGF0Y2h3b3JrIHNlZW1zIHRvCj4gYmUgcmVuYW1lMTU6Cj4gCj4gaHR0cHM6Ly9wYXRjaHdv
-cmsub3psYWJzLm9yZy9wcm9qZWN0L2x0cC9wYXRjaC8yMDI0MDQyNDA5MjM1Ny4xMTIwNy0xLWFu
-ZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5kZS8KPiAKPiAtLQo+IEN5cmlsIEhydWJpcwo+IGNocnViaXNA
-c3VzZS5jegoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
-c3RpbmZvL2x0cAo=
+Hi all,
+
+...
+> +static void tester_run_fs_rules(const int rules, const int result)
+> +{
+> +	if (rules & LANDLOCK_ACCESS_FS_EXECUTE)
+> +		_test_exec(result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_WRITE_FILE)
+> +		_test_write(result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_READ_FILE)
+> +		_test_read(result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_READ_DIR)
+> +		_test_readdir(result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_REMOVE_DIR)
+> +		_test_rmdir(result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_REMOVE_FILE)
+> +		_test_rmfile(result);
+> +
+
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_CHAR)
+> +		_test_make(DEV_CHAR0, S_IFCHR, dev_chr, result);
+FYI no need to skip vfat and exfat (.skip_filesystems), just certain tests. This
+one above would need to be skipped.
+
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_BLOCK)
+> +		_test_make(DEV_BLK0, S_IFBLK, dev_blk, result);
+and this...
+
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_REG)
+> +		_test_make(FILE_REGULAR, S_IFREG, 0, result);
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_SOCK)
+> +		_test_make(FILE_SOCKET, S_IFSOCK, 0, result);
+and this...
+
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_FIFO)
+> +		_test_make(FILE_FIFO, S_IFIFO, 0, result);
+and this...
+
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_MAKE_SYM)
+> +		_test_symbolic(result);
+and this.
+
+Kind regards,
+Petr
+
+
+> +
+> +	if (rules & LANDLOCK_ACCESS_FS_TRUNCATE) {
+> +		if ((tst_kvercmp(6, 2, 0)) < 0) {
+> +			tst_res(TINFO, "Skip truncate test. Minimum kernel version is 6.2");
+> +			return;
+> +		}
+> +
+> +		_test_truncate(result);
+> +	}
+> +}
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
