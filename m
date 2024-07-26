@@ -4,56 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EDDDC3DA49
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 13:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA77DC3DA49
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 13:53:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED35B3D1CA1
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 15:51:49 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 369933D1CC2
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 15:53:09 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB4443CF2B6
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:51:33 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=digikod.net (client-ip=84.16.66.172;
- helo=smtp-42ac.mail.infomaniak.ch; envelope-from=mic@digikod.net;
- receiver=lists.linux.it)
-Received: from smtp-42ac.mail.infomaniak.ch (smtp-42ac.mail.infomaniak.ch
- [84.16.66.172])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6CC873CF2B6
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:52:55 +0200 (CEST)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
+ [IPv6:2607:f8b0:4864:20::62f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 51F5A60563D
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:51:32 +0200 (CEST)
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch
- [10.7.10.107])
- by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4WVq104dKwzk5H;
- Fri, 26 Jul 2024 15:51:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
- s=20191114; t=1722001892;
- bh=KFbbw4xdpGnnzGNv+MpeS05EjuhAsjHohvW89oM7iiI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=z+EX2Pj/XV+g+qGIsVsyJz+82ALrA5mPk5XK4uzOJcU5vrrOUYQ6brlWupFsZUdJ4
- Le6vdP1isVEXNQS2ZRiU+Nkn9BSgp8eLFU6BCuAf6FkH+DTpOj7i49hr1igxozdXm0
- bTpQOe8/HRtJDkCh1i4/Wkkk0i7+7832g9FqWmQ8=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA
- id 4WVq101NrFztnT; Fri, 26 Jul 2024 15:51:32 +0200 (CEST)
-Date: Fri, 26 Jul 2024 15:51:29 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20240726.Moowae0jipai@digikod.net>
-References: <20240725-landlock-v4-0-66f5a1c0c693@suse.com>
- <20240725-landlock-v4-5-66f5a1c0c693@suse.com>
- <20240726132440.GC1066866@pevik>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240726132440.GC1066866@pevik>
-X-Infomaniak-Routing: alpha
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BE7931400060
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:52:54 +0200 (CEST)
+Received: by mail-pl1-x62f.google.com with SMTP id
+ d9443c01a7336-1fc47abc040so5386965ad.0
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 06:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1722001973; x=1722606773; darn=lists.linux.it;
+ h=to:date:message-id:subject:mime-version:from:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=hlzn4jLxXLMwuh2yh1LHIIdcIjv+b2ijdQgVNoLWnK8=;
+ b=GZeKk2WyJm4JWKM/YsqGmWKlSQC5PsdoTRKMmOBApR6sTjT+qEsMEY6xy1M3QYXarC
+ 2e3JjolqqkHzJSn32hJnlobXXBVUdAeALuK2p1CevP8bvBksO4IKKPckzkRVL9IlDqRV
+ t97iwNs8B59goACm8J6DEctRBmLcF3Mm81BgugfRqnNcqkHFYqOWvpZ8RZyvIr4lMPIl
+ 3F41iR81ajx1hH5ibbpksBisTyUgPQ2ZTiF1Gm6fKqTloths/ElzBPBJlol1JRlYAcVu
+ kh6299RjfmLZznaUeYVdnp+TFUlpbtGAdBfoeuo0fFvMm0xghNGOysEEXcwLsbQ8AB6e
+ e/yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1722001973; x=1722606773;
+ h=to:date:message-id:subject:mime-version:from:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=hlzn4jLxXLMwuh2yh1LHIIdcIjv+b2ijdQgVNoLWnK8=;
+ b=kWBw9kswCzjT1GWoPe4VCBmoZ9yVHVx1G8Q8H6LacgTGgzJPRZ3cKrd1hsQFftW/2q
+ jAh9ax1Tmo6RyvO6qqo63Yb4nHWsBmT7Zu/UGqPRpk1P9aPB1Fg8CgrnNGdgGh3acDh7
+ krPGJVAXWZwrLxYd8XVL2ypTE55UsC+Hb2h/lQsTFHooGijGiEOrv9Io4934vT9mPS05
+ J04taVC0bOYVl2ZT4vsmzfxYGIX+7kiuNkbLXpTduYQLNf5Op9N9Z+9RZoXRE2ETIuW1
+ mxLGxVN32Qa41hUlbJvPodHGinXR52Ltegz4Hp7GyowRrH6RsNuR+O5bhMcGoTUUIbxB
+ R6Lg==
+X-Gm-Message-State: AOJu0YynRP/jwpinsiwbSKMXEQWYygdrtwZ0eso3akFaX4JfqvD4H3Qi
+ cQAzcGGEofownrNVwMW488YXL4ipN+Z6d3xA2px1jH/rOTyd/I1UKG97cg==
+X-Google-Smtp-Source: AGHT+IEBchgy5BBvX8Qg8t0Ef2+eesOCbA4LU5vYWdcmf4JoeI+NC/Bbnt9G2Gdufo+WEPnIcrmQ7g==
+X-Received: by 2002:a17:902:d48a:b0:1fd:82ac:7c39 with SMTP id
+ d9443c01a7336-1fed39df7b0mr63132015ad.41.1722001972966; 
+ Fri, 26 Jul 2024 06:52:52 -0700 (PDT)
+Received: from smtpclient.apple (c-24-20-24-37.hsd1.or.comcast.net.
+ [24.20.24.37]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-1fed7c7fdafsm32525105ad.52.2024.07.26.06.52.52
+ for <ltp@lists.linux.it>
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 26 Jul 2024 06:52:52 -0700 (PDT)
+From: Brent Yardley <brent.yardley@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
+Message-Id: <92C0327A-E1AB-46B6-A180-9D886977902D@gmail.com>
+Date: Fri, 26 Jul 2024 06:52:41 -0700
+To: ltp@lists.linux.it
+X-Mailer: Apple Mail (2.3774.600.62)
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 5/5] Add landlock06 test
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Re-enable access to LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,29 +80,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: gnoack@google.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Jul 26, 2024 at 03:24:40PM +0200, Petr Vorel wrote:
-> Hi Andrea,
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Few notes below.
-> 
-> ...
-> > +static struct tst_test test = {
-> > +	.test_all = run,
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.min_kver = "6.10",
-> nit: would not be able to check the availablity via landlock ABI == 5?
+I was removed from the LTP due to not having TFA enabled.  I have reenabled TFA on GitHub, can I please be added back to LTP?
 
-Because Landlock is available since 5.13, I guess min_kver should be set
-to the same version.
+Thanks,
+
+Brent Yardley
+brent.yardley@gmail.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
