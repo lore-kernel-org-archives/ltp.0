@@ -4,104 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB4BC3DA70
-	for <ltp@archiver.kernel.org>; Thu, 25 Jul 2024 21:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEB38C3DA49
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 02:45:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B4C23D1C9E
-	for <ltp@archiver.kernel.org>; Thu, 25 Jul 2024 23:44:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id EF8DA3D1C2A
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 04:45:18 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 247713D0FB0
- for <ltp@lists.linux.it>; Thu, 25 Jul 2024 23:44:38 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id CA0783D0E76
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 04:45:04 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 40D996020B2
- for <ltp@lists.linux.it>; Thu, 25 Jul 2024 23:44:37 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0A5AB1401716
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 04:45:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1721961901;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ocPWJDm1gOUeE9KbPi4UDzUOTmRYSXdABw9LPfhJX4I=;
+ b=HPKkoaYDW6ipmw6FvUX0NGM1qaGdYPGASZ+3kA4J9gUPUpEcfxzG2ldWduX1HMieJH1F3n
+ 1rFkSayxMfz0fIN6fucUY7j8ydi0+EAXKGuYXdXrudWpAAj5svJGiFrS2d4Hwjubq+F9y1
+ MOkAVkck7tLHRb5uu/wrPN/U4PY2s2w=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-614-efSjuZV2PxKD19VSPAQ0tA-1; Thu,
+ 25 Jul 2024 22:44:57 -0400
+X-MC-Unique: efSjuZV2PxKD19VSPAQ0tA-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0CB6021224;
- Thu, 25 Jul 2024 21:44:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721943877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BTdNmAGGDDiYq38mCa3SjNwf3ieh/ly8dPOx9B8hkmU=;
- b=2IiYs4ZDx1n+MgriRTALtbgyE5Do2ZOcdNH88fanI16Q0xYoswRclN6wGPGt0A6WcocD/E
- pV4g0t/+PBS8umCbgeAASx8LtXsaQ26UsrHNJtpuz13OFMH98wFdxVOPmaSDhvjqImbqVL
- whuPf5B9b/HigrHLjx645Bqg51L9th8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721943877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BTdNmAGGDDiYq38mCa3SjNwf3ieh/ly8dPOx9B8hkmU=;
- b=RgVkrWUGuh/hRj7RUUN7S9niweFYZnHwlbSQ1FtXF/MSqN76VFpIuSPU7x/7miQUQ7UpyC
- u0yaznu6cUPsXtCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1721943877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BTdNmAGGDDiYq38mCa3SjNwf3ieh/ly8dPOx9B8hkmU=;
- b=2IiYs4ZDx1n+MgriRTALtbgyE5Do2ZOcdNH88fanI16Q0xYoswRclN6wGPGt0A6WcocD/E
- pV4g0t/+PBS8umCbgeAASx8LtXsaQ26UsrHNJtpuz13OFMH98wFdxVOPmaSDhvjqImbqVL
- whuPf5B9b/HigrHLjx645Bqg51L9th8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1721943877;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BTdNmAGGDDiYq38mCa3SjNwf3ieh/ly8dPOx9B8hkmU=;
- b=RgVkrWUGuh/hRj7RUUN7S9niweFYZnHwlbSQ1FtXF/MSqN76VFpIuSPU7x/7miQUQ7UpyC
- u0yaznu6cUPsXtCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFF9D13874;
- Thu, 25 Jul 2024 21:44:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KAMBNUTHombQEgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 25 Jul 2024 21:44:36 +0000
-Date: Thu, 25 Jul 2024 23:44:19 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240725214419.GA1002956@pevik>
-References: <20240716153604.22984-1-chrubis@suse.cz>
- <20240716153604.22984-3-chrubis@suse.cz>
- <d5cb1dc4-7bd7-4084-952d-95511cbbb907@suse.cz>
- <20240725110206.GA982789@pevik>
- <9066c23e-444e-4975-a3c8-505fbd4b6042@suse.cz>
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id C982D1955D45; Fri, 26 Jul 2024 02:44:55 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 4F4AF1955D42; Fri, 26 Jul 2024 02:44:52 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it,
+	andrea.cervesato@suse.com
+Date: Fri, 26 Jul 2024 10:44:47 +0800
+Message-ID: <20240726024447.134802-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9066c23e-444e-4975-a3c8-505fbd4b6042@suse.cz>
-X-Spamd-Result: default: False [-7.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- MIME_GOOD(-0.10)[text/plain]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCPT_COUNT_THREE(0.00)[3]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 2/2] testcaes/lib: Add shell loader
+Subject: [LTP] [PATCH] cachestat: remove .min_kver from cachestat tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,62 +75,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 25. 07. 24 13:02, Petr Vorel wrote:
-> > Hi Martin, Cyril,
+Removing the kernel version check (.min_kver) from the cachestat
+tests to allow the test to run on distributions that backport the
+cachestat syscall.
 
-> > > > +mounted=$(grep $TST_MNTPOINT /proc/mounts)
+With no support just skip as TCONF:
+  ../../../../include/lapi/mman.h:40: TCONF: syscall(451) __NR_cachestat not supported on your arch
 
-> > > This check might produce false positive for example when another LTP shell
-> > > script runs in parallel in another temp directory. I'd recommend using
-> > > $(realpath ...) to disambiguate the mountpoints.
+Suggested-by: Stephen Bertram <sbertram@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/cachestat/cachestat01.c | 1 -
+ testcases/kernel/syscalls/cachestat/cachestat02.c | 1 -
+ testcases/kernel/syscalls/cachestat/cachestat03.c | 1 -
+ testcases/kernel/syscalls/cachestat/cachestat04.c | 1 -
+ 4 files changed, 4 deletions(-)
 
-> > FYI this is just a test, not a library script.
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
+index f3730d773..19ae9655e 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat01.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
+@@ -90,7 +90,6 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
+-	.min_kver = "6.5",
+ 	.mount_device = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.all_filesystems = 1,
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat02.c b/testcases/kernel/syscalls/cachestat/cachestat02.c
+index 2bb94f133..e168de5a5 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat02.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat02.c
+@@ -82,7 +82,6 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
+-	.min_kver = "6.5",
+ 	.bufs = (struct tst_buffers []) {
+ 		{&cs, .size = sizeof(struct cachestat)},
+ 		{&cs_range, .size = sizeof(struct cachestat_range)},
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat03.c b/testcases/kernel/syscalls/cachestat/cachestat03.c
+index 35f6bdfb3..139745c34 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat03.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat03.c
+@@ -70,7 +70,6 @@ static struct tst_test test = {
+ 	.needs_hugetlbfs = 1,
+ 	.hugepages = {1, TST_NEEDS},
+ 	.tcnt = ARRAY_SIZE(tcases),
+-	.min_kver = "6.5",
+ 	.needs_tmpdir = 1,
+ 	.bufs = (struct tst_buffers []) {
+ 		{&cs, .size = sizeof(struct cachestat)},
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat04.c b/testcases/kernel/syscalls/cachestat/cachestat04.c
+index a389c203c..a59494451 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat04.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat04.c
+@@ -48,7 +48,6 @@ static void run(void)
+ 
+ static struct tst_test test = {
+ 	.test_all = run,
+-	.min_kver = "6.5",
+ 	.mount_device = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.bufs = (struct tst_buffers []) {
+-- 
+2.45.2
 
-> > Also maybe just prepend it with $PWD/ would be enough:
-
-> > mounted=$(grep $PWD/$TST_MNTPOINT /proc/mounts)
-
-> > (Not to require yet another binary. It's ok to have it here, because developers
-> > have coreutils, but in case it's in the tst_test.sh or its dependencies some
-> > minimal systems might have problem - busybox based embedded systems realpath is
-> > configurable via CONFIG_REALPATH=y. It would help if we specify shell library
-> > dependencies).
-
-> The test could still get confused by leftover mounts from other tests or
-> failed runs of itself. That'll be annoying to deal with when you try to
-> modify something in the shell loader.
-
-Fair point.
-
-> I've checked what happens if you mount a filesystem on a mountpoint path
-> that contains symlinks and in that case, /proc/mounts will report the real
-> path. So $(realpath $TST_MNTPOINT) is what you need to search for. Grep
-> might get confused by special characters in the path, though. Another
-> problem is that /proc/mounts converts spaces to octal codes to prevent
-> column parsing issues.
-
-OK, I would hope users would not use symlinks, but OTOH I'm ok with using
-realpath for tests, thus no reason to block using symlinks (which we would do
-with my suggestion to use $PWD instead of realpath).
-
-But I would not waste our time with effort to fix special characters:
-
-1) Build system does not work with some of them anyway (Cyril reported at least
-" due out-of-tree complexity of our build system).
-2) Old doc somewhere warned that project would ignore broken compilation due
-special characters.
-3) I don't expect many people will be forced to have LTP on directory with
-strange characters.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
