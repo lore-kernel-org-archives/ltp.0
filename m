@@ -4,71 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA77DC3DA49
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 13:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7362BC3DA4A
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 14:33:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 369933D1CC2
-	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 15:53:09 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D0F943D1B0E
+	for <ltp@archiver.kernel.org>; Fri, 26 Jul 2024 16:33:04 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CC873CF2B6
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:52:55 +0200 (CEST)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
- [IPv6:2607:f8b0:4864:20::62f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CDA123C60BA
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 16:32:49 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BE7931400060
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 15:52:54 +0200 (CEST)
-Received: by mail-pl1-x62f.google.com with SMTP id
- d9443c01a7336-1fc47abc040so5386965ad.0
- for <ltp@lists.linux.it>; Fri, 26 Jul 2024 06:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1722001973; x=1722606773; darn=lists.linux.it;
- h=to:date:message-id:subject:mime-version:from:from:to:cc:subject
- :date:message-id:reply-to;
- bh=hlzn4jLxXLMwuh2yh1LHIIdcIjv+b2ijdQgVNoLWnK8=;
- b=GZeKk2WyJm4JWKM/YsqGmWKlSQC5PsdoTRKMmOBApR6sTjT+qEsMEY6xy1M3QYXarC
- 2e3JjolqqkHzJSn32hJnlobXXBVUdAeALuK2p1CevP8bvBksO4IKKPckzkRVL9IlDqRV
- t97iwNs8B59goACm8J6DEctRBmLcF3Mm81BgugfRqnNcqkHFYqOWvpZ8RZyvIr4lMPIl
- 3F41iR81ajx1hH5ibbpksBisTyUgPQ2ZTiF1Gm6fKqTloths/ElzBPBJlol1JRlYAcVu
- kh6299RjfmLZznaUeYVdnp+TFUlpbtGAdBfoeuo0fFvMm0xghNGOysEEXcwLsbQ8AB6e
- e/yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1722001973; x=1722606773;
- h=to:date:message-id:subject:mime-version:from:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=hlzn4jLxXLMwuh2yh1LHIIdcIjv+b2ijdQgVNoLWnK8=;
- b=kWBw9kswCzjT1GWoPe4VCBmoZ9yVHVx1G8Q8H6LacgTGgzJPRZ3cKrd1hsQFftW/2q
- jAh9ax1Tmo6RyvO6qqo63Yb4nHWsBmT7Zu/UGqPRpk1P9aPB1Fg8CgrnNGdgGh3acDh7
- krPGJVAXWZwrLxYd8XVL2ypTE55UsC+Hb2h/lQsTFHooGijGiEOrv9Io4934vT9mPS05
- J04taVC0bOYVl2ZT4vsmzfxYGIX+7kiuNkbLXpTduYQLNf5Op9N9Z+9RZoXRE2ETIuW1
- mxLGxVN32Qa41hUlbJvPodHGinXR52Ltegz4Hp7GyowRrH6RsNuR+O5bhMcGoTUUIbxB
- R6Lg==
-X-Gm-Message-State: AOJu0YynRP/jwpinsiwbSKMXEQWYygdrtwZ0eso3akFaX4JfqvD4H3Qi
- cQAzcGGEofownrNVwMW488YXL4ipN+Z6d3xA2px1jH/rOTyd/I1UKG97cg==
-X-Google-Smtp-Source: AGHT+IEBchgy5BBvX8Qg8t0Ef2+eesOCbA4LU5vYWdcmf4JoeI+NC/Bbnt9G2Gdufo+WEPnIcrmQ7g==
-X-Received: by 2002:a17:902:d48a:b0:1fd:82ac:7c39 with SMTP id
- d9443c01a7336-1fed39df7b0mr63132015ad.41.1722001972966; 
- Fri, 26 Jul 2024 06:52:52 -0700 (PDT)
-Received: from smtpclient.apple (c-24-20-24-37.hsd1.or.comcast.net.
- [24.20.24.37]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-1fed7c7fdafsm32525105ad.52.2024.07.26.06.52.52
- for <ltp@lists.linux.it>
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 26 Jul 2024 06:52:52 -0700 (PDT)
-From: Brent Yardley <brent.yardley@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Message-Id: <92C0327A-E1AB-46B6-A180-9D886977902D@gmail.com>
-Date: Fri, 26 Jul 2024 06:52:41 -0700
-To: ltp@lists.linux.it
-X-Mailer: Apple Mail (2.3774.600.62)
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 55392600437
+ for <ltp@lists.linux.it>; Fri, 26 Jul 2024 16:32:49 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 797431F82D;
+ Fri, 26 Jul 2024 14:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722004368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QuU0+PpfEaEgg+YuKDD8mXRxA9Py0HvXZ48wicTlqaI=;
+ b=NnED5jMvdToxPLZvr3v9vCIkByhJO5qclKfzw1DhfBhxtz6YPvzymGmBhjz29m/YWcT4D3
+ nQAM85J6cakbGKkoaaKEvCfz8WTttEflQI3dovO06XYY7BsCW870AyZhKd6HkNLm2RN+K4
+ 0hveE8Rub8K2T7oeKcko/i+7bpTX+U4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722004368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QuU0+PpfEaEgg+YuKDD8mXRxA9Py0HvXZ48wicTlqaI=;
+ b=SINx+rZ4Jpq9J/paR3aXeNjbUYHYKl39PNecWYcpU/m3GUKi1LS76rbAP3fWUXvqVkJT2Y
+ bFJ2S9eqPJ6DXSDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722004368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QuU0+PpfEaEgg+YuKDD8mXRxA9Py0HvXZ48wicTlqaI=;
+ b=NnED5jMvdToxPLZvr3v9vCIkByhJO5qclKfzw1DhfBhxtz6YPvzymGmBhjz29m/YWcT4D3
+ nQAM85J6cakbGKkoaaKEvCfz8WTttEflQI3dovO06XYY7BsCW870AyZhKd6HkNLm2RN+K4
+ 0hveE8Rub8K2T7oeKcko/i+7bpTX+U4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722004368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QuU0+PpfEaEgg+YuKDD8mXRxA9Py0HvXZ48wicTlqaI=;
+ b=SINx+rZ4Jpq9J/paR3aXeNjbUYHYKl39PNecWYcpU/m3GUKi1LS76rbAP3fWUXvqVkJT2Y
+ bFJ2S9eqPJ6DXSDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4ECD5138A7;
+ Fri, 26 Jul 2024 14:32:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Xzw1EpCzo2ZRIQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 26 Jul 2024 14:32:48 +0000
+Date: Fri, 26 Jul 2024 16:32:46 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: =?iso-8859-2?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Message-ID: <20240726143246.GB1104577@pevik>
+References: <20240725-landlock-v4-0-66f5a1c0c693@suse.com>
+ <20240725-landlock-v4-5-66f5a1c0c693@suse.com>
+ <20240726132440.GC1066866@pevik>
+ <20240726.Moowae0jipai@digikod.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240726.Moowae0jipai@digikod.net>
+X-Spamd-Result: default: False [-4.30 / 50.00]; REPLY(-4.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] Re-enable access to LTP
+Subject: Re: [LTP] [PATCH v4 5/5] Add landlock06 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,18 +113,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: gnoack@google.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I was removed from the LTP due to not having TFA enabled.  I have reenabled TFA on GitHub, can I please be added back to LTP?
+> On Fri, Jul 26, 2024 at 03:24:40PM +0200, Petr Vorel wrote:
+> > Hi Andrea,
 
-Thanks,
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Brent Yardley
-brent.yardley@gmail.com
+> > Few notes below.
 
+> > ...
+> > > +static struct tst_test test = {
+> > > +	.test_all = run,
+> > > +	.setup = setup,
+> > > +	.cleanup = cleanup,
+> > > +	.min_kver = "6.10",
+> > nit: would not be able to check the availablity via landlock ABI == 5?
+
+> Because Landlock is available since 5.13, I guess min_kver should be set
+> to the same version.
+
+If anybody backport this, kernel version will not match. IMHO it's better to
+avoid specifying version if we can detect with something else (ABI version in
+this case). Also avoid kernel config reading if not needed is IMHO better.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
