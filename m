@@ -4,103 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88238C3DA61
-	for <ltp@archiver.kernel.org>; Mon, 29 Jul 2024 11:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D74EC3DA4A
+	for <ltp@archiver.kernel.org>; Mon, 29 Jul 2024 11:54:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 79FC03D1D43
-	for <ltp@archiver.kernel.org>; Mon, 29 Jul 2024 13:42:07 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5FA0B3D1D65
+	for <ltp@archiver.kernel.org>; Mon, 29 Jul 2024 13:54:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 58F963D1D3C
- for <ltp@lists.linux.it>; Mon, 29 Jul 2024 13:41:52 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 2AE2A3D1D43
+ for <ltp@lists.linux.it>; Mon, 29 Jul 2024 13:53:45 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1C7E860007E
- for <ltp@lists.linux.it>; Mon, 29 Jul 2024 13:41:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F3E8160110A
+ for <ltp@lists.linux.it>; Mon, 29 Jul 2024 13:53:44 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8CEB521C49;
- Mon, 29 Jul 2024 11:41:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0A75A1F793;
+ Mon, 29 Jul 2024 11:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722253309;
+ t=1722254024;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BWcMM4YVPQeLP0NUXSFfLygkhOwKI1fuLc41HjG7JEM=;
- b=bg0HxRf5xS9pxK3eBHbQlljh/AAFoBWYrgdGNpK+HSISkOCnMzE2GgrbJ5F4Cgw9mVojBW
- 48rMhyX3T+eA9JYbedBEeEcdKujR+YZIKvGZj7RPlU6G9VEa/imBfHJU3fTm2GdOFH4knw
- y0IDSgoYRkOf43cyYv7QrJFFZijingk=
+ bh=Y8DIbUraKoClAx4NSeSz1Ixn6mYPUc7MmPw43MLn+Ko=;
+ b=TidKj90rA8kkeUQd3zKQIf6QlouDBGJo/eyMkZm6lczKsbmRU33N256bJdc17GLtOl+ufS
+ onl3SLOxfhzomnkX50stZ6cAT+qDj1z4uhIsYP8dfHLSx2xmQ2zVc7E6l9a1yVpJiL2v7F
+ H7cp1ZhYtBuN3VUciCYWtdhz11qsb2Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722253309;
+ s=susede2_ed25519; t=1722254024;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BWcMM4YVPQeLP0NUXSFfLygkhOwKI1fuLc41HjG7JEM=;
- b=W+PKNqilo7Btcpq42DfC9HN1NTD2zZygEgKyqH7UNhDvUDul+9em8YdXG+IAdDXCtG4fl3
- ZxyeoRILXVJiRGCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=Y8DIbUraKoClAx4NSeSz1Ixn6mYPUc7MmPw43MLn+Ko=;
+ b=1wzAQu6zezT3ycMO0a0YI2Vaj1tKB6YG5NFKotKVDv0bZvQ6LufRBFMuYnGj5gJ/VqRyvP
+ ZnbMhjvxeOeZ5JAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TidKj90r;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1wzAQu6z
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722253309;
+ t=1722254024;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BWcMM4YVPQeLP0NUXSFfLygkhOwKI1fuLc41HjG7JEM=;
- b=bg0HxRf5xS9pxK3eBHbQlljh/AAFoBWYrgdGNpK+HSISkOCnMzE2GgrbJ5F4Cgw9mVojBW
- 48rMhyX3T+eA9JYbedBEeEcdKujR+YZIKvGZj7RPlU6G9VEa/imBfHJU3fTm2GdOFH4knw
- y0IDSgoYRkOf43cyYv7QrJFFZijingk=
+ bh=Y8DIbUraKoClAx4NSeSz1Ixn6mYPUc7MmPw43MLn+Ko=;
+ b=TidKj90rA8kkeUQd3zKQIf6QlouDBGJo/eyMkZm6lczKsbmRU33N256bJdc17GLtOl+ufS
+ onl3SLOxfhzomnkX50stZ6cAT+qDj1z4uhIsYP8dfHLSx2xmQ2zVc7E6l9a1yVpJiL2v7F
+ H7cp1ZhYtBuN3VUciCYWtdhz11qsb2Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722253309;
+ s=susede2_ed25519; t=1722254024;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BWcMM4YVPQeLP0NUXSFfLygkhOwKI1fuLc41HjG7JEM=;
- b=W+PKNqilo7Btcpq42DfC9HN1NTD2zZygEgKyqH7UNhDvUDul+9em8YdXG+IAdDXCtG4fl3
- ZxyeoRILXVJiRGCA==
+ bh=Y8DIbUraKoClAx4NSeSz1Ixn6mYPUc7MmPw43MLn+Ko=;
+ b=1wzAQu6zezT3ycMO0a0YI2Vaj1tKB6YG5NFKotKVDv0bZvQ6LufRBFMuYnGj5gJ/VqRyvP
+ ZnbMhjvxeOeZ5JAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C3EA1368A;
- Mon, 29 Jul 2024 11:41:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6EAC138A7;
+ Mon, 29 Jul 2024 11:53:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UFB/BP1/p2Y6NQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 29 Jul 2024 11:41:49 +0000
-Date: Mon, 29 Jul 2024 13:41:45 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zljEMseCp2apOAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 29 Jul 2024 11:53:43 +0000
+Date: Mon, 29 Jul 2024 13:53:35 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240729114145.GA1234388@pevik>
-References: <20240717171713.687339-1-pvorel@suse.cz>
- <20240717171713.687339-6-pvorel@suse.cz>
- <20240729073226.GA1223191@pevik> <ZqdlJJ1-AYAJsDcL@yuki>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20240729115335.GA1251624@pevik>
+References: <20240723-ioctl_ficlone-v2-0-33075bbc117f@suse.com>
+ <20240723-ioctl_ficlone-v2-3-33075bbc117f@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZqdlJJ1-AYAJsDcL@yuki>
-X-Spamd-Result: default: False [-0.30 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+In-Reply-To: <20240723-ioctl_ficlone-v2-3-33075bbc117f@suse.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 0A75A1F793
+X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/6] runtest/sched: Add sched_football
+Subject: Re: [LTP] [PATCH v2 3/7] Add ioctl_ficlone02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,7 +125,8 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
+Cc: linux-bcachefs@vger.kernel.org, Kent Overstreet <kent.overstreet@linux.dev>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -121,53 +134,36 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi all,
 
-...
-> > I'm sorry, I haven't noticed, that realtime installs into a different directory:
+> This test verifies that ioctl() FICLONE/FICLONERANGE feature
+> correctly raises EOPNOTSUPP when unsupported filesystem is used.
+> In particular, filesystems which don't support copy-on-write.
 
-> Uff, missed that as well. The INSTALL_DIR is set in the config.mk for
-> the realtime tests to $(srcdir) so it copies the layout of the realtime
-> directories.
+This test, merged as [1] fails on bcachefs:
 
-Thanks for having a look.
+$ cd testcases/kernel/syscalls/ioctl/
+# # LTP_SINGLE_FS_TYPE=bcachefs ./ioctl_ficlone02
+tst_buffers.c:57: TINFO: Test is using guarded buffers
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_iocu1xhKp as tmpdir (tmpfs filesystem)
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1806: TINFO: LTP version: 20240524-131-gdfb293ee0
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+tst_supported_fs_types.c:161: TINFO: WARNING: testing only bcachefs
+tst_supported_fs_types.c:97: TINFO: Kernel supports bcachefs
+tst_supported_fs_types.c:62: TINFO: mkfs.bcachefs does exist
+tst_test.c:1746: TINFO: === Testing on bcachefs ===
+tst_test.c:1111: TINFO: Formatting /dev/loop0 with bcachefs opts='' extra opts=''
+tst_test.c:1123: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocu1xhKp/mnt fstyp=bcachefs flags=0
+ioctl_ficlone02.c:33: TFAIL: ioctl(dst_fd, FICLONE, src_fd) succeeded
+ioctl_ficlone02.c:34: TFAIL: ioctl(dst_fd, FICLONERANGE, clone_range) expected EOPNOTSUPP: EINVAL (22)
 
-> > cd ltp/testcases/realtime/func/sched_football
-> > # make install
-> > mkdir -p "/opt/ltp/testcases/realtime/func/sched_football"
-> > install -m 00775   "ltp/testcases/realtime/func/sched_football/run_auto.sh" /opt/ltp/testcases/realtime/func/sched_football/run_auto.sh
-> > install -m 00775   "ltp/testcases/realtime/func/sched_football/sched_football" /opt/ltp/testcases/realtime/func/sched_football/sched_football
-
-> The minimal fix would be to overwrite the INSTALL_DIR for the
-> sched_football testcase, that would be:
-
-> diff --git a/testcases/realtime/func/sched_football/Makefile b/testcases/realtime/func/sched_football/Makefile
-> index 9bc779efa..aac98eab6 100644
-> --- a/testcases/realtime/func/sched_football/Makefile
-> +++ b/testcases/realtime/func/sched_football/Makefile
-> @@ -6,10 +6,11 @@
-
->  top_srcdir             ?= ../../../..
-
-> -INSTALL_TARGETS                := run_auto.sh
->  include $(top_srcdir)/include/mk/env_pre.mk
->  include $(abs_srcdir)/../../config.mk
-
-> +INSTALL_DIR=testcases/bin
-> +
->  # TODO: integrate properly with LTP library
->  LDLIBS                 += -lltp
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
-OK, quick fix. I'm for this to get problem fixed, but hope we sort realtime till
-next release.
-
-Thus 2 patches:
-https://patchwork.ozlabs.org/project/ltp/list/?series=417019&state=*
+I tested only kernel 6.10 and 6.9, fails on both. Maybe it's just a different
+errno set...
 
 Kind regards,
 Petr
 
-> We can move the source code around once we get to the realtime directory
-> cleanup later on.
+[1] https://github.com/linux-test-project/ltp/commit/d70bfb185c9aa52aeab9b9893055eec7fc969a4f
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
