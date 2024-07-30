@@ -4,66 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E3EC3DA49
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 07:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0B2EC3DA61
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 08:49:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D3123D1C18
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 09:50:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 436273D1D88
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 10:49:45 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 992783D0B1D
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:49:59 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D48633D112F
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 10:49:28 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 928F21000DE4
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:49:58 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A0487204733
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 10:49:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AE2DE21A92;
- Tue, 30 Jul 2024 07:49:57 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AD2931F7EC;
+ Tue, 30 Jul 2024 08:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722329364;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XwYnaVlsdSsb5qSop2VKmtOEM9x4H39gOVVRwZ9EUjw=;
+ b=jxu5g3p/OHGIL31C7S2LPHV1FMtBaHCT9OAW1+htFBiwrn5QRlT/PrCRRmIpzurW3GyZ/Y
+ q5hyCXuOOJsS3MzWvG5XRSnnhrbLVE54POqQW7nBiWvLH8bj4wSJD96SItWz78/gxAMjhm
+ r49iJ2oP5+/zJLICErtnZD59oNmW4gY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722329364;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XwYnaVlsdSsb5qSop2VKmtOEM9x4H39gOVVRwZ9EUjw=;
+ b=yFWnLmEHZkq0HAk///e1BfD3rtE9lNkEMRrcUyTL/UJXjAwZ0WnSiRGfUhR3Sg98EaOedg
+ oi0a5YGkc5YztVDg==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722329364;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XwYnaVlsdSsb5qSop2VKmtOEM9x4H39gOVVRwZ9EUjw=;
+ b=jxu5g3p/OHGIL31C7S2LPHV1FMtBaHCT9OAW1+htFBiwrn5QRlT/PrCRRmIpzurW3GyZ/Y
+ q5hyCXuOOJsS3MzWvG5XRSnnhrbLVE54POqQW7nBiWvLH8bj4wSJD96SItWz78/gxAMjhm
+ r49iJ2oP5+/zJLICErtnZD59oNmW4gY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722329364;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XwYnaVlsdSsb5qSop2VKmtOEM9x4H39gOVVRwZ9EUjw=;
+ b=yFWnLmEHZkq0HAk///e1BfD3rtE9lNkEMRrcUyTL/UJXjAwZ0WnSiRGfUhR3Sg98EaOedg
+ oi0a5YGkc5YztVDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9831913297;
- Tue, 30 Jul 2024 07:49:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8DD4C13983;
+ Tue, 30 Jul 2024 08:49:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tSzlJCWbqGYwdQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 30 Jul 2024 07:49:57 +0000
-Date: Tue, 30 Jul 2024 09:49:25 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZqibBUXHVfSjN-_4@yuki>
-References: <20240729223431.1307306-1-pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MsLsIRSpqGZbCAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 30 Jul 2024 08:49:24 +0000
+Date: Tue, 30 Jul 2024 10:49:24 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240730084924.GC1327610@pevik>
+References: <20240722145443.19104-1-chrubis@suse.cz>
+ <20240729205112.GA1287954@pevik> <ZqiRaf0bPloFV3LI@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240729223431.1307306-1-pvorel@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: AE2DE21A92
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <ZqiRaf0bPloFV3LI@yuki>
+X-Spamd-Result: default: False [-7.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] cachestat01: Reduce required space on 64kb
- page size
+Subject: Re: [LTP] [PATCH v3] sched: starvation: Autocallibrate the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,64 +113,126 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: joe.liu@mediatek.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> cachestat01.c:39: TINFO: Number of pages: 4096
-> cachestat01.c:56: TPASS: cachestat(fd, cs_range, cs, 0) passed
-> cachestat01.c:59: TPASS: cs->nr_cache + cs->nr_evicted == num_pages (4096)
-> cachestat01.c:38: TINFO: Disable file synchronization
-> cachestat01.c:39: TINFO: Number of pages: 8192
-> cachestat01.c:46: TBROK: write(3,0x1000ddb0aa0,65536) failed: ENOSPC (28)
-> 
-> Fixes: 93b28ee69d ("Add cachestat01 test")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> First I thought we should use tst_fs_has_free() in each
-> test_cached_pages() run, but test uses .all_filesystems, thus it's
-> always 300 MB. Should we, just in case, use .dev_min_size = 300,
-> to make sure it runs correctly even we change the DEV_SIZE_MB value?
-> 
-> Or, should we really calculate required space with tst_fs_has_free(),
-> based on page size num_pages and * 1.1 (reserved space for metadata)?
+Hi,
 
-Hmm, I guess that we should calculate how many pages are going to fit
-into the filesystem and cap it on a sane number as well, so that the
-test runs for a reasonable time if user passed a real and big block
-device, so something as:
+> Hi!
+> > tst_tmpdir.c:316: TINFO: Using /tmp/LTP_starv8seE as tmpdir (tmpfs filesystem)
+> > tst_test.c:1806: TINFO: LTP version: 20240524
+> > tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+> > starvation.c:71: TINFO: Setting affinity to CPU 0
+> > tst_test.c:1658: TINFO: Updating max runtime to 0h 04m 00s
+> > tst_test.c:1650: TINFO: Timeout per run is 0h 04m 30s
+> > starvation.c:117: TPASS: wait_for_pid(child_pid) passed
 
-num_pages = MIN(tst_device->size/(2*page_size), 15);
+> > => test runs ~ 13s - 19s on aarch64, ppc64le and x86_64. Therefore not sure if
+> > 04m max runtime is good.
 
->  testcases/kernel/syscalls/cachestat/cachestat01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
-> index f7f6275cbd..edb6335d9e 100644
-> --- a/testcases/kernel/syscalls/cachestat/cachestat01.c
-> +++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
-> @@ -67,7 +67,7 @@ static void test_cached_pages(const unsigned int use_sync, const int num_pages)
->  
->  static void run(unsigned int use_sync)
->  {
-> -	for (int i = 0; i < 15; i++)
-> +	for (int i = 0; i < page_size > 4096 ? 13 : 15; i++)
+OK, now testing with your patchset :)
+https://github.com/pevik/ltp/commit/0392e5142c5e8cb1d38dec9916a9f0118cf27afe
 
-Uff, this is starting to look like perl...
+All tests are on KVM.
 
->  		test_cached_pages(use_sync, 1 << i);
->  }
->  
-> -- 
-> 2.45.2
-> 
+* aarch64 6.10.1-1-default (8s)
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+starvation.c:52: TINFO: CPU did 120000000 loops in 42654us
+tst_test.c:1658: TINFO: Updating max runtime to 0h 00m 42s
+tst_test.c:1650: TINFO: Timeout per run is 0h 01m 12s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+* ppc64le 6.10.1-1-default (9s)
+...
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+starvation.c:52: TINFO: CPU did 120000000 loops in 98081us
+tst_test.c:1658: TINFO: Updating max runtime to 0h 01m 38s
+=> FYI HERE IS DIFFERENCE over 1 min
+tst_test.c:1650: TINFO: Timeout per run is 0h 02m 08s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* x86_64 6.10.1-1-default (10s)
+tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+starvation.c:52: TINFO: CPU did 120000000 loops in 41908us
+tst_test.c:1658: TINFO: Updating max runtime to 0h 00m 41s
+tst_test.c:1650: TINFO: Timeout per run is 0h 01m 11s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+Some SLES
+* s390x 6.4 (6s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 53599us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 53s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 23s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* s390x 6.4 (6s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 53599us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 53s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 23s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* x86_64 5.14.21 (5s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 75176us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 01m 15s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 45s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* aarch64 5.14.21 (9s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 42404us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 42s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 12s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* ppc64le 5.14.21 (16s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 147223us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 02m 27s
+tst_test.c:1652: TINFO: Timeout per run is 0h 02m 57s
+=> FYI HERE IS DIFFERENCE 2 min
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* aarch64 5.3.18 (8s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 42382us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 42s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 12s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* ppc64le 5.3.18 (50s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 140564us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 02m 20s
+tst_test.c:1652: TINFO: Timeout per run is 0h 02m 50s
+=> FYI HERE IS DIFFERENCE 2 min
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* aarch64 4.12.14 (12s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 55491us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 55s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 25s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* ppc64le 4.12.14 (1m 9s FYI HIGHEST RUNTIME)
+starvation.c:52: TINFO: CPU did 120000000 loops in 147102us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 02m 27s
+tst_test.c:1652: TINFO: Timeout per run is 0h 02m 57s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* s390x 4.12.14 (5s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 49973us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 49s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 19s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+* x86_64 4.4.180 (10s)
+starvation.c:52: TINFO: CPU did 120000000 loops in 37042us
+tst_test.c:1659: TINFO: Updating max runtime to 0h 00m 37s
+tst_test.c:1652: TINFO: Timeout per run is 0h 01m 07s
+starvation.c:150: TPASS: Haven't reproduced scheduller starvation.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
