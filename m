@@ -4,66 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE969C3DA61
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 07:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C371CC3DA61
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 07:37:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E8CF3D1D92
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 09:33:58 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 26EB13D1D7F
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 09:37:46 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B98F3D0B1D
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:33:43 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D9A1C3D1C18
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:37:30 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7E6E61400E70
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:33:43 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A5E6660563D
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 09:37:29 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 72A7C21A64;
- Tue, 30 Jul 2024 07:33:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F17FF21A64;
+ Tue, 30 Jul 2024 07:37:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722325048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aKjk5n48N9+NfpePDB2nJQNv8g75c45YokAKl78i8GE=;
+ b=x9UAVeI1/4W9S825IyzRIGaLTH3AODXXM21oku8ZmB4t/yH+mdeu1vrMrfSnEOXmSTQE7l
+ 3eo0aJkKTpuKPJcrQPWZrz1YIDzgHhEV0cHbqnOzPNOORFZHYmmVIJ7l5iTIm/8ADPh5VI
+ Olic8LJZ6ccqvik8TA1vG+uhf7rCoWs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722325048;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aKjk5n48N9+NfpePDB2nJQNv8g75c45YokAKl78i8GE=;
+ b=K98hHCAU2oqnA7SFRcM79h6EdMOYnULcj+tpbzMKFu8owqr8HU9L+Ono8hnurx2rlrSBKO
+ yYvrNeC8MHmt+NAQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722325045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aKjk5n48N9+NfpePDB2nJQNv8g75c45YokAKl78i8GE=;
+ b=v0zJjQu+CLNKzsV4XNbdG4YLAqUJzLxDAGCi2ISC3aoeIlCCzdjfoXBADyOXzAHgus/0Xq
+ 2HL4VH8h44ICyjPMAugG+h12m/TLjQzF+6IZcWv9eeBJnTW1Z+sO5CWGlcdJ//0qfGhb3E
+ 2eJKkvirwJyixDRwqznv2cjN7diXaMQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722325045;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aKjk5n48N9+NfpePDB2nJQNv8g75c45YokAKl78i8GE=;
+ b=0ABvBwrGvSJbnqr9G02Fcnuhu42IyAlIWor7pDNJj+XxFeXAHv3ugpU8xKTWVitwpBzjgJ
+ jb4qR1omU5OuNwDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3770A13983;
- Tue, 30 Jul 2024 07:33:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E08E913983;
+ Tue, 30 Jul 2024 07:37:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NeJ6C1aXqGbKcAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 30 Jul 2024 07:33:42 +0000
-Date: Tue, 30 Jul 2024 09:33:42 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240730073342.GA1327610@pevik>
-References: <20240722145443.19104-1-chrubis@suse.cz>
- <20240729205112.GA1287954@pevik> <ZqiRaf0bPloFV3LI@yuki>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oO1vMzWYqGbUcQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 30 Jul 2024 07:37:25 +0000
+Date: Tue, 30 Jul 2024 09:36:53 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Filippo Storniolo <fstornio@redhat.com>
+Message-ID: <ZqiYFfHsx4H1Dc8d@yuki>
+References: <20240724130553.126252-1-fstornio@redhat.com>
+ <ZqEaRwixo1dHiBEC@yuki>
+ <CAHzY_-55nD2yUQRL0wUT9ddD5ESSnBJAqiYZ5PscJF=bU4+j=A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZqiRaf0bPloFV3LI@yuki>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 72A7C21A64
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <CAHzY_-55nD2yUQRL0wUT9ddD5ESSnBJAqiYZ5PscJF=bU4+j=A@mail.gmail.com>
+X-Spamd-Result: default: False [-3.60 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] sched: starvation: Autocallibrate the timeout
+Subject: Re: [LTP] [PATCH] mlock05: add log details about the success/failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,34 +111,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: joe.liu@mediatek.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > tst_tmpdir.c:316: TINFO: Using /tmp/LTP_starv8seE as tmpdir (tmpfs filesystem)
-> > tst_test.c:1806: TINFO: LTP version: 20240524
-> > tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
-> > starvation.c:71: TINFO: Setting affinity to CPU 0
-> > tst_test.c:1658: TINFO: Updating max runtime to 0h 04m 00s
-> > tst_test.c:1650: TINFO: Timeout per run is 0h 04m 30s
-> > starvation.c:117: TPASS: wait_for_pid(child_pid) passed
+Hi!
+> Our test logs will be reviewed by people not familiar with the test purpose
+> or its implementation. These will be people who may not have the background
+> or time necessary to read and understand the source code.
 
-> > => test runs ~ 13s - 19s on aarch64, ppc64le and x86_64. Therefore not sure if
-> > 04m max runtime is good.
+You may be interested in the metadata extracted during the test build as
+well. LTP produces a big a big html page with descriptions extracted
+from the tests in docparse/metadata.html for mlock05 you get:
 
-> Are you sure that you have run the test with the patch?
+...
 
-Ah, single missing variable, I tested just the master. I'm sorry, I'll retest.
+Description
 
-Kind regards,
-Petr
+Verify mlock() causes pre-faulting of PTEs and prevent memory to be swapped out.
 
-> Because it's missing the messages produced by the autocallibration and
-> the wait_for_pid() should not be there after the patch.
+Find the new mapping in /proc/$pid/smaps and check Rss and Locked fields
+after mlock syscall: Rss and Locked size should be equal to the size of
+the memory allocation
+
+...
+
+> However, improving the TST_EXP_EQ_LU() macro to print additional
+> information looks great and I believe it would be the better approach, as
+> it would also be useful for future contributions.
+> Do you already have something in mind for a possible implementation?
+> I was thinking of creating a new one that looks like this:
+> TST_EXP_EQ_LU_MSG() so that the test writer can add a custom message where
+> the test passes/fails.
+
+Most of the TST_EXP_*() macros have optional printf-like format string
+and parameters, it should be easy to add that functionality the
+TST_EXP_EQ_*() macros as well.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
