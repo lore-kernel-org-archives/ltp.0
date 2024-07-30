@@ -4,105 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48915C3DA49
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 12:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39E1FC3DA70
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 15:21:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B67653D1D87
-	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 14:46:26 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2B9B73D1DCC
+	for <ltp@archiver.kernel.org>; Tue, 30 Jul 2024 17:21:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 292073CF2B5
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 14:46:10 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id EAF273D1D2D
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 17:21:07 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D85AE600A23
- for <ltp@lists.linux.it>; Tue, 30 Jul 2024 14:46:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DE60F1001578
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 17:21:06 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9E1E21F7F6;
- Tue, 30 Jul 2024 12:46:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E5C3321B36
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 15:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722343566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1722352866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PZ9iAiKZ0/l23fq0sXdpKpppG/bAVGOcYTInzL6MBKY=;
- b=Mj4oe67EnVle0jOGGhAkEt3kUtlExtIoRKRp02VNMNQAegnSyKcXcLRrEzxe3/yWh/sGB4
- hI79GSCxe9WyS0t+lEjj1E1lxs7I0tXDVQ6WFDn3FLtSZS7ApxIoRAuSTvLlEwlsg3dDG7
- pwUtYzAiQYsPDeIUjgvuRx33i4CcK3w=
+ bh=G59PIlwffJG18dtqf4H2C84RBBBToZhb7hhY+aVdpOY=;
+ b=is++o0Sh5W2HklsKURaneNiln0MWxkGR6Fixa43G24XN4z4KiQuNJK+oHzKvWrpPZmifT+
+ nWm/eghk/jTHZWPoMJr8Mh3DHFKDs5rx312rnXGNlMKDJeHcyx7QDq+bw1LfEsH36QMTcL
+ wItWVFWB9FPM3BnqVOHlu0JO6AuxkGs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722343566;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1722352866;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PZ9iAiKZ0/l23fq0sXdpKpppG/bAVGOcYTInzL6MBKY=;
- b=czeOtfCjOfmZoxYPlPUD1RGFcqBk4eNJauH6HlCDrMOUXJG+XPJXq6dF4EDqi9IXkYeSI/
- n7incBODuGrUnPDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yu+nCZ7g;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FTITXunh
+ bh=G59PIlwffJG18dtqf4H2C84RBBBToZhb7hhY+aVdpOY=;
+ b=N0PJeOOLFl79trzi+dt0LPYRjdVMGc3HPXdmlpTCkmKvD5fH4cfj0l/b03gyU1VnRG5QyX
+ WwAN39MWqtwLj0Bg==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722343565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1722352865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PZ9iAiKZ0/l23fq0sXdpKpppG/bAVGOcYTInzL6MBKY=;
- b=yu+nCZ7gyoz9LA/YHoBNbB+ZKACl9SyUqHagAajOf+6dVOtYx718AwfXxWu0q9NI9ntS+S
- E8aWPRKbKuwLhGXaE/b/uZP3NWfuUPQQyMfm9zMegAlgGAZLSytcSfm51NKVsmp25LjXAE
- nWg4GjccHuGmWw4UMAtH47obR03IdEw=
+ bh=G59PIlwffJG18dtqf4H2C84RBBBToZhb7hhY+aVdpOY=;
+ b=aAjGVbbJkpnCsroTZ7DTZ+2FmzTdn4DIJPj0H81X0teX8o+Ea9s/cCcoTcVutf05/hNqQD
+ lWOzE3YjRA7+5Q6bO1YBfielcUccLDbDKnR8GTV7EybXahu7bMBzmSP62gx65zQwfGy04e
+ XZ2BZR9nneaSZnfnpO0a33jTMcBaNZg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722343565;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1722352865;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=PZ9iAiKZ0/l23fq0sXdpKpppG/bAVGOcYTInzL6MBKY=;
- b=FTITXunhKRC+ck5GZvRCtIx/sPSc0Q20Rg0q00s5OfyLqfKh9hxHA3Tq/82/4rbBfcr0sY
- UOpQcNsbNwbYBxDg==
+ bh=G59PIlwffJG18dtqf4H2C84RBBBToZhb7hhY+aVdpOY=;
+ b=1ahkhZpv3hIELpw4Kxyy/6Pvyxtxt3Hk5foZfH/4NRLKTtEnDdZlCvyF0wfg65qK570LDj
+ oSa2Gbc3HzT9BvDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7719213297;
- Tue, 30 Jul 2024 12:46:05 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE32913983
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 15:21:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8Xj3G43gqGbbTQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 30 Jul 2024 12:46:05 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5kwGNuEEqWYZfQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 30 Jul 2024 15:21:05 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 30 Jul 2024 14:46:04 +0200
-Message-ID: <20240730124604.1393978-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.45.2
+Date: Tue, 30 Jul 2024 17:20:05 +0200
+Message-ID: <20240730152006.20018-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.44.0
 MIME-Version: 1.0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9E1E21F7F6
-X-Spamd-Result: default: False [-2.81 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-2.60 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[pypi.org:url,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,setup.py:url];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_HAS_DN(0.00)[];
+ R_MISSING_CHARSET(0.50)[]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [COMMITTED][PATCH 1/1] kirk: Update to 1.4
+Subject: [LTP] [PATCH] timer_settime01: Check signal timing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,31 +107,105 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Nothing really important, just fix version and sync with what is in
-newly created pypi https://pypi.org/project/kirk/
+Add a new check that the timer signal does not get delivered too early.
+Also fix a bug where tc->it_value_tv_usec was ignored in TIMER_ABSTIME
+subtests.
 
-* 6d419d4 ("Upgrade release to 1.4")
-* f3b977f ("Update setuptools developer information")
-* aa7d693 ("Refactor setuptools script")
-* 81c49ee ("__init__: update __version__ to 1.3")
-* cf73030 (" __init__: use __version__ instead of VERSION")
-* e04ec1b ("main: display kirk version more pythonic way")
-* 08fb2dc ("Fix setup.py license")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- tools/kirk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../syscalls/timer_settime/timer_settime01.c  | 49 +++++++++++++------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
 
-diff --git a/tools/kirk b/tools/kirk
-index 5e8c8064a0..6d419d419a 160000
---- a/tools/kirk
-+++ b/tools/kirk
-@@ -1 +1 @@
--Subproject commit 5e8c8064a0b2cee465f2a1dca1cfebef5ade36a2
-+Subproject commit 6d419d419a416238c785f626212d35d1940a0df0
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+index 6fa1e7487..f8e7ffa22 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+@@ -58,8 +58,11 @@ static struct time64_variants variants[] = {
+ 
+ static volatile int caught_signal;
+ 
+-static void clear_signal(void)
++static void clear_signal(clock_t clock, const struct tst_ts *exptime)
+ {
++	struct time64_variants *tv = &variants[tst_variant];
++	struct tst_ts curtime = { .type = tv->ts_type };
++
+ 	/*
+ 	 * The busy loop is intentional. The signal is sent after X
+ 	 * seconds of CPU time has been accumulated for the process and
+@@ -74,6 +77,17 @@ static void clear_signal(void)
+ 	}
+ 
+ 	caught_signal = 0;
++
++	if (tv->clock_gettime(clock, tst_ts_get(&curtime)) < 0) {
++		tst_res(TFAIL, "clock_gettime(%s) failed",
++			get_clock_str(clock));
++		return;
++	}
++
++	if (tst_ts_lt(curtime, *exptime)) {
++		tst_res(TFAIL, "Timer %s expired too early",
++			get_clock_str(clock));
++	}
+ }
+ 
+ static void sighandler(int sig)
+@@ -116,22 +130,22 @@ static void run(unsigned int n)
+ 		memset(&new_set, 0, sizeof(new_set));
+ 		memset(&old_set, 0, sizeof(old_set));
+ 
+-		new_set.type = old_set.type = tv->ts_type;
++		new_set.type = old_set.type = timenow.type = tv->ts_type;
+ 		val = tc->it_value_tv_usec;
+ 
+-		if (tc->flag & TIMER_ABSTIME) {
+-			timenow.type = tv->ts_type;
+-			if (tv->clock_gettime(clock, tst_ts_get(&timenow)) < 0) {
+-				tst_res(TFAIL,
+-					"clock_gettime(%s) failed - skipping the test",
+-					get_clock_str(clock));
+-				continue;
+-			}
+-			tst_ts_add_us(timenow, val);
++		if (tv->clock_gettime(clock, tst_ts_get(&timenow)) < 0) {
++			tst_res(TFAIL,
++				"clock_gettime(%s) failed - skipping the test",
++				get_clock_str(clock));
++			continue;
++		}
++
++		timenow = tst_ts_add_us(timenow, val);
++
++		if (tc->flag & TIMER_ABSTIME)
+ 			tst_its_set_value_from_ts(&new_set, timenow);
+-		} else {
++		else
+ 			tst_its_set_value_from_us(&new_set, val);
+-		}
+ 
+ 		tst_its_set_interval_from_us(&new_set, tc->it_interval_tv_usec);
+ 
+@@ -157,11 +171,14 @@ static void run(unsigned int n)
+ 				tst_its_get_value_nsec(new_set));
+ 		}
+ 
+-		clear_signal();
++		clear_signal(clock, &timenow);
+ 
+ 		/* Wait for another event when interval was set */
+-		if (tc->it_interval_tv_usec)
+-			clear_signal();
++		if (tc->it_interval_tv_usec) {
++			timenow = tst_ts_add_us(timenow,
++				tc->it_interval_tv_usec);
++			clear_signal(clock, &timenow);
++		}
+ 
+ 		tst_res(TPASS, "timer_settime(%s) passed",
+ 			get_clock_str(clock));
 -- 
-2.45.2
+2.44.0
 
 
 -- 
