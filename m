@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37FD0C3DA7F
-	for <ltp@archiver.kernel.org>; Wed, 31 Jul 2024 09:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA9ECC3DA7F
+	for <ltp@archiver.kernel.org>; Wed, 31 Jul 2024 09:21:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 079893D1E5C
-	for <ltp@archiver.kernel.org>; Wed, 31 Jul 2024 11:21:21 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 67A7D3D1E77
+	for <ltp@archiver.kernel.org>; Wed, 31 Jul 2024 11:21:39 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 51FA83D1E5C
+ by picard.linux.it (Postfix) with ESMTPS id 911153D1E65
  for <ltp@lists.linux.it>; Wed, 31 Jul 2024 11:20:50 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
@@ -25,94 +24,93 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4C72210085F1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4EDA56000EE
  for <ltp@lists.linux.it>; Wed, 31 Jul 2024 11:20:49 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 32B4721CCC
- for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 302E121D96
+ for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1722417648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VHkXZ5L6Vz9O2tq8pv0j91TzolX6AjaEE+NuKdmgEx8=;
- b=megVemn1D/kIFeaYD/3mFJ93YS1+uLUII5I2EV07n6E6Iz1QbI6k5xV0uhuk1jUxeZ9yMC
- uCtrcYTJcdCT3stHRUb6bNDp4xyW6sKM73+lIlP0KD4DEgfEAoQeJopgz5fG+HN6AVe7VK
- 319CVcfu0jrxpw2hCwGYyln+jBXyYIQ=
+ bh=uyVhK+iaCmYhgkKd3lb5rLVDmc3WJrBbtSqc2kREbow=;
+ b=pVXRhpkoEGHq3/5Yd8RrvX/Ltlui80PoqFElMdne9vCDQOXDKQMjMzqm6Oa7HKoce93MWk
+ QBfOcOyADatCJr1mU6Ldyk/4+OzTPQK8sG4EizFAI2+NaK0/cg8JFhLLYypbGubyMASXtI
+ 7l5Iu1vq01/HFrZDxBrbvuGWYnF+vuw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1722417648;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VHkXZ5L6Vz9O2tq8pv0j91TzolX6AjaEE+NuKdmgEx8=;
- b=+pmcXo2HIOyd3p5Atf2WHI041+4wE1CIY/O33iRXNSU9Cq2lC9Frcx5quWQogpruzvW9FH
- +elK4uZO8Z/pwnAg==
+ bh=uyVhK+iaCmYhgkKd3lb5rLVDmc3WJrBbtSqc2kREbow=;
+ b=rKn5okC36HvPJNeIeOcCl51CoZ7cT6bSegWETtPz6LOouT3v3wNLnbRAZMcLAlh+NN7LRH
+ 6VSTnIMrPgZ674CQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mnCsNENw;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=T0SKEn+k
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pVXRhpko;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rKn5okC3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722417647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1722417648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VHkXZ5L6Vz9O2tq8pv0j91TzolX6AjaEE+NuKdmgEx8=;
- b=mnCsNENwmLK/GL/eaBDPYaZceIV/Kmd0goF2LRF+IIMvmwa+U+GsIQR6516fjaEbM4DovU
- xcnWutUuAtXB1prKRc4hEdhAjetnLpXl9+3gZtoWwPlr25VLpQhknV3z3vYXo81ZtqP29y
- eTVHduPxTfdWebwPYNdFbP/ukJt2eiU=
+ bh=uyVhK+iaCmYhgkKd3lb5rLVDmc3WJrBbtSqc2kREbow=;
+ b=pVXRhpkoEGHq3/5Yd8RrvX/Ltlui80PoqFElMdne9vCDQOXDKQMjMzqm6Oa7HKoce93MWk
+ QBfOcOyADatCJr1mU6Ldyk/4+OzTPQK8sG4EizFAI2+NaK0/cg8JFhLLYypbGubyMASXtI
+ 7l5Iu1vq01/HFrZDxBrbvuGWYnF+vuw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722417647;
+ s=susede2_ed25519; t=1722417648;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VHkXZ5L6Vz9O2tq8pv0j91TzolX6AjaEE+NuKdmgEx8=;
- b=T0SKEn+klPrOfiaF6PCN7XbLDwXf3vw6EqDMNDhIFuwJx8PbqBRlYV9VCvV+Y72Z4HsFwa
- hGn35VySl/Jp3ZCA==
+ bh=uyVhK+iaCmYhgkKd3lb5rLVDmc3WJrBbtSqc2kREbow=;
+ b=rKn5okC36HvPJNeIeOcCl51CoZ7cT6bSegWETtPz6LOouT3v3wNLnbRAZMcLAlh+NN7LRH
+ 6VSTnIMrPgZ674CQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FDE41368F
- for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10BA213AD8
+ for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id E47PBu8BqmZbGQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id bezhAvABqmZlGQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:47 +0000
+ for <ltp@lists.linux.it>; Wed, 31 Jul 2024 09:20:48 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 31 Jul 2024 11:20:15 +0200
-Message-ID: <20240731092017.8267-2-chrubis@suse.cz>
+Date: Wed, 31 Jul 2024 11:20:17 +0200
+Message-ID: <20240731092017.8267-4-chrubis@suse.cz>
 X-Mailer: git-send-email 2.44.2
 In-Reply-To: <20240731092017.8267-1-chrubis@suse.cz>
 References: <20240731092017.8267-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 32B4721CCC
-X-Spamd-Result: default: False [-2.81 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.19 / 50.00]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_DN_NONE(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 302E121D96
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] Add support for mixing C and shell code
+Subject: [LTP] [PATCH 3/3] testcaes/lib: Add shell loader
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,572 +127,670 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is a proof of a concept of a seamless C and shell integration. The
-idea is that with this you can mix shell and C code as much as as you
-wish to get the best of the two worlds.
+This commit implements a shell loader so that we don't have to write a C
+loader for each LTP shell test. The idea is simple, the loader parses
+the shell test and prepares the tst_test structure accordingly, then
+runs the actual shell test.
+
+The format for the metadata in the shell test was choosen to be JSON
+because:
+
+- I didn't want to invent an adhoc format and JSON is perfect for
+  serializing data structures
+- The metadata parser for shell test will be trivial, it will just pick
+  the JSON from the comment, no parsing will be required
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_test.h                           | 38 +++++++++++++
- lib/tst_test.c                               | 51 +++++++++++++++++
- testcases/lib/.gitignore                     |  1 +
- testcases/lib/Makefile                       |  4 +-
- testcases/lib/run_tests.sh                   | 11 ++++
- testcases/lib/tests/.gitignore               |  6 ++
- testcases/lib/tests/Makefile                 | 11 ++++
- testcases/lib/tests/shell_test01.c           | 17 ++++++
- testcases/lib/tests/shell_test02.c           | 18 ++++++
- testcases/lib/tests/shell_test03.c           | 25 +++++++++
- testcases/lib/tests/shell_test04.c           | 18 ++++++
- testcases/lib/tests/shell_test05.c           | 27 +++++++++
- testcases/lib/tests/shell_test06.c           | 16 ++++++
- testcases/lib/tests/shell_test_brk.sh        |  6 ++
- testcases/lib/tests/shell_test_check_argv.sh | 23 ++++++++
- testcases/lib/tests/shell_test_checkpoint.sh |  7 +++
- testcases/lib/tests/shell_test_pass.sh       |  6 ++
- testcases/lib/tst_env.sh                     | 21 +++++++
- testcases/lib/tst_res_.c                     | 58 ++++++++++++++++++++
- 19 files changed, 362 insertions(+), 2 deletions(-)
- create mode 100755 testcases/lib/run_tests.sh
- create mode 100644 testcases/lib/tests/.gitignore
- create mode 100644 testcases/lib/tests/Makefile
- create mode 100644 testcases/lib/tests/shell_test01.c
- create mode 100644 testcases/lib/tests/shell_test02.c
- create mode 100644 testcases/lib/tests/shell_test03.c
- create mode 100644 testcases/lib/tests/shell_test04.c
- create mode 100644 testcases/lib/tests/shell_test05.c
- create mode 100644 testcases/lib/tests/shell_test06.c
- create mode 100755 testcases/lib/tests/shell_test_brk.sh
- create mode 100755 testcases/lib/tests/shell_test_check_argv.sh
- create mode 100755 testcases/lib/tests/shell_test_checkpoint.sh
- create mode 100755 testcases/lib/tests/shell_test_pass.sh
- create mode 100644 testcases/lib/tst_env.sh
- create mode 100644 testcases/lib/tst_res_.c
+ include/tst_test.h                            |   2 +-
+ testcases/lib/.gitignore                      |   1 +
+ testcases/lib/Makefile                        |   6 +-
+ testcases/lib/run_tests.sh                    |   9 +
+ testcases/lib/tests/shell_loader.sh           |  15 +
+ .../lib/tests/shell_loader_all_filesystems.sh |  24 ++
+ .../lib/tests/shell_loader_filesystems.sh     |  30 ++
+ .../tests/shell_loader_invalid_metadata.sh    |  12 +
+ .../lib/tests/shell_loader_no_metadata.sh     |   8 +
+ .../lib/tests/shell_loader_supported_archs.sh |   9 +
+ .../lib/tests/shell_loader_wrong_metadata.sh  |  12 +
+ testcases/lib/tst_env.sh                      |   4 +
+ testcases/lib/tst_loader.sh                   |  11 +
+ testcases/lib/tst_run_shell.c                 | 378 ++++++++++++++++++
+ 14 files changed, 519 insertions(+), 2 deletions(-)
+ create mode 100755 testcases/lib/tests/shell_loader.sh
+ create mode 100755 testcases/lib/tests/shell_loader_all_filesystems.sh
+ create mode 100755 testcases/lib/tests/shell_loader_filesystems.sh
+ create mode 100755 testcases/lib/tests/shell_loader_invalid_metadata.sh
+ create mode 100755 testcases/lib/tests/shell_loader_no_metadata.sh
+ create mode 100755 testcases/lib/tests/shell_loader_supported_archs.sh
+ create mode 100755 testcases/lib/tests/shell_loader_wrong_metadata.sh
+ create mode 100644 testcases/lib/tst_loader.sh
+ create mode 100644 testcases/lib/tst_run_shell.c
 
 diff --git a/include/tst_test.h b/include/tst_test.h
-index 6c76f043d..a334195ac 100644
+index a334195ac..c04498937 100644
 --- a/include/tst_test.h
 +++ b/include/tst_test.h
-@@ -331,6 +331,8 @@ struct tst_fs {
-  * @child_needs_reinit: Has to be set if the test needs to call tst_reinit()
-  *                      from a process started by exec().
-  *
-+ * @runs_script: Implies child_needs_reinit and forks_child at the moment.
-+ *
-  * @needs_devfs: If set the devfs is mounted at tst_test.mntpoint. This is
-  *               needed for tests that need to create device files since tmpfs
-  *               at /tmp is usually mounted with 'nodev' option.
-@@ -518,6 +520,7 @@ struct tst_fs {
- 	unsigned int mount_device:1;
- 	unsigned int needs_rofs:1;
- 	unsigned int child_needs_reinit:1;
-+	unsigned int runs_script:1;
- 	unsigned int needs_devfs:1;
- 	unsigned int restore_wallclock:1;
+@@ -274,7 +274,7 @@ struct tst_fs {
+ 	const char *const *mkfs_opts;
+ 	const char *mkfs_size_opt;
  
-@@ -526,6 +529,8 @@ struct tst_fs {
- 	unsigned int skip_in_lockdown:1;
- 	unsigned int skip_in_secureboot:1;
- 	unsigned int skip_in_compat:1;
-+
-+
- 	int needs_abi_bits;
- 
- 	unsigned int needs_hugetlbfs:1;
-@@ -611,6 +616,39 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
-  */
- void tst_reinit(void);
- 
-+/**
-+ * tst_run_shell() - Prepare the environment and execute a shell script.
-+ *
-+ * @script_name: A filename of the script.
-+ * @params: A NULL terminated array of shell script parameters, pass NULL if
-+ *          none are needed. This what is passed starting from argv[1].
-+ *
-+ * The shell script is executed with LTP_IPC_PATH in environment so that the
-+ * binary helpers such as tst_res_ or tst_checkpoint work properly when executed
-+ * from the script. This also means that the tst_test.runs_script flag needs to
-+ * be set.
-+ *
-+ * The shell script itself has to source the tst_env.sh shell script at the
-+ * start and after that it's free to use tst_res in the same way C code would
-+ * use.
-+ *
-+ * Example shell script that reports success::
-+ *
-+ *   #!/bin/sh
-+ *   . tst_env.sh
-+ *
-+ *   tst_res TPASS "Example test works"
-+ *
-+ * The call returns a pid in a case that you want to examine the return value
-+ * of the script yourself. If you do not need to check the return value
-+ * yourself you can use tst_reap_children() to wait for the completion. Or let
-+ * the test library collect the child automatically, just be wary that the
-+ * script and the test both runs concurently at the same time in this case.
-+ *
-+ * Return: A pid of the shell process.
-+ */
-+int tst_run_shell(char *script_name, char *const params[]);
-+
- unsigned int tst_multiply_timeout(unsigned int timeout);
- 
- /*
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index e5bc5bf4d..7e1075fdf 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -4,6 +4,8 @@
-  * Copyright (c) Linux Test Project, 2016-2024
-  */
- 
-+#define _GNU_SOURCE
-+
- #include <limits.h>
- #include <stdio.h>
- #include <stdarg.h>
-@@ -173,6 +175,50 @@ void tst_reinit(void)
- 	SAFE_CLOSE(fd);
- }
- 
-+extern char **environ;
-+
-+static unsigned int params_array_len(char *const array[])
-+{
-+	unsigned int ret = 0;
-+
-+	if (!array)
-+		return 0;
-+
-+	while (*(array++))
-+		ret++;
-+
-+	return ret;
-+}
-+
-+int tst_run_shell(char *script_name, char *const params[])
-+{
-+	int pid;
-+	unsigned int i, params_len = params_array_len(params);
-+	char *argv[params_len + 2];
-+
-+	if (!tst_test->runs_script)
-+		tst_brk(TBROK, "runs_script flag must be set!");
-+
-+	argv[0] = script_name;
-+
-+	if (params) {
-+		for (i = 0; i < params_len; i++)
-+			argv[i+1] = params[i];
-+	}
-+
-+	argv[params_len+1] = NULL;
-+
-+	pid = SAFE_FORK();
-+	if (pid)
-+		return pid;
-+
-+	execvpe(script_name, argv, environ);
-+
-+	tst_brk(TBROK | TERRNO, "execvpe(%s, ...) failed!", script_name);
-+
-+	return -1;
-+}
-+
- static void update_results(int ttype)
- {
- 	if (!results)
-@@ -1224,6 +1270,11 @@ static void do_setup(int argc, char *argv[])
- 		tdebug = 1;
- 	}
- 
-+	if (tst_test->runs_script) {
-+		tst_test->child_needs_reinit = 1;
-+		tst_test->forks_child = 1;
-+	}
-+
- 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
- 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+-	const unsigned int mnt_flags;
++	unsigned int mnt_flags;
+ 	const void *mnt_data;
+ };
  
 diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-index e8afd06f3..d0dacf62a 100644
+index d0dacf62a..385f3c3ca 100644
 --- a/testcases/lib/.gitignore
 +++ b/testcases/lib/.gitignore
-@@ -23,3 +23,4 @@
- /tst_sleep
+@@ -24,3 +24,4 @@
  /tst_supported_fs
  /tst_timeout_kill
-+/tst_res_
+ /tst_res_
++/tst_run_shell
 diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-index 990b46089..928d76d62 100644
+index 928d76d62..b3a9181c1 100644
 --- a/testcases/lib/Makefile
 +++ b/testcases/lib/Makefile
-@@ -13,6 +13,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+@@ -4,6 +4,9 @@
+ 
+ top_srcdir		?= ../..
+ 
++LTPLIBS = ujson
++tst_run_shell: LTPLDLIBS = -lujson
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ INSTALL_TARGETS		:= *.sh
+@@ -13,6 +16,7 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
  			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
  			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
  			   tst_check_kconfigs tst_cgctl tst_fsfreeze tst_ns_create tst_ns_exec\
--			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled
-+			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_
+-			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_
++			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_\
++			   tst_run_shell
  
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
 diff --git a/testcases/lib/run_tests.sh b/testcases/lib/run_tests.sh
-new file mode 100755
-index 000000000..60e7d1bcf
---- /dev/null
+index 60e7d1bcf..9857f5f82 100755
+--- a/testcases/lib/run_tests.sh
 +++ b/testcases/lib/run_tests.sh
-@@ -0,0 +1,11 @@
-+#!/bin/sh
+@@ -9,3 +9,12 @@ for i in `seq -w 01 06`; do
+ 	echo
+ 	./tests/shell_test$i
+ done
 +
-+testdir=$(realpath $(dirname $0))
-+export PATH=$PATH:$testdir:$testdir/tests/
-+
-+for i in `seq -w 01 06`; do
++for i in shell_loader.sh shell_loader_all_filesystems.sh shell_loader_no_metadata.sh \
++	 shell_loader_wrong_metadata.sh shell_loader_invalid_metadata.sh\
++	 shell_loader_supported_archs.sh shell_loader_filesystems.sh; do
 +	echo
-+	echo "*** Running shell_test$i ***"
++	echo "*** Running $i ***"
 +	echo
-+	./tests/shell_test$i
++	$i
 +done
-diff --git a/testcases/lib/tests/.gitignore b/testcases/lib/tests/.gitignore
-new file mode 100644
-index 000000000..da967c4d6
---- /dev/null
-+++ b/testcases/lib/tests/.gitignore
-@@ -0,0 +1,6 @@
-+shell_test01
-+shell_test02
-+shell_test03
-+shell_test04
-+shell_test05
-+shell_test06
-diff --git a/testcases/lib/tests/Makefile b/testcases/lib/tests/Makefile
-new file mode 100644
-index 000000000..5a5cf5310
---- /dev/null
-+++ b/testcases/lib/tests/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2009, Cisco Systems Inc.
-+# Ngie Cooper, August 2009
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+INSTALL_TARGETS=
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/lib/tests/shell_test01.c b/testcases/lib/tests/shell_test01.c
-new file mode 100644
-index 000000000..53c092783
---- /dev/null
-+++ b/testcases/lib/tests/shell_test01.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	tst_run_shell("shell_test_pass.sh", NULL);
-+	tst_res(TINFO, "C test exits now");
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test02.c b/testcases/lib/tests/shell_test02.c
-new file mode 100644
-index 000000000..1bc300ed3
---- /dev/null
-+++ b/testcases/lib/tests/shell_test02.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	tst_run_shell("shell_test_pass.sh", NULL);
-+	tst_reap_children();
-+	tst_res(TINFO, "Shell test has finished at this point!");
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test03.c b/testcases/lib/tests/shell_test03.c
-new file mode 100644
-index 000000000..2faa5e84c
---- /dev/null
-+++ b/testcases/lib/tests/shell_test03.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	int pid, status;
-+
-+	pid = tst_run_shell("shell_test_pass.sh", NULL);
-+
-+	tst_res(TINFO, "Waiting for the pid %i", pid);
-+
-+	waitpid(pid, &status, 0);
-+
-+	tst_res(TINFO, "Shell test has %s", tst_strstatus(status));
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test04.c b/testcases/lib/tests/shell_test04.c
-new file mode 100644
-index 000000000..beb4d783d
---- /dev/null
-+++ b/testcases/lib/tests/shell_test04.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	char *const params[] = {"param1", "param2", NULL};
-+
-+	tst_run_shell("shell_test_check_argv.sh", params);
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test05.c b/testcases/lib/tests/shell_test05.c
-new file mode 100644
-index 000000000..c6b446c76
---- /dev/null
-+++ b/testcases/lib/tests/shell_test05.c
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	int pid;
-+
-+	pid = tst_run_shell("shell_test_checkpoint.sh", NULL);
-+
-+	tst_res(TINFO, "Waiting for shell to sleep on checkpoint!");
-+
-+	TST_PROCESS_STATE_WAIT(pid, 'S', 10000);
-+
-+	tst_res(TINFO, "Waking shell child!");
-+
-+	TST_CHECKPOINT_WAKE(0);
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.needs_checkpoints = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test06.c b/testcases/lib/tests/shell_test06.c
-new file mode 100644
-index 000000000..d7f0ce946
---- /dev/null
-+++ b/testcases/lib/tests/shell_test06.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Shell test example.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void run_test(void)
-+{
-+	tst_run_shell("shell_test_brk.sh", NULL);
-+}
-+
-+static struct tst_test test = {
-+	.runs_script = 1,
-+	.test_all = run_test,
-+};
-diff --git a/testcases/lib/tests/shell_test_brk.sh b/testcases/lib/tests/shell_test_brk.sh
+diff --git a/testcases/lib/tests/shell_loader.sh b/testcases/lib/tests/shell_loader.sh
 new file mode 100755
-index 000000000..f266dc3fe
+index 000000000..642ffe97b
 --- /dev/null
-+++ b/testcases/lib/tests/shell_test_brk.sh
-@@ -0,0 +1,6 @@
++++ b/testcases/lib/tests/shell_loader.sh
+@@ -0,0 +1,15 @@
 +#!/bin/sh
++#
++# TEST = {
++#  "needs_tmpdir": true
++# }
 +
-+. tst_env.sh
++. tst_loader.sh
 +
-+tst_brk TCONF "This exits test and the next message should not be reached"
-+tst_res TFAIL "If you see this the test failed"
-diff --git a/testcases/lib/tests/shell_test_check_argv.sh b/testcases/lib/tests/shell_test_check_argv.sh
++tst_res TPASS "Shell loader works fine!"
++case "$PWD" in
++	/tmp/*)
++		tst_res TPASS "We are running in temp directory in $PWD";;
++	*)
++		tst_res TFAIL "We are not running in temp directory but $PWD";;
++esac
+diff --git a/testcases/lib/tests/shell_loader_all_filesystems.sh b/testcases/lib/tests/shell_loader_all_filesystems.sh
 new file mode 100755
-index 000000000..ce357027d
+index 000000000..8432b4b3d
 --- /dev/null
-+++ b/testcases/lib/tests/shell_test_check_argv.sh
-@@ -0,0 +1,23 @@
++++ b/testcases/lib/tests/shell_loader_all_filesystems.sh
+@@ -0,0 +1,24 @@
 +#!/bin/sh
++#
++# TEST = {
++#  "needs_root": true,
++#  "mount_device": true,
++#  "all_filesystems": true,
++#  "mntpoint": "ltp_mntpoint"
++# }
 +
-+. tst_env.sh
++. tst_loader.sh
 +
-+tst_res TINFO "argv = $@"
++tst_res TINFO "In shell"
 +
-+if [ $# -ne 2 ]; then
-+	tst_res TFAIL "Wrong number of parameters got $# expected 2"
++mntpath=$(realpath ltp_mntpoint)
++mounted=$(grep $mntpath /proc/mounts)
++
++if [ -n "$mounted" ]; then
++	device=$(echo $mounted |cut -d' ' -f 1)
++	path=$(echo $mounted |cut -d' ' -f 2)
++
++	tst_res TPASS "$device mounted at $path"
 +else
-+	tst_res TPASS "Got 2 parameters"
++	tst_res TFAIL "Device not mounted!"
 +fi
-+
-+if [ "$1" != "param1" ]; then
-+	tst_res TFAIL "First parameter is $1 expected param1"
-+else
-+	tst_res TPASS "First parameter is $1"
-+fi
-+
-+if [ "$2" != "param2" ]; then
-+	tst_res TFAIL "Second parameter is $2 expected param2"
-+else
-+	tst_res TPASS "Second parameter is $2"
-+fi
-diff --git a/testcases/lib/tests/shell_test_checkpoint.sh b/testcases/lib/tests/shell_test_checkpoint.sh
+diff --git a/testcases/lib/tests/shell_loader_filesystems.sh b/testcases/lib/tests/shell_loader_filesystems.sh
 new file mode 100755
-index 000000000..0ceb7cf66
+index 000000000..ede1a8fe9
 --- /dev/null
-+++ b/testcases/lib/tests/shell_test_checkpoint.sh
-@@ -0,0 +1,7 @@
++++ b/testcases/lib/tests/shell_loader_filesystems.sh
+@@ -0,0 +1,30 @@
 +#!/bin/sh
++#
++# TEST = {
++#  "mount_device": true,
++#  "mntpoint": "ltp_mntpoint",
++#  "filesystems": [
++#   {
++#    "type": "btrfs"
++#   },
++#   {
++#    "type": "xfs",
++#    "mkfs_opts": ["-m", "reflink=1"]
++#   }
++#  ]
++# }
 +
-+. tst_env.sh
++. tst_loader.sh
 +
-+tst_res TINFO "Waiting for a checkpoint 0"
-+tst_checkpoint wait 10000 0
-+tst_res TPASS "Continuing after checkpoint"
-diff --git a/testcases/lib/tests/shell_test_pass.sh b/testcases/lib/tests/shell_test_pass.sh
++tst_res TINFO "In shell"
++
++mntpoint=$(realpath ltp_mntpoint)
++mounted=$(grep $mntpoint /proc/mounts)
++
++if [ -n "$mounted" ]; then
++	fs=$(echo $mounted |cut -d' ' -f 3)
++
++	tst_res TPASS "Mounted device formatted with $fs"
++else
++	tst_res TFAIL "Device not mounted!"
++fi
+diff --git a/testcases/lib/tests/shell_loader_invalid_metadata.sh b/testcases/lib/tests/shell_loader_invalid_metadata.sh
 new file mode 100755
-index 000000000..fd0684eb2
+index 000000000..265be6f36
 --- /dev/null
-+++ b/testcases/lib/tests/shell_test_pass.sh
-@@ -0,0 +1,6 @@
++++ b/testcases/lib/tests/shell_loader_invalid_metadata.sh
+@@ -0,0 +1,12 @@
 +#!/bin/sh
++#
++# This test has wrong metadata and should not be run
++#
++# TEST = {
++#  {"needs_tmpdir": 42,
++# }
++#
 +
-+. tst_env.sh
++. tst_loader.sh
 +
-+tst_res TPASS "This is called from the shell script!"
-+tst_sleep 100ms
++tst_res TFAIL "Shell loader should TBROK the test"
+diff --git a/testcases/lib/tests/shell_loader_no_metadata.sh b/testcases/lib/tests/shell_loader_no_metadata.sh
+new file mode 100755
+index 000000000..60ba8b889
+--- /dev/null
++++ b/testcases/lib/tests/shell_loader_no_metadata.sh
+@@ -0,0 +1,8 @@
++#!/bin/sh
++#
++# This test has no metadata and should not be executed
++#
++
++. tst_loader.sh
++
++tst_res TFAIL "Shell loader should TBROK the test"
+diff --git a/testcases/lib/tests/shell_loader_supported_archs.sh b/testcases/lib/tests/shell_loader_supported_archs.sh
+new file mode 100755
+index 000000000..d5c6c648b
+--- /dev/null
++++ b/testcases/lib/tests/shell_loader_supported_archs.sh
+@@ -0,0 +1,9 @@
++#!/bin/sh
++#
++# TEST = {
++#  "supported_archs": ["x86", "ppc64", "x86_64"]
++# }
++
++. tst_loader.sh
++
++tst_res TPASS "We are running on supported architecture"
+diff --git a/testcases/lib/tests/shell_loader_wrong_metadata.sh b/testcases/lib/tests/shell_loader_wrong_metadata.sh
+new file mode 100755
+index 000000000..f29b9308f
+--- /dev/null
++++ b/testcases/lib/tests/shell_loader_wrong_metadata.sh
+@@ -0,0 +1,12 @@
++#!/bin/sh
++#
++# This test has wrong metadata and should not be run
++#
++# TEST = {
++#  "needs_tmpdir": 42,
++# }
++#
++
++. tst_loader.sh
++
++tst_res TFAIL "Shell loader should TBROK the test"
 diff --git a/testcases/lib/tst_env.sh b/testcases/lib/tst_env.sh
-new file mode 100644
-index 000000000..948bc5024
---- /dev/null
+index 948bc5024..67ba80744 100644
+--- a/testcases/lib/tst_env.sh
 +++ b/testcases/lib/tst_env.sh
-@@ -0,0 +1,21 @@
+@@ -1,4 +1,8 @@
+ #!/bin/sh
++#
++# This is a minimal test environment for a shell scripts executed from C by
++# tst_run_shell() function. Shell tests must use the tst_loader.sh instead!
++#
+ 
+ tst_script_name=$(basename $0)
+ 
+diff --git a/testcases/lib/tst_loader.sh b/testcases/lib/tst_loader.sh
+new file mode 100644
+index 000000000..5ac095e44
+--- /dev/null
++++ b/testcases/lib/tst_loader.sh
+@@ -0,0 +1,11 @@
 +#!/bin/sh
-+
-+tst_script_name=$(basename $0)
++#
++# This is a loader for shell tests that use the C test library.
++#
 +
 +if [ -z "$LTP_IPC_PATH" ]; then
-+	echo "This script has to be executed from a LTP loader!"
-+	exit 1
++	tst_run_shell $(basename "$0")
++	exit $?
++else
++	. tst_env.sh
 +fi
-+
-+tst_brk_()
-+{
-+	tst_res_ "$@"
-+
-+	case "$3" in
-+		"TBROK") exit 2;;
-+		*) exit 0;;
-+	esac
-+}
-+
-+alias tst_res="tst_res_ $tst_script_name \$LINENO"
-+alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
-diff --git a/testcases/lib/tst_res_.c b/testcases/lib/tst_res_.c
+diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
 new file mode 100644
-index 000000000..a43920f36
+index 000000000..96827e1cc
 --- /dev/null
-+++ b/testcases/lib/tst_res_.c
-@@ -0,0 +1,58 @@
++++ b/testcases/lib/tst_run_shell.c
+@@ -0,0 +1,378 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
 + */
++#include <sys/mount.h>
 +
 +#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
++#include "tst_safe_stdio.h"
++#include "ujson.h"
++
++static char *shell_filename;
++
++static void run_shell(void)
++{
++	tst_run_shell(shell_filename, NULL);
++}
++
++struct tst_test test = {
++	.test_all = run_shell,
++	.runs_script = 1,
++};
 +
 +static void print_help(void)
 +{
-+	printf("Usage: tst_res_ filename lineno [TPASS|TFAIL|TCONF|TINFO|TDEBUG] 'A short description'\n");
++	printf("Usage: tst_shell_loader ltp_shell_test.sh ...");
++}
++
++static char *metadata;
++static size_t metadata_size;
++static size_t metadata_used;
++
++static void metadata_append(const char *line)
++{
++	size_t linelen = strlen(line);
++
++	if (metadata_size - metadata_used < linelen + 1) {
++		metadata_size += 128;
++		metadata = SAFE_REALLOC(metadata, metadata_size);
++	}
++
++	strcpy(metadata + metadata_used, line);
++	metadata_used += linelen;
++}
++
++static ujson_obj_attr test_attrs[] = {
++	UJSON_OBJ_ATTR("all_filesystems", UJSON_BOOL),
++	UJSON_OBJ_ATTR("dev_min_size", UJSON_INT),
++	UJSON_OBJ_ATTR("filesystems", UJSON_ARR),
++	UJSON_OBJ_ATTR("format_device", UJSON_BOOL),
++	UJSON_OBJ_ATTR("min_cpus", UJSON_INT),
++	UJSON_OBJ_ATTR("min_mem_avail", UJSON_INT),
++	UJSON_OBJ_ATTR("min_kver", UJSON_STR),
++	UJSON_OBJ_ATTR("min_swap_avail", UJSON_INT),
++	UJSON_OBJ_ATTR("mntpoint", UJSON_STR),
++	UJSON_OBJ_ATTR("mount_device", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_abi_bits", UJSON_INT),
++	UJSON_OBJ_ATTR("needs_devfs", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_device", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_hugetlbfs", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_rofs", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_root", UJSON_BOOL),
++	UJSON_OBJ_ATTR("needs_tmpdir", UJSON_BOOL),
++	UJSON_OBJ_ATTR("restore_wallclock", UJSON_BOOL),
++	UJSON_OBJ_ATTR("skip_filesystems", UJSON_ARR),
++	UJSON_OBJ_ATTR("skip_in_compat", UJSON_BOOL),
++	UJSON_OBJ_ATTR("skip_in_lockdown", UJSON_BOOL),
++	UJSON_OBJ_ATTR("skip_in_secureboot", UJSON_BOOL),
++	UJSON_OBJ_ATTR("supported_archs", UJSON_ARR),
++};
++
++static ujson_obj test_obj = {
++	.attrs = test_attrs,
++	.attr_cnt = UJSON_ARRAY_SIZE(test_attrs),
++};
++
++/* Must match the order of test_attrs. */
++enum test_attr_ids {
++	ALL_FILESYSTEMS,
++	DEV_MIN_SIZE,
++	FILESYSTEMS,
++	FORMAT_DEVICE,
++	MIN_CPUS,
++	MIN_MEM_AVAIL,
++	MIN_KVER,
++	MIN_SWAP_AVAIL,
++	MNTPOINT,
++	MOUNT_DEVICE,
++	NEEDS_ABI_BITS,
++	NEEDS_DEVFS,
++	NEEDS_DEVICE,
++	NEEDS_HUGETLBFS,
++	NEEDS_ROFS,
++	NEEDS_ROOT,
++	NEEDS_TMPDIR,
++	RESTORE_WALLCLOCK,
++	SKIP_FILESYSTEMS,
++	SKIP_IN_COMPAT,
++	SKIP_IN_LOCKDOWN,
++	SKIP_IN_SECUREBOOT,
++	SUPPORTED_ARCHS,
++};
++
++static const char *const *parse_strarr(ujson_reader *reader, ujson_val *val)
++{
++	unsigned int cnt = 0, i = 0;
++	char **ret;
++
++	ujson_reader_state state = ujson_reader_state_save(reader);
++
++	UJSON_ARR_FOREACH(reader, val) {
++		if (val->type != UJSON_STR) {
++			ujson_err(reader, "Expected string!");
++			return NULL;
++		}
++
++		cnt++;
++	}
++
++	ujson_reader_state_load(reader, state);
++
++	ret = SAFE_MALLOC(sizeof(char*) * (cnt + 1));
++
++	UJSON_ARR_FOREACH(reader, val) {
++		ret[i++] = strdup(val->val_str);
++	}
++
++	ret[i] = NULL;
++
++	return (const char *const *)ret;
++}
++
++static ujson_obj_attr fs_attrs[] = {
++	UJSON_OBJ_ATTR("mkfs_opts", UJSON_ARR),
++	UJSON_OBJ_ATTR("mkfs_size_opt", UJSON_STR),
++	UJSON_OBJ_ATTR("mnt_flags", UJSON_ARR),
++	UJSON_OBJ_ATTR("type", UJSON_STR),
++};
++
++static ujson_obj fs_obj = {
++	.attrs = fs_attrs,
++	.attr_cnt = UJSON_ARRAY_SIZE(fs_attrs),
++};
++
++/* Must match the order of fs_attrs. */
++enum fs_ids {
++	MKFS_OPTS,
++	MKFS_SIZE_OPT,
++	MNT_FLAGS,
++	TYPE,
++};
++
++static int parse_mnt_flags(ujson_reader *reader, ujson_val *val)
++{
++	int ret = 0;
++
++	UJSON_ARR_FOREACH(reader, val) {
++		if (val->type != UJSON_STR) {
++			ujson_err(reader, "Expected string!");
++			return ret;
++		}
++
++		if (!strcmp(val->val_str, "RDONLY"))
++			ret |= MS_RDONLY;
++		else if (!strcmp(val->val_str, "NOATIME"))
++			ret |= MS_NOATIME;
++		else if (!strcmp(val->val_str, "NOEXEC"))
++			ret |= MS_NOEXEC;
++		else if (!strcmp(val->val_str, "NOSUID"))
++			ret |= MS_NOSUID;
++		else
++			ujson_err(reader, "Invalid mount flag");
++	}
++
++	return ret;
++}
++
++struct tst_fs *parse_filesystems(ujson_reader *reader, ujson_val *val)
++{
++	unsigned int i = 0, cnt = 0;
++	struct tst_fs *ret;
++
++	ujson_reader_state state = ujson_reader_state_save(reader);
++
++	UJSON_ARR_FOREACH(reader, val) {
++		if (val->type != UJSON_OBJ) {
++			ujson_err(reader, "Expected object!");
++			return NULL;
++		}
++		ujson_obj_skip(reader);
++		cnt++;
++	}
++
++	ujson_reader_state_load(reader, state);
++
++	ret = SAFE_MALLOC(sizeof(struct tst_fs) * (cnt + 1));
++	memset(ret, 0, sizeof(*ret) * (cnt+1));
++
++	UJSON_ARR_FOREACH(reader, val) {
++		UJSON_OBJ_FOREACH_FILTER(reader, val, &fs_obj, ujson_empty_obj) {
++			switch ((enum fs_ids)val->idx) {
++			case MKFS_OPTS:
++				ret[i].mkfs_opts = parse_strarr(reader, val);
++			break;
++			case MKFS_SIZE_OPT:
++				ret[i].mkfs_size_opt = strdup(val->val_str);
++			break;
++			case MNT_FLAGS:
++				ret[i].mnt_flags = parse_mnt_flags(reader, val);
++			break;
++			case TYPE:
++				ret[i].type = strdup(val->val_str);
++			break;
++			}
++
++		}
++
++		i++;
++	}
++
++	return ret;
++}
++
++static void parse_metadata(void)
++{
++	ujson_reader reader = UJSON_READER_INIT(metadata, metadata_used, UJSON_READER_STRICT);
++	char str_buf[128];
++	ujson_val val = UJSON_VAL_INIT(str_buf, sizeof(str_buf));
++
++	UJSON_OBJ_FOREACH_FILTER(&reader, &val, &test_obj, ujson_empty_obj) {
++		switch ((enum test_attr_ids)val.idx) {
++		case ALL_FILESYSTEMS:
++			test.all_filesystems = val.val_bool;
++		break;
++		case DEV_MIN_SIZE:
++			if (val.val_int <= 0)
++				ujson_err(&reader, "Device size must be > 0");
++			else
++				test.dev_min_size = val.val_int;
++		break;
++		case FILESYSTEMS:
++			test.filesystems = parse_filesystems(&reader, &val);
++		break;
++		case FORMAT_DEVICE:
++			test.format_device = val.val_bool;
++		break;
++		case MIN_CPUS:
++			if (val.val_int <= 0)
++				ujson_err(&reader, "Minimal number of cpus must be > 0");
++			else
++				test.min_cpus = val.val_int;
++		break;
++		case MIN_MEM_AVAIL:
++			if (val.val_int <= 0)
++				ujson_err(&reader, "Minimal available memory size must be > 0");
++			else
++				test.min_mem_avail = val.val_int;
++		break;
++		case MIN_KVER:
++			test.min_kver = strdup(val.val_str);
++		break;
++		case MIN_SWAP_AVAIL:
++			if (val.val_int <= 0)
++				ujson_err(&reader, "Minimal available swap size must be > 0");
++			else
++				test.min_swap_avail = val.val_int;
++		break;
++		case MNTPOINT:
++			test.mntpoint = strdup(val.val_str);
++		break;
++		case MOUNT_DEVICE:
++			test.mount_device = val.val_bool;
++		break;
++		case NEEDS_ABI_BITS:
++			if (val.val_int == 32 || val.val_int == 64)
++				test.needs_abi_bits = val.val_int;
++			else
++				ujson_err(&reader, "ABI bits must be 32 or 64");
++		break;
++		case NEEDS_DEVFS:
++			test.needs_devfs = val.val_bool;
++		break;
++		case NEEDS_DEVICE:
++			test.needs_device = val.val_bool;
++		break;
++		case NEEDS_HUGETLBFS:
++			test.needs_hugetlbfs = val.val_bool;
++		break;
++		case NEEDS_ROFS:
++			test.needs_rofs = val.val_bool;
++		break;
++		case NEEDS_ROOT:
++			test.needs_root = val.val_bool;
++		break;
++		case NEEDS_TMPDIR:
++			test.needs_tmpdir = val.val_bool;
++		break;
++		case RESTORE_WALLCLOCK:
++			test.restore_wallclock = val.val_bool;
++		break;
++		case SKIP_FILESYSTEMS:
++			test.skip_filesystems = parse_strarr(&reader, &val);
++		break;
++		case SKIP_IN_COMPAT:
++			test.skip_in_compat = val.val_bool;
++		break;
++		case SKIP_IN_LOCKDOWN:
++			test.skip_in_lockdown = val.val_bool;
++		break;
++		case SKIP_IN_SECUREBOOT:
++			test.skip_in_secureboot = val.val_bool;
++		break;
++		case SUPPORTED_ARCHS:
++			test.supported_archs = parse_strarr(&reader, &val);
++		break;
++		}
++	}
++
++	ujson_reader_finish(&reader);
++
++	if (ujson_reader_err(&reader))
++		tst_brk(TBROK, "Invalid metadata");
++}
++
++static void extract_metadata(void)
++{
++	FILE *f;
++	char line[4096];
++	char path[4096];
++	int in_json = 0;
++
++	if (tst_get_path(shell_filename, path, sizeof(path)) == -1)
++		tst_brk(TBROK, "Failed to find %s in $PATH", shell_filename);
++
++	f = SAFE_FOPEN(path, "r");
++
++	while (fgets(line, sizeof(line), f)) {
++		if (in_json)
++			metadata_append(line + 2);
++
++		if (in_json) {
++			if (!strcmp(line, "# }\n"))
++				in_json = 0;
++		} else {
++			if (!strcmp(line, "# TEST = {\n")) {
++				metadata_append("{\n");
++				in_json = 1;
++			}
++		}
++	}
++
++	fclose(f);
++}
++
++static void prepare_test_struct(void)
++{
++	extract_metadata();
++
++	if (metadata)
++		parse_metadata();
++	else
++		tst_brk(TBROK, "No metadata found!");
 +}
 +
 +int main(int argc, char *argv[])
 +{
-+	int type, i;
-+
-+	if (argc < 5)
++	if (argc < 2)
 +		goto help;
 +
-+	if (!strcmp(argv[3], "TPASS"))
-+		type = TPASS;
-+	else if (!strcmp(argv[3], "TFAIL"))
-+		type = TFAIL;
-+	else if (!strcmp(argv[3], "TCONF"))
-+		type = TCONF;
-+	else if (!strcmp(argv[3], "TINFO"))
-+		type = TINFO;
-+	else if (!strcmp(argv[3], "TDEBUG"))
-+		type = TDEBUG;
-+	else
-+		goto help;
++	shell_filename = argv[1];
 +
-+	size_t len = 0;
++	prepare_test_struct();
 +
-+	for (i = 4; i < argc; i++)
-+		len += strlen(argv[i]) + 1;
-+
-+	char *msg = SAFE_MALLOC(len);
-+	char *msgp = msg;
-+
-+	for (i = 4; i < argc; i++) {
-+		msgp = strcpy(msgp, argv[i]);
-+		msgp += strlen(argv[i]);
-+		*(msgp++) = ' ';
-+	}
-+
-+	*(msgp - 1) = 0;
-+
-+	tst_reinit();
-+
-+	tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
-+
-+	return 0;
++	tst_run_tcases(argc - 1, argv + 1, &test);
 +help:
 +	print_help();
 +	return 1;
