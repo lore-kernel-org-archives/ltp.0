@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D2FEC3DA4A
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:15:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51521C3DA4A
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:16:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E5DFC3D1F41
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:15:40 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id DF8FA3D1F45
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:16:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E42BB3D0B2B
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:15:25 +0200 (CEST)
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com
- [IPv6:2607:f8b0:4864:20::f2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 79E173D1DCB
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:16:33 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E6EB31001128
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:15:24 +0200 (CEST)
-Received: by mail-qv1-xf2a.google.com with SMTP id
- 6a1803df08f44-6bb96ef0e96so321806d6.2
- for <ltp@lists.linux.it>; Thu, 01 Aug 2024 05:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1722514524; x=1723119324; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=gMUSNP2McIZYLI/eEqL71k9IIU1p92v1M4zsyL7gmUw=;
- b=umPhiO/tsOOXANqO0EL2h/cehFV7Osibl9sg6rDiZ/3bIgA7T/BQaCnkB6WxPfNjYa
- FveSLJBvgXt888pbsg4ZHl/NZYGrneF+ZVMLLBoWkusx/bvAu8p7CXRbwLaAvGGt7wxR
- wiyS81ESpRtPaTDnnikdwDBlF9KQDbtVul/B95ZEkeFYjuUW4KC2ZPkYWbPj0KKxmOz+
- jrs55qDsZffGCfdMrnfjLYTquNxLwlVPBX/hbNIXSlSQusKJVy2pfTkEHucQYETgxSUd
- ih2cGDqTdOdWkQ4S5IO0QJ8rwxVhD61pSkb4uWq/4aPQ0Q9yRjI8EJ3vJdGULLgHypFc
- J9uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1722514524; x=1723119324;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=gMUSNP2McIZYLI/eEqL71k9IIU1p92v1M4zsyL7gmUw=;
- b=XvqGMwPl71qdGUcITmCwsNpQD/ppn5YheUNYs3kE3CdoNBD47+EiIXKPYivZ5mxdbX
- OfVYFa21iC5oiMXfx2RYVnZ5shNa3YRjBg3xsOQSDMCUBdEMgz7C8JhvTTs81mLQ0nYz
- tkERXJ3nvd2hgoBDSJTwBvq711LAZHzEnw7DLJb7AZIh9jMThb5zQRlxoHc9e2tNRIfa
- A9SDAGIw+rR5uPS4D7iqfjiJyGZyPGSeTyIi8raQ0US6JINrrnWiRMoNtapaaOmqeBnd
- dLEIqjMAsZMDIybzTwZQ/31HPj1GVmPvhqG+5a81LPln7tiUNpPkubQEolxmCBaZtant
- Xg0A==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUUHCsIXcj9qMBY500C63XaBVoBooON9E2B0oDD2nYzlYbuwKMjQmUC7kloEQq8fgT7qWxZ6d34otjsABzH5O0JhJg=
-X-Gm-Message-State: AOJu0Yy+0ODaBrGd03M7WQDaFbiKzjndADG1VzHD8i+hT/rvcPoKxfuJ
- XoxVZRcq2LL1ZJ+ewPIGjGCNC6ZQlncwN0RYgwDHv+nAMSwJE8w4P7pxskalsio619ENKBv09o0
- 2nSCLpR2QhCpH3eTFoWRjbSz0Tbko0Fr8cS6PCA==
-X-Google-Smtp-Source: AGHT+IFN8GyusAMlwPnyqnOG7/ueYNnLw/0qHFR1Shl54BK7ppVbx7z56cuWtYALt23SNjfnuCU8fpBPoSop8vef/nE=
-X-Received: by 2002:a05:6214:311e:b0:6b2:b557:c551 with SMTP id
- 6a1803df08f44-6bb8d7ccd57mr2706336d6.27.1722514523446; Thu, 01 Aug 2024
- 05:15:23 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4DD9E601021
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:16:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6B49E219EA;
+ Thu,  1 Aug 2024 12:16:30 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4656213946;
+ Thu,  1 Aug 2024 12:16:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6UAnEJ58q2ZrWgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 01 Aug 2024 12:16:30 +0000
+Date: Thu, 1 Aug 2024 14:16:31 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20240801121631.GA1510503@pevik>
+References: <20240801104004.15514-1-wegao@suse.com>
 MIME-Version: 1.0
-References: <20240722145443.19104-1-chrubis@suse.cz>
- <20240729205112.GA1287954@pevik>
-In-Reply-To: <20240729205112.GA1287954@pevik>
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Thu, 1 Aug 2024 14:15:12 +0200
-Message-ID: <CADYN=9LQGmMopUD1sfy71YVKmBUNTMgh=k8brL0EDdhCDOzcfA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240801104004.15514-1-wegao@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 6B49E219EA
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] sched: starvation: Autocallibrate the timeout
+Subject: Re: [LTP] [PATCH v1] cpuset_memory_test.c: Use $TMPDIR as prefix
+ for HUGEPAGE file path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,229 +75,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: joe.liu@mediatek.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, 29 Jul 2024 at 22:51, Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi all,
->
-> > Instead of hardcoding the values we attempt to measure the CPU speed and
-> > set the runtime accordingly. Given that the difference in the duration
-> > of the test when the kernel is buggy is about 30x we do not have to have
-> > a precise callibration, just very rough estimate if we are running on a
-> > server or small ARM board would suffice.
->
-> > So we attempt to measure how long does a bussy loop take and base the
-> > default timeout on that. On x86_64 CPUs the resulting runtime seems to
-> > be between 2x and 10x of the actual runtime which seems to be in the
-> > required range.
->
-> > We also make sure to check the runtime at the end of the test because
-> > the failures could have been masked by a timeout multiplier, i.e. if you
-> > set LTP_TIMEOUT_MUL=10 the test would previously pass on a buggy kernel
-> > as well. The side efect is that we now get better PASS/FAIL messages as
-> > well.
->
-> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> > ---
->
-> > Changes in v3:
->
-> > - Increased the CALLIBRATE_LOOPS a bit, since some of the numbers
-> >   reported by the linaro lab had the runtime very close to the
-> >   calculated runtime.
->
-> Anders, Joe, can you please recheck?
-
-I've tested this patch on 1 arm HW and 2 arm64 HW's. see the results below.
-
-arm HW:
-===== [1;36mstarvation[0m =====
-command: starvation
-[ 42.782470] /usr/local/bin/kirk[369]: starting test starvation (starvation)
-tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
-starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
-&mask) returned 0
-starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 106903us
-tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 01m 46s
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 07m 10s
-starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
-Summary:
-passed   2
-failed   0
-broken   0
-skipped  0
-warnings 0
-Duration: 1m 2s
-
-arm64 HW1:
-===== [1;36mstarvation[0m =====
-command: starvation
-[   52.326682] /usr/local/bin/kirk[371]: starting test starvation (starvation)
-[   52.326682] /usr/local/bin/kirk[371]: starting test starvation (starvation)
-tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
-starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
-&mask) returned 0
-starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 170664us
-tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 02m 50s
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 08m 14s
-starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
-Summary:
-passed   2
-failed   0
-broken   0
-skipped  0
-warnings 0
-Duration: 1m 31s
-
-arm64 HW2:
-===== [1;36mstarvation[0m =====
-command: starvation
-[   25.461437] /usr/local/bin/kirk[781]: starting test starvation (starvation)
-tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
-starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
-&mask) returned 0
-starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 136451us
-tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 02m 16s
-tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 07m 40s
-[   29.165003] sd 0:0:0:0: [sda] Starting disk
-[   35.815791] sd 0:0:0:0: [sda] Starting disk
-[   39.911757] sd 0:0:0:0: [sda] Starting disk
-[   47.079469] sd 0:0:0:0: [sda] Starting disk
-[   52.716832] sd 0:0:0:0: [sda] Starting disk
-[   57.831781] sd 0:0:0:0: [sda] Starting disk
-[   63.975740] sd 0:0:0:0: [sda] Starting disk
-[   69.095887] sd 0:0:0:0: [sda] Starting disk
-[   74.983623] sd 0:0:0:0: [sda] Starting disk
-[   77.799749] sd 0:0:0:0: [sda] Starting disk
-[   80.871712] sd 0:0:0:0: [sda] Starting disk
-[   87.015762] sd 0:0:0:0: [sda] Starting disk
-[   92.903786] sd 0:0:0:0: [sda] Starting disk
-starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
-Summary:
-passed   2
-failed   0
-broken   0
-skipped  0
-warnings 0
-Duration: 1m 7s
-
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
-
-Cheers,
-Anders
-
->
-> > - Removed some curly braces, as suggested by pvorel
->
-> > - Added runtime check at the end of test to avoid false positives with
-> >   LTP_TIMEOUT_MUL.
->
-> Great!
->
-> LGTM.
->
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> Tested-by: Petr Vorel <pvorel@suse.cz>
->
-> Tested on Tumbleweed (kernel 6.10.1):
->
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_starv8seE as tmpdir (tmpfs filesystem)
-> tst_test.c:1806: TINFO: LTP version: 20240524
-> tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
-> starvation.c:71: TINFO: Setting affinity to CPU 0
-> tst_test.c:1658: TINFO: Updating max runtime to 0h 04m 00s
-> tst_test.c:1650: TINFO: Timeout per run is 0h 04m 30s
-> starvation.c:117: TPASS: wait_for_pid(child_pid) passed
->
-> => test runs ~ 13s - 19s on aarch64, ppc64le and x86_64. Therefore not sure if
-> 04m max runtime is good.
->
-> I'll have tomorrow some tests on various SLES versions.
->
-> Kind regards,
-> Petr
->
-> > .../kernel/sched/cfs-scheduler/starvation.c   | 41 +++++++++++++++++--
-> >  1 file changed, 38 insertions(+), 3 deletions(-)
->
-> > diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
-> > index 9ac388fdc..e707e0865 100644
-> > --- a/testcases/kernel/sched/cfs-scheduler/starvation.c
-> > +++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
-> > @@ -21,11 +21,38 @@
-> >  #include <sched.h>
->
-> >  #include "tst_test.h"
-> > +#include "tst_safe_clocks.h"
-> > +#include "tst_timer.h"
->
-> >  static char *str_loop;
-> > -static long loop = 2000000;
-> > +static long loop = 1000000;
-> >  static char *str_timeout;
-> > -static int timeout = 240;
-> > +static int timeout;
-> > +
-> > +#define CALLIBRATE_LOOPS 120000000
-> > +
-> > +static int callibrate(void)
-> > +{
-> > +     int i;
-> > +     struct timespec start, stop;
-> > +     long long diff;
-> > +
-> > +     for (i = 0; i < CALLIBRATE_LOOPS; i++)
-> > +             __asm__ __volatile__ ("" : "+g" (i) : :);
-> > +
-> > +     SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &start);
-> > +
-> > +     for (i = 0; i < CALLIBRATE_LOOPS; i++)
-> > +             __asm__ __volatile__ ("" : "+g" (i) : :);
-> > +
-> > +     SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &stop);
-> > +
-> > +     diff = tst_timespec_diff_us(stop, start);
-> > +
-> > +     tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
-> > +
-> > +     return diff;
-> > +}
->
-> >  static int wait_for_pid(pid_t pid)
-> >  {
-> > @@ -78,6 +105,8 @@ static void setup(void)
->
-> >       if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
-> >               tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
-> > +     else
-> > +             timeout = callibrate() / 1000;
->
-> >       tst_set_max_runtime(timeout);
-> >  }
-> > @@ -114,7 +143,13 @@ static void do_test(void)
-> >               sleep(1);
->
-> >       SAFE_KILL(child_pid, SIGTERM);
-> > -     TST_EXP_PASS(wait_for_pid(child_pid));
-> > +
-> > +     if (!tst_remaining_runtime())
-> > +             tst_res(TFAIL, "Scheduller starvation reproduced.");
-> > +     else
-> > +             tst_res(TPASS, "Haven't reproduced scheduller starvation.");
-> > +
-> > +     TST_EXP_PASS_SILENT(wait_for_pid(child_pid));
-> >  }
->
-> >  static struct tst_test test = {
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKPiBUZXN0IGNhc2Ugd2lsbCBmYWlsIHdpdGggZm9sbG93aW5nIGVycm9yIGlmIHJ1
+bm5pbmcgb3BlcmF0aW9uIHN5c3RlbQo+IHdoaWNoIGZvcmNlIHJvb3QgcGF0aCByZWFkIE9OTFku
+Cgo+IG1rZGlyOiBjYW5ub3QgY3JlYXRlIGRpcmVjdG9yeSDigJgvaHVnZXRsYuKAmTogUmVhZC1v
+bmx5IGZpbGUgc3lzdGVtCgo+IFNpZ25lZC1vZmYtYnk6IFdlaSBHYW8gPHdlZ2FvQHN1c2UuY29t
+Pgo+IC0tLQo+ICAuLi4vY3B1c2V0X21lbW9yeV90ZXN0L2NwdXNldF9tZW1vcnlfdGVzdC5jICAg
+ICAgfCAxMSArKysrKysrKy0tLQo+ICAuLi4vY3B1c2V0X21lbW9yeV90ZXN0L2NwdXNldF9tZW1v
+cnlfdGVzdHNldC5zaCAgfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIDIgZmlsZXMgY2hhbmdlZCwg
+MTYgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgo+IGRpZmYgLS1naXQgYS90ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21l
+bW9yeV90ZXN0LmMgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRf
+bWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90ZXN0LmMKPiBpbmRleCA5OTEyZDhkNmEuLjczNzcw
+ZmQzYyAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9j
+cHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90ZXN0LmMKPiArKysgYi90ZXN0Y2FzZXMv
+a2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9y
+eV90ZXN0LmMKPiBAQCAtMTc3LDkgKzE3NywxNCBAQCB2b2lkIG1tYXBfZmlsZShpbnQgZmxhZ19h
+bGxvY2F0ZWQpCj4gIAlzdGF0aWMgaW50IGZkX2h1Z2VwYWdlOwo+ICAJaW50IGZkX3RtcDsKCj4g
+KwljaGFyIHBhdGhbMTAwXTsKPiArCWNoYXIgKnRtcGRpciA9IGdldGVudigiVE1QRElSIik7Cj4g
+Kwo+ICsJc3ByaW50ZihwYXRoLCAiJXMlcyIsIHRtcGRpciwgRklMRV9IVUdFUEFHRSk7CgpGWUks
+IHdlIGhhdmUgY3VzdG9tIGZ1bmN0aW9uLCB0aHVzIG5vIG5lZWQgdG8gZGV0ZWN0IFRNUERJUiBp
+biB0aGUgdGVzdC4KCkJlY2F1c2UgdGhpcyBpcyBzdGlsbCB0aGUgbGVnYWN5IEFQSSwgY291bGQg
+eW91IHBsZWFzZSB1c2UgdHN0X3RtcGRpcl9wYXRoKCk/CgpGWUkgaW4gdGhlIG5ldyBBUEkgV2Ug
+aGFkIGZvciBhIGxvbmcgdGltZSB0c3RfZ2V0X3RtcGRpcigpIGZ1bmN0aW9uIG5lZWRlZCB0bwp1
+c2UgZnJlZSgpIGFuZCB3YXMgdXNlZCBmb3Igc25wcmludGYoKSwgYnV0IEN5cmlsIGNoYW5nZWQg
+dGhhdCBxdWl0ZSByZWNlbnRseToKaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVj
+dC9sdHAvY29tbWl0L2M1ZDk1YjZkMzRlMjM1NmJkMTllNmI2NDZkYTA2ZjFiY2U2NmEwMjQKClNp
+bmNlIHRoYXQganVzdCB1c2UgdHN0X3RtcGRpcl9wYXRoKCksIG5vIG5lZWQgdG8gZnJlZS4KCklN
+SE8gYm90aCBsZWdhY3kgQVBJIGFuZCBuZXcgQVBJIGRvIGNoZGlyKCkgdG8gdGhlIHRlbXBvcmFy
+eSBkaXJlY3RvcnksIHNlZQpsaWIvdHN0X3RtcGRpci5jOgoKICAgIGlmIChjaGRpcihURVNURElS
+KSA9PSAtMSkgewogICAgICAgIHRzdF9yZXNtKFRFUlJOTywgIiVzOiBjaGRpciglcykgZmFpbGVk
+IiwgX19mdW5jX18sIFRFU1RESVIpOwoKVGhlcmVmb3JlIHVubGVzcyB0aGVyZSBpcyBmdWxsIHBh
+dGggbmVlZGVkIChlLmcuIHNlYXJjaCBpbiAvcHJvYy9tb3VudHMpIHdlCmNvdWxkIHVzZSByZWxh
+dGl2ZSBwYXRoLCBlLmcuIGFkZCAiLi8iIHRvIHRoZSBkZWZpbml0aW9uOgoKCisrKyB0ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21l
+bW9yeV90ZXN0LmMKQEAgLTU4LDcgKzU4LDcgQEAgc3RhdGljIGludCBvcHRfdGhyZWFkOwogc3Rh
+dGljIGludCBrZXlfaWQ7ICAgICAgICAgICAgICAgICAgICAgLyogdXNlZCB3aXRoIG9wdF9zaG0g
+Ki8KIHN0YXRpYyB1bnNpZ25lZCBsb25nIG1lbXNpemU7CgotI2RlZmluZSBGSUxFX0hVR0VQQUdF
+ICAiL2h1Z2V0bGIvaHVnZXBhZ2VmaWxlIgorI2RlZmluZSBGSUxFX0hVR0VQQUdFICAiLi9odWdl
+dGxiL2h1Z2VwYWdlZmlsZSIKCiAjZGVmaW5lIE1NQVBfQU5PTiAgICAgIChTQ0hBUl9NQVggKyAx
+KQogI2RlZmluZSBNTUFQX0ZJTEUgICAgICAoU0NIQVJfTUFYICsgMikKLS0tCgpBbHNvLCB0aGUg
+c2FtZSBkZWZpbml0aW9uIGlzIGluCnRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cv
+ZnVuY3Rpb25hbC9tZW1jZ19wcm9jZXNzLmMsIGlzIGl0IGFmZmVjdGVkIGFzCndlbGw/CgpGWUkg
+QmVzaWRlcyB0aGF0IGl0J3MgYWx3YXlzIGJldHRlciB0byB1c2UgJ24nIHNwcmludGYgZnVuY3Rp
+b25zIChlLmcuCnNucHJpbnRmKCksIGJlY2F1c2UgdGhleSByZXN0cmljdCB0aGUgd3JpdGUgc2l6
+ZSAobWFuIHByaW50ZigzKTogIndyaXRlIGF0IG1vc3Qgc2l6ZSBieXRlcyIpCgo+ICsKPiAgCWlm
+ICghZmxhZ19hbGxvY2F0ZWQpIHsKPiAgCQlpZiAob3B0X2h1Z2VwYWdlKSB7Cj4gLQkJCWZkX2h1
+Z2VwYWdlID0gb3BlbihGSUxFX0hVR0VQQUdFLAo+ICsJCQlmZF9odWdlcGFnZSA9IG9wZW4ocGF0
+aCwKPiAgCQkJCQkgICBPX0NSRUFUIHwgT19SRFdSLCAwNzU1KTsKPiAgCQkJaWYgKGZkX2h1Z2Vw
+YWdlIDwgMCkKPiAgCQkJCWVycigxLCAib3BlbiBodWdlcGFnZSBmaWxlIGZhaWxlZCIpOwo+IEBA
+IC0xOTEsNyArMTk2LDcgQEAgdm9pZCBtbWFwX2ZpbGUoaW50IGZsYWdfYWxsb2NhdGVkKQo+ICAJ
+CQkgTUFQX1NIQVJFRCwgZmRfdG1wLCAwKTsKPiAgCQlpZiAocCA9PSBNQVBfRkFJTEVEKSB7Cj4g
+IAkJCWlmIChvcHRfaHVnZXBhZ2UpCj4gLQkJCQl1bmxpbmsoRklMRV9IVUdFUEFHRSk7Cj4gKwkJ
+CQl1bmxpbmsocGF0aCk7Cj4gIAkJCWVycigxLCAibW1hcChmaWxlKSBmYWlsZWQiKTsKPiAgCQl9
+Cj4gIAkJdG91Y2hfbWVtb3J5X2FuZF9lY2hvX25vZGUocCwgbWVtc2l6ZSk7Cj4gQEAgLTIwMSw3
+ICsyMDYsNyBAQCB2b2lkIG1tYXBfZmlsZShpbnQgZmxhZ19hbGxvY2F0ZWQpCgo+ICAJCWlmIChv
+cHRfaHVnZXBhZ2UpIHsKPiAgCQkJY2xvc2UoZmRfaHVnZXBhZ2UpOwo+IC0JCQl1bmxpbmsoRklM
+RV9IVUdFUEFHRSk7Cj4gKwkJCXVubGluayhwYXRoKTsKPiAgCQl9Cj4gIAl9Cj4gIH0KPiBkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X21lbW9y
+eV90ZXN0L2NwdXNldF9tZW1vcnlfdGVzdHNldC5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJv
+bGxlcnMvY3B1c2V0L2NwdXNldF9tZW1vcnlfdGVzdC9jcHVzZXRfbWVtb3J5X3Rlc3RzZXQuc2gK
+PiBpbmRleCBjMWU3Y2VhOGYuLmI2MzQyNTA4OCAxMDA3NTUKPiAtLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90
+ZXN0c2V0LnNoCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1
+c2V0X21lbW9yeV90ZXN0L2NwdXNldF9tZW1vcnlfdGVzdHNldC5zaAo+IEBAIC0xNzUsOCArMTc1
+LDggQEAgdGVzdDYoKQo+ICAJCXJldHVybiAwCj4gIAlmaQoKPiAtCW1rZGlyIC9odWdldGxiCj4g
+LQltb3VudCAtdCBodWdldGxiZnMgbm9uZSAvaHVnZXRsYgo+ICsJbWtkaXIgJHtUTVBESVJ9L2h1
+Z2V0bGIKQ291bGQgeW91IHBsZWFzZSB1c2UgJFRNUERJUiBpbnN0ZWFkIG9mICR7VE1QRElSfT8g
+KG1vcmUgcmVhZGFibGUpLgoKPiArCW1vdW50IC10IGh1Z2V0bGJmcyBub25lICR7VE1QRElSfS9o
+dWdldGxiCkFuZCBoZXJlICh0aGVyZSBhcmUgbW9yZSBwbGFjZXMpLgoKQlRXIGp1c3QgLi9odWdl
+dGxiIGNvdWxkIHdvcmssIHJpZ2h0PyBBbHNvLCBpbiB0aGUgc2hlbGwgQVBJIHdlIGFyZSBpbiB0
+aGUKZGlyZWN0b3J5LgoKQW5kIHRoYW5rcyBmb3IgcG9pbnRpbmcgdGhlc2UgdGVzdHMsIG9uY2Ug
+Q3lyaWwncyBlZmZvcnQgZm9yIG1peGluZyBDIGFuZCBzaGVsbApjb2RlIGlzIG1lcmdlZCwgd2Ug
+c2hvdWxkIGFkYXB0IHRoZXNlIHRlc3RzIHRvIHVzZSBpdC4KCmh0dHBzOi8vcGF0Y2h3b3JrLm96
+bGFicy5vcmcvcHJvamVjdC9sdHAvbGlzdC8/c2VyaWVzPTQxNzM3MiZzdGF0ZT0qCgpLaW5kIHJl
+Z2FyZHMsClBldHIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
+dC9saXN0aW5mby9sdHAK
