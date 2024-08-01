@@ -4,122 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE413C3DA64
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:10:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D2FEC3DA4A
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:15:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A3B93D1F52
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:10:45 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E5DFC3D1F41
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:15:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D95A73D1EF3
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:08:53 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E42BB3D0B2B
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:15:25 +0200 (CEST)
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com
+ [IPv6:2607:f8b0:4864:20::f2a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B3B85608A6B
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:08:52 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C5F16219DF;
- Thu,  1 Aug 2024 12:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1722514129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=RzEXsVjfsFZNIle//BUDbEoHdH8JnzCGciz/v3oVa20=;
- b=hFGMVbTKxPrMWshLS/2pjaIxmKBFXJjb8xa+uoVlXg7NWt2BXtP2/7Qpx/ZyNkC6BmNk8E
- KlydF1dATgZ2WvKErAMG1U4Ly/0WFtgl/GicVP3KsKMGAPFDoBNB7dwBi9JuBqG+ZmPU4p
- //EFsXqDvj1VwevfN+JVoTnLpfv8pI0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1722514129;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=RzEXsVjfsFZNIle//BUDbEoHdH8JnzCGciz/v3oVa20=;
- b=Mg639s/gPmzwsQuxfiQn69e9TyvelGE9qgA6fkpYkaitUPmdIcJZkD4o7u4cnyYWzo+Otn
- wdZN3w05aEU3MhDw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=hFGMVbTK;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="Mg639s/g"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1722514129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=RzEXsVjfsFZNIle//BUDbEoHdH8JnzCGciz/v3oVa20=;
- b=hFGMVbTKxPrMWshLS/2pjaIxmKBFXJjb8xa+uoVlXg7NWt2BXtP2/7Qpx/ZyNkC6BmNk8E
- KlydF1dATgZ2WvKErAMG1U4Ly/0WFtgl/GicVP3KsKMGAPFDoBNB7dwBi9JuBqG+ZmPU4p
- //EFsXqDvj1VwevfN+JVoTnLpfv8pI0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1722514129;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=RzEXsVjfsFZNIle//BUDbEoHdH8JnzCGciz/v3oVa20=;
- b=Mg639s/gPmzwsQuxfiQn69e9TyvelGE9qgA6fkpYkaitUPmdIcJZkD4o7u4cnyYWzo+Otn
- wdZN3w05aEU3MhDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7EE3813946;
- Thu,  1 Aug 2024 12:08:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6xZsG9F6q2aiVwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 12:08:49 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 01 Aug 2024 14:08:37 +0200
-Message-Id: <20240801-landlock-v5-0-663d7383b335@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E6EB31001128
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:15:24 +0200 (CEST)
+Received: by mail-qv1-xf2a.google.com with SMTP id
+ 6a1803df08f44-6bb96ef0e96so321806d6.2
+ for <ltp@lists.linux.it>; Thu, 01 Aug 2024 05:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1722514524; x=1723119324; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=gMUSNP2McIZYLI/eEqL71k9IIU1p92v1M4zsyL7gmUw=;
+ b=umPhiO/tsOOXANqO0EL2h/cehFV7Osibl9sg6rDiZ/3bIgA7T/BQaCnkB6WxPfNjYa
+ FveSLJBvgXt888pbsg4ZHl/NZYGrneF+ZVMLLBoWkusx/bvAu8p7CXRbwLaAvGGt7wxR
+ wiyS81ESpRtPaTDnnikdwDBlF9KQDbtVul/B95ZEkeFYjuUW4KC2ZPkYWbPj0KKxmOz+
+ jrs55qDsZffGCfdMrnfjLYTquNxLwlVPBX/hbNIXSlSQusKJVy2pfTkEHucQYETgxSUd
+ ih2cGDqTdOdWkQ4S5IO0QJ8rwxVhD61pSkb4uWq/4aPQ0Q9yRjI8EJ3vJdGULLgHypFc
+ J9uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1722514524; x=1723119324;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=gMUSNP2McIZYLI/eEqL71k9IIU1p92v1M4zsyL7gmUw=;
+ b=XvqGMwPl71qdGUcITmCwsNpQD/ppn5YheUNYs3kE3CdoNBD47+EiIXKPYivZ5mxdbX
+ OfVYFa21iC5oiMXfx2RYVnZ5shNa3YRjBg3xsOQSDMCUBdEMgz7C8JhvTTs81mLQ0nYz
+ tkERXJ3nvd2hgoBDSJTwBvq711LAZHzEnw7DLJb7AZIh9jMThb5zQRlxoHc9e2tNRIfa
+ A9SDAGIw+rR5uPS4D7iqfjiJyGZyPGSeTyIi8raQ0US6JINrrnWiRMoNtapaaOmqeBnd
+ dLEIqjMAsZMDIybzTwZQ/31HPj1GVmPvhqG+5a81LPln7tiUNpPkubQEolxmCBaZtant
+ Xg0A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUUHCsIXcj9qMBY500C63XaBVoBooON9E2B0oDD2nYzlYbuwKMjQmUC7kloEQq8fgT7qWxZ6d34otjsABzH5O0JhJg=
+X-Gm-Message-State: AOJu0Yy+0ODaBrGd03M7WQDaFbiKzjndADG1VzHD8i+hT/rvcPoKxfuJ
+ XoxVZRcq2LL1ZJ+ewPIGjGCNC6ZQlncwN0RYgwDHv+nAMSwJE8w4P7pxskalsio619ENKBv09o0
+ 2nSCLpR2QhCpH3eTFoWRjbSz0Tbko0Fr8cS6PCA==
+X-Google-Smtp-Source: AGHT+IFN8GyusAMlwPnyqnOG7/ueYNnLw/0qHFR1Shl54BK7ppVbx7z56cuWtYALt23SNjfnuCU8fpBPoSop8vef/nE=
+X-Received: by 2002:a05:6214:311e:b0:6b2:b557:c551 with SMTP id
+ 6a1803df08f44-6bb8d7ccd57mr2706336d6.27.1722514523446; Thu, 01 Aug 2024
+ 05:15:23 -0700 (PDT)
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMZ6q2YC/13NTQ7CIBCG4asY1mIGyo+48h7GBYXBErU1RRtN0
- 7tL60LS5TfheRlJwj5iIofNSHocYopdm4fcbohrbHtBGn3ehAMXoJimN9v6W+eu1Im9FYpXVgh
- N8vNHjyG+l9TpnHcT07PrP0t5YPP1F9HA/pGBUaByj8YGJYzV/JheCXeuu5O5MfDCMSgczy4Eb
- XwNTHupV64qXflflZ3TNaBBH0wNKycKx2XhRHZKBWmZA6dMVbhpmr7/Qf6URwEAAA==
-To: ltp@lists.linux.it
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2982;
- i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=NsmIDsq1Bb4c5HEo0OESgYuY/hQ1u2kDhFpeUBeVSMs=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq3rMp0eG7FKpUTE/P/x1uLg0omnEfX/msf9jJ
- sOTLdOrL3WJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqt6zAAKCRDLzBqyILPm
- RljRC/4w6LFG6PdYyaHFNXq/ifH1IoEB3p/4I1H64kjf7g2hnFFx+jrjZyu00dJmXhKs7JHrO/C
- IKwqMwupAh1ALCl0df+eiVjNqjyM/qkgaj/juOSioE3MjbWJ/Q1RSPCWUoLj+3JvEaP+mgQ1oYb
- FlFumDTwu2enkecPHkMT/S+rKxu5o+pLSIY6T6fco8YdHsvsoQZRuisiXGB8zbBHhPEZVLy7FEM
- Qbw1jFThdxb3eeoQdaZPUWXhZ79HUp4JWzLN6WBLfj3pEi128K3RoMayTzeNamTEWSratgIt8Yv
- b62YiLHd0JU42OoO1OAG8kAxlZOXU8df3tqoJ/OT5pq3p2JYX0qY0wtNZ0kDVoUTlU20yoQUy17
- zXsE03fquu3KdP7m66qp5yw/tpkBFo91jy26g13J7hACpMkqewS0kaT/P9xT4Lt4+CpzUy/h9er
- BfRwJuHk4iCCDvR6h8s/pTF5Z8jJ/OeYQb9Cq761eTpMQ6e+njPHTlH6Q0b0XMEt2Zf0s=
-X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
- fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: C5F16219DF
-X-Spamd-Result: default: False [-4.31 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <20240722145443.19104-1-chrubis@suse.cz>
+ <20240729205112.GA1287954@pevik>
+In-Reply-To: <20240729205112.GA1287954@pevik>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 1 Aug 2024 14:15:12 +0200
+Message-ID: <CADYN=9LQGmMopUD1sfy71YVKmBUNTMgh=k8brL0EDdhCDOzcfA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/6] landlock testing suite
+Subject: Re: [LTP] [PATCH v3] sched: starvation: Autocallibrate the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,84 +80,229 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: joe.liu@mediatek.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This testing suite is meant to test the following syscalls:
+On Mon, 29 Jul 2024 at 22:51, Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi all,
+>
+> > Instead of hardcoding the values we attempt to measure the CPU speed and
+> > set the runtime accordingly. Given that the difference in the duration
+> > of the test when the kernel is buggy is about 30x we do not have to have
+> > a precise callibration, just very rough estimate if we are running on a
+> > server or small ARM board would suffice.
+>
+> > So we attempt to measure how long does a bussy loop take and base the
+> > default timeout on that. On x86_64 CPUs the resulting runtime seems to
+> > be between 2x and 10x of the actual runtime which seems to be in the
+> > required range.
+>
+> > We also make sure to check the runtime at the end of the test because
+> > the failures could have been masked by a timeout multiplier, i.e. if you
+> > set LTP_TIMEOUT_MUL=10 the test would previously pass on a buggy kernel
+> > as well. The side efect is that we now get better PASS/FAIL messages as
+> > well.
+>
+> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> > ---
+>
+> > Changes in v3:
+>
+> > - Increased the CALLIBRATE_LOOPS a bit, since some of the numbers
+> >   reported by the linaro lab had the runtime very close to the
+> >   calculated runtime.
+>
+> Anders, Joe, can you please recheck?
 
-- landlock_create_ruleset
-- landlock_add_rule
-- landlock_restrict_self
+I've tested this patch on 1 arm HW and 2 arm64 HW's. see the results below.
 
-Documentation can be found in kernel manuals and inside the official
-kernel documentation at
+arm HW:
+===== [1;36mstarvation[0m =====
+command: starvation
+[ 42.782470] /usr/local/bin/kirk[369]: starting test starvation (starvation)
+tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
+starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
+&mask) returned 0
+starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 106903us
+tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 01m 46s
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 07m 10s
+starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+Duration: 1m 2s
 
-https://www.kernel.org/doc/html/latest/userspace-api/landlock.html
+arm64 HW1:
+===== [1;36mstarvation[0m =====
+command: starvation
+[   52.326682] /usr/local/bin/kirk[371]: starting test starvation (starvation)
+[   52.326682] /usr/local/bin/kirk[371]: starting test starvation (starvation)
+tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
+starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
+&mask) returned 0
+starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 170664us
+tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 02m 50s
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 08m 14s
+starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+Duration: 1m 31s
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changes in v5:
-- landlock0[123]: remove minimum kernel check
-- landlock04: cleanup/setup for sandbox folder, enforce_ruleset() inside
-  the child, skip vfat and exfat for some tests, now working with -i >= 0
-- landlock05: remove minimum kernel check
-- landlock06: remove exfat from skip
-- Link to v4: https://lore.kernel.org/r/20240725-landlock-v4-0-66f5a1c0c693@suse.com
+arm64 HW2:
+===== [1;36mstarvation[0m =====
+command: starvation
+[   25.461437] /usr/local/bin/kirk[781]: starting test starvation (starvation)
+tst_test.c:1734: [1;34mTINFO: [0mLTP version: 20180118-5676-gc035435ba
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 05m 24s
+starvation.c:84: [1;32mTPASS: [0msched_setaffinity(0, sizeof(mask),
+&mask) returned 0
+starvation.c:52: [1;34mTINFO: [0mCPU did 120000000 loops in 136451us
+tst_test.c:1626: [1;34mTINFO: [0mUpdating max runtime to 0h 02m 16s
+tst_test.c:1618: [1;34mTINFO: [0mTimeout per run is 0h 07m 40s
+[   29.165003] sd 0:0:0:0: [sda] Starting disk
+[   35.815791] sd 0:0:0:0: [sda] Starting disk
+[   39.911757] sd 0:0:0:0: [sda] Starting disk
+[   47.079469] sd 0:0:0:0: [sda] Starting disk
+[   52.716832] sd 0:0:0:0: [sda] Starting disk
+[   57.831781] sd 0:0:0:0: [sda] Starting disk
+[   63.975740] sd 0:0:0:0: [sda] Starting disk
+[   69.095887] sd 0:0:0:0: [sda] Starting disk
+[   74.983623] sd 0:0:0:0: [sda] Starting disk
+[   77.799749] sd 0:0:0:0: [sda] Starting disk
+[   80.871712] sd 0:0:0:0: [sda] Starting disk
+[   87.015762] sd 0:0:0:0: [sda] Starting disk
+[   92.903786] sd 0:0:0:0: [sda] Starting disk
+starvation.c:133: [1;32mTPASS: [0mHaven't reproduced scheduller starvation.
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+Duration: 1m 7s
 
-Changes in v4:
-- landlock03: fix TBROK on -i usage
-- landlock04: fix EINVAL caused by namespace sharing on kernel <=6.6
-- Link to v3: https://lore.kernel.org/r/20240711-landlock-v3-0-c7b0e9edf9b0@suse.com
+Tested-by: Anders Roxell <anders.roxell@linaro.org>
 
-Changes in v3:
-- landlock01: 1 byte less when
-  HAVE_STRUCT_LANDLOCK_RULESET_ATTR_HANDLED_ACCESS_NET is defined
-- landlock04: dynamically assign read/exec permissions to dependences
-- landlock05: estetic fix and skip exfat
-- landlock06: estetic fix and skip exfat
-- Link to v2: https://lore.kernel.org/r/20240710-landlock-v2-0-ff79db017d57@suse.com
+Cheers,
+Anders
 
-Changes in v2:
-- remove -lc unused dependency from Makefile
-- move SAFE_LANDLOCK_* macros in lapi/landlock.h
-- define CAP_MKNOD in the lapi/capability.h
-- fix landlock fallback in order to let LTP build properly
-- fix landlock01 EINVAL test when "struct landlock_ruleset_attr" size is
-  too small
-- Link to v1: https://lore.kernel.org/r/20240701-landlock-v1-0-58e9af649a72@suse.com
-
----
-Andrea Cervesato (6):
-      Get ABI version from landlock common library
-      Add CAP_MKNOD fallback in lapi/capability.h
-      Disable kernel version check in landlock tests
-      Add landlock04 test
-      Add landlock05 test
-      Add landlock06 test
-
- include/lapi/capability.h                          |  12 +-
- runtest/syscalls                                   |   3 +
- testcases/kernel/syscalls/landlock/.gitignore      |   4 +
- testcases/kernel/syscalls/landlock/landlock01.c    |   1 -
- testcases/kernel/syscalls/landlock/landlock02.c    |   1 -
- testcases/kernel/syscalls/landlock/landlock03.c    |   1 -
- testcases/kernel/syscalls/landlock/landlock04.c    | 212 +++++++++++
- testcases/kernel/syscalls/landlock/landlock05.c    | 118 +++++++
- testcases/kernel/syscalls/landlock/landlock06.c    | 107 ++++++
- .../kernel/syscalls/landlock/landlock_common.h     |   4 +-
- testcases/kernel/syscalls/landlock/landlock_exec.c |   9 +
- .../kernel/syscalls/landlock/landlock_tester.h     | 393 +++++++++++++++++++++
- 12 files changed, 857 insertions(+), 8 deletions(-)
----
-base-commit: eee3b2dd6d9dae6120646bc14c30e460989d7df6
-change-id: 20240617-landlock-c48a4623a447
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+>
+> > - Removed some curly braces, as suggested by pvorel
+>
+> > - Added runtime check at the end of test to avoid false positives with
+> >   LTP_TIMEOUT_MUL.
+>
+> Great!
+>
+> LGTM.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+>
+> Tested on Tumbleweed (kernel 6.10.1):
+>
+> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_starv8seE as tmpdir (tmpfs filesystem)
+> tst_test.c:1806: TINFO: LTP version: 20240524
+> tst_test.c:1650: TINFO: Timeout per run is 0h 00m 30s
+> starvation.c:71: TINFO: Setting affinity to CPU 0
+> tst_test.c:1658: TINFO: Updating max runtime to 0h 04m 00s
+> tst_test.c:1650: TINFO: Timeout per run is 0h 04m 30s
+> starvation.c:117: TPASS: wait_for_pid(child_pid) passed
+>
+> => test runs ~ 13s - 19s on aarch64, ppc64le and x86_64. Therefore not sure if
+> 04m max runtime is good.
+>
+> I'll have tomorrow some tests on various SLES versions.
+>
+> Kind regards,
+> Petr
+>
+> > .../kernel/sched/cfs-scheduler/starvation.c   | 41 +++++++++++++++++--
+> >  1 file changed, 38 insertions(+), 3 deletions(-)
+>
+> > diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
+> > index 9ac388fdc..e707e0865 100644
+> > --- a/testcases/kernel/sched/cfs-scheduler/starvation.c
+> > +++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
+> > @@ -21,11 +21,38 @@
+> >  #include <sched.h>
+>
+> >  #include "tst_test.h"
+> > +#include "tst_safe_clocks.h"
+> > +#include "tst_timer.h"
+>
+> >  static char *str_loop;
+> > -static long loop = 2000000;
+> > +static long loop = 1000000;
+> >  static char *str_timeout;
+> > -static int timeout = 240;
+> > +static int timeout;
+> > +
+> > +#define CALLIBRATE_LOOPS 120000000
+> > +
+> > +static int callibrate(void)
+> > +{
+> > +     int i;
+> > +     struct timespec start, stop;
+> > +     long long diff;
+> > +
+> > +     for (i = 0; i < CALLIBRATE_LOOPS; i++)
+> > +             __asm__ __volatile__ ("" : "+g" (i) : :);
+> > +
+> > +     SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &start);
+> > +
+> > +     for (i = 0; i < CALLIBRATE_LOOPS; i++)
+> > +             __asm__ __volatile__ ("" : "+g" (i) : :);
+> > +
+> > +     SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &stop);
+> > +
+> > +     diff = tst_timespec_diff_us(stop, start);
+> > +
+> > +     tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
+> > +
+> > +     return diff;
+> > +}
+>
+> >  static int wait_for_pid(pid_t pid)
+> >  {
+> > @@ -78,6 +105,8 @@ static void setup(void)
+>
+> >       if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
+> >               tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
+> > +     else
+> > +             timeout = callibrate() / 1000;
+>
+> >       tst_set_max_runtime(timeout);
+> >  }
+> > @@ -114,7 +143,13 @@ static void do_test(void)
+> >               sleep(1);
+>
+> >       SAFE_KILL(child_pid, SIGTERM);
+> > -     TST_EXP_PASS(wait_for_pid(child_pid));
+> > +
+> > +     if (!tst_remaining_runtime())
+> > +             tst_res(TFAIL, "Scheduller starvation reproduced.");
+> > +     else
+> > +             tst_res(TPASS, "Haven't reproduced scheduller starvation.");
+> > +
+> > +     TST_EXP_PASS_SILENT(wait_for_pid(child_pid));
+> >  }
+>
+> >  static struct tst_test test = {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
