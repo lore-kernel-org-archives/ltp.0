@@ -4,125 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A84CC3DA64
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B8BC3DA4A
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:30:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C49C3D1F21
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 16:30:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 9BB193D1F34
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 16:30:35 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF2C23D1EF0
+ by picard.linux.it (Postfix) with ESMTPS id B7FA73D1EF3
  for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:03 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DF5BF6022C7
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:02 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 148DB1B6104E
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:01 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A2BA2219CF;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 30FD6219CD;
  Thu,  1 Aug 2024 14:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1722522601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ap2A2KDD+U7dDhbXFy+raCWgi3HsCdkmU6Qk8PbbWvA=;
- b=gK68PkXfBU9AdNn1C6oo4kk0KoyrE+Os03Nnj5LGU9LaOpWq3VvXviRtik2N7LKSllncSh
- HmS2OvfcCxjo7vXqeCwKKMsz7kOG0mJJwiyY6Uz31/45z1aQRfPdNBp4wsOEBof586PZm0
- Rg8z9dWelYDIAoH87vcqUfDPAdanszw=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
+ b=ZXVpNnhN1t4K4GQGGWm7D8mlWMqihgYVh4ge0yhpD6q1BvVv+wqm8GGU3VveYftijOwSrd
+ Zc4r1eFjQy/MXtnGj085wZfHWs3NXcVUJrH32D9xxkQ9pZi3MhEJIxL+ZRU5un50JVJbG9
+ CCM3+zdvyQeZivIZrn36IokA82IqKfc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1722522601;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ap2A2KDD+U7dDhbXFy+raCWgi3HsCdkmU6Qk8PbbWvA=;
- b=RZxqWUhjqZPafWhMp3Mga1CtSYrWsD8ezQ4o9Uk8swCY0U68W7MYjXHrkVu6XCKKbkefJP
- ys/jNULo7kU4e4BA==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
+ b=r3riH8Ofe9fDgd7HC7yP/+PbK8I5JRXRi/8QT9OuhyyWLlaSIpSP+bFlUtOa1LgE2hkO9z
+ Ymd6uvbZVk68rcCQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gK68PkXf;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=RZxqWUhj
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1722522601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ap2A2KDD+U7dDhbXFy+raCWgi3HsCdkmU6Qk8PbbWvA=;
- b=gK68PkXfBU9AdNn1C6oo4kk0KoyrE+Os03Nnj5LGU9LaOpWq3VvXviRtik2N7LKSllncSh
- HmS2OvfcCxjo7vXqeCwKKMsz7kOG0mJJwiyY6Uz31/45z1aQRfPdNBp4wsOEBof586PZm0
- Rg8z9dWelYDIAoH87vcqUfDPAdanszw=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
+ b=ZXVpNnhN1t4K4GQGGWm7D8mlWMqihgYVh4ge0yhpD6q1BvVv+wqm8GGU3VveYftijOwSrd
+ Zc4r1eFjQy/MXtnGj085wZfHWs3NXcVUJrH32D9xxkQ9pZi3MhEJIxL+ZRU5un50JVJbG9
+ CCM3+zdvyQeZivIZrn36IokA82IqKfc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1722522601;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ap2A2KDD+U7dDhbXFy+raCWgi3HsCdkmU6Qk8PbbWvA=;
- b=RZxqWUhjqZPafWhMp3Mga1CtSYrWsD8ezQ4o9Uk8swCY0U68W7MYjXHrkVu6XCKKbkefJP
- ys/jNULo7kU4e4BA==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
+ b=r3riH8Ofe9fDgd7HC7yP/+PbK8I5JRXRi/8QT9OuhyyWLlaSIpSP+bFlUtOa1LgE2hkO9z
+ Ymd6uvbZVk68rcCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5292C13ADB;
- Thu,  1 Aug 2024 14:30:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E2DCA13946;
+ Thu,  1 Aug 2024 14:30:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id EIcZDumbq2Z2AwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 14:30:01 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /yUoMeibq2Z2AwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 14:30:00 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 01 Aug 2024 16:29:40 +0200
+Date: Thu, 01 Aug 2024 16:29:39 +0200
+Message-Id: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
 MIME-Version: 1.0
-Message-Id: <20240801-fchmodat2-v4-1-7f2f11a53a09@suse.com>
-References: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
-In-Reply-To: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
+X-B4-Tracking: v=1; b=H4sIANObq2YC/13NTQ7CIBRG0a00jMX0AQV05D6Mg/JnGbQYqETTd
+ O/SxkTi8CPvXBaUbPQ2oXOzoGizTz5MZbBDg/TQT3eLvSkbkZawtgOBnR7GYPqZ4E5JIrkwApx
+ G5f4RrfOvvXW9lT34NIf43tMZttdvhUBVyYBbDCdQrD9JXg4u6ZnsUYcRbZFMflAQWkNSoOWdL
+ E4BUPsHaQ1ZDen2o9FCO80pU7KC67p+ANMDE54TAQAA
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2602;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3662;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=U2VGMxIUdQTXMvw5tt0u3nXxyihCqX23E98wwkw4Zeo=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq5vndRvwl07ECcxUtkG+jSwcd65h/4ZgGoM4y
- tM3a5sFetCJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqub5wAKCRDLzBqyILPm
- RsKSC/4gk4NV4qXrkmOkpyIts6+GK8+2fSn/kj4SS4z6kY9RXZvSMhU5BTHnkoUo1UnIcWO6QEa
- A7Te4mHUIdo2HYNP4ROKVG5bLmOC2KeOSR10PtmYyT5ZzD8o7anNR/juF+LTlywXpOHV10sLPiH
- ql8wggA6VFcc5ENJh/I9NU9c3axKo7HCJik22LnvgEyNwTrrn0ShxH1JnMQcdiMIAdsOFZdJ8Ml
- LB6ld9IuTI/GG/obddh/ZAmYjh4q7gGmAec1ftP7mL9xhc4XbgrdAnnX/D9Rx5X2t5/gTkOqL34
- yVBo4TCHhULiWCd1tbmQoQB4a2qiLkpxkYk2EshX9+Es5ko3DvJLXS//zm7CK6J+R83X5wj5O0M
- 7JyYd03WTL63PCUMhvfRrE0C8EkMqTstPEEiIRv1ONTHTaeLU88kO3PA8jC4PFa/gMcKffV5uyx
- 6doBvk9cYTXMMfX8lOnnxKCJCMVFNEgLXJCtlEErim68zEM3QRUJ4Ft9tHhnL1dIa2JuE=
+ bh=AE2fph+mdskpgA7ZmMv0A9d9CzVm8wT4c9/NNV5l+vw=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq5vaSkhP86ze4chjSqxSDFdyCTpk7xfECdOJK
+ mbFLbYmhzuJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqub2gAKCRDLzBqyILPm
+ RpIlDACqAHghE7LHKxjdTTEEzaaKJ8FAas1swwZhR5K5Ar6a4BeZKjWlogWdnKugo6VvBO5TzMX
+ wq5jUQ9rJidDqkniipdZOCwazwYQ0JGA2G6Qzz1Bnye2gSdIQSfoGiORRtf+8rtT0CIgzdQm0RS
+ S5s5UdSP+5zHFT1xn4rGrFWUoFJwhujzAJRMDgLgHBLuMqXLDdn3Gw4g0QKyNm9gXiPwf/OkvfX
+ MCqgP7Xd3jTXgVn9xI3u7Dqn6wlAleVEMqtLZhSacJDkdkL2sauVYpIHYFNZX31dITB/T1Vw/I7
+ qullwB1nZfTOvMtv5lFbjLl7VxJuJiG0/8yiQSaP3tPz10WTp5aMB0sx05/R5GV8wOP3faLMS1x
+ l8U4GX7cxVSGPUDadC/KdlqA0wSDfevT4e1bhD8FfVIlswgGbSCjbZepksOAPT+Sb3BrwUe5tEW
+ IoXh69lit5PqqsD2Q9BbVCUHMr+y1dMv6kTbuVx4bE/AfI0cIIdpOG6TXUtdQ438amX38=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A2BA2219CF
-X-Spamd-Result: default: False [-4.31 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/5] Add SAFE_SYMLINKAT macro
+Subject: [LTP] [PATCH v4 0/5] Add fchmodat2 testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -139,78 +128,88 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+This is a patch-set that implements fchmodat2() syscall coverage.
+fchmodat2() has been added in kernel 6.6 in order to support
+AT_SYMLINK_NOFOLLOW and AT_EMPTY_PATH in fchmodat().
+There's no man pages yet, so please take the following links as
+main documentation along with kernel source code:
+
+https://www.phoronix.com/news/fchmodat2-For-Linux-6.6
+https://lore.kernel.org/lkml/20230824-frohlocken-vorabend-725f6fdaad50@brauner/
+
+***********
+* WARNING *
+***********
+
+fchmodat2_02 fails with EOPNOTSUPP because of missing feature.
+According to documentation, the feature has been implemented in
+kernel 6.6, but __in reality__ AT_SYMLINK_NOFOLLOW is not working
+on symbolic files. Also kselftests, which are meant to test the
+functionality, are not working and they are treating fchmodat2()
+syscall failure as SKIP. Please take a look at the following code
+before reviewing:
+
+https://github.com/torvalds/linux/blob/8f6a15f095a63a83b096d9b29aaff4f0fbe6f6e6/tools/testing/selftests/fchmodat2/fchmodat2_test.c#L123
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/safe_macros_fn.h  |  4 ++++
- include/tst_safe_macros.h |  3 +++
- lib/safe_macros.c         | 20 ++++++++++++++++++++
- 3 files changed, 27 insertions(+)
+Changes in v4:
+- add SAFE_FCHMODAT2
+- Link to v3: https://lore.kernel.org/r/20240724-fchmodat2-v3-0-1dc7cfc634b8@suse.com
 
-diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
-index d256091b7..6d9e72e4f 100644
---- a/include/safe_macros_fn.h
-+++ b/include/safe_macros_fn.h
-@@ -122,6 +122,10 @@ int safe_symlink(const char *file, const int lineno,
-                  void (cleanup_fn)(void), const char *oldpath,
-                  const char *newpath);
- 
-+int safe_symlinkat(const char *file, const int lineno,
-+                 void (cleanup_fn)(void), const char *oldpath,
-+                 const int newdirfd, const char *newpath);
-+
- ssize_t safe_write(const char *file, const int lineno,
- 		   void (cleanup_fn)(void), enum safe_write_opts len_strict,
- 		   int fildes, const void *buf, size_t nbyte);
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 92b9bc119..47a6f99df 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -191,6 +191,9 @@ int safe_getgroups(const char *file, const int lineno, int size, gid_t list[]);
- #define SAFE_SYMLINK(oldpath, newpath) \
- 	safe_symlink(__FILE__, __LINE__, NULL, (oldpath), (newpath))
- 
-+#define SAFE_SYMLINKAT(oldpath, newdirfd, newpath) \
-+	safe_symlinkat(__FILE__, __LINE__, NULL, (oldpath), (newdirfd), (newpath))
-+
- #define SAFE_WRITE(len_strict, fildes, buf, nbyte) \
- 	safe_write(__FILE__, __LINE__, NULL, (len_strict), (fildes), (buf), (nbyte))
- 
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 109268587..f91e77022 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -527,6 +527,26 @@ int safe_symlink(const char *file, const int lineno,
- 	return rval;
- }
- 
-+int safe_symlinkat(const char *file, const int lineno,
-+                 void (cleanup_fn)(void), const char *oldpath,
-+				 const int newdirfd, const char *newpath)
-+{
-+	int rval;
-+
-+	rval = symlinkat(oldpath, newdirfd, newpath);
-+
-+	if (rval == -1) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"symlinkat(%s,%d,%s) failed", oldpath, newdirfd, newpath);
-+	} else if (rval) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Invalid symlinkat(%s,%d,%s) return value %d", oldpath,
-+			newdirfd, newpath, rval);
-+	}
-+
-+	return rval;
-+}
-+
- ssize_t safe_write(const char *file, const int lineno, void (cleanup_fn) (void),
- 		   enum safe_write_opts len_strict, int fildes, const void *buf,
- 		   size_t nbyte)
+Changes in v3:
+- removed fchmodat2.h
+- Link to v2: https://lore.kernel.org/r/20240723-fchmodat2-v2-0-e658a98b113e@suse.com
 
+Changes in v2:
+- merge first 3 tests into a unique one
+- move fchmodat2 in lapi/stat.h
+- add test for error checking
+- Link to v1: https://lore.kernel.org/r/20240521-fchmodat2-v1-0-191b4a986202@suse.com
+
+---
+Andrea Cervesato (5):
+      Add SAFE_SYMLINKAT macro
+      Add fchmodat2 syscalls definitions
+      Add fchmodat2 fallback definition
+      Add fchmodat2_01 test
+      Add fchmodat2_02 test
+
+ include/lapi/stat.h                                |  16 +++
+ include/lapi/syscalls/aarch64.in                   |   1 +
+ include/lapi/syscalls/arc.in                       |   1 +
+ include/lapi/syscalls/arm.in                       |   1 +
+ include/lapi/syscalls/hppa.in                      |   1 +
+ include/lapi/syscalls/i386.in                      |   1 +
+ include/lapi/syscalls/ia64.in                      |   1 +
+ include/lapi/syscalls/loongarch.in                 |   1 +
+ include/lapi/syscalls/mips_n32.in                  |   1 +
+ include/lapi/syscalls/mips_n64.in                  |   1 +
+ include/lapi/syscalls/mips_o32.in                  |   1 +
+ include/lapi/syscalls/powerpc.in                   |   1 +
+ include/lapi/syscalls/powerpc64.in                 |   1 +
+ include/lapi/syscalls/s390.in                      |   1 +
+ include/lapi/syscalls/s390x.in                     |   1 +
+ include/lapi/syscalls/sh.in                        |   1 +
+ include/lapi/syscalls/sparc.in                     |   1 +
+ include/lapi/syscalls/sparc64.in                   |   1 +
+ include/lapi/syscalls/x86_64.in                    |   1 +
+ include/safe_macros_fn.h                           |   4 +
+ include/tst_safe_macros.h                          |   3 +
+ lib/safe_macros.c                                  |  20 ++++
+ runtest/syscalls                                   |   3 +
+ testcases/kernel/syscalls/fchmodat2/.gitignore     |   2 +
+ testcases/kernel/syscalls/fchmodat2/Makefile       |   7 ++
+ testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c | 114 +++++++++++++++++++++
+ testcases/kernel/syscalls/fchmodat2/fchmodat2_02.c |  68 ++++++++++++
+ 27 files changed, 255 insertions(+)
+---
+base-commit: 8422d4680b21e6576da63c677b5d49f46b477df0
+change-id: 20240517-fchmodat2-5b82867d71fc
+
+Best regards,
 -- 
-2.43.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
