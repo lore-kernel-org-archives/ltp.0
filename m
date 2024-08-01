@@ -4,108 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA887C3DA4A
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13D16C3DA64
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 12:09:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D99A3D1B07
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:00:23 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2B68E3D1F40
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:09:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8E6E3D1EF6
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:00:07 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 5FF4F3D1073
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:08:51 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A4B1C206510
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:00:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4A0FD602086
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 14:08:51 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 154031FB4D
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 12:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722513604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 88FF61FB4D;
+ Thu,  1 Aug 2024 12:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1722514130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MuZxSEFGt4OpGyXO4eJiNtKNbH/FLCVtwWMDH6WYcNc=;
- b=i0yicqCHCRwuhOWQlqD5FUJg/4yBYaOJZla6UWNotA/sjYwVnSmrcoEKppJWQcT/6UalyV
- 19CWBpqF/GWl6n2dwgvVRhQGRnuHMDy25PWFjfGRV4/AoNVrStrM/fFhZD2Jdt2xOAxDbl
- igA0regYo+8cv7HXs5cvvjOlsAilzj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722513604;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=TO7QOD89YzOr9AiPnHH21yq6WGGs/tr8RnISGKNJbpU=;
+ b=HOpmCjmh7ZPCjG7V1GJUlqC2z3VK5ac6lDYZoQ0l33zdF/C34UIY2OmdCFWsbUD+mZEPVk
+ kdGXca7VqQiS3P5uIE7e3s85oe67fhI665nA1VPVDVcztLZ4gRYmwboAyAuhU151yRXNpp
+ gA//loJ+mIj0DOyi9L2szyg7X4nUW5Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1722514130;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MuZxSEFGt4OpGyXO4eJiNtKNbH/FLCVtwWMDH6WYcNc=;
- b=JTa4SK1vBN0hD7maZY54HA2cTH0gfD68EbZNH9CWygLUdz5GJK+X8m7pZmbX7q9PegzVy2
- nrYZpkedLwxIgXDQ==
+ bh=TO7QOD89YzOr9AiPnHH21yq6WGGs/tr8RnISGKNJbpU=;
+ b=EUnF0dodJWKFrNYwVz8QVEA/+VaqRF4RknrdpY3MBuZQcX9RjPLWcN6tPUeW+3i0U+ah0n
+ KwJVgvXTmWSd+BAQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=i0yicqCH;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JTa4SK1v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722513604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1722514130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MuZxSEFGt4OpGyXO4eJiNtKNbH/FLCVtwWMDH6WYcNc=;
- b=i0yicqCHCRwuhOWQlqD5FUJg/4yBYaOJZla6UWNotA/sjYwVnSmrcoEKppJWQcT/6UalyV
- 19CWBpqF/GWl6n2dwgvVRhQGRnuHMDy25PWFjfGRV4/AoNVrStrM/fFhZD2Jdt2xOAxDbl
- igA0regYo+8cv7HXs5cvvjOlsAilzj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722513604;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=TO7QOD89YzOr9AiPnHH21yq6WGGs/tr8RnISGKNJbpU=;
+ b=HOpmCjmh7ZPCjG7V1GJUlqC2z3VK5ac6lDYZoQ0l33zdF/C34UIY2OmdCFWsbUD+mZEPVk
+ kdGXca7VqQiS3P5uIE7e3s85oe67fhI665nA1VPVDVcztLZ4gRYmwboAyAuhU151yRXNpp
+ gA//loJ+mIj0DOyi9L2szyg7X4nUW5Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1722514130;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MuZxSEFGt4OpGyXO4eJiNtKNbH/FLCVtwWMDH6WYcNc=;
- b=JTa4SK1vBN0hD7maZY54HA2cTH0gfD68EbZNH9CWygLUdz5GJK+X8m7pZmbX7q9PegzVy2
- nrYZpkedLwxIgXDQ==
+ bh=TO7QOD89YzOr9AiPnHH21yq6WGGs/tr8RnISGKNJbpU=;
+ b=EUnF0dodJWKFrNYwVz8QVEA/+VaqRF4RknrdpY3MBuZQcX9RjPLWcN6tPUeW+3i0U+ah0n
+ KwJVgvXTmWSd+BAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 00D0713ADB
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 12:00:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 60FF913ADB;
+ Thu,  1 Aug 2024 12:08:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5vrVOsN4q2b2VAAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 01 Aug 2024 12:00:03 +0000
-Date: Thu, 1 Aug 2024 14:02:24 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <Zqt5UA5gVyq2glNC@rei>
-References: <20240731100743.9665-1-chrubis@suse.cz>
- <20240731100743.9665-2-chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qBDOFNJ6q2aiVwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 12:08:50 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 01 Aug 2024 14:08:40 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240731100743.9665-2-chrubis@suse.cz>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.81 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 154031FB4D
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Message-Id: <20240801-landlock-v5-3-663d7383b335@suse.com>
+References: <20240801-landlock-v5-0-663d7383b335@suse.com>
+In-Reply-To: <20240801-landlock-v5-0-663d7383b335@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1989;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=cDKP9t45/813OOiOnGDBhLPvLSWYhnYP5FEzZem15aY=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq3rQYXDiJXN4MSIBoGm/GueI26j+J7ViBTCHQ
+ 78vsy8rGBmJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqt60AAKCRDLzBqyILPm
+ Rqo4DACY0z2wm8syyM6AC2EHd77v0emJI4FMWWWazezJWfu+knzbjfXoBnXTUPGlY4BqoWxYMTB
+ Wlq1CXg2KYlBkb6qZOOZMT6Wgp2g7TWsyXdilsbuXoQBg25aR2Kf9mBoffAuyAppfUJqBgRN7iB
+ yFFwPGruVQSquo+Ja7qz2cKPU5jBZEQ7RyG1A1R6UlLby/RpC7yK6fi63BWY5f/BPBs8cQbHyXu
+ egIscIfvti7Gi/bpJS7Dnk7FAMmQJJxiiTRzk37q9PwFmE4X5/fDMCgIzuELs+3ifoFHq06xIe9
+ 0yQyt3tHe9SfVokMkd9sA9iyiEzv3k+X7ulaF6//HPOQVIjDGazmODggNVF6oePgtODX09lHt4S
+ gQIJtrQdMiYhpg7aXmTTQubZ+gFWtNx/XXced5GM0t/9OEKkjF+04AgfhW7RlP1rE3zVFuHhu3C
+ u+JZJtQlNGRCmzrWDymPQZxI0Njov99W2crmih9+Qav4IP6C+l1xO/c28gH32glK0K0w4=
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Spamd-Result: default: False [-1.10 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] Add support for mixing C and shell code
+Subject: [LTP] [PATCH v5 3/6] Disable kernel version check in landlock tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,82 +129,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index e5bc5bf4d..7e1075fdf 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -4,6 +4,8 @@
->   * Copyright (c) Linux Test Project, 2016-2024
->   */
->  
-> +#define _GNU_SOURCE
-> +
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-And this actualy causes obscure build failure on musl.
+The reason why we remove kernel version check is that we use
+verify_landlock_is_enabled() function in order to check if landlock is
+present in the system. This is really helpful when landlock support has
+been backported into old kernels.
 
-The problem is that on musl sched.h exposes clone() when _GNU_SOURCE is
-defined and at the same time sched.h does not get pulled before
-tst_clone.h gets included, which means that the macro from tst_clone.h
-that rewrites clone() functions actually rewrites the function
-declaration in the system header.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/syscalls/landlock/landlock01.c | 1 -
+ testcases/kernel/syscalls/landlock/landlock02.c | 1 -
+ testcases/kernel/syscalls/landlock/landlock03.c | 1 -
+ 3 files changed, 3 deletions(-)
 
-The solution is to include sched.h in the tst_clone.h which guarantees
-that headers are included in the right order, however after this the
-compilation fails in:
-
-testcases/kernel/controllers/cpuset/cpuset_lib/
-
-Because the library defines sched_setaffinity() prototype incompatible
-with the system headers and tst_sched.h gets pulled there from test.h.
-(That is something to be fixed, but that would be likely complete
- rewrite of these testcases.)
-
-However there is no need to include tst_clone.h in test.h since there is
-only single old library test that uses ltp_clone() API. So the whole fix
-should be:
-
-diff --git a/include/old/test.h b/include/old/test.h
-index 0e210e4ef..306868fb5 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -31,7 +31,6 @@
- #include "tst_pid.h"
- #include "tst_cmd.h"
- #include "tst_cpu.h"
--#include "tst_clone.h"
- #include "old_device.h"
- #include "old_tmpdir.h"
- #include "tst_minmax.h"
-diff --git a/include/tst_clone.h b/include/tst_clone.h
-index 56f23142d..a57d761ca 100644
---- a/include/tst_clone.h
-+++ b/include/tst_clone.h
-@@ -5,6 +5,8 @@
- #ifndef TST_CLONE_H__
- #define TST_CLONE_H__
- 
-+#include <sched.h>
-+
- #ifdef TST_TEST_H__
- 
- /* The parts of clone3's clone_args we support */
-diff --git a/testcases/kernel/syscalls/clone/clone02.c b/testcases/kernel/syscalls/clone/clone02.c
-index 821adc2d9..fd3ee1aed 100644
---- a/testcases/kernel/syscalls/clone/clone02.c
-+++ b/testcases/kernel/syscalls/clone/clone02.c
-@@ -59,6 +59,7 @@
- #include <sched.h>
- #include "test.h"
- #include "safe_macros.h"
-+#include "tst_clone.h"
- 
- #define FLAG_ALL (CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|SIGCHLD)
- #define FLAG_NONE SIGCHLD
+diff --git a/testcases/kernel/syscalls/landlock/landlock01.c b/testcases/kernel/syscalls/landlock/landlock01.c
+index 0c50b55d8..db2ffe89b 100644
+--- a/testcases/kernel/syscalls/landlock/landlock01.c
++++ b/testcases/kernel/syscalls/landlock/landlock01.c
+@@ -75,7 +75,6 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+-	.min_kver = "5.13",
+ 	.needs_root = 1,
+ 	.needs_kconfigs = (const char *[]) {
+ 		"CONFIG_SECURITY_LANDLOCK=y",
+diff --git a/testcases/kernel/syscalls/landlock/landlock02.c b/testcases/kernel/syscalls/landlock/landlock02.c
+index c29ff1e83..2b3e31f69 100644
+--- a/testcases/kernel/syscalls/landlock/landlock02.c
++++ b/testcases/kernel/syscalls/landlock/landlock02.c
+@@ -120,7 +120,6 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.min_kver = "5.13",
+ 	.needs_root = 1,
+ 	.needs_kconfigs = (const char *[]) {
+ 		"CONFIG_SECURITY_LANDLOCK=y",
+diff --git a/testcases/kernel/syscalls/landlock/landlock03.c b/testcases/kernel/syscalls/landlock/landlock03.c
+index 9bf358d1c..5661b6b29 100644
+--- a/testcases/kernel/syscalls/landlock/landlock03.c
++++ b/testcases/kernel/syscalls/landlock/landlock03.c
+@@ -108,7 +108,6 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.min_kver = "5.13",
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
