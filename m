@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B8BC3DA4A
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE98AC3DA64
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 14:30:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9BB193D1F34
-	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 16:30:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 1EC643D1F39
+	for <ltp@archiver.kernel.org>; Thu,  1 Aug 2024 16:30:51 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B7FA73D1EF3
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:03 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 4E5C63D1EF0
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:04 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
@@ -24,94 +23,95 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 148DB1B6104E
- for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:01 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ACA881402FB5
+ for <ltp@lists.linux.it>; Thu,  1 Aug 2024 16:30:03 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 30FD6219CD;
- Thu,  1 Aug 2024 14:30:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3DD27219D1;
+ Thu,  1 Aug 2024 14:30:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1722522601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1722522603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
- b=ZXVpNnhN1t4K4GQGGWm7D8mlWMqihgYVh4ge0yhpD6q1BvVv+wqm8GGU3VveYftijOwSrd
- Zc4r1eFjQy/MXtnGj085wZfHWs3NXcVUJrH32D9xxkQ9pZi3MhEJIxL+ZRU5un50JVJbG9
- CCM3+zdvyQeZivIZrn36IokA82IqKfc=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=y50r1xycIKX+iQ3cP5T4HQ0TxEUEobLIKDGFGw1tdS4=;
+ b=eGmE9HciVLNo/zMG0u1oafHJePfYxa19vMtp1CAdBqAOT8iCicd2LAgm/wHfEUcwiu0gmG
+ /rU3JD+a4sZif1Da1HvCQWRnovJffL47fNTqFQ2SmydbT0JUvQ/fYH1XH4+CLrnOZGKibB
+ xmzE5gngEhnK8dfV87htkTuWGQ1XNGw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1722522601;
+ s=susede2_ed25519; t=1722522603;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
- b=r3riH8Ofe9fDgd7HC7yP/+PbK8I5JRXRi/8QT9OuhyyWLlaSIpSP+bFlUtOa1LgE2hkO9z
- Ymd6uvbZVk68rcCQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=y50r1xycIKX+iQ3cP5T4HQ0TxEUEobLIKDGFGw1tdS4=;
+ b=HuDnumIm1N8kt7E1kJMmbT2JdZlvOpfnhCGWK2MrhDbRean/2MNw0gIyqG1v3zjq4/y+1X
+ s19AAWftBTEUedDQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1722522601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1722522603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
- b=ZXVpNnhN1t4K4GQGGWm7D8mlWMqihgYVh4ge0yhpD6q1BvVv+wqm8GGU3VveYftijOwSrd
- Zc4r1eFjQy/MXtnGj085wZfHWs3NXcVUJrH32D9xxkQ9pZi3MhEJIxL+ZRU5un50JVJbG9
- CCM3+zdvyQeZivIZrn36IokA82IqKfc=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=y50r1xycIKX+iQ3cP5T4HQ0TxEUEobLIKDGFGw1tdS4=;
+ b=eGmE9HciVLNo/zMG0u1oafHJePfYxa19vMtp1CAdBqAOT8iCicd2LAgm/wHfEUcwiu0gmG
+ /rU3JD+a4sZif1Da1HvCQWRnovJffL47fNTqFQ2SmydbT0JUvQ/fYH1XH4+CLrnOZGKibB
+ xmzE5gngEhnK8dfV87htkTuWGQ1XNGw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1722522601;
+ s=susede2_ed25519; t=1722522603;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=jVnEUEzHvdVi1wxqoC3y63F/5WE7wTIE8fyfqDc3djI=;
- b=r3riH8Ofe9fDgd7HC7yP/+PbK8I5JRXRi/8QT9OuhyyWLlaSIpSP+bFlUtOa1LgE2hkO9z
- Ymd6uvbZVk68rcCQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=y50r1xycIKX+iQ3cP5T4HQ0TxEUEobLIKDGFGw1tdS4=;
+ b=HuDnumIm1N8kt7E1kJMmbT2JdZlvOpfnhCGWK2MrhDbRean/2MNw0gIyqG1v3zjq4/y+1X
+ s19AAWftBTEUedDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E2DCA13946;
- Thu,  1 Aug 2024 14:30:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D586B13946;
+ Thu,  1 Aug 2024 14:30:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /yUoMeibq2Z2AwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 14:30:00 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8I8GLuqbq2Z2AwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 01 Aug 2024 14:30:02 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 01 Aug 2024 16:29:39 +0200
-Message-Id: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
+Date: Thu, 01 Aug 2024 16:29:43 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANObq2YC/13NTQ7CIBRG0a00jMX0AQV05D6Mg/JnGbQYqETTd
- O/SxkTi8CPvXBaUbPQ2oXOzoGizTz5MZbBDg/TQT3eLvSkbkZawtgOBnR7GYPqZ4E5JIrkwApx
- G5f4RrfOvvXW9lT34NIf43tMZttdvhUBVyYBbDCdQrD9JXg4u6ZnsUYcRbZFMflAQWkNSoOWdL
- E4BUPsHaQ1ZDen2o9FCO80pU7KC67p+ANMDE54TAQAA
+Message-Id: <20240801-fchmodat2-v4-4-7f2f11a53a09@suse.com>
+References: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
+In-Reply-To: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3662;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4479;
  i=andrea.cervesato@suse.com; h=from:subject:message-id;
- bh=AE2fph+mdskpgA7ZmMv0A9d9CzVm8wT4c9/NNV5l+vw=;
- b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq5vaSkhP86ze4chjSqxSDFdyCTpk7xfECdOJK
- mbFLbYmhzuJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqub2gAKCRDLzBqyILPm
- RpIlDACqAHghE7LHKxjdTTEEzaaKJ8FAas1swwZhR5K5Ar6a4BeZKjWlogWdnKugo6VvBO5TzMX
- wq5jUQ9rJidDqkniipdZOCwazwYQ0JGA2G6Qzz1Bnye2gSdIQSfoGiORRtf+8rtT0CIgzdQm0RS
- S5s5UdSP+5zHFT1xn4rGrFWUoFJwhujzAJRMDgLgHBLuMqXLDdn3Gw4g0QKyNm9gXiPwf/OkvfX
- MCqgP7Xd3jTXgVn9xI3u7Dqn6wlAleVEMqtLZhSacJDkdkL2sauVYpIHYFNZX31dITB/T1Vw/I7
- qullwB1nZfTOvMtv5lFbjLl7VxJuJiG0/8yiQSaP3tPz10WTp5aMB0sx05/R5GV8wOP3faLMS1x
- l8U4GX7cxVSGPUDadC/KdlqA0wSDfevT4e1bhD8FfVIlswgGbSCjbZepksOAPT+Sb3BrwUe5tEW
- IoXh69lit5PqqsD2Q9BbVCUHMr+y1dMv6kTbuVx4bE/AfI0cIIdpOG6TXUtdQ438amX38=
+ bh=FiidbMb0Ic7siV5MpFgVUWJisBk/zfCS3GmqPwnUdmI=;
+ b=owEB7QES/pANAwAIAcvMGrIgs+ZGAcsmYgBmq5vnP3rFVXrW+MekG366Q3ytBVOpgIXPmOTcX
+ CuvMviM4GaJAbMEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqub5wAKCRDLzBqyILPm
+ RrI5C/9vgJJPgN51n4/4q8ILBGjk1ru2A8TLJsLmgQI7zIp3ENIHxAkpQ5ZODHubNf0R2ox0bU0
+ M7Pj3+5KKO/a9SCYTCiX2T6qMH2TjGQvPpPgQHwq3D8IQkYjfUYQVrVYF+jnOgs8Sq+d1xCSPOt
+ ROuBCNK/dYGkGShGrAti7M5SkxPF+7QRuPKJQNLd3oMwYAVxuQ5wDqeTQyqaSRv3m4Jedr3y5za
+ zBHGZR6XxSYYbdHrXAzv6hbopfZUm6QMKDFM+uqSyg2okmk35wtjDrVX+F1X4GHqo2vNgjjwElk
+ sx/rYcFSKICgiXWjiGfzBjqys3F7oUWAyf40Ox4j0GohoJDroJ0dvg9OvylmXT+bG13UgPTGDkR
+ nvqDe5gSoBATZn+ygfd67w1h7BAgDt2kFl4u3MwgfhnDoWoSIr1Z32yt2V5kBoLHwAQjntHN3E7
+ /4EZ6jfRJX1vRk3YHxR/8F0yMNiS0+pkxPktjyPiJZY9ypZaT0VB4EIbb1akvFEfixkpI=
 X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
  fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
-X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+X-Spamd-Result: default: False [-1.10 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 0/5] Add fchmodat2 testing suite
+Subject: [LTP] [PATCH v4 4/5] Add fchmodat2_01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,88 +128,175 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is a patch-set that implements fchmodat2() syscall coverage.
-fchmodat2() has been added in kernel 6.6 in order to support
-AT_SYMLINK_NOFOLLOW and AT_EMPTY_PATH in fchmodat().
-There's no man pages yet, so please take the following links as
-main documentation along with kernel source code:
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-https://www.phoronix.com/news/fchmodat2-For-Linux-6.6
-https://lore.kernel.org/lkml/20230824-frohlocken-vorabend-725f6fdaad50@brauner/
-
-***********
-* WARNING *
-***********
-
-fchmodat2_02 fails with EOPNOTSUPP because of missing feature.
-According to documentation, the feature has been implemented in
-kernel 6.6, but __in reality__ AT_SYMLINK_NOFOLLOW is not working
-on symbolic files. Also kselftests, which are meant to test the
-functionality, are not working and they are treating fchmodat2()
-syscall failure as SKIP. Please take a look at the following code
-before reviewing:
-
-https://github.com/torvalds/linux/blob/8f6a15f095a63a83b096d9b29aaff4f0fbe6f6e6/tools/testing/selftests/fchmodat2/fchmodat2_test.c#L123
+This test verifies that fchmodat2() syscall is properly working with
+AT_SYMLINK_NOFOLLOW on regular files.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v4:
-- add SAFE_FCHMODAT2
-- Link to v3: https://lore.kernel.org/r/20240724-fchmodat2-v3-0-1dc7cfc634b8@suse.com
-
-Changes in v3:
-- removed fchmodat2.h
-- Link to v2: https://lore.kernel.org/r/20240723-fchmodat2-v2-0-e658a98b113e@suse.com
-
-Changes in v2:
-- merge first 3 tests into a unique one
-- move fchmodat2 in lapi/stat.h
-- add test for error checking
-- Link to v1: https://lore.kernel.org/r/20240521-fchmodat2-v1-0-191b4a986202@suse.com
-
----
-Andrea Cervesato (5):
-      Add SAFE_SYMLINKAT macro
-      Add fchmodat2 syscalls definitions
-      Add fchmodat2 fallback definition
-      Add fchmodat2_01 test
-      Add fchmodat2_02 test
-
- include/lapi/stat.h                                |  16 +++
- include/lapi/syscalls/aarch64.in                   |   1 +
- include/lapi/syscalls/arc.in                       |   1 +
- include/lapi/syscalls/arm.in                       |   1 +
- include/lapi/syscalls/hppa.in                      |   1 +
- include/lapi/syscalls/i386.in                      |   1 +
- include/lapi/syscalls/ia64.in                      |   1 +
- include/lapi/syscalls/loongarch.in                 |   1 +
- include/lapi/syscalls/mips_n32.in                  |   1 +
- include/lapi/syscalls/mips_n64.in                  |   1 +
- include/lapi/syscalls/mips_o32.in                  |   1 +
- include/lapi/syscalls/powerpc.in                   |   1 +
- include/lapi/syscalls/powerpc64.in                 |   1 +
- include/lapi/syscalls/s390.in                      |   1 +
- include/lapi/syscalls/s390x.in                     |   1 +
- include/lapi/syscalls/sh.in                        |   1 +
- include/lapi/syscalls/sparc.in                     |   1 +
- include/lapi/syscalls/sparc64.in                   |   1 +
- include/lapi/syscalls/x86_64.in                    |   1 +
- include/safe_macros_fn.h                           |   4 +
- include/tst_safe_macros.h                          |   3 +
- lib/safe_macros.c                                  |  20 ++++
- runtest/syscalls                                   |   3 +
- testcases/kernel/syscalls/fchmodat2/.gitignore     |   2 +
+ runtest/syscalls                                   |   2 +
+ testcases/kernel/syscalls/fchmodat2/.gitignore     |   1 +
  testcases/kernel/syscalls/fchmodat2/Makefile       |   7 ++
  testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c | 114 +++++++++++++++++++++
- testcases/kernel/syscalls/fchmodat2/fchmodat2_02.c |  68 ++++++++++++
- 27 files changed, 255 insertions(+)
----
-base-commit: 8422d4680b21e6576da63c677b5d49f46b477df0
-change-id: 20240517-fchmodat2-5b82867d71fc
+ 4 files changed, 124 insertions(+)
 
-Best regards,
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9b3cba667..50298d01e 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -270,6 +270,8 @@ fchmod06 fchmod06
+ fchmodat01 fchmodat01
+ fchmodat02 fchmodat02
+ 
++fchmodat2_01 fchmodat2_01
++
+ fchown01 fchown01
+ fchown01_16 fchown01_16
+ fchown02 fchown02
+diff --git a/testcases/kernel/syscalls/fchmodat2/.gitignore b/testcases/kernel/syscalls/fchmodat2/.gitignore
+new file mode 100644
+index 000000000..47d5e2427
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchmodat2/.gitignore
+@@ -0,0 +1 @@
++fchmodat2_01
+diff --git a/testcases/kernel/syscalls/fchmodat2/Makefile b/testcases/kernel/syscalls/fchmodat2/Makefile
+new file mode 100644
+index 000000000..8cf1b9024
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchmodat2/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
+new file mode 100644
+index 000000000..6f77788d2
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * This test verifies that fchmodat2() syscall is properly working with
++ * AT_SYMLINK_NOFOLLOW regular files, symbolic links and directories.
++ */
++
++#include "tst_test.h"
++#include "tst_safe_file_at.h"
++#include "lapi/fcntl.h"
++#include "lapi/stat.h"
++
++#define MNTPOINT "mntpoint"
++#define FNAME "myfile"
++#define SNAME "symlink"
++#define DNAME "mydir"
++#define DNAME_PATH MNTPOINT"/"DNAME
++
++static int fd_dir = -1;
++
++static void verify_mode(int dirfd, const char *path, mode_t mode)
++{
++	struct stat st;
++
++	SAFE_FSTATAT(dirfd, path, &st, AT_SYMLINK_NOFOLLOW);
++	TST_EXP_EQ_LI(st.st_mode, mode);
++}
++
++static void test_regular_file(void)
++{
++	tst_res(TINFO, "Using regular files");
++
++	SAFE_CHMOD(MNTPOINT"/"FNAME, 0640);
++
++	SAFE_FCHMODAT2(fd_dir, FNAME, 0700, 0);
++	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
++
++	SAFE_FCHMODAT2(fd_dir, FNAME, 0700, AT_SYMLINK_NOFOLLOW);
++	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
++}
++
++static void test_symbolic_link(void)
++{
++	tst_res(TINFO, "Using symbolic link");
++
++	SAFE_FCHMODAT2(fd_dir, SNAME, 0700, 0);
++	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
++	verify_mode(fd_dir, SNAME, S_IFLNK | 0777);
++
++	SAFE_FCHMODAT2(fd_dir, SNAME, 0640, AT_SYMLINK_NOFOLLOW);
++	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
++	verify_mode(fd_dir, SNAME, S_IFLNK | 0640);
++}
++
++static void test_empty_folder(void)
++{
++	tst_res(TINFO, "Using empty folder");
++
++	int fd;
++
++	SAFE_CHMOD(DNAME_PATH, 0640);
++	fd = SAFE_OPEN(DNAME_PATH, O_PATH | O_DIRECTORY, 0640);
++
++	SAFE_FCHMODAT2(fd, "", 0777, AT_EMPTY_PATH);
++	verify_mode(fd_dir, DNAME, S_IFDIR | 0777);
++
++	SAFE_CLOSE(fd);
++}
++
++static void run(void)
++{
++	test_regular_file();
++	test_empty_folder();
++	test_symbolic_link();
++}
++
++static void setup(void)
++{
++	fd_dir = SAFE_OPEN(MNTPOINT, O_PATH | O_DIRECTORY, 0640);
++
++	if (access(DNAME_PATH, F_OK) == -1)
++		SAFE_MKDIR(DNAME_PATH, 0640);
++
++	SAFE_TOUCH(MNTPOINT"/"FNAME, 0640, NULL);
++	SAFE_SYMLINKAT(FNAME, fd_dir, SNAME);
++}
++
++static void cleanup(void)
++{
++	SAFE_UNLINKAT(fd_dir, SNAME, 0);
++	SAFE_RMDIR(DNAME_PATH);
++
++	if (fd_dir != -1)
++		SAFE_CLOSE(fd_dir);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_kver = "6.6",
++	.mntpoint = MNTPOINT,
++	.format_device = 1,
++	.all_filesystems = 1,
++	.skip_filesystems = (const char *const []) {
++		"fuse",
++		NULL
++	},
++};
+
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.43.0
 
 
 -- 
