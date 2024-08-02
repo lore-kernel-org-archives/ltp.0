@@ -4,104 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C43C3DA4A
-	for <ltp@archiver.kernel.org>; Fri,  2 Aug 2024 05:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D07FCC52D71
+	for <ltp@archiver.kernel.org>; Fri,  2 Aug 2024 05:49:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2148B3D1F21
-	for <ltp@archiver.kernel.org>; Fri,  2 Aug 2024 07:43:10 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E794E3D1F30
+	for <ltp@archiver.kernel.org>; Fri,  2 Aug 2024 07:49:04 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A1D73D1EC1
- for <ltp@lists.linux.it>; Fri,  2 Aug 2024 07:42:54 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C16E53D1EC1
+ for <ltp@lists.linux.it>; Fri,  2 Aug 2024 07:48:49 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1508C601238
- for <ltp@lists.linux.it>; Fri,  2 Aug 2024 07:42:53 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 76ABD1A00CD8
+ for <ltp@lists.linux.it>; Fri,  2 Aug 2024 07:48:48 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C2EEB1F460;
- Fri,  2 Aug 2024 05:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722577373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8E85E21963;
+ Fri,  2 Aug 2024 05:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1722577727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZNYV5JrO2+4rUxmerNibhdblvntIxcZs6a8SNQn2bMY=;
- b=G0DHrjAyW30CBLn2iWSp5IRPFauuzXj/2gOprCvJ86PReSqKrGDR/eSoniJe6Cdr+E65pb
- 7h/l0WELCv9b0B7s0p7QG+/fsavy8O/nADHyVplPxrVTD8/P+MThR8FNxyr3lU9oT2+al4
- vv10wJnDYwiaODIXLStlLoOQXc+nMCc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722577373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=s8Md1oMlwpqHXOfMnaDg+noWm9J6OzRoRxtKGlTvrDY=;
+ b=J9jNk1s5wYWUcYOUJsKlOEE02Vx3hiLcSw2N28F6mibr9X2Sh8kGMTDduBIdlYvRzrksva
+ uLyASECX+auiiFnxXbAppgt9U3XIZRKEUpCJU926y3Mqq1MHVSblFpou/sWYLVqI3hHuOj
+ kOQmhjxX2Ws1+oxqRGDnxovEtpekHTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1722577727;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZNYV5JrO2+4rUxmerNibhdblvntIxcZs6a8SNQn2bMY=;
- b=Ep/AGNQgtl7/bjifSYL2tdTTHqjVaYoozGOcpr36WhtqUg789xVXQyn2HyOmnAmOKfEt3V
- Iv8leMGvlFiSzQDA==
-Authentication-Results: smtp-out2.suse.de;
+ bh=s8Md1oMlwpqHXOfMnaDg+noWm9J6OzRoRxtKGlTvrDY=;
+ b=+ocdV1Q0A+KqV+w/I4gN/IFK1pEjfOjTAddFNpn5kE1ggIkaMziZpDh4bRj6aZSd+EvgQZ
+ 2Plai4g8Ngx2WqCg==
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722577371;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1722577727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZNYV5JrO2+4rUxmerNibhdblvntIxcZs6a8SNQn2bMY=;
- b=xIj8gYV3BMg1qeMnluj+0wOrI3t1C3+UiazVWt8Zz2pxP2LPlI5oGaFimehtkURAWbjS+H
- tujZ6OgmTmhVNrJpaR33lJeS4FYnA3w9kmygzWoKkco4OQLGomLGgr42THOFFLDeDTOY7o
- Nd0WJLndvDo8ynxV4/HJj2D+vIgXG2o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722577371;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=s8Md1oMlwpqHXOfMnaDg+noWm9J6OzRoRxtKGlTvrDY=;
+ b=J9jNk1s5wYWUcYOUJsKlOEE02Vx3hiLcSw2N28F6mibr9X2Sh8kGMTDduBIdlYvRzrksva
+ uLyASECX+auiiFnxXbAppgt9U3XIZRKEUpCJU926y3Mqq1MHVSblFpou/sWYLVqI3hHuOj
+ kOQmhjxX2Ws1+oxqRGDnxovEtpekHTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1722577727;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZNYV5JrO2+4rUxmerNibhdblvntIxcZs6a8SNQn2bMY=;
- b=4+fEd71Wf2Asgaw0KtiS5/rV94YdZSBmL975dQBLrHdf26kn9OkY26JOxdwrbnu8E/+90u
- xA2w25281Nnm5gBg==
+ bh=s8Md1oMlwpqHXOfMnaDg+noWm9J6OzRoRxtKGlTvrDY=;
+ b=+ocdV1Q0A+KqV+w/I4gN/IFK1pEjfOjTAddFNpn5kE1ggIkaMziZpDh4bRj6aZSd+EvgQZ
+ 2Plai4g8Ngx2WqCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D03A13998;
- Fri,  2 Aug 2024 05:42:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6688B13B07;
+ Fri,  2 Aug 2024 05:48:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id a1RjIdtxrGZBagAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 02 Aug 2024 05:42:51 +0000
-Date: Fri, 2 Aug 2024 07:42:52 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Aleksa Sarai <cyphar@cyphar.com>
-Message-ID: <20240802054252.GA1582980@pevik>
-References: <20240801-fchmodat2-v4-0-7f2f11a53a09@suse.com>
- <20240801165756.GA1526142@pevik>
- <20240802.011554-broke.flocks.valiant.camp-sk9TjsxvPYf@cyphar.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OBVqFj9zrGaYawAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 02 Aug 2024 05:48:47 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 02 Aug 2024 07:48:38 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240802.011554-broke.flocks.valiant.camp-sk9TjsxvPYf@cyphar.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; REPLY(-4.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_SEVEN(0.00)[9]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[phoronix.com:url,suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Message-Id: <20240802-mseal-v4-1-bc1b97cb5a39@suse.com>
+References: <20240802-mseal-v4-0-bc1b97cb5a39@suse.com>
+In-Reply-To: <20240802-mseal-v4-0-bc1b97cb5a39@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6589;
+ i=andrea.cervesato@suse.com; h=from:subject:message-id;
+ bh=fKsGjN9BdkWkjVXfqyUJMOEEeXH74BEd4au+9LKFfJY=;
+ b=owEB7AET/pANAwAIAcvMGrIgs+ZGAcsmYgBmrHM9FB0fbI8f9sRuyfbhW9BgM4QRo0gBBdEq4
+ tRkwr9o7PeJAbIEAAEIAB0WIQT1ysFzUKRW0sIb39jLzBqyILPmRgUCZqxzPQAKCRDLzBqyILPm
+ Rq3iC/dNwfTChZ53rTS0OOe1wDKo/LQu+qrXp6elm+h/48W/gLOpgcw3tIhLqpZUjlAsCr1bsTL
+ kpvfB5Nb++0/npG94nlpuFP5vyELyZZnRJ8XvbfqQOgeItLVRMj7+pdZYC5RuDUqAOCHsYy8AL8
+ PWMrR4GrhsGIbFGRedOuVPocY1K/lTN4lm8U7rK5wY0skDFNszYDlOkgCWQPKEhLQH9pkOVmGed
+ 6amv9JAdWSX1uJ+ncP8SIOpJnlGDJOQyV5XrS76WObp7An/Z/gCA+fK65jaSecvKdX59+zgWpqw
+ AkXkywVYe0/rz/8EEAi13CtoM+ECrKF8qONWWSatQ+4zlWhOcr05+fYNLKlvrmpzUjRZ3yqv+gf
+ wCyeGDExeSvWJizdkdXsyYAGUOg7hHra7KIbQiZ0GiR8RuXelTcW6ex4cpsQNcVhzzUlj5Io3SE
+ 6mgZ5oR8xdgm9tV6gnzIpgfvy6er0WdxeJqjLYr3f5JBQK8Vo9kMu7zUwi9t6KQ39dWg==
+X-Developer-Key: i=andrea.cervesato@suse.com; a=openpgp;
+ fpr=F5CAC17350A456D2C21BDFD8CBCC1AB220B3E646
+X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 0/5] Add fchmodat2 testing suite
+Subject: [LTP] [PATCH v4 1/2] Add mseal() syscall declaration
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,160 +125,204 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Christian Brauner <brauner@kernel.org>,
- =?iso-8859-2?Q?Ga=EBl?= PORTAY <gael.portay@rtone.fr>,
- Adhemerval Zanella <adhemerval.zanella@linaro.org>,
- linux-kernel@vger.kernel.org, Alexey Gladkov <legion@kernel.org>,
- ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 2024-08-01, Petr Vorel <pvorel@suse.cz> wrote:
-> > Hi all,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> > > This is a patch-set that implements fchmodat2() syscall coverage.
-> > > fchmodat2() has been added in kernel 6.6 in order to support
-> > > AT_SYMLINK_NOFOLLOW and AT_EMPTY_PATH in fchmodat().
-> > > There's no man pages yet, so please take the following links as
-> > > main documentation along with kernel source code:
+---
+ include/lapi/syscalls/aarch64.in   | 1 +
+ include/lapi/syscalls/arc.in       | 1 +
+ include/lapi/syscalls/arm.in       | 1 +
+ include/lapi/syscalls/hppa.in      | 1 +
+ include/lapi/syscalls/i386.in      | 1 +
+ include/lapi/syscalls/ia64.in      | 1 +
+ include/lapi/syscalls/loongarch.in | 1 +
+ include/lapi/syscalls/mips_n32.in  | 1 +
+ include/lapi/syscalls/mips_n64.in  | 1 +
+ include/lapi/syscalls/mips_o32.in  | 1 +
+ include/lapi/syscalls/powerpc.in   | 1 +
+ include/lapi/syscalls/powerpc64.in | 1 +
+ include/lapi/syscalls/s390.in      | 1 +
+ include/lapi/syscalls/s390x.in     | 1 +
+ include/lapi/syscalls/sh.in        | 1 +
+ include/lapi/syscalls/sparc.in     | 1 +
+ include/lapi/syscalls/sparc64.in   | 1 +
+ include/lapi/syscalls/x86_64.in    | 1 +
+ 18 files changed, 18 insertions(+)
 
-> > I would hope that it'd be at least Christian's fork [1], but it's not there.
-> > I suppose nobody is working on the man page.
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index ef0aa04a3..d1ff7c081 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -301,4 +301,5 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
+index 3eaa6a8f1..265329cbe 100644
+--- a/include/lapi/syscalls/arc.in
++++ b/include/lapi/syscalls/arc.in
+@@ -321,3 +321,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index b52a32b6b..b49590268 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -400,3 +400,4 @@ landlock_restrict_self (__NR_SYSCALL_BASE+446)
+ memfd_secret (__NR_SYSCALL_BASE+447)
+ futex_waitv (__NR_SYSCALL_BASE+449)
+ cachestat (__NR_SYSCALL_BASE+451)
++mseal (__NR_SYSCALL_BASE+462)
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index 4919ee65d..9a8832248 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -48,3 +48,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index cff40957a..59c97b9b8 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -435,3 +435,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 11d4b46f4..f08a268e8 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -348,3 +348,4 @@ landlock_add_rule 1469
+ landlock_restrict_self 1470
+ futex_waitv 1473
+ cachestat 1475
++mseal 1486
+diff --git a/include/lapi/syscalls/loongarch.in b/include/lapi/syscalls/loongarch.in
+index 9bf6a7deb..29acad012 100644
+--- a/include/lapi/syscalls/loongarch.in
++++ b/include/lapi/syscalls/loongarch.in
+@@ -306,3 +306,4 @@ process_mrelease 448
+ futex_waitv 449
+ set_mempolicy_home_node 450
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
+index a76c82593..260e01518 100644
+--- a/include/lapi/syscalls/mips_n32.in
++++ b/include/lapi/syscalls/mips_n32.in
+@@ -375,3 +375,4 @@ landlock_add_rule 6445
+ landlock_restrict_self 6446
+ futex_waitv 6449
+ cachestat 6451
++mseal 6462
+diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
+index df991efd5..83da993ad 100644
+--- a/include/lapi/syscalls/mips_n64.in
++++ b/include/lapi/syscalls/mips_n64.in
+@@ -351,3 +351,4 @@ landlock_add_rule 5445
+ landlock_restrict_self 5446
+ futex_waitv 5449
+ cachestat 5451
++mseal 5462
+diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
+index 826b7d66e..3589e0337 100644
+--- a/include/lapi/syscalls/mips_o32.in
++++ b/include/lapi/syscalls/mips_o32.in
+@@ -421,3 +421,4 @@ landlock_add_rule 4445
+ landlock_restrict_self 4446
+ futex_waitv 4449
+ cachestat 4451
++mseal 4462
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index 798ed9050..e39e6b69c 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -428,3 +428,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 798ed9050..e39e6b69c 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -428,3 +428,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 126938095..d3426c88f 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -415,3 +415,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 18f2496a0..02df53322 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -363,3 +363,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index ae6f26050..c93271d1b 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -409,3 +409,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 409fa2729..9be7d2e96 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -414,3 +414,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index e13cf163e..9c80a328f 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -379,3 +379,4 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 05b1bee55..49cb1ab94 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -356,6 +356,7 @@ landlock_add_rule 445
+ landlock_restrict_self 446
+ futex_waitv 449
+ cachestat 451
++mseal 462
+ rt_sigaction 512
+ rt_sigreturn 513
+ ioctl 514
 
-> > > https://www.phoronix.com/news/fchmodat2-For-Linux-6.6
-> > > https://lore.kernel.org/lkml/20230824-frohlocken-vorabend-725f6fdaad50@brauner/
+-- 
+2.43.0
 
-> > > ***********
-> > > * WARNING *
-> > > ***********
-
-> > > fchmodat2_02 fails with EOPNOTSUPP because of missing feature.
-
-> > For a record, it's fchmodat2_01.c (from this patchset) which is failing (on
-> > 6.10.1-1.g4c78d6f-default Tumbleweed and 6.6.21-0-lts Alpine, both x86_64 VMs).
-
-> > Andrea, I would personally just skip test on EOPNOTSUPP (that's what we do in
-> > LTP on EOPNOTSUPP). The question why is not supported and whether is going to be
-> > fixed.
-
-> > Looking into glibc change 65341f7bbe ("linux: Use fchmodat2 on fchmod for flags
-> > different than 0 (BZ 26401)") one year old change from glibc-2.39 [2] it looks
-> > just accepted behavior (glibc returns EOPNOTSUPP on symlink):
-
-> > +  /* Some Linux versions with some file systems can actually
-> > +     change symbolic link permissions via /proc, but this is not
-> > +     intentional, and it gives inconsistent results (e.g., error
-> > +     return despite mode change).  The expected behavior is that
-> > +     symbolic link modes cannot be changed at all, and this check
-> > +     enforces that.  */
-> > +  if (S_ISLNK (st.st_mode))
-> > +    {
-> >        __close_nocancel (pathfd);
-> > -      return ret;
-> > +      __set_errno (EOPNOTSUPP);
-> > +      return -1;
-> > +    }
-
-> > Also musl also behaves the same on his fallback on old kernels [3]
-> > (it started 10 years ago on 0dc48244 ("work around linux's lack of flags
-> > argument to fchmodat syscall") when SYS_fchmodat was used and kept when this
-> > year SYS_fchmodat2 started to be used in d0ed307e):
-
-> > 	int ret = __syscall(SYS_fchmodat2, fd, path, mode, flag);
-> > 	if (ret != -ENOSYS) return __syscall_ret(ret);
-
-> > 	if (flag != AT_SYMLINK_NOFOLLOW)
-> > 		return __syscall_ret(-EINVAL);
-
-> > 	struct stat st;
-> > 	int fd2;
-> > 	char proc[15+3*sizeof(int)];
-
-> > 	if (fstatat(fd, path, &st, flag))
-> > 		return -1;
-> > 	if (S_ISLNK(st.st_mode))
-> > 		return __syscall_ret(-EOPNOTSUPP);
-
-
-> > > According to documentation, the feature has been implemented in
-> > > kernel 6.6, but __in reality__ AT_SYMLINK_NOFOLLOW is not working
-> > > on symbolic files. Also kselftests, which are meant to test the
-> > > functionality, are not working and they are treating fchmodat2()
-> > > syscall failure as SKIP. Please take a look at the following code
-> > > before reviewing:
-
-> > > https://github.com/torvalds/linux/blob/8f6a15f095a63a83b096d9b29aaff4f0fbe6f6e6/tools/testing/selftests/fchmodat2/fchmodat2_test.c#L123
-
-> > I see there is a kselftest workaround in 4859c257d295 ("selftests: Add fchmodat2
-> > selftest") [4], where fchmodat2 failure on symlink is simply skipped.
-
-> > Aleksa, you're probably aware of this fchmodat2() failure on symlinks. Does
-> > anybody work or plan to work on fixing it? LTP has policy to not cover kernel
-> > bugs, if it's not expected to be working we might just skip the test as well.
-
-> If I understand the bug report, the issue is that fchmodat2() doesn't
-> work on symlinks?
-
-Yes.
-
-> This is intentional -- Christian fixed a tree-wide bug a while ago[1]
-> where some filesystems would change the mode of symlinks despite
-> returning an error (usually EOPNOTSUPP) and IIRC a few others would
-> happily change the mode of symlinks.
-
-Ah, I've seen this in the past. Thanks a lot for reminding me.
-
-> The current intended behaviour is to always return EOPNOTSUPP, and AFAIK
-> there is no plan to re-enable the changing of symlink modes. EOPNOTSUPP
-> was chosen because that's what filesystems were already returning.
-> (While this is a little confusing, VFS syscalls return EINVAL for an
-> unsupported flag, not EOPNOTSUPP.)
-
-> The benefit of an AT_SYMLINK_NOFOLLOW flag is not just to to allow a
-> syscall to operate on symlinks, it also allows programs to safely
-> operate on path components without worrying about symlinks being
-> followed (this is relevant for container runtimes, where we are
-> operating on untrusted filesystem roots -- though in the case of
-> fchmodat2(2) you would probably just use AT_EMPTY_PATH in practice). So
-> an error here is actually what you want as a program that uses
-> AT_SYMLINK_NOFOLLOW (since the actual operation is intentionally not
-> supported by filesystems).
-
-Thanks a lot for explaining the background!
-
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d1f903f75a80daa4dfb3d84e114ec8ecbf29956
-
-> > I see a RFC UAPI related patchset [5] which touches include/uapi/linux/fcntl.h,
-> > but AFAIK it's not related to this problem.
-
-> Yeah this is unrelated, that patch is about clarifying how AT_* flags
-> are allocated, not syscall behaviour.
-
-Thanks!
-
-> > Kind regards,
-> > Petr
-
-@Andrea, I guess we want something like this:
-
-+++ testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
-@@ -43,9 +43,10 @@ static void test_symbolic_link(void)
- 	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
- 	verify_mode(fd_dir, SNAME, S_IFLNK | 0777);
- 
--	TST_EXP_PASS(fchmodat2(fd_dir, SNAME, 0640, AT_SYMLINK_NOFOLLOW));
--	verify_mode(fd_dir, FNAME, S_IFREG | 0700);
--	verify_mode(fd_dir, SNAME, S_IFLNK | 0640);
-+	if (tst_kvercmp(6, 6, 0) >= 0) {
-+		TST_EXP_FAIL(tst_syscall(__NR_fchmodat2, fd_dir, SNAME, 0640,
-+					 AT_SYMLINK_NOFOLLOW), EOPNOTSUPP);
-+	}
- }
- 
- static void test_empty_folder(void)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
