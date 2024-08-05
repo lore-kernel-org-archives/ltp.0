@@ -4,112 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C374FC3DA7F
-	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 13:55:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE2DC3DA4A
+	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 13:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1722866161; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=OiYlOwF5AQ5HzqYwZtdVGOJ9zivFzWJUJtwTxJfDyA4=;
+ b=CpAUlmc7VwyOECyh+PGBFwKduRKbjGgFmONtMqztHkheoKVzyHj5U8pTdl/kugvGEni8j
+ AtX3IPMCEq4tshoRIVisrscHZwy17MNUCAOJq/w/RZX/LPtdWUoDv4jjEmJXtzB4XWcUpMq
+ 1gUEJg76/X9fxiJj8uzAsi2iZc8aRbI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F2EE3D1FD5
-	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 15:55:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E39853CF4EC
+	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 15:56:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 722D13D1B17
- for <ltp@lists.linux.it>; Mon,  5 Aug 2024 15:55:10 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 659983CF05B
+ for <ltp@lists.linux.it>; Mon,  5 Aug 2024 15:55:41 +0200 (CEST)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F275E1A0121A
- for <ltp@lists.linux.it>; Mon,  5 Aug 2024 15:55:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ECF931F841;
- Mon,  5 Aug 2024 13:55:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722866109;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IdfYnwPMTgCQeJwnkXWwiVU3hoUrWqdlGJ7CaS1SfVw=;
- b=zBoBKOStwFZVIEQF7PYcTwB41Jvme/HIewo5s6niQnrXNPExJ8W2hPL/jMG/yEbPtnLsZP
- aYvlBuN9goqGI1/m/3tQa0xrobr3ONdJdf7C1iqk3ZBDFW1VYfa/jOp6bqXfjXM/U1ewSn
- cI43MI/gWb22E9ZPQ0FNHkH9T5X9KRw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722866109;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IdfYnwPMTgCQeJwnkXWwiVU3hoUrWqdlGJ7CaS1SfVw=;
- b=sQapNvlDMhc2zIYVWWSMztGRzMwU/r2h8XsjMm5jOJhaDaHKxIiB1mJqHGfhqEC2SAkqQW
- 6MXa0ZVOSqa9irDA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LumVcb2e;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VdIrgaiH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722866107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IdfYnwPMTgCQeJwnkXWwiVU3hoUrWqdlGJ7CaS1SfVw=;
- b=LumVcb2edjJ+4cwLUwTelPGaS9AI1CRi8Hfhw0sxv6MfloY5Anbhehdgi9H/WuNYB0oAZD
- 93ax6CkRrpK6ht75I+qrh37DblCHYwrhg8iCnoVWj1ilJ4g/UFXpdWvWyixlyXIegW1JC0
- tFzmB1YWXucfGtmxurQ9xGb6Iph9eF8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722866107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IdfYnwPMTgCQeJwnkXWwiVU3hoUrWqdlGJ7CaS1SfVw=;
- b=VdIrgaiHakEGgBwk5UolTERg7jNbBhuGzxIAhvWk6hUZYY1W47XoO4fRvStlBV6M4LlMMm
- JQVdOnfAJqpI6mBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD9C013254;
- Mon,  5 Aug 2024 13:55:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JZNSLLvZsGYnQgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 05 Aug 2024 13:55:07 +0000
-Date: Mon, 5 Aug 2024 15:55:01 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240805135501.GA45426@pevik>
-References: <20240805065247.13791-1-liwang@redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A92401400F47
+ for <ltp@lists.linux.it>; Mon,  5 Aug 2024 15:55:40 +0200 (CEST)
+Received: by mail-ed1-x52d.google.com with SMTP id
+ 4fb4d7f45d1cf-5af6a1afa63so11805088a12.0
+ for <ltp@lists.linux.it>; Mon, 05 Aug 2024 06:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1722866140; x=1723470940; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=I//wdu0w+vj3QkbfrTLbxdLio2e5gfcljrVdDaQ96+A=;
+ b=Bvy2nOX4HPVd1c7+6Vg3VkCo8UWRKjlFe+fgKc/nKdvpo22/Vcr6iLe7R8BX/7yb05
+ EYorEnRUcjNH4u3DoB3010qzEv4zEa/tK+zsey1qxF4IrFwhQgcd+p7HzTAGOddlKKpk
+ xGwNwAs5+fnB+ObDZ/l2Tacntz7Nx9h8x2IzSKyzidWd3B147ihdqyDijIgjabWNNtm/
+ 1zMBTOG5nYP0dvoqeKdY17LLiq3WWJkEzOQChwb2tWvoO7DrVXmDQ20nLW3EKiH2EjgN
+ xrr2Zg0aDLNH6mI2PXCDlT/8iUqgfdus1opyWQQBF8/W/qpm00KCe4XpxrKnY/u93zAJ
+ sSmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1722866140; x=1723470940;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=I//wdu0w+vj3QkbfrTLbxdLio2e5gfcljrVdDaQ96+A=;
+ b=imtgWSu5o8lHffKM+FN8puDv2aTS2IS5m5BjtEHhRJ580STGVzs9HJsW3pI8jNYsA3
+ KobQR4hbGD6FU+o0f7c+lo00idZWqhAq2bHsFuMmEHa/qC1Au/WMc73N9ImaMXVwH935
+ c49G7tVoIoGOOHMLGPwmdBl3LA78zwetL0SQD7nRa0yBsbbF6JM/T9stupKyJ8Q/kvU9
+ 5lQx7Tzq6YEJ9qUnZUe6XIrin8kauTkGHEbUHgpqTKbJWCGOuL7DcvoIvRHV1fTIW7A7
+ cB739FnLmoH/sZUk+ac8aVEhaY9FECo3uOQWS9fnEPdzXC+iWmkr6sUCnuWNZpG3yaIr
+ NUbA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWJ3OdI+fRh781iQrYPkXpE0r63mC1B0VnpitqHdCg4EkNO/opOR5J7dzh05x8UP+X9y7jwk5pf8TLrYik4WbPhF5M=
+X-Gm-Message-State: AOJu0Yxyi8mqOg5pcVQjR1/Sv+zpp0E+dQOcGUm+uOFMaQ0ucioRPEWg
+ 8lm/0tnDFJ2nqdjRm2y5XcPvRr+ag3jfPItojPBB22N8N6GEobRN/RZNxJ8FvHU=
+X-Google-Smtp-Source: AGHT+IGJFCiPTgPLbb6ccnH7UHfxclUjSZjD3RM0iSMP/ZvJYCQOpW9gLYEzvfhFSpSL7lDx5mxEkQ==
+X-Received: by 2002:a50:eb0b:0:b0:5b4:4bf7:59ef with SMTP id
+ 4fb4d7f45d1cf-5b7f35fd632mr8917158a12.6.1722866139380; 
+ Mon, 05 Aug 2024 06:55:39 -0700 (PDT)
+Received: from [192.168.1.59] ([151.51.15.217])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5babb4ec55csm2593125a12.47.2024.08.05.06.55.38
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 05 Aug 2024 06:55:39 -0700 (PDT)
+Message-ID: <ebe0aacb-b1d6-4815-b998-388e3ab48446@suse.com>
+Date: Mon, 5 Aug 2024 15:55:35 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240805065247.13791-1-liwang@redhat.com>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.71 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: ECF931F841
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20240805134618.41203-1-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20240805134618.41203-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] lapi: move pkey.h declarations inside the
- lapi/ folder
+Subject: Re: [LTP] [PATCH 1/1] lapi/stat.h: Handle invalid __NR_fchmodat2
+ syscall return value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,23 +95,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi,
 
-obviously correct, thanks!
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-BTW wouldn't be worth to rewrite mseal01.c to support both raw syscall and libc
-wrapper via .test_variants?
+On 8/5/24 15:46, Petr Vorel wrote:
+> Only 0 and -1 are valid for __NR_fchmodat2. Reporting invalid return
+> value is current approach for LTP safe macros.
+>
+> While at it, unify the error message with safe macros.
+>
+> Fixes: 49e1c012d3 ("Add fchmodat2 fallback definition")
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>   include/lapi/stat.h | 12 +++++++++---
+>   1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+> index 8e38ecfef1..030646a9e3 100644
+> --- a/include/lapi/stat.h
+> +++ b/include/lapi/stat.h
+> @@ -238,9 +238,15 @@ static inline int safe_fchmodat2(const char *file, const int lineno,
+>   	int ret;
+>   
+>   	ret = tst_syscall(__NR_fchmodat2, dfd, filename, mode, flags);
+> -	if (ret == -1)
+> -		tst_brk_(file, lineno, TBROK | TERRNO, "%s(%d,%s,%d,%d) error",
+> -			__func__, dfd, filename, mode, flags);
+> +	if (ret == -1) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			 "syscall(__NR_fchmodat2,%d,%s,%d,%d) failed",
+> +			 dfd, filename, mode, flags);
+> +	} else if (ret) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			 "Invalid syscall(__NR_fchmodat2,%d,%s,%d,%d) return value %d",
+> +			 dfd, filename, mode, flags, ret);
+> +	}
+>   
+>   	return ret;
+>   }
 
-Kind regards,
-Petr
+Andrea
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
