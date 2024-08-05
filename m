@@ -4,105 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9522CC3DA4A
-	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 15:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE3AC3DA7F
+	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 16:44:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C7FA3D1FE3
-	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 17:37:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DC8F63D1FD8
+	for <ltp@archiver.kernel.org>; Mon,  5 Aug 2024 18:44:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 731F63CF4EC
- for <ltp@lists.linux.it>; Mon,  5 Aug 2024 17:36:46 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id BE6A53D0817
+ for <ltp@lists.linux.it>; Mon,  5 Aug 2024 18:43:56 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D3E276233E9
- for <ltp@lists.linux.it>; Mon,  5 Aug 2024 17:36:45 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 183F31400990
+ for <ltp@lists.linux.it>; Mon,  5 Aug 2024 18:43:55 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DC8831F7E8;
- Mon,  5 Aug 2024 15:36:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7D70421BBD;
+ Mon,  5 Aug 2024 16:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722872205;
+ t=1722876234;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XHnJrdi56+Jmcq5Szlhvzme+4N//V95Ps8t0BzuMGHk=;
- b=VlF2cy0r5v4ImZ429tRCPFw5yGCaeRsIHqg9a633I+POu08Uu7/8jPWeWUPvsRjEhXkYnu
- aAUdREGcTYvt3pz48LbIuBgt5Onn4X/xiziPU8otkGjUi9zNbuzaxRyqKrzDRvFLuSfWff
- FIUH9rLYzum4enXfWUETIBAIS4VGgms=
+ bh=gfW3vC/l8PNvbUrgE3aztKf4I6H56liyfUaer6AAaM8=;
+ b=2Gxsb/9FdDJ6/LhzS0/4xcyw9cEi/z6+9wSxVvMNW7epqwHXwQwBL2Kf1b0G5edVhHpzHh
+ m26PEzZCma9Dh6No1D0xfKVd18K9JQPc0kZj05wvb5wAiLMHdAXKWxEBv2YYyNnBRGw3zO
+ Tn/9/w+HNnylMLSG04mjc4cfKsMEqVw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722872205;
+ s=susede2_ed25519; t=1722876234;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XHnJrdi56+Jmcq5Szlhvzme+4N//V95Ps8t0BzuMGHk=;
- b=GAgjGL5zU7MdSAUe2ZN6eoz6UkhZKuDUF5k1SwuGiNJ96V5nngldsDLpUp3L2K0SlCHPlu
- smOoJP2jSGdBnbAw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=gfW3vC/l8PNvbUrgE3aztKf4I6H56liyfUaer6AAaM8=;
+ b=Ozk+xoyMyTNZS/qBP1/T73HdMLZmxvtfRAbuaY/jWDS5qfSyKbdbush/CoBDEG4K+kGE1q
+ jrEchdPC5PD+ucAA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1722872204;
+ t=1722876233;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XHnJrdi56+Jmcq5Szlhvzme+4N//V95Ps8t0BzuMGHk=;
- b=zoxEhXS4NGhCm/m+mTBzIrlZPtmPKtzARUwZmy42KUWX11zFWGrUh8dkk/6hs95F8i/uMM
- vNTvyYZP20DlliLaOGl9kD4To8NewAjayKBUDDaeoZSxKChkq9/g1sW7VSGkezLnkphVW7
- J7E2/2oe91GH9GWTwxy5AVI1ofiEH3k=
+ bh=gfW3vC/l8PNvbUrgE3aztKf4I6H56liyfUaer6AAaM8=;
+ b=o1RbPhQKCJ5IXP9eBF57Kzmuk92a8aXjc0qITTQ7IWDeKzQxh9hqIeasMCBTs750Bo8IFx
+ NHWuXrdYFf0GJAZ22ED7zhpxApxUJPcbbvzQsgKIBkk6bqW5OrVjMF3YsIzCh8sbcQz7u+
+ nVQbQ1SG1c49vlTU4lQE3VvbmI3fTnM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1722872204;
+ s=susede2_ed25519; t=1722876233;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XHnJrdi56+Jmcq5Szlhvzme+4N//V95Ps8t0BzuMGHk=;
- b=tckw6jT1BxHI4k+BmB+17qj35kXl5uTQB4TMoj5M1A4aliOcQBg5ARYlLJgK9hhm2tcV9B
- w68COMZc0cqvIyBA==
+ bh=gfW3vC/l8PNvbUrgE3aztKf4I6H56liyfUaer6AAaM8=;
+ b=7h2L7twt5WzlqCao7rWl9ZuzBNGKqTtWj03ibSTxmBdJ7dD2pVrARuu7oebgfQCiGU6iEr
+ jBHA/hN2b2VbTBDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEC0E13ACF;
- Mon,  5 Aug 2024 15:36:44 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 521F713254;
+ Mon,  5 Aug 2024 16:43:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3FuBLYzxsGaGYgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 05 Aug 2024 15:36:44 +0000
-Date: Mon, 5 Aug 2024 17:36:43 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ekzwEkkBsWY6dgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 05 Aug 2024 16:43:53 +0000
+Date: Mon, 5 Aug 2024 18:43:48 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20240805153643.GA27762@pevik>
-References: <20240802-fchmodat2-v6-0-dcb0293979b3@suse.com>
- <20240802-fchmodat2-v6-3-dcb0293979b3@suse.com>
- <20240802113032.GA1626431@pevik>
- <8984a9e6-6b13-4e34-a709-3d45202f03ad@suse.com>
+Message-ID: <20240805164348.GA53089@pevik>
+References: <20240805092219.2659302-1-maxj.fnst@fujitsu.com>
+ <2d414c20-ab82-41d5-8490-335dd0134755@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <8984a9e6-6b13-4e34-a709-3d45202f03ad@suse.com>
-X-Spamd-Result: default: False [-0.50 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <2d414c20-ab82-41d5-8490-335dd0134755@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,suse.cz:email]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
  MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 3/5] Add fchmodat2 fallback definition
+Subject: Re: [LTP] [PATCH v3] getcpu: Add testcase for EFAULT
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,54 +121,164 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 8/2/24 13:30, Petr Vorel wrote:
-> > Hi Andrea,
+> Hi!
 
+> On 8/5/24 11:22, Ma Xinjian via ltp wrote:
+> > Add a testcase with the arguments point to an invalid address.
 
-> > > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> > > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> > > ---
-> > >   include/lapi/stat.h | 16 ++++++++++++++++
-> > >   1 file changed, 16 insertions(+)
-> > > diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-> > > index 3606c9eb0..8e38ecfef 100644
-> > > --- a/include/lapi/stat.h
-> > > +++ b/include/lapi/stat.h
-> > > @@ -229,4 +229,20 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
-> > >   # define STATX_ATTR_VERITY	0x00100000
-> > >   #endif
-> > > +#define SAFE_FCHMODAT2(dfd, filename, mode, flags) \
-> > > +	safe_fchmodat2(__FILE__, __LINE__, (dfd), (filename), (mode), (flags))
-> > > +
-> > > +static inline int safe_fchmodat2(const char *file, const int lineno,
-> > > +		int dfd, const char *filename, mode_t mode, int flags)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	ret = tst_syscall(__NR_fchmodat2, dfd, filename, mode, flags);
-> > > +	if (ret == -1)
-> > > +		tst_brk_(file, lineno, TBROK | TERRNO, "%s(%d,%s,%d,%d) error",
-> > > +			__func__, dfd, filename, mode, flags);
-> > I'm sorry, I overlook that errno check is not needed. tst_syscall() does it
-> > (see include/lapi/syscalls.h). Please remove it before merge.
-
-> > With this:
 > > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+> > ---
+> >   runtest/syscalls                            |  1 +
+> >   testcases/kernel/syscalls/getcpu/getcpu02.c | 97 +++++++++++++++++++++
+> >   2 files changed, 98 insertions(+)
+> >   create mode 100644 testcases/kernel/syscalls/getcpu/getcpu02.c
 
-> > Kind regards,
-> > Petr
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index b8728c1c5..1537b5022 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -448,6 +448,7 @@ futimesat01 futimesat01
+> >   getcontext01 getcontext01
+> >   getcpu01 getcpu01
+> > +getcpu02 getcpu02
+> >   getcwd01 getcwd01
+> >   getcwd02 getcwd02
+> > diff --git a/testcases/kernel/syscalls/getcpu/getcpu02.c b/testcases/kernel/syscalls/getcpu/getcpu02.c
+> > new file mode 100644
+> > index 000000000..f32660ef9
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/getcpu/getcpu02.c
+> > @@ -0,0 +1,97 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
+> > + * Copyright (c) Linux Test Project, 2024
+> > + * Author: Ma Xinjian <maxj.fnst@fujitsu.com>
+> > + *
+> > + */
+> > +
+> > +/*\
+> > + * [Description]
+> > + *
+> > + * Verify that getcpu(2) fails with
+> > + *
+> > + * - EFAULT arguments point outside the calling process's address
+> > + *          space.
+> We can squeeze the description in one single line since EFAULT is the only
+> one we are gonna test.
 
-> As far as I see, tst_syscall() only handles ENOSYS and invalid syscalls, so
-> it makes sense to handle TBROK | TERRNO inside the safe_* function.
+Good point. As Andrea suggested to use .tcnt, defining 2 testcases with
+different getcpu() input values, these two would deserve to be described.
 
-Yes, I'm sorry, I was wrong. But in that case handling ret < -1 is missing.
-I have sent a patch fixing this.
+Also it'd be nice to add some tst_res(TINFO, ...) description in the testing
+function (similar to one above in /*\.
 
 Kind regards,
 Petr
 
-> Andrea
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <errno.h>
+> > +#include <sys/resource.h>
+> > +#include <sys/time.h>
+> > +#include <sys/wait.h>
+> > +#include <stdlib.h>
+> tst_test.h is importing these already.
+> > +
+> > +#include "tst_test.h"
+> > +#include "lapi/sched.h"
+> > +
+> > +static void *bad_addr;
+> > +
+> > +static void setup(void)
+> > +{
+> > +	bad_addr = tst_get_bad_addr(NULL);
+> > +}
+> > +
+> > +static void check_bad_cpu_id(void *bad_addr, unsigned int *node_id)
+> > +{
+> > +	int status;
+> > +	pid_t pid;
+> > +
+> > +	pid = SAFE_FORK();
+> > +	if (!pid) {
+> > +		TST_EXP_FAIL(getcpu(bad_addr, node_id), EFAULT);
+> > +
+> > +		exit(0);
+> > +	}
+> > +
+> > +	SAFE_WAITPID(pid, &status, 0);
+> > +
+> > +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+> > +		tst_res(TPASS, "getcpu() caused SIGSEGV");
+> > +		return;
+> > +	}
+> > +
+> > +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+> > +		return;
+> > +
+> > +	tst_res(TFAIL, "child %s", tst_strstatus(status));
+> > +}
+> > +
+> > +static void check_bad_node_id(unsigned int *cpu_id, void *bad_addr)
+> > +{
+> > +	int status;
+> > +	pid_t pid;
+> > +
+> > +	pid = SAFE_FORK();
+> > +	if (!pid) {
+> > +		TST_EXP_FAIL(getcpu(cpu_id, bad_addr), EFAULT);
+> > +
+> > +		exit(0);
+> > +	}
+> > +
+> > +	SAFE_WAITPID(pid, &status, 0);
+> > +
+> > +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+> > +		tst_res(TPASS, "getcpu() caused SIGSEGV");
+> > +		return;
+> > +	}
+> > +
+> > +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+> > +		return;
+> > +
+> > +	tst_res(TFAIL, "child %s", tst_strstatus(status));
+> > +}
 
+These two testing functions are nearly the same, only parameters are different.
+How about creating a single function and just pass a different params?
+Also, only bad_addr and one of the functions holding "0" as id is needed.
+> > +
+> > +static void run_test(void)
+> > +{
+> > +	unsigned int cpu_id, node_id = 0;
+> > +
+> > +	check_bad_cpu_id(bad_addr, &node_id);
+> > +	check_bad_node_id(&cpu_id, bad_addr);
+
+> Here we can use .test/.tcnt , defining 2 testcases with different getcpu()
+> input values.
++1
+
+NOTE: sometimes we create struct tcase, but it'd be overkill for these 2
+functions.
+
+Kind regards,
+Petr
+
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.setup = setup,
+> > +	.test_all = run_test,
+> > +	.forks_child = 1,
+> > +};
+
+> Best regards,
+> Andrea Cervesato
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
