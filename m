@@ -4,85 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC02C3DA4A
-	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 01:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F26C3DA4A
+	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 02:31:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00CED3D1FE5
-	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 03:31:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DB31F3D1FE0
+	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 04:31:36 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B6863D0817
- for <ltp@lists.linux.it>; Tue,  6 Aug 2024 03:30:57 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 7B4B83D1DDD
+ for <ltp@lists.linux.it>; Tue,  6 Aug 2024 04:31:22 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2D225600070
- for <ltp@lists.linux.it>; Tue,  6 Aug 2024 03:30:56 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE85F60081A
+ for <ltp@lists.linux.it>; Tue,  6 Aug 2024 04:31:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1722907854;
+ s=mimecast20190719; t=1722911479;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kM+LKaVeDkV2tQ0h8hC63aNlsQR2YyhE7PBTyANqbBY=;
- b=QiXhJafGso377Os1qwCwewhTk7ozfIEBmMR4xy+ITmp866y5ER1c1O99nLfE/fsGOdwu46
- tILByB8p9adkTQ8Gh3c+HBZBGXhZvCzNtqwDLMjeKuj/1CtnxhenXCpy4tzMTVVOh5/p0L
- NHbf9yH4BAfrE0xXD5ApCXZgKWDNPEo=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-Y-YI8uzcPYm9jac-dH4a4g-1; Mon, 05 Aug 2024 21:30:52 -0400
-X-MC-Unique: Y-YI8uzcPYm9jac-dH4a4g-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2cb7364bac9so352501a91.0
- for <ltp@lists.linux.it>; Mon, 05 Aug 2024 18:30:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1722907850; x=1723512650;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=kM+LKaVeDkV2tQ0h8hC63aNlsQR2YyhE7PBTyANqbBY=;
- b=wRqrNRcI4a0f57aqryglmbaZQx9GOjHNBHSx8gySIvfgAoT0/8mJGecDMnIk7tBwo4
- +exN2t+q7TpaZcYV1iakTBgGfTDEUZY9R6TTA93E0diWSqymF2BRCYp37/h3LymSIGAm
- eP6YLsqiaUQmFAjIgB+giJnNtJRZp0UPQU0gmQV+X7u6MSj9sxhT2sVI82r9Xl8rieJ/
- 9ixcLJcoPk/+eH7dX6i6y1/ItBu4qOfJifvBE5CZzTkgNlZiggTywbGhe3iH5l9GmIaG
- W8xZI3/qsDjON7JxFiBseCtyBnIVtt1B0Z0HbU9pyDqazoXLiPYXXd1fH9T+aQ6SpK18
- BxmA==
-X-Gm-Message-State: AOJu0YzH34h3+Uq53koOpqQ17k8YDZaLZW0Y16KAaDFJ3ENg2lPXIpib
- ezdYpOPchA+9qEGCX8KMj/wfLNhgidxoLfraupXwng1y0NwdwadaLOk2FpBbbaEEOVcb+W4aMqz
- UYKhR6F6Hxi7DsvNhPFOED36to2dqzF+0+AgHrhrzPoiZHY/vpzuAFueES6TU4vLAJNdpEUZIbC
- yT/1nGNWWyIF6vpxcIeSEADDSlmKhyoTIBSw==
-X-Received: by 2002:a17:90a:6fa6:b0:2c7:d24b:57f with SMTP id
- 98e67ed59e1d1-2cff0b4a02dmr22755284a91.19.1722907850535; 
- Mon, 05 Aug 2024 18:30:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG2ALG/ledCeZmdnRl8xTyMqowFRNN3skmHpubgs110S+FHgEb8oty1ETnPwxekDDefvazm9p95y/T2qHbRiaw=
-X-Received: by 2002:a17:90a:6fa6:b0:2c7:d24b:57f with SMTP id
- 98e67ed59e1d1-2cff0b4a02dmr22755262a91.19.1722907850136; Mon, 05 Aug 2024
- 18:30:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240805065247.13791-1-liwang@redhat.com>
- <20240805065247.13791-2-liwang@redhat.com>
- <20240805135919.GB45426@pevik>
-In-Reply-To: <20240805135919.GB45426@pevik>
+ bh=UqE/s5Gvom7afcv97mTe2eOCXxwpQ3gyNPB5hQNQfPE=;
+ b=cynWqjhxLbZMuCOPDtTwzpE+gmj+Mo3gdcH7MoXItUKrGatn7LjUzX4pEp3llXBWAPB3P6
+ bPPMDnwb+dTi3Kri/6zvxjjzVUgwYdotgV6k1RICTSBlzUFSR6tsM0UoyVub6VXLZQOprK
+ mdKco2TSA5RHj9nWEQwHYvbURSYF3Ps=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-679-8Se-rnHpOlm8uEAc0NLP2w-1; Mon,
+ 05 Aug 2024 22:31:14 -0400
+X-MC-Unique: 8Se-rnHpOlm8uEAc0NLP2w-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 947FC19560A3; Tue,  6 Aug 2024 02:31:13 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B923A1955D42; Tue,  6 Aug 2024 02:31:11 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 6 Aug 2024 09:30:38 +0800
-Message-ID: <CAEemH2eF3B41E2nv1+-oMrCUTw7zfVrgCULRBaBe=Pk9roBUiQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue,  6 Aug 2024 10:31:05 +0800
+Message-ID: <20240806023105.20509-1-liwang@redhat.com>
+In-Reply-To: <CAEemH2eF3B41E2nv1+-oMrCUTw7zfVrgCULRBaBe=Pk9roBUiQ@mail.gmail.com>
+References: <CAEemH2eF3B41E2nv1+-oMrCUTw7zfVrgCULRBaBe=Pk9roBUiQ@mail.gmail.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 2/2] mseal01: handle more possible errnos when
- pkey_alloc gets fail
+Subject: [LTP] [PATCH] pkey: remove the ltp_ prefix from pkey functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,43 +77,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBBdWcgNSwgMjAyNCBhdCA5OjU54oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgoKPiBIaSBMaSwKPgo+IC4uLgo+ID4gIHN0YXRpYyB2b2lkIHRlc3RfcGtleV9t
-cHJvdGVjdCh2b2lkKQo+ID4gIHsKPiA+IC0gICAgIGludCByZXQ7Cj4gPiAgICAgICBpbnQgcGtl
-eTsKPgo+ID4gLSAgICAgcGtleSA9IHRzdF9zeXNjYWxsKF9fTlJfcGtleV9hbGxvYywgMCwgMCk7
-Cj4gPiAtICAgICBpZiAocGtleSA9PSAtMSkgewo+ID4gLSAgICAgICAgICAgICBpZiAoZXJybm8g
-PT0gRUlOVkFMKQo+ID4gLSAgICAgICAgICAgICAgICAgICAgIHRzdF9icmsoVENPTkYsICJwa3Ug
-aXMgbm90IHN1cHBvcnRlZCBvbiB0aGlzIENQVSIpOwo+ID4gKyAgICAgY2hlY2tfcGtleV9zdXBw
-b3J0KCk7Cj4KPiA+IC0gICAgICAgICAgICAgdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgInBrZXlf
-YWxsb2MoKSBlcnJvciIpOwo+ID4gLSAgICAgfQo+ID4gKyAgICAgcGtleSA9IGx0cF9wa2V5X2Fs
-bG9jKDAsIDApOwo+ID4gKyAgICAgaWYgKHBrZXkgPT0gLTEpCj4gPiArICAgICAgICAgICAgIHRz
-dF9icmsoVEJST0sgfCBURVJSTk8sICJwa2V5X2FsbG9jIGZhaWxlZCIpOwo+Cj4gPiAtICAgICBU
-U1RfRVhQX0ZBSUwodHN0X3N5c2NhbGwoX19OUl9wa2V5X21wcm90ZWN0LAo+ID4gKyAgICAgVFNU
-X0VYUF9GQUlMKGx0cF9wa2V5X21wcm90ZWN0KAo+ID4gICAgICAgICAgICAgICBtZW1fYWRkciwg
-bWVtX3NpemUsCj4gPiAgICAgICAgICAgICAgIFBST1RfTk9ORSwKPiA+ICAgICAgICAgICAgICAg
-cGtleSksCj4gPiAgICAgICAgICAgICAgIEVQRVJNKTsKPgo+IFJldmlld2VkLWJ5OiBQZXRyIFZv
-cmVsIDxwdm9yZWxAc3VzZS5jej4KPgo+IEJ1dCBhcyBJIHdyb3RlIGluIGZpcnN0IHBhdGNoLCBJ
-IHdvdWxkIGNvbnNpZGVyIGJldHRlciB0byByZXdyaXRlIHRlc3QgdG8KPiB1c2UKPiAudGVzdF92
-YXJpYW50cyA9IDIgdG8gdGVzdCBib3RoIHJhdyBzeXNjYWxsIGFuZCBsaWJjIHdyYXBwZXIuIFRo
-YXQgd291bGQKPiByZXF1aXJlCj4KClN1cmUsIGFzIEkgcmVwbHkgaW4gMS8yIHdlIGNhbiBkZWxh
-eSB0aGUgd29yay4KCgoKPiB0byByZXdyaXRlIHRoZSBsYXBpIGhlYWRlci4gQW5kIGl0J2QgYmUg
-dGhlbiBzYWZlciBpZiBwa2V5MDEuYyB3b3VsZCB1c2UKPiBhbHdheXMKPiByYXcgc3lzY2FsbCB2
-YXJpYW50LCBubyBuZWVkIGZvciBub3Qgc3RhbmRhcmQgImx0cF9wa2V5X21wcm90ZWN0KCkiIG5h
-bWUuCj4KCkdvb2QgcG9pbnQsIEkgd2lsbCBzZW5kIGEgZm9sbG93LXVwIHBhdGNoIHRvIHJlc29s
-dmUgdGhhdC4KCgoKPgo+ID4gLSAgICAgcmV0ID0gdHN0X3N5c2NhbGwoX19OUl9wa2V5X2ZyZWUs
-IHBrZXkpOwo+ID4gLSAgICAgaWYgKHJldCA9PSAtMSkKPiA+ICsgICAgIGlmIChsdHBfcGtleV9m
-cmVlKHBrZXkpID09IC0xKQo+ID4gICAgICAgICAgICAgICB0c3RfYnJrKFRCUk9LIHwgVEVSUk5P
-LCAicGtleV9mcmVlKCkgZXJyb3IiKTsKPiA+ICB9Cj4KPiA+IEBAIC0xNTAsNyArMTQ3LDYgQEAg
-c3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+ID4gICAgICAgLnRlc3QgPSBydW4sCj4g
-PiAgICAgICAudGNudCA9IEFSUkFZX1NJWkUodGNhc2VzKSwKPiA+ICAgICAgIC5zZXR1cCA9IHNl
-dHVwLAo+ID4gLSAgICAgLm1pbl9rdmVyID0gIjYuMTAiLAo+IFRoaXMgY2hhbmdlIHdvdWxkIGJl
-IHdvcnRoIHRvIG1lbnRpb24gaW4gdGhlIGNoYW5nZWxvZy4KPgoKKzEKCgo+IEtpbmQgcmVnYXJk
-cywKPiBQZXRyCj4KPiA+ICAgICAgIC5mb3Jrc19jaGlsZCA9IDEsCj4gPiAgfTsKPgo+CgotLSAK
-UmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
-bnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/lapi/pkey.h                       | 14 +++++---------
+ testcases/kernel/syscalls/mseal/mseal01.c |  6 +++---
+ testcases/kernel/syscalls/pkeys/pkey01.c  |  8 ++++----
+ 3 files changed, 12 insertions(+), 16 deletions(-)
+
+diff --git a/include/lapi/pkey.h b/include/lapi/pkey.h
+index e0dc20dce..933dff34a 100644
+--- a/include/lapi/pkey.h
++++ b/include/lapi/pkey.h
+@@ -17,29 +17,25 @@
+ #endif
+ 
+ #ifndef HAVE_PKEY_MPROTECT
+-inline int ltp_pkey_mprotect(void *addr, size_t len, int prot, int pkey)
++inline int pkey_mprotect(void *addr, size_t len, int prot, int pkey)
+ {
+ 	return tst_syscall(__NR_pkey_mprotect, addr, len, prot, pkey);
+ }
+ 
+-inline int ltp_pkey_alloc(unsigned int flags, unsigned int access_rights)
++inline int pkey_alloc(unsigned int flags, unsigned int access_rights)
+ {
+ 	return tst_syscall(__NR_pkey_alloc, flags, access_rights);
+ }
+ 
+-inline int ltp_pkey_free(int pkey)
++inline int pkey_free(int pkey)
+ {
+ 	return tst_syscall(__NR_pkey_free, pkey);
+ }
+-#else
+-#define ltp_pkey_alloc pkey_alloc
+-#define ltp_pkey_free pkey_free
+-#define ltp_pkey_mprotect pkey_mprotect
+ #endif /* HAVE_PKEY_MPROTECT */
+ 
+ static inline void check_pkey_support(void)
+ {
+-	int pkey = ltp_pkey_alloc(0, 0);
++	int pkey = tst_syscall(__NR_pkey_alloc, 0, 0);
+ 
+ 	if (pkey == -1) {
+ 		if (errno == ENOSYS)
+@@ -50,7 +46,7 @@ static inline void check_pkey_support(void)
+ 			tst_brk(TCONF, "pkeys are not available for test");
+ 	}
+ 
+-	ltp_pkey_free(pkey);
++	tst_syscall(__NR_pkey_free, pkey);
+ }
+ 
+ #endif /* PKEYS_H__ */
+diff --git a/testcases/kernel/syscalls/mseal/mseal01.c b/testcases/kernel/syscalls/mseal/mseal01.c
+index 1de9fb723..94e3e4b23 100644
+--- a/testcases/kernel/syscalls/mseal/mseal01.c
++++ b/testcases/kernel/syscalls/mseal/mseal01.c
+@@ -51,17 +51,17 @@ static void test_pkey_mprotect(void)
+ 
+ 	check_pkey_support();
+ 
+-	pkey = ltp_pkey_alloc(0, 0);
++	pkey = pkey_alloc(0, 0);
+ 	if (pkey == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
+ 
+-	TST_EXP_FAIL(ltp_pkey_mprotect(
++	TST_EXP_FAIL(pkey_mprotect(
+ 		mem_addr, mem_size,
+ 		PROT_NONE,
+ 		pkey),
+ 		EPERM);
+ 
+-	if (ltp_pkey_free(pkey) == -1)
++	if (pkey_free(pkey) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_free() error");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
+index a6a739668..60f36706c 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey01.c
++++ b/testcases/kernel/syscalls/pkeys/pkey01.c
+@@ -142,12 +142,12 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+ 
+ 	buffer = SAFE_MMAP(NULL, size, mpa->prot, mpa->flags, fd, 0);
+ 
+-	pkey = ltp_pkey_alloc(tc->flags, tc->access_rights);
++	pkey = pkey_alloc(tc->flags, tc->access_rights);
+ 	if (pkey == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
+ 
+ 	tst_res(TINFO, "Set %s on (%s) buffer", tc->name, flag_to_str(mpa->flags));
+-	if (ltp_pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
++	if (pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
+ 
+ 	pid = SAFE_FORK();
+@@ -176,7 +176,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+                 tst_res(TFAIL, "Child: %s", tst_strstatus(status));
+ 
+ 	tst_res(TINFO, "Remove %s from the buffer", tc->name);
+-	if (ltp_pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
++	if (pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
+ 
+ 	switch (mpa->prot) {
+@@ -199,7 +199,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+ 
+ 	SAFE_MUNMAP(buffer, size);
+ 
+-	if (ltp_pkey_free(pkey) == -1)
++	if (pkey_free(pkey) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_free failed");
+ }
+ 
+-- 
+2.45.2
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
