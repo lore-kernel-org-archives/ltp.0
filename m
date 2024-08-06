@@ -4,68 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F26C3DA4A
-	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 02:31:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AF24C52D6D
+	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 06:20:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DB31F3D1FE0
-	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 04:31:36 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 49D8D3D08CF
+	for <ltp@archiver.kernel.org>; Tue,  6 Aug 2024 08:20:06 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B4B83D1DDD
- for <ltp@lists.linux.it>; Tue,  6 Aug 2024 04:31:22 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 513C13CB256
+ for <ltp@lists.linux.it>; Tue,  6 Aug 2024 08:19:50 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE85F60081A
- for <ltp@lists.linux.it>; Tue,  6 Aug 2024 04:31:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1722911479;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 720C11000D98
+ for <ltp@lists.linux.it>; Tue,  6 Aug 2024 08:19:50 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 316FD21B2B;
+ Tue,  6 Aug 2024 06:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722925189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UqE/s5Gvom7afcv97mTe2eOCXxwpQ3gyNPB5hQNQfPE=;
- b=cynWqjhxLbZMuCOPDtTwzpE+gmj+Mo3gdcH7MoXItUKrGatn7LjUzX4pEp3llXBWAPB3P6
- bPPMDnwb+dTi3Kri/6zvxjjzVUgwYdotgV6k1RICTSBlzUFSR6tsM0UoyVub6VXLZQOprK
- mdKco2TSA5RHj9nWEQwHYvbURSYF3Ps=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-679-8Se-rnHpOlm8uEAc0NLP2w-1; Mon,
- 05 Aug 2024 22:31:14 -0400
-X-MC-Unique: 8Se-rnHpOlm8uEAc0NLP2w-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+ bh=lxl4MvPXDkigBz53gh0J/AUftw9KzqpYZC7M2pXyVdE=;
+ b=qONuJq1i6aIb2UELBSODfRyRsp5HI4vRWXG7H2+wdsAs0C/GA824HT3tkeXyFA2SitSluS
+ jItBSfd//xysXI2/i5wkpbRJwCiDGDqblzvQxjWPSmUZfE/3wC2lYyuOo560NQUshaQ/1c
+ 72Si6nhpvcTSqfkPwtdCfsMcgH1FrIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722925189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lxl4MvPXDkigBz53gh0J/AUftw9KzqpYZC7M2pXyVdE=;
+ b=8FYiwqdgWsCkTHXSnnOTxXD2zKEPqz+5S2S3GWkaRPDTUi2R1lGwbfjLykpCY6lKfZjOpc
+ 6GuIym++Z5i89zAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qONuJq1i;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8FYiwqdg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1722925189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lxl4MvPXDkigBz53gh0J/AUftw9KzqpYZC7M2pXyVdE=;
+ b=qONuJq1i6aIb2UELBSODfRyRsp5HI4vRWXG7H2+wdsAs0C/GA824HT3tkeXyFA2SitSluS
+ jItBSfd//xysXI2/i5wkpbRJwCiDGDqblzvQxjWPSmUZfE/3wC2lYyuOo560NQUshaQ/1c
+ 72Si6nhpvcTSqfkPwtdCfsMcgH1FrIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1722925189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lxl4MvPXDkigBz53gh0J/AUftw9KzqpYZC7M2pXyVdE=;
+ b=8FYiwqdgWsCkTHXSnnOTxXD2zKEPqz+5S2S3GWkaRPDTUi2R1lGwbfjLykpCY6lKfZjOpc
+ 6GuIym++Z5i89zAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 947FC19560A3; Tue,  6 Aug 2024 02:31:13 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id B923A1955D42; Tue,  6 Aug 2024 02:31:11 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue,  6 Aug 2024 10:31:05 +0800
-Message-ID: <20240806023105.20509-1-liwang@redhat.com>
-In-Reply-To: <CAEemH2eF3B41E2nv1+-oMrCUTw7zfVrgCULRBaBe=Pk9roBUiQ@mail.gmail.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E7A313770;
+ Tue,  6 Aug 2024 06:19:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4TL3AYXAsWbwRwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 06 Aug 2024 06:19:49 +0000
+Date: Tue, 6 Aug 2024 08:19:47 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20240806061947.GB73369@pevik>
 References: <CAEemH2eF3B41E2nv1+-oMrCUTw7zfVrgCULRBaBe=Pk9roBUiQ@mail.gmail.com>
+ <20240806023105.20509-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240806023105.20509-1-liwang@redhat.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 316FD21B2B
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] pkey: remove the ltp_ prefix from pkey functions
+Subject: Re: [LTP] [PATCH] pkey: remove the ltp_ prefix from pkey functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,131 +118,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- include/lapi/pkey.h                       | 14 +++++---------
- testcases/kernel/syscalls/mseal/mseal01.c |  6 +++---
- testcases/kernel/syscalls/pkeys/pkey01.c  |  8 ++++----
- 3 files changed, 12 insertions(+), 16 deletions(-)
+Hi Li,
 
-diff --git a/include/lapi/pkey.h b/include/lapi/pkey.h
-index e0dc20dce..933dff34a 100644
---- a/include/lapi/pkey.h
-+++ b/include/lapi/pkey.h
-@@ -17,29 +17,25 @@
- #endif
- 
- #ifndef HAVE_PKEY_MPROTECT
--inline int ltp_pkey_mprotect(void *addr, size_t len, int prot, int pkey)
-+inline int pkey_mprotect(void *addr, size_t len, int prot, int pkey)
- {
- 	return tst_syscall(__NR_pkey_mprotect, addr, len, prot, pkey);
- }
- 
--inline int ltp_pkey_alloc(unsigned int flags, unsigned int access_rights)
-+inline int pkey_alloc(unsigned int flags, unsigned int access_rights)
- {
- 	return tst_syscall(__NR_pkey_alloc, flags, access_rights);
- }
- 
--inline int ltp_pkey_free(int pkey)
-+inline int pkey_free(int pkey)
- {
- 	return tst_syscall(__NR_pkey_free, pkey);
- }
--#else
--#define ltp_pkey_alloc pkey_alloc
--#define ltp_pkey_free pkey_free
--#define ltp_pkey_mprotect pkey_mprotect
- #endif /* HAVE_PKEY_MPROTECT */
- 
- static inline void check_pkey_support(void)
- {
--	int pkey = ltp_pkey_alloc(0, 0);
-+	int pkey = tst_syscall(__NR_pkey_alloc, 0, 0);
- 
- 	if (pkey == -1) {
- 		if (errno == ENOSYS)
-@@ -50,7 +46,7 @@ static inline void check_pkey_support(void)
- 			tst_brk(TCONF, "pkeys are not available for test");
- 	}
- 
--	ltp_pkey_free(pkey);
-+	tst_syscall(__NR_pkey_free, pkey);
- }
- 
- #endif /* PKEYS_H__ */
-diff --git a/testcases/kernel/syscalls/mseal/mseal01.c b/testcases/kernel/syscalls/mseal/mseal01.c
-index 1de9fb723..94e3e4b23 100644
---- a/testcases/kernel/syscalls/mseal/mseal01.c
-+++ b/testcases/kernel/syscalls/mseal/mseal01.c
-@@ -51,17 +51,17 @@ static void test_pkey_mprotect(void)
- 
- 	check_pkey_support();
- 
--	pkey = ltp_pkey_alloc(0, 0);
-+	pkey = pkey_alloc(0, 0);
- 	if (pkey == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
- 
--	TST_EXP_FAIL(ltp_pkey_mprotect(
-+	TST_EXP_FAIL(pkey_mprotect(
- 		mem_addr, mem_size,
- 		PROT_NONE,
- 		pkey),
- 		EPERM);
- 
--	if (ltp_pkey_free(pkey) == -1)
-+	if (pkey_free(pkey) == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_free() error");
- }
- 
-diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
-index a6a739668..60f36706c 100644
---- a/testcases/kernel/syscalls/pkeys/pkey01.c
-+++ b/testcases/kernel/syscalls/pkeys/pkey01.c
-@@ -142,12 +142,12 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
- 
- 	buffer = SAFE_MMAP(NULL, size, mpa->prot, mpa->flags, fd, 0);
- 
--	pkey = ltp_pkey_alloc(tc->flags, tc->access_rights);
-+	pkey = pkey_alloc(tc->flags, tc->access_rights);
- 	if (pkey == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
- 
- 	tst_res(TINFO, "Set %s on (%s) buffer", tc->name, flag_to_str(mpa->flags));
--	if (ltp_pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
-+	if (pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
- 
- 	pid = SAFE_FORK();
-@@ -176,7 +176,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
-                 tst_res(TFAIL, "Child: %s", tst_strstatus(status));
- 
- 	tst_res(TINFO, "Remove %s from the buffer", tc->name);
--	if (ltp_pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
-+	if (pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
- 
- 	switch (mpa->prot) {
-@@ -199,7 +199,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
- 
- 	SAFE_MUNMAP(buffer, size);
- 
--	if (ltp_pkey_free(pkey) == -1)
-+	if (pkey_free(pkey) == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_free failed");
- }
- 
--- 
-2.45.2
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Thanks!
 
+Other thing which should follow is to use .test_variants.
+Feel free to send a patch or I'll do it later.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
