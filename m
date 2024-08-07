@@ -4,104 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C147CC3DA7F
-	for <ltp@archiver.kernel.org>; Wed,  7 Aug 2024 09:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B5BDC52D6F
+	for <ltp@archiver.kernel.org>; Wed,  7 Aug 2024 11:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1723030469; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=b7+0YHuSw7InJPeP8BSg6CMoHtwlHRRfbKs5bpIf1Tw=;
+ b=oX90U0wcTqSyWO0JefAc3XrHJ/jSdw7vZE99OpM53/Xoi6Q1Y6WDGbMg3FAIVhx1vEVb9
+ +AlS5q0tQAMLa3wb1wFDseWyNVoflcw0LezLpivBCss73eyMxQV43gyUMU1SYXIu8ugz/kZ
+ Lb9DwDbueLzHKoXD7VxzuFJ9VbeYkbw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 889BB3D1FFD
-	for <ltp@archiver.kernel.org>; Wed,  7 Aug 2024 11:01:15 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 369AB3D2054
+	for <ltp@archiver.kernel.org>; Wed,  7 Aug 2024 13:34:29 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD70E3D1FDF
- for <ltp@lists.linux.it>; Wed,  7 Aug 2024 11:01:01 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3E8BF3D1F6A
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 13:34:08 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.49;
+ helo=esa3.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2F7131400B77
- for <ltp@lists.linux.it>; Wed,  7 Aug 2024 11:00:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 111971FB7A;
- Wed,  7 Aug 2024 09:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723021250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vbi/Vkk4FJSrp6c3/9a0RgAv8U1aSe9fb/Jh6M7b3wc=;
- b=bqrbtulkn8Nz/jKc9BZnRs/mZ7MiG0Nzd5NZsk5kXki7DcyzTpWC0JhmsS5x7M1tAZCgyC
- FLXwS1CDdmzUz41/rYDGv9Qmp4u2QVD88hT7/vCqAXSd9f5gDkC/a5cghzTKU0EgkCHywd
- KpndtGSMJJ5DOy5kEBx/Ixz/7VMlOaY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723021250;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vbi/Vkk4FJSrp6c3/9a0RgAv8U1aSe9fb/Jh6M7b3wc=;
- b=ZLs2LfzW3mTzmnJ4zFW4PvKMLEECvHisJtCz6F86LVkIbqcFoxibdIj96LdCSQ1mMGTEVu
- nXL7+drL/p7+jlAA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bqrbtulk;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZLs2LfzW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723021250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vbi/Vkk4FJSrp6c3/9a0RgAv8U1aSe9fb/Jh6M7b3wc=;
- b=bqrbtulkn8Nz/jKc9BZnRs/mZ7MiG0Nzd5NZsk5kXki7DcyzTpWC0JhmsS5x7M1tAZCgyC
- FLXwS1CDdmzUz41/rYDGv9Qmp4u2QVD88hT7/vCqAXSd9f5gDkC/a5cghzTKU0EgkCHywd
- KpndtGSMJJ5DOy5kEBx/Ixz/7VMlOaY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723021250;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vbi/Vkk4FJSrp6c3/9a0RgAv8U1aSe9fb/Jh6M7b3wc=;
- b=ZLs2LfzW3mTzmnJ4zFW4PvKMLEECvHisJtCz6F86LVkIbqcFoxibdIj96LdCSQ1mMGTEVu
- nXL7+drL/p7+jlAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D461413297;
- Wed,  7 Aug 2024 09:00:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SMLHMsE3s2aFAwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 07 Aug 2024 09:00:49 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 296F4600949
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 13:34:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1723030447; x=1754566447;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=85GIIkolLKWmRlAZm7RS92yRO3oXUvGFrfh6pi1uTWo=;
+ b=tr/V+d2LrZSlbmmkxSFRByP0qfqEsyPugRbXX3QFlVtgt72HIioYdpYz
+ uYnUyX64H4kCyvHcOjHuz1aupbAFrzGBXeuliH5CnM6RZxFkkR5UmK7xw
+ 8+soEBF27Y/q3LFGXw55UxBLlR8yjH5rmb3b6Fvr8zJVk4EhZ2FFF1TwM
+ vDBZnzPko0opm0qzHeFiFAc7/mzxvVhpO5FTqy9OzuuRhQ7/QQcLf1irk
+ t2iP0O76nKvlNlQ/5HflJO1XnEQ4Ze8mg1pJlBFGMytXHhb9U4RPxkJeU
+ gMJHaRP+YabFAzh1eWdr8KDl8SC2PZ4+uq5VwJT5gtOAyTtBuPuh6qEFZ A==;
+X-CSE-ConnectionGUID: dzEOM1M0RhqcPiKMeBwyAg==
+X-CSE-MsgGUID: uJQWx7HRSxWI1qbcBMl45Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11156"; a="170049565"
+X-IronPort-AV: E=Sophos;i="6.09,269,1716217200"; d="scan'208";a="170049565"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Aug 2024 20:34:05 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
+ [192.168.83.65])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id BC1ABC68E2
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 20:34:02 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 07E16D50FB
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 20:34:02 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 76E922288CC
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 20:34:01 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.182])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id C2BB01A000B;
+ Wed,  7 Aug 2024 19:34:00 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Wed,  7 Aug 2024 11:00:43 +0200
-Message-ID: <20240807090043.229889-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.45.2
+Date: Wed,  7 Aug 2024 19:36:01 +0800
+Message-ID: <20240807113601.3882356-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.01 / 50.00]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[sourceware.org:url,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 111971FB7A
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28580.007
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28580.007
+X-TMASE-Result: 10--8.884000-10.000000
+X-TMASE-MatchedRID: 2wfub8HDRfNSuJfEWZSQfC+6f/7y7+Gz9LMB0hXFSeg6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmLy9zcRSkKatT4xnGicftABGYJhRh6ssesfimmlcABuNyfJTn+dmnFQGmV
+ udEhnpoT4XJPAGTaiPKuLQx6TP/2yNCash9Gq0CRrzsINdopFUgRryDXHx6oX1n3UyIV+D/OIRF
+ pl34/EAeLzNWBegCW2wgn7iDBesS3fd+P6wwCt84RtqopBKUBlvvOGuO0ekIuySBnJjXNdBO1Gb
+ 5/b+rsZckahIIZDODEJByASOcj6zg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] pkey01: Add .test_variants
+Subject: [LTP] [PATCH v4] getcpu: Add testcase for EFAULT
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,138 +98,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test both pkey_{alloc,mprotect() raw syscall and libc wrapper.
+Add a testcase with the arguments point to an invalid address.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.de>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
-Hi,
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/getcpu/getcpu02.c | 71 +++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/getcpu/getcpu02.c
 
-not sure if testing libc wrappers makes ATM sense, because (if I read
-glibc code correctly), there is only pkey_mprotect() very thin wrapper
-in sysdeps/unix/sysv/linux/pkey_mprotect.c [1]:
-
-int
-pkey_mprotect (void *addr, size_t len, int prot, int pkey)
-{
-  if (pkey == -1)
-    /* If the key is -1, the system call is precisely equivalent to
-       mprotect.  */
-    return __mprotect (addr, len, prot);
-  return INLINE_SYSCALL_CALL (pkey_mprotect, addr, len, prot, pkey);
-}
-
-pkey_alloc() and others [2]:
-
-	This adds system call wrappers for pkey_alloc, pkey_free, pkey_mprotect,
-	and x86-64 implementations of pkey_get and pkey_set, which abstract over
-	the PKRU CPU register and hide the actual number of memory protection
-	keys supported by the CPU.  pkey_mprotect with a -1 key is implemented
-	using mprotect, so it will work even if the kernel does not support the
-	pkey_mprotect system call.
-
-	The system call wrapers use unsigned int instead of unsigned long for
-	parameters, so that no special treatment for x32 is needed.  The flags
-	argument is currently unused, and the access rights bit mask is limited
-	to two bits by the current PKRU register layout anyway.
-
-Besides, something like SYSCALL_VARIANT could be added to include/tst_test_macros.h,
-to be reused.
-
-Kind regards,
-Petr
-
-[1] https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/pkey_mprotect.c;h=b7afa7946d016ddaa8d4dea5b000dfb04b45491e;hb=c2a05c99e34539d16ebf2bb6234c8d2f2fdaa1f9
-[2] https://sourceware.org/git/?p=glibc.git;a=commit;h=446d22e91d3113be57a4b0d1151cf337458c3bec
-
- testcases/kernel/syscalls/pkeys/pkey01.c | 43 +++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 9 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
-index f1ecfec0bb..52b29b1783 100644
---- a/testcases/kernel/syscalls/pkeys/pkey01.c
-+++ b/testcases/kernel/syscalls/pkeys/pkey01.c
-@@ -51,11 +51,40 @@ static struct tcase {
- 	{0, PKEY_DISABLE_WRITE, "PKEY_DISABLE_WRITE"},
- };
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b8728c1c5..1537b5022 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -448,6 +448,7 @@ futimesat01 futimesat01
+ getcontext01 getcontext01
  
-+#define PKEY_ALLOC(...) \
-+	SYSCALL_VARIANT(TST_EXP_POSITIVE, pkey_alloc, __VA_ARGS__)
+ getcpu01 getcpu01
++getcpu02 getcpu02
+ 
+ getcwd01 getcwd01
+ getcwd02 getcwd02
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu02.c b/testcases/kernel/syscalls/getcpu/getcpu02.c
+new file mode 100644
+index 000000000..859cb0d3e
+--- /dev/null
++++ b/testcases/kernel/syscalls/getcpu/getcpu02.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
++ * Copyright (c) Linux Test Project, 2024
++ * Author: Ma Xinjian <maxj.fnst@fujitsu.com>
++ *
++ */
 +
-+#define PKEY_MPROTECT(...) \
-+	SYSCALL_VARIANT(TST_EXP_PASS_SILENT, pkey_mprotect, __VA_ARGS__)
++/*\
++ * [Description]
++ *
++ * Verify that getcpu(2) fails with EFAULT:
++ *
++ * 1) cpu_id points outside the calling process's address space.
++ * 2) node_id points outside the calling process's address space.
++ */
 +
-+#define SYSCALL_VARIANT(TST, SCALL, ...)                                 \
-+	({                                                                     \
-+		if (tst_variant)                                    \
-+			TST(SCALL(__VA_ARGS__));	\
-+		else							\
-+			TST(tst_syscall(__NR_ ## SCALL, __VA_ARGS__));	\
-+		TST_RET;                                                       \
-+	})
++#define _GNU_SOURCE
 +
-+static void variant_check(void)
++#include "tst_test.h"
++#include "lapi/sched.h"
++
++static unsigned int cpu_id, node_id;
++
++static struct tcase {
++	unsigned int *cpu_id;
++	unsigned int *node_id;
++} tcases[] = {
++	{NULL, &node_id},
++	{&cpu_id, NULL}
++};
++
++static void check_getcpu(unsigned int n)
 +{
-+	if (tst_variant) {
-+		tst_res(TINFO, "Testing variant: libc pkey_{alloc,mprotect()");
-+#ifndef HAVE_PKEY_MPROTECT
-+		tst_brk(TCONF, "libc pkey_{alloc,mprotect() wrappers not available");
-+#endif
-+	} else {
-+		tst_res(TINFO, "Testing variant: syscall __NR_pkey_{alloc,mprotect}");
++	struct tcase *tc = &tcases[n];
++	int status;
++	pid_t pid;
++
++	if (n == 0) {
++		tst_res(TINFO, "Make cpu_id point outside the calling process's address space.");
++		tc->cpu_id = tst_get_bad_addr(NULL);
++	} else if (n == 1) {
++		tst_res(TINFO, "Make node_id point outside the calling process's address space.");
++		tc->node_id = tst_get_bad_addr(NULL);
 +	}
 +
-+	check_pkey_support();
++	pid = SAFE_FORK();
++	if (!pid) {
++		TST_EXP_FAIL(getcpu(tc->cpu_id, tc->node_id), EFAULT);
++
++		exit(0);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
++		tst_res(TPASS, "getcpu() caused SIGSEGV");
++		return;
++	}
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		return;
++
++	tst_res(TFAIL, "child %s", tst_strstatus(status));
 +}
 +
- static void setup(void)
- {
- 	int i, fd;
- 
--	check_pkey_support();
-+	variant_check();
- 
- 	if (tst_hugepages == test.hugepages.number)
- 		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
-@@ -146,14 +175,10 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
- 		fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
- 
- 	buffer = SAFE_MMAP(NULL, size, mpa->prot, mpa->flags, fd, 0);
--
--	pkey = pkey_alloc(tc->flags, tc->access_rights);
--	if (pkey == -1)
--		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
-+	pkey = PKEY_ALLOC(tc->flags, tc->access_rights);
- 
- 	tst_res(TINFO, "Set %s on (%s) buffer", tc->name, flag_to_str(mpa->flags));
--	if (pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
--		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
-+	PKEY_MPROTECT(buffer, size, mpa->prot, pkey);
- 
- 	pid = SAFE_FORK();
- 	if (pid == 0) {
-@@ -181,8 +206,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
-                 tst_res(TFAIL, "Child: %s", tst_strstatus(status));
- 
- 	tst_res(TINFO, "Remove %s from the buffer", tc->name);
--	if (pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
--		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
-+	PKEY_MPROTECT(buffer, size, mpa->prot, 0x0);
- 
- 	switch (mpa->prot) {
- 	case PROT_READ:
-@@ -230,4 +254,5 @@ static struct tst_test test = {
- 	.test = verify_pkey,
- 	.setup = setup,
- 	.hugepages = {1, TST_REQUEST},
-+	.test_variants = 2,
- };
++static struct tst_test test = {
++	.test = check_getcpu,
++	.tcnt = ARRAY_SIZE(tcases),
++	.forks_child = 1,
++};
 -- 
-2.45.2
+2.42.0
 
 
 -- 
