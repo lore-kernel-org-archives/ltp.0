@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A343FC52D7B
-	for <ltp@archiver.kernel.org>; Tue, 13 Aug 2024 08:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1723537183; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=DDAVCwyJMp483dUb6fK6gmb8mf6wMXpMDIDe77sz8T4=;
- b=keyx3A+D5DXP+bH/Z8y1uf7V/lVIMnZqsYqKC+Ns1GYuJKABXUpMTCUcNA5ma1fgBzVT1
- wXJbo5eWu0IWnuwJEAgO1Q4K5GgBhCUf2gJsD3UxjRL6UwpncxV5sWKzRubiOJVjeyLjT+I
- ECJuAqeTjPb/osBMIrRhslWUdb3ojVk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DA50C52D7C
+	for <ltp@archiver.kernel.org>; Tue, 13 Aug 2024 08:20:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 709013D2111
-	for <ltp@archiver.kernel.org>; Tue, 13 Aug 2024 10:19:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id CCCF13D2106
+	for <ltp@archiver.kernel.org>; Tue, 13 Aug 2024 10:20:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4678B3C8910
- for <ltp@lists.linux.it>; Tue, 13 Aug 2024 10:19:21 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+ by picard.linux.it (Postfix) with ESMTPS id 302DF3D2038
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 12:00:01 +0200 (CEST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 640D41400F3B
- for <ltp@lists.linux.it>; Tue, 13 Aug 2024 10:19:20 +0200 (CEST)
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-a7a8caef11fso587332966b.0
- for <ltp@lists.linux.it>; Tue, 13 Aug 2024 01:19:20 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 701D5601FAB
+ for <ltp@lists.linux.it>; Wed,  7 Aug 2024 12:00:01 +0200 (CEST)
+Received: by mail-ed1-x52c.google.com with SMTP id
+ 4fb4d7f45d1cf-5bb477e3a6dso1946400a12.0
+ for <ltp@lists.linux.it>; Wed, 07 Aug 2024 03:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1723537160; x=1724141960; darn=lists.linux.it;
+ d=linaro.org; s=google; t=1723024801; x=1723629601; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=CIwkXdcG1CkXxY2dVxy/1GdgSvwKac8OSS+wA1oOTbQ=;
- b=IzHLL7B9Z32OHjTTUYGCiReaCJUourlybZPIxvM1DrQaw56wyg3Qv46tW4+pRvWLg+
- MMgtxfPC7NcFBrpJ+cJ/PCVocHWhDYPzX0PQcSVQ8F92mh6QrNILLmes3evCCQHvDVmo
- U0nz8UPGsFoS19+HdemrueJYf36H2Vh786Ak0uh+A21b+vc8geZginkpSd6M9vr3svCn
- rEV9GvdAjay99BZIsebSyNDdmlkAfQRexeo95+wwgveKmrcUeKX3CB1b2aM2UgOA2GC5
- sdzk0KrAHynrh1mHI5l2z/E0CBYaPqXicnSUDnZP/s3hxreAShIRAJ4wmybxpESSHpHm
- QQ3Q==
+ bh=95MOr2Nqpzaj8+hgDHljrv8kJYESZgT7/x0j3jGO6bQ=;
+ b=tGhss9uXiyof3aV3eTbUFwBxMyImA3+Tsx+muA7rQH2gKmj7V+3IxSEEGGt1RpDPu4
+ geT0wF7y2IZTF2ol4mIhf/+uZtAwBH2lB18TxQzCXhQBvVfQyz5KQwJ/0EcIDrPsm4cC
+ 6nNUUXw4R+asuBeXZ+5z+uABi2mKBZ9CysmaB4F/d7r9L5M8dc3VhzWkEu41jo4kQlw+
+ 9V8O0RSgt7ffVPH7LULln7eM6VVfFoU8IT6hovRlJ6KqEnPognCWOW+4ITFn4X7lKwdd
+ NTf9NCdZ07PeXIoqVQZEYzkL+gErSXhvkk1P5j1XDwEc5B9eun8N+AfjT5X42rrg7xkF
+ ObPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1723537160; x=1724141960;
+ d=1e100.net; s=20230601; t=1723024801; x=1723629601;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=CIwkXdcG1CkXxY2dVxy/1GdgSvwKac8OSS+wA1oOTbQ=;
- b=sscw198zgr79trukZLtlDrwcmAuzHi3US5QLBUk9BZrc/Cc8Oifm82FYNWl8WdkdwQ
- Rgzoa/qcYT73fF2nompg07z3Ek8VKTtU3R7sntqKTCjiKFTGQNOzIRlY7PN2a2+1CWr8
- uOqX2Spp0DqJZmiceMNHNJYweOaSwor+iO8GRuHkCwFs3w4DxFSoesBkMwPd339+yxW+
- PPI1dzyjBPIVfZ9h5mljJRh62oTsM8AdlYwBRO6Vn9kG1ZJKQlU1xc5G/k5m+XMHeIrB
- Vy5lfnuzg2ZxXCYu5qBM6lkdLb+6ort8LKKTZvBF/cV9bKJ8ZhaDEwq+oK92AZAumvTa
- 5EvA==
+ bh=95MOr2Nqpzaj8+hgDHljrv8kJYESZgT7/x0j3jGO6bQ=;
+ b=PGBaSc55zy4Vq1WwCj/oHl0f8PD8Oy5ePzqGYKJTIAwbouhkxUijTjmC6cxv8+/kkM
+ tGmpn5BUPGORVTrSy7OjNXtCMXDAEpOnvN7KvqzFoY4zROrL5YGuOdoFA5ZKd/DBTiNu
+ 07Uh6w61estjCUDBWSFgMIS9Vi+xwsDk+pwzkcm+vxF24nXylTsjh2HF7yWRTyvX6LGX
+ pjwcqCZF9BL3BwBInF6+TZOIAPCIcBABEpCDBc6dzwfrbmLuG5UN8hGO9OEliEURllME
+ hjxoW4UyxdAJB1WqE26Ei1BIRWdNUzwS0/yxt0sIg8NQeDgs8SQxaVG4GxVHh5w9q8F1
+ z+lA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUDej69WgS4X27DyTsTMTruVt9sa+dWl1PtOuP3Ygz07Gm1FDf5tGfIkrEHlYt9joslxHVOpGx+h5CSo0fAxI9bhjc=
-X-Gm-Message-State: AOJu0YypMPro9pBOonY1YFcqR+oQwUSi0Ahj95Huy81wFK9SlOXpz7PI
- UeansJQivRzorEDO/qSSGKP9iWtFV9XntkpHJ2OCOAddqNBm2U7LbOr5SXhikhuA5Kz+Xpw77GE
- VQmVciw==
-X-Google-Smtp-Source: AGHT+IFstzGqNu9tpFD+4zRASs4tTcGm/nYM3Sq5a2mcsZTQ31aQbsQSuEL+9rPXvEz4/3LLKVRXKw==
-X-Received: by 2002:a17:907:e68b:b0:a7a:b43e:86cf with SMTP id
- a640c23a62f3a-a80ed1cece4mr217267466b.27.1723537159037; 
- Tue, 13 Aug 2024 01:19:19 -0700 (PDT)
-Received: from [10.232.133.86] ([88.128.88.112])
+ AJvYcCV5wk3cd/Cm5GKs1mb69qWbxono0sbu5kwu3KAJDEBcIXphDIlimUDsH1fsxmaMOD3QtF/+3A0Dq0dJcMCjDmSCsgM=
+X-Gm-Message-State: AOJu0YwNpfp48RybnX3bVAVR/GOtj6c6EI0J3XHwGmR2BYSBqmmOyFZU
+ CjXp5+HMxkhgVmtbRl5D4skDoIsrxEiwZMCm/QE1V+BidcnA3HubGsX1Cp6QXgQ=
+X-Google-Smtp-Source: AGHT+IF+gip/DTvnEMfinas8Dy//yVlsojjlA4Pv9/lXs0zNoaaogYms61L9cR7FBQ8BvCrZVYEkbQ==
+X-Received: by 2002:a17:907:934a:b0:a7a:a5ed:43d0 with SMTP id
+ a640c23a62f3a-a7dc5071046mr1387925166b.47.1723024800697; 
+ Wed, 07 Aug 2024 03:00:00 -0700 (PDT)
+Received: from [192.168.0.157] ([79.115.63.215])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a80f3f47b26sm48914666b.41.2024.08.13.01.19.18
+ a640c23a62f3a-a7dc9c0cbe6sm625039366b.71.2024.08.07.02.59.59
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 13 Aug 2024 01:19:18 -0700 (PDT)
-Message-ID: <4b3c0504-93c9-4359-ab50-35fef5f7ee9c@suse.com>
-Date: Tue, 13 Aug 2024 10:19:18 +0200
+ Wed, 07 Aug 2024 03:00:00 -0700 (PDT)
+Message-ID: <79fb2439-db38-4aad-bf91-2d3b031309a8@linaro.org>
+Date: Wed, 7 Aug 2024 10:59:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Andreas Schwab <schwab@suse.de>, ltp@lists.linux.it
-References: <mvm7cckdeqf.fsf@suse.de>
+To: Mark Brown <broonie@kernel.org>, Josef Bacik <josef@toxicpanda.com>
+References: <20240531-beheben-panzerglas-5ba2472a3330@brauner>
+ <20240531-vfs-i_writecount-v1-1-a17bea7ee36b@kernel.org>
+ <f8586f0c-f62c-4d92-8747-0ba20a03f681@arm.com>
+ <9bfb5ebb-80f4-4f43-80af-e0d7d28234fc@sirena.org.uk>
+ <20240606165318.GB2529118@perftesting>
+ <1eaedeba-805b-455e-bb2f-ed70b359bfdc@sirena.org.uk>
+ <550734af-e115-4048-8a8f-0fdaa199c956@sirena.org.uk>
 Content-Language: en-US
-In-Reply-To: <mvm7cckdeqf.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <550734af-e115-4048-8a8f-0fdaa199c956@sirena.org.uk>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Fix landlock06 test
+X-Mailman-Approved-At: Tue, 13 Aug 2024 10:19:42 +0200
+Subject: Re: [LTP] [PATCH] fs: don't block i_writecount during exec
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,42 +92,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Aishwarya TCV <aishwarya.tcv@arm.com>, "lee@kernel.org" <lee@kernel.org>,
+ jack@suse.cz, =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ david@fromorbit.com, Christian Brauner <brauner@kernel.org>,
+ Peter Griffin <peter.griffin@linaro.org>,
+ William McVicker <willmcvicker@google.com>, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ hch@lst.de, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andreas,
 
-thank you for this patch. I was just about to debug the test and to find 
-a solution :-)
-Do you have a validation test (for example in openQA) for this patch?
 
-On 8/13/24 10:11, Andreas Schwab wrote:
-> Initialize the flag variable, so that FIOASYNC does not spuriously fail
-> with ENOTTY (/dev/zero has no support for FASYNC).
->
-> Signed-off-by: Andreas Schwab <schwab@suse.de>
-> ---
->   testcases/kernel/syscalls/landlock/landlock06.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/syscalls/landlock/landlock06.c b/testcases/kernel/syscalls/landlock/landlock06.c
-> index 4dc1f532a..1a6e59241 100644
-> --- a/testcases/kernel/syscalls/landlock/landlock06.c
-> +++ b/testcases/kernel/syscalls/landlock/landlock06.c
-> @@ -28,7 +28,7 @@ static void run(void)
->   	if (SAFE_FORK())
->   		return;
->   
-> -	int flag;
-> +	int flag = 0;
->   	size_t sz = 0;
->   
->   	TST_EXP_PASS(ioctl(file_fd, FIONREAD, &sz));
-Andrea
+On 6/6/24 6:49 PM, Mark Brown wrote:
+> On Thu, Jun 06, 2024 at 06:33:34PM +0100, Mark Brown wrote:
+>> On Thu, Jun 06, 2024 at 12:53:18PM -0400, Josef Bacik wrote:
+>>> On Thu, Jun 06, 2024 at 04:37:49PM +0100, Mark Brown wrote:
+>>>> On Thu, Jun 06, 2024 at 01:45:05PM +0100, Aishwarya TCV wrote:
+>>
+>>>>> LTP test "execve04" is failing when run against
+>>>>> next-master(next-20240606) kernel with Arm64 on JUNO in our CI.
+>>
+>>>> It's also causing the LTP creat07 test to fail with basically the same
+>>>> bisection (I started from next/pending-fixes rather than the -rc so the
+>>>> initial phases were different):
+>>
+>>>> tst_test.c:1690: TINFO: LTP version: 20230929
+>>>> tst_test.c:1574: TINFO: Timeout per run is 0h 01m 30s
+>>>> creat07.c:37: TFAIL: creat() succeeded unexpectedly
+>>>> Test timeouted, sending SIGKILL!
+>>>> tst_test.c:1622: TINFO: Killed the leftover descendant processes
+>>>> tst_test.c:1628: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+>>>> tst_test.c:1630: TBROK: Test killed! (timeout?)
+>>
+>>>> The code in the testcase is below:
+>>
+>>> These tests will have to be updated, as this patch removes that behavior.
+>>
+>> Adding the LTP list - looking at execve04 it seems to be trying for a
+>> similar thing to creat07, it's looking for an ETXTBUSY.
+> 
+> Or not since they reject signed mail :/
+
+FYI, I encountered the same test failures. I opened a bug on the github
+ltp project suggesting that the tests need to be updated. Here it is:
+https://github.com/linux-test-project/ltp/issues/1184
+
+Cheers,
+ta
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
