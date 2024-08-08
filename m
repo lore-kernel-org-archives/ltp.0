@@ -4,106 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32DBAC3DA4A
-	for <ltp@archiver.kernel.org>; Thu,  8 Aug 2024 09:58:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA205C52D71
+	for <ltp@archiver.kernel.org>; Thu,  8 Aug 2024 10:21:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A72A03D204A
-	for <ltp@archiver.kernel.org>; Thu,  8 Aug 2024 11:58:44 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4A56D3D207A
+	for <ltp@archiver.kernel.org>; Thu,  8 Aug 2024 12:21:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B9E23D1EB2
- for <ltp@lists.linux.it>; Thu,  8 Aug 2024 11:58:27 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 9D0133D1DE2
+ for <ltp@lists.linux.it>; Thu,  8 Aug 2024 12:21:10 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4C418600F3B
- for <ltp@lists.linux.it>; Thu,  8 Aug 2024 11:58:26 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9BD3C21AFD;
- Thu,  8 Aug 2024 09:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723111105;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5FC811001F42
+ for <ltp@lists.linux.it>; Thu,  8 Aug 2024 12:21:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1723112467;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pmXrvYzPZND725QiQYDiOwgS4/05buZ65qoBwqI4gFs=;
- b=iyMnauUKjOuTDCcPchd94PepbYVJT9gjQHqLr8ucD9iXG1sDfqsfBgXAzb3CBFHenxoK+W
- 5Vezvl8bcLPwxMvivXeNlK5Nf6+cHm+twOvfEshs+Xta2wuc2t7AJuh5x9ECEgvgbadZyG
- vWcJLgrKse34NyyWG2mS+bYmdoDdzHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723111105;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pmXrvYzPZND725QiQYDiOwgS4/05buZ65qoBwqI4gFs=;
- b=kYtHsXRRsnBRseLz/Q5tKeLh0atwn/agrFx4AOa5msLSujlr3/SV46TPxJ3wfWTzpCZB+L
- az6XlrL7VpdT7bDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723111105;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pmXrvYzPZND725QiQYDiOwgS4/05buZ65qoBwqI4gFs=;
- b=iyMnauUKjOuTDCcPchd94PepbYVJT9gjQHqLr8ucD9iXG1sDfqsfBgXAzb3CBFHenxoK+W
- 5Vezvl8bcLPwxMvivXeNlK5Nf6+cHm+twOvfEshs+Xta2wuc2t7AJuh5x9ECEgvgbadZyG
- vWcJLgrKse34NyyWG2mS+bYmdoDdzHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723111105;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pmXrvYzPZND725QiQYDiOwgS4/05buZ65qoBwqI4gFs=;
- b=kYtHsXRRsnBRseLz/Q5tKeLh0atwn/agrFx4AOa5msLSujlr3/SV46TPxJ3wfWTzpCZB+L
- az6XlrL7VpdT7bDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77AC313876;
- Thu,  8 Aug 2024 09:58:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nhmzG8GWtGYNLgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 08 Aug 2024 09:58:25 +0000
-Date: Thu, 8 Aug 2024 11:58:24 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20240808095824.GC327665@pevik>
-References: <20240801-landlock-v5-0-663d7383b335@suse.com>
- <20240801-landlock-v5-3-663d7383b335@suse.com>
+ bh=+84/Idf3agYGAQrtSnClZGggVnQtzz0+/xmkfKBqIfg=;
+ b=XuKSNtGqIdx3CGh12ALpYiq8Ez5JqeegL150hrCbBrQG5dG0BvweOGLCG+Ekw9Kq1KbeK/
+ R5xpUGir+CdvasrYQa0w45cd0fA9rOLjjBmbpqqZh0HqfDxGdrEVleW0WNNoVLJfGtpcOo
+ ZGl+vAF47uJcteOy3okcozfpoEUePKA=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-TdqfNx84PA2BKLlCQvkcSw-1; Thu, 08 Aug 2024 06:21:05 -0400
+X-MC-Unique: TdqfNx84PA2BKLlCQvkcSw-1
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-2cb4c2276b9so1029848a91.0
+ for <ltp@lists.linux.it>; Thu, 08 Aug 2024 03:21:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1723112463; x=1723717263;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=+84/Idf3agYGAQrtSnClZGggVnQtzz0+/xmkfKBqIfg=;
+ b=uKOo5CrQfTZFgqTVa7sCR34jnRf3dS+vof0OJ9FdsakLvsk5FQJlKxPFaNecpGnovx
+ RtnFpgxINhbEkvqUgyYswaDeSM2LGlLEbbN35+IxW1esibdgLv9QsVEGO7zedUoFq4+d
+ l/HT9s8gF+aJwkTQ3dssqvnxlgPktYwYjKHMg5taTSMX+/xXUf7NeV9gKYIlVlxKHurV
+ MokFw6xQNYNFBhkpeOIbPEwBWnIOvx+ErridYK1lhWD/Q/etqzqh+ekyt9Mc8EOzydzW
+ 0XMlXQgkKP8dS/65I60myVYxyzHspUrDZSFQXFwWb2ekF+1BWLVdOaNIHUpbw3Cyan7W
+ oPLQ==
+X-Gm-Message-State: AOJu0Yybxo9xBCqZUfhnAnv+16OTg+rNVm+XSijRBdUQObh8AAYySm7v
+ Ktl5eNILVTPlN6Ajjiq0cOmx014/wExABAKsFCDSSv69YLpxKPorbOSwpMRo8wEN9l/AgZHE+k8
+ yqCpElOnqrW267FaKdtR6fPib/waSev67JIo3PSQGzNaUPvKgyNKmjjJSpAXTs8RdkgZZV3L07m
+ 1f2j1Gf5Dg5JhorJSO8KifN8c94Rk8oetptg==
+X-Received: by 2002:a17:90b:3503:b0:2cd:2f63:a447 with SMTP id
+ 98e67ed59e1d1-2d1c346b5ebmr1476767a91.36.1723112463303; 
+ Thu, 08 Aug 2024 03:21:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKbJY7swiIMPCqELYSsKN1Iz/Z2pLFUNC5mOyiJcLZT9Q0uQP7acReQmY8JrVK8r82b/oGY4ZIrzsPm26u18U=
+X-Received: by 2002:a17:90b:3503:b0:2cd:2f63:a447 with SMTP id
+ 98e67ed59e1d1-2d1c346b5ebmr1476756a91.36.1723112462983; Thu, 08 Aug 2024
+ 03:21:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240801-landlock-v5-3-663d7383b335@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+References: <20240808065732.64328-1-liwang@redhat.com>
+ <20240808074416.GA306790@pevik>
+In-Reply-To: <20240808074416.GA306790@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 8 Aug 2024 18:20:50 +0800
+Message-ID: <CAEemH2cTymz-XGi+PLLSLLy2tYynKS0Rv6qhi-0LP_JNtp07vQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/6] Disable kernel version check in landlock
- tests
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] pkey01: Adding test for PKEY_DISABLE_EXECUTE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,33 +92,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: =?iso-8859-2?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
- =?iso-8859-2?Q?G=FCnther?= Noack <gnoack@google.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Petr,
 
-> The reason why we remove kernel version check is that we use
-> verify_landlock_is_enabled() function in order to check if landlock is
-> present in the system. This is really helpful when landlock support has
-> been backported into old kernels.
+Petr Vorel <pvorel@suse.cz> wrote:
 
-Great, I'm glad you removed it from all landlock tests. It really did not make
-sense to guard correct version with 3 guards (kernel version, kernel config and
-ABI). Could you please remove also CONFIG_SECURITY_LANDLOCK=y, because you
-check EOPNOTSUPP in verify_landlock_is_enabled().
 
-Anyway, feel free to merge these first 3 patches (ideally remove also
-CONFIG_SECURITY_LANDLOCK=y before merge).
+> > +     if (!execute_supported && (tc->access_rights ==
+> PKEY_DISABLE_EXECUTE))
+> > +             tst_brk(TCONF, "skip PKEY_DISABLE_EXECUTE test");
+> NOTE due to possible tst_brk() it'd be good to keep PKEY_DISABLE_EXECUTE
+> as a
+> last test. Not sure if it's worth to add a comment (or replace with
+> tst_res()
+> and return).
+>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Or, we can use 'tst_res + return' which is similar to tst_hugepages missing
+way.
 
-Kind regards,
-Petr
+The rest comments all look good.
+
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
