@@ -4,89 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA9B4C52D71
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 07:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A45AC52D71
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 07:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1723188586; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=YZMN88XAr415XswObtKkptCYz3rWe30wK0+o6xQ7zLU=;
- b=KdGfS1AVW51ZUi3hT71HobNG6yiQd3E+zZO2EJWc3fpHIPukdeXt5Mkq4yQwXygmjYaIA
- M2TXoSptEzKMHBSxZcuycuQ2nIfsB943reIwWePd5jZGO9AQUy7j3MtzIyU/eEubdxJkvMw
- GwDlUNiy88wF58HhipEiuLcZtFy8tCA=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1723188620; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=U0kLHLABg3N5Jr5+BxZpqzWObJnBHxUJz5ALDyd3Bmc=;
+ b=YlRPhKp/jFgr6uKaee1lcR52Vzu0Bqj92L7wSkvXnWU8oUMeMxIkW8+ruVXw6h63u6YAY
+ o0Bgs1DpHsWDSKfkjgGgaAAqWcuVeIF7pCQW6efPydgEC6r0t+/4x1XuZnOu22jo4flgQHZ
+ G1VLAMIcXlU//2/1xL7kaTIdpkCi08U=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 377463D20B4
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 09:29:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8A9283D20B4
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 09:30:20 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F1FA3D10CD
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 09:29:24 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
- helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D159A3D10CD
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 09:29:58 +0200 (CEST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 33E5860109F
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 09:29:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1723188562; x=1754724562;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=mOfwvbUQYMJjBYGN3P5qu934Nh+fGCF31of0x7smSX4=;
- b=uB3AFq7zwstgFFYxJVaX21fIpO2jN057Va27gkJz15a4SP6q0ddiLmg/
- J57mO5RN8sGEJ/5Df+J/aZiVShYxBiKrd5f6lvLHFV/NGWvKdqkhljXY1
- JKnMpjMDD+1fUt3ptswuN8D+UoV/APKGQUJAtmOqkI+XXeRzLEKwYw6bw
- 1+A1ezNP/7ws6b7d8DkhfHMh30y5Dhe8nERq+CFecvVIkIcTchSRvzrbW
- Z65Ejq2NtfaSspCpPhnxQrqer92uMgucQyNWcaBDYmRgYpjwEfz9ACfuV
- si6r3zLJrOXDV6fUER4T8x1CHAqS1CxCEHoDUdf5aMgU7K0W0XQDD+II5 A==;
-X-CSE-ConnectionGUID: +qWfb4aORYer2oaQf2B8jQ==
-X-CSE-MsgGUID: rJ3g5ZHIRIGHfR+kBAnmvw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11158"; a="157672996"
-X-IronPort-AV: E=Sophos;i="6.09,275,1716217200"; d="scan'208";a="157672996"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2024 16:29:21 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 49D15C9444
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 16:29:19 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 83D6FD3F2A
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 16:29:18 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 1724C2008BCD0
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 16:29:18 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.182])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 700861A0002;
- Fri,  9 Aug 2024 15:29:17 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Fri,  9 Aug 2024 15:30:10 +0800
-Message-ID: <20240809073010.793324-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.42.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0185710060AD
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 09:29:56 +0200 (CEST)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-5b391c8abd7so2032540a12.2
+ for <ltp@lists.linux.it>; Fri, 09 Aug 2024 00:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1723188596; x=1723793396; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=+6WDCJa22hFfomoH2jaakFwvTXAFY7M1xukqjXmGJbs=;
+ b=NerysZxZfcOSVXl18tt8+JsPa1LnYLQbT7GJOQYCv1vff5CcOm6sptQVLZdliYj3lI
+ HZj7dUZrO+F2v302tHPMCuLAJlcm1e17GmHFKIvyqf+sfT02GbxbzuN5egHfPoNLPafJ
+ KFP57kPfiybDjvgwO8ArkjmyWb7aLK7ZyKk0p/RcEMfQUA5FADf7EU23bxJdeoPt9IL5
+ nb8yKBUk5Y2TIO01A924lcOVlfL0AkXqlDTn5F3Lw4a9zP5VRiF5Ny1YeNXfroKXIwsf
+ j1pQ2rdCPS+Rt2lIEKLwtpu6QdNPCC9j8FKxEKh0bzYiBeZndnMbIYWTCxq6OtHZLKF/
+ PL0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1723188596; x=1723793396;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=+6WDCJa22hFfomoH2jaakFwvTXAFY7M1xukqjXmGJbs=;
+ b=eCWpM7FlRGgr60S+tzZKBUr6q9WFfMRfz9zDu4JyIQHxJklLSKJVxIsi5QyA0U1wBh
+ 60tmqWy0T6VcCVGBCFBglmp7UTBV7fosDfJRmuPeidTwhpuHbisqHXG02Z0WHHmtohFi
+ kpxnxPiU4sl9iB0K7FD+KP3NbJOgB6+jc6FVK9g0jUbdTQJ3DmdWoA9CD2P47RVTC5jG
+ E5ALlih8XL1dZrt8xwbHYl/kP5aN9t1W+v/4JfTwozAndU39QeXsE+QOaPnCLSyNbTk+
+ Ngmy2wv8be5iR4sF1ovETpcnH3u6igAV1w/BKAgdP3VkPeifGAnd+OfR7yCpvaqd4aru
+ gWOQ==
+X-Gm-Message-State: AOJu0YwMrMubNZIs9DXp7v1czPIFwBdqnj2i8nFv54tTA2HLG5Ye2UdS
+ GLVfDgsdXDSyMU8AunVq3j+T7moSCa65Sm9PCRM2E+3RMKsulaWSqNAx6vgIDKc=
+X-Google-Smtp-Source: AGHT+IFOqoGe4pogBb4Hqy+wC++RxEZKQufJyDdLELaDmX6OCSUj4TQHTxIahJOy9qql6RBhk79/Lg==
+X-Received: by 2002:a17:907:d858:b0:a7a:8586:d36b with SMTP id
+ a640c23a62f3a-a80aa54ec04mr58404966b.3.1723188595667; 
+ Fri, 09 Aug 2024 00:29:55 -0700 (PDT)
+Received: from [10.232.133.25] ([88.128.88.152])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a7dc9ec350fsm812435066b.189.2024.08.09.00.29.55
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 09 Aug 2024 00:29:55 -0700 (PDT)
+Message-ID: <77540fcf-1d27-4292-b4c2-8cb45429da61@suse.com>
+Date: Fri, 9 Aug 2024 09:29:54 +0200
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28584.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28584.006
-X-TMASE-Result: 10--4.688000-10.000000
-X-TMASE-MatchedRID: zm9YP3yHAjR7dpr6RvFomQvBTB90+he+a9qiaDSLgo3dtCoZAk3E1LEp
- UQCQ2tw3earpgnzfvE+Qudd21uOMUB1YpEPWJiyzrMZ+BqQt2NrBOVz0Jwcxl5GUF3NhJu3iAy7
- Fge6wFlu0XJbuTzFIEZRQOqbWXP7wkfRhdidsajMURSScn+QSXmVV1G+Ck2l7+gtHj7OwNO2I3a
- djBtsMrMhJyCrR8zhJ+1vJ734aJeblXnV4mzLv+K+y99ankw3V+UxgTdbK8lZadL+nSaGTxsEEG
- qTlTsmAZ9OhtQ5AmKawtxasbFfS54aT7FRqp0wPAcQrAfBh69vBRLFeH6OJSCTDD+DBjuEw
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20240522-process_mrelease-v1-0-41fe2fa44194@suse.com>
+ <20240522-process_mrelease-v1-2-41fe2fa44194@suse.com> <ZpfDu0U1fISLDbqC@rei>
+Content-Language: en-US
+In-Reply-To: <ZpfDu0U1fISLDbqC@rei>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] cgroup_fj_common.sh: Do not disable systemd
- related cgroup subsystems
+Subject: Re: [LTP] [PATCH 2/3] Add process_mrelease01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,46 +93,168 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The cpu, io, memory, and pids subsystems under the root cgroup cannot be disabled
-because they are used for systemd. Currently, the test of cpu and memory subsystems
-in cgroup_fj_function.sh and cgroup_fj_stress.sh will report the error
-"echo: write error: device or resource busy".
+Hi!
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh      | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+On 7/17/24 15:14, Cyril Hrubis wrote:
+> Hi!
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * This test verifies that process_mrelease() syscall is releasing memory from
+>> + * a killed process with memory allocation pending.
+>> + */
+>> +
+>> +#include "tst_test.h"
+>> +#include "lapi/syscalls.h"
+>> +
+>> +#define CHUNK (1 * TST_MB)
+>> +#define MAX_SIZE_MB (128 * TST_MB)
+>> +
+>> +static void *mem;
+>> +static volatile int *mem_size;
+>> +
+>> +static void do_child(int size)
+>> +{
+>> +	tst_res(TINFO, "Child: allocate %d bytes", size);
+>> +
+>> +	mem = SAFE_MMAP(NULL,
+>> +		size,
+>> +		PROT_READ | PROT_WRITE,
+>> +		MAP_PRIVATE | MAP_ANON,
+>> +		0, 0);
+> This does not actually alloate any memory, it set ups the vmas but the
+> actual memory is not allocated until you fault it by accessing it, so
+> you have to actually touch every page to get it faulted, e.g. memset()
+> it to something.
+>
+Yes this is true. I will fix it.
+>> +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>> +
+>> +	tst_res(TINFO, "Child: releasing memory");
+>> +
+>> +	SAFE_MUNMAP(mem, size);
+>> +}
+>> +
+>> +static void run(void)
+>> +{
+>> +	int ret;
+>> +	int pidfd;
+>> +	int status;
+>> +	pid_t pid;
+>> +	volatile int restart;
+>> +
+>> +	for (*mem_size = CHUNK; *mem_size < MAX_SIZE_MB; *mem_size += CHUNK) {
+>> +		restart = 0;
+>> +
+>> +		pid = SAFE_FORK();
+>> +		if (!pid) {
+>> +			do_child(*mem_size);
+>> +			exit(0);
+>> +		}
+>> +
+>> +		TST_CHECKPOINT_WAIT(0);
+>> +		tst_disable_oom_protection(pid);
+> What is this needed for?
+process_mrelease() overlaps with OOM, since it's used to free up thread 
+memory instead of OOM. For this reason we need to disable it, so any OOM 
+operation after kill() won't be taken by it.
+>
+>> +		pidfd = SAFE_PIDFD_OPEN(pid, 0);
+>> +
+>> +		tst_res(TINFO, "Parent: killing child with PID=%d", pid);
+>> +
+>> +		SAFE_KILL(pid, SIGKILL);
+>> +
+>> +		ret = tst_syscall(__NR_process_mrelease, pidfd, 0);
+>> +		if (ret == -1) {
+>> +			if (errno == ESRCH) {
+>> +				tst_res(TINFO, "Parent: child terminated before process_mrelease()."
+>> +					" Increase memory size and restart test");
+>> +
+>> +				restart = 1;
+> As far as I understand the documentation his condition should not happen
+> until you have called wait() on the process.
 
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-index e866641ba..153d351d7 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-@@ -77,7 +77,13 @@ common_cleanup()
- 
-     cgroup_cleanup
- 
--    [ "$cgroup_version" = "2" ] && ROD echo "-$subsystem" \> "/sys/fs/cgroup/cgroup.subtree_control"
-+    if [ "$cgroup_version" = "2" ]; then
-+        case "$subsystem" in
-+        cpu|io|memory|pids)
-+            :;;
-+        *) ROD echo "-$subsystem" \> "/sys/fs/cgroup/cgroup.subtree_control";;
-+        esac
-+    fi
- }
- 
- . cgroup_lib.sh
--- 
-2.42.0
+The minimum requirement is that child has been killed and it's 
+accessible from process_mrelease, so if we call wait() on the child, we 
+won't be able to reach it anymore, causing ESRCH in process_mrelease().
 
+Please check mrelease_test.c kselftest.
+
+>
+>> +			} else {
+>> +				tst_res(TFAIL | TERRNO, "process_mrelease(%d,0) error", pidfd);
+>> +			}
+>> +		} else {
+>> +			tst_res(TPASS, "process_mrelease(%d,0) passed", pidfd);
+> Okay it passed, but did we free any memory?
+>
+> Is the /proc/$pid/ still accessible before we wait on the killed
+> process? If it is we can parse the proc maps before and after
+> process_mrelease and check if the memory was really freed.
+Good idea, I will do that.
+>> +		}
+>> +
+>> +		SAFE_WAITPID(-1, &status, 0);
+>> +		SAFE_CLOSE(pidfd);
+>> +
+>> +		if (!restart)
+>> +			break;
+>> +	}
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	mem_size = SAFE_MMAP(
+>> +		NULL,
+>> +		sizeof(int),
+>> +		PROT_READ | PROT_WRITE,
+>> +		MAP_SHARED | MAP_ANONYMOUS,
+>> +		-1, 0);
+> Why do we keep the size in shared memory? The forked child has COW
+> access to the parent memory, we can use the variables set in the parent
+> just fine.
++1
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (mem)
+>> +		SAFE_MUNMAP(mem, *mem_size);
+> This is allocated in chid and never non NULL in parent.
+>
+>> +	if (mem_size)
+>> +		SAFE_MUNMAP((void *)mem_size, sizeof(int));
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test_all = run,
+>> +	.needs_root = 1,
+>> +	.forks_child = 1,
+>> +	.min_kver = "5.15",
+>> +	.needs_checkpoints = 1,
+>> +	.needs_kconfigs = (const char *[]) {
+>> +		"CONFIG_MMU=y",
+>> +	},
+>> +};
+>>
+>> -- 
+>> 2.35.3
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+Andrea
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
