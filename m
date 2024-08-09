@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49B17C52D71
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 09:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F173DC3DA4A
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 10:32:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB2813D20B8
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 11:55:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 6895F3D20C7
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 12:32:19 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DFD5A3D1F4C
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 11:55:15 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 9952F3D1BF1
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 12:32:03 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -25,85 +24,86 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03F0F208E07
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 11:55:14 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22FA260712F
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 12:32:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0AABD21D57;
- Fri,  9 Aug 2024 09:55:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 865D621EA2;
+ Fri,  9 Aug 2024 10:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723197311; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=u34pKH+Qd+OheqSaoMWocoabJXRnBvDe2H7qNWzhilc=;
- b=n3arLDbQJ0JtlYPatQtNPQF4PEpzGSVsf3qonqzfcARMqQOYuek7c4vhj9bybkR8nX/Sl2
- t8zxlCkInE8oueOWj9AHaAs3IVVIUUrSLcDxHgxZAQZSXm2a+6qumESI7ceYSV+yMKGbo8
- I56GIZWbUm6mOWqDXEvOww2VAqB/Zk4=
+ t=1723199521;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rrf/+u96x5Vc/xIw21yAxwRrPW1GLm57VTQWS2MaTSk=;
+ b=oMDW6xr2BfprQost7/A3xjNfIKcv7SKpma+mq4ciaM5sKk983bBDFvBuFqv+RwQfMf383E
+ aJV1I69/GXHEZv29YSmixgc2DF1AaPk/wyQnKSZBrLZNoHCKPZYgte1Alf6yMMLbKVBvF7
+ 9lkjP9SVxyDvYW8fi+AyVqCEMQwV+2c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723197311;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=u34pKH+Qd+OheqSaoMWocoabJXRnBvDe2H7qNWzhilc=;
- b=02ja24CYinfJfs/hnSq7Ln8IDnugXAlqIasDHp6n21bFjUsh0+l3jyzuakKe3GbAAWtvWD
- WV6CzxV/DD/cAKBA==
+ s=susede2_ed25519; t=1723199521;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rrf/+u96x5Vc/xIw21yAxwRrPW1GLm57VTQWS2MaTSk=;
+ b=nVVJXOE2H8fG9QnAp2gsVea8fazni2uvd8W6E2doNb3hytnCczTzZCbvKnJ0uDS2tikfZU
+ UouGHBlJ1cnOQ8Cw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YP3XRftF;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KFCqviXp
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723197310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=u34pKH+Qd+OheqSaoMWocoabJXRnBvDe2H7qNWzhilc=;
- b=YP3XRftFJKG0DnQD1yjqwdCroDQB0w8nVUmqLrjFipOVhdPRr9KJfkqYozD1NeXpmcbji0
- EjSMmugplMpcK/YI0L3Gx/xbxbxKoUcq0yHS5wYeuNKz4VPTT82c/WjMdfM2yJwFmjOglj
- lz8nUNFecZNOAO0cmNzpQGhxLA19S/U=
+ t=1723199521;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rrf/+u96x5Vc/xIw21yAxwRrPW1GLm57VTQWS2MaTSk=;
+ b=oMDW6xr2BfprQost7/A3xjNfIKcv7SKpma+mq4ciaM5sKk983bBDFvBuFqv+RwQfMf383E
+ aJV1I69/GXHEZv29YSmixgc2DF1AaPk/wyQnKSZBrLZNoHCKPZYgte1Alf6yMMLbKVBvF7
+ 9lkjP9SVxyDvYW8fi+AyVqCEMQwV+2c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723197310;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=u34pKH+Qd+OheqSaoMWocoabJXRnBvDe2H7qNWzhilc=;
- b=KFCqviXpTGNqZDXyhfhjwXEOtjv5ETV6peA3Rgslnc7urisUBJOMwK7/IIU4cq1OJkMvJF
- TAgxHVuzhIj/6mBg==
+ s=susede2_ed25519; t=1723199521;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rrf/+u96x5Vc/xIw21yAxwRrPW1GLm57VTQWS2MaTSk=;
+ b=nVVJXOE2H8fG9QnAp2gsVea8fazni2uvd8W6E2doNb3hytnCczTzZCbvKnJ0uDS2tikfZU
+ UouGHBlJ1cnOQ8Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4C3B1379A;
- Fri,  9 Aug 2024 09:55:09 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FC711379A;
+ Fri,  9 Aug 2024 10:32:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6MYsLn3ntWYIPwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 09 Aug 2024 09:55:09 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id o6Y8CSHwtWbPSQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 09 Aug 2024 10:32:01 +0000
+Date: Fri, 9 Aug 2024 12:31:55 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri,  9 Aug 2024 11:55:05 +0200
-Message-ID: <20240809095505.352377-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.45.2
+To: "Xinjian Ma (Fujitsu)" <maxj.fnst@fujitsu.com>
+Message-ID: <20240809103155.GA352642@pevik>
+References: <20240809073010.793324-1-maxj.fnst@fujitsu.com>
+ <20240809084527.GA337675@pevik>
+ <TY3PR01MB120713856F5B63EA95B6376C8E8BA2@TY3PR01MB12071.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 0AABD21D57
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[4];
+Content-Disposition: inline
+In-Reply-To: <TY3PR01MB120713856F5B63EA95B6376C8E8BA2@TY3PR01MB12071.jpnprd01.prod.outlook.com>
+X-Spamd-Result: default: False [-0.50 / 50.00]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[fujitsu.com:email,imap1.dmz-prg2.suse.org:helo,cgroup_fj_function.sh:url];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] pkey01: Fix TBROK due missing results
+Subject: Re: [LTP] [PATCH v2] cgroup_fj_common.sh: Do not disable systemd
+ related cgroup subsystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,97 +115,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PKEY_DISABLE_EXECUTE is ppc64le specific test. Due messages being
-TINFO test on other archs fails:
+> > Hi Ma,
 
-    tst_test.c:1498: TBROK: Test 2 haven't reported results!
+> > > The cpu, io, memory, and pids subsystems under the root cgroup cannot
+> > > be disabled because they are used for systemd. Currently, the test of
+> > > cpu and memory subsystems in cgroup_fj_function.sh and
+> > > cgroup_fj_stress.sh will report the error
+> > > "echo: write error: device or resource busy".
 
-Changing messages to TCONF. Also exit loop on !execute_supported TCONF
-(no need to have 30x TCONF with the same error message, because we have
-PKEY_DISABLE_EXECUTE last). The other TCONF (on MAP_HUGETLB) must be
-repeated.
+> > Could you please share a bit of info on which system it fails. Do you use cgroup
+> > v1?
 
-Fixes: d2b8a476c2 ("pkey01: Adding test for PKEY_DISABLE_EXECUTE")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi Li, all,
+> Hi Petr
 
-if you don't like PKEY_DISABLE_EXECUTE having to be the last, we can
-just have 30x TCONF (just to change both TINFO to TCONF). Whatever you prefer.
+> It fails on Fedora 37 which uses cgroupv2.
+> cgroupv1 won't trigger this failure.
+
+OK, thx for info, merged!
+
+I managed to reproduce the same issue also on Debian trixie or some Alpine
+(which don't use systemd).  I still wonder what could be the root cause, because
+many other systemd based systems have no problem (various SLES versions and
+openSUSE Tumbleweed).
 
 Kind regards,
 Petr
 
- testcases/kernel/syscalls/pkeys/pkey01.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+> > Kind regards,
+> > Petr
 
-diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
-index e5db2c253c..a4b73c4056 100644
---- a/testcases/kernel/syscalls/pkeys/pkey01.c
-+++ b/testcases/kernel/syscalls/pkeys/pkey01.c
-@@ -51,7 +51,7 @@ static struct tcase {
- } tcases[] = {
- 	{PERM_NAME(PKEY_DISABLE_ACCESS)},
- 	{PERM_NAME(PKEY_DISABLE_WRITE)},
--	{PERM_NAME(PKEY_DISABLE_EXECUTE)},
-+	{PERM_NAME(PKEY_DISABLE_EXECUTE)} /* keep it the last */
- };
- 
- static void setup(void)
-@@ -155,7 +155,7 @@ static size_t function_size(void (*func)(void))
- 	return (size_t)(end - start + 1);
- }
- 
--static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
-+static int pkey_test(struct tcase *tc, struct mmap_param *mpa)
- {
- 	pid_t pid;
- 	char *buffer;
-@@ -165,13 +165,13 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
- 	size_t func_size = 0;
- 
- 	if (!execute_supported && (tc->access_rights == PKEY_DISABLE_EXECUTE)) {
--		tst_res(TINFO, "skip PKEY_DISABLE_EXECUTE test");
--		return;
-+		tst_res(TCONF, "skip PKEY_DISABLE_EXECUTE test");
-+		return 1;
- 	}
- 
- 	if (!tst_hugepages && (mpa->flags & MAP_HUGETLB)) {
--		tst_res(TINFO, "Skip test on (%s) buffer", flag_to_str(mpa->flags));
--		return;
-+		tst_res(TCONF, "Skip test on (%s) buffer", flag_to_str(mpa->flags));
-+		return 0;
- 	}
- 
- 	if (fd == 0)
-@@ -253,6 +253,8 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
- 
- 	if (pkey_free(pkey) == -1)
- 		tst_brk(TBROK | TERRNO, "pkey_free failed");
-+
-+	return 0;
- }
- 
- static void verify_pkey(unsigned int i)
-@@ -265,7 +267,8 @@ static void verify_pkey(unsigned int i)
- 	for (j = 0; j < ARRAY_SIZE(mmap_params); j++) {
- 		mpa = &mmap_params[j];
- 
--		pkey_test(tc, mpa);
-+		if (pkey_test(tc, mpa))
-+			break;
- 	}
- }
- 
--- 
-2.45.2
+> > > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > > Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+> > > ---
+> > >  .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh      | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
 
+> > > diff --git
+> > > a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > > b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > > index e866641ba..153d351d7 100755
+> > > --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > > +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > > @@ -77,7 +77,13 @@ common_cleanup()
+
+> > >      cgroup_cleanup
+
+> > > -    [ "$cgroup_version" = "2" ] && ROD echo "-$subsystem" \>
+> > "/sys/fs/cgroup/cgroup.subtree_control"
+> > > +    if [ "$cgroup_version" = "2" ]; then
+> > > +        case "$subsystem" in
+> > > +        cpu|io|memory|pids)
+> > > +            :;;
+> > > +        *) ROD echo "-$subsystem" \>
+> > "/sys/fs/cgroup/cgroup.subtree_control";;
+> > > +        esac
+> > > +    fi
+> > >  }
+
+> > >  . cgroup_lib.sh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
