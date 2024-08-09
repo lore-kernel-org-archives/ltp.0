@@ -4,84 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C1DDC3DA4A
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 01:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A56F0C52D7B
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 02:58:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 181093D2098
-	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 03:00:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A00023D20C3
+	for <ltp@archiver.kernel.org>; Fri,  9 Aug 2024 04:58:53 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3F30F3D2031
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 03:00:04 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 170F62009EF
- for <ltp@lists.linux.it>; Fri,  9 Aug 2024 03:00:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1723165202;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jdOVoLdseDiqqOEbKQphprJ0XqWBUrs9CDx2sHgRmqE=;
- b=gOBMK2tIDX4P1U6ZxNUxFdUl/iLpvL7/hEoqLvg9Vf9vknCsuqNT6FPo7IYff1ZolULeB4
- XfBDcmMOZ4vd7o7pkaQMg+jTCKzFofAPLS4sHs7AuPFJ5/vn7SySMrwX4was5MxiJR5t4j
- AzYvU13hw3Ney3f00taaqok6VQDFq68=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-572-O0EXbb83OhakaTGNJfmjAg-1; Thu, 08 Aug 2024 20:59:59 -0400
-X-MC-Unique: O0EXbb83OhakaTGNJfmjAg-1
-Received: by mail-pg1-f200.google.com with SMTP id
- 41be03b00d2f7-7a28f78c67aso1640210a12.1
- for <ltp@lists.linux.it>; Thu, 08 Aug 2024 17:59:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1723165199; x=1723769999;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=jdOVoLdseDiqqOEbKQphprJ0XqWBUrs9CDx2sHgRmqE=;
- b=OsBk4u0reusnwdIYujK0K3nhpStTUl9MlhZVTgo7a3i+KqRGayGEFEGw9rXtsO6NNO
- z7/CQ+iuT99biB1Oxym9fDEegPCTMIAThS8G5Bp8J4ilqjTh7dWU7UI5yK+lKc2AiYAZ
- sZwJW8I4yJhJkRAPql+jkYNHXAEMIHnvfYS/U8barZFiYkPiWDtIaBD7NLEQsYiPaTjs
- wThZDRoF5sjufAg5CDguqehmbRayVmjYsRnAJRtgIUh8yhYV+SNRLhp0qK+0Pq7mm3JS
- 5e6vSRf66xXemtsQM6ZAGhGN/Lo+YK+BgktBAcYgVTjDntQTu+GpLccq0Cc1Lcz6yt/9
- EYJQ==
-X-Gm-Message-State: AOJu0Yy1ZB8BzDNz4Q/YYF5oFJTjLgSYCQ6qojj/ymSueaaYyrP2YsRo
- ZIGksjLYkHFULVAji7q4WNhHoBDy5qzMt0HDyx0oSGYNvpoaVWfxXSst3KeXucEASvANr+rrqEM
- yiJMaolOYKr+IFH/yQ2uyiwnGxp5Zoy5fLAZDtY9WHYYNOq8gsRuwuu9+75ugMtmwlal6wtm5UM
- M81nM07gTQ57UzhQSQdh+AD+E=
-X-Received: by 2002:a05:6a21:3403:b0:1c4:87f5:995d with SMTP id
- adf61e73a8af0-1c89ff279admr92777637.54.1723165198752; 
- Thu, 08 Aug 2024 17:59:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEv76NGjArie0TYTyybuC3PYr0QmYHTupjeaqCjhdWjkvhmBO9XTYbtKkfdLFq1IVrSBCdrvCPj70k7NXrvJS0=
-X-Received: by 2002:a05:6a21:3403:b0:1c4:87f5:995d with SMTP id
- adf61e73a8af0-1c89ff279admr92768637.54.1723165198403; Thu, 08 Aug 2024
- 17:59:58 -0700 (PDT)
+ by picard.linux.it (Postfix) with ESMTPS id 6AD853D1D35
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 04:58:38 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id 21178601027
+ for <ltp@lists.linux.it>; Fri,  9 Aug 2024 04:58:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=0hr4G
+ +RPjLuLo4doFFCe7xvashRjorgn+nRh+WxmW7k=; b=ZKRC3fkWZcdMbATWH+hZg
+ /9Ovq0LiTRhQai0H7dj5wWWJoI/ORA/w/4R75IuxuswcZ22ndlfNrG0ovyJq5V4e
+ nLUBZnWR8t4s2PkOw75hMB2PbkMcAgVEJSVDhnKeGw0nEmqdzFUae30ORl56/g0l
+ 5iffiQn652tTh0+eq4BUrA=
+Received: from fedora-40.. (unknown [106.146.79.134])
+ by gzga-smtp-mta-g3-1 (Coremail) with SMTP id _____wD3H53ThbVmfArWBA--.8739S2; 
+ Fri, 09 Aug 2024 10:58:29 +0800 (CST)
+From: Xiao Yang <ice_yangxiao@163.com>
+To: ltp@lists.linux.it
+Date: Fri,  9 Aug 2024 11:58:25 +0900
+Message-ID: <20240809025825.4055-1-ice_yangxiao@163.com>
+X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
-References: <20240808065732.64328-1-liwang@redhat.com>
- <20240808074416.GA306790@pevik>
- <CAEemH2cTymz-XGi+PLLSLLy2tYynKS0Rv6qhi-0LP_JNtp07vQ@mail.gmail.com>
-In-Reply-To: <CAEemH2cTymz-XGi+PLLSLLy2tYynKS0Rv6qhi-0LP_JNtp07vQ@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 9 Aug 2024 08:59:45 +0800
-Message-ID: <CAEemH2fzzyzUDktrNgwfO8CDMtn7YQVXgjZ4Wk=ktzYNco+m5Q@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-CM-TRANSID: _____wD3H53ThbVmfArWBA--.8739S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWr47XFyxtFWrGryxAF4fKrg_yoWrXFyDp3
+ y3Ka4xZa1ftFZIyr40vwsYyw18uF15Jw1Fyr4qva1SqF1YkF95Xw4vqa4fZrWjqrWSv345
+ C3yUJr1rZ3yq9a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pR_HUhUUUUU=
+X-Originating-IP: [106.146.79.134]
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbB0g02XmWXzlkoHQABsm
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] pkey01: Adding test for PKEY_DISABLE_EXECUTE
+Subject: [LTP] [PATCH] syscalls/{fanotify17,
+ getxattr05}: simplify code by using save_restore
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,20 +55,138 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Pushed with minor changes as you suggested. Thanks!
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+---
+ .../kernel/syscalls/fanotify/fanotify17.c     | 23 ++++---------------
+ .../kernel/syscalls/getxattr/getxattr05.c     | 20 +++++-----------
+ 2 files changed, 11 insertions(+), 32 deletions(-)
 
-P.s. The new test passed on my POWER9+kernel-6.10 and Skylake-SP+
-kernel-5.14.
-
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify17.c b/testcases/kernel/syscalls/fanotify/fanotify17.c
+index 3ecb31b6e..f432dff36 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify17.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify17.c
+@@ -31,7 +31,6 @@
+ #define MOUNT_PATH	"fs_mnt"
+ #define TEST_FILE	MOUNT_PATH "/testfile"
+ #define SELF_USERNS	"/proc/self/ns/user"
+-#define MAX_USERNS	"/proc/sys/user/max_user_namespaces"
+ #define UID_MAP		"/proc/self/uid_map"
+ 
+ #define GLOBAL_MAX_GROUPS "/proc/sys/fs/fanotify/max_user_groups"
+@@ -47,7 +46,6 @@
+ #define DEFAULT_MAX_GROUPS 129
+ #define DEFAULT_MAX_MARKS  8192
+ 
+-static int orig_max_userns = -1;
+ static int user_ns_supported = 1;
+ static int max_groups = DEFAULT_MAX_GROUPS;
+ static int max_marks = DEFAULT_MAX_MARKS;
+@@ -216,16 +214,8 @@ static void setup(void)
+ 	/* Check for kernel fanotify support */
+ 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, TEST_FILE);
+ 
+-	/*
+-	 * The default value of max_user_namespaces is set to 0 on some distros,
+-	 * We need to change the default value to call unshare().
+-	 */
+-	if (access(SELF_USERNS, F_OK) != 0) {
++	if (access(SELF_USERNS, F_OK) != 0)
+ 		user_ns_supported = 0;
+-	} else if (!access(MAX_USERNS, F_OK)) {
+-		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
+-		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
+-	}
+ 
+ 	/*
+ 	 * In older kernels those limits were fixed in kernel and fanotify is
+@@ -244,21 +234,18 @@ static void setup(void)
+ 	setup_rlimit(max_groups * 2);
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (orig_max_userns != -1)
+-		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns);
+-}
+-
+ static struct tst_test test = {
+ 	.test = test_fanotify,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.mount_device = 1,
+ 	.mntpoint = MOUNT_PATH,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{}
++	},
+ };
+ #else
+ 	TST_TEST_TCONF("system doesn't have required fanotify support");
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
+index d9717a695..3dff8e27f 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr05.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
+@@ -40,11 +40,9 @@
+ 
+ #define TEST_FILE	"testfile"
+ #define SELF_USERNS	"/proc/self/ns/user"
+-#define MAX_USERNS	"/proc/sys/user/max_user_namespaces"
+ #define UID_MAP	"/proc/self/uid_map"
+ 
+ static acl_t acl;
+-static int orig_max_userns = -1;
+ static int user_ns_supported = 1;
+ 
+ static struct tcase {
+@@ -149,23 +147,13 @@ static void setup(void)
+ 		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
+ 	}
+ 
+-	/* The default value of max_user_namespaces is set to 0 on some distros,
+-	 * We need to change the default value to call unshare().
+-	 */
+-	if (access(SELF_USERNS, F_OK) != 0) {
++	if (access(SELF_USERNS, F_OK) != 0)
+ 		user_ns_supported = 0;
+-	} else if (!access(MAX_USERNS, F_OK)) {
+-		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
+-		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
+-	}
+ 
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (orig_max_userns != -1)
+-		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns);
+-
+ 	if (acl)
+ 		acl_free(acl);
+ }
+@@ -181,7 +169,11 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "82c9a927bc5d"},
+ 		{}
+-},
++	},
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{}
++	},
+ };
+ 
+ #else /* HAVE_SYS_XATTR_H && HAVE_LIBACL*/
 -- 
-Regards,
-Li Wang
+2.45.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
