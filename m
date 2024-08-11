@@ -4,90 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB29FC3DA4A
-	for <ltp@archiver.kernel.org>; Sat, 10 Aug 2024 08:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1723280333; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=V9HuHBg3k/QBSzXAaMCSSZEq4opL+XClOKVFUQPjhgE=;
- b=Uc+Qy3oGB4yXnbiY7liFVm2VOPVxnlyizRLnQdKm4LHXp7TUTENJXR5LONY/GWdOrRB9h
- w5SE54tGejvEbqO2n7dNCm9y+mwnqcn4z6asJBvJG6eNdKbOtd+uRWo/X5CJXrKdZK9rvDr
- 73dR6qLNMq8pr8iY3PpMFucj4GocmQs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DDE6C52D7C
+	for <ltp@archiver.kernel.org>; Sun, 11 Aug 2024 12:34:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EAA2A3D1EF6
-	for <ltp@archiver.kernel.org>; Sat, 10 Aug 2024 10:58:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 345FA3D20E7
+	for <ltp@archiver.kernel.org>; Sun, 11 Aug 2024 14:34:09 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 254B33D1CA3
- for <ltp@lists.linux.it>; Sat, 10 Aug 2024 10:58:30 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9CA1B1A01124
- for <ltp@lists.linux.it>; Sat, 10 Aug 2024 10:58:29 +0200 (CEST)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-a7aa4ca9d72so343662066b.0
- for <ltp@lists.linux.it>; Sat, 10 Aug 2024 01:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1723280309; x=1723885109; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=GQa7LkSSMhqruVKM+Z7QNtFKoJJZsNGSEUNDe6Wqyjg=;
- b=EedAc93vzKUc+bhLH/rWvhwWpkxIurY15Nn4fbTancYicWSugtYfhSZLzxSwWOwDM2
- ac4gJEp4FgKSzpGOQhseJVVs19f6emsQW9fROtJYn1cZOL05IneCVjkdUPlFnzWUMLWo
- RYg7OK1R4Op8nnZURy3nJPyPlHGCd4Kb/iVtt5G3baRA/8paz4rOxXexOAdeuSgvdUNq
- 00/jl9594a+/ElYBnse9rySfyiIB8uiezHeW+YBF4UMI6Zoz0pC5sdK3cT+H0H1kjlBD
- DFXRfxr5Z/rVubdxiJHTa99UUMUxAp8lDJndyP/ObAvDqBFgW3TaC6gSfAj63zOcEap3
- CwNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1723280309; x=1723885109;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=GQa7LkSSMhqruVKM+Z7QNtFKoJJZsNGSEUNDe6Wqyjg=;
- b=t2GQKkbE9LTrj0sZkfb6xhXoQXUbV2nq5UYes9b3q9KdiL5SFUmeWnBNiXyFhQDtl+
- OmITBCQqbRYlr0bIf0NFNjat67KqFnvG4LtPwnq8gmffL9lCvbkaphNkyj8c6eHlByvA
- KfpBPfFPZ3IDB/K4tkeBYZLE2Mibf+xv/p8luyubxFWO/89cDkct4lTIOev16YaXJB/b
- GDeUBJonPX7f6PBcQZMdvbf2fUtNQuZwwNFEyduC6qa/FaBl57jizTvYPnmHTbcZ5dcy
- i6WEuWRvTWbaF6K3Fhyd0CHjg+EPgpynisp1e4q8pEQHRyWLWtRGAWFw2GycZR9oIYFN
- lQiw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWG6W08EAbwbvJHO4g3XcIXwCJLZktcUzOrXisZv0tpsHq4Y9Z478mSGufEx6ziYxFuk193xFWU3EJ8l/LNj02Sm+Y=
-X-Gm-Message-State: AOJu0YzkP070lZjEFXZjSDjt6i5ofSiu0L5IvNvtvGYSF3boKnU3Hw9j
- t9QbUeAnjjDZT7AMxH7PkZa1yzmRD64UzhADfFIriCdBJzmUXOqfm892gevyaiU=
-X-Google-Smtp-Source: AGHT+IFS6rF/qy0VWax7HwILq27nVp0qg61bNmGBmeenp7hyaEeDAP4F2f/pXie1p7RKwEJZ2fT8eA==
-X-Received: by 2002:a17:907:7e97:b0:a7a:bbbb:6243 with SMTP id
- a640c23a62f3a-a80aa6548bdmr288946566b.51.1723280308413; 
- Sat, 10 Aug 2024 01:58:28 -0700 (PDT)
-Received: from [192.168.178.49] ([79.140.125.145])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a80bb0e1981sm52078066b.72.2024.08.10.01.58.27
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 10 Aug 2024 01:58:28 -0700 (PDT)
-Message-ID: <883b07d9-f6d0-4d6e-a85e-9028b45dc485@suse.com>
-Date: Sat, 10 Aug 2024 10:58:27 +0200
+ by picard.linux.it (Postfix) with ESMTPS id E07373CE3C4
+ for <ltp@lists.linux.it>; Sun, 11 Aug 2024 14:33:53 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id D3D02600C89
+ for <ltp@lists.linux.it>; Sun, 11 Aug 2024 14:33:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GFxMz
+ wQiAGmgK++/Z67lGpXX2sSBuyKtCBrHnA14o7Y=; b=UMlfB6uQcpv+5W57Wf2hB
+ QY5HyY/VSu94s4PMqdVFCZ6yTUMV7z05NJRqhUvI8dLZ20mh+SnjQ8ZVnk/NkIug
+ 7F84EkBDBG4X7qO2DvhcNpaXRuXXzDbCyUD6lVaPv0GDGy0MT7zjWIdxIkgwH4Qf
+ cFExx4NpcdqtY9RuWXQusI=
+Received: from ubuntu22.localdomain (unknown [171.214.180.39])
+ by gzga-smtp-mta-g3-0 (Coremail) with SMTP id _____wAXHxGor7hmTUDiBQ--.57527S2;
+ Sun, 11 Aug 2024 20:33:45 +0800 (CST)
+From: chenguanxi11234@163.com
+To: ltp@lists.linux.it
+Date: Sun, 11 Aug 2024 20:33:42 +0800
+Message-Id: <c82e787a5e77e6c7bc7cbac6338f4ce33b1079b2.1722929348.git.chen.haonan2@zte.com.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- Petr Vorel <pvorel@suse.cz>
-References: <20240801-landlock-v5-0-663d7383b335@suse.com>
- <20240801-landlock-v5-3-663d7383b335@suse.com>
- <20240808095824.GC327665@pevik> <20240809.Ohqueicih1ou@digikod.net>
-Content-Language: en-US
-In-Reply-To: <20240809.Ohqueicih1ou@digikod.net>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-CM-TRANSID: _____wAXHxGor7hmTUDiBQ--.57527S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFyUJrW3tr18GF4UXw1fWFg_yoW8KFWfpF
+ Z7u34vyr95Jr1fKr1fJF1UZ3WFkrWfJ3W8Aryxuw1jk3sayryY9r10qryYqF1xurZ2gFWr
+ AryfJa43W3yFqr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U5xhXUUUUU=
+X-Originating-IP: [171.214.180.39]
+X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/xtbBZwo4+mV4ImBLdgAAsN
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/6] Disable kernel version check in landlock
- tests
+Subject: [LTP] [PATCH v3] posix/conformance/interfaces/sem_timedwait/2-1:
+ Fix test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,39 +56,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: yang.guang5@zte.com.cn, chen.haonan2@zte.com.cn
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTWVja2FlbCwKCk9uIDgvOS8yNCAxNjozNiwgTWlja2HDq2wgU2FsYcO8biB3cm90ZToKPiBP
-biBUaHUsIEF1ZyAwOCwgMjAyNCBhdCAxMTo1ODoyNEFNICswMjAwLCBQZXRyIFZvcmVsIHdyb3Rl
-Ogo+PiBpcyBpcyByZWFsbHkgaGVscGZ1bCB3aGVuIGxhbmRsb2NrIHN1cHBvcnQgaGFzCj4+PiBi
-ZWVuIGJhY2twb3J0ZWQgaW50byBvbGQga2VybmVscy4KPj4gR3JlYXQsIEknbSBnbGFkIHlvdSBy
-ZW1vdmVkIGl0IGZyb20gYWxsIGxhbmRsb2NrIHRlc3RzLiBJdCByZWFsbHkgZGlkIG5vdCBtYWtl
-Cj4+IHNlbnNlIHRvIGd1YXJkIGNvcnJlY3QgdmVyc2lvbiB3aXRoIDMgZ3VhcmRzIChrZXJuZWwg
-dmVyc2lvbiwga2VybmVsIGNvbmZpZyBhbmQKPj4gQUJJKS4gQ291bGQgeW91IHBsZWFzZSByZW1v
-dmUgYWxzbyBDT05GSUdfU0VDVVJJVFlfTEFORExPQ0s9eSwgYmVjYXVzZSB5b3UKPj4gY2hlY2sg
-RU9QTk9UU1VQUCBpbiB2ZXJpZnlfbGFuZGxvY2tfaXNfZW5hYmxlZCgpLgo+Pgo+PiBBbnl3YXks
-IGZlZWwgZnJlZSB0byBtZXJnZSB0aGVzZSBmaXJzdCAzIHBhdGNoZXMgKGlkZWFsbHkgcmVtb3Zl
-IGFsc28KPj4gQ09ORklHX1NFQ1VSSVRZX0xBTkRMT0NLPXkgYmVmb3JlIG1lcmdlKS4KPiBNeSB1
-bmRlcnN0YW5kaW5nIGlzIHRoYXQgTFRQIG9ubHkgdGVzdHMgc3VwcG9ydGVkIGZlYXR1cmVzIHRv
-IG1ha2Ugc3VyZQo+IHRoZXkgd29yayBhcyBleHBlY3RlZCwgaWYgZW5hYmxlZC4gIElzIGl0IGNv
-cnJlY3Q/ClllcywgbGFuZGxvY2sgaW4gcGFydGljdWxhciBjYW4gYmUgYSBiYWNrcG9ydGVkIGZl
-YXR1cmUsIHNvIHdlIG5lZWQgdG8gCnJlbW92ZSBDT05GSUcgZmxhZ3MgYW5kIGtlcm5lbCB2ZXJz
-aW9uLCByYWlzaW5nIGFuIGVycm9yIGp1c3QgaW4gY2FzZSB3ZSAKaGF2ZSBFTk9TWVMuCj4gSSdt
-IHRoZW4gd29uZGVyaW5nIHdoYXQgaXMgdGhlIHB1cnBvc2Ugb2YgbmVlZHNfa2NvbmZpZ3MuICBJ
-ZiB0aGVyZSBpcwo+IG5vICJuZWVkZWQiIGNvbmZpZywgZG9lcyB0aGF0IG1lYW5zIHRoYXQgTGFu
-ZGxvY2sgdGVzdHMgd2lsbCBhbHdheXMgcnVuCj4gYW5kIGRldGVjdCBhdCBydW4gdGltZSBpZiB0
-ZXN0cyBhcmUgc2tpcHBlZCBvciBub3Q/ICBJZiB5ZXMsIGl0IGxvb2tzCj4gZ29vZCB0byBtZS4K
-Pgo+IEFuZHJlYSdzIGNvbW1pdCB0byByZW1vdmUgbmVlZHNfa2NvbmZpZzoKPiBodHRwczovL2dp
-dGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC9jb21taXQvZTdlYmM2MzdkMGQ5OTI5NTQ5
-MGFkZjU3NjYwYTNiM2ExNzdkNjVkMwo+Cj4gSXMgdGhlcmUgYW4gb25saW5lIGRhc2hib2FyZCB0
-byBzZWUgc29tZSB0ZXN0ZWQga2VybmVscz8KQFBldHIgVm9yZWwKPgo+PiBSZXZpZXdlZC1ieTog
-UGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4+Cj4+IEtpbmQgcmVnYXJkcywKPj4gUGV0cgo+
-Pgo+PiAtLSAKPj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlz
-dGluZm8vbHRwClJlZ2FyZHMsCkFuZHJlYQoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczov
-L2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Chen Haonan <chen.haonan2@zte.com.cn>
+
+Since the parent and child processes are not operating on the 
+same semaphore, this code wasn't doing its job correctly before,
+so we mapped the semaphore to a piece of shared memory and 
+changed some implementation details in the original code to make it work.
+
+Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+---
+ .../interfaces/sem_timedwait/2-1.c            | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+index 655e35108..46e9b696a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+@@ -20,6 +20,7 @@
+ #include <fcntl.h>
+ #include <signal.h>
+ #include <time.h>
++#include <sys/mman.h>
+ #include "posixtest.h"
+ 
+ #define TEST "2-1"
+@@ -28,12 +29,17 @@
+ 
+ int main(void)
+ {
+-	sem_t mysemp;
++	sem_t *mysemp;
+ 	struct timespec ts;
+ 	int pid;
++	mysemp = mmap(NULL, sizeof(*mysemp), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++	if (mysemp == MAP_FAILED) {
++		perror(ERROR_PREFIX "mmap");
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	/* Semaphore started out locked */
+-	if (sem_init(&mysemp, 0, 0) == -1) {
++	if (sem_init(mysemp, 1, 0) == -1) {
+ 		perror(ERROR_PREFIX "sem_init");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -44,19 +50,19 @@ int main(void)
+ 		ts.tv_sec = time(NULL) + 2;
+ 		ts.tv_nsec = 0;
+ 
+-		if (sem_timedwait(&mysemp, &ts) == -1) {
++		if (sem_timedwait(mysemp, &ts) == -1) {
+ 			puts("TEST FAILED");
+ 			return PTS_FAIL;
+ 		} else {
+ 			puts("TEST PASSED");
+-			sem_destroy(&mysemp);
++			sem_destroy(mysemp);
+ 			return PTS_PASS;
+ 		}
+ 	} else if (pid > 0)	// parent to unlock semaphore
+ 	{
+ 		int i;
+ 		sleep(1);
+-		if (sem_post(&mysemp) == -1) {
++		if (sem_post(mysemp) == -1) {
+ 			perror(ERROR_PREFIX "sem_post");
+ 			return PTS_FAIL;
+ 		}
+@@ -65,11 +71,15 @@ int main(void)
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		if (!WEXITSTATUS(i)) {
++		if (WEXITSTATUS(i)) {
+ 			return PTS_FAIL;
+ 		}
+ 		puts("TEST PASSED");
+-		sem_destroy(&mysemp);
++		sem_destroy(mysemp);
++		if (munmap(mysemp, sizeof(*mysemp)) == -1) {
++			perror(ERROR_PREFIX "munmap");
++			return PTS_UNRESOLVED;
++		}
+ 		return PTS_PASS;
+ 	}
+ 	return PTS_UNRESOLVED;
+-- 
+2.25.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
