@@ -4,109 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D727C52D7C
-	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 11:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BE33C52D7C
+	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 11:47:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B8F213D210B
-	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 13:47:05 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id D3BAB3D20F4
+	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 13:47:21 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 596FA3CD80A
+ by picard.linux.it (Postfix) with ESMTPS id D16553CD80A
  for <ltp@lists.linux.it>; Mon, 12 Aug 2024 13:46:32 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 67FF1200339
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8EC582003BA
  for <ltp@lists.linux.it>; Mon, 12 Aug 2024 13:46:31 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 219D022454;
- Mon, 12 Aug 2024 11:46:30 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B91F52026D;
+ Mon, 12 Aug 2024 11:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1723463190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ji+vC1FS9WVqLV+1r+v8tt0dhQ8PyQFZM6PBxlWvkUw=;
- b=npeiT57WwKLs6RFacdKfeHwV1AQxJeaN8BTqQZlx6fI4yXXvV2Qo+T7l3p7lz4/GHiHcjs
- zuYJM55diMetsschj6CPrp9GVH3uSWOpBo5tkdMhFCzMky71GTwqdLeJ8FHQ0IpWo8oC1b
- 1OtVKX5E6D3ZrsurRpBM+2CkRC+SEqs=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oVuka6M27pledoOf7b/hZ6NTzqhyxWCogKboj65jtME=;
+ b=thd/rQtpLGxtjUz/Q/C6r9VuHJXoXzgl0D3k2LbtTPgoRnFa/m8tYyJ94Dl7KzkVcY43lP
+ oxPAMh3A5HB4X1R67gnl+VmZ+vGNsJ9Pfv2WZ8rQ+osDkRAG85yueYNbBUbcAq0ZX/ORJJ
+ 3qJqNWMe5tQeKyta8WGaV45zjEg/QQY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1723463190;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ji+vC1FS9WVqLV+1r+v8tt0dhQ8PyQFZM6PBxlWvkUw=;
- b=JQRFBzSjRWfkcItk1O2YYHzpxL+8kHNx7yqj6uj5bZhXqj3647e0AEk+RyNdQ2yT7hf3tx
- 7rm5DUKpMEgIrfAA==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oVuka6M27pledoOf7b/hZ6NTzqhyxWCogKboj65jtME=;
+ b=FEsfGS8LhVgm3qFBPtiYcqY7GSSex4cOaf4PlBUZe+tXeX31becSOY+a25pn58UCFvAP0R
+ Efn4AlWQPA+7zgCg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1723463190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1723463189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ji+vC1FS9WVqLV+1r+v8tt0dhQ8PyQFZM6PBxlWvkUw=;
- b=npeiT57WwKLs6RFacdKfeHwV1AQxJeaN8BTqQZlx6fI4yXXvV2Qo+T7l3p7lz4/GHiHcjs
- zuYJM55diMetsschj6CPrp9GVH3uSWOpBo5tkdMhFCzMky71GTwqdLeJ8FHQ0IpWo8oC1b
- 1OtVKX5E6D3ZrsurRpBM+2CkRC+SEqs=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oVuka6M27pledoOf7b/hZ6NTzqhyxWCogKboj65jtME=;
+ b=OBgDUHhs7hipnlvmC83STsLCC5ZCgQIr0S9D84lN53d2MVqH2yl/lWtL1hJx5O+FTjS2SY
+ lkkGbPNVjBnpHCGDAtAvujagjY4t97dxF/3djQ1wNiXJ5n734CR7eDSrO9OGeUL2M/wBo5
+ ys1Aog7ctjbOcmcGXjObWojp+wglNT4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1723463190;
+ s=susede2_ed25519; t=1723463189;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ji+vC1FS9WVqLV+1r+v8tt0dhQ8PyQFZM6PBxlWvkUw=;
- b=JQRFBzSjRWfkcItk1O2YYHzpxL+8kHNx7yqj6uj5bZhXqj3647e0AEk+RyNdQ2yT7hf3tx
- 7rm5DUKpMEgIrfAA==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oVuka6M27pledoOf7b/hZ6NTzqhyxWCogKboj65jtME=;
+ b=LRsu2czdw6f3uZxnllX0+ovdG6fihlV89ILclx13c5PCt4vDqvlos/RsGdCJaR2RTDMqv4
+ xpW1ZGrona+7qUCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA1CA13AD8;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99953137BA;
  Mon, 12 Aug 2024 11:46:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aHBPNxX2uWYTWwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +rNKIxX2uWYTWwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Mon, 12 Aug 2024 11:46:29 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 12 Aug 2024 13:46:29 +0200
+Date: Mon, 12 Aug 2024 13:46:27 +0200
+Message-Id: <20240812-process_mrelease-v2-0-e61249986a0a@suse.com>
 MIME-Version: 1.0
-Message-Id: <20240812-process_mrelease-v2-2-e61249986a0a@suse.com>
-References: <20240812-process_mrelease-v2-0-e61249986a0a@suse.com>
-In-Reply-To: <20240812-process_mrelease-v2-0-e61249986a0a@suse.com>
+X-B4-Tracking: v=1; b=H4sIABP2uWYC/32NQQrCMBBFr1JmbSSZxIKuvEcpEuPEDtimZLQoJ
+ Xc39gAu34P//gpCmUng1KyQaWHhNFXAXQNh8NOdFN8qA2p0+oCo5pwCiVzGTA/yQspGbC1enUV
+ qoc7mTJHfW7LrKw8sz5Q/28NifvZPbDFKK2ciYfTOmaM7y0toH9IIfSnlCz5BlSivAAAA
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1723463189; l=5646;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1723463189; l=2433;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=yndh7l7u/5t2gDO/JAxbFDMFFctCk1Lge2Vnu0CXGc8=;
- b=8tXmpnTzlfvXuFkc9GKXku9O/Y/dPrXtOjHWIKA4qgDUNc7uqCoB1PJMwM8qaSVyZkALlWcQP
- A8diTv4BJAMCTEYK/bAYtCkLn24SF8Gdol6tWaUIkq8XEor+G0x2wkT
+ bh=xm483PAKg3p6HevyYwMHMfu6AZr+XI/zgU2FMx1PDNQ=;
+ b=8Y2VhjxUdpGKoEfAknOmQXpH2IR4iUHxyTLH792c7rAlSDuRL7WvEBS/mW9OPR6NY0dGYKbRX
+ Zkboi5VqPu7BoWqqI9BuPCDu+jkufYD5KmptzxVBhVSp029J5j2j0y/
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.10 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.994]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] Add process_mrelease01 test
+Subject: [LTP] [PATCH v2 0/3] Add process_mrelease testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,229 +120,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+This testing suite is meant to add coverage for process_mrelease()
+syscall, introduced in the kernel 5.15.
 
-This test verifies that process_mrelease() syscall is releasing memory
-from a killed process with memory allocation pending.
+The testing suite is providing following tests:
+- process_mrelease01
+- process_mrelease02
+
+Since there's no man pages, please consider the following
+documentation instead:
+
+https://lwn.net/Articles/864184/
+https://lwn.net/Articles/865341/
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                                   |   2 +
- .../kernel/syscalls/process_mrelease/.gitignore    |   1 +
+Changes in v2:
+- process_mrelease01: change the algorithm to ensure we released the
+  memory after process_mrelease() is called
+- process_mrelease02: verify ESRCH error
+- Link to v1: https://lore.kernel.org/r/20240522-process_mrelease-v1-0-41fe2fa44194@suse.com
+
+---
+Andrea Cervesato (3):
+      Add process_mrelease syscalls definition
+      Add process_mrelease01 test
+      Add process_mrelease02 test
+
+ include/lapi/syscalls/aarch64.in                   |   1 +
+ include/lapi/syscalls/arc.in                       |   1 +
+ include/lapi/syscalls/arm.in                       |   1 +
+ include/lapi/syscalls/hppa.in                      |   1 +
+ include/lapi/syscalls/i386.in                      |   1 +
+ include/lapi/syscalls/ia64.in                      |   1 +
+ include/lapi/syscalls/mips_n32.in                  |   1 +
+ include/lapi/syscalls/mips_n64.in                  |   1 +
+ include/lapi/syscalls/mips_o32.in                  |   1 +
+ include/lapi/syscalls/powerpc.in                   |   1 +
+ include/lapi/syscalls/powerpc64.in                 |   1 +
+ include/lapi/syscalls/s390.in                      |   1 +
+ include/lapi/syscalls/s390x.in                     |   1 +
+ include/lapi/syscalls/sh.in                        |   1 +
+ include/lapi/syscalls/sparc.in                     |   1 +
+ include/lapi/syscalls/sparc64.in                   |   1 +
+ include/lapi/syscalls/x86_64.in                    |   1 +
+ runtest/syscalls                                   |   3 +
+ .../kernel/syscalls/process_mrelease/.gitignore    |   2 +
  .../kernel/syscalls/process_mrelease/Makefile      |   7 +
  .../syscalls/process_mrelease/process_mrelease01.c | 168 +++++++++++++++++++++
- 4 files changed, 178 insertions(+)
+ .../syscalls/process_mrelease/process_mrelease02.c |  84 +++++++++++
+ 22 files changed, 281 insertions(+)
+---
+base-commit: e7ebc637d0d99295490adf57660a3b3a177d65d3
+change-id: 20240522-process_mrelease-3f2632b432e6
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 706dd56dc..de90e9ba3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1073,6 +1073,8 @@ preadv203_64 preadv203_64
- 
- profil01 profil01
- 
-+process_mrelease01 process_mrelease01
-+
- process_vm_readv01 process_vm01 -r
- process_vm_readv02 process_vm_readv02
- process_vm_readv03 process_vm_readv03
-diff --git a/testcases/kernel/syscalls/process_mrelease/.gitignore b/testcases/kernel/syscalls/process_mrelease/.gitignore
-new file mode 100644
-index 000000000..673983858
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_mrelease/.gitignore
-@@ -0,0 +1 @@
-+/process_mrelease01
-diff --git a/testcases/kernel/syscalls/process_mrelease/Makefile b/testcases/kernel/syscalls/process_mrelease/Makefile
-new file mode 100644
-index 000000000..8cf1b9024
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_mrelease/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c b/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c
-new file mode 100644
-index 000000000..8a0a2c3b4
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_mrelease/process_mrelease01.c
-@@ -0,0 +1,168 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesaend_addr <andrea.cervesaend_addr@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test verifies that process_mrelease() syscall is releasing memory start_addr
-+ * a killed process with memory allocation pending.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/syscalls.h"
-+
-+#define CHUNK (1 * TST_MB)
-+#define MAX_SIZE_MB (128 * TST_MB)
-+
-+static unsigned long *mem_addr;
-+static volatile int mem_size;
-+
-+static void do_child(int size)
-+{
-+	void *mem;
-+
-+	tst_res(TINFO, "Child: allocate %d bytes", size);
-+
-+	mem = SAFE_MMAP(NULL,
-+		size,
-+		PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANON,
-+		0, 0);
-+
-+	memset(mem, 0, size);
-+
-+	*mem_addr = (unsigned long)mem;
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	tst_res(TINFO, "Child: releasing memory");
-+
-+	SAFE_MUNMAP(mem, size);
-+}
-+
-+static int memory_is_mapped(pid_t pid, unsigned long start, unsigned long end)
-+{
-+	FILE *fmaps;
-+	int mapped = 0;
-+	char buff[1024];
-+	char pid_maps[128] = {0};
-+	unsigned long start_addr, end_addr;
-+
-+	snprintf(pid_maps, sizeof(pid_maps), "/proc/%d/maps", pid);
-+	fmaps = SAFE_FOPEN(pid_maps, "r");
-+
-+	while (!feof(fmaps)) {
-+		memset(buff, 0, sizeof(buff));
-+
-+		if (!fgets(buff, sizeof(buff), fmaps))
-+			break;
-+
-+		if (sscanf(buff, "%lx-%lx", &start_addr, &end_addr) != 2) {
-+			tst_brk(TBROK | TERRNO, "Couldn't parse /proc/%ud/maps line.", pid);
-+			break;
-+		}
-+
-+		if (start == start_addr && end == end_addr) {
-+			mapped = 1;
-+			break;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(fmaps);
-+
-+	return mapped;
-+}
-+
-+static void run(void)
-+{
-+	int ret;
-+	int pidfd;
-+	int status;
-+	pid_t pid;
-+	int restart;
-+
-+	for (mem_size = CHUNK; mem_size < MAX_SIZE_MB; mem_size += CHUNK) {
-+		restart = 0;
-+
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			do_child(mem_size);
-+			exit(0);
-+		}
-+
-+		TST_CHECKPOINT_WAIT(0);
-+
-+		tst_disable_oom_protection(pid);
-+
-+		if (!memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size)) {
-+			tst_res(TFAIL, "Memory is not mapped");
-+			break;
-+		}
-+
-+		pidfd = SAFE_PIDFD_OPEN(pid, 0);
-+
-+		tst_res(TINFO, "Parent: killing child with PID=%d", pid);
-+
-+		SAFE_KILL(pid, SIGKILL);
-+
-+		ret = tst_syscall(__NR_process_mrelease, pidfd, 0);
-+		if (ret == -1) {
-+			if (errno == ESRCH) {
-+				tst_res(TINFO, "Parent: child terminated before "
-+					"process_mrelease(). Increase memory size and "
-+					"restart test");
-+
-+				restart = 1;
-+			} else {
-+				tst_res(TFAIL | TERRNO, "process_mrelease(%d,0) error", pidfd);
-+			}
-+		} else {
-+			int timeout_ms = 1000;
-+
-+			tst_res(TPASS, "process_mrelease(%d,0) passed", pidfd);
-+
-+			while (memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size) &&
-+				timeout_ms--)
-+				usleep(1000);
-+
-+			if (memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size))
-+				tst_res(TFAIL, "Memory is still mapped inside child memory");
-+			else
-+				tst_res(TPASS, "Memory has been released");
-+		}
-+
-+		SAFE_WAITPID(-1, &status, 0);
-+		SAFE_CLOSE(pidfd);
-+
-+		if (!restart)
-+			break;
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	mem_addr = SAFE_MMAP(NULL,
-+		sizeof(unsigned long),
-+		PROT_READ | PROT_WRITE,
-+		MAP_SHARED | MAP_ANON,
-+		0, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (mem_addr)
-+		SAFE_MUNMAP(mem_addr, sizeof(unsigned long));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.min_kver = "5.15",
-+	.needs_checkpoints = 1,
-+};
-
+Best regards,
 -- 
-2.43.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
