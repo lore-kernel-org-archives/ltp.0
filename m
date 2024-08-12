@@ -4,68 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF6CFC3DA7F
-	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 10:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D26E4C3DA7F
+	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 11:34:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 063BB3D20F0
-	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 12:32:15 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id EFEAB3D20F9
+	for <ltp@archiver.kernel.org>; Mon, 12 Aug 2024 13:34:27 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A94423C9F45
- for <ltp@lists.linux.it>; Mon, 12 Aug 2024 12:31:58 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 9E2B43CD80A
+ for <ltp@lists.linux.it>; Mon, 12 Aug 2024 13:34:13 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=kernel.org (client-ip=145.40.73.55; helo=sin.source.kernel.org;
+ envelope-from=sashal@kernel.org; receiver=lists.linux.it)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 12583100094E
- for <ltp@lists.linux.it>; Mon, 12 Aug 2024 12:31:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1723458716;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=w2k3sIHY3FnAeea/XVWREiV4WtXVOVd5x14GuZtUPRU=;
- b=Hk20i2/VL9E8xc5oo5twxpc+9yjh/Bu1fAvIO3Llue9rQiv8LqA09eeAhBrCS3q1g9R1Aj
- di3jjQs7dDHvBTW4sEA28tW7f3b26aeBWN4qZnd1VnRSSI+loazu/55y9WxUCX4TJgRHdA
- avjfYfIQ32eNXtUQ9nURbi59fmEaQOA=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-275-00jZIOZ_MGayKBZXnrKfog-1; Mon,
- 12 Aug 2024 06:31:54 -0400
-X-MC-Unique: 00jZIOZ_MGayKBZXnrKfog-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id DC00E1944EAF
- for <ltp@lists.linux.it>; Mon, 12 Aug 2024 10:31:53 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.225.12])
- by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id E1DAC19560AD
- for <ltp@lists.linux.it>; Mon, 12 Aug 2024 10:31:52 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 12 Aug 2024 12:31:42 +0200
-Message-ID: <9a9b743304c2b6ad1a045f26d33304a3350cdf4c.1723458583.git.jstancek@redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 091F51400257
+ for <ltp@lists.linux.it>; Mon, 12 Aug 2024 13:34:12 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sin.source.kernel.org (Postfix) with ESMTP id 04077CE0D9A;
+ Mon, 12 Aug 2024 11:34:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE775C32782;
+ Mon, 12 Aug 2024 11:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1723462448;
+ bh=YzQWNzHUVtjC21KaSPNPbzz4LWAtZQNSwkGgV6/baAM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=RosAhIHUx1Pks6DTw1MepkHhqrlPL6GP8VQLHR8Jr0exiAr00Md92alPX588lSG/c
+ vKLa9Q1kaqoodWvZSnM354Wdxkj/P0rwPko27sWgExaJJWwbSsNr56ewRGS+hSMCLb
+ D5hSItTm82L/PLyTMnTdqQ4/x0dOIEABfQmnK8vJyXvUyFxy4w2qwEhCF4Th8i2A/t
+ gIJab1CvS0RQ2z2Zi+1//ieU6SLXYeUsJ2Yu8bZo+EgT4XIFFVA+UNx07WVYJfQrga
+ LtJtdpfn4CrHyTA7DXib9+q73GjItKmDyYDhn885qzT4bzDNn9O9hq7DNR8fHtZ9UK
+ t/2elZRb6qaGA==
+Date: Mon, 12 Aug 2024 07:34:06 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: cel@kernel.org
+Message-ID: <ZrnzLoZ8Tj9GhRSO@sashalap>
+References: <20240810200009.9882-1-cel@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240810200009.9882-1-cel@kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/execve04,
- creat07: skip for kernels 6.11 and later
+Subject: Re: [LTP] [PATCH 6.1.y 00/18] Backport "make svc_stat per-net
+ instead of global"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,68 +62,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-nfs@vger.kernel.org, sherry.yang@oracle.com, stable@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>, calum.mackay@oracle.com,
+ kernel-team@fb.com, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The behaviour is allowed since commit:
-  2a010c412853 ("fs: don't block i_writecount during exec")
-that landed in 6.11-rc1.
+On Sat, Aug 10, 2024 at 03:59:51PM -0400, cel@kernel.org wrote:
+>From: Chuck Lever <chuck.lever@oracle.com>
+>
+>Following up on
+>
+>https://lore.kernel.org/linux-nfs/d4b235df-4ee5-4824-9d48-e3b3c1f1f4d1@oracle.com/
+>
+>Here is a backport series targeting origin/linux-6.1.y that closes
+>the information leak described in the above thread.
+>
+>I started with v6.1.y because that is the most recent LTS kernel
+>and thus the closest to upstream. I plan to look at 5.15 and 5.10
+>LTS too if this series is applied to v6.1.y.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/creat/creat07.c   | 10 ++++++++++
- testcases/kernel/syscalls/execve/execve04.c | 10 ++++++++++
- 2 files changed, 20 insertions(+)
+6.6 would be the most recent LTS, and we would need to have this series
+on top of 6.6 first before we can backport it to older trees :)
 
-diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-index 7bd32ab4d328..f157e1a8fbb2 100644
---- a/testcases/kernel/syscalls/creat/creat07.c
-+++ b/testcases/kernel/syscalls/creat/creat07.c
-@@ -47,7 +47,17 @@ static void verify_creat(void)
- 	SAFE_WAITPID(pid, NULL, 0);
- }
- 
-+static void setup(void)
-+{
-+	if ((tst_kvercmp(6, 11, 0)) >= 0) {
-+		tst_brk(TCONF, "Skipping test, write to executed file is "
-+			"allowed since 6.11-rc1.\n"
-+			"2a010c412853 (\"fs: don't block i_writecount during exec\")");
-+	}
-+}
-+
- static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = verify_creat,
- 	.needs_checkpoints = 1,
- 	.forks_child = 1,
-diff --git a/testcases/kernel/syscalls/execve/execve04.c b/testcases/kernel/syscalls/execve/execve04.c
-index 3bac642e5412..7bbfece85906 100644
---- a/testcases/kernel/syscalls/execve/execve04.c
-+++ b/testcases/kernel/syscalls/execve/execve04.c
-@@ -65,7 +65,17 @@ static void do_child(void)
- 	exit(0);
- }
- 
-+static void setup(void)
-+{
-+	if ((tst_kvercmp(6, 11, 0)) >= 0) {
-+		tst_brk(TCONF, "Skipping test, write to executed file is "
-+			"allowed since 6.11-rc1.\n"
-+			"2a010c412853 (\"fs: don't block i_writecount during exec\")");
-+	}
-+}
-+
- static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = verify_execve,
- 	.forks_child = 1,
- 	.child_needs_reinit = 1,
 -- 
-2.43.0
-
+Thanks,
+Sasha
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
