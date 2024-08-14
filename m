@@ -4,184 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24395C52D7B
-	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 13:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1723641264; h=date : to :
- message-id : references : in-reply-to : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=60T3aPCxA9G/i5LgsgKg3dH0YVsMx/EiJI58g1yMPNk=;
- b=eyv3RKduT4lc40zHNUKJw1OkHX5XsiPKPNWTQ7KxbvYHI1kW3p5+B4rMKHMhSdsuS91Uw
- ai56Ck33Xpv233mU2W/8n/ePc/qfHRHyXgYy1BtfJXT73XY8G28UIXqUeIah+k97I7dTuNQ
- Knrs+CqC9VYD5GNUWT3GHz8bFyABwCc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36DCBC3DA4A
+	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 20:55:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 57A353D2134
-	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 15:14:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 74A383D218D
+	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 22:55:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C9B203D1DC5
- for <ltp@lists.linux.it>; Wed, 14 Aug 2024 15:14:01 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=oracle.com (client-ip=205.220.177.32;
- helo=mx0b-00069f02.pphosted.com; envelope-from=chuck.lever@oracle.com;
- receiver=lists.linux.it)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
- [205.220.177.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3429C3D1148
+ for <ltp@lists.linux.it>; Wed, 14 Aug 2024 22:55:31 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 204B06013B9
- for <ltp@lists.linux.it>; Wed, 14 Aug 2024 15:13:59 +0200 (CEST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47EBtZn9003670;
- Wed, 14 Aug 2024 13:13:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
- date:from:to:cc:subject:message-id:references:content-type
- :in-reply-to:mime-version; s=corp-2023-11-20; bh=mdPNvSD9QsIYuTU
- wZ19Xn5QaVb6zLYHr6+5BiTmMTaw=; b=Uf58AdI9SyhdzEuKx5s1RUpi06uBfxe
- ObICcMfbaEGrklw28wftFLQ2/wURCYLC8O5zFa7bK6BvjdrZ0gTSmDG423apSnTf
- pc8DRhKkdFH2aYmkNbxCOjW9kXqPxUDbJNWAglmy2e6TWhA2oqzV+qx+ouWxD5LN
- sb3Pild2W03HEut0v3XH0feWr4246a3ZPyLvTj/BBMCl7c1YnqEBvIpNF48fBWH1
- +KeMu/YgGZXLpzGG0sW1Nib84jrgHxX4uvi5t61orw7sD2aB8J8k2wrn6v7ma+2i
- eDSJ69prDhgw8p4tdS+nwHJ4xyon/ayzDf+T9/FPXs0koT+v15E5DuQ==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com
- (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
- by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40wxmd05yp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 14 Aug 2024 13:13:58 +0000 (GMT)
-Received: from pps.filterd
- (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
- by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 47EBvEkG021084; Wed, 14 Aug 2024 13:13:57 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com
- (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
- by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
- 40wxngdkgu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 14 Aug 2024 13:13:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BCU1OZF3Kp1CjOQh9f+Z6Lh+UNyye0sVs2nm2pCtidoqQ3MghpQosLUOR4TqyNxGgvE26Q90WjFP/kFuC2fcM2A3KSv4zUzJkBQnavPcaDcKUA8gWXwHX0Hdp1rM9UXTl5LC1/UBuIW4lRreGvznRFIW3jroKUUTGgQyS7EB5lNCtUlxGu1nvAQ60smQng5XSLFYfnP9IcKHlKlQn58rZ+DR5ZLFNJw/rDfSjjVRlSQr2sjoTA7EhZRtq4/AWxMNoDe0pZOhXo9Pyfl0ARpKV94g1ZXFMaDQqDN3OdeKDD2byteW7ruRzD7vPr/aTApiDMtClIOr1qhiKY3Mrex4Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mdPNvSD9QsIYuTUwZ19Xn5QaVb6zLYHr6+5BiTmMTaw=;
- b=QYP9kxGtzC34Fa1Cwjl1oGxwJIe5j7PmFsJVU/DSf6DE+Br2TeEgRQkUTLvhEfv2m1Dou45W9k+iAdiGuiMyMZlH7JVxpI9I37xC/qjj8gQEezsh12354SiGLuR8ruupV4jjlZK+HoO+fXR7OxB7I8s+eMUrdxzovyPdRwHaYTnxarrTJYq6QljOp5qWhBgi4tx4OoBznCoJh/PeyRQWgrpQ9utWJJgc2B+w4KulLYfkiSDcPty5s5UzSYqWxdQkQnXmCgNL+oMtvoMNKtU0YKMO7KhPKR5kC3g1XT8WsbzGOl0zyeb9sKExqN9jQtROCx2SitCOQRchjv/yltElbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mdPNvSD9QsIYuTUwZ19Xn5QaVb6zLYHr6+5BiTmMTaw=;
- b=w960JAxjmvLlTCzwWCJTqnDQ4GaECGhYLDmj18T55BQUATZChSBm+JAezGyjKCLxVI2mB2iou/MYcN9qDkJdiI4Je7adJp9zdVmYhN0qq+UKFm7na/6wusOYNFO6jaZvWPYcW/qdf1ho7M3jsKZsYjoJBUmsb9lgj4rZsFe+a5w=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by SJ0PR10MB4798.namprd10.prod.outlook.com (2603:10b6:a03:2df::8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.16; Wed, 14 Aug
- 2024 13:13:41 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::743a:3154:40da:cf90%6]) with mapi id 15.20.7875.016; Wed, 14 Aug 2024
- 13:13:41 +0000
-Date: Wed, 14 Aug 2024 09:13:35 -0400
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Zrytfw1DRse3wWRZ@tissot.1015granger.net>
-References: <20240814085721.518800-1-pvorel@suse.cz>
-Content-Disposition: inline
-In-Reply-To: <20240814085721.518800-1-pvorel@suse.cz>
-X-ClientProxiedBy: LO3P265CA0013.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:bb::18) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 26F73200747
+ for <ltp@lists.linux.it>; Wed, 14 Aug 2024 22:55:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C7E5522491;
+ Wed, 14 Aug 2024 20:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1723668929;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vAjON+M4IeNnOood1XuavEXjY8AwurJgpvp+EZZXZco=;
+ b=yqWwRQINYL2+afUCxk95HWgkkIE/LcDZHZFke7nCFSiyGW7cGrcgw/SGw24WQ4WKpcJnhy
+ 5g1ZXwhZLdb7Ewxi/OmneCaTSA80SQIJHL+aOuwuuXWaI+ft0uIK5gBvAf8nqxXwuo5xzO
+ s7hlO6PIrtP42Hrs5TJVPaNJNhJuWA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1723668929;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vAjON+M4IeNnOood1XuavEXjY8AwurJgpvp+EZZXZco=;
+ b=rIJLONRsh0V6mMbzTbgadksDWdvGbj3aZW2qkkP8TwYELkvOSS8kZ0Vzz+xnXiA/g9L41M
+ R5E5OXPPe0rJIWBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1723668929;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vAjON+M4IeNnOood1XuavEXjY8AwurJgpvp+EZZXZco=;
+ b=yqWwRQINYL2+afUCxk95HWgkkIE/LcDZHZFke7nCFSiyGW7cGrcgw/SGw24WQ4WKpcJnhy
+ 5g1ZXwhZLdb7Ewxi/OmneCaTSA80SQIJHL+aOuwuuXWaI+ft0uIK5gBvAf8nqxXwuo5xzO
+ s7hlO6PIrtP42Hrs5TJVPaNJNhJuWA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1723668929;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vAjON+M4IeNnOood1XuavEXjY8AwurJgpvp+EZZXZco=;
+ b=rIJLONRsh0V6mMbzTbgadksDWdvGbj3aZW2qkkP8TwYELkvOSS8kZ0Vzz+xnXiA/g9L41M
+ R5E5OXPPe0rJIWBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC476139B9;
+ Wed, 14 Aug 2024 20:55:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yRkRNMAZvWa1RwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 14 Aug 2024 20:55:28 +0000
+Date: Wed, 14 Aug 2024 22:55:19 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: NeilBrown <neilb@suse.de>
+Message-ID: <20240814205519.GA550121@pevik>
+References: <> <f74754b59ffc564ef882566beda87b3f354da48c.camel@kernel.org>
+ <172078283934.15471.13377048166707693692@noble.neil.brown.name>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SJ0PR10MB4798:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28a62f78-0d27-4747-34b1-08dcbc62eafe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?YhdAFwBH6MPrvGmyOG5aklPL+L8gbgOQmc8SNGc9q9/pIjNNFY5KlQAoEXpK?=
- =?us-ascii?Q?e8bOxWwPEg+uwBqmOnhx+QWjBotORDCq2HMgUFu5hWhJVF1K0w0uoBR2vW5K?=
- =?us-ascii?Q?uuB1OW9iEPL/BQtRtj5GdwxQeS4spcwOTfT4fBrzc2HnNODtwsfpiTMm47TK?=
- =?us-ascii?Q?5/wDYNvaJiCEc+9/iGL6sLVuMIOrkeDJWXLcF998gibCBLU0oeAlkkk3llKs?=
- =?us-ascii?Q?uVkll6K+NYo/GBHnIphNNjIZcDp70ucOMBS1eNgqnQzQ+i2qcpPhGMUUHLUJ?=
- =?us-ascii?Q?TFT9tcbSLTr5/Xv4cl17ch+5bBbBySun4uCJju16/OILzujqsmduQXr+jF5V?=
- =?us-ascii?Q?irrmfhWvbENSoLziyJDTe/KjP7a07jdQEjkXAHD0fnGJBp7BPbfXN+NDbZyS?=
- =?us-ascii?Q?ix7kleaLsBcgfXsU3cnkSeLGunaXL7NpyNDpUpLeeT8Q8afwcT5V1mwO/aLi?=
- =?us-ascii?Q?OyPBTL/F8rIcsrNKbtHuxB56PuudryMO/tSzNTf8pcWNXtMvCpIqDWXoGa4Y?=
- =?us-ascii?Q?92FQKN5qeHE3SXvG+84ibcNkPmcUkOvzC7ae99MXatFE67hPfpdFj9ltm1ZH?=
- =?us-ascii?Q?BX7POD52hTcrSUVq85WkaWnQcCAulrExu3YYW8k5lAeu2Aon3YcqWX4UmzHH?=
- =?us-ascii?Q?Az8bOb+zQaji6XZOKWrCd2bfRSb/TlY2Vbc0/pgy3QCuKTzkiojnEj6sb/7g?=
- =?us-ascii?Q?IJ/uzahgFRSIo3nT+pqmtOViaemjTRWiMi3LNHo3Ruq9K5u57GgBe8r5k3Nm?=
- =?us-ascii?Q?g6HPv+kcziVNTomid+RQwd7bU3KoHl9MTCqlUufx5hsr7/L1eR3t4nm6VhKo?=
- =?us-ascii?Q?pP4odbcu+8bKsUPW6VN1htCs7NE/QdMbmOF4mhYow72Wc8qTDP6eAfBR49za?=
- =?us-ascii?Q?PkTyNBVuzVIQIH83ZyYd4F8Ntnt38O29yQ7FPocV2MTMfq3o7bs5MoD9xZCD?=
- =?us-ascii?Q?XuUIOxZ0f/ABTeb4VxMfTTIHqM/CRsZNyGJz21R2+3Vx+l3V+hqcQ1HTgynR?=
- =?us-ascii?Q?yGy1Dl87v9QOF0svKoBVRcQm+1Aj3YhXxuAITxq552jLv/SmcH6n96QtdqFc?=
- =?us-ascii?Q?9bH3dNYVS+43mxktw8mA8nDFyk8Dj/Y1xFTs8t5I0nCDCEuk7kbHwjI1Ff27?=
- =?us-ascii?Q?QmpuIu2HqvxTxoMQp6g/JYW2AaNHWkMT89VUrdUMML1IGG8K2lLrZHlGqsyL?=
- =?us-ascii?Q?0DxIALOY2Hh+uZXZ4lLXwA76GeQm5MefecnCEDypsmSzm++6vJzQN6glC0Su?=
- =?us-ascii?Q?dalLatMOXgAoYmFf46R7TJOoRVZHOzQraAi+OnBfHGcoLyczqcl4KJp/vuC4?=
- =?us-ascii?Q?CAGVOuWnVCWhJrImaCVGpZme?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BN0PR10MB5128.namprd10.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(376014)(366016)(1800799024); DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Om1R4MbWm2/nmmUaVLnUy5gf0u6qhkTZDAvJH4iZcmO6mMsRtz6f+9LEZNvI?=
- =?us-ascii?Q?Zosnf8WPubZVluyZqmcMsCNYgbMOn7AwxhQGeqAcn9K68+rN5FPulHweaubk?=
- =?us-ascii?Q?V1rgIYqlpNwh1uEeGU/fBvX3tjJswqyLvtYQOPwXQDo1kDv4GiAFdQP9BWxV?=
- =?us-ascii?Q?/3R3DfRDrE0uyeow/Lzg8WJy4BQKP82zNiOnXS8q+GURYgbnEhuLX4Vhp7mT?=
- =?us-ascii?Q?BA7FWIcLKRw+bunVy/G0LgVZqAIPqvK8/DlNa2M3AkLQ8LKgA+vQ9vUNdZey?=
- =?us-ascii?Q?u4kLv+T0NurOsFwEkt5QgWmkiOAC8sIb0WoEnvbZ6+V6CQc6O9hrGB/Nw7tr?=
- =?us-ascii?Q?UXNqYB0vomboDwLbV5ifRXZtI/PSZk1Wbe89ezP8pLxWXcsh0fV37xZOU6fl?=
- =?us-ascii?Q?cL+whNWKu/Ezp5GlwRVhwWBOVZT7ohZLi+9clsCM0kFoB6SpSrDWYDkIEfXJ?=
- =?us-ascii?Q?dzWTndtil+9WtWAVxd8wPlxAS1OdjBiV0kLaIIGTBkh+CvJ7j6gVOVT4e1XQ?=
- =?us-ascii?Q?Pgy6T0dTNug9jVNmPk/38OTSxPv9oVLildXZk+dx/2ziAIG/81cJSWdNSeiY?=
- =?us-ascii?Q?E32LTtoCPrvL6FdI0mY7s3+ZmdrwOJC2j2dC0+4VU+lniw+Qm7lLQjG12f9Q?=
- =?us-ascii?Q?aGp0DErkfGJ6oPRZUW+4tIsnpwfFYT9uKdJEXSK+ZRaZ1Lmduqi0IT9KYRsv?=
- =?us-ascii?Q?g2FtVTKX6HQgWS3mQtFrSfPI5PvkX9jRegqtWApVkdWQkEEsfbqSERiPhQMc?=
- =?us-ascii?Q?omO94UYF0KJAeILriB0m/iw5XagLlu0/QhdeS0kRn/+AAttpdPppf7cSWA7h?=
- =?us-ascii?Q?h4GBLycdao/sfkL3PNeFmhnGKjWts2coG6DOgAtWslJF2mGz05UyfEPyogGM?=
- =?us-ascii?Q?HyaSPk+9tHEPExy7eIE16hFB1SQikAjTSQJL/boiNXJCF6hz6b01J/IA0MrD?=
- =?us-ascii?Q?Sli0jwSb5DGNcqyh+pgFvTtmguHD50F0xOG7yvrPaOsYCOJFxVuZyaNwZEGu?=
- =?us-ascii?Q?t+ahCFfy4Qd9DsKhJue7T+/69IAc8sLCwiltIM6cqzMPRbvM9rYE+7DTn/dT?=
- =?us-ascii?Q?/rpMFDTyYvx/+9bf5lmqQj2sqaUJwQkvwNbOcWS/dmVafCVD4KrPRFxR5NXp?=
- =?us-ascii?Q?0szn9LPls1rQiN1afLCzXf4kzTOoyIE4N3Gzc++y3tt5QwuSwPIYb9WWcTBa?=
- =?us-ascii?Q?eTFF/eQ5dN5+FjsA92DjQqo/DrkrVEAgYtt80LzVW4fzLKGsUoBFp3BkxjU8?=
- =?us-ascii?Q?DinDXoDwEEEuZwWdxblPobA0qUf5CcG25JoPj6Jgy7IT1jT4NAXu5eVc126T?=
- =?us-ascii?Q?75u1OAUURKbrpTaXGijBKVrzWZCmQAQEHyESVGz1XMVO8bDPCsDqERltpMOJ?=
- =?us-ascii?Q?6U0lQBdM3z6itd1Td9calr3KLytQdriNfIX75DigM5+ZTtGAlHqCjQmxPnIM?=
- =?us-ascii?Q?z//H7bBaVf47biFq79/1VE5PTfuDyCfxSUvS7Oa/t+e83ZPIl9ct/aV3UGJy?=
- =?us-ascii?Q?TYv9R7upOlpxmQp+aUVRNfENqWCRe7aHMO/xCAxMf2Ov8p1DiPehHZbCKQgj?=
- =?us-ascii?Q?1bdm47smhTrZV+wmJ0Csp3pWAAUp2l6SV3KL2b2L?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: E6m3g87Zcm8687RmkDULfx09Z8quNnhMhC/MtuXXjJekPyeq7qBDIB0nceqYQpUn8AUhewxkCoN3mdvNpV6Px8RP0F5pA2NPNVxPY3754BcmanmUHV+OB29F/UNslwfG4lwy/GidrbA7YBE3bW0EY35xJWjA+s+fiFaUL8xUx85z0xh69IiuFobOII/jfLWpTtcKUJjt3QzlTGNxKCFX5q/a9cQbg4XkY3gigPAA7KTT9j/Tcz5VWbLHnGhjcB++6a1eqguhmzA5zjyJ7xFHWd4kht/b+R1AVBT2FdiC9cRQ98D9EsBAH1nOyZ2/QQ32ynIcR8GmP29ATNqwNElPYTOnVxr619vBQOCiwqbkhT+vdGhIH3AYJXU1c9HiYNd9sROn3GTAsVlo7KwOn/KQlTvl5e6wuX9GvEPyG5LJJeHbXLz8dcBtsVWD7yIuIRutR/maQ8aXO2kqDy5/wrey7FphEZHIvd+94UJY9azN+gZm4l8vPIj8ujWHKj6uBvKrZz0kBAjwhvvlnXYaTNwRuBU6QxLs7ovaAlSoJkho5OZFxw6RzY9PtUmrBCbGWXRqHBKFNjvLzeyoQF0JyJonK6XHHDXgPk+7zI6bz/PVgMU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28a62f78-0d27-4747-34b1-08dcbc62eafe
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2024 13:13:41.7124 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QJW4x1MagCbXLOmLYRpMn1IVXxfuZ4wM40PvGmB66h7Sl83SrDqJY2Af/wUBW/HPEoH0JeLysqMzFWBB9Mpflw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4798
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-14_09,2024-08-13_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
- definitions=main-2408140093
-X-Proofpoint-ORIG-GUID: dMUvL7AtztaPbILOGPYybOeyoQs15PDl
-X-Proofpoint-GUID: dMUvL7AtztaPbILOGPYybOeyoQs15PDl
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <172078283934.15471.13377048166707693692@noble.neil.brown.name>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; RCPT_COUNT_TWELVE(0.00)[14];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] nfsstat01: Update client RPC calls for
- kernel 6.9
+Subject: Re: [LTP] [PATCH 1/1] nfsstat01: Update client RPC calls for kernel
+ 6.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -193,89 +113,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Chuck Lever via ltp <ltp@lists.linux.it>
-Reply-To: Chuck Lever <chuck.lever@oracle.com>
-Cc: linux-nfs@vger.kernel.org, NeilBrown <neilb@suse.de>,
- Josef Bacik <josef@toxicpanda.com>, stable@vger.kernel.org, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Greg KH <greg@kroah.com>, Jeff Layton <jlayton@kernel.org>,
+ Sherry Yang <sherry.yang@oracle.com>, linux-stable <stable@vger.kernel.org>,
+ Josef Bacik <josef@toxicpanda.com>, Chuck Lever III <chuck.lever@oracle.com>,
+ Anna Schumaker <anna@kernel.org>, Trond Myklebust <trondmy@hammerspace.com>,
+ Calum Mackay <calum.mackay@oracle.com>,
+ "kernel-team@fb.com" <kernel-team@fb.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Aug 14, 2024 at 10:57:21AM +0200, Petr Vorel wrote:
-> 6.9 moved client RPC calls to namespace in "Make nfs stats visible in
-> network NS" patchet.
-> 
-> https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v1->v2:
-> * Point out whole patchset, not just single commit
-> * Add a comment about the patchset
-> 
-> Hi all,
-> 
-> could you please ack this so that we have fixed mainline?
-> 
-> FYI Some parts has been backported, e.g.:
-> d47151b79e322 ("nfs: expose /proc/net/sunrpc/nfs in net namespaces")
-> to all stable/LTS: 5.4.276, 5.10.217, 5.15.159, 6.1.91, 6.6.31.
-> 
-> But most of that is not yet (but planned to be backported), e.g.
-> 93483ac5fec62 ("nfsd: expose /proc/net/sunrpc/nfsd in net namespaces")
-> see Chuck's patchset for 6.6
-> https://lore.kernel.org/linux-nfs/20240812223604.32592-1-cel@kernel.org/
-> 
-> Once all kernels up to 5.4 fixed we should update the version.
-> 
-> Kind regards,
-> Petr
-> 
->  testcases/network/nfs/nfsstat01/nfsstat01.sh | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> index c2856eff1f..1beecbec43 100755
-> --- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> +++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> @@ -15,7 +15,14 @@ get_calls()
->  	local calls opt
->  
->  	[ "$name" = "rpc" ] && opt="r" || opt="n"
-> -	! tst_net_use_netns && [ "$nfs_f" != "nfs" ] && type="rhost"
-> +
-> +	if tst_net_use_netns; then
-> +		# "Make nfs stats visible in network NS" patchet
-> +		# https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
-> +		tst_kvcmp -ge "6.9" && [ "$nfs_f" = "nfs" ] && type="rhost"
+> On Fri, 12 Jul 2024, Jeff Layton wrote:
+> > On Fri, 2024-07-12 at 16:12 +1000, NeilBrown wrote:
 
-Hello Petr-
-
-My concern with this fix is it targets v6.9 specifically, yet we
-know these fixes will appear in LTS/stable kernels as well.
-
-Neil Brown suggested an alternative approach that might not depend
-on knowing the specific kernel version:
-
-https://lore.kernel.org/linux-nfs/172078283934.15471.13377048166707693692@noble.neil.brown.name/
-
-HTH
+> > > My point is that if we are going to change the kernel to accommodate LTP
+> > > at all, we should accommodate LTP as it is today.  If we are going to
+> > > change LTP to accommodate the kernel, then it should accommodate the
+> > > kernel as it is today.
 
 
-> +	else
-> +		[ "$nfs_f" != "nfs" ] && type="rhost"
-> +	fi
->  
->  	if [ "$type" = "lhost" ]; then
->  		calls="$(grep $name /proc/net/rpc/$nfs_f | cut -d' ' -f$field)"
-> -- 
-> 2.45.2
-> 
-> 
+> > The problem is that there is no way for userland tell the difference
+> > between the older and newer behavior. That was what I was suggesting we
+> > add.
 
--- 
-Chuck Lever
+> To make sure I wasn't talking through my hat, I had a look at the ltp
+> code.
+
+> The test in question simply tests that the count of RPC calls increases.
+
+> It can get the count of RPC calls in one of 2 ways :
+>  1/ "lhost" - look directly in /proc/net/rpc/{nfs,nfsd}
+>  2/ "rhost" - ssh to the server and look in that file.
+
+FYI "rhost" in LTP can be either using namespaces (Single Host Configuration [1]),
+which is run by default, or SSH based (Two Host Configuration [2]). IMHO most of
+the testers (including myself run tests simply via network namespaces).
+
+NOTE: I suppose CONFIG_NAMESPACES=y is a must for 'ip netns' to be working, thus
+tests would hopefully failed early on kernel having that disabled.
+
+> The current test to "fix" this for kernels -ge "6.9" is to force the use
+> of "rhost".
+
+> I'm guessing that always using "rhost" for the nfsd stats would always
+> work.
+
+FYI this old commit [3] allowed these tests to be working in network namespaces.
+It reads for network namespaces both /proc/net/rpc/{nfs,nfsd} from non-namespace
+("lhost").  This is the subject of the change in 6.9, which now fails.
+And for SSH based we obviously look on "rhost" already.
+
+> But if not, the code could get both the local and remote nfsd stats, and
+> check that at least one of them increases (and neither decrease).
+
+This sounds reasonable, thanks for a hint. I'll just look for client RPC calls
+(/proc/net/rpc/nfs) in both non-namespace and namespace. The only think is that
+we effectively give up checking where it should be (if it for whatever reason in
+the future changes again, we miss that). I'm not sure if this would be treated
+the same as the current situation (Josef Bacik had obvious reasons for this to
+be working).
+
+@Josef @NFS maintainers: WDYT?
+
+Kind regards,
+Petr
+
+> So ltp doesn't need to know which kernel is being used - it can be
+> written to work safely on either.
+
+> NeilBrown
+
+[1] https://github.com/linux-test-project/ltp/tree/master/testcases/network#single-host-configuration
+[2] https://github.com/linux-test-project/ltp/tree/master/testcases/network#two-host-configuration
+[3] https://github.com/linux-test-project/ltp/commit/40958772f11d90e4b5052e7e772a3837d285cf89
+
+> > To be clear, I hold this opinion loosely. If the consensus is that we
+> > need to revert things then so be it. I just don't see the value of
+> > doing that in this particular situation.
+> > -- 
+> > Jeff Layton <jlayton@kernel.org>
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
