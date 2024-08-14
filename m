@@ -4,84 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF9EEC3DA4A
-	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 06:45:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51599C52D7F
+	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 07:46:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D3D63D2131
-	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 08:45:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id AB9093D212E
+	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 09:46:24 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 846FF3D210F
- for <ltp@lists.linux.it>; Wed, 14 Aug 2024 08:45:32 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 139333CF05C
+ for <ltp@lists.linux.it>; Wed, 14 Aug 2024 09:46:08 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D03D21400BDA
- for <ltp@lists.linux.it>; Wed, 14 Aug 2024 08:45:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1723617930;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 74C431A0014C
+ for <ltp@lists.linux.it>; Wed, 14 Aug 2024 09:46:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0662B1F7E1;
+ Wed, 14 Aug 2024 07:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1723621565;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lNuhH7XRzr231L/zb2L5tWd5joiezOmHdRf6uARyWSg=;
- b=f44w07NrRa7hDXLSWs4bJCMZRwy/1me1o0opl85+H/Hu7VARa5TgAg1eY1nL3hz9vWw7EE
- IfDDzDe7KagpfguFzi6Ej39qe6Xg5DSn7DigyBhdUa5GN2uWQx5FehbZN/6Lqcx5OjTs6d
- xo/qZVwwy0wvv3r+3C5HxyjMOXAwpDo=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-e6GUX-UpM9aJKgS_EP21NQ-1; Wed, 14 Aug 2024 02:45:28 -0400
-X-MC-Unique: e6GUX-UpM9aJKgS_EP21NQ-1
-Received: by mail-oi1-f198.google.com with SMTP id
- 5614622812f47-3db12b297edso7295996b6e.0
- for <ltp@lists.linux.it>; Tue, 13 Aug 2024 23:45:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1723617928; x=1724222728;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=lNuhH7XRzr231L/zb2L5tWd5joiezOmHdRf6uARyWSg=;
- b=lH6/OdNF+G98RGiDzNoXg8+9BCASon/PHi3e4dLUwikgPmH75TWSAsQSp2he28Hp+d
- IpAwFdtzCMIVu1mE+Gylqdv45Xv+31siW2Yj/kjOVSVBXf4ib/sLld2+Xho/Sm45nzbn
- yx7j0M3FEygIcPInYEx/mLjmPJcbof71ddYDHYxO6vY6F3eVa4xGx5Jy0RWWU9e3s1h1
- oEv3ai2PoFSJXGYb+owm4jtklnKo8fi552oDBrgDcWuGGtp7jZKLvvnL4oNci5MUu6kb
- iadspVISaM1KKJVQY/FeqEcHUpxCWHiDqA7sWlOurPb115yr5FfV5PUrlO/yG0ILGK53
- puDg==
-X-Gm-Message-State: AOJu0YzsVK9R80t6vMp5dF+D1qEU7BzF6iSAXuZV4GQfLVzM2vHqwFo5
- CSn3OBULvbpBJ7Wrfdl7qDTTNM5nPgVtlSdEaiOpzKfTu0gq8+hAUvqcw00XNy1yJq6Wv9o8+9U
- kp7KiNFU1aooNm2RWSrbVOjFNLOqWI+FOE1zVcXzOARTjx5cy/tZ+iRo85N3JrwAeKTEzZYQEwC
- ZBmadKiLheG8kyAIxnh4eQG5A=
-X-Received: by 2002:a05:6871:520d:b0:261:7b0:9d66 with SMTP id
- 586e51a60fabf-26fe5c8313fmr1845007fac.50.1723617927898; 
- Tue, 13 Aug 2024 23:45:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9NGjDo5fOoksRqVct7y7UKNHRZjbBcqvVPtqmPwoVpJfmB+iVh4431S0FdoTwqLHyZ5vVNWkQX5mKCIgMhkk=
-X-Received: by 2002:a05:6871:520d:b0:261:7b0:9d66 with SMTP id
- 586e51a60fabf-26fe5c8313fmr1844999fac.50.1723617927496; Tue, 13 Aug 2024
- 23:45:27 -0700 (PDT)
+ bh=xaVy4wFx7dCh6VdJK0U8mZ4nIvitG+veJTGq8x//eX4=;
+ b=WfTNVC8/uVDWTVk6JVyskOKqeZA9dfLCprIky1s7hApwybS7ZbSjbknR7LoWiqnoEbIH0k
+ m5vsKSCi4YaJ06epVVKcVejTeYvRfra208BGtxHURecKo+Lfksw3PRuzhExfaxcLotx+Zl
+ zBpLOEHdNURj3VrrO2tLH5Mg+Q98Jjc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1723621565;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xaVy4wFx7dCh6VdJK0U8mZ4nIvitG+veJTGq8x//eX4=;
+ b=hQsnQmc8ODY+A9pc4Mu+B8GaXYp48qvNHJaUEZ934B1AI89uZaoDLgolCSZN4ffGAf/HBJ
+ UtZ+3N2wHzNaQjBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="WfTNVC8/";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hQsnQmc8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1723621565;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xaVy4wFx7dCh6VdJK0U8mZ4nIvitG+veJTGq8x//eX4=;
+ b=WfTNVC8/uVDWTVk6JVyskOKqeZA9dfLCprIky1s7hApwybS7ZbSjbknR7LoWiqnoEbIH0k
+ m5vsKSCi4YaJ06epVVKcVejTeYvRfra208BGtxHURecKo+Lfksw3PRuzhExfaxcLotx+Zl
+ zBpLOEHdNURj3VrrO2tLH5Mg+Q98Jjc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1723621565;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xaVy4wFx7dCh6VdJK0U8mZ4nIvitG+veJTGq8x//eX4=;
+ b=hQsnQmc8ODY+A9pc4Mu+B8GaXYp48qvNHJaUEZ934B1AI89uZaoDLgolCSZN4ffGAf/HBJ
+ UtZ+3N2wHzNaQjBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8D52139B9;
+ Wed, 14 Aug 2024 07:46:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tTTAK7xgvGZKMwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 14 Aug 2024 07:46:04 +0000
+Date: Wed, 14 Aug 2024 09:45:59 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: cel@kernel.org
+Message-ID: <20240814074559.GA209695@pevik>
+References: <20240812223604.32592-1-cel@kernel.org>
 MIME-Version: 1.0
-References: <9a9b743304c2b6ad1a045f26d33304a3350cdf4c.1723458583.git.jstancek@redhat.com>
- <CAEemH2fMVJ6KCZoFOp=aj28JFB62aE0Bfpixm1E=XGZbact-eQ@mail.gmail.com>
-In-Reply-To: <CAEemH2fMVJ6KCZoFOp=aj28JFB62aE0Bfpixm1E=XGZbact-eQ@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 14 Aug 2024 08:45:09 +0200
-Message-ID: <CAASaF6yXAi67YRfME2=ds84ma=O6m56ha8CC6FPR3CTXWWugtQ@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240812223604.32592-1-cel@kernel.org>
+X-Rspamd-Queue-Id: 0662B1F7E1
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_SEVEN(0.00)[9]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/execve04,
- creat07: skip for kernels 6.11 and later
+Subject: Re: [LTP] [PATCH 6.6.y 00/12] Backport "make svc_stat per-net
+ instead of global"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,18 +123,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-nfs@vger.kernel.org, sherry.yang@oracle.com, stable@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>, calum.mackay@oracle.com,
+ kernel-team@fb.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBBdWcgMTQsIDIwMjQgYXQgODo0MeKAr0FNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPiB3cm90ZToKPgo+Cj4KPiBPbiBNb24sIEF1ZyAxMiwgMjAyNCBhdCA2OjMy4oCvUE0gSmFu
-IFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+IHdyb3RlOgo+Pgo+PiBUaGUgYmVoYXZpb3Vy
-IGlzIGFsbG93ZWQgc2luY2UgY29tbWl0Ogo+PiAgIDJhMDEwYzQxMjg1MyAoImZzOiBkb24ndCBi
-bG9jayBpX3dyaXRlY291bnQgZHVyaW5nIGV4ZWMiKQo+PiB0aGF0IGxhbmRlZCBpbiA2LjExLXJj
-MS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+
-Cj4KPgo+IFJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KClB1c2hlZC4K
-CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8v
-bHRwCg==
+Hi Chuck,
+
+> Following up on:
+
+> https://lore.kernel.org/linux-nfs/d4b235df-4ee5-4824-9d48-e3b3c1f1f4d1@oracle.com/
+
+> Here is a backport series targeting origin/linux-6.6.y that closes
+> the information leak described in the above thread. It passes basic
+> NFSD regression testing.
+
+
+Thank you for handling this! The link above mentions that it was already
+backported to 5.4 and indeed I see at least d47151b79e322 ("nfs: expose
+/proc/net/sunrpc/nfs in net namespaces") is backported in 5.4, 5.10, 5.15, 6.1.
+And you're now preparing 6.6. Thus we can expect the behavior changed from
+5.4 kernels.
+
+I wonder if we consider this as a fix, thus expect any kernel newer than 5.4
+should backport all these 12 patches.
+
+Or, whether we should relax and just check if version is higher than the one
+which got it in stable/LTS (e.g. >= 5.4.276 || >= 5.10.217 ...). The question is
+also if enterprise distros will take this patchset.
+
+BTW We have in LTP functionality which points as a hint to kernel fixes. But
+it's usually a single commit. I might need to list all.
+
+Kind regards,
+Petr
+
+> Review comments welcome.   
+
+> Chuck Lever (2):
+>   NFSD: Rewrite synopsis of nfsd_percpu_counters_init()
+>   NFSD: Fix frame size warning in svc_export_parse()
+
+> Josef Bacik (10):
+>   sunrpc: don't change ->sv_stats if it doesn't exist
+>   nfsd: stop setting ->pg_stats for unused stats
+>   sunrpc: pass in the sv_stats struct through svc_create_pooled
+>   sunrpc: remove ->pg_stats from svc_program
+>   sunrpc: use the struct net as the svc proc private
+>   nfsd: rename NFSD_NET_* to NFSD_STATS_*
+>   nfsd: expose /proc/net/sunrpc/nfsd in net namespaces
+>   nfsd: make all of the nfsd stats per-network namespace
+>   nfsd: remove nfsd_stats, make th_cnt a global counter
+>   nfsd: make svc_stat per-network namespace instead of global
+
+>  fs/lockd/svc.c             |  3 --
+>  fs/nfs/callback.c          |  3 --
+>  fs/nfsd/cache.h            |  2 -
+>  fs/nfsd/export.c           | 32 ++++++++++----
+>  fs/nfsd/export.h           |  4 +-
+>  fs/nfsd/netns.h            | 25 +++++++++--
+>  fs/nfsd/nfs4proc.c         |  6 +--
+>  fs/nfsd/nfs4state.c        |  3 +-
+>  fs/nfsd/nfscache.c         | 40 ++++-------------
+>  fs/nfsd/nfsctl.c           | 16 +++----
+>  fs/nfsd/nfsd.h             |  1 +
+>  fs/nfsd/nfsfh.c            |  3 +-
+>  fs/nfsd/nfssvc.c           | 14 +++---
+>  fs/nfsd/stats.c            | 54 ++++++++++-------------
+>  fs/nfsd/stats.h            | 88 ++++++++++++++------------------------
+>  fs/nfsd/vfs.c              |  6 ++-
+>  include/linux/sunrpc/svc.h |  5 ++-
+>  net/sunrpc/stats.c         |  2 +-
+>  net/sunrpc/svc.c           | 39 +++++++++++------
+>  19 files changed, 163 insertions(+), 183 deletions(-)
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
