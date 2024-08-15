@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FBABC3DA7F
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:43:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56680C3DA7F
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:44:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 257063D2227
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:43:50 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3A66E3D21FE
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:44:06 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E4DEB3D21B7
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:48 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
+ by picard.linux.it (Postfix) with ESMTPS id F18AD3D21C4
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:50 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linuxfoundation.org (client-ip=139.178.84.217;
+ helo=dfw.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 09B3620090E
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:47 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2E2991000965
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:49 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id 414CDCE19A6;
- Thu, 15 Aug 2024 08:40:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00D3AC32786;
- Thu, 15 Aug 2024 08:40:43 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTP id A94CB61AB3;
+ Thu, 15 Aug 2024 08:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E02C32786;
+ Thu, 15 Aug 2024 08:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1723711244;
- bh=D1aohcP3eUqMWoo1V5qUXQfKpImTIrbKTZYmgEPexgw=;
+ s=korg; t=1723711248;
+ bh=p54KPTEc1MHk5mkB8HHjZJuweZ2f3tSp/tLp+YXfwDE=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=Tw63zWgpTpGkaPh2HG1y1w2bK6wH/rNSco5CQ/uB2txVG1C66BBwbU1uIBZshMV0R
- KX/91RTDf7xQ+bMrLHVmuMriuB+9TwJTkapp/+wbaCbsY+oKDDd3fOV875rqDvbFyh
- ptPoKD7bdMiAUQOi2wHJrLHL8gHFxo7tyvcqGEqk=
+ b=Bv/bxaRTqNy4XLQMCiYYk0LvQekibWOMAQxEykkn3jGJu6YjkbDtCOkCkCjfz2deu
+ 1Y5/rjOD9sQiemg5AESxftHt1qBGgLzVF0c+7AXobPiuWcvFf9Hls6j6Y2sHgtVSkr
+ 6M4lK9QTT0sK+/EoYP9sujLSqQsZ37CBV4HiJFo0=
 To: calum.mackay@oracle.com, cel@kernel.org, chuck.lever@oracle.com,
- gregkh@linuxfoundation.org, jlayton@kernel.org, kernel-team@fb.com,
- ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
+ gregkh@linuxfoundation.org, jlayton@kernel.org, josef@toxicpanda.com,
+ kernel-team@fb.com, ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
 From: <gregkh@linuxfoundation.org>
-Date: Thu, 15 Aug 2024 10:39:59 +0200
-In-Reply-To: <20240810200009.9882-6-cel@kernel.org>
-Message-ID: <2024081559-anthill-water-f050@gregkh>
+Date: Thu, 15 Aug 2024 10:40:00 +0200
+In-Reply-To: <20240810200009.9882-11-cel@kernel.org>
+Message-ID: <2024081500-never-buddhism-bcbf@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Patch "NFSD: Replace nfsd_prune_bucket()" has been added to
- the 6.1-stable tree
+Subject: [LTP] Patch "nfsd: stop setting ->pg_stats for unused stats" has
+ been added to the 6.1-stable tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,206 +72,108 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 This is a note to let you know that I've just added the patch titled
 
-    NFSD: Replace nfsd_prune_bucket()
+    nfsd: stop setting ->pg_stats for unused stats
 
 to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     nfsd-replace-nfsd_prune_bucket.patch
+     nfsd-stop-setting-pg_stats-for-unused-stats.patch
 and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
-From stable+bounces-66326-greg=kroah.com@vger.kernel.org Sat Aug 10 22:00:52 2024
+From stable+bounces-66331-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:12 2024
 From: cel@kernel.org
-Date: Sat, 10 Aug 2024 15:59:56 -0400
-Subject: NFSD: Replace nfsd_prune_bucket()
+Date: Sat, 10 Aug 2024 16:00:01 -0400
+Subject: nfsd: stop setting ->pg_stats for unused stats
 To: <stable@vger.kernel.org>
-Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>
-Message-ID: <20240810200009.9882-6-cel@kernel.org>
+Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
+Message-ID: <20240810200009.9882-11-cel@kernel.org>
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit a9507f6af1450ed26a4a36d979af518f5bb21e5d ]
+[ Upstream commit a2214ed588fb3c5b9824a21cff870482510372bb ]
 
-Enable nfsd_prune_bucket() to drop the bucket lock while calling
-kfree(). Use the same pattern that Jeff recently introduced in the
-NFSD filecache.
+A lot of places are setting a blank svc_stats in ->pg_stats and never
+utilizing these stats.  Remove all of these extra structs as we're not
+reporting these stats anywhere.
 
-A few percpu operations are moved outside the lock since they
-temporarily disable local IRQs which is expensive and does not
-need to be done while the lock is held.
-
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Stable-dep-of: c135e1269f34 ("NFSD: Refactor the duplicate reply cache shrinker")
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfscache.c |   78 ++++++++++++++++++++++++++++++++++++++++++-----------
- fs/nfsd/trace.h    |   22 ++++++++++++++
- 2 files changed, 85 insertions(+), 15 deletions(-)
+ fs/lockd/svc.c    |    3 ---
+ fs/nfs/callback.c |    3 ---
+ fs/nfsd/nfssvc.c  |    5 -----
+ 3 files changed, 11 deletions(-)
 
---- a/fs/nfsd/nfscache.c
-+++ b/fs/nfsd/nfscache.c
-@@ -117,6 +117,21 @@ static void nfsd_cacherep_free(struct sv
- 	kmem_cache_free(drc_slab, rp);
- }
+--- a/fs/lockd/svc.c
++++ b/fs/lockd/svc.c
+@@ -759,8 +759,6 @@ static const struct svc_version *nlmsvc_
+ #endif
+ };
  
-+static unsigned long
-+nfsd_cacherep_dispose(struct list_head *dispose)
-+{
-+	struct svc_cacherep *rp;
-+	unsigned long freed = 0;
-+
-+	while (!list_empty(dispose)) {
-+		rp = list_first_entry(dispose, struct svc_cacherep, c_lru);
-+		list_del(&rp->c_lru);
-+		nfsd_cacherep_free(rp);
-+		freed++;
-+	}
-+	return freed;
-+}
-+
- static void
- nfsd_cacherep_unlink_locked(struct nfsd_net *nn, struct nfsd_drc_bucket *b,
- 			    struct svc_cacherep *rp)
-@@ -260,6 +275,41 @@ nfsd_cache_bucket_find(__be32 xid, struc
- 	return &nn->drc_hashtbl[hash];
- }
- 
-+/*
-+ * Remove and return no more than @max expired entries in bucket @b.
-+ * If @max is zero, do not limit the number of removed entries.
-+ */
-+static void
-+nfsd_prune_bucket_locked(struct nfsd_net *nn, struct nfsd_drc_bucket *b,
-+			 unsigned int max, struct list_head *dispose)
-+{
-+	unsigned long expiry = jiffies - RC_EXPIRE;
-+	struct svc_cacherep *rp, *tmp;
-+	unsigned int freed = 0;
-+
-+	lockdep_assert_held(&b->cache_lock);
-+
-+	/* The bucket LRU is ordered oldest-first. */
-+	list_for_each_entry_safe(rp, tmp, &b->lru_head, c_lru) {
-+		/*
-+		 * Don't free entries attached to calls that are still
-+		 * in-progress, but do keep scanning the list.
-+		 */
-+		if (rp->c_state == RC_INPROG)
-+			continue;
-+
-+		if (atomic_read(&nn->num_drc_entries) <= nn->max_drc_entries &&
-+		    time_before(expiry, rp->c_timestamp))
-+			break;
-+
-+		nfsd_cacherep_unlink_locked(nn, b, rp);
-+		list_add(&rp->c_lru, dispose);
-+
-+		if (max && ++freed > max)
-+			break;
-+	}
-+}
-+
- static long prune_bucket(struct nfsd_drc_bucket *b, struct nfsd_net *nn,
- 			 unsigned int max)
- {
-@@ -283,11 +333,6 @@ static long prune_bucket(struct nfsd_drc
- 	return freed;
- }
- 
--static long nfsd_prune_bucket(struct nfsd_drc_bucket *b, struct nfsd_net *nn)
--{
--	return prune_bucket(b, nn, 3);
--}
+-static struct svc_stat		nlmsvc_stats;
 -
- /*
-  * Walk the LRU list and prune off entries that are older than RC_EXPIRE.
-  * Also prune the oldest ones when the total exceeds the max number of entries.
-@@ -466,6 +511,8 @@ int nfsd_cache_lookup(struct svc_rqst *r
- 	__wsum			csum;
- 	struct nfsd_drc_bucket	*b;
- 	int type = rqstp->rq_cachetype;
-+	unsigned long freed;
-+	LIST_HEAD(dispose);
- 	int rtn = RC_DOIT;
+ #define NLM_NRVERS	ARRAY_SIZE(nlmsvc_version)
+ static struct svc_program	nlmsvc_program = {
+ 	.pg_prog		= NLM_PROGRAM,		/* program number */
+@@ -768,7 +766,6 @@ static struct svc_program	nlmsvc_program
+ 	.pg_vers		= nlmsvc_version,	/* version table */
+ 	.pg_name		= "lockd",		/* service name */
+ 	.pg_class		= "nfsd",		/* share authentication with nfsd */
+-	.pg_stats		= &nlmsvc_stats,	/* stats table */
+ 	.pg_authenticate	= &lockd_authenticate,	/* export authentication */
+ 	.pg_init_request	= svc_generic_init_request,
+ 	.pg_rpcbind_set		= svc_generic_rpcbind_set,
+--- a/fs/nfs/callback.c
++++ b/fs/nfs/callback.c
+@@ -407,15 +407,12 @@ static const struct svc_version *nfs4_ca
+ 	[4] = &nfs4_callback_version4,
+ };
  
- 	rqstp->rq_cacherep = NULL;
-@@ -490,20 +537,18 @@ int nfsd_cache_lookup(struct svc_rqst *r
- 	found = nfsd_cache_insert(b, rp, nn);
- 	if (found != rp)
- 		goto found_entry;
+-static struct svc_stat nfs4_callback_stats;
 -
--	nfsd_stats_rc_misses_inc();
- 	rqstp->rq_cacherep = rp;
- 	rp->c_state = RC_INPROG;
-+	nfsd_prune_bucket_locked(nn, b, 3, &dispose);
-+	spin_unlock(&b->cache_lock);
+ static struct svc_program nfs4_callback_program = {
+ 	.pg_prog = NFS4_CALLBACK,			/* RPC service number */
+ 	.pg_nvers = ARRAY_SIZE(nfs4_callback_version),	/* Number of entries */
+ 	.pg_vers = nfs4_callback_version,		/* version table */
+ 	.pg_name = "NFSv4 callback",			/* service name */
+ 	.pg_class = "nfs",				/* authentication class */
+-	.pg_stats = &nfs4_callback_stats,
+ 	.pg_authenticate = nfs_callback_authenticate,
+ 	.pg_init_request = svc_generic_init_request,
+ 	.pg_rpcbind_set	= svc_generic_rpcbind_set,
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -89,7 +89,6 @@ unsigned long	nfsd_drc_max_mem;
+ unsigned long	nfsd_drc_mem_used;
  
-+	freed = nfsd_cacherep_dispose(&dispose);
-+	trace_nfsd_drc_gc(nn, freed);
-+
-+	nfsd_stats_rc_misses_inc();
- 	atomic_inc(&nn->num_drc_entries);
- 	nfsd_stats_drc_mem_usage_add(nn, sizeof(*rp));
--
--	nfsd_prune_bucket(b, nn);
--
--out_unlock:
--	spin_unlock(&b->cache_lock);
--out:
--	return rtn;
-+	goto out;
+ #if defined(CONFIG_NFSD_V2_ACL) || defined(CONFIG_NFSD_V3_ACL)
+-static struct svc_stat	nfsd_acl_svcstats;
+ static const struct svc_version *nfsd_acl_version[] = {
+ # if defined(CONFIG_NFSD_V2_ACL)
+ 	[2] = &nfsd_acl_version2,
+@@ -108,15 +107,11 @@ static struct svc_program	nfsd_acl_progr
+ 	.pg_vers		= nfsd_acl_version,
+ 	.pg_name		= "nfsacl",
+ 	.pg_class		= "nfsd",
+-	.pg_stats		= &nfsd_acl_svcstats,
+ 	.pg_authenticate	= &svc_set_client,
+ 	.pg_init_request	= nfsd_acl_init_request,
+ 	.pg_rpcbind_set		= nfsd_acl_rpcbind_set,
+ };
  
- found_entry:
- 	/* We found a matching entry which is either in progress or done. */
-@@ -541,7 +586,10 @@ found_entry:
+-static struct svc_stat	nfsd_acl_svcstats = {
+-	.program	= &nfsd_acl_program,
+-};
+ #endif /* defined(CONFIG_NFSD_V2_ACL) || defined(CONFIG_NFSD_V3_ACL) */
  
- out_trace:
- 	trace_nfsd_drc_found(nn, rqstp, rtn);
--	goto out_unlock;
-+out_unlock:
-+	spin_unlock(&b->cache_lock);
-+out:
-+	return rtn;
- }
- 
- /**
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -1261,6 +1261,28 @@ TRACE_EVENT(nfsd_drc_mismatch,
- 		__entry->ingress)
- );
- 
-+TRACE_EVENT_CONDITION(nfsd_drc_gc,
-+	TP_PROTO(
-+		const struct nfsd_net *nn,
-+		unsigned long freed
-+	),
-+	TP_ARGS(nn, freed),
-+	TP_CONDITION(freed > 0),
-+	TP_STRUCT__entry(
-+		__field(unsigned long long, boot_time)
-+		__field(unsigned long, freed)
-+		__field(int, total)
-+	),
-+	TP_fast_assign(
-+		__entry->boot_time = nn->boot_time;
-+		__entry->freed = freed;
-+		__entry->total = atomic_read(&nn->num_drc_entries);
-+	),
-+	TP_printk("boot_time=%16llx total=%d freed=%lu",
-+		__entry->boot_time, __entry->total, __entry->freed
-+	)
-+);
-+
- TRACE_EVENT(nfsd_cb_args,
- 	TP_PROTO(
- 		const struct nfs4_client *clp,
+ static const struct svc_version *nfsd_version[] = {
 
 
 Patches currently in stable-queue which might be from kroah.com@vger.kernel.org are
