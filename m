@@ -4,103 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD3F9C3DA7F
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 07:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6935BC3DA7F
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:27:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D716F3D21A3
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 09:29:58 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id ACCF13D21B5
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:27:42 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 912E63D218A
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 09:29:44 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 071503D219A
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:27:28 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:40e1:4800::1;
+ helo=sin.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
+ receiver=lists.linux.it)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 066B91400B94
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 09:29:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C16461FD0A;
- Thu, 15 Aug 2024 07:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723706981;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Yr484reoDlIc0bgEYY1TtDqaLuAuIZrGdgZOwvVFg74=;
- b=wxDW2Ph/ekGYcy0oTkmMSuvHMLW9gEQbudL1MAlXLi/nbKLXoxjOxKfk9sXiZcXJoPnqfH
- UlGs7d5OkRRTOftxDd1+l783CyLw0s1QL6p1Geqi9bhphhQdGaEL4fZBC8aK4rmTM9apI3
- FUxK4Pxua/TM93Ga9xWOjqslP0iPN90=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723706981;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Yr484reoDlIc0bgEYY1TtDqaLuAuIZrGdgZOwvVFg74=;
- b=g2FEJoDREsZfxefCParXhwND1UUEo5/XnsUpKjBi73wVVoAsXDI0SjHUbyNQLH/rtlXDHR
- q32Xyee2fnwKzgDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1723706981;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Yr484reoDlIc0bgEYY1TtDqaLuAuIZrGdgZOwvVFg74=;
- b=wxDW2Ph/ekGYcy0oTkmMSuvHMLW9gEQbudL1MAlXLi/nbKLXoxjOxKfk9sXiZcXJoPnqfH
- UlGs7d5OkRRTOftxDd1+l783CyLw0s1QL6p1Geqi9bhphhQdGaEL4fZBC8aK4rmTM9apI3
- FUxK4Pxua/TM93Ga9xWOjqslP0iPN90=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1723706981;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Yr484reoDlIc0bgEYY1TtDqaLuAuIZrGdgZOwvVFg74=;
- b=g2FEJoDREsZfxefCParXhwND1UUEo5/XnsUpKjBi73wVVoAsXDI0SjHUbyNQLH/rtlXDHR
- q32Xyee2fnwKzgDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 64D341342D;
- Thu, 15 Aug 2024 07:29:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NTiwF2WuvWa0bAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 15 Aug 2024 07:29:41 +0000
-Date: Thu, 15 Aug 2024 09:29:35 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20240815072935.GA565878@pevik>
-References: <99d43982e2469b1423701b6772677173b5a53429.1723703723.git.jstancek@redhat.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 81B94600624
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:27:26 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sin.source.kernel.org (Postfix) with ESMTP id 6AEDECE1957;
+ Thu, 15 Aug 2024 08:27:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC684C4AF0E;
+ Thu, 15 Aug 2024 08:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1723710442;
+ bh=v8P56oHNTYvbAAxCX1bbMP4akoI/55elIExQZz8jGoY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=x0v9ZRzjzZ5mhfptkgtbMNTmD6JdDVWHeRNGmGANLYsAz7YzjXNX+VtFx06hz9t0K
+ eS621uasixkYSjt/489e+4GYPLPeBwwAKIVoT/mmVADiSIzIY5lzVhEXcaSAD1KwQW
+ mhHYMpPMaBuyuuR5m5sawgMbLpX2KxIiwWakBHE0=
+Date: Thu, 15 Aug 2024 10:27:19 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: cel@kernel.org
+Message-ID: <2024081509-surgical-surgical-fb94@gregkh>
+References: <20240810200009.9882-1-cel@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <99d43982e2469b1423701b6772677173b5a53429.1723703723.git.jstancek@redhat.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <20240810200009.9882-1-cel@kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: make tst_detach_device_by_fd() also close
- dev_fd
+Subject: Re: [LTP] [PATCH 6.1.y 00/18] Backport "make svc_stat per-net
+ instead of global"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,31 +61,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: liwan@redhat.com, gulam.mohamed@oracle.com, ltp@lists.linux.it
+Cc: linux-nfs@vger.kernel.org, sherry.yang@oracle.com, stable@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>, calum.mackay@oracle.com,
+ kernel-team@fb.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+On Sat, Aug 10, 2024 at 03:59:51PM -0400, cel@kernel.org wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Following up on
+> 
+> https://lore.kernel.org/linux-nfs/d4b235df-4ee5-4824-9d48-e3b3c1f1f4d1@oracle.com/
+> 
+> Here is a backport series targeting origin/linux-6.1.y that closes
+> the information leak described in the above thread.
+> 
+> I started with v6.1.y because that is the most recent LTS kernel
+> and thus the closest to upstream. I plan to look at 5.15 and 5.10
+> LTS too if this series is applied to v6.1.y.
+> 
+> Review comments welcome.
 
-thanks a lot for fixing this!
+Now queued up, thanks.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Closes: https://github.com/linux-test-project/ltp/issues/1175
-
-> Since commit 18048c1af783 ("loop: Fix a race between loop detach and loop open")
-> detach operation is deferred to the last close of the device.
-
-> Make tst_detach_device_by_fd() also close dev_fd, and leave it up to
-> caller to re-open it for further use.
-
-6.11.0-rc3-2.g00af0c0-default
-
-Kind regards,
-Petr
+greg k-h
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
