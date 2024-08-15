@@ -4,53 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0EDFC52D7D
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10CBAC52D7D
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:45:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CA963D227E
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:45:16 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5C02A3D225A
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:45:32 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 394EF3D21AB
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:07 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linuxfoundation.org (client-ip=139.178.84.217;
+ by picard.linux.it (Postfix) with ESMTPS id 24A463D21B3
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:10 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:4641:c500::1;
  helo=dfw.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6FC922005DE
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:06 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5BAFB1A0036A
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:08 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id D120561A39;
- Thu, 15 Aug 2024 08:41:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26A87C32786;
- Thu, 15 Aug 2024 08:41:03 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTP id C153861AB3;
+ Thu, 15 Aug 2024 08:41:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179C8C32786;
+ Thu, 15 Aug 2024 08:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1723711264;
- bh=bu9St7wcsbpBb9kIddq+c7b5bl4txtTSIHj5UyUuQac=;
+ s=korg; t=1723711267;
+ bh=hZ59AhSE/xOkyVDXrN4wF9xcCISZr/VekmR9CoPx33g=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=iceoKgLuN59NBxiTFCOtjoPnBXH+Xfm5pjVmY14d6s+q4uwXy8Wn3bK91HrViE7Fc
- rYgz4zjDNP3RZdum7LjHtjH0UE7xdY4llBNAdYj047VYn/KeMN2mRtbSpwPNXHbjPy
- uuE2gRVSO2SSaXxO+rAoylua1zSHsqMbaLgDnNnw=
+ b=O47+drkg7JLXUe7z/LgRhdZXtZ3JxY0uP8l+G/MuxLYDCg6rpzEgVSAB7EwGP4SsY
+ HZStyVIpAiWpHDqjQvn3DaiN/xmPLSGC6ZeIjksEKvaQ+/Do+dStafNMt2IHMshaiP
+ 1TXdXE7WpP7sLjqF/vXvPgqB3MPn6VXjo0lb20YA=
 To: calum.mackay@oracle.com, cel@kernel.org, chuck.lever@oracle.com,
  gregkh@linuxfoundation.org, jlayton@kernel.org, josef@toxicpanda.com,
  kernel-team@fb.com, ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
 From: <gregkh@linuxfoundation.org>
 Date: Thu, 15 Aug 2024 10:40:01 +0200
-In-Reply-To: <20240810200009.9882-14-cel@kernel.org>
-Message-ID: <2024081501-disallow-overheat-405e@gregkh>
+In-Reply-To: <20240810200009.9882-12-cel@kernel.org>
+Message-ID: <2024081501-volatile-suffix-fdb0@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Patch "sunrpc: use the struct net as the svc proc private"
- has been added to the 6.1-stable tree
+Subject: [LTP] Patch "sunrpc: pass in the sv_stats struct through
+ svc_create_pooled" has been added to the 6.1-stable tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,55 +73,126 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 This is a note to let you know that I've just added the patch titled
 
-    sunrpc: use the struct net as the svc proc private
+    sunrpc: pass in the sv_stats struct through svc_create_pooled
 
 to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     sunrpc-use-the-struct-net-as-the-svc-proc-private.patch
+     sunrpc-pass-in-the-sv_stats-struct-through-svc_create_pooled.patch
 and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
-From stable+bounces-66334-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:23 2024
+From stable+bounces-66332-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:17 2024
 From: cel@kernel.org
-Date: Sat, 10 Aug 2024 16:00:04 -0400
-Subject: sunrpc: use the struct net as the svc proc private
+Date: Sat, 10 Aug 2024 16:00:02 -0400
+Subject: sunrpc: pass in the sv_stats struct through svc_create_pooled
 To: <stable@vger.kernel.org>
 Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
-Message-ID: <20240810200009.9882-14-cel@kernel.org>
+Message-ID: <20240810200009.9882-12-cel@kernel.org>
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 418b9687dece5bd763c09b5c27a801a7e3387be9 ]
+[ Upstream commit f094323867668d50124886ad884b665de7319537 ]
 
-nfsd is the only thing using this helper, and it doesn't use the private
-currently.  When we switch to per-network namespace stats we will need
-the struct net * in order to get to the nfsd_net.  Use the net as the
-proc private so we can utilize this when we make the switch over.
+Since only one service actually reports the rpc stats there's not much
+of a reason to have a pointer to it in the svc_program struct.  Adjust
+the svc_create_pooled function to take the sv_stats as an argument and
+pass the struct through there as desired instead of getting it from the
+svc_program->pg_stats.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
+[ cel: adjusted to apply to v6.1.y ]
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sunrpc/stats.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfsd/nfssvc.c           |    3 ++-
+ include/linux/sunrpc/svc.h |    4 +++-
+ net/sunrpc/svc.c           |   12 +++++++-----
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
---- a/net/sunrpc/stats.c
-+++ b/net/sunrpc/stats.c
-@@ -309,7 +309,7 @@ EXPORT_SYMBOL_GPL(rpc_proc_unregister);
- struct proc_dir_entry *
- svc_proc_register(struct net *net, struct svc_stat *statp, const struct proc_ops *proc_ops)
- {
--	return do_register(net, statp->program->pg_name, statp, proc_ops);
-+	return do_register(net, statp->program->pg_name, net, proc_ops);
- }
- EXPORT_SYMBOL_GPL(svc_proc_register);
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -657,7 +657,8 @@ int nfsd_create_serv(struct net *net)
+ 	if (nfsd_max_blksize == 0)
+ 		nfsd_max_blksize = nfsd_get_default_max_blksize();
+ 	nfsd_reset_versions(nn);
+-	serv = svc_create_pooled(&nfsd_program, nfsd_max_blksize, nfsd);
++	serv = svc_create_pooled(&nfsd_program, &nfsd_svcstats,
++				 nfsd_max_blksize, nfsd);
+ 	if (serv == NULL)
+ 		return -ENOMEM;
  
+--- a/include/linux/sunrpc/svc.h
++++ b/include/linux/sunrpc/svc.h
+@@ -493,7 +493,9 @@ void		   svc_rqst_replace_page(struct sv
+ 					 struct page *page);
+ void		   svc_rqst_free(struct svc_rqst *);
+ void		   svc_exit_thread(struct svc_rqst *);
+-struct svc_serv *  svc_create_pooled(struct svc_program *, unsigned int,
++struct svc_serv *  svc_create_pooled(struct svc_program *prog,
++				     struct svc_stat *stats,
++				     unsigned int bufsize,
+ 				     int (*threadfn)(void *data));
+ int		   svc_set_num_threads(struct svc_serv *, struct svc_pool *, int);
+ int		   svc_pool_stats_open(struct svc_serv *serv, struct file *file);
+--- a/net/sunrpc/svc.c
++++ b/net/sunrpc/svc.c
+@@ -453,8 +453,8 @@ __svc_init_bc(struct svc_serv *serv)
+  * Create an RPC service
+  */
+ static struct svc_serv *
+-__svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
+-	     int (*threadfn)(void *data))
++__svc_create(struct svc_program *prog, struct svc_stat *stats,
++	     unsigned int bufsize, int npools, int (*threadfn)(void *data))
+ {
+ 	struct svc_serv	*serv;
+ 	unsigned int vers;
+@@ -466,7 +466,7 @@ __svc_create(struct svc_program *prog, u
+ 	serv->sv_name      = prog->pg_name;
+ 	serv->sv_program   = prog;
+ 	kref_init(&serv->sv_refcnt);
+-	serv->sv_stats     = prog->pg_stats;
++	serv->sv_stats     = stats;
+ 	if (bufsize > RPCSVC_MAXPAYLOAD)
+ 		bufsize = RPCSVC_MAXPAYLOAD;
+ 	serv->sv_max_payload = bufsize? bufsize : 4096;
+@@ -528,26 +528,28 @@ __svc_create(struct svc_program *prog, u
+ struct svc_serv *svc_create(struct svc_program *prog, unsigned int bufsize,
+ 			    int (*threadfn)(void *data))
+ {
+-	return __svc_create(prog, bufsize, 1, threadfn);
++	return __svc_create(prog, NULL, bufsize, 1, threadfn);
+ }
+ EXPORT_SYMBOL_GPL(svc_create);
+ 
+ /**
+  * svc_create_pooled - Create an RPC service with pooled threads
+  * @prog: the RPC program the new service will handle
++ * @stats: the stats struct if desired
+  * @bufsize: maximum message size for @prog
+  * @threadfn: a function to service RPC requests for @prog
+  *
+  * Returns an instantiated struct svc_serv object or NULL.
+  */
+ struct svc_serv *svc_create_pooled(struct svc_program *prog,
++				   struct svc_stat *stats,
+ 				   unsigned int bufsize,
+ 				   int (*threadfn)(void *data))
+ {
+ 	struct svc_serv *serv;
+ 	unsigned int npools = svc_pool_map_get();
+ 
+-	serv = __svc_create(prog, bufsize, npools, threadfn);
++	serv = __svc_create(prog, stats, bufsize, npools, threadfn);
+ 	if (!serv)
+ 		goto out_err;
+ 	return serv;
 
 
 Patches currently in stable-queue which might be from kroah.com@vger.kernel.org are
