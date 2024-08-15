@@ -4,55 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E848CC3DA7F
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:45:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0EDFC52D7D
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:45:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D1CC33D2265
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:44:59 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3CA963D227E
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:45:16 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 919303D21B2
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:05 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 394EF3D21AB
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:07 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:40e1:4800::1;
- helo=sin.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
+ smtp.mailfrom=linuxfoundation.org (client-ip=139.178.84.217;
+ helo=dfw.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3FAD420038E
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:03 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6FC922005DE
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:06 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id 54794CE19A6;
- Thu, 15 Aug 2024 08:41:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 032F0C32786;
- Thu, 15 Aug 2024 08:41:00 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTP id D120561A39;
+ Thu, 15 Aug 2024 08:41:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26A87C32786;
+ Thu, 15 Aug 2024 08:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1723711261;
- bh=WZebGvPgKHzE/Moe9ri+YHNorq+FVqvnlgozDjN/7JU=;
+ s=korg; t=1723711264;
+ bh=bu9St7wcsbpBb9kIddq+c7b5bl4txtTSIHj5UyUuQac=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=QkZuq7u/wORMJuDZmZ2u2SSk4WjGqHkUn3i5/wqhJCE0MLlLeaByRXDJfV6lYWzUL
- T42ricin83tZ/OTwz1WcyPHaX9pfPTJ8H4ncBPJFQEcBkZpsiaAwheJaTNUodIyNjI
- uXGrdXnFdPbPZgUrHDOMmiF71SnajK2cU9ZTN2is=
+ b=iceoKgLuN59NBxiTFCOtjoPnBXH+Xfm5pjVmY14d6s+q4uwXy8Wn3bK91HrViE7Fc
+ rYgz4zjDNP3RZdum7LjHtjH0UE7xdY4llBNAdYj047VYn/KeMN2mRtbSpwPNXHbjPy
+ uuE2gRVSO2SSaXxO+rAoylua1zSHsqMbaLgDnNnw=
 To: calum.mackay@oracle.com, cel@kernel.org, chuck.lever@oracle.com,
  gregkh@linuxfoundation.org, jlayton@kernel.org, josef@toxicpanda.com,
  kernel-team@fb.com, ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
 From: <gregkh@linuxfoundation.org>
 Date: Thu, 15 Aug 2024 10:40:01 +0200
-In-Reply-To: <20240810200009.9882-13-cel@kernel.org>
-Message-ID: <2024081501-shakily-absolve-c397@gregkh>
+In-Reply-To: <20240810200009.9882-14-cel@kernel.org>
+Message-ID: <2024081501-disallow-overheat-405e@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Patch "sunrpc: remove ->pg_stats from svc_program" has been
- added to the 6.1-stable tree
+Subject: [LTP] Patch "sunrpc: use the struct net as the svc proc private"
+ has been added to the 6.1-stable tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,63 +71,55 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 This is a note to let you know that I've just added the patch titled
 
-    sunrpc: remove ->pg_stats from svc_program
+    sunrpc: use the struct net as the svc proc private
 
 to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     sunrpc-remove-pg_stats-from-svc_program.patch
+     sunrpc-use-the-struct-net-as-the-svc-proc-private.patch
 and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
-From stable+bounces-66333-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:19 2024
+From stable+bounces-66334-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:23 2024
 From: cel@kernel.org
-Date: Sat, 10 Aug 2024 16:00:03 -0400
-Subject: sunrpc: remove ->pg_stats from svc_program
+Date: Sat, 10 Aug 2024 16:00:04 -0400
+Subject: sunrpc: use the struct net as the svc proc private
 To: <stable@vger.kernel.org>
 Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
-Message-ID: <20240810200009.9882-13-cel@kernel.org>
+Message-ID: <20240810200009.9882-14-cel@kernel.org>
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 3f6ef182f144dcc9a4d942f97b6a8ed969f13c95 ]
+[ Upstream commit 418b9687dece5bd763c09b5c27a801a7e3387be9 ]
 
-Now that this isn't used anywhere, remove it.
+nfsd is the only thing using this helper, and it doesn't use the private
+currently.  When we switch to per-network namespace stats we will need
+the struct net * in order to get to the nfsd_net.  Use the net as the
+proc private so we can utilize this when we make the switch over.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
-[ cel: adjusted to apply to v6.1.y ]
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfssvc.c           |    1 -
- include/linux/sunrpc/svc.h |    1 -
- 2 files changed, 2 deletions(-)
+ net/sunrpc/stats.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -136,7 +136,6 @@ struct svc_program		nfsd_program = {
- 	.pg_vers		= nfsd_version,		/* version table */
- 	.pg_name		= "nfsd",		/* program name */
- 	.pg_class		= "nfsd",		/* authentication class */
--	.pg_stats		= &nfsd_svcstats,	/* version table */
- 	.pg_authenticate	= &svc_set_client,	/* export authentication */
- 	.pg_init_request	= nfsd_init_request,
- 	.pg_rpcbind_set		= nfsd_rpcbind_set,
---- a/include/linux/sunrpc/svc.h
-+++ b/include/linux/sunrpc/svc.h
-@@ -422,7 +422,6 @@ struct svc_program {
- 	const struct svc_version **pg_vers;	/* version array */
- 	char *			pg_name;	/* service name */
- 	char *			pg_class;	/* class name: services sharing authentication */
--	struct svc_stat *	pg_stats;	/* rpc statistics */
- 	int			(*pg_authenticate)(struct svc_rqst *);
- 	__be32			(*pg_init_request)(struct svc_rqst *,
- 						   const struct svc_program *,
+--- a/net/sunrpc/stats.c
++++ b/net/sunrpc/stats.c
+@@ -309,7 +309,7 @@ EXPORT_SYMBOL_GPL(rpc_proc_unregister);
+ struct proc_dir_entry *
+ svc_proc_register(struct net *net, struct svc_stat *statp, const struct proc_ops *proc_ops)
+ {
+-	return do_register(net, statp->program->pg_name, statp, proc_ops);
++	return do_register(net, statp->program->pg_name, net, proc_ops);
+ }
+ EXPORT_SYMBOL_GPL(svc_proc_register);
+ 
 
 
 Patches currently in stable-queue which might be from kroah.com@vger.kernel.org are
