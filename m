@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64A0EC3DA7F
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A063C52D7D
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:42:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4927E3D21C3
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:42:04 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 377B33D21D1
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:42:21 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7C063D21B1
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:28 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:4641:c500::1;
+ by picard.linux.it (Postfix) with ESMTPS id EC40B3D21BB
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:31 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linuxfoundation.org (client-ip=139.178.84.217;
  helo=dfw.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0436010008F5
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:27 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A4B3760081C
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:40:30 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id 4245361BEA;
- Thu, 15 Aug 2024 08:40:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 750F8C4AF09;
- Thu, 15 Aug 2024 08:40:25 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTP id 1D39E61A3E;
+ Thu, 15 Aug 2024 08:40:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D8CC32786;
+ Thu, 15 Aug 2024 08:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1723711225;
- bh=ao4Oxsw6vyOqt8yYqvllWQH/fYL0HowbhlhKbSkBzYM=;
+ s=korg; t=1723711228;
+ bh=bjsPa5LWmVQ3d6tc3rpmk69k3qYw8zzill5jXOwLCzg=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=meWr5mUzLg4peJHTluTLDvRj8nFqeAnYq2ybjDq0XJ20zjrwsT/GsgA+6CDdjhMx6
- FCLPshvng7agb5k0ujP8ktcHX0XXEwGDUZilL7YAEQ+6cecfezBYTppc/19tUHFS1x
- MwiTfD041o/iIln9i7nf8xXUxuuOOibceYryg+RY=
+ b=eSqO4wjU6FRJ+GUtxOaZBU2G0nHOK+BFXt5CNt6UmzJl5rkvtubeRNcUTb120GXZF
+ oMfA3/xBQ+pV1mIqfuhRpncIpKhwKWB0kyg+gMsAgmVf7w7pE4Fqtpv7m556uFVkG9
+ IHrdlw1Gltytu126NsGQRFoc2ACyHDfNe4o+QK5Q=
 To: calum.mackay@oracle.com, cel@kernel.org, chuck.lever@oracle.com,
  gregkh@linuxfoundation.org, jlayton@kernel.org, kernel-team@fb.com,
  ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
 From: <gregkh@linuxfoundation.org>
 Date: Thu, 15 Aug 2024 10:39:58 +0200
-In-Reply-To: <20240810200009.9882-4-cel@kernel.org>
-Message-ID: <2024081558-gills-cornea-f2f1@gregkh>
+In-Reply-To: <20240810200009.9882-7-cel@kernel.org>
+Message-ID: <2024081558-habitable-python-5e96@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Patch "NFSD: Refactor nfsd_reply_cache_free_locked()" has
+Subject: [LTP] Patch "NFSD: Refactor the duplicate reply cache shrinker" has
  been added to the 6.1-stable tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -73,102 +72,153 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 This is a note to let you know that I've just added the patch titled
 
-    NFSD: Refactor nfsd_reply_cache_free_locked()
+    NFSD: Refactor the duplicate reply cache shrinker
 
 to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     nfsd-refactor-nfsd_reply_cache_free_locked.patch
+     nfsd-refactor-the-duplicate-reply-cache-shrinker.patch
 and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
-From stable+bounces-66324-greg=kroah.com@vger.kernel.org Sat Aug 10 22:00:43 2024
+From stable+bounces-66327-greg=kroah.com@vger.kernel.org Sat Aug 10 22:00:59 2024
 From: cel@kernel.org
-Date: Sat, 10 Aug 2024 15:59:54 -0400
-Subject: NFSD: Refactor nfsd_reply_cache_free_locked()
+Date: Sat, 10 Aug 2024 15:59:57 -0400
+Subject: NFSD: Refactor the duplicate reply cache shrinker
 To: <stable@vger.kernel.org>
 Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>
-Message-ID: <20240810200009.9882-4-cel@kernel.org>
+Message-ID: <20240810200009.9882-7-cel@kernel.org>
 
 From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 35308e7f0fc3942edc87d9c6dc78c4a096428957 ]
+[ Upstream commit c135e1269f34dfdea4bd94c11060c83a3c0b3c12 ]
 
-To reduce contention on the bucket locks, we must avoid calling
-kfree() while each bucket lock is held.
-
-Start by refactoring nfsd_reply_cache_free_locked() into a helper
-that removes an entry from the bucket (and must therefore run under
-the lock) and a second helper that frees the entry (which does not
-need to hold the lock).
-
-For readability, rename the helpers nfsd_cacherep_<verb>.
+Avoid holding the bucket lock while freeing cache entries. This
+change also caps the number of entries that are freed when the
+shrinker calls to reduce the shrinker's impact on the cache's
+effectiveness.
 
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Stable-dep-of: a9507f6af145 ("NFSD: Replace nfsd_prune_bucket()")
+[ cel: adjusted to apply to v6.1.y -- this one might not be necessary ]
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfscache.c |   27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ fs/nfsd/nfscache.c |   83 ++++++++++++++++++++++++-----------------------------
+ 1 file changed, 39 insertions(+), 44 deletions(-)
 
 --- a/fs/nfsd/nfscache.c
 +++ b/fs/nfsd/nfscache.c
-@@ -110,21 +110,33 @@ nfsd_reply_cache_alloc(struct svc_rqst *
- 	return rp;
- }
- 
-+static void nfsd_cacherep_free(struct svc_cacherep *rp)
-+{
-+	if (rp->c_type == RC_REPLBUFF)
-+		kfree(rp->c_replvec.iov_base);
-+	kmem_cache_free(drc_slab, rp);
-+}
-+
- static void
--nfsd_reply_cache_free_locked(struct nfsd_drc_bucket *b, struct svc_cacherep *rp,
--				struct nfsd_net *nn)
-+nfsd_cacherep_unlink_locked(struct nfsd_net *nn, struct nfsd_drc_bucket *b,
-+			    struct svc_cacherep *rp)
- {
--	if (rp->c_type == RC_REPLBUFF && rp->c_replvec.iov_base) {
-+	if (rp->c_type == RC_REPLBUFF && rp->c_replvec.iov_base)
- 		nfsd_stats_drc_mem_usage_sub(nn, rp->c_replvec.iov_len);
--		kfree(rp->c_replvec.iov_base);
--	}
- 	if (rp->c_state != RC_UNUSED) {
- 		rb_erase(&rp->c_node, &b->rb_head);
- 		list_del(&rp->c_lru);
- 		atomic_dec(&nn->num_drc_entries);
- 		nfsd_stats_drc_mem_usage_sub(nn, sizeof(*rp));
+@@ -310,67 +310,62 @@ nfsd_prune_bucket_locked(struct nfsd_net
  	}
--	kmem_cache_free(drc_slab, rp);
-+}
-+
-+static void
-+nfsd_reply_cache_free_locked(struct nfsd_drc_bucket *b, struct svc_cacherep *rp,
-+				struct nfsd_net *nn)
-+{
-+	nfsd_cacherep_unlink_locked(nn, b, rp);
-+	nfsd_cacherep_free(rp);
  }
  
- static void
-@@ -132,8 +144,9 @@ nfsd_reply_cache_free(struct nfsd_drc_bu
- 			struct nfsd_net *nn)
+-static long prune_bucket(struct nfsd_drc_bucket *b, struct nfsd_net *nn,
+-			 unsigned int max)
++/**
++ * nfsd_reply_cache_count - count_objects method for the DRC shrinker
++ * @shrink: our registered shrinker context
++ * @sc: garbage collection parameters
++ *
++ * Returns the total number of entries in the duplicate reply cache. To
++ * keep things simple and quick, this is not the number of expired entries
++ * in the cache (ie, the number that would be removed by a call to
++ * nfsd_reply_cache_scan).
++ */
++static unsigned long
++nfsd_reply_cache_count(struct shrinker *shrink, struct shrink_control *sc)
  {
- 	spin_lock(&b->cache_lock);
--	nfsd_reply_cache_free_locked(b, rp, nn);
-+	nfsd_cacherep_unlink_locked(nn, b, rp);
- 	spin_unlock(&b->cache_lock);
-+	nfsd_cacherep_free(rp);
+-	struct svc_cacherep *rp, *tmp;
+-	long freed = 0;
++	struct nfsd_net *nn = container_of(shrink,
++				struct nfsd_net, nfsd_reply_cache_shrinker);
+ 
+-	list_for_each_entry_safe(rp, tmp, &b->lru_head, c_lru) {
+-		/*
+-		 * Don't free entries attached to calls that are still
+-		 * in-progress, but do keep scanning the list.
+-		 */
+-		if (rp->c_state == RC_INPROG)
+-			continue;
+-		if (atomic_read(&nn->num_drc_entries) <= nn->max_drc_entries &&
+-		    time_before(jiffies, rp->c_timestamp + RC_EXPIRE))
+-			break;
+-		nfsd_reply_cache_free_locked(b, rp, nn);
+-		if (max && freed++ > max)
+-			break;
+-	}
+-	return freed;
++	return atomic_read(&nn->num_drc_entries);
  }
  
- int nfsd_drc_slab_create(void)
+-/*
+- * Walk the LRU list and prune off entries that are older than RC_EXPIRE.
+- * Also prune the oldest ones when the total exceeds the max number of entries.
++/**
++ * nfsd_reply_cache_scan - scan_objects method for the DRC shrinker
++ * @shrink: our registered shrinker context
++ * @sc: garbage collection parameters
++ *
++ * Free expired entries on each bucket's LRU list until we've released
++ * nr_to_scan freed objects. Nothing will be released if the cache
++ * has not exceeded it's max_drc_entries limit.
++ *
++ * Returns the number of entries released by this call.
+  */
+-static long
+-prune_cache_entries(struct nfsd_net *nn)
++static unsigned long
++nfsd_reply_cache_scan(struct shrinker *shrink, struct shrink_control *sc)
+ {
++	struct nfsd_net *nn = container_of(shrink,
++				struct nfsd_net, nfsd_reply_cache_shrinker);
++	unsigned long freed = 0;
++	LIST_HEAD(dispose);
+ 	unsigned int i;
+-	long freed = 0;
+ 
+ 	for (i = 0; i < nn->drc_hashsize; i++) {
+ 		struct nfsd_drc_bucket *b = &nn->drc_hashtbl[i];
+ 
+ 		if (list_empty(&b->lru_head))
+ 			continue;
++
+ 		spin_lock(&b->cache_lock);
+-		freed += prune_bucket(b, nn, 0);
++		nfsd_prune_bucket_locked(nn, b, 0, &dispose);
+ 		spin_unlock(&b->cache_lock);
+-	}
+-	return freed;
+-}
+-
+-static unsigned long
+-nfsd_reply_cache_count(struct shrinker *shrink, struct shrink_control *sc)
+-{
+-	struct nfsd_net *nn = container_of(shrink,
+-				struct nfsd_net, nfsd_reply_cache_shrinker);
+ 
+-	return atomic_read(&nn->num_drc_entries);
+-}
+-
+-static unsigned long
+-nfsd_reply_cache_scan(struct shrinker *shrink, struct shrink_control *sc)
+-{
+-	struct nfsd_net *nn = container_of(shrink,
+-				struct nfsd_net, nfsd_reply_cache_shrinker);
++		freed += nfsd_cacherep_dispose(&dispose);
++		if (freed > sc->nr_to_scan)
++			break;
++	}
+ 
+-	return prune_cache_entries(nn);
++	trace_nfsd_drc_gc(nn, freed);
++	return freed;
+ }
+ 
+ /**
 
 
 Patches currently in stable-queue which might be from kroah.com@vger.kernel.org are
