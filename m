@@ -4,104 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087DDC3DA4A
-	for <ltp@archiver.kernel.org>; Wed, 14 Aug 2024 22:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 624D5C3DA7F
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 06:38:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 077DE3D219B
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 00:18:26 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3128E3D219A
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:38:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C63F13D218A
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 00:18:10 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=neilb@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id B2D833D1D10
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 08:37:51 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D7461140099F
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 00:18:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AB9541000357
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 08:37:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1723703868;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GeXavfVKWNlgiqt4n+80Lx4Td9wOOaIAqtmUuPGHv5Q=;
+ b=jROGUs6/896t7xGbVzE6j+mVgEDFeaJUWnIJ8UtOE21bxowRerG6By4r9z5fK0KMmQK8cT
+ 6ida4EupMqfDjaY8Ros2yNBu0R8GcVrR37TigkwdZ1H7WTJUXhxl1Asmpy9lvqn6dbpcEM
+ sjhlkZkGQGEbBjXY/MaHJ77QQnuBhqs=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-595-LxUqC48PNJmt34yUvBeAOg-1; Thu,
+ 15 Aug 2024 02:37:44 -0400
+X-MC-Unique: LxUqC48PNJmt34yUvBeAOg-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2B73D1FF4D;
- Wed, 14 Aug 2024 22:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1723673888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Mgsbs6MgvDu9P60eUbpMp+vvP/KOYcWYiudaJDvVepg=;
- b=jfu11j4e1KmRXifh/nvBGvoKoHQxb2F3Jj8DADbVbVpTwlCZYtQbB5CCJMYicysCg2NUO9
- zwD20VS04ihRodGusbQPkiFtI2XF1891faRDXb0WveM1tfw44+v8sVthA1S/TvjiDV2DLf
- /3SdSzBn0OUgpiMlqg7amztYVkZhk6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1723673888;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Mgsbs6MgvDu9P60eUbpMp+vvP/KOYcWYiudaJDvVepg=;
- b=V8n2L59UVSay1GoTKNLc0qY8j+D88Z+8MKBlsmJQHPJxIaTtiJuakPMb3e4qbE+tjFsVMP
- KZOqWiwCP7RlfwDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1723673888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Mgsbs6MgvDu9P60eUbpMp+vvP/KOYcWYiudaJDvVepg=;
- b=jfu11j4e1KmRXifh/nvBGvoKoHQxb2F3Jj8DADbVbVpTwlCZYtQbB5CCJMYicysCg2NUO9
- zwD20VS04ihRodGusbQPkiFtI2XF1891faRDXb0WveM1tfw44+v8sVthA1S/TvjiDV2DLf
- /3SdSzBn0OUgpiMlqg7amztYVkZhk6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1723673888;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Mgsbs6MgvDu9P60eUbpMp+vvP/KOYcWYiudaJDvVepg=;
- b=V8n2L59UVSay1GoTKNLc0qY8j+D88Z+8MKBlsmJQHPJxIaTtiJuakPMb3e4qbE+tjFsVMP
- KZOqWiwCP7RlfwDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9B0D139B9;
- Wed, 14 Aug 2024 22:18:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SlqGFxstvWaAXQAAD6G6ig
- (envelope-from <neilb@suse.de>); Wed, 14 Aug 2024 22:18:03 +0000
+ by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id CF5301955D48; Thu, 15 Aug 2024 06:37:42 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.12])
+ by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 1A00519560AA; Thu, 15 Aug 2024 06:37:40 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 15 Aug 2024 08:37:10 +0200
+Message-ID: <99d43982e2469b1423701b6772677173b5a53429.1723703723.git.jstancek@redhat.com>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-reply-to: <20240814205519.GA550121@pevik>
-References: <>, <20240814205519.GA550121@pevik>
-Date: Thu, 15 Aug 2024 08:17:55 +1000
-Message-id: <172367387549.6062.7078032983644586462@noble.neil.brown.name>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_EQ_ADDR_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_TWELVE(0.00)[14]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfsstat01: Update client RPC calls for kernel
- 6.9
+Subject: [LTP] [PATCH] lib: make tst_detach_device_by_fd() also close dev_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,115 +73,185 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Greg KH <greg@kroah.com>, Jeff Layton <jlayton@kernel.org>,
- Sherry Yang <sherry.yang@oracle.com>, linux-stable <stable@vger.kernel.org>,
- Josef Bacik <josef@toxicpanda.com>, Chuck Lever III <chuck.lever@oracle.com>,
- Anna Schumaker <anna@kernel.org>, Trond Myklebust <trondmy@hammerspace.com>,
- Calum Mackay <calum.mackay@oracle.com>,
- "kernel-team@fb.com" <kernel-team@fb.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: liwan@redhat.com, gulam.mohamed@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 15 Aug 2024, Petr Vorel wrote:
-> > On Fri, 12 Jul 2024, Jeff Layton wrote:
-> > > On Fri, 2024-07-12 at 16:12 +1000, NeilBrown wrote:
-> 
-> > > > My point is that if we are going to change the kernel to accommodate LTP
-> > > > at all, we should accommodate LTP as it is today.  If we are going to
-> > > > change LTP to accommodate the kernel, then it should accommodate the
-> > > > kernel as it is today.
-> 
-> 
-> > > The problem is that there is no way for userland tell the difference
-> > > between the older and newer behavior. That was what I was suggesting we
-> > > add.
-> 
-> > To make sure I wasn't talking through my hat, I had a look at the ltp
-> > code.
-> 
-> > The test in question simply tests that the count of RPC calls increases.
-> 
-> > It can get the count of RPC calls in one of 2 ways :
-> >  1/ "lhost" - look directly in /proc/net/rpc/{nfs,nfsd}
-> >  2/ "rhost" - ssh to the server and look in that file.
-> 
-> FYI "rhost" in LTP can be either using namespaces (Single Host Configuration [1]),
-> which is run by default, or SSH based (Two Host Configuration [2]). IMHO most of
-> the testers (including myself run tests simply via network namespaces).
-> 
-> NOTE: I suppose CONFIG_NAMESPACES=y is a must for 'ip netns' to be working, thus
-> tests would hopefully failed early on kernel having that disabled.
-> 
-> > The current test to "fix" this for kernels -ge "6.9" is to force the use
-> > of "rhost".
-> 
-> > I'm guessing that always using "rhost" for the nfsd stats would always
-> > work.
-> 
-> FYI this old commit [3] allowed these tests to be working in network namespaces.
-> It reads for network namespaces both /proc/net/rpc/{nfs,nfsd} from non-namespace
-> ("lhost").  This is the subject of the change in 6.9, which now fails.
-> And for SSH based we obviously look on "rhost" already.
+Since commit 18048c1af783 ("loop: Fix a race between loop detach and loop open")
+detach operation is deferred to the last close of the device.
 
-That patch looks like a mistake.  The author noticed that the rpc stats
-were not "namespacified" and instead of reporting the bug (and surely
-the whole point of a test suite is to report bugs), they made a change
-that seems completely unnecessary which had the effect of entrenching
-the bug.  Unfortunately the commit message only says why it is same to
-make the change, not why it us useful.
+Make tst_detach_device_by_fd() also close dev_fd, and leave it up to
+caller to re-open it for further use.
 
-> 
-> > But if not, the code could get both the local and remote nfsd stats, and
-> > check that at least one of them increases (and neither decrease).
-> 
-> This sounds reasonable, thanks for a hint. I'll just look for client RPC calls
-> (/proc/net/rpc/nfs) in both non-namespace and namespace. The only think is that
-> we effectively give up checking where it should be (if it for whatever reason in
-> the future changes again, we miss that). I'm not sure if this would be treated
-> the same as the current situation (Josef Bacik had obvious reasons for this to
-> be working).
+Reported-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_device.h                           |  4 +++-
+ lib/tst_device.c                               | 10 ++++++++--
+ testcases/kernel/syscalls/ioctl/ioctl09.c      |  1 +
+ testcases/kernel/syscalls/ioctl/ioctl_loop01.c |  1 +
+ testcases/kernel/syscalls/ioctl/ioctl_loop02.c |  1 +
+ testcases/kernel/syscalls/ioctl/ioctl_loop04.c |  1 +
+ testcases/kernel/syscalls/ioctl/ioctl_loop06.c |  5 ++++-
+ testcases/kernel/syscalls/ioctl/ioctl_loop07.c |  2 ++
+ 8 files changed, 21 insertions(+), 4 deletions(-)
 
-Stats should always be visible in the relevant namespace.  server stats
-should be visible in the name space where the server runs.  client stats
-should be visible in the namespace where the filesystem is mounted.
-This has always been true (as long as we have had stats) and if it ever
-stops being true, that is a bug.
-I think the test suite should test for precisely this case.  Testing if
-the stats are visible from a different namespace is not likely to be an
-interesting test - unless you want to guard against the possibility that
-we will one day accidentally de-namespaceify the stats (stranger things
-have happened).
-
-Thanks,
-NeilBrown
-
-> 
-> @Josef @NFS maintainers: WDYT?
-> 
-> Kind regards,
-> Petr
-> 
-> > So ltp doesn't need to know which kernel is being used - it can be
-> > written to work safely on either.
-> 
-> > NeilBrown
-> 
-> [1] https://github.com/linux-test-project/ltp/tree/master/testcases/network#single-host-configuration
-> [2] https://github.com/linux-test-project/ltp/tree/master/testcases/network#two-host-configuration
-> [3] https://github.com/linux-test-project/ltp/commit/40958772f11d90e4b5052e7e772a3837d285cf89
-> 
-> > > To be clear, I hold this opinion loosely. If the consensus is that we
-> > > need to revert things then so be it. I just don't see the value of
-> > > doing that in this particular situation.
-> > > -- 
-> > > Jeff Layton <jlayton@kernel.org>
-> 
-> 
-> 
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 391fb4e568f1..2597fb4e235e 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -67,7 +67,9 @@ int tst_attach_device(const char *dev_path, const char *file_path);
+ uint64_t tst_get_device_size(const char *dev_path);
+ 
+ /*
+- * Detaches a file from a loop device fd.
++ * Detaches a file from a loop device fd. @dev_fd needs to be the
++ * last descriptor opened. Call to this function will close it,
++ * it is up to caller to open it again for further usage.
+  *
+  * @dev_path Path to the loop device e.g. /dev/loop0
+  * @dev_fd a open fd for the loop device
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index d659b54cfdee..723f6ca06375 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -243,17 +243,23 @@ int tst_detach_device_by_fd(const char *dev, int dev_fd)
+ 
+ 	/* keep trying to clear LOOPDEV until we get ENXIO, a quick succession
+ 	 * of attach/detach might not give udev enough time to complete
++	 *
++	 * Since 18048c1af783 ("loop: Fix a race between loop detach and loop open")
++	 * device is detached only after last close.
+ 	 */
+ 	for (i = 0; i < 40; i++) {
+ 		ret = ioctl(dev_fd, LOOP_CLR_FD, 0);
+ 
+-		if (ret && (errno == ENXIO))
++		if (ret && (errno == ENXIO)) {
++			SAFE_CLOSE(NULL, dev_fd);
+ 			return 0;
++		}
+ 
+ 		if (ret && (errno != EBUSY)) {
+ 			tst_resm(TWARN,
+ 				 "ioctl(%s, LOOP_CLR_FD, 0) unexpectedly failed with: %s",
+ 				 dev, tst_strerrno(errno));
++			SAFE_CLOSE(NULL, dev_fd);
+ 			return 1;
+ 		}
+ 
+@@ -262,6 +268,7 @@ int tst_detach_device_by_fd(const char *dev, int dev_fd)
+ 
+ 	tst_resm(TWARN,
+ 		"ioctl(%s, LOOP_CLR_FD, 0) no ENXIO for too long", dev);
++	SAFE_CLOSE(NULL, dev_fd);
+ 	return 1;
+ }
+ 
+@@ -276,7 +283,6 @@ int tst_detach_device(const char *dev)
+ 	}
+ 
+ 	ret = tst_detach_device_by_fd(dev, dev_fd);
+-	close(dev_fd);
+ 	return ret;
+ }
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
+index ca682ee9ad71..9c79210864b8 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl09.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
+@@ -88,6 +88,7 @@ static void verify_ioctl(void)
+ 	check_partition(2, true);
+ 
+ 	tst_detach_device_by_fd(dev_path, dev_fd);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 	attach_flag = 0;
+ }
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+index a4d191a2e982..2f0df3b27972 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+@@ -93,6 +93,7 @@ static void verify_ioctl_loop(void)
+ 	check_loop_value(0, LO_FLAGS_PARTSCAN, 0);
+ 
+ 	tst_detach_device_by_fd(dev_path, dev_fd);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 	attach_flag = 0;
+ }
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
+index 380fd10069ab..fa193924a448 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
+@@ -103,6 +103,7 @@ static void verify_ioctl_loop(unsigned int n)
+ 
+ 	SAFE_CLOSE(file_fd);
+ 	tst_detach_device_by_fd(dev_path, dev_fd);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 	attach_flag = 0;
+ }
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop04.c b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
+index 5b7506ea44df..f1021cc77d7b 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
+@@ -63,6 +63,7 @@ static void verify_ioctl_loop(void)
+ 
+ 	SAFE_CLOSE(file_fd);
+ 	tst_detach_device_by_fd(dev_path, dev_fd);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 	unlink("test.img");
+ 	attach_flag = 0;
+ }
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+index 64800b4ee44b..317f693a0458 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+@@ -57,8 +57,10 @@ static void verify_ioctl_loop(unsigned int n)
+ 
+ 	if (TST_RET == 0) {
+ 		tst_res(TFAIL, "Set block size succeed unexpectedly");
+-		if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
++		if (tcases[n].ioctl_flag == LOOP_CONFIGURE) {
+ 			tst_detach_device_by_fd(dev_path, dev_fd);
++			dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++		}
+ 		return;
+ 	}
+ 	if (TST_ERR == EINVAL)
+@@ -87,6 +89,7 @@ static void run(unsigned int n)
+ 	}
+ 	if (attach_flag) {
+ 		tst_detach_device_by_fd(dev_path, dev_fd);
++		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 		attach_flag = 0;
+ 	}
+ 	loopconfig.block_size = *(tc->setvalue);
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
+index d44f36212f5b..68db79558fb4 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
+@@ -73,6 +73,7 @@ static void verify_ioctl_loop(unsigned int n)
+ 	/*Reset*/
+ 	if (tc->ioctl_flag == LOOP_CONFIGURE) {
+ 		tst_detach_device_by_fd(dev_path, dev_fd);
++		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 	} else {
+ 		loopinfo.lo_sizelimit = 0;
+ 		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
+@@ -101,6 +102,7 @@ static void run(unsigned int n)
+ 	}
+ 	if (attach_flag) {
+ 		tst_detach_device_by_fd(dev_path, dev_fd);
++		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+ 		attach_flag = 0;
+ 	}
+ 	loopconfig.info.lo_sizelimit = tc->set_sizelimit;
+-- 
+2.43.0
 
 
 -- 
