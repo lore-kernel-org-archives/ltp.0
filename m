@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8222AC3DA7F
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:44:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E848CC3DA7F
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 08:45:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FEBC3D2253
-	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:44:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D1CC33D2265
+	for <ltp@archiver.kernel.org>; Thu, 15 Aug 2024 10:44:59 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8E0923D21C2
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:02 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id 919303D21B2
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:05 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=linuxfoundation.org (client-ip=2604:1380:40e1:4800::1;
  helo=sin.source.kernel.org; envelope-from=gregkh@linuxfoundation.org;
  receiver=lists.linux.it)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9DBDD1A002D7
- for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:01 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3FAD420038E
+ for <ltp@lists.linux.it>; Thu, 15 Aug 2024 10:41:03 +0200 (CEST)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by sin.source.kernel.org (Postfix) with ESMTP id 2EE06CE16CF;
- Thu, 15 Aug 2024 08:40:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E54F8C32786;
- Thu, 15 Aug 2024 08:40:57 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTP id 54794CE19A6;
+ Thu, 15 Aug 2024 08:41:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 032F0C32786;
+ Thu, 15 Aug 2024 08:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1723711258;
- bh=Rb1Wy7vCpsaoNahmpjto98dJM5bRkByCaFse7C4Rf8A=;
+ s=korg; t=1723711261;
+ bh=WZebGvPgKHzE/Moe9ri+YHNorq+FVqvnlgozDjN/7JU=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=qZCW8Xl7vVprHooW4iagp1bL26/W676+heqHu29uRSX0VOWrHk+JygA5ltq3WIK61
- GI++krH07KIWiDb7uzMSPIoS9yMnPekaiVh+Wu8fz+nb3L/rcvIfCnBGJ5/mMQXiJa
- +oDtAXisFhzkMTxeVAf9ENewVRo9mEkz/cLMJAE8=
-To: amir73il@gmail.com, calum.mackay@oracle.com, cel@kernel.org,
- chuck.lever@oracle.com, gregkh@linuxfoundation.org, jlayton@kernel.org,
+ b=QkZuq7u/wORMJuDZmZ2u2SSk4WjGqHkUn3i5/wqhJCE0MLlLeaByRXDJfV6lYWzUL
+ T42ricin83tZ/OTwz1WcyPHaX9pfPTJ8H4ncBPJFQEcBkZpsiaAwheJaTNUodIyNjI
+ uXGrdXnFdPbPZgUrHDOMmiF71SnajK2cU9ZTN2is=
+To: calum.mackay@oracle.com, cel@kernel.org, chuck.lever@oracle.com,
+ gregkh@linuxfoundation.org, jlayton@kernel.org, josef@toxicpanda.com,
  kernel-team@fb.com, ltp@lists.linux.it, pvorel@suse.cz, sherry.yang@oracle.com
 From: <gregkh@linuxfoundation.org>
-Date: Thu, 15 Aug 2024 10:40:00 +0200
-In-Reply-To: <20240810200009.9882-8-cel@kernel.org>
-Message-ID: <2024081559-unbuckled-pardon-5a3c@gregkh>
+Date: Thu, 15 Aug 2024 10:40:01 +0200
+In-Reply-To: <20240810200009.9882-13-cel@kernel.org>
+Message-ID: <2024081501-shakily-absolve-c397@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Patch "NFSD: Rewrite synopsis of nfsd_percpu_counters_init()"
- has been added to the 6.1-stable tree
+Subject: [LTP] Patch "sunrpc: remove ->pg_stats from svc_program" has been
+ added to the 6.1-stable tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,96 +65,99 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: stable-commits@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-ClRoaXMgaXMgYSBub3RlIHRvIGxldCB5b3Uga25vdyB0aGF0IEkndmUganVzdCBhZGRlZCB0aGUg
-cGF0Y2ggdGl0bGVkCgogICAgTkZTRDogUmV3cml0ZSBzeW5vcHNpcyBvZiBuZnNkX3BlcmNwdV9j
-b3VudGVyc19pbml0KCkKCnRvIHRoZSA2LjEtc3RhYmxlIHRyZWUgd2hpY2ggY2FuIGJlIGZvdW5k
-IGF0OgogICAgaHR0cDovL3d3dy5rZXJuZWwub3JnL2dpdC8/cD1saW51eC9rZXJuZWwvZ2l0L3N0
-YWJsZS9zdGFibGUtcXVldWUuZ2l0O2E9c3VtbWFyeQoKVGhlIGZpbGVuYW1lIG9mIHRoZSBwYXRj
-aCBpczoKICAgICBuZnNkLXJld3JpdGUtc3lub3BzaXMtb2YtbmZzZF9wZXJjcHVfY291bnRlcnNf
-aW5pdC5wYXRjaAphbmQgaXQgY2FuIGJlIGZvdW5kIGluIHRoZSBxdWV1ZS02LjEgc3ViZGlyZWN0
-b3J5LgoKSWYgeW91LCBvciBhbnlvbmUgZWxzZSwgZmVlbHMgaXQgc2hvdWxkIG5vdCBiZSBhZGRl
-ZCB0byB0aGUgc3RhYmxlIHRyZWUsCnBsZWFzZSBsZXQgPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+
-IGtub3cgYWJvdXQgaXQuCgoKRnJvbSBzdGFibGUrYm91bmNlcy02NjMyOC1ncmVnPWtyb2FoLmNv
-bUB2Z2VyLmtlcm5lbC5vcmcgU2F0IEF1ZyAxMCAyMjowMTowMiAyMDI0CkZyb206IGNlbEBrZXJu
-ZWwub3JnCkRhdGU6IFNhdCwgMTAgQXVnIDIwMjQgMTU6NTk6NTggLTA0MDAKU3ViamVjdDogTkZT
-RDogUmV3cml0ZSBzeW5vcHNpcyBvZiBuZnNkX3BlcmNwdV9jb3VudGVyc19pbml0KCkKVG86IDxz
-dGFibGVAdmdlci5rZXJuZWwub3JnPgpDYzogPGxpbnV4LW5mc0B2Z2VyLmtlcm5lbC5vcmc+LCBw
-dm9yZWxAc3VzZS5jeiwgc2hlcnJ5LnlhbmdAb3JhY2xlLmNvbSwgY2FsdW0ubWFja2F5QG9yYWNs
-ZS5jb20sIGtlcm5lbC10ZWFtQGZiLmNvbSwgbHRwQGxpc3RzLmxpbnV4Lml0LCBDaHVjayBMZXZl
-ciA8Y2h1Y2subGV2ZXJAb3JhY2xlLmNvbT4sIEFtaXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFp
-bC5jb20+LCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPgpNZXNzYWdlLUlEOiA8MjAy
-NDA4MTAyMDAwMDkuOTg4Mi04LWNlbEBrZXJuZWwub3JnPgoKRnJvbTogQ2h1Y2sgTGV2ZXIgPGNo
-dWNrLmxldmVyQG9yYWNsZS5jb20+CgpbIFVwc3RyZWFtIGNvbW1pdCA1ZWMzOTk0NGY4NzRlMWVj
-YzA5ZjYyNGE3MGRmYWE4YWMzYmY5ZDA4IF0KCkluIGZ1bmN0aW9uIOKAmGV4cG9ydF9zdGF0c19p
-bml04oCZLAogICAgaW5saW5lZCBmcm9tIOKAmHN2Y19leHBvcnRfYWxsb2PigJkgYXQgZnMvbmZz
-ZC9leHBvcnQuYzo4NjY6NjoKZnMvbmZzZC9leHBvcnQuYzozMzc6MTY6IHdhcm5pbmc6IOKAmG5m
-c2RfcGVyY3B1X2NvdW50ZXJzX2luaXTigJkgYWNjZXNzaW5nIDQwIGJ5dGVzIGluIGEgcmVnaW9u
-IG9mIHNpemUgMCBbLVdzdHJpbmdvcC1vdmVyZmxvdz1dCiAgMzM3IHwgICAgICAgICByZXR1cm4g
-bmZzZF9wZXJjcHVfY291bnRlcnNfaW5pdCgmc3RhdHMtPmNvdW50ZXIsIEVYUF9TVEFUU19DT1VO
-VEVSU19OVU0pOwogICAgICB8ICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgpmcy9uZnNkL2V4cG9y
-dC5jOjMzNzoxNjogbm90ZTogcmVmZXJlbmNpbmcgYXJndW1lbnQgMSBvZiB0eXBlIOKAmHN0cnVj
-dCBwZXJjcHVfY291bnRlclswXeKAmQpmcy9uZnNkL3N0YXRzLmg6IEluIGZ1bmN0aW9uIOKAmHN2
-Y19leHBvcnRfYWxsb2PigJk6CmZzL25mc2Qvc3RhdHMuaDo0MDo1OiBub3RlOiBpbiBhIGNhbGwg
-dG8gZnVuY3Rpb24g4oCYbmZzZF9wZXJjcHVfY291bnRlcnNfaW5pdOKAmQogICA0MCB8IGludCBu
-ZnNkX3BlcmNwdV9jb3VudGVyc19pbml0KHN0cnVjdCBwZXJjcHVfY291bnRlciBjb3VudGVyc1td
-LCBpbnQgbnVtKTsKICAgICAgfCAgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgoKQ2M6IEFt
-aXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+ClJldmlld2VkLWJ5OiBKZWZmIExheXRv
-biA8amxheXRvbkBrZXJuZWwub3JnPgpTdGFibGUtZGVwLW9mOiA5MzQ4M2FjNWZlYzYgKCJuZnNk
-OiBleHBvc2UgL3Byb2MvbmV0L3N1bnJwYy9uZnNkIGluIG5ldCBuYW1lc3BhY2VzIikKU2lnbmVk
-LW9mZi1ieTogQ2h1Y2sgTGV2ZXIgPGNodWNrLmxldmVyQG9yYWNsZS5jb20+ClNpZ25lZC1vZmYt
-Ynk6IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+Ci0tLQog
-ZnMvbmZzZC9zdGF0cy5jIHwgICAgMiArLQogZnMvbmZzZC9zdGF0cy5oIHwgICAgNiArKystLS0K
-IDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKLS0tIGEv
-ZnMvbmZzZC9zdGF0cy5jCisrKyBiL2ZzL25mc2Qvc3RhdHMuYwpAQCAtNzQsNyArNzQsNyBAQCBz
-dGF0aWMgaW50IG5mc2Rfc2hvdyhzdHJ1Y3Qgc2VxX2ZpbGUgKnNlCiAKIERFRklORV9QUk9DX1NI
-T1dfQVRUUklCVVRFKG5mc2QpOwogCi1pbnQgbmZzZF9wZXJjcHVfY291bnRlcnNfaW5pdChzdHJ1
-Y3QgcGVyY3B1X2NvdW50ZXIgY291bnRlcnNbXSwgaW50IG51bSkKK2ludCBuZnNkX3BlcmNwdV9j
-b3VudGVyc19pbml0KHN0cnVjdCBwZXJjcHVfY291bnRlciAqY291bnRlcnMsIGludCBudW0pCiB7
-CiAJaW50IGksIGVyciA9IDA7CiAKLS0tIGEvZnMvbmZzZC9zdGF0cy5oCisrKyBiL2ZzL25mc2Qv
-c3RhdHMuaApAQCAtMzYsOSArMzYsOSBAQCBleHRlcm4gc3RydWN0IG5mc2Rfc3RhdHMJbmZzZHN0
-YXRzOwogCiBleHRlcm4gc3RydWN0IHN2Y19zdGF0CQluZnNkX3N2Y3N0YXRzOwogCi1pbnQgbmZz
-ZF9wZXJjcHVfY291bnRlcnNfaW5pdChzdHJ1Y3QgcGVyY3B1X2NvdW50ZXIgY291bnRlcnNbXSwg
-aW50IG51bSk7Ci12b2lkIG5mc2RfcGVyY3B1X2NvdW50ZXJzX3Jlc2V0KHN0cnVjdCBwZXJjcHVf
-Y291bnRlciBjb3VudGVyc1tdLCBpbnQgbnVtKTsKLXZvaWQgbmZzZF9wZXJjcHVfY291bnRlcnNf
-ZGVzdHJveShzdHJ1Y3QgcGVyY3B1X2NvdW50ZXIgY291bnRlcnNbXSwgaW50IG51bSk7CitpbnQg
-bmZzZF9wZXJjcHVfY291bnRlcnNfaW5pdChzdHJ1Y3QgcGVyY3B1X2NvdW50ZXIgKmNvdW50ZXJz
-LCBpbnQgbnVtKTsKK3ZvaWQgbmZzZF9wZXJjcHVfY291bnRlcnNfcmVzZXQoc3RydWN0IHBlcmNw
-dV9jb3VudGVyICpjb3VudGVycywgaW50IG51bSk7Cit2b2lkIG5mc2RfcGVyY3B1X2NvdW50ZXJz
-X2Rlc3Ryb3koc3RydWN0IHBlcmNwdV9jb3VudGVyICpjb3VudGVycywgaW50IG51bSk7CiBpbnQg
-bmZzZF9zdGF0X2luaXQodm9pZCk7CiB2b2lkIG5mc2Rfc3RhdF9zaHV0ZG93bih2b2lkKTsKIAoK
-ClBhdGNoZXMgY3VycmVudGx5IGluIHN0YWJsZS1xdWV1ZSB3aGljaCBtaWdodCBiZSBmcm9tIGty
-b2FoLmNvbUB2Z2VyLmtlcm5lbC5vcmcgYXJlCgpxdWV1ZS02LjEvbmZzZC1yZW1vdmUtbmZzZF9z
-dGF0cy1tYWtlLXRoX2NudC1hLWdsb2JhbC1jb3VudGVyLnBhdGNoCnF1ZXVlLTYuMS9uZnNkLW1v
-dmUtcmVwbHktY2FjaGUtaW5pdGlhbGl6YXRpb24taW50by1uZnNkLXN0YXJ0dXAucGF0Y2gKcXVl
-dWUtNi4xL3N1bnJwYy1yZW1vdmUtcGdfc3RhdHMtZnJvbS1zdmNfcHJvZ3JhbS5wYXRjaApxdWV1
-ZS02LjEvbXB0Y3AtcG0tZG9uLXQtdHJ5LXRvLWNyZWF0ZS1zZi1pZi1hbGxvYy1mYWlsZWQucGF0
-Y2gKcXVldWUtNi4xL25mc2QtcmVuYW1lLW5mc2RfcmVwbHlfY2FjaGVfYWxsb2MucGF0Y2gKcXVl
-dWUtNi4xL25mc2QtbWFrZS1hbGwtb2YtdGhlLW5mc2Qtc3RhdHMtcGVyLW5ldHdvcmstbmFtZXNw
-YWNlLnBhdGNoCnF1ZXVlLTYuMS9tcHRjcC1wYXNzLWFkZHItdG8tbXB0Y3BfcG1fYWxsb2NfYW5u
-b19saXN0LnBhdGNoCnF1ZXVlLTYuMS9uZnNkLW1vdmUtaW5pdC1vZi1wZXJjcHUtcmVwbHlfY2Fj
-aGVfc3RhdHMtY291bnRlcnMtYmFjay10by1uZnNkX2luaXRfbmV0LnBhdGNoCnF1ZXVlLTYuMS9u
-ZnNkLXJlcGxhY2UtbmZzZF9wcnVuZV9idWNrZXQucGF0Y2gKcXVldWUtNi4xL25mc2Qtc3RvcC1z
-ZXR0aW5nLXBnX3N0YXRzLWZvci11bnVzZWQtc3RhdHMucGF0Y2gKcXVldWUtNi4xL3N1bnJwYy1k
-b24tdC1jaGFuZ2Utc3Zfc3RhdHMtaWYtaXQtZG9lc24tdC1leGlzdC5wYXRjaApxdWV1ZS02LjEv
-bmZzZC1tYWtlLXN2Y19zdGF0LXBlci1uZXR3b3JrLW5hbWVzcGFjZS1pbnN0ZWFkLW9mLWdsb2Jh
-bC5wYXRjaApxdWV1ZS02LjEvbmZzZC1maXgtZnJhbWUtc2l6ZS13YXJuaW5nLWluLXN2Y19leHBv
-cnRfcGFyc2UucGF0Y2gKcXVldWUtNi4xL25mc2QtcmVuYW1lLW5mc2RfbmV0Xy10by1uZnNkX3N0
-YXRzXy5wYXRjaApxdWV1ZS02LjEvbXB0Y3AtcG0tZG8tbm90LWlnbm9yZS1zdWJmbG93LWlmLXNp
-Z25hbC1mbGFnLWlzLWFsc28tc2V0LnBhdGNoCnF1ZXVlLTYuMS9uZnNkLXJlZmFjdG9yLW5mc2Rf
-cmVwbHlfY2FjaGVfZnJlZV9sb2NrZWQucGF0Y2gKcXVldWUtNi4xL21wdGNwLWZ1bGx5LWVzdGFi
-bGlzaGVkLWFmdGVyLWFkZF9hZGRyLWVjaG8tb24tbXBqLnBhdGNoCnF1ZXVlLTYuMS9zdW5ycGMt
-dXNlLXRoZS1zdHJ1Y3QtbmV0LWFzLXRoZS1zdmMtcHJvYy1wcml2YXRlLnBhdGNoCnF1ZXVlLTYu
-MS9zZWxmdGVzdHMtbXB0Y3Atam9pbi10ZXN0LWJvdGgtc2lnbmFsLXN1YmZsb3cucGF0Y2gKcXVl
-dWUtNi4xL3N1bnJwYy1wYXNzLWluLXRoZS1zdl9zdGF0cy1zdHJ1Y3QtdGhyb3VnaC1zdmNfY3Jl
-YXRlX3Bvb2xlZC5wYXRjaApxdWV1ZS02LjEvbXB0Y3AtcG0tcmVkdWNlLWluZGVudGF0aW9uLWJs
-b2Nrcy5wYXRjaApxdWV1ZS02LjEvbmZzZC1yZXdyaXRlLXN5bm9wc2lzLW9mLW5mc2RfcGVyY3B1
-X2NvdW50ZXJzX2luaXQucGF0Y2gKcXVldWUtNi4xL25mc2QtZXhwb3NlLXByb2MtbmV0LXN1bnJw
-Yy1uZnNkLWluLW5ldC1uYW1lc3BhY2VzLnBhdGNoCnF1ZXVlLTYuMS9uZnNkLXJlZmFjdG9yLXRo
-ZS1kdXBsaWNhdGUtcmVwbHktY2FjaGUtc2hyaW5rZXIucGF0Y2gKCi0tIApNYWlsaW5nIGxpc3Qg
-aW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+
+This is a note to let you know that I've just added the patch titled
+
+    sunrpc: remove ->pg_stats from svc_program
+
+to the 6.1-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     sunrpc-remove-pg_stats-from-svc_program.patch
+and it can be found in the queue-6.1 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From stable+bounces-66333-greg=kroah.com@vger.kernel.org Sat Aug 10 22:01:19 2024
+From: cel@kernel.org
+Date: Sat, 10 Aug 2024 16:00:03 -0400
+Subject: sunrpc: remove ->pg_stats from svc_program
+To: <stable@vger.kernel.org>
+Cc: <linux-nfs@vger.kernel.org>, pvorel@suse.cz, sherry.yang@oracle.com, calum.mackay@oracle.com, kernel-team@fb.com, ltp@lists.linux.it, Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
+Message-ID: <20240810200009.9882-13-cel@kernel.org>
+
+From: Josef Bacik <josef@toxicpanda.com>
+
+[ Upstream commit 3f6ef182f144dcc9a4d942f97b6a8ed969f13c95 ]
+
+Now that this isn't used anywhere, remove it.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+[ cel: adjusted to apply to v6.1.y ]
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/nfsd/nfssvc.c           |    1 -
+ include/linux/sunrpc/svc.h |    1 -
+ 2 files changed, 2 deletions(-)
+
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -136,7 +136,6 @@ struct svc_program		nfsd_program = {
+ 	.pg_vers		= nfsd_version,		/* version table */
+ 	.pg_name		= "nfsd",		/* program name */
+ 	.pg_class		= "nfsd",		/* authentication class */
+-	.pg_stats		= &nfsd_svcstats,	/* version table */
+ 	.pg_authenticate	= &svc_set_client,	/* export authentication */
+ 	.pg_init_request	= nfsd_init_request,
+ 	.pg_rpcbind_set		= nfsd_rpcbind_set,
+--- a/include/linux/sunrpc/svc.h
++++ b/include/linux/sunrpc/svc.h
+@@ -422,7 +422,6 @@ struct svc_program {
+ 	const struct svc_version **pg_vers;	/* version array */
+ 	char *			pg_name;	/* service name */
+ 	char *			pg_class;	/* class name: services sharing authentication */
+-	struct svc_stat *	pg_stats;	/* rpc statistics */
+ 	int			(*pg_authenticate)(struct svc_rqst *);
+ 	__be32			(*pg_init_request)(struct svc_rqst *,
+ 						   const struct svc_program *,
+
+
+Patches currently in stable-queue which might be from kroah.com@vger.kernel.org are
+
+queue-6.1/nfsd-remove-nfsd_stats-make-th_cnt-a-global-counter.patch
+queue-6.1/nfsd-move-reply-cache-initialization-into-nfsd-startup.patch
+queue-6.1/sunrpc-remove-pg_stats-from-svc_program.patch
+queue-6.1/mptcp-pm-don-t-try-to-create-sf-if-alloc-failed.patch
+queue-6.1/nfsd-rename-nfsd_reply_cache_alloc.patch
+queue-6.1/nfsd-make-all-of-the-nfsd-stats-per-network-namespace.patch
+queue-6.1/mptcp-pass-addr-to-mptcp_pm_alloc_anno_list.patch
+queue-6.1/nfsd-move-init-of-percpu-reply_cache_stats-counters-back-to-nfsd_init_net.patch
+queue-6.1/nfsd-replace-nfsd_prune_bucket.patch
+queue-6.1/nfsd-stop-setting-pg_stats-for-unused-stats.patch
+queue-6.1/sunrpc-don-t-change-sv_stats-if-it-doesn-t-exist.patch
+queue-6.1/nfsd-make-svc_stat-per-network-namespace-instead-of-global.patch
+queue-6.1/nfsd-fix-frame-size-warning-in-svc_export_parse.patch
+queue-6.1/nfsd-rename-nfsd_net_-to-nfsd_stats_.patch
+queue-6.1/mptcp-pm-do-not-ignore-subflow-if-signal-flag-is-also-set.patch
+queue-6.1/nfsd-refactor-nfsd_reply_cache_free_locked.patch
+queue-6.1/mptcp-fully-established-after-add_addr-echo-on-mpj.patch
+queue-6.1/sunrpc-use-the-struct-net-as-the-svc-proc-private.patch
+queue-6.1/selftests-mptcp-join-test-both-signal-subflow.patch
+queue-6.1/sunrpc-pass-in-the-sv_stats-struct-through-svc_create_pooled.patch
+queue-6.1/mptcp-pm-reduce-indentation-blocks.patch
+queue-6.1/nfsd-rewrite-synopsis-of-nfsd_percpu_counters_init.patch
+queue-6.1/nfsd-expose-proc-net-sunrpc-nfsd-in-net-namespaces.patch
+queue-6.1/nfsd-refactor-the-duplicate-reply-cache-shrinker.patch
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
