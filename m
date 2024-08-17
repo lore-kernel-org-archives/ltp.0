@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94F85C52D7F
-	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 04:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1F97C52D7F
+	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 06:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1723877856; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Iu572LIC7HGCeC3kqF6ycAlgjy/7uRoxbgC5Er/wMqA=;
+ b=XTdxOXeBYECUkmRsKRe1YlR5gi0vIpTLMjxj0b7X9RkzlWbA1imhbeTq43eIioEgMrA0B
+ wAy8txNyM59O009oq0eykgUa4PcWWyde+ly5tibh05Bsr53owDvtkwqh8HWoq4m5hcUxbqR
+ e5vWooIS5vHw8veMBB15RzmKIf2Pod4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8ABA43D221C
-	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 06:44:11 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 29F373D2222
+	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 08:57:36 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 664403C71B0
- for <ltp@lists.linux.it>; Sat, 17 Aug 2024 06:43:57 +0200 (CEST)
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id 10D661400247
- for <ltp@lists.linux.it>; Sat, 17 Aug 2024 06:43:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
- Message-ID; bh=MNzaqDtIM5nv4ckvrNAFIrvvxuV4AUOhMNbT0oLxvbc=; b=X
- Jjs4jaxWpa+zWXW3E90btnwF8425wfgbgFfKTb0roh54a34L0MXGcsKmHLxwwX5n
- kcjVAKWljPudp8LKGcvlrLJGReTmA/+kUQGC53yvhWCi61vrZ6ZnHuNSOUzHL5N+
- OJhlowDJvYAy767H4As7uY71D+PaJRfK9BTbd4XlXY=
-Received: from ice_yangxiao$163.com ( [160.86.227.245] ) by
- ajax-webmail-wmsvr-40-131 (Coremail) ; Sat, 17 Aug 2024 12:43:50 +0800
- (CST)
-X-Originating-IP: [160.86.227.245]
-Date: Sat, 17 Aug 2024 12:43:50 +0800 (CST)
-From: =?UTF-8?B?5p2o5pmT?= <ice_yangxiao@163.com>
-To: "Li Wang" <liwang@redhat.com>
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <CAEemH2dZk3b2nxO7F87ag8XJiHqxvqr1u0eWv5nxwr59FkRpdQ@mail.gmail.com>
-References: <20240816045342.185737-1-ice_yangxiao@163.com>
- <20240816045342.185737-2-ice_yangxiao@163.com>
- <CAEemH2dZk3b2nxO7F87ag8XJiHqxvqr1u0eWv5nxwr59FkRpdQ@mail.gmail.com>
-X-NTES-SC: AL_Qu2ZAfSdtkAo5iGeYekfmkwaj+w9XcqwuPsm24BUOpp+jA/o/RodT3lnOVb69PuyMw+KuTyzbiZK9elLWblIQYQLax96iRBqc31N2Ww6TwMJ4w==
+ by picard.linux.it (Postfix) with ESMTPS id 8659D3C132A
+ for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:11 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=gondor.apana.org.au (client-ip=144.6.53.87; helo=abb.hmeau.com;
+ envelope-from=herbert@gondor.apana.org.au; receiver=lists.linux.it)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 25C791400E5A
+ for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:07 +0200 (CEST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+ by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+ id 1sfDEM-005IF8-2C; Sat, 17 Aug 2024 14:56:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
+ Sat, 17 Aug 2024 14:56:51 +0800
+Date: Sat, 17 Aug 2024 14:56:51 +0800
+To: kernel test robot <oliver.sang@intel.com>
+Message-ID: <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
+References: <ZrbTUk6DyktnO7qk@gondor.apana.org.au>
+ <202408161634.598311fd-oliver.sang@intel.com>
 MIME-Version: 1.0
-Message-ID: <3c1b35f2.140a.1915ea61c1c.Coremail.ice_yangxiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: _____wD3H9KGKsBmhmUYAA--.2419W
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiMx0+XmXAnPB3cQABsA
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Disposition: inline
+In-Reply-To: <202408161634.598311fd-oliver.sang@intel.com>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] syscalls/mseal01.c: Use the correct "'" for
- JSON
+Subject: [LTP] [v3 PATCH 1/3] crypto: api - Remove instance larval fulfilment
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,35 +61,208 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Herbert Xu via ltp <ltp@lists.linux.it>
+Reply-To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+ "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
+ "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+ oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
+ Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGksCgoKCgpQdXNoZWQuIFRoYW5rcyBmb3IgeW91ciByZXZpZXcuCgoKCgoKQmVzdCBSZWdh
-cmRzLAoKWGlhbyBZYW5nCgoKCgoKT24gMjAyNC0wOC0xNiAxNTowMTo1M++8jCJMaSBXYW5nIiA8
-bGl3YW5nQHJlZGhhdC5jb20+IHdyb3Rl77yaCgoKCgoKT24gRnJpLCBBdWcgMTYsIDIwMjQgYXQg
-MTI6NTTigK9QTSBYaWFvIFlhbmcgPGljZV95YW5neGlhb0AxNjMuY29tPiB3cm90ZToKCkZpeCB0
-aGUgZm9sbG93aW5nIHdhcm5pbmdzIGZyb20gbWV0YWRhdGEvbWV0YXBhcnNlOgpkYXRhX3N0b3Jh
-Z2UuaDozMjU6IFdBUk5JTkc6IGludmFsaWQgY2hhcmFjdGVyIGZvciBKU09OOiBmZmZmZmZlMgpk
-YXRhX3N0b3JhZ2UuaDozMjU6IFdBUk5JTkc6IGludmFsaWQgY2hhcmFjdGVyIGZvciBKU09OOiBm
-ZmZmZmY4MApkYXRhX3N0b3JhZ2UuaDozMjU6IFdBUk5JTkc6IGludmFsaWQgY2hhcmFjdGVyIGZv
-ciBKU09OOiBmZmZmZmY5OQoKU2lnbmVkLW9mZi1ieTogWGlhbyBZYW5nIDxpY2VfeWFuZ3hpYW9A
-MTYzLmNvbT4KCgoKUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgoKCi0t
-LQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tc2VhbC9tc2VhbDAxLmMgfCAyICstCiAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21zZWFsL21zZWFsMDEuYyBiL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvbXNlYWwvbXNlYWwwMS5jCmluZGV4IDYyY2ZkZDZhNi4uMDA0NTRhNzY2IDEw
-MDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21zZWFsL21zZWFsMDEuYworKysg
-Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21zZWFsL21zZWFsMDEuYwpAQCAtMTYsNyArMTYs
-NyBAQAogICogLSBtb2RpZnlpbmcgYSBWTUEgdmlhIG1tYXAoTUFQX0ZJWEVEKQogICogLSBtcHJv
-dGVjdCgpIGFuZCBwa2V5X21wcm90ZWN0KCkKICAqIC0gZGVzdHJ1Y3RpdmUgbWFkdmljZSgpIGJl
-aGF2aW9ycyAoZS5nLiBNQURWX0RPTlRORUVEKSBmb3IgYW5vbnltb3VzIG1lbW9yeSwKLSAqICAg
-d2hlbiB1c2VycyBkb27igJl0IGhhdmUgd3JpdGUgcGVybWlzc2lvbiB0byB0aGUgbWVtb3J5Cisg
-KiAgIHdoZW4gdXNlcnMgZG9uJ3QgaGF2ZSB3cml0ZSBwZXJtaXNzaW9uIHRvIHRoZSBtZW1vcnkK
-ICAqCiAgKiBBbnkgb2YgdGhlIGRlc2NyaWJlZCBhY3Rpb25zIGlzIHJlY29nbml6ZWQgdmlhIEVQ
-RVJNIGVycm5vLgogICoKLS0KMi40NS4yCgoKLS0KTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
-bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCgoKCgoKLS0KClJlZ2FyZHMsCgpMaSBXYW5nCgot
-LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cg==
+On Fri, Aug 16, 2024 at 04:45:59PM +0800, kernel test robot wrote:
+> 
+> kernel test robot noticed "ltp.af_alg03.fail" on:
+
+Thanks for the report.  Indeed the first patch is buggy as the
+larval isn't marked as dead upon completion which when paired with
+the new re-lookup triggers a dead-lock.  Fix this by adding a DEAD
+marking prior to calling complete_all.
+
+---8<---
+In order to allow testing to complete asynchronously after the
+registration process, instance larvals need to complete prior
+to having a test result.  Support this by redoing the lookup for
+instance larvals after completion.   This should locate the pending
+test larval and then repeat the wait on that (if it is still pending).
+
+As the lookup is now repeated there is no longer any need to compute
+the fulfilment status and all that code can be removed.
+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ crypto/algapi.c  | 48 +++---------------------------------------------
+ crypto/algboss.c |  1 +
+ crypto/api.c     | 23 +++++++++++++++++++----
+ 3 files changed, 23 insertions(+), 49 deletions(-)
+
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index 122cd910c4e1..d2ccc1289f92 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -235,7 +235,6 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
+ EXPORT_SYMBOL_GPL(crypto_remove_spawns);
+ 
+ static void crypto_alg_finish_registration(struct crypto_alg *alg,
+-					   bool fulfill_requests,
+ 					   struct list_head *algs_to_put)
+ {
+ 	struct crypto_alg *q;
+@@ -247,30 +246,8 @@ static void crypto_alg_finish_registration(struct crypto_alg *alg,
+ 		if (crypto_is_moribund(q))
+ 			continue;
+ 
+-		if (crypto_is_larval(q)) {
+-			struct crypto_larval *larval = (void *)q;
+-
+-			/*
+-			 * Check to see if either our generic name or
+-			 * specific name can satisfy the name requested
+-			 * by the larval entry q.
+-			 */
+-			if (strcmp(alg->cra_name, q->cra_name) &&
+-			    strcmp(alg->cra_driver_name, q->cra_name))
+-				continue;
+-
+-			if (larval->adult)
+-				continue;
+-			if ((q->cra_flags ^ alg->cra_flags) & larval->mask)
+-				continue;
+-
+-			if (fulfill_requests && crypto_mod_get(alg))
+-				larval->adult = alg;
+-			else
+-				larval->adult = ERR_PTR(-EAGAIN);
+-
++		if (crypto_is_larval(q))
+ 			continue;
+-		}
+ 
+ 		if (strcmp(alg->cra_name, q->cra_name))
+ 			continue;
+@@ -359,7 +336,7 @@ __crypto_register_alg(struct crypto_alg *alg, struct list_head *algs_to_put)
+ 		list_add(&larval->alg.cra_list, &crypto_alg_list);
+ 	} else {
+ 		alg->cra_flags |= CRYPTO_ALG_TESTED;
+-		crypto_alg_finish_registration(alg, true, algs_to_put);
++		crypto_alg_finish_registration(alg, algs_to_put);
+ 	}
+ 
+ out:
+@@ -376,7 +353,6 @@ void crypto_alg_tested(const char *name, int err)
+ 	struct crypto_alg *alg;
+ 	struct crypto_alg *q;
+ 	LIST_HEAD(list);
+-	bool best;
+ 
+ 	down_write(&crypto_alg_sem);
+ 	list_for_each_entry(q, &crypto_alg_list, cra_list) {
+@@ -408,25 +384,7 @@ void crypto_alg_tested(const char *name, int err)
+ 
+ 	alg->cra_flags |= CRYPTO_ALG_TESTED;
+ 
+-	/*
+-	 * If a higher-priority implementation of the same algorithm is
+-	 * currently being tested, then don't fulfill request larvals.
+-	 */
+-	best = true;
+-	list_for_each_entry(q, &crypto_alg_list, cra_list) {
+-		if (crypto_is_moribund(q) || !crypto_is_larval(q))
+-			continue;
+-
+-		if (strcmp(alg->cra_name, q->cra_name))
+-			continue;
+-
+-		if (q->cra_priority > alg->cra_priority) {
+-			best = false;
+-			break;
+-		}
+-	}
+-
+-	crypto_alg_finish_registration(alg, best, &list);
++	crypto_alg_finish_registration(alg, &list);
+ 
+ complete:
+ 	complete_all(&test->completion);
+diff --git a/crypto/algboss.c b/crypto/algboss.c
+index 1aa5f306998a..d05a5aad2176 100644
+--- a/crypto/algboss.c
++++ b/crypto/algboss.c
+@@ -64,6 +64,7 @@ static int cryptomgr_probe(void *data)
+ 	crypto_tmpl_put(tmpl);
+ 
+ out:
++	param->larval->alg.cra_flags |= CRYPTO_ALG_DEAD;
+ 	complete_all(&param->larval->completion);
+ 	crypto_alg_put(&param->larval->alg);
+ 	kfree(param);
+diff --git a/crypto/api.c b/crypto/api.c
+index 22556907b3bc..ffb81aa32725 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -37,6 +37,8 @@ DEFINE_STATIC_KEY_FALSE(__crypto_boot_test_finished);
+ #endif
+ 
+ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg);
++static struct crypto_alg *crypto_alg_lookup(const char *name, u32 type,
++					    u32 mask);
+ 
+ struct crypto_alg *crypto_mod_get(struct crypto_alg *alg)
+ {
+@@ -201,9 +203,12 @@ static void crypto_start_test(struct crypto_larval *larval)
+ 
+ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+ {
+-	struct crypto_larval *larval = (void *)alg;
++	struct crypto_larval *larval;
+ 	long time_left;
+ 
++again:
++	larval = container_of(alg, struct crypto_larval, alg);
++
+ 	if (!crypto_boot_test_finished())
+ 		crypto_start_test(larval);
+ 
+@@ -215,9 +220,16 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+ 		alg = ERR_PTR(-EINTR);
+ 	else if (!time_left)
+ 		alg = ERR_PTR(-ETIMEDOUT);
+-	else if (!alg)
+-		alg = ERR_PTR(-ENOENT);
+-	else if (IS_ERR(alg))
++	else if (!alg) {
++		u32 type;
++		u32 mask;
++
++		alg = &larval->alg;
++		type = alg->cra_flags & ~(CRYPTO_ALG_LARVAL | CRYPTO_ALG_DEAD);
++		mask = larval->mask;
++		alg = crypto_alg_lookup(alg->cra_name, type, mask) ?:
++		      ERR_PTR(-ENOENT);
++	} else if (IS_ERR(alg))
+ 		;
+ 	else if (crypto_is_test_larval(larval) &&
+ 		 !(alg->cra_flags & CRYPTO_ALG_TESTED))
+@@ -228,6 +240,9 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+ 		alg = ERR_PTR(-EAGAIN);
+ 	crypto_mod_put(&larval->alg);
+ 
++	if (!IS_ERR(alg) && crypto_is_larval(alg))
++		goto again;
++
+ 	return alg;
+ }
+ 
+-- 
+2.39.2
+
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
