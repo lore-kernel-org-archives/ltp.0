@@ -4,52 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1F97C52D7F
-	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 06:57:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4839BC52D7F
+	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 06:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1723877856; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1723877893; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Iu572LIC7HGCeC3kqF6ycAlgjy/7uRoxbgC5Er/wMqA=;
- b=XTdxOXeBYECUkmRsKRe1YlR5gi0vIpTLMjxj0b7X9RkzlWbA1imhbeTq43eIioEgMrA0B
- wAy8txNyM59O009oq0eykgUa4PcWWyde+ly5tibh05Bsr53owDvtkwqh8HWoq4m5hcUxbqR
- e5vWooIS5vHw8veMBB15RzmKIf2Pod4=
+ bh=sGl/O2mB0FIqipnTuM5g82l9+tKM/EqwP/nZcr0VOa4=;
+ b=o7g6ge1JMyjo/+pnk3KAFwgr+znIqUn/ldqF2+lNcpTjqt+Q3CPOvgRNJ1TOnag8WVSUZ
+ ylittCw/57eTe80oxkC0xE0a5Hljx1WF0qb5/adwciFLYZ3/ARbJF+O6Ga51kQ+5i6pweO+
+ 9TPSGqSxlDQwnx2EK2FQEYNqy8y+Us0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 29F373D2222
-	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 08:57:36 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 775003D2227
+	for <ltp@archiver.kernel.org>; Sat, 17 Aug 2024 08:58:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8659D3C132A
- for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:11 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id 745FB3C132A
+ for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:52 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=gondor.apana.org.au (client-ip=144.6.53.87; helo=abb.hmeau.com;
  envelope-from=herbert@gondor.apana.org.au; receiver=lists.linux.it)
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
  server-digest SHA256) (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 25C791400E5A
- for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:07 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 564B4100040E
+ for <ltp@lists.linux.it>; Sat, 17 Aug 2024 08:57:50 +0200 (CEST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
  by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
- id 1sfDEM-005IF8-2C; Sat, 17 Aug 2024 14:56:52 +0800
+ id 1sfDF9-005IFL-1l; Sat, 17 Aug 2024 14:57:41 +0800
 Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
- Sat, 17 Aug 2024 14:56:51 +0800
-Date: Sat, 17 Aug 2024 14:56:51 +0800
+ Sat, 17 Aug 2024 14:57:40 +0800
+Date: Sat, 17 Aug 2024 14:57:40 +0800
 To: kernel test robot <oliver.sang@intel.com>
-Message-ID: <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
+Message-ID: <ZsBJ5H4JExArHGVw@gondor.apana.org.au>
 References: <ZrbTUk6DyktnO7qk@gondor.apana.org.au>
  <202408161634.598311fd-oliver.sang@intel.com>
+ <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <202408161634.598311fd-oliver.sang@intel.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [v3 PATCH 1/3] crypto: api - Remove instance larval fulfilment
+Subject: [LTP] [v3 PATCH 2/3] crypto: api - Do not wait for tests during
+ registration
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,189 +76,216 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Aug 16, 2024 at 04:45:59PM +0800, kernel test robot wrote:
-> 
-> kernel test robot noticed "ltp.af_alg03.fail" on:
+As registration is usually carried out during module init, this
+is a context where as little work as possible should be carried
+out.  Testing may trigger module loads of underlying components,
+which could even lead back to the module that is registering at
+the moment.  This may lead to dead-locks outside of the Crypto API.
 
-Thanks for the report.  Indeed the first patch is buggy as the
-larval isn't marked as dead upon completion which when paired with
-the new re-lookup triggers a dead-lock.  Fix this by adding a DEAD
-marking prior to calling complete_all.
+Avoid this by not waiting for the tests to complete.  They will
+be scheduled but completion will be asynchronous.  Any users will
+still wait for completion.
 
----8<---
-In order to allow testing to complete asynchronously after the
-registration process, instance larvals need to complete prior
-to having a test result.  Support this by redoing the lookup for
-instance larvals after completion.   This should locate the pending
-test larval and then repeat the wait on that (if it is still pending).
-
-As the lookup is now repeated there is no longer any need to compute
-the fulfilment status and all that code can be removed.
-
+Reported-by: Russell King <linux@armlinux.org.uk>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/algapi.c  | 48 +++---------------------------------------------
- crypto/algboss.c |  1 +
- crypto/api.c     | 23 +++++++++++++++++++----
- 3 files changed, 23 insertions(+), 49 deletions(-)
+ crypto/algapi.c   | 23 ++++++++++++-----------
+ crypto/api.c      | 41 +++++++++++++++++++++--------------------
+ crypto/internal.h |  3 +--
+ 3 files changed, 34 insertions(+), 33 deletions(-)
 
 diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 122cd910c4e1..d2ccc1289f92 100644
+index d2ccc1289f92..74e2261c184c 100644
 --- a/crypto/algapi.c
 +++ b/crypto/algapi.c
-@@ -235,7 +235,6 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
- EXPORT_SYMBOL_GPL(crypto_remove_spawns);
- 
- static void crypto_alg_finish_registration(struct crypto_alg *alg,
--					   bool fulfill_requests,
- 					   struct list_head *algs_to_put)
- {
- 	struct crypto_alg *q;
-@@ -247,30 +246,8 @@ static void crypto_alg_finish_registration(struct crypto_alg *alg,
- 		if (crypto_is_moribund(q))
- 			continue;
- 
--		if (crypto_is_larval(q)) {
--			struct crypto_larval *larval = (void *)q;
--
--			/*
--			 * Check to see if either our generic name or
--			 * specific name can satisfy the name requested
--			 * by the larval entry q.
--			 */
--			if (strcmp(alg->cra_name, q->cra_name) &&
--			    strcmp(alg->cra_driver_name, q->cra_name))
--				continue;
--
--			if (larval->adult)
--				continue;
--			if ((q->cra_flags ^ alg->cra_flags) & larval->mask)
--				continue;
--
--			if (fulfill_requests && crypto_mod_get(alg))
--				larval->adult = alg;
--			else
--				larval->adult = ERR_PTR(-EAGAIN);
--
-+		if (crypto_is_larval(q))
- 			continue;
--		}
- 
- 		if (strcmp(alg->cra_name, q->cra_name))
- 			continue;
-@@ -359,7 +336,7 @@ __crypto_register_alg(struct crypto_alg *alg, struct list_head *algs_to_put)
- 		list_add(&larval->alg.cra_list, &crypto_alg_list);
- 	} else {
- 		alg->cra_flags |= CRYPTO_ALG_TESTED;
--		crypto_alg_finish_registration(alg, true, algs_to_put);
-+		crypto_alg_finish_registration(alg, algs_to_put);
+@@ -366,7 +366,8 @@ void crypto_alg_tested(const char *name, int err)
  	}
  
- out:
-@@ -376,7 +353,6 @@ void crypto_alg_tested(const char *name, int err)
- 	struct crypto_alg *alg;
- 	struct crypto_alg *q;
- 	LIST_HEAD(list);
--	bool best;
+ 	pr_err("alg: Unexpected test result for %s: %d\n", name, err);
+-	goto unlock;
++	up_write(&crypto_alg_sem);
++	return;
  
- 	down_write(&crypto_alg_sem);
- 	list_for_each_entry(q, &crypto_alg_list, cra_list) {
-@@ -408,25 +384,7 @@ void crypto_alg_tested(const char *name, int err)
- 
- 	alg->cra_flags |= CRYPTO_ALG_TESTED;
- 
--	/*
--	 * If a higher-priority implementation of the same algorithm is
--	 * currently being tested, then don't fulfill request larvals.
--	 */
--	best = true;
--	list_for_each_entry(q, &crypto_alg_list, cra_list) {
--		if (crypto_is_moribund(q) || !crypto_is_larval(q))
--			continue;
--
--		if (strcmp(alg->cra_name, q->cra_name))
--			continue;
--
--		if (q->cra_priority > alg->cra_priority) {
--			best = false;
--			break;
--		}
--	}
--
--	crypto_alg_finish_registration(alg, best, &list);
-+	crypto_alg_finish_registration(alg, &list);
+ found:
+ 	q->cra_flags |= CRYPTO_ALG_DEAD;
+@@ -387,11 +388,12 @@ void crypto_alg_tested(const char *name, int err)
+ 	crypto_alg_finish_registration(alg, &list);
  
  complete:
++	list_del_init(&test->alg.cra_list);
  	complete_all(&test->completion);
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index 1aa5f306998a..d05a5aad2176 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -64,6 +64,7 @@ static int cryptomgr_probe(void *data)
- 	crypto_tmpl_put(tmpl);
  
- out:
-+	param->larval->alg.cra_flags |= CRYPTO_ALG_DEAD;
- 	complete_all(&param->larval->completion);
- 	crypto_alg_put(&param->larval->alg);
- 	kfree(param);
+-unlock:
+ 	up_write(&crypto_alg_sem);
+ 
++	crypto_alg_put(&test->alg);
+ 	crypto_remove_final(&list);
+ }
+ EXPORT_SYMBOL_GPL(crypto_alg_tested);
+@@ -412,7 +414,6 @@ int crypto_register_alg(struct crypto_alg *alg)
+ {
+ 	struct crypto_larval *larval;
+ 	LIST_HEAD(algs_to_put);
+-	bool test_started = false;
+ 	int err;
+ 
+ 	alg->cra_flags &= ~CRYPTO_ALG_DEAD;
+@@ -423,15 +424,16 @@ int crypto_register_alg(struct crypto_alg *alg)
+ 	down_write(&crypto_alg_sem);
+ 	larval = __crypto_register_alg(alg, &algs_to_put);
+ 	if (!IS_ERR_OR_NULL(larval)) {
+-		test_started = crypto_boot_test_finished();
++		bool test_started = crypto_boot_test_finished();
++
+ 		larval->test_started = test_started;
++		if (test_started)
++			crypto_schedule_test(larval);
+ 	}
+ 	up_write(&crypto_alg_sem);
+ 
+ 	if (IS_ERR(larval))
+ 		return PTR_ERR(larval);
+-	if (test_started)
+-		crypto_wait_for_test(larval);
+ 	crypto_remove_final(&algs_to_put);
+ 	return 0;
+ }
+@@ -646,8 +648,10 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 	larval = __crypto_register_alg(&inst->alg, &algs_to_put);
+ 	if (IS_ERR(larval))
+ 		goto unlock;
+-	else if (larval)
++	else if (larval) {
+ 		larval->test_started = true;
++		crypto_schedule_test(larval);
++	}
+ 
+ 	hlist_add_head(&inst->list, &tmpl->instances);
+ 	inst->tmpl = tmpl;
+@@ -657,8 +661,6 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 
+ 	if (IS_ERR(larval))
+ 		return PTR_ERR(larval);
+-	if (larval)
+-		crypto_wait_for_test(larval);
+ 	crypto_remove_final(&algs_to_put);
+ 	return 0;
+ }
+@@ -1042,6 +1044,7 @@ static void __init crypto_start_tests(void)
+ 
+ 			l->test_started = true;
+ 			larval = l;
++			crypto_schedule_test(larval);
+ 			break;
+ 		}
+ 
+@@ -1049,8 +1052,6 @@ static void __init crypto_start_tests(void)
+ 
+ 		if (!larval)
+ 			break;
+-
+-		crypto_wait_for_test(larval);
+ 	}
+ 
+ 	set_crypto_boot_test_finished();
 diff --git a/crypto/api.c b/crypto/api.c
-index 22556907b3bc..ffb81aa32725 100644
+index ffb81aa32725..bbe29d438815 100644
 --- a/crypto/api.c
 +++ b/crypto/api.c
-@@ -37,6 +37,8 @@ DEFINE_STATIC_KEY_FALSE(__crypto_boot_test_finished);
- #endif
- 
- static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg);
-+static struct crypto_alg *crypto_alg_lookup(const char *name, u32 type,
-+					    u32 mask);
- 
- struct crypto_alg *crypto_mod_get(struct crypto_alg *alg)
- {
-@@ -201,9 +203,12 @@ static void crypto_start_test(struct crypto_larval *larval)
- 
- static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
- {
--	struct crypto_larval *larval = (void *)alg;
-+	struct crypto_larval *larval;
- 	long time_left;
- 
-+again:
-+	larval = container_of(alg, struct crypto_larval, alg);
-+
- 	if (!crypto_boot_test_finished())
- 		crypto_start_test(larval);
- 
-@@ -215,9 +220,16 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
- 		alg = ERR_PTR(-EINTR);
- 	else if (!time_left)
- 		alg = ERR_PTR(-ETIMEDOUT);
--	else if (!alg)
--		alg = ERR_PTR(-ENOENT);
--	else if (IS_ERR(alg))
-+	else if (!alg) {
-+		u32 type;
-+		u32 mask;
-+
-+		alg = &larval->alg;
-+		type = alg->cra_flags & ~(CRYPTO_ALG_LARVAL | CRYPTO_ALG_DEAD);
-+		mask = larval->mask;
-+		alg = crypto_alg_lookup(alg->cra_name, type, mask) ?:
-+		      ERR_PTR(-ENOENT);
-+	} else if (IS_ERR(alg))
- 		;
- 	else if (crypto_is_test_larval(larval) &&
- 		 !(alg->cra_flags & CRYPTO_ALG_TESTED))
-@@ -228,6 +240,9 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
- 		alg = ERR_PTR(-EAGAIN);
- 	crypto_mod_put(&larval->alg);
- 
-+	if (!IS_ERR(alg) && crypto_is_larval(alg))
-+		goto again;
-+
+@@ -154,32 +154,31 @@ static struct crypto_alg *crypto_larval_add(const char *name, u32 type,
  	return alg;
  }
  
+-void crypto_larval_kill(struct crypto_alg *alg)
++static void crypto_larval_kill(struct crypto_larval *larval)
+ {
+-	struct crypto_larval *larval = (void *)alg;
++	bool unlinked;
+ 
+ 	down_write(&crypto_alg_sem);
+-	list_del(&alg->cra_list);
++	unlinked = list_empty(&larval->alg.cra_list);
++	if (!unlinked)
++		list_del_init(&larval->alg.cra_list);
+ 	up_write(&crypto_alg_sem);
+-	complete_all(&larval->completion);
+-	crypto_alg_put(alg);
+-}
+-EXPORT_SYMBOL_GPL(crypto_larval_kill);
+ 
+-void crypto_wait_for_test(struct crypto_larval *larval)
++	if (unlinked)
++		return;
++
++	complete_all(&larval->completion);
++	crypto_alg_put(&larval->alg);
++}
++
++void crypto_schedule_test(struct crypto_larval *larval)
+ {
+ 	int err;
+ 
+ 	err = crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER, larval->adult);
+-	if (WARN_ON_ONCE(err != NOTIFY_STOP))
+-		goto out;
+-
+-	err = wait_for_completion_killable(&larval->completion);
+-	WARN_ON(err);
+-out:
+-	crypto_larval_kill(&larval->alg);
++	WARN_ON_ONCE(err != NOTIFY_STOP);
+ }
+-EXPORT_SYMBOL_GPL(crypto_wait_for_test);
++EXPORT_SYMBOL_GPL(crypto_schedule_test);
+ 
+ static void crypto_start_test(struct crypto_larval *larval)
+ {
+@@ -198,7 +197,7 @@ static void crypto_start_test(struct crypto_larval *larval)
+ 	larval->test_started = true;
+ 	up_write(&crypto_alg_sem);
+ 
+-	crypto_wait_for_test(larval);
++	crypto_schedule_test(larval);
+ }
+ 
+ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+@@ -218,9 +217,11 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+ 	alg = larval->adult;
+ 	if (time_left < 0)
+ 		alg = ERR_PTR(-EINTR);
+-	else if (!time_left)
++	else if (!time_left) {
++		if (crypto_is_test_larval(larval))
++			crypto_larval_kill(larval);
+ 		alg = ERR_PTR(-ETIMEDOUT);
+-	else if (!alg) {
++	} else if (!alg) {
+ 		u32 type;
+ 		u32 mask;
+ 
+@@ -355,7 +356,7 @@ struct crypto_alg *crypto_alg_mod_lookup(const char *name, u32 type, u32 mask)
+ 		crypto_mod_put(larval);
+ 		alg = ERR_PTR(-ENOENT);
+ 	}
+-	crypto_larval_kill(larval);
++	crypto_larval_kill(container_of(larval, struct crypto_larval, alg));
+ 	return alg;
+ }
+ EXPORT_SYMBOL_GPL(crypto_alg_mod_lookup);
+diff --git a/crypto/internal.h b/crypto/internal.h
+index aee31319be2e..711a6a5bfa2b 100644
+--- a/crypto/internal.h
++++ b/crypto/internal.h
+@@ -113,8 +113,7 @@ struct crypto_alg *crypto_mod_get(struct crypto_alg *alg);
+ struct crypto_alg *crypto_alg_mod_lookup(const char *name, u32 type, u32 mask);
+ 
+ struct crypto_larval *crypto_larval_alloc(const char *name, u32 type, u32 mask);
+-void crypto_larval_kill(struct crypto_alg *alg);
+-void crypto_wait_for_test(struct crypto_larval *larval);
++void crypto_schedule_test(struct crypto_larval *larval);
+ void crypto_alg_tested(const char *name, int err);
+ 
+ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
 -- 
 2.39.2
 
