@@ -4,88 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF41AC3DA4A
-	for <ltp@archiver.kernel.org>; Mon, 19 Aug 2024 10:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1724061698; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=vqLsbrNoqCGcMV0t86ExuThHr9GdkE/dRZA4C0yxG0g=;
- b=LmxQfdGSPmpCwRW9u0/+Vfjykvx6s6sMppqhZkDIaUzwLx4agrv8aKQs/NYv32+k8WUTo
- woeXXCdkZYQRPfeUbbSkCrGpLbqeYiujlbSr1vf5n5gZPS8ulbJv8ZJD/y75cIVxH+bwDWf
- IcN0rQbXJnH8zAVS/dzAxFM1fe332yE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D25C5320E
+	for <ltp@archiver.kernel.org>; Mon, 19 Aug 2024 13:12:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A25EB3D3208
-	for <ltp@archiver.kernel.org>; Mon, 19 Aug 2024 12:01:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0E25D3D3202
+	for <ltp@archiver.kernel.org>; Mon, 19 Aug 2024 15:12:14 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 707BC3C01D4
- for <ltp@lists.linux.it>; Mon, 19 Aug 2024 12:01:18 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.48;
- helo=esa2.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id 3219D3C01D4
+ for <ltp@lists.linux.it>; Mon, 19 Aug 2024 15:11:57 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
  receiver=lists.linux.it)
-Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com
- [207.54.90.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5572A600BD1
- for <ltp@lists.linux.it>; Mon, 19 Aug 2024 12:01:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1724061677; x=1755597677;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=G/dQqQNmBw2jh8RljYYmXRX49IUKBDUTDnNsTTUqY8s=;
- b=UxjmMa8KB1iDwvgiND4TstGKWRxLr/UuKiMztXQCd2bNwoEr+FJ2azm4
- QGL53acXWzHum6SVOlgVbGquPGVbh5oOhBjLWNtPYyvLytRUxvP3LMKwo
- Dk/BCovxuLlJ2FNAp685IZmrBNmLt8FBDFe3TyL0RR0xQHAvm8mYSckzx
- 0MVPquATZ/jMVGNJ76ZEAuyMQeAAQMQAnmCJRv1TuQTOB4dRXMzojxiKj
- KXUv09Hbo6hy/FJRVVCyQPt1zr5zHBieiT1kGyaokGGjKqYAM2NoZ4K0J
- aZTqoFsoqXEmha8B3llYmaK5P13XjpKitEa6WRjxRI+ybnW1YoEMaYXaC A==;
-X-CSE-ConnectionGUID: 8pSjmGtgTzanEkqH1wWKfw==
-X-CSE-MsgGUID: 8r4XG/GjSwiBQBRnHP4t3g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11168"; a="171019947"
-X-IronPort-AV: E=Sophos;i="6.10,158,1719846000"; d="scan'208";a="171019947"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Aug 2024 19:01:15 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id E275B2F649
- for <ltp@lists.linux.it>; Mon, 19 Aug 2024 19:01:12 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 373F8D5046
- for <ltp@lists.linux.it>; Mon, 19 Aug 2024 19:01:12 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id A6FC8C56F
- for <ltp@lists.linux.it>; Mon, 19 Aug 2024 19:01:11 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.182])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 2219C1A000A;
- Mon, 19 Aug 2024 18:01:11 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Mon, 19 Aug 2024 18:02:56 +0800
-Message-ID: <20240819100256.2252942-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.42.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3BAE51A00210
+ for <ltp@lists.linux.it>; Mon, 19 Aug 2024 15:11:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1724073115;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ONIVu5A3755VlfzGE3C5HNVWEz/5kojyCPJpmgp4Wfc=;
+ b=a23eUqv7V1IWlP253w5ZdT4LdEYPJr0p4KZ9y3npNevYCkwY3hfr/fOeHqWe6q0FvwuW5S
+ RlAq9PKVVjdpRda7SJTs33MHo7vIDgmR2KbjsCXnH2bWti6W2IhKIC8fIaz0u4+2a6INuO
+ dJavymFaZXu/xMpzzHNvijbtecogbhM=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-iIJ3rFItMliWtKu4vg9G7Q-1; Mon, 19 Aug 2024 09:11:54 -0400
+X-MC-Unique: iIJ3rFItMliWtKu4vg9G7Q-1
+Received: by mail-oo1-f71.google.com with SMTP id
+ 006d021491bc7-5d5c3010f9fso3579784eaf.1
+ for <ltp@lists.linux.it>; Mon, 19 Aug 2024 06:11:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1724073113; x=1724677913;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=ONIVu5A3755VlfzGE3C5HNVWEz/5kojyCPJpmgp4Wfc=;
+ b=frvFb5OfAKDm/PPCbuaRmddIv9Ed4YPGqdHMYEAHab5kkQi7ZLFAlbZyPfWROllyr5
+ 6pyWZjR2kmS1F70E5aRrpJ5vH77xf1nh80fFT5wdR/M4WejErMaosEN7iHabSkq/KwyR
+ ASDBmlBEwS4k4N57yae/YK9ZEaBHNJ1EeKHwwCoiVwexy3hq9x0Tcyzh9lJK/wUejs6M
+ 90mrDuWujKgTUf6oTqS2EE55NXd0HiqIB0pT+NQ/TJ8XuGahAg9NELLyVFYG8IuU7ksJ
+ F88su9raE9iuzzXyyozLjqzKytCjkwK/ycqYqERK5izOnAfx5IJ4ohTrBrb8WOVvZ1a2
+ hReQ==
+X-Gm-Message-State: AOJu0Yw9LZDPQ+e3mKfxBQLbz1dmXW/HRpHnk93i/djX9vayza9tb1gf
+ 0YOncOIi555HemevlMkVtRA2sT850QgCBmzq0RVXPYcoyB3Dq9YY48MKHFnGX3W9gWcz9EKhr9e
+ oxB17AKXE+/g2CQDu52cw9T0oOkOZJ1DXunOdbAM8CKMDchllyh/m12o0AWELSFIxUmkFIrUx89
+ 6Jwv4k8N8l0X/NFXJ3YPJqhK4=
+X-Received: by 2002:a05:6870:c095:b0:270:4b79:5ed8 with SMTP id
+ 586e51a60fabf-2704b7962famr2059316fac.2.1724073113421; 
+ Mon, 19 Aug 2024 06:11:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFG0z3UKeMGKAyMUXINkbfFt/Pc3MF8jt44ASKJeWmmP1nM0AzYFQ8/NbQrd3Ax/D4tpfvHrTYN11baNuBcOXs=
+X-Received: by 2002:a05:6870:c095:b0:270:4b79:5ed8 with SMTP id
+ 586e51a60fabf-2704b7962famr2059297fac.2.1724073112995; Mon, 19 Aug 2024
+ 06:11:52 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28604.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28604.005
-X-TMASE-Result: 10--4.793800-10.000000
-X-TMASE-MatchedRID: 60gbRApQc+uhhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmOEENgsUAuYhDO
- 9b78NniRGtPsII7bpSEhTdlTCAnun6+/EguYor8cFEUknJ/kEl5jFT88f69nG/oLR4+zsDTtjoc
- zmuoPCq0wzQKLmEDacj15aY3sV6MkgIf+Pvp1N4DQTH2Q5ZvNFeI3zQLWs78br52L3Pnp8jG7pu
- CVAUrYjLNd/SlAN0GD15qP6uEMorQVwbf5lERMgI/2RRfVn5u4Tcu6aRtCI3BUKpNI+7y1VHsDE
- gQ63iHZ
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <99d43982e2469b1423701b6772677173b5a53429.1723703723.git.jstancek@redhat.com>
+ <20240815072935.GA565878@pevik>
+In-Reply-To: <20240815072935.GA565878@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 19 Aug 2024 15:11:33 +0200
+Message-ID: <CAASaF6xULS8Xj3GodoCZSf+CuEFDA5mWcq0_KduogjznoL07BA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] readlink01: Convert docs to docparse
+Subject: Re: [LTP] [PATCH] lib: make tst_detach_device_by_fd() also close
+ dev_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,42 +93,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: liwan@redhat.com, gulam.mohamed@oracle.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/readlink/readlink01.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/readlink/readlink01.c b/testcases/kernel/syscalls/readlink/readlink01.c
-index 389ba1fee..8165547d4 100644
---- a/testcases/kernel/syscalls/readlink/readlink01.c
-+++ b/testcases/kernel/syscalls/readlink/readlink01.c
-@@ -4,10 +4,12 @@
-  * Ported to LTP: Wayne Boyer
-  */
- 
--/*
-- * Test Description :
-- *   Testcase to check the basic functionality of the readlink(2),
-- *   readlink() will succeed to read the contents of the symbolic link.
-+/*\
-+ * [Description]
-+ *
-+ * Tests basic functionality of readlink(2).
-+ *
-+ * - readlink() will succeed to read the contents of the symbolic link
-  */
- 
- #include <pwd.h>
--- 
-2.42.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBBdWcgMTUsIDIwMjQgYXQgOToyOeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIEphbiwKPgo+IHRoYW5rcyBhIGxvdCBmb3IgZml4aW5nIHRoaXMh
+Cj4KPiBSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gVGVzdGVkLWJ5
+OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiBDbG9zZXM6IGh0dHBzOi8vZ2l0aHViLmNv
+bS9saW51eC10ZXN0LXByb2plY3QvbHRwL2lzc3Vlcy8xMTc1CgpQdXNoZWQuCgo+Cj4gPiBTaW5j
+ZSBjb21taXQgMTgwNDhjMWFmNzgzICgibG9vcDogRml4IGEgcmFjZSBiZXR3ZWVuIGxvb3AgZGV0
+YWNoIGFuZCBsb29wIG9wZW4iKQo+ID4gZGV0YWNoIG9wZXJhdGlvbiBpcyBkZWZlcnJlZCB0byB0
+aGUgbGFzdCBjbG9zZSBvZiB0aGUgZGV2aWNlLgo+Cj4gPiBNYWtlIHRzdF9kZXRhY2hfZGV2aWNl
+X2J5X2ZkKCkgYWxzbyBjbG9zZSBkZXZfZmQsIGFuZCBsZWF2ZSBpdCB1cCB0bwo+ID4gY2FsbGVy
+IHRvIHJlLW9wZW4gaXQgZm9yIGZ1cnRoZXIgdXNlLgo+Cj4gNi4xMS4wLXJjMy0yLmcwMGFmMGMw
+LWRlZmF1bHQKPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KCgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
