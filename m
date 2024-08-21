@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54891C52D6F
-	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 08:44:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F0FC52D6F
+	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 09:15:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5665D3D2254
-	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 10:44:57 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id EEEDA3D2197
+	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 11:15:52 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBF493D1B17
- for <ltp@lists.linux.it>; Wed, 21 Aug 2024 10:44:41 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E78AB3D115D
+ for <ltp@lists.linux.it>; Wed, 21 Aug 2024 11:15:36 +0200 (CEST)
 Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
  helo=us-smtp-delivery-124.mimecast.com; envelope-from=david@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1685A1A02389
- for <ltp@lists.linux.it>; Wed, 21 Aug 2024 10:44:40 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0F7C61A02389
+ for <ltp@lists.linux.it>; Wed, 21 Aug 2024 11:15:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1724229879;
+ s=mimecast20190719; t=1724231734;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=8+3vlnfHmJwpwssq29Yu4QXZMa+kW4/g5w49AQIsMVs=;
- b=XYnketHwy8m2PjA1EHrhYuVNDv1sX2j313+MEDP2Z2Mr7qYbaeigFkK1T8REnvUopF388m
- gVvtaTD2PLdNS+YwGt4vLTa9aHYJvop4Rlxkpc8ZKejX8SlXLmdMGSL+WdT7Z9dNwGYT7G
- RHli1imlfvZnuqcK2eNAUwnkIKDRavk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=FH3DRsdfKFj6wWn8IiUofmEtPoVy0JKk5VSTOQjOCp0=;
+ b=b1VKUp/cJm1yJSok0sQyaxHx4WKy+eiKE+kY5WunxGClf8l+PPrCObFuYfZHYVUKey7mZj
+ YP36oQjX0SiQiPLKVU+Q5xa+aKoETua/S6srDHwYe/l1Zget/2j8Xd5pFGFDw6lVh798Ne
+ JXEtq9f8DEzM+Qfxagc5TFVlzZlHBAM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-558-fMbeRorwPnuiSxLdQnCHrw-1; Wed, 21 Aug 2024 04:44:36 -0400
-X-MC-Unique: fMbeRorwPnuiSxLdQnCHrw-1
-Received: by mail-wm1-f71.google.com with SMTP id
- 5b1f17b1804b1-42aa70df35eso49458035e9.2
- for <ltp@lists.linux.it>; Wed, 21 Aug 2024 01:44:36 -0700 (PDT)
+ us-mta-343-nGMpbWL0NkG2zHf9MhZRqw-1; Wed, 21 Aug 2024 05:15:31 -0400
+X-MC-Unique: nGMpbWL0NkG2zHf9MhZRqw-1
+Received: by mail-wr1-f69.google.com with SMTP id
+ ffacd0b85a97d-371a804f191so3042187f8f.3
+ for <ltp@lists.linux.it>; Wed, 21 Aug 2024 02:15:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724229875; x=1724834675;
+ d=1e100.net; s=20230601; t=1724231730; x=1724836530;
  h=content-transfer-encoding:in-reply-to:organization:autocrypt
- :content-language:from:references:cc:to:subject:user-agent
+ :content-language:references:cc:to:from:subject:user-agent
  :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to;
- bh=8+3vlnfHmJwpwssq29Yu4QXZMa+kW4/g5w49AQIsMVs=;
- b=GCLu35zY/rTni0TlYSIceubUSetxKQ5C+27EHiEU/yUaHOGk6qPyOakmsxiSuk2QFd
- STZiXHEuRrFckntAGya5oyLyILwEc7Rnw2ZeEesCvfL7+u6nO4rjm04K455sPQVWRoWH
- geUsU0CnODNrnn8iNMtmleJXqXdKlwOwDt7LQuIfzcAfAecIDnOK7gjQp1YQDiGSHxWS
- xPzBhjpneTFKXN6ujpcVjBgfUaSa+V66G4/laZYBOEDO5F51BAXrAAyznxxZn9TuaYSf
- 8vttJPmIzXguU3+p8HgYQwYBhGABkbX7CenVf9Ot9Y50JXt+z4KPm9aGxBa+q0Kj+7g8
- iAwg==
+ bh=FH3DRsdfKFj6wWn8IiUofmEtPoVy0JKk5VSTOQjOCp0=;
+ b=CUkhQt+I1cic+0frUgawvDyw40G5/l1/oI+dLSg0I151g5OYpOGk5R4EymcBKsFGGS
+ bXLq88Owy2XtOvZwVVJ3U31X5hXUfefztkUpiQCAKsiV6NB93Fa2/61swOt3p/Pr+8o1
+ nrzuvrTadGtjg5vhh/laqqfZ+SmNDDegZqH1owVgZQd3m3FyoK2sYefo6i/aqPUBqL8R
+ QOhjugZi93IxvlxRDRJ9+p5OY/UTZ2jVC4NoNtwfjr1OjU/ewXIbAPCEI7EhBH6Kgssb
+ JJ5WVggZqx6lqtg0ypUEuQfAx8HynN/8V5r8P0vCZ3GbGJmpE7Xt6P3x25dSd7519Rci
+ q9vw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXICihYr6ticr8qOJ+xxWKQmdRzvpWydITk3jD48jHU3f1dL9reHTEv6TLR2Kog5FN/I/8=@lists.linux.it
-X-Gm-Message-State: AOJu0YzpRw74twJE69sob7gQUxWkGEHG/ukZwoBp3zHhGutjGw5GpI02
- Bk4a/AlaMxL6Stuaw9oJmTP/q6VtK5EbDIxZbbphZ2WSpNLkv+jPwo1hTtLWuqgVBfwxfSz0MZA
- S0qQsg0h42bRl010/U0r4Hhx1pE2By5WbQHUkZSYpjaUwuEQV
-X-Received: by 2002:a05:600c:1392:b0:426:6e9a:7a1e with SMTP id
- 5b1f17b1804b1-42abd255453mr13640505e9.35.1724229875429; 
- Wed, 21 Aug 2024 01:44:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFdBftAN+6Be0P7G6DupA5viq3qyf1tBgO8VTsIaJQrFRT5PDE2+3jX3exovRXCsq7Kb7H6Rw==
-X-Received: by 2002:a05:600c:1392:b0:426:6e9a:7a1e with SMTP id
- 5b1f17b1804b1-42abd255453mr13640205e9.35.1724229874535; 
- Wed, 21 Aug 2024 01:44:34 -0700 (PDT)
+ AJvYcCWQrqdIMF/49QXM1OMgzvNL48S8DSaUucQnfFtMSOKCJcQWmwAvSHkPyS7NAE97gJNK2Jo=@lists.linux.it
+X-Gm-Message-State: AOJu0Yz1hI1P6diiv16SiiVTILX7n1qA1LO37vnfmjRtqu8zb5MMx88/
+ MlaCPIQ/L2a8sz7RHrJNLWGHBs2nTcjOwrmzFD+9cgH0MYUN91NpIG3vL2GtrHrg9FGjCi5CzLu
+ yBiqu9ntLq8dB+DijmtZvcbnqKOjrDMdtIcs+8+ZtqDBv+azxy2iy5+2EUvQ=
+X-Received: by 2002:adf:e410:0:b0:367:8ff0:e022 with SMTP id
+ ffacd0b85a97d-372fd82c514mr936608f8f.63.1724231729733; 
+ Wed, 21 Aug 2024 02:15:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFlvrUtGjOXfqW9QJ0EsdZU6ssbttA+aJKQEOqlECcNqgOzmzImCpyCauFsPN9jjkgKW1cAEw==
+X-Received: by 2002:adf:e410:0:b0:367:8ff0:e022 with SMTP id
+ ffacd0b85a97d-372fd82c514mr936568f8f.63.1724231728774; 
+ Wed, 21 Aug 2024 02:15:28 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c705:4300:16d5:c5b:8388:a734?
  (p200300cbc705430016d50c5b8388a734.dip0.t-ipconnect.de.
  [2003:cb:c705:4300:16d5:c5b:8388:a734])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3718989708esm15283766f8f.70.2024.08.21.01.44.33
+ 5b1f17b1804b1-42abef9948bsm18495125e9.26.2024.08.21.02.15.27
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 21 Aug 2024 01:44:34 -0700 (PDT)
-Message-ID: <767d1908-dc30-42ae-9a8a-d2ad42a4d491@redhat.com>
-Date: Wed, 21 Aug 2024 10:44:32 +0200
+ Wed, 21 Aug 2024 02:15:28 -0700 (PDT)
+Message-ID: <8bde28af-3401-4d72-b821-d8cf01bbcd64@redhat.com>
+Date: Wed, 21 Aug 2024 11:15:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+From: David Hildenbrand <david@redhat.com>
 To: kernel test robot <oliver.sang@intel.com>
 References: <202408211026.636ade1a-oliver.sang@intel.com>
-From: David Hildenbrand <david@redhat.com>
+ <767d1908-dc30-42ae-9a8a-d2ad42a4d491@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
  dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
@@ -128,7 +129,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <202408211026.636ade1a-oliver.sang@intel.com>
+In-Reply-To: <767d1908-dc30-42ae-9a8a-d2ad42a4d491@redhat.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Language: en-US
@@ -164,120 +165,128 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 21.08.24 06:44, kernel test robot wrote:
+On 21.08.24 10:44, David Hildenbrand wrote:
+> On 21.08.24 06:44, kernel test robot wrote:
+>>
+>>
+>> Hello,
+>>
+>> kernel test robot noticed "ltp.move_pages04.fail" on:
+>>
+>> commit: b28dd7507f2dd7923325eab6ea1f291416dcc396 ("mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk")
+>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+>>
+>> [test failed on linux-next/master bb1b0acdcd66e0d8eedee3570d249e076b89ab32]
+>>
+>> in testcase: ltp
+>> version: ltp-x86_64-14c1f76-1_20240817
+>> with following parameters:
+>>
+>> 	test: numa/move_pages04
+>>
+>>
+>>
+>> compiler: gcc-12
+>> test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480+ (Sapphire Rapids) with 256G memory
+>>
+>> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>>
+>>
+>>
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <oliver.sang@intel.com>
+>> | Closes: https://lore.kernel.org/oe-lkp/202408211026.636ade1a-oliver.sang@intel.com
+>>
+>>
+>>
+>> Running tests.......
+>> <<<test_start>>>
+>> tag=move_pages04 stime=1724192393
+>> cmdline="move_pages04"
+>> contacts=""
+>> analysis=exit
+>> <<<test_output>>>
+>> move_pages04    1  TFAIL  :  move_pages04.c:142: status[1] is ENOENT, expected EFAULT
+> 
+> This change is to be expected, and I touched on that in the patch
+> description. I am rather surprised that we have a test for that
+> handling, especially because it changed already (see below).
+> 
+> The man page says:
+> 
+> 	-EFAULT: This is a zero page or the memory area is not mapped
+> 		 by the process.
+> 
+> "memory area not mapped" to me translates to "there is no mmap()", not
+> "there is no page mapped". And it says:
+> 
+> 	-ENOENT: The page is not present.
 > 
 > 
-> Hello,
+> It's not really specifies what happens when "The memory area is mapped
+> by the process, but no page is faulted in.".
 > 
-> kernel test robot noticed "ltp.move_pages04.fail" on:
+> And the old handling was even inconsistent: to achieve the old behavior,
+> we abused FOLL_DUMP, which triggers in mm/gup.c:no_page_table():
 > 
-> commit: b28dd7507f2dd7923325eab6ea1f291416dcc396 ("mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> (1) is_vm_hugetlb_page() *and* a hugetlb page is in the pagecache?
+>       Return -EFAULT. Otherwise return NULL -> -ENOENT.
+> (2) vma_is_anonymous() || !vma->vm_ops->fault ? Return -EFAULT.
+>       Otherwise return NULL -> -ENOENT.
 > 
-> [test failed on linux-next/master bb1b0acdcd66e0d8eedee3570d249e076b89ab32]
+> So, if nothing is mapped, for things like shmem we would always return
+> "-ENOENT", for anonymous memory always "-EFAULT", and for hugetlb
+> "-ENOENT" or "-EFAULT", depending on the page cache state. Inconsistent,
+> and that handling is only in place because we abused FOLL_DUMP.
 > 
-> in testcase: ltp
-> version: ltp-x86_64-14c1f76-1_20240817
-> with following parameters:
+> (there are other issues in the old implementation: on PMD migration
+> entries we would likely have returned -EFAULT in some cases where we
+> should have returned -ENOENT ...)
 > 
-> 	test: numa/move_pages04
+> While writing folio_walk, I temporarily had a version that would return
+> error codes instead of NULL to indicate "there is something, but we
+> cannot return  it" and "there is nothing", but it didn't feel right. And
+> I'm not really interested in revisiting that :)
 > 
+> ----
 > 
+> Staring at the test,  I realized the that behavior *changed* already,
+> because we wanted to fix the "zero page" and started abusing FOLL_DUMP,
+> but ended up changing the behavior for unpopulated (nothing mapped)
+> memory as well:
 > 
-> compiler: gcc-12
-> test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480+ (Sapphire Rapids) with 256G memory
+>    * NAME
+>    *	move_pages04.c
+>    *
+>    * DESCRIPTION
+>    *      Failure when page does not exit.
+>    *
+>    * ALGORITHM
+>    *
+>    *      1. Pass zero page (allocated, but not written to) as one of the
+>    *         page addresses to move_pages().
+>    *      2. Check if the corresponding status is set to:
+>    *         -ENOENT for kernels < 4.3
+>    *         -EFAULT for kernels >= 4.3 [1]
+>    *
+>    * [1]
+>    * d899844e9c98 "mm: fix status code which move_pages() returns for
+> zero page"
+>    *
 > 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> Likely test is *wrong*, because it claims to test the "zero page" but it
+> just passes "unpopulated" memory.
 > 
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202408211026.636ade1a-oliver.sang@intel.com
-> 
-> 
-> 
-> Running tests.......
-> <<<test_start>>>
-> tag=move_pages04 stime=1724192393
-> cmdline="move_pages04"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> move_pages04    1  TFAIL  :  move_pages04.c:142: status[1] is ENOENT, expected EFAULT
+> Let me dig deeper into the test.
 
-This change is to be expected, and I touched on that in the patch 
-description. I am rather surprised that we have a test for that 
-handling, especially because it changed already (see below).
+Okay, and it even looks like the test caught the unintended change for 
+"unpopulated memory", but instead we decided to change the test to 
+expect the other return code ... because there was some confusion about 
+"zero page".
 
-The man page says:
-
-	-EFAULT: This is a zero page or the memory area is not mapped
-		 by the process.
-
-"memory area not mapped" to me translates to "there is no mmap()", not 
-"there is no page mapped". And it says:
-
-	-ENOENT: The page is not present.
-
-
-It's not really specifies what happens when "The memory area is mapped 
-by the process, but no page is faulted in.".
-
-And the old handling was even inconsistent: to achieve the old behavior, 
-we abused FOLL_DUMP, which triggers in mm/gup.c:no_page_table():
-
-(1) is_vm_hugetlb_page() *and* a hugetlb page is in the pagecache?
-     Return -EFAULT. Otherwise return NULL -> -ENOENT.
-(2) vma_is_anonymous() || !vma->vm_ops->fault ? Return -EFAULT.
-     Otherwise return NULL -> -ENOENT.
-
-So, if nothing is mapped, for things like shmem we would always return 
-"-ENOENT", for anonymous memory always "-EFAULT", and for hugetlb 
-"-ENOENT" or "-EFAULT", depending on the page cache state. Inconsistent, 
-and that handling is only in place because we abused FOLL_DUMP.
-
-(there are other issues in the old implementation: on PMD migration 
-entries we would likely have returned -EFAULT in some cases where we 
-should have returned -ENOENT ...)
-
-While writing folio_walk, I temporarily had a version that would return 
-error codes instead of NULL to indicate "there is something, but we 
-cannot return  it" and "there is nothing", but it didn't feel right. And 
-I'm not really interested in revisiting that :)
-
-----
-
-Staring at the test,  I realized the that behavior *changed* already, 
-because we wanted to fix the "zero page" and started abusing FOLL_DUMP, 
-but ended up changing the behavior for unpopulated (nothing mapped) 
-memory as well:
-
-  * NAME
-  *	move_pages04.c
-  *
-  * DESCRIPTION
-  *      Failure when page does not exit.
-  *
-  * ALGORITHM
-  *
-  *      1. Pass zero page (allocated, but not written to) as one of the
-  *         page addresses to move_pages().
-  *      2. Check if the corresponding status is set to:
-  *         -ENOENT for kernels < 4.3
-  *         -EFAULT for kernels >= 4.3 [1]
-  *
-  * [1]
-  * d899844e9c98 "mm: fix status code which move_pages() returns for 
-zero page"
-  *
-
-Likely test is *wrong*, because it claims to test the "zero page" but it 
-just passes "unpopulated" memory.
-
-Let me dig deeper into the test.
+Long story short: the test needs to be fixed.
 
 -- 
 Cheers,
