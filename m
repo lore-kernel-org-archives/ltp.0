@@ -4,115 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E30C52D7C
-	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 09:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CED8C52D6F
+	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 10:31:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 579443D2269
-	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 11:37:33 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8FEAA3D2279
+	for <ltp@archiver.kernel.org>; Wed, 21 Aug 2024 12:31:51 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1FFB3D115D
- for <ltp@lists.linux.it>; Wed, 21 Aug 2024 11:37:17 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 1145B3CC2E6
+ for <ltp@lists.linux.it>; Wed, 21 Aug 2024 12:31:35 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 08A1560A768
- for <ltp@lists.linux.it>; Wed, 21 Aug 2024 11:37:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F0295200C22
+ for <ltp@lists.linux.it>; Wed, 21 Aug 2024 12:31:34 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EE61D20054;
- Wed, 21 Aug 2024 09:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1724233036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A978C20062;
+ Wed, 21 Aug 2024 10:31:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724236292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ugs6te0X/nonWu+6e1llRg5ZWyrX5/9pXfX8C9uNt/s=;
- b=X6xJL1j7aIczt+Jot9AVVJpfTy36RlQ6lMtZLyN9Obq/N7pJqE4rQt05+gAI7ob+W/Zjv9
- W8nURoe4qW55TkFNEoCKinMz8/1VwRqr0M/GF+3pOqnI5HRLCnPw8NiVZ9RpHwZGG+KC3s
- IVTz/QWgD99Ki2fBPx0bVNikyvGx5LU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1724233036;
+ bh=GOLNf8MJIl6QWG7nEI8STgqayL/ywHAQfFqF+8JkAMQ=;
+ b=daR2EvwglLu6w28pDNvJHvtlpjOHZ3Vz8wUO2usElo5CqnFE4mzmBX+LoEui6j3QpH0dv5
+ Kc611HATJb9TsOZ324KsWpu1CsZafX5bnreeZF//ph/Ecgy46U31kmq4tX9VAFMTaHbfWW
+ 7anBDsTOPoKh6Ue2FhM/mEMIW+OTZBk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724236292;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ugs6te0X/nonWu+6e1llRg5ZWyrX5/9pXfX8C9uNt/s=;
- b=aZN2wIx0foqspEJpa+JEIK9oLPM+qhMh8reqhJgTyAR9XwQKUVX+xw7oPqbY7ybq+eqpU3
- PrwKFOCqs9yuSLCg==
+ bh=GOLNf8MJIl6QWG7nEI8STgqayL/ywHAQfFqF+8JkAMQ=;
+ b=Zp+/cGUPO971ZYOuapTZMlWaqkyebK6R3561FeeuXkd0hqUoKuDzDx/dnITXiQdUVtDw40
+ tvRSiwHIdgup3QBA==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="KjWUgnX/";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="o9mRL/8O"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1724233035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724236291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ugs6te0X/nonWu+6e1llRg5ZWyrX5/9pXfX8C9uNt/s=;
- b=KjWUgnX//2WlwC2F/DbYPutm1ry1CqKhPnVOrnW3EA1V1s/7DaqrRqOWJqGNLANPQnKSqV
- FKh2pHdRoPERNX19almHWmPuFMKHyetsM//4pBPHCF9qoYk90PIHIFpFUfrNudfqZXbMnu
- oEJSpeYZoLCnHt+pYoABt5RJcLM3bqg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1724233035;
+ bh=GOLNf8MJIl6QWG7nEI8STgqayL/ywHAQfFqF+8JkAMQ=;
+ b=WlchWG12jZklYLSTsQZghVqCBcsVgPs7CQq4mAofKJvcgzz0sYP06ydYaH6V2Jb2FaIZ5Q
+ aH/n44nb1KKY6/0sldZqidcMri3q12P7Ex9r/cTPuV5htpWlq/3Nf679zd4t9+RZD2tOqm
+ A04Hb7KbgZGOW2ZD3wBsPyrkS6fKMls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724236291;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ugs6te0X/nonWu+6e1llRg5ZWyrX5/9pXfX8C9uNt/s=;
- b=o9mRL/8Omadwdo/LhSKHta+vRPw4pQMOAWLcy7odw5dgqc4oBOvpF2PuplOSd6t/Ty7HMT
- /LiSdFbYEKzK9hBw==
+ bh=GOLNf8MJIl6QWG7nEI8STgqayL/ywHAQfFqF+8JkAMQ=;
+ b=wFhmRpvhBeOOE4MYP+LRSS2U+ZybhPr5qeZrbrHnQGW85PgwlRBoGAG8fYVVrnKNSCn8cy
+ 7MKwo9e2gz4Md4BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFC1C139C2;
- Wed, 21 Aug 2024 09:37:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9791413770;
+ Wed, 21 Aug 2024 10:31:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mL/tNUu1xWb9VQAAD6G6ig
- (envelope-from <akumar@suse.de>); Wed, 21 Aug 2024 09:37:15 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 21 Aug 2024 11:37:15 +0200
-Message-ID: <2522568.XAFRqVoOGU@localhost>
-Organization: SUSE
-In-Reply-To: <20240726095546.1041726-1-pvorel@suse.cz>
-References: <20240726095546.1041726-1-pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zRf1IwPCxWZAZwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 21 Aug 2024 10:31:31 +0000
+Date: Wed, 21 Aug 2024 12:30:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <ZsXBxlFZGy4ETPa8@yuki.lan>
+References: <20240416080141.22616-1-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: EE61D20054
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+Content-Disposition: inline
+In-Reply-To: <20240416080141.22616-1-xuyang2018.jy@fujitsu.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- HAS_ORG_HEADER(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.de:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email, suse.de:dkim,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] lib: print kernel version
+Subject: Re: [LTP] [PATCH] execve: Add negative test for execve
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,21 +109,63 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCkkgdGhpbmsgdGhpcyBpcyB2ZXJ5IGhlbHBmdWwuIFRoYW5rIHlvdSEKClJldmll
-d2VkLWJ5OiBBdmluZXNoIEt1bWFyIDxha3VtYXJAc3VzZS5kZT4KZm9yIGFsbCBwYXRjaGVzIGlu
-IHNlcmllcy4KCk9uIEZyaWRheSwgSnVseSAyNiwgMjAyNCAxMTo1NTo0M+KAr0FNIEdNVCsyIFBl
-dHIgVm9yZWwgd3JvdGU6Cj4gSGksCj4gCj4gYSBmb2xsb3cgdXAgb2YgNWNhYmYyYmVhNyAoInRz
-dF90bXBkaXI6IFByaW50IHVzZWQgdGVtcG9yYXJ5IGRpciBhbmQgaXRzCj4gZmlsZXN5c3RlbSIp
-IHdoaWNoIHNob3VsZCBoZWxwIGRlYnVnZ2luZyBvZiBMVFAgZmFpbHVyZSByZXBvcnRzLgo+IAo+
-IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4gCj4gUGV0ciBWb3JlbCAoMyk6Cj4gICBsaWI6IFByaW50
-IHRlc3RlZCBrZXJuZWwgYW5kIGFyY2gKPiAgIHRzdF90ZXN0LnNoOiBsaWI6IFByaW50IHRlc3Rl
-ZCBrZXJuZWwgYW5kIGFyY2gKPiAgIHRzdF90ZXN0OiBQcmludCB1c2VkIHRlbXBvcmFyeSBkaXIg
-YW5kIGl0cyBmaWxlc3lzdGVtCj4gCj4gIGxpYi90c3RfdGVzdC5jICAgICAgICAgICAgfCA2ICsr
-KysrKwo+ICB0ZXN0Y2FzZXMvbGliL3RzdF90ZXN0LnNoIHwgMiArKwo+ICAyIGZpbGVzIGNoYW5n
-ZWQsIDggaW5zZXJ0aW9ucygrKQo+IAo+IAoKUmVnYXJkcywKQXZpbmVzaAoKCgotLSAKTWFpbGlu
-ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi!
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that execve(2) fails with
+> + *
+> + * - ELOOP when too many symbolic links are encountered in filename
+> + */
+> +
+> +#include "tst_test.h"
+> +
+> +#define TEST_ELOOP "test_eloop"
+> +#define TEST_ELOOP2 "test_eloop2"
+> +
+> +static struct test_case_t {
+> +	char *filename;
+> +	int expected_errno;
+> +	int user;
+> +	char *desc;
+> +} tcases[] = {
+> +	{TEST_ELOOP, ELOOP, 0,
+> +		"too many symbolic links are encountered in filename"},
+> +};
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_SYMLINK(TEST_ELOOP, TEST_ELOOP2);
+> +	SAFE_SYMLINK(TEST_ELOOP2, TEST_ELOOP);
+> +}
+> +
+> +static void verify_execve(unsigned int i)
+> +{
+> +	struct test_case_t *tc = &tcases[i];
+> +	char *argv[2] = {tc->filename, NULL};
+> +
+> +	TST_EXP_FAIL(execve(tc->filename, argv, NULL), tc->expected_errno,
+> +		"%s", tc->desc);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = verify_execve,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +};
+
+Any reason why this isn't added to execve03.c instead?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
