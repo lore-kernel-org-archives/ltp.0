@@ -4,87 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A5A7C531DC
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 12:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1724414469; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=H1AX0GQ/BjnoiKszs5Ezw2BI19r0XEyjwKdRKk2NbHg=;
- b=PqmfZLjTTKn/Lh+mZcUEjtDVapTEjb+zPS0MAvpKHdh8lySuy2fvBzK570Ibx4wKOBdb3
- pfDuvrWgDMiXxe1GUemXIeDbBHyVwfLUppwpE4N/cTpP3nO+mg+lPjwrxXXwVL0m3emR6UX
- y1mNJGeJF3+HlEOilJIjGgylq73q89Y=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B603C52D7C
+	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 12:02:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D91AA3D2332
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 14:01:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BEAC83CF762
+	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 14:02:31 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 75BC23CF762
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 14:00:50 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 278AF3CF762
+ for <ltp@lists.linux.it>; Fri, 23 Aug 2024 14:02:16 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BFF5A60274B
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 14:00:48 +0200 (CEST)
-Received: by mail-wr1-x42b.google.com with SMTP id
- ffacd0b85a97d-371aa511609so904900f8f.1
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 05:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1724414448; x=1725019248; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=ReK1PcepjLq7SZX4/eBNaQg9OzMVFiLW60qjjoOBOB4=;
- b=UCbnAs8HZ7jmmZENCmVzyyEAYMo3H7VI3llAHgLoIJMyB1rQHe8PI9eVBCjK1m46lD
- ZEQnvvxG0AS71cPcQZ3nqyEDBqgeSP39t0ZfpwVDQ7Rqt6cLuImj/3w8VOZFH6+9CMJ+
- myDVNMXdrUf0LTfwDMWj7ttOHrVZakc7txgAl4+SeZjLtzrOZgz1lxchaJ4tGAhnt8D1
- beROBYrPcXN9GTr7vpog+dPOjznzcWvs2JL4ODZ/kTzRbOKYNSoTbydMyrLAoaE13UK2
- smdZaHWdUmqweQ1rJzsY7FAT/+NaqoR7bsN55i7P9W7Qdlyv0rr9JfWlYx1tMubV2+DV
- oFWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724414448; x=1725019248;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ReK1PcepjLq7SZX4/eBNaQg9OzMVFiLW60qjjoOBOB4=;
- b=B6Gv28Dd+GC8Yos58wNrzM5SycVWRvxz9/V3NghtcZNnyRmAcQiP69EoYzQpDNnVM0
- z1TeOfZYH+U0s5exDuOoVpsxsMvEhL/mk7OjR1Sd3zUZe9Qr8EepePXEkVdmNFbAabIz
- pPTjWynL9ZwePGywgN/MZw3qI7MvvbbVnWn1c9VZM552TDELGWHz5e6fll1cpx/JnuRD
- RM1z/BmRHreoMMXYh7QPpPaxenFoidJeAHvV3wmHE6rlDBfdGvqCqrfHcd4reZ7sjgRL
- pn+222VJ/FayFkZI0I2cB0WdZxDNPTnorTwLUTOahJ/LQ1AdqmxEfgMg5T/uo0CaM3bj
- B7pg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXg9+IRsCGGtAnVjcVprBfnifdkS+azscmg4YbtO5NtHnaulAFRNyJgulKczQLkay/+ZTE=@lists.linux.it
-X-Gm-Message-State: AOJu0YzetnPchlfbffcx+klV8hLXqrbLbv07sMBb628qZ1AyuPbBo1z5
- vcowRt1MXRvudiBLnstoh3fBdH9JQ2Yzgw4E0t4MoJ4l9wJYeEyiF3tzCZVV6P4=
-X-Google-Smtp-Source: AGHT+IHx3fVywYSvoIwvMbMJQb9fVjdW9rUGKJJwjSTdSyTMzBThvCbAzQUZyPsWuAsFm6SmjUsb/g==
-X-Received: by 2002:a5d:490d:0:b0:367:94b8:1df1 with SMTP id
- ffacd0b85a97d-373118fba19mr1251531f8f.55.1724414447362; 
- Fri, 23 Aug 2024 05:00:47 -0700 (PDT)
-Received: from [10.232.133.86] ([88.128.88.138])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a868f2ca516sm249785666b.87.2024.08.23.05.00.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 23 Aug 2024 05:00:47 -0700 (PDT)
-Message-ID: <b57b7fc4-e3c2-4aa7-8037-a27906d25091@suse.com>
-Date: Fri, 23 Aug 2024 14:00:46 +0200
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3AE94200C70
+ for <ltp@lists.linux.it>; Fri, 23 Aug 2024 14:02:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B248022677;
+ Fri, 23 Aug 2024 12:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724414534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BcgzIPfw22XfyANRF4gzX2Zv9MsN0nRWQMXoT56qQ6A=;
+ b=pjgw0gi2P6anUpbt6w42WXHyCwdLkwENNMYfshClmXyGM5DMDJLqHgej3pYXA8HgUnNgc3
+ HRnWMOpA7ZLrshg6RTr116Kx7Eh2QTnDqxNKUATWPaM57YVIZ8YTidkkRSvIWD8hpoiuXk
+ W9PvBgqo1FKt0+ApnVkyMF19up/Unw0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724414534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BcgzIPfw22XfyANRF4gzX2Zv9MsN0nRWQMXoT56qQ6A=;
+ b=xqjPTp8j3YC9MYqCOvxHdfhUWH49+2rjLaffqkOGhFVTfG5F0tC+CRwrfXCZNIVzGsWqwZ
+ v50Knfdwt4IOOOAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pjgw0gi2;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xqjPTp8j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724414534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BcgzIPfw22XfyANRF4gzX2Zv9MsN0nRWQMXoT56qQ6A=;
+ b=pjgw0gi2P6anUpbt6w42WXHyCwdLkwENNMYfshClmXyGM5DMDJLqHgej3pYXA8HgUnNgc3
+ HRnWMOpA7ZLrshg6RTr116Kx7Eh2QTnDqxNKUATWPaM57YVIZ8YTidkkRSvIWD8hpoiuXk
+ W9PvBgqo1FKt0+ApnVkyMF19up/Unw0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724414534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BcgzIPfw22XfyANRF4gzX2Zv9MsN0nRWQMXoT56qQ6A=;
+ b=xqjPTp8j3YC9MYqCOvxHdfhUWH49+2rjLaffqkOGhFVTfG5F0tC+CRwrfXCZNIVzGsWqwZ
+ v50Knfdwt4IOOOAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 557C11398B;
+ Fri, 23 Aug 2024 12:02:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xfpDC0Z6yGYlSwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 23 Aug 2024 12:02:14 +0000
+Date: Fri, 23 Aug 2024 14:02:08 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Message-ID: <20240823120208.GC1247674@pevik>
+References: <20240821080808.3311245-1-maxj.fnst@fujitsu.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20240823114217.1261861-1-pvorel@suse.cz>
- <20240823114217.1261861-2-pvorel@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20240823114217.1261861-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240821080808.3311245-1-maxj.fnst@fujitsu.com>
+X-Rspamd-Queue-Id: B248022677
+X-Spamd-Result: default: False [-3.70 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.19)[-0.939]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] ci/debian: Simplify dependencies installation
- / removal
+Subject: Re: [LTP] [PATCH] kcmp: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,98 +126,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Thanks Petr for simplifying the ci process!
+Hi Ma,
 
-Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> +++ b/testcases/kernel/syscalls/kcmp/kcmp02.c
+...
+> - /* Description:
+> - *   Verify that:
+> - *		1) kcmp fails with bad pid
+> - *		2) kcmp fails with invalid flag
+> - *		3) kcmp fails with invalid flag
+> - *		4) kcmp fails with invalid flag
+> - *		5) kcmp fails with invalid flag
+> - *		6) kcmp fails with invalid fd
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that, kcmp() returns -1 and sets errno to
+> + *
+> + * 1. ESRCH if pid does not exist
+> + * 2. EINVAL if type is invalid
+> + * 3. EINVAL if type is invalid
+> + * 4. EINVAL if type is invalid
+> + * 5. EINVAL if type is invalid
+4x EINVAL, it would be better to describe how they differs.
+Obviously KCMP_TYPES (the last item in enum kcmp_type in
+include/uapi/linux/kcmp.h) should not be used in userspace (it's not in man
+page). Other wrong values are -1 (negative), INT_MIN (negative) and INT_MAX too high.
 
-Andrea
+Or, if you don't want to bother with the description, you could wrote:
 
-On 8/23/24 13:42, Petr Vorel wrote:
-> 1) Use asciidoc-base instead of asciidoc for both installation and
->     removal (it contains the asciidoc binary, asciidoc is a metapackage,
->     thus removing it would not remove the asciidoc binary).
->
-> 2) asciidoc-base asciidoc-dblatex and ruby-asciidoctor-pdf are available
->     on all current not yet EOL versions (from buster (oldoldstable) to
->     trixie (testing)), thus it can be safely used without '|| true' fallback.
->
-> 3) asciidoctor contains the asciidoctor binary and have ruby-asciidoctor
->     (ruby asciidoc library) as a dependency. It can be used instead.
->
-> 4) Remove also ruby-asciidoctor-pdf. It should be removed in flow
->     asciidoc => ruby-asciidoctor => ruby-asciidoctor-pdf, but explicit
->     remove is more obvious.
->
-> 5) Don't try to install libc6 (it's an obvious base package, it cannot
->     be removed). But it's not working on Ubuntu 18.04 LTS (Bionic Beaver)
->     (package not there yet).
->
-> This also unifies packages, which is a preparation for a next commit.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->   ci/debian.minimal.sh | 5 +++--
->   ci/debian.sh         | 6 +++---
->   2 files changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/ci/debian.minimal.sh b/ci/debian.minimal.sh
-> index 0584192721..2ccd161c46 100755
-> --- a/ci/debian.minimal.sh
-> +++ b/ci/debian.minimal.sh
-> @@ -5,7 +5,7 @@
->   apt="apt remove -y"
->   
->   $apt \
-> -	asciidoc \
-> +	asciidoc-base \
->   	asciidoctor \
->   	libacl1-dev \
->   	libaio-dev \
-> @@ -16,4 +16,5 @@ $apt \
->   	libsepol-dev \
->   	libssl-dev
->   
-> -$apt asciidoc-base ruby-asciidoctor || true
-> +# Missing on Ubuntu 18.04 LTS (Bionic Beaver)
-> +$apt ruby-asciidoctor-pdf || true
-> diff --git a/ci/debian.sh b/ci/debian.sh
-> index 63cf242d2a..c413ef457b 100755
-> --- a/ci/debian.sh
-> +++ b/ci/debian.sh
-> @@ -15,7 +15,8 @@ apt="apt install -y --no-install-recommends"
->   
->   $apt \
->   	acl-dev \
-> -	asciidoc \
-> +	asciidoc-base \
-> +	asciidoc-dblatex \
->   	asciidoctor \
->   	autoconf \
->   	automake \
-> @@ -29,7 +30,6 @@ $apt \
->   	libacl1-dev \
->   	libaio-dev \
->   	libcap-dev \
-> -	libc6 \
->   	libc6-dev \
->   	libjson-perl \
->   	libkeyutils-dev \
-> @@ -43,7 +43,7 @@ $apt \
->   	lsb-release \
->   	pkg-config
->   
-> +# Missing on Ubuntu 18.04 LTS (Bionic Beaver)
->   $apt ruby-asciidoctor-pdf || true
-> -$apt asciidoc-dblatex || true
->   
->   df -hT
+* 1. ESRCH if pid does not exist
+* 2-5. EINVAL if type is invalid
+* 5. EINVAL if type is invalid
+* 6. EBADF if fd is invalid
+
+Kind regards,
+Petr
+
+> + * 6. EBADF if fd is invalid
+...
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
