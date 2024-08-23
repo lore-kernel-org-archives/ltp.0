@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01ADDC531DC
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 11:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C0EBC531DC
+	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 11:42:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C759D3D2332
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 13:42:40 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1D3FB3D233A
+	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 13:42:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F3123D2258
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 13:42:26 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 6E5193D2258
+ for <ltp@lists.linux.it>; Fri, 23 Aug 2024 13:42:27 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,74 +24,46 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E5E3C1000403
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 13:42:25 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1C09E600B08
+ for <ltp@lists.linux.it>; Fri, 23 Aug 2024 13:42:26 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5AD2C223C9;
- Fri, 23 Aug 2024 11:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724413344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TcW+kCAH1cL6h21dzG0D5FbGeqBLAHcdnDWuMtK6g8M=;
- b=2v02dCfLCgVzU1D0nS1sixHr66Qeniyh/xFr2bumWvpidSSxXNzmTRiyLzVczeGu0aspLl
- cwmoirOvR9v7My8SCbom1T6qfgHkhkvSuEjiPY7o3z+7rSRIdmoiZUn5sxt4Q4S+m7OHKX
- EVdDlcMImk49Cg+xBTL6l0+Q9bSBBJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724413344;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TcW+kCAH1cL6h21dzG0D5FbGeqBLAHcdnDWuMtK6g8M=;
- b=Rv9LQ0yM2jeTeKtvRJypCWaLhVKGGiD61RF26rjphEPsXQCo+OckXMOMahMkikKBYAayun
- ckv9VpbevxwRWVBQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 327532266D;
+ Fri, 23 Aug 2024 11:42:25 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724413344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TcW+kCAH1cL6h21dzG0D5FbGeqBLAHcdnDWuMtK6g8M=;
- b=2v02dCfLCgVzU1D0nS1sixHr66Qeniyh/xFr2bumWvpidSSxXNzmTRiyLzVczeGu0aspLl
- cwmoirOvR9v7My8SCbom1T6qfgHkhkvSuEjiPY7o3z+7rSRIdmoiZUn5sxt4Q4S+m7OHKX
- EVdDlcMImk49Cg+xBTL6l0+Q9bSBBJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724413344;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TcW+kCAH1cL6h21dzG0D5FbGeqBLAHcdnDWuMtK6g8M=;
- b=Rv9LQ0yM2jeTeKtvRJypCWaLhVKGGiD61RF26rjphEPsXQCo+OckXMOMahMkikKBYAayun
- ckv9VpbevxwRWVBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 154D81398B;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C75711398B;
  Fri, 23 Aug 2024 11:42:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sePMA6B1yGbeRAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eBKwLqB1yGbeRAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Fri, 23 Aug 2024 11:42:24 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 23 Aug 2024 13:42:14 +0200
-Message-ID: <20240823114217.1261861-1-pvorel@suse.cz>
+Date: Fri, 23 Aug 2024 13:42:16 +0200
+Message-ID: <20240823114217.1261861-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240823114217.1261861-1-pvorel@suse.cz>
+References: <20240823114217.1261861-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-2.99)[99.96%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_DN_SOME(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 327532266D
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/3] ci: Simplify and speedup minimal installation
+Subject: [LTP] [PATCH 2/3] ci/debian: Speedup minimal variant installation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,29 +80,161 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+We installed full dependencies and then remove them. Faster and easier
+to review is to install only what will not be later removed.
+But still attempt to remove (in case something was installed for
+whatever reason - this should not happen in containers which are
+minimal, but 1) just in case 2) can be used on VM for testing.
 
-I tried to address Andrea's complain against installing and uninstalling
-(hard to debug).
+Implement this by several lists of packages and usual passing
+environment variables.
 
-Now minimal installation is really the fastest.
+In the end speedup is ~ 1 min 20 sec, but it's also easier to see what
+happen.
 
-Tested: https://github.com/pevik/ltp/actions/runs/10525033207
-
-Kind regards,
-Petr
-
-
-Petr Vorel (3):
-  ci/debian: Simplify dependencies installation / removal
-  ci/debian: Speedup minimal variant installation
-  ci/debian.sh: Make dependencies really minimal
-
+Reported-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
  .github/workflows/ci-docker-build.yml |  2 +-
- ci/debian.minimal.sh                  | 16 +----
- ci/debian.sh                          | 88 +++++++++++++++++----------
- 3 files changed, 58 insertions(+), 48 deletions(-)
+ ci/debian.minimal.sh                  | 17 +-----
+ ci/debian.sh                          | 84 +++++++++++++++++----------
+ 3 files changed, 55 insertions(+), 48 deletions(-)
 
+diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
+index 322c06efa3..0445a35384 100644
+--- a/.github/workflows/ci-docker-build.yml
++++ b/.github/workflows/ci-docker-build.yml
+@@ -128,7 +128,7 @@ jobs:
+         INSTALL=${{ matrix.container }}
+         INSTALL="${INSTALL%%:*}"
+         INSTALL="${INSTALL%%/*}"
+-        ./ci/$INSTALL.sh
++        ACTION="$VARIANT" ./ci/$INSTALL.sh
+         if [ "$VARIANT" ]; then ./ci/$INSTALL.$VARIANT.sh; fi
+ 
+     - name: Compiler version
+diff --git a/ci/debian.minimal.sh b/ci/debian.minimal.sh
+index 2ccd161c46..1e8dd19af2 100755
+--- a/ci/debian.minimal.sh
++++ b/ci/debian.minimal.sh
+@@ -2,19 +2,4 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2018-2024 Petr Vorel <pvorel@suse.cz>
+ 
+-apt="apt remove -y"
+-
+-$apt \
+-	asciidoc-base \
+-	asciidoctor \
+-	libacl1-dev \
+-	libaio-dev \
+-	libcap-dev \
+-	libkeyutils-dev \
+-	libnuma-dev \
+-	libselinux1-dev \
+-	libsepol-dev \
+-	libssl-dev
+-
+-# Missing on Ubuntu 18.04 LTS (Bionic Beaver)
+-$apt ruby-asciidoctor-pdf || true
++ACTION="remove-nonessential" $(dirname $0)/debian.sh
+diff --git a/ci/debian.sh b/ci/debian.sh
+index c413ef457b..68cf1509fc 100755
+--- a/ci/debian.sh
++++ b/ci/debian.sh
+@@ -11,39 +11,61 @@ apt update
+ # workaround for Ubuntu impish asking to interactively configure tzdata
+ export DEBIAN_FRONTEND="noninteractive"
+ 
+-apt="apt install -y --no-install-recommends"
+-
+-$apt \
+-	acl-dev \
+-	asciidoc-base \
+-	asciidoc-dblatex \
+-	asciidoctor \
+-	autoconf \
+-	automake \
+-	build-essential \
+-	debhelper \
+-	devscripts \
+-	clang \
+-	gcc \
+-	git \
+-	iproute2 \
+-	libacl1-dev \
+-	libaio-dev \
+-	libcap-dev \
+-	libc6-dev \
+-	libjson-perl \
+-	libkeyutils-dev \
+-	libmnl-dev \
+-	libnuma-dev \
+-	libselinux1-dev \
+-	libsepol-dev \
+-	libssl-dev \
+-	libtirpc-dev \
+-	linux-libc-dev \
+-	lsb-release \
++install="apt install -y --no-install-recommends"
++remove="apt remove -y"
++
++pkg_minimal="
++	acl-dev
++	autoconf
++	automake
++	build-essential
++	debhelper
++	devscripts
++	clang
++	gcc
++	git
++	iproute2
++	libc6-dev
++	libjson-perl
++	libmnl-dev
++	libtirpc-dev
++	linux-libc-dev
++	lsb-release
+ 	pkg-config
++"
++
++pkg_nonessential="
++	asciidoc-base
++	asciidoc-dblatex
++	asciidoctor
++	libacl1-dev
++	libaio-dev
++	libcap-dev
++	libkeyutils-dev
++	libnuma-dev
++	libselinux1-dev
++	libsepol-dev
++	libssl-dev
++"
+ 
+ # Missing on Ubuntu 18.04 LTS (Bionic Beaver)
+-$apt ruby-asciidoctor-pdf || true
++pkg_maybe_nonessential="ruby-asciidoctor-pdf"
++
++case "$ACTION" in
++	minimal)
++		echo "=== Installing only minimal dependencies ==="
++		$install $pkg_minimal
++		;;
++	remove-nonessential)
++		echo "=== Make sure devel libraries are removed ==="
++		$remove $pkg_nonessential
++		$remove $pkg_maybe_nonessential || true
++		;;
++	*)
++		echo "=== Installing dependencies ==="
++		$install $pkg_minimal $pkg_nonessential
++		$install $pkg_maybe_nonessential || true
++		;;
++esac
+ 
+ df -hT
 -- 
 2.45.2
 
