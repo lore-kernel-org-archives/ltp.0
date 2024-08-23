@@ -4,109 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF2FC52D7C
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 18:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 936EFC5321E
+	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 22:00:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9BEF33D2379
-	for <ltp@archiver.kernel.org>; Fri, 23 Aug 2024 20:53:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 244B63D239A
+	for <ltp@archiver.kernel.org>; Sat, 24 Aug 2024 00:00:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 926223D234B
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 20:53:07 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 2D1CC3D1311
+ for <ltp@lists.linux.it>; Sat, 24 Aug 2024 00:00:01 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=neilb@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E02B100093E
- for <ltp@lists.linux.it>; Fri, 23 Aug 2024 20:53:06 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D9EE360072D
+ for <ltp@lists.linux.it>; Sat, 24 Aug 2024 00:00:00 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A308522319;
- Fri, 23 Aug 2024 18:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724439184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 49D2522726;
+ Fri, 23 Aug 2024 21:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1724450399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OG3GVJvSkSrZing4dFbZLwgqoUoF+8JjNz2qwIrHZF0=;
- b=y6Hos3+MKKCwRWqdGbalwjyN0yI1r3BArHAE2+WFm6lI1iM4Aoaa2LHiwKm3e5rBI7T4zf
- 8zyE/YOu+jT/ClG/iM5ucHm87XLCB9elPs058ly1RhChqF3nmx8je31lBAAbnUdawXGjb7
- gSVsugwnfc2na5GoNRktCsvZMj3sA48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724439184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=yDHL5THQ9oZe4s+ltFvldSBSfUnI9O72ytyxKXsymW4=;
+ b=tGuMlhjb7CnvfVU0MvsvnWIwv0y3/Gua5JbROZ2qaxSFMgv3ZNWLBkEImrXJi+kqxhURFl
+ 9kj+JAGzlf5KMKdHevYCnwN03nEarj9V1qIeMLZ9Y3AmPHLt87USCuyegSjydlUKIxugUr
+ 6lXhrXHt1VH8K+zlje+zgrNhFlSqxbs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1724450399;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OG3GVJvSkSrZing4dFbZLwgqoUoF+8JjNz2qwIrHZF0=;
- b=skRm8FGyz3iCWprfZB+kYg+cSsywIeLFwMXLzs0BnteHym7JYC81cN8C0IP7iigmDe90xu
- OvQcUno0gBdS94Ag==
+ bh=yDHL5THQ9oZe4s+ltFvldSBSfUnI9O72ytyxKXsymW4=;
+ b=8j2t1iHtPs/5Vx9OVPWPWpsDeF7zCynLOCcZnD4C3Q7ihfOSVE4UuvjQQ3tqXvqaQgptOm
+ eHKBKeZ3jlW/clBw==
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724439184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1724450398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OG3GVJvSkSrZing4dFbZLwgqoUoF+8JjNz2qwIrHZF0=;
- b=y6Hos3+MKKCwRWqdGbalwjyN0yI1r3BArHAE2+WFm6lI1iM4Aoaa2LHiwKm3e5rBI7T4zf
- 8zyE/YOu+jT/ClG/iM5ucHm87XLCB9elPs058ly1RhChqF3nmx8je31lBAAbnUdawXGjb7
- gSVsugwnfc2na5GoNRktCsvZMj3sA48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724439184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=yDHL5THQ9oZe4s+ltFvldSBSfUnI9O72ytyxKXsymW4=;
+ b=cbda3XDMoD6/ANsRrOxfa8OHAgrh/pmv1CSt1HS9jDWLa3HPTR4rAyLtGXqHIRyAAlhf7C
+ PuEanvVExwApuS1srLgnPupgeycfWvd0S6tPBPxjpZhdkVZ0yJSrRiNZzt2mRJawhJ51Rm
+ NEMiLOyKV4rRTtQqFHB3iY0w6MDndRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1724450398;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OG3GVJvSkSrZing4dFbZLwgqoUoF+8JjNz2qwIrHZF0=;
- b=skRm8FGyz3iCWprfZB+kYg+cSsywIeLFwMXLzs0BnteHym7JYC81cN8C0IP7iigmDe90xu
- OvQcUno0gBdS94Ag==
+ bh=yDHL5THQ9oZe4s+ltFvldSBSfUnI9O72ytyxKXsymW4=;
+ b=l570JSo+B+WTjGTj2QB2iy+SI5noUjZuMLNG0NqcdTQw4jEbgL2Egp3Oq25e1DkYJnfxj6
+ ZWche639d3XPlVDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 184E41333E;
- Fri, 23 Aug 2024 18:53:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CF831398B;
+ Fri, 23 Aug 2024 21:59:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7H5dA5DayGZYRAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 23 Aug 2024 18:53:04 +0000
-Date: Fri, 23 Aug 2024 20:53:02 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Chuck Lever III <chuck.lever@oracle.com>
-Message-ID: <20240823185302.GA1302254@pevik>
-References: <20240814085721.518800-1-pvorel@suse.cz>
- <Zrytfw1DRse3wWRZ@tissot.1015granger.net>
- <20240823064640.GA1217451@pevik>
- <0BDD1287-471E-47A8-A362-DF660806CED6@oracle.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7tIHBVsGyWbhcwAAD6G6ig
+ (envelope-from <neilb@suse.de>); Fri, 23 Aug 2024 21:59:55 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0BDD1287-471E-47A8-A362-DF660806CED6@oracle.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+From: "NeilBrown" <neilb@suse.de>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-reply-to: <20240823064640.GA1217451@pevik>
+References: <>, <20240823064640.GA1217451@pevik>
+Date: Sat, 24 Aug 2024 07:59:44 +1000
+Message-id: <172445038410.6062.6091007925280806767@noble.neil.brown.name>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
  BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_EQ_ADDR_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[9];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_SEVEN(0.00)[9]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ noble.neil.brown.name:mid, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 1/1] nfsstat01: Update client RPC calls for
  kernel 6.9
@@ -121,92 +113,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Neil Brown <neilb@suse.de>, Josef Bacik <josef@toxicpanda.com>,
- linux-stable <stable@vger.kernel.org>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-nfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+ stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cgo+ID4gT24gQXVnIDIzLCAyMDI0LCBhdCAyOjQ24oCvQU0sIFBldHIgVm9yZWwgPHB2b3JlbEBz
-dXNlLmN6PiB3cm90ZToKCj4gPiBIaSBDaHVjaywgTmVpbCwgYWxsLAoKPiA+PiBPbiBXZWQsIEF1
-ZyAxNCwgMjAyNCBhdCAxMDo1NzoyMUFNICswMjAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+ID4+PiA2
-LjkgbW92ZWQgY2xpZW50IFJQQyBjYWxscyB0byBuYW1lc3BhY2UgaW4gIk1ha2UgbmZzIHN0YXRz
-IHZpc2libGUgaW4KPiA+Pj4gbmV0d29yayBOUyIgcGF0Y2hldC4KCj4gPj4+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xpbnV4LW5mcy9jb3Zlci4xNzA4MDI2OTMxLmdpdC5qb3NlZkB0b3hpY3Bh
-bmRhLmNvbS8KCj4gPj4+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6
-Pgo+ID4+PiAtLS0KPiA+Pj4gQ2hhbmdlcyB2MS0+djI6Cj4gPj4+ICogUG9pbnQgb3V0IHdob2xl
-IHBhdGNoc2V0LCBub3QganVzdCBzaW5nbGUgY29tbWl0Cj4gPj4+ICogQWRkIGEgY29tbWVudCBh
-Ym91dCB0aGUgcGF0Y2hzZXQKCj4gPj4+IEhpIGFsbCwKCj4gPj4+IGNvdWxkIHlvdSBwbGVhc2Ug
-YWNrIHRoaXMgc28gdGhhdCB3ZSBoYXZlIGZpeGVkIG1haW5saW5lPwoKPiA+Pj4gRllJIFNvbWUg
-cGFydHMgaGFzIGJlZW4gYmFja3BvcnRlZCwgZS5nLjoKPiA+Pj4gZDQ3MTUxYjc5ZTMyMiAoIm5m
-czogZXhwb3NlIC9wcm9jL25ldC9zdW5ycGMvbmZzIGluIG5ldCBuYW1lc3BhY2VzIikKPiA+Pj4g
-dG8gYWxsIHN0YWJsZS9MVFM6IDUuNC4yNzYsIDUuMTAuMjE3LCA1LjE1LjE1OSwgNi4xLjkxLCA2
-LjYuMzEuCgo+ID4+PiBCdXQgbW9zdCBvZiB0aGF0IGlzIG5vdCB5ZXQgKGJ1dCBwbGFubmVkIHRv
-IGJlIGJhY2twb3J0ZWQpLCBlLmcuCj4gPj4+IDkzNDgzYWM1ZmVjNjIgKCJuZnNkOiBleHBvc2Ug
-L3Byb2MvbmV0L3N1bnJwYy9uZnNkIGluIG5ldCBuYW1lc3BhY2VzIikKPiA+Pj4gc2VlIENodWNr
-J3MgcGF0Y2hzZXQgZm9yIDYuNgo+ID4+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1u
-ZnMvMjAyNDA4MTIyMjM2MDQuMzI1OTItMS1jZWxAa2VybmVsLm9yZy8KCj4gPj4+IE9uY2UgYWxs
-IGtlcm5lbHMgdXAgdG8gNS40IGZpeGVkIHdlIHNob3VsZCB1cGRhdGUgdGhlIHZlcnNpb24uCgo+
-ID4+PiBLaW5kIHJlZ2FyZHMsCj4gPj4+IFBldHIKCj4gPj4+IHRlc3RjYXNlcy9uZXR3b3JrL25m
-cy9uZnNzdGF0MDEvbmZzc3RhdDAxLnNoIHwgOSArKysrKysrKy0KPiA+Pj4gMSBmaWxlIGNoYW5n
-ZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKPiA+Pj4gZGlmZiAtLWdpdCBhL3Rl
-c3RjYXNlcy9uZXR3b3JrL25mcy9uZnNzdGF0MDEvbmZzc3RhdDAxLnNoIGIvdGVzdGNhc2VzL25l
-dHdvcmsvbmZzL25mc3N0YXQwMS9uZnNzdGF0MDEuc2gKPiA+Pj4gaW5kZXggYzI4NTZlZmYxZi4u
-MWJlZWNiZWM0MyAxMDA3NTUKPiA+Pj4gLS0tIGEvdGVzdGNhc2VzL25ldHdvcmsvbmZzL25mc3N0
-YXQwMS9uZnNzdGF0MDEuc2gKPiA+Pj4gKysrIGIvdGVzdGNhc2VzL25ldHdvcmsvbmZzL25mc3N0
-YXQwMS9uZnNzdGF0MDEuc2gKPiA+Pj4gQEAgLTE1LDcgKzE1LDE0IEBAIGdldF9jYWxscygpCj4g
-Pj4+IGxvY2FsIGNhbGxzIG9wdAoKPiA+Pj4gWyAiJG5hbWUiID0gInJwYyIgXSAmJiBvcHQ9InIi
-IHx8IG9wdD0ibiIKPiA+Pj4gLSAhIHRzdF9uZXRfdXNlX25ldG5zICYmIFsgIiRuZnNfZiIgIT0g
-Im5mcyIgXSAmJiB0eXBlPSJyaG9zdCIKPiA+Pj4gKwo+ID4+PiArIGlmIHRzdF9uZXRfdXNlX25l
-dG5zOyB0aGVuCj4gPj4+ICsgIyAiTWFrZSBuZnMgc3RhdHMgdmlzaWJsZSBpbiBuZXR3b3JrIE5T
-IiBwYXRjaGV0Cj4gPj4+ICsgIyBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1uZnMvY292
-ZXIuMTcwODAyNjkzMS5naXQuam9zZWZAdG94aWNwYW5kYS5jb20vCj4gPj4+ICsgdHN0X2t2Y21w
-IC1nZSAiNi45IiAmJiBbICIkbmZzX2YiID0gIm5mcyIgXSAmJiB0eXBlPSJyaG9zdCIKCj4gPj4g
-SGVsbG8gUGV0ci0KCj4gPj4gTXkgY29uY2VybiB3aXRoIHRoaXMgZml4IGlzIGl0IHRhcmdldHMg
-djYuOSBzcGVjaWZpY2FsbHksIHlldCB3ZQo+ID4+IGtub3cgdGhlc2UgZml4ZXMgd2lsbCBhcHBl
-YXIgaW4gTFRTL3N0YWJsZSBrZXJuZWxzIGFzIHdlbGwuCgo+ID4gR3JlYXQhIEkgc2VlIHlvdSBh
-bHJlYWR5IGZpeGVkIHVwIHRvIDUuMTUuIEkgc3VwcG9zZSB0aGUgY29kZSBpcyByZWFsbHkKPiA+
-IGJhY2twb3J0YWJsZSB0byB0aGUgb3RoZXIgc3RpbGwgYWN0aXZlIGJyYW5jaGVzICg1LjEwLCA1
-LjQsIDQuMTkpLgoKPiBJIHBsYW4gdG8gd29yayBvbiBiYWNrcG9ydGluZyB0byB2NS4xMCBuZXh0
-IHdlZWsuCgo+IEkndmUgYmVlbiBhc2tlZCB0byBsb29rIGF0IHY1LjQsIGJ1dCBJJ20gbm90IHN1
-cmUgaG93IGRpZmZpY3VsdAo+IHRoYXQgd2lsbCBiZSBiZWNhdXNlIGl0J3MgbWlzc2luZyBhIGxv
-dCBvZiBORlNEIHBhdGNoZXMuIEkgd2lsbAo+IGxvb2sgaW50byB0aGF0IGluIGEgY291cGxlIG9m
-IHdlZWtzLgoKPiBJJ20gdmVyeSBsaWtlbHkgdG8gcHVudCBvbiB2NC4xOSwgdGhvdWdoIE9yYWNs
-ZSdzIHN0YWJsZSBiYWNrcG9ydAo+IHRlYW0gbWlnaHQgdHJ5IHRvIHRhY2tsZSBpdCBhdCBzb21l
-IHBvaW50LiAocHVuIGludGVuZGVkKQoKVGhhbmtzIGEgbG90IGZvciBpbmZvLCB3ZSdsbCBzZWUg
-d2hhdCB5b3UgLyB5b3VyIE9yYWNsZSBiYWNrcG9ydCB0ZWFtIHdpbGwKbWFuYWdlIGluIHRoZSBl
-bmQuCgo+ID4gV2UgZGlzY3Vzc2VkIGluIHYxIGhvdyB0byBmaXggdGVzdHMuICBOZWlsIHN1Z2dl
-c3RlZCB0byBmaXggdGhlIHRlc3QgdGhlIHdheSBzbwo+ID4gdGhhdCBpdCB3b3JrcyBvbiBhbGwg
-a2VybmVscy4gQXMgSSBub3RlIFsxXQoKPiA+IDEpIGVpdGhlciB3ZSBnaXZlIHVwIG9uIGNoZWNr
-aW5nIHRoZSBuZXcgZnVuY3Rpb25hbGl0eSBzdGlsbCB3b3JrcyAoaWYgd2UKPiA+IGZhbGxiYWNr
-IHRvIG9sZCBiZWhhdmlvcikKPiA+IDIpIG9yIHdlIG5lZWQgdG8gc3BlY2lmeSBmcm9tIHdoaWNo
-IGtlcm5lbCB3ZSBleHBlY3QgbmV3IGZ1bmN0aW9uYWxpdHkKPiA+IChzbyBmYXIgaXQncyA1LjE1
-LCBJIHN1cHBvc2UgaXQgd2lsbCBiZSBvbGRlcikuCgo+ID4gSSB3b3VsZCBwcmVmZXIgMikgdG8g
-aGF2ZSBuZXcgZnVuY3Rpb25hbGl0eSBhbHdheXMgdGVzdGVkLgo+ID4gT3IgYW0gSSBtaXNzaW5n
-IHNvbWV0aGluZyBvYnZpb3VzPwoKPiBJIGRvbid0IHF1aXRlIHVuZGVyc3RhbmQgdGhlIHF1ZXN0
-aW9uLgoKPiBUaGUgIm9sZCBmdW5jdGlvbmFsaXR5IiBvZiByZXBvcnRpbmcgdGhlc2Ugc3RhdGlz
-dGljcyBnbG9iYWxseQo+IGlzIGJyb2tlbiwgYnV0IHdlJ3JlIHN0dWNrIHdpdGggaXQgaW4gdGhl
-IG9sZGVyIGtlcm5lbHMuIEkgZ3Vlc3MKPiB5b3UgbWlnaHQgd2FudCB0byBjb25maXJtIHRoYXQs
-IGZvciBhIGdpdmVuIHJlY2VudCBrZXJuZWwKPiByZWxlYXNlLCB0aGUgc3RhdHMgYXJlIGFjdHVh
-bGx5IHBlci1uYW1lc3BhY2UgLS0gdGhhdCdzIHdoYXQgd2UKPiBleHBlY3QgaW4gZml4ZWQga2Vy
-bmVscy4gSXMgdGhhdCB3aGF0IHlvdSBtZWFuPwoKWWVzLiBJJ20ganVzdCB0cnlpbmcgdG8gc2F5
-IHRoYXQgTmVpbCdzIHByb3Bvc2FsICJ3b3JrIGV2ZXJ5d2hlcmUgd2l0aG91dApjaGVja2luZyBr
-ZXJuZWwgdmVyc2lvbiIgd2lsbCBub3Qgd29yay4gSSB3b3VsZCBsaWtlIG5leHQgd2VlaywgYWZ0
-ZXIgeW91IHNlbmQKNS4xMCBwYXRjaGVzIHRvIGV4cGVjdCBhbnl0aGluZyA+PSA1LjEwIHdpbGwg
-aGF2ZSBuZXcgZnVuY3Rpb25hbGl0eQphbmQgdXBkYXRlIGtlcm5lbCB2ZXJzaW9uIGlmIG1vcmUg
-Z2V0cyBiYWNrcG9ydGVkLgoKS2luZCByZWdhcmRzLApQZXRyCgo+ID4gS2luZCByZWdhcmRzLAo+
-ID4gUGV0cgoKPiA+IFsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1uZnMvMTcyMzY3
-Mzg3NTQ5LjYwNjIuNzA3ODAzMjk4MzY0NDU4NjQ2MkBub2JsZS5uZWlsLmJyb3duLm5hbWUvCgo+
-ID4+IE5laWwgQnJvd24gc3VnZ2VzdGVkIGFuIGFsdGVybmF0aXZlIGFwcHJvYWNoIHRoYXQgbWln
-aHQgbm90IGRlcGVuZAo+ID4+IG9uIGtub3dpbmcgdGhlIHNwZWNpZmljIGtlcm5lbCB2ZXJzaW9u
-OgoKPiA+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1uZnMvMTcyMDc4MjgzOTM0LjE1
-NDcxLjEzMzc3MDQ4MTY2NzA3NjkzNjkyQG5vYmxlLm5laWwuYnJvd24ubmFtZS8KCj4gPj4gSFRI
-CgoKPiA+Pj4gKyBlbHNlCj4gPj4+ICsgWyAiJG5mc19mIiAhPSAibmZzIiBdICYmIHR5cGU9InJo
-b3N0Igo+ID4+PiArIGZpCgo+ID4+PiBpZiBbICIkdHlwZSIgPSAibGhvc3QiIF07IHRoZW4KPiA+
-Pj4gY2FsbHM9IiQoZ3JlcCAkbmFtZSAvcHJvYy9uZXQvcnBjLyRuZnNfZiB8IGN1dCAtZCcgJyAt
-ZiRmaWVsZCkiCj4gPj4+IC0tIAo+ID4+PiAyLjQ1LjIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Fri, 23 Aug 2024, Petr Vorel wrote:
+> Hi Chuck, Neil, all,
+> 
+> > On Wed, Aug 14, 2024 at 10:57:21AM +0200, Petr Vorel wrote:
+> > > 6.9 moved client RPC calls to namespace in "Make nfs stats visible in
+> > > network NS" patchet.
+> 
+> > > https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
+> 
+> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > > Changes v1->v2:
+> > > * Point out whole patchset, not just single commit
+> > > * Add a comment about the patchset
+> 
+> > > Hi all,
+> 
+> > > could you please ack this so that we have fixed mainline?
+> 
+> > > FYI Some parts has been backported, e.g.:
+> > > d47151b79e322 ("nfs: expose /proc/net/sunrpc/nfs in net namespaces")
+> > > to all stable/LTS: 5.4.276, 5.10.217, 5.15.159, 6.1.91, 6.6.31.
+> 
+> > > But most of that is not yet (but planned to be backported), e.g.
+> > > 93483ac5fec62 ("nfsd: expose /proc/net/sunrpc/nfsd in net namespaces")
+> > > see Chuck's patchset for 6.6
+> > > https://lore.kernel.org/linux-nfs/20240812223604.32592-1-cel@kernel.org/
+> 
+> > > Once all kernels up to 5.4 fixed we should update the version.
+> 
+> > > Kind regards,
+> > > Petr
+> 
+> > >  testcases/network/nfs/nfsstat01/nfsstat01.sh | 9 ++++++++-
+> > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> > > diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> > > index c2856eff1f..1beecbec43 100755
+> > > --- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> > > +++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> > > @@ -15,7 +15,14 @@ get_calls()
+> > >  	local calls opt
+> 
+> > >  	[ "$name" = "rpc" ] && opt="r" || opt="n"
+> > > -	! tst_net_use_netns && [ "$nfs_f" != "nfs" ] && type="rhost"
+> > > +
+> > > +	if tst_net_use_netns; then
+> > > +		# "Make nfs stats visible in network NS" patchet
+> > > +		# https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
+> > > +		tst_kvcmp -ge "6.9" && [ "$nfs_f" = "nfs" ] && type="rhost"
+> 
+> > Hello Petr-
+> 
+> > My concern with this fix is it targets v6.9 specifically, yet we
+> > know these fixes will appear in LTS/stable kernels as well.
+> 
+> Great! I see you already fixed up to 5.15. I suppose the code is really
+> backportable to the other still active branches (5.10, 5.4, 4.19).
+> 
+> We discussed in v1 how to fix tests.  Neil suggested to fix the test the way so
+> that it works on all kernels. As I note [1]
+> 
+> 1) either we give up on checking the new functionality still works (if we
+> fallback to old behavior)
+
+I don't understand.  What exactly do you mean by "the new
+functionality".
+As I understand it there is no new functionality.  All there was was and
+information leak between network namespaces, and we stopped the leak.
+Do you consider that to be new functionality?
+
+> 2) or we need to specify from which kernel we expect new functionality
+> (so far it's 5.15, I suppose it will be older).
+> 
+> I would prefer 2) to have new functionality always tested.
+> Or am I missing something obvious?
+
+As I understand it the primary purpose of the test is to confirm that
+when an NFS request is made, the client sees an increase the the count
+of RPC requests in the client statistics.  and the server sees an
+increase in the count of RPC requests in the server statistics.
+That test, if performed correctly, should always work.
+
+Is there something else you want to test?
+If you want to test that the server DOESN'T see and increase in the
+CLIENT statistics, then that is a valid thing to test and it won't work
+on early kernels.  I think we only need to test that for kernels since
+the fix landed in mainline.
+
+I'm sure one of us is missing something obvious because I am CONFIDENT
+that a test for correct functionality can be written to work on all
+kernels.  We didn't add any new functionality and didn't break any old
+functionality.  We just fixed a bug.
+
+NeilBrown
+
+
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://lore.kernel.org/linux-nfs/172367387549.6062.7078032983644586462@noble.neil.brown.name/
+> 
+> > Neil Brown suggested an alternative approach that might not depend
+> > on knowing the specific kernel version:
+> 
+> > https://lore.kernel.org/linux-nfs/172078283934.15471.13377048166707693692@noble.neil.brown.name/
+> 
+> > HTH
+> 
+> 
+> > > +	else
+> > > +		[ "$nfs_f" != "nfs" ] && type="rhost"
+> > > +	fi
+> 
+> > >  	if [ "$type" = "lhost" ]; then
+> > >  		calls="$(grep $name /proc/net/rpc/$nfs_f | cut -d' ' -f$field)"
+> > > -- 
+> > > 2.45.2
+> 
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
