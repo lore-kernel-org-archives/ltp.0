@@ -4,82 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE833C5321E
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 13:15:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1801CC5321D
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 13:21:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 204153D2732
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 15:15:42 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 977F83C9249
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 15:21:08 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3020B3C4AD1
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:15:27 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E56623C655D
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:20:52 +0200 (CEST)
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com
+ [IPv6:2607:f8b0:4864:20::a32])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 61C68601BAB
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:15:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1724678124;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HlU9cDRS151p3RNA7bzVGSnTyd6HT4EiI2pPDBkoArU=;
- b=FqGF9EfAG/zKG5F1QtRqlsrsjJssEmgwxBOXDbu4HReXm/kKjNlVGRPG8LgcMWvo7pQ4L4
- Q5s//vu7bel/a1J43zO3sHbtZguUaJ4rwfAEqfDoPGfehYlOnxMyDQUpdIvIUAYf9slXTw
- 9HO0UBtk8mZ971Vm2N/TMlBtmmAPo3k=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-6QoMA_ruOLmGwlKU5aSbzQ-1; Mon, 26 Aug 2024 09:15:23 -0400
-X-MC-Unique: 6QoMA_ruOLmGwlKU5aSbzQ-1
-Received: by mail-oo1-f71.google.com with SMTP id
- 006d021491bc7-5dcb1d95b5dso5630304eaf.3
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 06:15:23 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 900201A01456
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:20:50 +0200 (CEST)
+Received: by mail-vk1-xa32.google.com with SMTP id
+ 71dfb90a1353d-4fd05947340so1300102e0c.3
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 06:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1724678449; x=1725283249; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=eD175XUZ/ITy7ZdWAydNT67+uOxIgoWBm9/vtDXzUTA=;
+ b=mQnDHylPOwIap6Nq9J/oLLDFRlkkhTamI0LZg9NxKVHuvmY9cR4iydQal2Q4UzlWq1
+ C9w4FgBXCVVlQJw+65r0h3CB0+PUFMcyAN9zRhyKUYPadhSx9GBL1tcD/7c2wkf6t4pk
+ CfFPV4W2o2t/aqzWNl+7LJZ7JfPNrnQQqpL9+g8Whqjg9T1H4DNjnTnYcCWVr7v5ciqP
+ 2MvElFvZvBhGmQ77EqIpO600i4r6sOOqKHiB/Efu/jHeo4wA/y9Ohlf/Rx4PPIwdWtQr
+ ogp+96p4Nh8terLUtvqFUBVpeQKrallenGpJCkgLfXGOoRRP9hkqTlJEsfVT3KM8TxAa
+ BqDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724678122; x=1725282922;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=HlU9cDRS151p3RNA7bzVGSnTyd6HT4EiI2pPDBkoArU=;
- b=rtEhfEIjLTRcCbC8NL44BqmGv4Uv7Fy4QRJwYb0gX0FOw0qKg5yTSqqea7KyC3av5p
- +Zs92P2ZZnrlueS8nJIptTxL2wKD9F5cSbvsbrUG/rGEbl8kmpCiV0gz4lm7Z/hIYjvo
- DLhp503L1PboXJ52P37PNKDmyqdqlJQMdNoouTEwwkHGuwc4IujL7UWBwilvNsgG+kV7
- VewmGCFSFv+vGm9ZW+jmnKGjv7Db5herD+YX1l22XrgaACEGMTSlARqExngs5HE1KqHD
- dQB3/zlhvh4H6W7RHcCEADoDD13KS0Ak8NbXDbSLZvdQkA71/s76dFKLyf3iNZNoSF1B
- dkow==
-X-Gm-Message-State: AOJu0YwtH4jfW5lXm4hFoztzbI/McBSOyB7FCxYhXsstaKSuyq43zJpH
- hsAuiE83xdh2jpeOq7wHyG5Aym4kEJpgJ9XnZZ1YzxmxjUJAIvOnxaWFHe5jMIFlWrCxKAj3k8r
- 7jcUMRl8yIQMGm/ckdoeka1wFjhq5P24sqYoiJyihBZ3y3VTc0Bjif8K/oNWnMLEWamEEphtUJs
- fIeIUSgYRbCuk3BEUuB2e9ZK4=
-X-Received: by 2002:a05:6870:e0c9:b0:25d:f285:d008 with SMTP id
- 586e51a60fabf-273e63f21e6mr11597752fac.7.1724678122705; 
- Mon, 26 Aug 2024 06:15:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEzq2bSMG3n1mMWMxD3e9ncSJzObbAvcFCnCPnp8GOZioFDMaUJRjND+0VdyhQ/m7KU7RFZ8Thw8coLI6QWg6c=
-X-Received: by 2002:a05:6870:e0c9:b0:25d:f285:d008 with SMTP id
- 586e51a60fabf-273e63f21e6mr11597712fac.7.1724678122259; Mon, 26 Aug 2024
- 06:15:22 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1724678449; x=1725283249;
+ h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=eD175XUZ/ITy7ZdWAydNT67+uOxIgoWBm9/vtDXzUTA=;
+ b=kPx2ZK1nh2kdTBvtGwHSW2f//o6JpYBer0c1dtGDb7m78MysNYpQNZCDavPnOHmnVc
+ AvqxmSiPbZJXMCZO8mWSo/nWgydkMMyCntaCFkHsP685TzCZEKVLCIJ74VwGTaJm/PBM
+ 49mKLM9uZ0djx0X41Di42Z4IP2YQJm7vH0g1fIdFOQf/2Y9rz+0LFQu+kHvnpBA51a0I
+ q6qHUifbttfrp/fRDFUM92Vir6ZoXt1mrA48amORwHx1uiwsUwFIlITQIVdEj4MX73uH
+ Mh0i6sKaWUq+AYgtnq1yH61ELWb2kvyKd0P94Xt/U1t+bOGN9kO/QVaapq1WvdkpwQqO
+ K2Qg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVMawjh+cIgq3nDSOCKgznc07bSsepuuPu2ov6V+55hSGzAGDrv6y+foA6KC+kNNyfMR9Q=@lists.linux.it
+X-Gm-Message-State: AOJu0YxKzj2WtMZT4aI4MSvPNGZdrei/w61le8p4vKX85F4vMiyr7PCN
+ ybCla28SxpxuLCphiHIFD8GYB6p5Z1W8+Cw9tJfpKCUMLEC99QBQVrR+yBCPDMfhiz9h+/HshMs
+ Pv/cx/WC4MgivoxJ1kvT7zhp1hI8EVOvlkX5kTQ==
+X-Google-Smtp-Source: AGHT+IHfLYQXJQalFGVZVOgOn/tn6bOUOwnoI9D+YmaRkON0wOcbu81fZMRkrl/+m2cVQflgktyC19x+8RBVqWzPqMk=
+X-Received: by 2002:a05:6122:3d08:b0:4f5:28e3:5a5a with SMTP id
+ 71dfb90a1353d-4fd1a522b94mr12978602e0c.4.1724678449179; Mon, 26 Aug 2024
+ 06:20:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240826120205.5506-1-liwang@redhat.com>
- <CAEemH2dYB3tyG4xjE_b1rGBRqtCDOwByq5ZdA0VUxvL3nqW0Vw@mail.gmail.com>
-In-Reply-To: <CAEemH2dYB3tyG4xjE_b1rGBRqtCDOwByq5ZdA0VUxvL3nqW0Vw@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 26 Aug 2024 15:15:06 +0200
-Message-ID: <CAASaF6xh7_wXiFn9LakEv-LY-szkZ+5fJ0B67ygdCV0g4T-89Q@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 26 Aug 2024 18:50:37 +0530
+Message-ID: <CA+G9fYvcBvbabg+m7brKfpGCGZUcK+KHHTFX7hFvW6GmN2XF0g@mail.gmail.com>
+To: open list <linux-kernel@vger.kernel.org>, 
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, 
+ Linux Regressions <regressions@lists.linux.dev>, LTP List <ltp@lists.linux.it>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ioctl_loop06: no validate block size
+Subject: [LTP] selftests: core: unshare_test: WARNING: at mm/util.c:671
+ __kvmalloc_node_noprof
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,69 +80,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, "Michael S. Tsirkin" <mst@redhat.com>,
- John Garry <john.g.garry@oracle.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Stefan Hajnoczi <stefanha@redhat.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Al Viro <viro@zeniv.linux.org.uk>, David Gow <davidgow@google.com>,
+ Matt Mackall <mpm@selenic.com>, Shuah Khan <shuah@kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBBdWcgMjYsIDIwMjQgYXQgMjo0NuKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPiB3cm90ZToKPgo+IEhpIEFsbCwKPgo+IE9uIE1vbiwgQXVnIDI2LCAyMDI0IGF0IDg6MDLi
-gK9QTSBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cj4KPiA+IFNpbmNlIGNvbW1p
-dCA5NDIzYzY1M2ZlNjExMCAoImxvb3A6IERvbid0IGJvdGhlciB2YWxpZGF0aW5nIGJsb2Nrc2l6
-ZSIpCj4gPiBrZXJuZWwKPiA+IGRyb3AgdmFsaWRhdGluZyBibG9ja3NpemUgZm9yIGJvdGggbG9v
-cF9jb25maWd1cmUgYW5kIGxvb3Bfc2V0X2Jsb2NrX3NpemUKPiA+IHNvCj4gPiB0aGF0IHNldCBs
-YXJnZSBibG9jayBzaXplIHN1Y2NlZWRzLgo+ID4KPiA+IEVycm9yIGxvZzoKPiA+ICAgMTIgaW9j
-dGxfbG9vcDA2LmM6NzY6IFRJTkZPOiBVc2luZyBMT09QX1NFVF9CTE9DS19TSVpFIHdpdGggYXJn
-ID4KPiA+IFBBR0VfU0laRQo+ID4gICAxMyBpb2N0bF9sb29wMDYuYzo1OTogVEZBSUw6IFNldCBi
-bG9jayBzaXplIHN1Y2NlZWQgdW5leHBlY3RlZGx5Cj4gPiAgIC4uLgo+ID4gICAxOCBpb2N0bF9s
-b29wMDYuYzo3NjogVElORk86IFVzaW5nIExPT1BfQ09ORklHVVJFIHdpdGggYmxvY2tfc2l6ZSA+
-Cj4gPiBQQUdFX1NJWkUKPiA+ICAgMTkgaW9jdGxfbG9vcDA2LmM6NTk6ICBURkFJTDogU2V0IGJs
-b2NrIHNpemUgc3VjY2VlZCB1bmV4cGVjdGVkbHkKPiA+Cj4KPiBIbW0sIG1heWJlIEkgd2FzIHdy
-b25nIGhlcmUsIHRoZSBjb21taXQgc2F5cwo+Cj4gICAiVGhlIGJsb2NrIHF1ZXVlIGxpbWl0cyB2
-YWxpZGF0aW9uIGRvZXMgdGhpcyBmb3IgdXMgbm93LiIKPgo+IHdoaWNoIGluZGljYXRlcyB0aGUg
-dmFsaWRhdGlvbiBpcyBzdGlsbCBvbi4KPgo+IFNvIHRoZSB0ZXN0IGZhaWx1cmUgcHJvYmFibHkg
-bWVhbnMgYSBrZXJuZWwgYnVnIGJ1dCBub3QgYSB0ZXN0IHByb2JsZW0uCgpCZWZvcmUgdGhlIHBh
-dGNoLCBibGtfdmFsaWRhdGVfYmxvY2tfc2l6ZSgpIGRpZCB2YWxpZGF0ZSBvcmlnaW5hbAp2YWx1
-ZSBhcyB1bnNpZ25lZCBsb25nLAphZnRlciBwYXRjaCBpdCdzIHZhbGlkYXRlZCBhZnRlciBjYXN0
-IHRvIHVuc2lnbmVkIHNob3J0LgoKSW4gTFRQIHRocmVhZCB5b3UgbWVudGlvbmVkIGl0IGZhaWxl
-ZCBvbiBwcGM2NGxlL2FhcmNoNjQgYW5kIHdvcmtlZCBvbgp4ODZfNjQgYW5kIHMzOTB4LgpJcyBp
-dCBieSBjaGFuY2Ugbm93IGZhaWxpbmcgb25seSBvbiBrZXJuZWxzIHdpdGggNjRrIHBhZ2Ugc2l6
-ZT8KKFRlc3QgYXR0ZW1wdHMgdG8gc2V0IGJsb2NrIHNpemUgdG8gMipwYWdlIHNpemUuKQoKPgo+
-IENDIGJsb2NrIGRldnMgdG8gZ2l2ZSBzb21lIGFkdmljZS4KPgo+Cj4KPiA+Cj4gPiBTaWduZWQt
-b2ZmLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KPiA+IC0tLQo+ID4gIHRlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvaW9jdGwvaW9jdGxfbG9vcDA2LmMgfCA5ICsrKysrKysrKwo+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKykKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb2N0bC9pb2N0bF9sb29wMDYuYwo+ID4gYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2lvY3RsL2lvY3RsX2xvb3AwNi5jCj4gPiBpbmRleCAzMTdmNjkz
-YTAuLjRhYWNkMjg0YSAxMDA2NDQKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-aW9jdGwvaW9jdGxfbG9vcDA2LmMKPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-aW9jdGwvaW9jdGxfbG9vcDA2LmMKPiA+IEBAIC0yMyw2ICsyMyw3IEBAIHN0YXRpYyBjaGFyIGRl
-dl9wYXRoWzEwMjRdOwo+ID4gIHN0YXRpYyBpbnQgZGV2X251bSwgZGV2X2ZkLCBmaWxlX2ZkLCBh
-dHRhY2hfZmxhZywgbG9vcF9jb25maWd1cmVfc3VwID0gMTsKPiA+ICBzdGF0aWMgdW5zaWduZWQg
-aW50IGludmFsaWRfdmFsdWUsIGhhbGZfdmFsdWUsIHVuYWxpZ25fdmFsdWU7Cj4gPiAgc3RhdGlj
-IHN0cnVjdCBsb29wX2NvbmZpZyBsb29wY29uZmlnOwo+ID4gK3N0YXRpYyBpbnQgbm92YWxpZGF0
-ZV9ibG9ja3NpemUgPSAwOwo+ID4KPiA+ICBzdGF0aWMgc3RydWN0IHRjYXNlIHsKPiA+ICAgICAg
-ICAgdW5zaWduZWQgaW50ICpzZXR2YWx1ZTsKPiA+IEBAIC03NCw2ICs3NSwxMSBAQCBzdGF0aWMg
-dm9pZCBydW4odW5zaWduZWQgaW50IG4pCj4gPiAgICAgICAgIHN0cnVjdCB0Y2FzZSAqdGMgPSAm
-dGNhc2VzW25dOwo+ID4KPiA+ICAgICAgICAgdHN0X3JlcyhUSU5GTywgIiVzIiwgdGMtPm1lc3Nh
-Z2UpOwo+ID4gKyAgICAgICBpZiAoKCoodGMtPnNldHZhbHVlKSA9PSBpbnZhbGlkX3ZhbHVlKSAm
-JiBub3ZhbGlkYXRlX2Jsb2Nrc2l6ZSkgewo+ID4gKyAgICAgICAgICAgICAgIHRzdF9yZXMoVENP
-TkYsICJLZXJuZWwgZG9lc24ndCB2YWxpZGF0ZSBibG9jayBzaXplLCBza2lwCj4gPiBpbnZhbGlk
-IHZhbHVlIHRlc3QiKTsKPiA+ICsgICAgICAgICAgICAgICByZXR1cm47Cj4gPiArICAgICAgIH0K
-PiA+ICsKPiA+ICAgICAgICAgaWYgKHRjLT5pb2N0bF9mbGFnID09IExPT1BfU0VUX0JMT0NLX1NJ
-WkUpIHsKPiA+ICAgICAgICAgICAgICAgICBpZiAoIWF0dGFjaF9mbGFnKSB7Cj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICB0c3RfYXR0YWNoX2RldmljZShkZXZfcGF0aCwgInRlc3QuaW1nIik7
-Cj4gPiBAQCAtMTI2LDYgKzEzMiw5IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCj4gPiAgICAg
-ICAgICAgICAgICAgcmV0dXJuOwo+ID4gICAgICAgICB9Cj4gPiAgICAgICAgIGxvb3Bjb25maWcu
-ZmQgPSBmaWxlX2ZkOwo+ID4gKwo+ID4gKyAgICAgICBpZiAoKHRzdF9rdmVyY21wKDYsIDExLCAw
-KSkgPj0gMCkKPiA+ICsgICAgICAgICAgICAgICBub3ZhbGlkYXRlX2Jsb2Nrc2l6ZSA9IDE7Cj4g
-PiAgfQo+ID4KPiA+ICBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpCj4gPiAtLQo+ID4gMi40Ni4w
-Cj4gPgo+ID4KPiA+IC0tCj4gPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAKPiA+Cj4gPgo+Cj4gLS0KPiBSZWdhcmRzLAo+IExpIFdhbmcKPgo+
-IC0tCj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8v
-bHRwCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+The following kernel warning is noticed on all arch and all devices while
+running selftests: core: unshare_test on Linux next-20240823 and next-20240826.
+
+First seen on next-20240823.
+  Good: next-20240822
+  BAD:  next-20240823 and next-20240826
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Crash log:
+--------
+# selftests: core: unshare_test
+<4>[   61.084149] ------------[ cut here ]------------
+<4>[ 61.085175] WARNING: CPU: 0 PID: 477 at mm/util.c:671
+__kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
+<4>[   61.088958] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce
+sha512_ce sha512_arm64 drm fuse backlight dm_mod ip_tables x_tables
+<4>[   61.093141] CPU: 0 UID: 0 PID: 477 Comm: unshare_test Not
+tainted 6.11.0-rc5-next-20240826 #1
+<4>[   61.094558] Hardware name: linux,dummy-virt (DT)
+<4>[   61.096763] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT
+-SSBS BTYPE=--)
+<4>[ 61.097841] pc : __kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
+<4>[ 61.099701] lr : __kvmalloc_node_noprof (mm/util.c:661)
+<4>[   61.100448] sp : ffff800080abbce0
+<4>[   61.100819] x29: ffff800080abbcf0 x28: fff0000004549280 x27:
+0000000000000000
+<4>[   61.101744] x26: 0000000000000000 x25: 0000000000000000 x24:
+fff0000003615e40
+<4>[   61.102512] x23: fff0000003615ec0 x22: bfafa45863b285c8 x21:
+0000000200002000
+<4>[   61.103232] x20: 00000000ffffffff x19: 0000000000400cc0 x18:
+0000000000000000
+<4>[   61.104053] x17: 0000000000000000 x16: 0000000000000000 x15:
+0000000000000000
+<4>[   61.104927] x14: 0000000000000000 x13: 0000000000000000 x12:
+0000000000000000
+<4>[   61.105752] x11: 0000000000000000 x10: 0000000000000000 x9 :
+0000000000000000
+<4>[   61.106606] x8 : 0000000000000001 x7 : 0000000000000001 x6 :
+0000000000000005
+<4>[   61.107377] x5 : 0000000000000000 x4 : fff0000004549280 x3 :
+0000000000000000
+<4>[   61.108207] x2 : 0000000000000000 x1 : 000000007fffffff x0 :
+0000000000000000
+<4>[   61.109262] Call trace:
+<4>[ 61.109619] __kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
+<4>[ 61.110248] alloc_fdtable (fs/file.c:133)
+<4>[ 61.110751] expand_files
+(include/linux/atomic/atomic-arch-fallback.h:457
+include/linux/atomic/atomic-instrumented.h:33 fs/file.c:177
+fs/file.c:238)
+<4>[ 61.111171] ksys_dup3 (fs/file.c:1337)
+<4>[ 61.111596] __arm64_sys_dup3 (fs/file.c:1355)
+<4>[ 61.112006] invoke_syscall (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/syscall.c:54)
+<4>[ 61.112480] el0_svc_common.constprop.0
+(include/linux/thread_info.h:127 (discriminator 2)
+arch/arm64/kernel/syscall.c:140 (discriminator 2))
+<4>[ 61.112955] do_el0_svc (arch/arm64/kernel/syscall.c:152)
+<4>[ 61.113384] el0_svc (arch/arm64/include/asm/irqflags.h:55
+arch/arm64/include/asm/irqflags.h:76
+arch/arm64/kernel/entry-common.c:165
+arch/arm64/kernel/entry-common.c:178
+arch/arm64/kernel/entry-common.c:713)
+<4>[ 61.113742] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:731)
+<4>[ 61.115181] el0t_64_sync (arch/arm64/kernel/entry.S:598)
+<4>[   61.115709] ---[ end trace 0000000000000000 ]---
+
+
+Crash Log links,
+--------
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24953436/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-mmutilc-__kvmalloc_node_noprof/log
+
+Crash failed comparison:
+----------
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24953436/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-mmutilc-__kvmalloc_node_noprof/history/
+
+metadata:
+----
+  git describe: next-20240823 and next-20240826
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git sha: c79c85875f1af04040fe4492ed94ce37ad729c4d
+  kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/config
+  artifact location:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/
+  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/
+  toolchain: clang-18 and gcc-13
+
+Steps to reproduce:
+---------
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2l2paZVYTloIDBYnua1s12DeIic/reproducer
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2l2paZVYTloIDBYnua1s12DeIic/tux_plan
+
+Please let me know if you need more information.
+
+--
+Linaro LKFT
+https://lkft.linaro.org
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
