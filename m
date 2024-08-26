@@ -4,66 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEFFBC5321D
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 13:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DBEBC5321D
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 14:52:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D067A3CAFB8
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 15:58:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DDD803D1B57
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 16:52:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 65B313C810C
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:58:09 +0200 (CEST)
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com
- [IPv6:2607:f8b0:4864:20::e32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C07133CABA1
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 16:52:40 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 039F06010E5
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:58:08 +0200 (CEST)
-Received: by mail-vs1-xe32.google.com with SMTP id
- ada2fe7eead31-498e1e3bee8so1364991137.0
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 06:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1724680686; x=1725285486; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=3CDS805nHUtFyonKh5PIk1kaPDlOeosb6cbz/9l2QOw=;
- b=Gkw7BsKVGWCfwxfEcqIJj0xihwbznQ7fDryyRoX0ict4MylKJ2nfspr+AN4+axJf5W
- dODp76usel069uRXRUVMumgpi79J3FRBwsM+IN6qrg4pv9jo+gk6DN9b0Yk41ZEu0y1J
- /sbvJYKYns0qtbJrfFg3Q/dPtvENCJVQJ884Ga2Bju09DUy99hXugO7TvGm6vpg9/1G1
- 6nu5bPEuCQVEELVgdKFOLjNujtKxGsvYfkgOhOC2lnYx5JtFkCMJQbcEItpPysE/1vNO
- PU+WJY4iRp5OaItNDdzZKxIdCkOUCNqsZLrHygQjkiYmYOkI0E9HzOVdKst8XusIVMHJ
- E5cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724680686; x=1725285486;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=3CDS805nHUtFyonKh5PIk1kaPDlOeosb6cbz/9l2QOw=;
- b=pjze/+iiaQYW7/SRft7Xf6T8heEOp00KQbZidbl/zO9+d+N0Riu0gfEK7BskhCyVlQ
- BWG5TV3s1RNM9FMCmmzHUne8zcEixv3jfj6CRcppK12jnCztauTdKmfIATaFTszAkG85
- 7uyRlVk8huMtIKSX+8ceokinB0BPtbu63eVxwIaM1aH1YA6pM9nyilKW0WpFa+gJxaI6
- feFEkvatsAhXsX1dqGweSuVFozKEmcrSO0XojwGWqH3wJm9m1iCcc+h1avuqtX/Li4i2
- iyQfUYew6qAC1Abjf/s8APKh4vQQnDY1VFq0CFf9g8CNspUdJdxQg0eey4V9uLrW25B4
- 99pw==
-X-Gm-Message-State: AOJu0Yx2rPbIZMcNpanIMGfNF2hmYRHM8OycKgVzOmraEVr5MvBJnuX5
- fZAG3ML0Jz0nwH6BrfA/uu0N6UwWlUdw1mg2PO3nxpLHeyzu2bNw1pJ6/lXj8oWzyW8C8nHUuV4
- Gb4KVw4RDHRiMiGKzCbOOEhvQqhvURfZwzzCEAO98ypmr5rWMTKM=
-X-Google-Smtp-Source: AGHT+IFkcpeAOuBUs2E4wa+6RNK7C+e5xuFrPEf8HQlraPIyedR7HkaKxZf8OYQXei/P8iMoV551RENJbhZbpHUkRu4=
-X-Received: by 2002:a67:af09:0:b0:498:f4e1:22ed with SMTP id
- ada2fe7eead31-498f4e1234fmr6104016137.31.1724680686375; Mon, 26 Aug 2024
- 06:58:06 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7B9D8600C2A
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 16:52:38 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BEC27219ED;
+ Mon, 26 Aug 2024 14:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724683957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwqsT2Ocnp/l1xLpS6NFVB5VV2vK7xtli0BP9dBveY8=;
+ b=dBqGqX2QZpvkJTY6vL6dBs20Vq2G6FHooJagtOXsWh4bP2HjGstbABs+aw+YUACQ6iHB3P
+ ZS0NjWAsKwX/Thbtgs1aImErcWy2tGNvAwTJmJwe+XuzdwWiJRvStL72SNsiF5aWc/Jp3J
+ WL2/y9qQWD5/bszO286djm30KDfBOnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724683957;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwqsT2Ocnp/l1xLpS6NFVB5VV2vK7xtli0BP9dBveY8=;
+ b=p1bIsHG+B5iqsX4YytfdeBq2ma3hZ75S4kOtXia1rUkg8jGJ6kT47q82UIj8e3k8QIm3KR
+ RXYdJ7vHErsgH7BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724683957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwqsT2Ocnp/l1xLpS6NFVB5VV2vK7xtli0BP9dBveY8=;
+ b=dBqGqX2QZpvkJTY6vL6dBs20Vq2G6FHooJagtOXsWh4bP2HjGstbABs+aw+YUACQ6iHB3P
+ ZS0NjWAsKwX/Thbtgs1aImErcWy2tGNvAwTJmJwe+XuzdwWiJRvStL72SNsiF5aWc/Jp3J
+ WL2/y9qQWD5/bszO286djm30KDfBOnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724683957;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwqsT2Ocnp/l1xLpS6NFVB5VV2vK7xtli0BP9dBveY8=;
+ b=p1bIsHG+B5iqsX4YytfdeBq2ma3hZ75S4kOtXia1rUkg8jGJ6kT47q82UIj8e3k8QIm3KR
+ RXYdJ7vHErsgH7BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5939813724;
+ Mon, 26 Aug 2024 14:52:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id P1OfFLWWzGbUXgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 26 Aug 2024 14:52:37 +0000
+Date: Mon, 26 Aug 2024 16:51:28 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <io@richiejp.com>
+Message-ID: <ZsyWcCGmjaWWe7fK@yuki.lan>
+References: <20240731092017.8267-1-chrubis@suse.cz>
+ <20240731092017.8267-2-chrubis@suse.cz>
+ <87wmkksafr.fsf@richiejp.com>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 26 Aug 2024 19:27:55 +0530
-Message-ID: <CA+G9fYtOaqvOkargaX9qaOHdKbF_EeB49vAJr985kLujm5-cmw@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>, open list <linux-kernel@vger.kernel.org>, 
- linux-mm <linux-mm@kvack.org>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87wmkksafr.fsf@richiejp.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] LTP: hugemmap19: PF: supervisor read access in kernel mode
+Subject: Re: [LTP] [PATCH 1/3] Add support for mixing C and shell code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,160 +111,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The following kernel BUG noticed on x86_64 and qemu-x86_64 while running
-LTP hugetlb test cases on Linux next-20240823 and next-20240826 intermittently
-This is been noticed with compat mode running 64 bit kernel on 32-bit rootfs.
+Hi!
+> In general I like the idea except that it will encourage more shell
+> usage, but I'm guessing that is a battle that has already been
+> lost.
 
-We will re-investigate these test plan combinations with HUGE_PAGE on
-compat mode.
+Indeed. However messy shell is we are not going to get rid of it.
 
-First seen on - not sure - intermittent
-  Good: not sure
-  BAD:  next-20240826 (intermittent)
+> Also if a suitable embedded scripting language were found this is
+> a starting point for that.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+My hopes are not that high, LTP targets embedded, so we are quite
+limited in what we can do here and having python or perl as a dependency
+is a no-go. Perhaps there is a minimalistic scripting language that
+integrated into UNIX well out there, but I'm not aware of any. So as far
+as I can tell we are stuck with shell for the foreseeable future.
 
-Crash log:
---------
-hugemmap15.c:123: TINFO: SIGBUS at 0xf5200000 (sig_expected=0xf51fff80)
-hugemmap15.c:123: TINFO: SIG[   63.974604] hugemmap19 (460): drop_caches: 3
-BUS at 0xf4e00000 (sig_expected=0xf4dfff80)
-hugemmap15.c:123: TINFO: SIGBUS at 0xf4a00000 (sig_[   63.987273] BUG:
-kernel NULL pointer dereference, address: 0000000000000000
-[   63.995130] #PF: supervisor read access in kernel mode
-[   64.000269] #PF: error_code(0x0000) - not-present page
-[   64.005400] PGD 8000000105996067 P4D 8000000105996067 PUD 0
-[   64.011061] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
-[   64.015765] CPU: 3 UID: 0 PID: 461 Comm: hugemmap19 Not tainted
-6.11.0-rc5-next-20240826 #1
-[   64.024111] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.7 12/07/2021
-[   64.031518] RIP: 0010:mmap_region+0x443/0xcf0
-[   64.035908] Code: cd 29 00 85 c0 0f 84 c0 04 00 00 49 c7 c0 f4 ff
-ff ff 48 83 7d a0 00 74 af 80 7d 9d 00 0f 85 af 00 00 00 48 8b 9d 50
-ff ff ff <48> 8b 04 25 00 00 00 00 83 7b 38 01 74 14 48 3b 43 08 0f 82
-fb 00
-[   64.054653] RSP: 0018:ffff9fcdc0647ba0 EFLAGS: 00010246
-[   64.059879] RAX: 0000000000000000 RBX: ffff9fcdc0647c28 RCX: 000000000000000a
-[   64.067012] RDX: ffffffff9d892a02 RSI: ffffffff9d892a02 RDI: ffffffff9d89274f
-[   64.074142] RBP: ffff9fcdc0647d90 R08: ffffffffffffffea R09: 00000000f7a00000
-[   64.081268] R10: 00000000f7c00000 R11: ffff94ea42ba6000 R12: 00000000f7a00000
-[   64.088400] R13: ffff94ea40064ec0 R14: 0000000000000073 R15: ffff94ea428e91e0
-[   64.095533] FS:  0000000000000000(0000) GS:ffff94ebafb80000(0063)
-knlGS:00000000f7f525c0
-[   64.103618] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-[   64.109356] CR2: 0000000000000000 CR3: 0000000102ba6005 CR4: 00000000003706f0
-[   64.116486] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   64.123610] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   64.130736] Call Trace:
-[   64.133180]  <TASK>
-[   64.135277]  ? show_regs+0x68/0x80
-[   64.138709]  ? __die+0x28/0x70
-[   64.141766]  ? page_fault_oops+0x17b/0x560
-[   64.145858]  ? free_pgtables+0x23e/0x2c0
-[   64.149777]  ? do_user_addr_fault+0x2e0/0x600
-[   64.154136]  ? exc_page_fault+0x71/0x170
-[   64.158060]  ? asm_exc_page_fault+0x2b/0x30
-[   64.162247]  ? call_rcu+0x12/0x20
-[   64.165564]  ? call_rcu+0x12/0x20
-[   64.168876]  ? __call_rcu_common.constprop.0+0x12f/0x390
-[   64.174187]  ? mmap_region+0x443/0xcf0
-[   64.177938]  do_mmap+0x327/0x5b0
-[   64.181201]  vm_mmap_pgoff+0xe6/0x1b0
-[   64.184865]  ksys_mmap_pgoff+0x15c/0x1f0
-[   64.188784]  __ia32_sys_mmap_pgoff+0x29/0x30
-[   64.193056]  ia32_sys_call+0x1ebe/0x27c0
-[   64.196981]  __do_fast_syscall_32+0x6e/0x120
-[   64.201255]  do_fast_syscall_32+0x37/0x80
-[   64.205266]  do_SYSENTER_32+0x23/0x30
-[   64.208924]  entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-[   64.214410] RIP: 0023:0xf7f57579
-[   64.217641] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08
-03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f
-34 cd 80 <5d> 5a 59 c3 90 90 90 90 2e 8d b4 26 00 00 00 00 8d b4 26 00
-00 00
-[   64.236378] RSP: 002b:00000000ffc4c3a0 EFLAGS: 00000286 ORIG_RAX:
-00000000000000c0
-[   64.243936] RAX: ffffffffffffffda RBX: 00000000f7a00000 RCX: 0000000000200000
-[   64.251059] RDX: 0000000000000003 RSI: 0000000000000012 RDI: 0000000000000003
-[   64.258184] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-[   64.265306] R10: 0000000000000000 R11: 0000000000000286 R12: 0000000000000000
-[   64.272432] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[   64.279558]  </TASK>
-[   64.281749] Modules linked in: x86_pkg_temp_thermal
-[   64.286627] CR2: 0000000000000000
-[   64.289937] ---[ end trace 0000000000000000 ]---
-[   64.294547] RIP: 0010:mmap_region+0x443/0xcf0
-[   64.298898] Code: cd 29 00 85 c0 0f 84 c0 04 00 00 49 c7 c0 f4 ff
-ff ff 48 83 7d a0 00 74 af 80 7d 9d 00 0f 85 af 00 00 00 48 8b 9d 50
-ff ff ff <48> 8b 04 25 00 00 00 00 83 7b 38 01 74 14 48 3b 43 08 0f 82
-fb 00
-[   64.317636] RSP: 0018:ffff9fcdc0647ba0 EFLAGS: 00010246
-[   64.322861] RAX: 0000000000000000 RBX: ffff9fcdc0647c28 RCX: 000000000000000a
-[   64.329986] RDX: ffffffff9d892a02 RSI: ffffffff9d892a02 RDI: ffffffff9d89274f
-[   64.337117] RBP: ffff9fcdc0647d90 R08: ffffffffffffffea R09: 00000000f7a00000
-[   64.344240] R10: 00000000f7c00000 R11: ffff94ea42ba6000 R12: 00000000f7a00000
-[   64.351364] R13: ffff94ea40064ec0 R14: 0000000000000073 R15: ffff94ea428e91e0
-[   64.358512] FS:  0000000000000000(0000) GS:ffff94ebafb80000(0063)
-knlGS:00000000f7f525c0
-[   64.366592] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-[   64.372329] CR2: 0000000000000000 CR3: 0000000102ba6005 CR4: 00000000003706f0
-[   64.379469] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   64.386604] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   64.393728] note: hugemmap19[461] exited with irqs disabled
-expected=0xf49fff80)
-hugemmap15.c:123: TINFO: SIGBUS at 0xf4600000 (sig_expected=0xf45fff80)
+> > This is a proof of a concept of a seamless C and shell integration. The
+> > idea is that with this you can mix shell and C code as much as as you
+> > wish to get the best of the two worlds.
+> >
+> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> > ---
+> >  include/tst_test.h                           | 38 +++++++++++++
+> >  lib/tst_test.c                               | 51 +++++++++++++++++
+> >  testcases/lib/.gitignore                     |  1 +
+> >  testcases/lib/Makefile                       |  4 +-
+> >  testcases/lib/run_tests.sh                   | 11 ++++
+> >  testcases/lib/tests/.gitignore               |  6 ++
+> >  testcases/lib/tests/Makefile                 | 11 ++++
+> >  testcases/lib/tests/shell_test01.c           | 17 ++++++
+> >  testcases/lib/tests/shell_test02.c           | 18 ++++++
+> >  testcases/lib/tests/shell_test03.c           | 25 +++++++++
+> >  testcases/lib/tests/shell_test04.c           | 18 ++++++
+> >  testcases/lib/tests/shell_test05.c           | 27 +++++++++
+> >  testcases/lib/tests/shell_test06.c           | 16 ++++++
+> >  testcases/lib/tests/shell_test_brk.sh        |  6 ++
+> >  testcases/lib/tests/shell_test_check_argv.sh | 23 ++++++++
+> >  testcases/lib/tests/shell_test_checkpoint.sh |  7 +++
+> >  testcases/lib/tests/shell_test_pass.sh       |  6 ++
+> >  testcases/lib/tst_env.sh                     | 21 +++++++
+> >  testcases/lib/tst_res_.c                     | 58 ++++++++++++++++++++
+> >  19 files changed, 362 insertions(+), 2 deletions(-)
+> >  create mode 100755 testcases/lib/run_tests.sh
+> >  create mode 100644 testcases/lib/tests/.gitignore
+> >  create mode 100644 testcases/lib/tests/Makefile
+> >  create mode 100644 testcases/lib/tests/shell_test01.c
+> >  create mode 100644 testcases/lib/tests/shell_test02.c
+> >  create mode 100644 testcases/lib/tests/shell_test03.c
+> >  create mode 100644 testcases/lib/tests/shell_test04.c
+> >  create mode 100644 testcases/lib/tests/shell_test05.c
+> >  create mode 100644 testcases/lib/tests/shell_test06.c
+> >  create mode 100755 testcases/lib/tests/shell_test_brk.sh
+> >  create mode 100755 testcases/lib/tests/shell_test_check_argv.sh
+> >  create mode 100755 testcases/lib/tests/shell_test_checkpoint.sh
+> >  create mode 100755 testcases/lib/tests/shell_test_pass.sh
+> >  create mode 100644 testcases/lib/tst_env.sh
+> >  create mode 100644 testcases/lib/tst_res_.c
+> >
+> > diff --git a/include/tst_test.h b/include/tst_test.h
+> > index 6c76f043d..a334195ac 100644
+> > --- a/include/tst_test.h
+> > +++ b/include/tst_test.h
+> > @@ -331,6 +331,8 @@ struct tst_fs {
+> >   * @child_needs_reinit: Has to be set if the test needs to call tst_reinit()
+> >   *                      from a process started by exec().
+> >   *
+> > + * @runs_script: Implies child_needs_reinit and forks_child at the moment.
+> > + *
+> >   * @needs_devfs: If set the devfs is mounted at tst_test.mntpoint. This is
+> >   *               needed for tests that need to create device files since tmpfs
+> >   *               at /tmp is usually mounted with 'nodev' option.
+> > @@ -518,6 +520,7 @@ struct tst_fs {
+> >  	unsigned int mount_device:1;
+> >  	unsigned int needs_rofs:1;
+> >  	unsigned int child_needs_reinit:1;
+> > +	unsigned int runs_script:1;
+> 
+> This could be a string constant instead of a flag if you want to future
+> proof against multiple scripting languages or you could change it to runs_shell.
 
+Heh, Martin Doucha requtested runs_shell to be changed to runs_script,
+and that was a rightful request, since there is actually nothing shell
+specific in the test library, it just sets up env variables and passes
+command line option to something that is executed by execvpe(). All that
+is missing for any other scripting language is a bit of glue code that
+would interface the shared memory passed down in LTP_IPC_ENV.
 
-Crash Log links,
---------
- x86_64 device log -
-https://lkft.validation.linaro.org/scheduler/job/7821061#L2049
- x86_64 device log -
-https://lkft.validation.linaro.org/scheduler/job/7821898#L2102
+So quite contrary the tst_run_shell() function should be renamed to
+tst_run_script() as well, which I will do in v3.
 
- Qemu-x86_64 log -
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24952975/suite/log-parser-test/test/check-kernel-oops-oops-oops-preempt-smp-pti/log
+> > +	int pid;
+> > +	unsigned int i, params_len = params_array_len(params);
+> > +	char *argv[params_len + 2];
+> > +
+> > +	if (!tst_test->runs_script)
+> > +		tst_brk(TBROK, "runs_script flag must be set!");
+> > +
+> > +	argv[0] = script_name;
+> maybe you'd have to cast it here or something, but IMO worth it
 
-Crash failed comparison:
-----------
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24954436/suite/log-parser-test/test/check-kernel-oops-oops-oops-preempt-smp-pti/history/
+Hmm, I was expecting that we would have to copy the data, but casting
+seems to work, will do.
 
-metadata:
-----
-  git describe: next-20240826
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git sha: 1ca4237ad9ce29b0c66fe87862f1da54ac56a1e8
-  kernel config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2lC5Io63H0fgSxxgMVk7RTlr00F/config
-  artifact location:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2lC5Io63H0fgSxxgMVk7RTlr00F/
-  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2lC5Io63H0fgSxxgMVk7RTlr00F/
-  toolchain: gcc-13
-  arch: x86_64
-  LTP url: https://storage.tuxboot.com/overlays/debian/trixie/i386/ltp/20240524/ltp.tar.xz
-  rootfs url: https://storage.tuxboot.com/debian/trixie/i386/rootfs.tar.xz
-
-Steps to reproduce:
----------
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2lC5MBjPoo5vifL9EXfsMWCSHfN/reproducer
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2lC5MBjPoo5vifL9EXfsMWCSHfN/tux_plan
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2lC5MDbvH0o3j1TMpyOSDF4alXR/reproducer
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2lC5MDbvH0o3j1TMpyOSDF4alXR/tux_plan
-
-
-Please let me know if you need more information.
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
