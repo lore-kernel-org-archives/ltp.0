@@ -4,71 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1801CC5321D
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 13:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90BFCC5321D
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 13:21:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 977F83C9249
-	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 15:21:08 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 26ED63C7F5D
+	for <ltp@archiver.kernel.org>; Mon, 26 Aug 2024 15:21:41 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E56623C655D
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:20:52 +0200 (CEST)
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com
- [IPv6:2607:f8b0:4864:20::a32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CA25A3C655D
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:21:26 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 900201A01456
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:20:50 +0200 (CEST)
-Received: by mail-vk1-xa32.google.com with SMTP id
- 71dfb90a1353d-4fd05947340so1300102e0c.3
- for <ltp@lists.linux.it>; Mon, 26 Aug 2024 06:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1724678449; x=1725283249; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=eD175XUZ/ITy7ZdWAydNT67+uOxIgoWBm9/vtDXzUTA=;
- b=mQnDHylPOwIap6Nq9J/oLLDFRlkkhTamI0LZg9NxKVHuvmY9cR4iydQal2Q4UzlWq1
- C9w4FgBXCVVlQJw+65r0h3CB0+PUFMcyAN9zRhyKUYPadhSx9GBL1tcD/7c2wkf6t4pk
- CfFPV4W2o2t/aqzWNl+7LJZ7JfPNrnQQqpL9+g8Whqjg9T1H4DNjnTnYcCWVr7v5ciqP
- 2MvElFvZvBhGmQ77EqIpO600i4r6sOOqKHiB/Efu/jHeo4wA/y9Ohlf/Rx4PPIwdWtQr
- ogp+96p4Nh8terLUtvqFUBVpeQKrallenGpJCkgLfXGOoRRP9hkqTlJEsfVT3KM8TxAa
- BqDw==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0687A100092F
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 15:21:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1724678484;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VtOWUuZRTINmaESltZb3Jg6k19ZIVSMwtr88C8s6F+Y=;
+ b=PwpRJddcjRvezpNeGBqwWn5jdN/A4dPLxnLPtiGY14O+EfoKx563Yo4BRbFTnJ/acnhT5f
+ eJQ6mRUUBMFQi/gmaTCulh478sXGqD4Sy1/yEXOhS8I0VHaXkIpqB06c2xTHdNwfNMupeu
+ qb2vhDbwK/2lor2aY3+FH9M7uT68MZM=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-pD-dhAePP4aIaGbg5AEDRg-1; Mon, 26 Aug 2024 09:21:22 -0400
+X-MC-Unique: pD-dhAePP4aIaGbg5AEDRg-1
+Received: by mail-pg1-f197.google.com with SMTP id
+ 41be03b00d2f7-6507e2f0615so3656047a12.1
+ for <ltp@lists.linux.it>; Mon, 26 Aug 2024 06:21:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724678449; x=1725283249;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=eD175XUZ/ITy7ZdWAydNT67+uOxIgoWBm9/vtDXzUTA=;
- b=kPx2ZK1nh2kdTBvtGwHSW2f//o6JpYBer0c1dtGDb7m78MysNYpQNZCDavPnOHmnVc
- AvqxmSiPbZJXMCZO8mWSo/nWgydkMMyCntaCFkHsP685TzCZEKVLCIJ74VwGTaJm/PBM
- 49mKLM9uZ0djx0X41Di42Z4IP2YQJm7vH0g1fIdFOQf/2Y9rz+0LFQu+kHvnpBA51a0I
- q6qHUifbttfrp/fRDFUM92Vir6ZoXt1mrA48amORwHx1uiwsUwFIlITQIVdEj4MX73uH
- Mh0i6sKaWUq+AYgtnq1yH61ELWb2kvyKd0P94Xt/U1t+bOGN9kO/QVaapq1WvdkpwQqO
- K2Qg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVMawjh+cIgq3nDSOCKgznc07bSsepuuPu2ov6V+55hSGzAGDrv6y+foA6KC+kNNyfMR9Q=@lists.linux.it
-X-Gm-Message-State: AOJu0YxKzj2WtMZT4aI4MSvPNGZdrei/w61le8p4vKX85F4vMiyr7PCN
- ybCla28SxpxuLCphiHIFD8GYB6p5Z1W8+Cw9tJfpKCUMLEC99QBQVrR+yBCPDMfhiz9h+/HshMs
- Pv/cx/WC4MgivoxJ1kvT7zhp1hI8EVOvlkX5kTQ==
-X-Google-Smtp-Source: AGHT+IHfLYQXJQalFGVZVOgOn/tn6bOUOwnoI9D+YmaRkON0wOcbu81fZMRkrl/+m2cVQflgktyC19x+8RBVqWzPqMk=
-X-Received: by 2002:a05:6122:3d08:b0:4f5:28e3:5a5a with SMTP id
- 71dfb90a1353d-4fd1a522b94mr12978602e0c.4.1724678449179; Mon, 26 Aug 2024
- 06:20:49 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1724678481; x=1725283281;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=VtOWUuZRTINmaESltZb3Jg6k19ZIVSMwtr88C8s6F+Y=;
+ b=jsIsV9mocwsIUGDt6vD4Mtd72LkCe+/f05yKZ+6M/9Kc9mSXEbjRGYOnvUEU6PKsr9
+ z69ankdSWKA95pBEEnM5IzT6/lbdQYLJ+UAVgbHyYJpTZU3l7brva9cnghwPuvaPd3UQ
+ 4iWMocXqEz/87MkAIWrNNervF4JaTIk4qr1GlYaVU5c6zMqdeuB90c9MoZvkkEisQjaU
+ 9D05a3Hyc+wGDR2LrCcZcZfKiVfoM+vwSa9FcOqS+6m3EPkeaZP9vh9bNRuUsc+rLwnQ
+ CJgQWAMJ00YXuRjd00P9SRLBhQWwDzlOpR6lttF6ojF11vIuT1n/0vWbv62MfTjma/Sv
+ fDZg==
+X-Gm-Message-State: AOJu0YyRMklJ7MT1psVBmA+PAQnxl35bfsIqhGMMwdJyED1Zh5nsCVA4
+ pd6pqgiqD6Ygsn4917C4zkuz5t9v4Hq7sHfdc6fzNMV6zXpEGp7JuI5zpWRIrU/K9GaASxsoPz8
+ 1vzMdHnPzK30wp4rkSj7pJGJ+ZS1vX7c/fGmsBOo7mNUo8jKPORw1e+xBiIQLbVlgBY4Eoft5i0
+ Lxhy9iA7AYYap5EZYzrVxG0/I=
+X-Received: by 2002:a05:6a20:2d07:b0:1ca:97e4:14f0 with SMTP id
+ adf61e73a8af0-1cc89d19215mr11543676637.2.1724678481656; 
+ Mon, 26 Aug 2024 06:21:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFgEavbJ4yxKDsSdloT+6hh69lf8d6oFcOMWDhcC1LLaZY0aTamEKARONR9WDgSnv5JqIF4VEyMdKCqeDITP/A=
+X-Received: by 2002:a05:6a20:2d07:b0:1ca:97e4:14f0 with SMTP id
+ adf61e73a8af0-1cc89d19215mr11543650637.2.1724678481273; Mon, 26 Aug 2024
+ 06:21:21 -0700 (PDT)
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 26 Aug 2024 18:50:37 +0530
-Message-ID: <CA+G9fYvcBvbabg+m7brKfpGCGZUcK+KHHTFX7hFvW6GmN2XF0g@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>, 
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- lkft-triage@lists.linaro.org, 
- Linux Regressions <regressions@lists.linux.dev>, LTP List <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <20240826120205.5506-1-liwang@redhat.com>
+ <CAEemH2dYB3tyG4xjE_b1rGBRqtCDOwByq5ZdA0VUxvL3nqW0Vw@mail.gmail.com>
+ <CAASaF6xh7_wXiFn9LakEv-LY-szkZ+5fJ0B67ygdCV0g4T-89Q@mail.gmail.com>
+In-Reply-To: <CAASaF6xh7_wXiFn9LakEv-LY-szkZ+5fJ0B67ygdCV0g4T-89Q@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 26 Aug 2024 21:21:08 +0800
+Message-ID: <CAEemH2eBjOmLL-=zVFhoQiJXVDU0h1WThu5AP_Wf5S51RAtx7w@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] selftests: core: unshare_test: WARNING: at mm/util.c:671
- __kvmalloc_node_noprof
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] ioctl_loop06: no validate block size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,115 +92,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Al Viro <viro@zeniv.linux.org.uk>, David Gow <davidgow@google.com>,
- Matt Mackall <mpm@selenic.com>, Shuah Khan <shuah@kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Jens Axboe <axboe@kernel.dk>, "Michael S. Tsirkin" <mst@redhat.com>,
+ John Garry <john.g.garry@oracle.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The following kernel warning is noticed on all arch and all devices while
-running selftests: core: unshare_test on Linux next-20240823 and next-20240826.
-
-First seen on next-20240823.
-  Good: next-20240822
-  BAD:  next-20240823 and next-20240826
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Crash log:
---------
-# selftests: core: unshare_test
-<4>[   61.084149] ------------[ cut here ]------------
-<4>[ 61.085175] WARNING: CPU: 0 PID: 477 at mm/util.c:671
-__kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
-<4>[   61.088958] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce
-sha512_ce sha512_arm64 drm fuse backlight dm_mod ip_tables x_tables
-<4>[   61.093141] CPU: 0 UID: 0 PID: 477 Comm: unshare_test Not
-tainted 6.11.0-rc5-next-20240826 #1
-<4>[   61.094558] Hardware name: linux,dummy-virt (DT)
-<4>[   61.096763] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT
--SSBS BTYPE=--)
-<4>[ 61.097841] pc : __kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
-<4>[ 61.099701] lr : __kvmalloc_node_noprof (mm/util.c:661)
-<4>[   61.100448] sp : ffff800080abbce0
-<4>[   61.100819] x29: ffff800080abbcf0 x28: fff0000004549280 x27:
-0000000000000000
-<4>[   61.101744] x26: 0000000000000000 x25: 0000000000000000 x24:
-fff0000003615e40
-<4>[   61.102512] x23: fff0000003615ec0 x22: bfafa45863b285c8 x21:
-0000000200002000
-<4>[   61.103232] x20: 00000000ffffffff x19: 0000000000400cc0 x18:
-0000000000000000
-<4>[   61.104053] x17: 0000000000000000 x16: 0000000000000000 x15:
-0000000000000000
-<4>[   61.104927] x14: 0000000000000000 x13: 0000000000000000 x12:
-0000000000000000
-<4>[   61.105752] x11: 0000000000000000 x10: 0000000000000000 x9 :
-0000000000000000
-<4>[   61.106606] x8 : 0000000000000001 x7 : 0000000000000001 x6 :
-0000000000000005
-<4>[   61.107377] x5 : 0000000000000000 x4 : fff0000004549280 x3 :
-0000000000000000
-<4>[   61.108207] x2 : 0000000000000000 x1 : 000000007fffffff x0 :
-0000000000000000
-<4>[   61.109262] Call trace:
-<4>[ 61.109619] __kvmalloc_node_noprof (mm/util.c:671 (discriminator 1))
-<4>[ 61.110248] alloc_fdtable (fs/file.c:133)
-<4>[ 61.110751] expand_files
-(include/linux/atomic/atomic-arch-fallback.h:457
-include/linux/atomic/atomic-instrumented.h:33 fs/file.c:177
-fs/file.c:238)
-<4>[ 61.111171] ksys_dup3 (fs/file.c:1337)
-<4>[ 61.111596] __arm64_sys_dup3 (fs/file.c:1355)
-<4>[ 61.112006] invoke_syscall (arch/arm64/include/asm/current.h:19
-arch/arm64/kernel/syscall.c:54)
-<4>[ 61.112480] el0_svc_common.constprop.0
-(include/linux/thread_info.h:127 (discriminator 2)
-arch/arm64/kernel/syscall.c:140 (discriminator 2))
-<4>[ 61.112955] do_el0_svc (arch/arm64/kernel/syscall.c:152)
-<4>[ 61.113384] el0_svc (arch/arm64/include/asm/irqflags.h:55
-arch/arm64/include/asm/irqflags.h:76
-arch/arm64/kernel/entry-common.c:165
-arch/arm64/kernel/entry-common.c:178
-arch/arm64/kernel/entry-common.c:713)
-<4>[ 61.113742] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:731)
-<4>[ 61.115181] el0t_64_sync (arch/arm64/kernel/entry.S:598)
-<4>[   61.115709] ---[ end trace 0000000000000000 ]---
-
-
-Crash Log links,
---------
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24953436/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-mmutilc-__kvmalloc_node_noprof/log
-
-Crash failed comparison:
-----------
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240826/testrun/24953436/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-mmutilc-__kvmalloc_node_noprof/history/
-
-metadata:
-----
-  git describe: next-20240823 and next-20240826
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git sha: c79c85875f1af04040fe4492ed94ce37ad729c4d
-  kernel config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/config
-  artifact location:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/
-  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2l2pZRzhgRkPgXIKLJCI7vwVd6t/
-  toolchain: clang-18 and gcc-13
-
-Steps to reproduce:
----------
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2l2paZVYTloIDBYnua1s12DeIic/reproducer
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2l2paZVYTloIDBYnua1s12DeIic/tux_plan
-
-Please let me know if you need more information.
-
---
-Linaro LKFT
-https://lkft.linaro.org
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBBdWcgMjYsIDIwMjQgYXQgOToxNeKAr1BNIEphbiBTdGFuY2VrIDxqc3RhbmNla0By
+ZWRoYXQuY29tPiB3cm90ZToKCj4gT24gTW9uLCBBdWcgMjYsIDIwMjQgYXQgMjo0NuKAr1BNIExp
+IFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPiB3cm90ZToKPiA+Cj4gPiBIaSBBbGwsCj4gPgo+ID4g
+T24gTW9uLCBBdWcgMjYsIDIwMjQgYXQgODowMuKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
+Y29tPiB3cm90ZToKPiA+Cj4gPiA+IFNpbmNlIGNvbW1pdCA5NDIzYzY1M2ZlNjExMCAoImxvb3A6
+IERvbid0IGJvdGhlciB2YWxpZGF0aW5nIGJsb2Nrc2l6ZSIpCj4gPiA+IGtlcm5lbAo+ID4gPiBk
+cm9wIHZhbGlkYXRpbmcgYmxvY2tzaXplIGZvciBib3RoIGxvb3BfY29uZmlndXJlIGFuZAo+IGxv
+b3Bfc2V0X2Jsb2NrX3NpemUKPiA+ID4gc28KPiA+ID4gdGhhdCBzZXQgbGFyZ2UgYmxvY2sgc2l6
+ZSBzdWNjZWVkcy4KPiA+ID4KPiA+ID4gRXJyb3IgbG9nOgo+ID4gPiAgIDEyIGlvY3RsX2xvb3Aw
+Ni5jOjc2OiBUSU5GTzogVXNpbmcgTE9PUF9TRVRfQkxPQ0tfU0laRSB3aXRoIGFyZyA+Cj4gPiA+
+IFBBR0VfU0laRQo+ID4gPiAgIDEzIGlvY3RsX2xvb3AwNi5jOjU5OiBURkFJTDogU2V0IGJsb2Nr
+IHNpemUgc3VjY2VlZCB1bmV4cGVjdGVkbHkKPiA+ID4gICAuLi4KPiA+ID4gICAxOCBpb2N0bF9s
+b29wMDYuYzo3NjogVElORk86IFVzaW5nIExPT1BfQ09ORklHVVJFIHdpdGggYmxvY2tfc2l6ZSA+
+Cj4gPiA+IFBBR0VfU0laRQo+ID4gPiAgIDE5IGlvY3RsX2xvb3AwNi5jOjU5OiAgVEZBSUw6IFNl
+dCBibG9jayBzaXplIHN1Y2NlZWQgdW5leHBlY3RlZGx5Cj4gPiA+Cj4gPgo+ID4gSG1tLCBtYXli
+ZSBJIHdhcyB3cm9uZyBoZXJlLCB0aGUgY29tbWl0IHNheXMKPiA+Cj4gPiAgICJUaGUgYmxvY2sg
+cXVldWUgbGltaXRzIHZhbGlkYXRpb24gZG9lcyB0aGlzIGZvciB1cyBub3cuIgo+ID4KPiA+IHdo
+aWNoIGluZGljYXRlcyB0aGUgdmFsaWRhdGlvbiBpcyBzdGlsbCBvbi4KPiA+Cj4gPiBTbyB0aGUg
+dGVzdCBmYWlsdXJlIHByb2JhYmx5IG1lYW5zIGEga2VybmVsIGJ1ZyBidXQgbm90IGEgdGVzdCBw
+cm9ibGVtLgo+Cj4gQmVmb3JlIHRoZSBwYXRjaCwgYmxrX3ZhbGlkYXRlX2Jsb2NrX3NpemUoKSBk
+aWQgdmFsaWRhdGUgb3JpZ2luYWwKPiB2YWx1ZSBhcyB1bnNpZ25lZCBsb25nLAo+IGFmdGVyIHBh
+dGNoIGl0J3MgdmFsaWRhdGVkIGFmdGVyIGNhc3QgdG8gdW5zaWduZWQgc2hvcnQuCj4KPiBJbiBM
+VFAgdGhyZWFkIHlvdSBtZW50aW9uZWQgaXQgZmFpbGVkIG9uIHBwYzY0bGUvYWFyY2g2NCBhbmQg
+d29ya2VkIG9uCj4geDg2XzY0IGFuZCBzMzkweC4KPiBJcyBpdCBieSBjaGFuY2Ugbm93IGZhaWxp
+bmcgb25seSBvbiBrZXJuZWxzIHdpdGggNjRrIHBhZ2Ugc2l6ZT8KPgoKUmlnaHQsIEkgY2hlY2tl
+ZCB0aGUgYXV0b21hdGlvbiBqb2JzLCBhbGwgcmVjZW50ICh2Ni4xMSkgYWFyY2g2NC1rZXJuZWwt
+NjRrCnJlcG9ydHMgdGhhdCBmYWlsLgoKCgo+IChUZXN0IGF0dGVtcHRzIHRvIHNldCBibG9jayBz
+aXplIHRvIDIqcGFnZSBzaXplLikKPgo+ID4KPiA+IENDIGJsb2NrIGRldnMgdG8gZ2l2ZSBzb21l
+IGFkdmljZS4KPiA+Cj4gPgo+ID4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogTGkgV2FuZyA8
+bGl3YW5nQHJlZGhhdC5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pb2N0bC9pb2N0bF9sb29wMDYuYyB8IDkgKysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgOSBpbnNlcnRpb25zKCspCj4gPiA+Cj4gPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lvY3RsL2lvY3RsX2xvb3AwNi5jCj4gPiA+IGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9pb2N0bC9pb2N0bF9sb29wMDYuYwo+ID4gPiBpbmRleCAzMTdmNjkzYTAu
+LjRhYWNkMjg0YSAxMDA2NDQKPiA+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+b2N0bC9pb2N0bF9sb29wMDYuYwo+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2lvY3RsL2lvY3RsX2xvb3AwNi5jCj4gPiA+IEBAIC0yMyw2ICsyMyw3IEBAIHN0YXRpYyBjaGFy
+IGRldl9wYXRoWzEwMjRdOwo+ID4gPiAgc3RhdGljIGludCBkZXZfbnVtLCBkZXZfZmQsIGZpbGVf
+ZmQsIGF0dGFjaF9mbGFnLCBsb29wX2NvbmZpZ3VyZV9zdXAKPiA9IDE7Cj4gPiA+ICBzdGF0aWMg
+dW5zaWduZWQgaW50IGludmFsaWRfdmFsdWUsIGhhbGZfdmFsdWUsIHVuYWxpZ25fdmFsdWU7Cj4g
+PiA+ICBzdGF0aWMgc3RydWN0IGxvb3BfY29uZmlnIGxvb3Bjb25maWc7Cj4gPiA+ICtzdGF0aWMg
+aW50IG5vdmFsaWRhdGVfYmxvY2tzaXplID0gMDsKPiA+ID4KPiA+ID4gIHN0YXRpYyBzdHJ1Y3Qg
+dGNhc2Ugewo+ID4gPiAgICAgICAgIHVuc2lnbmVkIGludCAqc2V0dmFsdWU7Cj4gPiA+IEBAIC03
+NCw2ICs3NSwxMSBAQCBzdGF0aWMgdm9pZCBydW4odW5zaWduZWQgaW50IG4pCj4gPiA+ICAgICAg
+ICAgc3RydWN0IHRjYXNlICp0YyA9ICZ0Y2FzZXNbbl07Cj4gPiA+Cj4gPiA+ICAgICAgICAgdHN0
+X3JlcyhUSU5GTywgIiVzIiwgdGMtPm1lc3NhZ2UpOwo+ID4gPiArICAgICAgIGlmICgoKih0Yy0+
+c2V0dmFsdWUpID09IGludmFsaWRfdmFsdWUpICYmCj4gbm92YWxpZGF0ZV9ibG9ja3NpemUpIHsK
+PiA+ID4gKyAgICAgICAgICAgICAgIHRzdF9yZXMoVENPTkYsICJLZXJuZWwgZG9lc24ndCB2YWxp
+ZGF0ZSBibG9jayBzaXplLAo+IHNraXAKPiA+ID4gaW52YWxpZCB2YWx1ZSB0ZXN0Iik7Cj4gPiA+
+ICsgICAgICAgICAgICAgICByZXR1cm47Cj4gPiA+ICsgICAgICAgfQo+ID4gPiArCj4gPiA+ICAg
+ICAgICAgaWYgKHRjLT5pb2N0bF9mbGFnID09IExPT1BfU0VUX0JMT0NLX1NJWkUpIHsKPiA+ID4g
+ICAgICAgICAgICAgICAgIGlmICghYXR0YWNoX2ZsYWcpIHsKPiA+ID4gICAgICAgICAgICAgICAg
+ICAgICAgICAgdHN0X2F0dGFjaF9kZXZpY2UoZGV2X3BhdGgsICJ0ZXN0LmltZyIpOwo+ID4gPiBA
+QCAtMTI2LDYgKzEzMiw5IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCj4gPiA+ICAgICAgICAg
+ICAgICAgICByZXR1cm47Cj4gPiA+ICAgICAgICAgfQo+ID4gPiAgICAgICAgIGxvb3Bjb25maWcu
+ZmQgPSBmaWxlX2ZkOwo+ID4gPiArCj4gPiA+ICsgICAgICAgaWYgKCh0c3Rfa3ZlcmNtcCg2LCAx
+MSwgMCkpID49IDApCj4gPiA+ICsgICAgICAgICAgICAgICBub3ZhbGlkYXRlX2Jsb2Nrc2l6ZSA9
+IDE7Cj4gPiA+ICB9Cj4gPiA+Cj4gPiA+ICBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpCj4gPiA+
+IC0tCj4gPiA+IDIuNDYuMAo+ID4gPgo+ID4gPgo+ID4gPiAtLQo+ID4gPiBNYWlsaW5nIGxpc3Qg
+aW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKPiA+ID4KPiA+ID4KPiA+
+Cj4gPiAtLQo+ID4gUmVnYXJkcywKPiA+IExpIFdhbmcKPiA+Cj4gPiAtLQo+ID4gTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0gClJl
+Z2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
+eC5pdC9saXN0aW5mby9sdHAK
