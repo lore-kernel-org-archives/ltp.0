@@ -4,124 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED7ECC54731
-	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 15:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8257BC5472F
+	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 18:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1724785070; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=YmjkdWgkRd+YTfWNemX/aHt1oLM5GAJdmRyB40gSApE=;
+ b=pbRMVubOGPP/SBEYCHtj3TRX86LMybxNXt3ccC23IbczKudrfW2ovQ6BTXA40+FlXEgVX
+ qLf6GpnoysRolcmEf9ySi0oMhYmcKx2EEpvRnpSIOWjaB+RfKzMx3lOppt+mrSqBryoQpUm
+ H8rPbyTxEKar3YkhE5NwsULBhewg44c=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CB563D2752
-	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 17:27:29 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A47E03D2767
+	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 20:57:50 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 586233C655D
- for <ltp@lists.linux.it>; Tue, 27 Aug 2024 17:27:12 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 3999A3D2266
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 20:57:30 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=kernel.org (client-ip=145.40.73.55; helo=sin.source.kernel.org;
+ envelope-from=ebiggers@kernel.org; receiver=lists.linux.it)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BB5FD1007C82
- for <ltp@lists.linux.it>; Tue, 27 Aug 2024 17:27:11 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0163121B0E;
- Tue, 27 Aug 2024 15:27:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724772430;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DiRuT6KS5xm/a1uK/VGs5u1puvYNGTCyQqWHx/rE3bo=;
- b=o+dYyyKxYYk97NirY9aGv5IfKvHrHrqFWWqd9hJ+rwZaiV4IMrT9fYnxGt86PR0jNIoMJV
- 6l92S7RFOOAUCK1SjpiOfDcCmedGKugqzx9JI6yMoBCg3KhOvtw4+eed8G9Pgjf6WcAUET
- Jh3kYsoBPntmoJJxkX3N0PRNUtT/vQU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724772430;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DiRuT6KS5xm/a1uK/VGs5u1puvYNGTCyQqWHx/rE3bo=;
- b=bgprGjwOLEXZUcFTaD/4uIXDLmpzKCJ5Gjx7/8DrVfnaXTc6U7kK8itUTGzddff1AbSyGw
- +B2JIMwaO0HJFuBg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=o+dYyyKx;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bgprGjwO
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724772430;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DiRuT6KS5xm/a1uK/VGs5u1puvYNGTCyQqWHx/rE3bo=;
- b=o+dYyyKxYYk97NirY9aGv5IfKvHrHrqFWWqd9hJ+rwZaiV4IMrT9fYnxGt86PR0jNIoMJV
- 6l92S7RFOOAUCK1SjpiOfDcCmedGKugqzx9JI6yMoBCg3KhOvtw4+eed8G9Pgjf6WcAUET
- Jh3kYsoBPntmoJJxkX3N0PRNUtT/vQU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724772430;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DiRuT6KS5xm/a1uK/VGs5u1puvYNGTCyQqWHx/rE3bo=;
- b=bgprGjwOLEXZUcFTaD/4uIXDLmpzKCJ5Gjx7/8DrVfnaXTc6U7kK8itUTGzddff1AbSyGw
- +B2JIMwaO0HJFuBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5FE113724;
- Tue, 27 Aug 2024 15:27:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hmVCJ03wzWbUJAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 27 Aug 2024 15:27:09 +0000
-Date: Tue, 27 Aug 2024 17:27:02 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Chuck Lever III <chuck.lever@oracle.com>
-Message-ID: <20240827152702.GA1634061@pevik>
-References: <20240823064640.GA1217451@pevik>
- <172445038410.6062.6091007925280806767@noble.neil.brown.name>
- <9afef16d-52b2-435d-902a-7ccfa5824968@suse.cz>
- <20240827132242.GA1627011@pevik>
- <44DF7F99-3FDA-46C0-BC93-B6679F04B7AB@oracle.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E4B9C60239C
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 20:57:29 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sin.source.kernel.org (Postfix) with ESMTP id E9685CE1412;
+ Tue, 27 Aug 2024 18:57:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A4DC4FF4D;
+ Tue, 27 Aug 2024 18:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1724784521;
+ bh=TOskMyqvmJnMMdMK9trHR8rWGt1L+cQe4Dtdla0PK+0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=murPJKnrocvWfXX7rWlYLG3ledHoOxLgwG/e1Qwf9cs/KuUhuSnLz6a4PwpOAICuO
+ 7I+yhTbPeHZEp0GMdcgKfU0849z1wX6+w4+F9r3xzYA8tUC5mvlm6uoY/lydfbwgcL
+ YbZIPndcqpP30be39cIFQKzkQXAUHFLV4iZilqIUEFJk/d1I4ZpM9MeRfk61F3L/UW
+ qi4FAvEF0mCdQd+kCGVRsp45+khRStTBMoO2AwnBPxsNa1wzB6aRfW1uEKXueg92JN
+ 9KlbU+LvI6rKoGjx+2KIIvtsiGAkGuLnPpWBzAzReks4ZfNBEaaseoATd97fcjlw86
+ yeTIdEUTFmOhw==
+Date: Tue, 27 Aug 2024 11:48:39 -0700
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Message-ID: <20240827184839.GD2049@sol.localdomain>
+References: <ZrbTUk6DyktnO7qk@gondor.apana.org.au>
+ <202408161634.598311fd-oliver.sang@intel.com>
+ <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
+ <ZsBJ5H4JExArHGVw@gondor.apana.org.au>
+ <ZsBKG0la0m69Dyq3@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <44DF7F99-3FDA-46C0-BC93-B6679F04B7AB@oracle.com>
-X-Rspamd-Queue-Id: 0163121B0E
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_DN_EQ_ADDR_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <ZsBKG0la0m69Dyq3@gondor.apana.org.au>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] nfsstat01: Update client RPC calls for
- kernel 6.9
+Subject: Re: [LTP] [v3 PATCH 3/3] crypto: simd - Do not call
+ crypto_alloc_tfm during registration
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,67 +76,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Neil Brown <neilb@suse.de>, Josef Bacik <josef@toxicpanda.com>,
- linux-stable <stable@vger.kernel.org>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Eric Biggers via ltp <ltp@lists.linux.it>
+Reply-To: Eric Biggers <ebiggers@kernel.org>
+Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+ "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
+ "David S. Miller" <davem@davemloft.net>,
+ kernel test robot <oliver.sang@intel.com>, linux-crypto@vger.kernel.org,
+ oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
+ Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgYWxsLAoKPiA+IE9uIEF1ZyAyNywgMjAyNCwgYXQgOToyMuKAr0FNLCBQZXRyIFZvcmVsIDxw
-dm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+ID4gSGkgYWxsLAoKPiA+PiBPbiAyMy4gMDguIDI0IDIz
-OjU5LCBOZWlsQnJvd24gd3JvdGU6Cj4gPj4+IE9uIEZyaSwgMjMgQXVnIDIwMjQsIFBldHIgVm9y
-ZWwgd3JvdGU6Cj4gPj4+PiBXZSBkaXNjdXNzZWQgaW4gdjEgaG93IHRvIGZpeCB0ZXN0cy4gIE5l
-aWwgc3VnZ2VzdGVkIHRvIGZpeCB0aGUgdGVzdCB0aGUgd2F5IHNvCj4gPj4+PiB0aGF0IGl0IHdv
-cmtzIG9uIGFsbCBrZXJuZWxzLiBBcyBJIG5vdGUgWzFdCgo+ID4+Pj4gMSkgZWl0aGVyIHdlIGdp
-dmUgdXAgb24gY2hlY2tpbmcgdGhlIG5ldyBmdW5jdGlvbmFsaXR5IHN0aWxsIHdvcmtzIChpZiB3
-ZQo+ID4+Pj4gZmFsbGJhY2sgdG8gb2xkIGJlaGF2aW9yKQoKPiA+Pj4gSSBkb24ndCB1bmRlcnN0
-YW5kLiAgV2hhdCBleGFjdGx5IGRvIHlvdSBtZWFuIGJ5ICJ0aGUgbmV3Cj4gPj4+IGZ1bmN0aW9u
-YWxpdHkiLgo+ID4+PiBBcyBJIHVuZGVyc3RhbmQgaXQgdGhlcmUgaXMgbm8gbmV3IGZ1bmN0aW9u
-YWxpdHkuICBBbGwgdGhlcmUgd2FzIHdhcyBhbmQKPiA+Pj4gaW5mb3JtYXRpb24gbGVhayBiZXR3
-ZWVuIG5ldHdvcmsgbmFtZXNwYWNlcywgYW5kIHdlIHN0b3BwZWQgdGhlIGxlYWsuCj4gPj4+IERv
-IHlvdSBjb25zaWRlciB0aGF0IHRvIGJlIG5ldyBmdW5jdGlvbmFsaXR5PwoKPiA+IFRoYW5rcyBN
-YXJ0aW4gZm9yIGp1bXBpbmcgaW4uIEkgaG9wZWQgSSB3YXMgY2xlYXIsIGJ1dCBvYnZpb3VzbHkg
-bm90LgoKPiA+IEZvbGxvd2luZyBhcmUgdGhlIHF1ZXN0aW9ucyBmb3Iga2VybmVsIG1haW50YWlu
-ZXJzIGFuZCBkZXZlbG9wZXJzLiBJIHB1dCBteQo+ID4gb3BpbmlvbiwgYnV0IGl0J3MgcmVhbGx5
-IHVwIHRvIHlvdSB3aGF0IHlvdSB3YW50IHRvIGhhdmUgdGVzdGVkLgoKPiA+PiBUaGUgbmV3IGZ1
-bmN0aW9uYWxpdHkgaXMgdGhhdCB0aGUgcGF0Y2hlcyBhZGQgYSBuZXcgZmlsZSB0byBuZXR3b3Jr
-Cj4gPj4gbmFtZXNwYWNlczogL3Byb2MvbmV0L3JwYy9uZnMuIFRoaXMgZmlsZSBkaWQgbm90IGV4
-aXN0IG91dHNpZGUgdGhlIHJvb3QKPiA+PiBuZXR3b3JrIG5hbWVzcGFjZSBhdCBsZWFzdCBvbiBz
-b21lIG9mIHRoZSBrZXJuZWxzIHdoZXJlIHdlIHN0aWxsIG5lZWQgdG8gcnVuCj4gPj4gdGhpcyB0
-ZXN0LiBTbyB0aGUgcXVlc3Rpb24gaXM6IEhvdyBhZ2dyZXNzaXZlbHkgZG8gd2Ugd2FudCB0byBl
-bmZvcmNlCj4gPj4gYmFja3BvcnRpbmcgb2YgdGhlc2UgTkZTIHBhdGNoZXMgaW50byBkaXN0cm9z
-IHdpdGggb2xkZXIga2VybmVscz8KCj4gPj4gV2UgaGF2ZSAzIG9wdGlvbnMgaG93IHRvIGZpeCB0
-aGUgdGVzdCBkZXBlbmRpbmcgb24gdGhlIGFuc3dlcjoKPiA+PiAxKSBEb24ndCBlbmZvcmNlIGF0
-IGFsbC4gV2UnbGwgY2hlY2sgd2hldGhlciAvcHJvYy9uZXQvcnBjL25mcyBleGlzdHMgaW4gdGhl
-Cj4gPj4gY2xpZW50IG5hbWVzcGFjZSBhbmQgcmVhZCBpdCBvbmx5IGlmIGl0IGRvZXMuIE90aGVy
-d2lzZSB3ZSdsbCBmYWxsIGJhY2sgb24KPiA+PiB0aGUgZ2xvYmFsIGZpbGUuCgo+ID4gMSkgaXMg
-SU1ITyB0aGUgd29yc3QgY2FzZSBiZWNhdXNlIGl0J3Mgbm90IHRlc3RpbmcgcGF0Y2ggZ2V0cyBy
-ZXZlcnRlZC4KCj4gPj4gMikgRW5mb3JjZSBhZ2dyZXNzaXZlbHkuIFdlJ2xsIGhhcmRjb2RlIGEg
-bWluaW1hbCBrZXJuZWwgdmVyc2lvbiBpbnRvIHRoZQo+ID4+IHRlc3QgKGUuZy4gdjUuNCkgYW5k
-IGlmIHRoZSBwcm9jZmlsZSBkb2Vzbid0IGV4aXN0IG9uIGFueSBuZXdlciBrZXJuZWwsIGl0J3MK
-PiA+PiBhIGJ1Zy4KCj4gPiBJIHdvdWxkIHByZWZlciAyKSwgd2hpY2ggaXMgdGhlIHVzdWFsIExU
-UCBhcHByb2FjaCAoZG8gbm90IGhpZGUgYnVncywgd2UgZXZlbgo+ID4gZmFpbCBvbiB1cHN0cmVh
-bSBrZXJuZWwgV09OVEZJWCBbMV0sIHdoeSB3ZSBzaG91bGQgcmVmdXNlIHRoZSBwb2xpY3kgaGVy
-ZT8pLgoKPiAyKSBtYWtlcyBzZW5zZSB0byBtZS4KClRoYW5rcyBmb3IgeW91ciBvcGluaW9uLiBJ
-J2xsIHNlbmQgYW5vdGhlciB2ZXJzaW9uICgrIHN0aWxsIHdhaXQgZm9yIG90aGVycyBpbnB1dCku
-CgpLaW5kIHJlZ2FyZHMsClBldHIKCj4gPiBXaGljaGV2ZXIgb2xkZXIgTFRTIHVwc3RyZWFtIGtl
-cm5lbCBnZXRzIGZpeGVkIHdvdWxkIGRyaXZlIHRoZSBsaW5lIHdoZXJlIG5ldwo+ID4gZnVuY3Rp
-b25hbGl0eSBpcyByZXF1ZXN0ZWQgKGN1cnJlbnRseSB2NS4xNCwgSSBzdXBwb3NlIGF0IGxlYXN0
-IDUuMTAgd2lsbCBhbHNvCj4gPiBiZSBmaXhlZCkuIExUUCBhbHNvIGhhcyBhIHdheSB0byBzcGVj
-aWZ5IGVudGVycHJpc2UgZGlzdHJvIGtlcm5lbCB2ZXJzaW9uIGlmCj4gPiBvbGRlciBlbnRlcnBy
-aXNlIGtlcm5lbCBhbHNvIGdldHMgZml4ZWQgKHRoaXMgc2hvdWxkIG5vdCBiZSBuZWVkZWQsIGJ1
-dCBpdCdkIGJlCj4gPiBwb3NzaWJsZSkuCgo+ID4+IDMpIEVuZm9yY2Ugb24gbmV3IGtlcm5lbHMg
-b25seS4gV2UnbGwgc2V0IGEgaGFyZCByZXF1aXJlbWVudCBmb3Iga2VybmVsCj4gPj4gdjYuOSsg
-YXMgaW4gb3B0aW9uIDIpIGFuZCBjaGVjayBmb3IgZXhpc3RlbmNlIG9mIHRoZSBwcm9jZmlsZSBv
-biBhbnkgb2xkZXIKPiA+PiBrZXJuZWxzIGFzIGluIG9wdGlvbiAxKS4KCj4gPiBEdWUgd2F5IHRv
-IHNwZWNpZnkgZW50ZXJwcmlzZSBkaXN0cm8ga2VybmVsIHZlcnNpb24gYW5kIHVwc3RyZWFtIGtl
-cm5lbCB0ZXN0aW5nCj4gPiBleHBlY3RpbmcgcGVvcGxlIHVwZGF0ZSB0byB0aGUgbGF0ZXN0IHN0
-YWJsZS9MVFMgd2Ugc2hvdWxkIG5vdCB3b3JyeSBtdWNoIGFib3V0Cj4gPiBwZW9wbGUgd2l0aCBv
-bGRlciBrZXJuZWxzLgoKPiA+IEtpbmQgcmVnYXJkcywKPiA+IFBldHIKCj4gPiBbMV0gaHR0cHM6
-Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvYmxvYi9tYXN0ZXIvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy91c3RhdC91c3RhdDAxLmMjTDQ4LUw0OQoKLS0gCk1haWxpbmcgbGlz
-dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+On Sat, Aug 17, 2024 at 02:58:35PM +0800, Herbert Xu wrote:
+> Algorithm registration is usually carried out during module init,
+> where as little work as possible should be carried out.  The SIMD
+> code violated this rule by allocating a tfm, this then triggers a
+> full test of the algorithm which may dead-lock in certain cases.
+> 
+> SIMD is only allocating the tfm to get at the alg object, which is
+> in fact already available as it is what we are registering.  Use
+> that directly and remove the crypto_alloc_tfm call.
+> 
+> Also remove some obsolete and unused SIMD API.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> ---
+>  arch/arm/crypto/aes-ce-glue.c     |  2 +-
+>  arch/arm/crypto/aes-neonbs-glue.c |  2 +-
+>  crypto/simd.c                     | 76 ++++++-------------------------
+>  include/crypto/internal/simd.h    | 12 +----
+>  4 files changed, 19 insertions(+), 73 deletions(-)
+> 
+
+I'm getting a test failure with this series applied:
+
+[    0.383128] alg: aead: failed to allocate transform for gcm_base(ctr(aes-generic),ghash-generic): -2
+[    0.383500] alg: self-tests for gcm(aes) using gcm_base(ctr(aes-generic),ghash-generic) failed (rc=-2)
+
+This is on x86_64 with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.
+
+- Eric
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
