@@ -4,68 +4,206 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49F6EC54757
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 09:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09370C54755
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 09:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1724836678; h=message-id :
+ date : to : references : in-reply-to : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=rM97X36PPuTw+kM1HODqrXoxyGuaoBLv2lJUeDpw4zU=;
+ b=ToT0Pw4vNOycAo6ZDutRLCNg0vJLeXvQe7fqCq8KCtOVKGL5S+HGq/XrplPJZ6P+VCfKp
+ iOLb+QCQINwhdx1E8zMsosq0ry4P3OA89OUJJrlSPiJkwYgOuR9I1BF5QQe4HFTk3kzCIH5
+ eqxHwLR9i4ALqe967jpEZF+osni/O60=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA9023D278F
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 11:16:27 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6A4A73D2792
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 11:17:58 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CEDA23CF762
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 11:16:11 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 16AB63C02DC
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 09:19:55 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=oracle.com (client-ip=205.220.177.32;
+ helo=mx0b-00069f02.pphosted.com; envelope-from=john.g.garry@oracle.com;
+ receiver=lists.linux.it)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
+ [205.220.177.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C7AA361338A
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 11:16:10 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4E9741FBED;
- Wed, 28 Aug 2024 09:16:09 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31FFA1398F;
- Wed, 28 Aug 2024 09:16:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id LNJWC9nqzmYjUgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 28 Aug 2024 09:16:09 +0000
-Date: Wed, 28 Aug 2024 11:14:53 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Zs7qjUdRWuN9Pt6v@yuki.lan>
-References: <20240828052500.2395-1-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A97592010F2
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 09:19:53 +0200 (CEST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47R5tUGr021009;
+ Tue, 27 Aug 2024 07:19:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+ message-id:date:subject:to:cc:references:from:in-reply-to
+ :content-type:content-transfer-encoding:mime-version; s=
+ corp-2023-11-20; bh=X1PRqNYi1gTzNgYm/n07D0gIZY9xRP1a5QxPe2Hngeg=; b=
+ RtOaWzOZI5/6Hm/QD6loZwEfBJ/mGGLRGWF7Ksvu4L9eUlgOWngaF28JW9mLYMYx
+ JrXMnnZMSBAqsOhF/qsjF94vhJ7DsNJGBa0+6p7U3doa6gPQZcUrbsHZWveD+1Gx
+ zBLCUyJiCUzpVyNyEHN6C+HSvJ8irB0czuDxGQFrOt22Vn64SEN8yiWOSK15FBxS
+ Z6U/RWXbwY4STEc1z2rEITDxsQXgNOMStd3LhK/shx9XGc6rrZonNvZ/1y2sGrvQ
+ n2SvWnH81lEEBNBfA4JBekPfKfYkSYcim7Ni8stZs91Z53f8eXI3aILb482kozWC
+ aKzfEou8HsWcoMaBAOs+6A==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com
+ (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4177n44u74-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 27 Aug 2024 07:19:47 +0000 (GMT)
+Received: from pps.filterd
+ (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+ by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2)
+ with ESMTP id 47R7HXuV032456; Tue, 27 Aug 2024 07:19:47 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+ by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
+ 418a0thkra-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 27 Aug 2024 07:19:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jffPeggbFan4FthretG9X2NLxrNXoEpyjAqeKNBjjpwqKxooUyamo9T1SOqW4iunx3TKOCdrq56e26aAHzTTabd+xUKFcV/cKQ8E9XnMXFCAchSB/JJ4RHTmOsIIT70OvtAKx0yt8XiLv3fh8zy/sWhLfWlqQOGIxy53jI4iIByPtKb56i38GP/5ELYRvzIKplImFo4uDCWJhBRe5SfjfXiLtzYrELgyM0cEHE1gpKaDDIwoXcFie1tM+QDJgFhrOmoqb4VXRh5vQ+5uHAw07ZSzOMJjXKgcgGxvd4W5OMO3VZ41BW0uS2u1IgBBzadqwzUnsmwlhh08nEawDgwhsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X1PRqNYi1gTzNgYm/n07D0gIZY9xRP1a5QxPe2Hngeg=;
+ b=s0mYN6ebwgWdk0a6QU6xtEkzOypC9znvZvKTUyNd0kt3Rq4OVVicoxiceZjLvl2hDu+f4FssgQDYq9RDefAjw95vTpzvvbaw0B236Si/ARxM/8nXyWlBqWtASM5JiIlEH58ngMmBIRhAYevaQSzEen2dxGf8Ky+Q54/8/vRgrxodia0sn/T+LbM4majwqRh1bAaSKwKnoLexj/qZjdLNOOyyEOCm1pWnN4KoHKaH6GXWQaj6yff7cV89wwRiYnaZlgqcGtk6jpPIuv/WV3qaUnyqZIEiuzhLZtz/SgsVI84UL7Er+krt27Em25/5CX9hjiFUa3bwJV+PJManR3TuOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X1PRqNYi1gTzNgYm/n07D0gIZY9xRP1a5QxPe2Hngeg=;
+ b=YPl4/1bI3Yzr1LLBrVhij2ME3EN9+Li03eKKulJjm2CNSXKfj8o0mk56BWZy2jEATPEmmnv7m331iZcdNet4MQi15YuO7epgg0tal7GlHelbRhSm92e+VwrlWELyrhfeQcebt37R9llDTE8zz6TQv+TLDnYKIznWwAguoOzeqaA=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SJ0PR10MB5630.namprd10.prod.outlook.com (2603:10b6:a03:3d2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.17; Tue, 27 Aug
+ 2024 07:19:39 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088%3]) with mapi id 15.20.7918.006; Tue, 27 Aug 2024
+ 07:19:39 +0000
+Message-ID: <8694fd51-67a2-45e2-bda4-f6816e1d612c@oracle.com>
+Date: Tue, 27 Aug 2024 08:19:35 +0100
+User-Agent: Mozilla Thunderbird
+To: Li Wang <liwang@redhat.com>, linux-kernel@vger.kernel.org,
+ ltp@lists.linux.it
+References: <20240827032218.34744-1-liwang@redhat.com>
+Content-Language: en-US
+Organization: Oracle Corporation
+In-Reply-To: <20240827032218.34744-1-liwang@redhat.com>
+X-ClientProxiedBy: LO4P123CA0618.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:314::20) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240828052500.2395-1-wegao@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 4E9741FBED
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB5630:EE_
+X-MS-Office365-Filtering-Correlation-Id: e190875f-0583-44a1-4f3f-08dcc6689cb0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?MmVjU2QxR2drUGVXanRqZkZRRVUvNTNIcitvYkpVdWFWVU16Tnc5U1VyemFJ?=
+ =?utf-8?B?K25vUjhlY25HOEllV1dNTFZEQ2N3TjF6QWppSGMxOEpkbkZUQ0t1Nk1jSlVj?=
+ =?utf-8?B?aWl5NXBxblhST3NYZlB2SjdWbVhkL1VISGk2S1NyWDhnQ0huNjBOa0FIUHFN?=
+ =?utf-8?B?dkltbkUwU2NKVlNCM3Bid2hBNHN5YWFMeFpGeThZVTFpTUJPbkdxZFVLQnRv?=
+ =?utf-8?B?Qy9NZmsyQWxSM2xXNml6aGEzL0ZxMlkwS0pSUEJXQ0RsYVZ5YjBhWi9ucmFI?=
+ =?utf-8?B?R29LTEJUK2oycVJ5Q1JBaUpyMHJXVjVhYWRmaVkzRjZhaGw5Sjc2U1V6YVpr?=
+ =?utf-8?B?RlFLOGUzb2Z3a2hNb2k3UXV4enFCTVpTeUZEQmxsNUxyNlJGQmVSNVUrUmVL?=
+ =?utf-8?B?TVBMZ1ZmdklhSC9sYjVMamx2ZzB1VUVUekNIeWx1WlpnWm1HRWt5MkV6VGEy?=
+ =?utf-8?B?ejRtaVIxTFRHZFE3N3FtK1h4L0RqRkt1ZStrclF0cFQyOUNWbnBwQnlIY3Zu?=
+ =?utf-8?B?MC9NV2xQU0xMNFA2WVN6Z3BQS0Jsb0loTUhhekpBbEc2QXpSTXJkZzBrUGRv?=
+ =?utf-8?B?UU1nVXBBdTN2YzFyWlVWK3NDT05LbkJVSWdMWTJqeTRJVjV0bDdRYWxLUDVJ?=
+ =?utf-8?B?T2EwZ3M2NjJvQzdUYVpSaXlVVnZlcGxBbFAzRHdPN1JCTTR6Y3dJZEJIVlY2?=
+ =?utf-8?B?Z3pFTitFQnY4ZVJLbFFvWDFVM3NNd0FCQ1RZVy9lU1Y0UVVnU3lKQkFjMGR1?=
+ =?utf-8?B?L3hqUlEycS85UTV3RzZSNXQyclc4cEhtSlk5WG84T2NNZ0xINWlwbENjOHBr?=
+ =?utf-8?B?dHdKa0RjRDBlYk9RSkhLQ1kyZngrVHlQZldyWDZGcmRVL0puRkVxNmhFbzUv?=
+ =?utf-8?B?V1h0aHBORDhlOWFoNUxOeDU4QkJkQVJFclpvbGRRVUY5QUdrOTBzUVZxNUZM?=
+ =?utf-8?B?dWt2d0F6KzJsQUZzWlI0U2JEdk5qd1cxU1FIc3NMNy8yRjZVa3BvL05VRFo2?=
+ =?utf-8?B?eUNqYmJwSnpBcElqQnZXOWF5WmpOWVRtU2hWbGdIVUdsM0pHTmlqZTRBR0FN?=
+ =?utf-8?B?SUxtZDdQaTRMb2dncElyU0VJcUwrZ2hzSzFIM05mcVNtc21waUhPME8vN0dk?=
+ =?utf-8?B?Q2tiQkFxZEs5UUdQaUt5b0JlQ3Z5bndMcXRHUVozUWZmOEZFVlhJSVA1NVBN?=
+ =?utf-8?B?NCtRQW82VDh3UXhoWDRadWJNTkRMRjR5L1AxMzI1UUEzc2FyVytSaGthUGVU?=
+ =?utf-8?B?TGxLY3A0NlNsTDJaTnZZTVdWdTNTUDRJLzlsLytUVkxZaWw0cDB1RnNoZ2d6?=
+ =?utf-8?B?WTRyZXN3R2dhM0JXWE5oMGJXYnhxZEtKTXphQk50OE9XWWxzeXIvV1Q5WkE1?=
+ =?utf-8?B?bWNpUXBkVVFlZ0lSUFVkcnk3RFhkbUNjWTdubUpYMTRyR2QwK1BBc3poUnNw?=
+ =?utf-8?B?dEJlNE55ZGFhdjhib0Rid2s0TUNxTVRFRDZIUWpqc21KTmVVMC9qcEhURmtJ?=
+ =?utf-8?B?L2hlSDFJcHE4aXRGQXd6cHpQSDc3aTc2MmpjYmhwaFMyTlhBUUM0aUd6bFNV?=
+ =?utf-8?B?TEwwL1ZCcThwOExseDgySmsrYXdGNWpoL2lZRVZWbjNjL3Zhc2dsYTFBS2ZJ?=
+ =?utf-8?B?NEJxbnZKdmlJb2llSUR6ZFphWCtXbUR2STFRS1Q1OXBXK0dObFVkODdhbzNl?=
+ =?utf-8?B?SkJ0a0VQWkQ1V2Y1UTQ5RHMyOEZ1WEFnOThXQk9yTU5xNmcyMDh4ZXdNWWFp?=
+ =?utf-8?Q?qgpYjV5J6eqq7YRC+A=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR10MB4313.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(376014)(1800799024); DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rm15YTMwVWlKdHFPYmd2ZnZ2bFFCRTRHNGlqNE52eGRTNWtpZ296cU1pTlYy?=
+ =?utf-8?B?ODhHenE3R044bXl5TG9talBZMGpGMWpXcGVublJ2eU43cmNoUW1LQTZLT0xy?=
+ =?utf-8?B?OUp3UmpaM3VaVmlLQjNTb1ZoQ3l5RS8yRnE4Vkw1Lys5WFVrZGszem9hbUs3?=
+ =?utf-8?B?RlRjK21JZmlTaE5xRFRJdFV2YytrOWxNSkh6a21SRXEwckozUTZHNUp0bEh6?=
+ =?utf-8?B?YXpnaCt4YkJZaExCVndSaksyQ29zUVJ4R00vZkwyRWcrbDlTbVk3REJBd1NM?=
+ =?utf-8?B?WEM0RVFJU2V1S2NSMVl3R25VanBUQlB4VzV6QWpiNDlrYWNGc0JCSEwxT0pL?=
+ =?utf-8?B?T0tDbS9sWHVjVVc2eStNd3VZTUZJSm9JUDVjQ3NNd1VGWVR2SWNJSVJNWmRL?=
+ =?utf-8?B?dVNVK1dCT1dvQiszajIvR3Q3dHlTbDRUOFkvNk9SUWw5WmJkaUl5UmIyNDdo?=
+ =?utf-8?B?TEVlMDZreUQ5Tko1R00xUjVOcDNreElQRFdzS3JDU0k4aDBzemVkVmt0SzFG?=
+ =?utf-8?B?L1RqZ2NvNlE1S0dKUVhpTFF6eStFOGZyaEY2ZmNwTlZ2QWU0VTBsdkpNSVN1?=
+ =?utf-8?B?UDZjM3krc0ZKc1FQQXlEL2hsbVJrVWlMYkhlZ2prK0NRNnRLSFBualpkWklV?=
+ =?utf-8?B?bkM5ZVhSUk5lQlRBbi9lZnhhTUJIK0dDSWFPbyt2RHFBM2lWNXZRWFhwMWRI?=
+ =?utf-8?B?WGVaeVcyd3AvV2U0V3RDdjRJczJmcVppNUVMdko4Y3BhWUV3NG9CZVh3YmE0?=
+ =?utf-8?B?SS81VFFDNEJNTEJjZng1dVBmdUF4WjBjN0gzMkphY1JsOEFSWG9hMzBpb2Ex?=
+ =?utf-8?B?MERFRnJRMjJoL0ZsRUhHQzE3S2VodCs5cUlMYTZKZ2Y3My8rdkZrc2ROaXFj?=
+ =?utf-8?B?QTRzR216eWhpRk5vNTk5V2tvaTc2NlAvSERKaGJ4cTdkZVBxNDBYQmpkcjNR?=
+ =?utf-8?B?NC80eGwvanA3MXAxd2ZnMllFNXgwb3Y1VUorTS96LzY2NHNVMEJQUkJFNFps?=
+ =?utf-8?B?RU4xU2NCa3JQTmw2VVJ6RjZBS1ZIN3k3NiswYUR6M1pleGpBbStvMXU0WVE4?=
+ =?utf-8?B?TGRFSUQrbC8xNlR0K2NvZWI5MEJPN3Nyem9oZU1zUnlzTkFBZGtnZFZYcmdx?=
+ =?utf-8?B?bjdoRjJhRXZIM2tLK0psTXVEWGRlZkJNM2tzLzZXN2hxaUZTY1lJcGZKWFRt?=
+ =?utf-8?B?eCtZZTF0emh0cDFmeGFxeFhiSUw3R1FwcDR4UmpXalY4d09NblZYTE5rRElv?=
+ =?utf-8?B?ZUQrelpBZi9yME5sc01ySCtZNnBPWUsrMU03WnlBMVFCUS9ETUNUQ3pkbTdr?=
+ =?utf-8?B?QjE5SWQ0MlFnc1p4OFB0VCtPS2ZnbEpUQWxtV1Z0cDJGMFlSMmFUemkzWE03?=
+ =?utf-8?B?RE5rTTh6ZUJ0a080d2FFVzhTSVBkaGsxU1Y2ekYybGtmL2xQYXpTb1Q3M1k0?=
+ =?utf-8?B?T3dSajVxMjlGRFhaa0g0VHU1elUyM2RKRS9USmc3UWlPWVBzT0VNOHl0enRB?=
+ =?utf-8?B?ZzRqVlZnL1BHUU0xdkxpQTJQVHcva2p3NEZwWkpGdkJCazB3L0pRTHg1VGRw?=
+ =?utf-8?B?dE5kM0dIN2lMYVBxaTI5T214ZS9GbnZUZ1hObnNwdS9oYWdHMTMxMWIvUGNE?=
+ =?utf-8?B?cU9QQVljSnRndFJyR2VWbUdxUnBTczlnbkV2bDN6Vm9hREdsYXRacll4MGpS?=
+ =?utf-8?B?WU4rNzhINXIyT2NRL2l2UnB0M09iNFBDaVlCbnN3bFBZYjROWTFiZWU0aWZa?=
+ =?utf-8?B?SlpNRkRwQU9pQXV1VFdxV253eC94MS92R3B3U3JGZGZMQTlDSUNKOGJDTVdM?=
+ =?utf-8?B?QlZyZEl1bDRSMVppbHJWYTlwcDY1aGExc3U0MHRZWFBkUVIrcnh6Zk5vbXV6?=
+ =?utf-8?B?b2IwRmpSV1dwZlA4NWl0SEZpV1NRTkxKNStDUnJVSHFhRUVOR2QzV24wbnpa?=
+ =?utf-8?B?TkdKSVN4RTNvbmZER2FFSHFRVzcvckxYa3RJd3J4TVBOVmk1bENWMW83WVBa?=
+ =?utf-8?B?aUlNZ05sTTI1UGs2Y2lxWFYvdkN4RWIxUyt2Mit2ODc1aTRyQU5pVk4rQ2ZF?=
+ =?utf-8?B?c1N5UWwvZ3J1RHdjeTAzOFVBcEpFeVJlQXIyNURmTDZjMkVwbVJDalEwUmcw?=
+ =?utf-8?Q?L9Q1xevQFUdLKvtJIcDP71fOu?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: lO+48h2P+lLSPzf8Mgq3ssTnFh1QJn7roVySZMOlANfszTLRfpMBI46Lq4Z9mIzsz6zSQV62NgJ4WAmhdzEsj8xjuCiVqFC57lUfsGsgUSjZxdxx/Dgg0vvyXRSt+QP7BdfrEJi+cdD2k/KChF6N0776NXZ7Uy/r0NgTXqN6/BjAgCEyNOFw7ur19it89zVsSHCZwm4uKDxk2FKEoDn1bsOZrrS86muL7A62N2M+WeJ5jQcF+YlJV9cn4qwM77BQ//Oki9EuDV7N4cf2GEz/qmSaLymVESb7A4BOgK2QeQTzifoVOGmbS+zV/XBg60d5h0mAkUmGUGpUiwuFsBDvJAekjyiAGVJQMRy1D6s5nATVv4S7fMZ2c7naUsmMKMvAqC0g4YeVRBgnPlrorIpVdjKAk0RtIgq55trVxaY3D3H1Ad6+JFpOp/7ferKRvREUJNjfwqh9mpv3DpXV0QT4myzeAPo8hWOr26JGhyt89zimLe5ojtBu1cjGW15NXTxMogyxNj/wYjXpAxnZI4Z00ChCNw55stMqPpku0kjqZWg1xbv9iBTb0ZqThN/F0G3fMRRL0uUSEvYO2tgglLsuMdLZ89u/XLONO7bP8rLZ7Ms=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e190875f-0583-44a1-4f3f-08dcc6689cb0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2024 07:19:38.9405 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dIV5eL3w/Pni40wh6hcmhiFxyr3GVs93NceYQIiA0pij9KOgxNiTKrBtOey/6IAhJZ3yuLgTMGjthFD7lj7zog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5630
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-27_04,2024-08-26_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ mlxlogscore=999 mlxscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408270054
+X-Proofpoint-GUID: HEbHITFLPAZabSjeh9Nxy-zQE0Yyeazk
+X-Proofpoint-ORIG-GUID: HEbHITFLPAZabSjeh9Nxy-zQE0Yyeazk
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] isofs.sh: Create group and user before check
- mount option
+X-Mailman-Approved-At: Wed, 28 Aug 2024 11:17:38 +0200
+Subject: Re: [LTP] [PATCH] loop: Increase bsize variable from unsigned short
+ to unsigned int
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,83 +215,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: John Garry via ltp <ltp@lists.linux.it>
+Reply-To: John Garry <john.g.garry@oracle.com>
+Cc: linux-block@vger.kernel.org, axboe@kernel.dk,
+ Stefan Hajnoczi <stefanha@redhat.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Here should a description why is this needed.
+On 27/08/2024 04:22, Li Wang wrote:
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
++linux-block, Jens
+
+> This change allows the loopback driver to handle larger block sizes
+
+larger than what? PAGE_SIZE?
+
+> and increases the consistency of data types used within the driver.
+> Especially to mactch the struct queue_limits.logical_block_size type.
+> 
+> Also, this is to get rid of the LTP/ioctl_loop06 test failure:
+> 
+>    12 ioctl_loop06.c:76: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
+>    13 ioctl_loop06.c:59: TFAIL: Set block size succeed unexpectedly
+>    ...
+>    18 ioctl_loop06.c:76: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
+>    19 ioctl_loop06.c:59: TFAIL: Set block size succeed unexpectedly
+> 
+> Link: https://urldefense.com/v3/__https://lists.linux.it/pipermail/ltp/2024-August/039912.html__;!!ACWV5N9M2RV99hQ!Kxyf0QaP903VtqbEb5n4dgWFhDjWex6vfZhJ9i2ewSqvAWf_iqFNNoOLlJm2BR_ofSSwGwowUQbky65jbg$
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Jan Stancek <jstancek@redhat.com>
+> Cc: John Garry <john.g.garry@oracle.com>
+> Cc: Damien Le Moal <dlemoal@kernel.org>
+> Cc: Stefan Hajnoczi <stefanha@redhat.com>
 > ---
->  testcases/kernel/fs/iso9660/isofs.sh | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
+>   drivers/block/loop.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-> index d1a362d97..7ec314d1e 100755
-> --- a/testcases/kernel/fs/iso9660/isofs.sh
-> +++ b/testcases/kernel/fs/iso9660/isofs.sh
-> @@ -13,10 +13,27 @@ TST_NEEDS_CMDS="mount umount"
->  TST_NEEDS_TMPDIR=1
->  TST_TESTFUNC=do_test
->  TST_CNT=3
-> +TST_SETUP="setup"
-> +TST_CLEANUP="cleanup"
->  
->  MAX_DEPTH=3
->  MAX_DIRS=4
->  
-> +test_group="abc"
-> +
-> +setup()
-> +{
-> +	if ! getent group $test_group > /dev/null; then
-> +		useradd -U $test_group
-> +	fi
-> +}
-> +
-> +cleanup()
-> +{
-> +	userdel -f $test_group
-> +	groupdel -f $test_group
-> +}
-> +
->  gen_fs_tree()
->  {
->  	local cur_path="$1"
-> @@ -69,6 +86,7 @@ do_test()
->  	mkdir -p $make_file_sys_dir
->  	gen_fs_tree "$make_file_sys_dir" 1
->  
-> +
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 78a7bb28defe..86cc3b19faae 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -173,7 +173,7 @@ static loff_t get_loop_size(struct loop_device *lo, struct file *file)
+>   static bool lo_bdev_can_use_dio(struct loop_device *lo,
+>   		struct block_device *backing_bdev)
+>   {
+> -	unsigned short sb_bsize = bdev_logical_block_size(backing_bdev);
+> +	unsigned int sb_bsize = bdev_logical_block_size(backing_bdev);
+>   
+>   	if (queue_logical_block_size(lo->lo_queue) < sb_bsize)
+>   		return false;
+> @@ -977,7 +977,7 @@ loop_set_status_from_info(struct loop_device *lo,
+>   	return 0;
+>   }
+>   
+> -static unsigned short loop_default_blocksize(struct loop_device *lo,
+> +static unsigned int loop_default_blocksize(struct loop_device *lo,
+>   		struct block_device *backing_bdev)
+>   {
+>   	/* In case of direct I/O, match underlying block size */
+> @@ -986,7 +986,7 @@ static unsigned short loop_default_blocksize(struct loop_device *lo,
+>   	return SECTOR_SIZE;
+>   }
+>   
+> -static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
+> +static int loop_reconfigure_limits(struct loop_device *lo, unsigned int bsize)
+>   {
+>   	struct file *file = lo->lo_backing_file;
+>   	struct inode *inode = file->f_mapping->host;
 
-And you shouldn't add empty lines like this.
-
->  	# Make ISO9660 file system with different options.
->  	# Mount the ISO9660 file system with different mount options.
->  	for mkisofs_opt in \
-> @@ -92,8 +110,8 @@ do_test()
->  			"loop,block=512,unhide" \
->  			"loop,block=1024,cruft" \
->  			"loop,block=2048,nocompress" \
-> -			"loop,check=strict,map=off,gid=bin,uid=bin" \
-> -			"loop,check=strict,map=acorn,gid=bin,uid=bin" \
-> +			"loop,block=2048,nocompress" \ "loop,check=strict,map=off,gid=$test_group,uid=$test_group" \
-> +			"loop,check=strict,map=acorn,gid=$test_group,uid=$test_group" \
->  			"loop,check=relaxed,map=normal" \
->  			"loop,block=512,unhide,session=2"
->  		do
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
