@@ -4,87 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6669C52D6F
-	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 08:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BB99C52D6F
+	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 08:18:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA4093D2717
-	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 10:03:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 900E93D2727
+	for <ltp@archiver.kernel.org>; Tue, 27 Aug 2024 10:18:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D696A3C7A13
- for <ltp@lists.linux.it>; Tue, 27 Aug 2024 10:03:10 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0C5113C02CD
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 10:18:14 +0200 (CEST)
 Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A43B2203C5A
- for <ltp@lists.linux.it>; Tue, 27 Aug 2024 10:03:09 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 94FB4203C59
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 10:18:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1724745788;
+ s=mimecast20190719; t=1724746692;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ffMGKoiHs0yZ815x5dyOzgYe6p4XSSyZPbsnLGfo48c=;
- b=ahcyZ4ZMC7x4Rf3mcFlzBLh94TdViHaq0kUeqwNqSCFih9Z3CcVhlmLKbkSJ6CrhUq7bsd
- f3xqd/pr2zwHhEbUZFuvKZCAHFgvQHCWpVwqBf1HqWA5msvIhlyicEMaqJpnEcK/EIMkq9
- cLTZ4aT0R7Vuomk0CqlkLC2D9guJltw=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-177-KTObZSHIPayr0M-JizF_dA-1; Tue, 27 Aug 2024 04:03:06 -0400
-X-MC-Unique: KTObZSHIPayr0M-JizF_dA-1
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-2d3bbfcc5dbso5367888a91.0
- for <ltp@lists.linux.it>; Tue, 27 Aug 2024 01:03:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724745785; x=1725350585;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=ffMGKoiHs0yZ815x5dyOzgYe6p4XSSyZPbsnLGfo48c=;
- b=P8nbVFY/mynHUwdDwUkLiyN7i44Sj2CIuT81qkjbhMxLzSX0f7xWSSyU/OL/7/KB7o
- 38WMS7ck19wS6fqGxIZZ9uwgI9F1HaGa6aOOeI0m+95Kxno886sqR48uuMoZ6sFcB1fw
- h+7H/6eUsE8auxP3Tw9UpRS+FhMvWFuDs6Ib/PgMh6z8sbdsTp+hOfwtv6yBPIE4RWIK
- Z4NMajFvVEsHKICO+2og2BQ3ugG3BDUQp2sdIFnfz67iUZmw6TFri0mgqDQ1C3ezoqfA
- dvx3fxnuOhiD30gw2DWIQSGVwVsvsEwsEA4b+YKfux1Va54l85PF07+BbNike/88YKt1
- PgJg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXIAzlcZ9qhBK+B5vTyvHf4/xABhbb7xf0GD27XccUU79dnctyHyeG/zOiFkM6mrNd4AaY=@lists.linux.it
-X-Gm-Message-State: AOJu0YyUqpkBMDyiSArzzXtsc0qaAwbJUmwT6HxaUMH0bhPZgqUcmQV6
- 552rW4pAnsfyKXBHRxgZDrJR7GL3cf3TwiopLO0mUW5OsZOo/e8UiR3kgK9SGY3pU0SfLo5ltGW
- 6UwER3RKeiE1vOG5Ey4Ajv+j4L9qZpvkRpAJo76CmywUdyK4xe/hJFcxP1zR3tHeATGk+8HMkdd
- JAz7hc6zVSntxOpXLF6oP0WmQ=
-X-Received: by 2002:a17:90a:394c:b0:2c9:e24d:bbaa with SMTP id
- 98e67ed59e1d1-2d8259d4663mr2250660a91.27.1724745785151; 
- Tue, 27 Aug 2024 01:03:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFCZ0HUn8POci1+wrCfZMzm6mS4ZeB+DcoBO5sIlJ8wwnpW4tPy+dcsyOe2ekJNdcposI/b7etWYGnF60z08I4=
-X-Received: by 2002:a17:90a:394c:b0:2c9:e24d:bbaa with SMTP id
- 98e67ed59e1d1-2d8259d4663mr2250612a91.27.1724745783995; Tue, 27 Aug 2024
- 01:03:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240827032218.34744-1-liwang@redhat.com>
- <8694fd51-67a2-45e2-bda4-f6816e1d612c@oracle.com>
- <CAEemH2djkWMtuTN2=Y5MXZVOACeCm32_Hh0zAJxH7X4Ss1MSuQ@mail.gmail.com>
- <d431a0a3-a12d-4da0-b8cb-dd349aee8d4d@oracle.com>
-In-Reply-To: <d431a0a3-a12d-4da0-b8cb-dd349aee8d4d@oracle.com>
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=2POjXLS4suf26/CFlDwrLvuDWCdNgPkqz+C0kWqYtjM=;
+ b=LfSIziGcIxGnhvO5sOGfx5zRuY3lfM4RDbMzY1x1kK8GPgxZ+6qM8OURou+G0Jkr8Jy9V/
+ noOi3erJiJ690LHwHPNUJwqXpS3oScaKUAJ3NGa5i5zHIsxBVYViwl4k72laNUqC3MQ9N1
+ RJ0T0QoIPV4Rpvh2A+TBJkKZr1ZfZ8I=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-549-yPgESvXbOlO8WyU5Ii5kDQ-1; Tue,
+ 27 Aug 2024 04:18:09 -0400
+X-MC-Unique: yPgESvXbOlO8WyU5Ii5kDQ-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id A315A1955F42; Tue, 27 Aug 2024 08:18:07 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id AC8BF30001A1; Tue, 27 Aug 2024 08:18:02 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 27 Aug 2024 16:02:51 +0800
-Message-ID: <CAEemH2d9uzDv030eYRs_hsu_PcbVTXR75YPyN4Ux2v9AVxd5Lg@mail.gmail.com>
-To: John Garry <john.g.garry@oracle.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+To: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, axboe@kernel.dk,
+ john.g.garry@oracle.com, ltp@lists.linux.it
+Date: Tue, 27 Aug 2024 16:17:57 +0800
+Message-ID: <20240827081757.37646-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] loop: Increase bsize variable from unsigned short
+Subject: [LTP] [PATCh v2] loop: Increase bsize variable from unsigned short
  to unsigned int
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -97,35 +74,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: axboe@kernel.dk, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Stefan Hajnoczi <stefanha@redhat.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Stefan Hajnoczi <stefanha@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Sm9obiBHYXJyeSA8am9obi5nLmdhcnJ5QG9yYWNsZS5jb20+IHdyb3RlOgoKPiBPbiAyNy8wOC8y
-MDI0IDA4OjM1LCBMaSBXYW5nIHdyb3RlOgo+ID4gT24gVHVlLCBBdWcgMjcsIDIwMjQgYXQgMzoy
-MOKAr1BNIEpvaG4gR2FycnkgPGpvaG4uZy5nYXJyeUBvcmFjbGUuY29tPiB3cm90ZToKPiA+Pgo+
-ID4+IE9uIDI3LzA4LzIwMjQgMDQ6MjIsIExpIFdhbmcgd3JvdGU6Cj4gPj4KPiA+PiArbGludXgt
-YmxvY2ssIEplbnMKPiA+Pgo+ID4+PiBUaGlzIGNoYW5nZSBhbGxvd3MgdGhlIGxvb3BiYWNrIGRy
-aXZlciB0byBoYW5kbGUgbGFyZ2VyIGJsb2NrIHNpemVzCj4gPj4KPiA+PiBsYXJnZXIgdGhhbiB3
-aGF0PyBQQUdFX1NJWkU/Cj4gPgo+ID4gWWVzLAo+Cj4gUGxlYXNlIHRoZW4gZXhwbGljaXRseSBt
-ZW50aW9uIHRoYXQKClN1cmUuCgo+Cj4gPiBzeXN0ZW0gc2hvdWxkIHJldHVybiBFSU5WQUwgd2hl
-biB0aGUgdGVzdGVkIGJzaXplIGlzIGxhcmdlciB0aGFuIFBBR0VfU0laRS4KPiA+IEJ1dCBkdWUg
-dG8gdGhlIGxvb3BfcmVjb25maWd1cmVfbGltaXRzKCkgY2FzdCBpdCB0byAndW5zaW5lZCBzaG9y
-dCcgdGhhdAo+ICA+IG5ldmVyIGdldHMgYW4gZXhwZWN0ZWQgZXJyb3Igd2hlbiB0ZXN0aW5nIGlu
-dmFsaWQgbG9naWNhbCBibG9jayBzaXplLj4KPiA+IFRoYXQncyB3aHkgTFRQL2lvY3RsX2xvb3Aw
-NiBmYWlsZWQgb24gYSBzeXN0ZW0gd2l0aCA2NGsgKHBwYzY0bGUpIHBhZ2VzaXplCj4gPiAoc2lu
-Y2Uga2VybmVsLXY2LjExLXJjMSB3aXRoIHBhdGNoZXMpOgo+ID4KPiA+ICAgIDk0MjNjNjUzZmU2
-MTEwICgibG9vcDogRG9uJ3QgYm90aGVyIHZhbGlkYXRpbmcgYmxvY2tzaXplIikKPiA+ICAgIGZl
-M2Q1MDhiYTk1YmM2ICgiYmxvY2s6IFZhbGlkYXRlIGxvZ2ljYWwgYmxvY2sgc2l6ZSBpbiBibGtf
-dmFsaWRhdGVfbGltaXRzKCkiKQo+ID4KPiA+Cj4gPgo+Cj4gSSBmZWVsIHRoYXQgeW91IHNob3Vs
-ZCBiZSBhZGRpbmcgYSBmaXhlcyB0YWcsIGJ1dCBpdCBzZWVtcyB0aGF0IHRob3NlCj4gY29tbWl0
-cyBvbmx5IGV4cG9zZSB0aGUgaXNzdWUsIGFuZCB3aGF0ZXZlciBpbnRyb2R1Y2VkIHVuc2lnbmVk
-IHNob3J0Cj4gdXNhZ2Ugd2FzIG5vdCByaWdodC4gTWF5YmUgeW91IGNhbiBqdXN0IGdldCB0aGlz
-IGluY2x1ZGVkIGZvciA2LjExLAo+IHdoZXJlIDk0MjNjNjUzZmU2MTEwIHdhcyBpbnRyb2R1Y2Vk
-LgoKT2ssIHdlIGNhbiBtZW50aW9uIHRoYXQgdHdvIGNvbW1pdHMgZXhwb3NlZCB0aGUgcHJvYmxl
-bSBzaW5jZSB2Ni4xMS1yYzEuCkkgd2lsbCBzZW5kIFYyIGluY2x1ZGluZyB0aGF0LiBUaGFua3Mh
-CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
-aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+This change allows the loopback driver to handle block size larger than
+PAGE_SIZE and increases the consistency of data types used within the driver.
+Especially to match the struct queue_limits.logical_block_size type.
+
+Also, this is to get rid of the LTP/ioctl_loop06 test failure:
+
+  12 ioctl_loop06.c:76: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
+  13 ioctl_loop06.c:59: TFAIL: Set block size succeed unexpectedly
+  ...
+  18 ioctl_loop06.c:76: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
+  19 ioctl_loop06.c:59: TFAIL: Set block size succeed unexpectedly
+
+Thoese fail due to the loop_reconfigure_limits() cast bsize to 'unsined short'
+that never gets an expected error when testing invalid logical block size,
+which was just exposed since 6.11-rc1 introduced patches:
+
+  commit 9423c653fe61 ("loop: Don't bother validating blocksize")
+  commit fe3d508ba95b ("block: Validate logical block size in blk_validate_limits()")
+
+Link: https://lists.linux.it/pipermail/ltp/2024-August/039912.html
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: John Garry <john.g.garry@oracle.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Stefan Hajnoczi <stefanha@redhat.com>
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+---
+ drivers/block/loop.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 78a7bb28defe..86cc3b19faae 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -173,7 +173,7 @@ static loff_t get_loop_size(struct loop_device *lo, struct file *file)
+ static bool lo_bdev_can_use_dio(struct loop_device *lo,
+ 		struct block_device *backing_bdev)
+ {
+-	unsigned short sb_bsize = bdev_logical_block_size(backing_bdev);
++	unsigned int sb_bsize = bdev_logical_block_size(backing_bdev);
+ 
+ 	if (queue_logical_block_size(lo->lo_queue) < sb_bsize)
+ 		return false;
+@@ -977,7 +977,7 @@ loop_set_status_from_info(struct loop_device *lo,
+ 	return 0;
+ }
+ 
+-static unsigned short loop_default_blocksize(struct loop_device *lo,
++static unsigned int loop_default_blocksize(struct loop_device *lo,
+ 		struct block_device *backing_bdev)
+ {
+ 	/* In case of direct I/O, match underlying block size */
+@@ -986,7 +986,7 @@ static unsigned short loop_default_blocksize(struct loop_device *lo,
+ 	return SECTOR_SIZE;
+ }
+ 
+-static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
++static int loop_reconfigure_limits(struct loop_device *lo, unsigned int bsize)
+ {
+ 	struct file *file = lo->lo_backing_file;
+ 	struct inode *inode = file->f_mapping->host;
+-- 
+2.46.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
