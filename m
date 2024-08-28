@@ -4,105 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2522C5472D
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 08:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99651C54751
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 08:54:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D0DC93D27A0
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 10:24:34 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 271CD3D2793
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 10:54:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3228A3C7031
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:24:17 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id F20B63D209B
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:54:05 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3EDAC1A0C24E
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:24:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F150F610227
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:54:04 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E25601FBED;
- Wed, 28 Aug 2024 08:24:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6DD351FBFA;
+ Wed, 28 Aug 2024 08:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724833456;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1724835242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2dRgp/cBG57vE4RNJLl2sr2qXzWa1FUbUXiUJzbitg=;
- b=FTtsjl5po3CoQnQekyUMbJqX9PfLMUWt55Jtp3m0EghDvwX+K5/jnaDb3RfkXMnZl4hH02
- XbcL5EuTAjwWVSK4q0mkbQm+X2ougQcCIm6OZohVOYkeUuFwN306lsJXPnWOOw+uIyqp+J
- RLd0X7C2l1AkdNi85/2VcK2Fxc+5X9I=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=SyuqOkwwx01Oq7K7Akl9FV7roZD14qyfqLXWVSHYh55TWiznPVwMwgBZRIKKYJChc4GHtL
+ 4dcXeYL0JjIR6mJ+p/VM7mpXuPii+wFCHaD5/C0hLMc7gMlOnaJmUIcBNHwprJ6lo1j0IN
+ nsucCIaFovze2IXqL9i5RQFvyfJP1Hc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724833456;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1724835242;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2dRgp/cBG57vE4RNJLl2sr2qXzWa1FUbUXiUJzbitg=;
- b=mGrIHvPQRLxsntLWxrBQ3ClQSJlZsuiWav9SoZUBmIhlC/OhHtICGOp2WYZXKZ/7IjB+oC
- sR1xfRh+k67JUKDw==
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=4PY6fI+ec6Seqal/SfKZuBWQgDBY3UFBKH5ywA4PuzfTeVOQ6WREZNix8VrhXm0K/ypFSN
+ Dueze9x8/+j+aXBA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SyuqOkww;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4PY6fI+e
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724833455;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1724835242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2dRgp/cBG57vE4RNJLl2sr2qXzWa1FUbUXiUJzbitg=;
- b=GQsK3PVg9oGugtR68o19eFJQORMr7wx/RnunSrXtoSnVn7UCVNvI/I2WBFz9Ti3Vn1AS3g
- U96aBnPg4Isce0OWqo0SeXUSaqN89dNn36YSSC3jYKLojFgi/rl1rVrcOYt8sethLphXp4
- NPGug4WhFpMk/zZImqRWFJBM34opBl8=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=SyuqOkwwx01Oq7K7Akl9FV7roZD14qyfqLXWVSHYh55TWiznPVwMwgBZRIKKYJChc4GHtL
+ 4dcXeYL0JjIR6mJ+p/VM7mpXuPii+wFCHaD5/C0hLMc7gMlOnaJmUIcBNHwprJ6lo1j0IN
+ nsucCIaFovze2IXqL9i5RQFvyfJP1Hc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724833455;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1724835242;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2dRgp/cBG57vE4RNJLl2sr2qXzWa1FUbUXiUJzbitg=;
- b=PNdyiilAOEnTCDQ8BqZPWlIECBz9DIgkDblcApU6gnmkyDx8I0hfNYUut50IX5ugodxsJj
- OQRy0WIin7yJjEDQ==
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=4PY6fI+ec6Seqal/SfKZuBWQgDBY3UFBKH5ywA4PuzfTeVOQ6WREZNix8VrhXm0K/ypFSN
+ Dueze9x8/+j+aXBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E573138D2;
- Wed, 28 Aug 2024 08:24:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A301138D2;
+ Wed, 28 Aug 2024 08:54:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AnAxJa/ezmYTQQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 28 Aug 2024 08:24:15 +0000
-Date: Wed, 28 Aug 2024 10:24:10 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: NeilBrown <neilb@suse.de>
-Message-ID: <20240828082410.GA1665124@pevik>
-References: <> <9afef16d-52b2-435d-902a-7ccfa5824968@suse.cz>
- <172479295459.11014.9802161915427616319@noble.neil.brown.name>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GQywFarlzma3SgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 28 Aug 2024 08:54:02 +0000
+Date: Wed, 28 Aug 2024 10:52:46 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Zs7lXnBNak3L1skj@yuki.lan>
+References: <20240607142423.116285-1-pvorel@suse.cz>
+ <20240607142423.116285-3-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <172479295459.11014.9802161915427616319@noble.neil.brown.name>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20240607142423.116285-3-pvorel@suse.cz>
+X-Rspamd-Queue-Id: 6DD351FBFA
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] nfsstat01: Update client RPC calls for
- kernel 6.9
+Subject: Re: [LTP] [RFC PATCH 2/3] ltpmenu: Remove legacy script
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,100 +119,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-nfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
- stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Neil,
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> On Tue, 27 Aug 2024, Martin Doucha wrote:
-> > On 23. 08. 24 23:59, NeilBrown wrote:
-> > > On Fri, 23 Aug 2024, Petr Vorel wrote:
-> > >> We discussed in v1 how to fix tests.  Neil suggested to fix the test the way so
-> > >> that it works on all kernels. As I note [1]
-
-> > >> 1) either we give up on checking the new functionality still works (if we
-> > >> fallback to old behavior)
-
-> > > I don't understand.  What exactly do you mean by "the new
-> > > functionality".
-> > > As I understand it there is no new functionality.  All there was was and
-> > > information leak between network namespaces, and we stopped the leak.
-> > > Do you consider that to be new functionality?
-
-> > The new functionality is that the patches add a new file to network 
-> > namespaces: /proc/net/rpc/nfs. This file did not exist outside the root 
-> > network namespace at least on some of the kernels where we still need to 
-> > run this test. So the question is: How aggressively do we want to 
-> > enforce backporting of these NFS patches into distros with older kernels?
-
-> Thanks for explaining that.  I had assumed that the the file was always
-> visible from all name spaces, but before the fix every namespace saw the
-> same file.  Clearly I was wrong.
-
-
-> > We have 3 options how to fix the test depending on the answer:
-> > 1) Don't enforce at all. We'll check whether /proc/net/rpc/nfs exists in 
-> > the client namespace and read it only if it does. Otherwise we'll fall 
-> > back on the global file.
-> > 2) Enforce aggressively. We'll hardcode a minimal kernel version into 
-> > the test (e.g. v5.4) and if the procfile doesn't exist on any newer 
-> > kernel, it's a bug.
-> > 3) Enforce on new kernels only. We'll set a hard requirement for kernel 
-> > v6.9+ as in option 2) and check for existence of the procfile on any 
-> > older kernels as in option 1).
-
-> I think there are two totally separate questions here.
-> 1/ How to fix the existing test to work on new and old kernels.  The
->   existing test checked that the rpc count increased when NFS traffic
->   happened.  I think 1 is the correct fix.  I don't think the test
->   should check kernel version.
-
-> 2/ We have discovered a bug and want to add a test to guard against
->   regression.  This should be a new test.  That test can simply check if
->   the given file exist in a non-init namespace.  I have no particular
->   opinion about testing kernel versions.  A credible approach would be
->   to choose the oldest kernel which it still maintained at the time that
->   that bug was discovered.  Or maybe create a list of kernel versions
->   where were maintained at that time and only run the test on versions
->   in that list, or after the last in the list.
-
-> I really think there is value in having two different tests because we
-> are testing two different things.
-
-IMHO this is 3), just split in 2 tests (maybe more obvious for a reviewer).
-Sure, we can be explicit and split it into 2 tests.
-
-Regards the version, I would really either draw the line for new change for 6.9
-or whatever stable will be the last which gets that. I mean, if it's e.g. 5.14,
-this test should fail on some old e.g. unsupported 5.15 some companies may test.
-When we in LTP test if fix is still working (no regression), usually the same
-tests is used to verify if the fix was applied.
-
-Kind regards,
-Petr
-
-> Thanks,
-> NeilBrown
-
-
-
-> > -- 
-> > Martin Doucha   mdoucha@suse.cz
-> > SW Quality Engineer
-> > SUSE LINUX, s.r.o.
-> > CORSO IIa
-> > Krizikova 148/34
-> > 186 00 Prague 8
-> > Czech Republic
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
