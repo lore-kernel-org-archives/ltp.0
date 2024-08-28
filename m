@@ -4,57 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B41C5474A
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 03:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1608CC5472D
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 05:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1724814004; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=AW8nd3Dpg9QY8pbtRzSrH+0sMlq/t+3oH25rJF9Zycg=;
- b=MMFBxhDLX3lJFb0+NCbFfAff/qINpHYyxj3Fu8L60Q/cVybwpEMZbvKu8mLVegXo77mtv
- UqSOZhlarlFHiiiqBoYDfFsljuRejz6AQVioPNvAwxIzzuEkoQOJzotZH16spibbgF8K4WR
- RrYLUNPj/CMiO9Y13mFaNEgt0RUZ+5s=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1724822729; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=6krqtlZgS/fCdKODZ0CHpPaUqs5bcaRh4PYv1IHtE5I=;
+ b=RnLXGg08BLRngrQM9eCYA+pKKYMOWtq19OsbMDoGPfj+e1h8/xrXfG4Eez03Y+JbWfpxR
+ OAQoZDRzlqVZwflyp8hoyHMQj3aixW/xFtiP1riJFw4/cgXpdqOEdWI+NL9q9jT9d83ye3R
+ urKFME+IPREOJMelFIIMIFWIGYRAt4s=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 09E813D2774
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 05:00:04 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C991E3D2777
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 07:25:29 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3FC9F3C07AE
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 04:59:40 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=gondor.apana.org.au (client-ip=144.6.53.87; helo=abb.hmeau.com;
- envelope-from=herbert@gondor.apana.org.au; receiver=lists.linux.it)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7C2D81401242
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 04:59:37 +0200 (CEST)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
- by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
- id 1sj8lW-007pM5-37; Wed, 28 Aug 2024 10:59:21 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
- Wed, 28 Aug 2024 10:59:20 +0800
-Date: Wed, 28 Aug 2024 10:59:20 +0800
-To: Eric Biggers <ebiggers@kernel.org>
-Message-ID: <Zs6SiBOdasO9Thd1@gondor.apana.org.au>
-References: <ZrbTUk6DyktnO7qk@gondor.apana.org.au>
- <202408161634.598311fd-oliver.sang@intel.com>
- <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
- <ZsBJ5H4JExArHGVw@gondor.apana.org.au>
- <ZsBKG0la0m69Dyq3@gondor.apana.org.au>
- <20240827184839.GD2049@sol.localdomain>
+ by picard.linux.it (Postfix) with ESMTPS id BCE1C3D273C
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 07:25:09 +0200 (CEST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4BD6314060A9
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 07:25:08 +0200 (CEST)
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-a7aa086b077so563745566b.0
+ for <ltp@lists.linux.it>; Tue, 27 Aug 2024 22:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1724822707; x=1725427507; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=Fch4J+q3s4pbjvpvQvicDHm3PwvrE7hbw9ySPVmVDp0=;
+ b=a/EcYvib+MFABJDJ5G336RZbc4N11WbiTEJyrOglvlGIc6Or1k1NA5F3Fyk3n2+4lg
+ /BgeCCP0uKZcj5z157q7BITyY944CO0dkUD8rlbvIf+DR8Gy8WWjg3H34FLNlDhaiVSC
+ XKK4xXFkwLFk59WsOGxIBkUNpF+I/shFJfBUpHNwGqWDMcwK27mBJskMUHIPZzRmZBHT
+ 3mzviI9iuhiHBbZKy/xBk1fiqZi8Te0KRGzWPLjAdsG7d3ZTYaYbeN1I6IiW2VJMnw/h
+ j6YQVXdtIqSu67qQhNXgP1LgWLVvi0krObeau1ycXt8Hf1s+OlbKNJxzFE6rNljbDrpt
+ vcNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1724822707; x=1725427507;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Fch4J+q3s4pbjvpvQvicDHm3PwvrE7hbw9ySPVmVDp0=;
+ b=eXeGPsBnUexIQRWoEVOLdx7XcWlfgndTQY5RltqZF12sU2H2ehJQZHbuxmLGROo0nn
+ 61Ocgro362cbtYelrZB0ZI3bsKKvtV/GswECxrfjwC2HBrOZlV5/71IJAoWXiRERvoHu
+ h9ZwUUKfN2kSMWNsd/5mZvoTOspOWkbVM+in81yrHa6AnSTYqHOql2RkT4Um/YxmwzOt
+ A8GND26eU1DkwDOZHKaZZjmSs+d1izAsJf62+EdWcZq70oOK7Rvj/VgyY66Trjd3JH6x
+ 1sl3LybVZkLMknGasqdGMLaoaYgwKQokr1hRWp3ccg1F6s/gXdMh/isUsaCXPdGLlP+p
+ fn1g==
+X-Gm-Message-State: AOJu0Yze8tKCctKaEOPDcvUDpGr/+dxWlThmPtDfHz6nfWYbhBRtAAPc
+ HX6Dw9sJ0SZdwRGXZz+sm7c/gUif7HGW5JLvDB221vusV0jgC3bi/DQ/aIoSTaimfl2FI5mrrTX
+ QJw==
+X-Google-Smtp-Source: AGHT+IHVirNI2ibAkgXFdWF1P90ult+LoC9a/gvA8tzfYSuiYyglMwvqv4FEssyX6JF04aoqjnJI/A==
+X-Received: by 2002:a17:907:9447:b0:a86:700f:93c1 with SMTP id
+ a640c23a62f3a-a86a54de4f2mr1093107866b.60.1724822706814; 
+ Tue, 27 Aug 2024 22:25:06 -0700 (PDT)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a86e582d448sm191503566b.126.2024.08.27.22.25.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 27 Aug 2024 22:25:06 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 28 Aug 2024 01:25:00 -0400
+Message-Id: <20240828052500.2395-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240827184839.GD2049@sol.localdomain>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [v3 PATCH 3/3] crypto: simd - Do not call
- crypto_alloc_tfm during registration
+Subject: [LTP] [PATCH v1] isofs.sh: Create group and user before check mount
+ option
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,55 +88,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Herbert Xu via ltp <ltp@lists.linux.it>
-Reply-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
- "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
- "David S. Miller" <davem@davemloft.net>,
- kernel test robot <oliver.sang@intel.com>, linux-crypto@vger.kernel.org,
- oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
- Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Aug 27, 2024 at 11:48:39AM -0700, Eric Biggers wrote:
-> On Sat, Aug 17, 2024 at 02:58:35PM +0800, Herbert Xu wrote:
-> > Algorithm registration is usually carried out during module init,
-> > where as little work as possible should be carried out.  The SIMD
-> > code violated this rule by allocating a tfm, this then triggers a
-> > full test of the algorithm which may dead-lock in certain cases.
-> > 
-> > SIMD is only allocating the tfm to get at the alg object, which is
-> > in fact already available as it is what we are registering.  Use
-> > that directly and remove the crypto_alloc_tfm call.
-> > 
-> > Also remove some obsolete and unused SIMD API.
-> > 
-> > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> > ---
-> >  arch/arm/crypto/aes-ce-glue.c     |  2 +-
-> >  arch/arm/crypto/aes-neonbs-glue.c |  2 +-
-> >  crypto/simd.c                     | 76 ++++++-------------------------
-> >  include/crypto/internal/simd.h    | 12 +----
-> >  4 files changed, 19 insertions(+), 73 deletions(-)
-> > 
-> 
-> I'm getting a test failure with this series applied:
-> 
-> [    0.383128] alg: aead: failed to allocate transform for gcm_base(ctr(aes-generic),ghash-generic): -2
-> [    0.383500] alg: self-tests for gcm(aes) using gcm_base(ctr(aes-generic),ghash-generic) failed (rc=-2)
-> 
-> This is on x86_64 with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/fs/iso9660/isofs.sh | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-Could you please send me your config file?
-
-Thanks,
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+index d1a362d97..7ec314d1e 100755
+--- a/testcases/kernel/fs/iso9660/isofs.sh
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -13,10 +13,27 @@ TST_NEEDS_CMDS="mount umount"
+ TST_NEEDS_TMPDIR=1
+ TST_TESTFUNC=do_test
+ TST_CNT=3
++TST_SETUP="setup"
++TST_CLEANUP="cleanup"
+ 
+ MAX_DEPTH=3
+ MAX_DIRS=4
+ 
++test_group="abc"
++
++setup()
++{
++	if ! getent group $test_group > /dev/null; then
++		useradd -U $test_group
++	fi
++}
++
++cleanup()
++{
++	userdel -f $test_group
++	groupdel -f $test_group
++}
++
+ gen_fs_tree()
+ {
+ 	local cur_path="$1"
+@@ -69,6 +86,7 @@ do_test()
+ 	mkdir -p $make_file_sys_dir
+ 	gen_fs_tree "$make_file_sys_dir" 1
+ 
++
+ 	# Make ISO9660 file system with different options.
+ 	# Mount the ISO9660 file system with different mount options.
+ 	for mkisofs_opt in \
+@@ -92,8 +110,8 @@ do_test()
+ 			"loop,block=512,unhide" \
+ 			"loop,block=1024,cruft" \
+ 			"loop,block=2048,nocompress" \
+-			"loop,check=strict,map=off,gid=bin,uid=bin" \
+-			"loop,check=strict,map=acorn,gid=bin,uid=bin" \
++			"loop,block=2048,nocompress" \ "loop,check=strict,map=off,gid=$test_group,uid=$test_group" \
++			"loop,check=strict,map=acorn,gid=$test_group,uid=$test_group" \
+ 			"loop,check=relaxed,map=normal" \
+ 			"loop,block=512,unhide,session=2"
+ 		do
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
