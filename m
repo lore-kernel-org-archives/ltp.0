@@ -4,110 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99651C54751
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 08:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCCD9C54753
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 08:58:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 271CD3D2793
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 10:54:22 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 422CC3D279D
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 10:58:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F20B63D209B
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:54:05 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 252DB3D22D4
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:58:15 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F150F610227
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:54:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ABE1660239B
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 10:58:14 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6DD351FBFA;
- Wed, 28 Aug 2024 08:54:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 98A9C21B4F;
+ Wed, 28 Aug 2024 08:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724835242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1724835493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=SyuqOkwwx01Oq7K7Akl9FV7roZD14qyfqLXWVSHYh55TWiznPVwMwgBZRIKKYJChc4GHtL
- 4dcXeYL0JjIR6mJ+p/VM7mpXuPii+wFCHaD5/C0hLMc7gMlOnaJmUIcBNHwprJ6lo1j0IN
- nsucCIaFovze2IXqL9i5RQFvyfJP1Hc=
+ bh=CTm4nFrmM0H8q2ntf1yUNS8XAwIlc9PdlDGLZYBz6J0=;
+ b=szNL8ZDsU82u3iVA1tLQPdniffMsN2MwWrVLCcMI0p0MSOVxdqzG+wf+Jl9dO/ZWpuuXYa
+ kqpODV6Ncb4UKAsQbV9cUxKUbtLGGVIOsK+ozwsBSYOEvM8OhuKjk3kij6RaU9HmDAUt4X
+ CQY01oLI4UdzUg9sboVhUDyHwtUsv9c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724835242;
+ s=susede2_ed25519; t=1724835493;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=4PY6fI+ec6Seqal/SfKZuBWQgDBY3UFBKH5ywA4PuzfTeVOQ6WREZNix8VrhXm0K/ypFSN
- Dueze9x8/+j+aXBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SyuqOkww;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4PY6fI+e
+ bh=CTm4nFrmM0H8q2ntf1yUNS8XAwIlc9PdlDGLZYBz6J0=;
+ b=32edN0mt9gCMHvij/2FGEAdkVFUt9oxTphRGhv4FK8o+ScT98uouOq0CBfc1Jdl+MYN7xp
+ Gl0V5jmNHW+ZX8AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1724835242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1724835492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=SyuqOkwwx01Oq7K7Akl9FV7roZD14qyfqLXWVSHYh55TWiznPVwMwgBZRIKKYJChc4GHtL
- 4dcXeYL0JjIR6mJ+p/VM7mpXuPii+wFCHaD5/C0hLMc7gMlOnaJmUIcBNHwprJ6lo1j0IN
- nsucCIaFovze2IXqL9i5RQFvyfJP1Hc=
+ bh=CTm4nFrmM0H8q2ntf1yUNS8XAwIlc9PdlDGLZYBz6J0=;
+ b=nTGGewQ/RKqkhckrb3Xq+H6Rwqq7CWoCYvwSeC9vLWLz+o4J/0HEvNZ9LdOq5KUeVtRX25
+ 6OlER0M6brf1kXSTPf4itEbkctSzt9L93l5fGkxL7mpgIB2QD5meApe/+63TClvt0zCh0Y
+ bMoPvMWy83CrrzijKqnQsrplpfXZW6Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1724835242;
+ s=susede2_ed25519; t=1724835492;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=4PY6fI+ec6Seqal/SfKZuBWQgDBY3UFBKH5ywA4PuzfTeVOQ6WREZNix8VrhXm0K/ypFSN
- Dueze9x8/+j+aXBA==
+ bh=CTm4nFrmM0H8q2ntf1yUNS8XAwIlc9PdlDGLZYBz6J0=;
+ b=eazvjYC96A2J/E+nqE7fK0B/SQRylHimCqJRgQm1Gs1c2i4x+HcTldNgcG6hpUBF8bb1Yu
+ K6a5jYEe8p17byDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A301138D2;
- Wed, 28 Aug 2024 08:54:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F315138D2;
+ Wed, 28 Aug 2024 08:58:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GQywFarlzma3SgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 28 Aug 2024 08:54:02 +0000
-Date: Wed, 28 Aug 2024 10:52:46 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ANwAHqTmzmb/SwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 28 Aug 2024 08:58:12 +0000
+Date: Wed, 28 Aug 2024 10:56:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Zs7lXnBNak3L1skj@yuki.lan>
+Message-ID: <Zs7mUZNtpfJ6qA5v@yuki.lan>
 References: <20240607142423.116285-1-pvorel@suse.cz>
- <20240607142423.116285-3-pvorel@suse.cz>
+ <20240607142423.116285-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240607142423.116285-3-pvorel@suse.cz>
-X-Rspamd-Queue-Id: 6DD351FBFA
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240607142423.116285-4-pvorel@suse.cz>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, yuki.lan:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 2/3] ltpmenu: Remove legacy script
+Subject: Re: [LTP] [RFC PATCH 3/3] doc/old: Remove man pages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,6 +117,13 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
+> Remove man pages for outdated tools (used in legacy API,
+> people should migrate to from ltp-pan to kirk).
+
+The majority of the man pages are for the old library API functions and
+the documentation is outdated as well. These should have been removed
+a long time ago.
+
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
