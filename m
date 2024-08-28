@@ -4,84 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31CDDC54FB3
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 13:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1724852780; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=kIKEosyv3rF2FARin8QzeBeGwHK/pJ647I7LgOqIS/o=;
- b=fJLuicT57ap/BlRJ1h/dsn21YRsZjxLzg3/QjOqN1w/gz7uiE8eLbtb9uCmbDI5rTQwCA
- ZvPhSo0jIF7KY72iws8OvjmGca42aYGZKEBD5zmkbZlMzN+9FfffT0QGmoPbPQ1IRyS1Rpr
- SOn1JH5x1bj89WgTCf1Ijhi2QIU+ZnQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF184C54FAA
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 14:02:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A21613D27A2
-	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 15:46:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 1E8F33D2799
+	for <ltp@archiver.kernel.org>; Wed, 28 Aug 2024 16:02:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55CE13D2614
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 15:45:58 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BDBD53C7031
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 16:01:47 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B19E01B61060
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 15:45:57 +0200 (CEST)
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a86e5e9ff05so252405566b.1
- for <ltp@lists.linux.it>; Wed, 28 Aug 2024 06:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1724852757; x=1725457557; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=27fB1sv7lJnHTJvSQ7aumWnJOwQ01sswBp6MSI50Eg0=;
- b=GOi0SyWQsJEesDdrqWQDN7dvFtVXzTZnfCInkeeT+p8gnn0YWL5XErCxnvcnlOHX9H
- wWR6d/pr1zBznTadP+hCw0TSVCuDBpE6+GUB1/D7zLLKBpJ6izxuYQj/HA1Q7SR5m2bv
- YJDxeKxuXm5IqelDv+IaWMrY5VdaL5dl5KYUrWLDawyC4YdwYpBNzh5aI+3R/GRHuzht
- jZEtQJ6sdlhuqiWhWlC3lF6/XD9ias8PFcFCf4ZJRC0aFI/iiG9bVg1xhVhJyVQFxaoP
- zUJZyL53n2Or/EqL7b+TDQuzjtpcmmMJeaBBqfz+oCjfy18oibisQbtHeFMOEaeJCdMc
- 6H2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724852757; x=1725457557;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=27fB1sv7lJnHTJvSQ7aumWnJOwQ01sswBp6MSI50Eg0=;
- b=dhomecU/gjOvb0+ZFHTfHx9p40FnWOtZ91XClutY+iwIbcgFHivATwYbKifb5k/EU7
- pIXn8qmCkVdidpTKsh95PqovyqPA0lUCXMaDGjyxN742/OPXNZtFFx1qyEfh2lRnXyFf
- zYpvTCG8vQF5WanY9Lws7t26nyjioK1sxi66XwWgKLuzEsjFxMvCcCi7DExPawf2JBiM
- V8NKYpdWZ+mPrAyDFnnMbfbYkJQLrDNtN8EMWVtFU1+ZOHbTA/zNLSPqmCkR0tTOyE7p
- kC17CmayL7Qo2SDKWJBrV8dEbR/o5TTqqUXWy4Tyjpc7DxGWlasGXncPgPYQ1cXdubdz
- yzaA==
-X-Gm-Message-State: AOJu0YytkAwBUCDzN+vk6fBwJ8dPKPwaFYRK7f6eTsO7LwaX2hdAgdaM
- SL7MCPCNq0J3X5kV4VWqOpEXlsG1Zy+wM5MK4e5xK1XM1uJ9aejIaL/IzrfX6cEUd3q+NUeL92g
- TDQ==
-X-Google-Smtp-Source: AGHT+IFW77icXI1sTwuwBBAPw/upCQ1V6nQZLGWWN63Kiu9R87ah9/OvD6iDszcF3od95nfZvZB6YA==
-X-Received: by 2002:a17:907:7ea2:b0:a86:9053:d93a with SMTP id
- a640c23a62f3a-a870a9d7f73mr150600666b.31.1724852756189; 
- Wed, 28 Aug 2024 06:45:56 -0700 (PDT)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a86e5486994sm252020866b.14.2024.08.28.06.45.55
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 28 Aug 2024 06:45:55 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 28 Aug 2024 09:45:51 -0400
-Message-Id: <20240828134551.6344-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240828052500.2395-1-wegao@suse.com>
-References: <20240828052500.2395-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0E37F61762E
+ for <ltp@lists.linux.it>; Wed, 28 Aug 2024 16:01:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3279421B80;
+ Wed, 28 Aug 2024 14:01:46 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 045821398F;
+ Wed, 28 Aug 2024 14:01:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id P/e6M8ctz2YrMwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 28 Aug 2024 14:01:43 +0000
+Date: Wed, 28 Aug 2024 16:01:41 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240828140141.GA1716031@pevik>
+References: <20240828132325.23111-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240828132325.23111-1-mdoucha@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 3279421B80
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] isofs.sh: Create group and user before check mount
- option
+Subject: Re: [LTP] [PATCH] nfsstat01: Read client stats from netns rhost
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,68 +75,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Case will failed if default system has no group named "bin", such
-as suse sle-micro, so this patch will create specific group for test
-instead of fixed "bin" group.
+Hi Martin,
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/fs/iso9660/isofs.sh | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+Thanks for fixing the test.
 
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index d1a362d97..812df1caa 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -13,10 +13,27 @@ TST_NEEDS_CMDS="mount umount"
- TST_NEEDS_TMPDIR=1
- TST_TESTFUNC=do_test
- TST_CNT=3
-+TST_SETUP="setup"
-+TST_CLEANUP="cleanup"
- 
- MAX_DEPTH=3
- MAX_DIRS=4
- 
-+test_group="abc"
-+
-+setup()
-+{
-+	if ! getent group $test_group > /dev/null; then
-+		useradd -U $test_group
-+	fi
-+}
-+
-+cleanup()
-+{
-+	userdel -f $test_group
-+	groupdel -f $test_group
-+}
-+
- gen_fs_tree()
- {
- 	local cur_path="$1"
-@@ -92,8 +109,8 @@ do_test()
- 			"loop,block=512,unhide" \
- 			"loop,block=1024,cruft" \
- 			"loop,block=2048,nocompress" \
--			"loop,check=strict,map=off,gid=bin,uid=bin" \
--			"loop,check=strict,map=acorn,gid=bin,uid=bin" \
-+			"loop,block=2048,nocompress" \ "loop,check=strict,map=off,gid=$test_group,uid=$test_group" \
-+			"loop,check=strict,map=acorn,gid=$test_group,uid=$test_group" \
- 			"loop,check=relaxed,map=normal" \
- 			"loop,block=512,unhide,session=2"
- 		do
--- 
-2.35.3
+> On newer kernels, network namespaces have separate NFS stats. Detect
+> support for per-NS files and read stats from the correct NS.
 
+I'll mention before merging that it was kernel 6.9 and it got backported to up
+to 5.15 so far.
+
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+
+> The /proc/net/rpc/nfs file did not exist in nested network namespaces
+> on older kernels. The per-NS stats patchset adds it so we need to check
+> for its presence to read the correct stats on kernels where it was
+> backported.
+
+> Kernel devs have also asked for a test that'll ensure the patchset doesn't
+> get accidentaly reverted. Since this test uses namespaces only when
+> the server and client run on the same machine, it'll be better to create
+> a separate test for that. I'll send it later.
+Thanks!
+
+Kind regards,
+Petr
+
+>  testcases/network/nfs/nfsstat01/nfsstat01.sh | 24 +++++++++++++++++---
+>  1 file changed, 21 insertions(+), 3 deletions(-)
+
+> diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> index c2856eff1..8d7202cf3 100755
+> --- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> +++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> @@ -3,8 +3,19 @@
+>  # Copyright (c) 2016-2018 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2001
+
+> +TST_SETUP="nfsstat_setup"
+>  TST_TESTFUNC="do_test"
+>  TST_NEEDS_CMDS="nfsstat"
+> +NS_STAT_RHOST=0
+> +
+> +nfsstat_setup()
+> +{
+> +	nfs_setup
+> +
+> +	if tst_net_use_netns && [ -z "$LTP_NFS_NETNS_USE_LO" ]; then
+> +		tst_rhost_run -c "test -r /proc/net/rpc/nfs" && NS_STAT_RHOST=1
+> +	fi
+> +}
+
+>  get_calls()
+>  {
+> @@ -15,15 +26,22 @@ get_calls()
+>  	local calls opt
+
+>  	[ "$name" = "rpc" ] && opt="r" || opt="n"
+> -	! tst_net_use_netns && [ "$nfs_f" != "nfs" ] && type="rhost"
+> +	[ "$nfs_f" = "nfsd" ] && opt="-s$opt" || opt="-c$opt"
+> +
+> +	if tst_net_use_netns; then
+> +		# In netns setup, rhost is the client
+> +		[ "$nfs_f" = "nfs" ] && [ $NS_STAT_RHOST -ne 0 ] && type="rhost"
+> +	else
+> +		[ "$nfs_f" != "nfs" ] && type="rhost"
+> +	fi
+
+>  	if [ "$type" = "lhost" ]; then
+>  		calls="$(grep $name /proc/net/rpc/$nfs_f | cut -d' ' -f$field)"
+> -		ROD nfsstat -c$opt | grep -q "$calls"
+> +		ROD nfsstat $opt | grep -q "$calls"
+>  	else
+>  		calls=$(tst_rhost_run -c "grep $name /proc/net/rpc/$nfs_f" | \
+>  			cut -d' ' -f$field)
+> -		tst_rhost_run -s -c "nfsstat -s$opt" | grep -q "$calls"
+> +		tst_rhost_run -s -c "nfsstat $opt" | grep -q "$calls"
+>  	fi
+
+>  	if ! tst_is_int "$calls"; then
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
