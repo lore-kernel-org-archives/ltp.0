@@ -4,66 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFD52C83F26
-	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 14:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04C83C83F2E
+	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 14:33:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 383183D280F
-	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 16:10:41 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 457E23D280F
+	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 16:33:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 956A63D2808
- for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:10:25 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=david@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 7DC933D20EB
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:33:00 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4A46F100287D
- for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:10:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1724940620;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=7UPA9wwtp/mSKxKmkTeukZQiBLyuNpFLTqQQcPJJHOg=;
- b=G+RmxxIJNezLpuRjPZE+jdcXu1CoM8hYnG9gWi6EEAfa7Vy5Y36mJSBSqtRbW52S8+GiQ1
- UKEDj9uiv+mN5VSlwGfwBlRuoBUjQf8cbuGuqhfiLpcUxQPFcEeQqZB5hZY7nLu7QzHFAq
- /WLTIg+RcVORBX8lnxxCZktwpsBhWlc=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-428-j0lrGNIXPI2Q8P0sNlw3ZQ-1; Thu,
- 29 Aug 2024 10:10:18 -0400
-X-MC-Unique: j0lrGNIXPI2Q8P0sNlw3ZQ-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C83DE610226
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:32:59 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id B0DD6191815B; Thu, 29 Aug 2024 14:10:16 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.193.245])
- by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 8D8E119560A3; Thu, 29 Aug 2024 14:10:14 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu, 29 Aug 2024 16:10:02 +0200
-Message-ID: <20240829141002.1962303-1-david@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1E5112191F;
+ Thu, 29 Aug 2024 14:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724941978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UgvBT/lMjv0ff6wv1Eg9swV/WKRHj1qSeWNebhjgOLE=;
+ b=Ib6HJNkweLpoMNy9W+ktcnIfarHyScnBiHOx6IeKMXpW2Gq4QBRThgGCIiPK1ILP9GgRaB
+ SiRi9FFczMaF9NUte0GpcZ23rNgWmGv1WfrgVIxQDgfBE95unB4H47p0kEW8orpRq/+M46
+ dxEtOWVgq6V8xY5iphsktaQh9CnC7iA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724941978;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UgvBT/lMjv0ff6wv1Eg9swV/WKRHj1qSeWNebhjgOLE=;
+ b=HnkQ4ZRkz+qTUajSB8bGbE0s2bYu2jD9QSuBOJXfo/+nhkSo/IHe7qiLbfcyN35oYjQ8ca
+ cUXPP7DlWiQnCIBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1724941978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UgvBT/lMjv0ff6wv1Eg9swV/WKRHj1qSeWNebhjgOLE=;
+ b=Ib6HJNkweLpoMNy9W+ktcnIfarHyScnBiHOx6IeKMXpW2Gq4QBRThgGCIiPK1ILP9GgRaB
+ SiRi9FFczMaF9NUte0GpcZ23rNgWmGv1WfrgVIxQDgfBE95unB4H47p0kEW8orpRq/+M46
+ dxEtOWVgq6V8xY5iphsktaQh9CnC7iA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1724941978;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UgvBT/lMjv0ff6wv1Eg9swV/WKRHj1qSeWNebhjgOLE=;
+ b=HnkQ4ZRkz+qTUajSB8bGbE0s2bYu2jD9QSuBOJXfo/+nhkSo/IHe7qiLbfcyN35oYjQ8ca
+ cUXPP7DlWiQnCIBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 09AFD13408;
+ Thu, 29 Aug 2024 14:32:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id p6c4AZqG0GY6VwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 29 Aug 2024 14:32:58 +0000
+Date: Thu, 29 Aug 2024 16:31:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: David Hildenbrand <david@redhat.com>
+Message-ID: <ZtCGVr8l_Eq5uVlu@yuki.lan>
+References: <202408211026.636ade1a-oliver.sang@intel.com>
+ <767d1908-dc30-42ae-9a8a-d2ad42a4d491@redhat.com>
+ <8bde28af-3401-4d72-b821-d8cf01bbcd64@redhat.com>
+ <Zs7-A5S_ivFlosrj@yuki.lan>
+ <c6fb5f16-59bb-47a5-a2dd-3c4207d73614@redhat.com>
+ <Zs8W3nQszwhbSiT9@yuki.lan>
+ <4c190c79-401e-43a9-a4d1-e64f78110e0b@redhat.com>
+ <Zs8Yg7nXZHG8U821@yuki.lan>
+ <8a16ac0e-4a3f-48cc-a118-ea05c23d5d2b@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <8a16ac0e-4a3f-48cc-a118-ea05c23d5d2b@redhat.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWELVE(0.00)[19];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] move_pages04: check for "invalid area",
- "no page mapped" and "shared zero page mapped"
+Subject: Re: [LTP] [linux-next:master] [mm/migrate] b28dd7507f:
+ ltp.move_pages04.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,254 +115,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: David Hildenbrand <david@redhat.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, lkp@intel.com,
+ Vasily Gorbik <gor@linux.ibm.com>, Jonathan Corbet <corbet@lwn.net>,
+ ltp@lists.linux.it, Matthew Wilcox <willy@infradead.org>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ kernel test robot <oliver.sang@intel.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Zi Yan <ziy@nvidia.com>, oe-lkp@lists.linux.dev,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Janosch Frank <frankja@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-While the kernel commit d899844e9c98 ("mm: fix status code which
-move_pages() returns for zero page") fixed the return value when the
-shared zero page was encountered to match what was state in the man page,
-it unfortunately also changed the behavior when no page is mapped yet --
-when no page was faulted in/populated on demand.
+Hi!
+> >>> Also I think there is a third case that we do not cover either, what
+> >>> happens when we pass an address that is not mapped at all, e.g. NULL? Do
+> >>> we get EFAULT as well?
+> >>
+> >> Yes, that's documented as EFAULT and should behave that way. I can
+> >> extend the test to handle that as well.
+> > 
+> > Ideally the test should be ported to the new test API as well, but I can
+> > do that later on the top of your work.
+> 
+> I tried, and it all looked easy, until I realized that these tests use a 
+> share code-base:
+> 	testcases/kernel/syscalls/move_pages/move_pages_support.c
+>
+> That is also written using the old API. I assume mixing APIs might not 
+> work as expected ...
 
-Then, this test started failing, and we thought we would be testing for
-the "zero page" case, but actually we were testing for the "no page mapped"
-case, and didn't realize that the kernel commit had unintended side
-effects.
+The tst_resm() and tst_brkm() calls are redirected proplery in the case
+that the test runs with a new API so generally it should work fine as
+long as the cleanup callback is set to NULL for the tst_brkm(). That
+was one of the design decision we took years ago, because we knew that
+we are not going to reimplement thousands of tests instantly and that
+the old and new API would have to live alongside for a decade.
 
-As we are changing the behavior back to return "-ENOENT" in the kernel
-for the "no page mapped" case, while still keeping the "shared zero
-page" case to return "-EFAULT" the test starts failing again ...
+I glanced over the code and I do not see anything in the
+move_paves_support.c or in the kernel/lib/numa_helper.c that would break
+when executed under the new library test.
 
-The man page clearly spells out that the expectation for the zero page is
-"-EFAULT", and that "-EFAULT" can also be returned if "the memory area is
-not mapped by the process" -- which means that there is no VMA/mmap()
-covering that address.
-
-The man page also documents that "-ENOENT" is returned when "The page is
-not present", which includes "there is nothing mapped".
-
-So let's fix the test and properly testing for all three separate things:
-"invalid area/page", "no page mapped" and "shared zero page mapped">
-
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
-
-The kernel change[1] that will revert to the documented behavior -- return
--ENOENT when no page is mapped yet -- is not upstream yet, but the
-assumption is that it will go upstream in the next merge window, to land
-in v6.12.
-
-Consequently, this test will now fail (as expected) on kernels between
-v4.3 and current mainline.
-
-We seemed to have "hacked" the test to make kernels < 4.3 still pass,
-even though they were handling zero pages the wrong way.
-
-Should we add a similar "hack" for kernels >= 4.3 up to the one where
-the kernel behavior will change? (likely v6.12)?
-
-On current kernels:
-
-#./move_pages04
-move_pages04    1  TFAIL  :  move_pages04.c:184: status[1] is EFAULT, expected ENOENT
-move_pages04    2  TPASS  :  status[2] has expected value
-move_pages04    3  TPASS  :  status[3] has expected value
-
-On kernels with [1]:
-
-# ./move_pages04
-move_pages04    1  TPASS  :  status[1] has expected value
-move_pages04    2  TPASS  :  status[2] has expected value
-move_pages04    3  TPASS  :  status[3] has expected value
-
-
-Note that I tried converting this test to the new API, but the shared
-code move_pages_support.c also till uses the old API, so it's not
-as straight-forward as it seems.
-
-[1 https://lkml.kernel.org/r/20240802155524.517137-5-david@redhat.com
-
----
- .../kernel/syscalls/move_pages/move_pages04.c | 104 ++++++++++++++----
- 1 file changed, 83 insertions(+), 21 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
-index f53453ab4..7a20a1328 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages04.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
-@@ -26,15 +26,24 @@
-  *	move_pages04.c
-  *
-  * DESCRIPTION
-- *      Failure when page does not exit.
-+ *      Failure when the memory area is not valid, no page is mapped yet or
-+ *      the shared zero page is mapped.
-  *
-  * ALGORITHM
-  *
-- *      1. Pass zero page (allocated, but not written to) as one of the
-- *         page addresses to move_pages().
-- *      2. Check if the corresponding status is set to:
-+ *      1. Pass the address of a valid memory area where no where no page is
-+ *         mapped yet (not read/written), the address of a valid memory area
-+ *         where the shared zero page is mapped (read, but not written to)
-+ *         and the address of an invalid memory area as page addresses to
-+ *         move_pages().
-+ *      2. Check if the corresponding status for "no page mapped" is set to
-+ *         -ENOENT. Note that [1] changed the behavior to return -EFAULT by
-+ *         accident.
-+ *      3. Check if the corresponding status for "shared zero page" is set to:
-  *         -ENOENT for kernels < 4.3
-  *         -EFAULT for kernels >= 4.3 [1]
-+ *      4. Check if the corresponding status for "invalid memory area" is set
-+ *         to -EFAULT.
-  *
-  * [1]
-  * d899844e9c98 "mm: fix status code which move_pages() returns for zero page"
-@@ -64,10 +73,12 @@
- #include "test.h"
- #include "move_pages_support.h"
- 
--#define TEST_PAGES 2
-+#define TEST_PAGES 4
- #define TEST_NODES 2
- #define TOUCHED_PAGES 1
--#define UNTOUCHED_PAGE (TEST_PAGES - 1)
-+#define NO_PAGE TOUCHED_PAGES
-+#define ZERO_PAGE (NO_PAGE + 1)
-+#define INVALID_PAGE (ZERO_PAGE + 1)
- 
- void setup(void);
- void cleanup(void);
-@@ -89,12 +100,12 @@ int main(int argc, char **argv)
- 	int lc;
- 	unsigned int from_node;
- 	unsigned int to_node;
--	int ret, exp_status;
-+	int ret, exp_zero_page_status;
- 
- 	if ((tst_kvercmp(4, 3, 0)) >= 0)
--		exp_status = -EFAULT;
-+		exp_zero_page_status = -EFAULT;
- 	else
--		exp_status = -ENOENT;
-+		exp_zero_page_status = -ENOENT;
- 
- 	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
- 	if (ret < 0)
-@@ -106,6 +117,7 @@ int main(int argc, char **argv)
- 		int nodes[TEST_PAGES];
- 		int status[TEST_PAGES];
- 		unsigned long onepage = get_page_size();
-+		char tmp;
- 
- 		/* reset tst_count in case we are looping */
- 		tst_count = 0;
-@@ -114,14 +126,44 @@ int main(int argc, char **argv)
- 		if (ret == -1)
- 			continue;
- 
--		/* Allocate page and do not touch it. */
--		pages[UNTOUCHED_PAGE] = numa_alloc_onnode(onepage, from_node);
--		if (pages[UNTOUCHED_PAGE] == NULL) {
--			tst_resm(TBROK, "failed allocating page on node %d",
-+		/*
-+		 * Allocate memory and do not touch it. Consequently, no
-+		 * page will be faulted in / mapped into the page tables.
-+		 */
-+		pages[NO_PAGE] = numa_alloc_onnode(onepage, from_node);
-+		if (pages[NO_PAGE] == NULL) {
-+			tst_resm(TBROK, "failed allocating memory on node %d",
- 				 from_node);
- 			goto err_free_pages;
- 		}
- 
-+		/*
-+		 * Allocate memory, read from it, but do not write to it. This
-+		 * will populate the shared zeropage.
-+		 */
-+		pages[ZERO_PAGE] = numa_alloc_onnode(onepage, from_node);
-+		if (pages[ZERO_PAGE] == NULL) {
-+			tst_resm(TBROK, "failed allocating memory on node %d",
-+				 from_node);
-+			goto err_free_pages;
-+		}
-+		/* Make the compiler not optimize-out the read. */
-+		tmp = *((char *)pages[ZERO_PAGE]);
-+		asm volatile("" : "+r" (tmp));
-+
-+		/*
-+		 * Temporarily allocate memory and free it immediately. Do this
-+		 * as the last step so the area won't get reused before we're
-+		 * done.
-+		 */
-+		pages[INVALID_PAGE] = numa_alloc_onnode(onepage, from_node);
-+		if (pages[INVALID_PAGE] == NULL) {
-+			tst_resm(TBROK, "failed allocating memory on node %d",
-+				 from_node);
-+			goto err_free_pages;
-+		}
-+		numa_free(pages[INVALID_PAGE], onepage);
-+
- 		for (i = 0; i < TEST_PAGES; i++)
- 			nodes[i] = to_node;
- 
-@@ -135,20 +177,40 @@ int main(int argc, char **argv)
- 			tst_resm(TINFO, "move_pages() returned %d", ret);
- 		}
- 
--		if (status[UNTOUCHED_PAGE] == exp_status) {
-+		if (status[NO_PAGE] == -ENOENT) {
- 			tst_resm(TPASS, "status[%d] has expected value",
--				 UNTOUCHED_PAGE);
-+				 NO_PAGE);
- 		} else {
- 			tst_resm(TFAIL, "status[%d] is %s, expected %s",
--				UNTOUCHED_PAGE,
--				tst_strerrno(-status[UNTOUCHED_PAGE]),
--				tst_strerrno(-exp_status));
-+				NO_PAGE,
-+				tst_strerrno(-status[NO_PAGE]),
-+				tst_strerrno(ENOENT));
-+		}
-+
-+		if (status[ZERO_PAGE] == exp_zero_page_status) {
-+			tst_resm(TPASS, "status[%d] has expected value",
-+				 ZERO_PAGE);
-+		} else {
-+			tst_resm(TFAIL, "status[%d] is %s, expected %s",
-+				ZERO_PAGE,
-+				tst_strerrno(-status[ZERO_PAGE]),
-+				tst_strerrno(-exp_zero_page_status));
-+		}
-+
-+		if (status[INVALID_PAGE] == -EFAULT) {
-+			tst_resm(TPASS, "status[%d] has expected value",
-+				 INVALID_PAGE);
-+		} else {
-+			tst_resm(TFAIL, "status[%d] is %s, expected %s",
-+				INVALID_PAGE,
-+				tst_strerrno(-status[INVALID_PAGE]),
-+				tst_strerrno(EFAULT));
- 		}
- 
- err_free_pages:
--		/* This is capable of freeing both the touched and
--		 * untouched pages.
--		 */
-+		/* Memory for the invalid page was already freed. */
-+		pages[INVALID_PAGE] = NULL;
-+		/* This is capable of freeing all memory we allocated. */
- 		free_pages(pages, TEST_PAGES);
- 	}
- #else
 -- 
-2.46.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
