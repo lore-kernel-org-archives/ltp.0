@@ -4,143 +4,190 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29B88C83F2D
-	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 14:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 200A5C87FD4
+	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 19:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1724960154; h=to : date :
+ message-id : content-id : mime-version : subject : list-id :
+ list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=BRdTplK9Z9br28eeTWcTkP6qf5kCoiso8m0xcxT2/sE=;
+ b=INfmKt348g5LHumI5odoEdBKn/Y7sBApiVSV4ibHmxOvlGJUSlroHqL39knvYEORTSLPd
+ HD4K+/x/1dAs4HEOSGpRnurYXPSeBe8U2bu9pDmk+GetVQkRuA302KEH6T3FSWxnDz7m3qW
+ 4M8lJ82FhPrXOkg+rCmGDHnfr/fJrbI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F6043D280D
-	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 16:38:27 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C394E3D2818
+	for <ltp@archiver.kernel.org>; Thu, 29 Aug 2024 21:35:54 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBC183D06B7
- for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:38:10 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=david@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 0C1853D2808
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 21:35:32 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=oracle.com (client-ip=205.220.165.32;
+ helo=mx0a-00069f02.pphosted.com; envelope-from=chuck.lever@oracle.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
+ [205.220.165.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AE20B100608F
- for <ltp@lists.linux.it>; Thu, 29 Aug 2024 16:38:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1724942287;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=OsCX0ZyOxWwSEV2gyoydMLj2nN0vlKj1gl2mA+dgOIY=;
- b=aS9Xp64gJj7cmp+2eMHWV64cGPv3avG9jEB94GjtLPXVestRLq7oI0wCoolmyN2RGh6aDr
- AblQHfr7Y8YbT4WpeOnux77DuTk0Mzntf7CUNNxk5IIVVr73ncpSpM2fdeGJUSkT7hQIHY
- 3abDLyDDCY6vmMjgqkErCI95PiiQEfU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-AaxZ9C7ZNr6Q6-MqMumtfg-1; Thu, 29 Aug 2024 10:38:06 -0400
-X-MC-Unique: AaxZ9C7ZNr6Q6-MqMumtfg-1
-Received: by mail-wm1-f69.google.com with SMTP id
- 5b1f17b1804b1-42ba94a0555so7416445e9.0
- for <ltp@lists.linux.it>; Thu, 29 Aug 2024 07:38:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1724942284; x=1725547084;
- h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=OsCX0ZyOxWwSEV2gyoydMLj2nN0vlKj1gl2mA+dgOIY=;
- b=rQ14yg//l7pf4cy/P3OLJoaSrKipVlLr2WWNM/DBu2EGf+834rur3XSM76/uxgaLij
- D14m2GOxGkLoqp9rKfYT+mhS52A0ubv3QOvAAfMizTH57M524V8nNTZNnw/sQKS303e/
- C8k51NJD67d6Wui0+195vkArWdOuyRx3Q2+NQayy2cdm++keBfvh7y2vCJwj4W3riNns
- zPQOPQ1yLQlCvFPMlwlPik64tX2Sp4mApkLXRlsS4r+a2paRXQLMIsop2m5FjzjrixsQ
- iQ78cC9U7mNM6Ig31ps+YguK0QsaPzN/YUaSzZK8W4lykShiREZFCAqqwWCJCRd/yDsu
- dPMw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVW34OmwADFd7kXplJDkzXzmdjcMJlHl0KvwjdChZWxnRKaHGDRx52eBPCaLN7R8AYTOEE=@lists.linux.it
-X-Gm-Message-State: AOJu0YwDUp2U1mG7DtNw6s5iiLKOEHOgPTCQxdje/i51FIOmxNJyDUEX
- srA5Gz8IkN95WnA2GmudNLdspFfb9VstlpzmFcOT5JuB6rXwEsxUu4ebzJeTcXmOYYNCYyaBtz/
- diUJg5O2mPvlj295T6Ib4V5TUbkHo3xYYJBIylF0qBF4KpTV4
-X-Received: by 2002:a05:600c:3596:b0:426:629f:154e with SMTP id
- 5b1f17b1804b1-42bb02d970dmr19969405e9.30.1724942284328; 
- Thu, 29 Aug 2024 07:38:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHRpyGTsRQlxPkowSA5gXPZRCPCgPVQClP0RB72O4ew2XXmZ1TW0z28Qq5ZkWK2DfgaNfnwOw==
-X-Received: by 2002:a05:600c:3596:b0:426:629f:154e with SMTP id
- 5b1f17b1804b1-42bb02d970dmr19968375e9.30.1724942283356; 
- Thu, 29 Aug 2024 07:38:03 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c711:c600:c1d6:7158:f946:f083?
- (p200300cbc711c600c1d67158f946f083.dip0.t-ipconnect.de.
- [2003:cb:c711:c600:c1d6:7158:f946:f083])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3749ee413a8sm1587922f8f.6.2024.08.29.07.38.01
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 29 Aug 2024 07:38:02 -0700 (PDT)
-Message-ID: <f657523e-440f-4862-8497-a2fe99ad7bf5@redhat.com>
-Date: Thu, 29 Aug 2024 16:38:01 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <202408211026.636ade1a-oliver.sang@intel.com>
- <767d1908-dc30-42ae-9a8a-d2ad42a4d491@redhat.com>
- <8bde28af-3401-4d72-b821-d8cf01bbcd64@redhat.com> <Zs7-A5S_ivFlosrj@yuki.lan>
- <c6fb5f16-59bb-47a5-a2dd-3c4207d73614@redhat.com> <Zs8W3nQszwhbSiT9@yuki.lan>
- <4c190c79-401e-43a9-a4d1-e64f78110e0b@redhat.com> <Zs8Yg7nXZHG8U821@yuki.lan>
- <8a16ac0e-4a3f-48cc-a118-ea05c23d5d2b@redhat.com> <ZtCGVr8l_Eq5uVlu@yuki.lan>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZtCGVr8l_Eq5uVlu@yuki.lan>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F3D0C60117F
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 21:35:28 +0200 (CEST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47TIXkNx015106
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 19:35:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+ from:to:cc:subject:date:message-id:content-type:content-id
+ :content-transfer-encoding:mime-version; s=corp-2023-11-20; bh=j
+ 68yrGTGoUqwfvbWyYop3RFaU0Sfb/eXeaMKPINsvVI=; b=SDuLaN6YQgW342OHA
+ I3jWQfP0eOjOKW8ht4ROinHTtCnuvnRgx+PQx3EojfThix6+ArZde19dWhjhHPR/
+ DX6d/897xoEFP8ICskQqkowAOOCQkqPk2Un61WgwCbEm33MXFuEsne+GbIFclHRX
+ 1vVR0rru2s3IyaB00xjYfwP33eH9MiwFunBNnCx9VEWU5WXvhdPc+bK6Ym0jdmoB
+ Rfbug0vNfQCkOcvUZq3hPhkUq9iW9/2OZQHBbUqdRz2kU5MzaErgQ4gw+FFziP/a
+ 7cqzH0z1CKNk7I9hzauxFOg0pWYm+HTIBkFMEW3BgNqeN3lpBnwLQTaE45Pn8Xh+
+ YKWVA==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 419pup59uk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 19:35:26 +0000 (GMT)
+Received: from pps.filterd
+ (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+ by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2)
+ with ESMTP id 47TIIE8d009936
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 19:35:25 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+ by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
+ 41894r61m4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 29 Aug 2024 19:35:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=K4lzh0BJG22SqhPigzAt+BnwgPz+VJar3wuMXGEyxhNBbXoYAmbXA+O9q+8cdfESNaEKFlocbR7gvJeOfGQoiP/t4FmU2DNttWLfmlOC1zffq2fIXGZjqEjWe6dKOyxXUNMnqK78gapWaJpPCTnk3u/i/tzA+Iw32Z0KDKNFCDE1FhcHwqUuX3MXKHUVdxrWdH0D++PMTY3GR1gyLOjPudy45uZU9IdBjXfx0BxDakR1WWmGzCWUvXkg5FvzPxXwT3+pFw2BYdL3//ru8qdaBGqXbXi5ntC46h3SxbvPuMm3ZUiv5any7EWregWS48j/oYX0CBdljmvUA342jHI00A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j68yrGTGoUqwfvbWyYop3RFaU0Sfb/eXeaMKPINsvVI=;
+ b=Ig080Zopvf6o+HJeFwWqhkefuzueLxC+3veZ4Em7RnVAP7hFJnf7Sn0V3XZFbwHhtrYJLlt/GflSrTNfWAKnME+9eNMqOx7JwqTbHgVe+xfHeAe5mC7MA/X60KeAl+AxxKkTLxIA7FESG7TVI54b/eC4aPtQgR/znGwoGLsAVUY/PNNuPC2wNzcVLnRe0vbU+rvsXf5A9Z3hwfp6X/uMIY2DKoLTzV+X/iWyEYeFYN4Zpn9BySUQxY686qo2WeZZ5t/HM82evb4J+tPvsAqZG18gs8hHPj8pvx7vGwO3EfetS6H+LWPuz2yQ79Ezc4AlqMiGtt5D0wfSd85TGVLyqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j68yrGTGoUqwfvbWyYop3RFaU0Sfb/eXeaMKPINsvVI=;
+ b=Uzw0h6gxsrNaGZob0LctCKEbZs4xYfN5zPiTf6ixIT9qtNk2gT9j9AKwKseZRV6pFHVxM6bachdc6Cjw0I4Th1ApJOvnmGveX/lq02rCOR8NrVbjk84xMgkyK6miQl/W1oPBgSK4sJBjRn8N5baqaDUSSqvVWWBmn/FsFX+5nhg=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by MN0PR10MB5910.namprd10.prod.outlook.com (2603:10b6:208:3d2::12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.19; Thu, 29 Aug
+ 2024 19:35:19 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90%6]) with mapi id 15.20.7918.017; Thu, 29 Aug 2024
+ 19:35:19 +0000
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: TI-RPC test failures; network configuration related?
+Thread-Index: AQHa+kqUwHC9Nu16i0Wh/dCilVxUmQ==
+Date: Thu, 29 Aug 2024 19:35:18 +0000
+Message-ID: <662B8BF1-099A-4CD0-94AB-267BE738130F@oracle.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3776.700.51)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|MN0PR10MB5910:EE_
+x-ms-office365-filtering-correlation-id: 49c289fb-7190-425c-5c57-08dcc861b72b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0; ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?s4Q/eKLSmvxo/LATuJs43ozO6fFG+VHphWc3tvKqKpLFjjnM3EYNOarXnMVx?=
+ =?us-ascii?Q?iwI/0FxB2EHZdfT8it4i7eqJ5xGUYcvE6eb2TJ8uEb7TvTmJ3L2ZAuCu56YY?=
+ =?us-ascii?Q?KAgwnvsgOfiNwhs2hVVKK1aMInEffIFIdnRqgMZkWu7Fx4Bik0aOnL70rAI8?=
+ =?us-ascii?Q?+JzNsbjFtqorF3XOq1zixqXXA1/NJCWnwu2+4WujIyhpL4TvvGjgVpqkLHCc?=
+ =?us-ascii?Q?lhAKhcSL8/aI/3VHhhM9rbF++Dm1JIOkTNKr0Ag92VXxdr00kSxhdvUuxsEk?=
+ =?us-ascii?Q?X4YFSfnHJ4qQsHyMs9rgrJSvHrNyg1SwEx14rG4ZHXgFe66E4avUCx/PjTXt?=
+ =?us-ascii?Q?2TzFiVwkjOcH898jD7XxZ1LyGmP54VZsdiK0ZvP40z5IGOXg4LxZBU0vayd7?=
+ =?us-ascii?Q?vNgrdjNLUqCVDgqNORmZimyckl+yugIKR24J0DSyvdYIKSAqyfezxmEN4NRY?=
+ =?us-ascii?Q?jvYumTCV3u+yD5GB88tOoHx/NN7YCsW5I7faM6v6WJVSYgwAAqUN6bMtTJxl?=
+ =?us-ascii?Q?ECOHiUjuv024R9XiPIeko1XKDDMZkT+ON3bcHZAFIr1wp2z+ksh6GjYJDaXi?=
+ =?us-ascii?Q?D+Kc83cfU7tJ22DSx/avjltYJrg1VlBT8sGwmagJFPJG2aH16c96bTSbepwL?=
+ =?us-ascii?Q?Ec8RT0vuoyVLAwPyN9be762i5NQc+VAIB8EjmwNKy3OMSnUmhdiNSMHbaj0T?=
+ =?us-ascii?Q?yw8v28rV+i1x7htnUo7/54t+es5o2eBxeMj1bDB0p6sq0CR/iemc7UUADQ53?=
+ =?us-ascii?Q?nANFL0fP3eT/LVxTb5B5Zl6hE68BAiiYUfFjjhtYPRz5o6KSgtkig6K8xQju?=
+ =?us-ascii?Q?WvuhVOjghnJ8PUT4bKQlgsONC/jiY+PTxkfHd/9FMGxfXFy5ghAXhdwOr3vu?=
+ =?us-ascii?Q?lOsuZ0fZ2/NAakUm4wNIVP3WQRVAg6CHMMTTsjxtf3yjjwudRs/bFwgVhBrw?=
+ =?us-ascii?Q?KHqB0O6/9etEUP6BRpiYuoki/DTJw2ZdOpsvd6BjLoRoukg8Ao+F/UFlRDoV?=
+ =?us-ascii?Q?gH+1vMp/5hm1uQboBFR+hr5b5FCqViXUzSK+KYcKNpmrWx27Qk7bbwuqzIvF?=
+ =?us-ascii?Q?ibHzkeD4J4uTG9ynMdF4OteKhyN7nwF4O1y2bxo2T0A6pvTmKLq5uZQW7qXf?=
+ =?us-ascii?Q?FzXn37AsD+a439tFMuKR9Ba5/ubhro92q5wl1CFTx4HumMkhPULOKeaEmQsi?=
+ =?us-ascii?Q?zpqj8QqQ0rueOqIqewn9fhPgWC7WJzJZ7u7FuK8BPfQ5iaTH+JOzigwKGu05?=
+ =?us-ascii?Q?dRpHvdH6fT04T3N5NxmtBFuzStEC6BL3S+j9JYvBmvMQ/1ts1rJE5BcaXtjT?=
+ =?us-ascii?Q?O4QCaY0o7UTutApDo3WyGMkSWFPoVtJGD3J/w8+xoCgGwH5WDj12818cuCqc?=
+ =?us-ascii?Q?wFrSKhdeNuek87ek4rIagmL7dWKLDiTLylSIrAyxiIi0KrZuCg=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BN0PR10MB5128.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(376014)(1800799024)(366016)(38070700018); DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uR2veoyJC92txKBiXn1S3Yqbd45I/GJLh3dOPWia4ezOBt6RHBa8dOxaQedx?=
+ =?us-ascii?Q?4aWZd0dfEf4Hrt5IuN0sv5CeJJKylhCAkz8nKW2XrxKAbL/PRf7hQTr5Us7L?=
+ =?us-ascii?Q?MI0nGMD8XXgR+BfiHFzGrRvRbuQ8LsxIJsNS4uNpgeGPHzjTtx7swWOO+f5d?=
+ =?us-ascii?Q?BwLm/Vz5rbaMzZqnpPGpFUJ3p6vYrriT0QVrs4YVx0psxO5O5DUMlZ+zZi3z?=
+ =?us-ascii?Q?QZKu9VLZvdHz4P68axZQD1h3A4Zi67vUJIV1u+RBIKLHHIJltmzhbpZmCa+/?=
+ =?us-ascii?Q?rEvOwYrQuZwCypOAfc5FuRPb2c8D/kBNtITeB3TbKhjQA0+C0qmTQJJOgT0X?=
+ =?us-ascii?Q?jQQSllPZY2hyPgVcRDME2kOGjjCEmp1kmWvH6MZRX0UlnEkXtAlj8Ip3xBMb?=
+ =?us-ascii?Q?prOMdtRzKqKCj2k345xd4c9QPyYJLiP0o+382EtGmlNc1AXYNdunQezY1UYu?=
+ =?us-ascii?Q?eDfMAjO6k3A9vkle8cFjK7/GstjjU1FacIBMpDrItdHiXCuWIKebuHvTAbEm?=
+ =?us-ascii?Q?7hRBtVKcSSXVNIcYhhJ9w1IGzjAD5IqT1qW20uod5dm/N3KnVtBrRamAykds?=
+ =?us-ascii?Q?dMMEWnWH2ibsau96KS+xklTaScnEwKcKrP4w6nGI3VUXKlLCioWI4o44iyXN?=
+ =?us-ascii?Q?6uH58MgsjPJTRsCrOO2ohDYdO5N6UsYWFq2lh1ODlD7QTmBOujq8hjpgVoiF?=
+ =?us-ascii?Q?aqIQlclbyan0I4HzWYvX058Z5zaasw++xwXaLy4ALc+K2pHJLfBqKWRaLUl8?=
+ =?us-ascii?Q?rh7sJt2BDHCqkLLBOw8X80yMdWl7bHYpZni/Z2Bgf8h2N0A38bIFfBvH1aET?=
+ =?us-ascii?Q?/6qID/yLEWxw1eXufKh8cgvRl4NK1jUyTPVfp/lvBZV3fhYaisnpQGx3LNjp?=
+ =?us-ascii?Q?SaNrObGKLFFHmSAgGlUM8ZAdhl156AjUy0M9+cyIlNKSkBnXmXupvEcsE8ht?=
+ =?us-ascii?Q?mdnNme8iFLqT83H4M1bbLK2wjerzWPqhjTpeKw+RM6gTG6sYEY0t5o6cHqGy?=
+ =?us-ascii?Q?hakYj2ZBXQrTqZV5ZdNJFR3dkVeufm9rqtZ2Jpqna0vGFXZQyM8dE5RYmkFG?=
+ =?us-ascii?Q?B4Rfhgm5bcO8TN0E0z5Sq7apEbKgjIRGFpmf1ZI9nPgtkVcCstHAzxAgj1OU?=
+ =?us-ascii?Q?LxNq5BbhRuw1ns/ca+Rgp6q3QfKMvrP/EYwe/33sg1jbJ2GvOLf64zffn/YL?=
+ =?us-ascii?Q?ZvlpzbV3qzc6cBSz34END/lwMYz8CE+unwXXB6sigiAgmRqjy0UHgo1MQOB8?=
+ =?us-ascii?Q?xrC/iQTTG/pSZ+Ski+YgAAvo62s70mlJNqoibWTP3hzqgIY/LG9udnAJBc5F?=
+ =?us-ascii?Q?dxQAx836jb+jOrfrd8hdCylyVjzhGjsCaFOOuTPNVLmI81ZNFTdh5wixPZht?=
+ =?us-ascii?Q?yAVzOkYEVw1+NoZR9HlAuO+q8TJ9saJkdeyCw/fT+Nkk+0MqpMp/RwuO6znF?=
+ =?us-ascii?Q?7x+ooe3WJe3S+8jSwSR6Y7SpYWlaXww17FuCemcTP6wRYr2/TdyY30J1xf1H?=
+ =?us-ascii?Q?eqJ/g4JmCwjgfKyWOllohoECVm5pv8L0DTWML3c9urR/LSHOPsFmx4DZnShv?=
+ =?us-ascii?Q?Xchgfm27oKffw8S0XRvuoxvFKEGa3+u1Zl96U9u+r104r4uabzO43Rqrqzw3?=
+ =?us-ascii?Q?gA=3D=3D?=
+Content-ID: <3F06BF2EED5F6C458798156D7C9F5D7E@namprd10.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: rfr3Jv2Y4mC4RnAhmytl5JkNWdcL2yBhXg57WQuEoecCNDuXAN5E3gZGtTbEURjsS5HPCi5HMiwNbBRIgn7AVz4MG4BVTQjygA5yUbqh2wetCjoUsQzaJPZHniRqKFh+2huSMiu9Zw7oYlVXfdpEcdCYUHOalXJyblJICdf2EUCaKyAo7VuNvqFS7T0gPDLBr2266cOCdQsyyWEJgSMAHZeHAEKBo0BCVR6tkx60wxh/HeG0WMQTG9i1npMZVO0qjHEKQbWlxHNE84iPXRu4VDlrnincTi/i/Ni0y9+MKhUaQVe+fKDcOhw/oJDc8qae6pU6ouSr57cDQuMSKVJAw+1CfmUR9I01e/h7RZxo0+Hgjvajq8kXN7jZyYpEnDRccsqqkdTpG6kT6PgPzYSs1IgWYRYq6rbIeuU14kyj12y2yNGAdAAHHNTCzRSS5YvNu00+RbV3J1BjEdbxwHb6ms4QYKshA9FhiflB46DkDP9V81oc+8/yEscsJ9S6NpjmlA+VLCubrVPqHyormRJYXhcdXjvQk4If+nrZROfbtvPfTLYuhkqe/2CkBishRltiQ3fYc5AqthCVdbVcF6xX+6eySsRC2MkK5wjhjQ5+fyw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49c289fb-7190-425c-5c57-08dcc861b72b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2024 19:35:18.9822 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eoiVNj5MnlGt5Fvajm4MiccDdA11lb/WMcxPrJ7Q24LqTjczbSXOgSalGs64hKU2d3P8j8WNRoTaEXbHusJWHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR10MB5910
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-29_06,2024-08-29_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ malwarescore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408290138
+X-Proofpoint-ORIG-GUID: 6_EgBy6hZMgCxmZJWZUlf2CWpBELirMb
+X-Proofpoint-GUID: 6_EgBy6hZMgCxmZJWZUlf2CWpBELirMb
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linux-next:master] [mm/migrate] b28dd7507f:
- ltp.move_pages04.fail
+Subject: [LTP] TI-RPC test failures; network configuration related?
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -152,64 +199,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Ryan Roberts <ryan.roberts@arm.com>, lkp@intel.com,
- Vasily Gorbik <gor@linux.ibm.com>, Jonathan Corbet <corbet@lwn.net>,
- ltp@lists.linux.it, Matthew Wilcox <willy@infradead.org>,
- Linux Memory Management List <linux-mm@kvack.org>,
- kernel test robot <oliver.sang@intel.com>, Sven Schnelle <svens@linux.ibm.com>,
- Zi Yan <ziy@nvidia.com>, oe-lkp@lists.linux.dev,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Janosch Frank <frankja@linux.ibm.com>
+From: Chuck Lever III via ltp <ltp@lists.linux.it>
+Reply-To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Chuck Lever III <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 29.08.24 16:31, Cyril Hrubis wrote:
-> Hi!
->>>>> Also I think there is a third case that we do not cover either, what
->>>>> happens when we pass an address that is not mapped at all, e.g. NULL? Do
->>>>> we get EFAULT as well?
->>>>
->>>> Yes, that's documented as EFAULT and should behave that way. I can
->>>> extend the test to handle that as well.
->>>
->>> Ideally the test should be ported to the new test API as well, but I can
->>> do that later on the top of your work.
->>
->> I tried, and it all looked easy, until I realized that these tests use a
->> share code-base:
->> 	testcases/kernel/syscalls/move_pages/move_pages_support.c
->>
->> That is also written using the old API. I assume mixing APIs might not
->> work as expected ...
-> 
-> The tst_resm() and tst_brkm() calls are redirected proplery in the case
-> that the test runs with a new API so generally it should work fine as
-> long as the cleanup callback is set to NULL for the tst_brkm(). That
-> was one of the design decision we took years ago, because we knew that
-> we are not going to reimplement thousands of tests instantly and that
-> the old and new API would have to live alongside for a decade.
+For a while now my nightly "runltp -f net.tirpc_tests" have
+thrown a bunch of failures but I haven't had time to look
+into it until now. Without modification, about half of the
+client test programs segfault.
 
-Ah, the "NULL" is the magic bit.
+Here's a sample test failure. I instrumented the
+tirpc_clnt_destroy test case and the rpc_tests.sh script as
+shown below, but I still don't understand why clnt_create(3t)
+is failing.
 
-> 
-> I glanced over the code and I do not see anything in the
-> move_paves_support.c or in the kernel/lib/numa_helper.c that would break
-> when executed under the new library test.
+Seems to occur on all recent versions of Fedora with stock
+kernels or custom-built kernels.
 
-Okay, good. I can send a follow up to convert that file once the 
-fix/extension was reviewed.
 
--- 
-Cheers,
+[root@cel-tirpc ltp]# testcases/bin/rpc_test.sh -s tirpc_svc_2 -c tirpc_clnt_destroy
+rpc_test 1 TINFO: Running: rpc_test.sh -s tirpc_svc_2 -c tirpc_clnt_destroy
+rpc_test 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+rpc_test 1 TINFO: add local addr 10.0.0.2/24
+rpc_test 1 TINFO: add local addr fd00:1:1:1::2/64
+rpc_test 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+rpc_test 1 TINFO: add remote addr 10.0.0.1/24
+rpc_test 1 TINFO: add remote addr fd00:1:1:1::1/64
+rpc_test 1 TINFO: Network config (local -- remote):
+rpc_test 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+rpc_test 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+rpc_test 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+rpc_test 1 TINFO: timeout per run is 0h 5m 0s
+rpc_test 1 TINFO: check registered RPC with rpcinfo
+rpc_test 1 TINFO: registered RPC:
+   program vers proto   port  service
+    100000    4   tcp    111  portmapper
+    100000    3   tcp    111  portmapper
+    100000    2   tcp    111  portmapper
+    100000    4   udp    111  portmapper
+    100000    3   udp    111  portmapper
+    100000    2   udp    111  portmapper
+    100024    1   udp  46925  status
+    100024    1   tcp  60195  status
+    100005    1   udp  20048  mountd
+    100005    1   tcp  20048  mountd
+    100005    2   udp  20048  mountd
+    100005    2   tcp  20048  mountd
+    100005    3   udp  20048  mountd
+    100005    3   tcp  20048  mountd
+    100003    3   tcp   2049  nfs
+    100003    4   tcp   2049  nfs
+    100227    3   tcp   2049  nfs_acl
+    100003    3   udp   2049  nfs
+    100227    3   udp   2049  nfs_acl
+    100021    1   udp  33304  nlockmgr
+    100021    3   udp  33304  nlockmgr
+    100021    4   udp  33304  nlockmgr
+    100021    1   tcp  42895  nlockmgr
+    100021    3   tcp  42895  nlockmgr
+    100021    4   tcp  42895  nlockmgr
+        10    1   udp  59751
 
-David / dhildenb
+# Note above: the test RPC program (536875000) does not
+# appear in the rpcinfo output. That makes me suspect
+# the network namespace configuration on this guest is
+# somehow incorrect.
+
+rpc_test 1 TINFO: using libtirpc: yes
+traceroute to 10.0.0.2 (10.0.0.2), 30 hops max, 60 byte packets
+ 1  cel-tirpc (10.0.0.2)  0.501 ms  0.438 ms  0.392 ms
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+0.0.0.0         192.168.122.1   0.0.0.0         UG        0 0          0 enp1s0
+10.0.0.0        0.0.0.0         255.255.255.0   U         0 0          0 ltp_ns_veth2
+192.168.122.0   0.0.0.0         255.255.255.0   U         0 0          0 enp1s0
+rpc_test 1 TFAIL: tirpc_clnt_destroy 10.0.0.2 536875000 failed unexpectedly
+
+# I changed tirpc_clnt_destroy to display the following
+# information instead of segfaulting. clnt_create()
+# returns NULL and sets the library's rpc_createerr.
+
+rpc_createerr.cf_stat=12
+error: No route to host
+2
+rpc_test 2 TINFO: SELinux enabled in enforcing mode, this may affect test results
+rpc_test 2 TINFO: it can be disabled with TST_DISABLE_SELINUX=1 (requires super/root)
+rpc_test 2 TINFO: install seinfo to find used SELinux profiles
+rpc_test 2 TINFO: loaded SELinux profiles: none
+
+Summary:
+passed   0
+failed   1
+broken   0
+skipped  0
+warnings 0
+
+--
+Chuck Lever
+
 
 
 -- 
