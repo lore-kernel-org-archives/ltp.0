@@ -4,103 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C6E0CA0EFB
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 10:39:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB55DCA0EFC
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 11:39:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 823193D2837
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 12:39:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id C1E063D284E
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 13:39:42 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0E84A3D279F
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 12:38:54 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 379683CE3C5
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 13:39:26 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CCB4214098C7
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 12:38:53 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6AA7B600D4E
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 13:39:24 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BE3EF1F7BF;
- Fri, 30 Aug 2024 10:38:52 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 622CD1F7C9;
+ Fri, 30 Aug 2024 11:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725014332;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a3Oq2MLDZRF6c+g15dcwjQGS4oi8hCJTXgjsor95GYI=;
- b=B6C4qhZ351T+ubGrjEV/4lTP61IqSrLhBnPHxyN9cqHEO0ir7WiRXV4xDzYK8lqirm78Yn
- 8gh5IJo1thWOkcXJ3RVQUugTQ1HtMwBl8p1eE1p/OS338u5RAnRF1mw5ZrAQViQg10L3Lw
- XNdbzAEQJlXRS/53eEl8/uC+7QvOzXA=
+ t=1725017963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hofe3rMZPu9m66PysvJ15qIFJeOcQrHzkUzj7VTlDt8=;
+ b=if/Ryv2V2iUjWGnWhF+WfcXyJV4rwGm8QDyR/l/jmupF35BKgB3EIRXupD1CF4JeW4nRPE
+ oe4+PeRFF9c8t7uQ/ygwrTEWGRwhanRXsptHEsDuKeZgDTmkp9lVkvNe6B9GFjaIgFsOeE
+ g4ekX1HlOjWVgfvHpqdfUN/HOY7TjOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725014332;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a3Oq2MLDZRF6c+g15dcwjQGS4oi8hCJTXgjsor95GYI=;
- b=O4t0VxB1ZrlMnfcls915C0xDwep/41UPg62jf0RyOFhb8J/mbWsfvvmWilTh7dWQ468kQL
- 1z1mHu/vJGZmAyAA==
+ s=susede2_ed25519; t=1725017963;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hofe3rMZPu9m66PysvJ15qIFJeOcQrHzkUzj7VTlDt8=;
+ b=4S12aLAKRX3+9dzMkHtd/Sq1MgjHlW0TNUTV4t5QgTzWbFsT/ort/4D2Rtv1HqGi121X0J
+ lHrM/6RvIC07V2Cg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="if/Ryv2V";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4S12aLAK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725014332;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a3Oq2MLDZRF6c+g15dcwjQGS4oi8hCJTXgjsor95GYI=;
- b=B6C4qhZ351T+ubGrjEV/4lTP61IqSrLhBnPHxyN9cqHEO0ir7WiRXV4xDzYK8lqirm78Yn
- 8gh5IJo1thWOkcXJ3RVQUugTQ1HtMwBl8p1eE1p/OS338u5RAnRF1mw5ZrAQViQg10L3Lw
- XNdbzAEQJlXRS/53eEl8/uC+7QvOzXA=
+ t=1725017963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hofe3rMZPu9m66PysvJ15qIFJeOcQrHzkUzj7VTlDt8=;
+ b=if/Ryv2V2iUjWGnWhF+WfcXyJV4rwGm8QDyR/l/jmupF35BKgB3EIRXupD1CF4JeW4nRPE
+ oe4+PeRFF9c8t7uQ/ygwrTEWGRwhanRXsptHEsDuKeZgDTmkp9lVkvNe6B9GFjaIgFsOeE
+ g4ekX1HlOjWVgfvHpqdfUN/HOY7TjOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725014332;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a3Oq2MLDZRF6c+g15dcwjQGS4oi8hCJTXgjsor95GYI=;
- b=O4t0VxB1ZrlMnfcls915C0xDwep/41UPg62jf0RyOFhb8J/mbWsfvvmWilTh7dWQ468kQL
- 1z1mHu/vJGZmAyAA==
+ s=susede2_ed25519; t=1725017963;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hofe3rMZPu9m66PysvJ15qIFJeOcQrHzkUzj7VTlDt8=;
+ b=4S12aLAKRX3+9dzMkHtd/Sq1MgjHlW0TNUTV4t5QgTzWbFsT/ort/4D2Rtv1HqGi121X0J
+ lHrM/6RvIC07V2Cg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B7C413A3D;
- Fri, 30 Aug 2024 10:38:52 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A97AF13A44;
+ Fri, 30 Aug 2024 11:39:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uzD+FDyh0WbcIAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 30 Aug 2024 10:38:52 +0000
-Date: Fri, 30 Aug 2024 12:38:35 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3PMbKGqv0WZ7MwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 30 Aug 2024 11:39:22 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20240830103835.GA42409@pevik>
-References: <20240830095758.20018-1-wegao@suse.com>
+To: ltp@lists.linux.it
+Date: Fri, 30 Aug 2024 13:39:13 +0200
+Message-ID: <20240830113913.49675-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240830095758.20018-1-wegao@suse.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Rspamd-Queue-Id: 622CD1F7C9
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,opensuse.org:url,suse.cz:email,suse.cz:replyto];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[4];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.cz:dkim, suse.cz:mid,
+ suse.cz:email, imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mpls01.sh: Add --allow-unsupported for modprobe
+Subject: [LTP] [PATCH 1/1] isofs.sh: Use nobody user
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,77 +115,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+From: Wei Gao <wegao@suse.com>
 
-> In sle-micro we encounter following error when do modprobe:
-> root# modprobe mpls_router
-> modprobe: ERROR: module 'mpls_router' is unsupported
-> modprobe: ERROR: Use --allow-unsupported or set allow_unsupported_modules 1 in
-> modprobe: ERROR: /etc/modprobe.d/10-unsupported-modules.conf
-> modprobe: ERROR: could not insert 'mpls_router': Operation not permitted
+Some distros don't have user/group 'bin' (e.g. SUSE SLE-Micro).
+Although this user/group is required and created IDcheck.sh.
+(This script should be replaced in the future with library call,
+but it's still supported).
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/network/mpls/mpls01.sh | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Replace 'bin' user/group with 'nobody' user (more common on various
+Linux distributions). Most of the distros name have 'nobody' user's
+group also 'nobody', but at least Debian name it 'nogroup'. Therefore
+detect this name with 'id -g -n'.
 
-> diff --git a/testcases/network/mpls/mpls01.sh b/testcases/network/mpls/mpls01.sh
-> index 196b5b2f9..7f262d83e 100755
-> --- a/testcases/network/mpls/mpls01.sh
-> +++ b/testcases/network/mpls/mpls01.sh
-> @@ -21,7 +21,9 @@ cleanup()
+Reported-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+This should replace
+https://patchwork.ozlabs.org/project/ltp/patch/20240829065933.21902-1-wegao@suse.com/
 
->  setup()
->  {
-> -	ROD modprobe mpls_router
-> +	if ! modprobe mpls_router > /dev/null 2>&1; then
-> +		ROD modprobe mpls_router --allow-unsupported
+ testcases/kernel/fs/iso9660/isofs.sh | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-I'm not sure with ROD.  --allow-unsupported is SUSE specific modprobe extension,
-which is used for SLES.  It is also on Tumbleweed [1] [2] where does nothing.
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+index d1a362d979..d849a9acbf 100755
+--- a/testcases/kernel/fs/iso9660/isofs.sh
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -13,10 +13,19 @@ TST_NEEDS_CMDS="mount umount"
+ TST_NEEDS_TMPDIR=1
+ TST_TESTFUNC=do_test
+ TST_CNT=3
++TST_SETUP="setup"
+ 
+ MAX_DEPTH=3
+ MAX_DIRS=4
+ 
++TEST_USER='nobody'
++
++setup()
++{
++	TEST_GROUP="$(id -g -n $TEST_USER)"
++	[ "$TEST_USER" ] || TEST_GROUP="$TEST_USER"
++}
++
+ gen_fs_tree()
+ {
+ 	local cur_path="$1"
+@@ -92,8 +101,8 @@ do_test()
+ 			"loop,block=512,unhide" \
+ 			"loop,block=1024,cruft" \
+ 			"loop,block=2048,nocompress" \
+-			"loop,check=strict,map=off,gid=bin,uid=bin" \
+-			"loop,check=strict,map=acorn,gid=bin,uid=bin" \
++			"loop,check=strict,map=off,gid=$TEST_GROUP,uid=$TEST_USER" \
++			"loop,check=strict,map=acorn,gid=$TEST_GROUP,uid=$TEST_USER" \
+ 			"loop,check=relaxed,map=normal" \
+ 			"loop,block=512,unhide,session=2"
+ 		do
+-- 
+2.45.2
 
-If you try to run it with ROD, which quits testing on failure, all distros
-except SUSE products/openSUSE (e.g. Debian, Fedora, ...) which don't have
-mpls_router will TBROK in setup:
-
-	modprobe: unrecognised option '--allow-unsupported'.
-
-And I'm not talking about these small distros which use busybox kmod
-implementation, which would also fail.
-
-Also you remove /dev/null 2>&1 from the first command, thus other distros would
-not see error message about missing mpls_router module. Without looking into the
-source the tester will be pretty confused.
-
-I would do:
-
-	if grep -q suse /etc/os-release; then
-		ROD modprobe --allow-unsupported mpls_router
-	else
-		ROD modprobe mpls_router
-	fi
-
-(nit: better to put the option before the module name.)
-
-With this, you can put in the next version:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-> +	fi
->  }
-
->  test1()
-
-[1] https://build.opensuse.org/projects/Base:System/packages/kmod/files/0002-modprobe-Recognize-allow-unsupported-modules-on-comm.patch?expand=1
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
