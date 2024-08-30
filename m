@@ -4,56 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30C1DCA0FED
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 13:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725022908; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=jyljwTGZUMR7W7nClC0dTpnxyc9kPNAcTQmJ58tH1DQ=;
- b=aRUhlPAyscYQS/NDFreOYCmrOoDC3KEsdx4pV2jxJRJsTXfxRilDNEx9D8q7iejYUQ8tb
- EKOdzKJ2L+jLeDyORTc1Qg/qzMJIMXC/P3s8S8CFcKFPk8QTnzkaiYAiQvdDfXV2k8Yb091
- /miFiwlN9bmX+AqDFuAQUGoyJNuBWfo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92EACA0FEB
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 13:17:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD5C13D2857
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 15:01:48 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A4FC73D2848
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 15:17:15 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 666113D283D
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:01:25 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=huawei.com (client-ip=45.249.212.187; helo=szxga01-in.huawei.com;
- envelope-from=wozizhi@huawei.com; receiver=lists.linux.it)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5473A3D279F
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:16:58 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 102A4600BB5
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:01:23 +0200 (CEST)
-Received: from mail.maildlp.com (unknown [172.19.88.105])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WwJDF4YxGzyR7f
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 21:00:45 +0800 (CST)
-Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
- by mail.maildlp.com (Postfix) with ESMTPS id 4871714037D
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 21:01:18 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemf100017.china.huawei.com
- (7.202.181.16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 30 Aug
- 2024 21:01:17 +0800
-To: <ltp@lists.linux.it>, <jack@suse.cz>, <amir73il@gmail.com>
-Date: Fri, 30 Aug 2024 21:00:03 +0800
-Message-ID: <20240830130003.3245531-1-wozizhi@huawei.com>
-X-Mailer: git-send-email 2.39.2
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5F6BF60067E
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:16:57 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E482821A34;
+ Fri, 30 Aug 2024 13:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725023816;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=87k2SGr3i/ineu9WMTmrowQn1q29rWvJVohiyTZMXZU=;
+ b=WbOuORnhoTdr+6oBoqmANmEJ1U4ToFvvYTHZfxiDjf1E8E7UwkEjb6q50ICuEACdx5vWi5
+ c6AbKcw18BWck415UIFTmdLTlGS2U+xAi1SUpaCUQZ7REbprkRnVA9+4EUbNrQCoh/xBR6
+ V8JQrMOk1RgnHPwNYdfMYWUzqseFro8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725023816;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=87k2SGr3i/ineu9WMTmrowQn1q29rWvJVohiyTZMXZU=;
+ b=Wp/J9Tmrc4quraFF7R+4k/5l8uoeE2Al3qY8Iv6i04bxFExmY85rHoVgpH1Jx6hmhBlFNn
+ B5xtwEzjxDbNWPBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725023816;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=87k2SGr3i/ineu9WMTmrowQn1q29rWvJVohiyTZMXZU=;
+ b=WbOuORnhoTdr+6oBoqmANmEJ1U4ToFvvYTHZfxiDjf1E8E7UwkEjb6q50ICuEACdx5vWi5
+ c6AbKcw18BWck415UIFTmdLTlGS2U+xAi1SUpaCUQZ7REbprkRnVA9+4EUbNrQCoh/xBR6
+ V8JQrMOk1RgnHPwNYdfMYWUzqseFro8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725023816;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=87k2SGr3i/ineu9WMTmrowQn1q29rWvJVohiyTZMXZU=;
+ b=Wp/J9Tmrc4quraFF7R+4k/5l8uoeE2Al3qY8Iv6i04bxFExmY85rHoVgpH1Jx6hmhBlFNn
+ B5xtwEzjxDbNWPBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDE7C13A44;
+ Fri, 30 Aug 2024 13:16:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id N4IOLUjG0WbgUgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 30 Aug 2024 13:16:56 +0000
+Date: Fri, 30 Aug 2024 15:16:51 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240830131651.GA56692@pevik>
+References: <20240823083720.1545566-1-jingyisong@hust.edu.cn>
+ <Zsxm8c-ymd-8iLgP@yuki.lan>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100017.china.huawei.com (7.202.181.16)
+Content-Disposition: inline
+In-Reply-To: <Zsxm8c-ymd-8iLgP@yuki.lan>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fanotify10: Calling drop_cache twice to ensure the
- inode is evicted
+Subject: Re: [LTP] [PATCH] doc: add `--recurse-submodules` when cloning the
+ repo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,51 +115,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zizhi Wo via ltp <ltp@lists.linux.it>
-Reply-To: Zizhi Wo <wozizhi@huawei.com>
-Cc: yangerkun@huawei.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jingyi Song <jingyisong@hust.edu.cn>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In this test case, some scenarios are designed to verify whether the
-FANOTIFY_EVICTABLE flag takes effect: by verifying that information cannot
-be obtained from the corresponding inode after drop_cache, as this flag
-does not ping the inode.
+Hi all,
 
-However, drop_cache is only performed once here, which may result in the
-inode not being released in NUMA scenarios. Suppose the inode is located
-on NUMA0 and the dentry is located on NUMA1; the first drop_cache can only
-ensure that the inode is added to the LRU list, but does not guarantee that
-evict() can been called because dispose_list does not yet include this
-inode when traversing NUMA0, which causes the testcase execution fail.
+> Hi!
+> > User could run syscalls testing suite with
+> > `./kirk -f ltp -r syscalls`,
+> > but they may not be aware of the submodule `kirk`.
+> > So I add the `--recurse-submodules` option.
 
-For the single-file scenario in this testcase, executing drop_cache twice
-is necessary to ensure the inode is evicted, thus allowing the testcase to
-pass.
+thanks, merged!
 
-Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
----
- testcases/kernel/syscalls/fanotify/fanotify10.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index c6d8ec922..42018de0d 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -515,6 +515,8 @@ static void drop_caches(void)
- 	if (syncfs(fd_syncfs) < 0)
- 		tst_brk(TBROK | TERRNO, "Unexpected error when syncing filesystem");
- 
-+	/* Need to drop twice to ensure the inode is evicted. */
-+	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
- 	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
- }
- 
--- 
-2.39.2
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
