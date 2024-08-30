@@ -4,105 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D264CA100C
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 20:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 315D7CA100C
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 20:09:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A69F83D2889
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 22:04:53 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B623F3D2871
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 22:09:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19BC43C02CD
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 22:04:36 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 5C5DA3C655D
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 22:09:39 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5500160235F
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 22:04:35 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 925911400769
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 22:09:38 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2AB9B21A00;
- Fri, 30 Aug 2024 20:04:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A62341F7EC;
+ Fri, 30 Aug 2024 20:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725048275;
+ t=1725048575;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KUaRyRR2JX2wUegmlvlrYMrvHzY7d4d5V2LEG9EfGMQ=;
- b=H0KutMCXYEfhjMWb5PO5rHSYkfZulcogmj+mgyGCZP+4eSOIpt4ovB6xRbyO5TKM3pSlVe
- HqpvI7RvGvRRNx99tusA2dFMM4DWIKA13q48p7TOyEZx2LBECrP61JKk6YCxHU2pIY3baw
- YCm8YvHaR/60JHCytf5U1/X++7ds/Sk=
+ bh=K1ARkpOFSn5d1lnuZ+mIekVsBU58nOZjWyGJRRUtUKE=;
+ b=C99P5NysomTG7TRdf5U7mp62/Y9jzfehGe1Oox2GUZKcOknIFzZC+UVSulNzkpuxGOC7VE
+ hA9xCu4yKk2FfQ2g/MVheGiuLuwYhKS1wLFkSwHos+X4NUk5LKegxYWDMzPg6KhYsaGJ0v
+ DTjSM0C+MF/kOc5vuAEsQh1pABjHg0w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725048275;
+ s=susede2_ed25519; t=1725048575;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KUaRyRR2JX2wUegmlvlrYMrvHzY7d4d5V2LEG9EfGMQ=;
- b=mEVzx+4FwTF6JcvzvAyEypmAxO1sc+94ZYk40+Pi4MpgAvTr4D0tr3c+0LdxtyKN1bcxni
- BcdVW7GuwoXgYTAQ==
-Authentication-Results: smtp-out1.suse.de;
+ bh=K1ARkpOFSn5d1lnuZ+mIekVsBU58nOZjWyGJRRUtUKE=;
+ b=27NsEIWXkMh5H4nP6nzulccw51uHxLgkqzSyaP7muVc4UGFtCU22M8eYiPCCrZUrfPaVVE
+ g3zLD7xBMrkqxoAA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725048275;
+ t=1725048575;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KUaRyRR2JX2wUegmlvlrYMrvHzY7d4d5V2LEG9EfGMQ=;
- b=H0KutMCXYEfhjMWb5PO5rHSYkfZulcogmj+mgyGCZP+4eSOIpt4ovB6xRbyO5TKM3pSlVe
- HqpvI7RvGvRRNx99tusA2dFMM4DWIKA13q48p7TOyEZx2LBECrP61JKk6YCxHU2pIY3baw
- YCm8YvHaR/60JHCytf5U1/X++7ds/Sk=
+ bh=K1ARkpOFSn5d1lnuZ+mIekVsBU58nOZjWyGJRRUtUKE=;
+ b=C99P5NysomTG7TRdf5U7mp62/Y9jzfehGe1Oox2GUZKcOknIFzZC+UVSulNzkpuxGOC7VE
+ hA9xCu4yKk2FfQ2g/MVheGiuLuwYhKS1wLFkSwHos+X4NUk5LKegxYWDMzPg6KhYsaGJ0v
+ DTjSM0C+MF/kOc5vuAEsQh1pABjHg0w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725048275;
+ s=susede2_ed25519; t=1725048575;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KUaRyRR2JX2wUegmlvlrYMrvHzY7d4d5V2LEG9EfGMQ=;
- b=mEVzx+4FwTF6JcvzvAyEypmAxO1sc+94ZYk40+Pi4MpgAvTr4D0tr3c+0LdxtyKN1bcxni
- BcdVW7GuwoXgYTAQ==
+ bh=K1ARkpOFSn5d1lnuZ+mIekVsBU58nOZjWyGJRRUtUKE=;
+ b=27NsEIWXkMh5H4nP6nzulccw51uHxLgkqzSyaP7muVc4UGFtCU22M8eYiPCCrZUrfPaVVE
+ g3zLD7xBMrkqxoAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0238E13A3D;
- Fri, 30 Aug 2024 20:04:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4866613A3D;
+ Fri, 30 Aug 2024 20:09:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NS+eOtIl0maiRwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 30 Aug 2024 20:04:34 +0000
-Date: Fri, 30 Aug 2024 22:04:29 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /Q2aDv8m0ma5SAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 30 Aug 2024 20:09:35 +0000
+Date: Fri, 30 Aug 2024 22:09:33 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Chuck Lever <chuck.lever@oracle.com>
-Message-ID: <20240830200429.GA90470@pevik>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20240830200933.GB90470@pevik>
 References: <20240830141453.28379-1-mdoucha@suse.cz>
- <20240830141453.28379-2-mdoucha@suse.cz>
- <ZtILLtHSahuwDiZq@tissot.1015granger.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZtILLtHSahuwDiZq@tissot.1015granger.net>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20240830141453.28379-1-mdoucha@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
  MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] nfsstat01: Check that RPC stats don't leak
- between net namespaces
+Subject: Re: [LTP] [PATCH 1/2] Add test for per-NS NFS client statistics
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,113 +114,88 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, ltp@lists.linux.it
+Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
+ Chuck Lever III <chuck.lever@oracle.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Martin,
 
-> On Fri, Aug 30, 2024 at 04:13:40PM +0200, Martin Doucha wrote:
-> > When the NFS server and client run on the same host in different net
-> > namespaces, check that RPC calls from the client namespace don't
-> > change RPC statistics in the root namespace.
+> Check that /proc/net/rpc/nfs file exists in nested network namespaces.
 
-> > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> > ---
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 
-> > I've initially tried to test both NFS and RPC client stats but it appears
-> > that NFS client stats are still shared across all namespaces. Only RPC
-> > client stats are separate for each net namespace. The kernel patchset[1]
-> > which introduced per-NS stats confirms that only RPC stats have been changed.
+> Only do the minimal check here. If the file exists in namespaces,
+> nfsstat01.sh will take care of functional testing.
 
-Yes, only RPC client stats needed to be fixed in LTP test.
+>  runtest/net.nfs                              |  2 ++
+>  testcases/network/nfs/nfsstat01/nfsstat02.sh | 23 ++++++++++++++++++++
+>  2 files changed, 25 insertions(+)
+>  create mode 100755 testcases/network/nfs/nfsstat01/nfsstat02.sh
+
+> diff --git a/runtest/net.nfs b/runtest/net.nfs
+> index 929868a7b..7f84457bc 100644
+> --- a/runtest/net.nfs
+> +++ b/runtest/net.nfs
+> @@ -116,6 +116,8 @@ nfsstat01_v40_ip6t nfsstat01.sh -6 -v 4 -t tcp
+>  nfsstat01_v41_ip6t nfsstat01.sh -6 -v 4.1 -t tcp
+>  nfsstat01_v42_ip6t nfsstat01.sh -6 -v 4.2 -t tcp
+
+> +nfsstat02 nfsstat02.sh
+> +
+>  fsx_v30_ip4u fsx.sh -v 3 -t udp
+>  fsx_v30_ip4t fsx.sh -v 3 -t tcp
+>  fsx_v40_ip4t fsx.sh -v 4 -t tcp
+> diff --git a/testcases/network/nfs/nfsstat01/nfsstat02.sh b/testcases/network/nfs/nfsstat01/nfsstat02.sh
+> new file mode 100755
+> index 000000000..1e1bebe97
+> --- /dev/null
+> +++ b/testcases/network/nfs/nfsstat01/nfsstat02.sh
+> @@ -0,0 +1,23 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2024 SUSE LLC <mdoucha@suse.cz>
+> +
+> +TST_TESTFUNC="do_test"
+> +
+> +# PURPOSE:  Check that /proc/net/rpc/nfs exists in nested network namespaces
+I would point here a commit which added it or a patchset.
+
+Shell API does not have functionality to point out missing kernel git commit,
+but that might change. But even without it a comment is useful.
+
+Maybe point out d47151b79e32 ("nfs: expose /proc/net/sunrpc/nfs in net namespaces")
+and whole patchset
+https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested on 6.8 and 6.11 mainline
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks for this test!
 
 Kind regards,
 Petr
 
-> I believe that is correct, Josef changed only RPC counters. Which
-> counters did you expect also would be containerized, exactly?
-> Perhaps this issue should be raised on linux-nfs@vger, it could be
-> considered to be another information leak.
-
-
-> > If NFS client stats should be separate for each namespace as well, let
-> > me know and I'll return the second set of NS checks in patch v2.
-
-> > Tested on kernel v5.14 with Neil's backports.
-
-> > [1] https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
-
-> >  testcases/network/nfs/nfsstat01/nfsstat01.sh | 18 ++++++++++++++++--
-> >  1 file changed, 16 insertions(+), 2 deletions(-)
-
-> > diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> > index 8d7202cf3..3379c4d46 100755
-> > --- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> > +++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
-> > @@ -22,6 +22,7 @@ get_calls()
-> >  	local name=$1
-> >  	local field=$2
-> >  	local nfs_f=$3
-> > +	local netns=${4:-rhost}
-> >  	local type="lhost"
-> >  	local calls opt
-
-> > @@ -30,7 +31,8 @@ get_calls()
-
-> >  	if tst_net_use_netns; then
-> >  		# In netns setup, rhost is the client
-> > -		[ "$nfs_f" = "nfs" ] && [ $NS_STAT_RHOST -ne 0 ] && type="rhost"
-> > +		[ "$nfs_f" = "nfs" ] && [ $NS_STAT_RHOST -ne 0 ] && \
-> > +			type="$netns"
-> >  	else
-> >  		[ "$nfs_f" != "nfs" ] && type="rhost"
-> >  	fi
-> > @@ -64,13 +66,14 @@ get_calls()
-> >  do_test()
-> >  {
-> >  	local client_calls server_calls new_server_calls new_client_calls
-> > -	local client_field server_field
-> > +	local client_field server_field root_calls new_root_calls
-> >  	local client_v=$VERSION server_v=$VERSION
-
-> >  	tst_res TINFO "checking RPC calls for server/client"
-
-> >  	server_calls="$(get_calls rpc 2 nfsd)"
-> >  	client_calls="$(get_calls rpc 2 nfs)"
-> > +	root_calls="$(get_calls rpc 2 nfs lhost)"
-
-> >  	tst_res TINFO "calls $server_calls/$client_calls"
-
-> > @@ -79,6 +82,7 @@ do_test()
-
-> >  	new_server_calls="$(get_calls rpc 2 nfsd)"
-> >  	new_client_calls="$(get_calls rpc 2 nfs)"
-> > +	new_root_calls="$(get_calls rpc 2 nfs lhost)"
-> >  	tst_res TINFO "new calls $new_server_calls/$new_client_calls"
-
-> >  	if [ "$new_server_calls" -le "$server_calls" ]; then
-> > @@ -93,6 +97,16 @@ do_test()
-> >  		tst_res TPASS "client RPC calls increased"
-> >  	fi
-
-> > +	if [ $NS_STAT_RHOST -ne 0 ]; then
-> > +		tst_res TINFO "Root NS client RPC calls: $root_calls => $new_root_calls"
-> > +
-> > +		if [ $root_calls -ne $new_root_calls ]; then
-> > +			tst_res TFAIL "RPC stats leaked between net namespaces"
-> > +		else
-> > +			tst_res TPASS "RPC stats stay within net namespaces"
-> > +		fi
-> > +	fi
-> > +
-> >  	tst_res TINFO "checking NFS calls for server/client"
-> >  	case $VERSION in
-> >  	2) client_field=13 server_field=13
-> > -- 
-> > 2.46.0
+> +do_test()
+> +{
+> +	local procfile="/proc/net/rpc/nfs"
+> +
+> +	if tst_rhost_run -c "test -e '$procfile'"; then
+> +		tst_res TPASS "$procfile exists in net namespaces"
+> +	else
+> +		tst_res TFAIL "$procfile missing in net namespaces"
+> +	fi
+> +}
+> +
+> +# Force use of nested net namespace
+> +unset RHOST
+> +
+> +. nfs_lib.sh
+> +tst_run
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
