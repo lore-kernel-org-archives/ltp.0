@@ -4,71 +4,187 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67ADFCA0EFD
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 17:52:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16C6DCA0EDC
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 18:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725040341; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1725041640; h=date : to :
+ message-id : references : in-reply-to : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=YH1tRctQv3YAy5xSBAX8ezra1kxsCqpgs9BVWEgY4es=;
- b=cqrBkPcL3gP3WvOBmXnnzIbQlVuKnsXY/AYD8kCtkemfOcW1kvF1K3p+s4QswPvWh2xLN
- jFoLh19o44sHN1eqgjwCsgRzqUecMKhvDt6znwQOhLpoQ0MwTW4wQZEfWkXEl53J5Ho6iGW
- d63HYz+yVOhJ0jcE2cB7WjpCVOduEEI=
+ bh=4EkmqwwlZbNiQuEe3Bd1HAIc9El8gjQoEtszRycP4go=;
+ b=o4BmCEMwJqxZJERdTkp4yrgFgL3mopHc8DMui0eulwBQeZedklLJ5y5A/KSJsbszcSk84
+ cBPj1g4zRCaR6xNxhfnpds4dsNe4KudNTRqMbkhsxrJsKHsxUA5a/lGqjPLC1i/TmgyiIoc
+ 9pZJY2gDZ3+syW1qfv64U1n+9wBjGjo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8173E3D2871
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 19:52:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E78773D289A
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 20:14:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91EF63D278F
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 19:52:01 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:4641:c500::1;
- helo=dfw.source.kernel.org; envelope-from=ebiggers@kernel.org;
+ by picard.linux.it (Postfix) with ESMTPS id CA5F03D1D6B
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 20:13:39 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=oracle.com (client-ip=205.220.165.32;
+ helo=mx0a-00069f02.pphosted.com; envelope-from=chuck.lever@oracle.com;
  receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
+ [205.220.165.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 65694201DB6
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 19:51:59 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id CE43F5C10B5;
- Fri, 30 Aug 2024 17:51:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F24AC4CEC2;
- Fri, 30 Aug 2024 17:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1725040316;
- bh=uWhMmjJ50H1qYWLeYvBQd6Nv7WH9zgHdxdtD0x/kJv8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lRgzNm8+2G8pziDOMsiYugWgkPs3lXCnFeOZogB2bmerJAFS9ATZvAU8Z0LncZdq8
- +Y9jqkfu43WNnJ9SzKGrlfsatf6adScShb6fEHaLPjljMxUEc6jXfMYMv/eQcJE2sw
- zBAtitYvz+WV/aUZjNrXJZ3+IJ7xVsGEg9gY6QGfWBSvVslPRuTNq9is9BkxQtccTC
- Y/evok2+IS081uo4qn941Gc87BEoBnsvLznvdeY8eyaVh6qx5kuG5jkzPG3qyV1gMS
- frgFuWmkUbGn6t6HK68/vUqeV3fBNdtl6Ku79+5H4S0L7w77k4C/Y/CBpSkwjtcbUQ
- Y0PvzhYWctVPQ==
-Date: Fri, 30 Aug 2024 10:51:54 -0700
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Message-ID: <20240830175154.GA48019@sol.localdomain>
-References: <ZrbTUk6DyktnO7qk@gondor.apana.org.au>
- <202408161634.598311fd-oliver.sang@intel.com>
- <ZsBJs_C6GdO_qgV7@gondor.apana.org.au>
- <ZsBJ5H4JExArHGVw@gondor.apana.org.au>
- <ZsBKG0la0m69Dyq3@gondor.apana.org.au>
- <20240827184839.GD2049@sol.localdomain>
- <Zs6SiBOdasO9Thd1@gondor.apana.org.au>
-MIME-Version: 1.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 331EA617633
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 20:13:36 +0200 (CEST)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47UI0jgD013025;
+ Fri, 30 Aug 2024 18:13:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+ date:from:to:cc:subject:message-id:references:content-type
+ :in-reply-to:mime-version; s=corp-2023-11-20; bh=NNMFPX5rO+4TspR
+ lsDRXM3nPouPVOrV2XYzfUntTJ+k=; b=iwUSI4FQ2PstMRKkZnDq+y9C5fUbfId
+ 9+ruSw6aagwJsZojYiI9CNM63/4qC+FBGFbYejoct5AbkcZHPPEBho6P60O/3rfG
+ 7Da1B/oB22ag5/GmiAM5HPJPz0sbcAIls0nxwG76X15+Fi1s+iqj0LvpvleSWDbG
+ dAAQeD1PtnRnk7pviN2xska/Vr+tQGeqaBy6Tbj4tRkgbAT5E064FaOVfvDWuiya
+ OnhqRY+nPegWiNYgEGb5YmYf5QM39g0ha8TDFi4tqwMw0RgLsWeVEhZptdsYLW39
+ tlZKVn3g4Oap9OaLJWHQeZrx5QGI5HzHpxLM/3FF4mHAKggP34BSAHw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41bgf78c2k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 30 Aug 2024 18:13:33 +0000 (GMT)
+Received: from pps.filterd
+ (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+ by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2)
+ with ESMTP id 47UHCuHN034715; Fri, 30 Aug 2024 18:11:00 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com
+ (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+ by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
+ 4189sxqdj2-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 30 Aug 2024 18:11:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ESpj/1p8gGexAyALxaEKo7luOvDu/WR7NswnNncDF+0uh9BhyBJcAXJBqAjqQLOQaDOPtiTMPb/uLQkMMG8mqIChrnMXMpMlinMF4dW8mO0GBNU+pYR1RrGHFsjU+cn7VkFEetg1B56Aosq5+bBU9SPryeUCNbatJUqwHjKmYiZjPmP3XhcBR9xJVh+vrFC7EuvPhonTaslWteoPZLDo0AiwIsfz6eA6EFcMSuCGhJHCD+52PcSIu5DLK2WKWyNERIiX1e5IUbLF2Wff0xrM2CTbWuai6zFtM7Spjy8qnbYsvqTj1IDJNwXrVb/bd99G2KEE+eEsMcA1Dgn1DPJhmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NNMFPX5rO+4TspRlsDRXM3nPouPVOrV2XYzfUntTJ+k=;
+ b=pEe9YLuFreo1aA1NmDdpn2FBbiMuyHOmINhTTrdv4TdP/K1unkkzubWFckKfzGo4ung6q5SxeD36Tdup+vi1Zzi6IJG33wSBQ1W34rFxkt7101OxAlyWL21GH5GV9ufgvEQoP4P/sTw2V/e50+KXNiWu1Lco9rkipc954E5Qpfv1+Sq1uT+J6dZuRG7lumDm2s934Yg0FxtU/Otp5gGLDwxmuyTsqIer3pR3pU35xu5kDVCgnag2E3nNDtezMkzO73L3BEokAnb/alkOlvqkYZQv4hmRVyKKx6Q5vPjxl9udkofNsRDSJmiKuGtXbmOBWTIEns4q6K/zlNpsDa2hkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NNMFPX5rO+4TspRlsDRXM3nPouPVOrV2XYzfUntTJ+k=;
+ b=D5DRtnISIBsNgqPOrSROeYGoHs+QzQUFcoPPw/W5AOcANN5R9pW0/ZVsySPWiGCieiJokvtqOliqo1LmeH3w9alCjF9XUocC2QaFMBJP7k5zhNs5NoA1OtClzwWOlWBNmlS1YbDdvMobojmO9Q1uPkyjxI+DRSbPLfh01/Xp6Hs=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by DM4PR10MB6695.namprd10.prod.outlook.com (2603:10b6:8:111::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.19; Fri, 30 Aug
+ 2024 18:10:57 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90%6]) with mapi id 15.20.7918.017; Fri, 30 Aug 2024
+ 18:10:57 +0000
+Date: Fri, 30 Aug 2024 14:10:54 -0400
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <ZtILLtHSahuwDiZq@tissot.1015granger.net>
+References: <20240830141453.28379-1-mdoucha@suse.cz>
+ <20240830141453.28379-2-mdoucha@suse.cz>
 Content-Disposition: inline
-In-Reply-To: <Zs6SiBOdasO9Thd1@gondor.apana.org.au>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20240830141453.28379-2-mdoucha@suse.cz>
+X-ClientProxiedBy: CH2PR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:610:59::11) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|DM4PR10MB6695:EE_
+X-MS-Office365-Filtering-Correlation-Id: d977b1f8-7668-42c7-2e94-08dcc91f1888
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?MMLfONfqT0CP6C+844bS63ifUveCUu0lYTBhg6s7QmhSf2oQB+PfEx1JxlSC?=
+ =?us-ascii?Q?tq3Dfl8oarGW0CbB27kOGyj3qHCwQ6OirGwR9NFbTzgkykVgx3hk4lPO3UxP?=
+ =?us-ascii?Q?xq8m6TiR9CsVNOn5EDCiUAdOKC3xqj5YE8KSufcat4yx22Dbk6+iUbxCW0HR?=
+ =?us-ascii?Q?RHim21mPHggEX10bCjFQnMgR8WNsJsiyFUFa/QXVVGUBWaz5sE2JorHYxFZW?=
+ =?us-ascii?Q?rzMgx1O543vNmVAKWsZmc3WEfEkJP5q3CF5WKi9qVFmJ3ZYSCWKt3U7DvXyw?=
+ =?us-ascii?Q?nl1Chx2FBCu/bWdMubUGTRheVy7+LTswGy2e2syyNr+DZX8vNMaOdxXxA3a2?=
+ =?us-ascii?Q?3FcOIsvp4/YEku+Td0JTIJNMLFezeVVFm6NG/vgeQrYwIpRnzf+vVJNQgbNX?=
+ =?us-ascii?Q?iGHL7oNxKKvtdZiELJyHQQY7/Abo4pcL6XhDasCofOucV73C7DlJnjBnEsZX?=
+ =?us-ascii?Q?uRlRcPcn/279YWeu3Cj/dOWCrSCGrH4WoDuZvxP9PlrzmPA2M/pkFc63GvJP?=
+ =?us-ascii?Q?hQ/1EL2fWuNDZmO6HeRvs0h5pkCDPi3Wz34/MYx2tGaFtfyawteq81YwANjg?=
+ =?us-ascii?Q?wU07poFvrXRG6bpm7lgSr81ojALcAVWUhJKdJCC9/ja6WMEDH/RtcvWEsK+P?=
+ =?us-ascii?Q?RZE9OrN5meSdLSLPnBsiwGTnkK87gEKVvfd4qXYy50S2xinkgcNmjaElsIG2?=
+ =?us-ascii?Q?I9EK2imJlqoyzTurq9OxjUKXIQe+URlPVPAryg9+QGN/EDozpRw7YSkc3Z39?=
+ =?us-ascii?Q?63Yfbr633QMP04BRzJcYyCu1RRV48uyzpEfJ19UAj9A7DoE391BoXcl3sC7g?=
+ =?us-ascii?Q?Ivzljmk/uzjHTaRMlXaAM1I9vLUSpAjoAfzKnT6sZzM+cThtxQXQvaXntz6T?=
+ =?us-ascii?Q?2oQeYd6Vc6sQEk+hqweSnrW3Hcdqq28ObigHXSMM4Yj+zWTYf081A8fOgwWU?=
+ =?us-ascii?Q?oe3FJ8eRKKALOJ6nCBBHCUgNGr5P17Z2RYku1P+TtIFpKMoO3vHCV7hs//ys?=
+ =?us-ascii?Q?VVR2BznkCJxIgIWbL89tHKF5HYx7M23YE2HsZaSmTXBfJVDAl1u5dyQ/tlGZ?=
+ =?us-ascii?Q?l+BIwAUe4BhRythRqxzf9o0AHZ0vJf7qYQSqxB2gOU3WV1HNpOcdE+EwWFf5?=
+ =?us-ascii?Q?NVn6YRqdt0fgor3VbTKgIoscgb/Sf2aajPA0dxt2g2zGaxKApgZRcGEDYv0O?=
+ =?us-ascii?Q?SLrx654sMhmq/QSeI18rZyo7KOexsvAFmhQsj14aTeH6ux38f+NwoqnUyCai?=
+ =?us-ascii?Q?tiNYnOC+AeW+1Hvaj/IxTaIGvhemOocqQMpWxVoQ+uGzNMw0gj60AS2QE1s3?=
+ =?us-ascii?Q?D8m6cIZnvPYmPDs+G6fg3lA+GzBL8jE4DYh8GuVm3S+pPg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BN0PR10MB5128.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(376014)(1800799024); DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ss3MYoQHPHCEjlqiQ5+BaY5cz0TZza4EXq25U/N0OgDvs6pawO38UqKWvKTn?=
+ =?us-ascii?Q?M24ZhiRViaVLbdIy58KxvdQt8/DdD0nEUXSun4kEqh5CAIrU8NdrfvbZHqVY?=
+ =?us-ascii?Q?EMyROb9L5Wwg0GHPsn2F8VNa2lraENi2ET/VVTxNLFyALJcoQduGafEMoc9W?=
+ =?us-ascii?Q?qTQ4BBBaH0WeuT66D8y48K4J4TK51vlX2T9K9oRTKpcevMSsujIK8DBZuQRI?=
+ =?us-ascii?Q?iZuw0vi+MDQilSeEbWf4hOI+A3RSQA/j8dKgp9XnT1LaILeLGMj28gKga69k?=
+ =?us-ascii?Q?vM3uzz2YQ0WNTjzkuJ63gAgy4vyIlRm3VOvc80NuhNLpApWB+yyUO57sYNL7?=
+ =?us-ascii?Q?Nt2jSouo2Y2OJie5AlivzWchVlYQ/E0l4mFWi/zuZIcWCZ6tCek1+Im2bsCo?=
+ =?us-ascii?Q?I74AOMGlKOaQRj2vtwxtywis+RSUmFJbpznYTPgmIDbhU+uftpojTJD3LZDR?=
+ =?us-ascii?Q?5MHS2TKDu3Q9GzgIlchFyXAhH8tTg9Lw5wE3hkU2RJCHpGcIo7INBvj1o7IW?=
+ =?us-ascii?Q?R1nj3jk786Kfhaw/Aw84Ogx297tXor1PnFYOmVxm1E4bT0uqmhfBvXojmaT9?=
+ =?us-ascii?Q?Nui1eVxorNdiyU0lGJMxA0n/AiRe7FaYygr2n2VhOtkmyCbNsHhdotJRXgxp?=
+ =?us-ascii?Q?v5Ihjn4lnEen2wbmvoG6L4exzQGavlwHXbrnYi+WDRK/X9JtXR/hchiypRUq?=
+ =?us-ascii?Q?kdsW9WdvGbysOV3gW5WSyocFHE0c8umR6VMSRfBKbMFWxSg6NFilpaT/fYJ9?=
+ =?us-ascii?Q?o7veCf6zegtJjL6g+hCBHH4ja20zIhNkJet43KkRKq0K0ZbMkGV7wh3+oGaO?=
+ =?us-ascii?Q?y1UoDqTfitLohcsRLx0BBIepAUSbpBIhuMQsOJxhxFRc2ubqfFDrkr4G3cWi?=
+ =?us-ascii?Q?42B0RHxF+UyDuMX1KnVSsKzZlHsaQFVvr4qCx16YjoB1h9cUzcPnbLBBsJCs?=
+ =?us-ascii?Q?PqlcPufW/NOEC91WaiIhkrlq+2/GZh3nrrFa4EYqRmEs6PAlb3i1eLzK7YeD?=
+ =?us-ascii?Q?vzBr54SHPZYuPEKTMKMeKxuIeLBEGkNBjjgnYyNHC+gUQDOUOBVctDZMEbR8?=
+ =?us-ascii?Q?SxeYSCZL8X6avuuVJ/xj459auOlMjwK8aqNjEinpi+lsulJa9AEHUjLGwQhI?=
+ =?us-ascii?Q?u+0SBEVaIC0gt19r9c2tSO87f+77HktnbvMN4VJkTg+TyqvkMov/QeqW4W9s?=
+ =?us-ascii?Q?A0s4nJLIlof3syS25gaxyj7TWwb3HoNj9Ry9n0rSUcKjBAS+TtjV9QrU6Gb1?=
+ =?us-ascii?Q?0Fp40WK7x9Uju3G9H4GM9kPjd7hfWOd9FRgBWIsnlzVx42vIH/Tc/OFT6iOT?=
+ =?us-ascii?Q?UNBMgY0OmefsI8cAnNUAlk9E29pk++rIbzvW7WrdscGwFVvlpBtw5lNVw/45?=
+ =?us-ascii?Q?kX6Xkn4sS310GdEK720TSyXFNXnjv1h2uZ/fPTXgcgC9ZDcw0G41M0YlwupD?=
+ =?us-ascii?Q?X6bkqWoYj1KPP1AQQpF+JvtVbV9xz4G7tTss3A6CmgZwrL2y+N4s+ZzOzD6w?=
+ =?us-ascii?Q?hpp4ah9Wx8bWCB5BMseiykcFycEKL7MbYK9Le8JRQVG0s/vzUq+R5faz2dp0?=
+ =?us-ascii?Q?8dDxS95NGbKCf3ejrD9YiTnkbUd1CeGNpTCyccAMH23ImG+y9j9qOi4c55z8?=
+ =?us-ascii?Q?dw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: lmqFcASPt7l5Nut9AqSSXSImtm210mB322Y80OSsjVU/eLVZi6cZoqFkhE33mmHmZIbrJBe2Rwdy8PuvdVSgtiiZwAsrxtz1f0JsbKVMGpEZOg9IYszJ1aR3bOUs0Qw0mMrOL47uHdoFrKXsuOKdRfIj7rtORsZT1jvDm4iwmFGb85X27tHIEQHienJ4saGFkIxPmVKk5e+5MzlPyrzuIRLrwa5golmNg3gpZBfz6LnwZOWleSwFHIP/tQDx+Yc6sLyjpPkYjyqH692VFIOELpInh0w5MXWhe8VHo9CL+4teIXFNaTNJoRbJCbLjwfDgXMbjXsUZTvZOFl8a/7Bu1Aq9KWpCZvM33kJH44W3hjlbJnnw1hdRw45ZFlgqhrKWeKFj6GrIXN7DKecRB8VIUtuNc0lJtmcFeP9w8HuEh84LJrnErJFKMTASHj3hGFPaWxQpRSN5Z5qr4NFfrctf8GKsYZc/VifZDqiRGtPblaNpNnBjAgG3hSIEBJS7aXWvKBFclggawxXGp22yjJ/4Z8iLkv1zFzRcpbxsK5Bdt8k1MGlAjzB6tFz1tL1rW3mqU4esgBTA9P0exvZ4hRhHJ1IejQB9+EogQ8pNXahij5E=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d977b1f8-7668-42c7-2e94-08dcc91f1888
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2024 18:10:57.5526 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CfRBqBF83xZkOnBmV/hd9ilgcxKmVqv+pOXHmDTiC+lEHhV+f+GQJ9kKh6w5CZFLf5qVd+DWMiV2ECpXrtVVyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6695
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-30_10,2024-08-30_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ spamscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408300138
+X-Proofpoint-GUID: QU-dX9FMo-fII6D_GKsXTywd17puEIbC
+X-Proofpoint-ORIG-GUID: QU-dX9FMo-fII6D_GKsXTywd17puEIbC
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [v3 PATCH 3/3] crypto: simd - Do not call
- crypto_alloc_tfm during registration
+Subject: Re: [LTP] [PATCH 2/2] nfsstat01: Check that RPC stats don't leak
+ between net namespaces
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,222 +196,112 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Eric Biggers via ltp <ltp@lists.linux.it>
-Reply-To: Eric Biggers <ebiggers@kernel.org>
-Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
- "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
- "David S. Miller" <davem@davemloft.net>,
- kernel test robot <oliver.sang@intel.com>, linux-crypto@vger.kernel.org,
- oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
- Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
+From: Chuck Lever via ltp <ltp@lists.linux.it>
+Reply-To: Chuck Lever <chuck.lever@oracle.com>
+Cc: NeilBrown <neilb@suse.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Aug 28, 2024 at 10:59:20AM +0800, Herbert Xu wrote:
-> On Tue, Aug 27, 2024 at 11:48:39AM -0700, Eric Biggers wrote:
-> > On Sat, Aug 17, 2024 at 02:58:35PM +0800, Herbert Xu wrote:
-> > > Algorithm registration is usually carried out during module init,
-> > > where as little work as possible should be carried out.  The SIMD
-> > > code violated this rule by allocating a tfm, this then triggers a
-> > > full test of the algorithm which may dead-lock in certain cases.
-> > > 
-> > > SIMD is only allocating the tfm to get at the alg object, which is
-> > > in fact already available as it is what we are registering.  Use
-> > > that directly and remove the crypto_alloc_tfm call.
-> > > 
-> > > Also remove some obsolete and unused SIMD API.
-> > > 
-> > > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> > > ---
-> > >  arch/arm/crypto/aes-ce-glue.c     |  2 +-
-> > >  arch/arm/crypto/aes-neonbs-glue.c |  2 +-
-> > >  crypto/simd.c                     | 76 ++++++-------------------------
-> > >  include/crypto/internal/simd.h    | 12 +----
-> > >  4 files changed, 19 insertions(+), 73 deletions(-)
-> > > 
-> > 
-> > I'm getting a test failure with this series applied:
-> > 
-> > [    0.383128] alg: aead: failed to allocate transform for gcm_base(ctr(aes-generic),ghash-generic): -2
-> > [    0.383500] alg: self-tests for gcm(aes) using gcm_base(ctr(aes-generic),ghash-generic) failed (rc=-2)
-> > 
-> > This is on x86_64 with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.
+On Fri, Aug 30, 2024 at 04:13:40PM +0200, Martin Doucha wrote:
+> When the NFS server and client run on the same host in different net
+> namespaces, check that RPC calls from the client namespace don't
+> change RPC statistics in the root namespace.
 > 
-> Could you please send me your config file?
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 > 
-> Thanks,
+> I've initially tried to test both NFS and RPC client stats but it appears
+> that NFS client stats are still shared across all namespaces. Only RPC
+> client stats are separate for each net namespace. The kernel patchset[1]
+> which introduced per-NS stats confirms that only RPC stats have been changed.
 
-Given below in defconfig form, use 'make olddefconfig' to apply.  The failures
-are nondeterministic and sometimes there are different ones, for example:
+I believe that is correct, Josef changed only RPC counters. Which
+counters did you expect also would be containerized, exactly?
+Perhaps this issue should be raised on linux-nfs@vger, it could be
+considered to be another information leak.
 
-[    0.358017] alg: skcipher: failed to allocate transform for cbc(twofish-generic): -2
-[    0.358365] alg: self-tests for cbc(twofish) using cbc(twofish-generic) failed (rc=-2)
-[    0.358535] alg: skcipher: failed to allocate transform for cbc(camellia-generic): -2
-[    0.358918] alg: self-tests for cbc(camellia) using cbc(camellia-generic) failed (rc=-2)
-[    0.371533] alg: skcipher: failed to allocate transform for xts(ecb(aes-generic)): -2
-[    0.371922] alg: self-tests for xts(aes) using xts(ecb(aes-generic)) failed (rc=-2)
 
-Modules are not enabled, maybe that matters (I haven't checked yet).
+> If NFS client stats should be separate for each namespace as well, let
+> me know and I'll return the second set of NS checks in patch v2.
+> 
+> Tested on kernel v5.14 with Neil's backports.
+> 
+> [1] https://lore.kernel.org/linux-nfs/cover.1708026931.git.josef@toxicpanda.com/
+> 
+>  testcases/network/nfs/nfsstat01/nfsstat01.sh | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/nfs/nfsstat01/nfsstat01.sh b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> index 8d7202cf3..3379c4d46 100755
+> --- a/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> +++ b/testcases/network/nfs/nfsstat01/nfsstat01.sh
+> @@ -22,6 +22,7 @@ get_calls()
+>  	local name=$1
+>  	local field=$2
+>  	local nfs_f=$3
+> +	local netns=${4:-rhost}
+>  	local type="lhost"
+>  	local calls opt
+>  
+> @@ -30,7 +31,8 @@ get_calls()
+>  
+>  	if tst_net_use_netns; then
+>  		# In netns setup, rhost is the client
+> -		[ "$nfs_f" = "nfs" ] && [ $NS_STAT_RHOST -ne 0 ] && type="rhost"
+> +		[ "$nfs_f" = "nfs" ] && [ $NS_STAT_RHOST -ne 0 ] && \
+> +			type="$netns"
+>  	else
+>  		[ "$nfs_f" != "nfs" ] && type="rhost"
+>  	fi
+> @@ -64,13 +66,14 @@ get_calls()
+>  do_test()
+>  {
+>  	local client_calls server_calls new_server_calls new_client_calls
+> -	local client_field server_field
+> +	local client_field server_field root_calls new_root_calls
+>  	local client_v=$VERSION server_v=$VERSION
+>  
+>  	tst_res TINFO "checking RPC calls for server/client"
+>  
+>  	server_calls="$(get_calls rpc 2 nfsd)"
+>  	client_calls="$(get_calls rpc 2 nfs)"
+> +	root_calls="$(get_calls rpc 2 nfs lhost)"
+>  
+>  	tst_res TINFO "calls $server_calls/$client_calls"
+>  
+> @@ -79,6 +82,7 @@ do_test()
+>  
+>  	new_server_calls="$(get_calls rpc 2 nfsd)"
+>  	new_client_calls="$(get_calls rpc 2 nfs)"
+> +	new_root_calls="$(get_calls rpc 2 nfs lhost)"
+>  	tst_res TINFO "new calls $new_server_calls/$new_client_calls"
+>  
+>  	if [ "$new_server_calls" -le "$server_calls" ]; then
+> @@ -93,6 +97,16 @@ do_test()
+>  		tst_res TPASS "client RPC calls increased"
+>  	fi
+>  
+> +	if [ $NS_STAT_RHOST -ne 0 ]; then
+> +		tst_res TINFO "Root NS client RPC calls: $root_calls => $new_root_calls"
+> +
+> +		if [ $root_calls -ne $new_root_calls ]; then
+> +			tst_res TFAIL "RPC stats leaked between net namespaces"
+> +		else
+> +			tst_res TPASS "RPC stats stay within net namespaces"
+> +		fi
+> +	fi
+> +
+>  	tst_res TINFO "checking NFS calls for server/client"
+>  	case $VERSION in
+>  	2) client_field=13 server_field=13
+> -- 
+> 2.46.0
+> 
 
-CONFIG_SYSVIPC=y
-CONFIG_POSIX_MQUEUE=y
-CONFIG_NO_HZ=y
-CONFIG_HIGH_RES_TIMERS=y
-CONFIG_IKCONFIG=y
-CONFIG_IKCONFIG_PROC=y
-CONFIG_CGROUPS=y
-CONFIG_USER_NS=y
-CONFIG_BLK_DEV_INITRD=y
-CONFIG_SMP=y
-CONFIG_X86_X2APIC=y
-CONFIG_HYPERVISOR_GUEST=y
-CONFIG_PARAVIRT=y
-CONFIG_MCORE2=y
-CONFIG_NR_CPUS=48
-CONFIG_NUMA=y
-CONFIG_HZ_300=y
-# CONFIG_RANDOMIZE_BASE is not set
-CONFIG_IA32_EMULATION=y
-CONFIG_JUMP_LABEL=y
-CONFIG_NET=y
-CONFIG_PACKET=y
-CONFIG_PACKET_DIAG=y
-CONFIG_UNIX=y
-CONFIG_UNIX_DIAG=y
-CONFIG_INET=y
-CONFIG_PCI=y
-CONFIG_PCI_MSI=y
-CONFIG_DEVTMPFS=y
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_VIRTIO_BLK=y
-CONFIG_NETDEVICES=y
-CONFIG_VIRTIO_NET=y
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_CONSOLE=y
-CONFIG_SERIAL_8250_NR_UARTS=32
-CONFIG_SERIAL_8250_RUNTIME_UARTS=32
-CONFIG_HW_RANDOM_VIRTIO=y
-CONFIG_VIRT_DRIVERS=y
-CONFIG_VIRTIO_PCI=y
-CONFIG_VIRTIO_MMIO=y
-CONFIG_EXT4_FS=y
-CONFIG_EXT4_FS_POSIX_ACL=y
-CONFIG_EXT4_FS_SECURITY=y
-CONFIG_AUTOFS_FS=y
-CONFIG_TMPFS=y
-CONFIG_TMPFS_POSIX_ACL=y
-CONFIG_CRYPTO_USER=y
-# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
-CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
-CONFIG_CRYPTO_PCRYPT=y
-CONFIG_CRYPTO_DH_RFC7919_GROUPS=y
-CONFIG_CRYPTO_ECDH=y
-CONFIG_CRYPTO_ECDSA=y
-CONFIG_CRYPTO_ECRDSA=y
-CONFIG_CRYPTO_CURVE25519=y
-CONFIG_CRYPTO_AES_TI=y
-CONFIG_CRYPTO_ANUBIS=y
-CONFIG_CRYPTO_BLOWFISH=y
-CONFIG_CRYPTO_CAMELLIA=y
-CONFIG_CRYPTO_DES=y
-CONFIG_CRYPTO_FCRYPT=y
-CONFIG_CRYPTO_KHAZAD=y
-CONFIG_CRYPTO_SEED=y
-CONFIG_CRYPTO_TEA=y
-CONFIG_CRYPTO_TWOFISH=y
-CONFIG_CRYPTO_ADIANTUM=y
-CONFIG_CRYPTO_ARC4=y
-CONFIG_CRYPTO_HCTR2=y
-CONFIG_CRYPTO_KEYWRAP=y
-CONFIG_CRYPTO_LRW=y
-CONFIG_CRYPTO_PCBC=y
-CONFIG_CRYPTO_AEGIS128=y
-CONFIG_CRYPTO_SEQIV=y
-CONFIG_CRYPTO_ECHAINIV=y
-CONFIG_CRYPTO_ESSIV=y
-CONFIG_CRYPTO_BLAKE2B=y
-CONFIG_CRYPTO_MD4=y
-CONFIG_CRYPTO_RMD160=y
-CONFIG_CRYPTO_SM3_GENERIC=y
-CONFIG_CRYPTO_VMAC=y
-CONFIG_CRYPTO_WP512=y
-CONFIG_CRYPTO_XXHASH=y
-CONFIG_CRYPTO_CRC32=y
-CONFIG_CRYPTO_DEFLATE=y
-CONFIG_CRYPTO_LZO=y
-CONFIG_CRYPTO_842=y
-CONFIG_CRYPTO_LZ4=y
-CONFIG_CRYPTO_LZ4HC=y
-CONFIG_CRYPTO_ZSTD=y
-CONFIG_CRYPTO_ANSI_CPRNG=y
-CONFIG_CRYPTO_DRBG_HASH=y
-CONFIG_CRYPTO_DRBG_CTR=y
-CONFIG_CRYPTO_USER_API_HASH=y
-CONFIG_CRYPTO_USER_API_SKCIPHER=y
-CONFIG_CRYPTO_USER_API_RNG=y
-CONFIG_CRYPTO_USER_API_RNG_CAVP=y
-CONFIG_CRYPTO_USER_API_AEAD=y
-CONFIG_CRYPTO_CURVE25519_X86=y
-CONFIG_CRYPTO_AES_NI_INTEL=y
-CONFIG_CRYPTO_BLOWFISH_X86_64=y
-CONFIG_CRYPTO_CAMELLIA_AESNI_AVX2_X86_64=y
-CONFIG_CRYPTO_CAST5_AVX_X86_64=y
-CONFIG_CRYPTO_CAST6_AVX_X86_64=y
-CONFIG_CRYPTO_DES3_EDE_X86_64=y
-CONFIG_CRYPTO_SERPENT_SSE2_X86_64=y
-CONFIG_CRYPTO_SERPENT_AVX2_X86_64=y
-CONFIG_CRYPTO_SM4_AESNI_AVX2_X86_64=y
-CONFIG_CRYPTO_TWOFISH_AVX_X86_64=y
-CONFIG_CRYPTO_ARIA_GFNI_AVX512_X86_64=y
-CONFIG_CRYPTO_CHACHA20_X86_64=y
-CONFIG_CRYPTO_AEGIS128_AESNI_SSE2=y
-CONFIG_CRYPTO_NHPOLY1305_SSE2=y
-CONFIG_CRYPTO_NHPOLY1305_AVX2=y
-CONFIG_CRYPTO_BLAKE2S_X86=y
-CONFIG_CRYPTO_POLYVAL_CLMUL_NI=y
-CONFIG_CRYPTO_POLY1305_X86_64=y
-CONFIG_CRYPTO_SHA1_SSSE3=y
-CONFIG_CRYPTO_SHA256_SSSE3=y
-CONFIG_CRYPTO_SHA512_SSSE3=y
-CONFIG_CRYPTO_SM3_AVX_X86_64=y
-CONFIG_CRYPTO_GHASH_CLMUL_NI_INTEL=y
-CONFIG_CRYPTO_CRC32C_INTEL=y
-CONFIG_CRYPTO_CRC32_PCLMUL=y
-CONFIG_CRYPTO_CRCT10DIF_PCLMUL=y
-CONFIG_CRYPTO_DEV_PADLOCK=y
-CONFIG_CRYPTO_DEV_PADLOCK_AES=y
-CONFIG_CRYPTO_DEV_PADLOCK_SHA=y
-CONFIG_CRYPTO_DEV_CCP=y
-CONFIG_CRYPTO_DEV_NITROX_CNN55XX=y
-CONFIG_CRYPTO_DEV_QAT_DH895xCC=y
-CONFIG_CRYPTO_DEV_QAT_C3XXX=y
-CONFIG_CRYPTO_DEV_QAT_C62X=y
-CONFIG_CRYPTO_DEV_QAT_4XXX=y
-CONFIG_CRYPTO_DEV_QAT_DH895xCCVF=y
-CONFIG_CRYPTO_DEV_QAT_C3XXXVF=y
-CONFIG_CRYPTO_DEV_QAT_C62XVF=y
-CONFIG_CRYPTO_DEV_VIRTIO=y
-CONFIG_CRYPTO_DEV_SAFEXCEL=y
-CONFIG_CRYPTO_DEV_AMLOGIC_GXL=y
-CONFIG_CRYPTO_DEV_AMLOGIC_GXL_DEBUG=y
-CONFIG_CRYPTO_LIB_CURVE25519=y
-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=y
-CONFIG_CRC_CCITT=y
-CONFIG_CRC_T10DIF=y
-CONFIG_CRC64_ROCKSOFT=y
-CONFIG_CRC_ITU_T=y
-CONFIG_CRC32_SELFTEST=y
-CONFIG_CRC32_SLICEBY4=y
-CONFIG_CRC4=y
-CONFIG_CRC7=y
-CONFIG_LIBCRC32C=y
-CONFIG_PRINTK_TIME=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_DEBUG_FS=y
-CONFIG_PANIC_TIMEOUT=5
-CONFIG_UNWINDER_FRAME_POINTER=y
+-- 
+Chuck Lever
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
