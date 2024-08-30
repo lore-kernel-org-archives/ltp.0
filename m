@@ -4,95 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7085DCA0FF1
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 13:29:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA6CCA0FF3
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 14:00:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DE33C3D2847
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 15:29:29 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 95CBF3D2869
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 16:00:24 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBAEC3D279F
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:29:13 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 769C83D283F
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 16:00:07 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3CA9D60108F
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 15:29:11 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B4548100023C
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 16:00:06 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AE27C21A34;
- Fri, 30 Aug 2024 13:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1725024550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=S77KSCAssnGXD5hvJZRRW5B9YYcy11UDTBve/THdNRc=;
- b=Ov3JrDV+eGcUgf5OM75QoerxujPxu3/h5zXKbPZj2ATvE4EdNda68dD+6pj20t8LXiY2vP
- uE221PzdLGlnYo/LnJCjIiWwIQwkPYBNRrxTenleC7gG5/Gbav6oXvaxgDBK7ZyYNzyUp3
- pqCEGl6tRAzkOnrrlxQ+so7srfUNXL0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1725024550;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9DB7021B27;
+ Fri, 30 Aug 2024 14:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725026405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xtvOQfa0IpMjzpcy5XRphhC3cFD8olG/BHeXUUdS+cM=;
+ b=IZOG5YaAAqU4bzaHv9ii/FPd6OcFyfekvbxPwPnMX0u369tPTH95wrpRqUu3Enr/Xb7jta
+ laZfFKSnOVAliQSTUdSP8e0YMeNQEqziR6CzaWDy/VqOkl0Q9RzjgyJ2FT0zk98huv8jpk
+ grOlvczS4HWb0fjRaXCHH6MTrOIOt5I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725026405;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=S77KSCAssnGXD5hvJZRRW5B9YYcy11UDTBve/THdNRc=;
- b=dusNQ29PT88RXw57Dv91N6VBuIsz/D7RbITn/HPz18zlw0KSyhwA6YamXFp3yI4H0cNsrq
- REne2JGJMb8l4MBw==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xtvOQfa0IpMjzpcy5XRphhC3cFD8olG/BHeXUUdS+cM=;
+ b=DazJHzyXgxW6ht/vEEYF7r/qA9JHmGur12RdXvvC3kOwbjWzdRWDQIb2ogP0zgb7AGz6vT
+ dO0RIxU7WFAYwvAQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1725024550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=S77KSCAssnGXD5hvJZRRW5B9YYcy11UDTBve/THdNRc=;
- b=Ov3JrDV+eGcUgf5OM75QoerxujPxu3/h5zXKbPZj2ATvE4EdNda68dD+6pj20t8LXiY2vP
- uE221PzdLGlnYo/LnJCjIiWwIQwkPYBNRrxTenleC7gG5/Gbav6oXvaxgDBK7ZyYNzyUp3
- pqCEGl6tRAzkOnrrlxQ+so7srfUNXL0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1725024550;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725026405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xtvOQfa0IpMjzpcy5XRphhC3cFD8olG/BHeXUUdS+cM=;
+ b=IZOG5YaAAqU4bzaHv9ii/FPd6OcFyfekvbxPwPnMX0u369tPTH95wrpRqUu3Enr/Xb7jta
+ laZfFKSnOVAliQSTUdSP8e0YMeNQEqziR6CzaWDy/VqOkl0Q9RzjgyJ2FT0zk98huv8jpk
+ grOlvczS4HWb0fjRaXCHH6MTrOIOt5I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725026405;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=S77KSCAssnGXD5hvJZRRW5B9YYcy11UDTBve/THdNRc=;
- b=dusNQ29PT88RXw57Dv91N6VBuIsz/D7RbITn/HPz18zlw0KSyhwA6YamXFp3yI4H0cNsrq
- REne2JGJMb8l4MBw==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xtvOQfa0IpMjzpcy5XRphhC3cFD8olG/BHeXUUdS+cM=;
+ b=DazJHzyXgxW6ht/vEEYF7r/qA9JHmGur12RdXvvC3kOwbjWzdRWDQIb2ogP0zgb7AGz6vT
+ dO0RIxU7WFAYwvAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 881FF13A44;
- Fri, 30 Aug 2024 13:29:10 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B25A13A44;
+ Fri, 30 Aug 2024 14:00:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id DFg+HybJ0WaIVgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 30 Aug 2024 13:29:10 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 30 Aug 2024 15:29:02 +0200
-Message-ID: <20240830132905.14902-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.43.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id G5mpIWXQ0Wa7YAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 30 Aug 2024 14:00:05 +0000
+Date: Fri, 30 Aug 2024 15:58:57 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZtHQIQE--xS0MAve@yuki.lan>
+References: <20240515114339.19708-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.com:email];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20240515114339.19708-1-andrea.cervesato@suse.de>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] Refactor fork05 using new LTP API
+Subject: Re: [LTP] [PATCH v3] Rewrite fcnt14 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,298 +107,291 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> +fcntl14_01 fcntl14
+> +fcntl14_01_64 fcntl14_64
+> +fcntl14_02 fcntl14 -l
+> +fcntl14_02_64 fcntl14_64 -l
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Better metadata formatting
-TST_ABI32 -> defined(__i386__)
+I would slightly prefer having a .test_variants than adding a command
+line options.
 
- testcases/kernel/syscalls/fork/fork05.c | 224 ++++++++----------------
- 1 file changed, 69 insertions(+), 155 deletions(-)
+> +#define CHECK_EQ_SILENT_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS, FAILED) do {\
+> +	TYPE tst_tmp_a__ = VAL_A; \
+> +	TYPE tst_tmp_b__ = VAL_B; \
+> +	if (tst_tmp_a__ != tst_tmp_b__) { \
+> +		tst_res(TFAIL, \
+> +			SVAL_A " == " SVAL_B " (" PFS ")", tst_tmp_a__); \
+> +			*FAILED = 1; \
+> +	} \
+> +} while (0)
+> +
+> +#define CHECK_EQ_SILENT(VAL_A, VAL_B, FAILED) \
+> +		CHECK_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli", FAILED)
 
-diff --git a/testcases/kernel/syscalls/fork/fork05.c b/testcases/kernel/syscalls/fork/fork05.c
-index 9a99cff1d..c25d2391b 100644
---- a/testcases/kernel/syscalls/fork/fork05.c
-+++ b/testcases/kernel/syscalls/fork/fork05.c
-@@ -1,150 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- * Portions Copyright (c) 2000 Ulrich Drepper
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-+ *     Author: Ulrich Drepper / Nate Straz , Red Hat
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * http://www.sgi.com$
-+ * This test verifies that LDT is propagated correctly from parent process to
-+ * the child process.
-  *
-- * For further information regarding this notice, see:$
-+ * On Friday, May 2, 2003 at 09:47:00AM MST, Ulrich Drepper wrote:
-+ *  Robert Williamson wrote:
-  *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ *  I'm getting a SIGSEGV with one of our tests, fork05.c, that apparently
-+ *  you wrote (attached below).  The test passes on my 2.5.68 machine running
-+ *  SuSE 8.0 (glibc 2.2.5 and Linuxthreads), however it segmentation faults on
-+ *  RedHat 9 running 2.5.68.  The test seems to "break" when it attempts to run
-+ *  the assembly code....could you take a look at it?
-  *
-+ *  There is no need to look at it, I know it cannot work anymore on recent
-+ *  systems.  Either change all uses of %gs to %fs or skip the entire patch
-+ *  if %gs has a nonzero value.
-  *
-- *    Linux Test Project - Silicon Graphics, Inc.
-- *    TEST IDENTIFIER	: fork05
-- *    EXECUTED BY	: anyone
-- *    TEST TITLE	: Make sure LDT is propagated correctly
-- *    TEST CASE TOTAL	: 1
-- *    CPU TYPES		: i386
-- *    AUTHORS		: Ulrich Drepper
-- *			  Nate Straz
-+ * On Sat, Aug 12, 2000 at 12:47:31PM -0700, Ulrich Drepper wrote:
-+ *  Ever since the %gs handling was fixed in the 2.3.99 series the
-+ *  appended test program worked.  Now with 2.4.0-test6 it's not working
-+ *  again.  Looking briefly over the patch from test5 to test6 I haven't
-+ *  seen an immediate candidate for the breakage.  It could be missing
-+ *  propagation of the LDT to the new process (and therefore an invalid
-+ *  segment descriptor) or simply clearing %gs.
-  *
-- *On Friday, May 2, 2003 at 09:47:00AM MST, Ulrich Drepper wrote:
-- *>Robert Williamson wrote:
-- *>
-- *>>   I'm getting a SIGSEGV with one of our tests, fork05.c, that apparently
-- *>> you wrote (attached below).  The test passes on my 2.5.68 machine running
-- *>> SuSE 8.0 (glibc 2.2.5 and Linuxthreads), however it segmentation faults on
-- *>> RedHat 9 running 2.5.68.  The test seems to "break" when it attempts to run
-- *>> the assembly code....could you take a look at it?
-- *>
-- *>There is no need to look at it, I know it cannot work anymore on recent
-- *>systems.  Either change all uses of %gs to %fs or skip the entire patch
-- *>if %gs has a nonzero value.
-- *>
-- *>- --
-- *>- --------------.                        ,-.            444 Castro Street
-- *>Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
-- *>Red Hat         `--' drepper at redhat.com `---------------------------
-+ *  Anyway, this is what you should see and what you get with test5:
-  *
-+ *  a = 42
-+ *  %gs = 0x0007
-+ *  %gs = 0x0007
-+ *  a = 99
-  *
-+ *  This is what you get with test6:
-  *
-- *On Sat, Aug 12, 2000 at 12:47:31PM -0700, Ulrich Drepper wrote:
-- *> Ever since the %gs handling was fixed in the 2.3.99 series the
-- *> appended test program worked.  Now with 2.4.0-test6 it's not working
-- *> again.  Looking briefly over the patch from test5 to test6 I haven't
-- *> seen an immediate candidate for the breakage.  It could be missing
-- *> propagation of the LDT to the new process (and therefore an invalid
-- *> segment descriptor) or simply clearing %gs.
-- *>
-- *> Anyway, this is what you should see and what you get with test5:
-- *>
-- *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- *> a = 42
-- *> %gs = 0x0007
-- *> %gs = 0x0007
-- *> a = 99
-- *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- *>
-- *> This is what you get with test6:
-- *>
-- *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- *> a = 42
-- *> %gs = 0x0007
-- *> %gs = 0x0000
-- *> <SEGFAULT>
-- *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- *>
-- *> If somebody is actually creating a test suite for the kernel, please
-- *> add this program.  It's mostly self-contained.  The correct handling
-- *> of %gs is really important since glibc 2.2 will make heavy use of it.
-- *>
-- *> - --
-- *> - ---------------.                          ,-.   1325 Chesapeake Terrace
-- *> Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-- *> Red Hat          `--' drepper at redhat.com   `------------------------
-- *>
-- *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *  a = 42
-+ *  %gs = 0x0007
-+ *  %gs = 0x0000
-+ *  <SEGFAULT>
-  *
-+ *  If somebody is actually creating a test suite for the kernel, please
-+ *  add this program.  It's mostly self-contained.  The correct handling
-+ *  of %gs is really important since glibc 2.2 will make heavy use of it.
-  */
- 
--#include <stdio.h>
--#include <fcntl.h>
--#include <unistd.h>
--#include <stdlib.h>
--#include <sys/wait.h>
--#include "lapi/syscalls.h"
--#include "test.h"
--
--char *TCID = "fork05";
--
--static char *environ_list[] = { "TERM", "NoTSetzWq", "TESTPROG" };
--
--#define NUMBER_OF_ENVIRON (sizeof(environ_list)/sizeof(char *))
--int TST_TOTAL = NUMBER_OF_ENVIRON;
--
--#if defined(linux) && defined(__i386__)
--
--struct modify_ldt_ldt_s {
--	unsigned int entry_number;
--	unsigned long int base_addr;
--	unsigned int limit;
--	unsigned int seg_32bit:1;
--	unsigned int contents:2;
--	unsigned int read_exec_only:1;
--	unsigned int limit_in_pages:1;
--	unsigned int seg_not_present:1;
--	unsigned int useable:1;
--	unsigned int empty:25;
--};
-+#include "tst_test.h"
- 
--static int a = 42;
-+#if defined(__i386__)
- 
--static void modify_ldt(int func, struct modify_ldt_ldt_s *ptr, int bytecount)
--{
--	tst_syscall(__NR_modify_ldt, func, ptr, bytecount);
--}
-+#include "lapi/syscalls.h"
-+#include <asm/ldt.h>
- 
--int main(void)
-+static void run(void)
- {
--	struct modify_ldt_ldt_s ldt0;
--	int lo;
-+	struct user_desc ldt0;
-+	int base_addr = 42;
-+	int status;
- 	pid_t pid;
--	int res;
-+	int lo;
- 
- 	ldt0.entry_number = 0;
--	ldt0.base_addr = (long)&a;
-+	ldt0.base_addr = (long)&base_addr;
- 	ldt0.limit = 4;
- 	ldt0.seg_32bit = 1;
- 	ldt0.contents = 0;
-@@ -154,49 +77,40 @@ int main(void)
- 	ldt0.useable = 1;
- 	ldt0.empty = 0;
- 
--	modify_ldt(1, &ldt0, sizeof(ldt0));
-+	tst_syscall(__NR_modify_ldt, 1, &ldt0, sizeof(ldt0));
- 
- 	asm volatile ("movw %w0, %%fs"::"q" (7));
--
- 	asm volatile ("movl %%fs:0, %0":"=r" (lo));
--	tst_resm(TINFO, "a = %d", lo);
-+	tst_res(TINFO, "a = %d", lo);
- 
- 	asm volatile ("pushl %%fs; popl %0":"=q" (lo));
--	tst_resm(TINFO, "%%fs = %#06hx", lo);
-+	tst_res(TINFO, "%%fs = %#06hx", lo);
- 
- 	asm volatile ("movl %0, %%fs:0"::"r" (99));
- 
--	pid = fork();
--
--	if (pid == 0) {
-+	pid = SAFE_FORK();
-+	if (!pid) {
- 		asm volatile ("pushl %%fs; popl %0":"=q" (lo));
--		tst_resm(TINFO, "%%fs = %#06hx", lo);
-+		tst_res(TINFO, "%%fs = %#06hx", lo);
- 
- 		asm volatile ("movl %%fs:0, %0":"=r" (lo));
--		tst_resm(TINFO, "a = %d", lo);
--
--		if (lo != 99)
--			tst_resm(TFAIL, "Test failed");
--		else
--			tst_resm(TPASS, "Test passed");
--		exit(lo != 99);
--	} else {
--		waitpid(pid, &res, 0);
--	}
-+		tst_res(TINFO, "a = %d", lo);
- 
--	return WIFSIGNALED(res);
--}
-+		TST_EXP_EQ_LI(lo, 99);
- 
--#else /* if defined(linux) && defined(__i386__) */
-+		exit(0);
-+	}
- 
--int main(void)
--{
--	tst_resm(TINFO, "%%fs test only for ix86");
-+	SAFE_WAITPID(pid, &status, 0);
- 
--	/*
--	 * should be successful on all non-ix86 platforms.
--	 */
--	tst_exit();
-+	if (WIFSIGNALED(status))
-+		tst_res(TFAIL, "Child crashed with %s", tst_strsig(WTERMSIG(status)));
- }
- 
--#endif /* if defined(linux) && defined(__i386__) */
-+static struct tst_test test = {
-+	.run_all = run
-+};
-+
-+#else
-+	TST_TEST_TCONF("Test only supports Intel 32 bits");
-+#endif
+Maybe this should go to the tst_test_macros.h?
+
+> +struct file_conf {
+> +	short type;
+> +	short whence;
+> +	long start;
+> +	long len;
+>  };
+>  
+> -static testcase *thiscase;
+> +struct testcase {
+> +	struct file_conf parent;           /* parent parameters for fcntl() */
+> +	struct file_conf child;            /* child parameters for fcntl() */
+> +	short blocking;                    /* blocking/non-blocking flag */
+> +	long pos;                          /* starting file position */
+> +};
+> +
+> +struct tc_results {
+> +	int num_pass;
+> +	int last_failed;
+> +};
+> +
+> +static const char filepath[] = "unlocked.txt";
+> +static const char filedata[] = "Here some bytes!";
+>  static struct flock flock;
+> -static int parent, child, status, fail = 0;
+> -static int got1 = 0;
+> -static int fd;
+> -static int test;
+> -static char tmpname[40];
+> +static char *str_op_nums;
+> +static char *locking_file;
+> +static int op_nums = 5000;
+> +static int file_mode = 0777;
+> +static struct tc_results *results;
+>  
+> -#define FILEDATA	"ten bytes!"
+> +static void dochild(struct testcase *tc, const int fd, const pid_t parent_pid)
+> +{
+> +	results->last_failed = 0;
+>  
+> -void catch1(int sig);
+> -void catch_alarm(int sig);
+> +	flock.l_type = tc->child.type;
+> +	flock.l_whence = tc->child.whence;
+> +	flock.l_start = tc->child.start;
+> +	flock.l_len = tc->child.len;
+> +	flock.l_pid = 0;
+>  
+> -char *TCID = "fcntl14";
+> -int TST_TOTAL = 1;
+> -int NO_NFS = 1;
+> +	SAFE_FCNTL(fd, F_GETLK, &flock);
+>  
+> -void cleanup(void)
+> -{
+> -	tst_rmdir();
+> -}
+> +	if (tc->blocking) {
+> +		tst_res(TDEBUG, "Child: expecting blocked file by parent");
+>  
+> -void setup(void)
+> -{
+> -	struct sigaction act;
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	signal(SIGHUP, SIG_IGN);
+> -	umask(0);
+> -	TEST_PAUSE;
+> -	tst_tmpdir();
+> -	parent = getpid();
+> -
+> -	sprintf(tmpname, "fcntl2.%d", parent);
+> -
+> -	/* setup signal handler for signal from child */
+> -	memset(&act, 0, sizeof(act));
+> -	act.sa_handler = catch1;
+> -	sigemptyset(&act.sa_mask);
+> -	sigaddset(&act.sa_mask, SIGUSR1);
+> -	if ((sigaction(SIGUSR1, &act, NULL)) < 0) {
+> -		tst_resm(TFAIL, "SIGUSR1 signal setup failed, errno = %d",
+> -			 errno);
+> -		cleanup();
+> -	}
+> +		CHECK_EQ_SILENT(flock.l_pid, parent_pid, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+>  
+> -	memset(&act, 0, sizeof(act));
+> -	act.sa_handler = catch_alarm;
+> -	sigemptyset(&act.sa_mask);
+> -	sigaddset(&act.sa_mask, SIGALRM);
+> -	if ((sigaction(SIGALRM, &act, NULL)) < 0) {
+> -		tst_resm(TFAIL, "SIGALRM signal setup failed");
+> -		cleanup();
+> -	}
+> -}
+> +		CHECK_EQ_SILENT(flock.l_type, tc->parent.type, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+>  
+> -void wake_parent(void)
+> -{
+> -	if ((kill(parent, SIGUSR1)) < 0) {
+> -		tst_resm(TFAIL, "Attempt to send signal to parent " "failed");
+> -		tst_resm(TFAIL, "Test case %d, errno = %d", test + 1, errno);
+> -		fail = 1;
+> +		flock.l_type = tc->child.type;
+> +		flock.l_whence = tc->child.whence;
+> +		flock.l_start = tc->child.start;
+> +		flock.l_len = tc->child.len;
+> +		flock.l_pid = 0;
+> +
+> +		TST_EXP_FAIL_SILENT(fcntl(fd, F_SETLK, &flock), EWOULDBLOCK);
+> +		if (TST_RET != -1)
+> +			results->last_failed = 1;
+> +	} else {
+> +		tst_res(TDEBUG, "Child: expecting no blocking errors");
+> +
+> +		CHECK_EQ_SILENT(flock.l_type, F_UNLCK, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+> +
+> +		CHECK_EQ_SILENT(flock.l_whence, tc->child.whence, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+> +
+> +		CHECK_EQ_SILENT(flock.l_start, tc->child.start, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+> +
+> +		CHECK_EQ_SILENT(flock.l_len, tc->child.len, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+> +
+> +		CHECK_EQ_SILENT(flock.l_pid, 0, &results->last_failed);
+> +		if (results->last_failed)
+> +			return;
+
+Why do we have to exit after each failed check here? I would just a
+bunch of the checks here without the returns. All that we need is to
+make sure the last_failed is set if child fails so that parent can
+detect it.
+
+
+> +	/* set the initial parent lock on the file */
+> +	flock.l_type = tc->parent.type;
+> +	flock.l_whence = tc->parent.whence;
+> +	flock.l_start = tc->parent.start;
+> +	flock.l_len = tc->parent.len;
+>  	flock.l_pid = 0;
+
+I wonder if it would be better to use struct flock in the tc directory
+so that we could just assign the structure here. I.e. we would do here
+just:
+
+	struct flock flock = tc->flock;
+
+	flock.l_pid = 0;
+
+
+> +	flock.l_type = F_UNLCK;
+> +	flock.l_whence = 0;
+> +	flock.l_start = 0;
+> +	flock.l_len = 0;
+>  	flock.l_pid = 0;
+>  
+> +	SAFE_FCNTL(fd, F_SETLK, &flock);
+> +	SAFE_CLOSE(fd);
+
+Why bother with unlocking? Aren't the locks dropped when we close the fd
+here anyways?
+
+> +}
+> +
+> +static void genconf(struct file_conf *conf, const int size, const long pos)
+> +{
+> +	conf->type = rand() % 2 ? F_RDLCK : F_WRLCK;
+> +	conf->whence = SEEK_CUR;
+> +
+> +	if (pos > 0 && (rand() % 2)) {
+> +		conf->start = -(rand() % pos);
+> +		conf->len = rand() % (size + conf->start - 1) + 1;
+>  	} else {
+> -		exit(0);
+> +		conf->start = rand() % (size - 1);
+> +		conf->len = rand() % (size - conf->start - 1) + 1;
+>  	}
+>  }
+
+We have a file in which we seek at pos offset and then need a start
+relative to that and lenght so that it fits into the file.
+
+The start should be just the whole available range, which is random
+offset moved back by pos. Then we need a size which is limited to
+whatever is left in the file and is not relative. So if I'm not mistaken
+we need what is in the else branch but we have to move the start by pos
+at the end, i.e. the whole start and len generation should look like:
+
+	conf->start = rand() % (size - 1);
+	conf->len = rand() % (size - conf->start - 1) + 1;
+	conf->start -= pos;
+
+That way we generate a valid part of the file and make it realtive to
+the pos at the end.
+
+> -void run_test(int file_flag, int file_mode, int seek, int start, int end)
+> +static short fcntl_overlap(
+> +	struct file_conf *parent,
+> +	struct file_conf *child,
+> +	const long pos)
+>  {
+> +	long start[2];
+> +	long length[2];
+> +	short overlap = 0;
+> +
+> +	if (parent->start > child->start) {
+> +		start[0] = pos + child->start;
+> +		start[1] = pos + parent->start;
+> +		length[0] = child->len;
+> +		length[1] = parent->len;
+> +	} else {
+> +		start[0] = pos + parent->start;
+> +		start[1] = pos + child->start;
+> +		length[0] = parent->len;
+> +		length[1] = child->len;
+>  	}
+
+If you add pos to both of the starts you just move the two ranges by the
+same amount. So the end result is the same regardless of if you add it
+or not.
+
+> +
+> +	overlap = start[0] <= start[1] && start[1] < (start[0] + length[0]);
+
+Isn't the start[0] <= start[1] because we made it so? We set the
+start[0] to the smaller of the two. So all we need to do is to check
+that that start[0] + lenght[0] does not end before the start[1] which is
+the second part of the equation.
+
+And we do not use lenght[1] either. So maybe we just need:
+
+	if (child->start < parent->start)
+		overlap = parent->start < (child->start + child->len);
+	else
+		overlap = child->start < (parent->start + parent->len);
+
+> +	if (overlap)
+> +		tst_res(TDEBUG, "child/parent fcntl() configurations overlap");
+> +
+> +	return overlap;
+>  }
+>  
+
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
