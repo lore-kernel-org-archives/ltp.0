@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEE76CA0EE4
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 12:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FE9CA0FE1
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 12:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725021663; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1725021721; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=TUGF1V2KCMy1h67RmeL9qhVpzvNN90+lAIbzBF/8C9I=;
- b=WCTbF09zr8Z90hjC5UgR6THE710k1ItXxVW74MlNqu3zCPDLI/iTSFitUBz0z6F8BgH6/
- Me4rUpMsgpHqyqHoOhZ07OdQEzvIfknJwi6Lrf3k0oqwGKOOPWEypMsWz/HzV0l7nBlN21h
- jR2UGzf6IW+lIdLqQvjJxOd91hkwYOY=
+ bh=30zaeQ2oTG/Y+Y2GeZc55dSAraWoG+dvSqKqBy37XvI=;
+ b=hLStEIYvSHY74aDbtm9i+mCPZrbBjqUFqkU82ojxE0d14vwUAf57WH9hI1kQmvCS6nc+k
+ T8bY4QPGlkKT8B3j1vizT+A7rfVKOSvVlSOEptfLxgW2BtGIup0SJSL2z/zH4Ui3U7jRz5C
+ 0Zjjz3UgrvkR0Yc/IKELiq9KJVaeSdo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B5483D284E
-	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 14:41:03 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A17FD3D2860
+	for <ltp@archiver.kernel.org>; Fri, 30 Aug 2024 14:42:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BEFB3C02D5
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 14:40:42 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
+ by picard.linux.it (Postfix) with ESMTPS id EB7CD3C02D5
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 14:41:46 +0200 (CEST)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
+ [IPv6:2a00:1450:4864:20::530])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 49E586019B4
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 14:40:41 +0200 (CEST)
-Received: by mail-ej1-x632.google.com with SMTP id
- a640c23a62f3a-a86910caf9cso502711666b.1
- for <ltp@lists.linux.it>; Fri, 30 Aug 2024 05:40:41 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E248320EB46
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 14:41:44 +0200 (CEST)
+Received: by mail-ed1-x530.google.com with SMTP id
+ 4fb4d7f45d1cf-5bede548f7cso1901459a12.2
+ for <ltp@lists.linux.it>; Fri, 30 Aug 2024 05:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1725021640; x=1725626440; darn=lists.linux.it;
+ d=suse.com; s=google; t=1725021704; x=1725626504; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=QShvfgbjW+m2CNGXZdt2rFIyIQ5lBKhCNI7mhapHPic=;
- b=A6T02YHqwe4Y9FcL0LlgZpk5JsfKEYMQ/8LSN876koGssibrZXyjgjTcxuc4Uhr2fV
- XHgeCd/l2w/SgbA/Ge3RWhoy1ovDKAy31H04yR8x9PGnzjWZ80VQx1YywhpDd4evcTck
- oWDGnihD6pH+Q31u+vwthxVa/9fsjiKl4Hg7gXsBO2E6fg/c6GmTzq1pA/r4wrKoY1fe
- 2Kpe7K0ME+di1PASPXSSfZNn+VGOGTDYUyuAxjgYv4/lEHdxL6YTG/Dx2aBStzUfKNuu
- Swnshk7Z9Q12Z18AZ0USgSwUf+b0rG0CvWs8XFmjgPJQxBQAVyUvzPTt//uw0Jc1cnmQ
- deXg==
+ bh=+1cfZdPq2BXhfA78dHghPnAXWlacBEHVirryVUklWss=;
+ b=R4WVE5zJWtrAbD1bHHmUhM6CbR1g4bX7V+PUQFI+5uLlmE4xtNO2XefOqtQH5Zjpeg
+ smYbgaU6qSKm1FYNQcZ0nO0rGehSwsA85ioYC13MZtQ+To+IAI0jwuGDqgmds9BJTBIO
+ bympXVoLPDzv3wY+vDeFVPt5VCPcL2DQZzii4ZF60rKqgEDs+rv7mAjvQH0S7AxlWRqX
+ 8TpHyPqDbY9ufpy+p55bQw55Ahnp9vSLJXREsLMh8Dl4JNIi7JMh7Rsv2i69Dm/NSXJB
+ jEsPvZ/+BeCXp2ALIk7d/N+XSK2Y5z8newPEYVPmrexUm5D+x0P4mp3CkoyhuPxexW5L
+ I13Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1725021640; x=1725626440;
+ d=1e100.net; s=20230601; t=1725021704; x=1725626504;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=QShvfgbjW+m2CNGXZdt2rFIyIQ5lBKhCNI7mhapHPic=;
- b=fnvgMrBVkV2PjeD5BFM2XyHRlBYfAWNiEjIgd6jVds/KvOLaiC9Pye0kJaZ+eTwrI8
- ZbFi59IvEG8yVUhVDq+pu88tZ6Rpg07ivb2SmZYC9YFnx5WlH5riTTxxsKkd6/xfRCz+
- 93SryWReNRyLOfl8y5RbCL/5J29NVPk74r7sRdbpWjqEULH62sBeNcJ/g6sOurQc/XHN
- RP7JBxVpCWO+gZ63GtRe4PAy1nBS/c5s10WKl3CU8D+Eh4JpdOL/lQ5EYcuupNpV28YU
- JShEeQn++/YLct+J+T2OYT0+lHAQlOtbtASwX1ya2jqlsU8uGsArlRoRMz9jne4ue4Ve
- 1Pfg==
-X-Gm-Message-State: AOJu0YwHC6mzoNY9EaBHqZlqvnPENYA3xq5AqgV9ADtyEQnn2PLY1z05
- jloEEpys8cTBEAiwXjM5NCTHFQvCr3zcAL7MCNWT09Gpe3VCp9mXXWd0DUfg9//UBlR7ZL+m6X4
- 08GQ=
-X-Google-Smtp-Source: AGHT+IFn0RsARR4AeqB/qzlFcMNxzovi6uDn/waaoIDmmZmWjNLNiqqLbs1WrJ9DoeKygoi994em2w==
-X-Received: by 2002:a17:907:7e99:b0:a86:abbd:6834 with SMTP id
- a640c23a62f3a-a89828335famr502002066b.30.1725021639707; 
- Fri, 30 Aug 2024 05:40:39 -0700 (PDT)
+ bh=+1cfZdPq2BXhfA78dHghPnAXWlacBEHVirryVUklWss=;
+ b=k6dva8gI8PUX6cmOhif2R1pNUoYdfUxyHQwg0/5ex42VItJbilNkKGoexeWXRAn3t8
+ KcrDZcHzU7U8M6KTts0YoCYT4Xo1FtzW6aixoM9s1Uew7YCLqjxn2BY0H4F4GBulYd0+
+ CglhGcTO7G4E6RF8ok65Ro4Jno470kMsFCHw+slnY6U9ApqJYQVsEgABJo9nrg/Pi6pm
+ GZL/XoELrROS1fHY9vWmKMR7ahdx+LXFJpPmgbgWWiuYMQxnCxd0XOf53+vyHsRuvOGr
+ UjyId7JnL5gjQn8fVQOdaQUJN3WliofJINaqBieHwudOVx1t3RKj/v36MNge5S8/impx
+ rsHA==
+X-Gm-Message-State: AOJu0YzlFMkGDWqScfpJ54RqvCrPUtAO1LtRHiexM+o8CSPn6T2T3wcP
+ c7AYTkYW+wCDwOmw0BTh/wFIUbS4oHPR1+vg2m6NDGizP/de/gMzmEbl2oziQmHPtsLK0iF5nKF
+ mZxY=
+X-Google-Smtp-Source: AGHT+IGdTcYXAoA+DTOIxRh1FXAJOElHSpGDCdBGNv5aI0s+IJ7CArbpKfdzWiRGl9fXhehouJQ6sQ==
+X-Received: by 2002:a17:907:7ba1:b0:a7a:97ca:3059 with SMTP id
+ a640c23a62f3a-a897f8e2ef7mr483419066b.34.1725021702585; 
+ Fri, 30 Aug 2024 05:41:42 -0700 (PDT)
 Received: from [10.232.133.87] ([88.128.90.2])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a8989223199sm210978466b.219.2024.08.30.05.40.39
+ a640c23a62f3a-a89891d6dc3sm210338766b.156.2024.08.30.05.41.42
  for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 30 Aug 2024 05:40:39 -0700 (PDT)
-Message-ID: <642498c9-3db5-4947-bfb5-f1727b0e2a88@suse.com>
-Date: Fri, 30 Aug 2024 14:40:38 +0200
+ Fri, 30 Aug 2024 05:41:42 -0700 (PDT)
+Message-ID: <3a5874f1-ec25-476d-867b-9b572cc6321b@suse.com>
+Date: Fri, 30 Aug 2024 14:41:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: ltp@lists.linux.it
 References: <20240827120237.25805-1-chrubis@suse.cz>
- <20240827120237.25805-3-chrubis@suse.cz>
+ <20240827120237.25805-4-chrubis@suse.cz>
 Content-Language: en-US
-In-Reply-To: <20240827120237.25805-3-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <20240827120237.25805-4-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/4] Add support for mixing C and shell code
+Subject: Re: [LTP] [PATCH v3 3/4] libs: Vendor ujson library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,581 +105,2842 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-I like this minimal approach.
+would be nice to use this library also for C tests metadata later on.
 
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 On 8/27/24 14:02, Cyril Hrubis wrote:
-> This is a proof of a concept of a seamless C and shell integration. The
-> idea is that with this you can mix shell and C code as much as as you
-> wish to get the best of the two worlds.
+> See: https://github.com/metan-ucw/ujson
 >
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> Reviewed-by: Richard Palethorpe <io@richiejp.com>
+> Acked-by: Richard Palethorpe <io@richiejp.com>
 > ---
->   include/tst_test.h                           | 37 +++++++++++++
->   lib/tst_test.c                               | 51 +++++++++++++++++
->   testcases/lib/.gitignore                     |  1 +
->   testcases/lib/Makefile                       |  4 +-
->   testcases/lib/run_tests.sh                   | 11 ++++
->   testcases/lib/tests/.gitignore               |  6 ++
->   testcases/lib/tests/Makefile                 | 11 ++++
->   testcases/lib/tests/shell_test01.c           | 17 ++++++
->   testcases/lib/tests/shell_test02.c           | 18 ++++++
->   testcases/lib/tests/shell_test03.c           | 25 +++++++++
->   testcases/lib/tests/shell_test04.c           | 18 ++++++
->   testcases/lib/tests/shell_test05.c           | 27 +++++++++
->   testcases/lib/tests/shell_test06.c           | 16 ++++++
->   testcases/lib/tests/shell_test_brk.sh        |  6 ++
->   testcases/lib/tests/shell_test_check_argv.sh | 23 ++++++++
->   testcases/lib/tests/shell_test_checkpoint.sh |  7 +++
->   testcases/lib/tests/shell_test_pass.sh       |  6 ++
->   testcases/lib/tst_env.sh                     | 21 +++++++
->   testcases/lib/tst_res_.c                     | 58 ++++++++++++++++++++
->   19 files changed, 361 insertions(+), 2 deletions(-)
->   create mode 100755 testcases/lib/run_tests.sh
->   create mode 100644 testcases/lib/tests/.gitignore
->   create mode 100644 testcases/lib/tests/Makefile
->   create mode 100644 testcases/lib/tests/shell_test01.c
->   create mode 100644 testcases/lib/tests/shell_test02.c
->   create mode 100644 testcases/lib/tests/shell_test03.c
->   create mode 100644 testcases/lib/tests/shell_test04.c
->   create mode 100644 testcases/lib/tests/shell_test05.c
->   create mode 100644 testcases/lib/tests/shell_test06.c
->   create mode 100755 testcases/lib/tests/shell_test_brk.sh
->   create mode 100755 testcases/lib/tests/shell_test_check_argv.sh
->   create mode 100755 testcases/lib/tests/shell_test_checkpoint.sh
->   create mode 100755 testcases/lib/tests/shell_test_pass.sh
->   create mode 100644 testcases/lib/tst_env.sh
->   create mode 100644 testcases/lib/tst_res_.c
+>   include/ujson.h           |   13 +
+>   include/ujson_common.h    |   69 +++
+>   include/ujson_reader.h    |  543 +++++++++++++++++++
+>   include/ujson_utf.h       |  168 ++++++
+>   include/ujson_writer.h    |  224 ++++++++
+>   libs/ujson/Makefile       |   12 +
+>   libs/ujson/ujson_common.c |   38 ++
+>   libs/ujson/ujson_reader.c | 1081 +++++++++++++++++++++++++++++++++++++
+>   libs/ujson/ujson_utf.c    |  105 ++++
+>   libs/ujson/ujson_writer.c |  491 +++++++++++++++++
+>   10 files changed, 2744 insertions(+)
+>   create mode 100644 include/ujson.h
+>   create mode 100644 include/ujson_common.h
+>   create mode 100644 include/ujson_reader.h
+>   create mode 100644 include/ujson_utf.h
+>   create mode 100644 include/ujson_writer.h
+>   create mode 100644 libs/ujson/Makefile
+>   create mode 100644 libs/ujson/ujson_common.c
+>   create mode 100644 libs/ujson/ujson_reader.c
+>   create mode 100644 libs/ujson/ujson_utf.c
+>   create mode 100644 libs/ujson/ujson_writer.c
 >
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index afc6a5714..9871676a5 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -331,6 +331,8 @@ struct tst_fs {
->    * @child_needs_reinit: Has to be set if the test needs to call tst_reinit()
->    *                      from a process started by exec().
->    *
-> + * @runs_script: Implies child_needs_reinit and forks_child at the moment.
-> + *
->    * @needs_devfs: If set the devfs is mounted at tst_test.mntpoint. This is
->    *               needed for tests that need to create device files since tmpfs
->    *               at /tmp is usually mounted with 'nodev' option.
-> @@ -521,6 +523,7 @@ struct tst_fs {
->   	unsigned int mount_device:1;
->   	unsigned int needs_rofs:1;
->   	unsigned int child_needs_reinit:1;
-> +	unsigned int runs_script:1;
->   	unsigned int needs_devfs:1;
->   	unsigned int restore_wallclock:1;
->   
-> @@ -529,6 +532,8 @@ struct tst_fs {
->   	unsigned int skip_in_lockdown:1;
->   	unsigned int skip_in_secureboot:1;
->   	unsigned int skip_in_compat:1;
-> +
-> +
->   	int needs_abi_bits;
->   
->   	unsigned int needs_hugetlbfs:1;
-> @@ -616,6 +621,38 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
->    */
->   void tst_reinit(void);
->   
-> +/**
-> + * tst_run_script() - Prepare the environment and execute a (shell) script.
-> + *
-> + * @script_name: A filename of the script.
-> + * @params: A NULL terminated array of (shell) script parameters, pass NULL if
-> + *          none are needed. This what is passed starting from argv[1].
-> + *
-> + * The (shell) script is executed with LTP_IPC_PATH in environment so that the
-> + * binary helpers such as tst_res_ or tst_checkpoint work properly when executed
-> + * from the script. This also means that the tst_test.runs_script flag needs to
-> + * be set.
-> + *
-> + * A shell script has to source the tst_env.sh shell script at the start and
-> + * after that it's free to use tst_res in the same way C code would use.
-> + *
-> + * Example shell script that reports success::
-> + *
-> + *   #!/bin/sh
-> + *   . tst_env.sh
-> + *
-> + *   tst_res TPASS "Example test works"
-> + *
-> + * The call returns a pid in a case that you want to examine the return value
-> + * of the script yourself. If you do not need to check the return value
-> + * yourself you can use tst_reap_children() to wait for the completion. Or let
-> + * the test library collect the child automatically, just be wary that the
-> + * script and the test both runs concurently at the same time in this case.
-> + *
-> + * Return: A pid of the (shell) script process.
+> diff --git a/include/ujson.h b/include/ujson.h
+> new file mode 100644
+> index 000000000..8faeb18f0
+> --- /dev/null
+> +++ b/include/ujson.h
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
 > + */
-> +int tst_run_script(const char *script_name, char *const params[]);
 > +
->   unsigned int tst_multiply_timeout(unsigned int timeout);
->   
->   /*
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 201b81e14..918bee2a1 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -4,6 +4,8 @@
->    * Copyright (c) Linux Test Project, 2016-2024
->    */
->   
-> +#define _GNU_SOURCE
+> +#ifndef UJSON_H
+> +#define UJSON_H
 > +
->   #include <limits.h>
->   #include <stdio.h>
->   #include <stdarg.h>
-> @@ -174,6 +176,50 @@ void tst_reinit(void)
->   	SAFE_CLOSE(fd);
->   }
->   
-> +extern char **environ;
+> +#include <ujson_common.h>
+> +#include <ujson_reader.h>
+> +#include <ujson_writer.h>
 > +
-> +static unsigned int params_array_len(char *const array[])
+> +#endif /* UJSON_H */
+> diff --git a/include/ujson_common.h b/include/ujson_common.h
+> new file mode 100644
+> index 000000000..ed31c090d
+> --- /dev/null
+> +++ b/include/ujson_common.h
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +/**
+> + * @file ujson_common.h
+> + * @brief Common JSON reader/writer definitions.
+> + */
+> +
+> +#ifndef UJSON_COMMON_H
+> +#define UJSON_COMMON_H
+> +
+> +/** @brief Maximal error message length. */
+> +#define UJSON_ERR_MAX 128
+> +/** @brief Maximal id string lenght including terminating null element. */
+> +#define UJSON_ID_MAX 64
+> +/** @brief Maximal recursion depth allowed. */
+> +#define UJSON_RECURSION_MAX 128
+> +
+> +#define UJSON_ERR_PRINT ujson_err_handler
+> +#define UJSON_ERR_PRINT_PRIV stderr
+> +
+> +/**
+> + * @brief A JSON data type.
+> + */
+> +enum ujson_type {
+> +	/** @brief No type. Returned when parser finishes. */
+> +	UJSON_VOID = 0,
+> +	/** @brief An integer. */
+> +	UJSON_INT,
+> +	/** @brief A floating point. */
+> +	UJSON_FLOAT,
+> +	/** @brief A boolean. */
+> +	UJSON_BOOL,
+> +	/** @brief NULL */
+> +	UJSON_NULL,
+> +	/** @brief A string. */
+> +	UJSON_STR,
+> +	/** @brief A JSON object. */
+> +	UJSON_OBJ,
+> +	/** @brief A JSON array. */
+> +	UJSON_ARR,
+> +};
+> +
+> +/**
+> + * @brief Returns type name.
+> + *
+> + * @param type A json type.
+> + * @return A type name.
+> + */
+> +const char *ujson_type_name(enum ujson_type type);
+> +
+> +/**
+> + * @brief Default error print handler.
+> + *
+> + * @param print_priv A json buffer print_priv pointer.
+> + * @param line A line of text to be printed.
+> + */
+> +void ujson_err_handler(void *print_priv, const char *line);
+> +
+> +typedef struct ujson_reader ujson_reader;
+> +typedef struct ujson_writer ujson_writer;
+> +typedef struct ujson_val ujson_val;
+> +
+> +/** @brief An array size macro. */
+> +#define UJSON_ARRAY_SIZE(array) (sizeof(array) / sizeof(*array))
+> +
+> +#endif /* UJSON_COMMON_H */
+> diff --git a/include/ujson_reader.h b/include/ujson_reader.h
+> new file mode 100644
+> index 000000000..273fe624a
+> --- /dev/null
+> +++ b/include/ujson_reader.h
+> @@ -0,0 +1,543 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +/**
+> + * @file ujson_reader.h
+> + * @brief A recursive descend JSON parser.
+> + *
+> + * All the function that parse JSON return zero on success and non-zero on a
+> + * failure. Once an error has happened all subsequent attempts to parse more
+> + * return with non-zero exit status immediatelly. This is designed so that we
+> + * can parse several values without checking each return value and only check
+> + * if error has happened at the end of the sequence.
+> + */
+> +
+> +#ifndef UJSON_READER_H
+> +#define UJSON_READER_H
+> +
+> +#include <stdio.h>
+> +#include <ujson_common.h>
+> +
+> +/**
+> + * @brief An ujson_reader initializer with default values.
+> + *
+> + * @param buf A pointer to a buffer with JSON data.
+> + * @param buf_len A JSON data buffer lenght.
+> + * @param rflags enum ujson_reader_flags.
+> + *
+> + * @return An ujson_reader initialized with default values.
+> + */
+> +#define UJSON_READER_INIT(buf, buf_len, rflags) { \
+> +	.max_depth = UJSON_RECURSION_MAX, \
+> +	.err_print = UJSON_ERR_PRINT, \
+> +	.err_print_priv = UJSON_ERR_PRINT_PRIV, \
+> +	.json = buf, \
+> +	.len = buf_len, \
+> +	.flags = rflags \
+> +}
+> +
+> +/** @brief Reader flags. */
+> +enum ujson_reader_flags {
+> +	/** @brief If set warnings are treated as errors. */
+> +	UJSON_READER_STRICT = 0x01,
+> +};
+> +
+> +/**
+> + * @brief A JSON parser internal state.
+> + */
+> +struct ujson_reader {
+> +	/** Pointer to a null terminated JSON string */
+> +	const char *json;
+> +	/** A length of the JSON string */
+> +	size_t len;
+> +	/** A current offset into the JSON string */
+> +	size_t off;
+> +	/** An offset to the start of the last array or object */
+> +	size_t sub_off;
+> +	/** Recursion depth increased when array/object is entered decreased on leave */
+> +	unsigned int depth;
+> +	/** Maximal recursion depth */
+> +	unsigned int max_depth;
+> +
+> +	/** Reader flags. */
+> +	enum ujson_reader_flags flags;
+> +
+> +	/** Handler to print errors and warnings */
+> +	void (*err_print)(void *err_print_priv, const char *line);
+> +	void *err_print_priv;
+> +
+> +	char err[UJSON_ERR_MAX];
+> +	char buf[];
+> +};
+> +
+> +/**
+> + * @brief An ujson_val initializer.
+> + *
+> + * @param sbuf A pointer to a buffer used for string values.
+> + * @param sbuf_size A length of the buffer used for string values.
+> + *
+> + * @return An ujson_val initialized with default values.
+> + */
+> +#define UJSON_VAL_INIT(sbuf, sbuf_size) { \
+> +	.buf = sbuf, \
+> +	.buf_size = sbuf_size, \
+> +}
+> +
+> +/**
+> + * @brief A parsed JSON key value pair.
+> + */
+> +struct ujson_val {
+> +	/**
+> +	 * @brief A value type
+> +	 *
+> +	 * UJSON_VALUE_VOID means that no value was parsed.
+> +	 */
+> +	enum ujson_type type;
+> +
+> +	/** An user supplied buffer and size to store a string values to. */
+> +	char *buf;
+> +	size_t buf_size;
+> +
+> +	/**
+> +	 * @brief An index to attribute list.
+> +	 *
+> +	 * This is set by the ujson_obj_first_filter() and
+> +	 * ujson_obj_next_filter() functions.
+> +	 */
+> +	size_t idx;
+> +
+> +	/** An union to store the parsed value into. */
+> +	union {
+> +		/** @brief A boolean value. */
+> +		int val_bool;
+> +		/** @brief An integer value. */
+> +		long long val_int;
+> +		/** @brief A string value. */
+> +		const char *val_str;
+> +	};
+> +
+> +	/**
+> +	 * @brief A floating point value.
+> +	 *
+> +	 * Since integer values are subset of floating point values val_float
+> +	 * is always set when val_int was set.
+> +	 */
+> +	double val_float;
+> +
+> +	/** @brief An ID for object values */
+> +	char id[UJSON_ID_MAX];
+> +
+> +	char buf__[];
+> +};
+> +
+> +/**
+> + * @brief Allocates a JSON value.
+> + *
+> + * @param buf_size A maximal buffer size for a string value, pass 0 for default.
+> + * @return A newly allocated JSON value.
+> + */
+> +ujson_val *ujson_val_alloc(size_t buf_size);
+> +
+> +/**
+> + * @brief Frees a JSON value.
+> + *
+> + * @param self A JSON value previously allocated by ujson_val_alloc().
+> + */
+> +void ujson_val_free(ujson_val *self);
+> +
+> +/**
+> + * @brief Checks is result has valid type.
+> + *
+> + * @param res An ujson value.
+> + * @return Zero if result is not valid, non-zero otherwise.
+> + */
+> +static inline int ujson_val_valid(struct ujson_val *res)
 > +{
-> +	unsigned int ret = 0;
+> +	return !!res->type;
+> +}
 > +
-> +	if (!array)
-> +		return 0;
+> +/**
+> + * @brief Fills the reader error.
+> + *
+> + * Once buffer error is set all parsing functions return immediatelly with type
+> + * set to UJSON_VOID.
+> + *
+> + * @param self An ujson_reader
+> + * @param fmt A printf like format string
+> + * @param ... A printf like parameters
+> + */
+> +void ujson_err(ujson_reader *self, const char *fmt, ...)
+> +               __attribute__((format(printf, 2, 3)));
 > +
-> +	while (*(array++))
-> +		ret++;
+> +/**
+> + * @brief Prints error stored in the buffer.
+> + *
+> + * The error takes into consideration the current offset in the buffer and
+> + * prints a few preceding lines along with the exact position of the error.
+> + *
+> + * The error is passed to the err_print() handler.
+> + *
+> + * @param self A ujson_reader
+> + */
+> +void ujson_err_print(ujson_reader *self);
+> +
+> +/**
+> + * @brief Prints a warning.
+> + *
+> + * Uses the print handler in the buffer to print a warning along with a few
+> + * lines of context from the JSON at the current position.
+> + *
+> + * @param self A ujson_reader
+> + * @param fmt A printf-like error string.
+> + * @param ... A printf-like parameters.
+> + */
+> +void ujson_warn(ujson_reader *self, const char *fmt, ...)
+> +               __attribute__((format(printf, 2, 3)));
+> +
+> +/**
+> + * @brief Returns true if error was encountered.
+> + *
+> + * @param self A ujson_reader
+> + * @return True if error was encountered false otherwise.
+> + */
+> +static inline int ujson_reader_err(ujson_reader *self)
+> +{
+> +	return !!self->err[0];
+> +}
+> +
+> +/**
+> + * @brief Returns the type of next element in buffer.
+> + *
+> + * @param self An ujson_reader
+> + * @return A type of next element in the buffer.
+> + */
+> +enum ujson_type ujson_next_type(ujson_reader *self);
+> +
+> +/**
+> + * @brief Returns if first element in JSON is object or array.
+> + *
+> + * @param self A ujson_reader
+> + * @return On success returns UJSON_OBJ or UJSON_ARR. On failure UJSON_VOID.
+> + */
+> +enum ujson_type ujson_reader_start(ujson_reader *self);
+> +
+> +/**
+> + * @brief Starts parsing of a JSON object.
+> + *
+> + * @param self An ujson_reader
+> + * @param res An ujson_val to store the parsed value to.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_first(ujson_reader *self, struct ujson_val *res);
+> +
+> +/**
+> + * @brief Parses next value from a JSON object.
+> + *
+> + * If the res->type is UJSON_OBJ or UJSON_ARR it has to be parsed or skipped
+> + * before next call to this function.
+> + *
+> + * @param self An ujson_reader.
+> + * @param res A ujson_val to store the parsed value to.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_next(ujson_reader *self, struct ujson_val *res);
+> +
+> +/**
+> + * @brief A loop over a JSON object.
+> + *
+> + * @code
+> + * UJSON_OBJ_FOREACH(reader, val) {
+> + *	printf("Got value id '%s' type '%s'", val->id, ujson_type_name(val->type));
+> + *	...
+> + * }
+> + * @endcode
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the next parsed value to.
+> + */
+> +#define UJSON_OBJ_FOREACH(self, res) \
+> +	for (ujson_obj_first(self, res); ujson_val_valid(res); ujson_obj_next(self, res))
+> +
+> +/**
+> + * @brief Utility function for log(n) lookup in a sorted array.
+> + *
+> + * @param list Analphabetically sorted array.
+> + * @param list_len Array length.
+> + *
+> + * @return An array index or (size_t)-1 if key wasn't found.
+> + */
+> +size_t ujson_lookup(const void *arr, size_t memb_size, size_t list_len,
+> +                    const char *key);
+> +
+> +/**
+> + * @brief A JSON object attribute description i.e. key and type.
+> + */
+> +typedef struct ujson_obj_attr {
+> +	/** @brief A JSON object key name. */
+> +	const char *key;
+> +	/**
+> +	 * @brief A JSON object value type.
+> +	 *
+> +	 * Note that because integer numbers are subset of floating point
+> +         * numbers if requested type was UJSON_FLOAT it will match if parsed
+> +         * type was UJSON_INT and the val_float will be set in addition to
+> +         * val_int.
+> +         */
+> +	enum ujson_type type;
+> +} ujson_obj_attr;
+> +
+> +/** @brief A JSON object description */
+> +typedef struct ujson_obj {
+> +	/**
+> +	 * @brief A list of attributes.
+> +	 *
+> +	 * Attributes we are looking for, the parser sets the val->idx for these.
+> +	 */
+> +	const ujson_obj_attr *attrs;
+> +	/** @brief A size of attrs array. */
+> +	size_t attr_cnt;
+> +} ujson_obj;
+> +
+> +static inline size_t ujson_obj_lookup(const ujson_obj *obj, const char *key)
+> +{
+> +	return ujson_lookup(obj->attrs, sizeof(*obj->attrs), obj->attr_cnt, key);
+> +}
+> +
+> +/** @brief An ujson_obj_attr initializer. */
+> +#define UJSON_OBJ_ATTR(keyv, typev) \
+> +	{.key = keyv, .type = typev}
+> +
+> +/** @brief An ujson_obj_attr intializer with an array index. */
+> +#define UJSON_OBJ_ATTR_IDX(key_idx, keyv, typev) \
+> +	[key_idx] = {.key = keyv, .type = typev}
+> +
+> +/**
+> + * @brief Starts parsing of a JSON object with attribute lists.
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the parsed value to.
+> + * @param obj An ujson_obj object description.
+> + * @param ign A list of keys to ignore.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_first_filter(ujson_reader *self, struct ujson_val *res,
+> +                           const struct ujson_obj *obj, const struct ujson_obj *ign);
+> +
+> +/**
+> + * @brief An empty object attribute list.
+> + *
+> + * To be passed to UJSON_OBJ_FOREACH_FITLER() as ignore list.
+> + */
+> +extern const struct ujson_obj *ujson_empty_obj;
+> +
+> +/**
+> + * @brief Parses next value from a JSON object with attribute lists.
+> + *
+> + * If the res->type is UJSON_OBJ or UJSON_ARR it has to be parsed or skipped
+> + * before next call to this function.
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the parsed value to.
+> + * @param obj An ujson_obj object description.
+> + * @param ign A list of keys to ignore. If set to NULL all unknown keys are
+> + *            ignored, if set to ujson_empty_obj all unknown keys produce warnings.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_next_filter(ujson_reader *self, struct ujson_val *res,
+> +                          const struct ujson_obj *obj, const struct ujson_obj *ign);
+> +
+> +/**
+> + * @brief A loop over a JSON object with a pre-defined list of expected attributes.
+> + *
+> + * @code
+> + * static struct ujson_obj_attr attrs[] = {
+> + *	UJSON_OBJ_ATTR("bool", UJSON_BOOL),
+> + *	UJSON_OBJ_ATTR("number", UJSON_INT),
+> + * };
+> + *
+> + * static struct ujson_obj obj = {
+> + *	.attrs = filter_attrs,
+> + *	.attr_cnt = UJSON_ARRAY_SIZE(filter_attrs)
+> + * };
+> + *
+> + * UJSON_OBJ_FOREACH_FILTER(reader, val, &obj, NULL) {
+> + *	printf("Got value id '%s' type '%s'",
+> + *	       attrs[val->idx].id, ujson_type_name(val->type));
+> + *	...
+> + * }
+> + * @endcode
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the next parsed value to.
+> + * @param obj An ujson_obj with a description of attributes to parse.
+> + * @param ign An ujson_obj with a description of attributes to ignore.
+> + */
+> +#define UJSON_OBJ_FOREACH_FILTER(self, res, obj, ign) \
+> +	for (ujson_obj_first_filter(self, res, obj, ign); \
+> +	     ujson_val_valid(res); \
+> +	     ujson_obj_next_filter(self, res, obj, ign))
+> +
+> +/**
+> + * @brief Skips parsing of a JSON object.
+> + *
+> + * @param self An ujson_reader.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_skip(ujson_reader *self);
+> +
+> +/**
+> + * @brief Starts parsing of a JSON array.
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the parsed value to.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_arr_first(ujson_reader *self, struct ujson_val *res);
+> +
+> +/**
+> + * @brief Parses next value from a JSON array.
+> + *
+> + * If the res->type is UJSON_OBJ or UJSON_ARR it has to be parsed or skipped
+> + * before next call to this function.
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the parsed value to.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_arr_next(ujson_reader *self, struct ujson_val *res);
+> +
+> +/**
+> + * @brief A loop over a JSON array.
+> + *
+> + * @code
+> + * UJSON_ARR_FOREACH(reader, val) {
+> + *	printf("Got value type '%s'", ujson_type_name(val->type));
+> + *	...
+> + * }
+> + * @endcode
+> + *
+> + * @param self An ujson_reader.
+> + * @param res An ujson_val to store the next parsed value to.
+> + */
+> +#define UJSON_ARR_FOREACH(self, res) \
+> +	for (ujson_arr_first(self, res); ujson_val_valid(res); ujson_arr_next(self, res))
+> +
+> +/**
+> + * @brief Skips parsing of a JSON array.
+> + *
+> + * @param self A ujson_reader.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_arr_skip(ujson_reader *self);
+> +
+> +/**
+> + * @brief A JSON reader state.
+> + */
+> +typedef struct ujson_reader_state {
+> +	size_t off;
+> +	unsigned int depth;
+> +} ujson_reader_state;
+> +
+> +/**
+> + * @brief Returns a parser state at the start of current object/array.
+> + *
+> + * This function could be used for the parser to return to the start of the
+> + * currently parsed object or array.
+> + *
+> + * @param self A ujson_reader
+> + * @return A state that points to a start of the last object or array.
+> + */
+> +static inline ujson_reader_state ujson_reader_state_save(ujson_reader *self)
+> +{
+> +	struct ujson_reader_state ret = {
+> +		.off = self->sub_off,
+> +		.depth = self->depth,
+> +	};
 > +
 > +	return ret;
 > +}
 > +
-> +int tst_run_script(const char *script_name, char *const params[])
+> +/**
+> + * @brief Returns the parser to a saved state.
+> + *
+> + * This function could be used for the parser to return to the start of
+> + * object or array saved by t the ujson_reader_state_get() function.
+> + *
+> + * @param self A ujson_reader
+> + * @param state An parser state as returned by the ujson_reader_state_get().
+> + */
+> +static inline void ujson_reader_state_load(ujson_reader *self, ujson_reader_state state)
 > +{
-> +	int pid;
-> +	unsigned int i, params_len = params_array_len(params);
-> +	char *argv[params_len + 2];
+> +	if (ujson_reader_err(self))
+> +		return;
 > +
-> +	if (!tst_test->runs_script)
-> +		tst_brk(TBROK, "runs_script flag must be set!");
+> +	self->off = state.off;
+> +	self->sub_off = state.off;
+> +	self->depth = state.depth;
+> +}
 > +
-> +	argv[0] = (char*)script_name;
+> +/**
+> + * @brief Resets the parser to a start.
+> + *
+> + * @param self A ujson_reader
+> + */
+> +static inline void ujson_reader_reset(ujson_reader *self)
+> +{
+> +	self->off = 0;
+> +	self->sub_off = 0;
+> +	self->depth = 0;
+> +	self->err[0] = 0;
+> +}
 > +
-> +	if (params) {
-> +		for (i = 0; i < params_len; i++)
-> +			argv[i+1] = params[i];
+> +/**
+> + * @brief Loads a file into an ujson_reader buffer.
+> + *
+> + * The reader has to be later freed by ujson_reader_free().
+> + *
+> + * @param path A path to a file.
+> + * @return A ujson_reader or NULL in a case of a failure.
+> + */
+> +ujson_reader *ujson_reader_load(const char *path);
+> +
+> +/**
+> + * @brief Frees an ujson_reader buffer.
+> + *
+> + * @param self A ujson_reader allocated by ujson_reader_load() function.
+> + */
+> +void ujson_reader_free(ujson_reader *self);
+> +
+> +/**
+> + * @brief Prints errors and warnings at the end of parsing.
+> + *
+> + * Checks if self->err is set and prints the error with ujson_reader_err()
+> + *
+> + * Checks if there is any text left after the parser has finished with
+> + * ujson_reader_consumed() and prints a warning if there were any non-whitespace
+> + * characters left.
+> + *
+> + * @param self A ujson_reader
+> + */
+> +void ujson_reader_finish(ujson_reader *self);
+> +
+> +/**
+> + * @brief Returns non-zero if whole buffer has been consumed.
+> + *
+> + * @param self A ujson_reader.
+> + * @return Non-zero if whole buffer was consumed.
+> + */
+> +static inline int ujson_reader_consumed(ujson_reader *self)
+> +{
+> +	return self->off >= self->len;
+> +}
+> +
+> +#endif /* UJSON_H */
+> diff --git a/include/ujson_utf.h b/include/ujson_utf.h
+> new file mode 100644
+> index 000000000..f939fbe8c
+> --- /dev/null
+> +++ b/include/ujson_utf.h
+> @@ -0,0 +1,168 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2022-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +/**
+> + * @file ujson_utf.h
+> + * @brief Unicode helper macros and functions.
+> + */
+> +
+> +#ifndef UJSON_UTF_H
+> +#define UJSON_UTF_H
+> +
+> +#include <stdint.h>
+> +#include <stddef.h>
+> +
+> +/** Returns true if unicode byte is ASCII */
+> +#define UJSON_UTF8_IS_ASCII(ch) (!((ch) & 0x80))
+> +/** Returns true if we have first unicode byte of single byte sequence */
+> +#define UJSON_UTF8_IS_NBYTE(ch) (((ch) & 0xc0) == 0x80)
+> +/** Returns true if we have first unicode byte of two byte sequence */
+> +#define UJSON_UTF8_IS_2BYTE(ch) (((ch) & 0xe0) == 0xc0)
+> +/** Returns true if we have first unicode byte of three byte sequence */
+> +#define UJSON_UTF8_IS_3BYTE(ch) (((ch) & 0xf0) == 0xe0)
+> +/** Returns true if we have first unicode byte of four byte sequence */
+> +#define UJSON_UTF8_IS_4BYTE(ch) (((ch) & 0xf8) == 0xf0)
+> +
+> +#define UJSON_UTF8_NBYTE_MASK 0x3f
+> +
+> +/**
+> + * @brief Parses next unicode character in UTF-8 string.
+> + * @param str A pointer to the C string.
+> + * @return A unicode character or 0 on error or end of the string.
+> + */
+> +static inline uint32_t ujson_utf8_next(const char **str)
+> +{
+> +	uint32_t s0 = *str[0];
+> +
+> +	(*str)++;
+> +
+> +	if (UJSON_UTF8_IS_ASCII(s0))
+> +		return s0;
+> +
+> +	uint32_t s1 = *str[0];
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(s1))
+> +		return 0;
+> +
+> +	s1 &= UJSON_UTF8_NBYTE_MASK;
+> +
+> +	(*str)++;
+> +
+> +	if (UJSON_UTF8_IS_2BYTE(s0))
+> +		return (s0 & 0x1f)<<6 | s1;
+> +
+> +	uint32_t s2 = *str[0];
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(s2))
+> +		return 0;
+> +
+> +	s2 &= UJSON_UTF8_NBYTE_MASK;
+> +
+> +	(*str)++;
+> +
+> +	if (UJSON_UTF8_IS_3BYTE(s0))
+> +		return (s0 & 0x0f)<<12 | s1<<6 | s2;
+> +
+> +	(*str)++;
+> +
+> +	uint32_t s3 = *str[0];
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(s2))
+> +		return 0;
+> +
+> +	s3 &= UJSON_UTF8_NBYTE_MASK;
+> +
+> +	if (UJSON_UTF8_IS_4BYTE(s0))
+> +		return (s0 & 0x07)<<18 | s1<<12 | s2<<6 | s3;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * @brief Returns number of bytes next character is occupying in an UTF-8 string.
+> + *
+> + * @param str A pointer to a string.
+> + * @param off An offset into the string, must point to a valid multibyte boundary.
+> + * @return Number of bytes next character occupies, zero on string end and -1 on failure.
+> + */
+> +int8_t ujson_utf8_next_chsz(const char *str, size_t off);
+> +
+> +/**
+> + * @brief Returns number of bytes previous character is occupying in an UTF-8 string.
+> + *
+> + * @param str A pointer to a string.
+> + * @param off An offset into the string, must point to a valid multibyte boundary.
+> + * @return Number of bytes previous character occupies, and -1 on failure.
+> + */
+> +int8_t ujson_utf8_prev_chsz(const char *str, size_t off);
+> +
+> +/**
+> + * @brief Returns a number of characters in UTF-8 string.
+> + *
+> + * Returns number of characters in an UTF-8 string, which may be less or equal
+> + * to what strlen() reports.
+> + *
+> + * @param str An UTF-8 string.
+> + * @return Number of characters in the string.
+> + */
+> +size_t ujson_utf8_strlen(const char *str);
+> +
+> +/**
+> + * @brief Returns a number of bytes needed to store unicode character into UTF-8.
+> + *
+> + * @param unicode A unicode character.
+> + * @return Number of utf8 bytes required to store a unicode character.
+> + */
+> +static inline unsigned int ujson_utf8_bytes(uint32_t unicode)
+> +{
+> +	if (unicode < 0x0080)
+> +		return 1;
+> +
+> +	if (unicode < 0x0800)
+> +		return 2;
+> +
+> +	if (unicode < 0x10000)
+> +		return 3;
+> +
+> +	return 4;
+> +}
+> +
+> +/**
+> + * @brief Writes an unicode character into a UTF-8 buffer.
+> + *
+> + * The buffer _must_ be large enough!
+> + *
+> + * @param unicode A unicode character.
+> + * @param buf A byte buffer.
+> + * @return A number of bytes written.
+> + */
+> +static inline int ujson_to_utf8(uint32_t unicode, char *buf)
+> +{
+> +	if (unicode < 0x0080) {
+> +		buf[0] = unicode & 0x007f;
+> +		return 1;
 > +	}
 > +
-> +	argv[params_len+1] = NULL;
+> +	if (unicode < 0x0800) {
+> +		buf[0] = 0xc0 | (0x1f & (unicode>>6));
+> +		buf[1] = 0x80 | (0x3f & unicode);
+> +		return 2;
+> +	}
 > +
-> +	pid = SAFE_FORK();
-> +	if (pid)
-> +		return pid;
+> +	if (unicode < 0x10000) {
+> +		buf[0] = 0xe0 | (0x0f & (unicode>>12));
+> +		buf[1] = 0x80 | (0x3f & (unicode>>6));
+> +		buf[2] = 0x80 | (0x3f & unicode);
+> +		return 3;
+> +	}
 > +
-> +	execvpe(script_name, argv, environ);
+> +	buf[0] = 0xf0 | (0x07 & (unicode>>18));
+> +	buf[1] = 0x80 | (0x3f & (unicode>>12));
+> +	buf[2] = 0x80 | (0x3f & (unicode>>6));
+> +	buf[3] = 0x80 | (0x3f & unicode);
+> +	return 4;
+> +}
 > +
-> +	tst_brk(TBROK | TERRNO, "execvpe(%s, ...) failed!", script_name);
+> +#endif /* UJSON_UTF_H */
+> diff --git a/include/ujson_writer.h b/include/ujson_writer.h
+> new file mode 100644
+> index 000000000..dfcc95053
+> --- /dev/null
+> +++ b/include/ujson_writer.h
+> @@ -0,0 +1,224 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +/**
+> + * @file ujson_writer.h
+> + * @brief A JSON writer.
+> + *
+> + * All the function that add values return zero on success and non-zero on a
+> + * failure. Once an error has happened all subsequent attempts to add more
+> + * values return with non-zero exit status immediatelly. This is designed
+> + * so that we can add several values without checking each return value
+> + * and only check if error has happened at the end of the sequence.
+> + *
+> + * Failures may occur:
+> + * - if we call the functions out of order, e.g. attempt to finish array when
+> + *   we are not writing out an array.
+> + * - if we run out of recursion stack
+> + * - may be propagated from the writer function, e.g. allocation failure, no
+> + *   space on disk, etc.
+> + */
+> +
+> +#ifndef UJSON_WRITER_H
+> +#define UJSON_WRITER_H
+> +
+> +#include <ujson_common.h>
+> +
+> +/** @brief A JSON writer */
+> +struct ujson_writer {
+> +	unsigned int depth;
+> +	char depth_type[UJSON_RECURSION_MAX/8];
+> +	char depth_first[UJSON_RECURSION_MAX/8];
+> +
+> +	/** Handler to print errors and warnings */
+> +	void (*err_print)(void *err_print_priv, const char *line);
+> +	void *err_print_priv;
+> +	char err[UJSON_ERR_MAX];
+> +
+> +	/** Handler to produce JSON output */
+> +	int (*out)(struct ujson_writer *self, const char *buf, size_t buf_size);
+> +	void *out_priv;
+> +};
+> +
+> +/**
+> + * @brief An ujson_writer initializer with default values.
+> + *
+> + * @param vout A pointer to function to write out the data.
+> + * @param vout_priv An user pointer passed to the out function.
+> + *
+> + * @return An ujson_writer initialized with default values.
+> + */
+> +#define UJSON_WRITER_INIT(vout, vout_priv) { \
+> +	.err_print = UJSON_ERR_PRINT, \
+> +	.err_print_priv = UJSON_ERR_PRINT_PRIV, \
+> +	.out = vout, \
+> +	.out_priv = vout_priv \
+> +}
+> +
+> +/**
+> + * @brief Allocates a JSON file writer.
+> + *
+> + * The call may fail either when file cannot be opened for writing or if
+> + * allocation has failed. In all cases errno should be set correctly.
+> + *
+> + * @param path A path to the file, file is opened for writing and created if it
+> + *             does not exist.
+> + *
+> + * @return A ujson_writer pointer or NULL in a case of failure.
+> + */
+> +ujson_writer *ujson_writer_file_open(const char *path);
+> +
+> +/**
+> + * @brief Closes and frees a JSON file writer.
+> + *
+> + * @param self A ujson_writer file writer.
+> + *
+> + * @return Zero on success, non-zero on a failure and errno is set.
+> + */
+> +int ujson_writer_file_close(ujson_writer *self);
+> +
+> +/**
+> + * @brief Returns true if writer error happened.
+> + *
+> + * @param self A JSON writer.
+> + *
+> + * @return True if error has happened.
+> + */
+> +static inline int ujson_writer_err(ujson_writer *self)
+> +{
+> +	return !!self->err[0];
+> +}
+> +
+> +/**
+> + * @brief Starts a JSON object.
+> + *
+> + * For a top level object the id must be NULL, every other object has to have
+> + * non-NULL id. The call will also fail if maximal recursion depth
+> + * UJSON_RECURSION_MAX has been reached.
+> + *
+> + * @param self A JSON writer.
+> + * @param id An object name.
+> + *
+> + * @return Zero on a success, non-zero otherwise.
+> + */
+> +int ujson_obj_start(ujson_writer *self, const char *id);
+> +
+> +/**
+> + * @brief Finishes a JSON object.
+> + *
+> + * The call will fail if we are currenlty not writing out an object.
+> + *
+> + * @param self A JSON writer.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_obj_finish(ujson_writer *self);
+> +
+> +/**
+> + * @brief Starts a JSON array.
+> + *
+> + * For a top level array the id must be NULL, every other array has to have
+> + * non-NULL id. The call will also fail if maximal recursion depth
+> + * UJSON_RECURSION_MAX has been reached.
+> + *
+> + * @param self A JSON writer.
+> + * @param id An array name.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_arr_start(ujson_writer *self, const char *id);
+> +
+> +/**
+> + * @brief Finishes a JSON array.
+> + *
+> + * The call will fail if we are currenlty not writing out an array.
+> + *
+> + * @param self A JSON writer.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_arr_finish(ujson_writer *self);
+> +
+> +/**
+> + * @brief Adds a null value.
+> + *
+> + * The id must be NULL inside of an array, and must be non-NULL inside of an
+> + * object.
+> + *
+> + * @param self A JSON writer.
+> + * @param id A null value name.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_null_add(ujson_writer *self, const char *id);
+> +
+> +/**
+> + * @brief Adds an integer value.
+> + *
+> + * The id must be NULL inside of an array, and must be non-NULL inside of an
+> + * object.
+> + *
+> + * @param self A JSON writer.
+> + * @param id An integer value name.
+> + * @param val An integer value.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_int_add(ujson_writer *self, const char *id, long val);
+> +
+> +/**
+> + * @brief Adds a bool value.
+> + *
+> + * The id must be NULL inside of an array, and must be non-NULL inside of an
+> + * object.
+> + *
+> + * @param self A JSON writer.
+> + * @param id An boolean value name.
+> + * @param val A boolean value.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_bool_add(ujson_writer *self, const char *id, int val);
+> +
+> +/**
+> + * @brief Adds a float value.
+> + *
+> + * The id must be NULL inside of an array, and must be non-NULL inside of an
+> + * object.
+> + *
+> + * @param self A JSON writer.
+> + * @param id A floating point value name.
+> + * @param val A floating point value.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_float_add(ujson_writer *self, const char *id, double val);
+> +
+> +/**
+> + * @brief Adds a string value.
+> + *
+> + * The id must be NULL inside of an array, and must be non-NULL inside of an
+> + * object.
+> + *
+> + * @param self A JSON writer.
+> + * @param id A string value name.
+> + * @param str An UTF8 string value.
+> + *
+> + * @return Zero on success, non-zero otherwise.
+> + */
+> +int ujson_str_add(ujson_writer *self, const char *id, const char *str);
+> +
+> +/**
+> + * @brief Finalizes json writer.
+> + *
+> + * Finalizes the json writer, throws possible errors through the error printing
+> + * function.
+> + *
+> + * @param self A JSON writer.
+> + * @return Overall error value.
+> + */
+> +int ujson_writer_finish(ujson_writer *self);
+> +
+> +#endif /* UJSON_WRITER_H */
+> diff --git a/libs/ujson/Makefile b/libs/ujson/Makefile
+> new file mode 100644
+> index 000000000..4c8508010
+> --- /dev/null
+> +++ b/libs/ujson/Makefile
+> @@ -0,0 +1,12 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +#
+> +# Copyright (C) Cyril Hrubis <chrubis@suse.cz>
+> +
+> +top_srcdir		?= ../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INTERNAL_LIB		:= libujson.a
+> +
+> +include $(top_srcdir)/include/mk/lib.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/libs/ujson/ujson_common.c b/libs/ujson/ujson_common.c
+> new file mode 100644
+> index 000000000..c9cada9a9
+> --- /dev/null
+> +++ b/libs/ujson/ujson_common.c
+> @@ -0,0 +1,38 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +#include <stdio.h>
+> +#include "ujson_common.h"
+> +
+> +void ujson_err_handler(void *err_print_priv, const char *line)
+> +{
+> +	fputs(line, err_print_priv);
+> +	putc('\n', err_print_priv);
+> +}
+> +
+> +const char *ujson_type_name(enum ujson_type type)
+> +{
+> +	switch (type) {
+> +	case UJSON_VOID:
+> +		return "void";
+> +	case UJSON_INT:
+> +		return "integer";
+> +	case UJSON_FLOAT:
+> +		return "float";
+> +	case UJSON_BOOL:
+> +		return "boolean";
+> +	case UJSON_NULL:
+> +		return "null";
+> +	case UJSON_STR:
+> +		return "string";
+> +	case UJSON_OBJ:
+> +		return "object";
+> +	case UJSON_ARR:
+> +		return "array";
+> +	default:
+> +		return "invalid";
+> +	}
+> +}
+> +
+> diff --git a/libs/ujson/ujson_reader.c b/libs/ujson/ujson_reader.c
+> new file mode 100644
+> index 000000000..d508f00d3
+> --- /dev/null
+> +++ b/libs/ujson/ujson_reader.c
+> @@ -0,0 +1,1081 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <stdarg.h>
+> +#include <stdint.h>
+> +
+> +#include "ujson_utf.h"
+> +#include "ujson_reader.h"
+> +
+> +static const struct ujson_obj empty = {};
+> +const struct ujson_obj *ujson_empty_obj = &empty;
+> +
+> +static inline int buf_empty(ujson_reader *buf)
+> +{
+> +	return buf->off >= buf->len;
+> +}
+> +
+> +static int eatws(ujson_reader *buf)
+> +{
+> +	while (!buf_empty(buf)) {
+> +		switch (buf->json[buf->off]) {
+> +		case ' ':
+> +		case '\t':
+> +		case '\n':
+> +		case '\r':
+> +		break;
+> +		default:
+> +			goto ret;
+> +		}
+> +
+> +		buf->off += 1;
+> +	}
+> +ret:
+> +	return buf_empty(buf);
+> +}
+> +
+> +static char getb(ujson_reader *buf)
+> +{
+> +	if (buf_empty(buf))
+> +		return 0;
+> +
+> +	return buf->json[buf->off++];
+> +}
+> +
+> +static char peekb_off(ujson_reader *buf, size_t off)
+> +{
+> +	if (buf->off + off >= buf->len)
+> +		return 0;
+> +
+> +	return buf->json[buf->off + off];
+> +}
+> +
+> +static char peekb(ujson_reader *buf)
+> +{
+> +	if (buf_empty(buf))
+> +		return 0;
+> +
+> +	return buf->json[buf->off];
+> +}
+> +
+> +static int eatb(ujson_reader *buf, char ch)
+> +{
+> +	if (peekb(buf) != ch)
+> +		return 0;
+> +
+> +	getb(buf);
+> +	return 1;
+> +}
+> +
+> +static int eatb2(ujson_reader *buf, char ch1, char ch2)
+> +{
+> +	if (peekb(buf) != ch1 && peekb(buf) != ch2)
+> +		return 0;
+> +
+> +	getb(buf);
+> +	return 1;
+> +}
+> +
+> +static int eatstr(ujson_reader *buf, const char *str)
+> +{
+> +	while (*str) {
+> +		if (!eatb(buf, *str))
+> +			return 0;
+> +		str++;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+> +static int hex2val(unsigned char b)
+> +{
+> +	switch (b) {
+> +	case '0' ... '9':
+> +		return b - '0';
+> +	case 'a' ... 'f':
+> +		return b - 'a' + 10;
+> +	case 'A' ... 'F':
+> +		return b - 'A' + 10;
+> +	default:
+> +		return -1;
+> +	}
+> +}
+> +
+> +static int32_t parse_ucode_cp(ujson_reader *buf)
+> +{
+> +	int ret = 0, v, i;
+> +
+> +	for (i = 0; i < 4; i++) {
+> +		if ((v = hex2val(getb(buf))) < 0)
+> +			goto err;
+> +		ret *= 16;
+> +		ret += v;
+> +	}
+> +
+> +	return ret;
+> +err:
+> +	ujson_err(buf, "Expected four hexadecimal digits");
+> +	return -1;
+> +}
+> +
+> +static unsigned int parse_ucode_esc(ujson_reader *buf, char *str,
+> +                                    size_t off, size_t len)
+> +{
+> +	int32_t ucode = parse_ucode_cp(buf);
+> +
+> +	if (ucode < 0)
+> +		return 0;
+> +
+> +	if (!str)
+> +		return ucode;
+> +
+> +	if (ujson_utf8_bytes(ucode) + 1 >= len - off) {
+> +		ujson_err(buf, "String buffer too short!");
+> +		return 0;
+> +	}
+> +
+> +	return ujson_to_utf8(ucode, str+off);
+> +}
+> +
+> +static int copy_str(ujson_reader *buf, char *str, size_t len)
+> +{
+> +	size_t pos = 0;
+> +	int esc = 0;
+> +	unsigned int l;
+> +
+> +	eatb(buf, '"');
+> +
+> +	for (;;) {
+> +		if (buf_empty(buf)) {
+> +			ujson_err(buf, "Unterminated string");
+> +			return 1;
+> +		}
+> +
+> +		if (!esc && eatb(buf, '"')) {
+> +			if (str)
+> +				str[pos] = 0;
+> +			return 0;
+> +		}
+> +
+> +		unsigned char b = getb(buf);
+> +
+> +		if (b < 0x20) {
+> +			if (!peekb(buf))
+> +				ujson_err(buf, "Unterminated string");
+> +			else
+> +				ujson_err(buf, "Invalid string character 0x%02x", b);
+> +			return 1;
+> +		}
+> +
+> +		if (!esc && b == '\\') {
+> +			esc = 1;
+> +			continue;
+> +		}
+> +
+> +		if (esc) {
+> +			switch (b) {
+> +			case '"':
+> +			case '\\':
+> +			case '/':
+> +			break;
+> +			case 'b':
+> +				b = '\b';
+> +			break;
+> +			case 'f':
+> +				b = '\f';
+> +			break;
+> +			case 'n':
+> +				b = '\n';
+> +			break;
+> +			case 'r':
+> +				b = '\r';
+> +			break;
+> +			case 't':
+> +				b = '\t';
+> +			break;
+> +			case 'u':
+> +				if (!(l = parse_ucode_esc(buf, str, pos, len)))
+> +					return 1;
+> +				pos += l;
+> +				b = 0;
+> +			break;
+> +			default:
+> +				ujson_err(buf, "Invalid escape \\%c", b);
+> +				return 1;
+> +			}
+> +			esc = 0;
+> +		}
+> +
+> +		if (str && b) {
+> +			if (pos + 1 >= len) {
+> +				ujson_err(buf, "String buffer too short!");
+> +				return 1;
+> +			}
+> +
+> +			str[pos++] = b;
+> +		}
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+> +static int copy_id_str(ujson_reader *buf, char *str, size_t len)
+> +{
+> +	size_t pos = 0;
+> +
+> +	if (eatws(buf))
+> +		goto err0;
+> +
+> +	if (!eatb(buf, '"'))
+> +		goto err0;
+> +
+> +	for (;;) {
+> +		if (buf_empty(buf)) {
+> +			ujson_err(buf, "Unterminated ID string");
+> +			return 1;
+> +		}
+> +
+> +		if (eatb(buf, '"')) {
+> +			str[pos] = 0;
+> +			break;
+> +		}
+> +
+> +		if (pos >= len-1) {
+> +			ujson_err(buf, "ID string too long");
+> +			return 1;
+> +		}
+> +
+> +		str[pos++] = getb(buf);
+> +	}
+> +
+> +	if (eatws(buf))
+> +		goto err1;
+> +
+> +	if (!eatb(buf, ':'))
+> +		goto err1;
+> +
+> +	return 0;
+> +err0:
+> +	ujson_err(buf, "Expected ID string");
+> +	return 1;
+> +err1:
+> +	ujson_err(buf, "Expected ':' after ID string");
+> +	return 1;
+> +}
+> +
+> +static int is_digit(char b)
+> +{
+> +	switch (b) {
+> +	case '0' ... '9':
+> +		return 1;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int get_int(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	long val = 0;
+> +	int sign = 1;
+> +
+> +	if (eatb(buf, '-')) {
+> +		sign = -1;
+> +		if (!is_digit(peekb(buf))) {
+> +			ujson_err(buf, "Expected digit(s)");
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	if (peekb(buf) == '0' && is_digit(peekb_off(buf, 1))) {
+> +		ujson_err(buf, "Leading zero in number!");
+> +		return 1;
+> +	}
+> +
+> +	while (is_digit(peekb(buf))) {
+> +		val *= 10;
+> +		val += getb(buf) - '0';
+> +		//TODO: overflow?
+> +	}
+> +
+> +	if (sign < 0)
+> +		val = -val;
+> +
+> +	res->val_int = val;
+> +	res->val_float = val;
+> +
+> +	return 0;
+> +}
+> +
+> +static int eat_digits(ujson_reader *buf)
+> +{
+> +	if (!is_digit(peekb(buf))) {
+> +		ujson_err(buf, "Expected digit(s)");
+> +		return 1;
+> +	}
+> +
+> +	while (is_digit(peekb(buf)))
+> +		getb(buf);
+> +
+> +	return 0;
+> +}
+> +
+> +static int get_float(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	off_t start = buf->off;
+> +
+> +	eatb(buf, '-');
+> +
+> +	if (peekb(buf) == '0' && is_digit(peekb_off(buf, 1))) {
+> +		ujson_err(buf, "Leading zero in float");
+> +		return 1;
+> +	}
+> +
+> +	if (eat_digits(buf))
+> +		return 1;
+> +
+> +	switch (getb(buf)) {
+> +	case '.':
+> +		if (eat_digits(buf))
+> +			return 1;
+> +
+> +		if (!eatb2(buf, 'e', 'E'))
+> +			break;
+> +
+> +		/* fallthrough */
+> +	case 'e':
+> +	case 'E':
+> +		eatb2(buf, '+', '-');
+> +
+> +		if (eat_digits(buf))
+> +			return 1;
+> +	break;
+> +	}
+> +
+> +	size_t len = buf->off - start;
+> +	char tmp[len+1];
+> +
+> +	memcpy(tmp, buf->json + start, len);
+> +
+> +	tmp[len] = 0;
+> +
+> +	res->val_float = strtod(tmp, NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int get_bool(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	switch (peekb(buf)) {
+> +	case 'f':
+> +		if (!eatstr(buf, "false")) {
+> +			ujson_err(buf, "Expected 'false'");
+> +			return 1;
+> +		}
+> +
+> +		res->val_bool = 0;
+> +	break;
+> +	case 't':
+> +		if (!eatstr(buf, "true")) {
+> +			ujson_err(buf, "Expected 'true'");
+> +			return 1;
+> +		}
+> +
+> +		res->val_bool = 1;
+> +	break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int get_null(ujson_reader *buf)
+> +{
+> +	if (!eatstr(buf, "null")) {
+> +		ujson_err(buf, "Expected 'null'");
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_obj_skip(ujson_reader *buf)
+> +{
+> +	struct ujson_val res = {};
+> +
+> +	UJSON_OBJ_FOREACH(buf, &res) {
+> +		switch (res.type) {
+> +		case UJSON_OBJ:
+> +			if (ujson_obj_skip(buf))
+> +				return 1;
+> +		break;
+> +		case UJSON_ARR:
+> +			if (ujson_arr_skip(buf))
+> +				return 1;
+> +		break;
+> +		default:
+> +		break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_arr_skip(ujson_reader *buf)
+> +{
+> +	struct ujson_val res = {};
+> +
+> +	UJSON_ARR_FOREACH(buf, &res) {
+> +		switch (res.type) {
+> +		case UJSON_OBJ:
+> +			if (ujson_obj_skip(buf))
+> +				return 1;
+> +		break;
+> +		case UJSON_ARR:
+> +			if (ujson_arr_skip(buf))
+> +				return 1;
+> +		break;
+> +		default:
+> +		break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static enum ujson_type next_num_type(ujson_reader *buf)
+> +{
+> +	size_t off = 0;
+> +
+> +	for (;;) {
+> +		char b = peekb_off(buf, off++);
+> +
+> +		switch (b) {
+> +		case 0:
+> +		case ',':
+> +			return UJSON_INT;
+> +		case '.':
+> +		case 'e':
+> +		case 'E':
+> +			return UJSON_FLOAT;
+> +		}
+> +	}
+> +
+> +	return UJSON_VOID;
+> +}
+> +
+> +enum ujson_type ujson_next_type(ujson_reader *buf)
+> +{
+> +	if (eatws(buf)) {
+> +		ujson_err(buf, "Unexpected end");
+> +		return UJSON_VOID;
+> +	}
+> +
+> +	char b = peekb(buf);
+> +
+> +	switch (b) {
+> +	case '{':
+> +		return UJSON_OBJ;
+> +	case '[':
+> +		return UJSON_ARR;
+> +	case '"':
+> +		return UJSON_STR;
+> +	case '-':
+> +	case '0' ... '9':
+> +		return next_num_type(buf);
+> +	case 'f':
+> +	case 't':
+> +		return UJSON_BOOL;
+> +	break;
+> +	case 'n':
+> +		return UJSON_NULL;
+> +	break;
+> +	default:
+> +		ujson_err(buf, "Expected object, array, number or string");
+> +		return UJSON_VOID;
+> +	}
+> +}
+> +
+> +enum ujson_type ujson_reader_start(ujson_reader *buf)
+> +{
+> +	enum ujson_type type = ujson_next_type(buf);
+> +
+> +	switch (type) {
+> +	case UJSON_ARR:
+> +	case UJSON_OBJ:
+> +	case UJSON_VOID:
+> +	break;
+> +	default:
+> +		ujson_err(buf, "JSON can start only with array or object");
+> +		type = UJSON_VOID;
+> +	break;
+> +	}
+> +
+> +	return type;
+> +}
+> +
+> +static int get_value(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	int ret = 0;
+> +
+> +	res->type = ujson_next_type(buf);
+> +
+> +	switch (res->type) {
+> +	case UJSON_STR:
+> +		if (copy_str(buf, res->buf, res->buf_size)) {
+> +			res->type = UJSON_VOID;
+> +			return 0;
+> +		}
+> +		res->val_str = res->buf;
+> +		return 1;
+> +	case UJSON_INT:
+> +		ret = get_int(buf, res);
+> +	break;
+> +	case UJSON_FLOAT:
+> +		ret = get_float(buf, res);
+> +	break;
+> +	case UJSON_BOOL:
+> +		ret = get_bool(buf, res);
+> +	break;
+> +	case UJSON_NULL:
+> +		ret = get_null(buf);
+> +	break;
+> +	case UJSON_VOID:
+> +		return 0;
+> +	case UJSON_ARR:
+> +	case UJSON_OBJ:
+> +		buf->sub_off = buf->off;
+> +		return 1;
+> +	}
+> +
+> +	if (ret) {
+> +		res->type = UJSON_VOID;
+> +		return 0;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+> +static int pre_next(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (!eatb(buf, ',')) {
+> +		ujson_err(buf, "Expected ','");
+> +		res->type = UJSON_VOID;
+> +		return 1;
+> +	}
+> +
+> +	if (eatws(buf)) {
+> +		ujson_err(buf, "Unexpected end");
+> +		res->type = UJSON_VOID;
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int check_end(ujson_reader *buf, struct ujson_val *res, char b)
+> +{
+> +	if (eatws(buf)) {
+> +		ujson_err(buf, "Unexpected end");
+> +		return 1;
+> +	}
+> +
+> +	if (eatb(buf, b)) {
+> +		res->type = UJSON_VOID;
+> +		eatws(buf);
+> +		eatb(buf, 0);
+> +		buf->depth--;
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * This is supposed to return a pointer to a string stored as a first member of
+> + * a structure given an array.
+> + *
+> + * e.g.
+> + *
+> + *	struct foo {
+> + *		const char *key;
+> + *		...
+> + *	};
+> + *
+> + *	const struct foo bar[10] = {...};
+> + *
+> + *      // Returns a pointer to the key string in a second structure in bar[].
+> + *	const char *key = list_elem(bar, sizeof(struct foo), 1);
+> + */
+> +static inline const char *list_elem(const void *arr, size_t memb_size, size_t idx)
+> +{
+> +	return *(const char**)(arr + idx * memb_size);
+> +}
+> +
+> +size_t ujson_lookup(const void *arr, size_t memb_size, size_t list_len,
+> +                    const char *key)
+> +{
+> +	size_t l = 0;
+> +	size_t r = list_len-1;
+> +	size_t mid = -1;
+> +
+> +	if (!list_len)
+> +		return (size_t)-1;
+> +
+> +	while (r - l > 1) {
+> +		mid = (l+r)/2;
+> +
+> +		int ret = strcmp(list_elem(arr, memb_size, mid), key);
+> +		if (!ret)
+> +			return mid;
+> +
+> +		if (ret < 0)
+> +			l = mid;
+> +		else
+> +			r = mid;
+> +	}
+> +
+> +	if (r != mid && !strcmp(list_elem(arr, memb_size, r), key))
+> +		return r;
+> +
+> +	if (l != mid && !strcmp(list_elem(arr, memb_size, l), key))
+> +		return l;
 > +
 > +	return -1;
 > +}
 > +
->   static void update_results(int ttype)
->   {
->   	if (!results)
-> @@ -1226,6 +1272,11 @@ static void do_setup(int argc, char *argv[])
->   		tdebug = 1;
->   	}
->   
-> +	if (tst_test->runs_script) {
-> +		tst_test->child_needs_reinit = 1;
-> +		tst_test->forks_child = 1;
+> +static int skip_obj_val(ujson_reader *buf)
+> +{
+> +	struct ujson_val dummy = {};
+> +
+> +	if (!get_value(buf, &dummy))
+> +		return 0;
+> +
+> +	switch (dummy.type) {
+> +	case UJSON_OBJ:
+> +		return !ujson_obj_skip(buf);
+> +	case UJSON_ARR:
+> +		return !ujson_arr_skip(buf);
+> +	default:
+> +		return 1;
 > +	}
-> +
->   	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
->   		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
->   
-> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-> index e8afd06f3..d0dacf62a 100644
-> --- a/testcases/lib/.gitignore
-> +++ b/testcases/lib/.gitignore
-> @@ -23,3 +23,4 @@
->   /tst_sleep
->   /tst_supported_fs
->   /tst_timeout_kill
-> +/tst_res_
-> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-> index 990b46089..928d76d62 100644
-> --- a/testcases/lib/Makefile
-> +++ b/testcases/lib/Makefile
-> @@ -13,6 +13,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
->   			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
->   			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
->   			   tst_check_kconfigs tst_cgctl tst_fsfreeze tst_ns_create tst_ns_exec\
-> -			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled
-> +			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_
->   
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/lib/run_tests.sh b/testcases/lib/run_tests.sh
-> new file mode 100755
-> index 000000000..60e7d1bcf
-> --- /dev/null
-> +++ b/testcases/lib/run_tests.sh
-> @@ -0,0 +1,11 @@
-> +#!/bin/sh
-> +
-> +testdir=$(realpath $(dirname $0))
-> +export PATH=$PATH:$testdir:$testdir/tests/
-> +
-> +for i in `seq -w 01 06`; do
-> +	echo
-> +	echo "*** Running shell_test$i ***"
-> +	echo
-> +	./tests/shell_test$i
-> +done
-> diff --git a/testcases/lib/tests/.gitignore b/testcases/lib/tests/.gitignore
-> new file mode 100644
-> index 000000000..da967c4d6
-> --- /dev/null
-> +++ b/testcases/lib/tests/.gitignore
-> @@ -0,0 +1,6 @@
-> +shell_test01
-> +shell_test02
-> +shell_test03
-> +shell_test04
-> +shell_test05
-> +shell_test06
-> diff --git a/testcases/lib/tests/Makefile b/testcases/lib/tests/Makefile
-> new file mode 100644
-> index 000000000..5a5cf5310
-> --- /dev/null
-> +++ b/testcases/lib/tests/Makefile
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-> +# Ngie Cooper, August 2009
-> +
-> +top_srcdir		?= ../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +INSTALL_TARGETS=
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/lib/tests/shell_test01.c b/testcases/lib/tests/shell_test01.c
-> new file mode 100644
-> index 000000000..b9f07308e
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test01.c
-> @@ -0,0 +1,17 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
-> +{
-> +	tst_run_script("shell_test_pass.sh", NULL);
-> +	tst_res(TINFO, "C test exits now");
 > +}
 > +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test02.c b/testcases/lib/tests/shell_test02.c
-> new file mode 100644
-> index 000000000..087055794
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test02.c
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
+> +static int obj_next(ujson_reader *buf, struct ujson_val *res)
 > +{
-> +	tst_run_script("shell_test_pass.sh", NULL);
-> +	tst_reap_children();
-> +	tst_res(TINFO, "Shell test has finished at this point!");
+> +	if (copy_id_str(buf, res->id, sizeof(res->id)))
+> +		return 0;
+> +
+> +	return get_value(buf, res);
 > +}
 > +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test03.c b/testcases/lib/tests/shell_test03.c
-> new file mode 100644
-> index 000000000..61436891e
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test03.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include <sys/wait.h>
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
+> +static int obj_pre_next(ujson_reader *buf, struct ujson_val *res)
 > +{
-> +	int pid, status;
+> +	if (ujson_reader_err(buf))
+> +		return 1;
 > +
-> +	pid = tst_run_script("shell_test_pass.sh", NULL);
+> +	if (check_end(buf, res, '}'))
+> +		return 1;
 > +
-> +	tst_res(TINFO, "Waiting for the pid %i", pid);
-> +
-> +	waitpid(pid, &status, 0);
-> +
-> +	tst_res(TINFO, "Shell test has %s", tst_strstatus(status));
-> +}
-> +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test04.c b/testcases/lib/tests/shell_test04.c
-> new file mode 100644
-> index 000000000..a32dd1e9f
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test04.c
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
-> +{
-> +	char *const params[] = {"param1", "param2", NULL};
-> +
-> +	tst_run_script("shell_test_check_argv.sh", params);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test05.c b/testcases/lib/tests/shell_test05.c
-> new file mode 100644
-> index 000000000..771af8fc3
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test05.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
-> +{
-> +	int pid;
-> +
-> +	pid = tst_run_script("shell_test_checkpoint.sh", NULL);
-> +
-> +	tst_res(TINFO, "Waiting for shell to sleep on checkpoint!");
-> +
-> +	TST_PROCESS_STATE_WAIT(pid, 'S', 10000);
-> +
-> +	tst_res(TINFO, "Waking shell child!");
-> +
-> +	TST_CHECKPOINT_WAKE(0);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.needs_checkpoints = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test06.c b/testcases/lib/tests/shell_test06.c
-> new file mode 100644
-> index 000000000..89d66bab0
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test06.c
-> @@ -0,0 +1,16 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Shell test example.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static void run_test(void)
-> +{
-> +	tst_run_script("shell_test_brk.sh", NULL);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.runs_script = 1,
-> +	.test_all = run_test,
-> +};
-> diff --git a/testcases/lib/tests/shell_test_brk.sh b/testcases/lib/tests/shell_test_brk.sh
-> new file mode 100755
-> index 000000000..f266dc3fe
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test_brk.sh
-> @@ -0,0 +1,6 @@
-> +#!/bin/sh
-> +
-> +. tst_env.sh
-> +
-> +tst_brk TCONF "This exits test and the next message should not be reached"
-> +tst_res TFAIL "If you see this the test failed"
-> diff --git a/testcases/lib/tests/shell_test_check_argv.sh b/testcases/lib/tests/shell_test_check_argv.sh
-> new file mode 100755
-> index 000000000..ce357027d
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test_check_argv.sh
-> @@ -0,0 +1,23 @@
-> +#!/bin/sh
-> +
-> +. tst_env.sh
-> +
-> +tst_res TINFO "argv = $@"
-> +
-> +if [ $# -ne 2 ]; then
-> +	tst_res TFAIL "Wrong number of parameters got $# expected 2"
-> +else
-> +	tst_res TPASS "Got 2 parameters"
-> +fi
-> +
-> +if [ "$1" != "param1" ]; then
-> +	tst_res TFAIL "First parameter is $1 expected param1"
-> +else
-> +	tst_res TPASS "First parameter is $1"
-> +fi
-> +
-> +if [ "$2" != "param2" ]; then
-> +	tst_res TFAIL "Second parameter is $2 expected param2"
-> +else
-> +	tst_res TPASS "Second parameter is $2"
-> +fi
-> diff --git a/testcases/lib/tests/shell_test_checkpoint.sh b/testcases/lib/tests/shell_test_checkpoint.sh
-> new file mode 100755
-> index 000000000..0ceb7cf66
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test_checkpoint.sh
-> @@ -0,0 +1,7 @@
-> +#!/bin/sh
-> +
-> +. tst_env.sh
-> +
-> +tst_res TINFO "Waiting for a checkpoint 0"
-> +tst_checkpoint wait 10000 0
-> +tst_res TPASS "Continuing after checkpoint"
-> diff --git a/testcases/lib/tests/shell_test_pass.sh b/testcases/lib/tests/shell_test_pass.sh
-> new file mode 100755
-> index 000000000..fd0684eb2
-> --- /dev/null
-> +++ b/testcases/lib/tests/shell_test_pass.sh
-> @@ -0,0 +1,6 @@
-> +#!/bin/sh
-> +
-> +. tst_env.sh
-> +
-> +tst_res TPASS "This is called from the shell script!"
-> +tst_sleep 100ms
-> diff --git a/testcases/lib/tst_env.sh b/testcases/lib/tst_env.sh
-> new file mode 100644
-> index 000000000..948bc5024
-> --- /dev/null
-> +++ b/testcases/lib/tst_env.sh
-> @@ -0,0 +1,21 @@
-> +#!/bin/sh
-> +
-> +tst_script_name=$(basename $0)
-> +
-> +if [ -z "$LTP_IPC_PATH" ]; then
-> +	echo "This script has to be executed from a LTP loader!"
-> +	exit 1
-> +fi
-> +
-> +tst_brk_()
-> +{
-> +	tst_res_ "$@"
-> +
-> +	case "$3" in
-> +		"TBROK") exit 2;;
-> +		*) exit 0;;
-> +	esac
-> +}
-> +
-> +alias tst_res="tst_res_ $tst_script_name \$LINENO"
-> +alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
-> diff --git a/testcases/lib/tst_res_.c b/testcases/lib/tst_res_.c
-> new file mode 100644
-> index 000000000..a43920f36
-> --- /dev/null
-> +++ b/testcases/lib/tst_res_.c
-> @@ -0,0 +1,58 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +
-> +static void print_help(void)
-> +{
-> +	printf("Usage: tst_res_ filename lineno [TPASS|TFAIL|TCONF|TINFO|TDEBUG] 'A short description'\n");
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int type, i;
-> +
-> +	if (argc < 5)
-> +		goto help;
-> +
-> +	if (!strcmp(argv[3], "TPASS"))
-> +		type = TPASS;
-> +	else if (!strcmp(argv[3], "TFAIL"))
-> +		type = TFAIL;
-> +	else if (!strcmp(argv[3], "TCONF"))
-> +		type = TCONF;
-> +	else if (!strcmp(argv[3], "TINFO"))
-> +		type = TINFO;
-> +	else if (!strcmp(argv[3], "TDEBUG"))
-> +		type = TDEBUG;
-> +	else
-> +		goto help;
-> +
-> +	size_t len = 0;
-> +
-> +	for (i = 4; i < argc; i++)
-> +		len += strlen(argv[i]) + 1;
-> +
-> +	char *msg = SAFE_MALLOC(len);
-> +	char *msgp = msg;
-> +
-> +	for (i = 4; i < argc; i++) {
-> +		msgp = strcpy(msgp, argv[i]);
-> +		msgp += strlen(argv[i]);
-> +		*(msgp++) = ' ';
-> +	}
-> +
-> +	*(msgp - 1) = 0;
-> +
-> +	tst_reinit();
-> +
-> +	tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
+> +	if (pre_next(buf, res))
+> +		return 1;
 > +
 > +	return 0;
-> +help:
-> +	print_help();
+> +}
+> +
+> +static int obj_next_filter(ujson_reader *buf, struct ujson_val *res,
+> +                           const struct ujson_obj *obj, const struct ujson_obj *ign)
+> +{
+> +	const struct ujson_obj_attr *attr;
+> +
+> +	for (;;) {
+> +		if (copy_id_str(buf, res->id, sizeof(res->id)))
+> +			return 0;
+> +
+> +		res->idx = obj ? ujson_obj_lookup(obj, res->id) : (size_t)-1;
+> +
+> +		if (res->idx != (size_t)-1) {
+> +			if (!get_value(buf, res))
+> +				return 0;
+> +
+> +			attr = &obj->attrs[res->idx];
+> +
+> +			if (attr->type == UJSON_VOID)
+> +				return 1;
+> +
+> +			if (attr->type == res->type)
+> +				return 1;
+> +
+> +			if (attr->type == UJSON_FLOAT &&
+> +			    res->type == UJSON_INT)
+> +				return 1;
+> +
+> +			ujson_warn(buf, "Wrong '%s' type expected %s",
+> +				     attr->key, ujson_type_name(attr->type));
+> +		} else {
+> +			if (!skip_obj_val(buf))
+> +				return 0;
+> +
+> +			if (ign && ujson_obj_lookup(ign, res->id) == (size_t)-1)
+> +				ujson_warn(buf, "Unexpected key '%s'", res->id);
+> +		}
+> +
+> +		if (obj_pre_next(buf, res))
+> +			return 0;
+> +	}
+> +}
+> +
+> +static int check_err(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (ujson_reader_err(buf)) {
+> +		res->type = UJSON_VOID;
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_obj_next_filter(ujson_reader *buf, struct ujson_val *res,
+> +                            const struct ujson_obj *obj, const struct ujson_obj *ign)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (obj_pre_next(buf, res))
+> +		return 0;
+> +
+> +	return obj_next_filter(buf, res, obj, ign);
+> +}
+> +
+> +int ujson_obj_next(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (obj_pre_next(buf, res))
+> +		return 0;
+> +
+> +	return obj_next(buf, res);
+> +}
+> +
+> +static int any_first(ujson_reader *buf, char b)
+> +{
+> +	if (eatws(buf)) {
+> +		ujson_err(buf, "Unexpected end");
+> +		return 1;
+> +	}
+> +
+> +	if (!eatb(buf, b)) {
+> +		ujson_err(buf, "Expected '%c'", b);
+> +		return 1;
+> +	}
+> +
+> +	buf->depth++;
+> +
+> +	if (buf->depth > buf->max_depth) {
+> +		ujson_err(buf, "Recursion too deep");
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_obj_first_filter(ujson_reader *buf, struct ujson_val *res,
+> +                             const struct ujson_obj *obj, const struct ujson_obj *ign)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (any_first(buf, '{'))
+> +		return 0;
+> +
+> +	if (check_end(buf, res, '}'))
+> +		return 0;
+> +
+> +	return obj_next_filter(buf, res, obj, ign);
+> +}
+> +
+> +int ujson_obj_first(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (any_first(buf, '{'))
+> +		return 0;
+> +
+> +	if (check_end(buf, res, '}'))
+> +		return 0;
+> +
+> +	return obj_next(buf, res);
+> +}
+> +
+> +static int arr_next(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	return get_value(buf, res);
+> +}
+> +
+> +int ujson_arr_first(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (any_first(buf, '['))
+> +		return 0;
+> +
+> +	if (check_end(buf, res, ']'))
+> +		return 0;
+> +
+> +	return arr_next(buf, res);
+> +}
+> +
+> +int ujson_arr_next(ujson_reader *buf, struct ujson_val *res)
+> +{
+> +	if (check_err(buf, res))
+> +		return 0;
+> +
+> +	if (check_end(buf, res, ']'))
+> +		return 0;
+> +
+> +	if (pre_next(buf, res))
+> +		return 0;
+> +
+> +	return arr_next(buf, res);
+> +}
+> +
+> +static void ujson_err_va(ujson_reader *buf, const char *fmt, va_list va)
+> +{
+> +	vsnprintf(buf->err, UJSON_ERR_MAX, fmt, va);
+> +}
+> +
+> +void ujson_err(ujson_reader *buf, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +
+> +	va_start(va, fmt);
+> +	ujson_err_va(buf, fmt, va);
+> +	va_end(va);
+> +}
+> +
+> +static void vprintf_line(ujson_reader *buf, const char *fmt, va_list va)
+> +{
+> +	char line[UJSON_ERR_MAX+1];
+> +
+> +	vsnprintf(line, sizeof(line), fmt, va);
+> +
+> +	line[UJSON_ERR_MAX] = 0;
+> +
+> +	buf->err_print(buf->err_print_priv, line);
+> +}
+> +
+> +static void printf_line(ujson_reader *buf, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +
+> +	va_start(va, fmt);
+> +	vprintf_line(buf, fmt, va);
+> +	va_end(va);
+> +}
+> +
+> +static void printf_json_line(ujson_reader *buf, size_t line_nr, const char *buf_pos)
+> +{
+> +	char line[UJSON_ERR_MAX+1];
+> +	size_t plen, i;
+> +
+> +	plen = sprintf(line, "%03zu: ", line_nr);
+> +
+> +	for (i = 0; i < UJSON_ERR_MAX-plen && buf_pos[i] && buf_pos[i] != '\n'; i++)
+> +		line[i+plen] = buf_pos[i];
+> +
+> +	line[i+plen] = 0;
+> +
+> +	buf->err_print(buf->err_print_priv, line);
+> +}
+> +
+> +static void print_arrow(ujson_reader *buf, const char *buf_pos, size_t count)
+> +{
+> +	char line[count + 7];
+> +	size_t i;
+> +
+> +	/* The '000: ' prefix */
+> +	for (i = 0; i <= 5; i++)
+> +		line[i] = ' ';
+> +
+> +	for (i = 0; i < count; i++)
+> +		line[i+5] = buf_pos[i] == '\t' ? '\t' : ' ';
+> +
+> +	line[count+5] = '^';
+> +	line[count+6] = 0;
+> +
+> +	buf->err_print(buf->err_print_priv, line);
+> +}
+> +
+> +#define ERR_LINES 10
+> +
+> +#define MIN(A, B) ((A < B) ? (A) : (B))
+> +
+> +static void print_snippet(ujson_reader *buf, const char *type)
+> +{
+> +	ssize_t i;
+> +	const char *lines[ERR_LINES] = {};
+> +	size_t cur_line = 0;
+> +	size_t cur_off = 0;
+> +	size_t last_off = buf->off;
+> +
+> +	for (;;) {
+> +		lines[(cur_line++) % ERR_LINES] = buf->json + cur_off;
+> +
+> +		while (cur_off < buf->len && buf->json[cur_off] != '\n')
+> +			cur_off++;
+> +
+> +		if (cur_off >= buf->off)
+> +			break;
+> +
+> +		cur_off++;
+> +		last_off = buf->off - cur_off;
+> +	}
+> +
+> +	printf_line(buf, "%s at line %03zu", type, cur_line);
+> +	buf->err_print(buf->err_print_priv, "");
+> +
+> +	size_t idx = 0;
+> +
+> +	for (i = MIN(ERR_LINES, cur_line); i > 0; i--) {
+> +		idx = (cur_line - i) % ERR_LINES;
+> +		printf_json_line(buf, cur_line - i + 1, lines[idx]);
+> +	}
+> +
+> +	print_arrow(buf, lines[idx], last_off);
+> +}
+> +
+> +void ujson_err_print(ujson_reader *buf)
+> +{
+> +	if (!buf->err_print)
+> +		return;
+> +
+> +	print_snippet(buf, "Parse error");
+> +	buf->err_print(buf->err_print_priv, buf->err);
+> +}
+> +
+> +void ujson_warn(ujson_reader *buf, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +
+> +	if (buf->flags & UJSON_READER_STRICT) {
+> +		va_start(va, fmt);
+> +		ujson_err_va(buf, fmt, va);
+> +		va_end(va);
+> +		return;
+> +	}
+> +
+> +	if (!buf->err_print)
+> +		return;
+> +
+> +	print_snippet(buf, "Warning");
+> +
+> +	va_start(va, fmt);
+> +	vprintf_line(buf, fmt, va);
+> +	va_end(va);
+> +}
+> +
+> +void ujson_print(void *err_print_priv, const char *line)
+> +{
+> +	fputs(line, err_print_priv);
+> +	putc('\n', err_print_priv);
+> +}
+> +
+> +ujson_reader *ujson_reader_load(const char *path)
+> +{
+> +	int fd = open(path, O_RDONLY);
+> +	ujson_reader *ret;
+> +	ssize_t res;
+> +	off_t len, off = 0;
+> +
+> +	if (fd < 0)
+> +		return NULL;
+> +
+> +	len = lseek(fd, 0, SEEK_END);
+> +	if (len == (off_t)-1) {
+> +		fprintf(stderr, "lseek() failed\n");
+> +		goto err0;
+> +	}
+> +
+> +	if (lseek(fd, 0, SEEK_SET) == (off_t)-1) {
+> +		fprintf(stderr, "lseek() failed\n");
+> +		goto err0;
+> +	}
+> +
+> +	ret = malloc(sizeof(ujson_reader) + len + 1);
+> +	if (!ret) {
+> +		fprintf(stderr, "malloc() failed\n");
+> +		goto err0;
+> +	}
+> +
+> +	memset(ret, 0, sizeof(*ret));
+> +
+> +	ret->buf[len] = 0;
+> +	ret->len = len;
+> +	ret->max_depth = UJSON_RECURSION_MAX;
+> +	ret->json = ret->buf;
+> +	ret->err_print = UJSON_ERR_PRINT;
+> +	ret->err_print_priv = UJSON_ERR_PRINT_PRIV;
+> +
+> +	while (off < len) {
+> +		res = read(fd, ret->buf + off, len - off);
+> +		if (res < 0) {
+> +			fprintf(stderr, "read() failed\n");
+> +			goto err1;
+> +		}
+> +
+> +		off += res;
+> +	}
+> +
+> +	close(fd);
+> +
+> +	return ret;
+> +err1:
+> +	free(ret);
+> +err0:
+> +	close(fd);
+> +	return NULL;
+> +}
+> +
+> +void ujson_reader_finish(ujson_reader *self)
+> +{
+> +	if (ujson_reader_err(self))
+> +		ujson_err_print(self);
+> +	else if (!ujson_reader_consumed(self))
+> +		ujson_warn(self, "Garbage after JSON string!");
+> +}
+> +
+> +void ujson_reader_free(ujson_reader *buf)
+> +{
+> +	free(buf);
+> +}
+> +
+> +ujson_val *ujson_val_alloc(size_t buf_size)
+> +{
+> +	buf_size = buf_size == 0 ? 4096 : buf_size;
+> +	ujson_val *ret;
+> +
+> +	ret = malloc(sizeof(ujson_val) + buf_size);
+> +	if (!ret)
+> +		return NULL;
+> +
+> +	memset(ret, 0, sizeof(ujson_val) + buf_size);
+> +
+> +	ret->buf = ret->buf__;
+> +	ret->buf_size = buf_size;
+> +
+> +	return ret;
+> +}
+> +
+> +void ujson_val_free(ujson_val *self)
+> +{
+> +	free(self);
+> +}
+> diff --git a/libs/ujson/ujson_utf.c b/libs/ujson/ujson_utf.c
+> new file mode 100644
+> index 000000000..2c08a39a8
+> --- /dev/null
+> +++ b/libs/ujson/ujson_utf.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2022-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +#include <stddef.h>
+> +#include <ujson_utf.h>
+> +
+> +int8_t ujson_utf8_next_chsz(const char *str, size_t off)
+> +{
+> +	char ch = str[off];
+> +	uint8_t len = 0;
+> +
+> +	if (!ch)
+> +		return 0;
+> +
+> +	if (UJSON_UTF8_IS_ASCII(ch))
+> +		return 1;
+> +
+> +	if (UJSON_UTF8_IS_2BYTE(ch)) {
+> +		len = 2;
+> +		goto ret;
+> +	}
+> +
+> +	if (UJSON_UTF8_IS_3BYTE(ch)) {
+> +		len = 3;
+> +		goto ret;
+> +	}
+> +
+> +	if (UJSON_UTF8_IS_4BYTE(ch)) {
+> +		len = 4;
+> +		goto ret;
+> +	}
+> +
+> +	return -1;
+> +ret:
+> +	if (!UJSON_UTF8_IS_NBYTE(str[off+1]))
+> +		return -1;
+> +
+> +	if (len > 2 && !UJSON_UTF8_IS_NBYTE(str[off+2]))
+> +		return -1;
+> +
+> +	if (len > 3 && !UJSON_UTF8_IS_NBYTE(str[off+3]))
+> +		return -1;
+> +
+> +	return len;
+> +}
+> +
+> +int8_t ujson_utf8_prev_chsz(const char *str, size_t off)
+> +{
+> +	char ch;
+> +
+> +	if (!off)
+> +		return 0;
+> +
+> +	ch = str[--off];
+> +
+> +	if (UJSON_UTF8_IS_ASCII(ch))
+> +		return 1;
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(ch))
+> +		return -1;
+> +
+> +	if (off < 1)
+> +		return -1;
+> +
+> +	ch = str[--off];
+> +
+> +	if (UJSON_UTF8_IS_2BYTE(ch))
+> +		return 2;
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(ch))
+> +		return -1;
+> +
+> +	if (off < 1)
+> +		return -1;
+> +
+> +	ch = str[--off];
+> +
+> +	if (UJSON_UTF8_IS_3BYTE(ch))
+> +		return 3;
+> +
+> +	if (!UJSON_UTF8_IS_NBYTE(ch))
+> +		return -1;
+> +
+> +	if (off < 1)
+> +		return -1;
+> +
+> +	ch = str[--off];
+> +
+> +	if (UJSON_UTF8_IS_4BYTE(ch))
+> +		return 4;
+> +
+> +	return -1;
+> +}
+> +
+> +size_t ujson_utf8_strlen(const char *str)
+> +{
+> +	size_t cnt = 0;
+> +
+> +	while (ujson_utf8_next(&str))
+> +		cnt++;
+> +
+> +	return cnt;
+> +}
+> diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
+> new file mode 100644
+> index 000000000..6275be1ff
+> --- /dev/null
+> +++ b/libs/ujson/ujson_writer.c
+> @@ -0,0 +1,491 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+> + */
+> +
+> +#include <string.h>
+> +#include <stdarg.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +#include "ujson_utf.h"
+> +#include "ujson_writer.h"
+> +
+> +static inline int get_depth_bit(ujson_writer *self, char *mask)
+> +{
+> +	int depth = self->depth - 1;
+> +
+> +	if (depth < 0)
+> +		return -1;
+> +
+> +	return !!(mask[depth/8] & (1<<(depth%8)));
+> +}
+> +
+> +static inline void set_depth_bit(ujson_writer *self, int val)
+> +{
+> +	if (val)
+> +		self->depth_type[self->depth/8] |= (1<<(self->depth%8));
+> +	else
+> +		self->depth_type[self->depth/8] &= ~(1<<(self->depth%8));
+> +
+> +	self->depth_first[self->depth/8] |= (1<<(self->depth%8));
+> +
+> +	self->depth++;
+> +}
+> +
+> +static inline void clear_depth_bit(ujson_writer *self)
+> +{
+> +	self->depth--;
+> +}
+> +
+> +static inline int in_arr(ujson_writer *self)
+> +{
+> +	return !get_depth_bit(self, self->depth_type);
+> +}
+> +
+> +static inline int in_obj(ujson_writer *self)
+> +{
+> +	return get_depth_bit(self, self->depth_type);
+> +}
+> +
+> +static inline void clear_depth_first(ujson_writer *self)
+> +{
+> +	int depth = self->depth - 1;
+> +
+> +	self->depth_first[depth/8] &= ~(1<<(depth%8));
+> +}
+> +
+> +static inline int is_first(ujson_writer *self)
+> +{
+> +	int ret = get_depth_bit(self, self->depth_first);
+> +
+> +	if (ret == 1)
+> +		clear_depth_first(self);
+> +
+> +	return ret;
+> +}
+> +
+> +static inline void err(ujson_writer *buf, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +
+> +	va_start(va, fmt);
+> +	vsnprintf(buf->err, UJSON_ERR_MAX, fmt, va);
+> +	va_end(va);
+> +}
+> +
+> +static inline int is_err(ujson_writer *buf)
+> +{
+> +	return buf->err[0];
+> +}
+> +
+> +static inline int out(ujson_writer *self, const char *buf, size_t len)
+> +{
+> +	return self->out(self, buf, len);
+> +}
+> +
+> +static inline int out_str(ujson_writer *self, const char *str)
+> +{
+> +	return out(self, str, strlen(str));
+> +}
+> +
+> +static inline int out_ch(ujson_writer *self, char ch)
+> +{
+> +	return out(self, &ch, 1);
+> +}
+> +
+> +#define ESC_FLUSH(esc_char) do {\
+> +	out(self, val, i); \
+> +	val += i + 1; \
+> +	i = 0; \
+> +	out_str(self, esc_char); \
+> +} while (0)
+> +
+> +static inline int out_esc_str(ujson_writer *self, const char *val)
+> +{
+> +	if (out_ch(self, '"'))
+> +		return 1;
+> +
+> +	size_t i = 0;
+> +	int8_t next_chsz;
+> +
+> +	do {
+> +		next_chsz = ujson_utf8_next_chsz(val, i);
+> +
+> +		if (next_chsz == 1) {
+> +			switch (val[i]) {
+> +			case '\"':
+> +				ESC_FLUSH("\\\"");
+> +			break;
+> +			case '\\':
+> +				ESC_FLUSH("\\\\");
+> +			break;
+> +			case '/':
+> +				ESC_FLUSH("\\/");
+> +			break;
+> +			case '\b':
+> +				ESC_FLUSH("\\b");
+> +			break;
+> +			case '\f':
+> +				ESC_FLUSH("\\f");
+> +			break;
+> +			case '\n':
+> +				ESC_FLUSH("\\n");
+> +			break;
+> +			case '\r':
+> +				ESC_FLUSH("\\r");
+> +			break;
+> +			case '\t':
+> +				ESC_FLUSH("\\t");
+> +			break;
+> +			default:
+> +				i += next_chsz;
+> +			}
+> +		} else {
+> +			i += next_chsz;
+> +		}
+> +	} while (next_chsz);
+> +
+> +	if (i) {
+> +		if (out(self, val, i))
+> +			return 1;
+> +	}
+> +
+> +	if (out_ch(self, '"'))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int do_padd(ujson_writer *self)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < self->depth; i++) {
+> +		if (out_ch(self, ' '))
+> +			return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int newline(ujson_writer *self)
+> +{
+> +	if (out_ch(self, '\n'))
+> +		return 0;
+> +
+> +	if (do_padd(self))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int add_common(ujson_writer *self, const char *id)
+> +{
+> +	if (is_err(self))
+> +		return 1;
+> +
+> +	if (!self->depth) {
+> +		err(self, "Object/Array has to be started first");
+> +		return 1;
+> +	}
+> +
+> +	if (in_arr(self)) {
+> +		if (id) {
+> +			err(self, "Array entries can't have id");
+> +			return 1;
+> +		}
+> +	} else {
+> +		if (!id) {
+> +			err(self, "Object entries must have id");
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	if (!is_first(self) && out_ch(self, ','))
+> +		return 1;
+> +
+> +	if (self->depth && newline(self))
+> +		return 1;
+> +
+> +	if (id) {
+> +		if (out_esc_str(self, id))
+> +			return 1;
+> +
+> +		if (out_str(self, ": "))
+> +			return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_obj_start(ujson_writer *self, const char *id)
+> +{
+> +	if (self->depth >= UJSON_RECURSION_MAX)
+> +		return 1;
+> +
+> +	if (!self->depth && id) {
+> +		err(self, "Top level object cannot have id");
+> +		return 1;
+> +	}
+> +
+> +	if (self->depth && add_common(self, id))
+> +		return 1;
+> +
+> +	if (out_ch(self, '{'))
+> +		return 1;
+> +
+> +	set_depth_bit(self, 1);
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_obj_finish(ujson_writer *self)
+> +{
+> +	if (is_err(self))
+> +		return 1;
+> +
+> +	if (!in_obj(self)) {
+> +		err(self, "Not in object!");
+> +		return 1;
+> +	}
+> +
+> +	int first = is_first(self);
+> +
+> +	clear_depth_bit(self);
+> +
+> +	if (!first)
+> +		newline(self);
+> +
+> +	return out_ch(self, '}');
+> +}
+> +
+> +int ujson_arr_start(ujson_writer *self, const char *id)
+> +{
+> +	if (self->depth >= UJSON_RECURSION_MAX) {
+> +		err(self, "Recursion too deep");
+> +		return 1;
+> +	}
+> +
+> +	if (!self->depth && id) {
+> +		err(self, "Top level array cannot have id");
+> +		return 1;
+> +	}
+> +
+> +	if (self->depth && add_common(self, id))
+> +		return 1;
+> +
+> +	if (out_ch(self, '['))
+> +		return 1;
+> +
+> +	set_depth_bit(self, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_arr_finish(ujson_writer *self)
+> +{
+> +	if (is_err(self))
+> +		return 1;
+> +
+> +	if (!in_arr(self)) {
+> +		err(self, "Not in array!");
+> +		return 1;
+> +	}
+> +
+> +	int first = is_first(self);
+> +
+> +	clear_depth_bit(self);
+> +
+> +	if (!first)
+> +		newline(self);
+> +
+> +	return out_ch(self, ']');
+> +}
+> +
+> +int ujson_null_add(ujson_writer *self, const char *id)
+> +{
+> +	if (add_common(self, id))
+> +		return 1;
+> +
+> +	return out_str(self, "null");
+> +}
+> +
+> +int ujson_int_add(ujson_writer *self, const char *id, long val)
+> +{
+> +	char buf[64];
+> +
+> +	if (add_common(self, id))
+> +		return 1;
+> +
+> +	snprintf(buf, sizeof(buf), "%li", val);
+> +
+> +	return out_str(self, buf);
+> +}
+> +
+> +int ujson_bool_add(ujson_writer *self, const char *id, int val)
+> +{
+> +	if (add_common(self, id))
+> +		return 1;
+> +
+> +	if (val)
+> +		return out_str(self, "true");
+> +	else
+> +		return out_str(self, "false");
+> +}
+> +
+> +int ujson_str_add(ujson_writer *self, const char *id, const char *val)
+> +{
+> +	if (add_common(self, id))
+> +		return 1;
+> +
+> +	if (out_esc_str(self, val))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_float_add(ujson_writer *self, const char *id, double val)
+> +{
+> +	char buf[64];
+> +
+> +	if (add_common(self, id))
+> +		return 1;
+> +
+> +	snprintf(buf, sizeof(buf), "%lg", val);
+> +
+> +	return out_str(self, buf);
+> +}
+> +
+> +int ujson_writer_finish(ujson_writer *self)
+> +{
+> +	if (is_err(self))
+> +		goto err;
+> +
+> +	if (self->depth) {
+> +		err(self, "Objects and/or Arrays not finished");
+> +		goto err;
+> +	}
+> +
+> +	if (newline(self))
+> +		return 1;
+> +
+> +	return 0;
+> +err:
+> +	if (self->err_print)
+> +		self->err_print(self->err_print_priv, self->err);
+> +
 > +	return 1;
 > +}
+> +
+> +struct json_writer_file {
+> +	int fd;
+> +	size_t buf_used;
+> +	char buf[1024];
+> +};
+> +
+> +static int out_writer_file_write(ujson_writer *self, int fd, const char *buf, ssize_t buf_len)
+> +{
+> +	do {
+> +		ssize_t ret = write(fd, buf, buf_len);
+> +		if (ret <= 0) {
+> +			err(self, "Failed to write to a file");
+> +			return 1;
+> +		}
+> +
+> +		if (ret > buf_len) {
+> +			err(self, "Wrote more bytes than requested?!");
+> +			return 1;
+> +		}
+> +
+> +		buf_len -= ret;
+> +	} while (buf_len);
+> +
+> +	return 0;
+> +}
+> +
+> +static int out_writer_file(ujson_writer *self, const char *buf, size_t buf_len)
+> +{
+> +	struct json_writer_file *writer_file = self->out_priv;
+> +	size_t buf_size = sizeof(writer_file->buf);
+> +	size_t buf_avail = buf_size - writer_file->buf_used;
+> +
+> +	if (buf_len > buf_size/4)
+> +		return out_writer_file_write(self, writer_file->fd, buf, buf_len);
+> +
+> +	if (buf_len >= buf_avail) {
+> +		if (out_writer_file_write(self, writer_file->fd,
+> +		                          writer_file->buf, writer_file->buf_used))
+> +			return 1;
+> +
+> +		memcpy(writer_file->buf, buf, buf_len);
+> +		writer_file->buf_used = buf_len;
+> +		return 0;
+> +	}
+> +
+> +	memcpy(writer_file->buf + writer_file->buf_used, buf, buf_len);
+> +	writer_file->buf_used += buf_len;
+> +
+> +	return 0;
+> +}
+> +
+> +int ujson_writer_file_close(ujson_writer *self)
+> +{
+> +	struct json_writer_file *writer_file = self->out_priv;
+> +	int saved_errno = 0;
+> +
+> +	if (writer_file->buf_used) {
+> +		if (out_writer_file_write(self, writer_file->fd,
+> +		                          writer_file->buf, writer_file->buf_used))
+> +
+> +			saved_errno = errno;
+> +	}
+> +
+> +	if (close(writer_file->fd)) {
+> +		if (!saved_errno)
+> +			saved_errno = errno;
+> +	}
+> +
+> +	free(self);
+> +
+> +	if (saved_errno) {
+> +		errno = saved_errno;
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +ujson_writer *ujson_writer_file_open(const char *path)
+> +{
+> +	ujson_writer *ret;
+> +	struct json_writer_file *writer_file;
+> +
+> +	ret = malloc(sizeof(ujson_writer) + sizeof(struct json_writer_file));
+> +	if (!ret)
+> +		return NULL;
+> +
+> +	writer_file = (void*)ret + sizeof(ujson_writer);
+> +
+> +	writer_file->fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0664);
+> +	if (!writer_file->fd) {
+> +		free(ret);
+> +		return NULL;
+> +	}
+> +
+> +	writer_file->buf_used = 0;
+> +
+> +	memset(ret, 0, sizeof(*ret));
+> +
+> +	ret->err_print = UJSON_ERR_PRINT;
+> +	ret->err_print_priv = UJSON_ERR_PRINT_PRIV;
+> +	ret->out = out_writer_file;
+> +	ret->out_priv = writer_file;
+> +
+> +	return ret;
+> +}
+> +
+> +
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
