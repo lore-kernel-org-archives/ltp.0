@@ -4,90 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A60ADCD13CF
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 05:55:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBB47CD13CF
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 06:12:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20C183C3223
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 07:55:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 334AF3C3103
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 08:12:52 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C7FA3C3050
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 07:55:31 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7AEF23C3048
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:12:35 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=geetika@linux.ibm.com;
+ smtp.mailfrom=uniontech.com (client-ip=54.204.34.130;
+ helo=smtpbguseast2.qq.com; envelope-from=zhaoyouzhi@uniontech.com;
  receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 980BF100049E
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 07:55:28 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4825otUn026148
- for <ltp@lists.linux.it>; Mon, 2 Sep 2024 05:55:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-type:message-id:date:to:from:subject:cc:mime-version; s=
- pp1; bh=krh768+41BmdB1qqJRBCO8vd2rWstKKO7UFE0VpVpoQ=; b=iwpycGGO
- Ga/zMiS/03NkyiMtf5WOtIahkos6dDgySRkMGlFUTHMSkJEy8sNLF9s9lXEMnnKL
- tv+qVkXyxsU6YMtwcWdWefQm3Too/GAjCHM2CFToGb+35SSPhFD5gIxlDq5VVl3D
- nIsYWfVHwRSlrno3KDNlFt84diExMQoQxm6bfPvaVMgyztT6uTyHZGxNWYlxRmec
- zYmtTr3VRkSrQyFbpNgK2zP1PJ9MT0pUXuh+1vfN3GReBYGDs3BlzP109btp5/ML
- iPakq0Ut31dpE2JFfT0hmMaC0oucgJARpbFrPM2vkwj/w9spySkddToczc+ZSj8V
- dvhTaMJ0TDt5tg==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41btp97b8y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Mon, 02 Sep 2024 05:55:26 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4825Di2g009226
- for <ltp@lists.linux.it>; Mon, 2 Sep 2024 05:55:25 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 41cg73cfad-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Mon, 02 Sep 2024 05:55:25 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 4825tMhA39190980
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 2 Sep 2024 05:55:22 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 14DF620043;
- Mon,  2 Sep 2024 05:55:22 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1340520040;
- Mon,  2 Sep 2024 05:55:21 +0000 (GMT)
-Received: from [9.43.4.51] (unknown [9.43.4.51])
- by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon,  2 Sep 2024 05:55:20 +0000 (GMT)
-Message-ID: <bf5ed5dc-805c-4825-898f-1e4d3d280f2c@linux.ibm.com>
-Date: Mon, 2 Sep 2024 11:25:20 +0530
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7729C10007C3
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:12:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+ s=onoh2408; t=1725257547;
+ bh=NbKT6mR4t2o0dtxhBiH6hoLLxIzYtgC6fd+Ncpgs5II=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=Z+dDmOrbbX8anwQgtdqdfERI85TaAPSvaMXDBPyE2B0uMIkJJE9elr1qDl6ZAjAcQ
+ OekeqOO07eubAe/JHSqU8qKGLDTZYvTk16U1Ct5NNU5RqEDoO/g1gTWeor1exQOxBY
+ zBbRRUEC5uif6bnerQKOO0Oe7P2cR1GQ4cUNdMoU=
+X-QQ-mid: bizesmtpsz10t1725257544tvx4d4
+X-QQ-Originating-IP: iW2t8SvO5eyaiXbrregd3TGte5dknLnjBWHAQDamre8=
+Received: from localhost.localdomain ( [221.226.144.218])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Mon, 02 Sep 2024 14:12:22 +0800 (CST)
+X-QQ-SSF: 0001000000000000000000000000000
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 5910891645126402420
+From: YouZhi Zhao <zhaoyouzhi@uniontech.com>
 To: ltp@lists.linux.it
-From: Geetika M <geetika@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uF3aupFOC5KBCTmb32WRf5LvpdYN7rC5
-X-Proofpoint-ORIG-GUID: uF3aupFOC5KBCTmb32WRf5LvpdYN7rC5
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Date: Mon,  2 Sep 2024 14:12:17 +0800
+Message-ID: <B8632D9169E22850+20240902061218.39040-1-zhaoyouzhi@uniontech.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-09-01_06,2024-08-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- bulkscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0 spamscore=0
- malwarescore=0 mlxlogscore=708 adultscore=0 mlxscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2409020045
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] Acceptance Status of libhugetlbfs Patches
+Subject: [LTP] [PATCH] syscalls/fspick:add coverage for fspick01.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,54 +62,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: pavrampu@linux.ibm.com, pavithra.visweswara@ibm.com, sachinp@linux.ibm.com,
- Sachin P Bappalige <sachinpb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+expand the test items after setting FSCONFIG_CMD_RECONFIGURE to include re-fetching the mount point attributes and verifying whether the file system is set to read-only.
 
-Hello Maintainer(s),
+Signed-off-by: Youzhi Zhao <zhaoyouzhi@uniontech.com>
+---
+ testcases/kernel/syscalls/fspick/fspick01.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-I hope this message finds you well.
+diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
+index d3309a912..7aabb1d9e 100644
+--- a/testcases/kernel/syscalls/fspick/fspick01.c
++++ b/testcases/kernel/syscalls/fspick/fspick01.c
+@@ -6,6 +6,8 @@
+  */
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
++#include <sys/statvfs.h>
++
 
-I am writing on behalf of my team regarding the patches we recently 
-submitted to the LTP mailing list. We wanted to follow up and inquire 
-about the status of these patches and their potential integration into 
-the upstream project.
+ #define MNTPOINT		"mntpoint"
+ #define TCASE_ENTRY(_flags)	{.name = "Flag " #_flags, .flags = _flags}
+@@ -39,7 +41,7 @@ static void run(unsigned int n)
 
-For your reference, here are the few links to the patches we have sent:
+ 	TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "ro", NULL, 0));
+ 	if (TST_RET == -1) {
+-		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) failed");
++		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) ro failed");
+ 		goto out;
+ 	}
 
-*[LTP] [PATCH v2] [PATCH] Hugetlb: Migrating libhugetlbfs shm-perms 
-<https://lore.kernel.org/ltp/20240510141020.189065-1-spoorthy@linux.ibm.com/>*
+@@ -48,7 +50,19 @@ static void run(unsigned int n)
+ 		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_RECONFIGURE) failed");
+ 		goto out;
+ 	}
+-
++
++	struct statvfs buf;
++    	if (statvfs(MNTPOINT, &buf) == -1) {
++        	tst_res(TFAIL | TTERRNO, "statvfs() failed");
++        	return -1;
++    	}
++    	if(buf.f_flag & ST_RDONLY)
++	{
++		tst_res(TPASS, "%s: fspick() and reconfigure succeeded, filesystem is read-only", tc->name);
++	}else
++	{
++		tst_res(TFAIL, "%s: Filesystem is not read-only after reconfigure", tc->name);
++	}
+ 	tst_res(TPASS, "%s: fspick() passed", tc->name);
 
-*[LTP] [PATCH v4] Migrating the libhugetlbfs/testcases/shm-gettest.c 
-test 
-<https://lore.kernel.org/ltp/20240515092456.3180-1-sachinpb@linux.ibm.com/>*
+ out:
+--
+2.43.0
 
-*[LTP] [PATCH v3] Hugetlb: Migrating libhugetlbfs test 
-truncate_reserve_wraparound.c 
-<https://lore.kernel.org/ltp/20240802061342.8540-1-geetika@linux.ibm.com/>*
-
-*[LTP] [PATCH v4] Migrating the 
-libhugetlbfs/testcases/stack_grow_into_huge.c test 
-<https://lore.kernel.org/ltp/20240816103317.127972-1-samir@linux.vnet.ibm.com/> 
-**[LTP] [PATCH v3] Migrating the 
-libhugetlbfs/testcases/truncate_sigbus_versus_oom.c test 
-<https://lore.kernel.org/ltp/20240407095243.65152-1-samir@linux.vnet.ibm.com/> 
-**Re: [LTP] [PATCH v2] Migrating the 
-libhugetlbfs/testcases/truncate_above_4GB.c test 
-<https://lore.kernel.org/ltp/7c9bf212-bbd8-4889-ade9-9798cce3a29c@linux.ibm.com/>*
-
-We would greatly appreciate any updates you could provide on when these 
-might be reviewed and merged. Please let us know if there are any 
-additional steps we need to take or if further modifications are required.
-
-Thank you very much for your time and assistance.
-
-Best Regards,
-Geetika M
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
