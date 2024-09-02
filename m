@@ -4,86 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17A11CA0ED3
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 08:45:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF00CCD13CF
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 09:31:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5F0DA3C323B
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 10:45:42 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 556B73C330F
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 11:31:51 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 219353C2FE1
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 10:45:24 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 7646E3C3299
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 11:31:35 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 14F4A601BAE
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 10:45:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1725266722;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CMXGz+rf0NfqYlLSSiLPWLLpKvAqdoHUTqmShzUz3Bw=;
- b=ZpVh54P6t8nToeahFKpAS55xp+11o7aaIYJP8YdBQX8GfrcaZBEDENrq2GnaMO2kbnNjeu
- is2MR1BpxBypqvrJ8jdIWESTmee11sVNmeijqz+Sxww1AjNNOP3IukoNZjZX4zs+9SguyX
- Oo+mIAonc7nb1HvGre4dzQpE+2y6Qdg=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-574-1GV-W0UUPDW9NGqkyBbmzA-1; Mon, 02 Sep 2024 04:45:20 -0400
-X-MC-Unique: 1GV-W0UUPDW9NGqkyBbmzA-1
-Received: by mail-pl1-f200.google.com with SMTP id
- d9443c01a7336-20556f1cfebso16449565ad.1
- for <ltp@lists.linux.it>; Mon, 02 Sep 2024 01:45:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1725266719; x=1725871519;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=CMXGz+rf0NfqYlLSSiLPWLLpKvAqdoHUTqmShzUz3Bw=;
- b=tI2gV/FObShAo/tRdcBDqmByZfa07TLXhBAJ2+rVYD5PinNIsH5VVImQ/3GVcJwM8P
- UlrAhUXiX4YHcvppEYWO75do1RhoACr1WbZsKZSCqnkhlO9zCZsaqB+MliR/jJLA4p6P
- RSv0pMflBQpHaXckREYmPH1yXrgCAEPq87fsUu7Qu/kzvSveQBfdWSPVuSMh19JcqDqH
- aySdEmXby2sphP4EBAqkm5MzFNBSWUA5cSZ8UGPkt00Q02HzvvwaDMxgttVZ/8JmrOme
- mDN2wj26mlHyhlUP36S81q2ES4U5U+cqLyCdUTvvbE/7HFySM/dfrCd++rdAapP4tlrA
- vAgw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXQJn54KHZ2kHHQh//AvsAfqT6zz16OZN/kfRyKyI22HOWz8O3g9qHWhDT87KqS7/Qy6eM=@lists.linux.it
-X-Gm-Message-State: AOJu0YzOLjyrYua5o85svd2ISz82f7ZyLHIe6dfS6CwYpdZ8ovwHNBi+
- qZ3XUGMDOtuoCHDHM5GfUND+vtMrZoJARpEcJAaXRUu6EGRRUwn0i3+UeN17RvKywrjTW6itp9L
- /jb31i4ky8LDK5L6Mab9CwjSat2TYXWKrZrp2FfMpbNokSQU4/c7+AYTpNjbxIQ0WTfHEHH7JR9
- n3gqvGDcAW4u4rLkInmW1AWdc=
-X-Received: by 2002:a17:902:ec90:b0:203:a046:c666 with SMTP id
- d9443c01a7336-20545e44357mr85727475ad.3.1725266719680; 
- Mon, 02 Sep 2024 01:45:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEU0baq5wTD7qG57W+SoiO4JP03GIOKKHPeHluNsJhlNbeOhN8HLZgz/Iaz4ss10dXi0tzbCuD/2jG+73kwEo8=
-X-Received: by 2002:a17:902:ec90:b0:203:a046:c666 with SMTP id
- d9443c01a7336-20545e44357mr85727245ad.3.1725266719163; Mon, 02 Sep 2024
- 01:45:19 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AF7BE200CF8
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 11:31:34 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C407C1FBA4;
+ Mon,  2 Sep 2024 09:31:33 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AF62813A7C;
+ Mon,  2 Sep 2024 09:31:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id r0GBKvWF1Wb2VAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 02 Sep 2024 09:31:33 +0000
+Date: Mon, 2 Sep 2024 11:30:23 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Geetika M <geetika@linux.ibm.com>
+Message-ID: <ZtWFr6OWSah0k4j0@yuki.lan>
+References: <bf5ed5dc-805c-4825-898f-1e4d3d280f2c@linux.ibm.com>
 MIME-Version: 1.0
-References: <20240829114124.30299-1-wegao@suse.com>
- <20240902072842.GA280672@pevik>
-In-Reply-To: <20240902072842.GA280672@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 2 Sep 2024 16:45:07 +0800
-Message-ID: <CAEemH2eB4-wn6HyyJL9AUBaREeibhR5L9oEr9Z15tG7m_Q6ZDA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <bf5ed5dc-805c-4825-898f-1e4d3d280f2c@linux.ibm.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: C407C1FBA4
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] hugemmap11.c: Change NORMAL_PATH to current
- working directory
+Subject: Re: [LTP] Acceptance Status of libhugetlbfs Patches
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,30 +75,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Sachin P Bappalige <sachinpb@linux.vnet.ibm.com>, pavrampu@linux.ibm.com,
+ sachinp@linux.ibm.com, ltp@lists.linux.it, pavithra.visweswara@ibm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBTZXAgMiwgMjAyNCBhdCAzOjI54oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgo+Cj4gSGkgV2VpLCBMaSwKPgo+ID4gRm9sbG93aW5nIGVycm9yIHdpbGwgaGFw
-cGVuIG9uIHNsZS1taWNybyBzeXN0ZW0gc2luY2UgIi8iIGlzIHJlYWQgb25seQo+ID4gdHN0X3Rl
-c3QuYzoxMDYyOiBUQlJPSzogb3BlbigvbHRwX2h1ZzlJeTZPUiwxNjU3OCwxMDI0NzUyMDI0MCkg
-ZmFpbGVkOiBFUk9GUyAoMzApCj4KPiA+IFNpZ25lZC1vZmYtYnk6IFdlaSBHYW8gPHdlZ2FvQHN1
-c2UuY29tPgo+ID4gLS0tCj4gPiAgdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1h
-cC9odWdlbW1hcDExLmMgfCAyICstCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
-LCAxIGRlbGV0aW9uKC0pCj4KPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9o
-dWdldGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMTEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0
-bGIvaHVnZW1tYXAvaHVnZW1tYXAxMS5jCj4gPiBpbmRleCA0OTZhODE0YjUuLjY3ZmNhMmRkZiAx
-MDA2NDQKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1tYXAvaHVn
-ZW1tYXAxMS5jCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFw
-L2h1Z2VtbWFwMTEuYwo+ID4gQEAgLTIzLDcgKzIzLDcgQEAKPgo+ID4gICNkZWZpbmUgUDAgImZm
-ZmZmZmZmIgo+ID4gICNkZWZpbmUgSU9TWiA0MDk2Cj4gPiAtI2RlZmluZSBOT1JNQUxfUEFUSCAi
-Igo+ID4gKyNkZWZpbmUgTk9STUFMX1BBVEggIi4vIgo+Cj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9y
-ZWwgPHB2b3JlbEBzdXNlLmN6Pgo+Cj4gQExpOiBEbyB5b3Ugc2VlIGFueSBjb25zZXF1ZW5jZXM/
-CgpJIHRoaW5rIGl0IGlzIG5vIHByb2JsZW0gdG8gYXBwbHkgdGhlIHBhdGNoLCBhcyB5b3UgcG9p
-bnRlZAptbnRwb2ludCBpbXBsaWVzIG5lZWRzX3RtcGRpci4gIFNvIGl0IHdvbid0IGhpdCBhbiB1
-bndyaXRhYmxlCmlzc3VlIHdoZW4gdXNpbmcgJFBXRC4KClJldmlld2VkLWJ5OiBMaSBXYW5nIDxs
-aXdhbmdAcmVkaGF0LmNvbT4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgoKLS0gCk1haWxpbmcgbGlz
-dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> I am writing on behalf of my team regarding the patches we recently 
+> submitted to the LTP mailing list. We wanted to follow up and inquire 
+> about the status of these patches and their potential integration into 
+> the upstream project.
+> 
+> For your reference, here are the few links to the patches we have sent:
+> 
+> *[LTP] [PATCH v2] [PATCH] Hugetlb: Migrating libhugetlbfs shm-perms 
+> <https://lore.kernel.org/ltp/20240510141020.189065-1-spoorthy@linux.ibm.com/>*
+> 
+> *[LTP] [PATCH v4] Migrating the libhugetlbfs/testcases/shm-gettest.c 
+> test 
+> <https://lore.kernel.org/ltp/20240515092456.3180-1-sachinpb@linux.ibm.com/>*
+> 
+> *[LTP] [PATCH v3] Hugetlb: Migrating libhugetlbfs test 
+> truncate_reserve_wraparound.c 
+> <https://lore.kernel.org/ltp/20240802061342.8540-1-geetika@linux.ibm.com/>*
+> 
+> *[LTP] [PATCH v4] Migrating the 
+> libhugetlbfs/testcases/stack_grow_into_huge.c test 
+> <https://lore.kernel.org/ltp/20240816103317.127972-1-samir@linux.vnet.ibm.com/> 
+> **[LTP] [PATCH v3] Migrating the 
+> libhugetlbfs/testcases/truncate_sigbus_versus_oom.c test 
+> <https://lore.kernel.org/ltp/20240407095243.65152-1-samir@linux.vnet.ibm.com/> 
+> **Re: [LTP] [PATCH v2] Migrating the 
+> libhugetlbfs/testcases/truncate_above_4GB.c test 
+> <https://lore.kernel.org/ltp/7c9bf212-bbd8-4889-ade9-9798cce3a29c@linux.ibm.com/>*
+> 
+> We would greatly appreciate any updates you could provide on when these 
+> might be reviewed and merged. Please let us know if there are any 
+> additional steps we need to take or if further modifications are required.
+
+I will go over these as a part of the September release preparations.
+Sorry I haven't had time to for a review earlier.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
