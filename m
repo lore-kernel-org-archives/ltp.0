@@ -4,53 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBB47CD13CF
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 06:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58519CD13CF
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 06:28:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 334AF3C3103
-	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 08:12:52 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BA6533C31E0
+	for <ltp@archiver.kernel.org>; Mon,  2 Sep 2024 08:28:00 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AEF23C3048
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:12:35 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=54.204.34.130;
- helo=smtpbguseast2.qq.com; envelope-from=zhaoyouzhi@uniontech.com;
- receiver=lists.linux.it)
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A86693C3048
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:27:43 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7729C10007C3
- for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:12:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
- s=onoh2408; t=1725257547;
- bh=NbKT6mR4t2o0dtxhBiH6hoLLxIzYtgC6fd+Ncpgs5II=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=Z+dDmOrbbX8anwQgtdqdfERI85TaAPSvaMXDBPyE2B0uMIkJJE9elr1qDl6ZAjAcQ
- OekeqOO07eubAe/JHSqU8qKGLDTZYvTk16U1Ct5NNU5RqEDoO/g1gTWeor1exQOxBY
- zBbRRUEC5uif6bnerQKOO0Oe7P2cR1GQ4cUNdMoU=
-X-QQ-mid: bizesmtpsz10t1725257544tvx4d4
-X-QQ-Originating-IP: iW2t8SvO5eyaiXbrregd3TGte5dknLnjBWHAQDamre8=
-Received: from localhost.localdomain ( [221.226.144.218])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Mon, 02 Sep 2024 14:12:22 +0800 (CST)
-X-QQ-SSF: 0001000000000000000000000000000
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 5910891645126402420
-From: YouZhi Zhao <zhaoyouzhi@uniontech.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 036671A00146
+ for <ltp@lists.linux.it>; Mon,  2 Sep 2024 08:27:42 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 43DA41FB97;
+ Mon,  2 Sep 2024 06:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725258461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=W32hvrqHZhIGNWQVQIPMfQR3REUWNAACR2W7GtP2Oig=;
+ b=fhNLdqijOIF45JfdotVkulZn/eAzARwySGLgIzwkArZ37Z9WGteNsi0WPLCnkEjwc3S9Po
+ M7oi6fI1z8vLoLBtmqStjI+5xBKICyDKl0Cld896UkZFhrwJ/Jy0Q/KLMMwtB/DOTm5xMo
+ apilYIPCowY3FMw34dYDtNFrXdB7Fc8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725258461;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=W32hvrqHZhIGNWQVQIPMfQR3REUWNAACR2W7GtP2Oig=;
+ b=vXuVzopBBi/mrHzWH3vJLS9e6VOsF0uZm6MbbX/Wynn5nN76wkMZLLQuOKXOcd9JT3dIAY
+ BzuZ8FiODavuY+CQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fhNLdqij;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=vXuVzopB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725258461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=W32hvrqHZhIGNWQVQIPMfQR3REUWNAACR2W7GtP2Oig=;
+ b=fhNLdqijOIF45JfdotVkulZn/eAzARwySGLgIzwkArZ37Z9WGteNsi0WPLCnkEjwc3S9Po
+ M7oi6fI1z8vLoLBtmqStjI+5xBKICyDKl0Cld896UkZFhrwJ/Jy0Q/KLMMwtB/DOTm5xMo
+ apilYIPCowY3FMw34dYDtNFrXdB7Fc8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725258461;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=W32hvrqHZhIGNWQVQIPMfQR3REUWNAACR2W7GtP2Oig=;
+ b=vXuVzopBBi/mrHzWH3vJLS9e6VOsF0uZm6MbbX/Wynn5nN76wkMZLLQuOKXOcd9JT3dIAY
+ BzuZ8FiODavuY+CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0FBD413A7C;
+ Mon,  2 Sep 2024 06:27:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7sPTAd1a1WbYHAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 02 Sep 2024 06:27:41 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  2 Sep 2024 14:12:17 +0800
-Message-ID: <B8632D9169E22850+20240902061218.39040-1-zhaoyouzhi@uniontech.com>
-X-Mailer: git-send-email 2.43.0
+Date: Mon,  2 Sep 2024 08:27:38 +0200
+Message-ID: <20240902062738.267190-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Queue-Id: 43DA41FB97
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[4];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo, suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fspick:add coverage for fspick01.c
+Subject: [LTP] [PATCH v2 1/1] isofs.sh: Use nobody user
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,58 +120,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-expand the test items after setting FSCONFIG_CMD_RECONFIGURE to include re-fetching the mount point attributes and verifying whether the file system is set to read-only.
+From: Wei Gao <wegao@suse.com>
 
-Signed-off-by: Youzhi Zhao <zhaoyouzhi@uniontech.com>
+Some distros don't have user/group 'bin' (e.g. SUSE SLE-Micro).
+Although this user/group is required and created IDcheck.sh.
+(This script should be replaced in the future with library call,
+but it's still supported).
+
+Replace 'bin' user/group with 'nobody' user (more common on various
+Linux distributions). Most of the distros name have 'nobody' user's
+group also 'nobody', but at least Debian name it 'nogroup'. Therefore
+detect this name with 'id -g -n'.
+
+Reported-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/fspick/fspick01.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+Changes v1->v2:
+* Correct fallback condition (thanks Wei for the report):
+-	[ "$TEST_USER" ] || TEST_GROUP="$TEST_USER"
++	[ "$TEST_GROUP" ] || TEST_GROUP="$TEST_USER"
 
-diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
-index d3309a912..7aabb1d9e 100644
---- a/testcases/kernel/syscalls/fspick/fspick01.c
-+++ b/testcases/kernel/syscalls/fspick/fspick01.c
-@@ -6,6 +6,8 @@
-  */
- #include "tst_test.h"
- #include "lapi/fsmount.h"
-+#include <sys/statvfs.h>
+ testcases/kernel/fs/iso9660/isofs.sh | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+index d1a362d979..088e062d67 100755
+--- a/testcases/kernel/fs/iso9660/isofs.sh
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -13,10 +13,19 @@ TST_NEEDS_CMDS="mount umount"
+ TST_NEEDS_TMPDIR=1
+ TST_TESTFUNC=do_test
+ TST_CNT=3
++TST_SETUP="setup"
+ 
+ MAX_DEPTH=3
+ MAX_DIRS=4
+ 
++TEST_USER='nobody'
 +
-
- #define MNTPOINT		"mntpoint"
- #define TCASE_ENTRY(_flags)	{.name = "Flag " #_flags, .flags = _flags}
-@@ -39,7 +41,7 @@ static void run(unsigned int n)
-
- 	TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "ro", NULL, 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) ro failed");
- 		goto out;
- 	}
-
-@@ -48,7 +50,19 @@ static void run(unsigned int n)
- 		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_RECONFIGURE) failed");
- 		goto out;
- 	}
--
++setup()
++{
++	TEST_GROUP="$(id -g -n $TEST_USER)"
++	[ "$TEST_GROUP" ] || TEST_GROUP="$TEST_USER"
++}
 +
-+	struct statvfs buf;
-+    	if (statvfs(MNTPOINT, &buf) == -1) {
-+        	tst_res(TFAIL | TTERRNO, "statvfs() failed");
-+        	return -1;
-+    	}
-+    	if(buf.f_flag & ST_RDONLY)
-+	{
-+		tst_res(TPASS, "%s: fspick() and reconfigure succeeded, filesystem is read-only", tc->name);
-+	}else
-+	{
-+		tst_res(TFAIL, "%s: Filesystem is not read-only after reconfigure", tc->name);
-+	}
- 	tst_res(TPASS, "%s: fspick() passed", tc->name);
-
- out:
---
-2.43.0
+ gen_fs_tree()
+ {
+ 	local cur_path="$1"
+@@ -92,8 +101,8 @@ do_test()
+ 			"loop,block=512,unhide" \
+ 			"loop,block=1024,cruft" \
+ 			"loop,block=2048,nocompress" \
+-			"loop,check=strict,map=off,gid=bin,uid=bin" \
+-			"loop,check=strict,map=acorn,gid=bin,uid=bin" \
++			"loop,check=strict,map=off,gid=$TEST_GROUP,uid=$TEST_USER" \
++			"loop,check=strict,map=acorn,gid=$TEST_GROUP,uid=$TEST_USER" \
+ 			"loop,check=relaxed,map=normal" \
+ 			"loop,block=512,unhide,session=2"
+ 		do
+-- 
+2.45.2
 
 
 -- 
