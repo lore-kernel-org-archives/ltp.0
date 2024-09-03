@@ -4,116 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7CBECD342F
-	for <ltp@archiver.kernel.org>; Tue,  3 Sep 2024 07:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A441CD342F
+	for <ltp@archiver.kernel.org>; Tue,  3 Sep 2024 07:46:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 706023C4EAB
-	for <ltp@archiver.kernel.org>; Tue,  3 Sep 2024 09:31:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4F0E73C4E8C
+	for <ltp@archiver.kernel.org>; Tue,  3 Sep 2024 09:46:21 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A3C213C0265
- for <ltp@lists.linux.it>; Tue,  3 Sep 2024 09:31:24 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 3F6353C2EEC
+ for <ltp@lists.linux.it>; Tue,  3 Sep 2024 09:46:05 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9660260065D
- for <ltp@lists.linux.it>; Tue,  3 Sep 2024 09:31:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C0CD2200D17
+ for <ltp@lists.linux.it>; Tue,  3 Sep 2024 09:46:04 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B9AC71FCF3;
- Tue,  3 Sep 2024 07:31:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D26BC21A53;
+ Tue,  3 Sep 2024 07:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725348681;
+ t=1725349563;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NdGl09ae5aOwGpA1yeG0QYr2/4XDZNyMPzN3I4cDk+o=;
- b=OzbTX+kiYnX1kJMkKsazkuoPXxoWZpnLQbDm29vi639bmdMFLhfQTo0G+4Q5t7b40E3Ib2
- L3cNWrYJsCf0ZHfe0QY8jzS9/a96/bDic8nHNuzI/OLZs8+n0cxWJvF3HuInMJmQSBKiaP
- SQC4c1cZYnXkcGtdvNH0vp2m8IqhJ6c=
+ bh=uEhru2d1NqeLCDrfrwHhUk2ymT21nA7A56YklUyhbgE=;
+ b=iQUSRlZJuSR983q2VcdbZtmCsWFwEjkrG2Bv+uo/DfyBgdFpc/Iy5d9M5ATJ4f8NOIJQD7
+ MlF6+suZKZpaDGrCj9zNaXmBOXeqN8F0gxVhm7P8bDVxcZ/b665pcC0rnELsKKfTCXFIeI
+ BXWLHxEjzznIn+Xa2lqtAIMNli/VqAE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725348681;
+ s=susede2_ed25519; t=1725349563;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NdGl09ae5aOwGpA1yeG0QYr2/4XDZNyMPzN3I4cDk+o=;
- b=a90nMhHLvoi+r09tX+x6N35gtkchjQ+VRm5ue/kaEJlHzdZJWaEgWxS4Zkx4edeRbT+npn
- OmsHtQL+lVVcyuDg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SE0xcmyo;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/HtWBsRp"
+ bh=uEhru2d1NqeLCDrfrwHhUk2ymT21nA7A56YklUyhbgE=;
+ b=LEzQjMbNNBXm2TIgJwCDNW48xF+PD9kIbr8gMVZLjVifWiUTg/MXd/3cLPwvqbw9lTaboQ
+ fDaxMWIPfmQqWOAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725348680;
+ t=1725349563;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NdGl09ae5aOwGpA1yeG0QYr2/4XDZNyMPzN3I4cDk+o=;
- b=SE0xcmyofO2HBQXKkxV01N+wnsM99hl9PZxYGfqS8P5E/qxpDmDEycI9i8TCZZcqN4jdPF
- 7zO9eVys/BDN4d//ZQbZlDpRkhLg2fG39YIEf2Xkm1jDJR6MRF0Y/JQz0Hsgf7/JNVv/B5
- bZ0mnbnDuO9ylq+wgyzfYLzNAYPsx8Q=
+ bh=uEhru2d1NqeLCDrfrwHhUk2ymT21nA7A56YklUyhbgE=;
+ b=iQUSRlZJuSR983q2VcdbZtmCsWFwEjkrG2Bv+uo/DfyBgdFpc/Iy5d9M5ATJ4f8NOIJQD7
+ MlF6+suZKZpaDGrCj9zNaXmBOXeqN8F0gxVhm7P8bDVxcZ/b665pcC0rnELsKKfTCXFIeI
+ BXWLHxEjzznIn+Xa2lqtAIMNli/VqAE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725348680;
+ s=susede2_ed25519; t=1725349563;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NdGl09ae5aOwGpA1yeG0QYr2/4XDZNyMPzN3I4cDk+o=;
- b=/HtWBsRp9YsYyRiaMF0Afeo+loFRfaACnkefZlq9OAYCsboQkrKU6cKpwMIabk5VqHLDyU
- 6TLMJEWksILt+DDA==
+ bh=uEhru2d1NqeLCDrfrwHhUk2ymT21nA7A56YklUyhbgE=;
+ b=LEzQjMbNNBXm2TIgJwCDNW48xF+PD9kIbr8gMVZLjVifWiUTg/MXd/3cLPwvqbw9lTaboQ
+ fDaxMWIPfmQqWOAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C90813A52;
- Tue,  3 Sep 2024 07:31:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B80E213A52;
+ Tue,  3 Sep 2024 07:46:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8AyXHEi71mb2TwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 03 Sep 2024 07:31:20 +0000
-Date: Tue, 3 Sep 2024 09:31:15 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K0GsK7u+1mbqVAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 03 Sep 2024 07:46:03 +0000
+Date: Tue, 3 Sep 2024 09:46:02 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: cel@kernel.org
-Message-ID: <20240903073115.GA726144@pevik>
-References: <20240831160900.173809-1-cel@kernel.org>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20240903074602.GA728268@pevik>
+References: <20240827120237.25805-1-chrubis@suse.cz>
+ <20240827120237.25805-2-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240831160900.173809-1-cel@kernel.org>
-X-Rspamd-Queue-Id: B9AC71FCF3
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240827120237.25805-2-chrubis@suse.cz>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[lists.linux.it,gmail.com,vger.kernel.org,oracle.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH RFC] syscalls/fanotify09: Note backport of commit
- e730558adffb
+Subject: Re: [LTP] [PATCH v3 1/4] include: tst_clone.h: Fix possible MUSL
+ build failures
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,16 +113,35 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Chuck Lever <chuck.lever@oracle.com>, stable@vger.kernel.org,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Chuck,
+Hi Cyril,
 
-thanks for your patch, merged!
+> The problem is that on musl sched.h exposes clone() when _GNU_SOURCE is
+> defined and at the same time sched.h does not get pulled before
+> tst_clone.h gets included, which means that the macro from tst_clone.h
+> that rewrites clone() functions actually rewrites the function
+> declaration in the system header.
+
+BTW glibc guards clone() with #ifdef __USE_GNU, which should have the same
+effect as _GNU_SOURCE. I wonder why only musl got broken.
+
+> We remove the tst_clone.h from the old library because the newly
+> included sched.h causes conflicts in the cpuset/cpuset_lib/ directory
+> and the tst_clone.h header is used only in a single old library test
+> i.e. clone02.c.
+
+> This commit is needed in order to avoid build failures in the next
+> commits that add support for the shell test library.
+
+Thanks for fixing this!
+
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
