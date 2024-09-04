@@ -4,103 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 706F8CD37AE
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 05:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 121C0CA0ED3
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 06:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1725432527; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=VFYib9u3aydq8i4eJUmNTgeUyQRSto9W4xyAP57lsTg=;
+ b=kB5PDPggQ87LurjdTeutziTzVPeqwwVQ1CHn7bSOd82xB15+hc6/wCFKwkG3UX6QoOuyA
+ RCdR/CHQxbcwwEgRJIVjICLFXz8eINNnHOu4WSkCtcWE6VWi3El+eSzbxLS9frzJ2w6SXf8
+ gl3xMVKJC3sVfhOWyLyBW1VkRG9Ivuc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD3F73C17A3
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 07:32:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0F8573C1BBE
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 08:48:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1E9E3C0CCD
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 07:32:00 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D220D3C0CCD
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 08:48:26 +0200 (CEST)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
+ [IPv6:2a00:1450:4864:20::22f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1312F1402E10
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 07:31:59 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D989F219D7;
- Wed,  4 Sep 2024 05:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725427919;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5MyhVXx6HLKjg7LRW2f8cwQ/X5gKTrVO4aZqpwj7bEE=;
- b=uslm+rFYLTQKkKjPlXDuAtIpk4iYS7VkXl+oO7OaZkq4RL8YBOviOJe6DHwxJisZfwMUJo
- r0NMY0iNOUZ90o2OEhO/3OyoQjzwJNl/KZ1TI1hfVMrZxZrM3Ed3sS+shCJW/T9r//Qqhr
- PUjRuMqemi0UJT6+CnAbKXl751yJ9I8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725427919;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5MyhVXx6HLKjg7LRW2f8cwQ/X5gKTrVO4aZqpwj7bEE=;
- b=27SdM+Zl2ZfSFkRigUQzay2fvBqEn6eMRSEe5KsGue8ByXIH0jL0q70+kWH8mHxsaC5nKN
- yOo/zvwU/kdX7BCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725427918;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5MyhVXx6HLKjg7LRW2f8cwQ/X5gKTrVO4aZqpwj7bEE=;
- b=OmObthTjqWAwJiqTWNye9FYAdSBGwe3aXB/9epnPrIcL+v3iYove/qnotSZXXIMjNrdMUA
- /SHXirPHSPqM6wWl1PrTttTkmXQntjGeh7Uv9BOnjMjw2OwGmCZsfRLdRH5UmsmhRmSEWE
- UZVxFrl8YBmtzYgyIoyp8UGIbvMVO6M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725427918;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5MyhVXx6HLKjg7LRW2f8cwQ/X5gKTrVO4aZqpwj7bEE=;
- b=NGOVNki+LXDKhHCeBPtoubsbE1CfFdtXj7B4a8PdNBi/+KVNKh88qX36runN+5+NrOJKWH
- ndHMxXCVdjWXxODQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA18B139E2;
- Wed,  4 Sep 2024 05:31:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 66wXLM7w12b5TAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 04 Sep 2024 05:31:58 +0000
-Date: Wed, 4 Sep 2024 07:31:57 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20240904053157.GA836933@pevik>
-References: <20240903140326.773060-1-pvorel@suse.cz>
- <ZtcoDmsWrMu8Qaze@yuki.lan>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9ED8914098C8
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 08:48:25 +0200 (CEST)
+Received: by mail-lj1-x22f.google.com with SMTP id
+ 38308e7fff4ca-2f51e5f0656so69550981fa.1
+ for <ltp@lists.linux.it>; Tue, 03 Sep 2024 23:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1725432504; x=1726037304; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=3UC73SzuwSrO3vU6GYHYWY7jkv3dmJjIVaI9FEFOSi8=;
+ b=MxwdkbsNhB1/3MjaxVfUshkIg1EGei38WDL1fKVUZTFXBDNh9f4rFq6Y7xeZDp5sHt
+ QzR36BNG8c7Qf1nr10iq+Ht97QTEgroVU3kpHepi4gmhkFyrWySwQ2ygdqu6g3HGfbqy
+ kORurdgzFR0Pgv6nttrerS2Y3DT1BfecI3cKc6sY+X87kc8ZZb9tJJcB/tF2P93ygWxH
+ cdrFYwxex7Dxc+stxhZVRTKZjFykH3tMDh1eloILR7G9ymJ3hb0mg0xk8ZDNHlaWJCLi
+ p5XPzDa3qczW4UfLCAdXHK5Rowajl2tXwOGDLviynl6qFPHbHeJsyrBjR3JQSzfjxujC
+ dIaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1725432504; x=1726037304;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=3UC73SzuwSrO3vU6GYHYWY7jkv3dmJjIVaI9FEFOSi8=;
+ b=noivhLhUoUx34TwkMTRHKkHxlc2crkvfKtxSPXLcSZyU5rS1OI91jIMtYYRHV0MKiz
+ DFdBWVHLb1RJMQkrBkEyFlT/VYyjKyWnCbWpxbb01WcEr/Xvzii+/BTWicidm1QAAROW
+ nPijVdbXXM6KTVdDitanAbKmnaw8WBPrky9zQuPl6Kf/iJEIAQuJgVKpjPOxZdqnlPTn
+ PuBrwIathc5ecaCsvq32PNN2/5cGSew4MV2wqLuqYlLGAfNailLmQBUQDcsBhedQNXKk
+ JpLNCCvS93g1BjTInXXzGndfuAekeNpWjAFmXyTie5quGGotN8PBz7/PsTcpmBm8Cz1+
+ HHaQ==
+X-Gm-Message-State: AOJu0YxY3HYZ0SXSU5/GL6l2+vtcdmxIaUqhtPqubfMBv2OejOS5aMq0
+ ePLq8GU/uHN/C88b+WrELoqSrJrtAxj3lim8iOCu0Lax1ywu8GaJTBu5ZQl/G9z330TnSlhUKfw
+ =
+X-Google-Smtp-Source: AGHT+IHyLzwevJ39HjHMgWozvd4reEOUQOEEy5Udq6xuvPvjiT27VnDChlghGuirBTgh82mV/Wsz4Q==
+X-Received: by 2002:a05:651c:a0a:b0:2f6:2858:a141 with SMTP id
+ 38308e7fff4ca-2f62858a557mr90428121fa.39.1725432504037; 
+ Tue, 03 Sep 2024 23:48:24 -0700 (PDT)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5c226cd4bcbsm7302683a12.74.2024.09.03.23.48.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 03 Sep 2024 23:48:23 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed,  4 Sep 2024 02:48:17 -0400
+Message-Id: <20240904064817.29813-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240904035808.5891-1-wegao@suse.com>
+References: <20240904035808.5891-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZtcoDmsWrMu8Qaze@yuki.lan>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] swapoff01: Define max_runtime 45s
+Subject: [LTP] [PATCH v5] mpls01.sh: Add --allow-unsupported for modprobe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,64 +91,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > Test run mostly below 1 sec per filesystem, only NTFS is very slow
-> > ~ 10-15 sec depending on architecture.
+In sle-micro we encounter following error when do modprobe:
+root# modprobe mpls_router
+modprobe: ERROR: module 'mpls_router' is unsupported
+modprobe: ERROR: Use --allow-unsupported or set allow_unsupported_modules 1 in
+modprobe: ERROR: /etc/modprobe.d/10-unsupported-modules.conf
+modprobe: ERROR: could not insert 'mpls_router': Operation not permitted
 
-> If part of the slowdown is caused by the fact that we format the
-> filesystems the real question is if all the tests that format and mount
-> a device should have a max_runtime defined. It may make sense to
-> increment the max_runtime in the test library to compensate for the
-> mkfs, but it looks that it's not the mkfs that is slow.
+Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/mpls/mpls01.sh   |  4 ++--
+ testcases/network/mpls/mpls_lib.sh | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-> I did some measurements for the swapoff01 case and the whole testrun
-> runs for about 10 seconds for me. If I change the test to do
-> tst_brk(TCONF, ...) as the first thing in the test setup its 1s. So
-> writing out the 1MB of swapfile and running mkswap and swapon() on that
-> takes about 90% of the runtime.
+diff --git a/testcases/network/mpls/mpls01.sh b/testcases/network/mpls/mpls01.sh
+index 196b5b2f9..e453f8130 100755
+--- a/testcases/network/mpls/mpls01.sh
++++ b/testcases/network/mpls/mpls01.sh
+@@ -21,7 +21,7 @@ cleanup()
+ 
+ setup()
+ {
+-	ROD modprobe mpls_router
++	mpls_setup_driver
+ }
+ 
+ test1()
+@@ -66,5 +66,5 @@ test3()
+ 	tst_res TPASS "created and removed mpls routes"
+ }
+ 
+-. tst_net.sh
++. mpls_lib.sh
+ tst_run
+diff --git a/testcases/network/mpls/mpls_lib.sh b/testcases/network/mpls/mpls_lib.sh
+index 380b568bb..3c63e16a7 100755
+--- a/testcases/network/mpls/mpls_lib.sh
++++ b/testcases/network/mpls/mpls_lib.sh
+@@ -33,11 +33,21 @@ mpls_virt_cleanup()
+ 	mpls_cleanup
+ }
+ 
++mpls_setup_driver()
++{
++	local args
++
++	grep -q 'sl-micro' /etc/os-release && args='--allow-unsupported'
++	if [ "$TST_NEEDS_DRIVERS" ]; then
++		tst_net_run -s "modprobe $args -a $TST_NEEDS_DRIVERS"
++	fi
++}
++
+ mpls_setup()
+ {
+ 	local label="$1"
+ 
+-	tst_net_run -s "modprobe -a $TST_NEEDS_DRIVERS"
++	mpls_setup_driver
+ 
+ 	ROD sysctl -q net.mpls.conf.$(tst_iface).input=1
+ 	tst_set_sysctl net.mpls.conf.lo.input 1 safe
+-- 
+2.35.3
 
-Thanks for your investigation.
-
-> So yes it looks like the actual test needs some runtime defined,
-> although I'm not sure how long it should be. We probably need a
-> reference machine to callibrate this on. I would avoid any emulated CPU
-> and choose a real hardware. I guess one of the RPis e.g. Pi Zero would
-> be a good choice since they are widely available and slow by any modern
-> standards.
-
-This makes sense.
-
-Kind regards,
-Petr
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Changes v1->v2:
-> > * 60 => 45
-
-> >  testcases/kernel/syscalls/swapoff/swapoff01.c | 1 +
-> >  1 file changed, 1 insertion(+)
-
-> > diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > index 314630267d..ef75c92de0 100644
-> > --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > @@ -53,5 +53,6 @@ static struct tst_test test = {
-> >  	.all_filesystems = 1,
-> >  	.needs_root = 1,
-> >  	.test_all = verify_swapoff,
-> > +	.max_runtime = 45,
-> >  	.setup = setup
-> >  };
-> > -- 
-> > 2.45.2
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
