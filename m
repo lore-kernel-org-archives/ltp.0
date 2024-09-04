@@ -4,83 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CFC3CA0ED3
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 03:58:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725422318; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=Ex4sr9J4H7bnfbjdcXH4Ef8KhdNUHuIAV2s2GvG9PUc=;
- b=JAc7AbZCZ/wtRvqs16ticFeSrU6mjVs42K0FyFaBeJ8uEZckpSnvkEdIJH8iRvaiYk/zN
- dRjE5pgu25OSOCO/CyOspeYGcMTUMRxKECnOeewxtjFRFIsE8CJHJ1qdDbxDeDkCtp3833v
- Jphggr0qr/5MNpn21/geg8lJ/OmF5p4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0804FCA0ED3
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 04:37:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48B273C1840
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 05:58:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 00B9F3C1445
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 06:37:54 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E593E3C0BA7
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 05:58:17 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3D208602BDC
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 05:58:16 +0200 (CEST)
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-a86b46c4831so693410166b.1
- for <ltp@lists.linux.it>; Tue, 03 Sep 2024 20:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1725422295; x=1726027095; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=uPAyUILuhINWNznvsZ1IZK3edjHuHbIR9ngBLtcTXj0=;
- b=FEBZpWA7/hiSuxFtcFAns8Dn/thZfLPibFPsCimeDJQZyS5TsGGXW23H61hMEa+nXX
- YxlXXfMPukslPh0vfVV1oUlVNGRGl3tjg6eEra9uun3olqt8TuQ9hblbMCGAFafpk4CQ
- NU9xvbVIbWT7uXBaL+CfZ7FaP7Iu+Th/2C6wL4M6sQwTlZxtcOD1yVp7srPf7ta8tzUb
- KB/Fd+gALhKVWWcCkRYiurn74FIjaaXIFyMXOS7bi8Ckk3RWtUUgesbHoE7tK4NdMDhH
- /uHOqVV7gytz1K5fzSg5pcSTw8wQK4G3Cd+2xCQdjZz4uxZoOxBe88FTfwtcmmC92mNq
- gWKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1725422295; x=1726027095;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=uPAyUILuhINWNznvsZ1IZK3edjHuHbIR9ngBLtcTXj0=;
- b=DUYqGdkznst01ZNWEoyercnfRhLeaboN6oXfKDbWu5pYm0bGs5sKkiLUgW11QUhSB+
- grMMlRDHlwpSef5WEWzJqD7FqImKB5opq6+fCQMr/YLAjRaAOXwsijFnJA4KQe03VhQM
- pWDHv4ubA1Y+ES3DrfXpV/xh/8fTyLjAQE1/2UR3xEqCH+F/PMAhBjlwWYUo5aENWvi7
- bXrX4r7S2t+TMRBYxQSGQhGyzRzQbpmksBqJcwuN+eSa/WjVk26Obv3vWUW0sZa7TeSS
- crJ1ooT3yF6vVd+d/blHCE47IHHVQuIAdOSb1D9B0DlOTEIFHzJdvfJIHyxNz54rZo10
- niRA==
-X-Gm-Message-State: AOJu0Yzp+3lX7JYrc+sTzXic1HAOLT9ZWaV5qHaTMhCz3tq/Oi+IPKng
- LQ3acR1RILcvyGMyLbzvJ2f5O+wy8RERi81JWyzt9zow3Lu5PgMUNhHMZOr4XPp7/ZkmgF2j43Y
- =
-X-Google-Smtp-Source: AGHT+IH18PX6p2/TGEYi1iYwiMJSMUMJuAHhl/+MbxNrZyCSzuk0kTjQmu4pzuHtmNwazJ6Kdc++Cw==
-X-Received: by 2002:a17:907:3684:b0:a77:b5c2:399 with SMTP id
- a640c23a62f3a-a89d879c0a9mr921669566b.31.1725422294861; 
- Tue, 03 Sep 2024 20:58:14 -0700 (PDT)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a8989196b89sm754293566b.114.2024.09.03.20.58.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Sep 2024 20:58:14 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue,  3 Sep 2024 23:58:08 -0400
-Message-Id: <20240904035808.5891-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240903081916.27033-1-wegao@suse.com>
-References: <20240903081916.27033-1-wegao@suse.com>
+ by picard.linux.it (Postfix) with ESMTPS id 55CE63C08CF
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 06:37:37 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id A157160B04F
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 06:37:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+ Message-ID; bh=Ds8SGJNrGKKPwrRg5/3qgVtYu3HnLnrC+bgY+oUH6VA=; b=n
+ GjmtBSwtZx60+UvJiJmOIezVguPAfWnW+k2nhRxATTEKmckpJPLIXZXuwMIjNkHz
+ gMSCkjbsNH3xiPtK4OquZKLvdCEPa7hbw1wxEHuH+WOQZyHWWbIPkX90Aj7IkGBe
+ Y6dutC5qfc7RPTJrvgxWatZyYVfbv7RGlyevmy/wXI=
+Received: from ice_yangxiao$163.com ( [160.86.227.245] ) by
+ ajax-webmail-wmsvr-40-125 (Coremail) ; Wed, 4 Sep 2024 12:37:19 +0800 (CST)
+X-Originating-IP: [160.86.227.245]
+Date: Wed, 4 Sep 2024 12:37:19 +0800 (CST)
+From: =?GBK?B?0e7P/g==?= <ice_yangxiao@163.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <3zloqsccdzrelzht454tpafo3jseckjtnbyznyn7ve25m62uyf@olxy27mjxn42>
+References: <20240901145025.2311-1-ice_yangxiao@163.com>
+ <3zloqsccdzrelzht454tpafo3jseckjtnbyznyn7ve25m62uyf@olxy27mjxn42>
+X-NTES-SC: AL_Qu2ZB/iZu04o7yaRZukfmkwaj+w9XcqwuPsm24BUOpp+jAzp0z4ac3RdEmXn4t2DDBKjoQaJdTlg0/xgd4tWc4cL9bTRuTKzqZztgR3EX5bBOg==
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Message-ID: <60c0ae1b.4e59.191bb529ed5.Coremail.ice_yangxiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: _____wD3Xxr_49dmx5JdAA--.31718W
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbB0g9QXmWX0JuOWwADs8
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] mpls01.sh: Add --allow-unsupported for modprobe
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] mm/vma: Return the exact errno for
+ vms_gather_munmap_vmas()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,71 +59,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: linux-mm@kvack.org, oliver.sang@intel.com, linux-kernel@vger.kernel.org,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In sle-micro we encounter following error when do modprobe:
-root# modprobe mpls_router
-modprobe: ERROR: module 'mpls_router' is unsupported
-modprobe: ERROR: Use --allow-unsupported or set allow_unsupported_modules 1 in
-modprobe: ERROR: /etc/modprobe.d/10-unsupported-modules.conf
-modprobe: ERROR: could not insert 'mpls_router': Operation not permitted
+Hi Liam R
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/mpls/mpls01.sh   |  4 ++--
- testcases/network/mpls/mpls_lib.sh | 10 ++++++++++
- 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/mpls/mpls01.sh b/testcases/network/mpls/mpls01.sh
-index 196b5b2f9..e453f8130 100755
---- a/testcases/network/mpls/mpls01.sh
-+++ b/testcases/network/mpls/mpls01.sh
-@@ -21,7 +21,7 @@ cleanup()
- 
- setup()
- {
--	ROD modprobe mpls_router
-+	mpls_setup_driver
- }
- 
- test1()
-@@ -66,5 +66,5 @@ test3()
- 	tst_res TPASS "created and removed mpls routes"
- }
- 
--. tst_net.sh
-+. mpls_lib.sh
- tst_run
-diff --git a/testcases/network/mpls/mpls_lib.sh b/testcases/network/mpls/mpls_lib.sh
-index 380b568bb..2ded31ee9 100755
---- a/testcases/network/mpls/mpls_lib.sh
-+++ b/testcases/network/mpls/mpls_lib.sh
-@@ -33,6 +33,16 @@ mpls_virt_cleanup()
- 	mpls_cleanup
- }
- 
-+mpls_setup_driver()
-+{
-+	local args
-+
-+	grep -q 'sl-micro' /etc/os-release && args='--allow-unsupported'
-+	if [ "$TST_NEEDS_DRIVERS" ]; then
-+		tst_net_run -s "modprobe $args -a $TST_NEEDS_DRIVERS"
-+	fi
-+}
-+
- mpls_setup()
- {
- 	local label="$1"
--- 
-2.35.3
+Thanks for your reply.
 
+Could you share the URL of your v8 patches.
+
+
+
+Best Regards,
+Xiao Yang
+
+At 2024-09-03 23:58:26, "Liam R. Howlett" <Liam.Howlett@oracle.com> wrote:
+>
+>Thanks, but this is already fixed in v8 of my patches.
+>
+>* Xiao Yang <ice_yangxiao@163.com> [240901 10:51]:
+>> can_modify_vma() in vms_gather_munmap_vmas() returns -EPERM if vma is
+>> sealed so don't always return the fixed -ENOMEM on failure.
+>> 
+>> Fixes: c2eb22189bbc ("mm/vma: inline munmap operation in mmap_region()")
+>> Fixes: 5887a7ac2383 ("mm/vma: expand mmap_region() munmap call")
+>> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202408312155.fd26a58c-oliver.sang@intel.com
+>> ---
+>>  mm/mmap.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index c1781f643046..c9a0dc035819 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -1386,8 +1386,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>>  		mt_on_stack(mt_detach);
+>>  		mas_init(&mas_detach, &mt_detach, /* addr = */ 0);
+>>  		/* Prepare to unmap any existing mapping in the area */
+>> -		if (vms_gather_munmap_vmas(&vms, &mas_detach))
+>> -			return -ENOMEM;
+>> +		error = vms_gather_munmap_vmas(&vms, &mas_detach);
+>> +		if (error)
+>> +			return error;
+>>  
+>>  		vmg.next = vms.next;
+>>  		vmg.prev = vms.prev;
+>> -- 
+>> 2.44.0
+>> 
+>> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
