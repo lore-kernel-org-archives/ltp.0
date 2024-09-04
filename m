@@ -4,112 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1E30CA0ED3
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 10:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D1ABCA0ED3
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 10:16:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BEDA3C1CB9
-	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 12:08:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 3D7A33C1881
+	for <ltp@archiver.kernel.org>; Wed,  4 Sep 2024 12:16:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F0EF3C0BA7
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 12:08:06 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 9AE493C0BA7
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 12:16:32 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4E77E10004A0
- for <ltp@lists.linux.it>; Wed,  4 Sep 2024 12:08:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EABBD1A0068B
+ for <ltp@lists.linux.it>; Wed,  4 Sep 2024 12:16:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D2A04219AF;
- Wed,  4 Sep 2024 10:08:02 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D07B41F7BC;
+ Wed,  4 Sep 2024 10:16:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725444483;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1725444991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sH+dkpR8M3p1YMmQdJJtB+9mEgzsx8YVofqKVr2i65c=;
- b=UIQIoInuawVRdiXE1D2duLCrSvxfvMc/yYM3rzWWXYAKKUDezqRHNg/itNOI+d3EHq9bXb
- nMP/+aTr/Qlu9pLA55c33m3npw06BLMbP5rtt7lWa0RwXNOo+y3nLP7NLNGHWiC6EQsWTx
- oF9drhujouSXKsFzjxydmsP19OZGmu0=
+ bh=7ZxNDPoqgLEs9pDfCIm7uJhMddtNNggiwdXggIJQZ80=;
+ b=c5afJmicN30EBGp5T8MSXMpa31jnOHybo/Ney1+iOmschRMjumluaYr7HaoTZll6aHvtt1
+ tH1XwlhfcrYO3MjMdGi2kwCt3sMxhMowSR1u4g6rsww4UCX9RtYsjE5pXsljcUQHfbYir3
+ u2/siwYsQkILE9Trz9nOatYuy6JYBgA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725444483;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1725444991;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sH+dkpR8M3p1YMmQdJJtB+9mEgzsx8YVofqKVr2i65c=;
- b=Pxo8Mrr1ozSUsfHncdFlz1avMF5uAL27BC+K0gwbEoFjdlmmd5bOLD0/nH43DjzDGN2oV1
- 4XOp8XyhcwYEkPAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=7ZxNDPoqgLEs9pDfCIm7uJhMddtNNggiwdXggIJQZ80=;
+ b=xFzJESAYIA19uQ8QpO9tmVUKTvj7DXuRPqm9y+13hnen1tn8Ydzg+34h2AMMsV4uZK7ybV
+ rwDhgyHOMV9lUfCA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=D+aXAhw0;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=a3KPX+9+
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725444482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1725444990; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sH+dkpR8M3p1YMmQdJJtB+9mEgzsx8YVofqKVr2i65c=;
- b=o3zWgQAl7x2Dxy6l5rsOcvJS4TkdhrXc1rYG107R3llQjjFO4eCpvd1AVomomn13Nkb1ou
- zRYKSFfTysGY1SdqD/rJbYb8AdtUJLpiDVyr1+ilif75w88rIqNc8CLhDEnDPMzczZIFhV
- y0DEZXj7tjOvaLJKVtyW4zT9P2rqUA4=
+ bh=7ZxNDPoqgLEs9pDfCIm7uJhMddtNNggiwdXggIJQZ80=;
+ b=D+aXAhw0SX8Hgcnuwcm+8NAD9X/vM/5kTkJEYUzC3KBWAPdQRR7PXvVbKprG/rmPMq8fZ1
+ iFlmSxGzXxSzXIAGGwmXust9RZ1yPuaM+dQFDfArvTOFdCKe+jUp4da2hFTU+knO/JtNUd
+ xZ/PNFS6uu7t04vLu7rZq78DuexJeL0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725444482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1725444990;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sH+dkpR8M3p1YMmQdJJtB+9mEgzsx8YVofqKVr2i65c=;
- b=RSoIcByExzISJCdp8UOwVBLP/zALxvol1NKSLn0iMmMa4g3Gw1kjP7c6uQ1dQvYuI8w5vH
- qr5d8LZ5ixGnuUBw==
+ bh=7ZxNDPoqgLEs9pDfCIm7uJhMddtNNggiwdXggIJQZ80=;
+ b=a3KPX+9++XhoezNH42BaRlIqi7QFwKofPLnSLh3L+SKAFeMcHHzKgYueFGFHuUj3cBzhQF
+ Fl+RGitY1pujCUDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B414B139D2;
- Wed,  4 Sep 2024 10:08:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5366139D2;
+ Wed,  4 Sep 2024 10:16:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Rb36KoIx2GaOIgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 04 Sep 2024 10:08:02 +0000
-Date: Wed, 4 Sep 2024 12:07:53 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20240904100753.GB849136@pevik>
-References: <20240903140326.773060-1-pvorel@suse.cz>
- <ZtcoDmsWrMu8Qaze@yuki.lan> <20240904053157.GA836933@pevik>
- <Ztgfu4bTVyw7hvdP@yuki.lan>
- <CAEemH2edp0xmW=LQzvGPeukqh=NXai6N-3J7fgLcOm5eTkvO+Q@mail.gmail.com>
- <CAEemH2cg=mk7XzwZj+oYOM5BRzjewE9vHVMnDnX+UmQ4YZTT_g@mail.gmail.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Z1w9K34z2GZ5JQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 04 Sep 2024 10:16:30 +0000
+Date: Wed, 4 Sep 2024 12:15:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Samir Mulani <samir@linux.vnet.ibm.com>
+Message-ID: <ZtgzOT0gPiIyumky@yuki.lan>
+References: <20240407095243.65152-1-samir@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2cg=mk7XzwZj+oYOM5BRzjewE9vHVMnDnX+UmQ4YZTT_g@mail.gmail.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20240407095243.65152-1-samir@linux.vnet.ibm.com>
+X-Rspamd-Queue-Id: D07B41F7BC
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_SOME(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] swapoff01: Define max_runtime 45s
+Subject: Re: [LTP] [PATCH v3] Migrating the
+ libhugetlbfs/testcases/truncate_sigbus_versus_oom.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,45 +120,199 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: rpalethorpe@suse.de, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBPbiBXZWQsIFNlcCA0LCAyMDI0IGF0IDU6MjbigK9QTSBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0
-LmNvbT4gd3JvdGU6Cgo+ID4gT24gV2VkLCBTZXAgNCwgMjAyNCBhdCA0OjUz4oCvUE0gQ3lyaWwg
-SHJ1YmlzIDxjaHJ1YmlzQHN1c2UuY3o+IHdyb3RlOgoKPiA+ID4gSGkhCj4gPiA+ID4gPiBTbyB5
-ZXMgaXQgbG9va3MgbGlrZSB0aGUgYWN0dWFsIHRlc3QgbmVlZHMgc29tZSBydW50aW1lIGRlZmlu
-ZWQsCj4gPiA+ID4gPiBhbHRob3VnaCBJJ20gbm90IHN1cmUgaG93IGxvbmcgaXQgc2hvdWxkIGJl
-LiBXZSBwcm9iYWJseSBuZWVkIGEKPiA+ID4gPiA+IHJlZmVyZW5jZSBtYWNoaW5lIHRvIGNhbGxp
-YnJhdGUgdGhpcyBvbi4gSSB3b3VsZCBhdm9pZCBhbnkgZW11bGF0ZWQgQ1BVCj4gPiA+ID4gPiBh
-bmQgY2hvb3NlIGEgcmVhbCBoYXJkd2FyZS4gSSBndWVzcyBvbmUgb2YgdGhlIFJQaXMgZS5nLiBQ
-aSBaZXJvIHdvdWxkCj4gPiA+ID4gPiBiZSBhIGdvb2QgY2hvaWNlIHNpbmNlIHRoZXkgYXJlIHdp
-ZGVseSBhdmFpbGFibGUgYW5kIHNsb3cgYnkgYW55IG1vZGVybgo+ID4gPiA+ID4gc3RhbmRhcmRz
-LgoKUGkgWmVybyBpcyBnb29kIHRoYXQgaXQncyBzbG93IGVub3VnaCB0aGF0IGV2ZW4gZW11bGF0
-ZWQgcmlzYy12IHdpbGwgd29yay4KCkJ1dCBPVE9IIG1pZ2h0IGJlIG1vcmUgcHJhY3RpY2FsIHRv
-IG1lYXN1cmUgb24gUlBJNCBvciBSUEkzIChtYXliZSBtb3JlIG9mIHVzCmhhcyBSUEk0IG9yIFJQ
-STMgcGVyc29uYWxseSBvciBpbiBDSSkuIEkgbWVhbiB1bmxlc3Mgb3RoZXJzIGhhdmUvd2lsbCBi
-dXkgUGkKWmVybyB5b3Ugd2lsbCBiZSBmb3JjZWQgdG8gZG8gdGhlIHJlZmVyZW5jZS4gQWxzbyBQ
-aSBaZXJvIGlzIHNsb3cgKHlvdSBuZWVkIHRvCmNvbXBpbGUsIHRodXMgSSB3aWxsIG5vdCBsb3Zl
-IHRvIGRvIHRoZSBtZWFzdXJlbWVudHMuCgpBbHNvIGVtdWxhdGVkIHJpc2MtdiBhbmQgUGkgWmVy
-byB3aWxsIGFsd2F5cyBuZWVkIHRvIHNldCBMVFBfUlVOVElNRV9NVUwsIHJpZ2h0PwpPciBkbyB3
-ZSB3YW50IHRvIGRvIG1lYXN1cmVtZW50cyB0aGF0IGV2ZW4gdGhlc2Ugd2lsbCBydW4gd2l0aG91
-dApMVFBfUlVOVElNRV9NVUw/IFRoYXQgd291bGQgaGVscCB1c2VycyBub3QgaGF2aW5nIHRvIGJv
-dGhlciwgYnV0IGluY3JlYXNpbmcKbGltaXRzIGZvciBmYXN0IGRldmljZXMgbWlnaHQgbm90IGJl
-IGEgZ29vZCBpZGVhLgoKPiA+ID4gPiBUaGlzIG1ha2VzIHNlbnNlLgoKPiA+ID4gU28gSSBkdXN0
-ZWQgb2ZmIG15IFBpIFplcm8gYW5kIGluZGVlZCB0aGUgdGVzdCB0aW1lb3V0cyB0aGVyZSBhcyB3
-ZWxsLgo+ID4gPiBUaGUgbnRmcyBmaWxlc3lzdGVtIHRha2VzIDc4cywgZXh0MiAyOXMsIGV4ZmF0
-IDIwcy4gU28gSSB3b3VsZCBzYXkgdGhhdAoKPiA+IEknbSB3b25kZXJpbmcgd2hpY2ggZGlzdHJp
-YnV0aW9uIChhbmQga2VybmVsIHZlcnNpb24pIGRpZCB5b3UgdXNlIG9uIHJhc3BpLTA/CgpZZXMs
-IDc4cywgZXh0MiAyOXMsIGV4ZmF0IDIwcyBpcyBmYXN0ZXIsIGJ1dCB0aGF0J3MgZHVlIFJhc3Bi
-ZXJyeSBQaSBaZXJvIHVzaW5nCmp1c3QgQnJvYWRjb20gQkNNMjgzNSBTb0MgYXMgdGhlIGZpcnN0
-IGdlbmVyYXRpb24gUmFzcGJlcnJ5IFBpIFsxXSAoMzIgYml0IGFybSkuClJQSTQgdXNlcyBCcm9h
-ZGNvbSBCQ00yNzExIFNvQyAoNjQtYml0IHF1YWQtY29yZSkuCgpLaW5kIHJlZ2FyZHMsClBldHIK
-ClsxXSBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9SYXNwYmVycnlfUGkjUHJvY2Vzc29y
-Cgo+IEkgYXNrIHRoaXMgYmVjYXVzZSB3ZSBtaWdodCBuZWVkIHRvIGNvbnNpZGVyIHRoZSBvbGRl
-c3Qgc3VwcG9ydGVkIHN5c3RlbXM6Cj4gLSBodHRwczovL2xpbnV4LXRlc3QtcHJvamVjdC5yZWFk
-dGhlZG9jcy5pby9lbi9sYXRlc3QvdXNlcnMvc3VwcG9ydGVkX3N5c3RlbXMuaHRtbAoKLS0gCk1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> Some kernel have a bug in the positioning of the test against
+> i_size.  This bug means that attempting to instantiate a page
+> beyond the end of a hugepage file can result in an OOM and SIGKILL
+> instead of the correct SIGBUS.
+> 
+> Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
+> ---
+> v3:
+> --Addressed the below requested changes
+>   1. Added volatile variable in signal handler to varify the SIGBUS signal in runtest method.
+>   2. Fixed run test more times (-iN)
+>   3. Removed number of required hugepages.
+>   4. Corrected commit numberin struct tst_test.
+>   5. Ran make check and fixed the issues.
+> ---
+>  runtest/hugetlb                               |   1 +
+>  testcases/kernel/mem/.gitignore               |   1 +
+>  .../kernel/mem/hugetlb/hugemmap/hugemmap37.c  | 103 ++++++++++++++++++
+>  3 files changed, 105 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+> 
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 299c07ac9..7b7c44b77 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+>  hugemmap30 hugemmap30
+>  hugemmap31 hugemmap31
+>  hugemmap32 hugemmap32
+> +hugemmap37 hugemmap37
+>  hugemmap05_1 hugemmap05 -m
+>  hugemmap05_2 hugemmap05 -s
+>  hugemmap05_3 hugemmap05 -s -m
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index c96fe8bfc..a74260689 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -34,6 +34,7 @@
+>  /hugetlb/hugemmap/hugemmap30
+>  /hugetlb/hugemmap/hugemmap31
+>  /hugetlb/hugemmap/hugemmap32
+> +/hugetlb/hugemmap/hugemmap37
+>  /hugetlb/hugeshmat/hugeshmat01
+>  /hugetlb/hugeshmat/hugeshmat02
+>  /hugetlb/hugeshmat/hugeshmat03
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+> new file mode 100644
+> index 000000000..5c55afe54
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+> @@ -0,0 +1,103 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test Name: Truncate_sigbus_versus_oom
+
+Please drop the test name here as well.
+
+> + * Some kernel have a bug in the positioning of the test against
+> + * i_size.  This bug means that attempting to instantiate a page
+> + * beyond the end of a hugepage file can result in an OOM and SIGKILL
+> + * instead of the correct SIGBUS.
+> + */
+> +
+> +#include <setjmp.h>
+> +#include <signal.h>
+> +#include "hugetlb.h"
+> +
+> +#define MNTPOINT "hugetlbfs/"
+> +#define PTS_PASS 0
+
+This macro is unused now.
+
+> +static int  fd = -1, fdx = -1;
+> +
+> +static unsigned long long hpage_size;
+> +static unsigned long totpages;
+> +struct sigaction sa;
+> +static sigjmp_buf sig_escape;
+> +static volatile int test_pass;
+> +static int sigbus_count;
+> +
+> +static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	test_pass = 1;
+> +	siglongjmp(sig_escape, 17);
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	void *p, *q;
+> +	unsigned long i;
+> +
+> +	sigbus_count = 0;
+> +	test_pass = 0;
+> +
+> +	fd = tst_creat_unlinked(MNTPOINT, 0);
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+> +	SAFE_FTRUNCATE(fd, 0);
+> +
+> +	fdx = tst_creat_unlinked(MNTPOINT, 0);
+> +	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	q = SAFE_MMAP(NULL, totpages * hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fdx, 0);
+> +	/* Touch the pages to ensure they're removed from the pool */
+> +	for (i = 0; i < totpages; i++) {
+> +		volatile char *x = (volatile char *)q + i*hpage_size;
+> +		*x = 0;
+> +	}
+> +	/* SIGBUS is what *should* happen */
+> +	SAFE_FTRUNCATE(fdx, 0);
+> +	if (sigsetjmp(sig_escape, 1) == 0)
+> +		*((volatile unsigned int *)p);
+> +	else
+> +		sigbus_count++;
+
+I still think that this is actually useless, we already set a flag in
+the signal handler so we can drop the whole sigbus_count logic from the
+test and it could be simplified as:
+
+	if (segsetjmp(sig_escape, 1) == 0)
+		*((voilatile unsigned int *)p);
+
+	if (test_pass)
+		tst_res(TPASS, ...);
+	else
+		tst_res(TFAIL, ...);
+
+I mean we are not going to get to the else branch that increments the
+sigbus_count from anywhere else than the signal handler which already
+set the test_pass, so the values of test_pass and sigbus_count will be
+always the same.
+
+> +	if (sigbus_count != 1)
+> +		tst_res(TFAIL, "Didn't SIGBUS");
+> +
+> +	if (test_pass == 1)
+> +		tst_res(TPASS, "Expected SIGBUS triggered");
+> +}
+> +
+> +void setup(void)
+> +{
+> +	sa.sa_flags = SA_SIGINFO;
+> +	sa.sa_handler = sigbus_handler;
+> +	SAFE_SIGACTION(SIGBUS, &sa, NULL);
+> +	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	hpage_size = tst_get_hugepage_size();
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +	if (fdx > 0)
+> +		SAFE_CLOSE(fdx);
+> +}
+> +
+> +
+> +static struct tst_test test = {
+> +	.tags = (struct tst_tag[]) {
+> +		{"linux-git", "ebed4bfc8da8"},
+> +		{}
+> +	},
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {1, TST_NEEDS},
+> +};
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
