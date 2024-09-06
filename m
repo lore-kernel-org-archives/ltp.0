@@ -4,94 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49AC7CE7AE3
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 07:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE933CE7AE0
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 07:34:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7FF433C264F
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 09:25:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 114513C2145
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 09:34:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F8923C0780
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:25:19 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 80E5C3C050E
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:34:40 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6F66B1A0147B
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:25:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 44F241F896;
- Fri,  6 Sep 2024 07:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725607518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
- b=Il62bsvsUGTUBSa/bfUXedcan4hCcrkO34MFPNeWR6thWrl4EFat+3vYJ3FcvkDrFcUENh
- Q4tg1O2mfgCi8uS460gkFZg4gCw37pHFMVMk4DZHHD+G4VyUafEWkP+6DTLxuwLf571QkD
- DNcFe85/WJwKSgaMux8aX8vDCRlnTck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725607518;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
- b=Nrm2gPzx0Stc8Ap/RqOP4/EJUel9YxvAGwkVSlV8DdsOWJdzDnr8V7T+jy5d2EyiaRDWa0
- e1/A/mTqpFZ7vIAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725607518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
- b=Il62bsvsUGTUBSa/bfUXedcan4hCcrkO34MFPNeWR6thWrl4EFat+3vYJ3FcvkDrFcUENh
- Q4tg1O2mfgCi8uS460gkFZg4gCw37pHFMVMk4DZHHD+G4VyUafEWkP+6DTLxuwLf571QkD
- DNcFe85/WJwKSgaMux8aX8vDCRlnTck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725607518;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
- b=Nrm2gPzx0Stc8Ap/RqOP4/EJUel9YxvAGwkVSlV8DdsOWJdzDnr8V7T+jy5d2EyiaRDWa0
- e1/A/mTqpFZ7vIAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0335A1395F;
- Fri,  6 Sep 2024 07:25:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id S/7POV2u2mbVMwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 07:25:17 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri,  6 Sep 2024 09:25:00 +0200
-Message-ID: <20240906072500.982132-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.45.2
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C3BF71A003EF
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:34:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1725608078;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LILIagve2XKnwVCiM0NnOldsegua+OOjN9gOy9vXwkU=;
+ b=AN/ynxZjFUaVY7TxzCR55tfdPsAAyADaklr44Bbw3/tNaYvTy2I0WwJ9S9Df0o0LncLXP7
+ cLxIONccARz3PHXuuSsbOL2BW+TwBgpS1utt7EGK+tmn50upG9/sP5lu539+KU0st0DhBI
+ 8OgFzmYxg7FsXAM5TaR7wYEbmlnPGg4=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-121-djxEjOWQNzW35g0bAd0qJA-1; Fri, 06 Sep 2024 03:34:36 -0400
+X-MC-Unique: djxEjOWQNzW35g0bAd0qJA-1
+Received: by mail-pf1-f200.google.com with SMTP id
+ d2e1a72fcca58-7141f62ac14so3269882b3a.0
+ for <ltp@lists.linux.it>; Fri, 06 Sep 2024 00:34:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1725608075; x=1726212875;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=LILIagve2XKnwVCiM0NnOldsegua+OOjN9gOy9vXwkU=;
+ b=BndH5ACcE43Ni1ctEkRQ8KpBH/c5CYtWNUXgRO25eGTXSBxHR/ro5/+V7Le/fO4tlH
+ GjD6kO8e8WG+hO5lQP7uaUeausYKZ6jIuvMOwKweTZX+8z9b8/IHZcjLXQJByu3ODHmJ
+ 2PFk3Aq5dCraBXc8gD55A72k0I9kZCwuuvha3YLq9Aq+nmnD1btozqjg78H2f5U+7MhJ
+ KYdiyhBpDxonkZGqX9whkVmVdQXy6AGBFZ9A72KBkoVdfDPi2mCWOpu2+vE/DE9rh4wu
+ yKPddyLovfiVy91jyRXONxu6UTjSL4eOQZmp7Gpy0QYsNECxVPKdXqtsjibknXdmeJS4
+ mjuQ==
+X-Gm-Message-State: AOJu0YzGPENN13biSWectBTkBaEPCMxLnxAn+E7yXsNqhTH3KiV349LB
+ lKgzbiY4St8L2iMTtZPldA0/vePLfkEgEmr1IZXml+qedv1OqdMzj355dkRafJc8vW7KNWm0hzK
+ CQgBk+fivb7qGdxOR6S/PgSBz54Y1JxrGVrq6hZ1Fb+d0Y0tZbMVfLXTT0wvhAX6zhaPIWDKVVK
+ qJc4fo5kUeP5jzlH/ueG4QHRo=
+X-Received: by 2002:a05:6a21:3213:b0:1cf:1a90:fa6f with SMTP id
+ adf61e73a8af0-1cf1c10bd3fmr2861804637.20.1725608075129; 
+ Fri, 06 Sep 2024 00:34:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEscu313th/++nO3XodR6M6C7qbq2pWVWBVknw3EwQvTYQ8QowpXyoOkdSwcYFvYwRItiRiHutr2lbkNKjeoNA=
+X-Received: by 2002:a05:6a21:3213:b0:1cf:1a90:fa6f with SMTP id
+ adf61e73a8af0-1cf1c10bd3fmr2861777637.20.1725608074748; Fri, 06 Sep 2024
+ 00:34:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
+References: <20240827120237.25805-1-chrubis@suse.cz>
+ <20240827120237.25805-3-chrubis@suse.cz>
+In-Reply-To: <20240827120237.25805-3-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 6 Sep 2024 15:34:22 +0800
+Message-ID: <CAEemH2eQQfhTfVo5xrBHFjzuf4dn=VqK2M=9Y3+hy+r8yzMtAA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] fanotify09: Skip testing e730558adffb on SLE <
- 5.19 kernel
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v3 2/4] Add support for mixing C and shell code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,43 +91,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Kernel commit e730558adffb ("fsnotify: consistent behavior for parent
-not watching children") will not be backported to SLE15-SP[45] v5.14
-based kernel, therefore skip it for kernel < 5.19 (the original mainline
-kernel which brought the functionality.
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/fanotify/fanotify09.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-index 48b198b941..72e9239897 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-@@ -379,7 +379,12 @@ static void test_fanotify(unsigned int n)
- 		return;
- 	}
- 
--	if (tc->ignore && tst_kvercmp(5, 10, 0) < 0) {
-+	static struct tst_kern_exv kvers[] = {
-+		{"SLES", "5.19"},
-+		{NULL, NULL}
-+	};
+> diff --git a/testcases/lib/tst_env.sh b/testcases/lib/tst_env.sh
+> new file mode 100644
+> index 000000000..948bc5024
+> --- /dev/null
+> +++ b/testcases/lib/tst_env.sh
+> @@ -0,0 +1,21 @@
+> +#!/bin/sh
+> +
+> +tst_script_name=$(basename $0)
+> +
+> +if [ -z "$LTP_IPC_PATH" ]; then
+> +       echo "This script has to be executed from a LTP loader!"
+> +       exit 1
+> +fi
+> +
+> +tst_brk_()
+> +{
+> +       tst_res_ "$@"
+> +
+> +       case "$3" in
+> +               "TBROK") exit 2;;
+> +               *) exit 0;;
+> +       esac
+> +}
+> +
+> +alias tst_res="tst_res_ $tst_script_name \$LINENO"
+> +alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
+>
+
+
+*** Running shell_test01 ***
+
+tst_test.c:1860: TINFO: LTP version: 20240524
+tst_test.c:1864: TINFO: Tested kernel: 6.8.0-1010-raspi #11-Ubuntu SMP
+PREEMPT_DYNAMIC Thu Aug  8 23:22:41 UTC 2024 aarch64
+tst_test.c:1703: TINFO: Timeout per run is 0h 00m 30s
+shell_test01.c:11: TINFO: C test exits now
+Usage: tst_res_ filename lineno [TPASS|TFAIL|TCONF|TINFO|TDEBUG] 'A short
+description'
+tst_test.c:1535: TBROK: Test haven't reported results!
+
+Summary:
+passed   0
+failed   0
+broken   1
+skipped  0
+warnings 0
+
+
+Here I got test failures on my RPi4 (bash-5.2.21) that the $LINEON can't
+be parsed correctly.
+
+The reason probably is some shells or specific versions might not handle
+$LINENO correctly within aliases, especially when the line number needs
+to be dynamically determined.
+
+So I suggest using a function instead of the alias.
+
+
+--- a/testcases/lib/tst_env.sh
++++ b/testcases/lib/tst_env.sh
+@@ -21,5 +21,12 @@ tst_brk_()
+        esac
+ }
+
+-alias tst_res="tst_res_ $tst_script_name \$LINENO"
+-alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
++tst_res()
++{
++    tst_res_ "$tst_script_name" "$LINENO" "$@"
++}
 +
-+	if (tc->ignore && tst_kvercmp2(5, 10, 0, kvers) < 0) {
- 		tst_res(TCONF, "ignored mask on parent dir has undefined "
- 				"behavior on kernel < 5.10");
- 		return;
--- 
-2.45.2
++tst_brk()
++{
++    tst_brk_ "$tst_script_name" "$LINENO" "$@"
++}
 
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
