@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67E8CCE7AE8
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 08:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1AFCCE7AFD
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 09:54:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F08A3C24DC
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 10:36:56 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E89D73C2266
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 11:54:43 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03FE43C03B0
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:36:39 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 70D843C0352
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 11:54:28 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 66430610215
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:36:38 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B9ECF14098BC
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 11:54:27 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7761A21841;
- Fri,  6 Sep 2024 08:36:38 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6C3911F8AE;
+ Fri,  6 Sep 2024 09:54:25 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 488FD136A8;
- Fri,  6 Sep 2024 08:36:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5C27A136A8;
+ Fri,  6 Sep 2024 09:54:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yndSDxa/2mZdSQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 08:36:38 +0000
-Date: Fri, 6 Sep 2024 10:36:28 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240906083628.GA990068@pevik>
-References: <20240905134502.33759-1-mdoucha@suse.cz>
- <20240906081754.GB985598@pevik>
- <ee93e6ab-6f7c-4241-bb29-7c834935fbd8@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id bqh4FVHR2mZhYQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 06 Sep 2024 09:54:25 +0000
+Date: Fri, 6 Sep 2024 11:53:13 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <ZtrRCVxNKuu5ZdHN@yuki.lan>
+References: <20240827120237.25805-1-chrubis@suse.cz>
+ <20240827120237.25805-3-chrubis@suse.cz>
+ <CAEemH2eQQfhTfVo5xrBHFjzuf4dn=VqK2M=9Y3+hy+r8yzMtAA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ee93e6ab-6f7c-4241-bb29-7c834935fbd8@suse.cz>
+In-Reply-To: <CAEemH2eQQfhTfVo5xrBHFjzuf4dn=VqK2M=9Y3+hy+r8yzMtAA@mail.gmail.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 7761A21841
+X-Rspamd-Queue-Id: 6C3911F8AE
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] fallocate05: Check that deallocated file
- range is marked as a hole
+Subject: Re: [LTP] [PATCH v3 2/4] Add support for mixing C and shell code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,70 +77,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 06. 09. 24 10:17, Petr Vorel wrote:
-> > Hi Martin,
+Hi!
+> tst_test.c:1860: TINFO: LTP version: 20240524
+> tst_test.c:1864: TINFO: Tested kernel: 6.8.0-1010-raspi #11-Ubuntu SMP
+> PREEMPT_DYNAMIC Thu Aug  8 23:22:41 UTC 2024 aarch64
+> tst_test.c:1703: TINFO: Timeout per run is 0h 00m 30s
+> shell_test01.c:11: TINFO: C test exits now
+> Usage: tst_res_ filename lineno [TPASS|TFAIL|TCONF|TINFO|TDEBUG] 'A short
+> description'
+> tst_test.c:1535: TBROK: Test haven't reported results!
+> 
+> Summary:
+> passed   0
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+> 
+> 
+> Here I got test failures on my RPi4 (bash-5.2.21) that the $LINEON can't
+> be parsed correctly.
 
-> > > The new lseek(SEEK_HOLE/SEEK_DATA) checks will be useful for diagnosing
-> > > why the final write() check fails with ENOSPC. If the hole doesn't get
-> > > created at all, the lseek() checks will fail.
+Are you sure that this is due to bash? My guess is that on RPi the
+default shell is dash because it's debian based.
 
-> > Thank you!
+I will try to reproduce.
 
-> > ...
-> > > +	/* Check that the deallocated file range is marked as a hole */
-> > > +	TEST(lseek(fd, 0, SEEK_HOLE));
-> > > +
-> > > +	if (TST_RET == 0) {
-> > > +		tst_res(TPASS, "Test file contains hole at offset 0");
-> > > +	} else if (TST_RET == -1) {
-> > > +		tst_res(TFAIL | TTERRNO, "lseek(SEEK_HOLE) failed");
-> > > +	} else {
-> > > +		tst_res(TFAIL | TTERRNO,
-> > > +			"Unexpected lseek(SEEK_HOLE) return value %ld",
-> > > +			TST_RET);
-> > > +	}
-> > nit: maybe just using SAFE_LSEEK()?
+> The reason probably is some shells or specific versions might not handle
+> $LINENO correctly within aliases, especially when the line number needs
+> to be dynamically determined.
+> 
+> So I suggest using a function instead of the alias.
+> 
+> 
+> --- a/testcases/lib/tst_env.sh
+> +++ b/testcases/lib/tst_env.sh
+> @@ -21,5 +21,12 @@ tst_brk_()
+>         esac
+>  }
+> 
+> -alias tst_res="tst_res_ $tst_script_name \$LINENO"
+> -alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
+> +tst_res()
+> +{
+> +    tst_res_ "$tst_script_name" "$LINENO" "$@"
+> +}
+> +
+> +tst_brk()
+> +{
+> +    tst_brk_ "$tst_script_name" "$LINENO" "$@"
+> +}
 
-> Definitely no SAFE_LSEEK() here because I want to continue to the second
-> lseek() even if the first one fails.
+That actually does not work because unlike the alias the $LINENO is
+expanded in the wrong place and the line is incorrect.
 
-OK, fair enough.
+The whole reason for this to be alias is that it's expanded on the
+correct line in the test source.
 
-> > > +
-> > > +	TEST(lseek(fd, 0, SEEK_DATA));
-> > > +
-> > > +	if (TST_RET == holesize) {
-> > > +		tst_res(TPASS, "Test file data start at offset %ld", TST_RET);
-> > > +	} else if (TST_RET == -1) {
-> > > +		tst_res(TFAIL | TTERRNO, "lseek(SEEK_DATA) failed");
-> > > +	} else {
-> > > +		tst_res(TFAIL | TTERRNO,
-> > > +			"Unexpected lseek(SEEK_DATA) return value %ld",
-> > > +			TST_RET);
-> > > +	}
-
-> > nit: and here just:
-
-> > TEST(SAFE_LSEEK(fd, 0, SEEK_DATA));
-> > if (TST_RET == holesize)
-> > 	tst_res(TPASS, "Test file data start at offset %ld", TST_RET);
-
-> We could use SAFE_LSEEK() here at least until someone decides to add another
-> sanity check below it. But we still need the "else" branch to report wrong
-> hole size. I'd say it's slightly better to keep it as is for the more
-> descriptive error messages.
-
-Fair enough, thx for info.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
