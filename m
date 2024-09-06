@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ED58CE7AB8
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 08:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4670DCE7AE2
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 08:18:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B06F83C1D6E
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 10:02:21 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 970E33C2569
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 10:18:20 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8A2273C07AE
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:02:05 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 61D2C3C0352
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:18:03 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,84 +24,84 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 492021006088
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:02:03 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2D83E602BDF
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 10:18:00 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 43B8821AAC;
- Fri,  6 Sep 2024 08:02:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 181F921ABB;
+ Fri,  6 Sep 2024 08:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725609723;
+ t=1725610680;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
- b=COcpiAuKdkrmHuSI3evd7Ut36eY1WxAa76f+R5hfI1RKzSyPaPnClZOPOtTQ21kWWBgFoj
- GQVr1MFUTBdVpuySxHDB53bRJmU/1XYFk3ixMClLaukdzQ/H1bM0jDQ+N3djS7/N0A5TPI
- 6pbYwVoVOWwj1u8NfkblKrq/2IF1lt4=
+ bh=2HO4p7Qq2DTXviNGsGCXIu5rQhkbFl5vwPzbQW3sC9s=;
+ b=TwU6Ss1uxBE/Ay7AfeMY3yZAUO95GQlk6VSB6/mZxh/LaTe7hA/K6QZrE91LSCEbzlAaZE
+ UwxIjRDYyg1ssA2tAFnVl4peBejDtOwIwXxPhr7hBcsQMbM/HU8ljfYQYLFyIWlRpUGBot
+ 9htCQ58h3x83YFvWs3AIO4+uxMSFVp0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725609723;
+ s=susede2_ed25519; t=1725610680;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
- b=CwXlPXPaEp89DQpsQmD5KEux/VdCztin5VvxxNrvTcZUpEiMlzmIrdRxlHjIisKwFtHxXZ
- D2yuXY7zNyvoGEDg==
+ bh=2HO4p7Qq2DTXviNGsGCXIu5rQhkbFl5vwPzbQW3sC9s=;
+ b=JcNIFMTNXdZ/x61NWw7zH4dCnDssMCvQUY7/rEaZmrbQJ4okK8Bg1KjU3MyxqfD/6n4XNR
+ felUnTOVtYUSc6Aw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725609722;
+ t=1725610680;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
- b=gNqgrTUmYAcAkWKuYrwFmMkbzhlcZ5YGtOnbTtcYZipfDdpeznMj0ZFnX9mI2QY2MsFHZv
- 3clI4/UxXbeH44MTP7mAhFkx9PEpj7l9ycNtpEWZzdXnXZPAAa5pH9oqTjc6LKVwwo4PO7
- t7kdgfctzUNle8TEzXy6tiIL4GGgZj0=
+ bh=2HO4p7Qq2DTXviNGsGCXIu5rQhkbFl5vwPzbQW3sC9s=;
+ b=TwU6Ss1uxBE/Ay7AfeMY3yZAUO95GQlk6VSB6/mZxh/LaTe7hA/K6QZrE91LSCEbzlAaZE
+ UwxIjRDYyg1ssA2tAFnVl4peBejDtOwIwXxPhr7hBcsQMbM/HU8ljfYQYLFyIWlRpUGBot
+ 9htCQ58h3x83YFvWs3AIO4+uxMSFVp0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725609722;
+ s=susede2_ed25519; t=1725610680;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
- b=yGpJXjv22qg4sImATIv8uHzWeZ0TB0ZbPGc2ufMkeQe8zI+8wC5bdbueOJO6P1esxdb6nc
- ra0GIXqppWUBpwAA==
+ bh=2HO4p7Qq2DTXviNGsGCXIu5rQhkbFl5vwPzbQW3sC9s=;
+ b=JcNIFMTNXdZ/x61NWw7zH4dCnDssMCvQUY7/rEaZmrbQJ4okK8Bg1KjU3MyxqfD/6n4XNR
+ felUnTOVtYUSc6Aw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 041E3136A8;
- Fri,  6 Sep 2024 08:02:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD980136A8;
+ Fri,  6 Sep 2024 08:17:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cR85Ovm22mZ2PwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 08:02:01 +0000
-Date: Fri, 6 Sep 2024 10:02:00 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DnaVM7e62mbvQwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 08:17:59 +0000
+Date: Fri, 6 Sep 2024 10:17:54 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20240906080200.GA985598@pevik>
+Message-ID: <20240906081754.GB985598@pevik>
 References: <20240905134502.33759-1-mdoucha@suse.cz>
- <20240905134502.33759-2-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240905134502.33759-2-mdoucha@suse.cz>
+In-Reply-To: <20240905134502.33759-1-mdoucha@suse.cz>
 X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
  MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
  RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.cz:replyto,suse.cz:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] fallocate05: Deallocate whole file on bcachefs
+Subject: Re: [LTP] [PATCH 1/2] fallocate05: Check that deallocated file
+ range is marked as a hole
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,54 +114,59 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-bcachefs@vger.kernel.org, Kent Overstreet <kent.overstreet@linux.dev>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin, all,
+Hi Martin,
 
-[ Cc Kent and Bcachefs ML ]
+> The new lseek(SEEK_HOLE/SEEK_DATA) checks will be useful for diagnosing
+> why the final write() check fails with ENOSPC. If the hole doesn't get
+> created at all, the lseek() checks will fail.
 
-> The default deallocation size is likely too small for bcachefs
-> to actually release the blocks. Since it is also a copy-on-write
-> filesystem, deallocated the whole file like on Btrfs.
+Thank you!
 
-Make sense.
+...
+> +	/* Check that the deallocated file range is marked as a hole */
+> +	TEST(lseek(fd, 0, SEEK_HOLE));
+> +
+> +	if (TST_RET == 0) {
+> +		tst_res(TPASS, "Test file contains hole at offset 0");
+> +	} else if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "lseek(SEEK_HOLE) failed");
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"Unexpected lseek(SEEK_HOLE) return value %ld",
+> +			TST_RET);
+> +	}
+nit: maybe just using SAFE_LSEEK()?
+
+> +
+> +	TEST(lseek(fd, 0, SEEK_DATA));
+> +
+> +	if (TST_RET == holesize) {
+> +		tst_res(TPASS, "Test file data start at offset %ld", TST_RET);
+> +	} else if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "lseek(SEEK_DATA) failed");
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"Unexpected lseek(SEEK_DATA) return value %ld",
+> +			TST_RET);
+> +	}
+
+nit: and here just:
+
+TEST(SAFE_LSEEK(fd, 0, SEEK_DATA));
+if (TST_RET == holesize)
+	tst_res(TPASS, "Test file data start at offset %ld", TST_RET);
+
+Whatever you choose, LGTM.
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
-
-> AFAICT Bcachefs uses 512 byte data blocks by default but 256KB inode
-> blocks. The whole file will be 128KB and 32KB gets deallocated which may
-> be too small. However, I'm not entirely sure whether this is the best
-> solution.
-
-> See also https://bugzilla.suse.com/show_bug.cgi?id=1230155
-
->  testcases/kernel/syscalls/fallocate/fallocate05.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-
-> diff --git a/testcases/kernel/syscalls/fallocate/fallocate05.c b/testcases/kernel/syscalls/fallocate/fallocate05.c
-> index 979c70d6e..732a2f15d 100644
-> --- a/testcases/kernel/syscalls/fallocate/fallocate05.c
-> +++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
-> @@ -114,7 +114,8 @@ static void run(void)
->  	tst_res(TPASS, "fallocate() on full FS");
-
->  	/* Btrfs deallocates only complete extents, not individual blocks */
-> -	if (!strcmp(tst_device->fs_type, "btrfs"))
-> +	if (!strcmp(tst_device->fs_type, "btrfs") ||
-> +		!strcmp(tst_device->fs_type, "bcachefs"))
->  		holesize = bufsize + extsize;
->  	else
->  		holesize = DEALLOCATE_BLOCKS * blocksize;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
