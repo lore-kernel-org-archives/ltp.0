@@ -4,82 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EE3CCE7AA6
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 03:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49AC7CE7AE3
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 07:25:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60B513C265D
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 05:18:52 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7FF433C264F
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 09:25:35 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B2F873C25E0
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 05:18:34 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2F8923C0780
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:25:19 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E939B1000DBA
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 05:18:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1725592712;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rKEGP1Aza4RnmuKBUYuz597A6kLtsCaOIhlAGuX0yWo=;
- b=IHHss8UFKiSb7W4L/8bm92C34dapvfHgJoHNr+LWKw8lAb/HTIyG7XpSrLgfVLRQ/zlGSo
- TU6zU23wLkG5CeCKQp6i4XIyG8KIDtB6LD7Z1yJXWz+EzrdGqfPg+SUvFaXSPl5KH3mWif
- 0ww3hXI8hMpXbFxWH4usMWsurshR8OA=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-201-pSF0RCZ6PYm30vIyFlJiyA-1; Thu, 05 Sep 2024 23:18:30 -0400
-X-MC-Unique: pSF0RCZ6PYm30vIyFlJiyA-1
-Received: by mail-pf1-f199.google.com with SMTP id
- d2e1a72fcca58-7143ae1b4fbso2062701b3a.0
- for <ltp@lists.linux.it>; Thu, 05 Sep 2024 20:18:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1725592709; x=1726197509;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=rKEGP1Aza4RnmuKBUYuz597A6kLtsCaOIhlAGuX0yWo=;
- b=MlkUGSK3BqmJiB/EsRdU0qm4oTHHc9XZJBTJAqbLvJJb1K7V+jXzt377pJPuQVLMtm
- hMkIuktOOi9j9cQJ+saMDLUky/A57JQ+z2OGLMtKKMi3QCAXZfvVcconjxx91FStn74T
- w0gdvn6JcxWSk3GyTj27CIKdQccvL6YZpn79B0sqHqc5BONh9LgGpMnxnVQY7TFLACet
- cPLysRTj/m6pHqE8itTU+anqDAlnczGozpcGEc84VpxvIVIMscgH7z3TSc+fVmrcc/Yk
- SONzkK1Ox6ERD6MSYFVd11gnnejlT7REDn4uZBxTKfWcLNhqgMmAJ5U5l4+1x5nFSxPk
- 6xww==
-X-Gm-Message-State: AOJu0YyJNwLIhIewjYUlG/x/IJE32Pf+xu7DzfEiVmufIKKd746kzo6O
- GB1Fz2QQH7Dj+v1Fe1b/+MUXQFjucS+zamMcekvb1Vs2zH8aSZKC+aJdfXPfj7q2KJqFW6dSIF7
- vwehvWtNbzlWaKVd1mAsKYVPGWZq6QiDrhEeM2U3sbNyK475dp/NrcIxV4m13ygVjvHfDRHEmrk
- PWbQCsMbm3mbwJgsNL4K1P+80=
-X-Received: by 2002:a05:6a00:139f:b0:717:8b4e:a17f with SMTP id
- d2e1a72fcca58-718d531e249mr1966456b3a.4.1725592709153; 
- Thu, 05 Sep 2024 20:18:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE1XY7KfhQKB/WGblpOebCPuATkckZyCnn9gjyC3O0t1YH2Il4blIul/YRFy3hHsxO23IKBrWGCXUnB10pdBuI=
-X-Received: by 2002:a05:6a00:139f:b0:717:8b4e:a17f with SMTP id
- d2e1a72fcca58-718d531e249mr1966422b3a.4.1725592708625; Thu, 05 Sep 2024
- 20:18:28 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6F66B1A0147B
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 09:25:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 44F241F896;
+ Fri,  6 Sep 2024 07:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725607518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
+ b=Il62bsvsUGTUBSa/bfUXedcan4hCcrkO34MFPNeWR6thWrl4EFat+3vYJ3FcvkDrFcUENh
+ Q4tg1O2mfgCi8uS460gkFZg4gCw37pHFMVMk4DZHHD+G4VyUafEWkP+6DTLxuwLf571QkD
+ DNcFe85/WJwKSgaMux8aX8vDCRlnTck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725607518;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
+ b=Nrm2gPzx0Stc8Ap/RqOP4/EJUel9YxvAGwkVSlV8DdsOWJdzDnr8V7T+jy5d2EyiaRDWa0
+ e1/A/mTqpFZ7vIAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725607518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
+ b=Il62bsvsUGTUBSa/bfUXedcan4hCcrkO34MFPNeWR6thWrl4EFat+3vYJ3FcvkDrFcUENh
+ Q4tg1O2mfgCi8uS460gkFZg4gCw37pHFMVMk4DZHHD+G4VyUafEWkP+6DTLxuwLf571QkD
+ DNcFe85/WJwKSgaMux8aX8vDCRlnTck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725607518;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jDJGiF/BX8nXw+Fc53UMd3LJkqVNqCU65h+mrHdLVfk=;
+ b=Nrm2gPzx0Stc8Ap/RqOP4/EJUel9YxvAGwkVSlV8DdsOWJdzDnr8V7T+jy5d2EyiaRDWa0
+ e1/A/mTqpFZ7vIAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0335A1395F;
+ Fri,  6 Sep 2024 07:25:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id S/7POV2u2mbVMwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 07:25:17 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri,  6 Sep 2024 09:25:00 +0200
+Message-ID: <20240906072500.982132-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
-References: <20240905134502.33759-1-mdoucha@suse.cz>
- <20240905134502.33759-2-mdoucha@suse.cz>
-In-Reply-To: <20240905134502.33759-2-mdoucha@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 6 Sep 2024 11:18:16 +0800
-Message-ID: <CAEemH2fyNf7dgyo-_FOuxq8qUFSUBC+T3YjFXEndqdAB+0QQVw@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] fallocate05: Deallocate whole file on bcachefs
+Subject: [LTP] [PATCH 1/1] fanotify09: Skip testing e730558adffb on SLE <
+ 5.19 kernel
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,29 +103,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBTZXAgNSwgMjAyNCBhdCA5OjQ14oCvUE0gTWFydGluIERvdWNoYSA8bWRvdWNoYUBz
-dXNlLmN6PiB3cm90ZToKCj4gVGhlIGRlZmF1bHQgZGVhbGxvY2F0aW9uIHNpemUgaXMgbGlrZWx5
-IHRvbyBzbWFsbCBmb3IgYmNhY2hlZnMKPiB0byBhY3R1YWxseSByZWxlYXNlIHRoZSBibG9ja3Mu
-IFNpbmNlIGl0IGlzIGFsc28gYSBjb3B5LW9uLXdyaXRlCj4gZmlsZXN5c3RlbSwgZGVhbGxvY2F0
-ZWQgdGhlIHdob2xlIGZpbGUgbGlrZSBvbiBCdHJmcy4KPgo+IFNpZ25lZC1vZmYtYnk6IE1hcnRp
-biBEb3VjaGEgPG1kb3VjaGFAc3VzZS5jej4KCi0tLQo+Cj4gQUZBSUNUIEJjYWNoZWZzIHVzZXMg
-NTEyIGJ5dGUgZGF0YSBibG9ja3MgYnkgZGVmYXVsdCBidXQgMjU2S0IgaW5vZGUKPiBibG9ja3Mu
-IFRoZSB3aG9sZSBmaWxlIHdpbGwgYmUgMTI4S0IgYW5kIDMyS0IgZ2V0cyBkZWFsbG9jYXRlZCB3
-aGljaCBtYXkKPiBiZSB0b28gc21hbGwuIEhvd2V2ZXIsIEknbSBub3QgZW50aXJlbHkgc3VyZSB3
-aGV0aGVyIHRoaXMgaXMgdGhlIGJlc3QKPiBzb2x1dGlvbi4KPgoKSSB0aGluayB0aGlzIHNvbHV0
-aW9uIGlzIGNvcnJlY3QuCgpFdmVuIGRlYWxsb2NhdGluZyBhIGhvbGUgc2l6ZSAoMzJLQikgdGhh
-dCBpcyBsYXJnZXIgdGhhbiBhIGJsb2NrIHNpemUKNTEyYnl0ZXMsCmJ1dCB0aGF0IGRvZXMgbm90
-IG1lYW4gdGhlIEJjYWNoZWZzIGNhbiBzYXRpc2Z5IGVub3VnaCBzaXplIGZvciBmb2xsb3dpbmcK
-d3JpdHRlbgpiZWhhdmlvciwgYmVjYXVzZSB0aGUgYWxsb2NhdGlvbiBvZiBuZXcgZGF0YSBibG9j
-a3MgKGhvbGUpIG1pZ2h0IGludm9sdmUKbW9kaWZ5aW5nCm1ldGFkYXRhIHN0cnVjdHVyZXMgdGhh
-dCBuZWVkIG1vcmUgc3BhY2UoZXh0ZW5kcyBtb3JlIGlub2RlIGJsb2NrcyAyNTZLQikuCgpJZiB0
-aGUgZmlsZXN5c3RlbSBjYW5ub3QgYWNjb21tb2RhdGUgdGhlc2UgY2hhbmdlcywgaXQgY291bGQg
-bGVhZCB0byBhbgpFTk9TUEMgZXJyb3IuCgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJl
-ZGhhdC5jb20+CgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Kernel commit e730558adffb ("fsnotify: consistent behavior for parent
+not watching children") will not be backported to SLE15-SP[45] v5.14
+based kernel, therefore skip it for kernel < 5.19 (the original mainline
+kernel which brought the functionality.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify09.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+index 48b198b941..72e9239897 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify09.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+@@ -379,7 +379,12 @@ static void test_fanotify(unsigned int n)
+ 		return;
+ 	}
+ 
+-	if (tc->ignore && tst_kvercmp(5, 10, 0) < 0) {
++	static struct tst_kern_exv kvers[] = {
++		{"SLES", "5.19"},
++		{NULL, NULL}
++	};
++
++	if (tc->ignore && tst_kvercmp2(5, 10, 0, kvers) < 0) {
+ 		tst_res(TCONF, "ignored mask on parent dir has undefined "
+ 				"behavior on kernel < 5.10");
+ 		return;
+-- 
+2.45.2
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
