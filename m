@@ -4,113 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF458CE7B0D
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 13:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1921ECE7B1C
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 14:27:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A93CA3C28E8
-	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 15:30:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id DE9463C2915
+	for <ltp@archiver.kernel.org>; Fri,  6 Sep 2024 16:27:06 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F35D23C1C87
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 15:30:03 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 11A183C27AC
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 16:26:51 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 403391A0015C
- for <ltp@lists.linux.it>; Fri,  6 Sep 2024 15:30:02 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E5C6602BD7
+ for <ltp@lists.linux.it>; Fri,  6 Sep 2024 16:26:51 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2DB781F8B5;
- Fri,  6 Sep 2024 13:30:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 71CF91F8C1;
+ Fri,  6 Sep 2024 14:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725629400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1725632810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oJ/3vIpwH5EJkoCQ4SLsiBDbW78ioiRxiKItcwquTok=;
- b=haYzZq/2bDfHhJ2j6SiX7zNL2RTn37kV6qcEZPP0F0WTrDiQvuwhe/swQJd7iv/hC1SjgU
- 5p5xy1XUHixv8pAVPx2bCA/Jq8xD+tXu1pS2iDABnn39vnVRIgRLTLlTi/cSG5cJ1gNjpB
- lvuoGxrJbs0a4FI6OpAvMn5Va+WARKM=
+ bh=GqbZhM3rFOvxVceL1PO6nT2rYk1LpPGvMcH9LP2YUeo=;
+ b=WwUCtLN36TgXbEVZgSzSP6qWMwn3Hmus7+vjNynA7iXdJsT+7Fdqau+7tAB5AYS3YumYLe
+ 2oekClZaPqyvIXq0BukHLWpbirFML4w1wYgUCIVFGodEpxOufPT3O0me7+K/DN/iWRK8Sm
+ IxeUpLMTX0wROWRR7euDc2+mLIjy8xQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725629400;
+ s=susede2_ed25519; t=1725632810;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oJ/3vIpwH5EJkoCQ4SLsiBDbW78ioiRxiKItcwquTok=;
- b=/yuN4xmlMARWHd1BFsoic+qWz2UCkua8lI56by50LsHHySLfaemDfYE4vndBxt0GFnQL3j
- /ifthc1Key0MQOAw==
+ bh=GqbZhM3rFOvxVceL1PO6nT2rYk1LpPGvMcH9LP2YUeo=;
+ b=k755/+wvDRz6IdyTqGSCRjSi1gHUk3n+JsZQOs/bSSQeJ3bNf4j9U968IcrEJMCqoukrJ8
+ G2moOV7uxeV6XOAw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="haYzZq/2";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/yuN4xml"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725629400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1725632810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oJ/3vIpwH5EJkoCQ4SLsiBDbW78ioiRxiKItcwquTok=;
- b=haYzZq/2bDfHhJ2j6SiX7zNL2RTn37kV6qcEZPP0F0WTrDiQvuwhe/swQJd7iv/hC1SjgU
- 5p5xy1XUHixv8pAVPx2bCA/Jq8xD+tXu1pS2iDABnn39vnVRIgRLTLlTi/cSG5cJ1gNjpB
- lvuoGxrJbs0a4FI6OpAvMn5Va+WARKM=
+ bh=GqbZhM3rFOvxVceL1PO6nT2rYk1LpPGvMcH9LP2YUeo=;
+ b=WwUCtLN36TgXbEVZgSzSP6qWMwn3Hmus7+vjNynA7iXdJsT+7Fdqau+7tAB5AYS3YumYLe
+ 2oekClZaPqyvIXq0BukHLWpbirFML4w1wYgUCIVFGodEpxOufPT3O0me7+K/DN/iWRK8Sm
+ IxeUpLMTX0wROWRR7euDc2+mLIjy8xQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725629400;
+ s=susede2_ed25519; t=1725632810;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oJ/3vIpwH5EJkoCQ4SLsiBDbW78ioiRxiKItcwquTok=;
- b=/yuN4xmlMARWHd1BFsoic+qWz2UCkua8lI56by50LsHHySLfaemDfYE4vndBxt0GFnQL3j
- /ifthc1Key0MQOAw==
+ bh=GqbZhM3rFOvxVceL1PO6nT2rYk1LpPGvMcH9LP2YUeo=;
+ b=k755/+wvDRz6IdyTqGSCRjSi1gHUk3n+JsZQOs/bSSQeJ3bNf4j9U968IcrEJMCqoukrJ8
+ G2moOV7uxeV6XOAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C7EB1395F;
- Fri,  6 Sep 2024 13:30:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59023136A8;
+ Fri,  6 Sep 2024 14:26:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id a5rrBdgD22YLJAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 06 Sep 2024 13:30:00 +0000
-Date: Fri, 6 Sep 2024 15:28:37 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ogkbFSoR22aHNQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 06 Sep 2024 14:26:50 +0000
+Date: Fri, 6 Sep 2024 16:25:27 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <ZtsDheQySS4co49v@yuki.lan>
-References: <20240827120237.25805-1-chrubis@suse.cz>
- <20240827120237.25805-3-chrubis@suse.cz>
- <CAEemH2eQQfhTfVo5xrBHFjzuf4dn=VqK2M=9Y3+hy+r8yzMtAA@mail.gmail.com>
- <ZtrRCVxNKuu5ZdHN@yuki.lan>
- <CAEemH2eHa10SCrdVrPPTWZfQFpyDZ1poFEC=BL1raQECgpjf7g@mail.gmail.com>
- <ZtrmCfp5dPTx6vk_@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZtsQ1x1s56ZqgzGN@yuki.lan>
+References: <45853a0c-bff4-48be-9fba-b44038655741@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZtrmCfp5dPTx6vk_@yuki.lan>
-X-Rspamd-Queue-Id: 2DB781F8B5
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <45853a0c-bff4-48be-9fba-b44038655741@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FROM_HAS_DN(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ URIBL_BLOCKED(0.00)[suse.cz:email,yuki.lan:mid,imap1.dmz-prg2.suse.org:helo]; 
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/4] Add support for mixing C and shell code
+Subject: Re: [LTP] Open LTP meeting 11th of September 09:00 UTC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,40 +116,16 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> The difference is that /bin/sh links to dash in debian. But as you
-> pointed out even if all /bin/sh is changed to /bin/bash in the scripts
-> the tests stil fails.
+> this is a friendly reminder for the LTP mailing list about the next LTP 
+> meeting.
 > 
-> It looks like on RPi alias with variables does not work at all.
+> We missed a couple of meetings due to vacations. This is a personal 
+> suggestion and I would like to ask your opinions about having the next 
+> LTP meeting in the 11th of September, 9:00 UTC.
+> 
+> Let me know, so we fix the date.
 
-So it looks like aliases may not be expanded on non-interactive shells
-unless it's enabled explicitely.
-
-This patch uses shopt to enable that and also works around dash that
-does not support $LINENO:
-
-diff --git a/testcases/lib/tst_env.sh b/testcases/lib/tst_env.sh
-index 67ba80744..bb0c586d7 100644
---- a/testcases/lib/tst_env.sh
-+++ b/testcases/lib/tst_env.sh
-@@ -6,6 +6,16 @@
- 
- tst_script_name=$(basename $0)
- 
-+# bash does not expand aliases in non-iteractive mode, enable it
-+if [ -n "$BASH_VERSION" ]; then
-+       shopt -s expand_aliases
-+fi
-+
-+# dash does not support line numbers even though this is mandated by POSIX
-+if [ -z "$LINENO" ]; then
-+       LINENO=-1
-+fi
-+
- if [ -z "$LTP_IPC_PATH" ]; then
-        echo "This script has to be executed from a LTP loader!"
-        exit 1
-
+Works for me.
 
 -- 
 Cyril Hrubis
