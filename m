@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA285ECE57A
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 15:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9D8DECE577
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 16:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725894330; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1725898910; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=z/C9+wbkl/wFPSXdidnRQywR1IBVWQaT34GVo/re8Dw=;
- b=AjFnzXDE8lSDWWPIeUvZxcR5lSKoAaS1MROclKssJedyDDruzUALzbA8RbZtAROQBYwC9
- L7/WudlzsZBzdQqZX6vW52LSTz7lUeCbR41AS89ecudmbL/zM+egEkVyZ7LK4Xk3ahdvReB
- 2aPoDb3jlvNUdISKdu1isrYUkP+0KSo=
+ bh=J4uoetViglZWGsqKQb6kBKL1p34IvSE0zrx1qakyTFo=;
+ b=hcpTUnpKIiTfKA5TgtPrueEcJFhIjh36uEc4W5v1dyl8YfUlqoxSbqRnsBKx9sDSVLyyr
+ Sj8PlI4y3gLeBzMuyCfUmBWzin0Rw9D1cn0pjtTWkeggTX8Y3xrmvMUVBC1xZ0A5NigstWB
+ +7HOla+mhmOOw6YoYz2m1GPR+mABpRw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D092C3C1948
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 17:05:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 3C6DC3C1829
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 18:21:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C15D3C0F6B
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 17:05:10 +0200 (CEST)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
+ by picard.linux.it (Postfix) with ESMTPS id 7BD8F3C0F94
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 18:21:29 +0200 (CEST)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 68B36600847
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 17:05:09 +0200 (CEST)
-Received: by mail-ed1-x533.google.com with SMTP id
- 4fb4d7f45d1cf-5c26852af8fso5791044a12.2
- for <ltp@lists.linux.it>; Mon, 09 Sep 2024 08:05:09 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D80381A01452
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 18:21:28 +0200 (CEST)
+Received: by mail-lf1-x12b.google.com with SMTP id
+ 2adb3069b0e04-53660856a21so2227534e87.2
+ for <ltp@lists.linux.it>; Mon, 09 Sep 2024 09:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1725894309; x=1726499109; darn=lists.linux.it;
+ d=suse.com; s=google; t=1725898888; x=1726503688; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=8TiCiXGjGkM50HrCJ48ImvFzfPR3kc82M1NadfAtzVQ=;
- b=WpKIV54lNBVD4tgaG5RROo692aEcBh8YIkS8doIj1ZtOdczt+7PqBEUSu/8GXVcn2Z
- KvZ2a5N6gBu3mspfz7Tsf6T5gJLlSdH+jSZ2Ulvc6r6Jle3jNEas+oT2dIwuKAHMqWq+
- JwN0ZvW7QdaMmu9GPb+PMiWw56YUDpVvP77W1zOTTJZHfAGooOpYJBDbbldnlV34wx09
- KO4Rn5Iklq+4IfAMmpRD6i5gTGokqYgUKT2osm+Ujs4JQpWcvmWx4RWywPaQidnJdQ8/
- mp39aj56S7qASP8QMmifnuBSxZa5RJGQks1JKk575AyO1ZE6rDrio4QxenidQWUncLFV
- ZpdA==
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=PaLlaxk5Q9CNsdhF/vXlkItBrFkeQMRpUPFAUW/ks+Q=;
+ b=ej53s5PYo0GzZkt1V9udjLR5SfrA6ci0MBBsAormBX4eeJB9KWbXftBORVAdkiISto
+ wtp4WkHPBeyCV/V7v71D2l1ICnMlA2W1bjfzcLnjq/BCYsBkqSB1cqe30oQNFV2Cm40J
+ arvDSDB9t42YsYtC33qxNDpKlOpU8vJmWNbTCn9ExoigCZz5ixJ2uRVQQW9Aj2rseYQ6
+ Ls2OAaX00ZGFO5xcAPsvOBfYs0+0OKcSqgiPulO2iLUFofZ1vPxSdSwJ5meL2s4j5o9+
+ Q3cr/5IiAciREjaw/XnycxeWcOxXB74OADqzmcAwS8snCMQp2g0H3MqTa5Drfw2zp/Ha
+ 9Lhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1725894309; x=1726499109;
+ d=1e100.net; s=20230601; t=1725898888; x=1726503688;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=8TiCiXGjGkM50HrCJ48ImvFzfPR3kc82M1NadfAtzVQ=;
- b=QSMuDEIucVdfZUcLbPv60JulQ4PgE9b/b83wUm0f9NOdTLg+qQBYOAmUxft+iTvFOA
- LQPlMZLZOxjAdwQynQZOiJAEnGOUt2hw0fp85Q/dHSkRZQ9o0B1WO+3LblwRFa8qiNSh
- 4Zpr/x2kLzhGb21Ec7qAx5IqjuhmW4fbX32YFM14Xvn4y8WmdwZKpiJFP0GVTgE/vWv6
- 6iclsI/4Bqk2oSjKI+16fZSs8ZOGbvZgEKi2U9SViXOgz7TBPUp+jIo+VcV6y3CwZ32e
- u2kTAV5vhF+7ZUsiRxea5CrKFnj89+c4WNnwuSsugEHIQWSfg7mT7dpUl4hod1nGXQVI
- 0mCQ==
-X-Gm-Message-State: AOJu0YwBnMkX24eDt9bny88siWbdTUX4cpWleqzAMgcV5WAQsogTrJ5C
- kB4+oNDReM6wtSyqjqfHN862dG3nsxenWhiChwcUIAjWAmwIJm4KWktid3dpB4Q=
-X-Google-Smtp-Source: AGHT+IFHJQdBUw7oQy7oucpY8PK8AZrRa6eEDv/jVPYJzhvEaupLhA+wOFkwfYt8pU99DRXnCcjeoQ==
-X-Received: by 2002:a05:6402:35c1:b0:5c0:ad65:ebfa with SMTP id
- 4fb4d7f45d1cf-5c3e94d3399mr8338718a12.0.1725894307888; 
- Mon, 09 Sep 2024 08:05:07 -0700 (PDT)
+ bh=PaLlaxk5Q9CNsdhF/vXlkItBrFkeQMRpUPFAUW/ks+Q=;
+ b=dhqE7MYVcP+/eseY/Pi+prHbcgC1X5KsM8zAshC5jb9zDUjZLelvgKMuwKbhOx5wPr
+ 9vntdI2nh0bz1OoC+3tqh7ypM9hVIiU100fevShLLWDLxvUDnNWd59petl2tJKLKf6BP
+ woWRT9bgeAVqK3IzYz78UyvTx+KGWzPDb6zayfiBQxT47qmshX88v8ChS8mxbxx43TLt
+ GxJaBLkvunYcLhz9IYuJVU84+9YzBTIXBRrC1eIZWMTIFTmsEX9zNoggEUHNGenn0oYI
+ 9pA9LMO9ZGqSqikkTFplrVQVZgG86hP/RsmTaNeAFLrJEL8difsyUzmFRC6HxI2thq6S
+ aa5w==
+X-Gm-Message-State: AOJu0YxhW+EhCLWBSQjyWPLrP6zzibEtjYv9dibdyEU/oUBKNiG/JMxI
+ k9nZloXqJ2mjMwcUz1C/6ZoMAoLtrL4O1G1L0pY2VPfxrFBYWojYJaXBfJEgxYvfGmCUZwyFpCK
+ AJQ+cyA==
+X-Google-Smtp-Source: AGHT+IHrwEaTuF1/z18goPTYeO7GEtOuyZV4kXLiiRthCAy0NT1sz1MeDe2A0UgCDzpZyGZs7zWWWQ==
+X-Received: by 2002:a05:6512:3f12:b0:535:645b:fb33 with SMTP id
+ 2adb3069b0e04-536587a7738mr9044057e87.2.1725898886948; 
+ Mon, 09 Sep 2024 09:21:26 -0700 (PDT)
 Received: from [192.168.178.49] ([212.86.51.89])
  by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5c3ebd8d9easm3059812a12.97.2024.09.09.08.05.07
+ 4fb4d7f45d1cf-5c3ebd41ce2sm3182624a12.19.2024.09.09.09.21.26
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 09 Sep 2024 08:05:07 -0700 (PDT)
-Message-ID: <126dde73-c309-4fa2-80dd-d3ae4373a23d@suse.com>
-Date: Mon, 9 Sep 2024 17:05:07 +0200
+ Mon, 09 Sep 2024 09:21:26 -0700 (PDT)
+Message-ID: <d13a2438-cbc2-4a67-8df0-61bc1ce26f5a@suse.com>
+Date: Mon, 9 Sep 2024 18:21:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240909-regen_shutup_lsp-v1-1-d65ad07b822f@suse.com>
- <Zt8C3wF_zgpBtrxC@yuki.lan>
+To: ltp@lists.linux.it
+References: <20240909-listmount_statmount-v4-0-39558204ddf0@suse.com>
+ <20240909-listmount_statmount-v4-1-39558204ddf0@suse.com>
 Content-Language: en-US
-In-Reply-To: <Zt8C3wF_zgpBtrxC@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <20240909-listmount_statmount-v4-1-39558204ddf0@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Remove cleanup.c inclusion from syscalls
- generation
+Subject: Re: [LTP] [PATCH v4 01/13] Add SAFE_STATX macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,7 +97,6 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -104,64 +104,198 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-On 9/9/24 16:14, Cyril Hrubis wrote:
-> Hi!
->> Remove cleanup.c from syscalls.h as it is part of the old library and
->> its usage is discouraged. LSP(s) supporting C language correctly flag
->> this file as problematic. This patch ensures that the lapi/syscalls/regen.sh
->> script will no longer include cleanup.c, preventing unnecessary usage in
->> generated headers.
->>
->> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
->> ---
->>   include/lapi/syscalls/regen.sh | 6 ++++--
-> Can we remove the cleanup.c as well? It does not seem to be used
-> anywhere after this change.
-Do we want to touch old library? I actually don't mind since we are 
-going to remove everything there anyway, one day.
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
->> index 97027e2f3..0dd3269bb 100755
->> --- a/include/lapi/syscalls/regen.sh
->> +++ b/include/lapi/syscalls/regen.sh
->> @@ -33,7 +33,6 @@ cat << EOF > "${output_pid}"
->>   #include <errno.h>
->>   #include <sys/syscall.h>
->>   #include <asm/unistd.h>
->> -#include "cleanup.c"
->>   
->>   #ifdef TST_TEST_H__
->>   #define TST_SYSCALL_BRK__(NR, SNR) ({ \\
->> @@ -41,8 +40,11 @@ cat << EOF > "${output_pid}"
->>   		"syscall(%d) " SNR " not supported on your arch", NR); \\
->>   })
->>   #else
->> +static void dummy_cleanup(void) __attribute__ ((unused));
-> I do not think that we need this part, the function is always used
-> because it's passed to the tst_brkm().
-I actually had some warnings and that is needed unfortunately.
->> +static void dummy_cleanup(void) {}
->> +
->>   #define TST_SYSCALL_BRK__(NR, SNR) ({ \\
->> -	tst_brkm(TCONF, CLEANUP, \\
->> +	tst_brkm(TCONF, dummy_cleanup, \\
->>   		"syscall(%d) " SNR " not supported on your arch", NR); \\
->>   })
->>   #endif
->>
->> ---
->> base-commit: d3f1f93eda69905932bde4f66b44d72f9211909a
->> change-id: 20240909-regen_shutup_lsp-a35606a887b6
->>
->> Best regards,
->> -- 
->> Andrea Cervesato <andrea.cervesato@suse.com>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+read below...
+
+On 9/9/24 12:00, Andrea Cervesato wrote:
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> Reviewed-by: Avinesh Kumar <akumar@suse.de>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>   compile_flags.txt                                  |   1 +
+>   include/lapi/stat.h                                | 111 +++++++++++++++------
+>   testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c |   2 +
+>   3 files changed, 82 insertions(+), 32 deletions(-)
+>
+> diff --git a/compile_flags.txt b/compile_flags.txt
+> new file mode 100644
+> index 000000000..3e2e7607a
+> --- /dev/null
+> +++ b/compile_flags.txt
+
+This is a file for configuring clangd. I guess I had a "git add ." in 
+the folder. Please ignore this part of the patch.
+
 Andrea
+
+> @@ -0,0 +1 @@
+> +-Iinclude/
+> diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+> index 030646a9e..1fa5f4eaf 100644
+> --- a/include/lapi/stat.h
+> +++ b/include/lapi/stat.h
+> @@ -30,6 +30,7 @@ struct statx_timestamp {
+>   	int32_t __reserved;
+>   };
+>   #endif
+> +
+>   /*
+>    * Structures for the extended file attribute retrieval system call
+>    * (statx()).
+> @@ -67,39 +68,57 @@ struct statx_timestamp {
+>    * will have values installed for compatibility purposes so that stat() and
+>    * co. can be emulated in userspace.
+>    */
+> -#ifndef HAVE_STRUCT_STATX
+> -struct statx {
+> -	/* 0x00 */
+> -	uint32_t	stx_mask;
+> -	uint32_t	stx_blksize;
+> -	uint64_t	stx_attributes;
+> -	/* 0x10 */
+> -	uint32_t	stx_nlink;
+> -	uint32_t	stx_uid;
+> -	uint32_t	stx_gid;
+> -	uint16_t	stx_mode;
+> -	uint16_t	__spare0[1];
+> -	/* 0x20 */
+> -	uint64_t	stx_ino;
+> -	uint64_t	stx_size;
+> -	uint64_t	stx_blocks;
+> -	uint64_t	stx_attributes_mask;
+> -	/* 0x40 */
+> -	const struct statx_timestamp	stx_atime;
+> -	const struct statx_timestamp	stx_btime;
+> -	const struct statx_timestamp	stx_ctime;
+> -	const struct statx_timestamp	stx_mtime;
+> -	/* 0x80 */
+> -	uint32_t	stx_rdev_major;
+> -	uint32_t	stx_rdev_minor;
+> -	uint32_t	stx_dev_major;
+> -	uint32_t	stx_dev_minor;
+> -	/* 0x90 */
+> -	uint64_t	__spare2[14];
+> -	/* 0x100 */
+> + #define LTP_DEFINE_STATX_STRUCT(x) \
+> + 	struct x { \
+> +	uint32_t	stx_mask; \
+> +	uint32_t	stx_blksize; \
+> +	uint64_t	stx_attributes; \
+> +	uint32_t	stx_nlink; \
+> +	uint32_t	stx_uid; \
+> +	uint32_t	stx_gid; \
+> +	uint16_t	stx_mode; \
+> +	uint16_t	__spare0[1]; \
+> +	uint64_t	stx_ino; \
+> +	uint64_t	stx_size; \
+> +	uint64_t	stx_blocks; \
+> +	uint64_t	stx_attributes_mask; \
+> +	const struct statx_timestamp	stx_atime; \
+> +	const struct statx_timestamp	stx_btime; \
+> +	const struct statx_timestamp	stx_ctime; \
+> +	const struct statx_timestamp	stx_mtime; \
+> +	uint32_t	stx_rdev_major; \
+> +	uint32_t	stx_rdev_minor; \
+> +	uint32_t	stx_dev_major; \
+> +	uint32_t	stx_dev_minor; \
+> +	uint64_t	stx_mnt_id; \
+> +	uint32_t	stx_dio_mem_align; \
+> +	uint32_t	stx_dio_offset_align; \
+> +	uint64_t	__spare3[12]; \
+>   };
+> +
+> +LTP_DEFINE_STATX_STRUCT(statx_fallback);
+> +
+> +#ifdef HAVE_STRUCT_STATX
+> +typedef struct statx ltp_statx_;
+> +#else
+> +LTP_DEFINE_STATX_STRUCT(statx);
+> +
+> +typedef struct statx_fallback ltp_statx_;
+>   #endif
+>   
+> +/*
+> + * This is the fallback statx that we pass to the safe_statx() syscall.
+> + * The reason why we need it, is that statx struct is constantly changing
+> + * inside the kernel and we need to extend its definition when structure
+> + * changes in order to compile the tests.
+> + */
+> +struct ltp_statx {
+> +	union {
+> +		ltp_statx_ buff;
+> +		struct statx_fallback data;
+> +	};
+> +};
+> +
+>   #ifndef HAVE_STATX
+>   
+>   /*
+> @@ -108,9 +127,9 @@ struct statx {
+>    * Returns: It returns status of statx syscall
+>    */
+>   static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+> -			unsigned int mask, struct statx *statxbuf)
+> +			unsigned int mask, struct statx *st)
+>   {
+> -	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
+> +	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, st);
+>   }
+>   #endif
+>   
+> @@ -229,6 +248,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+>   # define STATX_ATTR_VERITY	0x00100000
+>   #endif
+>   
+> +#ifndef STATX_MNT_ID_UNIQUE
+> +# define STATX_MNT_ID_UNIQUE  0x00004000U
+> +#endif
+> +
+>   #define SAFE_FCHMODAT2(dfd, filename, mode, flags) \
+>   	safe_fchmodat2(__FILE__, __LINE__, (dfd), (filename), (mode), (flags))
+>   
+> @@ -251,4 +274,28 @@ static inline int safe_fchmodat2(const char *file, const int lineno,
+>   	return ret;
+>   }
+>   
+> +#define SAFE_STATX(dirfd, pathname, flags, mask, buf) \
+> +	safe_statx(__FILE__, __LINE__, (dirfd), (pathname), (flags), (mask), (buf))
+> +
+> +static inline int safe_statx(const char *file, const int lineno,
+> +	int dirfd, const char *pathname, int flags, unsigned int mask,
+> +	struct ltp_statx *buf)
+> +{
+> +	int rval;
+> +
+> +	rval = statx(dirfd, pathname, flags, mask, &buf->buff);
+> +
+> +	if (rval == -1) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			"statx(%d,%s,%d,%u,%p) failed", dirfd, pathname, flags, mask, buf);
+> +	} else if (rval) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			"Invalid statx(%d,%s,%d,%u,%p) return value %d",
+> +			dirfd, pathname, flags, mask, buf,
+> +			rval);
+> +	}
+> +
+> +	return rval;
+> +}
+> +
+>   #endif /* LAPI_STAT_H__ */
+> diff --git a/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
+> index a9932287c..f026b18df 100644
+> --- a/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
+> +++ b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
+> @@ -12,6 +12,8 @@
+>    * usage on symlinks will raise EOPNOTSUPP.
+>    */
+>   
+> +#define _GNU_SOURCE
+> +
+>   #include "tst_test.h"
+>   #include "tst_safe_file_at.h"
+>   #include "lapi/fcntl.h"
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
