@@ -4,69 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1069BEB64DE
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 02:53:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A85ACD4F4C
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 05:03:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 086F53C0FC2
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 04:53:20 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 25CD23C1014
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 07:03:12 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 274803C0E16
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 04:53:02 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E4D11600827
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 04:53:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1725850377;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=6LD2eZzZa9wMVxJDt36O0Cke1/KhJPvJot8sE2vYrIM=;
- b=X9ljL4mnIPACVCGPCr6z4/BYv+rf0tVwWs+0wQ402RqM1jt4q05RJhwBD1EeGEjkDNgzaG
- sKqknHV/3KxsX3p8tJayH6NX6FwV5w1qp8lAsI9a5jqTZxXeJceYsBD58DwWkUBhWoao7g
- RERQsr61JwsW2R+TSNLgCoemv1/c4/w=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-159-M9zrpTiHMmqMhZca_QtvRA-1; Sun,
- 08 Sep 2024 22:52:54 -0400
-X-MC-Unique: M9zrpTiHMmqMhZca_QtvRA-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id AA6E91956096; Mon,  9 Sep 2024 02:52:51 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 847311956086; Mon,  9 Sep 2024 02:52:48 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon,  9 Sep 2024 10:52:43 +0800
-Message-ID: <20240909025243.537071-1-liwang@redhat.com>
-In-Reply-To: <20240903140326.773060-1-pvorel@suse.cz>
-References: <20240903140326.773060-1-pvorel@suse.cz>
+ by picard.linux.it (Postfix) with ESMTPS id 1E01E3C0944
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 07:02:55 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id 10574601102
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 07:02:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=JBh9g
+ Ffx3heYPcoalbCGHCAhXyXUQUzmDtHwdRpGsi4=; b=U/jGcGoOG7tos2kQllbc6
+ h9/6GvWlPOf7GtDU345cjLcRzZ9eqVVLukbcetnKBx+omyLifVQzjYzi/fkS+ske
+ 0psRZ2uUnx1M5bUR5eqCj+maDb+w8xbu3inI80PWTr3o4Q8/JIQls0pRpzHnugnB
+ pjiyuru8b1Vx1R7+YmzCgw=
+Received: from fedora40-vm.. (unknown [106.133.130.25])
+ by gzga-smtp-mta-g2-2 (Coremail) with SMTP id _____wCXzkZkgd5mru5JGQ--.57674S2;
+ Mon, 09 Sep 2024 13:02:30 +0800 (CST)
+From: Xiao Yang <ice_yangxiao@163.com>
+To: Liam.Howlett@Oracle.com,
+	linux-mm@kvack.org
+Date: Mon,  9 Sep 2024 14:02:26 +0900
+Message-ID: <20240909050226.2053-1-ice_yangxiao@163.com>
+X-Mailer: git-send-email 2.46.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-CM-TRANSID: _____wCXzkZkgd5mru5JGQ--.57674S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFy8Xw4fXr1fGr1kWrykKrg_yoW8WFy5pr
+ 93Ww1DXFZ5Xr1Sg3WYqF1jvw1Yqas5X3WrCrWUWFn3Z3Z0qws8trW5tryrZr92grZ7uF9I
+ vr4DJF1fW3Z8KaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pinqXkUUUUU=
+X-Originating-IP: [106.133.130.25]
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiMwpVXmXAnu2fxwAAs8
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] swapoff01/swapon01: Define max_runtime 1 mins
+Subject: [LTP] [PATCH] mm/vma: Return the exact errno for __split_vma() and
+ mas_store_gfp()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,52 +57,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: oliver.sang@intel.com, linux-kernel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Petr Vorel <pvorel@suse.cz>
+__split_vma() and mas_store_gfp() returns several types of errno on
+failure so don't ignore them in vms_gather_munmap_vmas(). For example,
+__split_vma() returns -EINVAL when an unaligned huge page is unmapped.
+This issue is reproduced by ltp memfd_create03 test.
 
-Test run mostly below 1 sec per filesystem, only NTFS is very slow
-~ 10-15 sec depending on architecture.
-
-Also this is the only tests in syscalls which fails on due timeout on
-emulated risc-v with LTP_TIMEOUT_MUL=2,LTP_RUNTIME_MUL=2 (with the
-default 30s runtime => 1 min due LTP_RUNTIME_MUL=2).
-
-Based on the test consumed time on RPi0 and RPi4, we set runtime to 60s,
-that should be enough even for slow risc-v and not that high for other archs.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
+Fixes: 6898c9039bc8 ("mm/vma: extract the gathering of vmas from do_vmi_align_munmap()")
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202409081536.d283a0fb-oliver.sang@intel.com
 ---
- testcases/kernel/syscalls/swapoff/swapoff01.c | 1 +
- testcases/kernel/syscalls/swapon/swapon01.c   | 1 +
- 2 files changed, 2 insertions(+)
+ mm/vma.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-index 314630267..965d17cc8 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-@@ -53,5 +53,6 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.needs_root = 1,
- 	.test_all = verify_swapoff,
-+	.max_runtime = 60,
- 	.setup = setup
- };
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index 49915c32d..eddcd5788 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -51,5 +51,6 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
- 	.test_all = verify_swapon,
-+	.max_runtime = 60,
- 	.setup = setup
- };
+diff --git a/mm/vma.c b/mm/vma.c
+index 8d1686fc8d5a..3feeea9a8c3d 100644
+--- a/mm/vma.c
++++ b/mm/vma.c
+@@ -1200,7 +1200,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 			goto start_split_failed;
+ 		}
+ 
+-		if (__split_vma(vms->vmi, vms->vma, vms->start, 1))
++		error = __split_vma(vms->vmi, vms->vma, vms->start, 1);
++		if (error)
+ 			goto start_split_failed;
+ 	}
+ 	vms->prev = vma_prev(vms->vmi);
+@@ -1220,12 +1221,14 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 		}
+ 		/* Does it split the end? */
+ 		if (next->vm_end > vms->end) {
+-			if (__split_vma(vms->vmi, next, vms->end, 0))
++			error = __split_vma(vms->vmi, next, vms->end, 0);
++			if (error)
+ 				goto end_split_failed;
+ 		}
+ 		vma_start_write(next);
+ 		mas_set(mas_detach, vms->vma_count++);
+-		if (mas_store_gfp(mas_detach, next, GFP_KERNEL))
++		error = mas_store_gfp(mas_detach, next, GFP_KERNEL);
++		if (error)
+ 			goto munmap_gather_failed;
+ 
+ 		vma_mark_detached(next, true);
 -- 
 2.46.0
 
