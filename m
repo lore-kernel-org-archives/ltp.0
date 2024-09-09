@@ -4,50 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11E84ECE579
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 12:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 083A8ECE579
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 12:57:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 993AC3C0F6B
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 14:56:35 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EA9CF3C14B4
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 14:57:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E64C53C068A
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:19 +0200 (CEST)
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 4DC78600C6F
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:14 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 12C7E3C068A
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:48 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 95DCA2009AD
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
- Message-ID; bh=tq2Fo5m1IwUOla/q37kIBEqg0D8o0pWsIvcpAeOEIhc=; b=F
- bQRHk7N/X4ojAleSHTSLTULsIYD+4jmJtlfgauozq7cteVh8ww4wsuUNlr7u+VNf
- A8S0xYpQECCLI45cw/KGiWtAsjxhCtLSpogJuxsosbVXZaTIvqBHVlJqcfQkpBkH
- hdj4PuLqCRTr2LfB6fB7QpYfBQxLHds0bPmcN95y4o=
-Received: from ice_yangxiao$163.com ( [160.86.227.247] ) by
- ajax-webmail-wmsvr-40-105 (Coremail) ; Mon, 9 Sep 2024 20:55:55 +0800 (CST)
-X-Originating-IP: [160.86.227.247]
-Date: Mon, 9 Sep 2024 20:55:55 +0800 (CST)
-From: =?GBK?B?0e7P/g==?= <ice_yangxiao@163.com>
-To: "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <9a899c60-cb88-4991-8c5f-3fb14c8a09b8@lucifer.local>
-References: <20240909050226.2053-1-ice_yangxiao@163.com>
- <9a899c60-cb88-4991-8c5f-3fb14c8a09b8@lucifer.local>
-X-NTES-SC: AL_Qu2ZB/STuU0u4yedY+kfmkwaj+w9XcqwuPsm24BUOpp+jC/pyhICcXpaPmHMwOadJxuLtQGOXDNi5cBmUK9bVIYyYfgxMhrYka9GDdZhN4Q7jQ==
+ s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=WwFKI
+ +bxvE/sH0jt32LyN7fO/Tl860tFmSw7h6gPV2U=; b=nqqDcqUclCM9m94XLC8a6
+ fBVJ4W6RknZd6ElHvyedVV8+Ns4nOVZbcwMZiQa/rraX4q1VMbnpqXE32JBkgXyV
+ 4vNzYTPI/Zeqos6Xa5B12b2GpePETHvtT3zgSC7DocOjEk9xM0tmOOwO7J4hAqmH
+ i3Vz/KKrZlz5yCbq/KQwTE=
+Received: from fedora40-vm.. (unknown [160.86.227.247])
+ by gzga-smtp-mta-g0-0 (Coremail) with SMTP id _____wDnT2B38N5mBtdlGQ--.6710S2; 
+ Mon, 09 Sep 2024 20:56:26 +0800 (CST)
+From: Xiao Yang <ice_yangxiao@163.com>
+To: lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, vbabka@suse.cz,
+ Liam.Howlett@oracle.com
+Date: Mon,  9 Sep 2024 21:56:21 +0900
+Message-ID: <20240909125621.1994-1-ice_yangxiao@163.com>
+X-Mailer: git-send-email 2.46.0
 MIME-Version: 1.0
-Message-ID: <b52b2aa.c178.191d6dae671.Coremail.ice_yangxiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: _____wDXX4Nc8N5m5E4IAA--.5973W
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbB0gZVXmWX0RUYngAEsr
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-CM-TRANSID: _____wDnT2B38N5mBtdlGQ--.6710S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWFWkXryfJrW8Zw1DJw45GFg_yoW5ZF4xpF
+ 93W3s8WFWxXr4xW3Wagayjvw1Yva4rGa1jyrWUGF1Sv3ZIqwsIqryrJFyFvr9rKrZ7Ar9a
+ qr4UG3WfW3W5taDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pZg46tUUUUU=
+X-Originating-IP: [160.86.227.247]
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiMx5VXmXAnvb-xQAAsR
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] mm/vma: Return the exact errno for __split_vma()
- and mas_store_gfp()
+Subject: [LTP] [PATCH v2] mm/vma: Return the exact errno in
+ vms_gather_munmap_vmas()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,120 +57,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-kernel@vger.kernel.org, Liam.Howlett@oracle.com, linux-mm@kvack.org,
- oliver.sang@intel.com, Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
+Cc: linux-mm@kvack.org, oliver.sang@intel.com, linux-kernel@vger.kernel.org,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+__split_vma() and mas_store_gfp() returns several types of errno on
+failure so don't ignore them in vms_gather_munmap_vmas(). For example,
+__split_vma() returns -EINVAL when an unaligned huge page is unmapped.
+This issue is reproduced by ltp memfd_create03 test.
 
-At 2024-09-09 17:09:43, "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com> wrote:
->On Mon, Sep 09, 2024 at 02:02:26PM GMT, Xiao Yang wrote:
->> __split_vma() and mas_store_gfp() returns several types of errno on
->> failure so don't ignore them in vms_gather_munmap_vmas(). For example,
->> __split_vma() returns -EINVAL when an unaligned huge page is unmapped.
->> This issue is reproduced by ltp memfd_create03 test.
->
->Thanks for this! :)
->
->Though pedantic note - please ensure to check scripts/get_maintainer.pl and cc-
->the reviewers and maintainer, the maintainer being Andrew and the
+Don't initialise the error variable and assign it when a failure
+actually occurs.
 
->reviewers being me, Liam and Vlastimil.
+Fixes: 6898c9039bc8 ("mm/vma: extract the gathering of vmas from do_vmi_align_munmap()")
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202409081536.d283a0fb-oliver.sang@intel.com
+---
+ mm/vma.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
+diff --git a/mm/vma.c b/mm/vma.c
+index 8d1686fc8d5a..dc5355d99a18 100644
+--- a/mm/vma.c
++++ b/mm/vma.c
+@@ -1171,13 +1171,13 @@ void vms_complete_munmap_vmas(struct vma_munmap_struct *vms,
+  * @vms: The vma munmap struct
+  * @mas_detach: The maple state tracking the detached tree
+  *
+- * Return: 0 on success, -EPERM on mseal vmas, -ENOMEM otherwise
++ * Return: 0 on success, error otherwise
+  */
+ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 		struct ma_state *mas_detach)
+ {
+ 	struct vm_area_struct *next = NULL;
+-	int error = -ENOMEM;
++	int error;
+ 
+ 	/*
+ 	 * If we need to split any vma, do it now to save pain later.
+@@ -1191,8 +1191,10 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 		 * its limit temporarily, to help free resources as expected.
+ 		 */
+ 		if (vms->end < vms->vma->vm_end &&
+-		    vms->vma->vm_mm->map_count >= sysctl_max_map_count)
++		    vms->vma->vm_mm->map_count >= sysctl_max_map_count) {
++			error = -ENOMEM;
+ 			goto map_count_exceeded;
++		}
+ 
+ 		/* Don't bother splitting the VMA if we can't unmap it anyway */
+ 		if (!can_modify_vma(vms->vma)) {
+@@ -1200,7 +1202,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 			goto start_split_failed;
+ 		}
+ 
+-		if (__split_vma(vms->vmi, vms->vma, vms->start, 1))
++		error = __split_vma(vms->vmi, vms->vma, vms->start, 1);
++		if (error)
+ 			goto start_split_failed;
+ 	}
+ 	vms->prev = vma_prev(vms->vmi);
+@@ -1220,12 +1223,14 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 		}
+ 		/* Does it split the end? */
+ 		if (next->vm_end > vms->end) {
+-			if (__split_vma(vms->vmi, next, vms->end, 0))
++			error = __split_vma(vms->vmi, next, vms->end, 0);
++			if (error)
+ 				goto end_split_failed;
+ 		}
+ 		vma_start_write(next);
+ 		mas_set(mas_detach, vms->vma_count++);
+-		if (mas_store_gfp(mas_detach, next, GFP_KERNEL))
++		error = mas_store_gfp(mas_detach, next, GFP_KERNEL);
++		if (error)
+ 			goto munmap_gather_failed;
+ 
+ 		vma_mark_detached(next, true);
+@@ -1255,8 +1260,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+ 			 * split, despite we could. This is unlikely enough
+ 			 * failure that it's not worth optimizing it for.
+ 			 */
+-			if (userfaultfd_unmap_prep(next, vms->start, vms->end,
+-						   vms->uf))
++			error = userfaultfd_unmap_prep(next, vms->start, vms->end, vms->uf);
++			if (error)
+ 				goto userfaultfd_error;
+ 		}
+ #ifdef CONFIG_DEBUG_VM_MAPLE_TREE
+-- 
+2.46.0
 
-Hi Lorenzo,
-
-
-Thanks for your kind reminder.
-
->
->The maintainer is especially important as it's Andrew who'll take the patch
->;)
->
->I've cc'd them here :)
->
->>
->> Fixes: 6898c9039bc8 ("mm/vma: extract the gathering of vmas from do_vmi_align_munmap()")
->> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
->> Reported-by: kernel test robot <oliver.sang@intel.com>
->> Closes: https://lore.kernel.org/oe-lkp/202409081536.d283a0fb-oliver.sang@intel.com
->> ---
->>  mm/vma.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/vma.c b/mm/vma.c
->> index 8d1686fc8d5a..3feeea9a8c3d 100644
->> --- a/mm/vma.c
->> +++ b/mm/vma.c
->> @@ -1200,7 +1200,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
->>  			goto start_split_failed;
->>  		}
->>
->> -		if (__split_vma(vms->vmi, vms->vma, vms->start, 1))
->> +		error = __split_vma(vms->vmi, vms->vma, vms->start, 1);
->> +		if (error)
->>  			goto start_split_failed;
->
->We'd probably want to stop assigning error = ENOMEM and just leave it
->uninitialised if we're always going to assign it rather than filter.
->
->You'd want to make sure that you caught any case that relies on it being
->pre-assigned though.
->
->>  	}
->>  	vms->prev = vma_prev(vms->vmi);
->> @@ -1220,12 +1221,14 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
->>  		}
->>  		/* Does it split the end? */
->>  		if (next->vm_end > vms->end) {
->> -			if (__split_vma(vms->vmi, next, vms->end, 0))
->> +			error = __split_vma(vms->vmi, next, vms->end, 0);
->> +			if (error)
->>  				goto end_split_failed;
->
->Related to point above, In this and above, you are now resetting error to 0
->should this succeed while some later code might rely on this not being the
->case.
->
->Basically I'd prefer us, if Liam is cool with it, to just not initialise
-
->error and assign when an error actually occurs.
-
-
-Agreed. I will resend the v2 patch as you suggested.
-
-
-Best Regards,
-Xiao Yang
-
->
->But we filtered for a reason, need to figure out if that is still
->needed...
->m
->>  		}
->>  		vma_start_write(next);
->>  		mas_set(mas_detach, vms->vma_count++);
->> -		if (mas_store_gfp(mas_detach, next, GFP_KERNEL))
->> +		error = mas_store_gfp(mas_detach, next, GFP_KERNEL);
->> +		if (error)
->>  			goto munmap_gather_failed;
->>
->>  		vma_mark_detached(next, true);
->> --
->> 2.46.0
->>
->
->I'm in general in favour of what this patch does (modulo the points about
->not initialising error and checking that we don't rely on it being
->initialised above), but it very much need's Liam's input.
->
->If Liam is cool with it, I'll add tags, but let's hold off on this until we
->have confirmation from him.
->
->Thanks!
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
