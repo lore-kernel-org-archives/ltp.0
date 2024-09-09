@@ -4,100 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D7E5ECE57A
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 12:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11E84ECE579
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 12:56:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 816C33C1886
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 14:56:12 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 993AC3C0F6B
+	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 14:56:35 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B7E73C068A
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:55:57 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8F709140033A
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:55:55 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 431E22199B;
- Mon,  9 Sep 2024 12:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725886555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F5nnb5ec0T31AEKfMrKCxM+THE2kVOz9NLIF3JNPXl0=;
- b=SiSh65PtxgWo0KbDbxKZi1E+bztUXVHm0kp6Rvz1Sa6XY1jIDdlwx0rB6V4xkvXS1ifXQv
- 3/55W2S/p0MTB62oB2EEBI9yUdT1OShpny+Ougs6P4vEwQ5/HzXQZchHMIKHzUuRCT4pzs
- yznRjrHj69FV9t2LGOvf/7GM1my26Vw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725886555;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F5nnb5ec0T31AEKfMrKCxM+THE2kVOz9NLIF3JNPXl0=;
- b=0+8gfM63GxnQAUiXHDCPf1SJsSWTofc8tHBTj++lNxIOAL4jaq8q74AA+2SG+wp0XLryA0
- dAKo0Dt9W8HlRMCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725886554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F5nnb5ec0T31AEKfMrKCxM+THE2kVOz9NLIF3JNPXl0=;
- b=00qT13L+EOxy52MuZG4htY4W97IOZ/FusvTQk2tUeVAxfgLjTfciuqLJxEiBjDr+J1mCgI
- J5nh48MB4AFbQSskeD21jrqqxM1Y/coLkCMgV3UQYfOHtx/J6gVe0iTf7ASJYDD0uKCX5h
- B4etSC9QkD+BU7DEE+K35K9e2G9BjV0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725886554;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F5nnb5ec0T31AEKfMrKCxM+THE2kVOz9NLIF3JNPXl0=;
- b=Li0SNRqwLZxCs+npSaNRxIVB90U3m8cOuPMNWD5u/02Ut1ZBf61PS31c+4iFgd4aS9jSNr
- mNtfNBi8qiTvgEBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2811B13A3A;
- Mon,  9 Sep 2024 12:55:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id p0+pCFrw3mZmVgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 09 Sep 2024 12:55:54 +0000
-Date: Mon, 9 Sep 2024 14:54:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Zt7wE0QO7eTgUKOq@yuki.lan>
-References: <20240903140326.773060-1-pvorel@suse.cz>
- <20240909025243.537071-1-liwang@redhat.com>
+ by picard.linux.it (Postfix) with ESMTPS id E64C53C068A
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:19 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id 4DC78600C6F
+ for <ltp@lists.linux.it>; Mon,  9 Sep 2024 14:56:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+ Message-ID; bh=tq2Fo5m1IwUOla/q37kIBEqg0D8o0pWsIvcpAeOEIhc=; b=F
+ bQRHk7N/X4ojAleSHTSLTULsIYD+4jmJtlfgauozq7cteVh8ww4wsuUNlr7u+VNf
+ A8S0xYpQECCLI45cw/KGiWtAsjxhCtLSpogJuxsosbVXZaTIvqBHVlJqcfQkpBkH
+ hdj4PuLqCRTr2LfB6fB7QpYfBQxLHds0bPmcN95y4o=
+Received: from ice_yangxiao$163.com ( [160.86.227.247] ) by
+ ajax-webmail-wmsvr-40-105 (Coremail) ; Mon, 9 Sep 2024 20:55:55 +0800 (CST)
+X-Originating-IP: [160.86.227.247]
+Date: Mon, 9 Sep 2024 20:55:55 +0800 (CST)
+From: =?GBK?B?0e7P/g==?= <ice_yangxiao@163.com>
+To: "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <9a899c60-cb88-4991-8c5f-3fb14c8a09b8@lucifer.local>
+References: <20240909050226.2053-1-ice_yangxiao@163.com>
+ <9a899c60-cb88-4991-8c5f-3fb14c8a09b8@lucifer.local>
+X-NTES-SC: AL_Qu2ZB/STuU0u4yedY+kfmkwaj+w9XcqwuPsm24BUOpp+jC/pyhICcXpaPmHMwOadJxuLtQGOXDNi5cBmUK9bVIYyYfgxMhrYka9GDdZhN4Q7jQ==
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240909025243.537071-1-liwang@redhat.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Message-ID: <b52b2aa.c178.191d6dae671.Coremail.ice_yangxiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: _____wDXX4Nc8N5m5E4IAA--.5973W
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbB0gZVXmWX0RUYngAEsr
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] swapoff01/swapon01: Define max_runtime 1 mins
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] mm/vma: Return the exact errno for __split_vma()
+ and mas_store_gfp()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,19 +59,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-kernel@vger.kernel.org, Liam.Howlett@oracle.com, linux-mm@kvack.org,
+ oliver.sang@intel.com, Vlastimil Babka <vbabka@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+At 2024-09-09 17:09:43, "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com> wrote:
+>On Mon, Sep 09, 2024 at 02:02:26PM GMT, Xiao Yang wrote:
+>> __split_vma() and mas_store_gfp() returns several types of errno on
+>> failure so don't ignore them in vms_gather_munmap_vmas(). For example,
+>> __split_vma() returns -EINVAL when an unaligned huge page is unmapped.
+>> This issue is reproduced by ltp memfd_create03 test.
+>
+>Thanks for this! :)
+>
+>Though pedantic note - please ensure to check scripts/get_maintainer.pl and cc-
+>the reviewers and maintainer, the maintainer being Andrew and the
+
+>reviewers being me, Liam and Vlastimil.
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi Lorenzo,
+
+
+Thanks for your kind reminder.
+
+>
+>The maintainer is especially important as it's Andrew who'll take the patch
+>;)
+>
+>I've cc'd them here :)
+>
+>>
+>> Fixes: 6898c9039bc8 ("mm/vma: extract the gathering of vmas from do_vmi_align_munmap()")
+>> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202409081536.d283a0fb-oliver.sang@intel.com
+>> ---
+>>  mm/vma.c | 9 ++++++---
+>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/vma.c b/mm/vma.c
+>> index 8d1686fc8d5a..3feeea9a8c3d 100644
+>> --- a/mm/vma.c
+>> +++ b/mm/vma.c
+>> @@ -1200,7 +1200,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  			goto start_split_failed;
+>>  		}
+>>
+>> -		if (__split_vma(vms->vmi, vms->vma, vms->start, 1))
+>> +		error = __split_vma(vms->vmi, vms->vma, vms->start, 1);
+>> +		if (error)
+>>  			goto start_split_failed;
+>
+>We'd probably want to stop assigning error = ENOMEM and just leave it
+>uninitialised if we're always going to assign it rather than filter.
+>
+>You'd want to make sure that you caught any case that relies on it being
+>pre-assigned though.
+>
+>>  	}
+>>  	vms->prev = vma_prev(vms->vmi);
+>> @@ -1220,12 +1221,14 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  		}
+>>  		/* Does it split the end? */
+>>  		if (next->vm_end > vms->end) {
+>> -			if (__split_vma(vms->vmi, next, vms->end, 0))
+>> +			error = __split_vma(vms->vmi, next, vms->end, 0);
+>> +			if (error)
+>>  				goto end_split_failed;
+>
+>Related to point above, In this and above, you are now resetting error to 0
+>should this succeed while some later code might rely on this not being the
+>case.
+>
+>Basically I'd prefer us, if Liam is cool with it, to just not initialise
+
+>error and assign when an error actually occurs.
+
+
+Agreed. I will resend the v2 patch as you suggested.
+
+
+Best Regards,
+Xiao Yang
+
+>
+>But we filtered for a reason, need to figure out if that is still
+>needed...
+>m
+>>  		}
+>>  		vma_start_write(next);
+>>  		mas_set(mas_detach, vms->vma_count++);
+>> -		if (mas_store_gfp(mas_detach, next, GFP_KERNEL))
+>> +		error = mas_store_gfp(mas_detach, next, GFP_KERNEL);
+>> +		if (error)
+>>  			goto munmap_gather_failed;
+>>
+>>  		vma_mark_detached(next, true);
+>> --
+>> 2.46.0
+>>
+>
+>I'm in general in favour of what this patch does (modulo the points about
+>not initialising error and checking that we don't rely on it being
+>initialised above), but it very much need's Liam's input.
+>
+>If Liam is cool with it, I'll add tags, but let's hold off on this until we
+>have confirmation from him.
+>
+>Thanks!
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
