@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34DFAEB64DE
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 14:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A1BEDE99D
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 15:28:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E5C23C1B7B
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 16:21:42 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 5FF863C1BA1
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 17:28:32 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 57F383C1AEC
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 16:21:26 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id C75203C1B5A
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 17:28:15 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91EC61401250
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 16:21:25 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 55BC660D49A
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 17:28:14 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1AD0E1F816;
- Tue, 10 Sep 2024 14:21:24 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2E5241F7D4;
+ Tue, 10 Sep 2024 15:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725978084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1725982094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mpi+9wfOhRJJYcUYgoIKk5AM6GmMPCExpumocCWc5Vw=;
- b=qZ/T/tTiOTGH5xf/j0cMHm6Gh8HCq/paRfkvGkBlKDBJFO9yjMgxl/knBcNwKSHWCcrUii
- ctotCnr2vFHikVFG/5qeUlEW0+RyVkLyqHTYfeTLXXO9bACr8yO9f3pKrC/oRrxHPUqtUr
- Ref0HxRTHpEaR9ADmkLkEPcePjoI9I8=
+ bh=qd/QM8hMjJSx+/OnO2QTI6Sdm1M7uA/Vvb0iR89Ymrc=;
+ b=XIp9JF1uBwBMYmiqLnsnrKlWxyvDp2QwvVsb3MWDgsqWgWXxPylpWWaR/kzJqg6lEC3f27
+ 2UUs972Mw+Ih5LmX+xDrTIlskkn8f/p6BEYJPd1i0P0YEVPrZRs3VtVNFXZPm/mq47zYGG
+ gzD2QhHN4HKDLN7mFXdIOtF3l80/cIM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725978084;
+ s=susede2_ed25519; t=1725982094;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mpi+9wfOhRJJYcUYgoIKk5AM6GmMPCExpumocCWc5Vw=;
- b=RmUN+HcIGZMSpqXPRlUCdd4PyJtsPw2EEi6AZbr7A55pc1UVuzMNMnkFR1GOQIOQGxLhar
- ylhV8GnWxJIXVYDw==
+ bh=qd/QM8hMjJSx+/OnO2QTI6Sdm1M7uA/Vvb0iR89Ymrc=;
+ b=RgwhGslacSVv/lmf+CNYXa2GMGcYCSFOa33mb2gzmBe1YFyKLEVsJbN7xKHyG/VzS292sH
+ J6gTVdU+Ys3iojBg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1725978084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1725982094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mpi+9wfOhRJJYcUYgoIKk5AM6GmMPCExpumocCWc5Vw=;
- b=qZ/T/tTiOTGH5xf/j0cMHm6Gh8HCq/paRfkvGkBlKDBJFO9yjMgxl/knBcNwKSHWCcrUii
- ctotCnr2vFHikVFG/5qeUlEW0+RyVkLyqHTYfeTLXXO9bACr8yO9f3pKrC/oRrxHPUqtUr
- Ref0HxRTHpEaR9ADmkLkEPcePjoI9I8=
+ bh=qd/QM8hMjJSx+/OnO2QTI6Sdm1M7uA/Vvb0iR89Ymrc=;
+ b=XIp9JF1uBwBMYmiqLnsnrKlWxyvDp2QwvVsb3MWDgsqWgWXxPylpWWaR/kzJqg6lEC3f27
+ 2UUs972Mw+Ih5LmX+xDrTIlskkn8f/p6BEYJPd1i0P0YEVPrZRs3VtVNFXZPm/mq47zYGG
+ gzD2QhHN4HKDLN7mFXdIOtF3l80/cIM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1725978084;
+ s=susede2_ed25519; t=1725982094;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mpi+9wfOhRJJYcUYgoIKk5AM6GmMPCExpumocCWc5Vw=;
- b=RmUN+HcIGZMSpqXPRlUCdd4PyJtsPw2EEi6AZbr7A55pc1UVuzMNMnkFR1GOQIOQGxLhar
- ylhV8GnWxJIXVYDw==
+ bh=qd/QM8hMjJSx+/OnO2QTI6Sdm1M7uA/Vvb0iR89Ymrc=;
+ b=RgwhGslacSVv/lmf+CNYXa2GMGcYCSFOa33mb2gzmBe1YFyKLEVsJbN7xKHyG/VzS292sH
+ J6gTVdU+Ys3iojBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A95EA132CB;
- Tue, 10 Sep 2024 14:21:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 169EB13A3A;
+ Tue, 10 Sep 2024 15:28:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id PhmGH+NV4GakLwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 10 Sep 2024 14:21:23 +0000
-Date: Tue, 10 Sep 2024 16:20:09 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id NlLEBI5l4GY6RQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 10 Sep 2024 15:28:14 +0000
+Date: Tue, 10 Sep 2024 17:26:59 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZuBVmXDo99opXjdk@yuki.lan>
-References: <20240801135023.22125-1-andrea.cervesato@suse.de>
+Message-ID: <ZuBlQ02-AHxwDoI1@yuki.lan>
+References: <20240902-fcntl4_refactoring-v4-0-4446517da427@suse.com>
+ <20240902-fcntl4_refactoring-v4-1-4446517da427@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240801135023.22125-1-andrea.cervesato@suse.de>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240902-fcntl4_refactoring-v4-1-4446517da427@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -93,11 +93,10 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url, imap1.dmz-prg2.suse.org:helo,
- suse.com:email, suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Add rename15 test
+Subject: Re: [LTP] [PATCH v4 1/2] Add silent macros for TST_EXP_EQ_*
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,182 +115,32 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> This test has been extracted from symlink01 and it verifies that
-> rename() is working correctly on symlink() generated files, renaming
-> symbolic link and checking if stat() information are preserved.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> - tst_tmpdir_path/tst_tmpdir_mkpath usage
-> - use absolute paths
-> - add all_filesystems = 1
-> 
->  runtest/syscalls                            |   2 +-
->  testcases/kernel/syscalls/rename/.gitignore |   1 +
->  testcases/kernel/syscalls/rename/rename15.c | 109 ++++++++++++++++++++
->  3 files changed, 111 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/kernel/syscalls/rename/rename15.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 9b3cba667..6028c57c3 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1173,7 +1173,6 @@ removexattr01 removexattr01
->  removexattr02 removexattr02
->  
->  rename01 rename01
-> -rename01A symlink01 -T rename01
->  rename03 rename03
->  rename04 rename04
->  rename05 rename05
-> @@ -1186,6 +1185,7 @@ rename11 rename11
->  rename12 rename12
->  rename13 rename13
->  rename14 rename14
-> +rename15 rename15
->  
->  #renameat test cases
->  renameat01 renameat01
-> diff --git a/testcases/kernel/syscalls/rename/.gitignore b/testcases/kernel/syscalls/rename/.gitignore
-> index f95cf7d21..d17b80f09 100644
-> --- a/testcases/kernel/syscalls/rename/.gitignore
-> +++ b/testcases/kernel/syscalls/rename/.gitignore
-> @@ -11,3 +11,4 @@
->  /rename12
->  /rename13
->  /rename14
-> +/rename15
-> diff --git a/testcases/kernel/syscalls/rename/rename15.c b/testcases/kernel/syscalls/rename/rename15.c
-> new file mode 100644
-> index 000000000..234632879
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rename/rename15.c
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> + *    Authors: David Fenner, Jon Hendrickson
-> + * Copyright (C) 2024 Andrea Cervesato andrea.cervesato@suse.com
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This test verifies that rename() is working correctly on symlink()
-> + * generated files.
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "tst_tmpdir.h"
-> +
-> +#define MNTPOINT "mnt"
-> +#define OLDNAME MNTPOINT"/msymlink0"
-> +#define NEWNAME MNTPOINT"/asymlink0"
-> +#define OBJNAME MNTPOINT"/object"
-> +
-> +static char *tmpdir;
-> +static char *oldname;
-> +static char *newname;
-> +static char *objname;
-> +
-> +static void test_existing(void)
-> +{
-> +	tst_res(TINFO, "Test rename() on symlink pointing to an existent path");
-> +
-> +	struct stat oldsym_stat;
-> +	struct stat newsym_stat;
-> +
-> +	SAFE_SYMLINK(tmpdir, oldname);
-> +	SAFE_STAT(oldname, &oldsym_stat);
-> +
-> +	SAFE_RENAME(oldname, newname);
-> +	SAFE_STAT(newname, &newsym_stat);
-> +
-> +	TST_EXP_EQ_LI(oldsym_stat.st_ino, newsym_stat.st_ino);
-> +	TST_EXP_EQ_LI(oldsym_stat.st_dev, newsym_stat.st_dev);
+> +#define TST_EXP_EQ_SILENT_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS) do {       \
+> +	TYPE tst_tmp_a__ = VAL_A;                                              \
+> +	TYPE tst_tmp_b__ = VAL_B;                                              \
+> +                                                                               \
+> +	TST_PASS = 0;                                                          \
+> +                                                                               \
+> +	if (tst_tmp_a__ != tst_tmp_b__) {                                      \
+> +		tst_res_(__FILE__, __LINE__, TFAIL,                            \
+> +			SVAL_A " (" PFS ") != " SVAL_B " (" PFS ")",           \
+> +			tst_tmp_a__, tst_tmp_b__);                             \
+> +		break;                                                         \
+> +	}                                                                      \
+> +                                                                               \
 
-Here we should test that the oldname is not there anymore.
+I would probably do here:
 
-> +	SAFE_UNLINK(newname);
-> +}
-> +
-> +static void test_non_existing(void)
-> +{
-> +	tst_res(TINFO, "Test rename() on symlink pointing to a non-existent path");
-> +
-> +	struct stat path_stat;
-> +
-> +	SAFE_SYMLINK("this_path_doesnt_exist", oldname);
-> +	TST_EXP_FAIL(stat(oldname, &path_stat), ENOENT);
-> +
-> +	SAFE_RENAME(oldname, newname);
-> +	TST_EXP_FAIL(stat(newname, &path_stat), ENOENT);
+	} else {
+		TST_PASS = 1;
+	}
 
-I guess that we should use lstat() here to at least make sure that the
-symlinks are present when they should be.
+Because it's a bit more readable.
 
-> +	SAFE_UNLINK(newname);
-> +}
-> +
-> +static void test_creat(void)
-> +{
-> +
-> +	tst_res(TINFO, "Test rename() on symlink pointing to a path created lately");
-> +
-> +	struct stat path_stat;
-> +
-> +	SAFE_SYMLINK(objname, oldname);
-> +	TST_EXP_FAIL(stat(oldname, &path_stat), ENOENT);
-> +
-> +	tst_res(TINFO, "Create object file");
-> +
-> +	int fd;
-> +
-> +	fd = SAFE_CREAT(objname, 0700);
-> +	if (fd >= 0)
-> +		SAFE_CLOSE(fd);
-> +
-> +	SAFE_RENAME(oldname, newname);
-> +	TST_EXP_PASS(stat(newname, &path_stat));
+Also you did messed up the alignment of the \ at the end.
 
-Shouldn't we also check here that:
 
-- oldname is not there anymore
-- objname is still there
-
-> +	SAFE_UNLINK(objname);
-> +	SAFE_UNLINK(newname);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	test_existing();
-> +	test_creat();
-> +	test_non_existing();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tmpdir = tst_tmpdir_path();
-> +	oldname = tst_tmpdir_mkpath(OLDNAME);
-> +	newname = tst_tmpdir_mkpath(NEWNAME);
-> +	objname = tst_tmpdir_mkpath(OBJNAME);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test_all = run,
-> +	.all_filesystems = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.format_device = 1,
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.43.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Apart from these minor things I do not see anything wrong here.
 
 -- 
 Cyril Hrubis
