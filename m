@@ -4,111 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18835ECE579
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 17:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 084B7ECE591
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 00:18:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3032E3C1879
-	for <ltp@archiver.kernel.org>; Mon,  9 Sep 2024 19:35:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 3B5043C19F0
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 02:18:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A54053C0BC0
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 19:35:33 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B4E1A100052E
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 19:35:32 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B71C11F7D2
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 17:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1725903331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AXrWi/MvBuTrc6NZmXQrwdnPxigNaaIEfAOwcMDZh+s=;
- b=qO2FweruQR0mMb1Bvdhpk4oViTfgRK9XjPpuERD8k+nXohQzeRNb6zhkG6qIYWTio3ZniG
- UeJ4v8yG42kYvvU2ZHcgr8efRme+QxHSdGR8CJBqIFkeMLSjoqfnSr2rucv0TBCwrSdzxP
- 5c75KnrpLVlsK3HpHCkq7JNwiNVuAKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1725903331;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AXrWi/MvBuTrc6NZmXQrwdnPxigNaaIEfAOwcMDZh+s=;
- b=eivMrZvgbKk33TjSp18e0joaRt3/AFswxw72o8FAgxd/jowLc6x+Yh60/ZdBKpd9+pmvnH
- skHWOmAwTpRI/UAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1725903331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AXrWi/MvBuTrc6NZmXQrwdnPxigNaaIEfAOwcMDZh+s=;
- b=qO2FweruQR0mMb1Bvdhpk4oViTfgRK9XjPpuERD8k+nXohQzeRNb6zhkG6qIYWTio3ZniG
- UeJ4v8yG42kYvvU2ZHcgr8efRme+QxHSdGR8CJBqIFkeMLSjoqfnSr2rucv0TBCwrSdzxP
- 5c75KnrpLVlsK3HpHCkq7JNwiNVuAKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1725903331;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AXrWi/MvBuTrc6NZmXQrwdnPxigNaaIEfAOwcMDZh+s=;
- b=eivMrZvgbKk33TjSp18e0joaRt3/AFswxw72o8FAgxd/jowLc6x+Yh60/ZdBKpd9+pmvnH
- skHWOmAwTpRI/UAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5FC913A3A
- for <ltp@lists.linux.it>; Mon,  9 Sep 2024 17:35:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WXLJJeMx32ZOTQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>)
- for <ltp@lists.linux.it>; Mon, 09 Sep 2024 17:35:31 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 09 Sep 2024 19:35:30 +0200
+ by picard.linux.it (Postfix) with ESMTPS id B88D23C068A
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 02:17:43 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id 3F1166007AC
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 02:17:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+ Message-ID; bh=aZgkIqlZJojdB2AaLwv4UPem7CJ6dowqN8grFaiUjC4=; b=l
+ hWKZ8us4KaOY9j5CBhrNLdUmmMh8oDMaiI15LpPi9xrBtA4emylhHIxzUvAk0+HA
+ KHiyI9fEbigr/T4pfoKIK1vGTbRPoUr/FoaGq+qwM+qoQNRNO4G4g2AE8u54OlJk
+ NYcf1G9Lj/MXi4tzXcAURzEwjTHls0VKn7Cg3gF3pM=
+Received: from ice_yangxiao$163.com ( [160.86.227.247] ) by
+ ajax-webmail-wmsvr-40-139 (Coremail) ; Tue, 10 Sep 2024 08:17:13 +0800
+ (CST)
+X-Originating-IP: [160.86.227.247]
+Date: Tue, 10 Sep 2024 08:17:13 +0800 (CST)
+From: =?GBK?B?0e7P/g==?= <ice_yangxiao@163.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <tixinevflrciek4bnjwzxv6dwqyokfhrhtmu6qndc7hs2qoizd@iqg2tpjjtwyt>
+References: <20240909125621.1994-1-ice_yangxiao@163.com>
+ <tixinevflrciek4bnjwzxv6dwqyokfhrhtmu6qndc7hs2qoizd@iqg2tpjjtwyt>
+X-NTES-SC: AL_Qu2ZB/WZuEwo5SeRYOkfmkwaj+w9XcqwuPsm24BUOpp+jBHo4CcPZkdAOnHZ98CDLi+zmxuUTB5g1+BUeZR7docnHpFs2+7yF3SGE55UFMVE7Q==
 MIME-Version: 1.0
-Message-Id: <20240909-landlock_whitelist-v1-1-60c54aa9526d@suse.com>
-X-B4-Tracking: v=1; b=H4sIAOIx32YC/x3MQQqAIBBA0avErBM0bDFdJSJEpxwSC40KpLsnL
- d/i/wKZElOGoSmQ6OLMe6xQbQPWm7iSYFcNney0RIkimOjCbrf59nxS4HwKtaBF7I0ip6GGR6K
- Fn386Tu/7AbSDo1RkAAAA
-To: ltp@lists.linux.it
-Cc: 
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1725903331; l=908;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=A9TN1Ij8bMq57o3kMBvTLNiFzl7gTdg2PHBF/SJUI3M=;
- b=8OgY0Pjcnp/G71vEQqp9VHdjm+ELZscPrCtdQh01zNrMHQTTYHINKkB4i+45mBohe7Bb/0RRm
- y1Us6l9Z26wDXJdOoeanz83lvGhMp7OcvxE7Mbr/JL2r59BqUxiYRDh
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Message-ID: <17a3c672.469.191d94aa64e.Coremail.ice_yangxiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: _____wD3X4YKkN9mre5LAA--.1556W
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiMxZVXmXAnvvpZgAGsn
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add landlock syscalls to whitelist in statistics
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2] mm/vma: Return the exact errno in
+ vms_gather_munmap_vmas()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,45 +60,139 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: lorenzo.stoakes@oracle.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, vbabka@suse.cz,
+ akpm@linux-foundation.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Landlock syscalls are currently tested in the landlock testing suite and
-there's no reason to consider them untested, so they can be added to the
-statistics whitelist.
+At 2024-09-09 22:07:09, "Liam R. Howlett" <Liam.Howlett@oracle.com> wrote:
+>* Xiao Yang <ice_yangxiao@163.com> [240909 08:56]:
+>> __split_vma() and mas_store_gfp() returns several types of errno on
+>> failure so don't ignore them in vms_gather_munmap_vmas(). For example,
+>> __split_vma() returns -EINVAL when an unaligned huge page is unmapped.
+>> This issue is reproduced by ltp memfd_create03 test.
+>> 
+>> Don't initialise the error variable and assign it when a failure
+>> actually occurs.
+>> 
+>> Fixes: 6898c9039bc8 ("mm/vma: extract the gathering of vmas from do_vmi_align_munmap()")
+>> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+>> Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202409081536.d283a0fb-oliver.sang@intel.com
+>> ---
+>>  mm/vma.c | 21 +++++++++++++--------
+>>  1 file changed, 13 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/mm/vma.c b/mm/vma.c
+>> index 8d1686fc8d5a..dc5355d99a18 100644
+>> --- a/mm/vma.c
+>> +++ b/mm/vma.c
+>> @@ -1171,13 +1171,13 @@ void vms_complete_munmap_vmas(struct vma_munmap_struct *vms,
+>>   * @vms: The vma munmap struct
+>>   * @mas_detach: The maple state tracking the detached tree
+>>   *
+>> - * Return: 0 on success, -EPERM on mseal vmas, -ENOMEM otherwise
+>> + * Return: 0 on success, error otherwise
+>>   */
+>>  int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  		struct ma_state *mas_detach)
+>>  {
+>>  	struct vm_area_struct *next = NULL;
+>> -	int error = -ENOMEM;
+>> +	int error;
+>>  
+>>  	/*
+>>  	 * If we need to split any vma, do it now to save pain later.
+>> @@ -1191,8 +1191,10 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  		 * its limit temporarily, to help free resources as expected.
+>>  		 */
+>>  		if (vms->end < vms->vma->vm_end &&
+>> -		    vms->vma->vm_mm->map_count >= sysctl_max_map_count)
+>> +		    vms->vma->vm_mm->map_count >= sysctl_max_map_count) {
+>> +			error = -ENOMEM;
+>>  			goto map_count_exceeded;
+>> +		}
+>>  
+>>  		/* Don't bother splitting the VMA if we can't unmap it anyway */
+>>  		if (!can_modify_vma(vms->vma)) {
+>> @@ -1200,7 +1202,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  			goto start_split_failed;
+>>  		}
+>>  
+>> -		if (__split_vma(vms->vmi, vms->vma, vms->start, 1))
+>> +		error = __split_vma(vms->vmi, vms->vma, vms->start, 1);
+>> +		if (error)
+>>  			goto start_split_failed;
+>>  	}
+>>  	vms->prev = vma_prev(vms->vmi);
+>> @@ -1220,12 +1223,14 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  		}
+>>  		/* Does it split the end? */
+>>  		if (next->vm_end > vms->end) {
+>> -			if (__split_vma(vms->vmi, next, vms->end, 0))
+>> +			error = __split_vma(vms->vmi, next, vms->end, 0);
+>> +			if (error)
+>>  				goto end_split_failed;
+>>  		}
+>>  		vma_start_write(next);
+>>  		mas_set(mas_detach, vms->vma_count++);
+>> -		if (mas_store_gfp(mas_detach, next, GFP_KERNEL))
+>> +		error = mas_store_gfp(mas_detach, next, GFP_KERNEL);
+>> +		if (error)
+>>  			goto munmap_gather_failed;
+>>  
+>>  		vma_mark_detached(next, true);
+>> @@ -1255,8 +1260,8 @@ int vms_gather_munmap_vmas(struct vma_munmap_struct *vms,
+>>  			 * split, despite we could. This is unlikely enough
+>>  			 * failure that it's not worth optimizing it for.
+>>  			 */
+>> -			if (userfaultfd_unmap_prep(next, vms->start, vms->end,
+>> -						   vms->uf))
+>> +			error = userfaultfd_unmap_prep(next, vms->start, vms->end, vms->uf);
+>
+>This line is too long.
+>
+>> +			if (error)
+>>  				goto userfaultfd_error;
+>
+>Good you saw this issue, I was going to point it out.
+>
+>>  		}
+>>  #ifdef CONFIG_DEBUG_VM_MAPLE_TREE
+>> -- 
+>> 2.46.0
+>> 
+>> 
+>
+>Besides the line over 80 characters, this looks good to me and should be
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- doc/conf.py | 3 +++
- 1 file changed, 3 insertions(+)
+>squashed into my series.
 
-diff --git a/doc/conf.py b/doc/conf.py
-index c0346388e..7a3e9ec9f 100644
---- a/doc/conf.py
-+++ b/doc/conf.py
-@@ -90,6 +90,9 @@ def generate_syscalls_stats(_):
-         'seccomp',
-         'semtimedop',
-         'sethostname',
-+        'landlock_create_ruleset',
-+        'landlock_add_rule',
-+        'landlock_restrict_self',
-     ]
- 
-     # populate with not implemented, reserved, unmaintained syscalls defined
 
----
-base-commit: d60bdcc7c7ac4be6624302b909e4d38367652dda
-change-id: 20240909-landlock_whitelist-1f9c995a1ed4
+Hi Liam,
 
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
 
+Thanks for your reply.
+It seems that the default maximum line length is 100 now, should we split the line?
+In addition, is it better to remove the fixes line as you mentioned on previous patch?
+
+
+
+If you agree with these two changes, I will resend the v3 patch as soon as possible.
+
+
+
+Best Regards,
+Xiao Yang
+
+>
+>Thanks,
+>Liam
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
