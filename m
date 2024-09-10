@@ -4,67 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B0E6ECE564
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 07:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38232ECE564
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 08:42:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A13F63C02D1
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 09:10:48 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2207D3C1A24
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 10:42:45 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1953A3C022D
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 09:10:32 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 3E08E3C19E4
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 10:42:28 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DEA411002030
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 09:10:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1725952230;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=NwzQjwXmzTw5IgKqEazZVu7EXUqL9zhUZEFYXPoE1hc=;
- b=BlL5P/dXxLt+kXBHBhfpHzBTf/Jn52vwM8F+yP94M1kq7szBIb7BgarN1T7++biv+qv+nJ
- flxAXVjBC3oF+/pcqGCp+0z56gjkYHMmPjaDd2weQUgRttFtYPXqVr6zNqrCsxkhb0jAGC
- VBvuN1xzdLL9qZsNxIWIHV78LVe0Qyg=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-182-tHHe0Zc7OTyATwJOfLjqWw-1; Tue,
- 10 Sep 2024 03:10:28 -0400
-X-MC-Unique: tHHe0Zc7OTyATwJOfLjqWw-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8A9C0200078
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 10:42:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 40FCB193E8DB
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 07:10:27 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id CEF73300147D
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 07:10:25 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue, 10 Sep 2024 15:10:19 +0800
-Message-ID: <20240910071019.551379-1-liwang@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A4CB41FCE4;
+ Tue, 10 Sep 2024 08:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725957744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P5+u9zfmoImaQweUAuS5EZ1mu/FO5L0Q3uzFWwEeaug=;
+ b=j3ivJXiD9W5N6cX10fIrVfjWquU3eXv7ay+LBWeAYAO6N69BBdatrtzbZuXRg4+NPDPrKX
+ SK9wwqb9+FkwvHd3Hj0Y12ZluV3lX78JnIySck//5qcSNQX9FeIu72oFzVY3p6jV4CKT1y
+ zxjsVyLULHnS0Rl10HCHvIVheYGjBPE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725957744;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P5+u9zfmoImaQweUAuS5EZ1mu/FO5L0Q3uzFWwEeaug=;
+ b=odo1zV+xVzLhicmDGqLdJWSenT/vdPDrZ3AU5qePKlvqdBM6tgpcHNHVAW4Q9ragREv8Cb
+ C18cjoGtc7Hn9DBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725957744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P5+u9zfmoImaQweUAuS5EZ1mu/FO5L0Q3uzFWwEeaug=;
+ b=j3ivJXiD9W5N6cX10fIrVfjWquU3eXv7ay+LBWeAYAO6N69BBdatrtzbZuXRg4+NPDPrKX
+ SK9wwqb9+FkwvHd3Hj0Y12ZluV3lX78JnIySck//5qcSNQX9FeIu72oFzVY3p6jV4CKT1y
+ zxjsVyLULHnS0Rl10HCHvIVheYGjBPE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725957744;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P5+u9zfmoImaQweUAuS5EZ1mu/FO5L0Q3uzFWwEeaug=;
+ b=odo1zV+xVzLhicmDGqLdJWSenT/vdPDrZ3AU5qePKlvqdBM6tgpcHNHVAW4Q9ragREv8Cb
+ C18cjoGtc7Hn9DBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90C09132CB;
+ Tue, 10 Sep 2024 08:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id YGojInAG4GYDPwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 10 Sep 2024 08:42:24 +0000
+Date: Tue, 10 Sep 2024 10:41:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZuAGHuH9araamSrF@yuki.lan>
+References: <20240909-regen_shutup_lsp-v1-1-d65ad07b822f@suse.com>
+ <Zt8C3wF_zgpBtrxC@yuki.lan>
+ <126dde73-c309-4fa2-80dd-d3ae4373a23d@suse.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
-X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tmpdir: rename tst_tmpdir_mkpath to tst_tmpdir_genpath
+Content-Disposition: inline
+In-Reply-To: <126dde73-c309-4fa2-80dd-d3ae4373a23d@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
+ suse.com:email]
+Subject: Re: [LTP] [PATCH] Remove cleanup.c inclusion from syscalls
+ generation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,252 +111,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When I reviewed the rename15 patch I felt confused a while on
-function like tst_tmpdir_mkpath (reminds me of: mkdir).
+Hi!
+> > Can we remove the cleanup.c as well? It does not seem to be used
+> > anywhere after this change.
+> Do we want to touch old library? I actually don't mind since we are 
+> going to remove everything there anyway, one day.
 
-Because the name could be misleading since it suggests that a
-file or directory is being created, when in fact it is simply
-constructing a path inside a temporary directory without
-actually creating any files.
+I would remove any parts that are not used anymore. That way it's more
+clear how much old API mess we have to clean up.
 
-To make the function's purpose clearer, the name should reflect
-that it is only constructing or generating a path, not creating
-any files or directories.
+> >>   1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
+> >> index 97027e2f3..0dd3269bb 100755
+> >> --- a/include/lapi/syscalls/regen.sh
+> >> +++ b/include/lapi/syscalls/regen.sh
+> >> @@ -33,7 +33,6 @@ cat << EOF > "${output_pid}"
+> >>   #include <errno.h>
+> >>   #include <sys/syscall.h>
+> >>   #include <asm/unistd.h>
+> >> -#include "cleanup.c"
+> >>   
+> >>   #ifdef TST_TEST_H__
+> >>   #define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+> >> @@ -41,8 +40,11 @@ cat << EOF > "${output_pid}"
+> >>   		"syscall(%d) " SNR " not supported on your arch", NR); \\
+> >>   })
+> >>   #else
+> >> +static void dummy_cleanup(void) __attribute__ ((unused));
+> > I do not think that we need this part, the function is always used
+> > because it's passed to the tst_brkm().
+> I actually had some warnings and that is needed unfortunately.
 
-So I think either 'tst_tmpdir_genpath' or 'tst_tmpdir_buildpath'
-would be concise and clear options.
+Hmm, that is strange, the function is passed to the tst_brkm(). Maybe
+the compiler is smart enough to figure out that it's not used when the
+header is included and the tst_syscall() is not used.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- include/tst_tmpdir.h                                | 4 ++--
- lib/newlib_tests/tst_device.c                       | 2 +-
- lib/tst_tmpdir.c                                    | 2 +-
- testcases/kernel/syscalls/faccessat/faccessat01.c   | 2 +-
- testcases/kernel/syscalls/faccessat2/faccessat201.c | 2 +-
- testcases/kernel/syscalls/fchmodat/fchmodat01.c     | 2 +-
- testcases/kernel/syscalls/ioctl/ioctl_loop01.c      | 2 +-
- testcases/kernel/syscalls/ioctl/ioctl_loop02.c      | 4 ++--
- testcases/kernel/syscalls/ioctl/ioctl_loop05.c      | 2 +-
- testcases/kernel/syscalls/mount/mount06.c           | 8 ++++----
- testcases/kernel/syscalls/mount/mount07.c           | 6 +++---
- testcases/kernel/syscalls/pathconf/pathconf02.c     | 2 +-
- testcases/kernel/syscalls/readlinkat/readlinkat01.c | 2 +-
- testcases/kernel/syscalls/stat/stat04.c             | 4 ++--
- 14 files changed, 22 insertions(+), 22 deletions(-)
+The standard way how to define functions in header is 'static inline' so
+maybe drop this line and add inline to the function definition instead?
 
-diff --git a/include/tst_tmpdir.h b/include/tst_tmpdir.h
-index d25eeba02..85d708233 100644
---- a/include/tst_tmpdir.h
-+++ b/include/tst_tmpdir.h
-@@ -29,7 +29,7 @@ void tst_purge_dir(const char *path);
- char *tst_tmpdir_path(void);
- 
- /**
-- * tst_tmpdir_mkpath - Construct an absolute path pointing to a file inside tmpdir.
-+ * tst_tmpdir_genpath - Construct an absolute path pointing to a file inside tmpdir.
-  *
-  * Constructs a path inside tmpdir i.e. adds a prefix pointing to the current
-  * test tmpdir to the string build by the printf-like format.
-@@ -41,7 +41,7 @@ char *tst_tmpdir_path(void);
-  * of the test. If allocation fails the function calls tst_brk() and exits the
-  * test.
-  */
--char *tst_tmpdir_mkpath(const char *fmt, ...)
-+char *tst_tmpdir_genpath(const char *fmt, ...)
- 	__attribute__((format(printf, 1, 2)));
- 
- /*
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index ef69728f4..a450b284d 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -29,7 +29,7 @@ static void setup(void)
- {
- 	int fd;
- 
--	mntpoint = tst_tmpdir_mkpath("mnt");
-+	mntpoint = tst_tmpdir_genpath("mnt");
- 
- 	fd = SAFE_OPEN(tst_device->dev, O_RDONLY);
- 
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 5c63f7b3c..6ed2367b9 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -372,7 +372,7 @@ char *tst_tmpdir_path(void)
- 	return tmpdir;
- }
- 
--char *tst_tmpdir_mkpath(const char *fmt, ...)
-+char *tst_tmpdir_genpath(const char *fmt, ...)
- {
- 	size_t testdir_len, path_len;
- 	va_list va, vac;
-diff --git a/testcases/kernel/syscalls/faccessat/faccessat01.c b/testcases/kernel/syscalls/faccessat/faccessat01.c
-index d429cdd14..6be2b4bb7 100644
---- a/testcases/kernel/syscalls/faccessat/faccessat01.c
-+++ b/testcases/kernel/syscalls/faccessat/faccessat01.c
-@@ -55,7 +55,7 @@ static void verify_faccessat(unsigned int i)
- 
- static void setup(void)
- {
--	abs_path = tst_tmpdir_mkpath(FILEPATH);
-+	abs_path = tst_tmpdir_genpath(FILEPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0700);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/faccessat2/faccessat201.c b/testcases/kernel/syscalls/faccessat2/faccessat201.c
-index bbe441b51..1be6e9aa0 100644
---- a/testcases/kernel/syscalls/faccessat2/faccessat201.c
-+++ b/testcases/kernel/syscalls/faccessat2/faccessat201.c
-@@ -56,7 +56,7 @@ static void verify_faccessat2(unsigned int i)
- 
- static void setup(void)
- {
--	abs_path = tst_tmpdir_mkpath(RELPATH);
-+	abs_path = tst_tmpdir_genpath(RELPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0777);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-index 97ba31763..7ca65648f 100644
---- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-+++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-@@ -60,7 +60,7 @@ static void verify_fchmodat(unsigned int i)
- 
- static void setup(void)
- {
--	abs_path = tst_tmpdir_mkpath(FILEPATH);
-+	abs_path = tst_tmpdir_genpath(FILEPATH);
- 
- 	SAFE_MKDIR(TESTDIR, 0700);
- 	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index 2f0df3b27..e7b337e4a 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -126,7 +126,7 @@ static void setup(void)
- 	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
- 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
- 	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", dev_num, dev_num);
--	backing_file_path = tst_tmpdir_mkpath("test.img");
-+	backing_file_path = tst_tmpdir_genpath("test.img");
- 	sprintf(loop_partpath, "%sp1", dev_path);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- }
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-index fa193924a..dc983ac5f 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-@@ -121,8 +121,8 @@ static void setup(void)
- 	tst_fill_file("test2.img", 0, 2048, 20);
- 
- 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
--	backing_file_path = tst_tmpdir_mkpath("test.img");
--	backing_file_change_path = tst_tmpdir_mkpath("test1.img");
-+	backing_file_path = tst_tmpdir_genpath("test.img");
-+	backing_file_change_path = tst_tmpdir_genpath("test1.img");
- 	sprintf(loop_ro_path, "/sys/block/loop%d/ro", dev_num);
- 
- 	file_change_fd = SAFE_OPEN("test1.img", O_RDWR);
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index 6f19280cc..184462464 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -125,7 +125,7 @@ static void setup(void)
- 	 *   size of loop is bigger than the backing device's and the loop
- 	 *   needn't transform transfer.
- 	 */
--	backing_file_path = tst_tmpdir_mkpath("test.img");
-+	backing_file_path = tst_tmpdir_genpath("test.img");
- 	tst_find_backing_dev(backing_file_path, bd_path, sizeof(bd_path));
- 	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
- 	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
-diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
-index 8028dc5ec..05d6fdf86 100644
---- a/testcases/kernel/syscalls/mount/mount06.c
-+++ b/testcases/kernel/syscalls/mount/mount06.c
-@@ -43,10 +43,10 @@ static void setup(void)
- 	SAFE_MOUNT(tmppath, tmppath, "none", MS_BIND, NULL);
- 	SAFE_MOUNT("none", tmppath, "none", MS_PRIVATE, NULL);
- 
--	mntpoint_src = tst_tmpdir_mkpath(MNTPOINT_SRC);
--	mntpoint_dst = tst_tmpdir_mkpath(MNTPOINT_DST);
--	tstfiles_src = tst_tmpdir_mkpath("%s/testfile", MNTPOINT_SRC);
--	tstfiles_dst = tst_tmpdir_mkpath("%s/testfile", MNTPOINT_DST);
-+	mntpoint_src = tst_tmpdir_genpath(MNTPOINT_SRC);
-+	mntpoint_dst = tst_tmpdir_genpath(MNTPOINT_DST);
-+	tstfiles_src = tst_tmpdir_genpath("%s/testfile", MNTPOINT_SRC);
-+	tstfiles_dst = tst_tmpdir_genpath("%s/testfile", MNTPOINT_DST);
- 
- 	SAFE_MKDIR(mntpoint_dst, 0750);
- }
-diff --git a/testcases/kernel/syscalls/mount/mount07.c b/testcases/kernel/syscalls/mount/mount07.c
-index 495777067..8994d0f34 100644
---- a/testcases/kernel/syscalls/mount/mount07.c
-+++ b/testcases/kernel/syscalls/mount/mount07.c
-@@ -114,9 +114,9 @@ static void test_statfs(bool nosymfollow)
- 
- static void setup(void)
- {
--	test_file = tst_tmpdir_mkpath("%s/test_file", MNTPOINT);
--	link_file = tst_tmpdir_mkpath("%s/link_file", MNTPOINT);
--	temp_link_file = tst_tmpdir_mkpath("%s/temp_link_file", MNTPOINT);
-+	test_file = tst_tmpdir_genpath("%s/test_file", MNTPOINT);
-+	link_file = tst_tmpdir_genpath("%s/link_file", MNTPOINT);
-+	temp_link_file = tst_tmpdir_genpath("%s/temp_link_file", MNTPOINT);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/pathconf/pathconf02.c b/testcases/kernel/syscalls/pathconf/pathconf02.c
-index 42b97dc93..a7af980ec 100644
---- a/testcases/kernel/syscalls/pathconf/pathconf02.c
-+++ b/testcases/kernel/syscalls/pathconf/pathconf02.c
-@@ -70,7 +70,7 @@ static void setup(void)
- 
- 	SAFE_TOUCH("testfile", 0777, NULL);
- 
--	abs_path = tst_tmpdir_mkpath(FILEPATH);
-+	abs_path = tst_tmpdir_genpath(FILEPATH);
- 
- 	SAFE_CHMOD(tst_tmpdir_path(), 0);
- 
-diff --git a/testcases/kernel/syscalls/readlinkat/readlinkat01.c b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-index cd78ba134..9f238ff0a 100644
---- a/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-+++ b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-@@ -66,7 +66,7 @@ static void verify_readlinkat(unsigned int i)
- 
- static void setup(void)
- {
--	abspath = tst_tmpdir_mkpath(TEST_SYMLINK);
-+	abspath = tst_tmpdir_genpath(TEST_SYMLINK);
- 
- 	file_fd = SAFE_OPEN(TEST_FILE, O_CREAT, 0600);
- 	SAFE_SYMLINK(TEST_FILE, TEST_SYMLINK);
-diff --git a/testcases/kernel/syscalls/stat/stat04.c b/testcases/kernel/syscalls/stat/stat04.c
-index 04ddcd2d1..05ace606a 100644
---- a/testcases/kernel/syscalls/stat/stat04.c
-+++ b/testcases/kernel/syscalls/stat/stat04.c
-@@ -49,8 +49,8 @@ static void setup(void)
- 	int pagesize;
- 	int fd;
- 
--	file_path = tst_tmpdir_mkpath(FILENAME);
--	symb_path = tst_tmpdir_mkpath(SYMBNAME);
-+	file_path = tst_tmpdir_genpath(FILENAME);
-+	symb_path = tst_tmpdir_genpath(SYMBNAME);
- 
- 	/* change st_blksize / st_dev */
- 	SAFE_STAT(".", &sb);
+> >> +static void dummy_cleanup(void) {}
+> >> +
+> >>   #define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+> >> -	tst_brkm(TCONF, CLEANUP, \\
+> >> +	tst_brkm(TCONF, dummy_cleanup, \\
+> >>   		"syscall(%d) " SNR " not supported on your arch", NR); \\
+> >>   })
+> >>   #endif
+> >>
+> >> ---
+> >> base-commit: d3f1f93eda69905932bde4f66b44d72f9211909a
+> >> change-id: 20240909-regen_shutup_lsp-a35606a887b6
+> >>
+> >> Best regards,
+> >> -- 
+> >> Andrea Cervesato <andrea.cervesato@suse.com>
+> >>
+> >>
+> >> -- 
+> >> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Andrea
+
 -- 
-2.46.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
