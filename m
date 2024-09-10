@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F53AECE564
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 09:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDAE9ECE564
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 10:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725962395; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1725962940; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=KevVFG1HIxCfOdTcsfGvgndx4VJ7dohRfiVqmdXzkM4=;
- b=ecSvi6zN2+gS9QXKWlxF0xPUcU/x/6SG/Eg6ni3cQTjC9utg1HXsYUtYemramlcy5MNJc
- Pw/cIFexBmY6ocV2hLP6EUygMbNlnMjduhhYKF/UM9x5YViIt97yfku6M2zUh74OtXjF01T
- vkwIlZGnL/3oC8Vkbf+K3ybyiPeHbQU=
+ bh=OsPcrTgLN4wnfCFcX1Etw+Vz8zhbAeLAo6C6aV1SyYE=;
+ b=gd0A9F8Rpe85UhsoYDkJOM6R5+wrUP8WHJh7DSy+uEcZXi/ozUf2+PEX3EeRAyu5TP0zO
+ 8MCmI5+e3BA4ME0OiMLgHe8mB2c4+YpDQyd7/VyornJ+WPeW8s2unUDk8jblmQ9U1KQLXno
+ 5JxDHIw8XPBgaj9SlNbcHlt4YbevXLw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 613A23C1AC4
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 11:59:55 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7EB693C1A87
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 12:09:00 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C88143C020C
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 11:59:34 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
- helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id 0D6943C020C
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:08:38 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
+ helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E7B661A00445
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 11:59:33 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F23EC6008BD
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:08:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1725962374; x=1757498374;
+ t=1725962917; x=1757498917;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=nZr6IcmoXDbAi3Bgeg9MkX2JX9icHPDayapotPEjWUQ=;
- b=JMPfrCSyT1onpqvEYdJ/dzyq7WvixRiKJALc1Z3WCCpFzqlOeanyX1w2
- IHuK3XmA3BjhV0Hs1y48OMZNeQNUSgsXpHuRK2rQ6wwXxwxmiIaFDHrXZ
- XEYjdY1wVSdsU2VAK7VD14L6r18P3DLhheglbtisSLwkfDZYQBltGEB+R
- Ykj+hQX0ngKj0bK/wJuxhJiouSpW8Q1TpV6ZXztj3aj9gawKObcaDNX4A
- irKJNjUBbdwU1YZY6LHzTxiqlzXeeaMBkkJsDeHRU+DeEgcsUjIGT9EC7
- 94871fI40GbrzzPNtWWwKeXHbGq74DHFHQYyU0ikCrlAicHkKdIUgdpvu Q==;
-X-CSE-ConnectionGUID: LhHgRRiLQJqm3i3VQwUeEQ==
-X-CSE-MsgGUID: kdT3N080T4K63D1xnIugaA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="160632055"
-X-IronPort-AV: E=Sophos;i="6.10,216,1719846000"; d="scan'208";a="160632055"
+ bh=8LaHET/DrxwPOnqauJ7EDedJpcQ69Zjd4Ulkr5Gvlb8=;
+ b=s/PY8pUY3JGoTwFPDRDCxzIYe08773RM67YJW2luv6N+rDm/LNpiIG2e
+ LHwufH9MsokGRV/tTQqpRR7XItlJM/cmaA19pDNWmt1DWpldN7KBtVr1h
+ 0mk467eGm1l/BI8IK5Z8AhPg3OiJLAvH2zdxoApvC/eJHpy0h7NsPxt2n
+ hSOhEAtgP98SDZHei+TcH/Nknu+s/EIq7C/KHpyzH/d2LQbf4EDbxvjuG
+ JdS9PMn0eXRvYLjidcITMe/nNSWegOF8ApyipsYdBdOpgjny/ZHMuxqkp
+ F3c+Ol0CKSxyRwYIDX+sH+mVl9VqYJN9u6uPS/Pa2qwvmW8GPopBs8Rr1 Q==;
+X-CSE-ConnectionGUID: OnxINav+QdGVt1SI4pfIXA==
+X-CSE-MsgGUID: iz89ZhQfT3af+SZ9+/FqtA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="161250989"
+X-IronPort-AV: E=Sophos;i="6.10,216,1719846000"; d="scan'208";a="161250989"
 Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2024 18:59:31 +0900
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Sep 2024 19:08:34 +0900
 Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
  [192.168.83.66])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 43FE5E4458
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 18:59:29 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 961271034D
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 18:59:28 +0900 (JST)
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id D22C4D4F55
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:32 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 263C31027D
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:32 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2CF58200894AA
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 18:59:28 +0900 (JST)
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id B8A8D41055
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:31 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 9AFFF1A000B;
- Tue, 10 Sep 2024 17:59:27 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 36C9C1A000B;
+ Tue, 10 Sep 2024 18:08:31 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Tue, 10 Sep 2024 18:01:30 +0800
-Message-ID: <20240910100130.58203-1-maxj.fnst@fujitsu.com>
+Date: Tue, 10 Sep 2024 18:10:23 +0800
+Message-ID: <20240910101023.58695-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28654.006
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28654.006
-X-TMASE-Result: 10--8.025900-10.000000
-X-TMASE-MatchedRID: FMY5IFaWNFChhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmOEENgsUAuYuCY
- OCAduFDo//37E7X3yIKAMuqetGVetiVvu9chHp+mavP8b9lJtWr6C0ePs7A07fyjtizU0rhjLxN
- AYitCzIiG5APT5aJhQEzp5zO+QE50kmc3FbMeGPE=
+X-TMASE-Result: 10--8.657500-10.000000
+X-TMASE-MatchedRID: QlNdUeMfyo6hhjsqgSuNbxF4zyLyne+ATJDl9FKHbrkWxRFlzVAvGhpl
+ bnRIZ6aEtfzRNo3PTRhMQ8GITGODLdzZGrP764sOoCqoO2BspQh9LQinZ4QefCP/VFuTOXUT3n8
+ eBZjGmUzkwjHXXC/4I+JGF26G8SWypfzLa08EuFCcU3N3e4qcwVvpp9cc5yEEUhLuFJN83tfPHl
+ D3zdZS6Lc6cJ4uYUQo
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lremovexattr01: Convert docs to docparse
+Subject: [LTP] [PATCH] fchmod01: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,26 +106,28 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- testcases/kernel/syscalls/lremovexattr/lremovexattr01.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/fchmod/fchmod01.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-index 590f5a6f3..ec27bbbc7 100644
---- a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-+++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-@@ -4,10 +4,9 @@
-  * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-  */
- 
--/*
-- * Test Name: lremovexattr01
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod01.c b/testcases/kernel/syscalls/fchmod/fchmod01.c
+index 05b566791..417ea0a70 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod01.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod01.c
+@@ -2,9 +2,12 @@
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  * Author: Wayne Boyer and William Roske
++ */
++
 +/*\
 + * [Description]
   *
-- * Description:
-  * lremovexattr(2) removes the extended attribute identified by a name and
-  * associated with a given path in the filesystem. Unlike removexattr(2),
-  * lremovexattr(2) removes the attribute from the symbolic link only, and not
+- * Test Description:
+- * fchmod() will succeed to change the mode permissions of a file specified
++ * Verify that fchmod() can succeed to change the mode permissions of a file specified
+  * by file descriptor.
+  */
+ 
 -- 
 2.42.0
 
