@@ -4,88 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDAE9ECE564
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 10:09:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1725962940; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=OsPcrTgLN4wnfCFcX1Etw+Vz8zhbAeLAo6C6aV1SyYE=;
- b=gd0A9F8Rpe85UhsoYDkJOM6R5+wrUP8WHJh7DSy+uEcZXi/ozUf2+PEX3EeRAyu5TP0zO
- 8MCmI5+e3BA4ME0OiMLgHe8mB2c4+YpDQyd7/VyornJ+WPeW8s2unUDk8jblmQ9U1KQLXno
- 5JxDHIw8XPBgaj9SlNbcHlt4YbevXLw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 722FEECE564
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 10:13:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EB693C1A87
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 12:09:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E06A13C1A84
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 12:13:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D6943C020C
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:08:38 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
- helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
- [139.138.61.253])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 334C13C0E9B
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:13:01 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F23EC6008BD
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:08:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1725962917; x=1757498917;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=8LaHET/DrxwPOnqauJ7EDedJpcQ69Zjd4Ulkr5Gvlb8=;
- b=s/PY8pUY3JGoTwFPDRDCxzIYe08773RM67YJW2luv6N+rDm/LNpiIG2e
- LHwufH9MsokGRV/tTQqpRR7XItlJM/cmaA19pDNWmt1DWpldN7KBtVr1h
- 0mk467eGm1l/BI8IK5Z8AhPg3OiJLAvH2zdxoApvC/eJHpy0h7NsPxt2n
- hSOhEAtgP98SDZHei+TcH/Nknu+s/EIq7C/KHpyzH/d2LQbf4EDbxvjuG
- JdS9PMn0eXRvYLjidcITMe/nNSWegOF8ApyipsYdBdOpgjny/ZHMuxqkp
- F3c+Ol0CKSxyRwYIDX+sH+mVl9VqYJN9u6uPS/Pa2qwvmW8GPopBs8Rr1 Q==;
-X-CSE-ConnectionGUID: OnxINav+QdGVt1SI4pfIXA==
-X-CSE-MsgGUID: iz89ZhQfT3af+SZ9+/FqtA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="161250989"
-X-IronPort-AV: E=Sophos;i="6.10,216,1719846000"; d="scan'208";a="161250989"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2024 19:08:34 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
- [192.168.83.66])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id D22C4D4F55
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:32 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 263C31027D
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:32 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id B8A8D41055
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 19:08:31 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 36C9C1A000B;
- Tue, 10 Sep 2024 18:08:31 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Tue, 10 Sep 2024 18:10:23 +0800
-Message-ID: <20240910101023.58695-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.42.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 854B760298F
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 12:13:00 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 71CF01F7CF;
+ Tue, 10 Sep 2024 10:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725963179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oY7KahOMWSZGJC4j+88a+UF3cECqaO31R+0rT8y/83s=;
+ b=e2m4mUgJo3FWTWvlFUSMkcj4Xm6MjoxjSteyFU6NzKXzSC5Pjy9ISF7nhejNJ2uZtPj9bq
+ aDfi5S8DusTJlt112Q0T5uj/G4jGf3ovVs2GpaCM3CY0zSegYU88BbvGXudQ4CC7Aw85FW
+ tmh8Anxf4ZhzMNPaG0gSzfAnpo74v/g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725963179;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oY7KahOMWSZGJC4j+88a+UF3cECqaO31R+0rT8y/83s=;
+ b=9Geup2+0pGsUnNQSvjcay1sUPdujGZ+mBBbsYc/aos6uhSX2RbBHS4Y0JC/2T3urlbOmFz
+ JuN9/E8cH/wiRFDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1725963179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oY7KahOMWSZGJC4j+88a+UF3cECqaO31R+0rT8y/83s=;
+ b=e2m4mUgJo3FWTWvlFUSMkcj4Xm6MjoxjSteyFU6NzKXzSC5Pjy9ISF7nhejNJ2uZtPj9bq
+ aDfi5S8DusTJlt112Q0T5uj/G4jGf3ovVs2GpaCM3CY0zSegYU88BbvGXudQ4CC7Aw85FW
+ tmh8Anxf4ZhzMNPaG0gSzfAnpo74v/g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1725963179;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oY7KahOMWSZGJC4j+88a+UF3cECqaO31R+0rT8y/83s=;
+ b=9Geup2+0pGsUnNQSvjcay1sUPdujGZ+mBBbsYc/aos6uhSX2RbBHS4Y0JC/2T3urlbOmFz
+ JuN9/E8cH/wiRFDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F103132CB;
+ Tue, 10 Sep 2024 10:12:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id m7s0Fqsb4Ga0WwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 10 Sep 2024 10:12:59 +0000
+Date: Tue, 10 Sep 2024 12:11:53 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Message-ID: <ZuAbaUHY8ZPjN5ey@yuki.lan>
+References: <20240910094755.57438-1-maxj.fnst@fujitsu.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28654.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28654.006
-X-TMASE-Result: 10--8.657500-10.000000
-X-TMASE-MatchedRID: QlNdUeMfyo6hhjsqgSuNbxF4zyLyne+ATJDl9FKHbrkWxRFlzVAvGhpl
- bnRIZ6aEtfzRNo3PTRhMQ8GITGODLdzZGrP764sOoCqoO2BspQh9LQinZ4QefCP/VFuTOXUT3n8
- eBZjGmUzkwjHXXC/4I+JGF26G8SWypfzLa08EuFCcU3N3e4qcwVvpp9cc5yEEUhLuFJN83tfPHl
- D3zdZS6Lc6cJ4uYUQo
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+Content-Disposition: inline
+In-Reply-To: <20240910094755.57438-1-maxj.fnst@fujitsu.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fchmod01: Convert docs to docparse
+Subject: Re: [LTP] [PATCH] posix/conformance/interfaces/sem_timedwait/2-1:
+ add _GNU_SOURCE define
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,40 +112,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/fchmod/fchmod01.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod01.c b/testcases/kernel/syscalls/fchmod/fchmod01.c
-index 05b566791..417ea0a70 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod01.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod01.c
-@@ -2,9 +2,12 @@
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  * Author: Wayne Boyer and William Roske
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * Test Description:
-- * fchmod() will succeed to change the mode permissions of a file specified
-+ * Verify that fchmod() can succeed to change the mode permissions of a file specified
-  * by file descriptor.
-  */
- 
--- 
-2.42.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkhCj4gVG8gZ2V0IHJpZCBvZiBlcnJvciAi4oCYTUFQX0FOT05ZTU9VU+KAmSB1bmRlY2xhcmVk
+IChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikiCj4gb24gc29tZSBzeXN0ZW1zIChGZWRvcmEg
+MzcsIGV0YykuCgpUaGF0IGRvZXMgbm90IHNvdW5kIHJpZ2h0LCB0aGUgb3BlbiBwb3NpeCB0ZXN0
+c3VpdGUgbXVzdCBub3QgZGVwZW5kIG9uCmFueXRoaW5nIEdOVSBzcGVjaWZpYy4KCkFsc28gTUFQ
+X0FOT05ZTU9VUyBpcyByZXF1aWVyZWQgdG8gYmUgdGhlcmUgYnkgUE9TSVggc28gc2V0dGluZwpf
+R05VX1NPVVJDRSBkb2VzIG5vdCBzZWVtIHRvIGJlIGEgZ29vZCBzb2x1dGlvbi4KCj4gU2lnbmVk
+LW9mZi1ieTogTWEgWGluamlhbiA8bWF4ai5mbnN0QGZ1aml0c3UuY29tPgo+IC0tLQo+ICAuLi4v
+Y29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fdGltZWR3YWl0LzItMS5jICAgICAgICAgICAgICAg
+ICAgIHwgMSArCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+IAo+IGRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9zZW1fdGltZWR3YWl0LzItMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2Nv
+bmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX3RpbWVkd2FpdC8yLTEuYwo+IGluZGV4IDJlY2E4ZGZm
+Ni4uNGNjZWY3MjYxIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0
+ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NlbV90aW1lZHdhaXQvMi0xLmMKPiArKysgYi90ZXN0
+Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fdGlt
+ZWR3YWl0LzItMS5jCj4gQEAgLTExLDYgKzExLDcgQEAKPiAgICovCj4gIAo+ICAKPiArI2RlZmlu
+ZSBfR05VX1NPVVJDRQo+ICAjaW5jbHVkZSA8c3RkaW8uaD4KPiAgI2luY2x1ZGUgPGVycm5vLmg+
+Cj4gICNpbmNsdWRlIDx1bmlzdGQuaD4KPiAtLSAKPiAyLjQyLjAKPiAKPiAKPiAtLSAKPiBNYWls
+aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKCi0tIApD
+eXJpbCBIcnViaXMKY2hydWJpc0BzdXNlLmN6CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBz
+Oi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
