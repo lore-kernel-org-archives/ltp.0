@@ -4,88 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF9BBEDE994
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 02:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4508FECE58B
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 06:31:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D5333C1948
-	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 04:55:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 43EAF3C1A1E
+	for <ltp@archiver.kernel.org>; Tue, 10 Sep 2024 08:31:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 44E653C02D1
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 04:54:48 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=sachinpb@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B4CC93C0F5F
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 08:30:52 +0200 (CEST)
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com
+ [IPv6:2607:f8b0:4864:20::a31])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A284B600716
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 04:54:47 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48A2VLiT015997;
- Tue, 10 Sep 2024 02:54:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
- :to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=pp1; bh=YMVLzFfT+Svn1TwW/CYmxvES1b
- IghU27XReQtTm0dx0=; b=CC40jAjDWG99x6G/N5wNJfNBH0/japc+iAOoQjKbFb
- hMDnYrI1Ip8Zw6FqwlbHz4xW9gfVPkSwK2GhvwCq7wCKhP/0MBi1yQeQzUsUgGwO
- Bq49RWLYS96fTDLde0Tj1INH9nxkrhiUhk0ZbX18aveoVP8JZaQSWgeq6u5rj0nd
- VK4/NPFx2VHGW85a/G/+FRY2z3cDaaeyFr3Y8anLTebKRK97G3iuJFazJcbL1R2z
- whxE3pWx1kDyXpw30xvScK88j7/TO0VX/K3/vmCXXWBTlIpNQWxdzDO+VraZvs+o
- WPQZ5HI7Prbwe1zU45W61kpgBRExF+oFh/I0y7ULJ8Ew==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gefycyqc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 10 Sep 2024 02:54:45 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 489MPrlP003123;
- Tue, 10 Sep 2024 02:54:44 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 41h15tsj39-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 10 Sep 2024 02:54:44 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 48A2sfk853149984
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 10 Sep 2024 02:54:41 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3E4FA20043;
- Tue, 10 Sep 2024 02:54:41 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8D60A20040;
- Tue, 10 Sep 2024 02:54:40 +0000 (GMT)
-Received: from ltcden9-lp1.aus.stglabs.ibm.com (unknown [9.53.174.130])
- by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 10 Sep 2024 02:54:40 +0000 (GMT)
-From: Sachin P Bappalige <sachinpb@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue, 10 Sep 2024 08:24:24 +0530
-Message-ID: <20240910025424.128169-1-sachinpb@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 93ACF2005FB
+ for <ltp@lists.linux.it>; Tue, 10 Sep 2024 08:30:50 +0200 (CEST)
+Received: by mail-vk1-xa31.google.com with SMTP id
+ 71dfb90a1353d-501204753c4so2542343e0c.0
+ for <ltp@lists.linux.it>; Mon, 09 Sep 2024 23:30:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1725949849; x=1726554649; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=D29wqIU/MqdK42Hyv0CohOkSOr39XuSIDBy4dPZxDgM=;
+ b=CUumbxfzJMadsWd0d5R9ac6EZ0/yA5/8hCYSWBvmQCoEv/qw7APP6wvQbliM2bH837
+ hbJmy4pRXDNPGiiPLEQg/bekrVfcY/iSKRFnMkGo/nspPsFjuMt6/fIkf0HguE3evqTw
+ //Q8lFUQU0JRCDwoIS8fTlLUrS7/s8bb3yj19Ko8/jCRQmAQXo90D7OXGIMR1h8b0mv3
+ U5SV93cEklMcYX+EoznIgRpYU+G4LyruPLb06NDuMYHMZ/5hhEwjEdOx/L3Q/UciB058
+ agu9jejk4JCY6bgTzGwAZu4ZcmcQm9jOoG2Q+Rca2y8PR7Fr8ofoFUfoqI3KeF+CSagJ
+ FEfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1725949849; x=1726554649;
+ h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=D29wqIU/MqdK42Hyv0CohOkSOr39XuSIDBy4dPZxDgM=;
+ b=mBmygty4RGH69XG9LB0NsdE7f6Ed44EpTA5vW/gwmcYGHOjFRO6S8QGLYtuI3g8CUu
+ 73qc3vmDcCBX1QSOk2WIpZ+aughjM05+q2DMQ7ZAQNgEXOGxF54PmIq0hpaoEN6bJ9q8
+ ynrMWAt4OC8GRD+T2AnLsIfmlucPn/cqCU3nl6ML8GfK9eT3QLl8xsw9UDKthYDfY67l
+ 4+csjoReQEA2Llq5BMH/s6LA79VX87Iozru3nAN54IHEE9H6ilZICLhK3oQUUg6vTIRh
+ fQ8Gs7cUPUdTQofinOkr8LtfKN1i+5Nw4wWkgr4wVQxhx73rINGtHJGnFLUiI2MnNJWR
+ uo9w==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXjIEuew+3/ZZE7nrebNuf2SwfksPcwuQHu/ojsr/QnzgLK93iIB/YnulAIVXqqAdL4CMo=@lists.linux.it
+X-Gm-Message-State: AOJu0YwbwsImnQWfIEuGln8f4YV9K7TrnJAVTStKu/OJ6zErwnGdLih9
+ Wha7aJQ1dG/kncwS2OyH3Ul6f1zGTU+Rz9KUYj2+296Zwm8ksVt/sM8WOJYQAalRycftnrx1QPR
+ RWYl0a/yRq7J4WCOKYe9IKDNZPGvmZTzCsCVZHQ==
+X-Google-Smtp-Source: AGHT+IHcoWPZAPvlRorBhaWeYrWRcW8qT1wMakYMB+0xfz8JrsHlT0IMluZivW9XBmwtLaDIWY+MTbQx0inPfUk4M6c=
+X-Received: by 2002:a05:6122:31a6:b0:501:1aec:d2c4 with SMTP id
+ 71dfb90a1353d-502f72e194amr1582561e0c.2.1725949849112; Mon, 09 Sep 2024
+ 23:30:49 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RTCDTctpv1msdqybMJjhHNuXd0pDSCeD
-X-Proofpoint-ORIG-GUID: RTCDTctpv1msdqybMJjhHNuXd0pDSCeD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-09_12,2024-09-09_02,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- adultscore=0 clxscore=1011 spamscore=0 bulkscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2409100018
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 10 Sep 2024 12:00:37 +0530
+Message-ID: <CA+G9fYvarKEPN3u1Ogw2pcw4h6r3OMzg+5qJpYkAXRunAEF_0Q@mail.gmail.com>
+To: Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+ open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+ lkft-triage@lists.linaro.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] Migrating the libhugetlbfs/testcases/shm-gettest.c
- test
+Subject: [LTP] next-20240905: WARNING: at arch/arm64/include/asm/pkeys.h:40
+ do_mmap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,138 +79,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sachinpb@linux.ibm.com
+Cc: Aishwarya TCV <aishwarya.tcv@arm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, joey.gouly@arm.com,
+ Will Deacon <will@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test Description: This testcase creates shared memory segments
-backed by hugepages, writes  specific patterns to each segment,
-verifies pattern and detaches a shared memory segments in a loop.
+The following kernel warning noticed while running the LTP test case
+LTP syscalls mlock03 ( mmap03 ) on
+  - Arm DUT Juno-r2
+  - Qcomm DUT Dragonboard-410c
 
-This looping test was added to verify the functionality of
-large page backed shared memory segments. A segment is created,
-written, verified, and detached a specified number of times.
+running Linux next-20240905, next-20240906 and next-20240909 kernel.
 
--Updated 'kernel/mem/.gitignore'
--Updated 'runtest/hugetlb' for number of iterations with -i 10
+First seen on next-20240905
+  Good: next-20240904
+  BAD:  next-20240905..next-20240909
 
-Signed-off-by: Sachin P Bappalige <sachinpb@linux.ibm.com>
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget06.c     | 77 +++++++++++++++++++
- 3 files changed, 79 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 299c07ac9..f294e9aaa 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -55,3 +55,4 @@ hugeshmget01 hugeshmget01 -i 10
- hugeshmget02 hugeshmget02 -i 10
- hugeshmget03 hugeshmget03 -i 10
- hugeshmget05 hugeshmget05 -i 10
-+hugeshmget06 hugeshmget06 -i 10
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index c96fe8bfc..d88484fa1 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -47,6 +47,7 @@
- /hugetlb/hugeshmget/hugeshmget02
- /hugetlb/hugeshmget/hugeshmget03
- /hugetlb/hugeshmget/hugeshmget05
-+/hugetlb/hugeshmget/hugeshmget06
- /ksm/ksm01
- /ksm/ksm02
- /ksm/ksm03
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
-new file mode 100644
-index 000000000..15e0aba99
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget06.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2005-2006, IBM Corporation.
-+ * Author: David Gibson & Adam Litke
-+ */
-+
-+/*\
-+ * [Description]
-+ * This testcase creates shared memory segments backed by hugepages,
-+ * writes specific patterns to each segment, verifies pattern,
-+ * and detaches a shared memory segments in a loop.
-+ * It ensures that the hugepage backed shared memory functionalities
-+ * works correctly by validating the data written to segment.
-+ */
-+
-+#include "hugetlb.h"
-+#include "tst_safe_sysv_ipc.h"
-+
-+#define MNTPOINT "hugetlbfs/"
-+#define NR_HUGEPAGES 4
-+
-+static long hpage_size;
-+static int shmid = -1;
-+
-+static void run_test(void)
-+{
-+	size_t i, j;
-+	char pattern;
-+	char *shmaddr;
-+
-+	shmaddr = SAFE_SHMAT(shmid, 0, SHM_RND);
-+	tst_res(TINFO, "shmaddr: %p", shmaddr);
-+
-+	for (i = 0; i < NR_HUGEPAGES; i++) {
-+		pattern = 65 + (i % 26);
-+		tst_res(TINFO, "Touching %p with %c",
-+		shmaddr + (i * hpage_size), pattern);
-+		memset(shmaddr + (i * hpage_size), pattern, hpage_size);
-+	}
-+
-+	for (i = 0; i < NR_HUGEPAGES; i++) {
-+		pattern = 65 + (i % 26);
-+		tst_res(TINFO, "Verifying %p", (shmaddr + (i * hpage_size)));
-+		for (j = 0; j < (size_t)hpage_size; j++)
-+			if (*(shmaddr + (i * hpage_size) + j) != pattern) {
-+				tst_res(TFAIL, "Got wrong byte 0x%02x expected 0x%02x",
-+						*(shmaddr + (i * hpage_size) + j),
-+						pattern);
-+				return;
-+			}
-+	}
-+	SAFE_SHMDT((const void *)shmaddr);
-+	tst_res(TPASS, "shm hugepages works correctly");
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = tst_get_hugepage_size();
-+	tst_res(TINFO, "hugepage size is %ld", hpage_size);
-+	shmid = SAFE_SHMGET(IPC_PRIVATE, NR_HUGEPAGES * hpage_size, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
-+	tst_res(TINFO, "shmid: 0x%x", shmid);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (shmid >= 0)
-+		SAFE_SHMCTL(shmid, IPC_RMID, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {NR_HUGEPAGES, TST_NEEDS},
-+};
--- 
-2.43.0
+Warning log:
+----------
+[    0.000000] Linux version 6.11.0-rc6-next-20240905
+(tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 13.3.0-5) 13.3.0, GNU
+ld (GNU Binutils for Debian) 2.43) #1 SMP PREEMPT @1725536306
+[    0.000000] KASLR disabled due to lack of seed
+[    0.000000] Machine model: ARM Juno development board (r2)
+..
+mlock03.c:58: TINFO: mlock [aaaaddae1000,aaaaddafd000]
+mlock03.c:62: TINFO: munlock [aaaaddae1000,aaaaddafd000]
+[  795.850426] ------------[ cut here ]------------
+[  795.857261] WARNING: CPU: 5 PID: 101577 at
+arch/arm64/include/asm/pkeys.h:40 do_mmap
+(arch/arm64/include/asm/pkeys.h:40 (discriminator 1) mm/mmap.c:338
+(discriminator 1))
+[  795.868833] Modules linked in: tun overlay btrfs blake2b_generic
+libcrc32c xor xor_neon raid6_pq zstd_compress panfrost tda998x
+onboard_usb_dev drm_shmem_helper hdlcd crct10dif_ce cec gpu_sched
+drm_dma_helper drm_kms_helper fuse drm backlight dm_mod ip_tables
+x_tables
+[  795.895379] CPU: 5 UID: 0 PID: 101577 Comm: mmap03 Not tainted
+6.11.0-rc6-next-20240905 #1
+[  795.906430] Hardware name: ARM Juno development board (r2) (DT)
+[  795.915135] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  795.924881] pc : do_mmap (arch/arm64/include/asm/pkeys.h:40
+(discriminator 1) mm/mmap.c:338 (discriminator 1))
+[  795.931236] lr : vm_mmap_pgoff (mm/util.c:588)
+[  795.938113] sp : ffff80008ba0bc90
+[  795.944206] x29: ffff80008ba0bc90 x28: 0000000000000001 x27: ffff0008329cf800
+[  795.954128] x26: ffff0008329cf800 x25: ffff000822140cc0 x24: 0000000000000000
+[  795.964050] x23: ffff80008ba0bd20 x22: 0000000000000004 x21: 0000000000000000
+[  795.973972] x20: 0000000000000001 x19: 0000000000001000 x18: 0000000000000000
+[  795.983895] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[  795.993817] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+[  796.003739] x11: 0000000000000000 x10: 0000000000000000 x9 : ffff80008032e2c4
+[  796.013661] x8 : ffff000827e64c00 x7 : ffff80008ba0bd20 x6 : 0000000000000000
+[  796.023583] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000004
+[  796.033505] x2 : 0000000000001000 x1 : 0000000000000011 x0 : 000000000000fffa
+[  796.043428] Call trace:
+[  796.048651] do_mmap (arch/arm64/include/asm/pkeys.h:40
+(discriminator 1) mm/mmap.c:338 (discriminator 1))
+[  796.054658] vm_mmap_pgoff (mm/util.c:588)
+[  796.061187] ksys_mmap_pgoff (mm/mmap.c:542)
+[  796.067980] __arm64_sys_mmap (arch/arm64/kernel/sys.c:21)
+[  796.074597] invoke_syscall (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/syscall.c:54)
+[  796.081213] el0_svc_common.constprop.0
+(include/linux/thread_info.h:127 (discriminator 2)
+arch/arm64/kernel/syscall.c:140 (discriminator 2))
+[  796.088699] do_el0_svc (arch/arm64/kernel/syscall.c:152)
+[  796.094879] el0_svc (arch/arm64/include/asm/irqflags.h:82
+(discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
+1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
+arch/arm64/kernel/entry-common.c:165 (discriminator 1)
+arch/arm64/kernel/entry-common.c:178 (discriminator 1)
+arch/arm64/kernel/entry-common.c:713 (discriminator 1))
+[  796.100799] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:731)
+[  796.108024] el0t_64_sync (arch/arm64/kernel/entry.S:598)
+[  796.114467] ---[ end trace 0000000000000000 ]---
 
+boot Log links,
+--------
+  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240905/testrun/25069344/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-archarmincludeasmpkeysh-do_mmap/log
+  - https://lkft.validation.linaro.org/scheduler/job/7842087#L21916
+  - https://lkft.validation.linaro.org/scheduler/job/7847924#L23191
+
+Test results history:
+----------
+  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240909/testrun/25081195/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-archarmincludeasmpkeysh-do_mmap/history/
+
+metadata:
+----
+  git describe: next-20240905
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git sha: ad40aff1edffeccc412cde93894196dca7bc739e
+  kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2leMFe4WompPEOUNN7ODxtTMCxf/config
+  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2leMFe4WompPEOUNN7ODxtTMCxf/
+  toolchain: gcc-13
+
+Steps to reproduce:
+---------
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2leMISlsoJqQdTCCzBmuVwKHq9m/reproducer
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2leMISlsoJqQdTCCzBmuVwKHq9m/tux_plan
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
