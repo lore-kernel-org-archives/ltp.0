@@ -4,45 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B96C5FA3733
-	for <ltp@archiver.kernel.org>; Fri, 13 Sep 2024 08:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AB36FA3733
+	for <ltp@archiver.kernel.org>; Fri, 13 Sep 2024 08:58:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37FD83C27B4
-	for <ltp@archiver.kernel.org>; Fri, 13 Sep 2024 10:57:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E132B3C2798
+	for <ltp@archiver.kernel.org>; Fri, 13 Sep 2024 10:58:05 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 248F43C00BE
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 11:49:54 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=arm.com
- (client-ip=217.140.110.172; helo=foss.arm.com;
- envelope-from=joey.gouly@arm.com; receiver=lists.linux.it)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 85C061000A00
- for <ltp@lists.linux.it>; Tue, 10 Sep 2024 11:49:53 +0200 (CEST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFB57113E;
- Tue, 10 Sep 2024 02:50:20 -0700 (PDT)
-Received: from e124191.cambridge.arm.com (e124191.cambridge.arm.com
- [10.1.197.45])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D6243F66E;
- Tue, 10 Sep 2024 02:49:50 -0700 (PDT)
-Date: Tue, 10 Sep 2024 10:49:45 +0100
-From: Joey Gouly <joey.gouly@arm.com>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Message-ID: <20240910094945.GA649558@e124191.cambridge.arm.com>
-References: <CA+G9fYvarKEPN3u1Ogw2pcw4h6r3OMzg+5qJpYkAXRunAEF_0Q@mail.gmail.com>
+ by picard.linux.it (Postfix) with ESMTPS id AD05A3C1AE3
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 12:31:46 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it; spf=none (no SPF record)
+ smtp.mailfrom=linux.vnet.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=spoorthy@linux.vnet.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 93F4920650E
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 12:31:45 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48B1Io2v025281
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ message-id:date:mime-version:to:from:subject:content-type
+ :content-transfer-encoding; s=pp1; bh=1gNE1MxUUcDGb1HjO8KAQR8yFp
+ quIHCzn9pHq72zOkA=; b=NuUZjcpUlvNQ6BptZNp+c0s7+MZjZwDnv6naAt1vpC
+ xvXowHEDh6H9Y5ojw9YiBuKC8X7UixpjwEz+cyCwMBPt6Xq3D8iQGsIbofa5pojT
+ eRPpSp+3xUMJDASOKIp3GEZB8PbuAsxPpnLSrbxvWlW91BUkWUv18fkb1I9WtQqo
+ q6lCxPjodYTpFfKVQRRVwijbgn5Dpe38cHqPhZ3Bx3cXgFt3ImaZ3XWutXQbiEBc
+ aUfpNYTojCRgJhO7Rfm5TXatBSNW/TcHCcy6oedMHTw4BwHDnH7YTz0Rc4YFqPkf
+ BCQfPxmrPWIdyH5cybA+/bbM8wcrdom+PAPchArdHNkw==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gejan1ab-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:42 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48B8BgDL027328
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:42 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 41h3v38fag-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:42 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 48BAVe8F31523446
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:40 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 45D2520049
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:40 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6A0F320040
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:39 +0000 (GMT)
+Received: from [9.200.59.47] (unknown [9.200.59.47])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:31:38 +0000 (GMT)
+Message-ID: <3ad957fb-f653-47b4-8a7e-73d44852f674@linux.vnet.ibm.com>
+Date: Wed, 11 Sep 2024 16:01:37 +0530
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvarKEPN3u1Ogw2pcw4h6r3OMzg+5qJpYkAXRunAEF_0Q@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: ltp@lists.linux.it
+From: spoorthy s <spoorthy@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: RW-f8LXWOU_UI0O1pQQVw9YBHV16DOeA
+X-Proofpoint-GUID: RW-f8LXWOU_UI0O1pQQVw9YBHV16DOeA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-10_12,2024-09-09_02,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
+ definitions=main-2409110072
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 13 Sep 2024 10:57:32 +0200
-Subject: Re: [LTP] next-20240905: WARNING: at
- arch/arm64/include/asm/pkeys.h:40 do_mmap
+Subject: [LTP] [PATCH v3] Hugetlb: Migrating libhugetlbfs shm-perms
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -54,128 +98,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
- Aishwarya TCV <aishwarya.tcv@arm.com>, Arnd Bergmann <arnd@arndb.de>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Will Deacon <will@kernel.org>, LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 10, 2024 at 12:00:37PM +0530, Naresh Kamboju wrote:
-> The following kernel warning noticed while running the LTP test case
-> LTP syscalls mlock03 ( mmap03 ) on
->   - Arm DUT Juno-r2
->   - Qcomm DUT Dragonboard-410c
-> 
-> running Linux next-20240905, next-20240906 and next-20240909 kernel.
-> 
-> First seen on next-20240905
->   Good: next-20240904
->   BAD:  next-20240905..next-20240909
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Warning log:
-> ----------
-> [    0.000000] Linux version 6.11.0-rc6-next-20240905
-> (tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 13.3.0-5) 13.3.0, GNU
-> ld (GNU Binutils for Debian) 2.43) #1 SMP PREEMPT @1725536306
-> [    0.000000] KASLR disabled due to lack of seed
-> [    0.000000] Machine model: ARM Juno development board (r2)
-> ..
-> mlock03.c:58: TINFO: mlock [aaaaddae1000,aaaaddafd000]
-> mlock03.c:62: TINFO: munlock [aaaaddae1000,aaaaddafd000]
-> [  795.850426] ------------[ cut here ]------------
-> [  795.857261] WARNING: CPU: 5 PID: 101577 at
-> arch/arm64/include/asm/pkeys.h:40 do_mmap
-> (arch/arm64/include/asm/pkeys.h:40 (discriminator 1) mm/mmap.c:338
-> (discriminator 1))
-> [  795.868833] Modules linked in: tun overlay btrfs blake2b_generic
-> libcrc32c xor xor_neon raid6_pq zstd_compress panfrost tda998x
-> onboard_usb_dev drm_shmem_helper hdlcd crct10dif_ce cec gpu_sched
-> drm_dma_helper drm_kms_helper fuse drm backlight dm_mod ip_tables
-> x_tables
-> [  795.895379] CPU: 5 UID: 0 PID: 101577 Comm: mmap03 Not tainted
-> 6.11.0-rc6-next-20240905 #1
-> [  795.906430] Hardware name: ARM Juno development board (r2) (DT)
-> [  795.915135] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [  795.924881] pc : do_mmap (arch/arm64/include/asm/pkeys.h:40
-> (discriminator 1) mm/mmap.c:338 (discriminator 1))
-> [  795.931236] lr : vm_mmap_pgoff (mm/util.c:588)
-> [  795.938113] sp : ffff80008ba0bc90
-> [  795.944206] x29: ffff80008ba0bc90 x28: 0000000000000001 x27: ffff0008329cf800
-> [  795.954128] x26: ffff0008329cf800 x25: ffff000822140cc0 x24: 0000000000000000
-> [  795.964050] x23: ffff80008ba0bd20 x22: 0000000000000004 x21: 0000000000000000
-> [  795.973972] x20: 0000000000000001 x19: 0000000000001000 x18: 0000000000000000
-> [  795.983895] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> [  795.993817] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-> [  796.003739] x11: 0000000000000000 x10: 0000000000000000 x9 : ffff80008032e2c4
-> [  796.013661] x8 : ffff000827e64c00 x7 : ffff80008ba0bd20 x6 : 0000000000000000
-> [  796.023583] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000004
-> [  796.033505] x2 : 0000000000001000 x1 : 0000000000000011 x0 : 000000000000fffa
-> [  796.043428] Call trace:
-> [  796.048651] do_mmap (arch/arm64/include/asm/pkeys.h:40
-> (discriminator 1) mm/mmap.c:338 (discriminator 1))
-> [  796.054658] vm_mmap_pgoff (mm/util.c:588)
-> [  796.061187] ksys_mmap_pgoff (mm/mmap.c:542)
-> [  796.067980] __arm64_sys_mmap (arch/arm64/kernel/sys.c:21)
-> [  796.074597] invoke_syscall (arch/arm64/include/asm/current.h:19
-> arch/arm64/kernel/syscall.c:54)
-> [  796.081213] el0_svc_common.constprop.0
-> (include/linux/thread_info.h:127 (discriminator 2)
-> arch/arm64/kernel/syscall.c:140 (discriminator 2))
-> [  796.088699] do_el0_svc (arch/arm64/kernel/syscall.c:152)
-> [  796.094879] el0_svc (arch/arm64/include/asm/irqflags.h:82
-> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:713 (discriminator 1))
-> [  796.100799] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:731)
-> [  796.108024] el0t_64_sync (arch/arm64/kernel/entry.S:598)
-> [  796.114467] ---[ end trace 0000000000000000 ]---
-
-I see what has gone wrong here, it's fortunately harmless. I will send a patch
-to fix it.
-
-Thanks,
-Joey
-
-> 
-> boot Log links,
-> --------
->   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240905/testrun/25069344/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-archarmincludeasmpkeysh-do_mmap/log
->   - https://lkft.validation.linaro.org/scheduler/job/7842087#L21916
->   - https://lkft.validation.linaro.org/scheduler/job/7847924#L23191
-> 
-> Test results history:
-> ----------
->   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240909/testrun/25081195/suite/log-parser-test/test/check-kernel-exception-warning-cpu-pid-at-archarmincludeasmpkeysh-do_mmap/history/
-> 
-> metadata:
-> ----
->   git describe: next-20240905
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git sha: ad40aff1edffeccc412cde93894196dca7bc739e
->   kernel config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2leMFe4WompPEOUNN7ODxtTMCxf/config
->   build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2leMFe4WompPEOUNN7ODxtTMCxf/
->   toolchain: gcc-13
-> 
-> Steps to reproduce:
-> ---------
-> - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2leMISlsoJqQdTCCzBmuVwKHq9m/reproducer
-> - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2leMISlsoJqQdTCCzBmuVwKHq9m/tux_plan
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+VGVzdCBEZXNjcmlwdGlvbjogVGVzdHMgdGhlIGJlaGF2aW9yIG9mIHNoYXJlZCBtZW1vcnkgd2hl
+bgogwqBtdWx0aXBsZSB0aHJlYWRzIGF0dGFjaCB0byBhIHNlZ21lbnQgd2l0aCBkaWZmZXJlbnQg
+cGVybWlzc2lvbnMuCgpBdCBvbmUgcG9pbnQsIHJlc2VydmF0aW9uIGFjY291bnRpbmcgb2YgZnJl
+ZSBodWdlcGFnZXMgYmV0d2VlbiB0aGUgcGFyZW50CmFuZCBjaGlsZCBwcm9jZXNzZXMgbWF5IGJl
+Y29tZSBpbmNvbnNpc3RlbnQgZHVyaW5nIG1lbW9yeSBvcGVyYXRpb25zLgpUaGUgcGFyZW50IGNy
+ZWF0ZXMgNCBodWdlcGFnZXMgYW5kIGEgc2hhcmVkIG1lbW9yeSBzZWdtZW50CihzaXplIHNlZ21l
+bnRfc2l6ZSwgcGVybWlzc2lvbiAwNjQwKSwgYXR0YWNoZXMgaXQsIGFuZCBpbml0aWFsaXplcwpm
+b3VyIHBhcnRzIHdpdGggYSBwYXR0ZXJuICgweDU1KSwgdGhlbiBkZXRhY2hlcyBpdC4gQ2hpbGQg
+cHJvY2Vzc2VzCmFyZSBjcmVhdGVkIGluIGEgbG9vcCwgZWFjaCByZWF0dGFjaGluZyB0aGUgc2Vn
+bWVudCBpbiByZWFkLW9ubHkgbW9kZQp3aXRoIFNITV9SRE9OTFksIGRldGFjaGluZywgYW5kIGV4
+aXRpbmcuIElmIGF0dGFjaC9kZXRhY2ggZmFpbHMgb3IKaWYgdGhlIHJlc2VydmF0aW9uIGFjY291
+bnRpbmcgb2YgZnJlZSBodWdlcGFnZXMgZG9lc24ndCBtYXRjaApiZXR3ZWVuIHBhcmVudCBhbmQg
+Y2hpbGQsIHRoZSB0ZXN0IGZhaWxzLiBJZiBhbGwgY2hpbGQgcHJvY2Vzc2VzIGV4aXQKc3VjY2Vz
+c2Z1bGx5IGFuZCBhY2NvdW50aW5nIG1hdGNoZXMsIHRoZSB0ZXN0IHBhc3Nlcy4KClRlc3RlZCBh
+bmQgdmVyaWZpZWQgdGhlIHN1Y2Nlc3Mgb2YgdGVzdCBjYXNlCgpTaWduZWQtb2ZmLWJ5OiBTcG9v
+cnRoeSA8c3Bvb3J0aHlAbGludXguaWJtLmNvbT4KLS0tLS0tLQpDaGFuZ2VzIGluIHYyOgoxKU1h
+a2UgY2hlY2sgZXJyb3JzIGFyZSB0YWtlbiBjYXJlCjIpc2VnbWVudF9zaXplIGlzIG5vdCBzdGF0
+aWMKMylBZGRlZCBjaGVjayB0byBjb21wYXJlIHRoZSBmcmVlIGh1Z2VwYWdlIG1lbW9yeQotLS0t
+LS0tCkNoYW5nZXMgaW4gdjM6CjEpUmVtb3ZlIHJlZHVuZGFudCB2YXJpYWJsZXMgYW5kIGNvbmRp
+dGlvbmFsIGNoZWNrcwoyKUNvc21ldGljIGNoYW5nZXMgdG8gRGVzY3JpcHRpb24KLS0tLS0tLQog
+wqBydW50ZXN0L2h1Z2V0bGLCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDEgKwogwqB0ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0
+aWdub3JlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMSArCiDCoC4uLi9tZW0vaHVn
+ZXRsYi9odWdlc2htYXQvaHVnZXNobWF0MDYuY8KgwqDCoMKgwqDCoCB8IDk3ICsrKysrKysrKysr
+KysrKysrKysKIMKgMyBmaWxlcyBjaGFuZ2VkLCA5OSBpbnNlcnRpb25zKCspCiDCoGNyZWF0ZSBt
+b2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1hdC9odWdlc2ht
+YXQwNi5jCgpkaWZmIC0tZ2l0IGEvcnVudGVzdC9odWdldGxiIGIvcnVudGVzdC9odWdldGxiCmlu
+ZGV4IDI5OWMwN2FjOS4uMjQwNzAxYjJiIDEwMDY0NAotLS0gYS9ydW50ZXN0L2h1Z2V0bGIKKysr
+IGIvcnVudGVzdC9odWdldGxiCkBAIC00NCw2ICs0NCw3IEBAIGh1Z2VzaG1hdDAyIGh1Z2VzaG1h
+dDAyIC1pIDUKIMKgaHVnZXNobWF0MDMgaHVnZXNobWF0MDMgLWkgNQogwqBodWdlc2htYXQwNCBo
+dWdlc2htYXQwNCAtaSA1CiDCoGh1Z2VzaG1hdDA1IGh1Z2VzaG1hdDA1IC1pIDUKK2h1Z2VzaG1h
+dDA2IGh1Z2VzaG1hdDA2CgogwqBodWdlc2htY3RsMDEgaHVnZXNobWN0bDAxIC1pIDUKIMKgaHVn
+ZXNobWN0bDAyIGh1Z2VzaG1jdGwwMiAtaSA1CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
+L21lbS8uZ2l0aWdub3JlIApiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtLy5naXRpZ25vcmUKaW5kZXgg
+Yzk2ZmU4YmZjLi40YWQxZGMzMTMgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtLy5n
+aXRpZ25vcmUKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vLmdpdGlnbm9yZQpAQCAtMzksNiAr
+MzksNyBAQAogwqAvaHVnZXRsYi9odWdlc2htYXQvaHVnZXNobWF0MDMKIMKgL2h1Z2V0bGIvaHVn
+ZXNobWF0L2h1Z2VzaG1hdDA0CiDCoC9odWdldGxiL2h1Z2VzaG1hdC9odWdlc2htYXQwNQorL2h1
+Z2V0bGIvaHVnZXNobWF0L2h1Z2VzaG1hdDA2CiDCoC9odWdldGxiL2h1Z2VzaG1jdGwvaHVnZXNo
+bWN0bDAxCiDCoC9odWdldGxiL2h1Z2VzaG1jdGwvaHVnZXNobWN0bDAyCiDCoC9odWdldGxiL2h1
+Z2VzaG1jdGwvaHVnZXNobWN0bDAzCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9o
+dWdldGxiL2h1Z2VzaG1hdC9odWdlc2htYXQwNi5jIApiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1
+Z2V0bGIvaHVnZXNobWF0L2h1Z2VzaG1hdDA2LmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXgg
+MDAwMDAwMDAwLi5iY2IzMWIxZDQKLS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVs
+L21lbS9odWdldGxiL2h1Z2VzaG1hdC9odWdlc2htYXQwNi5jCkBAIC0wLDAgKzEsOTcgQEAKKy8v
+IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCisvKgorICogQ29weXJp
+Z2h0IChDKSAyMDA1LTIwMDYsIElCTSBDb3Jwb3JhdGlvbi4KKyAqIEF1dGhvcjogRGF2aWQgR2li
+c29uICYgQWRhbSBMaXRrZQorICovCisvKlwKKyAqIFtERVNDUklQVElPTl0KKyAqIFRlc3Qgc2hh
+cmVkIG1lbW9yeSBiZWhhdmlvciB3aGVuIG11bHRpcGxlIHRocmVhZHMgYXJlIGF0dGFjaGVkCisg
+KiB0byBhIHNlZ21lbnQgd2l0aCBkaWZmZXJlbnQgcGVybWlzc2lvbnMuwqAgQSBzZWdtZW50IGlz
+IGNyZWF0ZWQKKyAqIGFuZCBjaGlsZHJlbiBhdHRhY2ggcmVhZC1vbmx5IHRvIGNoZWNrIHJlc2Vy
+dmF0aW9uIGFjY291bnRpbmcuCisgKi8KKworI2luY2x1ZGUgImh1Z2V0bGIuaCIKKyNpbmNsdWRl
+ICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgorCisjZGVmaW5lIFNFR01FTlRfS0VZICgweDgyYmExNWZm
+KQorI2RlZmluZSBNTlRQT0lOVCAiaHVnZXRsYmZzLyIKKyNkZWZpbmUgSFBBR0VTX0lOX1NFR01F
+TlQgNAorCitzdGF0aWMgaW50IGdsb2JhbF9zaG1pZCA9IC0xOworc3RhdGljIHZvaWQgKnNobWFk
+ZHI7CitzdGF0aWMgbG9uZyBzZWdtZW50X3NpemUsIGhwYWdlX3NpemUsIHN0cmlkZTsKKworc3Rh
+dGljIGludCBhdHRhY2hfc2VnbWVudChzaXplX3Qgc2Vnc2l6ZSwgaW50IHNobWZsYWdzLCBpbnQg
+c2htcGVybXMpCit7CivCoMKgwqAgaW50IHNobWlkOworCivCoMKgwqAgc2htaWQgPSBTQUZFX1NI
+TUdFVChTRUdNRU5UX0tFWSwgc2Vnc2l6ZSwgc2htZmxhZ3MpOworwqDCoMKgIHNobWFkZHIgPSBT
+QUZFX1NITUFUKHNobWlkLCBzaG1hZGRyLCBzaG1wZXJtcyk7CivCoMKgwqAgZ2xvYmFsX3NobWlk
+ID0gc2htaWQ7CivCoMKgwqAgcmV0dXJuIHNobWlkOworfQorCitzdGF0aWMgdm9pZCBzZXR1cCh2
+b2lkKQoreworwqDCoMKgIGhwYWdlX3NpemUgPSB0c3RfZ2V0X2h1Z2VwYWdlX3NpemUoKTsKK8Kg
+wqDCoCBzZWdtZW50X3NpemUgPSA0ICogaHBhZ2Vfc2l6ZTsKK8KgwqDCoCBzdHJpZGUgPSBocGFn
+ZV9zaXplOworfQorCitzdGF0aWMgdm9pZCBjb21wYXJlX2ZyZWVfaHVnZXBhZ2VfbWVtb3J5KGxv
+bmcgZnJlZV9lbmQsIGxvbmcgZnJlZV9zdGFydCkKK3sKK8KgwqDCoCBpZiAoZnJlZV9lbmQgIT0g
+ZnJlZV9zdGFydCkKK8KgwqDCoCDCoMKgwqAgdHN0X3JlcyhURkFJTCwgIkZyZWUgaHVnZXBhZ2Vz
+IGFmdGVyIGF0dGFjaGluZyBtdWx0aXBsZSB0aHJlYWRzIApkaWZmZXIgZnJvbSBpbml0aWFsIGFs
+bG9jYXRpb24iKTsKK30KKworc3RhdGljIHZvaWQgcnVuX3Rlc3Qodm9pZCkKK3sKK8KgwqDCoCBj
+aGFyICpwOworwqDCoMKgIGludCBpLCBpdGVyYXRpb25zOworwqDCoMKgIGxvbmcgdG90YWxfaHBh
+Z2VzLCBmcmVlX3N0YXJ0LCBmcmVlX2VuZCwgdmFsOworCivCoMKgwqAgdG90YWxfaHBhZ2VzID0g
+U0FGRV9SRUFEX01FTUlORk8oTUVNSU5GT19IUEFHRV9UT1RBTCk7CivCoMKgwqAgaXRlcmF0aW9u
+cyA9ICh0b3RhbF9ocGFnZXMgKiBocGFnZV9zaXplKSAvIHNlZ21lbnRfc2l6ZSsxOworwqDCoMKg
+IGF0dGFjaF9zZWdtZW50KHNlZ21lbnRfc2l6ZSwgSVBDX0NSRUFUIHwgU0hNX0hVR0VUTEIgfCAw
+NjQwLCAwKTsKK8KgwqDCoCBwID0gKGNoYXIgKilzaG1hZGRyOworwqDCoMKgIGZvciAoaSA9IDA7
+IGkgPCA0OyBpKyssIHAgKz0gc3RyaWRlKQorwqDCoMKgIMKgwqDCoCBtZW1zZXQocCwgMHg1NSwg
+c3RyaWRlKTsKK8KgwqDCoCBmcmVlX3N0YXJ0ID0gU0FGRV9SRUFEX01FTUlORk8oTUVNSU5GT19I
+UEFHRV9GUkVFKTsKK8KgwqDCoCBTQUZFX1NITURUKChjb25zdCB2b2lkICopc2htYWRkcik7CivC
+oMKgwqAgZm9yIChpID0gMDsgaSA8IGl0ZXJhdGlvbnM7IGkrKykgeworwqDCoMKgIMKgwqDCoCBw
+aWRfdCBwaWQ7CisKK8KgwqDCoCDCoMKgwqAgcGlkID0gU0FGRV9GT1JLKCk7CivCoMKgwqAgwqDC
+oMKgIGlmICghcGlkKSB7CivCoMKgwqAgwqDCoMKgIMKgwqDCoCBhdHRhY2hfc2VnbWVudCgwLCAw
+LCBTSE1fUkRPTkxZKTsKK8KgwqDCoCDCoMKgwqAgwqDCoMKgIGZvciAoaSA9IDA7IGkgPCBIUEFH
+RVNfSU5fU0VHTUVOVDsgaSsrKQorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHZhbCA9ICoo
+KGNoYXIgKilzaG1hZGRyICsgKGkgKiBocGFnZV9zaXplKSk7CivCoMKgwqAgwqDCoMKgIMKgwqDC
+oCBTQUZFX1NITURUKCgoY29uc3Qgdm9pZCAqKXNobWFkZHIpKTsKK8KgwqDCoCDCoMKgwqAgwqDC
+oMKgIGZyZWVfZW5kID0gU0FGRV9SRUFEX01FTUlORk8oTUVNSU5GT19IUEFHRV9GUkVFKTsKK8Kg
+wqDCoCDCoMKgwqAgwqDCoMKgIGNvbXBhcmVfZnJlZV9odWdlcGFnZV9tZW1vcnkoZnJlZV9lbmQs
+IGZyZWVfc3RhcnQpOworwqDCoMKgIMKgwqDCoCDCoMKgwqAgZXhpdChFWElUX1NVQ0NFU1MpOwor
+wqDCoMKgIMKgwqDCoCB9CivCoMKgwqAgfQorwqDCoMKgIGZyZWVfZW5kID0gU0FGRV9SRUFEX01F
+TUlORk8oTUVNSU5GT19IUEFHRV9GUkVFKTsKK8KgwqDCoCBjb21wYXJlX2ZyZWVfaHVnZXBhZ2Vf
+bWVtb3J5KGZyZWVfZW5kLCBmcmVlX3N0YXJ0KTsKK8KgwqDCoCB0c3RfcmVhcF9jaGlsZHJlbigp
+OworwqDCoMKgIHRzdF9yZXMoVFBBU1MsICJTdWNjZXNzZnVsbHkgdGVzdGVkIHNoYXJlZCBtZW1v
+cnkgYmVoYXZpb3Igd2hlbiAKbXVsdGlwbGUgdGhyZWFkcyBhcmUgYXR0YWNoZWQiKTsKK30KKwor
+c3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQoreworwqDCoMKgIGlmIChnbG9iYWxfc2htaWQgPj0g
+MCkKK8KgwqDCoCDCoMKgwqAgU0FGRV9TSE1DVEwoZ2xvYmFsX3NobWlkLCBJUENfUk1JRCwgTlVM
+TCk7Cit9CisKK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKK8KgwqDCoCAubmVlZHNf
+cm9vdCA9IDEsCivCoMKgwqAgLm1udHBvaW50ID0gTU5UUE9JTlQsCivCoMKgwqAgLm5lZWRzX2h1
+Z2V0bGJmcyA9IDEsCivCoMKgwqAgLm5lZWRzX3RtcGRpciA9IDEsCivCoMKgwqAgLmZvcmtzX2No
+aWxkID0gMSwKK8KgwqDCoCAuc2V0dXAgPSBzZXR1cCwKK8KgwqDCoCAuY2xlYW51cCA9IGNsZWFu
+dXAsCivCoMKgwqAgLnRlc3RfYWxsID0gcnVuX3Rlc3QsCivCoMKgwqAgLmh1Z2VwYWdlcyA9IHsz
+MiwgVFNUX05FRURTfSwKK307Ci0tIAoyLjQzLjAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
