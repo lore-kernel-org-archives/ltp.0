@@ -4,86 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8E6BEE0214
-	for <ltp@archiver.kernel.org>; Wed, 11 Sep 2024 07:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1726041241; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=vW0NgYheVnws9jYjlArVNm96u3SzA50cf7ar8TQ5LaA=;
- b=Kcil3QXR3tclroL0lncAd1EeKY1EuH11h+5V4oHOgJSV7tq81mu1uFdiDvtz+Jd/vnQb9
- uy8/tAu6HmIGnftsrgsrH1nsrnxkQVfu+Tj8a4QfbxQnTCvUGGn2mbMjG3Pj7mtZKsvdAjL
- ioueYqinBR38urNhPiqEEvE9+pXtyvs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B93FEE0215
+	for <ltp@archiver.kernel.org>; Wed, 11 Sep 2024 08:06:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 258993C1C73
-	for <ltp@archiver.kernel.org>; Wed, 11 Sep 2024 09:54:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A27BD3C1C6A
+	for <ltp@archiver.kernel.org>; Wed, 11 Sep 2024 10:06:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 54C9B3C1C13
- for <ltp@lists.linux.it>; Wed, 11 Sep 2024 09:53:41 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EA2883C05E0
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:06:09 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 208A220EB32
- for <ltp@lists.linux.it>; Wed, 11 Sep 2024 09:53:40 +0200 (CEST)
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-a8a7929fd64so857795066b.0
- for <ltp@lists.linux.it>; Wed, 11 Sep 2024 00:53:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1726041219; x=1726646019; darn=lists.linux.it;
- h=in-reply-to:from:content-language:references:cc:to:subject
- :user-agent:mime-version:date:message-id:from:to:cc:subject:date
- :message-id:reply-to;
- bh=AsIZSqrYzJsnDbHHNDxbwS51fRAryELEhBLu7sBeuUM=;
- b=Zy+oz0v6sXansUSkyz1z8rElO/+3QEPjo4+wXV9eTbtTp4RYidIRov43PUAVamffBb
- 1XMv1YfyErMAk7b2yJ5w9ilHm02r4cr2HRLHLbdQCagFZcTW0y4jep9IzAVSoFeLAji+
- D/4/nA+rpHyo8UEMlRdATBWvth69BYiDfBNrDHChGp4RryWYtUhITm38OUe8FTuj8Z4X
- 2SVJpv3ClKvvd6oTTcs/kuXSaz9TnsABVATwEL78kvS/7hLLr1k4JyTc1KhG26R2tl5z
- 8F1OhGTXHJKl1XY3edUYTpME+dIlewjoOXspR4bZY4Thg3C0uk4j8NfNIHjKIzFyPw7A
- wExw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1726041219; x=1726646019;
- h=in-reply-to:from:content-language:references:cc:to:subject
- :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=AsIZSqrYzJsnDbHHNDxbwS51fRAryELEhBLu7sBeuUM=;
- b=FRMCy5hC2AvAw2QPMmuWaHYahbg2T+LK/yglki+dSYJhr34TLBC3HyXLYxY9EsoyjI
- cphbeo2qFm52wSHtT0aVJbA7ZJHnohqODRDvem4k+5FxOHG/TrUNvdRlf/eGFAWDYxCg
- pidrLL2zRdKZoq6MUlXY35byyN7/8rRBTCBceLAX/J8WUWR75RIxK71VvrAqxBToz3kU
- C0PbyjTjW1YOIT5CYg34i4lSYoGfrpvqTuRr0yXj8I/Kd5IM3pxel6dczq2m8L7fNjoS
- iaZKlgeTpDMezRApNjcJqGgueFhOPPt+WDsjgPE/5UanxafQ9JI+17TRtsqUqZvf2Cfw
- OjIg==
-X-Gm-Message-State: AOJu0YxpbGXv2ksTLduE1tUfI9OE9K7sdUi646ilGPuGv+96FWUO2vVl
- nqDmchnYAZFbwPveCOMKGtI0xIC7FI6uoMnxwC+DqyC4eTK+r6D8cScPmRcc2DHhGCFwObRK2JD
- kmxs=
-X-Google-Smtp-Source: AGHT+IEUmlrYl6lpkVfMs6J8L+K+/HvXCFqFPeGAiVUMeyX9NfdjpG90GYDz3yxL4Be0XAeltjSOSQ==
-X-Received: by 2002:a17:907:1c07:b0:a7d:a00a:aa02 with SMTP id
- a640c23a62f3a-a8ffaaa7202mr315294566b.1.1726041218588; 
- Wed, 11 Sep 2024 00:53:38 -0700 (PDT)
-Received: from [192.168.178.49] ([79.140.118.7])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a8d25d556e8sm580670066b.204.2024.09.11.00.53.38
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 11 Sep 2024 00:53:38 -0700 (PDT)
-Message-ID: <186c1131-189b-48fb-b0ec-965a8097c324@suse.com>
-Date: Wed, 11 Sep 2024 09:53:37 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 12969602AC6
+ for <ltp@lists.linux.it>; Wed, 11 Sep 2024 10:06:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E416B219C8;
+ Wed, 11 Sep 2024 08:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726041965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9tgm+yDinrvdDXXov/DQUyH8ayUvx509pG5PAsPlg9E=;
+ b=PSjuTiwwdHDq9BmjYqCOJ2T8L26L+mGMK4cPEJ5dEIyiKVle7jpwAT83ReGZvycbStLTnB
+ 3IJQoFSV5gHb/DEhIo6GvqRPhgNfp4rFfFnjThb1uXeByHIbxbkpl3JoWuIoPiFS7/N0xT
+ kN63WP4MCdqH9fui5NdBAQ8W5BfsBKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726041965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9tgm+yDinrvdDXXov/DQUyH8ayUvx509pG5PAsPlg9E=;
+ b=o1Eqb9o8hp7axENt2ZACvh0okCYtpTFDz5SlIPu8/qgaKj78FIl+5M6zTSwdUPVhHiL6We
+ rtbSvq0W9IZ/e6BQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PSjuTiww;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=o1Eqb9o8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726041965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9tgm+yDinrvdDXXov/DQUyH8ayUvx509pG5PAsPlg9E=;
+ b=PSjuTiwwdHDq9BmjYqCOJ2T8L26L+mGMK4cPEJ5dEIyiKVle7jpwAT83ReGZvycbStLTnB
+ 3IJQoFSV5gHb/DEhIo6GvqRPhgNfp4rFfFnjThb1uXeByHIbxbkpl3JoWuIoPiFS7/N0xT
+ kN63WP4MCdqH9fui5NdBAQ8W5BfsBKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726041965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9tgm+yDinrvdDXXov/DQUyH8ayUvx509pG5PAsPlg9E=;
+ b=o1Eqb9o8hp7axENt2ZACvh0okCYtpTFDz5SlIPu8/qgaKj78FIl+5M6zTSwdUPVhHiL6We
+ rtbSvq0W9IZ/e6BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA63513A7E;
+ Wed, 11 Sep 2024 08:06:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id IM8DMG1P4Wb3VgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 11 Sep 2024 08:06:05 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 11 Sep 2024 10:06:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20240909-landlock_whitelist-v1-1-60c54aa9526d@suse.com>
- <CAEemH2fLVESjVK2VzE_hpYKtrAiLbEDykfDa0gyomrRzCyVDkw@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAEemH2fLVESjVK2VzE_hpYKtrAiLbEDykfDa0gyomrRzCyVDkw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Message-Id: <20240911-fcntl4_refactoring-v5-1-948401e7131c@suse.com>
+References: <20240911-fcntl4_refactoring-v5-0-948401e7131c@suse.com>
+In-Reply-To: <20240911-fcntl4_refactoring-v5-0-948401e7131c@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1726041965; l=5397;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=3O4/RfVSWtS4BLqpiT0UoSABTLCW6QiXoeRI1fYdPNU=;
+ b=2pP8VeUu0N9i921F9t15gQCG/gi9hhjFftyDkXgG1Sd8P9umPKkc+fjkFJRaYWWV/qyGw+DHg
+ A+KhFngiHmYBYBgsHCD0oSJ+fbiOGzF3LoGvRb2zwfq6odco0trknJO
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: E416B219C8
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] Add landlock syscalls to whitelist in statistics
+Subject: [LTP] [PATCH v5 1/2] Add silent macros for TST_EXP_EQ_*
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,39 +129,125 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-UHVzaGVkIGFmdGVyIG1vdmluZyB0aGVtIGludG8gYWxwaGFiZXRpY2FsIG9yZGVyLgoKQW5kcmVh
-CgpPbiA5LzExLzI0IDA4OjE2LCBMaSBXYW5nIHdyb3RlOgo+Cj4KPiBPbiBUdWUsIFNlcCAxMCwg
-MjAyNCBhdCAxOjM14oCvQU0gQW5kcmVhIENlcnZlc2F0byAKPiA8YW5kcmVhLmNlcnZlc2F0b0Bz
-dXNlLmRlPiB3cm90ZToKPgo+ICAgICBGcm9tOiBBbmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2Vy
-dmVzYXRvQHN1c2UuY29tPgo+Cj4gICAgIExhbmRsb2NrIHN5c2NhbGxzIGFyZSBjdXJyZW50bHkg
-dGVzdGVkIGluIHRoZSBsYW5kbG9jayB0ZXN0aW5nCj4gICAgIHN1aXRlIGFuZAo+ICAgICB0aGVy
-ZSdzIG5vIHJlYXNvbiB0byBjb25zaWRlciB0aGVtIHVudGVzdGVkLCBzbyB0aGV5IGNhbiBiZSBh
-ZGRlZAo+ICAgICB0byB0aGUKPiAgICAgc3RhdGlzdGljcyB3aGl0ZWxpc3QuCj4KPiAgICAgU2ln
-bmVkLW9mZi1ieTogQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4K
-Pgo+Cj4gUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgo+Cj4gICAgIC0t
-LQo+ICAgICDCoGRvYy9jb25mLnB5IHwgMyArKysKPiAgICAgwqAxIGZpbGUgY2hhbmdlZCwgMyBp
-bnNlcnRpb25zKCspCj4KPiAgICAgZGlmZiAtLWdpdCBhL2RvYy9jb25mLnB5IGIvZG9jL2NvbmYu
-cHkKPiAgICAgaW5kZXggYzAzNDYzODhlLi43YTNlOWVjOWYgMTAwNjQ0Cj4gICAgIC0tLSBhL2Rv
-Yy9jb25mLnB5Cj4gICAgICsrKyBiL2RvYy9jb25mLnB5Cj4gICAgIEBAIC05MCw2ICs5MCw5IEBA
-IGRlZiBnZW5lcmF0ZV9zeXNjYWxsc19zdGF0cyhfKToKPiAgICAgwqAgwqAgwqAgwqAgwqAnc2Vj
-Y29tcCcsCj4gICAgIMKgIMKgIMKgIMKgIMKgJ3NlbXRpbWVkb3AnLAo+ICAgICDCoCDCoCDCoCDC
-oCDCoCdzZXRob3N0bmFtZScsCj4gICAgICvCoCDCoCDCoCDCoCAnbGFuZGxvY2tfY3JlYXRlX3J1
-bGVzZXQnLAo+ICAgICArwqAgwqAgwqAgwqAgJ2xhbmRsb2NrX2FkZF9ydWxlJywKPiAgICAgK8Kg
-IMKgIMKgIMKgICdsYW5kbG9ja19yZXN0cmljdF9zZWxmJywKPiAgICAgwqAgwqAgwqBdCj4KPiAg
-ICAgwqAgwqAgwqAjIHBvcHVsYXRlIHdpdGggbm90IGltcGxlbWVudGVkLCByZXNlcnZlZCwgdW5t
-YWludGFpbmVkCj4gICAgIHN5c2NhbGxzIGRlZmluZWQKPgo+ICAgICAtLS0KPiAgICAgYmFzZS1j
-b21taXQ6IGQ2MGJkY2M3YzdhYzRiZTY2MjQzMDJiOTA5ZTRkMzgzNjc2NTJkZGEKPiAgICAgY2hh
-bmdlLWlkOiAyMDI0MDkwOS1sYW5kbG9ja193aGl0ZWxpc3QtMWY5Yzk5NWExZWQ0Cj4KPiAgICAg
-QmVzdCByZWdhcmRzLAo+ICAgICAtLSAKPiAgICAgQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNl
-cnZlc2F0b0BzdXNlLmNvbT4KPgo+Cj4gICAgIC0tIAo+ICAgICBNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKPgo+Cj4KPiAtLSAKPiBSZWdhcmRz
-LAo+IExpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAK
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This patch adds the following macros:
+
+TST_EXP_EQ_LI_SILENT
+TST_EXP_EQ_LU_SILENT
+TST_EXP_EQ_SZ_SILENT
+TST_EXP_EQ_SSI_SILENT
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ include/tst_test_macros.h | 81 ++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 19 deletions(-)
+
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index 7a443c803..4217700f3 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -344,29 +344,72 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+        tst_res_(__FILE__, __LINE__, (EXPR) ? TPASS : TFAIL, "Expect: "       \
+                 TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, #EXPR), __VA_ARGS__));
+ 
+-#define TST_EXP_EQ_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS) do {\
+-	TYPE tst_tmp_a__ = VAL_A; \
+-	TYPE tst_tmp_b__ = VAL_B; \
+-	if (tst_tmp_a__ == tst_tmp_b__) { \
+-		tst_res_(__FILE__, __LINE__, TPASS, \
+-			SVAL_A " == " SVAL_B " (" PFS ")", tst_tmp_a__); \
+-	} else { \
+-		tst_res_(__FILE__, __LINE__, TFAIL, \
+-			SVAL_A " (" PFS ") != " SVAL_B " (" PFS ")", \
+-			tst_tmp_a__, tst_tmp_b__); \
+-	} \
++#define TST_EXP_EQ_SILENT_(VAL_A, SVAL_A, VAL_B, SVAL_B, TYPE, PFS) do {       \
++	TYPE tst_tmp_a__ = VAL_A;                                              \
++	TYPE tst_tmp_b__ = VAL_B;                                              \
++                                                                               \
++	TST_PASS = 0;                                                          \
++                                                                               \
++	if (tst_tmp_a__ != tst_tmp_b__) {                                      \
++		tst_res_(__FILE__, __LINE__, TFAIL,                            \
++			SVAL_A " (" PFS ") != " SVAL_B " (" PFS ")",           \
++			tst_tmp_a__, tst_tmp_b__);                             \
++		break;                                                         \
++	} else {                                                               \
++		TST_PASS = 1;                                                  \
++	}                                                                      \
++} while (0)
++
++#define TST_EXP_EQ_LI(VAL_A, VAL_B) do {                                       \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli");   \
++								               \
++	if (TST_PASS) {                                                        \
++		tst_res_(__FILE__, __LINE__, TPASS,                            \
++			#VAL_A " == " #VAL_B " (%lli)",                        \
++			(long long)VAL_A);                                     \
++	}                                                                      \
+ } while (0)
+ 
+-#define TST_EXP_EQ_LI(VAL_A, VAL_B) \
+-		TST_EXP_EQ_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli")
++#define TST_EXP_EQ_LI_SILENT(VAL_A, VAL_B) \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli")
++
++#define TST_EXP_EQ_LU(VAL_A, VAL_B) do {                                       \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, unsigned long long, "%llu"); \
++								               \
++	if (TST_PASS) {                                                        \
++		tst_res_(__FILE__, __LINE__, TPASS,                            \
++			#VAL_A " == " #VAL_B " (%llu)",                        \
++			(unsigned long long)VAL_A);                            \
++	}                                                                      \
++} while (0)
+ 
+-#define TST_EXP_EQ_LU(VAL_A, VAL_B) \
+-		TST_EXP_EQ_(VAL_A, #VAL_A, VAL_B, #VAL_B, unsigned long long, "%llu")
++#define TST_EXP_EQ_LU_SILENT(VAL_A, VAL_B) \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, unsigned long long, "%llu")
++
++#define TST_EXP_EQ_SZ(VAL_A, VAL_B) do {                                       \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zu");       \
++								               \
++	if (TST_PASS) {                                                        \
++		tst_res_(__FILE__, __LINE__, TPASS,                            \
++			#VAL_A " == " #VAL_B " (%zu)",                         \
++			(size_t)VAL_A);                                        \
++	}                                                                      \
++} while (0)
+ 
+-#define TST_EXP_EQ_SZ(VAL_A, VAL_B) \
+-		TST_EXP_EQ_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zu")
++#define TST_EXP_EQ_SZ_SILENT(VAL_A, VAL_B) \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zu")
++
++#define TST_EXP_EQ_SSZ(VAL_A, VAL_B) do {                                      \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zi");       \
++								               \
++	if (TST_PASS) {                                                        \
++		tst_res_(__FILE__, __LINE__, TPASS,                            \
++			#VAL_A " == " #VAL_B " (%zi)",                         \
++			(ssize_t)VAL_A);                                        \
++	}                                                                      \
++} while (0)
+ 
+-#define TST_EXP_EQ_SSZ(VAL_A, VAL_B) \
+-		TST_EXP_EQ_(VAL_A, #VAL_A, VAL_B, #VAL_B, ssize_t, "%zi")
++#define TST_EXP_EQ_SSZ_SILENT(VAL_A, VAL_B) \
++	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, ssize_t, "%zi")
+ 
+ #endif	/* TST_TEST_MACROS_H__ */
+
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
