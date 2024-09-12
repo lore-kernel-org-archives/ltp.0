@@ -4,18 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CC85EED60A
-	for <ltp@archiver.kernel.org>; Thu, 12 Sep 2024 14:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C010EED610
+	for <ltp@archiver.kernel.org>; Thu, 12 Sep 2024 14:58:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 66CEE3C2694
-	for <ltp@archiver.kernel.org>; Thu, 12 Sep 2024 16:30:37 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 46DE33C26E9
+	for <ltp@archiver.kernel.org>; Thu, 12 Sep 2024 16:58:04 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 70FBB3C2403
- for <ltp@lists.linux.it>; Thu, 12 Sep 2024 16:30:21 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 512D43C2677
+ for <ltp@lists.linux.it>; Thu, 12 Sep 2024 16:57:47 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
@@ -23,46 +24,46 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 99DEE1402F9C
- for <ltp@lists.linux.it>; Thu, 12 Sep 2024 16:30:20 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C7E2610008F6
+ for <ltp@lists.linux.it>; Thu, 12 Sep 2024 16:57:46 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A390221B09;
- Thu, 12 Sep 2024 14:30:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E399B21B09;
+ Thu, 12 Sep 2024 14:57:45 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8344113AD8;
- Thu, 12 Sep 2024 14:30:19 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D445813AD8;
+ Thu, 12 Sep 2024 14:57:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Z+LBD/v64maDBQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 12 Sep 2024 14:30:19 +0000
-Date: Thu, 12 Sep 2024 16:29:13 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PCLCMmkB42arDgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 12 Sep 2024 14:57:45 +0000
+Date: Thu, 12 Sep 2024 16:56:32 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: kernel test robot <oliver.sang@intel.com>
-Message-ID: <ZuL6uRAuIhAFTfJe@yuki.lan>
-References: <202409122103.e45aa13b-oliver.sang@intel.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZuMBIDh1YioEI_ra@yuki.lan>
+References: <20240912-rename15-v6-1-1cabdc922739@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <202409122103.e45aa13b-oliver.sang@intel.com>
+In-Reply-To: <20240912-rename15-v6-1-1cabdc922739@suse.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: A390221B09
+X-Rspamd-Queue-Id: E399B21B09
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linus:master] [f2fs]  9f0f6bf427:  ltp.ADSP069.fail
+Subject: Re: [LTP] [PATCH v6] Add rename15 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,25 +75,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, oe-lkp@lists.linux.dev,
- Jaegeuk Kim <jaegeuk@kernel.org>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-So what the test does is:
+> +static void test_non_existing(void)
+> +{
+> +	tst_res(TINFO, "Test rename() on symlink pointing to a non-existent path");
+> +
+> +	struct stat path_stat;
+> +
+> +	SAFE_SYMLINK("this_path_doesnt_exist", oldname);
+> +	TST_EXP_FAIL(stat(oldname, &path_stat), ENOENT);
 
-- creates a sparse file (truncates an empty file to non-zero size)
-- starts N child processes that open the file and read it in chunks
-  while they expect zeros to be read
-- starts a single writer child that opens the file with O_DIRECT
-  and writes zeros to the file starting at some offset
+I meant to have here:
 
-And if the test fails it means that at some point one of the reader
-children have seen inconsistent state.
+	TST_EXP_PASS(lstat(oldname, &path_stat));
+
+> +	SAFE_RENAME(oldname, newname);
+> +	TST_EXP_FAIL(stat(newname, &path_stat), ENOENT);
+
+And here to add:
+
+	TST_EXP_PASS(lstat(newname, &path_stat));
+
+instead of the:
+
+	TST_EXP_FAIL(access(oldname, F_OK), ENOENT);
+
+> +	SAFE_UNLINK(newname);
+> +}
+
+
+That way we are sure that the actual symlinks were created and that we
+get the enoent for the symlink target.
 
 -- 
 Cyril Hrubis
