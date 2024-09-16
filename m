@@ -4,67 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ECADC3ABB2
-	for <ltp@archiver.kernel.org>; Mon, 16 Sep 2024 08:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69631C3ABB2
+	for <ltp@archiver.kernel.org>; Mon, 16 Sep 2024 09:30:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 05E5B3C2B62
-	for <ltp@archiver.kernel.org>; Mon, 16 Sep 2024 10:30:50 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D195C3C2C00
+	for <ltp@archiver.kernel.org>; Mon, 16 Sep 2024 11:30:06 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 12D2E3C2B1D
- for <ltp@lists.linux.it>; Mon, 16 Sep 2024 10:30:33 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 314573C094B
+ for <ltp@lists.linux.it>; Mon, 16 Sep 2024 11:29:50 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=schwab@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 057B81A00EAC
- for <ltp@lists.linux.it>; Mon, 16 Sep 2024 10:30:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1726475431;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=4Gqv0AsZ3ee4DKzfO0fijMwyPanfp1jCzRC0R3RyqnE=;
- b=AOBweQh5I8I5/v01sFHNSPvSDFRTrurlMuWU9QMuGMci2OUJgw6wP7HKS43C87A3IR6hsG
- HsaARR6i3PH3C/itVGzcK/g0V8Nc94Zqfj/J8pJv6OdSy/9zjKPAvBIfVNQ68KKPZKV9cb
- NglceDCTFASh4y7ZptgIZXaxky56ajU=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-631-_JZxccFvPlql2SdSFvT4Rw-1; Mon,
- 16 Sep 2024 04:30:30 -0400
-X-MC-Unique: _JZxccFvPlql2SdSFvT4Rw-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 16F511956089
- for <ltp@lists.linux.it>; Mon, 16 Sep 2024 08:30:28 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.226.2])
- by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 40A97195605A
- for <ltp@lists.linux.it>; Mon, 16 Sep 2024 08:30:26 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 97C981007C94
+ for <ltp@lists.linux.it>; Mon, 16 Sep 2024 11:29:49 +0200 (CEST)
+Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 305F021BCB
+ for <ltp@lists.linux.it>; Mon, 16 Sep 2024 09:29:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726478988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=qMxFEx16qnwdtx5c73SfmdtMweVbPZsKQ5aEyg6Br2k=;
+ b=S3STeJqgpsBH3nEOoZ0NSOoIMAAHb3EOnbnts+BAwl09z3+h09ieMNV8dH10edsUQcIG+X
+ LnFjoh4n4pSYkm3uQrC1yvsb40yHPzUbAm3xzxJiAXPHW7qUpzZOAP7m9SDSMosV/etdmf
+ TW7mjrVODDJfdqRng0hnxgS3rKp6GTU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726478988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=qMxFEx16qnwdtx5c73SfmdtMweVbPZsKQ5aEyg6Br2k=;
+ b=AUwoqTCYGfzV3n5UDeVMqnzUOz2He8WDdlQyfeR6JKPMsmAlq+O7T/6k4XFLWe+01NA7f6
+ SHlO1/kMGYI2K6DQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726478988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=qMxFEx16qnwdtx5c73SfmdtMweVbPZsKQ5aEyg6Br2k=;
+ b=S3STeJqgpsBH3nEOoZ0NSOoIMAAHb3EOnbnts+BAwl09z3+h09ieMNV8dH10edsUQcIG+X
+ LnFjoh4n4pSYkm3uQrC1yvsb40yHPzUbAm3xzxJiAXPHW7qUpzZOAP7m9SDSMosV/etdmf
+ TW7mjrVODDJfdqRng0hnxgS3rKp6GTU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726478988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=qMxFEx16qnwdtx5c73SfmdtMweVbPZsKQ5aEyg6Br2k=;
+ b=AUwoqTCYGfzV3n5UDeVMqnzUOz2He8WDdlQyfeR6JKPMsmAlq+O7T/6k4XFLWe+01NA7f6
+ SHlO1/kMGYI2K6DQ==
+Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
+ id 20DAF4A0146; Mon, 16 Sep 2024 11:29:48 +0200 (CEST)
+From: Andreas Schwab <schwab@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 16 Sep 2024 10:30:24 +0200
-Message-ID: <b35bcb5fb9a87e218ddccd3944b961568a831aa4.1726475265.git.jstancek@redhat.com>
+X-Yow: DIDI...  is that a MARTIAN name, or, are we in ISRAEL?
+Date: Mon, 16 Sep 2024 11:29:48 +0200
+Message-ID: <mvmtteg0wvn.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.19 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.19)[-0.925]; RCVD_NO_TLS_LAST(0.10)[];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCVD_COUNT_ONE(0.00)[1]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_ONE(0.00)[1]; MID_RHS_MATCH_FROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_NONE(0.00)[];
+ FROM_HAS_DN(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/getdents02: reserve big enough buffer
+Subject: [LTP] [PATCH] getdents: account for d_name size in tst_dirp_size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,42 +98,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test sporadically fails EFAULT testcase because kernel can iterate over
-directory entries in different order. In most runs the first entry it finds
-is '.', but in others it can be 'lost+found' or directory/file created by test.
-
-Test currently only reserves space for buffer via tst_dirp_size(),
-which uses sizeof() and doesn't take into account number of entries or
-the size of d_name.
-
-Since sizeof returns the aligned size, in some runs there's just enough
-space for '.' entry, and test fails as expected on EFAULT. But if there's
-entry with larger d_name we hit EINVAL check first and test fails.
-
-Reserve large enough buffer.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+The linux_dirent and linux_dirent64 structs do not contain space for the
+d_name member.  Add NAME_MAX to the size in tst_dirp_size so that the
+getdents syscalls do not spuriously fail with EINVAL instead of EFAULT.
 ---
- testcases/kernel/syscalls/getdents/getdents02.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/getdents/getdents.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getdents/getdents02.c b/testcases/kernel/syscalls/getdents/getdents02.c
-index 805a8bc481e6..d17410c52afc 100644
---- a/testcases/kernel/syscalls/getdents/getdents02.c
-+++ b/testcases/kernel/syscalls/getdents/getdents02.c
-@@ -60,7 +60,8 @@ static void setup(void)
+diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
+index 560df4126..02c3bc509 100644
+--- a/testcases/kernel/syscalls/getdents/getdents.h
++++ b/testcases/kernel/syscalls/getdents/getdents.h
+@@ -64,9 +64,9 @@ tst_dirp_size(void)
  {
- 	getdents_info();
- 
--	size = tst_dirp_size();
-+	/* reserve big enough buffer for all entries we might find */
-+	size = 4096;
- 	dirp = tst_alloc(size);
- 
- 	fd = SAFE_OPEN(MNTPOINT, O_RDONLY);
+ 	switch (tst_variant) {
+ 	case 0:
+-		return sizeof(struct linux_dirent);
++		return sizeof(struct linux_dirent) + NAME_MAX;
+ 	case 1:
+-		return sizeof(struct linux_dirent64);
++		return sizeof(struct linux_dirent64) + NAME_MAX;
+ #if HAVE_GETDENTS
+ 	case 2:
+ 		return sizeof(struct dirent);
 -- 
-2.43.0
+2.46.1
 
+
+-- 
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
