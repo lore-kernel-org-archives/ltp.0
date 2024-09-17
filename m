@@ -4,86 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F4C9C36018
-	for <ltp@archiver.kernel.org>; Tue, 17 Sep 2024 12:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1726575822; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=4VBupQCUf8DgPxnLw9iSeH0Dl3h9w/W9qx/q7qnM4bo=;
- b=V9tRoPejKWE69ybfbLJ/L7+uSjsZ9zr0uqK7+ct3d/rnL3j7Z5hzJe+oMDgvBIVpX2zNu
- Dj4OzTHhR8pNFQpxTd7VCbwksPTrQ2MiIvLkSk8xsBKIQ6t5SksuksrMcDEHuIaYgI5jfS2
- 0H0cDBaQDdJIMoa1OPSQQWdTNy7oa40=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C0B4C3601A
+	for <ltp@archiver.kernel.org>; Tue, 17 Sep 2024 13:49:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 97D713C2E20
-	for <ltp@archiver.kernel.org>; Tue, 17 Sep 2024 14:23:42 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 51F203C2E27
+	for <ltp@archiver.kernel.org>; Tue, 17 Sep 2024 15:48:58 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E6CA3C2E0A
- for <ltp@lists.linux.it>; Tue, 17 Sep 2024 14:23:10 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A9ADC3C0729
+ for <ltp@lists.linux.it>; Tue, 17 Sep 2024 15:48:40 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6C3D960FB56
- for <ltp@lists.linux.it>; Tue, 17 Sep 2024 14:23:09 +0200 (CEST)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-42cbc22e1c4so35735475e9.2
- for <ltp@lists.linux.it>; Tue, 17 Sep 2024 05:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1726575788; x=1727180588; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=HKrTKeTU5vxuXxASKcsgnsyPknPdYl8nGmHFFU7/mAw=;
- b=SPEFD3hfiY9Sc41+vOCPcfrjVvAjYLipMaZbT7xvjja+dzitiEUdX8ZRZ+YFF4EaEJ
- cMCnXUxJK5vE6K8cb9q7kwzjG1R3h8LcO9q+E7686bTSyjH9jYMpmObZ5JDprCHiqqlm
- yK/H2cAWLQl8v3nLL7L+wYIuhSD7hiuCz7qqyvTwwBsRe/36w1Hbu45xWHacJ8xoInUM
- 1pjaAAqRXmWm/smoxZy5mD0v/vXaxQnPa9w9QfpMegMuuF8cYLL9SyzUnAeyJ0brxU2B
- pdgwzPaGDPg+HAAYKSNN+YgLD5q8q+AypdHz8OuBwSxtNwzXoMVLHTTO7aDfrtQXo7f0
- MkbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1726575788; x=1727180588;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=HKrTKeTU5vxuXxASKcsgnsyPknPdYl8nGmHFFU7/mAw=;
- b=Ks8H+Ukr6tOJ8VOTEfv++9+i7HCeFBloAGzTMHiVNIQ/IEWNlvoPE7X3alw2xh9Cuz
- k/37TKgsqkIJaypOVQxDoiANJ2vVcqVXn5y9n8OjDM+gwzXxIETJ+Xto3RjjggcOetGh
- iXXYDaNYVx2jOrKnvwPqfEiYlPXD3ReIYwa0Reqzhiqk3fN/nv5v9iCA/gU9FBmvgpOe
- k2gcWJIPaeXr9YQQeFIorglZXM5nZz4ItlR7/6qdGtGZbX0U8GbVflmrB4f14Yfi6cJv
- wLnBKUWWaklbYXBIOOlFPpSSIusMJVKiUsSPImfhm+J3vhDFHCkW9uLyxs8lbuN2ubBl
- N1Qw==
-X-Gm-Message-State: AOJu0Yx234g2Cd45dH5RGhS2dh9Miga2yq0X66V/BYv9pLi+7pwKcAJ9
- 8E06luYNUEfI75g1ywRtG/1FGZDhLH8DXx2+e+6GreC78DDgKsyRJJKFClcrWoiqf9h4PzLSZhc
- 1zU8=
-X-Google-Smtp-Source: AGHT+IHqbox8sNOELe1siy0TLUEBu2D22n/A/PDoGGTcFHZ9FOkzemAH6l0zrCMxrBD1U+8mZevrFg==
-X-Received: by 2002:a05:6000:1bca:b0:374:c847:85c with SMTP id
- ffacd0b85a97d-378d61e2c1fmr7335475f8f.24.1726575788110; 
- Tue, 17 Sep 2024 05:23:08 -0700 (PDT)
-Received: from [10.232.133.5] ([88.128.90.60])
- by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-2dbb9d5c9e7sm9288455a91.45.2024.09.17.05.23.05
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 17 Sep 2024 05:23:07 -0700 (PDT)
-Message-ID: <b13bde4a-a33a-4f5b-b03c-a68ec3da94c8@suse.com>
-Date: Tue, 17 Sep 2024 14:23:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0E2DF208E15
+ for <ltp@lists.linux.it>; Tue, 17 Sep 2024 15:48:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 643F22008E
+ for <ltp@lists.linux.it>; Tue, 17 Sep 2024 13:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1726580918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3pwH/0cwoo0UNI5vT251Wxq18tjSBfrJbeTH0+5k07c=;
+ b=GVdY7CzMUUNGySuTpWBMU1mwVWfj9nEHnsaLyQWpyfqqARZtMb7V85xZ0PEG8R8GSWID6T
+ rvbcJ6Ny7MBy04L49pLGzr33wxduhbPexn29TxnT+jhcJuQNy3VRtZ9Y6AJAuNLf5YQLpo
+ wZtVjTw1HD+E3D1xtiJgyKdnBPa/WYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1726580918;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3pwH/0cwoo0UNI5vT251Wxq18tjSBfrJbeTH0+5k07c=;
+ b=UuN/40RCSj5jMJ5HPgygv4SNG2CGd1ezFQtgoGFBpZCaomdunCOAyCeltTiRa7V3s5ANnD
+ PaP2Z0mGqYGszWAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1726580918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3pwH/0cwoo0UNI5vT251Wxq18tjSBfrJbeTH0+5k07c=;
+ b=GVdY7CzMUUNGySuTpWBMU1mwVWfj9nEHnsaLyQWpyfqqARZtMb7V85xZ0PEG8R8GSWID6T
+ rvbcJ6Ny7MBy04L49pLGzr33wxduhbPexn29TxnT+jhcJuQNy3VRtZ9Y6AJAuNLf5YQLpo
+ wZtVjTw1HD+E3D1xtiJgyKdnBPa/WYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1726580918;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3pwH/0cwoo0UNI5vT251Wxq18tjSBfrJbeTH0+5k07c=;
+ b=UuN/40RCSj5jMJ5HPgygv4SNG2CGd1ezFQtgoGFBpZCaomdunCOAyCeltTiRa7V3s5ANnD
+ PaP2Z0mGqYGszWAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4AEB113AB6
+ for <ltp@lists.linux.it>; Tue, 17 Sep 2024 13:48:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qbWlEbaI6Wb4NQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 17 Sep 2024 13:48:38 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-References: <20240917082543.27125-1-chrubis@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20240917082543.27125-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Date: Tue, 17 Sep 2024 15:48:32 +0200
+Message-ID: <20240917134835.104707-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.46.0
+MIME-Version: 1.0
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Disable failure hints before we actually run the
- test
+Subject: [LTP] [PATCH] cve-2015-3290: Fix broken 32bit assembly
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,76 +106,164 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+The 32bit corruption assembly has two bugs:
+- EBP is missing from asm clobber list which may result in input/output
+  parameters getting overwritten by the "puzzle"
+- orig_ss is allocated on stack which will result in segfault when
+  restoring %ss to the original value
 
-LGTM
+Add EBP to the clobber list and make sure that mov %[orig_ss], %%ss
+will not use address relative to %esp.
 
-Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-On 9/17/24 10:25, Cyril Hrubis wrote:
-> This is patch based on a suggestion from Peter Vorel:
->
-> http://patchwork.ozlabs.org/project/ltp/patch/20240527202858.350200-2-pvorel@suse.cz/
->
-> Peter proposed not to print failure hints (the tags) if we fail to
-> acquire the device. This patch extends it for the whole test library
-> intialization and enables the failure hints right before we jump into
-> the test function.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->   lib/tst_test.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 918bee2a1..3a71330b8 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -899,6 +899,8 @@ static void print_failure_hint(const char *tag, const char *hint,
->   	}
->   }
->   
-> +static int show_failure_hints;
-> +
->   /* update also docparse/testinfo.pl */
->   static void print_failure_hints(void)
->   {
-> @@ -919,7 +921,8 @@ static void do_exit(int ret)
->   
->   		if (results->failed) {
->   			ret |= TFAIL;
-> -			print_failure_hints();
-> +			if (show_failure_hints)
-> +				print_failure_hints();
->   		}
->   
->   		if (results->skipped && !results->passed)
-> @@ -930,7 +933,8 @@ static void do_exit(int ret)
->   
->   		if (results->broken) {
->   			ret |= TBROK;
-> -			print_failure_hints();
-> +			if (show_failure_hints)
-> +				print_failure_hints();
->   		}
->   
->   		fprintf(stderr, "\nSummary:\n");
-> @@ -1871,6 +1875,8 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
->   	if (tst_test->test_variants)
->   		test_variants = tst_test->test_variants;
->   
-> +	show_failure_hints = 1;
-> +
->   	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
->   		if (tst_test->all_filesystems || count_fs_descs() > 1)
->   			ret |= run_tcases_per_fs();
+Reproducer verified on affected kernel v3.16 and fixed kernel v5.14.
+
+I had to rewrite the mov %[ss], %%ss to two instructions because
+with EBP in the clobber list, 32bit Debian GCC could not find enough
+registers for the asm parameters. Now the [ss] parameter is passed
+as an integer constant.
+
+ testcases/cve/cve-2015-3290.c | 37 +++++++++++++++++++++++------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
+
+diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
+index 58585bac0..143c98230 100644
+--- a/testcases/cve/cve-2015-3290.c
++++ b/testcases/cve/cve-2015-3290.c
+@@ -218,7 +218,7 @@ static void set_ldt(void)
+ 	}
+ }
+ 
+-static void try_corrupt_stack(unsigned short orig_ss)
++static void try_corrupt_stack(unsigned short *orig_ss)
+ {
+ #ifdef __x86_64__
+ 	asm volatile (
+@@ -231,7 +231,8 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	      /*
+ 	       * Let 'er rip.
+ 	       */
+-	      "mov    %[ss], %%ss \n\t"   /* begin corruption */
++	      "mov    %[ss], %%edx \n\t"
++	      "mov    %%edx, %%ss \n\t"   /* begin corruption */
+ 	      "movl   $1000, %%edx    \n\t"
+ 	      "1:  decl   %%edx       \n\t"
+ 	      "jnz    1b      \n\t"
+@@ -250,7 +251,7 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	       * Stop further corruption.  We need to check CPL
+ 	       * first because we need RPL == CPL.
+ 	       */
+-	      "mov    %[orig_ss], %%ss \n\t"  /* end corruption */
++	      "mov    (%[orig_ss]), %%ss \n\t"  /* end corruption */
+ 
+ 	      "subq   $128, %%rsp \n\t"
+ 	      "pushfq	 \n\t"
+@@ -262,7 +263,7 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	      "3:  int3	   \n\t"
+ 	      "4:	     \n\t"
+ 	      : [expected_rsp] "=m" (expected_rsp)
+-	      : [ss] "r" (0x7), [orig_ss] "m" (orig_ss)
++	      : [ss] "n" (0x7), [orig_ss] "r" (orig_ss)
+ 		 : "rax", "rcx", "rdx", "rbp", "r11", "flags"
+ 	);
+ #else
+@@ -277,7 +278,8 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	      /*
+ 	       * Let 'er rip.
+ 	       */
+-	      "mov    %[ss], %%ss \n\t"   /* begin corruption */
++	      "mov    %[ss], %%edx \n\t"
++	      "mov    %%edx, %%ss \n\t"   /* begin corruption */
+ 	      "movl   $1000, %%edx    \n\t"
+ 	      "1:  .byte 0xff, 0xca   \n\t"   /* decl %edx */
+ 	      "jnz    1b      \n\t"
+@@ -298,7 +300,7 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	       * Stop further corruption.  We need to check CPL
+ 	       * first because we need RPL == CPL.
+ 	       */
+-	      "mov    %[orig_ss], %%ss \n\t"  /* end corruption */
++	      "mov    (%[orig_ss]), %%ss \n\t"  /* end corruption */
+ 
+ 	      "pushf	  \n\t"
+ 	      "testl  $(1<<9),(%%esp)   \n\t"
+@@ -309,8 +311,8 @@ static void try_corrupt_stack(unsigned short orig_ss)
+ 	      "3:  int3	   \n\t"
+ 	      "4:  mov %%esi, %%ebp   \n\t"
+ 	      : [expected_rsp] "=m" (expected_rsp)
+-	      : [ss] "r" (0x7), [orig_ss] "m" (orig_ss)
+-		 : "eax", "ecx", "edx", "esi", "flags"
++	      : [ss] "n" (0x7), [orig_ss] "r" (orig_ss)
++		 : "eax", "ecx", "edx", "esi", "ebp", "flags"
+ 	);
+ #endif
+ }
+@@ -328,10 +330,14 @@ static int perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
+ static int event_mlock_kb;
+ static int max_sample_rate;
+ 
+-static void *child_thread(void *arg LTP_ATTRIBUTE_UNUSED)
++static void *child_thread(void *arg)
+ {
++	/*
++	 * orig_ss must not be accessed via address relative to %esp,
++	 * otherwise mov %[orig_ss], %%ss above will always segfault
++	 */
++	unsigned short *orig_ss = arg;
+ 	long niter = 0;
+-	unsigned short orig_ss;
+ 
+ 	struct perf_event_attr pe = {
+ 		.size = sizeof(struct perf_event_attr),
+@@ -388,7 +394,7 @@ static void *child_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ 		SAFE_CLOSE(fd);
+ 	}
+ 
+-	asm volatile ("mov %%ss, %0" : "=rm" (orig_ss));
++	asm volatile ("mov %%ss, (%0)" :: "r" (orig_ss));
+ 
+ 	for (niter = 0; running && niter < 1000*1000*1000L; niter++) {
+ 
+@@ -414,6 +420,7 @@ static void do_child(void)
+ 	int i, ncpus;
+ 	pthread_t *threads;
+ 	long iter, total_iter = 0;
++	unsigned short *orig_ss;
+ 
+ 	tst_res(TINFO, "attempting to corrupt nested NMI stack state");
+ 
+@@ -421,9 +428,12 @@ static void do_child(void)
+ 
+ 	ncpus = tst_ncpus();
+ 	threads = SAFE_MALLOC(sizeof(*threads) * ncpus);
++	orig_ss = SAFE_MALLOC(sizeof(unsigned short) * ncpus);
+ 
+-	for (i = 0; i < ncpus; i++)
+-		SAFE_PTHREAD_CREATE(&threads[i], NULL, child_thread, NULL);
++	for (i = 0; i < ncpus; i++) {
++		SAFE_PTHREAD_CREATE(&threads[i], NULL, child_thread,
++			&orig_ss[i]);
++	}
+ 
+ 	sleep(tst_remaining_runtime());
+ 	running = 0;
+@@ -432,6 +442,7 @@ static void do_child(void)
+ 		SAFE_PTHREAD_JOIN(threads[i], (void **)&iter);
+ 		total_iter += iter;
+ 	}
++	free(orig_ss);
+ 	free(threads);
+ 
+ 	tst_res(TPASS, "can't corrupt nested NMI state after %ld iterations",
+-- 
+2.46.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
