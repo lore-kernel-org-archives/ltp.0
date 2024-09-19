@@ -4,91 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22AEFCE8D61
-	for <ltp@archiver.kernel.org>; Thu, 19 Sep 2024 09:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1726737083; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=1jM6x0LjOU+FqxFjm8pYQqyGlgIobrl+6c/rivTJDr4=;
- b=dFPhg0swW6prPZXuOwfdpXCiTfUubymA4MkoPMtU9KHtGtwA/lwSO3PrvZM3TXf6Fpirb
- bVDPnkDpAAWsVrkRaoc5w8+ubEYoHSYInRhVPJXqQVU/Nf0odYkUJJpY2LgxMnM2v6LT0Ij
- Gj62wNldMzGwpMJQoB4LXkn7nB8GbdI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36101CE8D75
+	for <ltp@archiver.kernel.org>; Thu, 19 Sep 2024 10:23:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CDEFB3C2F57
-	for <ltp@archiver.kernel.org>; Thu, 19 Sep 2024 11:11:23 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id EDAE83C2FAB
+	for <ltp@archiver.kernel.org>; Thu, 19 Sep 2024 12:23:35 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD6AA3C2F2E
- for <ltp@lists.linux.it>; Thu, 19 Sep 2024 11:11:02 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
- helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 4A7993C2F5B
+ for <ltp@lists.linux.it>; Thu, 19 Sep 2024 12:23:19 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8D0E36233C6
- for <ltp@lists.linux.it>; Thu, 19 Sep 2024 11:11:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1726737061; x=1758273061;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=fah6AQ/Bxw426bzAuSyNXaFqt4DUmbBoFiUXoB5kMhU=;
- b=ALGu6UY6h2nLDbzv5gIsy7vi0jW/oRMhdwiANf68K8qB77sBxA5C9bPB
- k9bjUpEyD+iFgV0Gtx+dn1uqZfeeHC/UoN+I2nOYLohS2kohCEWyGMoVp
- nSIfvxlF10Oa4k0qaSon96ZUsA57j1z8W1vVCmPw0y4t+WGZuBq71VpU0
- oO+uOogJ8mdwVMK0veliSe2ajOZxr6RDezcuSERybmLOxAJoe6bYR1GgL
- ZtY2kd/O3I5PrxPJnRMaf7z3QBzS+nKi5r9waTmndA4MmpB1hmYAM2Adk
- BP+Su3Vu46EkFaujLZXEDd6DsooS05bYZ5qQke56O/hHrIA2exwUqKZkL w==;
-X-CSE-ConnectionGUID: arTvp6aZRfmS52ErAL+X2Q==
-X-CSE-MsgGUID: WOT76hXuSImrcxQj2UqbcQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11199"; a="161557094"
-X-IronPort-AV: E=Sophos;i="6.10,241,1719846000"; d="scan'208";a="161557094"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2024 18:10:59 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
- [192.168.83.65])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 034E9D4F58
- for <ltp@lists.linux.it>; Thu, 19 Sep 2024 18:10:57 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 008E3D5BA2
- for <ltp@lists.linux.it>; Thu, 19 Sep 2024 18:10:55 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 7A56920086EAB
- for <ltp@lists.linux.it>; Thu, 19 Sep 2024 18:10:54 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id CFC941A000B;
- Thu, 19 Sep 2024 17:10:53 +0800 (CST)
-To: ltp@lists.linux.it,
-	chrubis@suse.cz
-Date: Thu, 19 Sep 2024 17:12:30 +0800
-Message-ID: <20240919091230.570477-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.42.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 846DF601151
+ for <ltp@lists.linux.it>; Thu, 19 Sep 2024 12:23:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CA975208AE
+ for <ltp@lists.linux.it>; Thu, 19 Sep 2024 10:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726741397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CM2mBO1j9IRh1tM2LzMpkkNfTlmbPkUBc0HhvpliX6g=;
+ b=f6Xy7z6DKn7xgzdM9d3DWuNfISfZWC2zBacYqKz26nL0ghSfv2AzeFHtUtwkKLiFYYvpKA
+ BbvmtUhOzG0HMPfNVL2itGPGXOSedgJaWurkgpnOGtd7ZZJ7IpRqGTmBwZ5qx7eYx4Y+ZT
+ oXfPF3vZu/3DG52omxmx5M6nCBcEGsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726741397;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CM2mBO1j9IRh1tM2LzMpkkNfTlmbPkUBc0HhvpliX6g=;
+ b=v/FP+NFcV1i2vJc4DLWkeKfvo8s4/y8/j8DrI+t4FrHHwluBDAXZUpuw+udOFES0GeH8hp
+ B3NcziKq01bkrNAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1726741397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CM2mBO1j9IRh1tM2LzMpkkNfTlmbPkUBc0HhvpliX6g=;
+ b=f6Xy7z6DKn7xgzdM9d3DWuNfISfZWC2zBacYqKz26nL0ghSfv2AzeFHtUtwkKLiFYYvpKA
+ BbvmtUhOzG0HMPfNVL2itGPGXOSedgJaWurkgpnOGtd7ZZJ7IpRqGTmBwZ5qx7eYx4Y+ZT
+ oXfPF3vZu/3DG52omxmx5M6nCBcEGsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1726741397;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CM2mBO1j9IRh1tM2LzMpkkNfTlmbPkUBc0HhvpliX6g=;
+ b=v/FP+NFcV1i2vJc4DLWkeKfvo8s4/y8/j8DrI+t4FrHHwluBDAXZUpuw+udOFES0GeH8hp
+ B3NcziKq01bkrNAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B452A13AAA
+ for <ltp@lists.linux.it>; Thu, 19 Sep 2024 10:23:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wD6VKpX762ZkBAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 19 Sep 2024 10:23:17 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 19 Sep 2024 12:23:08 +0200
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28674.001
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28674.001
-X-TMASE-Result: 10--11.914900-10.000000
-X-TMASE-MatchedRID: cSoPLjBYd51SuJfEWZSQfB1kSRHxj+Z5TJDl9FKHbrk6FHRWx2FGsP/6
- Rwrmf2vUhjf50HClX+Dmn3xyPJAJoimyf2R1E4xpGYJhRh6ssesfimmlcABuNyfJTn+dmnFQGmV
- udEhnpoTyZnEl0t0euxbvb8FR053hV9AgBtmvFeWqh5pv1eDPz/lSepWcgdLPWSYg69K24mxrQg
- SRg6yiRfNa5GcjfgJtg5TiQkMQ4aqOrUPm9PNUUt9JA2lmQRNUHLMdyB+LKtyJQ38lB610wqPFj
- JEFr+olwXCBO/GKkVr3FLeZXNZS4DjAdLIal4R6l36gyHGm9yf3uDOZeRmSl+4ZYiXL8bYVXjub
- qrncadwvFAH/K6X6lQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+Message-Id: <20240919-landlock_network-v1-2-9c997f03bd0a@suse.com>
+References: <20240919-landlock_network-v1-0-9c997f03bd0a@suse.com>
+In-Reply-To: <20240919-landlock_network-v1-0-9c997f03bd0a@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1726741397; l=3965;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=dlAHOYK/cKldhqwY5Xd2a25OafLUA4+oegT1EtyhDqM=;
+ b=O5wL1RLbrRvM8+0MrG9TNz61kxJmKwYyTVSOSd5LLsUdRmaNfxmdpskUyDHt1FzVZRJGyzb45
+ 4GFIpHZXkaAC+tnbbHnwuZF+mydgS5XnTsDtBLGA2gtDrnGlFcP6OOw
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] rt_sigqueueinfo02: Add negative tests for
- rt_sigqueueinfo
+Subject: [LTP] [PATCH 2/5] Network helpers in landlock suite common functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,156 +121,130 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add negative cases for rt_sigqueueinfo(), when errno is EINVAL, EPERM or ESRCH
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+Landlock suite helpers functions don't support network features. This
+patch adds apply_landlock_net_layer() helper that can be used to apply a
+network landlock rule in the current sandbox.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                              |   1 +
- .../syscalls/rt_sigqueueinfo/.gitignore       |   1 +
- .../rt_sigqueueinfo/rt_sigqueueinfo02.c       | 106 ++++++++++++++++++
- 3 files changed, 108 insertions(+)
- create mode 100644 testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo02.c
+ testcases/kernel/syscalls/landlock/landlock05.c    |  4 +--
+ testcases/kernel/syscalls/landlock/landlock06.c    |  2 +-
+ .../kernel/syscalls/landlock/landlock_common.h     | 39 ++++++++++++++++++++--
+ 3 files changed, 39 insertions(+), 6 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 02e721df9..837fa5699 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1224,6 +1224,7 @@ rt_sigaction03 rt_sigaction03
- rt_sigprocmask01 rt_sigprocmask01
- rt_sigprocmask02 rt_sigprocmask02
- rt_sigqueueinfo01 rt_sigqueueinfo01
-+rt_sigqueueinfo02 rt_sigqueueinfo02
- rt_sigsuspend01 rt_sigsuspend01
- rt_sigtimedwait01 rt_sigtimedwait01
- rt_tgsigqueueinfo01 rt_tgsigqueueinfo01
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/.gitignore b/testcases/kernel/syscalls/rt_sigqueueinfo/.gitignore
-index 37cd20621..a26811b08 100644
---- a/testcases/kernel/syscalls/rt_sigqueueinfo/.gitignore
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/.gitignore
-@@ -1 +1,2 @@
- /rt_sigqueueinfo01
-+/rt_sigqueueinfo02
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo02.c b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo02.c
-new file mode 100644
-index 000000000..319ef95c6
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo02.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-+ * Author: Ma Xinjian <maxj.fnst@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that, rt_sigqueueinfo(2) sets errno to
-+ *
-+ * - EINVAL if sig is invalid
-+ * - EPERM if uinfo->si_code is invalid
-+ * - ESRCH if no thread group matching tgid is found
-+ */
-+
-+#include <pwd.h>
-+#include <signal.h>
-+#include "config.h"
-+#include "tst_test.h"
-+
-+#ifdef HAVE_STRUCT_SIGACTION_SA_SIGACTION
-+#include "rt_sigqueueinfo.h"
-+
-+static siginfo_t siginfo_einval;
-+static siginfo_t siginfo_eperm;
-+static siginfo_t siginfo_esrch;
-+
-+static pid_t tgid_notfound = -1;
-+
-+static struct test_case_t {
-+	pid_t *tgid;
-+	int sig;
-+	siginfo_t *uinfo;
-+	int expected_errno;
-+	char *desc;
-+} tcases[] = {
-+	{NULL, -1, &siginfo_einval, EINVAL, "sig is invalid"},
-+	{NULL, SIGUSR1, &siginfo_eperm, EPERM, "uinfo->si_code is invalid"},
-+	{&tgid_notfound, SIGUSR1, &siginfo_esrch, ESRCH,
-+		"no thread group matching tgid is found"},
-+};
-+
-+static void setup(void)
+diff --git a/testcases/kernel/syscalls/landlock/landlock05.c b/testcases/kernel/syscalls/landlock/landlock05.c
+index 4efe19eb5..f0afad11a 100644
+--- a/testcases/kernel/syscalls/landlock/landlock05.c
++++ b/testcases/kernel/syscalls/landlock/landlock05.c
+@@ -70,13 +70,13 @@ static void setup(void)
+ 	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+ 		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr), 0);
+ 
+-	apply_landlock_rule(
++	apply_landlock_fs_rule(
+ 		path_beneath_attr,
+ 		ruleset_fd,
+ 		LANDLOCK_ACCESS_FS_REFER,
+ 		DIR1);
+ 
+-	apply_landlock_rule(
++	apply_landlock_fs_rule(
+ 		path_beneath_attr,
+ 		ruleset_fd,
+ 		LANDLOCK_ACCESS_FS_REFER,
+diff --git a/testcases/kernel/syscalls/landlock/landlock06.c b/testcases/kernel/syscalls/landlock/landlock06.c
+index 39e0856e3..f04df2ff1 100644
+--- a/testcases/kernel/syscalls/landlock/landlock06.c
++++ b/testcases/kernel/syscalls/landlock/landlock06.c
+@@ -59,7 +59,7 @@ static void setup(void)
+ 	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+ 		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr), 0);
+ 
+-	apply_landlock_layer(
++	apply_landlock_fs_layer(
+ 		ruleset_attr,
+ 		path_beneath_attr,
+ 		MNTPOINT,
+diff --git a/testcases/kernel/syscalls/landlock/landlock_common.h b/testcases/kernel/syscalls/landlock/landlock_common.h
+index c0bf88e4c..a955340bf 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_common.h
++++ b/testcases/kernel/syscalls/landlock/landlock_common.h
+@@ -33,7 +33,7 @@ static inline int verify_landlock_is_enabled(void)
+ 	return abi;
+ }
+ 
+-static inline void apply_landlock_rule(
++static inline void apply_landlock_fs_rule(
+ 	struct landlock_path_beneath_attr *path_beneath_attr,
+ 	const int ruleset_fd,
+ 	const int access,
+@@ -51,13 +51,29 @@ static inline void apply_landlock_rule(
+ 	SAFE_CLOSE(path_beneath_attr->parent_fd);
+ }
+ 
++static inline void apply_landlock_net_rule(
++	struct landlock_net_port_attr *net_attr,
++	const int ruleset_fd,
++	const uint64_t port,
++	const uint64_t access)
 +{
-+	siginfo_einval.si_code = SI_QUEUE;
-+	siginfo_eperm.si_code = 0;
-+	siginfo_esrch.si_code = SI_QUEUE;
++	net_attr->port = port;
++	net_attr->allowed_access = access;
++
++	SAFE_LANDLOCK_ADD_RULE(
++		ruleset_fd,
++		LANDLOCK_RULE_NET_PORT,
++		net_attr,
++		0);
 +}
 +
-+static void sig_handler(int sig)
-+{
-+	tst_res(TINFO, "Receive signal %s(%d)", tst_strsig(sig), sig);
+ static inline void enforce_ruleset(const int ruleset_fd)
+ {
+ 	SAFE_PRCTL(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+ 	SAFE_LANDLOCK_RESTRICT_SELF(ruleset_fd, 0);
+ }
+ 
+-static inline void apply_landlock_layer(
++static inline void apply_landlock_fs_layer(
+ 	struct tst_landlock_ruleset_attr *ruleset_attr,
+ 	struct landlock_path_beneath_attr *path_beneath_attr,
+ 	const char *path,
+@@ -68,7 +84,24 @@ static inline void apply_landlock_layer(
+ 	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+ 		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr), 0);
+ 
+-	apply_landlock_rule(path_beneath_attr, ruleset_fd, access, path);
++	apply_landlock_fs_rule(path_beneath_attr, ruleset_fd, access, path);
++	enforce_ruleset(ruleset_fd);
++
++	SAFE_CLOSE(ruleset_fd);
 +}
 +
-+static void parent_do(struct test_case_t *tc, pid_t pid)
++static inline void apply_landlock_net_layer(
++	struct tst_landlock_ruleset_attr *ruleset_attr,
++	struct landlock_net_port_attr *net_port_attr,
++	const uint64_t port,
++	const uint64_t access)
 +{
-+	pid_t real_pid;
++	int ruleset_fd;
 +
-+	if (tc->tgid)
-+		real_pid = *(tc->tgid);
-+	else
-+		real_pid = pid;
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
++		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr), 0);
 +
-+	TST_EXP_FAIL(sys_rt_sigqueueinfo(real_pid, tc->sig, tc->uinfo),
-+		tc->expected_errno, "%s", tc->desc);
-+	TST_CHECKPOINT_WAKE(1);
-+}
-+
-+static void child_do(void)
-+{
-+	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAIT(1);
-+}
-+
-+static void verify_rt_sigqueueinfo(unsigned int i)
-+{
-+	struct test_case_t *tc = &tcases[i];
-+	pid_t pid = SAFE_FORK();
-+
-+	if (!pid) {
-+		child_do();
-+		exit(0);
-+	}
-+	TST_CHECKPOINT_WAIT(0);
-+	parent_do(tc, pid);
-+	SAFE_WAITPID(pid, NULL, 0);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_rt_sigqueueinfo,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&siginfo_einval, .size = sizeof(siginfo_einval)},
-+		{&siginfo_eperm, .size = sizeof(siginfo_eperm)},
-+		{&siginfo_esrch, .size = sizeof(siginfo_esrch)},
-+		{},
-+	}
-+};
-+
-+#else
-+	TST_TEST_TCONF("This system does not support rt_sigqueueinfo()");
-+#endif /* HAVE_STRUCT_SIGACTION_SA_SIGACTION */
++	apply_landlock_net_rule(net_port_attr, ruleset_fd, port, access);
+ 	enforce_ruleset(ruleset_fd);
+ 
+ 	SAFE_CLOSE(ruleset_fd);
+
 -- 
-2.42.0
+2.43.0
 
 
 -- 
