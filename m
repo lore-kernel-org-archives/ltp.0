@@ -4,80 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5E6BCF58F1
-	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 08:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1726822101; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=2urPBc6HniQ8FTHMOjdy5o+UA88Syv1FRtIZnSVzZcQ=;
- b=SCvIwzm60w4Xt6JDSktc6tFdxEW72LAj1Pm2jfs4brNQml5ruTsDkM81txDmQaUdYqjfQ
- Ic+or2mKpOoAgZktUp/eJE7cQqIAhYGki/Shou9jTiKBUMR9hiDO44QDYMLOwKlueV+1CGM
- 4JsY3DvQdWlCXQ76gQDjuHWYUur03Kg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C62CF58F4
+	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 08:59:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7160F3C301D
-	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 10:48:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2E2BE3C2FBF
+	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 10:59:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 14AA23C28AC
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:30:44 +0200 (CEST)
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
- [IPv6:2607:f8b0:4864:20::42c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 81E1D3C020C
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:59:19 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8AC85208F8F
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:30:43 +0200 (CEST)
-Received: by mail-pf1-x42c.google.com with SMTP id
- d2e1a72fcca58-7191fb54147so1316076b3a.2
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 01:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=shopee.com; s=shopee.com; t=1726821041; x=1727425841; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=BYR4jeI4HaVoZDExVlC3ZW83o29iZco+Lcuti2F/fwU=;
- b=ZPRusIvy9zvkTLRT0sc77JtsodUzYt63vyMdtp8nw0o/PXHsr98Rdm76SYX6KoxDR9
- YLaDMZUH+UBCIoqueLZSraY8wUlfXB1g5xhmG8tkg/LrGKdFZD/sQYLDM6IA8Iu4gIzf
- qBdT85eE2QUt8lEGkkJqt1Krjva19cakjmXFUXLZMHWRnLdzbnJWf/MuVBC2i3Wke90x
- x8xEDopFqe1asDvnz0jowdvpR+N66wOAzZ809hPIKdeDOy24PjhDbq9V9eushdjM/wTc
- MAPHBLyyK6Hz2OY18k+Jkjcw6qF/qo1FvZIqd/lE7wgY6ZUaLOazm0BJTgZ7V+xyRvdk
- RN9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1726821041; x=1727425841;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=BYR4jeI4HaVoZDExVlC3ZW83o29iZco+Lcuti2F/fwU=;
- b=UckXSuAr/V/9ks8H8K66HL6qxeRJCAj/NCzzXhzRggGg/PLJM+nwB1D6ouw1QmCcHr
- rZA57x80J46HvLpY1cP145j+H/lBSuG1ubvKwTfPfq4YBkC1/flaW67sO1S9DmO2PAqK
- LLDj8UYers+6Jb1Id7DA/t9/S9ju4Qbf51jZQTu1x6wefieLNPVzIClPnD1BXv6E+C5K
- dPhyoIM6I0cWh566l7P83gmdWJwkVQHJ0jqGINWZIA0us8WT6rCFwT2aPXpN0j5Xt0KS
- k45OhNPZmzTMPbPvTk4GI0rvOHNT+B1E3KCaqPqRVktFe+QuN6hODhjERl31njWJzcBn
- kHAQ==
-X-Gm-Message-State: AOJu0YwZm5oEQlOWGA3K9F/2gESJFOiw/c/+bNw9GaAdRN5c9VJLeX0E
- o6b2omdaIVTzOAUt1Jfl0dqs29f/fx7xETTuIdKf1uN7PhQyGnaimsXlfvsjehPVriXtYu9R/xN
- xsHcDzQ==
-X-Google-Smtp-Source: AGHT+IGakqZe8n157UYbE6UQg7db++dTA9ooA4+qNVXVpVImKJjo8G6f5AY3osj6eaFCHlBYtc6Otw==
-X-Received: by 2002:a05:6a00:92a2:b0:710:da27:f176 with SMTP id
- d2e1a72fcca58-7199cd6bbc4mr3504760b3a.12.1726821041106; 
- Fri, 20 Sep 2024 01:30:41 -0700 (PDT)
-Received: from localhost.localdomain ([143.92.64.17])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-71944a97e87sm9337537b3a.1.2024.09.20.01.30.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 20 Sep 2024 01:30:40 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Fri, 20 Sep 2024 16:30:36 +0800
-Message-Id: <20240920083036.87291-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D7987205CFE
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:59:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B0B341F801;
+ Fri, 20 Sep 2024 08:59:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1726822756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
+ b=Sn77kvDz8bzI9fKmgprXu40b4i0kXnl08+v8D1CCQPQamr1GoNw95nPhXFXow8S9yKwkCd
+ z4Fpkv0hyMEmwbd6D4BhMtyvU0L7l1UGbwqxdFJ5RmeTWA5KWRPupGUHxEvlgCtCbqJTk/
+ 8Cts2rQ2hNBktBNZFn+biL7Md+IjvSw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1726822756;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
+ b=eqBs+Wy/p/+YgAija1i1p0wD+witpmpN0vRYqoz5YuXPqS+e/wzGXcAqldA2vQsB1Y9dPB
+ TvFEix/CJ8tzMkAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1726822756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
+ b=Sn77kvDz8bzI9fKmgprXu40b4i0kXnl08+v8D1CCQPQamr1GoNw95nPhXFXow8S9yKwkCd
+ z4Fpkv0hyMEmwbd6D4BhMtyvU0L7l1UGbwqxdFJ5RmeTWA5KWRPupGUHxEvlgCtCbqJTk/
+ 8Cts2rQ2hNBktBNZFn+biL7Md+IjvSw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1726822756;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
+ b=eqBs+Wy/p/+YgAija1i1p0wD+witpmpN0vRYqoz5YuXPqS+e/wzGXcAqldA2vQsB1Y9dPB
+ TvFEix/CJ8tzMkAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EB4413AA7;
+ Fri, 20 Sep 2024 08:59:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mo6ZJWQ57WYQagAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Sep 2024 08:59:16 +0000
+Date: Fri, 20 Sep 2024 10:58:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Haifeng Xu <haifeng.xu@shopee.com>
+Message-ID: <Zu05HskauxnYheRd@yuki.lan>
+References: <20240920083036.87291-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240920083036.87291-1-haifeng.xu@shopee.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 20 Sep 2024 10:48:00 +0200
-Subject: [LTP] [PATCH] ht_affinity.c: fix ht_affinity test failure
+Subject: Re: [LTP] [PATCH] ht_affinity.c: fix ht_affinity test failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,87 +109,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Haifeng Xu via ltp <ltp@lists.linux.it>
-Reply-To: Haifeng Xu <haifeng.xu@shopee.com>
-Cc: Haifeng Xu <haifeng.xu@shopee.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Running ht_affinity test fails:
+Hi!
+> The type of cpumask pointer used in set_affinity() is unsigned long, but
+> ht_affinity used a unsigned int pointer. When kernel copy cpumask from
+> user-space pointer, the high 32bit of cpumask is a random value. So the
+> process can't be bind to the cpu specified by users.
 
-	smt_smp_affinity    0  TINFO  :  Set affinity through system call
-	smt_smp_affinity    0  TINFO  :  Set test process affinity.
-	mask: 1
-	smt_smp_affinity    0  TINFO  :  ...Error
-
-	...
-
-	smt_smp_affinity    0  TINFO  :  Set test process affinity.
-	mask: c0000000
-	smt_smp_affinity    0  TINFO  :  ...Error
-	smt_smp_affinity    3  TFAIL  :  ht_affinity.c:240: System call setaffinity() is error.
-
-The type of cpumask pointer used in set_affinity() is unsigned long, but
-ht_affinity used a unsigned int pointer. When kernel copy cpumask from
-user-space pointer, the high 32bit of cpumask is a random value. So the
-process can't be bind to the cpu specified by users.
-
-After converting the cpumask from unsigned int to unsigned long, ht_affinity
-test succeeds:
-
-	smt_smp_affinity    0  TINFO  :  Set affinity through system call
-	smt_smp_affinity    0  TINFO  :  Set test process affinity.
-	mask: 1
-	smt_smp_affinity    0  TINFO  :  ...OK
-
-	...
-
-	smt_smp_affinity    0  TINFO  :  Set test process affinity.
-	mask: c0000000
-	smt_smp_affinity    0  TINFO  :  ...OK
-	smt_smp_affinity    3  TPASS  :  System call setaffinity() is OK.
-
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- .../kernel/sched/hyperthreading/ht_affinity/ht_affinity.c   | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Good catch, however it would be better if we used sizeof on the mask
+instead of sizeof(unsigned long) in the sched_setaffinity() as well:
 
 diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
-index f6e9f2745..e6829c2d2 100644
+index f6e9f2745..3c2fe1bf1 100644
 --- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
 +++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
-@@ -48,7 +48,7 @@ len - length in bytes of the bitmask pointed to by user_mask_ptr.
- 
- int HT_SetAffinity(void)
- {
--	unsigned int mask;
-+	unsigned long mask;
- 	pid_t pid;
- 	int result = 1;
- 	int cpu_count, i, j, k, cpuid;
-@@ -65,7 +65,7 @@ int HT_SetAffinity(void)
- 
- 	for (i = 0, mask = 0x1; i < cpu_count; i++, mask = mask << 1) {
- 		tst_resm(TINFO, "Set test process affinity.");
--		printf("mask: %x\n", mask);
-+		printf("mask: %lx\n", mask);
- 
- 		sched_setaffinity(pid, sizeof(unsigned long), &mask);
- 
-@@ -93,7 +93,7 @@ int HT_SetAffinity(void)
- 
- 	for (i = 0, mask = 0x3; i < cpu_count - 1; i++, mask = mask << 1) {
- 		tst_resm(TINFO, "Set test process affinity.");
--		printf("mask: %x\n", mask);
-+		printf("mask: %lx\n", mask);
- 
- 		sched_setaffinity(pid, sizeof(unsigned long), &mask);
- 
--- 
-2.25.1
+@@ -67,7 +67,7 @@ int HT_SetAffinity(void)
+                tst_resm(TINFO, "Set test process affinity.");
+                printf("mask: %x\n", mask);
 
+-               sched_setaffinity(pid, sizeof(unsigned long), &mask);
++               sched_setaffinity(pid, sizeof(mask), &mask);
+
+                for (j = 0; j < 10; j++) {
+                        for (k = 0; k < 10; k++) {
+@@ -95,7 +95,7 @@ int HT_SetAffinity(void)
+                tst_resm(TINFO, "Set test process affinity.");
+                printf("mask: %x\n", mask);
+
+-               sched_setaffinity(pid, sizeof(unsigned long), &mask);
++               sched_setaffinity(pid, sizeof(mask), &mask);
+
+                for (j = 0; j < 10; j++) {
+                        for (k = 0; k < 10; k++) {
+
+
+
+Most of the code does that already which makes it impossible to pass
+different size than the actual size.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
