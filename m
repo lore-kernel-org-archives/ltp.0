@@ -4,100 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C62CF58F4
-	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 08:59:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5965FCE8D75
+	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 10:13:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E2BE3C2FBF
-	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 10:59:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 282843C3023
+	for <ltp@archiver.kernel.org>; Fri, 20 Sep 2024 12:13:51 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 81E1D3C020C
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:59:19 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id BA9EF3C2DE4
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 12:13:36 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D7987205CFE
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 10:59:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0B341F801;
- Fri, 20 Sep 2024 08:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1726822756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D699C60E6BC
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 12:13:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1726827214;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
- b=Sn77kvDz8bzI9fKmgprXu40b4i0kXnl08+v8D1CCQPQamr1GoNw95nPhXFXow8S9yKwkCd
- z4Fpkv0hyMEmwbd6D4BhMtyvU0L7l1UGbwqxdFJ5RmeTWA5KWRPupGUHxEvlgCtCbqJTk/
- 8Cts2rQ2hNBktBNZFn+biL7Md+IjvSw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1726822756;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
- b=eqBs+Wy/p/+YgAija1i1p0wD+witpmpN0vRYqoz5YuXPqS+e/wzGXcAqldA2vQsB1Y9dPB
- TvFEix/CJ8tzMkAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1726822756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
- b=Sn77kvDz8bzI9fKmgprXu40b4i0kXnl08+v8D1CCQPQamr1GoNw95nPhXFXow8S9yKwkCd
- z4Fpkv0hyMEmwbd6D4BhMtyvU0L7l1UGbwqxdFJ5RmeTWA5KWRPupGUHxEvlgCtCbqJTk/
- 8Cts2rQ2hNBktBNZFn+biL7Md+IjvSw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1726822756;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6dBqQKvGHZ2nNHRw15sldfuW7Mv7YbRbwbFQhfRHXPY=;
- b=eqBs+Wy/p/+YgAija1i1p0wD+witpmpN0vRYqoz5YuXPqS+e/wzGXcAqldA2vQsB1Y9dPB
- TvFEix/CJ8tzMkAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EB4413AA7;
- Fri, 20 Sep 2024 08:59:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mo6ZJWQ57WYQagAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 20 Sep 2024 08:59:16 +0000
-Date: Fri, 20 Sep 2024 10:58:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Haifeng Xu <haifeng.xu@shopee.com>
-Message-ID: <Zu05HskauxnYheRd@yuki.lan>
-References: <20240920083036.87291-1-haifeng.xu@shopee.com>
+ bh=Vf9RroRD/2McHvwl/nLlF+1kngs2ueqkO9/46NYIbOA=;
+ b=I62wR8OQVbPptHdWtOWChSpGX/ibSIizuVrm2bAfNbLMevaDDT6WV/pPLra9p9GkEboBu0
+ 2gzR3iuvmiwOClB5fKn0ZpkPokMFh2+HBi9b5y+Dblz0oRLrPwqvYWqzp2AMt+M9jerlwY
+ nYMF0zXZxTwsQBwzuqesY/PSyDCF5qY=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-sGE5EcvXNFCLUOS9dH_5og-1; Fri, 20 Sep 2024 06:13:32 -0400
+X-MC-Unique: sGE5EcvXNFCLUOS9dH_5og-1
+Received: by mail-pf1-f197.google.com with SMTP id
+ d2e1a72fcca58-7179469744dso2979409b3a.2
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 03:13:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1726827211; x=1727432011;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Vf9RroRD/2McHvwl/nLlF+1kngs2ueqkO9/46NYIbOA=;
+ b=Yq/Xt5IbPAQOGBJQ0wCep9MJRPdtAkR75vbItGBqSY4po+OKcJEp+vBUaeIHwUYIZc
+ etzI8R8iJqOPw41sM5De56cAV16BwwrOH6RiKHaw2B08zrjGQJs/WYVjVgAGA91PHpqa
+ knPI5L1Az7yJZj0lwObCNramXM7oTBkU5coaQS+KLHEYrEL00brhc0j5YbreTbtUfVJO
+ V5kj2ZMLVCuLuu6e9t3t8YCNiEQEf3LGR2Kc7h1sQW4IrLAJpVbSCg8WZL6MEw6P50t9
+ Rf0ySuJBffvf2pUYX4UL7s3I7J/8oWVw27c7fBuMvHdajRmAUeEnyUu08rmqp8xnEAci
+ 04Dw==
+X-Gm-Message-State: AOJu0YzYIVDAllMFC6pLMgN0P0t1gD8NJiGi4ynFvzQynwlQQPLKvzHf
+ gg7Z7S3uLxovSndzDGuh4y70JiIrMI5qkw8JPjq6lUGfZmU/n5Z+za4jQP+dfC16QodoAvuXJ0t
+ EQ3I/HgZVhYwwGIfzl3EboHqq/jhsQeKXZ8yYg6A7oDFncuRAugvTLSI4F+O7WKm+oo0rl0BRYX
+ DhAiFQKA7Yp4R6NF+bgPHTBFsJLZbBu8l2DL3Q
+X-Received: by 2002:a05:6a00:194d:b0:719:1df4:9d02 with SMTP id
+ d2e1a72fcca58-7199ca03441mr3260842b3a.25.1726827210761; 
+ Fri, 20 Sep 2024 03:13:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFXZ1kPZyFZfO2nq4h2VO+BmR7xLyWbP1oPaKoAahEAQST0mVfFDWHvnjn/wKQhZ7WLSLIEd+vKuxJhDE96iI0=
+X-Received: by 2002:a05:6a00:194d:b0:719:1df4:9d02 with SMTP id
+ d2e1a72fcca58-7199ca03441mr3260814b3a.25.1726827210319; Fri, 20 Sep 2024
+ 03:13:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240920083036.87291-1-haifeng.xu@shopee.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+References: <ZtWLSQSSqmh0tn13@yuki.lan> <ZufqsLiVuMG_TqQN@yuki.lan>
+ <ZuruTPoOHdW5G2jm@yuki.lan>
+In-Reply-To: <ZuruTPoOHdW5G2jm@yuki.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 20 Sep 2024 18:13:17 +0800
+Message-ID: <CAEemH2c_hKCMwRVFxV7Hqz2N5NN8iSgQ5bJ83XOWgStxEMkWQg@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ht_affinity.c: fix ht_affinity test failure
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,51 +92,19 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> The type of cpumask pointer used in set_affinity() is unsigned long, but
-> ht_affinity used a unsigned int pointer. When kernel copy cpumask from
-> user-space pointer, the high 32bit of cpumask is a random value. So the
-> process can't be bind to the cpu specified by users.
-
-Good catch, however it would be better if we used sizeof on the mask
-instead of sizeof(unsigned long) in the sched_setaffinity() as well:
-
-diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
-index f6e9f2745..3c2fe1bf1 100644
---- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_affinity.c
-@@ -67,7 +67,7 @@ int HT_SetAffinity(void)
-                tst_resm(TINFO, "Set test process affinity.");
-                printf("mask: %x\n", mask);
-
--               sched_setaffinity(pid, sizeof(unsigned long), &mask);
-+               sched_setaffinity(pid, sizeof(mask), &mask);
-
-                for (j = 0; j < 10; j++) {
-                        for (k = 0; k < 10; k++) {
-@@ -95,7 +95,7 @@ int HT_SetAffinity(void)
-                tst_resm(TINFO, "Set test process affinity.");
-                printf("mask: %x\n", mask);
-
--               sched_setaffinity(pid, sizeof(unsigned long), &mask);
-+               sched_setaffinity(pid, sizeof(mask), &mask);
-
-                for (j = 0; j < 10; j++) {
-                        for (k = 0; k < 10; k++) {
-
-
-
-Most of the code does that already which makes it impossible to pass
-different size than the actual size.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQ3lyaWwsCgpPbiBXZWQsIFNlcCAxOCwgMjAyNCBhdCAxMToxNeKAr1BNIEN5cmlsIEhydWJp
+cyA8Y2hydWJpc0BzdXNlLmN6PiB3cm90ZToKCj4gSGkhCj4gQW5kIGFzIG9mIHRvZGF5IEkgd291
+bGQgbGlrZSB0byBkZWNsYXJlIGdpdCBmcmVlemUsIGZyb20gbm93IG9uIG9ubHkKPiBmaXhlcyBj
+YW4gZ28gaW50byB0aGUgZ2l0IHVudGlsIHRoZSByZWxlYXNlIGlzIHRhZ2dlZWQuCj4KPiBFdmVy
+eW9uZSBwbGVhc2Ugc3RhcnQgd2l0aCBwcmUtcmVsZWFzZSB0ZXN0aW5nLgo+CgpMVFAgcHJlLXJl
+bGVhc2UgdGVzdHMgKG9uIFJIRUwgc2VyaWVzIHByb2R1Y3RzIGFuZCBtYWlubGluZSBrZXJuZWwK
+djYuMTEtcmM2KQphbGwgbG9vayBnb29kIGZyb20gbXkgc2lkZS4KCkFuZCBJIGhhdmUgYSB0aW55
+IGZpeCB0aGF0IG1heSBuZWVkIG1lcmdlOgogIGh0dHBzOi8vbGlzdHMubGludXguaXQvcGlwZXJt
+YWlsL2x0cC8yMDI0LVNlcHRlbWJlci8wNDAyODguaHRtbAoKLS0gClJlZ2FyZHMsCkxpIFdhbmcK
+Ci0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
+dHAK
