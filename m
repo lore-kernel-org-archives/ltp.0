@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AA3CF9C68
-	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 02:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2698FCF9C6E
+	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 04:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1726892256; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=SstnUaghQ7tZUPIPuRBTGPuwD8pJu2C9TrIVt59OCiU=;
+ b=hPAizBDR8/+3A4JRsDHQkWB2oa+lTpyvqznQ/ZpXa6pGhnUAp/fos/FIXGxcKSgiLFz7A
+ CT30coddAN6YOE2fBxL1YfVRwlml9SZjononnhWm3FPrvPLjFGaYDQZAQHcFXuQTaDWprS0
+ e5TWbXJZthpBzQDKDy6skvd4N+gPEew=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE5403C30FC
-	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 04:35:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 85BEA3C30E4
+	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 06:17:36 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 34BE33C307C
- for <ltp@lists.linux.it>; Sat, 21 Sep 2024 04:35:37 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ECE713C0EB9
+ for <ltp@lists.linux.it>; Sat, 21 Sep 2024 06:17:15 +0200 (CEST)
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com
+ [IPv6:2607:f8b0:4864:20::1029])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C750B1036E42
- for <ltp@lists.linux.it>; Sat, 21 Sep 2024 04:35:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1726886134;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZEc5Wur1KPqUew+hOQiJ8LC2z5iFP18UNBYptv66wno=;
- b=eRyrfmYBxpcfKZmfM0yCcwbat3OG3RyFHhHiLuSOO8yjISc7uT87leFrl7GNUnlQeY9qGp
- CTx3NcCNTiyELMb17uY35dcGDvQLfhW4PcLBfbkLU60r+cEYCB5J+OmWVyAUCd1LlLFsk7
- tVFZf8Xq9raEJpPi342hMNr5PzggDyk=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-7OogEFQsMFeXOG-tU3FXLQ-1; Fri, 20 Sep 2024 22:35:32 -0400
-X-MC-Unique: 7OogEFQsMFeXOG-tU3FXLQ-1
-Received: by mail-pf1-f200.google.com with SMTP id
- d2e1a72fcca58-718e2da2e33so3711387b3a.1
- for <ltp@lists.linux.it>; Fri, 20 Sep 2024 19:35:32 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34CD060128C
+ for <ltp@lists.linux.it>; Sat, 21 Sep 2024 06:17:14 +0200 (CEST)
+Received: by mail-pj1-x1029.google.com with SMTP id
+ 98e67ed59e1d1-2d89dbb60bdso2013536a91.1
+ for <ltp@lists.linux.it>; Fri, 20 Sep 2024 21:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=shopee.com; s=shopee.com; t=1726892232; x=1727497032; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=NVghCUh1JvB9GbWRmjfBkgYU9jlML0peNxhVpx2Be8U=;
+ b=TvVnXA88mkasm4AW05txz3whILc04v7b1yWPTR09VTkdQ4vW7+FDP+U4VEyiX6tOz6
+ ohxrrT+hZDgAbh41y6cFBMO6SkYEcMWXxE/aNw6PBhsdse52SH/eduHPiU5bFI1xZPJR
+ +cuVOB5+6H0K0b5bSsdVNgDo2I1sD9E85Xt69NUgNwy0hcGEyUztr37DtJ3dWWfSx0jk
+ cH8PGRv+rt5cVmB/oF7J/EUBgrXFuEantjaSW5LcLV6pCaFmuxGRMS85rynDE256Zt7g
+ aQ9uKE2wMFnCuCxqYAYKBlpTsKc4zI93yZ0h1YxibHT6+iI9BjaVbBPxxXULvAutmvVG
+ n8kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1726886131; x=1727490931;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=ZEc5Wur1KPqUew+hOQiJ8LC2z5iFP18UNBYptv66wno=;
- b=Lp4jEW9t/2PBU/SArzbI5NETVTPW1Nk9vY3OPY4Eo7tdbj4A5bIDN8APwDzMYUe+7C
- LlZvGKty9dNQEqgxliUrS8aQoOJ6mqsvYpx616U6dILv4dH6y5Ww/y1SOm5bVy74UIZw
- hGLZLNK9E3+gt9GHqAxXFjxWsV3xNOc6TH8OIG7ZmN3Kr+VAKfpwW5XPWvn75mU32JoB
- rWITZzGcJMuHNSwSMNZ0DVQMiiiHlj9iwOTag5oDakYYoIVlWvUAWLb/DPyvXnbc75oi
- 1R2T1M9IWBLKpDhrK3y+4vkpmCr7DRrzK8jhF8UAuxH7wZ339Pi4xn32fPTLG19EWKmE
- qWug==
-X-Gm-Message-State: AOJu0YyrbUsZgstVGFZobEc+7lSz3SHkwPqRuHHoqE4zMCf/2TVT/g+v
- eWjJlu18ARcKXzEyXnY40WP0ScAEolzZya+KuvXoROTk6ZiMK3Wk3gg+4BqzDFqxJ6DNo7Tp4yb
- q7so5CF90ey0kiRZRolkyagnWyCsrNueg+0nRCyoR7GR22t2qhOqntpRnLjfp6L9DFU1jU4hjX4
- 4/2Sas7/N3piero2bM7j0tC/U=
-X-Received: by 2002:a05:6a00:b4f:b0:718:ddd7:dc3b with SMTP id
- d2e1a72fcca58-7199ca7be44mr7046377b3a.21.1726886131415; 
- Fri, 20 Sep 2024 19:35:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE024DAtaCGZqYUYmfo1ZWFt7lMiKsNd3L3O8tkgRdp4/ZZZAht8MmB4yxQwbNNgsSrqb2NgPVFio2P0wxY8Sc=
-X-Received: by 2002:a05:6a00:b4f:b0:718:ddd7:dc3b with SMTP id
- d2e1a72fcca58-7199ca7be44mr7046344b3a.21.1726886130908; Fri, 20 Sep 2024
- 19:35:30 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1726892232; x=1727497032;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=NVghCUh1JvB9GbWRmjfBkgYU9jlML0peNxhVpx2Be8U=;
+ b=WNOWR+2OM99axX2SLc+5j3/AxHlHh55U7UltlY6vXkY+1RA7PxOXmIZavnTwqV1Suy
+ hI1S68JJaEweQG1rbFvszz8Ju5Wa7Oz7Io3naKCococTuGoeS4hXWRAztAvo/CgRNMwg
+ pEUtrxJCuqr/0DvNdXEHTs5pmo34kotuCFyswJPhz7lnfTADlndKMgcr/l/Kkh2d2JkB
+ ZsGRXIrMH7yoO0F9ZiFQABt9Ctq3nuC6vbVfGBzVk7pg5UJ75lYJW2YgXUYED29Raa4D
+ HqFNLsAiDdhho69XZ3tSaUzsITcwJhE01IulJgAD36vReXLOXJuVqbk5Ez7QvVdPO3Up
+ M12Q==
+X-Gm-Message-State: AOJu0YzpzYDATH8g+pkykMFHgHTfFiwRMnKN7SvfIQxfLy8Gq1cTtOit
+ 32IUD7WlzHuy2F9k4fcL/lXtzRBPwWcH43i4WKEy6L3KJ0qYSQ98nAZB8ajY0TljzNkxbh1aa4V
+ ahFFfWg==
+X-Google-Smtp-Source: AGHT+IHftoeHtg0Hfpn8wLRvqa897fJg5JACSxDrtAAm5B/4a44BL8+JspsCZZz1AhlCioQ0vb6dkA==
+X-Received: by 2002:a17:90b:310b:b0:2d8:f11e:f7e with SMTP id
+ 98e67ed59e1d1-2dd7f3e4f0fmr6264855a91.12.1726892232646; 
+ Fri, 20 Sep 2024 21:17:12 -0700 (PDT)
+Received: from [10.12.172.13] ([143.92.127.224])
+ by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-2dd837875d2sm2744477a91.21.2024.09.20.21.17.10
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 20 Sep 2024 21:17:12 -0700 (PDT)
+Message-ID: <aedad82f-1981-4e6b-bf24-773e79606a1b@shopee.com>
+Date: Sat, 21 Sep 2024 12:17:09 +0800
 MIME-Version: 1.0
-References: <20240918073257.13930-1-liwang@redhat.com>
- <Zu2GK3-vbJVaivNM@yuki.lan>
-In-Reply-To: <Zu2GK3-vbJVaivNM@yuki.lan>
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 21 Sep 2024 10:35:18 +0800
-Message-ID: <CAEemH2eg2B6v2AC3vWJ=fRqeBRVm-_6wdEvXOz7EM=0vY6kvxg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <20240920083036.87291-1-haifeng.xu@shopee.com>
+ <Zu05HskauxnYheRd@yuki.lan> <82a1294f-f15a-4c1b-aee7-703e4ff84120@shopee.com>
+ <Zu1pGq6bklSY3SSZ@yuki.lan>
+In-Reply-To: <Zu1pGq6bklSY3SSZ@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] lib: handle ENOENT errors when processes exit
- during PID scanning
+Subject: Re: [LTP] [PATCH] ht_affinity.c: fix ht_affinity test failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,28 +94,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Charles Mirabile <cmirabil@redhat.com>, Paul Bunyan <pbunyan@redhat.com>,
- ltp@lists.linux.it
+From: Haifeng Xu via ltp <ltp@lists.linux.it>
+Reply-To: Haifeng Xu <haifeng.xu@shopee.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Hi!
-> I've spend some time looking at the code that uses the
-> FILE_LINES_SCANF() and it looks like this change shouldn't break
-> anything.
->
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
 
-Patch merged, thank you.
-
--- 
-Regards,
-Li Wang
+On 2024/9/20 20:22, Cyril Hrubis wrote:
+> Hi!
+>> From the kernel source code, the user_mask_ptr is unsigned long.
+>>
+>> SYSCALL_DEFINE3(sched_setaffinity, pid_t, pid, unsigned int, len,
+>> 		unsigned long __user *, user_mask_ptr)
+>>
+>> so maybe we can keep the type of user_mask_ptr consistent with it.
+> 
+> It's actually accessed as an array. See get_user_cpu_mask() function just
+> above this syscall definition and userspace is suppose to pass an array
+> big enough for all the flags of CPUs it cares about.
+> 
+> There are also macros in the libc sched.h header that allows you to
+> allocate an array big enough for the current machine and manipulate the
+> bits, see man CPU_ALLOC.
+> 
+OK. I'll post next version with your suggestions. 
+Thanks!
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
