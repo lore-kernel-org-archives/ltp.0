@@ -4,50 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40DE4CF9C5B
-	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 05:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E6B5CF9C5B
+	for <ltp@archiver.kernel.org>; Mon, 23 Sep 2024 08:17:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A29633C30E5
-	for <ltp@archiver.kernel.org>; Sat, 21 Sep 2024 07:54:55 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9AF783C31F7
+	for <ltp@archiver.kernel.org>; Mon, 23 Sep 2024 10:17:54 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D25EA3C0243
- for <ltp@lists.linux.it>; Sat, 21 Sep 2024 07:54:38 +0200 (CEST)
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 9D682100066B
- for <ltp@lists.linux.it>; Sat, 21 Sep 2024 07:54:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
- Message-ID; bh=lQob5yFC/rMRmZO9xzB3VFkqHHI9BWYpkoSWyl5Mbyk=; b=C
- +8GMx1yf+9rmAJqpYuMLk1ZKdisHywvebVg1FYZcAxAfZVedZbJRCajgFrR+mH/I
- QjyQ2zYb5kAWIrHGia+udfrbprEkAWS/pyYDnPMbO0CubfUJwXXAwDUYjgWlXF1D
- Wr2s+h/tLgYOeRTHBGSToyqI1wAWSLf7kXV/brkHH4=
-Received: from ice_yangxiao$163.com ( [160.86.227.245] ) by
- ajax-webmail-wmsvr-40-148 (Coremail) ; Sat, 21 Sep 2024 13:54:29 +0800
- (CST)
-X-Originating-IP: [160.86.227.245]
-Date: Sat, 21 Sep 2024 13:54:29 +0800 (CST)
-From: =?GBK?B?0e7P/g==?= <ice_yangxiao@163.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <ZuljrzDTzU3VtI5O@yuki.lan>
+ by picard.linux.it (Postfix) with ESMTPS id 793FC3C31AD
+ for <ltp@lists.linux.it>; Mon, 23 Sep 2024 10:17:38 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DA9246001E0
+ for <ltp@lists.linux.it>; Mon, 23 Sep 2024 10:17:37 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CAD9421EB6;
+ Mon, 23 Sep 2024 08:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727079456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rAD+fQE8CYWWeqVG7F3gmjOSsfkUJwlFuQZ+VcqRgR0=;
+ b=dxq7y6IJDJs/633LdVLsWGj3DD+ZmeyiY2v8hRPfnLVBonSg2lxD7FcZMTxMeEvvF1bEtu
+ kH1pC40/+QtVvYyenwdzo7mqLL3LYz/hvyURntdzV2HZQ2UX5CdkUyN84OkoJXWDDnj5aH
+ 4RgTVmRhISq+uQ1Aek9pQNTW/dSvo2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727079456;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rAD+fQE8CYWWeqVG7F3gmjOSsfkUJwlFuQZ+VcqRgR0=;
+ b=5ry6HpfX5lDSwvfHYymKe/nFOtsHgbfgwmbS1bT8aEy1GfjgefE/ZbhdNDzjTriMpOnGOQ
+ jBnxnCQrWiJImBDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727079456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rAD+fQE8CYWWeqVG7F3gmjOSsfkUJwlFuQZ+VcqRgR0=;
+ b=dxq7y6IJDJs/633LdVLsWGj3DD+ZmeyiY2v8hRPfnLVBonSg2lxD7FcZMTxMeEvvF1bEtu
+ kH1pC40/+QtVvYyenwdzo7mqLL3LYz/hvyURntdzV2HZQ2UX5CdkUyN84OkoJXWDDnj5aH
+ 4RgTVmRhISq+uQ1Aek9pQNTW/dSvo2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727079456;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rAD+fQE8CYWWeqVG7F3gmjOSsfkUJwlFuQZ+VcqRgR0=;
+ b=5ry6HpfX5lDSwvfHYymKe/nFOtsHgbfgwmbS1bT8aEy1GfjgefE/ZbhdNDzjTriMpOnGOQ
+ jBnxnCQrWiJImBDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B905A13A64;
+ Mon, 23 Sep 2024 08:17:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zfweLSAk8WbhawAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 23 Sep 2024 08:17:36 +0000
+Date: Mon, 23 Sep 2024 10:16:24 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: =?utf-8?B?5p2o5pmT?= <ice_yangxiao@163.com>
+Message-ID: <ZvEj2GHW8komVKfX@yuki.lan>
 References: <20240809025825.4055-1-ice_yangxiao@163.com>
  <ZuljrzDTzU3VtI5O@yuki.lan>
-X-NTES-SC: AL_Qu2ZBPSSt0gt7yGYZukfmkwah+o+X8G2vf0j1YJUO514jCHr/S4MeXBMBkD/wNCOFBG9rheYfgF/5eVlWY13YoU139Kost73eYnTMdHKKEQ4pg==
+ <5886c6f2.1ce6.19213255e77.Coremail.ice_yangxiao@163.com>
 MIME-Version: 1.0
-Message-ID: <5886c6f2.1ce6.19213255e77.Coremail.ice_yangxiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: lCgvCgD3ny6VX+5mpmYCAA--.22552W
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiqRphXmVODCY53AAHsv
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <5886c6f2.1ce6.19213255e77.Coremail.ice_yangxiao@163.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-0.997];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ FREEMAIL_TO(0.00)[163.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FREEMAIL_ENVRCPT(0.00)[163.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH] syscalls/{fanotify17,
  getxattr05}: simplify code by using save_restore
 X-BeenThere: ltp@lists.linux.it
@@ -67,155 +118,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi!
+> If more than 10 user namspaces is currently used on system, it is still successfully to set
+> max_user_namespaces to 10.  However, these tests fail with ENOSPC. for example:
+> # lsns -t user -l -n | wc -l
+> 17
+> 
+> root@fedora40:~/ltp/testcases/kernel/syscalls/fanotify# ./fanotify17
+> ...
+> fanotify17.c:174: TINFO: Test #0: Global groups limit in init user ns
+> fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
+> fanotify17.c:174: TINFO: Test #1: Global groups limit in privileged user ns
+> fanotify17.c:154: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
+> tst_test.c:452: TBROK: Invalid child (6958) exit value 1
+> 
+> 
+> 
+> Just try to fix the issue by increasing the setting of max_user_namespaces.
+> BTW, it may be better to get the number of user namespaces in use and then add 10.
 
-At 2024-09-17 19:10:39, "Cyril Hrubis" <chrubis@suse.cz> wrote:
->Hi!
->> -	/*
->> -	 * The default value of max_user_namespaces is set to 0 on some distros,
->> -	 * We need to change the default value to call unshare().
->> -	 */
->> -	if (access(SELF_USERNS, F_OK) != 0) {
->> +	if (access(SELF_USERNS, F_OK) != 0)
->>  		user_ns_supported = 0;
->> -	} else if (!access(MAX_USERNS, F_OK)) {
->> -		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
->> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
->
->Here the original code writes 10 to the MAX_USERNS.
->
->> -	}
->>  
->>  	/*
->>  	 * In older kernels those limits were fixed in kernel and fanotify is
->> @@ -244,21 +234,18 @@ static void setup(void)
->>  	setup_rlimit(max_groups * 2);
->>  }
->>  
->> -static void cleanup(void)
->> -{
->> -	if (orig_max_userns != -1)
->> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns);
->> -}
->> -
->>  static struct tst_test test = {
->>  	.test = test_fanotify,
->>  	.tcnt = ARRAY_SIZE(tcases),
->>  	.setup = setup,
->> -	.cleanup = cleanup,
->>  	.needs_root = 1,
->>  	.forks_child = 1,
->>  	.mount_device = 1,
->>  	.mntpoint = MOUNT_PATH,
->> +	.save_restore = (const struct tst_path_val[]) {
->> +		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
->> +		{}
->> +	},
->
->And here you are initializing it to 1024? Shouldn't the value here be 10
+Such change should be ideally in a separate patch with this explanation
+and not hidden in a patch that is supposedly just moving the code that
+restores the original value.
 
->too?
-
-
-Hi Cyril,
-
-
-Sorry for the late reply.
-
-
-
-If more than 10 user namspaces is currently used on system, it is still successfully to set
-max_user_namespaces to 10.  However, these tests fail with ENOSPC. for example:
-# lsns -t user -l -n | wc -l
-17
-
-root@fedora40:~/ltp/testcases/kernel/syscalls/fanotify# ./fanotify17
-...
-fanotify17.c:174: TINFO: Test #0: Global groups limit in init user ns
-fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
-fanotify17.c:174: TINFO: Test #1: Global groups limit in privileged user ns
-fanotify17.c:154: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
-tst_test.c:452: TBROK: Invalid child (6958) exit value 1
-
-
-
-Just try to fix the issue by increasing the setting of max_user_namespaces.
-BTW, it may be better to get the number of user namespaces in use and then add 10.
-
-
-Best Regards,
-Xiao Yang
-
->
->>  };
->>  #else
->>  	TST_TEST_TCONF("system doesn't have required fanotify support");
->> diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
->> index d9717a695..3dff8e27f 100644
->> --- a/testcases/kernel/syscalls/getxattr/getxattr05.c
->> +++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
->> @@ -40,11 +40,9 @@
->>  
->>  #define TEST_FILE	"testfile"
->>  #define SELF_USERNS	"/proc/self/ns/user"
->> -#define MAX_USERNS	"/proc/sys/user/max_user_namespaces"
->>  #define UID_MAP	"/proc/self/uid_map"
->>  
->>  static acl_t acl;
->> -static int orig_max_userns = -1;
->>  static int user_ns_supported = 1;
->>  
->>  static struct tcase {
->> @@ -149,23 +147,13 @@ static void setup(void)
->>  		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
->>  	}
->>  
->> -	/* The default value of max_user_namespaces is set to 0 on some distros,
->> -	 * We need to change the default value to call unshare().
->> -	 */
->> -	if (access(SELF_USERNS, F_OK) != 0) {
->> +	if (access(SELF_USERNS, F_OK) != 0)
->>  		user_ns_supported = 0;
->> -	} else if (!access(MAX_USERNS, F_OK)) {
->> -		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
->> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
->> -	}
->>  
->>  }
->>  
->>  static void cleanup(void)
->>  {
->> -	if (orig_max_userns != -1)
->> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns);
->> -
->>  	if (acl)
->>  		acl_free(acl);
->>  }
->> @@ -181,7 +169,11 @@ static struct tst_test test = {
->>  	.tags = (const struct tst_tag[]) {
->>  		{"linux-git", "82c9a927bc5d"},
->>  		{}
->> -},
->> +	},
->> +	.save_restore = (const struct tst_path_val[]) {
->> +		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
->
->And same here.
->
->> +		{}
->> +	},
->>  };
->>  
->>  #else /* HAVE_SYS_XATTR_H && HAVE_LIBACL*/
->> -- 
->> 2.45.2
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->-- 
->Cyril Hrubis
->chrubis@suse.cz
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
