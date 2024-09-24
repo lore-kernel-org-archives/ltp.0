@@ -4,70 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A9ECF9C6B
-	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 11:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A172CF9C6F
+	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 12:08:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E8543C4C9A
-	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 13:23:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 1F4B73C4CBD
+	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 14:08:53 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5AFEE3C4BE6
- for <ltp@lists.linux.it>; Tue, 24 Sep 2024 13:23:34 +0200 (CEST)
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com
- [IPv6:2607:f8b0:4864:20::a36])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4C1EA3C2ED8
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 14:08:38 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F41BF600C94
- for <ltp@lists.linux.it>; Tue, 24 Sep 2024 13:23:32 +0200 (CEST)
-Received: by mail-vk1-xa36.google.com with SMTP id
- 71dfb90a1353d-502af8a83daso1674364e0c.1
- for <ltp@lists.linux.it>; Tue, 24 Sep 2024 04:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1727177011; x=1727781811; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=KjdEl0kfRqlw8okFJhhXvORQBqugd848yp2a6Kz7jtI=;
- b=QTjj/cQv5i93ja4+x2PCENuqEYjQJ6EycyaxJUk5vni+HaNjnoY4lS9E6hGjzvBvxt
- g2yLRWVnw+IDJXUNhnW9+kxh80QjPYwx5nMECy4OL4y/5KSBTThHcdMWzGVNBBgMQg8i
- Nf1aByRxVi02yc5iUivddThkEvxvKwc08nEYR2YrIzBk+DhrQufrdzrVmapHZ1dKbdVT
- 1WTJDGFghum8BooJ2PReFHUOdRNS8Ej3eU9CAt1504jDV49u3D6CFxy+TkgEMDz4Kpf3
- 0Lpn/SoZQ2LFK4OK4CPxtZb4Phs9i85dC5wB761yMh11SacLJudeJ2BFatAKyMzrraAK
- o2lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1727177011; x=1727781811;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=KjdEl0kfRqlw8okFJhhXvORQBqugd848yp2a6Kz7jtI=;
- b=gszEV+G3nG1J5OXr6dD2uAeiASdYSA2vGGf7Ot1rmtEL9d04nFWjenn5KAMBTkwRZo
- vUOSSLhDkC78wDUxYcA0xZHhLexGPnS83IeNGctPaQDK+xF5NupQY8u1riwcgbKXO/K4
- wSBTIGTDtYtW2jnFOwu3R5lRQfT7JBauZzz9Yv4V4/T5y5pvODaOsNF845EIGzlZAP0Y
- cEDxyrVot22hqpC4Fzc+k8Du/ldM3bqADMI+jk2Vj6VH/B5VKBDF57VuAWK07HCufOPy
- H2E74KUuqhAurpmUcg7kQpesoPdLFY2B9ILW+EddgJkf6CQQ0gOSoyX877ZX+qg2ot54
- Ssng==
-X-Gm-Message-State: AOJu0YzMimU+AIFjvdpq4i4xxwY64ymT9OQIIa0XLsFqIFxKYMsgagG1
- uOkYGKmdR1BxNUbSdRbtTIi24aXbjVbdsAf4ItvIdO/4DwYMbaMBDtL/m3eyO69L4ImUMJlw12d
- kvIdo+kXsWaizHYwWRcFDri0KNkbYlNZWyi3p/2Z958nv3Zy8X3w=
-X-Google-Smtp-Source: AGHT+IEI7XjbuorHGWTR1E3X/+r/7ORf73vJlzjELjbAYRDPDVaPLPO0nhzOjurzdZrh5ZpFYfyg/8r0kv6TUteT69Y=
-X-Received: by 2002:a05:6122:2213:b0:503:d875:6a26 with SMTP id
- 71dfb90a1353d-503e0400c97mr9329354e0c.5.1727177011299; Tue, 24 Sep 2024
- 04:23:31 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A236C14052F9
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 14:08:37 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C3B941F792;
+ Tue, 24 Sep 2024 12:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727179716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=FnuGdFuX/4AGiMnlapTDxLKcf88iDIPZIsrUcT7iyyk=;
+ b=aQCXNHlqM5aLUgqCVrOKuA6ACvBnCVgH0bqZ5pA0pZ3VRrxN70GZbQUoa28/epManmdV/L
+ J2E2ufLDyGgHObxc/6FcJ6N0qfMNnKkk2y8Kj6MDEb7dz8/UjdR0GkG3LczYp1rNg/0SD2
+ SuG6apxQm0i+/GhlKwpKxckP4y3kWqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727179716;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=FnuGdFuX/4AGiMnlapTDxLKcf88iDIPZIsrUcT7iyyk=;
+ b=zxd/sUmnMtb3SMxKSEeEf9p+qifUWKvSpTeasCwrB77usZPZSU6pmYdAbTk1bhR6uXGg01
+ 93MRUWV3rHttanDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727179716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=FnuGdFuX/4AGiMnlapTDxLKcf88iDIPZIsrUcT7iyyk=;
+ b=aQCXNHlqM5aLUgqCVrOKuA6ACvBnCVgH0bqZ5pA0pZ3VRrxN70GZbQUoa28/epManmdV/L
+ J2E2ufLDyGgHObxc/6FcJ6N0qfMNnKkk2y8Kj6MDEb7dz8/UjdR0GkG3LczYp1rNg/0SD2
+ SuG6apxQm0i+/GhlKwpKxckP4y3kWqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727179716;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=FnuGdFuX/4AGiMnlapTDxLKcf88iDIPZIsrUcT7iyyk=;
+ b=zxd/sUmnMtb3SMxKSEeEf9p+qifUWKvSpTeasCwrB77usZPZSU6pmYdAbTk1bhR6uXGg01
+ 93MRUWV3rHttanDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B07BF13AA8;
+ Tue, 24 Sep 2024 12:08:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DY68KsSr8mYRPQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 24 Sep 2024 12:08:36 +0000
+Message-ID: <60131983-9e9f-437d-adaf-e779b9752639@suse.cz>
+Date: Tue, 24 Sep 2024 14:08:32 +0200
 MIME-Version: 1.0
-References: <CA+G9fYtu-h_pp_hNfmx1pBg48oGeRiEDnEc4b-r3AiC_QfWiKg@mail.gmail.com>
-In-Reply-To: <CA+G9fYtu-h_pp_hNfmx1pBg48oGeRiEDnEc4b-r3AiC_QfWiKg@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 24 Sep 2024 16:53:18 +0530
-Message-ID: <CA+G9fYsHQ_q9e5GYVpdMmaRrgR1zvoyFH0wP0RzbqUFBTuNq9Q@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>, open list <linux-kernel@vger.kernel.org>, 
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- lkft-triage@lists.linaro.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Wei Gao <wegao@suse.com>
+References: <20240918100344.21316-1-wegao@suse.com>
+ <efb8ced2-c2d2-4a1e-9358-e39e7f6b7adc@suse.cz> <ZvKRRDKH4D8ok8od@wegao>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <ZvKRRDKH4D8ok8od@wegao>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; MID_RHS_MATCH_FROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] af_alg01.c:36: TFAIL: instantiated nested hmac algorithm
- ('hmac(hmac(md5))')!
+Subject: Re: [LTP] [PATCH v1] tst_test.sh: Add support for localhost ssh key
+ setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,111 +158,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
- "David S. Miller" <davem@davemloft.net>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, 24 Sept 2024 at 15:16, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> The following LTP crypto tests failed on Linus mainline master branch.
->
-> LTP
->   ltp-crypto:
->     * af_alg03
->     * af_alg01
->
-> First seen on e8fc317dfca9 (v6.11-2185-ge8fc317dfca9)
->   Good: v6.11-rc7
->   BAD:  e8fc317dfca9 (v6.11-2185-ge8fc317dfca9) and (v6.11)
+On 24. 09. 24 12:15, Wei Gao wrote:
+> On Wed, Sep 18, 2024 at 01:46:30PM +0200, Martin Doucha wrote:
+>> The test runner can also create an alias for the lftp command so that the
+>> test can call it using the old name.
+> Create an alias for lftp not enough since current code use parameter "-nv" which
+> not supported by lftp so following error will popup:
+> 
+> lftp: invalid option -- 'n'
+> Try `lftp --help' for more information
 
-Also seen on Linux next from next-20240909 tag.
+In that case we can either leave the test as is or detect the available 
+ftp client in setup():
 
-Good:  next-20240906
-Bad:   next-20240909
+if tst_cmd_available ftp; then
+	FTP_CMD="ftp -nv"
+elif tst_cmd_available lftp; then
+	FTP_CMD="lftp -v --norc"
+else
+	tst_brkm TCONF "No FTP client found"
+fi
 
->
-> Devices and qemu's:
->   - dragonboard-410c
->   - dragonboard-845c
->   - e850-96
->   - juno-r2
->   - arm64
->   - qemu-arm64
->   - qemu-armv7
->   - qemu-riscv64
->   - qemu-x86_64
->   - rk3399-rock-pi-4b
->   - x15
->   - x86_64
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Warning log:
-> ----------
-> tst_test.c:1617: TINFO: Timeout per run is 0h 02m 30s
-> af_alg01.c:36: TFAIL: instantiated nested hmac algorithm ('hmac(hmac(md5))')!
-> tst_af_alg.c:46: TBROK: unexpected error binding AF_ALG socket to hash
-> algorithm 'hmac(hmac(md5))': EINVAL (22)
->
-> HINT: You _MAY_ be missing kernel fixes:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af3ff8045bbf
->
-> HINT: You _MAY_ be vulnerable to CVE(s):
->
-> https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-17806
->
-> HINT: You _MAY_ be missing kernel fixes:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af3ff8045bbf
->
-> HINT: You _MAY_ be vulnerable to CVE(s):
->
-> https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-17806
->
-> ...
-> tst_test.c:1617: TINFO: Timeout per run is 0h 02m 30s
-> af_alg03.c:22: TFAIL: instantiated rfc7539 template with wrong digest size
->
-> HINT: You _MAY_ be missing kernel fixes:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e57121d08c38
->
->
-> boot Log links,
-> --------
->  - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.11-8836-gf8eb5bd9a818/testrun/25191971/suite/ltp-crypto/test/af_alg03/log
-> - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2m983y1hatxwkXBtrAYvCPw6pK2
->
-> Test results history:
-> ----------
-> - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.11-8836-gf8eb5bd9a818/testrun/25191971/suite/ltp-crypto/test/af_alg01/history/
-> - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.11-8836-gf8eb5bd9a818/testrun/25191971/suite/ltp-crypto/test/af_alg01/history/
->
-> metadata:
-> ----
->   git describe:  v6.11-2185-ge8fc317dfca9 .. v6.11-5002-g200289db261f
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
->   git sha:  abf2050f51fdca0fd146388f83cddd95a57a008d  (v6.11)
->   kernel config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2m980TaGzPk0qjtFUPnMNoDj7Sw/config
->   build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2m980TaGzPk0qjtFUPnMNoDj7Sw/
->   toolchain: gcc-13
->
-> Steps to reproduce:
-> ---------
-> - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2m983y1hatxwkXBtrAYvCPw6pK2/reproducer
-> - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2m983y1hatxwkXBtrAYvCPw6pK2/tux_plan
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
-- Naresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
