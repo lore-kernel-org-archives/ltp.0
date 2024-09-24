@@ -4,120 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E985CF9C6B
-	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 12:54:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84D7ECF9C6F
+	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 13:17:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 442463C4C92
-	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 14:54:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 054C93C4CBA
+	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 15:17:38 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CC053C4BD9
- for <ltp@lists.linux.it>; Tue, 24 Sep 2024 14:54:06 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 763B33C4C08
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 15:17:22 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 432C51A00CAE
- for <ltp@lists.linux.it>; Tue, 24 Sep 2024 14:54:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5E22C1FBDE;
- Tue, 24 Sep 2024 12:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1727182444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=qrR0KVvuGXg6VRW9YZuZuEl4g0tOP9Q9mpbZjni2pKs=;
- b=osnVVHShnVUnN97WXzXENbs8v/qIYh6AE+uRVoFwuxeAD5MX1D7JE2ICKp3obL2/Pp/ATI
- 0bulBsGd9+MlUmrhYfLvbz4BnFwl3GtR+sUTuJx4nhPHBkqec67Aqx++9qRLGfYXzQlqSy
- MuwFciDLbttkDuVkeKTIHrPtjzBVXXQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1727182444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=qrR0KVvuGXg6VRW9YZuZuEl4g0tOP9Q9mpbZjni2pKs=;
- b=qedbuydjdRM0/w4Jfsw2YaoDaOnN/0wTWjBCYP94LN/ZKiRD63oFjaIZHx9H6Q4GJChkIA
- ldPVpvE7IyQtSYDg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=osnVVHSh;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qedbuydj
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1727182444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=qrR0KVvuGXg6VRW9YZuZuEl4g0tOP9Q9mpbZjni2pKs=;
- b=osnVVHShnVUnN97WXzXENbs8v/qIYh6AE+uRVoFwuxeAD5MX1D7JE2ICKp3obL2/Pp/ATI
- 0bulBsGd9+MlUmrhYfLvbz4BnFwl3GtR+sUTuJx4nhPHBkqec67Aqx++9qRLGfYXzQlqSy
- MuwFciDLbttkDuVkeKTIHrPtjzBVXXQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1727182444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=qrR0KVvuGXg6VRW9YZuZuEl4g0tOP9Q9mpbZjni2pKs=;
- b=qedbuydjdRM0/w4Jfsw2YaoDaOnN/0wTWjBCYP94LN/ZKiRD63oFjaIZHx9H6Q4GJChkIA
- ldPVpvE7IyQtSYDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 431B51386E;
- Tue, 24 Sep 2024 12:54:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 67mqDmy28mZqSwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 24 Sep 2024 12:54:04 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 24 Sep 2024 14:53:50 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC23E1409187
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 15:17:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1727183835;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1oXMYUPYMt07zz0fOECTOJHvq6ALaKeolSNYhYNLakE=;
+ b=I2hyVfm0i8VQMC3+qB2ntHQ2xPFNBlgfi+X0RBgA/RdI82JGHKZdNGwntGKPveg16vpxZj
+ O7IF1XaW9qsqehSwitUJBdyTYLrexBj0+UT7pS0gj5W1ukwXsPVq18SwviexTfgiid8R9H
+ oI4FJISR6DyvCwsDJLFEoEpVYGyORyY=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-451-K6iCR77_OPSALWi2U366_A-1; Tue, 24 Sep 2024 09:17:12 -0400
+X-MC-Unique: K6iCR77_OPSALWi2U366_A-1
+Received: by mail-oa1-f69.google.com with SMTP id
+ 586e51a60fabf-277d1371d01so4159499fac.1
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 06:17:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1727183831; x=1727788631;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=1oXMYUPYMt07zz0fOECTOJHvq6ALaKeolSNYhYNLakE=;
+ b=m2fSt1joSt57og8ur5AKm4+508SX0nq8jcZMpHNhjwqBv0gbkxos55zL/Ovc/IKr8d
+ 9RRiv+2gL0+kfEL8tIcIIrdOFJbUCRR694QolZBDl9qOWBINMejHj7UF2n87XZHOGcEb
+ mskVeijoBilDxwQBEyp5F8htGiJXpZLcBGvqS6fBCiOigFDd5b/ViEW1roJufJd6876R
+ H8tjIaBOGQ9Dqs1yYD7WPxt736H5+YNFcAA9hM66MWP60/Ke1amjSU+Off07Iz3hPWFg
+ 159X7NsXwrhkFnk6ltR44TlBG+01nQ9WeQX+CG2E65Ay2pd6d0XrpzP8UIGI1mhIb0ML
+ lOWg==
+X-Gm-Message-State: AOJu0Yy0LqulyUWnIb90rBB8jx2xqj3uTwSloYi0sRRFuuNZzkhMCoXb
+ SvHoGs/vQkQzNbyDuqb9+8qNeBTy7ssTngAQA9FHUSH4bs9iHlOUZ5B/aHn63G+gJ44Bt9xVFyr
+ 7wZnMADFVyLv1NmmPW6gjvKOV6BQtxLgvDftZGBZ5sTRbmesB64zXh1b7/L3eUtUrpK4mEpMTpC
+ ysvfsVepS+iGCy45MstsI5fcQ=
+X-Received: by 2002:a05:6870:d206:b0:27c:4853:2b68 with SMTP id
+ 586e51a60fabf-283ab9a5164mr1604015fac.20.1727183831320; 
+ Tue, 24 Sep 2024 06:17:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG65HUSJ3BLwBcA1uFgd30JeShx9W3meWfljUHN9feevoue9Oe1bla7s3toCNQIIX3qkS9l1JUMsMaal8u5YgY=
+X-Received: by 2002:a05:6870:d206:b0:27c:4853:2b68 with SMTP id
+ 586e51a60fabf-283ab9a5164mr1603981fac.20.1727183830831; Tue, 24 Sep 2024
+ 06:17:10 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <20240924-ioctl_ficlone01_fix-v1-1-7741e2e13cc2@suse.com>
-X-B4-Tracking: v=1; b=H4sIAF228mYC/x2MUQqAIBAFrxL7naCmZF0lIsLWWggNjQiiu7f0N
- zPw3gMFM2GBvnog40WFUmRRdQV+m+OKghZ20FIb2WkjKPlznwL5PUWUiukWzs2qxWCdNQ3w8sj
- I+X8dxvf9AEbq9jZlAAAA
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1727182444; l=4413;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=tPSujKVegeyjiIeyWz+KoxCntulSTdn7KmWm2VpzFwE=;
- b=DOBdYDjQzJfgnPHkddZhbx4cZwPN5xSB64eDfdRHz5nosG2iN5lGIq3kI+6FBnRAKTeb3pAEe
- iYGcf6UlIPcAhg9ERGM6IrvsawGLS9VkeqWhMvneDupyo/JgcTujtM3
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: 5E22C1FBDE
-X-Spamd-Result: default: False [-6.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- DWL_DNSWL_MED(-2.00)[suse.de:dkim];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <20240924-generate_syscalls-v1-0-941507a9cdac@suse.com>
+ <ff7c5d36-e2dc-47b6-aded-64ecf649d8a3@suse.com>
+In-Reply-To: <ff7c5d36-e2dc-47b6-aded-64ecf649d8a3@suse.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 24 Sep 2024 15:16:51 +0200
+Message-ID: <CAASaF6yUzHRxR8pvi0AXCYA6XqQHE8A1miqFLX88xYHMnwsq9A@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Fix ioctl_ficlone on XFS without reflink support
+Subject: Re: [LTP] [PATCH 0/4] Automatically generate syscalls.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,141 +92,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-reflink has been introduced in XFS by kernel 4.9 and mkfs.xfs enabled
-by default in 5.1.0. Check the mkfs.xfs version in order to make sure
-that mkfs.xfs supports reflink and verify kernel is at least 4.9 when
-we run the ioctl_ficlone tests on XFS.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-ioctl_ficlone tests are failing in certain circumstances. In particular,
-when kernel version is lower than 4.9 and mkfs.xfs is not 5.1.0
----
- testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c      | 9 ++++++++-
- testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c      | 5 ++++-
- testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c | 5 ++++-
- testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c | 5 ++++-
- 4 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
-index f5407f789..d0faf3327 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
-@@ -95,6 +95,12 @@ static void run(void)
- 	SAFE_UNLINK(DSTPATH);
- }
- 
-+static void setup(void)
-+{
-+	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(4, 9, 0) < 0)
-+		tst_brk(TCONF, "XFS doesn't support reflink");
-+}
-+
- static void cleanup(void)
- {
- 	if (src_fd != -1)
-@@ -106,6 +112,7 @@ static void cleanup(void)
- 
- static struct tst_test test = {
- 	.test_all = run,
-+	.setup = setup,
- 	.cleanup = cleanup,
- 	.min_kver = "4.5",
- 	.needs_root = 1,
-@@ -115,7 +122,7 @@ static struct tst_test test = {
- 		{.type = "bcachefs"},
- 		{.type = "btrfs"},
- 		{
--			.type = "xfs",
-+			.type = "xfs >= 5.1.0",
- 			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
- 		},
- 		{}
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-index 3cc386c59..8e32ba039 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-@@ -62,6 +62,9 @@ static void setup(void)
- 	int attr;
- 	struct stat sb;
- 
-+	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(4, 9, 0) < 0)
-+		tst_brk(TCONF, "XFS doesn't support reflink");
-+
- 	rw_file = SAFE_OPEN("ok_only", O_CREAT | O_RDWR, 0640);
- 	ro_file = SAFE_OPEN("rd_only", O_CREAT | O_RDONLY, 0640);
- 	wo_file = SAFE_OPEN("rw_only", O_CREAT | O_WRONLY, 0640);
-@@ -113,7 +116,7 @@ static struct tst_test test = {
- 		{.type = "bcachefs"},
- 		{.type = "btrfs"},
- 		{
--			.type = "xfs",
-+			.type = "xfs >= 5.1.0",
- 			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
- 		},
- 		{}
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-index e352c513b..4128285b1 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-@@ -108,6 +108,9 @@ static void setup(void)
- {
- 	struct stat sb;
- 
-+	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(4, 9, 0) < 0)
-+		tst_brk(TCONF, "XFS doesn't support reflink");
-+
- 	SAFE_STAT(MNTPOINT, &sb);
- 
- 	filesize = sb.st_blksize * CHUNKS;
-@@ -148,7 +151,7 @@ static struct tst_test test = {
- 		{.type = "bcachefs"},
- 		{.type = "btrfs"},
- 		{
--			.type = "xfs",
-+			.type = "xfs >= 5.1.0",
- 			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
- 		},
- 		{}
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-index ad36df162..d1f8d60c0 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-@@ -60,6 +60,9 @@ static void setup(void)
- {
- 	struct stat sb;
- 
-+	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(4, 9, 0) < 0)
-+		tst_brk(TCONF, "XFS doesn't support reflink");
-+
- 	SAFE_STAT(MNTPOINT, &sb);
- 
- 	alignment = sb.st_blksize;
-@@ -85,7 +88,7 @@ static struct tst_test test = {
- 		{.type = "bcachefs"},
- 		{.type = "btrfs"},
- 		{
--			.type = "xfs",
-+			.type = "xfs >= 5.1.0",
- 			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
- 		},
- 		{}
-
----
-base-commit: 968e6245d93bc91723e72086a71e6bc50f495d0b
-change-id: 20240924-ioctl_ficlone01_fix-88a17ef58543
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBTZXAgMjQsIDIwMjQgYXQgMTA6NDbigK9BTSBBbmRyZWEgQ2VydmVzYXRvIHZpYSBs
+dHAKPGx0cEBsaXN0cy5saW51eC5pdD4gd3JvdGU6Cj4KPiBIaSEKPgo+IFBsZWFzZSBjb25zaWRl
+ciB0aGlzIHBhdGNoc2V0IGFzIGEgZHJhZnQgb3BlbiBmb3IgZGlzY3Vzc2lvbi4KCkhhdmUgeW91
+IGNvbXBhcmVkIG9sZCBhbmQgbmV3IGRlZmluZXM/IEFyZSB0aGVyZSBhbnkgZGlmZmVyZW5jZXMK
+KG90aGVyIHRoYW4gYWRkaXRpb25zKT8KCj4KPiBBbmRyZWEKPgo+IE9uIDkvMjQvMjQgMTA6MDYs
+IEFuZHJlYSBDZXJ2ZXNhdG8gd3JvdGU6Cj4gPiBUaGUgcHJvYmxlbSB3ZSBoYXZlIGF0IHRoZSBt
+b21lbnQgaXMgdGhhdCBhbGwgc3lzY2FsbHMgaW5wdXQgZmlsZXMgbXVzdAo+ID4gYmUgY2hhbmdl
+ZCBieSBoYW5kIGVhY2ggdGltZSB3ZSBuZWVkIHRvIHRlc3QgYSBuZXcgc3lzY2FsbC4gVGhlIGlk
+ZWEgaXMKPiA+IHRvIHNpbXBsaWZ5IHRoaXMgcHJvY2VzcywgcHJvdmlkaW5nIGEgc2NyaXB0IHRo
+YXQgaXMgYWJsZSB0byByZWFkIGZyb20KPiA+IGtlcm5lbCBzb3VyY2VzIGFuZCB0byBnZW5lcmF0
+ZSBhbGwgc3lzY2FsbHMgZmlsZXMgd2UgbmVlZC4KPiA+Cj4gPiBUaGlzIGlzIGRvbmUgYnkgdGhl
+IGdlbmVyYXRlX3N5c2NhbGxzLnNoIHNjcmlwdCB0aGF0IGNhbiBiZSB1c2VkIGFzCj4gPiBmb2xs
+b3dpbmc6Cj4gPgo+ID4gLi9nZW5lcmF0ZV9zeXNjYWxscy5zaCBwYXRoL3RvL2tlcm5lbC9zb3Vy
+Y2UgcGF0aC90by9zeXNjYWxscy5oCj4gPgo+ID4gVGhpcyBhcHByb2FjaCByZXF1aXJlcyBhIGNl
+cnRhaW4gdHlwZSBvZiBhdHRlbnRpb24sIGR1ZSB0byB0aGUgZmFjdCB0aGF0Cj4gPiB3ZSBuZWVk
+IHRvIGdlbmVyYXRlIHN5c2NhbGxzLmggYXQgZWFjaCBrZXJuZWwgdmVyc2lvbiwgb3Igd2hlbiBu
+ZXcKPiA+IHN5c2NhbGxzIGhhdmUgYmVlbiBhZGRlZCBpbiB0aGUga2VybmVsLgo+ID4KPiA+IFNp
+Z25lZC1vZmYtYnk6IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+
+Cj4gPiAtLS0KPiA+IEFuZHJlYSBDZXJ2ZXNhdG8gKDQpOgo+ID4gICAgICAgIFJlbmFtZSBzeXNj
+YWxscyBvcmRlciBmaWxlIHRvIHN1cHBvcnRlZC1hcmNoLnR4dAo+ID4gICAgICAgIEFkZCBzY3Jp
+cHQgdG8gZ2VuZXJhdGUgc3lzY2FsbHMuaAo+ID4gICAgICAgIERlcHJlY2F0ZSBvbGQgc3lzY2Fs
+bHMgaW5wdXQgZmlsZXMKPiA+ICAgICAgICBTYXZlIHN5c2NhbGxzLmggaW5zaWRlIHJlcG8KPiA+
+Cj4gPiAgIGluY2x1ZGUvbGFwaS8uZ2l0aWdub3JlICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAgIDEgLQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMuaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8IDM0MjcyICsrKysrKysrKysrKysrKysrKysKPiA+ICAgaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL2FhcmNoNjQuaW4gICAgICAgICAgICAgICAgICAgfCAgIDMwNiAtCj4gPiAgIGlu
+Y2x1ZGUvbGFwaS9zeXNjYWxscy9hcmMuaW4gICAgICAgICAgICAgICAgICAgICAgIHwgICAzMjUg
+LQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJtLmluICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgNDA0IC0KPiA+ICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2JsYWNrbGlzdC1zeXNjYWxs
+cy50eHQgICAgICAgfCAgICAgNiArCj4gPiAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9nZW5lcmF0
+ZV9zeXNjYWxscy5zaCAgICAgICAgIHwgICAyOTIgKwo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2Fs
+bHMvaHBwYS5pbiAgICAgICAgICAgICAgICAgICAgICB8ICAgIDUyIC0KPiA+ICAgaW5jbHVkZS9s
+YXBpL3N5c2NhbGxzL2kzODYuaW4gICAgICAgICAgICAgICAgICAgICAgfCAgIDQzOSAtCj4gPiAg
+IGluY2x1ZGUvbGFwaS9zeXNjYWxscy9pYTY0LmluICAgICAgICAgICAgICAgICAgICAgIHwgICA5
+NTYgKy0KPiA+ICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2xvb25nYXJjaC5pbiAgICAgICAgICAg
+ICAgICAgfCAgIDMxMCAtCj4gPiAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX24zMi5pbiAg
+ICAgICAgICAgICAgICAgIHwgICAzNzkgLQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvbWlw
+c19uNjQuaW4gICAgICAgICAgICAgICAgICB8ICAgMzU1IC0KPiA+ICAgaW5jbHVkZS9sYXBpL3N5
+c2NhbGxzL21pcHNfbzMyLmluICAgICAgICAgICAgICAgICAgfCAgIDQyNSAtCj4gPiAgIGluY2x1
+ZGUvbGFwaS9zeXNjYWxscy9wb3dlcnBjLmluICAgICAgICAgICAgICAgICAgIHwgICA0MzIgLQo+
+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93ZXJwYzY0LmluICAgICAgICAgICAgICAgICB8
+ICAgNDMyIC0KPiA+ICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3JlZ2VuLnNoICAgICAgICAgICAg
+ICAgICAgICAgfCAgIDEyOSAtCj4gPiAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkwLmluICAg
+ICAgICAgICAgICAgICAgICAgIHwgICA0MTkgLQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMv
+czM5MHguaW4gICAgICAgICAgICAgICAgICAgICB8ICAgMzY3IC0KPiA+ICAgaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL3NoLmluICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDQxMyAtCj4gPiAgIGlu
+Y2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYy5pbiAgICAgICAgICAgICAgICAgICAgIHwgICA0MTgg
+LQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvc3BhcmM2NC5pbiAgICAgICAgICAgICAgICAg
+ICB8ICAgMzgzIC0KPiA+ICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3N0cmlwX3N5c2NhbGwuYXdr
+ICAgICAgICAgICAgfCAgICAxOSAtCj4gPiAgIC4uLi9sYXBpL3N5c2NhbGxzL3tvcmRlciA9PiBz
+dXBwb3J0ZWQtYXJjaC50eHR9ICAgIHwgICAgIDEgLQo+ID4gICBpbmNsdWRlL2xhcGkvc3lzY2Fs
+bHMveDg2XzY0LmluICAgICAgICAgICAgICAgICAgICB8ICAgMzk2IC0KPiA+ICAgMjUgZmlsZXMg
+Y2hhbmdlZCwgMzUxNzQgaW5zZXJ0aW9ucygrKSwgNjc1NyBkZWxldGlvbnMoLSkKPiA+IC0tLQo+
+ID4gYmFzZS1jb21taXQ6IDk2OGU2MjQ1ZDkzYmM5MTcyM2U3MjA4NmE3MWU2YmM1MGY0OTVkMGIK
+PiA+IGNoYW5nZS1pZDogMjAyNDA5MjMtZ2VuZXJhdGVfc3lzY2FsbHMtNzgwZGMyMjI3YmRiCj4g
+Pgo+ID4gQmVzdCByZWdhcmRzLAo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
+aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
