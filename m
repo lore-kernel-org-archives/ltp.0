@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF90ECF9C6B
-	for <ltp@archiver.kernel.org>; Tue, 24 Sep 2024 22:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 922A3CF9C6C
+	for <ltp@archiver.kernel.org>; Wed, 25 Sep 2024 03:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1727216945; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1727236707; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=EGxPMkcIa6Cz73KT5ICeqKvRAadJWmtePjo+SLbmJ5Y=;
- b=nb7sTz5n9GOC8kzJB9EeokOaJYxwSBts6CasjnaeBKGvdjgAKn5fw8FES4P9MprBjLUIH
- P6DWPvHrPUrqTvcsN/SlYF94/E8zN84C/NaMsrHo3OdWcz08cpUwwHxpqVf9XqUsejFcTOx
- +ZFokMdXQjGFmOvXd/eP+9DuaSPsLqI=
+ bh=8UPu5tUmym0VR6+TYsDRcvLCfhSfYFeIS6dxuqzfOaU=;
+ b=Yx2mYZz4g7miWCHIRvOzbSrarbt/mYCRL4Gh92MmBliIdsLhtWP7XlpKWcXObtkZCw8li
+ VXDuIkSoMimkwMB3OHey7s3pu5n/OjmRS8JOUS0KmgNUgRdIXe65H/jDUxrs2PzZGfglZ/p
+ 81xfeK8XE23oMmA1j3lo+Ky8lxn+64A=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 210973C4CC0
-	for <ltp@archiver.kernel.org>; Wed, 25 Sep 2024 00:29:05 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 62FDD3C4D2C
+	for <ltp@archiver.kernel.org>; Wed, 25 Sep 2024 05:58:27 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 130C13C2FF5
- for <ltp@lists.linux.it>; Wed, 25 Sep 2024 00:28:43 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=147.75.193.91; helo=nyc.source.kernel.org;
- envelope-from=ebiggers@kernel.org; receiver=lists.linux.it)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5B6113C2978
+ for <ltp@lists.linux.it>; Wed, 25 Sep 2024 05:58:05 +0200 (CEST)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3BA1B1A02390
- for <ltp@lists.linux.it>; Wed, 25 Sep 2024 00:28:42 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by nyc.source.kernel.org (Postfix) with ESMTP id 29DC7A4393C;
- Tue, 24 Sep 2024 22:28:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF30C4CEC4;
- Tue, 24 Sep 2024 22:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1727216920;
- bh=GsVkTtyX/rc3JJKceprQUMQw10UNBAbWAkdmH00ea+Y=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Nkyw7TgUrMk8k6+AAj4dlvo0Wf6I9ClSsmADp20hCwN5zP6jyECmqYdCVAyE+yBvP
- C+szEw6AKUep9mgcNK4F6TAO1/Zq3OA0ZOBBwnP8Z1puOiiiFduOHRME8495UOR3pM
- EaYiogikueTz2QTg3pL6NLk8Stcqhpg6XDfCi+kH5g951Fnb4oufus6d8/LVjMKzt2
- IW7ELaKsWCwCW2aKtvKJeyVZubRIJqbnoO3+2jypZzqfrpStw2NDzNkJuQl9Z10h4O
- OqmeRNWk5rpcl3RhsSZ/9RtU6qqRceCwp+egpt42f2Y14AH24xENro7vTO7oqmTEei
- 2Aswcn+zHAgYQ==
-Date: Tue, 24 Sep 2024 15:28:39 -0700
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Message-ID: <20240924222839.GC1585@sol.localdomain>
-References: <CA+G9fYtu-h_pp_hNfmx1pBg48oGeRiEDnEc4b-r3AiC_QfWiKg@mail.gmail.com>
- <ZvK-_5QKQ2e0S2Sd@gondor.apana.org.au>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9988D600070
+ for <ltp@lists.linux.it>; Wed, 25 Sep 2024 05:58:04 +0200 (CEST)
+Received: by mail-ed1-x52e.google.com with SMTP id
+ 4fb4d7f45d1cf-5c43003a667so8690873a12.3
+ for <ltp@lists.linux.it>; Tue, 24 Sep 2024 20:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1727236684; x=1727841484; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=eg39yxsi0nDDn+mzuyJTrgRdDSeUMpqefU2NsgfY1PE=;
+ b=fFbsRo3m5sE5QKOTWIbLRVWK+mhsRz4yWaT5Z8FeXBtpFJqkj+MhNypO2VvSRKHiA3
+ GcPMKam/apczashe3faOaexxUiVAow4K42uxXQRDyPCfRKwQT6iQ/+ESitmYwv6P1r3g
+ tUpSsQvO6mtMevv+AT/WyZ68Wc+TjJlhK8z0uL7JGiSvgSiFV32FZSRLNGAjZYT0qkQz
+ 8beYAV03cgrs7S7EcjHdUiSLZ23llcH4Jl611Oz8bzYYPkpeNiyoYcE7MivyNMFvnndZ
+ Fccd+pDAgy4qLY1O3ZAAh86lL7dHknA7NJ/74oLTGvzCw+6lifN8WEc8WGgp9wvYGw36
+ KJpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1727236684; x=1727841484;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=eg39yxsi0nDDn+mzuyJTrgRdDSeUMpqefU2NsgfY1PE=;
+ b=MgdWFRVt7mCyfz+jDSf5xChRH9siXcTDeIQoVs4Jq/JHBaj0Fu3TTz+hXmmTEoXjsj
+ g0f+4WwIpr5TTmtqJhv/vleyW0g8LdJKCLmEegM/Tcy1ovsv3dVtnmWduHWgvwTQIQOo
+ evyIbTMx5pH4aeDUnuZ0vBjzQ0BnOwkoZs0E7FJhVLOqpPAkDJ7dtaw6gDWW3uW1tatc
+ 7kDp3wKlWiNZwrzugMKGuLAr0hrNy6aFM30wFFectVyxeHrKy1Hjmlhl+hGY1inJ7fBM
+ 5IlPqAeUHYLmnBPHKJRPvwTsSANt7owa/17FUjq7DrjtWEzBqZ7Bs3VTeaddWidQ1QcB
+ FXTw==
+X-Gm-Message-State: AOJu0Yyv16u4lhTFAmS4yHCYi5/LFTgGuPXuEtch3/UEYu69JlKzUpvW
+ nc+4FFtbQtRfy9hPc9IIYzlTUj0YGBXnkPjQJc0ukocnH6MHW1i1mp6UkkERul2BvbfhhRpbnSY
+ =
+X-Google-Smtp-Source: AGHT+IHtB5NCLqgJWt/IeZhyrBuvkNaEWnVdH4brrm7c0knaYjws6OHaI6943DMbp/csH5Vo21WQSw==
+X-Received: by 2002:a17:907:928e:b0:a8a:91f4:fd30 with SMTP id
+ a640c23a62f3a-a93a06b96c2mr121350766b.56.1727236683700; 
+ Tue, 24 Sep 2024 20:58:03 -0700 (PDT)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a9393133c51sm161328666b.189.2024.09.24.20.58.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 Sep 2024 20:58:03 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 24 Sep 2024 23:57:56 -0400
+Message-Id: <20240925035756.14873-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240918100344.21316-1-wegao@suse.com>
+References: <20240918100344.21316-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZvK-_5QKQ2e0S2Sd@gondor.apana.org.au>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] af_alg01.c:36: TFAIL: instantiated nested hmac algorithm
- ('hmac(hmac(md5))')!
+Subject: [LTP] [PATCH v2] ftp01.sh: Add support for test lftp
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,62 +91,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Eric Biggers via ltp <ltp@lists.linux.it>
-Reply-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, LTP List <ltp@lists.linux.it>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 24, 2024 at 09:30:39PM +0800, Herbert Xu wrote:
-> On Tue, Sep 24, 2024 at 03:16:09PM +0530, Naresh Kamboju wrote:
-> >
-> > Warning log:
-> > ----------
-> > tst_test.c:1617: TINFO: Timeout per run is 0h 02m 30s
-> > af_alg01.c:36: TFAIL: instantiated nested hmac algorithm ('hmac(hmac(md5))')!
-> > tst_af_alg.c:46: TBROK: unexpected error binding AF_ALG socket to hash
-> > algorithm 'hmac(hmac(md5))': EINVAL (22)
-> 
-> This is expected.  You need to fix the test to not treat this as an
-> error.
-> 
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/network/tcp_cmds/ftp/ftp01.sh | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-So the error code changed from ENOENT to EINVAL.  These particular LTP tests
-(af_alg01 and af_alg03) could check for either ENOENT or EINVAL, and it would
-preserve the main point of the tests.
+diff --git a/testcases/network/tcp_cmds/ftp/ftp01.sh b/testcases/network/tcp_cmds/ftp/ftp01.sh
+index 53d1eec53..12d32a9a9 100755
+--- a/testcases/network/tcp_cmds/ftp/ftp01.sh
++++ b/testcases/network/tcp_cmds/ftp/ftp01.sh
+@@ -4,6 +4,7 @@
+ # Copyright (c) 2003 Manoj Iyer <manjo@mail.utexas.edu>
+ # Copyright (c) 2001 Robbie Williamson <robbiew@us.ibm.com>
+ 
++TST_SETUP=setup
+ TST_TESTFUNC=do_test
+ TST_CNT=4
+ TST_NEEDS_CMDS='awk ftp'
+@@ -11,6 +12,16 @@ TST_NEEDS_TMPDIR=1
+ 
+ RUSER="${RUSER:-root}"
+ RHOST="${RHOST:-localhost}"
++FTP_CMD="ftp -nv"
++
++setup()
++{
++    if tst_cmd_available lftp; then
++        FTP_CMD="lftp --norc"
++    else
++        tst_brkm TCONF "No FTP client found"
++    fi
++}
+ 
+ do_test()
+ {
+@@ -41,7 +52,7 @@ test_get()
+             echo cd $TST_NET_DATAROOT
+             echo get $file
+             echo quit
+-        } | ftp -nv $RHOST
++        } | $FTP_CMD $RHOST
+ 
+         sum1="$(ls -l $file | awk '{print $5}')"
+         sum2="$(ls -l $TST_NET_DATAROOT/$file | awk '{print $5}')"
+@@ -62,7 +73,7 @@ test_put()
+             echo cd $TST_TMPDIR
+             echo put $file
+             echo quit
+-        } | ftp -nv $RHOST
++        } | $FTP_CMD $RHOST
+ 
+         sum1="$(tst_rhost_run -c "sum $TST_TMPDIR/$file" -s | awk '{print $1}')"
+         sum2="$(sum $TST_NET_DATAROOT/$file | awk '{print $1}')"
+-- 
+2.35.3
 
-I do feel that the previous error code, ENOENT, was more logical though.  From
-userspace's perspective, these invalid algorithms don't exist and don't need to
-be treated any different from other algorithms that don't exist.
-
-Has it been checked what else in userspace might need to be updated as a result
-of this change?
-
-Looking at libkcapi for example
-(https://github.com/smuellerDD/libkcapi/blob/master/lib/kcapi.h#L125) it passes
-the error code up and documents it as part of its API:
-
-     * @return 0 upon success;
-     *         -ENOENT - algorithm not available;
-     *         -EOPNOTSUPP - AF_ALG family not available;
-     *         -EINVAL - accept syscall failed
-     *         -ENOMEM - cipher handle cannot be allocated
-     */
-    int kcapi_cipher_init(struct kcapi_handle **handle, const char *ciphername,
-                          uint32_t flags);
-
-So that is now wrong, as "algorithm not available" can now be either ENOENT or
-EINVAL.
-
-I don't really see the reason for this churn.  The kernel commit which made this
-change (795f85fca229) provides no explanation either.
-
-- Eric
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
