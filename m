@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10526CCF9E9
-	for <ltp@archiver.kernel.org>; Thu, 26 Sep 2024 06:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE237CCF9E9
+	for <ltp@archiver.kernel.org>; Thu, 26 Sep 2024 07:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1727331604; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1727334468; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=cAlwosRnLBdP9GS5UHDZUn0Z2ZcPsy5b151nvLOSnQc=;
- b=dxSp6BdZ7hObO5cydXcHsboSt4FR5X/UHoqqtogB2gHR9h2u71dy31Qiy7H2JrYGvS6G2
- rmj+l5Hdxbpy36X6JxKf8KjBP+O2Fud3dvBm1vEtuH/krQ5SZLqTzb+6AaUJqExWq8XOHMI
- evDvSpuTBKPQFowp5T1O1eP7eXfZBpQ=
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=wR8XEj9q8x3ltejeCaFOJpExQwhY6/4QWmN+gch0xo8=;
+ b=R5rYADQ+CD9mw9twLbpNIawICEBVqjOuSgIxnOz6kA6tTLcgFcHwlcxmRnGZaRkHKsLBG
+ CVdmNCwsNTt79rjU+CoMbEvqTDZPVOnA8oJrFvvMT/aKc/kLM1kDN2YTB+eH2WVaxC+FaWi
+ Zo9fHmqjGZ7731mlb6sBq13+rLVjbn0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7CC7A3C4E2D
-	for <ltp@archiver.kernel.org>; Thu, 26 Sep 2024 08:20:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D3D243C4E49
+	for <ltp@archiver.kernel.org>; Thu, 26 Sep 2024 09:07:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 296303C4DF5
- for <ltp@lists.linux.it>; Thu, 26 Sep 2024 08:19:43 +0200 (CEST)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
+ by picard.linux.it (Postfix) with ESMTPS id 852B33C238A
+ for <ltp@lists.linux.it>; Thu, 26 Sep 2024 09:07:28 +0200 (CEST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4D96F14104FC
- for <ltp@lists.linux.it>; Thu, 26 Sep 2024 08:19:43 +0200 (CEST)
-Received: by mail-lf1-x132.google.com with SMTP id
- 2adb3069b0e04-5356aa9a0afso846335e87.2
- for <ltp@lists.linux.it>; Wed, 25 Sep 2024 23:19:43 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A17891B61043
+ for <ltp@lists.linux.it>; Thu, 26 Sep 2024 09:07:27 +0200 (CEST)
+Received: by mail-ej1-x62a.google.com with SMTP id
+ a640c23a62f3a-a90349aa7e5so91451866b.0
+ for <ltp@lists.linux.it>; Thu, 26 Sep 2024 00:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1727331582; x=1727936382; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Brm7onrHfXV4dh/SfEZgIN9u3a1abUintvznuAeKhbA=;
- b=IS44LeabHRtKs9F7uainSljjMb73VVxjJtBhVvLY2IWZl7ow/QCnE5bKovePl0Zsop
- J4heRaBAjEyOuD553evf2YnjUYOSqJ8f8E02jDin9htmheHkScET/1u7RfuV/iMLpvf7
- rGexCN0ptr8EXDPoiPie1+3VpLz8u1VfZbTN8HClGz9QKGE5DzE7w5B+SNiV3ZUZxWDp
- 7tEIGpnBtZ+ld5iCYvI+0kM6Fti5TLH2C2DhScIwXN1m71T3uXeL3BnW89eTp/Qi9yBh
- PAYinPA5DzTVee2FcBv7GexijNXe6elX5nlodsyLioqPFzV2l3czW5rslOO5tf/vTHpV
- YDVw==
+ d=suse.com; s=google; t=1727334447; x=1727939247; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=1M3Gfxalu/Fd6r4AAoPd6G6OWZsl0rf9V7B96UXNHcA=;
+ b=FEA7a7/wW8kyvRPYiWeYpeVqEfM4+DcVkZIYJycg/nAbgVWX4u21NHmy7UjgOFVBPg
+ qqUlEt1S0j1DMO3RkFo8AX/KU/97EFUWvcYLtKlpHwEVXiFFBWS6aT+hcDHmE6fkOX5y
+ QopSeD32O2LdbyU3w0VMdS7kWRdflpg7HZ2zVvAv0yRcU0b3MjiAclidNXcDufrb3Hp9
+ wBXuSZet6AeQLXSH2nGP7uSdRrCn3YxY9HHoatCDPwW+btOqrr/x7WJNqtRPy3LeRLOv
+ kj6zkJbCij5sY5ilv0crAVoyxT5XqbKSRn6cJgNfC/Pj4CAwhJJBW6L1g2FhY1FV4aSy
+ UnzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1727331582; x=1727936382;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Brm7onrHfXV4dh/SfEZgIN9u3a1abUintvznuAeKhbA=;
- b=BCjWe5gysAK2XwDIkHZ8fy5eTezC7QpPxBZqgYZbuBydIXghfNRVxgj3WQK0lOjnC8
- vf4jpAx+gbMDYqsTD6Z7YUF4EEnnQV8LG4iNUoYbpNmGlAF07RlPCc4n3VmWS7U4TIzz
- C1pgdXj6xvfZyYYcoaXDAsKtd0BNUwCL0hycP2w1zHvx88LdyxQAKuAAZMfVjL2OrQqF
- d8o7mqlrKa5/SAWq5BrXCiI5m+jges08Zr6i0G+sbe+FqBH47YLW8xBs35qGOZlTdmMJ
- yjrwkPoTkNmbGTW69yXLTYHiqN8+m34rZksgcQHx+Ne1aCOFAOZmS0ELh6reK4aAPwlr
- d6ew==
-X-Gm-Message-State: AOJu0YyJj6zfZE4TohriBkvvJzRRjKCIushpniK5HTdjau1sT78rdWh4
- fDMCXfKsP5h8Z4tHIv+c4Oxha2JgYh2zrn9RkUjCpJru8+dWBsgCRH5pKEiykp+1Oj3OS3JVLs0
- =
-X-Google-Smtp-Source: AGHT+IFufHBb0O/hA4LGJQu6SBS2wXFDLt4cnXgNvKDLQm88LDRnWq0gPdhBKLJbPA13kfLDohf91g==
-X-Received: by 2002:a05:6512:31c3:b0:535:6925:7a82 with SMTP id
- 2adb3069b0e04-5387755cf04mr4595657e87.41.1727331582152; 
- Wed, 25 Sep 2024 23:19:42 -0700 (PDT)
-Received: from localhost ([223.72.87.57]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a9392f4fa95sm307044266b.54.2024.09.25.23.19.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 25 Sep 2024 23:19:41 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Thu, 26 Sep 2024 02:19:36 -0400
-Message-Id: <20240926061936.21499-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240819044901.17380-1-wegao@suse.com>
-References: <20240819044901.17380-1-wegao@suse.com>
+ d=1e100.net; s=20230601; t=1727334447; x=1727939247;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=1M3Gfxalu/Fd6r4AAoPd6G6OWZsl0rf9V7B96UXNHcA=;
+ b=UKaUZosDGZqZNClZS6Km2WEFUjmeT/fPcPpNk2TObnK7w9229fIxQv8TasOgEgvVlx
+ tCoBwZfk7P/rKF5iD22RJ77q5/aiB8xtcrAiAUxzqqUXsPmW4H6rMZS4Ni3S0xmV8o+K
+ 1lb548XqiTemJVbdlDqX9WRQVoTGDKu4HTi0bRCsFdyB8UBahsvzJkn64AruVoaYoQ7k
+ JvGMaLHZT+3Nx/2eGDf3sGd4qg9QlSQo7jfxq4LDNuqvVxggapUKxaI+fq4z1CViinF9
+ xhlRKeZVvIxABrMb0Xx4zZtwc8z5YNfGtPllngsOheQzWmr+LHdbogH4Vemh6SjyjsZw
+ lN9w==
+X-Gm-Message-State: AOJu0YxVwCBjjSFYRkvHhfmmQ4IIhI930buuNwn5rCgkEMXUmNyJqAxg
+ 3ouwGNfnhwluuntr7iZe4qDh9fsqwUwX1zC3Uwrcb6/5QoflqtFmwuGvDkHSWi8=
+X-Google-Smtp-Source: AGHT+IGwiM85mu7SR2j5/jK0CAdbq7J3tkdiaSGhKVhzhJLM3tV6RFT9mjz51Nex7zm2FOCPWpw79g==
+X-Received: by 2002:a17:907:7b8f:b0:a91:1592:f5cf with SMTP id
+ a640c23a62f3a-a93a035ce12mr479629866b.15.1727334446972; 
+ Thu, 26 Sep 2024 00:07:26 -0700 (PDT)
+Received: from [192.168.178.49] ([79.140.112.18])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a939313462dsm309998166b.201.2024.09.26.00.07.26
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 26 Sep 2024 00:07:26 -0700 (PDT)
+Message-ID: <5e157a19-8832-4531-b1b5-617f2a1044d5@suse.com>
+Date: Thu, 26 Sep 2024 09:07:20 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Jan Stancek <jstancek@redhat.com>
+References: <20240924-generate_syscalls-v1-0-941507a9cdac@suse.com>
+ <ff7c5d36-e2dc-47b6-aded-64ecf649d8a3@suse.com>
+ <CAASaF6yUzHRxR8pvi0AXCYA6XqQHE8A1miqFLX88xYHMnwsq9A@mail.gmail.com>
+ <98bdc518-be50-47d9-a6f9-5718217317c9@suse.com>
+ <CAASaF6wYYSfjxgg2byVBDhqCpQs9-8ngJZv8LrrJiytPR2=+ag@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAASaF6wYYSfjxgg2byVBDhqCpQs9-8ngJZv8LrrJiytPR2=+ag@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] cpuset02: Reimplementing the test6 of
- cpuset_memory_testset.sh as a separate C testcase
+Subject: Re: [LTP] [PATCH 0/4] Automatically generate syscalls.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,270 +96,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/mm                                    |   1 +
- .../cpuset_memory_test/cpuset_memory_test.c   |  15 +-
- testcases/kernel/mem/.gitignore               |   1 +
- testcases/kernel/mem/cpuset/cpuset02.c        | 147 ++++++++++++++++++
- 4 files changed, 158 insertions(+), 6 deletions(-)
- create mode 100644 testcases/kernel/mem/cpuset/cpuset02.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 6a8cd0b9d..845874c41 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -75,6 +75,7 @@ ksm06_2 ksm06 -n 8000
- ksm07 ksm07
- 
- cpuset01 cpuset01
-+cpuset02 cpuset02
- 
- oom01 oom01
- oom02 oom02
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
-index 9912d8d6a..4e9e40ea2 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
-@@ -56,10 +56,9 @@ static int opt_check; /* check node when munmap memory (only for mmap_anon()) */
- static int opt_thread;
- 
- static int key_id;			/* used with opt_shm */
-+static char hugepagefile[100] = "/hugetlb/hugepagefile";
- static unsigned long memsize;
- 
--#define FILE_HUGEPAGE	"/hugetlb/hugepagefile"
--
- #define MMAP_ANON	(SCHAR_MAX + 1)
- #define MMAP_FILE	(SCHAR_MAX + 2)
- #define MMAP_LOCK1	(SCHAR_MAX + 3)
-@@ -80,6 +79,7 @@ const struct option long_opts[] = {
- 	{"thread", 0, NULL, THREAD},
- 	{"size", 1, NULL, 's'},
- 	{"key", 1, NULL, 'k'},
-+	{"hugepage-file", 1, NULL, 'f'},
- 	{NULL, 0, NULL, 0},
- };
- 
-@@ -92,7 +92,7 @@ void process_options(int argc, char *argv[])
- 	char *end;
- 
- 	while (1) {
--		c = getopt_long(argc, argv, "s:k:", long_opts, NULL);
-+		c = getopt_long(argc, argv, "s:k:f:", long_opts, NULL);
- 		if (c == -1)
- 			break;
- 
-@@ -105,6 +105,9 @@ void process_options(int argc, char *argv[])
- 		case 'k':
- 			key_id = atoi(optarg);
- 			break;
-+		case 'f':
-+			strncpy(hugepagefile, optarg, sizeof(hugepagefile) - 1);
-+			break;
- 		case MMAP_ANON:
- 			opt_mmap_anon = 1;
- 			break;
-@@ -179,7 +182,7 @@ void mmap_file(int flag_allocated)
- 
- 	if (!flag_allocated) {
- 		if (opt_hugepage) {
--			fd_hugepage = open(FILE_HUGEPAGE,
-+			fd_hugepage = open(hugepagefile,
- 					   O_CREAT | O_RDWR, 0755);
- 			if (fd_hugepage < 0)
- 				err(1, "open hugepage file failed");
-@@ -191,7 +194,7 @@ void mmap_file(int flag_allocated)
- 			 MAP_SHARED, fd_tmp, 0);
- 		if (p == MAP_FAILED) {
- 			if (opt_hugepage)
--				unlink(FILE_HUGEPAGE);
-+				unlink(hugepagefile);
- 			err(1, "mmap(file) failed");
- 		}
- 		touch_memory_and_echo_node(p, memsize);
-@@ -201,7 +204,7 @@ void mmap_file(int flag_allocated)
- 
- 		if (opt_hugepage) {
- 			close(fd_hugepage);
--			unlink(FILE_HUGEPAGE);
-+			unlink(hugepagefile);
- 		}
- 	}
- }
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index d88484fa1..0845297cb 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,4 +1,5 @@
- /cpuset/cpuset01
-+/cpuset/cpuset02
- /hugetlb/hugefallocate/hugefallocate01
- /hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugefork/hugefork01
-diff --git a/testcases/kernel/mem/cpuset/cpuset02.c b/testcases/kernel/mem/cpuset/cpuset02.c
-new file mode 100644
-index 000000000..05ed5c791
---- /dev/null
-+++ b/testcases/kernel/mem/cpuset/cpuset02.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (c) 2009 FUJITSU LIMITED  Miao Xie <miaox@cn.fujitsu.com>
-+ * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This is reimplementing the test6 of cpuset_memory_testset.sh
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "tst_test.h"
-+
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
-+
-+#include "tst_safe_stdio.h"
-+#include "mem.h"
-+#include "numa_helper.h"
-+
-+#define MNTPOINT "hugetlbfs/"
-+#define CPUSET "cpuset_mnt"
-+
-+#ifdef HAVE_NUMA_V2
-+
-+static long hpage_size;
-+static int ncpus;
-+static int *nodes;
-+static int nnodes;
-+
-+static void count_cpus_mems(void)
-+{
-+	while (path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-+		ncpus++;
-+	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
-+		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
-+	if (nnodes <= 1)
-+		tst_brk(TCONF, "requires a NUMA system.");
-+}
-+
-+static void run_test(void)
-+{
-+	char path[256];
-+	char tmp_path[256];
-+
-+	snprintf(path, sizeof(path), "./%s/0", CPUSET);
-+	if (access(path, F_OK) != 0)
-+		SAFE_MKDIR(path, 0777);
-+	snprintf(tmp_path, sizeof(tmp_path), "./%s/cpuset.cpus", path);
-+	SAFE_FILE_PRINTF(tmp_path, "%s", "0");
-+	snprintf(tmp_path, sizeof(tmp_path), "./%s/cpuset.mems", path);
-+	SAFE_FILE_PRINTF(tmp_path, "%s", "0");
-+	snprintf(tmp_path, sizeof(tmp_path), "./%s/cpuset.sched_load_balance", path);
-+	SAFE_FILE_PRINTF(tmp_path, "%s", "0");
-+	SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%d", 2 * nnodes);
-+
-+	int pid;
-+	char str_hpage_size[20];
-+
-+	snprintf(str_hpage_size, sizeof(str_hpage_size), "%ld", hpage_size);
-+	snprintf(tmp_path, sizeof(tmp_path), "%shugepagefile", MNTPOINT);
-+
-+	char *argv[10] = {
-+		"--mmap-file",
-+		"--hugepage",
-+		"-s",
-+		str_hpage_size,
-+		"-f",
-+		tmp_path,
-+		NULL,
-+	};
-+
-+	int fd = SAFE_OPEN("memory_result", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+
-+	SAFE_DUP2(fd, STDOUT_FILENO);
-+	pid = tst_run_script("cpuset_memory_test", argv);
-+	close(fd);
-+
-+	sleep(1);
-+	snprintf(tmp_path, sizeof(tmp_path), "./%s/tasks", path);
-+	SAFE_FILE_PRINTF(tmp_path, "%d", pid);
-+	kill(pid, SIGUSR1);
-+	sleep(1);
-+	kill(pid, SIGUSR1);
-+	sleep(1);
-+	kill(pid, SIGINT);
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	char node[20];
-+	FILE *file;
-+
-+	file  = SAFE_FOPEN("memory_result", "r");
-+
-+	if (fgets(node, sizeof(node), file) == NULL)
-+		tst_res(TFAIL, "read memory_result failed");
-+
-+	fclose(file);
-+
-+	TST_EXP_PASS(strncmp(node, "0", 1));
-+}
-+
-+static void setup(void)
-+{
-+	count_cpus_mems();
-+
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+	SAFE_MKDIR(CPUSET, 0777);
-+	SAFE_MOUNT("cpuset", CPUSET, "cgroup", 0, "cpuset");
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_UMOUNT(CPUSET);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.runs_script = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.forks_child = 1,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/vm/nr_hugepages", NULL, TST_SR_TBROK},
-+		{}
-+	},
-+};
-+
-+#else
-+TST_TEST_TCONF(NUMA_ERROR_MSG);
-+#endif
--- 
-2.35.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+Ck9uIDkvMjUvMjQgMjI6MDEsIEphbiBTdGFuY2VrIHdyb3RlOgo+IE9uIFR1ZSwgU2VwIDI0LCAy
+MDI0IGF0IDM6MjTigK9QTSBBbmRyZWEgQ2VydmVzYXRvCj4gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3Vz
+ZS5jb20+IHdyb3RlOgo+Pgo+PiBPbiA5LzI0LzI0IDE1OjE2LCBKYW4gU3RhbmNlayB3cm90ZToK
+Pj4+IE9uIFR1ZSwgU2VwIDI0LCAyMDI0IGF0IDEwOjQ24oCvQU0gQW5kcmVhIENlcnZlc2F0byB2
+aWEgbHRwCj4+PiA8bHRwQGxpc3RzLmxpbnV4Lml0PiB3cm90ZToKPj4+PiBIaSEKPj4+Pgo+Pj4+
+IFBsZWFzZSBjb25zaWRlciB0aGlzIHBhdGNoc2V0IGFzIGEgZHJhZnQgb3BlbiBmb3IgZGlzY3Vz
+c2lvbi4KPj4+IEhhdmUgeW91IGNvbXBhcmVkIG9sZCBhbmQgbmV3IGRlZmluZXM/IEFyZSB0aGVy
+ZSBhbnkgZGlmZmVyZW5jZXMKPj4+IChvdGhlciB0aGFuIGFkZGl0aW9ucyk/Cj4+Pgo+PiBPbmx5
+IGFkZGl0aW9ucywgYnV0IHRoaXMgaXMgYSBkcmFmdCB3b3JrIGFuZCBJJ20gc2VhcmNoaW5nIGZv
+cgo+PiBhbHRlcm5hdGl2ZSBpZGVhcyBhcyB3ZWxsLgo+PiBGb3IgZXhhbXBsZSwgdGhlIGxpbWl0
+YXRpb24gb2YgdGhpcyBhcHByb2FjaCBpcyB0aGF0IHN5c2NhbGxzLmggaGFzIHRvCj4+IGJlIGdl
+bmVyYXRlZCBhbnl3YXkuCj4gSSBndWVzcyBpdCB3b3VsZG4ndCBiZSB0b28gZGlmZmljdWx0IHRv
+IGNoYW5nZSBzY3JpcHQgdG8gZ2VuZXJhdGUgLmluCj4gZmlsZXMgaW5zdGVhZCwgcmlnaHQ/Ckkn
+bSBhbHJlYWR5IGRvaW5nIGl0IGluIHRoZSBnZW5lcmF0ZV9zeXNjYWxscy5zaCBzY3JpcHQsIHNv
+IGl0J3MgcXVpdGUgCmVhc3kuIFRoZSBwb2ludCBpcyBpZiB3ZSB3YW50IHRvIG1ha2UgdGhpcyBl
+eHRyYSBzdGVwLCBiZWNhdXNlIG1heWJlIHdlIApjYW4ganVzdCBkb3dubG9hZCB0aGUgdGFibGVz
+IGFscmVhZHkgY3JlYXRlZCBieSB0aGUgc3lzY2FsbHMtdGFibGUgCnByb2plY3QgYW5kIHdlIGhh
+dmUgLmluIGZpbGVzIGZvciBmcmVlLiBCdXQgdGhhdCBhcHByb2FjaCBoYXMgZG93bnNpZGVzIApv
+ZiBjb3Vyc2UuCj4+IEF0IHRoZSBzYW1lIHRpbWUsIHdlIGhhdmUgcHJvamVjdHMgbGlrZQo+PiBo
+dHRwczovL2dpdGh1Yi5jb20vaHJ3L3N5c2NhbGxzLXRhYmxlICh0aGF0IGluc3BpcmVkIG15IHNj
+cmlwdCkKPj4gcHJvdmlkaW5nIHB5dGhvbiBiaW5kaW5ncyBhbmQgKm1heWJlKiBpdCBjb3VsZCBi
+ZSB1c2VkIHRvIGNyZWF0ZSBhCj4+IHB5dGhvbiBzY3JpcHQgd2hpY2ggZ2VuZXJhdGUgLmluIGZp
+bGVzIHdoZW4gdGhleSBuZWVkIHRvIGJlIHVwZGF0ZWQuCj4gcHl0aG9uIGZlZWxzIGxpa2UgYW4g
+ZXh0cmEgc3RlcCwgc2luY2Ugd2UgY291bGQgZG8gaXQgaW4gZXhpc3Rpbmcgc2hlbGwgc2NyaXB0
+Lgo+IE1heWJlIHN0b3JlIGEgY29weSBvZiB1cGRhdGUtdGFibGVzLnNoIGluIExUUCByZXBvLCBh
+bmQgYWRkIHNvbWUgd3JhcHBlcgo+IHRvIHByb3ZpZGUgY3JlYXRlX3RhYmxlc19mb3JfTFRQKCkg
+ZnVuY3Rpb24gYW5kIGEgY2hlY2sgdG8gcHJpbnQgd2FybmluZyBpZgo+IG9yaWdpbmFsIGdpdGh1
+YiBwcm9qZWN0IGNoYW5nZXMgdXBkYXRlLXRhYmxlcy5zaC4KPgo+IGNyZWF0ZV90YWJsZXNfZm9y
+X0xUUCgpIHdvdWxkIGdlbmVyYXRlIC5pbiBmaWxlcyBhbmQgcmVzdCBjYW4gc3RheSBhcyBpdCBp
+cy4KCkkgd2FzIGFsc28gdGhpbmtpbmcgdGhhdCBtYXliZSBpdCdzIGVub3VnaCB0byBoYXZlIDIg
+c2NyaXB0czogb25lIGZvciAKdXBkYXRpbmcgc3lzY2FsbHMgLmluIGZpbGVzIHdoZW4gbmVlZGVk
+IGFuZCBvbmUgZm9yIG1lcmdpbmcgdGhlbS4KClRoZSBvbmx5IHByb2JsZW0gSSBzZWUgaW4gdGhp
+cyBhcHByb2FjaCBpczogd2hlbiBkbyB3ZSB3YW50IHRvIHVwZGF0ZSAKdGFibGVzPyBJdCB3b3Vs
+ZCBiZSBuaWNlIHRvIGRvIHRoYXQgZXZlcnkgLi9jb25maWd1cmUgLCBidXQgdGhhdCB3b3VsZCAK
+YmUgdG9vIG11Y2ggYmVjYXVzZSBvZiBnaXQvY3VybCBkZXBlbmRlbmN5LgoKPj4gRXRjLi4KPj4K
+Pj4+PiBBbmRyZWEKPj4+Pgo+Pj4+IE9uIDkvMjQvMjQgMTA6MDYsIEFuZHJlYSBDZXJ2ZXNhdG8g
+d3JvdGU6Cj4+Pj4+IFRoZSBwcm9ibGVtIHdlIGhhdmUgYXQgdGhlIG1vbWVudCBpcyB0aGF0IGFs
+bCBzeXNjYWxscyBpbnB1dCBmaWxlcyBtdXN0Cj4+Pj4+IGJlIGNoYW5nZWQgYnkgaGFuZCBlYWNo
+IHRpbWUgd2UgbmVlZCB0byB0ZXN0IGEgbmV3IHN5c2NhbGwuIFRoZSBpZGVhIGlzCj4+Pj4+IHRv
+IHNpbXBsaWZ5IHRoaXMgcHJvY2VzcywgcHJvdmlkaW5nIGEgc2NyaXB0IHRoYXQgaXMgYWJsZSB0
+byByZWFkIGZyb20KPj4+Pj4ga2VybmVsIHNvdXJjZXMgYW5kIHRvIGdlbmVyYXRlIGFsbCBzeXNj
+YWxscyBmaWxlcyB3ZSBuZWVkLgo+Pj4+Pgo+Pj4+PiBUaGlzIGlzIGRvbmUgYnkgdGhlIGdlbmVy
+YXRlX3N5c2NhbGxzLnNoIHNjcmlwdCB0aGF0IGNhbiBiZSB1c2VkIGFzCj4+Pj4+IGZvbGxvd2lu
+ZzoKPj4+Pj4KPj4+Pj4gLi9nZW5lcmF0ZV9zeXNjYWxscy5zaCBwYXRoL3RvL2tlcm5lbC9zb3Vy
+Y2UgcGF0aC90by9zeXNjYWxscy5oCj4+Pj4+Cj4+Pj4+IFRoaXMgYXBwcm9hY2ggcmVxdWlyZXMg
+YSBjZXJ0YWluIHR5cGUgb2YgYXR0ZW50aW9uLCBkdWUgdG8gdGhlIGZhY3QgdGhhdAo+Pj4+PiB3
+ZSBuZWVkIHRvIGdlbmVyYXRlIHN5c2NhbGxzLmggYXQgZWFjaCBrZXJuZWwgdmVyc2lvbiwgb3Ig
+d2hlbiBuZXcKPj4+Pj4gc3lzY2FsbHMgaGF2ZSBiZWVuIGFkZGVkIGluIHRoZSBrZXJuZWwuCj4+
+Pj4+Cj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNh
+dG9Ac3VzZS5jb20+Cj4+Pj4+IC0tLQo+Pj4+PiBBbmRyZWEgQ2VydmVzYXRvICg0KToKPj4+Pj4g
+ICAgICAgICAgUmVuYW1lIHN5c2NhbGxzIG9yZGVyIGZpbGUgdG8gc3VwcG9ydGVkLWFyY2gudHh0
+Cj4+Pj4+ICAgICAgICAgIEFkZCBzY3JpcHQgdG8gZ2VuZXJhdGUgc3lzY2FsbHMuaAo+Pj4+PiAg
+ICAgICAgICBEZXByZWNhdGUgb2xkIHN5c2NhbGxzIGlucHV0IGZpbGVzCj4+Pj4+ICAgICAgICAg
+IFNhdmUgc3lzY2FsbHMuaCBpbnNpZGUgcmVwbwo+Pj4+Pgo+Pj4+PiAgICAgaW5jbHVkZS9sYXBp
+Ly5naXRpZ25vcmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgMSAtCj4+Pj4+ICAg
+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDM0
+MjcyICsrKysrKysrKysrKysrKysrKysKPj4+Pj4gICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9h
+YXJjaDY0LmluICAgICAgICAgICAgICAgICAgIHwgICAzMDYgLQo+Pj4+PiAgICAgaW5jbHVkZS9s
+YXBpL3N5c2NhbGxzL2FyYy5pbiAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMyNSAtCj4+Pj4+
+ICAgICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvYXJtLmluICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgNDA0IC0KPj4+Pj4gICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9ibGFja2xpc3Qtc3lzY2Fs
+bHMudHh0ICAgICAgIHwgICAgIDYgKwo+Pj4+PiAgICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2dl
+bmVyYXRlX3N5c2NhbGxzLnNoICAgICAgICAgfCAgIDI5MiArCj4+Pj4+ICAgICBpbmNsdWRlL2xh
+cGkvc3lzY2FsbHMvaHBwYS5pbiAgICAgICAgICAgICAgICAgICAgICB8ICAgIDUyIC0KPj4+Pj4g
+ICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9pMzg2LmluICAgICAgICAgICAgICAgICAgICAgIHwg
+ICA0MzkgLQo+Pj4+PiAgICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2lhNjQuaW4gICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDk1NiArLQo+Pj4+PiAgICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL2xv
+b25nYXJjaC5pbiAgICAgICAgICAgICAgICAgfCAgIDMxMCAtCj4+Pj4+ICAgICBpbmNsdWRlL2xh
+cGkvc3lzY2FsbHMvbWlwc19uMzIuaW4gICAgICAgICAgICAgICAgICB8ICAgMzc5IC0KPj4+Pj4g
+ICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9taXBzX242NC5pbiAgICAgICAgICAgICAgICAgIHwg
+ICAzNTUgLQo+Pj4+PiAgICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL21pcHNfbzMyLmluICAgICAg
+ICAgICAgICAgICAgfCAgIDQyNSAtCj4+Pj4+ICAgICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvcG93
+ZXJwYy5pbiAgICAgICAgICAgICAgICAgICB8ICAgNDMyIC0KPj4+Pj4gICAgIGluY2x1ZGUvbGFw
+aS9zeXNjYWxscy9wb3dlcnBjNjQuaW4gICAgICAgICAgICAgICAgIHwgICA0MzIgLQo+Pj4+PiAg
+ICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3JlZ2VuLnNoICAgICAgICAgICAgICAgICAgICAgfCAg
+IDEyOSAtCj4+Pj4+ICAgICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvczM5MC5pbiAgICAgICAgICAg
+ICAgICAgICAgICB8ICAgNDE5IC0KPj4+Pj4gICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9zMzkw
+eC5pbiAgICAgICAgICAgICAgICAgICAgIHwgICAzNjcgLQo+Pj4+PiAgICAgaW5jbHVkZS9sYXBp
+L3N5c2NhbGxzL3NoLmluICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDQxMyAtCj4+Pj4+ICAg
+ICBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvc3BhcmMuaW4gICAgICAgICAgICAgICAgICAgICB8ICAg
+NDE4IC0KPj4+Pj4gICAgIGluY2x1ZGUvbGFwaS9zeXNjYWxscy9zcGFyYzY0LmluICAgICAgICAg
+ICAgICAgICAgIHwgICAzODMgLQo+Pj4+PiAgICAgaW5jbHVkZS9sYXBpL3N5c2NhbGxzL3N0cmlw
+X3N5c2NhbGwuYXdrICAgICAgICAgICAgfCAgICAxOSAtCj4+Pj4+ICAgICAuLi4vbGFwaS9zeXNj
+YWxscy97b3JkZXIgPT4gc3VwcG9ydGVkLWFyY2gudHh0fSAgICB8ICAgICAxIC0KPj4+Pj4gICAg
+IGluY2x1ZGUvbGFwaS9zeXNjYWxscy94ODZfNjQuaW4gICAgICAgICAgICAgICAgICAgIHwgICAz
+OTYgLQo+Pj4+PiAgICAgMjUgZmlsZXMgY2hhbmdlZCwgMzUxNzQgaW5zZXJ0aW9ucygrKSwgNjc1
+NyBkZWxldGlvbnMoLSkKPj4+Pj4gLS0tCj4+Pj4+IGJhc2UtY29tbWl0OiA5NjhlNjI0NWQ5M2Jj
+OTE3MjNlNzIwODZhNzFlNmJjNTBmNDk1ZDBiCj4+Pj4+IGNoYW5nZS1pZDogMjAyNDA5MjMtZ2Vu
+ZXJhdGVfc3lzY2FsbHMtNzgwZGMyMjI3YmRiCj4+Pj4+Cj4+Pj4+IEJlc3QgcmVnYXJkcywKPj4+
+PiAtLQo+Pj4+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
+bmZvL2x0cAo+Pj4+CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
+aXQvbGlzdGluZm8vbHRwCg==
