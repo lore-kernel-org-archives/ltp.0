@@ -4,83 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55AA8CE8347
-	for <ltp@archiver.kernel.org>; Mon, 30 Sep 2024 13:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1727704720; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=DCRxY2UvnsjAMQmLo5uVbJ5Pdgs/KedqZR+C9zvS5Pc=;
- b=HmZmoGGfNEGCbLUmQyD2213Hf6SSQr8hQhkfDC157ZBqH+teAruPgSAfbt14PmEUd7gtn
- e4r0bajvs9MaQljnpB5PZlO85W1ed0vWMS/rAV2xomJPGBm1XXChXKIExrHRC+DpwCBCEse
- J7osbf8yNxBR3Lyer5QsLCYwtsnPlek=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A300CCFA16
+	for <ltp@archiver.kernel.org>; Mon, 30 Sep 2024 19:21:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B90523C5687
-	for <ltp@archiver.kernel.org>; Mon, 30 Sep 2024 15:58:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 899583C56FF
+	for <ltp@archiver.kernel.org>; Mon, 30 Sep 2024 21:21:57 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 78D3D3C5687
- for <ltp@lists.linux.it>; Mon, 30 Sep 2024 15:58:20 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 59F713C5553
+ for <ltp@lists.linux.it>; Mon, 30 Sep 2024 21:21:40 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BE5471A003FF
- for <ltp@lists.linux.it>; Mon, 30 Sep 2024 15:58:19 +0200 (CEST)
-Received: by mail-lf1-x130.google.com with SMTP id
- 2adb3069b0e04-539908f238fso1555508e87.2
- for <ltp@lists.linux.it>; Mon, 30 Sep 2024 06:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1727704698; x=1728309498; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=rh76bKx6Z4mAxL/IXG7RZ+7Sb/Dhv14GrRSRdpgU6Tg=;
- b=eEdTVXU6r0YrirppXFTKfU4tyRHlaMwnORtU2GI/kpdEF3/pBYvR15PYudBYFEJ7zj
- 9aZmUTXEXicA2K9WLyBQUkOypwxcUlSmobVk8t3iI+CVyNT5YQFn3PH0oXKW3ve2BVCd
- XrmWr8J2OAH8yyJkA/oR3Vlg0SABM+6kU4/vV7gSak+S+zsHmRYCbkEwd9Jw05HgxI2s
- dRgqjv/GmK7AXSXMLcZqo2Eg4d/IzVq+CDSpRnRKH3CSt6VP8YoxaeDh+FAlx9Po5FtH
- 1OqUCxhKaKaNvn5MC9n/H3nHOvfko1zvsLRTXiaehLTx9YfbMoAU5QBiH5+q/Refzt++
- npGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1727704698; x=1728309498;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=rh76bKx6Z4mAxL/IXG7RZ+7Sb/Dhv14GrRSRdpgU6Tg=;
- b=ZxCv8QC2VYl+jeRja4PfK2/WJYpm21lrhSz2WPNsMDbP+h5PO6bbCl/oars7gzzfED
- zUzyY5emG/d353cqWlRjJBgnFHlENLZPGjNH8zrAtbsIF1+Ixxku8/NBFUOggS2biIJh
- KX7wCrkJUjnj2DXphEsXBHohBP/5TxAcDuC9p+T0DiVr7QDGvfDn7/lsPPw3/YcIm/LC
- wKpdyGwd13zhucWf/RjSd7wrYhpAC3njSrK2PhhlWdP1VSd2oSUV7W2lX28Y8uz5MaSY
- uCCSVEBkopoymbPltgBXROLEFJYUyNeZee3sHYwlYwImq3zv0iCtt087kFCiiEiiDK+P
- i1Bg==
-X-Gm-Message-State: AOJu0Yzv2bJKeK67d1vUEJpTP4e1P8sRxUPplShegZrhJd3gn+c96w4B
- FQWiDqmAGZN7tU82W45pLGk/G2Ewbodv2OrsGsPtOYQ1Di4Z0l1PbsVOi+yYOTHto4RTBFngx0W
- q+A==
-X-Google-Smtp-Source: AGHT+IHcEcUh6BLe4X5Rro3WSEBAqf4yLOFvm0k6a8prlel4Xc8PKRALyv2SXwFFIC4fy8YoyEuwLw==
-X-Received: by 2002:a05:6512:3b0e:b0:533:4477:28a2 with SMTP id
- 2adb3069b0e04-5389fc3bd4cmr7406087e87.16.1727704698256; 
- Mon, 30 Sep 2024 06:58:18 -0700 (PDT)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5c88640fe9asm3518677a12.82.2024.09.30.06.58.15
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 30 Sep 2024 06:58:17 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Mon, 30 Sep 2024 09:58:09 -0400
-Message-Id: <20240930135809.9300-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240926061936.21499-1-wegao@suse.com>
-References: <20240926061936.21499-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A50D01A0117C
+ for <ltp@lists.linux.it>; Mon, 30 Sep 2024 21:21:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 825E21F814
+ for <ltp@lists.linux.it>; Mon, 30 Sep 2024 19:21:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1727724098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UbQSLW/InWkgIIpNudf7/R0gU9ianM3xGhIPMDH/AU=;
+ b=rqPkVQDdpgtaipThaVpyl6N6m33hu7KEx2rMhDKqsXd4H7Jf8hdn3cf9xqkRKa5Z1mTgQN
+ u29uige8MsJzBzXtKHFhRsVKRQusW2pAWqEOGH3fYg8RrgRZXt60kxQq72E5Eud3O85kWz
+ /sk41wxrlK3q9XNEoyICmykNw4ZY0bo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1727724098;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UbQSLW/InWkgIIpNudf7/R0gU9ianM3xGhIPMDH/AU=;
+ b=lBZH4/2byamiMqIFNPBEWmVaeXNa19ZcG/AWtfAVyUTHaxn29Lb5ecU8Hk5BEyWX1rx69+
+ GxbNu/s9KPGOmzBg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=rqPkVQDd;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="lBZH4/2b"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1727724098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UbQSLW/InWkgIIpNudf7/R0gU9ianM3xGhIPMDH/AU=;
+ b=rqPkVQDdpgtaipThaVpyl6N6m33hu7KEx2rMhDKqsXd4H7Jf8hdn3cf9xqkRKa5Z1mTgQN
+ u29uige8MsJzBzXtKHFhRsVKRQusW2pAWqEOGH3fYg8RrgRZXt60kxQq72E5Eud3O85kWz
+ /sk41wxrlK3q9XNEoyICmykNw4ZY0bo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1727724098;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UbQSLW/InWkgIIpNudf7/R0gU9ianM3xGhIPMDH/AU=;
+ b=lBZH4/2byamiMqIFNPBEWmVaeXNa19ZcG/AWtfAVyUTHaxn29Lb5ecU8Hk5BEyWX1rx69+
+ GxbNu/s9KPGOmzBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BA2A13A8F
+ for <ltp@lists.linux.it>; Mon, 30 Sep 2024 19:21:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qKnbGEL6+mY3ZwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 30 Sep 2024 19:21:38 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 30 Sep 2024 21:21:19 +0200
 MIME-Version: 1.0
+Message-Id: <20240930-generate_syscalls-v3-1-e56ede4bc7f5@suse.com>
+References: <20240930-generate_syscalls-v3-0-e56ede4bc7f5@suse.com>
+In-Reply-To: <20240930-generate_syscalls-v3-0-e56ede4bc7f5@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1727724098; l=8138;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=4kvWVfXXctywnKL8u4ee/g2h1Zis2kwcwQgKAouNUXQ=;
+ b=IMy8WRNEKJNQ2n+R90uamc58AHAGeH/rPGcVf4hQttXz96ZJLC2dgGljOfMbFTW2SVIR0f/g3
+ dXzv3XkkusnDq0EEvNWpLqXj3BKJRqDGbPi0YQyj5D/38iqZxUNW2Jb
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 825E21F814
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email,suse.de:dkim];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] cpuset02: Reimplementing the test6 of
- cpuset_memory_testset.sh as a separate C testcase
+Subject: [LTP] [PATCH v3 1/4] Refactor regen.sh script to generate syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,223 +129,304 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- lib/tst_cgroup.c                       |   1 +
- runtest/mm                             |   1 +
- testcases/kernel/mem/.gitignore        |   1 +
- testcases/kernel/mem/cpuset/Makefile   |   7 ++
- testcases/kernel/mem/cpuset/cpuset02.c | 140 +++++++++++++++++++++++++
- 5 files changed, 150 insertions(+)
- create mode 100644 testcases/kernel/mem/cpuset/cpuset02.c
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 6055015eb..1404116a5 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -203,6 +203,7 @@ static const struct cgroup_file cpuset_ctrl_files[] = {
- 	{ "cpuset.cpus", "cpuset.cpus", CTRL_CPUSET },
- 	{ "cpuset.mems", "cpuset.mems", CTRL_CPUSET },
- 	{ "cpuset.memory_migrate", "cpuset.memory_migrate", CTRL_CPUSET },
-+	{ "cpuset.sched_load_balance", "cpuset.sched_load_balance", CTRL_CPUSET },
- 	{ }
- };
+Rename regen.sh into a more meaningful generate_syscalls.sh name, rename
+order into a more meaningful supported-syscalls.txt name and rewrite
+part of the regen.sh script code in order to execute it from anywhere in
+the filesystem, without need to be in its own folder. The new code is
+also more clear and concise, using native sh features which are
+simplifying the code.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ configure.ac                                       |   2 +-
+ include/lapi/syscalls/generate_syscalls.sh         | 115 ++++++++++++++++++
+ include/lapi/syscalls/regen.sh                     | 129 ---------------------
+ .../lapi/syscalls/{order => supported-arch.txt}    |   0
+ 4 files changed, 116 insertions(+), 130 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ebbf49e28..45f92477f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -384,7 +384,7 @@ else
+     AC_SUBST([WITH_REALTIME_TESTSUITE],["no"])
+ fi
  
-diff --git a/runtest/mm b/runtest/mm
-index 6a8cd0b9d..845874c41 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -75,6 +75,7 @@ ksm06_2 ksm06 -n 8000
- ksm07 ksm07
+-AC_CONFIG_COMMANDS([syscalls.h], [cd ${ac_top_srcdir}/include/lapi/syscalls; ./regen.sh])
++AC_CONFIG_COMMANDS([syscalls.h], [cd ${ac_top_srcdir}/include/lapi/syscalls; ./generate_syscalls.sh ../syscalls.h])
  
- cpuset01 cpuset01
-+cpuset02 cpuset02
- 
- oom01 oom01
- oom02 oom02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index d88484fa1..0845297cb 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,4 +1,5 @@
- /cpuset/cpuset01
-+/cpuset/cpuset02
- /hugetlb/hugefallocate/hugefallocate01
- /hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugefork/hugefork01
-diff --git a/testcases/kernel/mem/cpuset/Makefile b/testcases/kernel/mem/cpuset/Makefile
-index 8e41c0223..366d67ce9 100644
---- a/testcases/kernel/mem/cpuset/Makefile
-+++ b/testcases/kernel/mem/cpuset/Makefile
-@@ -19,6 +19,13 @@
- 
- top_srcdir		?= ../../../..
- 
-+LTPLIBS = numa
-+
- include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
-+
-+LDLIBS  += $(NUMA_LIBS)
-+LDLIBS  += $(top_srcdir)/testcases/kernel/controllers/cpuset/cpuset_lib/libcpu_set.a
-+LTPLDLIBS = -lltpnuma
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/cpuset/cpuset02.c b/testcases/kernel/mem/cpuset/cpuset02.c
-new file mode 100644
-index 000000000..a62c98b3f
+ # custom functions
+ # NOTE: don't create custom functions for simple checks, put them into this file
+diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
+new file mode 100755
+index 000000000..863f52253
 --- /dev/null
-+++ b/testcases/kernel/mem/cpuset/cpuset02.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
++++ b/include/lapi/syscalls/generate_syscalls.sh
+@@ -0,0 +1,115 @@
++#!/bin/sh
++#
++# Generate the syscalls.h file, merging all architectures syscalls input file
++# which are in the current folder and defined inside supported-arch.txt file.
++
++SYSCALLS_FILE="${1}"
++
++if [ -z "${SYSCALLS_FILE}" ]; then
++	echo "Please provide the syscalls.h directory:"
++	echo ""
++	echo "$0 path/of/syscalls.h"
++	echo ""
++	exit 1
++fi
++
++SCRIPT_DIR="$(realpath $(dirname "$0"))"
++SUPPORTED_ARCH="${SCRIPT_DIR}/supported-arch.txt"
++
++merge_syscalls() {
++	echo '
++/************************************************
++* GENERATED FILE: DO NOT EDIT/PATCH THIS FILE  *
++*  change your arch specific .in file instead  *
++************************************************/
++
 +/*
-+ * Copyright (c) 2009 FUJITSU LIMITED  Miao Xie <miaox@cn.fujitsu.com>
-+ * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
-+ */
++kj* Here we stick all the ugly *fallback* logic for linux
++* system call numbers (those __NR_ thingies).
++*
++* Licensed under the GPLv2 or later, see the COPYING file.
++*/
 +
-+/*\
-+ * [Description]
-+ *
-+ * This test check cpuset's mems work with hugepage file.
-+ *
-+ */
++#ifndef LAPI_SYSCALLS_H__
++#define LAPI_SYSCALLS_H__
 +
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+#include "tst_test.h"
-+#include "../../controllers/cpuset/cpuset_lib/cpuset.h"
-+
-+#ifdef HAVE_NUMA_V2
-+#include <numa.h>
-+#include <numaif.h>
 +#include <errno.h>
-+#include "tst_numa.h"
-+#include "tst_safe_stdio.h"
-+#include "mem.h"
-+#include "numa_helper.h"
++#include <sys/syscall.h>
++#include <asm/unistd.h>
 +
-+#define MNTPOINT "hugetlbfs/"
-+#define HUGE_PAGE_FILE MNTPOINT "hugepagefile"
-+#define PAGES_ALLOCATED 16u
-+
-+static long hpage_size;
-+static struct tst_nodemap *node;
-+static struct tst_cg_group *cg_cpuset_0;
-+
-+static void count_cpus_mems(void)
-+{
-+	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
-+	if (node->cnt <= 1)
-+		tst_brk(TCONF, "test requires NUMA system");
-+}
-+
-+static void touch_memory_and_check_node(char *p, int size)
-+{
-+	int i;
-+	int pagesize = sysconf(_SC_PAGESIZE);
-+
-+	for (i = 0; i < size; i += pagesize)
-+		p[i] = 0xef;
-+
-+	if (cpuset_addr2node(p) == 0)
-+		tst_res(TPASS, "check node pass");
-+	else
-+		tst_res(TFAIL, "check node failed");
-+}
-+
-+static void child(void)
-+{
-+	char *p;
-+	int fd_hugepage;
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	fd_hugepage = SAFE_OPEN(HUGE_PAGE_FILE, O_CREAT | O_RDWR, 0755);
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_WRITE | PROT_READ,
-+				MAP_SHARED, fd_hugepage, 0);
-+
-+	touch_memory_and_check_node(p, hpage_size);
-+
-+	SAFE_MUNMAP(p, hpage_size);
-+	SAFE_CLOSE(fd_hugepage);
-+
-+	TST_CHECKPOINT_WAKE(1);
-+}
-+
-+static void run_test(void)
-+{
-+	int pid;
-+
-+	cg_cpuset_0 = tst_cg_group_mk(tst_cg, "0");
-+
-+	SAFE_CG_PRINT(cg_cpuset_0, "cpuset.cpus", "0");
-+	SAFE_CG_PRINT(cg_cpuset_0, "cpuset.mems", "0");
-+	SAFE_CG_PRINT(cg_cpuset_0, "cpuset.sched_load_balance", "0");
-+
-+	SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%d", 2 * node->cnt);
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		child();
-+	} else {
-+		SAFE_CG_PRINTF(cg_cpuset_0, "cgroup.procs", "%d", pid);
-+
-+		TST_CHECKPOINT_WAKE(0);
-+		TST_CHECKPOINT_WAIT(1);
-+
-+		SAFE_WAITPID(pid, NULL, 0);
-+
-+		cg_cpuset_0 = tst_cg_group_rm(cg_cpuset_0);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	count_cpus_mems();
-+
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (cg_cpuset_0)
-+		cg_cpuset_0 = tst_cg_group_rm(cg_cpuset_0);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.runs_script = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.forks_child = 1,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+	.needs_checkpoints = 1,
-+	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/vm/nr_hugepages", NULL, TST_SR_TBROK},
-+		{}
-+	},
-+};
-+
++#ifdef TST_TEST_H__
++#define TST_SYSCALL_BRK__(NR, SNR) ({ \
++tst_brk(TCONF, \
++	"syscall(%d) " SNR " not supported on your arch", NR); \
++})
 +#else
-+TST_TEST_TCONF(NUMA_ERROR_MSG);
++inline static void dummy_cleanup(void) {}
++
++#define TST_SYSCALL_BRK__(NR, SNR) ({ \
++tst_brkm(TCONF, dummy_cleanup, \
++	"syscall(%d) " SNR " not supported on your arch", NR); \
++})
 +#endif
++
++#define tst_syscall(NR, ...) ({ \
++intptr_t tst_ret; \
++if (NR == __LTP__NR_INVALID_SYSCALL) { \
++	errno = ENOSYS; \
++	tst_ret = -1; \
++} else { \
++	tst_ret = syscall(NR, ##__VA_ARGS__); \
++} \
++if (tst_ret == -1 && errno == ENOSYS) { \
++	TST_SYSCALL_BRK__(NR, #NR); \
++} \
++tst_ret; \
++})
++
++#define __LTP__NR_INVALID_SYSCALL -1' >${SYSCALLS_FILE}
++
++	while IFS= read -r arch; do
++		(
++			echo
++			case ${arch} in
++			sparc64) echo "#if defined(__sparc__) && defined(__arch64__)" ;;
++			sparc) echo "#if defined(__sparc__) && !defined(__arch64__)" ;;
++			s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
++			mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
++			mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
++			mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
++			*) echo "#ifdef __${arch}__" ;;
++			esac
++
++			while read -r line; do
++				set -- ${line}
++				syscall_nr="__NR_$1"
++				shift
++
++				echo "# ifndef ${syscall_nr}"
++				echo "#  define ${syscall_nr} $*"
++				echo "# endif"
++			done <"${SCRIPT_DIR}/${arch}.in"
++			echo "#endif"
++			echo
++		) >>${SYSCALLS_FILE}
++	done <${SUPPORTED_ARCH}
++
++	(
++		echo
++		echo "/* Common stubs */"
++		while IFS= read -r arch; do
++			while IFS= read -r line; do
++				set -- ${line}
++				syscall_nr="__NR_$1"
++				shift
++
++				echo "# ifndef ${syscall_nr}"
++				echo "#  define ${syscall_nr} __LTP__NR_INVALID_SYSCALL"
++				echo "# endif"
++			done <"${SCRIPT_DIR}/${arch}.in"
++		done <${SUPPORTED_ARCH}
++		echo "#endif"
++	) >>${SYSCALLS_FILE}
++}
++
++merge_syscalls
+diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
+deleted file mode 100755
+index 663ce4458..000000000
+--- a/include/lapi/syscalls/regen.sh
++++ /dev/null
+@@ -1,129 +0,0 @@
+-#!/bin/sh
+-
+-output="syscalls.h"
+-rm -f "${output}".[1-9]*
+-output_pid="${output}.$$"
+-
+-max_jobs=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
+-: ${max_jobs:=1}
+-
+-srcdir=${0%/*}
+-
+-err() {
+-	echo "$*" 1>&2
+-	exit 1
+-}
+-
+-cat << EOF > "${output_pid}"
+-/************************************************
+- * GENERATED FILE: DO NOT EDIT/PATCH THIS FILE  *
+- *  change your arch specific .in file instead  *
+- ************************************************/
+-
+-/*
+- * Here we stick all the ugly *fallback* logic for linux
+- * system call numbers (those __NR_ thingies).
+- *
+- * Licensed under the GPLv2 or later, see the COPYING file.
+- */
+-
+-#ifndef LAPI_SYSCALLS_H__
+-#define LAPI_SYSCALLS_H__
+-
+-#include <errno.h>
+-#include <sys/syscall.h>
+-#include <asm/unistd.h>
+-
+-#ifdef TST_TEST_H__
+-#define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+-	tst_brk(TCONF, \\
+-		"syscall(%d) " SNR " not supported on your arch", NR); \\
+-})
+-#else
+-inline static void dummy_cleanup(void) {}
+-
+-#define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+-	tst_brkm(TCONF, dummy_cleanup, \\
+-		"syscall(%d) " SNR " not supported on your arch", NR); \\
+-})
+-#endif
+-
+-#define tst_syscall(NR, ...) ({ \\
+-	intptr_t tst_ret; \\
+-	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
+-		errno = ENOSYS; \\
+-		tst_ret = -1; \\
+-	} else { \\
+-		tst_ret = syscall(NR, ##__VA_ARGS__); \\
+-	} \\
+-	if (tst_ret == -1 && errno == ENOSYS) { \\
+-		TST_SYSCALL_BRK__(NR, #NR); \\
+-	} \\
+-	tst_ret; \\
+-})
+-
+-EOF
+-
+-jobs=0
+-for arch in $(cat "${srcdir}/order") ; do
+-	(
+-	echo "Generating data for arch $arch ... "
+-
+-	(
+-	echo
+-	case ${arch} in
+-		sparc64) echo "#if defined(__sparc__) && defined(__arch64__)" ;;
+-		sparc) echo "#if defined(__sparc__) && !defined(__arch64__)" ;;
+-		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
+-		mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
+-		mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
+-		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
+-		*) echo "#ifdef __${arch}__" ;;
+-	esac
+-	while read line ; do
+-		set -- ${line}
+-		nr="__NR_$1"
+-		shift
+-		if [ $# -eq 0 ] ; then
+-			err "invalid line found: $line"
+-		fi
+-		echo "# ifndef ${nr}"
+-		echo "#  define ${nr} $*"
+-		echo "# endif"
+-	done < "${srcdir}/${arch}.in"
+-	echo "#endif"
+-	echo
+-	) >> "${output_pid}.${arch}"
+-
+-	) &
+-
+-	jobs=$(( jobs + 1 ))
+-	if [ ${jobs} -ge ${max_jobs} ] ; then
+-		wait || exit 1
+-		jobs=0
+-	fi
+-done
+-
+-echo "Generating stub list ... "
+-(
+-echo
+-echo "/* Common stubs */"
+-echo "#define __LTP__NR_INVALID_SYSCALL -1" >> "${output_pid}"
+-for nr in $(awk '{print $1}' "${srcdir}/"*.in | sort -u) ; do
+-	nr="__NR_${nr}"
+-	echo "# ifndef ${nr}"
+-	echo "#  define ${nr} __LTP__NR_INVALID_SYSCALL"
+-	echo "# endif"
+-done
+-echo "#endif"
+-) >> "${output_pid}._footer"
+-
+-wait || exit 1
+-
+-printf "Combining them all ... "
+-for arch in $(cat "${srcdir}/order") _footer ; do
+-	cat "${output_pid}.${arch}"
+-done >> "${output_pid}"
+-mv "${output_pid}" "../${output}"
+-rm -f "${output_pid}"*
+-echo "OK!"
+diff --git a/include/lapi/syscalls/order b/include/lapi/syscalls/supported-arch.txt
+similarity index 100%
+rename from include/lapi/syscalls/order
+rename to include/lapi/syscalls/supported-arch.txt
+
 -- 
-2.35.3
+2.43.0
 
 
 -- 
