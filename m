@@ -4,67 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F409CEACD5
-	for <ltp@archiver.kernel.org>; Tue,  1 Oct 2024 15:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EFF1CEACDD
+	for <ltp@archiver.kernel.org>; Tue,  1 Oct 2024 15:35:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1F923C57A3
-	for <ltp@archiver.kernel.org>; Tue,  1 Oct 2024 17:30:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 013E93C5974
+	for <ltp@archiver.kernel.org>; Tue,  1 Oct 2024 17:35:13 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4CC83C57A3
- for <ltp@lists.linux.it>; Tue,  1 Oct 2024 17:30:40 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 6C5623C5820
+ for <ltp@lists.linux.it>; Tue,  1 Oct 2024 17:34:57 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 30793200C38
- for <ltp@lists.linux.it>; Tue,  1 Oct 2024 17:30:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F15B21A001E8
+ for <ltp@lists.linux.it>; Tue,  1 Oct 2024 17:34:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6A32521A9B;
- Tue,  1 Oct 2024 15:30:36 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 75FAB1F8AE;
+ Tue,  1 Oct 2024 15:34:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727796895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fxKXSkhH0Tu1Bi4lPmn1tAejBhEXGY2LRgsVTm2xFD0=;
+ b=puTibodPsMrnLL2F/iuhbDrYH1WlE/NGLsuKrt5y6zYgVhgmvSuvwzgTuIcDSG/2e2W+3n
+ nOJZZ6Yb4rgn0T9EmbGUQCPchnEPc2I+g+Z/dwRvYsK8zy3brJ6KEEpM4wUIHaGHH5Eq7A
+ mjAzO8Kaw2MLtKgOe0k3VuQ97f5Zs48=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727796895;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fxKXSkhH0Tu1Bi4lPmn1tAejBhEXGY2LRgsVTm2xFD0=;
+ b=wZrYqoZszteNtiTM7A3PZrXfqcSFaLGe9QkCGg5spT4sMcOxnIEpMhUj+1ZTv85VAAP0u1
+ dC0SW84XdFeb5CAQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1727796895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fxKXSkhH0Tu1Bi4lPmn1tAejBhEXGY2LRgsVTm2xFD0=;
+ b=puTibodPsMrnLL2F/iuhbDrYH1WlE/NGLsuKrt5y6zYgVhgmvSuvwzgTuIcDSG/2e2W+3n
+ nOJZZ6Yb4rgn0T9EmbGUQCPchnEPc2I+g+Z/dwRvYsK8zy3brJ6KEEpM4wUIHaGHH5Eq7A
+ mjAzO8Kaw2MLtKgOe0k3VuQ97f5Zs48=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1727796895;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fxKXSkhH0Tu1Bi4lPmn1tAejBhEXGY2LRgsVTm2xFD0=;
+ b=wZrYqoZszteNtiTM7A3PZrXfqcSFaLGe9QkCGg5spT4sMcOxnIEpMhUj+1ZTv85VAAP0u1
+ dC0SW84XdFeb5CAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 562DF13A73;
- Tue,  1 Oct 2024 15:30:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F06513A73;
+ Tue,  1 Oct 2024 15:34:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id maX/E5wV/GZPNQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 01 Oct 2024 15:30:36 +0000
-Date: Tue, 1 Oct 2024 17:29:31 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id S3A+CJ8W/GbRNgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 01 Oct 2024 15:34:55 +0000
+Date: Tue, 1 Oct 2024 17:33:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZvwVW4twbnbXyDJM@yuki.lan>
+Message-ID: <ZvwWXjwDg31L1zSu@yuki.lan>
 References: <20241001-ioctl_ficlone01_fix-v2-0-dd0b021dd31d@suse.com>
- <20241001-ioctl_ficlone01_fix-v2-2-dd0b021dd31d@suse.com>
+ <20241001-ioctl_ficlone01_fix-v2-3-dd0b021dd31d@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241001-ioctl_ficlone01_fix-v2-2-dd0b021dd31d@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 6A32521A9B
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20241001-ioctl_ficlone01_fix-v2-3-dd0b021dd31d@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] Add minimum kernel requirement for FS setup
+Subject: Re: [LTP] [PATCH v2 3/3] Setup minimal kernel for
+ ioctl_clone(range) tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,152 +117,13 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> In some cases, a filesystem that is going to be created and mounted
-> by LTP can't be supported by certain kernel versions. This is the case
-> of the CoW support: mkfs creates a CoW filesystem, while underlying
-> kernel can't mount it.
-> 
-> To cover this scenario, a new flag called .min_kver has been
-> introduced in the tst_fs structure, giving the user a possibility to
-> filter out certain kernels not supporting certain FS features.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  include/tst_test.h            |  5 +++++
->  lib/tst_test.c                | 20 ++++++++++++++------
->  testcases/lib/tst_run_shell.c |  5 +++++
->  3 files changed, 24 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 38d24f48c..ac3ee66af 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -270,6 +270,9 @@ struct tst_ulimit_val {
->   *
->   * @mnt_data: The data passed to mount(2) when the test library mounts a device
->   *            in the case of 'tst_test.mount_device'.
-> + *
-> + * @min_kver: minimum kernel version supporting the filesystem which has been
-                 ^
-		 Uppercase here.
+> +		{
+> +			.type = "bcachefs",
+> +			.min_kver = "6.7",
 
-> + *		created with mkfs.
-       ^
-       Should spaces or tabs be used here? The rest of the comments uses
-       spaces.
-
->   */
->  struct tst_fs {
->  	const char *type;
-> @@ -280,6 +283,8 @@ struct tst_fs {
->  
->  	unsigned int mnt_flags;
->  	const void *mnt_data;
-> +
-> +	const char *min_kver;
->  };
->  
->  /**
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 7dfab4677..49a46fc7b 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -946,19 +946,24 @@ static void do_exit(int ret)
->  	exit(ret);
->  }
->  
-> -void check_kver(void)
-> +void check_kver(const char *min_kver, const int skip)
-                                          ^
-					  Maybe this should be called
-					  brk_on_skip in both of the
-					  cases.
->  {
-> +	char *msg;
->  	int v1, v2, v3;
->  
-> -	if (tst_parse_kver(tst_test->min_kver, &v1, &v2, &v3)) {
-> +	if (tst_parse_kver(min_kver, &v1, &v2, &v3)) {
->  		tst_res(TWARN,
->  			"Invalid kernel version %s, expected %%d.%%d.%%d",
-> -			tst_test->min_kver);
-> +			min_kver);
->  	}
->  
->  	if (tst_kvercmp(v1, v2, v3) < 0) {
-> -		tst_brk(TCONF, "The test requires kernel %s or newer",
-> -			tst_test->min_kver);
-> +		msg = "The test requires kernel %s or newer";
-> +
-> +		if (skip)
-> +			tst_res(TCONF, msg, min_kver);
-> +		else
-> +			tst_brk(TCONF, msg, min_kver);
->  	}
->  }
->  
-> @@ -1150,6 +1155,9 @@ static void prepare_device(struct tst_fs *fs)
->  	char buf[1024];
->  	struct tst_fs dummy = {};
->  
-> +	if (fs->min_kver)
-> +		check_kver(fs->min_kver, 1);
-
-And here as we, we print the message but continue with the action. I
-suppose that we have to hook it up the same way as the mkfs check.
-
->  	fs = fs ?: &dummy;
->  
->  	const char *const extra[] = {fs->mkfs_size_opt, NULL};
-> @@ -1287,7 +1295,7 @@ static void do_setup(int argc, char *argv[])
->  		tst_brk(TCONF, "Test needs to be run as root");
->  
->  	if (tst_test->min_kver)
-> -		check_kver();
-> +		check_kver(tst_test->min_kver, 0);
->  
->  	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
->  		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
-> diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
-> index fbfbe16a7..dc840782a 100644
-> --- a/testcases/lib/tst_run_shell.c
-> +++ b/testcases/lib/tst_run_shell.c
-> @@ -155,6 +155,7 @@ enum fs_ids {
->  	MKFS_SIZE_OPT,
->  	MKFS_VER,
->  	MNT_FLAGS,
-> +	FS_MIN_KVER,
->  	TYPE,
->  };
->  
-> @@ -163,6 +164,7 @@ static ujson_obj_attr fs_attrs[] = {
->  	UJSON_OBJ_ATTR_IDX(MKFS_VER, "mkfs_ver", UJSON_STR),
->  	UJSON_OBJ_ATTR_IDX(MKFS_SIZE_OPT, "mkfs_size_opt", UJSON_STR),
->  	UJSON_OBJ_ATTR_IDX(MNT_FLAGS, "mnt_flags", UJSON_ARR),
-> +	UJSON_OBJ_ATTR_IDX(FS_MIN_KVER, "min_kver", UJSON_STR),
-
-Again has to be sorted.
-
->  	UJSON_OBJ_ATTR_IDX(TYPE, "type", UJSON_STR),
->  };
->  
-> @@ -229,6 +231,9 @@ static struct tst_fs *parse_filesystems(ujson_reader *reader, ujson_val *val)
->  			case MKFS_VER:
->  				ret[i].mkfs_ver = strdup(val->val_str);
->  			break;
-> +			case FS_MIN_KVER:
-> +				ret[i].min_kver = strdup(val->val_str);
-> +			break;
->  			case MNT_FLAGS:
->  				ret[i].mnt_flags = parse_mnt_flags(reader, val);
->  			break;
-> 
-> -- 
-> 2.43.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+I do not think that the min_kver is needed here, because if there is no
+kernel support for bcachefs it will be skipped simply because it's
+missing.
 
 -- 
 Cyril Hrubis
