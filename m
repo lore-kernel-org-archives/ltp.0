@@ -4,100 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29775CF6D2D
-	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 14:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84243CF6D28
+	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 14:39:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A362A3C5DB1
-	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 16:15:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2B5BF3C5AEB
+	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 16:39:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 40F963C5A3B
- for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:15:07 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 9A2153C1C6D
+ for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:38:43 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 57A181A01442
- for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:15:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 10F6020D19D
+ for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:38:42 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D42C521C73;
- Wed,  2 Oct 2024 14:15:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0AD9B21C67;
+ Wed,  2 Oct 2024 14:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1727878506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1727879922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
- b=arD6oTHO8RBCB5l1hPOJnoB4/9QArxkgRgOqbqo1gIY1+8G6kk5r4KrsvEmCPjgeowFE2l
- ExTzFsxq42kWHe8vkBYuXeQ8JmbBKRuY+EHJqdeiVPyKZb7v10payGwq5Gh2kUnP9GOww5
- m1vyvJeX7nq48rzwWWHmcy4X8nT+rOw=
+ bh=b/ET2rCWVvrzSjVDC/i3JNdNRjYfp34NY/ZrfgxULXc=;
+ b=Zn9AiwjEqXxxacBJaNJNGVUqTEmNRHHG2O+OGs/fILZL/9Qxmpqj+63YQB/xFZfLoEL7kF
+ 8018VaG98sE8FysQbm8yH2LaFb1A38AXNCtj0U7+7D6/OespcP1QxXNwOdejwq6r3zKat3
+ TNRZkKJasA8Vxuq5UifUV2E1SGsHa1A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1727878506;
+ s=susede2_ed25519; t=1727879922;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
- b=y4EpEPPFVnMSc7NWmvnxM63kZ1S7nH5g8IIQctxSWj+d2YImWscb1zI7HvSueuxUzNDcQ/
- 3Jo0K+g+2q3daiCQ==
+ bh=b/ET2rCWVvrzSjVDC/i3JNdNRjYfp34NY/ZrfgxULXc=;
+ b=1LCMgItVc2+0ffvoLy4dKU0r83vF52WKIQTGWg8xgKvMB/TMgVFHK2dr2Xjl4pGpPQf/5A
+ XePIa7CKqXDCtTBw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Zn9AiwjE;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1LCMgItV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1727878505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1727879922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
- b=E/vGjYelKLCPu3X90VpshQmrV9ldee8OgTr7ebmT3P7VSTyT5qvrVU+UuEzu8+47nlE+pU
- 7M/kTfBunDHTPpalnfMmau3GoYPbd7vJcgRmM7G4x1hN0s0CAU/fOrM94zIRBYhUdeCO7i
- qe2QRIL7fIxkQBZyyV12vhrkqRuZDVA=
+ bh=b/ET2rCWVvrzSjVDC/i3JNdNRjYfp34NY/ZrfgxULXc=;
+ b=Zn9AiwjEqXxxacBJaNJNGVUqTEmNRHHG2O+OGs/fILZL/9Qxmpqj+63YQB/xFZfLoEL7kF
+ 8018VaG98sE8FysQbm8yH2LaFb1A38AXNCtj0U7+7D6/OespcP1QxXNwOdejwq6r3zKat3
+ TNRZkKJasA8Vxuq5UifUV2E1SGsHa1A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1727878505;
+ s=susede2_ed25519; t=1727879922;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
- b=SXYz75BEKeP0x3xlTXe53faQCh9Bcygtja0uJanV3GDoJ1mGO2PhIdrXq58p6pqwDzVTI4
- /g1dsPkDux6at+AA==
+ bh=b/ET2rCWVvrzSjVDC/i3JNdNRjYfp34NY/ZrfgxULXc=;
+ b=1LCMgItVc2+0ffvoLy4dKU0r83vF52WKIQTGWg8xgKvMB/TMgVFHK2dr2Xjl4pGpPQf/5A
+ XePIa7CKqXDCtTBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB7A913974;
- Wed,  2 Oct 2024 14:15:05 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C226A13A6E;
+ Wed,  2 Oct 2024 14:38:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id dVmcJmlV/WZgLQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 02 Oct 2024 14:15:05 +0000
-Date: Wed, 2 Oct 2024 16:14:03 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gsQ5LfFa/WYxNQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 02 Oct 2024 14:38:41 +0000
+Date: Wed, 2 Oct 2024 16:37:39 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Zv1VKyK9Z6Uz-d8y@yuki.lan>
+Message-ID: <Zv1as5QQ6WUgRkJT@yuki.lan>
 References: <20240909-listmount_statmount-v4-0-39558204ddf0@suse.com>
- <20240909-listmount_statmount-v4-4-39558204ddf0@suse.com>
+ <20240909-listmount_statmount-v4-5-39558204ddf0@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240909-listmount_statmount-v4-4-39558204ddf0@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240909-listmount_statmount-v4-5-39558204ddf0@suse.com>
+X-Rspamd-Queue-Id: 0AD9B21C67
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,yuki.lan:mid]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,suse.cz:dkim,suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 04/13] Add listmount01 test
+Subject: Re: [LTP] [PATCH v4 05/13] Add listmount02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,35 +124,28 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +#ifndef LISTMOUNT_H
-
-Ah, and #define LISTMOUNT_H is missing here, otherwise the header guards
-does not work at all.
-
-> +#define _GNU_SOURCE
-> +
-> +#include "tst_test.h"
-> +#include "lapi/mount.h"
-> +#include "lapi/syscalls.h"
-> +
-> +static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
-> +			 uint64_t list[], size_t num, unsigned int flags)
+> +static void run(void)
 > +{
-> +	struct mnt_id_req req = {
-> +		.size = MNT_ID_REQ_SIZE_VER0,
-> +		.mnt_id = mnt_id,
-> +		.param = last_mnt_id,
-> +	};
+> +	ssize_t ret;
+> +	size_t id, tot_ids, count = 0;
+> +	uint64_t mount_ids[LISTSIZE];
+> +	uint64_t list[LISTSIZE];
 > +
-> +	return tst_syscall(__NR_listmount, &req, list, num, flags);
-> +}
+> +	for (int i = 0; i < BIND_MOUNTS; i++)
+> +		SAFE_MOUNT("/", "/", NULL, MS_BIND, NULL);
 > +
-> +#endif
+> +	tst_res(TINFO, "Reading all %d mount IDs in once", LISTSIZE);
+> +
+> +	TST_EXP_POSITIVE(listmount(LSMT_ROOT, 0, mount_ids, LISTSIZE, 0));
+> +	if (TST_RET == -1)
+> +		goto end;
+
+Again this should be if (!TST_PASS)
+
+
+Otherwise:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
