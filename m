@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1336ECF6D28
-	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 14:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29775CF6D2D
+	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 14:15:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89DB23C5ADC
-	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 16:14:15 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id A362A3C5DB1
+	for <ltp@archiver.kernel.org>; Wed,  2 Oct 2024 16:15:23 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 271D93C5A3B
- for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:14:00 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 40F963C5A3B
+ for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:15:07 +0200 (CEST)
 Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 500E51BB9594
- for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:13:58 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 57A181A01442
+ for <ltp@lists.linux.it>; Wed,  2 Oct 2024 16:15:07 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 232D91FB6A;
- Wed,  2 Oct 2024 14:13:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D42C521C73;
+ Wed,  2 Oct 2024 14:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1727878436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1727878506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SduEiF9Ik/ZK5SMlOPgQmZLFgXGcZILlq78H7xxnbHI=;
- b=xAJA0isLc9rWGWzZSnBqYFVTlNKtS6xkolEzXCRbJJw2srsjc6X6wERYEcsN8pHYMMBAP7
- FQWhE/bizapmS+ENSy5p+6sy+arU8C/VB1Ps0BdNDjUa6D//MbhblvsaLpmn/oen30P3aG
- 2T7C3z/Zvh1I3CuqSYbMUZZmCp11eZE=
+ bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
+ b=arD6oTHO8RBCB5l1hPOJnoB4/9QArxkgRgOqbqo1gIY1+8G6kk5r4KrsvEmCPjgeowFE2l
+ ExTzFsxq42kWHe8vkBYuXeQ8JmbBKRuY+EHJqdeiVPyKZb7v10payGwq5Gh2kUnP9GOww5
+ m1vyvJeX7nq48rzwWWHmcy4X8nT+rOw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1727878436;
+ s=susede2_ed25519; t=1727878506;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SduEiF9Ik/ZK5SMlOPgQmZLFgXGcZILlq78H7xxnbHI=;
- b=ktzIysb+yZepvLYBBcgdX6gKxd+E7MN+rqsJNOl9U0BDL3qo36MMrco1LFcNGzCnHm+NH9
- NfAfSuy5N1sVbQCg==
-Authentication-Results: smtp-out2.suse.de;
+ bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
+ b=y4EpEPPFVnMSc7NWmvnxM63kZ1S7nH5g8IIQctxSWj+d2YImWscb1zI7HvSueuxUzNDcQ/
+ 3Jo0K+g+2q3daiCQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1727878436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1727878505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SduEiF9Ik/ZK5SMlOPgQmZLFgXGcZILlq78H7xxnbHI=;
- b=xAJA0isLc9rWGWzZSnBqYFVTlNKtS6xkolEzXCRbJJw2srsjc6X6wERYEcsN8pHYMMBAP7
- FQWhE/bizapmS+ENSy5p+6sy+arU8C/VB1Ps0BdNDjUa6D//MbhblvsaLpmn/oen30P3aG
- 2T7C3z/Zvh1I3CuqSYbMUZZmCp11eZE=
+ bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
+ b=E/vGjYelKLCPu3X90VpshQmrV9ldee8OgTr7ebmT3P7VSTyT5qvrVU+UuEzu8+47nlE+pU
+ 7M/kTfBunDHTPpalnfMmau3GoYPbd7vJcgRmM7G4x1hN0s0CAU/fOrM94zIRBYhUdeCO7i
+ qe2QRIL7fIxkQBZyyV12vhrkqRuZDVA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1727878436;
+ s=susede2_ed25519; t=1727878505;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SduEiF9Ik/ZK5SMlOPgQmZLFgXGcZILlq78H7xxnbHI=;
- b=ktzIysb+yZepvLYBBcgdX6gKxd+E7MN+rqsJNOl9U0BDL3qo36MMrco1LFcNGzCnHm+NH9
- NfAfSuy5N1sVbQCg==
+ bh=dt97gAq9KD9l/+Eg1URV12QDq/cH31TWfYOx4hodd50=;
+ b=SXYz75BEKeP0x3xlTXe53faQCh9Bcygtja0uJanV3GDoJ1mGO2PhIdrXq58p6pqwDzVTI4
+ /g1dsPkDux6at+AA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 079D613974;
- Wed,  2 Oct 2024 14:13:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB7A913974;
+ Wed,  2 Oct 2024 14:15:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +YC5ACRV/WbdLAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 02 Oct 2024 14:13:56 +0000
-Date: Wed, 2 Oct 2024 16:12:53 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dVmcJmlV/WZgLQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 02 Oct 2024 14:15:05 +0000
+Date: Wed, 2 Oct 2024 16:14:03 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Zv1U5dtEseUQyZoC@yuki.lan>
+Message-ID: <Zv1VKyK9Z6Uz-d8y@yuki.lan>
 References: <20240909-listmount_statmount-v4-0-39558204ddf0@suse.com>
- <20240909-listmount_statmount-v4-3-39558204ddf0@suse.com>
+ <20240909-listmount_statmount-v4-4-39558204ddf0@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240909-listmount_statmount-v4-3-39558204ddf0@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240909-listmount_statmount-v4-4-39558204ddf0@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -94,11 +94,10 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,yuki.lan:mid]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 03/13] Add listmount/statmount fallback
- declarations
+Subject: Re: [LTP] [PATCH v4 04/13] Add listmount01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,135 +116,35 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/configure.ac b/configure.ac
-> index ebbf49e28..3dca7c646 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -114,6 +114,7 @@ AC_CHECK_FUNCS_ONCE([ \
->      io_uring_register \
->      io_uring_enter \
->      kcmp \
-> +    listmount \
->      mallinfo \
->      mallinfo2 \
->      mallopt \
-> @@ -143,6 +144,7 @@ AC_CHECK_FUNCS_ONCE([ \
->      setns \
->      sigpending \
->      splice \
-> +    statmount \
->      statx \
->      stime \
->      sync_file_range \
-
-These two checks shouldn't be here because we do not use them at all and
-just define cunstom wrappers later on.
-
-> @@ -246,6 +248,8 @@ AC_CHECK_TYPES([struct mount_attr],,,[
->  
->  AC_CHECK_TYPES([struct cachestat_range],,,[#include <sys/mman.h>])
->  AC_CHECK_TYPES([struct cachestat],,,[#include <sys/mman.h>])
-> +AC_CHECK_TYPES([struct mnt_id_req],,,[#include <linux/mount.h>])
-> +AC_CHECK_TYPES([struct statmount],,,[#include <linux/mount.h>])
->  
->  # Tools knobs
->  
-> diff --git a/include/lapi/mount.h b/include/lapi/mount.h
-> index c1af944fe..01a0fd2d6 100644
-> --- a/include/lapi/mount.h
-> +++ b/include/lapi/mount.h
-> @@ -2,12 +2,15 @@
->  /*
->   * Copyright (c) Linux Test Project, 2015-2022
->   * Copyright (c) 2015 Cui Bixuan <cuibixuan@huawei.com>
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
 > + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
->   */
->  
->  #ifndef LAPI_MOUNT_H__
->  #define LAPI_MOUNT_H__
->  
-> +#include <stdint.h>
->  #include <sys/mount.h>
-> +#include "config.h"
->  
->  #ifndef MS_REC
->  # define MS_REC 16384
-> @@ -37,4 +40,71 @@
->  # define MS_NOSYMFOLLOW 256
->  #endif
->  
-> +#ifndef HAVE_STRUCT_MNT_ID_REQ
-> +struct mnt_id_req {
-> +	uint32_t size;
-> +	uint32_t spare;
-> +	uint64_t mnt_id;
-> +	uint64_t param;
-> +};
-> +#endif
+> + */
 > +
-> +#ifndef HAVE_STRUCT_STATMOUNT
-> +struct statmount {
-> +	uint32_t size;
-> +	uint32_t __spare1;
-> +	uint64_t mask;
-> +	uint32_t sb_dev_major;
-> +	uint32_t sb_dev_minor;
-> +	uint64_t sb_magic;
-> +	uint32_t sb_flags;
-> +	uint32_t fs_type;
-> +	uint64_t mnt_id;
-> +	uint64_t mnt_parent_id;
-> +	uint32_t mnt_id_old;
-> +	uint32_t mnt_parent_id_old;
-> +	uint64_t mnt_attr;
-> +	uint64_t mnt_propagation;
-> +	uint64_t mnt_peer_group;
-> +	uint64_t mnt_master;
-> +	uint64_t propagate_from;
-> +	uint32_t mnt_root;
-> +	uint32_t mnt_point;
-> +	uint64_t __spare2[50];
-> +	char str[];
-> +};
-> +#endif
-> +
-> +#ifndef MNT_ID_REQ_SIZE_VER0
-> +# define MNT_ID_REQ_SIZE_VER0 24
-> +#endif
-> +
-> +#ifndef STATMOUNT_SB_BASIC
-> +# define STATMOUNT_SB_BASIC 0x00000001U
-> +#endif
-> +
-> +#ifndef STATMOUNT_MNT_BASIC
-> +# define STATMOUNT_MNT_BASIC 0x00000002U
-> +#endif
-> +
-> +#ifndef STATMOUNT_PROPAGATE_FROM
-> +# define STATMOUNT_PROPAGATE_FROM 0x00000004U
-> +#endif
-> +
-> +#ifndef STATMOUNT_MNT_ROOT
-> +# define STATMOUNT_MNT_ROOT 0x00000008U
-> +#endif
-> +
-> +#ifndef STATMOUNT_MNT_POINT
-> +# define STATMOUNT_MNT_POINT 0x00000010U
-> +#endif
-> +
-> +#ifndef STATMOUNT_FS_TYPE
-> +# define STATMOUNT_FS_TYPE 0x00000020U
-> +#endif
-> +
-> +#ifndef LSMT_ROOT
-> +# define LSMT_ROOT 0xffffffffffffffff
-> +#endif
-> +
->  #endif /* LAPI_MOUNT_H__ */
+> +#ifndef LISTMOUNT_H
 
-The rest looks fine:
+Ah, and #define LISTMOUNT_H is missing here, otherwise the header guards
+does not work at all.
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> +#define _GNU_SOURCE
+> +
+> +#include "tst_test.h"
+> +#include "lapi/mount.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
+> +			 uint64_t list[], size_t num, unsigned int flags)
+> +{
+> +	struct mnt_id_req req = {
+> +		.size = MNT_ID_REQ_SIZE_VER0,
+> +		.mnt_id = mnt_id,
+> +		.param = last_mnt_id,
+> +	};
+> +
+> +	return tst_syscall(__NR_listmount, &req, list, num, flags);
+> +}
+> +
+> +#endif
 
 -- 
 Cyril Hrubis
