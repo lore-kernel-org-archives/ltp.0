@@ -4,108 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96AFDCF8552
-	for <ltp@archiver.kernel.org>; Fri,  4 Oct 2024 14:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D92CCCFA775
+	for <ltp@archiver.kernel.org>; Fri,  4 Oct 2024 14:10:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D526E3C633E
-	for <ltp@archiver.kernel.org>; Fri,  4 Oct 2024 16:01:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 518163C6353
+	for <ltp@archiver.kernel.org>; Fri,  4 Oct 2024 16:10:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B9303C4D32
- for <ltp@lists.linux.it>; Fri,  4 Oct 2024 16:01:39 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 831703C61DE
+ for <ltp@lists.linux.it>; Fri,  4 Oct 2024 16:10:00 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7F063100117F
- for <ltp@lists.linux.it>; Fri,  4 Oct 2024 16:01:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 669F860DBCE
+ for <ltp@lists.linux.it>; Fri,  4 Oct 2024 16:09:58 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DC37B21CA8;
- Fri,  4 Oct 2024 14:01:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8468C1FD8C;
+ Fri,  4 Oct 2024 14:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1728050497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1728050968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=w8cpr4Du8cUk5hRONXDCo/vW8OB5pbiH1PY/I/KVo5g=;
- b=EaQexhtgUFgJfkN3WE035rm62k4b8tfbAqOXuhPYTmd7GQxcnEqkzhAsBJSnfkcUFXG+6/
- PrfyY6/1mWbM+0R6nWM9nzs/5H8FSV1jbzYfi9fdhdGawLe1dRwwjsk0GCxIVdMhv3EqSD
- mfuaLafrVb5f1rtG7FfzG4TpTtiphd8=
+ bh=F4yjtKZxR8hoDy4CbyuhCfXq+PuHGz2lGsIfCGNvo50=;
+ b=gGjdd1ihhwRdfWAvQn6lUSkcajbkjD8ezXG0pmVun1jl8LxwCfHjfTzLJiRCjuohiaq8XJ
+ ScV/1pKcpZG1fUFL2Q2FLSl6wAxEbgQ6DQNH61Y7bMy09mcF5wpxgbUuoTPVKNQ8mEClea
+ XcXDQnFw+qscvtHuM+4ynea/4z4LmDk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1728050497;
+ s=susede2_ed25519; t=1728050968;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=w8cpr4Du8cUk5hRONXDCo/vW8OB5pbiH1PY/I/KVo5g=;
- b=0maYjtlv5Pp3Laok+qXVsKQDtZWXg/PXy252PYw9QXF9lRzu42uGxsRNExxONsFr4ep1CS
- 4PCrdtyp82JXeNBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CuvAc99X;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=C3y1LDXJ
+ bh=F4yjtKZxR8hoDy4CbyuhCfXq+PuHGz2lGsIfCGNvo50=;
+ b=nxjRXMavAtINF9YFIBoxghDXEWrLiBODAObFFd2+O6qcb5oy3poY+7YalD9RBtGQ1DY1n0
+ e1O/Kj2uSLeKSmBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=i3bcqbC9;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gFZpzkfK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1728050496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1728050967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=w8cpr4Du8cUk5hRONXDCo/vW8OB5pbiH1PY/I/KVo5g=;
- b=CuvAc99X8YQuDedIUuqKUoVzM1mNemnQ+UPEWJ7ZhEcyBi1qwNSFNkaFGoLiZQ1IAXWDMk
- 2pecKEObDit1xr3hvRancSkA/bB+k8ut1u7NH2xFvWxxEy1PIzmeddFEnw+YKIJaxAkw1O
- IGO6B4GFf8dXwIxS2SQkiKKbmBYQgG0=
+ bh=F4yjtKZxR8hoDy4CbyuhCfXq+PuHGz2lGsIfCGNvo50=;
+ b=i3bcqbC9BFe7TygpXCqM+Djf81lKAlzK6uF91hTGe1OPpADimZwKANDBDis3z9OwhMG4y0
+ KnJU8BU2mqVNzC54DHNWsrGx4P6/6oTcHeAfsDAt+xxOKNlk3zYabY9tOTcPpBqCcMPE4U
+ BQoaK808glf2WvbBEK4qpZkVgqp0ZK0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1728050496;
+ s=susede2_ed25519; t=1728050967;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=w8cpr4Du8cUk5hRONXDCo/vW8OB5pbiH1PY/I/KVo5g=;
- b=C3y1LDXJsL4aFx5IzhOI+s4+Z98oJ+t2s6vf0wuwgVBNkMTpVVmw6VAvmuMxwDjGUf9G5T
- vJu7yEFeyucrt5Aw==
+ bh=F4yjtKZxR8hoDy4CbyuhCfXq+PuHGz2lGsIfCGNvo50=;
+ b=gFZpzkfKanT4U0iK95EAWWJ16XQK5HXQl54a7AT4S5PvVVdNy7hw1+BpPrY19Q1iAZr/Pm
+ XBjTGTaILcBwHpBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA06A13A6E;
- Fri,  4 Oct 2024 14:01:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 725E413A6E;
+ Fri,  4 Oct 2024 14:09:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OYJbLED1/2YgYAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 04 Oct 2024 14:01:36 +0000
-Date: Fri, 4 Oct 2024 16:00:30 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Ju1yGhf3/2akYgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 04 Oct 2024 14:09:27 +0000
+Date: Fri, 4 Oct 2024 16:08:21 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Zv_0_tsJE6XMSKMz@yuki.lan>
+Message-ID: <Zv_21V0x0Kv-ViJo@yuki.lan>
 References: <20241002-ioctl_ficlone01_fix-v3-0-7e077918dfd4@suse.com>
- <20241002-ioctl_ficlone01_fix-v3-1-7e077918dfd4@suse.com>
+ <20241002-ioctl_ficlone01_fix-v3-2-7e077918dfd4@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241002-ioctl_ficlone01_fix-v3-1-7e077918dfd4@suse.com>
-X-Rspamd-Queue-Id: DC37B21CA8
-X-Rspamd-Action: no action
+In-Reply-To: <20241002-ioctl_ficlone01_fix-v3-2-7e077918dfd4@suse.com>
+X-Rspamd-Queue-Id: 8468C1FD8C
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,suse.com:email];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/3] Filter mkfs version in tst_fs
+Subject: Re: [LTP] [PATCH v3 2/3] Add minimum kernel requirement for FS setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,56 +128,135 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +		if (ver_parser >= ver_get)
-> +			break;
+> In some cases, a filesystem that is going to be created and mounted
+> by LTP can't be supported by certain kernel versions. This is the case
+> of the CoW support: mkfs creates a CoW filesystem, while underlying
+> kernel can't mount it.
+> 
+> To cover this scenario, a new flag called .min_kver has been
+> introduced in the tst_fs structure, giving the user a possibility to
+> filter out certain kernels not supporting certain FS features.
+> 
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  include/tst_test.h            |  5 +++++
+>  lib/tst_test.c                | 27 +++++++++++++++++++++------
+>  testcases/lib/tst_run_shell.c |  5 +++++
+>  3 files changed, 31 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index 38d24f48c..8d1819f74 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -270,6 +270,9 @@ struct tst_ulimit_val {
+>   *
+>   * @mnt_data: The data passed to mount(2) when the test library mounts a device
+>   *            in the case of 'tst_test.mount_device'.
+> + *
+> + * @min_kver: A minimum kernel version supporting the filesystem which has been
+> + *            created with mkfs.
+>   */
+>  struct tst_fs {
+>  	const char *type;
+> @@ -280,6 +283,8 @@ struct tst_fs {
+>  
+>  	unsigned int mnt_flags;
+>  	const void *mnt_data;
 > +
-> +		check_msg = "%s required >= %d, but got %d, "
-> +			"the version is required in order run the test.";
-
-I would drop the "the version is required in order to run the test."
-part from these messages, since it does not add any more value on the
-top of the first part of the meassage.
-
+> +	const char *min_kver;
+>  };
+>  
+>  /**
 > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index d226157e0..192fee309 100644
+> index 192fee309..fe07c4d98 100644
 > --- a/lib/tst_test.c
 > +++ b/lib/tst_test.c
-> @@ -1250,6 +1250,7 @@ static const char *default_fs_type(void)
->  static void do_setup(int argc, char *argv[])
+> @@ -950,20 +950,29 @@ static void do_exit(int ret)
+>  	exit(ret);
+>  }
+>  
+> -void check_kver(void)
+> +int check_kver(const char *min_kver, const int brk_nosupp)
 >  {
->  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
-> +	int ret = 0;
+> +	char *msg;
+>  	int v1, v2, v3;
 >  
->  	if (!tst_test)
->  		tst_brk(TBROK, "No tests to run");
-> @@ -1310,7 +1311,7 @@ static void do_setup(int argc, char *argv[])
->  		int i;
->  
->  		for (i = 0; (cmd = tst_test->needs_cmds[i]); ++i)
-> -			tst_check_cmd(cmd);
-> +			tst_check_cmd(cmd, 1);
+> -	if (tst_parse_kver(tst_test->min_kver, &v1, &v2, &v3)) {
+> +	if (tst_parse_kver(min_kver, &v1, &v2, &v3)) {
+>  		tst_res(TWARN,
+>  			"Invalid kernel version %s, expected %%d.%%d.%%d",
+> -			tst_test->min_kver);
+> +			min_kver);
 >  	}
 >  
->  	if (tst_test->needs_drivers) {
-> @@ -1415,8 +1416,15 @@ static void do_setup(int argc, char *argv[])
->  
->  		tdev.fs_type = default_fs_type();
->  
-> -		if (!tst_test->all_filesystems && count_fs_descs() <= 1)
-> +		if (!tst_test->all_filesystems && count_fs_descs() <= 1) {
-> +			if (tst_test->filesystems->mkfs_ver)
-> +				ret = tst_check_cmd(tst_test->filesystems->mkfs_ver, 0);
+>  	if (tst_kvercmp(v1, v2, v3) < 0) {
+> -		tst_brk(TCONF, "The test requires kernel %s or newer",
+> -			tst_test->min_kver);
+> +		msg = "The test requires kernel %s or newer";
 > +
-> +			if (ret)
-> +				return;
+> +		if (brk_nosupp)
+> +			tst_brk(TCONF, msg, min_kver);
+> +		else
+> +			tst_res(TCONF, msg, min_kver);
+> +
+> +		return 1;
+>  	}
+> +
+> +	return 0;
+>  }
+>  
+>  static int results_equal(struct results *a, struct results *b)
+> @@ -1289,7 +1298,7 @@ static void do_setup(int argc, char *argv[])
+>  		tst_brk(TCONF, "Test needs to be run as root");
+>  
+>  	if (tst_test->min_kver)
+> -		check_kver();
+> +		check_kver(tst_test->min_kver, 1);
+>  
+>  	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+>  		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+> @@ -1420,6 +1429,9 @@ static void do_setup(int argc, char *argv[])
+>  			if (tst_test->filesystems->mkfs_ver)
+>  				ret = tst_check_cmd(tst_test->filesystems->mkfs_ver, 0);
+>  
+> +			if (tst_test->filesystems->min_kver)
+> +				ret = check_kver(tst_test->filesystems->min_kver, 0);
 
-And if we are here, it means that the test runs only for a single
-filesystem, so we should instead do:
+Here as well, we should pass 1 as the last argument.
 
-			if (tst_test->filesystem->mkfs_ver)
-				tst_check_mcd(tst_test->filesystems->mkfs_ver, 1);
+>  			if (ret)
+>  				return;
+>  
+> @@ -1816,6 +1828,9 @@ static int run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+>  	if (fs->mkfs_ver && tst_check_cmd(fs->mkfs_ver, 0))
+>  		return TCONF;
+>  
+> +	if (fs->min_kver && check_kver(fs->min_kver, 0))
+> +		return TCONF;
+> +
+>  	prepare_device(fs);
+>  
+>  	ret = fork_testrun();
+> diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
+> index ee029b666..6b714c51c 100644
+> --- a/testcases/lib/tst_run_shell.c
+> +++ b/testcases/lib/tst_run_shell.c
+> @@ -156,6 +156,7 @@ enum fs_ids {
+>  	MKFS_VER,
+>  	MNT_FLAGS,
+>  	TYPE,
+> +	FS_MIN_KVER,
+>  };
+>  
+>  static ujson_obj_attr fs_attrs[] = {
+> @@ -164,6 +165,7 @@ static ujson_obj_attr fs_attrs[] = {
+>  	UJSON_OBJ_ATTR_IDX(MKFS_VER, "mkfs_ver", UJSON_STR),
+>  	UJSON_OBJ_ATTR_IDX(MNT_FLAGS, "mnt_flags", UJSON_ARR),
+>  	UJSON_OBJ_ATTR_IDX(TYPE, "type", UJSON_STR),
+> +	UJSON_OBJ_ATTR_IDX(FS_MIN_KVER, "min_kver", UJSON_STR),
 
-The rest looks good.
+This is stil not sorted properly, the min_kver should go before the
+mkfs_ver.
 
 -- 
 Cyril Hrubis
