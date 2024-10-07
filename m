@@ -4,58 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 808DCCFB43F
-	for <ltp@archiver.kernel.org>; Sun,  6 Oct 2024 03:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EA82CFB43C
+	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 04:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1728275587; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=4Jme2mQXFS+pouQDC1iAhHWjbbtPE59wlZUJQOuUXVs=;
+ b=G/0+2np7xoQAmkR+KhxgKKlfSrDn99K2CyWvfXtfSDM4Z3A9BgwlaAMlZ2FKKnnp7eMW1
+ GugY5m3DHQTuB9Mo59bgSiC+RcIzwERhtAvuTON5QYH6KyzUoOOXticNUIZLumYZ8ZEOVDJ
+ E8dsjIOSSwSEFoCXDKaMsz9r0D6x2Kk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 965323C2F0D
-	for <ltp@archiver.kernel.org>; Sun,  6 Oct 2024 05:38:49 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 4AE6B3C1C7F
+	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 06:33:07 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C7363C1DC1
- for <ltp@lists.linux.it>; Sun,  6 Oct 2024 05:38:33 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=mit.edu
- (client-ip=18.9.28.11; helo=outgoing.mit.edu; envelope-from=tytso@mit.edu;
- receiver=lists.linux.it)
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D84191A010A9
- for <ltp@lists.linux.it>; Sun,  6 Oct 2024 05:38:31 +0200 (CEST)
-Received: from cwcc.thunk.org (pool-173-48-111-178.bstnma.fios.verizon.net
- [173.48.111.178]) (authenticated bits=0)
- (User authenticated as tytso@ATHENA.MIT.EDU)
- by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4963c5lT019613
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 5 Oct 2024 23:38:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
- t=1728185893; bh=oCEEqj+UtNwLXvigx5EXmnpRe6dWCvtIGCt8HrRAOZQ=;
- h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
- b=jT9l+tfW8Xt8ZDRXCHbo1A9oBWKxJFfvFcmX3f+kRWSXhjHeZTlIcMAnGylsCAIUU
- BzoDQQFShM913bZrUBEuWEqoYyyV1lsFcVHh/k/5QalXHxFH6W5i13ZK6erEIvNiZb
- 4XLDg4vUQ/dtMpZHcFDzzeIvbOyDcgxhm9EA4LCm0LTF1DCuj+LXjC0EExOame65+w
- /LrqlfRWC3nfl6OzIlOpSNnC8AGEVPXApwaOF8pBJDSSJ+LF7raCmQtsR/FtOA67XL
- YCegeAvaRD6Gu7JZEMsQ5gnvgTEqSgKdPvzEo7d6zXFagUUaAfODN9aTUYzNupwCRC
- +yRCtH6d/pguA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
- id 6068A15C6668; Sat, 05 Oct 2024 23:38:05 -0400 (EDT)
-Date: Sat, 5 Oct 2024 23:38:05 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Gabriel Krisman Bertazi <gabriel@krisman.be>
-Message-ID: <20241006033805.GB158527@mit.edu>
-References: <20240805201241.27286-1-jack@suse.cz> <Zvp6L+oFnfASaoHl@t14s>
- <20240930113434.hhkro4bofhvapwm7@quack3>
- <CAOQ4uxjXE7Tyz39wLUcuSTijy37vgUjYxvGL21E32cxStAgQpQ@mail.gmail.com>
- <877canu0gr.fsf@mailhost.krisman.be>
+ by picard.linux.it (Postfix) with ESMTPS id 584B93C1C7F
+ for <ltp@lists.linux.it>; Mon,  7 Oct 2024 06:32:42 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=gondor.apana.org.au (client-ip=144.6.53.87; helo=abb.hmeau.com;
+ envelope-from=herbert@gondor.apana.org.au; receiver=lists.linux.it)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8A5F01A01231
+ for <ltp@lists.linux.it>; Mon,  7 Oct 2024 06:32:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com; 
+ s=formenos;
+ h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+ Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=o7SMnmFH+FyD3bxWmFoMm+ObZ1/7pInGDbzO+Qr22oc=; b=rUdzX5q3E3IzZGOmrTZexpSRkd
+ /B47jUSaRYKufG6nVJz0ixWfJYozWlNTMloZFAbuccu3h1lt4rPvuVZ7tTkjygEt28Z4CcSTVpGkr
+ KFdeCOfHZi6No6WMfDgq9vOdf9h8oCWuUSobaLGs1qPBNxWTyO2wIeCwTegpsyZA+gP7NARufsLDu
+ fBy+yFodaw1YbYPa8OGhl29AVF7xPeFsEVRXtjoFuXNHivnb6HirZ5obgBwapmlH6MOyTYcdlE+2X
+ kQkSNNW5DgkQt0A8DYdWEt5FXW/hVV5detVUbWhvV5Sun/+bkVLN6684V7PR+vucXNLHwJOIAPmyY
+ cI3N6jAw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+ by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+ id 1sxfG5-007MaH-0n; Mon, 07 Oct 2024 12:32:23 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
+ Mon, 07 Oct 2024 12:32:22 +0800
+Date: Mon, 7 Oct 2024 12:32:22 +0800
+To: Eric Biggers <ebiggers@kernel.org>
+Message-ID: <ZwNkVv5WWrmpOmqN@gondor.apana.org.au>
+References: <ZsBKG0la0m69Dyq3@gondor.apana.org.au>
+ <20240827184839.GD2049@sol.localdomain>
+ <Zs6SiBOdasO9Thd1@gondor.apana.org.au>
+ <20240830175154.GA48019@sol.localdomain>
+ <ZtQgVOnK6WzdIDlU@gondor.apana.org.au>
+ <20240902170554.GA77251@sol.localdomain>
+ <ZtZFOgh3WylktM1E@gondor.apana.org.au>
+ <20241005222448.GB10813@sol.localdomain>
+ <ZwHfiNsP7fUvDwbH@gondor.apana.org.au>
+ <20241006030618.GA30755@sol.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <877canu0gr.fsf@mailhost.krisman.be>
+In-Reply-To: <20241006030618.GA30755@sol.localdomain>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ext4: don't set SB_RDONLY after filesystem errors
+Subject: Re: [LTP] [PATCH] crypto: api - Fix generic algorithm self-test
+ races
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,69 +84,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, ltp@lists.linux.it
+From: Herbert Xu via ltp <ltp@lists.linux.it>
+Reply-To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+ "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
+ "David S. Miller" <davem@davemloft.net>,
+ kernel test robot <oliver.sang@intel.com>, linux-crypto@vger.kernel.org,
+ oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
+ Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Oct 04, 2024 at 03:33:56PM -0400, Gabriel Krisman Bertazi wrote:
-> > Regardless of what is right or wrong to do in ext4, I don't think that the test
-> > really cares about remount read-only.
-> > I don't see anything in the test that requires it. Gabriel?
-> > If I remove MS_RDONLY from the test it works just fine.
-> 
-> If I recall correctly, no, there is no need for the MS_RDONLY.  We only
-> care about getting the event to test FS_ERROR.
+On Sat, Oct 05, 2024 at 08:06:18PM -0700, Eric Biggers wrote:
+>
+> I'm not sure about that, since the code that looks up algorithms only looks for
+> algorithms that already have the CRYPTO_ALG_TESTED flag.
 
-Looking at ltp/testcases/kernel/syscalls/fanotify/fanotify22.c this
-appears to be true.
+For normal lookups (one without CRYPTO_ALG_TESTED set in the mask
+field), the core API will first look for a tested algorithm, and
+if that fails then it will look for an untested algorithm.  The
+second step should find the larval and then sleep on that until it's
+done.
+ 
+> That problem is caused by the use of fallback ciphers, though.
 
-I'll note though that this comment in fanotify22.c is a bit
-misleading:
+Sure that particular deadlock may have been due to a fallback,
+but such dependencies exist outside of fallbacks too.  Especially
+now that we have the fuzz testing which will dynamically load the
+generic algorithms, it's easy to envisage a scenario where one
+module registers an algorithm, which then triggers modprobe's on the
+generic implementation of the same algorithm that then dead-locks.
 
-	/* Unmount and mount the filesystem to get it out of the error state */
-	SAFE_UMOUNT(MOUNT_PATH);
-	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+PS it looks like there is an actual report of things breaking with
+async testing in mv_cesa so I might revert/disable the async testing
+after all.
 
-Once ext4_error() gets called, the file system will be marked as
-containing errors.  This can be seen when you mount the file system,
-and when you run fsck -p:
-
-root@kvm-xfstests:~# mount /dev/vdc /vdc
-[ 1893.569015] EXT4-fs (vdc): mounted filesystem 9bf1a2df-fc1c-4b46-a8e8-c9e3e9bc7a26 r/w with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# echo "testing 123" > /sys/fs/ext4/vdc/trigger_fs_error 
-[ 1907.268249] EXT4-fs error (device vdc): trigger_test_error:129: comm bash: testing 123
-root@kvm-xfstests:~# umount /vdc
-[ 1919.722934] EXT4-fs (vdc): unmounting filesystem 9bf1a2df-fc1c-4b46-a8e8-c9e3e9bc7a26.
-root@kvm-xfstests:~# mount /dev/vdc /vdc
-[ 1923.270852] EXT4-fs (vdc): warning: mounting fs with errors, running e2fsck is recommended
-[ 1923.297998] EXT4-fs (vdc): mounted filesystem 9bf1a2df-fc1c-4b46-a8e8-c9e3e9bc7a26 r/w with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# umount /vdc
-[ 1925.889086] EXT4-fs (vdc): unmounting filesystem 9bf1a2df-fc1c-4b46-a8e8-c9e3e9bc7a26.
-root@kvm-xfstests:~# fsck -p /dev/vdc
-fsck from util-linux 2.38.1
-/dev/vdc contains a file system with errors, check forced.
-/dev/vdc: 12/327680 files (0.0% non-contiguous), 42398/1310720 blocks
-
-Unmounting and remounting the file system is not going to clear file
-system's error state.  You have to clear the EXT2_ERROR_FS state, and
-if you want to prevent fsck.ext4 -p from running, you'll need to set
-the EXT2_VALID_FS bit, via 'debugfs -w -R "ssv state 1" /dev/vdc' or
-you could just run 'fsck.ext4 -p /dev/vdc'.
-
-Also note that way I generally recommend that people simulate
-triggering a file system error is via a command like this:
-
-   echo "test error description" > /sys/fs/ext4/vdc/trigger_fs_error
-
-To be honest, I had completely forgotten that the abort mount option
-exists at all, and if I didn't know that ltp was using it, I'd be
-inclined to deprecate and remove it....
-
-						- Ted
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
