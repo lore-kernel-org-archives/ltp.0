@@ -4,73 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B4DCFB440
-	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 08:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1728289917; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=abR+nSx6W31z8u3wYdAESUUOg8rP36v1R5UdHhwm0J0=;
- b=Mq5F3b5P1mb6jLsll8dzQMUhMKSq8hh25jBaNaRfCoI+X53ngE+4+JfiLoNXcSE5sgJyx
- 9oUvj0P1oePIXMfvuNQfvGbXsaYJmnGnKaI9TqTECNWDDemKyDE75pnSn1sh2YtGdA3uzZv
- rg7PmqJ53Sld3bfsR19xm2zEd4zLbzQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0149BCFB444
+	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 15:05:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84A553C581E
-	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 10:31:57 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id EF9423C63C5
+	for <ltp@archiver.kernel.org>; Mon,  7 Oct 2024 17:05:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 258823C2034
- for <ltp@lists.linux.it>; Mon,  7 Oct 2024 10:31:34 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=gondor.apana.org.au (client-ip=144.6.53.87; helo=abb.hmeau.com;
- envelope-from=herbert@gondor.apana.org.au; receiver=lists.linux.it)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+ by picard.linux.it (Postfix) with ESMTPS id 279023C1D06
+ for <ltp@lists.linux.it>; Mon,  7 Oct 2024 17:04:58 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C08A8201734
- for <ltp@lists.linux.it>; Mon,  7 Oct 2024 10:31:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com; 
- s=formenos;
- h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
- Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=GcToCRPaIztkagLop0+41I63NBz+F4uN8r4VJ4+Mb3M=; b=LGLOdpO+ZiyWz5P8pqeemo5ZDZ
- k+5YEArr0MzSrn/sdR/n5yZkbGPY/9numMySxhYRDCATlRqyJCx1PPJYm7MXeubgs1uK4R0SNCvkN
- bahmEHYesIlRGRrVTrAWTXOb4E3qCjvxHKJvw9P4n32xvkF0clFu8C7YP8NX43h9b7kddvxV0/Uhs
- qycBoSEpMdIuksTeoZkjvxmUFORbcny9c6sVncCohiPz7HavDCblR4DTjX7HnzbeFrxy1j0pvucLS
- GFCGQxJ+I0AGS7EyHkZYq/Rg4156Khy2OaObcLEtw5JKBT7rOwDTAMucpw0McXhrx5VQyzavQrGlY
- wbHUgWAw==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
- by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
- id 1sxizN-007Ouk-0m; Mon, 07 Oct 2024 16:31:23 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
- Mon, 07 Oct 2024 16:31:22 +0800
-Date: Mon, 7 Oct 2024 16:31:22 +0800
-To: Eric Biggers <ebiggers@kernel.org>
-Message-ID: <ZwOcWtgj3YaAvocJ@gondor.apana.org.au>
-References: <20240827184839.GD2049@sol.localdomain>
- <Zs6SiBOdasO9Thd1@gondor.apana.org.au>
- <20240830175154.GA48019@sol.localdomain>
- <ZtQgVOnK6WzdIDlU@gondor.apana.org.au>
- <20240902170554.GA77251@sol.localdomain>
- <ZtZFOgh3WylktM1E@gondor.apana.org.au>
- <20241005222448.GB10813@sol.localdomain>
- <ZwHfiNsP7fUvDwbH@gondor.apana.org.au>
- <20241006030618.GA30755@sol.localdomain>
- <ZwNkVv5WWrmpOmqN@gondor.apana.org.au>
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B57C2600F33
+ for <ltp@lists.linux.it>; Mon,  7 Oct 2024 17:04:57 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4131821B3C;
+ Mon,  7 Oct 2024 15:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728313496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hDiWMxDNTtjZESqjgsm0J34q6GQJHh5QVnimEZjK7/k=;
+ b=DY0Lr3lMuOgs9DZEnDuDWK8oZc1oXXbefq9KJefHIGieHoY/6x+I4BUFo49Zw2TxiLeGTl
+ IdTgZTUNIoyP51ZSHHvNIOSDJa1g6//G5cGku+FEkR6P27KLfuwng9BdR43juR/V2wRNnT
+ XnKRUiwDwWwWag/xYsxKr8pt3spSA3g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728313496;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hDiWMxDNTtjZESqjgsm0J34q6GQJHh5QVnimEZjK7/k=;
+ b=fCujeGPlnJcBAf5ubkH4bzRcuYAbWBp4rJ3QfclJ53l4Nytx4u2eSYNPLqGySy7Idbe0eF
+ DY9bwgy+hLMpHVBA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DY0Lr3lM;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fCujeGPl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728313496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hDiWMxDNTtjZESqjgsm0J34q6GQJHh5QVnimEZjK7/k=;
+ b=DY0Lr3lMuOgs9DZEnDuDWK8oZc1oXXbefq9KJefHIGieHoY/6x+I4BUFo49Zw2TxiLeGTl
+ IdTgZTUNIoyP51ZSHHvNIOSDJa1g6//G5cGku+FEkR6P27KLfuwng9BdR43juR/V2wRNnT
+ XnKRUiwDwWwWag/xYsxKr8pt3spSA3g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728313496;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hDiWMxDNTtjZESqjgsm0J34q6GQJHh5QVnimEZjK7/k=;
+ b=fCujeGPlnJcBAf5ubkH4bzRcuYAbWBp4rJ3QfclJ53l4Nytx4u2eSYNPLqGySy7Idbe0eF
+ DY9bwgy+hLMpHVBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3208A132BD;
+ Mon,  7 Oct 2024 15:04:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0xs0C5j4A2eFCAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 07 Oct 2024 15:04:56 +0000
+Date: Mon, 7 Oct 2024 17:03:51 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZwP4VxOgCOI-BWMw@yuki.lan>
+References: <20240812-process_mrelease-v2-0-e61249986a0a@suse.com>
+ <20240812-process_mrelease-v2-3-e61249986a0a@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZwNkVv5WWrmpOmqN@gondor.apana.org.au>
-Subject: Re: [LTP] [PATCH] crypto: api - Fix generic algorithm self-test
- races
+In-Reply-To: <20240812-process_mrelease-v2-3-e61249986a0a@suse.com>
+X-Rspamd-Queue-Id: 4131821B3C
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ MISSING_XM_UA(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Status: Clean
+Subject: Re: [LTP] [PATCH v2 3/3] Add process_mrelease02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,45 +117,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Herbert Xu via ltp <ltp@lists.linux.it>
-Reply-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: lkp@intel.com, Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
- "Russell King \(Oracle\)" <linux@armlinux.org.uk>,
- "David S. Miller" <davem@davemloft.net>,
- kernel test robot <oliver.sang@intel.com>, linux-crypto@vger.kernel.org,
- oe-lkp@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>,
- Ard Biesheuvel <ardb@kernel.org>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Oct 07, 2024 at 12:32:22PM +0800, Herbert Xu wrote:
->
-> PS it looks like there is an actual report of things breaking with
-> async testing in mv_cesa so I might revert/disable the async testing
-> after all.
+Hi!
+> +/*\
+> + * [Description]
+> + *
+> + * This test verifies that process_mrelease() syscall is raising errors:
+> + * * EBADF when a bad file descriptor is given
+> + * * EINVAL when flags is not zero
+> + * * EINVAL when memory of a task cannot be released because it's still running
+> + * * ESRCH when child has been closed
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static int badfd = -1;
+> +static int pidfd;
+> +
+> +enum {
+> +	NO_CHILD,
+> +	EXIT_CHILD,
+> +	WAIT_CHILD,
+> +};
+> +
+> +static struct tcase {
+> +	int child_type;
+> +	int *fd;
+> +	int flags;
+> +	int exp_errno;
+> +	char *msg;
+> +} tcases[] = {
+> +	{NO_CHILD, &badfd, 0, EBADF, "bad file descriptor"},
+> +	{WAIT_CHILD, &pidfd, -1, EINVAL, "flags is not 0"},
+> +	{WAIT_CHILD, &pidfd, 0, EINVAL, "task memory cannot be released"},
+> +	{EXIT_CHILD, &pidfd, 0, ESRCH, "child is not running"},
+> +};
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	int status;
+> +
+> +	if (tc->child_type != NO_CHILD) {
+> +		pid_t pid;
+> +
+> +		pid = SAFE_FORK();
+> +		if (!pid) {
+> +			if (tc->child_type == WAIT_CHILD)
+> +				TST_CHECKPOINT_WAIT(0);
+> +
+> +			exit(0);
+> +		}
+> +
+> +		tst_res(TINFO, "Spawned waiting child with pid=%d", pid);
+> +
+> +		pidfd = SAFE_PIDFD_OPEN(pid, 0);
+> +
+> +		if (tc->child_type == EXIT_CHILD)
+> +			SAFE_WAITPID(pid, &status, 0);
+> +	}
 
-It looks like it wasn't a bug in the async self-test.
+Why don't we instead fork two children in the setup, one of the waits
+and second exits and just set the pidfd once?
 
-Instead this appears to be a real bug that was discovered by the
-async testing (because we now run all the tests at the same time,
-thus testing the whether the driver deals with parallel requests
-or not).
+> +	TST_EXP_FAIL(tst_syscall(__NR_process_mrelease, *tc->fd, tc->flags),
+> +		tc->exp_errno,
+> +		"%s", tc->msg);
+> +
+> +	if (tc->child_type != NO_CHILD) {
+> +		if (tc->child_type == WAIT_CHILD)
+> +			TST_CHECKPOINT_WAKE(0);
+> +
+> +		SAFE_CLOSE(pidfd);
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.min_kver = "5.15",
+> +	.needs_checkpoints = 1,
+> +};
+> 
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-This is a bit accidental, because the driver in question registered
-multiple hash algorithms.  Had it only registered one, then nothing
-would have changed.
-
-Is this something that we could improve in testmgr? Perhaps we can
-add a bit of parallelism ourselves to cover the case where a driver
-only registers one hash algorithm.
-
-Cheers,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
