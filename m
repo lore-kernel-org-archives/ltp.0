@@ -4,110 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BEC2CEF172
-	for <ltp@archiver.kernel.org>; Tue,  8 Oct 2024 15:00:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA2CACFB45B
+	for <ltp@archiver.kernel.org>; Tue,  8 Oct 2024 15:00:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C16E3C1D06
-	for <ltp@archiver.kernel.org>; Tue,  8 Oct 2024 17:00:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 782373C1D19
+	for <ltp@archiver.kernel.org>; Tue,  8 Oct 2024 17:00:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9D853C1C42
+ by picard.linux.it (Postfix) with ESMTPS id C3EB43C1C49
  for <ltp@lists.linux.it>; Tue,  8 Oct 2024 17:00:08 +0200 (CEST)
 Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1E6301A00EBF
- for <ltp@lists.linux.it>; Tue,  8 Oct 2024 17:00:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D66321A00E63
+ for <ltp@lists.linux.it>; Tue,  8 Oct 2024 17:00:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 841FB1FCE4;
- Tue,  8 Oct 2024 15:00:07 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E09FA21CE4;
+ Tue,  8 Oct 2024 15:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1728399607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GwR/xJpgj+Z5shBdLF/Lid8wDOLZqMnSddGrPKHeyUA=;
- b=sUjRl8XYYdRG6hLOPoN4S6xLjqpVhWNFP3B0uLbCO+yEmmfpEhVM5JnhsKYmuFjz9KprHB
- T9nUSqGqHPjBsdm020AxVVzUv40GV2ukhBx0g2bOH4BNqV+6ucdw/NBmLiPmjR/7aah3Wx
- sV4laWiMM3Z7Jv+fj1wYbrvXxRUYJPM=
+ bh=jfR+3Edrtw6RmB//typGP6WdKlYPX1DR7jppeppsfhs=;
+ b=JbU2IowCEkdbxwmJTACx7eqb+nnWeGBJg0AN9OS/K7A0uOL6oGpqfc1Nm+SM0wDghphDew
+ FtTzKuB5e0PFmEAoYU69jBytaHFnvZt7jEQccKVCcXDumhbZfcq9NDsO03Q/FKDVKRhUFQ
+ rdaF1ZspBPx30hbfF+KwhndqtkOcuf0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1728399607;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GwR/xJpgj+Z5shBdLF/Lid8wDOLZqMnSddGrPKHeyUA=;
- b=7laeG7MKES68154IS81E0u5EuDfHdpx3EUTlODj24KRdKjY2ZOXamsYY5E9j+DBuEJ71KN
- wq1Z/oA5Zz1IT8CA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=jfR+3Edrtw6RmB//typGP6WdKlYPX1DR7jppeppsfhs=;
+ b=PEWsKNHltgfdrhzzSnynOGIzWNVYXk3yFH/sUMp8NpBzVh2siw3upqnYBNV3a82TNaDfQz
+ knj+05BHaQP/DvDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=amReaHiE;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=tloefAZ6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1728399607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1728399606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GwR/xJpgj+Z5shBdLF/Lid8wDOLZqMnSddGrPKHeyUA=;
- b=sUjRl8XYYdRG6hLOPoN4S6xLjqpVhWNFP3B0uLbCO+yEmmfpEhVM5JnhsKYmuFjz9KprHB
- T9nUSqGqHPjBsdm020AxVVzUv40GV2ukhBx0g2bOH4BNqV+6ucdw/NBmLiPmjR/7aah3Wx
- sV4laWiMM3Z7Jv+fj1wYbrvXxRUYJPM=
+ bh=jfR+3Edrtw6RmB//typGP6WdKlYPX1DR7jppeppsfhs=;
+ b=amReaHiEKSpnT+lSl7uRX/O8DKOeas4hVOViiIvwoyCjNNTLfltT87WUwYyLfolSWc8y0H
+ MbREHh/XgC1VGQXhPJOVzo1rI/+xbHryOeG0FQqycCDo7Xk9Bc4NEnNORXR1nCFyXwivf3
+ TJeG2lEtVj0Q2ZXEd+f6acq9jSwJPxw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1728399607;
+ s=susede2_ed25519; t=1728399606;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GwR/xJpgj+Z5shBdLF/Lid8wDOLZqMnSddGrPKHeyUA=;
- b=7laeG7MKES68154IS81E0u5EuDfHdpx3EUTlODj24KRdKjY2ZOXamsYY5E9j+DBuEJ71KN
- wq1Z/oA5Zz1IT8CA==
+ bh=jfR+3Edrtw6RmB//typGP6WdKlYPX1DR7jppeppsfhs=;
+ b=tloefAZ6KbrCvQV4klhwO14qNEYduquANQwg/crsl7b/vmuv8y/xGD2ye+IrMBHbkqN0Au
+ yIbk9xj4jATRYfDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1CE8B13A6E;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77D98137CF;
  Tue,  8 Oct 2024 15:00:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ePVRO/ZIBWf6KgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EGTUFvZIBWf6KgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Tue, 08 Oct 2024 15:00:06 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 08 Oct 2024 16:59:57 +0200
+Date: Tue, 08 Oct 2024 16:59:56 +0200
 MIME-Version: 1.0
-Message-Id: <20241008-listmount_statmount-v6-2-0fd456b6b9bf@suse.com>
+Message-Id: <20241008-listmount_statmount-v6-1-0fd456b6b9bf@suse.com>
 References: <20241008-listmount_statmount-v6-0-0fd456b6b9bf@suse.com>
 In-Reply-To: <20241008-listmount_statmount-v6-0-0fd456b6b9bf@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1728399605; l=1508;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1728399605; l=4558;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=wKW7SkkBGBovvRLZKug6J5sa1QDffYz75+yHWRTN5ss=;
- b=0bP4P+m9hh0hH6T71eEcAv4clplzHx3b9QvCcWa/rQNI5ZPI0alBkJEzev/I9sPikxPPE9lxP
- CNVA8U1KmI1CcNvOGNKKwIW774fyiy7j2oJV2IH2Kyeyb75+6xIjdRQ
+ bh=Cx9Quw2Lv7qzSk1kd3UNtqPyhtAjsdjQMEOtq56Q1+w=;
+ b=sq7bHZUaaiGj8YoCKmCPcF8Sqiu2kT1EskRWPaWdu6BHcdjc6K7SwmOEv23J7IcGQ/rlT8EPD
+ Rhg4DmSQQrFCNKYi72kHC6ZDzMTvzk3UOZ2cum/m0Zi43i+a5aH+Bey
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.29 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: E09FA21CE4
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.19)[-0.954]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 02/16] Add TST_EXP_EQ_STR macro
+Subject: [LTP] [PATCH v6 01/16] Add SAFE_STATX macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,35 +136,164 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_test_macros.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/lapi/stat.h | 111 +++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 79 insertions(+), 32 deletions(-)
 
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index c02ad38f9..b2ca32f77 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -411,4 +411,18 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
- #define TST_EXP_EQ_SSZ_SILENT(VAL_A, VAL_B) \
- 	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, ssize_t, "%zi")
- 
-+#define TST_EXP_EQ_STR(STR_A, STR_B) do {                                      \
-+	TST_PASS = strcmp(STR_A, STR_B) == 0;                                  \
-+                                                                               \
-+	if (TST_PASS) {                                                        \
-+		tst_res_(__FILE__, __LINE__, TPASS,                            \
-+			"%s == %s (%s)",                                       \
-+			#STR_A, #STR_B, STR_B);                                \
-+	} else {                                                               \
-+		tst_res_(__FILE__, __LINE__, TFAIL,                            \
-+			"%s (%s) != %s (%s)",                                  \
-+			#STR_A, STR_A, #STR_B, STR_B);                         \
-+	}                                                                      \
-+} while (0)
+diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+index 030646a9e..1fa5f4eaf 100644
+--- a/include/lapi/stat.h
++++ b/include/lapi/stat.h
+@@ -30,6 +30,7 @@ struct statx_timestamp {
+ 	int32_t __reserved;
+ };
+ #endif
 +
- #endif	/* TST_TEST_MACROS_H__ */
+ /*
+  * Structures for the extended file attribute retrieval system call
+  * (statx()).
+@@ -67,39 +68,57 @@ struct statx_timestamp {
+  * will have values installed for compatibility purposes so that stat() and
+  * co. can be emulated in userspace.
+  */
+-#ifndef HAVE_STRUCT_STATX
+-struct statx {
+-	/* 0x00 */
+-	uint32_t	stx_mask;
+-	uint32_t	stx_blksize;
+-	uint64_t	stx_attributes;
+-	/* 0x10 */
+-	uint32_t	stx_nlink;
+-	uint32_t	stx_uid;
+-	uint32_t	stx_gid;
+-	uint16_t	stx_mode;
+-	uint16_t	__spare0[1];
+-	/* 0x20 */
+-	uint64_t	stx_ino;
+-	uint64_t	stx_size;
+-	uint64_t	stx_blocks;
+-	uint64_t	stx_attributes_mask;
+-	/* 0x40 */
+-	const struct statx_timestamp	stx_atime;
+-	const struct statx_timestamp	stx_btime;
+-	const struct statx_timestamp	stx_ctime;
+-	const struct statx_timestamp	stx_mtime;
+-	/* 0x80 */
+-	uint32_t	stx_rdev_major;
+-	uint32_t	stx_rdev_minor;
+-	uint32_t	stx_dev_major;
+-	uint32_t	stx_dev_minor;
+-	/* 0x90 */
+-	uint64_t	__spare2[14];
+-	/* 0x100 */
++ #define LTP_DEFINE_STATX_STRUCT(x) \
++ 	struct x { \
++	uint32_t	stx_mask; \
++	uint32_t	stx_blksize; \
++	uint64_t	stx_attributes; \
++	uint32_t	stx_nlink; \
++	uint32_t	stx_uid; \
++	uint32_t	stx_gid; \
++	uint16_t	stx_mode; \
++	uint16_t	__spare0[1]; \
++	uint64_t	stx_ino; \
++	uint64_t	stx_size; \
++	uint64_t	stx_blocks; \
++	uint64_t	stx_attributes_mask; \
++	const struct statx_timestamp	stx_atime; \
++	const struct statx_timestamp	stx_btime; \
++	const struct statx_timestamp	stx_ctime; \
++	const struct statx_timestamp	stx_mtime; \
++	uint32_t	stx_rdev_major; \
++	uint32_t	stx_rdev_minor; \
++	uint32_t	stx_dev_major; \
++	uint32_t	stx_dev_minor; \
++	uint64_t	stx_mnt_id; \
++	uint32_t	stx_dio_mem_align; \
++	uint32_t	stx_dio_offset_align; \
++	uint64_t	__spare3[12]; \
+ };
++
++LTP_DEFINE_STATX_STRUCT(statx_fallback);
++
++#ifdef HAVE_STRUCT_STATX
++typedef struct statx ltp_statx_;
++#else
++LTP_DEFINE_STATX_STRUCT(statx);
++
++typedef struct statx_fallback ltp_statx_;
+ #endif
+ 
++/*
++ * This is the fallback statx that we pass to the safe_statx() syscall.
++ * The reason why we need it, is that statx struct is constantly changing
++ * inside the kernel and we need to extend its definition when structure
++ * changes in order to compile the tests.
++ */
++struct ltp_statx {
++	union {
++		ltp_statx_ buff;
++		struct statx_fallback data;
++	};
++};
++
+ #ifndef HAVE_STATX
+ 
+ /*
+@@ -108,9 +127,9 @@ struct statx {
+  * Returns: It returns status of statx syscall
+  */
+ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+-			unsigned int mask, struct statx *statxbuf)
++			unsigned int mask, struct statx *st)
+ {
+-	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
++	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, st);
+ }
+ #endif
+ 
+@@ -229,6 +248,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_ATTR_VERITY	0x00100000
+ #endif
+ 
++#ifndef STATX_MNT_ID_UNIQUE
++# define STATX_MNT_ID_UNIQUE  0x00004000U
++#endif
++
+ #define SAFE_FCHMODAT2(dfd, filename, mode, flags) \
+ 	safe_fchmodat2(__FILE__, __LINE__, (dfd), (filename), (mode), (flags))
+ 
+@@ -251,4 +274,28 @@ static inline int safe_fchmodat2(const char *file, const int lineno,
+ 	return ret;
+ }
+ 
++#define SAFE_STATX(dirfd, pathname, flags, mask, buf) \
++	safe_statx(__FILE__, __LINE__, (dirfd), (pathname), (flags), (mask), (buf))
++
++static inline int safe_statx(const char *file, const int lineno,
++	int dirfd, const char *pathname, int flags, unsigned int mask,
++	struct ltp_statx *buf)
++{
++	int rval;
++
++	rval = statx(dirfd, pathname, flags, mask, &buf->buff);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"statx(%d,%s,%d,%u,%p) failed", dirfd, pathname, flags, mask, buf);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid statx(%d,%s,%d,%u,%p) return value %d",
++			dirfd, pathname, flags, mask, buf,
++			rval);
++	}
++
++	return rval;
++}
++
+ #endif /* LAPI_STAT_H__ */
 
 -- 
 2.43.0
