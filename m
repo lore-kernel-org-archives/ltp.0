@@ -4,120 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E58CEDD88
-	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 12:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2428CCEDD89
+	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 12:13:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B37403C268C
-	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 14:10:07 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A825C3C2E96
+	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 14:13:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DAA1C3C2E4E
- for <ltp@lists.linux.it>; Wed,  9 Oct 2024 14:04:52 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 150E63C1C20
+ for <ltp@lists.linux.it>; Wed,  9 Oct 2024 14:13:34 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 52BC6602795
- for <ltp@lists.linux.it>; Wed,  9 Oct 2024 14:04:52 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8B3591410516
+ for <ltp@lists.linux.it>; Wed,  9 Oct 2024 14:13:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0A40421E8B;
- Wed,  9 Oct 2024 12:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1728475491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AC5171FE92;
+ Wed,  9 Oct 2024 12:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728476012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EE3poBj6nwBid+yp8MIbwprv16pGjJvjeJ30mTvkF8k=;
- b=H/ewVsZOsxU8z5/rPdRI/mVNEyAE24TMEQDNakJvUUBRCFPFzpaauMf+jtpqwmx9BJOEqj
- JpnNm5xoBeRsVCKmgb39rQsIJejqzdgDL87kEIqdh6tXWX/jMW3zZN2Hd0GSuSAXArviNq
- 41E3Jglc1BHFDf2PeljtvvloVzcARJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1728475491;
+ bh=kVwQ2B6oqN6R1cjKj7a48z9CCDJ1+OXnhlZDoZqnq5c=;
+ b=VxwzswzcNL+zTgdRarw0YYggegO5S6ky1LwOewcfTD9eS7MZ4k37w33cWNecUuYc/T7ql0
+ 0GX4OwFCtFy9JTrYiK3FkPEW4d0Yv9ZE2qqn2ZrWmdozlipAmRs8RGeaFnb5oSEIdW04H6
+ Tdd5QGvQOoznLnjpemTIJxRT6PTPFwY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728476012;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EE3poBj6nwBid+yp8MIbwprv16pGjJvjeJ30mTvkF8k=;
- b=6DlJwrs8/sWUqm+UzK3ngGS0v7eEaHILf2AW8U7vLKhALndVpaqNV5C3bcsBI6mSU8rCpi
- aZuTc5EsmW9TXsDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="H/ewVsZO";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6DlJwrs8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1728475491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ bh=kVwQ2B6oqN6R1cjKj7a48z9CCDJ1+OXnhlZDoZqnq5c=;
+ b=7Wuc/lXUbJ5GhIOkXsL/YFclW9YSBFY+btM6KTmol7FT+Ipz+eFurUDHNmRzm3TQihXWtH
+ IJTPTaenFFj2xSDQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Vxwzswzc;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="7Wuc/lXU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728476012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EE3poBj6nwBid+yp8MIbwprv16pGjJvjeJ30mTvkF8k=;
- b=H/ewVsZOsxU8z5/rPdRI/mVNEyAE24TMEQDNakJvUUBRCFPFzpaauMf+jtpqwmx9BJOEqj
- JpnNm5xoBeRsVCKmgb39rQsIJejqzdgDL87kEIqdh6tXWX/jMW3zZN2Hd0GSuSAXArviNq
- 41E3Jglc1BHFDf2PeljtvvloVzcARJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1728475491;
+ bh=kVwQ2B6oqN6R1cjKj7a48z9CCDJ1+OXnhlZDoZqnq5c=;
+ b=VxwzswzcNL+zTgdRarw0YYggegO5S6ky1LwOewcfTD9eS7MZ4k37w33cWNecUuYc/T7ql0
+ 0GX4OwFCtFy9JTrYiK3FkPEW4d0Yv9ZE2qqn2ZrWmdozlipAmRs8RGeaFnb5oSEIdW04H6
+ Tdd5QGvQOoznLnjpemTIJxRT6PTPFwY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728476012;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EE3poBj6nwBid+yp8MIbwprv16pGjJvjeJ30mTvkF8k=;
- b=6DlJwrs8/sWUqm+UzK3ngGS0v7eEaHILf2AW8U7vLKhALndVpaqNV5C3bcsBI6mSU8rCpi
- aZuTc5EsmW9TXsDQ==
+ bh=kVwQ2B6oqN6R1cjKj7a48z9CCDJ1+OXnhlZDoZqnq5c=;
+ b=7Wuc/lXUbJ5GhIOkXsL/YFclW9YSBFY+btM6KTmol7FT+Ipz+eFurUDHNmRzm3TQihXWtH
+ IJTPTaenFFj2xSDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA6C913A58;
- Wed,  9 Oct 2024 12:04:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 936C9136BA;
+ Wed,  9 Oct 2024 12:13:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iJ/hI2JxBmfLEwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Oct 2024 12:04:50 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 09 Oct 2024 14:04:51 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TJexI2xzBmdxFgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 09 Oct 2024 12:13:32 +0000
+Date: Wed, 9 Oct 2024 14:12:31 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZwZzL9g8iqIweUW6@yuki.lan>
+References: <20241008-ioctl_ficlone01_fix-v4-0-eae3adac33c9@suse.com>
+ <20241008-ioctl_ficlone01_fix-v4-1-eae3adac33c9@suse.com>
 MIME-Version: 1.0
-Message-Id: <20241009-listmount_statmount-v8-16-182cd6557223@suse.com>
-References: <20241009-listmount_statmount-v8-0-182cd6557223@suse.com>
-In-Reply-To: <20241009-listmount_statmount-v8-0-182cd6557223@suse.com>
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1728475481; l=4674;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=RfIUutDB9KNuhiyPPcaij15WEetkpAhALEgoonSjYM0=;
- b=BrAdI5HM4RZrVLkfZsYBpxfch3YuT3OjDRsemPqhY8DOV0QYf6xW5ryxiWMeVo2xhrAGsKxf7
- KAImuV4dH40DrigEugdjHMpIUxS3FKIU6XT95++8naye5JCESuq0cTU
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: 0A40421E8B
-X-Rspamd-Action: no action
+Content-Disposition: inline
+In-Reply-To: <20241008-ioctl_ficlone01_fix-v4-1-eae3adac33c9@suse.com>
+X-Rspamd-Queue-Id: AC5171FE92
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_TWO(0.00)[2];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 16/16] Add listmount04 test
+Subject: Re: [LTP] [PATCH v4 1/3] Filter mkfs version in tst_fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,202 +119,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+>  	if (!op_token)
+> -		return;
+> +		goto error;
 
-Verify that listmount() raises the correct errors according with
-invalid data:
+This is not an error case, when we get NULL token it means that there is
+no version embedded in the string and that we should return 0 here. This
+does not cause any problems for us because we do not use the return
+value in the case that we pass commands without version, but we should
+stil be consistent here.
 
-- EFAULT: req or mnt_id are unaccessible memories
-- EINVAL: invalid flags or mnt_id request
-- ENOENT: non-existent mount point
+That also means that in all the rest of the cases the op_token will be
+defined and we can use that directly instead of the op_msg.
+
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index d226157e0..4f4a53080 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1250,6 +1250,7 @@ static const char *default_fs_type(void)
+>  static void do_setup(int argc, char *argv[])
+>  {
+>  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
+> +	int ret = 0;
+
+This is now unused.
+
+>  	if (!tst_test)
+>  		tst_brk(TBROK, "No tests to run");
+> @@ -1310,7 +1311,7 @@ static void do_setup(int argc, char *argv[])
+>  		int i;
+>  
+>  		for (i = 0; (cmd = tst_test->needs_cmds[i]); ++i)
+> -			tst_check_cmd(cmd);
+> +			tst_check_cmd(cmd, 1);
+>  	}
+>  
+>  	if (tst_test->needs_drivers) {
+> @@ -1415,8 +1416,12 @@ static void do_setup(int argc, char *argv[])
+>  
+>  		tdev.fs_type = default_fs_type();
+>  
+> -		if (!tst_test->all_filesystems && count_fs_descs() <= 1)
+> +		if (!tst_test->all_filesystems && count_fs_descs() <= 1) {
+> +			if (tst_test->filesystems->mkfs_ver)
+> +				tst_check_cmd(tst_test->filesystems->mkfs_ver, 1);
+> +
+>  			prepare_device(tst_test->filesystems);
+> +		}
+>  	}
+>  
+>  	if (tst_test->needs_overlay && !tst_test->mount_device)
+> @@ -1805,6 +1810,9 @@ static int run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+>  	tst_res(TINFO, "=== Testing on %s ===", fs_type);
+>  	tdev.fs_type = fs_type;
+>  
+> +	if (fs->mkfs_ver && tst_check_cmd(fs->mkfs_ver, 0))
+> +		return TCONF;
+> +
+>  	prepare_device(fs);
+>  
+>  	ret = fork_testrun();
+> @@ -1832,7 +1840,7 @@ static int run_tcases_per_fs(void)
+>  		if (!fs)
+>  			continue;
+>  
+> -		run_tcase_on_fs(fs, filesystems[i]);
+> +		ret = run_tcase_on_fs(fs, filesystems[i]);
+
+I've send a patch that fixes this separately with a proper Fixes: tag,
+it would make more sense if you added your reviewed by and I would apply
+that patch separately...
+
+
+Other than that:
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                                  |   1 +
- testcases/kernel/syscalls/listmount/.gitignore    |   1 +
- testcases/kernel/syscalls/listmount/listmount04.c | 143 ++++++++++++++++++++++
- 3 files changed, 145 insertions(+)
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7e6d7aacf..80c4888ee 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -734,6 +734,7 @@ listen01 listen01
- listmount01 listmount01
- listmount02 listmount02
- listmount03 listmount03
-+listmount04 listmount04
- 
- listxattr01 listxattr01
- listxattr02 listxattr02
-diff --git a/testcases/kernel/syscalls/listmount/.gitignore b/testcases/kernel/syscalls/listmount/.gitignore
-index e4273f319..4d709bae5 100644
---- a/testcases/kernel/syscalls/listmount/.gitignore
-+++ b/testcases/kernel/syscalls/listmount/.gitignore
-@@ -1,3 +1,4 @@
- listmount01
- listmount02
- listmount03
-+listmount04
-diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
-new file mode 100644
-index 000000000..d38408d2c
---- /dev/null
-+++ b/testcases/kernel/syscalls/listmount/listmount04.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that listmount() raises the correct errors according with
-+ * invalid data:
-+ *
-+ * - EFAULT: req or mnt_id are unaccessible memories
-+ * - EINVAL: invalid flags or mnt_id request
-+ * - ENOENT: non-existent mount point
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+#include "lapi/mount.h"
-+#include "lapi/syscalls.h"
-+
-+#define MNT_SIZE 32
-+
-+static struct mnt_id_req *request;
-+static uint64_t mnt_ids[MNT_SIZE];
-+
-+static struct tcase {
-+	int req_usage;
-+	uint32_t size;
-+	uint32_t spare;
-+	uint64_t mnt_id;
-+	uint64_t param;
-+	uint64_t *mnt_ids;
-+	size_t nr_mnt_ids;
-+	uint64_t flags;
-+	int exp_errno;
-+	char *msg;
-+} tcases[] = {
-+	{
-+		.req_usage = 0,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EFAULT,
-+		.msg = "request points to unaccessible memory",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = LSMT_ROOT,
-+		.mnt_ids = NULL,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EFAULT,
-+		.msg = "mnt_ids points to unaccessible memory",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = LSMT_ROOT,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.flags = -1,
-+		.exp_errno = EINVAL,
-+		.msg = "invalid flags",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = 0,
-+		.mnt_id = LSMT_ROOT,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EINVAL,
-+		.msg = "insufficient mnt_id_req.size",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.spare = -1,
-+		.mnt_id = LSMT_ROOT,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EINVAL,
-+		.msg = "invalid mnt_id_req.spare",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = LSMT_ROOT,
-+		.param = STATMOUNT_PROPAGATE_FROM + 1,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EINVAL,
-+		.msg = "invalid mnt_id_req.param",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = 0,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = EINVAL,
-+		.msg = "invalid mnt_id_req.mnt_id",
-+	},
-+	{
-+		.req_usage = 1,
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = LSMT_ROOT - 1,
-+		.mnt_ids = mnt_ids,
-+		.nr_mnt_ids = MNT_SIZE,
-+		.exp_errno = ENOENT,
-+		.msg = "non-existant mnt_id",
-+	},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	struct mnt_id_req *req = NULL;
-+
-+	memset(mnt_ids, 0, sizeof(mnt_ids));
-+
-+	if (tc->req_usage) {
-+		req = request;
-+		req->mnt_id = tc->mnt_id;
-+		req->param = tc->param;
-+		req->size = tc->size;
-+		req->spare = tc->spare;
-+	}
-+
-+	TST_EXP_FAIL(tst_syscall(__NR_listmount, req, tc->mnt_ids,
-+		tc->nr_mnt_ids, tc->flags), tc->exp_errno,
-+		"%s", tc->msg);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "6.8",
-+	.bufs = (struct tst_buffers []) {
-+		{ &request, .size = sizeof(struct mnt_id_req) },
-+		{},
-+	},
-+};
 
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
