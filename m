@@ -4,72 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61AEDCEDD86
-	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 11:36:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0596CEDD87
+	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 11:56:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C54A83C2AF7
-	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 13:36:04 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2E7983C2CF2
+	for <ltp@archiver.kernel.org>; Wed,  9 Oct 2024 13:56:53 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 226413C2A71
- for <ltp@lists.linux.it>; Wed,  9 Oct 2024 13:35:49 +0200 (CEST)
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com
- [IPv6:2607:f8b0:4864:20::f2f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B59613C2750
+ for <ltp@lists.linux.it>; Wed,  9 Oct 2024 13:54:38 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2DC0B601F65
- for <ltp@lists.linux.it>; Wed,  9 Oct 2024 13:35:49 +0200 (CEST)
-Received: by mail-qv1-xf2f.google.com with SMTP id
- 6a1803df08f44-6cbc1638608so1390846d6.0
- for <ltp@lists.linux.it>; Wed, 09 Oct 2024 04:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1728473748; x=1729078548; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=FurzM10u95VKmaZwS7ymh0VKZoWWm9NbSC/cRDUlyeU=;
- b=wD/Za2zgWlO4cQqQVP/JS9y9JXAqOOF9CGDQ0THkdSa/eQjnKnlIvYJKvCYozNawu7
- d/eIRel8rizgALHOXBZlKj0QiU56KuA9hPV3szCW1yxNyqDfsuX0iCT5yu/yV+dSdQcp
- 5hxNjRFetWrneWdkZYyJyiAplwqIzNG5tuAwqRLkLde6ktth0E3hbO8E5NUY+8YbNTuM
- TJFdYpRNpERGurVhRzwmI94KC58LYzAGnr+WF+E74g/bTGZs14FvRxrmQkTofg+zKftr
- 5D7dB5QG0BptOk5Oh2iwv1yVzMErFBukTvBqICYV8I1o4LPQjvhWdJ4umHpWVMFGSyxD
- q62Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1728473748; x=1729078548;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=FurzM10u95VKmaZwS7ymh0VKZoWWm9NbSC/cRDUlyeU=;
- b=hGX1i/AatR+C/9vRw/ka4SV7qVG/p+UcnPPtw3W2M+sZ/wNoiD2tQvtACadr+PTMTg
- avG3ATYQpURLXcqraxvrMhZfUBEyPe+ENGigcCp0ysIbQJ2E/8w9H5LYvXQfL/KolGaX
- qEaDulMtLsltab/ZimZl+aXI/0hcnDhM1EQHp+ei447Xl9H3QTMnjMn4ZZXW4ZC706oD
- 4I6H8U1WpjuxUSQ1MyV/Za1kMmCj9zDImsTeniFGTEoXXvFUKVJtaByo7yctfKHiBQVG
- wq4Z/ROWy63rc+Y9j5z97W2Cb0aWSlUSsZluLRyWCL1HaFoP0nQBDT5K2omARyXE2DRN
- azcQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVqKYQTkbx29UjRU5TsswmLazesJX0uaMiO4SX7mU7n4cP0RmY90+rKBkXUCH1jw3DyD5A=@lists.linux.it
-X-Gm-Message-State: AOJu0YwvOPLJ0VQLeBohHrE8xrxfLMjjhgt/M7cnck4IaQCW+THs6ABF
- v7EhWLy0bsHj8km1F6f19/WY3Q3HT3UEYs99APDFeEWyD5bPPAIJZmbnAQCX6WbZPH7enKXiGOW
- NBXn1lSCFk+/mnYF4WsiXDtVxduBkxYpAg7V4ww==
-X-Google-Smtp-Source: AGHT+IGxVD61+vnO6Sd1PNMSaYrQo9NkwfAClZ0FVDtlnROBKd2JA5fPqspTbiQbddkGddY+tZ38AMM6AmjuFdGb7sY=
-X-Received: by 2002:a05:6214:5014:b0:6cb:6006:c98b with SMTP id
- 6a1803df08f44-6cbc932a05amr17137026d6.5.1728473747881; Wed, 09 Oct 2024
- 04:35:47 -0700 (PDT)
-MIME-Version: 1.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F397B201744
+ for <ltp@lists.linux.it>; Wed,  9 Oct 2024 13:54:37 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4DD6321E5D;
+ Wed,  9 Oct 2024 11:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728474876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oUvGL+sPmRmjMQqWkjor2e4sPlA8EZDWqN+kZ9oteLo=;
+ b=mLYPyaitTcegU8E6eMKZAutBgCCB+zCZWUJZ7wim12jFiEspOZvA3V6NiE3bIBNbtPPT7+
+ TCVlQIgLf7hGe/KAv5n0f6LTjrquvho33fWCAxCo59ER7P6E5y1jzEo6FWEjR5WuDRjl0O
+ r+TOz/770C5FysmZNwI8N9X5kNYWdnc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728474876;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oUvGL+sPmRmjMQqWkjor2e4sPlA8EZDWqN+kZ9oteLo=;
+ b=WrkZoEASi/jBZ/ULqsAMhbXUKb2xpyb5lgf8fp+HhmzKwvVriwuOzDnucnHbnnVB64ppsn
+ oGEuo4Z4/rLUizDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mLYPyait;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WrkZoEAS
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1728474876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oUvGL+sPmRmjMQqWkjor2e4sPlA8EZDWqN+kZ9oteLo=;
+ b=mLYPyaitTcegU8E6eMKZAutBgCCB+zCZWUJZ7wim12jFiEspOZvA3V6NiE3bIBNbtPPT7+
+ TCVlQIgLf7hGe/KAv5n0f6LTjrquvho33fWCAxCo59ER7P6E5y1jzEo6FWEjR5WuDRjl0O
+ r+TOz/770C5FysmZNwI8N9X5kNYWdnc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1728474876;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oUvGL+sPmRmjMQqWkjor2e4sPlA8EZDWqN+kZ9oteLo=;
+ b=WrkZoEASi/jBZ/ULqsAMhbXUKb2xpyb5lgf8fp+HhmzKwvVriwuOzDnucnHbnnVB64ppsn
+ oGEuo4Z4/rLUizDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36E8A13A58;
+ Wed,  9 Oct 2024 11:54:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TRdICvxuBmdoEAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 09 Oct 2024 11:54:36 +0000
+Date: Wed, 9 Oct 2024 13:53:31 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Anders Roxell <anders.roxell@linaro.org>
+Message-ID: <ZwZuuz2jTW5evZ6v@yuki.lan>
 References: <20241008115648.280954295@linuxfoundation.org>
  <CA+G9fYv=Ld-YCpWaV2X=ErcyfEQC8DA1jy+cOhmviEHGS9mh-w@mail.gmail.com>
-In-Reply-To: <CA+G9fYv=Ld-YCpWaV2X=ErcyfEQC8DA1jy+cOhmviEHGS9mh-w@mail.gmail.com>
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Wed, 9 Oct 2024 13:35:36 +0200
-Message-ID: <CADYN=9KBXFJA1oU6KVJU66vcEej5p+6NcVYO0=SUrWW1nqJ8jQ@mail.gmail.com>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.cz>, 
- Christian Brauner <brauner@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ <CADYN=9KBXFJA1oU6KVJU66vcEej5p+6NcVYO0=SUrWW1nqJ8jQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CADYN=9KBXFJA1oU6KVJU66vcEej5p+6NcVYO0=SUrWW1nqJ8jQ@mail.gmail.com>
+X-Rspamd-Queue-Id: 4DD6321E5D
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-2.98 / 50.00]; BAYES_HAM(-2.97)[99.87%];
+ SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCPT_COUNT_TWELVE(0.00)[25]; MIME_TRACE(0.00)[0:+];
+ FREEMAIL_CC(0.00)[linaro.org,linuxfoundation.org,suse.cz,kernel.org,mit.edu,gmail.com,gmx.de,denx.de,lists.linux.it,lists.linux.dev,vger.kernel.org,lists.linaro.org,sladewatkins.net,kernelci.org,linux-foundation.org,nvidia.com,roeck-us.net];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TAGGED_RCPT(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
+ imap1.dmz-prg2.suse.org:helo, suse.cz:email, suse.cz:dkim, linux.it:url]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
+X-Mailman-Approved-At: Wed, 09 Oct 2024 13:56:37 +0200
 Subject: Re: [LTP] [PATCH 6.10 000/482] 6.10.14-rc1 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -82,64 +127,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: f.fainelli@gmail.com, rwarsow@gmx.de, pavel@denx.de, conor@kernel.org,
- shuah@kernel.org, allen.lkml@gmail.com, LTP List <ltp@lists.linux.it>,
- patches@lists.linux.dev, stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org, lkft-triage@lists.linaro.org, srw@sladewatkins.net,
- patches@kernelci.org, akpm@linux-foundation.org, jonathanh@nvidia.com,
- torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com, linux@roeck-us.net
+Cc: Jan Kara <jack@suse.cz>, lkft-triage@lists.linaro.org, allen.lkml@gmail.com,
+ stable@vger.kernel.org, shuah@kernel.org, f.fainelli@gmail.com,
+ jonathanh@nvidia.com, patches@kernelci.org, linux@roeck-us.net,
+ srw@sladewatkins.net, broonie@kernel.org, LTP List <ltp@lists.linux.it>,
+ Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ rwarsow@gmx.de, pavel@denx.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, conor@kernel.org, patches@lists.linux.dev,
+ akpm@linux-foundation.org, torvalds@linux-foundation.org,
+ sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 9 Oct 2024 at 08:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Tue, 8 Oct 2024 at 17:42, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 6.10.14 release.
-> > There are 482 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 10 Oct 2024 11:55:15 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.10.14-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.10.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
->
-> The LTP syscalls fanotify22 test failed  (broken).
-> This regression is noticed on linux.6.10.y, linux.6.11.y and linux.6.6.y.
->
-> We are bisecting this issue.
+Hi!
+Work in progress, see:
+https://lists.linux.it/pipermail/ltp/2024-October/040433.html
 
-The bisection pointed to patch b1a855f8a4fd ("ext4: don't set
-SB_RDONLY after filesystem errors")
-[ Upstream commit d3476f3dad4ad68ae5f6b008ea6591d1520da5d8 ]
-
-Reverting patch b1a855f8a4fd ("ext4: don't set SB_RDONLY after
-filesystem errors") makes
-ltp-syscalls/fanotify22 pass.
-
-That said, I also checked Linus tree and fanotify22 fails there too.
-Reverting the upstream
-patch d3476f3dad4a ("ext4: don't set SB_RDONLY after filesystem
-errors") from Linux tree
-v6.12-rc2-58-g75b607fab38d and run syscalls/fanotify22 it pass.
-
-Any ideas whats wrong here?
-
-Cheers,
-Anders
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
