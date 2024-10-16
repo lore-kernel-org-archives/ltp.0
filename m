@@ -4,110 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2E3DD2A52F
-	for <ltp@archiver.kernel.org>; Wed, 16 Oct 2024 16:17:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B65B3D2F7C2
+	for <ltp@archiver.kernel.org>; Wed, 16 Oct 2024 21:15:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E2553C6889
-	for <ltp@archiver.kernel.org>; Wed, 16 Oct 2024 18:17:26 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9599B3C2079
+	for <ltp@archiver.kernel.org>; Wed, 16 Oct 2024 23:15:33 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B64C23C672F
- for <ltp@lists.linux.it>; Wed, 16 Oct 2024 18:17:09 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 876053C12E8
+ for <ltp@lists.linux.it>; Wed, 16 Oct 2024 23:15:17 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5E10062EB20
- for <ltp@lists.linux.it>; Wed, 16 Oct 2024 18:17:07 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0725C235C7C
+ for <ltp@lists.linux.it>; Wed, 16 Oct 2024 23:15:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E50451FECE;
- Wed, 16 Oct 2024 16:17:06 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A2DD821EFC;
+ Wed, 16 Oct 2024 21:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1729113314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZvZfn92Gn9lEJIlQxnMss2I+uj9oPfwi9BzOpNQx5R8=;
+ b=h6Hg0vXMLjqsVLdC5f2iT/Vdfm9ipcIf3qcgiaq39/uiKNp0dAa43VdzxTcDRlD0FZqUUA
+ pSdA+x7Q0urQsQgQ4Q2wNIptGR+xpg6NoHzL9KvMxZHbPuAFHQEmswgJcoQINl2C04KuzR
+ X5J8yJVNZBh6YNRiNlja+blWaephqBs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1729113314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZvZfn92Gn9lEJIlQxnMss2I+uj9oPfwi9BzOpNQx5R8=;
+ b=iQxPiGNDzq+9bzGLEeDqN2w1xfdgfIgK8zk/MMHAszkEadfn/DQApq+wLWT2NdawgkETy1
+ sGgBFX2pHkavZwAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=h6Hg0vXM;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iQxPiGND
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1729113314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZvZfn92Gn9lEJIlQxnMss2I+uj9oPfwi9BzOpNQx5R8=;
+ b=h6Hg0vXMLjqsVLdC5f2iT/Vdfm9ipcIf3qcgiaq39/uiKNp0dAa43VdzxTcDRlD0FZqUUA
+ pSdA+x7Q0urQsQgQ4Q2wNIptGR+xpg6NoHzL9KvMxZHbPuAFHQEmswgJcoQINl2C04KuzR
+ X5J8yJVNZBh6YNRiNlja+blWaephqBs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1729113314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZvZfn92Gn9lEJIlQxnMss2I+uj9oPfwi9BzOpNQx5R8=;
+ b=iQxPiGNDzq+9bzGLEeDqN2w1xfdgfIgK8zk/MMHAszkEadfn/DQApq+wLWT2NdawgkETy1
+ sGgBFX2pHkavZwAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4BBC13433;
- Wed, 16 Oct 2024 16:17:06 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 859111376C;
+ Wed, 16 Oct 2024 21:15:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id T4d5MwLnD2f2PwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Wed, 16 Oct 2024 16:17:06 +0000
-Message-ID: <66c4cb2a-14de-4967-9c86-843759087dc5@suse.cz>
-Date: Wed, 16 Oct 2024 18:17:06 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PFCbH+IsEGf2DgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Oct 2024 21:15:14 +0000
+Date: Wed, 16 Oct 2024 23:15:13 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20241016211513.GA104519@pevik>
 References: <20240918100344.21316-1-wegao@suse.com>
- <20240925035756.14873-1-wegao@suse.com> <20241015193958.GC46536@pevik>
- <Zw-15cE2R0_5FOmJ@yuki.lan>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <Zw-15cE2R0_5FOmJ@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: E50451FECE
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+ <20240925035756.14873-1-wegao@suse.com>
+ <20241015193958.GC46536@pevik> <Zw-15cE2R0_5FOmJ@yuki.lan>
+ <66c4cb2a-14de-4967-9c86-843759087dc5@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <66c4cb2a-14de-4967-9c86-843759087dc5@suse.cz>
+X-Rspamd-Queue-Id: A2DD821EFC
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] ftp01.sh: Add support for test lftp
 X-BeenThere: ltp@lists.linux.it
@@ -121,46 +123,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 16. 10. 24 14:47, Cyril Hrubis wrote:
-> Hi!
->> To be honest, I would rather to remove this FTP test because FTP protocol is
->> legacy. I know it is supposed to be a smoke test, but maybe using modern tools
->> would be better than keeping test working among various old FTP implementations.
->> (Also nontrivial setup is required just for few FTP tests:
->> https://github.com/linux-test-project/ltp/tree/master/testcases/network )
->> But probably Cyril would be against. @Cyril @Martin WDYT?
-> 
-> So where is the ftp server setup code? Or do we expect ftp server to be
-> installed and configured prior to the test execution?
-> 
-> The actuall test does not look that complex to me.
+> On 16. 10. 24 14:47, Cyril Hrubis wrote:
+> > Hi!
+> > > To be honest, I would rather to remove this FTP test because FTP protocol is
+> > > legacy. I know it is supposed to be a smoke test, but maybe using modern tools
+> > > would be better than keeping test working among various old FTP implementations.
+> > > (Also nontrivial setup is required just for few FTP tests:
+> > > https://github.com/linux-test-project/ltp/tree/master/testcases/network )
+> > > But probably Cyril would be against. @Cyril @Martin WDYT?
 
-Hi,
-I've replied to patchset v1[1] that the server setup is better left to 
-the user, like we do with NFS. In our case, it should be done in OpenQA 
-during VM environment setup.
+> > So where is the ftp server setup code? Or do we expect ftp server to be
+> > installed and configured prior to the test execution?
 
-I agree that the test could be replaced by a socket test, either using 
-improved netstress tool or some new syscall tests for send()/recv()/...
+> > The actuall test does not look that complex to me.
 
-[1] 
-https://patchwork.ozlabs.org/project/ltp/patch/20240918100344.21316-1-wegao@suse.com/#3381493
+> Hi,
+> I've replied to patchset v1[1] that the server setup is better left to the
+> user, like we do with NFS. In our case, it should be done in OpenQA during
+> VM environment setup.
 
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+NFS case is kind of different from FTP. 1) There is the only nfsd implementation,
+in kernel. But there are more FTP servers (userspace).
 
+Also it's not just about starting the service (I agree with leaving services
+enabled in tooling outside LTP, e.g. *not* using testcases/lib/daemonlib.sh),
+but there is also service configuration which is required to be done in the test
+(part of the testing). NFS tests just run exportfs. All FTP scripts but ftp01.sh
+use vsftpd configuration. ftp01.sh could reuse this code (if it's working).
+
+Besides this FTP server it also involves some additional setup [2] (adjust
+/etc/ftpusers or /etc/vsftpd.ftpusers), but sure, this could be left for the
+test runner.
+
+> I agree that the test could be replaced by a socket test, either using
+> improved netstress tool or some new syscall tests for send()/recv()/...
+
+I was also thinking about using netstress.c (which is already used for
+network many tests) for FTP download and upload tests.
+
+There are also other tests in runtest/net_stress.appl:
+
+* dns-stress.sh bind9 resolving test - IMHO not relevant for LTP (bind has nice
+  CI testing done by ISC).
+* ssh-stress.sh sshd stress test - IMHO not relevant for LTP even as a smoke
+  test. Also touching ssh configuration can break some LTP users as LTP is often
+  used as a connection to SUT.
+* http-stress.sh http downloading stress test - IMHO redundant to FTP download
+  (if we replace FTP tests with netstress / other C code, we can delete this as well).
+
+Back to ftp01.sh (file modified in this patch). It tests downloading and
+uploading with FTP protocol. It looks to me more as FTP client/server test than
+anything else (it's not a stress test). IMHO not relevant for LTP.
+
+Kind regards,
+Petr
+
+> [1] https://patchwork.ozlabs.org/project/ltp/patch/20240918100344.21316-1-wegao@suse.com/#3381493
+
+[2] https://github.com/linux-test-project/ltp/tree/master/testcases/network#ftp-and-telnet-setup
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
