@@ -4,105 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 199E1D15D9A
-	for <ltp@archiver.kernel.org>; Mon, 21 Oct 2024 14:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13150D15DAD
+	for <ltp@archiver.kernel.org>; Mon, 21 Oct 2024 15:25:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 90B793C6F17
-	for <ltp@archiver.kernel.org>; Mon, 21 Oct 2024 16:29:09 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 086F43C6F23
+	for <ltp@archiver.kernel.org>; Mon, 21 Oct 2024 17:25:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB7D43C6ED6
- for <ltp@lists.linux.it>; Mon, 21 Oct 2024 16:28:53 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id AA2173C061D
+ for <ltp@lists.linux.it>; Mon, 21 Oct 2024 17:24:50 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22D1C61959A
- for <ltp@lists.linux.it>; Mon, 21 Oct 2024 16:28:52 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ADDA723465E
+ for <ltp@lists.linux.it>; Mon, 21 Oct 2024 17:24:49 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 924431F7F3;
- Mon, 21 Oct 2024 14:28:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B657E21E2C;
+ Mon, 21 Oct 2024 15:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1729520931;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1729524288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=749ad4kekkP7Oan/MH1aleIFVQjzCMy1d/OciLHSIz4=;
- b=UWaodKSUBbvapyBq5tGvKuoz2Q8hkk9PkxkBKDrlpFWsHeURvZBo+ObT2L4LcBso2vPnkf
- Z+WCYr452CLgTxD/e7uasCbFGNqbThQH/nF1YBSmDlAazgdQJsr0t3q+LKYhmFbYQUgKvc
- OrW8Vqfl+MDfwwaTclus64fmS3Wdwq0=
+ bh=GlKVv91TAt6uQuxHSA9yTNBJw+ZRgIyGQi3roXVEFq4=;
+ b=O0pXkrb/lrEsOCwLI/bA7UZg+kVryR44jPvBEOeSOFpxPEOMm7JWJ3sfwpKbq8ksYLCZYk
+ OaohdzwcYOJTz6rduFjOT1lBjohrSvFEycpBZhWKx8VpjN4X4iXofTBEIzow5dGCHEKC99
+ Z+NdJBrPLsbjZz9X1O553zwsQOym39I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1729520931;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1729524288;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=749ad4kekkP7Oan/MH1aleIFVQjzCMy1d/OciLHSIz4=;
- b=X1HtddTosDKFGT4grmGdfd4fJIVN/K24F54DQqk3PNWYesgqq6Fg06GdDhbEirFPbIyOUD
- 74lKXVCE+vm9LkCQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=GlKVv91TAt6uQuxHSA9yTNBJw+ZRgIyGQi3roXVEFq4=;
+ b=DZ8rpUGo/UYeEICnNQg87SKu+534yihYsaU8wQibAe+OiOl+wbmrkDBGyhYluAFZxTAbvC
+ kyPWXxzYeEP+51DQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1729520931;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1729524288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=749ad4kekkP7Oan/MH1aleIFVQjzCMy1d/OciLHSIz4=;
- b=UWaodKSUBbvapyBq5tGvKuoz2Q8hkk9PkxkBKDrlpFWsHeURvZBo+ObT2L4LcBso2vPnkf
- Z+WCYr452CLgTxD/e7uasCbFGNqbThQH/nF1YBSmDlAazgdQJsr0t3q+LKYhmFbYQUgKvc
- OrW8Vqfl+MDfwwaTclus64fmS3Wdwq0=
+ bh=GlKVv91TAt6uQuxHSA9yTNBJw+ZRgIyGQi3roXVEFq4=;
+ b=O0pXkrb/lrEsOCwLI/bA7UZg+kVryR44jPvBEOeSOFpxPEOMm7JWJ3sfwpKbq8ksYLCZYk
+ OaohdzwcYOJTz6rduFjOT1lBjohrSvFEycpBZhWKx8VpjN4X4iXofTBEIzow5dGCHEKC99
+ Z+NdJBrPLsbjZz9X1O553zwsQOym39I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1729520931;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1729524288;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=749ad4kekkP7Oan/MH1aleIFVQjzCMy1d/OciLHSIz4=;
- b=X1HtddTosDKFGT4grmGdfd4fJIVN/K24F54DQqk3PNWYesgqq6Fg06GdDhbEirFPbIyOUD
- 74lKXVCE+vm9LkCQ==
+ bh=GlKVv91TAt6uQuxHSA9yTNBJw+ZRgIyGQi3roXVEFq4=;
+ b=DZ8rpUGo/UYeEICnNQg87SKu+534yihYsaU8wQibAe+OiOl+wbmrkDBGyhYluAFZxTAbvC
+ kyPWXxzYeEP+51DQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66BB4139E0;
- Mon, 21 Oct 2024 14:28:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A114C136DC;
+ Mon, 21 Oct 2024 15:24:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nwewFiNlFmd2VgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 21 Oct 2024 14:28:51 +0000
-Date: Mon, 21 Oct 2024 16:28:42 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20241021142842.GA483032@pevik>
-References: <20240416080237.22627-1-xuyang2018.jy@fujitsu.com>
- <1934768.7Z3S40VBb9@localhost>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RxUyJkByFmdfaQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 21 Oct 2024 15:24:48 +0000
+Date: Mon, 21 Oct 2024 17:24:48 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: "Ricardo B. Marliere" <rbm@suse.com>
+Message-ID: <ZxZyQIV_d95yg30k@yuki.lan>
+References: <20241018-block_dev-v1-1-f1f98dfebb6d@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1934768.7Z3S40VBb9@localhost>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20241018-block_dev-v1-1-f1f98dfebb6d@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] flock: Add negative tests for flock
+Subject: Re: [LTP] [PATCH] block_dev: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,43 +112,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Yang Xu, Avinesh,
+Hi!
+>  .../block/block_dev_kernel/ltp_block_dev.c         |  1 -
+>  .../block/block_dev_user/block_dev.c               | 78 +++++++++-------=
+------
+>  2 files changed, 32 insertions(+), 47 deletions(-)
+> =
 
-> Hi Yang Xu,
+> diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_b=
+lock_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_blo=
+ck_dev.c
+> index 17047c0d5ae3f6556f3fa4b0eb2a17a86e5f05a6..8a3ee4ff0bac6ed46c7c09c57=
+52b6fec3ef01a40 100644
+> --- a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_de=
+v.c
+> +++ b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_de=
+v.c
+> @@ -12,7 +12,6 @@
+>  #include <linux/module.h>
+>  #include <linux/device.h>
+>  #include <linux/fs.h>
+> -#include <linux/genhd.h>
+>  #include <linux/blkdev.h>
 
+Technically LTP is supposed to support kernel 4.4 and newer, looking
+into kernel git the genhd.h content was moved into blkdev.h in 5.18 so
+ideally we should make it work for both. I suppose that we can make use
+of one of the macros that were moved into blkdev.h and do something as:
 
-> When I am testing this by running multiple times, EINTR test is getting
-> timed out randomly.
+#include <linux/blkdev.h>
+#ifndef DISK_NAME_LEN
+# include <linux/genhd.h>
+#endif
 
-> tst_test.c:1625: TINFO: Timeout per run is 0h 00m 30s
-> flock07.c:46: TINFO: Got SIGUSR1
-> Test timeouted, sending SIGKILL!
-> tst_test.c:1673: TINFO: Killed the leftover descendant processes
-> tst_test.c:1679: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-> tst_test.c:1681: TBROK: Test killed! (timeout?)
+>  MODULE_AUTHOR("M=E1rton N=E9meth <nm127@freemail.hu>");
+> diff --git a/testcases/kernel/device-drivers/block/block_dev_user/block_d=
+ev.c b/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
+> index 543c36795cc3b2776c59141023e03ff2c58bd36a..f795fb05b9af71f6a3c748936=
+a15ac3a652db5e3 100644
+> --- a/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
+> +++ b/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+>   *
+> @@ -26,74 +27,59 @@
+>  #include <unistd.h>
+>  #include <string.h>
+>  =
 
-> In these cases I see that there are two locks (held or waiting) by the process
-> even after SIGUSER1 signal is delivered, so somehow signal is being ignored.
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "old_module.h"
+> +#include "tst_test.h"
+> +#include "tst_module.h"
+> +
+> +#define MODULE_NAME "ltp_block_dev"
+> +#define MODULE_NAME_KO	MODULE_NAME ".ko"
+>  =
 
-> flock07         16520  FLOCK        WRITE* 0          0          0 /tmp...
-> flock07         16519  FLOCK        WRITE  0          0          0 /tmp...
+>  char *TCID =3D "block_dev";
 
+Isn't this unused as well?
 
-> And I feel we should add EWOULDBLOCK errno test to flock02.c file,
-> and keep only EINTR testcase here. 
+> -int TST_TOTAL =3D 9;
+>  =
 
-There are v2 and v3 sent by Avinesh, therefore I set this in patchwork as
-"Changes requested". Please correct me if I'm wrong.
+> -static const char module_name[]	=3D "ltp_block_dev.ko";
+>  static const char dev_result[]	=3D "/sys/devices/ltp_block_dev/result";
+>  static const char dev_tcase[]	=3D "/sys/devices/ltp_block_dev/tcase";
+> -static int module_loaded;
+>  =
 
-Kind regards,
-Petr
+> -static int run_all_testcases;
+> -static const option_t options[] =3D {
+> -	{"a", &run_all_testcases, NULL},
+> +static int module_loaded;
+> +static char* run_all_testcases;
 
--- 
+The whitespaces around the asterisk here are wrong. Have fixed all the
+errors and warnings reported by 'make check'?
+
+> +static struct tst_option options[] =3D {
+> +	{"a",  &run_all_testcases, "-a\tRun all test-cases (can crash the kerne=
+l)"},
+>  	{NULL, NULL, NULL}
+>  };
+>  =
+
+>  static void cleanup(void)
+>  {
+>  	if (module_loaded)
+> -		tst_module_unload(NULL, module_name);
+> -}
+> -
+> -static void help(void)
+> -{
+> -	printf("  -a      Run all test-cases (can crash the kernel)\n");
+> -}
+> -
+> -void setup(int argc, char *argv[])
+> -{
+> -	tst_parse_opts(argc, argv, options, help);
+> -
+> -	tst_require_root();
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +		tst_module_unload(MODULE_NAME_KO);
+>  }
+>  =
+
+> -static void test_run(void)
+> +static void run(unsigned int n)
+>  {
+> -	int off =3D 0;
+>  	/*
+>  	 * test-cases #8 and #9 can crash the kernel.
+>  	 * We have to wait for kernel fix where register_blkdev() &
+>  	 * unregister_blkdev() checks the input device name parameter
+>  	 * against NULL pointer.
+>  	 */
+
+Is this still true?
+
+> -	if (!run_all_testcases)
+> -		off =3D 2;
+> -
+> -	tst_module_load(cleanup, module_name, NULL);
+> -	module_loaded =3D 1;
+> -
+> -	int i, pass =3D 0;
+> -	for (i =3D 0; i < TST_TOTAL - off; ++i) {
+> -		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i + 1);
+> -		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &pass);
+> -		tst_resm((pass) ? TPASS : TFAIL, "Test-case '%d'", i + 1);
+> +	n++;
+> +	if (!run_all_testcases && (n =3D=3D 8 || n =3D=3D 9)) {
+> +		tst_res(TCONF, "Skipped n =3D %d", n);
+> +		return;
+>  	}
+> -}
+> -
+> -int main(int argc, char *argv[])
+> -{
+> -	setup(argc, argv);
+> -
+> -	test_run();
+>  =
+
+> -	cleanup();
+> +	if (!module_loaded) {
+> +		tst_module_load(MODULE_NAME_KO, NULL);
+> +		module_loaded =3D 1;
+> +	}
+>  =
+
+> -	tst_exit();
+> +	int pass =3D 0;
+> +	SAFE_FILE_PRINTF(dev_tcase, "%d", n);
+> +	SAFE_FILE_SCANF(dev_result, "%d", &pass);
+> +	tst_res((pass) ? TPASS : TFAIL, "Test-case '%d'", n);
+
+It would be way better if we printed a menaningful information about the
+test here as well, but that would probably require having a third file
+exported by the test module and should ideally be done in an subsequent
+patch.
+
+>  }
+> +
+> +static struct tst_test test =3D {
+> +	.needs_root =3D 1,
+> +	.cleanup =3D cleanup,
+> +	.test =3D run,
+> +	.tcnt =3D 9,
+> +	.options =3D options,
+> +};
+> =
+
+> ---
+> base-commit: 47aff4decc81ac837fd745278def6883fc2f197b
+> change-id: 20241018-block_dev-c322152e03ad
+> =
+
+> Best regards,
+> -- =
+
+> Ricardo B. Marliere <rbm@suse.com>
+> =
+
+> =
+
+> -- =
+
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
+
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
