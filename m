@@ -4,101 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AEE8D17141
-	for <ltp@archiver.kernel.org>; Mon, 21 Oct 2024 22:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C0AD1CDA0
+	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 06:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1729548373; h=date :
- mime-version : message-id : to : cc : subject : list-id :
- list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=IDdvl+HiL+xAKzQFNnEWoATDgSgHMpuCMfqEeYVWA40=;
- b=jyQtd1chfrqGWb5sRj8HK8YGH/9kSj9VWbeuQ0ll+ieykQRxoiDJewmcynda3cw8l6GLG
- qyplwO9lWjUGOFDrpjfghi2A1aMx5E7RYZhKfH5gWY71gty1l4sunIVVIk4MgKRs4qTk+8M
- PRx1exoc6DBex2PK6ytvefzY4F5wiUw=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1729577634; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=jG7yfgXsNrxDG8jpHQ3plwem51hGH8wACSlIJit1NHI=;
+ b=YRPP1yVJoHGacOFoRt5LDrSzmTLQUHphctj1gv8V1sPPqg/rtLjQ6A8eOVikNLRsTI+0w
+ DLY4KyOs6LVoGS8og1bKJEVMRwNKr+8uTC8g5UX966W6bu+WpFOCsnHQ5uzXMdgt28w6Dcg
+ gWkHo26I4UQI4sNfU/OaOhgy0VkXJHg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 842E83C6F33
-	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 00:06:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 699343C6F80
+	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 08:13:54 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FDF63C6747
- for <ltp@lists.linux.it>; Tue, 22 Oct 2024 00:05:53 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 84B3D3C6A20
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 08:13:32 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
+ helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
+ [207.54.90.137])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B57811182E7B
- for <ltp@lists.linux.it>; Tue, 22 Oct 2024 00:05:52 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-37d6a2aa748so3276056f8f.1
- for <ltp@lists.linux.it>; Mon, 21 Oct 2024 15:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1729548352; x=1730153152; darn=lists.linux.it;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:from:to:cc:subject:date:message-id:reply-to;
- bh=OdS6xVlG/EFYxX1OBtGVGA/EYWUkTtGA/nuWnVOitTY=;
- b=HEhQKeZpDRUmGRCdnMIlYjChMYOb2oGrYF673z/O267HA925VqzHaL2BGS7EMX+UpU
- SGXTwT8dAFsrP87muDO5x47LgE+kpGe5OPH6fy8ShVyJtm+dz3vda31fh8kfJNNns8tk
- xwR9MiPDehud+vS3rRyo74EQFnqWJu3vsgIlAZw/2pYf+1HdOQLS4+WzKlk7W2ooc+MW
- qeQ4ImbyDn0Nz/AkxCtGjtlBzeHmmrobCIs1+S8WFrTcBt8GVNmbXzsdNiZRe7ijcawA
- sxdGNR3ECTHEqVRyiyLrmo5BXGXo2v4qQFFk5t9ZR59FZhRU1ZJwmSRnWc1kazVK/rbI
- lTog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1729548352; x=1730153152;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=OdS6xVlG/EFYxX1OBtGVGA/EYWUkTtGA/nuWnVOitTY=;
- b=Yr7bg0u/jAR3iy0vC0/FWhgGiKgq5KO38bvp4otv1pGgW1JVj1/2U3Phan5HrO/WIo
- k6dIy985lKwxesol0Ub8I2TGQ34umc20T5vA+VvxA7YgTCXmpEuhMbmC0Mg8s0caYy1T
- qyfHghLOh9RwKIB4GMqyVLPnDLK2PW6FYZuigOasw1E9CrD5KQGxLeOhcHmLqVzprBeG
- uMX858CtBz1CFEXwDur28E3gb/lMn3vM3B3Uc8hL9AlIKtt7llU6NzT48u2UsGRG4+a5
- HEXTkM6mGin3i2Gfw6KS8RueBLmsX3ublvlZ1f+GIhrF+0AVxnB1aEhq7ZeaeBLtIIDJ
- 5OtA==
-X-Gm-Message-State: AOJu0Yzw+++jgrDHT1YrevYgSTC9DJwpU+noJIsy3YBtiBdz89WfZ72n
- SeakwrAlodPeGCkaj3RpoKCV4/PGe0PCcCHkmO4LSZQIj2N0ug4ciThJEeNi1LW+FDS/11znJBF
- 4
-X-Google-Smtp-Source: AGHT+IHlD3TjUhxrxYxQsNEDhBXxnGpyVQJB2fmBO7eRwFR1jymzq3h4ZUgeIMwEtyfkXnxo7XnF6w==
-X-Received: by 2002:adf:ecc3:0:b0:37d:45ad:8394 with SMTP id
- ffacd0b85a97d-37ea2164cf9mr7316102f8f.15.1729548352031; 
- Mon, 21 Oct 2024 15:05:52 -0700 (PDT)
-Received: from localhost ([177.68.4.104]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-71ec13d7416sm3381513b3a.101.2024.10.21.15.05.50
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Oct 2024 15:05:51 -0700 (PDT)
-Date: Mon, 21 Oct 2024 19:05:07 -0300
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4FE1B619286
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 08:13:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1729577611; x=1761113611;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Hj7tpSr8E0CmJQBeUo6NCAUeHVUPfy+I6vSwJG3B7AQ=;
+ b=fmGxGc1HzLh4mQNeqekTeMD6HGZ2CulOzN+8fzmMHpuTs2B0oPxoo+Aq
+ sHupWQKV+r+MqkViBB0cnuLGk3IDKUZ6CWAEra0gXYjt5QRpIy7cJJjJE
+ CS4bDv7bjDe8O/5OS0VguReosXVl/vd++uDZGoIPW4UOiYqxlXkYrYQQ/
+ QJnVzATVKGraVgXqUmE9aR+527WSlvGlPfZjcL+slM8xf7fKeKLC8yhDp
+ h0hhrx3TAp76VUCbaxuJ2OTaovtx6ItjvyBGNgeyzRRVwMYebdRbW1qDp
+ gRp93ya7IRg0bIQXsrNEbe05WH9q9DrZRKFH+Drp3MYfDuerKtstXHEHV w==;
+X-CSE-ConnectionGUID: YdFpK+42QpGN18oj7h3i5Q==
+X-CSE-MsgGUID: 2KTHSbTpST6cpH8IpODIxA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11232"; a="156980380"
+X-IronPort-AV: E=Sophos;i="6.11,222,1725289200"; d="scan'208";a="156980380"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+ by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Oct 2024 15:13:27 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 7EF67D4F57
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 15:13:25 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 82813CF7CB
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 15:13:24 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id D8BF220071A23
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 15:13:23 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.135.101])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 33A311A000B;
+ Tue, 22 Oct 2024 14:13:23 +0800 (CST)
+To: ltp@lists.linux.it, chuck.lever@oracle.com, chenhx.fnst@fujitsu.com,
+ pvorel@suse.cz
+Date: Tue, 22 Oct 2024 14:14:33 +0800
+Message-ID: <20241022061434.2610583-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Message-Id: <20241021-block_dev-v2-1-339a95c89fe0@suse.com>
-X-B4-Tracking: v=1; b=H4sIABLQFmcC/23MQQrCMBCF4auUWRvJTFWqK+8hRZpkYoPaSEaDU
- nJ3Y9cu/8fjm0E4BRY4NDMkzkFCnGrQqgE7DtOFVXC1gTRtUGOnzC3a69lxVrYlwi2xbgcH9f9
- I7MN7sU597THIM6bPQmf8rf+UjAqVR7/vnGdjdu4oL+G1jXfoSylfsWnbwqEAAAA=
-X-Change-ID: 20241018-block_dev-c322152e03ad
-To: ltp@lists.linux.it
-Cc: 
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4527; i=rbm@suse.com;
- h=from:subject:message-id; bh=Wik7YsDmSd+Y8fuvxQM1URvMwdHT+PehC387kaTjGjk=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnFtA7SWmW+E2koUPQXpRJW6gjeYDaTi3oROQBY
- 45uKV4klRqJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZxbQOwAKCRDJC4p8Y4ZY
- pr9wD/96kznQHXjz5UzszLY64AO3y/b7CwrYYQZzejhXtANN/SHIIl0oBpF1AMgbSGhA7nnG6yV
- jNWxIgXgWTHJEHNoC1AnFwkr0/7/tNTrgcYAc1P4Oqr0kikiLNqopIxcWfOgi2YFZ+QWox1WpE0
- NFeZ8INnT0GXHc/UDQZD38M+X6rbwIleMxpdHzTJXKYfu1KyZBfqf4qKXt8t2sxoc2Lz4qU1KWS
- 3n/OMzpr9PmXzPwyeKIjIfTLTHdCX3b5KGcG/5N+B29s+XAecxP2UcMDQinh9qjfuAVljheXuNW
- WDdeJecmd9LIfcSRk9oIypBcGJntJJXobO76ssob29fXt7t8woQs2KG5Z1ilm7HzvNGHIBVsva5
- tOqSLe8LfxIi/AHd52d3O4L59IQ3vp5UDJiEB9yghkHp/LLDRRPcjBdz9/FKhjHsibS16K1aJbZ
- VzFOuCjWXVDKoq26FxPUDEHoT0aJQ3PHZDmClEo/Y8dEFRYRAxDf+VUDonX4XTFm0+uDKPQDEp4
- bEHxv34I4HiVdy4HXsreZfP4Hlh6viOwzDQjH/cK5hTyFZCdeVJUyk6jr9vVAW8WUH2KVAzJpoA
- DK38Kq05lMHtpn3hwuAu+cBENqeqz1IHPLUY3Cb9vZ6AimE2eHHeBu8MN0ChFCwEpOe+Rzc4Ru4
- jr1T93LCpN/IrBQ==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28746.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28746.005
+X-TMASE-Result: 10--10.887600-10.000000
+X-TMASE-MatchedRID: oLtLGnXlbAEvKBNTYKG+pUrOO5m0+0gETJDl9FKHbrnQEElETurAJS2I
+ CLwE7H6Xjx5X3FdI4UAEzNy+qeySxJfPkHar3hvdlXePXNM4FjOBs03RHrzjMyIIO0VwKeOLr9Y
+ /9i+8T9Yd99HV0jpzz4UKVJyLQPFLtMT1y9P9VbJB9I5g6XEpi6scWEcqpe5LzBnz0ZuJSWdjGq
+ ZxQuvF5sIuTCoy+YItNOJYLkLWx//lRxm3A2wKuhRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7hE4h
+ WqTrQd8TqkeuGzRSKzvTU07Ctl6b0640xWoLTEmsBTJSD2iAW0=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] block_dev: Convert to new API
+Subject: [LTP] [PATCH] clnt_create: Determine the return value of
+ clnt_create()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,88 +100,476 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-U2lnbmVkLW9mZi1ieTogUmljYXJkbyBCLiBNYXJsaWVyZSA8cmJtQHN1c2UuY29tPgotLS0KdjEt
-PnYyOgotIEFkZGVkIGlmZGVmIGZvciBpbmNsdWRpbmcgZ2VuaGQuaCBpbiBvbGRlciBrZXJuZWxz
-Ci0gUmVtb3ZlZCB1bnVzZWQgcG9pbnRlcgotIEZpeGVkIGBtYWtlIGNoZWNrYCBsaW50ZXIgd2Fy
-bmluZ3MKLSBMaW5rIHRvIHYxOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjQxMDE4LWJs
-b2NrX2Rldi12MS0xLWYxZjk4ZGZlYmI2ZEBzdXNlLmNvbQp2MToKLSBUZXN0ZWQgYWdhaW5zdCB2
-Ni4xMQotLS0KIC4uLi9ibG9jay9ibG9ja19kZXZfa2VybmVsL2x0cF9ibG9ja19kZXYuYyAgICAg
-ICAgIHwgIDQgKy0KIC4uLi9ibG9jay9ibG9ja19kZXZfdXNlci9ibG9ja19kZXYuYyAgICAgICAg
-ICAgICAgIHwgNzcgKysrKysrKysrLS0tLS0tLS0tLS0tLQogMiBmaWxlcyBjaGFuZ2VkLCAzNCBp
-bnNlcnRpb25zKCspLCA0NyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
-bmVsL2RldmljZS1kcml2ZXJzL2Jsb2NrL2Jsb2NrX2Rldl9rZXJuZWwvbHRwX2Jsb2NrX2Rldi5j
-IGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9ibG9jay9ibG9ja19kZXZfa2VybmVs
-L2x0cF9ibG9ja19kZXYuYwppbmRleCAxNzA0N2MwZDVhZTNmNjU1NmYzZmE0YjBlYjJhMTdhODZl
-NWYwNWE2Li41Y2UxNDVjOWY4N2QxYzhhMTNjMzI1MDU1OTU5OTAxNDVkMjRhOTI4IDEwMDY0NAot
-LS0gYS90ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2ZXJzL2Jsb2NrL2Jsb2NrX2Rldl9rZXJu
-ZWwvbHRwX2Jsb2NrX2Rldi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMv
-YmxvY2svYmxvY2tfZGV2X2tlcm5lbC9sdHBfYmxvY2tfZGV2LmMKQEAgLTEyLDggKzEyLDEwIEBA
-CiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+CiAj
-aW5jbHVkZSA8bGludXgvZnMuaD4KLSNpbmNsdWRlIDxsaW51eC9nZW5oZC5oPgogI2luY2x1ZGUg
-PGxpbnV4L2Jsa2Rldi5oPgorI2lmbmRlZiBESVNLX05BTUVfTEVOCisjaW5jbHVkZSA8bGludXgv
-Z2VuaGQuaD4KKyNlbmRpZgogCiBNT0RVTEVfQVVUSE9SKCJNw6FydG9uIE7DqW1ldGggPG5tMTI3
-QGZyZWVtYWlsLmh1PiIpOwogTU9EVUxFX0FVVEhPUigiQ29weXJpZ2h0IChjKSAyMDEzIE9yYWNs
-ZSBhbmQvb3IgaXRzIGFmZmlsaWF0ZXMiKTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-ZGV2aWNlLWRyaXZlcnMvYmxvY2svYmxvY2tfZGV2X3VzZXIvYmxvY2tfZGV2LmMgYi90ZXN0Y2Fz
-ZXMva2VybmVsL2RldmljZS1kcml2ZXJzL2Jsb2NrL2Jsb2NrX2Rldl91c2VyL2Jsb2NrX2Rldi5j
-CmluZGV4IDU0M2MzNjc5NWNjM2IyNzc2YzU5MTQxMDIzZTAzZmYyYzU4YmQzNmEuLjlmODdhODhj
-OWY5MTUwZWQxNzcxNjE2ODIxZDI2ZTQ5ODJjNTU3MDggMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvZGV2aWNlLWRyaXZlcnMvYmxvY2svYmxvY2tfZGV2X3VzZXIvYmxvY2tfZGV2LmMKKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9ibG9jay9ibG9ja19kZXZfdXNlci9i
-bG9ja19kZXYuYwpAQCAtMSwzICsxLDQgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wLW9yLWxhdGVyCiAvKgogICogQ29weXJpZ2h0IChjKSAyMDEzIE9yYWNsZSBhbmQvb3Ig
-aXRzIGFmZmlsaWF0ZXMuIEFsbCBSaWdodHMgUmVzZXJ2ZWQuCiAgKgpAQCAtMjYsNzQgKzI3LDU4
-IEBACiAjaW5jbHVkZSA8dW5pc3RkLmg+CiAjaW5jbHVkZSA8c3RyaW5nLmg+CiAKLSNpbmNsdWRl
-ICJ0ZXN0LmgiCi0jaW5jbHVkZSAic2FmZV9tYWNyb3MuaCIKLSNpbmNsdWRlICJvbGRfbW9kdWxl
-LmgiCisjaW5jbHVkZSAidHN0X3Rlc3QuaCIKKyNpbmNsdWRlICJ0c3RfbW9kdWxlLmgiCiAKLWNo
-YXIgKlRDSUQgPSAiYmxvY2tfZGV2IjsKLWludCBUU1RfVE9UQUwgPSA5OworI2RlZmluZSBNT0RV
-TEVfTkFNRSAibHRwX2Jsb2NrX2RldiIKKyNkZWZpbmUgTU9EVUxFX05BTUVfS08JTU9EVUxFX05B
-TUUgIi5rbyIKIAotc3RhdGljIGNvbnN0IGNoYXIgbW9kdWxlX25hbWVbXQk9ICJsdHBfYmxvY2tf
-ZGV2LmtvIjsKIHN0YXRpYyBjb25zdCBjaGFyIGRldl9yZXN1bHRbXQk9ICIvc3lzL2RldmljZXMv
-bHRwX2Jsb2NrX2Rldi9yZXN1bHQiOwogc3RhdGljIGNvbnN0IGNoYXIgZGV2X3RjYXNlW10JPSAi
-L3N5cy9kZXZpY2VzL2x0cF9ibG9ja19kZXYvdGNhc2UiOwotc3RhdGljIGludCBtb2R1bGVfbG9h
-ZGVkOwogCi1zdGF0aWMgaW50IHJ1bl9hbGxfdGVzdGNhc2VzOwotc3RhdGljIGNvbnN0IG9wdGlv
-bl90IG9wdGlvbnNbXSA9IHsKLQl7ImEiLCAmcnVuX2FsbF90ZXN0Y2FzZXMsIE5VTEx9LAorc3Rh
-dGljIGludCBtb2R1bGVfbG9hZGVkOworc3RhdGljIGNoYXIgKnJ1bl9hbGxfdGVzdGNhc2VzOwor
-c3RhdGljIHN0cnVjdCB0c3Rfb3B0aW9uIG9wdGlvbnNbXSA9IHsKKwl7ImEiLCAgJnJ1bl9hbGxf
-dGVzdGNhc2VzLCAiLWFcdFJ1biBhbGwgdGVzdC1jYXNlcyAoY2FuIGNyYXNoIHRoZSBrZXJuZWwp
-In0sCiAJe05VTEwsIE5VTEwsIE5VTEx9CiB9OwogCiBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQp
-CiB7CiAJaWYgKG1vZHVsZV9sb2FkZWQpCi0JCXRzdF9tb2R1bGVfdW5sb2FkKE5VTEwsIG1vZHVs
-ZV9uYW1lKTsKLX0KLQotc3RhdGljIHZvaWQgaGVscCh2b2lkKQotewotCXByaW50ZigiICAtYSAg
-ICAgIFJ1biBhbGwgdGVzdC1jYXNlcyAoY2FuIGNyYXNoIHRoZSBrZXJuZWwpXG4iKTsKLX0KLQot
-dm9pZCBzZXR1cChpbnQgYXJnYywgY2hhciAqYXJndltdKQotewotCXRzdF9wYXJzZV9vcHRzKGFy
-Z2MsIGFyZ3YsIG9wdGlvbnMsIGhlbHApOwotCi0JdHN0X3JlcXVpcmVfcm9vdCgpOwotCi0JdHN0
-X3NpZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7CisJCXRzdF9tb2R1bGVfdW5sb2FkKE1P
-RFVMRV9OQU1FX0tPKTsKIH0KIAotc3RhdGljIHZvaWQgdGVzdF9ydW4odm9pZCkKK3N0YXRpYyB2
-b2lkIHJ1bih1bnNpZ25lZCBpbnQgbikKIHsKLQlpbnQgb2ZmID0gMDsKIAkvKgogCSAqIHRlc3Qt
-Y2FzZXMgIzggYW5kICM5IGNhbiBjcmFzaCB0aGUga2VybmVsLgogCSAqIFdlIGhhdmUgdG8gd2Fp
-dCBmb3Iga2VybmVsIGZpeCB3aGVyZSByZWdpc3Rlcl9ibGtkZXYoKSAmCiAJICogdW5yZWdpc3Rl
-cl9ibGtkZXYoKSBjaGVja3MgdGhlIGlucHV0IGRldmljZSBuYW1lIHBhcmFtZXRlcgogCSAqIGFn
-YWluc3QgTlVMTCBwb2ludGVyLgogCSAqLwotCWlmICghcnVuX2FsbF90ZXN0Y2FzZXMpCi0JCW9m
-ZiA9IDI7Ci0KLQl0c3RfbW9kdWxlX2xvYWQoY2xlYW51cCwgbW9kdWxlX25hbWUsIE5VTEwpOwot
-CW1vZHVsZV9sb2FkZWQgPSAxOwotCi0JaW50IGksIHBhc3MgPSAwOwotCWZvciAoaSA9IDA7IGkg
-PCBUU1RfVE9UQUwgLSBvZmY7ICsraSkgewotCQlTQUZFX0ZJTEVfUFJJTlRGKGNsZWFudXAsIGRl
-dl90Y2FzZSwgIiVkIiwgaSArIDEpOwotCQlTQUZFX0ZJTEVfU0NBTkYoY2xlYW51cCwgZGV2X3Jl
-c3VsdCwgIiVkIiwgJnBhc3MpOwotCQl0c3RfcmVzbSgocGFzcykgPyBUUEFTUyA6IFRGQUlMLCAi
-VGVzdC1jYXNlICclZCciLCBpICsgMSk7CisJbisrOworCWlmICghcnVuX2FsbF90ZXN0Y2FzZXMg
-JiYgKG4gPT0gOCB8fCBuID09IDkpKSB7CisJCXRzdF9yZXMoVENPTkYsICJTa2lwcGVkIG4gPSAl
-ZCIsIG4pOworCQlyZXR1cm47CiAJfQotfQogCi1pbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJn
-dltdKQotewotCXNldHVwKGFyZ2MsIGFyZ3YpOwotCi0JdGVzdF9ydW4oKTsKKwlpZiAoIW1vZHVs
-ZV9sb2FkZWQpIHsKKwkJdHN0X21vZHVsZV9sb2FkKE1PRFVMRV9OQU1FX0tPLCBOVUxMKTsKKwkJ
-bW9kdWxlX2xvYWRlZCA9IDE7CisJfQogCi0JY2xlYW51cCgpOworCWludCBwYXNzID0gMDsKIAot
-CXRzdF9leGl0KCk7CisJU0FGRV9GSUxFX1BSSU5URihkZXZfdGNhc2UsICIlZCIsIG4pOworCVNB
-RkVfRklMRV9TQ0FORihkZXZfcmVzdWx0LCAiJWQiLCAmcGFzcyk7CisJdHN0X3JlcygocGFzcykg
-PyBUUEFTUyA6IFRGQUlMLCAiVGVzdC1jYXNlICclZCciLCBuKTsKIH0KKworc3RhdGljIHN0cnVj
-dCB0c3RfdGVzdCB0ZXN0ID0geworCS5uZWVkc19yb290ID0gMSwKKwkuY2xlYW51cCA9IGNsZWFu
-dXAsCisJLnRlc3QgPSBydW4sCisJLnRjbnQgPSA5LAorCS5vcHRpb25zID0gb3B0aW9ucywKK307
-CgotLS0KYmFzZS1jb21taXQ6IDQ3YWZmNGRlY2M4MWFjODM3ZmQ3NDUyNzhkZWY2ODgzZmMyZjE5
-N2IKY2hhbmdlLWlkOiAyMDI0MTAxOC1ibG9ja19kZXYtYzMyMjE1MmUwM2FkCgpCZXN0IHJlZ2Fy
-ZHMsCi0tIApSaWNhcmRvIEIuIE1hcmxpZXJlIDxyYm1Ac3VzZS5jb20+CgoKLS0gCk1haWxpbmcg
-bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Determine the return value of clnt_create() to avoid segmentation fault
+when executing clnt_destroy() when the return value of create is NULL.
+
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+---
+ .../rpc/rpc_createdestroy_clnt_create/rpc_clnt_create.c    | 7 +++++++
+ .../rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c | 6 ++++++
+ .../rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy.c  | 7 +++++++
+ .../rpc_clnt_destroy_stress.c                              | 5 +++++
+ .../rpc/rpc_err_clnt_pcreateerror/rpc_clnt_pcreateerror.c  | 7 +++++++
+ .../rpc_suite/rpc/rpc_err_clnt_perrno/rpc_clnt_perrno.c    | 7 +++++++
+ .../rpc_suite/rpc/rpc_err_clnt_perror/rpc_clnt_perror.c    | 7 +++++++
+ .../rpc_err_clnt_spcreateerror/rpc_clnt_spcreateerror.c    | 7 +++++++
+ .../rpc_suite/rpc/rpc_err_clnt_sperrno/rpc_clnt_sperrno.c  | 7 +++++++
+ .../rpc_suite/rpc/rpc_err_clnt_sperror/rpc_clnt_sperror.c  | 7 +++++++
+ .../rpc_suite/rpc/rpc_err_svcerr_auth/rpc_svcerr_auth.c    | 7 +++++++
+ .../rpc/rpc_err_svcerr_noproc/rpc_svcerr_noproc.c          | 7 +++++++
+ .../rpc/rpc_err_svcerr_progvers/rpc_svcerr_progvers.c      | 7 +++++++
+ .../rpc/rpc_err_svcerr_systemerr/rpc_svcerr_systemerr.c    | 7 +++++++
+ .../rpc/rpc_err_svcerr_weakauth/rpc_svcerr_weakauth.c      | 7 +++++++
+ .../rpc/rpc_stdcall_clnt_control/rpc_clnt_control.c        | 7 +++++++
+ .../rpc_stdcall_clnt_control/rpc_clnt_control_dataint.c    | 7 +++++++
+ .../rpc/rpc_stdcall_clnt_geterr/rpc_clnt_geterr.c          | 7 +++++++
+ .../tirpc_err_clnt_pcreateerror/tirpc_clnt_pcreateerror.c  | 7 +++++++
+ .../tirpc/tirpc_err_clnt_perrno/tirpc_clnt_perrno.c        | 7 +++++++
+ .../tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror.c        | 7 +++++++
+ .../tirpc_err_clnt_perror/tirpc_clnt_perror_complex.c      | 7 +++++++
+ .../tirpc/tirpc_toplevel_clnt_create/tirpc_clnt_create.c   | 7 +++++++
+ .../tirpc_clnt_create_timed.c                              | 7 +++++++
+ 24 files changed, 165 insertions(+)
+
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create.c
+index 98793c640..8578d943c 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create.c
+@@ -52,6 +52,13 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode == 1) {
+ 		printf("CLIENT : %p\n", clnt);
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c
+index 58f55d71e..c5780d629 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c
+@@ -59,6 +59,12 @@ int main(int argn, char *argc[])
+ 
+ 		if (clnt != NULL)
+ 			nbOk++;
++		else {
++			clnt_pcreateerror("err");
++			printf("%d\n", rpc_createerr.cf_stat);
++
++			return 1;
++		}
+ 	}
+ 
+ 	if (run_mode == 1) {
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy.c
+index f10f15d9b..85c0d5fe6 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy.c
+@@ -48,6 +48,13 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call destroy macro
+ 	clnt_destroy(clnt);
+ 
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy_stress.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy_stress.c
+index 9fef30f6b..ba5324c18 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy_stress.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_destroy/rpc_clnt_destroy_stress.c
+@@ -56,6 +56,11 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	for (i = 0; i < nbCall; i++) {
+ 		clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
++		if (clnt == NULL) {
++			clnt_pcreateerror("err");
++			printf("%d\n", rpc_createerr.cf_stat);
++			return 1;
++		}
+ 		clnt_destroy(clnt);
+ 		nbOk++;
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_pcreateerror/rpc_clnt_pcreateerror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_pcreateerror/rpc_clnt_pcreateerror.c
+index 0aaa50c27..03756cf7e 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_pcreateerror/rpc_clnt_pcreateerror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_pcreateerror/rpc_clnt_pcreateerror.c
+@@ -49,6 +49,13 @@ int main(int argn, char *argc[])
+ 
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	clnt_pcreateerror("#SUCCESS");
+ 
+ 	//If we are here, test has passed
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perrno/rpc_clnt_perrno.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perrno/rpc_clnt_perrno.c
+index 489c6c8b6..a881a4a09 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perrno/rpc_clnt_perrno.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perrno/rpc_clnt_perrno.c
+@@ -65,6 +65,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perror/rpc_clnt_perror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perror/rpc_clnt_perror.c
+index 74c6201d3..ddf2ec441 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perror/rpc_clnt_perror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_perror/rpc_clnt_perror.c
+@@ -65,6 +65,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_void, NULL,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_spcreateerror/rpc_clnt_spcreateerror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_spcreateerror/rpc_clnt_spcreateerror.c
+index 65e68dae6..a85e87787 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_spcreateerror/rpc_clnt_spcreateerror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_spcreateerror/rpc_clnt_spcreateerror.c
+@@ -50,6 +50,13 @@ int main(int argn, char *argc[])
+ 
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	rslt = clnt_spcreateerror("#SUCCESS");
+ 
+ 	//If we are here, test has passed
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperrno/rpc_clnt_sperrno.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperrno/rpc_clnt_sperrno.c
+index 1e74c39a3..728f35a97 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperrno/rpc_clnt_sperrno.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperrno/rpc_clnt_sperrno.c
+@@ -66,6 +66,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperror/rpc_clnt_sperror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperror/rpc_clnt_sperror.c
+index fc10f9e04..de4734579 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperror/rpc_clnt_sperror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_clnt_sperror/rpc_clnt_sperror.c
+@@ -66,6 +66,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_void, NULL,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_auth/rpc_svcerr_auth.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_auth/rpc_svcerr_auth.c
+index 50232a91a..34b1b2bf9 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_auth/rpc_svcerr_auth.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_auth/rpc_svcerr_auth.c
+@@ -62,6 +62,13 @@ int main(int argn, char *argc[])
+ 
+ 	client = clnt_create(argc[1], progNum, VERSNUM, nettype);	/* Call AuthErr RP */
+ 
++	if (client == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	cs = clnt_call(client, PROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd, tv);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_noproc/rpc_svcerr_noproc.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_noproc/rpc_svcerr_noproc.c
+index 3f9ea9142..4483fb6ab 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_noproc/rpc_svcerr_noproc.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_noproc/rpc_svcerr_noproc.c
+@@ -65,6 +65,13 @@ int main(int argn, char *argc[])
+ 
+ 	client = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (client == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	cs = clnt_call((CLIENT *) client, PROCNUM, (xdrproc_t) xdr_int, (char *)&var_snd,	// xdr_in
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_progvers/rpc_svcerr_progvers.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_progvers/rpc_svcerr_progvers.c
+index 8fa54d9f0..9dfc65431 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_progvers/rpc_svcerr_progvers.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_progvers/rpc_svcerr_progvers.c
+@@ -62,6 +62,13 @@ int main(int argn, char *argc[])
+ 
+ 	client = clnt_create(argc[1], progNum, VERSNUM, nettype);	/* Call wrong version RP */
+ 
++	if (client == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	cs = clnt_call(client, PROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd, tv);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_systemerr/rpc_svcerr_systemerr.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_systemerr/rpc_svcerr_systemerr.c
+index 2a45f5055..17546fe0a 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_systemerr/rpc_svcerr_systemerr.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_systemerr/rpc_svcerr_systemerr.c
+@@ -62,6 +62,13 @@ int main(int argn, char *argc[])
+ 
+ 	client = clnt_create(argc[1], progNum, VERSNUM, nettype);	/* Call SysErr RP */
+ 
++	if (client == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	cs = clnt_call(client, PROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd, tv);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_weakauth/rpc_svcerr_weakauth.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_weakauth/rpc_svcerr_weakauth.c
+index 563b11a36..a9dd71b5d 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_weakauth/rpc_svcerr_weakauth.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_err_svcerr_weakauth/rpc_svcerr_weakauth.c
+@@ -62,6 +62,13 @@ int main(int argn, char *argc[])
+ 
+ 	client = clnt_create(argc[1], progNum, VERSNUM, nettype);	/* Call WeakAuthErr RP */
+ 
++	if (client == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	cs = clnt_call(client, PROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd,
+ 		       (xdrproc_t) xdr_int, (char *)&var_snd, tv);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control.c
+index 0b37585ec..91d087141 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control.c
+@@ -53,6 +53,13 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode == 1) {
+ 		printf("CLIENT : %p\n", clnt);
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control_dataint.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control_dataint.c
+index 3616d652c..10de96e10 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control_dataint.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control_dataint.c
+@@ -54,6 +54,13 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode) {
+ 		printf("CLIENT : %p\n", clnt);
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_geterr/rpc_clnt_geterr.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_geterr/rpc_clnt_geterr.c
+index 9bbce26af..d0505e623 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_geterr/rpc_clnt_geterr.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_geterr/rpc_clnt_geterr.c
+@@ -53,6 +53,13 @@ int main(int argn, char *argc[])
+ 	//First of all, create a client
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, proto);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode == 1) {
+ 		printf("CLIENT : %p\n", clnt);
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_pcreateerror/tirpc_clnt_pcreateerror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_pcreateerror/tirpc_clnt_pcreateerror.c
+index 029d158ff..81bf37e36 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_pcreateerror/tirpc_clnt_pcreateerror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_pcreateerror/tirpc_clnt_pcreateerror.c
+@@ -50,6 +50,13 @@ int main(int argn, char *argc[])
+ 
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	clnt_pcreateerror("#SUCCESS");
+ 
+ 	//If we are here, test has passed
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perrno/tirpc_clnt_perrno.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perrno/tirpc_clnt_perrno.c
+index a1b16416a..c3ec08887 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perrno/tirpc_clnt_perrno.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perrno/tirpc_clnt_perrno.c
+@@ -65,6 +65,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_void, NULL,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror.c
+index 445ecfd32..8a8cdf238 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror.c
+@@ -65,6 +65,13 @@ int main(int argn, char *argc[])
+ 	    //First of all, create client using top level API
+ 	    clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Then call remote procedure
+ 	rslt = clnt_call((CLIENT *) clnt, PROCNUM, (xdrproc_t) xdr_void, NULL,	// xdr_in
+ 			 (xdrproc_t) xdr_int, (char *)&recVar,	// xdr_out
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror_complex.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror_complex.c
+index e363e00b9..a97bbfa17 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror_complex.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_err_clnt_perror/tirpc_clnt_perror_complex.c
+@@ -64,6 +64,13 @@ int main(int argn, char *argc[])
+ 	total_timeout.tv_usec = 1;
+ 	/**/ clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	//Multiple test case
+ 	rslt = rpc_call(argc[1], progNum, VERSNUM, PROCNUM,
+ 			(xdrproc_t) xdr_int, (char *)&sndVar,
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create/tirpc_clnt_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create/tirpc_clnt_create.c
+index eaca14747..6a9aae6c0 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create/tirpc_clnt_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create/tirpc_clnt_create.c
+@@ -57,6 +57,13 @@ int main(int argn, char *argc[])
+ 	}
+ 	clnt = clnt_create(argc[1], progNum, VERSNUM, nettype);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode == 1) {
+ 		printf("Client after creation : %p\n", clnt);
+ 	}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed.c
+index 43df4d95f..8723ca8c8 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed.c
+@@ -62,6 +62,13 @@ int main(int argn, char *argc[])
+ 
+ 	clnt = clnt_create_timed(argc[1], progNum, VERSNUM, nettype, &tv);
+ 
++	if (clnt == NULL) {
++		clnt_pcreateerror("err");
++		printf("%d\n", rpc_createerr.cf_stat);
++
++		return 1;
++	}
++
+ 	if (run_mode == 1) {
+ 		printf("Client after creation : %p\n", clnt);
+ 	}
+-- 
+2.42.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
