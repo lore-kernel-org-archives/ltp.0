@@ -4,104 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EFB9D1CDAB
-	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 07:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFDE3D1CDCB
+	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 09:45:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 59EB73C6F75
-	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 09:50:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id DF7FB3C6FA5
+	for <ltp@archiver.kernel.org>; Tue, 22 Oct 2024 11:45:25 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 453F63C6EA3
- for <ltp@lists.linux.it>; Tue, 22 Oct 2024 09:50:22 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id E50563C20C3
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 11:45:10 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4A9E31A0153C
- for <ltp@lists.linux.it>; Tue, 22 Oct 2024 09:50:20 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ADCE5141B2CD
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 11:45:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1729590308;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=nNL+4XzEYb364wfZ29ypZ/mfKwKxypkxC2RzGHHguUA=;
+ b=YoaBP7Y4g9qVG1KauMIKXpLEtVptJ4J7eiNENrA69TDsz09Pk4ySgbbATL315Jwr+VV4yK
+ 24bfAyhAjmKKL2QiPJnxWro8c9DCtkd20QoTWsB/PAvlnKR3YKxPa7cqd2J739mgQKeQDM
+ pJunPJ+fiRqWbQkz4EwlJBaYJmD/yAg=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-4bd5adAeO_a63fTNkwJfSA-1; Tue,
+ 22 Oct 2024 05:45:04 -0400
+X-MC-Unique: 4bd5adAeO_a63fTNkwJfSA-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 36BA01FD0E;
- Tue, 22 Oct 2024 07:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1729583418;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G+PQkMpPloFxa5xTgQwqCThmzs7Uwi0XZ4bPLJYf4B8=;
- b=rEfNlazAk031BhOUesUrFG9xLgyMm036XAyhrSQFie1sgMIpj3A+ykAio8Sjmq94TspV7X
- /xlKcF365ERpsYzr46fzBi1CpHP+5OtZNg87l5q9VbpJ+fdJN9/3Zs3E0i19ohT5b7dL+8
- seq4z3MXJ8I4TyyLw2nv/v1MhQ05cM8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1729583418;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G+PQkMpPloFxa5xTgQwqCThmzs7Uwi0XZ4bPLJYf4B8=;
- b=YOoyRhGVPMNBm24b0oVaVhuXZh0HSmCPHt400wIRgpC5jeSfYLduj03PZZSyJdrLBO4N+9
- N77f2MQ3bbwGkFDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1729583417;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G+PQkMpPloFxa5xTgQwqCThmzs7Uwi0XZ4bPLJYf4B8=;
- b=vdc8MQnT+sNJOGj11xmZu0YLX3gJBrOKy9a7cdW+zz0cnhJ9vIlMzDHbEDg31k+2YbU7kp
- B2YCiZA8/UCwtqLzzv5aNwTjbm26N7oG3CEyBPOamcM0ZmkakqjD4aaOMkW2LaVQuqAEuh
- bUwqjiIja8TJY39xeeBeUn+wS2aWAko=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1729583417;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=G+PQkMpPloFxa5xTgQwqCThmzs7Uwi0XZ4bPLJYf4B8=;
- b=FB9BxG+DIfsUdX4bnzH2yzg6RQ6TlMoScwen+jCIUujqwh1SG3DXZdc0XpO937zsex5Lt8
- 8y2OdG76NmtvuVBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 587B413AC9;
- Tue, 22 Oct 2024 07:50:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id J+WkFDhZF2eibgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Oct 2024 07:50:16 +0000
-Date: Tue, 22 Oct 2024 09:50:06 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Message-ID: <20241022075006.GA503931@pevik>
-References: <20241022061434.2610583-1-maxj.fnst@fujitsu.com>
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 7B5BE19560AD
+ for <ltp@lists.linux.it>; Tue, 22 Oct 2024 09:45:03 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.224.11])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 4240B19560AE; Tue, 22 Oct 2024 09:45:01 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Tue, 22 Oct 2024 11:44:56 +0200
+Message-ID: <36c63ee52ce1e7ab1f6ce90bc6a4c58272130bee.1729590080.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241022061434.2610583-1-maxj.fnst@fujitsu.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clnt_create: Determine the return value of
- clnt_create()
+Subject: [LTP] [PATCH] read_all: limit sysfs tpm entries to single worker
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,54 +75,112 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: chuck.lever@oracle.com, ltp@lists.linux.it
+Cc: liwan@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ma,
+Repeated reads from TPM entries (tcg_operations, vs_operations,
+caps,..) are causing big delays with 3 or more repetitions,
+which has signs of some kind of rate-limitting on firmware side.
 
-Thanks a lot, merged!
+This patch introduces a new kind of blacklist, which doesn't
+completely skips the entry, but assigns it to only single
+worker.
 
-BTW I see some of the tests already had error control and they just printed 1
-instead of rpc_createerr.cf_stat (rpc_clnt_call_dataint.c). Some other report
-5 (e.g. rpc_clnt_call_performance.c). 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/fs/read_all/read_all.c | 49 +++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-> Determine the return value of clnt_create() to avoid segmentation fault
-> when executing clnt_destroy() when the return value of create is NULL.
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index 266678ea7794..9c58b5e85bbf 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -94,11 +94,17 @@ static int worker_timeout;
+ static int timeout_warnings_left = 15;
+ 
+ static char *blacklist[] = {
+-	NULL, /* reserved for -e parameter */
++	"/reserved/", /* reserved for -e parameter */
+ 	"/sys/kernel/debug/*",
+ 	"/sys/devices/platform/*/eeprom",
+ 	"/sys/devices/platform/*/nvmem",
+ 	"/sys/*/cpu??*(?)/*",	/* cpu* entries with 2 or more digits */
++	NULL
++};
++
++static char *ratelimit_list[] = {
++	"/sys/devices/*/tpm*",
++	NULL,
+ };
+ 
+ static long long epoch;
+@@ -193,19 +199,43 @@ static void sanitize_str(char *buf, ssize_t count)
+ 		strcpy(buf + MAX_DISPLAY, "...");
+ }
+ 
+-static int is_blacklisted(const char *path)
++static int is_onlist(const char *path, char *list[])
+ {
+-	unsigned int i;
++	unsigned int i = 0;
++
++	while (1) {
++		const char *pattern = list[i++];
+ 
+-	for (i = 0; i < ARRAY_SIZE(blacklist); i++) {
+-		if (blacklist[i] && !fnmatch(blacklist[i], path, FNM_EXTMATCH)) {
+-			if (verbose)
+-				tst_res(TINFO, "Ignoring %s", path);
++		if (!pattern)
++			break;
++		if (!fnmatch(pattern, path, FNM_EXTMATCH))
+ 			return 1;
+-		}
+ 	}
+ 
+ 	return 0;
++
++}
++
++static int is_blacklisted(const char *path)
++{
++	int ret;
++
++	ret = is_onlist(path, blacklist);
++	if (ret && verbose)
++		tst_res(TINFO, "Ignoring %s", path);
++
++	return ret;
++}
++
++static int is_ratelimitted(const char *path)
++{
++	int ret;
++
++	ret = is_onlist(path, ratelimit_list);
++	if (ret && verbose)
++		tst_res(TINFO, "Limiting to single worker %s", path);
++
++	return ret;
+ }
+ 
+ static void worker_heartbeat(const int worker)
+@@ -503,6 +533,9 @@ static int sched_work(const int first_worker,
+ 	int min_ttl = worker_timeout, sleep_time = 1;
+ 	int pushed, workers_pushed = 0;
+ 
++	if (is_ratelimitted(path))
++		repetitions = 1;
++
+ 	for (i = 0, j = first_worker; i < repetitions; j++) {
+ 		if (j >= worker_count)
+ 			j = 0;
+-- 
+2.43.0
 
-...
-> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_clnt_create/rpc_clnt_create_stress.c
-> @@ -59,6 +59,12 @@ int main(int argn, char *argc[])
-
->  		if (clnt != NULL)
->  			nbOk++;
-> +		else {
-> +			clnt_pcreateerror("err");
-> +			printf("%d\n", rpc_createerr.cf_stat);
-> +
-> +			return 1;
-> +		}
->  	}
-
-I reversed the condition of the check (more readable code):
-
-		if (clnt == NULL) {
-			clnt_pcreateerror("err");
-			printf("%d\n", rpc_createerr.cf_stat);
-
-			return 1;
-		}
-
-		nbOk++;
-
-The testsuite contains a lot of duplicity and useless code. It could be
-rewritten to use simple macro to remove most of the redundancy.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
