@@ -4,101 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5D63D149E7
-	for <ltp@archiver.kernel.org>; Fri, 25 Oct 2024 19:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1729885063; h=date :
- mime-version : message-id : to : cc : subject : list-id :
- list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=T2LFLMOS4u/52+WeNKGzzobIs1Ek2i8ea0Vs1nrCAEo=;
- b=kMSJUx6ocH5Ls3MtdeuEaZZ6cLDAooFDaVU7dfqroZU9He70YzkuU7XqFVPTh9J3lLspi
- FmBQ7e7fsvHH0OatpE8yfavXWXfQu2bCpzzlN4iZ8iC9qqoyC0MmU+Rda5TkluVXjSOVNOf
- uXiG2DQFtTaWUuiwVn67lDG+F0yGhDk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05C56D149F3
+	for <ltp@archiver.kernel.org>; Fri, 25 Oct 2024 20:49:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 616593C7383
-	for <ltp@archiver.kernel.org>; Fri, 25 Oct 2024 21:37:43 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C7AFD3C737D
+	for <ltp@archiver.kernel.org>; Fri, 25 Oct 2024 22:49:53 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6111C3C7100
- for <ltp@lists.linux.it>; Fri, 25 Oct 2024 21:37:21 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id F22393C0924
+ for <ltp@lists.linux.it>; Fri, 25 Oct 2024 22:49:36 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=none (no SPF record)
+ smtp.mailfrom=linux.vnet.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=samir@linux.vnet.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B7D61C00820
- for <ltp@lists.linux.it>; Fri, 25 Oct 2024 21:37:20 +0200 (CEST)
-Received: by mail-lf1-x130.google.com with SMTP id
- 2adb3069b0e04-539e13375d3so2931603e87.3
- for <ltp@lists.linux.it>; Fri, 25 Oct 2024 12:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1729885040; x=1730489840; darn=lists.linux.it;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:from:to:cc:subject:date:message-id:reply-to;
- bh=e1jNodPhg2kAUi3shTtNBo7Ah+VAeX4FG2TUqkAbU9k=;
- b=DGZiO0K5ff11/OpFd+TjIfA0dp7y/qnAbMgyUSkgrWiu0Kv9/9IM7Lt7qbhu6wsjnv
- asWFVDRkNr/Cj5EvuffV+nrSzeD0KGYoMu3e5hmRaNH49R/cD6hAREQHJmX9tXz7uiY9
- 0G+O7rRvC13lIFNnQYdFbqlaN2RYYgJNKxrI9Oop51oSUZyHPNSDND4V8NXCcKU6bPJk
- Wie6IWn9vv35b2kRzN+0xA9TG/2a+euQIyeKzHtJMoR4LFnKdcbEiYWeF5qP6sZEl/3S
- /IRAr0+MBEDaJwwGBHPQXQ5H9ej14Uj/UuZ3xXFw8HYkWFfH5hT5Depy4C8N5W773+Ag
- pjSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1729885040; x=1730489840;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=e1jNodPhg2kAUi3shTtNBo7Ah+VAeX4FG2TUqkAbU9k=;
- b=P1sIXbGNKEq3QtGkKS1pucFNBCwQQHonsUgGO+ZGs5ZSCWrxxuETBftMFTAVLBVU1+
- MU+Ooe0rt8EeI54nlrXEDzhaVDRycliBB99PTewq5ullZCLDvfarhqKJ2GLRkRPBdkVi
- YPnRNmHZ2cl4nfrvdiIpgiC2VJ1En6H0cZvtDmQ54vMNmHE77Z411XxXoL2e8FE0vblp
- LPVbCGLqphzq2kiiSnx9TxcsMErRMjmvRfvhqJ2p9y7qA//dZ+XesdhdLgqoJpJa6Iek
- i8czxkoz4Flfsdj/QV4gl1M15LITaNSk28bE2Fny0yx7hUvN/wTBLAKrf+7QMyzAW545
- OXMQ==
-X-Gm-Message-State: AOJu0Yzy9drWvzKtkHZ33XKt/5iA6GU+35wxfIcyda80rLRLny17MTTG
- om3N+jipAhfia69GlYd7wtNmHUmmx2DD1hB1NiR1+eJ1E2Av04Q6rWvH9Ol8R1NwXFoaJ+8KiPF
- T
-X-Google-Smtp-Source: AGHT+IHt08hJ6o551j+yOUpM+HFEoIbHIdDRfJ8MCVsCz2IKZrkM1pFWIfxFL/i7/0Q2t0Ho8C1mOQ==
-X-Received: by 2002:a05:6512:b8d:b0:539:f7c1:5feb with SMTP id
- 2adb3069b0e04-53b34a18f19mr165817e87.39.1729885039692; 
- Fri, 25 Oct 2024 12:37:19 -0700 (PDT)
-Received: from localhost ([179.228.213.26]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-210bbf4418esm12889905ad.15.2024.10.25.12.37.18
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Oct 2024 12:37:19 -0700 (PDT)
-Date: Fri, 25 Oct 2024 16:37:14 -0300
-MIME-Version: 1.0
-Message-Id: <20241025-convert_mmap14-v1-1-6ba672485028@suse.com>
-X-B4-Tracking: v=1; b=H4sIAGnzG2cC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxNDAyNT3eT8vLLUopL43NzEAkMTXUvjJINEIxNzcxPDVCWgpoKi1LTMCrC
- B0bG1tQBkdw5TYAAAAA==
-X-Change-ID: 20241025-convert_mmap14-93b0a247741e
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 520226068E4
+ for <ltp@lists.linux.it>; Fri, 25 Oct 2024 22:49:34 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49PDJpxX026337;
+ Fri, 25 Oct 2024 20:49:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=hzPtuoTj5XjLifn1VyWjf+L84VkwMIw6c/b7xDyEN
+ R0=; b=pwVbyz6MyJzW2P/4t9rrVZgwWwaLLGbknK4w80+WJ5l4OB3t3UqzgAqb2
+ OIpTbzhaNkUGdQOo7YSl79NkIm1hmR/CAwphwxF+n5/LC62MGeDDPqUEfFBEC1U6
+ 8PTWJ/UEsHEyS8E+u0zNGkZdKNZ2gvybq1/7k7as3P8g/etKK88EIbalyMNz6MtY
+ pwTpwRDk5Iap4oFkxjhavtmByNa2Z4W/JHpFK7n+INh6YDsAOl45Ev0gshgYNJKS
+ YJIWx4ohcopP1bOhyl1wrIPB1P14yK6XrJzI9e8X9j1m58SS86f1hHh5AwhKFqRj
+ jiQk4aMMzKm3IXRpg/qoPzLgQDryQ==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42emaf8a1q-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 25 Oct 2024 20:49:32 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49PHpvic008754;
+ Fri, 25 Oct 2024 20:49:32 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 42emkayppa-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 25 Oct 2024 20:49:32 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 49PKnUMJ26411448
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 25 Oct 2024 20:49:30 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 57D9B2004B;
+ Fri, 25 Oct 2024 20:49:30 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 90F6E20040;
+ Fri, 25 Oct 2024 20:49:29 +0000 (GMT)
+Received: from ltcden9-lp5.aus.stglabs.ibm.com (unknown [9.53.174.134])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 25 Oct 2024 20:49:29 +0000 (GMT)
+From: Samir Mulani <samir@linux.vnet.ibm.com>
 To: ltp@lists.linux.it
-Cc: 
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4584; i=rbm@suse.com;
- h=from:subject:message-id; bh=V9heUIxcStpm7vEu/2BN4SOS2cX0NXyZPTW6D3Ugdbw=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnG/NtruuytBAUWo4s9zKLNBrOV/7M2yoOmA3Eh
- pwVfF/UslCJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZxvzbQAKCRDJC4p8Y4ZY
- pgnhD/4g/kXah8oBqIr7jgOnwSangIezBUcM0C6kdguAGXRR4piOyfsOMMTsPmrj6v59T/29Iwj
- QOm/esPqGOiI1uQxXfldit7I5Kw/PIX/pi7VRFUC16mIuikmvr66zBHbjsvnh8iY4gG+6fXe/X9
- SNXNXMPyh6maMxkdTjtG0kUEaFDY+W+onHNuPkNULmR3en98gYIbOVP7AkpkHBUAXJQqY3d5WaP
- a6FVIFzKIE+/qEd5epaY2t86x6StdBJhve/MCYI7zTlSgoimE65cKQ4KizG/gYAlK3MaZdzlIY5
- 1EhaDTC2/3iZ3vV2wZ4SXs9LZQCPCTL5qi3nITq/+Qeo/qQzEPiZxMK8+HXPbJK7s775GscntFt
- HNLDOrp2XIsYTwJJQo5EpjbGEDu4VOycqXLBsivA/22dcjkHXHxDFAbZMNjh1o9e+CId3niaDZq
- 6Z4DeCaox6z8tWpNhSUBf3/ySItO8wC2wnVGCbWP5n/7/U1XzLnTEBSjm13zbLMeGfbr7zDR/yb
- ZBcvkOjHnPSepzvLKO+9Ldf27m2Khu67F4W0M/qMvxm4vLs0vbTzK2SvgEvawCxP8y94sBDO80P
- JAk4Pmjj3iHO1khZ2ny2Sd7PGPjZI1vYk4sMGilGe4LxY2rGyzgpXbMlyLSGbJ5ogb8nEAk+5WH
- Cz0WA74pHOvYAlw==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Date: Fri, 25 Oct 2024 15:49:12 -0500
+Message-Id: <20241025204912.1900449-1-samir@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: coc3kn0F9UZCAwPCYtY_qdJow2FVetvH
+X-Proofpoint-ORIG-GUID: coc3kn0F9UZCAwPCYtY_qdJow2FVetvH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 clxscore=1011 impostorscore=0
+ bulkscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410250157
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mmap14: Convert to new API
+Subject: [LTP] [PATCH v2] Migrating the
+ libhugetlbfs/testcases/alloc-instantiate-race.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,178 +97,346 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
+Cc: Samir Mulani <samir@linux.vnet.ibm.com>, rnsastry@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
----
- testcases/kernel/syscalls/mmap/mmap14.c | 97 ++++++++++-----------------------
- 1 file changed, 30 insertions(+), 67 deletions(-)
+This test is designed to detect a kernel allocation race introduced
+with hugepage demand-faulting.  The problem is that no lock is held
+between allocating a hugepage and instantiating it in the
+pagetables or page cache index.  In between the two, the (huge)
+page is cleared, so there's substantial time.  Thus two processes
+can race instantiating the (same) last available hugepage - one
+will fail on the allocation, and thus cause an OOM fault even
+though the page it actually wants is being instantiated by the
+other racing process.
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap14.c b/testcases/kernel/syscalls/mmap/mmap14.c
-index 31632601bbed85b60f1dfee7044bf961b1f2a756..63a2f9e4cab2f7ab12b1ad982bc690f9fabcc252 100644
---- a/testcases/kernel/syscalls/mmap/mmap14.c
-+++ b/testcases/kernel/syscalls/mmap/mmap14.c
-@@ -1,22 +1,12 @@
+Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
+---
+v2: --Addressed the below requested changes
+
+1.	Added static keyword to global variable declarations for better encapsulation.
+2.	Removed test name from the test description for conciseness.
+3.	Implemented support for dynamic CPU mask allocation using CPU_ALLOC.
+4.	Enhanced error handling by using TERRNO for clearer error reporting.
+5.	Specified .min_cpus = 2 in tst_test to ensure the test runs only when at least two CPUs are online.
+6.	Integrated sched_getaffinity() to retrieve the IDs of available online CPUs.
+7.	Adjusted exit status handling in run_race() as per review recommendations.
+8.	Removed unnecessary TINFO messages to streamline output.
+9.	Ran make check and addressed all flagged issues.
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 272 ++++++++++++++++++
+ 3 files changed, 274 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index f294e9aaa..cc1e56f16 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
++hugemmap36 hugemmap36
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index d88484fa1..8a0fcbdf5 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -34,6 +34,7 @@
+ /hugetlb/hugemmap/hugemmap30
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
++/hugetlb/hugemmap/hugemmap36
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+new file mode 100644
+index 000000000..8f4944a76
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+@@ -0,0 +1,272 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
--/*
++/*
++ * Copyright (C) 2005-2006 IBM Corporation
++ * Author: David Gibson & Adam Litke
++ */
++
 +/*\
 + * [Description]
 + *
-  * Test Description:
-  *  Verify MAP_LOCKED works fine.
-  *  "Lock the pages of the mapped region into memory in the manner of mlock(2)."
-@@ -28,65 +18,45 @@
- #include <stdio.h>
- #include <sys/mman.h>
- 
--#include "test.h"
-+#include "tst_test.h"
- 
- #define TEMPFILE        "mmapfile"
- #define MMAPSIZE        (1UL<<20)
- #define LINELEN         256
- 
--char *TCID = "mmap14";
--int TST_TOTAL = 1;
--
- static char *addr;
- 
- static void getvmlck(unsigned int *lock_sz);
--static void setup(void);
--static void cleanup(void);
- 
--int main(int argc, char *argv[])
-+static void run(unsigned int n)
- {
--	int lc;
- 	unsigned int sz_before;
- 	unsigned int sz_after;
- 	unsigned int sz_ch;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		getvmlck(&sz_before);
-+	getvmlck(&sz_before);
- 
--		addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
--			    MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS,
--			    -1, 0);
-+	addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS,
-+			-1, 0);
- 
--		if (addr == MAP_FAILED) {
--			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
--			continue;
--		}
-+	if (addr == MAP_FAILED)
-+		tst_res(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
- 
--		getvmlck(&sz_after);
-+	getvmlck(&sz_after);
- 
--		sz_ch = sz_after - sz_before;
--		if (sz_ch == MMAPSIZE / 1024) {
--			tst_resm(TPASS, "Functionality of mmap() "
--					"successful");
--		} else {
--			tst_resm(TFAIL, "Expected %luK locked, "
--					"get %uK locked",
--					MMAPSIZE / 1024, sz_ch);
--		}
--
--		if (munmap(addr, MMAPSIZE) != 0)
--			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
-+	sz_ch = sz_after - sz_before;
-+	if (sz_ch == MMAPSIZE / 1024) {
-+		tst_res(TPASS, "Functionality of mmap() "
-+				"successful");
-+	} else {
-+		tst_res(TFAIL, "Expected %luK locked, "
-+				"get %uK locked",
-+				MMAPSIZE / 1024, sz_ch);
- 	}
- 
--	cleanup();
--	tst_exit();
-+	if (munmap(addr, MMAPSIZE) != 0)
-+		tst_res(TFAIL | TERRNO, "munmap failed");
- }
- 
- void getvmlck(unsigned int *lock_sz)
-@@ -97,7 +67,7 @@ void getvmlck(unsigned int *lock_sz)
- 
- 	fstatus = fopen("/proc/self/status", "r");
- 	if (fstatus == NULL)
--		tst_brkm(TFAIL | TERRNO, NULL, "Open dev status failed");
-+		tst_res(TFAIL | TERRNO, "Open dev status failed");
- 
- 	while (fgets(line, LINELEN, fstatus) != NULL)
- 		if (strstr(line, "VmLck") != NULL)
-@@ -105,20 +75,13 @@ void getvmlck(unsigned int *lock_sz)
- 
- 	ret = sscanf(line, "%*[^0-9]%d%*[^0-9]", lock_sz);
- 	if (ret != 1)
--		tst_brkm(TFAIL | TERRNO, NULL, "Get lock size failed");
-+		tst_res(TFAIL | TERRNO, "Get lock size failed");
- 
- 	fclose(fstatus);
- }
- 
--static void setup(void)
--{
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.test = run,
-+	.tcnt = 1,
++ * This test is designed to detect a kernel allocation race introduced
++ * with hugepage demand-faulting.  The problem is that no lock is held
++ * between allocating a hugepage and instantiating it in the
++ * pagetables or page cache index.  In between the two, the (huge)
++ * page is cleared, so there's substantial time.  Thus two processes
++ * can race instantiating the (same) last available hugepage - one
++ * will fail on the allocation, and thus cause an OOM fault even
++ * though the page it actually wants is being instantiated by the
++ * other racing process.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <pthread.h>
++#include "tst_safe_pthread.h"
++#include "hugetlb.h"
++#define SYSFS_CPU_ONLINE_FMT	"/sys/devices/system/cpu/cpu%d/online"
++#define MNTPOINT "hugetlbfs/"
++unsigned long totpages;
++static long hpage_size;
++static char *str_op;
++static int child1, child2, race_type, fd_sync, test_flag;
++static pthread_t thread1, thread2;
++static void *p_sync, *q_sync;
++
++struct racer_info {
++	void *p; /* instantiation address */
++	int cpu;
++	volatile int *mytrigger;
++	volatile int *othertrigger;
++	int status;
 +};
-
----
-base-commit: 34e6dd2d233abcebae435d34d793b6a49d08c190
-change-id: 20241025-convert_mmap14-93b0a247741e
-
-Best regards,
++
++static int one_racer(void *p, int cpu,
++		     volatile int *mytrigger, volatile int *othertrigger)
++{
++	volatile int *pi = p;
++	cpu_set_t *cpuset;
++	size_t mask_size;
++	int err;
++
++	// Allocate CPU mask dynamically
++	cpuset = CPU_ALLOC(cpu + 1);
++	if (!cpuset)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC() failed");
++	// Get the required size for the allocated CPU set
++	mask_size = CPU_ALLOC_SIZE(cpu + 1);
++
++	/* Split onto different CPUs to encourage the race */
++	CPU_ZERO_S(mask_size, cpuset);
++	CPU_SET_S(cpu, mask_size, cpuset);
++	// Set CPU affinity using the allocated mask size
++	err = sched_setaffinity(getpid(), mask_size, cpuset);
++	if (err == -1)
++		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
++	/* Ready */
++	*mytrigger = 1;
++	/* Wait for the other trigger to be set */
++	while (!*othertrigger)
++		;
++	/* Set the shared value */
++	*pi = 1;
++	// Free the dynamically allocated CPU set
++	CPU_FREE(cpuset);
++	return 0;
++}
++
++static void proc_racer(void *p, int cpu,
++		       volatile int *mytrigger, volatile int *othertrigger)
++{
++	exit(one_racer(p, cpu, mytrigger, othertrigger));
++}
++
++static void *thread_racer(void *info)
++{
++	struct racer_info *ri = info;
++
++	ri->status = one_racer(ri->p, ri->cpu, ri->mytrigger, ri->othertrigger);
++	return ri;
++}
++
++void check_online_cpus(int online_cpus[], int nr_cpus_needed)
++{
++	cpu_set_t cpuset;
++	int total_cpus, cpu_idx, i;
++	// Initialize the CPU set
++	CPU_ZERO(&cpuset);
++	// Get the total number of configured CPUs
++	total_cpus = get_nprocs_conf();
++	// Get the CPU affinity mask of the calling process
++	if (sched_getaffinity(0, sizeof(cpu_set_t), &cpuset) == -1)
++		tst_brk(TBROK | TERRNO, "sched_getaffinity() failed");
++
++	// Check if there are enough online CPUs
++	if (CPU_COUNT(&cpuset) < nr_cpus_needed)
++		tst_brk(TBROK | TERRNO, "At least %d online CPUs are required ", nr_cpus_needed);
++
++	cpu_idx = 0;
++	// Find the first `nr_cpus_needed` CPUs in the affinity mask
++	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
++		if (CPU_ISSET(i, &cpuset))
++			online_cpus[cpu_idx++] = i;
++	}
++	if (cpu_idx < nr_cpus_needed)
++		tst_brk(TBROK | TERRNO, "Unable to find enough online CPUs");
++}
++
++static void run_race(void *syncarea, int race_type)
++{
++	volatile int *trigger1, *trigger2;
++	int fd;
++	void *p, *tret1, *tret2;
++	int status1, status2;
++	int online_cpus[2];
++
++	check_online_cpus(online_cpus, 2);
++	memset(syncarea, 0, sizeof(*trigger1) + sizeof(*trigger2));
++	trigger1 = syncarea;
++	trigger2 = trigger1 + 1;
++
++	/* Get a new file for the final page */
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++	tst_res(TINFO, "Mapping final page.. ");
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, race_type, fd, 0);
++	if (race_type == MAP_SHARED) {
++		child1 = SAFE_FORK();
++		if (child1 == 0)
++			proc_racer(p, online_cpus[0], trigger1, trigger2);
++
++		child2 = SAFE_FORK();
++		if (child2 == 0)
++			proc_racer(p, online_cpus[1], trigger2, trigger1);
++
++		/* wait() calls */
++		SAFE_WAITPID(child1, &status1, 0);
++		tst_res(TINFO, "Child 1 status: %x\n", status1);
++
++
++		SAFE_WAITPID(child2, &status2, 0);
++		tst_res(TINFO, "Child 2 status: %x\n", status2);
++
++		if (WIFSIGNALED(status1))
++			tst_res(TFAIL, "Child 1 killed by signal %s",
++			strsignal(WTERMSIG(status1)));
++		if (WIFSIGNALED(status2))
++			tst_res(TFAIL, "Child 2 killed by signal %s",
++			strsignal(WTERMSIG(status2)));
++
++	} else {
++		struct racer_info ri1 = {
++			.p = p,
++			.cpu = online_cpus[0],
++			.mytrigger = trigger1,
++			.othertrigger = trigger2,
++			.status = -1,
++		};
++		struct racer_info ri2 = {
++			.p = p,
++			.cpu = online_cpus[1],
++			.mytrigger = trigger2,
++			.othertrigger = trigger1,
++			.status = -1,
++		};
++		SAFE_PTHREAD_CREATE(&thread1, NULL, thread_racer, &ri1);
++		SAFE_PTHREAD_CREATE(&thread2, NULL, thread_racer, &ri2);
++		SAFE_PTHREAD_JOIN(thread1, &tret1);
++		if (tret1 != &ri1) {
++			test_flag = -1;
++			tst_res(TFAIL, "Thread 1 returned %p not %p, killed?\n",
++			     tret1, &ri1);
++		}
++		SAFE_PTHREAD_JOIN(thread2, &tret2);
++		if (tret2 != &ri2) {
++			test_flag = -1;
++			tst_res(TFAIL, "Thread 2 returned %p not %p, killed?\n",
++			     tret2, &ri2);
++		}
++		status1 = ri1.status;
++		status2 = ri2.status;
++	}
++
++	if (status1 != 0) {
++		test_flag = -1;
++		tst_res(TFAIL, "Racer 1 terminated with code %d", status1);
++	}
++
++	if (status2 != 0) {
++		test_flag = -1;
++		tst_res(TFAIL, "Racer 2 terminated with code %d", status2);
++	}
++	if (test_flag != -1)
++		test_flag = 0;
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++
++static void run_test(void)
++{
++	unsigned long i;
++
++	/* Allocate all save one of the pages up front */
++	tst_res(TINFO, "instantiating.. ");
++	for (i = 0; i < (totpages - 1); i++)
++		memset(p_sync + (i * hpage_size), 0, sizeof(int));
++
++	run_race(q_sync, race_type);
++	if (test_flag == 0)
++		tst_res(TPASS, "Test done");
++}
++
++static void setup(void)
++{
++	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	hpage_size = tst_get_hugepage_size();
++
++	if (str_op)
++		if (strcmp(str_op, "shared") == 0)
++			race_type = MAP_SHARED;
++		else if (strcmp(str_op, "private") == 0)
++			race_type = MAP_PRIVATE;
++		else
++			tst_res(TFAIL, "Usage:mmap<private|shared>");
++	else
++		tst_res(TFAIL, "Usage:mmap<private|shared>");
++
++	fd_sync = tst_creat_unlinked(MNTPOINT, 0);
++	/* Get a shared normal page for synchronization */
++	q_sync = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
++			MAP_SHARED|MAP_ANONYMOUS, -1, 0);
++	tst_res(TINFO, "Mapping %ld/%ld pages.. ", totpages-1, totpages);
++	p_sync = SAFE_MMAP(NULL, (totpages-1)*hpage_size, PROT_READ|PROT_WRITE,
++			MAP_SHARED, fd_sync, 0);
++}
++
++static void cleanup(void)
++{
++	if (fd_sync >= 0)
++		SAFE_CLOSE(fd_sync);
++	if (child1)
++		SAFE_KILL(child1, SIGKILL);
++	if (child2)
++		SAFE_KILL(child2, SIGKILL);
++}
++
++
++static struct tst_test test = {
++	.options = (struct  tst_option[]){
++		{"m:", &str_op, "Usage:mmap<private|shared>"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
++	.forks_child = 1,
++	.min_cpus = 2
++};
 -- 
-Ricardo B. Marliere <rbm@suse.com>
+2.31.1
 
 
 -- 
