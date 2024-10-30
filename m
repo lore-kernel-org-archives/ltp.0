@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6C8BD7497F
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 08:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B40D6D2AB2C
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 08:53:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 461913CAA40
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 09:53:37 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D302A3CAA76
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 09:53:54 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C047F3CAA32
+ by picard.linux.it (Postfix) with ESMTPS id 242EA3C7270
  for <ltp@lists.linux.it>; Wed, 30 Oct 2024 09:53:20 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
@@ -23,92 +23,101 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5210E101B132
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4FF09627D30
  for <ltp@lists.linux.it>; Wed, 30 Oct 2024 09:53:19 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 76D3C1F7AB;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 519661F45F;
  Wed, 30 Oct 2024 08:53:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1730278398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=a4q9L7Dl2ENq6xosbIOajyQTRoxJJtZpctR7V/2YxQU=;
- b=wcuY21Lon9fBBHvoBs2efXUkXFCHwWpLHr1RzRNAOet65abU2cg0xfrhwssHBQurupJ0G8
- rsMY01o4atljFclucaWLM6drnaf7ErmESduJjTDZy7V2+bWmKecmM7QE6JGMmLuyQwNji/
- ECLH76YN81i91BXiqrxdRoHg+aCVhhg=
+ bh=/iPDA0SRFf7jXN224RrCxDRW0KTnlUVEShP1Lg4vJJU=;
+ b=N3aQlB/y+4nDupqYrB9CZX4hmU/OurZGbL0ndEYDb9do/WzLsybUMGZzjda6MxQrirwp5m
+ cTkz9JnKv7HDgpeleCM158Ne3G3HWFfl0CtMmqGQN2L4R+1EuhcrzL4/6hhBDNkAfJiDbb
+ st+Be6UaEO/ot1tavC0fkYxpzdjoY7w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1730278398;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=a4q9L7Dl2ENq6xosbIOajyQTRoxJJtZpctR7V/2YxQU=;
- b=kGWEjPxpfvfQATFiqpvPxayd8h85lLlXCrfp9NIIl9Uofhu9DYQfyk49YaBscoWFWMQQAA
- 3ZrwEa+9ktVmwcDg==
+ bh=/iPDA0SRFf7jXN224RrCxDRW0KTnlUVEShP1Lg4vJJU=;
+ b=JaabVOJ5l2Iu8/Abayl2wLs4RXTHYc/RFjBKroPuRhFpqOPGDq+PsZBu4bBZHLvCYVe7rG
+ A4ebyMf8SghUDvCg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="N3aQlB/y";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JaabVOJ5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1730278398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=a4q9L7Dl2ENq6xosbIOajyQTRoxJJtZpctR7V/2YxQU=;
- b=wcuY21Lon9fBBHvoBs2efXUkXFCHwWpLHr1RzRNAOet65abU2cg0xfrhwssHBQurupJ0G8
- rsMY01o4atljFclucaWLM6drnaf7ErmESduJjTDZy7V2+bWmKecmM7QE6JGMmLuyQwNji/
- ECLH76YN81i91BXiqrxdRoHg+aCVhhg=
+ bh=/iPDA0SRFf7jXN224RrCxDRW0KTnlUVEShP1Lg4vJJU=;
+ b=N3aQlB/y+4nDupqYrB9CZX4hmU/OurZGbL0ndEYDb9do/WzLsybUMGZzjda6MxQrirwp5m
+ cTkz9JnKv7HDgpeleCM158Ne3G3HWFfl0CtMmqGQN2L4R+1EuhcrzL4/6hhBDNkAfJiDbb
+ st+Be6UaEO/ot1tavC0fkYxpzdjoY7w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1730278398;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=a4q9L7Dl2ENq6xosbIOajyQTRoxJJtZpctR7V/2YxQU=;
- b=kGWEjPxpfvfQATFiqpvPxayd8h85lLlXCrfp9NIIl9Uofhu9DYQfyk49YaBscoWFWMQQAA
- 3ZrwEa+9ktVmwcDg==
+ bh=/iPDA0SRFf7jXN224RrCxDRW0KTnlUVEShP1Lg4vJJU=;
+ b=JaabVOJ5l2Iu8/Abayl2wLs4RXTHYc/RFjBKroPuRhFpqOPGDq+PsZBu4bBZHLvCYVe7rG
+ A4ebyMf8SghUDvCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5717613AE3;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28B1913ADE;
  Wed, 30 Oct 2024 08:53:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IN2FE/7zIWdCGQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CDwnCP7zIWdCGQAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 30 Oct 2024 08:53:18 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 30 Oct 2024 09:53:01 +0100
+Date: Wed, 30 Oct 2024 09:53:00 +0100
 MIME-Version: 1.0
-Message-Id: <20241030-generate_syscalls-v5-2-eed6a87dc787@suse.com>
+Message-Id: <20241030-generate_syscalls-v5-1-eed6a87dc787@suse.com>
 References: <20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com>
 In-Reply-To: <20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1730278397; l=7982;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1730278397; l=8523;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=3bLwHTGeHjG+/V0Ngfz6qOObJ1f+pwwFuS68UNJe2gs=;
- b=eogsirkjb+lnmHSqm+kDXEBOFv/5fLrLRCCXBRzAkwKQLXVbiU2rk8Alqpt08y71Hkw39U6Mq
- RykE9tYZNJFCmrf6IvR+784apAgWiOZkAuwfM3DaIJxl7RshBbDyYHz
+ bh=ijfTnczOzEM9HaXbiChBSdaAG7SmasRnu7+zRTZiS64=;
+ b=a18stfTSvyoJ/9ciHfZ+/YHFBu5z1N47hOkXCCCsDOy+MRVXh0aarWwdLmxwBPWeZx1NO8iNY
+ +F3nYZlX33YBKG8PDPQBIYWP8QNclAU2e4s7zsl2wXQHl9HIMGmf75w
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 519661F45F
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.cz:email];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 2/3] Add script to generate arch(s) dependant
- syscalls
+Subject: [LTP] [PATCH v5 1/3] Refactor regen.sh script to generate syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,293 +136,296 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add generate_arch.sh script which can be used to generate arch(s)
-dependant syscalls file. The way it works is pretty simple: for each
-architecture defined into supported-arch.txt, compile kernel headers,
-extract the list of syscalls and generate a .in file containing all of
-them, associated with their own syscall's number.
-The way syscalls files are generated, passes through a C application
-which is automatically checking the availability of the syscalls in
-the user space environment.
+Rename regen.sh into a more meaningful generate_syscalls.sh name, rename
+order into a more meaningful supported-syscalls.txt name and rewrite
+part of the regen.sh script code in order to execute it from anywhere in
+the filesystem, without need to be in its own folder. The new code is
+also more clear and concise, using native sh features which are
+simplifying the code.
 
 Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/lapi/syscalls/{aarch64.in => arm64.in}     |   0
- include/lapi/syscalls/generate_arch.sh             | 211 +++++++++++++++++++++
- .../lapi/syscalls/{loongarch.in => loongarch64.in} |   0
- include/lapi/syscalls/{mips_n64.in => mips64.in}   |   0
- .../lapi/syscalls/{mips_n32.in => mips64n32.in}    |   0
- include/lapi/syscalls/{mips_o32.in => mipso32.in}  |   0
- include/lapi/syscalls/{hppa.in => parisc.in}       |   0
- include/lapi/syscalls/supported-arch.txt           |  12 +-
- 8 files changed, 217 insertions(+), 6 deletions(-)
+ configure.ac                                       |   2 +-
+ include/lapi/syscalls/generate_syscalls.sh         | 115 ++++++++++++++++++
+ include/lapi/syscalls/regen.sh                     | 129 ---------------------
+ .../lapi/syscalls/{order => supported-arch.txt}    |   0
+ 4 files changed, 116 insertions(+), 130 deletions(-)
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/arm64.in
-similarity index 100%
-rename from include/lapi/syscalls/aarch64.in
-rename to include/lapi/syscalls/arm64.in
-diff --git a/include/lapi/syscalls/generate_arch.sh b/include/lapi/syscalls/generate_arch.sh
+diff --git a/configure.ac b/configure.ac
+index d327974efa71f263d7f7f5aec9d2c5831d53dd0e..cd1233d19fad376973fc880d6689859845613fb0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -386,7 +386,7 @@ else
+     AC_SUBST([WITH_REALTIME_TESTSUITE],["no"])
+ fi
+ 
+-AC_CONFIG_COMMANDS([syscalls.h], [cd ${ac_top_srcdir}/include/lapi/syscalls; ./regen.sh; cd - >/dev/null])
++AC_CONFIG_COMMANDS([syscalls.h], [cd ${ac_top_srcdir}/include/lapi/syscalls; ./generate_syscalls.sh ../syscalls.h; cd - >/dev/null])
+ 
+ # custom functions
+ # NOTE: don't create custom functions for simple checks, put them into this file
+diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
 new file mode 100755
-index 0000000000000000000000000000000000000000..c88ca945127c3c26162a48babcd6b0f8ca552311
+index 0000000000000000000000000000000000000000..2bcb10b5d1bb67704f51e1a81ec979725353b692
 --- /dev/null
-+++ b/include/lapi/syscalls/generate_arch.sh
-@@ -0,0 +1,211 @@
++++ b/include/lapi/syscalls/generate_syscalls.sh
+@@ -0,0 +1,115 @@
 +#!/bin/sh
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +#
-+# This is an adaptation of the update-tables.sh script, included in the
-+# syscalls-table project (https://github.com/hrw/syscalls-table) and released
-+# under the MIT license.
-+#
-+# Author: Andrea Cervesato <andrea.cervesato@suse.com>
++# Generate the syscalls.h file, merging all architectures syscalls input file
++# which are in the current folder and defined inside supported-arch.txt file.
 +
-+KERNELSRC="$1"
++SYSCALLS_FILE="$1"
 +
-+# to keep sorting in order
-+export LC_ALL=C
-+
-+if [ -z "$KERNELSRC" ]; then
-+	echo "Please provide kernel sources:"
++if [ -z "${SYSCALLS_FILE}" ]; then
++	echo "Please provide the syscalls.h directory:"
 +	echo ""
-+	echo "$0 path/to/Linux/kernel/sources"
++	echo "$0 path/of/syscalls.h"
 +	echo ""
 +	exit 1
 +fi
-+
-+if [ ! -d "$KERNELSRC" ]; then
-+	echo "$KERNELSRC is not a directory"
-+	exit 1
-+fi
-+
-+if [ ! -e "${KERNELSRC}/Makefile" ]; then
-+	echo "No Makefile in $KERNELSRC directory"
-+	exit 1
-+fi
-+
-+TEMP="$(mktemp -d)"
-+KVER="$(make -C ${KERNELSRC} kernelversion -s)"
 +
 +SCRIPT_DIR="$(realpath $(dirname "$0"))"
 +SUPPORTED_ARCH="${SCRIPT_DIR}/supported-arch.txt"
-+LINUX_HEADERS="${TEMP}/headers"
 +
-+grab_syscall_names_from_tables()
-+{
-+	for tbl_file in $(find ${KERNELSRC}/arch -name syscall*.tbl); do
-+		grep -E -v "(^#|^$|sys_ni_syscall)" $tbl_file |
-+			awk '{ print $3 }' >> ${TEMP}/syscall-names.tosort
-+	done
++echo '
++/************************************************
++* GENERATED FILE: DO NOT EDIT/PATCH THIS FILE  *
++*  change your arch specific .in file instead  *
++************************************************/
 +
-+	drop_bad_entries
-+}
++/*
++* Here we stick all the ugly *fallback* logic for linux
++* system call numbers (those __NR_ thingies).
++*
++* Licensed under the GPLv2 or later, see the COPYING file.
++*/
 +
-+grab_syscall_names_from_unistd_h()
-+{
-+	grep -E -h "^#define __NR_" \
-+		${LINUX_HEADERS}/usr/include/asm/unistd*.h \
-+		${LINUX_HEADERS}/usr/include/asm-generic/unistd.h \
-+		>${TEMP}/syscall-names.tosort
++#ifndef LAPI_SYSCALLS_H__
++#define LAPI_SYSCALLS_H__
 +
-+	drop_bad_entries
-+}
++#include <errno.h>
++#include <sys/syscall.h>
++#include <asm/unistd.h>
 +
-+drop_bad_entries()
-+{
-+	grep -E -v "(unistd.h|NR3264|__NR_syscall|__SC_COMP|__NR_.*Linux|__NR_FAST)" \
-+		${TEMP}/syscall-names.tosort |
-+		grep -E -v "(__SYSCALL|SYSCALL_BASE|SYSCALL_MASK)" |
-+		sed -e "s/#define\s*__NR_//g" -e "s/\s.*//g" |
-+		sort -u >${TEMP}/syscall-names.txt
-+}
++#ifdef TST_TEST_H__
++#define TST_SYSCALL_BRK__(NR, SNR) ({ \
++tst_brk(TCONF, \
++	"syscall(%d) " SNR " not supported on your arch", NR); \
++})
++#else
++inline static void dummy_cleanup(void) {}
 +
-+generate_table()
-+{
-+	echo "- $arch"
++#define TST_SYSCALL_BRK__(NR, SNR) ({ \
++tst_brkm(TCONF, dummy_cleanup, \
++	"syscall(%d) " SNR " not supported on your arch", NR); \
++})
++#endif
 +
-+	if [ $bits == 32 ]; then
-+		extraflags="${extraflags} -D__BITS_PER_LONG=32"
-+	fi
++#define tst_syscall(NR, ...) ({ \
++intptr_t tst_ret; \
++if (NR == __LTP__NR_INVALID_SYSCALL) { \
++	errno = ENOSYS; \
++	tst_ret = -1; \
++} else { \
++	tst_ret = syscall(NR, ##__VA_ARGS__); \
++} \
++if (tst_ret == -1 && errno == ENOSYS) { \
++	TST_SYSCALL_BRK__(NR, #NR); \
++} \
++tst_ret; \
++})
 +
-+	local uppercase_arch=$(echo "$arch" | tr '[:lower:]' '[:upper:]')
++#define __LTP__NR_INVALID_SYSCALL -1' >${SYSCALLS_FILE}
 +
-+	gcc ${TEMP}/list-syscalls.c -U__LP64__ -U__ILP32__ -U__i386__ \
-+		-D${uppercase_arch} \
-+		-D__${arch}__ ${extraflags} \
-+		-I ${LINUX_HEADERS}/usr/include/ \
-+		-o ${TEMP}/list-syscalls &>/dev/null
-+
-+	${TEMP}/list-syscalls > "${TEMP}/${arch}.in.tosort"
-+
-+	sort -k2,2n "${TEMP}/${arch}.in.tosort" > "${TEMP}/${arch}.in"
-+}
-+
-+generate_list_syscalls_c()
-+{
++while IFS= read -r arch; do
 +	(
 +		echo
-+		echo "
-+		#include <stdio.h>
-+		#include <asm/unistd.h>
-+
-+		int main(void)
-+		{
-+		"
-+		for syscall in $(cat ${TEMP}/syscall-names.txt); do
-+			echo "
-+		#ifdef __NR_$syscall
-+			printf(\"$syscall %d\\n\", __NR_$syscall);
-+		#endif
-+		"
-+		done
-+		echo " return 0;
-+		}"
-+	) > ${TEMP}/list-syscalls.c
-+}
-+
-+export_headers()
-+{
-+	make -s -C ${KERNELSRC} ARCH=${arch} O=${LINUX_HEADERS} \
-+		headers_install &>/dev/null
-+}
-+
-+do_all_tables()
-+{
-+	for archdir in ${KERNELSRC}/arch/*; do
-+		arch=$(basename $archdir)
-+
-+		bits=64
-+		extraflags=
-+
 +		case ${arch} in
-+		Kconfig)
-+			continue
-+			;;
-+		um)
-+			continue
-+			;;
++		sparc64) echo "#if defined(__sparc__) && defined(__arch64__)" ;;
++		sparc) echo "#if defined(__sparc__) && !defined(__arch64__)" ;;
++		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
++		mips64n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
++		mips64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
++		mipso32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
++		parisc) echo "#ifdef __hppa__" ;;
++		loongarch64) echo "#ifdef __loongarch__" ;;
++		arm64) echo "#ifdef __aarch64__" ;;
++		*) echo "#ifdef __${arch}__" ;;
 +		esac
 +
-+		export_headers
-+		grab_syscall_names_from_unistd_h
++		while read -r line; do
++			set -- ${line}
++			syscall_nr="__NR_$1"
++			shift
 +
-+		case ${arch} in
-+		arm)
-+			bits=32
-+			arch=armoabi extraflags= generate_table
-+			arch=arm extraflags=-D__ARM_EABI__ generate_table
-+			;;
-+		loongarch)
-+			# 32-bit variant of loongarch may appear
-+			arch=loongarch64 extraflags=-D_LOONGARCH_SZLONG=64 generate_table
-+			;;
-+		mips)
-+			arch=mips64 extraflags=-D_MIPS_SIM=_MIPS_SIM_ABI64 generate_table
-+			bits=32
-+			arch=mipso32 extraflags=-D_MIPS_SIM=_MIPS_SIM_ABI32 generate_table
-+			arch=mips64n32 extraflags=-D_MIPS_SIM=_MIPS_SIM_NABI32 generate_table
-+			;;
-+		powerpc)
-+			generate_table
-+			arch=powerpc64 generate_table
-+			;;
-+		riscv)
-+			arch=riscv64 extraflags=-D__LP64__ generate_table
-+			bits=32
-+			arch=riscv32 extraflags=-D__SIZEOF_POINTER__=4 generate_table
-+			;;
-+		s390)
-+			bits=32
-+			generate_table
-+			bits=64
-+			arch=s390x generate_table
-+			;;
-+		sparc)
-+			bits=32
-+			extraflags=-D__32bit_syscall_numbers__ generate_table
-+			bits=64
-+			arch=sparc64 extraflags=-D__arch64__ generate_table
-+			;;
-+		x86)
-+			arch=x86_64 extraflags=-D__LP64__ generate_table
-+			bits=32
-+			arch=i386 generate_table
-+			arch=x32 extraflags=-D__ILP32__ generate_table
-+			;;
-+		arc | csky | hexagon | m68k | microblaze | nios2 | openrisc | sh | xtensa)
-+			bits=32 generate_table
-+			;;
-+		*)
-+			generate_table
-+			;;
-+		esac
-+	done
-+}
++			echo "# ifndef ${syscall_nr}"
++			echo "#  define ${syscall_nr} $*"
++			echo "# endif"
++		done <"${SCRIPT_DIR}/${arch}.in"
++		echo "#endif"
++		echo
++	) >>${SYSCALLS_FILE}
++done <${SUPPORTED_ARCH}
 +
-+copy_supported_arch()
-+{
++(
++	echo
++	echo "/* Common stubs */"
 +	while IFS= read -r arch; do
-+		if [ -f "${TEMP}/${arch}.in" ]; then
-+			echo "- ${arch}"
-+			cp "${TEMP}/${arch}.in" "${SCRIPT_DIR}/${arch}.in"
-+		fi
-+	done < ${SUPPORTED_ARCH}
-+}
++		while IFS= read -r line; do
++			set -- ${line}
++			syscall_nr="__NR_$1"
++			shift
 +
-+echo "Temporary directory ${TEMP}"
-+echo "Extracting syscalls"
-+
-+grab_syscall_names_from_tables
-+generate_list_syscalls_c
-+
-+do_all_tables
-+
-+echo "Copying supported syscalls"
-+copy_supported_arch
-diff --git a/include/lapi/syscalls/loongarch.in b/include/lapi/syscalls/loongarch64.in
++			echo "# ifndef ${syscall_nr}"
++			echo "#  define ${syscall_nr} __LTP__NR_INVALID_SYSCALL"
++			echo "# endif"
++		done <"${SCRIPT_DIR}/${arch}.in"
++	done <${SUPPORTED_ARCH}
++	echo "#endif"
++) >>${SYSCALLS_FILE}
+diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
+deleted file mode 100755
+index 663ce4458bbc67c3a9e8073dfe8359164a9da0ee..0000000000000000000000000000000000000000
+--- a/include/lapi/syscalls/regen.sh
++++ /dev/null
+@@ -1,129 +0,0 @@
+-#!/bin/sh
+-
+-output="syscalls.h"
+-rm -f "${output}".[1-9]*
+-output_pid="${output}.$$"
+-
+-max_jobs=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
+-: ${max_jobs:=1}
+-
+-srcdir=${0%/*}
+-
+-err() {
+-	echo "$*" 1>&2
+-	exit 1
+-}
+-
+-cat << EOF > "${output_pid}"
+-/************************************************
+- * GENERATED FILE: DO NOT EDIT/PATCH THIS FILE  *
+- *  change your arch specific .in file instead  *
+- ************************************************/
+-
+-/*
+- * Here we stick all the ugly *fallback* logic for linux
+- * system call numbers (those __NR_ thingies).
+- *
+- * Licensed under the GPLv2 or later, see the COPYING file.
+- */
+-
+-#ifndef LAPI_SYSCALLS_H__
+-#define LAPI_SYSCALLS_H__
+-
+-#include <errno.h>
+-#include <sys/syscall.h>
+-#include <asm/unistd.h>
+-
+-#ifdef TST_TEST_H__
+-#define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+-	tst_brk(TCONF, \\
+-		"syscall(%d) " SNR " not supported on your arch", NR); \\
+-})
+-#else
+-inline static void dummy_cleanup(void) {}
+-
+-#define TST_SYSCALL_BRK__(NR, SNR) ({ \\
+-	tst_brkm(TCONF, dummy_cleanup, \\
+-		"syscall(%d) " SNR " not supported on your arch", NR); \\
+-})
+-#endif
+-
+-#define tst_syscall(NR, ...) ({ \\
+-	intptr_t tst_ret; \\
+-	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
+-		errno = ENOSYS; \\
+-		tst_ret = -1; \\
+-	} else { \\
+-		tst_ret = syscall(NR, ##__VA_ARGS__); \\
+-	} \\
+-	if (tst_ret == -1 && errno == ENOSYS) { \\
+-		TST_SYSCALL_BRK__(NR, #NR); \\
+-	} \\
+-	tst_ret; \\
+-})
+-
+-EOF
+-
+-jobs=0
+-for arch in $(cat "${srcdir}/order") ; do
+-	(
+-	echo "Generating data for arch $arch ... "
+-
+-	(
+-	echo
+-	case ${arch} in
+-		sparc64) echo "#if defined(__sparc__) && defined(__arch64__)" ;;
+-		sparc) echo "#if defined(__sparc__) && !defined(__arch64__)" ;;
+-		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
+-		mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
+-		mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
+-		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
+-		*) echo "#ifdef __${arch}__" ;;
+-	esac
+-	while read line ; do
+-		set -- ${line}
+-		nr="__NR_$1"
+-		shift
+-		if [ $# -eq 0 ] ; then
+-			err "invalid line found: $line"
+-		fi
+-		echo "# ifndef ${nr}"
+-		echo "#  define ${nr} $*"
+-		echo "# endif"
+-	done < "${srcdir}/${arch}.in"
+-	echo "#endif"
+-	echo
+-	) >> "${output_pid}.${arch}"
+-
+-	) &
+-
+-	jobs=$(( jobs + 1 ))
+-	if [ ${jobs} -ge ${max_jobs} ] ; then
+-		wait || exit 1
+-		jobs=0
+-	fi
+-done
+-
+-echo "Generating stub list ... "
+-(
+-echo
+-echo "/* Common stubs */"
+-echo "#define __LTP__NR_INVALID_SYSCALL -1" >> "${output_pid}"
+-for nr in $(awk '{print $1}' "${srcdir}/"*.in | sort -u) ; do
+-	nr="__NR_${nr}"
+-	echo "# ifndef ${nr}"
+-	echo "#  define ${nr} __LTP__NR_INVALID_SYSCALL"
+-	echo "# endif"
+-done
+-echo "#endif"
+-) >> "${output_pid}._footer"
+-
+-wait || exit 1
+-
+-printf "Combining them all ... "
+-for arch in $(cat "${srcdir}/order") _footer ; do
+-	cat "${output_pid}.${arch}"
+-done >> "${output_pid}"
+-mv "${output_pid}" "../${output}"
+-rm -f "${output_pid}"*
+-echo "OK!"
+diff --git a/include/lapi/syscalls/order b/include/lapi/syscalls/supported-arch.txt
 similarity index 100%
-rename from include/lapi/syscalls/loongarch.in
-rename to include/lapi/syscalls/loongarch64.in
-diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips64.in
-similarity index 100%
-rename from include/lapi/syscalls/mips_n64.in
-rename to include/lapi/syscalls/mips64.in
-diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips64n32.in
-similarity index 100%
-rename from include/lapi/syscalls/mips_n32.in
-rename to include/lapi/syscalls/mips64n32.in
-diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mipso32.in
-similarity index 100%
-rename from include/lapi/syscalls/mips_o32.in
-rename to include/lapi/syscalls/mipso32.in
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/parisc.in
-similarity index 100%
-rename from include/lapi/syscalls/hppa.in
-rename to include/lapi/syscalls/parisc.in
-diff --git a/include/lapi/syscalls/supported-arch.txt b/include/lapi/syscalls/supported-arch.txt
-index c18aa38cf4546cdf3ac8c89a45bd1b202ffa7711..c5c5191ac08482d89f0a8c39dfae936538f58f7f 100644
---- a/include/lapi/syscalls/supported-arch.txt
-+++ b/include/lapi/syscalls/supported-arch.txt
-@@ -1,13 +1,13 @@
--aarch64
- arc
-+arm64
- arm
--hppa
- i386
- ia64
--loongarch
--mips_n32
--mips_n64
--mips_o32
-+loongarch64
-+mips64n32
-+mips64
-+mipso32
-+parisc
- powerpc64
- powerpc
- s390x
+rename from include/lapi/syscalls/order
+rename to include/lapi/syscalls/supported-arch.txt
 
 -- 
 2.43.0
