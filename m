@@ -4,105 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14BFED6B6AD
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 16:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 510B7D6B6B7
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 17:44:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 93EA93CB3D4
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 17:50:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A36EA3CB4C3
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 18:44:04 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4E3D3C61D7
- for <ltp@lists.linux.it>; Wed, 30 Oct 2024 17:49:52 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id E86313C7257
+ for <ltp@lists.linux.it>; Wed, 30 Oct 2024 18:43:49 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C54F51BBD389
- for <ltp@lists.linux.it>; Wed, 30 Oct 2024 17:49:51 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C2A1647BF2
+ for <ltp@lists.linux.it>; Wed, 30 Oct 2024 18:43:48 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 37C0221B71;
- Wed, 30 Oct 2024 16:49:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D75E31FB87;
+ Wed, 30 Oct 2024 17:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730306990;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1730310228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pvxA8eDinpQeuCwX5hTgGFZwOh4b2plKh2AOD4P3U2c=;
- b=O7qdT5AhLdLkF0uEbrvWP/XROyVJDzbYImuzuOIMbtIdBInMOQ1mKadNKlWUg584S+e+zq
- i/idqm0p1nPljPaBY5lzGJJLwC9kBK/Vtok0fsW53wqX1CZ8TgzjvwNrw62hwT/GHqS8lr
- inETWX1yuuiIIh6VFhfDcjH/+mdOF5I=
+ bh=6MdzjEFcQweaUY3n9Lyx1FBtXnn2tTYUAk0jHaAbOak=;
+ b=QfV291CEDjxEVQR5TBqF19uE4s3tenlzCzZHgwcIwgb7cmd6RKCSQCGSw2jgRSPWRGbZoT
+ 7/pEo1LpNYlocWlZAbDXyyqM/FZNuoxumbNhcCYwOo1tW/Vofo7wqM9FbXLmyNpHtraDzR
+ yldmCIsAEG3+L+kS2u1MG7dyl8FP1Fk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730306990;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1730310228;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pvxA8eDinpQeuCwX5hTgGFZwOh4b2plKh2AOD4P3U2c=;
- b=r1vBICBxQDeZihAAcuVfdnmLZ0L4a44e2Dkfs6ngILdxkUEhi0rOjy5aP6WaalolvMByZ/
- sHZq1cyXuUgiFTCw==
-Authentication-Results: smtp-out1.suse.de;
+ bh=6MdzjEFcQweaUY3n9Lyx1FBtXnn2tTYUAk0jHaAbOak=;
+ b=xYp1d2NzOfsBoVZlfLMkGR9Ih+MlS69+6z9KatRReV279MfnDy5kS7WUj7PV8SbFcDc+PY
+ zeDt4ddkZFWt30Cw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730306990;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1730310227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pvxA8eDinpQeuCwX5hTgGFZwOh4b2plKh2AOD4P3U2c=;
- b=O7qdT5AhLdLkF0uEbrvWP/XROyVJDzbYImuzuOIMbtIdBInMOQ1mKadNKlWUg584S+e+zq
- i/idqm0p1nPljPaBY5lzGJJLwC9kBK/Vtok0fsW53wqX1CZ8TgzjvwNrw62hwT/GHqS8lr
- inETWX1yuuiIIh6VFhfDcjH/+mdOF5I=
+ bh=6MdzjEFcQweaUY3n9Lyx1FBtXnn2tTYUAk0jHaAbOak=;
+ b=FhEvuVmI6HpYorq/CQ98CgP4zVre/x3Lbmj8zeJe37VfkzCIU4c/Y+nfKo38598TPwu/L7
+ AsiZFLB/cQU07js288EdNhgdCf7a/PSuiCJabhE1MkmF/oz8CfD0wHTZTfmfZgds+CEiaj
+ NklVhRHmt0Hj55Myu8p3m3Df9QFFxtA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730306990;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1730310227;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pvxA8eDinpQeuCwX5hTgGFZwOh4b2plKh2AOD4P3U2c=;
- b=r1vBICBxQDeZihAAcuVfdnmLZ0L4a44e2Dkfs6ngILdxkUEhi0rOjy5aP6WaalolvMByZ/
- sHZq1cyXuUgiFTCw==
+ bh=6MdzjEFcQweaUY3n9Lyx1FBtXnn2tTYUAk0jHaAbOak=;
+ b=pW6nRncMeNb+oboQ+OFg+ZiFzhR5vRWQ+kcMPuOveZ6UHAhs3Ht4lf6/45x8PbFwSVMXHb
+ IvtApCBrKZPFHIBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 14A26136A5;
- Wed, 30 Oct 2024 16:49:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C06E513A7C;
+ Wed, 30 Oct 2024 17:43:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0XPDA65jImd8NwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 30 Oct 2024 16:49:50 +0000
-Date: Wed, 30 Oct 2024 17:49:40 +0100
-From: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SbsPLFNwImdaSAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 30 Oct 2024 17:43:47 +0000
+Date: Wed, 30 Oct 2024 18:43:36 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20241030164940.GA940932@pevik>
+Message-ID: <ZyJwSAHQzUyubmh_@yuki.lan>
 References: <20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com>
  <20241030-generate_syscalls-v5-1-eed6a87dc787@suse.com>
- <20241030144908.GA915191@pevik>
- <fa37b53b-51c8-4ea2-b95a-c6248b5bc4a3@suse.com>
+ <ZyI42B6qhZCf0Qwo@yuki.lan>
+ <4e4ff14e-43d8-4a97-8dd6-f8609cd38404@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fa37b53b-51c8-4ea2-b95a-c6248b5bc4a3@suse.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <4e4ff14e-43d8-4a97-8dd6-f8609cd38404@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v5 1/3] Refactor regen.sh script to generate
  syscalls
@@ -117,50 +111,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr,
+Hi!
+> > This will generate multiple fallback definitions, one per architecture
+> > for common syscall, there was a good reason why these files were parsed
+> > by awk with sort -u
+> I wrote the code a few weeks ago, so I needed to read it again to 
+> understand the reason.
+> 
+> If you take a look at the drop_bad_entries() and generate_tables() you 
+> will see that `sort` command is used to remove duplicates and to sort 
+> the entire list per architecture.
 
-> On 10/30/24 15:49, Petr Vorel wrote:
-> > Hi Andrea,
+No no, this is the code that generates the actuall LTP header and what
+you do here is:
 
-> > > +++ b/include/lapi/syscalls/generate_syscalls.sh
-> > > @@ -0,0 +1,115 @@
-> > > +#!/bin/sh
-> > > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > > +#
-> > > +# Generate the syscalls.h file, merging all architectures syscalls input file
-> > > +# which are in the current folder and defined inside supported-arch.txt file.
-> > > +
-> > > +SYSCALLS_FILE="$1"
-> > > +
-> > > +if [ -z "${SYSCALLS_FILE}" ]; then
-> > nit: I would still replace ${...} with $... (e.g. ${SYSCALLS_FILE} =>
-> > $SYSCALLS_FILE) as I noted in v4 - readability. IMHO there is no need to use
-> > ${...} in whole script.
+	for each architecture:
+		for each syscall in architecture:
+			generate fallback with invalid value
 
-> > The same applies to include/lapi/syscalls/generate_arch.sh in the second commit.
 
-> This is a bit debatable. The reason why using ${VAR} over $VAR is the
-> readability in the first place (i.e. when you have `${PATH}/bin` instead
-> `$PATH/bin` or when you use characters which could mix with PATH var name
-> and it might create debug issues), but also the fact it provides
-> ${VAR:-default} syntax which can always added afterwards.
+And what you need to do is:
 
-> I usually prefer this method for these reasons.
+	read all syscall names for all architectures and do sort -u then
+	generate fallback with invalid value
 
-Sure, it's matter of preference. At least LTP shell library tst_test.sh
-is happy with $VAR instead of ${VAR}. But as generate_arch.sh origin is in the
-separate project, and this is a separate shell script (not part of shell API)
-let's ignore my suggestion.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
