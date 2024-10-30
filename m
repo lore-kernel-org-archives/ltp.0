@@ -4,101 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A208D5CC9F
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 12:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1D68D5CCAF
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 13:47:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 014AE3CAE4D
-	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 13:15:49 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0FDFA3CAFBF
+	for <ltp@archiver.kernel.org>; Wed, 30 Oct 2024 14:47:33 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA2FF3CAE07
- for <ltp@lists.linux.it>; Wed, 30 Oct 2024 13:15:33 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id ABBA33CAF32
+ for <ltp@lists.linux.it>; Wed, 30 Oct 2024 14:47:17 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 850ED100FB18
- for <ltp@lists.linux.it>; Wed, 30 Oct 2024 13:15:33 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0FEA0641114
+ for <ltp@lists.linux.it>; Wed, 30 Oct 2024 14:47:16 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C2ADE1FB8A;
- Wed, 30 Oct 2024 12:15:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3ACCA1F7DD;
+ Wed, 30 Oct 2024 13:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730290532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730296035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d0P4iUnWmeZUYCxP4b7HrgC1D++4wwt4fNRp3wttlzk=;
- b=b5d+PF11kGQDbZUfkIU9295sTW7BI6zKSxthMxIi8hhECH5EjFV+m0RJHh99uuWQZIy2LN
- tfbCTwQ/q9Q8Lm1kcuMMSyCAFQAyv2prYFStCjwcQZxvI7TRVPsvB4av0P0tJ8HRw0oTdQ
- RvkrXgVVIqeh6AsLhKR8bql786C7UlQ=
+ bh=fFV0Qv5CZwKOQIsx1XoQRsOWBwHGhYa7G8471hyDnDE=;
+ b=Pty+kAEFz1G8LmmDZyq7/aYOIRpqAm67SNG25COCenPPx3oif1z9i8jaacn+WxiazPpOsH
+ /2G5YJEHwmOg6wLjVxuSJ9VsHxDZmc+O5ZnXaqNZQ56T8HWTi0RI+lsECawYEzqW9RercQ
+ BrgCW45OcFUh61lAfaUuob0yx3NzsJo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730290532;
+ s=susede2_ed25519; t=1730296035;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d0P4iUnWmeZUYCxP4b7HrgC1D++4wwt4fNRp3wttlzk=;
- b=RO8a9OvjOAV7hR8obhWRKCnLIyRmnDJSiz561rckM3mUYYK89bOrsUerIqVlsNtbGjrIFC
- D0tJk5XjQdqs3cCw==
+ bh=fFV0Qv5CZwKOQIsx1XoQRsOWBwHGhYa7G8471hyDnDE=;
+ b=fjqJalawJNgzDdfDj3Rd+MhaA3XVR14zs8JJwLF3zDDBHmnp5IcfgJv0/04exBF2mEd7uK
+ ZUSytjH9VNSwJBAg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Pty+kAEF;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fjqJalaw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730290532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730296035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d0P4iUnWmeZUYCxP4b7HrgC1D++4wwt4fNRp3wttlzk=;
- b=b5d+PF11kGQDbZUfkIU9295sTW7BI6zKSxthMxIi8hhECH5EjFV+m0RJHh99uuWQZIy2LN
- tfbCTwQ/q9Q8Lm1kcuMMSyCAFQAyv2prYFStCjwcQZxvI7TRVPsvB4av0P0tJ8HRw0oTdQ
- RvkrXgVVIqeh6AsLhKR8bql786C7UlQ=
+ bh=fFV0Qv5CZwKOQIsx1XoQRsOWBwHGhYa7G8471hyDnDE=;
+ b=Pty+kAEFz1G8LmmDZyq7/aYOIRpqAm67SNG25COCenPPx3oif1z9i8jaacn+WxiazPpOsH
+ /2G5YJEHwmOg6wLjVxuSJ9VsHxDZmc+O5ZnXaqNZQ56T8HWTi0RI+lsECawYEzqW9RercQ
+ BrgCW45OcFUh61lAfaUuob0yx3NzsJo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730290532;
+ s=susede2_ed25519; t=1730296035;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d0P4iUnWmeZUYCxP4b7HrgC1D++4wwt4fNRp3wttlzk=;
- b=RO8a9OvjOAV7hR8obhWRKCnLIyRmnDJSiz561rckM3mUYYK89bOrsUerIqVlsNtbGjrIFC
- D0tJk5XjQdqs3cCw==
+ bh=fFV0Qv5CZwKOQIsx1XoQRsOWBwHGhYa7G8471hyDnDE=;
+ b=fjqJalawJNgzDdfDj3Rd+MhaA3XVR14zs8JJwLF3zDDBHmnp5IcfgJv0/04exBF2mEd7uK
+ ZUSytjH9VNSwJBAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABED813AD9;
- Wed, 30 Oct 2024 12:15:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27BA713AD9;
+ Wed, 30 Oct 2024 13:47:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gLLcKGQjImfrWAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 30 Oct 2024 12:15:32 +0000
-Date: Wed, 30 Oct 2024 13:15:32 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hsKOCOM4ImeVdwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 30 Oct 2024 13:47:15 +0000
+Date: Wed, 30 Oct 2024 14:47:04 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <ZyIjZGIpFlFqLm42@yuki.lan>
-References: <20241030084558.195297-1-liwang@redhat.com>
- <ZyIjHUuNFviz47gx@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZyI42B6qhZCf0Qwo@yuki.lan>
+References: <20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com>
+ <20241030-generate_syscalls-v5-1-eed6a87dc787@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZyIjHUuNFviz47gx@yuki.lan>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20241030-generate_syscalls-v5-1-eed6a87dc787@suse.com>
+X-Rspamd-Queue-Id: 3ACCA1F7DD
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: Print failure hints only once to reduce log
- duplication
+Subject: Re: [LTP] [PATCH v5 1/3] Refactor regen.sh script to generate
+ syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,23 +126,31 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > The LTP test currently prints failure hints multiple times if a test
-> > encounters several TFAIL or TBROK results. This leads to unnecessarily
-> > verbose and duplicated logs.
-> > 
-> > This patch modifies the `print_failure_hints()` function to ensure that
-> > failure hints are printed only once per test run. By setting `show_failure_hints`
-> > to 0 after the first print, subsequent calls to `print_failure_hints()`
-> > will not produce redundant output.
-> 
-> Hmm, we do call print_failure_hints() from do_exit() that calls exit()
-> at the end of the function. We shouldn't print the hints twice, what do
-> I miss?
+> +(
+> +	echo
+> +	echo "/* Common stubs */"
+> +	while IFS= read -r arch; do
+> +		while IFS= read -r line; do
+> +			set -- ${line}
+> +			syscall_nr="__NR_$1"
+> +			shift
+> +
+> +			echo "# ifndef ${syscall_nr}"
+> +			echo "#  define ${syscall_nr} __LTP__NR_INVALID_SYSCALL"
+> +			echo "# endif"
+> +		done <"${SCRIPT_DIR}/${arch}.in"
+> +	done <${SUPPORTED_ARCH}
+> +	echo "#endif"
+> +) >>${SYSCALLS_FILE}
 
-Ah, right, we have two if () conditions that call the function in there,
-so yes, we may print it twice.
+This will generate multiple fallback definitions, one per architecture
+for common syscall, there was a good reason why these files were parsed
+by awk with sort -u
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> -echo "#define __LTP__NR_INVALID_SYSCALL -1" >> "${output_pid}"
+> -for nr in $(awk '{print $1}' "${srcdir}/"*.in | sort -u) ; do
+
+This is the important part that IMHO should stay.
 
 -- 
 Cyril Hrubis
