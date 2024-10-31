@@ -4,117 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A2A0E6896A
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 09:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CA43E6896A
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 09:56:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 831CA3CBDE6
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 10:49:50 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B65EC3CBE28
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 10:56:45 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C28933CB779
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 10:49:35 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 012F23CBCC1
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 10:56:29 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 20BFF1012BD5
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 10:49:34 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C6FC72195B4
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 10:56:27 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6674221DF4;
- Thu, 31 Oct 2024 09:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730368173;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZBw5VbvhPECBC53PcESCet7Dta/PDXSaND5Dz5U8ZFQ=;
- b=ViUvtrUp265/aTUAgAqKbPEYjnhx8XsdnF1Nk98tR2JNAgYyvHs+J/zvEok/q6SN7NGf3h
- HzE54xelGvbiezZT2uz5CMVq9pCUTGHu1CEQBhfMhTssK8g45a0wn+LwJ0pe99ZrdyiWN3
- BNeyMfV3mNCRbav9X1M+3QISZYkfRvU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730368173;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZBw5VbvhPECBC53PcESCet7Dta/PDXSaND5Dz5U8ZFQ=;
- b=TpdkB0m66jMPetwGE9Uu/7LUugvl2slv3oPzoe1M8bJmoV2Hd4zt42ejFkBW1NSSIlOgwz
- ZKa0u101IG8bWiDg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ViUvtrUp;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TpdkB0m6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730368173;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZBw5VbvhPECBC53PcESCet7Dta/PDXSaND5Dz5U8ZFQ=;
- b=ViUvtrUp265/aTUAgAqKbPEYjnhx8XsdnF1Nk98tR2JNAgYyvHs+J/zvEok/q6SN7NGf3h
- HzE54xelGvbiezZT2uz5CMVq9pCUTGHu1CEQBhfMhTssK8g45a0wn+LwJ0pe99ZrdyiWN3
- BNeyMfV3mNCRbav9X1M+3QISZYkfRvU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730368173;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZBw5VbvhPECBC53PcESCet7Dta/PDXSaND5Dz5U8ZFQ=;
- b=TpdkB0m66jMPetwGE9Uu/7LUugvl2slv3oPzoe1M8bJmoV2Hd4zt42ejFkBW1NSSIlOgwz
- ZKa0u101IG8bWiDg==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 604CE1F826;
+ Thu, 31 Oct 2024 09:56:26 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3737013A53;
- Thu, 31 Oct 2024 09:49:33 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25FDC13A53;
+ Thu, 31 Oct 2024 09:56:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id lozcCq1SI2fMMAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 31 Oct 2024 09:49:33 +0000
-Date: Thu, 31 Oct 2024 10:49:27 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gmowCEpUI2cQMwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 31 Oct 2024 09:56:26 +0000
+Date: Thu, 31 Oct 2024 10:56:09 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20241031094927.GB995052@pevik>
+Message-ID: <20241031095609.GC995052@pevik>
 References: <20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com>
- <20241031-generate_syscalls-v6-1-1ad86a33ce2d@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241031-generate_syscalls-v6-1-1ad86a33ce2d@suse.com>
-X-Rspamd-Queue-Id: 6674221DF4
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+In-Reply-To: <20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: 604CE1F826
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/3] Refactor regen.sh script to generate
- syscalls
+Subject: Re: [LTP] [PATCH v6 0/3] Automatically generate syscalls.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -135,35 +85,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-whole patchset LGTM, thank you!
+> The problem we have at the moment is that all syscalls input files must
+> be changed by hand each time we need to test a new syscall. The idea is
+> to simplify this process, providing a script that is able to read from
+> kernel sources and to generate all syscalls files we need.
 
-I was comparing the old include/lapi/syscalls.h (21579 lines) and the new one
-(20054). Having new file shorter is a bit surprising to me. I haven't found what
-is missing, probably I'm missing something myself :).
+> This patch set adds a new command inside the syscalls folder and
+> it refactors the previous regen.sh code.
+> The new way we have to generate the syscalls.h file is the following:
 
-> Rename regen.sh into a more meaningful generate_syscalls.sh name, rename
-> order into a more meaningful supported-syscalls.txt name and rewrite
-> part of the regen.sh script code in order to execute it from anywhere in
-> the filesystem, without need to be in its own folder. The new code is
-> also more clear and concise, using native sh features which are
-> simplifying the code.
+> 	include/lapi/syscalls/generate_arch.sh 		path/to/kernel/source
+> 	include/lapi/syscalls/generate_syscalls.sh 	path/to/syscalls.h
 
-Purely out of curiosity (nothing to block this), which "native sh features"?
+> Scripts are independent and they can be run separately.
+> generate_syscalls.sh is the equivalent of regen.sh, but its code has
+> been cleaned up.
 
-> +++ b/include/lapi/syscalls/generate_syscalls.sh
-...
-> +SCRIPT_DIR="$(realpath $(dirname "$0"))"
-> +SUPPORTED_ARCH="${SCRIPT_DIR}/supported-arch.txt"
-> +
-> +echo '
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-
-very nit stylish: This produce new line. Why not just:
-
-echo '// SPDX-License-Identifier: GPL-2.0-or-later
-/************************************************
-
-Feel free to ignore or amend before push.
+it would be nice to have this documented (as a separate effort, not blocking
+to merge this). Specially the new generate_arch.sh, which is not part of
+./configure run.
 
 Kind regards,
 Petr
