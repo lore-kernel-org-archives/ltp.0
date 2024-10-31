@@ -4,98 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CEDFE68974
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 10:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC696E68973
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 10:32:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98D7C3CBE7E
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 11:28:41 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7D0F93CBE66
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 11:31:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 866333CBCF4
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:28:25 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D0EE93C9DED
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:31:43 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 169CD206BF6
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:28:24 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3287662E78E
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:31:42 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 349541F7DB;
- Thu, 31 Oct 2024 10:28:24 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9081221BBE;
+ Thu, 31 Oct 2024 10:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730370504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730370701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2vA9M9Z/xd7AYK+YV0wi1fGnTS5gkKW3eSCFh0/Bm04=;
- b=s40PS01ZuTaGh1zy4V0rWpKUX0ZsOQBiLFAIfb3qSHHPjV6Xev1msTgDKp5P1GxUfLY0X9
- MgVMbbtb8Gg/7rZJUkq6qiwLUTIgvN5dByRshJl93oZ3O2yWyihpXkB7P/Nx4x7Wot8hff
- 949+cJ/TI6g+wBMXNOvpAIVeUcKCUf0=
+ bh=rjgSnNueFMmSwMVaJvdfguxePZl6E7l7QSIgCzIRHVA=;
+ b=DWTq+yfbgORnyil1ZCMKqECaA69odG+2zJhE49SIcc9EzFBY0rnxvezaVTc8tY1lVjfLVP
+ SQ75XOErsXvSD2K6xUrB3VMxBilV9tz/WU6LvXL0y5KZ9N4PjNsxGlYblnwanuJRSMtbkW
+ vKSbR+Eq/LQeaeKraPa/ooRr8nmIY5A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730370504;
+ s=susede2_ed25519; t=1730370701;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2vA9M9Z/xd7AYK+YV0wi1fGnTS5gkKW3eSCFh0/Bm04=;
- b=h/ZrobfZimm1sRzVucHgWRYbWBoxhHZfMy2TIT77DFtKRgnnq1Sw+uUfbaKSpkUiR4vx7Y
- FJuyqssYeurI+FAw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=rjgSnNueFMmSwMVaJvdfguxePZl6E7l7QSIgCzIRHVA=;
+ b=mATAUD/2SaLIDI08Evobjo+9I0jJV69UbTGqSmkTjiV9RnCS4df2RuCY14yb2EA3NxBSe8
+ cJ1n/tY9oD9KOzDw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730370504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730370701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2vA9M9Z/xd7AYK+YV0wi1fGnTS5gkKW3eSCFh0/Bm04=;
- b=s40PS01ZuTaGh1zy4V0rWpKUX0ZsOQBiLFAIfb3qSHHPjV6Xev1msTgDKp5P1GxUfLY0X9
- MgVMbbtb8Gg/7rZJUkq6qiwLUTIgvN5dByRshJl93oZ3O2yWyihpXkB7P/Nx4x7Wot8hff
- 949+cJ/TI6g+wBMXNOvpAIVeUcKCUf0=
+ bh=rjgSnNueFMmSwMVaJvdfguxePZl6E7l7QSIgCzIRHVA=;
+ b=DWTq+yfbgORnyil1ZCMKqECaA69odG+2zJhE49SIcc9EzFBY0rnxvezaVTc8tY1lVjfLVP
+ SQ75XOErsXvSD2K6xUrB3VMxBilV9tz/WU6LvXL0y5KZ9N4PjNsxGlYblnwanuJRSMtbkW
+ vKSbR+Eq/LQeaeKraPa/ooRr8nmIY5A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730370504;
+ s=susede2_ed25519; t=1730370701;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2vA9M9Z/xd7AYK+YV0wi1fGnTS5gkKW3eSCFh0/Bm04=;
- b=h/ZrobfZimm1sRzVucHgWRYbWBoxhHZfMy2TIT77DFtKRgnnq1Sw+uUfbaKSpkUiR4vx7Y
- FJuyqssYeurI+FAw==
+ bh=rjgSnNueFMmSwMVaJvdfguxePZl6E7l7QSIgCzIRHVA=;
+ b=mATAUD/2SaLIDI08Evobjo+9I0jJV69UbTGqSmkTjiV9RnCS4df2RuCY14yb2EA3NxBSe8
+ cJ1n/tY9oD9KOzDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2062613A53;
- Thu, 31 Oct 2024 10:28:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7740913B02;
+ Thu, 31 Oct 2024 10:31:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id TmzwBshbI2eBPQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 31 Oct 2024 10:28:24 +0000
-Date: Thu, 31 Oct 2024 11:28:28 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OhMjHI1cI2fLPgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 31 Oct 2024 10:31:41 +0000
+Date: Thu, 31 Oct 2024 11:31:31 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZyNbzFs39LOOLgV7@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZyNcg8SklPPUf9iK@yuki.lan>
 References: <20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com>
  <20241031-generate_syscalls-v6-1-1ad86a33ce2d@suse.com>
- <20241031094927.GB995052@pevik>
+ <ZyNbCKxK_rKwuH1C@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241031094927.GB995052@pevik>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <ZyNbCKxK_rKwuH1C@yuki.lan>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v6 1/3] Refactor regen.sh script to generate
  syscalls
@@ -117,103 +118,10 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> I was comparing the old include/lapi/syscalls.h (21579 lines) and the new one
-> (20054). Having new file shorter is a bit surprising to me. I haven't found what
-> is missing, probably I'm missing something myself :).
+And besides these two issues I pointed out it seems to work fine and the
+code looks fine, so with these two fixed:
 
-That is strange, I got exactly same content minus some whitespaces and
-slightly different macros that check for arch support:
-
---- syscalls.h.old      2024-10-31 11:17:04.840217056 +0100
-+++ syscalls.h  2024-10-31 11:23:38.326891830 +0100
-@@ -1,3 +1,5 @@
-+
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /************************************************
-  * GENERATED FILE: DO NOT EDIT/PATCH THIS FILE  *
-  *  change your arch specific .in file instead  *
-@@ -6,8 +8,6 @@
- /*
-  * Here we stick all the ugly *fallback* logic for linux
-  * system call numbers (those __NR_ thingies).
-- *
-- * Licensed under the GPLv2 or later, see the COPYING file.
-  */
-
- #ifndef LAPI_SYSCALLS_H__
-@@ -19,30 +19,30 @@
-
- #ifdef TST_TEST_H__
- #define TST_SYSCALL_BRK__(NR, SNR) ({ \
--       tst_brk(TCONF, \
--               "syscall(%d) " SNR " not supported on your arch", NR); \
-+tst_brk(TCONF, \
-+       "syscall(%d) " SNR " not supported on your arch", NR); \
- })
- #else
- inline static void dummy_cleanup(void) {}
-
- #define TST_SYSCALL_BRK__(NR, SNR) ({ \
--       tst_brkm(TCONF, dummy_cleanup, \
--               "syscall(%d) " SNR " not supported on your arch", NR); \
-+tst_brkm(TCONF, dummy_cleanup, \
-+       "syscall(%d) " SNR " not supported on your arch", NR); \
- })
- #endif
-
- #define tst_syscall(NR, ...) ({ \
--       intptr_t tst_ret; \
--       if (NR == __LTP__NR_INVALID_SYSCALL) { \
--               errno = ENOSYS; \
--               tst_ret = -1; \
--       } else { \
--               tst_ret = syscall(NR, ##__VA_ARGS__); \
--       } \
--       if (tst_ret == -1 && errno == ENOSYS) { \
--               TST_SYSCALL_BRK__(NR, #NR); \
--       } \
--       tst_ret; \
-+intptr_t tst_ret; \
-+if (NR == __LTP__NR_INVALID_SYSCALL) { \
-+       errno = ENOSYS; \
-+       tst_ret = -1; \
-+} else { \
-+       tst_ret = syscall(NR, ##__VA_ARGS__); \
-+} \
-+if (tst_ret == -1 && errno == ENOSYS) { \
-+       TST_SYSCALL_BRK__(NR, #NR); \
-+} \
-+tst_ret; \
- })
-
- #define __LTP__NR_INVALID_SYSCALL -1
-@@ -6681,7 +6681,7 @@
- #endif
-
-
--#if defined(__mips__) && defined(_ABIN32)
-+#ifdef __mips_n32__
- # ifndef __NR_read
- #  define __NR_read 6000
- # endif
-@@ -7828,7 +7828,7 @@
- #endif
-
-
--#if defined(__mips__) && defined(_ABI64)
-+#ifdef __mips_n64__
- # ifndef __NR_read
- #  define __NR_read 5000
- # endif
-@@ -8903,7 +8903,7 @@
- #endif
-
-
--#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32
-+#ifdef __mips_o32__
- # ifndef __NR_syscall
- #  define __NR_syscall 4000
- # endif
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
