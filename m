@@ -4,105 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EEBED767C0
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 13:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEA8FD767CE
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 13:58:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7F5E43CC064
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 14:44:48 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 53A1B3CC0C8
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 14:58:42 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 391933C0273
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 14:44:32 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A1EAE3CC0AE
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 14:58:25 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 79EFE102748C
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 14:44:31 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AD110218392
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 14:58:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F0B9921D29;
- Thu, 31 Oct 2024 13:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730382270;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=t6Avf5dU6QTYbtCEqTI9/K5coRw5IO6muNBx4yrGZ7o=;
- b=wpXeHdM13zRxZ0veendl4p/YlOZC0ZTfZOjyGOlxdzpRbZfcMJEFds6fXW/WGS1lfeduRm
- NoRRSgCAwOwO0OyvijZR6QQluWqubKeYDgAqip9BO4Z5QSZWT1UPAb0p57XAemzoUI7VwS
- KXlQBzLkgTE7A5x3BMjB6qWjns30i3s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730382270;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=t6Avf5dU6QTYbtCEqTI9/K5coRw5IO6muNBx4yrGZ7o=;
- b=BCnC26GqYQJwB/eN78GZoFIBabbNzWXfPjcsJLUNU8Xha4wh9euqqjoaNKQ6xNgkVJgLgJ
- ZE0CRd0vlj+EA4DQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E636E21D3E;
+ Thu, 31 Oct 2024 13:58:23 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730382269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=t6Avf5dU6QTYbtCEqTI9/K5coRw5IO6muNBx4yrGZ7o=;
- b=q4zETp/ivMowFYzjtlpMwdSL1VQqQjqSuOeY3MFLlu0R75tZW9JaVat9Sq0qbDQp/3BlIv
- Ba7d2FWzWyhEJzMruD+qGoGO8EMzH1P9M3KeDaqIAs5ZLlmIBhjEAAtqPxfoQrq44sxjq6
- MAwBFCpap5Z62lzzqSfFJ8/5rN+k4qY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730382269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=t6Avf5dU6QTYbtCEqTI9/K5coRw5IO6muNBx4yrGZ7o=;
- b=WwjBh6NlrVQW4qxlgrLKgcANwO6Tmy030zd3zpOxghbvRaE0F9OAyMklgDDpEwK4R6/wKs
- I2iGPCthozICTlAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D299713A53;
- Thu, 31 Oct 2024 13:44:29 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C212C13A53;
+ Thu, 31 Oct 2024 13:58:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JVB5Mr2JI2cMfQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 31 Oct 2024 13:44:29 +0000
-Date: Thu, 31 Oct 2024 14:44:24 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 77tMLv+MI2f0AgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 31 Oct 2024 13:58:23 +0000
+Date: Thu, 31 Oct 2024 14:58:14 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241031134424.GA1049242@pevik>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20241031135814.GB1049242@pevik>
 References: <20241031-generate_syscalls-v7-0-f3e26c06814e@suse.com>
- <20241031-generate_syscalls-v7-1-f3e26c06814e@suse.com>
- <20241031130117.GA1017691@pevik> <ZyODpGheJSyv3EL9@yuki.lan>
+ <20241031-generate_syscalls-v7-2-f3e26c06814e@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZyODpGheJSyv3EL9@yuki.lan>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <20241031-generate_syscalls-v7-2-f3e26c06814e@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: E636E21D3E
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 1/4] Refactor regen.sh script to generate
+Subject: Re: [LTP] [PATCH v7 2/4] Add script to generate arch(s) dependant
  syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -122,36 +84,91 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > $ ./configure
-> > ...
-> > + syscall_nr=__NR_writev
-> > + echo # ifndef __NR_writev
-> > + echo #  define __NR_writev __LTP__NR_INVALID_SYSCALL
-> > + echo # endif
-> > + echo #endif
+Hi Andrea,
 
-> > $ ./configure > /tmp/out 2> /tmp/err; wc -l /tmp/out /tmp/err
+> --- /dev/null
+> +++ b/include/lapi/syscalls/generate_arch.sh
+> @@ -0,0 +1,211 @@
+> +#!/bin/sh
+Also here would be nice to use -eu (I know it's a script originated from
+elsewhere)...
 
-> > on master:
-> >   290 /tmp/out
-> >     3 /tmp/err
-> >   293 total
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +#
+> +# This is an adaptation of the update-tables.sh script, included in the
+> +# syscalls-table project (https://github.com/hrw/syscalls-table) and released
+> +# under the MIT license.
+> +#
+> +# Author: Andrea Cervesato <andrea.cervesato@suse.com>
+> +
+> +KERNELSRC="$1"
 
-> > on v7 (at least what I apply from https://patchwork.ozlabs.org/series/430633/mbox/):
-> >     289 /tmp/out
-> >   48706 /tmp/err
-> >   48995 total
+... but that would require instead of this to check like this before using $1:
 
-> The /tmp/out now looks fine, there is a single line difference, that is
-> the empty newline at the start of the file I asked to remove.
+if [ $# -eq 0 ]
+	echo "Please provide kernel sources:"
+	echo ""
+	echo "$0 path/to/Linux/kernel/sources"
+	echo ""
+	exit 1
+fi
 
-OK, it can be something on the setup of the VM I'm using (some Debian), which
-uses dash as /bin/sh. I was not able to reproduce it on openSUSE Tumbleweed.
-Feel free to ignore it.
+Also running with dash I get failures:
 
-But I have other error for generate_arch.sh which I'll report on the other
-patchset.
+$ ./include/lapi/syscalls/generate_arch.sh ../linux
+...
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm/unistd*.h: No such file or directory
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm-generic/unistd.h: No such file or directory
+./include/lapi/syscalls/generate_arch.sh: 73: [: 64: unexpected operator
+./include/lapi/syscalls/generate_arch.sh: 85: /tmp/tmp.sVfa08a9De/list-syscalls: not found
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm/unistd*.h: No such file or directory
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm-generic/unistd.h: No such file or directory
+./include/lapi/syscalls/generate_arch.sh: 73: [: 32: unexpected operator
+./include/lapi/syscalls/generate_arch.sh: 85: /tmp/tmp.sVfa08a9De/list-syscalls: not found
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm/unistd*.h: No such file or directory
+grep: /tmp/tmp.sVfa08a9De/headers/usr/include/asm-generic/unistd.h: No such file or directory
+./include/lapi/syscalls/generate_arch.sh: 73: [: 32: unexpected operator
+/tmp/tmp.sVfa08a9De/list-syscalls.c: In function 'main':
+/tmp/tmp.sVfa08a9De/list-syscalls.c:11:32: warning: missing terminating " character
+   11 |                         printf("_llseek %d
+      |                                ^
+/tmp/tmp.sVfa08a9De/list-syscalls.c:12:1: warning: missing terminating " character
+   12 | ", __NR__llseek);
+      | ^
+
+That fails in generate_table on:
+if [ $bits == 32 ]; then
+
+When I use "!/bin/sh -eux" I see:
+
+make -s -C /home/foo/sources/linux ARCH=alpha O=/tmp/tmp.G3HzE6EnFu/headers headers_install
+grep: /tmp/tmp.G3HzE6EnFu/headers/usr/include/asm/unistd*.h: No such file or directory
+
+This looks like it requires to have build kernel before running this script,
+right? (I have 6.12-rc4 in the kernel directory). As a result of running the
+script are empty include/lapi/syscalls/*.in files.
+
+Again, it can be a combination of some problem with my environment (some
+variable set or shell setup) + dash as /bin/sh. Changing script to /bin/bash
+fixes everything. It would be nice if anybody test it with installed dash and
+!#/bin/dash in both scripts.
+
+And successful run changes include/lapi/syscalls/arm.in:
+
++++ include/lapi/syscalls/arm.in
+@@ -1,406 +1,415 @@
+-restart_syscall (__NR_SYSCALL_BASE+  0)
+-exit (__NR_SYSCALL_BASE+  1)
+-fork (__NR_SYSCALL_BASE+  2)
+-read (__NR_SYSCALL_BASE+  3)
+...
++restart_syscall 0
++exit 1
++fork 2
++read 3
++write 4
+
+Maybe we could update syscalls with generate_arch.sh after we merge this?
 
 Kind regards,
 Petr
