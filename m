@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9E73E68973
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 10:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D654E68975
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 11:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730371088; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1730372552; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-transfer-encoding :
  content-type : sender : from;
- bh=4wl/SroUk7XTXecbqObCG3tKV6k9H3GUIZNxGc0c3oY=;
- b=HEQ0hlxU51C+UNhY1yyswLSEyZRZ7he+2EmQpZCWcExf/u9scCpXPR66iRw6sNq2r6wrd
- Gzhjw48nnsI+0OVJ4xQLtqSorQuSZRLpQcoWKdrAPHnxYkeSJWiuRKKpDyypki3hh8fM3rk
- CNnp2ACNtEOk61ECsxfJ5/rSwKBYuMc=
+ bh=+bFGxnRoXS4kMNQPn8agDdbOYxtvAxSKhHOHAXS3+vQ=;
+ b=J8254Jc0XJ6pIn3xz6d5aCatK5vEMDozcmOAyx3W8K3z5BwCIen8SvQsL7BJVsVVAzlAa
+ KRx3XT9ive12mWz592mxjzwcrkCh6XwuYNNzW6Orhccq9EMOpy8uwv18qwq0CE17/ZY+2RN
+ Mvi67ARN18YsiBKZGfIepwsiLQFosTk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 352FE3CBE8B
-	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 11:38:08 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 83D403CBEDA
+	for <ltp@archiver.kernel.org>; Thu, 31 Oct 2024 12:02:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FEB93CBB79
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:37:47 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ by picard.linux.it (Postfix) with ESMTPS id 4851F3C7392
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 12:02:12 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4C6041435AE1
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 11:37:46 +0100 (CET)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-431695fa98bso5894535e9.3
- for <ltp@lists.linux.it>; Thu, 31 Oct 2024 03:37:46 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 983851BEF93E
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 12:02:08 +0100 (CET)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-37d6a2aa748so439723f8f.1
+ for <ltp@lists.linux.it>; Thu, 31 Oct 2024 04:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730371066; x=1730975866; darn=lists.linux.it;
+ d=suse.com; s=google; t=1730372528; x=1730977328; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=4aiL6UoIstVQmwQTMVJI5V1RhGPhSFBIDcfaVG3TYi0=;
- b=IEyoJsNjxun/paFKnWRInZ5262yzEgjMhp7csAzz8uMvrm/tXVHH6PPEbRVBHsg0ON
- HmB0ARDLibcrx6c88pBcBsnVEUCzbRi2fvPj3MhekfH2m6whN4a+BMv3F24XgBdN/M7l
- bl5WlsVne7mBM9gZnnqfLboUp2bNLwKQqewYSynE1osFELgS7HCFLhkwVoB++fLa+1Bb
- WUnotiOInmYlGGNNGanuV7IVcyB3nuKkCOZPBF5S5+Pu9mM6oECSWOYBrWsjXCYJKQdN
- smSQF6BoPT2wZw1Yo6yUmL5YvOiO2GKCExqlp6bpuVoeEBx/reQGsgshyuoUAhITKEZo
- /Wpg==
+ bh=2ska0A0Bp9GdKPpaXXHxPnM5AEFQvhU58uMdXYNDCR4=;
+ b=Ef8nAfyYoTGryYKmqYBYN4W17gd7Q8MIR1bfP0rh4FJNuxW3vYo7dgIMqWIzZ/W3Nt
+ NYQJlWh0KuQwy7fWs7eKEGy4FOXRBHjtelMeuCzpyXu7FqWYtmxlucaFIYYVCz8qyf35
+ isFwxhIXtIBYcAgzcSFkkzQh4OQtFAkQoRHILUMys4H6ollLLBsoTmn9B3OBs5a3NRBU
+ vlAUG2GQfkn8geZE2Sa2Gx+B4KBoc3MXg9oVUP9r4AuVrOtJYdN5EmsETrK3+vwfGnrZ
+ DH18oy1o4OLzQbquSrPJaidC2nbdlQgLtDh/aBh/nIt72/v3DhmPlKxutH3KKYzwrMcQ
+ YoMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730371066; x=1730975866;
+ d=1e100.net; s=20230601; t=1730372528; x=1730977328;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=4aiL6UoIstVQmwQTMVJI5V1RhGPhSFBIDcfaVG3TYi0=;
- b=jHM0yPUGfH38mE7oHjm1t+mZQcC9NQlwPygdOWrj1fjt1kAefi9su+b9mIC/+bZntX
- hqe26XgU2bvHLcVR/gMIbPI2jYa7ghZGJPDmMwJZ2hVANdzOx41Mo/xEPtfG+G5Dpuiy
- pBzMwDbCgo44H93jMz1yFafVAJFisva+fo5QzcxegEiAt0l2UyndYc/GgWbOeFwjtYDW
- 0zhQg+9VnK0PoTuppB+ny9eHb6ZKPJHDSlMnwIrand/bHH5n420v6qHWFDh+K1de+/2B
- 0QzgXrT4GV3u3wlpsl70XmfxFiWHgABre8wEZBN2uakXp3VKDMPZORTacAqd60OtZP7P
- YVfA==
+ bh=2ska0A0Bp9GdKPpaXXHxPnM5AEFQvhU58uMdXYNDCR4=;
+ b=jvPP6H7tRfRfX0lkvmwIB07vsXiFNGI8XXBtQcI/L6l2WIx7CdRdSagdsENQsnUi5S
+ hwt4YCBZS/eOi8eLRHiwjJLwjhn4gq6ycg5cnYiAC0Fvtr7x/ms59aK6fGi8NwpfyRZU
+ mLSG/RRUDHJi2/bQycTJCldAtIGSV47Vh5iKQnBxw9c3NwF/7Y5oTgCWZyoHfvaG6Erx
+ jw01zmIvlOObNJpNvSV23na93A9VJhg0mfBf+uPRcJFLc+qRl62MKCIYCvnTk+Geglaj
+ yPIjjbtdX7qRpwoh9anFjE+pnubJZpXP87uSoszTKi3liEYzHXoi0Osov/tkS2O5ByDQ
+ Lv3w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVLMe2bAcTSKz0K7V6c32dkPQI2Q8yqhp+Yf/hdaxTOoB0JKZs+kMbBtt6IWTcx9+8xkJQ=@lists.linux.it
-X-Gm-Message-State: AOJu0YzcfjKcwZm/WvAzs8FxGw7Yolt+afdt7LWe1Un00JuVmifFfVfT
- BKxDbOTtYnm2MWqi1WH52sc9RtFrY9Slml3aXlyxcYdIZMoyj6OYN/klqfAmeA4=
-X-Google-Smtp-Source: AGHT+IGH5pded5G+85yX1I3NjZStHZAH9B+Ml4SzVFLnrGa5xYBLlU1MZMlVYiC2Lr1xIKQejbETrA==
-X-Received: by 2002:a05:600c:4fd3:b0:431:60d0:9088 with SMTP id
- 5b1f17b1804b1-4319ac9acedmr176816695e9.13.1730371065718; 
- Thu, 31 Oct 2024 03:37:45 -0700 (PDT)
+ AJvYcCUvOoHwxnvk6/W5mXAcGB8GCEJC/ekG68ByOQDh9SIe7s4rqhS/kAv54zN8r99PJZ+PW2M=@lists.linux.it
+X-Gm-Message-State: AOJu0YyfMAiuQlkF7Q6rjelO269MtuF3wSSSNIgJOXA/I/2zmcLyV2yz
+ 8f5m6P8hw+QLuMJDMOepLAAmhOeEYd9weTsQhOdlHIUghxIbDY/OyZaZuBXVRFQ=
+X-Google-Smtp-Source: AGHT+IHD+DJlx7duAZggnmlyRVZZpOACX2AaNkU/ImOQl5+XjlOGVu2OIDvh1xcwIGtwWwtlOrhMVw==
+X-Received: by 2002:a5d:4f82:0:b0:37c:fdc9:fc17 with SMTP id
+ ffacd0b85a97d-38061137f57mr13644604f8f.23.1730372527978; 
+ Thu, 31 Oct 2024 04:02:07 -0700 (PDT)
 Received: from ?IPV6:2a00:20:6047:3333:1b05:5290:eb22:1d88?
  ([2a00:20:6047:3333:1b05:5290:eb22:1d88])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-431bd9ca8eesm51726245e9.43.2024.10.31.03.37.44
+ ffacd0b85a97d-381c10b7c08sm1784785f8f.17.2024.10.31.04.02.07
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 31 Oct 2024 03:37:45 -0700 (PDT)
-Message-ID: <da584663-4deb-4293-99ab-9c08a851dedf@suse.com>
-Date: Thu, 31 Oct 2024 11:37:44 +0100
+ Thu, 31 Oct 2024 04:02:07 -0700 (PDT)
+Message-ID: <a91af59b-08bc-4712-b99a-19bccba9d859@suse.com>
+Date: Thu, 31 Oct 2024 12:02:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
@@ -83,7 +84,7 @@ References: <20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com>
  <20241031094927.GB995052@pevik> <ZyNbzFs39LOOLgV7@yuki.lan>
 Content-Language: en-US
 In-Reply-To: <ZyNbzFs39LOOLgV7@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v6 1/3] Refactor regen.sh script to generate
  syscalls
@@ -106,7 +107,6 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
 
 On 10/31/24 11:28, Cyril Hrubis wrote:
 > Hi!
@@ -185,8 +185,6 @@ On 10/31/24 11:28, Cyril Hrubis wrote:
 >
 > -#if defined(__mips__) && defined(_ABIN32)
 > +#ifdef __mips_n32__
-Do you believe these lines are an error? I'm checking the code and it 
-seems fine.
 >   # ifndef __NR_read
 >   #  define __NR_read 6000
 >   # endif
@@ -209,7 +207,13 @@ seems fine.
 >   #  define __NR_syscall 4000
 >   # endif
 >
+I just realized that these are errors. The reason is that files are 
+changed now, so I need to change the way architecture is seen at compile 
+time. For example, mips64n32 is now mips_n32 and that has to be handled 
+in the syscalls file generator.
+
 Andrea
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
