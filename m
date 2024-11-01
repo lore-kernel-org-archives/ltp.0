@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96769E6F093
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 22:41:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7422AE6F093
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 22:46:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 014013CE456
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 23:41:30 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E179A3CE475
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 23:46:21 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 67DFE3CE3F0
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:41:13 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 149DD3CE3F0
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:46:06 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9922D1BCB783
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:41:09 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DC8CE143F18D
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:46:04 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A8A141F451;
- Fri,  1 Nov 2024 22:41:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 031762195D;
+ Fri,  1 Nov 2024 22:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730500867;
+ t=1730501164;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
- b=O4QGxF5S4Kf2mnOLAzE4EmG/uOEgH8HxCjLsCp0qsPnavMoLnfZVuW9gvA4dbwh+CLr9Y/
- IQD4NEhMMi1S5PFCWHuQHK0Ov0i7GhXRtCIT3ry+3f8Fo1AFwun0ktceUW1c36kQC0SXMT
- Vh0z2MuOf5h+i0ccS5fpcNTHqY//mkI=
+ bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
+ b=I32OlS6AB/ZeyMWp/T2WaoAs/Srxx5YPKzXK2n1JVs1PTznv2p8gLvHLSN/zh3nwtsgtLQ
+ bKIL257caSKh2fMQRmYbCPAejVsCcXn2nLclyb+fITcLSz2u4L7EYr3mQ3eWkGBi71Fhd3
+ cCJ110cnQaDc0mdzF7FauM+KPK2o86E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730500867;
+ s=susede2_ed25519; t=1730501164;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
- b=1fXYS8p9Z38pkTUoqlbW/PohnVVMj0jy2FuftcM3RPpVxea5qPAVNEYcainYDwLAnQMd8Z
- ribg7tPBQ+m4SSBg==
-Authentication-Results: smtp-out2.suse.de;
+ bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
+ b=knR3C8VRohn4JD5HxXODGPnndlrmLx+JTbaduczd5Cb5FA+tFnyBDxZrToRqsglu/a7EAy
+ 2nMpYAhsl0mQHKBg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730500866;
+ t=1730501164;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
- b=WvR0639GwREzYesr3Trmmv1OkQ6khWj6S/QbqhH1vrVlyKyifk/eCzeeIWz6AYawyM2jDm
- Bl/sZ6YvJhlvcuwG2APQ/GdU2QC1M5P/LX1EkhJj+5BbY7CYE0WaYcUpylTedQ5be94+Pg
- ifG3RH+/zE4SFL48+r3sN8ocgs7XyDI=
+ bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
+ b=I32OlS6AB/ZeyMWp/T2WaoAs/Srxx5YPKzXK2n1JVs1PTznv2p8gLvHLSN/zh3nwtsgtLQ
+ bKIL257caSKh2fMQRmYbCPAejVsCcXn2nLclyb+fITcLSz2u4L7EYr3mQ3eWkGBi71Fhd3
+ cCJ110cnQaDc0mdzF7FauM+KPK2o86E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730500866;
+ s=susede2_ed25519; t=1730501164;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
- b=WI3rY3caiDWfEvXFfJpXsWr20M6WIoiR64iQ1E+NdyFukXq3vO3MEvGya+s+yuVTbn2lv9
- o5LWTDQxHqVXMSAg==
+ bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
+ b=knR3C8VRohn4JD5HxXODGPnndlrmLx+JTbaduczd5Cb5FA+tFnyBDxZrToRqsglu/a7EAy
+ 2nMpYAhsl0mQHKBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4176136D9;
- Fri,  1 Nov 2024 22:41:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CAC46136D9;
+ Fri,  1 Nov 2024 22:46:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2kT3IQBZJWe8egAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 22:41:04 +0000
-Date: Fri, 1 Nov 2024 23:40:46 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ztOsLytaJWfqewAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 22:46:03 +0000
+Date: Fri, 1 Nov 2024 23:45:47 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20241101224046.GA1324664@pevik>
+Message-ID: <20241101224547.GB1324664@pevik>
 References: <20241101141111.104803-1-mdoucha@suse.cz>
- <20241101141111.104803-2-mdoucha@suse.cz>
+ <20241101141111.104803-5-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241101141111.104803-2-mdoucha@suse.cz>
+In-Reply-To: <20241101141111.104803-5-mdoucha@suse.cz>
 X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
  BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
@@ -96,13 +96,13 @@ X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] Move preadv()/pwritev() backup definitions to
- LAPI
+Subject: Re: [LTP] [PATCH 4/5] Add support for setting loop device size in
+ shell tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,13 +123,13 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Martin,
 
-> Merge existing LAPI definitions of preadv2()/pwritev2() to lapi/uio.h
-> and add preadv()/pwritev() definitions from test code. Also fix minor
-> bugs in return value type and offset handling.
+> Add TST_DEVICE_SIZE variable to set loop device size.
 
-Good catch int => ssize_t.
+obviously correct, thanks!
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Obviously correct, merged with second commit.
+Maybe we should (later) add trivial shell API test into lib/newlib_tests/shell,
+which creates the device and tests if the size is expected.
 
 Kind regards,
 Petr
