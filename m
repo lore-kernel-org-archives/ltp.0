@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57911E6B278
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 14:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27DA8E6B27C
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 14:13:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E68853CD78C
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 15:12:58 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B44663CD78B
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 15:13:16 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 999143CD6CD
+ by picard.linux.it (Postfix) with ESMTPS id E9CA13CD6D7
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 15:11:32 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
@@ -25,32 +24,32 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C37931183CCD
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BF52D641103
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 15:11:30 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9900721CB6
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 899E421CB2
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 14:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1730470289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PwK7SUcY/jXh0fPg25f/Zus2cLtrTDCivuKIk5lLPSA=;
- b=pfUQ2hCKH5N/MTlUtabLrU16GlFmGW3Ooep1vandvPoCZRd2ZVoXy00LYHSEL5Yc86PoBP
- 6KTWZPBksE2asNugqY7sLgvPdcQILj5onrE2e92ld9sgV/n2goI7ynOlwgnYNFg1OpzshK
- o8j9vApr3UM7NMdoZfc+qBeCGbujkc8=
+ bh=QaS6rHt8S6oZ3Q0hfzNPyvKl2ELX6TgmmlCOav8eHkE=;
+ b=WD7IjPnML1PjXpit0Ute82eQzAmDih/08j/W23wqWUt1ddTN0SQaLrvjGvrmW1vCzkVzwD
+ rJH1f62LHtvllR+JTT9ZemEjT60k9bdhLoBPBNaIiwg6xaDLgJOvULg9Z3bevkPFNX5GnF
+ f+c+EH5iWj77UYt6ZOxfXMVEQ16PmIE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1730470289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PwK7SUcY/jXh0fPg25f/Zus2cLtrTDCivuKIk5lLPSA=;
- b=rvuCk2NlgyYeprtQIq63t2DkbgP3svsq62o6AH6kew439QivLdsudWc3FNYCHlnjnrXxuP
- NPUJyMKSsm2aL8BQ==
+ bh=QaS6rHt8S6oZ3Q0hfzNPyvKl2ELX6TgmmlCOav8eHkE=;
+ b=mBHFZNsvoJ+birSI9SgjfCkHyn7c1GEEMQPiAULoHjqdwW5YoXIlF42SQtDuxE/Pd7SdVm
+ QTEop/58JRdl3wAA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -58,53 +57,53 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PwK7SUcY/jXh0fPg25f/Zus2cLtrTDCivuKIk5lLPSA=;
- b=pfUQ2hCKH5N/MTlUtabLrU16GlFmGW3Ooep1vandvPoCZRd2ZVoXy00LYHSEL5Yc86PoBP
- 6KTWZPBksE2asNugqY7sLgvPdcQILj5onrE2e92ld9sgV/n2goI7ynOlwgnYNFg1OpzshK
- o8j9vApr3UM7NMdoZfc+qBeCGbujkc8=
+ bh=QaS6rHt8S6oZ3Q0hfzNPyvKl2ELX6TgmmlCOav8eHkE=;
+ b=WD7IjPnML1PjXpit0Ute82eQzAmDih/08j/W23wqWUt1ddTN0SQaLrvjGvrmW1vCzkVzwD
+ rJH1f62LHtvllR+JTT9ZemEjT60k9bdhLoBPBNaIiwg6xaDLgJOvULg9Z3bevkPFNX5GnF
+ f+c+EH5iWj77UYt6ZOxfXMVEQ16PmIE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1730470289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PwK7SUcY/jXh0fPg25f/Zus2cLtrTDCivuKIk5lLPSA=;
- b=rvuCk2NlgyYeprtQIq63t2DkbgP3svsq62o6AH6kew439QivLdsudWc3FNYCHlnjnrXxuP
- NPUJyMKSsm2aL8BQ==
+ bh=QaS6rHt8S6oZ3Q0hfzNPyvKl2ELX6TgmmlCOav8eHkE=;
+ b=mBHFZNsvoJ+birSI9SgjfCkHyn7c1GEEMQPiAULoHjqdwW5YoXIlF42SQtDuxE/Pd7SdVm
+ QTEop/58JRdl3wAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A49213B1B
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7716C13ACC
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 14:11:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ICCPIZHhJGf1BAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sADYHJHhJGf1BAAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Fri, 01 Nov 2024 14:11:29 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  1 Nov 2024 15:11:08 +0100
-Message-ID: <20241101141111.104803-4-mdoucha@suse.cz>
+Date: Fri,  1 Nov 2024 15:11:06 +0100
+Message-ID: <20241101141111.104803-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241101141111.104803-1-mdoucha@suse.cz>
 References: <20241101141111.104803-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
  MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
  RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
  ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/5] Add test for file data integrity
+Subject: [LTP] [PATCH 1/5] Move preadv()/pwritev() backup definitions to LAPI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,338 +120,316 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Merge existing LAPI definitions of preadv2()/pwritev2() to lapi/uio.h
+and add preadv()/pwritev() definitions from test code. Also fix minor
+bugs in return value type and offset handling.
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/fs/fsplough/.gitignore  |   1 +
- testcases/kernel/fs/fsplough/Makefile    |   8 +
- testcases/kernel/fs/fsplough/fsplough.c  | 279 +++++++++++++++++++++++
- testcases/misc/lvm/datafiles/runfile.tpl |   4 +
- 4 files changed, 292 insertions(+)
- create mode 100644 testcases/kernel/fs/fsplough/.gitignore
- create mode 100644 testcases/kernel/fs/fsplough/Makefile
- create mode 100644 testcases/kernel/fs/fsplough/fsplough.c
+ include/lapi/pwritev2.h                       | 26 -----------------
+ include/lapi/{preadv2.h => uio.h}             | 29 ++++++++++++++++++-
+ testcases/kernel/syscalls/preadv/preadv.h     | 22 --------------
+ testcases/kernel/syscalls/preadv/preadv01.c   |  2 +-
+ testcases/kernel/syscalls/preadv/preadv02.c   |  2 +-
+ testcases/kernel/syscalls/preadv/preadv03.c   |  2 +-
+ testcases/kernel/syscalls/preadv2/preadv201.c |  2 +-
+ testcases/kernel/syscalls/preadv2/preadv202.c |  2 +-
+ testcases/kernel/syscalls/preadv2/preadv203.c |  2 +-
+ testcases/kernel/syscalls/pwritev/pwritev.h   | 22 --------------
+ testcases/kernel/syscalls/pwritev/pwritev01.c |  2 +-
+ testcases/kernel/syscalls/pwritev/pwritev02.c |  2 +-
+ testcases/kernel/syscalls/pwritev/pwritev03.c |  2 +-
+ .../kernel/syscalls/pwritev2/pwritev201.c     |  2 +-
+ .../kernel/syscalls/pwritev2/pwritev202.c     |  2 +-
+ 15 files changed, 39 insertions(+), 82 deletions(-)
+ delete mode 100644 include/lapi/pwritev2.h
+ rename include/lapi/{preadv2.h => uio.h} (51%)
+ delete mode 100644 testcases/kernel/syscalls/preadv/preadv.h
+ delete mode 100644 testcases/kernel/syscalls/pwritev/pwritev.h
 
-diff --git a/testcases/kernel/fs/fsplough/.gitignore b/testcases/kernel/fs/fsplough/.gitignore
-new file mode 100644
-index 000000000..34fee75c7
---- /dev/null
-+++ b/testcases/kernel/fs/fsplough/.gitignore
-@@ -0,0 +1 @@
-+/fsplough
-diff --git a/testcases/kernel/fs/fsplough/Makefile b/testcases/kernel/fs/fsplough/Makefile
-new file mode 100644
-index 000000000..887756d04
---- /dev/null
-+++ b/testcases/kernel/fs/fsplough/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2017 Linux Test Project
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/fsplough/fsplough.c b/testcases/kernel/fs/fsplough/fsplough.c
-new file mode 100644
-index 000000000..900aaacab
---- /dev/null
-+++ b/testcases/kernel/fs/fsplough/fsplough.c
-@@ -0,0 +1,279 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 SUSE LLC <mdoucha@suse.cz>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Write data into a test file using various methods and verify that file
-+ * contents match what was written.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <fcntl.h>
-+#include <sys/statvfs.h>
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+#define MAX_VEC 8
-+#define TEST_FILENAME "fsplough.dat"
-+
-+typedef void (*io_func)(void *buf, size_t offset, size_t size);
-+
-+static char *workdir_arg;
-+static char *directwr_flag;
-+static char *directrd_flag;
-+static char *loop_arg;
-+static int loop_count = 4096;
-+
-+static int read_fd = -1, write_fd = -1;
-+static char *writebuf, *filedata;
-+static size_t blocksize, bufsize, filesize;
-+
-+static void do_write(void *buf, size_t offset, size_t size);
-+static void do_pwrite(void *buf, size_t offset, size_t size);
-+static void do_writev(void *buf, size_t offset, size_t size);
-+static void do_pwritev(void *buf, size_t offset, size_t size);
-+static void do_read(void *buf, size_t offset, size_t size);
-+static void do_pread(void *buf, size_t offset, size_t size);
-+static void do_readv(void *buf, size_t offset, size_t size);
-+static void do_preadv(void *buf, size_t offset, size_t size);
-+
-+static const io_func write_funcs[] = {
-+	do_write,
-+	do_pwrite,
-+	do_writev,
-+	do_pwritev
-+};
-+
-+static const io_func read_funcs[] = {
-+	do_read,
-+	do_pread,
-+	do_readv,
-+	do_preadv
-+};
-+
-+static size_t fill_buffer(char *buf, size_t size)
+diff --git a/include/lapi/pwritev2.h b/include/lapi/pwritev2.h
+deleted file mode 100644
+index 48b53f463..000000000
+--- a/include/lapi/pwritev2.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+- * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+- */
+-
+-#ifndef LAPI_PWRITEV2_H__
+-#define LAPI_PWRITEV2_H__
+-
+-#include "config.h"
+-#include "lapi/syscalls.h"
+-
+-#if !defined(HAVE_PWRITEV2)
+-
+-/* LO_HI_LONG taken from glibc */
+-# define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
+-
+-static inline ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt,
+-                               off_t offset, int flags)
+-{
+-	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
+-			   LO_HI_LONG(offset), flags);
+-}
+-#endif
+-
+-#endif /* LAPI_PWRITEV2_H__ */
+diff --git a/include/lapi/preadv2.h b/include/lapi/uio.h
+similarity index 51%
+rename from include/lapi/preadv2.h
+rename to include/lapi/uio.h
+index db89547e2..a78103d99 100644
+--- a/include/lapi/preadv2.h
++++ b/include/lapi/uio.h
+@@ -14,11 +14,27 @@
+ # define RWF_NOWAIT 0x00000008
+ #endif
+ 
+-#if !defined(HAVE_PREADV2)
+ 
+ /* LO_HI_LONG taken from glibc */
+ # define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
+ 
++#if !defined(HAVE_PREADV)
++static inline ssize_t preadv(int fd, const struct iovec *iov, int iovcnt,
++	off_t offset)
 +{
-+	size_t i, ret = MAX_VEC + 1 + rand() % (size - MAX_VEC);
-+
-+	/* Align buffer size to block size */
-+	if (directwr_flag || directrd_flag)
-+		ret = MAX(LTP_ALIGN(ret, blocksize), MAX_VEC * blocksize);
-+
-+	for (i = 0; i < ret; i++)
-+		buf[i] = rand();
-+
-+	return ret;
++	return tst_syscall(__NR_preadv, fd, iov, iovcnt, LO_HI_LONG(offset));
 +}
++#endif
 +
-+static void vectorize_buffer(struct iovec *vec, size_t vec_size, char *buf,
-+	size_t buf_size, int align)
++#if !defined(HAVE_PWRITEV)
++static inline ssize_t pwritev(int fd, const struct iovec *iov, int iovcnt,
++	off_t offset)
 +{
-+	size_t i, len, chunk = align ? blocksize : 1;
-+
-+	memset(vec, 0, vec_size * sizeof(struct iovec));
-+	buf_size /= chunk;
-+
-+	for (i = 0; buf_size && i < vec_size; i++) {
-+		len = 1 + rand() % (buf_size + i + 1 - vec_size);
-+		vec[i].iov_base = buf;
-+		vec[i].iov_len = len * chunk;
-+		buf += vec[i].iov_len;
-+		buf_size -= len;
-+	}
-+
-+	vec[vec_size - 1].iov_len += buf_size * chunk;
++	return tst_syscall(__NR_pwritev, fd, iov, iovcnt, LO_HI_LONG(offset));
 +}
++#endif
 +
-+static void update_filedata(const void *buf, size_t offset, size_t size)
++#if !defined(HAVE_PREADV2)
+ static inline ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt,
+                               off_t offset, int flags)
+ {
+@@ -27,4 +43,15 @@ static inline ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt,
+ }
+ #endif
+ 
++#if !defined(HAVE_PWRITEV2)
++static inline ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt,
++                               off_t offset, int flags)
 +{
-+	memcpy(filedata + offset, buf, size * sizeof(char));
++	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
++			   LO_HI_LONG(offset), flags);
 +}
++#endif
 +
-+static void do_write(void *buf, size_t offset, size_t size)
-+{
-+	SAFE_LSEEK(write_fd, offset, SEEK_SET);
-+	SAFE_WRITE(1, write_fd, buf, size);
-+}
++#undef LO_HI_LONG
 +
-+static void do_pwrite(void *buf, size_t offset, size_t size)
-+{
-+	SAFE_PWRITE(1, write_fd, buf, size, offset);
-+}
-+
-+static void do_writev(void *buf, size_t offset, size_t size)
-+{
-+	struct iovec vec[MAX_VEC] = {};
-+
-+	vectorize_buffer(vec, MAX_VEC, buf, size, !!directwr_flag);
-+	SAFE_LSEEK(write_fd, offset, SEEK_SET);
-+	SAFE_WRITEV(1, write_fd, vec, MAX_VEC);
-+}
-+
-+static void do_pwritev(void *buf, size_t offset, size_t size)
-+{
-+	struct iovec vec[MAX_VEC] = {};
-+
-+	vectorize_buffer(vec, MAX_VEC, buf, size, !!directwr_flag);
-+	SAFE_PWRITEV(1, write_fd, vec, MAX_VEC, offset);
-+}
-+
-+static void do_read(void *buf, size_t offset, size_t size)
-+{
-+	SAFE_LSEEK(read_fd, offset, SEEK_SET);
-+	SAFE_READ(1, read_fd, buf, size);
-+}
-+
-+static void do_pread(void *buf, size_t offset, size_t size)
-+{
-+	SAFE_PREAD(1, read_fd, buf, size, offset);
-+}
-+
-+static void do_readv(void *buf, size_t offset, size_t size)
-+{
-+	struct iovec vec[MAX_VEC] = {};
-+
-+	vectorize_buffer(vec, MAX_VEC, buf, size, !!directrd_flag);
-+	SAFE_LSEEK(read_fd, offset, SEEK_SET);
-+	SAFE_READV(1, read_fd, vec, MAX_VEC);
-+}
-+
-+static void do_preadv(void *buf, size_t offset, size_t size)
-+{
-+	struct iovec vec[MAX_VEC] = {};
-+
-+	vectorize_buffer(vec, MAX_VEC, buf, size, !!directrd_flag);
-+	SAFE_PREADV(1, read_fd, vec, MAX_VEC, offset);
-+}
-+
-+static int open_testfile(int flags)
-+{
-+	if ((flags & O_WRONLY) && directwr_flag)
-+		flags |= O_DIRECT;
-+
-+	if ((flags & O_RDONLY) && directrd_flag)
-+		flags |= O_DIRECT;
-+
-+	return SAFE_OPEN(TEST_FILENAME, flags, 0644);
-+}
-+
-+static void setup(void)
-+{
-+	struct statvfs statbuf;
-+	size_t pagesize;
-+
-+	srand(time(0));
-+	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
-+
-+	if (workdir_arg)
-+		SAFE_CHDIR(workdir_arg);
-+
-+	if (tst_parse_int(loop_arg, &loop_count, 0, INT_MAX))
-+		tst_brk(TBROK, "Invalid write loop count: %s", loop_arg);
-+
-+	write_fd = open_testfile(O_WRONLY | O_CREAT | O_TRUNC);
-+	read_fd = open_testfile(O_RDONLY);
-+	TEST(fstatvfs(write_fd, &statbuf));
-+
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "fstatvfs() failed");
-+	else if (TST_RET)
-+		tst_brk(TBROK | TTERRNO, "Invalid fstatvfs() return value");
-+
-+	blocksize = statbuf.f_bsize;
-+	tst_res(TINFO, "Block size: %zu", blocksize);
-+	bufsize = 4 * MAX_VEC * MAX(pagesize, blocksize);
-+	filesize = 1024 * MAX(pagesize, blocksize);
-+	writebuf = SAFE_MMAP(NULL, bufsize, PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	filedata = SAFE_MALLOC(filesize);
-+
-+	tst_set_max_runtime(bufsize * loop_count / (8 * 1024 * 1024));
-+}
-+
-+static void run(void)
-+{
-+	size_t start, length;
-+	int i, f, fails = 0;
-+
-+	/* Test data consistency between random writes */
-+	for (i = 0; i < loop_count; i++) {
-+		length = fill_buffer(writebuf, bufsize);
-+		start = rand() % (filesize + 1 - length);
-+
-+		/* Align offset to blocksize if needed */
-+		if (directrd_flag || directwr_flag)
-+			start = (start + blocksize / 2) & ~(blocksize - 1);
-+
-+		update_filedata(writebuf, start, length);
-+		f = rand() % ARRAY_SIZE(write_funcs);
-+		write_funcs[f](writebuf, start, length);
-+
-+		memset(writebuf, 0, length);
-+		f = rand() % ARRAY_SIZE(read_funcs);
-+		read_funcs[f](writebuf, start, length);
-+
-+		if (memcmp(writebuf, filedata + start, length)) {
-+			tst_res(TFAIL, "Partial data mismatch at [%zu:%zu]",
-+				start, start + length);
-+			fails++;
-+		}
-+	}
-+
-+	if (!fails)
-+		tst_res(TPASS, "Partial data are consistent");
-+
-+	/* Ensure that the testfile has the expected size */
-+	do_write(writebuf, filesize - blocksize, blocksize);
-+	update_filedata(writebuf, filesize - blocksize, blocksize);
-+
-+	/* Sync the testfile and clear cache */
-+	SAFE_CLOSE(read_fd);
-+	SAFE_FSYNC(write_fd);
-+	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "1");
-+	read_fd = open_testfile(O_RDONLY);
-+
-+	/* Check final file contents */
-+	for (start = 0; start < filesize; start += bufsize) {
-+		length = MIN(bufsize, filesize - start);
-+		SAFE_READ(1, read_fd, writebuf, length);
-+
-+		if (memcmp(writebuf, filedata + start, length)) {
-+			tst_res(TFAIL, "Final data mismatch at [%zu:%zu]",
-+				start, start + length);
-+			return;
-+		}
-+	}
-+
-+	tst_res(TPASS, "Final data are consistent");
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_MUNMAP(writebuf, bufsize);
-+	free(filedata);
-+
-+	if (read_fd >= 0)
-+		SAFE_CLOSE(read_fd);
-+
-+	if (write_fd >= 0)
-+		SAFE_CLOSE(write_fd);
-+
-+	SAFE_UNLINK(TEST_FILENAME);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.options = (struct tst_option[]) {
-+		{"c:", &loop_arg, "Number of write loops (default: 4096)"},
-+		{"d:", &workdir_arg, "Path to working directory"},
-+		{"W", &directwr_flag, "Use direct I/O for writing"},
-+		{"R", &directrd_flag, "Use direct I/O for reading"},
-+		{}
-+	}
-+};
-diff --git a/testcases/misc/lvm/datafiles/runfile.tpl b/testcases/misc/lvm/datafiles/runfile.tpl
-index 4c80e9391..ee733626f 100644
---- a/testcases/misc/lvm/datafiles/runfile.tpl
-+++ b/testcases/misc/lvm/datafiles/runfile.tpl
-@@ -29,6 +29,10 @@
- {fsname}_gf28 growfiles -W {fsname}_gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u {tempdir}/{fsname}/gfsparse-2-$$
- {fsname}_gf29 growfiles -W {fsname}_gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -B 805306368 -C 1 -u {tempdir}/{fsname}/gfsparse-3-$$
- {fsname}_gf30 growfiles -W {fsname}_gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 {tempdir}/{fsname}/gf-sync-$$
-+{fsname}_plough01 fsplough -d {tempdir}/{fsname}
-+{fsname}_plough02 fsplough -R -d {tempdir}/{fsname}
-+{fsname}_plough03 fsplough -W -d {tempdir}/{fsname}
-+{fsname}_plough04 fsplough -RW -d {tempdir}/{fsname}
- {fsname}_rwtest01 rwtest -N {fsname}_rwtest01 -c -q -i 60s  -f sync 10%25000:rw-sync-$$ 500b:{tempdir}/{fsname}/rwtest01%f
- {fsname}_rwtest02 rwtest -N {fsname}_rwtest02 -c -q -i 60s  -f buffered 10%25000:rw-buffered-$$ 500b:{tempdir}/{fsname}/rwtest02%f
- {fsname}_rwtest03 rwtest -N {fsname}_rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:mm-buff-$$ 500b:{tempdir}/{fsname}/rwtest03%f
+ #endif /* LAPI_PREADV2_H__ */
+diff --git a/testcases/kernel/syscalls/preadv/preadv.h b/testcases/kernel/syscalls/preadv/preadv.h
+deleted file mode 100644
+index c715715b1..000000000
+--- a/testcases/kernel/syscalls/preadv/preadv.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later
+- *
+- * Copyright (c) 2015 Fujitsu Ltd.
+- * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+- * Copyright (c) Linux Test Project, 2016-2023
+- */
+-
+-#ifndef PREADV_H
+-#define PREADV_H
+-
+-#include <sys/types.h>
+-#include "config.h"
+-#include "lapi/syscalls.h"
+-
+-#if !defined(HAVE_PREADV)
+-int preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)
+-{
+-	return tst_syscall(__NR_preadv, fd, iov, iovcnt, offset);
+-}
+-#endif
+-
+-#endif /* RREADV_H */
+diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
+index 871b3ab42..d5e5bd95f 100644
+--- a/testcases/kernel/syscalls/preadv/preadv01.c
++++ b/testcases/kernel/syscalls/preadv/preadv01.c
+@@ -20,7 +20,7 @@
+ #include <sys/uio.h>
+ 
+ #include "tst_test.h"
+-#include "preadv.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK           64
+ 
+diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
+index 9977a4f48..19b194314 100644
+--- a/testcases/kernel/syscalls/preadv/preadv02.c
++++ b/testcases/kernel/syscalls/preadv/preadv02.c
+@@ -23,7 +23,7 @@
+ #include <sys/uio.h>
+ #include <unistd.h>
+ #include "tst_test.h"
+-#include "preadv.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK           64
+ 
+diff --git a/testcases/kernel/syscalls/preadv/preadv03.c b/testcases/kernel/syscalls/preadv/preadv03.c
+index 558d85050..997e7a07c 100644
+--- a/testcases/kernel/syscalls/preadv/preadv03.c
++++ b/testcases/kernel/syscalls/preadv/preadv03.c
+@@ -22,7 +22,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/mount.h>
+ #include "tst_test.h"
+-#include "preadv.h"
++#include "lapi/uio.h"
+ 
+ #define MNTPOINT	"mntpoint"
+ #define FNAME	MNTPOINT"/file"
+diff --git a/testcases/kernel/syscalls/preadv2/preadv201.c b/testcases/kernel/syscalls/preadv2/preadv201.c
+index 110977290..50f5a2e01 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv201.c
++++ b/testcases/kernel/syscalls/preadv2/preadv201.c
+@@ -20,7 +20,7 @@
+ #include <sys/uio.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/preadv2.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK           64
+ 
+diff --git a/testcases/kernel/syscalls/preadv2/preadv202.c b/testcases/kernel/syscalls/preadv2/preadv202.c
+index 4e1e82ebd..fd3b7c9d7 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv202.c
++++ b/testcases/kernel/syscalls/preadv2/preadv202.c
+@@ -25,7 +25,7 @@
+ #include <unistd.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/preadv2.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK           64
+ 
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index c87deb674..42b265680 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -45,7 +45,7 @@
+ 
+ #include "tst_test.h"
+ #include "tst_safe_pthread.h"
+-#include "lapi/preadv2.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK_SZ 4123
+ #define CHUNKS 60
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev.h b/testcases/kernel/syscalls/pwritev/pwritev.h
+deleted file mode 100644
+index e657dc7e6..000000000
+--- a/testcases/kernel/syscalls/pwritev/pwritev.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later
+- *
+- * Copyright (c) 2015 Fujitsu Ltd.
+- * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+- * Copyright (c) Linux Test Project, 2016-2023
+- */
+-
+-#ifndef PWRITEV_H
+-#define PWRITEV_H
+-
+-#include <sys/types.h>
+-#include "config.h"
+-#include "lapi/syscalls.h"
+-
+-#if !defined(HAVE_PWRITEV)
+-int pwritev(int fd, const struct iovec *iov, int iovcnt, off_t offset)
+-{
+-	return tst_syscall(__NR_pwritev, fd, iov, iovcnt, offset);
+-}
+-#endif
+-
+-#endif /* PWRITEV_H */
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev01.c b/testcases/kernel/syscalls/pwritev/pwritev01.c
+index f5fce81f2..1a4f672bf 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev01.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev01.c
+@@ -18,7 +18,7 @@
+ #include <string.h>
+ #include <sys/uio.h>
+ #include "tst_test.h"
+-#include "pwritev.h"
++#include "lapi/uio.h"
+ #include "tst_safe_prw.h"
+ 
+ #define	CHUNK		64
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
+index 59a286847..25eb242f5 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev02.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
+@@ -22,7 +22,7 @@
+ #include <sys/uio.h>
+ #include <unistd.h>
+ #include "tst_test.h"
+-#include "pwritev.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK           64
+ 
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev03.c b/testcases/kernel/syscalls/pwritev/pwritev03.c
+index 1bf9d5731..81ccee9be 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev03.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev03.c
+@@ -22,7 +22,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/mount.h>
+ #include "tst_test.h"
+-#include "pwritev.h"
++#include "lapi/uio.h"
+ #include "tst_safe_prw.h"
+ 
+ #define MNTPOINT	"mntpoint"
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+index 987412ba8..ae9047cdd 100644
+--- a/testcases/kernel/syscalls/pwritev2/pwritev201.c
++++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+@@ -22,7 +22,7 @@
+ #include <sys/uio.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/pwritev2.h"
++#include "lapi/uio.h"
+ #include "tst_safe_prw.h"
+ 
+ #define CHUNK	64
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev202.c b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+index 5a1c4c6b6..e4d80070d 100644
+--- a/testcases/kernel/syscalls/pwritev2/pwritev202.c
++++ b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+@@ -26,7 +26,7 @@
+ #include <unistd.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/pwritev2.h"
++#include "lapi/uio.h"
+ 
+ #define CHUNK	64
+ 
 -- 
 2.46.0
 
