@@ -4,18 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A8A6E6B27C
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 14:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F12F7E6B278
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 14:12:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9C593CD729
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 15:12:03 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 81F183CD788
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 15:12:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B569D3CD6B6
+ by picard.linux.it (Postfix) with ESMTPS id E9E4D3CD6B2
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 15:11:31 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
@@ -24,73 +25,73 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 17841140E94E
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 165911BBCF19
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 15:11:30 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BF2311FECF
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9E9D21FECE
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 14:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1730470289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FOu3XfXk0/3QePjYbag/+L1gt2KzQkJpn4UPjNtijBc=;
- b=yoyo0x1naORecUlAG5AiI5+XNqoiCF8n5KZwU4DdrFf1y9YzKXtQGgObjDiobKwsgeNaY5
- 2/iJzoAwgS0m868NwBegktL2/vO+zpdb+8j4LO1I9P5+2QonDm6XiFPfr+LxTD226RZ5Ra
- gYzpdHDdmerl8TzKmlXZbWRwmXXY9C8=
+ bh=0l1ai+80MSVkCbX/Fe6QjfKxPg8RSEOmU8exbAx9Dm4=;
+ b=ily0q7+NdSEUUY1XunpwYdxXFw/CNHZS61hZ2f+VAuCuAfgEEqPOYfvhWe42JmgPku4Omu
+ YCyW+Z6Cr5KBxKA+jPyHVhSuONfg8uKs+GIX16NQvKjsQsyXv3PvtjT/loiChRscFFM/wR
+ xXjMmqVYdPVXrXBBPdI6QcjmCTqVDnI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1730470289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FOu3XfXk0/3QePjYbag/+L1gt2KzQkJpn4UPjNtijBc=;
- b=DycH9yOyR04HdOBoyJWoDCe683NELnnS6V1J3jQL0/AE89+zgMuNxGxf6CRDN1Nlu4xcLC
- PVdO0q+B3daiozDA==
+ bh=0l1ai+80MSVkCbX/Fe6QjfKxPg8RSEOmU8exbAx9Dm4=;
+ b=yaZjXBXrQiEN4KMYD2enea6YgWvEybC+Sdmk0qKEoSJqpiunKMHU96twZZwqLuEkbIr+g6
+ o3ohAikXnX0KHEAg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yoyo0x1n;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DycH9yOy
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ily0q7+N;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yaZjXBXr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1730470289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FOu3XfXk0/3QePjYbag/+L1gt2KzQkJpn4UPjNtijBc=;
- b=yoyo0x1naORecUlAG5AiI5+XNqoiCF8n5KZwU4DdrFf1y9YzKXtQGgObjDiobKwsgeNaY5
- 2/iJzoAwgS0m868NwBegktL2/vO+zpdb+8j4LO1I9P5+2QonDm6XiFPfr+LxTD226RZ5Ra
- gYzpdHDdmerl8TzKmlXZbWRwmXXY9C8=
+ bh=0l1ai+80MSVkCbX/Fe6QjfKxPg8RSEOmU8exbAx9Dm4=;
+ b=ily0q7+NdSEUUY1XunpwYdxXFw/CNHZS61hZ2f+VAuCuAfgEEqPOYfvhWe42JmgPku4Omu
+ YCyW+Z6Cr5KBxKA+jPyHVhSuONfg8uKs+GIX16NQvKjsQsyXv3PvtjT/loiChRscFFM/wR
+ xXjMmqVYdPVXrXBBPdI6QcjmCTqVDnI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1730470289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FOu3XfXk0/3QePjYbag/+L1gt2KzQkJpn4UPjNtijBc=;
- b=DycH9yOyR04HdOBoyJWoDCe683NELnnS6V1J3jQL0/AE89+zgMuNxGxf6CRDN1Nlu4xcLC
- PVdO0q+B3daiozDA==
+ bh=0l1ai+80MSVkCbX/Fe6QjfKxPg8RSEOmU8exbAx9Dm4=;
+ b=yaZjXBXrQiEN4KMYD2enea6YgWvEybC+Sdmk0qKEoSJqpiunKMHU96twZZwqLuEkbIr+g6
+ o3ohAikXnX0KHEAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9884713B22
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 93D0413B1D
  for <ltp@lists.linux.it>; Fri,  1 Nov 2024 14:11:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kEgMJZHhJGf1BAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sMLhI5HhJGf1BAAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Fri, 01 Nov 2024 14:11:29 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  1 Nov 2024 15:11:10 +0100
-Message-ID: <20241101141111.104803-6-mdoucha@suse.cz>
+Date: Fri,  1 Nov 2024 15:11:09 +0100
+Message-ID: <20241101141111.104803-5-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241101141111.104803-1-mdoucha@suse.cz>
 References: <20241101141111.104803-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: BF2311FECF
+X-Rspamd-Queue-Id: 9E9D21FECE
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
@@ -108,13 +109,14 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:email, suse.cz:dkim, suse.cz:mid]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:dkim, suse.cz:mid,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] Add test for data integrity over NFS
+Subject: [LTP] [PATCH 4/5] Add support for setting loop device size in shell
+ tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,85 +133,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add NFS test which checks data integrity of random writes into a file,
-with both buffered and direct I/O.
+Add TST_DEVICE_SIZE variable to set loop device size.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
+ doc/developers/writing_tests.rst | 2 +-
+ testcases/lib/tst_test.sh        | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-The lower loop count is necessary because NFS has very large block size,
-up to 256KB on x86_64. The new tests take ~50 minutes to complete in total
-on my laptop. With the default loop count, the TCP tests would all time out.
-
- runtest/net.nfs                           | 11 +++++++
- testcases/network/nfs/nfs_stress/nfs10.sh | 36 +++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100755 testcases/network/nfs/nfs_stress/nfs10.sh
-
-diff --git a/runtest/net.nfs b/runtest/net.nfs
-index 7f84457bc..fef993da8 100644
---- a/runtest/net.nfs
-+++ b/runtest/net.nfs
-@@ -94,6 +94,17 @@ nfs09_v40_ip6t nfs09.sh -6 -v 4 -t tcp
- nfs09_v41_ip6t nfs09.sh -6 -v 4.1 -t tcp
- nfs09_v42_ip6t nfs09.sh -6 -v 4.2 -t tcp
+diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+index 2293800a1..ab633121e 100644
+--- a/doc/developers/writing_tests.rst
++++ b/doc/developers/writing_tests.rst
+@@ -390,7 +390,7 @@ LTP C And Shell Test API Comparison
+       - TST_FS_TYPE
  
-+nfs10_v30_ip4u nfs10.sh -v 3 -t udp
-+nfs10_v30_ip4t nfs10.sh -v 3 -t tcp
-+nfs10_v40_ip4t nfs10.sh -v 4 -t tcp
-+nfs10_v41_ip4t nfs10.sh -v 4.1 -t tcp
-+nfs10_v42_ip4t nfs10.sh -v 4.2 -t tcp
-+nfs10_v30_ip6u nfs10.sh -6 -v 3 -t udp
-+nfs10_v30_ip6t nfs10.sh -6 -v 3 -t tcp
-+nfs10_v40_ip6t nfs10.sh -6 -v 4 -t tcp
-+nfs10_v41_ip6t nfs10.sh -6 -v 4.1 -t tcp
-+nfs10_v42_ip6t nfs10.sh -6 -v 4.2 -t tcp
-+
- nfslock01_v30_ip4u nfslock01.sh -v 3 -t udp
- nfslock01_v30_ip4t nfslock01.sh -v 3 -t tcp
- nfslock01_v40_ip4t nfslock01.sh -v 4 -t tcp
-diff --git a/testcases/network/nfs/nfs_stress/nfs10.sh b/testcases/network/nfs/nfs_stress/nfs10.sh
-new file mode 100755
-index 000000000..b4e777285
---- /dev/null
-+++ b/testcases/network/nfs/nfs_stress/nfs10.sh
-@@ -0,0 +1,36 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2024 SUSE LLC <mdoucha@suse.cz>
-+#
-+# DESCRIPTION: Verify data integrity over NFS, with and without O_DIRECT
-+
-+TST_CNT=4
-+TST_TESTFUNC="do_test"
-+TST_DEVICE_SIZE=1024
-+
-+do_test1()
-+{
-+	tst_res TINFO "Testing buffered write, buffered read"
-+	EXPECT_PASS fsplough -c 512 -d "$PWD"
-+}
-+
-+do_test2()
-+{
-+	tst_res TINFO "Testing buffered write, direct read"
-+	EXPECT_PASS fsplough -c 512 -R -d "$PWD"
-+}
-+
-+do_test3()
-+{
-+	tst_res TINFO "Testing direct write, buffered read"
-+	EXPECT_PASS fsplough -c 512 -W -d "$PWD"
-+}
-+
-+do_test4()
-+{
-+	tst_res TINFO "Testing direct write, direct read"
-+	EXPECT_PASS fsplough -c 512 -RW -d "$PWD"
-+}
-+
-+. nfs_lib.sh
-+tst_run
+     * - .dev_min_size
+-      - not applicable
++      - TST_DEVICE_SIZE
+ 
+     * - .format_device
+       - TST_FORMAT_DEVICE
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index c19c30b76..cfdae0230 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -687,6 +687,7 @@ tst_run()
+ 			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+ 			DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE|MOUNT_DEVICE);;
+ 			SKIP_FILESYSTEMS|SKIP_IN_LOCKDOWN|SKIP_IN_SECUREBOOT);;
++			DEVICE_SIZE);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+ 			esac
+ 		done
+@@ -750,7 +751,7 @@ tst_run()
+ 
+ 	# needs to be after cd $TST_TMPDIR to keep test_dev.img under $TST_TMPDIR
+ 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+-		TST_DEVICE=$(tst_device acquire)
++		TST_DEVICE=$(tst_device acquire $TST_DEVICE_SIZE)
+ 
+ 		if [ ! -b "$TST_DEVICE" -o $? -ne 0 ]; then
+ 			unset TST_DEVICE
 -- 
 2.46.0
 
