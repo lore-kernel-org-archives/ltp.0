@@ -4,104 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5004E674BD
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 09:18:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9CA9E674BF
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 09:34:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 03DFB3CCF35
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 10:18:22 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5DD4E3CD0A4
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 10:34:09 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3BC8E3C21FF
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 10:18:06 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id DCFC43CD090
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 10:33:53 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 97B8E1BD10B3
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 10:18:05 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 536B11435AF1
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 10:33:52 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AF58F21C9D;
- Fri,  1 Nov 2024 09:18:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BE26B1FD09;
+ Fri,  1 Nov 2024 09:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730452684;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1730453630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mqPYXDipeRxrNOaVTM63kloFXxe7tiumDDemqZQ0ifU=;
- b=x53jbemfHLBXTn8U0MY5yFu3u6T3Jew31uTMaLsIGYV+luEIyEb8d+htyGcV7u/grUl8J6
- b2zM2r9H3Z/amImnfCqrgmfNhOYmrhTE8pX4E0oI40PlttTFmz4Ralk2axX6r8wAvyolcb
- 3EjyTCFgXJ6ApGBaIqKbQyve/prX08E=
+ bh=3XwwwRGeLG4HFrhXTh8amMXbRvXQzWTt+0OQzXopXtw=;
+ b=zCe9NFJe9FnyUuzX1KQpRk/txUpga54FMD3xqdfBxFbgGO+kLEQKO7hdOYj3bjkGIvHu8w
+ uCi1KIkYut+PMsXn+KZfgooJr23BEHQf3EgevA0W/RUZfT7Tb8aIyLSfc6HlfTQJ6TD2PN
+ ajXu/BZnueqsrpy1EV11ZivhFz2tZ2I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730452684;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1730453630;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mqPYXDipeRxrNOaVTM63kloFXxe7tiumDDemqZQ0ifU=;
- b=TkI+IZTHzo40v7USh6j14o0py1x4Krnyhh7Sf6NcoirMdKNOhHCaPZG6B30TvA9dngEe+0
- kHIh7YiTIqNdAPCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=3XwwwRGeLG4HFrhXTh8amMXbRvXQzWTt+0OQzXopXtw=;
+ b=r2jJsjIykqVC82yZTX12NhR8k4g7+Tq4WxuRWsooLq6a3PjN4PNOf2z3NFGxoALb4pim8Z
+ FQ1i1dxnavPTHMAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zCe9NFJe;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=r2jJsjIy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730452684;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1730453630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mqPYXDipeRxrNOaVTM63kloFXxe7tiumDDemqZQ0ifU=;
- b=x53jbemfHLBXTn8U0MY5yFu3u6T3Jew31uTMaLsIGYV+luEIyEb8d+htyGcV7u/grUl8J6
- b2zM2r9H3Z/amImnfCqrgmfNhOYmrhTE8pX4E0oI40PlttTFmz4Ralk2axX6r8wAvyolcb
- 3EjyTCFgXJ6ApGBaIqKbQyve/prX08E=
+ bh=3XwwwRGeLG4HFrhXTh8amMXbRvXQzWTt+0OQzXopXtw=;
+ b=zCe9NFJe9FnyUuzX1KQpRk/txUpga54FMD3xqdfBxFbgGO+kLEQKO7hdOYj3bjkGIvHu8w
+ uCi1KIkYut+PMsXn+KZfgooJr23BEHQf3EgevA0W/RUZfT7Tb8aIyLSfc6HlfTQJ6TD2PN
+ ajXu/BZnueqsrpy1EV11ZivhFz2tZ2I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730452684;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1730453630;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mqPYXDipeRxrNOaVTM63kloFXxe7tiumDDemqZQ0ifU=;
- b=TkI+IZTHzo40v7USh6j14o0py1x4Krnyhh7Sf6NcoirMdKNOhHCaPZG6B30TvA9dngEe+0
- kHIh7YiTIqNdAPCw==
+ bh=3XwwwRGeLG4HFrhXTh8amMXbRvXQzWTt+0OQzXopXtw=;
+ b=r2jJsjIykqVC82yZTX12NhR8k4g7+Tq4WxuRWsooLq6a3PjN4PNOf2z3NFGxoALb4pim8Z
+ FQ1i1dxnavPTHMAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 579A7136D9;
- Fri,  1 Nov 2024 09:18:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A92AC136D9;
+ Fri,  1 Nov 2024 09:33:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8q73EsycJGeBOQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 09:18:04 +0000
-Date: Fri, 1 Nov 2024 10:18:02 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20241101091802.GA1180540@pevik>
-References: <20241031-generate_syscalls-v8-0-8e35a9d6783b@suse.com>
- <20241031-generate_syscalls-v8-2-8e35a9d6783b@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id grYCKX6gJGfOPQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 01 Nov 2024 09:33:50 +0000
+Date: Fri, 1 Nov 2024 10:33:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZySgf_RyPfZUXCXD@yuki.lan>
+References: <20240927101813.12643-1-chrubis@suse.cz>
+ <2748318.lGaqSPkdTl@localhost> <20241015161950.GA35679@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241031-generate_syscalls-v8-2-8e35a9d6783b@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20241015161950.GA35679@pevik>
+X-Rspamd-Queue-Id: BE26B1FD09
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo,suse.com:email];
- FUZZY_BLOCKED(0.00)[rspamd.com];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 2/4] Add script to generate arch(s) dependant
- syscalls
+Subject: Re: [LTP] [PATCH] include: Better documentation for TFAIL and TBROK\
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,102 +117,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi!
+> nit: there is trailing "\" in the test subject.
 
-the script works for me, great!
+I know, fixed.
 
-Few more comments, I promis the last one, feel free to just ignore them.
+> > > diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
+> > > index 806940e0d..a79428fa2 100644
+> > > --- a/include/tst_res_flags.h
+> > > +++ b/include/tst_res_flags.h
+> > > @@ -9,11 +9,26 @@
+> > >  /**
+> > >   * enum tst_res_flags - Test result reporting flags.
+> > >   *
+> > > - * @TPASS: Reports a single success.
+> > > - * @TFAIL: Reports a single failure.
+> > > - * @TBROK: Reports a single breakage.
+> > > + * @TPASS: Reports a single success. Successes increment passed counter and
+> > > + *         show up in the test results.
+> > > + *
+> > > + * @TFAIL: Reports a single failure. Failures increment failure counter and
+> > > + *         show up in the test results. A failure occurs when test assertion
+> > > + *         is broken.
+> > > + *
+> > > + * @TBROK: Reports a single breakage. Breakages increment breakage counter and
+> > > + *         show up in the test results. Breakages are reported in cases where a
+> > > + *         test couldn't be executed due to an unexpected failure when we were
+> nit: maybe use passive form? "when we were setting the test environment" =>
+> "during the test setup" or "during setting the test environment"?
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+That is indeed better, thanks.
 
-> --- /dev/null
-> +++ b/include/lapi/syscalls/generate_arch.sh
-> @@ -0,0 +1,206 @@
-> +#!/bin/sh -eu
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-I would put here your/SUSE/LTP copyright (2024) and the original author
-copyright:
-# Copyright (c) Marcin Juszkiewicz, 2023-2024
+> > > + *         setting the test environment. The TBROK status is mostly used
+> > > + *         with tst_brk() which exit the test immediatelly. The difference
+> > s/immediatelly/immediately 
+> 
+> +1
 
-The author does not have it in the script, but it has in LICENSE:
-Copyright (c) Marcin Juszkiewicz
+Fixed as well.
 
-But I'm not a lawyer, maybe I'm wrong.
+> > > + *         between TBROK and TCONF is that TCONF is used in cases where
+> > > + *         optional functionality is missing while TBROK is used in cases where
+> > > + *         something that is supposed to work is broken unexpectedly.
+> nit (not really sure): "that" => "which"
+> 
+> > > + *
+> > >   * @TWARN: Reports a single warning. Warnings increment a warning counter and
+> > > - *         show up in test results.
+> > > + *         show up in test results. Warnings are somewhere in the middle between
+> > > + *         TBROK and TCONF. Warnings usually appear when something that is
+> nit (not really sure): "that" => "which"
 
-> +#
-> +# This is an adaptation of the update-tables.sh script, included in the
-> +# syscalls-table project (https://github.com/hrw/syscalls-table) and released
-> +# under the MIT license.
-> +#
-> +# Author: Andrea Cervesato <andrea.cervesato@suse.com>
-> +
-> +if [ "$#" -eq "0" ]; then
-> +	echo "Please provide kernel sources:"
-> +	echo ""
-> +	echo "$0 path/to/Linux/kernel/sources"
-> +	echo ""
-> +	exit 1
-> +fi
+AFAIK both can work here, so I kept the original.
 
-nit: use common syntax ($# is always defined, thus not need to be quoted, 0 as
-well, "" is empty string, thus can be omitted):
-if [ $# -eq 0 ]; then
-	echo "Please provide kernel sources:"
-	echo
-	echo "$0 path/to/Linux/kernel/sources"
-	echo
-	exit 1
-fi
+Thanks a lot everyone for the reviews, pushed.
 
-...
-> +generate_list_syscalls_c() {
-> +	(
-very nit: this first echo is probably not needed.
-> +		echo
-> +		echo "
-> +		#include <stdio.h>
-> +		#include <asm/unistd.h>
-> +
-> +		int main(void)
-> +		{
-> +		"
-> +		for syscall in $(cat ${TEMP}/syscall-names.txt); do
-> +			echo "
-> +		#ifdef __NR_$syscall
-> +			printf(\"$syscall %d\\\n\", __NR_$syscall);
-> +		#endif
-> +		"
-> +		done
-> +		echo " return 0;
-> +		}"
-> +	) >${TEMP}/list-syscalls.c
-> +}
-...
-> +
-> +do_all_tables() {
-> +	for archdir in ${KERNELSRC}/arch/*; do
-> +		arch=$(basename $archdir)
-...
-> +			arch=x86_64 extraflags=-D__LP64__ generate_table
-> +			bits=32
-> +			arch=i386 generate_table
-> +			arch=x32 extraflags=-D__ILP32__ generate_table
-> +			;;
-> +		arc | csky | hexagon | m68k | microblaze | nios2 | openrisc | sh | xtensa)
-I've never seen spaces between '|' separator in shell case command. It should
-not cause anything, but it's just unusual (original code in
-https://github.com/hrw/syscalls-table/blob/master/scripts/update-tables.sh
-from which we diverged quite a lot now also does not have it).
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
