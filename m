@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E20EE674AC
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 07:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D45CE674B0
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 07:57:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9E29A3CCFB6
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 08:40:18 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8844B3C745B
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 08:57:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 877863CCD33
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 08:40:03 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0276D3C745B
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 08:56:56 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,92 +24,49 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BC0A623AF75
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 08:40:02 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4946464AC6F
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 08:56:54 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6141421D98;
- Fri,  1 Nov 2024 07:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730446798;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OFT0c1sfAu4/ULqEDR6VY/JDT8xqavNqJE1fjTtiCV8=;
- b=drTACs7p74NtzEWiNoB/eXVUvyXypog2zX4V1Y0lodJKNC3H7dWN9DlHFyg6O5hUrH1iim
- s+uLS8fKnQwwrV+d48Y2AHU4AU9vevgZj68ugebnLtYyxG2UdGWnSTIia+6rMJU7dOp0je
- 4eDzDl/qE5h3M56L+gB2wuk+ZwvY2vU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730446798;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OFT0c1sfAu4/ULqEDR6VY/JDT8xqavNqJE1fjTtiCV8=;
- b=LJ8g5uQEmYJ16d/urxovozj0T8HQW3olzXPe86uPlbaACBx3Uy3NBpQj4niCPcCuZvmK9w
- tamJsIopUvkQQyCA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DB0B121C1F;
+ Fri,  1 Nov 2024 07:56:53 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=drTACs7p;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LJ8g5uQE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730446798;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OFT0c1sfAu4/ULqEDR6VY/JDT8xqavNqJE1fjTtiCV8=;
- b=drTACs7p74NtzEWiNoB/eXVUvyXypog2zX4V1Y0lodJKNC3H7dWN9DlHFyg6O5hUrH1iim
- s+uLS8fKnQwwrV+d48Y2AHU4AU9vevgZj68ugebnLtYyxG2UdGWnSTIia+6rMJU7dOp0je
- 4eDzDl/qE5h3M56L+gB2wuk+ZwvY2vU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730446798;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OFT0c1sfAu4/ULqEDR6VY/JDT8xqavNqJE1fjTtiCV8=;
- b=LJ8g5uQEmYJ16d/urxovozj0T8HQW3olzXPe86uPlbaACBx3Uy3NBpQj4niCPcCuZvmK9w
- tamJsIopUvkQQyCA==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3435013ACC;
- Fri,  1 Nov 2024 07:39:58 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4A9A13722;
+ Fri,  1 Nov 2024 07:56:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wRf/Cs6FJGeaHgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 07:39:58 +0000
-Date: Fri, 1 Nov 2024 08:39:41 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id u/rCKcWJJGfmIgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 07:56:53 +0000
+Date: Fri, 1 Nov 2024 08:56:44 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241101073941.GA1145995@pevik>
+Message-ID: <20241101075644.GB1145995@pevik>
 References: <20241031-generate_syscalls-v8-0-8e35a9d6783b@suse.com>
- <20241031-generate_syscalls-v8-1-8e35a9d6783b@suse.com>
- <ZyOucZF2mzL-Jame@yuki.lan>
+ <20241031-generate_syscalls-v8-4-8e35a9d6783b@suse.com>
+ <ZyOw8qyh3py6wO8t@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZyOucZF2mzL-Jame@yuki.lan>
-X-Rspamd-Queue-Id: 6141421D98
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+In-Reply-To: <ZyOw8qyh3py6wO8t@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: DB0B121C1F
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 1/4] Refactor regen.sh script to generate
- syscalls
+Subject: Re: [LTP] [PATCH v8 4/4] Add documentation about syscalls.h
+ generator
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,76 +85,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+HI Andrea, Cyril,
 
-> Hi!
-> > +while IFS= read -r arch; do
-> > +	(
-> > +		echo
-> > +		case ${arch} in
-> > +		sparc64) echo "#if defined(__sparc__) && defined(__arch64__)" ;;
-> > +		sparc) echo "#if defined(__sparc__) && !defined(__arch64__)" ;;
-> > +		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
-> > +		mips64n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
-> > +		mips64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
-> > +		mipso32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
+> > +++ b/doc/developers/test_case_tutorial.rst
+> > @@ -302,24 +302,25 @@ for a distribution's C library version to be older than its kernel or it may use
+> >  cut down C library in comparison to the GNU one. So we must call ``statx()``
+> >  using the general ``syscall()`` interface.
 
-The original code was:
+> > -The LTP contains a library for dealing with the ``syscall`` interface, which is
+> > +LTP contains a library for dealing with the ``syscall`` interface, which is
+> >  located in :master:`include/lapi`. System call numbers are listed against the relevant
+> >  call in the ``*.in`` files (e.g. ``x86_64.in``) which are used to generate
+> > -``syscalls.h``, which is the header you should include. On rare occasions you
+> > -may find the system call number is missing from the ``*.in`` files and will need
+> > -to add it (see :master:`include/lapi/syscalls/strip_syscall.awk`).
+> > +``syscalls.h``, the header you should include.
 
--		mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
--		mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
--		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
+> > -System call numbers vary between architectures, hence there are multiple
+> > -``*.in`` files for each architecture.
 
-ifdefs are the same, the only thing which changed are arch names. And these are
-also changed, see below. The only problem I see is that the change in
-supported-arch.txt below happens in the following commit. Shouldn't the rename
-happen in this commit already? syscalls.h file generated from the first commit
-is indeed different from the one generated in 2nd and 3rd (which are the same.
+> I would keep this sentence in there, probably as a last sentence in the
+> upper paragraph.
 
-+++ b/include/lapi/syscalls/supported-arch.txt
-@@ -1,13 +1,13 @@
--aarch64
- arc
-+arm64
- arm
--hppa
- i386
- ia64
--loongarch
--mips_n32
--mips_n64
--mips_o32
-+loongarch64
-+mips64n32
-+mips64
-+mipso32
-+parisc
- powerpc64
- powerpc
- s390x
++1
 
-1st commit have (which is IMHO wrong)
-#ifdef __mips_n32__
+> > - You can find the various values for the
+> > -``statx`` system call across a number of ``unistd.h`` files in the Linux kernel.
+> > +On rare occasions, you may find that system call number is missing from ``*.in``
+> > +files. In these cases, they will need to be updated using
+> > +`include/lapi/syscalls/generate_arch.sh` script as following:
+>         ^
+> 	Just `generate_arch.sh` here, we list the full path in the code
+> 	block, no need to repeat it here as well.
++1. BTW it should be either ``generate_arch.sh`` (double `` is used for
+other commands, e.g. ``make check`` or ``./configure``) or it could be a link to
+a source:
 
-2nd and 3rd have:
-#if defined(__mips__) && defined(_ABIN32)
+:master:`include/lapi/syscalls/generate_arch.sh` script as following:
 
-The reason due postponed changes is, that some arch use
+I like links, because reader can see the script content. Also it can help to
+verify whether the script is still at the repository (was not moved/deleted).
 
-*) echo "#ifdef __${arch}__" ;;
+> > -Note that we don't use the system-call-identifier value available in
+> > -``/usr/include/linux/uinstd.h`` because the kernel might be much newer than the
+> > -user land development packages.
+> > +.. code-block:: bash
+> > +
+> > +    $ include/lapi/syscalls/generate_arch.sh /path/of/linux/sources
+>                                                       ^
+> 						      to
 
-Whoever will do bisecting, cannot use this commit on mips and other affected
-archs due broken syscalls.h. This problem appeared in v5. Previously (v3 and v4)
-old names were used in generate_syscalls.sh, and in second commit (when the
-generate_arch.sh archs was added) were new ones used.
+very nit: "path/to/Linux/kernel/sources" (upper "L", which you use later, also
+it's used in the script).
 
-IMHO clearest solution would be to move rename to 1st commit.
+> > +The script will generate all the needed ``*.in`` files according to the Linux
+>                                                             ^
+> 							  accordingly
++1
+> > +source code which has been used. Make sure that your Linux source code has
+> > +been updated to the latest version.
 
-> It would be nice to get a confirmation from someone who knows mips that
-> these changes in ifdefs are okay, otherwise:
+> > -For ``statx`` we had to add ``statx 332`` to :master:`include/lapi/syscalls/x86_64.in`,
+> > -``statx 383`` to :master:`include/lapi/syscalls/powerpc.in`, etc.  Now lets look at
+> > -the code, which I will explain in more detail further down.
+> > +Once the new syscalls files have been updated, to rebuild our ``syscalls.h``
+> > +file, please use ``./configure`` command.
+>             ^                         ^
+> 	 re-run			      script
++1
 
-I guess we know the answer thus we don't have to bother mips folks.
-But very good catch.
+Otherwise LGTM, thanks a lot for bothering with the docs.
 
 Kind regards,
 Petr
