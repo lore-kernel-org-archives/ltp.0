@@ -4,105 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7422AE6F093
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 22:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C47AE6F095
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 23:32:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E179A3CE475
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 23:46:21 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 79E603CE47B
+	for <ltp@archiver.kernel.org>; Sat,  2 Nov 2024 00:32:57 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 149DD3CE3F0
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:46:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0A4393CE47B
+ for <ltp@lists.linux.it>; Sat,  2 Nov 2024 00:32:41 +0100 (CET)
 Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DC8CE143F18D
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:46:04 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 46BE11413E70
+ for <ltp@lists.linux.it>; Sat,  2 Nov 2024 00:32:39 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 031762195D;
- Fri,  1 Nov 2024 22:46:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730501164;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
- b=I32OlS6AB/ZeyMWp/T2WaoAs/Srxx5YPKzXK2n1JVs1PTznv2p8gLvHLSN/zh3nwtsgtLQ
- bKIL257caSKh2fMQRmYbCPAejVsCcXn2nLclyb+fITcLSz2u4L7EYr3mQ3eWkGBi71Fhd3
- cCJ110cnQaDc0mdzF7FauM+KPK2o86E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730501164;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
- b=knR3C8VRohn4JD5HxXODGPnndlrmLx+JTbaduczd5Cb5FA+tFnyBDxZrToRqsglu/a7EAy
- 2nMpYAhsl0mQHKBg==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3238621C88;
+ Fri,  1 Nov 2024 23:32:38 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730501164;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
- b=I32OlS6AB/ZeyMWp/T2WaoAs/Srxx5YPKzXK2n1JVs1PTznv2p8gLvHLSN/zh3nwtsgtLQ
- bKIL257caSKh2fMQRmYbCPAejVsCcXn2nLclyb+fITcLSz2u4L7EYr3mQ3eWkGBi71Fhd3
- cCJ110cnQaDc0mdzF7FauM+KPK2o86E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730501164;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/bfb0Q/TYby9USvLlqB6I16SkuEcSX12IYw7Czelb8c=;
- b=knR3C8VRohn4JD5HxXODGPnndlrmLx+JTbaduczd5Cb5FA+tFnyBDxZrToRqsglu/a7EAy
- 2nMpYAhsl0mQHKBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CAC46136D9;
- Fri,  1 Nov 2024 22:46:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C81F136C7;
+ Fri,  1 Nov 2024 23:32:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ztOsLytaJWfqewAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 22:46:03 +0000
-Date: Fri, 1 Nov 2024 23:45:47 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +9RMARZlJWceBwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 23:32:38 +0000
+Date: Sat, 2 Nov 2024 00:32:21 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20241101224547.GB1324664@pevik>
+Message-ID: <20241101233221.GC1324664@pevik>
 References: <20241101141111.104803-1-mdoucha@suse.cz>
- <20241101141111.104803-5-mdoucha@suse.cz>
+ <20241101141111.104803-6-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241101141111.104803-5-mdoucha@suse.cz>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
+In-Reply-To: <20241101141111.104803-6-mdoucha@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 3238621C88
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/5] Add support for setting loop device size in
- shell tests
+Subject: Re: [LTP] [PATCH 5/5] Add test for data integrity over NFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,13 +86,75 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Martin,
 
-> Add TST_DEVICE_SIZE variable to set loop device size.
+[ Cc Li and Cyril due tst_set_timeout vs. tst_loader.sh and tst_run_shell.c. ]
 
-obviously correct, thanks!
+> Add NFS test which checks data integrity of random writes into a file,
+> with both buffered and direct I/O.
+
+LGTM.
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Maybe we should (later) add trivial shell API test into lib/newlib_tests/shell,
-which creates the device and tests if the size is expected.
+I'll try to have look on the core work (fsplough.c) on Monday.
+Hopefully Li or Cyril would have look into this as well.
+
+> The lower loop count is necessary because NFS has very large block size,
+> up to 256KB on x86_64. The new tests take ~50 minutes to complete in total
+> on my laptop. With the default loop count, the TCP tests would all time out.
+
+BTW I got timeout when testing nfs10.sh -v 4 -t tcp on Tumbleweed VM (2 CPU,
+1.4 GB RAM, 2 GB SWAP) on my laptop:
+...
+nfs10 1 TINFO: === Testing on ext4 ===
+nfs10 1 TINFO: Formatting ext4 with opts='/dev/loop0'
+nfs10 1 TINFO: Mounting device: mount -t ext4 /dev/loop0 /var/tmp/LTP_nfs10.zWBiahjI48/mntpoint
+nfs10 1 TINFO: timeout per run is 0h 5m 0s
+
+=> nfs10.sh runs only for 5 min.
+
+nfs10 1 TINFO: mount.nfs: (linux nfs-utils 2.6.3)
+nfs10 1 TINFO: setup NFSv4, socket type tcp
+nfs10 1 TINFO: Mounting /var/tmp/LTP_nfs10.zWBiahjI48/4/0
+nfs10 1 TINFO: Mounting NFS: mount -v -t nfs -o proto=tcp,vers=4 10.0.0.2:/var/tmp/LTP_nfs10.zWBiahjI48/mntpoint/4/tcp /var/tmp/LTP_nfs10.zWBiahjI48/4/0
+nfs10 1 TINFO: Testing buffered write, buffered read
+tst_tmpdir.c:316: TINFO: Using /var/tmp//LTP_fspL4p41F as tmpdir (btrfs filesystem)
+tst_test.c:1890: TINFO: LTP version: 20240930-49-g3facdd035
+tst_test.c:1894: TINFO: Tested kernel: 6.12.0-rc4-1.gf83465d-default #1 SMP PREEMPT_DYNAMIC Sun Oct 20 22:44:57 UTC 2024 (f83465d) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+fsplough.c:186: TINFO: Block size: 262144
+tst_test.c:1733: TINFO: Updating max runtime to 0h 08m 32s
+tst_test.c:1725: TINFO: Timeout per run is 0h 09m 02s
+
+=> fsplough.c is updated to 9 min, but that does not help due nfs10.sh not
+having updated.
+
+Test timed out, sending SIGTERM!
+If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+Sending SIGKILL to test process...
+Test is still running... 10
+Test is still running... 9
+Test is still running... 8
+Test is still running... 7
+Test is still running... 6
+Test is still running... 5
+Test is still running... 4
+Test is still running... 3
+Test is still running... 2
+Test is still running... 1
+Test is still running, sending SIGKILL
+Killed
+
+The quickest way would be to use the same calculation (* $TST_CNT + 5% for spare
+time) in nfs10.sh and increase tst_set_timeout with.
+
+Or, I wonder if using tst_loader.sh and tst_run_shell.c would help to integrate
+these. But I'm not sure how easily could be nfs_lib.sh integrated, e.g.
+* isn't it too late, when it uses tst_net.sh (maybe this file would need to be
+  integrated)
+* should use keep using TST_ALL_FILESYSTEMS=1 from tst_test.sh or configure
+  via all_filesystems=1 via json?
+
+OT: Other tests which are considerable are these which use netstress.c (via
+tst_netload_compare).
 
 Kind regards,
 Petr
