@@ -4,71 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACC5AE6F06F
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 17:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96769E6F093
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 22:41:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E77AD3CDB02
-	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 18:03:10 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 014013CE456
+	for <ltp@archiver.kernel.org>; Fri,  1 Nov 2024 23:41:30 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9AF2C3CD7EE
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 18:02:55 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 67DFE3CE3F0
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:41:13 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 64A9A243620
- for <ltp@lists.linux.it>; Fri,  1 Nov 2024 18:02:53 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9922D1BCB783
+ for <ltp@lists.linux.it>; Fri,  1 Nov 2024 23:41:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 838A021B1E;
- Fri,  1 Nov 2024 17:02:51 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A8A141F451;
+ Fri,  1 Nov 2024 22:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1730500867;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
+ b=O4QGxF5S4Kf2mnOLAzE4EmG/uOEgH8HxCjLsCp0qsPnavMoLnfZVuW9gvA4dbwh+CLr9Y/
+ IQD4NEhMMi1S5PFCWHuQHK0Ov0i7GhXRtCIT3ry+3f8Fo1AFwun0ktceUW1c36kQC0SXMT
+ Vh0z2MuOf5h+i0ccS5fpcNTHqY//mkI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1730500867;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
+ b=1fXYS8p9Z38pkTUoqlbW/PohnVVMj0jy2FuftcM3RPpVxea5qPAVNEYcainYDwLAnQMd8Z
+ ribg7tPBQ+m4SSBg==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1730500866;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
+ b=WvR0639GwREzYesr3Trmmv1OkQ6khWj6S/QbqhH1vrVlyKyifk/eCzeeIWz6AYawyM2jDm
+ Bl/sZ6YvJhlvcuwG2APQ/GdU2QC1M5P/LX1EkhJj+5BbY7CYE0WaYcUpylTedQ5be94+Pg
+ ifG3RH+/zE4SFL48+r3sN8ocgs7XyDI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1730500866;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fSI1NBqyff20J2AyoC5bsvhORO96srTMGAarivl6C6M=;
+ b=WI3rY3caiDWfEvXFfJpXsWr20M6WIoiR64iQ1E+NdyFukXq3vO3MEvGya+s+yuVTbn2lv9
+ o5LWTDQxHqVXMSAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55A41136D9;
- Fri,  1 Nov 2024 17:02:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4176136D9;
+ Fri,  1 Nov 2024 22:41:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8ZcwDroJJWfOLwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 17:02:50 +0000
-Date: Fri, 1 Nov 2024 18:02:33 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2kT3IQBZJWe8egAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Nov 2024 22:41:04 +0000
+Date: Fri, 1 Nov 2024 23:40:46 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20241101170233.GA1294836@pevik>
-References: <20241101-generate_syscalls-v9-0-d2c3820b0323@suse.com>
- <20241101-generate_syscalls-v9-2-d2c3820b0323@suse.com>
- <20241101113019.GA1264676@pevik>
- <d6bf0ba3-92eb-476e-8c6d-b6fcec1c258c@suse.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20241101224046.GA1324664@pevik>
+References: <20241101141111.104803-1-mdoucha@suse.cz>
+ <20241101141111.104803-2-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <d6bf0ba3-92eb-476e-8c6d-b6fcec1c258c@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 838A021B1E
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20241101141111.104803-2-mdoucha@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v9 2/5] Add script to generate arch(s) dependant
- syscalls
+Subject: Re: [LTP] [PATCH 1/5] Move preadv()/pwritev() backup definitions to
+ LAPI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,65 +121,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi,
+Hi Martin,
 
-> On 11/1/24 12:30, Petr Vorel wrote:
-> > Hi Andrea,
+> Merge existing LAPI definitions of preadv2()/pwritev2() to lapi/uio.h
+> and add preadv()/pwritev() definitions from test code. Also fix minor
+> bugs in return value type and offset handling.
 
-> > ...
-> > > +		for syscall in $(cat ${TEMP}/syscall-names.txt); do
-> > > +			printf "
-> > > +		#ifdef __NR_$syscall
-> > > +			printf(\"$syscall %%d"
-> > > +			# i know the following print is ugly, but dash and bash
-> > > +			# treat double quoted strings in a different way and we
-> > > +			# really need to inject '\n' character in the C code
-> > > +			# rather than carriage return
-> > > +			printf '\\n'
-> > > +			printf "\", __NR_$syscall);
-> > How about using heredocs? IMHO more compatible way of echo/printf "" for new
-> > lines:
-> > cat << EOF
-> > ...
-> > EOF
+Good catch int => ssize_t.
 
-> > I should have noted that at previous version.
-> > Hint: looking into tst_test.sh can sometimes help.
-
-> > Also there is echo/printf '' variant:
-> > cat << 'EOF'
-> > EOF
-> > https://unix.stackexchange.com/questions/462593/how-to-escape-a-character-in-a-heredoc-bash-script/462595#462595
-
-> > There is also ~EOF - ignore leading whitespace, even for terminating EOF.
-
-> > Kind regards,
-> > Petr
-
-> This method is so ugly: basically the ending EOF must be in the first column
-> of the next line, otherwise it won't be parsed. And this breaks readability
-> of course (probably some debugging). I really would avoid this way..
-
-I would say EOF if quite standard way of using shell + it allows you to use \n
-unescaped:
-
-syscall="XXX"
-cat > foo.txt <<EOF
-	printf(\"$syscall %%d"
-	printf '\n'
-EOF
-
-prints into foo.txt:
-	printf(\"XXX %%d"
-	printf '\n'
-
-But sure, it's just a suggestion based your comment.
+Obviously correct, merged with second commit.
 
 Kind regards,
 Petr
-
-> Andrea
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
