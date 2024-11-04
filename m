@@ -4,97 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D31BCD132DF
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 15:34:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE5FFD1BDC1
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 16:00:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 955223D0D4B
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 16:34:24 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 68D253D0D90
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 17:00:08 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B95C73D0D29
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:34:07 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id DD1633C6112
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:59:52 +0100 (CET)
 Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D91BB636637
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:34:06 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D346C6067A9
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:59:51 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B48121F7F5
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1730734444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
- b=Q4Oc7wQbqef+q5QCi/52sE0lxJBACfNqMSy067nT9zQToVRxj2d3WuApVoCmtzbvLsgrg3
- +NBlvyCmvaOi/zAH5jSoLxeOZia8SehYzyHT4higyxvMUVKGjzOi36m3F76fXLi9n35jNL
- ddi2W1XYMeTsSNgB4y0QtTfCsbACvUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1730734444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
- b=K2KUBDgqnQmWzZ2b+3xIujoA2p/Qv/RH1T2kWocwjUGLuZcZWJu/sCLdP2WbeNFJjOZ4DK
- OZ0D5uwP/hBsvnCw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 568311FDE6;
+ Mon,  4 Nov 2024 15:59:49 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1730734444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
- b=Q4Oc7wQbqef+q5QCi/52sE0lxJBACfNqMSy067nT9zQToVRxj2d3WuApVoCmtzbvLsgrg3
- +NBlvyCmvaOi/zAH5jSoLxeOZia8SehYzyHT4higyxvMUVKGjzOi36m3F76fXLi9n35jNL
- ddi2W1XYMeTsSNgB4y0QtTfCsbACvUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1730734444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
- b=K2KUBDgqnQmWzZ2b+3xIujoA2p/Qv/RH1T2kWocwjUGLuZcZWJu/sCLdP2WbeNFJjOZ4DK
- OZ0D5uwP/hBsvnCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD4EA13503
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:34:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B15813503;
+ Mon,  4 Nov 2024 15:59:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id E99NKmzpKGfVFgAAD6G6ig
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Mon, 04 Nov 2024 15:34:04 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Mon,  4 Nov 2024 16:33:59 +0100
-Message-ID: <20241104153404.21273-1-akumar@suse.de>
-X-Mailer: git-send-email 2.43.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EmtwDXXvKGcWHwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 04 Nov 2024 15:59:49 +0000
+Date: Mon, 4 Nov 2024 16:59:47 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20241104155947.GC1388681@pevik>
+References: <20241101141111.104803-1-mdoucha@suse.cz>
+ <20241101141111.104803-6-mdoucha@suse.cz>
+ <20241101233221.GC1324664@pevik> <ZyjGiQ7-oyBZBG-S@yuki.lan>
+ <ZyjJ9iywT4boYavJ@yuki.lan> <ZyjM_1iwp58EbHwh@yuki.lan>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:email];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[]
+Content-Disposition: inline
+In-Reply-To: <ZyjM_1iwp58EbHwh@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: 568311FDE6
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] crypto/af_alg0[13]: update tests for additional
- possible errno case
+Subject: Re: [LTP] [PATCH 5/5] Add test for data integrity over NFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,83 +78,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-kernel behaviour wrt checking invalid algorithms has changed [1] [2]
-updating the tests to address the additional errno case.
-Related discussion on the mailing list [3]
+> Hi!
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e7a4142b35ce489fc8908d75596c51549711ade0
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=795f85fca229a88543a0a706039f901106bf11c1
-[3] https://lore.kernel.org/lkml/20240924222839.GC1585@sol.localdomain/
+> > I'm looking at the nfs_lib.sh, we do have a lot there actually since it
+> > runs for all filesystems and we run the nfs tests for different nfs
+> > versions as well. This does not seem that would integrate well into the
+> > tst_test all_filesystems testing.
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- lib/tst_af_alg.c                   | 1 +
- testcases/kernel/crypto/af_alg01.c | 5 ++++-
- testcases/kernel/crypto/af_alg03.c | 5 ++++-
- 3 files changed, 9 insertions(+), 2 deletions(-)
+Yes (found that as well when replied to your first email).
+I thought you want to integrate NFS just for a shake of other tests, which use
+.all_filesystems (e.g. some NFS to be added into fs_type_whitelist[], e.g.
+"nfsv4), which would of course require u specific setup.
 
-diff --git a/lib/tst_af_alg.c b/lib/tst_af_alg.c
-index f5437c5c5..a14f9865c 100644
---- a/lib/tst_af_alg.c
-+++ b/lib/tst_af_alg.c
-@@ -103,6 +103,7 @@ bool tst_have_alg(const char *algtype, const char *algname)
- 	case 0:
- 		return true;
- 	case ENOENT:
-+	case EINVAL:
- 		tst_res(TCONF, "kernel doesn't have %s algorithm '%s'",
- 			algtype, algname);
- 		return false;
-diff --git a/testcases/kernel/crypto/af_alg01.c b/testcases/kernel/crypto/af_alg01.c
-index 7cefe5946..2100b3698 100644
---- a/testcases/kernel/crypto/af_alg01.c
-+++ b/testcases/kernel/crypto/af_alg01.c
-@@ -21,6 +21,7 @@ static void test_with_hash_alg(const char *hash_algname)
- {
- 	char hmac_algname[64];
- 	char key[4096] = { 0 };
-+	int ret;
- 
- 	if (!tst_have_alg("hash", hash_algname))
- 		return;
-@@ -30,7 +31,9 @@ static void test_with_hash_alg(const char *hash_algname)
- 		return;
- 
- 	sprintf(hmac_algname, "hmac(hmac(%s))", hash_algname);
--	if (tst_try_alg("hash", hmac_algname) != ENOENT) {
-+
-+	ret = tst_try_alg("hash", hmac_algname);
-+	if (ret != ENOENT && ret != EINVAL) {
- 		int algfd;
- 
- 		tst_res(TFAIL, "instantiated nested hmac algorithm ('%s')!",
-diff --git a/testcases/kernel/crypto/af_alg03.c b/testcases/kernel/crypto/af_alg03.c
-index bb8d480e2..d7d385883 100644
---- a/testcases/kernel/crypto/af_alg03.c
-+++ b/testcases/kernel/crypto/af_alg03.c
-@@ -15,10 +15,13 @@
- 
- static void run(void)
- {
-+	int ret;
-+
- 	tst_require_alg("aead", "rfc7539(chacha20,poly1305)");
- 	tst_require_alg("hash", "sha256");
- 
--	if (tst_try_alg("aead", "rfc7539(chacha20,sha256)") != ENOENT) {
-+	ret = tst_try_alg("aead", "rfc7539(chacha20,sha256)");
-+	if ( ret != ENOENT && ret != EINVAL) {
- 		tst_res(TFAIL,
- 			"instantiated rfc7539 template with wrong digest size");
- 	} else {
--- 
-2.43.0
+That would, of course did not cover all range of NFS versions + also using UDP,
+which is used for current NFS tests (including this one).
 
+> > I will think a bit how to integrate things better, because having LTP
+> > test inside LTP test will never work well.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+Looks usable + later on tests which use netstress.c could be converted to use it
+as well.
+
+Kind regards,
+Petr
+
+> So one posibility is to use the new shell test library that integrates
+> cleanly with C, then we can have a shell nfs test that runs for all
+> filesystems, mounts the nfs and then runs the C fsplough itself.
+
+> Minimal example how to do that is:
+
+> From b48184d4fa1918afe6c84d0e691f8d46c986e92c Mon Sep 17 00:00:00 2001
+> From: Cyril Hrubis <chrubis@suse.cz>
+> Date: Mon, 4 Nov 2024 14:29:24 +0100
+> Subject: [PATCH] shell lib: Add example how to run C child
+
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/lib/run_tests.sh                  |  2 +-
+>  testcases/lib/tests/.gitignore              |  1 +
+>  testcases/lib/tests/shell_c_child.c         | 16 ++++++++++++++
+>  testcases/lib/tests/shell_loader_c_child.sh | 24 +++++++++++++++++++++
+>  4 files changed, 42 insertions(+), 1 deletion(-)
+>  create mode 100644 testcases/lib/tests/shell_c_child.c
+>  create mode 100755 testcases/lib/tests/shell_loader_c_child.sh
+
+> diff --git a/testcases/lib/run_tests.sh b/testcases/lib/run_tests.sh
+> index 8ea615f96..40d415e6c 100755
+> --- a/testcases/lib/run_tests.sh
+> +++ b/testcases/lib/run_tests.sh
+> @@ -14,7 +14,7 @@ for i in shell_loader.sh shell_loader_all_filesystems.sh shell_loader_no_metadat
+>  	 shell_loader_wrong_metadata.sh shell_loader_invalid_metadata.sh\
+>  	 shell_loader_supported_archs.sh shell_loader_filesystems.sh\
+>  	 shell_loader_tcnt.sh shell_loader_kconfigs.sh shell_loader_tags.sh \
+> -	 shell_loader_invalid_block.sh; do
+> +	 shell_loader_invalid_block.sh shell_loader_c_child.sh; do
+>  	echo
+>  	echo "*** Running $i ***"
+>  	echo
+> diff --git a/testcases/lib/tests/.gitignore b/testcases/lib/tests/.gitignore
+> index da967c4d6..e9e163d13 100644
+> --- a/testcases/lib/tests/.gitignore
+> +++ b/testcases/lib/tests/.gitignore
+> @@ -4,3 +4,4 @@ shell_test03
+>  shell_test04
+>  shell_test05
+>  shell_test06
+> +shell_c_child
+> diff --git a/testcases/lib/tests/shell_c_child.c b/testcases/lib/tests/shell_c_child.c
+> new file mode 100644
+> index 000000000..fda5133a6
+> --- /dev/null
+> +++ b/testcases/lib/tests/shell_c_child.c
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Shell test C child example.
+> + */
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +
+> +int main(void)
+> +{
+> +	tst_reinit();
+> +
+> +	tst_res(TPASS, "C child works fine!");
+> +
+> +	return 0;
+> +}
+> diff --git a/testcases/lib/tests/shell_loader_c_child.sh b/testcases/lib/tests/shell_loader_c_child.sh
+> new file mode 100755
+> index 000000000..d190be6e2
+> --- /dev/null
+> +++ b/testcases/lib/tests/shell_loader_c_child.sh
+> @@ -0,0 +1,24 @@
+> +#!/bin/sh
+> +#
+> +# ---
+> +# doc
+> +#
+> +# [Description]
+> +#
+> +# This is an example how to run C child from shell.
+> +# ---
+> +#
+> +# ---
+> +# env
+> +# {
+> +# }
+> +# ---
+> +
+> +. tst_loader.sh
+> +
+> +if [ -n "LTP_IPC_PATH" ]; then
+> +	tst_res TPASS "LTP_IPC_PATH=$LTP_IPC_PATH!"
+> +fi
+> +
+> +tst_res TINFO "Running C child"
+> +shell_c_child
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
