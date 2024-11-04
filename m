@@ -4,103 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7EDFD1BDC5
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 16:39:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5956D1BDC5
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 16:45:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 393953D0E2C
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 17:39:09 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5E84C3D0E20
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 17:45:26 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86A9E3D0DC4
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 17:38:52 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id C4AB63D0DC0
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 17:45:11 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C9C9262D380
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 17:38:49 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6E0D4232853
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 17:45:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4140D21B4F;
- Mon,  4 Nov 2024 16:38:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BFD4E1FEF4;
+ Mon,  4 Nov 2024 16:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730738328;
+ t=1730738708;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UO8m8cBQAfXV6CXqAE8/bf4ynw5Cf3nT1N4WxCf0q0c=;
- b=yggwXDGit5k9u8/rzgaZDY3c3ZZqUiV675arh3W7lPWUEuamj+krABJ3LUlHIgvBG3XjIC
- UP6lroWexfOazGl6ES4W+QeIOBnbQ9AcwMhUL8vlPO/U7B4NuiUgAOIL7QFggv6oBa1NtX
- iAJUkWwskyJoMJix0R/gxeZ+rCcPDxE=
+ bh=PvfJFWKdLanplggGQg6ZikzHCuOtS/RmQ2+7bgP3tcU=;
+ b=eT4D2ctPobMLNHHl4SDph/7uENn+Z6N0m9QTxoUetf/ndiDSunwCJ4tiSj9aJjvV95LZb9
+ thByKCqFibQ9/ZwT2LPhHykLSXZ+pn2xRqr1zzbg79Swqe1sHvbicO/GOePk4hgfSZoA88
+ rNwwLE1TGQaeS1X94lGQJpcS4d7rxiU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730738328;
+ s=susede2_ed25519; t=1730738708;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UO8m8cBQAfXV6CXqAE8/bf4ynw5Cf3nT1N4WxCf0q0c=;
- b=PG0b/r7c6V50X6Lb+sCjUhophwHVkRoOFLNsmnYwwLm+rjgaHQ8CIXPylppyam9szBbety
- umHvv2oHJJS4g+Cg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=PvfJFWKdLanplggGQg6ZikzHCuOtS/RmQ2+7bgP3tcU=;
+ b=PJnVSQAojWOEF/yXHXcszsTE65das2Bj/pgGH+QMO3UAZP0QAVHqEiXIlF31dElegVWhVi
+ lDRQrmgAvBHFCKCQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eT4D2ctP;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PJnVSQAo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730738328;
+ t=1730738708;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UO8m8cBQAfXV6CXqAE8/bf4ynw5Cf3nT1N4WxCf0q0c=;
- b=yggwXDGit5k9u8/rzgaZDY3c3ZZqUiV675arh3W7lPWUEuamj+krABJ3LUlHIgvBG3XjIC
- UP6lroWexfOazGl6ES4W+QeIOBnbQ9AcwMhUL8vlPO/U7B4NuiUgAOIL7QFggv6oBa1NtX
- iAJUkWwskyJoMJix0R/gxeZ+rCcPDxE=
+ bh=PvfJFWKdLanplggGQg6ZikzHCuOtS/RmQ2+7bgP3tcU=;
+ b=eT4D2ctPobMLNHHl4SDph/7uENn+Z6N0m9QTxoUetf/ndiDSunwCJ4tiSj9aJjvV95LZb9
+ thByKCqFibQ9/ZwT2LPhHykLSXZ+pn2xRqr1zzbg79Swqe1sHvbicO/GOePk4hgfSZoA88
+ rNwwLE1TGQaeS1X94lGQJpcS4d7rxiU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730738328;
+ s=susede2_ed25519; t=1730738708;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UO8m8cBQAfXV6CXqAE8/bf4ynw5Cf3nT1N4WxCf0q0c=;
- b=PG0b/r7c6V50X6Lb+sCjUhophwHVkRoOFLNsmnYwwLm+rjgaHQ8CIXPylppyam9szBbety
- umHvv2oHJJS4g+Cg==
+ bh=PvfJFWKdLanplggGQg6ZikzHCuOtS/RmQ2+7bgP3tcU=;
+ b=PJnVSQAojWOEF/yXHXcszsTE65das2Bj/pgGH+QMO3UAZP0QAVHqEiXIlF31dElegVWhVi
+ lDRQrmgAvBHFCKCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1269013736;
- Mon,  4 Nov 2024 16:38:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 765BD13736;
+ Mon,  4 Nov 2024 16:45:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id DnmUApj4KGd9LAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 04 Nov 2024 16:38:48 +0000
-Date: Mon, 4 Nov 2024 17:38:45 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wpETGhT6KGdtLgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 04 Nov 2024 16:45:08 +0000
+Date: Mon, 4 Nov 2024 17:45:06 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241104163845.GA1417282@pevik>
+To: Xiao Yang <ice_yangxiao@163.com>
+Message-ID: <20241104164506.GB1417282@pevik>
 References: <20240925084921.16352-1-ice_yangxiao@163.com>
- <ZvVDCJfV931oLIe2@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZvVDCJfV931oLIe2@yuki.lan>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240925084921.16352-1-ice_yangxiao@163.com>
+X-Rspamd-Queue-Id: BFD4E1FEF4
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[163.com];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FREEMAIL_CC(0.00)[163.com,lists.linux.it];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ FREEMAIL_TO(0.00)[163.com]; ARC_NA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FREEMAIL_ENVRCPT(0.00)[163.com];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim,suse.cz:email];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] syscalls/{fanotify17,
  getxattr05}: Fix the ENOSPC error
@@ -124,65 +131,10 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril, Xiao Yang,
 
-> Hi!
-> > If the value of max_user_namespaces is set to 10 but more than
-> > 10 user namspaces are currently used on system.  In this case,
-> > these tests fail with ENOSPC. for example:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> > # lsns -t user -n | wc -l
-> > 17
-
-> > # ./fanotify17
-> > ...
-> > fanotify17.c:174: TINFO: Test #0: Global groups limit in init user ns
-> > fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
-> > fanotify17.c:174: TINFO: Test #1: Global groups limit in privileged user ns
-> > fanotify17.c:154: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
-> > tst_test.c:452: TBROK: Invalid child (6958) exit value 1
-
-> That's strange the test seems to work for me even if it's over the
-> limit.
-
-> $ lsns -t user -n | wc -l
-> 14
-
-I'm able to reproduce as well on VM.
-
-I get problems with 9 for fanotify17 ...
-
-# for i in {0..7}; do unshare -U & done
-
-# lsns -t user -n | wc -l
-9
-
-# ./fanotify17
-...
-fanotify17.c:154: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
-tst_test.c:452: TBROK: Invalid child (1916) exit value 1
-
-and with 10 for getxattr05:
-
-# unshare -U  &
-
-# lsns -t user -n | wc -l
-10
-
-# ./getxattr05
-getxattr05.c:88: TPASS: Got same data when acquiring the value of system.posix_acl_access twice
-getxattr05.c:88: TPASS: Got same data when acquiring the value of system.posix_acl_access twice
-getxattr05.c:88: TPASS: Got same data when acquiring the value of system.posix_acl_access twice
-
-> I suppose that since the test is executed as a root since it has
-> .require_root the limits does not apply. It's strange that they apply in
-> your case. Which kernel is this?
-
-Testing on 6.12.0-rc4-1.gf83465d-default and 6.11.5-1-default (both openSUSE
-Tumbleweed) and 6.9.9-amd64 (Debian).
-
-Yes, root access is required for rw to /proc/sys/user/max_user_namespaces:
-
-getxattr05.c:159: TBROK: Failed to open FILE '/proc/sys/user/max_user_namespaces' for writing: EACCES (13)
-getxattr05.c:167: TWARN: Failed to open FILE '/proc/sys/user/max_user_namespaces' for writing: EACCES (13)
+> BTW, it may be better to get the number of user namespaces in use and then add 10.
+Although I thing this suggestion from Xiao Yang would be better.
 
 Kind regards,
 Petr
