@@ -4,69 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E625D132D0
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 14:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D31BCD132DF
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 15:34:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 084723D0C03
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 15:16:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 955223D0D4B
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 16:34:24 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 52FAC3D0BA1
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:16:11 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ by picard.linux.it (Postfix) with ESMTPS id B95C73D0D29
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:34:07 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5111263198A
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:16:09 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D91BB636637
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 16:34:06 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 371931F7DD;
- Mon,  4 Nov 2024 14:16:08 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B48121F7F5
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1730734444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
+ b=Q4Oc7wQbqef+q5QCi/52sE0lxJBACfNqMSy067nT9zQToVRxj2d3WuApVoCmtzbvLsgrg3
+ +NBlvyCmvaOi/zAH5jSoLxeOZia8SehYzyHT4higyxvMUVKGjzOi36m3F76fXLi9n35jNL
+ ddi2W1XYMeTsSNgB4y0QtTfCsbACvUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1730734444;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
+ b=K2KUBDgqnQmWzZ2b+3xIujoA2p/Qv/RH1T2kWocwjUGLuZcZWJu/sCLdP2WbeNFJjOZ4DK
+ OZ0D5uwP/hBsvnCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1730734444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
+ b=Q4Oc7wQbqef+q5QCi/52sE0lxJBACfNqMSy067nT9zQToVRxj2d3WuApVoCmtzbvLsgrg3
+ +NBlvyCmvaOi/zAH5jSoLxeOZia8SehYzyHT4higyxvMUVKGjzOi36m3F76fXLi9n35jNL
+ ddi2W1XYMeTsSNgB4y0QtTfCsbACvUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1730734444;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QJIJlz+kHp+7jA8J78osNcA2XojS3I+maOf9/RRwNqo=;
+ b=K2KUBDgqnQmWzZ2b+3xIujoA2p/Qv/RH1T2kWocwjUGLuZcZWJu/sCLdP2WbeNFJjOZ4DK
+ OZ0D5uwP/hBsvnCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F316813736;
- Mon,  4 Nov 2024 14:16:07 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD4EA13503
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 15:34:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WUH1OSfXKGcRfAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 04 Nov 2024 14:16:07 +0000
-Date: Mon, 4 Nov 2024 15:16:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241104141606.GB1388681@pevik>
-References: <20241101141111.104803-1-mdoucha@suse.cz>
- <20241101141111.104803-6-mdoucha@suse.cz>
- <20241101233221.GC1324664@pevik> <ZyjGiQ7-oyBZBG-S@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id E99NKmzpKGfVFgAAD6G6ig
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 04 Nov 2024 15:34:04 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Mon,  4 Nov 2024 16:33:59 +0100
+Message-ID: <20241104153404.21273-1-akumar@suse.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZyjGiQ7-oyBZBG-S@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 371931F7DD
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:email];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] Add test for data integrity over NFS
+Subject: [LTP] [PATCH] crypto/af_alg0[13]: update tests for additional
+ possible errno case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,91 +106,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > Test timed out, sending SIGTERM!
-> > If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-> > Sending SIGKILL to test process...
-> > Test is still running... 10
-> > Test is still running... 9
-> > Test is still running... 8
-> > Test is still running... 7
-> > Test is still running... 6
-> > Test is still running... 5
-> > Test is still running... 4
-> > Test is still running... 3
-> > Test is still running... 2
-> > Test is still running... 1
-> > Test is still running, sending SIGKILL
-> > Killed
+kernel behaviour wrt checking invalid algorithms has changed [1] [2]
+updating the tests to address the additional errno case.
+Related discussion on the mailing list [3]
 
-> Isn't the propblem here that the fsplough.c itself does not have
-> .max_runtime set?
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e7a4142b35ce489fc8908d75596c51549711ade0
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=795f85fca229a88543a0a706039f901106bf11c1
+[3] https://lore.kernel.org/lkml/20240924222839.GC1585@sol.localdomain/
 
-It has timeout adjusted in the setup function:
-tst_set_max_runtime(bufsize * loop_count / (8 * 1024 * 1024));
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ lib/tst_af_alg.c                   | 1 +
+ testcases/kernel/crypto/af_alg01.c | 5 ++++-
+ testcases/kernel/crypto/af_alg03.c | 5 ++++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
-> I think that main problem here is that we have a LTP test that is being
-> executed from another LTP test which means that we have two layers of
-> everything including timeouts.
+diff --git a/lib/tst_af_alg.c b/lib/tst_af_alg.c
+index f5437c5c5..a14f9865c 100644
+--- a/lib/tst_af_alg.c
++++ b/lib/tst_af_alg.c
+@@ -103,6 +103,7 @@ bool tst_have_alg(const char *algtype, const char *algname)
+ 	case 0:
+ 		return true;
+ 	case ENOENT:
++	case EINVAL:
+ 		tst_res(TCONF, "kernel doesn't have %s algorithm '%s'",
+ 			algtype, algname);
+ 		return false;
+diff --git a/testcases/kernel/crypto/af_alg01.c b/testcases/kernel/crypto/af_alg01.c
+index 7cefe5946..2100b3698 100644
+--- a/testcases/kernel/crypto/af_alg01.c
++++ b/testcases/kernel/crypto/af_alg01.c
+@@ -21,6 +21,7 @@ static void test_with_hash_alg(const char *hash_algname)
+ {
+ 	char hmac_algname[64];
+ 	char key[4096] = { 0 };
++	int ret;
+ 
+ 	if (!tst_have_alg("hash", hash_algname))
+ 		return;
+@@ -30,7 +31,9 @@ static void test_with_hash_alg(const char *hash_algname)
+ 		return;
+ 
+ 	sprintf(hmac_algname, "hmac(hmac(%s))", hash_algname);
+-	if (tst_try_alg("hash", hmac_algname) != ENOENT) {
++
++	ret = tst_try_alg("hash", hmac_algname);
++	if (ret != ENOENT && ret != EINVAL) {
+ 		int algfd;
+ 
+ 		tst_res(TFAIL, "instantiated nested hmac algorithm ('%s')!",
+diff --git a/testcases/kernel/crypto/af_alg03.c b/testcases/kernel/crypto/af_alg03.c
+index bb8d480e2..d7d385883 100644
+--- a/testcases/kernel/crypto/af_alg03.c
++++ b/testcases/kernel/crypto/af_alg03.c
+@@ -15,10 +15,13 @@
+ 
+ static void run(void)
+ {
++	int ret;
++
+ 	tst_require_alg("aead", "rfc7539(chacha20,poly1305)");
+ 	tst_require_alg("hash", "sha256");
+ 
+-	if (tst_try_alg("aead", "rfc7539(chacha20,sha256)") != ENOENT) {
++	ret = tst_try_alg("aead", "rfc7539(chacha20,sha256)");
++	if ( ret != ENOENT && ret != EINVAL) {
+ 		tst_res(TFAIL,
+ 			"instantiated rfc7539 template with wrong digest size");
+ 	} else {
+-- 
+2.43.0
 
-Similarly netstress.c, which is also called from tst_net.sh. But these tests
-does not run on all filesystems.
-
-> > The quickest way would be to use the same calculation (* $TST_CNT + 5% for spare
-> > time) in nfs10.sh and increase tst_set_timeout with.
-
-> > Or, I wonder if using tst_loader.sh and tst_run_shell.c would help to integrate
-> > these. But I'm not sure how easily could be nfs_lib.sh integrated, e.g.
-> > * isn't it too late, when it uses tst_net.sh (maybe this file would need to be
-> >   integrated)
-> > * should use keep using TST_ALL_FILESYSTEMS=1 from tst_test.sh or configure
-> >   via all_filesystems=1 via json?
-
-> I guess that the best solution would be to add NFS support into the
-> tst_test.c as another filesystem. That way we would get much more
-> coverate than we do now. I guess that it would be doable as long as the
-> configuration on how to do that is passed to the test library somehow.
-
-Test coverage would really increase a lot. Even there are more NFS testsuites,
-IMHO it'd be useful to bring this to LTP - we test a different things then
-fstests, pynfs, cthon, ....
-
-But OTOH it does not have much sense to run NFS tests on a loop device which
-backing file is on tmpfs (the default setup on distros which use tmpfs on /tmp).
-It's a question, whether we should start using /var/tmp as a default for TMPDIR
-(if exists). LTP does cleanup of the functions, unless it fails. Specially NFS
-tests when they timeout, the cleanup is not done due mounted filesystem being
-used. Then /var/tmp gets filled up quickly and reboot does not do automatic
-cleanup.
-
-Adding NFS support would require setup code from nfs_lib.sh (e.g. exportfs, run
-mount binary or start using mount(2), doing various checks etc) to be run by
-tst_test.c, via another process via fork() and execvp(), e.g. with LTP's
-tst_cmd().  I'm not sure if minimal required subset should be put in some shell
-script, which would be executed by tst_test.c (maybe using tst_loader.sh to join
-shared memory to unify the counter) or run individual commands one by one. WDYT?
-
-This simpler version would allow to add various NFS to all_filesystems. I wonder
-if we want to support just single NFS version e.g. the newest NFSv4.2 or more.
-I suppose we would test only on TCP (UDP is deprecated, not enabled by default
-on newer kernels). But even the core of the NFS setup in nfs_mount() uses
-tst_rhost_run() from tst_net.sh. E.g. some parts of tst_net.sh would need to be
-rewritten into C code (or it would have to call tst_net.sh, if gluing with
-tst_loader.sh would work).
-
-My original idea to convert all NFS tests would basically mean to rewrite quite
-to use even more nfs_lib.sh and tst_net.sh. code (there is a support for
-setting NFS version and protocol and other things).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
