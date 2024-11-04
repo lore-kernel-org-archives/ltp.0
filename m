@@ -4,101 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA9BD132C0
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 13:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D9E9D132C2
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 13:21:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C3683D0AD9
-	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 14:20:09 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EAD2B3D0AE8
+	for <ltp@archiver.kernel.org>; Mon,  4 Nov 2024 14:21:01 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE3A73D0718
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 14:19:53 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id B08783D0718
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 14:20:46 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 217D560D471
- for <ltp@lists.linux.it>; Mon,  4 Nov 2024 14:19:51 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 960F91FF32;
- Mon,  4 Nov 2024 13:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730726390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5F20B10002B0
+ for <ltp@lists.linux.it>; Mon,  4 Nov 2024 14:20:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1730726443;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FccnCAPsUkkPnEpH/a+bhn38p7NqzYW2XMWb4GREFVc=;
- b=wh0pSwQU6wPr/mUzNFWEyzNx9fEpoay2lvMdbbk3PGQKabeidsMVPgthGIC5V5B3pXnvfe
- jXH0I8UWg+07EvDAoNQvRH6KwyQcxjsaW1RwsO3fZ+XYsNig8Hw0qfj/KQkA/oOL6V+MRh
- aBvW8W2m3up8EI+5GciNDvZA41Yq7Tg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730726390;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FccnCAPsUkkPnEpH/a+bhn38p7NqzYW2XMWb4GREFVc=;
- b=FZwkG96oyFtCKyAAn1eVSAc/U5kvWyuPKR4tq+w/QsES0LDFEHVnNWXIWBUvl6VH2+QHmc
- okkXgD2y7CmcmPDQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730726390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FccnCAPsUkkPnEpH/a+bhn38p7NqzYW2XMWb4GREFVc=;
- b=wh0pSwQU6wPr/mUzNFWEyzNx9fEpoay2lvMdbbk3PGQKabeidsMVPgthGIC5V5B3pXnvfe
- jXH0I8UWg+07EvDAoNQvRH6KwyQcxjsaW1RwsO3fZ+XYsNig8Hw0qfj/KQkA/oOL6V+MRh
- aBvW8W2m3up8EI+5GciNDvZA41Yq7Tg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730726390;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FccnCAPsUkkPnEpH/a+bhn38p7NqzYW2XMWb4GREFVc=;
- b=FZwkG96oyFtCKyAAn1eVSAc/U5kvWyuPKR4tq+w/QsES0LDFEHVnNWXIWBUvl6VH2+QHmc
- okkXgD2y7CmcmPDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80D9F1373E;
- Mon,  4 Nov 2024 13:19:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KQAOH/bJKGdjaAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 04 Nov 2024 13:19:50 +0000
-Date: Mon, 4 Nov 2024 14:19:50 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZyjJ9iywT4boYavJ@yuki.lan>
-References: <20241101141111.104803-1-mdoucha@suse.cz>
- <20241101141111.104803-6-mdoucha@suse.cz>
- <20241101233221.GC1324664@pevik> <ZyjGiQ7-oyBZBG-S@yuki.lan>
+ bh=SLANeXJgf0AREy3tLGI6mKOhCR72qZHr/3iy1EOh2hk=;
+ b=ExQw/SpJtr5FwFLNkrL6STSjoYq0Inujntd9eRRKLNj8CIaQc+c3Nmnp/bt+h/9O2aAE3r
+ ubMnl810rImQ933qHtjewF5WCx/6s0cJAr+8krF5CsYrLBB59Fsc7i4NbMy+NoisbpKddv
+ aoLihfmKwjBZwSp0Ik2Tb/o32O2eqKo=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-280-0Kv3P4PsOyuw79AhuckHhA-1; Mon, 04 Nov 2024 08:20:41 -0500
+X-MC-Unique: 0Kv3P4PsOyuw79AhuckHhA-1
+Received: by mail-oa1-f69.google.com with SMTP id
+ 586e51a60fabf-28cc1cea79cso3046399fac.3
+ for <ltp@lists.linux.it>; Mon, 04 Nov 2024 05:20:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1730726441; x=1731331241;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=SLANeXJgf0AREy3tLGI6mKOhCR72qZHr/3iy1EOh2hk=;
+ b=N4pDMRkboscqXktxKQAiysWpm7NXIZuBBLtI4GZnrJ1buT6Msj0MmhYp7fD0C1XeWa
+ pZ7dew7Sj6AaGbfnTP8GITPL3A5bzMT73Oc4gpXn7KbRHhHKvnAqGv/uNkqSAd57Wb04
+ I+HH45K9dj9l+BpQ1jI15NVdWTaSLQpUXwf8uYrN4AuOplBngGCUlVFyD7GmP+QIvsFT
+ J5ijgsjFvG7NBT0zyVA7atYU2ZTNy4BIneZnGiT0suXU1AWH3vPzg+ssswrcPQi1Amq2
+ Kj2SNEhuAPBSVYKzo7B5/pWs3RFNHJcguXEz81I6WD5eCh79BXK+uhkUdroG3AsP8emN
+ y0Tw==
+X-Gm-Message-State: AOJu0Yx6nmMGmwerils+8wcHjuMSKaQWXqlJrUcJOjgSt6CwIGTxL5XP
+ k9NF4LVCydmBwkhx10/o+6vzJJKkiarJiWprVov3kU21riG3SiH47h71sUE5Kztow0u+VYXVbKb
+ 3bwwnO6eOKQQS3SaH5hnfBFRPUxCy/he6p35YClBWAYUlJdr6rqpPc/Cxyv7976TJ3Tiqnj0+cD
+ 9ARq5FMBwI8w0/SElOFFmCDFc=
+X-Received: by 2002:a05:6871:8801:b0:277:f9d5:e85 with SMTP id
+ 586e51a60fabf-294844d625dmr12125053fac.22.1730726441066; 
+ Mon, 04 Nov 2024 05:20:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFluKoliswPJOTRKXGIA6rcSsUxKXnI80Jw6CsKgUqEhR3W02PCjPTtDZpVA1hzNc29TY17TlvG0L8uyL1x72o=
+X-Received: by 2002:a05:6871:8801:b0:277:f9d5:e85 with SMTP id
+ 586e51a60fabf-294844d625dmr12125033fac.22.1730726440782; Mon, 04 Nov 2024
+ 05:20:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZyjGiQ7-oyBZBG-S@yuki.lan>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <a0c8683d576671c055a4fe5edde45b5232a27660.1730714163.git.jstancek@redhat.com>
+ <ZyjIYpYv_o6osllR@yuki.lan>
+In-Reply-To: <ZyjIYpYv_o6osllR@yuki.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 4 Nov 2024 14:20:12 +0100
+Message-ID: <CAASaF6yoHUXrstLA9TGChkrLWTwnF=mVXxSViSEt==p9UqupOQ@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] Add test for data integrity over NFS
+Subject: Re: [LTP] [PATCH] lapi/sched.h: don't include itself
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,38 +93,26 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > The quickest way would be to use the same calculation (* $TST_CNT + 5% for spare
-> > time) in nfs10.sh and increase tst_set_timeout with.
-> > 
-> > Or, I wonder if using tst_loader.sh and tst_run_shell.c would help to integrate
-> > these. But I'm not sure how easily could be nfs_lib.sh integrated, e.g.
-> > * isn't it too late, when it uses tst_net.sh (maybe this file would need to be
-> >   integrated)
-> > * should use keep using TST_ALL_FILESYSTEMS=1 from tst_test.sh or configure
-> >   via all_filesystems=1 via json?
-> 
-> I guess that the best solution would be to add NFS support into the
-> tst_test.c as another filesystem. That way we would get much more
-> coverate than we do now. I guess that it would be doable as long as the
-> configuration on how to do that is passed to the test library somehow.
-
-I'm looking at the nfs_lib.sh, we do have a lot there actually since it
-runs for all filesystems and we run the nfs tests for different nfs
-versions as well. This does not seem that would integrate well into the
-tst_test all_filesystems testing.
-
-I will think a bit how to integrate things better, because having LTP
-test inside LTP test will never work well.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBOb3YgNCwgMjAyNCBhdCAyOjEz4oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
+c2UuY3o+IHdyb3RlOgo+Cj4gSGkhCj4KPiBBZGRlZCBieToKPgo+IGNvbW1pdCA0NWY2OTE2YmFl
+NGNmNDE3ZmQ1YTc1N2VhOGNhNTE2ZDE3ODY1MDc1Cj4gQXV0aG9yOiBXZWkgR2FvIHZpYSBsdHAg
+PGx0cEBsaXN0cy5saW51eC5pdD4KPiBEYXRlOiAgIFRodSBBdWcgMzEgMDI6NDc6MjcgMjAyMyAt
+MDQwMAo+Cj4gICAgIGNsb25lMzogQWRkIGNsb25lMydzIGNsb25lX2FyZ3MgY2dyb3VwCj4KPiAg
+ICAgU2lnbmVkLW9mZi1ieTogV2VpIEdhbyA8d2VnYW9Ac3VzZS5jb20+Cj4gICAgIFJldmlld2Vk
+LWJ5OiBSaWNoYXJkIFBhbGV0aG9ycGUgPHJwYWxldGhvcnBlQHN1c2UuY29tPgo+ICAgICBbcnBh
+bGV0aG9ycGU6IHJtIG1heF9ydW50aW1lXQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS9z
+Y2hlZC5oIGIvaW5jbHVkZS9sYXBpL3NjaGVkLmgKPiBpbmRleCAxMDY1NjY1ZDEuLmFjNzY2ZWZj
+NSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xhcGkvc2NoZWQuaAo+ICsrKyBiL2luY2x1ZGUvbGFw
+aS9zY2hlZC5oCj4gQEAgLTEzLDYgKzEzLDcgQEAKPiAgI2luY2x1ZGUgPGludHR5cGVzLmg+Cj4g
+ICNpbmNsdWRlICJjb25maWcuaCIKPiAgI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKPiArI2lu
+Y2x1ZGUgImxhcGkvc2NoZWQuaCIKPgo+Cj4gQWxvbmcgd2l0aCBhIGZldyBhZGRpdGlvbnMuIExv
+b2tzIGxpa2UgYSBtaXN0YWtlIHRvIG1lIGFzIHdlbGwuIEFuZCBpdCdzCj4gbm8tb3AgZHVlIHRv
+IHRoZSBoZWFkZXIgZ3VhcmRzIGVpdGhlciB3YXkuCj4KPiBSZXZpZXdlZC1ieTogQ3lyaWwgSHJ1
+YmlzIDxjaHJ1YmlzQHN1c2UuY3o+CgpQdXNoZWQuCgo+Cj4gLS0KPiBDeXJpbCBIcnViaXMKPiBj
+aHJ1YmlzQHN1c2UuY3oKPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
+aW51eC5pdC9saXN0aW5mby9sdHAK
