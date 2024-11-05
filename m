@@ -4,86 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DA81D12663
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 08:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730796972; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=sZYrGoaO9QdZpiQGJ4UrTVGiyFtNc/dLvkxjY73wErc=;
- b=rcYkNqV2jHLYzSBvWFfNosRwHeh3ToHehaHUb+shdOf1rqutCs5M8EaJK/zEX+gd/TmKa
- 194DRPlQjSO1c6z2R0Zpq2FPJRRKX8GrwOTtA8Zkp9JWRg+uu3edppNH9Q1TP+95dFaynRS
- CiXYxGBMjj1iQu2DHdFYbIigBPBwZz0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5DE9D1266E
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 09:34:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE2B73D1E82
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 09:56:12 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8A57A3D1F1B
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 10:34:48 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCA573D1E0F
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:55:51 +0100 (CET)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 26FC03D1BF4
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 10:34:32 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E1BA31A0BEBA
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:55:49 +0100 (CET)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-43161c0068bso43733465e9.1
- for <ltp@lists.linux.it>; Tue, 05 Nov 2024 00:55:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730796949; x=1731401749; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=nOiLS7osUKQSTRs6teEUVkXsco1i1iZrNgU2qo0ugTk=;
- b=SBFzNjrtoixUyEvqEuyJUGtztc65+I30LqexAwZcv3RUDLZCmlv8Eqsgwo1R6pczvk
- knTsYJC3Ze3sVxfsrC5rPmIq0/w/4hSyULW54lFQra24o23b4pFGBOWQl+BeDiLpdngB
- YxR1G1dXrCbPsG3qUEVzHiG9/1g5P2YWHccCfX1ZY9uW5pX80a2IpG+SRKiK6AMRkLLS
- X2w+eAZnJJvNHmj/pgrw/ls5QG+29ssaG0DknszL18+baanamC6CznxVriAlKMX7gDAY
- 0fZ2MabY2O+Mw75c6Rpnj2rUNyGHEA+IWLLncLqBsWDmjpP3J7YEuwarxD9j6yNKoD84
- eZBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730796949; x=1731401749;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=nOiLS7osUKQSTRs6teEUVkXsco1i1iZrNgU2qo0ugTk=;
- b=oMPXXMhuIPuBzswWaOIAH/cYCZrluyirQTQkprZlZMH9U7FpRy3K7nucG0BnNJfF7S
- BsPfkD55FifacLR7WN/are/Ev8uygHqWpVi46MnNzGw48T9LmJOsb+WQtiCGq0Xaq846
- jw8RpYhQ8AzrXnLj/Gnkz6jbkNL+TVHZw9w8UzGtWIvanyaT/wOtAtWlgdcTHdDqqlnl
- UsU4CR3/AMxbAimLfQgzMLi5pRVTRqKgVaA7jbjRv7haIkp5ZadAEFu1Gv/YU9m34tiW
- 8/HQ0n4xqUmqKRKjd1NPlTNbmimvpcuWNFYh48Az6YzBr4a3Ucgc+ILeh1+v4XTKPtMg
- lubw==
-X-Gm-Message-State: AOJu0YzjotImtHrqScaxP7A8Lp/E67BL9tR4tFEyrj9yqM4Su6IsuqCb
- Xx+i2UPfimIt0s1tsBePeFf+KIzXYoit0/3W0xa19bikVPo8KCKEN9wtIP0cRwDJOTbw2pZfBHo
- D
-X-Google-Smtp-Source: AGHT+IGCNJmXkmOO0rKMEPjkm3xvwQK3XFUJV5lzzX7lsRPxWV0NR8vaLgM6JXHW8Xy+pYJbd7Xh9A==
-X-Received: by 2002:a05:600c:3ca1:b0:426:6e86:f82 with SMTP id
- 5b1f17b1804b1-4328327db85mr125553715e9.22.1730796948637; 
- Tue, 05 Nov 2024 00:55:48 -0800 (PST)
-Received: from ?IPV6:2a00:20:6006:76f:ba80:af72:413c:f99a?
- ([2a00:20:6006:76f:ba80:af72:413c:f99a])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-431bd9a9fb9sm214945765e9.33.2024.11.05.00.55.47
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Nov 2024 00:55:48 -0800 (PST)
-Message-ID: <64a21716-965d-490c-9831-b5416b0a08dd@suse.com>
-Date: Tue, 5 Nov 2024 09:55:46 +0100
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DC60B218EDE
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 10:34:30 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 10D4321B64
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1730799268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9aWoFAH45VOjxUZ/gBrmbxljlcRnchNYspNnI+n5318=;
+ b=D0GzWrTZz17aOVxXVGcxm1HqSbFnEjTl0LzvvVNKNsqsRDOlq8ZoHfY/F0rCi4/DZXsAmr
+ AfHnetWZKVwMyhkVlWDWKXi/w56Ws6ZVhxkdVpBIgWQFecRg2OzX3Fn1MO10tO8cfrsDtk
+ ITvdyLkk99TvIWp1Lbfc2NB02yv0qzM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1730799268;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9aWoFAH45VOjxUZ/gBrmbxljlcRnchNYspNnI+n5318=;
+ b=rI0uIcJzfSP28jeA6o2iUohx5r9PzJf5clk3qCxD82DuzOcLKHOBJ3g2gJ0IxGTFcN1cLv
+ OB2l5j/2P+QumvBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1730799268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9aWoFAH45VOjxUZ/gBrmbxljlcRnchNYspNnI+n5318=;
+ b=D0GzWrTZz17aOVxXVGcxm1HqSbFnEjTl0LzvvVNKNsqsRDOlq8ZoHfY/F0rCi4/DZXsAmr
+ AfHnetWZKVwMyhkVlWDWKXi/w56Ws6ZVhxkdVpBIgWQFecRg2OzX3Fn1MO10tO8cfrsDtk
+ ITvdyLkk99TvIWp1Lbfc2NB02yv0qzM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1730799268;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9aWoFAH45VOjxUZ/gBrmbxljlcRnchNYspNnI+n5318=;
+ b=rI0uIcJzfSP28jeA6o2iUohx5r9PzJf5clk3qCxD82DuzOcLKHOBJ3g2gJ0IxGTFcN1cLv
+ OB2l5j/2P+QumvBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA09F1394A
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:34:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MdwMLKPmKWeAPwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 05 Nov 2024 09:34:27 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 05 Nov 2024 10:34:24 +0100
+Message-Id: <20241105-landlock_network-v2-0-d58791487919@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+X-B4-Tracking: v=1; b=H4sIAKDmKWcC/2WNyw7CIBQFf6W5azEU0QZX/odpDI+LJa1goKKm4
+ d/FJq5cziRnzgIJo8MEx2aBiNklF3wFtmlAD9JfkThTGRhlnIr2QCbpzRT0ePE4P0McieJK8b0
+ 12DEFdXaPaN1rTZ77yoNLc4jv9SG3X/uLif9YbgklQgvRWbpThspTeiTc6nCDvpTyAbELkM2vA
+ AAA
+X-Change-ID: 20240916-landlock_network-b4bb45fde72b
 To: ltp@lists.linux.it
-References: <20241101-generate_syscalls-v9-0-d2c3820b0323@suse.com>
-Content-Language: en-US
-In-Reply-To: <20241101-generate_syscalls-v9-0-d2c3820b0323@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1730799267; l=1971;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=4w3z5hCXPMXsAdxyN/hgCzcs+L2mnwr2GlWuiWFO04w=;
+ b=UO8/dv7Sw7bUpviMVNz/EckyYOfnOrwfJwIVHF5BaN8mPU0jTk3CXHkNwqGeFj6jAYkY5Ocsg
+ r0YXDe22NK6BeIWaTBauaCjHPJ8wAoUPpbXgKrT3ihdF53J5nb4nTfw
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v9 0/5] Automatically generate syscalls.h
+Subject: [LTP] [PATCH v2 0/4] landlock network coverage support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,124 +121,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Pushed! Thanks
+This testing suite is meant to test the landlock network support.
+The landlock fallback had to be modified in order to support ABI v4
+which changed the landlock rules structures. Also, a new test has been
+added in landlock08, testing bind() and connect() syscalls support.
+A few error checks have been added in the landlock02 test.
 
-Andrea
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v2:
+- check for LANDLOCK_RULE_NET_PORT symbol via autoconf
+- split landlock_ruleset_attr for abi1 and abi4
+- Link to v1: https://lore.kernel.org/r/20240919-landlock_network-v1-0-9c997f03bd0a@suse.com
 
-On 11/1/24 11:48, Andrea Cervesato wrote:
-> The problem we have at the moment is that all syscalls input files must
-> be changed by hand each time we need to test a new syscall. The idea is
-> to simplify this process, providing a script that is able to read from
-> kernel sources and to generate all syscalls files we need.
->
-> This patch set adds a new command inside the syscalls folder and
-> it refactors the previous regen.sh code.
-> The new way we have to generate the syscalls.h file is the following:
->
-> 	include/lapi/syscalls/generate_arch.sh 		path/to/kernel/source
-> 	include/lapi/syscalls/generate_syscalls.sh 	path/to/syscalls.h
->
-> Scripts are independent and they can be run separately.
-> generate_syscalls.sh is the equivalent of regen.sh, but its code has
-> been cleaned up.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Changes in v9:
-> - use of printf when printing "\n" string, in order to support both dash
->    and bash. BEWARE: ugliness triggered.
-> - rename *.in files with supported-arch.txt file naming convention
-> - update *.in files in a separated commit
-> - update documentation to be more readable
-> - aesthetic code changes
-> - Link to v8: https://lore.kernel.org/r/20241031-generate_syscalls-v8-0-8e35a9d6783b@suse.com
->
-> Changes in v8:
-> - use /bin/sh -eu
-> - support for dash and removed all bashism madness
-> - validation: https://github.com/acerv/ltp/actions/runs/11615377438
-> - Link to v7: https://lore.kernel.org/r/20241031-generate_syscalls-v7-0-f3e26c06814e@suse.com
->
-> Changes in v7:
-> - check for errors in generate_syscalls.sh
-> - add documentation
-> - validation: https://github.com/acerv/ltp/actions/runs/11611080151
-> - Link to v6: https://lore.kernel.org/r/20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com
->
-> Changes in v6:
-> - aesthetic changes in the syscall generator
-> - fix fallback definitions in the syscalls.h file generator
-> - Link to v5: https://lore.kernel.org/r/20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com
->
-> Changes in v5:
-> - license SPDX inside scripts files
-> - quote shell variables inside scripts
-> - some generic code cleanup
-> - Link to v4: https://lore.kernel.org/r/20241009-generate_syscalls-v4-0-5328a785bbad@suse.com
->
-> Changes in v4:
-> - remove blacklist file
-> - update syscalls files
-> - Link to v3: https://lore.kernel.org/r/20240930-generate_syscalls-v3-0-e56ede4bc7f5@suse.com
->
-> Changes in v3:
-> - fix generate_arch.sh to work properly for all architectures
-> - rename some arch .in files and handle renaming inside
->    generate_syscalls.sh using the right gcc directives
-> - Link to v2: https://lore.kernel.org/r/20240927-generate_syscalls-v2-0-108f5f2ad318@suse.com
->
-> Changes in v2:
-> - refactor regen.sh
-> - split syscalls.h and syscalls .in files creation
-> - updated syscalls .in files
-> - Link to v1: https://lore.kernel.org/r/20240924-generate_syscalls-v1-0-941507a9cdac@suse.com
->
-> ---
-> Andrea Cervesato (5):
->        Refactor regen.sh script to generate syscalls
->        Add script to generate arch(s) dependant syscalls
->        Update arch(s) syscalls files
->        Delete obsolete strip_syscall.awk file
->        Add documentation about syscalls.h generator
->
->   configure.ac                                       |   2 +-
->   doc/developers/test_case_tutorial.rst              |  29 +-
->   include/lapi/syscalls/arc.in                       |  41 +-
->   include/lapi/syscalls/arm.in                       | 821 +++++++++++----------
->   include/lapi/syscalls/{loongarch.in => arm64.in}   |  12 +-
->   include/lapi/syscalls/generate_arch.sh             | 213 ++++++
->   include/lapi/syscalls/generate_syscalls.sh         | 109 +++
->   include/lapi/syscalls/hppa.in                      |  54 --
->   include/lapi/syscalls/i386.in                      |  18 +-
->   .../lapi/syscalls/{aarch64.in => loongarch64.in}   |  20 +-
->   include/lapi/syscalls/{mips_n64.in => mips64.in}   |  13 +-
->   .../lapi/syscalls/{mips_n32.in => mips64n32.in}    |  13 +-
->   include/lapi/syscalls/{mips_o32.in => mipso32.in}  |  19 +-
->   include/lapi/syscalls/parisc.in                    | 397 ++++++++++
->   include/lapi/syscalls/powerpc.in                   |  19 +-
->   include/lapi/syscalls/powerpc64.in                 |  47 +-
->   include/lapi/syscalls/regen.sh                     | 129 ----
->   include/lapi/syscalls/s390.in                      |  15 +-
->   include/lapi/syscalls/s390x.in                     |  15 +-
->   include/lapi/syscalls/sh.in                        |  15 +-
->   include/lapi/syscalls/sparc.in                     |  14 +-
->   include/lapi/syscalls/sparc64.in                   |  16 +-
->   include/lapi/syscalls/strip_syscall.awk            |  19 -
->   .../lapi/syscalls/{order => supported-arch.txt}    |  12 +-
->   include/lapi/syscalls/x86_64.in                    |  51 +-
->   25 files changed, 1351 insertions(+), 762 deletions(-)
-> ---
-> base-commit: 84e77afb3acc4bc69c434c430cc1c1d000427921
-> change-id: 20240923-generate_syscalls-780dc2227bdb
->
-> Best regards,
+---
+Andrea Cervesato (4):
+      Fallback landlock network support
+      Network helpers in landlock suite common functions
+      Add landlock08 test
+      Add error coverage for landlock network support
+
+ configure.ac                                       |   3 +-
+ include/lapi/capability.h                          |   4 +
+ include/lapi/landlock.h                            |  28 +--
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/landlock/.gitignore      |   1 +
+ testcases/kernel/syscalls/landlock/landlock01.c    |  15 +-
+ testcases/kernel/syscalls/landlock/landlock02.c    |  94 ++++++++--
+ testcases/kernel/syscalls/landlock/landlock03.c    |   6 +-
+ testcases/kernel/syscalls/landlock/landlock04.c    |   6 +-
+ testcases/kernel/syscalls/landlock/landlock05.c    |  10 +-
+ testcases/kernel/syscalls/landlock/landlock06.c    |  14 +-
+ testcases/kernel/syscalls/landlock/landlock07.c    |   6 +-
+ testcases/kernel/syscalls/landlock/landlock08.c    | 208 +++++++++++++++++++++
+ .../kernel/syscalls/landlock/landlock_common.h     | 134 ++++++++++++-
+ 14 files changed, 456 insertions(+), 74 deletions(-)
+---
+base-commit: 5746e25935a81043d7971d54038636b26355cd0f
+change-id: 20240916-landlock_network-b4bb45fde72b
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
