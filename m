@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5971ED12680
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1336D12683
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730804709; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1730804783; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=zclXBV0Jv8J9u1C3AmVDwyHDXG5OtakhvCaaNndVNEM=;
- b=kryJRVylq5sF9L/5K0FFYn7Ps2MTck+vvx+JEKfpMa/waw+ntMWf0d8KH0gwpnvmIBA3V
- tqgmwsNwuDbllnHrka5mEY9tdypvQ8ogbxl5P8NQQvjaKxoMCcRlcjyUqFVLhYn4AAfBgSP
- yMEvy2HiKMCY7mWS77z4aBWSbvM5PHs=
+ bh=NZRq+uBbXDqOkLr/3Jf+CzC1IdbgwoZImuTBcaiNwjI=;
+ b=bInF63dTzV8iU6D2DN+pznmUdnD0g2n6K6k1Rfq5+crB4cTnQJPOb4gJwbGGOEGdUkQ3+
+ m0wbNBGakr02Wo2i5vZvwPC7jBExCN0RZYzo07OESRQXX5CgERSlQk6XpLyh4twI3jptR1U
+ j19Kl1to3g4Op9HazHlT/OvgbAmdok4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 596CB3D206B
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:05:09 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 212663D2050
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:06:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F62A3D1091
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:04:48 +0100 (CET)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
+ by picard.linux.it (Postfix) with ESMTPS id 998003D1091
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:06:01 +0100 (CET)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A8FC6601EB9
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:04:46 +0100 (CET)
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-a9a2209bd7fso934440566b.2
- for <ltp@lists.linux.it>; Tue, 05 Nov 2024 03:04:46 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 09E5F629473
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:06:01 +0100 (CET)
+Received: by mail-lf1-x131.google.com with SMTP id
+ 2adb3069b0e04-539e5c15fd3so5133541e87.3
+ for <ltp@lists.linux.it>; Tue, 05 Nov 2024 03:06:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730804686; x=1731409486; darn=lists.linux.it;
+ d=suse.com; s=google; t=1730804760; x=1731409560; darn=lists.linux.it;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=X8eAGZGAbId7aPNDp7gP4lcktKTDyj3+Uhn37r3QG1E=;
- b=a3LN2C2sOxPmsSkvXck6Wj3eUJt0wP7nKIwon/l59cv8LtKyOZ7JYaA9mfqF/LdpeT
- MrgdFNj5igzBXFFHEKKfuFWpqJYW29xVyEkzFtB5ZldBu0+h9/0R2H2QMoPv83WV2tSz
- s+je6cWmhP3/GTkUK50MBNGOxxsjZTfLEkJL7cI3TKrXyhfpbyfCk1qrVu+0YY3Sp8uz
- AkhyCwoUv1kwUQwRtmbKAtrDpOW84hOyULHPhqCH1u2i0297BMUeOZ1CvL8BJhoRycNs
- Db4TyjC362nEoGD3qoyPEX10RozR0AZ1wXIDBGLAPE47n0gFVRUSBcvTTuX7E0tOYBkW
- wTHw==
+ bh=kRNwD6941zNIExMPlUUstjLShGgmSX9XSQrWdIS64ZU=;
+ b=cOuHKKljWIogpxG0/snCXGeO4V/UVUsH0PkoRtFkuwuJ6G92zWhxu5JUAAIgiqfulF
+ +sqhZlkFE6wH7uUqEhtBL/9kLJJEFkvmxEA1IhdSd7haY7K4+fJwi9af2VMwchE86kjK
+ dLwOEX1fbgEVLTTKsBfIWGK1pk2VXjHspqy5/dOsABrI5jaz5ZOn88e1Ok55C82ahRBz
+ 8L+USEFbqs6TDi8aiRPo+G4u7jbcJ3mbKnfNlpTMF6c/K4UF4bE3ThmgnTy6TxcN6os2
+ QVKJcSvjsQ0nhy3kJOAOr0FGpbquEbU2+8IlynXiD1W+BTcXsiz2oV9Nw0pDQpem25EX
+ P6KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730804686; x=1731409486;
+ d=1e100.net; s=20230601; t=1730804760; x=1731409560;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=X8eAGZGAbId7aPNDp7gP4lcktKTDyj3+Uhn37r3QG1E=;
- b=WV5xIShHSbzJvu2eL7BDh33bNl0ADW8x6qZUb9ZczGH3VGyt3SpKWsNQhfO9YxNHeB
- 4T5kSJXzzHDQZjrzCK2k/Dh8RTupgByhbL7ddjWksSRD0jFZG41g0DowGgQttm8qZi69
- 0/vZuOkuaMy6IPqtQNMkV9XUkXoJ8mKih2zx0Sk9MWaf3KxOb+3n3OztrVZCA3gtCpvG
- Jr/IlmCsy1biLos9MyzBml050dcsO+ifAOoHQ1iTc9BeQ7hQdg5s2m1ZoUQnUEixqUT5
- 4mnkccR6yuGREuNP+q/DffkFwrrD2wKOiK5cr+9uE/asAlpsc5MGxEoEOokY9bD9tVh3
- cwPw==
-X-Gm-Message-State: AOJu0Yz+YKYIndDvMBT53kM30lkjKfbswAMUOebCHJ0FYxS6lNQt5Afo
- oqyzfEjRWMjwlE/KKuFzZNK82+77YeATiwp8ISmaFV+Resea/6h9tFooFJFcWfI5tSCC0Mgah/c
- =
-X-Google-Smtp-Source: AGHT+IGYfK1Z9XG9FCgr7hlY10dq+qeAWM5RdebezBGTRtKflwXtFirKmRJAJ50oLfPF1OfNM+fR+g==
-X-Received: by 2002:a17:907:7d8b:b0:a9a:5b4:b19e with SMTP id
- a640c23a62f3a-a9de5ee15damr3784714366b.32.1730804686004; 
- Tue, 05 Nov 2024 03:04:46 -0800 (PST)
+ bh=kRNwD6941zNIExMPlUUstjLShGgmSX9XSQrWdIS64ZU=;
+ b=vfp+OQJ4RI4jSKL/P2gN7ciqIPn0i4Gnw6mbdSlntZQcsHjCGOBorTVk0i7XPBYgVH
+ 1fJXt1dedqppKWA2zIdWEnm7G9WX/v/9rotafKhTh5CAgLh22G1i7vPKHgGSEpdq/7JI
+ 2Kovf2/S41oNIIKTc1rzgIO8tJgXviStCRdn7QpeBgStLgNyUN6AqO+krjW4uqbCGxjn
+ mtdN30Ux/EKAvMoc+ALTTQudiies20vjRfGufpDPGAgqjxLLBUhHx8p478bu4ZY2TuNX
+ 4rtCIaokVf1m0QsVKShMaUnAx+PQyswgG5PyL3RUQiEd1paiE+Us1OfExBYvO295gLG4
+ dO3Q==
+X-Gm-Message-State: AOJu0Yz7MRQ4vbMi+mj8mbVeYHoDyi+UAsjiWvdTEISWldMnYjv2JwyL
+ THUgsdtM0cvBlNIiWEmyodPA6zd+XeGkpx9Zrlsf1GAjjoDPDDsXkovfGlqXPw==
+X-Google-Smtp-Source: AGHT+IEQ7FPM8Yd+HuWlxFwMXH0ujBcKQ+B/s5N7R030so6QUHXhPgeP3dRcwirnoSX+qSGuwKajFg==
+X-Received: by 2002:a05:6512:ac5:b0:539:fda6:fa0a with SMTP id
+ 2adb3069b0e04-53b348c382bmr17476772e87.9.1730804760185; 
+ Tue, 05 Nov 2024 03:06:00 -0800 (PST)
 Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a9eb17f49a9sm116574866b.133.2024.11.05.03.04.44
+ d9443c01a7336-211056edc1asm75965475ad.57.2024.11.05.03.05.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Nov 2024 03:04:45 -0800 (PST)
-Date: Tue, 5 Nov 2024 06:04:40 -0500
+ Tue, 05 Nov 2024 03:05:59 -0800 (PST)
+Date: Tue, 5 Nov 2024 06:05:56 -0500
 To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Message-ID: <Zyn7yLeMy5D3Lrj7@wegao>
-References: <20241031085809.56982-1-maxj.fnst@fujitsu.com>
+Message-ID: <Zyn8FA6Ad0Z7WQY0@wegao>
+References: <20241031085904.57020-1-maxj.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241031085809.56982-1-maxj.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <20241031085904.57020-1-maxj.fnst@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] llistxattr01: Convert docs to docparse
+Subject: Re: [LTP] [PATCH] llistxattr02: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,17 +98,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Oct 31, 2024 at 04:58:09PM +0800, Ma Xinjian via ltp wrote:
+On Thu, Oct 31, 2024 at 04:59:04PM +0800, Ma Xinjian via ltp wrote:
 > Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 > ---
->  .../kernel/syscalls/llistxattr/llistxattr01.c | 23 ++++++++-----------
->  1 file changed, 10 insertions(+), 13 deletions(-)
+>  .../kernel/syscalls/llistxattr/llistxattr02.c | 34 ++++++++-----------
+>  1 file changed, 14 insertions(+), 20 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr01.c b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-> index f59413265..5002fe96f 100644
-> --- a/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-> +++ b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-> @@ -1,18 +1,15 @@
+> diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr02.c b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+> index 6974f013b..c91d05f35 100644
+> --- a/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+> +++ b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+> @@ -1,25 +1,19 @@
 >  // SPDX-License-Identifier: GPL-2.0-or-later
 >  /*
 > -* Copyright (c) 2016 Fujitsu Ltd.
@@ -116,13 +116,20 @@ On Thu, Oct 31, 2024 at 04:58:09PM +0800, Ma Xinjian via ltp wrote:
 > -*/
 > -
 > -/*
-> -* Test Name: llistxattr01
+> -* Test Name: llistxattr02
 > -*
 > -* Description:
-> -* The testcase checks the basic functionality of the llistxattr(2).
-> -* llistxattr(2) retrieves the list of extended attribute names
-> -* associated with the link itself in the filesystem.
+> -* 1) llistxattr(2) fails if the size of the list buffer is too small
+> -* to hold the result.
+> -* 2) llistxattr(2) fails if path is an empty string.
+> -* 3) llistxattr(2) fails when attempted to read from a invalid address.
+> -* 4) llistxattr(2) fails if path is longer than allowed.
 > -*
+> -* Expected Result:
+> -* 1) llistxattr(2) should return -1 and set errno to ERANGE.
+> -* 2) llistxattr(2) should return -1 and set errno to ENOENT.
+> -* 3) llistxattr(2) should return -1 and set errno to EFAULT.
+> -* 4) llistxattr(2) should return -1 and set errno to ENAMETOOLONG.
 > -*/
 > + * Copyright (c) 2016 Fujitsu Ltd.
 > + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -131,11 +138,15 @@ On Thu, Oct 31, 2024 at 04:58:09PM +0800, Ma Xinjian via ltp wrote:
 > +/*\
 > + * [Description]
 > + *
-> + * Basic test for llistxattr(2), retrieves the list of extended attribute names
-> + * associated with the link itself in the filesystem.
+> + * Verify llistxattr(2) returns -1 and set proper errno:
+> + *
+> + * - ERANGE if the size of the list buffer is too small to hold the result
+> + * - ENOENT if path is an empty string
+> + * - EFAULT when attempted to read from a invalid address
+> + * - ENAMETOOLONG if path is longer than allowed
 > + */
-Reviewed-by: Wei Gao <wegao@suse.com>
 >  
+Reviewed-by: Wei Gao <wegao@suse.com>
 >  #include "config.h"
 >  #include <errno.h>
 > -- 
