@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC419D1CA29
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 05:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DA81D12663
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 08:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730784647; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1730796972; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=FUGfNhKVxjVHZN4WwMiyKit+PVAPmxCRRRwfXIDI7Qo=;
- b=iUE2j74VxPqizV54QdZSGG2lMNRw4F8JMwrNPIU57SQyFK0GTPaWl9XHd+ht9HRvzQaXb
- FT6CIpxji7VHOiQadLSyWskXPnc/jt0UL15a2BcKN2wvc4g9YftNNv+1dXRPRr1wR/uoj6s
- iExxTtzm3+nCy/RSmu9ryzXqaQ899GI=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=sZYrGoaO9QdZpiQGJ4UrTVGiyFtNc/dLvkxjY73wErc=;
+ b=rcYkNqV2jHLYzSBvWFfNosRwHeh3ToHehaHUb+shdOf1rqutCs5M8EaJK/zEX+gd/TmKa
+ 194DRPlQjSO1c6z2R0Zpq2FPJRRKX8GrwOTtA8Zkp9JWRg+uu3edppNH9Q1TP+95dFaynRS
+ CiXYxGBMjj1iQu2DHdFYbIigBPBwZz0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 377F63D1B49
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 06:30:47 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id BE2B73D1E82
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 09:56:12 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BAEC3D1A54
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 06:30:24 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+ by picard.linux.it (Postfix) with ESMTPS id CCA573D1E0F
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:55:51 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C9828141ABB7
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 06:30:23 +0100 (CET)
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a9eaf93e40dso107033666b.0
- for <ltp@lists.linux.it>; Mon, 04 Nov 2024 21:30:23 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E1BA31A0BEBA
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:55:49 +0100 (CET)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-43161c0068bso43733465e9.1
+ for <ltp@lists.linux.it>; Tue, 05 Nov 2024 00:55:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730784623; x=1731389423; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=2cCmKiT9ubFl9Ox+6s5+jmW2FlMjQyvQ6sUP3SyXgG0=;
- b=YjlBuwIXFqWXb4t8qpTdBe3zxxmQPSNAKoHyHJlDq5oWsPEc5jDZ9xJtLJJQB+RKCF
- sHDpOXxaXF4GfnT2fZfRDNeW2UTOsJfKtDm4ZouaCbsuirqmN9ZbaEhxlN+Fvh3E1NP5
- 7BJ5sXGa3cSngdhcTzc6Q2Y4QRUAv88bp7wsg1GGMwtlyxtCVbKwSOSYeuWHjPOLt14y
- lSlaVJMmk0Kfh3jU967uvI2o4aiWpTZxBtrnz/du1FTFXixo1HAendr9Vqd4I3ZHVcBB
- T9MT19Ps+3ipqz7ObX84LyOQgxPSUqwIM3YzG05rGMAb9QeH0/RGg2nknviIY2+Qh/Pz
- rbtA==
+ d=suse.com; s=google; t=1730796949; x=1731401749; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=nOiLS7osUKQSTRs6teEUVkXsco1i1iZrNgU2qo0ugTk=;
+ b=SBFzNjrtoixUyEvqEuyJUGtztc65+I30LqexAwZcv3RUDLZCmlv8Eqsgwo1R6pczvk
+ knTsYJC3Ze3sVxfsrC5rPmIq0/w/4hSyULW54lFQra24o23b4pFGBOWQl+BeDiLpdngB
+ YxR1G1dXrCbPsG3qUEVzHiG9/1g5P2YWHccCfX1ZY9uW5pX80a2IpG+SRKiK6AMRkLLS
+ X2w+eAZnJJvNHmj/pgrw/ls5QG+29ssaG0DknszL18+baanamC6CznxVriAlKMX7gDAY
+ 0fZ2MabY2O+Mw75c6Rpnj2rUNyGHEA+IWLLncLqBsWDmjpP3J7YEuwarxD9j6yNKoD84
+ eZBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730784623; x=1731389423;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=2cCmKiT9ubFl9Ox+6s5+jmW2FlMjQyvQ6sUP3SyXgG0=;
- b=f2zT1EnneB5kwmKeHpHN5uOqRDHIJ+fFJS3BxeMFAuHz98HGmRjLk1RDbI7f5jVbc9
- PrASRwENpEosnwAvrHc8Nvb9IMGTt+iwBWLpigWTv3pw9Z+McOA2/RjprK9sK8iqO8HC
- 2HuIOGim4RXIu9Sbx1q5rTbYdTkUru/JI0gaXV1ENUqTtZtjvhIYjdyTHPhNSid7ZXuu
- KQbMsgnjd048cJmRKzWWt3VaSTWOkqCD2DH3DEVV3vrDW1PJNSVDCxdQkLj12kb191JD
- 2KPty13lwXJObRH0y+8J3U4bOsu/Yp0nY0+q3OjEkRqjf56gIi4Trr6avoZak+L0SM1I
- wr5A==
-X-Gm-Message-State: AOJu0YziPbFCTSi8VbJWx8R/5vI+Ov0bNVfMklDDvgtyr2PNhEdf5jZo
- m7x/vMoJDGHaQQGnuNPmhHwoWPwqwsb5QqHM+/hXhypa3MuWq27DFhEeLpd4Ww==
-X-Google-Smtp-Source: AGHT+IF55bY3KVz6nbn7yHsahqrBYRV/JVKSmT9R/VEomP03/LRYuPemxNoP7l4xRvhh3TdEd1uKig==
-X-Received: by 2002:a17:907:7f07:b0:a9a:17f5:79a8 with SMTP id
- a640c23a62f3a-a9de5d6fad3mr3494714466b.13.1730784623121; 
- Mon, 04 Nov 2024 21:30:23 -0800 (PST)
-Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a9eb16a3bf6sm79324566b.24.2024.11.04.21.30.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 Nov 2024 21:30:22 -0800 (PST)
-Date: Tue, 5 Nov 2024 00:30:16 -0500
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZymtaEIKm/caa+z2@wegao>
-References: <20240926061936.21499-1-wegao@suse.com>
- <20240930135809.9300-1-wegao@suse.com>
- <20241101105808.GD1145995@pevik>
+ d=1e100.net; s=20230601; t=1730796949; x=1731401749;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=nOiLS7osUKQSTRs6teEUVkXsco1i1iZrNgU2qo0ugTk=;
+ b=oMPXXMhuIPuBzswWaOIAH/cYCZrluyirQTQkprZlZMH9U7FpRy3K7nucG0BnNJfF7S
+ BsPfkD55FifacLR7WN/are/Ev8uygHqWpVi46MnNzGw48T9LmJOsb+WQtiCGq0Xaq846
+ jw8RpYhQ8AzrXnLj/Gnkz6jbkNL+TVHZw9w8UzGtWIvanyaT/wOtAtWlgdcTHdDqqlnl
+ UsU4CR3/AMxbAimLfQgzMLi5pRVTRqKgVaA7jbjRv7haIkp5ZadAEFu1Gv/YU9m34tiW
+ 8/HQ0n4xqUmqKRKjd1NPlTNbmimvpcuWNFYh48Az6YzBr4a3Ucgc+ILeh1+v4XTKPtMg
+ lubw==
+X-Gm-Message-State: AOJu0YzjotImtHrqScaxP7A8Lp/E67BL9tR4tFEyrj9yqM4Su6IsuqCb
+ Xx+i2UPfimIt0s1tsBePeFf+KIzXYoit0/3W0xa19bikVPo8KCKEN9wtIP0cRwDJOTbw2pZfBHo
+ D
+X-Google-Smtp-Source: AGHT+IGCNJmXkmOO0rKMEPjkm3xvwQK3XFUJV5lzzX7lsRPxWV0NR8vaLgM6JXHW8Xy+pYJbd7Xh9A==
+X-Received: by 2002:a05:600c:3ca1:b0:426:6e86:f82 with SMTP id
+ 5b1f17b1804b1-4328327db85mr125553715e9.22.1730796948637; 
+ Tue, 05 Nov 2024 00:55:48 -0800 (PST)
+Received: from ?IPV6:2a00:20:6006:76f:ba80:af72:413c:f99a?
+ ([2a00:20:6006:76f:ba80:af72:413c:f99a])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-431bd9a9fb9sm214945765e9.33.2024.11.05.00.55.47
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Nov 2024 00:55:48 -0800 (PST)
+Message-ID: <64a21716-965d-490c-9831-b5416b0a08dd@suse.com>
+Date: Tue, 5 Nov 2024 09:55:46 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241101105808.GD1145995@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: ltp@lists.linux.it
+References: <20241101-generate_syscalls-v9-0-d2c3820b0323@suse.com>
+Content-Language: en-US
+In-Reply-To: <20241101-generate_syscalls-v9-0-d2c3820b0323@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] cpuset02: Reimplementing the test6 of
- cpuset_memory_testset.sh as a separate C testcase
+Subject: Re: [LTP] [PATCH v9 0/5] Automatically generate syscalls.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,130 +95,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Nov 01, 2024 at 11:58:08AM +0100, Petr Vorel wrote:
-> Hi Wei, Cyril,
-> 
-> > "Reimplementing the test6 of cpuset_memory_testset.sh as a separate C testcase"
-> This could be followed by removing test6 from cpuset_memory_testset.sh?
-> 
-> The conversion itself from shell test test6 LGTM.
-> 
-> I suppose the reason is that moving code to C improves stability of the test.
-> But this would be nice to mention in the commit message. (Remember "what" versus
-> "why" - often the reason for the change is more important that describing the
-> change.)
-> 
-> > index 8e41c0223..366d67ce9 100644
-> > --- a/testcases/kernel/mem/cpuset/Makefile
-> > +++ b/testcases/kernel/mem/cpuset/Makefile
-> > @@ -19,6 +19,13 @@
-> 
-> >  top_srcdir		?= ../../../..
-> 
-> > +LTPLIBS = numa
-> > +
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >  include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
-> > +
-> > +LDLIBS  += $(NUMA_LIBS)
-> > +LDLIBS  += $(top_srcdir)/testcases/kernel/controllers/cpuset/cpuset_lib/libcpu_set.a
-> This is not enough, because there is no build dependency on libcpu_set.a.
-> 
-> Other tests which depends on libcpu_set.a are in the subdirectories (e.g.
-> testcases/kernel/controllers/cpuset/cpuset_hotplug_test/) and they use
-> testcases/kernel/controllers/cpuset/Makefile.inc. Can you somehow use it?
-> 
-> Maybe we should move cpuset_lib code to libs/ directory, when used elsewhere.
-I have created another new patch for move lib code:
-https://patchwork.ozlabs.org/project/ltp/patch/20241105052507.29630-1-wegao@suse.com/
-> 
-> That would also help to avoid ugly includes like:
-> > +#include "../../controllers/cpuset/cpuset_lib/cpuset.h"
-> 
-> (This could be also improved with CFLAGS += -I../../controllers/cpuset/cpuset_lib/.)
-> 
-> 
-> > +LTPLDLIBS = -lltpnuma
-> > +
-> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > diff --git a/testcases/kernel/mem/cpuset/cpuset02.c b/testcases/kernel/mem/cpuset/cpuset02.c
-> > new file mode 100644
-> > index 000000000..a62c98b3f
-> > --- /dev/null
-> > +++ b/testcases/kernel/mem/cpuset/cpuset02.c
-> > @@ -0,0 +1,140 @@
-> > +// SPDX-License-Identifier: LGPL-2.1-or-later
-> > +/*
-> > + * Copyright (c) 2009 FUJITSU LIMITED  Miao Xie <miaox@cn.fujitsu.com>
-> > + * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
-> > + */
-> > +
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * This test check cpuset's mems work with hugepage file.
-> Maybe: Test checks cpuset.mems works with hugepage file.
-> 
-> > + *
-> Please remove the blank line above ^.
-> > + */
-> ...
-> 
-> > +static void count_cpus_mems(void)
-> > +{
-> > +	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
-> > +	if (node->cnt <= 1)
-> > +		tst_brk(TCONF, "test requires NUMA system");
-> > +}
-> nit: Function used only once, I would move the code into setup().
-> 
-> Later (separate effort), this function (with size parameter) could be in
-> libs/numa/tst_numa.c, because it's used in many tests, or even added into struct
-> tst_test.
-> 
-> > +static void run_test(void)
-> > +{
-> ...
-> > +	pid = SAFE_FORK();
-> > +	if (!pid) {
-> > +		child();
-> > +	} else {
-> > +		SAFE_CG_PRINTF(cg_cpuset_0, "cgroup.procs", "%d", pid);
-> > +
-> > +		TST_CHECKPOINT_WAKE(0);
-> > +		TST_CHECKPOINT_WAIT(1);
-> > +
-> > +		SAFE_WAITPID(pid, NULL, 0);
-> > +
-> > +		cg_cpuset_0 = tst_cg_group_rm(cg_cpuset_0);
-> > +	}
-> 
-> Very nit: IMHO saving indent would be more readable:
-> 
-> 	if (!pid) {
-> 		child();
-> 		return; // or call exit() in child() and no return here.
-> 	}
-> 
-> 	SAFE_CG_PRINTF(cg_cpuset_0, "cgroup.procs", "%d", pid);
-> 
-> 	TST_CHECKPOINT_WAKE(0);
-> 	TST_CHECKPOINT_WAIT(1);
-> 
-> 	SAFE_WAITPID(pid, NULL, 0);
-> 
-> 	cg_cpuset_0 = tst_cg_group_rm(cg_cpuset_0);
-> 
-> Kind regards,
-> Petr
+Pushed! Thanks
+
+Andrea
+
+On 11/1/24 11:48, Andrea Cervesato wrote:
+> The problem we have at the moment is that all syscalls input files must
+> be changed by hand each time we need to test a new syscall. The idea is
+> to simplify this process, providing a script that is able to read from
+> kernel sources and to generate all syscalls files we need.
+>
+> This patch set adds a new command inside the syscalls folder and
+> it refactors the previous regen.sh code.
+> The new way we have to generate the syscalls.h file is the following:
+>
+> 	include/lapi/syscalls/generate_arch.sh 		path/to/kernel/source
+> 	include/lapi/syscalls/generate_syscalls.sh 	path/to/syscalls.h
+>
+> Scripts are independent and they can be run separately.
+> generate_syscalls.sh is the equivalent of regen.sh, but its code has
+> been cleaned up.
+>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> Changes in v9:
+> - use of printf when printing "\n" string, in order to support both dash
+>    and bash. BEWARE: ugliness triggered.
+> - rename *.in files with supported-arch.txt file naming convention
+> - update *.in files in a separated commit
+> - update documentation to be more readable
+> - aesthetic code changes
+> - Link to v8: https://lore.kernel.org/r/20241031-generate_syscalls-v8-0-8e35a9d6783b@suse.com
+>
+> Changes in v8:
+> - use /bin/sh -eu
+> - support for dash and removed all bashism madness
+> - validation: https://github.com/acerv/ltp/actions/runs/11615377438
+> - Link to v7: https://lore.kernel.org/r/20241031-generate_syscalls-v7-0-f3e26c06814e@suse.com
+>
+> Changes in v7:
+> - check for errors in generate_syscalls.sh
+> - add documentation
+> - validation: https://github.com/acerv/ltp/actions/runs/11611080151
+> - Link to v6: https://lore.kernel.org/r/20241031-generate_syscalls-v6-0-1ad86a33ce2d@suse.com
+>
+> Changes in v6:
+> - aesthetic changes in the syscall generator
+> - fix fallback definitions in the syscalls.h file generator
+> - Link to v5: https://lore.kernel.org/r/20241030-generate_syscalls-v5-0-eed6a87dc787@suse.com
+>
+> Changes in v5:
+> - license SPDX inside scripts files
+> - quote shell variables inside scripts
+> - some generic code cleanup
+> - Link to v4: https://lore.kernel.org/r/20241009-generate_syscalls-v4-0-5328a785bbad@suse.com
+>
+> Changes in v4:
+> - remove blacklist file
+> - update syscalls files
+> - Link to v3: https://lore.kernel.org/r/20240930-generate_syscalls-v3-0-e56ede4bc7f5@suse.com
+>
+> Changes in v3:
+> - fix generate_arch.sh to work properly for all architectures
+> - rename some arch .in files and handle renaming inside
+>    generate_syscalls.sh using the right gcc directives
+> - Link to v2: https://lore.kernel.org/r/20240927-generate_syscalls-v2-0-108f5f2ad318@suse.com
+>
+> Changes in v2:
+> - refactor regen.sh
+> - split syscalls.h and syscalls .in files creation
+> - updated syscalls .in files
+> - Link to v1: https://lore.kernel.org/r/20240924-generate_syscalls-v1-0-941507a9cdac@suse.com
+>
+> ---
+> Andrea Cervesato (5):
+>        Refactor regen.sh script to generate syscalls
+>        Add script to generate arch(s) dependant syscalls
+>        Update arch(s) syscalls files
+>        Delete obsolete strip_syscall.awk file
+>        Add documentation about syscalls.h generator
+>
+>   configure.ac                                       |   2 +-
+>   doc/developers/test_case_tutorial.rst              |  29 +-
+>   include/lapi/syscalls/arc.in                       |  41 +-
+>   include/lapi/syscalls/arm.in                       | 821 +++++++++++----------
+>   include/lapi/syscalls/{loongarch.in => arm64.in}   |  12 +-
+>   include/lapi/syscalls/generate_arch.sh             | 213 ++++++
+>   include/lapi/syscalls/generate_syscalls.sh         | 109 +++
+>   include/lapi/syscalls/hppa.in                      |  54 --
+>   include/lapi/syscalls/i386.in                      |  18 +-
+>   .../lapi/syscalls/{aarch64.in => loongarch64.in}   |  20 +-
+>   include/lapi/syscalls/{mips_n64.in => mips64.in}   |  13 +-
+>   .../lapi/syscalls/{mips_n32.in => mips64n32.in}    |  13 +-
+>   include/lapi/syscalls/{mips_o32.in => mipso32.in}  |  19 +-
+>   include/lapi/syscalls/parisc.in                    | 397 ++++++++++
+>   include/lapi/syscalls/powerpc.in                   |  19 +-
+>   include/lapi/syscalls/powerpc64.in                 |  47 +-
+>   include/lapi/syscalls/regen.sh                     | 129 ----
+>   include/lapi/syscalls/s390.in                      |  15 +-
+>   include/lapi/syscalls/s390x.in                     |  15 +-
+>   include/lapi/syscalls/sh.in                        |  15 +-
+>   include/lapi/syscalls/sparc.in                     |  14 +-
+>   include/lapi/syscalls/sparc64.in                   |  16 +-
+>   include/lapi/syscalls/strip_syscall.awk            |  19 -
+>   .../lapi/syscalls/{order => supported-arch.txt}    |  12 +-
+>   include/lapi/syscalls/x86_64.in                    |  51 +-
+>   25 files changed, 1351 insertions(+), 762 deletions(-)
+> ---
+> base-commit: 84e77afb3acc4bc69c434c430cc1c1d000427921
+> change-id: 20240923-generate_syscalls-780dc2227bdb
+>
+> Best regards,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
