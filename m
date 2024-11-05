@@ -4,80 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A18DBD12689
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4F85D12689
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730805566; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1730805635; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=e3gEy1NiLkCWtNfMmLfS6Rkyv42f2aHgryG2UHjzEP4=;
- b=OaQzcDd6E5rB7TMLDgtQN6wbAPywIYIDmNz0+ApIkonDYg85+YeAQOHBIVwq0MjPFKAXh
- ilO52B6GwHnx1tL1D9f3gKYcXQ023z/a3JRZhG/vFdZdQmujQITtEJ38we8bFyt5ZLmBzhe
- ORsQB8Q1DR1F+DST9aOmQeYQkS38IuI=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=XzZmlfTNa2spdd5PKj1VXVEPio5mLAs4ZZBA7C8Qt+M=;
+ b=MFXgoCND07LRvcKHs1kij+flJ5IvccxZCW2aTX0s0UjtzjEGbGfVa3ghg0DWq4iEpL94e
+ BAkClUPFxwQMnWpNVLKsPu4qoQYzXofDB65WaKAlBbM5Ks0sGlcgvx2VmrFp/eqO2+KahWw
+ pLLVbprWaPQLcPlamcsqvaQciRzC2pg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F2D23D2093
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:19:26 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 3F2493D20A5
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:20:35 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F0653D1AD2
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:19:05 +0100 (CET)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
+ by picard.linux.it (Postfix) with ESMTPS id 15F933D1AD2
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:20:13 +0100 (CET)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
+ [IPv6:2a00:1450:4864:20::132])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BD744245576
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:19:03 +0100 (CET)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-a9e8522445dso505526666b.1
- for <ltp@lists.linux.it>; Tue, 05 Nov 2024 03:19:03 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EFD76209E34
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:20:11 +0100 (CET)
+Received: by mail-lf1-x132.google.com with SMTP id
+ 2adb3069b0e04-539f72c8fc1so5083813e87.1
+ for <ltp@lists.linux.it>; Tue, 05 Nov 2024 03:20:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730805543; x=1731410343; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=sG6WRM0/57h3B3wLhto7jLHnHdpKIbVbYLJZtKyNYEg=;
- b=BSjQOUSTWrms0uHPwrNkKN8G3CYvV7Xhb7ehTVjYRVEgIrEhTjFvN56y3lSo9DufJI
- 8sY/yVttlF7WFhZaMpWkwmIE9Oa3MxvdFu+rFtSkYV9mR8thHfcRURVJ359gl2PIzATX
- s71LrpBgb8XhBwzFITOOj74acXynWk1hpRmBIX29Nyq6LbbKHPYNmrGI2T4Xk1No29ye
- LjeTgGb0NvnyvEp3czp72E62uhZ8Y4J3qyWsrMNMQl+yWhNBnUeP+vibY699Iw8IKhu+
- qYsLlV6B46/+eGiGDCUJRj/K6/TTHzcDx1uvtzrKbaRYnK0XNcrMDfczHcE4fljnFII/
- 3JTA==
+ d=suse.com; s=google; t=1730805611; x=1731410411; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=ZDt2ni0fKkNmv5Aa6UsbfV3/S/TOMToYs7XV0p6xlpU=;
+ b=eKEuqurWcJXNvv8+yReVG7sMvU+YS716LF0yE+S8XP7VfNDjPvEme03g8RMuWrQvGP
+ YaNl0qMUH3MDfZZh222YCTD+gHBXYRrOyTqRDG3y/Vhb/x/z2PNAB7opiqFS//owVHaM
+ c6B7vHEXr2SlvP4SaQ6TB+Bd61PMp3Yxtr8H9cdemqUTht07dDjE72Coz1QABo0nvceP
+ gevt0u05lWnVvk6bwIJp1NqmAc5lJrX9vCJqMh5iPBnesE+/bmXZZ8PGMUUCZLgDvBJ5
+ Z7tMbwb6n+V3xm+/5q/xBC7vvsp0r7tr4hJskf+Udzfdl22I9zqikhFZPpk0bVTTIymj
+ p0tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730805543; x=1731410343;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=sG6WRM0/57h3B3wLhto7jLHnHdpKIbVbYLJZtKyNYEg=;
- b=kBQ6q9UbMtzk45CFxvOLQgX/RVCqIfKUWav/36SKn5HT244raNTqZIpjCms1afrl48
- mQLBf87EqHHYz39T7cpEf/W18trcNDEf+UbULBQa3/TrsOIjZDqKwksKFdIt0+hd6Tfu
- DEhiQsFeC89JP/acfczTrHoae2n40Is/Pm9s+1+AVAvwTHICEIskqF0V/kn+WZdqPsly
- YLHDn8dVYDNyuLPwrvOif/5Guw9Tl3PqLXkYKnxw+f8eMqgJvNqSOh+KBC4ZQsRPpHc4
- YhygUl+JlYKSU+1qejPZ00zvgQQiUe1pOtJkW0xVx6CBzvvoBtFtz7D0sCNOZReF+NeU
- PNYQ==
-X-Gm-Message-State: AOJu0Yw4bfOWkt6q0hT3JykP46Xae+aPBHAVYar0XDne6/fJVwUtIebG
- KE7lTEQ03IJpBKyGgJOsvQy4YRmRzGSoxQTYFqsipsCGcY38KD/y/aer+HfguA==
-X-Google-Smtp-Source: AGHT+IFqU2Uiq2zlHcT+jPbysTJRX3MtaCRM/LEMr0CI3dqotVUwzLZ2+C2jDSinNxU7SrLempxNzA==
-X-Received: by 2002:a17:906:c145:b0:a99:7bc0:bca9 with SMTP id
- a640c23a62f3a-a9e6553af4fmr1584318966b.3.1730805542978; 
- Tue, 05 Nov 2024 03:19:02 -0800 (PST)
-Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a9eb17d7328sm120660966b.129.2024.11.05.03.19.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Nov 2024 03:19:02 -0800 (PST)
-Date: Tue, 5 Nov 2024 06:18:57 -0500
-To: Ma Xinjian <maxj.fnst@fujitsu.com>
-Message-ID: <Zyn/IUYuWpAoswZP@wegao>
-References: <20241031085934.57039-1-maxj.fnst@fujitsu.com>
+ d=1e100.net; s=20230601; t=1730805611; x=1731410411;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=ZDt2ni0fKkNmv5Aa6UsbfV3/S/TOMToYs7XV0p6xlpU=;
+ b=r27qM0Uk5p8RSIwNcE9jr6/B+I1sEzGakmprb1uZpNeCGaolS76G86nvNGOiw4g2F3
+ aVwiP2cPB1YJ1Kec4e/nCPqH2BqxoulDWBHuCjUqDxxzK5NXPERsti9wxdBM9+dcZKu7
+ cToMLzymA9xKoQeiwzdxT3/GS/bw/ENvjpgWuJuYYqwg5XI4l+lQC3Euuyn8DfxZGXpt
+ o8y5qMIAf3u6O4Cj0R/tznD99rBzd++gTZ4i2solpbp/akU/ULevzLQ5MGLt/RaClJmj
+ E9MhevHB5fJDv+i3ZsJEGjZylh111p4q0c0Ag+NgeCynPAyf6sdx4WqPTIlpGEtBwquE
+ qa4A==
+X-Gm-Message-State: AOJu0YxlycGeHxrZAEfYdDRykqvYEsLznD2qsgXHa/wa7fNxoxTvEud+
+ rlZTP6+wTFiEcZ4fIJ4nDmwP+tbHt00pmZ9TkB+BomORuzvkipuRtV5wlkk8sHyzHdqC6scWUdv
+ olAc=
+X-Google-Smtp-Source: AGHT+IF6tYeS0zmvujCUnKVvJOjd9Rsg+To5CqhN54hXuRstfE4VPMgIlE4C52ydIT2EYgVPQqIiUw==
+X-Received: by 2002:a05:6512:31cc:b0:531:4c6d:b8ef with SMTP id
+ 2adb3069b0e04-53b7ecd5232mr13460642e87.6.1730805610695; 
+ Tue, 05 Nov 2024 03:20:10 -0800 (PST)
+Received: from [10.232.133.32] ([88.128.90.60])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4327d5e8562sm185114735e9.23.2024.11.05.03.20.10
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Nov 2024 03:20:10 -0800 (PST)
+Message-ID: <279a334b-6ba2-4edd-a0e2-3118401a2178@suse.com>
+Date: Tue, 5 Nov 2024 12:20:09 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241031085934.57039-1-maxj.fnst@fujitsu.com>
+User-Agent: Mozilla Thunderbird
+To: ltp@lists.linux.it
+References: <20241105041326.18531-1-liwang@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20241105041326.18531-1-liwang@redhat.com>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] llistxattr03: Convert docs to docparse
+Subject: Re: [LTP] [PATCH 1/2] lapi: Add new field socket scoping to
+ landlock_ruleset_attr
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,60 +95,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Oct 31, 2024 at 04:59:34PM +0800, Ma Xinjian via ltp wrote:
-> Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+Hi Li,
+
+please check my latest landlock network v2 testing suite, because the 
+paradigm will change due to incompatibility between ABI v1 and v4 of 
+landlock implementation. We need to simplify the way we fallback 
+landlock_ruleset_attr.
+
+Andrea
+
+On 11/5/24 05:13, Li Wang wrote:
+> Mainline kernel commit 21d52e295 ("landlock: Add abstract UNIX socket scoping")
+> introduces a new "scoped" member to the struct landlock_ruleset_attr.
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
 > ---
->  .../kernel/syscalls/llistxattr/llistxattr03.c | 23 +++++++++----------
->  1 file changed, 11 insertions(+), 12 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-> index 940851f40..3280e91aa 100644
-> --- a/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-> +++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-> @@ -1,17 +1,16 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> -* Copyright (c) 2016 Fujitsu Ltd.
-> -* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> -*/
-> -
-> -/*
-> -* Test Name: llistxattr03
-> -*
-> -* Description:
-> -* llistxattr is identical to listxattr. an empty buffer of size zero
-> -* can return the current size of the list of extended attribute names,
-> -* which can be used to estimate a suitable buffer.
-> -*/
-> + * Copyright (c) 2016 Fujitsu Ltd.
-> + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * llistxattr is identical to listxattr. An empty buffer of size zero
-> + * can return the current size of the list of extended attribute names,
-> + * which can be used to estimate a suitable buffer.
-> + */
-Reviewed-by: Wei Gao <wegao@suse.com>
->  
->  #include "config.h"
->  #include <errno.h>
-> -- 
-> 2.42.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>   include/lapi/landlock.h | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/include/lapi/landlock.h b/include/lapi/landlock.h
+> index 211d171eb..5fb6d3755 100644
+> --- a/include/lapi/landlock.h
+> +++ b/include/lapi/landlock.h
+> @@ -19,6 +19,7 @@ struct landlock_ruleset_attr
+>   {
+>   	uint64_t handled_access_fs;
+>   	uint64_t handled_access_net;
+> +	uint64_t scoped;
+>   };
+>   #endif
+>   
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
