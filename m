@@ -4,122 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02D8DD1266E
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 09:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EB03D1266E
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 09:35:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78A3C3D1F2D
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 10:35:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B8A993D1F2D
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 10:35:23 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B41B3D1F0F
+ by picard.linux.it (Postfix) with ESMTPS id 3F7D83D1F10
  for <ltp@lists.linux.it>; Tue,  5 Nov 2024 10:34:32 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3219B11E49D3
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 10:34:31 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9273E222FBB
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 10:34:30 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C5EBF21CE6
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 020011FE1A
  for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1730799269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xYQUxFzPNXm+U3UFeLFZgxpRVzy00XD0Xvy/mjTn9UU=;
- b=A+FSlhO00QVWxfLSJmytgfbWvlTdiSdP6yv44C0GykdaOJovZDHkdd2Dd6v8hidy0z2Z3O
- dgtBXg84BMg6feJ9BpuLaZv9b3bkC9vV9xoRrA7Y79O0JSz+OMPhi/M3nkOLKtBM2e1LoX
- e6G8K+B35nYy16S2+W1jSyhFM3kg1SE=
+ bh=XmFx+ZoGKaF8JcZ0SEs7vMOYAGoAp4of9O1OLpWp3Ww=;
+ b=OgJN3dTFrK4LTs5/jxflPIshRmF0wHYdQk9oMWXRS47CvbXOpnsLxrffGDkFvhEEDwL1XY
+ vAUGCdqlXE5AApopvuRozAkIsDC9e3e9dgloyDI62H1ebOKQIft32qyvcgF7Qwz9nvyLj8
+ N2qemAqV46URG9xTypLrrKwoU/Mile0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1730799269;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xYQUxFzPNXm+U3UFeLFZgxpRVzy00XD0Xvy/mjTn9UU=;
- b=AIlpAkm8ldIfaEkW4niyWKFpQD2GiPmHryjZW1Yb07m8havN2JEIMyrZUGaq6Bv18E5y1j
- LNukqew0R0Lr3fBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=A+FSlhO0;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=AIlpAkm8
+ bh=XmFx+ZoGKaF8JcZ0SEs7vMOYAGoAp4of9O1OLpWp3Ww=;
+ b=q3C0TN1hRDXFoFfRq+1IoHWCgW7E4oaFCYZU9/SPo4BIcPPBzK5A3up02ct0qBrrsHUeyu
+ EeK+fwo/JkCcZuBQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1730799269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xYQUxFzPNXm+U3UFeLFZgxpRVzy00XD0Xvy/mjTn9UU=;
- b=A+FSlhO00QVWxfLSJmytgfbWvlTdiSdP6yv44C0GykdaOJovZDHkdd2Dd6v8hidy0z2Z3O
- dgtBXg84BMg6feJ9BpuLaZv9b3bkC9vV9xoRrA7Y79O0JSz+OMPhi/M3nkOLKtBM2e1LoX
- e6G8K+B35nYy16S2+W1jSyhFM3kg1SE=
+ bh=XmFx+ZoGKaF8JcZ0SEs7vMOYAGoAp4of9O1OLpWp3Ww=;
+ b=OgJN3dTFrK4LTs5/jxflPIshRmF0wHYdQk9oMWXRS47CvbXOpnsLxrffGDkFvhEEDwL1XY
+ vAUGCdqlXE5AApopvuRozAkIsDC9e3e9dgloyDI62H1ebOKQIft32qyvcgF7Qwz9nvyLj8
+ N2qemAqV46URG9xTypLrrKwoU/Mile0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1730799269;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xYQUxFzPNXm+U3UFeLFZgxpRVzy00XD0Xvy/mjTn9UU=;
- b=AIlpAkm8ldIfaEkW4niyWKFpQD2GiPmHryjZW1Yb07m8havN2JEIMyrZUGaq6Bv18E5y1j
- LNukqew0R0Lr3fBA==
+ bh=XmFx+ZoGKaF8JcZ0SEs7vMOYAGoAp4of9O1OLpWp3Ww=;
+ b=q3C0TN1hRDXFoFfRq+1IoHWCgW7E4oaFCYZU9/SPo4BIcPPBzK5A3up02ct0qBrrsHUeyu
+ EeK+fwo/JkCcZuBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8F7651394A
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:34:29 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4BC01394A
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 09:34:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id qM1YGKXmKWeAPwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cNucJqTmKWeAPwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>)
- for <ltp@lists.linux.it>; Tue, 05 Nov 2024 09:34:29 +0000
+ for <ltp@lists.linux.it>; Tue, 05 Nov 2024 09:34:28 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 05 Nov 2024 10:34:28 +0100
+Date: Tue, 05 Nov 2024 10:34:26 +0100
 MIME-Version: 1.0
-Message-Id: <20241105-landlock_network-v2-4-d58791487919@suse.com>
+Message-Id: <20241105-landlock_network-v2-2-d58791487919@suse.com>
 References: <20241105-landlock_network-v2-0-d58791487919@suse.com>
 In-Reply-To: <20241105-landlock_network-v2-0-d58791487919@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1730799267; l=5623;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1730799267; l=4182;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=N2vJqOuSsOM8voWJqH/WPlb8Qs5LvIFvaQ2Aafq7bd0=;
- b=bmgFGgHsm4tZdey9vNJP+ObUp90mKVT3ivGHqkR2QH2QEEvjNuiPYHYeilxVCDAqHn5UlOUyz
- tR3Dx2UsG0WA2MCBOAygPSnn1eMMXuXQCtl/V6QVxyxiCm15Ml9wlaR
+ bh=bb0mNcabNfgo6eO8im6I/sIqAGiaCsEwkXF0hpOJhQE=;
+ b=hwc7pmH/AeiiKx7CUkQmFiJDmlUCRodWvF/bQOd0V6sYLNQ2BuaI36K4tMSVqEkev6r4U8rlR
+ rqKWW55zXr1Dvs88Z75QhjeIe2ZbdmnFlcaULKIB7t+kqnqvR/6IFnp
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: C5EBF21CE6
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_ONE(0.00)[1];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
- TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-Subject: [LTP] [PATCH v2 4/4] Add error coverage for landlock network support
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Status: Clean
+Subject: [LTP] [PATCH v2 2/4] Network helpers in landlock suite common
+ functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,196 +130,162 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add two more errors checks inside the landlock02 which is testing
-landlock_add_rule syscall. In particular, test now verifies when the
-syscall is raising EINVAL due to invalid network attributes.
+Landlock suite helpers functions don't support network features. This
+patch adds apply_landlock_net_layer() helper that can be used to apply a
+network landlock rule in the current sandbox.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/landlock/landlock02.c | 94 +++++++++++++++++++------
- 1 file changed, 74 insertions(+), 20 deletions(-)
+ .../kernel/syscalls/landlock/landlock_common.h     | 124 +++++++++++++++++++++
+ 1 file changed, 124 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/landlock/landlock02.c b/testcases/kernel/syscalls/landlock/landlock02.c
-index 8566d407f6d17ab367695125f07d0a80cf4130e5..dbc405a8a01ac58e0d22f952f57bd603c62ab8be 100644
---- a/testcases/kernel/syscalls/landlock/landlock02.c
-+++ b/testcases/kernel/syscalls/landlock/landlock02.c
-@@ -20,93 +20,146 @@
+diff --git a/testcases/kernel/syscalls/landlock/landlock_common.h b/testcases/kernel/syscalls/landlock/landlock_common.h
+index f3096f4bf15f155f2a00b39c461d0805a76306e5..d55f2a2576968a89fbeca6bb2a56c6c2700729fa 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_common.h
++++ b/testcases/kernel/syscalls/landlock/landlock_common.h
+@@ -11,6 +11,16 @@
+ #include "lapi/fcntl.h"
+ #include "lapi/landlock.h"
  
- #include "landlock_common.h"
- 
--static struct tst_landlock_ruleset_attr_abi1 *ruleset_attr;
-+static struct tst_landlock_ruleset_attr_abi4 *ruleset_attr;
- static struct landlock_path_beneath_attr *path_beneath_attr;
- static struct landlock_path_beneath_attr *rule_null;
-+static struct landlock_net_port_attr *net_port_attr;
- static int ruleset_fd;
- static int invalid_fd = -1;
-+static int abi_current;
- 
- static struct tcase {
- 	int *fd;
--	enum landlock_rule_type rule_type;
--	struct landlock_path_beneath_attr **attr;
-+	int rule_type;
-+	struct landlock_path_beneath_attr **path_attr;
-+	struct landlock_net_port_attr **net_attr;
- 	int access;
- 	int parent_fd;
-+	int net_port;
- 	uint32_t flags;
- 	int exp_errno;
-+	int abi_ver;
- 	char *msg;
- } tcases[] = {
- 	{
- 		.fd = &ruleset_fd,
--		.attr = &path_beneath_attr,
-+		.path_attr = &path_beneath_attr,
-+		.net_attr = NULL,
- 		.access = LANDLOCK_ACCESS_FS_EXECUTE,
- 		.flags = 1,
- 		.exp_errno = EINVAL,
-+		.abi_ver = 1,
- 		.msg = "Invalid flags"
- 	},
- 	{
- 		.fd = &ruleset_fd,
--		.attr = &path_beneath_attr,
-+		.path_attr = &path_beneath_attr,
-+		.net_attr = NULL,
- 		.access = LANDLOCK_ACCESS_FS_EXECUTE,
- 		.exp_errno = EINVAL,
-+		.abi_ver = 1,
- 		.msg = "Invalid rule type"
- 	},
- 	{
- 		.fd = &ruleset_fd,
- 		.rule_type = LANDLOCK_RULE_PATH_BENEATH,
--		.attr = &path_beneath_attr,
-+		.path_attr = &path_beneath_attr,
-+		.net_attr = NULL,
- 		.exp_errno = ENOMSG,
-+		.abi_ver = 1,
- 		.msg = "Empty accesses"
- 	},
- 	{
- 		.fd = &invalid_fd,
--		.attr = &path_beneath_attr,
-+		.path_attr = &path_beneath_attr,
-+		.net_attr = NULL,
- 		.access = LANDLOCK_ACCESS_FS_EXECUTE,
- 		.exp_errno = EBADF,
-+		.abi_ver = 1,
- 		.msg = "Invalid file descriptor"
- 	},
- 	{
- 		.fd = &ruleset_fd,
- 		.rule_type = LANDLOCK_RULE_PATH_BENEATH,
--		.attr = &path_beneath_attr,
-+		.path_attr = &path_beneath_attr,
-+		.net_attr = NULL,
- 		.access = LANDLOCK_ACCESS_FS_EXECUTE,
- 		.parent_fd = -1,
- 		.exp_errno = EBADF,
-+		.abi_ver = 1,
- 		.msg = "Invalid parent fd"
- 	},
- 	{
- 		.fd = &ruleset_fd,
- 		.rule_type = LANDLOCK_RULE_PATH_BENEATH,
--		.attr = &rule_null,
-+		.path_attr = &rule_null,
-+		.net_attr = NULL,
- 		.exp_errno = EFAULT,
-+		.abi_ver = 1,
- 		.msg = "Invalid rule attr"
- 	},
-+	{
-+		.fd = &ruleset_fd,
-+		.rule_type = LANDLOCK_RULE_NET_PORT,
-+		.path_attr = NULL,
-+		.net_attr = &net_port_attr,
-+		.access = LANDLOCK_ACCESS_FS_EXECUTE,
-+		.net_port = 448,
-+		.exp_errno = EINVAL,
-+		.abi_ver = 4,
-+		.msg = "Invalid access rule for network type"
-+	},
-+	{
-+		.fd = &ruleset_fd,
-+		.rule_type = LANDLOCK_RULE_NET_PORT,
-+		.path_attr = NULL,
-+		.net_attr = &net_port_attr,
-+		.access = LANDLOCK_ACCESS_NET_BIND_TCP,
-+		.net_port = INT16_MAX + 1,
-+		.exp_errno = EINVAL,
-+		.abi_ver = 4,
-+		.msg = "Socket port greater than 65535"
-+	},
- };
- 
- static void run(unsigned int n)
++#define IPV4_ADDRESS "127.0.0.1"
++#define IPV6_ADDRESS "::1"
++
++struct socket_data {
++	struct sockaddr_in addr_ipv4;
++	struct sockaddr_in6 addr_ipv6;
++	size_t address_size;
++	int fd;
++};
++
+ static inline int verify_landlock_is_enabled(void)
  {
- 	struct tcase *tc = &tcases[n];
+ 	int abi;
+@@ -51,6 +61,22 @@ static inline void apply_landlock_fs_rule(
+ 	SAFE_CLOSE(path_beneath_attr->parent_fd);
+ }
  
--	if (*tc->attr) {
--		(*tc->attr)->allowed_access = tc->access;
--		(*tc->attr)->parent_fd = tc->parent_fd;
-+	if (tc->abi_ver > abi_current) {
-+		tst_res(TCONF, "Minimum ABI required: %d", tc->abi_ver);
++static inline void apply_landlock_net_rule(
++	struct landlock_net_port_attr *net_attr,
++	const int ruleset_fd,
++	const uint64_t port,
++	const uint64_t access)
++{
++	net_attr->port = port;
++	net_attr->allowed_access = access;
++
++	SAFE_LANDLOCK_ADD_RULE(
++		ruleset_fd,
++		LANDLOCK_RULE_NET_PORT,
++		net_attr,
++		0);
++}
++
+ static inline void enforce_ruleset(const int ruleset_fd)
+ {
+ 	SAFE_PRCTL(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+@@ -72,4 +98,102 @@ static inline void apply_landlock_fs_layer(
+ 
+ 	SAFE_CLOSE(ruleset_fd);
+ }
++
++static inline void apply_landlock_net_layer(
++	void *ruleset_attr, size_t attr_size,
++	struct landlock_net_port_attr *net_port_attr,
++	const in_port_t port,
++	const uint64_t access)
++{
++	int ruleset_fd;
++
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(ruleset_attr, attr_size, 0);
++
++	apply_landlock_net_rule(net_port_attr, ruleset_fd, port, access);
++	enforce_ruleset(ruleset_fd);
++
++	SAFE_CLOSE(ruleset_fd);
++}
++
++static inline in_port_t getsocket_port(struct socket_data *socket,
++	const int addr_family)
++{
++	struct sockaddr_in addr_ipv4;
++	struct sockaddr_in6 addr_ipv6;
++	socklen_t len;
++	in_port_t port = 0;
++
++	switch (addr_family) {
++	case AF_INET:
++		len = sizeof(addr_ipv4);
++		memset(&addr_ipv4, 0, len);
++
++		SAFE_GETSOCKNAME(socket->fd, (struct sockaddr *)&addr_ipv4, &len);
++		port = ntohs(addr_ipv4.sin_port);
++		break;
++	case AF_INET6:
++		len = sizeof(addr_ipv6);
++		memset(&addr_ipv6, 0, len);
++
++		SAFE_GETSOCKNAME(socket->fd, (struct sockaddr *)&addr_ipv6, &len);
++		port = ntohs(addr_ipv6.sin6_port);
++		break;
++	default:
++		tst_brk(TBROK, "Unsupported protocol");
++		break;
++	};
++
++	return port;
++}
++
++static inline void create_socket(struct socket_data *socket,
++	const int addr_family, const in_port_t port)
++{
++	memset(socket, 0, sizeof(struct socket_data));
++
++	switch (addr_family) {
++	case AF_INET:
++		if (!port) {
++			tst_init_sockaddr_inet_bin(&socket->addr_ipv4,
++				INADDR_ANY, 0);
++		} else {
++			tst_init_sockaddr_inet(&socket->addr_ipv4,
++				IPV4_ADDRESS, port);
++		}
++
++		socket->address_size = sizeof(struct sockaddr_in);
++		break;
++	case AF_INET6:
++		if (!port) {
++			tst_init_sockaddr_inet6_bin(&socket->addr_ipv6,
++				&in6addr_any, 0);
++		} else {
++			tst_init_sockaddr_inet6(&socket->addr_ipv6,
++				IPV6_ADDRESS, port);
++		}
++
++		socket->address_size = sizeof(struct sockaddr_in6);
++		break;
++	default:
++		tst_brk(TBROK, "Unsupported protocol");
 +		return;
- 	}
- 
--	TST_EXP_FAIL(tst_syscall(__NR_landlock_add_rule,
--		*tc->fd, tc->rule_type, *tc->attr, tc->flags),
--		tc->exp_errno,
--		"%s",
--		tc->msg);
-+	if (tc->path_attr) {
-+		if (*tc->path_attr) {
-+			(*tc->path_attr)->allowed_access = tc->access;
-+			(*tc->path_attr)->parent_fd = tc->parent_fd;
-+		}
++	};
 +
-+		TST_EXP_FAIL(tst_syscall(__NR_landlock_add_rule,
-+			*tc->fd, tc->rule_type, *tc->path_attr, tc->flags),
-+			tc->exp_errno, "%s", tc->msg);
-+	} else if (tc->net_attr) {
-+		if (*tc->net_attr) {
-+			(*tc->net_attr)->allowed_access = tc->access;
-+			(*tc->net_attr)->port = tc->net_port;
-+		}
++	socket->fd = SAFE_SOCKET(addr_family, SOCK_STREAM | SOCK_CLOEXEC, 0);
++}
 +
-+		TST_EXP_FAIL(tst_syscall(__NR_landlock_add_rule,
-+			*tc->fd, tc->rule_type, *tc->net_attr, tc->flags),
-+			tc->exp_errno, "%s", tc->msg);
-+	}
- }
- 
- static void setup(void)
- {
--	verify_landlock_is_enabled();
-+	abi_current = verify_landlock_is_enabled();
- 
- 	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
- 
- 	ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
--		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
-+		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
- }
- 
- static void cleanup(void)
-@@ -122,8 +175,9 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.bufs = (struct tst_buffers []) {
--		{&ruleset_attr, .size = sizeof(struct tst_landlock_ruleset_attr_abi1)},
-+		{&ruleset_attr, .size = sizeof(struct tst_landlock_ruleset_attr_abi4)},
- 		{&path_beneath_attr, .size = sizeof(struct landlock_path_beneath_attr)},
-+		{&net_port_attr, .size = sizeof(struct landlock_net_port_attr)},
- 		{},
- 	},
- 	.caps = (struct tst_cap []) {
++static inline void getsocket_addr(struct socket_data *socket,
++	const int addr_family, struct sockaddr **addr)
++{
++	switch (addr_family) {
++	case AF_INET:
++		*addr = (struct sockaddr *)&socket->addr_ipv4;
++		break;
++	case AF_INET6:
++		*addr = (struct sockaddr *)&socket->addr_ipv6;
++		break;
++	default:
++		break;
++	};
++}
+ #endif /* LANDLOCK_COMMON_H__ */
 
 -- 
 2.43.0
