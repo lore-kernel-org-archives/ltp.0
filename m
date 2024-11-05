@@ -4,86 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4F85D12689
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1730805635; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=XzZmlfTNa2spdd5PKj1VXVEPio5mLAs4ZZBA7C8Qt+M=;
- b=MFXgoCND07LRvcKHs1kij+flJ5IvccxZCW2aTX0s0UjtzjEGbGfVa3ghg0DWq4iEpL94e
- BAkClUPFxwQMnWpNVLKsPu4qoQYzXofDB65WaKAlBbM5Ks0sGlcgvx2VmrFp/eqO2+KahWw
- pLLVbprWaPQLcPlamcsqvaQciRzC2pg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DA2ED12690
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 11:42:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3F2493D20A5
-	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:20:35 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id AB9723D2101
+	for <ltp@archiver.kernel.org>; Tue,  5 Nov 2024 12:42:15 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15F933D1AD2
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:20:13 +0100 (CET)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BF4073D1FCB
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:41:59 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EFD76209E34
- for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:20:11 +0100 (CET)
-Received: by mail-lf1-x132.google.com with SMTP id
- 2adb3069b0e04-539f72c8fc1so5083813e87.1
- for <ltp@lists.linux.it>; Tue, 05 Nov 2024 03:20:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1730805611; x=1731410411; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ZDt2ni0fKkNmv5Aa6UsbfV3/S/TOMToYs7XV0p6xlpU=;
- b=eKEuqurWcJXNvv8+yReVG7sMvU+YS716LF0yE+S8XP7VfNDjPvEme03g8RMuWrQvGP
- YaNl0qMUH3MDfZZh222YCTD+gHBXYRrOyTqRDG3y/Vhb/x/z2PNAB7opiqFS//owVHaM
- c6B7vHEXr2SlvP4SaQ6TB+Bd61PMp3Yxtr8H9cdemqUTht07dDjE72Coz1QABo0nvceP
- gevt0u05lWnVvk6bwIJp1NqmAc5lJrX9vCJqMh5iPBnesE+/bmXZZ8PGMUUCZLgDvBJ5
- Z7tMbwb6n+V3xm+/5q/xBC7vvsp0r7tr4hJskf+Udzfdl22I9zqikhFZPpk0bVTTIymj
- p0tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1730805611; x=1731410411;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ZDt2ni0fKkNmv5Aa6UsbfV3/S/TOMToYs7XV0p6xlpU=;
- b=r27qM0Uk5p8RSIwNcE9jr6/B+I1sEzGakmprb1uZpNeCGaolS76G86nvNGOiw4g2F3
- aVwiP2cPB1YJ1Kec4e/nCPqH2BqxoulDWBHuCjUqDxxzK5NXPERsti9wxdBM9+dcZKu7
- cToMLzymA9xKoQeiwzdxT3/GS/bw/ENvjpgWuJuYYqwg5XI4l+lQC3Euuyn8DfxZGXpt
- o8y5qMIAf3u6O4Cj0R/tznD99rBzd++gTZ4i2solpbp/akU/ULevzLQ5MGLt/RaClJmj
- E9MhevHB5fJDv+i3ZsJEGjZylh111p4q0c0Ag+NgeCynPAyf6sdx4WqPTIlpGEtBwquE
- qa4A==
-X-Gm-Message-State: AOJu0YxlycGeHxrZAEfYdDRykqvYEsLznD2qsgXHa/wa7fNxoxTvEud+
- rlZTP6+wTFiEcZ4fIJ4nDmwP+tbHt00pmZ9TkB+BomORuzvkipuRtV5wlkk8sHyzHdqC6scWUdv
- olAc=
-X-Google-Smtp-Source: AGHT+IF6tYeS0zmvujCUnKVvJOjd9Rsg+To5CqhN54hXuRstfE4VPMgIlE4C52ydIT2EYgVPQqIiUw==
-X-Received: by 2002:a05:6512:31cc:b0:531:4c6d:b8ef with SMTP id
- 2adb3069b0e04-53b7ecd5232mr13460642e87.6.1730805610695; 
- Tue, 05 Nov 2024 03:20:10 -0800 (PST)
-Received: from [10.232.133.32] ([88.128.90.60])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4327d5e8562sm185114735e9.23.2024.11.05.03.20.10
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Nov 2024 03:20:10 -0800 (PST)
-Message-ID: <279a334b-6ba2-4edd-a0e2-3118401a2178@suse.com>
-Date: Tue, 5 Nov 2024 12:20:09 +0100
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C70991028546
+ for <ltp@lists.linux.it>; Tue,  5 Nov 2024 12:41:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 36C171FBEF;
+ Tue,  5 Nov 2024 11:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1730806913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sYR/zUni931f/H5PLD0pMxQh6J+tlYeX6iQRWrztepo=;
+ b=ibo+l+9SoAMR4yrK5a+e3/q2yH/omsycTA2rqkf17PsgP0j/3uFz7E/3COlHULW0MJUo22
+ vWF9Q4WSfImWXH5VSjxf2uAM3i4Sv8702ZineOskoAEl/mTWMbL03iU6GvUl3SsPfKmEza
+ 9mp9pDXOBh6o39yY2wED1vt+NHHHG7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1730806913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sYR/zUni931f/H5PLD0pMxQh6J+tlYeX6iQRWrztepo=;
+ b=8Q5GThqD0WIR+9gDjEmjN5vu53xcV7T4B6qGBc1jX51WiUfOc8Rg6Kl8Fsbpl4w0Y54f+s
+ k6P8Ezo081GPuFCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1730806913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sYR/zUni931f/H5PLD0pMxQh6J+tlYeX6iQRWrztepo=;
+ b=ibo+l+9SoAMR4yrK5a+e3/q2yH/omsycTA2rqkf17PsgP0j/3uFz7E/3COlHULW0MJUo22
+ vWF9Q4WSfImWXH5VSjxf2uAM3i4Sv8702ZineOskoAEl/mTWMbL03iU6GvUl3SsPfKmEza
+ 9mp9pDXOBh6o39yY2wED1vt+NHHHG7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1730806913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sYR/zUni931f/H5PLD0pMxQh6J+tlYeX6iQRWrztepo=;
+ b=8Q5GThqD0WIR+9gDjEmjN5vu53xcV7T4B6qGBc1jX51WiUfOc8Rg6Kl8Fsbpl4w0Y54f+s
+ k6P8Ezo081GPuFCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 175F31394A;
+ Tue,  5 Nov 2024 11:41:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uJ03BIEEKmeYaQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 05 Nov 2024 11:41:53 +0000
+Date: Tue, 5 Nov 2024 12:41:51 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20241105114151.GA1576432@pevik>
+References: <20241105052507.29630-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
-References: <20241105041326.18531-1-liwang@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20241105041326.18531-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20241105052507.29630-1-wegao@suse.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lapi: Add new field socket scoping to
- landlock_ruleset_attr
+Subject: Re: [LTP] [PATCH v1] Move cpuset_lib code to libs/ directory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,43 +112,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Wei,
 
-please check my latest landlock network v2 testing suite, because the 
-paradigm will change due to incompatibility between ABI v1 and v4 of 
-landlock implementation. We need to simplify the way we fallback 
-landlock_ruleset_attr.
 
-Andrea
+First, this does not work [1].
 
-On 11/5/24 05:13, Li Wang wrote:
-> Mainline kernel commit 21d52e295 ("landlock: Add abstract UNIX socket scoping")
-> introduces a new "scoped" member to the struct landlock_ruleset_attr.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
+1) LTP would depend on fts.h on musl:
+Musl has missing fts.h dependency for HAVE_FTS_H:
+2024-11-05T10:52:38.2449988Z CC libs/cpuset_lib/cpuinfo.o
+2024-11-05T10:52:38.2681767Z libcpuset.c:32:10: fatal error: fts.h: No such file or directory
+
+libcpuset is compiled on Musl only when fts.h is installed (not part of official
+musl):
+ifneq ($(HAVE_FTS_H),1)
+	FILTER_OUT_DIRS += cpuset
+endif
+The new library would need to be compiled conditionally and
+e.g. libcpuset being mandatory will break musl without
+
+And anything which depends on this will need to have the same check (e.g. the
+original cpuset02 patch [3]).
+
+2) There are still some problems with the patchset, e.g. on Fedora, old Leap 42.2 and Ubuntu bionic
+
+2024-11-05T10:53:18.7290696Z /usr/bin/ld: ../../lib/libltp.a: error adding symbols: file format not recognized
+2024-11-05T10:53:18.7295116Z clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+I haven't found what causes it.
+
+3) Debian when cross compiling seqfaults
+2024-11-05T10:54:35.2460053Z collect2: fatal error: ld terminated with signal 11 [Segmentation fault], core dumped
+2024-11-05T10:54:35.2461039Z compilation terminated.
+2024-11-05T10:54:35.2461847Z collect2: fatal error: ld terminated with signal 11 [Segmentation fault], core dumped
+
+I suppose the same root cause as 2).
+
+Some general tips for the patches:
+
+1) Always push to your fork
+It would save reviewers time if you push to your fork before sending a patch.
+That would save me to do that and reviewers to look at the broken patch.
+
+2) Describe the reason of the change in the commit message ("what" vs. "why")
+I.e. *why* the change is needed is sometimes more important than to describe
+what was *changed* [2].
+
+3) Put common things together
+I'm not sure if I move code to libs/ on it's own (without the patch which that
+requires it [3]). And even if the change itself makes sense (maybe apply here as
+a cleanup), it would be nice to post here the motivation (e.g. link of the
+original patch). That's actually 2 (*why*). This people looking at your patches
+to get the context). Sometimes it's worth to have it in the commit message,
+here would be enough just to put link [3] below --- (note which will not be part
+of the commit message).
+
+4) very nit: it's nice to respect the credit (for new ideas) :)
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+
 > ---
->   include/lapi/landlock.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/include/lapi/landlock.h b/include/lapi/landlock.h
-> index 211d171eb..5fb6d3755 100644
-> --- a/include/lapi/landlock.h
-> +++ b/include/lapi/landlock.h
-> @@ -19,6 +19,7 @@ struct landlock_ruleset_attr
->   {
->   	uint64_t handled_access_fs;
->   	uint64_t handled_access_net;
-> +	uint64_t scoped;
->   };
->   #endif
->   
+>  .../cpuset/cpuset_lib => include}/cpuset.h    |  0
+>  .../bitmask.h => include/cpuset_bitmask.h     |  0
+>  .../common.h => include/cpuset_common.h       |  0
+>  .../cpuinfo.h => include/cpuset_cpuinfo.h     |  0
+>  .../meminfo.h => include/cpuset_meminfo.h     |  0
+
+You added 'cpuset_' prefix for headers. Good, but IMHO it should be 'libcpuset_' prefix.
+
+We usually have 'tst_' or 'safe_' or 'lib' prefix for new code in include/*.
+When I filter also config.h and vendored ujson library (which we obviously did
+not want to change just to add the 'lib' prefix) there is not much left:
+
+$ ls include/*.h |grep -v -e /tst_ -e /safe_ -e /lib -e /ujson -e /config.h
+include/ipcmsg.h
+include/ipcsem.h
+include/parse_vdso.h
+include/time64_variants.h
+
+I wonder if we need whole cpuset_lib or just part. Moving just what is needed
+into libs/ might have also solve fts.h dependency on musl.
+
+Kind regards,
+Petr
+
+[1] https://github.com/pevik/ltp/actions/runs/11682645742
+[2] https://cbea.ms/git-commit/
+[3] https://patchwork.ozlabs.org/project/ltp/patch/20240930135809.9300-1-wegao@suse.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
