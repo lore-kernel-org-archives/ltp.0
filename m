@@ -4,98 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CB0CD44D42
-	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 10:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CCF3D44D46
+	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 10:38:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1CDFC3D313A
-	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 11:34:36 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 83AEC3D3135
+	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 11:38:35 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 31ED83D3148
- for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:34:12 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 72C203D3127
+ for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:38:19 +0100 (CET)
 Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 729C360007A
- for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:34:11 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 97D0260083D
+ for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:38:16 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B9C321F88E;
- Wed,  6 Nov 2024 10:34:09 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EF9D921C2C;
+ Wed,  6 Nov 2024 10:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730889249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730889495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3UvQ4XORobF9ceN0TSMDWFiZhTjc1xbRGX1/tw8B+R8=;
- b=N3Gczshu5S/5AL7Sj3+xpUsyTBx0X4hkob6LTCnz7VjvbZ1elhr116IUE8EEng03OaB0Hp
- XV4CXNgjdVYKXtR84MEcLwvAN5c3MI35ah2eysX13A5TYjyEPZNGHbA55Oqw7FZRYdFJXC
- wpZsYmyt/1oeHcu6R0L5ETevrDqDcs8=
+ bh=92Muy1p+1dUQCVwNRaCjoMzeG5MBu+SpmxzT6HvnpKc=;
+ b=AHsu6B0XEtHkqajMxln3l97KaDqkGMypzRb7Xzcmhs8pmgILcMhGomFqAFpoXfc2PEpMgV
+ hvcnvnBOszprfz6UzTUN9+2V3PFlDcHxlCmh4dFTnmo+h82hrn7+tA7Dc5I1JeJqETMsTF
+ D9OhHtP+kjrdP0/eSaCM0FRv2a9v8Ik=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730889249;
+ s=susede2_ed25519; t=1730889495;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3UvQ4XORobF9ceN0TSMDWFiZhTjc1xbRGX1/tw8B+R8=;
- b=AWP085FMs+cC4p4grR5Hgm3K+Y90i9DhRWQkt+QCiQGCUa1egcsW4x0H07g8oUIl/OVGpB
- HmaYsrWZX3YdOBBQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=92Muy1p+1dUQCVwNRaCjoMzeG5MBu+SpmxzT6HvnpKc=;
+ b=UgRct8bT6vIFUTYcl+qHZiqXw6XlTaUtEZ4R1XTNbmbcm9BVhu4s2KBvToYDxb3SVlw4Be
+ G3Khg1YWRKiJAPAw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730889249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1730889494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3UvQ4XORobF9ceN0TSMDWFiZhTjc1xbRGX1/tw8B+R8=;
- b=N3Gczshu5S/5AL7Sj3+xpUsyTBx0X4hkob6LTCnz7VjvbZ1elhr116IUE8EEng03OaB0Hp
- XV4CXNgjdVYKXtR84MEcLwvAN5c3MI35ah2eysX13A5TYjyEPZNGHbA55Oqw7FZRYdFJXC
- wpZsYmyt/1oeHcu6R0L5ETevrDqDcs8=
+ bh=92Muy1p+1dUQCVwNRaCjoMzeG5MBu+SpmxzT6HvnpKc=;
+ b=g51A6+kJEeOByaNdT4UWPbIqcbd/6NjOEQs2zT470lnYdBcCM4y4s7earV7YmfazXgkVLA
+ kQfm/5IZgNsUKJjWL97Z8IS3mZO99Y63XQhtlLr4tog36WaEY0gWnPauFU8miCDAQPXEKx
+ dmGJwa7BylUMakon8E/I8/rVwbmJ8iM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730889249;
+ s=susede2_ed25519; t=1730889494;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3UvQ4XORobF9ceN0TSMDWFiZhTjc1xbRGX1/tw8B+R8=;
- b=AWP085FMs+cC4p4grR5Hgm3K+Y90i9DhRWQkt+QCiQGCUa1egcsW4x0H07g8oUIl/OVGpB
- HmaYsrWZX3YdOBBQ==
+ bh=92Muy1p+1dUQCVwNRaCjoMzeG5MBu+SpmxzT6HvnpKc=;
+ b=svfyyI8aD2Dfv4NrzfnVQW2FFAO6OxCgb4xZAypGd4KDkqZ4H8c9NF3432AVxpVO+6xHke
+ qT+fHKBmGO7pUFCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A835A13736;
- Wed,  6 Nov 2024 10:34:09 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0AB513736;
+ Wed,  6 Nov 2024 10:38:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id epcfKCFGK2dVaQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 06 Nov 2024 10:34:09 +0000
-Date: Wed, 6 Nov 2024 11:34:14 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GDOdMhZHK2egagAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 06 Nov 2024 10:38:14 +0000
+Date: Wed, 6 Nov 2024 11:38:11 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZytGJscp13xbE1_K@yuki.lan>
-References: <20240331021720.9527-1-wegao@suse.com>
- <20240415114652.22687-1-wegao@suse.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZytHE-4rpsrycuI_@yuki.lan>
+References: <20241105-landlock_network-v2-0-d58791487919@suse.com>
+ <20241105-landlock_network-v2-4-d58791487919@suse.com>
+ <Zyo8I-32MuJz_EFw@yuki.lan>
+ <d3f0719e-a1e3-4eb1-8613-1506d137351a@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240415114652.22687-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+In-Reply-To: <d3f0719e-a1e3-4eb1-8613-1506d137351a@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-Subject: Re: [LTP] [PATCH v4] ioctl_fiemap01: New test for fiemap ioctl()
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Status: Clean
+Subject: Re: [LTP] [PATCH v2 4/4] Add error coverage for landlock network
+ support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,135 +119,34 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*\
-> + * [Description]
-> + *
-> + * Verify basic fiemap ioctl.
-
-This should explain better what the test actually does.
-
-We are doing several things here, that should be described including
-checks for invalid flags, empty file, and then finally check that we get
-sane data extend data from the call in two different situations. These
-subtests should be described here.
-
-> + */
-> +
-> +#include <linux/fs.h>
-> +#include <linux/fiemap.h>
-> +#include <stdlib.h>
-> +#include <sys/statvfs.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#define MNTPOINT "mntpoint"
-> +#define TESTFILE "testfile"
-> +#define NUM_EXTENT 3
-> +
-> +static void print_extens(struct fiemap *fiemap)
-> +{
-> +	tst_res(TDEBUG, "File extent count: %u", fiemap->fm_mapped_extents);
-> +
-> +	for (unsigned int i = 0; i < fiemap->fm_mapped_extents; ++i) {
-> +		tst_res(TDEBUG, "Extent %u: Logical offset: %llu, Physical offset: %llu, flags: %u, Length: %llu",
-> +				i + 1,
-> +				fiemap->fm_extents[i].fe_logical,
-> +				fiemap->fm_extents[i].fe_physical,
-> +				fiemap->fm_extents[i].fe_flags,
-> +				fiemap->fm_extents[i].fe_length);
-> +	}
-> +}
-> +
-> +static void check_extent(struct fiemap *fiemap, unsigned int fm_mapped_extents, int index_extents, int fe_flags, unsigned int min_fe_physical, unsigned int fe_length)
-
-Didn't make check complain that this line is too long?
-
-> +{
-> +	TST_EXP_EXPR(fiemap->fm_mapped_extents == fm_mapped_extents,
-> +		"Check extent fm_mapped_extents is %d", fm_mapped_extents);
-> +	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_flags & fe_flags,
-> +		"Check fe_flags is %d", fe_flags);
-> +	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_physical >= min_fe_physical,
-> +		"Check fe_physical > %d", min_fe_physical);
-> +	TST_EXP_EXPR(fiemap->fm_extents[index_extents].fe_length == fe_length,
-> +		"Check fe_length is %d", fe_length);
-> +}
-> +
-> +static void verify_ioctl(void)
-> +{
-> +	int fd;
-> +	struct fiemap *fiemap;
-> +	struct statvfs fs_info;
-> +	unsigned long blk_size;
-> +
-> +	SAFE_CHDIR(MNTPOINT);
-> +	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-> +
-> +	if (statvfs(".", &fs_info) != 0)
-> +		tst_brk(TBROK, "statvfs failed");
-
-It would be nicer if we added SAFE_STATVFS() in a separate patch and
-then used it here.
-
-> +	blk_size = fs_info.f_bsize;
-> +
-> +	fiemap = SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent) * NUM_EXTENT);
-> +	fiemap->fm_start = 0;
-> +	fiemap->fm_length = ~0ULL;
-> +	fiemap->fm_extent_count = 1;
-> +
-> +	fiemap->fm_flags = -1;
-> +	TST_EXP_FAIL(ioctl(fd, FS_IOC_FIEMAP, fiemap), EBADR);
-> +
-> +	fiemap->fm_flags =  0;
-> +	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-> +	print_extens(fiemap);
-> +	TST_EXP_EXPR(fiemap->fm_mapped_extents == 0,
-> +		"Check extent fm_mapped_extents is 0");
-                   ^
-		   Maybe better "Empty file should have 0 extends mapped"
-
-Or something that actually explains better why it should be 0.
-
-> +	char *buf = SAFE_MALLOC(blk_size);
-> +
-> +	SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, blk_size);
-> +	fiemap->fm_flags = FIEMAP_FLAG_SYNC;
-> +	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-> +	print_extens(fiemap);
-> +	check_extent(fiemap, 1, 0, FIEMAP_EXTENT_LAST, 1, blk_size);
-> +
-> +	fiemap->fm_extent_count = NUM_EXTENT;
-> +	SAFE_LSEEK(fd, 2 * blk_size, SEEK_SET);
-> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-> +	SAFE_LSEEK(fd, 4 * blk_size, SEEK_SET);
-> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, blk_size);
-> +	TST_EXP_PASS(ioctl(fd, FS_IOC_FIEMAP, fiemap));
-> +	print_extens(fiemap);
-> +	check_extent(fiemap, NUM_EXTENT, NUM_EXTENT - 1, FIEMAP_EXTENT_LAST, 1, blk_size);
-> +
-> +	free(buf);
-> +	free(fiemap);
-> +	SAFE_CLOSE(fd);
-> +	SAFE_UNLINK(TESTFILE);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.all_filesystems = 1,
-> +	.skip_filesystems = (const char *const[]) {
-> +		"exfat", "vfat", "ntfs", "tmpfs", NULL
-> +	},
-> +	.test_all = verify_ioctl,
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.35.3
+> >> -	verify_landlock_is_enabled();
+> >> +	abi_current = verify_landlock_is_enabled();
+> >>   
+> >>   	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
+> >>   
+> >>   	ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+> >> -		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
+> >> +		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
+> >                                 ^
+> > 			       This should be abi_current otherwise we
+> > 			       will fail on v1 only system.
+> >
+> >>   }
+> >>   
 > 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> In what sense? abi4 is already the last one. At least the last supported 
+> by LTP.
+
+Because if we request abi4 it will fail on kernels that only support
+abi1. We try hard to skip the abi4 tests, but we wouldn't get there at
+all on abi1 kernel because we would fail to create the ruleset_fd in the
+test setup.
+
+And we cannot initialize the abi to anything newer than abi4 either,
+because we pass abi4 structure in the test. It's fine that we pass abi4
+structure on abi1 system here, because the test only checks for invalid
+cases and all we need here is to pass a valid attr and size so that we
+get rejected by the kernel on the rest of the parameters.
 
 -- 
 Cyril Hrubis
