@@ -4,99 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65BBFD3E78C
-	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 09:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D336D44D42
+	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 10:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1730888969; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=CLrrwRx1Le32Nw5FEggg9jSzsM8Mcy8GFN//8v6VpLU=;
+ b=Aa0/JUaqnBpgtpE7eHGiBL1JpfMF/arSGkimQTX1Ufe7+HU3Kp+vHt+zbZIXRlaoGFL/0
+ aHu0LK2CKjrN1IafWzpwECRywFk0PzGoME06Rj6LbOutwvtT9Y4nBj603wi4THG732kgduT
+ lo9omoOZUOBsELdD75mp7Cz7fAJn0oY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E6243D2FD8
-	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 10:44:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D2B843D313D
+	for <ltp@archiver.kernel.org>; Wed,  6 Nov 2024 11:29:29 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B27D63D2FBB
- for <ltp@lists.linux.it>; Wed,  6 Nov 2024 10:44:09 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D2B923D30FC
+ for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:29:09 +0100 (CET)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 32DE21BF51FA
- for <ltp@lists.linux.it>; Wed,  6 Nov 2024 10:44:00 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B5B7C1F86C;
- Wed,  6 Nov 2024 09:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730886236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DOVrUFcS1MUe6+MK/EF26nWAzUFNZgmHJoMORjmupVk=;
- b=us3fUjUT5QtZ5lkD3XtBxApMJG+U7KCP0ytn4P2z4cn0McmkJV0Nxw3NY0HyB6fbprcuKd
- UimA04cOx09Haf+9Lp7a0Q0Kxg1jdLfEU/6FEsp/ZeJ5Wg/LFiT02g5clpnfO8Z1f6XpG4
- 5ePzO/4sJB2dsPOoJR5KlQW1SUGvrRk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730886236;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DOVrUFcS1MUe6+MK/EF26nWAzUFNZgmHJoMORjmupVk=;
- b=csYd8HeBjl2o4W4WiNqfvhh6Vil1XKBBV2VysK6q3jZ3g6mXS1mdz44HZ/8hYAovY0ovfq
- AEyp6s3eC4AvONDQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1730886236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DOVrUFcS1MUe6+MK/EF26nWAzUFNZgmHJoMORjmupVk=;
- b=us3fUjUT5QtZ5lkD3XtBxApMJG+U7KCP0ytn4P2z4cn0McmkJV0Nxw3NY0HyB6fbprcuKd
- UimA04cOx09Haf+9Lp7a0Q0Kxg1jdLfEU/6FEsp/ZeJ5Wg/LFiT02g5clpnfO8Z1f6XpG4
- 5ePzO/4sJB2dsPOoJR5KlQW1SUGvrRk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1730886236;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DOVrUFcS1MUe6+MK/EF26nWAzUFNZgmHJoMORjmupVk=;
- b=csYd8HeBjl2o4W4WiNqfvhh6Vil1XKBBV2VysK6q3jZ3g6mXS1mdz44HZ/8hYAovY0ovfq
- AEyp6s3eC4AvONDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A3BCE137C4;
- Wed,  6 Nov 2024 09:43:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id q9WzJ1w6K2cmWAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 06 Nov 2024 09:43:56 +0000
-Date: Wed, 6 Nov 2024 10:44:01 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Zys6YRPAMzHDpMbo@yuki.lan>
-References: <20240913134036.12078-1-spoorthy@linux.ibm.com>
- <CAEemH2doMF7EggO_TOP+y=WwS75aXxrFA8mfaZmr-+YWwB1JSQ@mail.gmail.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B70BC1A0B54A
+ for <ltp@lists.linux.it>; Wed,  6 Nov 2024 11:29:05 +0100 (CET)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-43162cf1eaaso76488475e9.0
+ for <ltp@lists.linux.it>; Wed, 06 Nov 2024 02:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1730888945; x=1731493745; darn=lists.linux.it;
+ h=in-reply-to:from:content-language:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=aOXjTgd/ENeuqHnc0kjVAdnZAv1DiX+T10SSyFMIzc4=;
+ b=Twg+UO0I+TcVVVwzf6KtNmz21LtTGGSWHikSIbkspjO6ZZHKeJ82InKNxVJBg185K3
+ bNhO2b9Y2YUq2cHRuqq1vuxg2ydWi09x4og/JNVrTmR1SK9I6xHwZ7cEjNlTks/P+muz
+ h+HDytJ59EK6o5MIHeGi+qLca6sI64xatAzsroMGdhVlw6jGgEIYHGl7lPanLZne6XIo
+ FRf3XM/wtn/DLG/cbNh9ZkBXKrtgv5c8zxPtLozrqC6+qEwCyMDAf1VsLVhV4+xNOqiL
+ JmgCertM2WVUBG4fHZTfNA+1df90iAGGmaeaQEZ2/IUCWGlcarzibWuvheawMag6EqmB
+ J3XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1730888945; x=1731493745;
+ h=in-reply-to:from:content-language:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=aOXjTgd/ENeuqHnc0kjVAdnZAv1DiX+T10SSyFMIzc4=;
+ b=GB22y0iiMXPxdzbZw+QVhU3RRvpsHxy3Qp/V2Mh9U7hRkUFJlRH/FKlF3bpN+utden
+ +RNjigOxNy0d61oH+6E2ENJGZukV+aQk7GlL0icbs6okQE4fsAwK9mIRic+OuFm8KjLE
+ 0/fYaL1bF2YWbnG1Kn1ztxH2m2uFaLCrprXkCUKbpcuPujTqFZaELl6vSDdwHhgg2xwH
+ IIMSCdV07tDPTiq4BTBn2Iv+5HX/Y6FFzL6+S5I6siupYFx24A6ZgXL8H67EbIFYuMRy
+ IZCEbmE5trbC2y7wgN57W62vKDZXyIy/wlQQj8rBL5I6ZQKJXjYa8D/p3dmKoLk1v5Ps
+ K7/Q==
+X-Gm-Message-State: AOJu0YzStHhYbrq7dbN5T5yfkeZvyRRIO2OCALQnZ5vmysx3QL1m0unP
+ WBA35J4IXHxuEuGchT4Zc1diFgLXLGVFyG1fBkiAO/qtALeHarJ/AEpkucc3mp8=
+X-Google-Smtp-Source: AGHT+IEPw7sgWy00JT4OGEG7y1hgjsQKnGhc7zX3oo4AA+sKOusfKBZHw4uKECOXotiYPS93SiNLHg==
+X-Received: by 2002:a05:600c:3148:b0:431:557e:b40c with SMTP id
+ 5b1f17b1804b1-4328327ce1fmr200752355e9.27.1730888945141; 
+ Wed, 06 Nov 2024 02:29:05 -0800 (PST)
+Received: from [10.232.133.32] ([88.128.90.29])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-381c10ea7a1sm18504014f8f.62.2024.11.06.02.29.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 06 Nov 2024 02:29:04 -0800 (PST)
+Message-ID: <d3f0719e-a1e3-4eb1-8613-1506d137351a@suse.com>
+Date: Wed, 6 Nov 2024 11:29:03 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2doMF7EggO_TOP+y=WwS75aXxrFA8mfaZmr-+YWwB1JSQ@mail.gmail.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-Subject: Re: [LTP] [PATCH v3] Hugetlb: Migrating libhugetlbfs shm-perms
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20241105-landlock_network-v2-0-d58791487919@suse.com>
+ <20241105-landlock_network-v2-4-d58791487919@suse.com>
+ <Zyo8I-32MuJz_EFw@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <Zyo8I-32MuJz_EFw@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Status: Clean
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2 4/4] Add error coverage for landlock network
+ support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,37 +96,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > +static void compare_free_hugepage_memory(long free_end, long free_start)
-> > +{
-> > +       if (free_end != free_start)
-> > +               tst_res(TFAIL, "Free hugepages after attaching multiple
-> > threads differ from initial allocation");
-> >
-> 
-> We cannot make such an assumption for TFAIL because the system
-> may be using hugepages in the background by other processes, and
-> this test is not alone in occupying huge page so that would be possible
-> get false positive in the real testing.
+Hi Cyril,
 
-We already have similar assumptions in the rest of the hugepage tests,
-however at least it's clear from the message that is being printed that
-it may fail if we run more than one test in parallel or if system
-allocates hugepages for something.
+On 11/5/24 16:39, Cyril Hrubis wrote:
+>> -	verify_landlock_is_enabled();
+>> +	abi_current = verify_landlock_is_enabled();
+>>   
+>>   	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
+>>   
+>>   	ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+>> -		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
+>> +		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
+>                                 ^
+> 			       This should be abi_current otherwise we
+> 			       will fail on v1 only system.
+>
+>>   }
+>>   
 
-But I guess that we can do better, we can look at the HugetlbPages:
-field in the "/proc/self/status" instead and check that it's incremented
-and decremented properly as the test runs.
+In what sense? abi4 is already the last one. At least the last supported 
+by LTP.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Andrea
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
