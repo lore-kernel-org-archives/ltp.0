@@ -4,82 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 803A8D597C9
-	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 03:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46D8FD41C1D
+	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 09:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1731466849; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=0qOEt/OUHzJh7Q2YHwVXYHtSLiAzTM19y75pEUP0p1o=;
- b=MFHDsr2XIDrzk9TiC0LzKQhs2UQdon00OcH23zUnPd3K/D5pFXFcfWq/5vLF9KJ3Mvb2y
- w3Aw/w9JEh1Uzz+kCSHpYVlR4uFCeipl7/svChvFBfSEPYH+qj0xffXhQjvUvQgHx/HAKcK
- ewJDbqjsDB3FmcCJLdcjK183g8y78x8=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1731488907; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=ZiSlCeuKzSRkL4EGAjmhn4ihPDW5YBHDpWfVUbPrNJQ=;
+ b=FTelFlprs5JFah072dZ5vnTTbpL35mzi4kPQbOw3WHAlTQBO41wF7wnj3G25SnkFBidkR
+ lD2j4kVvCPjF8y0+JNbmJ00EayAXdw4KStXV1+NwhRj8zTZHo3X1dIk4+YwChRCAMaX/t5y
+ 517wmkGuz6FzVuWClKcIg5JA52Nk/w8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D34C93D6420
-	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 04:00:49 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 818663D6548
+	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 10:08:27 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA2E33D63E8
- for <ltp@lists.linux.it>; Wed, 13 Nov 2024 04:00:28 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A98A53D6449
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 10:08:07 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
+ helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 34B2B1182ADC
- for <ltp@lists.linux.it>; Wed, 13 Nov 2024 04:00:27 +0100 (CET)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-382026ba43eso1734018f8f.1
- for <ltp@lists.linux.it>; Tue, 12 Nov 2024 19:00:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1731466826; x=1732071626; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=FaEc6W1w1lK8Q4bA1raV2OuJtGtCE0iooPyn/KkpbaU=;
- b=LqJnP1xVB9FRWAPg4M4AxYlG5MQcRix7EZ09j4oXqe9FUyucT+mxmdXBxyVnrbJgiC
- ph2oqtR+DT2OGh9lajSUJ13sm4Xwg8AlluUb1FnXy1p9YSw+wYr/yi04ZL6mIZn+sCZT
- hG+Euy2CONt3r9yNf0Y+FageBQ3CisyA5NN0fJlwNevDUhlEfXB/ms2q7gSL71D2+Fho
- t2SaSQRmpQcAmslNiqYUNxFrOLBNgtMhFaSTxJ+h6GhPbaZTIsdF/TiCUMVlJh8HL3iV
- 1rAT5CZXVNVPfBUUgiTq4ankQg5/VxsYi37aLUjn+ev+9kO6MD1LsfYTK/qhMR4TCEGZ
- 2rqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1731466826; x=1732071626;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=FaEc6W1w1lK8Q4bA1raV2OuJtGtCE0iooPyn/KkpbaU=;
- b=WRlZWwsVqsl3b54HgNk3fdm/cfAlyIQOFEXO0fDSlmkWHdbSMvY9IAtXMX75bVlQmK
- eETyR+yacvqH+1Chw2LRMTQNBJ0m0IJQHK/Ed4L65GwD/fYVT+w3IuZLmjrgy7Dbh4IW
- 7p394WFD68naLYwv8q4JDi1FMg/WuCORwGp6TID2tSYcO3fXQ17SRiN7qYwAnV0ycgDU
- ZD6Da4c7PPolQRGy2B8p/+Byqey4ivyR6hGJw/rYk0fkLe3vfleE7P42HUscKYaedvlq
- cJMdhYzRaNBTBLgUuZS3DXXGpUGrAvtW4gU1yK58qKxNeYqI2jfx09IY4cU8cByMrfN0
- 7AUw==
-X-Gm-Message-State: AOJu0YwcL23DzKHZ6ZTLRpKJQ/XU38Ud2zQv4uLqKg6B+SO9PuOADw4B
- 7V0kWjcZR2QHq86QaID0ic/RXzG5+TiDCxktfvP3ivoWqZoGJ8E/cHWRCX4hTQ==
-X-Google-Smtp-Source: AGHT+IEZ5qS6HN5AeiDSDPrqm3b+2vvvSbIoiDIKt/cPx+jkclC4pePFZ7nHvJl4CHIN/O+xjVVmGQ==
-X-Received: by 2002:a05:6000:1fa3:b0:382:6f3:a20f with SMTP id
- ffacd0b85a97d-382080f7025mr4244255f8f.11.1731466826574; 
- Tue, 12 Nov 2024 19:00:26 -0800 (PST)
-Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-21177e5810csm101290245ad.179.2024.11.12.19.00.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 12 Nov 2024 19:00:26 -0800 (PST)
-Date: Tue, 12 Nov 2024 22:00:21 -0500
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZzQWRTZTrWWMDNDv@wegao>
-References: <20241112171831.156440-1-pvorel@suse.cz>
- <20241112171831.156440-2-pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4E2706637EC
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 10:08:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1731488886; x=1763024886;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=6mWAAA6Z2Nl+6pnW/kAOhjyhQVvS/fsyOK+YlfehsMU=;
+ b=I8TceILkkU6oDd/vH25srQIe9MKamBen8DmZACzSoHNr66mUcVFwMgT7
+ /XOKsFTsdcpwM2Qv/dB/C4QD9/HPf7c6Hvm15ex41Z8Ye2SCQnw+uNt16
+ OaFACXYtqat6xfWcFp7G7v0p7oah3iOGdOtfLz9yvNWjP/BfR/InGiZQ/
+ xj6IbUXfBhpDqNWhLBiJdXyjNaOHIR/Sa4YEKEjq5LwHGRzSfvAOFbxaC
+ +RU8xFBZ54B9Qs9eVF8UdaOWy7q4mwTPu4mUeQeiWMqESupZq7W/b/W4n
+ l69EEMQoZXicJgHxCYJj/zaLravLwHk9BlvEz+WPCHjs7P5ay1K4zi2l6 w==;
+X-CSE-ConnectionGUID: 465AeKbGScqt6XAmcApP3w==
+X-CSE-MsgGUID: 8P7FSR3EThCYx+etxnNrqw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="168263148"
+X-IronPort-AV: E=Sophos;i="6.12,150,1728918000"; d="scan'208";a="168263148"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Nov 2024 18:08:03 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 966FCD6EAA
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 18:08:01 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2D0C7D2ECA
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 18:08:01 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id AD4CB2007472F
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 18:08:00 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.135.101])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 293291A000A;
+ Wed, 13 Nov 2024 17:08:00 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Wed, 13 Nov 2024 17:07:45 +0800
+Message-ID: <20241113090745.21789-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241112171831.156440-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28794.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28794.006
+X-TMASE-Result: 10--12.429900-10.000000
+X-TMASE-MatchedRID: QlNdUeMfyo6hhjsqgSuNbxF4zyLyne+ATJDl9FKHbrkoYw/JH0PMskWY
+ FvwCgnnKBm33ka/xTVdURMm+dS/voXqDDsxI37Z830kDaWZBE1QnsBRgUEfdppsoi2XrUn/J8m+
+ hzBStanvIM9mETCO709934/rDAK3zhG2qikEpQGXfyBth+xZALcd0IWJJCUmnFyiRWX//vWlxGE
+ ApMk1LnPdUQRRfnUKB
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] mq_timedreceive01: Workaround segfault on
- libc variant on 32 bit
+Subject: [LTP] [PATCH] ftruncate01: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,131 +96,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Nov 12, 2024 at 06:18:31PM +0100, Petr Vorel wrote:
-> EFAULT test segfaults on newer kernels (e.g. 6.4) on libc variant on
-> 32bit.  Similarly to 1d4d5a0750 use typical LTP workaround to test by
-> forked child + checking the terminating signal.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  .../mq_timedreceive/mq_timedreceive01.c       | 78 ++++++++++++++-----
->  1 file changed, 58 insertions(+), 20 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> index d4f447d047..a5a43a1771 100644
-> --- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> +++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> @@ -129,32 +129,16 @@ static void setup(void)
->  	setup_common();
->  }
->  
-> -static void do_test(unsigned int i)
-> +
-> +static void verify_mqt_receive(unsigned int i, pid_t pid)
->  {
->  	struct time64_variants *tv = &variants[tst_variant];
->  	const struct test_case *tc = &tcase[i];
-> -	unsigned int j;
-> -	unsigned int prio;
->  	size_t len = MAX_MSGSIZE;
->  	char rmsg[len];
-> -	pid_t pid = -1;
->  	void *abs_timeout;
-> -
-> -	tst_ts_set_sec(&ts, tc->tv_sec);
-> -	tst_ts_set_nsec(&ts, tc->tv_nsec);
-> -
-> -	if (tc->signal)
-> -		pid = set_sig(tc->rq, tv->clock_gettime);
-> -
-> -	if (tc->timeout)
-> -		set_timeout(tc->rq, tv->clock_gettime);
-> -
-> -	if (tc->send) {
-> -		if (tv->mqt_send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
-> -			tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
-> -			return;
-> -		}
-> -	}
-> +	unsigned int j;
-> +	unsigned int prio;
->  
->  	if (tc->invalid_msg)
->  		len -= 1;
-> @@ -208,6 +192,60 @@ static void do_test(unsigned int i)
->  			TST_RET, prio, len);
->  }
->  
-> +static void test_bad_addr(unsigned int i)
-> +{
-> +	struct time64_variants *tv = &variants[tst_variant];
-> +	pid_t pid;
-> +	int status;
-> +
-> +	pid = SAFE_FORK();
-> +	if (!pid) {
-> +		verify_mqt_receive(i, pid);
-> +		_exit(0);
-nit:
-If this is a normal exit, i suggest use s/_exit(0)/exit(0) ?
-> +	}
-> +
-> +	SAFE_WAITPID(pid, &status, 0);
-> +
-> +	if (WIFEXITED(status) && !WEXITSTATUS(status))
-> +		return;
-> +
-> +	if (tv->ts_type == TST_LIBC_TIMESPEC &&
-> +		WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
-> +		tst_res(TPASS, "Child killed by expected signal");
-> +		return;
-> +	}
-> +
-> +	tst_res(TFAIL, "Child %s", tst_strstatus(status));
-> +}
-> +
-> +static void do_test(unsigned int i)
-> +{
-> +	struct time64_variants *tv = &variants[tst_variant];
-> +	const struct test_case *tc = &tcase[i];
-> +	pid_t pid = -1;
-> +
-> +	tst_ts_set_sec(&ts, tc->tv_sec);
-> +	tst_ts_set_nsec(&ts, tc->tv_nsec);
-> +
-> +	if (tc->bad_ts_addr) {
-> +		test_bad_addr(i);
-> +		return;
-> +	}
-> +
-> +	if (tc->signal)
-> +		pid = set_sig(tc->rq, tv->clock_gettime);
-> +
-> +	if (tc->timeout)
-> +		set_timeout(tc->rq, tv->clock_gettime);
-> +
-> +	if (tc->send && tv->mqt_send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
-> +		tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
-> +		return;
-> +	}
-> +
-> +	verify_mqt_receive(i, pid);
-> +}
-> +
->  static struct tst_test test = {
->  	.tcnt = ARRAY_SIZE(tcase),
->  	.test = do_test,
-> -- 
-> 2.47.0
-> 
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+---
+ testcases/kernel/syscalls/ftruncate/ftruncate01.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ftruncate/ftruncate01.c b/testcases/kernel/syscalls/ftruncate/ftruncate01.c
+index 5ffdd0513..ea97edb1d 100644
+--- a/testcases/kernel/syscalls/ftruncate/ftruncate01.c
++++ b/testcases/kernel/syscalls/ftruncate/ftruncate01.c
+@@ -4,11 +4,13 @@
+  * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+  * Author: Wayne Boyer
+  */
+-/*
+- * Test Description:
+- *  Verify that, ftruncate() succeeds to truncate a file to a certain length,
+- *  if the file previously is smaller than the truncated size, ftruncate()
+- *  shall increase the size of the file.
++
++/*\
++ * [Description]
++ *
++ * Verify that, ftruncate() succeeds to truncate a file to a certain length,
++ * if the file previously is smaller than the truncated size, ftruncate()
++ * shall increase the size of the file.
+  */
+ 
+ #include <sys/types.h>
+-- 
+2.47.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
