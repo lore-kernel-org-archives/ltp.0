@@ -4,64 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41EB1D41C33
-	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 11:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53F26D41C3E
+	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 13:02:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5B7053D65FF
-	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 12:30:26 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 8E5A83D66AB
+	for <ltp@archiver.kernel.org>; Wed, 13 Nov 2024 14:02:39 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 138723D6322
- for <ltp@lists.linux.it>; Wed, 13 Nov 2024 12:29:47 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id DD2AB3C7457
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 14:02:21 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8D1D714001E6
- for <ltp@lists.linux.it>; Wed, 13 Nov 2024 12:29:47 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 06C0A11F235C
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 14:02:20 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 962B7211A6;
- Wed, 13 Nov 2024 11:29:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4F6BF2111F
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 13:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1731502939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oN4taUnPx+WdUIoNavY9H7tQjlA/eiHZXxdKsdkG7pA=;
+ b=rYTgJ8iSkWEc1Qrkp8vr+4iS+4eJdcq4fGA+vfjKaBB/jowgDXEJvpW/pl+SZmkg+ud5An
+ ZkR8cEzpFDEoSO3SPL4sAhhfg8QiRi6w51/byMtbSsqlI90WJcU/S8xpY8L6Vei28Tjy8Y
+ mtZ/cw+Fm9d9iZuepkhIYnqInSs3PDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1731502939;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oN4taUnPx+WdUIoNavY9H7tQjlA/eiHZXxdKsdkG7pA=;
+ b=nBLjfpflEGu5k4PhbotDRycw60lsiYiwyOXq1UphWwtZOLcRK2XdQyK8DI+eNSDslpjccW
+ 1+0rz+oTpFJWQSAw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=rYTgJ8iS;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nBLjfpfl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1731502939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oN4taUnPx+WdUIoNavY9H7tQjlA/eiHZXxdKsdkG7pA=;
+ b=rYTgJ8iSkWEc1Qrkp8vr+4iS+4eJdcq4fGA+vfjKaBB/jowgDXEJvpW/pl+SZmkg+ud5An
+ ZkR8cEzpFDEoSO3SPL4sAhhfg8QiRi6w51/byMtbSsqlI90WJcU/S8xpY8L6Vei28Tjy8Y
+ mtZ/cw+Fm9d9iZuepkhIYnqInSs3PDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1731502939;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=oN4taUnPx+WdUIoNavY9H7tQjlA/eiHZXxdKsdkG7pA=;
+ b=nBLjfpflEGu5k4PhbotDRycw60lsiYiwyOXq1UphWwtZOLcRK2XdQyK8DI+eNSDslpjccW
+ 1+0rz+oTpFJWQSAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B91D13301;
- Wed, 13 Nov 2024 11:29:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AF3C13301
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 13:02:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bGfQIaeNNGfxXAAAD6G6ig
- (envelope-from <akumar@suse.de>); Wed, 13 Nov 2024 11:29:43 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 13 Nov 2024 12:29:43 +0100
-Message-ID: <6126477.lOV4Wx5bFT@thinkpad>
-In-Reply-To: <20241113105925.295697-1-pvorel@suse.cz>
-References: <20241113105925.295697-1-pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id R7SIDFujNGfrPgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Wed, 13 Nov 2024 13:02:19 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 13 Nov 2024 14:02:10 +0100
+Message-Id: <20241113-setresgid_refactoring-v1-0-b6d07400e374@suse.com>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 962B7211A6
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+X-B4-Tracking: v=1; b=H4sIAFKjNGcC/x2MSQqAMAwAvyI5W2hcsPgVEZE2rblUSUQE8e8Wj
+ 8Mw84CSMCmM1QNCFyvvuQDWFfhtzYkMh8LQ2KZDxNYonUKaOCxCcfXnLpyTwd4NfbDOx9hCaY8
+ i+f6/0/y+H/N+YENnAAAA
+X-Change-ID: 20241113-setresgid_refactoring-15875d08cff3
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1731502939; l=616;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=qMov5nn0yRRdwIgQ9ySEXkHDvS2LDMpOryFv8HvlK1w=;
+ b=McMwn3aqGHJwYM0Zv98/WWwo1lti9YYzPmNxqHdmpGVPiS22bluQIoS3g/Vcbl4fa8X4h61mC
+ mFpYZ8ezw+OAaihV+v0yFrbqNZ5kx2ljqi7BQkkDZfz/Njtw5ifm+zg
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 4F6BF2111F
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email,suse.de:dkim];
+ MIME_TRACE(0.00)[0:+];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] select03: Fix false positive on TCONF
+Subject: [LTP] [PATCH 0/2] setresgit testing suite refactoring
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,58 +127,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dominique Leuenberger <dleuenberger@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Usual business: remove old stuff, new LTP API and a general cleanup.
 
-On Wednesday, November 13, 2024 11:59:25 AM CET Petr Vorel wrote:
-> This fixes error on unsupported __NR__newselect:
-> select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your arch
-> select03.c:90: TFAIL: Child exited with 32
-> 
-> Fixes: ffdd3b36cd ("syscalls: Add missing exit status check")
-> Reported-by: Dominique Leuenberger <dleuenberger@suse.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Andrea Cervesato (2):
+      Refactor setresgit01 test
+      Refactor setresgit04 test
 
-Reviewed-by: Avinesh Kumar <akumar@suse.de>
+ testcases/kernel/syscalls/setresgid/setresgid01.c | 264 ++++++----------------
+ testcases/kernel/syscalls/setresgid/setresgid04.c | 104 ++-------
+ 2 files changed, 94 insertions(+), 274 deletions(-)
+---
+base-commit: a5721272ece4113df04c060989d4d7261a45b138
+change-id: 20241113-setresgid_refactoring-15875d08cff3
 
-
-> ---
-> Alternatively, we could revert to previous state (remove
-> "!WEXITSTATUS(status)" check), if we really don't care about any other
-> exit code.
-> 
-> Kind regards,
-> Petr
-> 
->  testcases/kernel/syscalls/select/select03.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/select/select03.c b/testcases/kernel/syscalls/select/select03.c
-> index 216b22104f..34aea12603 100644
-> --- a/testcases/kernel/syscalls/select/select03.c
-> +++ b/testcases/kernel/syscalls/select/select03.c
-> @@ -77,8 +77,10 @@ static void run(unsigned int n)
->  
->  	SAFE_WAITPID(pid, &status, 0);
->  
-> -	if (WIFEXITED(status) && !WEXITSTATUS(status))
-> +	if (WIFEXITED(status) &&
-> +		(WEXITSTATUS(status) == 0 || WEXITSTATUS(status) == TCONF)) {
->  		return;
-> +	}
->  
->  	if (tst_variant == GLIBC_SELECT_VARIANT &&
->  	    tests[n].timeout == &invalid_to &&
-> 
-
-Thanks,
-Avinesh
-
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
