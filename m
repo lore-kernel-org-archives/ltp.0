@@ -4,71 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C4DCD6A25B
-	for <ltp@archiver.kernel.org>; Thu, 14 Nov 2024 23:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E60D6A25D
+	for <ltp@archiver.kernel.org>; Thu, 14 Nov 2024 23:49:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 251EE3D7204
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 00:49:00 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 67F953D71FD
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 00:49:17 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E833B3D71D0
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 00:48:44 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ by picard.linux.it (Postfix) with ESMTPS id 7E64E3D71FA
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 00:48:45 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C8A8C1BBF491
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 00:48:43 +0100 (CET)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-37d447de11dso101305f8f.1
- for <ltp@lists.linux.it>; Thu, 14 Nov 2024 15:48:43 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 22E081BBF491
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 00:48:45 +0100 (CET)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-37d4ac91d97so1019376f8f.2
+ for <ltp@lists.linux.it>; Thu, 14 Nov 2024 15:48:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1731628123; x=1732232923; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=rbliS0InrBXP/XI9aWNBDdIBKMi4A+UPy3aaAR6rW7s=;
- b=RqPsXlPbfBjfA7HrS48Fo6G2PSxAr2P9Wm23d8IoYzAxyVwO76ny/hUif/VH6GyTLe
- acywqtBNg4HjlmwTKSrQ4uwpd8KwIjOTqjyZRaYKTttCyTwLVIoiDdLTLUPnSbSQQX5E
- hTL65pzipbuF2EQ3atxC7jFZXQ4Ngipdd42mAUVyN316xN3UMMXooOqlDdwwxkw1W9Lx
- TluUNQ49/8n45p3wFVy7YPjrGLcHRX+w6ZUrrGHC5lnPvR9Y2gsEIsXzXLkGQ3zYcOMG
- vJbZ21jK8nNtZi8fZUaT5NqwgvvpbFtWYVKKD5wz1Xmm5gMEBcPPwN7K6WbhS1P7Hpn6
- 7pKg==
+ d=gmail.com; s=20230601; t=1731628124; x=1732232924; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=F5XOSjKokoBwvjZP1LdheMUaTb3ntcK/kz8rjyToRCA=;
+ b=Ux0yIZVCmVilOCCom84vqbVa4//htd9gAU3ZeDAprADQyTT6pYeyqYs3dZzY0+YFqq
+ YpH5Tk7OvV0EpefvOQDOTIHTZHZ6/9+9UXKhoOxnk4aAVmC2+eecOOp4N2mlS/yzwJ6y
+ 1qPwaGm4ncx/eoA+4WCMcmXGR6WEz6wJhG4n0Yp0M+au6WQUCNoSSJv63qBSXXRRUXXF
+ VFBcHDoWrMXXAKW2f/DS6IYimeP8L9ZKDxP2I2eV4VTPV7NUf+A6+cDVMZVoHP6vcZlO
+ LlEbLP3kC2LXDXp2MhRjQd3llp8VsRklDSsNrBRd200ch07FzV1Qw3MRM8yVXzVjEbJ+
+ qj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1731628123; x=1732232923;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=rbliS0InrBXP/XI9aWNBDdIBKMi4A+UPy3aaAR6rW7s=;
- b=VIr6bKfl4MLONUnAEOCrNTLTGtHclwEt9Z9IXWkZf0y1QH3x3iPiiYf11u4527b66M
- BuJSVwMpHVblLy93VnbrwPIR6VbGh4gZm95QSq7Y2Gyqrkadp83ge0Vdm6mP0SHivdWa
- +bStox+7Y06KXZLF+mEVakF5EJudTk2Xis28ynKqQfPXY1h+W9+JjxPLEVjXPHvS68tf
- wSJQX5fv7F7qyzODpQJAb6N68xEFoMC3iaPX5gDKGuKWZs/wa7qrcY9i/lF9s/ZU+/i7
- p9AFEiKlwEc+l7yrUj31EPIN0mk9Vu30cYa9o0JXX8+KubF/bps3Wcx7+31JLlLRlTdw
- Lh2Q==
-X-Gm-Message-State: AOJu0Yxe3iS46P+AigGfFPIxS03Cp8Aw9YHMnDMUHy/z3GZrzD5wn/NX
- 22+LgmZnAuQi2TyYwspQDMAEdMSVdD5MWUDCLo+SMkxwMufZld+EoZnEvQ==
-X-Google-Smtp-Source: AGHT+IGldGaeonZaWmW1to0sDTTOLesL/uI4RGEE43Y16wEbXajarUzaCS5NsGdmK0s8bpXDaTOuYw==
-X-Received: by 2002:a5d:6d01:0:b0:37d:4d80:34ae with SMTP id
- ffacd0b85a97d-38225901fe2mr380983f8f.4.1731628123062; 
- Thu, 14 Nov 2024 15:48:43 -0800 (PST)
+ d=1e100.net; s=20230601; t=1731628124; x=1732232924;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=F5XOSjKokoBwvjZP1LdheMUaTb3ntcK/kz8rjyToRCA=;
+ b=KMwmZh48JpFiXqLbs1C8CYlXA0vV9YaV12b2IhAEKonGa4c5sQnlHO8t6O5SjMz4B8
+ X4zx3pRhA4rvOXanijjnEaLBxAhdXk+wDIvIEv+cKJMLS7EjGugrGgXN7gEbGcfYq/7V
+ 7Kwcr06VJxvbgF7FSVh5gV/l0FXNtj3O18Kv4/FiKnVi6rgDyiphq2L4JP5on632ExVH
+ sd16MagGscDBW5L7dmxsClVQBMLJ/kBCqRKrHi8LOk/S5LgDBtTeUmDr9bp5oedd6Q7T
+ 3hcCeX2UIN8DEaCl1WJVdFCfpqeZromBULfoHlO46cCIRUhmBqF6bPowq98XuDLOsmuW
+ dD9g==
+X-Gm-Message-State: AOJu0Yx8kWp3ZofS94vi4tNNG6Ks165oRsbjC72C2+M2sjchYM8YIrOx
+ 8UxHE4dIAcO5gWgx5K4OXk6hytsS3gj2Ez4gUwt9NpZ/snBtUwxE1vDsNw==
+X-Google-Smtp-Source: AGHT+IH0czxFe1NIzZKs9HbHSF2tmU1e3gwvl/aUKOYycaRIEq5q4snNTMXXznOsxE8qfCno8dqNRg==
+X-Received: by 2002:a05:6000:4023:b0:37d:4319:f8c6 with SMTP id
+ ffacd0b85a97d-38225a21e11mr442058f8f.7.1731628124479; 
+ Thu, 14 Nov 2024 15:48:44 -0800 (PST)
 Received: from x230.suse.cz (gw1.ms-free.net. [185.243.124.10])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3821ada2e35sm2789402f8f.5.2024.11.14.15.48.42
+ ffacd0b85a97d-3821ada2e35sm2789402f8f.5.2024.11.14.15.48.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Nov 2024 15:48:42 -0800 (PST)
+ Thu, 14 Nov 2024 15:48:44 -0800 (PST)
 From: Petr Vorel <petr.vorel@gmail.com>
 To: ltp@lists.linux.it
-Date: Fri, 15 Nov 2024 00:48:35 +0100
-Message-ID: <20241114234839.1680432-1-petr.vorel@gmail.com>
+Date: Fri, 15 Nov 2024 00:48:36 +0100
+Message-ID: <20241114234839.1680432-2-petr.vorel@gmail.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241114234839.1680432-1-petr.vorel@gmail.com>
+References: <20241114234839.1680432-1-petr.vorel@gmail.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/3] Port rt_tgsigqueueinfo01 to musl
+Subject: [LTP] [PATCH 1/3] rt_tgsigqueueinfo01: Use siginfo_t portable
+ members
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,15 +89,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel (3):
-  rt_tgsigqueueinfo01: Use siginfo_t portable members
-  rt_tgsigqueueinfo01: Convert doc to docparse
-  ci/alpine.sh: Update list of incompatible tests
+POSIX API for siginfo_t expect simple struct members (see man
+sigaction(2)). Most of the implementations (including glibc, uclibc,
+musl, bionic) combine many fields into union due optimisation. To
+achieve POSIX API compatibility implementations provide definitions
+to access members.
 
- ci/alpine.sh                                  |  3 +--
- .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c   | 22 +++++++------------
- 2 files changed, 9 insertions(+), 16 deletions(-)
+Depending on glibc/uclibc specific internal implementation was wrong.
+eea3ba496b attempt to add bionic support. To get musl (or whatever libc)
+support do what should have been done from the beginning: use portable
+members.
 
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c        | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+index bee6a62713..2f603be945 100644
+--- a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
++++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+@@ -25,12 +25,6 @@
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+-#ifndef __ANDROID__
+-#define SI_SIGVAL si_sigval
+-#else
+-#define SI_SIGVAL _sigval
+-#endif
+-
+ static char sigval_send[] = "rt_tgsigqueueinfo data";
+ static volatile int signum_rcv;
+ static char *sigval_rcv;
+@@ -39,7 +33,7 @@ static void sigusr1_handler(int signum, siginfo_t *uinfo,
+ 			    void *p LTP_ATTRIBUTE_UNUSED)
+ {
+ 	signum_rcv = signum;
+-	sigval_rcv = uinfo->_sifields._rt.SI_SIGVAL.sival_ptr;
++	sigval_rcv = uinfo->si_ptr;
+ }
+ 
+ void *send_rcv_func(void *arg)
+@@ -51,7 +45,7 @@ void *send_rcv_func(void *arg)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
++	uinfo.si_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 syscall(__NR_gettid), SIGUSR1, &uinfo));
+@@ -113,7 +107,7 @@ static void verify_signal_parent_thread(void)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
++	uinfo.si_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 tid, SIGUSR1, &uinfo));
+@@ -130,7 +124,7 @@ void *sender_func(void *arg)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
++	uinfo.si_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 *tid, SIGUSR1, &uinfo));
 -- 
 2.45.2
 
