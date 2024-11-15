@@ -4,92 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD648D6DDD2
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 05:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02ED2D6DDD7
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 06:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1731650931; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=QSMUIk4yqx+ns7/3HpKazjLS8ZGErXXYGMW2F9LLmpw=;
+ b=MFxtfBcpCXhRpbdkHZeoiur1dtxWZJBDchQVzThB7UK6wvhJ7glCK212mO/EnzdEavcF1
+ NGHjRVJiU2IgN4rClXzJN/klSkGmjTAew0R0+R2fJC+E8/++eRFkmLL/CxnD9QIjNR+7dXr
+ n7wb5mzE9uOhtM/WdVrXcbEK2ASazHU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F27633D7291
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 06:10:46 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 2FD493D72E3
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 07:08:51 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B3123C62AC
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 06:10:30 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 71C3F3D721B
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 07:08:29 +0100 (CET)
 Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.223;
+ helo=esa9.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E82146418C1
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 06:10:28 +0100 (CET)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF0kHpl015146;
- Fri, 15 Nov 2024 05:10:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=YRUYBk
- Te4kBch3RjQ6hcAX6cCIoUtWoiASLRsd3/EiY=; b=WiVPTPTPu5GtzEC/yVrBdk
- o6nzMj50T0gWArBhpxatatulE0KprOgbZyP/lueE98IS0APHqPvRh0vGJYXJ3ZG5
- xgZuxWbPdWkZks+p0fbY8jykDJsuj4Q+CrFQChbOTaQtduINp7qDL3NEHX9IQrk+
- ZkC95dTwcxrEbuEEFkBvOkxqNFopiGKuj9Iyb/jnBXQCly8SQ2kZT2kCiQ6Zoe1J
- FwaoaLdX2hjBwRgXThzVbVoLRrJZoaJ9MUuBjhomLSxYEX0/Qgfbo/Kmks/4Pctu
- Ec7JQ6fPd0nyMWGvW8Pki4A4wU6uMyqLMDmtZqXMxXvZIVHZJHpHVj/DiIe26V0Q
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42wuvc10dc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 15 Nov 2024 05:10:26 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF41nYt008404;
- Fri, 15 Nov 2024 05:10:25 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42tjf0f2rw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 15 Nov 2024 05:10:25 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com
- [10.39.53.228])
- by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 4AF5AOLP49021382
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 15 Nov 2024 05:10:25 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DA3B258059;
- Fri, 15 Nov 2024 05:10:24 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5E2CF58065;
- Fri, 15 Nov 2024 05:10:24 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.35.114]) by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Fri, 15 Nov 2024 05:10:24 +0000 (GMT)
-Message-ID: <219c37a46024eb2c8ae5af342ec26802519f26e7.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-Date: Fri, 15 Nov 2024 00:10:23 -0500
-In-Reply-To: <20241101143726.1278291-1-pvorel@suse.cz>
-References: <20241101143726.1278291-1-pvorel@suse.cz>
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9A5C564DB70
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 07:08:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1731650908; x=1763186908;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=hCUrdudU55TF46Rj371KqeofZ3lRQjKX9d/xBSv/BxA=;
+ b=qkWwyzkUNvZga1ty0wJa1KZi2JH6ZvupjVNddsE6Z3m14uaZJ//QtlBk
+ usicsei5M4MQDitSycieaasNMdR4VVDW96HWPNgaGP6thJfKmyg9Bllhm
+ jS2I/clFv38Aupk30YJ7zCOkOnZBffYF32+Z7qdUYdkXx90OXcYnUH2CG
+ nuXmTnlWbz/BTuN2tSaKsljmZe5GSpGpP5mvDHptJlMQtrdMPUchu773N
+ NUYeuLys9/M9BiDkd4o4IsqHe9ssmEgy1Nme/SFWrH/TkqjYmD48cxN2P
+ jJX5oBnxkyfiT1+Tu4jp/4zxO+d8JkjyTpLeAWF/BGN0GCJDuAw4tly4h w==;
+X-CSE-ConnectionGUID: byfohJ+hSnOSSbTcWRqKCw==
+X-CSE-MsgGUID: 66aMmMH7QxqXXGB1M0TAdw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11256"; a="168877841"
+X-IronPort-AV: E=Sophos;i="6.12,155,1728918000"; d="scan'208";a="168877841"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2024 15:08:25 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 38D4FD7AC5
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 15:08:23 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id BC2E9D6170
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 15:08:22 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 7DE4C40B7D
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 15:08:21 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.135.101])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id E719D1A000B;
+ Fri, 15 Nov 2024 14:08:20 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Fri, 15 Nov 2024 14:08:04 +0800
+Message-ID: <20241115060804.130544-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xRLfgMMeLG_P_f_NwX-hIWoF5TlD9l0x
-X-Proofpoint-ORIG-GUID: xRLfgMMeLG_P_f_NwX-hIWoF5TlD9l0x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0
- priorityscore=1501 clxscore=1011 suspectscore=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411150041
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28798.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28798.005
+X-TMASE-Result: 10--2.340700-10.000000
+X-TMASE-MatchedRID: FMY5IFaWNFChhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmvY+2jZ6Y7ZZUX
+ tMTov77hXSjVgziIU9OAMuqetGVetk6N1CbkSyKE3QfwsVk0Ubv+efAnnZBiL5K13zeQcKlRjQE
+ md0Hvg8tsa5GG4C2XkC3RD/DG9XAyXimSit+d22lM/DT2tOYoaYCvK0e1CWOmQ+Tug43iztPZU4
+ QAssAowHjKdkPZVDsmW4wbpXTb5DJKKve1kh3RY37qSWrndbmQn0bOriG5BVc=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] ima_boot_aggregate: Fix openssl 3.0
- deprecation warnings
+Subject: [LTP] [PATCH] tee02: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,115 +97,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, 2024-11-01 at 15:37 +0100, Petr Vorel wrote:
-> From the docs:
-> https://docs.openssl.org/3.0/man7/migration_guide/#deprecated-low-level-digest-functions
-> 
->     Use of low-level digest functions such as SHA1_Init(3) have been
->     informally discouraged from use for a long time. Applications should
->     instead use the high level EVP APIs EVP_DigestInit_ex(3),
->     EVP_DigestUpdate(3) and EVP_DigestFinal_ex(3), or the quick one-shot
->     EVP_Q_digest(3).
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+---
+ testcases/kernel/syscalls/tee/tee02.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Sorry for the long delay in responding.  The patch nicely cleans up all the
-warnings.
-
-thanks,
-
-Mimi
-
-> ---
->  .../integrity/ima/src/ima_boot_aggregate.c    | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-> index 62468e0d19..68d12fc3c2 100644
-> --- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-> +++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-> @@ -24,6 +24,7 @@
->  
->  #if HAVE_LIBCRYPTO
->  #include <openssl/sha.h>
-> +#include <openssl/evp.h>
->  
->  #define MAX_EVENT_SIZE (1024*1024)
->  #define EVENT_HEADER_SIZE 32
-> @@ -61,7 +62,11 @@ static void display_sha1_digest(unsigned char *pcr)
->  static void do_test(void)
->  {
->  	FILE *fp;
-> +#if OPENSSL_VERSION_NUMBER > 0x030000000L
-> +	EVP_MD_CTX *c = NULL;
-> +#else
->  	SHA_CTX c;
-> +#endif
->  	int i;
->  
->  	if (!file)
-> @@ -85,12 +90,24 @@ static void do_test(void)
->  		}
->  
->  		if (event.header.pcr < NUM_PCRS) {
-> +#if OPENSSL_VERSION_NUMBER > 0x030000000L
-> +			if ((c = EVP_MD_CTX_new()) == NULL)
-> +				tst_brk(TBROK, "can't get new context");
-> +
-> +			EVP_DigestInit_ex(c, EVP_sha1(), NULL);
-> +			EVP_DigestUpdate(c, pcr[event.header.pcr].digest,
-> +					 SHA_DIGEST_LENGTH);
-> +			EVP_DigestUpdate(c, event.header.digest, SHA_DIGEST_LENGTH);
-> +			EVP_DigestFinal_ex(c, pcr[event.header.pcr].digest, NULL);
-> +			EVP_MD_CTX_free(c);
-> +#else
->  			SHA1_Init(&c);
->  			SHA1_Update(&c, pcr[event.header.pcr].digest,
->  				    SHA_DIGEST_LENGTH);
->  			SHA1_Update(&c, event.header.digest,
->  				    SHA_DIGEST_LENGTH);
->  			SHA1_Final(pcr[event.header.pcr].digest, &c);
-> +#endif
->  		}
->  
->  #if MAX_EVENT_DATA_SIZE < USHRT_MAX
-> @@ -107,15 +124,30 @@ static void do_test(void)
->  
->  	/* Extend the boot aggregate with the pseudo PCR digest values */
->  	memset(&boot_aggregate, 0, SHA_DIGEST_LENGTH);
-> +
-> +#if OPENSSL_VERSION_NUMBER > 0x030000000L
-> +	EVP_DigestInit_ex(c, EVP_sha1(), NULL);
-> +#else
->  	SHA1_Init(&c);
-> +#endif
-> +
->  	for (i = 0; i < NUM_PCRS; i++) {
->  		if (debug) {
->  			printf("PCR-%2.2x: ", i);
->  			display_sha1_digest(pcr[i].digest);
->  		}
-> +#if OPENSSL_VERSION_NUMBER > 0x030000000L
-> +		EVP_DigestUpdate(c, pcr[i].digest, SHA_DIGEST_LENGTH);
-> +#else
->  		SHA1_Update(&c, pcr[i].digest, SHA_DIGEST_LENGTH);
-> +#endif
->  	}
-> +
-> +#if OPENSSL_VERSION_NUMBER > 0x030000000L
-> +	EVP_MD_CTX_free(c);
-> +#else
->  	SHA1_Final(boot_aggregate, &c);
-> +#endif
->  
->  	printf("sha1:");
->  	display_sha1_digest(boot_aggregate);
+diff --git a/testcases/kernel/syscalls/tee/tee02.c b/testcases/kernel/syscalls/tee/tee02.c
+index 5ebb3c3f6..c3b991189 100644
+--- a/testcases/kernel/syscalls/tee/tee02.c
++++ b/testcases/kernel/syscalls/tee/tee02.c
+@@ -3,15 +3,15 @@
+  * Copyright (c) 2014 Fujitsu Ltd.
+  * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
+  */
+-/*
+- * Description:
+- *   Verify that,
+- *   1) tee() returns -1 and sets errno to EINVAL if fd_in does
+- *      not refer to a pipe.
+- *   2) tee() returns -1 and sets errno to EINVAL if fd_out does
+- *      not refer to a pipe.
+- *   3) tee() returns -1 and sets errno to EINVAL if fd_in and
+- *      fd_out refer to the same pipe.
++
++/*\
++ * [Description]
++ *
++ * Verify that, tee(2) returns -1 and sets errno to
++ *
++ * 1. EINVAL if fd_in does not refer to a pipe.
++ * 2. EINVAL if fd_out does not refer to a pipe.
++ * 3. EINVAL if fd_in and fd_out refer to the same pipe.
+  */
+ 
+ #define _GNU_SOURCE
+-- 
+2.47.0
 
 
 -- 
