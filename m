@@ -4,88 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E71DD6DDDA
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 07:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B250CD6DDDB
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 07:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1731654153; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=pGcjAndbOv+8wAYKYLNWLS1cGszkqGhkqVe0TjovYWg=;
- b=SoeUoZbalHEFzQIZt/Stu/KQLCy6q+dWxKvZFYkC0Xm5ZVLMCPx28RzNPtqjFWXlRZUhG
- 0qwgtvHtbGyx/z1u1pJlqrTApQa8AbkJB9It5oqJGK3XDyKdRsHSiHgjd8IzIuOEpkdkf2C
- R59O4cx2fWhCYdbRUsgMqJw+JgHng18=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1731657081; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=HkLR0//FANPeNU19+twMtkGB+PBYbGWiD8Y0YrX7xgQ=;
+ b=P6u0wZLZ16SH6Ix+8jZbG6faANp/O8vsqPxgyefZR+eMuoU6fbTPZbuTfIT5yBuRPIcZy
+ fADK0oQZ3+KTQ0m1UgkeE6FfY3vzbQWynMGuJM63aVuWJHsaPP8LZgdt5UmkmSe/4YRBNmc
+ zWve9SIivkojZ8pyUtnwvj6X9M96Cag=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 632B63D74AC
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 08:02:33 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 19E2E3D74D3
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 08:51:21 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A660B3D746E
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 08:02:12 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
- helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5D3163D72EC
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 08:51:00 +0100 (CET)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 09D871BE1BF0
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 08:02:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1731654132; x=1763190132;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=X5lALcREZK/l9luZPxMFc44+jHMCC1G30dX5MA/2SIo=;
- b=rZWEUg9eruJCw2/IFZQhmsGk8Pup9WO4DUMzgK42ZkPmDxCYKgwhHZ+n
- 7g62ieRXAL0Xxreia+gIc6U+zNAYim64HL75Y0jzY6GGEkNjdz3ZvMAiC
- HMFm22LV2TNCMoZiG7p0nuyYR8dm9J4c7Ca2KYbi93Q1dhmr81Hae7EHV
- ChEQ+ZxAQgZxOXUVGAo7/Sf32Y55lMQIF2yG2P6ze9ktati0o9eun8oMS
- 67buTV9HDb/306RW9Fl+8F7JZC+vhz/M2KYOOXhJuqkpw/v0x+96Apd5m
- ECI5D4qxm25H7x2X9xCDk7wk+3eAp4EfTTlUblIMEg/QQ4GpNChQ9J6xF w==;
-X-CSE-ConnectionGUID: NFYTN7XoQ3WSFJ+m8wIzaw==
-X-CSE-MsgGUID: yzlvnVecRXKJhuulRiH/jg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11256"; a="159510601"
-X-IronPort-AV: E=Sophos;i="6.12,156,1728918000"; d="scan'208";a="159510601"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2024 16:02:09 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
- [192.168.83.65])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 28FBF9674B
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 16:02:07 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id BBC80385D3
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 16:02:06 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4FD17E2059
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 16:02:06 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id EA3F21A000B;
- Fri, 15 Nov 2024 15:02:05 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Fri, 15 Nov 2024 15:01:53 +0800
-Message-ID: <20241115070153.133523-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C430C223D6D
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 08:50:59 +0100 (CET)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-5cf896558c4so1207419a12.2
+ for <ltp@lists.linux.it>; Thu, 14 Nov 2024 23:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1731657059; x=1732261859; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=k0/hALFIgf+wg+Ti4nWa58RNKv8YJ5d+s1+nUivF9x4=;
+ b=g6lQb8kr+lbJTKWWkjV1Ztc+j6yTwk6S3iZtR5sXANpGd0qNBv3wegDI52hWNtn14T
+ cbfWZtou+DQ3zjKIkSb1CSRda6/SNRlw7fDKmTUYBY48W+jbqMkTBKQiN2+1610b5oaz
+ GNw2WNtlfUT66nCrwXppn4cs0ZlcVYKDnzi2i9vWvjj4jgFrt36APz6fIbtIImiNbrwh
+ bQACGAu+rYyF45m3slPoRTGv+mmYBPPeUGzDLAYtj+jjIRvCDWkH9oILwOHuE5yctjos
+ EcuLnIPiwj8FBUQHsaFMiDyeg/gGwVLIllFXqLlWX4FppzisAZPcSAmxyHe48oxvygXH
+ bBeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1731657059; x=1732261859;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=k0/hALFIgf+wg+Ti4nWa58RNKv8YJ5d+s1+nUivF9x4=;
+ b=egWyZpdlFWzSjWvoQ/f0OfPU9kFKlN2c0WTMhx4XP9/4YZmofmhbZvlXhhy2K4GtFk
+ bbVR42Bm17DL98qOmGLM3Xqce9iiM6mzV0uTwn08JER2aRSevxmjmUZTQroyGW23XjNO
+ OmWIMls3Ogl958FljoIKXkN/Dd5S2Vwdrw5qrQOexvXlpwbdoAcDifo4hNKWL3r2hwFw
+ gQWvrtTrlvGrLLOlcVRVnYKIx9DDcAALbA2CX/oLHn0tySIXu1rMzZHj9fRdzFq9i5yz
+ ctIPGGn3QGqU0mHnDrzn+QfbDsLgpPidrgu6o9eS4pjku4RzhsvB00Njm0gV24VY2Aph
+ v/mA==
+X-Gm-Message-State: AOJu0Yx59KTSnRU6rQ8I6NNC0ShdyLLDOX+rAUgy/J82vz7QDiDEjb9U
+ PO4mmTrOICTV1tqhI6LxX17JIIm+8Q2y05YwHLkhCpe/6qD20iydFmNpQHOuV2mAPIcLFlrUDFA
+ =
+X-Google-Smtp-Source: AGHT+IHyfYa1pSPYFNROZ47qGUVSLHGIGUkFa5FvhTNJeipfnh/isq9aCKwTwMEePj1oi09MPrpi9Q==
+X-Received: by 2002:a05:6402:210a:b0:5ce:fc3c:3c3 with SMTP id
+ 4fb4d7f45d1cf-5cf8fd03d94mr1274721a12.28.1731657059104; 
+ Thu, 14 Nov 2024 23:50:59 -0800 (PST)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5cf79c1dc72sm1332485a12.79.2024.11.14.23.50.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 14 Nov 2024 23:50:58 -0800 (PST)
+Date: Fri, 15 Nov 2024 02:50:52 -0500
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Zzb9XKvIe9D6Mcn3@wegao>
+References: <20241114172911.362197-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28798.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28798.005
-X-TMASE-Result: 10--3.711800-10.000000
-X-TMASE-MatchedRID: /CzucCovGFKhhjsqgSuNbxF4zyLyne+ATJDl9FKHbrlcGuTueJkNIuLS
- dVP2tZn5KhUWD07FA+x0GLVq9e5VbIV30ZD7XA/l1l+BjLM8lsqtOrovcQWGr88jvrgttXWzAwV
- YwE7hIhzi8zVgXoAltsIJ+4gwXrEt33fj+sMArfOUZ3IP5ATaHzeHv7ksikI9ikqMYL+xXvlWei
- dhmIlWKwATu+ilBB6jer82lSuD5riCtvJtlw9an0euqjnBJSKxhowD6QK9FnACUb3VB7BlShFlt
- GxCTkwFQHVA+r1vGdZmQDEDCMiuswfP8fSSIvISoYC0cwOOST0=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20241114172911.362197-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] preadv202: Convert docs to docparse
+Subject: Re: [LTP] [PATCH 1/1] ioctl01: Workaround segfault on ppc64le
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,59 +91,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/preadv2/preadv202.c | 27 +++++++++----------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+On Thu, Nov 14, 2024 at 06:29:11PM +0100, Petr Vorel wrote:
+> Testing termio/termios invalid/NULL address for EFAULT fails on ppc64le.
+> Use typical LTP workaround to test by forked child + checking the
+> terminating signal (on all archs).
+Very nit:
+The title is "[PATCH 1/1] ioctl01: Workaround segfault on ppc64le" but 
+your code is create workaround for all archs, so maybe update some words?
 
-diff --git a/testcases/kernel/syscalls/preadv2/preadv202.c b/testcases/kernel/syscalls/preadv2/preadv202.c
-index fd3b7c9d7..f7279e0ad 100644
---- a/testcases/kernel/syscalls/preadv2/preadv202.c
-+++ b/testcases/kernel/syscalls/preadv2/preadv202.c
-@@ -4,20 +4,19 @@
-  * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-  */
- 
--/*
-- * Description:
-- * Check various errnos for preadv2(2).
-- * 1) preadv2() fails and sets errno to EINVAL if iov_len is invalid.
-- * 2) preadv2() fails and sets errno to EINVAL if the vector count iovcnt
-- *    is less than zero.
-- * 3) preadv2() fails and sets errno to EOPNOTSUPP if flag is invalid.
-- * 4) preadv2() fails and sets errno to EFAULT when attempts to read into
-- *    a invalid address.
-- * 5) preadv2() fails and sets errno to EBADF if file descriptor is invalid.
-- * 6) preadv2() fails and sets errno to EBADF if file descriptor is not
-- *    open for reading.
-- * 7) preadv2() fails and sets errno to EISDIR when fd refers to a directory.
-- * 8) preadv2() fails and sets errno to ESPIPE if fd is associated with a pipe.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that, preadv2(2) fails and sets errno to
-+ *
-+ * 1. EINVAL if iov_len is invalid.
-+ * 2. EINVAL if the vector count iovcnt is less than zero.
-+ * 3. EOPNOTSUPP if flag is invalid.
-+ * 4. EFAULT when attempting to read into an invalid address.
-+ * 5. EBADF if file descriptor is invalid.
-+ * 6. EBADF if file descriptor is not open for reading.
-+ * 7. EISDIR when fd refers to a directory.
-+ * 8. ESPIPE if fd is associated with a pipe.
-  */
- 
- #define _GNU_SOURCE
--- 
-2.47.0
-
+Reviewed-by: Wei Gao <wegao@suse.com>
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/syscalls/ioctl/ioctl01.c | 45 ++++++++++++++++++++---
+>  1 file changed, 40 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c b/testcases/kernel/syscalls/ioctl/ioctl01.c
+> index c84a72b9a2..e4f32330d0 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl01.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * Copyright (c) International Business Machines Corp., 2001
+>   * Copyright (c) 2020 Petr Vorel <petr.vorel@gmail.com>
+> - * Copyright (c) Linux Test Project, 2002-2023
+> + * Copyright (c) Linux Test Project, 2002-2024
+>   * 07/2001 Ported by Wayne Boyer
+>   * 04/2002 Fixes by wjhuie
+>   */
+> @@ -59,8 +59,42 @@ static struct tcase {
+>  
+>  static void verify_ioctl(unsigned int i)
+>  {
+> -	TST_EXP_FAIL(ioctl(*(tcases[i].fd), tcases[i].request, tcases[i].s_tio),
+> -		     tcases[i].error, "%s", tcases[i].desc);
+> +	struct tcase *tc = &tcases[i];
+> +
+> +	TST_EXP_FAIL(ioctl(*(tc->fd), tc->request, tc->s_tio), tc->error, "%s",
+> +		     tc->desc);
+> +}
+> +
+> +static void test_bad_addr(unsigned int i)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		verify_ioctl(i);
+> +		_exit(0);
+> +	}
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	if (WIFEXITED(status) && !WEXITSTATUS(status))
+> +		return;
+> +
+> +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+> +		tst_res(TPASS, "Child killed by expected signal");
+> +		return;
+> +	}
+> +
+> +	tst_res(TFAIL, "Child %s", tst_strstatus(status));
+> +}
+> +
+> +static void do_test(unsigned int i)
+> +{
+> +	if (tcases[i].error == EFAULT)
+> +		test_bad_addr(i);
+> +	else
+> +		verify_ioctl(i);
+>  }
+>  
+>  static void setup(void)
+> @@ -86,6 +120,7 @@ static struct tst_test test = {
+>  	.needs_tmpdir = 1,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> -	.test = verify_ioctl,
+> -	.tcnt = ARRAY_SIZE(tcases)
+> +	.test = do_test,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.forks_child = 1,
+>  };
+> -- 
+> 2.45.2
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
