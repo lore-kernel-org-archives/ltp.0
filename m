@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70F2ED6DDEA
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 08:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B8C0D6DDEF
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 10:37:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DB2103D74E3
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 09:25:37 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D59B23D7607
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 11:37:56 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 769A53D74DC
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 09:25:22 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 1C1793D75A7
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 11:37:41 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -23,48 +23,83 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C33DE10394CC
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 09:25:21 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 85BD963D164
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 11:37:40 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 04B8E211F9;
- Fri, 15 Nov 2024 08:25:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B3FAD2128C;
+ Fri, 15 Nov 2024 10:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1731667058;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8nz/3aRwNpYgHnBEPYSHRNwK/0dZ6Nq8IdNJtIc+tq4=;
+ b=fJrQIt8dYKZ1mUPwkP+AajJnO30us06D7GA+Z9YiZ8l4kavnUq+59E6vjMXhHVoQF2oeqf
+ 0oWDqEsqCeaoqM1XmN5Itjmc8d7Om999Bdwn/dgDWM+93mb/d4sILyBdpAUMIwjehnnuii
+ ntBlCmPEZXBwF++YYoyI5LS2fDEQasc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1731667058;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8nz/3aRwNpYgHnBEPYSHRNwK/0dZ6Nq8IdNJtIc+tq4=;
+ b=Ln7OoRHAF5X4Fr3uM7E5BMHt8/x52al51Cu50sXli5Dryzkm5mMbHQ/OWnEZC3l7i0f1/K
+ 0wHE2qImimbuI9Cw==
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1731667057;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8nz/3aRwNpYgHnBEPYSHRNwK/0dZ6Nq8IdNJtIc+tq4=;
+ b=JTJPJxRbMJU5WWobUKMWXPjziBjR7+qELwczo9tKt1Nqbysel1blLWZlGD3l42hEiV3bbR
+ 0X6u72VA2vKefRAvDKf59AYu5F8DjuNcCDxGgHbZFL6P9+1eDKmADByTM6fKXc+GWgBKSd
+ WefAjrgKqXJcaUdrTLC6nwgfrKEAkz4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1731667057;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8nz/3aRwNpYgHnBEPYSHRNwK/0dZ6Nq8IdNJtIc+tq4=;
+ b=mpAadHvtwjZ3gKq8HGDR6ArQVpAr6M8dZM361RuNEcDD5vD80uOg8z4H5o2C70Z7MetVft
+ gwAOtUzj2zoNxDCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E030313485;
- Fri, 15 Nov 2024 08:25:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9123813485;
+ Fri, 15 Nov 2024 10:37:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id dPjLNXAFN2d5LgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 15 Nov 2024 08:25:20 +0000
-Date: Fri, 15 Nov 2024 09:25:19 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id nstsInEkN2cYWwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 15 Nov 2024 10:37:37 +0000
+Date: Fri, 15 Nov 2024 11:37:36 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20241115082519.GA1711911@pevik>
-References: <20241115033916.1707627-1-petr.vorel@gmail.com>
- <20241115033916.1707627-2-petr.vorel@gmail.com>
- <fca99dc0-24cb-4248-bb9a-2d4de448a3aa@suse.com>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20241115103736.GA1718754@pevik>
+References: <20241114172911.362197-1-pvorel@suse.cz> <Zzb9XKvIe9D6Mcn3@wegao>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fca99dc0-24cb-4248-bb9a-2d4de448a3aa@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- TAGGED_RCPT(0.00)[]
-X-Rspamd-Queue-Id: 04B8E211F9
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <Zzb9XKvIe9D6Mcn3@wegao>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] doc: Add URL to the sources in syscalls list
+Subject: Re: [LTP] [PATCH 1/1] ioctl01: Workaround segfault on ppc64le
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,67 +118,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr,
+> On Thu, Nov 14, 2024 at 06:29:11PM +0100, Petr Vorel wrote:
+> > Testing termio/termios invalid/NULL address for EFAULT fails on ppc64le.
+> > Use typical LTP workaround to test by forked child + checking the
+> > terminating signal (on all archs).
+> Very nit:
+> The title is "[PATCH 1/1] ioctl01: Workaround segfault on ppc64le" but 
+> your code is create workaround for all archs, so maybe update some words?
 
-> On 11/15/24 04:39, Petr Vorel wrote:
-> > +    # Or syscalls are here to get their folder.
-> > +    white_list = {
-> > +        'epoll_pwait2': 'epoll_pwait',
-> > +        'fadvise64': 'fadvise',
-> > +        'fanotify_init': 'fanotify',
-> > +        'fanotify_mark': 'fanotify',
-> > +        'futex_wait': 'futex',
-> > +        'futex_waitv': 'futex',
-> > +        'futex_wake': 'futex',
-> > +        'getdents64': 'getdents',
-> > +        'inotify_add_watch': 'inotify',
-> > +        'inotify_rm_watch': 'inotify',
-> > +        'inotify_init1': 'inotify',
-> > +        'io_uring_enter': 'io_uring',
-> > +        'io_uring_register': 'io_uring',
-> > +        'io_uring_setup': 'io_uring',
-> > +        'ioprio_get': 'ioprio',
-> > +        'ioprio_set': 'ioprio',
-> > +        'landlock_add_rule': 'landlock',
-> > +        'landlock_create_ruleset': 'landlock',
-> > +        'landlock_restrict_self': 'landlock',
-> > +        'lsetxattr': 'lgetxattr', # llistxattr, lremovexattr
-> > +        'newfstatat': 'fstatat',
-> > +        'pkey_alloc': 'pkeys',
-> > +        'pkey_free': 'pkeys',
-> > +        'pkey_mprotect': 'pkeys',
-> > +        'pread64': 'preadv',
-> > +        'prlimit64': 'getrlimit',
-> > +        'process_vm_readv': 'cma',
-> > +        'process_vm_writev': 'cma',
-> > +        'pselect6': 'select',
-> > +        'pwrite64': 'pwrite',
-> > +        'quotactl_fd': 'quotactl',
-> > +        'rt_sigpending': 'sigpending',
-> > +        'semtimedop': 'ipc/semop',
-> > +        'sethostname': 'setdomainname',
-> > +        'timerfd_gettime': 'timerfd',
-> > +        'timerfd_settime': 'timerfd',
-> > +        'timerfd_create': 'timerfd',
-> > +    }
+Thanks! I guess I should change it before merge to:
 
-> The problem with this approach and the reason why I didn't use it, is that
-> if you change the testing folder, you need to update the docs generator
-> script. But I also see the goal, so probably this is the only approach we
-> should follow.
+"ioctl01: Workaround segfault on EFAULT tests"
 
-Other thing would be move around folders, but IMHO some syscalls are really
-related, that's why it's good they are in "ipc" subfolder. OTOH bind(), send(),
-recvmsg(), ... aren't in "net or "network" subfolder.
-
-Whole this was inspired by Metan's suggestion to deriver info about syscalls
-from the folder.
+And note later in the message that the problem is only on ppc64le.
 
 Kind regards,
 Petr
-
-> Andrea
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
