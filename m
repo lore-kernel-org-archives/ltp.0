@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4AEED6DDF2
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 11:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1731670818; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=8sCzMaqUziG35Vpiz8tum9I41j/xb2m9ndmoGBwGSkM=;
- b=PujPmk4Z+q9mgsvPjdRYs6Nf5mVoEGNiD4Hz94YSpIdI4lLhTkkPsrVhKUpnCBFhfRARa
- iEh3ucO7ecgo6VgFcL1+/hbfiglbaguDFANJNbCLXEiCJ4qO4r5EFrWqDD+CxXpye6rxbTr
- GnXpgnUWCuVH74/Br5QVKCfnw6Iep/Q=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1755AD6DDD8
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 12:58:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37D633D765D
-	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 12:40:18 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 3C83B3D76D2
+	for <ltp@archiver.kernel.org>; Fri, 15 Nov 2024 13:58:25 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A8F6A3D59D0
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 12:39:58 +0100 (CET)
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
- [IPv6:2a00:1450:4864:20::141])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 80F9C3D76B0
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 13:58:08 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 990871410515
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 12:39:57 +0100 (CET)
-Received: by mail-lf1-x141.google.com with SMTP id
- 2adb3069b0e04-539e59dadebso1941495e87.0
- for <ltp@lists.linux.it>; Fri, 15 Nov 2024 03:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1731670797; x=1732275597; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=IotaCYNlT7OP6SrsetzjAtKFIzTmD2Pze0t0vwENx1I=;
- b=WJ/B3Vz3ZNrnf/uylKM+gBG1EAxrVRkx7ACOsuP1U0jJo0T8CKpSZc+oq/eu/H8gry
- 2u7rEVv1eTLOEfKWbngwBBdD+KNvbMOqW+FqzFiCzvi6Vs98vj3P3h1DKGPigYvR2CxY
- wlON8jse0JQDKhaKSdPhuINzU0VLVpZjZgRhSSTxDf10rU03a8Bfd1N46FfMpFVmynFp
- k7bmFSya1oMhXgt07WxA3ui6zhqKt0Q5qm+sdwQENUXBzzshxDPCOTnI80d1Y7Uv/4Ef
- J1vTygTFR+AcxNfK0JN5DMfb2XcsAypwn+1iP5sjbTeIvnKNFac85s8k28YxXcfDxJ3P
- XK+w==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 98F18219FD9
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 13:58:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1731675485;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+T2rkNoCi4juEtCtza7W+ROj3SOAD5UwWZfyGYXpGDE=;
+ b=Yn7DOJjlBvXGbOEAae4OIZE/vdrC8tXVIVwFbPEgqZlKnOIw2XYEVpTyBwV5jfmF2zwB2o
+ X/xbT2UkWvqkKmwt94d8DU9obavhtO5NJ1rymHmfbVe52LRK3wnYuWH82RbL1YDd2bwqCy
+ y6483hpn8M7Qtp2/pAJBuvCS9DYQSDk=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-zYqV7v8kOcGWBBnjF9jqEQ-1; Fri, 15 Nov 2024 07:58:03 -0500
+X-MC-Unique: zYqV7v8kOcGWBBnjF9jqEQ-1
+X-Mimecast-MFC-AGG-ID: zYqV7v8kOcGWBBnjF9jqEQ
+Received: by mail-oa1-f70.google.com with SMTP id
+ 586e51a60fabf-2961a7c2b82so1241434fac.3
+ for <ltp@lists.linux.it>; Fri, 15 Nov 2024 04:58:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1731670797; x=1732275597;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=IotaCYNlT7OP6SrsetzjAtKFIzTmD2Pze0t0vwENx1I=;
- b=qPU5nnni7mwVqKGsF3Ya/6vOhrO6hEzEM0uOvJj/5ZkobKf5IiocwjVVPjF7QMTj4C
- s8eosr67+X8LV5cEBxBvszFkCpjHeCA9VgWHopFt2x9fPxxakU3Xc7607GSnnrANsxkK
- bk96CBaWZf/m6ocGBGjtA12mQtNPgUKKF178h9g92MUPoKCrfgSUXNXzxoiUylUKacPJ
- Ydi7TXYrU0Jv4OQ1phUy4f8oQZD6xIb/jikhKC5ypY6MhasSTkM9NUDTS5tCCXhN0U5K
- vfrf18VARmL7typtpoHMVzGNq28zFJvGRjc8z5SnlO7FsNuFmp3jiLR0ZzFdoJEm2v/X
- AjwQ==
+ d=1e100.net; s=20230601; t=1731675483; x=1732280283;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=+T2rkNoCi4juEtCtza7W+ROj3SOAD5UwWZfyGYXpGDE=;
+ b=Qsu51UBXI6KiSA7l8nq/se6HEwdx4ecmtG4cir7YxHRWz3ZJPAqKxjjwXsR0ChQQpN
+ 86ecgXC1kx9LRtdEGrA2zQnaM1w4Qf0qsjH+Kj33DnH7r0Q7ykNIE48pUhhypNoInc9R
+ Mx1V14hhha/kfJ9sw6fOpeM3JKAZXDaq7Qrv1IyH0N95bqpgtnG/x9Y4ufEHxs8nlURF
+ f+lOdIIUv8El/2Eze4SQP+yxlARb2RF6nvkEMP4CA2P9t2DyFqpXVGRshnfZU7s9bUJ6
+ Zbrk9iUaCSSdBKhvXf/gfrds5bEqpmmq5K04PMaUnFUhvEh7Dg9REKb/gKHsc0pyhnJs
+ 5QYQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW3ir9+P4WiBbMQ3Cj8mk/Ch69DlrZGe8IJgKsbYk4gmtdpBezedsKBKvTRe5hj4WF0egE=@lists.linux.it
-X-Gm-Message-State: AOJu0Yy69zbart/mLaPiTdMf1RuodaxjI7R3/Ml8rX50a+CkztSXdwfG
- ZdRQCAwfrbxhzsgZgbwlIF/A0RfQcUKpBai1FkpzeiIjnMqm36HINIAWe3R6C3k=
-X-Google-Smtp-Source: AGHT+IEVjoh5bbA90J1Shus5FtrGXG0NoYQTFhNzK5qXPEVL5hqYErIBNFsPHQy+HRuM9CRAY/Gc9A==
-X-Received: by 2002:a05:6512:4012:b0:539:e4b5:10e5 with SMTP id
- 2adb3069b0e04-53dab2926e6mr1135812e87.9.1731670796748; 
- Fri, 15 Nov 2024 03:39:56 -0800 (PST)
-Received: from [10.232.133.32] ([88.128.90.43])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3821adada8esm4122139f8f.36.2024.11.15.03.39.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 15 Nov 2024 03:39:56 -0800 (PST)
-Message-ID: <5022a1c2-9e14-46a6-90fd-8c65dd6e2555@suse.com>
-Date: Fri, 15 Nov 2024 12:39:55 +0100
+ AJvYcCWjo7fMjshobn5bDuHLPKBVp7JriPCQUGrhD5Op0aYDVtsSQpeIOoRywxKk8Drao2xxqtE=@lists.linux.it
+X-Gm-Message-State: AOJu0YwU4qOvnYvILanZ91xisoYCu+GYHnaB3X8nUD0aOYgrW5crUhTk
+ 726iokXQNEGbhTrYrF0XyqYowWEXw2tgy4y+O8elxPQcHQDbFo7ii9D8j1ivtbtCKP4S6Q3H/U1
+ kB51D5GrdnQLSxvO2ENCyBsj1q9GkY7NSylO2sCtZgWd1LmNbeASx8u8Pn+jRRFjRuF+CgXSbtm
+ Msq72TVYnJ27aVSJvtXvDR9a0=
+X-Received: by 2002:a05:6871:108:b0:296:13f5:80c with SMTP id
+ 586e51a60fabf-2962dfe8c7amr2334830fac.26.1731675482785; 
+ Fri, 15 Nov 2024 04:58:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFAacfhZOh1RltNv5lOyh4zxJKumRSiCbLbQifMiN5cMQ6qr12YyyVwMy+aZXFdEGZTAm+PhSmRBltMHUW9VCQ=
+X-Received: by 2002:a05:6871:108:b0:296:13f5:80c with SMTP id
+ 586e51a60fabf-2962dfe8c7amr2334801fac.26.1731675482258; Fri, 15 Nov 2024
+ 04:58:02 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20241112171831.156440-1-pvorel@suse.cz>
+ <20241112171831.156440-2-pvorel@suse.cz>
+ <ZzQWRTZTrWWMDNDv@wegao> <20241114145301.GA349678@pevik>
+In-Reply-To: <20241114145301.GA349678@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 Nov 2024 13:57:44 +0100
+Message-ID: <CAASaF6yDG9VfWOzaSbzEMSGq5LXrqkNfLF7UmMcdWNvqmYywtA@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-References: <20241115033916.1707627-1-petr.vorel@gmail.com>
- <20241115033916.1707627-2-petr.vorel@gmail.com>
- <fca99dc0-24cb-4248-bb9a-2d4de448a3aa@suse.com>
- <20241115110410.GB1718754@pevik>
-Content-Language: en-US
-In-Reply-To: <20241115110410.GB1718754@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: J-ZPmcWc12Adx3VsVn1dUxwwQ8471txl58uEgME9UFA_1731675483
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] doc: Add URL to the sources in syscalls list
+Subject: Re: [LTP] [PATCH 2/2] mq_timedreceive01: Workaround segfault on
+ libc variant on 32 bit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,48 +98,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-
-On 11/15/24 12:04, Petr Vorel wrote:
-> @Andrea @Cyril: Other think I would like to have our metadata doc somehow
-> generated for the master. But that would require to have installed asciidoctor
-> on container, that will not work for sphinx. Also our metadata syntax is somehow
-> LTP specific (at least /*\ starter) and having doc on 2 places
-> (readthedocshttps://linux-test-project.readthedocs.io/ and static metadata doc
-> file uploaded to releases (e.g.
-> https://github.com/linux-test-project/ltp/releases/download/20240930/metadata.20240930.html)
-> is not optimal. I also like python scripting more than perl (used for metadata).
-
-I remember we talked with Cyril long time ago about this. Yes, it's 
-possibly something which requires a move from asciidoc to sphinx syntax. 
-It's not so difficult. The rules are pretty simple, since we really 
-don't have much information inside the asciidoc format.
-
-Most of the times, it's only a matter of replacing /*\ with /** and to 
-change [Description/Algorithm] with ===== underline.
-
-> Other option would be to drop metadata syntax and transform docs to sphinx
-> format. But that would require a lot of scripting, we would not want to do it manually.
->
-> Also, doc added to releases vs. online doc:
-> * Should we add generated readthedocs to releases? One could have docs forever.
-> * Should we have also the latest release doc in online readthedocs? Or even for
-> * all releases? ATM we have just master.
-
-I think it makes sense to have it in the release, but I don't know if 
-it's possible to generate a single file in a easy way. Maybe take a look 
-at singlehtml.
-
-Andrea
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBOb3YgMTQsIDIwMjQgYXQgMzo1M+KAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIGFsbCwKPgo+ID4gT24gVHVlLCBOb3YgMTIsIDIwMjQgYXQgMDY6
+MTg6MzFQTSArMDEwMCwgUGV0ciBWb3JlbCB3cm90ZToKPiA+ID4gRUZBVUxUIHRlc3Qgc2VnZmF1
+bHRzIG9uIG5ld2VyIGtlcm5lbHMgKGUuZy4gNi40KSBvbiBsaWJjIHZhcmlhbnQgb24KPiA+ID4g
+MzJiaXQuICBTaW1pbGFybHkgdG8gMWQ0ZDVhMDc1MCB1c2UgdHlwaWNhbCBMVFAgd29ya2Fyb3Vu
+ZCB0byB0ZXN0IGJ5Cj4gPiA+IGZvcmtlZCBjaGlsZCArIGNoZWNraW5nIHRoZSB0ZXJtaW5hdGlu
+ZyBzaWduYWwuCj4KPiAuLi4KPiA+ID4gKyAgIHVuc2lnbmVkIGludCBqOwo+ID4gPiArICAgdW5z
+aWduZWQgaW50IHByaW87Cj4KPiA+ID4gICAgIGlmICh0Yy0+aW52YWxpZF9tc2cpCj4gPiA+ICAg
+ICAgICAgICAgIGxlbiAtPSAxOwo+ID4gPiBAQCAtMjA4LDYgKzE5Miw2MCBAQCBzdGF0aWMgdm9p
+ZCBkb190ZXN0KHVuc2lnbmVkIGludCBpKQo+ID4gPiAgICAgICAgICAgICAgICAgICAgIFRTVF9S
+RVQsIHByaW8sIGxlbik7Cj4gPiA+ICB9Cj4KPiA+ID4gK3N0YXRpYyB2b2lkIHRlc3RfYmFkX2Fk
+ZHIodW5zaWduZWQgaW50IGkpCj4gPiA+ICt7Cj4gPiA+ICsgICBzdHJ1Y3QgdGltZTY0X3Zhcmlh
+bnRzICp0diA9ICZ2YXJpYW50c1t0c3RfdmFyaWFudF07Cj4gPiA+ICsgICBwaWRfdCBwaWQ7Cj4g
+PiA+ICsgICBpbnQgc3RhdHVzOwo+ID4gPiArCj4gPiA+ICsgICBwaWQgPSBTQUZFX0ZPUksoKTsK
+PiA+ID4gKyAgIGlmICghcGlkKSB7Cj4gPiA+ICsgICAgICAgICAgIHZlcmlmeV9tcXRfcmVjZWl2
+ZShpLCBwaWQpOwo+ID4gPiArICAgICAgICAgICBfZXhpdCgwKTsKPiA+IG5pdDoKPiA+IElmIHRo
+aXMgaXMgYSBub3JtYWwgZXhpdCwgaSBzdWdnZXN0IHVzZSBzL19leGl0KDApL2V4aXQoMCkgPwo+
+Cj4gSSBjb3B5IHBhc3RlZCB0aGlzIGZyb20gc2ltaWxhciB0ZXN0cy4gSU1ITyBib3RoIHNob3Vs
+ZCB3b3JrLiBBY2NvcmRpbmcgdG8gbWFuCj4gZXhpdCgpIGNhbGxzIGZ1bmN0aW9ucyByZWdpc3Rl
+cmVkIHdpdGggYXRleGl0KCkgYW5kIF9leGl0KCksIF9leGl0KCkganVzdAo+IGltbWVkaWF0ZWx5
+IHRlcm1pbmF0ZXMgdGhlIHByb2Nlc3MuIEFueSBvcGVuIGZpbGUgZGVzY3JpcHRvcnMgYmVsb25n
+aW5nIHRvIHRoZSBwcm9jZXNzIGFyZSBjbG9zZWQuCj4KPiBASmFuLCBAQ3lyaWwgUGxlYXNlIGNv
+cnJlY3QgbWUgaWYgSSdtIHdyb25nLgoKT3VyIG1haW4gdXNhZ2Ugb2YgX2V4aXQoKSBpcyBzaWdu
+YWwgaGFuZGxlcnMsIGJlY2F1c2UgZXhpdCgpIGlzIG5vdAphc3luYy1zaWduYWwtc2FmZS4KZXhp
+dCgpIHdpbGwgYWxzbyBmbHVzaCBvcGVuIHN0cmVhbXMsIHdoaWNoIHNlZW1zIGRlc2lyYWJsZSBo
+ZXJlLgoKPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiA+ID4gKyAgIH0KPiA+ID4gKwo+ID4g
+PiArICAgU0FGRV9XQUlUUElEKHBpZCwgJnN0YXR1cywgMCk7Cj4gPiA+ICsKPiA+ID4gKyAgIGlm
+IChXSUZFWElURUQoc3RhdHVzKSAmJiAhV0VYSVRTVEFUVVMoc3RhdHVzKSkKPiA+ID4gKyAgICAg
+ICAgICAgcmV0dXJuOwo+ID4gPiArCj4gPiA+ICsgICBpZiAodHYtPnRzX3R5cGUgPT0gVFNUX0xJ
+QkNfVElNRVNQRUMgJiYKPiA+ID4gKyAgICAgICAgICAgV0lGU0lHTkFMRUQoc3RhdHVzKSAmJiBX
+VEVSTVNJRyhzdGF0dXMpID09IFNJR1NFR1YpIHsKPiA+ID4gKyAgICAgICAgICAgdHN0X3JlcyhU
+UEFTUywgIkNoaWxkIGtpbGxlZCBieSBleHBlY3RlZCBzaWduYWwiKTsKPiA+ID4gKyAgICAgICAg
+ICAgcmV0dXJuOwo+ID4gPiArICAgfQo+ID4gPiArCj4gPiA+ICsgICB0c3RfcmVzKFRGQUlMLCAi
+Q2hpbGQgJXMiLCB0c3Rfc3Ryc3RhdHVzKHN0YXR1cykpOwo+ID4gPiArfQo+IC4uLgo+CgoKLS0g
+Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
