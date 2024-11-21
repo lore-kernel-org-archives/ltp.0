@@ -4,106 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30D35D711CB
-	for <ltp@archiver.kernel.org>; Wed, 20 Nov 2024 17:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC3C4D75BA3
+	for <ltp@archiver.kernel.org>; Thu, 21 Nov 2024 03:06:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAAFC3D923C
-	for <ltp@archiver.kernel.org>; Wed, 20 Nov 2024 18:08:02 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E50733D93FD
+	for <ltp@archiver.kernel.org>; Thu, 21 Nov 2024 04:06:20 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 505173D922B
- for <ltp@lists.linux.it>; Wed, 20 Nov 2024 18:07:48 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 30F223D93E5
+ for <ltp@lists.linux.it>; Thu, 21 Nov 2024 04:06:04 +0100 (CET)
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com
+ [IPv6:2607:f8b0:4864:20::a2a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3E43D7BD0C8
- for <ltp@lists.linux.it>; Wed, 20 Nov 2024 18:07:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C0D421F7C4;
- Wed, 20 Nov 2024 17:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1732122466;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3eSQYYNcxObBB6KIHTthPx1YrX+ASykBYPNaSLP69Eo=;
- b=A3uBWMKvZUxvlBwsaj4R1KJP5LaGQEfpHoX9hC9Qm3QY6KSGzlShJVWTBxjgbHOdJirGmM
- DkV+7P2Gmlj9+Pp7vwgDPwSHAIG6QJsZU8NuzJGiqsjhYHEC/FuNYJdRrjC+uwRnrqdtFH
- P9i5NiGRJYzbv4asAd1RY+IOlYeQ6t8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1732122466;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3eSQYYNcxObBB6KIHTthPx1YrX+ASykBYPNaSLP69Eo=;
- b=Vjt/OkXVikTA/xoTpbxfWuYq3Z4GTaTWhvljyOzxOiw0LjnJx948XNmZsdOO2hYlCn9RYh
- IIfDzLPy/ERfDICw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1732122464;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3eSQYYNcxObBB6KIHTthPx1YrX+ASykBYPNaSLP69Eo=;
- b=MFnolcq5VEleKrBlTdRVDwgeDJ6xTBQhUguk3guUUVK9e8u1G/pIeObJkmHCpLZfFzZvTE
- YrTRz4VVBP0gs+KksBjUWb4TMqe51aW7e4RBMkmbM3GWuwNBR1U33Es5vhJ8WUm9eUveAF
- vlYZK9X86eUQhUTZEqwHHkEemfVJBzo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1732122464;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3eSQYYNcxObBB6KIHTthPx1YrX+ASykBYPNaSLP69Eo=;
- b=UKMFm9j3D+2G+fOYuW5tE6xRPr2wym0MrRzL+pNik1m155Yw0Sf3sQdjSogShOnMu3CsIv
- ugNfU+1Zx7mPeSCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E8DB513297;
- Wed, 20 Nov 2024 17:07:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oHRPN18XPmeFYgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 20 Nov 2024 17:07:43 +0000
-Date: Wed, 20 Nov 2024 18:07:38 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20241120170738.GA38310@pevik>
-References: <CAASaF6yd+FHWf8urwFbk6U6oTNnXhdR+CbGhWqq6DT+eKjeVfQ@mail.gmail.com>
- <7cdc48ed109ee67af12d0bc74eb32c0b7f862430.1732031092.git.jstancek@redhat.com>
- <CAASaF6xyu0kuOZ=PJTb+byWFFJ2U-ap3hdX-YTfDTLQYQgm0Aw@mail.gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 836521000EB7
+ for <ltp@lists.linux.it>; Thu, 21 Nov 2024 04:06:03 +0100 (CET)
+Received: by mail-vk1-xa2a.google.com with SMTP id
+ 71dfb90a1353d-514d560507cso197322e0c.0
+ for <ltp@lists.linux.it>; Wed, 20 Nov 2024 19:06:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1732158362; x=1732763162; darn=lists.linux.it;
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=5qELBMJH/N5VIHrSBFXgCLOHb9PjbL8juf3vwNKKMvY=;
+ b=bcnMsiQZFY3IYjU5t1fPhR1998vqchIRBGDmjFxCHEs/ahH5b9O3DFadJbMFHLxbNI
+ Jfz6BxMT0kVsUNtTtQuyF5q9ZclYlrEqasDLSFXOVwfpUE/DFr6EdVX9+4GfTEwNGUJh
+ ZinS3QVJbFm4WaWe6Bcc98co6IyiGpHPABIUGKc81uuFmjpDgFwVGeUPqE4zBbziuHIs
+ xB8qm+NbTOdp9Wmk/G6YhJ/fSE1CtOTkCEODm//dPhh5wWzhkCono9g/6At4Oh6Mphlv
+ uY2UbmmGA5ayCvDvXKdkMnTCVQFFAFK+JFNInihhYvmoIhXTbK2bD6GATt53h5REoRup
+ YzSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1732158362; x=1732763162;
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=5qELBMJH/N5VIHrSBFXgCLOHb9PjbL8juf3vwNKKMvY=;
+ b=WlFoX12KxeEdv6lP7rv2GwUFGnGuMCs9HR1adr64kuMd7kE+3dWNZx3F/4WqBrnz8C
+ HyaYs7AdW0KYQUb/GuvBzNpVog3NUe4aIwtTabuZ8SyNhINBnihlFH58fZQJXTJ+NeQG
+ XPYdln+Q/rYGeU+TxTJUzATDTKOUx61ZaBjDPzCF10ERFTlFrqiUKKD4kQjSTxjYP/Bx
+ vW2uhSmTBUJf4iiaehNUXXyQKm7dDDHGdLbpr54Mt4A64uhabTCr6cPDbBAdVX9duM0y
+ 5pmf+Imj7GsUgvagcieNDL/dgiHa4sr8r8hEAoP9zRfU6llwDSXf6C9a7Kx6FSCPuI03
+ yi9g==
+X-Gm-Message-State: AOJu0YxU5b9l+lT9nu8xmXDppxlxR4y8zlnNt7CdUa3uKMNa/fiJwIao
+ k19mPyHKKyHpYXcMJFggqG84GwW6f1JCzBxWiLv6j6ej7GkZVj8MLTB/7tk2ByGYu5x43w3tXuQ
+ q5OGYHFZJ74U4wN48y8fEHBLD6d0YCMREGvC0mTKTGI0=
+X-Google-Smtp-Source: AGHT+IFmYrOib3hcl1J0I2xp0ZhuyRMr4Sn8xsn6ZOiTv/Nx8ELx4QMD629KEYiFIQrrSr4/hPRD4NlpD4JwwbSuRVc=
+X-Received: by 2002:a05:6122:1d07:b0:50d:354a:19ae with SMTP id
+ 71dfb90a1353d-514cfb88abcmr5793359e0c.10.1732158361947; Wed, 20 Nov 2024
+ 19:06:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAASaF6xyu0kuOZ=PJTb+byWFFJ2U-ap3hdX-YTfDTLQYQgm0Aw@mail.gmail.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <eb40aae4-1b25-43a7-a592-cf03690edeb8.jinguojie.jgj@alibaba-inc.com>
+ <CA+B+MYSAN9kYUvmRF7ooox3koJjFf+6o73kfEWZ9oiYU2eLDjA@mail.gmail.com>
+In-Reply-To: <CA+B+MYSAN9kYUvmRF7ooox3koJjFf+6o73kfEWZ9oiYU2eLDjA@mail.gmail.com>
+From: Jin Guojie <guojie.jin@gmail.com>
+Date: Thu, 21 Nov 2024 11:05:50 +0800
+Message-ID: <CA+B+MYQPoqtKrnTiVsqyJEvo1_=r3-EJqCQT+RxqfaSG0xXgYw@mail.gmail.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/pkeys01: use a dummy function instead of
- function_size
+Subject: [LTP] [PATCH] memcg/memcontrol04: Fix the judgment error in
+ test_memcg_low()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,33 +77,95 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+When running memcontrol04, TFAIL results will appear on various Linux
+distributions, kernel versions, and CPUs:
 
-...
-> > This could be an alternative to reverting PKEY_DISABLE_EXECUTE test.
-> > I haven't tested it yet on 32bit, but since it doesn't rely on any
-> > instruction codes I don't expect it to break. An important test
-> > would also be ppc64le.
+(1) Test platform
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-LGTM.
+* Linux distribution: Ubuntu 24.10
+* CPU: X86_64, Arm64
+* Kernel: 6.6 longterm
+* glibc:  2.40
+* LTP version:  commit ec4161186e5, Oct 24 12:18:17 2024
 
-NOTE: we have hackweek this week, I guess you get Martin's feedback next week.
+(2) Error logs
 
-> I tested 32bit and ppc64le, both worked fine, so I propose we give this
-> a consideration as alternative to Martin's revert.
+During the operation of memcontrol04, file systems such as ext2, ext3,
+ext4, xfs, ntfs, and vfat will be tested.
+For any of the file system, the same TFAIL result will appear:
 
-Thanks!
+root@vm:~/ltp/testcases/kernel/controllers/memcg# ./memcontrol04
 
-Kind regards,
-Petr
+tst_test.c:1823: TINFO: === Testing on ext2 ===
+memcontrol04.c:208: TPASS: Expect: (C oom events=0) == 0
+memcontrol04.c:211: TPASS: Expect: (C low events=437) > 0
+memcontrol04.c:208: TPASS: Expect: (D oom events=0) == 0
+memcontrol04.c:211: TPASS: Expect: (D low events=437) > 0
+memcontrol04.c:208: TPASS: Expect: (E oom events=0) == 0
+memcontrol04.c:214: TPASS: Expect: (E low events=0) == 0
+memcontrol04.c:208: TPASS: Expect: (F oom events=0) == 0
+memcontrol04.c:214: TFAIL: Expect: (F low events=412) == 0
+
+tst_test.c:1823: TINFO: === Testing on ext3 ===
+memcontrol04.c:208: TPASS: Expect: (C oom events=0) == 0
+memcontrol04.c:211: TPASS: Expect: (C low events=437) > 0
+memcontrol04.c:208: TPASS: Expect: (D oom events=0) == 0
+memcontrol04.c:211: TPASS: Expect: (D low events=437) > 0
+memcontrol04.c:208: TPASS: Expect: (E oom events=0) == 0
+memcontrol04.c:214: TPASS: Expect: (E low events=0) == 0
+memcontrol04.c:208: TPASS: Expect: (F oom events=0) == 0
+memcontrol04.c:214: TFAIL: Expect: (F low events=411) == 0
+
+......
+
+Summary:
+passed   55
+failed   5
+broken   0
+skipped  0
+warnings 0
+
+It looks like there is an error in the processing logic of cgroup F.
+
+(3) Cause analysis
+
+In the test_memcg_low() function, 4 subgroups (C, D, E, F) are created under B,
+and 50MB pagecache is allocated in C, D, and F. Therefore, when checking whether
+it is successful at the end, only E should be judged to have low_events==0,
+and the judgment conditions for all other subgroups should be low_events > 0.
+
+(4) Fix issure
+
+#1209
+https://github.com/linux-test-project/ltp/issues/1209
+
+Signed-off-by: Jin Guojie <guojie.jin@gmail.com>
+
+---
+ testcases/kernel/controllers/memcg/memcontrol04.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/controllers/memcg/memcontrol04.c
+b/testcases/kernel/controllers/memcg/memcontrol04.c
+index 1b8d115f8..0dddb7449 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol04.c
++++ b/testcases/kernel/controllers/memcg/memcontrol04.c
+@@ -207,7 +207,7 @@ static void test_memcg_low(void)
+
+                TST_EXP_EXPR(oom == 0, "(%c oom events=%ld) == 0", id, oom);
+
+-               if (i < E) {
++               if (i != E) {
+                        TST_EXP_EXPR(low > 0,
+                                     "(%c low events=%ld) > 0", id, low);
+                } else {
+--
+2.45.2
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
