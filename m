@@ -4,127 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B36B5D5808D
-	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 12:21:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05183D5808D
+	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 12:21:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B1B53DAAC3
-	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 13:21:02 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 814B33DAAC3
+	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 13:21:19 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 85DEB3D6A4D
+ by picard.linux.it (Postfix) with ESMTPS id 29D0F3DAAC6
  for <ltp@lists.linux.it>; Mon, 25 Nov 2024 13:19:02 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A797F64AD2B
- for <ltp@lists.linux.it>; Mon, 25 Nov 2024 13:19:01 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15F2762C2F5
+ for <ltp@lists.linux.it>; Mon, 25 Nov 2024 13:19:02 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A16731F397
- for <ltp@lists.linux.it>; Mon, 25 Nov 2024 12:19:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 12D6821198
+ for <ltp@lists.linux.it>; Mon, 25 Nov 2024 12:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1732537140; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1732537141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fdr/LVU4Gea4b8hiCStPTIlSOTeV5wjRXe2Rhc+z8is=;
- b=wdO4hMZ2QgblAA/VlMkGSj5MTYCJ2L6Q2uhXKDatTJanE5BXGpMS+eQO+sRS2YNeNNVx2L
- +oWIi5rEWXPhb6bjQOfBCCJCCpf4XNN8Pb+Z92fB2XYK22d6ERr4OCQtsr578BXomhnsEK
- UUX4aOBT4KeqBo4U+HaUGQCcv63AeOc=
+ bh=++FEL+nStN2kw3jFeJSIMnfiGfr/iQJw1VdpOFLStzw=;
+ b=th1PnRUHI4LKADjqAd9W0yNzCX3T3kqvYuftaWRoXEsuha2f9GXKc5DTCD8y78iVA43mRu
+ 5XpoJOTOrsw0FCAxfdXZIV7cnGe2XQCQewLMmf6bQpHZu5rfG6BK/rMEwGw6meWkhxU5Rf
+ QVvjGUlJn4x4TgFudEEWnn4Lv6ZLFSk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1732537140;
+ s=susede2_ed25519; t=1732537141;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fdr/LVU4Gea4b8hiCStPTIlSOTeV5wjRXe2Rhc+z8is=;
- b=JDk/CmLiXICtVjL+BXzFcUE1jbZmraLJ8AoqpAwV01Tu3IWoDd20Mtq0JfCq9gHcu3CV7l
- IBN9pMRzUv6X7HDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=wdO4hMZ2;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="JDk/CmLi"
+ bh=++FEL+nStN2kw3jFeJSIMnfiGfr/iQJw1VdpOFLStzw=;
+ b=VQFxtpSqSfRdELrEO2HFk/WLpQSIwNGwTY+I9xhZrEuC2bGSjeDBaJLTWh0Zn7Mj5n3ld8
+ swk0NnANoy6uxpDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1732537140; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1732537141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fdr/LVU4Gea4b8hiCStPTIlSOTeV5wjRXe2Rhc+z8is=;
- b=wdO4hMZ2QgblAA/VlMkGSj5MTYCJ2L6Q2uhXKDatTJanE5BXGpMS+eQO+sRS2YNeNNVx2L
- +oWIi5rEWXPhb6bjQOfBCCJCCpf4XNN8Pb+Z92fB2XYK22d6ERr4OCQtsr578BXomhnsEK
- UUX4aOBT4KeqBo4U+HaUGQCcv63AeOc=
+ bh=++FEL+nStN2kw3jFeJSIMnfiGfr/iQJw1VdpOFLStzw=;
+ b=th1PnRUHI4LKADjqAd9W0yNzCX3T3kqvYuftaWRoXEsuha2f9GXKc5DTCD8y78iVA43mRu
+ 5XpoJOTOrsw0FCAxfdXZIV7cnGe2XQCQewLMmf6bQpHZu5rfG6BK/rMEwGw6meWkhxU5Rf
+ QVvjGUlJn4x4TgFudEEWnn4Lv6ZLFSk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1732537140;
+ s=susede2_ed25519; t=1732537141;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fdr/LVU4Gea4b8hiCStPTIlSOTeV5wjRXe2Rhc+z8is=;
- b=JDk/CmLiXICtVjL+BXzFcUE1jbZmraLJ8AoqpAwV01Tu3IWoDd20Mtq0JfCq9gHcu3CV7l
- IBN9pMRzUv6X7HDQ==
+ bh=++FEL+nStN2kw3jFeJSIMnfiGfr/iQJw1VdpOFLStzw=;
+ b=VQFxtpSqSfRdELrEO2HFk/WLpQSIwNGwTY+I9xhZrEuC2bGSjeDBaJLTWh0Zn7Mj5n3ld8
+ swk0NnANoy6uxpDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8526213890
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E856B13890
  for <ltp@lists.linux.it>; Mon, 25 Nov 2024 12:19:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eEy5HTRrRGepGwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id COKeNTRrRGepGwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>)
  for <ltp@lists.linux.it>; Mon, 25 Nov 2024 12:19:00 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 25 Nov 2024 13:19:00 +0100
+Date: Mon, 25 Nov 2024 13:19:02 +0100
 MIME-Version: 1.0
-Message-Id: <20241125-input_refactoring-v1-4-b622b3aa698d@suse.com>
+Message-Id: <20241125-input_refactoring-v1-6-b622b3aa698d@suse.com>
 References: <20241125-input_refactoring-v1-0-b622b3aa698d@suse.com>
 In-Reply-To: <20241125-input_refactoring-v1-0-b622b3aa698d@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732537139; l=4478;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1732537139; l=8529;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=wYnhdNByvclG+Jfy//xlu9Lw2cU4aNGa/QxlnXmrtNo=;
- b=eKHD/AkzmNHyRzzoa6PFjREgxutd/g9Lao+516s+AahafKJEjn7R9nEQ+1SGGnMLY6MR7Um9L
- FX1hnYqT0+0DLhEAWpAuDK4e0gy2Ksz60Hti0uW3SZaY3Rgseu8xbC1
+ bh=p4yLVLPjcCTTBj+dkNjWo7wyyJULRIGPy4MCTaFMzdE=;
+ b=auLQ/jlZlh6n8bE6p+EgJy0D6L52sSSM0/NNArtJPYF2FZ+HyiPKy3ToAvbM6UxsO5atp36kx
+ scKdQR4+mI6DkbbBN1EDPt69eys844rBNEq8F2A9uDa0E4RukMvcl+c
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: A16731F397
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/7] Refactor input04 test
+Subject: [LTP] [PATCH 6/7] Refactor input06 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -145,30 +132,30 @@ From: Andrea Cervesato <andrea.cervesato@suse.com>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/input/Makefile  |   4 +-
- testcases/kernel/input/input04.c | 113 ++++++++++++---------------------------
- 2 files changed, 35 insertions(+), 82 deletions(-)
+ testcases/kernel/input/Makefile  |   5 +-
+ testcases/kernel/input/input06.c | 190 ++++++++++++++++-----------------------
+ 2 files changed, 79 insertions(+), 116 deletions(-)
 
 diff --git a/testcases/kernel/input/Makefile b/testcases/kernel/input/Makefile
-index 8c302dbc8c75cf4fd42bc162b4bb8a9882237164..cf35e1bfc150a6c1556ef796d4858c0df9020131 100644
+index a37aa28fc27688901e0555a0338395a681b45b39..945299a13bfcecc3eeae029931ef5ae44781b7ad 100644
 --- a/testcases/kernel/input/Makefile
 +++ b/testcases/kernel/input/Makefile
-@@ -8,8 +8,8 @@ LTPLIBS = uinput
+@@ -7,9 +7,6 @@ LTPLIBS = uinput
+ 
  include $(top_srcdir)/include/mk/testcases.mk
  
- FILTER_OUT_MAKE_TARGETS		:= input_helper
--input01 input02 input03: LDLIBS += -lltpuinput
-+input01 input02 input03 input04: LDLIBS += -lltpuinput
+-FILTER_OUT_MAKE_TARGETS		:= input_helper
+-input01 input02 input03 input04 input05: LDLIBS += -lltpuinput
+-
+-input06: %: input_helper.o
++LDLIBS += -lltpuinput
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
--input04 input05 input06: %: input_helper.o
-+input05 input06: %: input_helper.o
-diff --git a/testcases/kernel/input/input04.c b/testcases/kernel/input/input04.c
-index e57b76b0b40f8be4f851137f1a9185b37c6e64c0..3c76d7c82ad7fe76f35f5a4ecfc78f27069d3fa0 100644
---- a/testcases/kernel/input/input04.c
-+++ b/testcases/kernel/input/input04.c
-@@ -1,103 +1,56 @@
+diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
+index b698c277d875ed2df8a0f07a88784997944eeee4..5527e160c4569a94d5b5f50da3dc3360143f231d 100644
+--- a/testcases/kernel/input/input06.c
++++ b/testcases/kernel/input/input06.c
+@@ -1,102 +1,30 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
@@ -190,40 +177,41 @@ index e57b76b0b40f8be4f851137f1a9185b37c6e64c0..3c76d7c82ad7fe76f35f5a4ecfc78f27
   */
  
 - /*
--  *  Create a virtual device (mouse), send empty events to /dev/uinput
--  *  and check that the events are not received in /dev/inputX
+-  *  Create a virtual device, activate auto-repeat and
+-  *  and check that auto repeat is working
 -  */
--
++/*\
++ * [Description]
++ *
++ * Verify that auto-repeat is working on a virtual device, that in our case
++ * it's a mouse.
++ */
+ 
 -#include <linux/input.h>
+ #include <linux/uinput.h>
+-#include <linux/kd.h>
 -
 -#include "test.h"
 -#include "safe_macros.h"
 -#include "lapi/fcntl.h"
 -#include "input_helper.h"
--
--#define NB_TEST 20
-+/*\
-+ * [Description]
-+ *
-+ * Verify that /dev/input/eventX doesn't receive any event sent from a virtual
-+ * device, that in our case is a mouse, when relative move is (0, 0)
-+ */
  
 -static void setup(void);
 -static void send_events(void);
+-static int check_events(void);
 -static void cleanup(void);
 +#include "input_common.h"
  
--static int fd, fd2;
-+#define NUM_EVENTS 20
- 
--char *TCID = "input04";
-+static int fd_send = -1;
-+static int fd_recv = -1;
- 
+-static int fd;
+-static int fd2;
+ struct input_event events[64];
+ static int num_events;
+ static int ev_iter;
+-
+-char *TCID = "input06";
+-
 -int main(int ac, char **av)
-+static void run(void)
- {
+-{
 -	int lc;
 -	int pid;
 -
@@ -233,8 +221,7 @@ index e57b76b0b40f8be4f851137f1a9185b37c6e64c0..3c76d7c82ad7fe76f35f5a4ecfc78f27
 -
 -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
 -		pid = tst_fork();
-+	tst_res(TINFO, "Sending empty relative move");
- 
+-
 -		switch (pid) {
 -		case 0:
 -			send_events();
@@ -242,55 +229,198 @@ index e57b76b0b40f8be4f851137f1a9185b37c6e64c0..3c76d7c82ad7fe76f35f5a4ecfc78f27
 -		case -1:
 -			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
 -		default:
--			if (no_events_queued(fd2, 1))
--				tst_resm(TPASS,
--					"No data received in /dev/inputX");
--			else
+-			if (!check_events())
 -				tst_resm(TFAIL,
--					"Data received /dev/inputX");
+-					"Wrong data received in eventX");
+-			else
+-				tst_resm(TPASS, "Data received in eventX");
 -		break;
 -		}
 -
 -		SAFE_WAITPID(NULL, pid, NULL, 0);
-+	for (int i = 0; i < NUM_EVENTS; i++) {
-+		send_relative_move(fd_send, 0, 0);
-+		usleep(1000);
- 	}
- 
+-	}
+-
 -	cleanup();
 -	tst_exit();
-+	verify_no_events_queued(fd_recv);
- }
- 
- static void setup(void)
- {
+-}
+-
+-static void setup(void)
+-{
 -	tst_require_root();
 -
 -	fd = open_uinput();
--	setup_mouse_events(fd);
+-
+-	SAFE_IOCTL(NULL, fd, UI_SET_EVBIT, EV_KEY);
+-	SAFE_IOCTL(NULL, fd, UI_SET_EVBIT, EV_REP);
+-	SAFE_IOCTL(NULL, fd, UI_SET_KEYBIT, KEY_X);
+-
 -	create_device(fd);
 -
 -	fd2 = open_device();
+-	SAFE_IOCTL(NULL, fd2, EVIOCGRAB, 1);
 -}
--
--static void send_events(void)
--{
--	int nb;
-+	fd_send = open_uinput();
-+	setup_mouse_events(fd_send);
-+	create_input_device(fd_send);
++static int fd_send = -1;
++static int fd_recv = -1;
  
--	for (nb = 0; nb < NB_TEST; ++nb) {
--		send_rel_move(fd, 0, 0);
--		usleep(1000);
--	}
-+	fd_recv = open_event_device();
+ static void send_events(void)
+ {
+-	send_event(fd, EV_KEY, KEY_X, 1);
+-	send_event(fd, EV_SYN, 0, 0);
++	send_event(fd_send, EV_KEY, KEY_X, 1);
++	send_event(fd_send, EV_SYN, 0, 0);
+ 
+ 	/*
+ 	 * Sleep long enough to keep the key pressed for some time
+@@ -106,8 +34,8 @@ static void send_events(void)
+ 	 */
+ 	usleep(500000);
+ 
+-	send_event(fd, EV_KEY, KEY_X, 0);
+-	send_event(fd, EV_SYN, 0, 0);
++	send_event(fd_send, EV_KEY, KEY_X, 0);
++	send_event(fd_send, EV_SYN, 0, 0);
  }
  
+ static int check_event(struct input_event *iev, int event, int code, int value)
+@@ -117,20 +45,18 @@ static int check_event(struct input_event *iev, int event, int code, int value)
+ 
+ static void read_events(void)
+ {
+-	int rd = read(fd2, events, sizeof(events));
+-	if (rd < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "read() failed");
++	int num_bytes = SAFE_READ(0, fd_recv, events, sizeof(events));
+ 
+-	if (rd == 0)
+-		tst_brkm(TBROK, cleanup, "Failed to read events");
++	if (!num_bytes)
++		tst_brk(TBROK, "Failed to read events");
+ 
+-	if (rd % sizeof(struct input_event) != 0) {
+-		tst_brkm(TBROK, cleanup, "read size %i not multiple of %zu",
+-		         rd, sizeof(struct input_event));
++	if (num_bytes % sizeof(struct input_event) != 0) {
++		tst_brk(TBROK, "Read size %i is not multiple of %zu",
++			num_bytes, sizeof(struct input_event));
+ 	}
+ 
+ 	ev_iter = 0;
+-	num_events = rd / sizeof(struct input_event);
++	num_events = num_bytes / sizeof(struct input_event);
+ }
+ 
+ static int have_events(void)
+@@ -146,29 +72,37 @@ static struct input_event *next_event(void)
+ 	return &events[ev_iter++];
+ }
+ 
++static int check_event_code(struct input_event *iev, int event, int code)
++{
++	return iev->type == event && iev->code == code;
++}
++
+ static int parse_autorepeat_config(struct input_event *iev)
+ {
+ 	if (!check_event_code(iev, EV_REP, REP_DELAY)) {
+-		tst_resm(TFAIL,
+-			 "Didn't get EV_REP configuration with code REP_DELAY");
++		tst_res(TFAIL, "Didn't get EV_REP type with REP_DELAY code");
+ 		return 0;
+ 	}
+ 
+ 	if (!check_event_code(next_event(), EV_REP, REP_PERIOD)) {
+-		tst_resm(TFAIL,
+-			 "Didn't get EV_REP configuration with code REP_PERIOD");
++		tst_res(TFAIL, "Didn't get EV_REP type with REP_PERIOD code");
+ 		return 0;
+ 	}
+ 
+ 	return 1;
+ }
+ 
++static int check_sync_event(struct input_event *iev)
++{
++	return check_event_code(iev, EV_SYN, SYN_REPORT);
++}
++
+ static int parse_key(struct input_event *iev)
+ {
+ 	int autorep_count = 0;
+ 
+ 	if (!check_event(iev, EV_KEY, KEY_X, 1) || !check_sync_event(next_event())) {
+-		tst_resm(TFAIL, "Didn't get expected key press for KEY_X");
++		tst_res(TFAIL, "Didn't get expected key press for KEY_X");
+ 		return 0;
+ 	}
+ 
+@@ -180,19 +114,16 @@ static int parse_key(struct input_event *iev)
+ 
+ 	/* make sure we have at least one auto-repeated key event */
+ 	if (!autorep_count) {
+-		tst_resm(TFAIL,
+-			 "Didn't get autorepeat events for the key - KEY_X");
++		tst_res(TFAIL, "Didn't get autorepeat events for the key - KEY_X");
+ 		return 0;
+ 	}
+ 
+ 	if (!check_event(iev, EV_KEY, KEY_X, 0) || !check_sync_event(next_event())) {
+-		tst_resm(TFAIL,
+-			 "Didn't get expected key release for KEY_X");
++		tst_res(TFAIL, "Didn't get expected key release for KEY_X");
+ 		return 0;
+ 	}
+ 
+-	tst_resm(TINFO,
+-		 "Received %d repititions for KEY_X", autorep_count);
++	tst_res(TINFO, "Received %d repetitions for KEY_X", autorep_count);
+ 
+ 	return 1;
+ }
+@@ -218,8 +149,7 @@ static int check_events(void)
+ 			rep_keys_done = 1;
+ 			break;
+ 		default:
+-			tst_resm(TFAIL,
+-				 "Unexpected event type '0x%04x' received",
++			tst_res(TFAIL, "Unexpected event type '0x%04x' received",
+ 				iev->type);
+ 			ret = 0;
+ 			break;
+@@ -232,10 +162,46 @@ static int check_events(void)
+ 	return ret;
+ }
+ 
++static void run(void)
++{
++	if (!SAFE_FORK()) {
++		send_events();
++		exit(0);
++	}
++
++	if (!check_events())
++		tst_res(TFAIL, "Wrong data received from input device");
++	else
++		tst_res(TPASS, "Data received from input device");
++}
++
++static void setup(void)
++{
++	fd_send = open_uinput();
++
++	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_KEY);
++	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_REP);
++	SAFE_IOCTL(fd_send, UI_SET_KEYBIT, KEY_X);
++
++	create_input_device(fd_send);
++
++	fd_recv = open_event_device();
++	SAFE_IOCTL(fd_recv, EVIOCGRAB, 1);
++}
++
  static void cleanup(void)
  {
 -	if (fd2 > 0 && close(fd2))
--		tst_resm(TWARN | TERRNO, "close(fd2)");
+-		tst_resm(TWARN | TERRNO, "close(fd2) failed");
 +	if (fd_send != -1)
 +		destroy_input_device(fd_send);
  
@@ -304,6 +434,7 @@ index e57b76b0b40f8be4f851137f1a9185b37c6e64c0..3c76d7c82ad7fe76f35f5a4ecfc78f27
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
++	.forks_child = 1,
 +};
 
 -- 
