@@ -4,70 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EDE5E65D10
-	for <ltp@archiver.kernel.org>; Fri, 22 Nov 2024 02:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20538D3B7CA
+	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 03:44:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C7FA43D99AA
-	for <ltp@archiver.kernel.org>; Fri, 22 Nov 2024 03:19:05 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id ADF243DA888
+	for <ltp@archiver.kernel.org>; Mon, 25 Nov 2024 04:44:22 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 79FA93D982D
- for <ltp@lists.linux.it>; Fri, 22 Nov 2024 03:18:49 +0100 (CET)
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com
- [IPv6:2607:f8b0:4864:20::e2e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7BA6C3DA826
+ for <ltp@lists.linux.it>; Mon, 25 Nov 2024 04:44:07 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EA3F4219FE0
- for <ltp@lists.linux.it>; Fri, 22 Nov 2024 03:18:48 +0100 (CET)
-Received: by mail-vs1-xe2e.google.com with SMTP id
- ada2fe7eead31-4a5c4d8ee99so206169137.1
- for <ltp@lists.linux.it>; Thu, 21 Nov 2024 18:18:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1732241927; x=1732846727; darn=lists.linux.it;
- h=to:subject:message-id:date:from:in-reply-to:references:mime-version
- :from:to:cc:subject:date:message-id:reply-to;
- bh=4kytzDtTBdsXiGV+HYwOSEo5TfJUKlxT0iON4AUO/DY=;
- b=f2d+UTQf9ioCHn0gUbbFJhEe3JmtNKzl0vzMPLARK3IPJttXd80FPu++72CmCwSaZm
- YNqYJpNVYQq94gKGPCz06xgNoxL94DrwOaN+6qatcVoR7Bjj+kufI6NJkDs5nTp+E3OM
- CtOJkJyuKEuzrZLRIMzV1DWuxWX2LzBOmvJwQwkNIS5TKC7qQCToaP7VtLLL0+0tFubv
- Nuj25xSuMIDw61wq+RbvfsGBfpPVMPKjcOkmb3RqUYOnLFDmWlbkSHwj+MCPqU6FpIpX
- ink5SG8v3uQ/j2YgVAtbEgI44HK1q91RHcW01NOS6t3uGwj+3TWkkx4FH3FIzfIL+uc4
- XN8Q==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B07E065063C
+ for <ltp@lists.linux.it>; Mon, 25 Nov 2024 04:44:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1732506244;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RAUl4zMJr1IbzDs9YePrakoHuyybSg6/Oyqd6aQNzQ=;
+ b=J183q4L+vHQY0qnYG1oK2bbXfp+rW319/u2ydKM9l79GfDzL2HDQ+ixHBSW2PYC2IP+R60
+ 4wGUNz6XwHFv2r2URQSUqwN1guJaaH6R5h36hFhOTgrjPt6LD/qWrgInEjeGnvgIY9RLdH
+ ixGC0hPs6q7/bhnliQ4j2yghpEF6HOw=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-oBqfs4RDNN2WMZx3ipAjcw-1; Sun, 24 Nov 2024 22:44:02 -0500
+X-MC-Unique: oBqfs4RDNN2WMZx3ipAjcw-1
+X-Mimecast-MFC-AGG-ID: oBqfs4RDNN2WMZx3ipAjcw
+Received: by mail-pj1-f71.google.com with SMTP id
+ 98e67ed59e1d1-2edba08c89bso817103a91.1
+ for <ltp@lists.linux.it>; Sun, 24 Nov 2024 19:44:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1732241927; x=1732846727;
- h=to:subject:message-id:date:from:in-reply-to:references:mime-version
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=4kytzDtTBdsXiGV+HYwOSEo5TfJUKlxT0iON4AUO/DY=;
- b=jiYBNwZZ40+luTdOpq3KMle/cysOF6VwphTFbt5yYbc8HLcOWEhDNASkcThfkXUVXL
- WfSrT+G/jbCS0899XDtir7V8W19sQSxHgmO+iX1rusnfMpvTX+CB3QvDdXMDsLC0kvNC
- 9FRdpw5OKWds0DVsJSlsOza5m3pqKBRsInylOlfo1wJtDJFOsniwG0WrDRQuMznZzYV6
- Ic5/DWz8eeFOo772JTBp14Dml7HdfTr/Y0k9DUVlw32BJygnGO5ojFB4rHGw+nlW3cwZ
- bGHA/Eo5zdQ9X2Ui442akFGE/85PMalshD/Ax+DDFjjQT8EEhxvmkpi2r8Lg/SIvhEv/
- rntg==
-X-Gm-Message-State: AOJu0YxmuU7MV79pGZ3QujcCAlYStajzmsYhuBnO2NTS6PVZkGSyQcf7
- xi7Q4KHan//xAJEYWACXnMo6kAn3S8C2aDq1rUA/cqeb4hYwY39Ip10q7tqaglXfmSCRWaoJq6G
- 3keqtljtFe3YZdwqRHNwZQBI2Mcrf+OcpdkUA8bsN7Eg=
-X-Gm-Gg: ASbGncsY0gnxxZT5ZzktJzZh1TOCP7V8TuLG08HZejk+aS31HR+nYj10Q8i9hnS5J+z
- F32we+K+HwJcoUViqu9iJiaiGY6GuG3rb
-X-Google-Smtp-Source: AGHT+IG0RC77vwvvhZW90AQnE+bZAQBvU/Iczqb8mfYHkc+b2XpfwTJi6XLojMqCK+eCMfMO9EcIWsjCKSdjKwKsY/I=
-X-Received: by 2002:a05:6102:3589:b0:4a4:7928:637c with SMTP id
- ada2fe7eead31-4addcbfb02cmr1368369137.8.1732241927035; Thu, 21 Nov 2024
- 18:18:47 -0800 (PST)
+ d=1e100.net; s=20230601; t=1732506241; x=1733111041;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=0RAUl4zMJr1IbzDs9YePrakoHuyybSg6/Oyqd6aQNzQ=;
+ b=U5qDesm6G9ZDeO4QJ4BT9ujG8zbGENKt5xMU2kHJT3Zcndq5hFUoEsiaxd6XAva2Jw
+ I4yx3DQMpYn943lmV84uM7YuULPa55zhI5+xCom1mFjlx3WAYWKP0Qb/B4hRyJ3ngPbx
+ VaBArx8UKYwoPxI7K0dASlp5lI9MbdLmfclo8fjNgorjJOIomAfAQ1+G74WxO6yeq4t6
+ WlIaQPb3kGulLMds6gs0F+LSvyF4F8LRFDtQhWdGOKV3NsuZ3ZJrTBM2KDoByYIZrW3N
+ dEoOtecX5nvsM2/X9B+3xw5AwUMbj5dfBKz4piD4Xw8dJ9HqdlbbbuVxNZIuzpihBmUG
+ rpVQ==
+X-Gm-Message-State: AOJu0YwMTMI6ACwzrJAk/l+j7W2x+AnX1ZD0+wJ9dXeECcJ6/N/7IZMD
+ XhyWRDdYaM19/c+FpXMT89WWoGKZBIW8+PoLjCol6I7RfXAcH+mLo7Ra7R1y+aY1C1CgB/+HSIG
+ ByzOaYT5JBP9vQbA5CdP+CIqV4ZCNwnnEIgmBsUCczznUOd1mnchJShecjC3sto7uY0lgN0GIiN
+ p5EKXRYQyx6z6zXfr6ffySWWE=
+X-Gm-Gg: ASbGncv2heWxlrxr8zbbMaJHp3I4x5kizB8SWXgMZ0pc/CvaotT/YT3AOEdXYrT9gTS
+ z3Sf8k819G+v0Fhclj5ailkshbuedDnca
+X-Received: by 2002:a17:90b:1a8e:b0:2ea:77a2:e47b with SMTP id
+ 98e67ed59e1d1-2eb0e22bfe8mr17968595a91.12.1732506241679; 
+ Sun, 24 Nov 2024 19:44:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHmxv3zNYXrLtQAOsQ7Oh+GZ5DDuM0fuqscGvLGkgsQWDa/GKWse1b8+pqqI+GNtSIPcCYIXEjXhHmZ46AYwrw=
+X-Received: by 2002:a17:90b:1a8e:b0:2ea:77a2:e47b with SMTP id
+ 98e67ed59e1d1-2eb0e22bfe8mr17968579a91.12.1732506241261; Sun, 24 Nov 2024
+ 19:44:01 -0800 (PST)
 MIME-Version: 1.0
-References: <25b83072-41aa-45dc-984f-70f5d1f9b6dc.jinguojie.jgj@alibaba-inc.com>
-In-Reply-To: <25b83072-41aa-45dc-984f-70f5d1f9b6dc.jinguojie.jgj@alibaba-inc.com>
-From: Jin Guojie <guojie.jin@gmail.com>
-Date: Fri, 22 Nov 2024 10:18:35 +0800
-Message-ID: <CA+B+MYT+ANrXktd6hsuA2EUs-Jr1x_ozpkhHyHrr-V=66S5uhg@mail.gmail.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+References: <CAASaF6yd+FHWf8urwFbk6U6oTNnXhdR+CbGhWqq6DT+eKjeVfQ@mail.gmail.com>
+ <7cdc48ed109ee67af12d0bc74eb32c0b7f862430.1732031092.git.jstancek@redhat.com>
+In-Reply-To: <7cdc48ed109ee67af12d0bc74eb32c0b7f862430.1732031092.git.jstancek@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 25 Nov 2024 11:43:49 +0800
+Message-ID: <CAEemH2dHY4UWEmoTQFg2Qt_bi0He2WFv=CmAR6RAa6A4se5E_Q@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: OFrVl5XqdmIQYEybbQNey-tcsfyqTOim02c23g5FqeU_1732506242
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Fwd: [PATCH] controllers: skip the test on systems where
- cgroup v2 is already loaded
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] syscalls/pkeys01: use a dummy function instead of
+ function_size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,172 +96,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When running "controllers" case on some newer Linux distributions, there
-will be 10 ERROR messages during the setup phase, and several TFAIL
-results at the end, even though the kernel support for cgroups in these
-distributions is correct.
-
-(1) Test platform
-
-* Linux distribution: Ubuntu 24.10
-* CPU: X86_64, Arm64
-* Kernel: 6.6 longterm, with CONFIG_CGROUPS=y enabled
-* glibc:  2.40
-* LTP version:  commit b21fd2072, Thu Nov 14 11:47:10 2024
-
-(2) Error logs
-
-The output of running the controllers on the above platforms is
-(simplified to highlight important content):
-
-root@vm:/opt/ltp# ./runltp  -s controllers
-
-Running tests.......
-<<<test_start>>>
-tag=controllers stime=1732238600
-cmdline="test_controllers.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-TEST 1: CPU CONTROLLER TESTING
-RUNNING SETUP.....
-ERROR: Could not mount cgroup filesystem on /dev/cpuctl..Exiting test
-Cleanup called
-cat: /dev/cpuctl/group_def/tasks: No such file or directory
-TEST 3: CPU CONTROLLER TESTING
-RUNNING SETUP.....
-ERROR: Could not mount cgroup filesystem on /dev/cpuctl..Exiting test
-Cleanup called
-cat: /dev/cpuctl/group_def/tasks: No such file or directory
-
-...{{Repeat between TEST 4 to 9}}...
-
-TEST 10: CPU CONTROLLER STRESS TESTING
-RUNNING SETUP.....
-ERROR: Could not mount cgroup filesystem on /dev/cpuctl..Exiting test
-Cleanup called
-cat: /dev/cpuctl/group_def/tasks: No such file or directory
-FAIL     The Latency test 1 failed
-
-TINFO Running cpuctl Latency Test 2
-mount: /dev/cpuctl: cpuctl already mounted or mount point busy.
-       dmesg(1) may have more information after failed mount system
-call.
-cpuctl_test_fj    1  TFAIL  :  ltpapicmd.c:188: failed to mount cpu
-subsystem... Exiting
-cpuctl_test_fj    1  TFAIL  :  ltpapicmd.c:188: case1    FAIL
-......
-
-
-
-On the other hand, multiple applications running on this system(e.g. systemd,
-docker) can prove that the kernel's support for cgroups is working properly.
-
-(3) Cause analysis
-
-Current "controllers" case in LTP only implements tests for the cgroup
-v1 file interface. Currently,
-many Linux distributions, including Ubuntu 24.10, mount the cgroup v2
-hierarchy to /sys/fs/cgroup
-at startup, which has occupied cpu, memory and other controllers, resulting
-in the inability to load the v1 hierarchy again in another directory.
-
-In this case, loading the v1 hierarchy is meaningless and subsequent
-tests cannot be executed.
-
-(4) Behavior of the patch
-
-In order to make LTP more elegantly reflect the actual running
-situation, a simple solution is to skip the test on systems where the v2
-hierarchy has already been loaded.
-
-a. Check whether the cgroup v2 file system has been loaded in the system
-b. Make precise prompts, skip the test with TCONF result
-
-On other systems that have cgroup v1 loaded by default, the behavior of
-the program is not affected.
-
-(5) Running results after code modification
-
-a. On Ubuntu 24.10
-
-cmdline="test_controllers.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-CONTROLLERS TESTCASES: WARNING
-The OS has enabled cgroup v2 hierarchy,
-while LTP only implements v1 interface.
-Skipping all controllers testcases....
-(null)      1  TCONF  :  ltpapicmd.c:172: test_controllers.sh: skipping
-cgroup v2 hierarchy
-(null)      2  TCONF  :  ltpapicmd.c:172: Remaining cases not
-appropriate for configuration
-
-b. On other systems that have cgroup v1 loaded by default, this use case
-still works correctly.
-
-(6) Future work
-
-At present, some distributions use cgroup v1 by default, while others
-use cgroup v2 by default.
-Since cgroup v1 and v2 are incompatible in terms of interface, many test
-programs in LTP need to modify their code to support cgroup v2. This is
-a large amount of work and will be completed in the future.
-
-Signed-off-by: Jin Guojie <guojie.jin@gmail.com>
----
- .../kernel/controllers/test_controllers.sh    | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/testcases/kernel/controllers/test_controllers.sh
-b/testcases/kernel/controllers/test_controllers.sh
-index 7aa974ff2..6675e5618 100755
---- a/testcases/kernel/controllers/test_controllers.sh
-+++ b/testcases/kernel/controllers/test_controllers.sh
-@@ -37,6 +37,27 @@
- #
-           #
- ##################################################################################
-
-+
-+# Check for cgroup v2, and skip it.
-+# In the script called by test_controllers.sh, only the file
-interface of cgroup v1
-+# is tested. Since many Linux distributions are now turning to v2, cgroup v2
-+# hierarchy is mounted to /sys/fs/cgroup at startup, and Linux
-documentation does
-+# not recommend using v2 hierarchy and v2 hierarchy at the same time
-in a running
-+# system. Therefore, when the v2 hierarchy is already loaded in the
-system, skip the test.
-+# In fact, the safest way is to add a new set of test scripts for
-cgroup v2 in LTP.
-+# But this workload is relatively large, hope someone will do it in the future.
-+mount | grep  " type cgroup2 " &>/dev/null
-+if [ $? == 0 ]
-+then
-+       echo "CONTROLLERS TESTCASES: WARNING"
-+       echo "The OS has enabled cgroup v2 hierarchy,";
-+       echo "while LTP only implements v1 interface.";
-+       echo "Skipping all controllers testcases....";
-+
-+       tst_brkm TCONF "" "test_controllers.sh: skipping cgroup v2 hierarchy"
-+       exit 32
-+fi
-+
- if [ -f /proc/cgroups ]
- then
-        CPU_CONTROLLER=`grep -w cpu /proc/cgroups | cut -f1`;
---
-2.45.2
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBOb3YgMTksIDIwMjQgYXQgMTE6NDjigK9QTSBKYW4gU3RhbmNlayA8anN0YW5jZWtA
+cmVkaGF0LmNvbT4gd3JvdGU6Cgo+IEFzIE1hcnRpbiBmb3VuZDoKPiAgIFRoZSBmdW5jdGlvbl9z
+aXplKCkgY29kZQo+ICAgaXMgYnJva2VuIGluIGEgd2F5IHRoYXQgSSBjYW5ub3QgZWFzaWx5IGZp
+eC4gVGhlIGZ1bmN0aW9uIHRyaWVzCj4gICB0byBjYWxjdWxhdGUgdGhlIHNpemUgb2YgYSBmdW5j
+dGlvbiBieSBmaW5kaW5nIHRoZSBmaXJzdCBSRVQKPiAgIGluc3RydWN0aW9uLiBIb3dldmVyLCBp
+biAzMmJpdCBMVFAgYnVpbGRzLCB0aGUgY29kZSBnZXRzIGNvbXBpbGVkCj4gICB0byB0aGlzOgo+
+Cj4gICAwODA0YjY5MCA8ZnVuY3Rpb25fc2l6ZT46Cj4gICAgODA0YjY5MDogICAgICAgOGIgNGMg
+MjQgMDQgICAgICAgICAgICAgbW92ICAgIDB4NCglZXNwKSwlZWN4Cj4gICAgODA0YjY5NDogICAg
+ICAgMGYgYjYgMDEgICAgICAgICAgICAgICAgbW92emJsICglZWN4KSwlZWF4Cj4gICAgODA0YjY5
+NzogICAgICAgODMgYzAgM2UgICAgICAgICAgICAgICAgYWRkICAgICQweDNlLCVlYXgKPiAgICA4
+MDRiNjlhOiAgICAgICAzYyAwMSAgICAgICAgICAgICAgICAgICBjbXAgICAgJDB4MSwlYWwKPiAg
+ICA4MDRiNjljOiAgICAgICA3NiAxYSAgICAgICAgICAgICAgICAgICBqYmUgICAgODA0YjZiOAo+
+IDxmdW5jdGlvbl9zaXplKzB4Mjg+Cj4gICAgODA0YjY5ZTogICAgICAgODkgYzggICAgICAgICAg
+ICAgICAgICAgbW92ICAgICVlY3gsJWVheAo+ICAgIDgwNGI2YTA6ICAgICAgIDgzIGMwIDAxICAg
+ICAgICAgICAgICAgIGFkZCAgICAkMHgxLCVlYXgKPiAgICA4MDRiNmEzOiAgICAgICAwZiBiNiAx
+MCAgICAgICAgICAgICAgICBtb3Z6YmwgKCVlYXgpLCVlZHgKPiAgICA4MDRiNmE2OiAgICAgICA4
+MyBjMiAzZSAgICAgICAgICAgICAgICBhZGQgICAgJDB4M2UsJWVkeAo+ICAgIDgwNGI2YTk6ICAg
+ICAgIDgwIGZhIDAxICAgICAgICAgICAgICAgIGNtcCAgICAkMHgxLCVkbAo+ICAgIDgwNGI2YWM6
+ICAgICAgIDc3IGYyICAgICAgICAgICAgICAgICAgIGphICAgICA4MDRiNmEwCj4gPGZ1bmN0aW9u
+X3NpemUrMHgxMD4KPiAgICA4MDRiNmFlOiAgICAgICAyOSBjOCAgICAgICAgICAgICAgICAgICBz
+dWIgICAgJWVjeCwlZWF4Cj4gICAgODA0YjZiMDogICAgICAgODMgYzAgMTAgICAgICAgICAgICAg
+ICAgYWRkICAgICQweDEwLCVlYXgKPiAgICA4MDRiNmIzOiAgICAgICBjMyAgICAgICAgICAgICAg
+ICAgICAgICByZXQKPiAgICA4MDRiNmI0OiAgICAgICA4ZCA3NCAyNiAwMCAgICAgICAgICAgICBs
+ZWEgICAgMHgwKCVlc2ksJWVpeiwxKSwlZXNpCj4gICAgODA0YjZiODogICAgICAgYjggMTAgMDAg
+MDAgMDAgICAgICAgICAgbW92ICAgICQweDEwLCVlYXgKPiAgICA4MDRiNmJkOiAgICAgICBjMyAg
+ICAgICAgICAgICAgICAgICAgICByZXQKPiAgICA4MDRiNmJlOiAgICAgICA2NiA5MCAgICAgICAg
+ICAgICAgICAgICB4Y2hnICAgJWF4LCVheAo+Cj4gICBJZiB5b3UgbG9vayBjbG9zZWx5IGVub3Vn
+aCwgeW91J2xsIG5vdGljZSBhIEMyIGJ5dGUgaW4gYWRkICQweDNlLCVlZHgKPiAgIGluc3RydWN0
+aW9uIG9uIGFkZHJlc3MgODA0YjZhNi4gVGhlIGZ1bmN0aW9uIHdpbGwgYXNzdW1lIHRoaXMgYnl0
+ZSBpcwo+ICAgYSBSRVQgaW5zdHJ1Y3Rpb24sIHJldHVybiBhIHNpemUgdGhhdCdzIDIyIGJ5dGVz
+IHRvbyBzaG9ydCBhbmQgdGhlbgo+ICAgdGhlIGNvZGUgZXhlY3V0aW9uIGluc2lkZSB0aGUgZXhl
+Y3V0YWJsZSBidWZmZXIgd2lsbCBydW4gcGFzdCB0aGUgZW5kCj4gICBvZiBidWZmZXIsIHJlc3Vs
+dGluZyBpbiBhIHNlZ2ZhdWx0Lgo+Cj4gVXNlIGEgZHVtbXkgZnVuY3Rpb24gYW5kIGNvcHkgZW50
+aXJlIHBhZ2UsIHNpbWlsYXIgdG8gd2hhdCB3ZSBkbwo+IGluIG1wcm90ZWN0MDQuCj4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KPgoKClRoaXMgd2F5
+IGlzIGJldHRlciB0aGFuIHJldmVydGluZywgdGhhbmtzIQoKUmV2aWV3ZWQtYnk6IExpIFdhbmcg
+PGxpd2FuZ0ByZWRoYXQuY29tPgoKCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
