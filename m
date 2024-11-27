@@ -4,91 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 698FDD690EF
-	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 09:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C83D690EF
+	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 09:52:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E8F433DBB6E
-	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 10:51:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 2DA103DBB63
+	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 10:51:59 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ADD4D3DA8A5
- for <ltp@lists.linux.it>; Mon, 25 Nov 2024 16:30:42 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=none (no SPF record)
- smtp.mailfrom=linux.vnet.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=pavrampu@linux.vnet.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B841C101A7E3
- for <ltp@lists.linux.it>; Mon, 25 Nov 2024 16:30:40 +0100 (CET)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4APAJkbm022178;
- Mon, 25 Nov 2024 15:30:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:message-id
- :mime-version:subject:to; s=pp1; bh=S6NJ63wDnPM9jEmd1shScIOSyGj+
- a9/GRJ9wvTtE1gU=; b=cbWwkoGhbiaslLpYMzyX/TtowHigU7JFXATASPDU8ZJw
- DRf1GZOjz7Xe8TEp94gZ5MhWA+nqionb7SUQZsDLUvAHAUpw94bjKUvCpHMb8fo9
- yPnoi1U5xSxHCYnrh2PFmpGJRlHB9S9mLgfkN3MwPHkGjMVztNfxsbiDYmsGZHMV
- ZpWfB1Cfsu+VQ7psKqFjk1QLUHj+N3crJIMw8zV5PSp/f/Z711z9yQKALYE6qWTN
- gENdtJfbFjG7oNNf7ggMwEaeYNvgqnyRdq+upoUWDJA8WatL5QSaJ5oEOdrKbduP
- vKQzhLSGtxv6aMZPOoITk/aG9DJ9JMselWVUUPs/AA==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43386n95gf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 25 Nov 2024 15:30:38 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4APAwh0q018509;
- Mon, 25 Nov 2024 15:30:37 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 433scrts6t-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 25 Nov 2024 15:30:37 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 4APFUZS155771590
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 25 Nov 2024 15:30:35 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B55972004B;
- Mon, 25 Nov 2024 15:30:35 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id CE29820043;
- Mon, 25 Nov 2024 15:30:34 +0000 (GMT)
-Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.ibm.com.com (unknown
- [9.124.220.116])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 25 Nov 2024 15:30:34 +0000 (GMT)
-From: Pavithra <pavrampu@linux.vnet.ibm.com>
-To: ltp@lists.linux.it
-Date: Mon, 25 Nov 2024 21:00:06 +0530
-Message-ID: <20241125153006.799645-1-pavrampu@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.43.5
+ by picard.linux.it (Postfix) with ESMTPS id 09D523DB666
+ for <ltp@lists.linux.it>; Wed, 27 Nov 2024 13:05:05 +0100 (CET)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on2072f.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2418::72f])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3198563CF19
+ for <ltp@lists.linux.it>; Wed, 27 Nov 2024 13:05:05 +0100 (CET)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KKjbbxWDQ0TgMcp/UEOuZY0ogfPuc4+GkiI+pSjNatwWi2E3+y38i+H0GKBl0AMj3UNh4QK7Cz0OYPKo8s3aCblBJTWXcLnFwzwUNYITvgT0oKUjrXCcZIVw8VcLFGwgTsxJborOFdGyhsC/FP+Lh8IgyXKi9DcJOiE8+Xu4C+bDr4pZmhZyj34g0/J+uFPy4EvA7Jif/XN0J+7fDOsQGlzccv0WSyJYuTothyg9x4hZkou5dB2uNdhwM1VFZS++kUMyZqDbDXZga7qf5fvk4TqbjPnHDqIq2FRVn0ROZWK1Fovzgsug9SbHBaeSzbipB670JzL/CozHLcmkkjZY/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ulYBEeSxQJjc8WkgUM9QYua1OAqpq1YXfvHaPpthCkU=;
+ b=KzQX2SvIFi+j1BdjkXolpK9VzjugslVFrxtRQSkIabXUA9ze2hutZcg1Nzw7NE1C/EiizYykHNvilTHbLrUsjcyyuirkDGOXXQ+47D1UH6agQSTXodm5657GqGw4bxyCma/CmUFDOPLgiBVYQ9LH9sHw2v2npXnezBKq4qc9d6HO8ktQwuAQWzF0njbB3AHipZQCfkaUeFtI5YXcRjWVUHC5yRATcmux9tb7HYGLYZpa3B0NJFldlujX5JiG+imFtCwD4KlMUh317uxXqHOaYGN34Pexbe9kdhwiXnnm0ygTG6Xl1B4RrPTiNlr20oPCObHC8/zOGdm3YQmXb4FXTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=alifsemi.com; dmarc=pass action=none header.from=alifsemi.com;
+ dkim=pass header.d=alifsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=alifsemi.onmicrosoft.com; s=selector2-alifsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ulYBEeSxQJjc8WkgUM9QYua1OAqpq1YXfvHaPpthCkU=;
+ b=LqTbMDFDx+iOis/2Z5oXaZXe8rHv3l2RuV38HQ+9MrtIEXaODv7/r+8ueV8kys5HKIRomasBdcgV/F9VX9UminjPQEZW9LbV/YkLqlEmeFEJbzRsTFQ/crm+AHWPz0w3B4niHJ8WXyUaf1/RG17+erIREQmN3XWQAV2sF54ZZ5Y=
+Received: from LV1PR22MB6014.namprd22.prod.outlook.com (2603:10b6:408:2b4::11)
+ by MW4PR22MB3740.namprd22.prod.outlook.com (2603:10b6:303:1bb::21)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.23; Wed, 27 Nov
+ 2024 12:05:00 +0000
+Received: from LV1PR22MB6014.namprd22.prod.outlook.com
+ ([fe80::ec4a:ae17:b696:7dc8]) by LV1PR22MB6014.namprd22.prod.outlook.com
+ ([fe80::ec4a:ae17:b696:7dc8%4]) with mapi id 15.20.8182.019; Wed, 27 Nov 2024
+ 12:05:00 +0000
+From: R Akshay Dharmapuri <raghavendra.akshay@alifsemi.com>
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: Regarding the Musl C library for using Linux Test Project on our
+ Board linux kernel 5.4.25
+Thread-Index: AQHbQMNPi2gyC6xx0U6l8eYU9cdevg==
+Date: Wed, 27 Nov 2024 12:04:59 +0000
+Message-ID: <LV1PR22MB601444E2D0CA1619E19EAE2BF5282@LV1PR22MB6014.namprd22.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=alifsemi.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV1PR22MB6014:EE_|MW4PR22MB3740:EE_
+x-ms-office365-filtering-correlation-id: 6fcd3ea1-5e40-4959-d215-08dd0edbb7b7
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+ ARA:13230040|376014|366016|1800799024|38070700018|8096899003; 
+x-microsoft-antispam-message-info: =?iso-8859-1?Q?DsIEW/NPo1A4oas3HjdXpVf1dc87Q9pjynxYxiZ+rOtMCSM2IpFPPA0s+b?=
+ =?iso-8859-1?Q?4GgXTbnIR5WxbVOc2/jzvGozo1o5oF6CktRaNmJfQZHdTXJfAkUQF4BtpX?=
+ =?iso-8859-1?Q?asYtzSx6NkAKztRYZ/JtjKUMuD/zcAcxL/A5jnkxPz2A5d920Z6jUw2Pat?=
+ =?iso-8859-1?Q?GiTN+x9axhY6NrKqCeAaLxGmXtLUzpWi8CQ8m8/jnT3myTFU9kyjWjkymL?=
+ =?iso-8859-1?Q?IXh94AXBVyhPxg8MojyIshT5VKA4AGJ3sxbXbaLf/nUHFcAadPsZqCViv7?=
+ =?iso-8859-1?Q?SdfGO5xpl4veohxRCZUcXooLdDOFkJUaJqO2fkuaVQr2pdcv0Htb7OUgGG?=
+ =?iso-8859-1?Q?e9nw3MHOJrKGRsm2I5/oDqRnnKih31yREQBwRbqX6fmxPMB5C1MFw+2Wya?=
+ =?iso-8859-1?Q?pu8EIJgC3zwtWrtcHgIjYrTVQxSTfUSURyCNtGdXjYmF0oeMa8uQZnU7Ct?=
+ =?iso-8859-1?Q?GJ+8nvS2NNbN1HQ4BHE1rUIkZ6nZB5TNQnrdiiEnxg1OsOxXbdDwH3OGRx?=
+ =?iso-8859-1?Q?Xu8E4tWqvSk1dUpbROK1sNX2571+5aqe3M77KE14YE4gpKWeMUZkEC5674?=
+ =?iso-8859-1?Q?IQWZD3alcDC+tIxPWIm3NcH8A0HRySlaOz33ZkVmyBeFvrgpsjD3/qG8At?=
+ =?iso-8859-1?Q?1XHPK5RDx06JJaQq1djpanP6RTAbzvhVGmzdXRn5KSxG3SFA5JvE9qBts6?=
+ =?iso-8859-1?Q?ObuVV7YP9JCtkjBxAHSSxXt4uZTF+Orl88U9LJG/ePnIUMgLMpL8JSp8bC?=
+ =?iso-8859-1?Q?rhr0jMqR2IuQp6fNjF5CUf8AftRA3lpSG0XksYAlhZ5SHnELXfJpP9Gs57?=
+ =?iso-8859-1?Q?+ywZzzvKL+7+pAfHLd212LTyzDp/TKthgDBm5G1J88YPH+qeubwAZ1S0aX?=
+ =?iso-8859-1?Q?b3eJGdlmTkx+AYVynx6DiN5Oh9QwoJ/lq83iF2OohO5Wsktd0cm7xPvqRU?=
+ =?iso-8859-1?Q?sTMyptMprzQVuFLq9xE56eGY4CkcYQPKmuP2lCOXsKH+CMj4W6xEUIDgw3?=
+ =?iso-8859-1?Q?jvdpv16trHCZTSnCF+0MKiqVupRNZ3SOmZMyn7bXX4r5GaVZ0MThCQRHj4?=
+ =?iso-8859-1?Q?Pz/kceZwvsP/W8Tq58dLl9ORwvYhzckk+Qe+hgN/czfUcW/8k9bBlNFi1k?=
+ =?iso-8859-1?Q?NrodDid7jaHUd0RYem+DWZLHnW83SlTXh3JtYmNRWYrMXLH02t3JrX9n0V?=
+ =?iso-8859-1?Q?prrq/R32jqkBtrEi/XjU4dEzQmRt4mbxP01D/EG6n6TdFhsWlDYerD8D5U?=
+ =?iso-8859-1?Q?7tEjcNpyiZJ7XmzVyYtlXadlsKfw9fNq1NiLlZKKq12pFznqORzNsZoOHh?=
+ =?iso-8859-1?Q?iUJSZZqJrinZIp/hcYVxeiiRzdu0NOkbU8SE2XofzAmIQlxXxaw9/u13BO?=
+ =?iso-8859-1?Q?6jZOeCKJ+4ZAFbPPGL/252odelsUlntRyKjG9oRdPKvi3mnqlpJ9ExLYan?=
+ =?iso-8859-1?Q?qqqJkRGQUkXiRsTZx7FxKaTY+5MVWozfctekzw=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV1PR22MB6014.namprd22.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(376014)(366016)(1800799024)(38070700018)(8096899003); DIR:OUT;
+ SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?KFgk26dbQQkG/NE0aQSCHoxyseYYTB9jsBn9h6bID0smEGgqhrPIERpQX9?=
+ =?iso-8859-1?Q?xGuhyTXgN4loNjEEMeoZXsC+U7fhZ75OIZEISo1UYa4aafz1gJVf+HxM4D?=
+ =?iso-8859-1?Q?T7XAH4D3P2Wu6P6L1FUN3mV2rvt3l/v2Ue568ea2Y/JJVz4uFHK2/cI3HU?=
+ =?iso-8859-1?Q?ugafZrbOLWSjQT0n1C2T0EESX7HKha3RwyGLijSZHAhjlWuYHOyBH5+7ZB?=
+ =?iso-8859-1?Q?DapIBzxlsJcfiqbuxfGPQ3T+aAztGOjQWe1Y3GuAYfJaMCF8TrheM1ni5Q?=
+ =?iso-8859-1?Q?g9iiysROWXZg4D6+Z0v/X+pth7jh+HGIfQjqT+agydy5+fd0xb7VaCjMXI?=
+ =?iso-8859-1?Q?kfllOW+XGvadohBgy/aB76Fx6hBdowsacHShqfJ3XGLBP2ItaRZwQUB1Yb?=
+ =?iso-8859-1?Q?re9LCX/fg9kEk99GkI1rYP81rri7Bdb4B901+LIrCts4i29Elezgv7/Lwe?=
+ =?iso-8859-1?Q?QPbqMopZED0Abk4EFUlycjGO8cwEdXwp1ju7ZHGp0wYV/tPj6kmVpjnRiJ?=
+ =?iso-8859-1?Q?Tm+vS8locQAwnFEuT+ka3BXGHNc3xl8DTOXdLo8CevXZeWS2RrpzeWtvg5?=
+ =?iso-8859-1?Q?rxyvjCnxalKfdyuFBRAoE/QnjkDndCCFRtZ8uQBCiMx068akeC8En6QF7a?=
+ =?iso-8859-1?Q?Y+QoNV60Ee785x6BhzsF+ExHJzS2rLBMXtK/4NlVFSpWMzOEZhSFqtgljF?=
+ =?iso-8859-1?Q?1/3Ulv39GzdhYF3QLgon0AvpFRTLaWe0n2RqaeTh237X8TiZT3EvZmUwp/?=
+ =?iso-8859-1?Q?A8JmEd0eK8nGrhbAz+Xl1Sh77IVVN8FsEASZPrEEq5MamsFnuXzfPk+esC?=
+ =?iso-8859-1?Q?Xjwcy6nTZ8oImWdrggtgyOPgzud1XhhbDticcHb6QjyGyiNczY4kDCR6AA?=
+ =?iso-8859-1?Q?P6F59DLIA8BKDRCezvYdY5k1paAtfqlTqphdHg8MA8lJ4pe77lvY1hRPzk?=
+ =?iso-8859-1?Q?Jf4bTBnsC7d/WSv1KrT95wcpd/2J2o5xSdTnDKfSVPTReyQjYjZhin/qgD?=
+ =?iso-8859-1?Q?LoRHceF5caXMSQaIffellAQIEcjw+n3kSYimRT94M69AjEYeGtKukLB2ek?=
+ =?iso-8859-1?Q?BC5YY7fI2nZJkID/7/J4vrvSSK7sUZLc6dEPdsUA19SY+ekr0lLASNQdtR?=
+ =?iso-8859-1?Q?I+y86k/DVmai/mYOuLXKUO1Ls4paaYPMtjWl34QBk0cTw509mkHdFK8zzI?=
+ =?iso-8859-1?Q?Gj7B9TBpG+A2P+ycVtBF3tH0YPyGUQZYqPLxW5becrlncIEqdqVNLFHvZN?=
+ =?iso-8859-1?Q?Q28SSMLVc2EwPNgU2TzSbzLN3z1fORvH2QJMSjqX2ZIgFoB8KpSbmQoPhA?=
+ =?iso-8859-1?Q?yesYq9CR/0u5E4SU4twH3Z3Gb9hNPtV6P8q2YxsaJjqgq8D/iss6xw9jNU?=
+ =?iso-8859-1?Q?amDwFqEVhpI1llSh763PEruZOAodJMhsnM18K8cnamgb0KnIpX2YvPNaN4?=
+ =?iso-8859-1?Q?0wlekU6bHPSZrubcn9fR3Brfu5jn94K5VAxrXIuN8EIzca12Fjs5lCg+n3?=
+ =?iso-8859-1?Q?Zhx8Nhp4GqTfFCMNM7owCFDWC/p6udV5zzqdVnhvyUl3pnjugbkWsD3Rx3?=
+ =?iso-8859-1?Q?zAK8wq2UzuJN3D9qxUsFkDPxRBtITgFzPP4YZna/XRVFMUb+IqmLInjQT/?=
+ =?iso-8859-1?Q?7I/K7+jt8Hr8zqnCaUFXnIwID4yJikM1lo3mY7t7j0oZDZT7BSGWniKQ?=
+ =?iso-8859-1?Q?=3D=3D?=
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fxXkVdIzCQAG2m5NMV8dPiPxnVU9iGXq
-X-Proofpoint-ORIG-GUID: fxXkVdIzCQAG2m5NMV8dPiPxnVU9iGXq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 mlxscore=0
- mlxlogscore=999 suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2411250130
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-OriginatorOrg: alifsemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV1PR22MB6014.namprd22.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fcd3ea1-5e40-4959-d215-08dd0edbb7b7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2024 12:04:59.9285 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b00baf25-129f-4e99-a1ef-bdc77ebabee5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FtepZGTzd0+Ty2KBKxa2C8KdLux5UDc/7R9t5YQJVxzRe+7lo5lVwFEBd3jvUBzlsOgboYSAKx4zNppFHnbRpNcAsS8RfuMsyz32apKYKFM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR22MB3740
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Thu, 28 Nov 2024 10:49:51 +0100
-Subject: [LTP] [PATCH v5] Origin:
- https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/shm-getraw.c
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Regarding the Musl C library for using Linux Test Project on
+ our Board linux kernel 5.4.25
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,76 +157,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: pavrampu@linux.vnet.ibm.com, rnsastry@linux.ibm.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhlIHRlc3QgY3JlYXRlcyBhIHNoYXJlZCBtZW1vcnkgc2VnbWVudCwgdGhlbiBhdHRhY2hlcyBp
-dCB0byB0aGUgcHJvY2Vzc+KAmXMgYWRkcmVzcyBzcGFjZS4KSXQgd3JpdGVzIGEgc3RyaW5nIHRv
-IHRoZSBzaGFyZWQgbWVtb3J5IGZyb20gcmF3IGRldmljZSBhbmQgZGV0YWNoZXMgdGhlIHNoYXJl
-ZCBtZW1vcnkKc2VnbWVudCBhbmQgZmluYWxseSByZW1vdmVzIGl0LgpUaGUgcHVycG9zZSBvZiB0
-aGlzIHRlc3QgaXMgdG8gZW5zdXJlIHRoYXQgdGhlIHNoYXJlZCBtZW1vcnkgc3Vic3lzdGVtIGlz
-IHdvcmtpbmcgY29ycmVjdGx5CndpdGggaHVnZXBhZ2VzLiBJdCBjaGVja3MgdGhhdCBzaGFyZWQg
-bWVtb3J5IHNlZ21lbnRzIGNhbiBiZSBjcmVhdGVkLCBhdHRhY2hlZCwgd3JpdHRlbiB0bywKcmVh
-ZCBmcm9tLCBkZXRhY2hlZCwgYW5kIHJlbW92ZWQgd2l0aG91dCBlcnJvcnMKClNpZ25lZC1vZmYt
-Ynk6IFBhdml0aHJhIDxwYXZyYW1wdUBsaW51eC52bmV0LmlibS5jb20+Ci0tLQogcnVudGVzdC9o
-dWdldGxiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKwogdGVzdGNhc2VzL2tl
-cm5lbC9tZW0vLmdpdGlnbm9yZSAgICAgICAgICAgICAgIHwgIDEgKwogLi4uL2tlcm5lbC9tZW0v
-aHVnZXRsYi9odWdlc2htbWlzYy9NYWtlZmlsZSAgIHwgIDkgKysrCiAuLi4vbWVtL2h1Z2V0bGIv
-aHVnZXNobW1pc2MvaHVnZXNobW1pc2MwMS5jICAgfCA1OCArKysrKysrKysrKysrKysrKysrCiA0
-IGZpbGVzIGNoYW5nZWQsIDcwIGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0
-Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1taXNjL01ha2VmaWxlCiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlc2htbWlzYy9odWdlc2ht
-bWlzYzAxLmMKCmRpZmYgLS1naXQgYS9ydW50ZXN0L2h1Z2V0bGIgYi9ydW50ZXN0L2h1Z2V0bGIK
-aW5kZXggZjI5NGU5YWFhLi40MTIwMDgxODUgMTAwNjQ0Ci0tLSBhL3J1bnRlc3QvaHVnZXRsYgor
-KysgYi9ydW50ZXN0L2h1Z2V0bGIKQEAgLTU2LDMgKzU2LDUgQEAgaHVnZXNobWdldDAyIGh1Z2Vz
-aG1nZXQwMiAtaSAxMAogaHVnZXNobWdldDAzIGh1Z2VzaG1nZXQwMyAtaSAxMAogaHVnZXNobWdl
-dDA1IGh1Z2VzaG1nZXQwNSAtaSAxMAogaHVnZXNobWdldDA2IGh1Z2VzaG1nZXQwNiAtaSAxMAor
-CitodWdlc2htbWlzYzAxIGh1Z2VzaG1taXNjMDEKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvbWVtLy5naXRpZ25vcmUgYi90ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0aWdub3JlCmluZGV4
-IGQ4ODQ4NGZhMS4uODg5MGQ0MjJlIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS8u
-Z2l0aWdub3JlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtLy5naXRpZ25vcmUKQEAgLTQ4LDYg
-KzQ4LDcgQEAKIC9odWdldGxiL2h1Z2VzaG1nZXQvaHVnZXNobWdldDAzCiAvaHVnZXRsYi9odWdl
-c2htZ2V0L2h1Z2VzaG1nZXQwNQogL2h1Z2V0bGIvaHVnZXNobWdldC9odWdlc2htZ2V0MDYKKy9o
-dWdldGxiL2h1Z2VzaG1taXNjL2h1Z2VzaG1taXNjMDEKIC9rc20va3NtMDEKIC9rc20va3NtMDIK
-IC9rc20va3NtMDMKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVn
-ZXNobW1pc2MvTWFrZWZpbGUgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1t
-aXNjL01ha2VmaWxlCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMC4uODQ3MTVj
-N2I1Ci0tLSAvZGV2L251bGwKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdl
-c2htbWlzYy9NYWtlZmlsZQpAQCAtMCwwICsxLDkgQEAKKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZp
-ZXI6IEdQTC0yLjAtb3ItbGF0ZXIKKyMgQ29weXJpZ2h0IChDKSAyMDA5LCBDaXNjbyBTeXN0ZW1z
-IEluYy4KKyMgTmdpZSBDb29wZXIsIEp1bHkgMjAwOQorCit0b3Bfc3JjZGlyICAgICAgICAgICAg
-ICA/PSAuLi8uLi8uLi8uLi8uLgorCitpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay90
-ZXN0Y2FzZXMubWsKK2luY2x1ZGUgJChhYnNfc3JjZGlyKS8uLi9NYWtlZmlsZS5pbmMKK2luY2x1
-ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKZGlmZiAt
-LWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobW1pc2MvaHVnZXNobW1p
-c2MwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlc2htbWlzYy9odWdlc2ht
-bWlzYzAxLmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwLi43MjgxNDAxZTgK
-LS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1t
-aXNjL2h1Z2VzaG1taXNjMDEuYwpAQCAtMCwwICsxLDU4IEBACisjaW5jbHVkZSAiaHVnZXRsYi5o
-IgorI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCisKKyNkZWZpbmUgTU5UUE9JTlQgImh1
-Z2V0bGJmcy8iCisjZGVmaW5lIE5SX0hVR0VQQUdFUyAyCisKK3N0YXRpYyBpbnQgc2htaWQgPSAt
-MTsKK3N0YXRpYyBzaXplX3Qgc2l6ZTsKK3N0YXRpYyBzaXplX3QgaTsKK3N0YXRpYyBzaXplX3Qg
-cmV0OworCitzdGF0aWMgdm9sYXRpbGUgY2hhciAqc2htYWRkcjsKK3N0YXRpYyBpbnQgcmF3X2Zk
-Oworc3RhdGljIGxvbmcgaHBhZ2Vfc2l6ZTsKKworc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKK3sK
-KwlocGFnZV9zaXplID0gdHN0X2dldF9odWdlcGFnZV9zaXplKCk7Cit9CisKK3N0YXRpYyB2b2lk
-IGNsZWFudXAodm9pZCkKK3sKKwlpZiAoc2htaWQgPj0gMCkKKwkJU0FGRV9TSE1DVEwoc2htaWQs
-IElQQ19STUlELCBOVUxMKTsKK30KKworc3RhdGljIHZvaWQgcnVuX3Rlc3Qodm9pZCkKK3sKKwlz
-aXplID0gaHBhZ2Vfc2l6ZSAqIE5SX0hVR0VQQUdFUzsKKwlyYXdfZmQgPSBTQUZFX09QRU4oIi9k
-ZXYvcmFuZG9tIiwgT19SRE9OTFkpOworCXRzdF9yZXMoVElORk8sICJSZXF1ZXN0aW5nICV6dSBi
-eXRlc1xuIiwgc2l6ZSk7CisKKyAgICAgICAgc2htaWQgPSBTQUZFX1NITUdFVChJUENfUFJJVkFU
-RSwgc2l6ZSwgU0hNX0hVR0VUTEJ8U0hNX1J8U0hNX1cpOworCisJc2htYWRkciA9IFNBRkVfU0hN
-QVQoc2htaWQsIDAsIFNITV9STkQpOworCXRzdF9yZXMoVElORk8sICJzaG1hZGRyOiAlcFxuIiwg
-c2htYWRkcik7CisKKwkvKiBSZWFkIGEgcGFnZSBmcm9tIGRldmljZSBhbmQgd3JpdGUgdG8gc2ht
-IHNlZ21lbnQgKi8KKwlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSArPSBocGFnZV9zaXplKSB7CisJ
-CWlmICghcmVhZChyYXdfZmQsIHNobWFkZHIsIGhwYWdlX3NpemUpKSB7CisJCQl0c3RfcmVzKFRG
-QUlMIHwgVEVSUk5PLCAiQ2FuJ3QgcmVhZCBmcm9tIHJhdyBkZXZpY2UhIik7CisJCX0KKwl9CisK
-KwlTQUZFX1NITURUKChjb25zdCB2b2lkICopc2htYWRkcik7CisKKwl0c3RfcmVzKFRQQVNTLCAi
-VGVzdCBQYXNzZWQhIik7Cit9CisKK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKKwku
-bmVlZHNfcm9vdCA9IDEsCisJLm1udHBvaW50ID0gTU5UUE9JTlQsCisJLm5lZWRzX2h1Z2V0bGJm
-cyA9IDEsCisJLnNldHVwID0gc2V0dXAsCisJLmNsZWFudXAgPSBjbGVhbnVwLAorCS50ZXN0X2Fs
-bCA9IHJ1bl90ZXN0LAorCS5odWdlcGFnZXMgPSB7MiwgVFNUX05FRURTfSwKK307Ci0tIAoyLjQz
-LjUKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
-Zm8vbHRwCg==
+Hi All,
+
+Myself Akshay from Alif Semiconductor working on LTP(Linux Test Project).I am using environment-setup-cortexa32hf-neon-poky-linux-musleabi (Musl C) for our target board.
+I wanted to enquire how to test LTP on Arm 32 architecture(board architecture).We are using linux kernel 5.4.25 to deploy onto the target hardware.
+Also wanted to enquire if musl C (above toolchain) is fully supported as I checked onto the documentation link of Linux Test Project(Its not yet fully supported)
+
+Thanks and Regards
+Akshay Dharmapuri
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
