@@ -4,73 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A46B4D6ACC0
-	for <ltp@archiver.kernel.org>; Wed, 27 Nov 2024 12:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E59C3D690E4
+	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 07:29:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35AD63DB674
-	for <ltp@archiver.kernel.org>; Wed, 27 Nov 2024 13:13:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4D56A3DBABD
+	for <ltp@archiver.kernel.org>; Thu, 28 Nov 2024 08:29:01 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9CF913DB67B
- for <ltp@lists.linux.it>; Wed, 27 Nov 2024 13:12:51 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id E756C3DBA8C
+ for <ltp@lists.linux.it>; Thu, 28 Nov 2024 08:28:45 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=canonical.com (client-ip=185.125.188.120;
+ helo=smtp-relay-canonical-0.canonical.com;
+ envelope-from=po-hsu.lin@canonical.com; receiver=lists.linux.it)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1F578101AEA1
- for <ltp@lists.linux.it>; Wed, 27 Nov 2024 13:12:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1732709567;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=u0LkFsI8Nf5w2rg3MT3pv6ctq22KfcPI+9I2LK0gmYQ=;
- b=Lf7x/TR4E8RWnr3wjeycZnqMQsjmfXV4XF4oF6MXdaxB4Gy+JLLbA1PnapdpeS27avPs2i
- P/KSyLzz99k8d/fDlnUg4sBWyk32ZK534ywwXWKryDabzGjG4iPX5tu7vnv8vvVIm8RnsY
- xxMGJHOirpw3cmrt0uSnbX+5jd92nH4=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-VsOd9pqQMACv5ZfahVOsuw-1; Wed,
- 27 Nov 2024 07:12:44 -0500
-X-MC-Unique: VsOd9pqQMACv5ZfahVOsuw-1
-X-Mimecast-MFC-AGG-ID: VsOd9pqQMACv5ZfahVOsuw
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C78A9140BD35
+ for <ltp@lists.linux.it>; Thu, 28 Nov 2024 08:28:44 +0100 (CET)
+Received: from Phocidae.conference (1.general.phlin.uk.vpn [10.172.194.38])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id A0B231955F77
- for <ltp@lists.linux.it>; Wed, 27 Nov 2024 12:12:42 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 63440300019E
- for <ltp@lists.linux.it>; Wed, 27 Nov 2024 12:12:40 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 07E8E3F78F; 
+ Thu, 28 Nov 2024 07:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1732778923;
+ bh=0iHQfJ5R1KwcDpbaeNACSb6U8g9gHPmrRdwXGgbj3h4=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=YaoXJwjiL4y4ahaqIYcaT4IQ3gVW8V6Zk7e6g7uBFBhwStA5rpU4/AIy7ZCBUsgMW
+ R+a6em3dZXYCI9Y9yuO7joBU+2EzdOsscZQ+C0oNxW5Kg+aLumWqPmNLJTzv+CjMTf
+ SbQBOA9tOsAZhmbkPtbcgiCuWC+Ixt2V7DDwNlMvhFegS2qCfMs4vjCP7AOYWo05uJ
+ CVmDadpaBPBiMTuW5oDAAkh/HCnKxLfb2VRoECoNP0KN1E4C4/eXoz4dDrsC8eStR6
+ kFXiiWF75NTVC5X/lAfXFnO9CA1Ru4Mt38CbGdHXlDGuVtru3GpGC5DCk2LwpRB9sr
+ NQzax6u2rXQZQ==
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
 To: ltp@lists.linux.it
-Date: Wed, 27 Nov 2024 20:12:33 +0800
-Message-ID: <20241127121233.14638-2-liwang@redhat.com>
-In-Reply-To: <20241127121233.14638-1-liwang@redhat.com>
-References: <20241127121233.14638-1-liwang@redhat.com>
+Date: Thu, 28 Nov 2024 15:28:19 +0800
+Message-Id: <20241128072820.364726-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: GE8iDsa-Kw_6V_U8PryDQn3mN_ABRivGSD20S_vsrhA_1732709562
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] starvation: define the max_runtime
+Subject: [LTP] [PATCH] logrotate: support new rotate debug message
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,85 +63,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: po-hsu.lin@canonical.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- .../kernel/sched/cfs-scheduler/starvation.c   | 38 +------------------
- 1 file changed, 1 insertion(+), 37 deletions(-)
+This test was found failing on Ubuntu Oracular with:
+    grep -q forced from command line (5 rotations) tst_logrotate.out
+    failed unexpectedly
 
-diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
-index e707e0865..cd6739a24 100644
---- a/testcases/kernel/sched/cfs-scheduler/starvation.c
-+++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
-@@ -21,38 +21,9 @@
- #include <sched.h>
+This is because the logrotate debug message has been changed in upstream:
+https://github.com/logrotate/logrotate/commit/be6a263c87
+
+Include the new debug message to fix this issue.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/commands/logrotate/logrotate_tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+index 0aa9f12e1..1cd355f02 100755
+--- a/testcases/commands/logrotate/logrotate_tests.sh
++++ b/testcases/commands/logrotate/logrotate_tests.sh
+@@ -90,7 +90,7 @@ test1()
+ 	ROD logrotate -fv tst_logrotate.conf > tst_logrotate.out 2>&1
  
- #include "tst_test.h"
--#include "tst_safe_clocks.h"
--#include "tst_timer.h"
+ 	EXPECT_PASS grep -q "reading config file tst_logrotate.conf" tst_logrotate.out
+-	EXPECT_PASS grep -q "forced from command line (5 rotations)" tst_logrotate.out
++	EXPECT_PASS grep -E -q "forced from command line (5 rotations)|forced from command line empty log files are rotated, \(5 rotations\)" tst_logrotate.out
+ 	EXPECT_PASS grep -E -q "compressing new|log with" tst_logrotate.out
  
- static char *str_loop;
- static long loop = 1000000;
--static char *str_timeout;
--static int timeout;
--
--#define CALLIBRATE_LOOPS 120000000
--
--static int callibrate(void)
--{
--	int i;
--	struct timespec start, stop;
--	long long diff;
--
--	for (i = 0; i < CALLIBRATE_LOOPS; i++)
--		__asm__ __volatile__ ("" : "+g" (i) : :);
--
--	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &start);
--
--	for (i = 0; i < CALLIBRATE_LOOPS; i++)
--		__asm__ __volatile__ ("" : "+g" (i) : :);
--
--	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC_RAW, &stop);
--
--	diff = tst_timespec_diff_us(stop, start);
--
--	tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
--
--	return diff;
--}
- 
- static int wait_for_pid(pid_t pid)
- {
-@@ -102,13 +73,6 @@ static void setup(void)
- 
- 	if (tst_parse_long(str_loop, &loop, 1, LONG_MAX))
- 		tst_brk(TBROK, "Invalid number of loop number '%s'", str_loop);
--
--	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
--		tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
--	else
--		timeout = callibrate() / 1000;
--
--	tst_set_max_runtime(timeout);
- }
- 
- static void handler(int sig LTP_ATTRIBUTE_UNUSED)
-@@ -158,8 +122,8 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.options = (struct tst_option[]) {
- 		{"l:", &str_loop, "Number of loops (default 2000000)"},
--		{"t:", &str_timeout, "Max timeout (default 240s)"},
- 		{}
- 	},
-+	.max_runtime = 120,
- 	.needs_checkpoints = 1,
- };
+ 	check_log /var/log/tst_logfile.1.gz
 -- 
-2.47.0
+2.25.1
 
 
 -- 
