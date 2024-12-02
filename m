@@ -4,105 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A433D78326
-	for <ltp@archiver.kernel.org>; Mon,  2 Dec 2024 14:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3187D7832E
+	for <ltp@archiver.kernel.org>; Mon,  2 Dec 2024 15:15:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A94AD3DD505
-	for <ltp@archiver.kernel.org>; Mon,  2 Dec 2024 15:42:35 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 34AE03DD564
+	for <ltp@archiver.kernel.org>; Mon,  2 Dec 2024 16:15:43 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD8343DD4F0
- for <ltp@lists.linux.it>; Mon,  2 Dec 2024 15:42:19 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 866433DD556
+ for <ltp@lists.linux.it>; Mon,  2 Dec 2024 16:15:28 +0100 (CET)
 Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BF9F11415333
- for <ltp@lists.linux.it>; Mon,  2 Dec 2024 15:42:18 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2C4961417869
+ for <ltp@lists.linux.it>; Mon,  2 Dec 2024 16:15:25 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 164241F396;
- Mon,  2 Dec 2024 14:42:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7C7B321172;
+ Mon,  2 Dec 2024 15:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733150538;
+ t=1733152524;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjBxfqO/ySVLd4QZxyp/PzwWoLWjLSKlZI5j2GSBajo=;
- b=KpFaafg+kPqnvpVh3YHkQdmaQlw+XGNIBssAslzy3A8aEHqrIISlTF1ehOUUwRU1aN+t9H
- h/jKCwRJyAHmgpCp4eCq9qNN1HL9ZUW0NlF7NLFMaIpkWxPHktfTjR2cFfC3b37qkpvaMe
- dqxFqsA5QKmD23bZwoX63bX5K1bCPHk=
+ bh=nFv4xHdPm8tRn48fZbZGLALL5qg3s1WUUjExP8N6Oyg=;
+ b=BUcvhQzO2WpMVZYYo03LECYhWNs6XWJKm5BrXI+azEu2ORG1nGOOyq+9HKG1Gn9kwDPdpU
+ rv6niZZwqrGzlOp+Rk88M9geFKVZxhHPUkkaR4l2NUj7paAW9BkuGkqasq/5nIDpen2KmM
+ nHU+jFiE3hM43AU51qJB2cU5ikEudVo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733150538;
+ s=susede2_ed25519; t=1733152524;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjBxfqO/ySVLd4QZxyp/PzwWoLWjLSKlZI5j2GSBajo=;
- b=5kpP1mo6qR13rjIEpR1gz8Hba6B7PYLeVBnFz5D6C0ORfoKQJulp6MsFe2XwoRvQbFEx/m
- 2ZJHvhqrLKcrkoCg==
-Authentication-Results: smtp-out2.suse.de;
+ bh=nFv4xHdPm8tRn48fZbZGLALL5qg3s1WUUjExP8N6Oyg=;
+ b=wrZuOfFV2JY3pVCvb54HD5jouieLpg7JX97Q/GDDPsWTO+3oY7P1tfIwGKGFDufQGdlKYk
+ X92NtZEjLj2JB8BQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733150538;
+ t=1733152523;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjBxfqO/ySVLd4QZxyp/PzwWoLWjLSKlZI5j2GSBajo=;
- b=KpFaafg+kPqnvpVh3YHkQdmaQlw+XGNIBssAslzy3A8aEHqrIISlTF1ehOUUwRU1aN+t9H
- h/jKCwRJyAHmgpCp4eCq9qNN1HL9ZUW0NlF7NLFMaIpkWxPHktfTjR2cFfC3b37qkpvaMe
- dqxFqsA5QKmD23bZwoX63bX5K1bCPHk=
+ bh=nFv4xHdPm8tRn48fZbZGLALL5qg3s1WUUjExP8N6Oyg=;
+ b=i4VOG1IBzsVVjCgptMCEYYbas2enbXppiaT9HRjCMhnX/WaeQAbY1u5bekr8DCRFp7ddA2
+ oHIhiBQhLOGJHEnrkEmu/STGtrsNObRQi1wt5QcV0R3Bl+kpn3W4tyhkkVU2Nk1A+KGbup
+ r5d+eQtKJcBZ9Vi3fLOCjRQsQ39uClQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733150538;
+ s=susede2_ed25519; t=1733152523;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjBxfqO/ySVLd4QZxyp/PzwWoLWjLSKlZI5j2GSBajo=;
- b=5kpP1mo6qR13rjIEpR1gz8Hba6B7PYLeVBnFz5D6C0ORfoKQJulp6MsFe2XwoRvQbFEx/m
- 2ZJHvhqrLKcrkoCg==
+ bh=nFv4xHdPm8tRn48fZbZGLALL5qg3s1WUUjExP8N6Oyg=;
+ b=wEI8UlL+kpS+jD0ziW7Fdyuy4w5SOMuuTcwCIXlwaQe79GeRMOD/dwiDUXmXOHhCvzloHu
+ BkIsQih7e2e2kWDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E217313A31;
- Mon,  2 Dec 2024 14:42:17 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54DF2139C2;
+ Mon,  2 Dec 2024 15:15:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 50TsNUnHTWdKIwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 02 Dec 2024 14:42:17 +0000
-Date: Mon, 2 Dec 2024 15:42:08 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Aq+8EgvPTWeaLQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 02 Dec 2024 15:15:23 +0000
+Date: Mon, 2 Dec 2024 16:15:21 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241202144208.GB321427@pevik>
-References: <20241201093606.68993-1-zlang@kernel.org>
- <20241201093606.68993-2-zlang@kernel.org>
- <Z02337yqxrfeZxIn@yuki.lan> <Z029S0wgjrsv9qHL@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20241202151521.GC321427@pevik>
+References: <20241202-input_refactoring-v2-0-369609492896@suse.com>
+ <20241202-input_refactoring-v2-1-369609492896@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Z029S0wgjrsv9qHL@yuki.lan>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20241202-input_refactoring-v2-1-369609492896@suse.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] ioctl_ficlone02.c: set all_filesystems to zero
+Subject: Re: [LTP] [PATCH v2 1/7] Refactor input01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,58 +114,54 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-btrfs@vger.kernel.org, Zorro Lang <zlang@kernel.org>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > The code to skip filesystems in the case of all filesystems is in the
-> > run_tcase_per_fs() function:
+Hi Andrea,
 
-> > static int run_tcases_per_fs(void)
-> > {
-> >         int ret = 0;
-> >         unsigned int i;
-> >         const char *const *filesystems = tst_get_supported_fs_types(tst_test->skip_filesystems);
+I would mention adding a check of the device name in /sys/devices
+create_input_device(), because that modifies also a different test
+(../uevents/uevent03.c).
 
-> > The skip_filesystems array is passed to the tst_get_supporte_fs_types()
-> > function which filters out them.
+> ---
+>  libs/uinput/tst_uinput.c              |  26 ++++-
+>  testcases/kernel/input/Makefile       |   5 +-
+>  testcases/kernel/input/input01.c      | 205 ++++++++--------------------------
+>  testcases/kernel/input/input_common.h |  97 ++++++++++++++++
+>  4 files changed, 173 insertions(+), 160 deletions(-)
 
-> Perhaps you mean that the skiplist does not work with .all_filesystems
-> _and_ the LTP_SINGLE_FS_TYPE environment variable?
-
-> I guess that we need:
-
-> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-> index bbbb8df19..49b1d7205 100644
-> --- a/lib/tst_supported_fs_types.c
-> +++ b/lib/tst_supported_fs_types.c
-> @@ -159,6 +159,10 @@ const char **tst_get_supported_fs_types(const char *const *skiplist)
-
->         if (only_fs) {
->                 tst_res(TINFO, "WARNING: testing only %s", only_fs);
+...
+> +static void check_ui_get_sysname_ioctl(int fd)
+> +{
+> +	char sys_name[256];
+> +	char dev_name[256];
+> +	char *path;
 > +
-> +               if (tst_fs_in_skiplist(only_fs, skiplist))
-> +                       tst_brk(TCONF, "Requested filesystems is in test skiplist");
+> +	SAFE_IOCTL(fd, UI_GET_SYSNAME(sizeof(sys_name)), sys_name, NULL);
+> +	SAFE_ASPRINTF(&path, "/sys/devices/virtual/input/%s/name", sys_name);
 > +
+> +	if (FILE_SCANF(path, "%s", dev_name)) {
+> +		tst_brk(TBROK|TERRNO, "Failed to read '%s'", path);
+> +		free(path);
+I guess free(path) here is not needed due exit() via tst_brk() right?
+And if it's needed, you meant to first free and then tst_brk().
 
-It's a nice feature to be able to force testing on filesystem even it's set to
-be skipped without need to manually enable the filesystem and recompile.
-(It helps testing with LTP compiled as a package without need to compile LTP.)
-Therefore I would avoid this.
+> +		return;
+> +	}
+> +
+> +	if (strcmp(VIRTUAL_DEVICE, dev_name))
+And if I'm wrong, then free(path) should be also here.
+> +		tst_brk(TBROK, "ioctl UI_GET_SYSNAME returned wrong name");
 
-@Zorro Lang or are you testing whole syscalls on particular filesystem via
-LTP_SINGLE_FS_TYPE=xfs ?
+The rest LGTM, nice cleanup (free can be fixed before merge).
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
->                 if (tst_fs_is_supported(only_fs))
->                         fs_types[0] = only_fs;
->                 return fs_types;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
