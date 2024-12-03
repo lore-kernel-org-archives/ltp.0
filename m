@@ -4,90 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD4C9E64A80
-	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 11:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1733226621; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=okQA8RyIZ6GyloQp9SCzykc4ZFk+VlsBqOuyY8ReoKQ=;
- b=ngo4H7irVKhzJRH4P1GsbenDuRAwJYuIyCC4/HqclVGVu5BW0sgmsD7lxcHbiRW7d1bbu
- ZJxunge1HKL1uzCGkcr/5qrRC5LjvNXa+DHAO/6CpQjlij9w4JO/B2xE6I7xNkNtpHQx5sD
- nxoCo5ds9lue23zifAs6zZ96Y/r9CDA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C822E64A85
+	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 12:18:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3731F3DDEF0
-	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 12:50:21 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 809403DDF56
+	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 13:18:57 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7D043DDEBD
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 12:49:59 +0100 (CET)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com
- [IPv6:2a00:1450:4864:20::544])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 43ED73DC5C0
+ for <ltp@lists.linux.it>; Tue,  3 Dec 2024 13:18:42 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DC3966443B7
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 12:49:58 +0100 (CET)
-Received: by mail-ed1-x544.google.com with SMTP id
- 4fb4d7f45d1cf-5cf6f367f97so6472886a12.0
- for <ltp@lists.linux.it>; Tue, 03 Dec 2024 03:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1733226598; x=1733831398; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ZQhe+/TpLAB2CHOQBNTABGyOrOq+g7sYXOeRSOoD6Ik=;
- b=gGoxrKS/z6e62QPR8YHB2w8/zr34FfcOSdkQIjS503jLyldKrHlSWtZfTMaUCrAua4
- LL64yCsVYu5CPCbtv4NTVVL5BXle4MjWqZyEaaN57Vvphy/ilPmHN68fA5e8hV8ONkOJ
- 7oaCf8B2MKWK3rlnGL/CvLNSBK8qkhHLXzRp7MwmCtlovi6ZYvlvP9o3RtprJesGjNdh
- AELui4ytbX4Y+DJtFEKVXqeJASJVadD2NK79uqoeQGwzmOAjiReI9Qrdup/eCgTAGmLK
- IdWJ1IGYbaeEma48ItChVK8b83IUJblKmWWhUaCYP54Yc4ijHvD146ocVRcREB/lk3DG
- uHCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1733226598; x=1733831398;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ZQhe+/TpLAB2CHOQBNTABGyOrOq+g7sYXOeRSOoD6Ik=;
- b=oHrIKXh8G9pNu+PeZ/lMd1VPCofWi7g1uIkyBWSBWxcWTOG9J63pk2whlrVQqovhOo
- yA2OvrHADc+zcawaIXGEoEuUJ7DMjd6T0R9cwHOXqfkfYRmKVZEJLF89cZ1AIPRJaGjR
- Ofpx1WK8s/HHpZa+IL13yqdI3xzimy7PX1SkzfpLBhFlzxUSwNap3Ug+QmA+gDA9VeCi
- Sl/mHrRRpf6hmpT62NEDusx2r40sfjJSmwjINFuNfS6n0xtwEETAYPgqNTW4r5FssRdR
- 5800FJh7lrDrR9eD5iyIhwmWT2sf8OX40cx1X58IX6NtuYMx0dOIwDmzRd4n3M9sQCEN
- 2njg==
-X-Gm-Message-State: AOJu0YzGz/IbwgB1CbNVdWIWZQiAavInJWhHN1+bW8tSBrCA1W9KWuNL
- rFmMbEl5Br8GAKPHYl/4AUKqJVSa9wAkGCDHuwK69T5PZ+zxmsdDvgGYTpi/9Eubfc+meE4xTQJ
- 0VHxgjx5U
-X-Gm-Gg: ASbGnctxn3mUePTDzVoLRpx/x7MUWL2W8Qqtc12wddmFqjd+0iOzqjFHvtfVWzTUVqK
- NsoUUD681YIHcSr+xt/RlQhLTCltuW9oT/d+zEFxMZoE3QHei1t/hogmYAUTCgDtgIQKEE7pR9A
- RiulSILNkXJa7dyjCaqfgJWZwSdeV0hwsYU86SdsWjIWmFWAyHGjfQzW8MDLeEKWVPGWTPzIUKP
- c6VdAl1a3HIkd8UloIZRH9pdM/Uyf5br/mtznk4rSiiOQiBtt659QpD48nw
-X-Google-Smtp-Source: AGHT+IHkFh3MtF5/yy64RBM35oeqVw/toQGgHwePui32ZNNdq8V8Bh6qBGGEWbudGKGAj1rYS2+laQ==
-X-Received: by 2002:a05:6402:13d1:b0:5d0:b2c8:8d04 with SMTP id
- 4fb4d7f45d1cf-5d10cb5cc5amr1518581a12.18.1733226597989; 
- Tue, 03 Dec 2024 03:49:57 -0800 (PST)
-Received: from [10.232.133.32] ([88.128.90.63])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-aa5998e771csm613979166b.127.2024.12.03.03.49.57
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 03 Dec 2024 03:49:57 -0800 (PST)
-Message-ID: <571fe72a-d057-4fb4-bc9b-9991b9e2b814@suse.com>
-Date: Tue, 3 Dec 2024 12:49:56 +0100
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 47BFE101C58F
+ for <ltp@lists.linux.it>; Tue,  3 Dec 2024 13:18:40 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 551631F445;
+ Tue,  3 Dec 2024 12:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733228319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=810lRXG0tzUj2OizmsGcdtNO9XTVWnuYs928PnCB2Is=;
+ b=TbY9eE2Gk9WcXD10gkSmj8WQ/94+fsjIw0AWRZQedjk24ixxErhYyPGWBS/o/j8KYoOJyc
+ RRLJdrymwe9DFeNg/BQKofGQgehRL72hktUh3gJ2lUCZX45mHDIS4K7AEiKTucZgDJBjqM
+ tMj54a4+vCYr18nLC0IAkJC8kr1Q77M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733228319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=810lRXG0tzUj2OizmsGcdtNO9XTVWnuYs928PnCB2Is=;
+ b=bKjhVW+PP82aacSL/jubuQUb8vT2xoCbuwLHjpQw8q1MxYY7v796GEsO05kDbPLPk2TXNo
+ gYn5E9qGXn65jkDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733228319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=810lRXG0tzUj2OizmsGcdtNO9XTVWnuYs928PnCB2Is=;
+ b=TbY9eE2Gk9WcXD10gkSmj8WQ/94+fsjIw0AWRZQedjk24ixxErhYyPGWBS/o/j8KYoOJyc
+ RRLJdrymwe9DFeNg/BQKofGQgehRL72hktUh3gJ2lUCZX45mHDIS4K7AEiKTucZgDJBjqM
+ tMj54a4+vCYr18nLC0IAkJC8kr1Q77M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733228319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=810lRXG0tzUj2OizmsGcdtNO9XTVWnuYs928PnCB2Is=;
+ b=bKjhVW+PP82aacSL/jubuQUb8vT2xoCbuwLHjpQw8q1MxYY7v796GEsO05kDbPLPk2TXNo
+ gYn5E9qGXn65jkDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 446F313A15;
+ Tue,  3 Dec 2024 12:18:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0JDMDx/3TmeoCAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 03 Dec 2024 12:18:39 +0000
+Date: Tue, 3 Dec 2024 13:18:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Z073Lvv3h7cexyQq@yuki.lan>
+References: <20241127121233.14638-1-liwang@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
-References: <20241202-input_refactoring-v2-0-369609492896@suse.com>
-Content-Language: en-US
-In-Reply-To: <20241202-input_refactoring-v2-0-369609492896@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20241127121233.14638-1-liwang@redhat.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/7] Rewrite input testing suite
+Subject: Re: [LTP] [PATCH 1/2] lib: add extra calibrated runtime to slow
+ tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,59 +110,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> +/*
+> + * List of debug-kernel config options that may degrade performance when enabled.
+> + */
+> +static const char * const tst_kconf_debug_options[][2] = {
+> +	{"CONFIG_PROVE_LOCKING=y", NULL},
+> +	{"CONFIG_LOCKDEP=y", NULL},
+> +	{"CONFIG_DEBUG_SPINLOCK=y", NULL},
+> +	{"CONFIG_DEBUG_RT_MUTEXES=y", NULL},
+> +	{"CONFIG_DEBUG_MUTEXES=y", NULL},
+> +	{"CONFIG_DEBUG_PAGEALLOC=y", NULL},
+> +	{"CONFIG_KASAN=y", NULL},
+> +	{"CONFIG_SLUB_RCU_DEBUG=y", NULL},
+> +	{"CONFIG_TRACE_IRQFLAGS=y", NULL},
+> +	{"CONFIG_LATENCYTOP=y", NULL},
+> +	{"CONFIG_DEBUG_NET=y", NULL},
+> +	{"CONFIG_EXT4_DEBUG=y", NULL},
+> +	{"CONFIG_QUOTA_DEBUG=y", NULL},
+> +	{"CONFIG_FAULT_INJECTION=y", NULL},
+> +	{"CONFIG_DEBUG_OBJECTS=y", NULL},
+> +	{NULL, NULL}
+> +};
+> +
+> +static inline int tst_kconfig_debug_matches(void)
+> +{
+> +	int i, num = 1;
+> +
+> +	for (i = 0; tst_kconf_debug_options[i][0] != NULL; i++)
+> +		num += !tst_kconfig_check(tst_kconf_debug_options[i]);
+> +
+> +	return num;
+> +}
+> +
+>  #endif	/* TST_KCONFIG_H__ */
+> diff --git a/include/tst_timer.h b/include/tst_timer.h
+> index 6fb940020..268fc8389 100644
+> --- a/include/tst_timer.h
+> +++ b/include/tst_timer.h
+> @@ -17,6 +17,7 @@
+>  #include <mqueue.h>
+>  #include <time.h>
+>  #include "tst_test.h"
+> +#include "tst_clocks.h"
+>  #include "lapi/common_timers.h"
+>  #include "lapi/posix_types.h"
+>  #include "lapi/syscalls.h"
+> @@ -1074,4 +1075,33 @@ static inline long long tst_timer_elapsed_us(void)
+>  	return tst_timespec_to_us(tst_timer_elapsed());
+>  }
+>  
+> +#define CALLIBRATE_LOOPS 120000000
+> +
+> +/*
+> + * Measures the time taken by the CPU to perform a specified
+> + * number of empty loops for calibration.
+> + */
+> +static inline int tst_callibrate(void)
+> +{
+> +	int i;
+> +	struct timespec start, stop;
+> +	long long diff;
+> +
+> +	for (i = 0; i < CALLIBRATE_LOOPS; i++)
+> +		__asm__ __volatile__ ("" : "+g" (i) : :);
+> +
+> +	tst_clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+> +
+> +	for (i = 0; i < CALLIBRATE_LOOPS; i++)
+> +		__asm__ __volatile__ ("" : "+g" (i) : :);
+> +
+> +	tst_clock_gettime(CLOCK_MONOTONIC_RAW, &stop);
+> +
+> +	diff = tst_timespec_diff_us(stop, start);
+> +
+> +	tst_res(TINFO, "CPU did %i loops in %llius", CALLIBRATE_LOOPS, diff);
+> +
+> +	return diff;
+> +}
+> +
+>  #endif /* TST_TIMER */
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 8db554dea..296683ffb 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -549,13 +549,16 @@ static void parse_mul(float *mul, const char *env_name, float min, float max)
+>  static int multiply_runtime(int max_runtime)
+>  {
+>  	static float runtime_mul = -1;
+> +	static int extra_runtime = 0;
+>  
+>  	if (max_runtime <= 0)
+>  		return max_runtime;
+>  
+>  	parse_mul(&runtime_mul, "LTP_RUNTIME_MUL", 0.0099, 100);
+>  
+> -	return max_runtime * runtime_mul;
+> +	extra_runtime = (tst_callibrate() / 1000) * tst_kconfig_debug_matches();
+> +
+> +	return (max_runtime + extra_runtime) * runtime_mul;
 
-merged, thanks for the reviews!
+I was hoping for a simpler calculation something as:
 
-Andrea
+	if (any_kconfig_debug_enabled())
+		max_runtime *= 4;
 
-On 12/2/24 11:12, Andrea Cervesato wrote:
-> Cleanup of the input testing suite, using new LTP API and changing
-> the way we are obtaining information from input devices.
-> Usage of the tst_uinput.h utilities, rewritten input helper and
-> simplified the source code.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Changes in v2:
-> - use checkpoint in input03
-> - move check_ui_get_sysname_ioctl() in tst_uinput.h
-> - Link to v1: https://lore.kernel.org/r/20241125-input_refactoring-v1-0-b622b3aa698d@suse.com
->
-> ---
-> Andrea Cervesato (7):
->        Refactor input01 test
->        Refactor input02 test
->        Refactor input03 test
->        Refactor input04 test
->        Refactor input05 test
->        Refactor input06 test
->        Delete depreacted input test suite helper
->
->   libs/uinput/tst_uinput.c              |  26 ++-
->   testcases/kernel/input/Makefile       |   6 +-
->   testcases/kernel/input/input01.c      | 205 +++++-----------------
->   testcases/kernel/input/input02.c      | 132 ++++++--------
->   testcases/kernel/input/input03.c      | 176 ++++++++-----------
->   testcases/kernel/input/input04.c      | 113 ++++--------
->   testcases/kernel/input/input05.c      | 119 ++++---------
->   testcases/kernel/input/input06.c      | 190 +++++++++------------
->   testcases/kernel/input/input_common.h |  97 +++++++++++
->   testcases/kernel/input/input_helper.c | 313 ----------------------------------
->   testcases/kernel/input/input_helper.h |  36 ----
->   11 files changed, 443 insertions(+), 970 deletions(-)
-> ---
-> base-commit: ec4161186e51b55d4faaa394dc4607200cb30f68
-> change-id: 20241113-input_refactoring-16aea13ed7b8
->
-> Best regards,
+Or something along these lines. I do not think that the kernel will get
+slower with each debug option enabled. And we are not looking for a
+tight fit either, so the callbration loop does not make much sense here.
+
+It also makes sense that a debug kernel will be N times slower, where
+the exact N would be hard to find out, but in this case we just need a
+reasonable upper bound.
+
+And this would work nicely for the starvation test too, since we
+calculate a tight fit there first, then we would multiply it by the
+"debug kernel slowness" multiplier. There would be no need to modify the
+starvation test in that case either (it may make sense to set the
+runtime of the test to -1 so that the metadata will have an information
+that the test runtime is unbound until we actually execute it though).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
