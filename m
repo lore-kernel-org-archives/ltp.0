@@ -4,118 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83D4FE64AB6
-	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 15:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60E96E74AC3
+	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 16:22:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00EE43DE303
-	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 16:17:10 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C76283DE798
+	for <ltp@archiver.kernel.org>; Tue,  3 Dec 2024 17:22:44 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 83F973DE314
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 16:15:31 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id BD5323DE77D
+ for <ltp@lists.linux.it>; Tue,  3 Dec 2024 17:22:27 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=dsterba@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 02FDD10122B6
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 16:15:31 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 730EE1439983
+ for <ltp@lists.linux.it>; Tue,  3 Dec 2024 17:22:25 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D22A91F451
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 15:15:29 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4A1B22111F;
+ Tue,  3 Dec 2024 16:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733238930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ t=1733242944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jIb8im4tEet1nVc29aLgUYbXF64jiC8rWf9Yu2Ded24=;
- b=VFgZomP7RVd+lCHdnOZLcYsMu2jY9vWb9uksvb9+x9W/ieZRWgNNn0SFjJzQFvvRAidunh
- JPSGMxQT2poKXe/j8GEGN8IggXTgAcoPOhNlieiXnJ9wQQb6RSDGWXRL3LVwVTbh3K/3XN
- 9mqsA5idfWvGBiS0E0ynFunXqR7YZec=
+ bh=1rPsvvaWSf5EInVJ6+/I67B6CD791tTlwfTh2OD9QIo=;
+ b=LjAQFJELwBc4At8UHc+cKSRonjJLGh617Iw0wki32EGM23ubMjNEBEyNnABRwTRkqmjBys
+ 5N7op2VJKbsgS+Y9GbGmOagREn1KQafmAm3qVGQyKFd7ceqks5M5o5JxqTgxi3ZkU32T6i
+ 8P/rxF1lPBj9f06yLGnkWAoo23VNRDY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733238930;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ s=susede2_ed25519; t=1733242944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jIb8im4tEet1nVc29aLgUYbXF64jiC8rWf9Yu2Ded24=;
- b=Gw89h5GnugWR0HmdW+rF61VvrXCtim31jhRjVeEinNrO44p9gbJ9czkhUMTjxTZjVgO2rh
- eMkiMsf1w01to9Dg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hrnojVrS;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lhLmqSq8
+ bh=1rPsvvaWSf5EInVJ6+/I67B6CD791tTlwfTh2OD9QIo=;
+ b=Zso3rvvKrpbrXSuEEfKbxr2gdua7W6hsG9nUQAKKXZoJTS2Dumt2dp36i57NewWPK78jIg
+ RJ+lsdhnKiXYguCA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LjAQFJEL;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Zso3rvvK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733238929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ t=1733242944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jIb8im4tEet1nVc29aLgUYbXF64jiC8rWf9Yu2Ded24=;
- b=hrnojVrSQ/eX4tQqf8amQB59Tgb7ixarugPMI9fFJXsRCuRNBsDEyRUUVGHEV6+FtG3XlO
- TNZlSJzsEyzItA4nh9fFmufenLEWn57eWZrnIm0WuZM5qNGRb1zW4Z4358HCUeyyS3VTOH
- ty+ArzrjdcPzkJXsFO/JY/apd90skSc=
+ bh=1rPsvvaWSf5EInVJ6+/I67B6CD791tTlwfTh2OD9QIo=;
+ b=LjAQFJELwBc4At8UHc+cKSRonjJLGh617Iw0wki32EGM23ubMjNEBEyNnABRwTRkqmjBys
+ 5N7op2VJKbsgS+Y9GbGmOagREn1KQafmAm3qVGQyKFd7ceqks5M5o5JxqTgxi3ZkU32T6i
+ 8P/rxF1lPBj9f06yLGnkWAoo23VNRDY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733238929;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ s=susede2_ed25519; t=1733242944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jIb8im4tEet1nVc29aLgUYbXF64jiC8rWf9Yu2Ded24=;
- b=lhLmqSq8UR33hf/K+IWOxzfLYIa+5RzIQPrlqYCRqWiDr9ZXoUxOnGqUSd9W8fdrGxXTAi
- 6s/I54QIh6LIFyCQ==
+ bh=1rPsvvaWSf5EInVJ6+/I67B6CD791tTlwfTh2OD9QIo=;
+ b=Zso3rvvKrpbrXSuEEfKbxr2gdua7W6hsG9nUQAKKXZoJTS2Dumt2dp36i57NewWPK78jIg
+ RJ+lsdhnKiXYguCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0D93139C2
- for <ltp@lists.linux.it>; Tue,  3 Dec 2024 15:15:29 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2850813A15;
+ Tue,  3 Dec 2024 16:22:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KTMrLpEgT2eyQwAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 03 Dec 2024 15:15:29 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  3 Dec 2024 16:15:30 +0100
-Message-ID: <20241203151530.16882-6-chrubis@suse.cz>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241203151530.16882-1-chrubis@suse.cz>
-References: <20241203151530.16882-1-chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UM+jCUAwT2fCWQAAD6G6ig
+ (envelope-from <dsterba@suse.cz>); Tue, 03 Dec 2024 16:22:24 +0000
+Date: Tue, 3 Dec 2024 17:22:22 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <20241203162222.GD31418@twin.jikos.cz>
+References: <20241201093606.68993-1-zlang@kernel.org>
+ <d1682e7d-9b1d-44cc-963a-1b1c5394fb2d@gmx.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: D22A91F451
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
+Content-Disposition: inline
+In-Reply-To: <d1682e7d-9b1d-44cc-963a-1b1c5394fb2d@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 4A1B22111F
+X-Spamd-Result: default: False [-4.21 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ HAS_REPLYTO(0.30)[dsterba@suse.cz];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[]; ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ FREEMAIL_TO(0.00)[gmx.com]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmx.com];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[5];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_NONE(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_ADDR_EQ_FROM(0.00)[]; REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] mem/vma05.sh: Convert to the new shell library
+Subject: Re: [LTP] [PATCH 0/3] LTP random fixes for xfs and btrfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,141 +125,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, Zorro Lang <zlang@kernel.org>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PATH=$PATH:$PWD/../../../lib/:$PWD/testcases/lib/:: ./vma05.sh
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/mem/vma/vma05.sh | 97 ++++++++++++++++---------------
- 1 file changed, 50 insertions(+), 47 deletions(-)
-
-diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-index e1ef1014e..908a05850 100755
---- a/testcases/kernel/mem/vma/vma05.sh
-+++ b/testcases/kernel/mem/vma/vma05.sh
-@@ -1,6 +1,15 @@
- #!/bin/sh
-+#
- # SPDX-License-Identifier: GPL-2.0-or-later
-+#
- # Copyright (C) 2017 Red Hat, Inc.
-+# Copyright (C) 2024 Cyril Hrubis <chrubis@suse.cz>
-+#
-+# ---
-+# doc
-+#
-+# [Description]
-+#
- # Regression test if the vsyscall and vdso VMA regions are reported correctly.
- #
- # While [vsyscall] is mostly deprecated with newer systems, there is
-@@ -15,58 +24,52 @@
- # VM_ALWAYSDUMP)). As a consequence of this bug, VMAs were not included
- # in core dumps which resulted in eg. incomplete backtraces and invalid
- # core dump files created by gdb.
-+# ---
-+#
-+# ---
-+# env
-+# {
-+#  "needs_root": true,
-+#  "needs_tmpdir": true,
-+#  "needs_cmds": ["gdb"],
-+#  "save_restore": [
-+#   ["/proc/sys/kernel/core_pattern", "TBROK"],
-+#   ["/proc/sys/kernel/core_uses_pid", "TBROK"]
-+#  ],
-+#  "tags": [
-+#   ["linux-git", "103efcd9aac1"],
-+#   ["linux-git", "b6558c4a2378"],
-+#   ["linux-git", "e5b97dde514f"]
-+#  ]
-+# }
-+# ---
- 
--TST_SETUP=setup
--TST_CLEANUP=cleanup
--TST_TESTFUNC=vma_report_check
--TST_NEEDS_ROOT=1
--TST_NEEDS_TMPDIR=1
--TST_NEEDS_CMDS="gdb"
--
--CORE_LIMIT=$(ulimit -c)
--CORE_PATTERN=$(cat /proc/sys/kernel/core_pattern)
--CORE_USES_PID=$(cat /proc/sys/kernel/core_uses_pid)
--
--setup()
--{
--	ulimit -c unlimited
--	echo "core" > /proc/sys/kernel/core_pattern
--	echo 0 > /proc/sys/kernel/core_uses_pid
--	unset DEBUGINFOD_URLS
--}
-+. tst_loader.sh
- 
--cleanup()
--{
--	ulimit -c "$CORE_LIMIT"
--	echo "$CORE_PATTERN" > /proc/sys/kernel/core_pattern
--	echo $CORE_USES_PID > /proc/sys/kernel/core_uses_pid
--}
-+ulimit -c unlimited
-+echo "core" > /proc/sys/kernel/core_pattern
-+echo 0 > /proc/sys/kernel/core_uses_pid
- 
--vma_report_check()
--{
--	if [ $(uname -m) = "x86_64" ]; then
--		if LINE=$(grep "vsyscall" /proc/self/maps); then
--			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
--			if echo "$LINE" | grep -q "$RIGHT"; then
--				tst_res TPASS "[vsyscall] reported correctly"
--			else
--				tst_res TFAIL "[vsyscall] reporting wrong"
--			fi
-+if [ $(uname -m) = "x86_64" ]; then
-+	if LINE=$(grep "vsyscall" /proc/self/maps); then
-+		RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
-+		if echo "$LINE" | grep -q "$RIGHT"; then
-+			tst_res TPASS "[vsyscall] reported correctly"
-+		else
-+			tst_res TFAIL "[vsyscall] reporting wrong"
- 		fi
- 	fi
-+fi
- 
--	rm -rf core*
--	{ vma05_vdso; } > /dev/null 2>&1
--	[ -f core ] || tst_brk TBROK "missing core file"
-+rm -rf core*
-+{ vma05_vdso; } > /dev/null 2>&1
-+[ -f core ] || tst_brk TBROK "missing core file"
- 
--	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
--		vma05_vdso ./core* 2> /dev/null)
--	if echo "$TRACE" | grep -qF "??"; then
--		tst_res TFAIL "[vdso] bug not patched"
--	else
--		tst_res TPASS "[vdso] backtrace complete"
--	fi
--}
-+TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
-+	vma05_vdso ./core* 2> /dev/null)
- 
--. tst_test.sh
--tst_run
-+if echo "$TRACE" | grep -qF "??"; then
-+	tst_res TFAIL "[vdso] bug not patched"
-+else
-+	tst_res TPASS "[vdso] backtrace complete"
-+fi
--- 
-2.45.2
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gU3VuLCBEZWMgMDEsIDIwMjQgYXQgMDg6MjU6MTlQTSArMTAzMCwgUXUgV2VucnVvIHdyb3Rl
+Ogo+IAo+IAo+IOWcqCAyMDI0LzEyLzEgMjA6MDYsIFpvcnJvIExhbmcg5YaZ6YGTOgo+ID4gW1BB
+VENIIDEvM10gaW9jdGxfZmljbG9uZTAyLmM6IHNldCBhbGxfZmlsZXN5c3RlbXMgdG8gemVybwo+
+ID4KPiA+ICAgIEl0IGRvZXNuJ3Qgc2tpcCBmaWxlc3lzdGVtcyBhcyBpdHMgcGxhbiwgZml4IGl0
+Lgo+ID4KPiA+IFtQQVRDSCAyLzNdIHN0YXQwNCtsc3RhdDAzOiBmaXggYmFkIGJsb2Nrc2l6ZSBt
+a2ZzIG9wdGlvbiBmb3IgeGZzCj4gPgo+ID4gICAgbWtmcy54ZnMgZG9lc24ndCBzdXBwb3J0ICIt
+YiAxMDI0IiwgbmVlZHMgIi1iIHNpemU9MTAyNCIKPiA+Cj4gPiBbUEFUQ0ggMy8zXSBzdGF0MDQr
+bHN0YXQwMzogc2tpcCB0ZXN0IG9uIGJ0cmZzCj4gPgo+ID4gICAgVGhlICItYiIgb3B0aW9uIG9m
+IG1rZnMuYnRyZnMgaXNuJ3QgYSBibG9ja3NpemUgb3B0aW9uLCB0aGVyZSdzIG5vdCBibG9ja3Np
+emUKPiA+ICAgIG9wdGlvbiBpbiBta2ZzLmJ0cmZzLiBTbyBJJ2QgbGlrZSB0byBza2lwIHRoaXMg
+dGVzdCBmb3IgYnRyZnMuIEJ1dCBJJ20gbm90Cj4gPiAgICBzdXJlIGlmIHRoZXJlJ3MgYmV0dGVy
+IHdheSwgc28gQ0MgKmJ0cmZzIGxpc3QqIHRvIGdldCBtb3JlIHJldmlldyBwb2ludHMgZm9yCj4g
+PiAgICB0aGF0Lgo+ID4gICAgKEJUVywgYmV0dGVyIHRvIGhhdmUgYSBjb21tb24gaGVscGVyIHRv
+IGRlYWwgd2l0aCBkaWZmZXJlbnQgZmlsZXN5c3RlbXMnCj4gPiAgICAgYmxvY2tzaXplIG9wdGlv
+bnMgaW4gdGhlIGZ1dHVyZSkKPiA+Cj4gCj4gV2VsbCwgSSdkIHNheSBXaWxjb3ggaXMga2luZGEg
+Y29ycmVjdCBoZXJlLgo+IAo+IEJ0cmZzIHVzZXMgdGhlIG5hbWUgInNlY3RvciBzaXplIiB0byBp
+bmRpY2F0ZSB0aGUgbWluaW1hbCB1bml0LCBha2EsIHRoZQo+IGJsb2Nrc2l6ZSBvZiBhbGwgdGhl
+IG90aGVyIGZzZXMuCj4gCj4gTm90IHN1cmUgaWYgd2Ugd2lsbCBldmVuIHJlbmFtZSB0aGUgd2hv
+bGUgc2VjdG9yIHNpemUgdG8gYmxvY2sgc2l6ZSBpbgo+IHRoZSBmdXR1cmUsIGl0IGxvb2tzIGxp
+a2UgYSBodWdlIHdvcmsgdG8gZG8uCgpXZWxsLCBJIHRoaW5rIHdlIGNhbiBhdCBsZWFzdCBhZGQg
+YW4gYWxpYXMgYmxvY2tzaXplIHRvIHNlY3RvcnNpemUgdG8KbWtmcy4gIFdlIGRvbid0IGhhdmUg
+YSB0aW1lIG1hY2hpbmUgdG8gY2hhbmdlIHRoZSBpbml0aWFsIGNvbmZ1c2luZwpuYW1pbmcsIGJ1
+dCBjYW4gc2xpZ2h0bHkgaW1wcm92ZSB0aGUgdXNlciBjb252ZW5pZW5jZS4gIEludGVybmFsbHkg
+aW4KdGhlIGNvZGUgd2UgY2FuIGtlZXAgc2VjdG9yc2l6ZSBvciBpbmNyZW1lbnRhbGx5IHJlbmFt
+ZSBpdCB0byBibG9ja3NpemUuCldoYXQgbWF0dGVycyBtb3JlIGhlcmUgaXMgdGhlIHVzZXIgaW50
+cmZhY2UsIGkuZS4gdGhlIG1rZnMgb3B0aW9ucy4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
