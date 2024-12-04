@@ -4,97 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BED69E7716D
-	for <ltp@archiver.kernel.org>; Wed,  4 Dec 2024 17:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB53E7716D
+	for <ltp@archiver.kernel.org>; Wed,  4 Dec 2024 17:23:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED9AF3DF298
-	for <ltp@archiver.kernel.org>; Wed,  4 Dec 2024 18:23:36 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 153A83DF28E
+	for <ltp@archiver.kernel.org>; Wed,  4 Dec 2024 18:23:54 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5845A3DF250
+ by picard.linux.it (Postfix) with ESMTPS id 63D503DF281
  for <ltp@lists.linux.it>; Wed,  4 Dec 2024 18:23:21 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AE26764AD3B
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AAB78143B8DF
  for <ltp@lists.linux.it>; Wed,  4 Dec 2024 18:23:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 858FC21264
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9A7451F805
  for <ltp@lists.linux.it>; Wed,  4 Dec 2024 17:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1733332998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Qn1zXNeUMqCXvBbNFTPRWMT4UWkd8qWdyphBnImPhp4=;
- b=e6/6iFhH29Ylxj2wpcx0T3lMjoAJI7Crz9eqZNjh2azCJaBDkhK2RvpRmgaRUPfnD0vyfT
- SR9Bpbedrok0l4YDnJ9dYyUdbwPv3HVWtbigQHMJud82HAhFk+88JspCMdT3mcy2g+KXP/
- swNWtkR+TTheF/TILRCl2r1cdW7FCuY=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bhNKLH2K7G3DVKglye8ouL3pU8UF8+H/Fil5vNHeniw=;
+ b=yMigiWxFKOtDL+t3yfyb2fzZKzDmq0avFPrVgCG69Ool4SBoprvjHjVMR96QEMFnqb42xn
+ SRMGCeCp4rcrB0Hay89MsTEmG8hZgpVFYKh2a1TSUfXJS0AaYgIbIE9S4C7l2S2jVdxj/P
+ booYRTSdR382g/iBhy+lvqqDxbYVMF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1733332998;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Qn1zXNeUMqCXvBbNFTPRWMT4UWkd8qWdyphBnImPhp4=;
- b=Ia65M2/Ln/Lzlc2PFXDULC+BKM4DHzVt7r9MtgoEW28CD1joIpJf1JOzE9AU2U6+s1RceX
- WMjzREtbDxhsuvAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bhNKLH2K7G3DVKglye8ouL3pU8UF8+H/Fil5vNHeniw=;
+ b=R6PTpr5hZyviiI7xRFSFJjRGUiHnLtkknyCam9WfjoySGS/Oak5WcSwbvq9pQhHg8PE1Zv
+ fKpJY5sTAntnQoCw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yMigiWxF;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=R6PTpr5h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1733332998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Qn1zXNeUMqCXvBbNFTPRWMT4UWkd8qWdyphBnImPhp4=;
- b=e6/6iFhH29Ylxj2wpcx0T3lMjoAJI7Crz9eqZNjh2azCJaBDkhK2RvpRmgaRUPfnD0vyfT
- SR9Bpbedrok0l4YDnJ9dYyUdbwPv3HVWtbigQHMJud82HAhFk+88JspCMdT3mcy2g+KXP/
- swNWtkR+TTheF/TILRCl2r1cdW7FCuY=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bhNKLH2K7G3DVKglye8ouL3pU8UF8+H/Fil5vNHeniw=;
+ b=yMigiWxFKOtDL+t3yfyb2fzZKzDmq0avFPrVgCG69Ool4SBoprvjHjVMR96QEMFnqb42xn
+ SRMGCeCp4rcrB0Hay89MsTEmG8hZgpVFYKh2a1TSUfXJS0AaYgIbIE9S4C7l2S2jVdxj/P
+ booYRTSdR382g/iBhy+lvqqDxbYVMF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1733332998;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Qn1zXNeUMqCXvBbNFTPRWMT4UWkd8qWdyphBnImPhp4=;
- b=Ia65M2/Ln/Lzlc2PFXDULC+BKM4DHzVt7r9MtgoEW28CD1joIpJf1JOzE9AU2U6+s1RceX
- WMjzREtbDxhsuvAQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bhNKLH2K7G3DVKglye8ouL3pU8UF8+H/Fil5vNHeniw=;
+ b=R6PTpr5hZyviiI7xRFSFJjRGUiHnLtkknyCam9WfjoySGS/Oak5WcSwbvq9pQhHg8PE1Zv
+ fKpJY5sTAntnQoCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C7CB13974
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 83988139C2
  for <ltp@lists.linux.it>; Wed,  4 Dec 2024 17:23:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id p7kLHgaQUGe/GAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aL3nHwaQUGe/GAAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Wed, 04 Dec 2024 17:23:18 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  4 Dec 2024 18:23:09 +0100
-Message-ID: <20241204172312.34099-1-mdoucha@suse.cz>
+Date: Wed,  4 Dec 2024 18:23:10 +0100
+Message-ID: <20241204172312.34099-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241204172312.34099-1-mdoucha@suse.cz>
+References: <20241204172312.34099-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Rspamd-Queue-Id: 9A7451F805
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_NONE(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] nfs_lib.sh: Add support for extra NFS mount
- options
+Subject: [LTP] [PATCH v3 2/2] Add test for data integrity over NFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,42 +131,106 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Add NFS test which checks data integrity of random writes into a file,
+with both buffered and direct I/O.
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v2: New patch
+Changes since v1: Added TST_TIMEOUT
 
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Changes since v2: Force NFS blocksize to the underlying FS blocksize
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index d3de3b7f1..f0da1fc99 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -168,6 +168,7 @@ nfs_setup()
- 	local local_dir
- 	local remote_dir
- 	local mount_dir
-+	local nfs_opts
+By default, NFS uses very large blocksize (up to 1MB) to optimize network
+communication. For the FS integrity test this means a significant slowdown
+because the size of the test file and I/O operations increase with
+blocksize. Autodetect the blocksize of the underlying filesystem and force
+the same value during NFS mount to speed things up.
+
+The TST_TIMEOUT value is calculated as worst-case scenario for 64KB
+blocksize. On reasonably modern x86_64 machines, the new tests take about
+6 minutes to complete in total (with Btrfs, Ext4 and XFS being tested).
+
+ runtest/net.nfs                           | 11 ++++++
+ testcases/network/nfs/nfs_stress/nfs10.sh | 47 +++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
+ create mode 100755 testcases/network/nfs/nfs_stress/nfs10.sh
+
+diff --git a/runtest/net.nfs b/runtest/net.nfs
+index 7f84457bc..fef993da8 100644
+--- a/runtest/net.nfs
++++ b/runtest/net.nfs
+@@ -94,6 +94,17 @@ nfs09_v40_ip6t nfs09.sh -6 -v 4 -t tcp
+ nfs09_v41_ip6t nfs09.sh -6 -v 4.1 -t tcp
+ nfs09_v42_ip6t nfs09.sh -6 -v 4.2 -t tcp
  
- 	if [ "$(stat -f . | grep "Type: nfs")" ]; then
- 		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
-@@ -192,8 +193,14 @@ nfs_setup()
- 		remote_dir="$(get_remote_dir $i $type)"
- 		nfs_setup_server "$remote_dir" "$(($$ + n))"
- 		local_dir="$(get_local_dir $i $n)"
-+		nfs_opts="-o proto=$type,vers=$i"
++nfs10_v30_ip4u nfs10.sh -v 3 -t udp
++nfs10_v30_ip4t nfs10.sh -v 3 -t tcp
++nfs10_v40_ip4t nfs10.sh -v 4 -t tcp
++nfs10_v41_ip4t nfs10.sh -v 4.1 -t tcp
++nfs10_v42_ip4t nfs10.sh -v 4.2 -t tcp
++nfs10_v30_ip6u nfs10.sh -6 -v 3 -t udp
++nfs10_v30_ip6t nfs10.sh -6 -v 3 -t tcp
++nfs10_v40_ip6t nfs10.sh -6 -v 4 -t tcp
++nfs10_v41_ip6t nfs10.sh -6 -v 4.1 -t tcp
++nfs10_v42_ip6t nfs10.sh -6 -v 4.2 -t tcp
 +
-+		if [ ! -z "$NFS_MOUNT_OPTS" ]; then
-+			nfs_opts="$nfs_opts,$NFS_MOUNT_OPTS"
-+		fi
+ nfslock01_v30_ip4u nfslock01.sh -v 3 -t udp
+ nfslock01_v30_ip4t nfslock01.sh -v 3 -t tcp
+ nfslock01_v40_ip4t nfslock01.sh -v 4 -t tcp
+diff --git a/testcases/network/nfs/nfs_stress/nfs10.sh b/testcases/network/nfs/nfs_stress/nfs10.sh
+new file mode 100755
+index 000000000..2fca4f916
+--- /dev/null
++++ b/testcases/network/nfs/nfs_stress/nfs10.sh
+@@ -0,0 +1,47 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2024 SUSE LLC <mdoucha@suse.cz>
++#
++# DESCRIPTION: Verify data integrity over NFS, with and without O_DIRECT
 +
- 		tst_res TINFO "Mounting $local_dir"
--		nfs_mount "$local_dir" "$remote_dir" "-o proto=$type,vers=$i"
-+		nfs_mount "$local_dir" "$remote_dir" "$nfs_opts"
- 
- 		n=$(( n + 1 ))
- 	done
++TST_CNT=4
++TST_SETUP="nfs10_setup"
++TST_TESTFUNC="do_test"
++TST_DEVICE_SIZE=1024
++TST_TIMEOUT=660
++
++nfs10_setup()
++{
++	local bsize=$(stat -f -c %s .)
++
++	bsize=$(( $bsize < 1024 ? 1024 : $bsize ))
++	NFS_MOUNT_OPTS="rsize=$bsize,wsize=$bsize"
++	nfs_setup
++}
++
++do_test1()
++{
++	tst_res TINFO "Testing buffered write, buffered read"
++	EXPECT_PASS fsplough -c 512 -d "$PWD"
++}
++
++do_test2()
++{
++	tst_res TINFO "Testing buffered write, direct read"
++	EXPECT_PASS fsplough -c 512 -R -d "$PWD"
++}
++
++do_test3()
++{
++	tst_res TINFO "Testing direct write, buffered read"
++	EXPECT_PASS fsplough -c 512 -W -d "$PWD"
++}
++
++do_test4()
++{
++	tst_res TINFO "Testing direct write, direct read"
++	EXPECT_PASS fsplough -c 512 -RW -d "$PWD"
++}
++
++. nfs_lib.sh
++tst_run
 -- 
 2.47.0
 
