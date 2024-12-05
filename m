@@ -4,89 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19DD3E7716C
-	for <ltp@archiver.kernel.org>; Thu,  5 Dec 2024 12:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E6CE7716C
+	for <ltp@archiver.kernel.org>; Thu,  5 Dec 2024 12:25:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 471E73DFA39
-	for <ltp@archiver.kernel.org>; Thu,  5 Dec 2024 13:11:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 6ED9A3DF9A5
+	for <ltp@archiver.kernel.org>; Thu,  5 Dec 2024 13:25:28 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 780233DC06C
- for <ltp@lists.linux.it>; Thu,  5 Dec 2024 13:11:13 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 3C9723DF9A5
+ for <ltp@lists.linux.it>; Thu,  5 Dec 2024 13:25:12 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D0BC62ADCD
- for <ltp@lists.linux.it>; Thu,  5 Dec 2024 13:11:12 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B200D21AC78
+ for <ltp@lists.linux.it>; Thu,  5 Dec 2024 13:25:11 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 660D521206;
- Thu,  5 Dec 2024 12:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733400669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=TVkS3EAIn0Ap1JCv16M3APe+PZmuP2bKPzeEW/Ek1hc=;
- b=uoHdE2Usa2wdTiH2HkphwbhaVnpgRct3jFgClQLrGunzBM7h5n7tqieRCaOR9CMVPFMIPz
- JrcJrd9IU7wpYkgqg2ci0pBEIvgERSu7q/Mvo5dlUG9Jptog82TtIsJHradmpSqlGNENKU
- LFJmgnBu6FUSs1tyFy8L8Dwo7c1Dkys=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733400669;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=TVkS3EAIn0Ap1JCv16M3APe+PZmuP2bKPzeEW/Ek1hc=;
- b=I2zZYyKOXK5WG1Yx9A3yNZQUD8EIaKmpIYxcFpHcB4DjjC5fQh72y5TCpvG31TBDFXrT9N
- PCt+IL8s4KNxjqDQ==
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 330061F38F;
+ Thu,  5 Dec 2024 12:25:10 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733400669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=TVkS3EAIn0Ap1JCv16M3APe+PZmuP2bKPzeEW/Ek1hc=;
- b=uoHdE2Usa2wdTiH2HkphwbhaVnpgRct3jFgClQLrGunzBM7h5n7tqieRCaOR9CMVPFMIPz
- JrcJrd9IU7wpYkgqg2ci0pBEIvgERSu7q/Mvo5dlUG9Jptog82TtIsJHradmpSqlGNENKU
- LFJmgnBu6FUSs1tyFy8L8Dwo7c1Dkys=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733400669;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=TVkS3EAIn0Ap1JCv16M3APe+PZmuP2bKPzeEW/Ek1hc=;
- b=I2zZYyKOXK5WG1Yx9A3yNZQUD8EIaKmpIYxcFpHcB4DjjC5fQh72y5TCpvG31TBDFXrT9N
- PCt+IL8s4KNxjqDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58FA0138A5;
- Thu,  5 Dec 2024 12:11:09 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26F2F138A5;
+ Thu,  5 Dec 2024 12:25:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5/M1FV2YUWdmMwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Thu, 05 Dec 2024 12:11:09 +0000
-Message-ID: <264e84c9-dd4e-437b-b65e-74b268847b1a@suse.cz>
-Date: Thu, 5 Dec 2024 13:11:09 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id pVfzCKabUWdHNwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Thu, 05 Dec 2024 12:25:10 +0000
+Message-ID: <ffe3ddb9-834c-46e1-80ed-169b32c1f977@suse.cz>
+Date: Thu, 5 Dec 2024 13:25:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Petr Vorel <pvorel@suse.cz>
 References: <20241204172312.34099-1-mdoucha@suse.cz>
- <20241205103439.GA28204@pevik>
+ <20241204172312.34099-2-mdoucha@suse.cz> <20241205111014.GB28204@pevik>
 Content-Language: en-US
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
@@ -132,21 +96,19 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  sOf6M5s7RKNzreVXkrlArE+x29swkXZbxFoXuahA2iykPyyCAgPz0ikRI+374jXVAtbZAAut
  HD1KfuCahogFT4upYpOUl26KquywYOGciSan4jHuqXIVCQzjYd/zOzsL7hTJiteae/oOg4m5
  i8BUUzanmo3FPwFBcjEn4nDvkw/YEo5gtQZmrxOHQAdSHdyqtFgRxu4+w3JFmnQvkResUgm3 ag==
-In-Reply-To: <20241205103439.GA28204@pevik>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- MID_RHS_MATCH_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <20241205111014.GB28204@pevik>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: 330061F38F
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] nfs_lib.sh: Add support for extra NFS
- mount options
+Subject: Re: [LTP] [PATCH v3 2/2] Add test for data integrity over NFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,33 +128,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
 
-On 05. 12. 24 11:34, Petr Vorel wrote:
-> Hi Martin,
-> 
-> ...
->> +		nfs_opts="-o proto=$type,vers=$i"
+On 05. 12. 24 12:10, Petr Vorel wrote:
 >> +
->> +		if [ ! -z "$NFS_MOUNT_OPTS" ]; then
-> 
-> We have -n for non-null string. Even just [ "$NFS_MOUNT_OPTS" ] would work,
-> but -n is more obvious. I can change it before merge:
-> 
-> 		if [ -n "$NFS_MOUNT_OPTS" ]; then
-
-Please do, thanks.
-
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Kind regards,
-> Petr
-> 
->> +			nfs_opts="$nfs_opts,$NFS_MOUNT_OPTS"
->> +		fi
+>> +nfs10_setup()
+>> +{
+>> +	local bsize=$(stat -f -c %s .)
 >> +
->>   		tst_res TINFO "Mounting $local_dir"
->> -		nfs_mount "$local_dir" "$remote_dir" "-o proto=$type,vers=$i"
->> +		nfs_mount "$local_dir" "$remote_dir" "$nfs_opts"
+>> +	bsize=$(( $bsize < 1024 ? 1024 : $bsize ))
+> 
+> nit: this would work if stat is not installed (minimal systems) or fails for
+> some reason:
+> 
+> if [ -z "$bsize" ] || [ "$bsize" -lt 1024 ]; then
+> 	bsize=1024
+> fi
+> 
+> If you agree, I can change it during merge.
+> Otherwise LGTM.
 
+Please do, thank you.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
