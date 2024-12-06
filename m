@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA4E8E77179
-	for <ltp@archiver.kernel.org>; Fri,  6 Dec 2024 09:50:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94653E77173
+	for <ltp@archiver.kernel.org>; Fri,  6 Dec 2024 09:51:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D2113E6863
-	for <ltp@archiver.kernel.org>; Fri,  6 Dec 2024 10:50:48 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1C08A3E65F4
+	for <ltp@archiver.kernel.org>; Fri,  6 Dec 2024 10:51:05 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24D193CEFC7
+ by picard.linux.it (Postfix) with ESMTPS id 30B493E626C
  for <ltp@lists.linux.it>; Fri,  6 Dec 2024 10:49:59 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -23,72 +23,72 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3CD9D1034D62
- for <ltp@lists.linux.it>; Fri,  6 Dec 2024 10:49:57 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 50FFD62B47D
+ for <ltp@lists.linux.it>; Fri,  6 Dec 2024 10:49:58 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7D3C11F394;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DB5C11F45A;
  Fri,  6 Dec 2024 09:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1733478597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ey1oe6zdyy+mXOXW/sdDdmXXCl266X4GW0KF+5btraI=;
- b=d6tzUHnP+OluW+i4WiN1sakmafhBcBpq/OyWXdQnp1hYT5EXSE7WAaDcc38r0cxWMrCu3h
- vpiCewr926BbtEPBw3wHAuqlLkmHNgG4ilASF42TPIhiIHDgqgynzztNeQj1UgmRosAY4c
- fKUCLwquQad5Pruuven0TPKzU6uM6OA=
+ bh=m8XDr3O+7IPKQksVvBnrdHtlV0+eVW/Nxr1/tPa6bac=;
+ b=lKZzhJdCPuyesBGPRCxOWOEpHVdKr34JJx/pGoJLSGJ9cH1fZSrXG8tZK6D78/V2u/2I7D
+ ZWDVnp/SkjGjYv9ibpBRaUNHlBWHNfBtnn0mNf4MP2NmOqds0X1F6JJxHUsvlQKxbJ32Sw
+ FprpD7CqZjdrk/zz80wcjWs/mQMz7sc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1733478597;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ey1oe6zdyy+mXOXW/sdDdmXXCl266X4GW0KF+5btraI=;
- b=YZlgAc7sH1YmtYc98M11l0aKQNdfAFN3KJXPfSvLg1aqx2FUCAKAfpaLLNlDQ2SYhLgD2a
- XWVC+mXNFQtB4BAw==
+ bh=m8XDr3O+7IPKQksVvBnrdHtlV0+eVW/Nxr1/tPa6bac=;
+ b=FdGrAst1nAZffpm7+JGph3mPQvleyjEcP8HIHBPMS4DSSHQCoJk2cf3b2i22WDpUep+LgK
+ tAl+OJIky6lVyOBw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=d6tzUHnP;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YZlgAc7s
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lKZzhJdC;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FdGrAst1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1733478597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ey1oe6zdyy+mXOXW/sdDdmXXCl266X4GW0KF+5btraI=;
- b=d6tzUHnP+OluW+i4WiN1sakmafhBcBpq/OyWXdQnp1hYT5EXSE7WAaDcc38r0cxWMrCu3h
- vpiCewr926BbtEPBw3wHAuqlLkmHNgG4ilASF42TPIhiIHDgqgynzztNeQj1UgmRosAY4c
- fKUCLwquQad5Pruuven0TPKzU6uM6OA=
+ bh=m8XDr3O+7IPKQksVvBnrdHtlV0+eVW/Nxr1/tPa6bac=;
+ b=lKZzhJdCPuyesBGPRCxOWOEpHVdKr34JJx/pGoJLSGJ9cH1fZSrXG8tZK6D78/V2u/2I7D
+ ZWDVnp/SkjGjYv9ibpBRaUNHlBWHNfBtnn0mNf4MP2NmOqds0X1F6JJxHUsvlQKxbJ32Sw
+ FprpD7CqZjdrk/zz80wcjWs/mQMz7sc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1733478597;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ey1oe6zdyy+mXOXW/sdDdmXXCl266X4GW0KF+5btraI=;
- b=YZlgAc7sH1YmtYc98M11l0aKQNdfAFN3KJXPfSvLg1aqx2FUCAKAfpaLLNlDQ2SYhLgD2a
- XWVC+mXNFQtB4BAw==
+ bh=m8XDr3O+7IPKQksVvBnrdHtlV0+eVW/Nxr1/tPa6bac=;
+ b=FdGrAst1nAZffpm7+JGph3mPQvleyjEcP8HIHBPMS4DSSHQCoJk2cf3b2i22WDpUep+LgK
+ tAl+OJIky6lVyOBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56FD713A79;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7B0713A15;
  Fri,  6 Dec 2024 09:49:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id APBaFMXIUmehEwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8K4QKMXIUmehEwAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Fri, 06 Dec 2024 09:49:57 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  6 Dec 2024 10:49:36 +0100
-Message-ID: <20241206094938.92895-3-pvorel@suse.cz>
+Date: Fri,  6 Dec 2024 10:49:38 +0100
+Message-ID: <20241206094938.92895-5-pvorel@suse.cz>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241206094938.92895-1-pvorel@suse.cz>
 References: <20241206094938.92895-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 7D3C11F394
+X-Rspamd-Queue-Id: DB5C11F45A
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -103,9 +103,9 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/4] Makefile: Add target to run shell loader
+Subject: [LTP] [PATCH 4/4] ci: Add shell loader tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,34 +124,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .github/workflows/ci-docker-build.yml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index ae0247761c..5066789349 100644
---- a/Makefile
-+++ b/Makefile
-@@ -188,6 +188,7 @@ ifneq ($(build),$(host))
- 	$(error running tests on cross-compile build not supported)
- endif
- 	$(call _test)
-+	$(MAKE) test-shell-loader
- 	$(MAKE) test-metadata
+diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
+index 0445a35384..6b3bc2cef0 100644
+--- a/.github/workflows/ci-docker-build.yml
++++ b/.github/workflows/ci-docker-build.yml
+@@ -161,6 +161,11 @@ jobs:
+         case "$VARIANT" in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
+         ./build.sh -r test-shell -o ${TREE:-in} -t $BUILD
  
- test-c: lib-all
-@@ -202,6 +203,12 @@ ifneq ($(build),$(host))
- endif
- 	$(call _test,-s)
- 
-+test-shell-loader: lib-all
-+ifneq ($(build),$(host))
-+	$(error running tests on cross-compile build not supported)
-+endif
-+	$(top_srcdir)/testcases/lib/run_tests.sh -b $(abs_builddir)
++    - name: Test shell loader
++      run: |
++        case "$VARIANT" in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
++        ./build.sh -r test-shell-loader -o ${TREE:-in} -t $BUILD
 +
- test-metadata: metadata-all
- 	$(MAKE) -C $(abs_srcdir)/metadata test
- 
+     - name: Install
+       run: |
+         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
 -- 
 2.45.2
 
