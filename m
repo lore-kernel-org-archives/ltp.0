@@ -4,110 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15F19E7717F
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 08:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3055E77180
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 11:03:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6136B3E77E0
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 09:58:53 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 248893E8CB1
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 12:03:34 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 13B2D3E5664
- for <ltp@lists.linux.it>; Tue, 10 Dec 2024 09:58:35 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 36FDD3D96CB
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 12:03:17 +0100 (CET)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 326241000DEA
- for <ltp@lists.linux.it>; Tue, 10 Dec 2024 09:58:34 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9EE8A1035C79
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 12:03:16 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1D8721F392;
- Tue, 10 Dec 2024 08:58:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DB4CC1F395;
+ Tue, 10 Dec 2024 11:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733821114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1733828595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8EfATEBFFoCL4FPkRLrLraI/14tpJlku90BcFpJQmhQ=;
- b=cnHV6aIW4lztzOr81HPKgIBaG0+n5R8+ixbjpAt1Zo1JLfI/6OmnVI56EvUZGML+9NKD5o
- V9JSO+lqIta2S66R91xVdKntbur0XiFpqDCyAbnSkjE/b34opJodOoAIWDc2P6UKrQl/EK
- SCdkH50rKg0oaQjsuQhfXuilu5erRuA=
+ bh=4yHfunjFn93PlMmXuRmF+gySA7SL9sTXsoKqeo2yT9g=;
+ b=ReTjWChqg8z+4jq1dfudrb4SY1JskOeYvJA4wiSCM8OgLjIF0USKwao+WkkNAKCnoiPt6P
+ GcQq9DhQUpuEej2WC1vYAnsyJXaylPdMJOYmiMQFa0znG/HeJU45YY5CgJhTijvOg9lxwU
+ 9Lx1eKr1jk4TmlXdfASPyCc1AfqKjro=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733821114;
+ s=susede2_ed25519; t=1733828595;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8EfATEBFFoCL4FPkRLrLraI/14tpJlku90BcFpJQmhQ=;
- b=b5iZRn/VlyvCdHTroFHzOpXfXlCRGtcrJ/5djU42TMAywHa7NQhuAOE9JDg+QzrnZdr0go
- jznDXtiOJo+7tlAA==
+ bh=4yHfunjFn93PlMmXuRmF+gySA7SL9sTXsoKqeo2yT9g=;
+ b=Y/tXwp6QzIE+6SoIiC4E7vN3wGMGCCTq82EdOS1FeC7723dSwkD3owiMPSk/VFNsOpWXEf
+ gdZnlhui3HSxa8DQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cnHV6aIW;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="b5iZRn/V"
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zj5k+LCN;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Fg+hV4O2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733821114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1733828594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8EfATEBFFoCL4FPkRLrLraI/14tpJlku90BcFpJQmhQ=;
- b=cnHV6aIW4lztzOr81HPKgIBaG0+n5R8+ixbjpAt1Zo1JLfI/6OmnVI56EvUZGML+9NKD5o
- V9JSO+lqIta2S66R91xVdKntbur0XiFpqDCyAbnSkjE/b34opJodOoAIWDc2P6UKrQl/EK
- SCdkH50rKg0oaQjsuQhfXuilu5erRuA=
+ bh=4yHfunjFn93PlMmXuRmF+gySA7SL9sTXsoKqeo2yT9g=;
+ b=zj5k+LCNDx7STT6o+S8W11QgvgE37tYgTVwlLZ70sKGBowKKGaClP793qVg2I1Ul6xmRcr
+ LywaN5zWYP1TG44YggUDG5yToQNhjJidsgVP2BCQ6+xyAKOe8CrzgvDK45Tn+L1iMMRe2u
+ 2JULoWHbEw05VTERA3Vs720sFatMAls=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733821114;
+ s=susede2_ed25519; t=1733828594;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8EfATEBFFoCL4FPkRLrLraI/14tpJlku90BcFpJQmhQ=;
- b=b5iZRn/VlyvCdHTroFHzOpXfXlCRGtcrJ/5djU42TMAywHa7NQhuAOE9JDg+QzrnZdr0go
- jznDXtiOJo+7tlAA==
+ bh=4yHfunjFn93PlMmXuRmF+gySA7SL9sTXsoKqeo2yT9g=;
+ b=Fg+hV4O2EQ1Re//UWgFRRcJ1yUpHL5s5ui6Y8CthAgKl9ZIbf9SNc/2wGDhgZBqlUJO+L4
+ FOTvQ0CT880pw0Bg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E550138D2;
- Tue, 10 Dec 2024 08:58:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC78D138D2;
+ Tue, 10 Dec 2024 11:03:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sQnrAboCWGdHKAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 10 Dec 2024 08:58:34 +0000
-Date: Tue, 10 Dec 2024 09:58:49 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +gGLMPIfWGeAUQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 10 Dec 2024 11:03:14 +0000
+Date: Tue, 10 Dec 2024 12:03:22 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Z1gCyS_5EuNJZcQ2@yuki.lan>
-References: <20241207085754.159597-1-liwang@redhat.com>
- <Z1b4YRIly1R1DtBS@yuki.lan>
- <CAEemH2eRBRWjPMYnHLGAx7N_0NSRrKpTO6krFEJPr12iiDcDKQ@mail.gmail.com>
+To: samasth.norway.ananda@oracle.com
+Message-ID: <Z1gf-odBjJ3XQhmT@yuki.lan>
+References: <20240626010532.2845919-1-samasth.norway.ananda@oracle.com>
+ <CAEemH2fskxgP9cFB-8zztts1qqtCJ2g01A=4+w6OxU6O_pE-9w@mail.gmail.com>
+ <0865e127-cd49-4d8a-b334-039f94b80e76@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2eRBRWjPMYnHLGAx7N_0NSRrKpTO6krFEJPr12iiDcDKQ@mail.gmail.com>
-X-Rspamd-Queue-Id: 1D8721F392
+In-Reply-To: <0865e127-cd49-4d8a-b334-039f94b80e76@oracle.com>
+X-Rspamd-Queue-Id: DB4CC1F395
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Patch V2] lib: multiply the max_runtime if detect kernel
- debug options
+Subject: Re: [LTP] [External] : Re: [PATCH] fallocate03:
+ FALLOC_FL_PUNCH_HOLE must be used with FALLOC_FL_KEEP_SIZE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,13 +125,34 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> This is a good suggestion, and besides, as I talked with Petr that I
-> would more like to name it "slow_kconfigs" but not "debug" prefix,
-> because the kernel configures is customized and maybe just enabled
-> partly on self-build kernel.
+> >  From the fallocate() manual, I see that:
+> > "The FALLOC_FL_PUNCH_HOLE flag must be ORed withFALLOC_FL_KEEP_SIZE in mode"
+> > 
+> > But it doesn't mean we wouldn't use FALLOC_FL_KEEP_SIZE singly in this test.
+> 
+> Oh okay. Sorry mistook that.
 
-Sounds reasonably too, there are some security related config options
-that slow down process execution as well.
+The problem here is that most of the fallocate() modes are not supported
+on NFS just have a look on how fallocate is implemented in
+linux/fs/nfs/nfs4file.c:
+
+static long nfs42_fallocate(struct file *filep, int mode, loff_t offset, loff_t len)
+{
+        struct inode *inode = file_inode(filep);
+        long ret;
+
+        if (!S_ISREG(inode->i_mode))
+                return -EOPNOTSUPP;
+
+        if ((mode != 0) && (mode != (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)))
+                return -EOPNOTSUPP;
+
+...
+
+So only two combinations of modes are actually supported. I guess that
+it may make sense to skip the unsupported modes for NFS.
+
+And it may make sense to enable the test for all_filesystems as well.
 
 -- 
 Cyril Hrubis
