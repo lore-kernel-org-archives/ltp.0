@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B196BE7717F
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 23:55:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03E11E7717F
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 23:56:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C36C3E9266
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 00:55:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 942F03E945D
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 00:56:40 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D5163E1410
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:54:45 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 89C193E9377
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:56:25 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 61C8A141035B
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:54:43 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BFA1B101E931
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:56:24 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A09581F38C;
- Tue, 10 Dec 2024 23:54:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5A88221134;
+ Tue, 10 Dec 2024 23:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733874882;
+ t=1733874983;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
- b=de1bNtG7zF5kcAqncrtwj3s9rW8pjCZDSRqA34cDtGO8s8ePb8NF221xJUp7u6ME8UAlAd
- fntzMwRpv5IyhfAT9loIGjmfo6Lyszdo2LZxk3XkXKaOIMyh69h6TmgvbbjSODg9BE+F7r
- juticNEBJKPC+r1o/o+Nkaqav1umsfQ=
+ bh=Tol1IpMhTo4jfNZKXnJHxXeZObWyyufCpV2hrlDq8xE=;
+ b=iMnaZrzFL1nOBZZmhtuVLEYKX8+m0gHYj6QjFF4faKyYw/SrnB9MYspJP1FrQ+ZL/9L+HL
+ Ms8nBJPYzvlIWKOyFtE+0VQfoDKDJEfBUq9dnk6xa4XN5Lu1KPwIMzYuaMum/s4FTx5Fvs
+ aVBDtBn7C+WFgfXuk3Vz/1puZLf5YcA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733874882;
+ s=susede2_ed25519; t=1733874983;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
- b=extn7AxDdrcgPc+fE64huWC76UoJ+pNbV/l9qnTRYtvZhuyCG0Xz85uLyFLMSJdB9xjbYi
- ZiNLWhQvrjsgqWDA==
-Authentication-Results: smtp-out2.suse.de;
+ bh=Tol1IpMhTo4jfNZKXnJHxXeZObWyyufCpV2hrlDq8xE=;
+ b=vqO+/SL/xTv5k4Qxo8MFYxsOm0RM9HrV72C5L1RldepNI/6Wma37tBvLPhzGTygzDEO9CB
+ pEdGDvMTfSaQJYCA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733874881;
+ t=1733874983;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
- b=Tq8SYipxPrsgrBrbtQA9FkUFLXavNCV61Fn+6tiaHOo8vSdLItLukaHC/JPnK/oIEW+r5m
- jJKzzeEcYBqSphB+dl0smKVr53AWsWTF4lHkRIADsbXGbZO/Xd6kvYXy956qnmCKnv0uHi
- 60qPvs/7fHoiIJ2ay2krkqaGAPOZpOA=
+ bh=Tol1IpMhTo4jfNZKXnJHxXeZObWyyufCpV2hrlDq8xE=;
+ b=iMnaZrzFL1nOBZZmhtuVLEYKX8+m0gHYj6QjFF4faKyYw/SrnB9MYspJP1FrQ+ZL/9L+HL
+ Ms8nBJPYzvlIWKOyFtE+0VQfoDKDJEfBUq9dnk6xa4XN5Lu1KPwIMzYuaMum/s4FTx5Fvs
+ aVBDtBn7C+WFgfXuk3Vz/1puZLf5YcA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733874881;
+ s=susede2_ed25519; t=1733874983;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
- b=HDu0yMOndCE5DpG6ggFouleCZlHL5/UDmtcouFZI30sX6k0edqp/XhPxRkeqETZia87LkD
- CC6pO93AmN1KhfBg==
+ bh=Tol1IpMhTo4jfNZKXnJHxXeZObWyyufCpV2hrlDq8xE=;
+ b=vqO+/SL/xTv5k4Qxo8MFYxsOm0RM9HrV72C5L1RldepNI/6Wma37tBvLPhzGTygzDEO9CB
+ pEdGDvMTfSaQJYCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81DCD138D2;
- Tue, 10 Dec 2024 23:54:41 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2FA9B1370C;
+ Tue, 10 Dec 2024 23:56:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gZEOHsHUWGePNwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 10 Dec 2024 23:54:41 +0000
-Date: Wed, 11 Dec 2024 00:54:36 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ajFhCifVWGcROAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 10 Dec 2024 23:56:23 +0000
+Date: Wed, 11 Dec 2024 00:56:21 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241210235436.GC386508@pevik>
+Message-ID: <20241210235621.GD386508@pevik>
 References: <20241203151530.16882-1-chrubis@suse.cz>
- <20241203151530.16882-6-chrubis@suse.cz>
+ <20241203151530.16882-4-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241203151530.16882-6-chrubis@suse.cz>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20241203151530.16882-4-chrubis@suse.cz>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -98,11 +97,12 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[vma05.sh:url,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] mem/vma05.sh: Convert to the new shell library
+Subject: Re: [LTP] [PATCH 3/5] tst_run_shell: Better errors for metadata
+ extractor
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,101 +123,15 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> +# env
-> +# {
-> +#  "needs_root": true,
-> +#  "needs_tmpdir": true,
-> +#  "needs_cmds": ["gdb"],
-Maybe to add here also "uname" ?
+> - Add filename and lineno to error messages
 
-> +#  "save_restore": [
-> +#   ["/proc/sys/kernel/core_pattern", "TBROK"],
-> +#   ["/proc/sys/kernel/core_uses_pid", "TBROK"]
-> +#  ],
-> +#  "tags": [
-> +#   ["linux-git", "103efcd9aac1"],
-> +#   ["linux-git", "b6558c4a2378"],
-> +#   ["linux-git", "e5b97dde514f"]
-> +#  ]
-> +# }
-> +# ---
+> - Make sure that we are stil in the comment part and TBROK if any of the
+nit: s/stil/still/
 
-...
-> -vma_report_check()
-> -{
-> -	if [ $(uname -m) = "x86_64" ]; then
-> -		if LINE=$(grep "vsyscall" /proc/self/maps); then
-> -			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
-> -			if echo "$LINE" | grep -q "$RIGHT"; then
-> -				tst_res TPASS "[vsyscall] reported correctly"
-> -			else
-> -				tst_res TFAIL "[vsyscall] reporting wrong"
-> -			fi
-> +if [ $(uname -m) = "x86_64" ]; then
-> +	if LINE=$(grep "vsyscall" /proc/self/maps); then
-> +		RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
-> +		if echo "$LINE" | grep -q "$RIGHT"; then
-> +			tst_res TPASS "[vsyscall] reported correctly"
-> +		else
-> +			tst_res TFAIL "[vsyscall] reporting wrong"
->  		fi
->  	fi
-> +fi
+>   block wasn't terminated properly
 
-> -	rm -rf core*
-> -	{ vma05_vdso; } > /dev/null 2>&1
-> -	[ -f core ] || tst_brk TBROK "missing core file"
-> +rm -rf core*
-> +{ vma05_vdso; } > /dev/null 2>&1
-> +[ -f core ] || tst_brk TBROK "missing core file"
-
-Test timeouts for me:
-# PATH=.:~/ltp.git/testcases/lib/:$PATH vma05.sh
-tst_tmpdir.c:316: TINFO: Using /tmp/LTP_vmaN8CQtx as tmpdir (tmpfs filesystem)
-tst_test.c:1890: TINFO: LTP version: 20240930-113-gffde06520
-tst_test.c:1894: TINFO: Tested kernel: 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64
-tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-vma05.sh:57: TPASS: [vsyscall] reported correctly
-
-Test timeouted, sending SIGKILL!
-tst_test.c:1775: TINFO: Killed the leftover descendant processes
-tst_test.c:1781: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-tst_test.c:1783: TBROK: Test killed! (timeout?)
-
-HINT: You _MAY_ be missing kernel fixes:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=103efcd9aac1
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b6558c4a2378
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e5b97dde514f
-
-Summary:
-passed   1
-failed   0
-broken   1
-skipped  0
-warnings 0
-
-But it fails on master, therefore problem on the system I test. Although on
-master it was more obvious that the problem is due core dump file not being
-created. In new version it just timeouts.
-
-PATH=.:~/ltp.git/testcases/lib/:$PATH LTPROOT=$LTPROOT vma05.sh
-vma05 1 TINFO: Running: vma05.sh
-vma05 1 TINFO: Tested kernel: Linux ts 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64 x86_64 x86_64 GNU/Linux
-vma05 1 TINFO: Using /tmp/LTP_vma05.I8VXfhyFt6 as tmpdir (tmpfs filesystem)
-vma05 1 TINFO: timeout per run is 0h 5m 0s
-vma05 1 TPASS: [vsyscall] reported correctly
-vma05 1 TBROK: missing core file
-vma05 1 TINFO: AppArmor enabled, this may affect test results
-vma05 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-vma05 1 TINFO: loaded AppArmor profiles: none
-
-Summary:
-passed   1
-failed   0
-broken   1
-skipped  0
-warnings 0
+good improvement, thanks!
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
