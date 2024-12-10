@@ -4,89 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BDF8E7717F
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 13:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44087E77180
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 14:13:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BD6AE3E8DBD
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 14:25:42 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B11CD3E8E2E
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 15:13:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76B9A3E8DB4
- for <ltp@lists.linux.it>; Tue, 10 Dec 2024 14:25:26 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 75B9B3E8D7E
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 15:13:34 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5160362C0C3
- for <ltp@lists.linux.it>; Tue, 10 Dec 2024 14:25:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1733837123;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LVAeKveyEUhMZUUgcHoa8f/pZz4v5dshwGxg9aAvcPk=;
- b=XM84i6VgoKwLSxY9TPve3C808eFRUodAnRi8C6kObq0w+k9r8B8jH78QWGF0kii9NYeezn
- 0Nt/jHPTkHvvUpQCZQDD7lA38CHEtN6l6OJEOpa/0Y1RE4Zm0ITERSGc43NCwL7CGBL5M5
- m6wRLSW6XV63pntCCDpmJNMPuuOHTvY=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-672--wElgHzhO6ukw5DYGwvq7w-1; Tue, 10 Dec 2024 08:25:22 -0500
-X-MC-Unique: -wElgHzhO6ukw5DYGwvq7w-1
-X-Mimecast-MFC-AGG-ID: -wElgHzhO6ukw5DYGwvq7w
-Received: by mail-oa1-f71.google.com with SMTP id
- 586e51a60fabf-29e1fc246ccso3938816fac.2
- for <ltp@lists.linux.it>; Tue, 10 Dec 2024 05:25:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1733837121; x=1734441921;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=LVAeKveyEUhMZUUgcHoa8f/pZz4v5dshwGxg9aAvcPk=;
- b=Rb+O0H5mgI0jFhVJo131dnlegUgN81iH/5hLrh++ugh4OsB1aZS5bYLXLMJ9DlS1h6
- eLCTTVwra6qCkAQkqknbq4dndMLlGFtEAB6siHFmjjmTWW+/2O5oeMUO2wfLQ+i+gZpH
- Ma/SMXTlIJBlua2ZnRKrXn9QI0JjjrLZil3KGk6FeFtgEujdibvg0gafg7FHVQpeq7EE
- xHmWz7XB4pxlg9NuGGNLc+VgR7nzSUTO22fk02/ij5N6EXsu/KxKIEIOG/FwQRQbPcro
- Zxfe77Ja5mlEnzLvi5vlhpevBnt6PiRmKBeZVfEcmjtn6QDHftQOiKqizRpTkKplaw02
- sOyQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXVEbKA4evFK0MLe45W9LwfvYk5kH7y6Py9xEtuYV3lSKc4meFF/lnkgg/+oawWHErZ7pM=@lists.linux.it
-X-Gm-Message-State: AOJu0YzErQxBgcQqiuicEBUwX+LgcL+rkpzAftHmb/qfM+WX0pKhfPMT
- oVqHY6PIUl4Kk5t2B+XoaX+s5qh+vXKunEXaQuCkf4/LBlP5y3PKOpUtgf8bKrC3UcGYPSusvWx
- XLxtpB0gXw06nXZlDTEBSZOT0vyIy87evwHTrcuL6tp/NGp2sD5wE+HLMMnbur/YBCIiVwjlNgQ
- EaCPGGKe3wym4BDeulw2DOHYc=
-X-Gm-Gg: ASbGncvxeSn2MWNSel5c2B24SnulTDegorov8t12vffaYAQ97x58LJ0FbUzXxIEDAjf
- xELm3TAbw0brkZNJUOLkUg08Y/FSDXOibohg=
-X-Received: by 2002:a05:6870:79d:b0:29e:5297:a2a7 with SMTP id
- 586e51a60fabf-29f73860d8dmr10828887fac.30.1733837121447; 
- Tue, 10 Dec 2024 05:25:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLEZ7Q2XwSA1xrqjEUWfr7rofXDgYqZxyaCX8Bo3/MHchXMQcONUwwMNH0FMq1Lz03ptzLCwYcbQzDdsNVPnI=
-X-Received: by 2002:a05:6870:79d:b0:29e:5297:a2a7 with SMTP id
- 586e51a60fabf-29f73860d8dmr10828872fac.30.1733837121061; Tue, 10 Dec 2024
- 05:25:21 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D71CF1B621B3
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 15:13:33 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 20ACA1F441
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 14:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1733840013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GjFOep+TB6F3Ir0ZBfx8Gc5+GDdd4U3721h6pN6qFtI=;
+ b=uRVNb9IlnByHTSfWwDc/kSsLcfYMJfDGJexwn2hK8bs/FSks/m8RlnSXzRieEbNZEziYPF
+ gJcZvhn3rRHzrCG0FVesL+t7Go/OQbP8LqD1v6icFynUhYFFNjj+DzqEck4+MME6YfnfQt
+ COtI+EmePCt78RQtK7ShJoUevupfOfE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1733840013;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GjFOep+TB6F3Ir0ZBfx8Gc5+GDdd4U3721h6pN6qFtI=;
+ b=mZzMyzs23JxdZ4ytxV7PvyaJjR7dFCdwPSr+4mLsHywoWfaLUfeApgTUPZ7Kg4Zs1PDKOu
+ r9+B47Xs/Ij8mcDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1733840013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GjFOep+TB6F3Ir0ZBfx8Gc5+GDdd4U3721h6pN6qFtI=;
+ b=uRVNb9IlnByHTSfWwDc/kSsLcfYMJfDGJexwn2hK8bs/FSks/m8RlnSXzRieEbNZEziYPF
+ gJcZvhn3rRHzrCG0FVesL+t7Go/OQbP8LqD1v6icFynUhYFFNjj+DzqEck4+MME6YfnfQt
+ COtI+EmePCt78RQtK7ShJoUevupfOfE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1733840013;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GjFOep+TB6F3Ir0ZBfx8Gc5+GDdd4U3721h6pN6qFtI=;
+ b=mZzMyzs23JxdZ4ytxV7PvyaJjR7dFCdwPSr+4mLsHywoWfaLUfeApgTUPZ7Kg4Zs1PDKOu
+ r9+B47Xs/Ij8mcDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18E8E13A15
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 14:13:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rGRNBY1MWGeKEAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 10 Dec 2024 14:13:33 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 10 Dec 2024 15:13:27 +0100
 MIME-Version: 1.0
-References: <Z1grtnHIJz//u4kB@wegao>
- <CAASaF6yCT_B87ZN5fjC=n0WodMXjavgVTct=FM4xDi5N+WzwSQ@mail.gmail.com>
-In-Reply-To: <CAASaF6yCT_B87ZN5fjC=n0WodMXjavgVTct=FM4xDi5N+WzwSQ@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 10 Dec 2024 14:25:06 +0100
-Message-ID: <CAASaF6xzh3uObN3dxcLxPkyVjb-W1eZ2hLmQb6ke9a8=ezVrzw@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: MtubySBf4SazLsSI7NkiepCNH9H85p2Uegb21D5jdus_1733837121
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Message-Id: <20241210-fix_input_suite-v1-1-f8bb1d80d2fc@suse.com>
+X-B4-Tracking: v=1; b=H4sIAIZMWGcC/x2MWwqAIBAAryL7naCLBXWViBDban9MfEQg3T3pc
+ 2BmKiSKTAkmUSHSzYkv30B3Atxp/UGSt8aACo1GreTOz8o+lLymwplk70aHvRmstQitCpGa8h/
+ n5X0/NaTLVmEAAAA=
+X-Change-ID: 20241210-fix_input_suite-5c9c2546aaa2
+To: ltp@lists.linux.it
+Cc: 
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733840013; l=4645;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=fCTtITtnYc4FWMZebOZJYqFPGADCT2EN66wu2Rk+aMY=;
+ b=N4onqWtfYCLlWXcg3SQGumc2zKVbvpM1nJx0THhKcsd8R855ydz6vd0kiBfxbVcnmeTzCSmdK
+ czUIad5uFAfAuanXw0dCxXeDagv3O5g1kzhTdTXvDCrYFgEYSwfTvnS
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Question on hugemmap34
+Subject: [LTP] [PATCH] Verify virtual device availability
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,66 +120,138 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: samir@linux.vnet.ibm.com, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- emunson@mgebm.net, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBEZWMgMTAsIDIwMjQgYXQgMTo1NOKAr1BNIEphbiBTdGFuY2VrIDxqc3RhbmNla0By
-ZWRoYXQuY29tPiB3cm90ZToKPgo+IE9uIFR1ZSwgRGVjIDEwLCAyMDI0IGF0IDEyOjUz4oCvUE0g
-V2VpIEdhbyA8d2VnYW9Ac3VzZS5jb20+IHdyb3RlOgo+ID4KPiA+IEhpIEFMTAo+ID4KPiA+IElz
-IHRoZXJlIGFueSBzcGVjaWFsIGNvbmZpZyBuZWVkZWQgZm9yIHRoaXMgdGVzdCBjYXNlPyBTaW5j
-ZSB0aGUgdGVzdCBmYWlsZWQgd2l0aCB0aGUgZm9sbG93aW5nIG91dHB1dCBvbiBteSB0ZXN0IHNl
-dHVwKG9wZW5zdXNlMTUuNSB3aXRoIDYuMTIga2VybmVsKToKPiA+Cj4gPiB0c3RfaHVnZXBhZ2Uu
-Yzo4NDogVElORk86IDEgaHVnZXBhZ2UocykgcmVzZXJ2ZWQKPiA+IHRzdF90bXBkaXIuYzozMTc6
-IFRJTkZPOiBVc2luZyAvdG1wL0xUUF9odWdMU0piN3IgYXMgdG1wZGlyIChidHJmcyBmaWxlc3lz
-dGVtKQo+ID4gdHN0X3Rlc3QuYzoxMTAwOiBUSU5GTzogTW91bnRpbmcgbm9uZSB0byAvdG1wL0xU
-UF9odWdMU0piN3IvaHVnZXRsYmZzIGZzdHlwPWh1Z2V0bGJmcyBmbGFncz0wCj4gPiB0c3RfdGVz
-dC5jOjE4OTA6IFRJTkZPOiBMVFAgdmVyc2lvbjogMjAyNDA5MzAKPiA+IHRzdF90ZXN0LmM6MTg5
-NDogVElORk86IFRlc3RlZCBrZXJuZWw6IDYuMTIuMy1scDE1NS4xMS5nNzhiMDAzMC12YW5pbGxh
-ICMxIFNNUCBGcmkgRGVjICA2IDA4OjU2OjM5IFVUQyAyMDI0ICg3OGIwMDMwKSBwcGM2NGxlCj4g
-PiB0c3RfdGVzdC5jOjE3Mjc6IFRJTkZPOiBUaW1lb3V0IHBlciBydW4gaXMgMGggMDBtIDMwcwo+
-ID4gdHN0X2NvcmVkdW1wLmM6MzI6IFRJTkZPOiBBdm9pZCBkdW1waW5nIGNvcmVmaWxlIGZvciBw
-cm9jZXNzKHBpZD02NjcxKQo+ID4gaHVnZW1tYXAzNC5jOjg4OiBUQlJPSzogd2FpdHBpZCgwLDB4
-N2ZmZmQ4YmFhMjIwLDApIGZhaWxlZDogRUNISUxEICgxMCkKPgo+IFRoZXJlJ3MgbWlzc2luZyBl
-eGl0KCkgaW4gZG9fY2hpbGQoKSwgYnV0IHRoYXQncyBub3QgdGhlIG9ubHkgaXNzdWUKPiB3aXRo
-IHRoZSB0ZXN0LgoKQ291bGQgeW91IGdpdmUgdGhpcyBwYXRjaCBhIHRyeT8KCmRpZmYgLS1naXQg
-YS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMzQuYwpiL3Rl
-c3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZW1tYXAvaHVnZW1tYXAzNC5jCmluZGV4IGE3
-YTg4ZmJiMi4uODE4Njk3YmU4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
-dGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMzQuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
-dGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMzQuYwpAQCAtNTEsMTYgKzUxLDIzIEBAIHZvaWQgZG9fY2hp
-bGQodm9pZCAqc3RvcF9hZGRyZXNzKQogICAgICAgICAgICAgICAgeCA9IGFsbG9jYShTVEFDS19B
-TExPQ0FUSU9OX1NJWkUpOwogICAgICAgICAgICAgICAgKnggPSAxOwogICAgICAgIH0gd2hpbGUg
-KCh2b2lkICopeCA+PSBzdG9wX2FkZHJlc3MpOworICAgICAgIGV4aXQoMCk7CiB9Cgogc3RhdGlj
-IHZvaWQgcnVuX3Rlc3Qodm9pZCkKIHsKICAgICAgICBpbnQgcGlkLCBzdGF0dXM7CiAgICAgICAg
-dm9pZCAqc3RhY2tfYWRkcmVzcywgKm1tYXBfYWRkcmVzcywgKmhlYXBfYWRkcmVzcywgKm1hcDsK
-KyAgICAgICBjaGFyIHRtcFsxMjhdOwoKICAgICAgICBzdGFja19hZGRyZXNzID0gYWxsb2NhKDAp
-OwogICAgICAgIGhlYXBfYWRkcmVzcyA9IHNicmsoMCk7CgorICAgICAgIHRzdF9yZXMoVElORk8s
-ICJoZWFwIGlzIGF0OiAlcCIsIGhlYXBfYWRkcmVzcyk7CisgICAgICAgdHN0X3JlcyhUSU5GTywg
-InN0YWNrIGlzIGF0OiAlcCIsIHN0YWNrX2FkZHJlc3MpOworICAgICAgIHNwcmludGYodG1wLCAi
-Y2F0IC9wcm9jLyVkL21hcHMiLCBnZXRwaWQoKSk7CisgICAgICAgVFNUX0VYUF9QQVNTX1NJTEVO
-VChzeXN0ZW0odG1wKSk7CisKICAgICAgICAvKgogICAgICAgICAqIHBhcmFub2lhOiBzdGFydCBt
-YXBwaW5nIHR3byBodWdlcGFnZXMgYmVsb3cgdGhlIHN0YXJ0IG9mIHRoZSBzdGFjaywKICAgICAg
-ICAgKiBpbiBjYXNlIHRoZSBhbGlnbm1lbnQgd291bGQgY2F1c2UgdXMgdG8gbWFwIG92ZXIgc29t
-ZXRoaW5nIGlmIHdlCkBAIC03MCw2ICs3Nyw5IEBAIHN0YXRpYyB2b2lkIHJ1bl90ZXN0KHZvaWQp
-CiAgICAgICAgZG8gewogICAgICAgICAgICAgICAgbWFwID0gbW1hcChtbWFwX2FkZHJlc3MsIGhw
-YWdlX3NpemUsIFBST1RfUkVBRHxQUk9UX1dSSVRFLAogICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIE1BUF9TSEFSRUQgfCBNQVBfRklYRURfTk9SRVBMQUNFLCBmZCwgMCk7CisgICAgICAg
-ICAgICAgICBpZiAobWFwID09IG1tYXBfYWRkcmVzcykKKyAgICAgICAgICAgICAgICAgICAgICAg
-YnJlYWs7CisKICAgICAgICAgICAgICAgIGlmIChtYXAgPT0gTUFQX0ZBSUxFRCkgewogICAgICAg
-ICAgICAgICAgICAgICAgICBpZiAoZXJybm8gPT0gRU5PTUVNKSB7CiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgdHN0X3JlcyhUQ09ORiwgIlRoZXJlIGlzIG5vIGVub3VnaAptZW1vcnkg
-aW4gdGhlIHN5c3RlbSB0byBkbyBtbWFwIik7CkBAIC04MCw3ICs5MCwxMiBAQCBzdGF0aWMgdm9p
-ZCBydW5fdGVzdCh2b2lkKQogICAgICAgICAgICAgICAgLyoKICAgICAgICAgICAgICAgICAqIGlm
-IHdlIGdldCBhbGwgdGhlIHdheSBkb3duIHRvIHRoZSBoZWFwLCBzdG9wIHRyeWluZwogICAgICAg
-ICAgICAgICAgICovCi0gICAgICAgfSB3aGlsZSAobW1hcF9hZGRyZXNzIDw9IGhlYXBfYWRkcmVz
-cyk7CisgICAgICAgfSB3aGlsZSAobW1hcF9hZGRyZXNzID4gaGVhcF9hZGRyZXNzKTsKKworICAg
-ICAgIGlmIChtYXAgPT0gTUFQX0ZBSUxFRCkKKyAgICAgICAgICAgICAgIHRzdF9icmsoVEJST0ss
-ICJmYWlsZWQgdG8gbWFwIGhwYWdlX3NpemUgYXJlYSBiZWZvcmUKaGl0dGluZyBoZWFwIik7Cisg
-ICAgICAgdHN0X3JlcyhUSU5GTywgIm1hcHBlZCBhdCAlcCIsIG1tYXApOworCiAgICAgICAgcGlk
-ID0gU0FGRV9GT1JLKCk7CiAgICAgICAgaWYgKHBpZCA9PSAwKQogICAgICAgICAgICAgICAgZG9f
-Y2hpbGQobW1hcF9hZGRyZXNzKTsKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Virtual device is supposed to be found in /dev/uinput or
+/dev/input/uinput, but in some cases this is not true. For instance, a
+kernel which is not exposing any virtual device. This patch is meant to
+verify that the device is available and we eventually skip test if it's
+not found.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Just skip tests which cannot find any virtual device in the current
+system.
+---
+ testcases/kernel/input/input01.c    | 3 +++
+ testcases/kernel/input/input02.c    | 3 +++
+ testcases/kernel/input/input03.c    | 2 ++
+ testcases/kernel/input/input04.c    | 3 +++
+ testcases/kernel/input/input05.c    | 3 +++
+ testcases/kernel/input/input06.c    | 2 ++
+ testcases/kernel/uevents/uevent03.c | 3 +++
+ 7 files changed, 19 insertions(+)
+
+diff --git a/testcases/kernel/input/input01.c b/testcases/kernel/input/input01.c
+index 0872204111b81fd19a1525ef7f099e8ddead9658..5e85133028e25ea4a4596475f9aa876cb913694d 100644
+--- a/testcases/kernel/input/input01.c
++++ b/testcases/kernel/input/input01.c
+@@ -53,6 +53,9 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
++
+ 	setup_mouse_events(fd_send);
+ 	create_input_device(fd_send);
+ 
+diff --git a/testcases/kernel/input/input02.c b/testcases/kernel/input/input02.c
+index eeff54ed21cbff6eac2d90dc53c6447d379e29ed..8e48f12d9a1108c9a5b1d8452e07386d5534fbfb 100644
+--- a/testcases/kernel/input/input02.c
++++ b/testcases/kernel/input/input02.c
+@@ -53,6 +53,9 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
++
+ 	setup_mouse_events(fd_send);
+ 	create_input_device(fd_send);
+ 
+diff --git a/testcases/kernel/input/input03.c b/testcases/kernel/input/input03.c
+index 4a3eb464ee0322b134f44158a08dbb4ed000216f..2e6161beefccc1133b654be8cf2529e97610960f 100644
+--- a/testcases/kernel/input/input03.c
++++ b/testcases/kernel/input/input03.c
+@@ -82,6 +82,8 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
+ 
+ 	setup_mouse_events(fd_send);
+ 	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_KEY);
+diff --git a/testcases/kernel/input/input04.c b/testcases/kernel/input/input04.c
+index 3c76d7c82ad7fe76f35f5a4ecfc78f27069d3fa0..fb13500fe6ab5eba7fed4640ed51dfbc8105cd09 100644
+--- a/testcases/kernel/input/input04.c
++++ b/testcases/kernel/input/input04.c
+@@ -33,6 +33,9 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
++
+ 	setup_mouse_events(fd_send);
+ 	create_input_device(fd_send);
+ 
+diff --git a/testcases/kernel/input/input05.c b/testcases/kernel/input/input05.c
+index 4e5072a038ea8e4f7b8e0899d88a58bdf18e9e94..fa37ac7acb22b690b7bb35d9fe655d3e49532a61 100644
+--- a/testcases/kernel/input/input05.c
++++ b/testcases/kernel/input/input05.c
+@@ -38,6 +38,9 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
++
+ 	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_KEY);
+ 	SAFE_IOCTL(fd_send, UI_SET_KEYBIT, BTN_LEFT);
+ 	create_input_device(fd_send);
+diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
+index cb871cbaec0fc8e35182dc0256dc2672dae4a419..d3584a2b0b9f540b29def3d98b7c77db09faefe9 100644
+--- a/testcases/kernel/input/input06.c
++++ b/testcases/kernel/input/input06.c
+@@ -178,6 +178,8 @@ static void run(void)
+ static void setup(void)
+ {
+ 	fd_send = open_uinput();
++	if (fd_send == -1)
++		tst_brk(TCONF, "Virtual device is not available");
+ 
+ 	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_KEY);
+ 	SAFE_IOCTL(fd_send, UI_SET_EVBIT, EV_REP);
+diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
+index 5b3dd701f0cf8f2f12a910b57d5f49d58712fe52..f7072db1c5f076e811e473438db3aa895644eaec 100644
+--- a/testcases/kernel/uevents/uevent03.c
++++ b/testcases/kernel/uevents/uevent03.c
+@@ -27,6 +27,9 @@ static int mouse_fd;
+ static void create_uinput_mouse(void)
+ {
+ 	mouse_fd = open_uinput();
++	if (mouse_fd == -1)
++		tst_brk(TCONF, "Virtual device is not available");
++
+ 	setup_mouse_events(mouse_fd);
+ 	create_input_device(mouse_fd);
+ }
+
+---
+base-commit: b5e2ea3cc02a2466c5bee3b0e650869f4ddf438c
+change-id: 20241210-fix_input_suite-5c9c2546aaa2
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
