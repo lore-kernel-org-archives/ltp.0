@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A089DE7717F
-	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 23:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B196BE7717F
+	for <ltp@archiver.kernel.org>; Tue, 10 Dec 2024 23:55:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 219723E9456
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 00:39:54 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 3C36C3E9266
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 00:55:01 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1015D3E1169
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:39:38 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9D5163E1410
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:54:45 +0100 (CET)
 Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
@@ -25,69 +25,69 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4BDE314280AB
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:39:37 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 61C8A141035B
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 00:54:43 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1FB821F38C;
- Tue, 10 Dec 2024 23:39:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A09581F38C;
+ Tue, 10 Dec 2024 23:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733873976;
+ t=1733874882;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQmq9pTvCRuQm+++RjJZpQqcsjy/SdRVzZ5V/3PhvKk=;
- b=u52zLxbuZ273QDb+H8afGcfsLvvqjSUVkF6HX2EM2e4WA/aISjbSP1JfF3foeZPagulhaZ
- v0gSDcRgxmLlfByLgnoISlOF+VpYrJRKhBaAF7/Pp9gRH/VWvDEBvNDVpS/zN7H5V9qtME
- qjjW+8eVnrJgJslccS4NvRqHAScSWK8=
+ bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
+ b=de1bNtG7zF5kcAqncrtwj3s9rW8pjCZDSRqA34cDtGO8s8ePb8NF221xJUp7u6ME8UAlAd
+ fntzMwRpv5IyhfAT9loIGjmfo6Lyszdo2LZxk3XkXKaOIMyh69h6TmgvbbjSODg9BE+F7r
+ juticNEBJKPC+r1o/o+Nkaqav1umsfQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733873976;
+ s=susede2_ed25519; t=1733874882;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQmq9pTvCRuQm+++RjJZpQqcsjy/SdRVzZ5V/3PhvKk=;
- b=3If16ifyZLp97dUhpzM7arc/9sp776AxuwyONBS0/r9cMCv9cjAWvecsyXZFPLhaE1PXVT
- H7qngj9nGNTCPRBw==
+ bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
+ b=extn7AxDdrcgPc+fE64huWC76UoJ+pNbV/l9qnTRYtvZhuyCG0Xz85uLyFLMSJdB9xjbYi
+ ZiNLWhQvrjsgqWDA==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733873975;
+ t=1733874881;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQmq9pTvCRuQm+++RjJZpQqcsjy/SdRVzZ5V/3PhvKk=;
- b=ic9jLcP2HSdhMiX7M5FyHzz+CxLkp1M/pyfxHHOLK8Qah29L2EHl3UYES6oJh9Fj6iXlFJ
- IPdO2QXoXEG37CYXUtRJzmATv3c8MSIZRJd6hid/Yup6ET6a18k9pZimV3q9pz79AeB6rp
- OGq6CKgjbZtEpscYa6cFVdqP6Xgy8wM=
+ bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
+ b=Tq8SYipxPrsgrBrbtQA9FkUFLXavNCV61Fn+6tiaHOo8vSdLItLukaHC/JPnK/oIEW+r5m
+ jJKzzeEcYBqSphB+dl0smKVr53AWsWTF4lHkRIADsbXGbZO/Xd6kvYXy956qnmCKnv0uHi
+ 60qPvs/7fHoiIJ2ay2krkqaGAPOZpOA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733873975;
+ s=susede2_ed25519; t=1733874881;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQmq9pTvCRuQm+++RjJZpQqcsjy/SdRVzZ5V/3PhvKk=;
- b=VE4HLhrybjS4qvVxGCXWsRMZazhlbm6ih3ziBki3HsxpDIDo4aeIZunYT8ngZ3FogWg47R
- 5Ms/EY64/0eiLzBw==
+ bh=0WfZ3TSJGMO8X+iYuoeiEymh5EZri4zSQeGcrtZRAmg=;
+ b=HDu0yMOndCE5DpG6ggFouleCZlHL5/UDmtcouFZI30sX6k0edqp/XhPxRkeqETZia87LkD
+ CC6pO93AmN1KhfBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04475138D2;
- Tue, 10 Dec 2024 23:39:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81DCD138D2;
+ Tue, 10 Dec 2024 23:54:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +X2HOjbRWGfXMwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 10 Dec 2024 23:39:34 +0000
-Date: Wed, 11 Dec 2024 00:39:29 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gZEOHsHUWGePNwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 10 Dec 2024 23:54:41 +0000
+Date: Wed, 11 Dec 2024 00:54:36 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20241210233929.GB386508@pevik>
+Message-ID: <20241210235436.GC386508@pevik>
 References: <20241203151530.16882-1-chrubis@suse.cz>
- <20241203151530.16882-2-chrubis@suse.cz>
+ <20241203151530.16882-6-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241203151530.16882-2-chrubis@suse.cz>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20241203151530.16882-6-chrubis@suse.cz>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -98,11 +98,11 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo,vma05.sh:url];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[vma05.sh:url,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
  REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] tst_run_shell: Add save_restore parser
+Subject: Re: [LTP] [PATCH 5/5] mem/vma05.sh: Convert to the new shell library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,43 +123,101 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
+> +# env
+> +# {
+> +#  "needs_root": true,
+> +#  "needs_tmpdir": true,
+> +#  "needs_cmds": ["gdb"],
+Maybe to add here also "uname" ?
+
+> +#  "save_restore": [
+> +#   ["/proc/sys/kernel/core_pattern", "TBROK"],
+> +#   ["/proc/sys/kernel/core_uses_pid", "TBROK"]
+> +#  ],
+> +#  "tags": [
+> +#   ["linux-git", "103efcd9aac1"],
+> +#   ["linux-git", "b6558c4a2378"],
+> +#   ["linux-git", "e5b97dde514f"]
+> +#  ]
+> +# }
+> +# ---
+
 ...
-> +		UJSON_ARR_FOREACH(reader, val) {
-> +			if (val->type != UJSON_STR) {
-> +				ujson_err(reader, "Expected string!");
-> +				return NULL;
-> +			}
-> +
-> +			if (!path) {
-> +				path = strdup(val->val_str);
-> +			} else if (!flags_set) {
-> +				if (!strcmp(val->val_str, "TCONF")) {
-> +					flags = TST_SR_TCONF;
-> +				} else if (!strcmp(val->val_str, "TBROK")) {
-> +					flags = TST_SR_TBROK;
-> +				} else if (!strcmp(val->val_str, "SKIP")) {
-> +					flags = TST_SR_SKIP;
-> +				} else {
-> +					ujson_err(reader, "Invalid flags!");
-> +					return NULL;
-> +				}
-> +
-> +				flags_set = 1;
-> +			} else {
-> +				ujson_err(reader, "Expected only two members!");
+> -vma_report_check()
+> -{
+> -	if [ $(uname -m) = "x86_64" ]; then
+> -		if LINE=$(grep "vsyscall" /proc/self/maps); then
+> -			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
+> -			if echo "$LINE" | grep -q "$RIGHT"; then
+> -				tst_res TPASS "[vsyscall] reported correctly"
+> -			else
+> -				tst_res TFAIL "[vsyscall] reporting wrong"
+> -			fi
+> +if [ $(uname -m) = "x86_64" ]; then
+> +	if LINE=$(grep "vsyscall" /proc/self/maps); then
+> +		RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
+> +		if echo "$LINE" | grep -q "$RIGHT"; then
+> +			tst_res TPASS "[vsyscall] reported correctly"
+> +		else
+> +			tst_res TFAIL "[vsyscall] reporting wrong"
+>  		fi
+>  	fi
+> +fi
 
-As I noted at vma05.sh, C API supports 3 members (also value).
-Maybe vma05.sh does not need it, but wouldn't be better to support it?
+> -	rm -rf core*
+> -	{ vma05_vdso; } > /dev/null 2>&1
+> -	[ -f core ] || tst_brk TBROK "missing core file"
+> +rm -rf core*
+> +{ vma05_vdso; } > /dev/null 2>&1
+> +[ -f core ] || tst_brk TBROK "missing core file"
 
-Otherwise LGTM.
+Test timeouts for me:
+# PATH=.:~/ltp.git/testcases/lib/:$PATH vma05.sh
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_vmaN8CQtx as tmpdir (tmpfs filesystem)
+tst_test.c:1890: TINFO: LTP version: 20240930-113-gffde06520
+tst_test.c:1894: TINFO: Tested kernel: 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+vma05.sh:57: TPASS: [vsyscall] reported correctly
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Test timeouted, sending SIGKILL!
+tst_test.c:1775: TINFO: Killed the leftover descendant processes
+tst_test.c:1781: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1783: TBROK: Test killed! (timeout?)
 
-Also, while you at it:
+HINT: You _MAY_ be missing kernel fixes:
 
--struct tst_test test = {
-+static struct tst_test test = {
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=103efcd9aac1
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b6558c4a2378
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e5b97dde514f
 
+Summary:
+passed   1
+failed   0
+broken   1
+skipped  0
+warnings 0
+
+But it fails on master, therefore problem on the system I test. Although on
+master it was more obvious that the problem is due core dump file not being
+created. In new version it just timeouts.
+
+PATH=.:~/ltp.git/testcases/lib/:$PATH LTPROOT=$LTPROOT vma05.sh
+vma05 1 TINFO: Running: vma05.sh
+vma05 1 TINFO: Tested kernel: Linux ts 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64 x86_64 x86_64 GNU/Linux
+vma05 1 TINFO: Using /tmp/LTP_vma05.I8VXfhyFt6 as tmpdir (tmpfs filesystem)
+vma05 1 TINFO: timeout per run is 0h 5m 0s
+vma05 1 TPASS: [vsyscall] reported correctly
+vma05 1 TBROK: missing core file
+vma05 1 TINFO: AppArmor enabled, this may affect test results
+vma05 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
+vma05 1 TINFO: loaded AppArmor profiles: none
+
+Summary:
+passed   1
+failed   0
+broken   1
+skipped  0
+warnings 0
 
 Kind regards,
 Petr
