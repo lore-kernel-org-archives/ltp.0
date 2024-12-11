@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62F12E7717D
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 19:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC381E7717D
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 19:37:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D7AD3E9B24
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 20:00:47 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9918E3E9BD7
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 20:37:11 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A30E53E8A10
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:00:30 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D3CD93E93AC
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:36:56 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,84 +24,49 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 63DB763D16E
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:00:28 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1ABEB602772
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:36:55 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AB8151F38C;
- Wed, 11 Dec 2024 19:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733943627;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
- b=pakGRQGhJcqeg8VBOsh+wubJnV5V8Rv2CBXzJq7+vSc6EJgD599vGGvBU60JzqwTSZInkY
- sTsXEwvJR2Fes07hPJQbGb+2ZR3L80zx1pKVGHT/A9wZtEx1U+fI6cqCx1Rpd2sE7wKDVY
- s3jkdhS4B7pkBCea8EhbjTf0PujD/b0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733943627;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
- b=bjuDEsm7tsxqQDbYe+Lj9KlgF2QKxNtmTvLPJeZIUO7arhbDX9WGYVmDWw4vMWVMJufo+f
- CQrNDltI5E0a5qAA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 969911F38D;
+ Wed, 11 Dec 2024 19:36:54 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1733943627;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
- b=pakGRQGhJcqeg8VBOsh+wubJnV5V8Rv2CBXzJq7+vSc6EJgD599vGGvBU60JzqwTSZInkY
- sTsXEwvJR2Fes07hPJQbGb+2ZR3L80zx1pKVGHT/A9wZtEx1U+fI6cqCx1Rpd2sE7wKDVY
- s3jkdhS4B7pkBCea8EhbjTf0PujD/b0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1733943627;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
- b=bjuDEsm7tsxqQDbYe+Lj9KlgF2QKxNtmTvLPJeZIUO7arhbDX9WGYVmDWw4vMWVMJufo+f
- CQrNDltI5E0a5qAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FCCD13927;
- Wed, 11 Dec 2024 19:00:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 256711344A;
+ Wed, 11 Dec 2024 19:36:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id LAN4DkvhWWe4BgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 11 Dec 2024 19:00:27 +0000
-Date: Wed, 11 Dec 2024 20:00:17 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hpz7AtbpWWdREAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 11 Dec 2024 19:36:54 +0000
+Date: Wed, 11 Dec 2024 20:36:52 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: "Ricardo B. Marliere" <rbm@suse.com>
-Message-ID: <20241211190017.GA440022@pevik>
-References: <20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com>
- <20241211014710.GC383036@pevik>
- <heoebo5b4mslxrpopscllz7a2rfviwltnxsvtl6bvsd4h7gacz@kttzguhbtix2>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20241211193652.GC443680@pevik>
+References: <20241203151530.16882-1-chrubis@suse.cz>
+ <20241203151530.16882-5-chrubis@suse.cz>
+ <20241211001106.GE386508@pevik> <Z1lg6tNdAzzL2UAh@rei.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <heoebo5b4mslxrpopscllz7a2rfviwltnxsvtl6bvsd4h7gacz@kttzguhbtix2>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+In-Reply-To: <Z1lg6tNdAzzL2UAh@rei.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: 969911F38D
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] mmap01: Convert to new API
+Subject: Re: [LTP] [PATCH 4/5] lib/tst_res_.c: Add TBROK handler + more
+ verbose errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,88 +85,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr!
+Hi Cyril,
 
-> On 11 Dec 24 02:47, Petr Vorel wrote:
-> > Hi Ricardo,
+> Hi!
+> > > We use the tst_res_ helper for tst_brk_ as well so we need to be able to
+> > > handle TBROK type as well.
 
-> > ...
-> > > +static void run(void)
-> > >  {
-> > > +	pid_t pid;
-> > > +
-> > > +	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE,
-> > > +			 MAP_FILE | MAP_SHARED, fildes, 0);
-> > > +
-> > > +	/*
-> > > +	 * Check if mapped memory area beyond EOF are zeros and changes beyond
-> > > +	 * EOF are not written to file.
-> > > +	 */
-> > > +	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz))
-> > > +		tst_brk(TFAIL, "mapped memory area contains invalid data");
-> > FYI test fails when run more iterations (e.g. -i2)
+> > How can we call tst_brk_() via tst_res_() ?
+> > 	tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
 
+> In the end both of these functions increment counters, but in this case
+> we need to return to the shell so we cannot call tst_brk() in the
+> helper. It's a very special situation here.
 
-> Thanks for taking a look, but I don't see the issue here:
+Thanks for info. Maybe a little note anywhere (e.g. commit message) would help.
 
-> # /opt/ltp/testcases/bin/mmap01 -i4
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmaiVJsAq as tmpdir (fuse filesystem)
-> tst_test.c:1890: TINFO: LTP version: 20240930-73-g865be36ffce8
-> tst_test.c:1894: TINFO: Tested kernel: 6.11.0-virtme #1 SMP PREEMPT_DYNAMIC Fri Oct  4 13:39:48 -03 2024 x86_64
-> tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-> mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> mmap01.c:49: TPASS: Functionality of mmap() successful YES
+> > Also we have TST_RES_SUPPORTS_TCONF_TDEBUG_TFAIL_TINFO_TPASS_TWARN check to not
+> > add TBROK to tst_res_().
 
-> Summary:
-> passed   4
-> failed   0
-> broken   0
-> skipped  0
-> warnings 0
+> That only works when the value is constant, if you pass via variable
+> that is not constant at build time you can pass whatever you want. Which
+> is another reason why it makes sense to relax the constraints.
 
-> I appended the "YES" just to make sure I wasn't running some outdated
-> code, can you please provide more details?
+Good point. So you plan to remove these build time checks?
 
-I have no idea myself. I verified if I'm using v4 [1] and I really do.
-Can you please push the code you're using?
-Your code I'm testing is in my fork [2].
+Also we have nice docs from you include/tst_res_flags.h.
+ATM include/tst_test.h and doc/old/C-Test-API.asciidoc are outdated,
+but if you relax allowed ttype, than it would not need to be updated.
 
-Tested on more systems:
+Also, any reason to not support TWARN?
 
-# ./mmap01 -i4
-tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmabiOth0 as tmpdir (tmpfs filesystem)
-tst_test.c:1890: TINFO: LTP version: 20240930-116-g23f5a4447
-tst_test.c:1894: TINFO: Tested kernel: 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64
-tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-mmap01.c:49: TPASS: Functionality of mmap() successful
-mmap01.c:68: TFAIL: mapped memory area contains invalid data
+I suppose we don't need TERRNO, TTERRNO, TRERRNO (not supported by tst_test.sh).
 
-Summary:
-passed   1
-failed   1
-broken   0
-skipped  0
-warnings 0
+Anyway, LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-$ ./mmap01 -i4
-tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmakqgzvS as tmpdir (tmpfs filesystem)
-tst_test.c:1890: TINFO: LTP version: 20240930-115-g786b808eda
-tst_test.c:1894: TINFO: Tested kernel: 6.11-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.11 (2024-11-23) x86_64
-tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-mmap01.c:49: TPASS: Functionality of mmap() successful
-mmap01.c:68: TFAIL: mapped memory area contains invalid data
-
-Summary:
-passed   1
-failed   1
-broken   0
-skipped  0
-warnings 0
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com/
-[2] https://github.com/pevik/ltp/commit/a3c07097784088a679e77a4486bb10adfe03eea0
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
