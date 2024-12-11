@@ -4,92 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C02D9E7717D
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 12:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62F12E7717D
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 19:00:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14BC63E8901
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 13:36:49 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 7D7AD3E9B24
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 20:00:47 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C86163E88F7
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 13:36:33 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A30E53E8A10
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:00:30 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 911526331C2
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 13:36:32 +0100 (CET)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BBBI4ML003958;
- Wed, 11 Dec 2024 12:36:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=2QWjvM
- WlAvOZgtL9Gcgr5khcSNDksxdxj1U4OoYJokg=; b=DljNplhpJHSKKEE2Dgquoz
- 0H76S5iTz92bgY6HXcG68WKgc7sG1CMQj8dKeJhUFNaiGLEVXO42ddTWV6PQTjnE
- vzXlyEN74DpbrzWsnA2zh9cmis3+dz+f0DlTS02x9BOdlcNWAgpLy6W6JDQ39UXj
- 0xyW8MJYEMBd9svGoNmYPjj0Y3RuINoBIxfEvRsDKcx2MIoBrWB4i+5as8GmvN7x
- ilxLZH4R5Ror5cvx0p8E80oa+tl0R2+5tBp+in04Q8AVPlKeyREPZO4W0rho7c3u
- r5jjASWnlEH2IIW2ShQPjMONAV8xCm4RsJDo8gowvlWs1YWIlBUDWmJxYmFPBhUg
- ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43ce0xm187-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 11 Dec 2024 12:36:30 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BB9brVf032589;
- Wed, 11 Dec 2024 12:36:30 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43d1pn9ddk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 11 Dec 2024 12:36:30 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com
- [10.39.53.232])
- by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 4BBCaTTA29295308
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 11 Dec 2024 12:36:30 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DB11158059;
- Wed, 11 Dec 2024 12:36:29 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 79F8058053;
- Wed, 11 Dec 2024 12:36:29 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.71.1]) by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 11 Dec 2024 12:36:29 +0000 (GMT)
-Message-ID: <b6464e2c5c0195ffd882e6cc484b2f12e7383349.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-Date: Wed, 11 Dec 2024 07:36:29 -0500
-In-Reply-To: <20241126173830.98960-4-pvorel@suse.cz>
-References: <20241126173830.98960-1-pvorel@suse.cz>
- <20241126173830.98960-4-pvorel@suse.cz>
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 63DB763D16E
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 20:00:28 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AB8151F38C;
+ Wed, 11 Dec 2024 19:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733943627;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
+ b=pakGRQGhJcqeg8VBOsh+wubJnV5V8Rv2CBXzJq7+vSc6EJgD599vGGvBU60JzqwTSZInkY
+ sTsXEwvJR2Fes07hPJQbGb+2ZR3L80zx1pKVGHT/A9wZtEx1U+fI6cqCx1Rpd2sE7wKDVY
+ s3jkdhS4B7pkBCea8EhbjTf0PujD/b0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733943627;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
+ b=bjuDEsm7tsxqQDbYe+Lj9KlgF2QKxNtmTvLPJeZIUO7arhbDX9WGYVmDWw4vMWVMJufo+f
+ CQrNDltI5E0a5qAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733943627;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
+ b=pakGRQGhJcqeg8VBOsh+wubJnV5V8Rv2CBXzJq7+vSc6EJgD599vGGvBU60JzqwTSZInkY
+ sTsXEwvJR2Fes07hPJQbGb+2ZR3L80zx1pKVGHT/A9wZtEx1U+fI6cqCx1Rpd2sE7wKDVY
+ s3jkdhS4B7pkBCea8EhbjTf0PujD/b0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733943627;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=u4eJCvWb8qX1U9BXfR6tBG+A9k7Tqfk+5Z+ge9Eu6y4=;
+ b=bjuDEsm7tsxqQDbYe+Lj9KlgF2QKxNtmTvLPJeZIUO7arhbDX9WGYVmDWw4vMWVMJufo+f
+ CQrNDltI5E0a5qAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FCCD13927;
+ Wed, 11 Dec 2024 19:00:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LAN4DkvhWWe4BgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 11 Dec 2024 19:00:27 +0000
+Date: Wed, 11 Dec 2024 20:00:17 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "Ricardo B. Marliere" <rbm@suse.com>
+Message-ID: <20241211190017.GA440022@pevik>
+References: <20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com>
+ <20241211014710.GC383036@pevik>
+ <heoebo5b4mslxrpopscllz7a2rfviwltnxsvtl6bvsd4h7gacz@kttzguhbtix2>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZdNj9DrtCNVPZkmotR9V-85r0AEK5Gjz
-X-Proofpoint-ORIG-GUID: ZdNj9DrtCNVPZkmotR9V-85r0AEK5Gjz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- spamscore=0 clxscore=1015 impostorscore=0 mlxscore=0 mlxlogscore=878
- priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412110091
+Content-Disposition: inline
+In-Reply-To: <heoebo5b4mslxrpopscllz7a2rfviwltnxsvtl6bvsd4h7gacz@kttzguhbtix2>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] ima_{kexec, keys,
- selinux}: Set minimal kernel version
+Subject: Re: [LTP] [PATCH v4] mmap01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,25 +113,95 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, 2024-11-26 at 18:38 +0100, Petr Vorel wrote:
-> The functionality IMHO was not backported to the enterprise kernels.
-> 
-> This helps to avoid false positive in ima_kexec.sh:
-> ima_kexec 1 TWARN: policy not readable, it might not contain required
-> policy '^measure.*func=KEXEC_CMDLINE'
-> ima_kexec 1 TBROK: unable to find a correct measurement
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Hi Petr!
 
-Looks good.
+> On 11 Dec 24 02:47, Petr Vorel wrote:
+> > Hi Ricardo,
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > ...
+> > > +static void run(void)
+> > >  {
+> > > +	pid_t pid;
+> > > +
+> > > +	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE,
+> > > +			 MAP_FILE | MAP_SHARED, fildes, 0);
+> > > +
+> > > +	/*
+> > > +	 * Check if mapped memory area beyond EOF are zeros and changes beyond
+> > > +	 * EOF are not written to file.
+> > > +	 */
+> > > +	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz))
+> > > +		tst_brk(TFAIL, "mapped memory area contains invalid data");
+> > FYI test fails when run more iterations (e.g. -i2)
+
+
+> Thanks for taking a look, but I don't see the issue here:
+
+> # /opt/ltp/testcases/bin/mmap01 -i4
+> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmaiVJsAq as tmpdir (fuse filesystem)
+> tst_test.c:1890: TINFO: LTP version: 20240930-73-g865be36ffce8
+> tst_test.c:1894: TINFO: Tested kernel: 6.11.0-virtme #1 SMP PREEMPT_DYNAMIC Fri Oct  4 13:39:48 -03 2024 x86_64
+> tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+> mmap01.c:49: TPASS: Functionality of mmap() successful YES
+> mmap01.c:49: TPASS: Functionality of mmap() successful YES
+> mmap01.c:49: TPASS: Functionality of mmap() successful YES
+> mmap01.c:49: TPASS: Functionality of mmap() successful YES
+
+> Summary:
+> passed   4
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+
+> I appended the "YES" just to make sure I wasn't running some outdated
+> code, can you please provide more details?
+
+I have no idea myself. I verified if I'm using v4 [1] and I really do.
+Can you please push the code you're using?
+Your code I'm testing is in my fork [2].
+
+Tested on more systems:
+
+# ./mmap01 -i4
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmabiOth0 as tmpdir (tmpfs filesystem)
+tst_test.c:1890: TINFO: LTP version: 20240930-116-g23f5a4447
+tst_test.c:1894: TINFO: Tested kernel: 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+mmap01.c:49: TPASS: Functionality of mmap() successful
+mmap01.c:68: TFAIL: mapped memory area contains invalid data
+
+Summary:
+passed   1
+failed   1
+broken   0
+skipped  0
+warnings 0
+
+$ ./mmap01 -i4
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmakqgzvS as tmpdir (tmpfs filesystem)
+tst_test.c:1890: TINFO: LTP version: 20240930-115-g786b808eda
+tst_test.c:1894: TINFO: Tested kernel: 6.11-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.11 (2024-11-23) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+mmap01.c:49: TPASS: Functionality of mmap() successful
+mmap01.c:68: TFAIL: mapped memory area contains invalid data
+
+Summary:
+passed   1
+failed   1
+broken   0
+skipped  0
+warnings 0
+
+[1] https://patchwork.ozlabs.org/project/ltp/patch/20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com/
+[2] https://github.com/pevik/ltp/commit/a3c07097784088a679e77a4486bb10adfe03eea0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
