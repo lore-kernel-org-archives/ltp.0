@@ -4,90 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5D3AE7717D
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 09:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1733910354; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=6OdRSR+OoTF71uzBf7WA+M3mARU81iLwkiJBt4LsDbU=;
- b=MgB3+NZAokcPIvcT6mxfPWUvLii81+JZEiFRyd/32DT9OIRThFBaRXyktvNayYB5iuw57
- tOAOEWRL6CZbNMa7dzqXVXosQyMTTu9So2STe3gW8IbNYzTAy0kdQlOXQjBsRyCr8zxDpnq
- oFh0mNP5Wq3coh+2/INULQuqW6DZKXk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFAE5E7717D
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 09:53:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 299213E7D02
-	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 10:45:54 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2446B3E7D1A
+	for <ltp@archiver.kernel.org>; Wed, 11 Dec 2024 10:53:01 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD1053E5ACA
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 10:45:32 +0100 (CET)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3923D3E7D06
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 10:52:46 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1AB751BBBB86
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 10:45:32 +0100 (CET)
-Received: by mail-wr1-x431.google.com with SMTP id
- ffacd0b85a97d-385f06d0c8eso3028361f8f.0
- for <ltp@lists.linux.it>; Wed, 11 Dec 2024 01:45:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1733910331; x=1734515131; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=Z8TKJu1S8/mLX2MSxte+IQhkQciIU/S+70wXjlhcH1U=;
- b=LOrZZYBBgYxXTTCML/DB4tFvyHAJlDwVZKEf4k1aqDdnswmpon1IhmWsT6ZzY5vY96
- XnrTAdfWDkASOJIhTslVRlTrSXt2BTowkrMnAFbzoHBu/xbEfHxCiQusosoXdSPHlLUJ
- 3Pkbpr9lSXcSTfgUwEX2TY9Tr0sPIrQNmR/RLgKl7/Wju/IiNlqrPZRffbWKYscL888J
- sxQj58QoXPj01AN8oALqFjDs1OwG2ZHPDiTvJ6Cly0VOxuLhP1V1NU3uyV7zTEajttrK
- ttpzdN9yG6jjQyqu0vVtNo/ku8+EA+Mik6mCZRLI/h0uaqyRpnwjisKN/NOdhOqi+DA+
- f7uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1733910331; x=1734515131;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Z8TKJu1S8/mLX2MSxte+IQhkQciIU/S+70wXjlhcH1U=;
- b=OYDq9Vwp/3MYkjuGJzUzSXii+VRxVUL8k1IY+37ZS0hqVdZCn24ci3QNkItMFcPjLE
- AtaSBfg9PRURPVxhWvMam0PhJH0ws3QAWVADBzoONmi8SBAYkJEMAZJekjEBM3mXrYNO
- 2BUF10VlJpta+xVD1nEROWMN4WwOQcCH0ajwEgIxZdOyaVZHIJSVbBZ5PkQ+/ekiHrjv
- YNGwsjepbWUkO8GWa/NNqMi8hu8CmLcIer/M1F+O+L1N16copgsceLGsS6tIdU2sm651
- D7sBJas+4NDQCmDmGJW8Dv79jiKnTpGwt/gOlJgG0UcEBk602XTzJzM9+7oz1qEMilP+
- 1snA==
-X-Gm-Message-State: AOJu0Yy8j3bMQdHUBRPqjbqvk3c/8/Bq0KZxiOYG0dS/IWRqilACFVc8
- QfIHrJLcBB1ZhgWiNAFI+Oc+qUWsGOT+wHsa1tDgTBOi+cxv50agM22eUQOA4O6YgPoZJPrbUxo
- wADw=
-X-Gm-Gg: ASbGncvlpB1vDHVI6KnuxOEONnu45BNLgF/QHKtqZfodvw+zh68gP/Z0LtmWnmXdaZD
- fL1f6aBOjT9Om8WkuleQGxs21BdteSq89Cooh4KnPn57QS+UE18Sdf5nQGw/Gtgvs8QTBQ7Fwzr
- fiii04A+AOzNKZVRn//56AQVC08/lY3dqF3XOgaSnMThMYuHiJ4nd0KvXnB01WjmPUtHG3Hsa7o
- eaWlHxB7TzNW8NITnsHPFnogGz4MYSgHqIuqngpU3cWlw+e4fpW+sTIwdTmVYq9Ng==
-X-Google-Smtp-Source: AGHT+IHbz8mD6cVVCtMhKy2RWGkQiNY0KFN+Pf/bt6EPhEuos93S8hdfz6jhbH95ooWzeI7wPixwBw==
-X-Received: by 2002:a05:6000:4719:b0:385:fd07:85f8 with SMTP id
- ffacd0b85a97d-3864ce5db50mr1471418f8f.29.1733910331320; 
- Wed, 11 Dec 2024 01:45:31 -0800 (PST)
-Received: from [192.168.42.37] ([193.86.92.181])
- by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-2ef2700979fsm14405100a91.18.2024.12.11.01.45.29
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 11 Dec 2024 01:45:30 -0800 (PST)
-Message-ID: <ae3b5208-6276-4569-b78c-8ff95bd2c4d2@suse.com>
-Date: Wed, 11 Dec 2024 10:45:26 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A6EF310007C7
+ for <ltp@lists.linux.it>; Wed, 11 Dec 2024 10:52:45 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AB3E81F38C;
+ Wed, 11 Dec 2024 09:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733910764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=henwRg90rlJ1o1dR3z2gapB+gdfNM9s16pqNoRucSu0=;
+ b=VNLLsIfspLwM2IoxMnyIoVY+onIqH6kaKJCcJfMAH9bKvMW5VyyI1UzDxPR05/qEV+euPo
+ NntMf7hEolJFkgWhijycz2zzjLU0ULEsQoqA1LjEunLccU5Xa+DipJa6MxyOgFVZNjTGqD
+ q0edgC0ObHUdrotKkWHy7FEnguUq1N8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733910764;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=henwRg90rlJ1o1dR3z2gapB+gdfNM9s16pqNoRucSu0=;
+ b=nVSWsOWPUAtKHEpmURxI8rSgQjeqgDEmzbBRkkzJsd8VYf5ZHHpjpQiJhYJWq7HqYNdOie
+ u8+RnE/bUoksbZCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1733910764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=henwRg90rlJ1o1dR3z2gapB+gdfNM9s16pqNoRucSu0=;
+ b=VNLLsIfspLwM2IoxMnyIoVY+onIqH6kaKJCcJfMAH9bKvMW5VyyI1UzDxPR05/qEV+euPo
+ NntMf7hEolJFkgWhijycz2zzjLU0ULEsQoqA1LjEunLccU5Xa+DipJa6MxyOgFVZNjTGqD
+ q0edgC0ObHUdrotKkWHy7FEnguUq1N8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1733910764;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=henwRg90rlJ1o1dR3z2gapB+gdfNM9s16pqNoRucSu0=;
+ b=nVSWsOWPUAtKHEpmURxI8rSgQjeqgDEmzbBRkkzJsd8VYf5ZHHpjpQiJhYJWq7HqYNdOie
+ u8+RnE/bUoksbZCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9910513983;
+ Wed, 11 Dec 2024 09:52:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BzJWJOxgWWceUgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 11 Dec 2024 09:52:44 +0000
+Date: Wed, 11 Dec 2024 10:52:42 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z1lg6tNdAzzL2UAh@rei.lan>
 References: <20241203151530.16882-1-chrubis@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20241203151530.16882-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ <20241203151530.16882-5-chrubis@suse.cz>
+ <20241211001106.GE386508@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20241211001106.GE386508@pevik>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/5] First new shell library converted test
+Subject: Re: [LTP] [PATCH 4/5] lib/tst_res_.c: Add TBROK handler + more
+ verbose errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,37 +111,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> > We use the tst_res_ helper for tst_brk_ as well so we need to be able to
+> > handle TBROK type as well.
+> 
+> How can we call tst_brk_() via tst_res_() ?
+> 	tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
 
-I had time to take a look at it closer and it looks really promising.
-Thanks for this support, it simplifies tests quite a lot.
+In the end both of these functions increment counters, but in this case
+we need to return to the shell so we cannot call tst_brk() in the
+helper. It's a very special situation here.
 
-Andrea
+> Also we have TST_RES_SUPPORTS_TCONF_TDEBUG_TFAIL_TINFO_TPASS_TWARN check to not
+> add TBROK to tst_res_().
 
-On 12/3/24 16:15, Cyril Hrubis wrote:
-> This patchset contains a few fixes for the new shell library and first
-> converted test.
->
-> Cyril Hrubis (5):
->    tst_run_shell: Add save_restore parser
->    libs/ujson: Fix "Garbage after JSON string!" in strict mode
->    tst_run_shell: Better errors for metadata extractor
->    lib/tst_res_.c: Add TBROK handler + more verbose errors
->    mem/vma05.sh: Convert to the new shell library
->
->   libs/ujson/ujson_reader.c         |  6 +-
->   testcases/kernel/mem/vma/vma05.sh | 97 ++++++++++++++++---------------
->   testcases/lib/tst_res_.c          | 22 ++++---
->   testcases/lib/tst_run_shell.c     | 97 +++++++++++++++++++++++++++++--
->   4 files changed, 162 insertions(+), 60 deletions(-)
->
+That only works when the value is constant, if you pass via variable
+that is not constant at build time you can pass whatever you want. Which
+is another reason why it makes sense to relax the constraints.
+
+> ...
+> > -	else if (!strcmp(argv[3], "TINFO"))
+> > +	} else if (!strcmp(argv[3], "TINFO")) {
+> >  		type = TINFO;
+> > -	else if (!strcmp(argv[3], "TDEBUG"))
+> > +	} else if (!strcmp(argv[3], "TDEBUG")) {
+> >  		type = TDEBUG;
+> > -	else
+> > +	} else if (!strcmp(argv[3], "TBROK")) {
+> > +		type = TBROK;
+> > +	} else {
+> > +		printf("Wrong type '%s'\n", argv[3]);
+> >  		goto help;
+> 
+> Also tst_brk allows only TBROK and TCONF in C:
+> 
+> #define tst_brk(ttype, arg_fmt, ...)						\
+> 	({									\
+> 		TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(!((ttype) &			\
+> 			(TBROK | TCONF | TFAIL)));				\
+> 		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+> 	})
+
+See above.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
