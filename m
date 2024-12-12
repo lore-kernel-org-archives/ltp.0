@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 928F3E77182
-	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 14:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1734012855; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=3GSAeuzaUAFvELXc5RuXW6ZrP/ZNRUa2myMbciQnH18=;
- b=FBp8f2wvZKj2W0RTqtaJz4SlNe/NErkybO+67KXs9Cke5Fu9DAITRRxb2hVZvOW4TJNS5
- m4eHCsK2mr5S3pUQ8ixMrK9sUS1hi9ATugG6p0B3i5WEucy9rfSvyxYpdds5FhCNRxtpvdv
- dLIxmMqndOzp4ZHwrXTubFnYCbnqxVQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB5B8E77182
+	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 14:30:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 136523E9917
-	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 15:14:15 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8657F3E9935
+	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 15:30:26 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BEB33E1529
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 15:13:54 +0100 (CET)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C24843E1529
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 15:30:10 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 45E6D257355
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 15:13:53 +0100 (CET)
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-aa689a37dd4so115922566b.3
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 06:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1734012832; x=1734617632; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=8F+r+FR6YSs9zG+qxsz75a9XyNwt5IwRlAusxJtlCBQ=;
- b=cXEeDXrmX4gOjfTFBwgGM0YRAb1aiXtvPaVdehff8h67EC0EWM19uYzkg9MzN5tM4f
- 1JRl+dfXeZaE3KfAYvN6kgN69K/w/igEHXOmPs5agaXl/jatc4yUtwbq8AR8K67R73wF
- 173xeeJN3yUDHez88K9fW9tFh1NKYKYBoWu4VffV52X3qAQFwMMXaZ5hwCnqBB6A5FAw
- hZkXtRerF88ndOX8AXsgmErMrf0mKLoVCanD89QP4O2fDhhuD6wKnGbHfv/cXEnF1Xpm
- tAwE603e+5EuNr5yUhOxF9ihgRvXMAf2i8z5njQpQg0ki7Ib5sr5vnTQVqlWbRAQqV9/
- uzmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1734012832; x=1734617632;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=8F+r+FR6YSs9zG+qxsz75a9XyNwt5IwRlAusxJtlCBQ=;
- b=UwPl0s1LY81S1b/cuSjImndAQSsdxWJHb+DUOf/+8mRUZNqGeEYPlxaWPFbGBbIPhn
- dQm7U2BgPShPZAYxEWPW2XsEnTUj8p8ssIOq1JQ+I/L23GWk1LYjEzuuyleMH02SJt1C
- nhcdl4abNAOVF76+XcntRP1dPpoZ1q1S9FNhP0mhPNtLxNHvhd+3HV0I/Ol1nWfMHYAF
- ULCzSRgA1CCd23b2jaMv3x6oThl7hN3uM+XMsMI3JPYWtOocwgkxfhFa3paK36rF5nIG
- 7D8LnyxBim96d1nR1iV+RD3AOqGq/p4mxnkQ8FRtjA5YfW73PY8l+/KUWwmYQGMbEa5Z
- mwPg==
-X-Gm-Message-State: AOJu0YwafhwFVzzPN+UspqtwdMrgXzY6Os5kWWjDPMbqZcw2o3F2e/Wx
- /Tls3eMOwSzwscLGeZ3YeTsumr7cEyV0uj19xOa9gZ8q7XzEPg/eUoSf4j45Ie8EqV3U50NEMV5
- fbIoz/Q==
-X-Gm-Gg: ASbGnctoB6+rjVVbGIgnPz4BTJPGtjkShLqldjk/AkCJc9bqmhMz/F9VGbJDA5zITLC
- UpZc30jl0t5A4yMQWIHEXZLrfFKHxmRs613nf/P4hQLE9mJ6MJKuugoycIRlykHYhJrIulTxj3l
- QlJf1zjQdLmeS8DNWbZ40IGRzGvpd8OHoN7ShxWZLsVITnk/xInGMEt1r9XpsKv25poTt4e7c+O
- kLHZ7fFxrijJIAq9W3apfwLyZgTbSUED9DglFeFA9Ojs/KEIkxrBFCAWU2lclSJbQvXJDc+Fz8U
- vXBqxBq4wUHAkrM054HQUfjzvsfsAnujxxJGxjHnND2oyJMcozGk7csyxs4RwrtaM0Ykau4i+26
- seDs17SumX2XCa4H4DEw=
-X-Google-Smtp-Source: AGHT+IFmM+eqI+7h2L76NP49/FjJs4iDjerCd40XiwHlUcsVs4C/llDRjbLdzMs5/Q6XdjSdHtwiAg==
-X-Received: by 2002:a17:906:292a:b0:aa6:7d82:540a with SMTP id
- a640c23a62f3a-aa6b14fcce0mr619630766b.61.1734012832271; 
- Thu, 12 Dec 2024 06:13:52 -0800 (PST)
-Received: from ?IPV6:2003:ef:2f27:8800:6a22:ade0:fb79:fefa?
- (p200300ef2f2788006a22ade0fb79fefa.dip0.t-ipconnect.de.
- [2003:ef:2f27:8800:6a22:ade0:fb79:fefa])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-aa686d933ffsm599741566b.1.2024.12.12.06.13.51
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 12 Dec 2024 06:13:52 -0800 (PST)
-Message-ID: <d2025fe4-91aa-4c06-b5ae-888612c9941b@suse.com>
-Date: Thu, 12 Dec 2024 15:13:50 +0100
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0D0B9143DF2B
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 15:30:09 +0100 (CET)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BC73Sh6005494;
+ Thu, 12 Dec 2024 14:30:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=veTZQe
+ DJ0GD1LXtOGAdZJOldYsKDzUhG628MUhkI/T8=; b=KdfQluCMktqVRBR6jEElqf
+ 1eGvU9GlMz59dLUMyPRYGnmxmfrIT9RYY9A2H6ecel7goU/51ITjiU3d7oNpCYch
+ lyYbxhvm6Lg2e21pqEw5odehXMmFsdDMoBKyC8A01FUo4FUQolAkOlXhYnGF/d8M
+ /qIIFWps6b/X3g6kO6ahfk8SWr9yN7dzkJ7Iz6TxUQmQIzjBs7ZlCJJEWMLBlkxz
+ cA0TG0G79amSnYZb1fRHrgef/x2Tx9nakm5ekinWiyBYZm+jxWKVhJW/i9VM1CVp
+ TNiq/T4JnREj5E+WqD2pbgSgK4fUkG5SlTJCvhMIkSFncCOQcELgPRjS0jPyey3g
+ ==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43cbsqkw9k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 12 Dec 2024 14:30:00 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BCD2lp0016910;
+ Thu, 12 Dec 2024 14:29:59 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43d12yh3j3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 12 Dec 2024 14:29:59 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com
+ [10.39.53.233])
+ by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 4BCETxte22741746
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 12 Dec 2024 14:29:59 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0562058054;
+ Thu, 12 Dec 2024 14:29:59 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6B64C5803F;
+ Thu, 12 Dec 2024 14:29:58 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.61.69.6]) by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 12 Dec 2024 14:29:58 +0000 (GMT)
+Message-ID: <3da6e0fade05a3087848bc86a55d771901dbf701.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Dec 2024 09:29:57 -0500
+In-Reply-To: <20241211194836.GE443680@pevik>
+References: <20241126173830.98960-1-pvorel@suse.cz>
+ <20241126173830.98960-3-pvorel@suse.cz>
+ <710315f59b9378d76d226e209fee698f6bc11c06.camel@linux.ibm.com>
+ <20241211194836.GE443680@pevik>
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
-References: <20241212-doc_syscalls_link-v1-0-69a916958ba9@suse.com>
-Content-Language: en-US
-In-Reply-To: <20241212-doc_syscalls_link-v1-0-69a916958ba9@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 62OGfyyTt3VXsO3FZuZP8LzSiIEc_plY
+X-Proofpoint-GUID: 62OGfyyTt3VXsO3FZuZP8LzSiIEc_plY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412120104
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] doc: support for links in syscalls
+Subject: Re: [LTP] [PATCH 2/3] ima_setup.sh: Allow to load predefined policy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,37 +103,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: linux-integrity@vger.kernel.org,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Pushed with follow up patch for blacklist.
+On Wed, 2024-12-11 at 20:48 +0100, Petr Vorel wrote:
+> Hi Mimi, all,
+> 
+> > On Tue, 2024-11-26 at 18:38 +0100, Petr Vorel wrote:
+> > > environment variable LTP_IMA_LOAD_POLICY=1 tries to load example policy
+> > > if available. This should be used only if tooling running LTP tests
+> > > allows to reboot afterwards (because policy may be writable only once,
+> > > e.g. missing CONFIG_IMA_WRITE_POLICY=y, or policies can influence each
+> > > other).
+> 
+> > Thanks, Petr.  Allowing the policy to be updated only if permitted is a good
+> > idea.  Even with the LTP_IMA_LOAD_POLICY=1 environment variable, the policy
+> > might not be loaded.  For example, when secure boot is enabled and the kernel is
+> > configured with CONFIG_IMA_ARCH_POLICY enabled, an "appraise func=POLICY_CHECK
+> > appraise_type=imasig" rule is loaded, requiring the IMA policy itself to be
+> > signed.
+> 
+> Yes, it's an attempt, which can fail for various reasons. I'll add this example
+> of failure to load the policy to the commit message and to the docs.
+> 
+> I'd like to detect if policy got updated to avoid wasting time with SUT reboot
+> when policy was not updated. But this probably will not be always possible
+> (e.g. (CONFIG_IMA_READ_POLICY not set).
 
-Thanks!
-Andrea
+Why do you actually need to be able to read the policy, after updating it?
+Either the policy update succeeded or failed.  For example in the signed policy
+case, writing a valid policy rule via 'cat' on a system requiring the policy to
+be signed always fails.
 
-On 12/12/24 11:33, Andrea Cervesato wrote:
-> This is an optimization of the documentation, which adds a bit of
-> refactoring and clickable syscalls names inside the statistics table.
-> In this way, users can click on a syscall and being redirected to the
-> source code which is testing it.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Andrea Cervesato (2):
->        doc: cleanup conf.py script
->        doc: support for clickable syscalls under stats
->
->   doc/conf.py | 158 ++++++++++++++++++++++++++++++++++--------------------------
->   1 file changed, 91 insertions(+), 67 deletions(-)
-> ---
-> base-commit: 8f2292af050fd64c447dd462880d0b0a19d79448
-> change-id: 20241204-doc_syscalls_link-a184545389ba
->
-> Best regards,
+> 
+> > On failure to load a policy, the ima_conditionals.sh and ima_policy.sh tests say
+> > "TINFO: SELinux enabled in enforcing mode, this may affect test results".  We
+> > should stop blaming SELinux. :)
+> 
+> This info was added for LTP shell tests, which got often affected by
+> SELinux/Apparmor. Because IMA is written in LTP shell API it gets this.
+> Error message is printed on TBROK, TFAIL, TWARN. Is this the only part where you
+> would like to avoid the message? Or do you want to remove SELinux/Apparmor
+> warning from all IMA tests?
+
+You have a better feel than me as to whether SELinux/Apparmor could interfere
+with these tests.  Unless we have some reason to blame SELinux/Apparmor, I would
+remove it.
+
+Mimi 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
