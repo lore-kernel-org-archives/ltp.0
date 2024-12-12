@@ -4,71 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F03ADE7717F
-	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 09:30:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 731F6E77180
+	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 10:33:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6245C3C00FF
-	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 10:30:04 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id CE9FC3E8897
+	for <ltp@archiver.kernel.org>; Thu, 12 Dec 2024 11:33:28 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C35B93C00FF
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 10:29:49 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 43A4F3E8891
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 11:33:12 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 003FC64ADB4
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 10:29:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1733995787;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FtHUP0fgQg/OohCqlqw+foQdx0MhLeO+2VowIZm0ieg=;
- b=CXcXEnim82skHRnS9tEUXnK0GraVhV8npqJ9g92ywreyoUxrOhkiJB7OkqBN81jeEPeS70
- McAVjqnWEMMct6wjNAsdcWpCMLjhswLAllVWEvIkuu5bE58KrW21oNNt3HhQvg45lPaolR
- zMZsfq+WupMHzgs0fqrFO9AvIJR6i00=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-121-vyRwBH5qNn6ZPDzwkUSH7A-1; Thu,
- 12 Dec 2024 04:29:43 -0500
-X-MC-Unique: vyRwBH5qNn6ZPDzwkUSH7A-1
-X-Mimecast-MFC-AGG-ID: vyRwBH5qNn6ZPDzwkUSH7A
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9C1D26396EF
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 11:33:11 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id C19671956086; Thu, 12 Dec 2024 09:29:41 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.224.182])
- by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 65CB51956052; Thu, 12 Dec 2024 09:29:38 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it,
-	wegao@suse.com
-Date: Thu, 12 Dec 2024 10:29:24 +0100
-Message-ID: <30448a47662f0cf71acddd2f12eb2a08092309a3.1733995467.git.jstancek@redhat.com>
-In-Reply-To: <CAASaF6xtjp4cTWydtqfUsqMe0q0fym+_Dhqg=KAWPgF=CM6DBw@mail.gmail.com>
-References: <CAASaF6xtjp4cTWydtqfUsqMe0q0fym+_Dhqg=KAWPgF=CM6DBw@mail.gmail.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1BFBF1F445
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 10:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1733999590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Wx/Wu/CIvC/lSJeN+NKBCxAufMv9SmHk/4GW7Xnb+5k=;
+ b=bMF+jFTugWEJUsX5nfvr/59QSe+9zKBQg9hm4OIKJxE1+ZT8OzzasnE9VDWl3PwwwAtCzC
+ Rj0F82qcUEJLSla9G9LM+i0knurngpy2TgAK+rNOjojXJz4Gfjr7DhNrlB/79koQ8Ijjjj
+ xFbv1lKuu4TQkINJ+OmsrBOd1Ib0ibg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1733999590;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Wx/Wu/CIvC/lSJeN+NKBCxAufMv9SmHk/4GW7Xnb+5k=;
+ b=dYfZIilg4l7amMvgr5bmeThIOv5WgCo3UYimKdWUXZCw/xaeep+DOazFIZHaCZWvTCkxWn
+ a63+81QbGFgi//Ag==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=bMF+jFTu;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=dYfZIilg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1733999590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Wx/Wu/CIvC/lSJeN+NKBCxAufMv9SmHk/4GW7Xnb+5k=;
+ b=bMF+jFTugWEJUsX5nfvr/59QSe+9zKBQg9hm4OIKJxE1+ZT8OzzasnE9VDWl3PwwwAtCzC
+ Rj0F82qcUEJLSla9G9LM+i0knurngpy2TgAK+rNOjojXJz4Gfjr7DhNrlB/79koQ8Ijjjj
+ xFbv1lKuu4TQkINJ+OmsrBOd1Ib0ibg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1733999590;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Wx/Wu/CIvC/lSJeN+NKBCxAufMv9SmHk/4GW7Xnb+5k=;
+ b=dYfZIilg4l7amMvgr5bmeThIOv5WgCo3UYimKdWUXZCw/xaeep+DOazFIZHaCZWvTCkxWn
+ a63+81QbGFgi//Ag==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8A2D13939
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 10:33:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dmkbLuW7WmcuJAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 10:33:09 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 12 Dec 2024 11:33:06 +0100
+Message-Id: <20241212-doc_syscalls_link-v1-0-69a916958ba9@suse.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: yw86fBQE5Ydp0WsqxVO_QnlcDzdcI_dQY0RmMosaZmM_1733995782
-X-Mimecast-Originator: redhat.com
+X-B4-Tracking: v=1; b=H4sIAOK7WmcC/x3MQQqAIBBA0avErBPUFKqrRITZVENi4UAU0d2Tl
+ m/x/wOMiZChLR5IeBLTHjNUWYBfXVxQ0JQNWmqjtDRi2v3AN3sXAg+B4iacqo01tqqb0UHujoQ
+ zXf+z69/3A65USMJjAAAA
+X-Change-ID: 20241204-doc_syscalls_link-a184545389ba
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733999589; l=739;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=Q7T0yYz31YLwrQ38mWFmcCecsXUHTbfIEUH4DqXzEFc=;
+ b=UVTXU7HhxIp6errKOuFGOI53DwtjQWHLlGPRd9CgHZl1CsQj54ABi6HQWI6/4q9hJMWgVLTLn
+ vr+HiyE6kFBALD8yZoKMoIhDbgl+Nvt+MvuB1GyCbEjhAnPmZVQwl4T
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 1BFBF1F445
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_ONE(0.00)[1];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.de:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_NONE(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim, suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] hugemmap34: change how test finds suitable huge page
- and stack for test
+Subject: [LTP] [PATCH 0/2] doc: support for links in syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,246 +133,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: samir@linux.vnet.ibm.com, mkoutny@suse.com, emunson@mgebm.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test is trying to find a place for huge page with mmap(MAP_FIXED_NOREPLACE)
-starting at top of stack and going downwards until it succeeds. The problem
-is that before it finds one, it goes over other existing mappings. So, child
-process does crash when trying to extend stack, but not because it hits
-mapped huge page, it hits one of the existing mappings. This search is slow,
-specially on -debug kernels.
+This is an optimization of the documentation, which adds a bit of
+refactoring and clickable syscalls names inside the statistics table.
+In this way, users can click on a syscall and being redirected to the
+source code which is testing it.
 
-This patch changes the test, by giving child process a separate stack that is
-always immediately above a huge page. Setup temporarily allocates huge pages and
-uses those addresses to map potential child stacks. When it allocates huge page
-and finds that mapping after it is one of child stacks, it uses that pair
-for the test.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- .../kernel/mem/hugetlb/hugemmap/hugemmap34.c  | 151 ++++++++++++++----
- 1 file changed, 118 insertions(+), 33 deletions(-)
+Andrea Cervesato (2):
+      doc: cleanup conf.py script
+      doc: support for clickable syscalls under stats
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
-index a7a88fbb2d9e..91b070a8462e 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
-@@ -20,25 +20,32 @@
-  * huge page-only segment -- resulting in bugs.
-  */
- 
-+#define _GNU_SOURCE
- #include "lapi/mmap.h"
- #include "hugetlb.h"
- #include <errno.h>
-+#include <inttypes.h>
-+#include <sched.h>
- 
- #ifdef __LP64__
- #define STACK_ALLOCATION_SIZE	(256*1024*1024)
- #else
- #define STACK_ALLOCATION_SIZE	(16*1024*1024)
- #endif
--#define PALIGN(p, a) ((void *)LTP_ALIGN((unsigned long)(p), (a)))
- #define MNTPOINT "hugetlbfs/"
--static int  fd = -1;
--static unsigned long long hpage_size;
--static int page_size;
-+#define PATH_HUGEPAGE "/sys/kernel/mm/hugepages"
-+
-+#define STACKS_MAX 64
- 
-+static int  fd = -1;
-+static uintptr_t hpage_size, stacks[STACKS_MAX];
-+static int stacks_num;
-+static void *hpage_addr, *stack_addr;
-+static void **shared_area;
- 
--void do_child(void *stop_address)
-+int do_child(void *stop_address)
- {
--	volatile int *x;
-+	volatile char *x;
- 
- 	/* corefile from this process is not interesting and limiting
- 	 * its size can save a lot of time. '1' is a special value,
-@@ -46,57 +53,77 @@ void do_child(void *stop_address)
- 	 * sets limit to RLIM_INFINITY.
- 	 */
- 	tst_no_corefile(1);
-+	tst_res(TINFO, "Child process starting with top of stack at %p", &x);
- 
- 	do {
- 		x = alloca(STACK_ALLOCATION_SIZE);
-+		*shared_area = (void *)x;
- 		*x = 1;
- 	} while ((void *)x >= stop_address);
-+	exit(0);
- }
- 
- static void run_test(void)
- {
- 	int pid, status;
--	void *stack_address, *mmap_address, *heap_address, *map;
- 
--	stack_address = alloca(0);
--	heap_address = sbrk(0);
--
--	/*
--	 * paranoia: start mapping two hugepages below the start of the stack,
--	 * in case the alignment would cause us to map over something if we
--	 * only used a gap of one hugepage.
--	 */
--	mmap_address = PALIGN(stack_address - 2 * hpage_size, hpage_size);
--	do {
--		map = mmap(mmap_address, hpage_size, PROT_READ|PROT_WRITE,
--				MAP_SHARED | MAP_FIXED_NOREPLACE, fd, 0);
--		if (map == MAP_FAILED) {
--			if (errno == ENOMEM) {
--				tst_res(TCONF, "There is no enough memory in the system to do mmap");
--				return;
--			}
--		}
--		mmap_address -= hpage_size;
--		/*
--		 * if we get all the way down to the heap, stop trying
--		 */
--	} while (mmap_address <= heap_address);
--	pid = SAFE_FORK();
-+	pid = ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, do_child,
-+		hpage_addr, hpage_size, stack_addr);
- 	if (pid == 0)
--		do_child(mmap_address);
-+		do_child(hpage_addr);
- 
- 	SAFE_WAITPID(pid, &status, 0);
-+	tst_res(TINFO, "Child process extended stack up to %p, failed at %p",
-+		*shared_area, *shared_area - STACK_ALLOCATION_SIZE);
- 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
- 		tst_res(TPASS, "Child killed by %s as expected", tst_strsig(SIGSEGV));
- 	else
- 		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
- }
- 
-+/* Return start address of next mapping or 0 */
-+static uintptr_t  get_next_mapping_start(uintptr_t addr)
-+{
-+	FILE *fp = fopen("/proc/self/maps", "r");
-+
-+	if (fp == NULL)
-+		tst_brk(TBROK | TERRNO, "Failed to open /proc/self/maps.");
-+
-+	while (!feof(fp)) {
-+		uintptr_t start, end;
-+		int ret;
-+
-+		ret = fscanf(fp, "%"PRIxPTR"-%"PRIxPTR" %*[^\n]\n", &start, &end);
-+		if (ret != 2) {
-+			fclose(fp);
-+			tst_brk(TBROK | TERRNO, "Couldn't parse /proc/self/maps line.");
-+		}
-+
-+		if (start > addr) {
-+			fclose(fp);
-+			return start;
-+		}
-+	}
-+	fclose(fp);
-+	return 0;
-+}
-+
-+static int is_addr_in_stacks(uintptr_t addr)
-+{
-+	int i;
-+
-+	for (i = 0; i < stacks_num; i++) {
-+		if (addr == stacks[i])
-+			return 1;
-+	}
-+	return 0;
-+}
-+
- void setup(void)
- {
- 	struct rlimit r;
-+	int i;
- 
--	page_size = getpagesize();
- 	hpage_size = tst_get_hugepage_size();
- 	/*
- 	 * Setting the stack size to unlimited.
-@@ -107,7 +134,65 @@ void setup(void)
- 	SAFE_GETRLIMIT(RLIMIT_STACK, &r);
- 	if (r.rlim_cur != RLIM_INFINITY)
- 		tst_brk(TCONF, "Stack rlimit must be 'unlimited'");
-+
-+	if (access(PATH_HUGEPAGE, F_OK))
-+		tst_brk(TCONF, "hugetlbfs is not supported");
-+
- 	fd = tst_creat_unlinked(MNTPOINT, 0);
-+
-+	/* shared memory to pass a (void *) from child process */
-+	shared_area = SAFE_MMAP(0, getpagesize(), PROT_READ|PROT_WRITE,
-+		MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-+
-+	/*
-+	 * We search for potential stack addresses by looking at
-+	 * places where kernel would map next huge page and occupying that
-+	 * address as potential stack. When huge page lands in such place
-+	 * that next mapping is one of our stack mappings, we use those
-+	 * two for the test. We try to map huge pages in child process so that
-+	 * slices in parent are not affected.
-+	 */
-+	tst_res(TINFO, "searching for huge page and child stack placement");
-+	for (i = 0; i < STACKS_MAX; i++) {
-+		uintptr_t next_start;
-+		int pid, status;
-+
-+		pid = SAFE_FORK();
-+		if (pid == 0) {
-+			*shared_area = SAFE_MMAP(0, hpage_size, PROT_READ|PROT_WRITE,
-+				MAP_PRIVATE, fd, 0);
-+			SAFE_MUNMAP(*shared_area, hpage_size);
-+			exit(0);
-+		}
-+		SAFE_WAITPID(pid, &status, 0);
-+		if (status != 0)
-+			tst_brk(TFAIL, "Child: %s", tst_strstatus(status));
-+
-+		next_start = get_next_mapping_start((uintptr_t)*shared_area);
-+		if (is_addr_in_stacks(next_start)) {
-+			stack_addr = (void *)next_start;
-+			hpage_addr = *shared_area;
-+			break;
-+		}
-+
-+		tst_res(TINFO, "potential stack at address %p", *shared_area);
-+		stacks[stacks_num++] = (uintptr_t) SAFE_MMAP(*shared_area, hpage_size,
-+			PROT_READ|PROT_WRITE,
-+			MAP_ANONYMOUS|MAP_PRIVATE|MAP_GROWSDOWN, -1, 0);
-+	}
-+
-+	if (!stack_addr)
-+		tst_brk(TCONF, "failed to find good place for huge page and stack");
-+
-+	hpage_addr = mmap(hpage_addr, hpage_size, PROT_READ|PROT_WRITE,
-+		MAP_SHARED|MAP_FIXED, fd, 0);
-+	if (hpage_addr == MAP_FAILED) {
-+		if (errno == ENOMEM)
-+			tst_brk(TCONF, "Not enough memory.");
-+		tst_brk(TBROK|TERRNO, "mmap failed");
-+	}
-+	tst_res(TINFO, "huge page is at address %p", hpage_addr);
-+	tst_res(TINFO, "using stack is at address %p", stack_addr);
- }
- 
- void cleanup(void)
+ doc/conf.py | 158 ++++++++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 91 insertions(+), 67 deletions(-)
+---
+base-commit: 8f2292af050fd64c447dd462880d0b0a19d79448
+change-id: 20241204-doc_syscalls_link-a184545389ba
+
+Best regards,
 -- 
-2.43.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
