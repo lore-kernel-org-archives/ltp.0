@@ -4,88 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E94DE7717F
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 01:08:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63C2BE7717D
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 04:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1734052132; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1734063005; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=WInIzknj2QmXw80qLuxLglAGGMcne0VFXFZNx9w/VL8=;
- b=Nueh6Ty9r9R6Ifq3tPavEP19dtpgARiE+P37254xA/uivgJNoEgNvCxTVOWPQ1iLuK5Fe
- qZV9BLUsVuOOOlcWQ2mGn1a8ONHe5BXWl5m437LWeW0EXhGSxMseVdINPGIpN45ZbmoVTgv
- IwrcIVwDXFQb4xsxdPSKFllOFG95wxE=
+ bh=OOi6Bs2fDGY0ZHTRV8Hx1ttB+rc6o+6/1BjCUxBF30I=;
+ b=rvecTkcGA7sK3UNXyGOtb/3V/BfZ1iyP6ypqCp7KFcfo0L7NlpIwkVOxU2e3G3YN7u+eN
+ 2BbbiKzWoeBs5GKQOGwb3FOCejecudt8rq4BtH2Uy8wIdJCiaoN/Yng1WQHyQq8qkvkQ/hT
+ H3TbZWNvg9kbJEAKxZZBwUIqgAZIq8Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B01F83EB184
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 02:08:52 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2607C3EB217
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 05:10:05 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 861C93E9803
- for <ltp@lists.linux.it>; Fri, 13 Dec 2024 02:08:32 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ by picard.linux.it (Postfix) with ESMTPS id C41693EB1D3
+ for <ltp@lists.linux.it>; Fri, 13 Dec 2024 05:09:44 +0100 (CET)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8C2E91016FEA
- for <ltp@lists.linux.it>; Fri, 13 Dec 2024 02:08:31 +0100 (CET)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-4361e89b6daso8469665e9.3
- for <ltp@lists.linux.it>; Thu, 12 Dec 2024 17:08:31 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C902E142BF95
+ for <ltp@lists.linux.it>; Fri, 13 Dec 2024 05:09:43 +0100 (CET)
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-a9a977d6cc7so157527666b.3
+ for <ltp@lists.linux.it>; Thu, 12 Dec 2024 20:09:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1734052111; x=1734656911; darn=lists.linux.it;
+ d=suse.com; s=google; t=1734062983; x=1734667783; darn=lists.linux.it;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=TDLpdoLGHo+qN1+zdPI7VjrnBNnQwsa380EQWxzvQ3U=;
- b=X0JxPYhaSa+aZy8vmO+6EgI+4zaJu/WXJ9ITHJzJt/WnFkME97RWElWaAXBYSkx2EQ
- ikpQhI3Ccgp8OYOXlf5Bt3hiBFLQKby3A4S3kuc2AxSrw6XafB9vZPUFtqM68+LjiHTH
- X/SusmnS8Nvy029cfArGshPbZfFqs3w9okiO2+JghUBRvz+xApiJbVH++FJINUXYqKQy
- 297a9YU848tS+efsn2UR6TI8UzFvGSLxl9AgAyFPLnh4LiR/3s+VJdES0iM4D2rMDEnI
- ASgvGWNfxAdRcfClc7sE9bhFQ765afeTiOsii5mh/fc3wGblR7iCrbXgXSDlqeveAyQV
- X0ow==
+ bh=abi4YYpSQs0c/pj6iXvC1Rp1Guiq6mNpaLfmITlkSBo=;
+ b=PTyugxOaj7YCcLqbVbmEd3ESqGHLsMRVOGXC+ZnPt7UPDcx2+0LEx/CYrzPe7wBe/7
+ XSeTlQ8E0dydKtnU2lMNzqg0qoeB9LKqIIAkd+Mdr+Wck26gAtF9Nfh8cObtwM1OyBCr
+ nutBXsN5K2onhMjBumuYcDi7BazkTFYV+j33yUb8pZcpudUT2peipa9M97Q6ifXbAnrC
+ IaZin6CDmQlTJFOpt6CZBjXGV8vLgp7VXGmgGk3bzekY33PlyEhLODw9QnaIDDZglDBa
+ bqlrwlJQwYbeE6u4lMQ6rm8YrMMYAOeQAsEc651ajBDyaXVQgmO/Fk0vIK9Dch0SRanT
+ QRcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1734052111; x=1734656911;
+ d=1e100.net; s=20230601; t=1734062983; x=1734667783;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=TDLpdoLGHo+qN1+zdPI7VjrnBNnQwsa380EQWxzvQ3U=;
- b=oV4AZwXJztKEvOvSAP6RJXQB3MLe3zn4ZAJaSGvrQpr75g8jnd9ky3on48oLqECCUg
- eOl9vj9QZZUrVcHetnSxNyMdC9GvlZXWTxo0HQ8Siftxn5dyQ1PW1d1ur70yDxZIAKY0
- zYHtA2IzBM7w5ww8gyLsJfm9lpEW0wrk6E+gHpm46sV931KtiexFedyPUQuJ327jLzaB
- MO2Bo6Jx8X8osQaWkzhHw9x2epLwIccmwQ+em0MsklOkYMotB/8hUH9QYZBL9R7kgIUJ
- PRqs+XUrIqwBSMYR7cFTq7WcGkmEHcxRP/YKvjKUYR1ElPq3CeC9EWq+CEvTJrY9IORi
- 4g6w==
-X-Gm-Message-State: AOJu0YzpaP5FLQ9s3TM8GfZ0Ep3TAn56wXhht0VmoTsu2cv1m01HQxUP
- l5moz8ceYAKXwcPdeqEQETEtOQXMUOFo+xYMwkF7jhC6RHAiyB/6Ng8tdqy6gOMGuaYOKdKyAxg
- y
-X-Gm-Gg: ASbGncu0yLb5UEC/rA6rtAL3AN4jhtBxbak/KVlH+NcHfs4vs6JnmeUC/94qI5v5G7x
- cjx7sLVYoAUFlPxkpqXNIS32UHhlHPWyBKGSZzKQ1AeMDpi1m6fiIHFBMHVRsnZWuET3Vr78ca1
- JkKTxqopIBpwm/RyWr3c5NhUJNq4bLeYTpfWIx8D8sTN+1cI80PuhJQewLSh9tAt8wJfijQ6fEp
- IyInzD999EiAQzaHvom+Bj24p5NeRKilvGb5zwwOGDlVg==
-X-Google-Smtp-Source: AGHT+IHaSVXhzlhLDRlBcvGMuCCxJvUtG2QwJKVO+PSpoRTh7g47Yl9LZEpqfYTDvp6KomRiC4sjCw==
-X-Received: by 2002:a5d:6da4:0:b0:382:4926:98fa with SMTP id
- ffacd0b85a97d-3888e0f2cefmr321984f8f.40.1734052110962; 
- Thu, 12 Dec 2024 17:08:30 -0800 (PST)
-Received: from localhost ([152.250.153.103]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-21641f46e17sm81926405ad.221.2024.12.12.17.08.29
+ bh=abi4YYpSQs0c/pj6iXvC1Rp1Guiq6mNpaLfmITlkSBo=;
+ b=qrWNYNqYzmlyxZNBLhUyDKoFLDUehOJqN7Z2yP5iYgYDL170va5UY6ONRstRJYdFFf
+ vYYvv62AmhSGf80Zg9obbohmlJEd0/2qV8lEk1p5KNSoDj8vQX2fRPuKCsuVVrAGTQNo
+ 3YnGeANPgmHbS4zLWCZfSWgwjylSJGoWl4ZwGdQunjLXiIQw51+crGqNYwCWXREm3v5U
+ /comWoS8I6riKjE4xtAyydqyjAgGUFoKUgq85srNMyKRLT2VxhkERt6icpB+EI1KZsk+
+ XAb1H2SVKDETpIGZFOeTAIdm8XNogD3Qckg8Lb7dQabBity2H87eSUDHnt0DKqeosL5B
+ 4uVg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXz0hZx/VYGorJj72MwmGzxiqeJG/VAW9QtGASlWVlMO+1IxMKCOQZmkhLt36p7cgyqZxA=@lists.linux.it
+X-Gm-Message-State: AOJu0YwVF7vu2CnwZdFLWClI6m2vlcSFV9lCvM5cAkxiNH3ofFfn5tBD
+ kR6KPaia5Vw1Usol0n4BNw9DH+yX88j8ivDQu47eWxcSDWOpeKf+Oo63WJSjn6wGEaxEUq0cj64
+ =
+X-Gm-Gg: ASbGncssz1qVjnZyARrNVZH4LAlFIAmnQ+S/IexBU96p+SPayRy0DcdtQPVCG/en039
+ ELLkVLyG3FNgKlypfHbcj92ETSskhIJQK3Y3Pxf2MgIiwXBVsWsaBBAYS0K+L6qMIpvKJA0v4Ze
+ 2C1uogh/6U1A0FmYG0TcSFNH0n99Ls7DbWUweBieNCsQvzBiWBYrBmYzLEyC5myAY0mGVFOzZ3E
+ ZP2qO+2VcSJVnrJhGn7x8Qj66X4YL858B7Cgs7M
+X-Google-Smtp-Source: AGHT+IH495VV6fw8KFwqNJR9kaY0z66GnuR4QjROaA1SezqNYoPtK1wcgZWkeBMsXHvxRPxfK9tC6A==
+X-Received: by 2002:a05:6402:34c7:b0:5d0:cfad:f71 with SMTP id
+ 4fb4d7f45d1cf-5d63c407452mr2025207a12.32.1734062983104; 
+ Thu, 12 Dec 2024 20:09:43 -0800 (PST)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5d3cbd14892sm9528807a12.39.2024.12.12.20.09.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Dec 2024 17:08:30 -0800 (PST)
-Date: Thu, 12 Dec 2024 22:08:28 -0300
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <bch7hrahlshmgsodzp56jqcpwvjwrhzud3z24dvzlskokxoyo6@vis3gda44bwk>
-References: <20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com>
- <20241211014710.GC383036@pevik>
- <heoebo5b4mslxrpopscllz7a2rfviwltnxsvtl6bvsd4h7gacz@kttzguhbtix2>
- <20241211190017.GA440022@pevik>
+ Thu, 12 Dec 2024 20:09:42 -0800 (PST)
+Date: Thu, 12 Dec 2024 23:09:35 -0500
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Z1uzfxfIatBdzxnW@wegao>
+References: <CAASaF6xtjp4cTWydtqfUsqMe0q0fym+_Dhqg=KAWPgF=CM6DBw@mail.gmail.com>
+ <30448a47662f0cf71acddd2f12eb2a08092309a3.1733995467.git.jstancek@redhat.com>
+ <Z1rfW8Sl78BwDuiN@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241211190017.GA440022@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <Z1rfW8Sl78BwDuiN@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] mmap01: Convert to new API
+Subject: Re: [LTP] [PATCH] hugemmap34: change how test finds suitable huge
+ page and stack for test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,113 +99,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: samir@linux.vnet.ibm.com, mkoutny@suse.com, ltp@lists.linux.it,
+ emunson@mgebm.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello!
+Hi, Jan
 
-On 11 Dec 24 20:00, Petr Vorel wrote:
-> > Hi Petr!
-> 
-> > On 11 Dec 24 02:47, Petr Vorel wrote:
-> > > Hi Ricardo,
-> 
-> > > ...
-> > > > +static void run(void)
-> > > >  {
-> > > > +	pid_t pid;
-> > > > +
-> > > > +	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE,
-> > > > +			 MAP_FILE | MAP_SHARED, fildes, 0);
-> > > > +
-> > > > +	/*
-> > > > +	 * Check if mapped memory area beyond EOF are zeros and changes beyond
-> > > > +	 * EOF are not written to file.
-> > > > +	 */
-> > > > +	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz))
-> > > > +		tst_brk(TFAIL, "mapped memory area contains invalid data");
-> > > FYI test fails when run more iterations (e.g. -i2)
-> 
-> 
-> > Thanks for taking a look, but I don't see the issue here:
-> 
-> > # /opt/ltp/testcases/bin/mmap01 -i4
-> > tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmaiVJsAq as tmpdir (fuse filesystem)
-> > tst_test.c:1890: TINFO: LTP version: 20240930-73-g865be36ffce8
-> > tst_test.c:1894: TINFO: Tested kernel: 6.11.0-virtme #1 SMP PREEMPT_DYNAMIC Fri Oct  4 13:39:48 -03 2024 x86_64
-> > tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-> > mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> > mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> > mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> > mmap01.c:49: TPASS: Functionality of mmap() successful YES
-> 
-> > Summary:
-> > passed   4
-> > failed   0
-> > broken   0
-> > skipped  0
-> > warnings 0
-> 
-> > I appended the "YES" just to make sure I wasn't running some outdated
-> > code, can you please provide more details?
-> 
-> I have no idea myself. I verified if I'm using v4 [1] and I really do.
-> Can you please push the code you're using?
-> Your code I'm testing is in my fork [2].
-> 
-> Tested on more systems:
+Thanks for your new patch, test on my setup and result is pass.
 
-Many thanks! After a fresh build I started seeing those, too. The issue
-is that run() changes the file and the second run uses this updated
-file. I pushed a new revision with a new set_file to put it in a known
-state before each run.
+Reviewed-by: Wei Gao <wegao@suse.com>
 
-FWIW I pushed it here:
-
-https://github.com/rbmarliere/ltp/tree/b4/convert_mmap01
-
-Thanks,
--	Ricardo.
-
-
-> 
-> # ./mmap01 -i4
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmabiOth0 as tmpdir (tmpfs filesystem)
-> tst_test.c:1890: TINFO: LTP version: 20240930-116-g23f5a4447
-> tst_test.c:1894: TINFO: Tested kernel: 6.13.0-rc1-1.g492f944-default #1 SMP PREEMPT_DYNAMIC Mon Dec  2 08:55:00 UTC 2024 (492f944) x86_64
-> tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-> mmap01.c:49: TPASS: Functionality of mmap() successful
-> mmap01.c:68: TFAIL: mapped memory area contains invalid data
-> 
-> Summary:
-> passed   1
-> failed   1
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> $ ./mmap01 -i4
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmakqgzvS as tmpdir (tmpfs filesystem)
-> tst_test.c:1890: TINFO: LTP version: 20240930-115-g786b808eda
-> tst_test.c:1894: TINFO: Tested kernel: 6.11-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.11 (2024-11-23) x86_64
-> tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
-> mmap01.c:49: TPASS: Functionality of mmap() successful
-> mmap01.c:68: TFAIL: mapped memory area contains invalid data
-> 
-> Summary:
-> passed   1
-> failed   1
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> [1] https://patchwork.ozlabs.org/project/ltp/patch/20241210-convert_mmap01-v4-1-c2338a2ca071@suse.com/
-> [2] https://github.com/pevik/ltp/commit/a3c07097784088a679e77a4486bb10adfe03eea0
+Regards
+Gao Wei
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
