@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8DBCE7717F
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 22:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58B0BE7717F
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 22:20:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E89973EB896
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 23:20:36 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E872B3EB886
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 23:20:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07EC03E9757
+ by picard.linux.it (Postfix) with ESMTPS id 6EBF93E9757
  for <ltp@lists.linux.it>; Fri, 13 Dec 2024 23:20:19 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 67D216008AF
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7CE85141098A
  for <ltp@lists.linux.it>; Fri, 13 Dec 2024 23:20:19 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DC4801F46E;
- Fri, 13 Dec 2024 22:20:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1B03021196;
+ Fri, 13 Dec 2024 22:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1734128418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1734128419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DGrabM/RTjYOWG32YCic41PKnBU/k6Nk5QL41lBHGqo=;
- b=WsKHDXunr0pGwiyfDdN0I4Ti56Hhc13TAIfOXhcdDYLqHVb51u9/zyIreO3tc2sa50BWJV
- sHRrDKZUoR72+rf0+gfID0jnXOLscrhpLMXphs1CoQZ2kSf2X/g6qeyL9MkCmzDp2SNaT5
- tg9pLvl0vYMWBVUDQSqf00IhtX1RH0c=
+ bh=+IACrbzar+q2gwbFX3a7IyWwyvw/T4otCMTSaJqhvFw=;
+ b=OsyGGQhMyqzu69X//ITStD4ftphXU9WtyZZboywVLIhaNVWobxrDY0b+jpbIEcahuaeyXL
+ 6w6a/oJsegwpw88wTYMexL4eTS6hHhRaHkQ+xbdSJFm60uwQTDZ//cx1C5YRJQlZvA9oRV
+ PBlq9fVZlpTDExYNyZXsksTCo7cq5VM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1734128418;
+ s=susede2_ed25519; t=1734128419;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DGrabM/RTjYOWG32YCic41PKnBU/k6Nk5QL41lBHGqo=;
- b=tUHW+Ko4a97J70ValSNk573aKzzga3AjwGdje4o0at3r9RwJYxnixb+xUcbt2UurTma68L
- MpXy0p4ANYDR1JAQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=+IACrbzar+q2gwbFX3a7IyWwyvw/T4otCMTSaJqhvFw=;
+ b=Q7nrjrxiAT2qFnFfuG44FVyuVGE/dNfqXF61AuK1pYqLOgANhKvxhMvPFLFxq9Gj1HDYMZ
+ JKWs+F9KGOIRqAAQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1734128418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1734128419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DGrabM/RTjYOWG32YCic41PKnBU/k6Nk5QL41lBHGqo=;
- b=WsKHDXunr0pGwiyfDdN0I4Ti56Hhc13TAIfOXhcdDYLqHVb51u9/zyIreO3tc2sa50BWJV
- sHRrDKZUoR72+rf0+gfID0jnXOLscrhpLMXphs1CoQZ2kSf2X/g6qeyL9MkCmzDp2SNaT5
- tg9pLvl0vYMWBVUDQSqf00IhtX1RH0c=
+ bh=+IACrbzar+q2gwbFX3a7IyWwyvw/T4otCMTSaJqhvFw=;
+ b=OsyGGQhMyqzu69X//ITStD4ftphXU9WtyZZboywVLIhaNVWobxrDY0b+jpbIEcahuaeyXL
+ 6w6a/oJsegwpw88wTYMexL4eTS6hHhRaHkQ+xbdSJFm60uwQTDZ//cx1C5YRJQlZvA9oRV
+ PBlq9fVZlpTDExYNyZXsksTCo7cq5VM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1734128418;
+ s=susede2_ed25519; t=1734128419;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DGrabM/RTjYOWG32YCic41PKnBU/k6Nk5QL41lBHGqo=;
- b=tUHW+Ko4a97J70ValSNk573aKzzga3AjwGdje4o0at3r9RwJYxnixb+xUcbt2UurTma68L
- MpXy0p4ANYDR1JAQ==
+ bh=+IACrbzar+q2gwbFX3a7IyWwyvw/T4otCMTSaJqhvFw=;
+ b=Q7nrjrxiAT2qFnFfuG44FVyuVGE/dNfqXF61AuK1pYqLOgANhKvxhMvPFLFxq9Gj1HDYMZ
+ JKWs+F9KGOIRqAAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 992F7137CF;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E235C13939;
  Fri, 13 Dec 2024 22:20:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WJp7IyKzXGf5QQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GIpRNCKzXGf5QQAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Fri, 13 Dec 2024 22:20:18 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 13 Dec 2024 23:20:12 +0100
-Message-ID: <20241213222014.1580991-7-pvorel@suse.cz>
+Date: Fri, 13 Dec 2024 23:20:13 +0100
+Message-ID: <20241213222014.1580991-8-pvorel@suse.cz>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241213222014.1580991-1-pvorel@suse.cz>
 References: <20241213222014.1580991-1-pvorel@suse.cz>
@@ -99,9 +99,9 @@ X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/8] IMA: Add example policy for ima_violations.sh
+Subject: [LTP] [PATCH v2 7/8] ima_violations.sh: Check for a required policy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,20 +119,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+Add check for ^func=FILE_CHECK'
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../integrity/ima/datafiles/ima_violations/violations.policy     | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
+ .../kernel/security/integrity/ima/tests/ima_violations.sh    | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
-new file mode 100644
-index 0000000000..5734c7617f
---- /dev/null
-+++ b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
-@@ -0,0 +1 @@
-+func=FILE_CHECK
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+index 0f710dea2e..73b9fe6f30 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2009 IBM Corporation
+-# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2018-2024 Petr Vorel <pvorel@suse.cz>
+ # Author: Mimi Zohar <zohar@linux.ibm.com>
+ #
+ # Test whether ToMToU and open_writer violations invalidatethe PCR and are logged.
+@@ -9,6 +9,7 @@
+ TST_SETUP="setup"
+ TST_CLEANUP="cleanup"
+ TST_CNT=3
++REQUIRED_POLICY='^func=FILE_CHECK'
+ 
+ setup()
+ {
+@@ -17,6 +18,8 @@ setup()
+ 	LOG="/var/log/messages"
+ 	PRINTK_RATE_LIMIT=
+ 
++	require_ima_policy_content_if_readable "$REQUIRED_POLICY"
++
+ 	if status_daemon auditd; then
+ 		LOG="/var/log/audit/audit.log"
+ 	elif tst_check_cmds sysctl; then
 -- 
 2.47.1
 
