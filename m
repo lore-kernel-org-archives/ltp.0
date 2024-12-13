@@ -4,51 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DCAFE7717F
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 22:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3C46E7717F
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 22:22:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 147C13EB887
-	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 23:21:48 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 417EE3EB88C
+	for <ltp@archiver.kernel.org>; Fri, 13 Dec 2024 23:22:04 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1E5203E9757
+ by picard.linux.it (Postfix) with ESMTPS id 269393EB879
  for <ltp@lists.linux.it>; Fri, 13 Dec 2024 23:20:21 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8CAA8141098A
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9691B63F2AA
  for <ltp@lists.linux.it>; Fri, 13 Dec 2024 23:20:20 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 931722117F;
- Fri, 13 Dec 2024 22:20:18 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 576CD1F74B;
+ Fri, 13 Dec 2024 22:20:19 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FCED13AD7;
- Fri, 13 Dec 2024 22:20:18 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 229D2137CF;
+ Fri, 13 Dec 2024 22:20:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4N1EFiKzXGf5QQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 13 Dec 2024 22:20:18 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OBgIByOzXGf5QQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 13 Dec 2024 22:20:19 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 13 Dec 2024 23:20:11 +0100
-Message-ID: <20241213222014.1580991-6-pvorel@suse.cz>
+Date: Fri, 13 Dec 2024 23:20:14 +0100
+Message-ID: <20241213222014.1580991-9-pvorel@suse.cz>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241213222014.1580991-1-pvorel@suse.cz>
 References: <20241213222014.1580991-1-pvorel@suse.cz>
@@ -57,15 +56,15 @@ X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
  ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 931722117F
+X-Rspamd-Queue-Id: 576CD1F74B
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/8] ima_kexec.sh: Move checking policy if readable
- to ima_setup.sh
+Subject: [LTP] [PATCH v2 8/8] [RFC] ima_kexec.sh: Relax result on unreadable
+ policy to TCONF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,61 +82,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It will be reused.
+Although d1e29adca6, which set minimal version fixed some false
+positives, it might be better to be optimistic and exit with TCONF
+when result is unknown due policy not being readable than "fail" with
+TBROK and TWARN.
 
+Fixes: 731aae8121 ("IMA: Add test for kexec cmdline measurement")
+Reported-by: Martin Doucha <mdoucha@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../kernel/security/integrity/ima/tests/ima_kexec.sh   |  8 ++------
- .../kernel/security/integrity/ima/tests/ima_setup.sh   | 10 ++++++++++
- 2 files changed, 12 insertions(+), 6 deletions(-)
+ testcases/kernel/security/integrity/ima/tests/ima_kexec.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-index 3446bc24bf..df8658655d 100755
+index df8658655d..c52d767fe7 100755
 --- a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
 +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-@@ -47,10 +47,7 @@ setup()
- 		tst_brk TCONF "kernel image not found, specify path in \$IMA_KEXEC_IMAGE"
- 	fi
- 
--	if check_policy_readable; then
--		require_ima_policy_content "$REQUIRED_POLICY"
--		policy_readable=1
--	fi
-+	require_ima_policy_content_if_readable "$REQUIRED_POLICY"
- }
- 
- kexec_failure_hint()
-@@ -97,8 +94,7 @@ kexec_test()
- 
+@@ -95,7 +95,7 @@ kexec_test()
  	ROD kexec -su
  	if ! measure "$cmdline"; then
--		if [ "$policy_readable" != 1 ]; then
--			tst_res TWARN "policy not readable, it might not contain required policy '$REQUIRED_POLICY'"
-+		if ! check_policy_readable; then
- 			res=TBROK
+ 		if ! check_policy_readable; then
+-			res=TBROK
++			res=TCONF
  		fi
  		tst_brk $res "unable to find a correct measurement"
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index e958dd3334..9a05a31c31 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -101,6 +101,16 @@ check_ima_policy_content()
  	fi
- }
- 
-+require_ima_policy_content_if_readable()
-+{
-+	local pattern="$1"
-+	local grep_params="${2--q}"
-+
-+	if ! check_ima_policy_content "$pattern" "$grep_params"; then
-+		tst_brk TCONF "IMA policy does not specify '$pattern'"
-+	fi
-+}
-+
- require_ima_policy_content()
- {
- 	local pattern="$1"
 -- 
 2.47.1
 
