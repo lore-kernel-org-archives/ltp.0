@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 357F4E7717F
-	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 06:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 606FDE7717F
+	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 07:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1734331571; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1734332657; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=qSeMUtJpU8fBBLDHS6rT7DbDR+/vn2zpv0m7D9vnZ7w=;
- b=LqXG2HvEGIRLA1iCs5QGmcqaBn28cJWjy2r2/R1lFlLlBiKbSFLBp6iIoElkJewK0pAT/
- ksuR+ZJonvCWle+oDq9yY4MX4i/jPLT7lPGJWX6GTi/bYBGzlGXerWD60uBoAGqVLT+9dOL
- MZ5tBDpgxWePmG1Auh4nTiFIzijc6WQ=
+ bh=3UMbqcABAsaYWQQqGd2OHYa64U7j/hXdghhDHOLjesM=;
+ b=ojjbSaMujPhKkdM+BTx25w50QdxoXo3GqhInXycQgky6+XJueL5RTjQ3hxbU6ro7tKzsd
+ pQVlKucrj2wwWKazEEKgKPHUw6HrxnuzghufftnmzIpmgGdTwEKILcm7IdsdJB+Rmwk+cNO
+ Qmq3eWEfA/GNY+/ZM2V5rqBIoiL2aNs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 909093E2A06
-	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 07:46:11 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8D56D3E2A2B
+	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 08:04:17 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B1A353E1320
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 07:45:52 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 54BFD3E29DF
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 08:03:55 +0100 (CET)
 Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.225;
+ helo=esa10.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
+ [139.138.36.225])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 34E011BC8492
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 07:45:51 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5B7621BC8496
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 08:03:54 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1734331552; x=1765867552;
+ t=1734332635; x=1765868635;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=aI/ZxXRq5qqMnmYxPIXIiGIQoxE7v921jpL5iGnrSTQ=;
- b=DIxRPEnpAGgGTwXR9OGml0SKycbJBpQ1UPEM2OOvXiJbRYcQjnAH7Aj5
- FI5Tbz/oHiUOkduKki5V1XzAruMJV+aO0+wC9rofw1JOIerCDBK4bkLE5
- 1q4s+JwgQlAyRFJRBVurVvAEWuIrmoO61/imEIFhVXkpHhnuG1zm4JTkz
- g1/NXS0UwMTRPhsR3tTClLrSreXcm4j+p5Vp9//SbXmB60/Q3mOo2Gjjj
- AfDtU7q1KIq8Aa9ctT6tbkYsQGIKieSK9ry/DtJs9kIhswR1n+0RhsoSm
- 9xQ3NSuKqQEdKEf4ZoGcgX5E/gyq6RIXaFdV+Q7WlBFFLPdwa+6UYkqqh Q==;
-X-CSE-ConnectionGUID: 3h+h9J15TySCZO/Ht4YCyA==
-X-CSE-MsgGUID: 7O0x6R2rRfCLUHV5QusIIA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11287"; a="163290264"
-X-IronPort-AV: E=Sophos;i="6.12,237,1728918000"; d="scan'208";a="163290264"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2024 15:45:50 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8C77AE852C
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 15:45:47 +0900 (JST)
+ bh=MTCv3vnOWvrU43jrVDEAYmQJsCiPQqo74bkFrcarveY=;
+ b=UxWAqJtT0wB/nliaKWGV1T1Vec7kNZYNNUfW7B3Jf6y+eA+WzgUytJum
+ 5acrqCQAXZP3J6E9OsHG2fMvEFenJcdP5ecMXPs/X8y0jghMYPVEvZrzE
+ XCVRc7ySGYvRDd6m+OWpxmCQeaZ7uGS3EdRd7SHU/ZBjrJU6XG1wCVFvx
+ xT/zwEL9zQDU9O5s3BDEwPYGBHwp6w54OIv3KkSC+WV0r52Vn6TqlAUCp
+ scpKRP7OKc34VM2IgNOEqDd1VXbeChauw/FIOTs4J+LnqBiEZ6tmCQELC
+ c3TrEzU0wzgCYHbBU95V6XPK8UrkNORyQTPnRI0v8eeWHd+t+DHl9GApy w==;
+X-CSE-ConnectionGUID: DjUOxBsoQhK/wCEg00wRdQ==
+X-CSE-MsgGUID: gfRPMulzRIiKsDCdxmatHw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11287"; a="171175934"
+X-IronPort-AV: E=Sophos;i="6.12,237,1728918000"; d="scan'208";a="171175934"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+ by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Dec 2024 16:03:52 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
+ [192.168.87.60])
+ by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id BE082C2266
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 16:03:50 +0900 (JST)
 Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
  [192.51.206.22])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 5AB9BD3F26
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 15:45:47 +0900 (JST)
+ by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 958E0D73B9
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 16:03:50 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id E1AFF224606
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 15:45:46 +0900 (JST)
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 1E769224966
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 16:03:50 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 202F71A000B;
- Mon, 16 Dec 2024 14:45:46 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 8C1B01A000B;
+ Mon, 16 Dec 2024 15:03:49 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Mon, 16 Dec 2024 14:45:26 +0800
-Message-ID: <20241216064526.2891270-1-maxj.fnst@fujitsu.com>
+Date: Mon, 16 Dec 2024 15:03:29 +0800
+Message-ID: <20241216070329.2892491-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28862.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28862.005
-X-TMASE-Result: 10--4.955700-10.000000
-X-TMASE-MatchedRID: FMY5IFaWNFChhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmOEENgsUAuYsdh
- SaRRgUR74vM1YF6AJbZhyT3WNjppUtAtbEEX0MxBxEHRux+uk8irEHfaj14ZyQca30uf/jvRdln
- MkAcJxIK6x7m8HB8AAkjYm/dW6C9nYeBUSAnD9CKbObtkXNzgwi2tDUhxbkptuP2uzsmvxU9kn+
- ZWe1sgHAd0ruCUrh2IhpPsVGqnTA8BxCsB8GHr28FEsV4fo4lIJMMP4MGO4TA=
+X-TMASE-Result: 10--12.123100-10.000000
+X-TMASE-MatchedRID: gk5wloW7liihhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmY0QQ8kxqAzJGH
+ Z85Onc+24PKuGN+8yk1BkRBFNEKJqbejROPl/CmS5CghTisABMxf3ennYqHe2F/8lGqVstJXD4m
+ 1gZ6zeMTi8zVgXoAltuJ5hXsnxp7jC24oEZ6SpSkgbhiVsIMQK9LdHHLXgng3Ihig5xFCeYe1Vq
+ 5q0xWDH1wPHDI+xMSDyQQuHnPzpXschXTZ3Wukbw==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] nanosleep01: Convert docs to docparse
+Subject: [LTP] [PATCH] fchmod05: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,29 +106,42 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- testcases/kernel/syscalls/nanosleep/nanosleep01.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/fchmod/fchmod05.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep01.c b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-index eaacb89fa..bd9ae0caa 100644
---- a/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-+++ b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-@@ -5,10 +5,11 @@
-  * Copyright (C) 2015-2017 Cyril Hrubis <chrubis@suse.cz>
-  */
- 
--/*
-- * Test Description:
-- *  nanosleep() should return with value 0 and the process should be
-- *  suspended for time specified by timespec structure.
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+index 0c731d601..e5de86117 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod05.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+@@ -2,18 +2,18 @@
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  * Author: Wayne Boyer
++ */
++
 +/*\
 + * [Description]
-+ *
-+ * Verify that nanosleep() should return with value 0 and the process should be
-+ * suspended for time specified by timespec structure.
+  *
+- * Test Description:
+- *  Verify that, fchmod(2) will succeed to change the mode of a directory
+- *  but fails to set the setgid bit on it if invoked by non-root (uid != 0)
+- *  process with the following constraints,
+- *	- the process is the owner of the directory.
+- *	- the effective group ID or one of the supplementary group ID's of the
+- *	  process is not equal to the group ID of the directory.
++ * Verify that, fchmod(2) will succeed to change the mode of a directory
++ * but fails to set the setgid bit on it if invoked by non-root (uid != 0)
++ * process with the following constraints,
+  *
+- * Expected Result:
+- *  fchmod() should return value 0 on success and though succeeds to change
+- *  the mode of a directory but fails to set setgid bit on it.
++ * - the process is the owner of the directory.
++ * - the effective group ID or one of the supplementary group ID's of the
++ *   process is not equal to the group ID of the directory.
   */
  
- #include <errno.h>
+ #include <pwd.h>
 -- 
 2.47.0
 
