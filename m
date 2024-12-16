@@ -4,85 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40B9DE7717F
-	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 09:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FFFCE7717F
+	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 12:29:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC3983EB366
-	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 10:38:29 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A56733EBCDE
+	for <ltp@archiver.kernel.org>; Mon, 16 Dec 2024 13:29:14 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 977023E14D8
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 10:38:13 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id DBFF13EB674
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 13:28:57 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 555096285D6
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 10:38:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1734341889;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wqQyFK3k1RGlXxfIvfcHb4pbqhQwmGF+icZgABRB8Yc=;
- b=NYCTJC9pN83vju+i/pT4469zAE90ZYp0jezxO1twNd5mtlM7KyYDMhamIIxsznlDsGwShq
- AgrzG1yI0/tcdw8NWR6rZzWulByDZMGZdjO+L7mZr29lGlooFcQohJ5YqHa4qahgn88tZF
- 6y+a5mHVMXW9EWKIwWUi7AI489Ovfto=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-126-UhCE80aCPsW0n-A2bKRxyg-1; Mon, 16 Dec 2024 04:38:07 -0500
-X-MC-Unique: UhCE80aCPsW0n-A2bKRxyg-1
-X-Mimecast-MFC-AGG-ID: UhCE80aCPsW0n-A2bKRxyg
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2f129f7717fso3624949a91.0
- for <ltp@lists.linux.it>; Mon, 16 Dec 2024 01:38:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1734341885; x=1734946685;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=wqQyFK3k1RGlXxfIvfcHb4pbqhQwmGF+icZgABRB8Yc=;
- b=WeV4tmemm0d8btaypOy6bZA5Oc3t8h7pyYvTACCJwvZRdpCh0hTQn+SKKfS0U+qzjx
- D44nH8vAqTcWlxPpOpIeuHgg9CVXoJPqFQ06MrIqYz2NzolxoSlPPRwJXoBrrWUFhXpI
- 1Q17hnxHuvQlsGBHbby8BOk0t+YCemsWSNSHrb4W3MUJppEOzbLvjLhnAqxx7pyE8oZG
- dlk7OEHTDrd0lkE3jK+w8JKPW2Exgv3JCKn3L7h+O/9CNDt9mxaRkMPdYOtuCDs/oFa0
- 001CVYfkwh2vQ8q77twdT6bAH2RZrvKmeA/HhZ2aSEgoz0m/kBEyQm4zoIefktkd8Fjm
- HXdA==
-X-Gm-Message-State: AOJu0YxGDZ7/QQjEy7HTmmAVb3WQVcBj3OXpf6X/4BQOEfVWhgY4jW2h
- EmamuJi+r6oJEomtF4p/StF9kWbaQdxDTmbUkVztNNU92ZEnBW3IpqrzqUp5Sdt7mIS4ZdY4n4C
- ey6ieuiSfNxKUCrMxmiSdnJEljwhtAOZw+dRjee+yvYWo9TCHnzT7kePkpEm4MWnISWCo47ttvV
- WKCtB4f+Kyi7ZAzCwyE7tTO863Q2/zzcY3qCFS
-X-Gm-Gg: ASbGncuxwSvB01LBGWZBnQs+HVInTj9CU1Rm4IV1X/bnpfm3MX9LQuOCBr+Lx5IpyCQ
- FB67kvP7fr7E2dVDxDv9hiCGVJW+Gpoe6XhH7chU=
-X-Received: by 2002:a17:90b:5105:b0:2ee:ed07:d6d2 with SMTP id
- 98e67ed59e1d1-2f2902ac693mr17140500a91.37.1734341885348; 
- Mon, 16 Dec 2024 01:38:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF//gxhbWvVAai2WZWVZev/1YiYfCT1l2og+L8ftGDcbznOL3PgAlQ2YeqUQu9pgHqQC7ZY+5jwfkz1rr/WOTs=
-X-Received: by 2002:a17:90b:5105:b0:2ee:ed07:d6d2 with SMTP id
- 98e67ed59e1d1-2f2902ac693mr17140478a91.37.1734341884979; Mon, 16 Dec 2024
- 01:38:04 -0800 (PST)
-MIME-Version: 1.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 33AFF102F414
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 13:28:56 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7EEAB1F37E;
+ Mon, 16 Dec 2024 12:28:54 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6263D137CF;
+ Mon, 16 Dec 2024 12:28:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7l8MFwYdYGduSQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 16 Dec 2024 12:28:54 +0000
+Date: Mon, 16 Dec 2024 13:28:48 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20241216122848.GA587325@pevik>
 References: <20241212060448.204158-1-liwang@redhat.com>
  <20241213224041.GB1577592@pevik>
-In-Reply-To: <20241213224041.GB1577592@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 16 Dec 2024 17:37:53 +0800
-Message-ID: <CAEemH2dRjvTkvmJ1tXGq9FXbKZETjhAbe90s4-ayCzygc5jonQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: QEAG35UnVigKZfOEe3Kqg1TUWObH70fgR4rmYzldUcA_1734341887
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ <CAEemH2dRjvTkvmJ1tXGq9FXbKZETjhAbe90s4-ayCzygc5jonQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2dRjvTkvmJ1tXGq9FXbKZETjhAbe90s4-ayCzygc5jonQ@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 7EEAB1F37E
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH V3] lib: multiply the max_runtime if detect slow
  kconfigs
 X-BeenThere: ltp@lists.linux.it
@@ -96,107 +78,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gU2F0LCBEZWMgMTQsIDIwMjQgYXQgNjo0MOKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gSGkgTGksCj4KPiA+IFRoZSBtZXRob2QgYWRqdXN0cyB0aGUgbWF4X3J1
-bnRpbWUgZm9yIHRlc3QgY2FzZXMgYnkgbXVsdGlwbHlpbmcKPiA+IGl0IGJ5IGEgZmFjdG9yICg0
-eCkgaWYgYW55IHNsb3dlciBrZXJuZWwgb3B0aW9ucyBhcmUgZGV0ZWN0ZWQuCj4gPiBEZWJ1ZyBr
-ZXJuZWwgY29uZmlndXJhdGlvbnMgKHN1Y2ggYXMgQ09ORklHX0tBU0FOLCBDT05GSUdfUFJPVkVf
-TE9DS0lORywKPiBldGMuKQo+ID4gYXJlIGtub3duIHRvIGRlZ3JhZGUgcGVyZm9ybWFuY2UsIGFu
-ZCB0aGlzIGFkanVzdG1lbnQgZW5zdXJlcwo+ID4gdGhhdCB0ZXN0cyBkbyBub3QgZmFpbCBwcmVt
-YXR1cmVseSBkdWUgdG8gdGltZW91dHMuCj4KPiA+IEFzIEN5cmlsIHBvaW50ZWQgb3V0IHRoYXQg
-YSBkZWJ1ZyBrZXJuZWwgd2lsbCB0eXBpY2FsbHkgcnVuCj4gPiBzbG93ZXIgYnkgYSBmYWN0b3Ig
-b2YgTiwgYW5kIHdoaWxlIGRldGVybWluaW5nIHRoZSBleGFjdCB2YWx1ZQo+ID4gb2YgTiBpcyBj
-aGFsbGVuZ2luZywgc28gYSByZWFzb25hYmxlIHVwcGVyIGJvdW5kIGlzIHN1ZmZpY2llbnQKPiA+
-IGZvciBwcmFjdGljYWwgcHVycG9zZXMuCj4KPiA+IFNpZ25lZC1vZmYtYnk6IExpIFdhbmcgPGxp
-d2FuZ0ByZWRoYXQuY29tPgo+ID4gLS0tCj4gPiAgaW5jbHVkZS90c3Rfa2NvbmZpZy5oIHwgMTMg
-KysrKysrKysrKysrKwo+ID4gIGxpYi90c3Rfa2NvbmZpZy5jICAgICB8IDM5ICsrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ID4gIGxpYi90c3RfdGVzdC5jICAgICAgICB8
-ICAzICsrKwo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgNTUgaW5zZXJ0aW9ucygrKQo+Cj4gPiBkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS90c3Rfa2NvbmZpZy5oIGIvaW5jbHVkZS90c3Rfa2NvbmZpZy5oCj4g
-PiBpbmRleCAyM2Y4MDc0MDkuLjI5MWMzNGIxMSAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvdHN0
-X2tjb25maWcuaAo+ID4gKysrIGIvaW5jbHVkZS90c3Rfa2NvbmZpZy5oCj4gPiBAQCAtOTgsNCAr
-OTgsMTcgQEAgc3RydWN0IHRzdF9rY21kbGluZV92YXIgewo+ID4gICAqLwo+ID4gIHZvaWQgdHN0
-X2tjbWRsaW5lX3BhcnNlKHN0cnVjdCB0c3Rfa2NtZGxpbmVfdmFyIHBhcmFtc1tdLCBzaXplX3QK
-PiBwYXJhbXNfbGVuKTsKPgo+IExHVE0sIGZldyBjb21tZW50cyBiZWxvdwo+IFJldmlld2VkLWJ5
-OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPgo+Cj4gPiArLyoKPiA+ICsgKiBDaGVjayBp
-ZiBhbnkgcGVyZm9ybWFuY2UtZGVncmFkaW5nIGtlcm5lbCBjb25maWdzIGFyZSBlbmFibGVkLgo+
-Cj4gQ291bGQgeW91IHBsZWFzZSBiZWZvcmUgbWVyZ2UgY2hhbmdlIHRoaXMgdG86Cj4KPiAvKioK
-PiAgKiB0c3RfaGFzX3Nsb3dfa2NvbmZpZygpIC0gQ2hlY2sgaWYgYW55IHBlcmZvcm1hbmNlLWRl
-Z3JhZGluZyBrZXJuZWwKPiBjb25maWdzIGFyZSBlbmFibGVkLgo+Cj4gVG8gY29tcGx5IGtlcm5l
-bCBkb2MgZm9ybWF0dGluZz8KPiB0c3Rfa2NvbmZpZy5oIGhhcyBub3QgYmVlbiBhZGRlZCB0byBz
-cGhpbnggZG9jIHlldCwgYnV0IGl0IHdvdWxkIGJlIG5pY2UKPiB0byBhZGQKPiBuZXcgY29kZSB3
-aXRoIHByb3BlciBmb3JtYXR0aW5nLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPgo+ID4gKyAq
-Cj4gPiArICogVGhpcyBmdW5jdGlvbiBpdGVyYXRlcyBvdmVyIHRoZSBsaXN0IG9mIHNsb3cga2Vy
-bmVsIGNvbmZpZ3VyYXRpb24KPiBvcHRpb25zCj4gPiArICogKGB0c3Rfc2xvd19rY29uZmlnc2Ap
-IGFuZCBjaGVja3MgaWYgYW55IG9mIHRoZW0gYXJlIGVuYWJsZWQgaW4gdGhlCj4gcnVubmluZyBr
-ZXJuZWwuCj4gPiArICogVGhlc2Ugb3B0aW9ucyBhcmUga25vd24gdG8gZGVncmFkZSBzeXN0ZW0g
-cGVyZm9ybWFuY2Ugd2hlbiBlbmFibGVkLgo+ID4gKyAqCj4gPiArICogUmV0dXJuOgo+ID4gKyAq
-IC0gMSBpZiBhdCBsZWFzdCBvbmUgc2xvdyBrZXJuZWwgY29uZmlnIGlzIGVuYWJsZWQuCj4gPiAr
-ICogLSAwIGlmIG5vbmUgb2YgdGhlIHNsb3cga2VybmVsIGNvbmZpZ3MgYXJlIGVuYWJsZWQuCj4g
-PiArICovCj4gPiAraW50IHRzdF9oYXNfc2xvd19rY29uZmlnKHZvaWQpOwo+ID4gKwo+ID4gICNl
-bmRpZiAgICAgICAvKiBUU1RfS0NPTkZJR19IX18gKi8KPiA+IGRpZmYgLS1naXQgYS9saWIvdHN0
-X2tjb25maWcuYyBiL2xpYi90c3Rfa2NvbmZpZy5jCj4gPiBpbmRleCA2ZDZiMWRhMTguLjkyYzI3
-Y2IzNSAxMDA2NDQKPiA+IC0tLSBhL2xpYi90c3Rfa2NvbmZpZy5jCj4gPiArKysgYi9saWIvdHN0
-X2tjb25maWcuYwo+ID4gQEAgLTYzMSwzICs2MzEsNDIgQEAgdm9pZCB0c3Rfa2NtZGxpbmVfcGFy
-c2Uoc3RydWN0IHRzdF9rY21kbGluZV92YXIKPiBwYXJhbXNbXSwgc2l6ZV90IHBhcmFtc19sZW4p
-Cj4KPiA+ICAgICAgIFNBRkVfRkNMT1NFKGYpOwo+ID4gIH0KPiA+ICsKPiA+ICsvKgo+ID4gKyAq
-IExpc3Qgb2Yga2VybmVsIGNvbmZpZyBvcHRpb25zIHRoYXQgbWF5IGRlZ3JhZGUgcGVyZm9ybWFu
-Y2Ugd2hlbgo+IGVuYWJsZWQuCj4gPiArICovCj4gPiArc3RhdGljIHN0cnVjdCB0c3Rfa2NvbmZp
-Z192YXIgc2xvd19rY29uZmlnc1tdID0gewo+ID4gKyAgICAgVFNUX0tDT05GSUdfSU5JVCgiQ09O
-RklHX1BST1ZFX0xPQ0tJTkciKSwKPiA+ICsgICAgIFRTVF9LQ09ORklHX0lOSVQoIkNPTkZJR19M
-T0NLREVQIiksCj4gPiArICAgICBUU1RfS0NPTkZJR19JTklUKCJDT05GSUdfREVCVUdfU1BJTkxP
-Q0siKSwKPiA+ICsgICAgIFRTVF9LQ09ORklHX0lOSVQoIkNPTkZJR19ERUJVR19SVF9NVVRFWEVT
-IiksCj4gPiArICAgICBUU1RfS0NPTkZJR19JTklUKCJDT05GSUdfREVCVUdfTVVURVhFUyIpLAo+
-ID4gKyAgICAgVFNUX0tDT05GSUdfSU5JVCgiQ09ORklHX0RFQlVHX1BBR0VBTExPQyIpLAo+IERv
-ZXMgQ09ORklHX0RFQlVHX1BBR0VBTExPQyBpdHNlbGYgcHJvbG9uZyB0aGUgcnVuPyBJc24ndCBp
-dCB0aGF0IG9ubHkgd2hlbgo+IGRlYnVnX2d1YXJkcGFnZV9taW5vcmRlcj0uLi4gb3IgZGVidWdf
-cGFnZWFsbG9jPS4uLiBpcyBzZXQ/Cj4KCkdvb2QgY2F0Y2guCgpJIGd1ZXNzIHRoYXQgd29uJ3Qg
-aW1wYWN0IHRoZSBrZXJuZWwgcGVyZm9ybWFuY2UgaWYgbm90IHNldCBhbnkKb2YgdGhlIHBhcmFt
-ZXRlcnMsIGJlY2F1c2UgZnJvbSB0aGUgZG9jIGl0IGlzIGRpc2FibGVkIGJ5IGRlZmF1bHQuCgog
-ICJXaGVuIENPTkZJR19ERUJVR19QQUdFQUxMT0MgaXMgc2V0LCB0aGlzIHBhcmFtZXRlcgogIGVu
-YWJsZXMgdGhlIGZlYXR1cmUgYXQgYm9vdCB0aW1lLiBJbiBkZWZhdWx0LCBpdCBpcyBkaXNhYmxl
-ZC4KICAuLi4uCiAgaWYgd2UgZG9uJ3QgZW5hYmxlIGl0IGF0IGJvb3QgdGltZSBhbmQgdGhlIHRo
-ZSBzeXN0ZW0gd2lsbCB3b3JrCiAgbW9zdGx5IHNhbWUgd2l0aCB0aGUga2VybmVsIGJ1aWx0IHdp
-dGhvdXQgQ09ORklHX0RFQlVHX1BBR0VBTExPQy4iCgpTbyBJIHdvdWxkIGxpa2UgdG8gcmVtb3Zl
-IENPTkZJR19ERUJVR19QQUdFQUxMT0MgZnJvbQp0aGUgZGV0ZWN0aW5nLgoKCgo+IGh0dHBzOi8v
-d3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvdjUuMi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVy
-cy5odG1sCj4KPiBJIHdvdWxkIG5lZWQgdG8gcnVuIHRoZSB0ZXN0IHdpdGggdGhlc2UgdG8gc2Vl
-IHRoZSBkaWZmZXJlbmNlLgo+CgpBbnkgbmV3IGZvdW5kPwoKCgo+Cj4KPiA+ICsgICAgIFRTVF9L
-Q09ORklHX0lOSVQoIkNPTkZJR19LQVNBTiIpLAo+ID4gKyAgICAgVFNUX0tDT05GSUdfSU5JVCgi
-Q09ORklHX1NMVUJfUkNVX0RFQlVHIiksCj4gPiArICAgICBUU1RfS0NPTkZJR19JTklUKCJDT05G
-SUdfVFJBQ0VfSVJRRkxBR1MiKSwKPiA+ICsgICAgIFRTVF9LQ09ORklHX0lOSVQoIkNPTkZJR19M
-QVRFTkNZVE9QIiksCj4gPiArICAgICBUU1RfS0NPTkZJR19JTklUKCJDT05GSUdfREVCVUdfTkVU
-IiksCj4gPiArICAgICBUU1RfS0NPTkZJR19JTklUKCJDT05GSUdfRVhUNF9ERUJVRyIpLAo+ID4g
-KyAgICAgVFNUX0tDT05GSUdfSU5JVCgiQ09ORklHX1FVT1RBX0RFQlVHIiksCj4gPiArICAgICBU
-U1RfS0NPTkZJR19JTklUKCJDT05GSUdfRkFVTFRfSU5KRUNUSU9OIiksCj4gPiArICAgICBUU1Rf
-S0NPTkZJR19JTklUKCJDT05GSUdfREVCVUdfT0JKRUNUUyIpCj4gPiArfTsKPiA+ICsKPiA+ICtp
-bnQgdHN0X2hhc19zbG93X2tjb25maWcodm9pZCkKPiA+ICt7Cj4gPiArICAgICB1bnNpZ25lZCBp
-bnQgaTsKPiA+ICsKPiA+ICsgICAgIHRzdF9rY29uZmlnX3JlYWQoc2xvd19rY29uZmlncywgQVJS
-QVlfU0laRShzbG93X2tjb25maWdzKSk7Cj4gPiArCj4gTWF5YmUgaGVyZSBUSU5GTyBtZXNzYWdl
-ICJjaGVja2luZyBmb3Igb3B0aW9ucyB3aGljaCBzbG93IHRoZSBleGVjdXRpb24/Cj4gT3IgcHJp
-bnQgaXQgKG9uY2UpIG9ubHkgaWYgb3B0aW9uIGRldGVjdGVkPyBCZWNhdXNlIGl0J3Mgbm90IG9i
-dmlvdXMgd2h5Cj4gd2UgYXJlCj4gZGV0ZWN0aW5nIGl0LiBPciBhZnRlciBzZWFyY2hpbmcgcHJp
-bnQgd2hhdCB3ZSBkaWQgKDR4IHByb2xvbmdlZCBydW50aW1lKS4KPgoKQWdyZWUsIHRoZSByZXN0
-IGNvbW1lbnRzIGFsbCBsb29rIGdvb2QuCgoKCj4KPiA+ICsgICAgIGZvciAoaSA9IDA7IGkgPCBB
-UlJBWV9TSVpFKHNsb3dfa2NvbmZpZ3MpOyBpKyspIHsKPiA+ICsgICAgICAgICAgICAgaWYgKHNs
-b3dfa2NvbmZpZ3NbaV0uY2hvaWNlID09ICd5Jykgewo+ID4gKyAgICAgICAgICAgICAgICAgICAg
-IHRzdF9yZXMoVElORk8sCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiJXMga2Vy
-bmVsIG9wdGlvbiBkZXRlY3RlZCIsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBz
-bG93X2tjb25maWdzW2ldLmlkKTsKPiA+ICsgICAgICAgICAgICAgICAgICAgICByZXR1cm4gMTsK
-PiA+ICsgICAgICAgICAgICAgfQo+ID4gKyAgICAgfQo+ID4gKwo+ID4gKyAgICAgcmV0dXJuIDA7
-Cj4gPiArfQo+ID4gZGlmZiAtLWdpdCBhL2xpYi90c3RfdGVzdC5jIGIvbGliL3RzdF90ZXN0LmMK
-PiA+IGluZGV4IDhkYjU1NGRlYS4uZjRlNjY3MjQwIDEwMDY0NAo+ID4gLS0tIGEvbGliL3RzdF90
-ZXN0LmMKPiA+ICsrKyBiL2xpYi90c3RfdGVzdC5jCj4gPiBAQCAtNTU1LDYgKzU1NSw5IEBAIHN0
-YXRpYyBpbnQgbXVsdGlwbHlfcnVudGltZShpbnQgbWF4X3J1bnRpbWUpCj4KPiA+ICAgICAgIHBh
-cnNlX211bCgmcnVudGltZV9tdWwsICJMVFBfUlVOVElNRV9NVUwiLCAwLjAwOTksIDEwMCk7Cj4K
-PiA+ICsgICAgIGlmICh0c3RfaGFzX3Nsb3dfa2NvbmZpZygpKQo+ID4gKyAgICAgICAgICAgICBt
-YXhfcnVudGltZSAqPSA0Owo+IE1heWJlIG5vdGUgaGVyZSB3aGF0IHdlIGRvPyAoVElORk8pCj4K
-PiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+ID4gKwo+ID4gICAgICAgcmV0dXJuIG1heF9ydW50aW1l
-ICogcnVudGltZV9tdWw7Cj4gPiAgfQo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFp
-bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi Li,
+
+...
+> > > +/*
+> > > + * List of kernel config options that may degrade performance when
+> > enabled.
+> > > + */
+> > > +static struct tst_kconfig_var slow_kconfigs[] = {
+> > > +     TST_KCONFIG_INIT("CONFIG_PROVE_LOCKING"),
+> > > +     TST_KCONFIG_INIT("CONFIG_LOCKDEP"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_SPINLOCK"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_RT_MUTEXES"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_MUTEXES"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_PAGEALLOC"),
+> > Does CONFIG_DEBUG_PAGEALLOC itself prolong the run? Isn't it that only when
+> > debug_guardpage_minorder=... or debug_pagealloc=... is set?
+
+> Good catch.
+
+> I guess that won't impact the kernel performance if not set any
+> of the parameters, because from the doc it is disabled by default.
+
+>   "When CONFIG_DEBUG_PAGEALLOC is set, this parameter
+>   enables the feature at boot time. In default, it is disabled.
+>   ....
+>   if we don't enable it at boot time and the the system will work
+>   mostly same with the kernel built without CONFIG_DEBUG_PAGEALLOC."
+
+> So I would like to remove CONFIG_DEBUG_PAGEALLOC from
+> the detecting.
+
+Or maybe to detect if debug_pagealloc kernel cmdline is set with tst_kcmdline_parse()?
+
+OTOH we run with debug_pagealloc=on only syscalls and some long running tests
+(e.g. bind06) are even slightly faster than when running without it. But that
+may be affected by QEMU host. Therefore let's skip CONFIG_DEBUG_PAGEALLOC until
+I find a time to test how it affects the runtime.
+
+> > https://www.kernel.org/doc/html/v5.2/admin-guide/kernel-parameters.html
+
+> > I would need to run the test with these to see the difference.
+
+
+> Any new found?
+
+I'm sorry I haven't tested yet. Feel free to not to wait and merge. I'll try to
+do it soon.
+
+Kind regards,
+Petr
+
+
+> > > +     TST_KCONFIG_INIT("CONFIG_KASAN"),
+> > > +     TST_KCONFIG_INIT("CONFIG_SLUB_RCU_DEBUG"),
+> > > +     TST_KCONFIG_INIT("CONFIG_TRACE_IRQFLAGS"),
+> > > +     TST_KCONFIG_INIT("CONFIG_LATENCYTOP"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_NET"),
+> > > +     TST_KCONFIG_INIT("CONFIG_EXT4_DEBUG"),
+> > > +     TST_KCONFIG_INIT("CONFIG_QUOTA_DEBUG"),
+> > > +     TST_KCONFIG_INIT("CONFIG_FAULT_INJECTION"),
+> > > +     TST_KCONFIG_INIT("CONFIG_DEBUG_OBJECTS")
+> > > +};
+> > > +
+> > > +int tst_has_slow_kconfig(void)
+> > > +{
+> > > +     unsigned int i;
+> > > +
+> > > +     tst_kconfig_read(slow_kconfigs, ARRAY_SIZE(slow_kconfigs));
+> > > +
+> > Maybe here TINFO message "checking for options which slow the execution?
+> > Or print it (once) only if option detected? Because it's not obvious why
+> > we are
+> > detecting it. Or after searching print what we did (4x prolonged runtime).
+
+
+> Agree, the rest comments all look good.
+
++1
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
