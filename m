@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4501BE7716A
-	for <ltp@archiver.kernel.org>; Tue, 17 Dec 2024 05:42:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F908E7716A
+	for <ltp@archiver.kernel.org>; Tue, 17 Dec 2024 06:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1734414165; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=9k7Zo2GG3+vyU1/Y8sHkuajmzvEUKsg7kI75/lVrzOc=;
- b=D/D+x6QjlVsD3iowZ2q7rp4+ttyNYDYxg8qv9KSSfVS8d2QcTsUS72vXyyCju5Mt15yTT
- 0rm2cK9aMnOjvMWHpyRGE5dUE4oweR7muBta/GC0I6ZxjVoKxSL0/x66P6Wq55cRAx9GIlq
- YKGxWyRMA2s2UhnuK5xvHIAECbuBHFA=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1734416229; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=1GSoO+E0/tVLA12qMn+eGK5VWlYCrl0M+n1Cb+iSoLw=;
+ b=CcKi6T9fCHnmf6BwQhiG37Qxv9LKNe8TjKv8butkWD0XHGk2d/Uk9gaLgkySPimWlnPUa
+ a1OnWB6xWlOEbvd7Fg9CjTXIXh1xVVp2FnUckNRQgPhPqxJWAZWNT4L30q32de6mNJO5AK8
+ IT3Y9gFDuMilAigiDjL+AEcEog2u4hk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 57BAB3E298C
-	for <ltp@archiver.kernel.org>; Tue, 17 Dec 2024 06:42:45 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9565A3E29AD
+	for <ltp@archiver.kernel.org>; Tue, 17 Dec 2024 07:17:09 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4C993E1313
- for <ltp@lists.linux.it>; Tue, 17 Dec 2024 06:42:23 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
- helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3F3803E29A2
+ for <ltp@lists.linux.it>; Tue, 17 Dec 2024 07:16:48 +0100 (CET)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
+ [IPv6:2a00:1450:4864:20::52a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 939DC14225C2
- for <ltp@lists.linux.it>; Tue, 17 Dec 2024 06:42:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1734414143; x=1765950143;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=6YYCmqs9+5CQijca2yhUXNO6mOTB/Wr+Qajc8KtLitg=;
- b=XFC/zGLiO1WLJo366LyyNF8F8zISv9uF2MyMU3Yk8FIATIwik4PDqy6G
- NlAIPj92b8j+mzv6zo63rrzmvPYGe0zEvVOgFiTlKY3M9R4jXd//277GO
- bOFk3w1nykVekqK7gE1qXFkpIfFi60m0XKYI1TJDxVUBNh+rn1J6huVdn
- TdZ1Mdc+zKX3r8MNTU+1IVb6ymGqQbciVm+MRB+jZdFOjlJLGTbUCAqn/
- YXBqqYZrmGlFnJL5lYF+G0nObjpj1xWv3n1lpLwd/dWfbNSR4DDPgaQgT
- MSooHUFbE3ulgQxISAiyNOWokegBDokYI29JCLbdfdJzpAjsLUbVm1xrS A==;
-X-CSE-ConnectionGUID: LNogJzBqQjinWHV4GzcncQ==
-X-CSE-MsgGUID: tfYU6sEgSvamjqNG7+5WRw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11288"; a="162928237"
-X-IronPort-AV: E=Sophos;i="6.12,240,1728918000"; d="scan'208";a="162928237"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2024 14:42:19 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id AD662D5015
- for <ltp@lists.linux.it>; Tue, 17 Dec 2024 14:42:16 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 7F332CF7F7
- for <ltp@lists.linux.it>; Tue, 17 Dec 2024 14:42:16 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 02FEA6BF56
- for <ltp@lists.linux.it>; Tue, 17 Dec 2024 14:42:16 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 90B3E1A000B;
- Tue, 17 Dec 2024 13:42:15 +0800 (CST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 74E2A142E642
+ for <ltp@lists.linux.it>; Tue, 17 Dec 2024 07:16:47 +0100 (CET)
+Received: by mail-ed1-x52a.google.com with SMTP id
+ 4fb4d7f45d1cf-5d122cf8dd1so8250530a12.2
+ for <ltp@lists.linux.it>; Mon, 16 Dec 2024 22:16:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1734416206; x=1735021006; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=rkKXAk72zpzmc8wM6Ww0P3Wd3UssF38v0xVLX6w46tM=;
+ b=Svgw0RqN7ozhjRXMSg4IL44dt9Ie9rYXnBZface9sy+Ze/QTchx2ud9STRmAaUymqw
+ wSG5p08jQAwJJL+fqJiiIinhv7nRD6I3eA8Fea/DW8FjT4PggXj/MTa0lgkfLdesfYUA
+ X7dQdqwuHcjvChrSfWlz4k19GRaLXySQ18vSnUOQMoVNMfPW0QWzfM94gl8YsC4Y0x+m
+ BeLmcdeG+4pc7F6E7xXLVkr/CEe5Ii7xbrYcVeun3Qc4FxxhSWg1FpvJ9/FD76zYb1Qs
+ doGS5DC6Bucy7ef9XUXPXBvjJYk3O8rEDqfZO9wphX6EQ94HQAswO0sSthkM6zK+5Fz2
+ MiPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1734416206; x=1735021006;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=rkKXAk72zpzmc8wM6Ww0P3Wd3UssF38v0xVLX6w46tM=;
+ b=rIfoSK525Mo/pzeJi5ugFxgIqun/jshQFD40RjNkxXBCHYK0eZhqKSb80UxJRMb7S6
+ 0h0iCwzIZviNjPvYEBLfRwRSmU7rzWRwzY4Zc/YFuM9EdPIUnez8p/+acPSza5DcLbeA
+ p7vEIwgCz1DuqRSG81w2o/hp72q20+RvvzpSU4lcRAOrGevnDWaD1z/zcs9wxg9ruPb/
+ bBY/0OMTFtZoEA4X0utXMzVyLTS+lPVHcmYafXFX2HGKxVpEsINjniZEOeDKN6bkmoYF
+ CWSJ5hGmuhLCb2nKSP44n3ETJFN9fF/H5yr46BhXuYmTzEY+4M+4Ivmq+ctGC2n9AJA/
+ KOrw==
+X-Gm-Message-State: AOJu0YxSx1Jag7bc899JYk8mLqqjxyoGGAePrsWoq68441QocHb6yfel
+ Gvx8IDALZaOvW4EGpXsz+yHPGYjJjKWdt6sXEMS728N6tqobDYzvs9tMzOM46j2r+8rxhWUKV20
+ =
+X-Gm-Gg: ASbGncuCa+0XJlleg38qTtfZnKzQeNsd4Ti9pHH7gzagvQhDQd0sz/hvSIbDumW2Nvg
+ 6NdabXhvuFQPcrMhs5SVh42MyDRMif/tgHrX+nQyliz1ev0+TFQ1eLXZUkxbSCqS81QLCvbodEO
+ sDTV8+EX+2vTyoxv84cARXgccw6id3EOeSopI49YkTPMZ5h5om1ehODHvwLkg5GKSaZCMDRbvtQ
+ BLO/wo+yYu902JfZ8wMz0JWC/i53T0dBKd41qyMaqC3Sg==
+X-Google-Smtp-Source: AGHT+IFyZLftbokd4dAUZSgoXzdStCTLG7vZN54WcVa11jtl1asOM7q0jL2tb4L4aeWZd9eekXYBvw==
+X-Received: by 2002:a05:6402:2695:b0:5d2:728f:d5f8 with SMTP id
+ 4fb4d7f45d1cf-5d7d40dbd9dmr2233266a12.27.1734416206217; 
+ Mon, 16 Dec 2024 22:16:46 -0800 (PST)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-5d652ad19ffsm3912596a12.24.2024.12.16.22.16.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Dec 2024 22:16:45 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Tue, 17 Dec 2024 13:41:38 +0800
-Message-ID: <20241217054138.2967010-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
+Date: Tue, 17 Dec 2024 01:16:34 -0500
+Message-Id: <20241217061636.16366-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240603103553.8318-1-wegao@suse.com>
+References: <20240603103553.8318-1-wegao@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28864.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28864.005
-X-TMASE-Result: 10--2.310000-10.000000
-X-TMASE-MatchedRID: 60gbRApQc+uhhjsqgSuNbxF4zyLyne+AVBDQSDMig9EnyU5/nZpxUBDO
- 9b78NniRb+SLxu/s2gUfMrPgF6OYQ6+/EguYor8cFEUknJ/kEl6YwzE9E8g5OfoLR4+zsDTthUf
- R2rvBju4x3aOcczvmuErRyUmhcwlyIXrZxYVfW0O42fKuo7kW1rgQrvE+hAU70CFP/Y0bIcPpVt
- f38x1UID5ZWl4J4VuJ5LD4QqUpZu4DzEnEoXMLKBXFEH92Kf64nTtPxlIuIBW9Hzj86YHXBCnif
- x5AGfCL
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] futex_cmp_requeue01: Convert docs to docparse
+Subject: [LTP] [PATCH v4 0/2] ptrace: Refactor
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,39 +96,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/futex/futex_cmp_requeue01.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Wei Gao (2):
+  ptrace05: Refactor the test using new LTP API
+  ptrace06: Refactor the test using new LTP API
 
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-index 872704467..2f3bb70f9 100644
---- a/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-@@ -1,9 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (C) 2019 Xiao Yang <ice_yangxiao@163.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * Description:
-- * Testcase to check the basic functionality of futex(FUTEX_CMP_REQUEUE).
-+ * Verify the basic functionality of futex(FUTEX_CMP_REQUEUE).
-  * futex(FUTEX_CMP_REQUEUE) can wake up the number of waiters specified
-  * by val argument and then requeue the number of waiters limited by val2
-  * argument(i.e. move some remaining waiters from uaddr to uaddr2 address).
+ testcases/kernel/syscalls/ptrace/ptrace05.c   | 228 +++++-------
+ testcases/kernel/syscalls/ptrace/ptrace06.c   | 325 ++++++++++--------
+ .../kernel/syscalls/ptrace/ptrace06_child.c   |  16 +
+ 3 files changed, 272 insertions(+), 297 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace06_child.c
+
 -- 
-2.47.0
+2.35.3
 
 
 -- 
