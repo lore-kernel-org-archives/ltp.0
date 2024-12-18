@@ -4,113 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E414E77187
-	for <ltp@archiver.kernel.org>; Wed, 18 Dec 2024 18:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BE7E77187
+	for <ltp@archiver.kernel.org>; Wed, 18 Dec 2024 18:48:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B6093ED609
-	for <ltp@archiver.kernel.org>; Wed, 18 Dec 2024 19:47:37 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5958A3ED622
+	for <ltp@archiver.kernel.org>; Wed, 18 Dec 2024 19:47:59 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 132343ED622
- for <ltp@lists.linux.it>; Wed, 18 Dec 2024 19:45:21 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 3E8903ED62F
+ for <ltp@lists.linux.it>; Wed, 18 Dec 2024 19:45:27 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4BB941BC9ED6
- for <ltp@lists.linux.it>; Wed, 18 Dec 2024 19:45:21 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 098D960FB3D
+ for <ltp@lists.linux.it>; Wed, 18 Dec 2024 19:45:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2FB5D1F396;
- Wed, 18 Dec 2024 18:45:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7DFD021164;
+ Wed, 18 Dec 2024 18:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1734547520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1734547525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CmM6HTfykFcEEtYKi6meWb9evdvx5hj0QLHcC9LcjYg=;
- b=BNTuv8q/ELKYRVHNw+dJAIowq6MYvFDfiyKsv+94+KCQherTuTsxlAAfZ6dhd+Oz2tWJZl
- gjMH5X6vVBtPf2+i9CDda3B4RmYFdcbFiAHWB9F1JHEb/LT9fNI4XF4pEBamHPBZJoKXhi
- Qt9/wEnJvVT+sjC87+0fbAEPTcVef9w=
+ bh=dexBIcwuYFVtkEFhVaMlIz+cZEuxkrGtGbeYk6rVrIo=;
+ b=hXIjIrZkoqAKnt0kdQcxp97oGzvZuDgTpdBRrUk9VhIwFfKohCbXRydseDiYGY5ZAv/Y3u
+ Au22Dd5g0ZF//qV2SQP+KQhbJwkUy9GTrDLvfEN07rkW8BoFelOwnRL3hgSR8gxJEBPNuU
+ 6iJbXvjEEzSg+OoRXMVilo67ownHz0E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1734547520;
+ s=susede2_ed25519; t=1734547525;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CmM6HTfykFcEEtYKi6meWb9evdvx5hj0QLHcC9LcjYg=;
- b=jrf0kx0g0+0oPPWCfUJhcv02oUMxX57vyAUUy9IYojZI0cX12bckQiXtUjffF2IiRZUSR8
- GEqGBxb+EQYshOCA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="BNTuv8q/";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jrf0kx0g
+ bh=dexBIcwuYFVtkEFhVaMlIz+cZEuxkrGtGbeYk6rVrIo=;
+ b=VnsmyUlpB8iOwu4o+gAbfqyWU/Es2y6rA0mlIG+Bpwzbvq6fUMk0oJ5C+emZ05rrrjm+ej
+ A5WrQjjtInb6AfDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1734547520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1734547525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CmM6HTfykFcEEtYKi6meWb9evdvx5hj0QLHcC9LcjYg=;
- b=BNTuv8q/ELKYRVHNw+dJAIowq6MYvFDfiyKsv+94+KCQherTuTsxlAAfZ6dhd+Oz2tWJZl
- gjMH5X6vVBtPf2+i9CDda3B4RmYFdcbFiAHWB9F1JHEb/LT9fNI4XF4pEBamHPBZJoKXhi
- Qt9/wEnJvVT+sjC87+0fbAEPTcVef9w=
+ bh=dexBIcwuYFVtkEFhVaMlIz+cZEuxkrGtGbeYk6rVrIo=;
+ b=hXIjIrZkoqAKnt0kdQcxp97oGzvZuDgTpdBRrUk9VhIwFfKohCbXRydseDiYGY5ZAv/Y3u
+ Au22Dd5g0ZF//qV2SQP+KQhbJwkUy9GTrDLvfEN07rkW8BoFelOwnRL3hgSR8gxJEBPNuU
+ 6iJbXvjEEzSg+OoRXMVilo67ownHz0E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1734547520;
+ s=susede2_ed25519; t=1734547525;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CmM6HTfykFcEEtYKi6meWb9evdvx5hj0QLHcC9LcjYg=;
- b=jrf0kx0g0+0oPPWCfUJhcv02oUMxX57vyAUUy9IYojZI0cX12bckQiXtUjffF2IiRZUSR8
- GEqGBxb+EQYshOCA==
+ bh=dexBIcwuYFVtkEFhVaMlIz+cZEuxkrGtGbeYk6rVrIo=;
+ b=VnsmyUlpB8iOwu4o+gAbfqyWU/Es2y6rA0mlIG+Bpwzbvq6fUMk0oJ5C+emZ05rrrjm+ej
+ A5WrQjjtInb6AfDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FB8513A63;
- Wed, 18 Dec 2024 18:45:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6660F137CF;
+ Wed, 18 Dec 2024 18:45:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 5Y+BBkAYY2ducQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 18 Dec 2024 18:45:20 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SoHzF0UYY2d1cQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 18 Dec 2024 18:45:25 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 18 Dec 2024 19:45:11 +0100
-Message-ID: <20241218184518.16190-7-chrubis@suse.cz>
+Date: Wed, 18 Dec 2024 19:45:14 +0100
+Message-ID: <20241218184518.16190-10-chrubis@suse.cz>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241218184518.16190-1-chrubis@suse.cz>
 References: <20241218184518.16190-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 2FB5D1F396
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FROM_EQ_ENVFROM(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 06/13] testcases/kernel/mem: Move check_hugepage() +
- PATH_THP
+Subject: [LTP] [PATCH 09/13] testcases/kernel/mem: Move KSM bits to ksm tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,148 +117,768 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-These were only used in thp testcases, also after this the mem library
-is no longer needed in thp tests so it's removed from the Makefile.
-
-Also note that PATH_HUGEPAGES is defined in tst_hugepage.h which is
-included by tst_test.h so we can just remove this macro.
+Moves the ksm helpers into a ksm/ksm_test.h since these are not used by
+any other but ksm tests.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/mem/include/mem.h |  7 -------
- testcases/kernel/mem/lib/mem.c     |  6 ------
- testcases/kernel/mem/thp/Makefile  |  2 +-
- testcases/kernel/mem/thp/thp.h     | 17 +++++++++++++++++
- testcases/kernel/mem/thp/thp01.c   |  1 -
- testcases/kernel/mem/thp/thp02.c   |  3 ++-
- testcases/kernel/mem/thp/thp03.c   |  5 +++--
- 7 files changed, 23 insertions(+), 18 deletions(-)
- create mode 100644 testcases/kernel/mem/thp/thp.h
+ testcases/kernel/mem/include/mem.h    |   5 -
+ testcases/kernel/mem/ksm/Makefile     |   2 +-
+ testcases/kernel/mem/ksm/ksm01.c      |   2 +-
+ testcases/kernel/mem/ksm/ksm02.c      |   2 +-
+ testcases/kernel/mem/ksm/ksm03.c      |   2 +-
+ testcases/kernel/mem/ksm/ksm04.c      |   2 +-
+ testcases/kernel/mem/ksm/ksm05.c      |   2 +-
+ testcases/kernel/mem/ksm/ksm06.c      |   4 +-
+ testcases/kernel/mem/ksm/ksm07.c      |   3 +-
+ testcases/kernel/mem/ksm/ksm_common.h |   3 +-
+ testcases/kernel/mem/ksm/ksm_test.h   | 299 ++++++++++++++++++++++++++
+ testcases/kernel/mem/lib/mem.c        | 287 ------------------------
+ 12 files changed, 312 insertions(+), 301 deletions(-)
+ create mode 100644 testcases/kernel/mem/ksm/ksm_test.h
 
 diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 03dbe91d7..ba5a996a7 100644
+index 5ebedc175..25389f34c 100644
 --- a/testcases/kernel/mem/include/mem.h
 +++ b/testcases/kernel/mem/include/mem.h
-@@ -52,17 +52,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages);
- void ksm_group_check(int run, int pg_shared, int pg_sharing, int pg_volatile,
-                      int pg_unshared, int sleep_msecs, int pages_to_scan);
+@@ -16,11 +16,6 @@
  
--/* THP */
--
--#define PATH_THP		"/sys/kernel/mm/transparent_hugepage/"
--#define PATH_KHPD		PATH_THP "khugepaged/"
+ /* KSM */
+ 
+-void create_same_memory(int size, int num, int unit);
+-void test_ksm_merge_across_nodes(unsigned long nr_pages);
+-void ksm_group_check(int run, int pg_shared, int pg_sharing, int pg_volatile,
+-                     int pg_unshared, int sleep_msecs, int pages_to_scan);
 -
  /* HUGETLB */
  
--#define PATH_HUGEPAGES		"/sys/kernel/mm/hugepages/"
  #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
- 
--void check_hugepage(void);
- void write_memcg(void);
- 
- /* cpuset/memcg - include/tst_cgroup.h */
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index de9388a80..02199349d 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -324,12 +324,6 @@ static void verify(char **memory, char value, int proc,
- 	free(s);
- }
- 
--void check_hugepage(void)
--{
--	if (access(PATH_HUGEPAGES, F_OK))
--		tst_brk(TCONF, "Huge page is not supported.");
--}
--
- struct ksm_merge_data {
- 	char data;
- 	unsigned int mergeable_size;
-diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
-index e95712eaf..d89ea1dd3 100644
---- a/testcases/kernel/mem/thp/Makefile
-+++ b/testcases/kernel/mem/thp/Makefile
-@@ -3,7 +3,7 @@
- 
- top_srcdir		?= ../../../..
- thp04:			LDLIBS += -lrt
-+thp04:			CFLAGS += -pthread
+diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
+index 6aba73e61..2af02a274 100644
+--- a/testcases/kernel/mem/ksm/Makefile
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -7,5 +7,5 @@ LTPLIBS = numa
+ ksm06: LTPLDLIBS = -lltpnuma
  
  include $(top_srcdir)/include/mk/testcases.mk
 -include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
++include $(top_srcdir)/testcases/kernel/include/lib.mk
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/thp/thp.h b/testcases/kernel/mem/thp/thp.h
+diff --git a/testcases/kernel/mem/ksm/ksm01.c b/testcases/kernel/mem/ksm/ksm01.c
+index e2d3d9e00..a22e4830f 100644
+--- a/testcases/kernel/mem/ksm/ksm01.c
++++ b/testcases/kernel/mem/ksm/ksm01.c
+@@ -56,7 +56,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include "mem.h"
++#include "tst_test.h"
+ #include "ksm_common.h"
+ 
+ static void verify_ksm(void)
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index a388e82ab..4d1306045 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -53,7 +53,7 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <unistd.h>
+-#include "mem.h"
++#include "tst_test.h"
+ #include "ksm_common.h"
+ 
+ #ifdef HAVE_NUMA_V2
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+index cff74700d..78844b30e 100644
+--- a/testcases/kernel/mem/ksm/ksm03.c
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -56,7 +56,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include "mem.h"
++#include "tst_test.h"
+ #include "ksm_common.h"
+ 
+ static void verify_ksm(void)
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index 31f3ff2eb..8465ee230 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -38,7 +38,7 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <unistd.h>
+-#include "mem.h"
++#include "tst_test.h"
+ #include "ksm_common.h"
+ 
+ #ifdef HAVE_NUMA_V2
+diff --git a/testcases/kernel/mem/ksm/ksm05.c b/testcases/kernel/mem/ksm/ksm05.c
+index 1d9d9699a..025dffc09 100644
+--- a/testcases/kernel/mem/ksm/ksm05.c
++++ b/testcases/kernel/mem/ksm/ksm05.c
+@@ -39,7 +39,7 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include "tst_test.h"
+-#include "mem.h"
++#include "ksm_helper.h"
+ 
+ #ifdef HAVE_DECL_MADV_MERGEABLE
+ 
+diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+index 80fdf1e47..09a54fd18 100644
+--- a/testcases/kernel/mem/ksm/ksm06.c
++++ b/testcases/kernel/mem/ksm/ksm06.c
+@@ -33,8 +33,10 @@
+ #include <unistd.h>
+ #include <limits.h>
+ 
+-#include "mem.h"
++#include "tst_test.h"
+ #include "tst_numa.h"
++#include "ksm_helper.h"
++#include "ksm_test.h"
+ 
+ #ifdef HAVE_NUMA_V2
+ # include <numa.h>
+diff --git a/testcases/kernel/mem/ksm/ksm07.c b/testcases/kernel/mem/ksm/ksm07.c
+index 619bd7b55..24b393283 100644
+--- a/testcases/kernel/mem/ksm/ksm07.c
++++ b/testcases/kernel/mem/ksm/ksm07.c
+@@ -23,7 +23,8 @@
+  */
+ 
+ #include <sys/wait.h>
+-#include "mem.h"
++#include "tst_test.h"
++#include "ksm_helper.h"
+ 
+ /* This test allocates one page, fills the page with a's, captures the
+  * full_scan and pages_skipped counters. Then it makes sure at least 3
+diff --git a/testcases/kernel/mem/ksm/ksm_common.h b/testcases/kernel/mem/ksm/ksm_common.h
+index 43ea8f8c2..d677b224d 100644
+--- a/testcases/kernel/mem/ksm/ksm_common.h
++++ b/testcases/kernel/mem/ksm/ksm_common.h
+@@ -11,7 +11,9 @@
+ #define KSM_COMMON_H__
+ 
+ #include "tst_test.h"
++#include "ksm_helper.h"
+ #include "numa_helper.h"
++#include "ksm_test.h"
+ 
+ #define DEFAULT_MEMSIZE 128
+ 
+@@ -67,5 +69,4 @@ static inline unsigned int get_a_numa_node(void)
+ 	abort();
+ }
+ 
+-
+ #endif /* KSM_COMMON_H__ */
+diff --git a/testcases/kernel/mem/ksm/ksm_test.h b/testcases/kernel/mem/ksm/ksm_test.h
 new file mode 100644
-index 000000000..7723bedc2
+index 000000000..ebce8197c
 --- /dev/null
-+++ b/testcases/kernel/mem/thp/thp.h
-@@ -0,0 +1,17 @@
++++ b/testcases/kernel/mem/ksm/ksm_test.h
+@@ -0,0 +1,299 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) Linux Test Project, 2011-2021
-+ * Copyright (c) Cyril Hrubis 2024
++ * Copyright (c) Cyril Hrubis <chrubis@suse.cz> 2024
 + */
-+#ifndef THP_H
-+#define THP_H
++#ifndef KSM_TEST_
++#define KSM_TEST_
 +
-+#define PATH_THP "/sys/kernel/mm/transparent_hugepage/"
++#include <sys/wait.h>
 +
-+static inline void check_hugepage(void)
++static inline void check(char *path, long int value)
 +{
-+        if (access(PATH_HUGEPAGES, F_OK))
-+                tst_brk(TCONF, "Huge page is not supported.");
++	char fullpath[BUFSIZ];
++	long actual_val;
++
++	snprintf(fullpath, BUFSIZ, PATH_KSM "%s", path);
++	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
++
++	if (actual_val != value)
++		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
++			actual_val);
++	else
++		tst_res(TPASS, "%s is %ld.", path, actual_val);
 +}
 +
-+#endif /* THP_H */
-diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
-index 69825b0f9..bdb2c54db 100644
---- a/testcases/kernel/mem/thp/thp01.c
-+++ b/testcases/kernel/mem/thp/thp01.c
-@@ -38,7 +38,6 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "tst_test.h"
--#include "mem.h"
- #include "tst_minmax.h"
++static inline void final_group_check(int run, int pages_shared, int pages_sharing,
++			  int pages_volatile, int pages_unshared,
++			  int sleep_millisecs, int pages_to_scan)
++{
++	int ksm_run_orig;
++
++	tst_res(TINFO, "check!");
++	check("run", run);
++
++	/*
++	 * Temporarily stop the KSM scan during the checks: during the
++	 * KSM scan the rmap_items in the stale unstable tree of the
++	 * old pass are removed from it and are later reinserted in
++	 * the new unstable tree of the current pass. So if the checks
++	 * run in the race window between removal and re-insertion, it
++	 * can lead to unexpected false positives where page_volatile
++	 * is elevated and page_unshared is recessed.
++	 */
++	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &ksm_run_orig);
++	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++
++	check("pages_shared", pages_shared);
++	check("pages_sharing", pages_sharing);
++	check("pages_volatile", pages_volatile);
++	check("pages_unshared", pages_unshared);
++	check("sleep_millisecs", sleep_millisecs);
++	check("pages_to_scan", pages_to_scan);
++
++	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", ksm_run_orig);
++}
++
++static inline void ksm_group_check(int run, int pages_shared, int pages_sharing,
++		     int pages_volatile, int pages_unshared,
++		     int sleep_millisecs, int pages_to_scan)
++{
++	if (run != 1) {
++		tst_res(TFAIL, "group_check run is not 1, %d.", run);
++	} else {
++		/* wait for ksm daemon to scan all mergeable pages. */
++		wait_ksmd_full_scan();
++	}
++
++	final_group_check(run, pages_shared, pages_sharing,
++			  pages_volatile, pages_unshared,
++			  sleep_millisecs, pages_to_scan);
++}
++
++static inline void verify(char **memory, char value, int proc,
++		    int start, int end, int start2, int end2)
++{
++	int i, j;
++	void *s = NULL;
++
++	s = SAFE_MALLOC((end - start) * (end2 - start2));
++
++	tst_res(TINFO, "child %d verifies memory content.", proc);
++	memset(s, value, (end - start) * (end2 - start2));
++	if (memcmp(memory[start], s, (end - start) * (end2 - start2))
++	    != 0)
++		for (j = start; j < end; j++)
++			for (i = start2; i < end2; i++)
++				if (memory[j][i] != value)
++					tst_res(TFAIL, "child %d has %c at "
++						 "%d,%d,%d.",
++						 proc, memory[j][i], proc,
++						 j, i);
++	free(s);
++}
++
++struct ksm_merge_data {
++	char data;
++	unsigned int mergeable_size;
++};
++
++static inline void ksm_child_memset(int child_num, int size, int total_unit,
++		 struct ksm_merge_data ksm_merge_data, char **memory)
++{
++	int i = 0, j;
++	int unit = size / total_unit;
++
++	tst_res(TINFO, "child %d continues...", child_num);
++
++	if (ksm_merge_data.mergeable_size == size * TST_MB) {
++		tst_res(TINFO, "child %d allocates %d TST_MB filled with '%c'",
++			child_num, size, ksm_merge_data.data);
++
++	} else {
++		tst_res(TINFO, "child %d allocates %d TST_MB filled with '%c'"
++				" except one page with 'e'",
++				child_num, size, ksm_merge_data.data);
++	}
++
++	for (j = 0; j < total_unit; j++) {
++		for (i = 0; (unsigned int)i < unit * TST_MB; i++)
++			memory[j][i] = ksm_merge_data.data;
++	}
++
++	/* if it contains unshared page, then set 'e' char
++	 * at the end of the last page
++	 */
++	if (ksm_merge_data.mergeable_size < size * TST_MB)
++		memory[j-1][i-1] = 'e';
++}
++
++static inline void create_ksm_child(int child_num, int size, int unit,
++		       struct ksm_merge_data *ksm_merge_data)
++{
++	int j, total_unit;
++	char **memory;
++
++	/* The total units in all */
++	total_unit = size / unit;
++
++	/* Apply for the space for memory */
++	memory = SAFE_MALLOC(total_unit * sizeof(char *));
++	for (j = 0; j < total_unit; j++) {
++		memory[j] = SAFE_MMAP(NULL, unit * TST_MB, PROT_READ|PROT_WRITE,
++			MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++#ifdef HAVE_DECL_MADV_MERGEABLE
++		if (madvise(memory[j], unit * TST_MB, MADV_MERGEABLE) == -1)
++			tst_brk(TBROK|TERRNO, "madvise");
++#endif
++	}
++
++	tst_res(TINFO, "child %d stops.", child_num);
++	if (raise(SIGSTOP) == -1)
++		tst_brk(TBROK|TERRNO, "kill");
++	fflush(stdout);
++
++	for (j = 0; j < 4; j++) {
++
++		ksm_child_memset(child_num, size, total_unit,
++				  ksm_merge_data[j], memory);
++
++		fflush(stdout);
++
++		tst_res(TINFO, "child %d stops.", child_num);
++		if (raise(SIGSTOP) == -1)
++			tst_brk(TBROK|TERRNO, "kill");
++
++		if (ksm_merge_data[j].mergeable_size < size * TST_MB) {
++			verify(memory, 'e', child_num, total_unit - 1,
++				total_unit, unit * TST_MB - 1, unit * TST_MB);
++			verify(memory, ksm_merge_data[j].data, child_num,
++				0, total_unit, 0, unit * TST_MB - 1);
++		} else {
++			verify(memory, ksm_merge_data[j].data, child_num,
++				0, total_unit, 0, unit * TST_MB);
++		}
++	}
++
++	tst_res(TINFO, "child %d finished.", child_num);
++}
++
++static inline void stop_ksm_children(int *child, int num)
++{
++	int k, status;
++
++	tst_res(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		SAFE_WAITPID(child[k], &status, WUNTRACED);
++		if (!WIFSTOPPED(status))
++			tst_brk(TBROK, "child %d was not stopped", k);
++	}
++}
++
++static inline void resume_ksm_children(int *child, int num)
++{
++	int k;
++
++	tst_res(TINFO, "resume all children.");
++	for (k = 0; k < num; k++)
++		SAFE_KILL(child[k], SIGCONT);
++
++	fflush(stdout);
++}
++
++static inline void create_same_memory(int size, int num, int unit)
++{
++	int i, j, status, *child;
++	unsigned long ps, pages;
++	struct ksm_merge_data **ksm_data;
++
++	struct ksm_merge_data ksm_data0[] = {
++	       {'c', size*TST_MB}, {'c', size*TST_MB}, {'d', size*TST_MB}, {'d', size*TST_MB},
++	};
++	struct ksm_merge_data ksm_data1[] = {
++	       {'a', size*TST_MB}, {'b', size*TST_MB}, {'d', size*TST_MB}, {'d', size*TST_MB-1},
++	};
++	struct ksm_merge_data ksm_data2[] = {
++	       {'a', size*TST_MB}, {'a', size*TST_MB}, {'d', size*TST_MB}, {'d', size*TST_MB},
++	};
++
++	ps = sysconf(_SC_PAGE_SIZE);
++	pages = TST_MB / ps;
++
++	ksm_data = malloc((num - 3) * sizeof(struct ksm_merge_data *));
++	/* Since from third child, the data is same with the first child's */
++	for (i = 0; i < num - 3; i++) {
++		ksm_data[i] = malloc(4 * sizeof(struct ksm_merge_data));
++		for (j = 0; j < 4; j++) {
++			ksm_data[i][j].data = ksm_data0[j].data;
++			ksm_data[i][j].mergeable_size =
++				ksm_data0[j].mergeable_size;
++		}
++	}
++
++	child = SAFE_MALLOC(num * sizeof(int));
++
++	for (i = 0; i < num; i++) {
++		fflush(stdout);
++		switch (child[i] = SAFE_FORK()) {
++		case 0:
++			if (i == 0) {
++				create_ksm_child(i, size, unit, ksm_data0);
++				exit(0);
++			} else if (i == 1) {
++				create_ksm_child(i, size, unit, ksm_data1);
++				exit(0);
++			} else if (i == 2) {
++				create_ksm_child(i, size, unit, ksm_data2);
++				exit(0);
++			} else {
++				create_ksm_child(i, size, unit, ksm_data[i-3]);
++				exit(0);
++			}
++		}
++	}
++
++	stop_ksm_children(child, num);
++
++	tst_res(TINFO, "KSM merging...");
++	if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
++		SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing", "%ld", size * pages * num);
++	}
++
++	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
++	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld", size * pages * num);
++	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
++
++	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
++	ksm_group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
++
++	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
++	ksm_group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
++
++	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
++	ksm_group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
++
++	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
++	ksm_group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
++
++	tst_res(TINFO, "KSM unmerging...");
++	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++
++	resume_ksm_children(child, num);
++	final_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
++
++	tst_res(TINFO, "stop KSM.");
++	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
++
++	while (waitpid(-1, &status, 0) > 0)
++		if (WEXITSTATUS(status) != 0)
++			tst_res(TFAIL, "child exit status is %d",
++				 WEXITSTATUS(status));
++}
++
++#endif /* KSM_TEST_ */
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index f3b844994..4e5c0b873 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -28,290 +28,3 @@
  
- #define ARGS_SZ	(256 * 32)
-diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
-index 56568d1d1..c6f9d2fd5 100644
---- a/testcases/kernel/mem/thp/thp02.c
-+++ b/testcases/kernel/mem/thp/thp02.c
-@@ -38,7 +38,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include "mem.h"
-+#include "tst_test.h"
-+#include "thp.h"
+ /* KSM */
  
- static int ps;
- static long hps, size;
-diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
-index 839efcb0e..e8d22669e 100644
---- a/testcases/kernel/mem/thp/thp03.c
-+++ b/testcases/kernel/mem/thp/thp03.c
-@@ -36,7 +36,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
--#include "mem.h"
-+#include "tst_test.h"
-+#include "thp.h"
- #include "lapi/mmap.h"
- 
- static void thp_test(void);
-@@ -83,7 +84,7 @@ static void setup(void)
- 
- 	check_hugepage();
- 
--	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
-+	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * TST_KB;
- 	unaligned_size = hugepage_size * 4 - 1;
- 	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
- }
+-static void check(char *path, long int value)
+-{
+-	char fullpath[BUFSIZ];
+-	long actual_val;
+-
+-	snprintf(fullpath, BUFSIZ, PATH_KSM "%s", path);
+-	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
+-
+-	if (actual_val != value)
+-		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
+-			actual_val);
+-	else
+-		tst_res(TPASS, "%s is %ld.", path, actual_val);
+-}
+-
+-static void final_group_check(int run, int pages_shared, int pages_sharing,
+-			  int pages_volatile, int pages_unshared,
+-			  int sleep_millisecs, int pages_to_scan)
+-{
+-	int ksm_run_orig;
+-
+-	tst_res(TINFO, "check!");
+-	check("run", run);
+-
+-	/*
+-	 * Temporarily stop the KSM scan during the checks: during the
+-	 * KSM scan the rmap_items in the stale unstable tree of the
+-	 * old pass are removed from it and are later reinserted in
+-	 * the new unstable tree of the current pass. So if the checks
+-	 * run in the race window between removal and re-insertion, it
+-	 * can lead to unexpected false positives where page_volatile
+-	 * is elevated and page_unshared is recessed.
+-	 */
+-	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &ksm_run_orig);
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+-
+-	check("pages_shared", pages_shared);
+-	check("pages_sharing", pages_sharing);
+-	check("pages_volatile", pages_volatile);
+-	check("pages_unshared", pages_unshared);
+-	check("sleep_millisecs", sleep_millisecs);
+-	check("pages_to_scan", pages_to_scan);
+-
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", ksm_run_orig);
+-}
+-
+-void ksm_group_check(int run, int pages_shared, int pages_sharing,
+-		     int pages_volatile, int pages_unshared,
+-		     int sleep_millisecs, int pages_to_scan)
+-{
+-	if (run != 1) {
+-		tst_res(TFAIL, "group_check run is not 1, %d.", run);
+-	} else {
+-		/* wait for ksm daemon to scan all mergeable pages. */
+-		wait_ksmd_full_scan();
+-	}
+-
+-	final_group_check(run, pages_shared, pages_sharing,
+-			  pages_volatile, pages_unshared,
+-			  sleep_millisecs, pages_to_scan);
+-}
+-
+-static void verify(char **memory, char value, int proc,
+-		    int start, int end, int start2, int end2)
+-{
+-	int i, j;
+-	void *s = NULL;
+-
+-	s = SAFE_MALLOC((end - start) * (end2 - start2));
+-
+-	tst_res(TINFO, "child %d verifies memory content.", proc);
+-	memset(s, value, (end - start) * (end2 - start2));
+-	if (memcmp(memory[start], s, (end - start) * (end2 - start2))
+-	    != 0)
+-		for (j = start; j < end; j++)
+-			for (i = start2; i < end2; i++)
+-				if (memory[j][i] != value)
+-					tst_res(TFAIL, "child %d has %c at "
+-						 "%d,%d,%d.",
+-						 proc, memory[j][i], proc,
+-						 j, i);
+-	free(s);
+-}
+-
+-struct ksm_merge_data {
+-	char data;
+-	unsigned int mergeable_size;
+-};
+-
+-static void ksm_child_memset(int child_num, int size, int total_unit,
+-		 struct ksm_merge_data ksm_merge_data, char **memory)
+-{
+-	int i = 0, j;
+-	int unit = size / total_unit;
+-
+-	tst_res(TINFO, "child %d continues...", child_num);
+-
+-	if (ksm_merge_data.mergeable_size == size * MB) {
+-		tst_res(TINFO, "child %d allocates %d MB filled with '%c'",
+-			child_num, size, ksm_merge_data.data);
+-
+-	} else {
+-		tst_res(TINFO, "child %d allocates %d MB filled with '%c'"
+-				" except one page with 'e'",
+-				child_num, size, ksm_merge_data.data);
+-	}
+-
+-	for (j = 0; j < total_unit; j++) {
+-		for (i = 0; (unsigned int)i < unit * MB; i++)
+-			memory[j][i] = ksm_merge_data.data;
+-	}
+-
+-	/* if it contains unshared page, then set 'e' char
+-	 * at the end of the last page
+-	 */
+-	if (ksm_merge_data.mergeable_size < size * MB)
+-		memory[j-1][i-1] = 'e';
+-}
+-
+-static void create_ksm_child(int child_num, int size, int unit,
+-		       struct ksm_merge_data *ksm_merge_data)
+-{
+-	int j, total_unit;
+-	char **memory;
+-
+-	/* The total units in all */
+-	total_unit = size / unit;
+-
+-	/* Apply for the space for memory */
+-	memory = SAFE_MALLOC(total_unit * sizeof(char *));
+-	for (j = 0; j < total_unit; j++) {
+-		memory[j] = SAFE_MMAP(NULL, unit * MB, PROT_READ|PROT_WRITE,
+-			MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+-#ifdef HAVE_DECL_MADV_MERGEABLE
+-		if (madvise(memory[j], unit * MB, MADV_MERGEABLE) == -1)
+-			tst_brk(TBROK|TERRNO, "madvise");
+-#endif
+-	}
+-
+-	tst_res(TINFO, "child %d stops.", child_num);
+-	if (raise(SIGSTOP) == -1)
+-		tst_brk(TBROK|TERRNO, "kill");
+-	fflush(stdout);
+-
+-	for (j = 0; j < 4; j++) {
+-
+-		ksm_child_memset(child_num, size, total_unit,
+-				  ksm_merge_data[j], memory);
+-
+-		fflush(stdout);
+-
+-		tst_res(TINFO, "child %d stops.", child_num);
+-		if (raise(SIGSTOP) == -1)
+-			tst_brk(TBROK|TERRNO, "kill");
+-
+-		if (ksm_merge_data[j].mergeable_size < size * MB) {
+-			verify(memory, 'e', child_num, total_unit - 1,
+-				total_unit, unit * MB - 1, unit * MB);
+-			verify(memory, ksm_merge_data[j].data, child_num,
+-				0, total_unit, 0, unit * MB - 1);
+-		} else {
+-			verify(memory, ksm_merge_data[j].data, child_num,
+-				0, total_unit, 0, unit * MB);
+-		}
+-	}
+-
+-	tst_res(TINFO, "child %d finished.", child_num);
+-}
+-
+-static void stop_ksm_children(int *child, int num)
+-{
+-	int k, status;
+-
+-	tst_res(TINFO, "wait for all children to stop.");
+-	for (k = 0; k < num; k++) {
+-		SAFE_WAITPID(child[k], &status, WUNTRACED);
+-		if (!WIFSTOPPED(status))
+-			tst_brk(TBROK, "child %d was not stopped", k);
+-	}
+-}
+-
+-static void resume_ksm_children(int *child, int num)
+-{
+-	int k;
+-
+-	tst_res(TINFO, "resume all children.");
+-	for (k = 0; k < num; k++)
+-		SAFE_KILL(child[k], SIGCONT);
+-
+-	fflush(stdout);
+-}
+-
+-void create_same_memory(int size, int num, int unit)
+-{
+-	int i, j, status, *child;
+-	unsigned long ps, pages;
+-	struct ksm_merge_data **ksm_data;
+-
+-	struct ksm_merge_data ksm_data0[] = {
+-	       {'c', size*MB}, {'c', size*MB}, {'d', size*MB}, {'d', size*MB},
+-	};
+-	struct ksm_merge_data ksm_data1[] = {
+-	       {'a', size*MB}, {'b', size*MB}, {'d', size*MB}, {'d', size*MB-1},
+-	};
+-	struct ksm_merge_data ksm_data2[] = {
+-	       {'a', size*MB}, {'a', size*MB}, {'d', size*MB}, {'d', size*MB},
+-	};
+-
+-	ps = sysconf(_SC_PAGE_SIZE);
+-	pages = MB / ps;
+-
+-	ksm_data = malloc((num - 3) * sizeof(struct ksm_merge_data *));
+-	/* Since from third child, the data is same with the first child's */
+-	for (i = 0; i < num - 3; i++) {
+-		ksm_data[i] = malloc(4 * sizeof(struct ksm_merge_data));
+-		for (j = 0; j < 4; j++) {
+-			ksm_data[i][j].data = ksm_data0[j].data;
+-			ksm_data[i][j].mergeable_size =
+-				ksm_data0[j].mergeable_size;
+-		}
+-	}
+-
+-	child = SAFE_MALLOC(num * sizeof(int));
+-
+-	for (i = 0; i < num; i++) {
+-		fflush(stdout);
+-		switch (child[i] = SAFE_FORK()) {
+-		case 0:
+-			if (i == 0) {
+-				create_ksm_child(i, size, unit, ksm_data0);
+-				exit(0);
+-			} else if (i == 1) {
+-				create_ksm_child(i, size, unit, ksm_data1);
+-				exit(0);
+-			} else if (i == 2) {
+-				create_ksm_child(i, size, unit, ksm_data2);
+-				exit(0);
+-			} else {
+-				create_ksm_child(i, size, unit, ksm_data[i-3]);
+-				exit(0);
+-			}
+-		}
+-	}
+-
+-	stop_ksm_children(child, num);
+-
+-	tst_res(TINFO, "KSM merging...");
+-	if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing", "%ld", size * pages * num);
+-	}
+-
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+-	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld", size * pages * num);
+-	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
+-
+-	resume_ksm_children(child, num);
+-	stop_ksm_children(child, num);
+-	ksm_group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+-
+-	resume_ksm_children(child, num);
+-	stop_ksm_children(child, num);
+-	ksm_group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+-
+-	resume_ksm_children(child, num);
+-	stop_ksm_children(child, num);
+-	ksm_group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+-
+-	resume_ksm_children(child, num);
+-	stop_ksm_children(child, num);
+-	ksm_group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+-
+-	tst_res(TINFO, "KSM unmerging...");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-
+-	resume_ksm_children(child, num);
+-	final_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
+-
+-	tst_res(TINFO, "stop KSM.");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+-	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+-
+-	while (waitpid(-1, &status, 0) > 0)
+-		if (WEXITSTATUS(status) != 0)
+-			tst_res(TFAIL, "child exit status is %d",
+-				 WEXITSTATUS(status));
+-}
 -- 
 2.45.2
 
