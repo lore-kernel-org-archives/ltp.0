@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9384AE77184
-	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 06:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7838EE77184
+	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 06:36:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D9BA23E291B
-	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 07:09:28 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D58AE3E28F3
+	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 07:36:57 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C80C3E2911
- for <ltp@lists.linux.it>; Thu, 19 Dec 2024 07:09:12 +0100 (CET)
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com
- [IPv6:2607:f8b0:4864:20::a2b])
+ by picard.linux.it (Postfix) with ESMTPS id A04B73E28F3
+ for <ltp@lists.linux.it>; Thu, 19 Dec 2024 07:36:41 +0100 (CET)
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com
+ [IPv6:2607:f8b0:4864:20::e35])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EA58B600AD1
- for <ltp@lists.linux.it>; Thu, 19 Dec 2024 07:09:11 +0100 (CET)
-Received: by mail-vk1-xa2b.google.com with SMTP id
- 71dfb90a1353d-5188e0c2b52so134459e0c.1
- for <ltp@lists.linux.it>; Wed, 18 Dec 2024 22:09:11 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1652D14302B0
+ for <ltp@lists.linux.it>; Thu, 19 Dec 2024 07:36:41 +0100 (CET)
+Received: by mail-vs1-xe35.google.com with SMTP id
+ ada2fe7eead31-4afeccfeda2so244516137.1
+ for <ltp@lists.linux.it>; Wed, 18 Dec 2024 22:36:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1734588550; x=1735193350; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=y95ddjRt/6VNmX5GGG48bgZZRRTZZ83ZXEt9kfMxqxc=;
- b=FFZmABVs+AoB5j4NyH4JVnP9ewIlemT4afPC/YyJVGAx1aSYCSd48vXr419md+jJtq
- +4NgpavVmOAc8+H6W+Kn9x4oZeMlv2t8Vh2+rp4v7LNm3ac04+9+03TK0iNecMzRppXH
- w2zgNrZxMk9a3lMk9Hvq+yzQiKVpOZIGagBmgDj0he/ZZhm330TysSxfvnbefyap3w9+
- vKLkutpBjsbP67oZThiPfVZ01TWTlI1+SfmwwkXROg6mPdqy/fmaGk5gZ63NIu6LL7WA
- Jd9vVhKArk9taOWHcPKXbCrJ/rGb6jdPAT3ZwH4aoFOSaoKFNnXKvoY5jYLlYj7FzJ0o
- R/Hw==
+ d=gmail.com; s=20230601; t=1734590199; x=1735194999; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=RLMbCG8mN/n5tZifGkj6lrIMmqMapi4j7SoTdoMRef4=;
+ b=LGRdC1eQTihfNSgggv1QHZSDmKuvgTL7ZTrXyzMzQY9/5TwYHRINQdblY4xq96zCyg
+ sxHJ1E7Vp1w5WDoJPpN5y6ExNlr1jnZNbirFqsK/4qtFiv7c5VEypQCjUAAdAftpK1r4
+ Nq3SjydEZr1Tz+SlmCW1kZHUe5igLMb5sAh1eEINTo22GrgVINV9L8rF9ecfiKm7WJp0
+ jsnqXZlSYOAAp1hD4OTjs4auMaHgdh3AC/M5C0mpBqTbs0HajuoZo7/bhygEClYCx0wj
+ be2xmLU0ksIsHpdUShtFZ+n7EFoGFVKK5Je/TJTLRuOAWJQonz28fCx81TIhfEgAFMkX
+ 6FvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1734588550; x=1735193350;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=y95ddjRt/6VNmX5GGG48bgZZRRTZZ83ZXEt9kfMxqxc=;
- b=WnDR5upLZOUjy/RHm7vWxC+xyObc+gYPYbwdn5NvsaXsePH59wHVC1LXicdM+Yks2R
- XOty0KpmFiC9PxC0pRgDWONXgiGfCizB2g5/FGzi4Tqq64u4Rm0LwEG58V1tkVGMyxxm
- xzzViILRTOMWz1BnA7PB9n8AdC65L9qRHzgZlVHbQYyQhsj6kLXvSDqecgRaGUtsbtJn
- 298SuJyn8vISNVLSndNs12wRx7XFpNRtzZUF+rR8EaxPCaYFbjdcxfsikZ+yIoVOA206
- OLuZ6fdJUxZ47eZkzh4qtK0290Gs4GeF9svGInzF/nRVC3EpptdV62rhXBxSAT6a9+fl
- j2Kw==
-X-Gm-Message-State: AOJu0YxxCCLNibIE4hGQRbd1ecs7urGXq0zA6F+S9UI46TUoAwk988FR
- MxyQXHdD9Qhleb7HIB/n2B4EHKyzNkm4HRDbB0rUWEfHA+SSnZwZUsa0CBZVyY+Z6ehjqpdACMV
- aSvYpOE/Hk5ecFQxSCV/p16KLesAifXeBHcpIwDEL
-X-Gm-Gg: ASbGncuZvjw51GzBN2XUtxlRBiaJRZ+uazYYGKgKRdb6tOcFTVm65q8tPdM1IQB9iWW
- M7O00o55vJI/aQnWyFTQ8fe0NN6T+hZfxZEanbSU=
-X-Google-Smtp-Source: AGHT+IFb6NUpNk3xnV8yOx7XrH3/2XCLTjv1ahUC6YUe4WwRYelscPg5YPYIlSC6ZR9cj2A5hoog3DXpnyLFJoJxQRo=
-X-Received: by 2002:a05:6122:3d01:b0:518:7c13:d191 with SMTP id
- 71dfb90a1353d-51b648adce9mr2032220e0c.8.1734588550422; Wed, 18 Dec 2024
- 22:09:10 -0800 (PST)
+ d=1e100.net; s=20230601; t=1734590199; x=1735194999;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=RLMbCG8mN/n5tZifGkj6lrIMmqMapi4j7SoTdoMRef4=;
+ b=YZ83yXfxYbWj/FFOPWgR65C/n2F1/lb9Esz9f1ug4DJ+ePvrwIzAytb02cobmi8tGZ
+ KcAvkrJB2LYdWe4WS3n2V1pUROgR4D8L2LTX8mBj3xziu+rw82R4xu/YnvuoBah3Hzpb
+ RN7iI8cwE6QxfBwSh2DJswgqdT+jhjDiR9Bs0GSC+SiiuTqKQuyCeUlo4HfpqXZGZZzP
+ 6GPHti9X6aHh3tuIIY1Xjp3mQtFcji5PMV4reC50/TSt6xFwoHHlINm4nLePDEWutIMq
+ 8dIddIc+XL1PvunvC1mt7KF3I2K3hI4pTdAAD04+60O0n8CwUAApDh92Nbe91Gsi3n1/
+ zlhA==
+X-Gm-Message-State: AOJu0YyZgbV4VY/ZO+jLThMrlP3KCyeN0znfbTDUmk9P7bPWCPuehlXt
+ vafokVIGZd1YukGJYohs8yUn/+R0M7E4RUUflkkVX4vQUZexylYQULT1MsvhmC+YbG6Am+a4+yX
+ Ti98CORqM8XGoVQ+RRWlJsggsSay5NjSJ/5r6yQ==
+X-Gm-Gg: ASbGncuzCuhZchwCYjRG63qd02nS6Rqi343HnqwAZvNSUqaruSQRxGHFZo6KntpYUnJ
+ Yb7BYobrD42GqxyivuedTqdgxZefbRkhrZ+MSD1I=
+X-Google-Smtp-Source: AGHT+IH9tJ8hqaGRirm7lkZPQxTT5y4oG3LXloy5X7xjRMFA838cqtrNiubVng1A5vD61fB8FM2EmalMFWQmfXHPQwk=
+X-Received: by 2002:a67:ef45:0:b0:4b2:af37:1433 with SMTP id
+ ada2fe7eead31-4b2af3714d6mr4689338137.13.1734590199391; Wed, 18 Dec 2024
+ 22:36:39 -0800 (PST)
 MIME-Version: 1.0
-References: <31564d54-4fea-4450-997d-45e14c4957f4.jinguojie.jgj@alibaba-inc.com>
-In-Reply-To: <31564d54-4fea-4450-997d-45e14c4957f4.jinguojie.jgj@alibaba-inc.com>
+References: <22b831c6-4a7c-4393-a840-d0b00512acbb.jinguojie.jgj@alibaba-inc.com>
+ <4ae915b4-0be1-4ea6-b59e-50c9a960c558.jinguojie.jgj@alibaba-inc.com>
+In-Reply-To: <4ae915b4-0be1-4ea6-b59e-50c9a960c558.jinguojie.jgj@alibaba-inc.com>
 From: Jin Guojie <guojie.jin@gmail.com>
-Date: Thu, 19 Dec 2024 14:08:59 +0800
-Message-ID: <CA+B+MYSO4HM9aBWEyCszC3-VrYvyv5DCs2ofaheHpsw0j7jiXQ@mail.gmail.com>
+Date: Thu, 19 Dec 2024 14:36:28 +0800
+Message-ID: <CA+B+MYT=RRPEUQ8WydQWeQkB02xO5=EJd=gqOTXB1F5OUWj9HQ@mail.gmail.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] memcg/memcontrol04: Fix judgment for
- recursive_protection
+Subject: [LTP] [PATCH v2] controllers: skip test when cgroup v2 is loaded
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,85 +80,57 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VjI6CiogQ2hhbmdlIHRoZSBleHBlY3RlZCBldmVudHMgaW4gRiBkZXBlbmRpbmcgb24gbWVtb3J5
-X3JlY3Vyc2l2ZXByb3QKCkluIFBhdGNoIHYxWzFdLCB0aGUgcm9sZSBvZiByZWN1cnNpdmVfcHJv
-dGVjdGlvbiBpbiBjZ291cCB2MiB3YXMgbm90IGNvbnNpZGVyZWQuCgpCeSBjYXJlZnVsbHkgcmVh
-ZGluZyB0aGUgYWxnb3JpdGhtIGluIHRoZSBrZXJuZWwgZnVuY3Rpb24KZWZmZWN0aXZlX3Byb3Rl
-Y3Rpb24oKS4gV2hlbiBtZW1vcnlfcmVjdXJzaXZlcHJvdCBpcyBlbmFibGVkLCBhCnN1Ymdyb3Vw
-IHdpdGggdXNhZ2UgPiAwIGNhbiBnZXQgdW5jbGFpbWVkIGdyZWF0ZXIgdGhhbiAwLgoKVGhlIHB1
-cnBvc2Ugb2YgZG9pbmcgdGhpcyBzaG91bGQgYmUgdG8gYWNoaWV2ZSB0aGUgZXNzZW50aWFsIHB1
-cnBvc2UKb2YgcmVjdXJzaXZlX3Byb3RlY3Rpb246IHRoZSBzdW0gb2YgYWxsIHN1Ymdyb3Vwcycg
-dW5wcm90ZWN0ZWQgdmFsdWVzCmlzIGVxdWFsIHRvIHBhcmVudCdzIHVucHJvdGVjdGVkIHZhbHVl
-cy4KCkV2ZW4gdGhvdWdoIHRoZSBkb2N1bWVudGF0aW9uIGRvZXMgbm90IGdpdmUgYW4gZXhwbGlj
-aXQgZGVzY3JpcHRpb24KZm9yIHJlY3Vyc2l2ZV9tZW1vcnlwcm90LCBpdCBsb29rcyBsaWtlIHRo
-ZSBrZXJuZWwncyBwcm9jZXNzaW5nCmFsZ29yaXRobSBpcyByZWFzb25hYmxlLgoKQmFzZWQgb24g
-dGhlIGlkZWEgb2YgWzJdLCBQYXRjaCB2MiBpcyByZXdyaXR0ZW4gdG8gZGV0ZXJtaW5lIHdoZXRo
-ZXIKbWVtb3J5X3JlY3Vyc2l2ZXByb3QgaXMgZW5hYmxlZC4KCk9uIGRpc3RyaWJ1dGlvbnMgd2l0
-aCBtZW1vcnlfcmVjdXJzaXZlcHJvdCBlbmFibGVkIGJ5IGRlZmF1bHQgKGZyb20KVWJ1bnR1IDIy
-LjA0IHRvIDI0LjEwKSwgcnVubmluZyB0aGlzIHBhc3NlczoKCm1lbWNvbnRyb2wwNC5jOjIwODog
-VFBBU1M6IEV4cGVjdDogKEMgb29tIGV2ZW50cz0wKSA9PSAwCm1lbWNvbnRyb2wwNC5jOjIxMTog
-VFBBU1M6IEV4cGVjdDogKEMgbG93IGV2ZW50cz05NjYpID4gMAptZW1jb250cm9sMDQuYzoyMDg6
-IFRQQVNTOiBFeHBlY3Q6IChEIG9vbSBldmVudHM9MCkgPT0gMAptZW1jb250cm9sMDQuYzoyMTE6
-IFRQQVNTOiBFeHBlY3Q6IChEIGxvdyBldmVudHM9OTY2KSA+IDAKbWVtY29udHJvbDA0LmM6MjA4
-OiBUUEFTUzogRXhwZWN0OiAoRSBvb20gZXZlbnRzPTApID09IDAKbWVtY29udHJvbDA0LmM6MjE0
-OiBUUEFTUzogRXhwZWN0OiAoRSBsb3cgZXZlbnRzPTApID09IDAKbWVtY29udHJvbDA0LmM6MjA4
-OiBUUEFTUzogRXhwZWN0OiAoRiBvb20gZXZlbnRzPTApID09IDAKbWVtY29udHJvbDA0LmM6MjEx
-OiBUUEFTUzogRXhwZWN0OiAoRiBsb3cgZXZlbnRzPTg3NCkgPiAwCgpbMV0gaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9waXBlcm1haWwvbHRwLzIwMjQtTm92ZW1iZXIvMDQwOTQ2Lmh0bWwKWzJdIGh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8yMDIyMDIyMjE0NDUxMS5HQTEyMDM3QGJsYWNrYm9k
-eS5zdXNlLmN6LwoKU2lnbmVkLW9mZi1ieTogSmluIEd1b2ppZSA8Z3VvamllLmppbkBnbWFpbC5j
-b20+ClN1Z2dlc3RlZC1ieTogUmljaGFyZCBQYWxldGhvcnBlIDxycGFsZXRob3JwZUBzdXNlLmNv
-bT4KU3VnZ2VzdGVkLWJ5OiBNaWNoYWwgS291dG7DvSA8bWtvdXRueUBzdXNlLmNvbT4KLS0tCiBp
-bmNsdWRlL3RzdF9jZ3JvdXAuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKysK
-IGxpYi90c3RfY2dyb3VwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMiAr
-KysrKysrKysrKysKIHRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJv
-bDA0LmMgfCAgMiArLQogMyBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxIGRlbGV0
-aW9uKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfY2dyb3VwLmggYi9pbmNsdWRlL3RzdF9j
-Z3JvdXAuaAppbmRleCBkMjNhOGU2NTIuLjA2OGZmODMwNiAxMDA2NDQKLS0tIGEvaW5jbHVkZS90
-c3RfY2dyb3VwLmgKKysrIGIvaW5jbHVkZS90c3RfY2dyb3VwLmgKQEAgLTI1Niw0ICsyNTYsNiBA
-QCBpbnQgc2FmZV9jZ19vY2N1cnNpbihjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGluZW5v
-LAogICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqY29uc3QgZmlsZV9uYW1lLAog
-ICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqY29uc3QgbmVlZGxlKTsKCitpbnQg
-dHN0X2NnX21lbW9yeV9yZWN1cnNpdmVwcm90KHN0cnVjdCB0c3RfY2dfZ3JvdXAgKmNnKTsKKwog
-I2VuZGlmIC8qIFRTVF9DR1JPVVBfSCAqLwpkaWZmIC0tZ2l0IGEvbGliL3RzdF9jZ3JvdXAuYyBi
-L2xpYi90c3RfY2dyb3VwLmMKaW5kZXggNjA1NTAxNWViLi45ZTNiMjFlZDAgMTAwNjQ0Ci0tLSBh
-L2xpYi90c3RfY2dyb3VwLmMKKysrIGIvbGliL3RzdF9jZ3JvdXAuYwpAQCAtNzYsNiArNzYsOCBA
-QCBzdHJ1Y3QgY2dyb3VwX3Jvb3QgewogICAgICAgIGludCB3ZV9tb3VudGVkX2l0OjE7CiAgICAg
-ICAgLyogY3B1c2V0IGlzIGluIGNvbXBhdGFiaWxpdHkgbW9kZSAqLwogICAgICAgIGludCBub19j
-cHVzZXRfcHJlZml4OjE7CisKKyAgICAgICBpbnQgbWVtb3J5X3JlY3Vyc2l2ZXByb3Q6MTsKIH07
-CgogLyogQ29udHJvbGxlciBzdWItc3lzdGVtcyAqLwpAQCAtNTkyLDYgKzU5NCw3IEBAIHN0YXRp
-YyB2b2lkIGNncm91cF9yb290X3NjYW4oY29uc3QgY2hhciAqY29uc3QgbW50X3R5cGUsCiAgICAg
-ICAgfQogICAgICAgIGZvciAodG9rID0gc3RydG9rKG1udF9vcHRzLCAiLCIpOyB0b2s7IHRvayA9
-IHN0cnRvayhOVUxMLCAiLCIpKSB7CiAgICAgICAgICAgICAgICBuc2RlbGVnYXRlIHw9ICFzdHJj
-bXAoIm5zZGVsZWdhdGUiLCB0b2spOworICAgICAgICAgICAgICAgcm9vdC0+bWVtb3J5X3JlY3Vy
-c2l2ZXByb3QgfD0KIXN0cmNtcCgibWVtb3J5X3JlY3Vyc2l2ZXByb3QiLCB0b2spOwogICAgICAg
-IH0KCiAgICAgICAgaWYgKHJvb3QtPnZlciAmJiBjdHJsX2ZpZWxkID09IHJvb3QtPmN0cmxfZmll
-bGQpCkBAIC03MTgsNiArNzIxLDcgQEAgbW91bnQ6CiAgICAgICAgICAgICAgICB0c3RfcmVzKFRJ
-TkZPLCAiTW91bnRlZCBWMiBDR3JvdXBzIG9uICVzIiwgbW50X3BhdGgpOwogICAgICAgICAgICAg
-ICAgdHN0X2NnX3NjYW4oKTsKICAgICAgICAgICAgICAgIHJvb3RzWzBdLndlX21vdW50ZWRfaXQg
-PSAxOworICAgICAgICAgICAgICAgcm9vdHNbMF0ubWVtb3J5X3JlY3Vyc2l2ZXByb3QgPSAxOwog
-ICAgICAgICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KCkBAIC0xNTA5LDMgKzE1MTMsMTEgQEAg
-aW50IHNhZmVfY2dfb2NjdXJzaW4oY29uc3QgY2hhciAqY29uc3QgZmlsZSwKY29uc3QgaW50IGxp
-bmVubywKCiAgICAgICAgcmV0dXJuICEhc3Ryc3RyKGJ1ZiwgbmVlZGxlKTsKIH0KKworaW50IHRz
-dF9jZ19tZW1vcnlfcmVjdXJzaXZlcHJvdChzdHJ1Y3QgdHN0X2NnX2dyb3VwICpjZykKK3sKKyAg
-ICAgICBpZiAoY2cgJiYgY2ctPmRpcnNfYnlfY3RybFswXS0+ZGlyX3Jvb3QpCisgICAgICAgICAg
-ICAgICByZXR1cm4gY2ctPmRpcnNfYnlfY3RybFswXS0+ZGlyX3Jvb3QtPm1lbW9yeV9yZWN1cnNp
-dmVwcm90OworICAgICAgIHJldHVybiAwOworfQorCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
-bmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRyb2wwNC5jCmIvdGVzdGNhc2VzL2tlcm5lbC9j
-b250cm9sbGVycy9tZW1jZy9tZW1jb250cm9sMDQuYwppbmRleCAxYjhkMTE1ZjguLjllOWQ2YWI2
-ZSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9tZW1jb250
-cm9sMDQuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRy
-b2wwNC5jCkBAIC0yMDcsNyArMjA3LDcgQEAgc3RhdGljIHZvaWQgdGVzdF9tZW1jZ19sb3codm9p
-ZCkKCiAgICAgICAgICAgICAgICBUU1RfRVhQX0VYUFIob29tID09IDAsICIoJWMgb29tIGV2ZW50
-cz0lbGQpID09IDAiLCBpZCwgb29tKTsKCi0gICAgICAgICAgICAgICBpZiAoaSA8IEUpIHsKKyAg
-ICAgICAgICAgICAgIGlmIChpIDwgRSB8fCAoKGkgPT0gRikgJiYKdHN0X2NnX21lbW9yeV9yZWN1
-cnNpdmVwcm90KGxlYWZfY2dbRl0pKSkgewogICAgICAgICAgICAgICAgICAgICAgICBUU1RfRVhQ
-X0VYUFIobG93ID4gMCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIoJWMg
-bG93IGV2ZW50cz0lbGQpID4gMCIsIGlkLCBsb3cpOwogICAgICAgICAgICAgICAgfSBlbHNlIHsK
-LS0KMi4zNC4xCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
-bGlzdGluZm8vbHRwCg==
+V2:
+* Correction of comments
+
+V1:
+* Initial check for cgroup v2
+
+When running "controllers" case on some newer Linux distributions, there
+will be 10 ERROR messages during the setup phase, and several TFAIL
+results at the end.
+
+Current "controllers" cases only implement tests for cgroup v1 file interface.
+It's better to skip the test after checking that v2 hierarchy has
+already been loaded.
+
+[1] https://lists.linux.it/pipermail/ltp/2024-December/041082.html
+
+Signed-off-by: Jin Guojie <guojie.jin@gmail.com>
+---
+ testcases/kernel/controllers/test_controllers.sh | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/testcases/kernel/controllers/test_controllers.sh
+b/testcases/kernel/controllers/test_controllers.sh
+index 7aa974ff2..0b67387ec 100755
+--- a/testcases/kernel/controllers/test_controllers.sh
++++ b/testcases/kernel/controllers/test_controllers.sh
+@@ -37,6 +37,15 @@
+ #
+           #
+ ##################################################################################
+
++# Currently only cgroup v1 interface can be tested.
++# When the v2 hierarchy is already loaded in the system, skip the test.
++mount | grep  " type cgroup2 " &>/dev/null
++if [ $? == 0 ]
++then
++       tst_brkm TCONF "" "test_controllers.sh: V1 controller
+required, but mounted on V2"
++       exit 32
++fi
++
+ if [ -f /proc/cgroups ]
+ then
+        CPU_CONTROLLER=`grep -w cpu /proc/cgroups | cut -f1`;
+--
+2.34.1
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
