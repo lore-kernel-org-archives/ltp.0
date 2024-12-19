@@ -4,86 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BD57E77184
-	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 08:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B1EE77184
+	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 09:09:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 165C83EC0C5
-	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 09:55:23 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id ABD183EC0DD
+	for <ltp@archiver.kernel.org>; Thu, 19 Dec 2024 10:09:26 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C89823E12DE
- for <ltp@lists.linux.it>; Thu, 19 Dec 2024 09:55:06 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 3F8973EB9D1
+ for <ltp@lists.linux.it>; Thu, 19 Dec 2024 10:09:11 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6378862FB75
- for <ltp@lists.linux.it>; Thu, 19 Dec 2024 09:55:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1734598502;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3CABE65C6A1
+ for <ltp@lists.linux.it>; Thu, 19 Dec 2024 10:09:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E02811F38E;
+ Thu, 19 Dec 2024 09:09:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1734599348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nVV4GSQk6KMacgfetuytahVWzR71aXt5L9M6BI92g4U=;
- b=JYaHvkJrxrlmOsKwnfV5SKuJJGjCPzDVtQgo7jS/mGZxZarR0462W/ARipQbit08TYnWyq
- 0gWtn4fgRC8ip7cVvSxLtC1s7O+X1r4LeilDWsNrVwBCvVb1bpOp0wPyzMG2doEHqa3NnC
- xNgWcuI07CQ2eqJ8VB7bMznPiV46dbU=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-_Lnnt4mNOv6M9dLA516gpA-1; Thu, 19 Dec 2024 03:55:01 -0500
-X-MC-Unique: _Lnnt4mNOv6M9dLA516gpA-1
-X-Mimecast-MFC-AGG-ID: _Lnnt4mNOv6M9dLA516gpA
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2ef9da03117so774618a91.1
- for <ltp@lists.linux.it>; Thu, 19 Dec 2024 00:55:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1734598499; x=1735203299;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=nVV4GSQk6KMacgfetuytahVWzR71aXt5L9M6BI92g4U=;
- b=HYPUG+Uj41pzI29c70k+0yrJwrBN7AaOeuMAnyeSlmaCbmwC502IJlGHuV5xTdzkOQ
- 4lqX2wPREcwHX4BitlMqelGdOdshOR5HGs3/2syKr6fqxZXa80DwNqgNSRxSsFoLGYVB
- nRfePtqUk/XxouQ2rOXfWTXbtzrdvVbEtQjPefn5eJS8QO+8nDZ2BAU3kImSR0GWg4iR
- Tdw6MfrmS2TM/ow8taqu+M7rAjvIQChfzTRPckOJLC9xmpdmofe9tscc8ALOBGkfPpHb
- ZfZUCqwNXdmc1EVRxuQXcTdUO+ZS/E6iaDA6eUhafPExTJqRC0LX2W/pJJO0XCgHNPEW
- 6WNw==
-X-Gm-Message-State: AOJu0YyCfbSY5rUx+m2QVCTzobWtUOX1kCw+t0+4lJe4vctAMgX/BVcM
- UXPDcu3wXg7rxTNrKjCybdaPECsLX5Llv6qVg8MbvWAgx7YvHW+Ii0vZqivi5sAGQ5J812OHS7p
- ABmS9I6VPicotDbB3xS1kjU8Sa4wHo587Rrji4EZp5Gcei82TjJdm9bzikBWwPnMxQK/lFLY6wX
- 35miyxze14o7h4K6XZfm+og6t7aJoom6FY2i+F
-X-Gm-Gg: ASbGncvR/uEYaF7RPtqMNRZoetDMbXbfWaVATZMWp4B3J9fPcl2UkEffbpUgS9RbHbW
- FEe9CM1pqGeLkc3wrVLsSukAxPwe+m5c0Ua5K2aE=
-X-Received: by 2002:a17:90b:2f0e:b0:2ee:8427:4b02 with SMTP id
- 98e67ed59e1d1-2f2e937721emr7929304a91.28.1734598499182; 
- Thu, 19 Dec 2024 00:54:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFllRFj3LyJBGEpWm3En9E42lijjoZSm+MPGWYRZV6zxmBKBcn29dNZQwfZkpZYD/w4nvISajsoQ/4SfgeZvUQ=
-X-Received: by 2002:a17:90b:2f0e:b0:2ee:8427:4b02 with SMTP id
- 98e67ed59e1d1-2f2e937721emr7929295a91.28.1734598498871; Thu, 19 Dec 2024
- 00:54:58 -0800 (PST)
+ bh=Irp8d5KyQHCHP7hgxuvmNn8aUQy/wl3tPPMTFBDXvxo=;
+ b=pVviq3RwTYnkjZRY7nPAdQbVWx12PIxBbTml2Xj/HwqPZXQFH6W6KQw/Ac+Kk7SVJWnBMG
+ PyW9JQFhNVdUc3Akb/6e0udVG4NWXBpFf2VloPiXfEwXaO0o3fIxwj/S1R0XVayujqwhrl
+ kqZzqtiUvZBJKy2EM5MzqhOXAvkTllQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1734599348;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Irp8d5KyQHCHP7hgxuvmNn8aUQy/wl3tPPMTFBDXvxo=;
+ b=x6kyYEPeN8e08C1D8RUASF3GUlAqji8ieD5qr3QcsJKErxwxBn0ewJTQPHsQV5r+Ulr1AQ
+ HEdRz1jJOzWLXcDA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mW8d6eoM;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=S747dskP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1734599347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Irp8d5KyQHCHP7hgxuvmNn8aUQy/wl3tPPMTFBDXvxo=;
+ b=mW8d6eoMhReOziQtmR6UrFoPLYH6V3b9QQqmFFsGQK0vKDmKGCGacg/cHy62X211DT0RBs
+ 8kPljhUIQvnN3qkjHynCrYY+pHpoI+SULUgEKO65dythMpnxkvieEENnjSq/BE/uBDdP+j
+ l+8XndL9Cpznv+Umot9FjgJ/j0HkGrc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1734599347;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Irp8d5KyQHCHP7hgxuvmNn8aUQy/wl3tPPMTFBDXvxo=;
+ b=S747dskPT2Rkv/HM77/VEIh24Aw6EJjMUvzDlUGL8CFF5Pd347/n0mUbiHPh70qia34aFK
+ CAzd0pxroG5LdQDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CEFFD13A32;
+ Thu, 19 Dec 2024 09:09:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id FptOMbPiY2fXSQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 19 Dec 2024 09:09:07 +0000
+Date: Thu, 19 Dec 2024 10:08:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Z2Pipl_6CoNCjI3b@rei.lan>
+References: <20241218184518.16190-1-chrubis@suse.cz>
+ <20241218184518.16190-10-chrubis@suse.cz>
+ <CAEemH2d=r9XMqzwr=Jd=0KEvT6YE6uTtBqoOKWOu=3xfYUbnRQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20241210225753.381770-1-pvorel@suse.cz>
-In-Reply-To: <20241210225753.381770-1-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 19 Dec 2024 16:54:45 +0800
-Message-ID: <CAEemH2dq0Vg95SMSz1-Y-yAhs-or1Ua2igHFfJ=b-7Su5uN=kg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: NU2qeZtKu5qyQWAbjcIHrYthJatBT5F1FnLNEyJJCm0_1734598500
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2d=r9XMqzwr=Jd=0KEvT6YE6uTtBqoOKWOu=3xfYUbnRQ@mail.gmail.com>
+X-Rspamd-Queue-Id: E02811F38E
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 0/7] ci: run shell loader tests
+Subject: Re: [LTP] [PATCH 09/13] testcases/kernel/mem: Move KSM bits to ksm
+ tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,133 +129,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi!
+> We do have another tst_helper.h under testcases/kernel/include/,
+> maybe we can combine it with ksm_test.h together?
 
-Petr Vorel <pvorel@suse.cz> wrote:
-
-
-> 2024-12-10T21:07:23.4757888Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:484:
-> TINFO: Minimum sampling period ended
-> 2024-12-10T21:07:23.4758941Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:307:
-> TINFO: loop = 10000, delay_bias = 0
-> 2024-12-10T21:07:23.4760498Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: start_a - start_b: { avg =   -10ns, avg_dev =    17ns, dev_ratio =
-> 1.62 }
-> 2024-12-10T21:07:23.4761822Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - start_a  : { avg = 15683ns, avg_dev =    76ns, dev_ratio =
-> 0.00 }
-> 2024-12-10T21:07:23.4763095Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_b - start_b  : { avg = 15947ns, avg_dev =    71ns, dev_ratio =
-> 0.00 }
-> 2024-12-10T21:07:23.4764323Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - end_b    : { avg =  -275ns, avg_dev =    18ns, dev_ratio =
-> 0.07 }
-> 2024-12-10T21:07:23.4765493Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: spins            : { avg =   341  , avg_dev =    27  , dev_ratio =
-> 0.08 }
-> 2024-12-10T21:07:26.9727369Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:494:
-> TINFO: Reached deviation ratios < 0.10, introducing randomness
-> 2024-12-10T21:07:26.9728387Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:497:
-> TINFO: Delay range is [-15945, 15847]
-> 2024-12-10T21:07:26.9729228Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:307:
-> TINFO: loop = 218505, delay_bias = 0
-> 2024-12-10T21:07:26.9730199Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: start_a - start_b: { avg =   -85ns, avg_dev =     8ns, dev_ratio =
-> 0.09 }
-> 2024-12-10T21:07:26.9731309Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - start_a  : { avg = 15814ns, avg_dev =     7ns, dev_ratio =
-> 0.00 }
-> 2024-12-10T21:07:26.9732397Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_b - start_b  : { avg = 15913ns, avg_dev =    10ns, dev_ratio =
-> 0.00 }
-> 2024-12-10T21:07:26.9733462Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - end_b    : { avg =  -183ns, avg_dev =     9ns, dev_ratio =
-> 0.05 }
-> 2024-12-10T21:07:26.9734493Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: spins            : { avg =   184  , avg_dev =    10  , dev_ratio =
-> 0.05 }
-
-
-
-> 2024-12-10T21:08:22.5072327Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:654:
-> TINFO: Exceeded execution loops, requesting exit
-> 2024-12-10T21:08:22.5073965Z
-> /__w/ltp/ltp/lib/newlib_tests/tst_fuzzy_sync01.c:219: TFAIL: acs:0  act:1
-> art:3  | =:24   -:2999931 +:45
-
-
-
-> runtest TINFO: * tst_fuzzy_sync02
-> ...
-> 2024-12-10T21:09:01.0848787Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:484:
-> TINFO: Minimum sampling period ended
-> 2024-12-10T21:09:01.0849660Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:307:
-> TINFO: loop = 10000, delay_bias = 9931
-> 2024-12-10T21:09:01.0850640Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: start_a - start_b: { avg = -3787ns, avg_dev =   134ns, dev_ratio =
-> 0.04 }
-> 2024-12-10T21:09:01.0851859Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - start_a  : { avg =  6983ns, avg_dev =   645ns, dev_ratio =
-> 0.09 }
-> 2024-12-10T21:09:01.0852990Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_b - start_b  : { avg = 13154ns, avg_dev =   190ns, dev_ratio =
-> 0.01 }
-> 2024-12-10T21:09:01.0854078Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - end_b    : { avg = -9959ns, avg_dev =   347ns, dev_ratio =
-> 0.03 }
-> 2024-12-10T21:09:01.0855485Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: spins            : { avg = 16071  , avg_dev =   555  , dev_ratio =
-> 0.03 }
-> 2024-12-10T21:09:01.0856560Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:494:
-> TINFO: Reached deviation ratios < 0.10, introducing randomness
-> 2024-12-10T21:09:01.0857498Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:497:
-> TINFO: Delay range is [-11296, 21198]
-> 2024-12-10T21:09:01.0858300Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:307:
-> TINFO: loop = 10001, delay_bias = 9931
-> 2024-12-10T21:09:01.0859260Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: start_a - start_b: { avg = -3787ns, avg_dev =   134ns, dev_ratio =
-> 0.04 }
-> 2024-12-10T21:09:01.0860356Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - start_a  : { avg =  6983ns, avg_dev =   645ns, dev_ratio =
-> 0.09 }
-> 2024-12-10T21:09:01.0861433Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_b - start_b  : { avg = 13154ns, avg_dev =   190ns, dev_ratio =
-> 0.01 }
-> 2024-12-10T21:09:01.0862510Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: end_a - end_b    : { avg = -9959ns, avg_dev =   347ns, dev_ratio =
-> 0.03 }
-> 2024-12-10T21:09:01.0863584Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:295:
-> TINFO: spins            : { avg = 16071  , avg_dev =   555  , dev_ratio =
-> 0.03 }
->
-
-
-> 2024-12-10T21:09:52.6826456Z /__w/ltp/ltp/include/tst_fuzzy_sync.h:654:
-> TINFO: Exceeded execution loops, requesting exit
-> 2024-12-10T21:09:52.6827841Z
-> /__w/ltp/ltp/lib/newlib_tests/tst_fuzzy_sync02.c:164: TFAIL: 2| =:15
-
-
-
-From what I understand, CI environments (GitHub Actions) are shared
-infrastructures with limited control over CPU allocation. CPU time slices
-may
-be interrupted or delayed due to resource contention with other CI jobs.
-
-As both last TINFO print "Exceeded execution loops, requesting exit,"
-they fail to meet the success criteria due to resource constraints.
-So I guess we'd better stop the test once the loops terminate early.
-That's the way to guarantee the precise data needed to satisfy certain
-scenarios (HW, VM, CI, etc.).
-
-I will send an improvement patch later. And your patchset itself looks good.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+The ksm_test.h are functions used only in ksm testcases, the
+ksm_helper.h is used in more tests and I plan to make it an library in
+top level libs/ later on.
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
