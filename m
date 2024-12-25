@@ -4,83 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB34E7718B
-	for <ltp@archiver.kernel.org>; Wed, 25 Dec 2024 11:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1735127371; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=HvAbG6Ixu5RNA/8M2aWMO8tQx+3etZRzyWIcrcoWU68=;
- b=PzX+LCHSMWjeI9feuh9AV2gKwKg7IYI6j4v9AzBuM/EGFkbkRmEuJbXMZT9Zug6UuabSQ
- C8wRQptFC21AmO8xTMpEm1XXNd31KhUTjp/h5ghAPiVGFBK0hDK/jrQI38gS2Odh6hzCE0I
- kuDvdZO0aT3wgCNE9Lp4oUcDERkAqMw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6488DE7718B
+	for <ltp@archiver.kernel.org>; Wed, 25 Dec 2024 11:57:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 788423E4E56
-	for <ltp@archiver.kernel.org>; Wed, 25 Dec 2024 12:49:31 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7CFD43E5593
+	for <ltp@archiver.kernel.org>; Wed, 25 Dec 2024 12:57:06 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 57C483E271E
- for <ltp@lists.linux.it>; Wed, 25 Dec 2024 12:49:10 +0100 (CET)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6E0B73DA818
+ for <ltp@lists.linux.it>; Wed, 25 Dec 2024 12:56:51 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 73D4410005CF
- for <ltp@lists.linux.it>; Wed, 25 Dec 2024 12:49:09 +0100 (CET)
-Received: by mail-ed1-x52e.google.com with SMTP id
- 4fb4d7f45d1cf-5d34030ebb2so3358031a12.1
- for <ltp@lists.linux.it>; Wed, 25 Dec 2024 03:49:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1735127348; x=1735732148; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=DcbBqonNAAZs53xXlzvWHxq0+fW/8Tkc1kH8lvYsX7g=;
- b=arMqjehoSwJamz0NBOojUfGj1cycGzsIF0cUnx2OmY0CUuB0MQX43F3F6naDOsNObT
- oUFQXmXoR1AkaHR/HvZSs8sCvw6CRUUighhQI0iWxl/pINbK2iN5r17vxxONB5+rbyvc
- lO+Zm1jf3GQ6SeYlHi6Ra/8daMGm0WgOucCRtKhigrI4QLZda/XI6Ke4NDjc+ix9YUGs
- 8D5mP5cnbaWz4c+6vfVBUXdm7q04yusMUvtdqV4uH7DR3fdUYhT0aoHJzazMVis5F5xH
- kpOyYSuj66CKIrtFk7pEBFlXdSt11ay7L9h1PpAmhtfta8lGLnJPbbELP+XfjoryQLbD
- Oitw==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 38DFA206C55
+ for <ltp@lists.linux.it>; Wed, 25 Dec 2024 12:56:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1735127808;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ekyeE/ODFICy8m61DT6TyLOECgT84W9yQAg7HqnfKeA=;
+ b=PGzgj+U/jqYIHMX5FlKSDko/6bLfokfDXmkuCMaBfEJYQ40l0G81yg8nECNiCuSrNdjPlb
+ H0jmlnOnrFAOeZecpgylooHBjODHJJSvcBw5JfJUIIOxnd4BHj6XwLJP94h6d8+ARdaQeF
+ 4ZJVAZwS7Ya8rhdfh0Hh8d06LQqPngc=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-331-OUOcqX9GMI-5z60Cvv_afw-1; Wed, 25 Dec 2024 06:56:47 -0500
+X-MC-Unique: OUOcqX9GMI-5z60Cvv_afw-1
+X-Mimecast-MFC-AGG-ID: OUOcqX9GMI-5z60Cvv_afw
+Received: by mail-pj1-f71.google.com with SMTP id
+ 98e67ed59e1d1-2ee5668e09bso6781316a91.3
+ for <ltp@lists.linux.it>; Wed, 25 Dec 2024 03:56:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1735127348; x=1735732148;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ d=1e100.net; s=20230601; t=1735127806; x=1735732606;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=DcbBqonNAAZs53xXlzvWHxq0+fW/8Tkc1kH8lvYsX7g=;
- b=d3luraH7BxGbKMXi+2rqDmTfZB+xE8htQpJeZbJcQQ8tAMLxdGck51oa/kCSzpN2AN
- Ja/Ff0gg+D70faYqDqbZAX99cImK+k7oE9t7u4PzxYsfJaTzuMCXnzqgbQrNU+xSVc/7
- z2K8Gzc8bdouOpYmrW8lGIXLzWmb1Yh7r98DFpObR4oZSgFKpbW/Q3zDIaPzgbFpWGAm
- VH7E5EtXZ+gbsL97Won7iRw+MqtHtg2lE17RXU4LwzSQah4bekufgkaIWnXq2J+/iAdz
- HDbzgg2AN6uBIMP5QrXMeiJVSoU0VD1OhylTMUQmwkjUmJ74NiGZ/Vwf6Qi/M8785gQN
- fwrw==
-X-Gm-Message-State: AOJu0YxX7WiIlu0C2s2PMS3vlmN6u668vj413wtOsxY2vFsLdZW8yrkK
- 1Y3/0z0UiAfXJ9KDtruPEkgebmTJOdCV6f+FmpPJs1fFB6ODyTjfZlDn6Il1npxQ2eR2QWPAqC8
- =
-X-Gm-Gg: ASbGncummYuBIdIfW0SHduLVqBEahcbA+f0l+Trk6wijA2ol2W6ly3Lr4CbE4DnCLeA
- +9ESPSRmzuN7MwsClFr5st5GYxpm2KPAhkWj8v4p/3YA8jQ3o/E8tGjKTWsBPQZm21Xs2WnCJKE
- bgVmdqkwfQCbg8mGSqT5QaB4EYSwCU0SvWjUa+hNLRiJMjqkP1KLWZnyurI01gHRqeQ4iZ6hg21
- U3Q7Op47J0zmVblh4TxDrVvVaOPfvNYo7bVHhUYWOemsg==
-X-Google-Smtp-Source: AGHT+IHZmyfZc5/NC4YhdInZNGQpfiMiWerxKF9zCd9VwJXgzZJPQ6YqHuocl09CiF48RABVDluw8A==
-X-Received: by 2002:a05:6402:5256:b0:5d0:bdc1:75df with SMTP id
- 4fb4d7f45d1cf-5d81ddf7fa6mr17255417a12.24.1735127348261; 
- Wed, 25 Dec 2024 03:49:08 -0800 (PST)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5d80665253dsm7369015a12.0.2024.12.25.03.49.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 25 Dec 2024 03:49:07 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Wed, 25 Dec 2024 06:42:15 -0500
-Message-Id: <20241225114215.2973-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
+ bh=ekyeE/ODFICy8m61DT6TyLOECgT84W9yQAg7HqnfKeA=;
+ b=HEHK/JWKy0s8uG7hANzJtCpfvd2w4jqGRtXWpyHLcLXJnlw3Zqq2s2enJYuniJRdI1
+ TCT4aqazI7YLAw7tSbktZRVE+54wq09tSZLnha/DiGwRcuVJ0K98hb+NjvRvACbfSAdj
+ KK0tbVlyhAJUhW1y6nL85D6138TPbobSC/iDinX4vsuWafxRn/csSAOzJ6tlNU5AsptX
+ Zy6KkWqbCIhfV8CkdmWqrV74m87otuKwusOpU7qPwby3dNALO2lWRaas7HiOmLxVOhhZ
+ L1Z7WMNXiZ9+P1Z11sq3uCvYkHiot0/Gwu/1FprFkzcNMEOL+/1r+iF/nqVnka81V6hs
+ JQcw==
+X-Gm-Message-State: AOJu0Yz3jLg4o+HFsgb3cLAGo9u/Ou7/s57/N3jhIAMteNrojVIDdogv
+ xcqao/ptKDAHWOyjjgmWWWru32gCTeycIPAipcP1ChSVbrjXL3o1ZMQgvvAclqX6TUof/o7jfic
+ I5TXUP7yArZUrzIB5fnRy6bCWJPfRzkrZ0lsn/m1bZqNAq7ZSaZcvDmMN2V+Dro37E3uA7OhukV
+ QD2fyMu/7yeerQDMmtO6JrnjY=
+X-Gm-Gg: ASbGnctPsQiesISjIty1X0K46AP4OzyHQDR66zNc4wfv7ecD7V3pCsa5YUGNHFUWs+T
+ 0g+gbMsQNbkIbmiMoUtz/Yi5J/H6wrKkLAbt/Clk=
+X-Received: by 2002:a17:90a:d88c:b0:2ee:94d1:7a9d with SMTP id
+ 98e67ed59e1d1-2f452eed6cemr26706455a91.32.1735127806105; 
+ Wed, 25 Dec 2024 03:56:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEl1DrhGPKsb3gdN3kEsKZnfnv9GM8v/7XMu9qSrTIPeZMGQ3CEY5yxcegOlYgxZXTlk+sRr1AT7aA8z6vJczA=
+X-Received: by 2002:a17:90a:d88c:b0:2ee:94d1:7a9d with SMTP id
+ 98e67ed59e1d1-2f452eed6cemr26706442a91.32.1735127805875; Wed, 25 Dec 2024
+ 03:56:45 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <31564d54-4fea-4450-997d-45e14c4957f4.jinguojie.jgj@alibaba-inc.com>
+ <CA+B+MYSO4HM9aBWEyCszC3-VrYvyv5DCs2ofaheHpsw0j7jiXQ@mail.gmail.com>
+ <CAEemH2cFissakwU4N7s+XPLrWvZu4Do5nsEZ8aFohP7zA-TVyg@mail.gmail.com>
+In-Reply-To: <CAEemH2cFissakwU4N7s+XPLrWvZu4Do5nsEZ8aFohP7zA-TVyg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 25 Dec 2024 19:56:34 +0800
+Message-ID: <CAEemH2f5fm76Z4mPJArQu4MWGT618tswKEwHfxsSjqYf8UGDhw@mail.gmail.com>
+To: Jin Guojie <guojie.jin@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: dld9hTqX6W2hTvJKJ5407sf9BvL82n9pg6nTXNaMxZs_1735127806
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] mount08.c: Restrict overmounting of ephemeral
- entities on /proc/<pid>/fd/<nr>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2] memcg/memcontrol04: Fix judgment for
+ recursive_protection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,107 +97,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, ltp@lists.linux.it,
+ Richard Palethorpe <richard.palethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                           |  1 +
- testcases/kernel/syscalls/mount/.gitignore |  1 +
- testcases/kernel/syscalls/mount/mount08.c  | 56 ++++++++++++++++++++++
- 3 files changed, 58 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mount/mount08.c
+Hi All,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ded035ee8..d3abc8b85 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -852,6 +852,7 @@ mount04 mount04
- mount05 mount05
- mount06 mount06
- mount07 mount07
-+mount08 mount08
- 
- mount_setattr01 mount_setattr01
- 
-diff --git a/testcases/kernel/syscalls/mount/.gitignore b/testcases/kernel/syscalls/mount/.gitignore
-index 80885dbf0..3eee5863a 100644
---- a/testcases/kernel/syscalls/mount/.gitignore
-+++ b/testcases/kernel/syscalls/mount/.gitignore
-@@ -6,3 +6,4 @@
- /mount05
- /mount06
- /mount07
-+/mount08
-diff --git a/testcases/kernel/syscalls/mount/mount08.c b/testcases/kernel/syscalls/mount/mount08.c
-new file mode 100644
-index 000000000..9b54ea835
---- /dev/null
-+++ b/testcases/kernel/syscalls/mount/mount08.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test check restrict overmounting on /proc/<pid>/fd/<nr>.
-+ * It is based on the following kernel commit:
-+ * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
-+ */
-+
-+#include "tst_test.h"
-+#include <sys/mount.h>
-+#include "tst_safe_file_at.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define FOO MNTPOINT "/foo"
-+#define BAR MNTPOINT "/bar"
-+
-+static void run(void)
-+{
-+	char path[PATH_MAX];
-+	int foo_fd, newfd, proc_fd;
-+
-+	foo_fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
-+	newfd = SAFE_DUP(foo_fd);
-+	SAFE_CLOSE(foo_fd);
-+
-+	sprintf(path, "/proc/%d/fd/%d", getpid(), newfd);
-+
-+	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
-+
-+	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
-+
-+	TST_EXP_FAIL(
-+		mount(BAR, path, "", MS_BIND, 0),
-+		ENOENT,
-+		"mount() on proc failed expectedly"
-+	);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_CREAT(FOO, 0777);
-+	SAFE_CREAT(BAR, 0777);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.min_kver = "6.12",
-+};
+There is another problem in that tst_cgroup lib that
+the definition can lead to -1 during the | operation.
+
+Because If the field is uninitialized (contains garbage),
+it could hold 0b1, which is interpreted as -1 in signed arithmetic.
+
+At least we need separate fix:
+
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -44,7 +44,7 @@ struct cgroup_dir {
+         */
+        int dir_fd;
+
+-       int we_created_it:1;
++       unsigned int we_created_it:1;
+ };
+
+ /* The root of a CGroup hierarchy/tree */
+@@ -71,12 +71,12 @@ struct cgroup_root {
+        /* CGroup for current test. Which may have children. */
+        struct cgroup_dir test_dir;
+
+-       int nsdelegate:1;
+-       int memory_recursiveprot:1;
++       unsigned int nsdelegate:1;
++       unsigned int memory_recursiveprot:1;
+
+-       int we_mounted_it:1;
++       unsigned int we_mounted_it:1;
+        /* cpuset is in compatability mode */
+-       int no_cpuset_prefix:1;
++       unsigned int no_cpuset_prefix:1;
+ };
+
+
 -- 
-2.35.3
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
