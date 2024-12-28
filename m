@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C18FBE77188
-	for <ltp@archiver.kernel.org>; Sat, 28 Dec 2024 11:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88932E77188
+	for <ltp@archiver.kernel.org>; Sat, 28 Dec 2024 13:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1735386287; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1735392767; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=Jr4WsE2Te3jYHvBIyJcRa5jxokWPwkSzoLNG5bjckJ0=;
- b=Opmq7Ph+h9r7otHRPHJCD7716m0XepyRbCX7t7oqk/Np3O6k28Jr60zIUpvu51t/jmg0g
- +JWpEiBEHIzTUeuLyGyoEVlt5IgRSzgqqmARtIBJy+a8/jybyvFL0B2AsVUfXzqG2GaNpzr
- 5nteZ+0U1Gn5z53Dgd3xt8U9XEA7xzM=
+ bh=lG5ATCk8eYVJigB3ssqp1X6iwDOsO4tWame8GPRTxRI=;
+ b=KCoWJrse9xOiCnh+6l6IJ56eokVvYsmmysPu+oG2eFO7wDDxBmJYZSGw877hj2MQq+/W6
+ Y4CVNSJYoa8tcmDoW2yMIFrZCgIJ3jaO6/XavGDWKriGxsHHLVJ0GyoGv0SULc/b/XE0QUs
+ gU4zPoqtSYMJjz7fj8m82POEJhckLPY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 784513E4D93
-	for <ltp@archiver.kernel.org>; Sat, 28 Dec 2024 12:44:47 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id B41053E576A
+	for <ltp@archiver.kernel.org>; Sat, 28 Dec 2024 14:32:47 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 92BC93E4D79
- for <ltp@lists.linux.it>; Sat, 28 Dec 2024 12:44:26 +0100 (CET)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+ by picard.linux.it (Postfix) with ESMTPS id 7B4393E11CC
+ for <ltp@lists.linux.it>; Sat, 28 Dec 2024 14:32:25 +0100 (CET)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 36ECE14010C7
- for <ltp@lists.linux.it>; Sat, 28 Dec 2024 12:44:25 +0100 (CET)
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-aa68b513abcso1508411366b.0
- for <ltp@lists.linux.it>; Sat, 28 Dec 2024 03:44:25 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AE5AD625B72
+ for <ltp@lists.linux.it>; Sat, 28 Dec 2024 14:32:24 +0100 (CET)
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-aaec61d0f65so1102275366b.1
+ for <ltp@lists.linux.it>; Sat, 28 Dec 2024 05:32:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1735386264; x=1735991064; darn=lists.linux.it;
+ d=suse.com; s=google; t=1735392743; x=1735997543; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=lH5LTH/kLj+cW4t0FokBs1IPrHyjEs+pFRtsAN/ppxw=;
- b=PepyPnFM0C9usWJ4/5TUKtI93qK4lo93FaJvqla8O1aHKobzxQY84PT+TTWcUsBmgb
- zLgIIze0DVgwyR9OcykCtL0MbTPq3q4pxwr+B9QZCXjh+2nZoHwJREVFGpusztEgNH/v
- pnU0PRKTVK4+2nuhHXR85vMawN/RS3xVtCzZpTkNhGTsS2IclEiNPAy9v3tNuxkPb8A4
- XeW+PapBGZQrewK+6k/ssP83BxOoD4G0PX6Ozxm08a2PB6srA9sme1i60U7jR0JUnZKH
- PZaRD38+7Be2nZnomA4Hz5d2T6sNBff6BoeBrsVKFV+op3FFtuXDRiWWxewVS69vUqJn
- tjXg==
+ bh=0fqGXbuVw/1qan5dm8yor8PhLe/zYJR0LGoP0lPv0v8=;
+ b=QzjKlx6vlDmyeMeTyDzMUTcAytQFHxuF8fG20vMoZoHO3ICL++hconWTq5aE/f/eZw
+ FfagmIRhxnnlCHtBT/OpmM17ZUdws9gLCANzlUmR6Zu+VUx4WN09RVuYtV+2vv0Tpr/r
+ L0lAMTpw9h1it1vNuAXgUXV0N87zjN1lWdIh9RwAv7arSviK1rVbTKd5nz5PR1dTfd3t
+ my0ida8SbUU2/0276mXA0A7UteqDw5mbYaSt2o9JAQph5iNZSy60KGa01FiNYZ7+vAha
+ RmR6CBKVAUzncYQQhhiafcCY1bezmf4SArBEahND8Sd6iJrC06IwkIIiqqVlPtyeoFdr
+ Q+4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1735386264; x=1735991064;
+ d=1e100.net; s=20230601; t=1735392743; x=1735997543;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=lH5LTH/kLj+cW4t0FokBs1IPrHyjEs+pFRtsAN/ppxw=;
- b=JP1LIPeJ3Wv2FzPVxMsk1mn+IU2jtaZdNkU/K3bFFXX1UD2UvIfXiDmLDr4SwYRR/G
- CDMg2gi0jcBIkXdeC0CmzUTNmVmfwuqbACXmEEVthGcr9VOiYHhI+hihuNGAA1/LyEU/
- 9V+9oADl0h+rTj95Ke2A02UkUVWRzBZbV6Mc+JDKi2QmJWSK0rPYtCfmyCLxgs6Fdb/j
- 0qYrwGIZvRHkdggM2bpqgTOuyL76mTYWALA1YKgNISHW+uyM0tH5tuIts6dRVVUJPkwg
- nTsybxtpYK1NyfvmQQKQ6bGjOETIWsR3YG/4IGbUsnXb3EVaokemFZz8JL9rzYLxdAK1
- iSBw==
-X-Gm-Message-State: AOJu0YyDG7JVMVP0UeED1waPfHf/3NRxgF/OxWsz1iABr5z6BdWZ9IFu
- 6ZZZZbnogZYg2oAdF9PqKaAOwY1ChhOwA2q+eEGcf8Cohk6fPShz7b31/duXiqpQf3wrFQ9c8h0
+ bh=0fqGXbuVw/1qan5dm8yor8PhLe/zYJR0LGoP0lPv0v8=;
+ b=Vq+7xxxn5BQpGk/b6vjcw2svpQtP67oWNUHpsRvgA0vmSvTdXXs3fpD3eO4+ESYCZ4
+ lPhMSpDiXGYELV0HRssoEWted5Lo6L9hyPZeeLB5XQNqhPize4K/+mSVJmGGGEs5nukW
+ uRu0jSotDkAdZQbrMhiLoaIYduQb+xjUMb7VmCGsf6LuHBfc/juDTnAbFkM1aLT4kU7l
+ 2+StHAwIdtyzP13gVSkBssbPN77tpldBwTEp+Bwd/OPzlG5RgRqGKM26jms3lQkH2cUL
+ shpjK8M7NA8Jfwfg86sswwGy2c39RXWxqrwJKz8yP661PLxqNqt0YK+TtT1LHDDlNMrd
+ G8ig==
+X-Gm-Message-State: AOJu0Yztotl/O8okZHtXWz3njTtuxR0nKmhg7gcL5dGmQBTLCezqobo3
+ yP3wjHJWbl+YBtgYReKOqUL9S+lCJSpVl34Kf8Pb73vbyQYQ7AtywRgTAT82zCJbodYim7XlqQM
  =
-X-Gm-Gg: ASbGncv/MYRbCLNiImMXm8g81IEu7ddV29C3WKHwObCs9ubCi6aojiqoKPXjBnkqfOK
- odUrCMWnzOQsH0j37CRufymjNYDboqjdSiL+aj12mfdXJMkZsTCVzQGmugnsyXFlmcEF9tj/XgB
- G16y1UHa3dShZ7+kPplcwP32IuzUj2G7G3KsXDoWSNUZVZfmzXnSKKemgZct8EM/kqG5irocYEj
- JWL0FmG6Ymj2LEFGpnKcLDnqZWmAQ8Gc9sFNba/+NlNsw==
-X-Google-Smtp-Source: AGHT+IEQv2O1j02D5JpihIEjwZ4p2wj6Cq5H4XgtRDwSR30l9TZCGZJ/T2bWYiFX4Quld77N/8X5hw==
-X-Received: by 2002:a17:907:2d1e:b0:aa6:bcc2:4da1 with SMTP id
- a640c23a62f3a-aac2874a98amr2656332766b.7.1735386263830; 
- Sat, 28 Dec 2024 03:44:23 -0800 (PST)
+X-Gm-Gg: ASbGncsS66eDzqKa7yPZfsR9o7A3FPQ2Ssc7cBdZt4IUI/8AhtoIspIQ8mX7g8QxQr3
+ y6bX+yUbyPyV6MbAA0DHtA49k8Le+otdF7JpWDB+0fVYEPvAQuxLA3TfK0LgcKHaDZVacOCVxht
+ ymfTSWO7KkPC4HVMX85/98CKLAtOSfo+m3gXm7GYp8ObCVUt6t6S1HIHHmgZSaBZh3cQbmZHR8T
+ wJPefbkPr/A1ZLvN+fSHq6Pv4gjJ5Cw46Qo4i7dUkIlCg==
+X-Google-Smtp-Source: AGHT+IHMC4LAby+e5kmsAZYsNDH7mOvKKpNJ0U43GKdSEfjGx80+vgfDBmaUGdR2slj+3Ns8HWoCMw==
+X-Received: by 2002:a17:906:9c8f:b0:aae:d199:6eae with SMTP id
+ a640c23a62f3a-aaed1998ef7mr1769099266b.14.1735392743405; 
+ Sat, 28 Dec 2024 05:32:23 -0800 (PST)
 Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-aac0eae4369sm1238674866b.87.2024.12.28.03.44.22
+ a640c23a62f3a-aac0f014538sm1258403066b.146.2024.12.28.05.32.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 28 Dec 2024 03:44:23 -0800 (PST)
+ Sat, 28 Dec 2024 05:32:23 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Sat, 28 Dec 2024 06:44:16 -0500
-Message-Id: <20241228114416.12653-1-wegao@suse.com>
+Date: Sat, 28 Dec 2024 08:32:17 -0500
+Message-Id: <20241228133217.28945-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] fcntl40.c: Test fcntl using F_CREATED_QUERY
+Subject: [LTP] [PATCH v1] mmap21.c: Test for new MAP_DROPPABLE flag for mmap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,112 +100,127 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- include/lapi/fcntl.h                       |  8 ++++
- runtest/syscalls                           |  2 +
- testcases/kernel/syscalls/fcntl/.gitignore |  2 +
- testcases/kernel/syscalls/fcntl/fcntl40.c  | 52 ++++++++++++++++++++++
- 4 files changed, 64 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl40.c
+ include/lapi/mmap.h                       |  4 ++
+ runtest/syscalls                          |  1 +
+ testcases/kernel/syscalls/mmap/.gitignore |  1 +
+ testcases/kernel/syscalls/mmap/mmap21.c   | 73 +++++++++++++++++++++++
+ 4 files changed, 79 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap21.c
 
-diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
-index 761331798..7c0502488 100644
---- a/include/lapi/fcntl.h
-+++ b/include/lapi/fcntl.h
-@@ -154,6 +154,14 @@
- # define RENAME_WHITEOUT		(1 << 2)
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index ea9730586..248b64564 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -87,6 +87,10 @@
+ # define MADV_PAGEOUT	21
  #endif
  
-+#ifndef F_LINUX_SPECIFIC_BASE
-+#define F_LINUX_SPECIFIC_BASE 1024
++#ifndef MAP_DROPPABLE
++# define MAP_DROPPABLE 0x08
 +#endif
 +
-+#ifndef F_CREATED_QUERY
-+#define F_CREATED_QUERY (F_LINUX_SPECIFIC_BASE + 4)
-+#endif
-+
- /* splice, vmsplice, tee */
+ #ifndef MAP_FIXED_NOREPLACE
  
- #ifndef SPLICE_F_NONBLOCK
+ #ifdef __alpha__
 diff --git a/runtest/syscalls b/runtest/syscalls
-index ded035ee8..43e493eb1 100644
+index ded035ee8..7166e39a4 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -363,6 +363,8 @@ fcntl38 fcntl38
- fcntl38_64 fcntl38_64
- fcntl39 fcntl39
- fcntl39_64 fcntl39_64
-+fcntl40 fcntl40
-+fcntl40_64 fcntl40_64
+@@ -840,6 +840,7 @@ mmap17 mmap17
+ mmap18 mmap18
+ mmap19 mmap19
+ mmap20 mmap20
++mmap21 mmap21
  
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/fcntl/.gitignore b/testcases/kernel/syscalls/fcntl/.gitignore
-index e60176973..e3486ee45 100644
---- a/testcases/kernel/syscalls/fcntl/.gitignore
-+++ b/testcases/kernel/syscalls/fcntl/.gitignore
-@@ -72,3 +72,5 @@
- /fcntl38_64
- /fcntl39
- /fcntl39_64
-+/fcntl40
-+/fcntl40_64
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl40.c b/testcases/kernel/syscalls/fcntl/fcntl40.c
+ modify_ldt01 modify_ldt01
+ modify_ldt02 modify_ldt02
+diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
+index 4591fdbb9..87b23aaee 100644
+--- a/testcases/kernel/syscalls/mmap/.gitignore
++++ b/testcases/kernel/syscalls/mmap/.gitignore
+@@ -18,3 +18,4 @@
+ /mmap18
+ /mmap19
+ /mmap20
++/mmap21
+diff --git a/testcases/kernel/syscalls/mmap/mmap21.c b/testcases/kernel/syscalls/mmap/mmap21.c
 new file mode 100644
-index 000000000..ef03becef
+index 000000000..e2b8c4551
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl40.c
-@@ -0,0 +1,52 @@
++++ b/testcases/kernel/syscalls/mmap/mmap21.c
+@@ -0,0 +1,73 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2024 SUSE Wei Gao <wegao@suse.com>
++ * Copyright (c) 2024 Wei Gao <wegao@suse.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Basic test for fcntl using F_CREATED_QUERY.
++ * Test mmap(2) with MAP_DROPPABLE flag.
 + *
-+ * It is based on the following kernel commit:
-+ * commit d0fe8920cbe42547798fd806f078eeaaba05df18
-+ * Author: Christian Brauner brauner@kernel.org
-+ * Date: Wed Jul 24 15:15:36 2024 +0200
++ * Test base on kernel selftests/mm/droppable.c
 + */
 +
-+#include "lapi/fcntl.h"
++#include <errno.h>
++#include <stdio.h>
++#include <sys/types.h>
 +#include "tst_test.h"
++#include "lapi/mmap.h"
 +
-+static void verify_fcntl(void)
++static void test_mmap(void)
 +{
-+	for (int i = 0; i < 101; i++) {
-+		int fd;
-+		char path[PATH_MAX];
++	size_t alloc_size = 134217728;
++	size_t page_size = getpagesize();
++	void *alloc;
++	pid_t child;
 +
-+		fd = SAFE_OPEN("/dev/null", O_RDONLY | O_CLOEXEC);
++	alloc = SAFE_MMAP(0, alloc_size, PROT_READ | PROT_WRITE,
++			MAP_ANONYMOUS | MAP_DROPPABLE, -1, 0);
 +
-+		/* We didn't create "/dev/null". */
-+		TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-+		close(fd);
-+
-+		sprintf(path, "aaaa_%d", i);
-+		fd = SAFE_OPEN(path, O_CREAT | O_RDONLY | O_CLOEXEC, 0600);
-+
-+		/* We created "aaaa_%d". */
-+		TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 1);
-+		close(fd);
-+
-+		fd = SAFE_OPEN(path, O_RDONLY | O_CLOEXEC);
-+
-+		/* We're opening it again, so no positive creation check. */
-+		TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-+		close(fd);
-+		unlink(path);
++	memset(alloc, 'A', alloc_size);
++	for (size_t i = 0; i < alloc_size; i += page_size) {
++		if (*(char *)(alloc + i) != 'A')
++			tst_res(TFAIL, "memset failed");
 +	}
++
++	int *shared_var = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++
++	*shared_var = 0;
++
++	child = SAFE_FORK();
++	if (!child) {
++		for (;;) {
++			*(char *)malloc(page_size) = 'B';
++			if ((*shared_var) == 1)
++				exit(0);
++		}
++	}
++
++	for (; !(*shared_var);) {
++		for (size_t i = 0; i < alloc_size; i += page_size) {
++			if (!*(uint8_t *)(alloc + i)) {
++				*shared_var = 1;
++				break;
++			}
++		}
++	}
++
++	TST_EXP_EQ_LI((*shared_var), 1);
++
++	SAFE_WAITPID(child, NULL, 0);
++
++	SAFE_MUNMAP(alloc, alloc_size);
++	SAFE_MUNMAP(shared_var, sizeof(int));
 +}
 +
 +static struct tst_test test = {
-+	.test_all = verify_fcntl,
++	.min_kver = "6.11",
++	.test_all = test_mmap,
 +	.needs_tmpdir = 1,
-+	.min_kver = "6.12",
++	.forks_child = 1,
++	.max_runtime = 180,
 +};
 -- 
 2.35.3
