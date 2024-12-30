@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2778E77188
-	for <ltp@archiver.kernel.org>; Mon, 30 Dec 2024 08:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B701E77188
+	for <ltp@archiver.kernel.org>; Mon, 30 Dec 2024 20:44:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7762A3EC065
-	for <ltp@archiver.kernel.org>; Mon, 30 Dec 2024 09:56:06 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1F0C83F022A
+	for <ltp@archiver.kernel.org>; Mon, 30 Dec 2024 21:44:03 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D02B3E2577
- for <ltp@lists.linux.it>; Mon, 30 Dec 2024 09:55:50 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id 3E6553EF3ED
+ for <ltp@lists.linux.it>; Mon, 30 Dec 2024 21:43:46 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E79AC641A4F
- for <ltp@lists.linux.it>; Mon, 30 Dec 2024 09:55:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1735548946;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=nNYVzDv7vue4pR/nXrmsw5PqQbr9NjgVIKgrOfXMpZk=;
- b=dLU9RmwFn0WvV/6aPhFCyZtqqG07D1eOdgOxqNvE3rWLVYHyaHmqupP1XB81Nfa4PXcvqW
- UQ79yBWAQpNEGEmeQ5pLLD9nwMKN19lwJg7iZn9Inr5eYt4IgJx7Rys6lMDwdyh4K46iB1
- /gc5NmfRnC9UoCTEQ2vH0gRno3Y4+DY=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-250-I5ek9x6XP5yQBje7ixLFrQ-1; Mon, 30 Dec 2024 03:55:44 -0500
-X-MC-Unique: I5ek9x6XP5yQBje7ixLFrQ-1
-X-Mimecast-MFC-AGG-ID: I5ek9x6XP5yQBje7ixLFrQ
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-2ef79403c5eso18429675a91.0
- for <ltp@lists.linux.it>; Mon, 30 Dec 2024 00:55:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1735548943; x=1736153743;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=nNYVzDv7vue4pR/nXrmsw5PqQbr9NjgVIKgrOfXMpZk=;
- b=BUQRZd6yhyq2zi1HcY5zZgJl6iIYuhvQmtKMnDXZRrObGfcvW2LZGUQeujknnRPjRj
- Ynoqt1NVis5unkgf9vIecWKczROhhTgzlEFStDGpk0hC6NzOWH5BKiYbFU9Cuh3BV1DW
- dS6REj5q6nANqsDzknRJUN6tcbNnLgplLJOoCk5UNs7lz7hYRP0NdHjIuH683vkGBI1Y
- 27kCzBGvILKvnmEUq4XMjverLJw6e//X8C3GyvODtFGwRNBs7H85GUjlq6xVWmFCRDly
- P692FweecCDwdg3blLou6IMbFT5q+AruMkKa/XLxR65noA7q/YNP96DDAa345F0JCwbY
- QfmA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWs85mV1mbt8J/Yab24QzRUibpPUsZ15Os2I4/t6oyD+KJ9IqnmH2als+18sZghbd3aIdo=@lists.linux.it
-X-Gm-Message-State: AOJu0YwIWSRc23fyJRUEC+SlTEA8csnVI2v+F1YbbixtS09NZ7q6AuQR
- 8TwkQ9io+0Smhw+0+4OhXYuY+i8iRGQXM1xYJLI4qMrpfSufp0Mzp7/WEh82yC0BfeYBEpcjpWS
- 68rzwLRv+Q+aw/9uLa62w7SEtLvvJGMNO0u6C4iFjBFvjCjeRhiWfkB8g7HTiCfIaiwbygRO5IV
- 9waGuFcpuc9qRtuLPgmdLOWVkQNRcW3ONX4fgD
-X-Gm-Gg: ASbGncuyyNduZIquYtp8BEG0PbwzfzOobB/wtbWBxRecFU3eo1hhYBPDdMdCG69cwbg
- YXfhPCi65d4wnBW6O1YDgOPcXZ9jgUuCQy6JltDc=
-X-Received: by 2002:a17:90b:5246:b0:2ee:d18c:7d84 with SMTP id
- 98e67ed59e1d1-2f452e4a839mr53741003a91.20.1735548942739; 
- Mon, 30 Dec 2024 00:55:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGKYE1SKWz43hqIWCqswWHi9YUQopuhAR7wW9qiKaAzzl1gMizyYyizYirLz3q2ZLwbLOn8svqgL7F8UOMsK8s=
-X-Received: by 2002:a17:90b:5246:b0:2ee:d18c:7d84 with SMTP id
- 98e67ed59e1d1-2f452e4a839mr53740986a91.20.1735548942416; Mon, 30 Dec 2024
- 00:55:42 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5E7521011832
+ for <ltp@lists.linux.it>; Mon, 30 Dec 2024 21:43:44 +0100 (CET)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BUE6DxI015425;
+ Mon, 30 Dec 2024 20:43:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=F2G9Tt
+ 3Te+rFmUbbhIz4CvSCoO8c+P1/VsXhqhm6ef4=; b=ZDTtK0CINhqbwUtrYselPW
+ csUlNYA+igw/ILcHGCqC6lyMaLWkInfEbBTdRrtLiMbt/wyyLUqXPyZjeIFUZNOo
+ tsl8QwvKRg1/oFqEp446+JcxB5sSeXxEaNY7ZDyOlmFwQV4HD0JaHhFuNfMFa1qj
+ GdXgz7rxFgALpE8dDHCMmrpxov1j+K82M8UZprYwN/gAJIKY7Ex+xyRh+hfa4U6F
+ wDDvDNKrg+qtVykxI8RYWsfmHbYKT5BK2izO5heAARgZfOZHz3tlnpv6lL/i5hB6
+ /Srq3iQxl9TJ26bSarPZvH4hzdrhG23+g7NldoO49KKyfI1g127sbBv47cXcnryw
+ ==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43uw04hk3v-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 30 Dec 2024 20:43:43 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BUHkVCr014589;
+ Mon, 30 Dec 2024 20:43:42 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 43tunsfmc3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 30 Dec 2024 20:43:42 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com
+ [10.39.53.231])
+ by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 4BUKhfET50463278
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 30 Dec 2024 20:43:41 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A563658052;
+ Mon, 30 Dec 2024 20:43:41 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3C7E758045;
+ Mon, 30 Dec 2024 20:43:41 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.61.97.206]) by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Mon, 30 Dec 2024 20:43:41 +0000 (GMT)
+Message-ID: <a617f000c69875b5c02743c8f0a8fee72cb1ea55.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+Date: Mon, 30 Dec 2024 15:43:40 -0500
+In-Reply-To: <20241213222014.1580991-3-pvorel@suse.cz>
+References: <20241213222014.1580991-1-pvorel@suse.cz>
+ <20241213222014.1580991-3-pvorel@suse.cz>
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
-References: <20241227073921.GB290415@pevik>
-In-Reply-To: <20241227073921.GB290415@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 30 Dec 2024 16:55:30 +0800
-Message-ID: <CAEemH2cnb9dao+2qjuaCLMegQzpHRSTuP7mT_F+oftxiMTi8cA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: kicjz24kzKTXS9dirqqOcHjuNULt9yb1tE4PxdOl5h4_1735548943
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6tElxNeSnOrpeWur1lPSuYgbEe0KxMk7
+X-Proofpoint-ORIG-GUID: 6tElxNeSnOrpeWur1lPSuYgbEe0KxMk7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 malwarescore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412300176
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [RFC] Convert test catalog (docparse) from asciidoc to
- readthedocs.io (sphinx)
+Subject: Re: [LTP] [PATCH v2 2/8] ima_setup.sh: Allow to load predefined
+ policy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,42 +101,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBEZWMgMjcsIDIwMjQgYXQgMzozOeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gSGkKPgo+IEkgc3VnZ2VzdCB0byBjb252ZXJ0IHRlc3QgY2F0YWxvZyAo
-ImRvY3BhcnNlIikgZ2VuZXJhdGVkIGJ5IGRvY3BhcnNlLwo+IHRlc3RpbmZvLnBsCj4gYW5kIGFz
-Y2lpZG9jL2FzY2lpZG9jdG9yIHRvIHNwaGlueCBnZW5lcmF0b3IgKHJlYWR0aGVkb2NzLmlvKS4K
-PiBhc2NpaWRvYy9hc2NpaWRvY3RvciB3YXMgYSBnb29kIGNob2ljZSBhdCB0aGUgdGltZSwgYnV0
-IG5vdyBpdCBsb29rcyB0byBtZQo+IGJldHRlciB0byB1c2Ugc3BoaW54IGZvciBldmVyeXRoaW5n
-Lgo+CgpBZ3JlZS4KCgo+IEkgdm9sdW50ZWVyIHRvIGRvIHRoZSB3b3JrLCBidXQgSSB3b3VsZCBs
-aWtlIHRvIGhhdmUgYSBnZW5lcmFsIGFncmVlbWVudAo+IGJlZm9yZQo+IEkgZG8gaXQuCj4KClRo
-YW5rcywgdGhlIExpbnV4IEtlcm5lbCBoYXMgc2hpZnRlZCBmcm9tIEFzY2lpRG9jIHRvIHJlU3Ry
-dWN0dXJlZFRleHQKYXMgcGFydCBvZiBpdHMgRG9jdW1lbnRhdGlvbiBvdmVyaGF1bC4gU28gSXQg
-aXMgcmVhc29uYWJsZSBmb3IgTFRQIHRvIGRvCnRoaXMgYXMgd2VsbC4KCgoKPgo+IFByb3M6Cj4K
-PiAqIFdlIGFscmVhZHkgaGF2ZSBhdHRlbXB0IHRvIHNob3cgdGVzdGVkIHN5c2NhbGxzIFsxXS4g
-UHJpbnRpbmcgdGVzdAo+IGNhdGFsb2cgd291bGQKPiBoYXZlIG1vcmUgaW5mby4KPiAqIE5vIG5l
-ZWQgdG8gaW5zdGFsbCBkZXBlbmRlbmNpZXMuCj4gKiBBdXRvbWF0aWMuIElmIHdlIGFkZCBhbHNv
-IGRvYyBmb3Igc3RhYmxlIHJlbGVhc2VzLCBpdCB3b3VsZCByZXBsYWNlIHRoZQo+IG5lZWQKPiB0
-byBpbnN0YWxsIGRlcGVuZGVuY2llcyBhbmQgdXBsb2FkIGZpbGUgdG8gTFRQIHJlbGVhc2Ugb24g
-R2l0SHViIFsyXS4gVGhlbgo+IG9ubHkKPiBsaW5rIHRvIHBhZ2UgdG8gdGVzdCBjb3ZlcmFnZSBv
-biBsaW51eC10ZXN0LXByb2plY3QucmVhZHRoZWRvY3MuaW8gb2YKPiBwYXJ0aWN1bGFyCj4gcmVs
-ZWFzZSAob3IgbGluayB0byB3aG9sZSBkb2Mgb24gcGFydGljdWxhciByZWxlYXNlKSB3b3VsZCBi
-ZSBhZGRlZCBpbgo+IHJlbGVhc2UKPiBtYWlsIGFubm91bmNlbWVudCAob3Igd2UgbWlnaHQga2Vl
-cCBhZGRpbmcgZ2VuZXJhdGVkIHBkZi9lcHViL3ppcHBlZCBodG1sCj4gYWxzbwo+IHRvIExUUCBy
-ZWxlYXNlcyBbMl0pLgo+ICogVW5pZmllZCBsb29rIGFuZCBmZWVsLgo+Cj4gV29yayBuZWVkZWQ6
-Cj4KPiAqIENvbnZlcnQgZG9jcGFyc2UvdGVzdGluZm8ucGwgdG8gZG9jL2NvbmYucHksIG9idmlv
-dXNseSBjaGFuZ2UgZnJvbQo+IGFzY2lpZG9jCj4gdG8gc3BpbnguCj4gKiBBZGRpbmcgc3RhYmxl
-IHJlbGVhc2VzIChub3Qgc3VyZSBpZiBpdCBjYW4gYmUgY3JlYXRlZCBhdXRvbWF0aWNhbGx5IGZv
-cgo+IGFsbAo+IHRhZ3MpLgo+ICogQWRkaW5nIG9mZmxpbmUgZm9ybWF0cyBbM10gc28gdGhhdCB1
-c2VycyBjYW4gZG93bmxvYWQgdGhlIGRvY3MgKHRoYXQKPiB3b3VsZCBiZQo+IHVzZWZ1bCBhbnl3
-YXkpLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPgo+IFsxXSBodHRwczovL2xpbnV4LXRlc3Qt
-cHJvamVjdC5yZWFkdGhlZG9jcy5pby9lbi9sYXRlc3QvdXNlcnMvc3RhdHMuaHRtbAo+IFsyXSBo
-dHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC9yZWxlYXNlcwo+IFszXSBo
-dHRwczovL2RvY3MucmVhZHRoZWRvY3MuaW8vZW4vc3RhYmxlL2Rvd25sb2FkYWJsZS1kb2N1bWVu
-dGF0aW9uLmh0bWwKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBp
-bmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Petr,
+
+On Fri, 2024-12-13 at 23:20 +0100, Petr Vorel wrote:
+[snip]
+
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -1,7 +1,7 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+>  # Copyright (c) 2009 IBM Corporation
+> -# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2018-2024 Petr Vorel <pvorel@suse.cz>
+>  # Author: Mimi Zohar <zohar@linux.ibm.com>
+>  
+>  TST_TESTFUNC="test"
+> @@ -72,14 +72,20 @@ require_policy_readable()
+>  	fi
+>  }
+>  
+> -require_policy_writable()
+> +check_policy_writable()
+>  {
+> -	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
+> -
+> -	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
+> -	# CONFIG_IMA_READ_POLICY
+> +	[ -f $IMA_POLICY ] || return 1
+> +	# workaround for kernels < v4.18 without fix
+> +	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
+>  	echo "" 2> log > $IMA_POLICY
+> -	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
+> +	grep -q "Device or resource busy" log && return 1
+> +	return 0
+> +}
+> +
+> +require_policy_writable()
+> +{
+> +	check_policy_writable || tst_brk TCONF \
+> +		"IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
+>  }
+>  
+>  check_ima_policy_content()
+> @@ -158,6 +164,34 @@ print_ima_config()
+>  	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
+>  }
+>  
+> +load_ima_policy()
+> +{
+> +	local policy="$(ls $TST_DATAROOT/*.policy 2>/dev/null)"
+> +
+> +	if [ "$LTP_IMA_LOAD_POLICY" != 1 -a "$policy" -a -f "$policy" ]; then
+> +		tst_res TINFO "NOTE: set LTP_IMA_LOAD_POLICY=1 to load policy for this test"
+> +		return
+> +	fi
+> +
+> +	if [ -z "$policy" -o ! -f "$policy" ]; then
+> +		tst_res TINFO "no policy for this test"
+> +		LTP_IMA_LOAD_POLICY=
+> +		return
+> +	fi
+> +
+> +	tst_res TINFO "trying to load '$policy' policy:"
+> +	cat $policy
+> +	if ! check_policy_writable; then
+> +		tst_res TINFO "WARNING: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y), reboot required"
+> +		LTP_IMA_LOAD_POLICY=
+> +		return
+> +	fi
+> +
+> +	cat "$policy" 2> log > $IMA_POLICY
+> +	if grep -q "Device or resource busy" log; then
+> +		tst_brk TBROK "Loading policy failed"
+> +	fi
+
+To write to the IMA securityfs policy file, check_policy_writable() used "echo",
+while here it's using "cat".  "cat" fails when signed policies are required.
+Perhaps add something like:
++
++       if grep -q "write error: Permission denied" log; then
++               tst_brk TBROK "Loading unsigned policy failed"
++       fi
+
+> +}
+
+Mimi
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
