@@ -4,69 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D92EE77188
-	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 10:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C825E77188
+	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 10:05:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E0E6C3E9F1C
-	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 11:01:24 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 540FD3E550D
+	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 11:05:29 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76AA63DCCDF
- for <ltp@lists.linux.it>; Tue, 31 Dec 2024 11:01:08 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 2F8603C0225
+ for <ltp@lists.linux.it>; Tue, 31 Dec 2024 11:05:12 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 49F5C1034053
- for <ltp@lists.linux.it>; Tue, 31 Dec 2024 11:01:07 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CE0411F37C;
- Tue, 31 Dec 2024 10:01:06 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A359513A30;
- Tue, 31 Dec 2024 10:01:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MClyJuLAc2dzEQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 31 Dec 2024 10:01:06 +0000
-Date: Tue, 31 Dec 2024 11:00:57 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <20241231100057.GB36475@pevik>
-References: <20241213222014.1580991-1-pvorel@suse.cz>
- <20241213222014.1580991-3-pvorel@suse.cz>
- <a617f000c69875b5c02743c8f0a8fee72cb1ea55.camel@linux.ibm.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 908C81A0196A
+ for <ltp@lists.linux.it>; Tue, 31 Dec 2024 11:05:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1735639509;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E5abudlYINOMemu5vUbzybswaEDw+ukyaNRrFzBKJ6c=;
+ b=IpHx8Wb9DGBGDFe8Yf0hqd4XfMUlKSqA9pET+3JsvZ3U9If/q7ud570S1hiCPyPQwmXNYQ
+ cozYFV1zoE1r6XntR/DsQ16Vdw6O0l6rBLRxbwlRrOjSpeJZHQIclCzftht1UnYqFBvIrx
+ TwHu0CcwHdUiGutARDX98k0srS8r7dA=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-53-gGZLnVdhOsmI3Knu12BtkQ-1; Tue, 31 Dec 2024 05:05:07 -0500
+X-MC-Unique: gGZLnVdhOsmI3Knu12BtkQ-1
+X-Mimecast-MFC-AGG-ID: gGZLnVdhOsmI3Knu12BtkQ
+Received: by mail-pj1-f69.google.com with SMTP id
+ 98e67ed59e1d1-2ef79403c5eso20260379a91.0
+ for <ltp@lists.linux.it>; Tue, 31 Dec 2024 02:05:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1735639506; x=1736244306;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=E5abudlYINOMemu5vUbzybswaEDw+ukyaNRrFzBKJ6c=;
+ b=rIeOQeYzXdo1egNSkdqXRrrF39RqISeUT6tSGo5JqfD0PlrvSo/OH7r/UmBSsZfGFO
+ lgkx3urmvPleJlBaBB02oiMvPPGqcTOBqTqRSImd2NlECvgbcfS/rgpuvr7NysOzHW/W
+ SbX065oai+iPA9p/Ua9JE5R7SWub/N+N9vHq9NksTsSMl/Y6hGNmPTjDbJeD40eG13Dc
+ O484eJCn246fLgGx3XWawcOH+X15yYcUnI1/e16xDjryBVWJNh/PGhPuq2jgmSufnD2o
+ XjAjE9BcqD53DDqhfhvzUzMVA6mZV0Ty2GQQMG9baRHdF0YoC2Rg930wsDdNVNjuCN0u
+ ruhQ==
+X-Gm-Message-State: AOJu0YxaF/79A87SHUifpTxGkbxv4Sj6hcG9rVd3RCoYC+GKdMYkxoRq
+ cxDSBG/ahMQ0fKPC8cbDKxSHXBz62nHBm25e8w2TXPfnRAzYaS6K2wP/mPs4wxPIjrKE+XZZ0BL
+ lXSDaV6i7OlynL6dDc2YyM8Vq6SMU69WkmP9FKQdDtPSi9ZG2fTjt6GKMa6ztehYepalbqggbnL
+ UcFZy4rnBn5wFVJ3DIUvup3pg=
+X-Gm-Gg: ASbGnctV74jOKUnw5040EXdxYdQgIB18Lg459WlFjVeQKYJbV5NBdfNG8nA+6LKOBaJ
+ QnNtrXe2TPmGJD3Ma2kgDNaq46+w5BU9Mz1OISG0=
+X-Received: by 2002:a17:90a:e187:b0:2ee:8430:b847 with SMTP id
+ 98e67ed59e1d1-2f452dfcd26mr54129706a91.6.1735639506406; 
+ Tue, 31 Dec 2024 02:05:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFRUhdsDDCjHDY7r+dtpGchYANdPGWMCxHzmYbxd+Fx/aWBiXV1RkOuNw6n++MeznuTpMTqrDZam0/5Xv0jNGs=
+X-Received: by 2002:a17:90a:e187:b0:2ee:8430:b847 with SMTP id
+ 98e67ed59e1d1-2f452dfcd26mr54129670a91.6.1735639505900; Tue, 31 Dec 2024
+ 02:05:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a617f000c69875b5c02743c8f0a8fee72cb1ea55.camel@linux.ibm.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: CE0411F37C
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+References: <20241228133217.28945-1-wegao@suse.com>
+In-Reply-To: <20241228133217.28945-1-wegao@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 31 Dec 2024 18:04:54 +0800
+Message-ID: <CAEemH2cdZ1fJHma3xDF1r-wPycbLqXRXT0Q4smqivuAZcWC9GQ@mail.gmail.com>
+To: Wei Gao <wegao@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: eP_QZDY-KqQ9cTmHFLnE2JKfiqMCP0Lt3uwijFfg4Mc_1735639506
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/8] ima_setup.sh: Allow to load predefined
- policy
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v1] mmap21.c: Test for new MAP_DROPPABLE flag for
+ mmap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,117 +96,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr,
-
-> On Fri, 2024-12-13 at 23:20 +0100, Petr Vorel wrote:
-> [snip]
-
-> > --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > @@ -1,7 +1,7 @@
-> >  #!/bin/sh
-> >  # SPDX-License-Identifier: GPL-2.0-or-later
-> >  # Copyright (c) 2009 IBM Corporation
-> > -# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
-> > +# Copyright (c) 2018-2024 Petr Vorel <pvorel@suse.cz>
-> >  # Author: Mimi Zohar <zohar@linux.ibm.com>
-
-> >  TST_TESTFUNC="test"
-> > @@ -72,14 +72,20 @@ require_policy_readable()
-> >  	fi
-> >  }
-
-> > -require_policy_writable()
-> > +check_policy_writable()
-> >  {
-> > -	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
-> > -
-> > -	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
-> > -	# CONFIG_IMA_READ_POLICY
-> > +	[ -f $IMA_POLICY ] || return 1
-> > +	# workaround for kernels < v4.18 without fix
-> > +	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
-> >  	echo "" 2> log > $IMA_POLICY
-> > -	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
-> > +	grep -q "Device or resource busy" log && return 1
-> > +	return 0
-> > +}
-> > +
-> > +require_policy_writable()
-> > +{
-> > +	check_policy_writable || tst_brk TCONF \
-> > +		"IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
-> >  }
-
-> >  check_ima_policy_content()
-> > @@ -158,6 +164,34 @@ print_ima_config()
-> >  	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
-> >  }
-
-> > +load_ima_policy()
-> > +{
-> > +	local policy="$(ls $TST_DATAROOT/*.policy 2>/dev/null)"
-> > +
-> > +	if [ "$LTP_IMA_LOAD_POLICY" != 1 -a "$policy" -a -f "$policy" ]; then
-> > +		tst_res TINFO "NOTE: set LTP_IMA_LOAD_POLICY=1 to load policy for this test"
-> > +		return
-> > +	fi
-> > +
-> > +	if [ -z "$policy" -o ! -f "$policy" ]; then
-> > +		tst_res TINFO "no policy for this test"
-> > +		LTP_IMA_LOAD_POLICY=
-> > +		return
-> > +	fi
-> > +
-> > +	tst_res TINFO "trying to load '$policy' policy:"
-> > +	cat $policy
-> > +	if ! check_policy_writable; then
-> > +		tst_res TINFO "WARNING: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y), reboot required"
-> > +		LTP_IMA_LOAD_POLICY=
-> > +		return
-> > +	fi
-> > +
-> > +	cat "$policy" 2> log > $IMA_POLICY
-> > +	if grep -q "Device or resource busy" log; then
-> > +		tst_brk TBROK "Loading policy failed"
-> > +	fi
-
-> To write to the IMA securityfs policy file, check_policy_writable() used "echo",
-> while here it's using "cat".  "cat" fails when signed policies are required.
-> Perhaps add something like:
-> +
-> +       if grep -q "write error: Permission denied" log; then
-> +               tst_brk TBROK "Loading unsigned policy failed"
-> +       fi
-
-+1, I'll add this extra check to v3.
-
-I suppose echo "" > /sys/kernel/security/ima/policy does not need this check.
-
-Do I understand correctly you talk about policy containing func=POLICY_CHECK [1]?
-Maybe there could be a test based on example [2].
-
-echo /home/user/tmpfile > /sys/kernel/security/ima/policy
-cp tmpfile /sys/kernel/security/ima/policy
-cat tmpfile > /sys/kernel/security/ima/policy
-
-Kind regards,
-Petr
-
-[1] https://ima-doc.readthedocs.io/en/latest/policy-syntax.html#func-policy-check
-[2] https://ima-doc.readthedocs.io/en/latest/ima-policy.html#runtime-custom-policy
-
-> > +}
-
-> Mimi
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gU2F0LCBEZWMgMjgsIDIwMjQgYXQgOTozMuKAr1BNIFdlaSBHYW8gdmlhIGx0cCA8bHRwQGxp
+c3RzLmxpbnV4Lml0PiB3cm90ZToKCj4gU2lnbmVkLW9mZi1ieTogV2VpIEdhbyA8d2VnYW9Ac3Vz
+ZS5jb20+Cj4gLS0tCj4gIGluY2x1ZGUvbGFwaS9tbWFwLmggICAgICAgICAgICAgICAgICAgICAg
+IHwgIDQgKysKPiAgcnVudGVzdC9zeXNjYWxscyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MSArCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC8uZ2l0aWdub3JlIHwgIDEgKwo+
+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDIxLmMgICB8IDczICsrKysrKysr
+KysrKysrKysrKysrKysrCj4gIDQgZmlsZXMgY2hhbmdlZCwgNzkgaW5zZXJ0aW9ucygrKQo+ICBj
+cmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMS5j
+Cj4KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL21tYXAuaCBiL2luY2x1ZGUvbGFwaS9tbWFw
+LmgKPiBpbmRleCBlYTk3MzA1ODYuLjI0OGI2NDU2NCAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xh
+cGkvbW1hcC5oCj4gKysrIGIvaW5jbHVkZS9sYXBpL21tYXAuaAo+IEBAIC04Nyw2ICs4NywxMCBA
+QAo+ICAjIGRlZmluZSBNQURWX1BBR0VPVVQgIDIxCj4gICNlbmRpZgo+Cj4gKyNpZm5kZWYgTUFQ
+X0RST1BQQUJMRQo+ICsjIGRlZmluZSBNQVBfRFJPUFBBQkxFIDB4MDgKPiArI2VuZGlmCj4gKwo+
+ICAjaWZuZGVmIE1BUF9GSVhFRF9OT1JFUExBQ0UKPgo+ICAjaWZkZWYgX19hbHBoYV9fCj4gZGlm
+ZiAtLWdpdCBhL3J1bnRlc3Qvc3lzY2FsbHMgYi9ydW50ZXN0L3N5c2NhbGxzCj4gaW5kZXggZGVk
+MDM1ZWU4Li43MTY2ZTM5YTQgMTAwNjQ0Cj4gLS0tIGEvcnVudGVzdC9zeXNjYWxscwo+ICsrKyBi
+L3J1bnRlc3Qvc3lzY2FsbHMKPiBAQCAtODQwLDYgKzg0MCw3IEBAIG1tYXAxNyBtbWFwMTcKPiAg
+bW1hcDE4IG1tYXAxOAo+ICBtbWFwMTkgbW1hcDE5Cj4gIG1tYXAyMCBtbWFwMjAKPiArbW1hcDIx
+IG1tYXAyMQo+Cj4gIG1vZGlmeV9sZHQwMSBtb2RpZnlfbGR0MDEKPiAgbW9kaWZ5X2xkdDAyIG1v
+ZGlmeV9sZHQwMgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAv
+LmdpdGlnbm9yZQo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwLy5naXRpZ25vcmUK
+PiBpbmRleCA0NTkxZmRiYjkuLjg3YjIzYWFlZSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL21tYXAvLmdpdGlnbm9yZQo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvbW1hcC8uZ2l0aWdub3JlCj4gQEAgLTE4LDMgKzE4LDQgQEAKPiAgL21tYXAxOAo+ICAv
+bW1hcDE5Cj4gIC9tbWFwMjAKPiArL21tYXAyMQo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL21tYXAvbW1hcDIxLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+bW1hcC9tbWFwMjEuYwo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwLi5l
+MmI4YzQ1NTEKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9tbWFwL21tYXAyMS5jCj4gQEAgLTAsMCArMSw3MyBAQAo+ICsvLyBTUERYLUxpY2Vuc2UtSWRl
+bnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgo+ICsvKgo+ICsgKiBDb3B5cmlnaHQgKGMpIDIwMjQg
+V2VpIEdhbyA8d2VnYW9Ac3VzZS5jb20+Cj4gKyAqLwo+ICsKPiArLypcCj4gKyAqIFtEZXNjcmlw
+dGlvbl0KPiArICoKPiArICogVGVzdCBtbWFwKDIpIHdpdGggTUFQX0RST1BQQUJMRSBmbGFnLgo+
+ICsgKgo+ICsgKiBUZXN0IGJhc2Ugb24ga2VybmVsIHNlbGZ0ZXN0cy9tbS9kcm9wcGFibGUuYwo+
+ICsgKi8KPiArCj4gKyNpbmNsdWRlIDxlcnJuby5oPgo+ICsjaW5jbHVkZSA8c3RkaW8uaD4KPiAr
+I2luY2x1ZGUgPHN5cy90eXBlcy5oPgo+ICsjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPiArI2luY2x1
+ZGUgImxhcGkvbW1hcC5oIgo+ICsKPiArc3RhdGljIHZvaWQgdGVzdF9tbWFwKHZvaWQpCj4gK3sK
+PiArICAgICAgIHNpemVfdCBhbGxvY19zaXplID0gMTM0MjE3NzI4Owo+CgpNYXliZSBkZWZpbmUg
+TUIgYXMgMTAyNCAqIDEwMjQgdGhlbiwKICBzaXplX3QgYWxsb2Nfc2l6ZSA9IDEyOCpNQjsKCgoK
+PiArICAgICAgIHNpemVfdCBwYWdlX3NpemUgPSBnZXRwYWdlc2l6ZSgpOwo+ICsgICAgICAgdm9p
+ZCAqYWxsb2M7Cj4gKyAgICAgICBwaWRfdCBjaGlsZDsKPiArCj4gKyAgICAgICBhbGxvYyA9IFNB
+RkVfTU1BUCgwLCBhbGxvY19zaXplLCBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLAo+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIE1BUF9BTk9OWU1PVVMgfCBNQVBfRFJPUFBBQkxFLCAtMSwgMCk7Cj4g
+Kwo+ICsgICAgICAgbWVtc2V0KGFsbG9jLCAnQScsIGFsbG9jX3NpemUpOwo+ICsgICAgICAgZm9y
+IChzaXplX3QgaSA9IDA7IGkgPCBhbGxvY19zaXplOyBpICs9IHBhZ2Vfc2l6ZSkgewo+ICsgICAg
+ICAgICAgICAgICBpZiAoKihjaGFyICopKGFsbG9jICsgaSkgIT0gJ0EnKQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIHRzdF9yZXMoVEZBSUwsICJtZW1zZXQgZmFpbGVkIik7Cj4gKyAgICAgICB9
+Cj4gKwo+ICsgICAgICAgaW50ICpzaGFyZWRfdmFyID0gU0FGRV9NTUFQKE5VTEwsIHNpemVvZihp
+bnQpLCBQUk9UX1JFQUQgfAo+IFBST1RfV1JJVEUsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+TUFQX1NIQVJFRCB8IE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsKPiArCj4gKyAgICAgICAqc2hhcmVk
+X3ZhciA9IDA7Cj4gKwo+ICsgICAgICAgY2hpbGQgPSBTQUZFX0ZPUksoKTsKPiArICAgICAgIGlm
+ICghY2hpbGQpIHsKPiArICAgICAgICAgICAgICAgZm9yICg7Oykgewo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICooY2hhciAqKW1hbGxvYyhwYWdlX3NpemUpID0gJ0InOwo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIGlmICgoKnNoYXJlZF92YXIpID09IDEpCj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBleGl0KDApOwo+CgpJZiB0aGUgcGFyZW50IHByb2Nlc3MgY3Jhc2hlcywg
+aGFuZ3MsIG9yIGZhaWxzIHRvIGRldGVjdCByZWNsYWltZWQKcGFnZXMsIHRoZSBjaGlsZCBwcm9j
+ZXNzIHdpbGwgcnVuIGluZGVmaW5pdGVseSwgcG90ZW50aWFsbHkgY29uc3VtaW5nCnN5c3RlbSBy
+ZXNvdXJjZXMuCgpJZiBpdCBydW5zIHRvbyBsb25nLCBhZGQgYSB0aW1lb3V0IG1lY2hhbmlzbSB0
+byB0ZXJtaW5hdGUgdGhlIGNoaWxkIHByb2Nlc3MuCgoKCj4gKyAgICAgICAgICAgICAgIH0KPiAr
+ICAgICAgIH0KPiArCj4gKyAgICAgICBmb3IgKDsgISgqc2hhcmVkX3Zhcik7KSB7Cj4KCndoeSBu
+b3QgdXNlIHdoaWxlKCkgbG9vcC4KCisgICAgICAgICAgICAgICBmb3IgKHNpemVfdCBpID0gMDsg
+aSA8IGFsbG9jX3NpemU7IGkgKz0gcGFnZV9zaXplKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKCEqKHVpbnQ4X3QgKikoYWxsb2MgKyBpKSkgewo+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKnNoYXJlZF92YXIgPSAxOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgYnJlYWs7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgfQo+ICsgICAgICAgICAgICAg
+ICB9Cj4gKyAgICAgICB9Cj4gKwo+ICsgICAgICAgVFNUX0VYUF9FUV9MSSgoKnNoYXJlZF92YXIp
+LCAxKTsKPgoKVGhlIHRlc3QgYXNzdW1lcyB0aGF0IHJlY2xhaW1lZCBNQVBfRFJPUFBBQkxFIHBh
+Z2VzIHdpbGwgYmUKemVyb2VkIG91dCB3aGVuIGFjY2Vzc2VkLiBXaGlsZSB0aGlzIGJlaGF2aW9y
+IGlzIHBsYXVzaWJsZSwgaXQgZGVwZW5kcwpvbiBob3cgTUFQX0RST1BQQUJMRSBpcyBpbXBsZW1l
+bnRlZCBpbiB0aGUga2VybmVsLgoKRG8geW91IGhhdmUgYW55IGNsdWUgKGRvY3VtZW50cyBvciBj
+b2RlKSB0aGF0IGluZGljYXRlcyB0aGlzIGlzIHRydWU/CgoKCj4gKwo+ICsgICAgICAgU0FGRV9X
+QUlUUElEKGNoaWxkLCBOVUxMLCAwKTsKPiArCj4gKyAgICAgICBTQUZFX01VTk1BUChhbGxvYywg
+YWxsb2Nfc2l6ZSk7Cj4gKyAgICAgICBTQUZFX01VTk1BUChzaGFyZWRfdmFyLCBzaXplb2YoaW50
+KSk7Cj4gK30KPiArCj4gK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKPiArICAgICAg
+IC5taW5fa3ZlciA9ICI2LjExIiwKPgoKSSB3b3VsZCBzdWdnZXN0IHJlbW92aW5nIHRoaXMgbGlu
+ZSBiZWNhdXNlIHNvbWUgZGlzdHJvcyBtaWdodCBiYWNrcG9ydCB0aGUKc3lzY2FsbCB0byB0aGVp
+ciBvbGQgZW50ZXJwcmlzZSB2ZXJzaW9uLgoKVGhlbiBiZWZvcmUgcnVubmluZyB0aGlzIHRlc3Qs
+IHRoZSBwcmVzZW5jZSBvZiBNQVBfRFJPUFBBQkxFIGluIHRoZQprZXJuZWwgc2hvdWxkIGJlIHZl
+cmlmaWVkLCBvciB0aGUgdGVzdCBzaG91bGQgZ3JhY2VmdWxseSBza2lwIGlmIHRoZQpmZWF0dXJl
+IGlzCm5vdCBzdXBwb3J0ZWQuCgoKCj4gKyAgICAgICAudGVzdF9hbGwgPSB0ZXN0X21tYXAsCj4g
+KyAgICAgICAubmVlZHNfdG1wZGlyID0gMSwKPgoKYWRkIC5taW5fbWVtX2F2YWlsIGhlcmUuCgoK
+Cj4gKyAgICAgICAuZm9ya3NfY2hpbGQgPSAxLAo+ICsgICAgICAgLm1heF9ydW50aW1lID0gMTgw
+LAo+CgpUaGlzIG1heF9ydW50aW1lIGlzIHVzZWxlc3MgaWYgd2UgcnVuIHRoZSB0ZXN0IG9uIGEg
+bGFyZ2UgUkFNIHN5c3RlbQp3aGljaCBsaWtlbHkgdGFrZXMgdG9vIGxvbmcgdG8gc2ltdWxhdGUg
+dGhlIG1lbW9yeSBwcmVzc3VyZS4KCldlIGNvdWxkIGxpbWl0IHRoZSB0ZXN0IHRvIGFuIENHcm91
+cCBhbmQgc2V0IHRoZSBtZW1vcnkubWF4CnRvIDI1Nk1CLCB3aGljaCBjYW4gY29tcGxldGUgdGhl
+IG1lbSBob2cgcXVpY2tseSB0byBmaW5pc2guCgoKCj4gK307Cj4gLS0KPiAyLjM1LjMKPgo+Cj4g
+LS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
+dHAKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRw
+czovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
