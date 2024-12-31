@@ -4,112 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99950E77188
-	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 11:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10FDE7718B
+	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 12:24:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 220913EE0AA
-	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 12:57:09 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 43D393EE0B6
+	for <ltp@archiver.kernel.org>; Tue, 31 Dec 2024 13:24:07 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 92BD13EC821
- for <ltp@lists.linux.it>; Tue, 31 Dec 2024 12:56:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6AE733E2516
+ for <ltp@lists.linux.it>; Tue, 31 Dec 2024 13:23:49 +0100 (CET)
 Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B58351002048
- for <ltp@lists.linux.it>; Tue, 31 Dec 2024 12:56:16 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 666F81016556
+ for <ltp@lists.linux.it>; Tue, 31 Dec 2024 13:23:48 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A13191F381;
- Tue, 31 Dec 2024 11:56:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 61C4F21106;
+ Tue, 31 Dec 2024 12:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735646175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1735647827;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5iw2JJA8MNK7p+kF+xYgKqcquRfVMpcGJCxpzneaNA=;
- b=fhWkhYnaIqgA2jmlhGtLGlzxgWWpm+GPI0jhLGH3HLuZ+eBIgOSl/4IWpFvwCkMXHdvMgi
- euDgCo7/v0yM8Pi90AdMAxeN2NCwQwlA6JYH/jcCyJ8VroeP8bYZpWoCuyb2sVGkR3wPJB
- 6UAKk/GbZW+J6pWSPUBP1gIqKLdQbOk=
+ bh=qW6K8/XiIDbujI3GqcHzEo+AP9hoPD5wsMVIbzxMq4E=;
+ b=qdPpQtilvaoi5iWzxx9Y3oajadkvOLzMJrT+WTHfzVP4es2RymC7G53CJa3ZRQzKhx1eEX
+ KEe+sCEplzQAeBzFIB2g3Ogg5RT0OlNxWBuTcMuFa63t1DbM5nQMv3rUSVcGUhMS3rxbek
+ 0ht8gYPSfsv36/ct/3IxZyrmaXeUoec=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735646175;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1735647827;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5iw2JJA8MNK7p+kF+xYgKqcquRfVMpcGJCxpzneaNA=;
- b=wNNqYaDNQ8qquIYDIdP/Oq//VwDauxJoImI7BDjWweizjpPSiWunLixXxJAfd+g6P7b08t
- bUWOOWmZx90qUJDA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fhWkhYna;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wNNqYaDN
+ bh=qW6K8/XiIDbujI3GqcHzEo+AP9hoPD5wsMVIbzxMq4E=;
+ b=Tet+azhgYtXoPqw6LOtP3RGo8H+GHvSqh/rV/Pa4VkJ5VsRYN+bP/R+DpnFJIzUvcXaGHn
+ ZZPfYo4Xsq+5xqBA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qdPpQtil;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Tet+azhg
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735646175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1735647827;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5iw2JJA8MNK7p+kF+xYgKqcquRfVMpcGJCxpzneaNA=;
- b=fhWkhYnaIqgA2jmlhGtLGlzxgWWpm+GPI0jhLGH3HLuZ+eBIgOSl/4IWpFvwCkMXHdvMgi
- euDgCo7/v0yM8Pi90AdMAxeN2NCwQwlA6JYH/jcCyJ8VroeP8bYZpWoCuyb2sVGkR3wPJB
- 6UAKk/GbZW+J6pWSPUBP1gIqKLdQbOk=
+ bh=qW6K8/XiIDbujI3GqcHzEo+AP9hoPD5wsMVIbzxMq4E=;
+ b=qdPpQtilvaoi5iWzxx9Y3oajadkvOLzMJrT+WTHfzVP4es2RymC7G53CJa3ZRQzKhx1eEX
+ KEe+sCEplzQAeBzFIB2g3Ogg5RT0OlNxWBuTcMuFa63t1DbM5nQMv3rUSVcGUhMS3rxbek
+ 0ht8gYPSfsv36/ct/3IxZyrmaXeUoec=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735646175;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1735647827;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5iw2JJA8MNK7p+kF+xYgKqcquRfVMpcGJCxpzneaNA=;
- b=wNNqYaDNQ8qquIYDIdP/Oq//VwDauxJoImI7BDjWweizjpPSiWunLixXxJAfd+g6P7b08t
- bUWOOWmZx90qUJDA==
+ bh=qW6K8/XiIDbujI3GqcHzEo+AP9hoPD5wsMVIbzxMq4E=;
+ b=Tet+azhgYtXoPqw6LOtP3RGo8H+GHvSqh/rV/Pa4VkJ5VsRYN+bP/R+DpnFJIzUvcXaGHn
+ ZZPfYo4Xsq+5xqBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68DDD13ABB;
- Tue, 31 Dec 2024 11:56:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2EC7713A30;
+ Tue, 31 Dec 2024 12:23:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sPT3F9/bc2cxKQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 31 Dec 2024 11:56:15 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cRJ4ClPic2cQLwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 31 Dec 2024 12:23:47 +0000
+Date: Tue, 31 Dec 2024 13:23:40 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 31 Dec 2024 12:56:07 +0100
-Message-ID: <20241231115607.56105-3-pvorel@suse.cz>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241231115607.56105-1-pvorel@suse.cz>
-References: <20241231115607.56105-1-pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <20241231122340.GE36475@pevik>
+References: <20241213222014.1580991-1-pvorel@suse.cz>
+ <20241213222014.1580991-7-pvorel@suse.cz>
+ <35af7de88f6961817a9df23c55104d20c32d2680.camel@linux.ibm.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: A13191F381
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
+Content-Disposition: inline
+In-Reply-To: <35af7de88f6961817a9df23c55104d20c32d2680.camel@linux.ibm.com>
+X-Rspamd-Queue-Id: 61C4F21106
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+ RCVD_TLS_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] device-drivers: *module: Use helpers for
- module signature enforcement
+Subject: Re: [LTP] [PATCH v2 6/8] IMA: Add example policy for
+ ima_violations.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,370 +121,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Po-Hsu Lin <po-hsu.lin@canonical.com>,
- "Ricardo B . Marliere" <rbm@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Changes v1->v2:
-* tpci.c: move tst_check_module_signature_enforced() after tst_sig(FORK, DEF_HANDLER, cleanup);
-* finit_module01.c: restore sig_enforce()
+Hi Mimi,
 
- testcases/kernel/device-drivers/acpi/ltp_acpi.c       | 11 +----------
- .../device-drivers/block/block_dev_user/block_dev.c   |  9 +--------
- testcases/kernel/device-drivers/pci/tpci_user/tpci.c  | 11 +----------
- testcases/kernel/device-drivers/uaccess/uaccess.c     | 11 +----------
- testcases/kernel/firmware/fw_load_user/fw_load.c      | 10 +---------
- .../kernel/syscalls/delete_module/delete_module01.c   |  9 +--------
- .../kernel/syscalls/delete_module/delete_module03.c   |  9 +--------
- .../kernel/syscalls/finit_module/finit_module01.c     |  9 +--------
- .../kernel/syscalls/finit_module/finit_module02.c     |  7 +------
- testcases/kernel/syscalls/init_module/init_module01.c |  8 +-------
- testcases/kernel/syscalls/init_module/init_module02.c |  7 +------
- 11 files changed, 11 insertions(+), 90 deletions(-)
+> Hi Petr,
 
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-index c674b20321..eb5e197239 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-@@ -22,7 +22,6 @@
- #include <stdlib.h>
- 
- #include "test.h"
--#include "tst_kconfig.h"
- #include "old_module.h"
- #include "safe_macros.h"
- 
-@@ -129,20 +128,12 @@ static void test_run(void)
- int main(int argc, char *argv[])
- {
- 	int acpi_disabled;
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
- 
- 	tst_parse_opts(argc, argv, NULL, NULL);
--
- 	tst_require_root();
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brkm(TCONF, tst_exit, "module signature is enforced, skip test");
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-+	tst_check_module_signature_enforced();
- 	tst_module_load(NULL, module_name, NULL);
- 	module_loaded = 1;
- 
-diff --git a/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c b/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
-index 2c3ffd9203..98b786a90b 100644
---- a/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
-+++ b/testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
-@@ -17,7 +17,6 @@
- #include <unistd.h>
- #include <string.h>
- 
--#include "tst_kconfig.h"
- #include "tst_test.h"
- #include "tst_module.h"
- 
-@@ -42,13 +41,7 @@ static void cleanup(void)
- 
- static void run(unsigned int n)
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brk(TCONF, "module signature is enforced, skip test");
-+	tst_check_module_signature_enforced();
- 
- 	/*
- 	 * test-cases #8 and #9 can crash the kernel.
-diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-index aa07fdb427..faace7727b 100644
---- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-@@ -27,7 +27,6 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "tst_kconfig.h"
- #include "safe_macros.h"
- #include "old_module.h"
- 
-@@ -50,17 +49,9 @@ static void cleanup(void)
- 
- void setup(void)
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
- 	tst_require_root();
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brkm(TCONF, tst_exit, "module signature is enforced, skip test");
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_check_module_signature_enforced();
- }
- 
- static void run_pci_testcases(int bus, int slot)
-diff --git a/testcases/kernel/device-drivers/uaccess/uaccess.c b/testcases/kernel/device-drivers/uaccess/uaccess.c
-index c6dfeb8456..58bef13ef3 100644
---- a/testcases/kernel/device-drivers/uaccess/uaccess.c
-+++ b/testcases/kernel/device-drivers/uaccess/uaccess.c
-@@ -27,7 +27,6 @@
- #include <unistd.h>
- 
- #include "test.h"
--#include "tst_kconfig.h"
- #include "old_module.h"
- #include "safe_macros.h"
- 
-@@ -93,20 +92,12 @@ static void tc_write_userspace(void)
- 
- int main(int argc, char *argv[])
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
- 	tst_parse_opts(argc, argv, NULL, NULL);
- 
- 	tst_require_root();
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brkm(TCONF, tst_exit, "module signature is enforced, skip test");
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-+	tst_check_module_signature_enforced();
- 	tst_module_load(NULL, module_name, NULL);
- 	module_loaded = 1;
- 
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
-index b34b56fae5..7ebb2cc8ed 100644
---- a/testcases/kernel/firmware/fw_load_user/fw_load.c
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
-@@ -29,7 +29,6 @@
- #include <string.h>
- 
- #include "test.h"
--#include "tst_kconfig.h"
- #include "safe_macros.h"
- #include "old_module.h"
- 
-@@ -103,9 +102,6 @@ static void help(void)
- 
- void setup(int argc, char *argv[])
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
- 	tst_parse_opts(argc, argv, options, help);
- 
- 	if (nflag) {
-@@ -116,11 +112,7 @@ void setup(int argc, char *argv[])
- 	}
- 
- 	tst_require_root();
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brkm(TCONF, tst_exit, "module signature is enforced, skip test");
-+	tst_check_module_signature_enforced();
- 
- 	char fw_size_param[19];
- 	snprintf(fw_size_param, 19, "fw_size=%d", fw_size);
-diff --git a/testcases/kernel/syscalls/delete_module/delete_module01.c b/testcases/kernel/syscalls/delete_module/delete_module01.c
-index 5ccbe6fd5b..48b324309f 100644
---- a/testcases/kernel/syscalls/delete_module/delete_module01.c
-+++ b/testcases/kernel/syscalls/delete_module/delete_module01.c
-@@ -17,7 +17,6 @@
- #include <stdlib.h>
- #include "tst_test.h"
- #include "tst_module.h"
--#include "tst_kconfig.h"
- #include "lapi/syscalls.h"
- 
- #define MODULE_NAME	"dummy_del_mod"
-@@ -27,13 +26,7 @@ static int module_loaded;
- 
- static void do_delete_module(void)
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brk(TCONF, "module signature is enforced, skip test");
-+	tst_check_module_signature_enforced();
- 
- 	if (!module_loaded) {
- 		tst_module_load(MODULE_NAME_KO, NULL);
-diff --git a/testcases/kernel/syscalls/delete_module/delete_module03.c b/testcases/kernel/syscalls/delete_module/delete_module03.c
-index 76ccfb1e25..be358381ef 100644
---- a/testcases/kernel/syscalls/delete_module/delete_module03.c
-+++ b/testcases/kernel/syscalls/delete_module/delete_module03.c
-@@ -16,7 +16,6 @@
- #include <errno.h>
- #include "tst_test.h"
- #include "tst_module.h"
--#include "tst_kconfig.h"
- #include "lapi/syscalls.h"
- 
- #define DUMMY_MOD		"dummy_del_mod"
-@@ -52,13 +51,7 @@ static void do_delete_module(void)
- 
- static void setup(void)
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
--		tst_brk(TCONF, "module signature is enforced, skip test");
-+	tst_check_module_signature_enforced();
- 
- 	/* Load first kernel module */
- 	tst_module_load(DUMMY_MOD_KO, NULL);
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module01.c b/testcases/kernel/syscalls/finit_module/finit_module01.c
-index d75e5e4753..ea00e48356 100644
---- a/testcases/kernel/syscalls/finit_module/finit_module01.c
-+++ b/testcases/kernel/syscalls/finit_module/finit_module01.c
-@@ -17,7 +17,6 @@
- #include <errno.h>
- #include "lapi/init_module.h"
- #include "tst_module.h"
--#include "tst_kconfig.h"
- 
- #define MODULE_NAME	"finit_module.ko"
- 
-@@ -27,12 +26,7 @@ static char *mod_path;
- 
- static void setup(void)
- {
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
--
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
-+	if (tst_module_signature_enforced())
- 		sig_enforce = 1;
- 
- 	tst_module_exists(MODULE_NAME, &mod_path);
-@@ -43,7 +37,6 @@ static void setup(void)
- static void run(void)
- {
- 	if (sig_enforce == 1) {
--		tst_res(TINFO, "module signature is enforced");
- 		TST_EXP_FAIL(finit_module(fd, "status=valid", 0), EKEYREJECTED);
- 		return;
- 	}
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
-index dc81ae727d..e16164ee25 100644
---- a/testcases/kernel/syscalls/finit_module/finit_module02.c
-+++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
-@@ -18,7 +18,6 @@
- #include <errno.h>
- #include "lapi/init_module.h"
- #include "tst_module.h"
--#include "tst_kconfig.h"
- #include "tst_capability.h"
- 
- #define MODULE_NAME	"finit_module.ko"
-@@ -77,12 +76,8 @@ static struct tcase tcases[] = {
- static void setup(void)
- {
- 	unsigned long int i;
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
- 
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
-+	if (tst_module_signature_enforced())
- 		sig_enforce = 1;
- 
- 	tst_module_exists(MODULE_NAME, &mod_path);
-diff --git a/testcases/kernel/syscalls/init_module/init_module01.c b/testcases/kernel/syscalls/init_module/init_module01.c
-index d7ed08b143..850f826e62 100644
---- a/testcases/kernel/syscalls/init_module/init_module01.c
-+++ b/testcases/kernel/syscalls/init_module/init_module01.c
-@@ -17,7 +17,6 @@
- #include <errno.h>
- #include "lapi/init_module.h"
- #include "tst_module.h"
--#include "tst_kconfig.h"
- 
- #define MODULE_NAME	"init_module.ko"
- 
-@@ -28,12 +27,8 @@ static int sig_enforce;
- static void setup(void)
- {
- 	int fd;
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
- 
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
-+	if (tst_module_signature_enforced())
- 		sig_enforce = 1;
- 
- 	tst_module_exists(MODULE_NAME, NULL);
-@@ -47,7 +42,6 @@ static void setup(void)
- static void run(void)
- {
- 	if (sig_enforce == 1) {
--		tst_res(TINFO, "module signature is enforced");
- 		TST_EXP_FAIL(init_module(buf, sb.st_size, "status=valid"), EKEYREJECTED);
- 		return;
- 	}
-diff --git a/testcases/kernel/syscalls/init_module/init_module02.c b/testcases/kernel/syscalls/init_module/init_module02.c
-index 3eb99574d9..c3979c08aa 100644
---- a/testcases/kernel/syscalls/init_module/init_module02.c
-+++ b/testcases/kernel/syscalls/init_module/init_module02.c
-@@ -17,7 +17,6 @@
- #include <stdlib.h>
- #include <errno.h>
- #include "lapi/init_module.h"
--#include "tst_kconfig.h"
- #include "tst_module.h"
- #include "tst_capability.h"
- 
-@@ -53,12 +52,8 @@ static void setup(void)
- {
- 	struct stat sb;
- 	int fd;
--	struct tst_kcmdline_var params = TST_KCMDLINE_INIT("module.sig_enforce");
--	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_MODULE_SIG_FORCE");
- 
--	tst_kcmdline_parse(&params, 1);
--	tst_kconfig_read(&kconfig, 1);
--	if (params.found || kconfig.choice == 'y')
-+	if (tst_module_signature_enforced())
- 		sig_enforce = 1;
- 
- 	tst_module_exists(MODULE_NAME, NULL);
--- 
-2.45.2
+> On Fri, 2024-12-13 at 23:20 +0100, Petr Vorel wrote:
+> > Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> >  .../integrity/ima/datafiles/ima_violations/violations.policy     | 1 +
+> >  1 file changed, 1 insertion(+)
+> >  create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
 
+> > diff --git a/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
+> > new file mode 100644
+> > index 0000000000..5734c7617f
+> > --- /dev/null
+> > +++ b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
+> > @@ -0,0 +1 @@
+> > +func=FILE_CHECK
+
+> "[PATCH v2 1/8] IMA: Add TCB policy as an example for ima_measurements.sh"
+> contains two rules to measure files opened by root on file open.
+
+> measure func=FILE_CHECK mask=^MAY_READ euid=0
+> measure func=FILE_CHECK mask=^MAY_READ uid=0
+
+> If the 'tcb' or equivalent policy is loaded, there is no need to load another
+> policy rule. 
+
+I guess I'll move check for builtin policy loaded via kernel command line
+parameter also to ima_setup.sh to avoid loading example policy when there is a
+required builtin policy loaded. I also wonder what is a common approach - don't
+try to load custom example policy when there is builtin policy loaded?
+
+My goal was to allow more broad IMA testing based on different setup:
+
+* running tests with ima_policy=tcb builtin policy (current approach). Many
+tests will be skipped due missing required policy content.
+* running tests without any builtin policy + load a custom policy + reboot via
+LTP_IMA_LOAD_POLICY=1 (this patchset), but this should be probably be done only
+if required (or even none) builtin policy is loaded.
+* Ideally not require CONFIG_IMA_READ_POLICY=y as some distros does not have it
+(but then it is hard to detect whether failures are real bugs or just false
+positives due not having a proper policy). Maybe convert TBROK/TFAIL to TCONF if
+policy content is required but cannot be read due CONFIG_IMA_READ_POLICY (and
+custom policy with proper content was not loaded).
+
+But you may have an idea what is more useful (brings more test coverage).
+
+Kind regards,
+Petr
+
+> Thanks,
+
+> Mimi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
