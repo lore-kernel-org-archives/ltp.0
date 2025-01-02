@@ -4,112 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA5FE77188
-	for <ltp@archiver.kernel.org>; Thu,  2 Jan 2025 14:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89739E77188
+	for <ltp@archiver.kernel.org>; Thu,  2 Jan 2025 14:53:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6FA233F042A
-	for <ltp@archiver.kernel.org>; Thu,  2 Jan 2025 15:50:25 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B34073F042D
+	for <ltp@archiver.kernel.org>; Thu,  2 Jan 2025 15:53:35 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A5A703EB992
- for <ltp@lists.linux.it>; Thu,  2 Jan 2025 15:50:08 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 4248D3EB992
+ for <ltp@lists.linux.it>; Thu,  2 Jan 2025 15:53:19 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B7FA9617D07
- for <ltp@lists.linux.it>; Thu,  2 Jan 2025 15:50:07 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 025E6234656
+ for <ltp@lists.linux.it>; Thu,  2 Jan 2025 15:53:18 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DD84D1F395;
- Thu,  2 Jan 2025 14:50:06 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 868A81F38F;
+ Thu,  2 Jan 2025 14:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735829407;
+ t=1735829597;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hMHxLCoSeoE0+xFarTE6fWqh/53CNGCrg6z937pDysM=;
- b=lD6UtuXhJDQZN1YTjZLao5TCw+fzzPtia/L7RxVQ6hfAFgt7O1UFAHmqZSA1RDvZbHUKdZ
- ajHNVr5L5N0p4dNglBfRx7hjssQLr2NNJnehGTCIiDgq82riI8m5BzUyopIzEBbCCWeXZU
- xL6MRIV54eDmRZggykvMQxfCvHngFTQ=
+ bh=XTCew5p0ITe7WMv9X1YOZozdUO5oTA/yS8zZk6T+FtQ=;
+ b=aFxY3YQR9plvL29YN8+A7JD4C3wN6787JrRcw684sgJopbR7nnCtO7uB6lx6EbUtMLFnbS
+ fMGAJPKefJRqvBe/kzoqvzqytiJ7mPcepgoe+pjayrrDsPHdaBF7WR5iKC4keP1aRgoRgd
+ Mt6sglokDi7TYNN4eI2IJEtlw4A+kPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735829407;
+ s=susede2_ed25519; t=1735829597;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hMHxLCoSeoE0+xFarTE6fWqh/53CNGCrg6z937pDysM=;
- b=12bqHJkU+TXv5D0iHGMFwSx9tzkM7yasCPXE5uuK+FKRDQq9i5pgztnYgxsDhNq61JHVC2
- e59e7kTu647vBODw==
+ bh=XTCew5p0ITe7WMv9X1YOZozdUO5oTA/yS8zZk6T+FtQ=;
+ b=0RLuvZkwqg1JH8Jt0QOuV2Vqd5Y+a54w6b5YdG0bvF2N7R9i2djJAy+3pUhmqUT/NGa48U
+ lL5Rj6tv5z/4OqCw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hPSLJ39r;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=r8yOXRF+
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735829406;
+ t=1735829597;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hMHxLCoSeoE0+xFarTE6fWqh/53CNGCrg6z937pDysM=;
- b=hPSLJ39rDaR4q6spiofcQku6OO0dHqO+R7wsnq6NG0oMx89d32uaC+81u3royNDE5hKRaY
- L1k/b4Eq7etiACe17oLNnzZgMfbuK4jQ+1VaTedpYymysMwTrlV/1tpwzcPZfkwV62wITM
- pb4ze35P2CHQKTxqMlZ7HGaXKgwucBY=
+ bh=XTCew5p0ITe7WMv9X1YOZozdUO5oTA/yS8zZk6T+FtQ=;
+ b=aFxY3YQR9plvL29YN8+A7JD4C3wN6787JrRcw684sgJopbR7nnCtO7uB6lx6EbUtMLFnbS
+ fMGAJPKefJRqvBe/kzoqvzqytiJ7mPcepgoe+pjayrrDsPHdaBF7WR5iKC4keP1aRgoRgd
+ Mt6sglokDi7TYNN4eI2IJEtlw4A+kPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735829406;
+ s=susede2_ed25519; t=1735829597;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hMHxLCoSeoE0+xFarTE6fWqh/53CNGCrg6z937pDysM=;
- b=r8yOXRF+GgUguCIOTpKdf6X8u4FOjw7X1dMUESM5Crwx4RAXF+rj6NBV/ozMFMLTw3vgHD
- 7F2P/GFOpG8WQDDg==
+ bh=XTCew5p0ITe7WMv9X1YOZozdUO5oTA/yS8zZk6T+FtQ=;
+ b=0RLuvZkwqg1JH8Jt0QOuV2Vqd5Y+a54w6b5YdG0bvF2N7R9i2djJAy+3pUhmqUT/NGa48U
+ lL5Rj6tv5z/4OqCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B56F013418;
- Thu,  2 Jan 2025 14:50:06 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B5E313418;
+ Thu,  2 Jan 2025 14:53:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UE+DKZ6ndmdfGgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 02 Jan 2025 14:50:06 +0000
-Date: Thu, 2 Jan 2025 15:50:04 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LHk9DF2odmcDGwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 02 Jan 2025 14:53:17 +0000
+Date: Thu, 2 Jan 2025 15:53:07 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20250102145004.GC94207@pevik>
+Message-ID: <20250102145307.GD94207@pevik>
 References: <20241222075102.14536-1-liwang@redhat.com>
- <20241222075102.14536-2-liwang@redhat.com>
+ <20241222075102.14536-3-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241222075102.14536-2-liwang@redhat.com>
-X-Rspamd-Queue-Id: DD84D1F395
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20241222075102.14536-3-liwang@redhat.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; REPLYTO_EQ_FROM(0.00)[]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] tst_fuzzy_sync: ingnore test result if loop
- termination occurs
+Subject: Re: [LTP] [PATCH 3/3] newlib_test: enable all tst_fuzzy_sync tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,108 +123,47 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Li,
 
-> This patch updates the behavior of tst_fuzzy_sync tests to address
-> scenarios where test results may be unreliable due to resource constraints.
-
-> Specifically, if pair->exit is set (indicating exceeded loop termination),
-> the test result is ignored, and a TCONF status is returned. This ensures
-> invalid results are not falsely reported as failures or successes.
-
->   tst_fuzzy_sync.h:654: TINFO: Exceeded execution loops, requesting exit
->   /lib/newlib_tests/tst_fuzzy_sync02.c:164: TFAIL: 2| =:15
-
-LGTM, good catch.
-
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Below are noted typos, could you please fix them before merge?
+> Notes:
+>     This patch based on Peter's work:
+>     Message-ID: <20241210225753.381770-1-pvorel@suse.cz>
 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  lib/newlib_tests/tst_fuzzy_sync01.c | 21 +++++++++++++++++++++
->  lib/newlib_tests/tst_fuzzy_sync02.c | 21 +++++++++++++++++++++
->  2 files changed, 42 insertions(+)
+>     CI: https://github.com/wangli5665/ltp/actions/runs/12452324779/
 
-> diff --git a/lib/newlib_tests/tst_fuzzy_sync01.c b/lib/newlib_tests/tst_fuzzy_sync01.c
-> index d510bd2dd..c8c195859 100644
-> --- a/lib/newlib_tests/tst_fuzzy_sync01.c
-> +++ b/lib/newlib_tests/tst_fuzzy_sync01.c
-> @@ -212,10 +212,31 @@ static void run(unsigned int i)
+>  lib/newlib_tests/runtest.sh | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
->  		if (critical > 100) {
->  			tst_fzsync_pair_cleanup(&pair);
-> +			tst_atomic_store(0, &pair.exit);
->  			break;
->  		}
->  	}
+> diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+> index 66aaa9361..b00965b16 100755
+> --- a/lib/newlib_tests/runtest.sh
+> +++ b/lib/newlib_tests/runtest.sh
+> @@ -2,7 +2,7 @@
+>  # Copyright (c) 2021-2024 Petr Vorel <pvorel@suse.cz>
 
-> +	/*
-> +	 * If `pair->exit` is true, the test may fail to meet expected
-> +	 * results due to resource constraints in shared CI environments
-> +	 * (e.g., GitHub Actions). Limited control over CPU allocation
-> +	 * can cause delays or interruptions in CPU time slices due to
-> +	 * contention with other jobs.
-> +	 *
-> +	 * Binding the test to a single CPU core (e.g., via `taskset -c 0`)
-> +	 * can worsen this by increasing contention, leading to performance
-> +	 * degradation and premature loop termination.
-> +	 *
-> +	 * To ensure valid and reliable results in scenarios (e.g., HW, VM, CI),
-> +	 * it is best to ingore test result when loop termination occurs,
-s/ingore/ignore/
-> +	 * avoiding unnecessary false postive.
-s/postive/positive/
+>  # TODO "unknown failure, exit code": test_assert test08 tst_cgroup01 tst_cgroup02 tst_res_flags variant
+> -# TODO TFAIL: tst_fuzzy_sync01 tst_fuzzy_sync02 test_macros0[1-6] test23 test26
+Ah, I should have mark it as tst_fuzzy_sync0[12]
 
-> +	 */
-> +	if (pair.exit) {
-> +		tst_res(TCONF, "Test may not be able to generate a valid result");
-> +		return;
-> +	}
-> +
->  	tst_res(critical > 50 ? TPASS : TFAIL,
->  		"acs:%-2d act:%-2d art:%-2d | =:%-4d -:%-4d +:%-4d",
->  		a.critical_s, a.critical_t, a.return_t,
-> diff --git a/lib/newlib_tests/tst_fuzzy_sync02.c b/lib/newlib_tests/tst_fuzzy_sync02.c
-> index f95394371..ad19a675e 100644
-> --- a/lib/newlib_tests/tst_fuzzy_sync02.c
-> +++ b/lib/newlib_tests/tst_fuzzy_sync02.c
-> @@ -192,10 +192,31 @@ static void run(unsigned int i)
-
->  		if (critical > 100) {
->  			tst_fzsync_pair_cleanup(&pair);
-> +			tst_atomic_store(0, &pair.exit);
->  			break;
->  		}
->  	}
-
-> +	/*
-> +	 * If `pair->exit` is true, the test may fail to meet expected
-> +	 * results due to resource constraints in shared CI environments
-> +	 * (e.g., GitHub Actions). Limited control over CPU allocation
-> +	 * can cause delays or interruptions in CPU time slices due to
-> +	 * contention with other jobs.
-> +	 *
-> +	 * Binding the test to a single CPU core (e.g., via `taskset -c 0`)
-> +	 * can worsen this by increasing contention, leading to performance
-> +	 * degradation and premature loop termination.
-> +	 *
-> +	 * To ensure valid and reliable results in scenarios (e.g., HW, VM, CI),
-> +	 * it is best to ingore test result when loop termination occurs,
-s/ingore/ignore/
-> +	 * avoiding unnecessary false postive.
-s/postive/positive/
-
-Also there is original typo from Richie:
-s/Emperically/Empirically/
+Anyway, feel free to merge before I merge my patchset, I have no problem to
+rebase mine.
 
 Kind regards,
 Petr
 
-> +	 */
-> +	if (pair.exit) {
-> +		tst_res(TCONF, "Test may not be able to generate a valid result");
-> +		return;
-> +	}
+> +# TODO TFAIL: test_macros0[1-6] test23 test26
+>  # TODO TBROK: test_exec_child test_kconfig01 test_kconfig02 tst_needs_cmds04 tst_needs_cmds05 test_runtime02 test01 test02 test03 test04 test06 test11 test13 test22 test25 tst_safe_fileops
+>  # TODO TWARN: test_guarded_buf test14 tst_capability01 tst_print_result
+>  LTP_C_API_TESTS="${LTP_C_API_TESTS:-
+> @@ -20,6 +20,8 @@ tst_bool_expr
+>  tst_capability02
+>  tst_device
+>  tst_expiration_timer
+> +tst_fuzzy_sync01
+> +tst_fuzzy_sync02
+>  tst_fuzzy_sync03
+>  tst_needs_cmds0[1-36-8]
+>  tst_res_hexd
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
