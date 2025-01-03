@@ -4,105 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EEF2E77188
-	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 08:51:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E554E77188
+	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 09:08:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7381D3EE9B9
-	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 09:51:09 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 971B93EFDAF
+	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 10:08:05 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8956B3EE6CB
- for <ltp@lists.linux.it>; Fri,  3 Jan 2025 09:50:52 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 559A43E242A
+ for <ltp@lists.linux.it>; Fri,  3 Jan 2025 10:07:49 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DFEB0212FE1
- for <ltp@lists.linux.it>; Fri,  3 Jan 2025 09:50:51 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CBB831BDD89E
+ for <ltp@lists.linux.it>; Fri,  3 Jan 2025 10:07:47 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E27772115E;
- Fri,  3 Jan 2025 08:50:49 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2A5BD2115E;
+ Fri,  3 Jan 2025 09:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735894251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1735895266;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M4nYAP6IoxwHlS+Vn/506VAsxYvrJsKV0sTkX6JKYSE=;
- b=pWxolsIcHWFY75PoH0VCiEJwnCfMjoa2SSKdLqSNkiPY/0OGbxGdjbC1F4ucI34J9J3nmR
- 67Xis9dNNpZwF51kd+0fhtmKp3ZkepYMlGwNrFZmKnqbu55qFe2HFe2s73BpVTAdvhSzmZ
- zDcq9XQCtESRO+e1YB6Aq41KPF7AWaM=
+ bh=tRQScYmAu1BrIF9Iv49/tOpd4PqUSbHvcBziCJbu2Bw=;
+ b=tLhRH1Q8RLxQD8ANolOrkCdvYwe3EDjTVflS/WyXIy0VnbiGt/FhxMyxJLhJXlHqDinEWG
+ BHKHZgYLSv9O6P4vcqTo93e8X6YlpBqkVMO2nKjswfRdJSCOG9+AxM9Ug+I5hv8Vgnd2mm
+ 8NgbC934k/X9szloH3SQpxeTxdrRQOc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735894251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1735895266;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M4nYAP6IoxwHlS+Vn/506VAsxYvrJsKV0sTkX6JKYSE=;
- b=fij4mvKwXbB7OR4vWEuNpivOtaDo5E7O2fyOqdhH8nGRHx1TxJjNuBgFH5M4s90j+cnmhF
- yoA4yDlRTHhOiVCQ==
+ bh=tRQScYmAu1BrIF9Iv49/tOpd4PqUSbHvcBziCJbu2Bw=;
+ b=p/xojsZmp9PW3evBQ29HWYgW4q1+astlD5idQ8eFIpo8QZ65UC2y4PFNeakSZuZ+IFAeZS
+ dj9Gflqz9hXhf6Ag==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735894249;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1735895266;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M4nYAP6IoxwHlS+Vn/506VAsxYvrJsKV0sTkX6JKYSE=;
- b=MFgyGb1wrfZVEdEEzbnpxyd19UHok/T8wF5Rx0H/J9K9yowcUAz3mkBnjhvyNr8hGkf+cF
- HR3rZGGCOHdFfgdAycPiDIMViphRFo3uQ1Bc1jXF/w4euwjFxAy2X4OjY3+KMAABpULow3
- +ZmPws+38pMjyqN2aWC1kbn1M437SZA=
+ bh=tRQScYmAu1BrIF9Iv49/tOpd4PqUSbHvcBziCJbu2Bw=;
+ b=tLhRH1Q8RLxQD8ANolOrkCdvYwe3EDjTVflS/WyXIy0VnbiGt/FhxMyxJLhJXlHqDinEWG
+ BHKHZgYLSv9O6P4vcqTo93e8X6YlpBqkVMO2nKjswfRdJSCOG9+AxM9Ug+I5hv8Vgnd2mm
+ 8NgbC934k/X9szloH3SQpxeTxdrRQOc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735894249;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1735895266;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M4nYAP6IoxwHlS+Vn/506VAsxYvrJsKV0sTkX6JKYSE=;
- b=rX0cV2e5s/qd1l/aHtTHyrDTrINCPoNZK4+RIUFX7QKj1EhWS0vW7++wfoCqRDBMgGmGpU
- kGmf0ZB+lulbe5BQ==
+ bh=tRQScYmAu1BrIF9Iv49/tOpd4PqUSbHvcBziCJbu2Bw=;
+ b=p/xojsZmp9PW3evBQ29HWYgW4q1+astlD5idQ8eFIpo8QZ65UC2y4PFNeakSZuZ+IFAeZS
+ dj9Gflqz9hXhf6Ag==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4C7E13418;
- Fri,  3 Jan 2025 08:50:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E611413418;
+ Fri,  3 Jan 2025 09:07:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XaNMKumkd2eOBgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 03 Jan 2025 08:50:49 +0000
-Date: Fri, 3 Jan 2025 09:50:40 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id HeNoNuGod2enCgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 03 Jan 2025 09:07:45 +0000
+Date: Fri, 3 Jan 2025 10:07:44 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250103085040.GA188652@pevik>
-References: <20241126085808.14616-1-liwang@redhat.com>
- <20250102145903.GE94207@pevik>
- <CAEemH2dNVsJ4QhdNkQ=d8hPpEqvCTPGXQm6stCjfg3uVQkwx7A@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>, ltp@lists.linux.it,
+ Po-Hsu Lin <po-hsu.lin@canonical.com>,
+ "Ricardo B . Marliere" <rbm@suse.com>
+Message-ID: <20250103090744.GA193802@pevik>
+References: <20241231115607.56105-1-pvorel@suse.cz>
+ <20241231115607.56105-2-pvorel@suse.cz>
+ <CAEemH2dUU4JNNxL3Gxrdgf-=_DPWW=Cbb-2AysWi0_BLc3yDFw@mail.gmail.com>
+ <20250102101428.GA72628@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2dNVsJ4QhdNkQ=d8hPpEqvCTPGXQm6stCjfg3uVQkwx7A@mail.gmail.com>
+In-Reply-To: <20250102101428.GA72628@pevik>
 X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
  MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] process_madvise01: running the test in mem_cg
+Subject: Re: [LTP] [PATCH v2 1/2] lib: Add helpers for module signature
+ enforcement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,23 +120,57 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Li, Po-Hsu Lin, all,
 
-...
-> Thanks for the review, after reading the patch summary I guess it
-> still makes sense to apply it, since MADV_PAGEOUT is indeed not
-> a mandatory option and still may ignored by kernel in the test.
+> Hi Li,
 
-Sure, please go ahead and merge the patchset.
+> > > +/**
+> > > + * tst_check_module_signature_enforced() - Check if test needs to be
+> > > skipped due
+> > > + * enforced module signature.
+> > > + *
+> > > + * Skip test with tst_brk(TCONF) due module signature enforcement if
+> > > + * module.sig_enforce=1 kernel parameter or CONFIG_MODULE_SIG_FORCE=y.
+> > > + */
+> > > +
+> > > +static inline void tst_check_module_signature_enforced(void)
+
+
+> > This function is used to skip tests while detecting the signature
+> > enforcement ON, but the name might be ambiguous somewhere.
+
+> +1, I was not sure myself about naming.
+
+> > I would suggest to name it:
+
+> >   tst_check_module_signature_not_enforced(void)  or,
+> >   tst_skip_if_module_signature_enforced(void)  or,
+> >   tst_requires_module_signature_disabled(void)
+
+> Thanks for the suggestions.  tst_requires_module_signature_disabled(void) looks
+> best to me, we use "require" and "needs" for tst_brk().
+
+> I'll wait little longer before merging in case there is some feedback.
+
+FYI patchset merged with rename:
+s/tst_check_module_signature_enforced/tst_requires_module_signature_disabled/
+
+Thanks for your review.
 
 Kind regards,
 Petr
+
+> Kind regards,
+> Petr
+
+> > Otherwise, the whole patch set looks good.
+
+> > Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
