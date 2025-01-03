@@ -4,109 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517A2E77188
-	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 12:19:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB9C5E77188
+	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 13:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1735912500; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=5XPdB4WnDz4o4us5NI3E9QB8TRjyoZ4YOJpHQXcSBCk=;
+ b=Gpa1SnV7xzc+hv3HEADEIOH71q3/tO3q8RCEfpIRYi/CXpCVq7hcFd1RRO3PXOeuVSr14
+ 8sSev3CbaWKegtTtJ0kY8RzPx4Uru2SoF6Eomt4JvNJoB+L1pLRYKoi/oRhCN4XRIwey1+1
+ o+hks3WokDXdyFfDhyO2cuT5WJEvoNk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D8DF53C0652
-	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 13:19:22 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 133183C078E
+	for <ltp@archiver.kernel.org>; Fri,  3 Jan 2025 14:55:00 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F33C13C04FC
- for <ltp@lists.linux.it>; Fri,  3 Jan 2025 13:19:06 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C2C133C055C
+ for <ltp@lists.linux.it>; Fri,  3 Jan 2025 14:54:38 +0100 (CET)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 93F9565F21D
- for <ltp@lists.linux.it>; Fri,  3 Jan 2025 13:19:05 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0EB1321114;
- Fri,  3 Jan 2025 12:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735906744;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gCCmtVwgPhrDKWKe0rGu0fanaPp9HeohivRvCaksz4o=;
- b=v1SaE3Xa0iZ4w6ejzVfteBVu/apDPVclN6i9QpBypBCNy5t5e3glE0TejQII/L8ASgeU31
- Cjdi4dHh7ax3AYLMzryLOUAKIROtukMOkdXYqca4ZCXucjs5L3Ma/719ICyoJTC19NVBpG
- g0BPXY50z6a9YV9sfu1sUcc+mBSfz98=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735906744;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gCCmtVwgPhrDKWKe0rGu0fanaPp9HeohivRvCaksz4o=;
- b=4ekhy6GmZLFl9Wg0qWNrCngnV2UfqYTSE1RPZDX1S/WRIzVlPdbY7P1dJGSQR/Wio//AYY
- yAnapeiZ3kAWm4Bw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1735906744;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gCCmtVwgPhrDKWKe0rGu0fanaPp9HeohivRvCaksz4o=;
- b=v1SaE3Xa0iZ4w6ejzVfteBVu/apDPVclN6i9QpBypBCNy5t5e3glE0TejQII/L8ASgeU31
- Cjdi4dHh7ax3AYLMzryLOUAKIROtukMOkdXYqca4ZCXucjs5L3Ma/719ICyoJTC19NVBpG
- g0BPXY50z6a9YV9sfu1sUcc+mBSfz98=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1735906744;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gCCmtVwgPhrDKWKe0rGu0fanaPp9HeohivRvCaksz4o=;
- b=4ekhy6GmZLFl9Wg0qWNrCngnV2UfqYTSE1RPZDX1S/WRIzVlPdbY7P1dJGSQR/Wio//AYY
- yAnapeiZ3kAWm4Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9515F134E4;
- Fri,  3 Jan 2025 12:19:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Xr1GILfVd2fiOgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 03 Jan 2025 12:19:03 +0000
-Date: Fri, 3 Jan 2025 13:18:58 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <20250103121858.GC211314@pevik>
-References: <20241213222014.1580991-1-pvorel@suse.cz>
- <20241213222014.1580991-3-pvorel@suse.cz>
- <a617f000c69875b5c02743c8f0a8fee72cb1ea55.camel@linux.ibm.com>
- <20241231100057.GB36475@pevik>
- <b577405f0c6d2af8de6650eb1cd8c69305f616bf.camel@linux.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 168E0102C3CF
+ for <ltp@lists.linux.it>; Fri,  3 Jan 2025 14:54:38 +0100 (CET)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-436ce2ab251so2616135e9.1
+ for <ltp@lists.linux.it>; Fri, 03 Jan 2025 05:54:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1735912477; x=1736517277; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=Cxydt7FEBPzSLmZ/X/JccuW+OqMNohCVkgmxH7JQvlg=;
+ b=ccReZ+JeOiX2WrXbtyP8LgXIHsLQQ1k+Ky7urw/QMr5rtqKCSa7Ep6cLXubMqyeidT
+ sq+jfD008rIK8a94RKsNs58MXe7Bjax/ZQk5r9UYcSNBcQfU/S0cQ6IszydFYk4ExMje
+ 2CsA/vNExbFlMOg3lP5jyR0OCAIxJlICMuNoHaYJI0xxyOfT6UhMaotJ7Xx0arovINr5
+ uyPaJpMWQooNAERse0JwyQ8bIEp0PlqFwlJS0GrsRvYozjT+m3kf1THFUeCQlN5EDE/p
+ GS6K1Vbp3I3nMJb5c1/M6ldj7S+y4sjDfKz6nC4hEilAUuv3N0XGBwI5flYjvinOQTOY
+ 9rkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1735912477; x=1736517277;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=Cxydt7FEBPzSLmZ/X/JccuW+OqMNohCVkgmxH7JQvlg=;
+ b=nGfHaK8koLeHZbniVvl5J5KPH186UST2ZdU8zgo8S2DLLYCgl2XeqB/mgIW8vVI1yW
+ O0OlDqAbmgWMjdxFS1UVmD8nM11RQJeosqvZY/Lsepu4QQzC3tHB6tYo2VbXPFUSzuQb
+ EPCY5xvC22IUPzuQz5o0chJJsCLBlBaPLkJSp/l4Cnqca84X26nGvcyn9j0N+4LrJH8h
+ gzfi7h0gM5FAZ83qSTqswcYTs+6yvrHZfCZHx6jNxCvl7HgjgecBYcMM5Q7LcEKMhWHS
+ EFUq2wHmp/jdgtUe3LGodDO/gSfB34Eu1OVZOE8XDNije0Oy3XclSFu4cyGIwN+yzoTj
+ qz0g==
+X-Gm-Message-State: AOJu0YxfgVMkCQpkP/+vUFzH/pJliNsytQwmBdbA5Ta84AG9VzBTHaTD
+ a4sn08Iu7dQGxTWn3w855PgOQ87QPRtm+k8ra1IXoczzdVRGZffzMvWJKVtUAQ8V4ZvQK2NLGoT
+ xsA==
+X-Gm-Gg: ASbGncsM0bDOgkwtJyagOJWbEw4n/yF5AS2bwBmXSY2YINte69NV+7O8r5tMyeCTAHL
+ pLrSuj7OWS9/dZF2aPH0ePICwe8ze3bm8bRUfwIOTbG0oF1XeuTzTsRCWwKjSvTM9P494PkS06Y
+ hmxGY/GWVdULeuUrl8+FYo7AH4icGxxjIITa2PR64jA966ENCJeq38S+CexQd8BYd8zgMbJM4dV
+ E2j3hv1ib59UrGWKLsWwgpWQ9BiJbVO2GAsVQK00A==
+X-Google-Smtp-Source: AGHT+IEb9kBE1aEX/28z5kBBlBqny1WJZIT3Lcsk+xDkPkCdgrRSW6aYIFNurRShqe2C4I7eUyG+lA==
+X-Received: by 2002:a05:600c:310d:b0:434:e2ea:fc94 with SMTP id
+ 5b1f17b1804b1-436686431ebmr400782535e9.11.1735912477456; 
+ Fri, 03 Jan 2025 05:54:37 -0800 (PST)
+Received: from wegao1 ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38a1c89e1c0sm41466030f8f.77.2025.01.03.05.54.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 03 Jan 2025 05:54:37 -0800 (PST)
+Date: Fri, 3 Jan 2025 08:54:29 -0500
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Z3fsFaLpv+a4irX8@wegao1>
+References: <20241228133217.28945-1-wegao@suse.com>
+ <CAEemH2cdZ1fJHma3xDF1r-wPycbLqXRXT0Q4smqivuAZcWC9GQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <b577405f0c6d2af8de6650eb1cd8c69305f616bf.camel@linux.ibm.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+In-Reply-To: <CAEemH2cdZ1fJHma3xDF1r-wPycbLqXRXT0Q4smqivuAZcWC9GQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/8] ima_setup.sh: Allow to load predefined
- policy
+Subject: Re: [LTP] [PATCH v1] mmap21.c: Test for new MAP_DROPPABLE flag for
+ mmap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,84 +97,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi,
-
-...
-> > Do I understand correctly you talk about policy containing func=POLICY_CHECK [1]?
-
-> Yes.  On a secure boot enabled system, the architecture specific policy might
-> require the IMA policy itself to be signed.
-
-> Snippet from ima_fs.c:
-
-> #if IS_ENABLED(CONFIG_INTEGRITY_MACHINE_KEYRING) &&
-> IS_ENABLED(CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY)
->         "appraise func=POLICY_CHECK appraise_type=imasig",
-> #endif
-
-> > Maybe there could be a test based on example [2].
-
-> > echo /home/user/tmpfile > /sys/kernel/security/ima/policy
-> > cp tmpfile /sys/kernel/security/ima/policy
-> > cat tmpfile > /sys/kernel/security/ima/policy
-
-> All of the above will load a policy, assuming the policy itself doesn't need to
-> be signed.  Only "echo /home/user/tmpfile > /sys/kernel/security/ima/policy" can
-> load a signed policy.
-
-> Loading a CA key (mokutil), signing (evmctl)[1] and loading (keyctl) an IMA
-> policy is probably beyond LTP.  The purpose of this test would be to detect
-> whether policies need to be signed.
-
-The most advanced for LTP is currently solving reboot [3].
-
-FYI we plan to add support [4] to our kirk tool [5] (currently supports running LTP,
-kselftest and liburing, testing via SSH, qemu).
-
-I suppose given how sparse is IMA/EVM testing in LTP this can wait (there are
-more basic features not covered by testing). I suppose most of the testing you
-have in ima-evm-utils repo (at least I found only IMA related code in kselftest
-in BPF tests).
-
-> Going forward what's probably needed is a new package containing a set of pre-
-> defined sample custom policies, which are signed by the distro.
-
-Please let me now once you or other IMA devs are doing any work in this.
-
-Kind regards,
-Petr
-
-> [1] Directions for signing and loading a custom policy,
-> https://ima-doc.readthedocs.io/en/latest/ima-utilities.html#sign-and-install-a-custom-policy
-
-> Thanks,
-
-> Mimi
-
-
-> > Kind regards,
-> > Petr
-
-> > [1] https://ima-doc.readthedocs.io/en/latest/policy-syntax.html#func-policy-check
-> > [2] https://ima-doc.readthedocs.io/en/latest/ima-policy.html#runtime-custom-policy
-
-[3] https://github.com/linux-test-project/ltp/issues/868
-[4] https://github.com/linux-test-project/kirk/issues/12
-[5] https://github.com/linux-test-project/kirk
-
-> > > > +}
-
-> > > Mimi
-
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBEZWMgMzEsIDIwMjQgYXQgMDY6MDQ6NTRQTSArMDgwMCwgTGkgV2FuZyB3cm90ZToK
+PiBPbiBTYXQsIERlYyAyOCwgMjAyNCBhdCA5OjMy4oCvUE0gV2VpIEdhbyB2aWEgbHRwIDxsdHBA
+bGlzdHMubGludXguaXQ+IHdyb3RlOgo+IAo+ID4gKwo+ID4gKyAgICAgICBpbnQgKnNoYXJlZF92
+YXIgPSBTQUZFX01NQVAoTlVMTCwgc2l6ZW9mKGludCksIFBST1RfUkVBRCB8Cj4gPiBQUk9UX1dS
+SVRFLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgTUFQX1NIQVJFRCB8IE1BUF9BTk9OWU1P
+VVMsIC0xLCAwKTsKPiA+ICsKPiA+ICsgICAgICAgKnNoYXJlZF92YXIgPSAwOwo+ID4gKwo+ID4g
+KyAgICAgICBjaGlsZCA9IFNBRkVfRk9SSygpOwo+ID4gKyAgICAgICBpZiAoIWNoaWxkKSB7Cj4g
+PiArICAgICAgICAgICAgICAgZm9yICg7Oykgewo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+KihjaGFyICopbWFsbG9jKHBhZ2Vfc2l6ZSkgPSAnQic7Cj4gPiArICAgICAgICAgICAgICAgICAg
+ICAgICBpZiAoKCpzaGFyZWRfdmFyKSA9PSAxKQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBleGl0KDApOwo+ID4KPiAKPiBJZiB0aGUgcGFyZW50IHByb2Nlc3MgY3Jhc2hlcywg
+aGFuZ3MsIG9yIGZhaWxzIHRvIGRldGVjdCByZWNsYWltZWQKPiBwYWdlcywgdGhlIGNoaWxkIHBy
+b2Nlc3Mgd2lsbCBydW4gaW5kZWZpbml0ZWx5LCBwb3RlbnRpYWxseSBjb25zdW1pbmcKPiBzeXN0
+ZW0gcmVzb3VyY2VzLgo+IAo+IElmIGl0IHJ1bnMgdG9vIGxvbmcsIGFkZCBhIHRpbWVvdXQgbWVj
+aGFuaXNtIHRvIHRlcm1pbmF0ZSB0aGUgY2hpbGQgcHJvY2Vzcy4KCkFmdGVyIGxpbWl0IHRoZSB0
+ZXN0IHRvIGFuIENHcm91cCBhbmQgc2V0IHRoZSBtZW1vcnkubWF4ID0gMjU2TShiYXNlIHlvdXIg
+c3VnZ2VzdGlvbiksCmkgc3VwcG9zZSB3ZSBkbyBub3QgbmVlZCB0aGlzIHRpbWVvdXQgbWVjaGFu
+aXNtLCBzaW5jZSBhZnRlciBpIHRlc3QgaW4gbXkgZW52LCB3aGVuCnRoZSBjaGlsZCBydW4gZm9y
+IH4zcywgdGhlIHN5c3RlbSB3aWxsIHRyaWdnZXIgb29tX21lbWNnIGFuZCBraWxsIHRoZSBjaGls
+ZC4KV2hhdCdzIHlvdXIgb3Bpbmlvbj8KCj4gCj4gVGhpcyBtYXhfcnVudGltZSBpcyB1c2VsZXNz
+IGlmIHdlIHJ1biB0aGUgdGVzdCBvbiBhIGxhcmdlIFJBTSBzeXN0ZW0KPiB3aGljaCBsaWtlbHkg
+dGFrZXMgdG9vIGxvbmcgdG8gc2ltdWxhdGUgdGhlIG1lbW9yeSBwcmVzc3VyZS4KPiAKPiBXZSBj
+b3VsZCBsaW1pdCB0aGUgdGVzdCB0byBhbiBDR3JvdXAgYW5kIHNldCB0aGUgbWVtb3J5Lm1heAo+
+IHRvIDI1Nk1CLCB3aGljaCBjYW4gY29tcGxldGUgdGhlIG1lbSBob2cgcXVpY2tseSB0byBmaW5p
+c2guCj4gCj4gCj4gCj4gPiArfTsKPiA+IC0tCj4gPiAyLjM1LjMKPiA+Cj4gPgo+ID4gLS0KPiA+
+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo+
+ID4KPiA+Cj4gCj4gLS0gCj4gUmVnYXJkcywKPiBMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
