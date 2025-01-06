@@ -4,112 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73ECE77198
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 10:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9FBBE77188
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 12:10:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FC1F3C3077
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 11:35:20 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 149B93C3346
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 13:10:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15AD33C0E08
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 11:31:33 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id A379F3C0349
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 13:10:27 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 164D71BC6709
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 11:31:26 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 22C84222399
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 13:10:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 645D721162
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 10:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736159486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5CABB1F399;
+ Mon,  6 Jan 2025 12:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736165426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jlhf8TI1SlIvHjQZ9ge6kD0wHXRcZ84beMHCd6EhYFU=;
- b=Sad/rlryflNNjNPpGeZf1SpNUnd1937Ac3dbDrCPCiSvWZhXsz2Mb3CfhYVpNJ152y+SsL
- SRuI+o65SLYiyC0KP2dI93b3WQCQpSAiD0FStasT06qDQNMtIVJsMG3JfzIV+DzIAb8uLd
- tsQQoAzPlfyQ4cIsq0Uqf6rb/Pojd9I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1736159486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=cYPzPB5aQNtdLHKuyLvH/08Tf/7z6R3xdqpS0QuHZ+s=;
+ b=DGdChZc5YBdNA2wVwFqvXM5bmHG9cROY5dp8AIITE9a4KFEeRyOcOWcBP1QaNyG0vAkdAs
+ Lo1W+T7apzoUGmkxe8krko7OOUrXc+SulJyWPhipdrcFN88aukxfbX6uKZ4N+Ggl5jeS+X
+ hUXw6lqtPrHPcvyeEC5qyPD8OXb9kso=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736165426;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jlhf8TI1SlIvHjQZ9ge6kD0wHXRcZ84beMHCd6EhYFU=;
- b=ro7VrAohpTh9tGy+FGOY75CZc9X9zzmZsApsw2BsY5Ra9/Rh6s0pKrsCAIydBGOXtFt6m1
- SU630fExo4B2DiDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736159486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=cYPzPB5aQNtdLHKuyLvH/08Tf/7z6R3xdqpS0QuHZ+s=;
+ b=cPPncpKSutm9XEkCEJAx8Vcr/hyeAfwXSb/swyYzXTGScUDOAx5liyg5BxxrSTZ5gDxtyB
+ 4x2eYH1FoLagZ+Cg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nQPnu2FE;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MIGaapQg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736165425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jlhf8TI1SlIvHjQZ9ge6kD0wHXRcZ84beMHCd6EhYFU=;
- b=Sad/rlryflNNjNPpGeZf1SpNUnd1937Ac3dbDrCPCiSvWZhXsz2Mb3CfhYVpNJ152y+SsL
- SRuI+o65SLYiyC0KP2dI93b3WQCQpSAiD0FStasT06qDQNMtIVJsMG3JfzIV+DzIAb8uLd
- tsQQoAzPlfyQ4cIsq0Uqf6rb/Pojd9I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1736159486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=cYPzPB5aQNtdLHKuyLvH/08Tf/7z6R3xdqpS0QuHZ+s=;
+ b=nQPnu2FE6axJcuAIGiwiqBzUBRthKQ+F2qv67BZgovWxUXuXWCRmpIO3VzHTvUfEgE9mEd
+ lxCL8lMxHmSuii8qcZ1A3CM18Igst0aTLoY9CSnXIHGNbsZy/0aaq72OZwHL+q4FQOV9ph
+ 9/r3+wjjBX8RFdWKeZLbinUdR8H4+DI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736165425;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jlhf8TI1SlIvHjQZ9ge6kD0wHXRcZ84beMHCd6EhYFU=;
- b=ro7VrAohpTh9tGy+FGOY75CZc9X9zzmZsApsw2BsY5Ra9/Rh6s0pKrsCAIydBGOXtFt6m1
- SU630fExo4B2DiDg==
+ bh=cYPzPB5aQNtdLHKuyLvH/08Tf/7z6R3xdqpS0QuHZ+s=;
+ b=MIGaapQgaMRxkm6Ro/nVKsRhZTKwSXaCBQaxCdhHZYT0JxezxFwi3vUFgOI/5H/PSsU3Wl
+ P6gBZXH0FgVJZ4Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51024137DA
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 10:31:26 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 44CE4137DA;
+ Mon,  6 Jan 2025 12:10:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OEqUEf6we2fGfwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>)
- for <ltp@lists.linux.it>; Mon, 06 Jan 2025 10:31:26 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 06 Jan 2025 11:31:28 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /YB8EDHIe2enGAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 06 Jan 2025 12:10:25 +0000
+Date: Mon, 6 Jan 2025 13:10:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Z3vII4tENjV4G6GQ@yuki.lan>
+References: <20241222072251.13150-1-liwang@redhat.com>
+ <20250102124319.GA81987@pevik>
+ <CAEemH2cXL8yu0jhHz7wefvBbDGy-wXcz8Mw1JZv8FqLAXHKm9Q@mail.gmail.com>
+ <Z3gGuFHey5qgQ__6@yuki.lan>
+ <CAEemH2cawEE9=-3=QUScg+K4JYe5hqhYMtUManS_8JsBfG30AQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <20250106-fix_setsid_tests-v2-6-c43f57a2bab6@suse.com>
-References: <20250106-fix_setsid_tests-v2-0-c43f57a2bab6@suse.com>
-In-Reply-To: <20250106-fix_setsid_tests-v2-0-c43f57a2bab6@suse.com>
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1736159485; l=2553;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=LXfdTGudWk5lXSjP4Yyymf9rgbuZnD2em6iVGutWhVE=;
- b=auU0yjWrTQR9/e2nnTKGfTwrD88UsJmyBA8FuK5SA9BzE4FICj5jC47yj+RP6qdzPDUxshrTL
- YI1Cjz/QqplAllK9EpsDRKyjGrgQjODvsubqCiBw7Tca9XzyKjvVSuh
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+Content-Disposition: inline
+In-Reply-To: <CAEemH2cawEE9=-3=QUScg+K4JYe5hqhYMtUManS_8JsBfG30AQ@mail.gmail.com>
+X-Rspamd-Queue-Id: 5CABB1F399
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 06/11] Add ptem04 test
+Subject: Re: [LTP] [PATCH 1/2] lib: multiply the timeout if detect slow
+ kconfigsD
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,109 +121,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> I did a quick grep that some ltp-aiodio tests set it to 1800 sec, which
+> only 8/91 occupation in the LTP testcases/, I'm not sure if it's worth
+> adding a new field for those few stress tests.
+> 
+> And with the previous method, the multiple 4 max_runtime for 1800s
+> is 2hours per test up limit, I can't imagine how long we will get eventually
+> in the whole test time.
+> 
+> Maybe another way is to create a separate function in a header
+> like aio_common.h (or in high-level dir) for handling that significantly
+> larger runtime tests.
+> 
+> BTW, we have TST_UNLIMITED_RUNTIME choice or, invoke
+> tst_set_max_runtime() in somehow.
 
-Verify that it's possible to open a pseudo-terminal via /dev/ptmx,
-obtain a slave device and to check if it's possible to open it
-multiple times.
+I stil think that misusing max_runtime, which is supposed to be upper
+bound for the actual test runtime was a mistake.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/pty                     |  1 +
- testcases/kernel/pty/.gitignore |  1 +
- testcases/kernel/pty/ptem04.c   | 52 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
+Maybe we should have called the max_runtime a timeout and add runtime
+for tests that needs it. That way we would have timeout compromising of
+two parts, one would be the 30s that is used for all tests and second
+part from the tst_test structure. And then the sum of these two would be
+multiplied by the timeout multipliers. Then we would have a runtime,
+which would be used only by tests that call tst_remaining_runtime().
 
-diff --git a/runtest/pty b/runtest/pty
-index 329cc84cdc107ab8e814fea72a8088ea62d5ad25..63d927eca07aa3dbd312d5c5cc6b6681dbf3627d 100644
---- a/runtest/pty
-+++ b/runtest/pty
-@@ -9,5 +9,6 @@ pty07 pty07
- ptem01 ptem01
- ptem02 ptem02
- ptem03 ptem03
-+ptem04 ptem04
- hangup01 hangup01
- 
-diff --git a/testcases/kernel/pty/.gitignore b/testcases/kernel/pty/.gitignore
-index 61fec1ddae3ea39d20e97123e34888708050c25c..c9bb33664f9de55038f4638406841f403f1a86c4 100644
---- a/testcases/kernel/pty/.gitignore
-+++ b/testcases/kernel/pty/.gitignore
-@@ -2,6 +2,7 @@
- /ptem01
- /ptem02
- /ptem03
-+/ptem04
- /pty01
- /pty02
- /pty03
-diff --git a/testcases/kernel/pty/ptem04.c b/testcases/kernel/pty/ptem04.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..85ff1687fe4e8744be1e61effa6ad547d9d4c071
---- /dev/null
-+++ b/testcases/kernel/pty/ptem04.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2002
-+ * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
-+ * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that it's possible to open a pseudo-terminal via /dev/ptmx, obtain a
-+ * slave device and to check if it's possible to open it multiple times.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+
-+#define MASTERCLONE "/dev/ptmx"
-+#define NUM_SLAVES 10
-+
-+static void run(void)
-+{
-+	int masterfd;
-+	int slavefd[NUM_SLAVES];
-+	char *slavename;
-+
-+	masterfd = SAFE_OPEN(MASTERCLONE, O_RDWR);
-+	slavename = SAFE_PTSNAME(masterfd);
-+
-+	TST_EXP_PASS(grantpt(masterfd));
-+	TST_EXP_PASS(unlockpt(masterfd));
-+
-+	for (int i = 0; i < NUM_SLAVES; i++)
-+		slavefd[i] = TST_EXP_FD(open(slavename, O_RDWR));
-+
-+	for (int i = 0; i < NUM_SLAVES; i++)
-+		SAFE_CLOSE(slavefd[i]);
-+
-+	SAFE_CLOSE(masterfd);
-+}
-+
-+static void setup(void)
-+{
-+	if (access(MASTERCLONE, F_OK))
-+		tst_brk(TBROK, "%s device doesn't exist", MASTERCLONE);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+};
+The overall test timeout would be then:
+
+(default_30s_timeout + tst_test->timeout) * TIMEOUT_MUL + tst_test->runtime * RUNTIME_MUL
+
+What do you think?
 
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
