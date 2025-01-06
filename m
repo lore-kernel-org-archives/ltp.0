@@ -4,103 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE962E77188
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 13:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD3BDE77188
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 13:39:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71B913C4BE7
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 14:28:29 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4AA013C4C03
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 14:39:41 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 53FAF3C4C32
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:26:29 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id EDA363C4BFD
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:39:24 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B8C90141B2EF
- for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:26:28 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 38D721001F37
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:39:23 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 29A731F399;
- Mon,  6 Jan 2025 13:26:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7BB8C21102;
+ Mon,  6 Jan 2025 13:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736169988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1736170762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
- b=3WBSMH2Yv+jPeUZ2kgMzyterzzTUXR3aemeUl8OPWIbhDR2/sthUz8nspIqkVX0b79/dMX
- kIGaAyVEuZ73FNY81KDvHJtqkj+eqwIHWlDhoEtqmAge3FPdETOJ6E9uyxxQ4BptEwGgD3
- uRLNc9pn6VL17Oc+lNGEWHm4mVngRsg=
+ bh=I5E942yni94owsxJIrx/qcPATEX9fv+ghsrXUKgftEw=;
+ b=INGTmXDt4+U4g8vIkByABMPSyX5QmNp8hsXXRW/ZKtHDkyfe1ke+hI4BCKnXxU1rkT6E9y
+ VQNp3oAvbaH7cxoLGIlre3hUVh1Pzhr6/6vOL3Ti0NAGoH0pThsQC875KaMLJz9X2WB/hx
+ szfSq7kaVBtP2Wf6VoJczXg4SjFnMvs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736169988;
+ s=susede2_ed25519; t=1736170762;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
- b=70XVGhZotfLL4jfoDFSrTBtrRiCZJ4aUvgcsJpWb3d7aKCeyNqUngSGhU2ZUMb9V8kH1q6
- IetX3N3r0a61ryAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=I5E942yni94owsxJIrx/qcPATEX9fv+ghsrXUKgftEw=;
+ b=qRbhUdxzxJHeThjkbwOvlj5AAig/MMw+P3SkiTDEubaTFE6R5LpmaOePCpeIY0W86K7IH5
+ v3GLTt+95TsrvIAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=INGTmXDt;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qRbhUdxz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736169988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1736170762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
- b=3WBSMH2Yv+jPeUZ2kgMzyterzzTUXR3aemeUl8OPWIbhDR2/sthUz8nspIqkVX0b79/dMX
- kIGaAyVEuZ73FNY81KDvHJtqkj+eqwIHWlDhoEtqmAge3FPdETOJ6E9uyxxQ4BptEwGgD3
- uRLNc9pn6VL17Oc+lNGEWHm4mVngRsg=
+ bh=I5E942yni94owsxJIrx/qcPATEX9fv+ghsrXUKgftEw=;
+ b=INGTmXDt4+U4g8vIkByABMPSyX5QmNp8hsXXRW/ZKtHDkyfe1ke+hI4BCKnXxU1rkT6E9y
+ VQNp3oAvbaH7cxoLGIlre3hUVh1Pzhr6/6vOL3Ti0NAGoH0pThsQC875KaMLJz9X2WB/hx
+ szfSq7kaVBtP2Wf6VoJczXg4SjFnMvs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736169988;
+ s=susede2_ed25519; t=1736170762;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
- b=70XVGhZotfLL4jfoDFSrTBtrRiCZJ4aUvgcsJpWb3d7aKCeyNqUngSGhU2ZUMb9V8kH1q6
- IetX3N3r0a61ryAw==
+ bh=I5E942yni94owsxJIrx/qcPATEX9fv+ghsrXUKgftEw=;
+ b=qRbhUdxzxJHeThjkbwOvlj5AAig/MMw+P3SkiTDEubaTFE6R5LpmaOePCpeIY0W86K7IH5
+ v3GLTt+95TsrvIAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 178BA139AB;
- Mon,  6 Jan 2025 13:26:28 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6ABBA139AB;
+ Mon,  6 Jan 2025 13:39:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fMP6AwTae2fWKgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 06 Jan 2025 13:26:28 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +T7LGQrde2cWLgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 06 Jan 2025 13:39:22 +0000
+Date: Mon, 6 Jan 2025 14:39:04 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon,  6 Jan 2025 14:26:07 +0100
-Message-ID: <20250106132607.25627-7-chrubis@suse.cz>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20250106132607.25627-1-chrubis@suse.cz>
-References: <20250106132607.25627-1-chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z3vc-PafjaXVIcRJ@yuki.lan>
+References: <20241222072251.13150-1-liwang@redhat.com>
+ <20250102124319.GA81987@pevik>
+ <CAEemH2cXL8yu0jhHz7wefvBbDGy-wXcz8Mw1JZv8FqLAXHKm9Q@mail.gmail.com>
+ <Z3gGuFHey5qgQ__6@yuki.lan>
+ <CAEemH2cawEE9=-3=QUScg+K4JYe5hqhYMtUManS_8JsBfG30AQ@mail.gmail.com>
+ <Z3vII4tENjV4G6GQ@yuki.lan> <20250106125255.GC302614@pevik>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_TWO(0.00)[2];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+Content-Disposition: inline
+In-Reply-To: <20250106125255.GC302614@pevik>
+X-Rspamd-Queue-Id: 7BB8C21102
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
  RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/6] mem/vma05.sh: Convert to the new shell library
+Subject: Re: [LTP] [PATCH 1/2] lib: multiply the timeout if detect slow
+ kconfigsD
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,142 +127,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To run the test from the test directory do:
+Hi!
+> > > I did a quick grep that some ltp-aiodio tests set it to 1800 sec, which
+> > > only 8/91 occupation in the LTP testcases/, I'm not sure if it's worth
+> > > adding a new field for those few stress tests.
+> 
+> > > And with the previous method, the multiple 4 max_runtime for 1800s
+> > > is 2hours per test up limit, I can't imagine how long we will get eventually
+> > > in the whole test time.
+> 
+> > > Maybe another way is to create a separate function in a header
+> > > like aio_common.h (or in high-level dir) for handling that significantly
+> > > larger runtime tests.
+> 
+> > > BTW, we have TST_UNLIMITED_RUNTIME choice or, invoke
+> > > tst_set_max_runtime() in somehow.
+> 
+> > I stil think that misusing max_runtime, which is supposed to be upper
+> > bound for the actual test runtime was a mistake.
+> 
+> Do you want to separate timeout for setup() and for actual test run?
+> Which one would be prolonged in case of "slow" kernels? (e.g. this patch).
 
-PATH=$PATH:$PWD/../../../lib/:$PWD/testcases/lib/:: ./vma05.sh
+Currently the test timeout applies both for the setup, single test
+iteration and cleanup. So the short answer is both.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/mem/vma/vma05.sh | 96 ++++++++++++++++---------------
- 1 file changed, 49 insertions(+), 47 deletions(-)
+> Or you want to fix -iN?
 
-diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-index e1ef1014e..1876d7663 100755
---- a/testcases/kernel/mem/vma/vma05.sh
-+++ b/testcases/kernel/mem/vma/vma05.sh
-@@ -1,6 +1,15 @@
- #!/bin/sh
-+#
- # SPDX-License-Identifier: GPL-2.0-or-later
-+#
- # Copyright (C) 2017 Red Hat, Inc.
-+# Copyright (C) 2024 Cyril Hrubis <chrubis@suse.cz>
-+#
-+# ---
-+# doc
-+#
-+# [Description]
-+#
- # Regression test if the vsyscall and vdso VMA regions are reported correctly.
- #
- # While [vsyscall] is mostly deprecated with newer systems, there is
-@@ -15,58 +24,51 @@
- # VM_ALWAYSDUMP)). As a consequence of this bug, VMAs were not included
- # in core dumps which resulted in eg. incomplete backtraces and invalid
- # core dump files created by gdb.
-+# ---
-+#
-+# ---
-+# env
-+# {
-+#  "needs_root": true,
-+#  "needs_tmpdir": true,
-+#  "needs_cmds": ["gdb"],
-+#  "save_restore": [
-+#   ["/proc/sys/kernel/core_pattern", "core", "TBROK"],
-+#   ["/proc/sys/kernel/core_uses_pid", "0", "TBROK"]
-+#  ],
-+#  "tags": [
-+#   ["linux-git", "103efcd9aac1"],
-+#   ["linux-git", "b6558c4a2378"],
-+#   ["linux-git", "e5b97dde514f"]
-+#  ]
-+# }
-+# ---
- 
--TST_SETUP=setup
--TST_CLEANUP=cleanup
--TST_TESTFUNC=vma_report_check
--TST_NEEDS_ROOT=1
--TST_NEEDS_TMPDIR=1
--TST_NEEDS_CMDS="gdb"
--
--CORE_LIMIT=$(ulimit -c)
--CORE_PATTERN=$(cat /proc/sys/kernel/core_pattern)
--CORE_USES_PID=$(cat /proc/sys/kernel/core_uses_pid)
--
--setup()
--{
--	ulimit -c unlimited
--	echo "core" > /proc/sys/kernel/core_pattern
--	echo 0 > /proc/sys/kernel/core_uses_pid
--	unset DEBUGINFOD_URLS
--}
-+. tst_loader.sh
- 
--cleanup()
--{
--	ulimit -c "$CORE_LIMIT"
--	echo "$CORE_PATTERN" > /proc/sys/kernel/core_pattern
--	echo $CORE_USES_PID > /proc/sys/kernel/core_uses_pid
--}
-+ulimit -c unlimited
-+unset DEBUGINFOD_URLS
- 
--vma_report_check()
--{
--	if [ $(uname -m) = "x86_64" ]; then
--		if LINE=$(grep "vsyscall" /proc/self/maps); then
--			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
--			if echo "$LINE" | grep -q "$RIGHT"; then
--				tst_res TPASS "[vsyscall] reported correctly"
--			else
--				tst_res TFAIL "[vsyscall] reporting wrong"
--			fi
-+if [ $(uname -m) = "x86_64" ]; then
-+	if LINE=$(grep "vsyscall" /proc/self/maps); then
-+		RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
-+		if echo "$LINE" | grep -q "$RIGHT"; then
-+			tst_res TPASS "[vsyscall] reported correctly"
-+		else
-+			tst_res TFAIL "[vsyscall] reporting wrong"
- 		fi
- 	fi
-+fi
- 
--	rm -rf core*
--	{ vma05_vdso; } > /dev/null 2>&1
--	[ -f core ] || tst_brk TBROK "missing core file"
-+rm -rf core*
-+{ vma05_vdso; } > /dev/null 2>&1
-+[ -f core ] || tst_brk TBROK "missing core file"
- 
--	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
--		vma05_vdso ./core* 2> /dev/null)
--	if echo "$TRACE" | grep -qF "??"; then
--		tst_res TFAIL "[vdso] bug not patched"
--	else
--		tst_res TPASS "[vdso] backtrace complete"
--	fi
--}
-+TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
-+	vma05_vdso ./core* 2> /dev/null)
- 
--. tst_test.sh
--tst_run
-+if echo "$TRACE" | grep -qF "??"; then
-+	tst_res TFAIL "[vdso] bug not patched"
-+else
-+	tst_res TPASS "[vdso] backtrace complete"
-+fi
+After each test iteration the child signals the parent that the
+iteration has been finished and that restarts the timeout timer.
+
+The test overall timeout is computed in set_timeout() and currently is
+computed as:
+
+	results->timeout = tst_multiply_timeout(timeout) + results->max_runtime;
+
+
+And the tst_multiply_tiemout() would then be changed into:
+
+	return (DEFAULT_TIMEOUT + tst_test->timeout) * timeout_mul;
+
+> Also for docs purposes it might be useful to list long running tests.
+> Fortunately there are just few tests which calls tst_set_max_runtime()
+> for dynamically set timeout.
+
+That would be actually easier, because we could do:
+
+- add special value TST_RUNTIME_TIMEOUT
+- allow test to change timeout only if TST_RUNTIME_TIMEOUT was set in
+  tst_test
+
+Then all long running test would have either tst_test->timeout or
+tst_test->runtime set.
+
+Technically we would need two special timeout values
+TST_UNLIMITED_TIMEOUT and TST_RUNTIME_TIMEOUT.
+
+> > Maybe we should have called the max_runtime a timeout and add runtime
+> > for tests that needs it. That way we would have timeout compromising of
+> > two parts, one would be the 30s that is used for all tests and second
+> > part from the tst_test structure. And then the sum of these two would be
+> > multiplied by the timeout multipliers. Then we would have a runtime,
+> > which would be used only by tests that call tst_remaining_runtime().
+> 
+> > The overall test timeout would be then:
+> 
+> > (default_30s_timeout + tst_test->timeout) * TIMEOUT_MUL + tst_test->runtime * RUNTIME_MUL
+> 
+> > What do you think?
+> 
+> Timeout is for setup function, right? e.g. for ioctl_sg01? If yes, timeout is
+> too generic, IMHO many people will think that it's a general test timeout.
+> I would think about general name.
+
+Not only, the default 30s timeout is for the whole testrun for tests
+that are quick enough. We have a lot of tests that run just for less
+than 1s even on small embedded boards.
+
+> The above formula should be written in the docs in the separate description and
+> this section should be linked in TIMEOUT_MUL and RUNTIME_MUL description [1].
+
+Yes.
+
 -- 
-2.45.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
