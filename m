@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 440E2E77188
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 13:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE962E77188
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 13:28:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 64C7A3C4C15
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 14:28:12 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 71B913C4BE7
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 14:28:29 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3393E3C4C0B
+ by picard.linux.it (Postfix) with ESMTPS id 53FAF3C4C32
  for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:26:29 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 519D91BCD0E7
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B8C90141B2EF
  for <ltp@lists.linux.it>; Mon,  6 Jan 2025 14:26:28 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B268D21162;
- Mon,  6 Jan 2025 13:26:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 29A731F399;
+ Mon,  6 Jan 2025 13:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736169987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1736169988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ru5CXbgyJGgZ8RLmRhxVoG03/z3KhJI1v0UxWH58LDA=;
- b=okrbsq0AMcsBoH35obMP8OdVymqXwSABmISg5YYvpAOl1Q+kBUk60/FRZzUsAJ3VdjdfcQ
- S2JpiuPNcCbDXgOQsbqx8Z9BUvcP38Fyp1FsIwET+aZ9bYDNbUYw60bhKjeUkv0JHLeIg1
- quoiHXKAsAJ8qjxu6pChpGpg3wBjaY8=
+ bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
+ b=3WBSMH2Yv+jPeUZ2kgMzyterzzTUXR3aemeUl8OPWIbhDR2/sthUz8nspIqkVX0b79/dMX
+ kIGaAyVEuZ73FNY81KDvHJtqkj+eqwIHWlDhoEtqmAge3FPdETOJ6E9uyxxQ4BptEwGgD3
+ uRLNc9pn6VL17Oc+lNGEWHm4mVngRsg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736169987;
+ s=susede2_ed25519; t=1736169988;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ru5CXbgyJGgZ8RLmRhxVoG03/z3KhJI1v0UxWH58LDA=;
- b=fuHzhAMTjb9GlQA6FIwwW7MxcHBXU4wq4F+R7p/mC5zRVzXlUG34mEN1EPndaTkpnnQQ8q
- 8jmpUTnon59bQ+DQ==
-Authentication-Results: smtp-out1.suse.de;
+ bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
+ b=70XVGhZotfLL4jfoDFSrTBtrRiCZJ4aUvgcsJpWb3d7aKCeyNqUngSGhU2ZUMb9V8kH1q6
+ IetX3N3r0a61ryAw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736169987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1736169988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ru5CXbgyJGgZ8RLmRhxVoG03/z3KhJI1v0UxWH58LDA=;
- b=okrbsq0AMcsBoH35obMP8OdVymqXwSABmISg5YYvpAOl1Q+kBUk60/FRZzUsAJ3VdjdfcQ
- S2JpiuPNcCbDXgOQsbqx8Z9BUvcP38Fyp1FsIwET+aZ9bYDNbUYw60bhKjeUkv0JHLeIg1
- quoiHXKAsAJ8qjxu6pChpGpg3wBjaY8=
+ bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
+ b=3WBSMH2Yv+jPeUZ2kgMzyterzzTUXR3aemeUl8OPWIbhDR2/sthUz8nspIqkVX0b79/dMX
+ kIGaAyVEuZ73FNY81KDvHJtqkj+eqwIHWlDhoEtqmAge3FPdETOJ6E9uyxxQ4BptEwGgD3
+ uRLNc9pn6VL17Oc+lNGEWHm4mVngRsg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736169987;
+ s=susede2_ed25519; t=1736169988;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ru5CXbgyJGgZ8RLmRhxVoG03/z3KhJI1v0UxWH58LDA=;
- b=fuHzhAMTjb9GlQA6FIwwW7MxcHBXU4wq4F+R7p/mC5zRVzXlUG34mEN1EPndaTkpnnQQ8q
- 8jmpUTnon59bQ+DQ==
+ bh=AVCWYOnJ8uHxXnIngMRDSiC7h2UBmbP2c1MlLJ6Dsfw=;
+ b=70XVGhZotfLL4jfoDFSrTBtrRiCZJ4aUvgcsJpWb3d7aKCeyNqUngSGhU2ZUMb9V8kH1q6
+ IetX3N3r0a61ryAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A25BB139AB;
- Mon,  6 Jan 2025 13:26:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 178BA139AB;
+ Mon,  6 Jan 2025 13:26:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id crp4JgPae2fUKgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 06 Jan 2025 13:26:27 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fMP6AwTae2fWKgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 06 Jan 2025 13:26:28 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  6 Jan 2025 14:26:06 +0100
-Message-ID: <20250106132607.25627-6-chrubis@suse.cz>
+Date: Mon,  6 Jan 2025 14:26:07 +0100
+Message-ID: <20250106132607.25627-7-chrubis@suse.cz>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250106132607.25627-1-chrubis@suse.cz>
 References: <20250106132607.25627-1-chrubis@suse.cz>
@@ -94,15 +93,14 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/6] lib/tst_res_.c: Add TBROK handler + more
- verbose errors
+Subject: [LTP] [PATCH v2 6/6] mem/vma05.sh: Convert to the new shell library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,68 +117,134 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-We use the tst_res_ helper for tst_brk_ as well so we need to be able to
-handle TBROK type as well.
+To run the test from the test directory do:
 
-Note that we pass TBROK to the tst_res() here deliberately here because
-we want to return back to the shell library, which is the process that
-reports the TBROK to the test library by doing 'exit 2'. This works
-because we pass the value by a variable as compiler cannot evaluate it's
-value at a compile time.
+PATH=$PATH:$PWD/../../../lib/:$PWD/testcases/lib/:: ./vma05.sh
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_res_.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ testcases/kernel/mem/vma/vma05.sh | 96 ++++++++++++++++---------------
+ 1 file changed, 49 insertions(+), 47 deletions(-)
 
-diff --git a/testcases/lib/tst_res_.c b/testcases/lib/tst_res_.c
-index a43920f36..fd9b8e841 100644
---- a/testcases/lib/tst_res_.c
-+++ b/testcases/lib/tst_res_.c
-@@ -8,28 +8,34 @@
+diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+index e1ef1014e..1876d7663 100755
+--- a/testcases/kernel/mem/vma/vma05.sh
++++ b/testcases/kernel/mem/vma/vma05.sh
+@@ -1,6 +1,15 @@
+ #!/bin/sh
++#
+ # SPDX-License-Identifier: GPL-2.0-or-later
++#
+ # Copyright (C) 2017 Red Hat, Inc.
++# Copyright (C) 2024 Cyril Hrubis <chrubis@suse.cz>
++#
++# ---
++# doc
++#
++# [Description]
++#
+ # Regression test if the vsyscall and vdso VMA regions are reported correctly.
+ #
+ # While [vsyscall] is mostly deprecated with newer systems, there is
+@@ -15,58 +24,51 @@
+ # VM_ALWAYSDUMP)). As a consequence of this bug, VMAs were not included
+ # in core dumps which resulted in eg. incomplete backtraces and invalid
+ # core dump files created by gdb.
++# ---
++#
++# ---
++# env
++# {
++#  "needs_root": true,
++#  "needs_tmpdir": true,
++#  "needs_cmds": ["gdb"],
++#  "save_restore": [
++#   ["/proc/sys/kernel/core_pattern", "core", "TBROK"],
++#   ["/proc/sys/kernel/core_uses_pid", "0", "TBROK"]
++#  ],
++#  "tags": [
++#   ["linux-git", "103efcd9aac1"],
++#   ["linux-git", "b6558c4a2378"],
++#   ["linux-git", "e5b97dde514f"]
++#  ]
++# }
++# ---
  
- static void print_help(void)
- {
--	printf("Usage: tst_res_ filename lineno [TPASS|TFAIL|TCONF|TINFO|TDEBUG] 'A short description'\n");
-+	printf("Usage: tst_{res,brk} filename lineno [TPASS|TBROK|TFAIL|TCONF|TINFO|TDEBUG] 'A short description'\n");
- }
+-TST_SETUP=setup
+-TST_CLEANUP=cleanup
+-TST_TESTFUNC=vma_report_check
+-TST_NEEDS_ROOT=1
+-TST_NEEDS_TMPDIR=1
+-TST_NEEDS_CMDS="gdb"
+-
+-CORE_LIMIT=$(ulimit -c)
+-CORE_PATTERN=$(cat /proc/sys/kernel/core_pattern)
+-CORE_USES_PID=$(cat /proc/sys/kernel/core_uses_pid)
+-
+-setup()
+-{
+-	ulimit -c unlimited
+-	echo "core" > /proc/sys/kernel/core_pattern
+-	echo 0 > /proc/sys/kernel/core_uses_pid
+-	unset DEBUGINFOD_URLS
+-}
++. tst_loader.sh
  
- int main(int argc, char *argv[])
- {
- 	int type, i;
+-cleanup()
+-{
+-	ulimit -c "$CORE_LIMIT"
+-	echo "$CORE_PATTERN" > /proc/sys/kernel/core_pattern
+-	echo $CORE_USES_PID > /proc/sys/kernel/core_uses_pid
+-}
++ulimit -c unlimited
++unset DEBUGINFOD_URLS
  
--	if (argc < 5)
-+	if (argc < 5) {
-+		printf("argc = %i expected 5\n", argc);
- 		goto help;
-+	}
+-vma_report_check()
+-{
+-	if [ $(uname -m) = "x86_64" ]; then
+-		if LINE=$(grep "vsyscall" /proc/self/maps); then
+-			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
+-			if echo "$LINE" | grep -q "$RIGHT"; then
+-				tst_res TPASS "[vsyscall] reported correctly"
+-			else
+-				tst_res TFAIL "[vsyscall] reporting wrong"
+-			fi
++if [ $(uname -m) = "x86_64" ]; then
++	if LINE=$(grep "vsyscall" /proc/self/maps); then
++		RIGHT="ffffffffff600000-ffffffffff601000[[:space:]][r-]-xp"
++		if echo "$LINE" | grep -q "$RIGHT"; then
++			tst_res TPASS "[vsyscall] reported correctly"
++		else
++			tst_res TFAIL "[vsyscall] reporting wrong"
+ 		fi
+ 	fi
++fi
  
--	if (!strcmp(argv[3], "TPASS"))
-+	if (!strcmp(argv[3], "TPASS")) {
- 		type = TPASS;
--	else if (!strcmp(argv[3], "TFAIL"))
-+	} else if (!strcmp(argv[3], "TFAIL")) {
- 		type = TFAIL;
--	else if (!strcmp(argv[3], "TCONF"))
-+	} else if (!strcmp(argv[3], "TCONF")) {
- 		type = TCONF;
--	else if (!strcmp(argv[3], "TINFO"))
-+	} else if (!strcmp(argv[3], "TINFO")) {
- 		type = TINFO;
--	else if (!strcmp(argv[3], "TDEBUG"))
-+	} else if (!strcmp(argv[3], "TDEBUG")) {
- 		type = TDEBUG;
+-	rm -rf core*
+-	{ vma05_vdso; } > /dev/null 2>&1
+-	[ -f core ] || tst_brk TBROK "missing core file"
++rm -rf core*
++{ vma05_vdso; } > /dev/null 2>&1
++[ -f core ] || tst_brk TBROK "missing core file"
+ 
+-	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
+-		vma05_vdso ./core* 2> /dev/null)
+-	if echo "$TRACE" | grep -qF "??"; then
+-		tst_res TFAIL "[vdso] bug not patched"
 -	else
-+	} else if (!strcmp(argv[3], "TBROK")) {
-+		type = TBROK;
-+	} else {
-+		printf("Wrong type '%s'\n", argv[3]);
- 		goto help;
-+	}
+-		tst_res TPASS "[vdso] backtrace complete"
+-	fi
+-}
++TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
++	vma05_vdso ./core* 2> /dev/null)
  
- 	size_t len = 0;
- 
+-. tst_test.sh
+-tst_run
++if echo "$TRACE" | grep -qF "??"; then
++	tst_res TFAIL "[vdso] bug not patched"
++else
++	tst_res TPASS "[vdso] backtrace complete"
++fi
 -- 
 2.45.2
 
