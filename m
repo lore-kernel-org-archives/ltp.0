@@ -4,108 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF0B4E77198
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 10:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93CE4E77188
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 10:32:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1355B3C306E
-	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 11:31:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EA4903C3071
+	for <ltp@archiver.kernel.org>; Mon,  6 Jan 2025 11:32:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 800A33C0E08
+ by picard.linux.it (Postfix) with ESMTPS id 9264E3C2F3F
  for <ltp@lists.linux.it>; Mon,  6 Jan 2025 11:31:27 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E33A5142171F
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 117261BBFC87
  for <ltp@lists.linux.it>; Mon,  6 Jan 2025 11:31:26 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 93D1B1F383;
- Mon,  6 Jan 2025 10:31:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DF52921119
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 10:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736159485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1736159485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fxZDQbHRbK//MLwL+MwNdr0Ejf6G9xSklda3Jk8zdqg=;
- b=NNy5S3wezAok2n68edOspaI/VNi+Qjp46XzBjbRkbHlPB+hMWDOUxR7YZm5RanuiSiD9VM
- M/NP2sKQiCfODj7JA80p6GkogYPpxlDL2rBcD3bjXfntMb5Um4DQn+m0DiacFZ2FRxQ2wX
- ylDgz8NZ40nTqnIBMra+twSayjdI3Y8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+Ytd84sQZb9rCeF2/0iacxaqfB6qxou3SAurnaRLL9s=;
+ b=NgBm5p1gFOIogb2uqaQdktn7LuAJHWxQ9NHJqy9kl1ehehpeeReTs4aSvvQjOljReH/DO1
+ jEjfiOgiQ05FHTPWXfxvMBoUsd8d7vVUPjvaFo/YJ0Y91x8qkY1iCU0l5d8KrFE7QBIylq
+ 8vejiF/RBMLNQ7HfU8mm05YcRXX4u/Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1736159485;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fxZDQbHRbK//MLwL+MwNdr0Ejf6G9xSklda3Jk8zdqg=;
- b=JB7jOFQ1rvFylIKx4eiIGGaxBoCzco+btZINZpmGSoMY5qnWB6FgV/hKLq8iEO24g7sMQG
- FJJCFtQkszwheWBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+Ytd84sQZb9rCeF2/0iacxaqfB6qxou3SAurnaRLL9s=;
+ b=lxe0JzsxvUcrlKHSFwSlQMUJX/SQ5vAClT1aJmf8EoC4eaHtCsaYtWIperLZt+TY8E3HrK
+ xBvsRRD5xVh11mBw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NgBm5p1g;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=lxe0Jzsx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736159485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1736159485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fxZDQbHRbK//MLwL+MwNdr0Ejf6G9xSklda3Jk8zdqg=;
- b=NNy5S3wezAok2n68edOspaI/VNi+Qjp46XzBjbRkbHlPB+hMWDOUxR7YZm5RanuiSiD9VM
- M/NP2sKQiCfODj7JA80p6GkogYPpxlDL2rBcD3bjXfntMb5Um4DQn+m0DiacFZ2FRxQ2wX
- ylDgz8NZ40nTqnIBMra+twSayjdI3Y8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+Ytd84sQZb9rCeF2/0iacxaqfB6qxou3SAurnaRLL9s=;
+ b=NgBm5p1gFOIogb2uqaQdktn7LuAJHWxQ9NHJqy9kl1ehehpeeReTs4aSvvQjOljReH/DO1
+ jEjfiOgiQ05FHTPWXfxvMBoUsd8d7vVUPjvaFo/YJ0Y91x8qkY1iCU0l5d8KrFE7QBIylq
+ 8vejiF/RBMLNQ7HfU8mm05YcRXX4u/Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1736159485;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fxZDQbHRbK//MLwL+MwNdr0Ejf6G9xSklda3Jk8zdqg=;
- b=JB7jOFQ1rvFylIKx4eiIGGaxBoCzco+btZINZpmGSoMY5qnWB6FgV/hKLq8iEO24g7sMQG
- FJJCFtQkszwheWBA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+Ytd84sQZb9rCeF2/0iacxaqfB6qxou3SAurnaRLL9s=;
+ b=lxe0JzsxvUcrlKHSFwSlQMUJX/SQ5vAClT1aJmf8EoC4eaHtCsaYtWIperLZt+TY8E3HrK
+ xBvsRRD5xVh11mBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 78793137DA;
- Mon,  6 Jan 2025 10:31:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3617137DA
+ for <ltp@lists.linux.it>; Mon,  6 Jan 2025 10:31:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tvKZG/2we2fGfwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 06 Jan 2025 10:31:25 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gEP6Lf2we2fGfwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 06 Jan 2025 10:31:25 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 06 Jan 2025 11:31:22 +0100
-Message-Id: <20250106-fix_setsid_tests-v2-0-c43f57a2bab6@suse.com>
+Date: Mon, 06 Jan 2025 11:31:24 +0100
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPqwe2cC/2WNwQ6CMBBEf4Xs2Zq21EI8+R+GEFIW2YNgurXRk
- P67K/Hm8U1m3mzAGAkZztUGETMxrYuAPVQQ5mG5oaJRGKy2zljt1ESvnjExjX1CTqzaxg/OW9/
- Y9gQye0SUzq68dsIzcVrje3/I5pv+ZMb8y7JRWqHR9VT74EV74SfjMax36EopH5MkAE2vAAAA
-X-Change-ID: 20241204-fix_setsid_tests-876a46267285
+Message-Id: <20250106-fix_setsid_tests-v2-2-c43f57a2bab6@suse.com>
+References: <20250106-fix_setsid_tests-v2-0-c43f57a2bab6@suse.com>
+In-Reply-To: <20250106-fix_setsid_tests-v2-0-c43f57a2bab6@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1736159485; l=1983;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1736159485; l=1413;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=Jk5wlkYhJ/V/dr2xCWBT1H/KWoPBiy5h6VPUqrySUto=;
- b=3A+c9kHniWV22r0sx1R9eSXjHrevRt5WXKF/7csDtIwsWuyRLRNWixQaKFiqao3K5RzqXmZ3E
- eRA/ez4JNxWDp0HiotOtYPr+lEoLU3yyipkKUSxzo5riGG49xmUDQ3j
+ bh=r8sBvRzZI0eEQ2uwH2ssINncM5AQHEtoFNRsNtDnSfs=;
+ b=bVhJHVXV8c5+JQyhEcogDlOOPUQ1xfmlwo2u+P0BSnRQ23F/SazOeIucl3G7OT4tRGKg8Avck
+ sWH6NBJWTxxCGtQxcycaf6Qb4Zp8C93ww9RHf7A7oknYM7c5hYnfcQN
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: DF52921119
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_ONE(0.00)[1];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 00/11] Fix tests failing with setsid
+Subject: [LTP] [PATCH v2 02/11] Add SAFE_PTSNAME macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,57 +138,52 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following tests are failing when running on a new session started with
-setsid command/syscall: pty01, ptem01, setpgid01.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Tihs patch-set refactor them in order to fix this issue. Some tests like
-pty01 and ptem01 have been split into multiple files due to their
-complexity.
-
-Fixes: https://github.com/linux-test-project/kirk/issues/28
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- add SAFE_PTSNAME macro
-- ptem01: check ptsname() with TBROK
-- Link to v1: https://lore.kernel.org/r/20241211-fix_setsid_tests-v1-0-e103f36c6462@suse.com
+ include/tst_safe_macros.h |  4 ++++
+ lib/tst_safe_macros.c     | 14 ++++++++++++++
+ 2 files changed, 18 insertions(+)
 
----
-Andrea Cervesato (11):
-      Refactor setpgid01 test
-      Add SAFE_PTSNAME macro
-      Refactor ptem01 test
-      Add ptem02 test
-      Add ptem03 test
-      Add ptem04 test
-      Add ptem05 test
-      Add ptem06 test
-      Refactor pty01 test
-      Add pty08 test
-      Add pty09 test
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index a9fa7dbe128f17eace381fdf9f2795684e55969b..6985aa4bd80af2ff8a7c606fdba9830bb5ccd195 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -528,4 +528,8 @@ ssize_t safe_writev(const char *file, const int lineno, char len_strict,
+ 	safe_writev(__FILE__, __LINE__, (len_strict), (fildes), \
+ 		(iov), (iovcnt))
+ 
++char *safe_ptsname(const char *const file, const int lineno, int masterfd);
++#define SAFE_PTSNAME(masterfd) \
++	safe_ptsname(__FILE__, __LINE__, (masterfd))
++
+ #endif /* TST_SAFE_MACROS_H__ */
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index 633b00404a56aafce6322e43bd614070d085e643..a837d4582d4402a0aa0dd4f231d36439e1cd046f 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -796,3 +796,17 @@ ssize_t safe_writev(const char *file, const int lineno, char len_strict,
+ 
+ 	return rval;
+ }
++
++char *safe_ptsname(const char *const file, const int lineno, int masterfd)
++{
++	char *name;
++
++	name = ptsname(masterfd);
++
++	if (name == NULL) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"ptsname(%d) failed", masterfd);
++	}
++
++	return name;
++}
 
- include/tst_safe_macros.h                     |   4 +
- lib/tst_safe_macros.c                         |  14 +
- runtest/pty                                   |   7 +
- testcases/kernel/pty/.gitignore               |   7 +
- testcases/kernel/pty/ptem01.c                 | 454 +++-----------------------
- testcases/kernel/pty/ptem02.c                 |  73 +++++
- testcases/kernel/pty/ptem03.c                 |  51 +++
- testcases/kernel/pty/ptem04.c                 |  52 +++
- testcases/kernel/pty/ptem05.c                 |  53 +++
- testcases/kernel/pty/ptem06.c                 |  54 +++
- testcases/kernel/pty/pty01.c                  | 416 +++--------------------
- testcases/kernel/pty/pty08.c                  |  57 ++++
- testcases/kernel/pty/pty09.c                  |  86 +++++
- testcases/kernel/syscalls/setpgid/setpgid01.c | 152 ++-------
- 14 files changed, 570 insertions(+), 910 deletions(-)
----
-base-commit: 7aea2cea9ad5d9e1586112a57948c7f85dc12970
-change-id: 20241204-fix_setsid_tests-876a46267285
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.43.0
 
 
 -- 
