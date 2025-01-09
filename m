@@ -4,114 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E376E77199
-	for <ltp@archiver.kernel.org>; Wed,  8 Jan 2025 14:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C02E77197
+	for <ltp@archiver.kernel.org>; Thu,  9 Jan 2025 04:56:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9699D3C1C0F
-	for <ltp@archiver.kernel.org>; Wed,  8 Jan 2025 15:05:34 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9FF183C1BD1
+	for <ltp@archiver.kernel.org>; Thu,  9 Jan 2025 05:56:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07B643C0273
- for <ltp@lists.linux.it>; Wed,  8 Jan 2025 15:05:16 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 522ED3C185A
+ for <ltp@lists.linux.it>; Thu,  9 Jan 2025 05:55:44 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B72361027853
- for <ltp@lists.linux.it>; Wed,  8 Jan 2025 15:05:15 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7E60A1BBBB91
+ for <ltp@lists.linux.it>; Thu,  9 Jan 2025 05:55:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1736398541;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Jrbn3dB+GmYcz7cNFUI5lgkCnojAgBTSRBBxhxZQUiM=;
+ b=RU2SxKl5jGfenC/vssoOzS3WpE5P3brwWJec06jmBrnX+EJUyDHrSpuGnUvTUjq1mlBqf2
+ 90hUHSsOQ/1Ny81NyNk3VLCxozB31gik3cby2y2WEmuMoabx4kgPV9Xi+Q2iTdldW2Hnf9
+ LSYB4VSEdYToeffYBkQw9yXBEJPC3Dw=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-599-Dvo4UABUOmuYCCH0AQjxbA-1; Wed,
+ 08 Jan 2025 23:55:39 -0500
+X-MC-Unique: Dvo4UABUOmuYCCH0AQjxbA-1
+X-Mimecast-MFC-AGG-ID: Dvo4UABUOmuYCCH0AQjxbA
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 18FDD210F6;
- Wed,  8 Jan 2025 14:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736345114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=M5Alk104LudE6zgrklT/YBY7Q7OGrLSaQcKmfumFrQk=;
- b=jE3/2xDipcYXS/aGNSHvKclpuafL9t8Pw8ye986lT9QNKx/qTRCyDzxsVqWgJEOd+XQRau
- MYX8RVmj0xos4FcJB9Lvl4VlwdHMQqvIMMLluhmlrtrU5E3aXiVFSBVYNscTkbnvDT/Yx1
- Ywk6Va5PIX4hsKauPqF4UUj3CTC7Ros=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736345114;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=M5Alk104LudE6zgrklT/YBY7Q7OGrLSaQcKmfumFrQk=;
- b=Hkg8QJp3BkBdSKQS+Ps1jfbaPXN3St7syrQWIUh+XrbjqUDEKMfqnnxZs7KygUZNvWhRMc
- ebWSg7+5eU239zDA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="jE3/2xDi";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Hkg8QJp3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736345114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=M5Alk104LudE6zgrklT/YBY7Q7OGrLSaQcKmfumFrQk=;
- b=jE3/2xDipcYXS/aGNSHvKclpuafL9t8Pw8ye986lT9QNKx/qTRCyDzxsVqWgJEOd+XQRau
- MYX8RVmj0xos4FcJB9Lvl4VlwdHMQqvIMMLluhmlrtrU5E3aXiVFSBVYNscTkbnvDT/Yx1
- Ywk6Va5PIX4hsKauPqF4UUj3CTC7Ros=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736345114;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=M5Alk104LudE6zgrklT/YBY7Q7OGrLSaQcKmfumFrQk=;
- b=Hkg8QJp3BkBdSKQS+Ps1jfbaPXN3St7syrQWIUh+XrbjqUDEKMfqnnxZs7KygUZNvWhRMc
- ebWSg7+5eU239zDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 084C71351A;
- Wed,  8 Jan 2025 14:05:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YuFvABqGfmfSQgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 08 Jan 2025 14:05:14 +0000
-Date: Wed, 8 Jan 2025 15:05:00 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Z36GDDnXQfhzwZvk@yuki.lan>
-References: <20241112-lsm-v1-0-e293a8d99cf6@suse.com>
- <20241112-lsm-v1-6-e293a8d99cf6@suse.com>
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 1A6FD1956083
+ for <ltp@lists.linux.it>; Thu,  9 Jan 2025 04:55:39 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id E66B019560AA
+ for <ltp@lists.linux.it>; Thu,  9 Jan 2025 04:55:37 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu,  9 Jan 2025 12:55:28 +0800
+Message-ID: <20250109045532.43017-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241112-lsm-v1-6-e293a8d99cf6@suse.com>
-X-Rspamd-Queue-Id: 18FDD210F6
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,linux.it:url];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url, imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo, suse.cz:email, suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: XW7PgJtA54OskupljW9bggGCZKoY8sI8lJZq6GTJf38_1736398539
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/7] Add lsm_list_modules02 test
+Subject: [LTP] [PATCH v2 0/3] Refine overall timeout and runtime management
+ in LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,81 +79,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +		if (!name)
-> +			tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]);
-> +
-> +		if (strstr(name, lsm_list))
+This patch series introduces a restructured approach to managing
+timeouts and runtime limits in the LTP framework. The changes aim to
+simplify timeout handling, improve clarity, and provide better
+separation between the phases of a test (setup, execution, and cleanup).
 
-Again here the strstr() is not future proof. There is no lsm with the
-name as a substring of a different lsm, but it's not entirely unlikely
-that a lsm with name that contains one of the three letter names as a
-substring in the future.
+The main updates include refining the description and usage of .timeout,
+deprecating TST_UNLIMITED_RUNTIME, and introducing the tst_set_timeout()
+function. Additionally, test cases that previously relied on .max_runtime
+have been updated to adopt the revised logic, either by moving to .timeout
+directly or transitioning to .runtime depending on their behavior.
 
-So I guess that we may as well break the lsm list into an array of
-strings with strtok() in the setup and add a function that loops on the
-array and does strcmp() for each entry in that array.
+The series ends with an update to the set_mempolicy01 test, demonstrating
+the use of tst_set_timeout() to determine an upper bound for its execution.
 
-> +			tst_res(TFAIL, "'%s' has not been found", name);
-> +		else
-> +			tst_res(TPASS, "'%s' is enabled", name);
-> +	}
-> +
-> +	TST_EXP_EQ_LI(*size, counter * sizeof(uint64_t));
+CI job: https://github.com/wangli5665/ltp/actions/runs/12683826906/
 
-So we get literal size in the size and number of elements as the return
-value. Sounds good.
+Major changes V1 to V2:
 
-> +	TST_EXP_EQ_LI(lsm_num, counter);
+  * Refined the description of .timeout usage and its relationship with .runtime.
 
-Isn't this true by definition? We do tst_brk(TBROK, "") on unknown lsm
-so if the counter is not increased on each lsm_num iteration we exit the
-test with tst_brk() and never reach this line.
+  * Moved .max_runtime to .timeout directly for tests where runtime is not explicitly used.
 
-And hat is actually missing here is to compare the number of lsm names
-in the /sys/kernel/security/lsm file with the lsm_num. But for that we
-have to break the file content into tokens and count them, which we need
-to do anyways.
+  * Transitioned .max_runtime to .runtime for tests that call tst_remaining_runtime()
+    or use the fuzzy_sync library.
 
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +
-> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-> +	fd = SAFE_OPEN("/sys/kernel/security/lsm", O_RDONLY);
-> +	SAFE_READ(0, fd, lsm_list, BUFSIZ);
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.min_kver = "6.8",
-> +	.bufs = (struct tst_buffers []) {
-> +		{&ids, .size = sizeof(uint64_t) * MAX_LSM_NUM},
-> +		{&size, .size = sizeof(uint32_t)},
-> +		{},
-> +	},
-> +};
-> 
-> -- 
-> 2.43.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+  * Added the tst_set_timeout() function to allow test cases to set the overall
+    timeout dynamically, particularly useful for tests that aim to determine
+    upper execution bounds.
+
+  * Updated set_mempolicy01 to make use of tst_set_timeout().
+
+
+Li Wang (3):
+  lib: redefine the overall timeout logic of test
+  lib: add tst_set_timeout for reset entire timeout
+  set_mempolicy01: make use of tst_set_timeout
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.47.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
