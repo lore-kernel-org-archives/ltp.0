@@ -4,103 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0595DC02184
-	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 22:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736805933; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=2Rbdig/vGNiBnzRtFsmQybxqyTul8OtG9wdz1XP4CWc=;
- b=FpSMYqmNPGGcYBJBm0GJqu3UlIaAJ4KIgznwRHsBP5feJftw2EEkwwGP2poAFYhKbtwwD
- f5f+xkMR1um/HOJ+IXiMfIToxykEpiLrLRS7QSLrpRd74RevwyJPZivgfJgwyEDgKrrlwQd
- u3Wr7ZVSnAz1/+GYjDYE0fM84zjW/Ss=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7184C02180
+	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 22:09:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF5493C79BD
-	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 23:05:32 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 653DF3C79AD
+	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 23:09:03 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ABD093C0B87
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:05:10 +0100 (CET)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 02EB03C0B87
+ for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:08:46 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4D9FA1BEF88E
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:05:10 +0100 (CET)
-Received: by mail-ej1-x631.google.com with SMTP id
- a640c23a62f3a-ab2b29dfc65so744395866b.1
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 14:05:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736805909; x=1737410709; darn=lists.linux.it;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:from:to:cc:subject:date:message-id:reply-to;
- bh=ybBrHrhNZ1gPOjADMg6uV6TmZ+InLG10UoLHOBD3DXI=;
- b=ClF7KzYn/Y4yBMm9FEvjog8n/mng/GCqoIcTcp73rqfKCh8GvLWKgbRMRkWNMmfZi8
- 3dcEuayq1i3Ix6byV8UVG3o27hRj5Kxb7N8njH3fKnps+MdSZKe7LOZ6YUkV/6gx23lk
- zkZbGl+YeAIbEou1UJsbWuYXBymags7JAZjJepbj8XkgQ8P9AWY3xk+kiWF6NoOxFkkL
- mdM1EkIzcpNmnH31IBMPCVN34gmXFct29lF41nRVKic3eoD5FPsPtqJ8Y/HitPJMq46T
- SJJKQZJ75JGj9CyDpMC7D9tyGQwXde5jsCLrM24UIPu5daPUwtOZHOsCxr15kt1uKjgB
- bV1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736805909; x=1737410709;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=ybBrHrhNZ1gPOjADMg6uV6TmZ+InLG10UoLHOBD3DXI=;
- b=M1s2cdikWJ0wNxbCL31HfSyjrrgftf75iT3f0zBUp53ONDoOnmD+4//xybMCaBfC+W
- WCaQ9oCaKnV7rb9DJ8qXHcnYLGmVWjqoZWf2LInPOAohYf277xiYGuI5Jiokj4A6XxwN
- 2Mf6A1VjNiMyXq+dZUvseeFN3DBt5P14MpbYYd6laqXD9Go1A+0JqZFucti5sh2vh6FN
- 9ot+/Vi39TffWPS43DtIA1pniI6LPqtG6eU1o2fVaM5TvuVTisTq0ZygzBoC7TIsOkly
- c7rnnD74GIoQbCsofXHWzx6GCAAoJu+E1i8oi4UUfOLq6R/LVpY8c0qm6o7BjKNbJr22
- wOXQ==
-X-Gm-Message-State: AOJu0YwMW9ut6hlPeZPI2o91Xz5qtE5PmtFUAvsPQvKc7GtKVFvLDEKg
- zwfg7dz3FtJb7c8VhO+TpwS2K0gocM7OUP//nGlSx8hMYfUN679ZjiC13wppHVynXzMTEDHHwxL
- A
-X-Gm-Gg: ASbGnctIKo4Z7Tg0DN4aHZnTqaYdq4dl7SnLXolXvwtdsoc5WdR8fWASwbn06zvlN4R
- FP1skr0UxV+kwvR1N9JnWU3T0eGhz1QL0WNvtqrluLLFlhpCjufv0YiBoGKHlrseH0ElROyj5PP
- kpiE38NCNge8ICe/j0XUp+53FkR0WAD1KvgNdyQ/HuSDSceG3eCHcAzmWwqJHHD7i1btiabnZiK
- f8gqwO152CyefUpv8yT3vf9X/FPH62TAYC4EY7ySA==
-X-Google-Smtp-Source: AGHT+IFeTI817g+Ih3jvWojF5cnDNU3jXGzsIKNx2RWPi9sNUWYLPbrzJr6iY/yQ8vJYT8wlLLPWUA==
-X-Received: by 2002:a17:907:2da6:b0:aac:2297:377d with SMTP id
- a640c23a62f3a-ab2abdc09eemr2142783866b.52.1736805909440; 
- Mon, 13 Jan 2025 14:05:09 -0800 (PST)
-Received: from localhost ([177.95.18.53]) by smtp.gmail.com with ESMTPSA id
- 46e09a7af769-723519d3c2bsm112945a34.14.2025.01.13.14.05.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jan 2025 14:05:07 -0800 (PST)
-Date: Mon, 13 Jan 2025 19:05:03 -0300
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 72A1B1401134
+ for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:08:46 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A3A751F747;
+ Mon, 13 Jan 2025 22:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736806125;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=92lIyZ24HGhV43BQ53WeT5NiIPb2H0aQ5GpNlDmGci8=;
+ b=GUzSmwj+xfRm8KCRhUFoANoQe4rNScZMGO+8B8yIGkuhT2pIrfVTShTkvtlXNB1+HYKDQR
+ AADxeV2Ix0WilDU/Hdn8++/LoayJn94YZRNeQPFrretjBCIcp3a+oXd1FdPhvqhqFaAnX5
+ rKfEsGkJ91spwB2WAFssurAoaujKIYM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736806125;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=92lIyZ24HGhV43BQ53WeT5NiIPb2H0aQ5GpNlDmGci8=;
+ b=aK2g8wsKnLLucruIpPeVUu3OfgC81bmqzDHpSOcomdK6XGKQmemqfwqzXG10gW93I0QCYU
+ q9g31B4YaJCXAqBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736806125;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=92lIyZ24HGhV43BQ53WeT5NiIPb2H0aQ5GpNlDmGci8=;
+ b=GUzSmwj+xfRm8KCRhUFoANoQe4rNScZMGO+8B8yIGkuhT2pIrfVTShTkvtlXNB1+HYKDQR
+ AADxeV2Ix0WilDU/Hdn8++/LoayJn94YZRNeQPFrretjBCIcp3a+oXd1FdPhvqhqFaAnX5
+ rKfEsGkJ91spwB2WAFssurAoaujKIYM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736806125;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=92lIyZ24HGhV43BQ53WeT5NiIPb2H0aQ5GpNlDmGci8=;
+ b=aK2g8wsKnLLucruIpPeVUu3OfgC81bmqzDHpSOcomdK6XGKQmemqfwqzXG10gW93I0QCYU
+ q9g31B4YaJCXAqBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A44513310;
+ Mon, 13 Jan 2025 22:08:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wlD6Gu2OhWeARAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 13 Jan 2025 22:08:45 +0000
+Date: Mon, 13 Jan 2025 23:08:44 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Attila Fazekas <afazekas@redhat.com>
+Message-ID: <20250113220844.GA510999@pevik>
+References: <20250113160040.670737-1-afazekas@redhat.com>
 MIME-Version: 1.0
-Message-Id: <20250113-tst_kconfig_stddef-v1-1-66c75790d127@suse.com>
-X-B4-Tracking: v=1; b=H4sIAA6OhWcC/x3MQQqEMAxA0atI1hZsrS7mKiJS21SDTJWkDAPi3
- a0u3+L/EwSZUOBTncD4I6E9Fei6Ar+6tKCiUAymMV2jdauy5Gnze4q0TJJDwKg6a33bWxtMr6G
- EB2Ok/zsdxuLZCaqZXfLrs/o6ychwXTfmYpFcfQAAAA==
-X-Change-ID: 20250113-tst_kconfig_stddef-544c3644d261
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1789; i=rbm@suse.com;
- h=from:subject:message-id; bh=6mK7yrhEgr+rn+6aTlohB4Fba8txDM7ScGsfUrTkBP8=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnhY4QjxE0Tz5c4JaCiiccShQ4mt+YeQB+skj5m
- AZ0TgRpsSGJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ4WOEAAKCRDJC4p8Y4ZY
- psusEACNEw0AhBqj/amrGJLB2NsakBfOaj3EeqLq64e4whI30qIlvyGzj6eJxTGlb6zmuwSwzob
- O1bfceukzjwZJP4II73bpTzf/iSCldf+VgGKjz3Ehdmo0u5RaWNgnMJAjpv6+Jf/a2qb+DuLw4F
- rpQywznL7tx3oB/tzdBdwYNTKHCoa3Sgj8JAguBtETEMgW+pJHPS1hGD6pFijAtERcfG6lZ03O8
- 6r44vXCh112VtPSyou3tEOvHTyI/JJt8/eUrvS00TxDSaquru2Qt4H7cGbqEe2J7MQqS2rB1U1N
- ZeWXw+v8VkccfoLrOXAJmayxL1dw+jLo7RaXyVQZ2qh8q34cgpHIFvRObFATeSZbDzefFmiDDmo
- dBGXWHUkPkBksWLMCaUh3wm2X1z6GWxPfkB6RL3MADDrBDKnu14G8ruk42/UXAHmsLvzntn/PRJ
- v82uhGxPK6+u6/JNAIo/mmyOs7uKPekCvl9XQ4cBmNH8lPlK+o3hO7jTwiLTpHFC7pCCoUJV3B7
- KgKRKvy/JZa0G06hygQOSkfaq+ZOdKjXl0GEVjw2oiMIqFYq5ciGcB0t29I73R2PDH9CuctGg4q
- 9Fj7BosXTvTJrqLMHdBpr0VoLCYvXWxP/EC/0QlWwVywrCGWot+31vg3qx6kvDHwc7/pOY/PmVX
- Bh7XAHLRZMt9GeQ==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250113160040.670737-1-afazekas@redhat.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib/tst_kconfig: Include stddef.h
+Subject: Re: [LTP] [PATCH] sched_football: isolcpus handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,62 +111,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
-Cc: "Ricardo B. Marliere" <rbm@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently, if a test wants to make use of tst_kconfig.h it must also
-include stddef.h due to the usage of size_t. While at it, fix a few minor
-typos in comments.
+Hi Attila,
 
-Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
----
- include/tst_kconfig.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> sched_football expects each player thread is scheduleable
+> to all of the physical CPU threads, however for example
+> when you are using isolcpus by default you threads are
+> not scheduled to some CPU. It leads to the test hangs.
+> 591c56b045b2d44a0f4ba1a13545420b23e909b5solved was asimilar issue
+nit: missing spaces:
+591c56b045b2d44a0f4ba1a13545420b23e909b5 solved was a similar issue
+> in realtime/prio-preempt .
 
-diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
-index 5377c00f39957fd93f316368865c8e44038f2e1e..b0608498d7e837e2c7b847fbef23334dcf2605c9 100644
---- a/include/tst_kconfig.h
-+++ b/include/tst_kconfig.h
-@@ -7,6 +7,7 @@
- #define TST_KCONFIG_H__
- 
- #include <stdbool.h>
-+#include <stddef.h>
- 
- /**
-  * Initialization helper macro for struct tst_kconfig_var. Requires <string.h>
-@@ -29,7 +30,7 @@ struct tst_kconfig_var {
-  * tst_kconfig_var structures.
-  *
-  * The path to the kernel config should be autodetected in most of the cases as
-- * the code looks for know locations. It can be explicitely set/overrided with
-+ * the code looks for know locations. It can be explicitly set/overridden with
-  * the KCONFIG_PATH environment variable as well.
-  *
-  * The caller has to initialize the tst_kconfig_var structure. The id has to be
-@@ -47,7 +48,7 @@ struct tst_kconfig_var {
-  * In the case that match is set to 'v' the val pointer points to a newly
-  * allocated string that holds the value.
-  *
-- * @param vars An array of caller initalized tst_kconfig_var structures.
-+ * @param vars An array of caller initialized tst_kconfig_var structures.
-  * @param vars_len Length of the vars array.
-  */
- void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
+> Signed-off-by: Attila Fazekas <afazekas@redhat.com>
+> ---
+>  .../realtime/func/sched_football/sched_football.c  | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 
----
-base-commit: 7aea2cea9ad5d9e1586112a57948c7f85dc12970
-change-id: 20250113-tst_kconfig_stddef-544c3644d261
+> diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
+> index 763b41f23..e4ae6a027 100644
+> --- a/testcases/realtime/func/sched_football/sched_football.c
+> +++ b/testcases/realtime/func/sched_football/sched_football.c
+> @@ -133,6 +133,18 @@ void referee(int game_length)
+>  	TST_EXP_EXPR(final_ball == 0);
+>  }
 
-Best regards,
--- 
-Ricardo B. Marliere <rbm@suse.com>
+> +static inline int get_numcpus(void)
+> +{
+> +	cpu_set_t mask;
+> +
+> +	CPU_ZERO(&mask);
+> +
+> +	/* Get the number of cpus accessible to the current process */
+> +	sched_getaffinity(getpid(), sizeof(mask), &mask);
+> +
+> +	return CPU_COUNT(&mask);
+> +}
 
+Can't we unify these get_numcpus() functions and move to librttest.[ch]?
+
+Also we have similar code in testcases/kernel/sched/cfs-scheduler/starvation.c
+added in 1800e635783b69cacdce9f654ecd730a8f30915b (uses code from
+lib/tst_cpu.c), but that's outside of testcases/realtime/, thus let's keep it
+untouched.
+
+Kind regards,
+Petr
+
+> +
+>  static void do_test(void)
+>  {
+>  	struct sched_param param;
+> @@ -140,7 +152,7 @@ static void do_test(void)
+>  	int i;
+
+>  	if (players_per_team == 0)
+> -		players_per_team = sysconf(_SC_NPROCESSORS_ONLN);
+> +		players_per_team = get_numcpus();
+
+>  	tst_atomic_store(0, &players_ready);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
