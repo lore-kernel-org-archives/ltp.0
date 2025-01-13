@@ -4,102 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 000B4C02180
-	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 22:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0595DC02184
+	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 22:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736805814; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736805933; h=date :
  mime-version : message-id : to : subject : list-id : list-unsubscribe
  : list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=m8mgnUBJpbnhsw4DJPkvMc+d38VIk/fxJk2r3CmgfFA=;
- b=TtQtxwaY5XtwaOgLVDp7gtlZ/Cq0J2gAAY9xjGIHIf+B1gEP0nqgOgm1hwicmpQVP5874
- cX7bQZth74/22wAxSC4Oqtvn2W7jAdBMsOUQ8QYzTeLDfV02dB0MvXXPvBy3NCQCsivDPIM
- utmDrTo0xHqoYfY+4e2+mEbjrhHE4yo=
+ from; bh=2Rbdig/vGNiBnzRtFsmQybxqyTul8OtG9wdz1XP4CWc=;
+ b=FpSMYqmNPGGcYBJBm0GJqu3UlIaAJ4KIgznwRHsBP5feJftw2EEkwwGP2poAFYhKbtwwD
+ f5f+xkMR1um/HOJ+IXiMfIToxykEpiLrLRS7QSLrpRd74RevwyJPZivgfJgwyEDgKrrlwQd
+ u3Wr7ZVSnAz1/+GYjDYE0fM84zjW/Ss=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6648D3C7994
-	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 23:03:34 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id EF5493C79BD
+	for <ltp@archiver.kernel.org>; Mon, 13 Jan 2025 23:05:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 760173C286F
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:03:12 +0100 (CET)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+ by picard.linux.it (Postfix) with ESMTPS id ABD093C0B87
+ for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:05:10 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5F8521BE673F
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:03:12 +0100 (CET)
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-aaf0f1adef8so1002552366b.3
- for <ltp@lists.linux.it>; Mon, 13 Jan 2025 14:03:12 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4D9FA1BEF88E
+ for <ltp@lists.linux.it>; Mon, 13 Jan 2025 23:05:10 +0100 (CET)
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-ab2b29dfc65so744395866b.1
+ for <ltp@lists.linux.it>; Mon, 13 Jan 2025 14:05:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736805792; x=1737410592; darn=lists.linux.it;
+ d=suse.com; s=google; t=1736805909; x=1737410709; darn=lists.linux.it;
  h=cc:to:message-id:content-transfer-encoding:mime-version:subject
  :date:from:from:to:cc:subject:date:message-id:reply-to;
- bh=rcTmE5xqh5gaEdltFqxYimaddb6vq3LA8KWbXhRg3FM=;
- b=LQL7oKc99s4K4L12aO/4AoB7cEWgeU7IiDdgREav6qjjgQvV/2W/A7cu7cdg6shj9f
- v1BhV3kFDXqsPoUwylrrTInw+mUjOdYhOZCdgOrCffXJw6cjs1VNfl4CUEoSoh1T3TEQ
- lFt2oUZpHCIhkRz62o8bs2DYCitjUnR6PUbJwb2uNz0ncKMO5jXYxI195zIpgJ3uRmiN
- Q165LtNi6GqME1ryrNyTomFkALQOxJdDynFDANEYV5PCw0QVY1uaEGRq3tL+V3fc2aHw
- CVorSmzUjY+0a6oel9wH5PFi1bcK3AOi524MFtcWNWZFyAofVPIZCG80CFcLTXRgZPe+
- B5Kg==
+ bh=ybBrHrhNZ1gPOjADMg6uV6TmZ+InLG10UoLHOBD3DXI=;
+ b=ClF7KzYn/Y4yBMm9FEvjog8n/mng/GCqoIcTcp73rqfKCh8GvLWKgbRMRkWNMmfZi8
+ 3dcEuayq1i3Ix6byV8UVG3o27hRj5Kxb7N8njH3fKnps+MdSZKe7LOZ6YUkV/6gx23lk
+ zkZbGl+YeAIbEou1UJsbWuYXBymags7JAZjJepbj8XkgQ8P9AWY3xk+kiWF6NoOxFkkL
+ mdM1EkIzcpNmnH31IBMPCVN34gmXFct29lF41nRVKic3eoD5FPsPtqJ8Y/HitPJMq46T
+ SJJKQZJ75JGj9CyDpMC7D9tyGQwXde5jsCLrM24UIPu5daPUwtOZHOsCxr15kt1uKjgB
+ bV1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736805792; x=1737410592;
+ d=1e100.net; s=20230601; t=1736805909; x=1737410709;
  h=cc:to:message-id:content-transfer-encoding:mime-version:subject
  :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=rcTmE5xqh5gaEdltFqxYimaddb6vq3LA8KWbXhRg3FM=;
- b=CHAXswasZga9fAQXglLroBuWruADoMsGaq9mvu2ynRgl1L4vRGbo+6v3P8bY1HiS9q
- Ql+evlKVWAtBq9piS+RpD0uGGqCqCtJlla/QxdGzaKm7yaGX1bfUK1glxlWbXwlA1irQ
- FqwFAcs2JOjexWy3tcfXd7ZyGNjzgHswnQ2GM+9fz48B8ces3Tj8zH0NUFwgZoxlrbMR
- OoNulao+evDsQFykvtR8UOTjdCwjoirbL+cGlHNlhmOOuDB0gRINd4RGMhaesPtvl9xi
- LNeOSMM4+46VSl8FRYc9YwL/sQO+EkToLfokWJdGkprYPLYXT7g/CgikDBd9EvpyCQDv
- 7RfA==
-X-Gm-Message-State: AOJu0YzwIUJMObDnZ3EfFdYhnTAnDhgRqFs+geoFBB7unFq40e9gvINy
- rIeKqlzXExZRN2aGA1nISrToOE23QqBwSh9jYW7t2TtTQAfL0LGSUXJUQU+V3X3BXJRUunYRq5+
- i
-X-Gm-Gg: ASbGncvSYpo+19m8fQwnG2HPXgqQS/Llejz5zlwuazarX9urKWbK+dK6Yb26G5P3AF3
- RMd8WKbUJt6p+CRwgvX1hk0jqHrqSXkWvIKV3bUPZWvguAab6JSf9rImAx4MKNdnIWgDR8qcsWN
- uS3f9JIf9SXCvL10tWOlahPuUg0IbG9AVyuDBy5HbeHDo3EpWPGDDC13f5SXJd/oR6V0/mc4gFc
- rgsaeWydg+YdzsTQNuZnZZEhE7OBujv2j52Sos0hA==
-X-Google-Smtp-Source: AGHT+IHUJCQRvHpvi/mikayHMwGo52Fm/H7vFSpUetPjtPRPgIXetITdj3qBA84UibgqJdUFSDN5aQ==
-X-Received: by 2002:a17:907:948d:b0:a9a:9df:5580 with SMTP id
- a640c23a62f3a-ab2ab6fd625mr2087479366b.19.1736805791712; 
- Mon, 13 Jan 2025 14:03:11 -0800 (PST)
+ bh=ybBrHrhNZ1gPOjADMg6uV6TmZ+InLG10UoLHOBD3DXI=;
+ b=M1s2cdikWJ0wNxbCL31HfSyjrrgftf75iT3f0zBUp53ONDoOnmD+4//xybMCaBfC+W
+ WCaQ9oCaKnV7rb9DJ8qXHcnYLGmVWjqoZWf2LInPOAohYf277xiYGuI5Jiokj4A6XxwN
+ 2Mf6A1VjNiMyXq+dZUvseeFN3DBt5P14MpbYYd6laqXD9Go1A+0JqZFucti5sh2vh6FN
+ 9ot+/Vi39TffWPS43DtIA1pniI6LPqtG6eU1o2fVaM5TvuVTisTq0ZygzBoC7TIsOkly
+ c7rnnD74GIoQbCsofXHWzx6GCAAoJu+E1i8oi4UUfOLq6R/LVpY8c0qm6o7BjKNbJr22
+ wOXQ==
+X-Gm-Message-State: AOJu0YwMW9ut6hlPeZPI2o91Xz5qtE5PmtFUAvsPQvKc7GtKVFvLDEKg
+ zwfg7dz3FtJb7c8VhO+TpwS2K0gocM7OUP//nGlSx8hMYfUN679ZjiC13wppHVynXzMTEDHHwxL
+ A
+X-Gm-Gg: ASbGnctIKo4Z7Tg0DN4aHZnTqaYdq4dl7SnLXolXvwtdsoc5WdR8fWASwbn06zvlN4R
+ FP1skr0UxV+kwvR1N9JnWU3T0eGhz1QL0WNvtqrluLLFlhpCjufv0YiBoGKHlrseH0ElROyj5PP
+ kpiE38NCNge8ICe/j0XUp+53FkR0WAD1KvgNdyQ/HuSDSceG3eCHcAzmWwqJHHD7i1btiabnZiK
+ f8gqwO152CyefUpv8yT3vf9X/FPH62TAYC4EY7ySA==
+X-Google-Smtp-Source: AGHT+IFeTI817g+Ih3jvWojF5cnDNU3jXGzsIKNx2RWPi9sNUWYLPbrzJr6iY/yQ8vJYT8wlLLPWUA==
+X-Received: by 2002:a17:907:2da6:b0:aac:2297:377d with SMTP id
+ a640c23a62f3a-ab2abdc09eemr2142783866b.52.1736805909440; 
+ Mon, 13 Jan 2025 14:05:09 -0800 (PST)
 Received: from localhost ([177.95.18.53]) by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-5f88277b354sm3988249eaf.38.2025.01.13.14.03.08
+ 46e09a7af769-723519d3c2bsm112945a34.14.2025.01.13.14.05.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jan 2025 14:03:09 -0800 (PST)
-Date: Mon, 13 Jan 2025 19:02:55 -0300
+ Mon, 13 Jan 2025 14:05:07 -0800 (PST)
+Date: Mon, 13 Jan 2025 19:05:03 -0300
 MIME-Version: 1.0
-Message-Id: <20250113-add_b4-config-v1-1-d0c14d9dfac6@suse.com>
-X-B4-Tracking: v=1; b=H4sIAI6NhWcC/x3MQQrCQAxA0auUrA10Yt14FRFJZjJtFk4lESmU3
- t3R5Vv8v0OomwZchx1cPxa2to50GiAv3GZFK91AI13GlM7IpTxkwry2ajNOVYiqFC1E0JuXa7X
- t/7vdu4VDUZxbXn6XJ8dbHY7jC4Ier2J4AAAA
-X-Change-ID: 20250113-add_b4-config-4fb22fbded22
+Message-Id: <20250113-tst_kconfig_stddef-v1-1-66c75790d127@suse.com>
+X-B4-Tracking: v=1; b=H4sIAA6OhWcC/x3MQQqEMAxA0atI1hZsrS7mKiJS21SDTJWkDAPi3
+ a0u3+L/EwSZUOBTncD4I6E9Fei6Ar+6tKCiUAymMV2jdauy5Gnze4q0TJJDwKg6a33bWxtMr6G
+ EB2Ok/zsdxuLZCaqZXfLrs/o6ychwXTfmYpFcfQAAAA==
+X-Change-ID: 20250113-tst_kconfig_stddef-544c3644d261
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=788; i=rbm@suse.com;
- h=from:subject:message-id; bh=DvN04ZC6tXuHRZXZ+gfshj6sjYoiv34OcGBQIo0YrYI=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnhY2ZbUoFngv+0jOYs0Cqe7nlCKlpPBkdd4AKc
- 0nLW/fkyrSJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ4WNmQAKCRDJC4p8Y4ZY
- ppuZD/0TbikG8tGCEm8E8GFzj2K5gtb1GhlMSruQmVaTY5BVOlwiY6dnqzPbDhodNQOl4AdC6FR
- DUX7V5h3RqbMYeXJ2v156BLq5ahpNxm589pvVk0L9LpnlCvbhlsiN+1Qze7Pe4ieRDMvy/m2U66
- 1h+09R4ReCrByamNQnVCWbA6TuGWhtBktO6I/2ACFl3FhpFIe0dwIREeX7HqHBSRWfg9XtvKnei
- L2Zaaev7ZQ44TZFujUc3pnhoSgdZtHH5mGpQqF2WuFuZ7zn1iaK2mviSJsVMrhD0u4sCQD+Zxyi
- hmaNDklzBP5eP/pcCST8HY6GT3GTh1BF+zxPosQHQliq+CdwxSwKqt5X6RVIE5Yym8QN8eo7uhx
- r5ZDSjPE/gVa1bjkkcME5gEWVvr++zcsB6HMaaCV6if+kqCmMdNrnObxdnBT8ZsTeuV1PndvCqK
- 7YbZ7sMB7j0zBB6wBtG/oAbayoHbVrZ+rFay+/0A2TIJcbmb/alc5ekgi/qTT/QiPNmCst4nJuK
- o2/0pyxHyOyO9KAxWsdpTvkQbwD6tcGDfolqToB+VW7XZxBhrBSDDXeU30zBxNYBFYGMMVioK9L
- fYr37KUVXII6T5O+WQ3Bv7Ywru9n+B8sByL4oBg4EDJTBrF5WhLnDydqPhq3jiNAdfXrMUT2Pr0
- TeohxUEJaLLMteQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1789; i=rbm@suse.com;
+ h=from:subject:message-id; bh=6mK7yrhEgr+rn+6aTlohB4Fba8txDM7ScGsfUrTkBP8=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnhY4QjxE0Tz5c4JaCiiccShQ4mt+YeQB+skj5m
+ AZ0TgRpsSGJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ4WOEAAKCRDJC4p8Y4ZY
+ psusEACNEw0AhBqj/amrGJLB2NsakBfOaj3EeqLq64e4whI30qIlvyGzj6eJxTGlb6zmuwSwzob
+ O1bfceukzjwZJP4II73bpTzf/iSCldf+VgGKjz3Ehdmo0u5RaWNgnMJAjpv6+Jf/a2qb+DuLw4F
+ rpQywznL7tx3oB/tzdBdwYNTKHCoa3Sgj8JAguBtETEMgW+pJHPS1hGD6pFijAtERcfG6lZ03O8
+ 6r44vXCh112VtPSyou3tEOvHTyI/JJt8/eUrvS00TxDSaquru2Qt4H7cGbqEe2J7MQqS2rB1U1N
+ ZeWXw+v8VkccfoLrOXAJmayxL1dw+jLo7RaXyVQZ2qh8q34cgpHIFvRObFATeSZbDzefFmiDDmo
+ dBGXWHUkPkBksWLMCaUh3wm2X1z6GWxPfkB6RL3MADDrBDKnu14G8ruk42/UXAHmsLvzntn/PRJ
+ v82uhGxPK6+u6/JNAIo/mmyOs7uKPekCvl9XQ4cBmNH8lPlK+o3hO7jTwiLTpHFC7pCCoUJV3B7
+ KgKRKvy/JZa0G06hygQOSkfaq+ZOdKjXl0GEVjw2oiMIqFYq5ciGcB0t29I73R2PDH9CuctGg4q
+ 9Fj7BosXTvTJrqLMHdBpr0VoLCYvXWxP/EC/0QlWwVywrCGWot+31vg3qx6kvDHwc7/pOY/PmVX
+ Bh7XAHLRZMt9GeQ==
 X-Developer-Key: i=rbm@suse.com; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add .b4-config file
+Subject: [LTP] [PATCH] lib/tst_kconfig: Include stddef.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,29 +120,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This file configures the `b4` tool which some contributors might use.
+Currently, if a test wants to make use of tst_kconfig.h it must also
+include stddef.h due to the usage of size_t. While at it, fix a few minor
+typos in comments.
 
 Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
 ---
- .b4-config | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/tst_kconfig.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/.b4-config b/.b4-config
-new file mode 100644
-index 0000000000000000000000000000000000000000..2efdf2273240dcf57bd5cab174ff6c7a1952dd5b
---- /dev/null
-+++ b/.b4-config
-@@ -0,0 +1,6 @@
-+# Configuration for the `b4` tool
-+# See https://b4.docs.kernel.org/en/latest/config.html
-+[b4]
-+    send-series-to = Linux Test Project <ltp@lists.linux.it>
-+    pw-url = https://patchwork.ozlabs.org/
-+    pw-project = ltp
+diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+index 5377c00f39957fd93f316368865c8e44038f2e1e..b0608498d7e837e2c7b847fbef23334dcf2605c9 100644
+--- a/include/tst_kconfig.h
++++ b/include/tst_kconfig.h
+@@ -7,6 +7,7 @@
+ #define TST_KCONFIG_H__
+ 
+ #include <stdbool.h>
++#include <stddef.h>
+ 
+ /**
+  * Initialization helper macro for struct tst_kconfig_var. Requires <string.h>
+@@ -29,7 +30,7 @@ struct tst_kconfig_var {
+  * tst_kconfig_var structures.
+  *
+  * The path to the kernel config should be autodetected in most of the cases as
+- * the code looks for know locations. It can be explicitely set/overrided with
++ * the code looks for know locations. It can be explicitly set/overridden with
+  * the KCONFIG_PATH environment variable as well.
+  *
+  * The caller has to initialize the tst_kconfig_var structure. The id has to be
+@@ -47,7 +48,7 @@ struct tst_kconfig_var {
+  * In the case that match is set to 'v' the val pointer points to a newly
+  * allocated string that holds the value.
+  *
+- * @param vars An array of caller initalized tst_kconfig_var structures.
++ * @param vars An array of caller initialized tst_kconfig_var structures.
+  * @param vars_len Length of the vars array.
+  */
+ void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
 
 ---
 base-commit: 7aea2cea9ad5d9e1586112a57948c7f85dc12970
-change-id: 20250113-add_b4-config-4fb22fbded22
+change-id: 20250113-tst_kconfig_stddef-544c3644d261
 
 Best regards,
 -- 
