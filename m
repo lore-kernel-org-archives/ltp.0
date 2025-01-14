@@ -4,104 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 719ABE77188
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 16:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 557D1E77188
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 16:20:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C9043C7B25
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 17:16:31 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A7FB23C7B15
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 17:20:48 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCF743C7A7A
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 17:16:15 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 1DF013C79FA
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 17:20:32 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 22CD91BDC7C7
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 17:16:14 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8946661614E
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 17:20:31 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 942622116A;
- Tue, 14 Jan 2025 16:16:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736871373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hGEIXkSD2ifQ6Pe81K/5/u0F7jukFfe92hHz0P0QyAI=;
- b=mVm9i+ezJ2YRhT4utCM55WUU4x/jdmaGdd9radOC+4Mz2nOVCvn3OfIC8YseHmW5BWGGml
- ONJHbbaFW/IvWN0bn/Kqpkz91bJ2T7C9SHBoCd6yxK/nKHr+K9FjWTxnCTAWjOfBuB0eHF
- gNmuzyN/eO7LT+4z5y0lvFiv0zSBfhc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736871373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hGEIXkSD2ifQ6Pe81K/5/u0F7jukFfe92hHz0P0QyAI=;
- b=AUCmmh6QJ7x+z6UntV1eNKTVV4rQw8g/jed52C9OmQ9KmAEXLSoSKID0DGBPUQB2SVXG11
- 8KamXUZ3+7Dh83Aw==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F0E8E21167;
+ Tue, 14 Jan 2025 16:20:30 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736871372;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hGEIXkSD2ifQ6Pe81K/5/u0F7jukFfe92hHz0P0QyAI=;
- b=QHVtp/7OpnO9dPgoL+6uqSusbJgBIhjzVAOrV+VNY9wdEQbiTdajLAHnB1aPwTs8MKcOdV
- dtVwtIPwXjCmnYbN7GcBGY+b/WkMPhytI9XdHtRhI1nVrfFJqf3twbcAgMxYXZL2tlUMxs
- QWw8MwSbJjvbioNx+WWBK9CZDAcWaDU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736871372;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hGEIXkSD2ifQ6Pe81K/5/u0F7jukFfe92hHz0P0QyAI=;
- b=P9YoaUpdqcrpJ3pbFysa7Mx/ZymkFT38TJJBDBYER07vFL318p8piIxmDMgnxED5F8htq+
- bXHUsSgsD+seKyAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6550D139CB;
- Tue, 14 Jan 2025 16:16:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D81A51384C;
+ Tue, 14 Jan 2025 16:20:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id n5UxF8yNhmf2AwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 14 Jan 2025 16:16:12 +0000
-Date: Tue, 14 Jan 2025 17:16:06 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id nYfOM86OhmdwBQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Jan 2025 16:20:30 +0000
+Date: Tue, 14 Jan 2025 17:20:28 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250114161606.GA619334@pevik>
-References: <20241217213245.29778-1-pvorel@suse.cz> <Z4aH4LDbjgWDyLrW@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250114162028.GB619334@pevik>
+References: <20250109132334.212281-1-pvorel@suse.cz>
+ <9cda6edd-6644-46f6-980e-b8939f6f2240@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Z4aH4LDbjgWDyLrW@yuki.lan>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+In-Reply-To: <9cda6edd-6644-46f6-980e-b8939f6f2240@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: F0E8E21167
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH 1/1] tst_net.sh: Fix calling tst_brk with
- TFAIL
+Subject: Re: [LTP] [PATCH 1/2] [RFC] macros: Remove TEST_VOID()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,118 +83,73 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > And yes, using shell runner to run netstress as a child would probably
-> > help, but logs would need to be printed immediately to be visible before
-> > calling tst_brk() from netstress.
-> > NOTE: Despite macro name TST_BRK_SUPPORTS_ONLY_TCONF_TBROK() the
-> > original concept in 0738e3753c allowed TFAIL as well.
 
-> >     This patch adds simple build-check that allows only
-> >     TFAIL, TBROK and TCONF as parameter for tst_brk().
+> I'm kinda surprised something so ugly even existed :-) Thanks for cleaning
+> up.
+> Feel free to merge the whole patch-set.
 
-> >     TFAIL is currently quite commonly used as a shortcut for
-> >     TFAIL + exit() by many tests. I kept it for now, since
-> >     it doesn't go against current doc description.
-
-> > And indeed C API allows tst_brk(TFAIL). Should we allow this also in
-> > shell API?
-
-> I think that it does make sense to have a reporting function that
-> reports a result and exits. The type of the result is really orthogonal
-> to the fact that the function does not return and both tst_brk(TFAIL,
-> ...) and even tst_brk(TPASS, ...) do make sense.
-
-> The rules that we enforced on tst_brk() were mainly because of the
-> limits of the implementation details that should have been fixed in the
-> library instead.
-
-> > Also Cyril suggested for C API different approach:
-
-> > https://patchwork.ozlabs.org/project/ltp/patch/20241115164101.17983-1-chrubis@suse.cz/
-
-> > Therefore we should probably agree what to do with C API and then unify shell API.
-
-> I suppose so.
-
-> >  testcases/lib/tst_net.sh | 25 ++++++++++++++++++-------
-> >  1 file changed, 18 insertions(+), 7 deletions(-)
-
-> > diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> > index ee0ae1cad7..d44115d758 100644
-> > --- a/testcases/lib/tst_net.sh
-> > +++ b/testcases/lib/tst_net.sh
-> > @@ -713,9 +713,17 @@ tst_wait_ipv6_dad()
-
-> >  tst_netload_brk()
-> >  {
-> > +	local res="$1"
-> > +	local msg="$2"
-> > +
-> >  	tst_rhost_run -c "cat $TST_TMPDIR/netstress.log"
-> >  	cat tst_netload.log
-> > -	tst_brk_ $1 $2
-> > +
-> > +	if [ "$res" = TFAIL ]; then
-> > +		tst_res_ "$res" "$msg"
-> > +	else
-> > +		tst_brk_ "$res" "$msg"
-> > +	fi
-> >  }
-
-> >  # Run network load test, see 'netstress -h' for option description
-> > @@ -825,28 +833,31 @@ tst_netload()
-> >  		fi
-
-> >  		if [ "$ret" -ne 0 ]; then
-> > -			[ $((ret & 32)) -ne 0 ] && \
-> > -				tst_netload_brk TCONF "not supported configuration"
-> > +			[ $((ret & 32)) -ne 0 ] && tst_netload_brk TCONF "not supported configuration"
-
-> > -			[ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ] && \
-> > +			if [ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ]; then
-> >  				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
-> > +				return
-> > +			fi
-
-> >  			tst_res_ TWARN "netstress failed, ret: $ret"
-> >  			was_failure=1
-> >  			continue
-> >  		fi
-
-> > -		[ ! -f $rfile ] && \
-> > +		if [ ! -f $rfile ]; then
-> >  			tst_netload_brk TFAIL "can't read $rfile"
-> > +			return
-> > +		fi
-
-> >  		results="$results $(cat $rfile)"
-> >  		passed=$((passed + 1))
-> >  	done
-
-> >  	if [ "$ret" -ne 0 ]; then
-> > -		[ $((ret & 4)) -ne 0 ] && \
-> > -			tst_res_ TWARN "netstress has warnings"
-> > +		[ $((ret & 4)) -ne 0 ] && tst_res_ TWARN "netstress has warnings"
-> >  		tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
-> > +		return
-> >  	fi
-
-> >  	local median=$(tst_get_median $results)
-
-> As for this patch, wouldn't it make more sense to allow tst_brk_ TFAIL
-> instead, who knows how many places in shell stil use that...
-
-Sure, I'm not against it. We would just simply revert
-1878502f63 ("tst_test.sh/tst_brk(): Allow only TBROK and TCONF")
-
-BTW we have a real problem in shell when calling tst_brk in code evaluated in
-$(...) with cd on mounted device. I fixed one of these problems:
-304d4178a7 ("IMA: Fix exit test on subprocess")
-but it would be great to have better solution. This will not be fixed by shell
-loader.
+Yeah, there are many dark sides in LTP :). Fortunately, thanks to you and others
+it's getting much better.
 
 Kind regards,
 Petr
+
+> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+> Andrea
+
+> On 1/9/25 14:23, Petr Vorel wrote:
+> > TEST_VOID() macro was meant for syscalls whose return type is void, e.g.
+> > sync(). It was used only sync03.c, which was later merged to sync01.c
+> > and later removed. Now it's unused, therefore remove it.
+
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> >   include/old/usctest.h     | 14 --------------
+> >   include/tst_test_macros.h |  7 -------
+> >   2 files changed, 21 deletions(-)
+
+> > diff --git a/include/old/usctest.h b/include/old/usctest.h
+> > index 2d46c40451..b984c343fd 100644
+> > --- a/include/old/usctest.h
+> > +++ b/include/old/usctest.h
+> > @@ -60,20 +60,6 @@ extern int TEST_ERRNO;
+> >   		TEST_ERRNO = errno; \
+> >   	} while (0)
+> > -/***********************************************************************
+> > - * TEST_VOID: calls a system call
+> > - *
+> > - * parameters:
+> > - *	SCALL = system call and parameters to execute
+> > - *
+> > - * Note: This is IDENTICAL to the TEST() macro except that it is intended
+> > - * for use with syscalls returning no values (void syscall()).  The
+> > - * Typecasting nothing (void) into an unsigned integer causes compilation
+> > - * errors.
+> > - *
+> > - ***********************************************************************/
+> > -#define TEST_VOID(SCALL) do { errno = 0; SCALL; TEST_ERRNO = errno; } while (0)
+> > -
+> >   /***********************************************************************
+> >    * TEST_PAUSE: Pause for SIGUSR1 if the pause flag is set.
+> >    *	       Just continue when signal comes in.
+> > diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> > index b2ca32f771..b2b446b70c 100644
+> > --- a/include/tst_test_macros.h
+> > +++ b/include/tst_test_macros.h
+> > @@ -16,13 +16,6 @@
+> >   		TST_ERR = errno; \
+> >   	} while (0)
+> > -#define TEST_VOID(SCALL) \
+> > -	do { \
+> > -		errno = 0; \
+> > -		SCALL; \
+> > -		TST_ERR = errno; \
+> > -	} while (0)
+> > -
+> >   extern long TST_RET;
+> >   extern int TST_ERR;
+> >   extern int TST_PASS;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
