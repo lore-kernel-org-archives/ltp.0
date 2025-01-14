@@ -4,104 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3052C02183
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 11:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1937EE77188
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 11:30:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 17B193C76EA
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 12:30:31 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 6D35D3C0325
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 12:30:47 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42C8B3C1BCE
+ by picard.linux.it (Postfix) with ESMTPS id 7E2443C1BCE
  for <ltp@lists.linux.it>; Tue, 14 Jan 2025 12:29:25 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6444F665576
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2330B101040F
  for <ltp@lists.linux.it>; Tue, 14 Jan 2025 12:29:24 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9DF0221161;
- Tue, 14 Jan 2025 11:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736854163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0s/frsk6RFXoxvXBXW/i5hroD+8/U2yuZ2yviEeqlBU=;
- b=RRxI3UcNYRlaUI9aIrB8L3vuHRqnbIDES1s/29ias/aCvmsMAN1gvVg9fGZzW/atkV/M5b
- HcwCV9ulBHTOB20kDMtWgxT1/Vl+24uyGBaixd0iuEXd393wD8lWWN/vaNzpuc0VILbZw9
- xyMKLTag7YNt/MUJKIMV9YakdV3pYoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736854163;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0s/frsk6RFXoxvXBXW/i5hroD+8/U2yuZ2yviEeqlBU=;
- b=NbyRglXW1tVKn1ITVxgHsF5VlBChmCIgUl8TAvelL2znaJcWcdO1LxdeBm+V5SzhVFd8h2
- fyvj53dMjSMMD7BA==
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8FF101F391;
+ Tue, 14 Jan 2025 11:29:24 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736854163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0s/frsk6RFXoxvXBXW/i5hroD+8/U2yuZ2yviEeqlBU=;
- b=RRxI3UcNYRlaUI9aIrB8L3vuHRqnbIDES1s/29ias/aCvmsMAN1gvVg9fGZzW/atkV/M5b
- HcwCV9ulBHTOB20kDMtWgxT1/Vl+24uyGBaixd0iuEXd393wD8lWWN/vaNzpuc0VILbZw9
- xyMKLTag7YNt/MUJKIMV9YakdV3pYoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736854163;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0s/frsk6RFXoxvXBXW/i5hroD+8/U2yuZ2yviEeqlBU=;
- b=NbyRglXW1tVKn1ITVxgHsF5VlBChmCIgUl8TAvelL2znaJcWcdO1LxdeBm+V5SzhVFd8h2
- fyvj53dMjSMMD7BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A85813A86;
- Tue, 14 Jan 2025 11:29:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D08A139CB;
+ Tue, 14 Jan 2025 11:29:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GEecGJNKhmeMIAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 14 Jan 2025 11:29:23 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6AxaEJRKhmeMIAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Jan 2025 11:29:24 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 14 Jan 2025 12:29:06 +0100
-Message-ID: <20250114112915.610297-2-pvorel@suse.cz>
+Date: Tue, 14 Jan 2025 12:29:09 +0100
+Message-ID: <20250114112915.610297-5-pvorel@suse.cz>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250114112915.610297-1-pvorel@suse.cz>
 References: <20250114112915.610297-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 8FF101F391
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 01/10] ima_violations.sh: Fix log detection
+Subject: [LTP] [PATCH v3 04/10] IMA: Add example policy for ima_violations.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,38 +81,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fix TBROK on systems which does not have /var/log/messages
-(any modern distro is using systemd) not auditd installed:
-
-    ima_violations 1 TBROK: log /var/log/messages does not exist (bug in detection?)
-
-Instead TCONF with more meaningful message:
-
-    ima_violations 1 TCONF: log file not found, install auditd
-
-Fixes: https://github.com/linux-test-project/ltp/issues/372
+Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../kernel/security/integrity/ima/tests/ima_violations.sh   | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../kernel/security/integrity/ima/datafiles/Makefile  |  2 +-
+ .../integrity/ima/datafiles/ima_violations/Makefile   | 11 +++++++++++
+ .../ima/datafiles/ima_violations/violations.policy    |  2 ++
+ 3 files changed, 14 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_violations/Makefile
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-index 0f710dea2e..b2b597ad08 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-@@ -23,8 +23,10 @@ setup()
- 		PRINTK_RATE_LIMIT=`sysctl -n kernel.printk_ratelimit`
- 		sysctl -wq kernel.printk_ratelimit=0
- 	fi
--	[ -f "$LOG" ] || \
--		tst_brk TBROK "log $LOG does not exist (bug in detection?)"
-+
-+	if [ ! -e "$LOG" ]; then
-+		tst_brk TCONF "log file not found, install auditd"
-+	fi
- 	tst_res TINFO "using log $LOG"
- }
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/Makefile b/testcases/kernel/security/integrity/ima/datafiles/Makefile
+index 0f2b4fdb11..2013bfc918 100644
+--- a/testcases/kernel/security/integrity/ima/datafiles/Makefile
++++ b/testcases/kernel/security/integrity/ima/datafiles/Makefile
+@@ -8,6 +8,6 @@ top_srcdir	?= ../../../../../..
  
+ include	$(top_srcdir)/include/mk/env_pre.mk
+ 
+-SUBDIRS	:= ima_kexec ima_keys ima_measurements ima_policy ima_selinux
++SUBDIRS	:= ima_kexec ima_keys ima_measurements ima_policy ima_selinux ima_violations
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/ima_violations/Makefile b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/Makefile
+new file mode 100644
+index 0000000000..58d474f076
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/Makefile
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) Linux Test Project, 2025
++
++top_srcdir	?= ../../../../../../..
++
++include	$(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_DIR		:= testcases/data/ima_violations
++INSTALL_TARGETS	:= *.policy
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
+new file mode 100644
+index 0000000000..466b8c5a64
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/datafiles/ima_violations/violations.policy
+@@ -0,0 +1,2 @@
++measure func=FILE_CHECK mask=^MAY_READ euid=0
++measure func=FILE_CHECK mask=^MAY_READ uid=0
 -- 
 2.47.1
 
