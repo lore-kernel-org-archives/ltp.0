@@ -4,88 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47FC7E77188
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 12:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736858504; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=X1t5fjr67z3bB6zJpKqGlCWUCLMRhlyMKxXZItToYKE=;
- b=f3MYkYTe8qu7hDLOeMZ/KdJa3yNYmneJUKebdUdDuB+keHuRK3/XpgTZRJTQDB2WzSAHz
- Yk9p7cKNqZwU5Tz0Gdpyb2xTPWgv+WkOTW5YYQ2iMmrUMpIuYgE+MKARJuEYdBgouv4pKhL
- iNeN62GJmarKEke5Km4rOYFkkIsbBYw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5716E77188
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 12:49:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8AD493C7A3C
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 13:41:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6243A3C7A73
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 13:49:25 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 418A93C7A4D
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 13:40:52 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 593393C7A26
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 13:49:10 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A1D90143AE9B
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 13:40:47 +0100 (CET)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-43618283d48so38825065e9.1
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 04:40:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736858447; x=1737463247; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=mFrGMmc/nru1R9UJbAhfdaahlP/akbndbvCKUX7TXJM=;
- b=GvmS7h7+QN6o14ZA8gpMFyjL+Au07mcGsznxhMRekHY7LPmk8VGqpqPCELpGyEB1T7
- 44NDvq08K2U2ajYIpWQjLkKCXZACt9Bf0WMLc+QVTg8d659mbxnjDKgqyHJae5KIm4S6
- z6y/2kQxbEZGviHocKgzsuzsscOlT6NDrHfErdPScUIvYQS9Ao9IeTSmhGBHRT6/4wcG
- c+Lwq/JtTFE1ECF02Aq8jhc9KlBTf0K0PDFGR4Xp1+Jc+BGth36Vn8bxdTAiCQwSGxej
- Zk5vPmpeZ1mJ11ob4464U8WqkrJMmuDtNJPF6NfpkzeeJRvJKWIFCCxFFrYvqTKmuykY
- 7GXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736858447; x=1737463247;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=mFrGMmc/nru1R9UJbAhfdaahlP/akbndbvCKUX7TXJM=;
- b=jFtBX3xi0YTIdtqz0OlB8GBb6KnUtMLyYl4ySoIHAOtofwop+MkIFv9QdTY1ItAFpF
- c6lmzi7T8Y6rbiaP5RL8Ic/1dm0uoB1LQmh5d9KuzHMLf4kZD1DNTUSuKUvbwzZi4y/T
- IwSaQBzgggb8tDGwa3zROMiTB/CDN8nvowaMIBbbxx99JosoR6qEt6OJiKUItfPq33Yl
- UPPFfaJwSOcdghiFUtdQiO4/WEMlWRJnu6uL2G+4GJU8oXFi63YoTsQOW1r9+e938GnL
- hYSS8Zr+dhJK7zmOCVnSxKPRrReMkZXGxvF1ogpqVmQu2fUQppocdd+ZFOte3OnMybGV
- 1wpg==
-X-Gm-Message-State: AOJu0YztQo7Enidc8kqzoR5WF4woL6zH9gWDkqGOF5NX2olTfxtwQcW6
- /7kd3QqFazM71zLLzmyaP1J7NUkXznY8HyAMG5Jd30KNWFlEWhoNWLtk9uK1F3VGRhkFCAh8W88
- =
-X-Gm-Gg: ASbGncumIJrcVNJLrBZ6BEkjeG6WYxhbalRdSeYa0R78dBmeVBoy7VZpjJGWau6Iheq
- erg5+4eT7/OoXMD6OjFdMlpKwnlPR6ieg2+mtLVBbHVbymwC6wj3FFnuh6h/altd7ECmSxGEwVS
- 7xPG7C5g1EIFAgWXBtMHcpa8DW0M5/ndqtIkEEWvtpZd+aELQRA4M1B+wLybCcPhgs3UTYtQoKG
- iO+2Pxno2B87GL0JtA5es48TBxgmjtT9I68UT2XXTuNmg==
-X-Google-Smtp-Source: AGHT+IGkUU6kVl6qlCIonqA7ZCdn+chbGzCSEAqKyEoBe29WBw87Jfw8wd1iZF8qBJvsyi15RBHP9w==
-X-Received: by 2002:a05:600c:4511:b0:434:fe3c:c67c with SMTP id
- 5b1f17b1804b1-436e26e51eemr198737725e9.26.1736858446858; 
- Tue, 14 Jan 2025 04:40:46 -0800 (PST)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-436e2e89ca5sm208472495e9.29.2025.01.14.04.40.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jan 2025 04:40:46 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Tue, 14 Jan 2025 07:40:23 -0500
-Message-Id: <20250114124023.4702-3-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20250114124023.4702-1-wegao@suse.com>
-References: <20250113081622.28942-1-wegao@suse.com>
- <20250114124023.4702-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8CFE760D49F
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 13:49:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 10FAB1F37C;
+ Tue, 14 Jan 2025 12:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736858946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=guAb3bvb65P8m4g4Bc8Iug1K80ZeL0K/gTt5A6Imf2g=;
+ b=nwohFS6rk9OODxxQEq1Z0XEtgyx9tzL/+YU2rg14RWuK1dQs0J9xFNuJdiUeJ/uf+ildf4
+ FltH0ao70q7QNCOvjn38fc4xyqY+6YHCSoYLg6xqHjNOJkhIXrf8RFwYgj4boI8cw7JAsm
+ LZcRmmOVUnxH4cZllhDR6DJIVzdf0jk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736858946;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=guAb3bvb65P8m4g4Bc8Iug1K80ZeL0K/gTt5A6Imf2g=;
+ b=9eRA9l5FTOab6TSx+lDtcy7f/NTxVSicRTYajLUnEiPNX1bG5jsQKfimft1M+e7ibnBg7x
+ CPpRntlMbs5DlAAA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nwohFS6r;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9eRA9l5F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736858946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=guAb3bvb65P8m4g4Bc8Iug1K80ZeL0K/gTt5A6Imf2g=;
+ b=nwohFS6rk9OODxxQEq1Z0XEtgyx9tzL/+YU2rg14RWuK1dQs0J9xFNuJdiUeJ/uf+ildf4
+ FltH0ao70q7QNCOvjn38fc4xyqY+6YHCSoYLg6xqHjNOJkhIXrf8RFwYgj4boI8cw7JAsm
+ LZcRmmOVUnxH4cZllhDR6DJIVzdf0jk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736858946;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=guAb3bvb65P8m4g4Bc8Iug1K80ZeL0K/gTt5A6Imf2g=;
+ b=9eRA9l5FTOab6TSx+lDtcy7f/NTxVSicRTYajLUnEiPNX1bG5jsQKfimft1M+e7ibnBg7x
+ CPpRntlMbs5DlAAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E84DB1384C;
+ Tue, 14 Jan 2025 12:49:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KOzRN0FdhmdYOQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Jan 2025 12:49:05 +0000
+Date: Tue, 14 Jan 2025 13:48:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z4ZdMxVRQwtEtz3f@yuki.lan>
+References: <20250106132607.25627-1-chrubis@suse.cz>
+ <20250106132607.25627-3-chrubis@suse.cz>
+ <20250108131212.GA30426@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250108131212.GA30426@pevik>
+X-Rspamd-Queue-Id: 10FAB1F37C
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 2/2] ptrace06: Refactor the test using new LTP API
+Subject: Re: [LTP] [PATCH v2 2/6] tst_run_shell: Make the tst_test struct
+ static
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,424 +122,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/ptrace/ptrace06.c   | 325 ++++++++++--------
- .../kernel/syscalls/ptrace/ptrace06_child.c   |  16 +
- 2 files changed, 190 insertions(+), 151 deletions(-)
- create mode 100644 testcases/kernel/syscalls/ptrace/ptrace06_child.c
+Hi!
+I've fixed all the minor things you pointed out and pushed this
+patchset. Thanks for the reviews.
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace06.c b/testcases/kernel/syscalls/ptrace/ptrace06.c
-index a1db3bab8..b760ab89d 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace06.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace06.c
-@@ -1,199 +1,222 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * check out-of-bound/unaligned addresses given to
-+ * Copyright (c) 2008 Analog Devices Inc.
-+ * Copyright (c) Linux Test Project, 2009-2022
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Check out-of-bound/unaligned addresses given to
-+ *
-  *  - {PEEK,POKE}{DATA,TEXT,USER}
-  *  - {GET,SET}{,FG}REGS
-  *  - {GET,SET}SIGINFO
-- *
-- * Copyright (c) 2008 Analog Devices Inc.
-- *
-- * Licensed under the GPL-2 or later
-  */
- 
--#define _GNU_SOURCE
--
--#include <errno.h>
--#include <stdbool.h>
--#include <stdio.h>
- #include <stdlib.h>
--#include <unistd.h>
- #include <sys/ptrace.h>
--
--#include "test.h"
--#include "spawn_ptrace_child.h"
-+#include "tst_test.h"
- 
- /* this should be sizeof(struct user), but that info is only found
-  * in the kernel asm/user.h which is not exported to userspace.
-  */
-+
- #if defined(__i386__)
--#define SIZEOF_USER 284
-+# define SIZEOF_USER 284
- #elif defined(__x86_64__)
--#define SIZEOF_USER 928
-+# define SIZEOF_USER 928
- #else
--#define SIZEOF_USER 0x1000	/* just pick a big number */
-+# define SIZEOF_USER 0x1000	/* just pick a big number */
- #endif
- 
--char *TCID = "ptrace06";
--
--struct test_case_t {
-+static struct test_case_t {
- 	int request;
- 	long addr;
- 	long data;
- } test_cases[] = {
--	{
--	PTRACE_PEEKDATA,.addr = 0}, {
--	PTRACE_PEEKDATA,.addr = 1}, {
--	PTRACE_PEEKDATA,.addr = 2}, {
--	PTRACE_PEEKDATA,.addr = 3}, {
--	PTRACE_PEEKDATA,.addr = -1}, {
--	PTRACE_PEEKDATA,.addr = -2}, {
--	PTRACE_PEEKDATA,.addr = -3}, {
--	PTRACE_PEEKDATA,.addr = -4}, {
--	PTRACE_PEEKTEXT,.addr = 0}, {
--	PTRACE_PEEKTEXT,.addr = 1}, {
--	PTRACE_PEEKTEXT,.addr = 2}, {
--	PTRACE_PEEKTEXT,.addr = 3}, {
--	PTRACE_PEEKTEXT,.addr = -1}, {
--	PTRACE_PEEKTEXT,.addr = -2}, {
--	PTRACE_PEEKTEXT,.addr = -3}, {
--	PTRACE_PEEKTEXT,.addr = -4}, {
--	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 1}, {
--	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 2}, {
--	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 3}, {
--	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 4}, {
--	PTRACE_PEEKUSER,.addr = -1}, {
--	PTRACE_PEEKUSER,.addr = -2}, {
--	PTRACE_PEEKUSER,.addr = -3}, {
--	PTRACE_PEEKUSER,.addr = -4}, {
--	PTRACE_POKEDATA,.addr = 0}, {
--	PTRACE_POKEDATA,.addr = 1}, {
--	PTRACE_POKEDATA,.addr = 2}, {
--	PTRACE_POKEDATA,.addr = 3}, {
--	PTRACE_POKEDATA,.addr = -1}, {
--	PTRACE_POKEDATA,.addr = -2}, {
--	PTRACE_POKEDATA,.addr = -3}, {
--	PTRACE_POKEDATA,.addr = -4}, {
--	PTRACE_POKETEXT,.addr = 0}, {
--	PTRACE_POKETEXT,.addr = 1}, {
--	PTRACE_POKETEXT,.addr = 2}, {
--	PTRACE_POKETEXT,.addr = 3}, {
--	PTRACE_POKETEXT,.addr = -1}, {
--	PTRACE_POKETEXT,.addr = -2}, {
--	PTRACE_POKETEXT,.addr = -3}, {
--	PTRACE_POKETEXT,.addr = -4}, {
--	PTRACE_POKEUSER,.addr = SIZEOF_USER + 1}, {
--	PTRACE_POKEUSER,.addr = SIZEOF_USER + 2}, {
--	PTRACE_POKEUSER,.addr = SIZEOF_USER + 3}, {
--	PTRACE_POKEUSER,.addr = SIZEOF_USER + 4}, {
--	PTRACE_POKEUSER,.addr = -1}, {
--	PTRACE_POKEUSER,.addr = -2}, {
--	PTRACE_POKEUSER,.addr = -3}, {
--	PTRACE_POKEUSER,.addr = -4},
-+	{PTRACE_PEEKDATA, .addr = 0},
-+	{PTRACE_PEEKDATA, .addr = 1},
-+	{PTRACE_PEEKDATA, .addr = 2},
-+	{PTRACE_PEEKDATA, .addr = 3},
-+	{PTRACE_PEEKDATA, .addr = -1},
-+	{PTRACE_PEEKDATA, .addr = -2},
-+	{PTRACE_PEEKDATA, .addr = -3},
-+	{PTRACE_PEEKDATA, .addr = -4},
-+	{PTRACE_PEEKTEXT, .addr = 0},
-+	{PTRACE_PEEKTEXT, .addr = 1},
-+	{PTRACE_PEEKTEXT, .addr = 2},
-+	{PTRACE_PEEKTEXT, .addr = 3},
-+	{PTRACE_PEEKTEXT, .addr = -1},
-+	{PTRACE_PEEKTEXT, .addr = -2},
-+	{PTRACE_PEEKTEXT, .addr = -3},
-+	{PTRACE_PEEKTEXT, .addr = -4},
-+	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 1},
-+	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 2},
-+	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 3},
-+	{PTRACE_PEEKUSER, .addr = SIZEOF_USER + 4},
-+	{PTRACE_PEEKUSER, .addr = -1},
-+	{PTRACE_PEEKUSER, .addr = -2},
-+	{PTRACE_PEEKUSER, .addr = -3},
-+	{PTRACE_PEEKUSER, .addr = -4},
-+	{PTRACE_POKEDATA, .addr = 0},
-+	{PTRACE_POKEDATA, .addr = 1},
-+	{PTRACE_POKEDATA, .addr = 2},
-+	{PTRACE_POKEDATA, .addr = 3},
-+	{PTRACE_POKEDATA, .addr = -1},
-+	{PTRACE_POKEDATA, .addr = -2},
-+	{PTRACE_POKEDATA, .addr = -3},
-+	{PTRACE_POKEDATA, .addr = -4},
-+	{PTRACE_POKETEXT, .addr = 0},
-+	{PTRACE_POKETEXT, .addr = 1},
-+	{PTRACE_POKETEXT, .addr = 2},
-+	{PTRACE_POKETEXT, .addr = 3},
-+	{PTRACE_POKETEXT, .addr = -1},
-+	{PTRACE_POKETEXT, .addr = -2},
-+	{PTRACE_POKETEXT, .addr = -3},
-+	{PTRACE_POKETEXT, .addr = -4},
-+	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 1},
-+	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 2},
-+	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 3},
-+	{PTRACE_POKEUSER, .addr = SIZEOF_USER + 4},
-+	{PTRACE_POKEUSER, .addr = -1},
-+	{PTRACE_POKEUSER, .addr = -2},
-+	{PTRACE_POKEUSER, .addr = -3},
-+	{PTRACE_POKEUSER, .addr = -4},
- #ifdef PTRACE_GETREGS
--	{
--	PTRACE_GETREGS,.data = 0}, {
--	PTRACE_GETREGS,.data = 1}, {
--	PTRACE_GETREGS,.data = 2}, {
--	PTRACE_GETREGS,.data = 3}, {
--	PTRACE_GETREGS,.data = -1}, {
--	PTRACE_GETREGS,.data = -2}, {
--	PTRACE_GETREGS,.data = -3}, {
--	PTRACE_GETREGS,.data = -4},
-+	{PTRACE_GETREGS, .data = 0},
-+	{PTRACE_GETREGS, .data = 1},
-+	{PTRACE_GETREGS, .data = 2},
-+	{PTRACE_GETREGS, .data = 3},
-+	{PTRACE_GETREGS, .data = -1},
-+	{PTRACE_GETREGS, .data = -2},
-+	{PTRACE_GETREGS, .data = -3},
-+	{PTRACE_GETREGS, .data = -4},
- #endif
- #ifdef PTRACE_GETFGREGS
--	{
--	PTRACE_GETFGREGS,.data = 0}, {
--	PTRACE_GETFGREGS,.data = 1}, {
--	PTRACE_GETFGREGS,.data = 2}, {
--	PTRACE_GETFGREGS,.data = 3}, {
--	PTRACE_GETFGREGS,.data = -1}, {
--	PTRACE_GETFGREGS,.data = -2}, {
--	PTRACE_GETFGREGS,.data = -3}, {
--	PTRACE_GETFGREGS,.data = -4},
-+	{PTRACE_GETFGREGS, .data = 0},
-+	{PTRACE_GETFGREGS, .data = 1},
-+	{PTRACE_GETFGREGS, .data = 2},
-+	{PTRACE_GETFGREGS, .data = 3},
-+	{PTRACE_GETFGREGS, .data = -1},
-+	{PTRACE_GETFGREGS, .data = -2},
-+	{PTRACE_GETFGREGS, .data = -3},
-+	{PTRACE_GETFGREGS, .data = -4},
- #endif
- #ifdef PTRACE_SETREGS
--	{
--	PTRACE_SETREGS,.data = 0}, {
--	PTRACE_SETREGS,.data = 1}, {
--	PTRACE_SETREGS,.data = 2}, {
--	PTRACE_SETREGS,.data = 3}, {
--	PTRACE_SETREGS,.data = -1}, {
--	PTRACE_SETREGS,.data = -2}, {
--	PTRACE_SETREGS,.data = -3}, {
--	PTRACE_SETREGS,.data = -4},
-+	{PTRACE_SETREGS, .data = 0},
-+	{PTRACE_SETREGS, .data = 1},
-+	{PTRACE_SETREGS, .data = 2},
-+	{PTRACE_SETREGS, .data = 3},
-+	{PTRACE_SETREGS, .data = -1},
-+	{PTRACE_SETREGS, .data = -2},
-+	{PTRACE_SETREGS, .data = -3},
-+	{PTRACE_SETREGS, .data = -4},
- #endif
- #ifdef PTRACE_SETFGREGS
--	{
--	PTRACE_SETFGREGS,.data = 0}, {
--	PTRACE_SETFGREGS,.data = 1}, {
--	PTRACE_SETFGREGS,.data = 2}, {
--	PTRACE_SETFGREGS,.data = 3}, {
--	PTRACE_SETFGREGS,.data = -1}, {
--	PTRACE_SETFGREGS,.data = -2}, {
--	PTRACE_SETFGREGS,.data = -3}, {
--	PTRACE_SETFGREGS,.data = -4},
-+	{PTRACE_SETFGREGS, .data = 0},
-+	{PTRACE_SETFGREGS, .data = 1},
-+	{PTRACE_SETFGREGS, .data = 2},
-+	{PTRACE_SETFGREGS, .data = 3},
-+	{PTRACE_SETFGREGS, .data = -1},
-+	{PTRACE_SETFGREGS, .data = -2},
-+	{PTRACE_SETFGREGS, .data = -3},
-+	{PTRACE_SETFGREGS, .data = -4},
- #endif
- #if HAVE_DECL_PTRACE_GETSIGINFO
--	{
--	PTRACE_GETSIGINFO,.data = 0}, {
--	PTRACE_GETSIGINFO,.data = 1}, {
--	PTRACE_GETSIGINFO,.data = 2}, {
--	PTRACE_GETSIGINFO,.data = 3}, {
--	PTRACE_GETSIGINFO,.data = -1}, {
--	PTRACE_GETSIGINFO,.data = -2}, {
--	PTRACE_GETSIGINFO,.data = -3}, {
--	PTRACE_GETSIGINFO,.data = -4},
-+	{PTRACE_GETSIGINFO, .data = 0},
-+	{PTRACE_GETSIGINFO, .data = 1},
-+	{PTRACE_GETSIGINFO, .data = 2},
-+	{PTRACE_GETSIGINFO, .data = 3},
-+	{PTRACE_GETSIGINFO, .data = -1},
-+	{PTRACE_GETSIGINFO, .data = -2},
-+	{PTRACE_GETSIGINFO, .data = -3},
-+	{PTRACE_GETSIGINFO, .data = -4},
- #endif
- #if HAVE_DECL_PTRACE_SETSIGINFO
--	{
--	PTRACE_SETSIGINFO,.data = 0}, {
--	PTRACE_SETSIGINFO,.data = 1}, {
--	PTRACE_SETSIGINFO,.data = 2}, {
--	PTRACE_SETSIGINFO,.data = 3}, {
--	PTRACE_SETSIGINFO,.data = -1}, {
--	PTRACE_SETSIGINFO,.data = -2}, {
--	PTRACE_SETSIGINFO,.data = -3}, {
--	PTRACE_SETSIGINFO,.data = -4},
-+	{PTRACE_SETSIGINFO, .data = 0},
-+	{PTRACE_SETSIGINFO, .data = 1},
-+	{PTRACE_SETSIGINFO, .data = 2},
-+	{PTRACE_SETSIGINFO, .data = 3},
-+	{PTRACE_SETSIGINFO, .data = -1},
-+	{PTRACE_SETSIGINFO, .data = -2},
-+	{PTRACE_SETSIGINFO, .data = -3},
-+	{PTRACE_SETSIGINFO, .data = -4},
-+#endif
-+};
-+
-+#define SPT(x)[PTRACE_##x] = #x,
-+static char *strings[] = {
-+	SPT(TRACEME)
-+	SPT(PEEKTEXT)
-+	SPT(PEEKDATA)
-+	SPT(PEEKUSER)
-+	SPT(POKETEXT)
-+	SPT(POKEDATA)
-+	SPT(POKEUSER)
-+#ifdef PTRACE_GETREGS
-+	SPT(GETREGS)
-+#endif
-+#ifdef PTRACE_SETREGS
-+	SPT(SETREGS)
-+#endif
-+#ifdef PTRACE_GETSIGINFO
-+	SPT(GETSIGINFO)
- #endif
-+#ifdef PTRACE_SETSIGINFO
-+	SPT(SETSIGINFO)
-+#endif
-+#ifdef PTRACE_GETFGREGS
-+	SPT(GETFGREGS)
-+#endif
-+#ifdef PTRACE_SETFGREGS
-+	SPT(SETFGREGS)
-+#endif
-+	SPT(KILL)
-+	SPT(SINGLESTEP)
- };
- 
--int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static void child(void)
-+{
-+	SAFE_PTRACE(PTRACE_TRACEME, 0, NULL, NULL);
-+	raise(SIGSTOP);
-+	exit(0);
-+}
- 
--int main(int argc, char *argv[])
-+static void run(void)
- {
- 	size_t i;
--	long ret;
--	int saved_errno;
-+	int pid;
-+	int status;
-+	int exp_errnos[] = {EIO, EFAULT};
-+
-+	pid = SAFE_FORK();
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
-+	if (!pid)
-+		child();
- 
--	make_a_baby(argc, argv);
-+	SAFE_WAIT(&status);
-+
-+	if (!WIFSTOPPED(status))
-+		tst_brk(TBROK, "child %d was not stopped", pid);
- 
- 	for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
- 		struct test_case_t *tc = &test_cases[i];
- 
--		errno = 0;
--		ret =
--		    ptrace(tc->request, pid, (void *)tc->addr,
--			   (void *)tc->data);
--		saved_errno = errno;
--		if (ret != -1)
--			tst_resm(TFAIL,
--				 "ptrace(%s, ..., %li, %li) returned %li instead of -1",
--				 strptrace(tc->request), tc->addr, tc->data,
--				 ret);
--		else if (saved_errno != EIO && saved_errno != EFAULT)
--			tst_resm(TFAIL,
--				 "ptrace(%s, ..., %li, %li) expected errno EIO or EFAULT; actual: %i (%s)",
--				 strptrace(tc->request), tc->addr, tc->data,
--				 saved_errno, strerror(saved_errno));
--		else
--			tst_resm(TPASS,
--				 "ptrace(%s, ..., %li, %li) failed as expected",
--				 strptrace(tc->request), tc->addr, tc->data);
-+		TEST(ptrace(tc->request, pid, (void *)tc->addr,
-+					(void *)tc->data));
-+		TST_EXP_FAIL_ARR(ptrace(tc->request, pid, (void *)tc->addr,
-+					(void *)tc->data), exp_errnos, ARRAY_SIZE(exp_errnos),
-+					"ptrace(%s, ..., %li, %li) failed as expected",
-+					 strings[tc->request], tc->addr, tc->data);
- 	}
- 
--	/* hopefully this worked */
--	ptrace(PTRACE_KILL, pid, NULL, NULL);
-+	SAFE_PTRACE(PTRACE_CONT, pid, NULL, NULL);
- 
--	tst_exit();
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+};
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace06_child.c b/testcases/kernel/syscalls/ptrace/ptrace06_child.c
-new file mode 100644
-index 000000000..350b0e8df
---- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace06_child.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 Linux Test Project
-+ * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+
-+int main(int argc, char *argv[])
-+{
-+
-+	tst_res(TPASS, "%s executed", argv[0]);
-+
-+	return 0;
-+}
+There is also one more patch that addes license and copyright to the
+newest shell library that I've pushed without prior review as it falls
+into the obvious fixes category.
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
