@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6552E77188
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 22:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 370E0E77188
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 22:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736893677; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736893702; h=date :
  mime-version : message-id : references : in-reply-to : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=TnJCieeExS28zjFl69fDOMNGgRYmmgAei5AllcF1yd8=;
- b=DPDTzQuytNnx+1+Cc3Q0rFjoBR86YevZTEOEVgjG/ae0aEw17Let6tVq3LVJECoSXtTst
- djwPWCu8V5LDtO6ge8l0sj4W6ILT6cBFA/aQVshld+xDtxnLrSvzMDEXd8jvxobnK9rFdBV
- 84k+bSP3/sGHLpKU3H70hGruYWTSA/E=
+ bh=fFxwe9aKsko9u9U/VCszOiPJjO6Afx+Tc9jxA+8xtWI=;
+ b=T+wuQj4MxZHPytV+/cBwCjlRc8YPYvgOazrYFpmDXzYe2t0PI+8xoIJhoyZWwDrt58GXM
+ wsLd00OxTC4WzgtY8GMDH86N3vXzoWGi/t4GT9x27IZwqFIDgLNW/ZXC+S5GgIl84Ou4QYs
+ 9tyrqXQEu72T0zW+Wy6Yq+yOfsO6fJk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B8A6A3C7AE7
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 23:27:57 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7D5AF3C7B5B
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 23:28:22 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D8BA3C7B66
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 23:26:54 +0100 (CET)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com
- [209.85.221.42])
+ by picard.linux.it (Postfix) with ESMTPS id C46C73C7B5C
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 23:27:01 +0100 (CET)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com
+ [209.85.218.41])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DD08710009AB
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 23:26:53 +0100 (CET)
-Received: by mail-wr1-f42.google.com with SMTP id
- ffacd0b85a97d-385e1fcb0e1so3128146f8f.2
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:26:53 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 85539101AF20
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 23:27:00 +0100 (CET)
+Received: by mail-ej1-f41.google.com with SMTP id
+ a640c23a62f3a-aaeef97ff02so987440166b.1
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:27:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736893612; x=1737498412;
+ d=1e100.net; s=20230601; t=1736893619; x=1737498419;
  h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
  :mime-version:subject:date:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=BSyJr+nZjNT3cDiT+HeeyWBrqGxM7NY8nixr7dDK8nA=;
- b=qfIFhg+alIPFnm6rbTTi5RezNiYx4ew6M67Fw42gQOmBGzEbV2amqxR11tDegijZsh
- BgcZ+6gGNHdm+5ePtCxyC5Qomg1QjDxcDUiNLFUZ/bFb2Zt2yqZYThVpxYkz7iO8cZwW
- pbznbqvF1Hn5+5t5rBlpdYashjQZOQQginbFAUhMmn6rpzibkD7Ofjal7UFJ73la0xYv
- F/Vhr+HZbNdGjqJIQ3xh/NHBQkFitsT+zoisJwKw87ZILnhBbI/8qgmqDoemm/IkoXpt
- zsJe2lQwFTjh6odUA0pmvHxGjtJEXLrakaGQ+PzX8bsQidaeIKOTfQwGgWRmvwHlXViD
- WY6g==
-X-Gm-Message-State: AOJu0Yz1Fp+BkBbfjDUjD+xQlCR/Exd/CKOZwcuwSYdEV2Zkt9b6TtD2
- GMXXYmm33vhY96evR78H1gHTNuFE+1seejd0pQLf5acqNkRSEo+/BLEAB826r7stpV95WPR7WZ5
- H
-X-Gm-Gg: ASbGncs4dJa/7V7vP9U6Cso6mENH8+yQ2E4khxW1fu0UHqu9TchBlAtkafh8DPgh6N0
- EbakOR5MofHNzRphVrv3j/3Jhx53qYrBnsI26DzZVRio4EW7ierdxmyq75rgQuDwfsi/oBZ9S+u
- BAADzBIVRiE7XecewCDQl9ihm4jciZzRRJdoRIfGY37Ff7gST2C60Gvlv8p0HrCnIRR8KKZdaa0
- WTs/8D7PA1r2V7rUWYfLwYhQzwFB3LL8v2nSIlDhQ==
-X-Google-Smtp-Source: AGHT+IFzgLvIT1ha0UWzd5tEaOx17lyiBSAJCRitH2/W6P0jYM5nOPC6vOYXEMadFWhFzqAL29fGZA==
-X-Received: by 2002:a5d:59af:0:b0:382:31a1:8dc3 with SMTP id
- ffacd0b85a97d-38a87313151mr26448300f8f.35.1736893612422; 
- Tue, 14 Jan 2025 14:26:52 -0800 (PST)
+ bh=Vft6rbST+ikO96MWzBgfSzVDzklvPVU5bfiBw5Tzblg=;
+ b=qIhWwJgmFRYg/UDIkHYyTtzVw0/EpZ5E3RvcQ0Sa191ZPs7eutM012xCioB71Tcw0d
+ x3T8Shk7DxVGWJxifDwewVVl6hYD236vcw4IbZZN1ud8Zyz2iDUJeVWf0iWZ2jW51NnB
+ QKcqE1Xt+ayjXyqdb89BnU5hbDwX+fkVRTQVlv68Pq5r8gLriCfal/x74lttCt/UhGmV
+ xdMlPvxe1C8zJi+/+K2BoqhtfNOtGOAxjtCVT2FbqUBPYUnbl8yy4fosLY83Cpo0w1us
+ 8nkx1IXlbymngPjdjuwenNmxWAiOw73P3v+9FwHtjFXV7ydRPfL2vwW7MCgpLTcY96JV
+ QgOg==
+X-Gm-Message-State: AOJu0Yw1NWC21H4ZlgeaE1WWMnIIRCzEYuU/xCjbIlsiSDmKta0Sq7pK
+ Cy8onBjq/Iwv586zuLiKsC9JfpnEiBqtcQI7vZswxqyNPblTdv4TzXsOp7hmDOooRKKX4Ove9G0
+ k
+X-Gm-Gg: ASbGncvpiwhcpQnCGxB6e+qomOpWgbBvWXOlc9K5qD0JrGpy41XK1Ht7/m9BLlxbQBo
+ DtmbjMBlqEkpbQNaQdCMJHK6/PO82An5it/lFuE4bjRmxmIhA/tNR4tUrWFWrMXOavWJI/HLIBP
+ kQObklr2uOvCxOOr3yLDyPjyFuBOtoNFFF+12r3yG/52EWrLEd49Wq/Sgf+USjO/jgvRaNXc8hj
+ HnOPlW76H47z8k6mmKVqOuYYGgcM1jNONNgI21qMA==
+X-Google-Smtp-Source: AGHT+IHiK81qbf+qIwWtlgOxDWqSGRM7DzaAu1lLhoqPQoUaDLElXWaIPNZqM+TO8F5799IxD14bFg==
+X-Received: by 2002:a17:907:3f15:b0:aab:f8e8:53ce with SMTP id
+ a640c23a62f3a-ab2ab67658bmr2338058066b.11.1736893619164; 
+ Tue, 14 Jan 2025 14:26:59 -0800 (PST)
 Received: from localhost ([177.95.18.53]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-2ad80545fc1sm5568377fac.13.2025.01.14.14.26.48
+ 006d021491bc7-5f8826425cdsm4655406eaf.14.2025.01.14.14.26.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jan 2025 14:26:50 -0800 (PST)
-Date: Tue, 14 Jan 2025 19:26:32 -0300
+ Tue, 14 Jan 2025 14:26:56 -0800 (PST)
+Date: Tue, 14 Jan 2025 19:26:33 -0300
 MIME-Version: 1.0
-Message-Id: <20250114-conversions-v1-2-7869a9f786d0@suse.com>
+Message-Id: <20250114-conversions-v1-3-7869a9f786d0@suse.com>
 References: <20250114-conversions-v1-0-7869a9f786d0@suse.com>
 In-Reply-To: <20250114-conversions-v1-0-7869a9f786d0@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10160; i=rbm@suse.com;
- h=from:subject:message-id; bh=h9ARUH8iIm5jZNeLGViJErpIMrrz4oQv/UpMnESSDgw=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnhuScyWjFcgK94dNjvvc2Eiuk/2NNvtMK/9Obk
- eD3Z1KSRZeJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ4bknAAKCRDJC4p8Y4ZY
- pu9pEACMVUfgi4Xh6uBwezO1OD2JBP5NhfVxg0mKQxq32R+D5yYN+wFZNJPoej8x6V0IjKF+WiF
- lAfkG1TXSdkFKOn2x6m75CuQM+6xBD9/O36Zu+r3vBCIHqmQkI4MPQWzlTE1YCFEPFZKfYwaR/J
- rXl4ecoI6tT7kqu3M1F3HaOF74aVz7+QDXxbZBI9ngalElCDsiXNmKFNSgfU+5FVufKJ5RibZe7
- /CvTCGDvVR3n4D60uLjtpXXRCz9HvU0J0atoGse8ahx1h58mIf2rrf+iGXQoBT2cbiNwbjgIuEt
- dwAx7SnF8L/zc84SA+KQNRIuMF4J5eLePHwdmwf7KQ9s0sMUZ7IxUr7rcHYfSA6pTTsBRBgvBCn
- Qt+SR+yv+Y81hMI7PcuCIs0DRLloj3cnVEmjAQaa4jrObXf9sv0lx6r+ysxPLfSGhpYPOou8fRH
- idwzOJLWUVzXsgol/LNd06hvmuPyBTqu9urJBOkNkbgsB1pJCPLUVHnR3ccy2E1K4v8QOp1aLt+
- 41WnWl93aj4CN8JEaoVSKBbInjC9OE70+wVY8v1tHKd2L3fmN3lbSBcZq28f41Q9tZUUXI7KpBl
- ahqDLsFrDqnYO/JtrIYa91aGCQWwe5KVpnPauqjsSI3DR4S131AGyE/wfBE0HRt/+txbM33rI/W
- QVwP16HfZu2rgkg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7191; i=rbm@suse.com;
+ h=from:subject:message-id; bh=d9LkgF1v4VJUoi4/fYIND5az/m3T2LFfb+IQ3uP62Ko=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBnhuScsm3pq2xmIKIXPo9dnuz5XcFNhkX0t7WAD
+ nwqYWbd7RiJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ4bknAAKCRDJC4p8Y4ZY
+ pujfD/9fd7a+qt2g+4mRYMIwfxk9MCbuMdUFKAx+DRGWKquvAJzTtQ0zckL3USEf0pqHD4DwgAW
+ JgZCJ5HJ/stSLd4ClVWXEkd7daOL5La1XlYB9rADFtiSJ8oLMDf53210aBSKHWimTHH1R00lOxe
+ Po3HKUd0QyTCxamnqb5yYvbx1WM7CNLzm4mfZNGiwlNjJWa1dPEpCgGshPq/VOXiF/pGOW/9YWH
+ c8IxTSJH8jq/x1zsZWqucBReamfDuqMG8OBI5p9IECct614inHSVW9cZkKhSyn4kbusLH9ED5U7
+ idPwZmY4Ln4IQM34BHIsQJgj1flhUIPe8jt5XFM7o3SqI01ZlB+PJoqBoFADilDYADLCmc7h9Vj
+ 8jG7xJNlnOvdLUjZRHMAlppqgyyWhSW/7u3prSvRXd1yxmePtczNO2aHEmNwfF2IWT1X2LGQF6e
+ Z+71UZ1uw/nw2Ic2gdaj32HuBPaL68bdxsCwrQQsEdaBHSplNC0wmCPOReTL9pVPd7M7aXKhJQF
+ JpOmP/Eo9SszQpvAdLblgyIn0G6fzKHj4SVoNyeXc+GfhBvhL3DBt+Ji8vqcjeimFjr9/RMsV7U
+ Uwt8AK+6/XS8vZnGtKmzCdZX1LhmtTXAzCBb8+mTgpNCYKRlpIr6Hi8zSl3fEbG25mW38CL4N8Q
+ hdNO1TKkgADC6AA==
 X-Developer-Key: i=rbm@suse.com; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] mmap03: Convert to new API
+Subject: [LTP] [PATCH 3/3] mmap10: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,346 +110,264 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Ricardo B. Marliere <rbm@suse.com>
 
-Also add x86_64 if PKU is enabled.
-
 Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
 ---
- testcases/kernel/syscalls/mmap/mmap03.c | 274 ++++++++++++--------------------
- 1 file changed, 99 insertions(+), 175 deletions(-)
+ testcases/kernel/syscalls/mmap/mmap10.c | 198 +++++++++++---------------------
+ 1 file changed, 66 insertions(+), 132 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap03.c b/testcases/kernel/syscalls/mmap/mmap03.c
-index 9d94d2653661387d22f811cd959a87b8112c1167..8990acbecfb8dcad174df3a56fa512a39be16478 100644
---- a/testcases/kernel/syscalls/mmap/mmap03.c
-+++ b/testcases/kernel/syscalls/mmap/mmap03.c
-@@ -1,230 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+index b844af07fd78d69c5cf5afc3039a54685c982776..3436457e7c6ca89b3dd98058bb6cc72308f8ff99 100644
+--- a/testcases/kernel/syscalls/mmap/mmap10.c
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -1,27 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
+- * Copyright (C) 2010  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
 - *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
 - *
 - * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * Copyright (c) 2010 Red Hat, Inc.
 + * Copyright (c) 2025 Linux Test Project
-+ * 07/2001 Ported by Wayne Boyer
   */
  
 -/*
-- * Test Description:
-- *  Call mmap() to map a file creating a mapped region with execute access
-- *  under the following conditions -
-- *	- The prot parameter is set to PROT_EXE
-- *	- The file descriptor is open for read
-- *	- The file being mapped has execute permission bit set.
-- *	- The minimum file permissions should be 0555.
 +/*\
 + * [Description]
++ *
+  * mmap/munmap /dev/zero: a common way of malloc()/free() anonymous
+  * memory on Solaris.
   *
-- *  The call should succeed to map the file creating mapped memory with the
-- *  required attributes.
-+ * Call mmap() to map a file creating a mapped region with execute access
-+ * under the following conditions:
-+ * - The prot parameter is set to PROT_EXEC
-+ * - The file descriptor is open for read
-+ * - The file being mapped has execute permission bit set
-+ * - The minimum file permissions should be 0555
-+ * The call should succeed to map the file creating mapped memory with the
-+ * required attributes.
-  *
-- * Expected Result:
-- *  mmap() should succeed returning the address of the mapped region,
-- *  and the mapped region should contain the contents of the mapped file.
-- *  but with ia64 and PARISC/hppa,
-- *  an attempt to access the contents of the mapped region should give
-- *  rise to the signal SIGSEGV.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * mmap() should succeed returning the address of the mapped region,
-+ * and the mapped region should contain the contents of the mapped file.
-+ * but with ia64, PARISC/hppa and x86_64 (with PKU), an attempt to access
-+ * the contents of the mapped region should give rise to the signal SIGSEGV.
+@@ -52,155 +37,104 @@
+  * address range was an optimization to make the subsequent pagefault
+  * times faster on RHEL5 that has been removed/changed upstream.
   */
--#include <stdio.h>
--#include <stdlib.h>
 -#include <sys/types.h>
+-#include <sys/stat.h>
++
++#include "safe_macros_fn.h"
++#include "tst_test.h"
+ #include <sys/wait.h>
+-#include <sys/mman.h>
 -#include <errno.h>
 -#include <unistd.h>
+-#include <stdlib.h>
+-#include <stdio.h>
 -#include <fcntl.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--#include <setjmp.h>
- 
 -#include "test.h"
-+#include <setjmp.h>
-+#include <stdlib.h>
- 
--#define TEMPFILE	"mmapfile"
-+#include "tst_kconfig.h"
-+#include "tst_test.h"
- 
--char *TCID = "mmap03";
--int TST_TOTAL = 1;
-+#define TEMPFILE "mmapfile"
- 
- static size_t page_sz;
- static char *addr;
- static char *dummy;
- static int fildes;
--static volatile int pass = 0;
-+static volatile int sig_flag = -1;
- static sigjmp_buf env;
- 
--static void setup(void);
--static void cleanup(void);
--static void sig_handler(int sig);
+-#include "config.h"
 -
--int main(int ac, char **av)
-+/*
-+ * This function gets executed when the test process receives the signal
-+ * SIGSEGV while trying to access the contents of memory which is not accessible.
-+ */
-+static void sig_handler(int sig)
+-#define SIZE (5*1024*1024)
+-#define PATH_KSM "/sys/kernel/mm/ksm/"
+ 
+-char *TCID = "mmap10";
+-int TST_TOTAL = 1;
++#define SIZE (5 * 1024 * 1024)
++#define PATH_KSM "/sys/kernel/mm/ksm/"
+ 
+-static int fd, opt_anon, opt_ksm;
++static int fd;
++static char *opt_anon, *opt_ksm;
+ static long ps;
+ static char *x;
+ 
+-void setup(void);
+-void cleanup(void);
+-void mmapzero(void);
+-void help(void);
+-
+-static option_t options[] = {
+-	{"a", &opt_anon, NULL},
+-	{"s", &opt_ksm, NULL},
+-	{NULL, NULL, NULL}
+-};
+-
+-int main(int argc, char *argv[])
++static void setup(void)
  {
 -	int lc;
 -
--	tst_parse_opts(ac, av, NULL, NULL);
+-	tst_parse_opts(argc, argv, options, help);
 -
+ 	if (opt_ksm) {
+ 		if (access(PATH_KSM, F_OK) == -1)
+-			tst_brkm(TCONF, NULL,
+-				 "KSM configuration is not enabled");
++			tst_brk(TCONF, "KSM configuration is not enabled");
+ #ifdef HAVE_DECL_MADV_MERGEABLE
+-		tst_resm(TINFO, "add to KSM regions.");
++		tst_res(TINFO, "add to KSM regions.");
+ #else
+-		tst_brkm(TCONF, NULL, "MADV_MERGEABLE missing in sys/mman.h");
++		tst_brk(TCONF, "MADV_MERGEABLE missing in sys/mman.h");
+ #endif
+ 	}
++
+ 	if (opt_anon)
+-		tst_resm(TINFO, "use anonymous pages.");
++		tst_res(TINFO, "use anonymous pages.");
+ 	else
+-		tst_resm(TINFO, "use /dev/zero.");
++		tst_res(TINFO, "use /dev/zero.");
+ 
 -	setup();
 -
+-	tst_resm(TINFO, "start tests.");
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
 -		tst_count = 0;
--
--		/*
--		 * Call mmap to map the temporary file 'TEMPFILE'
--		 * with execute access.
--		 */
--		errno = 0;
--		addr = mmap(0, page_sz, PROT_EXEC,
--			    MAP_FILE | MAP_SHARED, fildes, 0);
--
--		/* Check for the return value of mmap() */
--		if (addr == MAP_FAILED) {
--			tst_resm(TFAIL | TERRNO, "mmap() failed on %s",
--				 TEMPFILE);
--			continue;
--		}
--
--		/*
--		 * Read the file contents into the dummy
--		 * variable.
--		 */
--		if (read(fildes, dummy, page_sz) < 0) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "reading %s failed", TEMPFILE);
--		}
--
--		/*
--		 * Check whether the mapped memory region
--		 * has the file contents.
--		 *
--		 * with ia64 and PARISC/hppa, this should
--		 * generate a SIGSEGV which will be caught below.
--		 *
--		 */
--
--		if (sigsetjmp(env, 1) == 0) {
--			if (memcmp(dummy, addr, page_sz)) {
--				tst_resm(TFAIL,
--					 "mapped memory region "
--					 "contains invalid data");
--			} else {
--				tst_resm(TPASS,
--					 "mmap() functionality is "
--					 "correct");
--			}
--		}
--#if defined(__ia64__) || defined(__hppa__) || defined(__mips__)
--		if (pass) {
--			tst_resm(TPASS, "Got SIGSEGV as expected");
--		} else {
--			tst_resm(TFAIL, "Mapped memory region with NO "
--				 "access is accessible");
--		}
--#endif
--
--		/* Clean up things in case we are looping */
--		/* Unmap the mapped memory */
--		if (munmap(addr, page_sz) != 0) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to unmap the mmapped pages");
--		}
--		pass = 0;
--
-+	if (sig == SIGSEGV) {
-+		/* Set the global variable and jump back */
-+		sig_flag = 1;
-+		siglongjmp(env, 1);
-+	} else {
-+		tst_brk(TBROK, "received an unexpected signal: %d", sig);
- 	}
--
+-		mmapzero();
+-	}
++	ps = SAFE_SYSCONF(_SC_PAGESIZE);
++}
+ 
 -	cleanup();
 -	tst_exit();
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
  }
  
- static void setup(void)
- {
- 	char *tst_buff;
- 
--	tst_sig(NOFORK, sig_handler, cleanup);
--
--	TEST_PAUSE;
-+	SAFE_SIGNAL(SIGSEGV, sig_handler);
- 
- 	page_sz = getpagesize();
- 
- 	/* Allocate space for the test buffer */
--	if ((tst_buff = calloc(page_sz, sizeof(char))) == NULL) {
--		tst_brkm(TFAIL, NULL, "calloc failed (tst_buff)");
--	}
-+	tst_buff = SAFE_CALLOC(page_sz, sizeof(char));
- 
- 	/* Fill the test buffer with the known data */
- 	memset(tst_buff, 'A', page_sz);
- 
--	tst_tmpdir();
--
--	/* Creat a temporary file used for mapping */
--	if ((fildes = open(TEMPFILE, O_WRONLY | O_CREAT, 0666)) < 0) {
--		free(tst_buff);
--		tst_brkm(TFAIL | TERRNO, cleanup, "opening %s failed",
--			 TEMPFILE);
--	}
-+	/* Create a temporary file used for mapping */
-+	fildes = SAFE_OPEN(TEMPFILE, O_WRONLY | O_CREAT);
- 
- 	/* Write test buffer contents into temporary file */
--	if (write(fildes, tst_buff, page_sz) < (long)page_sz) {
--		free(tst_buff);
--		tst_brkm(TFAIL | TERRNO, cleanup, "writing to %s failed",
--			 TEMPFILE);
--	}
-+	SAFE_WRITE(SAFE_WRITE_ALL, fildes, tst_buff, page_sz);
- 
- 	/* Free the memory allocated for test buffer */
- 	free(tst_buff);
- 
- 	/* Make sure proper permissions set on file */
--	if (fchmod(fildes, 0555) < 0) {
--		tst_brkm(TFAIL, cleanup, "fchmod of %s failed", TEMPFILE);
--	}
-+	SAFE_FCHMOD(fildes, 0555);
- 
- 	/* Close the temporary file opened for write */
--	if (close(fildes) < 0) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "closing %s failed",
--			 TEMPFILE);
--	}
-+	SAFE_CLOSE(fildes);
- 
- 	/* Allocate and initialize dummy string of system page size bytes */
--	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
--		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
--	}
-+	dummy = SAFE_CALLOC(page_sz, sizeof(char));
- 
- 	/* Open the temporary file again for reading */
--	if ((fildes = open(TEMPFILE, O_RDONLY)) < 0) {
--		tst_brkm(TFAIL | TERRNO, cleanup,
--			 "opening %s read-only failed", TEMPFILE);
--	}
-+	fildes = SAFE_OPEN(TEMPFILE, O_RDONLY);
- }
- 
--/*
-- *   This function gets executed when the test process receives
-- *   the signal SIGSEGV while trying to access the contents of memory which
-- *   is not accessible.
-- */
--static void sig_handler(int sig)
+-void mmapzero(void)
 +static void run(void)
  {
--	if (sig == SIGSEGV) {
--		/* set the global variable and jump back */
--		pass = 1;
--		siglongjmp(env, 1);
--	} else
--		tst_brkm(TBROK, cleanup, "received an unexpected signal");
-+	addr = SAFE_MMAP(0, page_sz, PROT_EXEC, MAP_FILE | MAP_SHARED, fildes,
-+			 0);
+-	int n;
++	pid_t pid;
 +
-+	/* Read the file contents into the dummy variable. */
-+	SAFE_READ(0, fildes, dummy, page_sz);
-+
-+	/*
-+	 * Check whether the mapped memory region
-+	 * has the file contents. With ia64, PARISC/hppa and x86_64 (with PKU),
-+	 * this should generate a SIGSEGV which will be caught below.
-+	 */
-+	if (sigsetjmp(env, 1) == 0) {
-+		if (memcmp(dummy, addr, page_sz)) {
-+			tst_res(TINFO, "memcmp returned non-zero");
-+			tst_res(TFAIL,
-+				"mapped memory region contains invalid data");
-+		} else {
-+			tst_res(TINFO, "memcmp returned zero");
-+			tst_res(TPASS, "mmap() functionality is correct");
-+		}
-+	}
-+
-+#if defined(__ia64__) || defined(__hppa__) || defined(__mips__)
-+	if (sig_flag > 0)
-+		tst_res(TPASS, "Got SIGSEGV as expected");
-+	else
-+		tst_res(TFAIL,
-+			"Mapped memory region with NO access is accessible");
-+#elif defined(__x86_64__)
-+	struct tst_kconfig_var kconfig =
-+		TST_KCONFIG_INIT("CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS");
-+	tst_kconfig_read(&kconfig, 1);
-+	if (kconfig.choice == 'y') {
-+		if (sig_flag > 0)
-+			tst_res(TPASS, "Got SIGSEGV as expected");
-+		else
-+			tst_res(TFAIL,
-+				"Mapped memory region with NO access is accessible");
-+	}
-+#else
-+	if (sig_flag > 0)
-+		tst_res(TFAIL, "Got unexpected SIGSEGV");
-+#endif
-+
-+	/* Clean up things in case we are looping */
-+	sig_flag = -1;
-+	SAFE_MUNMAP(addr, page_sz);
++	tst_res(TINFO, "start tests.");
+ 
+ 	if (opt_anon) {
+-		x = mmap(NULL, SIZE + SIZE - ps, PROT_READ | PROT_WRITE,
+-			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++		x = SAFE_MMAP(NULL, SIZE + SIZE - ps, PROT_READ | PROT_WRITE,
++			      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 	} else {
+-		if ((fd = open("/dev/zero", O_RDWR, 0666)) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "open");
+-		x = mmap(NULL, SIZE + SIZE - ps, PROT_READ | PROT_WRITE,
+-			 MAP_PRIVATE, fd, 0);
++		fd = SAFE_OPEN("/dev/zero", O_RDWR, 0666);
++		x = SAFE_MMAP(NULL, SIZE + SIZE - ps, PROT_READ | PROT_WRITE,
++			      MAP_PRIVATE, fd, 0);
+ 	}
+-	if (x == MAP_FAILED)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "mmap");
+ #ifdef HAVE_DECL_MADV_MERGEABLE
+-	if (opt_ksm) {
++	if (opt_ksm)
+ 		if (madvise(x, SIZE + SIZE - ps, MADV_MERGEABLE) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "madvise");
+-	}
++			tst_brk(TBROK | TERRNO, "madvise");
+ #endif
+ 	x[SIZE] = 0;
+ 
+-	switch (n = fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-	case 0:
+-		if (munmap(x + SIZE + ps, SIZE - ps - ps) == -1)
+-			tst_brkm(TFAIL | TERRNO, cleanup, "munmap");
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_MUNMAP(x + SIZE + ps, SIZE - ps - ps);
+ 		exit(0);
+-	default:
+-		break;
+ 	}
+ 
+-	switch (n = fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-	case 0:
+-		if (munmap(x + SIZE + ps, SIZE - ps - ps) == -1)
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "subsequent munmap #1");
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_MUNMAP(x + SIZE + ps, SIZE - ps - ps);
+ 		exit(0);
+-	default:
+-		switch (n = fork()) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-		case 0:
+-			if (munmap(x + SIZE + ps, SIZE - ps - ps) == -1)
+-				tst_brkm(TFAIL | TERRNO, cleanup,
+-					 "subsequent munmap #2");
++	} else {
++		pid = SAFE_FORK();
++		if (pid == 0) {
++			SAFE_MUNMAP(x + SIZE + ps, SIZE - ps - ps);
+ 			exit(0);
+-		default:
+-			break;
+ 		}
+-		break;
+ 	}
+ 
+-	if (munmap(x, SIZE + SIZE - ps) == -1)
+-		tst_resm(TFAIL | TERRNO, "munmap all");
+-
+-	while (waitpid(-1, &n, WUNTRACED | WCONTINUED) > 0)
+-		if (WEXITSTATUS(n) != 0)
+-			tst_resm(TFAIL, "child exit status is %d",
+-				 WEXITSTATUS(n));
+-}
+-
+-void cleanup(void)
+-{
+-}
+-
+-void setup(void)
+-{
+-	tst_require_root();
++	SAFE_MUNMAP(x, SIZE + SIZE - ps);
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++	while (waitpid(-1, &pid, WUNTRACED | WCONTINUED) > 0)
++		if (WEXITSTATUS(pid) != 0)
++			tst_res(TFAIL, "child exit status is %d",
++				WEXITSTATUS(pid));
+ 
+-	if ((ps = sysconf(_SC_PAGESIZE)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "sysconf(_SC_PAGESIZE)");
++	tst_res(TPASS, "mmap/munmap operations completed successfully");
  }
  
- static void cleanup(void)
- {
--	close(fildes);
- 	free(dummy);
--	tst_rmdir();
-+	if (fildes > 0)
-+		SAFE_CLOSE(fildes);
- }
-+
+-void help(void)
+-{
+-	printf("  -a      Test anonymous pages\n");
+-	printf("  -s      Add to KSM regions\n");
+-}
 +static struct tst_test test = {
-+	.test_all = run,
 +	.setup = setup,
++	.test_all = run,
 +	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++	.options =
++		(struct tst_option[]){
++			{ "a", &opt_anon, "Test anonymous pages" },
++			{ "s", &opt_ksm, "Add to KSM regions" },
++			{},
++		},
 +};
 
 -- 
