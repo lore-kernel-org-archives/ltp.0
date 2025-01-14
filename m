@@ -4,76 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E2FDE77188
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 13:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E378C02183
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 13:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736860709; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736862185; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=J7RWwLTdBP6IEH9LjpYNMuatMPOfBTogeg2iTOoTsxU=;
- b=EEHThuV0bLfEm2Aa1PczPt1gJrbMF/fJJ9f6aEenxdV+0LSOqrHAeCGxLS8qXtZpT1F3Y
- RFU1YzVLf1fHCLj61Yhx+fJmX8pxgctNNJZO7T11ud43+vFeaE6AuDozF3SKr7QAIKkjxB3
- F/7Dqw01Hv0QuQ7NzRvTMdflSLt2lnQ=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=bezPlG7BUmWsMxnsYXSgx3DKqvYhFqAU3v17EyyRugc=;
+ b=Lcgwg1FJzmC/9NvXDD97yO2wdHjQ825nIx2ODU3POMhX23Wu3YqB/cn5kMJdVnhZSd80J
+ zD+h2tReWgOzR0xo45NwXKJaEDG0voUn050HeGsJR3PeWjAT4rpsVYF/mc0jYheuEKuT8FM
+ bL30fBtkt2xJvecg7f0h+tlIy2669aM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD6353C7A73
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 14:18:29 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 69B283C7AC9
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 14:43:05 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 58D8F3C7A28
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:18:08 +0100 (CET)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com
- [209.85.221.53])
+ by picard.linux.it (Postfix) with ESMTPS id B42373C7AAA
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:42:43 +0100 (CET)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8A871BDC58C
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:18:07 +0100 (CET)
-Received: by mail-wr1-f53.google.com with SMTP id
- ffacd0b85a97d-385e0e224cbso2860189f8f.2
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 05:18:07 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D5238600490
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 14:42:42 +0100 (CET)
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-ab2e308a99bso196423266b.1
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 05:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1736862162; x=1737466962; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=F6GF+oqoKuNbm0W+dgRlgguumXVMZnyIPngBjwd7DLM=;
+ b=bvkueKgL4YqgaHyJvgq/K4SOkTqiR96CTQE9cTX7KFfWGMdeemCaHmkmKiRwBzcujg
+ Ho8buR7lA6zFWT6OZf/+146Xn68tYr7txOk7uH4oa0rC5/qFZJKdcHvn4019YoPRYOE7
+ h+y/9mm4NZRjqV9LWcPMoPPSfvbPhS9TNyqq4+VFBQlo1pYCM+MDdyC/3GRF9BrnFNzf
+ Hkr62Lx+3sJoTp/xjXQj4RLfU5YbnHw//MwcbSUIRkKBUCdqhHjQ+x5HwnQ1bqP2ndEn
+ FukjstaP2XE0rp7i7FzCs9B8P0pzyw9nZKHkyUGTl6q4nHoE8MX37Hrj1s1W+Sc/9Hn7
+ bW4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736860687; x=1737465487;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ZXP5oYWoq2rBM4WWDmpjfx4/fQXhyVoyM4FGXBs1h/0=;
- b=eGANdNVgBR25bBuEpvn3UTQ4LLXiXuoIpfF408d8qNnNYc5dBFpMi4h5GVAHbRVR05
- 2nJlPrCLRxefNWLRHj2yWtq2VRuE1IY9JS5SuQ4ogdE7cwkBUzbhw/NXDnmi9T8OwMK+
- Lf7wNXxdjEcOUl7og5b53JDhO8SoDWNexTcPEvjA5gCT1GOZmNE933k3wzW7eO+bh7Xc
- YWqv+L/7kD7ZPklDKa2p44Xt1ao1iPeuAypQ+IRYAahruWNFCRra1HZ2YqR7Mok1Xp2p
- 4bjXI0tLBIeA7/jfgd5kqVg98LFffvsENz0W190Uy6TIDqH/Tyvak5d2dv9VvvtfP6+N
- Dg4g==
-X-Gm-Message-State: AOJu0YygdotY0hcO8+fHEeee5Y3/7A6CCQN1Fun3qo+DVtPBotesdZqX
- XWmXTIQ7Xpp1gHkk0quBzR9gqO+hvpSSh37kUPyiCYMpcTHL5ryPUcQIQA2M+PFRtai+Sb9IJHf
- E
-X-Gm-Gg: ASbGncs7+kOxcHigFipXlIGrzS2R70vRcOSy6x5UhMaU198bh9TqC7zLZklTixzC93L
- txQThFk7UjSLgs9hgtWp8wb9nf6H9U8kEXEpolMm7mBjp074iVNJrCWi9CxYMXWQitzkelUONPR
- O0xs3v/1zq+8U4HP+wbwAcCmU8X6w1rMANik6gPDe4rOxbDciocAY7k7qjW4cDlZOrvCOYeN5GI
- 2SyjGeze5dgWRq+zscKAryQOloejOH2M0EGGkC1MQ==
-X-Google-Smtp-Source: AGHT+IG1/kPJwHuDp6zyrPzps1Eeno9k3Ew0arZUF2FZqsGkNn2D0uomNcnlejSVRAz85p727k9KOw==
-X-Received: by 2002:a05:6000:712:b0:385:f3fb:46aa with SMTP id
- ffacd0b85a97d-38a87308c15mr22534920f8f.43.1736860687296; 
- Tue, 14 Jan 2025 05:18:07 -0800 (PST)
-Received: from localhost ([177.95.18.53]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-2ad80a525d3sm4971555fac.48.2025.01.14.05.18.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jan 2025 05:18:04 -0800 (PST)
-Date: Tue, 14 Jan 2025 10:18:01 -0300
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <cd47v5gs3f3b22fj2av6rjyjyoujm2z5qsbrbqb3mzg3e7p4gp@xgynztdlrmwq>
-References: <20250113-tst_kconfig_stddef-v1-1-66c75790d127@suse.com>
- <20250114025507.GA564529@pevik>
+ d=1e100.net; s=20230601; t=1736862162; x=1737466962;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=F6GF+oqoKuNbm0W+dgRlgguumXVMZnyIPngBjwd7DLM=;
+ b=feg1B4H1TgOxmeTXPt5IeCwMd+oaeL7P011j6lK/91ri/4xUTjz7gHBmIT0RiS0Fzm
+ VuJz9XmzMVCyxv7u7kp0UXIvNModVhnit1XP7XcVSdwCL+rU2KixB0vIJAZymdqljvW8
+ kM8mLsO81dAFd/GrPCBGzzJW72daomLZPOSZstuMJGJsiII/oz38u33rUn0cYKYZ3kLI
+ 2jxKECop1R8Y0Cc0kfhniNDFIWsHAC4rRZwNXYz3J1pkqRAiirxx9yWziHLQh2szkrEf
+ xTnvcii182ka4o/g7WSWmkAquy9RviFpkzLD14TVCOqxTCeRkpRgUX9efyo5cPLtoOyi
+ ZmHw==
+X-Gm-Message-State: AOJu0Yz6nTxMmfnUnGNYvGDmkxTcc//ZYaZTSgG3GW6ceqOl0z3i3VX3
+ tubjiGqocEm8sW/rOYp8r75Ckebr0+QcoH1Q47uMX5k64Fl9e9J6V4X3/zFmxkRuObFZ8K4TVDd
+ PUiU=
+X-Gm-Gg: ASbGncsmQbBuqhMsdFrcS09ji19spL720cpa0lQB2ruPdG7r+ilYl2TyEly7paeeeTm
+ UJb4JEd6vsSMBVkHyjgrgVA2DT0404zRudqHWE2YAaJUb7j1L/2zoU5XsDg8yESMQQgdC5h6afa
+ CQjDp0vHIHTO64ZaSCFd7degd0iu5wBeWkS2pNNiXNm4XdigAq0tyqzLkXMQbs4DecLKC18k5Ua
+ cM9alXWEFilXhh97r3kAxBPyp/k1vP+TuDsVSd6hT9I1cSZvK/s4yyxH6WEWnKLYNs=
+X-Google-Smtp-Source: AGHT+IF8bCMoYeCIJBr8JPROwA5g8qyO69Gz4IPXOWxvnJETDONUb5K/R0Euy4o/Iooy3wjQb57ICw==
+X-Received: by 2002:a17:907:1b05:b0:aab:a02c:764e with SMTP id
+ a640c23a62f3a-ab2c3c7a0c6mr2051176766b.14.1736862161958; 
+ Tue, 14 Jan 2025 05:42:41 -0800 (PST)
+Received: from [10.232.133.36] ([88.128.90.43])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-ab2c956258fsm636585866b.107.2025.01.14.05.42.41
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 14 Jan 2025 05:42:41 -0800 (PST)
+Message-ID: <47b29622-05c1-4eb1-82d4-fa530bc8314f@suse.com>
+Date: Tue, 14 Jan 2025 14:42:40 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250114025507.GA564529@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: ltp@lists.linux.it
+References: <20240415025100.2103-1-wegao@suse.com>
+ <20240425020308.25367-1-wegao@suse.com>
+Content-Language: en-US
+In-Reply-To: <20240425020308.25367-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib/tst_kconfig: Include stddef.h
+Subject: Re: [LTP] [PATCH v2 0/3] lib: Add TST_EXP_PASS_PTR_{NULL,
+ VOID} macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,56 +101,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr!
+Hi,
 
-On 14 Jan 25 03:55, Petr Vorel wrote:
-> Hi Ricardo,
-> 
-> > Currently, if a test wants to make use of tst_kconfig.h it must also
-> > include stddef.h due to the usage of size_t. While at it, fix a few minor
-> 
-> <stddef.h> or <stdlib.h>
-> 
-> Good catch, it should be corrected.
-> 
-> <stdlib.h> is used in lib/tst_test.c, thus tests have it for free,
-> but there are libraries, which load it as well.
-> 
-> > typos in comments.
-> 
-> FYI we usually split changes into commits (easier in case of revert),
-> but this is, of course, OK to keep.
+pushed!
 
-I'm aware, but when I was about to send I noticed these and figured it
-wouldn't hurt to bundle them in :)
+Andrea
 
-> 
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Also, I wondered if we want to remove these includes in files they use
-> tst_kconfig.h, but probably not necessary.
-
-I'll do some quick grepping to investigate.
-
-Thanks for reviewing,
--	Ricardo.
-
-
-> 
-> Kind regards,
-> Petr
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+On 4/25/24 04:03, Wei Gao via ltp wrote:
+> Wei Gao (3):
+>    lib: Add TST_EXP_PASS_PTR_{NULL,VOID} macros
+>    sbrk01.c: Use TST_EXP_PASS_PTR_VOID
+>    sbrk02.c: Use TST_EXP_FAIL_PTR_VOID
+>
+>   include/tst_test_macros.h               | 45 +++++++++++++++++++++----
+>   testcases/kernel/syscalls/sbrk/sbrk01.c |  8 ++---
+>   testcases/kernel/syscalls/sbrk/sbrk02.c | 17 ++--------
+>   3 files changed, 43 insertions(+), 27 deletions(-)
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
