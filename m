@@ -4,106 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EE74E77188
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 15:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64F88E77188
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 15:51:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F2C73C7B19
-	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 16:50:33 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DA18E3C7AEB
+	for <ltp@archiver.kernel.org>; Tue, 14 Jan 2025 16:51:29 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 925243C7AD6
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 16:50:16 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E91C83C7AD6
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 16:51:12 +0100 (CET)
 Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=akumar@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D02BF11F5FF2
- for <ltp@lists.linux.it>; Tue, 14 Jan 2025 16:50:15 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9AC51102A4E4
+ for <ltp@lists.linux.it>; Tue, 14 Jan 2025 16:51:11 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4E8132116A;
- Tue, 14 Jan 2025 15:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736869814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Nw0/BmeU86fTIouPw8UdbmEXrYjZfDkhqqHATf4/LFk=;
- b=l32bRusZnWn8/uU2mRqBZkeyVhA+FxFx9KfRM/C/ckL5T6CCtXKWrWnF6yHGFKc1CNKrbJ
- +Q3cciQNyDqDw0Je55C2s3HyByeakCMjClWgAjPty59YAmtv8jbo4ubEeQIwRD7hyt9odU
- 5qrCtNoINAeTPfgSpIXqRgCXNgdw67s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1736869814;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 11DCB1F37C;
+ Tue, 14 Jan 2025 15:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736869870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DjeqS26VpGF2iKB5igtxjOInWtoC/bkiQ3gpPzkjvlw=;
+ b=RdgsIi2DHw/+ogBq5hFDzIKIe7RegrQn45Sx+RZb13pXEsYdGYndEIVJGKQymTp1J50SEe
+ lNkDEjvtkOFGXWLtVyWuxVYlDg/44oKq1Cst020ip+d3+vwyvyBZ9lRetlpuDRUDqPfMfL
+ Nwi8tJRhpYWul+VlBpw2eftMyHXpV7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736869870;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Nw0/BmeU86fTIouPw8UdbmEXrYjZfDkhqqHATf4/LFk=;
- b=pH8b3tDgZJPmr5mqNtGyjl72s+1/olvDh8BlTTNKw5v7b5uPRJYIOTa1JQk85uANTJj8g7
- hd1GwNenNKFcrqBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=l32bRusZ;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=pH8b3tDg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1736869814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Nw0/BmeU86fTIouPw8UdbmEXrYjZfDkhqqHATf4/LFk=;
- b=l32bRusZnWn8/uU2mRqBZkeyVhA+FxFx9KfRM/C/ckL5T6CCtXKWrWnF6yHGFKc1CNKrbJ
- +Q3cciQNyDqDw0Je55C2s3HyByeakCMjClWgAjPty59YAmtv8jbo4ubEeQIwRD7hyt9odU
- 5qrCtNoINAeTPfgSpIXqRgCXNgdw67s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1736869814;
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DjeqS26VpGF2iKB5igtxjOInWtoC/bkiQ3gpPzkjvlw=;
+ b=yApCljMBJcXNddC262Vzn1sPaEMxrVuu3gDJzAHoP+83QEQokrgq85GyWTON2kUybRwk40
+ iqJU5rUtu8qxJqAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RdgsIi2D;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yApCljMB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736869870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DjeqS26VpGF2iKB5igtxjOInWtoC/bkiQ3gpPzkjvlw=;
+ b=RdgsIi2DHw/+ogBq5hFDzIKIe7RegrQn45Sx+RZb13pXEsYdGYndEIVJGKQymTp1J50SEe
+ lNkDEjvtkOFGXWLtVyWuxVYlDg/44oKq1Cst020ip+d3+vwyvyBZ9lRetlpuDRUDqPfMfL
+ Nwi8tJRhpYWul+VlBpw2eftMyHXpV7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736869870;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Nw0/BmeU86fTIouPw8UdbmEXrYjZfDkhqqHATf4/LFk=;
- b=pH8b3tDgZJPmr5mqNtGyjl72s+1/olvDh8BlTTNKw5v7b5uPRJYIOTa1JQk85uANTJj8g7
- hd1GwNenNKFcrqBA==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DjeqS26VpGF2iKB5igtxjOInWtoC/bkiQ3gpPzkjvlw=;
+ b=yApCljMBJcXNddC262Vzn1sPaEMxrVuu3gDJzAHoP+83QEQokrgq85GyWTON2kUybRwk40
+ iqJU5rUtu8qxJqAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A4EF139CB;
- Tue, 14 Jan 2025 15:50:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 03740139CB;
+ Tue, 14 Jan 2025 15:51:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XyQuDraHhmeXegAAD6G6ig
- (envelope-from <akumar@suse.de>); Tue, 14 Jan 2025 15:50:14 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 14 Jan 2025 16:49:59 +0100
-Message-ID: <20250114155013.7644-1-akumar@suse.de>
-X-Mailer: git-send-email 2.43.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8wZfO+2HhmfcegAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Jan 2025 15:51:09 +0000
+Date: Tue, 14 Jan 2025 16:50:56 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z4aH4LDbjgWDyLrW@yuki.lan>
+References: <20241217213245.29778-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 4E8132116A
+Content-Disposition: inline
+In-Reply-To: <20241217213245.29778-1-pvorel@suse.cz>
+X-Rspamd-Queue-Id: 11DCB1F37C
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,suse.de:email];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_TRACE(0.00)[suse.de:+]
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[5];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] flock02: Add test for EWOULDBLOCK errno
+Subject: Re: [LTP] [RFC][PATCH 1/1] tst_net.sh: Fix calling tst_brk with
+ TFAIL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,65 +120,117 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Also fix a make check warning.
+Hi!
+> And yes, using shell runner to run netstress as a child would probably
+> help, but logs would need to be printed immediately to be visible before
+> calling tst_brk() from netstress.
+> NOTE: Despite macro name TST_BRK_SUPPORTS_ONLY_TCONF_TBROK() the
+> original concept in 0738e3753c allowed TFAIL as well.
+> 
+>     This patch adds simple build-check that allows only
+>     TFAIL, TBROK and TCONF as parameter for tst_brk().
+> 
+>     TFAIL is currently quite commonly used as a shortcut for
+>     TFAIL + exit() by many tests. I kept it for now, since
+>     it doesn't go against current doc description.
+> 
+> And indeed C API allows tst_brk(TFAIL). Should we allow this also in
+> shell API?
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
-Following up on https://lore.kernel.org/ltp/1934768.7Z3S40VBb9@localhost/
+I think that it does make sense to have a reporting function that
+reports a result and exits. The type of the result is really orthogonal
+to the fact that the function does not return and both tst_brk(TFAIL,
+...) and even tst_brk(TPASS, ...) do make sense.
 
- testcases/kernel/syscalls/flock/flock02.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+The rules that we enforced on tst_brk() were mainly because of the
+limits of the implementation details that should have been fixed in the
+library instead.
 
-diff --git a/testcases/kernel/syscalls/flock/flock02.c b/testcases/kernel/syscalls/flock/flock02.c
-index b8c7eee68..e2fe73a64 100644
---- a/testcases/kernel/syscalls/flock/flock02.c
-+++ b/testcases/kernel/syscalls/flock/flock02.c
-@@ -13,6 +13,7 @@
-  * - EBADF if the file descriptor is invalid
-  * - EINVAL if the argument operation does not include LOCK_SH,LOCK_EX,LOCK_UN
-  * - EINVAL if an invalid combination of locking modes is used i.e LOCK_SH with LOCK_EX
-+ * - EWOULDBLOCK if the file is locked and the LOCK_NB flag was selected
-  */
- 
- #include <errno.h>
-@@ -31,13 +32,19 @@ static struct tcase {
- 	{&badfd, LOCK_SH, EBADF},
- 	{&fd, LOCK_NB, EINVAL},
- 	{&fd, LOCK_SH | LOCK_EX, EINVAL},
-+	{&fd, LOCK_NB | LOCK_EX, EWOULDBLOCK}
- };
- 
--static void verify_flock(unsigned n)
-+static void verify_flock(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
- 
- 	fd = SAFE_OPEN("testfile", O_RDWR);
-+	int fd2 = SAFE_OPEN("testfile", O_RDWR);
-+
-+	if (tc->exp_err == EWOULDBLOCK)
-+		flock(fd2, LOCK_EX);
-+
- 	TEST(flock(*tc->fd, tc->operation));
- 	if (TST_RET == 0) {
- 		tst_res(TFAIL | TTERRNO, "flock() succeeded unexpectedly");
-@@ -53,6 +60,7 @@ static void verify_flock(unsigned n)
- 	}
- 
- 	SAFE_CLOSE(fd);
-+	SAFE_CLOSE(fd2);
- }
- 
- static void setup(void)
+> Also Cyril suggested for C API different approach:
+> 
+> https://patchwork.ozlabs.org/project/ltp/patch/20241115164101.17983-1-chrubis@suse.cz/
+> 
+> Therefore we should probably agree what to do with C API and then unify shell API.
+
+I suppose so.
+
+>  testcases/lib/tst_net.sh | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index ee0ae1cad7..d44115d758 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -713,9 +713,17 @@ tst_wait_ipv6_dad()
+>  
+>  tst_netload_brk()
+>  {
+> +	local res="$1"
+> +	local msg="$2"
+> +
+>  	tst_rhost_run -c "cat $TST_TMPDIR/netstress.log"
+>  	cat tst_netload.log
+> -	tst_brk_ $1 $2
+> +
+> +	if [ "$res" = TFAIL ]; then
+> +		tst_res_ "$res" "$msg"
+> +	else
+> +		tst_brk_ "$res" "$msg"
+> +	fi
+>  }
+>  
+>  # Run network load test, see 'netstress -h' for option description
+> @@ -825,28 +833,31 @@ tst_netload()
+>  		fi
+>  
+>  		if [ "$ret" -ne 0 ]; then
+> -			[ $((ret & 32)) -ne 0 ] && \
+> -				tst_netload_brk TCONF "not supported configuration"
+> +			[ $((ret & 32)) -ne 0 ] && tst_netload_brk TCONF "not supported configuration"
+>  
+> -			[ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ] && \
+> +			if [ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ]; then
+>  				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
+> +				return
+> +			fi
+>  
+>  			tst_res_ TWARN "netstress failed, ret: $ret"
+>  			was_failure=1
+>  			continue
+>  		fi
+>  
+> -		[ ! -f $rfile ] && \
+> +		if [ ! -f $rfile ]; then
+>  			tst_netload_brk TFAIL "can't read $rfile"
+> +			return
+> +		fi
+>  
+>  		results="$results $(cat $rfile)"
+>  		passed=$((passed + 1))
+>  	done
+>  
+>  	if [ "$ret" -ne 0 ]; then
+> -		[ $((ret & 4)) -ne 0 ] && \
+> -			tst_res_ TWARN "netstress has warnings"
+> +		[ $((ret & 4)) -ne 0 ] && tst_res_ TWARN "netstress has warnings"
+>  		tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
+> +		return
+>  	fi
+>  
+>  	local median=$(tst_get_median $results)
+
+As for this patch, wouldn't it make more sense to allow tst_brk_ TFAIL
+instead, who knows how many places in shell stil use that...
+
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
