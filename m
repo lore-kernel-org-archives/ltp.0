@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15DB5C02185
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 11:04:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F8E5C02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 11:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736939052; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736939345; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=mgCyyGPMn5azLVpBX+t0cEbWoRRueKJ/u0Y3T25TdW8=;
- b=OZuErSJW1naWXJdhbGUA9kLzBUj/POAzk/7ojETJHyijbmgDuJPIaxuvsdC9YcKaadA9O
- VUn74q2Ssnl2d2cM6Mouy8BgxwmZFPV/AQuCI0b2xBUQB+DLY2EaED7+kbUiq21GHGP5HSH
- qtgsMOyXGofQv09kk+4iO4K9Tdenrug=
+ bh=YPvcm+5FGVYKXGVyyjROWfZwy6clK5/sFr2PEaYqp14=;
+ b=fwfUfTME6F3vfMXHUabsaiCVA0ULUIfnpdQyleCj6bRAKxJ57oEPzQgsRZXtpn53CawbP
+ 8EFlpfsEzUwh2SjLb8bbNI6MPv2UFRMxu2Zvzy+z2l2Hu2pjsq/3AfZzCSmQ2QwYdU3gfat
+ 3vpe8TgQNtAdz5lawWvataM4Gd0VnAo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71F373C7B7A
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:04:12 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5E34C3C7B75
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:09:05 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 157363C7A3B
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 12:03:51 +0100 (CET)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ by picard.linux.it (Postfix) with ESMTPS id 82EB53C7A70
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 12:08:45 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B6A891035C6F
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 12:03:50 +0100 (CET)
-Received: by mail-wm1-x343.google.com with SMTP id
- 5b1f17b1804b1-4361b6f9faeso4346585e9.1
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 03:03:50 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 87E021BDB43A
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 12:08:44 +0100 (CET)
+Received: by mail-wr1-x443.google.com with SMTP id
+ ffacd0b85a97d-385ef8b64b3so5703951f8f.0
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 03:08:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736939030; x=1737543830; darn=lists.linux.it;
+ d=suse.com; s=google; t=1736939324; x=1737544124; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=Ld1GJzbvjfUMUbLikZcvBl7uWi0Z7CVqw4WeURdiQeI=;
- b=MYZviVM3Mvz9CnX8O2vUUticNX8yIVBrI3oKM04pk1V7M6YidhXcDKfrk5mGVEqej2
- Tw5jLBPSoty0l2h3mNMM173rUvTNUS1ZqxGQCx9AuBzev9BnLbJJ7fDrOBOrIIrz5DF5
- 7XHyx6zShPQmvFRvGXpZinPAg0ES0AEnNXaE5rXeHksWc0SgmwbuX0v/JCQyVOmiAAV/
- 8B7+LLDUvQCDuuCCWYQtb8yK2JfZIq4xa6yYdjE7qaU5IDhLg3xuCyfHQus8MT7+Xg/z
- s5ThNI0RLpQjq8PM9zquST7Z1bAVOXDkybgWZ3x+I+80AX753T6Lsm1EVZ+42kRPVxE9
- 6XTQ==
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=/QmyOBdZIMaB18JKLFcK84yZo8tGvnawakHomce1YyM=;
+ b=EbN1eN9SFMGAPm5EbGNEiW/eAtpwJxJn1k4Jp7pFyef35eVJ6aKT9+fMD5xKxZqHt+
+ VWAIujeCJ5isQwNiNx+c3u6DqB9BKdBN88qBPmHHrr5Oq3Fc9KDgI1w046RQTyKgroeY
+ o7iaI/rTYrnznrP9dmmEz5Tt+eoewbxkZdUgSVHkyZfMKPAjHVYQ74nOwQnmqYCvmYqq
+ EP8bvDAU+DNwmSI2D0NsI2m7A7VlWvMuIkgRBgm38kHhUgbb8a59V8pwwvSAXPkzeSFr
+ WmeGg3MrkTp3IUeaJ33oh1TEuR8NolfWjEz+evtQkmifH6Q1DAwq8EEG/9fqW2jcR06v
+ 69aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736939030; x=1737543830;
+ d=1e100.net; s=20230601; t=1736939324; x=1737544124;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Ld1GJzbvjfUMUbLikZcvBl7uWi0Z7CVqw4WeURdiQeI=;
- b=U0/Uv6NkOYtXxD9MIFLxuXvCqk3dzcJROSvyq4Omd4EPul3br1SogKP3oB8SHeSMlH
- YCaHf067MByn5z7SZ1hQBtk5SbMS55/KdCAj/H2mskPTJdOOD1ON3b5Xu+910gC2ZWmm
- hiWjkVhZwpZZv7SjoNta0QJIvqzuM2WRvHD2UixdtenDjaWZs7l1PbRT2R5zjMiPRrdt
- GesOYfHouj4fXnl7BDORd5IIGmVjUNUIZR375ZaZLhwi0F+Q2cBkudndImUKm6r+wgDs
- 2+1n+lurjadr0D1CqVYbfItX/e4PUYw+aHaABEKbDGXMOEawIfnptkvmmqIgs4sV8ty8
- Xa5A==
-X-Gm-Message-State: AOJu0YzNrI4M3Hbk5nC+jbO4CCiEQ1K704kPeMttJX4+10xj7vWWcbto
- r7NuY+zt6u3aYN37SRq0nE14oSPN9xY07d/O4MuUw6HUz84GwJ2lmd7BEMH9BAU=
-X-Gm-Gg: ASbGnctFRLAg2Y5segUYYJ03j+I63IuozWgUGJs4v/WcH9CawcE3UYh7JMJYsgt3nKM
- j6X0tIeuXPtJKFddwYGruwoYjvAkbANC4DIRUgzJ/0dHLmQcXHuoSNoZ9BhilKEFfCEeohC0SMg
- hJ0WLbJazOAolQu5tqvX6mgoj0GLymoKy1/VS3If1GuUWnzsqY6hDP55R43gieaLHowLFcA2+Yy
- ZPxkzCxY7vfaoirUjmlky6Ai3SXmFDRx9nGSNowUc58zasnkULDsV5DREJjRjrXftk/9RKSC0Zm
- VVZ2OV9uk5e6qtya+1mb7od1eMA/M2V6j1+jgycCo+NEY0W3jheKxk+Awu41LiwrpqjS+toBbk5
- Pm99BhTcaa0nGHHZSrUg=
-X-Google-Smtp-Source: AGHT+IGXAzaTNMUWI+OHkzo4H8zbdLjL0GhawyY8igZYJaSWo8hriKTdQOMAyEkUufQApWL6denxvg==
-X-Received: by 2002:a05:600c:4c06:b0:434:92f8:54a8 with SMTP id
- 5b1f17b1804b1-437c6a86b58mr19313335e9.0.1736939030081; 
- Wed, 15 Jan 2025 03:03:50 -0800 (PST)
+ bh=/QmyOBdZIMaB18JKLFcK84yZo8tGvnawakHomce1YyM=;
+ b=aMIw5YDNNmvTB1Z6ulZiVP4PLjKyeVc26lopgyss4y6E1ch0Wb+EEw+FngIHFHrpSb
+ G2hPSXEpdbgThQiL+5vJlwDK+uzbysoTIClu5FqK3bTxmkflb5sW7SE/6uuUa97gwWrK
+ lAsYOgZR53GFeVRMHZAzitq+id8+I7JkEjHTtkGwK4krPDMPzyg9tFzmSskfK3qA9oNC
+ ovGAfIJlApiIZeK3iGLhDJ4q99E7pZXLMKfQo01bCFxzpHMlXF4eRhDqV5Lsq4hgzjoj
+ h9799DcWF/ea2RtM8OT0zm2d7UfcXYrHUNAD29i5xbYDOXbTuPXRDGqbbuDqJKt3qKoM
+ kHwA==
+X-Gm-Message-State: AOJu0YyCYerSgz2Ib/mGKY4TEWW66S7rQSrHxThTg4nv88niDe8dWNJt
+ sPLKJe06O4sTnkTwbEOyO4cxhY+FsJCUOcJ7q9EYMm5GuNLEamvg9obVo+CPMaETFP36ExJWBBc
+ bdvHpkl7k
+X-Gm-Gg: ASbGncuJcNyIbJB99yYhg9uSJNfuTzwjD/yhoF7eX9y3YNp1sOO7KCbQOdKLLIXwqof
+ eanGv8Aiua4NvkRzNgBlnd+t+WF4W6Qgp4e6D9mkkRqF6uKyM2CS28/7uQ83rn7YKwCGqvJtfj+
+ 6KOha/4fsocyqMwv3r+TzQ6LDYYtRvwA3vQBZJDlA0VWmDU/r5azU311HHrtb7xHtnVHywF8MjA
+ g+GTlT207adXG2cRCMcoSS2AsmfZkWshEcQUyFwsmyOGeTF0jyAG32v918zTc9Fq7DEno/Lf9/Z
+ 9qLSFugimK429oBbXJfsYid71J9fJJZl/34nXOaQYKU0s3ocq412ORSjqAnSt9VjJW0yxJ0m2gb
+ /Foh6vzUWA/4t16V28T8=
+X-Google-Smtp-Source: AGHT+IEv9+QxUs+Oy4csZXtKZEvaubDRn01eWx84TGrtncz4ST58qlXdHQW3d1dhXQZ+esDjyC9DfA==
+X-Received: by 2002:a5d:6da3:0:b0:38b:669d:4dd4 with SMTP id
+ ffacd0b85a97d-38b669d5112mr9996312f8f.11.1736939323762; 
+ Wed, 15 Jan 2025 03:08:43 -0800 (PST)
 Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
  (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
  [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-437c0f02c07sm33012865e9.0.2025.01.15.03.03.49
+ 5b1f17b1804b1-437c74e59ecsm19315005e9.35.2025.01.15.03.08.43
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 Jan 2025 03:03:49 -0800 (PST)
-Message-ID: <867c3f3e-7edd-4a73-b401-85c082cced6c@suse.com>
-Date: Wed, 15 Jan 2025 12:03:48 +0100
+ Wed, 15 Jan 2025 03:08:43 -0800 (PST)
+Message-ID: <29864db8-1642-4734-b11a-f5ba0ee6f0e7@suse.com>
+Date: Wed, 15 Jan 2025 12:08:42 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: "Ricardo B. Marliere" <rbm@suse.com>
+To: ltp@lists.linux.it
 References: <20250114-fix_b4-config-v1-1-e03eff794599@suse.com>
- <7b366388-6a0b-45de-95fe-08beb7528062@suse.com>
- <vifwygnntr4s4u5xk5dgqmq2dni5mb2doay5mw35rf6ji5epd4@semy6ws4gcsx>
 Content-Language: en-US
-In-Reply-To: <vifwygnntr4s4u5xk5dgqmq2dni5mb2doay5mw35rf6ji5epd4@semy6ws4gcsx>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <20250114-fix_b4-config-v1-1-e03eff794599@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] .b4-config: Add checkpatch.pl default commands
 X-BeenThere: ltp@lists.linux.it
@@ -105,7 +105,6 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -113,69 +112,41 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
 
-On 1/15/25 11:44, Ricardo B. Marliere wrote:
-> Hi Andrea!
->
-> On Wed, Jan 15, 2025 at 09:54:43AM +0100, Andrea Cervesato wrote:
->> Hi,
->>
->> thanks for this patch. I was using something similar, but the output here
->> seems more reliable. What I don't really understand is the following error
->> for many of the commits in the patch-set:
-> What patch-set are you referring to?
-I was referring to the current patch-set under development in b4 branch.
->
->> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> I remember seeing those in the past, but was unable to see it when
-> running against the last patch-set I sent (regarding mmap refactors).
-> I'm running b4 version 0.14.2.
->
-> Replying to your other message: I agree with adding FILE_PATH_CHANGES to
-> the ignores, since there is no MAINTAINERS file in LTP. That should also
-> probably be added to include/mk/env_post.mk.
-Yeah I was thinking that. I will submit this patch with a change on 
-env_post.mk as well.
->
-> Thank you,
-> -	Ricardo.
->
->
->> Andrea
->>
->> On 1/14/25 23:43, Ricardo B. Marliere via ltp wrote:
->>> From: Ricardo B. Marliere <rbm@suse.com>
->>>
->>> Blend b4 default checkpatch.pl flags with the ones defined in
->>> include/mk/env_post.mk in .b4-config so that a contributor may use `b4 prep
->>> --check` and `b4 am --check` in his workflow.
->>>
->>> Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
->>> ---
->>>    .b4-config | 3 +++
->>>    1 file changed, 3 insertions(+)
->>>
->>> diff --git a/.b4-config b/.b4-config
->>> index 2efdf2273240dcf57bd5cab174ff6c7a1952dd5b..5a16bd64ec98b91e17386c0eadc7ef0de54d86f3 100644
->>> --- a/.b4-config
->>> +++ b/.b4-config
->>> @@ -4,3 +4,6 @@
->>>        send-series-to = Linux Test Project <ltp@lists.linux.it>
->>>        pw-url = https://patchwork.ozlabs.org/
->>>        pw-project = ltp
->>> +    prep-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --showfile --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
->>> +    am-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
->>> +
->>>
->>> ---
->>> base-commit: 6fe8aa186559784f0394cd449cba6c53342790ec
->>> change-id: 20250114-fix_b4-config-1ab84320000a
->>>
->>> Best regards,
+pushed with FILE_PATH_CHANGES in the ignore list.
 
-Thanks,
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 Andrea
 
+On 1/14/25 23:43, Ricardo B. Marliere via ltp wrote:
+> From: Ricardo B. Marliere <rbm@suse.com>
+>
+> Blend b4 default checkpatch.pl flags with the ones defined in
+> include/mk/env_post.mk in .b4-config so that a contributor may use `b4 prep
+> --check` and `b4 am --check` in his workflow.
+>
+> Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
+> ---
+>   .b4-config | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/.b4-config b/.b4-config
+> index 2efdf2273240dcf57bd5cab174ff6c7a1952dd5b..5a16bd64ec98b91e17386c0eadc7ef0de54d86f3 100644
+> --- a/.b4-config
+> +++ b/.b4-config
+> @@ -4,3 +4,6 @@
+>       send-series-to = Linux Test Project <ltp@lists.linux.it>
+>       pw-url = https://patchwork.ozlabs.org/
+>       pw-project = ltp
+> +    prep-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --showfile --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
+> +    am-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
+> +
+>
+> ---
+> base-commit: 6fe8aa186559784f0394cd449cba6c53342790ec
+> change-id: 20250114-fix_b4-config-1ab84320000a
+>
+> Best regards,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
