@@ -4,97 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F05EC02180
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:33:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 914EDC02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736944382; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736944877; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=Nqn1cox/0UaQCUYbFA/X4VipLI/IIY9SUy6KPTS6oaA=;
- b=OK+Kkj7JjKENqxgfnv7994yuN7YvKmCT80UtvxjOFpu95dGc43oMRBPv6UBxi0satPaa5
- uoo/RSeuzXUUfEjq0+yIC4ybOxCo6sRvBezlr4H98+BPN9akkQr6di46nCM1wgl/CHmpxTg
- bOb3fgcA8dVb70MgsqtpUgfHuKkOszo=
+ bh=+BPM2aHj7B2PCwMfnWx8nAw3dbh9CMFjEzrdfh/K+kM=;
+ b=luNYpicULKYn/xjE4zg3CtfIvA3AJfb/c0ryLtO8NKMhKCiH1G1orK7JdzAV7wdISg4ba
+ qWlXH6JBIs+BajQQmz1hIwE1jky7IqQmV9drce8/oFTWmJS07zb1bzO/UTqbIs5RLA1bpXx
+ fkDPE5Op5vzDgkEt8Mu9otjKtyz9Y8c=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E57583C7B76
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:33:02 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id EC7063C7B75
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:41:16 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C6783C7A3B
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:32:42 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ by picard.linux.it (Postfix) with ESMTPS id BB1B83C7A53
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:40:55 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CA161100E33F
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:32:41 +0100 (CET)
-Received: by mail-wr1-x444.google.com with SMTP id
- ffacd0b85a97d-385e27c75f4so4684007f8f.2
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 04:32:41 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BB67D1016C4E
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:40:54 +0100 (CET)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-4361f796586so69822055e9.3
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 04:40:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736944361; x=1737549161; darn=lists.linux.it;
+ d=suse.com; s=google; t=1736944854; x=1737549654; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=HW/F+NTPd9zA6EeiG17QsvjCz0i5XvpMl5RT5fLR0CU=;
- b=OHOfb0K2seNvVkhk4CkpDNkNq9jif/xIfPnxHXxPtVe2vs/8CfRMObWdktQu0yfbXM
- Zze12H7a59q0UKfWSb7qKjw2Es8tfSzAYmrxt5VhMGNaY0MtyncPixwW+2Yh4wFAzW7t
- 6u20UILi75lhXqbjuBSX4Un3Z5f6EnsQvgjQuIeks0ExtcX9Yc10f4tBwKKEfLTMgkOH
- rr36If093SQeS6ijGTfcu0emkst0I+l/TAo0S/ECvAd0w99xsa26zT3m/w7eunMTCwt7
- e02l+SvjXSX9ymHasla4EHVq5h8cMuCUAfNsLTKTXl9fkjGZJ1Trts4C+QYmMso7Vs5W
- 0EHQ==
+ bh=huaMLO0q7V61j4y98vFJ10COryJ7RT9A40TI34LSmNs=;
+ b=SHn7we9/8i9c0IYGqpzsBTm9WgcgRNL7Ez6RoMKFCqKtWs2q7IEORmMZBUfZcYNeRS
+ MGRpTH9O0cHD8EEXQQB6ghd0mjGBoxAQpfaMwQUAPVvAvbPG/bVHoo+9xmPZa6ze4aQm
+ chF9Olb15tJLF8+xzAz5o7O/zB0jxHZ1jVr9b5xOXDlbNnTc4/4zKcPKNUrmB6mkcyMo
+ XAICHCZ1Kq60NQUdA2OTLjGVv92hY1a5A09GeAuo80lDdnW65MinFtBgjMIFMGCqnjBm
+ ifoEIw63XjRVHy+s1vJ0XbQSD21ZnIgIjByAhMwk1y/ppcS81KWVqXl7dYu/g0EAtuZP
+ 7lxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736944361; x=1737549161;
+ d=1e100.net; s=20230601; t=1736944854; x=1737549654;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=HW/F+NTPd9zA6EeiG17QsvjCz0i5XvpMl5RT5fLR0CU=;
- b=TE4XwzmWtHq7hp9/70IZ1lDGnSAmAKH3NF5VI65vhoF2emMvMHWN+aNt96Agm1UNS1
- mJbxTTM8U94Y3uybUEZqyIJBfATOTfars7eq9KnH29g1wVzB77R01Iwlzlu32Pt6+vuq
- EjSA3ICvVk/PjUXyG55AYMi5Qhz0dOYDmGCUAfX0+xo/m78ZN2WGtzZ0G3mmDSz46H11
- n6KR+9cTavUtdreV2w68yQmDtqU1ivtMQy/JyBg7B0h2VyCEUAqgfnI9oKFeKxitwhtx
- pdOr8Pt7NlxRpq1ci2kiS5U48KGHrHwHgEJnO6aTBV7N741QOxs/SnrnN52xrOmWC7Sj
- l6zQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCX8NfC4wTjtaOf7jjcrti6bzZqQmASsjPG5g+4ZqHgOixpkLy2jqQKy3xe1KPQjJp/KJRM=@lists.linux.it
-X-Gm-Message-State: AOJu0YyaRJD5Gpqcyr5oRqF66MldPp3mGsya8n6rmXoOlhHeEeSlDTtP
- gMYUwuNa1QlZgn/kj8rv7K6f8HN/CJFcq7JhKQmHvWlw8EaFg8b40UjT7vQwEMzToRdZ28vtrXt
- +bgdxTpov
-X-Gm-Gg: ASbGncsko/LoXRHSrCVt17ztYYTA3oyX3NvpORcy5WKCgK7twkvjiqyV/GOUNqW4LRC
- qjdET1bQcj3uhldSWw/9Wh9CbG07LIxTNrGGuuIV+dn1p81xNL/24LU6kKIfJRWfrSlxMCjFiFU
- 8VrNo3wmHNezA13hWPfyQuU/l+oFMbasId0ZPP+UkwhjrTwGZMFnBwXwVZuqFspQ37zsRTh4psd
- buNQM6dwuzn8AfyGY7jOzO55UErnm9iUXPA8RojB1ox1quIEaFioR9mL7m38+fsSwCxby0Iy7l9
- KoHEwQW1lQ8epvuCsZ1Op6WQTewqwQdGli4HHLPEl77Bz0g1Gyo3Pl1RnwOCduorZDhmdLWu4qs
- vWe5c6Zrk4LFSeSp/4w4=
-X-Google-Smtp-Source: AGHT+IFDIcUQ3wYt/QrzXwkTI00yEMKk47/zcnbTCR3VEbuLjwNBaOOOp2ujc74WfIGwfuRpFDS29A==
-X-Received: by 2002:a05:6000:2a3:b0:386:32ca:aa12 with SMTP id
- ffacd0b85a97d-38a8733b9dbmr24827733f8f.49.1736944361076; 
- Wed, 15 Jan 2025 04:32:41 -0800 (PST)
+ bh=huaMLO0q7V61j4y98vFJ10COryJ7RT9A40TI34LSmNs=;
+ b=MblVCzGE6OuDo5J+aFF36PEf4fOsFBvL40r9InAAXBEd3Aj0SGQ3blIM0r6ppKZT3d
+ 3lF1gpdZDGWH4F9vRvmXWJYACGCZ7+f53fX4h0pFA+vpcN4ODe6Wxopgo2rNu9Xtpm+D
+ ViwAxy11IUNj/uPfc6th7YFMcgFA2kln6AHNi0YxKAPiwsSKKtg5CA3AynSSKgZxxTlh
+ uG7zh8TTLwzdVT0/A/rHJ+YaT1/6/gOI/CqWWVyD2oAuBElJ91/nnnMYfes7IAGBEHim
+ 8ni6wOpg4z6DylGDEIawBjJMwrPA+ikP92+5HVNFcTqMtXt+nEeA2GUH7hwYX9sRi/GT
+ eMQw==
+X-Gm-Message-State: AOJu0YyvRaKw2UkYkSf30en02+hD/MPiyHPNeUD3eygmVZiphHpC8jUZ
+ i+VILzD1jsIVkooY6bNqVjQHwUxizm/yWA347lnGnnShpIfFxn57dSpSsC4/+D4BBf2k/K+7pjh
+ nSlaw8Q==
+X-Gm-Gg: ASbGncsBoZ/GkhytmFrwC8U7cm74WgxiIxsj/rdu6NVBY48TMKFvYS5yCN8cxQ+nkOe
+ eYPX9CDlpPdxrQmcEHJKGpKVa5VsEtRBJ0TvNdU9VHMFsgi4BzdmzSXOvEUSVLH0aVhDVHv3V9F
+ 8QIyY8RBnJ6hYLMqpRl5JTDM+cjjuyqizTeA5cWS8uW+e/wrIN2MmNypepQIkMRVmK/qUQUcVrf
+ N3XZ1QgZANwkapYOGAGdLGTr8dcw4o8dY8SaCiCvyqLWxr1qjlVzwX9aw9kOGI942ml2puMpIqg
+ LiZqFjXy8WB6qRls2Zyd0dBSGxuigS8glsoWWoTMLFMcYzo7iuRBq09Dyq6J/WOZ3V08KN5iE0t
+ kJYiUFnBv+FnrKj0M0vY=
+X-Google-Smtp-Source: AGHT+IHNvECnhNYlKdn8QbG3vo+QVI4cjgn4pSCxGGk5A5Fy8/b+bLeLjhCKM3lPM1URjBSKomagMw==
+X-Received: by 2002:a5d:6c63:0:b0:38a:418e:1179 with SMTP id
+ ffacd0b85a97d-38a872fc20bmr27882247f8f.2.1736944853788; 
+ Wed, 15 Jan 2025 04:40:53 -0800 (PST)
 Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
  (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
  [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-38a8e37d2dfsm17177949f8f.7.2025.01.15.04.32.40
+ ffacd0b85a97d-38a8e4c1c01sm17786537f8f.97.2025.01.15.04.40.52
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 Jan 2025 04:32:40 -0800 (PST)
-Message-ID: <d89f62cd-1949-4598-9919-9c83d6be19c8@suse.com>
-Date: Wed, 15 Jan 2025 13:32:39 +0100
+ Wed, 15 Jan 2025 04:40:53 -0800 (PST)
+Message-ID: <c3a91a38-10de-4400-9db2-4c46fbc73ee7@suse.com>
+Date: Wed, 15 Jan 2025 13:40:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>, ltp@lists.linux.it,
- liwang@redhat.com
+To: ltp@lists.linux.it, Shiyang Ruan <ruansy.fnst@fujitsu.com>
 References: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
- <20250115091218.2630891-2-ruansy.fnst@fujitsu.com>
+ <20250115091218.2630891-3-ruansy.fnst@fujitsu.com>
 Content-Language: en-US
-In-Reply-To: <20250115091218.2630891-2-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20250115091218.2630891-3-ruansy.fnst@fujitsu.com>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] fchownat02: Convert to new API
+Subject: Re: [LTP] [PATCH v2 3/3] fchownat03: Move error tests from
+ fchownat01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,202 +113,117 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
+This is a new test, so we require a proper commit description for it, 
+even if it comes from fchownat01.
+The commit name might be "Add new fchownat03 test" and description 
+should contain what the test is made for and where it comes from.
+
 On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
 > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 > ---
->   .../kernel/syscalls/fchownat/fchownat02.c     | 132 +++++-------------
->   1 file changed, 33 insertions(+), 99 deletions(-)
+>   testcases/kernel/syscalls/fchownat/.gitignore |  1 +
+>   .../kernel/syscalls/fchownat/fchownat03.c     | 77 +++++++++++++++++++
+>   2 files changed, 78 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/fchownat/fchownat03.c
 >
-> diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
-> index 6dd1e024e..d8e4e0cfe 100644
-> --- a/testcases/kernel/syscalls/fchownat/fchownat02.c
-> +++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
-> @@ -1,135 +1,69 @@
+> diff --git a/testcases/kernel/syscalls/fchownat/.gitignore b/testcases/kernel/syscalls/fchownat/.gitignore
+> index 35c00345b..60fac7e69 100644
+> --- a/testcases/kernel/syscalls/fchownat/.gitignore
+> +++ b/testcases/kernel/syscalls/fchownat/.gitignore
+> @@ -1,2 +1,3 @@
+>   /fchownat01
+>   /fchownat02
+> +/fchownat03
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat03.c b/testcases/kernel/syscalls/fchownat/fchownat03.c
+> new file mode 100644
+> index 000000000..3c50eb39e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat03.c
+> @@ -0,0 +1,77 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
->   /*
->    * Copyright (c) 2014 Fujitsu Ltd.
-> - * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> + * Copyright (c) Linux Test Project, 2014-2025
+> +/*
+> + * Copyright (c) International Business Machines  Corp., 2006
+> + * Copyright (c) Linux Test Project, 2007-2025
 > + */
 > +
 > +/*\
 > + * [Description]
->    *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
 > + * Verify that:
->    *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program.
-> - */
-> -/*
-> - * Test Description:
-> - *   Verify that,
-
-This newline is not needed. We can just have:
-
-"Verify that fchownat() will operate on symbolic links when 
-AT_SYMLINK_NOFOLLOW is used".
->    *   The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
->    *   not be dereferenced if the pathname is a symbolic link.
->    */
->   
->   #define _GNU_SOURCE
-> -
-> -#include <sys/types.h>
-> -#include <sys/stat.h>
-> -#include <unistd.h>
-> -#include <stdlib.h>
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -#include "lapi/fcntl.h"
+> + *
+> + * 1. fchownat() returns -1 and sets errno to ENOTDIR if the file descriptor is
+> + *    a file.
+> + * 2. fchownat() returns -1 and sets errno to EBADF if the file descriptor
+> + *    of the specified file is not valid.
+> + * 3. fchownat() returns -1 and sets errno to EINVAL if the flag is not valid.
+The list is kinda small, we have a huge number of cases which would be 
+nice to extend. Please check fchownat(2) manual.
+> + */
+> +
+> +#define _GNU_SOURCE
 > +#include "tst_test.h"
->   
->   #define TESTFILE	"testfile"
->   #define TESTFILE_LINK	"testfile_link"
->   
-> -char *TCID = "fchownat02";
-> -int TST_TOTAL = 1;
-> -
-> -static int dir_fd;
->   static uid_t set_uid = 1000;
->   static gid_t set_gid = 1000;
-> -static void setup(void);
-> -static void cleanup(void);
-> -static void test_verify(void);
-> -static void fchownat_verify(void);
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -		for (i = 0; i < TST_TOTAL; i++)
-> -			fchownat_verify();
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
->   
->   static void setup(void)
->   {
->   	struct stat c_buf, l_buf;
->   
-> -	tst_require_root();
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
-> -
-> -	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
-> -
-> -	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
-> -
-> -	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
-> -
-> -	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
+> +
+> +#define TESTFILE	"testfile"
+> +#define TESTFILE2	"testfile2"
+TESTFILE2 is never used in the test so it can be removed.
+> +
+> +static int fd;
+> +static int no_fd = -1;
+> +static int dir_fd;
+> +
+> +static struct tcase {
+> +	int exp_errno;
+> +	int flag;
+> +	int *fd;
+> +	char *filename;
+> +} tcases[] = {
+> +	{ ENOTDIR, 0, &fd, TESTFILE },
+> +	{ EBADF, 0, &no_fd, TESTFILE },
+> +	{ EINVAL, 9999, &dir_fd, TESTFILE },
+> +};
+> +
+> +static void fchownat_verify(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	uid_t euid = geteuid();
+> +	gid_t egid = getegid();
+> +	int fd = *tc->fd;
+> +	int flag = tc->flag;
+> +	const char *filename = tc->filename;
+There's no need to create new variables for the tcases attributes access.
+> +
+> +	TST_EXP_FAIL(fchownat(fd, filename, euid, egid, flag),
+> +			tc->exp_errno,
+> +			"fchownat(%d, %s, %d, %d, %d)",
+> +			fd, filename, euid, egid, flag);
+> +}
+> +
+> +static void setup(void)
+> +{
 > +	SAFE_TOUCH(TESTFILE, 0600, NULL);
-> +	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
-> +	SAFE_STAT(TESTFILE_LINK, &c_buf);
-> +	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
->   
->   	if (l_buf.st_uid == set_uid || l_buf.st_gid == set_gid) {
-> -		tst_brkm(TBROK | TERRNO, cleanup,
-> -			 "link_uid(%d) == set_uid(%d) or link_gid(%d) == "
-> -			 "set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
-> -			 set_gid);
-> +		tst_brk(TBROK | TERRNO,
-> +			"link_uid(%d) == set_uid(%d) or link_gid(%d) == "
-> +			"set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
-> +			set_gid);
->   	}
-TERRNO is not needed.
->   }
->   
-> -static void fchownat_verify(void)
-> -{
-> -	TEST(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
-> -		      AT_SYMLINK_NOFOLLOW));
-> -
-> -	if (TEST_RETURN != 0) {
-> -		tst_resm(TFAIL | TTERRNO, "fchownat() failed, errno=%d : %s",
-> -			 TEST_ERRNO, strerror(TEST_ERRNO));
-> -	} else {
-> -		test_verify();
-> -	}
-> -}
-> -
-> -static void test_verify(void)
-> +static void run(void)
->   {
->   	struct stat c_buf, l_buf;
->   
-> -	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
-> +	TST_EXP_PASS_SILENT(fchownat(AT_FDCWD, TESTFILE_LINK, set_uid, set_gid,
-> +				     AT_SYMLINK_NOFOLLOW));
-No need to use SILENT version, since we are testing fchownat().
->   
-> -	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
-> +	SAFE_STAT(TESTFILE_LINK, &c_buf);
-> +	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
->   
->   	if (c_buf.st_uid != set_uid && l_buf.st_uid == set_uid &&
->   	    c_buf.st_gid != set_gid && l_buf.st_gid == set_gid) {
-> -		tst_resm(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
-> +		tst_res(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
-
-Here we can use TST_EXP_EXPR() macro here:
-
-TST_EXP_EXPR(c_buf.st_uid != set_uid && l_buf.st_uid == set_uid, "%s", 
-"fchownat() correctly operated on symlink user ID");
-TST_EXP_EXPR(c_buf.st_gid != set_gid && l_buf.st_gid == set_gid, "%s", 
-"fchownat() correctly operated on symlink group ID");
-
->   	} else {
-> -		tst_resm(TFAIL,
-> -			 "fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
-> -			 "link_uid=%d set_uid=%d | gid=%d link_gid=%d "
-> -			 "set_gid=%d", c_buf.st_uid, l_buf.st_uid, set_uid,
-> -			 c_buf.st_gid, l_buf.st_gid, set_gid);
-> +		tst_res(TFAIL,
-> +			"fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
-> +			"link_uid=%d set_uid=%d | gid=%d link_gid=%d set_gid=%d",
-> +			c_buf.st_uid, l_buf.st_uid, set_uid,
-> +			c_buf.st_gid, l_buf.st_gid, set_gid);
->   	}
->   }
->   
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
+> +	fd = SAFE_OPEN(TESTFILE2, O_CREAT | O_RDWR, 0600);
+> +	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+Better to initialize file descriptors to -1, then check here if they are 
+!= -1 after setup() and test run.
+> +
+> +	if (dir_fd > 0)
+> +		SAFE_CLOSE(dir_fd);
+Same here.
+> +}
+> +
 > +static struct tst_test test = {
 > +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +	.test_all = run,
+> +	.test = fchownat_verify,
+> +	.tcnt = ARRAY_SIZE(tcases),
 > +	.setup = setup,
+> +	.cleanup = cleanup,
 > +};
-Kind regards,
-Andrea Cervesato
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
