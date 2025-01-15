@@ -4,89 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D3DC02180
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 10:38:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54AD1C02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 10:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736937523; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=3/uVt27/T7AiM2PjnEQXgVg5MhE0wM9c9zPUDkMmTnc=;
- b=MClYBl2kxkws8KFWtVhLajUf4t9t1ke7MqSXiE15eepYA9oMF4VD5FsCZGQdk8MnIKhYL
- vXeAfTdeakbMCBDPdlD0uzTRyqGAKRo6GCeKzXAqB/qB/EGZL9M1+0x5hA1ONudUiyq8GT0
- 27Xgmhe3HnKG5wy+JCRy50Wv+KTs6dg=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736937928; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=oUmn2XLmS3P29w+TsibEoTYl8z2d+n+mv02qioO2AZ8=;
+ b=USMQkVDF3tPNNA3utmWvf1lcan3lNNVYS1i6HrBV7/k3hj+cBjjqX6bdJLiiMlDdRR9dy
+ E0A0Yr/wfDG6/EYe3Fs0p2APdgLCxCAnrlj6n+TmgeHDxgScs3bZ3hPV7eEALgrWHE2DqRJ
+ mR9/ISjSDDrgZogcG25iSxwCAOJ4AHk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 475243C7B63
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 11:38:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id CFB773C7B79
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 11:45:28 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 656AE3C7B48
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 11:38:21 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
- helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
- [139.138.61.253])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 852203C7B48
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 11:45:07 +0100 (CET)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com
+ [209.85.218.43])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 99BC5234175
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 11:38:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1736937500; x=1768473500;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=ZxIDukeFhQY685y2VeAvZatuSF8ETj1rJy7vojsLAV4=;
- b=oHWwDL+7NDWkU8Ogj7W0V/fMZwaMLJRzZAv7abLFsT0a+ZiX/399sl7t
- uM9cN47vrvZp6dzIn6kVYg31S+cwRPE+Iv5uDhGJgYUsLI4PXsdkKCZjb
- 4bJwCsGikczPDFqiCjA6Z8/87rFzVJOwhyeBJm8PABGbuazOz/M39cZre
- J7lqJ4eVrG6s6RC7VomY4zUeo+BhT67b5u6A7klT7ctbfy3mnLGGcSgj9
- OYf90HMy7+Dqt3yTT5G/fAadP8t65kLEkTT8Tb07tMz/j0G28fVFbPyS4
- dr7eIBr/YkS+cVlzicEmyA312iaJcWsrD8F2uJ5uQUI1PT6C8O1nDIZ9o A==;
-X-CSE-ConnectionGUID: NTTs5I7oTYCvYtZ9jO+TFA==
-X-CSE-MsgGUID: 26300JilTAyTd9BtPGGmOA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11315"; a="174619142"
-X-IronPort-AV: E=Sophos;i="6.12,317,1728918000"; d="scan'208";a="174619142"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jan 2025 19:38:18 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 0183AD6EA5
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 19:38:16 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id C16DDD3F2E
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 19:38:15 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4959A6BEFE
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 19:38:15 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.81])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 947F21A000B;
- Wed, 15 Jan 2025 18:38:14 +0800 (CST)
-To: ltp@lists.linux.it,
-	pvorel@suse.cz
-Date: Wed, 15 Jan 2025 18:38:13 +0800
-Message-ID: <20250115103813.3584089-1-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.43.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 312AB141ECB1
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 11:45:06 +0100 (CET)
+Received: by mail-ej1-f43.google.com with SMTP id
+ a640c23a62f3a-ab2e308a99bso159337266b.1
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 02:45:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1736937905; x=1737542705;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=2ElDcofHHFqbTs8I684DZ0waaqC9ON223w6j2uktK8A=;
+ b=DdF7TLDhSmMuMnYJenbeHa7GBJWi/shAtZ4R4JYFfPjSRle3fHOi+nBNUGj7D+7bhL
+ QXxd1REZQp7t8UTPtfjuTxeVLCv//JU+C1+Ez55AKqcGAN44y0jwOQav8y1ur65M/uT7
+ v332VCVtdQNPmVTEJ6Vyuanqxp1xafGDfjauj+T1yDtDFE59jFLKrkus2Cx4zykqmSmd
+ 0BJXSefyGZ3AHtS/owXcyQoWGCLIHYUZKEPh8o3lfIROWQesKrlTnk8u2F3FI9T0lVF4
+ V9jTB08lN0CslXFbbcWofvwN6V4VArkDDdsfy1RUMJAuFEV88kFal51RcQ2QJIJqofnM
+ 9kbg==
+X-Gm-Message-State: AOJu0YxIKOdCE3JZYSJQqnJ+QuVkPb1M4yIZz0LVP/BZkcynd+EI4ny/
+ kEM0otA6tnnki8PxePpo8fSgAmScy4lYYvMWoOCfHOaaJ6aaGSW/TB6xPAF3Xxh7Lx6axg30Bvh
+ 4
+X-Gm-Gg: ASbGnct9nUOEfd/oMCD1RbilB5GZlDEcaeKuJ0874shnK7z7xq1AyiBspfbrDQCYNf7
+ PqLbL2lVVoxLPxuYXWoOMCwXpbXy6wjBWRTYRhHWRkFzCeH//IDfCrKQjKjuT3ijDbPObqmyMIN
+ cEkasgK81nZjzYqH3d/FiDRHXdc9w2PzqmglFWF/6Qn5EKS/cVkOVmQc2xzhog3o5wWfs74E/1z
+ aXdVMhcHaVJaCutUk2mcBQbiBYrrBXmi+Lh6jhRDw==
+X-Google-Smtp-Source: AGHT+IHoyNM0/pAT7De03V3b835r1Xbq7X1aXMUmpxHAjtPEIPCKEAdyXRC2Wij/9knobQGvHik1cQ==
+X-Received: by 2002:a17:907:7282:b0:a9a:6c41:50a8 with SMTP id
+ a640c23a62f3a-ab2c3c79cf5mr2238298866b.17.1736937905446; 
+ Wed, 15 Jan 2025 02:45:05 -0800 (PST)
+Received: from localhost ([177.95.18.53]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-723185482fcsm5511375a34.24.2025.01.15.02.45.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 15 Jan 2025 02:45:04 -0800 (PST)
+Date: Wed, 15 Jan 2025 07:44:59 -0300
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <vifwygnntr4s4u5xk5dgqmq2dni5mb2doay5mw35rf6ji5epd4@semy6ws4gcsx>
+References: <20250114-fix_b4-config-v1-1-e03eff794599@suse.com>
+ <7b366388-6a0b-45de-95fe-08beb7528062@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28924.007
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28924.007
-X-TMASE-Result: 10-0.030200-10.000000
-X-TMASE-MatchedRID: aulLGGssQIPyq/cli2hvDbnHu4BcYSmtwTlc9CcHMZeRlBdzYSbt4hDO
- 9b78NniRqrPmcwxLbKVqzED31CYLQJ5l5tqvE/eV6T0GzY0FZMefjJ25h/keVZsoi2XrUn/Jn6K
- dMrRsL14qtq5d3cxkNQwWxr7XDKH8PBKKdqcBoGfCoQn08En4B9o9qwQhdOhUyArxylrE1F4llo
- 5c+AK6ClPkRWMxgiAVvjwkj2SPxnCro73lPUO//jp2LVoWTflzFcG3+ZRETICP9kUX1Z+buE3Lu
- mkbQiNwVCqTSPu8tVR7AxIEOt4h2Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <7b366388-6a0b-45de-95fe-08beb7528062@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] posix_fadvise: Convert docs to docparse
+Subject: Re: [LTP] [PATCH] .b4-config: Add checkpatch.pl default commands
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,141 +85,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Shiyang Ruan via ltp <ltp@lists.linux.it>
-Reply-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
+Reply-To: "Ricardo B. Marliere" <rbm@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- .../kernel/syscalls/fadvise/posix_fadvise01.c  | 17 +++--------------
- .../kernel/syscalls/fadvise/posix_fadvise02.c  | 17 +++--------------
- .../kernel/syscalls/fadvise/posix_fadvise03.c  | 18 ++++--------------
- .../kernel/syscalls/fadvise/posix_fadvise04.c  | 17 +++--------------
- 4 files changed, 13 insertions(+), 56 deletions(-)
+Hi Andrea!
 
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-index 71e6454d8..650459455 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-@@ -3,21 +3,10 @@
-  * Copyright (c) Red Hat Inc., 2007
-  */
- 
--/*
-- * NAME
-- *	posix_fadvise01.c
-- *
-- * DESCRIPTION
-- *	Check the value that posix_fadvise returns for wrong ADVISE value.
-- *
-- * USAGE
-- *	posix_fadvise01
-- *
-- * HISTORY
-- *	11/2007 Initial version by Masatake YAMATO <yamato@redhat.com>
-+/*\
-+ * [Description]
-  *
-- * RESTRICTIONS
-- *	None
-+ * Verify that posix_fadvise() returns 0 for permissible ADVISE value.
-  */
- 
- #include <fcntl.h>
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise02.c b/testcases/kernel/syscalls/fadvise/posix_fadvise02.c
-index 303f776e4..39a1f1b57 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise02.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise02.c
-@@ -3,21 +3,10 @@
-  * Copyright (c) Red Hat Inc., 2007
-  */
- 
--/*
-- * NAME
-- *	posix_fadvise02.c
-- *
-- * DESCRIPTION
-- *	Check the value that posix_fadvise returns for wrong file descriptor.
-- *
-- * USAGE
-- *	posix_fadvise02
-- *
-- * HISTORY
-- *	11/2007 Initial version by Masatake YAMATO <yamato@redhat.com>
-+/*\
-+ * [Description]
-  *
-- * RESTRICTIONS
-- *	None
-+ * Verify that posix_fadvise() returns EBADF for wrong file descriptor.
-  */
- 
- #include <fcntl.h>
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-index 98d8d2930..9bfd42439 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-@@ -3,21 +3,11 @@
-  * Copyright (c) Red Hat Inc., 2007
-  */
- 
--/*
-- * NAME
-- *	posix_fadvise03.c
-- *
-- * DESCRIPTION
-- *	Check the value that posix_fadvise returns for wrong ADVISE value.
-- *
-- * USAGE
-- *	posix_fadvise03
-- *
-- * HISTORY
-- *	11/2007 Initial version by Masatake YAMATO <yamato@redhat.com>
-+/*\
-+ * [Description]
-  *
-- * RESTRICTIONS
-- *	None
-+ * Verify that posix_fadvise() returns EINVAL for the ADVISE value not
-+ * permissible on the architecture.
-  */
- 
- #include <fcntl.h>
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise04.c b/testcases/kernel/syscalls/fadvise/posix_fadvise04.c
-index 8baf91bb0..2fe7e3577 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise04.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise04.c
-@@ -3,21 +3,10 @@
-  * Copyright (c) Red Hat Inc., 2007
-  */
- 
--/*
-- * NAME
-- *	posix_fadvise04.c
-- *
-- * DESCRIPTION
-- *	Check the value that posix_fadvise returns for pipe descriptor.
-- *
-- * USAGE
-- *	posix_fadvise04
-- *
-- * HISTORY
-- *	11/2007 Initial version by Masatake YAMATO <yamato@redhat.com>
-+/*\
-+ * [Description]
-  *
-- * RESTRICTIONS
-- *	None
-+ * Verify that posix_fadvise() returns ESPIPE for pipe descriptor.
-  */
- 
- #include <fcntl.h>
--- 
-2.43.0
+On Wed, Jan 15, 2025 at 09:54:43AM +0100, Andrea Cervesato wrote:
+> Hi,
+> 
+> thanks for this patch. I was using something similar, but the output here
+> seems more reliable. What I don't really understand is the following error
+> for many of the commits in the patch-set:
 
+What patch-set are you referring to?
+
+> 
+> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+
+I remember seeing those in the past, but was unable to see it when
+running against the last patch-set I sent (regarding mmap refactors).
+I'm running b4 version 0.14.2.
+
+Replying to your other message: I agree with adding FILE_PATH_CHANGES to
+the ignores, since there is no MAINTAINERS file in LTP. That should also
+probably be added to include/mk/env_post.mk.
+
+Thank you,
+-	Ricardo.
+
+
+> 
+> Andrea
+> 
+> On 1/14/25 23:43, Ricardo B. Marliere via ltp wrote:
+> > From: Ricardo B. Marliere <rbm@suse.com>
+> > 
+> > Blend b4 default checkpatch.pl flags with the ones defined in
+> > include/mk/env_post.mk in .b4-config so that a contributor may use `b4 prep
+> > --check` and `b4 am --check` in his workflow.
+> > 
+> > Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
+> > ---
+> >   .b4-config | 3 +++
+> >   1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/.b4-config b/.b4-config
+> > index 2efdf2273240dcf57bd5cab174ff6c7a1952dd5b..5a16bd64ec98b91e17386c0eadc7ef0de54d86f3 100644
+> > --- a/.b4-config
+> > +++ b/.b4-config
+> > @@ -4,3 +4,6 @@
+> >       send-series-to = Linux Test Project <ltp@lists.linux.it>
+> >       pw-url = https://patchwork.ozlabs.org/
+> >       pw-project = ltp
+> > +    prep-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --showfile --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
+> > +    am-perpatch-check-cmd = ./scripts/checkpatch.pl -q --terse --no-summary --mailback --no-tree --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
+> > +
+> > 
+> > ---
+> > base-commit: 6fe8aa186559784f0394cd449cba6c53342790ec
+> > change-id: 20250114-fix_b4-config-1ab84320000a
+> > 
+> > Best regards,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
