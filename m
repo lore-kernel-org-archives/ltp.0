@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65104C02180
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 09:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0C56C02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 09:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736932413; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736932518; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=mnNlQ3AzO1CqVm7EzUgwXn1pH+cqJZi/+HbERHt5r7o=;
- b=BPhYubGLfiOtMQpY0jzmI7ZYS8AQlx0Gev7fZoLh13g/9nIxzAnaTN9J+v/x6Gfu3IvLf
- aWMN2XpKUrMABBC2c3OveKrPXLKhkdsZCzggtTbXaoLll04QFqIbCc0FcXCiq47UWro4G12
- qYmwePTlvDZBrwEv8e/5+X85EX7eaDw=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=Eipsr5nGfq5RgbE+CwLrImg26pGMF4jTipxMLgy2tUg=;
+ b=CQKDXGdZhjBhgZAXcsIQIF+NBwUVQtk9jZH/GfBsHFVWRYTcJbvsGNcpli7XAXODw/gif
+ dVIeOf7N1bLWANGBpiDeSYhHnIP9Whcj5Suvk/zhCPzj6wx+E93lYs60/SWPNLHzRnjMu+c
+ ATSd2mnXRFANmpzLxTy5Sc0DceVCyqY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3BF93C7B5E
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 10:13:33 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7C9583C7B54
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 10:15:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF5C63C7A3C
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 10:12:26 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.252;
- helo=esa7.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
- [139.138.61.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8A9A93C7A78
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 10:14:56 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2CFC9141555E
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 10:12:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1736932344; x=1768468344;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=/8Mcbb+6jPfvHHwXEL5AFxAFS9C8bedoK6Hes4x5C3s=;
- b=RfeEwwlcXZJOChIJcEJ4QNQF8A09Lq0+bz+bbPEbtnmIR9a+TaOBuvVW
- OEVDoPl3P60uPD8GT9hD9xyKBLFPSxUJ5SwQw+HczeVpXCGf7kMYeaWoI
- XJXUKr0L9eBJSMkWaPfbXVXVCdxh0qV4gX/0mfkajSIFo25ScNnOT4L3G
- 0/6eNIyN5JOSDRFxtIiA0hVH0ApUQirET3gdCagdYBvLd41gl7zl/7Hh+
- 56IhKPPze32AywCrmnTbfF16Z4q8XP9gKh4KjNWX4bkb0r9XXsXtLMyVj
- Na52MgECw/naRYz5oyAm6PB2ph7QJ+F4yAaB+zpvuM+shK6ATc5YbqV9g g==;
-X-CSE-ConnectionGUID: DFQ6Js29TeuJEGOlOdbH+w==
-X-CSE-MsgGUID: 3Xuyj5kQTsGBT5LTRyQMIA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11315"; a="165499721"
-X-IronPort-AV: E=Sophos;i="6.12,316,1728918000"; d="scan'208";a="165499721"
-Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
- by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jan 2025 18:12:21 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 45B87E6148
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 18:12:20 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 15D68BDC87
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 18:12:20 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id A71FC20071A37
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 18:12:19 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.81])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 422A01A0071;
- Wed, 15 Jan 2025 17:12:19 +0800 (CST)
-To: ltp@lists.linux.it,
-	liwang@redhat.com
-Date: Wed, 15 Jan 2025 17:12:17 +0800
-Message-ID: <20250115091218.2630891-2-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
-References: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 173D760B024
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 10:14:56 +0100 (CET)
+Received: by mail-wm1-x343.google.com with SMTP id
+ 5b1f17b1804b1-43623f0c574so45849935e9.2
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 01:14:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1736932495; x=1737537295; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=g6ZbwJnY5cihlSg4acH+yl1WPp+PPNjoUP9Oks91/tE=;
+ b=PkV/QoB4+C/mQxX+tsL/J/bueHYCwMdujswSaXFumf/lz6I/RSJGY0HRlBoqJCs2Us
+ tQb+CMNAglZs0m25+oD6FXc8Vt2/bhqKPFHmWAOqQPXFo6haBTE9XzyQuaZifPmeAA3v
+ oNl+vErUMm5nG6AY60X7jaqzxxpWba+TXyHn6kN6SZAh3yLCWFKaM5xMLwNaL5eXDfSA
+ IJVwOZ2EUfI7OcpGSd9TvBX34KMtFBnVotPihhwL4Brs20yVAJMrPIRX752Zacoz+15v
+ +L0JpKiLbrrkwpa1j3Wxu3Vd2ohDmq/2y4V/kMPaPJRlywQDdaNJjQGMuXRXgCCfmpZ1
+ 0ruA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1736932495; x=1737537295;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=g6ZbwJnY5cihlSg4acH+yl1WPp+PPNjoUP9Oks91/tE=;
+ b=W1lL1OhdKiccpBAX5sr64Ijst4rhwVMOkl7lKF28PRUhSA6a3cSAxZ9yncWLL84eA+
+ 75jaG/Q68vWak77zi2zJEn3vadLSILUUBI0OzjDwvMf9376XdhgC4iW3DhVUdqXxl782
+ WeKX/VX84tsDwzpwXAsX0AZWEQRz3twAA0wKWqlQyU/JWmBxso/mlnf9H499L89Bwjo6
+ 3UuC2aNC0LuMq56nrgaEqUanHzN6oRPvHmy4696+1q4w4I8lZpsmTEsgCfNPXZldaNw1
+ I1gDWvuP7M4wzHHH+eO/eqNQYL0uWpzMi2qaBR2ag/AECM8sBz7i2rwVF5u8ZCeLgjtg
+ QWGQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWEMIwYQ3h5efULgrhlFpACqI7gRK0Sy11So7UYt43nSaWGay3Y2kSXXqz2NnvwTecjxjU=@lists.linux.it
+X-Gm-Message-State: AOJu0YyEFhZyBElnSpCis7ZCuNCbeYmMk5KFoY9vwL7B8jwhtOXPBwoE
+ FlkoLM0usRSMVJE7y7BOr1ttJG+n3X41oyD8Q6e1HQ4EVvpSK8zS0RccqaRQ89nqngWqGYY4hgq
+ 7Q+wBgKUa
+X-Gm-Gg: ASbGncttootyiUQWukEuGWEzaHOp+gZnNKVEoKzPt7V7OmAugi3Y8bymishHcJ1ah0q
+ iZH2TjI8DrPsfRbkaXmEROjX2tsxR2ymBGLVGoeWoNVy19yrosvowtWDzNExbZYq+vgIZ0AfVgN
+ ETHnHP1Giup7llCANDR3R+wg4AD1e6h6GWT4ucPNNHnECy10BFcYVqxOa+mjb5SsGpNfF+3mcOg
+ 1PTS64IQ8ipyBb9e6ZxXI/1C3eKukT/r7I7szBEnP1VhqozGJR8vM//XUovnPzzFV2CMVP3eeX/
+ FkOmXEpYlDrysWWkA4Ro8iIgZyvUI1HJ7VFGAcaaj6g158jq8YsL5Pbnqn3107wLuRQ5pErkGkt
+ V8Dt5gExHRDHAF0NIsEc=
+X-Google-Smtp-Source: AGHT+IHIPpR5OkT69tpActlLXEEpjm1o1C5J/EE2ejEiuPegl0+VLJYJrIF5HrQBWi3xC0Y/WfKKzQ==
+X-Received: by 2002:a5d:6d05:0:b0:38b:d9a3:6cff with SMTP id
+ ffacd0b85a97d-38bd9a36e6cmr13611256f8f.16.1736932495352; 
+ Wed, 15 Jan 2025 01:14:55 -0800 (PST)
+Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
+ (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
+ [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38a8e4c1cf2sm17220684f8f.99.2025.01.15.01.14.54
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 15 Jan 2025 01:14:55 -0800 (PST)
+Message-ID: <46ff9a8f-f2d7-4858-80dc-1b39f2ffb393@suse.com>
+Date: Wed, 15 Jan 2025 10:14:53 +0100
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28924.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28924.006
-X-TMASE-Result: 10--8.233700-10.000000
-X-TMASE-MatchedRID: 8R18cQDv3dnyq/cli2hvDU7nLUqYrlslFIuBIWrdOeNrL/5mlYISizib
- ESY8R8hiQMOJEqjTDADuNT8xdcEnQ5LaPACgg26O194/5X9VfCx0bXWCb2qGLhd+xtxH8FsxxH8
- MA9IoRM934VOGRdhrB+vbgxb5qGOHA5/BSwKJDDGVd49c0zgWM79cAlQW5YprrblmM/aFaC+Trr
- +C1WNmxS/KXR4/4Lv6EC9CQs9quavsR84ORZresovefyp1glN0fS0Ip2eEHnz3IzXlXlpamPoLR
- 4+zsDTthUfR2rvBju7hrbidVvQoxU1qBXXL5B6SOtcYPJknCfeY7rpZg0lJ4qIUwiD7vcgW
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Avinesh Kumar <akumar@suse.de>, ltp@lists.linux.it
+References: <20250114155013.7644-1-akumar@suse.de>
+Content-Language: en-US
+In-Reply-To: <20250114155013.7644-1-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] fchownat02: Convert to new API
+Subject: Re: [LTP] [PATCH] flock02: Add test for EWOULDBLOCK errno
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,194 +103,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Shiyang Ruan via ltp <ltp@lists.linux.it>
-Reply-To: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- .../kernel/syscalls/fchownat/fchownat02.c     | 132 +++++-------------
- 1 file changed, 33 insertions(+), 99 deletions(-)
+Hi Avinesh,
 
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
-index 6dd1e024e..d8e4e0cfe 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat02.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
-@@ -1,135 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-- * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-+ * Copyright (c) Linux Test Project, 2014-2025
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ * Verify that:
-  *
-- * You should have received a copy of the GNU General Public License along
-- * with this program.
-- */
--/*
-- * Test Description:
-- *   Verify that,
-  *   The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
-  *   not be dereferenced if the pathname is a symbolic link.
-  */
- 
- #define _GNU_SOURCE
--
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <unistd.h>
--#include <stdlib.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--#include "lapi/fcntl.h"
-+#include "tst_test.h"
- 
- #define TESTFILE	"testfile"
- #define TESTFILE_LINK	"testfile_link"
- 
--char *TCID = "fchownat02";
--int TST_TOTAL = 1;
--
--static int dir_fd;
- static uid_t set_uid = 1000;
- static gid_t set_gid = 1000;
--static void setup(void);
--static void cleanup(void);
--static void test_verify(void);
--static void fchownat_verify(void);
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		for (i = 0; i < TST_TOTAL; i++)
--			fchownat_verify();
--	}
--
--	cleanup();
--	tst_exit();
--}
- 
- static void setup(void)
- {
- 	struct stat c_buf, l_buf;
- 
--	tst_require_root();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
--
--	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
--
--	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
--
--	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
--
--	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
-+	SAFE_TOUCH(TESTFILE, 0600, NULL);
-+	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
-+	SAFE_STAT(TESTFILE_LINK, &c_buf);
-+	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
- 
- 	if (l_buf.st_uid == set_uid || l_buf.st_gid == set_gid) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "link_uid(%d) == set_uid(%d) or link_gid(%d) == "
--			 "set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
--			 set_gid);
-+		tst_brk(TBROK | TERRNO,
-+			"link_uid(%d) == set_uid(%d) or link_gid(%d) == "
-+			"set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
-+			set_gid);
- 	}
- }
- 
--static void fchownat_verify(void)
--{
--	TEST(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
--		      AT_SYMLINK_NOFOLLOW));
--
--	if (TEST_RETURN != 0) {
--		tst_resm(TFAIL | TTERRNO, "fchownat() failed, errno=%d : %s",
--			 TEST_ERRNO, strerror(TEST_ERRNO));
--	} else {
--		test_verify();
--	}
--}
--
--static void test_verify(void)
-+static void run(void)
- {
- 	struct stat c_buf, l_buf;
- 
--	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
-+	TST_EXP_PASS_SILENT(fchownat(AT_FDCWD, TESTFILE_LINK, set_uid, set_gid,
-+				     AT_SYMLINK_NOFOLLOW));
- 
--	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
-+	SAFE_STAT(TESTFILE_LINK, &c_buf);
-+	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
- 
- 	if (c_buf.st_uid != set_uid && l_buf.st_uid == set_uid &&
- 	    c_buf.st_gid != set_gid && l_buf.st_gid == set_gid) {
--		tst_resm(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
-+		tst_res(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
- 	} else {
--		tst_resm(TFAIL,
--			 "fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
--			 "link_uid=%d set_uid=%d | gid=%d link_gid=%d "
--			 "set_gid=%d", c_buf.st_uid, l_buf.st_uid, set_uid,
--			 c_buf.st_gid, l_buf.st_gid, set_gid);
-+		tst_res(TFAIL,
-+			"fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
-+			"link_uid=%d set_uid=%d | gid=%d link_gid=%d set_gid=%d",
-+			c_buf.st_uid, l_buf.st_uid, set_uid,
-+			c_buf.st_gid, l_buf.st_gid, set_gid);
- 	}
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.test_all = run,
-+	.setup = setup,
-+};
--- 
-2.43.0
+On 1/14/25 16:49, Avinesh Kumar wrote:
+> Also fix a make check warning.
+>
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+> Following up on https://lore.kernel.org/ltp/1934768.7Z3S40VBb9@localhost/
+>
+>   testcases/kernel/syscalls/flock/flock02.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/flock/flock02.c b/testcases/kernel/syscalls/flock/flock02.c
+> index b8c7eee68..e2fe73a64 100644
+> --- a/testcases/kernel/syscalls/flock/flock02.c
+> +++ b/testcases/kernel/syscalls/flock/flock02.c
+> @@ -13,6 +13,7 @@
+>    * - EBADF if the file descriptor is invalid
+>    * - EINVAL if the argument operation does not include LOCK_SH,LOCK_EX,LOCK_UN
+>    * - EINVAL if an invalid combination of locking modes is used i.e LOCK_SH with LOCK_EX
+> + * - EWOULDBLOCK if the file is locked and the LOCK_NB flag was selected
+>    */
+>   
+>   #include <errno.h>
+> @@ -31,13 +32,19 @@ static struct tcase {
+>   	{&badfd, LOCK_SH, EBADF},
+>   	{&fd, LOCK_NB, EINVAL},
+>   	{&fd, LOCK_SH | LOCK_EX, EINVAL},
+> +	{&fd, LOCK_NB | LOCK_EX, EWOULDBLOCK}
+>   };
+>   
+> -static void verify_flock(unsigned n)
+> +static void verify_flock(unsigned int n)
+>   {
+>   	struct tcase *tc = &tcases[n];
+>   
+>   	fd = SAFE_OPEN("testfile", O_RDWR);
+> +	int fd2 = SAFE_OPEN("testfile", O_RDWR);
+We can initialize fd2 at the beginning of verify_flock() with -1, open 
+it only when tc->exp_err is EWOULDBLOCK and close it only when it's not 
+-1. So we avoid to open one more testfile also for the other testcases.
+> +
+> +	if (tc->exp_err == EWOULDBLOCK)
+> +		flock(fd2, LOCK_EX);
+> +
+>   	TEST(flock(*tc->fd, tc->operation));
+>   	if (TST_RET == 0) {
+>   		tst_res(TFAIL | TTERRNO, "flock() succeeded unexpectedly");
+> @@ -53,6 +60,7 @@ static void verify_flock(unsigned n)
+>   	}
+>   
+>   	SAFE_CLOSE(fd);
+> +	SAFE_CLOSE(fd2);
+>   }
+>   
+>   static void setup(void)
+With that small thing:
 
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+Kind regards,
+Andrea
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
