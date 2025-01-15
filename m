@@ -4,95 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 914EDC02180
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1736944877; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=+BPM2aHj7B2PCwMfnWx8nAw3dbh9CMFjEzrdfh/K+kM=;
- b=luNYpicULKYn/xjE4zg3CtfIvA3AJfb/c0ryLtO8NKMhKCiH1G1orK7JdzAV7wdISg4ba
- qWlXH6JBIs+BajQQmz1hIwE1jky7IqQmV9drce8/oFTWmJS07zb1bzO/UTqbIs5RLA1bpXx
- fkDPE5Op5vzDgkEt8Mu9otjKtyz9Y8c=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ACE8C02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:41:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC7063C7B75
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:41:16 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id F30AF3C7B78
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:41:40 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BB1B83C7A53
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:40:55 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4D0DC3C7A53
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:41:23 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BB67D1016C4E
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:40:54 +0100 (CET)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-4361f796586so69822055e9.3
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 04:40:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1736944854; x=1737549654; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=huaMLO0q7V61j4y98vFJ10COryJ7RT9A40TI34LSmNs=;
- b=SHn7we9/8i9c0IYGqpzsBTm9WgcgRNL7Ez6RoMKFCqKtWs2q7IEORmMZBUfZcYNeRS
- MGRpTH9O0cHD8EEXQQB6ghd0mjGBoxAQpfaMwQUAPVvAvbPG/bVHoo+9xmPZa6ze4aQm
- chF9Olb15tJLF8+xzAz5o7O/zB0jxHZ1jVr9b5xOXDlbNnTc4/4zKcPKNUrmB6mkcyMo
- XAICHCZ1Kq60NQUdA2OTLjGVv92hY1a5A09GeAuo80lDdnW65MinFtBgjMIFMGCqnjBm
- ifoEIw63XjRVHy+s1vJ0XbQSD21ZnIgIjByAhMwk1y/ppcS81KWVqXl7dYu/g0EAtuZP
- 7lxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1736944854; x=1737549654;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=huaMLO0q7V61j4y98vFJ10COryJ7RT9A40TI34LSmNs=;
- b=MblVCzGE6OuDo5J+aFF36PEf4fOsFBvL40r9InAAXBEd3Aj0SGQ3blIM0r6ppKZT3d
- 3lF1gpdZDGWH4F9vRvmXWJYACGCZ7+f53fX4h0pFA+vpcN4ODe6Wxopgo2rNu9Xtpm+D
- ViwAxy11IUNj/uPfc6th7YFMcgFA2kln6AHNi0YxKAPiwsSKKtg5CA3AynSSKgZxxTlh
- uG7zh8TTLwzdVT0/A/rHJ+YaT1/6/gOI/CqWWVyD2oAuBElJ91/nnnMYfes7IAGBEHim
- 8ni6wOpg4z6DylGDEIawBjJMwrPA+ikP92+5HVNFcTqMtXt+nEeA2GUH7hwYX9sRi/GT
- eMQw==
-X-Gm-Message-State: AOJu0YyvRaKw2UkYkSf30en02+hD/MPiyHPNeUD3eygmVZiphHpC8jUZ
- i+VILzD1jsIVkooY6bNqVjQHwUxizm/yWA347lnGnnShpIfFxn57dSpSsC4/+D4BBf2k/K+7pjh
- nSlaw8Q==
-X-Gm-Gg: ASbGncsBoZ/GkhytmFrwC8U7cm74WgxiIxsj/rdu6NVBY48TMKFvYS5yCN8cxQ+nkOe
- eYPX9CDlpPdxrQmcEHJKGpKVa5VsEtRBJ0TvNdU9VHMFsgi4BzdmzSXOvEUSVLH0aVhDVHv3V9F
- 8QIyY8RBnJ6hYLMqpRl5JTDM+cjjuyqizTeA5cWS8uW+e/wrIN2MmNypepQIkMRVmK/qUQUcVrf
- N3XZ1QgZANwkapYOGAGdLGTr8dcw4o8dY8SaCiCvyqLWxr1qjlVzwX9aw9kOGI942ml2puMpIqg
- LiZqFjXy8WB6qRls2Zyd0dBSGxuigS8glsoWWoTMLFMcYzo7iuRBq09Dyq6J/WOZ3V08KN5iE0t
- kJYiUFnBv+FnrKj0M0vY=
-X-Google-Smtp-Source: AGHT+IHNvECnhNYlKdn8QbG3vo+QVI4cjgn4pSCxGGk5A5Fy8/b+bLeLjhCKM3lPM1URjBSKomagMw==
-X-Received: by 2002:a5d:6c63:0:b0:38a:418e:1179 with SMTP id
- ffacd0b85a97d-38a872fc20bmr27882247f8f.2.1736944853788; 
- Wed, 15 Jan 2025 04:40:53 -0800 (PST)
-Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
- (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
- [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-38a8e4c1c01sm17786537f8f.97.2025.01.15.04.40.52
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 Jan 2025 04:40:53 -0800 (PST)
-Message-ID: <c3a91a38-10de-4400-9db2-4c46fbc73ee7@suse.com>
-Date: Wed, 15 Jan 2025 13:40:51 +0100
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8B1DC1425597
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:41:22 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 56CBE2192D;
+ Wed, 15 Jan 2025 12:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736944882;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lx1IoHPNbpKEku90KOAc8/SHtiSpkvtkvL98am4cWkc=;
+ b=0pAT0wJTPTaRKGejveiWW4+ljtxOGGRencpTSfQdMOF8Ih7lRDyxA5kbL8fdVsfFRfFlH4
+ mXFnpU3At0qAZ69oKYeq/4etxr5BZ0iTVKuFWDlJamg9Nfg03ZZ47KKYcrUUCjKPMMNYc9
+ DaOXxFPsXa7vdTgXBhL4EriBLPwaeX8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736944882;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lx1IoHPNbpKEku90KOAc8/SHtiSpkvtkvL98am4cWkc=;
+ b=aKNr6QS6z9o0oS+UVeS0PFeTL6o72X/pQviP3EdoOiAZ0iVkxMolgpEgs4gk3Sl5M6LGbM
+ mwMPvnfztgpTz9AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1736944881;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lx1IoHPNbpKEku90KOAc8/SHtiSpkvtkvL98am4cWkc=;
+ b=i4ATWifKjzHGmRFmdjJmN+jDG4DEQf6V2AHYDysWYq09BTtFd2YZz6cU4oLdILLx+uPDrS
+ EcTfpSOcrRAsxqywJa1FO/wumFCM4JFupwF5X90CAbNcqAX0OMcXLsaSPXiCk25zFXqI0m
+ 6rpLnRLGbKqLVMBsS5DuihtS0fa33Pc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1736944881;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lx1IoHPNbpKEku90KOAc8/SHtiSpkvtkvL98am4cWkc=;
+ b=8bqhU96YAZwTSCKrpsIRL6eOl91zTLbBindsXn10SJSU2AGnl0l4kFlzxbKJVa0Yez5poS
+ 00j/RLo/YyXDr1Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3503113A6F;
+ Wed, 15 Jan 2025 12:41:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Fx3zC/Gsh2dyUQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 15 Jan 2025 12:41:21 +0000
+Date: Wed, 15 Jan 2025 13:41:15 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250115124115.GB648257@pevik>
+References: <20241211001418.392890-1-pvorel@suse.cz>
+ <Z4eVyQM2kiYrz3f8@yuki.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it, Shiyang Ruan <ruansy.fnst@fujitsu.com>
-References: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
- <20250115091218.2630891-3-ruansy.fnst@fujitsu.com>
-Content-Language: en-US
-In-Reply-To: <20250115091218.2630891-3-ruansy.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Z4eVyQM2kiYrz3f8@yuki.lan>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] fchownat03: Move error tests from
- fchownat01
+Subject: Re: [LTP] [PATCH 1/1] tst_test.sh: Fix TBROK => TWARN evaluation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,126 +112,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Hi Cyril,
 
-This is a new test, so we require a proper commit description for it, 
-even if it comes from fchownat01.
-The commit name might be "Add new fchownat03 test" and description 
-should contain what the test is made for and where it comes from.
+> Hi!
+> This I suppose got broken in:
 
-On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/fchownat/.gitignore |  1 +
->   .../kernel/syscalls/fchownat/fchownat03.c     | 77 +++++++++++++++++++
->   2 files changed, 78 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/fchownat/fchownat03.c
->
-> diff --git a/testcases/kernel/syscalls/fchownat/.gitignore b/testcases/kernel/syscalls/fchownat/.gitignore
-> index 35c00345b..60fac7e69 100644
-> --- a/testcases/kernel/syscalls/fchownat/.gitignore
-> +++ b/testcases/kernel/syscalls/fchownat/.gitignore
-> @@ -1,2 +1,3 @@
->   /fchownat01
->   /fchownat02
-> +/fchownat03
-> diff --git a/testcases/kernel/syscalls/fchownat/fchownat03.c b/testcases/kernel/syscalls/fchownat/fchownat03.c
-> new file mode 100644
-> index 000000000..3c50eb39e
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fchownat/fchownat03.c
-> @@ -0,0 +1,77 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) International Business Machines  Corp., 2006
-> + * Copyright (c) Linux Test Project, 2007-2025
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that:
-> + *
-> + * 1. fchownat() returns -1 and sets errno to ENOTDIR if the file descriptor is
-> + *    a file.
-> + * 2. fchownat() returns -1 and sets errno to EBADF if the file descriptor
-> + *    of the specified file is not valid.
-> + * 3. fchownat() returns -1 and sets errno to EINVAL if the flag is not valid.
-The list is kinda small, we have a huge number of cases which would be 
-nice to extend. Please check fchownat(2) manual.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include "tst_test.h"
-> +
-> +#define TESTFILE	"testfile"
-> +#define TESTFILE2	"testfile2"
-TESTFILE2 is never used in the test so it can be removed.
-> +
-> +static int fd;
-> +static int no_fd = -1;
-> +static int dir_fd;
-> +
-> +static struct tcase {
-> +	int exp_errno;
-> +	int flag;
-> +	int *fd;
-> +	char *filename;
-> +} tcases[] = {
-> +	{ ENOTDIR, 0, &fd, TESTFILE },
-> +	{ EBADF, 0, &no_fd, TESTFILE },
-> +	{ EINVAL, 9999, &dir_fd, TESTFILE },
-> +};
-> +
-> +static void fchownat_verify(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	uid_t euid = geteuid();
-> +	gid_t egid = getegid();
-> +	int fd = *tc->fd;
-> +	int flag = tc->flag;
-> +	const char *filename = tc->filename;
-There's no need to create new variables for the tcases attributes access.
-> +
-> +	TST_EXP_FAIL(fchownat(fd, filename, euid, egid, flag),
-> +			tc->exp_errno,
-> +			"fchownat(%d, %s, %d, %d, %d)",
-> +			fd, filename, euid, egid, flag);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_TOUCH(TESTFILE, 0600, NULL);
-> +	fd = SAFE_OPEN(TESTFILE2, O_CREAT | O_RDWR, 0600);
-> +	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-Better to initialize file descriptors to -1, then check here if they are 
-!= -1 after setup() and test run.
-> +
-> +	if (dir_fd > 0)
-> +		SAFE_CLOSE(dir_fd);
-Same here.
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.test = fchownat_verify,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +};
+> commit 55bfa08e179de16773f19b703de70262896383ea
+> Author: Petr Vorel <pvorel@suse.cz>
+> Date:   Thu Dec 14 15:00:10 2023 +0100
+
+FYI it was broken by 5c36ae3e30 ("tst_test.sh: Call cleanup function only after
+test start") (much earlier than 55bfa08e17).
+
+>     tst_test.sh/tst_brk(): Convert only TBROK to TWARN in cleanup
+
+
+> The original code only only depended on TST_DO_EXIT being set. I guess
+> that the easiest fix here would be actually to revert that patch. That
+> is because we mostly call the cleanup from _tst_do_exit() which sets the
+> TST_DO_EXIT before it calls _tst_do_cleanup(). The only place where we
+> call _tst_do_cleanup() wihout the TST_DO_EXIT is inside of the
+> _tst_run_iterations(), if we wanted to convert TBROK to TWARN in that
+> case we can simply do:
+
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index cfdae0230..ac1caebcb 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -820,6 +820,7 @@ _tst_run_iterations()
+>                 _tst_i=$((_tst_i-1))
+>         done
+
+> +       TST_DO_EXIT=1
+>         _tst_do_cleanup
+
+OK, you would revert 55bfa08e179de16773f19b703de70262896383ea + use variable as
+guard here (TST_TBROK_TO_TWARN or whatever name it uses).
+
+I'll try to test it. BTW I remember in the past there were problems when setup
+got tst_brk TCONF, which calls the cleanup.
+
+Kind regards,
+Petr
+
+>         if [ "$TST_MOUNT_FLAG" = 1 ]; then
+
+
+> And possibly change the TST_DO_EXIT to TST_TBROK_TO_TWARN as well.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
