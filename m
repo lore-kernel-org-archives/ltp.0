@@ -4,111 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 344ECC02183
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 12:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33A26C02180
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1736946902; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=Y9w2olf9kug/s+VBncfimjPSDHaQGTBcBN0YwRPs24M=;
+ b=NSF8Jm+1JjSIZRIpWmBocME7vhB+ACz7X+pEMKd/+7IyR3y/d5NknnKq/jcXWsvNaQiH6
+ T02IPSga30sKzS/oqoFKa1ovSs5s00+nrSIxs78V8/NjK2nTdp04dJT+A3YCOhZw8Gd8nhM
+ 5MU0I4ZSShm05TNZc2h25qkq6Dppf+g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06F433C7711
-	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 13:53:03 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B5E5A3C7B48
+	for <ltp@archiver.kernel.org>; Wed, 15 Jan 2025 14:15:02 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7E7343C1117
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:52:45 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 753323C0299
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 14:14:40 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 80B6A61829A
- for <ltp@lists.linux.it>; Wed, 15 Jan 2025 13:52:43 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8C6F621A83;
- Wed, 15 Jan 2025 12:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736945562;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KuW8WVge7wowTir3C9LINPTsboz19fj9H8UAVavQ3eA=;
- b=F4ERQDMxKaQAI4cKdYD1Ge76fe4VR7lNZRIAtpqbkC9ZL9YYi7V8425Vzmz/yImnFj9a4r
- zvgZvOsJFMCjN63oFXO96G3hHnik/q8d2rXJ5L2h+25VcIw3ck+Dcr/opz2a3YIv2r/45b
- jjx/FAksmdJ4YmkZh+BHSg0ImfaUU8M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736945562;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KuW8WVge7wowTir3C9LINPTsboz19fj9H8UAVavQ3eA=;
- b=mddE4VrvuDYDdFZzoBiHOseY8skDbBAeqBO6eIZuQ9xu1mXXKnRKz0ZjJOznllILB437zj
- g1MESsHTnoj2UGBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1736945562;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KuW8WVge7wowTir3C9LINPTsboz19fj9H8UAVavQ3eA=;
- b=F4ERQDMxKaQAI4cKdYD1Ge76fe4VR7lNZRIAtpqbkC9ZL9YYi7V8425Vzmz/yImnFj9a4r
- zvgZvOsJFMCjN63oFXO96G3hHnik/q8d2rXJ5L2h+25VcIw3ck+Dcr/opz2a3YIv2r/45b
- jjx/FAksmdJ4YmkZh+BHSg0ImfaUU8M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1736945562;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KuW8WVge7wowTir3C9LINPTsboz19fj9H8UAVavQ3eA=;
- b=mddE4VrvuDYDdFZzoBiHOseY8skDbBAeqBO6eIZuQ9xu1mXXKnRKz0ZjJOznllILB437zj
- g1MESsHTnoj2UGBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A81813A6F;
- Wed, 15 Jan 2025 12:52:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id I+9BGJqvh2fsVAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 15 Jan 2025 12:52:42 +0000
-Date: Wed, 15 Jan 2025 13:52:41 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Harshvardhan Jha <harshvardhan.j.jha@oracle.com>
-Message-ID: <20250115125241.GD648257@pevik>
-References: <e66fcf77-cf9d-4d14-9e42-1fc4564483bc@oracle.com>
- <PH7PR10MB650583A6483E7A87B43630BDAC302@PH7PR10MB6505.namprd10.prod.outlook.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C8CB622261
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 14:14:40 +0100 (CET)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-43618283dedso64352525e9.3
+ for <ltp@lists.linux.it>; Wed, 15 Jan 2025 05:14:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1736946879; x=1737551679; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=CoOdYJnx3UBt6EfYjOgQoxlNiIoHzlSO+jTjOs3C4vs=;
+ b=hATgCFT1oDVgtU+al//MBpTFVRD02gVpSMNJV9v57u2NuwiMScgizKnFtN9IO3HAh8
+ GllumZDvybopWeFxoVwhAQ9sVzVoLNrvqelkOdhUiz4H6OI7TwlYnCWbagESEo3vgjeb
+ hmAsEkqRxpZ4xgyxCOMhI7ZNPkhDZOVcJjmPuveVVZKnkiz1NqdyWiuKKB6BHdjYOBct
+ CJ3obzR8zYfkr6KDXrqUsByS75f69VXdO7hUHxuuxv8iXZymGxWOSTAY6j4Y9NOvZYiz
+ gSYl1FfncEU5M95WP69gkwyOj3P+JuASN+zt/x3maNUo/Z1qdkpu8BQg4ESyQSTOTJOl
+ wR3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1736946879; x=1737551679;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=CoOdYJnx3UBt6EfYjOgQoxlNiIoHzlSO+jTjOs3C4vs=;
+ b=j3OBVZzCxNZWBDfuX0fEW5RAK4OqZjWVb0eoBKMiYIuAEUJfqMTMvTI8/irYHHUTc/
+ m15QGxDZwd1F/nza7kBrmJMblNSU+65oNKn/+vh2AnsBM2xR5aYMAQv/36mskqj/TtzJ
+ Nln+XdLckxHxCSnajsW7vL1HNnnx5+ZRCgYh6KAEcPdPipRz885OfnXjClrhM/91n8CG
+ Ntu/tZCvMK1VqA8OFXS9HIOy28c830HvxCvQ3vXvwwgsUm684h7eOT0h8bM+Ofm2P7E1
+ uBQbMkDWzcBAUVs8bFLZ3Hda3z3J+MhVwzeuDdeFsWocD2Fd6VGof9YBzOmAcjqDXnUt
+ 6bzQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWowmSh/uCtgcsRzGT293WcQ3BnHvvpjRK2/RypOEu2tlIy3yxsj0Kcvx1s9bj1PvzvqVk=@lists.linux.it
+X-Gm-Message-State: AOJu0YyHlYIZ6ykbKGpzmSFSDPR9HsZ7Er9eEyW6rChOt4ECQhQOpACX
+ smmipQUgR8pKFFzdM/uhuH1sOP8agHm8nUwC6Akwm8spkfFwvKg5DheSMFN+V/c=
+X-Gm-Gg: ASbGnct1rRoCOiSqx/uBr2CPhrZZ4EIevjWyMABU9GJ0qQPIusW3xq26h+rstQ+dimA
+ IGg3PDyA/XuP3F8B6v0ifsGQCfElAUkJmf8xLVCWscjMMBtkjiwTuAD4ovQi+NqrGmoCVb38Hnz
+ 88z3I65oTL199W4T0HKT8rQUPucxuXcBgKRn0x2qX+8u9G6NDfP/7Si3l4XZ4zLdn1xNXWeXC0s
+ kVw2/2Ms+f7j3/CT5z9m3Y8cyO7SmmIGJKDD//MvpV5l8xZjEbH37pQaFVmRv8m5QoxRHQKtKLU
+ MTZ21c0NlYGczE+VSremdtXaUqlzUO3paIBjor0zISNhaxXq0/QveQ8vlnjn+nAkgsE7mbjVE/v
+ L8diRe2lWn1EZ/+8Ke2s=
+X-Google-Smtp-Source: AGHT+IGrXywZNOb39KWBbH3CYRJJz0nxkqqFPEytm01m2LBx6MQYbIw2fkdiSk//B6iENcMFAuEzBQ==
+X-Received: by 2002:a05:600c:45c3:b0:434:a90b:94fe with SMTP id
+ 5b1f17b1804b1-436e26c3c3fmr298413195e9.10.1736946879477; 
+ Wed, 15 Jan 2025 05:14:39 -0800 (PST)
+Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
+ (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
+ [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-437c7528076sm23500045e9.25.2025.01.15.05.14.38
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 15 Jan 2025 05:14:39 -0800 (PST)
+Message-ID: <7f1c0594-e6ef-497b-852a-e8fe6ee2afe4@suse.com>
+Date: Wed, 15 Jan 2025 14:14:38 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <PH7PR10MB650583A6483E7A87B43630BDAC302@PH7PR10MB6505.namprd10.prod.outlook.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- REDIRECTOR_URL(0.00)[urldefense.com]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:email,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
+User-Agent: Mozilla Thunderbird
+To: "Ricardo B. Marliere" <rbm@suse.com>,
+ Linux Test Project <ltp@lists.linux.it>
+References: <20250114-conversions-v1-0-7869a9f786d0@suse.com>
+ <20250114-conversions-v1-1-7869a9f786d0@suse.com>
+Content-Language: en-US
+In-Reply-To: <20250114-conversions-v1-1-7869a9f786d0@suse.com>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Issue faced in memcg_stat_rss while running mainline
- kernels between 6.7 and 6.8
+Subject: Re: [LTP] [PATCH 1/3] mmap001: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,164 +104,269 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgSGFyc2h2YXJkaGFuLAoKV2UgcnVuIG1haW5saW5lIHN0YWJsZSBrZXJuZWwgVHVtYmxld2Vl
-ZCBvbiB2MiwgdGh1cyB3ZSBoYXZlClRDT05GOiBtZW1vcnkgY29udHJvbGxlciBtb3VudGVkIG9u
-IGNncm91cCB2MiBoaWVyYXJjaHksIHNraXBwaW5nIHRlc3QuCgpJIHRyeSB0byBoYXZlIGxvb2sg
-dG9kYXkgb3IgdG9tb3Jyb3cgb24gaXQuIEkgd29uZGVyIGlmIEkgZXZlbiBmaW5kIHNvbWUgc3lz
-dGVtCndpdGggY2dyb3VwIHYxLgoKQExpOiBtYXliZSB5b3UgaGFkIGFuIGlkZWEgd2hhdCdzIHdy
-b25nLgoKS2luZCByZWdhcmRzLApQZXRyCgo+IEhpIHRoZXJlLAo+IEkgc2F3IHlvdXIgbmFtZSBh
-cHBlYXIgdGhlIG1vc3QgaW4gdGhlIGNvbW1pdCBsb2cgb2YgbWVtY2dfc3RhdF9yc3Muc2ggc28g
-SSB3YXMgd29uZGVyaW5nIGlmIHlvdSBoYWQgYW55IGluZm9ybWF0aW9uIGFzIHRvIHdoeSB0aGlz
-IGlzIGhhcHBlbmluZy4gSSBmZWVsIHRoYXQgd2UgaGF2ZSBlbm91Z2ggcmVhc29uIHRvIGJlbGll
-dmUgdGhhdCB0aGlzIGlzIGR1ZSB0byBvdXRkYXRlZCB0ZXN0Y2FzZXMuIEl04oCZbGwgYmUgaGln
-aGx5IGFwcHJlY2lhdGVkIGlmIHlvdSBjb3VsZCB2ZXJpZnkgdGhpcyBmYWN0LgoKPiBUaGFua3Mg
-JiBSZWdhcmRzLAo+IEhhcnNodmFyZGhhbgoKPiBGcm9tOiBsdHAgPGx0cC1ib3VuY2VzK2hhcnNo
-dmFyZGhhbi5qLmpoYT1vcmFjbGUuY29tQGxpc3RzLmxpbnV4Lml0PiBvbiBiZWhhbGYgb2YgSGFy
-c2h2YXJkaGFuIEpoYSB2aWEgbHRwIDxsdHBAbGlzdHMubGludXguaXQ+Cj4gRGF0ZTogVGh1cnNk
-YXksIDI4IE5vdmVtYmVyIDIwMjQgYXQgMzoyMOKAr1BNCj4gVG86IGx0cEBsaXN0cy5saW51eC5p
-dCA8bHRwQGxpc3RzLmxpbnV4Lml0Pgo+IFN1YmplY3Q6IFtMVFBdIElzc3VlIGZhY2VkIGluIG1l
-bWNnX3N0YXRfcnNzIHdoaWxlIHJ1bm5pbmcgbWFpbmxpbmUga2VybmVscyBiZXR3ZWVuIDYuNyBh
-bmQgNi44Cj4gSGkgdGhlcmUsCgo+IEkndmUgYmVlbiBnZXR0aW5nIHRlc3QgZmFpbHVyZXMgb24g
-dGhlIG1lbWNnX3N0YXRfcnNzIHRlc3RjYXNlIGZvcgo+IG1haW5saW5lIDYuMTIga2VybmVscyB3
-aXRoIDMgdGVzdHMgZmFpbGluZyBhbmQgb25lIGJlaW5nIGJyb2tlbi4KCj4gUnVubmluZyB0ZXN0
-cy4uLi4uLi4KPiA8PDx0ZXN0X3N0YXJ0Pj4+Cj4gdGFnPW1lbWNnX3N0YXRfcnNzIHN0aW1lPTE3
-MzIwMDM1MDAKPiBjbWRsaW5lPSJtZW1jZ19zdGF0X3Jzcy5zaCIKPiBjb250YWN0cz0iIgo+IGFu
-YWx5c2lzPWV4aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IGluY3JlbWVudGluZyBzdG9wCj4gbWVt
-Y2dfc3RhdF9yc3MgMSBUSU5GTzogUnVubmluZzogbWVtY2dfc3RhdF9yc3Muc2gKPiBtZW1jZ19z
-dGF0X3JzcyAxIFRJTkZPOiBUZXN0ZWQga2VybmVsOiBMaW51eCBoYXJqaGEtb2w5a2Rldmx0cAo+
-IDYuMTIuMC1tYXN0ZXIuMjAyNDEwMjEuZWw5LnYxLng4Nl82NCAjMSBTTVAgUFJFRU1QVF9EWU5B
-TUlDIE1vbiBPY3QgMjEKPiAwNjoyNDoyMiBQRFQgMjAyNCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBH
-TlUvTGludXgKPiBtZW1jZ19zdGF0X3JzcyAxIFRJTkZPOiBVc2luZwo+IC90ZW1wZGlyL2x0cC1Z
-NEFFVW1LVklFL0xUUF9tZW1jZ19zdGF0X3Jzcy5rRWhEMFF2dk13IGFzIHRtcGRpciAoeGZzCj4g
-ZmlsZXN5c3RlbSkKPiBtZW1jZ19zdGF0X3JzcyAxIFRJTkZPOiB0aW1lb3V0IHBlciBydW4gaXMg
-MGggNW0gMHMKPiBtZW1jZ19zdGF0X3JzcyAxIFRJTkZPOiBzZXQgL3N5cy9mcy9jZ3JvdXAvbWVt
-b3J5L21lbW9yeS51c2VfaGllcmFyY2h5Cj4gdG8gMCBmYWlsZWQKPiBtZW1jZ19zdGF0X3JzcyAx
-IFRJTkZPOiBTZXR0aW5nIHNobW1heAo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFJ1bm5pbmcg
-bWVtY2dfcHJvY2VzcyAtLW1tYXAtYW5vbiAtcyAyNjYyNDAKPiBtZW1jZ19zdGF0X3JzcyAxIFRJ
-TkZPOiBXYXJtaW5nIHVwIHBpZDogOTM2Nwo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFByb2Nl
-c3MgaXMgc3RpbGwgaGVyZSBhZnRlciB3YXJtIHVwOiA5MzY3Cj4gbWVtY2dfc3RhdF9yc3MgMSBU
-RkFJTDogcnNzIGlzIDAsIDI2NjI0MCBleHBlY3RlZAo+IG1lbWNnX3N0YXRfcnNzIDIgVElORk86
-IFJ1bm5pbmcgbWVtY2dfcHJvY2VzcyAtLW1tYXAtZmlsZSAtcyA0MDk2Cj4gbWVtY2dfc3RhdF9y
-c3MgMiBUSU5GTzogV2FybWluZyB1cCBwaWQ6IDkzODMKPiBtZW1jZ19zdGF0X3JzcyAyIFRJTkZP
-OiBQcm9jZXNzIGlzIHN0aWxsIGhlcmUgYWZ0ZXIgd2FybSB1cDogOTM4Mwo+IG1lbWNnX3N0YXRf
-cnNzIDIgVFBBU1M6IHJzcyBpcyAwIGFzIGV4cGVjdGVkCj4gbWVtY2dfc3RhdF9yc3MgMyBUSU5G
-TzogUnVubmluZyBtZW1jZ19wcm9jZXNzIC0tc2htIC1rIDMgLXMgNDA5Ngo+IG1lbWNnX3N0YXRf
-cnNzIDMgVElORk86IFdhcm1pbmcgdXAgcGlkOiA5NDQ2Cj4gbWVtY2dfc3RhdF9yc3MgMyBUSU5G
-TzogUHJvY2VzcyBpcyBzdGlsbCBoZXJlIGFmdGVyIHdhcm0gdXA6IDk0NDYKPiBtZW1jZ19zdGF0
-X3JzcyAzIFRQQVNTOiByc3MgaXMgMCBhcyBleHBlY3RlZAo+IG1lbWNnX3N0YXRfcnNzIDQgVElO
-Rk86IFJ1bm5pbmcgbWVtY2dfcHJvY2VzcyAtLW1tYXAtYW5vbiAtLW1tYXAtZmlsZQo+IC0tc2ht
-IC1zIDI2NjI0MAo+IG1lbWNnX3N0YXRfcnNzIDQgVElORk86IFdhcm1pbmcgdXAgcGlkOiA5NDYy
-Cj4gbWVtY2dfc3RhdF9yc3MgNCBUSU5GTzogUHJvY2VzcyBpcyBzdGlsbCBoZXJlIGFmdGVyIHdh
-cm0gdXA6IDk0NjIKPiBtZW1jZ19zdGF0X3JzcyA0IFRQQVNTOiByc3MgaXMgMjY2MjQwIGFzIGV4
-cGVjdGVkCj4gbWVtY2dfc3RhdF9yc3MgNSBUSU5GTzogUnVubmluZyBtZW1jZ19wcm9jZXNzIC0t
-bW1hcC1sb2NrMSAtcyAyNjYyNDAKPiBtZW1jZ19zdGF0X3JzcyA1IFRJTkZPOiBXYXJtaW5nIHVw
-IHBpZDogOTQ3OQo+IG1lbWNnX3N0YXRfcnNzIDUgVElORk86IFByb2Nlc3MgaXMgc3RpbGwgaGVy
-ZSBhZnRlciB3YXJtIHVwOiA5NDc5Cj4gbWVtY2dfc3RhdF9yc3MgNSBURkFJTDogcnNzIGlzIDAs
-IDI2NjI0MCBleHBlY3RlZAo+IG1lbWNnX3N0YXRfcnNzIDYgVElORk86IFJ1bm5pbmcgbWVtY2df
-cHJvY2VzcyAtLW1tYXAtYW5vbiAtcyAyNjYyNDAKPiBtZW1jZ19zdGF0X3JzcyA2IFRJTkZPOiBX
-YXJtaW5nIHVwIHBpZDogOTQ5NQo+IG1lbWNnX3N0YXRfcnNzIDYgVElORk86IFByb2Nlc3MgaXMg
-c3RpbGwgaGVyZSBhZnRlciB3YXJtIHVwOiA5NDk1Cj4gbWVtY2dfc3RhdF9yc3MgNiBURkFJTDog
-cnNzIGlzIDAsIDI2NjI0MCBleHBlY3RlZAo+IG1lbWNnX3N0YXRfcnNzIDYgVEJST0s6IHRpbWVk
-IG91dCBvbiBtZW1vcnkudXNhZ2VfaW5fYnl0ZXMgNDA5NiAyNjYyNDAKPiAyNjYyNDAKPiAvb3B0
-L2x0cC0yMDI0MDkzMC90ZXN0Y2FzZXMvYmluL3RzdF90ZXN0LnNoOiBsaW5lIDE1ODogIDk0OTUK
-PiBLaWxsZWQgICAgICAgICAgICAgICAgICBtZW1jZ19wcm9jZXNzICIkQCIgICh3ZDoKPiAvc3lz
-L2ZzL2Nncm91cC9tZW1vcnkvbHRwL3Rlc3QtOTMwOC9sdHBfOTMwOCkKCj4gU3VtbWFyeToKPiBw
-YXNzZWQgICAzCj4gZmFpbGVkICAgMwo+IGJyb2tlbiAgIDEKPiBza2lwcGVkICAwCj4gd2Fybmlu
-Z3MgMAo+IDw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4g
-ZHVyYXRpb249MTcgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MyBjb3Jl
-ZmlsZT1ubwo+IGN1dGltZT0xMyBjc3RpbWU9NTgKPiA8PDx0ZXN0X2VuZD4+Pgo+IElORk86IGx0
-cC1wYW4gcmVwb3J0ZWQgc29tZSB0ZXN0cyBGQUlMCj4gTFRQIFZlcnNpb246IDIwMjQwOTMwCgo+
-IEknbSBub3Qgc3VyZSB3aGV0aGVyIHRoaXMgZXJyb3IgaXMgZHVlIHRvIHRoZSBrZXJuZWwgb3Ig
-dGhlIHRlc3RjYXNlCj4gYmVpbmcgb3V0ZGF0ZWQuIEkga25vdyB0aGF0IHNpbmNlIGNncm91cCB2
-MiBpcyB0aGUgZGVmYXVsdCB1cHN0cmVhbSBhbmQKPiBjZ3JvdXAgdjEgaXMgbm93IGEgbGVnYWN5
-IG9wdGlvbiwgdGhpcyBzcGVjaWZpYyB0ZXN0Y2FzZSBpcyBub3QKPiBwYXJ0aWN1bGFybHkgaGln
-aGVyIGluIHRoZSBwcmlvcml0eSBsaXN0LCBidXQganVzdCB0byBiZSBzdXJlLCBJIHdhbnRlZAo+
-IHRvIHZlcmlmeSB0aGlzIGZyb20geW91ciBzaWRlLiBQbGVhc2UgbGV0IG1lIGtub3cgd2hldGhl
-ciB0aGlzIGVycm9yIGlzCj4gY29taW5nIGR1ZSB0byB0aGUgdGVzdGNhc2UgYmVpbmcgb3V0ZGF0
-ZWQgb3IgdGhpcyBpbiBmYWN0IGlzIGEgdmFsaWQKPiBrZXJuZWwgZXJyb3IuCgo+IEkgcmFuIGEg
-YmlzZWN0IG9uIG1lbWNnX3N0YXRfcnNzIHRlc3QgdXBvbiBtYWlubGluZSBrZXJuZWxzIGFuZCBz
-YXcgdGhlCj4gYmlzZWN0IHJhbmdlIG5hcnJvdyBkb3duIGJldHdlZW4gNi43IGFuZCA2Ljggd2hp
-Y2ggZnVydGhlciBpc29sYXRlZCB0bzoKPiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0
-cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4
-LmdpdC9jb21taXQvP2lkPTdkN2VmMGE0Njg2YWJlNDNjZDc2YTE0MWIzNDBhMzQ4ZjQ1ZWNkZjJf
-XzshIUFDV1Y1TjlNMlJWOTloUSFLeTBtTTJYRUdGU2lDYmNCdmpQNUZWNUlWM2tHcER1REVodUZW
-QUdWZEQxbVhMUVBpZFJjWkxxSDhrMEFGeFNjalpnWW5qQ2dhQ0lTRWdEVmxjbjRCU29qJDxodHRw
-czovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
-dXgva2VybmVsL2dpdC9zdGFibGUvbGludXguZ2l0L2NvbW1pdC8/aWQ9N2Q3ZWYwYTQ2ODZhYmU0
-M2NkNzZhMTQxYjM0MGEzNDhmNDVlY2RmMl9fOyEhQUNXVjVOOU0yUlY5OWhRIUt5MG1NMlhFR0ZT
-aUNiY0J2alA1RlY1SVYza0dwRHVERWh1RlZBR1ZkRDFtWExRUGlkUmNaTHFIOGswQUZ4U2NqWmdZ
-bmpDZ2FDSVNFZ0RWbGNuNEJTb2okPgo+IFRoaXMgY29tbWl0IHdhcyBwYXJ0IG9mIGEgNSBwYXRj
-aCBzZXJpZXMgYW5kIEkgd2Fzbid0IGFibGUgdG8gcmV2ZXJ0IGl0Cj4gb24gNi4xMiB3aXRob3V0
-IGdldHRpbmcgYSBzZXJpZXMgb2YgY29uZmxpY3RzLgo+IFNvLCB3aGF0IEkgZGlkIHdhcyBjaGVj
-a291dCB0aGUgU0hBIGJlZm9yZSB0aGlzIHBhdGNoIHNlcmllcwo+IDRhM2JmYmQxNjk5ZTIzMDY3
-MzE4MDlkNTBkNDgwNjM0MDEyZWQ0ZGUgYW5kIGFmdGVyIHRoZSBwYXRjaCBzZXJpZXMKPiA3ZDdl
-ZjBhNDY4NmFiZTQzY2Q3NmExNDFiMzQwYTM0OGY0NWVjZGYyIGFuZCByYW4gdGhpcyB0ZXN0LgoK
-PiBUaGUgbWFjaGluZSBoYWQgMzJHQiBSYW0gYW5kIDRDUFVzLgoKPiBUaGUgc3RlcHMgdG8gcmVw
-cm9kdWNlIHRoaXMgYXJlOgoKPiAjIS9iaW4vYmFzaAoKPiAjIEFmdGVyIHNldHRpbmcgZGVmYXVs
-dCBrZXJuZWwgdG8gdGhlIGRlc2lyZWQgb25lCj4gaWYgISBncmVwIC1xICJ1bmlmaWVkX2Nncm91
-cF9oaWVyYXJjaHk9MCIgL3Byb2MvY21kbGluZTsgdGhlbgo+ICAgICAgICAgc3VkbyBncnViYnkg
-LS11cGRhdGUta2VybmVsIERFRkFVTFQKPiAtLWFyZ3M9InN5c3RlbWQudW5pZmllZF9jZ3JvdXBf
-aGllcmFyY2h5PTAiCj4gICAgICAgICBzdWRvIGdydWJieSAtLXVwZGF0ZS1rZXJuZWwgREVGQVVM
-VAo+IC0tYXJncz0ic3lzdGVtZC5sZWdhY3lfc3lzdGVtZF9jZ3JvdXBfY29udHJvbGxlciIKPiAg
-ICAgICAgIHN1ZG8gZ3J1YmJ5IC0tdXBkYXRlLWtlcm5lbCBERUZBVUxUIC0tYXJncyBzZWxpbnV4
-PTAKPiAgICAgICAgIHN1ZG8gc2VkIC1pICIvXlNFTElOVVg9L3MvPS4qLz1kaXNhYmxlZC8iIC9l
-dGMvc2VsaW51eC9jb25maWcKPiAgICAgICAgIHN1ZG8gcmVib290Cj4gZmkKCj4gY2QgL29wdC9s
-dHAKPiBybSAtcmYgL3RtcGRpcgo+IG1rZGlyIC90ZW1wZGlyCj4gLi9ydW5sdHAgLWQgL3RlbXBk
-aXIgIC1zIG1lbWNnX3N0YXRfcnNzCgoKPiBUaGUgcmVzdWx0cyBvYnRhaW5lZCB3ZXJlOgoKPiBQ
-cmUgYmlzZWN0IGN1bHByaXQgKDRhM2JmYmQxNjk5ZTIzMDY3MzE4MDlkNTBkNDgwNjM0MDEyZWQ0
-ZGUpOgoKPiA8PDx0ZXN0X3N0YXJ0Pj4+Cj4gdGFnPW1lbWNnX3N0YXRfcnNzIHN0aW1lPTE3MzE3
-NTQwNzgKPiBjbWRsaW5lPSJtZW1jZ19zdGF0X3Jzcy5zaCIKPiBjb250YWN0cz0iIgo+IGFuYWx5
-c2lzPWV4aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IGluY3JlbWVudGluZyBzdG9wCj4gbWVtY2df
-c3RhdF9yc3MgMSBUSU5GTzogUnVubmluZzogbWVtY2dfc3RhdF9yc3Muc2gKPiBtZW1jZ19zdGF0
-X3JzcyAxIFRJTkZPOiBUZXN0ZWQga2VybmVsOiBMaW51eCBoYXJqaGEtb2w5a2Rldmx0cAo+IDYu
-Ny4wLW1hc3RlcnByZS4yMDI0MTExLmVsOS5yYzEueDg2XzY0ICMxIFNNUCBQUkVFTVBUX0RZTkFN
-SUMgRnJpIE5vdiAxNQo+IDExOjU2OjEwIFBTVCAyMDI0IHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdO
-VS9MaW51eAo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFVzaW5nCj4gL3RlbXBkaXIvbHRwLVN6
-RTlBREs2TU0vTFRQX21lbWNnX3N0YXRfcnNzLjZvcDI4c01YTzIgYXMgdG1wZGlyICh4ZnMKPiBm
-aWxlc3lzdGVtKQo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IHRpbWVvdXQgcGVyIHJ1biBpcyAw
-aCA1bSAwcwo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IHNldCAvc3lzL2ZzL2Nncm91cC9tZW1v
-cnkvbWVtb3J5LnVzZV9oaWVyYXJjaHkKPiB0byAwIGZhaWxlZAo+IG1lbWNnX3N0YXRfcnNzIDEg
-VElORk86IFNldHRpbmcgc2htbWF4Cj4gbWVtY2dfc3RhdF9yc3MgMSBUSU5GTzogUnVubmluZyBt
-ZW1jZ19wcm9jZXNzIC0tbW1hcC1hbm9uIC1zIDI2NjI0MAo+IG1lbWNnX3N0YXRfcnNzIDEgVElO
-Rk86IFdhcm1pbmcgdXAgcGlkOiAzNDIzNwo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFByb2Nl
-c3MgaXMgc3RpbGwgaGVyZSBhZnRlciB3YXJtIHVwOiAzNDIzNwo+IG1lbWNnX3N0YXRfcnNzIDEg
-VFBBU1M6IHJzcyBpcyAyNjYyNDAgYXMgZXhwZWN0ZWQKPiBtZW1jZ19zdGF0X3JzcyAxIFRCUk9L
-OiB0aW1lZCBvdXQgb24gbWVtb3J5LnVzYWdlX2luX2J5dGVzIDQwOTYgMjY2MjQwCj4gMjY2MjQw
-Cj4gL29wdC9sdHAtMjAyNDA5MzAvdGVzdGNhc2VzL2Jpbi90c3RfdGVzdC5zaDogbGluZSAxNTg6
-IDM0MjM3Cj4gS2lsbGVkICAgICAgICAgICAgICAgICAgbWVtY2dfcHJvY2VzcyAiJEAiICAod2Q6
-Cj4gL3N5cy9mcy9jZ3JvdXAvbWVtb3J5L2x0cC90ZXN0LTM0MTgwL2x0cF8zNDE4MCkKCj4gU3Vt
-bWFyeToKPiBwYXNzZWQgICAxCj4gZmFpbGVkICAgMAo+IGJyb2tlbiAgIDEKPiBza2lwcGVkICAw
-Cj4gd2FybmluZ3MgMAo+IDw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KCgo+IFBvc3QgYmlzZWN0IGN1
-bHByaXQoN2Q3ZWYwYTQ2ODZhYmU0M2NkNzZhMTQxYjM0MGEzNDhmNDVlY2RmMik6Cgo+IDw8PHRl
-c3Rfc3RhcnQ+Pj4KPiB0YWc9bWVtY2dfc3RhdF9yc3Mgc3RpbWU9MTczMTc1NTMzOQo+IGNtZGxp
-bmU9Im1lbWNnX3N0YXRfcnNzLnNoIgo+IGNvbnRhY3RzPSIiCj4gYW5hbHlzaXM9ZXhpdAo+IDw8
-PHRlc3Rfb3V0cHV0Pj4+Cj4gaW5jcmVtZW50aW5nIHN0b3AKPiBtZW1jZ19zdGF0X3JzcyAxIFRJ
-TkZPOiBSdW5uaW5nOiBtZW1jZ19zdGF0X3Jzcy5zaAo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86
-IFRlc3RlZCBrZXJuZWw6IExpbnV4IGhhcmpoYS1vbDlrZGV2bHRwCj4gNi43LjAtbWFzdGVycG9z
-dC4yMDI0MTExLmVsOS5yYzEueDg2XzY0ICMxIFNNUCBQUkVFTVBUX0RZTkFNSUMgRnJpIE5vdgo+
-IDE1IDExOjU1OjQxIFBTVCAyMDI0IHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdOVS9MaW51eAo+IG1l
-bWNnX3N0YXRfcnNzIDEgVElORk86IFVzaW5nCj4gL3RlbXBkaXIvbHRwLUc2Y2dlNENrclIvTFRQ
-X21lbWNnX3N0YXRfcnNzLjF6cm02WDAyQ08gYXMgdG1wZGlyICh4ZnMKPiBmaWxlc3lzdGVtKQo+
-IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IHRpbWVvdXQgcGVyIHJ1biBpcyAwaCA1bSAwcwo+IG1l
-bWNnX3N0YXRfcnNzIDEgVElORk86IHNldCAvc3lzL2ZzL2Nncm91cC9tZW1vcnkvbWVtb3J5LnVz
-ZV9oaWVyYXJjaHkKPiB0byAwIGZhaWxlZAo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFNldHRp
-bmcgc2htbWF4Cj4gbWVtY2dfc3RhdF9yc3MgMSBUSU5GTzogUnVubmluZyBtZW1jZ19wcm9jZXNz
-IC0tbW1hcC1hbm9uIC1zIDI2NjI0MAo+IG1lbWNnX3N0YXRfcnNzIDEgVElORk86IFdhcm1pbmcg
-dXAgcGlkOiA5MDgzCj4gbWVtY2dfc3RhdF9yc3MgMSBUSU5GTzogUHJvY2VzcyBpcyBzdGlsbCBo
-ZXJlIGFmdGVyIHdhcm0gdXA6IDkwODMKPiBtZW1jZ19zdGF0X3JzcyAxIFRGQUlMOiByc3MgaXMg
-MCwgMjY2MjQwIGV4cGVjdGVkCj4gbWVtY2dfc3RhdF9yc3MgMSBUQlJPSzogdGltZWQgb3V0IG9u
-IG1lbW9yeS51c2FnZV9pbl9ieXRlcyA0MDk2IDI2NjI0MAo+IDI2NjI0MAo+IC9vcHQvbHRwLTIw
-MjQwOTMwL3Rlc3RjYXNlcy9iaW4vdHN0X3Rlc3Quc2g6IGxpbmUgMTU4OiAgOTA4Mwo+IEtpbGxl
-ZCAgICAgICAgICAgICAgICAgIG1lbWNnX3Byb2Nlc3MgIiRAIiAgKHdkOgo+IC9zeXMvZnMvY2dy
-b3VwL21lbW9yeS9sdHAvdGVzdC05MDI0L2x0cF85MDI0KQoKPiBTdW1tYXJ5Ogo+IHBhc3NlZCAg
-IDAKPiBmYWlsZWQgICAxCj4gYnJva2VuICAgMQo+IHNraXBwZWQgIDAKPiB3YXJuaW5ncyAwCj4g
-PDw8ZXhlY3V0aW9uX3N0YXR1cz4+PgoKPiBUaGFua3MgJiBSZWdhcmRzLAo+IEhhcnNodmFyZGhh
-bgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
-L2x0cAo=
+Hi!
+
+On 1/14/25 23:26, Ricardo B. Marliere via ltp wrote:
+> From: Ricardo B. Marliere <rbm@suse.com>
+>
+> Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
+> ---
+>   testcases/kernel/syscalls/mmap/mmap001.c | 206 ++++++++-----------------------
+>   1 file changed, 49 insertions(+), 157 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/mmap/mmap001.c b/testcases/kernel/syscalls/mmap/mmap001.c
+> index dabb7d1e4998b1097e179abe23555926f5841117..bc9b4155e8b53f942ef694fdf3187c0e544a97cd 100644
+> --- a/testcases/kernel/syscalls/mmap/mmap001.c
+> +++ b/testcases/kernel/syscalls/mmap/mmap001.c
+> @@ -1,183 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>   /*
+>    * Copyright (C) 2000 Juan Quintela <quintela@fi.udc.es>
+>    *                    Aaron Laffin <alaffin@sgi.com>
+> + * Copyright (c) 2025 Linux Test Project
+> + */
+> +
+> +/*\
+> + * [Description]
+>    *
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of the GNU General Public License
+> - * as published by the Free Software Foundation; either version 2
+> - * of the License, or (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - * GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write to the Free Software
+> - * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+> - *
+> - * mmap001.c - Tests mmapping a big file and writing it once
+> + * Tests mmapping a big file and writing it once
+Description is a bit short and it needs a bit more information. For 
+example, what we expect to see and what could happen during test (SEGV 
+for example).
+>    */
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -#include <fcntl.h>
+> -#include <sys/mman.h>
+> -#include <stdlib.h>
+> -#include <stdio.h>
+> -#include <unistd.h>
+> -#include <errno.h>
+> -#include <string.h>
+>   
+> -#include "test.h"
+> +#include "tst_test.h"
+>   
+> -char *TCID = "mmap001";
+> -int TST_TOTAL = 5;
+> -static char *filename = NULL;
+> -static int m_opt = 0;
+> +static int fd = -1;
+> +static int m_opt = 1000;
+>   static char *m_copt;
+>   
+> -static void cleanup(void)
+> -{
+> -	free(filename);
+> -
+> -	tst_rmdir();
+> -}
+> -
+>   static void setup(void)
+>   {
+> -	char buf[1024];
+> -	/*
+> -	 * setup a default signal hander and a
+> -	 * temporary working directory.
+> -	 */
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	snprintf(buf, 1024, "testfile.%d", getpid());
+> -
+> -	if ((filename = strdup(buf)) == NULL) {
+> -		tst_brkm(TBROK | TERRNO, cleanup, "strdup failed");
+> -	}
+> -
+> -}
+> -
+> -static void help(void)
+> -{
+> -	printf("  -m x    size of mmap in pages (default 1000)\n");
+> +	if (tst_parse_int(m_copt, &m_opt, 1, INT_MAX))
+> +		tst_brk(TBROK, "Invalid size of mmap '%s'", m_copt);
+>   }
+>   
+> -/*
+> - * add the -m option whose parameter is the
+> - * pages that should be mapped.
+> - */
+> -option_t options[] = {
+> -	{"m:", &m_opt, &m_copt},
+> -	{NULL, NULL, NULL}
+> -};
+> -
+> -int main(int argc, char *argv[])
+> +static void run(void)
+>   {
+>   	char *array;
+> -	int lc;
+>   	unsigned int i;
+> -	int fd;
+>   	unsigned int pages, memsize;
+>   
+> -	tst_parse_opts(argc, argv, options, help);
+> -
+> -	if (m_opt) {
+> -		memsize = pages = atoi(m_copt);
+> -
+> -		if (memsize < 1) {
+> -			tst_brkm(TBROK, cleanup, "Invalid arg for -m: %s",
+> -				 m_copt);
+> -		}
+> -
+> -		memsize *= getpagesize();	/* N PAGES */
+> -
+> -	} else {
+> -		/*
+> -		 * default size 1000 pages;
+> -		 */
+> -		memsize = pages = 1000;
+> -		memsize *= getpagesize();
+> -	}
+> -
+> -	tst_resm(TINFO, "mmap()ing file of %u pages or %u bytes", pages,
+> -		 memsize);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		fd = open(filename, O_RDWR | O_CREAT, 0666);
+> -		if ((fd == -1))
+> -			tst_brkm(TBROK | TERRNO, cleanup,
+> -				 "opening %s failed", filename);
+> -
+> -		if (lseek(fd, memsize, SEEK_SET) != memsize) {
+> -			TEST_ERRNO = errno;
+> -			close(fd);
+> -			tst_brkm(TBROK | TTERRNO, cleanup, "lseek failed");
+> -		}
+> +	memsize = m_opt;
+> +	pages = m_opt;
+> +	memsize *= getpagesize();
+>   
+> -		if (write(fd, "\0", 1) != 1) {
+> -			TEST_ERRNO = errno;
+> -			close(fd);
+> -			tst_brkm(TBROK | TTERRNO, cleanup,
+> -				 "writing to %s failed", filename);
+> -		}
+> +	tst_res(TINFO, "mmap()ing file of %u pages or %u bytes", pages,
+> +		memsize);
+>   
+> -		array = mmap(0, memsize, PROT_WRITE, MAP_SHARED, fd, 0);
+> -		if (array == MAP_FAILED) {
+> -			TEST_ERRNO = errno;
+> -			close(fd);
+> -			tst_brkm(TBROK | TTERRNO, cleanup,
+> -				 "mmapping %s failed", filename);
+> -		} else {
+> -			tst_resm(TPASS, "mmap() completed successfully.");
+> -		}
+> +	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT);
+> +	SAFE_LSEEK(fd, memsize, SEEK_SET);
+> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, "\0", 1);
+>   
+> -		tst_resm(TINFO, "touching mmaped memory");
+> +	array = SAFE_MMAP(NULL, memsize, PROT_WRITE, MAP_SHARED, fd, 0);
+>   
+> -		for (i = 0; i < memsize; i++) {
+> -			array[i] = (char)i;
+> -		}
+> +	tst_res(TINFO, "touching mmaped memory");
+> +	for (i = 0; i < memsize; i++)
+> +		array[i] = (char)i;
+>   
+> -		/*
+> -		 * seems that if the map area was bad, we'd get SEGV,
+> -		 * hence we can indicate a PASS.
+> -		 */
+> -		tst_resm(TPASS,
+> -			 "we're still here, mmaped area must be good");
+> -
+> -		TEST(msync(array, memsize, MS_SYNC));
+> -
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL | TTERRNO,
+> -				 "synchronizing mmapped page failed");
+> -		} else {
+> -			tst_resm(TPASS,
+> -				 "synchronizing mmapped page passed");
+> -		}
+> -
+> -		TEST(munmap(array, memsize));
+> -
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL | TTERRNO,
+> -				 "munmapping %s failed", filename);
+> -		} else {
+> -			tst_resm(TPASS, "munmapping %s successful", filename);
+> -		}
+> +	/*
+> +	 * Seems that if the map area was bad, we'd get SEGV,
+> +	 * hence we can indicate a PASS.
+> +	 */
+If this is true, we need to find a way to test that specific scenario. 
+This can e done by forking a process where test is running and to check 
+if SIGSEGV killed it after calling SAFE_WAITPID()
+> +	tst_res(TPASS, "we're still here, mmaped area must be good");
+>   
+> -		close(fd);
+> -		unlink(filename);
+> +	SAFE_MSYNC(array, memsize, MS_SYNC);
+> +	SAFE_MUNMAP(array, memsize);
+> +}
+>   
+> -	}
+> -	cleanup();
+> -	tst_exit();
+> +static void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+>   }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test_all = run,
+> +	.cleanup = cleanup,
+> +	.options =
+> +		(struct tst_option[]){
+> +			{ "m:", &m_copt,
+> +			  "Size of mmap in pages (default 1000)" },
+> +			{},
+> +		},
+> +};
+>
+Kind regards,
+Andrea
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
