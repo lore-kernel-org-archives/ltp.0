@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DC2FC02180
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 12:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C9AC02183
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 12:57:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E4D573C7BE4
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 13:18:59 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 203C73C7BE3
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 13:57:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E6463C7BD1
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:18:44 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id B46843C7BDE
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:56:53 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8FFDB62D1C9
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:18:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1737029921;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=gLEmUF0bAMGMnRH6gsKonxd/kxXBapdCT0eaOdFTS9g=;
- b=L7bh5RpYwdgLifvZuDH7YWJ8XfUZPh67cbxc9VOHdB/qsbXNgBhSBC6K08JBrpmpfE2O9g
- PbxFwYycauZ46IX9ov0ct6M6AKFg4VeT7T17PrIRfKCq3qPd9BkqR5XTio3+OzpUJyKFum
- 49yBHvHBGbvqRq3G548kO97A09xa/0M=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-76-ClKPus9kMIyJrEPR0mX3HA-1; Thu,
- 16 Jan 2025 07:18:40 -0500
-X-MC-Unique: ClKPus9kMIyJrEPR0mX3HA-1
-X-Mimecast-MFC-AGG-ID: ClKPus9kMIyJrEPR0mX3HA
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 34D9D1BDB76D
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:56:52 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 8542E1955E79
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 12:18:39 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.192.62])
- by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 2D90019560BF; Thu, 16 Jan 2025 12:18:37 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu, 16 Jan 2025 13:18:01 +0100
-Message-ID: <1b9d04fe8d4f0f386398216b9a5c172bb010c97f.1737029809.git.jstancek@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 334B8211ED;
+ Thu, 16 Jan 2025 12:56:52 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E9E9613A57;
+ Thu, 16 Jan 2025 12:56:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6kPvNxMCiWetMAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 16 Jan 2025 12:56:51 +0000
+Date: Thu, 16 Jan 2025 13:56:50 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20250116125650.GA692568@pevik>
+References: <20241222072251.13150-1-liwang@redhat.com>
+ <20250115224154.GA664782@pevik>
+ <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: xChzrQhYl978iMHGRj3m-qDND5RtnhMZ6mVYmg-cusM_1737029919
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 334B8211ED
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] aio-stress: fix opened fd leak
+Subject: Re: [LTP] [REGRESSION] Broken tests using tst_net.sh by 893ca0abe7
+ (was: [PATCH 1/2] lib: multiply the timeout if detect slow kconfigs)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,55 +78,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: liwan@redhat.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Martin Doucha <martin.doucha@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In cases where worker completes specified number of `iterations` before
-oper completes all `total_ios`, such oper remains on active_list.
-This is a problem because cleanup only walks over finished list,
-and closes fds only for items on this list. So it's possible for
-test to exhaust ulimit for open files and fail:
-
-$ ./aio-stress -a1 -I100 -o2 -r4 -f1 -d1^
-aio-stress.c:1347: TPASS: Test passed
-aio-stress.c:1285: TINFO: starting with random write
-aio-stress.c:1296: TINFO: file size 1024MB, record size 0KB, depth 1, I/O per iteration 1
-aio-stress.c:1298: TINFO: max io_submit 1, buffer alignment set to 4KB
-aio-stress.c:1300: TINFO: threads 1 files 1 contexts 1 context offset 2MB verification off
-aio-stress.c:1314: TBROK: open(file0.bin,1052738,0600) failed: EMFILE (24)
-
-Clean/free also items from active_list. Also don't let `status` from cleanup
-be set to zero once it becomes non-zero.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/io/ltp-aiodio/aio-stress.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-index 419fc2cd25a4..e84308d1d0e8 100644
---- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
-+++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-@@ -1122,7 +1122,12 @@ restart:
- 	while (t->finished_opers) {
- 		oper = t->finished_opers;
- 		oper_list_del(oper, &t->finished_opers);
--		status = finish_oper(t, oper);
-+		status = finish_oper(t, oper) ? : status;
-+	}
-+	while (t->active_opers) {
-+		oper = t->active_opers;
-+		oper_list_del(oper, &t->active_opers);
-+		status = finish_oper(t, oper) ? : status;
- 	}
- 
- 	if (t->num_global_pending)
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBPbiBUaHUsIEphbiAxNiwgMjAyNSBhdCA2OjQy4oCvQU0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1
+c2UuY3o+IHdyb3RlOgoKPiA+IEhpIExpLCBDeXJpbCwgYWxsLAoKPiA+IC4uLgo+ID4gPiArKysg
+Yi9saWIvdHN0X3Rlc3QuYwo+ID4gPiBAQCAtNTU1LDkgKzU1NSw2IEBAIHN0YXRpYyBpbnQgbXVs
+dGlwbHlfcnVudGltZShpbnQgbWF4X3J1bnRpbWUpCgo+ID4gPiAgICAgICBwYXJzZV9tdWwoJnJ1
+bnRpbWVfbXVsLCAiTFRQX1JVTlRJTUVfTVVMIiwgMC4wMDk5LCAxMDApOwoKPiA+ID4gLSAgICAg
+aWYgKHRzdF9oYXNfc2xvd19rY29uZmlnKCkpCj4gPiA+IC0gICAgICAgICAgICAgbWF4X3J1bnRp
+bWUgKj0gNDsKPiA+ID4gLQo+ID4gPiAgICAgICByZXR1cm4gbWF4X3J1bnRpbWUgKiBydW50aW1l
+X211bDsKPiA+ID4gIH0KCj4gPiA+IEBAIC0xNzA2LDYgKzE3MDMsOSBAQCB1bnNpZ25lZCBpbnQg
+dHN0X211bHRpcGx5X3RpbWVvdXQodW5zaWduZWQgaW50Cj4gPiB0aW1lb3V0KQo+ID4gPiAgICAg
+ICBpZiAodGltZW91dCA8IDEpCj4gPiA+ICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSywgInRp
+bWVvdXQgbXVzdCB0byBiZSA+PSAxISAoJWQpIiwgdGltZW91dCk7Cgo+ID4gPiArICAgICBpZiAo
+dHN0X2hhc19zbG93X2tjb25maWcoKSkKPiA+ID4gKyAgICAgICAgICAgICB0aW1lb3V0ICo9IDQ7
+Cgo+ID4gRllJIHRoaXMgY2hhbmdlLCBtZXJnZWQgYXMgODkzY2EwYWJlNyAoImxpYjogbXVsdGlw
+bHkgdGhlIHRpbWVvdXQgaWYKPiA+IGRldGVjdCBzbG93Cj4gPiBrY29uZmlncyIpIGNhdXNlZCBh
+IHJlZ3Jlc3Npb24gb24gKmFsbCogdGVzdHMgd2hpY2ggdXNlIHRzdF9uZXQuc2guCgo+ID4gRmly
+c3QsIGl0IGRldGVjdHMgc2xvdyBjb25maWcgb24gZXZlcnl0aGluZyB3aGljaCB1c2VzIHN0cnVj
+dCB0c3RfdGVzdCwKPiA+IHdoaWNoIGFyZSB1bmZvcnR1bmF0ZWx5IHNvbWUgdG9vbHMgYXQgdGVz
+dGNhc2VzL2xpYi86Cgo+ID4gJCBnaXQgZ3JlcCAtbCAic3RydWN0IHRzdF90ZXN0IiB0ZXN0Y2Fz
+ZXMvbGliLyouYwo+ID4gdGVzdGNhc2VzL2xpYi90c3RfZGV2aWNlLmMgLy8gbm90IG9idmlvdXMg
+cmVhc29uLCBtaWdodCBiZSByZW1vdmVkCj4gPiB0ZXN0Y2FzZXMvbGliL3RzdF9nZXRfZnJlZV9w
+aWRzLmMgLy8gZm9yY2UgbWVzc2FnZXMgdG8gYmUgcHJpbnRlZCBmcm9tIG5ldwo+ID4gbGlicmFy
+eQo+ID4gdGVzdGNhc2VzL2xpYi90c3RfbnNfY3JlYXRlLmMgLy8gLmZvcmtzX2NoaWxkID0gMSwg
+TmVlZGVkIGJ5IFNBRkVfQ0xPTkUKPiA+IHRlc3RjYXNlcy9saWIvdHN0X25zX2V4ZWMuYyAgLy8g
+LmZvcmtzX2NoaWxkID0gMSwgTmVlZGVkIGJ5IFNBRkVfQ0xPTkUKPiA+IHRlc3RjYXNlcy9saWIv
+dHN0X3J1bl9zaGVsbC5jIC8vIG5vdCBvYnZpb3VzIHJlYXNvbiwgbWlnaHQgYmUgcmVtb3ZlZAoK
+PiA+IEJlc2lkZXMgdW5pbXBvcnRhbnQgZmFjdCB0aGF0IHNsb3cgY29uZmlnIGRldGVjdGlvbiBp
+cyBhbiB1bm5lY2Vzc2FyeQo+ID4gc2xvd2Rvd24KPiA+IG9uIHRoZXNlIHRvb2xzLCB0aGUgcHJv
+YmxlbSBpcyB0aGF0IGl0IHByaW50cyBtZXNzYWdlcyB0byBzdGRlcnIsIHdoaWNoCj4gPiBjYXVz
+ZXMKPiA+IGJyZWFrYWdlLgoKPiA+IFByZXZpb3VzbHkgdHN0X25zX2V4ZWMuYyBydW4ganVzdCBj
+b21tYW5kIHBhc3NlZCBieSAtYyBwYXJhbWV0ZXI6Cgo+ID4gJCAuL3RzdF9uc19leGVjIDE0NTM2
+IG5ldCxtbnQgc2ggLWMgIiBjYXQKPiA+IC9wcm9jL3N5cy9uZXQvaXB2Ni9jb25mL2x0cF9uc192
+ZXRoMS9kaXNhYmxlX2lwdjYiCj4gPiAwCgo+ID4gTm93IGl0IHByaW50cyBUSU5GTzoKPiA+ICQg
+Li90c3RfbnNfZXhlYyAxNDUzNiBuZXQsbW50IHNoIC1jICIgY2F0Cj4gPiAvcHJvYy9zeXMvbmV0
+L2lwdjYvY29uZi9sdHBfbnNfdmV0aDEvZGlzYWJsZV9pcHY2Igo+ID4gdHN0X2tjb25maWcuYzo4
+ODogVElORk86IFBhcnNpbmcga2VybmVsIGNvbmZpZyAnL3Byb2MvY29uZmlnLmd6Jwo+ID4gdHN0
+X2tjb25maWcuYzo2Njc6IFRJTkZPOiBDT05GSUdfTEFURU5DWVRPUCBrZXJuZWwgb3B0aW9uIGRl
+dGVjdGVkIHdoaWNoCj4gPiBtaWdodCBzbG93IHRoZSBleGVjdXRpb24KPiA+IDAKCj4gPiB0c3Rf
+cmhvc3RfcnVuKCkgaW4gdHN0X25ldC5zaCBydW5zIGJpbmFyeSBvbiByZW1vdGUgaG9zdDoKCj4g
+PiAgICAgICAgIG91dHB1dD0kKCRyY21kICIkc2hfY21kIiAkb3V0IDI+JjEgfHwgZWNobyAnUlRF
+UlInKQoKPiA+IFJlZGlyZWN0IHN0ZGVyciB0byBzdGRvdXQgKDI+JjEpIGlzIGxpa2VseSBuZWVk
+ZWQgZm9yIHNvbWUgdGVzdHMuIEJ1dAo+ID4gdHN0X3Job3N0X3J1bigpIG91dHB1dCBpcyBvZnRl
+biBwYXJzZWQgaW5jbHVkaW5nIHRoZXJlZm9yZSBjZXJ0YWluIHRvb2xzIGluCj4gPiB0ZXN0Y2Fz
+ZXMvbGliLyBoYXZlIHRvIHByaW50IG9ubHkgZXhwZWN0ZWQgb3V0cHV0OgoKPiA+IGluaXRfbHRw
+X25ldHNwYWNlKCkKPiA+IHsKPiA+ICAgICAgICAgLi4uCj4gPiAgICAgICAgICAgICAgICAgcGlk
+PSIkKFJPRCB0c3RfbnNfY3JlYXRlIG5ldCxtbnQpIgo+ID4gICAgICAgICAuLi4KPiA+ICAgICAg
+ICAgZXhwb3J0IExUUF9ORVROUz0iJHtMVFBfTkVUTlM6LXRzdF9uc19leGVjICRwaWQgbmV0LG1u
+dH0iCgo+ID4gSSB3aWxsIHByb2JhYmx5IHNvbHZlIGl0IGJ5IGFkZGluZyB5ZXQgYW5vdGhlciBw
+YXJhbWV0ZXIgdG8KPiA+IHRzdF9yaG9zdF9ydW4oKSwKPiA+IHdoaWNoIGlnbm9yZXMgc3RkZXJy
+IGFuZCB1c2UgaXQgZm9yIHRzdF9uc197Y3JlYXRlLGV4ZWN9LiBCdXQgbWF5YmUgdGhlcmUKCkFj
+dHVhbGx5IHRzdF9uc19leGVjLmMgbmVlZHMgdG8gYmUgcXVpZXQgdG8gbm90IGNsdXR0ZXIgdGhl
+IG91dHB1dCBvZiB0aGUKY29tbWFuZCBpdCBydW5zIHZpYSB0c3Rfcmhvc3RfcnVuKCkgZm9yIG5l
+dG5zICh2aWEgJExUUF9ORVROUykuIFRoZXJlZm9yZSBhZGRpbmcKYW4gcXVpZXQgb3B0aW9uIHRv
+IHRzdF9yaG9zdF9ydW4oKSBpcyBub3QgYSBzb2x1dGlvbi4KCj4gPiBpcwo+ID4gYW5vdGhlciBz
+b2x1dGlvbiAob3IgYW5vdGhlciBwcm9ibGVtKS4KCgo+IE9yLCBhbm90aGVyIHdheSBpcyBqdXN0
+IHRvIHNldCAndHN0X3Rlc3QtPnRpbWVvdXQgPT0gVFNUX1VOTElNSVRFRF9USU1FT1VUJwo+IGlu
+IHRob3NlIHRlc3RjYXNlL2xpYiB0b29scy4KClVuZm9ydHVuYXRlbHkgdGhpcyBkb2VzIG5vdCB3
+b3JrLiBJbiB0aGUgZW5kIEkgcHJvYmFibHkgZmlsdGVyIG91dCAnVElORk86JwptZXNzYWdlcyBp
+biB0c3Rfcmhvc3RfcnVuKCkuCgpJdCdkIGJlIHNhZmVyIHRvIGF2b2lkIHVzaW5nIGxpYnJhcnkg
+Zm9yIHRzdF9uc19leGVjLmMsIGJ1dCBpdCdzIGFsc28gdXNlZCBpbgpjb250YWluZXJzIHNoZWxs
+IHRlc3RzIChuZXRuc19saWIuc2gsIG5ldG5zX3N5c2ZzLnNoKSBhbmQgZnNfYmluZCB0ZXN0cwoo
+ZnNfYmluZF9jbG9uZU5TKi5zaCkuCgpBbHNvLCB0c3RfbnNfZXhlYy5jIChhbmQgdHN0X25zX2Ny
+ZWF0ZS5jKSBjb3VsZCBiZSBmb3IgbmV0bnMgcmVwbGFjZWQgYnkKJ2lwIG5ldG5zJyAocmV2ZXJ0
+IGJhY2sgY2hhbmdlIGluIDIwMTcgM2ZiNTAxZTA0YyAoIm5ldDogdXNlIExUUCBuc19jcmVhdGUv
+bnNfZXhlYyIpCgpNYXliZSBvdGhlciB0b29scyB3aGljaCB1c2UgdHN0X25zX3tjcmVhdGUsZXhl
+YyxpZm1vdmV9LmMgY291bGQgYmUgcmVwbGFjZWQgYnkKc29tZSB0b29scyBmcm9tIHV0aWwtbGlu
+dXggKHVuc2hhcmUgPykuIFdlIGNvbnNpZGVyIGhhdmluZyBvd24gYmluYXJ5IGFzIGJldHRlcgp0
+aGFuIGV4dGVybmFsIGRlcGVuZGVuY3ksIGJ1dCBiaW5hcnkgbmVlZHMgdG8gYmUgc2ltcGxlIHRv
+IGF2b2lkIHByb2JsZW1zIHdoZW4KTFRQIGxpYnJhcnkgY2hhbmdlcy4KCktpbmQgcmVnYXJkcywK
+UGV0cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
+bmZvL2x0cAo=
