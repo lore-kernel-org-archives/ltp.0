@@ -4,69 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C9AC02183
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 12:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 986D5C02180
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 13:09:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 203C73C7BE3
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 13:57:09 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 030713C7B97
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 14:09:58 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B46843C7BDE
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:56:53 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 69B033C7B97
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 14:09:41 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 34D9D1BDB76D
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 13:56:52 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 81B54100860C
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 14:09:40 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 334B8211ED;
- Thu, 16 Jan 2025 12:56:52 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 94F9F1F797;
+ Thu, 16 Jan 2025 13:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737032979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+G5iA5GfYCtinG7mNq4qE+zOt34aBgC+032apDFnNgk=;
+ b=OtekLjLvQvxyqu+Q3419HBJNYdiBgbfDwF6DF2xvHYoqVecZSBQfjjgJRiLewDPJe1CNgg
+ gaOa9RaD73PZE2kl6WxALhPYDHI4DNx86FpWeY4zc5J3e8VuESmQnlgOzlzQGy5eUfYFYs
+ K9JTCIAW0MYjzKRQuzulFbd7N4WAsq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737032979;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+G5iA5GfYCtinG7mNq4qE+zOt34aBgC+032apDFnNgk=;
+ b=ZWS8RtAkFSK/Enf82eneKbFWHrUhaWcx1MBEcdKe/dw9DeiwVGTESbePZydakslrrKbbkU
+ DmMQq6Wm1oiqL7Bw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OtekLjLv;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZWS8RtAk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737032979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+G5iA5GfYCtinG7mNq4qE+zOt34aBgC+032apDFnNgk=;
+ b=OtekLjLvQvxyqu+Q3419HBJNYdiBgbfDwF6DF2xvHYoqVecZSBQfjjgJRiLewDPJe1CNgg
+ gaOa9RaD73PZE2kl6WxALhPYDHI4DNx86FpWeY4zc5J3e8VuESmQnlgOzlzQGy5eUfYFYs
+ K9JTCIAW0MYjzKRQuzulFbd7N4WAsq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737032979;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+G5iA5GfYCtinG7mNq4qE+zOt34aBgC+032apDFnNgk=;
+ b=ZWS8RtAkFSK/Enf82eneKbFWHrUhaWcx1MBEcdKe/dw9DeiwVGTESbePZydakslrrKbbkU
+ DmMQq6Wm1oiqL7Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E9E9613A57;
- Thu, 16 Jan 2025 12:56:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40CFF13332;
+ Thu, 16 Jan 2025 13:09:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6kPvNxMCiWetMAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 16 Jan 2025 12:56:51 +0000
-Date: Thu, 16 Jan 2025 13:56:50 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gbyVCxMFiWcaIgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 16 Jan 2025 13:09:39 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250116125650.GA692568@pevik>
-References: <20241222072251.13150-1-liwang@redhat.com>
- <20250115224154.GA664782@pevik>
- <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
+To: ltp@lists.linux.it
+Date: Thu, 16 Jan 2025 14:09:36 +0100
+Message-ID: <20250116130936.700441-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.47.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 334B8211ED
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 94F9F1F797
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,suse.cz:mid];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] Broken tests using tst_net.sh by 893ca0abe7
- (was: [PATCH 1/2] lib: multiply the timeout if detect slow kconfigs)
+Subject: [LTP] [PATCH 1/1] tst_net.sh: Filter out tst_ns_exec TINFO messages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,80 +109,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Martin Doucha <martin.doucha@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBPbiBUaHUsIEphbiAxNiwgMjAyNSBhdCA2OjQy4oCvQU0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1
-c2UuY3o+IHdyb3RlOgoKPiA+IEhpIExpLCBDeXJpbCwgYWxsLAoKPiA+IC4uLgo+ID4gPiArKysg
-Yi9saWIvdHN0X3Rlc3QuYwo+ID4gPiBAQCAtNTU1LDkgKzU1NSw2IEBAIHN0YXRpYyBpbnQgbXVs
-dGlwbHlfcnVudGltZShpbnQgbWF4X3J1bnRpbWUpCgo+ID4gPiAgICAgICBwYXJzZV9tdWwoJnJ1
-bnRpbWVfbXVsLCAiTFRQX1JVTlRJTUVfTVVMIiwgMC4wMDk5LCAxMDApOwoKPiA+ID4gLSAgICAg
-aWYgKHRzdF9oYXNfc2xvd19rY29uZmlnKCkpCj4gPiA+IC0gICAgICAgICAgICAgbWF4X3J1bnRp
-bWUgKj0gNDsKPiA+ID4gLQo+ID4gPiAgICAgICByZXR1cm4gbWF4X3J1bnRpbWUgKiBydW50aW1l
-X211bDsKPiA+ID4gIH0KCj4gPiA+IEBAIC0xNzA2LDYgKzE3MDMsOSBAQCB1bnNpZ25lZCBpbnQg
-dHN0X211bHRpcGx5X3RpbWVvdXQodW5zaWduZWQgaW50Cj4gPiB0aW1lb3V0KQo+ID4gPiAgICAg
-ICBpZiAodGltZW91dCA8IDEpCj4gPiA+ICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSywgInRp
-bWVvdXQgbXVzdCB0byBiZSA+PSAxISAoJWQpIiwgdGltZW91dCk7Cgo+ID4gPiArICAgICBpZiAo
-dHN0X2hhc19zbG93X2tjb25maWcoKSkKPiA+ID4gKyAgICAgICAgICAgICB0aW1lb3V0ICo9IDQ7
-Cgo+ID4gRllJIHRoaXMgY2hhbmdlLCBtZXJnZWQgYXMgODkzY2EwYWJlNyAoImxpYjogbXVsdGlw
-bHkgdGhlIHRpbWVvdXQgaWYKPiA+IGRldGVjdCBzbG93Cj4gPiBrY29uZmlncyIpIGNhdXNlZCBh
-IHJlZ3Jlc3Npb24gb24gKmFsbCogdGVzdHMgd2hpY2ggdXNlIHRzdF9uZXQuc2guCgo+ID4gRmly
-c3QsIGl0IGRldGVjdHMgc2xvdyBjb25maWcgb24gZXZlcnl0aGluZyB3aGljaCB1c2VzIHN0cnVj
-dCB0c3RfdGVzdCwKPiA+IHdoaWNoIGFyZSB1bmZvcnR1bmF0ZWx5IHNvbWUgdG9vbHMgYXQgdGVz
-dGNhc2VzL2xpYi86Cgo+ID4gJCBnaXQgZ3JlcCAtbCAic3RydWN0IHRzdF90ZXN0IiB0ZXN0Y2Fz
-ZXMvbGliLyouYwo+ID4gdGVzdGNhc2VzL2xpYi90c3RfZGV2aWNlLmMgLy8gbm90IG9idmlvdXMg
-cmVhc29uLCBtaWdodCBiZSByZW1vdmVkCj4gPiB0ZXN0Y2FzZXMvbGliL3RzdF9nZXRfZnJlZV9w
-aWRzLmMgLy8gZm9yY2UgbWVzc2FnZXMgdG8gYmUgcHJpbnRlZCBmcm9tIG5ldwo+ID4gbGlicmFy
-eQo+ID4gdGVzdGNhc2VzL2xpYi90c3RfbnNfY3JlYXRlLmMgLy8gLmZvcmtzX2NoaWxkID0gMSwg
-TmVlZGVkIGJ5IFNBRkVfQ0xPTkUKPiA+IHRlc3RjYXNlcy9saWIvdHN0X25zX2V4ZWMuYyAgLy8g
-LmZvcmtzX2NoaWxkID0gMSwgTmVlZGVkIGJ5IFNBRkVfQ0xPTkUKPiA+IHRlc3RjYXNlcy9saWIv
-dHN0X3J1bl9zaGVsbC5jIC8vIG5vdCBvYnZpb3VzIHJlYXNvbiwgbWlnaHQgYmUgcmVtb3ZlZAoK
-PiA+IEJlc2lkZXMgdW5pbXBvcnRhbnQgZmFjdCB0aGF0IHNsb3cgY29uZmlnIGRldGVjdGlvbiBp
-cyBhbiB1bm5lY2Vzc2FyeQo+ID4gc2xvd2Rvd24KPiA+IG9uIHRoZXNlIHRvb2xzLCB0aGUgcHJv
-YmxlbSBpcyB0aGF0IGl0IHByaW50cyBtZXNzYWdlcyB0byBzdGRlcnIsIHdoaWNoCj4gPiBjYXVz
-ZXMKPiA+IGJyZWFrYWdlLgoKPiA+IFByZXZpb3VzbHkgdHN0X25zX2V4ZWMuYyBydW4ganVzdCBj
-b21tYW5kIHBhc3NlZCBieSAtYyBwYXJhbWV0ZXI6Cgo+ID4gJCAuL3RzdF9uc19leGVjIDE0NTM2
-IG5ldCxtbnQgc2ggLWMgIiBjYXQKPiA+IC9wcm9jL3N5cy9uZXQvaXB2Ni9jb25mL2x0cF9uc192
-ZXRoMS9kaXNhYmxlX2lwdjYiCj4gPiAwCgo+ID4gTm93IGl0IHByaW50cyBUSU5GTzoKPiA+ICQg
-Li90c3RfbnNfZXhlYyAxNDUzNiBuZXQsbW50IHNoIC1jICIgY2F0Cj4gPiAvcHJvYy9zeXMvbmV0
-L2lwdjYvY29uZi9sdHBfbnNfdmV0aDEvZGlzYWJsZV9pcHY2Igo+ID4gdHN0X2tjb25maWcuYzo4
-ODogVElORk86IFBhcnNpbmcga2VybmVsIGNvbmZpZyAnL3Byb2MvY29uZmlnLmd6Jwo+ID4gdHN0
-X2tjb25maWcuYzo2Njc6IFRJTkZPOiBDT05GSUdfTEFURU5DWVRPUCBrZXJuZWwgb3B0aW9uIGRl
-dGVjdGVkIHdoaWNoCj4gPiBtaWdodCBzbG93IHRoZSBleGVjdXRpb24KPiA+IDAKCj4gPiB0c3Rf
-cmhvc3RfcnVuKCkgaW4gdHN0X25ldC5zaCBydW5zIGJpbmFyeSBvbiByZW1vdGUgaG9zdDoKCj4g
-PiAgICAgICAgIG91dHB1dD0kKCRyY21kICIkc2hfY21kIiAkb3V0IDI+JjEgfHwgZWNobyAnUlRF
-UlInKQoKPiA+IFJlZGlyZWN0IHN0ZGVyciB0byBzdGRvdXQgKDI+JjEpIGlzIGxpa2VseSBuZWVk
-ZWQgZm9yIHNvbWUgdGVzdHMuIEJ1dAo+ID4gdHN0X3Job3N0X3J1bigpIG91dHB1dCBpcyBvZnRl
-biBwYXJzZWQgaW5jbHVkaW5nIHRoZXJlZm9yZSBjZXJ0YWluIHRvb2xzIGluCj4gPiB0ZXN0Y2Fz
-ZXMvbGliLyBoYXZlIHRvIHByaW50IG9ubHkgZXhwZWN0ZWQgb3V0cHV0OgoKPiA+IGluaXRfbHRw
-X25ldHNwYWNlKCkKPiA+IHsKPiA+ICAgICAgICAgLi4uCj4gPiAgICAgICAgICAgICAgICAgcGlk
-PSIkKFJPRCB0c3RfbnNfY3JlYXRlIG5ldCxtbnQpIgo+ID4gICAgICAgICAuLi4KPiA+ICAgICAg
-ICAgZXhwb3J0IExUUF9ORVROUz0iJHtMVFBfTkVUTlM6LXRzdF9uc19leGVjICRwaWQgbmV0LG1u
-dH0iCgo+ID4gSSB3aWxsIHByb2JhYmx5IHNvbHZlIGl0IGJ5IGFkZGluZyB5ZXQgYW5vdGhlciBw
-YXJhbWV0ZXIgdG8KPiA+IHRzdF9yaG9zdF9ydW4oKSwKPiA+IHdoaWNoIGlnbm9yZXMgc3RkZXJy
-IGFuZCB1c2UgaXQgZm9yIHRzdF9uc197Y3JlYXRlLGV4ZWN9LiBCdXQgbWF5YmUgdGhlcmUKCkFj
-dHVhbGx5IHRzdF9uc19leGVjLmMgbmVlZHMgdG8gYmUgcXVpZXQgdG8gbm90IGNsdXR0ZXIgdGhl
-IG91dHB1dCBvZiB0aGUKY29tbWFuZCBpdCBydW5zIHZpYSB0c3Rfcmhvc3RfcnVuKCkgZm9yIG5l
-dG5zICh2aWEgJExUUF9ORVROUykuIFRoZXJlZm9yZSBhZGRpbmcKYW4gcXVpZXQgb3B0aW9uIHRv
-IHRzdF9yaG9zdF9ydW4oKSBpcyBub3QgYSBzb2x1dGlvbi4KCj4gPiBpcwo+ID4gYW5vdGhlciBz
-b2x1dGlvbiAob3IgYW5vdGhlciBwcm9ibGVtKS4KCgo+IE9yLCBhbm90aGVyIHdheSBpcyBqdXN0
-IHRvIHNldCAndHN0X3Rlc3QtPnRpbWVvdXQgPT0gVFNUX1VOTElNSVRFRF9USU1FT1VUJwo+IGlu
-IHRob3NlIHRlc3RjYXNlL2xpYiB0b29scy4KClVuZm9ydHVuYXRlbHkgdGhpcyBkb2VzIG5vdCB3
-b3JrLiBJbiB0aGUgZW5kIEkgcHJvYmFibHkgZmlsdGVyIG91dCAnVElORk86JwptZXNzYWdlcyBp
-biB0c3Rfcmhvc3RfcnVuKCkuCgpJdCdkIGJlIHNhZmVyIHRvIGF2b2lkIHVzaW5nIGxpYnJhcnkg
-Zm9yIHRzdF9uc19leGVjLmMsIGJ1dCBpdCdzIGFsc28gdXNlZCBpbgpjb250YWluZXJzIHNoZWxs
-IHRlc3RzIChuZXRuc19saWIuc2gsIG5ldG5zX3N5c2ZzLnNoKSBhbmQgZnNfYmluZCB0ZXN0cwoo
-ZnNfYmluZF9jbG9uZU5TKi5zaCkuCgpBbHNvLCB0c3RfbnNfZXhlYy5jIChhbmQgdHN0X25zX2Ny
-ZWF0ZS5jKSBjb3VsZCBiZSBmb3IgbmV0bnMgcmVwbGFjZWQgYnkKJ2lwIG5ldG5zJyAocmV2ZXJ0
-IGJhY2sgY2hhbmdlIGluIDIwMTcgM2ZiNTAxZTA0YyAoIm5ldDogdXNlIExUUCBuc19jcmVhdGUv
-bnNfZXhlYyIpCgpNYXliZSBvdGhlciB0b29scyB3aGljaCB1c2UgdHN0X25zX3tjcmVhdGUsZXhl
-YyxpZm1vdmV9LmMgY291bGQgYmUgcmVwbGFjZWQgYnkKc29tZSB0b29scyBmcm9tIHV0aWwtbGlu
-dXggKHVuc2hhcmUgPykuIFdlIGNvbnNpZGVyIGhhdmluZyBvd24gYmluYXJ5IGFzIGJldHRlcgp0
-aGFuIGV4dGVybmFsIGRlcGVuZGVuY3ksIGJ1dCBiaW5hcnkgbmVlZHMgdG8gYmUgc2ltcGxlIHRv
-IGF2b2lkIHByb2JsZW1zIHdoZW4KTFRQIGxpYnJhcnkgY2hhbmdlcy4KCktpbmQgcmVnYXJkcywK
-UGV0cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+This is a workaround to filter out tst_ns_exec.c TINFO messages printed
+on stderr by tst_has_slow_kconfig(). tst_ns_exec.c is used by default by
+$LTP_NETNS in tst_rhost_run().
+
+This fixes errors on shell tests on netns backend (the default):
+
+    # PATH="/opt/ltp/testcases/bin:$PATH" ping01.sh
+    ...
+    ping01 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+    /opt/ltp/testcases/bin/ping01.sh: 142: [: tst_kconfig.c:88:: unexpected operator
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    /opt/ltp/testcases/bin/ping01.sh: 142: [: tst_kconfig.c:88:: unexpected operator
+    ping01 1 TINFO: add remote addr 10.0.0.1/24
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    /opt/ltp/testcases/bin/ping01.sh: 142: [: tst_kconfig.c:88:: unexpected operator
+    ping01 1 TINFO: add remote addr fd00:1:1:1::1/64
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: tst_kconfig.c:88:: not found
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: 34mTINFO:: not found
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: 34mTINFO:: not found
+    /opt/ltp/testcases/bin/ping01.sh: 142: [: tst_kconfig.c:88:: unexpected operator
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: tst_kconfig.c:88:: not found
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: 34mTINFO:: not found
+    /opt/ltp/testcases/bin/ping01.sh: 1: eval: 34mTINFO:: not found
+    ping01 1 TINFO: Network config (local -- remote):
+    ping01 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+    ping01 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+
+Fixes: 893ca0abe7 ("lib: multiply the timeout if detect slow kconfigs")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
+
+alternative to Li's TST_NO_SLOW_KCONFIG_CHECK suggestion:
+https://lore.kernel.org/ltp/CAEemH2d6RJ8yd4TcLt-z49fmNKt7eAGg=VhdASkNtE=7cR7bgg@mail.gmail.com/
+
+Maybe even both could be applied.
+WDYT?
+
+Kind regards,
+Petr
+
+ testcases/lib/tst_net.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index ee0ae1cad7..4e8786b704 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -265,6 +265,8 @@ tst_rhost_run()
+ 		[ "$safe" ] && \
+ 			tst_brk_ TBROK "'$cmd' failed on '$RHOST': '$output'"
+ 	fi
++	# strip out tst_ns_exec TINFO messages
++	output=$(echo "$output" | grep -v 'TINFO:')
+ 
+ 	[ -z "$out" -a -n "$output" ] && echo "$output"
+ 
+-- 
+2.47.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
