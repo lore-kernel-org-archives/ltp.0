@@ -4,100 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4077C02183
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 11:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68F5CC02180
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 11:38:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C27C3C7CA8
-	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 12:38:22 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9104F3C7C9F
+	for <ltp@archiver.kernel.org>; Thu, 16 Jan 2025 12:38:38 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CDC193C7BD6
+ by picard.linux.it (Postfix) with ESMTPS id A7AC63C7BD4
  for <ltp@lists.linux.it>; Thu, 16 Jan 2025 12:36:06 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4EC746182D6
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 12:36:06 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B78A6102CB48
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 12:36:05 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DF3A01F79E
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:05 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 22D011F79C
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1737027365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1737027364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F+fdXa+1DaPGRHkGI4dHlMdKh9/3Ar7KbOKHWp1CU9o=;
- b=OzS2WceONxJgFvm9P4zZMZjU1afOpt4KqbNn369KQnI9trfuBcMCqEqv+WcsCNG3nGkQQ0
- E+Dhc+WKfkQE48TWBw/xcFlwY9uwOUA+A/ptIUyaT8z4MuG0ZC5GaQiXuw1Pc6RxycC1Jc
- FO7wQXdA0ibzSbd7ra6Ph1XQAV0VTlo=
+ bh=nlEv6w8A7eSAvMVQB1iEHaAP1MrSfpvxkoNeb247EAU=;
+ b=LdprVhCDDt//AHufEwhrCo7Ln2xEx5px59MtuRi6QTF5EBsTDCu7rJks9l+tKK5w+KUor0
+ 7gU5SPjt9hqLimbdg9y9NVPOJBvMD0UASHtKjO3d0PmrOKvty7ACsB11G3EuUEJzzUME2M
+ r4J9xw0AWJbsSbpOB3ozXzPyNCgibUc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1737027365;
+ s=susede2_ed25519; t=1737027364;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F+fdXa+1DaPGRHkGI4dHlMdKh9/3Ar7KbOKHWp1CU9o=;
- b=16QXk8B+kMSjMQnFMd4pjOG2f8i41UfmgTj6rgTRxMhfxtEhApXX8WiC7VaJB3BrvIFptS
- 2/J+CYYXdMHdJhDw==
+ bh=nlEv6w8A7eSAvMVQB1iEHaAP1MrSfpvxkoNeb247EAU=;
+ b=cuxKCe7tgBdtIHHHWn42+J1Mhjkqpsl2aNNeKWVaxoQeVn2pGstmmuUKPe7kj2iK1c0ECS
+ wQCMwpjzShQZF9DA==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=OzS2WceO;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=16QXk8B+
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LdprVhCD;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=cuxKCe7t
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1737027365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1737027364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F+fdXa+1DaPGRHkGI4dHlMdKh9/3Ar7KbOKHWp1CU9o=;
- b=OzS2WceONxJgFvm9P4zZMZjU1afOpt4KqbNn369KQnI9trfuBcMCqEqv+WcsCNG3nGkQQ0
- E+Dhc+WKfkQE48TWBw/xcFlwY9uwOUA+A/ptIUyaT8z4MuG0ZC5GaQiXuw1Pc6RxycC1Jc
- FO7wQXdA0ibzSbd7ra6Ph1XQAV0VTlo=
+ bh=nlEv6w8A7eSAvMVQB1iEHaAP1MrSfpvxkoNeb247EAU=;
+ b=LdprVhCDDt//AHufEwhrCo7Ln2xEx5px59MtuRi6QTF5EBsTDCu7rJks9l+tKK5w+KUor0
+ 7gU5SPjt9hqLimbdg9y9NVPOJBvMD0UASHtKjO3d0PmrOKvty7ACsB11G3EuUEJzzUME2M
+ r4J9xw0AWJbsSbpOB3ozXzPyNCgibUc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1737027365;
+ s=susede2_ed25519; t=1737027364;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F+fdXa+1DaPGRHkGI4dHlMdKh9/3Ar7KbOKHWp1CU9o=;
- b=16QXk8B+kMSjMQnFMd4pjOG2f8i41UfmgTj6rgTRxMhfxtEhApXX8WiC7VaJB3BrvIFptS
- 2/J+CYYXdMHdJhDw==
+ bh=nlEv6w8A7eSAvMVQB1iEHaAP1MrSfpvxkoNeb247EAU=;
+ b=cuxKCe7tgBdtIHHHWn42+J1Mhjkqpsl2aNNeKWVaxoQeVn2pGstmmuUKPe7kj2iK1c0ECS
+ wQCMwpjzShQZF9DA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAE8113332
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:05 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EEC3C13332
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4EdoKSXviGdrOgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8Gy1OCPviGdrOgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>)
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:05 +0000
+ for <ltp@lists.linux.it>; Thu, 16 Jan 2025 11:36:03 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 16 Jan 2025 12:36:11 +0100
+Date: Thu, 16 Jan 2025 12:36:03 +0100
 MIME-Version: 1.0
-Message-Id: <20250116-fix_setsid_tests-v4-12-910f062a7235@suse.com>
+Message-Id: <20250116-fix_setsid_tests-v4-4-910f062a7235@suse.com>
 References: <20250116-fix_setsid_tests-v4-0-910f062a7235@suse.com>
 In-Reply-To: <20250116-fix_setsid_tests-v4-0-910f062a7235@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1737027362; l=2733;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737027362; l=3089;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=nYuUiNsABRxYc2hTZLxEZkOtCvPRUaP0Q+PB174jM0M=;
- b=f9bc9jGiwmfK78Ee8E1N6+/J7+y49HYTM2tDkd4EDV0e+epTmZvW5BdbjDq5uHpQDeoH9z0Qr
- FDuZg2NfA99CXNp1jiQGpM5xdBjOt4B9oYYZBQZf5gx6/tZRyPMFSjW
+ bh=2HA7nyt41D5v8m+lFngxg8AamZ8hWHNN2fZDh6Zxuxc=;
+ b=vjS57JBHvBWFb4q9Xwmr36YEMQ+Op66rW8p89QUCNyg00aI6k6Hj7u8EJFOAkSTCggPnDQ0PB
+ CSbfOXd4dWLA5LV0b2ZvnwpTP18TVa7KZPoqSgTgK/ak67IGpbudbNH
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: DF3A01F79E
+X-Rspamd-Queue-Id: 22D011F79C
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -108,7 +109,7 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  ARC_NA(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  MIME_TRACE(0.00)[0:+]; RCPT_COUNT_ONE(0.00)[1];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:email,suse.com:mid];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email];
  RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
@@ -119,9 +120,9 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_TRACE(0.00)[suse.de:+]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 12/12] Add pty09 test
+Subject: [LTP] [PATCH v4 04/12] Add ptem02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -140,53 +141,56 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Verify that slave pseudo-terminal can be opened multiple times
-in parallel.
+Verify that it's possible to open a pseudo-terminal via /dev/ptmx,
+obtain a slave device and set/get window size.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/pty                     |  1 +
  testcases/kernel/pty/.gitignore |  1 +
- testcases/kernel/pty/pty09.c    | 74 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
+ testcases/kernel/pty/ptem02.c   | 71 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 73 insertions(+)
 
 diff --git a/runtest/pty b/runtest/pty
-index 365a46ee9730aa36b22dbbdbfba82ac0d491ac94..4b1abe7a602a14456877f3bc42f2275a3be0f8f0 100644
+index df2074153c2ac01038a0ef0ce5ad8938960ae53d..3ce7160e2776e58973def5893fc269ed035376c0 100644
 --- a/runtest/pty
 +++ b/runtest/pty
-@@ -7,6 +7,7 @@ pty05 pty05
+@@ -7,5 +7,6 @@ pty05 pty05
  pty06 pty06
  pty07 pty07
- pty08 pty08
-+pty09 pty09
  ptem01 ptem01
- ptem02 ptem02
- ptem03 ptem03
++ptem02 ptem02
+ hangup01 hangup01
+ 
 diff --git a/testcases/kernel/pty/.gitignore b/testcases/kernel/pty/.gitignore
-index 7d8d4dceda84f2e2695a8bee39abfe894288b8b6..2d0c8bb6ff7d6883abfc7838e257b9be50244b69 100644
+index acca3db9a1786f243b31f1fc4a8833d6ed8751a6..e638413a127fad65ed2f58c24dc1ae718219e518 100644
 --- a/testcases/kernel/pty/.gitignore
 +++ b/testcases/kernel/pty/.gitignore
-@@ -13,3 +13,4 @@
- /pty06
- /pty07
- /pty08
-+/pty09
-diff --git a/testcases/kernel/pty/pty09.c b/testcases/kernel/pty/pty09.c
+@@ -1,5 +1,6 @@
+ /hangup01
+ /ptem01
++/ptem02
+ /pty01
+ /pty02
+ /pty03
+diff --git a/testcases/kernel/pty/ptem02.c b/testcases/kernel/pty/ptem02.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..1e477869b0d5be3958a0a4bff24f96220753d513
+index 0000000000000000000000000000000000000000..0fc69aa1d8d487fba9c6022d77254660b678c6e0
 --- /dev/null
-+++ b/testcases/kernel/pty/pty09.c
-@@ -0,0 +1,74 @@
++++ b/testcases/kernel/pty/ptem02.c
+@@ -0,0 +1,71 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) International Business Machines  Corp., 2002
++ * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
 + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Verify that slave pseudo-terminal can be opened multiple times in parallel.
++ * Verify that it's possible to open a pseudo-terminal via /dev/ptmx, obtain a
++ * slave device and set/get window size.
 + */
 +
 +#define _GNU_SOURCE
@@ -195,44 +199,39 @@ index 0000000000000000000000000000000000000000..1e477869b0d5be3958a0a4bff24f9622
 +
 +static int masterfd = -1;
 +
-+static unsigned int count_avail_pid(void)
-+{
-+	DIR *dir;
-+	struct dirent *ent;
-+	struct rlimit limit;
-+	unsigned int count = 0;
-+	unsigned int max_pid_num;
-+
-+	SAFE_GETRLIMIT(RLIMIT_NOFILE, &limit);
-+
-+	dir = SAFE_OPENDIR("/proc/self/fd");
-+	while ((ent = SAFE_READDIR(dir)))
-+		count++;
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	max_pid_num = limit.rlim_cur - count;
-+
-+	tst_res(TINFO, "Available number of pids: %u", max_pid_num);
-+
-+	return max_pid_num;
-+}
-+
 +static void run(void)
 +{
-+	unsigned int max_pid_num;
++	int slavefd;
++	struct winsize wsz;
++	struct winsize wsz1 = { 24, 80, 5, 10 };
++	struct winsize wsz2 = { 60, 100, 11, 777 };
 +
-+	max_pid_num = count_avail_pid();
++	slavefd = open_slave(masterfd);
 +
-+	int slavefd[max_pid_num];
++	TST_EXP_PASS(ioctl(masterfd, TIOCSWINSZ, &wsz1));
++	TST_EXP_PASS(ioctl(slavefd, TIOCGWINSZ, &wsz));
 +
-+	for (uint32_t i = 0; i < max_pid_num; i++)
-+		slavefd[i] = open_slave(masterfd);
++	TST_EXP_EQ_LI(wsz.ws_row, wsz1.ws_row);
++	TST_EXP_EQ_LI(wsz.ws_col, wsz1.ws_col);
++	TST_EXP_EQ_LI(wsz.ws_xpixel, wsz1.ws_xpixel);
++	TST_EXP_EQ_LI(wsz.ws_ypixel, wsz1.ws_ypixel);
 +
-+	tst_res(TPASS, "pty has been opened %d times", max_pid_num);
++	TST_EXP_PASS(ioctl(masterfd, TIOCGWINSZ, &wsz));
 +
-+	for (uint32_t i = 0; i < max_pid_num; i++)
-+		SAFE_CLOSE(slavefd[i]);
++	TST_EXP_EQ_LI(wsz.ws_row, wsz1.ws_row);
++	TST_EXP_EQ_LI(wsz.ws_col, wsz1.ws_col);
++	TST_EXP_EQ_LI(wsz.ws_xpixel, wsz1.ws_xpixel);
++	TST_EXP_EQ_LI(wsz.ws_ypixel, wsz1.ws_ypixel);
++
++	TST_EXP_PASS(ioctl(slavefd, TIOCSWINSZ, &wsz2));
++	TST_EXP_PASS(ioctl(slavefd, TIOCGWINSZ, &wsz));
++
++	TST_EXP_EQ_LI(wsz.ws_row, wsz2.ws_row);
++	TST_EXP_EQ_LI(wsz.ws_col, wsz2.ws_col);
++	TST_EXP_EQ_LI(wsz.ws_xpixel, wsz2.ws_xpixel);
++	TST_EXP_EQ_LI(wsz.ws_ypixel, wsz2.ws_ypixel);
++
++	SAFE_CLOSE(slavefd);
 +}
 +
 +static void setup(void)
