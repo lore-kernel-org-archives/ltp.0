@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65AE1C02183
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 13:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90FC6C02183
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 13:58:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B974F3C7BCC
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 14:56:19 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5B0C53C7BC6
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 14:58:39 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 237C63C76E8
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 14:55:44 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 9825D3C2204
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 14:58:22 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=afazekas@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7C2A51B621D9
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 14:55:43 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F3DF6142E9F3
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 14:58:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1737122300;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0beefTFvZzpZwEpF4/5tJwAz3RVPnkp6RudxClAh6Z8=;
+ b=XW3ckYtZnVonxYf+Ji1ACnBRVCKjt7qc03rHhwOTvgTTY/8yjpnRt7K6bGSJsw/QdeV4pl
+ LlffB5VTy2pbGWp6N4qk5pgyWoeHskMDBBD+myUe3P3Fj2/S4qVgRChTQsDcMQCGUrKcrL
+ WHbJeIN0NmJ0R/OXVoaf3ZyAdZSbh+8=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-387-RUHsauMkMwmer6LD-MMSVQ-1; Fri,
+ 17 Jan 2025 08:58:18 -0500
+X-MC-Unique: RUHsauMkMwmer6LD-MMSVQ-1
+X-Mimecast-MFC-AGG-ID: RUHsauMkMwmer6LD-MMSVQ
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 38C292117E;
- Fri, 17 Jan 2025 13:55:42 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1692113A30;
- Fri, 17 Jan 2025 13:55:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IHLiA15himeydgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Jan 2025 13:55:42 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 04E5319560BB
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 13:58:18 +0000 (UTC)
+Received: from interceptor.brq.redhat.com (unknown [10.43.2.84])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 0D78119560B0; Fri, 17 Jan 2025 13:58:16 +0000 (UTC)
+From: Attila Fazekas <afazekas@redhat.com>
 To: ltp@lists.linux.it
-Date: Fri, 17 Jan 2025 14:55:39 +0100
-Message-ID: <20250117135539.773036-2-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250117135539.773036-1-pvorel@suse.cz>
-References: <20250117135539.773036-1-pvorel@suse.cz>
+Date: Fri, 17 Jan 2025 14:57:43 +0100
+Message-ID: <20250117135745.909549-1-afazekas@redhat.com>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 38C292117E
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: Sl6seleCZAWym2kBJhFoBKB4HhqBtPqpZIp-Z0hEerA_1737122298
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] tst_net.sh: Add more doc
+Subject: [LTP] [PATCH v2 0/2] sched_football: isolcpus handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,91 +77,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Attila Fazekas <afazekas@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Example usage:
+sched_football expects each player thread is scheduleable
+to all of the physical CPU threads, however for example
+when you are using isolcpus by default you threads are
+not scheduled to some CPU. It leads to the test hangs.
+591c56b045b2d44a0f4ba1a13545420b23e909b5 solved was a 
+similar issue in realtime/prio-preempt .
 
-# ping01.sh
-ping01 1 TINFO: Running: ping01.sh -h
-ping01 1 TINFO: Tested kernel: Linux ts 6.13.0-rc4-1.g4a5c6a6-default #1 SMP PREEMPT_DYNAMIC Sun Dec 22 22:11:35 UTC 2024 (4a5c6a6) x86_64 x86_64 x86_64 GNU/Linux
-Usage: /opt/ltp/testcases/bin/ping01.sh [-6]
+Attila Fazekas (2):
+  lib: move get_numcpus to librttest.[ch]
+  sched_football: use get_numcpus()
 
-OPTIONS (network tests only)
-----------------------------
--6      IPv6 tests
+ testcases/realtime/func/prio-preempt/prio-preempt.c | 13 -------------
+ .../realtime/func/sched_football/sched_football.c   |  2 +-
+ testcases/realtime/include/librttest.h              |  4 ++++
+ testcases/realtime/lib/librttest.c                  | 13 +++++++++++++
+ 4 files changed, 18 insertions(+), 14 deletions(-)
 
-Environment Variables (network tests only)
-------------------------------------------
-TST_NET_RHOST_RUN_DEBUG=1
-Print commands used by tst_rhost_run()
-
-LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1
-Ignore performance failure and test only the network functionality in tests
-which use tst_netload_compare().
-
-OPTIONS
--------
--h      Prints this help
--i n    Execute test n times
-
-Environment Variables
----------------------
-KCONFIG_PATH         Specify kernel config file
-KCONFIG_SKIP_CHECK   Skip kernel config check if variable set (not set by default)
-LTPROOT              Prefix for installed LTP (default: /opt/ltp)
-LTP_COLORIZE_OUTPUT  Force colorized output behaviour (y/1 always, n/0: never)
-LTP_DEV              Path to the block device to be used (for .needs_device)
-LTP_DEV_FS_TYPE      Filesystem used for testing (default: ext2)
-LTP_SINGLE_FS_TYPE   Testing only - specifies filesystem instead all supported (for TST_ALL_FILESYSTEMS=1)
-LTP_TIMEOUT_MUL      Timeout multiplier (must be a number >=1, ceiled to int)
-TMPDIR               Base directory for template directory (for .needs_tmpdir, default: /tmp)
-
-
- testcases/lib/tst_net.sh | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 9a8b8d7214..4f2336537b 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -42,10 +42,29 @@ tst_net_usage()
- 	if [ -n "$TST_USAGE_CALLER" ]; then
- 		$TST_USAGE_CALLER
- 	else
--		echo "Usage: $0 [-6]"
--		echo "OPTIONS"
-+	cat << EOF
-+Usage: $0 [-6]
-+
-+OPTIONS (network tests only)
-+----------------------------
-+EOF
- 	fi
--	echo "-6      IPv6 tests"
-+
-+	cat << EOF
-+-6      IPv6 tests
-+
-+Environment Variables (network tests only)
-+------------------------------------------
-+TST_NET_RHOST_RUN_DEBUG=1
-+Print commands used by tst_rhost_run()
-+
-+LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1
-+Ignore performance failure and test only the network functionality in tests
-+which use tst_netload_compare().
-+
-+OPTIONS
-+-------
-+EOF
- }
- 
- tst_net_remote_tmpdir()
 -- 
 2.47.1
 
