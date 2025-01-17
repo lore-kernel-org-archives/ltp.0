@@ -4,92 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B80E3C02183
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 07:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1737100128; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=gXm/4zswxOjvh0Zyys46oS2euANU8VQm490PzdP6Zcg=;
- b=XRQZ8yU4fiMM06UZGFNHdww7azimZCNoOl33lBUEvaxeqj6LMyM97TjtR+oA3LabTsvka
- rQ9FdFvMVXsaSbQ4ANfR5HBakvyOdKngIrLaJP9KwFj6FlEnPzOb7bkT909jJQNqFnMp5jI
- NxwMK4ir2vwI4yPCXvrQX+nr/28n7MY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D994C02183
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 08:05:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C0E43C7C24
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 08:48:48 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 882503C7C16
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 09:05:22 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A91ED3C7B97
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 08:48:26 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 70C323C7B35
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 09:05:04 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9139262098E
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 08:48:25 +0100 (CET)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-38a34e8410bso880201f8f.2
- for <ltp@lists.linux.it>; Thu, 16 Jan 2025 23:48:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1737100105; x=1737704905; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=TREqSoMiK3zCRNFH36G8Wcxdz6JqJWLPjA9/8fPc9lI=;
- b=L/iLIdRjx8rFBIn46TSrwW6eeMciXewB0SR7BMhjL+p4COB5gJU4FE4GKwzzvUKppn
- ppMDCyWHzkBuoT372HgfRlsoTUFGYhXN98t9uoqfv3l2Te9YX+cJs+VyrDpcrKBkaJuc
- LEas6vuMIvkqyDwEHVvT7JE8W3c5yOS3+T8+dZjV/KyDWr8+n8lItC2RqfkJDJwAeVXr
- vMFrckon8+t7ilJ1WhpWFX6vW+ucjM6DO6u1UcgQzo6AKxNDFve27cHtXhW8hi4DMexG
- aZ8M+Ym6wu1XJY4+7TnHzPcwnZq4321A3aB73Cdxi9tRrAT9rOvQxLQoOLCKSyEtIyJa
- ueEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737100105; x=1737704905;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=TREqSoMiK3zCRNFH36G8Wcxdz6JqJWLPjA9/8fPc9lI=;
- b=r+t32DEgql+fXRb9H5ol1TjWWe0e5Qcu8IUs9L9H1KFWa5KPxanoJwXpd+n/qn4fyv
- IvqZ/Yc9DqEpGn4eyXYERXNtmJfdq79RpzFNxcnZDbHNh6MZGzLL8ica6apY3aYwZSaD
- d4EWmCRt9mq835aAb+cLHLcbWBx+vEseLvOuxafzOhYb8YoMY1eLPZ7dbRKZHXcj35M4
- y8PBL76kJaM3bvDd3gHgOIWyb6HaUwmBQG8DnO3+7BZvDm5mpbeWklbWieipbu2hYQmd
- Cww88vv/cvuOInXd2FrOTNMhBR9cPfGLxFbqr6kY7MTft7Lk68C/q5TkW6EnH7ZjTp9i
- X7Gg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUK1gyFv5UU183WL/lMGLFEyEnK4FDY7/K4LrsWAol2pKFJ7thfxMe766+OB+mkhE9yhk4=@lists.linux.it
-X-Gm-Message-State: AOJu0YyYRKzz8JkF9tl6nHXENZbBicpb81yqEInKVJNN546cahuaxgo/
- rO2vnB3mn/JZAUI0NaCX26hoKPUmFkO2GzAetCcq1gyKsQkUEzf5sfdgwv+29E0=
-X-Gm-Gg: ASbGncusB+/0A6ZQgOsjHTkH2/Dk5Aid4fBJOTBIiwtc9VHoi8oX7pRnsOr7VRO5Hua
- HT4kvL54CY60pE2ZEqXEUxy7iuJVT7F53W8bHNFuLcuhH1E4mbbY90R1EQ6OqBQT1Sv+BUHesaw
- aoAkki14jKyjWtCDd6uLIyug5554tXyojpi3/yoTYMrFA6TnrFZYZgcl3M09VCiLWYITw0yGgji
- jtO6KK8KgzFjjrqaFMaKpFJ342PO6wUmRtFKR94Q9QobtQZtuIV48QJ/EPQmKlvVsRA19jXsW/U
- GsEldFpcjsmmpNE1nVIGiUjXE9yqDUPDG5V3rF7Xp/Lc+BFuA9trYmpGMNHr5qnE+zZV9wUzyfV
- RHKsciEE/PWzWtgmKAq0=
-X-Google-Smtp-Source: AGHT+IGPX8QUhER2Dg89sdkZQ8zXGTgEt9M8bhafU4lW0R4VlcHjU/KPEss5Qund8ySDsRc3ld6XoA==
-X-Received: by 2002:a05:6000:c8c:b0:382:51ae:7569 with SMTP id
- ffacd0b85a97d-38bf5686484mr990261f8f.18.1737100104941; 
- Thu, 16 Jan 2025 23:48:24 -0800 (PST)
-Received: from ?IPV6:2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4?
- (p200300ef2f2b3f007ee622e7e7efafd4.dip0.t-ipconnect.de.
- [2003:ef:2f2b:3f00:7ee6:22e7:e7ef:afd4])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-38bf3221761sm1779787f8f.22.2025.01.16.23.48.24
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 16 Jan 2025 23:48:24 -0800 (PST)
-Message-ID: <95cf0806-4600-4949-8ed7-a31cacf2c8a5@suse.com>
-Date: Fri, 17 Jan 2025 08:48:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DA801633C42
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 09:05:01 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CC2261F38F;
+ Fri, 17 Jan 2025 08:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737101100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LEXVzi3DZpXR6V0yD4wHYGivF5yya4ojrNPwjr7W+sA=;
+ b=omqJctPxcex6yBWcRyHDwBAq5UjEsntZcLz5cmeuwKUR1RONmFpi6sBKNzrjS9Wk/FjUpr
+ CN8Fj6oA5fJy2BMXeyJ2Ploz6npFoyPgsPdXgn5hODZbFxM1TMOaQrpmV/LLuDfVt8DTMx
+ OjhWfR4OpMwvlaOveHRGCDhtOWwUGh0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737101100;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LEXVzi3DZpXR6V0yD4wHYGivF5yya4ojrNPwjr7W+sA=;
+ b=aMFGKjc4My6HG1P6dHd0myZxq8uHd2UT4EYAyCAqusXVjHYPx+r9zbT660/tmWNIfibmD/
+ Z48WD4fZjzZEz8Ag==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2oIiQSt6;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hAQ88n+W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737101099;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LEXVzi3DZpXR6V0yD4wHYGivF5yya4ojrNPwjr7W+sA=;
+ b=2oIiQSt61w65Hq+MfS7uK8IW554tbjQZQvqdst2ibIre8MWc0o985m4hq6feO+ez2wPj3Z
+ 6b/w45ZdNdIs/D8MKmMlatw6iY5pjw9DFVrwnsthauZu++u5c5o0ekrtRg3ItIlDN3gFbN
+ KeQV6mvQBAnEmMCt7dyzW8zL6gAxBPw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737101099;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LEXVzi3DZpXR6V0yD4wHYGivF5yya4ojrNPwjr7W+sA=;
+ b=hAQ88n+Wm1GFdMElkaj4S0Tu1eN8tZvzvG7trPpCDMnPI8hcaOlEoQFhxncKtu/qwStPuT
+ udJC75FQNZl/rpAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3C3B139CB;
+ Fri, 17 Jan 2025 08:04:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fyp1KisPimeWKwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Jan 2025 08:04:59 +0000
+Date: Fri, 17 Jan 2025 09:04:54 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>, ltp@lists.linux.it
+Message-ID: <20250117080454.GD729073@pevik>
 References: <20250117071758.120366-1-liwang@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20250117071758.120366-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ <20250117073607.GA731427@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250117073607.GA731427@pevik>
+X-Rspamd-Queue-Id: CC2261F38F
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] lib: add TST_NO_SLOW_KCONFIG_CHECK macro for
  testcase tools
@@ -104,115 +123,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Li,
 
-the feature is interesting, but I have the feeling this should be added 
-to tst_test struct rather than using a flag at compile time.
-For example, by adding to tst_test a slow_kconfig attribute.
+> Hi Li,
 
-Andrea
+> > The macro TST_NO_SLOW_KCONFIG_CHECK is added to control whether
+> > the tst_has_slow_kconfig() function (which presumably checks for
+> > slow kernel configurations) should be executed.
 
-On 1/17/25 08:17, Li Wang wrote:
-> The macro TST_NO_SLOW_KCONFIG_CHECK is added to control whether
-> the tst_has_slow_kconfig() function (which presumably checks for
-> slow kernel configurations) should be executed.
->
-> This allows test cases and tools to opt out of this additional
-> check, enabling more flexible and faster test execution in
-> certain scenarios.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->   lib/tst_test.c                    | 2 ++
->   testcases/lib/tst_device.c        | 1 +
->   testcases/lib/tst_get_free_pids.c | 1 +
->   testcases/lib/tst_ns_create.c     | 1 +
->   testcases/lib/tst_ns_exec.c       | 1 +
->   testcases/lib/tst_run_shell.c     | 1 +
->   6 files changed, 7 insertions(+)
->
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index b204ad975..00d34b6f0 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1702,8 +1702,10 @@ unsigned int tst_multiply_timeout(unsigned int timeout)
->   	if (timeout < 1)
->   		tst_brk(TBROK, "timeout must to be >= 1! (%d)", timeout);
->   
-> +#ifndef TST_NO_SLOW_KCONFIG_CHECK
->   	if (tst_has_slow_kconfig())
->   		timeout *= 4;
-> +#endif
->   
->   	return timeout * timeout_mul;
->   }
-> diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
-> index 45f77a38b..386636610 100644
-> --- a/testcases/lib/tst_device.c
-> +++ b/testcases/lib/tst_device.c
-> @@ -8,6 +8,7 @@
->   #include <stdio.h>
->   #include <stdlib.h>
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_SLOW_KCONFIG_CHECK
->   #include "tst_test.h"
->   #include "old/old_device.h"
->   
-> diff --git a/testcases/lib/tst_get_free_pids.c b/testcases/lib/tst_get_free_pids.c
-> index 370ec3e26..c6436687a 100644
-> --- a/testcases/lib/tst_get_free_pids.c
-> +++ b/testcases/lib/tst_get_free_pids.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later
->   
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_SLOW_KCONFIG_CHECK
->   #include <stdio.h>
->   #include "tst_test.h"
->   
-> diff --git a/testcases/lib/tst_ns_create.c b/testcases/lib/tst_ns_create.c
-> index ce3707a60..8c22ad449 100644
-> --- a/testcases/lib/tst_ns_create.c
-> +++ b/testcases/lib/tst_ns_create.c
-> @@ -17,6 +17,7 @@
->    */
->   
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_SLOW_KCONFIG_CHECK
->   
->   #include <stdio.h>
->   #include <string.h>
-> diff --git a/testcases/lib/tst_ns_exec.c b/testcases/lib/tst_ns_exec.c
-> index 6a8e39339..ca5b717da 100644
-> --- a/testcases/lib/tst_ns_exec.c
-> +++ b/testcases/lib/tst_ns_exec.c
-> @@ -14,6 +14,7 @@
->    */
->   
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_SLOW_KCONFIG_CHECK
->   
->   #include <stdio.h>
->   #include <sys/wait.h>
-> diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
-> index 7a446e004..b12a1e9f6 100644
-> --- a/testcases/lib/tst_run_shell.c
-> +++ b/testcases/lib/tst_run_shell.c
-> @@ -5,6 +5,7 @@
->   #include <sys/mount.h>
->   
->   #define TST_NO_DEFAULT_MAIN
-> +#define TST_NO_SLOW_KCONFIG_CHECK
->   #include "tst_test.h"
->   #include "tst_safe_stdio.h"
->   #include "ujson.h"
+> That was quick, thanks a lot!
+
+> But unfortunately the patch does not help to avoid printing TINFO
+> (tested on a fresh clone):
+
+> # make && ./tst_ns_exec 14536 net,mnt sh -c " cat /proc/sys/net/ipv6/conf/ltp_ns_veth1/disable_ipv6"
+> CC testcases/lib/tst_ns_exec
+> make[1]: Nothing to be done for 'all'.
+> tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_kconfig.c:667: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+> 0
+
+> Maybe it's because safe_clone() triggers it? Or what am I missing?
+
+The problem why it does not work is that it uses lib/tst_test.o via
+lib/libltp.a, which was compiled without TST_NO_SLOW_KCONFIG_CHECK.
+
+IMHO We cannot easily solve this with preprocessor definition.
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
+
+> > This allows test cases and tools to opt out of this additional
+> > check, enabling more flexible and faster test execution in
+> > certain scenarios.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
