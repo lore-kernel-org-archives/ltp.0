@@ -4,84 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2AEAC02183
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 12:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAD57C02185
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 12:25:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2891D3C7C2B
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 13:25:24 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 330D83C7C54
+	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 13:25:42 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BA773C088F
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 13:25:05 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 02F4F3C088F
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 13:25:07 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8A62F1022FAF
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 13:25:05 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 320311BDB44B
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 13:25:06 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9AF531F37C
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 12:25:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 090091F387
+ for <ltp@lists.linux.it>; Fri, 17 Jan 2025 12:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737116705; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9V0ExaHWf4T4wMvp8GUfL3sldxUd9nsVq/fGiQruxpA=;
+ b=N4z3bWdlTHAoCdpK0lsq3czMvfzN0ZFwk0ZVXL6bWviu4e5LcXmhkyijbNLuxffAmC9O9F
+ mjqUHsMchdBgVKX/Ya13Rmfw7lTk6YfLRp2nhc6+Y8Z/GgfaaVuFFcSJ4YNyS8IlwzW5Ed
+ NdpXl+JrcdtPa4p/EYk+LJBQksdANLQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737116705;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9V0ExaHWf4T4wMvp8GUfL3sldxUd9nsVq/fGiQruxpA=;
+ b=tmejrvZ098xIXaoE3X8eOvBb9a7efiTLxE2DoNZFGiekMsI1SwiwqnG4wUE/pcFbLreZRP
+ 5bk+8s2Q7TXpRaAw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Cc4OwUSe;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8ib9i+wY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1737116704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EzyqG31Vohs3kCiewdHMq8Z7PxChqmVhZrqycX3k0WE=;
- b=D912YuyqfSKZ5YRb4Yb+zCll5gIbVRQ3bEPuG/ZNnTwiaM/yT0vJBUdPecq5x6X5NRSrll
- SDUWrrybA2PIzGTP0C+GLd9CviEzZHEZctUBXVc771KclfJBo3giIIXrzR5X22GXMblVW2
- 59S06h8YtfI2rkjO+UQtMmuelSC1ZXU=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9V0ExaHWf4T4wMvp8GUfL3sldxUd9nsVq/fGiQruxpA=;
+ b=Cc4OwUSeO3eJMDf7H9XM+sEVWNnpNu2p59sbEisL+sRfHRNTi3sjFBtHHz+t1oqd9NcGmN
+ cJbTBt6KIJpJR0sjqAxEi0UoGOoIW2p893q/VLAzrZg+W4S4RiK05eq2+AC3+vRUNOg5c/
+ 7BvgCo6ILtUdt9wq2pAhTmajF4fY9S4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1737116704;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EzyqG31Vohs3kCiewdHMq8Z7PxChqmVhZrqycX3k0WE=;
- b=ObU5BMlRkwWJrXDSIzV1N5mYxeR7tcn6LNQNLe+SHhJUtReO+nEofjjNijk9Dbm2SOcPcL
- WkdHI1kj6JImdRDg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=J4tdbVia;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WlI3Xcni
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737116703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EzyqG31Vohs3kCiewdHMq8Z7PxChqmVhZrqycX3k0WE=;
- b=J4tdbViaCpEHs09hgsG71aFy6/nWbbd+3LSZ1fKARFtrYCCckDUXm5ckUOfUNrqRyPCmEL
- Zyb+oO/vbxybofDBFEWI0ghIojBh4z7f7VPf7fwy3g+lIxN2F5PHGI6MRJc8HeyZgAdKUF
- TErBzEREnsxX4TCmKzGqmt78URtQGhM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737116703;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EzyqG31Vohs3kCiewdHMq8Z7PxChqmVhZrqycX3k0WE=;
- b=WlI3XcninApNzWAAeRohDL5bfzSwXFL6TNqBXlvcIfuwAo+6Ow+VRs1drCejGYDwksYt6M
- VmI9Ok2P5YiyTsAA==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9V0ExaHWf4T4wMvp8GUfL3sldxUd9nsVq/fGiQruxpA=;
+ b=8ib9i+wYrqLi+cNm+ndCaKFUqRoFwG1qPfr2T9ncLHaezLCQzRgsySRnI4bMRkGmvxJ855
+ YViQpJF2Ayq3ZcAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A6C5139CB
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA40313A30
  for <ltp@lists.linux.it>; Fri, 17 Jan 2025 12:25:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id L+eqHx9MimcGSgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SvAhOB9MimcJSgAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Fri, 17 Jan 2025 12:25:03 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 17 Jan 2025 13:24:54 +0100
-Message-ID: <20250117122455.7989-1-chrubis@suse.cz>
+Date: Fri, 17 Jan 2025 13:24:55 +0100
+Message-ID: <20250117122455.7989-2-chrubis@suse.cz>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20250117122455.7989-1-chrubis@suse.cz>
+References: <20250117122455.7989-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 9AF531F37C
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 090091F387
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -98,13 +110,13 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:email, suse.cz:dkim, suse.cz:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] testcases/lib: Fix tst_ns_* helpers
+Subject: [LTP] [PATCH 2/2] testcases/lib: tst_net.sh: Do not use stderr in
+ tst_rhost_run()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,128 +133,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replaces SAFE_CLONE() with tst_clone() in the tst_ns_* helpers.
+This is another place that broke the network test on the unrelated
+changes that caused the SAFE_CLONE() to produce TINFO messages. The test
+library prints messages into the stdout, because this is something that
+is not supposed to be the command output but rather diagnostic messages.
+So there was no good reason to include the stderr in the data we got
+from the tst_rhost_run().
 
-The reason for the replacement is that SAFE_CLONE() uses
-TST_RETRY_FUNC() which calls tst_multiply_timeout(). The problem with
-that is that the tst_multiply_timeout() is a test library function that
-started to print TINFO messages recently and that we rely on parsing the
-output from the tst_ns_* helpers.
-
-The reason SAFE_CLONE() started to call TST_RETRY_FUNC() is that in the
-case that we create new namespaces with the clone call, we may end up
-creating them faster than kernel can clean them up which is described in:
-
-commit 7d882081a5613f44a12fc6b1c44267d4df0857a4
-Author: Petr Vorel <pvorel@suse.cz>
-Date:   Mon Mar 28 22:46:43 2022 +0200
-
-    lib: Retry safe_clone() on ENOSPC
-
-This combined with the newly introduced changes in the test library that
-check for kernel debugging options that may need to adjust default
-timeouts:
-
-commit 893ca0abe7e82851ff0e5d93c09b1098f2eff121
-Author: Li Wang <liwang@redhat.com>
-Date:   Sun Dec 22 15:22:49 2024 +0800
-
-    lib: multiply the timeout if detect slow kconfigs
-
-which adds tst_has_slow_kconfig() into the tst_multiply_timeout() causes
-the TINFO messages to be printed.
-
-The reason why we can safely replace the SAFE_CLONE() with tst_clone()
-here is that we are not creating new namspaces in the tst_ns_* helpers,
-but rather than that cloning a new process to be executed inside of the
-namespace, hence we do not need to retry on ENOSPC.
+If this patch does not break anything it should be pushed since this
+will fix the tst_ns_* helpers even if the they start print diagnostics
+TINFO messages again.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/lib/tst_ns_create.c | 15 ++++++---------
- testcases/lib/tst_ns_exec.c   | 15 ++++++---------
- 2 files changed, 12 insertions(+), 18 deletions(-)
+ testcases/lib/tst_net.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/lib/tst_ns_create.c b/testcases/lib/tst_ns_create.c
-index ce3707a60..bd7633b0b 100644
---- a/testcases/lib/tst_ns_create.c
-+++ b/testcases/lib/tst_ns_create.c
-@@ -23,12 +23,6 @@
- #include "tst_test.h"
- #include "tst_ns_common.h"
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index ee0ae1cad..60bc25b79 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -257,7 +257,7 @@ tst_rhost_run()
+ 		tst_res_ TINFO "$use: $rcmd \"$sh_cmd\" $out 2>&1"
+ 	fi
  
--extern struct tst_test *tst_test;
--
--static struct tst_test test = {
--	.forks_child = 1, /* Needed by SAFE_CLONE */
--};
--
- static void print_help(void)
- {
- 	int i;
-@@ -66,8 +60,6 @@ int main(int argc, char *argv[])
- 		return 1;
- 	}
+-	output=$($rcmd "$sh_cmd" $out 2>&1 || echo 'RTERR')
++	output=$($rcmd "$sh_cmd" $out || echo 'RTERR')
  
--	tst_test = &test;
--
- 	while ((token = strsep(&argv[1], ","))) {
- 		struct param *p = get_param(token);
- 
-@@ -80,7 +72,12 @@ int main(int argc, char *argv[])
- 		args.flags |= p->flag;
- 	}
- 
--	pid = SAFE_CLONE(&args);
-+	pid = tst_clone(&args);
-+	if (pid < 0) {
-+		printf("clone() failed");
-+		return 1;
-+	}
-+
- 	if (!pid) {
- 		child_fn();
- 		return 0;
-diff --git a/testcases/lib/tst_ns_exec.c b/testcases/lib/tst_ns_exec.c
-index 6a8e39339..5d34e9ad5 100644
---- a/testcases/lib/tst_ns_exec.c
-+++ b/testcases/lib/tst_ns_exec.c
-@@ -20,12 +20,6 @@
- #include "tst_test.h"
- #include "tst_ns_common.h"
- 
--extern struct tst_test *tst_test;
--
--static struct tst_test test = {
--	.forks_child = 1, /* Needed by SAFE_CLONE */
--};
--
- static int ns_fd[NS_TOTAL];
- static int ns_fds;
- 
-@@ -71,8 +65,6 @@ int main(int argc, char *argv[])
- 	int i, status, pid;
- 	char *token;
- 
--	tst_test = &test;
--
- 	if (argc < 4) {
- 		print_help();
- 		return 1;
-@@ -100,7 +92,12 @@ int main(int argc, char *argv[])
- 	for (i = 0; i < ns_fds; i++)
- 		SAFE_SETNS(ns_fd[i], 0);
- 
--	pid = SAFE_CLONE(&args);
-+	pid = tst_clone(&args);
-+	if (pid < 0) {
-+		printf("clone() failed");
-+		return 1;
-+	}
-+
- 	if (!pid)
- 		SAFE_EXECVP(argv[3], argv+3);
- 
+ 	echo "$output" | grep -q 'RTERR$' && ret=1
+ 	if [ $ret -eq 1 ]; then
 -- 
 2.45.2
 
