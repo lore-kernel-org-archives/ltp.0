@@ -4,107 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D6BC02183
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 16:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E277C02187
+	for <ltp@archiver.kernel.org>; Sat, 18 Jan 2025 10:26:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3DDD93C7C4C
-	for <ltp@archiver.kernel.org>; Fri, 17 Jan 2025 17:18:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0DD5C3C7C51
+	for <ltp@archiver.kernel.org>; Sat, 18 Jan 2025 11:26:45 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 56C823C7961
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 17:18:25 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 22FC73C5480
+ for <ltp@lists.linux.it>; Sat, 18 Jan 2025 11:26:28 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 83D131000761
- for <ltp@lists.linux.it>; Fri, 17 Jan 2025 17:18:24 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DE7672359BF
+ for <ltp@lists.linux.it>; Sat, 18 Jan 2025 11:26:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1737195985;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FYk7fFCftkck0DgUVwObhfcZpMuuQ8ydWH6AcnX0/Kw=;
+ b=P1xMMnJFzq/GIOWg3VjgmtJEqPNekP07CjMbEvLueudFdmPJoAxD6yt+KJt1nvFzkIrJ6o
+ Ab4eNb1QlW5iO5oXi7VfUjWpu8kndJdeXZk2/VDePHw1Jtqzd4NkqCphd6768aoJH1jByQ
+ IoIy8XNPdWTm3JgtUypeRmqlvD5NY0E=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-vaV9to4cPQOi_K-TQcjCBg-1; Sat,
+ 18 Jan 2025 05:26:23 -0500
+X-MC-Unique: vaV9to4cPQOi_K-TQcjCBg-1
+X-Mimecast-MFC-AGG-ID: vaV9to4cPQOi_K-TQcjCBg
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AE26B21170;
- Fri, 17 Jan 2025 16:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737130703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=nCLlyRWJ58SJHQEMhmWqSPcFo+2Nj1lUz5OPALqQ6YKqfouYdqm1iUz/lD+j0lkQmKxSV1
- uC8Mgq/zA/liePmrvKD4+UUmLNIlwk0tq/GULH/fRtJGwOysNcg32IsWLtLCkR0JZ6Q3PY
- n0qh8HkAoUT1c4QWARhQHi1JpJ/PbXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737130703;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=0HmvmgiZLJVL/eqUgYQkjGR0l35qXPkmXpEp+F6+R7I6ndHr57ofibhtxl6JcS7ludVjzw
- 7xx8xHSSIZaRtUAw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nCLlyRWJ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0HmvmgiZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737130703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=nCLlyRWJ58SJHQEMhmWqSPcFo+2Nj1lUz5OPALqQ6YKqfouYdqm1iUz/lD+j0lkQmKxSV1
- uC8Mgq/zA/liePmrvKD4+UUmLNIlwk0tq/GULH/fRtJGwOysNcg32IsWLtLCkR0JZ6Q3PY
- n0qh8HkAoUT1c4QWARhQHi1JpJ/PbXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737130703;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=0HmvmgiZLJVL/eqUgYQkjGR0l35qXPkmXpEp+F6+R7I6ndHr57ofibhtxl6JcS7ludVjzw
- 7xx8xHSSIZaRtUAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 944DB139CB;
- Fri, 17 Jan 2025 16:18:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2KNQI8+CimeseAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 17 Jan 2025 16:18:23 +0000
-Date: Fri, 17 Jan 2025 17:18:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Attila Fazekas <afazekas@redhat.com>
-Message-ID: <Z4qCv9LJe6uMXtEH@yuki.lan>
-References: <20250117135745.909549-1-afazekas@redhat.com>
- <20250117135745.909549-3-afazekas@redhat.com>
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B9344195608A; Sat, 18 Jan 2025 10:26:22 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 17EDD19560A3; Sat, 18 Jan 2025 10:26:20 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Sat, 18 Jan 2025 18:26:15 +0800
+Message-ID: <20250118102615.127485-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250117135745.909549-3-afazekas@redhat.com>
-X-Rspamd-Queue-Id: AE26B21170
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- TO_DN_SOME(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 6hGV2s-GWlN96_ynm-cmJJt3xsL754mXtqyWMTFomxk_1737195983
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] sched_football: use get_numcpus()
+Subject: [LTP] [PATCH] lib: switch cgroup bit-fields from signed to unsigned
+ int
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,18 +77,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+There is a problem in cgroup lib that the declearation int
+can lead to -1 during the | operation.
 
+Becasue if the field contains uninitialized garbage data,
+a bit-field declared as int could interpret 0b1 as -1 due
+to signed arithmetic.
+
+By changing the type to unsigned int, the issue is avoided
+since unsigned fields cannot represent negative values.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Jin Guojie <guojie.jin@gmail.com>
+---
+
+Notes:
+    @Cyril, Petr, I vote to merge this patch before the release.
+    @Guojie, Could you plz repost your memcontrol04 patch based on this change?
+
+ include/tst_test.h |  2 +-
+ lib/tst_cgroup.c   | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 5b3889e64..eb73cd593 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -610,7 +610,7 @@ struct tst_fs {
+ 
+ 	const char *const *needs_cgroup_ctrls;
+ 
+-	int needs_cgroup_nsdelegate:1;
++	unsigned int needs_cgroup_nsdelegate:1;
+ };
+ 
+ /**
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 6055015eb..aa13ac8ec 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -44,7 +44,7 @@ struct cgroup_dir {
+ 	 */
+ 	int dir_fd;
+ 
+-	int we_created_it:1;
++	unsigned int we_created_it:1;
+ };
+ 
+ /* The root of a CGroup hierarchy/tree */
+@@ -71,11 +71,11 @@ struct cgroup_root {
+ 	/* CGroup for current test. Which may have children. */
+ 	struct cgroup_dir test_dir;
+ 
+-	int nsdelegate:1;
++	unsigned int nsdelegate:1;
+ 
+-	int we_mounted_it:1;
++	unsigned int we_mounted_it:1;
+ 	/* cpuset is in compatability mode */
+-	int no_cpuset_prefix:1;
++	unsigned int no_cpuset_prefix:1;
+ };
+ 
+ /* Controller sub-systems */
+@@ -138,7 +138,7 @@ struct cgroup_ctrl {
+ 	/* Runtime; hierarchy the controller is attached to */
+ 	struct cgroup_root *ctrl_root;
+ 	/* Runtime; whether we required the controller */
+-	int we_require_it:1;
++	unsigned int we_require_it:1;
+ };
+ 
+ struct tst_cg_group {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.47.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
