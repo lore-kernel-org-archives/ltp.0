@@ -4,97 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 357A2C02181
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 13:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA003C02182
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 13:07:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C90D73C19B9
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 14:03:36 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 532FB3C1A7D
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 14:07:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 243083C07B5
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 14:03:21 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id A2C893C07B5
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 14:07:34 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9E5BC612DCF
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 14:03:20 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C67FC1425599
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 14:07:33 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 061FB2117C;
- Mon, 20 Jan 2025 13:03:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 796912117C;
+ Mon, 20 Jan 2025 13:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737378199;
+ t=1737378452;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TKlCL8uUY0ax0eyLdD8SaQRQlMmxt4XfVlU1XxJoUt0=;
- b=gvKHNG4hXOA3lqM8q9UzWMaTChm1n1T5mhk7aDOZvns88qs1sFXe+8Lq/l2pXmCGHLZ9Ef
- mOFKUMTyBW6efkJPgapgNL/10qwad1/XvHGdixoh9HgsvCjdsLZLmQIhBEY3SI+wCVf5wl
- kX8rubu4EZ037ugQ+mrsCJHyvQz+J/w=
+ bh=/5sSd6+NFkLbWMlUwIGpQADkUyjM1KfjVEVqGfmCVJs=;
+ b=Ha3yyenw7RB862G4PFfWZtUBB3srkp81+Hig3AMdDzEsFu0LBS37UVVA227ZhxtT3WLctA
+ kEtIaC5sW6cAe/VzZ04B5PV/t7fMOryqsbTqw8cxqhMesxsQV63SxWCApQgSOlFpG9DpIE
+ hyxI7AWEJ52XUDqPOxclYv0/WCZSDYc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737378199;
+ s=susede2_ed25519; t=1737378452;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TKlCL8uUY0ax0eyLdD8SaQRQlMmxt4XfVlU1XxJoUt0=;
- b=GXP5VviEhKZpQJCrOoiUYAsTa/iRMMvE/BooaiYAGDm1LfSnNW+BEgHaC1mDa2JkfwoGha
- 8wWZu94Nq5OmSOBA==
+ bh=/5sSd6+NFkLbWMlUwIGpQADkUyjM1KfjVEVqGfmCVJs=;
+ b=H7y11oLWNbozTwcCKGdzjY47BosK8DseyY4PkyCYxD/ukgY/4QbzD3XQwyNuHJ3ShupsyH
+ U5yVLucnnCRuyECA==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gvKHNG4h;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GXP5VviE
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FEKiEwYH;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4bxUyZeL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737378199;
+ t=1737378451;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TKlCL8uUY0ax0eyLdD8SaQRQlMmxt4XfVlU1XxJoUt0=;
- b=gvKHNG4hXOA3lqM8q9UzWMaTChm1n1T5mhk7aDOZvns88qs1sFXe+8Lq/l2pXmCGHLZ9Ef
- mOFKUMTyBW6efkJPgapgNL/10qwad1/XvHGdixoh9HgsvCjdsLZLmQIhBEY3SI+wCVf5wl
- kX8rubu4EZ037ugQ+mrsCJHyvQz+J/w=
+ bh=/5sSd6+NFkLbWMlUwIGpQADkUyjM1KfjVEVqGfmCVJs=;
+ b=FEKiEwYH5izBEGBDtO3Ix60UdlUvTf7crZ6PXKz7vfGy+9pTkP/wUxSWTU1O7LxXJ+u/YP
+ 5cQLz6HDAD8XjNA3h4rPTMlXy9EB6KJC5ZMKyWIQeK47wlVRXXEq77lk60AAoW6xvG1arP
+ NVLTfk4N5lSkBBbmd8fMyOOJmDWufk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737378199;
+ s=susede2_ed25519; t=1737378451;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TKlCL8uUY0ax0eyLdD8SaQRQlMmxt4XfVlU1XxJoUt0=;
- b=GXP5VviEhKZpQJCrOoiUYAsTa/iRMMvE/BooaiYAGDm1LfSnNW+BEgHaC1mDa2JkfwoGha
- 8wWZu94Nq5OmSOBA==
+ bh=/5sSd6+NFkLbWMlUwIGpQADkUyjM1KfjVEVqGfmCVJs=;
+ b=4bxUyZeLng/1PC6SwKuNnbeBe0fcscb6mwTm58bBofOsvHBSWw8NagYXgFRV5EtkaqO8Gr
+ 6xa/7Q6/omxszyDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C952C1393E;
- Mon, 20 Jan 2025 13:03:18 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FC811393E;
+ Mon, 20 Jan 2025 13:07:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 08hdL5ZJjmf4eQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 20 Jan 2025 13:03:18 +0000
-Date: Mon, 20 Jan 2025 14:03:17 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hZAoEpNKjmfoSQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 20 Jan 2025 13:07:31 +0000
+Date: Mon, 20 Jan 2025 14:07:25 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250120130317.GA806253@pevik>
-References: <20241222072251.13150-1-liwang@redhat.com>
- <20250115224154.GA664782@pevik>
- <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
- <20250120090740.GB794282@pevik> <20250120091137.GC794282@pevik>
- <CAEemH2e03yTcWBDw=BK7O6SU69mVXhO4zv2LUDgPLe0kD=w12Q@mail.gmail.com>
- <Z45BxqUsOQXm12My@yuki.lan>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20250120130725.GB806253@pevik>
+References: <20250120104911.39566-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Z45BxqUsOQXm12My@yuki.lan>
-X-Rspamd-Queue-Id: 061FB2117C
-X-Rspamd-Action: no action
+In-Reply-To: <20250120104911.39566-1-mdoucha@suse.cz>
+X-Rspamd-Queue-Id: 796912117C
 X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
@@ -107,7 +100,7 @@ X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
  MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
  RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
@@ -115,11 +108,12 @@ X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
  RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] pidns05 timeout (was: [PATCH 1/2] lib:
- multiply the timeout if detect slow kconfigs)
+Subject: Re: [LTP] [PATCH v2] cgroup_core02: Allocate child stack using
+ mmap()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,20 +132,14 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > Yes, I understand your concern. I agree that we can avoid the
-> > kconfig detection for most faster test cases.
+Hi Martin,
 
-> > After reviewing my previous pre-release LTP test and compare to
-> > the current main branch test, it doesn't show much more time-consuming,
-> > maybe there is different HW/kernel factors, but the performance
-> > impact can be ignored.
+> Some architectures like arm64 have strict requirements for stack alignment.
+> Statically allocated buffer may result in one of the test processes
+> getting killed by SIGBUS. Allocate child stack using mmap() to ensure
+> the requirements are met.
 
-> I've just send a patch that caches the detection results, because in the
-> case of pins05 we did parse the config for each SAFE_CLONE() call.
-
-Thanks! Elegant solution, I should have come up with static myself instead of
-complaining :).
+merged, thank you!
 
 Kind regards,
 Petr
