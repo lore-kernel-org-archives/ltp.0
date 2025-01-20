@@ -4,123 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 512DDC02185
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 09:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE505C02185
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 09:34:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B1DB73C18AB
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 10:12:13 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 3AE003C1832
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 10:34:41 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9149A3C1812
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 10:11:56 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id AD2923C149D
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 09:50:51 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=acarmina@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 16EB4600046
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 10:11:55 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 986CF2116D;
- Mon, 20 Jan 2025 09:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737364314;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DPls2FAr0wGhTPUwEsgQqvhY7cC8kEohs8lPZOI9q14=;
- b=kNvmEWRS3JEprLFUjyI0Dp+/8wiM+VDMHjVm0wnaX5sPwa/Az9S6UMNjeUZ6wdNZXSP1KY
- uvLTrijQQrFNE0PAhaDRNdzK8SKbU1wQHAEeJ9tPIfA5JGhJx47gc8d4MwOkQiLvuEar2F
- ui+H4j7rC3yeaZ7UBoGYm3qswjjIgWE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737364314;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DPls2FAr0wGhTPUwEsgQqvhY7cC8kEohs8lPZOI9q14=;
- b=42Gg0P0hqIjjc3/tyzp8ZOJVqL7f5+OgUMTnPUNrU/Cot9d/kQUB88HxEwxe1saVzL8tIJ
- Gf7BwCqK+pf2pfAA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kNvmEWRS;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=42Gg0P0h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737364314;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DPls2FAr0wGhTPUwEsgQqvhY7cC8kEohs8lPZOI9q14=;
- b=kNvmEWRS3JEprLFUjyI0Dp+/8wiM+VDMHjVm0wnaX5sPwa/Az9S6UMNjeUZ6wdNZXSP1KY
- uvLTrijQQrFNE0PAhaDRNdzK8SKbU1wQHAEeJ9tPIfA5JGhJx47gc8d4MwOkQiLvuEar2F
- ui+H4j7rC3yeaZ7UBoGYm3qswjjIgWE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737364314;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DPls2FAr0wGhTPUwEsgQqvhY7cC8kEohs8lPZOI9q14=;
- b=42Gg0P0hqIjjc3/tyzp8ZOJVqL7f5+OgUMTnPUNrU/Cot9d/kQUB88HxEwxe1saVzL8tIJ
- Gf7BwCqK+pf2pfAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21ECE1393E;
- Mon, 20 Jan 2025 09:11:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id pCWHBVoTjmdoeQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 20 Jan 2025 09:11:54 +0000
-Date: Mon, 20 Jan 2025 10:11:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>,
- ltp@lists.linux.it, Avinesh Kumar <akumar@suse.de>,
- Martin Doucha <martin.doucha@suse.com>, Jan Stancek <jstancek@redhat.com>,
- Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20250120091137.GC794282@pevik>
-References: <20241222072251.13150-1-liwang@redhat.com>
- <20250115224154.GA664782@pevik>
- <CAEemH2e+Cb8R0kS5a8FnETcMiafWeD529CO3=AtHk310vyckbg@mail.gmail.com>
- <20250120090740.GB794282@pevik>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E502E1BD73B2
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 09:50:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1737363049;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uyo0RNOrd7Lw3M9C/mUrnVTwd291EhYOLVPHNzCocw8=;
+ b=GF3JyV0z8Iyl1vOi+d5bC6qaSSnPUckHxiJqNbKboFj40s2/O5O+RDPB2ImtiOmx8orEmt
+ 945fEhWyhJhQVBl3a2m2OiBFQNyJpI8LS2q0beUC8AE6Z/x5nJD3aQFDfY9QDCGeXek9SY
+ ZtS7UXhLoaEyrlVo7q4cQ6xb0c2qNys=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-323-5WMYGGPfMtKL-EAwn4365g-1; Mon, 20 Jan 2025 03:50:48 -0500
+X-MC-Unique: 5WMYGGPfMtKL-EAwn4365g-1
+X-Mimecast-MFC-AGG-ID: 5WMYGGPfMtKL-EAwn4365g
+Received: by mail-wr1-f71.google.com with SMTP id
+ ffacd0b85a97d-38bf4913659so2222801f8f.1
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 00:50:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1737363046; x=1737967846;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=uyo0RNOrd7Lw3M9C/mUrnVTwd291EhYOLVPHNzCocw8=;
+ b=IWd4GvAuwyh8vC5bCNBvjjk3k6CRhuFsEvfNoJijApNF7Hj5Ld9Udw9F0UUf0y8KN5
+ QCkdkwpPcJTH4Whl0hRfS/oOwaPyGg323UchTZygzurySNurRw5nTiVUHlqX170zzzai
+ rsNKeHeSvf8gdE0okw7RseTl8ico2idYcccjw+SYpT4WTpcsjl1TEfUQ3ScVnN+w/vGm
+ qFunEelBxgoZJgiIhGLeF4YZNhRZJAA8mToWy17OrfQzBNZj2Olsz9XVR280y4dS7qJI
+ lZo/ekBvzE8Rzcpa+us7w1v39ie23JX+XbcNK48VKupYOsHNLbEx88mZqj+RqikvjUIx
+ s00Q==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUUqZFbLvOTp0zBDuSgFlju7Me+rHKMRlIRG2XiufQ0NJ/cBDwKQYBGUjdh9mDPT+nCbe0=@lists.linux.it
+X-Gm-Message-State: AOJu0YxqEJzGiauFxAk9zv3le69TnhTwOm6NhplHhHQC1aPlMMHzCnHT
+ 4VVG3z8gHaGKbylwTbNa3Av45NmSilfJCq0DW8MXTAqLt6ba1iUjgfoD8W3f814OfqMYSpO36h2
+ MFtW2fIE+wrp+QvL4X7BasiZNCgTk3yC9FRO5Ss85GWnZyQsL7lVilyXc
+X-Gm-Gg: ASbGnctfvwgDxtiBIhng+h7H6GnXL4wntPa/4EsRdw5l5i6zaascm8UIYvPpsLLCsA7
+ z9qKvdWA1ACzV1MsHxLYhFQy8EaXaRXbalBx2t+jJf74YzGPshg8BTR2+hv4MSwQGruBl1b4IUd
+ pkrq+fgsWnxArElFryhnRS0xTb22JGxZAb+UmzUbqPk/ynlIqjeEUHns/JGfGhtYv9XrQ+G44SW
+ RGtOOESU1s32QX0Gn+EnZBQH2pAxtXUHrR9rwMLVmj1FRRpq2DeMxIgYWtDeX1dEKGSXZQOsjc=
+X-Received: by 2002:a5d:4845:0:b0:386:857:cc54 with SMTP id
+ ffacd0b85a97d-38bf5679b17mr8416157f8f.9.1737363046592; 
+ Mon, 20 Jan 2025 00:50:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGiBMvcY4CkznvkYS3FyA205PnbILAUCicby9Fxgl9kTVPrqzif9/eNuNe4wvvdK/VF2Di8sA==
+X-Received: by 2002:a5d:4845:0:b0:386:857:cc54 with SMTP id
+ ffacd0b85a97d-38bf5679b17mr8416141f8f.9.1737363046266; 
+ Mon, 20 Jan 2025 00:50:46 -0800 (PST)
+Received: from lab.hqhome163.com ([81.57.75.210])
+ by smtp.googlemail.com with ESMTPSA id
+ ffacd0b85a97d-38bf3275901sm9837470f8f.61.2025.01.20.00.50.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Jan 2025 00:50:45 -0800 (PST)
+From: Alessandro Carminati <acarmina@redhat.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 20 Jan 2025 08:50:17 +0000
+Message-Id: <20250120085017.63442-1-acarmina@redhat.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250120090740.GB794282@pevik>
-X-Rspamd-Queue-Id: 986CF2116D
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
- ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[7];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: FOdpABf4uxgMDrM3nVWmoFh3yw4RpnJ4dWxrbAo5sc0_1737363047
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] pidns05 timeout (was: [PATCH 1/2] lib:
- multiply the timeout if detect slow kconfigs)
+X-Mailman-Approved-At: Mon, 20 Jan 2025 10:34:24 +0100
+Subject: [LTP] [PATCH] cfs-scheduler/starvation.c: Skip test on realtime
+ kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,49 +102,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Alessandro Carminati <acarmina@redhat.com>,
+ Alessandro Carminati <alessandro.carminati@gmail.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiA+IE9uIFRodSwgSmFuIDE2LCAyMDI1IGF0IDY6NDLigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxA
-c3VzZS5jej4gd3JvdGU6Cgo+ID4gPiBIaSBMaSwgQ3lyaWwsIGFsbCwKCj4gPiA+IC4uLgo+ID4g
-PiA+ICsrKyBiL2xpYi90c3RfdGVzdC5jCj4gPiA+ID4gQEAgLTU1NSw5ICs1NTUsNiBAQCBzdGF0
-aWMgaW50IG11bHRpcGx5X3J1bnRpbWUoaW50IG1heF9ydW50aW1lKQoKPiA+ID4gPiAgICAgICBw
-YXJzZV9tdWwoJnJ1bnRpbWVfbXVsLCAiTFRQX1JVTlRJTUVfTVVMIiwgMC4wMDk5LCAxMDApOwoK
-PiA+ID4gPiAtICAgICBpZiAodHN0X2hhc19zbG93X2tjb25maWcoKSkKPiA+ID4gPiAtICAgICAg
-ICAgICAgIG1heF9ydW50aW1lICo9IDQ7Cj4gPiA+ID4gLQo+ID4gPiA+ICAgICAgIHJldHVybiBt
-YXhfcnVudGltZSAqIHJ1bnRpbWVfbXVsOwo+ID4gPiA+ICB9Cgo+ID4gPiA+IEBAIC0xNzA2LDYg
-KzE3MDMsOSBAQCB1bnNpZ25lZCBpbnQgdHN0X211bHRpcGx5X3RpbWVvdXQodW5zaWduZWQgaW50
-Cj4gPiA+IHRpbWVvdXQpCj4gPiA+ID4gICAgICAgaWYgKHRpbWVvdXQgPCAxKQo+ID4gPiA+ICAg
-ICAgICAgICAgICAgdHN0X2JyayhUQlJPSywgInRpbWVvdXQgbXVzdCB0byBiZSA+PSAxISAoJWQp
-IiwgdGltZW91dCk7Cgo+ID4gPiA+ICsgICAgIGlmICh0c3RfaGFzX3Nsb3dfa2NvbmZpZygpKQo+
-ID4gPiA+ICsgICAgICAgICAgICAgdGltZW91dCAqPSA0OwoKPiA+ID4gRllJIHRoaXMgY2hhbmdl
-LCBtZXJnZWQgYXMgODkzY2EwYWJlNyAoImxpYjogbXVsdGlwbHkgdGhlIHRpbWVvdXQgaWYKPiA+
-ID4gZGV0ZWN0IHNsb3cKPiA+ID4ga2NvbmZpZ3MiKSBjYXVzZWQgYSByZWdyZXNzaW9uIG9uICph
-bGwqIHRlc3RzIHdoaWNoIHVzZSB0c3RfbmV0LnNoLgo+IC4uLgoKPiBGWUkgYWxzbyBhdCBsZWFz
-dCBwaWRuczA1LmMgc29tZXRpbWVzIGZhaWxzIGR1ZSB0aW1lb3V0IHdpdGggdGhpcyBjaGFuZ2Uu
-Cj4gT24gc29tZSBvZiBTTEVTIHByb2R1Y3QgcHJldmlvdXNseSBwaWRuczA1LmMgcnVuIGZvciAz
-IHNlYy4gV2l0aCB0aGlzIGNoYW5nZSBpdAo+IHJ1bnMgMTJzIGFuZCB0aGVyZWZvcmUgdGltZW91
-dHMuCgpJJ20gc29ycnkgZm9yIGEgd3JvbmcgcmVwb3J0LiBMb29raW5nIGFib3V0IGl0IHR3aWNl
-IHRoZXJlIGlzICIqKiogc3RhY2sKc21hc2hpbmcgZGV0ZWN0ZWQgKioqOiB0ZXJtaW5hdGVkIiA9
-PiBzb21lIG90aGVyIHByb2JsZW0sIHdoaWNoIGNhdXNlcyBzbG93CmRvd24uIElNSE8gaXQncyBu
-b3Qgb3B0aW1hbCB0byBydW4gdGhlIGRldGVjdGlvbiBtYW55IHRpbWVzICsgYmFzaWNhbGx5IG5v
-dwpyZXF1aXJpbmcga2VybmVsIGNvbmZpZyBmb3IgZWFjaCBMVFAgdGVzdCwgYnV0IHBlcmZvcm1h
-bmNlIGltcGFjdCBpcyBwcm9iYWJseQpsb3cuCgpLaW5kIHJlZ2FyZHMsClBldHIKCj4gSW4gcGlk
-bnMwNS5jIGNhc2UgY2hpbGQgaXMgcnVuIDV4LiBGb3IgZWFjaCBvZiB0aGlzIGNoaWxkIHdlIGFn
-YWluIGRldGVjdCBpZiB3ZQo+IHJ1biBvbiBzbG93IGNvbmZpZy4gTWF5YmUgd2Ugc2hvdWxkIGhh
-dmUgdXNlZCBzdHJ1Y3QgdHN0X3Rlc3QgbWVtYmVyIHRvIGNhY2hlCj4gdGhlIHZhbHVlLgoKPiBX
-aGF0IGJvdGhlcnMgbWUgbW9yZSB0aGF0IGhvdyBtdWNoIHRpbWUgd2Ugd2FzdGUgZm9yIHdob2xl
-IExUUCB0ZXN0aW5nIHdpdGgKPiByZXBlYXRlZGx5IGRldGVjdGluZyBzbG93IGNvbmZpZyBmb3Ig
-YWxsIHRlc3RzIChydW50ZXN0L3N5c2NhbGxzIGhhcyAxNDU3IGl0ZW1zLAo+IHdlIHJ1biBpdCBt
-b3JlIHRpbWVzIGZvciBlYWNoIHByb2R1Y3Qgd2l0aCBkaWZmZXJlbnQga2VybmVsIGNtZGxpbmUg
-cGFyYW1ldGVycykuCj4gSSBkb24ndCBrbm93IHdoYXQgd2FzIHN1cHBvc2VkIHRvIGJlIGZpeGVk
-IGJ5IHRoaXMgZmVhdHVyZSwgaXMgaXQgcmVhbGx5IHdvcnRoCj4gb2Ygc2xvd2Rvd24/IFdoeSBu
-b3QganVzdCBzZXQgTFRQX1JVTlRJTUVfTVVMPTIgb24gc2xvdyBrZXJuZWxzPyBXZSBjb3VsZCBo
-YXZlCj4gdG9vbCB3aGljaCB3b3VsZCAnZXhpdCAxJyBvbiAic2xvdyIga2VybmVsIGFuZCAnZXhp
-dCAwJyBvbiBub3JtYWwga2VybmVsIHRvIGRvCj4gYXV0b21hdGljIGRldGVjdGlvbiwgd2hpY2gg
-Y291bGQgYmUgcnVuIGJ5IGZyYW1ld29ya3MganVzdCBvbmNlLgoKPiBLaW5kIHJlZ2FyZHMsCj4g
-UGV0cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+This commit introduces a check in the starvation test case to detect and
+skip execution on realtime kernels. The test is designed for use with the
+Completely Fair Scheduler and produces meaningless results when run on
+realtime kernels.
+
+By skipping the test on realtime kernels, we avoid confusion caused by
+misleading results.
+
+Changes include:
+- Added a detection mechanism for realtime kernels.
+- Logic to skip the test execution if the kernel is identified as
+  realtime.
+
+Signed-off-by: Alessandro Carminati <acarmina@redhat.com>
+---
+ include/tst_kernel.h                              |  9 +++++++++
+ lib/tst_kernel.c                                  | 10 ++++++++++
+ testcases/kernel/sched/cfs-scheduler/starvation.c |  3 +++
+ 3 files changed, 22 insertions(+)
+
+diff --git a/include/tst_kernel.h b/include/tst_kernel.h
+index 5f49952b7..63ecb19a4 100644
+--- a/include/tst_kernel.h
++++ b/include/tst_kernel.h
+@@ -58,4 +58,13 @@ int tst_check_builtin_driver(const char *driver);
+  */
+ int tst_check_driver(const char *driver);
+ 
++/**
++ * tst_check_preempt_rt() - Check if the running kernel is RT.
++ *
++ * Check support for the kernel module (both built-in and loadable).
++ *
++ * Return: -1 if the kernel is RT, 0 otherwise.
++ */
++int tst_check_preempt_rt(void);
++
+ #endif	/* TST_KERNEL_H__ */
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 8dabfeba2..7084289c3 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -214,3 +214,13 @@ int tst_check_driver(const char *driver)
+ 
+ 	return -1;
+ }
++
++int tst_check_preempt_rt(void)
++{
++	struct utsname uval;
++
++	uname(&uval);
++	if (strstr(uval.version, "PREEMPT_RT"))
++		return -1;
++	return 0;
++}
+diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
+index 901556a7b..c620c9c3e 100644
+--- a/testcases/kernel/sched/cfs-scheduler/starvation.c
++++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
+@@ -82,6 +82,9 @@ static void setup(void)
+ 
+ 	CPU_ZERO(&mask);
+ 
++	if (tst_check_preempt_rt())
++		tst_brk(TCONF, "This test is not designed for the RT kernel");
++
+ 	/* Restrict test to a single cpu */
+ 	if (sched_getaffinity(0, sizeof(mask), &mask) < 0)
+ 		tst_brk(TBROK | TERRNO, "sched_getaffinity() failed");
+-- 
+2.34.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
