@@ -4,92 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73872C02181
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 12:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1737374414; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=NYOdl1TaYF4ZigCIcpzTfc9A5pjLEVJSKgknN+ojmMc=;
- b=QcqEM7C7nxed3YITUz1+pcrYZgJ0KBMi031Tg7cph4zmurAG0FrXX06zlra0qae6wmUEc
- Cow6434cdH1qqko8KdvliNDN3RdbHWgx5cX/dLv0HoMq0jx+zmeDGB2WLO08xl79qDU+axe
- 7fXfGFvSbxmRaSzFpHAhGL9R59cGKNQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44A67C02181
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 12:06:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB6623C1AD3
-	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 13:00:14 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A91223C1A09
+	for <ltp@archiver.kernel.org>; Mon, 20 Jan 2025 13:06:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A030E3C03BD
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 12:59:52 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 89D763C05DA
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 13:06:16 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A1F6364ECB8
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 12:59:51 +0100 (CET)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-436ce2ab251so30025305e9.1
- for <ltp@lists.linux.it>; Mon, 20 Jan 2025 03:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1737374391; x=1737979191; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=jVW2QeHQspBTSAJqqOkF7xOZCNrkP7xpQCjb7AJJfpY=;
- b=PFvc47WgY3ItwLwHBkPgAfHjXczOh88i+KXKOYJrBilRKil0Bt715qlPP7g+gjgXnx
- k7SOMBSDSG2UrmCt3IunEXj+gmRxu8CQGCtsuzM2h7Ez4AUbpUPMtkeiWBZYLS/O17gE
- ZjTWiYrM+wlNPfzwDxXB8S0TgH+MNNIgDZfzer621fd34NPfOD93Pfhp4TuXXlYR9Ah4
- PmxquqjR/HC05MUn5wvmCzbhH9bRMDtMc1HZymEgO8VZX8tCeKUHGSkxVXXS5uT+twIF
- P6iOsW1p26+xhzeDsYYS8DmWmXOkHy+reH7b+cdRZVv6ZSw8eBGgZqw2mSeQLTN1weT/
- i0hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737374391; x=1737979191;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=jVW2QeHQspBTSAJqqOkF7xOZCNrkP7xpQCjb7AJJfpY=;
- b=VDm3DAL1Cf91l4ooR1meDaQhECQKk6spSuSINsarwQJi6B10eg/IHalrHVFqc2zF+a
- M9EEysAKkxpqanctyNZnPiiKParfNZAsGOkEQ4BkQXspCYvedF47fH5jg8e4XBfq++hY
- yXmWbRrLrcGA7bPhU8h4w/yFIATqdwUA4ZEMb7JhJ6YxWlfGrpI0xdsT7HbBtwTKeHYQ
- Oy/9/SMy49SrWnQA+VXxKMxomBrqp1EEZn3hIbR4lTjoNUW5GEJwRfcdZh1D9iwR+cwS
- ZATEJrdPKOOG884f+uoxMOPBXeiARmJbXQNs1EMaP9hdmXhmU9NoLk2yUUXkaKw9Qx51
- b7kw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXcYqu2vaOS8oGKhminTCA+21igxmFufxw5qGgr7hMulQTSVHD87f+jz1ErUqw3Gg7iU2I=@lists.linux.it
-X-Gm-Message-State: AOJu0YyAwULVgecw+pAI9AkEadLOzfo4fb4eCS/oXbLJYq6hIGLrktA4
- pxKbYkNJ/Q5oTJxzfhA5oS2JEX+Am1ZRJZ3FvBewD9VBeuAmuLxxTfiyL/R5IJE=
-X-Gm-Gg: ASbGncvSoGdlm/34Jma2ee0Ch+56tDrJ3LjO46aeut/93xIB6Ixqr7YBGoAcgj+h8wW
- Cf6tc/oOy/cvxIX5vnZ/fFqSaehCWbKh/w3AJJlXs+cS0SBw5tQG9y3AJqm1DnUQFZvfWzYY11H
- d8xorNdjutZqJTTKVOvWx50n6LuNOgAPDUH/bmzWRptgh1ShfODk5MVrrbFz9f9b2TMD9WTUsKy
- n/PjCvSTeKsBeCoRkishq9JQlB+rosQaWyQ1JanH3lFuYeTxAtcx465+Cqe/IgiTUbyAUwAZKgR
- CEdp5+XxcKn2AqvcWzrfzSHz3EkqEzO/rsU24D2xWl7oArLeSGet
-X-Google-Smtp-Source: AGHT+IG4APdRBiNOw8/+nwGSsKIKIscNqGNMEFUsNxvKEtNjWzC3MaQvpa/+oXBvDPVJsUfJoL18rg==
-X-Received: by 2002:a05:600c:1908:b0:434:9c1b:b36a with SMTP id
- 5b1f17b1804b1-438913dbf63mr113676115e9.13.1737374391025; 
- Mon, 20 Jan 2025 03:59:51 -0800 (PST)
-Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
- ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4389046b0f5sm137609045e9.39.2025.01.20.03.59.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 20 Jan 2025 03:59:50 -0800 (PST)
-Message-ID: <5202b2ba-a13e-4250-97c5-937dde849975@suse.com>
-Date: Mon, 20 Jan 2025 12:59:48 +0100
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A2C9C1A0BEC4
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 13:06:15 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E9029210F7
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 12:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737374774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TWlhV38U4ftcNc3WCIsVRYYP9eKNid3uv1YMA0NNWsg=;
+ b=tp6/lIAUrXaZsH1p+rT+Gvrqt4jy6/ZePkCqCCOykRhBa9LuybEjVGVHr3cJL6gKQNZB1Y
+ g9URe9s/ppywpV62jZd3Pv+FfusaplaqcnNptHhmfOLLeJBjkaSUqKO/6v9jhQo4r/SESk
+ 2TQDr1g/lb6Vu/fpF7sci4b4RlIIGlc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737374774;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TWlhV38U4ftcNc3WCIsVRYYP9eKNid3uv1YMA0NNWsg=;
+ b=NGCsj57nhKBBz69qE3F9MOqrFY57/Jzn52Ckai5MYRkEuex1rSaDs1mzcW6Fdl3Evoodgv
+ dig8QyAfAT1zgNAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="kln4OW/l";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VICcWWlA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737374773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TWlhV38U4ftcNc3WCIsVRYYP9eKNid3uv1YMA0NNWsg=;
+ b=kln4OW/lP+ljWwIVn+a8UnT8slTKbHyTcQrGWfmJ81U/uCSroclzas69dKPKjkzNFDfrC4
+ Uy/208m46KCY2O27ToOp6re9692XBabWvOTLaKJ9cvJw9GlO4VtdbpY0tj4eyH+iO2p3O9
+ OQR6V4PNVYZIhFU8bJKECJkKugOcBcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737374773;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TWlhV38U4ftcNc3WCIsVRYYP9eKNid3uv1YMA0NNWsg=;
+ b=VICcWWlA3S5uzT6XgiIMZEeI7zrVeQTLo4ymtfNWiN5jzxQz+q0aRwlS375Q4VUTpeRhio
+ 4ozRJrIH1GvpH0DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA4A9139CB
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 12:06:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BNmENDU8jmftSAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 20 Jan 2025 12:06:13 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 20 Jan 2025 13:06:06 +0100
+Message-ID: <20250120120606.20145-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <Z3vJ6zXDVPACBIGd@yuki.lan> <Z4pj78casC9Ioyga@yuki.lan>
-Content-Language: en-US
-In-Reply-To: <Z4pj78casC9Ioyga@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: E9029210F7
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_DN_NONE(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: [LTP] [PATCH] lib: tst_has_slow_kconfig() cache the result
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,27 +110,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+The result from the tst_has_slow_kconfig() is not going to change so we
+can cache the result as there are several cases where the function may
+end up being called. For instance any test that calls SAFE_CLONE() will
+call the function repeatedly. This change makes the tests slightly
+faster and also avoids repeated messages in the test output.
 
-all good from my side. Feel free to freeze it.
+For example before:
 
-Andrea
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+tst_test.c:1722: TINFO: Overall timeout per run is 0h 00m 30s
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:94: TPASS: find_cinit_pids(pids) returned 5
+pidns05.c:112: TPASS: No children left after sending SIGKILL to the first child
 
-On 1/17/25 15:06, Cyril Hrubis wrote:
-> Hi!
-> Can we freeze git today? There are some fixes that are still
-> work-in-progress but these can go in after the freeze.
->
-> If there are any patches that add new functionality and should be
-> reviewed before the release please let me know now.
->
+And after:
+
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.3/build/.config'
+tst_test.c:1722: TINFO: Overall timeout per run is 0h 00m 30s
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:34: TPASS: cpid == 1 (1)
+pidns05.c:35: TPASS: ppid == 0 (0)
+pidns05.c:94: TPASS: find_cinit_pids(pids) returned 5
+pidns05.c:112: TPASS: No children left after sending SIGKILL to the first child
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_kconfig.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index e83de3dcd..66402e370 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -652,13 +652,23 @@ static struct tst_kconfig_var slow_kconfigs[] = {
+ 	TST_KCONFIG_INIT("CONFIG_DEBUG_OBJECTS")
+ };
+ 
++static bool slow_kconfig_cached;
++static bool slow_kconfig_result;
++
+ int tst_has_slow_kconfig(void)
+ {
+ 	unsigned int i;
+ 	char path_buf[1024];
+ 
+-	if (!kconfig_path(path_buf, sizeof(path_buf)))
++	if (slow_kconfig_cached)
++		return slow_kconfig_result;
++
++	slow_kconfig_cached = 1;
++
++	if (!kconfig_path(path_buf, sizeof(path_buf))) {
++		slow_kconfig_result = 0;
+ 		return 0;
++	}
+ 
+ 	tst_kconfig_read(slow_kconfigs, ARRAY_SIZE(slow_kconfigs));
+ 
+@@ -667,9 +677,11 @@ int tst_has_slow_kconfig(void)
+ 			tst_res(TINFO,
+ 				"%s kernel option detected which might slow the execution",
+ 				slow_kconfigs[i].id);
++			slow_kconfig_result = 1;
+ 			return 1;
+ 		}
+ 	}
+ 
++	slow_kconfig_result = 0;
+ 	return 0;
+ }
+-- 
+2.45.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
