@@ -4,90 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6F38C02182
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 12:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994A1C02182
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 12:35:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FE0B3C2778
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 13:08:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1ACB23C2773
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 13:35:10 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBFF83C1C95
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:07:55 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 1A2633C2621
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:34:52 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E7FDC1037B59
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:07:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1737461273;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2619562A12D
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:34:51 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1BF8E21157
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737462891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fHioWFmAT3HUYphdlzMeJFk3mfVaujQulkJGksXsx4Y=;
- b=WYFg8Y207GQmSDC6b3rK2EryuY5DEO3mEM+kN51el5bvh27Izl9iI5omweYmMmro9Law2p
- 4RHiFtFw7uPSpyFlb9LCEDMME5vNOeacnxeoz5xgfCw89mTt2Nnsb1okOy/kgubXh7yoqj
- 2m2v8d61GvuwBugrApsfkLeEawa3ZK8=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-HBgDouLpP0aueKQuiuI4hg-1; Tue, 21 Jan 2025 07:07:51 -0500
-X-MC-Unique: HBgDouLpP0aueKQuiuI4hg-1
-X-Mimecast-MFC-AGG-ID: HBgDouLpP0aueKQuiuI4hg
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-2ee5616e986so15979053a91.2
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 04:07:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737461270; x=1738066070;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=fHioWFmAT3HUYphdlzMeJFk3mfVaujQulkJGksXsx4Y=;
- b=gw18J4Z+Y7iFoeUk17DqAS3Ves/3i48QTJjkNVflJCDBcV0HIH+SDHfAdcs+a7WHQ6
- NKK9UuPH7F1MpxRK4FcftU0LuDWhCoV3BL0H9+bi5q/8wvZvZmeBwzuWXpd52IJvSNTe
- 4RckyLIlYrV9zIXeRU/e6LKBLJTh2evU0C7E3Hx3pxzDCF5BcH6WOYg8j/xtElfpkuEi
- rBhrzDHw+NQvpstLFyBCEcRxV7CQfsnhwwqcl6eO3+9CbUdg16W/wUqeTI9HlVpklXFA
- vwUyzpP7UTa7v+Af74GotKwLX8mMP3gAZt8Fg/CmPm8Q8ejNWX2/c7JLdRdU07J3mSoV
- +xjg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUG0INVtMfyjzt8ESheamJFU8WFpjjHIIEt1Xv5RbDQNpjRLy3MiNuN/PT4InfXDp4ZJTk=@lists.linux.it
-X-Gm-Message-State: AOJu0YwmGo3HAxtTqxtSzShaHKzx2IlG6hfrTgzlvcwGX8HLTq4Q8IrR
- KiR9XeqZoXUmd+L9GJWrqrJ+Su5LLN4vFk3i0K2AIvqpU4/PzMiU5BWTEcHLQ6Eg+c0H6ggBaOn
- RW9HDoRdR0tO4VlUF8rym2f8DCukFdPphZ0CXYymo/AI1ktfE9Uha2cu/3LUR10j0IWhBQz4YJk
- kRrs/hSTh1tuIi8+06Q7cw65k=
-X-Gm-Gg: ASbGncvZLby2aSudMeTrN0pC5b7iA+RsqCEaoFnMY5bRN9jvCp5aM3zG86DDnnb4t+v
- e3yWHBSp9YDk6HMskaQsi83143pZS4onQqQYQwdcvuvuZQOXgrhGV
-X-Received: by 2002:a17:90b:524d:b0:2ee:b26c:1099 with SMTP id
- 98e67ed59e1d1-2f782d99563mr22163074a91.34.1737461270335; 
- Tue, 21 Jan 2025 04:07:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFsla6C156f+VGw4L1+eai7IdUmgBLFMWm8xFn5xtMe+0HXj5fDTJJbfzuaG6P+HqZAiUKO2x6FLGSEZJ9YsG8=
-X-Received: by 2002:a17:90b:524d:b0:2ee:b26c:1099 with SMTP id
- 98e67ed59e1d1-2f782d99563mr22163043a91.34.1737461269956; Tue, 21 Jan 2025
- 04:07:49 -0800 (PST)
+ bh=JVmEfN7LkR7We2IKG06h70uVYzEiUvnjjD35yE2v7pY=;
+ b=NdCOL2Surf+nKi6Bu8kl+AsK9/aRuHDqEox9l2sYq4dFIpvVg09rQwv64s0t823X+9/EwV
+ ohROjfrZyHCOE+b4bzkRYA8hpfN1vZk90F5+WvCCQKGSmm1rO2T2HluVavGJAYLuo8c6tS
+ gACw9T9x7lLG5legL9NTCUxuEyG+NSs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737462891;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JVmEfN7LkR7We2IKG06h70uVYzEiUvnjjD35yE2v7pY=;
+ b=iwKv7ezWp4o+xzi4i3j0r4PyPAR7f5j1EUbW03G+WiyqSOp98tASU9pEawu2kf8wDHqRF5
+ U3J6UT9ugrCcc/CQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737462891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JVmEfN7LkR7We2IKG06h70uVYzEiUvnjjD35yE2v7pY=;
+ b=NdCOL2Surf+nKi6Bu8kl+AsK9/aRuHDqEox9l2sYq4dFIpvVg09rQwv64s0t823X+9/EwV
+ ohROjfrZyHCOE+b4bzkRYA8hpfN1vZk90F5+WvCCQKGSmm1rO2T2HluVavGJAYLuo8c6tS
+ gACw9T9x7lLG5legL9NTCUxuEyG+NSs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737462891;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JVmEfN7LkR7We2IKG06h70uVYzEiUvnjjD35yE2v7pY=;
+ b=iwKv7ezWp4o+xzi4i3j0r4PyPAR7f5j1EUbW03G+WiyqSOp98tASU9pEawu2kf8wDHqRF5
+ U3J6UT9ugrCcc/CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 093121387C
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rExYAWuUj2cLVAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 21 Jan 2025 13:34:43 +0100
+Message-ID: <20250121123444.5380-2-chrubis@suse.cz>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20250121123444.5380-1-chrubis@suse.cz>
+References: <20250121123444.5380-1-chrubis@suse.cz>
 MIME-Version: 1.0
-References: <20250121111909.66487-1-acarmina@redhat.com>
-In-Reply-To: <20250121111909.66487-1-acarmina@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 21 Jan 2025 20:07:38 +0800
-X-Gm-Features: AbW1kvY1o2thFrlvnoMiAlJCbnRap5vwE3EvumrFLIO459igg4pViWlxfjo-hQc
-Message-ID: <CAEemH2ddReqpm0F=f82yd8RPo1JAXEErcJzdbJy4CYxMt3857g@mail.gmail.com>
-To: Alessandro Carminati <acarmina@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Vom5VCmouOUpH3xylvB1e9RD6vBWEJ8CItZBVrK4-04_1737461270
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] cfs-scheduler/starvation.c: Skip test on
- realtime kernels
+Subject: [LTP] [PATCH 1/2] scripts: Add simple script for calculating
+ timeouts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,57 +116,188 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alessandro Carminati <alessandro.carminati@gmail.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKYW4gMjEsIDIwMjUgYXQgNzoyMuKAr1BNIEFsZXNzYW5kcm8gQ2FybWluYXRpIDxh
-Y2FybWluYUByZWRoYXQuY29tPgp3cm90ZToKCj4gVGhpcyBjb21taXQgaW50cm9kdWNlcyBhIGNo
-ZWNrIGluIHRoZSBzdGFydmF0aW9uIHRlc3QgY2FzZSB0byBkZXRlY3QgYW5kCj4gc2tpcCBleGVj
-dXRpb24gb24gcmVhbHRpbWUga2VybmVscy4gVGhlIHRlc3QgaXMgZGVzaWduZWQgZm9yIHVzZSB3
-aXRoIHRoZQo+IENvbXBsZXRlbHkgRmFpciBTY2hlZHVsZXIgYW5kIHByb2R1Y2VzIG1lYW5pbmds
-ZXNzIHJlc3VsdHMgd2hlbiBydW4gb24KPiByZWFsdGltZSBrZXJuZWxzLgo+Cj4gQnkgc2tpcHBp
-bmcgdGhlIHRlc3Qgb24gcmVhbHRpbWUga2VybmVscywgd2UgYXZvaWQgY29uZnVzaW9uIGNhdXNl
-ZCBieQo+IG1pc2xlYWRpbmcgcmVzdWx0cy4KPgo+IENoYW5nZXMgaW5jbHVkZToKPiAtIEFkZGVk
-IGEgZGV0ZWN0aW9uIG1lY2hhbmlzbSBmb3IgcmVhbHRpbWUga2VybmVscy4KPiAtIExvZ2ljIHRv
-IHNraXAgdGhlIHRlc3QgZXhlY3V0aW9uIGlmIHRoZSBrZXJuZWwgaXMgaWRlbnRpZmllZCBhcwo+
-ICAgcmVhbHRpbWUuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbGVzc2FuZHJvIENhcm1pbmF0aSA8YWNh
-cm1pbmFAcmVkaGF0LmNvbT4KPgoKUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPgoKCgo+IC0tLQo+Cj4gVjE6Cj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwLzIwMjUw
-MTIwMDg1MDE3LjYzNDQyLTEtYWNhcm1pbmFAcmVkaGF0LmNvbS8KPgo+ICBpbmNsdWRlL3RzdF9r
-ZXJuZWwuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDkgKysrKysrKysrCj4gIGxp
-Yi90c3Rfa2VybmVsLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMCArKysr
-KysrKysrCj4gIHRlc3RjYXNlcy9rZXJuZWwvc2NoZWQvY2ZzLXNjaGVkdWxlci9zdGFydmF0aW9u
-LmMgfCAgMyArKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspCj4KPiBkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS90c3Rfa2VybmVsLmggYi9pbmNsdWRlL3RzdF9rZXJuZWwuaAo+IGlu
-ZGV4IDVmNDk5NTJiNy4uNjNlY2IxOWE0IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvdHN0X2tlcm5l
-bC5oCj4gKysrIGIvaW5jbHVkZS90c3Rfa2VybmVsLmgKPiBAQCAtNTgsNCArNTgsMTMgQEAgaW50
-IHRzdF9jaGVja19idWlsdGluX2RyaXZlcihjb25zdCBjaGFyICpkcml2ZXIpOwo+ICAgKi8KPiAg
-aW50IHRzdF9jaGVja19kcml2ZXIoY29uc3QgY2hhciAqZHJpdmVyKTsKPgo+ICsvKioKPiArICog
-dHN0X2NoZWNrX3ByZWVtcHRfcnQoKSAtIENoZWNrIGlmIHRoZSBydW5uaW5nIGtlcm5lbCBpcyBS
-VC4KPiArICoKPiArICogQ2hlY2sgc3VwcG9ydCBmb3IgdGhlIGtlcm5lbCBtb2R1bGUgKGJvdGgg
-YnVpbHQtaW4gYW5kIGxvYWRhYmxlKS4KPiArICoKPiArICogUmV0dXJuOiAtMSBpZiB0aGUga2Vy
-bmVsIGlzIFJULCAwIG90aGVyd2lzZS4KPiArICovCj4gK2ludCB0c3RfY2hlY2tfcHJlZW1wdF9y
-dCh2b2lkKTsKPiArCj4gICNlbmRpZiAvKiBUU1RfS0VSTkVMX0hfXyAqLwo+IGRpZmYgLS1naXQg
-YS9saWIvdHN0X2tlcm5lbC5jIGIvbGliL3RzdF9rZXJuZWwuYwo+IGluZGV4IDhkYWJmZWJhMi4u
-NzA4NDI4OWMzIDEwMDY0NAo+IC0tLSBhL2xpYi90c3Rfa2VybmVsLmMKPiArKysgYi9saWIvdHN0
-X2tlcm5lbC5jCj4gQEAgLTIxNCwzICsyMTQsMTMgQEAgaW50IHRzdF9jaGVja19kcml2ZXIoY29u
-c3QgY2hhciAqZHJpdmVyKQo+Cj4gICAgICAgICByZXR1cm4gLTE7Cj4gIH0KPiArCj4gK2ludCB0
-c3RfY2hlY2tfcHJlZW1wdF9ydCh2b2lkKQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3QgdXRzbmFtZSB1
-dmFsOwo+ICsKPiArICAgICAgIHVuYW1lKCZ1dmFsKTsKPiArICAgICAgIGlmIChzdHJzdHIodXZh
-bC52ZXJzaW9uLCAiUFJFRU1QVF9SVCIpKQo+ICsgICAgICAgICAgICAgICByZXR1cm4gLTE7Cj4g
-KyAgICAgICByZXR1cm4gMDsKPiArfQo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3Nj
-aGVkL2Nmcy1zY2hlZHVsZXIvc3RhcnZhdGlvbi5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3NjaGVk
-L2Nmcy1zY2hlZHVsZXIvc3RhcnZhdGlvbi5jCj4gaW5kZXggOTAxNTU2YTdiLi4yN2JmNzdmMzkg
-MTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zY2hlZC9jZnMtc2NoZWR1bGVyL3N0YXJ2
-YXRpb24uYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc2NoZWQvY2ZzLXNjaGVkdWxlci9zdGFy
-dmF0aW9uLmMKPiBAQCAtODAsNiArODAsOSBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ICAg
-ICAgICAgaW50IGNwdSA9IDA7Cj4gICAgICAgICBsb25nIG5jcHVzID0gdHN0X25jcHVzX2NvbmYo
-KTsKPgo+ICsgICAgICAgaWYgKHRzdF9jaGVja19wcmVlbXB0X3J0KCkpCj4gKyAgICAgICAgICAg
-ICAgIHRzdF9icmsoVENPTkYsICJUaGlzIHRlc3QgaXMgbm90IGRlc2lnbmVkIGZvciB0aGUgUlQK
-PiBrZXJuZWwiKTsKPiArCj4gICAgICAgICBDUFVfWkVSTygmbWFzayk7Cj4KPiAgICAgICAgIC8q
-IFJlc3RyaWN0IHRlc3QgdG8gYSBzaW5nbGUgY3B1ICovCj4gLS0KPiAyLjM0LjEKPgo+CgotLSAK
-UmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
-bnV4Lml0L2xpc3RpbmZvL2x0cAo=
+This script parses JSON results from kirk and LTP metadata in order
+calculate timeouts for tests based on the result file and can even patch
+tests automatically.
+
+The script does:
+
+- Take the results and pick all tests that run for longer than 0.5s.
+  Multiplies the time with a constant (currently 1.2) to get a suggested
+  timeout.
+
+- Exclude tests that have runtime defined since these are controller
+  by the runtime (that filters out all fuzzy sync tests).
+
+  There is a special case for timer tests that define runtime only
+  dynamically in the timer library code. This should be possibly fixed
+  with special value for the .runtime in tst_test. E.g.
+  TST_RUNTIME_DYNAMIC for tests that only set runtime in the setup.
+
+- Normalize the timeout per a single filesystem run if test is running for
+  more than one filesystem.
+
+- Tests that do not have a metadata record are old library tests which
+  which cannot be patched but are printed in a separate table if we
+  request a table to be printed.
+
+- If patching option is selected tests are update with newly calculated
+  timeout. By default we only increase timeouts but that can be
+  overrided with the -o option.
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ scripts/calc_timeouts.py | 133 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 133 insertions(+)
+ create mode 100755 scripts/calc_timeouts.py
+
+diff --git a/scripts/calc_timeouts.py b/scripts/calc_timeouts.py
+new file mode 100755
+index 000000000..c69ab8f57
+--- /dev/null
++++ b/scripts/calc_timeouts.py
+@@ -0,0 +1,133 @@
++#!/usr/bin/python
++import re
++import json
++import getopt
++import sys
++from os import system
++
++# Top level directory path
++top_dir = '../'
++
++# The test runtime is multiplied by this to get a timeout
++timeout_mul = 1.2
++
++def patch(fname, new_timeout, patch_override):
++
++    orig_timeout = None
++    file_path = top_dir + fname
++
++    with open(file_path, 'r') as c_source:
++        for line in c_source:
++            timeout = re.search(r'\s*.timeout\s*=\s*(\d+).', line)
++            if timeout:
++                orig_timeout = int(timeout.group(1))
++
++    if orig_timeout:
++        if orig_timeout < new_timeout or patch_override:
++            print("CHANGE %s timeout %i -> %i" % (fname, orig_timeout, new_timeout))
++            system("sed -i 's/\\.timeout = [0-9]*/\\.timeout = " + str(new_timeout) + "/' " + file_path)
++        else:
++            print("KEEP   %s timeout %i (new %i)" % (fname, orig_timeout, new_timeout))
++    else:
++        print("ADD    %s timeout %i" % (fname, new_timeout))
++        system("sed -i '/static struct tst_test test = {/a\\\\t.timeout = " + str(new_timeout) + ",' " + file_path)
++
++def patch_all(timeouts, patch_override):
++    for timeout in timeouts:
++        if timeout[3]:
++            patch(timeout[3], timeout[1], patch_override)
++
++def print_table(timeouts):
++    timeouts.sort(key=lambda x: x[1], reverse=True)
++
++    total = 0;
++
++    print("Old library tests\n-----------------\n");
++    for timeout in timeouts:
++        if not timeout[2]:
++            print("%-30s %i" % (timeout[0], timeout[1]))
++            total+=1
++
++    print("\n\t%i tests in total" % total)
++
++    total = 0;
++
++    print("\nNew library tests\n-----------------\n");
++    for timeout in timeouts:
++        if timeout[2]:
++            print("%-30s %i" % (timeout[0], timeout[1]))
++            total+=1
++
++    print("\n\t%i tests in total" % total)
++
++def parse_data(results_path):
++    timeouts = []
++
++    with open(results_path, 'r') as file:
++        results = json.load(file)
++
++    with open(top_dir + 'metadata/ltp.json', 'r') as file:
++        metadata = json.load(file)
++
++    for test in results['results']:
++        name = test['test_fqn']
++        duration = test['test']['duration']
++        # If test runs for all_filesystems normalize the runtime per a single filesystem
++        filesystems = max(1, test['test']['log'].count('TINFO: Formatting /'))
++        # Check if test is new library test
++        test_is_newlib = name in metadata['tests']
++        # Store test file path
++        path = None if not test_is_newlib else metadata['tests'][name]['fname']
++        # Filter out tests with runtime
++        test_has_runtime = False if not test_is_newlib else 'runtime' in metadata['tests'][name]
++        # Timer tests define runtime dynamically in timer library
++        if test_is_newlib and 'sample' in metadata['tests'][name]:
++            test_has_runtime = True
++        # Select tests that does not have runtime and are executed for longer time
++        if not test_has_runtime and duration >= 0.5:
++            timeouts.append((name, int(timeout_mul * duration/filesystems + 0.5), test_is_newlib, path))
++
++    return timeouts
++
++def print_help():
++    print('calc_timeouts.py [OPTION] [RESULT].json')
++    print('\t-h prints this help')
++    print('\t-o override test timeouts, by default timeouts are only increased')
++    print('\t-p patch testcases with updated timeouts')
++    print('\t-t prints table of tests with suggested timeouts')
++
++try:
++    opts, args = getopt.getopt(sys.argv[1:], "hopt")
++except:
++    print_help()
++    sys.exit(1)
++
++opt_print_table = False
++opt_patch_tests = False
++opt_patch_override = False
++
++for opt,arg in opts:
++    if opt == '-h':
++        print_help()
++        sys.exit(0)
++    if opt == '-o':
++        opt_patch_override = True
++    if opt == '-p':
++        opt_patch_tests = True
++    if opt == '-t':
++        opt_print_table = True
++
++if not opt_print_table and not opt_patch_tests:
++    print("No action selected!\n")
++    print_help()
++    sys.exit(1)
++
++results = args[0] if args else 'results.json'
++
++timeouts = parse_data(results)
++
++if opt_print_table:
++    print_table(timeouts)
++
++if opt_patch_tests:
++    patch_all(timeouts, opt_patch_override)
+-- 
+2.45.2
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
