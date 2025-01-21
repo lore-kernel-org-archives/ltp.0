@@ -4,118 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07155C02182
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 16:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB760C0218B
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 16:45:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 912003C296A
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 17:45:23 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 068B43C2BB9
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 17:45:41 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F10783C296A
+ by picard.linux.it (Postfix) with ESMTPS id 000993C2998
  for <ltp@lists.linux.it>; Tue, 21 Jan 2025 17:44:30 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7713610072CC
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 672831BD634F
  for <ltp@lists.linux.it>; Tue, 21 Jan 2025 17:44:30 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 609A81F453
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5078821166
  for <ltp@lists.linux.it>; Tue, 21 Jan 2025 16:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1737477869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sq1jbEgyz+KAgbPRyLdDRUtxDIEe4TO0KEAF6HFNNvI=;
- b=1cRJXWI6Zjl+ieuDguUrBSUoiOhkSvNxvj0sOwfc8KmdYw+CbJy2fQ6HiKgAdNiidqLs8I
- TpjAgbwZjWQRhdaXlp78tx/NOpBPv2HDu/DK8WnJu1meg1Qruov4ZZe7d49FtpjdxlK0+7
- g4xOBYk2H/hkyx+XA4GuApqpxIXsNcM=
+ bh=jXvSdLKI8VOxd4vW6LjBiFlZ9rrL6TMxs8P8eFUEXTI=;
+ b=b5un8mZ3k+TtH5FKTbETSjaoEuWK5W4KyNbl3CHHasBktGa7P3jCy2vnnKsWn33qiL7tQ8
+ iHqY+SYl1SQ88iNK7xdFccMDDo1Ua+kcZfbtzv2VXCbz0mAZTncmG460PAc9ksX9DkW5ET
+ DQi/bcBhuRdLKZNxObJmYDOYjKjfHO4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1737477869;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sq1jbEgyz+KAgbPRyLdDRUtxDIEe4TO0KEAF6HFNNvI=;
- b=ZSK+tUqF5IIh0D90HkLINPKdbll3j2aq2VmKQiQQ9e4rPdrmsN4kMvBeFlhR8795UwTi2b
- 8W48F0YdNCwscaCg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1cRJXWI6;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZSK+tUqF
+ bh=jXvSdLKI8VOxd4vW6LjBiFlZ9rrL6TMxs8P8eFUEXTI=;
+ b=asrNrRKPTGDJO1rYwAjSumlQ5uSfx4rmz7zIKigWQBx6rdGWDOuMCp9Gn8fbLhg1r13tHD
+ rdQjiS3C1XFHqiBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1737477869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sq1jbEgyz+KAgbPRyLdDRUtxDIEe4TO0KEAF6HFNNvI=;
- b=1cRJXWI6Zjl+ieuDguUrBSUoiOhkSvNxvj0sOwfc8KmdYw+CbJy2fQ6HiKgAdNiidqLs8I
- TpjAgbwZjWQRhdaXlp78tx/NOpBPv2HDu/DK8WnJu1meg1Qruov4ZZe7d49FtpjdxlK0+7
- g4xOBYk2H/hkyx+XA4GuApqpxIXsNcM=
+ bh=jXvSdLKI8VOxd4vW6LjBiFlZ9rrL6TMxs8P8eFUEXTI=;
+ b=b5un8mZ3k+TtH5FKTbETSjaoEuWK5W4KyNbl3CHHasBktGa7P3jCy2vnnKsWn33qiL7tQ8
+ iHqY+SYl1SQ88iNK7xdFccMDDo1Ua+kcZfbtzv2VXCbz0mAZTncmG460PAc9ksX9DkW5ET
+ DQi/bcBhuRdLKZNxObJmYDOYjKjfHO4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1737477869;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sq1jbEgyz+KAgbPRyLdDRUtxDIEe4TO0KEAF6HFNNvI=;
- b=ZSK+tUqF5IIh0D90HkLINPKdbll3j2aq2VmKQiQQ9e4rPdrmsN4kMvBeFlhR8795UwTi2b
- 8W48F0YdNCwscaCg==
+ bh=jXvSdLKI8VOxd4vW6LjBiFlZ9rrL6TMxs8P8eFUEXTI=;
+ b=asrNrRKPTGDJO1rYwAjSumlQ5uSfx4rmz7zIKigWQBx6rdGWDOuMCp9Gn8fbLhg1r13tHD
+ rdQjiS3C1XFHqiBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 57B731387C
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 42BAA13AF0
  for <ltp@lists.linux.it>; Tue, 21 Jan 2025 16:44:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +Lw6Fe3Oj2erPQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gK8fEO3Oj2erPQAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 21 Jan 2025 16:44:29 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 21 Jan 2025 17:44:21 +0100
-Message-ID: <20250121164426.27977-8-mdoucha@suse.cz>
+Date: Tue, 21 Jan 2025 17:44:19 +0100
+Message-ID: <20250121164426.27977-6-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20250121164426.27977-1-mdoucha@suse.cz>
 References: <20250121164426.27977-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 609A81F453
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_NONE(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 07/10] lib: Add helper function for reloading kernel
- modules
+Subject: [LTP] [PATCH 05/10] KVM: Add memcmp() helper function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,58 +123,46 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/tst_module.h |  3 +++
- lib/tst_module.c     | 28 ++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+ testcases/kernel/kvm/include/kvm_guest.h |  2 ++
+ testcases/kernel/kvm/lib_guest.c         | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/include/tst_module.h b/include/tst_module.h
-index 8bbaf08f3..e55321d19 100644
---- a/include/tst_module.h
-+++ b/include/tst_module.h
-@@ -47,4 +47,7 @@ static inline void tst_requires_module_signature_disabled(void)
- 	tst_requires_module_signature_disabled_();
+diff --git a/testcases/kernel/kvm/include/kvm_guest.h b/testcases/kernel/kvm/include/kvm_guest.h
+index 0eabfb9a0..3f3e2f16c 100644
+--- a/testcases/kernel/kvm/include/kvm_guest.h
++++ b/testcases/kernel/kvm/include/kvm_guest.h
+@@ -48,6 +48,8 @@ void *memset(void *dest, int val, size_t size);
+ void *memzero(void *dest, size_t size);
+ void *memcpy(void *dest, const void *src, size_t size);
+ 
++int memcmp(const void *a, const void *b, size_t length);
++
+ char *strcpy(char *dest, const char *src);
+ char *strcat(char *dest, const char *src);
+ size_t strlen(const char *str);
+diff --git a/testcases/kernel/kvm/lib_guest.c b/testcases/kernel/kvm/lib_guest.c
+index 2e3e9cb6e..6f0b2824c 100644
+--- a/testcases/kernel/kvm/lib_guest.c
++++ b/testcases/kernel/kvm/lib_guest.c
+@@ -45,6 +45,18 @@ void *memcpy(void *dest, const void *src, size_t size)
+ 	return dest;
  }
  
-+void tst_modprobe(const char *mod_name, char *const argv[]);
-+void tst_module_reload(const char *mod_name, char *const argv[]);
-+
- #endif /* TST_MODULE_H */
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index cec20524f..42d63ede6 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -146,3 +146,31 @@ void tst_requires_module_signature_disabled_(void)
- 	if (tst_module_signature_enforced_())
- 		tst_brkm(TCONF, NULL, "module signature is enforced, skip test");
- }
-+
-+void tst_modprobe(const char *mod_name, char *const argv[])
++int memcmp(const void *a, const void *b, size_t length)
 +{
-+	const int offset = 2; /* command name & module path */
-+	int i, size = 0;
++	const unsigned char *x = a, *y = b;
 +
-+	while (argv && argv[size])
-+		++size;
-+	size += offset;
++	for (; length; x++, y++, length--) {
++		if (*x != *y)
++			return (int)*x - (int)*y;
++	}
 +
-+	const char *mod_argv[size + 1]; /* + NULL in the end */
-+
-+	mod_argv[size] = NULL;
-+	mod_argv[0] = "modprobe";
-+	mod_argv[1] = mod_name;
-+
-+	for (i = offset; i < size; ++i)
-+		mod_argv[i] = argv[i - offset];
-+
-+	tst_cmd(NULL, mod_argv, NULL, NULL, 0);
++	return 0;
 +}
 +
-+void tst_module_reload(const char *mod_name, char *const argv[])
-+{
-+	tst_resm(TINFO, "Reloading kernel module %s", mod_name);
-+	tst_module_unload_(NULL, mod_name);
-+	tst_modprobe(mod_name, argv);
-+}
+ char *strcpy(char *dest, const char *src)
+ {
+ 	char *ret = dest;
 -- 
 2.47.0
 
