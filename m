@@ -4,113 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEF93C0218B
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 12:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A0DFC0218B
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 13:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1737465169; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=M1bftuVPEETHkyTkP8zVwQMAjQybGWMKD2mBeAUcnGg=;
+ b=h/DXZSyqLxfKlOVYVB65aiL06doVW47FoSFjEC8I8tbH3ASjEYh7akkxNuQly37i3+6Ae
+ AKhYaIfb6uiB5jUORoGd+H8ozAF/k4pfWAHq8sZM1NNdPWCg+MkCdTZusplWTja59P6sVO+
+ SfAfFRcxoBFT0t1vGp1CylgHFXKf8cc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 445513C2731
-	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 13:35:53 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 56EC23C2752
+	for <ltp@archiver.kernel.org>; Tue, 21 Jan 2025 14:12:49 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35EAA3C2621
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:34:54 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0BD5E3C0254
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 14:12:27 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DA29C1037B61
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 13:34:52 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 895FB211C9
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737462891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=N0686Mk2g58rEARq6QviOIxP/WA1BoZbhyKyviZ6/S4=;
- b=TTpGPc7mNf9vxPh6rCBg03oJSv+BhOzadb/Jsam9uJa+yVw/kLjoSO+w1MjGHl2FbP1Cvd
- E29pcIizPVQphF9H3NyejBmWU/4YePeAGZGg74DZDxMW22HvLCEmPM8HuxqfpisKzZ7mkT
- 645ct70ELhfPfDZ3h1dwlU1q9EX9CUI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737462891;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=N0686Mk2g58rEARq6QviOIxP/WA1BoZbhyKyviZ6/S4=;
- b=rOGgWPcpSUVUX9m0/zmtEduC7nG22w385wGBPeWz5TPnLpGdL4fFlTj/LQ9Dw0R1giZiN9
- KmFuG0VlKl2p8iCw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TTpGPc7m;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rOGgWPcp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737462891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=N0686Mk2g58rEARq6QviOIxP/WA1BoZbhyKyviZ6/S4=;
- b=TTpGPc7mNf9vxPh6rCBg03oJSv+BhOzadb/Jsam9uJa+yVw/kLjoSO+w1MjGHl2FbP1Cvd
- E29pcIizPVQphF9H3NyejBmWU/4YePeAGZGg74DZDxMW22HvLCEmPM8HuxqfpisKzZ7mkT
- 645ct70ELhfPfDZ3h1dwlU1q9EX9CUI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737462891;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=N0686Mk2g58rEARq6QviOIxP/WA1BoZbhyKyviZ6/S4=;
- b=rOGgWPcpSUVUX9m0/zmtEduC7nG22w385wGBPeWz5TPnLpGdL4fFlTj/LQ9Dw0R1giZiN9
- KmFuG0VlKl2p8iCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6FA881387C
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YKg8GmuUj2dmVAAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 21 Jan 2025 12:34:51 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 21 Jan 2025 13:34:44 +0100
-Message-ID: <20250121123444.5380-3-chrubis@suse.cz>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20250121123444.5380-1-chrubis@suse.cz>
-References: <20250121123444.5380-1-chrubis@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B45181037B69
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 14:12:26 +0100 (CET)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-438a3216fc2so28402135e9.1
+ for <ltp@lists.linux.it>; Tue, 21 Jan 2025 05:12:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1737465146; x=1738069946; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=l2MKL6Fu5rhqTXgGqDVKca1xGngmwXXOLYN2yMOw5lU=;
+ b=XauwSbb+H5t/NksUOob8t2DUYhKLH7xARZW2YXirAku3nSquFdsoBblTNZp5TCg/OJ
+ hi0PK69biHY77lz5H6LG7+a6jb/YDkpC1dEm/SGOfoi5TRxytaPX939Qvm2JwzWpwb6e
+ beNZLZvGiYAMtddWtrM+3rzahD4mS5ukOgAAIDW4mrCao6isM+vQtvkvc6sR2pL4S9yr
+ UcCpgpbCJmg/kGHhd+8dsNEy92k6B1Dm6rp6y2sBLXRatx9Y2F1XHsKNtjuNAvT7Objv
+ OqaZxOz/1tZmDB81dDbHqAN1BtQA1nWyDUoRSxYuC+pumSdWeBHVPS6nXOYF1KXsoDV6
+ Hq+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1737465146; x=1738069946;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=l2MKL6Fu5rhqTXgGqDVKca1xGngmwXXOLYN2yMOw5lU=;
+ b=wSqAgoRjAVuCqBdx21w3nUz2vQnp9JNpsrO1OBG9pMV9WCsx9ATK7YvJSJdYPO0iVC
+ 9oVjTHwDiu928R0E2xDH8Ix9/jgfTqDDP3ec7al7Uq+6qlQYuGuDDkWib7ROeB3AoO09
+ 4iIvXRbsaxi+pCXtKi2XTAAYWSTiejrSsuyVmAi2ef2julVCKKtE6GeewbmB8geqqWsA
+ fPrFapxAGKRac0BY3yFgo0IxLUKpoT1Slra/J6SbwJNt8+BlRtqv3CkQQtWPdc5zXDsK
+ NKMnO+y7o4r6GCbPxmTj8V8XchUAfkgHLdD4ujanh/IaOBID5GCMvBkM5E6vlU9aENzf
+ Fgxw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWJrfV7NUEqFIun5c2HT1cO02pBZeyzMc7zYKrx9xZ4s/V2j1dRMtp362OmUxo9T67dAzI=@lists.linux.it
+X-Gm-Message-State: AOJu0YzTKMtXr1FbRxD+AsFCwE/UR0mH84RhsehQbRuma8Avx+NqmstW
+ s/4oMbjxHAs4jjDrBawW2lq+UsPGdWAxZ/KLDhwIPzA3utSua+1Bjm1bcOf0t9zHTQJteCzxDSn
+ PrkbO2A==
+X-Gm-Gg: ASbGncu2EUtDkoFABjLkWFxy2fiPLoMSllaE2bRgJy0mmM3a9vV2pOqJgCBNeESEfVm
+ 2ZuVfBDDC8KzlV+ztzXdPGQsMeJkjywxBDZ3II2gzSL784cayHDCJzjoS+lY4tCXQgNFso//EEH
+ pKnv64nFaeeRF5HrMalHSvjMwdgN36tPQ8g2623Rooy+xhaRRz7S2t2+LY5PD+Cr07MkMpXwRiU
+ qGfRNhw0WAWbR5PIByObfeUnyLOHx5eZF0U7fH6/je3ttXXKd8Fh7QVtvKDuniFqZoxCXlXAwQw
+ YrqrOnkf9bjbZeL9GvJL5PBHrxF5RKHzZ8goOoOQtFWMchsrWALC
+X-Google-Smtp-Source: AGHT+IHCWwOwCObs3r0Xlh2vA8AgHISK+0cppMt4rQu739xlMOzHAqkbUyRBvkOBX7/VaxNoTlArxQ==
+X-Received: by 2002:a05:600c:c87:b0:434:ff30:a159 with SMTP id
+ 5b1f17b1804b1-438912d54b1mr180911255e9.0.1737465146078; 
+ Tue, 21 Jan 2025 05:12:26 -0800 (PST)
+Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
+ ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-437c74ac604sm237753005e9.13.2025.01.21.05.12.25
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 21 Jan 2025 05:12:25 -0800 (PST)
+Message-ID: <79aba4cf-e564-4cde-8433-d292b31616e4@suse.com>
+Date: Tue, 21 Jan 2025 14:12:23 +0100
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 895FB211C9
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_ONE(0.00)[1];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_NONE(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20250121123444.5380-1-chrubis@suse.cz>
+ <20250121123444.5380-2-chrubis@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250121123444.5380-2-chrubis@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls: Update test timeouts
+Subject: Re: [LTP] [PATCH 1/2] scripts: Add simple script for calculating
+ timeouts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,870 +104,146 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This change was genered by:
-
-- runnning syscalls via kirk on RPi zero and saving the json result
-
-- running 'cd scripts && calc_timeouts.py -p results.json'
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/access/access01.c                   | 1 +
- testcases/kernel/syscalls/add_key/add_key05.c                 | 1 +
- testcases/kernel/syscalls/alarm/alarm05.c                     | 1 +
- testcases/kernel/syscalls/alarm/alarm06.c                     | 1 +
- testcases/kernel/syscalls/alarm/alarm07.c                     | 1 +
- testcases/kernel/syscalls/bind/bind04.c                       | 1 +
- testcases/kernel/syscalls/bpf/bpf_prog05.c                    | 1 +
- testcases/kernel/syscalls/bpf/bpf_prog06.c                    | 1 +
- testcases/kernel/syscalls/bpf/bpf_prog07.c                    | 1 +
- testcases/kernel/syscalls/cachestat/cachestat01.c             | 1 +
- testcases/kernel/syscalls/cachestat/cachestat04.c             | 1 +
- testcases/kernel/syscalls/chdir/chdir01.c                     | 1 +
- testcases/kernel/syscalls/clock_gettime/leapsec01.c           | 1 +
- testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c | 1 +
- testcases/kernel/syscalls/clock_settime/clock_settime03.c     | 1 +
- testcases/kernel/syscalls/close_range/close_range01.c         | 1 +
- testcases/kernel/syscalls/connect/connect02.c                 | 1 +
- testcases/kernel/syscalls/creat/creat05.c                     | 1 +
- testcases/kernel/syscalls/creat/creat09.c                     | 1 +
- testcases/kernel/syscalls/execve/execve05.c                   | 1 +
- testcases/kernel/syscalls/execveat/execveat03.c               | 1 +
- testcases/kernel/syscalls/fallocate/fallocate04.c             | 1 +
- testcases/kernel/syscalls/fallocate/fallocate05.c             | 1 +
- testcases/kernel/syscalls/fallocate/fallocate06.c             | 2 +-
- testcases/kernel/syscalls/fanotify/fanotify01.c               | 1 +
- testcases/kernel/syscalls/fanotify/fanotify03.c               | 1 +
- testcases/kernel/syscalls/fanotify/fanotify05.c               | 1 +
- testcases/kernel/syscalls/fanotify/fanotify06.c               | 1 +
- testcases/kernel/syscalls/fanotify/fanotify09.c               | 1 +
- testcases/kernel/syscalls/fanotify/fanotify10.c               | 1 +
- testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c            | 1 +
- testcases/kernel/syscalls/fcntl/fcntl14.c                     | 1 +
- testcases/kernel/syscalls/fcntl/fcntl36.c                     | 1 +
- testcases/kernel/syscalls/fdatasync/fdatasync03.c             | 1 +
- testcases/kernel/syscalls/fgetxattr/fgetxattr01.c             | 1 +
- testcases/kernel/syscalls/fremovexattr/fremovexattr01.c       | 1 +
- testcases/kernel/syscalls/fremovexattr/fremovexattr02.c       | 1 +
- testcases/kernel/syscalls/fsconfig/fsconfig01.c               | 1 +
- testcases/kernel/syscalls/fsconfig/fsconfig03.c               | 1 +
- testcases/kernel/syscalls/fsetxattr/fsetxattr01.c             | 1 +
- testcases/kernel/syscalls/fsmount/fsmount01.c                 | 1 +
- testcases/kernel/syscalls/fsmount/fsmount02.c                 | 1 +
- testcases/kernel/syscalls/fsopen/fsopen01.c                   | 1 +
- testcases/kernel/syscalls/fspick/fspick01.c                   | 1 +
- testcases/kernel/syscalls/fspick/fspick02.c                   | 1 +
- testcases/kernel/syscalls/fstatfs/fstatfs01.c                 | 1 +
- testcases/kernel/syscalls/fsync/fsync01.c                     | 1 +
- testcases/kernel/syscalls/fsync/fsync04.c                     | 1 +
- testcases/kernel/syscalls/getpid/getpid01.c                   | 1 +
- testcases/kernel/syscalls/getxattr/getxattr02.c               | 1 +
- testcases/kernel/syscalls/getxattr/getxattr03.c               | 1 +
- testcases/kernel/syscalls/inotify/inotify03.c                 | 1 +
- testcases/kernel/syscalls/inotify/inotify05.c                 | 1 +
- testcases/kernel/syscalls/inotify/inotify07.c                 | 1 +
- testcases/kernel/syscalls/inotify/inotify08.c                 | 1 +
- testcases/kernel/syscalls/inotify/inotify11.c                 | 1 +
- testcases/kernel/syscalls/ioctl/ioctl02.c                     | 1 +
- testcases/kernel/syscalls/ioctl/ioctl04.c                     | 1 +
- testcases/kernel/syscalls/ioctl/ioctl08.c                     | 1 +
- testcases/kernel/syscalls/ioctl/ioctl09.c                     | 1 +
- testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c             | 1 +
- testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c             | 1 +
- testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c        | 1 +
- testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c        | 1 +
- testcases/kernel/syscalls/ioctl/ioctl_loop01.c                | 1 +
- 65 files changed, 65 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/access/access01.c b/testcases/kernel/syscalls/access/access01.c
-index 391c8d44b..1c32c6d04 100644
---- a/testcases/kernel/syscalls/access/access01.c
-+++ b/testcases/kernel/syscalls/access/access01.c
-@@ -314,6 +314,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
- 	.forks_child = 1,
-diff --git a/testcases/kernel/syscalls/add_key/add_key05.c b/testcases/kernel/syscalls/add_key/add_key05.c
-index 3abd58b83..c9a2f840e 100644
---- a/testcases/kernel/syscalls/add_key/add_key05.c
-+++ b/testcases/kernel/syscalls/add_key/add_key05.c
-@@ -212,6 +212,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 2,
- 	.test = do_test,
- 	.tcnt = 2,
- 	.needs_root = 1,
-diff --git a/testcases/kernel/syscalls/alarm/alarm05.c b/testcases/kernel/syscalls/alarm/alarm05.c
-index 2eeb1c22f..82bff69cb 100644
---- a/testcases/kernel/syscalls/alarm/alarm05.c
-+++ b/testcases/kernel/syscalls/alarm/alarm05.c
-@@ -44,6 +44,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 2,
- 	.test_all = run,
- 	.setup = setup,
- };
-diff --git a/testcases/kernel/syscalls/alarm/alarm06.c b/testcases/kernel/syscalls/alarm/alarm06.c
-index 82c0d44bd..2cfa26207 100644
---- a/testcases/kernel/syscalls/alarm/alarm06.c
-+++ b/testcases/kernel/syscalls/alarm/alarm06.c
-@@ -41,6 +41,7 @@ static void verify_alarm(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 4,
- 	.setup = setup,
- 	.test_all = verify_alarm,
- };
-diff --git a/testcases/kernel/syscalls/alarm/alarm07.c b/testcases/kernel/syscalls/alarm/alarm07.c
-index 64aed507d..c04745f9d 100644
---- a/testcases/kernel/syscalls/alarm/alarm07.c
-+++ b/testcases/kernel/syscalls/alarm/alarm07.c
-@@ -47,6 +47,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 4,
- 	.test_all = verify_alarm,
- 	.setup = setup,
- 	.forks_child = 1,
-diff --git a/testcases/kernel/syscalls/bind/bind04.c b/testcases/kernel/syscalls/bind/bind04.c
-index d8456e739..2a46559de 100644
---- a/testcases/kernel/syscalls/bind/bind04.c
-+++ b/testcases/kernel/syscalls/bind/bind04.c
-@@ -161,6 +161,7 @@ static void test_bind(unsigned int n)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = test_bind,
- 	.tcnt = ARRAY_SIZE(testcase_list),
- 	.needs_tmpdir = 1,
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog05.c b/testcases/kernel/syscalls/bpf/bpf_prog05.c
-index 08254ba89..050081712 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog05.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog05.c
-@@ -190,6 +190,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 20,
- 	.setup = setup,
- 	.test_all = run,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog06.c b/testcases/kernel/syscalls/bpf/bpf_prog06.c
-index cee9616cf..87fdd8060 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog06.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog06.c
-@@ -131,6 +131,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 20,
- 	.setup = setup,
- 	.test_all = run,
- 	.min_kver = "5.8",
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog07.c b/testcases/kernel/syscalls/bpf/bpf_prog07.c
-index dab5bb8ad..29dfbf2ca 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog07.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog07.c
-@@ -139,6 +139,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 20,
- 	.setup = setup,
- 	.test_all = run,
- 	.min_kver = "5.8",
-diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
-index 2dca68885..22f0071d1 100644
---- a/testcases/kernel/syscalls/cachestat/cachestat01.c
-+++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
-@@ -85,6 +85,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 13,
- 	.test = run,
- 	.tcnt = 2,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/cachestat/cachestat04.c b/testcases/kernel/syscalls/cachestat/cachestat04.c
-index a59494451..7cef9897d 100644
---- a/testcases/kernel/syscalls/cachestat/cachestat04.c
-+++ b/testcases/kernel/syscalls/cachestat/cachestat04.c
-@@ -47,6 +47,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 2,
- 	.test_all = run,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-index d50a8f50c..1c1299332 100644
---- a/testcases/kernel/syscalls/chdir/chdir01.c
-+++ b/testcases/kernel/syscalls/chdir/chdir01.c
-@@ -149,6 +149,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/clock_gettime/leapsec01.c b/testcases/kernel/syscalls/clock_gettime/leapsec01.c
-index e623b4107..4cd469dc2 100644
---- a/testcases/kernel/syscalls/clock_gettime/leapsec01.c
-+++ b/testcases/kernel/syscalls/clock_gettime/leapsec01.c
-@@ -196,6 +196,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 40,
- 	.test_all = run_leapsec,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-index eef8a5992..55e7b294e 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-@@ -219,6 +219,7 @@ static void do_test(unsigned int i)
- }
- 
- static struct tst_test test = {
-+	.timeout = 3,
- 	.tcnt = ARRAY_SIZE(tcase),
- 	.test = do_test,
- 	.test_variants = ARRAY_SIZE(variants),
-diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-index f196a257c..692e63788 100644
---- a/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-+++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-@@ -104,6 +104,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 4,
- 	.test_all = run,
- 	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/close_range/close_range01.c b/testcases/kernel/syscalls/close_range/close_range01.c
-index 110ffa9b7..941f3e403 100644
---- a/testcases/kernel/syscalls/close_range/close_range01.c
-+++ b/testcases/kernel/syscalls/close_range/close_range01.c
-@@ -191,6 +191,7 @@ static void run(unsigned int n)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.tcnt = 4,
- 	.forks_child = 1,
- 	.mount_device = 1,
-diff --git a/testcases/kernel/syscalls/connect/connect02.c b/testcases/kernel/syscalls/connect/connect02.c
-index e20214e24..087b514bf 100644
---- a/testcases/kernel/syscalls/connect/connect02.c
-+++ b/testcases/kernel/syscalls/connect/connect02.c
-@@ -126,6 +126,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 3,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/creat/creat05.c b/testcases/kernel/syscalls/creat/creat05.c
-index bf4099439..32074a449 100644
---- a/testcases/kernel/syscalls/creat/creat05.c
-+++ b/testcases/kernel/syscalls/creat/creat05.c
-@@ -74,6 +74,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test_all = verify_creat,
- 	.needs_tmpdir = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/creat/creat09.c b/testcases/kernel/syscalls/creat/creat09.c
-index a5d3740ac..d18165772 100644
---- a/testcases/kernel/syscalls/creat/creat09.c
-+++ b/testcases/kernel/syscalls/creat/creat09.c
-@@ -138,6 +138,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/execve/execve05.c b/testcases/kernel/syscalls/execve/execve05.c
-index d87d7446d..530c7cc89 100644
---- a/testcases/kernel/syscalls/execve/execve05.c
-+++ b/testcases/kernel/syscalls/execve/execve05.c
-@@ -62,6 +62,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 3,
- 	.test_all = verify_execve,
- 	.options = (struct tst_option[]) {
- 		{"n:", &opt_nchild, "Numbers of children"},
-diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-index 057d83278..684f0d0c6 100644
---- a/testcases/kernel/syscalls/execveat/execveat03.c
-+++ b/testcases/kernel/syscalls/execveat/execveat03.c
-@@ -68,6 +68,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.needs_overlay = 1,
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index 7b285fb5d..3a8ea5fa7 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -282,6 +282,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.options = (struct tst_option[]) {
- 		{"v", &verbose, "Turns on verbose mode"},
- 		{}
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate05.c b/testcases/kernel/syscalls/fallocate/fallocate05.c
-index 732a2f15d..f17cc993e 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate05.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
-@@ -172,6 +172,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 42,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
-index 5e1454c30..0e1509ace 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate06.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
-@@ -261,7 +261,7 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(testcase_list),
- 	.needs_root = 1,
- 	.dev_min_size = 1024,
--	.timeout = 120,
-+	.timeout = 150,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-index 5d18fe851..c7e759166 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify01.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -387,6 +387,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 3ed78e5fa..64c933c19 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -343,6 +343,7 @@ static const char *const resource_files[] = {
- };
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
-index 12c240881..435a91c49 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify05.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
-@@ -208,6 +208,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 13,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
-index 8779e34d9..b4992afa0 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify06.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
-@@ -236,6 +236,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-index 48b198b94..45303c31e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-@@ -507,6 +507,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index eedd1442f..23e9554b3 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -959,6 +959,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.test = test_fanotify,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test_variants = 2,
-diff --git a/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
-index f026b18df..e58be31c4 100644
---- a/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
-+++ b/testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c
-@@ -104,6 +104,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl14.c b/testcases/kernel/syscalls/fcntl/fcntl14.c
-index 367701d68..21dbede5c 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl14.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl14.c
-@@ -263,6 +263,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 8,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
-index fabdbe905..19a5a0303 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl36.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
-@@ -387,6 +387,7 @@ static void tests(unsigned int i)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.needs_tmpdir = 1,
- 	.test = tests,
- 	.tcnt = ARRAY_SIZE(tcases),
-diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync03.c b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
-index 5f3e0c96f..f1b5f0fb8 100644
---- a/testcases/kernel/syscalls/fdatasync/fdatasync03.c
-+++ b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
-@@ -53,6 +53,7 @@ static void verify_fdatasync(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 15,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
-diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-index 52e6e44ab..eefddd829 100644
---- a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-+++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-@@ -134,6 +134,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.setup = setup,
- 	.test = verify_fgetxattr,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c b/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
-index 907d210d1..aca2fce7c 100644
---- a/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
-+++ b/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
-@@ -83,6 +83,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 12,
- 	.setup = setup,
- 	.test_all = verify_fremovexattr,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c b/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
-index eb106a8fa..78af8be32 100644
---- a/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
-+++ b/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
-@@ -105,6 +105,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.setup = setup,
- 	.test = verify_fremovexattr,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-index a585daa6d..678d21815 100644
---- a/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-@@ -82,6 +82,7 @@ static void run(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.test_all = run,
- 	.setup = fsopen_supported_by_kernel,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-index 0ba5355d3..503753636 100644
---- a/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-@@ -80,6 +80,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-index b65b27bdf..73e1fcfb7 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-@@ -214,6 +214,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.setup = setup,
- 	.test = verify_fsetxattr,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-index 5f755863f..6dafe25a8 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-@@ -88,6 +88,7 @@ static void run(unsigned int n)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = fsopen_supported_by_kernel,
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount02.c b/testcases/kernel/syscalls/fsmount/fsmount02.c
-index a4f42dc18..55f0e2f28 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount02.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount02.c
-@@ -68,6 +68,7 @@ static void run(unsigned int n)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/fsopen/fsopen01.c b/testcases/kernel/syscalls/fsopen/fsopen01.c
-index c2c719c96..9dd87b99f 100644
---- a/testcases/kernel/syscalls/fsopen/fsopen01.c
-+++ b/testcases/kernel/syscalls/fsopen/fsopen01.c
-@@ -69,6 +69,7 @@ out:
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = fsopen_supported_by_kernel,
-diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
-index d3309a912..d03cacd3d 100644
---- a/testcases/kernel/syscalls/fspick/fspick01.c
-+++ b/testcases/kernel/syscalls/fspick/fspick01.c
-@@ -56,6 +56,7 @@ out:
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = fsopen_supported_by_kernel,
-diff --git a/testcases/kernel/syscalls/fspick/fspick02.c b/testcases/kernel/syscalls/fspick/fspick02.c
-index f9a3697c1..89bdd2cc8 100644
---- a/testcases/kernel/syscalls/fspick/fspick02.c
-+++ b/testcases/kernel/syscalls/fspick/fspick02.c
-@@ -43,6 +43,7 @@ static void run(unsigned int n)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = fsopen_supported_by_kernel,
-diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs01.c b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-index 9d3909ace..044ab6548 100644
---- a/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-+++ b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-@@ -56,6 +56,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.tcnt = ARRAY_SIZE(tcases),
-diff --git a/testcases/kernel/syscalls/fsync/fsync01.c b/testcases/kernel/syscalls/fsync/fsync01.c
-index 072245fc8..7ae5296c7 100644
---- a/testcases/kernel/syscalls/fsync/fsync01.c
-+++ b/testcases/kernel/syscalls/fsync/fsync01.c
-@@ -44,6 +44,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.cleanup = cleanup,
- 	.setup = setup,
- 	.test_all = verify_fsync,
-diff --git a/testcases/kernel/syscalls/fsync/fsync04.c b/testcases/kernel/syscalls/fsync/fsync04.c
-index 9aa1584c1..f7553ff58 100644
---- a/testcases/kernel/syscalls/fsync/fsync04.c
-+++ b/testcases/kernel/syscalls/fsync/fsync04.c
-@@ -53,6 +53,7 @@ static void verify_fsync(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 17,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
-diff --git a/testcases/kernel/syscalls/getpid/getpid01.c b/testcases/kernel/syscalls/getpid/getpid01.c
-index 495002037..314c45d09 100644
---- a/testcases/kernel/syscalls/getpid/getpid01.c
-+++ b/testcases/kernel/syscalls/getpid/getpid01.c
-@@ -43,6 +43,7 @@ static void verify_getpid(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.setup = setup,
- 	.forks_child = 1,
- 	.test_all = verify_getpid,
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
-index 5a84d876c..593ad7b8c 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr02.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
-@@ -105,6 +105,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.all_filesystems = 1,
- 	.needs_root = 1,
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr03.c b/testcases/kernel/syscalls/getxattr/getxattr03.c
-index 1fe4ba48f..85f26402a 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr03.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr03.c
-@@ -37,6 +37,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 14,
- 	.all_filesystems = 1,
- 	.needs_root = 1,
- 	.mntpoint = MNTPOINT,
-diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
-index ff025b360..4ee5e9461 100644
---- a/testcases/kernel/syscalls/inotify/inotify03.c
-+++ b/testcases/kernel/syscalls/inotify/inotify03.c
-@@ -166,6 +166,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_root = 1,
- 	.format_device = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/inotify/inotify05.c b/testcases/kernel/syscalls/inotify/inotify05.c
-index a1597217f..38b30878c 100644
---- a/testcases/kernel/syscalls/inotify/inotify05.c
-+++ b/testcases/kernel/syscalls/inotify/inotify05.c
-@@ -148,6 +148,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_tmpdir = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index 08ea1e06a..bcfc569a8 100644
---- a/testcases/kernel/syscalls/inotify/inotify07.c
-+++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -182,6 +182,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.needs_overlay = 1,
-diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index 9c2ecdabd..149a0a1f8 100644
---- a/testcases/kernel/syscalls/inotify/inotify08.c
-+++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -176,6 +176,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.needs_overlay = 1,
-diff --git a/testcases/kernel/syscalls/inotify/inotify11.c b/testcases/kernel/syscalls/inotify/inotify11.c
-index 1630477fc..2e571f3a0 100644
---- a/testcases/kernel/syscalls/inotify/inotify11.c
-+++ b/testcases/kernel/syscalls/inotify/inotify11.c
-@@ -119,6 +119,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 12,
- 	.needs_tmpdir = 1,
- 	.forks_child = 1,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
-index f3bfb239a..9337da384 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
-@@ -242,6 +242,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 9,
- 	.needs_root = 1,
- 	.needs_checkpoints = 1,
- 	.forks_child = 1,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl04.c b/testcases/kernel/syscalls/ioctl/ioctl04.c
-index 262c06e97..f96b22f0c 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl04.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl04.c
-@@ -84,6 +84,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.format_device = 1,
- 	.needs_root = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl08.c b/testcases/kernel/syscalls/ioctl/ioctl08.c
-index 834c5ae74..14f9354c9 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl08.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl08.c
-@@ -118,6 +118,7 @@ static void setup(void)
- 
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = verify_ioctl,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-index 9c7921086..0d1f1072d 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl09.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-@@ -110,6 +110,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_ioctl,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c
-index fab0daaee..e5d4be96f 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c
-@@ -51,6 +51,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 10,
- 	.test_all = run,
- 	.setup = setup,
- 	.min_kver = "4.5",
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-index f12c4e7fd..b0a0f8d63 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-@@ -101,6 +101,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test = run,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-index 8fd1d299a..707270765 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange01.c
-@@ -137,6 +137,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-index eb941c3fc..cc1d0e031 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlonerange02.c
-@@ -74,6 +74,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 4,
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index e7b337e4a..c3fb9f583 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -140,6 +140,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.timeout = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_ioctl_loop,
--- 
-2.45.2
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkhCgpJIGxpa2UgdGhlIGdlbmVyYWwgaWRlYSwgYSBjb3VwbGUgb2YgY29tbWVudHMgb24gdGhl
+IHB5dGhvbiBjb2RlLgoKT24gMS8yMS8yNSAxMzozNCwgQ3lyaWwgSHJ1YmlzIHdyb3RlOgo+IFRo
+aXMgc2NyaXB0IHBhcnNlcyBKU09OIHJlc3VsdHMgZnJvbSBraXJrIGFuZCBMVFAgbWV0YWRhdGEg
+aW4gb3JkZXIKPiBjYWxjdWxhdGUgdGltZW91dHMgZm9yIHRlc3RzIGJhc2VkIG9uIHRoZSByZXN1
+bHQgZmlsZSBhbmQgY2FuIGV2ZW4gcGF0Y2gKPiB0ZXN0cyBhdXRvbWF0aWNhbGx5Lgo+Cj4gVGhl
+IHNjcmlwdCBkb2VzOgo+Cj4gLSBUYWtlIHRoZSByZXN1bHRzIGFuZCBwaWNrIGFsbCB0ZXN0cyB0
+aGF0IHJ1biBmb3IgbG9uZ2VyIHRoYW4gMC41cy4KPiAgICBNdWx0aXBsaWVzIHRoZSB0aW1lIHdp
+dGggYSBjb25zdGFudCAoY3VycmVudGx5IDEuMikgdG8gZ2V0IGEgc3VnZ2VzdGVkCj4gICAgdGlt
+ZW91dC4KPgo+IC0gRXhjbHVkZSB0ZXN0cyB0aGF0IGhhdmUgcnVudGltZSBkZWZpbmVkIHNpbmNl
+IHRoZXNlIGFyZSBjb250cm9sbGVyCj4gICAgYnkgdGhlIHJ1bnRpbWUgKHRoYXQgZmlsdGVycyBv
+dXQgYWxsIGZ1enp5IHN5bmMgdGVzdHMpLgo+Cj4gICAgVGhlcmUgaXMgYSBzcGVjaWFsIGNhc2Ug
+Zm9yIHRpbWVyIHRlc3RzIHRoYXQgZGVmaW5lIHJ1bnRpbWUgb25seQo+ICAgIGR5bmFtaWNhbGx5
+IGluIHRoZSB0aW1lciBsaWJyYXJ5IGNvZGUuIFRoaXMgc2hvdWxkIGJlIHBvc3NpYmx5IGZpeGVk
+Cj4gICAgd2l0aCBzcGVjaWFsIHZhbHVlIGZvciB0aGUgLnJ1bnRpbWUgaW4gdHN0X3Rlc3QuIEUu
+Zy4KPiAgICBUU1RfUlVOVElNRV9EWU5BTUlDIGZvciB0ZXN0cyB0aGF0IG9ubHkgc2V0IHJ1bnRp
+bWUgaW4gdGhlIHNldHVwLgo+Cj4gLSBOb3JtYWxpemUgdGhlIHRpbWVvdXQgcGVyIGEgc2luZ2xl
+IGZpbGVzeXN0ZW0gcnVuIGlmIHRlc3QgaXMgcnVubmluZyBmb3IKPiAgICBtb3JlIHRoYW4gb25l
+IGZpbGVzeXN0ZW0uCj4KPiAtIFRlc3RzIHRoYXQgZG8gbm90IGhhdmUgYSBtZXRhZGF0YSByZWNv
+cmQgYXJlIG9sZCBsaWJyYXJ5IHRlc3RzIHdoaWNoCj4gICAgd2hpY2ggY2Fubm90IGJlIHBhdGNo
+ZWQgYnV0IGFyZSBwcmludGVkIGluIGEgc2VwYXJhdGUgdGFibGUgaWYgd2UKPiAgICByZXF1ZXN0
+IGEgdGFibGUgdG8gYmUgcHJpbnRlZC4KPgo+IC0gSWYgcGF0Y2hpbmcgb3B0aW9uIGlzIHNlbGVj
+dGVkIHRlc3RzIGFyZSB1cGRhdGUgd2l0aCBuZXdseSBjYWxjdWxhdGVkCj4gICAgdGltZW91dC4g
+QnkgZGVmYXVsdCB3ZSBvbmx5IGluY3JlYXNlIHRpbWVvdXRzIGJ1dCB0aGF0IGNhbiBiZQo+ICAg
+IG92ZXJyaWRlZCB3aXRoIHRoZSAtbyBvcHRpb24uCj4KPiBTaWduZWQtb2ZmLWJ5OiBDeXJpbCBI
+cnViaXMgPGNocnViaXNAc3VzZS5jej4KPiAtLS0KPiAgIHNjcmlwdHMvY2FsY190aW1lb3V0cy5w
+eSB8IDEzMyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgIDEgZmls
+ZSBjaGFuZ2VkLCAxMzMgaW5zZXJ0aW9ucygrKQo+ICAgY3JlYXRlIG1vZGUgMTAwNzU1IHNjcmlw
+dHMvY2FsY190aW1lb3V0cy5weQo+Cj4gZGlmZiAtLWdpdCBhL3NjcmlwdHMvY2FsY190aW1lb3V0
+cy5weSBiL3NjcmlwdHMvY2FsY190aW1lb3V0cy5weQo+IG5ldyBmaWxlIG1vZGUgMTAwNzU1Cj4g
+aW5kZXggMDAwMDAwMDAwLi5jNjlhYjhmNTcKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvc2NyaXB0
+cy9jYWxjX3RpbWVvdXRzLnB5Cj4gQEAgLTAsMCArMSwxMzMgQEAKPiArIyEvdXNyL2Jpbi9weXRo
+b24KPiAraW1wb3J0IHJlCj4gK2ltcG9ydCBqc29uCj4gK2ltcG9ydCBnZXRvcHQKPiAraW1wb3J0
+IHN5cwo+ICtmcm9tIG9zIGltcG9ydCBzeXN0ZW0KPiArCj4gKyMgVG9wIGxldmVsIGRpcmVjdG9y
+eSBwYXRoCj4gK3RvcF9kaXIgPSAnLi4vJwpCZXR0ZXIgdG8gcGFzcyB0aGlzIGZvbGRlciB0byB0
+aGUgc2NyaXB0IHVzaW5nIHBhcmFtZXRlcnMsIGFsc28gYmVjYXVzZSAKbWV0YWRhdGEgY2FuIGJl
+IGZvdW5kIGluIHRoZSBpbnN0YWxsIGZvbGRlciBhcyB3ZWxsLgo+ICsKPiArIyBUaGUgdGVzdCBy
+dW50aW1lIGlzIG11bHRpcGxpZWQgYnkgdGhpcyB0byBnZXQgYSB0aW1lb3V0Cj4gK3RpbWVvdXRf
+bXVsID0gMS4yCkdsb2JhbCB2YXJpYWJsZXMgaW4gcHl0aG9uIHVzZSBUSU1FT1VUX01VTCBmb3Jt
+YXQuCj4gKwo+ICtkZWYgcGF0Y2goZm5hbWUsIG5ld190aW1lb3V0LCBwYXRjaF9vdmVycmlkZSk6
+Cj4gKwo+ICsgICAgb3JpZ190aW1lb3V0ID0gTm9uZQo+ICsgICAgZmlsZV9wYXRoID0gdG9wX2Rp
+ciArIGZuYW1lCm9zLnBhdGguam9pbigpCj4gKwo+ICsgICAgd2l0aCBvcGVuKGZpbGVfcGF0aCwg
+J3InKSBhcyBjX3NvdXJjZToKPiArICAgICAgICBmb3IgbGluZSBpbiBjX3NvdXJjZToKPiArICAg
+ICAgICAgICAgdGltZW91dCA9IHJlLnNlYXJjaChyJ1xzKi50aW1lb3V0XHMqPVxzKihcZCspLics
+IGxpbmUpClRoaXMgcmVnZXggc2hvdWxkIGJlIGNvbXBpbGVkIGJlZm9yZSBsb29wIHVzaW5nIHJl
+LmNvbXBpbGUoKSwgb3RoZXJ3aXNlIApyZS5zZWFyY2goKSB3aWxsIGNvbXBpbGUgaXQgZm9yIGVh
+Y2ggbGluZS4KPiArICAgICAgICAgICAgaWYgdGltZW91dDoKPiArICAgICAgICAgICAgICAgIG9y
+aWdfdGltZW91dCA9IGludCh0aW1lb3V0Lmdyb3VwKDEpKQo+ICsKPiArICAgIGlmIG9yaWdfdGlt
+ZW91dDoKPiArICAgICAgICBpZiBvcmlnX3RpbWVvdXQgPCBuZXdfdGltZW91dCBvciBwYXRjaF9v
+dmVycmlkZToKPiArICAgICAgICAgICAgcHJpbnQoIkNIQU5HRSAlcyB0aW1lb3V0ICVpIC0+ICVp
+IiAlIChmbmFtZSwgb3JpZ190aW1lb3V0LCBuZXdfdGltZW91dCkpCj4gKyAgICAgICAgICAgIHN5
+c3RlbSgic2VkIC1pICdzL1xcLnRpbWVvdXQgPSBbMC05XSovXFwudGltZW91dCA9ICIgKyBzdHIo
+bmV3X3RpbWVvdXQpICsgIi8nICIgKyBmaWxlX3BhdGgpCgpUaGlzIGNhbiBiZSBzdWJzdGl0dXRl
+ZCB3aXRoIGEgcHl0aG9uIHZlcnNpb24gb2Ygc2VkLCBzaW5jZSBzeXN0ZW0oKSBpcyAKbmV2ZXIg
+YSBnb29kIGlkZWEsIHVubGVzcyB3ZSByZWFsbHkgbmVlZCB0byB1c2UgaXQgZm9yIGV4dGVybmFs
+IHRvb2xzIAp3aGljaCBjYW5ub3QgYmUgdHJhbnNsYXRlZCBpbnRvIHB5dGhvbi4gVGhlIHNvbHV0
+aW9uIHdvdWxkIGJlOgoKY29udGVudCA9IFtdCm1hdGNoZXIgPSByZS5tYXRjaChyJ1xzKi50aW1l
+b3V0XHMqPVxzKihcZCspLicpCndpdGggb3BlbihmaWxlX3BhdGgsICdyJykgYXMgZGF0YToKIMKg
+wqDCoCBmb3IgbGluZSBpbiBkYXRhOgogwqDCoMKgwqDCoMKgwqAgIyB1c2UgcmVnZXggaGVyZSB0
+byBmaW5kIHRoZSBtYXRjaGluZyBzdHJpbmcKIMKgwqDCoMKgwqDCoMKgIGlmIG1hdGNoZXIuc2Vh
+cmNoKGxpbmUpOgogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb250ZW50LmFwcGVuZChmJ3RpbWVv
+dXQgPSB7bmV3X3RpbWVvdXR9JykKIMKgwqDCoMKgwqDCoMKgIGVsc2U6CiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGNvbnRlbnQuYXBwZW5kKGxpbmUpCgp3aXRoIG9wZW4oZmlsZV9wYXRoLCAndycp
+IGFzIGRhdGE6CiDCoMKgwqDCoMKgwqDCoCBkYXRhLndyaXRlbGluZXMoY29udGVudCkKCj4gKyAg
+ICAgICAgZWxzZToKPiArICAgICAgICAgICAgcHJpbnQoIktFRVAgICAlcyB0aW1lb3V0ICVpIChu
+ZXcgJWkpIiAlIChmbmFtZSwgb3JpZ190aW1lb3V0LCBuZXdfdGltZW91dCkpCj4gKyAgICBlbHNl
+Ogo+ICsgICAgICAgIHByaW50KCJBREQgICAgJXMgdGltZW91dCAlaSIgJSAoZm5hbWUsIG5ld190
+aW1lb3V0KSkKPiArICAgICAgICBzeXN0ZW0oInNlZCAtaSAnL3N0YXRpYyBzdHJ1Y3QgdHN0X3Rl
+c3QgdGVzdCA9IHsvYVxcXFx0LnRpbWVvdXQgPSAiICsgc3RyKG5ld190aW1lb3V0KSArICIsJyAi
+ICsgZmlsZV9wYXRoKQpTYW1lIGhlcmUuIE1heWJlIHdlIGNhbiBjcmVhdGUgYSBnZW5lcmljIHNl
+ZCgpIGZ1bmN0aW9uIGZvciBib3RoIGNhc2VzLgo+ICsKPiArZGVmIHBhdGNoX2FsbCh0aW1lb3V0
+cywgcGF0Y2hfb3ZlcnJpZGUpOgo+ICsgICAgZm9yIHRpbWVvdXQgaW4gdGltZW91dHM6Cj4gKyAg
+ICAgICAgaWYgdGltZW91dFszXToKPiArICAgICAgICAgICAgcGF0Y2godGltZW91dFszXSwgdGlt
+ZW91dFsxXSwgcGF0Y2hfb3ZlcnJpZGUpCj4gKwo+ICtkZWYgcHJpbnRfdGFibGUodGltZW91dHMp
+Ogo+ICsgICAgdGltZW91dHMuc29ydChrZXk9bGFtYmRhIHg6IHhbMV0sIHJldmVyc2U9VHJ1ZSkK
+PiArCj4gKyAgICB0b3RhbCA9IDA7Cj4gKwo+ICsgICAgcHJpbnQoIk9sZCBsaWJyYXJ5IHRlc3Rz
+XG4tLS0tLS0tLS0tLS0tLS0tLVxuIik7Cj4gKyAgICBmb3IgdGltZW91dCBpbiB0aW1lb3V0czoK
+PiArICAgICAgICBpZiBub3QgdGltZW91dFsyXToKPiArICAgICAgICAgICAgcHJpbnQoIiUtMzBz
+ICVpIiAlICh0aW1lb3V0WzBdLCB0aW1lb3V0WzFdKSkKPiArICAgICAgICAgICAgdG90YWwrPTEK
+PiArCj4gKyAgICBwcmludCgiXG5cdCVpIHRlc3RzIGluIHRvdGFsIiAlIHRvdGFsKQo+ICsKPiAr
+ICAgIHRvdGFsID0gMDsKPiArCj4gKyAgICBwcmludCgiXG5OZXcgbGlicmFyeSB0ZXN0c1xuLS0t
+LS0tLS0tLS0tLS0tLS1cbiIpOwo+ICsgICAgZm9yIHRpbWVvdXQgaW4gdGltZW91dHM6Cj4gKyAg
+ICAgICAgaWYgdGltZW91dFsyXToKPiArICAgICAgICAgICAgcHJpbnQoIiUtMzBzICVpIiAlICh0
+aW1lb3V0WzBdLCB0aW1lb3V0WzFdKSkKPiArICAgICAgICAgICAgdG90YWwrPTEKPiArCj4gKyAg
+ICBwcmludCgiXG5cdCVpIHRlc3RzIGluIHRvdGFsIiAlIHRvdGFsKQo+ICsKPiArZGVmIHBhcnNl
+X2RhdGEocmVzdWx0c19wYXRoKToKPiArICAgIHRpbWVvdXRzID0gW10KPiArCj4gKyAgICB3aXRo
+IG9wZW4ocmVzdWx0c19wYXRoLCAncicpIGFzIGZpbGU6Cj4gKyAgICAgICAgcmVzdWx0cyA9IGpz
+b24ubG9hZChmaWxlKQo+ICsKPiArICAgIHdpdGggb3Blbih0b3BfZGlyICsgJ21ldGFkYXRhL2x0
+cC5qc29uJywgJ3InKSBhcyBmaWxlOgo+ICsgICAgICAgIG1ldGFkYXRhID0ganNvbi5sb2FkKGZp
+bGUpCj4gKwo+ICsgICAgZm9yIHRlc3QgaW4gcmVzdWx0c1sncmVzdWx0cyddOgo+ICsgICAgICAg
+IG5hbWUgPSB0ZXN0Wyd0ZXN0X2ZxbiddCj4gKyAgICAgICAgZHVyYXRpb24gPSB0ZXN0Wyd0ZXN0
+J11bJ2R1cmF0aW9uJ10KPiArICAgICAgICAjIElmIHRlc3QgcnVucyBmb3IgYWxsX2ZpbGVzeXN0
+ZW1zIG5vcm1hbGl6ZSB0aGUgcnVudGltZSBwZXIgYSBzaW5nbGUgZmlsZXN5c3RlbQo+ICsgICAg
+ICAgIGZpbGVzeXN0ZW1zID0gbWF4KDEsIHRlc3RbJ3Rlc3QnXVsnbG9nJ10uY291bnQoJ1RJTkZP
+OiBGb3JtYXR0aW5nIC8nKSkKPiArICAgICAgICAjIENoZWNrIGlmIHRlc3QgaXMgbmV3IGxpYnJh
+cnkgdGVzdAo+ICsgICAgICAgIHRlc3RfaXNfbmV3bGliID0gbmFtZSBpbiBtZXRhZGF0YVsndGVz
+dHMnXQo+ICsgICAgICAgICMgU3RvcmUgdGVzdCBmaWxlIHBhdGgKPiArICAgICAgICBwYXRoID0g
+Tm9uZSBpZiBub3QgdGVzdF9pc19uZXdsaWIgZWxzZSBtZXRhZGF0YVsndGVzdHMnXVtuYW1lXVsn
+Zm5hbWUnXQo+ICsgICAgICAgICMgRmlsdGVyIG91dCB0ZXN0cyB3aXRoIHJ1bnRpbWUKPiArICAg
+ICAgICB0ZXN0X2hhc19ydW50aW1lID0gRmFsc2UgaWYgbm90IHRlc3RfaXNfbmV3bGliIGVsc2Ug
+J3J1bnRpbWUnIGluIG1ldGFkYXRhWyd0ZXN0cyddW25hbWVdCj4gKyAgICAgICAgIyBUaW1lciB0
+ZXN0cyBkZWZpbmUgcnVudGltZSBkeW5hbWljYWxseSBpbiB0aW1lciBsaWJyYXJ5Cj4gKyAgICAg
+ICAgaWYgdGVzdF9pc19uZXdsaWIgYW5kICdzYW1wbGUnIGluIG1ldGFkYXRhWyd0ZXN0cyddW25h
+bWVdOgo+ICsgICAgICAgICAgICB0ZXN0X2hhc19ydW50aW1lID0gVHJ1ZQo+ICsgICAgICAgICMg
+U2VsZWN0IHRlc3RzIHRoYXQgZG9lcyBub3QgaGF2ZSBydW50aW1lIGFuZCBhcmUgZXhlY3V0ZWQg
+Zm9yIGxvbmdlciB0aW1lCj4gKyAgICAgICAgaWYgbm90IHRlc3RfaGFzX3J1bnRpbWUgYW5kIGR1
+cmF0aW9uID49IDAuNToKPiArICAgICAgICAgICAgdGltZW91dHMuYXBwZW5kKChuYW1lLCBpbnQo
+dGltZW91dF9tdWwgKiBkdXJhdGlvbi9maWxlc3lzdGVtcyArIDAuNSksIHRlc3RfaXNfbmV3bGli
+LCBwYXRoKSkKPiArCj4gKyAgICByZXR1cm4gdGltZW91dHMKCkluIHRoaXMgY2FzZSBpdCdzIGJl
+dHRlciB0byBhdm9pZCB0dXBsZXMgYmVjYXVzZSB0aGV5IG1ha2UgY29kZSBtb3JlIApkaWZmaWN1
+bHQgdG8gcmVhZC4gSGFzaCBpcyBhIGJldHRlciBhcHByb2FjaCBpbiBnZW5lcmFsOgoKZGF0YVsi
+bmFtZSJdID0gbmFtZQpkYXRhWyJ0aW1lb3V0Il0gPSBpbnQodGltZW91dF9tdWwgKiBkdXJhdGlv
+bi9maWxlc3lzdGVtcyArIDAuNSkKZGF0YVsibmV3X2xpYiJdID0gdGVzdF9pc19uZXdsaWIKZGF0
+YVsicGF0aCJdID0gcGF0aAoKcmV0dXJuIGRhdGEKCj4gKwo+ICtkZWYgcHJpbnRfaGVscCgpOgo+
+ICsgICAgcHJpbnQoJ2NhbGNfdGltZW91dHMucHkgW09QVElPTl0gW1JFU1VMVF0uanNvbicpCj4g
+KyAgICBwcmludCgnXHQtaCBwcmludHMgdGhpcyBoZWxwJykKPiArICAgIHByaW50KCdcdC1vIG92
+ZXJyaWRlIHRlc3QgdGltZW91dHMsIGJ5IGRlZmF1bHQgdGltZW91dHMgYXJlIG9ubHkgaW5jcmVh
+c2VkJykKPiArICAgIHByaW50KCdcdC1wIHBhdGNoIHRlc3RjYXNlcyB3aXRoIHVwZGF0ZWQgdGlt
+ZW91dHMnKQo+ICsgICAgcHJpbnQoJ1x0LXQgcHJpbnRzIHRhYmxlIG9mIHRlc3RzIHdpdGggc3Vn
+Z2VzdGVkIHRpbWVvdXRzJykKPiArCj4gK3RyeToKPiArICAgIG9wdHMsIGFyZ3MgPSBnZXRvcHQu
+Z2V0b3B0KHN5cy5hcmd2WzE6XSwgImhvcHQiKQo+ICtleGNlcHQ6Cj4gKyAgICBwcmludF9oZWxw
+KCkKPiArICAgIHN5cy5leGl0KDEpCj4gKwo+ICtvcHRfcHJpbnRfdGFibGUgPSBGYWxzZQo+ICtv
+cHRfcGF0Y2hfdGVzdHMgPSBGYWxzZQo+ICtvcHRfcGF0Y2hfb3ZlcnJpZGUgPSBGYWxzZQo+ICsK
+PiArZm9yIG9wdCxhcmcgaW4gb3B0czoKPiArICAgIGlmIG9wdCA9PSAnLWgnOgo+ICsgICAgICAg
+IHByaW50X2hlbHAoKQo+ICsgICAgICAgIHN5cy5leGl0KDApCj4gKyAgICBpZiBvcHQgPT0gJy1v
+JzoKPiArICAgICAgICBvcHRfcGF0Y2hfb3ZlcnJpZGUgPSBUcnVlCj4gKyAgICBpZiBvcHQgPT0g
+Jy1wJzoKPiArICAgICAgICBvcHRfcGF0Y2hfdGVzdHMgPSBUcnVlCj4gKyAgICBpZiBvcHQgPT0g
+Jy10JzoKPiArICAgICAgICBvcHRfcHJpbnRfdGFibGUgPSBUcnVlCj4gKwo+ICtpZiBub3Qgb3B0
+X3ByaW50X3RhYmxlIGFuZCBub3Qgb3B0X3BhdGNoX3Rlc3RzOgo+ICsgICAgcHJpbnQoIk5vIGFj
+dGlvbiBzZWxlY3RlZCFcbiIpCj4gKyAgICBwcmludF9oZWxwKCkKPiArICAgIHN5cy5leGl0KDEp
+Cj4gKwo+ICtyZXN1bHRzID0gYXJnc1swXSBpZiBhcmdzIGVsc2UgJ3Jlc3VsdHMuanNvbicKPiAr
+Cj4gK3RpbWVvdXRzID0gcGFyc2VfZGF0YShyZXN1bHRzKQo+ICsKPiAraWYgb3B0X3ByaW50X3Rh
+YmxlOgo+ICsgICAgcHJpbnRfdGFibGUodGltZW91dHMpCj4gKwo+ICtpZiBvcHRfcGF0Y2hfdGVz
+dHM6Cj4gKyAgICBwYXRjaF9hbGwodGltZW91dHMsIG9wdF9wYXRjaF9vdmVycmlkZSkKQmV0dGVy
+IHRvIHdyYXAgZXZlcnl0aGluZyBpbnRvIGEgbWFpbigpIGZ1bmN0aW9uIGFuZCB0byB1c2U6Cgpp
+ZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgoKIMKgwqDCoCBydW4oKQoKCkFuZHJlYQoKCi0tIApN
+YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
