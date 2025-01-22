@@ -4,82 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 266E0C02182
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 17:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C981C02181
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 19:17:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2C2D3C30A9
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 18:26:32 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 072793C30BC
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 20:17:21 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D9BA3C3084
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:49 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E50113C2CA2
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 20:17:03 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=canonical.com (client-ip=185.125.188.122;
+ helo=smtp-relay-internal-0.canonical.com;
+ envelope-from=ian.whitfield@canonical.com; receiver=lists.linux.it)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AA321141ABAE
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:48 +0100 (CET)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-435f8f29f8aso52350675e9.2
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 09:24:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1737566688; x=1738171488; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=LGU8p7tNLhmNAY4sN+z3CxHEUlGufSGkgwZx3tPWe4o=;
- b=Sjiu29oKZJ9LrWd2qRtyybFcQVg69aqsfVvR7omIDuuQFLKo2mdPdzg24Y4/QGaUG+
- o7N+4KM6nxe5HN9XelY3zH+PnQVaaPADF8Uhb/u/RZ7OUbLs5UFEKUat+6vaSyAfQq9n
- 6eoCho+cTwPWcrveovZR5P6DyoUXjroXT2vYNB704I9jujWpdMB9ooMTvcih7JaZ3y6r
- mBeDBDBUDaBQzs9GXh30y85HBX4W7HFZwfBuL/3GBCYjg2+BiVdUbvETMudn9K0e2dlS
- Z7jayZ0AlXTWcjcPs5zkZLP5I0hcZMU4ai9j96ayt5/1YoBhgIbsEainOZiDm6BFfps9
- qUPw==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F1F5E656179
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 20:17:02 +0100 (CET)
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 41A1E3F2A0
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 19:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1737573421;
+ bh=LquFRNU5PUc/CoHX2FCBP5kQLCg0xbnvabf8HPyMZms=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=p9dCLs1YdweTf4AIzaoR6mD22PxZjnv0JLyytC7WC94dFgdU42CcgWI7YaVdRLlsd
+ pD9zWG2uVKxmeppErzw3zzyPIKHxHxUxxqeBYUO9CfNiUb+g09Zj+fTLDxaW6AAUqM
+ lNSnMlRwJx0GwdkHn+qPzhHDpY3ICWQrKFZPe9tQOnH4+XjMa6Q9nE3NL308Hcvcbt
+ tehOS/wVFUcS+/CuLyYF3iNoFfjY03nrFFCRe4Ztcnin++AnR3YAm3uYBCW6D0G+Mi
+ n/m3ZOpfHHWS1ACTz00JNafq5t5qR0ayGRKEZrRZN3nwqMhbAWSKCRsQTAjsgVSd9Q
+ oZMMO7EAWOBJw==
+Received: by mail-oa1-f69.google.com with SMTP id
+ 586e51a60fabf-2a75cda3961so59411fac.0
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 11:17:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737566688; x=1738171488;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=LGU8p7tNLhmNAY4sN+z3CxHEUlGufSGkgwZx3tPWe4o=;
- b=KdVHci5zhjYsUErTW/cV77yhhuEisrZxels4rAOnxkjoZl+CXJP2GS3iiVhGivLDzF
- 24k/Ac7tMqbfxbOI5aOvTidJ+DJgE8nIyHKNMwwAxhp6qFLhpaSEwc1ra6auSvvr+Rb6
- jH5WhPZSap26L2H3svg5BnyIXuWVi6j092yg4bk6WIHtpwXZWtGHiBjI9VtnjrhbHG+l
- 1r9Brrcb6TVpD05942u81QTNW6GC0AjbH/N5umoSNAOEiNTwVc5FqBFDV7OpuV6L5oLU
- tqDplCPNmZcWYg1rE6+04Svd7/cCCIz9u0crd/qoWIQHovvmzZ45K9wjv3KJ7174mNsj
- J4dQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXMWxtgYKeoGtPsrV2Xee/d27a4DFEShZoOsumgTr1hA1uN53OBN+y4gczFMMiTkAugHBA=@lists.linux.it
-X-Gm-Message-State: AOJu0YwdUA+N55mMHy0ka9P7RcR8ZlWFsieewyol1DD0Y9ThMnCWgCro
- jQvmUr86Zaw0Oyok2E8SnjN2u6mD0vvkDjLeE49ZmZdOJ3fIvFP+Nxyp8Mhw
-X-Gm-Gg: ASbGnctjrHpflAdBI8EBnTQ2jkFnPEQIl27N0X5kvYoookh+VABYOolse8Unew719qE
- k12LPLOuCyfYw+lquGh2c4irOEM93nBMUld9PGpAQbSyFCKF8XMYQe8lPrjpOMPLRVg7S1jIQuU
- FoQOhnZDl8al4fMTJaL0Gg+4tXKA7rEBV+O6Ec0Jq+WE2v7BzP1eugTZKgj82ji4u+JY0VbMCZa
- W+JdpPwKTt/NLlrFB2+Erao1bYKp7dXvMNT51xgtcUzLOm2OZXyaIpoZkPtMPGOlAsu+Ni7t3D4
- YhCwLReSB2rgKI9T8N+bpiTX/zdQBwEP7Wie6f7Us20InTgGH8YzJusCrA/jRw5Q58c=
-X-Google-Smtp-Source: AGHT+IGngsxz5LDMDmiBj2YRFs9s8oRF0rzV9GytldLmvSTOwYmZoVW7KGgmO3c4IwJL6r2VqOEq6Q==
-X-Received: by 2002:a05:600c:1e1c:b0:434:f0df:9f6 with SMTP id
- 5b1f17b1804b1-438913bf655mr220244155e9.3.1737566687748; 
- Wed, 22 Jan 2025 09:24:47 -0800 (PST)
-Received: from amir-ThinkPad-T480.arnhem.chello.nl
- (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
+ d=1e100.net; s=20230601; t=1737573420; x=1738178220;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=LquFRNU5PUc/CoHX2FCBP5kQLCg0xbnvabf8HPyMZms=;
+ b=H3I/cL9XkcAqxE8DS6xZMvnsm+3/VvMxBmeqoOeuIGZCieQZ44h61adR95aXACYVzh
+ ebFF1ygqXbgjwqkyGBX+X+2NElEKr0vFbKNeTTBMZNRQSdAVilPWfGpbEYGGe5LY6adC
+ n3lPm9BEjhJZz0U8UZssfhwzxZZvIpbsJL8+f/AorHQ5kXKupl4wXpGyY5y0Rj2dfe/f
+ hfcvezQuFfipmtQVD4XaC74mdnOr+FYORQb3W3eFnsLQe5sHX53IEEJPDdg6MpoGVkoj
+ MsK4yTjUs96OZET2y2dPyIlIOIY8T/KXgeiy/c+tSjn5Q+mve/m6vPcNlX6lZ3shks14
+ ywwA==
+X-Gm-Message-State: AOJu0Yw5eDNUP9ZaUNCfnwLyfPgNPP4c7C5OpLbmaD+geYJEY0amU2wm
+ VvvfM/MAjnsB5KAo8Q0CwXUIGXgmWCfInvFVFdPzbBSMmg/cx9/xfoqUjxcccWOF7z+Und2FQtY
+ MxZQOwEDHev+QTCb3iVM5lFR8RciqN6BWNp1ea+CcG6iofjLLhX+X3NzC/S7vk7lodzb8NUkP
+X-Gm-Gg: ASbGncu3lZBSbtgbXoeJb9H+tyoKXzQK7INEwcsvqspNtH9DZAjH8E/rmuAdfpJKIvp
+ T4lISPlZO4LvT5tT4gJ/EbwZXtCARyn/G7JubVPbNespk5srO8B9hWD7OvyCzUr/gHtR6lTIthJ
+ R6M6yrtb+ZFc+X+ej5OR2Dbtz6ud3BTfyw83ac/z9N0cabE9YtWYEgiJvj8ZEKnWJvIfg6Fzfnc
+ ZRQBK0DvSaopSVhVLPbCOnp+Eo7blpW8JSYJeWm2UpXkxHDfqcqetjpSo20CAS06mOvUTg3/P3W
+ W+27Rg==
+X-Received: by 2002:a05:6870:470b:b0:27d:10f5:347 with SMTP id
+ 586e51a60fabf-2b1c0a2db1dmr12032087fac.15.1737573420073; 
+ Wed, 22 Jan 2025 11:17:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFqalBIyx7mUuDfpweC2mEG5sC1NhCGYST52wPHBwnDMI7mrKjeKc1cx76RJQmaDt9xEko2CA==
+X-Received: by 2002:a05:6870:470b:b0:27d:10f5:347 with SMTP id
+ 586e51a60fabf-2b1c0a2db1dmr12032068fac.15.1737573419508; 
+ Wed, 22 Jan 2025 11:16:59 -0800 (PST)
+Received: from localhost ([2600:1700:3ec0:2680:3767:f8c3:faa2:5d12])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-438b31d98e2sm31592405e9.26.2025.01.22.09.24.47
+ 586e51a60fabf-2b1b8f767e6sm4601246fac.35.2025.01.22.11.16.59
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jan 2025 09:24:47 -0800 (PST)
-From: Amir Goldstein <amir73il@gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 22 Jan 2025 18:24:40 +0100
-Message-Id: <20250122172440.506677-6-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250122172440.506677-1-amir73il@gmail.com>
-References: <20250122172440.506677-1-amir73il@gmail.com>
+ Wed, 22 Jan 2025 11:16:59 -0800 (PST)
+From: Ian Whitfield <ian.whitfield@canonical.com>
+To: ltp@lists.linux.it
+Date: Wed, 22 Jan 2025 11:16:58 -0800
+Message-ID: <20250122191658.43194-1-ian.whitfield@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] fanotify21: Test reporting fd open errors with
- FAN_REPORT_FD_ERROR
+Subject: [LTP] [PATCH] gethostname: Fix ENAMETOOLONG on 64 character
+ hostnames
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,164 +99,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Expect to get -EROFS as event->fd.
-Expect to get -ESRCH instead of FAN_NOPIDFD.
+HOST_NAME_MAX does not include the null terminator, so the hostname
+buffer in gethostname02.c needs an extra character of space to support
+maximum length hostnames.
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Ian Whitfield <ian.whitfield@canonical.com>
 ---
- .../kernel/syscalls/fanotify/fanotify21.c     | 61 ++++++++++++++++---
- 1 file changed, 51 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/gethostname/gethostname02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index 4324019fa..8765767f2 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify21.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-@@ -57,7 +57,7 @@ static struct test_case_t {
- 	{
- 		"return invalid pidfd for event created by terminated child",
- 		1,
--		FAN_NOPIDFD,
-+		1,
- 		0,
- 	},
- 	{
-@@ -72,6 +72,8 @@ static int fanotify_fd;
- static char event_buf[BUF_SZ];
- static struct pidfd_fdinfo_t *self_pidfd_fdinfo;
+diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
+index 250e5f2fd..f792371ed 100644
+--- a/testcases/kernel/syscalls/gethostname/gethostname02.c
++++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
+@@ -16,7 +16,7 @@
  
-+static int fd_error_unsupported;
-+
- static struct pidfd_fdinfo_t *read_pidfd_fdinfo(int pidfd)
+ static void verify_gethostname(void)
  {
- 	char *fdinfo_path;
-@@ -121,6 +123,15 @@ static void do_fork(void)
- static void do_setup(void)
- {
- 	int pidfd;
-+	int init_flags = FAN_REPORT_PIDFD;
-+
-+	if (tst_variant) {
-+		fanotify_fd = -1;
-+		fd_error_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FD_ERROR, ".");
-+		if (fd_error_unsupported)
-+			return;
-+		init_flags |= FAN_REPORT_FD_ERROR;
-+	}
+-	char hostname[HOST_NAME_MAX];
++	char hostname[HOST_NAME_MAX + 1];
+ 	int real_length;
  
- 	SAFE_TOUCH(TEST_FILE, 0666, NULL);
- 
-@@ -132,7 +143,7 @@ static void do_setup(void)
- 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_PIDFD,
- 						    TEST_FILE);
- 
--	fanotify_fd = SAFE_FANOTIFY_INIT(FAN_REPORT_PIDFD, O_RDWR);
-+	fanotify_fd = SAFE_FANOTIFY_INIT(init_flags, O_RDWR);
- 	SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD, FAN_OPEN, AT_FDCWD,
- 			   TEST_FILE);
- 
-@@ -150,8 +161,17 @@ static void do_test(unsigned int num)
- {
- 	int i = 0, len;
- 	struct test_case_t *tc = &test_cases[num];
-+	int nopidfd_err = tc->want_pidfd_err ?
-+			  (tst_variant ? -ESRCH : FAN_NOPIDFD) : 0;
-+	int fd_err = (tc->remount_ro && tst_variant) ? -EROFS : 0;
- 
--	tst_res(TINFO, "Test #%d: %s", num, tc->name);
-+	tst_res(TINFO, "Test #%d.%d: %s %s", num, tst_variant, tc->name,
-+			tst_variant ? "(FAN_REPORT_FD_ERROR)" : "");
-+
-+	if (fd_error_unsupported && tst_variant) {
-+		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_FD_ERROR, fd_error_unsupported);
-+		return;
-+	}
- 
- 	if (tc->remount_ro) {
- 		/* SAFE_MOUNT fails to remount FUSE */
-@@ -179,12 +199,12 @@ static void do_test(unsigned int num)
- 	 */
- 	len = read(fanotify_fd, event_buf, sizeof(event_buf));
- 	if (len < 0) {
--		if (tc->remount_ro && errno == EROFS) {
-+		if (tc->remount_ro && !fd_err && errno == EROFS) {
- 			tst_res(TPASS, "cannot read event with rw fd from a ro fs");
- 			return;
- 		}
- 		tst_brk(TBROK | TERRNO, "reading fanotify events failed");
--	} else if (tc->remount_ro) {
-+	} else if (tc->remount_ro && !fd_err) {
- 		tst_res(TFAIL, "got unexpected event with rw fd from a ro fs");
- 	}
- 	while (i < len) {
-@@ -218,6 +238,28 @@ static void do_test(unsigned int num)
- 			goto next_event;
- 		}
- 
-+		/*
-+		 * Check if event->fd reported any errors during
-+		 * creation and whether they're expected.
-+		 */
-+		if (!fd_err && event->fd >= 0) {
-+			tst_res(TPASS,
-+				"event->fd %d is valid as expected",
-+				event->fd);
-+		} else if (fd_err && event->fd == fd_err) {
-+			tst_res(TPASS,
-+				"event->fd is error %d as expected",
-+				event->fd);
-+		} else if (fd_err) {
-+			tst_res(TFAIL,
-+				"event->fd is %d, but expected error %d",
-+				event->fd, fd_err);
-+		} else {
-+			tst_res(TFAIL,
-+				"event->fd creation failed with error %d",
-+				event->fd);
-+		}
-+
- 		/*
- 		 * Check if pidfd information object reported any errors during
- 		 * creation and whether they're expected.
-@@ -229,20 +271,18 @@ static void do_test(unsigned int num)
- 				(unsigned int)event->pid,
- 				info->pidfd);
- 			goto next_event;
--		} else if (tc->want_pidfd_err &&
--			   info->pidfd != tc->want_pidfd_err) {
-+		} else if (tc->want_pidfd_err && info->pidfd != nopidfd_err) {
- 			tst_res(TFAIL,
- 				"pidfd set to an unexpected error: %d for pid: %u",
- 				info->pidfd,
- 				(unsigned int)event->pid);
- 			goto next_event;
--		} else if (tc->want_pidfd_err &&
--			   info->pidfd == tc->want_pidfd_err) {
-+		} else if (tc->want_pidfd_err && info->pidfd == nopidfd_err) {
- 			tst_res(TPASS,
- 				"pid: %u terminated before pidfd was created, "
- 				"pidfd set to the value of: %d, as expected",
- 				(unsigned int)event->pid,
--				FAN_NOPIDFD);
-+				nopidfd_err);
- 			goto next_event;
- 		}
- 
-@@ -323,6 +363,7 @@ static struct tst_test test = {
- 	.setup = do_setup,
- 	.test = do_test,
- 	.tcnt = ARRAY_SIZE(test_cases),
-+	.test_variants = 2,
- 	.cleanup = do_cleanup,
- 	.all_filesystems = 1,
- 	.needs_root = 1,
+ 	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
 -- 
-2.34.1
+2.43.0
 
 
 -- 
