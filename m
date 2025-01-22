@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CECBDC02181
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 17:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CD19C02182
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 17:25:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A9173C3096
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 18:25:39 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 196DB3C300B
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 18:25:57 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A5863C2CD6
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:46 +0100 (CET)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ by picard.linux.it (Postfix) with ESMTPS id B89423C3023
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:47 +0100 (CET)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 290B9140F6E4
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:46 +0100 (CET)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-38a8b35e168so34911f8f.1
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 09:24:46 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 21F2E140BE97
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 18:24:47 +0100 (CET)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-43621d27adeso49960865e9.2
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 09:24:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1737566685; x=1738171485; darn=lists.linux.it;
+ d=gmail.com; s=20230601; t=1737566686; x=1738171486; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=Ulu7h+e6YvmahDfyW/K6MvdMBikUH9p99/cmNqM6gbQ=;
- b=BKBtfzUenADmLmFpBaloKugtgeduC6kO5NsZ1P8Z3Sp5d343X8e+58WW/S8aJTPISp
- 2CnYhtVq/I3oquLhqXJzjttsL9xSnQnueT4HuQjWXsoA9MYzoEDUMXkB9cMsFmBklYWB
- kSrqFAuSavAxb4VxAoe1VnmIs6Hq5NBYmwA8/A+P4A/uRyAkmnFBmjZyIDN0dcuoJkxA
- frVPF5h7KRcqdFLkLAptrj3ao+MPmxdDDX1nHOgCcuGnxy+Ofqz8t61QPHaP21MMnwTx
- Q1sdtKEJcQGfLUXwtSJrC2apec2GEucFaT4fy2tW+enmXx/yIVewQeU8G2XG0RXrEH26
- x3mQ==
+ bh=9/V0/e/tzCvLMPGQx8k53/xvSqQsbs2ToQRXVk1DF40=;
+ b=PPoN37B3AoRWCPnlhOrNY1OmiUX/BEud7U7gC5yRGH5Lz/8waQS9OEltwraAfo2lw1
+ /bxmCGjKwsNSAcLBsiq0Jtp46uswXOy2Dg5VET8JPf4lJUTFsSEK/1D2zfxmK8KMQDT8
+ ASg8E3O31jGlTM8ZjxDvSP15Gcjn6pOpEjblazgdmGCm2JMrb12N3+6+BMbIH64OQw64
+ 0fOjt9Pb97G49+mN1JsB11hEpYIjAVEcOYkQxh+88AxIuamiQjh1jyIR4Zbaa3GE4wuQ
+ la8DY1XMYEXOUmlGzxcHEBTbUtPXCJka7v9yueNXqEanWaumqcy/mv/cRSZrB10gpOjV
+ 44/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737566685; x=1738171485;
+ d=1e100.net; s=20230601; t=1737566686; x=1738171486;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=Ulu7h+e6YvmahDfyW/K6MvdMBikUH9p99/cmNqM6gbQ=;
- b=G/TNzItFXyoNNQszSMHbojTw/9tm8x+h+ORN7hZHBLyx/Co2ftAvwUF1E5JJpkPg+f
- dldUk4N9MYTA3CvFCSZMZfobhjabDPlc+JVBYhfm2rFaerdCor6XuVUT0aeP1aD3BozJ
- cpawBi252e/9vmcRMQnbxJI4tboU8AISBVtEf2wjX42vY3dMF/ddGeI8qJuUfJ6PegDc
- Z8qGjLeQJJ247mXiO3R5v2hFJPMF7yIx7MqqWaHJF9UnUZHUBTa3+pE+VagAsCWkd4lA
- i+W631X6UGpTWvfHChdyit0mpsJGUPesTMmc7/W4+o7bYWjVYUAV7XtiaRVsMVB1pdTz
- 5ObA==
+ bh=9/V0/e/tzCvLMPGQx8k53/xvSqQsbs2ToQRXVk1DF40=;
+ b=mRAMTug74dE0mYTVcj3Xv7DjBrvP5VaixN5zCc3q3XTCvT76y9x+dyR/SF+Opm2FnX
+ UALzQZZgfP7aUlDJLF5SkS+Cqe6ZZtb/adBGRackBsbmBermociiPm1+EUX2NbWgAXzj
+ iOydyYmxK7QptLF1mwpi72tb4P5oU4k4fa9xhAA+hpDIxNYm6fkC7aXh/tE+dbGVrlUL
+ eHCtNGkVFbGgKz9cthWPOaouUWKLudpJYb73tGNQpAFxTRhlVcNYmYJPFxN2ZmLtCNg/
+ XnGzkcOVD/pCgSCUEH/kNx2MwOx5UEz8GtnZmPUwRl+PVXqFxVWHLXxwrn7alHgaDCVb
+ tqNQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXp8Z6ESfcJnG9M4B9mFrbOWSx/SFhLe+UqyRglHyyvjbhhU4OMZwGz8d30jiplHk24NOA=@lists.linux.it
-X-Gm-Message-State: AOJu0Yyh6EdNJPvlW6uj1EQB6VjUPplr0RuSo3V9o0r0LI2iVwq47tql
- tJZJKhpCXDDRd5biJpxisyoLPxTK20Z0XaOKv/fRCGYGEG9NhR0qPXTjI5qz
-X-Gm-Gg: ASbGnct50ooBKi6+uXBiae/iH+l4PS/ILYwa4CBNno9Nv+Q6RYqPq1WqSUJakSQBSWd
- pR7X2mKZoA752a8LETquVLzPwE1y5yxCBv5uA5l7g38XaVybMdbXr0XHMkeubu1i/SPqKsAXN5+
- hBuDKAqEh374bzQu9j/QmpA6jhyAkyr/SA1hbZ/w+y+QgjEluuygVvPajBI2gsCzrzcNemnoKD4
- l2rFE5toO1xV6Gl9QawzQulTFtSzh9ss40cLGxf+u17v/Q8rkKKq29qmTneiQ2wUqoxxyyONVB5
- 3vjvh1afjT8Sm/pF4I+pCKCWErkLMrpPWG92i3gjJpA3u2OwjZsLedwUtnXNeMyDG1c=
-X-Google-Smtp-Source: AGHT+IEdrYZPF/hEycotyiGd7xSvj8Sl2CsNmlWj39bwwRiiwEIKc77l9VMZF6UiJT7UokTwCRXAEA==
-X-Received: by 2002:a5d:64af:0:b0:386:37f8:451c with SMTP id
- ffacd0b85a97d-38c22172989mr147473f8f.1.1737566685277; 
- Wed, 22 Jan 2025 09:24:45 -0800 (PST)
+ AJvYcCU9utTfflxs3m15LCU7aGdpVGU6JimLUPug3T/zoEfPiQOqM/Ero9gywi22xipP5G/7jNk=@lists.linux.it
+X-Gm-Message-State: AOJu0YxgGI0LyzwC9EdZE4af7uAx5Nzmx0IBXHLRbBiIM0oqkeXdIByq
+ kzyveFcAfZwrDZCTY5KefR9WoX0ZCI44BQY248AVrbVAY1tWtPGHTMQgLK29
+X-Gm-Gg: ASbGncsp8d4X1MKSCVa2cXmIemMZJXB3YclS9pZ5WBRpY1ycCVyh6PX0crXJWLBLcQu
+ y/M/8t+QnZgkZehf33X4d7kyPaJNSxD9PJhvxzoHQ6QT5jYGjU1Rzb189aRv/zAg1zhpIoY6YLv
+ Eu8TtDkxZA+Kr4XAZPc6bZyay1V+JJ+vrhTAkUlcgHJILIA0oQ27XuXtwg1FvDPFnggPs2JZdzx
+ 7JNd+oJHOj+RrqFmp8WYSTv1gZ5TODvDWGsdk9iCM77XewvzA7L56Rd/ND0MG27Xtsg4/xDdzig
+ wNp8QdVQtipVXSoQQtw+Xc07ONe3X9BzfDuJZzkoDh37hDIQIrK2GdG8005sl2SBDeA=
+X-Google-Smtp-Source: AGHT+IGxxBGGl/g5VXKWVGqAXFcib2XZLmV1lCqiTUR5NKgcSiTBjWQmXkJ0mX/17UmTMbY0rEbPgQ==
+X-Received: by 2002:a05:600c:3149:b0:436:5fc9:30ba with SMTP id
+ 5b1f17b1804b1-43891441f57mr225158235e9.29.1737566686050; 
+ Wed, 22 Jan 2025 09:24:46 -0800 (PST)
 Received: from amir-ThinkPad-T480.arnhem.chello.nl
  (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-438b31d98e2sm31592405e9.26.2025.01.22.09.24.44
+ 5b1f17b1804b1-438b31d98e2sm31592405e9.26.2025.01.22.09.24.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jan 2025 09:24:44 -0800 (PST)
+ Wed, 22 Jan 2025 09:24:45 -0800 (PST)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 22 Jan 2025 18:24:37 +0100
-Message-Id: <20250122172440.506677-3-amir73il@gmail.com>
+Date: Wed, 22 Jan 2025 18:24:38 +0100
+Message-Id: <20250122172440.506677-4-amir73il@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250122172440.506677-1-amir73il@gmail.com>
 References: <20250122172440.506677-1-amir73il@gmail.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/5] fanotify13: Add test case for FAN_DELETE_SELF
+Subject: [LTP] [PATCH 3/5] fanotify05: Test reporting overflow event with
+ FAN_REPORT_FD_ERROR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,138 +97,109 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify that FAN_DELETE_SELF on overlayfs reports a valid file handle.
-
-This was fixed in v6.13-rc7 and backported to v6.12.10 and v6.6.74.
+Expecting to get -EBADF instead of FAN_NOFD.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify13.c     | 68 ++++++++++++++++---
- 1 file changed, 57 insertions(+), 11 deletions(-)
+ include/lapi/fanotify.h                        |  4 ++++
+ testcases/kernel/syscalls/fanotify/fanotify.h  |  1 +
+ .../kernel/syscalls/fanotify/fanotify05.c      | 18 ++++++++++++++++--
+ 3 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 16fd99ba1..67f05da20 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -15,6 +15,15 @@
+diff --git a/include/lapi/fanotify.h b/include/lapi/fanotify.h
+index 424514625..40ea7ead7 100644
+--- a/include/lapi/fanotify.h
++++ b/include/lapi/fanotify.h
+@@ -32,6 +32,10 @@
+ #define FAN_REPORT_DFID_NAME_TARGET (FAN_REPORT_DFID_NAME | \
+ 				     FAN_REPORT_FID | FAN_REPORT_TARGET_FID)
+ #endif
++#ifndef FAN_REPORT_FD_ERROR
++#define FAN_REPORT_FD_ERROR	0x00002000
++#endif
++
+ 
+ /* Non-uapi convenience macros */
+ #ifndef FAN_REPORT_DFID_NAME_FID
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 554940a7e..48a44cc7e 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -213,6 +213,7 @@ static inline int fanotify_mark_supported_on_fs(uint64_t flag, const char *fname
+ 
+ #define TST_FANOTIFY_INIT_KNOWN_FLAGS                                      \
+ 	(FAN_REPORT_DFID_NAME_TARGET | FAN_REPORT_TID | FAN_REPORT_PIDFD | \
++	 FAN_REPORT_FD_ERROR | \
+ 	FAN_CLASS_NOTIF | FAN_CLASS_CONTENT | FAN_CLASS_PRE_CONTENT)
+ 
  /*
-  * This is also regression test for:
-  *     c285a2f01d69 ("fanotify: update connector fsid cache on add mark")
-+ *
-+ * The test variants 1-2 are regression tests for:
-+ *     bc2473c90fca5 ("ovl: enable fsnotify events on underlying real files")
-+ *
-+ * The test variants 3-4 are tests for overlay fid events supprted since v6.6:
-+ *     16aac5ad1fa9 ("ovl: support encoding non-decodable file handles")
-+ *
-+ * The last test case for FAN_DELETE_SELF is a regression test for:
-+ *     c45beebfde34a ("ovl: support encoding fid from inode with no alias")
-  */
- 
- #define _GNU_SOURCE
-@@ -86,7 +95,12 @@ static struct test_case_t {
- 	{
- 		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
- 		FAN_OPEN | FAN_CLOSE_NOWRITE | FAN_ONDIR
--	}
-+	},
-+	/* Keep this test case last because it deletes the test files */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
+index 12c240881..f1a132cbf 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify05.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
+@@ -51,6 +51,10 @@ static struct tcase {
+ 		"Limited queue",
+ 		FAN_CLASS_NOTIF,
+ 	},
 +	{
-+		INIT_FANOTIFY_MARK_TYPE(INODE),
-+		FAN_DELETE_SELF | FAN_ONDIR
++		"Limited queue (FAN_REPORT_FD_ERROR)",
++		FAN_CLASS_NOTIF | FAN_REPORT_FD_ERROR,
 +	},
- };
+ 	{
+ 		"Unlimited queue",
+ 		FAN_CLASS_NOTIF | FAN_UNLIMITED_QUEUE,
+@@ -63,6 +67,8 @@ static char symlnk[BUF_SIZE];
+ static char fdpath[BUF_SIZE];
+ static int fd, fd_notify;
  
- static int ovl_mounted;
-@@ -111,6 +125,18 @@ static void create_objects(void)
- 	}
- }
- 
-+static void delete_objects(void)
-+{
-+	unsigned int i;
++static int fd_error_unsupported;
 +
-+	for (i = 0; i < ARRAY_SIZE(objects); i++) {
-+		if (objects[i].is_dir)
-+			SAFE_RMDIR(objects[i].path);
-+		else
-+			SAFE_UNLINK(objects[i].path);
+ static struct fanotify_event_metadata event;
+ 
+ static void event_res(struct fanotify_event_metadata *event, int i)
+@@ -110,9 +116,15 @@ static void test_fanotify(unsigned int n)
+ 	int len, nevents = 0, got_overflow = 0;
+ 	int num_files = max_events + 1;
+ 	int expect_overflow = !(tc->init_flags & FAN_UNLIMITED_QUEUE);
++	int nofd_err = tc->init_flags & FAN_REPORT_FD_ERROR ? -EBADF : FAN_NOFD;
+ 
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
++	if (fd_error_unsupported && (tc->init_flags & FAN_REPORT_FD_ERROR)) {
++		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_FD_ERROR, fd_error_unsupported);
++		return;
 +	}
-+}
 +
- static void get_object_stats(void)
- {
- 	unsigned int i;
-@@ -155,8 +181,10 @@ static void do_test(unsigned int number)
- 	struct fanotify_mark_type *mark = &tc->mark;
+ 	fd_notify = SAFE_FANOTIFY_INIT(tc->init_flags | FAN_NONBLOCK, O_RDONLY);
  
- 	tst_res(TINFO,
--		"Test #%d.%d: FAN_REPORT_FID with mark flag: %s",
--		number, tst_variant, mark->name);
-+		"Test #%d.%d: FAN_REPORT_FID of %s events with mark type %s",
-+		number, tst_variant,
-+		(tc->mask & FAN_DELETE_SELF) ? "delete" : "open/close",
-+		mark->name);
- 
- 	if (tst_variant && !ovl_mounted) {
- 		tst_res(TCONF, "overlayfs not supported on %s", tst_device->fs_type);
-@@ -184,23 +212,40 @@ static void do_test(unsigned int number)
- 			tst_res(TCONF, "overlayfs base fs cannot be watched with mount mark");
- 			goto out;
+ 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_MOUNT | FAN_MARK_ADD, FAN_OPEN,
+@@ -142,7 +154,7 @@ static void test_fanotify(unsigned int n)
+ 				tst_res(expect_overflow ? TFAIL : TPASS, "Overflow event not generated!\n");
+ 			break;
  		}
-+		if (tc->mask & FAN_DELETE_SELF) {
-+			/* The eviction of base fs inodes is defered due to overlay held reference */
-+			tst_res(TCONF, "overlayfs base fs cannot be watched for delete self events");
-+			goto out;
-+		}
- 		SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
- 	}
+-		if (event.fd != FAN_NOFD) {
++		if (event.fd >= 0) {
+ 			/*
+ 			 * Verify that events generated on unique files
+ 			 * are received by the same order they were generated.
+@@ -166,7 +178,7 @@ static void test_fanotify(unsigned int n)
+ 			break;
+ 		}
+ 		if (event.mask == FAN_Q_OVERFLOW) {
+-			if (got_overflow || event.fd != FAN_NOFD) {
++			if (got_overflow || event.fd != nofd_err) {
+ 				tst_res(TFAIL,
+ 					"%s overflow event: mask=%llx pid=%u fd=%d",
+ 					got_overflow ? "unexpected" : "invalid",
+@@ -193,6 +205,8 @@ static void setup(void)
+ 	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+ 	SAFE_CLOSE(fd);
  
- 	/* Generate sequence of FAN_OPEN events on objects */
--	for (i = 0; i < ARRAY_SIZE(objects); i++)
--		fds[i] = SAFE_OPEN(objects[i].path, O_RDONLY);
-+	if (tc->mask & FAN_OPEN) {
-+		for (i = 0; i < ARRAY_SIZE(objects); i++)
-+			fds[i] = SAFE_OPEN(objects[i].path, O_RDONLY);
-+	}
- 
- 	/*
--	 * Generate sequence of FAN_CLOSE_NOWRITE events on objects. Each
--	 * FAN_CLOSE_NOWRITE event is expected to be merged with its
--	 * respective FAN_OPEN event that was performed on the same object.
-+	 * Generate sequence of FAN_CLOSE_NOWRITE events on objects.
-+	 * Each FAN_CLOSE_NOWRITE event is expected to be merged with the
-+	 * respective FAN_OPEN event that was reported on the same object.
- 	 */
--	for (i = 0; i < ARRAY_SIZE(objects); i++) {
--		if (fds[i] > 0)
--			SAFE_CLOSE(fds[i]);
-+	if (tc->mask & FAN_CLOSE) {
-+		for (i = 0; i < ARRAY_SIZE(objects); i++) {
-+			if (fds[i] > 0)
-+				SAFE_CLOSE(fds[i]);
-+		}
- 	}
- 
-+	/*
-+	 * Generate sequence of FAN_DELETE_SELF events on objects.
-+	 * Each FAN_DELETE_SELF event is expected to be merged with the
-+	 * respective OPEN/CLOSE events that were reported on the same object.
-+	 */
-+	if (tc->mask & FAN_DELETE_SELF)
-+		delete_objects();
++	fd_error_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FD_ERROR, ".");
 +
- 	if (tst_variant && !ovl_bind_mounted)
- 		SAFE_UMOUNT(MOUNT_PATH);
- 
-@@ -392,6 +437,7 @@ static struct tst_test test = {
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "c285a2f01d69"},
- 		{"linux-git", "bc2473c90fca"},
-+		{"linux-git", "c45beebfde34a"},
- 		{}
- 	}
- };
+ 	/* In older kernels this limit is fixed in kernel */
+ 	if (access(SYSFS_MAX_EVENTS, F_OK) && errno == ENOENT)
+ 		max_events = DEFAULT_MAX_EVENTS;
 -- 
 2.34.1
 
