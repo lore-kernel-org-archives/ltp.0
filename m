@@ -4,90 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C981C02181
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 19:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E21BC02181
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 20:50:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 072793C30BC
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 20:17:21 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6768C3C311A
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 21:50:49 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E50113C2CA2
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 20:17:03 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=canonical.com (client-ip=185.125.188.122;
- helo=smtp-relay-internal-0.canonical.com;
- envelope-from=ian.whitfield@canonical.com; receiver=lists.linux.it)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id F183C3C2BB9
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 21:50:31 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F1F5E656179
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 20:17:02 +0100 (CET)
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 79E812264AF
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 21:50:28 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 41A1E3F2A0
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 19:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1737573421;
- bh=LquFRNU5PUc/CoHX2FCBP5kQLCg0xbnvabf8HPyMZms=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=p9dCLs1YdweTf4AIzaoR6mD22PxZjnv0JLyytC7WC94dFgdU42CcgWI7YaVdRLlsd
- pD9zWG2uVKxmeppErzw3zzyPIKHxHxUxxqeBYUO9CfNiUb+g09Zj+fTLDxaW6AAUqM
- lNSnMlRwJx0GwdkHn+qPzhHDpY3ICWQrKFZPe9tQOnH4+XjMa6Q9nE3NL308Hcvcbt
- tehOS/wVFUcS+/CuLyYF3iNoFfjY03nrFFCRe4Ztcnin++AnR3YAm3uYBCW6D0G+Mi
- n/m3ZOpfHHWS1ACTz00JNafq5t5qR0ayGRKEZrRZN3nwqMhbAWSKCRsQTAjsgVSd9Q
- oZMMO7EAWOBJw==
-Received: by mail-oa1-f69.google.com with SMTP id
- 586e51a60fabf-2a75cda3961so59411fac.0
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 11:17:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1737573420; x=1738178220;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=LquFRNU5PUc/CoHX2FCBP5kQLCg0xbnvabf8HPyMZms=;
- b=H3I/cL9XkcAqxE8DS6xZMvnsm+3/VvMxBmeqoOeuIGZCieQZ44h61adR95aXACYVzh
- ebFF1ygqXbgjwqkyGBX+X+2NElEKr0vFbKNeTTBMZNRQSdAVilPWfGpbEYGGe5LY6adC
- n3lPm9BEjhJZz0U8UZssfhwzxZZvIpbsJL8+f/AorHQ5kXKupl4wXpGyY5y0Rj2dfe/f
- hfcvezQuFfipmtQVD4XaC74mdnOr+FYORQb3W3eFnsLQe5sHX53IEEJPDdg6MpoGVkoj
- MsK4yTjUs96OZET2y2dPyIlIOIY8T/KXgeiy/c+tSjn5Q+mve/m6vPcNlX6lZ3shks14
- ywwA==
-X-Gm-Message-State: AOJu0Yw5eDNUP9ZaUNCfnwLyfPgNPP4c7C5OpLbmaD+geYJEY0amU2wm
- VvvfM/MAjnsB5KAo8Q0CwXUIGXgmWCfInvFVFdPzbBSMmg/cx9/xfoqUjxcccWOF7z+Und2FQtY
- MxZQOwEDHev+QTCb3iVM5lFR8RciqN6BWNp1ea+CcG6iofjLLhX+X3NzC/S7vk7lodzb8NUkP
-X-Gm-Gg: ASbGncu3lZBSbtgbXoeJb9H+tyoKXzQK7INEwcsvqspNtH9DZAjH8E/rmuAdfpJKIvp
- T4lISPlZO4LvT5tT4gJ/EbwZXtCARyn/G7JubVPbNespk5srO8B9hWD7OvyCzUr/gHtR6lTIthJ
- R6M6yrtb+ZFc+X+ej5OR2Dbtz6ud3BTfyw83ac/z9N0cabE9YtWYEgiJvj8ZEKnWJvIfg6Fzfnc
- ZRQBK0DvSaopSVhVLPbCOnp+Eo7blpW8JSYJeWm2UpXkxHDfqcqetjpSo20CAS06mOvUTg3/P3W
- W+27Rg==
-X-Received: by 2002:a05:6870:470b:b0:27d:10f5:347 with SMTP id
- 586e51a60fabf-2b1c0a2db1dmr12032087fac.15.1737573420073; 
- Wed, 22 Jan 2025 11:17:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFqalBIyx7mUuDfpweC2mEG5sC1NhCGYST52wPHBwnDMI7mrKjeKc1cx76RJQmaDt9xEko2CA==
-X-Received: by 2002:a05:6870:470b:b0:27d:10f5:347 with SMTP id
- 586e51a60fabf-2b1c0a2db1dmr12032068fac.15.1737573419508; 
- Wed, 22 Jan 2025 11:16:59 -0800 (PST)
-Received: from localhost ([2600:1700:3ec0:2680:3767:f8c3:faa2:5d12])
- by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-2b1b8f767e6sm4601246fac.35.2025.01.22.11.16.59
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jan 2025 11:16:59 -0800 (PST)
-From: Ian Whitfield <ian.whitfield@canonical.com>
-To: ltp@lists.linux.it
-Date: Wed, 22 Jan 2025 11:16:58 -0800
-Message-ID: <20250122191658.43194-1-ian.whitfield@canonical.com>
-X-Mailer: git-send-email 2.43.0
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1F5C321164;
+ Wed, 22 Jan 2025 20:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737579026;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GwgkmyAT9oEdwIPAae6/v0wBGyPrDPHRZU9ZpJ/WIOg=;
+ b=e/xR1WybonY224cCVT9XGKpngVLKszACE7JkTTpx0TSaodEos2d5H9HCjYp1fPhP/1D8Vc
+ +7iThIkOStGhJzHqv6TnKaYxxiX+WuJKiBNEidhVAJq/vwKHtzVeyry+Z80nnmcVBrZ/tL
+ b7R764m39CaU+kvr1IyszOQ2xmEEdUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737579026;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GwgkmyAT9oEdwIPAae6/v0wBGyPrDPHRZU9ZpJ/WIOg=;
+ b=GkegdX+bAf+QDYLNLADQUKOQzU0g18QiKR5Q7cCEzOkAnwR6mQAVu8U0Cv13Z38hZnWHyK
+ JU3WjOoDjKy0kICw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="e/xR1Wyb";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GkegdX+b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1737579026;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GwgkmyAT9oEdwIPAae6/v0wBGyPrDPHRZU9ZpJ/WIOg=;
+ b=e/xR1WybonY224cCVT9XGKpngVLKszACE7JkTTpx0TSaodEos2d5H9HCjYp1fPhP/1D8Vc
+ +7iThIkOStGhJzHqv6TnKaYxxiX+WuJKiBNEidhVAJq/vwKHtzVeyry+Z80nnmcVBrZ/tL
+ b7R764m39CaU+kvr1IyszOQ2xmEEdUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1737579026;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GwgkmyAT9oEdwIPAae6/v0wBGyPrDPHRZU9ZpJ/WIOg=;
+ b=GkegdX+bAf+QDYLNLADQUKOQzU0g18QiKR5Q7cCEzOkAnwR6mQAVu8U0Cv13Z38hZnWHyK
+ JU3WjOoDjKy0kICw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5EF53136A1;
+ Wed, 22 Jan 2025 20:50:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jTtsDhFakWdzeAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Jan 2025 20:50:25 +0000
+Date: Wed, 22 Jan 2025 21:50:23 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20250122205023.GA48906@pevik>
+References: <20250122172440.506677-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250122172440.506677-1-amir73il@gmail.com>
+X-Rspamd-Queue-Id: 1F5C321164
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.70 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.19)[-0.961]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FREEMAIL_TO(0.00)[gmail.com]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] gethostname: Fix ENAMETOOLONG on 64 character
- hostnames
+Subject: Re: [LTP] [PATCH 0/5] LTP fanotify tests for v6.13
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,36 +124,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-HOST_NAME_MAX does not include the null terminator, so the hostname
-buffer in gethostname02.c needs an extra character of space to support
-maximum length hostnames.
+Hi Amir,
 
-Signed-off-by: Ian Whitfield <ian.whitfield@canonical.com>
----
- testcases/kernel/syscalls/gethostname/gethostname02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi all,
 
-diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
-index 250e5f2fd..f792371ed 100644
---- a/testcases/kernel/syscalls/gethostname/gethostname02.c
-+++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
-@@ -16,7 +16,7 @@
- 
- static void verify_gethostname(void)
- {
--	char hostname[HOST_NAME_MAX];
-+	char hostname[HOST_NAME_MAX + 1];
- 	int real_length;
- 
- 	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
--- 
-2.43.0
+> Following tests for fanotify code in v6.13.
 
+> 1. The new test case in fanotify13 fails as follows on kernels v6.6..v6.12:
+
+> fanotify13.c:282: TFAIL: handle_bytes (0) returned in event does not equal to handle_bytes (24) returned in name_to_handle_at(2)
+> fanotify13.c:282: TFAIL: handle_bytes (0) returned in event does not equal to handle_bytes (24) returned in name_to_handle_at(2)
+> fanotify13.c:282: TFAIL: handle_bytes (180003) returned in event does not equal to handle_bytes (24) returned in name_to_handle_at(2)
+
+> The fix was already backported to v6.12.10.
+> It was also backported to v6.6.72,
+> but then reverted due to a backport bug in v6.6.73
+> and it now staged again for v6.6.74.
+
+
+> 2. The new variant of fanotify21 is skipped on kernels <= v6.12
+
+> This variant tests the new feature flag FAN_REPORT_FD_ERROR, which is
+> not effectively a bug fix.
+
+> Because this feature was added as a consequence of a bug report,
+> it was auto backported to v6.12.5 and to v6.6.66, but I do not
+> feel comfortable with adding a fix tag to force distros to backport
+> this feature.
+
+We have git freeze before new release. But IMHO this should go in.
+It works well on v6.13, I'll retest it on SLES kernels.
+
+Kind regards,
+Petr
+
+> Thanks,
+> Amir.
+
+> Amir Goldstein (5):
+>   fanotify13: Verify that we did not get an extra event
+>   fanotify13: Add test case for FAN_DELETE_SELF
+>   fanotify05: Test reporting overflow event with FAN_REPORT_FD_ERROR
+>   fanotify21: Test reporting event with RDWR fd on RO mount
+>   fanotify21: Test reporting fd open errors with FAN_REPORT_FD_ERROR
+
+>  include/lapi/fanotify.h                       |  4 +
+>  testcases/kernel/syscalls/fanotify/fanotify.h |  1 +
+>  .../kernel/syscalls/fanotify/fanotify05.c     | 18 +++-
+>  .../kernel/syscalls/fanotify/fanotify13.c     | 90 ++++++++++++++++---
+>  .../kernel/syscalls/fanotify/fanotify21.c     | 89 ++++++++++++++++--
+>  5 files changed, 177 insertions(+), 25 deletions(-)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
