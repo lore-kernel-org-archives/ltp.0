@@ -4,92 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 853CBC02181
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 12:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5FD5C02181
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 12:48:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1BB543C2FD0
-	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 13:33:55 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9CE243C2F6A
+	for <ltp@archiver.kernel.org>; Wed, 22 Jan 2025 13:48:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A98BC3C2CF7
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 13:33:39 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=svens@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D873C3C2977
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 13:48:34 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9EBF1141D0DB
- for <ltp@lists.linux.it>; Wed, 22 Jan 2025 13:33:38 +0100 (CET)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50M2XGCB009586;
- Wed, 22 Jan 2025 12:33:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=w0ce1D49YlNg3XqIwV8ptSJKYH5N/S
- VmnB67uctgow0=; b=PNlEn4pLInnKE9NkLQMtds8w2/Vdrtz/GwgINoM4KUHbDZ
- q8lIhGKgCbd04wtzIrH7DxvDzbvqEP+D8Gb7L8dKZ0Id0869SJT6EqIeg0Ajd6UO
- f2pZXpwIwNIISFcY3mY28tr8VgOKoP+Cytj9bgqALn4OsHEcOY6uNUIS97SexMU+
- 0pRPwaxQVZuqtO9pjpVgxuh17UNmnAmf4XD8WIGB72KNMZ63gHg/HmrIbFq1C3OG
- NoBO+VX58fWfNCNslCuYTevtiVVjiB9wXPkOHhh6CqkmGbAXE46C3MaSlLJW44V3
- ugp3oxr6SfaYA70VZcBrkhQQtMbkBcgTFV3CMAEQ==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44aee1d0pm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 22 Jan 2025 12:33:36 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50MBWitn032222;
- Wed, 22 Jan 2025 12:33:36 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 448rujr344-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 22 Jan 2025 12:33:35 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
- [10.20.54.102])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 50MCXYdc60555766
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 22 Jan 2025 12:33:34 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4F79720043;
- Wed, 22 Jan 2025 12:33:34 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 356E520040;
- Wed, 22 Jan 2025 12:33:34 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Wed, 22 Jan 2025 12:33:34 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-In-Reply-To: <Z5DkUNyjq9x-jY7v@yuki.lan> (Cyril Hrubis's message of "Wed, 22
- Jan 2025 13:28:00 +0100")
-References: <20250122100915.3126008-1-svens@linux.ibm.com>
- <20250122102648.GA29598@pevik> <Z5DQFuQiIAGAqtK4@yuki.lan>
- <yt9da5bj6o7f.fsf@linux.ibm.com> <Z5DkUNyjq9x-jY7v@yuki.lan>
-Date: Wed, 22 Jan 2025 13:33:33 +0100
-Message-ID: <yt9d5xm76naa.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C8B6F140113B
+ for <ltp@lists.linux.it>; Wed, 22 Jan 2025 13:48:33 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EBA9D21746;
+ Wed, 22 Jan 2025 12:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1737550112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=yZqfYnRekbaw34gkoxW6b6gk3+q42zwHMMfc7fv9+qY=;
+ b=LHgi3oaXboyg8hgu5nc7KJs2vUxgA0PMCnj8BDx6UQ0yZ7ZLfJmp1EKXCk6hS3yKZ5hmKt
+ 3+FHX8rfIYkTpnHkfZnxVqHzmfVpMh+9lPfduAGedouO1xnOAOrKi06bSioPzUeIQPIp3l
+ hmjVbMvbRV9tvy8rdh/aiSYRGc4EzXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1737550112;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=yZqfYnRekbaw34gkoxW6b6gk3+q42zwHMMfc7fv9+qY=;
+ b=SJ3hycYsin9zrWjn3hkZ/IBxBpyecgvPYRT/IwSIQlr79+7SDZjZF/2ynsUmC/koN1UC4i
+ cVn0LbERi8y8iZDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=geL0qLpm;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Y+ti0OGB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1737550111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=yZqfYnRekbaw34gkoxW6b6gk3+q42zwHMMfc7fv9+qY=;
+ b=geL0qLpmf5hwHNuKLh4CgPp0TQmmdoEt1mp3rCOgxr3HaHdfRuX6rR7gJ47JuRE9v4rwZb
+ NAjecric81x3VuI2KQCv40m2rnBFunRwf3xAKec44Gfaw0d+mSgXaE3/z95xwY+ZAeQdOy
+ 1Zujvv3wRKdz5ico4MaY5p7x/cUPibQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1737550111;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=yZqfYnRekbaw34gkoxW6b6gk3+q42zwHMMfc7fv9+qY=;
+ b=Y+ti0OGBIoSYKGZyW2JwmAwty1iCwsSUONt0GKNFc8IIjzLKme0vqCeCRtDjmDaD6ilSUY
+ rdnN8q6EQaRzKvAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74E34136A1;
+ Wed, 22 Jan 2025 12:48:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Pf+VEB/pkGeANAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 22 Jan 2025 12:48:31 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 22 Jan 2025 13:48:25 +0100
+Message-Id: <20250122-cyril_script_update_timeouts-v1-0-5f668bbc6e0c@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yTFDBacY6uxaq9YrcjoiOUVS-W-CRuaU
-X-Proofpoint-GUID: yTFDBacY6uxaq9YrcjoiOUVS-W-CRuaU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-22_05,2025-01-22_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=594 priorityscore=1501 bulkscore=0
- spamscore=0 malwarescore=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501220093
+X-B4-Tracking: v=1; b=H4sIABnpkGcC/x3MSwqDMBAA0KvIrBtIot14lVJCnIx1wE+YiWIR7
+ 97Q5du8C5SESaFvLhA6WHlbK9yjAZzi+iHDqRq89U/rvDP4FZ6DonAuYc8pFgqFF9r2oqaLiC1
+ aO7QJoRZZaOTz37/e9/0D1aqT2m4AAAA=
+X-Change-ID: 20250121-cyril_script_update_timeouts-4acc3c00b3dc
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737550111; l=4705;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=dgD3ZF5r6F38Jagam2rNOyaiukV75FR1pwj1nqV16uc=;
+ b=DEnO+5+yknnezeKRVFVb+MdQkFkwknZaaX7oZ1G6pHXo6/YhCsLqrN/oq+yOb4ADonhxbacKq
+ zZHwkOB2IQTB8/5kzL2yBSUWzsaUGSSRuvxCIoIaOGaXYwyideknqgi
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: EBA9D21746
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mmap01: initialize buffer in check_file()
+Subject: [LTP] [PATCH 0/2] Update test timeouts in an automated way
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,43 +125,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+First patch adds a script that can parse kirk test results, calculate
+timeouts and patch tests with the newly calculated timeouts.
 
-> Hi!
->> >> > mmap01 reported random test failures. Turns out the
->> >> > the temporary buffer in check_file() isn't initialized.
->> >> > The SAFE_READ reads less then sizeof(buf) bytes so the
->> >> > rest stays initialized and might contain bytes check_file()
->> >> > is looking for.
->> >> 
->> >> Looks reasonable to me.
->> >> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->> >> 
->> >> @Cyril a candidate for merge before the release.
->> >
->> > Alternatively we could use the return value from the SAFE_READ() instead
->> > of the buf_len. Also I suppose that we could check that we read at least
->> > something.
->> 
->> I wonder whether a check that strlen(STRING) bytes was read is
->> sufficient, and if it's more just FAIL the test? My understanding of the
->> test is that the data written beyond file's end isn't yet synced, so
->> if we can read more bytes that would already be an error?
->
-> I would say yes, but it does not hurt to keep the check that the file
-> data were not corrupted by the write after the file end. So maybe we
-> just need to:
->
-> 1. check that we read right size
-> 2. check that the buffer has correct bytes
+Second patch updates tests timeouts using this script with a results
+captured on RPi zero.
 
-Ok. I'll change the patch and send a V2 later.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Cyril Hrubis (2):
+      scripts: Add simple script for calculating timeouts
+      syscalls: Update test timeouts
+
+ scripts/calctimeouts.py                            | 232 +++++++++++++++++++++
+ testcases/kernel/syscalls/access/access01.c        |   1 +
+ testcases/kernel/syscalls/add_key/add_key05.c      |   1 +
+ testcases/kernel/syscalls/alarm/alarm05.c          |   1 +
+ testcases/kernel/syscalls/alarm/alarm06.c          |   1 +
+ testcases/kernel/syscalls/alarm/alarm07.c          |   1 +
+ testcases/kernel/syscalls/bind/bind04.c            |   1 +
+ testcases/kernel/syscalls/bpf/bpf_prog05.c         |   1 +
+ testcases/kernel/syscalls/bpf/bpf_prog06.c         |   1 +
+ testcases/kernel/syscalls/bpf/bpf_prog07.c         |   1 +
+ testcases/kernel/syscalls/cachestat/cachestat01.c  |   1 +
+ testcases/kernel/syscalls/cachestat/cachestat04.c  |   1 +
+ testcases/kernel/syscalls/chdir/chdir01.c          |   1 +
+ .../kernel/syscalls/clock_gettime/leapsec01.c      |   1 +
+ .../syscalls/clock_nanosleep/clock_nanosleep01.c   |   1 +
+ .../syscalls/clock_settime/clock_settime03.c       |   1 +
+ .../kernel/syscalls/close_range/close_range01.c    |   1 +
+ testcases/kernel/syscalls/connect/connect02.c      |   1 +
+ testcases/kernel/syscalls/creat/creat05.c          |   1 +
+ testcases/kernel/syscalls/creat/creat09.c          |   1 +
+ testcases/kernel/syscalls/execve/execve05.c        |   1 +
+ testcases/kernel/syscalls/execveat/execveat03.c    |   1 +
+ testcases/kernel/syscalls/fallocate/fallocate04.c  |   1 +
+ testcases/kernel/syscalls/fallocate/fallocate05.c  |   1 +
+ testcases/kernel/syscalls/fallocate/fallocate06.c  |   2 +-
+ testcases/kernel/syscalls/fanotify/fanotify01.c    |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify03.c    |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify05.c    |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify06.c    |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify09.c    |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify10.c    |   1 +
+ testcases/kernel/syscalls/fchmodat2/fchmodat2_01.c |   1 +
+ testcases/kernel/syscalls/fcntl/fcntl14.c          |   1 +
+ testcases/kernel/syscalls/fcntl/fcntl36.c          |   1 +
+ testcases/kernel/syscalls/fdatasync/fdatasync03.c  |   1 +
+ testcases/kernel/syscalls/fgetxattr/fgetxattr01.c  |   1 +
+ .../kernel/syscalls/fremovexattr/fremovexattr01.c  |   1 +
+ .../kernel/syscalls/fremovexattr/fremovexattr02.c  |   1 +
+ testcases/kernel/syscalls/fsconfig/fsconfig01.c    |   1 +
+ testcases/kernel/syscalls/fsconfig/fsconfig03.c    |   1 +
+ testcases/kernel/syscalls/fsetxattr/fsetxattr01.c  |   1 +
+ testcases/kernel/syscalls/fsmount/fsmount01.c      |   1 +
+ testcases/kernel/syscalls/fsmount/fsmount02.c      |   1 +
+ testcases/kernel/syscalls/fsopen/fsopen01.c        |   1 +
+ testcases/kernel/syscalls/fspick/fspick01.c        |   1 +
+ testcases/kernel/syscalls/fspick/fspick02.c        |   1 +
+ testcases/kernel/syscalls/fstatfs/fstatfs01.c      |   1 +
+ testcases/kernel/syscalls/fsync/fsync01.c          |   1 +
+ testcases/kernel/syscalls/fsync/fsync04.c          |   1 +
+ testcases/kernel/syscalls/getpid/getpid01.c        |   1 +
+ testcases/kernel/syscalls/getxattr/getxattr02.c    |   1 +
+ testcases/kernel/syscalls/getxattr/getxattr03.c    |   1 +
+ testcases/kernel/syscalls/inotify/inotify03.c      |   1 +
+ testcases/kernel/syscalls/inotify/inotify05.c      |   1 +
+ testcases/kernel/syscalls/inotify/inotify07.c      |   1 +
+ testcases/kernel/syscalls/inotify/inotify08.c      |   1 +
+ testcases/kernel/syscalls/inotify/inotify11.c      |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl02.c          |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl04.c          |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl08.c          |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl09.c          |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl_ficlone02.c  |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c  |   1 +
+ .../kernel/syscalls/ioctl/ioctl_ficlonerange01.c   |   1 +
+ .../kernel/syscalls/ioctl/ioctl_ficlonerange02.c   |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl_loop01.c     |   1 +
+ 66 files changed, 297 insertions(+), 1 deletion(-)
+---
+base-commit: d3df587ed1ee3f881f802f5060506a8192c38e0d
+change-id: 20250121-cyril_script_update_timeouts-4acc3c00b3dc
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
