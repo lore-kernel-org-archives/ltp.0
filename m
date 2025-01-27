@@ -4,118 +4,195 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 126CFC02188
-	for <ltp@archiver.kernel.org>; Mon, 27 Jan 2025 17:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30380C02188
+	for <ltp@archiver.kernel.org>; Mon, 27 Jan 2025 18:11:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1738001514; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=LziDZWIbEsMqNG8wT4kutMMlNDgpqRx5uDNR8PGMyC4=;
+ b=YUj2+wwHecdWGdye6c7k45y5S2ZWrWMN/5Dfv35tFfF0IWNkz7Xnk1PY0uNeEKSYP+rND
+ mzNRQUb02d8t0PrhicwtQQFZGAimKFwJpRTAxcm3jEtVaalH4kLLJEz95q/wNd37G/sfleT
+ gPXtAxw5B50EUbKEXynEpKZGPHfS5X0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4CA5B3C6586
-	for <ltp@archiver.kernel.org>; Mon, 27 Jan 2025 18:15:08 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8761A3C65EF
+	for <ltp@archiver.kernel.org>; Mon, 27 Jan 2025 19:11:54 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 024EF3C275F
- for <ltp@lists.linux.it>; Mon, 27 Jan 2025 18:14:50 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 2B8383C2C38
+ for <ltp@lists.linux.it>; Mon, 27 Jan 2025 19:11:32 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=hpe.com
+ (client-ip=148.163.147.86; helo=mx0a-002e3701.pphosted.com;
+ envelope-from=coey.minear@hpe.com; receiver=lists.linux.it)
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com
+ [148.163.147.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A3ED1140F6DC
- for <ltp@lists.linux.it>; Mon, 27 Jan 2025 18:14:49 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 68666635F00
+ for <ltp@lists.linux.it>; Mon, 27 Jan 2025 19:11:28 +0100 (CET)
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+ by mx0a-002e3701.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50RHhRV1021889
+ for <ltp@lists.linux.it>; Mon, 27 Jan 2025 18:11:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=
+ content-type:date:from:message-id:mime-version:subject:to; s=
+ pps0720; bh=hzDv7e4uAt8/69aGWju1simfoXRRO14kGBUWQxDx7HU=; b=ghQz
+ /o/fA+OCRq7kB5TIFlHIvBSQfnb9aiUDFyu2FJREBxUF629ViziVxgDrqVvsz33S
+ 0eUUuKG2qPWSV03VvKhqIR/n02BfgX7lrtswaGUvll9jzZ1j7sAHWAjlYPnsIf3L
+ FyS6w4MnaVW/XDbTu+fq0npeJVcWqh1DBEnG7wVComa/T/wOfIVDv7TJcW7iN4FC
+ KXdgxd897PP678FdpX2zlVZBcjgfo3JvbOdARoWAIJdP1FidpywRVmjgSRC6DJEm
+ T+2ntJ9IQzLrZmquj6mqhxK89cdOuIPbFxCh1F5492lnNRFv3yq5l3ffbEv3ZT+T
+ nDZXUqc0Juu976ReTg==
+Received: from p1lg14880.it.hpe.com ([16.230.97.201])
+ by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 44eess87sd-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Mon, 27 Jan 2025 18:11:26 +0000 (GMT)
+Received: from p1wg14925.americas.hpqcorp.net (unknown [10.119.18.114])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D00A11F383;
- Mon, 27 Jan 2025 17:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737998088;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n5PKsDZUFwm6Vl++f1pZ4VObNjaXXp84MbOFTfZo4GY=;
- b=TZZ/vUhjQ7UCl7RNSHlB58ZKfI9EvAooxXVu1nWugl35t6cMhFT67Bu8+JDY5ps2aQP2dq
- cS57vE16c6RrcnWYCvWSN+7pKF8dNVlfYG/6lPRsQLsmjvnmtL1pqOktu22XbC8sKLQp9p
- soyQkzHE+0yIZ8mMh1Aw9a6FxU80ico=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737998088;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n5PKsDZUFwm6Vl++f1pZ4VObNjaXXp84MbOFTfZo4GY=;
- b=P7xx/jyLhmLLuGUYrJEDo5eowmdwOc85K4XG1K0upVWfKNcAdYQGzAbcfk40qMJZQEM1mm
- DxHrs+sx48RLc5CQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=M61I9LTU;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0DqEASDu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1737998087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n5PKsDZUFwm6Vl++f1pZ4VObNjaXXp84MbOFTfZo4GY=;
- b=M61I9LTU/D8M+sxqWUd3qL0xyZQ9J0AmnJx1VWMngLm3m/sy0JDjJn3XwCaxn3c1kwlWTi
- +9/OHnTB3CG2x4cFlKy8SRLJ+MAVITLy1glGvmgv/SfFuP9jqes0VINMZ88beFlcDhZg9l
- 2yBkURdq4QspbRvSpfyF7R4AQrXvneg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1737998087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n5PKsDZUFwm6Vl++f1pZ4VObNjaXXp84MbOFTfZo4GY=;
- b=0DqEASDu+w1uOskvsIOwhecWEor/B1FSqdnYCqiom3EyEB+jdEgBTpLiIM41EM+fzPEAQ1
- WaH74g0wrQ4jlkCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 48E2E13715;
- Mon, 27 Jan 2025 17:14:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1PyODge/l2dLHAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 27 Jan 2025 17:14:47 +0000
-Date: Mon, 27 Jan 2025 18:14:41 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Xiao Yang <ice_yangxiao@163.com>
-Message-ID: <20250127171441.GA304248@pevik>
-References: <20240925084921.16352-1-ice_yangxiao@163.com>
+ by p1lg14880.it.hpe.com (Postfix) with ESMTPS id BD09C801739
+ for <ltp@lists.linux.it>; Mon, 27 Jan 2025 18:11:25 +0000 (UTC)
+Received: from p1wg14927.americas.hpqcorp.net (10.119.18.117) by
+ p1wg14925.americas.hpqcorp.net (10.119.18.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 27 Jan 2025 06:11:10 -1200
+Received: from p1wg14919.americas.hpqcorp.net (16.230.19.122) by
+ p1wg14927.americas.hpqcorp.net (10.119.18.117) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11 via Frontend Transport; Mon, 27 Jan 2025 06:11:05 -1200
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (192.58.206.38)
+ by edge.it.hpe.com (16.230.19.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 27 Jan 2025 06:11:11 -1200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DgsuHcJyL/YJDK8mlc4nD5svnwrs5J4iGGaudT7mJGN0GDEye32b1DZX0bvJEXRoSUCqOGtw7LkKd3G4Kz7UqadIRiTaVRbWK8ekxwbPaG+dg3/A3w6Rgxp5NvE7a6gSZRi4pV+fcQDJxH7+M45AvuLhIyUCE1dsOJikKv1jDg+7QFfbtO19MqQSo5atoI75/MQ8IPhwwOSeZ3olNrSP4fgqeDZJx3Fh3i5herYc87c3Tj0aj8zXBiDrTFoYnEL4FW+RAxG75TtyECgVkVKYsOr2EqjtcIKxSJ+NHfyuWKecf+3562b5rSkRBWyt3/Iln25c5vP8gUTy1p16RbAN9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hzDv7e4uAt8/69aGWju1simfoXRRO14kGBUWQxDx7HU=;
+ b=gi6mSY0BixoIiD69RyiREavr+p1Fk5ofE58U1SjMvD3Fyxo8+8kL2srJJz5Z6anPWTDqblqL08OzF7CbQ3r4e7OGIVNOlxfLcSwNLDJXr4q3MYV0GMjrQqTYElCSOz1JODkTBkjoSKLwelH3kU81V1SO9aoX6UytJdER15tpbmH7+6nrVx9L5Lrj28waMvTGsrRWOLTUDI5eXcrJa1X/h55QZwDaJ+CfnyVFBVffGnmGisSkYrRViQkzsv/LK4/H9RWGN3PfVjn5o5Xbs+XUASHygzwK39kr5LVDDRZFNdFZ16zlzq60ABTvyVdWy115ccKrl9xVxgHleL4CEPTJ/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:208:3ce::15)
+ by LV3PR84MB3553.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:408:1ab::20)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.23; Mon, 27 Jan
+ 2025 18:11:09 +0000
+Received: from MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::6431:db58:d32e:2b02]) by MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::6431:db58:d32e:2b02%6]) with mapi id 15.20.8377.009; Mon, 27 Jan 2025
+ 18:11:09 +0000
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: Possible fix for LTP Issue #1219
+Thread-Index: AQHbcOXhivfgRX1T+EGZAq3G4stlcQ==
+Date: Mon, 27 Jan 2025 18:11:09 +0000
+Message-ID: <MN0PR84MB3022EFF407AA0C3130EE9728EAEC2@MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-reactions: allow
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR84MB3022:EE_|LV3PR84MB3553:EE_
+x-ms-office365-filtering-correlation-id: 0b8409e9-027e-478e-7d2c-08dd3efdf9c4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+ ARA:13230040|366016|1800799024|376014|8096899003|13003099007|38070700018; 
+x-microsoft-antispam-message-info: =?Windows-1252?Q?gaVZiaNc7JPOmF0FYLJUbQOvYjVnNIL6LMls9s5+xq/Hld0Wja2TSLzo?=
+ =?Windows-1252?Q?aYbnKCbnpreY2HF1yP0UsVTYxg94BnwZOq0gVmze2qqDefHktmmw8FpH?=
+ =?Windows-1252?Q?hHoGA/3MU+3avMPT9WMabvHo4GL7jWzQUij2XwUqt4mgnfdF3IkykNK9?=
+ =?Windows-1252?Q?0LsFIb0LP/mEgLpRxuoLUADyEA9dEo2RwpCaSpLxF2zUFUzwg9gTWKu/?=
+ =?Windows-1252?Q?alspOTdggolyNlT1nUqe1HzNj8LWVL4yEvqFly8BmQNVdIAHUZgMiw9r?=
+ =?Windows-1252?Q?zv30ppAUEXS62Z2LTAoM6DLap9pfAZ/zwJBHvR4HcIzA5n3AJzCPTUHi?=
+ =?Windows-1252?Q?ZK3wDhgwGGwYJ+NkPI8pRX0K5N30hjXL9jNehKZb/Eb6U4L4uyZAuNgZ?=
+ =?Windows-1252?Q?1JYfrbfY3G6wcMnYCU5vhT5pA/ZoiSaCmvCwsHe1UNGJ9kr1UDQtwIU+?=
+ =?Windows-1252?Q?UAnZmFpCyVBEOgayTp3e4pvoYqoDg+FV0oPYbBKwjzbmql06xvhDqWxs?=
+ =?Windows-1252?Q?decixaukch//czNUY/+iCjHuLHvO7ttcFdX6umIhJkNNNg2etIFgrKbp?=
+ =?Windows-1252?Q?P5v3ibo/XDbZgi5/4DgTS9lU9HyLsIzUfhdncgEFw8K5XjbpMWcKigOF?=
+ =?Windows-1252?Q?5+eaRGpq7+GbdfD4TCY2Dq0Xhfyny37FXrwD1JwCdDRByqcE4vcyg0l3?=
+ =?Windows-1252?Q?HHez1bR031T53VWJvdJWnyevP+4elLoCJa2uWN4i5qEd7K/zM4Go+iJZ?=
+ =?Windows-1252?Q?Mefo2mGvjfThdyRVYJJl76GpYeAlqnIdY+EtsGfELLO+Kp4ie5f3vqXf?=
+ =?Windows-1252?Q?HthpN7pHYoBGG75rfehWOI9X/BownDe3hL4JeL+WEh323xnO3zZr8nD5?=
+ =?Windows-1252?Q?mAloWLbocCrKVZaCZ2fSCtB49YKw105bngglyIy66+XbErru9WrueLD3?=
+ =?Windows-1252?Q?G/m6Vx2WQjTBRoobacXrXyuuw42pq4xZZ/ey/f5TzNR419TObaa/K1Kt?=
+ =?Windows-1252?Q?4TMw/BccHP7/ZIMuemSOALF/wDH0rWLbQPXZQL+ZrJtQYdT6ih7EZJe7?=
+ =?Windows-1252?Q?UEQ8FANknc6lv9rJt/slsyVGOBGUvZ9V/ssUlJXWevm/3B4qGWfePoSs?=
+ =?Windows-1252?Q?/ye65e8xkc7pEcM46TuOez5oQ8rQxlES31Dtga0VOnyoRUiCKVKgL1B6?=
+ =?Windows-1252?Q?2qmIDfL8co+8ytTViJUkCr2cCstECg0AzneCyfA7PzaFXlnM8iApa2eG?=
+ =?Windows-1252?Q?asisjLPuwbqxqg4PIxRNwBaBH3nl/QTJEic8sTgQ8Ttwq3xr41HAs/GS?=
+ =?Windows-1252?Q?ePv8gKCPiVw7jNW+qMuPjAkJinr/GrBMeVKotTcBQG50ZENyypu6T8J6?=
+ =?Windows-1252?Q?XoCkc59VI5Ct+3Llt6UhUDm2Bm1eGeJ3ie51KC/NPQZWPlWgPjlzidXR?=
+ =?Windows-1252?Q?ZNat6NUBtV26Hh95L6npZpXsVNLH9s3UqNsk3nHBapbqfoFYUQRAmHPP?=
+ =?Windows-1252?Q?tm/hqCowEaz0cqvNEIsv8Cxpj4tcvEQbzcUz7CwauxStwGIPF1SVtCYv?=
+ =?Windows-1252?Q?qdSM7l2IVg5rey2f?=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(1800799024)(376014)(8096899003)(13003099007)(38070700018);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?aUWj3pfFdyPqjs53ZwwhTP4jRYXXtnQi6ez3iBJRaBwFWk71UBEfQrMC?=
+ =?Windows-1252?Q?cZ6m9VQ3eqATI6ofveqOH18CskQaW95kNFZQ2pJoZJem+UHSujR0DoJU?=
+ =?Windows-1252?Q?wORcTlWWZ12o30BlhzF0Jjn/9pXNBBJJ0ZwR+LfgcD9IcHmAJlGE7sSx?=
+ =?Windows-1252?Q?4ZLklmhNsfx5MNjqT0ZJB9IfloiXXC3UjMC51/R172+U6L+6A3IQzPAN?=
+ =?Windows-1252?Q?C4AxMeTlPb1m1mVjnVdkgR9SsHyj9ZtKbMRJbp+sxDCvF9bfQwcURY+x?=
+ =?Windows-1252?Q?GPkeFpfxqh76SPYu1PllRGoAXvfPeLSgom+fmcTbWztNlx6BVlwXBRXS?=
+ =?Windows-1252?Q?3V9TST2VzaxxDbMASZ5z4omGll9m7YQMJsWLS7+3cGWLtATSLaczPbkW?=
+ =?Windows-1252?Q?xXO1lkWQ++kNb5fqZSF34NLVQylFbVZmNMwvZntcPH4Ife8cc+5TeGH9?=
+ =?Windows-1252?Q?D0N/vIgQ+tJM/CDREPRst1J4Au7gpZXRUbSJfLDwBt7/bKnWpsWxb7H+?=
+ =?Windows-1252?Q?WJITElYsffheX2H+ez487cVGN7H/OUh4KT7GlpjXE2+F39O0Zo+QiOfB?=
+ =?Windows-1252?Q?cF04WuMWJaDT6re/WFeMLkVsAEyzDONt/WzBU0LPJW1vgj+UTCFInNsn?=
+ =?Windows-1252?Q?PbE3BHgsLr7zEL3w07p+Uf4a9BdRx3V8vWRI6y8jdooIZX9DmAiYOXjQ?=
+ =?Windows-1252?Q?rJlby8p9S0RXcEqYW7FVSosixnNGSv4GIKL1jBT+/cjXaPkhP4nYV8uo?=
+ =?Windows-1252?Q?3eKogdNrS9wzyRLzQ+QdNnFggox5wymL8TsraEFyUwrzaKPq3g6QikFI?=
+ =?Windows-1252?Q?PaTp/viC4wQiWjgfv1l7+43lQFtxwOV7T44X+yS8Ysyfk4QyfDioXc3E?=
+ =?Windows-1252?Q?kdEFTxk5Y2iyFLlWb602TPmwQoKFz75h2qsuB6OVvBLOdBiw9IoSv4dJ?=
+ =?Windows-1252?Q?R5J0BD7qSPan0VeiSJhZiaYwqVexiIH6zQMsD3kaetnq/HlSnXuXDmaZ?=
+ =?Windows-1252?Q?aiAd5snuFvoXnJoLywWkc5aiXNFNwfl1aFqYv9LyYswMEfzTw1HRrQ9q?=
+ =?Windows-1252?Q?1SVbKSwKHK3eNrhrbt33/Fx840ic6/XFO8c7WRkRckNMR1ReABSY5WQb?=
+ =?Windows-1252?Q?XhkpJ6Ccoh44z2tyipjdRuZYF+i57PDJPzcxNYEFiD2ROb0oEVQ7awqy?=
+ =?Windows-1252?Q?3LO3nJzvxziKyw24KwdZogJdK08kHMzEILlbxUJ9AXMKD8AtXuSYT58N?=
+ =?Windows-1252?Q?55uogd9jbfUqOs/SSlVUBS8gI0TMdxjiC5IGRt/wxYFsUQZotMFr/RZK?=
+ =?Windows-1252?Q?5sAXXHZnduvu3xxy2Q9aH309f1UXHG6P2NQZoDHCIngW1g83TC1GJePx?=
+ =?Windows-1252?Q?j1z7jP2Q/vDkxVtlr4CHR4qV4wfb3zsXr6/gul9MDXfxTpyjwLxyUd8t?=
+ =?Windows-1252?Q?TIsvq7ckAKwNIxPiA33gGiBWBISCxbmkT+fdAdMHeI8+SWsJ9xnyuWMI?=
+ =?Windows-1252?Q?mOKQeCP6A9XYq1JYhlGz7EzbrjLNu856EQKW/zN819nHQ3OX/CNXEzVk?=
+ =?Windows-1252?Q?0RsuiI8sjzb2KkEfOh+otzIIDmeVTIdXKrS6hp4j1ALdoYbwRyYs9OHM?=
+ =?Windows-1252?Q?ieQkzrl+ELGtCsJ0oezV/H6LrLkvlxnly5x1mSYQV8zIHIiQuuh6Py8j?=
+ =?Windows-1252?Q?zypRNPtSBs2dtBQvuX1fvfzfhrBoYTY/JoXT4GIAZvyHJy4HevsnoQ?=
+ =?Windows-1252?Q?=3D=3D?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240925084921.16352-1-ice_yangxiao@163.com>
-X-Rspamd-Queue-Id: D00A11F383
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FREEMAIL_TO(0.00)[163.com]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FREEMAIL_ENVRCPT(0.00)[163.com]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR84MB3022.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b8409e9-027e-478e-7d2c-08dd3efdf9c4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jan 2025 18:11:09.4386 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lqj/o5YWX8K08eVDNaXVmv5n4evPdfozIse3mJyp9F0FCoEjo3eDdP4WP5uPc/3gnbDkjF99pGfBam6tAId1DQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR84MB3553
+X-OriginatorOrg: hpe.com
+X-Proofpoint-GUID: 67vLrmK8Sis5GeHvLLkPFS5YqAa5YTBH
+X-Proofpoint-ORIG-GUID: 67vLrmK8Sis5GeHvLLkPFS5YqAa5YTBH
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-27_08,2025-01-27_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999
+ phishscore=0 impostorscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501270143
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/{fanotify17,
- getxattr05}: Fix the ENOSPC error
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Possible fix for LTP Issue #1219
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,71 +204,139 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: "Minear, Coey via ltp" <ltp@lists.linux.it>
+Reply-To: "Minear, Coey" <coey.minear@hpe.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Li,
+I created an issue against LTP: https://github.com/linux-test-project/ltp/i=
+ssues/1219. =91pevik=92 suggested that I send a patch here. I=92ll admit th=
+at I=92m uncertain what form would be preferred, but here=92s what I=92ll s=
+hare:
+[[PATCH]]
+diff --git a/testcases/kernel/kvm/kvm_pagefault01.c b/testcases/kernel/kvm/=
+kvm_pagefault01.c
+index 16b3137c0..649bf429a 100644
+--- a/testcases/kernel/kvm/kvm_pagefault01.c
++++ b/testcases/kernel/kvm/kvm_pagefault01.c
+@@ -214,6 +214,10 @@ static struct tst_test test =3D {
+        .setup =3D setup,
+        .cleanup =3D tst_kvm_cleanup,
+        .needs_root =3D 1,
++       .needs_drivers =3D (const char *const []) {
++               "kvm",
++               NULL
++       },
+        .supported_archs =3D (const char *const []) {
+                "x86_64",
+                NULL
+diff --git a/testcases/kernel/kvm/kvm_svm01.c b/testcases/kernel/kvm/kvm_sv=
+m01.c
+index 32d15526b..f81602567 100644
+--- a/testcases/kernel/kvm/kvm_svm01.c
++++ b/testcases/kernel/kvm/kvm_svm01.c
+@@ -108,6 +108,10 @@ static struct tst_test test =3D {
+        .test_all =3D tst_kvm_run,
+        .setup =3D tst_kvm_setup,
+        .cleanup =3D tst_kvm_cleanup,
++       .needs_drivers =3D (const char *const []) {
++               "kvm",
++               NULL
++       },
+        .supported_archs =3D (const char *const []) {
+                "x86_64",
+                "x86",
+diff --git a/testcases/kernel/kvm/kvm_svm02.c b/testcases/kernel/kvm/kvm_sv=
+m02.c
+index 6914fdcba..701f2731d 100644
+--- a/testcases/kernel/kvm/kvm_svm02.c
++++ b/testcases/kernel/kvm/kvm_svm02.c
+@@ -129,6 +129,10 @@ static struct tst_test test =3D {
+        .test_all =3D tst_kvm_run,
+        .setup =3D tst_kvm_setup,
+        .cleanup =3D tst_kvm_cleanup,
++       .needs_drivers =3D (const char *const []) {
++               "kvm",
++               NULL
++       },
+        .supported_archs =3D (const char *const []) {
+                "x86_64",
+                "x86",
+diff --git a/testcases/kernel/kvm/kvm_svm03.c b/testcases/kernel/kvm/kvm_sv=
+m03.c
+index 87164d013..87f9887d8 100644
+--- a/testcases/kernel/kvm/kvm_svm03.c
++++ b/testcases/kernel/kvm/kvm_svm03.c
+@@ -88,6 +88,9 @@ static void *vm_thread(void *arg)
 
-> If the value of max_user_namespaces is set to 10 but more than
-> 10 user namspaces are currently used on system.  In this case,
-> these tests fail with ENOSPC. for example:
+static void setup(void)
+{
++       /* Run the common 'tst_kvm_setup()' first. */
++       tst_kvm_setup();
++
+        struct sigaction sa =3D { .sa_handler =3D sighandler };
+        pthread_mutexattr_t attr;
 
-> # lsns -t user -n | wc -l
-> 17
+@@ -155,6 +158,10 @@ static struct tst_test test =3D {
+        .setup =3D setup,
+        .cleanup =3D cleanup,
+        .min_cpus =3D 2,
++       .needs_drivers =3D (const char *const []) {
++               "kvm",
++               NULL
++       },
+        .supported_archs =3D (const char *const []) {
+                "x86_64",
+                "x86",
+diff --git a/testcases/kernel/kvm/kvm_svm04.c b/testcases/kernel/kvm/kvm_sv=
+m04.c
+index e69f0d4be..d8d3bdd96 100644
+--- a/testcases/kernel/kvm/kvm_svm04.c
++++ b/testcases/kernel/kvm/kvm_svm04.c
+@@ -297,6 +297,10 @@ static struct tst_test test =3D {
+        .test_all =3D tst_kvm_run,
+        .setup =3D tst_kvm_setup,
+        .cleanup =3D tst_kvm_cleanup,
++       .needs_drivers =3D (const char *const []) {
++               "kvm",
++               NULL
++       },
+        .supported_archs =3D (const char *const []) {
+                "x86_64",
+                "x86",
+diff --git a/testcases/kernel/kvm/lib_host.c b/testcases/kernel/kvm/lib_hos=
+t.c
+index 8e3d6094e..17215c23b 100644
+--- a/testcases/kernel/kvm/lib_host.c
++++ b/testcases/kernel/kvm/lib_host.c
+@@ -323,7 +323,14 @@ void tst_kvm_clear_guest_signal(struct tst_kvm_instanc=
+e *inst)
 
-> # ./fanotify17
-> ...
-> fanotify17.c:174: TINFO: Test #0: Global groups limit in init user ns
-> fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
-> fanotify17.c:174: TINFO: Test #1: Global groups limit in privileged user ns
-> fanotify17.c:154: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
-> tst_test.c:452: TBROK: Invalid child (6958) exit value 1
+void tst_kvm_setup(void)
+{
+-
++       /* Do a quick check that the 'kvm' module is actually loaded by
++          checking for '/dev/kvm'. If that device file is not present, then
++          the module is likely not loaded in which case we should just CONF
++          out.
++       */
++       if (access("/dev/kvm", F_OK) !=3D 0) {
++                tst_brk(TCONF, "The test requires 'kvm' device, which is n=
+ot loaded.");
++       }
+}
 
-> Try to fix the issue by increasing the default value of
-> max_user_namespaces by 10.
+void tst_kvm_run(void)
+[[/PATCH]]
 
-How about merging this before release? I was able to reproduce:
-https://lore.kernel.org/ltp/20241104163845.GA1417282@pevik/
+I=92ll admit that this possibly contains parts that you may not want, but i=
+t includes the parts of the issue that I raised.
 
-Kind regards,
-Petr
+Coey Minear
 
-> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify17.c | 2 +-
->  testcases/kernel/syscalls/getxattr/getxattr05.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify17.c b/testcases/kernel/syscalls/fanotify/fanotify17.c
-> index 3ecb31b6e..a6206d953 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify17.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify17.c
-> @@ -224,7 +224,7 @@ static void setup(void)
->  		user_ns_supported = 0;
->  	} else if (!access(MAX_USERNS, F_OK)) {
->  		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
-> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
-> +		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns + 10);
->  	}
+-- =
 
->  	/*
-> diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
-> index d9717a695..f1c8e8391 100644
-> --- a/testcases/kernel/syscalls/getxattr/getxattr05.c
-> +++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
-> @@ -156,7 +156,7 @@ static void setup(void)
->  		user_ns_supported = 0;
->  	} else if (!access(MAX_USERNS, F_OK)) {
->  		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
-> -		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
-> +		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns + 10);
->  	}
-
->  }
-
--- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
