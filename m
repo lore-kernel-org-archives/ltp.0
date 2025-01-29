@@ -4,93 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27D0CC0218D
-	for <ltp@archiver.kernel.org>; Wed, 29 Jan 2025 17:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1738171179; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=6rpkGL7VWCf9oWH4uODReKU+usWZ/exh2WQVsiJ/r9M=;
- b=Hi+e/gEc0K8HrfQ5HvGagV+WU03lVRTtJe9U3G5fV568N5V1vA8JsK+Ivmctn8Gfkn+xU
- SP6vmJixbZCOKfn7Xg868pa2G33YSAkSSguiXjwAKBPIr6FHgGN+9iMpcC7cc4CNRnlwDEw
- p0iO6X2FatoKysm1YV9bxPabrnyNK0A=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31960C0218D
+	for <ltp@archiver.kernel.org>; Wed, 29 Jan 2025 21:42:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CFA93C6F84
-	for <ltp@archiver.kernel.org>; Wed, 29 Jan 2025 18:19:39 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 241293C6F9F
+	for <ltp@archiver.kernel.org>; Wed, 29 Jan 2025 22:42:41 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BAFB3C23C9
- for <ltp@lists.linux.it>; Wed, 29 Jan 2025 18:19:17 +0100 (CET)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
+ by picard.linux.it (Postfix) with ESMTPS id 4B36A3C2A49
+ for <ltp@lists.linux.it>; Wed, 29 Jan 2025 22:42:24 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E6FE76170A0
- for <ltp@lists.linux.it>; Wed, 29 Jan 2025 18:19:15 +0100 (CET)
-Received: by mail-pl1-x635.google.com with SMTP id
- d9443c01a7336-2166f1e589cso11907125ad.3
- for <ltp@lists.linux.it>; Wed, 29 Jan 2025 09:19:15 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C3CA4617D1E
+ for <ltp@lists.linux.it>; Wed, 29 Jan 2025 22:42:22 +0100 (CET)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-38789e5b6a7so87133f8f.1
+ for <ltp@lists.linux.it>; Wed, 29 Jan 2025 13:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1738186942; x=1738791742; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:reply-to:message-id:subject:cc:to:from:date
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=rr8sxsKiF/lU9vsbhVl5SmziNEiI8NAifs0lNyPeKH4=;
+ b=fwY+rPMK/uqBww+js1/uZSGyKoqQIDDzXiwIi08JZOQOMCJB0mH88+zF9NRFZqxChE
+ n0oDcCphz+LJHsOeDtSQxUCvdo8WuUSRXeYhjGrnR5IDow3FgVYXD4DuAWlpM2tjd9kP
+ mMGJXCnwNHlWTJDir4wzIK/ox/bLQhwT7YKQVTxK71NLUr1oJnqGrHGxvnJfR5FX6m23
+ lFM1njZ+WOoOdGngc5BwHOxm3Q7MOwrEfQo1xzt1wHVhcnAGKqBSyli6M9kQM8JVzulq
+ BUukrcJcY+D4g0OgIoV13W3ZFrxn5U6IC4vlA22Gs1+7mZ59EAtoz0jOpV9uWg89AiVh
+ KOOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1738171153; x=1738775953;
- h=in-reply-to:references:to:subject:message-id:date
- :content-transfer-encoding:mime-version:dkim-signature:from
+ d=1e100.net; s=20230601; t=1738186942; x=1738791742;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:reply-to:message-id:subject:cc:to:from:date
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=26r6Lxn/gZNPGEw+7tthsdkLbr5x8LE+5mVw61jJDhI=;
- b=AAzz3OsPGlkvId+7jDBadJIbRSYu4wHELQ2oTzDwCv/+Fr3Rc48WrJvgBt1hxUuays
- oKbXPGtVwbr8QQUe6W9mFQkShA5gyM3tbOKP+2DJ70kM/xFedT1UHE+73aP/RQDiqv6e
- ac2o4EPNTOct6kfwW+BASPrhHayVQh1YOdQJPHu+U4nGlJdeGdtGYmJkKMpK4aoeU9AJ
- +wFcGC6A4DxdMpJPAHlupUa3RS3OMPeLGwMOUrZoB6TUfc+JYlgwfLbcTYLbnQcMLcCf
- 7cLJCzmPPwjoB3zvCDRAws3p0nNfdMinhxYzV/NYBXbpNTwH5NUyzFi44vJala92a5Wc
- ATyA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXac3npJvK8nam1ajo0dG3MTuF9KmeYkFvMhKDAMftCfsryeVf+HPvl3qIeMp80STaYuVM=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzo5F4ZCeUnmp8IzrY0xweyLoC0GZUJxr317e9LHXENTgCCBkim
- vqF1pqIfKpZxsHnO5pkz5OuNsBAL6t01jrGt5OA+R89GDwos4WKyLgzppA==
-X-Gm-Gg: ASbGncv+eeLspIabDEivA4Zv4W+qWtskdKDuWf8yRFKNSJOb2Us3n6JK68qcDDqBC0a
- L9xZEBPF9/ruMBR91clJNJlCasswOPQetKr3Bh/VVmsHa8I/G11Ju98HYuCFtDeAohjmxFLL0xN
- lP0TYoWn8YfZeMO/jjjWbSBkkW8uCyrgQ+KPet+xBcspuiOe1aYPX6G1MrC8kEn0NUo1dxsy6Yf
- a9ehxkOZRe29k1unW9hJcAW+XR1o0PQ1qQp1er7ZBHXN4PekDCW20xNsQ6m3TC2VZk2LYNNJnYw
- vwr8Zfp8zw==
-X-Google-Smtp-Source: AGHT+IGOFCfbukJlmWIgCKWQBrvoBrVHlsY9xahF0ZbAh9vzdI8sNkx7lJGDtbvy3NkFcV7IuRte8g==
-X-Received: by 2002:a05:6a00:c88:b0:727:3c37:d5fb with SMTP id
- d2e1a72fcca58-72fd0c70535mr5769414b3a.16.1738171153111; 
- Wed, 29 Jan 2025 09:19:13 -0800 (PST)
-Received: from mail.marliere.net ([2604:a880:4:1d0::7f5:6000])
+ bh=rr8sxsKiF/lU9vsbhVl5SmziNEiI8NAifs0lNyPeKH4=;
+ b=kPBF4cH+VFTseiTENVnZCgAgyWoirXP1CuEope0mwW6lnNRbbAAOV0Mx+dDh47Yyc0
+ 2spvUwr+4J5tlqG7f0GXzzEnhB/SFJFccXZWV/384o3dS9va6mbKr+Ycdcbg1KZVrluh
+ ZN0YFQU6fN1oWJ63Ny+i5m+yJ5qurHa/rpE3zvsWO4NmTECpE4WCAH5KKcH7Pwaj235c
+ I2cv1u+v4C3yuQRU2qHSialx0qUXh0m1KCkN7fY6+47suqLzKzkYV9hUdw0JMxuzMUcN
+ L48u/sCdRVlYOxS6YO3IISVW7JBNVNvwHk77FxISjP4I/xe0jp/Kpq/8u/kvJ2dtU3La
+ s4PA==
+X-Gm-Message-State: AOJu0YxoRCMBU1FUCF5GCh1MTTNVfJF/fp+NnSZLfcBVJe16Gfu7/1Eo
+ oEqNIAGryoeWSSrefidq9tGawfb742EnSTXLTIZW3sTtZtRwYuNx
+X-Gm-Gg: ASbGnct6e1zXRBSxPkX2Yftic7aYiOfi4CIrfp24iCQLXP2mIc1p89qBySdbzpH4sph
+ 4//OyLRYa1SjWXedF3QV936yHAtsFbX/z8gM2LBKW8+I2ytjWXvE07takHPiFf7XvF9/sdvyCLz
+ ANOOBATR1YgwZGCM0qsQCkERmz84e2PlHKBG2LpLriSoWFPnSffwFBcL6cCdD4nSjkCyDEttF55
+ Noz/MYDPpcw6z0dGXFEDfip1dpBG0l3ZZuA/FQaH3/5ReYUu+sL2fX11Obm8I7+3RfZNEwk3aoY
+ OBGkEO4Hr5CgYCFnSHFg
+X-Google-Smtp-Source: AGHT+IFoSi4pQyWa540ZMOoVaZElt7UULsPNO8T5++ktbSr6E6fWptQOWZVXTTTpG3iQKBnwCrQDqw==
+X-Received: by 2002:a5d:6489:0:b0:38c:246f:b0b3 with SMTP id
+ ffacd0b85a97d-38c52097871mr4094679f8f.51.1738186941922; 
+ Wed, 29 Jan 2025 13:42:21 -0800 (PST)
+Received: from pevik (gw1.ms-free.net. [185.243.124.10])
  by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-ac490acf549sm8893504a12.35.2025.01.29.09.19.12
+ ffacd0b85a97d-38c5c0eccc3sm3189f8f.18.2025.01.29.13.42.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jan 2025 09:19:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
- s=2024; t=1738171150;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=26r6Lxn/gZNPGEw+7tthsdkLbr5x8LE+5mVw61jJDhI=;
- b=j2B8nmDMqVxTj3ZrM4Omu7Q6LWniT5EFywMG0zt2nOa/lgGs1Uf6Rj9AWLVfAq6mLhuDMv
- XlJvbNcSIZ5CdMMmSPxn6g1XdlbjOWScioHkuF4CVD98KBKp7GY1znFGBDCiUsSV1wUIue
- NLoOu8NQxjGlSN2Fuo3j77svIKlNsJZGGdvjQ5IcW4KsOajTISs5EYFYdtv9ut/LBKyLmT
- H5SllzTPy21/ZNtcORHbKdxOMliORBVFoN5Gcpue68LHd6Wh0/PqQPogZJBBN2mxvOwjqY
- yS0hA+43j8nrB0ZwPaMGii0FMgqCLIzSPwDCCz2bIVVUSWFp+ChPCewteK1WzQ==
-Authentication-Results: ORIGINATING;
- auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Mime-Version: 1.0
-Date: Wed, 29 Jan 2025 14:19:04 -0300
-Message-Id: <D7EQ8W8TM84D.T8OZ3RKV2RH3@marliere.net>
-To: "Andrea Cervesato" <andrea.cervesato@suse.com>, "Ricardo B. Marliere"
- <rbm@suse.com>, "Linux Test Project" <ltp@lists.linux.it>
-References: <20250114-conversions-v1-0-7869a9f786d0@suse.com>
- <20250114-conversions-v1-1-7869a9f786d0@suse.com>
- <7f1c0594-e6ef-497b-852a-e8fe6ee2afe4@suse.com>
-In-Reply-To: <7f1c0594-e6ef-497b-852a-e8fe6ee2afe4@suse.com>
+ Wed, 29 Jan 2025 13:42:21 -0800 (PST)
+Date: Wed, 29 Jan 2025 22:42:19 +0100
+From: Petr Vorel <petr.vorel@gmail.com>
+To: buildroot@buildroot.org
+Message-ID: <20250129214219.GA447474@pevik>
+References: <20240226155137.25523-1-mdoucha@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240226155137.25523-1-mdoucha@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] mmap001: Convert to new API
+Subject: Re: [LTP] [PATCH] ioctl02: Use correct termios structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,162 +88,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+ James Hilliard <james.hilliard1@gmail.com>, Mike Gilbert <floppym@gentoo.org>,
+ ltp@lists.linux.it, sparclinux@vger.kernel.org,
+ Martin Doucha <martin.doucha@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
-
-thanks for reviewing!
-
-On Wed Jan 15, 2025 at 10:14 AM -03, Andrea Cervesato wrote:
-> Hi!
->
-> On 1/14/25 23:26, Ricardo B. Marliere via ltp wrote:
->> From: Ricardo B. Marliere <rbm@suse.com>
->>
->> Signed-off-by: Ricardo B. Marliere <rbm@suse.com>
->> ---
->>   testcases/kernel/syscalls/mmap/mmap001.c | 206 ++++++++-----------------------
->>   1 file changed, 49 insertions(+), 157 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/mmap/mmap001.c b/testcases/kernel/syscalls/mmap/mmap001.c
->> index dabb7d1e4998b1097e179abe23555926f5841117..bc9b4155e8b53f942ef694fdf3187c0e544a97cd 100644
->> --- a/testcases/kernel/syscalls/mmap/mmap001.c
->> +++ b/testcases/kernel/syscalls/mmap/mmap001.c
->> @@ -1,183 +1,75 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->>   /*
->>    * Copyright (C) 2000 Juan Quintela <quintela@fi.udc.es>
->>    *                    Aaron Laffin <alaffin@sgi.com>
->> + * Copyright (c) 2025 Linux Test Project
->> + */
->> +
->> +/*\
->> + * [Description]
->>    *
->> - * This program is free software; you can redistribute it and/or
->> - * modify it under the terms of the GNU General Public License
->> - * as published by the Free Software Foundation; either version 2
->> - * of the License, or (at your option) any later version.
->> - *
->> - * This program is distributed in the hope that it will be useful,
->> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> - * GNU General Public License for more details.
->> - *
->> - * You should have received a copy of the GNU General Public License
->> - * along with this program; if not, write to the Free Software
->> - * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
->> - *
->> - * mmap001.c - Tests mmapping a big file and writing it once
->> + * Tests mmapping a big file and writing it once
-> Description is a bit short and it needs a bit more information. For 
-> example, what we expect to see and what could happen during test (SEGV 
-> for example).
-
-Ack.
-
->> -		if (TEST_RETURN == -1) {
->> -			tst_resm(TFAIL | TTERRNO,
->> -				 "munmapping %s failed", filename);
->> -		} else {
->> -			tst_resm(TPASS, "munmapping %s successful", filename);
->> -		}
->> +	/*
->> +	 * Seems that if the map area was bad, we'd get SEGV,
->> +	 * hence we can indicate a PASS.
->> +	 */
-> If this is true, we need to find a way to test that specific scenario. 
-> This can e done by forking a process where test is running and to check 
-> if SIGSEGV killed it after calling SAFE_WAITPID()
-
-Good idea, I kept the original comment and TPASS string but it could
-surely be expanded. What do you think of the following? I'll be sending
-as v2 when the series receive some more reviewing.
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap001.c b/testcases/kernel/syscalls/mmap/mmap001.c
-index bc9b4155e8b5..10ce7a48e7c2 100644
---- a/testcases/kernel/syscalls/mmap/mmap001.c
-+++ b/testcases/kernel/syscalls/mmap/mmap001.c
-@@ -8,7 +8,8 @@
- /*\
-  * [Description]
-  *
-- * Tests mmapping a big file and writing it once
-+ * This test will map a big file to memory and write to it once,
-+ * making sure nothing bad happened in between such as a SIGSEGV.
-  */
- 
- #include "tst_test.h"
-@@ -25,6 +26,8 @@ static void setup(void)
- 
- static void run(void)
- {
-+	pid_t pid;
-+	int status;
- 	char *array;
- 	unsigned int i;
- 	unsigned int pages, memsize;
-@@ -40,20 +43,23 @@ static void run(void)
- 	SAFE_LSEEK(fd, memsize, SEEK_SET);
- 	SAFE_WRITE(SAFE_WRITE_ALL, fd, "\0", 1);
- 
--	array = SAFE_MMAP(NULL, memsize, PROT_WRITE, MAP_SHARED, fd, 0);
--
--	tst_res(TINFO, "touching mmaped memory");
--	for (i = 0; i < memsize; i++)
--		array[i] = (char)i;
--
--	/*
--	 * Seems that if the map area was bad, we'd get SEGV,
--	 * hence we can indicate a PASS.
--	 */
--	tst_res(TPASS, "we're still here, mmaped area must be good");
--
--	SAFE_MSYNC(array, memsize, MS_SYNC);
--	SAFE_MUNMAP(array, memsize);
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		array = SAFE_MMAP(NULL, memsize, PROT_WRITE, MAP_SHARED, fd, 0);
-+		tst_res(TINFO, "touching mmapped memory");
-+		for (i = 0; i < memsize; i++)
-+			array[i] = (char)i;
-+		SAFE_MSYNC(array, memsize, MS_SYNC);
-+		SAFE_MUNMAP(array, memsize);
-+		exit(0);
-+	} else {
-+		SAFE_WAITPID(pid, &status, 0);
-+		if (WIFSIGNALED(status) && WEXITSTATUS(status) == SIGSEGV)
-+			tst_res(TFAIL, "test was killed by SIGSEGV");
-+		else
-+			tst_res(TPASS,
-+				"memory was mapped and written to successfully");
-+	}
- }
- 
- static void cleanup(void)
-@@ -66,6 +72,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.test_all = run,
- 	.cleanup = cleanup,
-+	.forks_child = 1,
- 	.options =
- 		(struct tst_option[]){
- 			{ "m:", &m_copt,
-
-
-
-> Kind regards,
-> Andrea
-
-Thank you,
--	Ricardo.
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgYWxsLAoKRllJIHRoaXMgTFRQIGNvbW1pdCBtZXJnZWQgYXMgNjk3YTA2YTgyNyBbMV0gd2hp
+Y2ggaXMgbmVlZGVkIHRvIGZpeCBpb2N0bDAyLmMKdGVzdCBvbiBwcGM2NGxlIG9uIGFsbCBrZXJu
+ZWwgdmVyc2lvbnMgYnJlYWtzIGNvbXBpbGF0aW9uIG9uIEJ1aWxkcm9vdApib290bGluLXNwYXJj
+NjQtZ2xpYmMgdG9vbGNoYWluIChnY2M6IDEzLjMuMCwga2VybmVsIGhlYWRlcnM6IDQuMTkuMjU1
+LCBnbGliYzogMi4zOSk6CgoJSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGJyLXRlc3QtcGtnL2Jvb3Rs
+aW4tc3BhcmM2NC1nbGliYy9ob3N0L3NwYXJjNjQtYnVpbGRyb290LWxpbnV4LWdudS9zeXNyb290
+L3Vzci9pbmNsdWRlL3N5cy9pb2N0bC5oOjI5LAoJCQkJCSBmcm9tIC4uLy4uLy4uLy4uL2luY2x1
+ZGUvbGFwaS9pb2N0bC5oOjExLAoJCQkJCSBmcm9tIGlvY3RsMDIuYzozMToKCWJyLXRlc3QtcGtn
+L2Jvb3RsaW4tc3BhcmM2NC1nbGliYy9ob3N0L3NwYXJjNjQtYnVpbGRyb290LWxpbnV4LWdudS9z
+eXNyb290L3Vzci9pbmNsdWRlL2JpdHMvaW9jdGwtdHlwZXMuaDozNjo4OiBlcnJvcjogcmVkZWZp
+bml0aW9uIG9mIOKAmHN0cnVjdCB0ZXJtaW/igJkKCSAgIDM2IHwgc3RydWN0IHRlcm1pbwoJCSAg
+fCAgICAgICAgXn5+fn5+CglJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW9jdGwwMi5jOjI5OgoJYnIt
+dGVzdC1wa2cvYm9vdGxpbi1zcGFyYzY0LWdsaWJjL2hvc3Qvc3BhcmM2NC1idWlsZHJvb3QtbGlu
+dXgtZ251L3N5c3Jvb3QvdXNyL2luY2x1ZGUvYXNtL3Rlcm1iaXRzLmg6MTc6ODogbm90ZTogb3Jp
+Z2luYWxseSBkZWZpbmVkIGhlcmUKCSAgIDE3IHwgc3RydWN0IHRlcm1pbyB7CgpUaGUgcHJvYmxl
+bSBpcyB3aXRoIGtlcm5lbCA8YXNtL3Rlcm1iaXRzLmg+IGluY29tcGF0aWJpbGl0eSB3aXRoIGds
+aWJjCjxiaXRzL2lvY3RsLXR5cGVzLmg+IGluY2x1ZGVkIHZpYSA8c3lzL2lvY3RsLmg+IHdoaWNo
+IGlzIG5lZWRlZCBieSBpb2N0bDAyLmMKYW5kIGFsc28gYnkgTFRQIGxpYnJhcnkgaW5jbHVkZS9z
+YWZlX21hY3Jvc19mbi5oLgoKVGhpcyBwcm9ibGVtIHdhcyBmaXhlZCBhIHllYXIgYWdvIGluIGtl
+cm5lbCB2Ni4xMC1yYzEgaW4gY29tbWl0IGMzMmQxOGU3OTQyZAooInNwYXJjOiBtb3ZlIHN0cnVj
+dCB0ZXJtaW8gdG8gYXNtL3Rlcm1pb3MuaCIpIFsyXS4KCkJlY2F1c2Ugbm9ib2R5IG5vdGljZWQg
+dGhpcyBjaGFuZ2UgSSBzdXBwb3NlIG5vYm9keSB1c2VzIExUUCBvbiBzcGFyYzY0Cm9yIHBlb3Bs
+ZSBjb21waWxlIExUUCBvbiBzcGFyYzY0IHdpdGggbmV3IGtlcm5lbCBoZWFkZXJzLgoKQEN5cmls
+IEBNYXJ0aW4gRllJIGFub3RoZXIgZXhhbXBsZSBvZiBjb25mbGljdGluZyBnbGliYyBhbmQga2Vy
+bmVsIGhlYWRlcnMgKG5vdApsaXN0ZWQgaW4gWzNdKS4gSU1ITyBub3RoaW5nIHRvIGJlIGRvbmUg
+b24gTFRQIHNpZGUgdW5sZXNzIHdlIGNhbiBtYWdpY2FsbHkgcHV0CmJhY2sgPHRlcm1pb3MuaD4g
+YW5kIGhhdmUgcHBjNjRsZSB3b3JraW5nIHdpdGggaXQuCgpAQnVpbGRyb290IEFzIEkgd3JvdGUs
+IGJlY2F1c2UgTFRQIG5lZWRzIHRoaXMgZml4IGZvciBwcGM2NGxlIChhcmNoIGFjdHVhbGx5CnRl
+c3RlZCBieSBMVFAgZGV2ZWxvcGVycyksIHRoZSBvbmx5IHNvbHV0aW9uIGZvciBCdWlsZHJvb3Qg
+aXMgdG8gcmVxdWlyZQp0b29sY2hhaW4gYmFzZWQgb24gdjYuMTAga2VybmVsIGhlYWRlcnMgZm9y
+IHNwYXJjNjQgKHF1aXRlIGEgYmlnIGxpbWl0YXRpb24gZm9yCnNldmVyYWwgY3Jvc3MgY29tcGls
+YXRpb24gdG9vbGNoYWluLCBzb21lIGFyZSBiYXNlZCBvbiA0LjE5IGtlcm5lbCBoZWFkZXJzLAo1
+LjExIHJlcXVpcmVtZW50IGZvciBtdXNsIGVmZmVjdGl2ZWx5IGRpc2FibGVzIExUUCBvbiBCdWls
+ZHJvb3Qgb24gbXVzbCkuCgpLaW5kIHJlZ2FyZHMsClBldHIKClsxXSBodHRwczovL2dpdGh1Yi5j
+b20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC9jb21taXQvNjk3YTA2YTgyNzk3ODg4N2U0Yzg4NzEw
+ZGM3ZDMxZDZmM2VlODE2YQpbMl0gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4
+L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9YzMyZDE4ZTc5NDJkNzU4
+OWI2MmUzMDFlYjQyNmIzMjYyMzM2NjU2NQpbM10gaHR0cHM6Ly9zb3VyY2V3YXJlLm9yZy9nbGli
+Yy93aWtpL1N5bmNocm9uaXppbmdfSGVhZGVycwoKPiBUaGUgdGVybWlvcyBzdHJ1Y3R1cmUgZGVm
+aW5pdGlvbiBpbiA8dGVybWlvcy5oPiBpcyBpbmNvbXBhdGlibGUKPiB3aXRoIGRpcmVjdCBpb2N0
+bCgpIGNhbGxzLiBUaGUgY29ycmVjdCBkZWZpbml0aW9uIGlzIGluIDxhc20vdGVybWJpdHMuaD4K
+Cj4gU2lnbmVkLW9mZi1ieTogTWFydGluIERvdWNoYSA8bWRvdWNoYUBzdXNlLmN6Pgo+IC0tLQo+
+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lvY3RsL2lvY3RsMDIuYyB8IDIgKy0KPiAgMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgo+IGRpZmYgLS1naXQg
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lvY3RsL2lvY3RsMDIuYyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaW9jdGwvaW9jdGwwMi5jCj4gaW5kZXggYWFiODBiMjUxLi5mM2JmYjIz
+OWEgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb2N0bC9pb2N0bDAy
+LmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lvY3RsL2lvY3RsMDIuYwo+IEBA
+IC0yNiw3ICsyNiw3IEBACgo+ICAjaW5jbHVkZSA8c3RkaW8uaD4KPiAgI2luY2x1ZGUgPHN0ZGxp
+Yi5oPgo+IC0jaW5jbHVkZSA8dGVybWlvcy5oPgo+ICsjaW5jbHVkZSA8YXNtL3Rlcm1iaXRzLmg+
+Cgo+ICAjaW5jbHVkZSAibGFwaS9pb2N0bC5oIgo+ICAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKCgot
+LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
+Cg==
