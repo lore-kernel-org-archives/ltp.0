@@ -4,94 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABAD0C0218D
-	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 10:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1738320532; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=pIhwPw3TYTq5l3U2tw5v6dHDH4160NlWrdkNxzE5x8s=;
- b=nsxbbQc3Uz2TYY2ueV6jn+qvcFstKbEsoTfnrjgvlBw2rri4Dt7BUwXrgkab6ROEsejd3
- g+oNIWcC2WTdHJFFHGjmoJPOkIdIgLhJTuAagAFl0Pe36HCEzK1Lif+pd3qCilp13XlWGqW
- ePHUoqZiMNr+pbhUq9TpANvpQ4lX8CQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F16AC0218D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 11:02:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2ABB03C7ADF
-	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 11:48:52 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A45003C7A21
+	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 12:02:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 512703C6F7C
- for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:48:31 +0100 (CET)
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
- [IPv6:2a00:1450:4864:20::542])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3FFE33C7A21
+ for <ltp@lists.linux.it>; Fri, 31 Jan 2025 12:01:57 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7991C62D1D0
- for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:48:30 +0100 (CET)
-Received: by mail-ed1-x542.google.com with SMTP id
- 4fb4d7f45d1cf-5dc7425ec5fso3247934a12.0
- for <ltp@lists.linux.it>; Fri, 31 Jan 2025 02:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1738320510; x=1738925310; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=pfLZr14NvMB7CFtdw0ta/KVy7Sjhhk2y16Dd0ofeN2Y=;
- b=WRiStZteWsCYRQLJXOrEwr0o0iL6mx3x/wCM9YnnFYCILak8Xi8CfXZ9lUYHq8Nggx
- HvzIrjW+3axKDizIiedQpj3+jGvF3PFN0CuJStbUZjf2ILjDV+Ua7aL87zKl2HjI0oQ2
- n17vlfvRiYLCe1kb4YfKZXD03XROmHkNWpBRJY6G2ZnIpWwty1nC7hbZCbnEfgR+Ucqf
- m/Oe7lkSb+ZZAwOr5KxM0vHYMXiNIJwJCceSdrvadxX2/i6n+iQgAA04XH4GYurmBBGt
- wGFU0z2IczeJP//MuaqfexQ1CQJ7mh6GVzkpxx2CSNhG4fvZFWNYp59sOBz2QlWAFKko
- VfQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1738320510; x=1738925310;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=pfLZr14NvMB7CFtdw0ta/KVy7Sjhhk2y16Dd0ofeN2Y=;
- b=D6vSY8OMyB1DLrNuGHhYBMyGlWCGA6ZZsZLGxMqLsmQw3YIi+zEgyl+Ht4AMvFiGoi
- ej8rf71gByU0+Vjo/zgOLdXt+u5hE1vNPumVxmXPHhtYLRtatf2s7fRCbcCsfRap8CN7
- WAKcRnDilAcb55pbilDFjkiuk1Kb91EA7GGinDmtYIXGY5w4DPblpjAYbhwZACk6JPTS
- +XiXYhkFphu7p26nRbHZoxCUL1F//w5a5WVeB+pMrev4dkiZdPXgt7YXnaZCQz7lPJIq
- yo1PcwfTWYXkxKyNYiw33FC2lbtBiP9tV5IN7o3TF57ZldKfZEWzQQqfJwjp/vbVx6kx
- 6ZUQ==
-X-Gm-Message-State: AOJu0YycMcZ09fpD2RIMpfcbfxrhJxByun8Q8R5dZstLD47+uRMoJtdZ
- viezJ38ta2ZPbUVNypDZFnYL+6bgYJOU28nzvJ8mx14Eq8q8zbFjDF0+dkYO4olaXYVIl1m09iW
- 6R6OAFg==
-X-Gm-Gg: ASbGncu14PE/F1ag62OzgwORXS8VtOBKU6OVwcP77uNkNoDsWaeL+eqlT+bHTXITiCP
- HT38n24Amz9lx0wh3PCFoHb+/3W0SztSeuL+rRExt7KInq9/EZXMsdjiepvVJt7hl+11XGAesX9
- V+AYDMtAEjQ4pPaeeP9vUkf6HRbbm9AZ4nMusZpOsjnpKh8Vfp7My6LS0gt1y1YugGsP7dfyADy
- OXy5i/y26quRfqg40d4dPC37CvUxeJi+zzdY/gZM+8ssLBGPxpNkRQB+ZLSjRGjoA9/S3zmuG0K
- +NB0bNPmXd73I4I9wuA7Hdro2uq3jBGryglhCYAW6P6Pu4IeQcCEOg2rVbFvs6D5dBWFfFxQrfw
- m3FPk699GWlskH4P0Lxds1Y+9ZBLQAr9k1FPOt+nAiRRqm4fWfmI=
-X-Google-Smtp-Source: AGHT+IFfcLd0qvC42Gqe6gyb0ZVuYYR6rWQhP+LH+KvKx4gdBv6G6IiXTWcE97avkKesX+DHqLliZA==
-X-Received: by 2002:a17:907:6d0b:b0:ab6:b8e2:ebf3 with SMTP id
- a640c23a62f3a-ab6cfda42c7mr1203082366b.36.1738320509785; 
- Fri, 31 Jan 2025 02:48:29 -0800 (PST)
-Received: from ?IPV6:2003:ef:2f02:800:9162:c8ad:3b21:a399?
- (p200300ef2f0208009162c8ad3b21a399.dip0.t-ipconnect.de.
- [2003:ef:2f02:800:9162:c8ad:3b21:a399])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5dc723e9fe4sm2623082a12.26.2025.01.31.02.48.29
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 31 Jan 2025 02:48:29 -0800 (PST)
-Message-ID: <f635d8c0-41ba-47ec-9c85-85d36b756215@suse.com>
-Date: Fri, 31 Jan 2025 11:48:28 +0100
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 853401BDF433
+ for <ltp@lists.linux.it>; Fri, 31 Jan 2025 12:01:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 072531F38E;
+ Fri, 31 Jan 2025 11:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738321313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5htAS4MkmBxgf/EQCp+k29/9SIJHlmkhEIb0WtLF9vI=;
+ b=fPKCFVGfxfQcXTCukG8PCXuwZExGyCgua345hfEqsuPsiNCyQtmaTjFf8YBGoR116JBD9j
+ eu87ccT9vCBcQf/uw8SPBtGyxm5SIfqhApAwzkoLJVCE+ADSCE9VOGa4z7A4H6LxleWCUQ
+ caJnPbMEnl41TEAA+h5G9K7BhXj+Yr8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738321313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5htAS4MkmBxgf/EQCp+k29/9SIJHlmkhEIb0WtLF9vI=;
+ b=RVJESEzS1HorGa7l7IXECdJ40m6R2VEwVWXczgvTs/P9R9d4TidSFWPjIM745cHPF5OVNj
+ Qmqx5PqGFpgxnmAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fPKCFVGf;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RVJESEzS
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738321313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5htAS4MkmBxgf/EQCp+k29/9SIJHlmkhEIb0WtLF9vI=;
+ b=fPKCFVGfxfQcXTCukG8PCXuwZExGyCgua345hfEqsuPsiNCyQtmaTjFf8YBGoR116JBD9j
+ eu87ccT9vCBcQf/uw8SPBtGyxm5SIfqhApAwzkoLJVCE+ADSCE9VOGa4z7A4H6LxleWCUQ
+ caJnPbMEnl41TEAA+h5G9K7BhXj+Yr8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738321313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5htAS4MkmBxgf/EQCp+k29/9SIJHlmkhEIb0WtLF9vI=;
+ b=RVJESEzS1HorGa7l7IXECdJ40m6R2VEwVWXczgvTs/P9R9d4TidSFWPjIM745cHPF5OVNj
+ Qmqx5PqGFpgxnmAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C11441364B;
+ Fri, 31 Jan 2025 11:01:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dZ4vLqCtnGdYOQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 31 Jan 2025 11:01:52 +0000
+Date: Fri, 31 Jan 2025 12:01:36 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <20250131110136.GB1097590@pevik>
+References: <20240530144406.7626-1-akumar@suse.de>
+ <20240530144846.10915-1-akumar@suse.de>
+ <20241021195521.GA493656@pevik> <6145632.lOV4Wx5bFT@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>
-References: <20250131091535.GB1090737@pevik>
- <92cb274a-440a-42e5-95ab-5dd0e1513074@suse.com>
- <20250131103451.GA1097590@pevik>
-Content-Language: en-US
-In-Reply-To: <20250131103451.GA1097590@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6145632.lOV4Wx5bFT@thinkpad>
+X-Rspamd-Queue-Id: 072531F38E
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC] Remove [Description] subtitle from docparse
+Subject: Re: [LTP] [PATCH v3] flock: Add test for verifying EINTR errno
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,54 +126,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+> On Monday, October 21, 2024 9:55:21 PM CET Petr Vorel wrote:
+> > Hi Avinesh, Yang Xu,
 
-On 1/31/25 11:34, Petr Vorel wrote:
-> Hi Andrea,
->
->> Hi Petr,
->> I'm currently working on parsing metadata in order to produce a tests list
->> in the LTP documentation.
-> FYI I planned to work on it (announced in ML [1]), but since you started I stop
-> working on it.
-I'm sorry, I didn't read carefully. The results will come out soon tho, 
-I will send the patch-set soon.
->
->> I just replace "[Description]" with "**Description**". Same for
->> "[Algorithm]".
->> I would keep the bold version tho, with the double star **.
-> We talk about a different things. You about the conversion of the subtitles to
-> the final documentation (previously was done in docparse/testinfo.pl, now you
-> will do it in python).
->
-> But I'm suggesting to entirely remove subtitle "Description". It looks to me
-> useless and some people don't add it thus docs looks inconsistent.
-The thing is that there's not only [Description], but there's also 
-[Algorithm]. Maybe we can think about the tests description as a whole 
-RST code that will be injected inside the documentation website once 
-it's published. In this way, conversion would be much easier.
-> Kind regards,
-> Petr
->
->> Andrea
->> On 1/31/25 10:15, Petr Vorel wrote:
->>> Hi,
->>> Can we remove [Description] part from docparse documentation in tests?
->>> This is transformed into "Description" subtitle in resulted html/pdf.
->>> 1) It's not really needed (it's obvious that it's a description of the test)
->>> 2) Sometimes it's missing (inconsistency).
->>> I would keep other subtitles (e.g. [Algorithm]), just remove the first one.
->>> Kind regards,
->>> Petr
-> [1] https://lore.kernel.org/ltp/20241227073921.GB290415@pevik/
-Andrea
+> > > Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> > > Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> > ...
+> > > --- /dev/null
+> > > +++ b/testcases/kernel/syscalls/flock/flock07.c
+> > > @@ -0,0 +1,70 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > +/*
+> > > + * Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
+> > > + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+> > > + * Copyright (c) 2024 Linux Test Project
+> > > + */
+> > > +
+> > > +/*\
+> > > + * [Description]
+> > > + *
+> > > + * Verify that flock(2) fails with errno EINTR when waiting to acquire a lock,
+> > > + * and the call is interrupted by a signal.
+
+> > Avinesh, you mentioned at Yang Xu's v1 [1] that EINTR test is getting timed out
+> > randomly. I also experienced timeouts on aarch64 and ppc64le. v1 had 2 tests
+> > (EINTR and EWOULDBLOCK), you here posted only EINTR. I would expect you would
+> > put here only the other one - EWOULDBLOCK. Or am I missing something?
+> Hi Petr,
+
+> I am sorry, I completely missed this.
+> I sent the patch for EWOULDBLOCK case now -
+> https://lore.kernel.org/ltp/20250114155013.7644-1-akumar@suse.de/T/#u
+
+Thanks for info. I'm closing this as rejected. Please let me know if I did not
+understand you and this is a valid patch.
+
+Kind regards,
+Petr
+
+> Regards,
+> Avinesh
+
+> > Kind regards,
+> > Petr
+
+> > [1] https://lore.kernel.org/ltp/1934768.7Z3S40VBb9@localhost/
+
+
+
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
