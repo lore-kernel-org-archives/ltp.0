@@ -4,19 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10514C0218D
-	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 10:11:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B93D0C0218F
+	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 10:35:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 675CC3C7ACF
-	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 11:11:48 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 363293C7AA4
+	for <ltp@archiver.kernel.org>; Fri, 31 Jan 2025 11:35:13 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 316DD3C2386
- for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:11:30 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0A4C93C6F7C
+ for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:34:55 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -25,82 +24,47 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E1A181425584
- for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:11:29 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E9724206BE7
+ for <ltp@lists.linux.it>; Fri, 31 Jan 2025 11:34:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5268221170;
- Fri, 31 Jan 2025 10:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738318288;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ESi1LUqPK+s283vqQoAFNJnfE8DYN0fpNsf6Gb8aCiA=;
- b=PuyPWxookVihxwZ0Wei2su0JFeXJxQYWYaaYNgjN/qFO18OVJu43Ju79JR96IWSnkvgpbj
- r4Y3Rxq1HWNh7PebwPCpcAK7ewyy13pEyFeB0wINEoKJY7JiblJ2zGhngVeWL2KmmCBRWh
- C2XEQfV6tehUNzwGQvSylx/ioovk2s4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738318288;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ESi1LUqPK+s283vqQoAFNJnfE8DYN0fpNsf6Gb8aCiA=;
- b=h3SwD7PA3wKUjWWgW/1BM5Be/TBMdUKOMIK6sW3DMXoQP3lZFulA1mcf2M+W5IB0VWMZwz
- QWmqciq2keHZ5lDw==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 73A662116C;
+ Fri, 31 Jan 2025 10:34:53 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738318288;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ESi1LUqPK+s283vqQoAFNJnfE8DYN0fpNsf6Gb8aCiA=;
- b=PuyPWxookVihxwZ0Wei2su0JFeXJxQYWYaaYNgjN/qFO18OVJu43Ju79JR96IWSnkvgpbj
- r4Y3Rxq1HWNh7PebwPCpcAK7ewyy13pEyFeB0wINEoKJY7JiblJ2zGhngVeWL2KmmCBRWh
- C2XEQfV6tehUNzwGQvSylx/ioovk2s4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738318288;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ESi1LUqPK+s283vqQoAFNJnfE8DYN0fpNsf6Gb8aCiA=;
- b=h3SwD7PA3wKUjWWgW/1BM5Be/TBMdUKOMIK6sW3DMXoQP3lZFulA1mcf2M+W5IB0VWMZwz
- QWmqciq2keHZ5lDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BDB9133A6;
- Fri, 31 Jan 2025 10:11:28 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CA15133A6;
+ Fri, 31 Jan 2025 10:34:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ypa1CdChnGdjKgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 31 Jan 2025 10:11:28 +0000
-Date: Fri, 31 Jan 2025 11:11:18 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id USlyFU2nnGeUMQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 31 Jan 2025 10:34:53 +0000
+Date: Fri, 31 Jan 2025 11:34:51 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20250131101118.GC1090737@pevik>
-References: <46ff9a8f-f2d7-4858-80dc-1b39f2ffb393@suse.com>
- <20250115145449.3850-1-akumar@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250131103451.GA1097590@pevik>
+References: <20250131091535.GB1090737@pevik>
+ <92cb274a-440a-42e5-95ab-5dd0e1513074@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250115145449.3850-1-akumar@suse.de>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <92cb274a-440a-42e5-95ab-5dd0e1513074@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 73A662116C
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] flock02: Add test for EWOULDBLOCK errno
+Subject: Re: [LTP] [RFC] Remove [Description] subtitle from docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,13 +83,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Andrea,
 
-v2 merged also with Andrea's RBT.
-Thanks!
+> Hi Petr,
+
+> I'm currently working on parsing metadata in order to produce a tests list
+> in the LTP documentation.
+FYI I planned to work on it (announced in ML [1]), but since you started I stop
+working on it.
+
+> I just replace "[Description]" with "**Description**". Same for
+> "[Algorithm]".
+
+> I would keep the bold version tho, with the double star **.
+
+We talk about a different things. You about the conversion of the subtitles to
+the final documentation (previously was done in docparse/testinfo.pl, now you
+will do it in python).
+
+But I'm suggesting to entirely remove subtitle "Description". It looks to me
+useless and some people don't add it thus docs looks inconsistent.
 
 Kind regards,
 Petr
+
+> Andrea
+
+> On 1/31/25 10:15, Petr Vorel wrote:
+> > Hi,
+
+> > Can we remove [Description] part from docparse documentation in tests?
+> > This is transformed into "Description" subtitle in resulted html/pdf.
+
+> > 1) It's not really needed (it's obvious that it's a description of the test)
+> > 2) Sometimes it's missing (inconsistency).
+
+> > I would keep other subtitles (e.g. [Algorithm]), just remove the first one.
+
+> > Kind regards,
+> > Petr
+
+[1] https://lore.kernel.org/ltp/20241227073921.GB290415@pevik/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
