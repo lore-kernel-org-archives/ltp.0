@@ -4,71 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B876DC02192
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 22:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B98AFC02192
+	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 00:50:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5209F3C8F76
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 23:10:22 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8C5CA3C8F80
+	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 01:50:37 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4DF683C8ED5
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 23:09:13 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id CED6A3C54B2
+ for <ltp@lists.linux.it>; Tue,  4 Feb 2025 01:50:20 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2DEBD1BD50CB
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 23:09:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1738620551;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=JUJivSwhgQFXh5t/oZ9XjF9XdI+8VqiBDr+myqg6P+c=;
- b=GOTIorrDubaoSskisk3o8C14pWcloXV5ECp8jaUC4NcgxgHtjReiAZQfleAv/fVUCr1w/S
- 6LkiCvjnwWxSSzUIyxSR0VbMnJyOROOpiZ66O329dmO6P8hdIUzON86xZ8bXU/lSE0+32A
- 2RoNzpO0bD1VUVzRwWvfFpkuJ/L78mI=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-496-YPf3GvL0PWGv4SG1vfI0Ng-1; Mon,
- 03 Feb 2025 17:09:10 -0500
-X-MC-Unique: YPf3GvL0PWGv4SG1vfI0Ng-1
-X-Mimecast-MFC-AGG-ID: YPf3GvL0PWGv4SG1vfI0Ng
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 7B0181801F1D
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 22:09:09 +0000 (UTC)
-Received: from segfault.usersys.redhat.com (unknown [10.22.65.155])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 504AE1800268
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 22:09:09 +0000 (UTC)
-Received: by segfault.usersys.redhat.com (Postfix, from userid 3734)
- id 72C0F24EA204; Mon,  3 Feb 2025 17:09:06 -0500 (EST)
-From: Jeff Moyer <jmoyer@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon,  3 Feb 2025 17:05:57 -0500
-Message-ID: <20250203220903.399544-1-jmoyer@redhat.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3F2C64F649
+ for <ltp@lists.linux.it>; Tue,  4 Feb 2025 01:50:18 +0100 (CET)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 513MvaiK027290;
+ Tue, 4 Feb 2025 00:50:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=iFD7h3
+ eA60RTkB1tif+Q3mte1FUD/lUZQjV+uaohdwk=; b=JqzDLA8kb8QTFeSl+MtUjh
+ yZ24+8vdg4GjNbh35wfmQSfKSFeqmUoa9jq3pIy3yVy09tiUfPDqSBYleI8WIHGQ
+ TQFPtJY9ALgAzm16UExvZ8kSkBZPqRTbP77QhR/B0tTkgG7ZSGMgTvSkD2uoGVbU
+ kBq5j9HrZGCR0EnJY5dwrDZpUOS/fjVQD0kTzfdhjQnvuKQbf5kh9ZfUyBq39Zsy
+ Upgwc05HT11S+XamWH0TKOZL5t0wvK9/FsDUi+0Lp9X0xdzo9tikxloFJxP/SMAP
+ IX5sSf5Zrjbsq62WvRyt0SR5B5FIt47UAT/2f/2BXpeaQSMWqOkPJpIYMoIem1sA
+ ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44jkv961ke-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 04 Feb 2025 00:50:16 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 513NPWWD024635;
+ Tue, 4 Feb 2025 00:50:15 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44hxxn11p1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 04 Feb 2025 00:50:15 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com
+ [10.241.53.100])
+ by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 5140oFmI19923702
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 4 Feb 2025 00:50:15 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E06A85806D;
+ Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9E9E258068;
+ Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.61.18.96]) by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+ Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
+Message-ID: <4e4fb197b7127f8d82705ec441e8a273cd237b7f.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+In-Reply-To: <20250203210233.1407530-1-pvorel@suse.cz>
+References: <20250203210233.1407530-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: BrsX5XcQhvZXw0FIOUAAvGZvz72ZG9GeNnLYg4V42uc_1738620549
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Date: Mon, 03 Feb 2025 18:48:10 -0500
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OSMniuTFzQyC2Z-dKRU-m4GR0-1MMSrz
+X-Proofpoint-ORIG-GUID: OSMniuTFzQyC2Z-dKRU-m4GR0-1MMSrz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-03_10,2025-01-31_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 clxscore=1015 lowpriorityscore=0 spamscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2501170000 definitions=main-2502040002
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/3] tst_device: add support for overlayfs
+Subject: Re: [LTP] [PATCH] IMA: measure.policy: limit dont_measure tmpfs
+ policy to func=FILE_CHECK
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,43 +100,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When running ltp-aiodio on an overlay file system, the following error
-occurs:
-
-tst_tmpdir.c:316: TINFO: Using /mnt/fstests/TEST_DIR/ovl-mnt/ltp-hSHEHy5M0s/LTP_aio4q4GMW as tmpdir (overlayfs filesystem)
-tst_test.c:1888: TINFO: LTP version: 20220121-2271-g91a10df22
-tst_test.c:1892: TINFO: Tested kernel: vendor kernel
-tst_test.c:1723: TINFO: Timeout per run is 0h 40m 00s
-aiocp.c:211: TINFO: Maximum AIO blocks: 65536
-tst_device.c:551: TINFO: Use BTRFS specific strategy
-tst_device.c:569: TBROK: BTRFS ioctl failed. Is . on a tmpfs?: ENOTTY (25)
-
-The issue is that stat(2) on an overlayfs mount point will return a
-major device number of 0.  The code assumes this is btrfs, and tries
-to issue a btrfs-specific ioctl.  When that fails, the final message is
-printed that suggests this might be tmpfs.
-
-I modified the code to use statfs(2) to get the file system type, and
-use that to determine which file system specific code to call.  Finally, I
-added code to parse out the upper directory from the overlayfs mount options
-using libmount.  libmount is part of util-linux, so it should be fairly
-ubiquitous.  stat(2) is then called on the upper directory to get to the
-underlying device node.
-
-Review of the series is greatly appreciated.
-
-Thanks in advance!
-Jeff
-
-[PATCH 1/3] lib/tst_device.c: factor out btrfs-specific logic from
-[PATCH 2/3] lib/tst_device.c: check for BTRFS_SUPER_MAGIC instead of
-[PATCH 3/3] lib/tst_device.c: add support for overlayfs
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCAyMDI1LTAyLTAzIGF0IDIyOjAyICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+IGFk
+ZCBmdW5jPUZJTEVfQ0hFQ0sgdG8gZG9udF9tZWFzdXJlIHRtcGZzCj4gCj4gU2ltaWxhcmx5IHRv
+IHRjYi5wb2xpY3kgbGltaXQgZG9udF9tZWFzdXJlIHRtcGZzIHBvbGljeSB0byBmdW5jPUZJTEVf
+Q0hFQ0suCj4gVGhpcyBhbGxvd3MgdG8gZG8gZXh0cmEgbWVhc3VyZW1lbnRzLCBlLmcuIGtleGVj
+IGJvb3QgY29tbWFuZCBsaW5lLCBzZWUKPiBrZXJuZWwgY29tbWl0Cj4gCj4gN2VlZjdjOGJhYzlh
+ICgiaW1hOiBsaW1pdCB0aGUgYnVpbHRpbiAndGNiJyBkb250X21lYXN1cmUgdG1wZnMgcG9saWN5
+IHJ1bGUiKQo+IAo+IEFsc28gcmVtb3ZlIGxlYWRpbmcgMCBmcm9tIHRtcGZzIG1hZ2ljICh0byBt
+YXRjaCBJTUEgZG9jcyBhbmQgdGNiLnBvbGljeSkuCj4gCj4gU3VnZ2VzdGVkLWJ5OiBNaW1pIFpv
+aGFyIDx6b2hhckBsaW51eC5pYm0uY29tPgo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2
+b3JlbEBzdXNlLmN6PgoKUmV2aWV3ZWQtYnk6IE1pbWkgWm9oYXIgPHpvaGFyQGxpbnV4LmlibS5j
+b20+Cgo+IC0tLQo+IMKgLi4uL3NlY3VyaXR5L2ludGVncml0eS9pbWEvZGF0YWZpbGVzL2ltYV9w
+b2xpY3kvbWVhc3VyZS5wb2xpY3nCoCB8IDIgKy0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
+dGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1naXQKPiBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9kYXRhZmlsZXMvaW1hX3BvbGljeS9tZWFzdXJlLnBv
+bGljeQo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2RhdGFmaWxl
+cy9pbWFfcG9saWN5L21lYXN1cmUucG9saWN5Cj4gaW5kZXggOTk3NmRkZjJkZS4uOGFiZDA1ZmIx
+YSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEv
+ZGF0YWZpbGVzL2ltYV9wb2xpY3kvbWVhc3VyZS5wb2xpY3kKPiArKysgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEvZGF0YWZpbGVzL2ltYV9wb2xpY3kvbWVhc3VyZS5w
+b2xpY3kKPiBAQCAtOCw3ICs4LDcgQEAgZG9udF9tZWFzdXJlIGZzbWFnaWM9MHg2MjY1NjU3Mgo+
+IMKgIyBERUJVR0ZTX01BR0lDCj4gwqBkb250X21lYXN1cmUgZnNtYWdpYz0weDY0NjI2NzIwCj4g
+wqAjIFRNUEZTX01BR0lDCj4gLWRvbnRfbWVhc3VyZSBmc21hZ2ljPTB4MDEwMjE5OTQKPiArZG9u
+dF9tZWFzdXJlIGZzbWFnaWM9MHgxMDIxOTk0IGZ1bmM9RklMRV9DSEVDSwo+IMKgIyBTRUNVUklU
+WUZTX01BR0lDCj4gwqBkb250X21lYXN1cmUgZnNtYWdpYz0weDczNjM2NjczCj4gwqBtZWFzdXJl
+IGZ1bmM9RklMRV9NTUFQIG1hc2s9TUFZX0VYRUMKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
