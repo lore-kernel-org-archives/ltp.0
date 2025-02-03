@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00CFAC02196
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 09:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69EF9C02192
+	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 09:58:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1738576699; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1738576723; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=jL0af2yMoCZkn90+13Im/zVJ9kzkmizGxVY6BXJb0OE=;
- b=A7GlY01e2nPKi44gX4dLxGGQ8fafm2hyi77KzT3wHDFQdodCqZLvnQTLbq6tQTwC5xI32
- 1Css9f/os7gouT0VQM9PNJo8G2bGK5GSrH4LdpgYywTFclJ+AOB5N0t+0kdGYYeT537Z1OR
- 2OqkzpCSUWG7VXlL/z1nXFcz9W93XcU=
+ bh=eShh1mkmBySmH1fLExns46oAm05i/+Iog9Nnmsop4V4=;
+ b=VY9NjxfA4A8E77c9D4gNUkSuUXAK7D9wf+clNuvIF5I7J29dAzq9yYZqvbgAj+ByM80lx
+ WI8e09AqkTZXEfmYm/9NaMSnOkOQ95b8oyUMb5+Ry8gS518Te1CfRV+oPJRGzXx3HH10dkL
+ BjMPSFwF/4T2kG3hCUSuUFho0BQ4AvM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7368A3C8EA2
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 10:58:19 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2AB083C8E9E
+	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 10:58:43 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 88A023C8E71
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 10:57:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 201F53C8E9C
+ for <ltp@lists.linux.it>; Mon,  3 Feb 2025 10:58:07 +0100 (CET)
 Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com
  [IPv6:2a00:1450:4864:20::642])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E8E8F142E675
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 10:57:55 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 17A79102DC4C
+ for <ltp@lists.linux.it>; Mon,  3 Feb 2025 10:58:06 +0100 (CET)
 Received: by mail-ej1-x642.google.com with SMTP id
- a640c23a62f3a-ab70043cd05so594989466b.0
- for <ltp@lists.linux.it>; Mon, 03 Feb 2025 01:57:55 -0800 (PST)
+ a640c23a62f3a-aa67ac42819so622023166b.0
+ for <ltp@lists.linux.it>; Mon, 03 Feb 2025 01:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1738576675; x=1739181475; darn=lists.linux.it;
+ d=suse.com; s=google; t=1738576685; x=1739181485; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=pjAgJfwF6r7DlwHyqYVZr+63limf/UOsVHvomNCXH9M=;
- b=SrvvdEqF3v5osO/m3tCES2pNdQj+obX94+4Q//eOq9ll1OIPM/UWZURWWAWS8Bv0Rm
- RhRXLlenQoJD7oRl5rXMN5VBgOatF8XdsWL0YxNRafxI92x6wZMJuPguz1wGfdT58LUg
- rwVkFtwgU5IHkLmEd5Sk0q+nHxTPsAnyLPOqUiuQfR428tDAdfMsoqiWJHD0lKYrJ/F/
- x+w61pRL77JbQmrQL0rSVV88Do/ioQBVHRi0hOgSG0uTlCc2CNq0ma+UJjAv+B30vJMM
- XryE/I1AZlLwRcKipgePy6GgKb79lwq9sMQ+9B6E+tiNFtaWLdROB8hej27HzPE1/wGa
- zQPw==
+ bh=pP8c15fkdq17EAG0DTwyOKfG8vaxSGilgXzm8EWhq0E=;
+ b=aFzsQWMeL6+e6bDPhZBYyOVWriMCSpp7C6lKPhxHoVu53aK12rmdgcB+/KqKOUcMEY
+ fcBIESovCH24ztDHT7bQQk25I+ulEd4qVVLfziZc0SkgMm3Jik9O+fcogOX2jPHQNTYL
+ A9Sn8N8LqanaZ6dEBC2v7M32qgcj37+Nw/28HM56VAUmiSH688E706EwelDKLWhZO24C
+ nm9TogMMpdwDosKDlDX9ChwrPycXcA45mUrq2wP9Xhu3EaH75G3V7YuAKXnCo9R07pge
+ hiY1JxWTjg7F39GTQOlEWx6HUGVKBC2fDkw4Q2/lyhX5I+umMuOzB4SbUGOsZ9F9VKMu
+ 4O/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1738576675; x=1739181475;
+ d=1e100.net; s=20230601; t=1738576685; x=1739181485;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=pjAgJfwF6r7DlwHyqYVZr+63limf/UOsVHvomNCXH9M=;
- b=Lh1DGfOgVn1dsSacw3iofz6fH6N/ZfUEDXCAZdhOCwxV26XouKDtcDpPMPaApMc+lI
- I4vmW9BmJSpl8vJpfHj56acayC3G7Mmr+XmwQ/274lO5366d5pmHCBeE3Tj49K/U6BsW
- lyPQ6wuNo+OeR/1Bl3GbU2Dxj9NTyS9wDTQuMYUDRIa6nQAzKe2f3swIMrLiEy8r50Cz
- r/oIv7xj+heO673eHU7LrEpkKWhFo3MEWoOkFymv/Y8qgWhPloiel+mRSS6L9au5chAe
- FJhQ7pHxj22cJkXR70J83cS3hXa/qScEDeduRSiRS6Q/v4tDDTzvxhiModzGuRGE8Naa
- exYg==
+ bh=pP8c15fkdq17EAG0DTwyOKfG8vaxSGilgXzm8EWhq0E=;
+ b=krwKgUCrn5/vFxZV+e18DkG+6arppxcDbylzx50f8CiezGsZsLWwmH9ETe12uK0eV2
+ H0lBdPt5k+p94KZCc92dMR2QPDKfIZuVnu1NfWx8suh7RPLU8/bvGKtabW2h5msZAHS3
+ ol6zLSDOgcJ5GfitD6XlH0HMS2IZA9VuAGD7FVphcREYHOS62HRywUuEFmi0EGDoV4Yy
+ emv5sSL9eso6KGSnvHp5Go80NplnVUsDtTexkiJIf9/guqexkAVixJ8J9MAWMiAuKHVv
+ D2mC2dI/fgGjFbXRRFzkyu6iCAdPUHUZ+UjQfwTrvCVdQAJq+RP+b/s17GrNaWCdPefJ
+ mNqg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXpwZ8wZUMysjVJy3d5AazaZDYYuPwPAr6SCx3hPCKJ+j/RFLkEKQqXrsU3Yzx9YkweSNw=@lists.linux.it
-X-Gm-Message-State: AOJu0YzZ626+3zUqp7Y+MNNSvKIlAr75EYmJVsM+dvoHMruHIO136st2
- viXwCiJYc7w4UmwfFwd/6l1LW8WKJM9vcVz7GChpb857vyB8uDIPpdjGAdw1rYw=
-X-Gm-Gg: ASbGnctDKRhZBWe2mxu92tk2BzhCwwRJyhbV7n5OxDXu83AnVDnLhEDPpnIrx/+FoLj
- ydQzY4zJpYdsuQW0o+GJOhcZStrTBGBfymFG5SqBuDvt13uyUMoYuFhETTN4mebSC43USODdeNW
- ohSisiKOgDsF1jaV/gSy5aOGbHqToVOOvgsLPxxu1g7yUZffKmvezjB/Tbuuu3YVKApuDYSAZ0j
- S5z1ylBEjIuZ39j+T/qlnQqG6uV26w2rpIXfKHKcoY4yhbUJb7C19RUAPQJ13hGQq61eUwEApHM
- RwdQrOeOAiyFPAICuwVV9DaGSw==
-X-Google-Smtp-Source: AGHT+IFon7fA11O29rmGWLT/awOhJY1VScHwJqUBjapyPqpVQUVsZmDn7o6DaX+eduHY7wBxe5x0Ww==
-X-Received: by 2002:a17:907:c10:b0:ab6:f59b:8327 with SMTP id
- a640c23a62f3a-ab6f59b8396mr1868620766b.10.1738576675272; 
- Mon, 03 Feb 2025 01:57:55 -0800 (PST)
+ AJvYcCUHxGsFepXYhdO8Du8SIcxsh3gFtp4GUteTlctPTMSxfdzOzdHFE66NDF8X8ytKvwzCZRw=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx5CxJg8DeLh5Hkm0ZaKKl4WRPsj8ZHIHWLlh0L3lTaOvtTuOTL
+ d/hfYccCEcq7vnF6X0XRzdQdtWCokCOHyOb2Q8oYO4o0igoCtrgzEgXqU/BhWd4=
+X-Gm-Gg: ASbGncuJXq+bWFwjjh0bFPcgrlVZVqvC1sbyDGNxwi9p857HqBPkdVS6N86tohM6jSI
+ imy7GVeNZkLTFfF63TOftErdaeQX4m18QdwVOBJB+cjF1gqVdmSTUbO0mxBH3+GSDiqDE689kyI
+ y/oNqAwJyUVS1+OBSfwpt8CzZEzLG76OSZCsNKz+ePx+OnKgpDyWPk7a9nVvPrHyPb9INB76zqY
+ 6AKfOkvvrdIAxu2QRwrOrePtkdxYD0/ReCub1PpixmqCr/9JpFgdAJmJDNWHcbEzQchjUSaVwkv
+ 254KgnUTPgL6t0ia+dMND0rbmg==
+X-Google-Smtp-Source: AGHT+IEIvGh8nwaTon/5XiqGirHeOCKMtX3fhpuxmccTnyq84BF6LvX/x7VnT14GbMF6GJWcKzv3qQ==
+X-Received: by 2002:a17:907:c1f:b0:ab2:f5cb:c039 with SMTP id
+ a640c23a62f3a-ab6cfe174edmr2098612266b.54.1738576685335; 
+ Mon, 03 Feb 2025 01:58:05 -0800 (PST)
 Received: from [10.232.133.36] ([88.128.90.13])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-ab705a00b60sm493038366b.10.2025.02.03.01.57.54
+ a640c23a62f3a-ab6e4a326e6sm721450366b.157.2025.02.03.01.58.04
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 03 Feb 2025 01:57:54 -0800 (PST)
-Message-ID: <9d0b6458-6d77-4c2c-a46b-60208d07b5df@suse.com>
-Date: Mon, 3 Feb 2025 10:57:54 +0100
+ Mon, 03 Feb 2025 01:58:05 -0800 (PST)
+Message-ID: <05d0cc8e-25ac-4709-8ecc-dcf8c1cd9be3@suse.com>
+Date: Mon, 3 Feb 2025 10:58:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Shiyang Ruan <ruansy.fnst@fujitsu.com>, ltp@lists.linux.it,
  liwang@redhat.com
 References: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
+ <20250115091218.2630891-2-ruansy.fnst@fujitsu.com>
 Content-Language: en-US
-In-Reply-To: <20250115091218.2630891-1-ruansy.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <20250115091218.2630891-2-ruansy.fnst@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] fchownat01: Convert to new API
+Subject: Re: [LTP] [PATCH v2 2/3] fchownat02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,63 +114,47 @@ Hi!
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
-> 1. convert to new API
-> 2. move error tests to fchownat03
-> 3. check if uid/gid is correctly set
->
-> ---
-> V1: https://lore.kernel.org/ltp/20240126062540.2596279-1-ruansy.fnst@fujitsu.com/T/#u
->
-> Changes:
->   * Move error tests from fchownat01 to fchownat03
->   * fchownat01: Add check if file's ownership changed successfully
->   * fchownat02: Use AT_FDCWD instead of dir_fd
->
 > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 > ---
->   .../kernel/syscalls/fchownat/fchownat01.c     | 160 ++++++------------
->   1 file changed, 50 insertions(+), 110 deletions(-)
+>   .../kernel/syscalls/fchownat/fchownat02.c     | 132 +++++-------------
+>   1 file changed, 33 insertions(+), 99 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
-> index 7771c111a..6768fdd77 100644
-> --- a/testcases/kernel/syscalls/fchownat/fchownat01.c
-> +++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
-> @@ -1,133 +1,73 @@
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
+> index 6dd1e024e..d8e4e0cfe 100644
+> --- a/testcases/kernel/syscalls/fchownat/fchownat02.c
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
+> @@ -1,135 +1,69 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >   /*
-> - *   Copyright (c) International Business Machines  Corp., 2006
-> - *   AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
+>    * Copyright (c) 2014 Fujitsu Ltd.
+> - * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 > - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software Foundation,
-> - *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * Copyright (c) International Business Machines  Corp., 2006
-> + * Copyright (c) Linux Test Project, 2007-2025
->    */
-> -/*
-> - * DESCRIPTION
-> - *	This test case will verify basic function of fchownat
-> - *	added by kernel 2.6.16 or up.
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> + * Copyright (c) Linux Test Project, 2014-2025
+> + */
 > +
 > +/*\
 > + * [Description]
-> + *
-> + * Verify basic function of fchownat() added by kernel 2.6.16 or up.
+>    *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + * Verify that:
+>    *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program.
+> - */
+> -/*
+> - * Test Description:
+> - *   Verify that,
+>    *   The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
+>    *   not be dereferenced if the pathname is a symbolic link.
 >    */
 >   
 >   #define _GNU_SOURCE
-> +#include "tst_test.h"
->   
+> -
 > -#include <sys/types.h>
 > -#include <sys/stat.h>
 > -#include <unistd.h>
@@ -177,52 +162,27 @@ On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
 > -#include <errno.h>
 > -#include <string.h>
 > -#include <signal.h>
-> -
 > -#include "test.h"
 > -#include "safe_macros.h"
 > -#include "lapi/fcntl.h"
+> +#include "tst_test.h"
+>   
+>   #define TESTFILE	"testfile"
+>   #define TESTFILE_LINK	"testfile_link"
+>   
+> -char *TCID = "fchownat02";
+> -int TST_TOTAL = 1;
 > -
-> -#define TESTFILE	"testfile"
-> -
+> -static int dir_fd;
+>   static uid_t set_uid = 1000;
+>   static gid_t set_gid = 1000;
 > -static void setup(void);
 > -static void cleanup(void);
-> +#define TESTFILE1	"testfile1"
-> +#define TESTFILE2	"testfile2"
->   
-> +static uid_t set_uid = 1000;
-> +static gid_t set_gid = 1000;
->   static int dir_fd;
-> -static int fd;
-> -static int no_fd = -1;
->   static int cu_fd = AT_FDCWD;
->   
-> -static struct test_case_t {
-> -	int exp_ret;
-> -	int exp_errno;
-> -	int flag;
-> -	int *fds;
-> -	char *filenames;
-> -} test_cases[] = {
-> -	{0, 0, 0, &dir_fd, TESTFILE},
-> -	{-1, ENOTDIR, 0, &fd, TESTFILE},
-> -	{-1, EBADF, 0, &no_fd, TESTFILE},
-> -	{-1, EINVAL, 9999, &dir_fd, TESTFILE},
-> -	{0, 0, 0, &cu_fd, TESTFILE},
-> +static struct tcase {
-> +	int *fd;
-> +	char *filename;
-> +} tcases[] = {
-> +	{ &dir_fd, TESTFILE1, },
-> +	{ &cu_fd, TESTFILE2, },
->   };
->   
-> -char *TCID = "fchownat01";
-> -int TST_TOTAL = ARRAY_SIZE(test_cases);
-> -static void fchownat_verify(const struct test_case_t *);
+> -static void test_verify(void);
+> -static void fchownat_verify(void);
 > -
 > -int main(int ac, char **av)
-> +static void fchownat_verify(unsigned int n)
->   {
+> -{
 > -	int lc;
 > -	int i;
 > -
@@ -233,32 +193,19 @@ On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -		tst_count = 0;
 > -		for (i = 0; i < TST_TOTAL; i++)
-> -			fchownat_verify(&test_cases[i]);
+> -			fchownat_verify();
 > -	}
 > -
 > -	cleanup();
 > -	tst_exit();
-> +	struct tcase *tc = &tcases[n];
-> +	struct stat stat_buf;
-> +	int fd = *tc->fd;
-> +	const char *filename = tc->filename;
-> +
-> +	TST_EXP_PASS_SILENT(fchownat(fd, filename, set_uid, set_gid, 0));
-> +
-> +	/* check if the file's ownership changed successfully */
-> +	SAFE_STAT(filename, &stat_buf);
-> +	if (stat_buf.st_uid == set_uid && stat_buf.st_gid == set_gid)
-> +		tst_res(TPASS, "fchownat(%d, %s, %d, %d, 0)",
-> +			fd, filename, set_uid, set_gid);
-> +	else
-> +		tst_res(TFAIL, "fchownat() fails because uid(%d) != set(%d) || "
-> +			"gid(%d) != set(%d)",
-> +			stat_buf.st_uid, set_uid,
-> +			stat_buf.st_gid, set_gid);
->   }
+> -}
 >   
 >   static void setup(void)
 >   {
+>   	struct stat c_buf, l_buf;
+>   
+> -	tst_require_root();
+> -
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 > -
 > -	TEST_PAUSE;
@@ -269,54 +216,81 @@ On 1/15/25 10:12, Shiyang Ruan via ltp wrote:
 > -
 > -	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
 > -
-> -	fd = SAFE_OPEN(cleanup, "testfile2", O_CREAT | O_RDWR, 0600);
-> -}
+> -	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
 > -
-> -static void fchownat_verify(const struct test_case_t *test)
-> -{
-> -	TEST(fchownat(*(test->fds), test->filenames, geteuid(),
-> -		      getegid(), test->flag));
+> -	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
 > -
-> -	if (TEST_RETURN != test->exp_ret) {
-> -		tst_resm(TFAIL | TTERRNO,
-> -			 "fchownat() returned %ld, expected %d, errno=%d",
-> -			 TEST_RETURN, test->exp_ret, test->exp_errno);
-> -		return;
-> -	}
-> -
-> -	if (TEST_ERRNO == test->exp_errno) {
-> -		tst_resm(TPASS | TTERRNO,
-> -			 "fchownat() returned the expected errno %d: %s",
-> -			 test->exp_ret, strerror(test->exp_errno));
-> -	} else {
-> -		tst_resm(TFAIL | TTERRNO,
-> -			 "fchownat() failed unexpectedly; expected: %d - %s",
-> -			 test->exp_errno, strerror(test->exp_errno));
-> -	}
-> +	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
-> +	SAFE_TOUCH(TESTFILE1, 0600, NULL);
-> +	SAFE_TOUCH(TESTFILE2, 0600, NULL);
+> -	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
+> +	SAFE_TOUCH(TESTFILE, 0600, NULL);
+> +	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
+> +	SAFE_STAT(TESTFILE_LINK, &c_buf);
+> +	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+>   
+>   	if (l_buf.st_uid == set_uid || l_buf.st_gid == set_gid) {
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "link_uid(%d) == set_uid(%d) or link_gid(%d) == "
+> -			 "set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
+> -			 set_gid);
+> +		tst_brk(TBROK | TERRNO,
+> +			"link_uid(%d) == set_uid(%d) or link_gid(%d) == "
+> +			"set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
+> +			set_gid);
+>   	}
 >   }
 >   
->   static void cleanup(void)
+> -static void fchownat_verify(void)
+> -{
+> -	TEST(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
+> -		      AT_SYMLINK_NOFOLLOW));
+> -
+> -	if (TEST_RETURN != 0) {
+> -		tst_resm(TFAIL | TTERRNO, "fchownat() failed, errno=%d : %s",
+> -			 TEST_ERRNO, strerror(TEST_ERRNO));
+> -	} else {
+> -		test_verify();
+> -	}
+> -}
+> -
+> -static void test_verify(void)
+> +static void run(void)
 >   {
-> -	if (fd > 0)
-> -		close(fd);
-> -
->   	if (dir_fd > 0)
-> -		close(dir_fd);
-> -
-> -	tst_rmdir();
-> +		SAFE_CLOSE(dir_fd);
+>   	struct stat c_buf, l_buf;
+>   
+> -	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
+> +	TST_EXP_PASS_SILENT(fchownat(AT_FDCWD, TESTFILE_LINK, set_uid, set_gid,
+> +				     AT_SYMLINK_NOFOLLOW));
+>   
+> -	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
+> +	SAFE_STAT(TESTFILE_LINK, &c_buf);
+> +	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+>   
+>   	if (c_buf.st_uid != set_uid && l_buf.st_uid == set_uid &&
+>   	    c_buf.st_gid != set_gid && l_buf.st_gid == set_gid) {
+> -		tst_resm(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
+> +		tst_res(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
+>   	} else {
+> -		tst_resm(TFAIL,
+> -			 "fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
+> -			 "link_uid=%d set_uid=%d | gid=%d link_gid=%d "
+> -			 "set_gid=%d", c_buf.st_uid, l_buf.st_uid, set_uid,
+> -			 c_buf.st_gid, l_buf.st_gid, set_gid);
+> +		tst_res(TFAIL,
+> +			"fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
+> +			"link_uid=%d set_uid=%d | gid=%d link_gid=%d set_gid=%d",
+> +			c_buf.st_uid, l_buf.st_uid, set_uid,
+> +			c_buf.st_gid, l_buf.st_gid, set_gid);
+>   	}
 >   }
-> +
+>   
+> -static void cleanup(void)
+> -{
+> -	tst_rmdir();
+> -}
 > +static struct tst_test test = {
 > +	.needs_tmpdir = 1,
 > +	.needs_root = 1,
-> +	.test = fchownat_verify,
-> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test_all = run,
 > +	.setup = setup,
-> +	.cleanup = cleanup,
 > +};
 
 -- 
