@@ -4,103 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9659AC02197
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 14:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E71C02196
+	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 14:55:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 037423C8EFD
-	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 15:42:21 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 35D0A3C8F06
+	for <ltp@archiver.kernel.org>; Mon,  3 Feb 2025 15:55:49 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 27E353C5584
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 15:42:04 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ by picard.linux.it (Postfix) with ESMTPS id 5126A3C8ED5
+ for <ltp@lists.linux.it>; Mon,  3 Feb 2025 15:55:31 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+ envelope-from=akumar@suse.de; receiver=lists.linux.it)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 914A5600687
- for <ltp@lists.linux.it>; Mon,  3 Feb 2025 15:42:03 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1581B141AB8C
+ for <ltp@lists.linux.it>; Mon,  3 Feb 2025 15:55:30 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D051021109;
- Mon,  3 Feb 2025 14:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738593722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0F37C2115C;
+ Mon,  3 Feb 2025 14:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1738594530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uIQ/5qmBpMCp2TafQehva9Km/jMFyl83X97qdU++40k=;
- b=T/FTcL2MGIpiuD8DGcMgSVR1yF9cuWnR8iqheA7XBnThjJNsjeESwpNhf8eUF33+4YMfYi
- USGDP9+eMqsDjhKDpT+6bUiQk7nWvwZhNAg/MCaRUr+OB4EoZw5r8Xbu/ponwxLmeyuypD
- qyZwxVfpaG0eC+KRNH56UJMvBvCtHjQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738593722;
+ bh=GIQ+qp6yPAAi0569p4f2u5rSMZ47Tx4NB7nXUUFfAJ4=;
+ b=arWunw9J3t093sS1EQFhKNgyLUJjTgeZQgfS+mjZzTJAv/37sNaVpuqUyJ7IyjY+LnUdOa
+ th4oQGuoSRHQLZgL3uQ4eV0mZAhqtGx0FfQswNbVJTUdCGD4lbyNXUahv+CWAyYOUcxQ8C
+ /n/opckJgzdk3KEDQWIga6g2W4v+drw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1738594530;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uIQ/5qmBpMCp2TafQehva9Km/jMFyl83X97qdU++40k=;
- b=cl9NCMdZZLZk7E9oio8Tufp/UlqN8lUl8blLtBYyfWICqkDiyzwpLFUaD04Ybu8qFl94rH
- /zl7QtHw0sdchIAQ==
+ bh=GIQ+qp6yPAAi0569p4f2u5rSMZ47Tx4NB7nXUUFfAJ4=;
+ b=SLeVwTmCycd00/Yaz9zFJzRFXrknoLNRsBVb9SJBNuv0iI2RGFLpxmPww+phoRTKm0sDN+
+ JJ4r78btSfS6HdCg==
 Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738593721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=arWunw9J;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SLeVwTmC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1738594530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uIQ/5qmBpMCp2TafQehva9Km/jMFyl83X97qdU++40k=;
- b=umhw+BzzDTxWKFvo0lbtFcWGenkwf7bWHKGLGDfO1rOtghUvStta7YEocQuvml9j0hYuPB
- CB8w6P9uf2lVDej/JSXX4oLwpk+aEzARivrNYFRZeASaGrA0ZDINKAghoE7hVIrsrQrIkw
- 88W7SF+PE8/3xtk37v1Hpn92Kd+D4ww=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738593721;
+ bh=GIQ+qp6yPAAi0569p4f2u5rSMZ47Tx4NB7nXUUFfAJ4=;
+ b=arWunw9J3t093sS1EQFhKNgyLUJjTgeZQgfS+mjZzTJAv/37sNaVpuqUyJ7IyjY+LnUdOa
+ th4oQGuoSRHQLZgL3uQ4eV0mZAhqtGx0FfQswNbVJTUdCGD4lbyNXUahv+CWAyYOUcxQ8C
+ /n/opckJgzdk3KEDQWIga6g2W4v+drw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1738594530;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uIQ/5qmBpMCp2TafQehva9Km/jMFyl83X97qdU++40k=;
- b=oMnSMblDb5g4HIbTrA8tkKyuDuTQrX8GrJik2bPCkt1bROXHW3QtgVV3ff0kTurgTZl+hH
- fy/drQ0GElWtzODg==
+ bh=GIQ+qp6yPAAi0569p4f2u5rSMZ47Tx4NB7nXUUFfAJ4=;
+ b=SLeVwTmCycd00/Yaz9zFJzRFXrknoLNRsBVb9SJBNuv0iI2RGFLpxmPww+phoRTKm0sDN+
+ JJ4r78btSfS6HdCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C240413795;
- Mon,  3 Feb 2025 14:42:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0313013A78;
+ Mon,  3 Feb 2025 14:55:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8EKbLrnVoGcDSQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 03 Feb 2025 14:42:01 +0000
-Date: Mon, 3 Feb 2025 15:42:01 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MsxKAOLYoGfKTQAAD6G6ig
+ (envelope-from <akumar@suse.de>); Mon, 03 Feb 2025 14:55:30 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Z6DVuQ4DcH5Ai1fX@yuki.lan>
-References: <20250203-doc_tests_list-v1-1-5fe69c07b1ab@suse.com>
- <Z6CxekRPhvsSdfLc@rei>
- <7f6d9a5d-284a-4c25-b491-cfd7b15da2dd@suse.com>
- <4f163ac1-d282-4ea1-baa7-c574b342243c@suse.com>
- <Z6DBxBvFRXHvolkt@yuki.lan> <20250203141408.GA1266486@pevik>
+Date: Mon, 03 Feb 2025 15:55:29 +0100
+Message-ID: <4654118.LvFx2qVVIh@thinkpad>
+In-Reply-To: <20250203142213.GA1268944@pevik>
+References: <20240530144406.7626-1-akumar@suse.de>
+ <20240530144846.10915-1-akumar@suse.de> <20250203142213.GA1268944@pevik>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250203141408.GA1266486@pevik>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: 0F37C2115C
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; CTE_CASE(0.50)[];
+ MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.de:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
+ imap1.dmz-prg2.suse.org:helo, suse.de:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] doc: add tests catalog page
+Subject: Re: [LTP] [PATCH v3] flock: Add test for verifying EINTR errno
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,52 +130,115 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > I guess that we want group the data somewhat like:
+On Monday, February 3, 2025 3:22:13 PM CET Petr Vorel wrote:
+> Hi Avinesh, all,
 > 
-> >  - options (because command line options may be useful there)
+> ...
+> > +++ b/testcases/kernel/syscalls/flock/flock07.c
+> ...
+> > +static void handler(int sig)
+> > +{
+> > +	tst_res(TINFO, "Received signal: %d", sig);
+> How about print a signal constant/name?
 > 
-> >  - min_kver, needs_kconfigs, min_cpus, needs_drivers, needs_cmds...
-> >    (because it may describe why tests are skipped)
+> 	tst_res(TINFO, "Received signal: %s (%d)", tst_strsig(sig), sig);
+> > +}
+> ...
+> > +static void verify_flock(void)
+> > +{
+> > +	pid_t pid;
+> > +	int fd1 = SAFE_OPEN(TEMPFILE, O_RDWR);
+> > +	int fd2 = SAFE_OPEN(TEMPFILE, O_RDWR);
+> How about to setup file descriptors in setup() and close them in cleanup()?
 > 
-> >  - needs_cgroup_ctrls + cgroup knobs (for tests that use cgroups)
-> Also .needs_cgroup_ver, .needs_cgroup_nsdelegate
+> I suggest to merge with the change below.
+Hi Petr,
 
-That should be covered by the "cgroup knobs"
+Thank you for the review, and I agree with your suggestions.
 
-> >  - all_filesystems, skip_filesystems, filesystems
+Regards,
+Avinesh
+
 > 
-> >  - timeout, runtime         (here as well, run for longer)
+> > +
+> > +	TST_EXP_PASS(flock(fd1, LOCK_EX));
+> > +
+> > +	pid = SAFE_FORK();
+> > +	if (!pid) {
+> > +		child_do(fd2);
+> > +		exit(0);
+> > +	} else {
+> > +		sleep(1);
+> > +		SAFE_KILL(pid, SIGUSR1);
+> > +		SAFE_WAITPID(pid, NULL, 0);
+> > +	}
+> > +
+> > +	SAFE_CLOSE(fd1);
+> > +	SAFE_CLOSE(fd2);
+> > +}
 > 
-> >  - needs_root      maybe?
-> >  - needs_device    maybe?
-> IMHO both can be interesting - you can list tests you loose if you don't use
-> root or you don't have kernel with loop device configured.
+> Kind regards,
+> Petr
 > 
-> Also there are more: .caps, .hugepages, .needs_hugetlbfs, .min_mem_avail,
+> +++ testcases/kernel/syscalls/flock/flock07.c
+> @@ -17,14 +17,27 @@
+>  
+>  #define TEMPFILE "test_eintr"
+>  
+> +static int fd1 = -1, fd2 = -1;
+> +
+>  static void handler(int sig)
+>  {
+> -	tst_res(TINFO, "Received signal: %d", sig);
+> +	tst_res(TINFO, "Received signal: %s (%d)", tst_strsig(sig), sig);
+>  }
+>  
+>  static void setup(void)
+>  {
+>  	SAFE_TOUCH(TEMPFILE, 0777, NULL);
+> +	fd1 = SAFE_OPEN(TEMPFILE, O_RDWR);
+> +	fd2 = SAFE_OPEN(TEMPFILE, O_RDWR);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd1 >= 0)
+> +		SAFE_CLOSE(fd1);
+> +
+> +	if (fd2 >= 0)
+> +		SAFE_CLOSE(fd2);
+>  }
+>  
+>  static void child_do(int fd)
+> @@ -42,8 +55,6 @@ static void child_do(int fd)
+>  static void verify_flock(void)
+>  {
+>  	pid_t pid;
+> -	int fd1 = SAFE_OPEN(TEMPFILE, O_RDWR);
+> -	int fd2 = SAFE_OPEN(TEMPFILE, O_RDWR);
+>  
+>  	TST_EXP_PASS(flock(fd1, LOCK_EX));
+>  
+> @@ -56,13 +67,11 @@ static void verify_flock(void)
+>  		SAFE_KILL(pid, SIGUSR1);
+>  		SAFE_WAITPID(pid, NULL, 0);
+>  	}
+> -
+> -	SAFE_CLOSE(fd1);
+> -	SAFE_CLOSE(fd2);
+>  }
+>  
+>  static struct tst_test test = {
+>  	.setup = setup,
+> +	.cleanup = cleanup,
+>  	.test_all = verify_flock,
+>  	.needs_tmpdir = 1,
+>  	.needs_root = 1,
+> 
 
-I guess that .caps is closer to be interanal than not.
 
-> .min_swap_avail, .dev_min_size, .needs_abi_bits, .needs_overlay (at least).
 
-And we also have supported_archs, that is probably interesting.
 
-> Why not to show all the info like it was previously? We never know what the
-> reader will be interested in.
-
-The chalenge here is to keep the page nicely formatted and generally
-well arranged, having less helps a bit there. So the idea is to skip the
-data that are generally mostly interesting to the test runner. The
-quesitos is where to draw the line.
-
-> If we are really not interested at all, I would just avoid few LTP true
-> internals, e.g.: .needs_checkpoints, .forks_child, .child_needs_reinit.
-
-These are really uninteresting to anone reading that documentation.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
