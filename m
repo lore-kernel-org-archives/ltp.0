@@ -4,91 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B98AFC02192
-	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 00:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CCADC02197
+	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 11:18:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C5CA3C8F80
-	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 01:50:37 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 184F93C8FC3
+	for <ltp@archiver.kernel.org>; Tue,  4 Feb 2025 12:18:14 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CED6A3C54B2
- for <ltp@lists.linux.it>; Tue,  4 Feb 2025 01:50:20 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 782CE3C4E26
+ for <ltp@lists.linux.it>; Tue,  4 Feb 2025 12:17:57 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3F2C64F649
- for <ltp@lists.linux.it>; Tue,  4 Feb 2025 01:50:18 +0100 (CET)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 513MvaiK027290;
- Tue, 4 Feb 2025 00:50:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=iFD7h3
- eA60RTkB1tif+Q3mte1FUD/lUZQjV+uaohdwk=; b=JqzDLA8kb8QTFeSl+MtUjh
- yZ24+8vdg4GjNbh35wfmQSfKSFeqmUoa9jq3pIy3yVy09tiUfPDqSBYleI8WIHGQ
- TQFPtJY9ALgAzm16UExvZ8kSkBZPqRTbP77QhR/B0tTkgG7ZSGMgTvSkD2uoGVbU
- kBq5j9HrZGCR0EnJY5dwrDZpUOS/fjVQD0kTzfdhjQnvuKQbf5kh9ZfUyBq39Zsy
- Upgwc05HT11S+XamWH0TKOZL5t0wvK9/FsDUi+0Lp9X0xdzo9tikxloFJxP/SMAP
- IX5sSf5Zrjbsq62WvRyt0SR5B5FIt47UAT/2f/2BXpeaQSMWqOkPJpIYMoIem1sA
- ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44jkv961ke-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 04 Feb 2025 00:50:16 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 513NPWWD024635;
- Tue, 4 Feb 2025 00:50:15 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44hxxn11p1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 04 Feb 2025 00:50:15 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com
- [10.241.53.100])
- by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 5140oFmI19923702
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 4 Feb 2025 00:50:15 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E06A85806D;
- Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9E9E258068;
- Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.18.96]) by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Tue,  4 Feb 2025 00:50:14 +0000 (GMT)
-Message-ID: <4e4fb197b7127f8d82705ec441e8a273cd237b7f.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-In-Reply-To: <20250203210233.1407530-1-pvorel@suse.cz>
-References: <20250203210233.1407530-1-pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8599D6609E2
+ for <ltp@lists.linux.it>; Tue,  4 Feb 2025 12:17:55 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C94581F365;
+ Tue,  4 Feb 2025 11:17:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738667874;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TCWvqfjG0BtUUcUKLRbPGcFU/qOT5u/PDe3V66sMGro=;
+ b=V2AsqGoBdQoD9CyvNZGreA6cs0wF3MAKS5B0H3DurKDJQfY99SBz0pXHgXeeWVmaelEc7M
+ bGyrybZ2cgBpcd8wvB7IjBE2siOQIey38tqzsCFkvCSk5O7oqBKUSD1iyI8AXXX3YZvaYr
+ I5w6trcDz8YGvjg4XI4DnvnDKF8Bq4c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738667874;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TCWvqfjG0BtUUcUKLRbPGcFU/qOT5u/PDe3V66sMGro=;
+ b=DKdUythLUCl3IQ/jEpNvzE6nGnF3PbujjLCaQld62utnEXov42OX3ZkSDbQCnPdejvi/kW
+ d+/jBq4L/mijoFAA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wZjieH7r;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Op07PxRq
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738667873;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TCWvqfjG0BtUUcUKLRbPGcFU/qOT5u/PDe3V66sMGro=;
+ b=wZjieH7rVYHZ399hValt6hVe7HXVoOdgtgAaHKGB537+oF3FGeoWIycNhyYrhlzPxIEkjQ
+ WclnnCIiPcYF8mRTnk686t+iA1o/ZtIRo/82s8lSDEfdn0V6wyUsOHMMdE5ATuYNQJTGyW
+ uawrkTz9on3SduJHlzcXIt67gy+9ZIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738667873;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TCWvqfjG0BtUUcUKLRbPGcFU/qOT5u/PDe3V66sMGro=;
+ b=Op07PxRqNBXO+m4sgc+MbLnNT7w62fmZ2MlsDEhQa2jfIvXZsFeXD7uCT71X/d7R7KJW97
+ 9hSqtEqQ6eRsHbBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9FDB13795;
+ Tue,  4 Feb 2025 11:17:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EhUrKGH3oWcgJwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Feb 2025 11:17:53 +0000
+Date: Tue, 4 Feb 2025 12:17:48 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <20250204111748.GA1454574@pevik>
+References: <20250114112915.610297-1-pvorel@suse.cz>
+ <20250114112915.610297-6-pvorel@suse.cz>
+ <3c7dee2c281867aa279c9d556e4aa62a7e865d36.camel@linux.ibm.com>
 MIME-Version: 1.0
-Date: Mon, 03 Feb 2025 18:48:10 -0500
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OSMniuTFzQyC2Z-dKRU-m4GR0-1MMSrz
-X-Proofpoint-ORIG-GUID: OSMniuTFzQyC2Z-dKRU-m4GR0-1MMSrz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-03_10,2025-01-31_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 clxscore=1015 lowpriorityscore=0 spamscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2501170000 definitions=main-2502040002
+Content-Disposition: inline
+In-Reply-To: <3c7dee2c281867aa279c9d556e4aa62a7e865d36.camel@linux.ibm.com>
+X-Rspamd-Queue-Id: C94581F365
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] IMA: measure.policy: limit dont_measure tmpfs
- policy to func=FILE_CHECK
+Subject: Re: [LTP] [PATCH v3 05/10] IMA: Read required policy from file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,35 +126,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCAyMDI1LTAyLTAzIGF0IDIyOjAyICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+IGFk
-ZCBmdW5jPUZJTEVfQ0hFQ0sgdG8gZG9udF9tZWFzdXJlIHRtcGZzCj4gCj4gU2ltaWxhcmx5IHRv
-IHRjYi5wb2xpY3kgbGltaXQgZG9udF9tZWFzdXJlIHRtcGZzIHBvbGljeSB0byBmdW5jPUZJTEVf
-Q0hFQ0suCj4gVGhpcyBhbGxvd3MgdG8gZG8gZXh0cmEgbWVhc3VyZW1lbnRzLCBlLmcuIGtleGVj
-IGJvb3QgY29tbWFuZCBsaW5lLCBzZWUKPiBrZXJuZWwgY29tbWl0Cj4gCj4gN2VlZjdjOGJhYzlh
-ICgiaW1hOiBsaW1pdCB0aGUgYnVpbHRpbiAndGNiJyBkb250X21lYXN1cmUgdG1wZnMgcG9saWN5
-IHJ1bGUiKQo+IAo+IEFsc28gcmVtb3ZlIGxlYWRpbmcgMCBmcm9tIHRtcGZzIG1hZ2ljICh0byBt
-YXRjaCBJTUEgZG9jcyBhbmQgdGNiLnBvbGljeSkuCj4gCj4gU3VnZ2VzdGVkLWJ5OiBNaW1pIFpv
-aGFyIDx6b2hhckBsaW51eC5pYm0uY29tPgo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2
-b3JlbEBzdXNlLmN6PgoKUmV2aWV3ZWQtYnk6IE1pbWkgWm9oYXIgPHpvaGFyQGxpbnV4LmlibS5j
-b20+Cgo+IC0tLQo+IMKgLi4uL3NlY3VyaXR5L2ludGVncml0eS9pbWEvZGF0YWZpbGVzL2ltYV9w
-b2xpY3kvbWVhc3VyZS5wb2xpY3nCoCB8IDIgKy0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1naXQKPiBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9kYXRhZmlsZXMvaW1hX3BvbGljeS9tZWFzdXJlLnBv
-bGljeQo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2RhdGFmaWxl
-cy9pbWFfcG9saWN5L21lYXN1cmUucG9saWN5Cj4gaW5kZXggOTk3NmRkZjJkZS4uOGFiZDA1ZmIx
-YSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEv
-ZGF0YWZpbGVzL2ltYV9wb2xpY3kvbWVhc3VyZS5wb2xpY3kKPiArKysgYi90ZXN0Y2FzZXMva2Vy
-bmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEvZGF0YWZpbGVzL2ltYV9wb2xpY3kvbWVhc3VyZS5w
-b2xpY3kKPiBAQCAtOCw3ICs4LDcgQEAgZG9udF9tZWFzdXJlIGZzbWFnaWM9MHg2MjY1NjU3Mgo+
-IMKgIyBERUJVR0ZTX01BR0lDCj4gwqBkb250X21lYXN1cmUgZnNtYWdpYz0weDY0NjI2NzIwCj4g
-wqAjIFRNUEZTX01BR0lDCj4gLWRvbnRfbWVhc3VyZSBmc21hZ2ljPTB4MDEwMjE5OTQKPiArZG9u
-dF9tZWFzdXJlIGZzbWFnaWM9MHgxMDIxOTk0IGZ1bmM9RklMRV9DSEVDSwo+IMKgIyBTRUNVUklU
-WUZTX01BR0lDCj4gwqBkb250X21lYXN1cmUgZnNtYWdpYz0weDczNjM2NjczCj4gwqBtZWFzdXJl
-IGZ1bmM9RklMRV9NTUFQIG1hc2s9TUFZX0VYRUMKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi MImi,
+
+...
+> > +++ b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+> > @@ -1,6 +1,7 @@
+> > =A0#!/bin/sh
+> > =A0# SPDX-License-Identifier: GPL-2.0-or-later
+> > =A0# Copyright (c) 2021 Microsoft Corporation
+> > +# Copyright (c) Linux Test Project, 2021-2025
+> > =A0# Author: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > =A0#
+> > =A0# Verify measurement of SELinux policy hash and state.
+> > @@ -14,15 +15,12 @@ TST_CNT=3D2
+> > =A0TST_SETUP=3D"setup"
+> > =A0TST_MIN_KVER=3D"5.12"
+> > =A0
+> > -FUNC_CRITICAL_DATA=3D'func=3DCRITICAL_DATA'
+> > -REQUIRED_POLICY=3D"^measure.*$FUNC_CRITICAL_DATA"
+> > +REQUIRED_POLICY_CONTENT=3D'selinux.policy'
+
+> The selinux.policy contains a specific critical data measurement rule:
+> measure func=3DCRITICAL_DATA label=3Dselinux.  However the test would wor=
+k with the
+> generic policy rule "measure func=3DCRITICAL_DATA", which can be specifie=
+d on the . =
+
+> boot command line via "ima_policy=3Dcritical_data".
+
+> As long as being able to read the IMA policy is required, in addition to =
+checking
+> whether the specific critical data rule exists, check whether the generic=
+ rule exists
+> before loading the specific one.
+
+> Perhaps all that is needed is defining REQUIRED_BUILTIN_POLICY like:
+> REQUIRED_BUILTIN_POLICY=3D"critical_data"
+
+Thanks for a hint, I'll retest ima_policy=3Dcritical_data and add it as an
+alternative (as a separate patch). In a meanwhile I (hopefully) fixed all
+mistakes in the commit messages and merged. Thanks a lot for your patient
+review!
+
+...
+
+Kind regards,
+Petr
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
