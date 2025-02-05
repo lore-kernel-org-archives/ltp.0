@@ -4,52 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2801C02193
-	for <ltp@archiver.kernel.org>; Wed,  5 Feb 2025 02:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E7CBC02193
+	for <ltp@archiver.kernel.org>; Wed,  5 Feb 2025 02:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1738724111; h=date : to :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=5BCklIH0T1h8urVSwgo8OKjaQ4/Rk8PcYBkpIKUi5mA=;
+ b=KXtPuC924px0qhhL1QoIOJH4LRlbKhp+MjIGKVbpx7iiE8D/v/OCMvthcNGXjlIlfSG+M
+ yGwL2SLReW0Xtf5nUN+RXaO8tvyEHraU9gTr1sePhyt6VCnVL+c3LtAbKqDweUQTF155q8x
+ 2+/5SHAD3LDVWUTQxJ7w4f3V63boaSQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78FE13C91D3
-	for <ltp@archiver.kernel.org>; Wed,  5 Feb 2025 03:37:32 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9DF823C2DA5
+	for <ltp@archiver.kernel.org>; Wed,  5 Feb 2025 03:55:11 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D2513C6E6B
- for <ltp@lists.linux.it>; Wed,  5 Feb 2025 03:37:14 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux-foundation.org (client-ip=2604:1380:45d1:ec00::3;
- helo=nyc.source.kernel.org; envelope-from=akpm@linux-foundation.org;
- receiver=lists.linux.it)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org
- [IPv6:2604:1380:45d1:ec00::3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B02F63C2DA5
+ for <ltp@lists.linux.it>; Wed,  5 Feb 2025 03:54:49 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0ACCC6373E7
- for <ltp@lists.linux.it>; Wed,  5 Feb 2025 03:37:12 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by nyc.source.kernel.org (Postfix) with ESMTP id BCE67A415DC;
- Wed,  5 Feb 2025 02:35:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565ADC4CEDF;
- Wed,  5 Feb 2025 02:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
- s=korg; t=1738723030;
- bh=UMN3I8ugG4IroGqBeu8UD16HZSzIa0wlUCA/0Y8bC9w=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=PKr2dLkP73x/+9jsz+6Rpz5dIR1j9EeewhSNfHPKTsifReqR6FTgsZdeRnfsZud6z
- alayUOjsaDlgfnQFjV+n2uGXtBTKkRvigaILgpapAyDiVzRxZrDMehoC+c/9bCWPq/
- 0JoIyHd/tVynl13SaFId9fS/gvpWTN/yrTqRILJc=
-Date: Tue, 4 Feb 2025 18:37:09 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: bugzilla-daemon@kernel.org
-Message-Id: <20250204183709.3db159f63a99a8dc25b7d342@linux-foundation.org>
-In-Reply-To: <bug-219750-27@https.bugzilla.kernel.org/>
-References: <bug-219750-27@https.bugzilla.kernel.org/>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A6F241422B74
+ for <ltp@lists.linux.it>; Wed,  5 Feb 2025 03:54:48 +0100 (CET)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4361b6f9faeso2137065e9.1
+ for <ltp@lists.linux.it>; Tue, 04 Feb 2025 18:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1738724088; x=1739328888; darn=lists.linux.it;
+ h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=9Js0LoHdWpKXdIM4zynGhpGSgGPzARb5d2jY55ISCtw=;
+ b=OdKH4lQHVuR75FjdvXirz/Stym9aquvClYCAe33/MXg2Lgvr+fQosgi3dxpNUPXKyx
+ /4JfoLfbn5BW9n/6nTy5TOvpdzgzViGc8QPcFZfWZ79zq3e8XRwMygQEHL2+W61nxU6l
+ xdhvlgjYJCemSfyGd3Czd7azFLap9EwfGxHOlExpBhV+NFl3/vCW0SeU6DXqPLu8aA5L
+ vy/afWT3jjirS+z6AxvAgJpCt03kqEKfIDxlmNCc/W3BGvDSSeaHuU38OnrEcD3yZSMC
+ 6Wu+ladvNyna3Vj2JuMADd+J5QHMfAja2yBy6SvByMMc9wE3KDY2AWm5ZKgECDJxhyEn
+ 1INQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1738724088; x=1739328888;
+ h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=9Js0LoHdWpKXdIM4zynGhpGSgGPzARb5d2jY55ISCtw=;
+ b=d+DgqCEHlzzCnzzHUVEjbevTi8gox3CX5izRV6t0BqJH5WR9mddXtfAL5YfAzgi+1E
+ VdaT/VNqMedeq4tndoz5wBKulZ3D7Ivl+KlnVSnGFKatv9DoBpk0jlI0mzfeTl2rwYyQ
+ BvTfD5PEALXNMaKb4qCbeQ1xub9hvMwQNw/mL6fcHGPl3WYLSeDaLHiC8RA/C/LRlG0R
+ HX8MNbRAsOY+yY/n8iMQujnIQ6qbowodb1DJEa60aKEG/K+xzHGClX6xLZhpYixvK/VI
+ mvBn9n7fzyztunOsBHaF8VarCrP4Zlm3Gmn+YpMaIv61nAON85At70eywnZqX16PpFX7
+ WHvQ==
+X-Gm-Message-State: AOJu0YxS/WtJZFrVmzv6zBPYkmhIMqt+gE13dG3MQE64/FxfFc3bjvI3
+ HsXD65MHuKVPaJErknyzgiVaU/qnGsJyGdH3ZMvKOhpgkeIyeJ4Vyu9mr4HNBiyAkKPESBMzvIM
+ =
+X-Gm-Gg: ASbGncu1mDkNsmsP7JWWv8PporaBWOGH2eAYy9OODblsbHgRTGmLXjMOBq7qsgvQOBE
+ jhPSs2HvqsIf2Ewc5fNRscQKlCGpB7fEZNtQvLV44PFX/1F5UlsS5Ihvnj7+OXQOxul4MF1Ror+
+ NBdbVL5tmmPl4fpMe0WpGDAHndxVKixwFPJxBGLwECpagMtquwsj2u6RKMlEjkUAfQstBxgdfGp
+ t4zoMtFv3ZKbHbxWluJRsxezYfw5OpUQxj2KXjuhTLexe5Q/T40OkUA9DlorKU3MhilwvjWNWQ=
+X-Google-Smtp-Source: AGHT+IGAXS+yEDwBc2KGSOm0pjH1QPMZ1mxinV2xHVa6blcmZg1QuhgACHC+n55hrL88pCcOPgRy/Q==
+X-Received: by 2002:a05:6000:1fa1:b0:38c:2745:2ddb with SMTP id
+ ffacd0b85a97d-38db4630f1dmr667084f8f.2.1738724087910; 
+ Tue, 04 Feb 2025 18:54:47 -0800 (PST)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38c5c1016a1sm17493747f8f.21.2025.02.04.18.54.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 04 Feb 2025 18:54:47 -0800 (PST)
+Date: Tue, 4 Feb 2025 21:54:41 -0500
+To: jstancek@redhat.com
+Message-ID: <Z6LS8SfWeWnd5A3C@wegao>
+MIME-Version: 1.0
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Bug 219750] New: Unexpected result from the stack_clash
- test for CVE 2017-1000364
+Subject: [LTP] hugemmap34 trigger oom if compile with
+ CFLAGS='-fstack-clash-protection'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,109 +91,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: rick.p.edgecombe@intel.com, lawa@nvidia.com, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-(switched to email.  Please respond via emailed reply-to-all, not via the
-bugzilla web interface).
+Hi Jan
 
-On Tue, 04 Feb 2025 22:19:44 +0000 bugzilla-daemon@kernel.org wrote:
+Compiling hugemmap34 with CFLAGS='-fstack-clash-protection' causes gcc to insert additional stack address validation checks during alloca calls.  This results in kernel start allocate memory really , eventually triggering an OOM.
 
-> https://bugzilla.kernel.org/show_bug.cgi?id=219750
-> 
->             Bug ID: 219750
->            Summary: Unexpected result from the stack_clash test for CVE
->                     2017-1000364
->            Product: Memory Management
->            Version: 2.5
->           Hardware: All
->                 OS: Linux
->             Status: NEW
->           Severity: normal
->           Priority: P3
->          Component: Other
->           Assignee: akpm@linux-foundation.org
->           Reporter: lawa@nvidia.com
->         Regression: No
+In our normal openqa env we do not have such big memory(1024GB) to support this test. So we
+ have to disable CFLAGS='-fstack-clash-protection' if we still need this case running in our env.
 
-Thanks.  I'm suspecting that the changes in 6b008640db73 ("mm: move
-'mmap_min_addr' logic from callers into vm_unmapped_area()") broke the
-heuristics in stack_clash.c.  Let's cc the LTP team and ask whether
-others are seeing this?
+===log with CFLAGS='-fstack-clash-protection'===
+[71073.562094] [T13546] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0-1,global_oom,task_memcg=/,task=hugemmap34,pid=13542,uid=0
+[71073.562109] [T13546] Out of memory: Killed process 13542 (hugemmap34) total-vm:4764864kB, anon-rss:2816000kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:636kB oom_score_adj:0
 
-> Created attachment 307574
->   --> https://bugzilla.kernel.org/attachment.cgi?id=307574&action=edit
-> git bisect log file
-> 
-> I ran into the following unexpected result from the stack clash test included
-> with the LTP testsuite while running tests against 6.12.10:
-> 
-> ###
-> 
-> tst_test.c:1724: TINFO: Overall timeout per run is 0h 04m 00s 
-> tst_kconfig.c:629: TINFO: stack_guard_gap is not found in /proc/cmdline 
-> stack_clash.c:296: TINFO: STACK_GROWSDOWN = 1 == 0x7fffffffcfd0 >
-> 0x7fffffffcf40 
-> stack_clash.c:247: TINFO: Stack:0x7fffffefc000+0x103000
-> mmap:0x7fffffdfb000+0x1000 
-> stack_clash.c:207: TBROK: mmap((nil),4096,PROT_READ | PROT_WRITE(3),34,0,0)
-> failed: ENOMEM (12) 
-> stack_clash.c:329: TBROK: Child exited with 2 
-> 
-> HINT: You _MAY_ be missing kernel fixes: 
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=58c5d0d6d522 
-> 
-> HINT: You _MAY_ be vulnerable to CVE(s): 
-> 
-> ###
-> 
-> 
-> The test worked previously on 6.1.x.   
-> 
-> I ran the same test on a 6.6.x  (6.6.70 to be specific) and I got the same
-> failure.
-> 
-> git bisect testing appeared to narrow down the reason for the unexpected result
-> to the   following commit:
-> 
-> 6b008640db7355d8de6ac18f74cedd7ccc92684f
-> 
-> 
-> Tested reverting the changes from the latter commit and I was able to get the
-> expected result:
-> 
-> 
-> [root@rno2-sim-j08-017 ~]# stack_clash
-> tst_test.c:1900: TINFO: LTP version: 20240930
-> tst_test.c:1904: TINFO: Tested kernel: 6.12.10 #8 SMP PREEMPT_DYNAMIC Fri Jan
-> 31 12:42:41 PST 2025 x86_64
-> tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_test.c:1724: TINFO: Overall timeout per run is 0h 00m 30s 
-> tst_kconfig.c:629: TINFO: stack_guard_gap is not found in /proc/cmdline
-> stack_clash.c:296: TINFO: STACK_GROWSDOWN = 1 == 0x7fffffffd3b0 >
-> 0x7fffffffd320
-> stack_clash.c:247: TINFO: Stack:0x7fffffefc000+0x103000
-> mmap:0x7fffffdfb000+0x1000
-> stack_clash.c:89: TINFO: mmap = [7fffffdfb000, 7fffffdfc000), addr =
-> 7fffffefbd60, diff = ffd60, THRESHOLD = ff000
-> stack_clash.c:321: TPASS: stack is far enough from mmaped area
-> 
-> Summary:
-> passed   1   
-> failed   0   
-> broken   0   
-> skipped  0
-> warnings 0
-> 
-> -- 
-> You may reply to this email to add a comment.
-> 
-> You are receiving this mail because:
-> You are the assignee for the bug.
+tst_hugepage.c:84: TINFO: 1 hugepage(s) reserved
+tst_tmpdir.c:317: TINFO: Using /tmp/LTP_hug2vxfh1 as tmpdir (btrfs filesystem)
+tst_test.c:1097: TINFO: Mounting none to /tmp/LTP_hug2vxfh1/hugetlbfs fstyp=hugetlbfs flags=0
+tst_test.c:1900: TINFO: LTP version: 20240930
+tst_test.c:1904: TINFO: Tested kernel: 6.4.0-150700.40-default #1 SMP Thu Jan 9 12:43:31 UTC 2025 (f78fd5e) ppc64le
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:669: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+tst_test.c:1724: TINFO: Overall timeout per run is 0h 02m 00s
+hugemmap34.c:152: TINFO: searching for huge page and child stack placement
+hugemmap34.c:175: TINFO: potential stack at address 0x7effff000000
+hugemmap34.c:192: TINFO: stack = 0x7effff000000-0x7f0000000000, hugepage = 0x7dffff000000-0x7e0000000000
+tst_coredump.c:32: TINFO: Avoid dumping corefile for process(pid=20714)
+hugemmap34.c:56: TINFO: Child process starting with top of stack at 0x7effffffff80
+
+tst_test.c:1785: TINFO: Killed the leftover descendant processes
+tst_test.c:1792: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1793: TBROK: Test killed! (timeout?)
+
+
+===log without CFLAGS='-fstack-clash-protection'===
+tst_hugepage.c:84: TINFO: 1 hugepage(s) reserved
+tst_tmpdir.c:317: TINFO: Using /tmp/LTP_hugjztvoX as tmpdir (btrfs filesystem)
+tst_test.c:1097: TINFO: Mounting none to /tmp/LTP_hugjztvoX/hugetlbfs fstyp=hugetlbfs flags=0
+tst_test.c:1900: TINFO: LTP version: 20240930
+tst_test.c:1904: TINFO: Tested kernel: 6.4.0-150700.40-default #1 SMP Thu Jan 9 12:43:31 UTC 2025 (f78fd5e) ppc64le
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:669: TINFO: CONFIG_LATENCYTOP kernel option detected which might slow the execution
+tst_test.c:1724: TINFO: Overall timeout per run is 0h 02m 00s
+hugemmap34.c:152: TINFO: searching for huge page and child stack placement
+hugemmap34.c:175: TINFO: potential stack at address 0x7effff000000
+hugemmap34.c:192: TINFO: stack = 0x7effff000000-0x7f0000000000, hugepage = 0x7dffff000000-0x7e0000000000
+tst_coredump.c:32: TINFO: Avoid dumping corefile for process(pid=20704)
+hugemmap34.c:56: TINFO: Child process starting with top of stack at 0x7effffffff80
+hugemmap34.c:77: TINFO: Child process extended stack up to 0x7dfffffeff80, hasn't reached 0x7dffeffeff80
+hugemmap34.c:79: TPASS: Child killed by SIGSEGV as expected
+
+Thanks.
+Regards
+Gao Wei
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
