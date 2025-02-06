@@ -4,102 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE3AC02194
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 17:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C7D6C02194
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 21:25:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3EA5F3C92A9
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 18:46:13 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7C9593C92CB
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 22:25:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07D413C9194
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 18:45:55 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 307343C6BFE
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 22:24:49 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6F222223D83
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 18:45:54 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E4F4A102118A
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 22:24:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1738877087;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oe7BpYmOH3rnLkc4+DZeNaQm2FjAtuRoHSoGNRUocJE=;
+ b=hTDjoKDtq0nWAtDUrc2i1yNKwoxyVH+SF62ynF3NZl4gMsuD3x/Bw1UdK3kj0WFLasJtCV
+ 6dVGgf4TfjHvzSP7Q/zl0zEOhMbk+qaVDRrQxMLX2Dg268dbmQ3Qhk1RfEnBRxXXwxATrn
+ TRPW+Ait8ozuci7L4gw3PHmGNQsGz/0=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-655-mvNmCeTFP_ermLxLs3KXbg-1; Thu,
+ 06 Feb 2025 16:24:44 -0500
+X-MC-Unique: mvNmCeTFP_ermLxLs3KXbg-1
+X-Mimecast-MFC-AGG-ID: mvNmCeTFP_ermLxLs3KXbg
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D46382115F;
- Thu,  6 Feb 2025 17:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738863953;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TUsqkDhdhlbKWoqLsQ777cWlHo7tlWrbbuffJ1QxTlw=;
- b=SSGyF3ljQQJtACLSNrkiLPIjyWJLopizH5XfmzR9OsdgR1oTmiDAyKz2agUY1tv0yqcY6Z
- Pe3W2y+S5DftTiZ4pEuEcnWPoWFJpr9+nkh84G18nIJfk+AEcxLLfbjJERQW84QZQjfoP4
- 7u3zVO2VQe1Q9QfjyYy9//UjPLbaM4s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738863953;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TUsqkDhdhlbKWoqLsQ777cWlHo7tlWrbbuffJ1QxTlw=;
- b=iQIIzxgtHEwre2/3cv5IfV9NE5s/tTp3JZzWPEghdnnAjdNqwkncAqnuNep6WPjN8PvMCW
- OEFNMnTdyJfiHPBA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738863953;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TUsqkDhdhlbKWoqLsQ777cWlHo7tlWrbbuffJ1QxTlw=;
- b=SSGyF3ljQQJtACLSNrkiLPIjyWJLopizH5XfmzR9OsdgR1oTmiDAyKz2agUY1tv0yqcY6Z
- Pe3W2y+S5DftTiZ4pEuEcnWPoWFJpr9+nkh84G18nIJfk+AEcxLLfbjJERQW84QZQjfoP4
- 7u3zVO2VQe1Q9QfjyYy9//UjPLbaM4s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738863953;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TUsqkDhdhlbKWoqLsQ777cWlHo7tlWrbbuffJ1QxTlw=;
- b=iQIIzxgtHEwre2/3cv5IfV9NE5s/tTp3JZzWPEghdnnAjdNqwkncAqnuNep6WPjN8PvMCW
- OEFNMnTdyJfiHPBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A22C413697;
- Thu,  6 Feb 2025 17:45:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1/4NJlH1pGe7YwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 06 Feb 2025 17:45:53 +0000
-Date: Thu, 6 Feb 2025 18:45:44 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20250206174544.GB1612920@pevik>
-References: <20250206153435.1602181-1-pvorel@suse.cz>
- <f652b056-7548-4a8d-a318-b32fbe941de6@suse.com>
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id C027B1800874
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 21:24:43 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.224.64])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id E180519560AB
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 21:24:42 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu,  6 Feb 2025 22:23:44 +0100
+Message-ID: <0c8f014b5a9092bb1f6cc3dca6d1946c5e9cac39.1738876985.git.jstancek@redhat.com>
+In-Reply-To: <Z6TCWQIediqqUUVW@yuki.lan>
+References: <Z6TCWQIediqqUUVW@yuki.lan>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f652b056-7548-4a8d-a318-b32fbe941de6@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ZunDjuiHx1iRBApMOT_dy062D6abGxfVDT6VBB9zm9A_1738877084
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/5] configure.ac and make cleanup
+Subject: [LTP] [PATCH v2] syscalls/bpf: zero-initialize bpf_attr including
+ padding bits
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,22 +81,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+gcc 15 stopped zero-initializing padding bits:
+  https://gcc.gnu.org/gcc-15/changes.html
 
-> Thanks for fixing this.
+However kernel bpf syscall checks that all unused fields for a command
+are set to zero in CHECK_ATTR() macro, which causes tests to fail with
+EINVAL.
 
-OK, I realized that the rest is just docs update and clean targed we already
-talked about therefore I merged the rest.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+v2 changes:
+- Use slightly better version suggested by Cyril
 
-Kind regards,
-Petr
+ testcases/kernel/syscalls/bpf/bpf_common.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/bpf/bpf_common.c b/testcases/kernel/syscalls/bpf/bpf_common.c
+index 95b5bc12eaa4..9148b0437279 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_common.c
++++ b/testcases/kernel/syscalls/bpf/bpf_common.c
+@@ -49,7 +49,10 @@ int bpf_map_create(union bpf_attr *const attr)
+ 
+ int bpf_map_array_create(const uint32_t max_entries)
+ {
+-	union bpf_attr map_attr = {
++	/* zero-initialize entire struct including padding bits */
++	union bpf_attr map_attr = {};
++
++	map_attr = (union bpf_attr) {
+ 		.map_type = BPF_MAP_TYPE_ARRAY,
+ 		.key_size = 4,
+ 		.value_size = 8,
+@@ -64,13 +67,18 @@ void bpf_map_array_get(const int map_fd,
+ 		       const uint32_t *const array_indx,
+ 		       uint64_t *const array_val)
+ {
+-	union bpf_attr elem_attr = {
++	/* zero-initialize entire struct including padding bits */
++	union bpf_attr elem_attr = {};
++	int ret;
++
++	elem_attr = (union bpf_attr) {
+ 		.map_fd = map_fd,
+ 		.key = ptr_to_u64(array_indx),
+ 		.value = ptr_to_u64(array_val),
+ 		.flags = 0
+ 	};
+-	const int ret = bpf(BPF_MAP_LOOKUP_ELEM, &elem_attr, sizeof(elem_attr));
++
++	ret = bpf(BPF_MAP_LOOKUP_ELEM, &elem_attr, sizeof(elem_attr));
+ 
+ 	if (ret) {
+ 		tst_brk(TBROK | TTERRNO,
+-- 
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
