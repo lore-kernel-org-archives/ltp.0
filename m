@@ -4,103 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC2A6C02196
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 14:37:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D2EBC02194
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 14:37:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70F313C9277
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 15:37:17 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4AF243C9293
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 15:37:35 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 43EAC3C9296
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 15:34:52 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 4D0A53C9295
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 15:35:08 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7FF7E141ECC0
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 15:34:48 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0BC6E21166;
- Thu,  6 Feb 2025 14:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738852488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 57C2F1016FE0
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 15:35:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1738852506;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vx0z7yFEkyvkT5Doed5dDvnQhNKWmKxXQraLdTu0YlY=;
- b=0HorWK+xLX1sUfrbHmFkVgjCghvVjQWbX8xzdS1kCIJ3iDOTBzuTWP0YIWfXKbjzaOsiFs
- OKFB1EBwHw8R1XXYXzyJCBUTHF+ISzYGt6LSKTajDkDz3zgM8ZB3nCJTAakkcFhFndG+Pt
- +ILAiOxF7PGAhQlS3yGdjQW6OroVcA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738852488;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=vx0z7yFEkyvkT5Doed5dDvnQhNKWmKxXQraLdTu0YlY=;
- b=fqdPHRZc8mCsDDM9ptcx8M2TTTLIFuNOxK+3gQzKX+R+Ib5wZup+UqJ2HuLe8LpeW/uoNu
- 0V54NW2kpO6DBLDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1738852487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=vx0z7yFEkyvkT5Doed5dDvnQhNKWmKxXQraLdTu0YlY=;
- b=bX1uIgVn1Xn+2TfYwlVkp3s2We2JkW/Am4fTvJiL3njZlqU6nTTI94RV/q4hAQyENfcXnN
- +vyEkk1vXWBBcjfsePhWaAfaPIxO/2xIOD/CuaoGyfKKZEm42PirBB2o+mkyniYt3z4+gr
- vcLmg0RrbdR5qAIFyDeI+F2vQV+5DlY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1738852487;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=vx0z7yFEkyvkT5Doed5dDvnQhNKWmKxXQraLdTu0YlY=;
- b=30SYG4W/z1JF5cat0ZzmGkhCupmI2Zhc9du5gvr4qDQAq5OE2dSvVvb2LpkSSzhBbnZuFj
- Ol8qYQwFHPffGSCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA24E13694;
- Thu,  6 Feb 2025 14:34:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4M7pL4bIpGfvJwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 06 Feb 2025 14:34:46 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu,  6 Feb 2025 15:34:20 +0100
-Message-ID: <20250206143421.1571918-7-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250206143421.1571918-1-pvorel@suse.cz>
-References: <20250206143421.1571918-1-pvorel@suse.cz>
+ bh=0bI5QEYIpxOGTv1TK1jV8jof7EiLQa63QklhAw1bXhE=;
+ b=NN/B6wWmeBzY0IUjFYV0RIesmMIYWPXeS/qv+/HTwfIP5h8HhePKJMPPCe1dfqJ49R5Zov
+ HMVK/JbehYKQH32XNLKHLH8fVqTDXqrxx5/pJutdmxxR8NVbuyyr9GwmzIgibLBUw2BxHc
+ 91+l0fBcAdgl+o7MlNV1n5z5o7VWmHA=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-OY6-iEF0NeOcRQ41OlIyyA-1; Thu, 06 Feb 2025 09:35:05 -0500
+X-MC-Unique: OY6-iEF0NeOcRQ41OlIyyA-1
+X-Mimecast-MFC-AGG-ID: OY6-iEF0NeOcRQ41OlIyyA
+Received: by mail-oi1-f197.google.com with SMTP id
+ 5614622812f47-3eba8314c0bso801721b6e.2
+ for <ltp@lists.linux.it>; Thu, 06 Feb 2025 06:35:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1738852504; x=1739457304;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=0bI5QEYIpxOGTv1TK1jV8jof7EiLQa63QklhAw1bXhE=;
+ b=Qe3O9BLJZvrPevp3BDoe/pf8BsehisOjY5PeDaB4NEaO+KEYBIEmO2t1r3suTM04cU
+ w5Wh6hERaeXpiJDWmoU/HT7rriCar/n3EVr5tNzeLAIIn3oOlTcoAw/aFJx5BKmBJQZp
+ fXxKBGIjXs8UGehJMDwadlRwyIdSCCmjHWd4mqMgaSKxAIfisbPKU5y8fD4KDIHVW6IB
+ PlvFw+K59IY31HCEJIlqN7h06XI6yja2NLaQWega7W+iSufPArAYyusbCawvEuwIZeO3
+ zNAufroVKxzwejqRvS3fszubNuulNW5AShEln5P5TbLNou3/6wzZWhWDITfQfdbBsjKW
+ HkQA==
+X-Gm-Message-State: AOJu0Yx1H/Jgxy+VhjH/FDpj9zQYbNIGm6aC0eM70JPITA7qTGEh4JbH
+ 8sH4+hI+elhSm+Omp2WQW26xgui1m3Fm8Dw9hb77cLgSr5FF1t7r1ZwMkotWUInX2k3LD3HwH8T
+ gMd4f7at9pZp15qOfGXdK4qVQfKQX0iDC9gwNBTNvKCGqN9q3omMMA3bxVfhb6ast5trf6Pb6J+
+ A8gbhcY80+3Kngdtl8PL9AFGs=
+X-Gm-Gg: ASbGnctO4xsXnFiFFoq/sTvKgN4UlGzNy/+jpw2mt76ijis13sieoAB8CaQ9ODGiPSX
+ 0e7ZffeBL3qLPHuyRCnILCHn0RssCU1zPSh+vEQSBGJ1jxHPsqmxMIsloo+TLEA==
+X-Received: by 2002:a05:6808:2dcd:b0:3ea:367e:db44 with SMTP id
+ 5614622812f47-3f37c0bac88mr4736610b6e.3.1738852504521; 
+ Thu, 06 Feb 2025 06:35:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH66bvjKjn6HpVG47DlJ1t6f6Fssn34Sf9pE9gJcbTJuHhD6kOG65F6V2dsrBKqukC+Hgs3f1t54KRXxRgC6OU=
+X-Received: by 2002:a05:6808:2dcd:b0:3ea:367e:db44 with SMTP id
+ 5614622812f47-3f37c0bac88mr4736598b6e.3.1738852504260; Thu, 06 Feb 2025
+ 06:35:04 -0800 (PST)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <89d0fb724ea534419942c2647e1ef7ca98f9e72d.1738846569.git.jstancek@redhat.com>
+ <Z6TCWQIediqqUUVW@yuki.lan>
+In-Reply-To: <Z6TCWQIediqqUUVW@yuki.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 6 Feb 2025 15:34:47 +0100
+X-Gm-Features: AWEUYZln1m8zoqP5tcguXlnAddpCXbiDYD1bjk6wS2vXGx1biDNhcMDHM6Dhx48
+Message-ID: <CAASaF6z-oCHe66zJ_=r_B3HMQg7934xfPhkH2nyOoo2gm=uYFw@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ozETEWVHgdFTFs_7z7TOlHjWoBR4hpmcJ5JOn1g2HjE_1738852504
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 6/7] configure: make: Add SPDX, update copyright
+Subject: Re: [LTP] [PATCH] syscalls/bpf: zero-initialize bpf_attr including
+ padding bits
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,556 +98,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add SPDX and copyright to few missing places or update copyright.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- configure.ac                        |  3 +++
- doc/Makefile                        |  3 +++
- include/mk/automake.mk              | 24 ++++--------------------
- include/mk/config-openposix.mk.in   |  2 ++
- include/mk/config.mk.in             | 23 +++--------------------
- include/mk/env_post.mk              | 25 ++++---------------------
- include/mk/env_pre.mk               | 26 ++++----------------------
- include/mk/features.mk.in           | 22 ++--------------------
- include/mk/functions.mk             | 25 ++++---------------------
- include/mk/generic_leaf_target.inc  | 24 ++++--------------------
- include/mk/generic_leaf_target.mk   | 24 ++++--------------------
- include/mk/generic_trunk_target.inc | 24 ++++--------------------
- include/mk/generic_trunk_target.mk  | 24 ++++--------------------
- include/mk/lib.mk                   | 27 ++++-----------------------
- include/mk/man.mk                   | 23 +++--------------------
- include/mk/module.mk                | 18 ++----------------
- include/mk/rules.mk                 |  3 +++
- include/mk/sparse.mk                |  2 ++
- include/mk/testcases.mk             | 22 ++--------------------
- 19 files changed, 61 insertions(+), 283 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index afcbd1a5ef..c663108a8d 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1,3 +1,6 @@
-+# Copyright (c) Linux Test Project, 2008-2025
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
- AC_PREREQ(2.64)
- AC_INIT([ltp], [LTP_VERSION], [ltp@lists.linux.it])
- AC_CONFIG_AUX_DIR([.])
-diff --git a/doc/Makefile b/doc/Makefile
-index 0f67721ef5..c6dadfd521 100644
---- a/doc/Makefile
-+++ b/doc/Makefile
-@@ -1,3 +1,6 @@
-+# Copyright (c) Linux Test Project, 2024-2025
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
- PYTHON := python3
- 
- # install sphinx only if needed
-diff --git a/include/mk/automake.mk b/include/mk/automake.mk
-index 0fa059f117..79f83a5a2e 100644
---- a/include/mk/automake.mk
-+++ b/include/mk/automake.mk
-@@ -1,24 +1,8 @@
--#
--#    Autotools include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Autotools include Makefile.
-+# Copyright (c) Linux Test Project, 2010-2024
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- # Override these variables to use non-system available tools.
- ACLOCAL		?= aclocal
-diff --git a/include/mk/config-openposix.mk.in b/include/mk/config-openposix.mk.in
-index 9a91dcb7ee..54422aec1b 100644
---- a/include/mk/config-openposix.mk.in
-+++ b/include/mk/config-openposix.mk.in
-@@ -1,3 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2016
- # Parameters from the top level configure
- CC=		@CC@
- CFLAGS+=	@CFLAGS@
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index f6e02eaeba..baf1b414ec 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -1,24 +1,7 @@
--#
--#    config.mk.in.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2009-2024
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- # See this page for more info about LEX*:
- # http://www.gnu.org/software/hello/manual/autoconf/Particular-Programs.html
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 4dd3f1e2d7..ab31da73af 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -1,25 +1,8 @@
--#
--#    Environment post-setup Makefile.
--#
--#    Copyright (c) Linux Test Project, 2009-2020
--#    Copyright (c) Cisco Systems Inc., 2009
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Environment post-setup Makefile.
-+# Copyright (c) Linux Test Project, 2009-2025
-+# Copyright (c) Cisco Systems Inc., 2009
- # Ngie Cooper, July 2009
--#
- 
- ENV_PRE_LOADED			?= $(error You must load env_pre.mk before including this file)
- 
-diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-index f362151675..46d6abecfb 100644
---- a/include/mk/env_pre.mk
-+++ b/include/mk/env_pre.mk
-@@ -1,29 +1,11 @@
--#
--#    Make pre-include environment Makefile.
--#
--#    Copyright (c) Linux Test Project, 2009-2020
--#    Copyright (c) Cisco Systems Inc., 2009
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Make pre-include environment Makefile.
-+# Copyright (c) Linux Test Project, 2009-2020
-+# Copyright (c) Cisco Systems Inc., 2009
- # Ngie Cooper, September 2009
- #
- # This Makefile must be included first. NO IF'S, AND'S, OR BUT'S.
--#
- # This sets the stage for all operations required within Makefiles.
--#
- 
- ifndef ENV_PRE_LOADED
- ENV_PRE_LOADED = 1
-diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
-index 0a8a405acf..3af74002b6 100644
---- a/include/mk/features.mk.in
-+++ b/include/mk/features.mk.in
-@@ -1,24 +1,6 @@
--#
--#    features.mk.in - feature tuning include Makefile.
--#
--#    Copyright (C) 2010, Linux Test Project.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# Copyright (c) Linux Test Project, 2008-2025
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Ngie Cooper, October 2010
--#
- 
- # Tools enable knobs
- WITH_EXPECT			:= @WITH_EXPECT@
-diff --git a/include/mk/functions.mk b/include/mk/functions.mk
-index e86dbccdc0..60dbed395e 100644
---- a/include/mk/functions.mk
-+++ b/include/mk/functions.mk
-@@ -1,25 +1,8 @@
--#
--#  A Makefile with a collection of reusable functions.
--#
--#    Copyright (c) Linux Test Project, 2009-2020
--#    Copyright (c) Cisco Systems Inc., 2009
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# A Makefile with a collection of reusable functions.
-+# Copyright (c) Linux Test Project, 2009-2020
-+# Copyright (c) Cisco Systems Inc., 2009
- # Ngie Cooper, July 2009
--#
- 
- # Generate an install rule which also creates the install directory if needed
- # to avoid unnecessary bourne shell based for-loops and install errors, as well
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index 565a282bb3..7c685fea76 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -1,24 +1,8 @@
--#
--#    Generic leaf rules include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Generic leaf rules include Makefile.
-+# Copyright (c) Linux Test Project, 2017-2022
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- #
- # generic_leaf_target
-diff --git a/include/mk/generic_leaf_target.mk b/include/mk/generic_leaf_target.mk
-index 908d0b0004..c200803b55 100644
---- a/include/mk/generic_leaf_target.mk
-+++ b/include/mk/generic_leaf_target.mk
-@@ -1,24 +1,8 @@
--#
--#    Generic leaf include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Generic leaf include Makefile.
-+# Copyright (c) Linux Test Project, 2017
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- include $(top_srcdir)/include/mk/env_post.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.inc
-diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-index 82aece7c02..f9db7896a9 100644
---- a/include/mk/generic_trunk_target.inc
-+++ b/include/mk/generic_trunk_target.inc
-@@ -1,24 +1,8 @@
--#
--#    Generic trunk rules include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2010-2021
-+# Generic trunk rules include Makefile.
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- #
- # generic_trunk_target
-diff --git a/include/mk/generic_trunk_target.mk b/include/mk/generic_trunk_target.mk
-index 576b32db39..e25f7bce24 100644
---- a/include/mk/generic_trunk_target.mk
-+++ b/include/mk/generic_trunk_target.mk
-@@ -1,24 +1,8 @@
--#
--#    Generic trunk include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Generic trunk include Makefile.
-+# Copyright (c) Linux Test Project, 2017
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- include $(top_srcdir)/include/mk/env_post.mk
- include $(top_srcdir)/include/mk/generic_trunk_target.inc
-diff --git a/include/mk/lib.mk b/include/mk/lib.mk
-index 3bf63bf9e8..cefb28c25d 100644
---- a/include/mk/lib.mk
-+++ b/include/mk/lib.mk
-@@ -1,27 +1,8 @@
--#
--#    library include Makefile.
--#
--#    Copyright (c) Linux Test Project, 2009-2020
--#    Copyright (c) Cisco Systems Inc., 2009
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--# Ngie Cooper, July 2009
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2009-2019
- # Copyright (C) Cyril Hrubis <chrubis@suse.cz> 2012
--#
-+# Copyright (c) Cisco Systems Inc., 2009
-+# Ngie Cooper, July 2009
- 
- # Makefile to include for libraries.
- 
-diff --git a/include/mk/man.mk b/include/mk/man.mk
-index c94af61b11..a642dfb35d 100644
---- a/include/mk/man.mk
-+++ b/include/mk/man.mk
-@@ -1,24 +1,7 @@
--#
--#    Manpage include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2010-2017
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- 
- ifeq ($(strip $(MANPREFIX)),)
- $(error $$(MANPREFIX) not defined)
-diff --git a/include/mk/module.mk b/include/mk/module.mk
-index 3bb7350f1e..10914084cf 100644
---- a/include/mk/module.mk
-+++ b/include/mk/module.mk
-@@ -1,24 +1,10 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program; if not, write the Free Software Foundation,
--# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--#
-+# Copyright (c) Linux Test Project, 2014-2021
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- #
- # Include it to build kernel modules.
- # REQ_VERSION_MAJOR and REQ_VERSION_PATCH must be defined beforehand.
--#
- 
- $(if $(REQ_VERSION_MAJOR),,$(error You must define REQ_VERSION_MAJOR))
- $(if $(REQ_VERSION_PATCH),,$(error You must define REQ_VERSION_MINOR))
-diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-index 517863c04b..c7da6d37f9 100644
---- a/include/mk/rules.mk
-+++ b/include/mk/rules.mk
-@@ -1,3 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2020-2022
-+
- target_rel_dir := $(if $(cwd_rel_from_top),$(cwd_rel_from_top)/,)
- 
- %.o: %.S
-diff --git a/include/mk/sparse.mk b/include/mk/sparse.mk
-index a86928393a..3390672c15 100644
---- a/include/mk/sparse.mk
-+++ b/include/mk/sparse.mk
-@@ -1,3 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2021
- # Rules to make sparse tool(s) for inclusion in lib and testcases Makefiles
- 
- SPARSE_DIR:= $(abs_top_builddir)/tools/sparse
-diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-index bec8d8cc47..2609535ce7 100644
---- a/include/mk/testcases.mk
-+++ b/include/mk/testcases.mk
-@@ -1,24 +1,6 @@
--#
--#    testcases include Makefile.
--#
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2009-2024
- # Ngie Cooper, July 2009
--#
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(top_srcdir)/include/mk/functions.mk
--- 
-2.47.2
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBGZWIgNiwgMjAyNSBhdCAzOjA44oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
+c2UuY3o+IHdyb3RlOgo+Cj4gSGkhCj4gPiBIb3dldmVyIGtlcm5lbCBicGYgc3lzY2FsbCBjaGVj
+a3MgdGhhdCBhbGwgdW51c2VkIGZpZWxkcyBmb3IgYSBjb21tYW5kCj4gPiBhcmUgc2V0IHRvIHpl
+cm8gaW4gQ0hFQ0tfQVRUUigpIG1hY3JvLCB3aGljaCBjYXVzZXMgdGVzdHMgdG8gZmFpbCB3aXRo
+Cj4gPiBFSU5WQUwuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2Vr
+QHJlZGhhdC5jb20+Cj4gPiAtLS0KPiA+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2JwZi9i
+cGZfY29tbW9uLmMgfCAzMiArKysrKysrKysrKystLS0tLS0tLS0tCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDE4IGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQg
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2JwZi9icGZfY29tbW9uLmMgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2JwZi9icGZfY29tbW9uLmMKPiA+IGluZGV4IDk1YjViYzEyZWFhNC4u
+ZDc2NWM0ZTMyOTM2IDEwMDY0NAo+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9i
+cGYvYnBmX2NvbW1vbi5jCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2JwZi9i
+cGZfY29tbW9uLmMKPiA+IEBAIC00OSwxMyArNDksMTQgQEAgaW50IGJwZl9tYXBfY3JlYXRlKHVu
+aW9uIGJwZl9hdHRyICpjb25zdCBhdHRyKQo+ID4KPiA+ICBpbnQgYnBmX21hcF9hcnJheV9jcmVh
+dGUoY29uc3QgdWludDMyX3QgbWF4X2VudHJpZXMpCj4gPiAgewo+ID4gLSAgICAgdW5pb24gYnBm
+X2F0dHIgbWFwX2F0dHIgPSB7Cj4gPiAtICAgICAgICAgICAgIC5tYXBfdHlwZSA9IEJQRl9NQVBf
+VFlQRV9BUlJBWSwKPiA+IC0gICAgICAgICAgICAgLmtleV9zaXplID0gNCwKPiA+IC0gICAgICAg
+ICAgICAgLnZhbHVlX3NpemUgPSA4LAo+ID4gLSAgICAgICAgICAgICAubWF4X2VudHJpZXMgPSBt
+YXhfZW50cmllcywKPiA+IC0gICAgICAgICAgICAgLm1hcF9mbGFncyA9IDAKPiA+IC0gICAgIH07
+Cj4gPiArICAgICAvKiB6ZXJvLWluaXRpYWxpemUgZW50aXJlIHN0cnVjdCBpbmNsdWRpbmcgcGFk
+ZGluZyBiaXRzICovCj4gPiArICAgICB1bmlvbiBicGZfYXR0ciBtYXBfYXR0ciA9IHt9Owo+ID4g
+Kwo+ID4gKyAgICAgbWFwX2F0dHIubWFwX3R5cGUgPSBCUEZfTUFQX1RZUEVfQVJSQVk7Cj4gPiAr
+ICAgICBtYXBfYXR0ci5rZXlfc2l6ZSA9IDQ7Cj4gPiArICAgICBtYXBfYXR0ci52YWx1ZV9zaXpl
+ID0gODsKPiA+ICsgICAgIG1hcF9hdHRyLm1heF9lbnRyaWVzID0gbWF4X2VudHJpZXM7Cj4gPiAr
+ICAgICBtYXBfYXR0ci5tYXBfZmxhZ3MgPSAwOwo+Cj4gSSBoYWQgYSBjbG9zZXIgbG9vayBoZXJl
+LCB0aGUgbWFwX2F0dHIgaXMgYW4gdW5pb24gd2l0aCBhbm9ueW1vdXMKPiBzdHJ1Y3R1cmVzIGFu
+ZCBJIHN1cHBvc2UgdGhhdCB0aGUgcHJvYmxlbSBoZXJlIGlzIHRoYXQgdGhlIHBhZGRpbmcgYWZ0
+ZXIKPiB0aGUgdW5pb24gaXMgbm8gbG9uZ2VyIGNsZWFyZWQgYW5kIHRoYXQgdGhlcmUgaGF2ZSBi
+ZWVuIHNvbWUgbmV3IGZpZWxkcwo+IGFkZGVkLCBhdCBsZWFzdCBjb21wYXJlZCB0byB0aGUgbGFw
+aSBmYWxsYmFjayBzdHJ1Y3R1cmVzIHdlIGhhdmUgYW5kIHdlCj4gcG9zc2libHkgcGFzcyByYW5k
+b20gbWVzcyBpbiBmbGFncy4KCkl0J3Mgbm90IGp1c3QgcGFkZGluZywgc29tZSBmaWVsZHMgKGZy
+b20gb3RoZXIgc3RydWN0cykgYXJlIGFsc28gbm90CmluaXRpYWxpemVkOgoKdm9pZCBicGZfbWFw
+X2FycmF5X2dldChjb25zdCBpbnQgbWFwX2ZkLAogICAgICAgICAgICAgICAgICAgICAgIGNvbnN0
+IHVpbnQzMl90ICpjb25zdCBhcnJheV9pbmR4LAogICAgICAgICAgICAgICAgICAgICAgIHVpbnQ2
+NF90ICpjb25zdCBhcnJheV92YWwpCnsKICAgICAgICB1bmlvbiBicGZfYXR0ciBlbGVtX2F0dHIg
+PSB7CiAgICAgICAgICAgICAgICAubWFwX2ZkID0gbWFwX2ZkLAogICAgICAgICAgICAgICAgLmtl
+eSA9IHB0cl90b191NjQoYXJyYXlfaW5keCksCiAgICAgICAgICAgICAgICAudmFsdWUgPSBwdHJf
+dG9fdTY0KGFycmF5X3ZhbCksCiAgICAgICAgICAgICAgICAuZmxhZ3MgPSAwCiAgICAgICAgfTsK
+CiAgICAgICAgcHJpbnRmKCJzaG91bGQgYmUgemVybz8gJXVcbiIsIGVsZW1fYXR0ci5mdW5jX2lu
+Zm9fY250KTsKCmFuZCBJIGdldDoKc2hvdWxkIGJlIHplcm8/IDQyMDIwOTMKCmZ1bmNfaW5mb19j
+bnQgaXMgYXQgb2Zmc2V0IDg4LCB3aGljaCBpcyBmYXIgYXdheSBmcm9tIG9uZXMgd2UKaW5pdGlh
+bGl6ZWQgZXhwbGljaXRseToKCiAgICAgICAgc3RydWN0IHsKICAgICAgICAgICAgICAgIHVpbnQz
+Ml90ICAgICAgICAgICBtYXBfZmQ7ICAgICAgICAgICAgIC8qICAgICAwICAgICA0ICovCgogICAg
+ICAgICAgICAgICAgLyogWFhYIDQgYnl0ZXMgaG9sZSwgdHJ5IHRvIHBhY2sgKi8KCiAgICAgICAg
+ICAgICAgICB1aW50NjRfdCAgICAgICAgICAga2V5Cl9fYXR0cmlidXRlX18oKF9fYWxpZ25lZF9f
+KDgpKSk7IC8qICAgICA4ICAgICA4ICovCiAgICAgICAgICAgICAgICB1bmlvbiB7CiAgICAgICAg
+ICAgICAgICAgICAgICAgIHVpbnQ2NF90ICAgdmFsdWUKX19hdHRyaWJ1dGVfXygoX19hbGlnbmVk
+X18oOCkpKTsgLyogICAgMTYgICAgIDggKi8KICAgICAgICAgICAgICAgICAgICAgICAgdWludDY0
+X3QgICBuZXh0X2tleQpfX2F0dHJpYnV0ZV9fKChfX2FsaWduZWRfXyg4KSkpOyAvKiAgICAxNiAg
+ICAgOCAqLwogICAgICAgICAgICAgICAgfSBfX2F0dHJpYnV0ZV9fKChfX2FsaWduZWRfXyg4KSkp
+OyAgICAgLyogICAgMTYgICAgIDggKi8KICAgICAgICAgICAgICAgIHVpbnQ2NF90ICAgICAgICAg
+ICBmbGFnczsgICAgICAgICAgICAgIC8qICAgIDI0ICAgICA4ICovCiAgICAgICAgfSBfX2F0dHJp
+YnV0ZV9fKChfX2FsaWduZWRfXyg4KSkpCl9fYXR0cmlidXRlX18oKF9fYWxpZ25lZF9fKDgpKSk7
+ICAgICAgICAgICAgIC8qICAgICAwICAgIDMyICovCgo+Cj4gTWF5YmUgc2xpZ2h0bHkgYmV0dGVy
+IHZlcnNpb24gd291bGQgYmU6Cj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9icGYvYnBmX2NvbW1vbi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9icGYvYnBm
+X2NvbW1vbi5jCj4gaW5kZXggOTViNWJjMTJlLi5hODI4OWUxMDYgMTAwNjQ0Cj4gLS0tIGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9icGYvYnBmX2NvbW1vbi5jCj4gKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9icGYvYnBmX2NvbW1vbi5jCj4gQEAgLTQ5LDcgKzQ5LDkgQEAgaW50
+IGJwZl9tYXBfY3JlYXRlKHVuaW9uIGJwZl9hdHRyICpjb25zdCBhdHRyKQo+Cj4gIGludCBicGZf
+bWFwX2FycmF5X2NyZWF0ZShjb25zdCB1aW50MzJfdCBtYXhfZW50cmllcykKPiAgewo+IC0gICAg
+ICAgdW5pb24gYnBmX2F0dHIgbWFwX2F0dHIgPSB7Cj4gKyAgICAgICB1bmlvbiBicGZfYXR0ciBt
+YXBfYXR0ciA9IHt9Owo+ICsKPiArICAgICAgIG1hcF9hdHRyID0gKHVuaW9uIGJwZl9hdHRyKSB7
+Cj4gICAgICAgICAgICAgICAgIC5tYXBfdHlwZSA9IEJQRl9NQVBfVFlQRV9BUlJBWSwKPiAgICAg
+ICAgICAgICAgICAgLmtleV9zaXplID0gNCwKPiAgICAgICAgICAgICAgICAgLnZhbHVlX3NpemUg
+PSA4LAo+Cj4KPiAtLQo+IEN5cmlsIEhydWJpcwo+IGNocnViaXNAc3VzZS5jego+CgoKLS0gCk1h
+aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
