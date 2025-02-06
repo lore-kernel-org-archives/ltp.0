@@ -4,70 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21AD1C02194
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 09:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50D03C02194
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 10:17:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA3C13C29EC
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 10:50:51 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 81C7E3C4D47
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 11:16:59 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 331DB3C12C2
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 10:50:34 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 738543C02C9
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 11:16:42 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F277065F21C
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 10:50:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1738835432;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=B/vHz4Pif5VXZEnu91dy6zglfxXZB/acWexoct0M4ms=;
- b=YmVvLKxZDzQ7K+HktyvwuAvUlxvau6zEmHc938X/lYpC03aek59xnJEiyBGmLrdNNxmxj1
- PUvqOaaopqrTemqFU6n4Umzu/bo9x+b/nlYgFarP+WzB8TCfFT6N39n9LyNLJKIo97ewqC
- 0nTOQTaFcQ1hv8zbWfcptjUWr7NeBxY=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-75-qaFJSD3APr6ZE06gtmdw8g-1; Thu,
- 06 Feb 2025 04:50:30 -0500
-X-MC-Unique: qaFJSD3APr6ZE06gtmdw8g-1
-X-Mimecast-MFC-AGG-ID: qaFJSD3APr6ZE06gtmdw8g
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7B83110136BF
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 11:16:41 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 91D3D1956096
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 09:50:29 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.224.64])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id B5D6C1800570
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 09:50:28 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu,  6 Feb 2025 10:49:26 +0100
-Message-ID: <700f4d3bc73f0deebe7fe0e41305d365135c53eb.1738835278.git.jstancek@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C18241F38D
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 10:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1738837000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+igzDG5ce7+zTATuwxXV7u+Ye4uygawrT1xGBz0WjI4=;
+ b=P7NBjIQJvkJaqlrQEqvgtu1fKEggeu6efUqilfyxEu6jSPNrU0kfi367PC2xil5O8AbWu8
+ nVNxnwH0QK9dE6G3R7Fd1tQ2AgXjYs4kHGqbh74LDusJ924YELjRYMwuxjoVXmB8CD2L+F
+ sPllyqn4pHAqZXWa5Z9s39E+6B+TooU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1738837000;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+igzDG5ce7+zTATuwxXV7u+Ye4uygawrT1xGBz0WjI4=;
+ b=Twb+LIcmivEgAz5Nd5Tp2NvE/PFEKBcXxdaYLHCJqcbX1VoZaBIiwPH7pe52r50YsSMh/h
+ Zto+bsI7Nr5QJzCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1738837000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+igzDG5ce7+zTATuwxXV7u+Ye4uygawrT1xGBz0WjI4=;
+ b=P7NBjIQJvkJaqlrQEqvgtu1fKEggeu6efUqilfyxEu6jSPNrU0kfi367PC2xil5O8AbWu8
+ nVNxnwH0QK9dE6G3R7Fd1tQ2AgXjYs4kHGqbh74LDusJ924YELjRYMwuxjoVXmB8CD2L+F
+ sPllyqn4pHAqZXWa5Z9s39E+6B+TooU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1738837000;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+igzDG5ce7+zTATuwxXV7u+Ye4uygawrT1xGBz0WjI4=;
+ b=Twb+LIcmivEgAz5Nd5Tp2NvE/PFEKBcXxdaYLHCJqcbX1VoZaBIiwPH7pe52r50YsSMh/h
+ Zto+bsI7Nr5QJzCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A44C13A7F
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 10:16:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kEScGwiMpGccVQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 06 Feb 2025 10:16:40 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 06 Feb 2025 11:16:33 +0100
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: n-dbxuW0_Keeb2fzW3usRwTJTVFkt_OqK8UCzA-uB90_1738835429
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Message-Id: <20250206-doc_tests_list-v5-1-52110e1421a9@suse.com>
+References: <20250206-doc_tests_list-v5-0-52110e1421a9@suse.com>
+In-Reply-To: <20250206-doc_tests_list-v5-0-52110e1421a9@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1738836999; l=714;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=xIxBi+p3aLafzYaXkWW6uwH/V/fEZ/BbxKrndtRGtgc=;
+ b=0psGiz78tUjhGaUMQ43zhliOu8Es+trM3D4WAg3+qzkOuvTu3C6QYVsqTnbfgwyKVIiek3oUQ
+ /MkvGzdirVnDlWPP0dWnKr8AvfR8Ag7WpZ7ZrPNEvZIzd/cVkyvn408
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/mallinfo02: introduce LTP_VAR_USED to avoid
- optimization
+Subject: [LTP] [PATCH v5 1/2] doc: remove margin for multiline cells
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,46 +126,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-gcc 15 is a bit more clever and noticed that 'buf' isn't used
-for anything so it optimized it out, including call to malloc.
-So, there's also no mmap() call behind it and test fails,
-because nothing was allocated.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Introduce LTP_VAR_USED macro, that makes compiler aware of the
-variable and doesn't optimize it out.
+Multiline table's cells show a margin at the end of them. Remove the
+margin by setting 'margin-bottom: 0' in the CSS table declaration
+style.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_common.h                               | 2 ++
- testcases/kernel/syscalls/mallinfo2/mallinfo2_01.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ doc/_static/custom.css | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/tst_common.h b/include/tst_common.h
-index b14bbae04077..3de826acd0ec 100644
---- a/include/tst_common.h
-+++ b/include/tst_common.h
-@@ -13,6 +13,8 @@
- #define LTP_ATTRIBUTE_UNUSED		__attribute__((unused))
- #define LTP_ATTRIBUTE_UNUSED_RESULT	__attribute__((warn_unused_result))
- 
-+#define LTP_VAR_USED(p) asm volatile("" :: "m"(p)); p
+diff --git a/doc/_static/custom.css b/doc/_static/custom.css
+index cb4d3821dc65f9f904cd90951f968bc90d8798c1..c5816a55346fa28416377375bc91966780075dc3 100644
+--- a/doc/_static/custom.css
++++ b/doc/_static/custom.css
+@@ -2,3 +2,8 @@
+ .wy-table-responsive table td {
+     white-space: normal;
+ }
 +
- #ifndef ARRAY_SIZE
- # define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
- #endif
-diff --git a/testcases/kernel/syscalls/mallinfo2/mallinfo2_01.c b/testcases/kernel/syscalls/mallinfo2/mallinfo2_01.c
-index 90cf4fcb3b89..51783fc22b80 100644
---- a/testcases/kernel/syscalls/mallinfo2/mallinfo2_01.c
-+++ b/testcases/kernel/syscalls/mallinfo2/mallinfo2_01.c
-@@ -26,7 +26,7 @@ void test_mallinfo2(void)
- 	char *buf;
- 	size_t size = 2UL * 1024UL * 1024UL * 1024UL;
- 
--	buf = malloc(size);
-+	LTP_VAR_USED(buf) = malloc(size);
- 
- 	if (!buf)
- 		tst_brk(TCONF, "Current system can not malloc 2G space, skip it");
++/* remove margin for multiline cells */
++.rst-content table td div.line-block {
++    margin-bottom: 0;
++}
+
 -- 
 2.43.0
 
