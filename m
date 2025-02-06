@@ -4,88 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 175EBC02196
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 06:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D7BC02196
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 07:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1738828331; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=qqyYoyrxp5hdiYS3kMyuSCCdqip0EVYn01GMemQL34U=;
+ b=GPVyEByJ7yMHo+SyXQGD2dCvxvNsZu8DBtJ8m+O6wCLOTKAXJsqLxE1s9hEw2l8VJk3TU
+ VztZD4PAD/OiIp5R++NCXQYkob4Um+qnbXYvqp4g6zStsN8n2BPgF5O8fvvBQ84jEiQofBt
+ ra1ePyOHW6X0EbUNKWVuM+crwYE/ryQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4EA8D3C2CC1
-	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 07:34:47 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 1DE243C4CF0
+	for <ltp@archiver.kernel.org>; Thu,  6 Feb 2025 08:52:11 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7CFDF3C0387
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 07:34:29 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 579413C0387
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 08:51:48 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 37CF3226C74
- for <ltp@lists.linux.it>; Thu,  6 Feb 2025 07:34:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1738823667;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jN4S47KvYPfX2j5GZgnINGt1n8fDTN8XtOmW6ExsUQQ=;
- b=DG4XsY0T3SsiKuCdtiLMUjOI9Y9IyFqumeVdp+0OFr4ALJu4qzf/to3bLBOueQzJvsAPaB
- 0OcYTCOvwk2m2hJtOl7O0Hcbu8A53vXjnaveNi9JJ0QrfFv8BHCgqRtVAMU5Xc9j9QXfvC
- Qz/c0Xa8ojUjxwpKJaq/URehEtDK/l0=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-21YMWNExPv-sCwhXYiPzGQ-1; Thu, 06 Feb 2025 01:34:25 -0500
-X-MC-Unique: 21YMWNExPv-sCwhXYiPzGQ-1
-X-Mimecast-MFC-AGG-ID: 21YMWNExPv-sCwhXYiPzGQ
-Received: by mail-oi1-f199.google.com with SMTP id
- 5614622812f47-3f3412843dbso613930b6e.0
- for <ltp@lists.linux.it>; Wed, 05 Feb 2025 22:34:25 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 07AC0234675
+ for <ltp@lists.linux.it>; Thu,  6 Feb 2025 08:51:48 +0100 (CET)
+Received: by mail-wm1-x341.google.com with SMTP id
+ 5b1f17b1804b1-4361f664af5so6369825e9.1
+ for <ltp@lists.linux.it>; Wed, 05 Feb 2025 23:51:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1738828307; x=1739433107; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=SzHLUA4+wfg0YTFc5LHRzSNVLyTxEuMF7AmG83hFbc0=;
+ b=EAOnnqfnNwua8YoG8SbFL90QocUb/gB0C5FTBXsuhJeZS/NKz6m1zx/gQQ4FtR7blw
+ DlfchHwxSZEm69woL9gHr9NlS4yRJoC/0aaDjz2oeWxk687QnuMgLizV5MHEPHcqSxD8
+ dAVs5Xt3skA56LdO6KkiLhC5ZSd8e02ZXVtaXXYRXKBTbJIX4gciHnXfiCaeC99eOZe1
+ o2tIEnCBiGEA3UZOTIfrCuCHmEQMwKk3UcZ1cak63x46ucL3ofZuyo4lz9AMV191EumL
+ DVQlIQRMUabeoAehllQRseRb3VowOd3xLZhlDAve53Gcfqhs2JM/UISzTZ8VT94bBsJZ
+ soPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1738823665; x=1739428465;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=jN4S47KvYPfX2j5GZgnINGt1n8fDTN8XtOmW6ExsUQQ=;
- b=gU+p8NAnmbb/IQpNfMucXpSSUrHVikfzOX0nG4pvC9umZU7t4nulGGNEbWmgizaYzv
- lsgv6rvZnKXnRxDTHbLnR8PpTt3YqExtLvI1J7qVuSc6pCXpgymj1RBmjv2z0gioqjFY
- Mm0sX2YtLmyG7rEFfthHfe7E1oKKxccDel4dCScCQHIZPHFy94JcxSX5D1yAYqoY1dVA
- gRDSvS1lH3FwxU069LnxzOoFwVoaUB53FR9rw8i024pIPNzOZeKcFqvILZcHhNpz9FCK
- 7f8YTdHc8nn/EjjXG7sVzn9LGtKY0dcvyb7qdzAiaOHc2vRx1I1i2YWT3pW/rYGZRjA0
- aclA==
-X-Gm-Message-State: AOJu0Yy0LdPklmAuzgifSLLcW1cmAhSIATxveOnItD1+gbxH2bpf7QQH
- Jztp+5sNItCfQXXddktPSxn0NYf02GNwFSQTlovnNUKqm2C5aClvqVOJ6ystiER3ztqmKdcCpG+
- UDK8d4WQAgg+gLl6P9xntsqMOANF6dHw20UkT+/b2tzV1IpcfccQRBvP95uoaNc8PXJjM9ELCkJ
- B+MmSVlU6e1wBHTmN0xcR7HGQ=
-X-Gm-Gg: ASbGnctqofT9TDKIY3VFSiJGThRGpA6WZfgUt3XRD3OVp1pSYeQIbATolbicwCIUsWA
- Gsh0r0ioJb9y35WMox3U3Xmn861NfrC4hJpftUtPzJTAqn5V2g4kK+SbnVLXlIw==
-X-Received: by 2002:a05:6808:4408:b0:3eb:63c9:fe87 with SMTP id
- 5614622812f47-3f37c121d58mr2972560b6e.16.1738823664797; 
- Wed, 05 Feb 2025 22:34:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFh1oiNGznQrLjI2MgY7aTWJMXGN7/iU2ZoprIkK+N04WB1+9NL8t/ueDF/YFpgzL+AMQIkbNTOKuXi6m3PEck=
-X-Received: by 2002:a05:6808:4408:b0:3eb:63c9:fe87 with SMTP id
- 5614622812f47-3f37c121d58mr2972552b6e.16.1738823664428; Wed, 05 Feb 2025
- 22:34:24 -0800 (PST)
+ d=1e100.net; s=20230601; t=1738828307; x=1739433107;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=SzHLUA4+wfg0YTFc5LHRzSNVLyTxEuMF7AmG83hFbc0=;
+ b=cejhPm3YWviWiLlFi3RJRU767Uy6f6McJXBmWgKY2nGENHMqs4bpFSOjJmCnxOUbJ6
+ 2HbyKqJECTnYz4180Q4KSm7THzudzqXDYATlpA0amCnhFXQ7yivZFkGnhELUpz+LYIXO
+ 3koUP/urxEZ2oCcT0/OXkiGlpKk+iGHFOlqcsJ/Jv0Vz/Ba+APx9oDnLuH05bXHLA/59
+ c3vEpO5+iZLoTk2xi1/1WoE3TIJNfGDL9vh6+47mSeFFKRMelbjG1J86x8PJA71nM1oO
+ dul8izBIJySsFEQZpbWtTwJV1ZlQnfwvbpFbZYEkxyhSDtPO/jvjeLv4/F9cQO/DDxBm
+ T+bw==
+X-Gm-Message-State: AOJu0Ywj9yDuq495L6MZzUdYi4Ezj50+DubekgZZWNDASjnGsxKWmxrD
+ b/fab7TTEEN2dM6E1+kt8ZmcdPSrkEJwAIuihL/M2NPfOLMD66kSuwG1FhiJNxs=
+X-Gm-Gg: ASbGnctZTYFhNCE81m66BT913sFnXHgB6sKVTmy6O03q6LdWsaH5PeD1omAApTR+c0D
+ QyRW8vBsEZSrvAw4au6JTvqxbNUGyHgTCvly4DbCtMBXgH7jT4jLvk1FuFl9VIhkjkUmkgjgDQC
+ Zo+XVThQf84UJw+BzfX+Fr0P94JxpOdv3aXiBIG84dUCa06XV2dnWeQf4hyQXooPUmPPAwsAfEK
+ v1ztEnFzhD4j03pRZnufTbIUgg88MFtQhvuom9jjk8q0mFAJSDx1yoBQ2F9z8KB6zJzZNUbEJ9s
+ jia5bERrX7elIcqL1RvRMWChQJ1SbCrfPQxT8k31Kn55FqiOVidiFIn8NNNy5sPH3KZuuxQYPXf
+ AiSj5Db5CDNm7DytkZ97KMNxzNyQF0cHN4zDqklry/RqSfXCKUUI=
+X-Google-Smtp-Source: AGHT+IFKno0WKiONvP1sQLglAoJwwltvNgSBYzhjwBdaLiOYZ8ZdkFo7ogKXGxS/sOODdKsqnwYkKw==
+X-Received: by 2002:a05:600c:4f05:b0:434:f586:753c with SMTP id
+ 5b1f17b1804b1-4390d434cb0mr47201595e9.7.1738828307342; 
+ Wed, 05 Feb 2025 23:51:47 -0800 (PST)
+Received: from ?IPV6:2003:ef:2f02:800:9162:c8ad:3b21:a399?
+ (p200300ef2f0208009162c8ad3b21a399.dip0.t-ipconnect.de.
+ [2003:ef:2f02:800:9162:c8ad:3b21:a399])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4391dc9ff10sm10470695e9.12.2025.02.05.23.51.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 05 Feb 2025 23:51:47 -0800 (PST)
+Message-ID: <e4725e7a-5c5e-44b2-951e-e6a9faadd5ee@suse.com>
+Date: Thu, 6 Feb 2025 08:51:45 +0100
 MIME-Version: 1.0
-References: <1b9d04fe8d4f0f386398216b9a5c172bb010c97f.1737029809.git.jstancek@redhat.com>
- <Z4kqqIQlgj4QF21X@yuki.lan>
-In-Reply-To: <Z4kqqIQlgj4QF21X@yuki.lan>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 6 Feb 2025 07:34:08 +0100
-X-Gm-Features: AWEUYZnjTYBJKAUqQ0V3frYsEDJmvH8V-OWtKPBLO08TuRuIhK4U5Snpm_g_L0A
-Message-ID: <CAASaF6zzT1GzdR7O8oC=JQso57VLO47jyXkBdbDZv1WKpW9uvA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: XhH-G4XGR3CMZN9uMuNSeB1FE57U4czdFKuxTGvkgoE_1738823665
-X-Mimecast-Originator: redhat.com
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20250205-doc_tests_list-v4-1-ae46e56073bb@suse.com>
+ <20250205232049.GA1528001@pevik>
+Content-Language: en-US
+In-Reply-To: <20250205232049.GA1528001@pevik>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] aio-stress: fix opened fd leak
+Subject: Re: [LTP] [PATCH v4] doc: add tests catalog page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,49 +102,209 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: liwan@redhat.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKYW4gMTYsIDIwMjUgYXQgNDo1MOKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
-dXNlLmN6PiB3cm90ZToKPgo+IEhpIQo+ID4gSW4gY2FzZXMgd2hlcmUgd29ya2VyIGNvbXBsZXRl
-cyBzcGVjaWZpZWQgbnVtYmVyIG9mIGBpdGVyYXRpb25zYCBiZWZvcmUKPiA+IG9wZXIgY29tcGxl
-dGVzIGFsbCBgdG90YWxfaW9zYCwgc3VjaCBvcGVyIHJlbWFpbnMgb24gYWN0aXZlX2xpc3QuCj4g
-PiBUaGlzIGlzIGEgcHJvYmxlbSBiZWNhdXNlIGNsZWFudXAgb25seSB3YWxrcyBvdmVyIGZpbmlz
-aGVkIGxpc3QsCj4gPiBhbmQgY2xvc2VzIGZkcyBvbmx5IGZvciBpdGVtcyBvbiB0aGlzIGxpc3Qu
-IFNvIGl0J3MgcG9zc2libGUgZm9yCj4gPiB0ZXN0IHRvIGV4aGF1c3QgdWxpbWl0IGZvciBvcGVu
-IGZpbGVzIGFuZCBmYWlsOgo+ID4KPiA+ICQgLi9haW8tc3RyZXNzIC1hMSAtSTEwMCAtbzIgLXI0
-IC1mMSAtZDFeCj4gPiBhaW8tc3RyZXNzLmM6MTM0NzogVFBBU1M6IFRlc3QgcGFzc2VkCj4gPiBh
-aW8tc3RyZXNzLmM6MTI4NTogVElORk86IHN0YXJ0aW5nIHdpdGggcmFuZG9tIHdyaXRlCj4gPiBh
-aW8tc3RyZXNzLmM6MTI5NjogVElORk86IGZpbGUgc2l6ZSAxMDI0TUIsIHJlY29yZCBzaXplIDBL
-QiwgZGVwdGggMSwgSS9PIHBlciBpdGVyYXRpb24gMQo+ID4gYWlvLXN0cmVzcy5jOjEyOTg6IFRJ
-TkZPOiBtYXggaW9fc3VibWl0IDEsIGJ1ZmZlciBhbGlnbm1lbnQgc2V0IHRvIDRLQgo+ID4gYWlv
-LXN0cmVzcy5jOjEzMDA6IFRJTkZPOiB0aHJlYWRzIDEgZmlsZXMgMSBjb250ZXh0cyAxIGNvbnRl
-eHQgb2Zmc2V0IDJNQiB2ZXJpZmljYXRpb24gb2ZmCj4gPiBhaW8tc3RyZXNzLmM6MTMxNDogVEJS
-T0s6IG9wZW4oZmlsZTAuYmluLDEwNTI3MzgsMDYwMCkgZmFpbGVkOiBFTUZJTEUgKDI0KQo+Cj4g
-TG9va3MgbGlrZSB0aGUgdGVzdCBoYXMgbWFueSBvcHRpb25zIGFuZCBzb21lIGNvbWJpbmF0aW9u
-cyBtYXkgc2V0Cj4gdGhpbmdzIGluIGEgd2F5IHRoYXQgZG9lcyBub3QgbWFrZSBtdWNoIHNlbnNl
-Lgo+Cj4gPiBDbGVhbi9mcmVlIGFsc28gaXRlbXMgZnJvbSBhY3RpdmVfbGlzdC4gQWxzbyBkb24n
-dCBsZXQgYHN0YXR1c2AgZnJvbSBjbGVhbnVwCj4gPiBiZSBzZXQgdG8gemVybyBvbmNlIGl0IGJl
-Y29tZXMgbm9uLXplcm8uCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFu
-Y2VrQHJlZGhhdC5jb20+Cj4gPiAtLS0KPiA+ICB0ZXN0Y2FzZXMva2VybmVsL2lvL2x0cC1haW9k
-aW8vYWlvLXN0cmVzcy5jIHwgNyArKysrKystCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0
-aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
-bmVsL2lvL2x0cC1haW9kaW8vYWlvLXN0cmVzcy5jIGIvdGVzdGNhc2VzL2tlcm5lbC9pby9sdHAt
-YWlvZGlvL2Fpby1zdHJlc3MuYwo+ID4gaW5kZXggNDE5ZmMyY2QyNWE0Li5lODQzMDhkMWQwZTgg
-MTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2lvL2x0cC1haW9kaW8vYWlvLXN0cmVz
-cy5jCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2lvL2x0cC1haW9kaW8vYWlvLXN0cmVzcy5j
-Cj4gPiBAQCAtMTEyMiw3ICsxMTIyLDEyIEBAIHJlc3RhcnQ6Cj4gPiAgICAgICB3aGlsZSAodC0+
-ZmluaXNoZWRfb3BlcnMpIHsKPiA+ICAgICAgICAgICAgICAgb3BlciA9IHQtPmZpbmlzaGVkX29w
-ZXJzOwo+ID4gICAgICAgICAgICAgICBvcGVyX2xpc3RfZGVsKG9wZXIsICZ0LT5maW5pc2hlZF9v
-cGVycyk7Cj4gPiAtICAgICAgICAgICAgIHN0YXR1cyA9IGZpbmlzaF9vcGVyKHQsIG9wZXIpOwo+
-ID4gKyAgICAgICAgICAgICBzdGF0dXMgPSBmaW5pc2hfb3Blcih0LCBvcGVyKSA/IDogc3RhdHVz
-Owo+ID4gKyAgICAgfQo+ID4gKyAgICAgd2hpbGUgKHQtPmFjdGl2ZV9vcGVycykgewo+ID4gKyAg
-ICAgICAgICAgICBvcGVyID0gdC0+YWN0aXZlX29wZXJzOwo+ID4gKyAgICAgICAgICAgICBvcGVy
-X2xpc3RfZGVsKG9wZXIsICZ0LT5hY3RpdmVfb3BlcnMpOwo+ID4gKyAgICAgICAgICAgICBzdGF0
-dXMgPSBmaW5pc2hfb3Blcih0LCBvcGVyKSA/IDogc3RhdHVzOwo+ID4gICAgICAgfQo+Cj4KPiBJ
-IGd1ZXNzIHRoYXQgdGhpcyB3b3JrcyBhcyBhIG1pbmltYWwgZml4Lgo+Cj4gUmV2aWV3ZWQtYnk6
-IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PgoKUHVzaGVkLgoKCi0tIApNYWlsaW5nIGxp
-c3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Petr,
+
+On 2/6/25 00:20, Petr Vorel wrote:
+> Hi Andrea,
+>
+> generally LGTM, thanks for working on it.
+>
+> 1) clickable (referenced) keys
+>
+> I asked keys (e.g. needs_root) to be referenced to be clickable to the
+> relevant API.  This allows reader to click and read relevant info about the key.
+We can't do it because tst_test struct parsing does not generate a 
+reference for the attributes, but only for the entire struct.
+Maybe there's a sphinx configuration somewhere, but I have no idea, we 
+should read documentation. This should be done by a followup patch.
+> 2) git commit description of referenced tags
+>
+> Perl code was able to take git description.  E.g. instead of plain "d2f007dbe7e4"
+> it got:
+> d2f007dbe7e4 ("userns: also map extents in the reverse map to kernel IDs")
+>
+> I understand you don't want to bother with it, but it was more descriptive.
+> I guess using github API or simple fetching web page on git.kernel.org and
+> take content of "commit-subject" would work, but it'd be slow and we could hit
+> some access limits from the provider. I can have look into this afterwards (I
+> don't want to block this issue).
+I seen that, but it's really too slow and I'm not sure if it provides a 
+big help honestly. It's a "nice to have" but slow feature that can be 
+resolved with 1 click more on the git commit hash. Feel free to try 
+adding it after this patch has been merged, but my impression was 
+negative, due to the fact network was having issues (timeouts, slow 
+website, etc).
+> 3) CSS fix of some tables
+>
+> Code on tables with keys and values (e.g. needs_kconfigs) looks ugly, when there
+> are more items.  E.g. needs_kconfigs at icmp_rate_limit01, which has:
+> CONFIG_VETH
+> CONFIG_USER_NS=y
+> CONFIG_NET_NS=y
+>
+> The ugly part is margin-bottom: 24px; from class="line-block".
+> Single item line uses <p></p>.
+>
+> I looked into docs (https://tables-with-sphinx.readthedocs.io/en/latest/),
+> but than I realized it's a simple CSS issue. It can be fixed by adding
+> into doc/_static/custom.css:
+>
+> /* remove margin for multiline cells */
+> .rst-content table td div.line-block {
+>      margin-bottom: 0;
+> }
+>
+> I can send it as a separate patch if you don't want to bother with it.
+I can add that, thanks for checking.
+>
+>> +def _generate_tags_table(tags):
+>> +    """
+>> +    Generate the tags table from tags hash.
+>> +    """
+> nit: conf.py is getting slightly big. I need to remember that public functions
+> are these which generates stats.html and test_catalog.html. Maybe having
+> functions or setup() which references them on the top would help reader to start
+> with relevant code.
+> ...
+If you mean to move small functions on top, that can be done easily. At 
+the moment, I only see the syscall table generator function being a bit 
+long. The test catalog generator function is already splitting it into 
+multiple functions and it's pretty easy to read.
+>> +def _generate_setup_table(keys):
+>> +    """
+>> +    Generate the table with test setup configuration.
+>> +    """
+>> +    exclude = [
+> This list is slightly confusing for a reader. I would expect there will be no
+> options in generated docs nor tags. Obviously they are processed separately.
+We can add a comment.
+>
+>> +        'child_needs_reinit',
+>> +        'needs_checkpoints',
+>> +        'resource_files',
+> Maybe add this? e.g. creat07 requires also creat07_child. That might be useful
+> for somebody to see that test needs another LTP binary.
+>
+>> +        'save_restore',
+> This is useful, it shows which /proc/sys files are touched.
+>
+>> +        'forks_child',
+>> +        'hugepages',
+> I know that these are cryptic:
+> .hugepages = {1, TST_NEEDS},
+> .hugepages = {TST_NO_HUGEPAGES},
+> but trying to filter out info may cause people prefer using 'git grep' sources
+> instead of searching in 'ctrl+F' in this nice documentation.
+>
+>> +        'options',
+>> +        'timeout',
+>> +        'runtime',
+> Cyril already asked for runtime, IMHO important to have.
+It has been moved in the timeout text. No need have it in the table as well.
+>
+>> +        'ulimit',
+> Also ulimit is useful.
+>
+>
+>> +        'fname',
+>> +        'tags',
+>> +        'doc',
+>> +    ]
+> ...
+>> +def generate_test_catalog(_):
+>> +    """
+>> +    Generate the test catalog from ltp.json metadata file.
+>> +    """
+>> +    output = '_static/tests.rst'
+>> +    metadata_file = '../metadata/ltp.json'
+>> +    text = [
+>> +        '.. warning::',
+>> +        '    The following catalog has been generated using LTP metadata',
+>> +        '    which is including only tests using the new :ref:`LTP C API`.',
+>> +        '    For this reason, some old tests might be missing from the list.',
+> Besides the fact that *all* tests using legacy API are skipped I don't think
+> user is interested why they aren't included. I would just note that only tests
+> which use new :ref:`LTP C API` are here listed.
+>
+>> +        ''
+>> +    ]
+>> +
+>> +    metadata = None
+>> +    with open(metadata_file, 'r', encoding='utf-8') as data:
+>> +        metadata = json.load(data)
+>> +
+>> +    timeout_def = metadata['defaults']['timeout']
+>> +
+>> +    for test_name, conf in metadata['tests'].items():
+>> +        text.extend([
+>> +            f'{test_name}',
+>> +            len(test_name) * '-'
+>> +        ])
+>> +
+>> +        # source url location
+>> +        test_fname = conf.get('fname', None)
+>> +        if test_fname:
+>> +            text.extend([
+>> +                '',
+>> +                f"`source <{ltp_repo_base_url}/{test_fname}>`__",
+>> +                ''
+>> +            ])
+>> +
+>> +        # test description
+>> +        desc = conf.get('doc', None)
+>> +        if desc:
+>> +            desc_text = []
+>> +            for line in desc:
+>> +                if line.startswith("[Description]"):
+>> +                    desc_text.append("**Description**")
+> I suggested about deleting all [Description] from the code. I see no value in
+> it, but it forces reader to scroll more (it prolongs the page).
+>
+>> +                elif line.startswith("[Algorithm]"):
+>> +                    desc_text.append("**Algorithm**")
+>> +                else:
+>> +                    desc_text.append(line)
+> NOTE: because there are more titles in "[..]" (there can be anything, why not
+> just replace \[(.*)\] with **\1** ?
+That's how it should be done yes. But at the moment we are still having 
+[..], so that should be removed with a followup patch when titles will 
+be adapted.
+>> +
+>> +            text.extend([
+>> +                '\n'.join(desc_text),
+>> +            ])
+>> +
+>> +
+>> +        # developer information
+> For me would be more obvious comment something like: "parse struct tst_test content".
+>
+> Kind regards,
+> Petr
+>
+>> +        text.append('')
+>> +        text.extend(_generate_setup_table(conf))
+>> +        text.append('')
+>> +
+>> +        # small separator between tests
+>> +        text.extend([
+>> +            '',
+>> +            '.. raw:: html',
+>> +            '',
+>> +            '    <hr>',
+>> +            '',
+>> +        ])
+>> +
+>> +    with open(output, 'w+', encoding='utf-8') as new_tests:
+>> +        new_tests.write('\n'.join(text))
+> ...
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
