@@ -4,71 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBF7FC02194
-	for <ltp@archiver.kernel.org>; Fri,  7 Feb 2025 17:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B168BC0219B
+	for <ltp@archiver.kernel.org>; Fri,  7 Feb 2025 17:15:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 565903C93C8
-	for <ltp@archiver.kernel.org>; Fri,  7 Feb 2025 18:09:19 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 314E33C93E4
+	for <ltp@archiver.kernel.org>; Fri,  7 Feb 2025 18:15:46 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9FF733C92E1
- for <ltp@lists.linux.it>; Fri,  7 Feb 2025 18:09:02 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 082A23C9385
+ for <ltp@lists.linux.it>; Fri,  7 Feb 2025 18:15:29 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0150E641D94
- for <ltp@lists.linux.it>; Fri,  7 Feb 2025 18:09:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1738948139;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 735326022B9
+ for <ltp@lists.linux.it>; Fri,  7 Feb 2025 18:15:28 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 549191F385;
+ Fri,  7 Feb 2025 17:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738948528;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=KFzSA/ClmQGokoZhScGx+kA2MANb1R9rM6kIq8DcjOU=;
- b=SvBg4uNZq/QzEM1D7UJIkJBvBUWfYw6MWRKQkQVMrpxm31eqTp3zPB+u3socP8HAyx5yjb
- YCBEDBhCcN6AsuSUC19va1yC/6n/mht77jgAlwpxK35iMhBX4lOe0THc4wL7hHcrOSJCBe
- ENzjs8X8I6JAItehW03M49H0FgcmqFU=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-90-rYX0D9wMOlCm23p5Ea3ajA-1; Fri,
- 07 Feb 2025 12:08:56 -0500
-X-MC-Unique: rYX0D9wMOlCm23p5Ea3ajA-1
-X-Mimecast-MFC-AGG-ID: rYX0D9wMOlCm23p5Ea3ajA
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+ bh=lOrR9ICQo2MApu8fYbFZ20RlaNJSvYnj8u7jztMTyv0=;
+ b=KKVTF2Mhi2QubvWFiQjTkrdQci0gYyWpPm9a+EgUIaERp/rH6XBBS3NZhq+Dm1Qdns7aPm
+ RHxdzQH0dmjPoR+3Idv933n7H/dyQEYSVzC178+unSG4eWCazq/cjMFRFfXyJS39m+pcBG
+ dpGxLyPsIyZazL2QA1EIxGEIkxRMcdw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738948528;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lOrR9ICQo2MApu8fYbFZ20RlaNJSvYnj8u7jztMTyv0=;
+ b=0G6hetqB3x/ma7J9jXZMlxV4ObXm03olR+sQrsfd9u2j1x/SaMyto09m3pM6AC/9rtRAvs
+ 6COfLC28UlhdVhDw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2Q1V0hT5;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QddhR7Um
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1738948527;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lOrR9ICQo2MApu8fYbFZ20RlaNJSvYnj8u7jztMTyv0=;
+ b=2Q1V0hT5QlvlrdW19+SQDB/Z6bhlnELTYDW97kmrpzJKTsJZAd5KifRzCPSeUzjFmi5Rbo
+ 5/QWUVgqMefNabhhxmqOhmdawu8pRJJU6Y1Sho+6LV6aZHqyU31s7C8J2D1eCYJxKNU/fb
+ ZcO7t8QPxSlwgi4jJ/xL7BXRVTZtpHg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1738948527;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lOrR9ICQo2MApu8fYbFZ20RlaNJSvYnj8u7jztMTyv0=;
+ b=QddhR7UmW7tdTcjief13ZkQyZc/Gn0tWMB56/d1TyMGkfm+Ofn2sjtnqNIY77E9NRjVasz
+ Rpz1K/DoHbA50SBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id A678C180098C; Fri,  7 Feb 2025 17:08:55 +0000 (UTC)
-Received: from segfault.usersys.redhat.com (unknown [10.22.89.51])
- by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 9BC8119560A3; Fri,  7 Feb 2025 17:08:54 +0000 (UTC)
-From: Jeff Moyer <jmoyer@redhat.com>
-To: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37F0F13694;
+ Fri,  7 Feb 2025 17:15:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GjH2C68/pmeebAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 07 Feb 2025 17:15:27 +0000
+Date: Fri, 7 Feb 2025 18:15:10 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Jeff Moyer <jmoyer@redhat.com>
+Message-ID: <20250207171510.GA1767469@pevik>
 References: <20250203220903.399544-1-jmoyer@redhat.com>
  <20250207113726.GB1739723@pevik>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date: Fri, 07 Feb 2025 12:08:52 -0500
-In-Reply-To: <20250207113726.GB1739723@pevik> (Petr Vorel's message of "Fri, 7
- Feb 2025 12:37:26 +0100")
-Message-ID: <x498qqhel7f.fsf@segfault.usersys.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+ <x498qqhel7f.fsf@segfault.usersys.redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: TXtuX0py7YODWIrnMZ0ai4PUMLEaSsdSPtZ9TEfQhZo_1738948135
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <x498qqhel7f.fsf@segfault.usersys.redhat.com>
+X-Rspamd-Queue-Id: 549191F385
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 0/3] tst_device: add support for overlayfs
@@ -83,23 +125,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> writes:
+Hi Jeff,
 
-> @Jeff: would it be too hard to parse /proc/self/mountinfo (I suppose
-> /proc/self/mounts is not enough)? I'm looking into libmount code E.e.
+> Petr Vorel <pvorel@suse.cz> writes:
 
-Looking more closely, I think /proc/self/mounts will work just fine.  I
-was pointed to mountinfo originally and didn't consider mounts.  Thanks
-for the suggestion, that will make this much easier!
+> > @Jeff: would it be too hard to parse /proc/self/mountinfo (I suppose
+> > /proc/self/mounts is not enough)? I'm looking into libmount code E.e.
 
-Cheers,
-Jeff
+> Looking more closely, I think /proc/self/mounts will work just fine.  I
+> was pointed to mountinfo originally and didn't consider mounts.  Thanks
+> for the suggestion, that will make this much easier!
+
+Great, thank you! Not dragging libmount as a hard dependency for base library
+helps us a lot.
+
+Kind regards,
+Petr
+
+> Cheers,
+> Jeff
 
 
 -- 
