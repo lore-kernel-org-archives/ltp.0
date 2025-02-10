@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A34C02198
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 15:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 342B1C02198
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 15:14:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DE90E3C98C3
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 16:13:57 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 71F2D3C98D8
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 16:14:14 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A00FF3C98BB
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:22 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ by picard.linux.it (Postfix) with ESMTPS id 9DEBA3C98B5
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:23 +0100 (CET)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D31A6603EB3
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:21 +0100 (CET)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-38dc5764fc0so3243253f8f.3
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 07:13:21 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AE9CC1182BAC
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:22 +0100 (CET)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-43690d4605dso30614245e9.0
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 07:13:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1739200401; x=1739805201; darn=lists.linux.it;
+ d=gmail.com; s=20230601; t=1739200402; x=1739805202; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=jmbkc2nHfJoKqvFGLcuf6R23pTeNbYxOXq5vzCpPkTk=;
- b=Wy2T9T38XzJ0eSVWrcGbklaZYUpkYZb+hSwhdX+okpIu1n3JKg59nuwoEFtQmRKK0G
- /pL2n6JOLnhPzmznCnbGccojLIwHVRrVvjiVGhsG2lq9KVxe4nKj/rKe8ibz0EaxQRmp
- i40iuvQSR7JdIqMuYHms2lhP0h3JdslRvtwDuXKP2eXecrpmFefLhPxBYtLuL5eGlkl9
- SfZpH8Ew08Y+dUFBPYW/7Qs5nEmheTRVU+9g/3jMHsVP14G/xfa1eVhNevmoZF+4l/HZ
- 6MKdf47VjsPgR0gLcZ9SdbJHcDDWhZxJVj5WsrUIBo1MwqRxZ3Zdmy4Wnl3jV34S1WHB
- +nuw==
+ bh=vCmjzahZ+QHfId617BilrkRcDNpOISopNsybGx6Z0Vk=;
+ b=R7yiVMRIRCdAmdrGHxAcowNdrNk0Hz3F4MRBnD6ZFRtwr0abGFcFU/o1cvYEeU8C8N
+ SAwskoYRktgcxXRoBbsI6/iQAozZMyf7WBZqSFzT7csOFEiFhcQtd1boYHaH1DWgZKLW
+ zTnTqxx/xJ5+zykNxQXBK0vFlXWcnW1gYs3Rcj0D3Upu5vSU4Kviw8rZlHD9l9EMrlCL
+ TLiC7FOV++gQFQyKrQZfmKOGwlISTc3fndmXKdfoawMpWlrCZUz+dRfHcdoMMpDqKwgV
+ suj8FKTLqJdYxFVQg7HUbcajCuwVMxgq2Fu+hZiJA36lkWrMGQvgW+lw6RDMd61nS/Mw
+ dWqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739200401; x=1739805201;
+ d=1e100.net; s=20230601; t=1739200402; x=1739805202;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=jmbkc2nHfJoKqvFGLcuf6R23pTeNbYxOXq5vzCpPkTk=;
- b=e9A2yw/uLRaiMTztLLARsdkOKb8LjbtG+r8j5fKav6JB20McDiDkLSOhlCwkZeJiaz
- 8rdG7JttlYRaghUZ4B+iILj9wv46S9uTkYyAcPaUWboUoovO/A+gk0K+aIe4rdGKPnLK
- Jmqs6hQub6RIjZksnaw9EiPSXbbs6TWwEP5LylD+RBCron+W31HuQu01htKDwf7k/EWm
- MQ/cJP3s+6xwEY+WizGSgPnGsDZmrdnWgIRxr4T6LIZNkfd0KdQld2hjSNYUeMnc++ea
- r/3R01NIKI5jXNwgGFAXkD63nNMT9i7xcSgtlNwsDPQ1Ymw9eVJ2fjM0gevs8xq6QU9h
- 0FgQ==
+ bh=vCmjzahZ+QHfId617BilrkRcDNpOISopNsybGx6Z0Vk=;
+ b=U3iw+N8SqadkiHqKIqTWoMR68jSjnoenXsQVSY+4KhbroMhThwEEnaxgl/AdLUem+5
+ 7l+ymdXqcFvFlT5YbZtv1VHrEipuLcrF9pnFaOI9+QCW6dAAGYzBZbrmtxhUmsncidCC
+ 37EwE75dXKonODlzU0Pm5cS/wY8kEb9YYnQHNaHlVfT1ORM6ht2UfwvtFyZ14BXFQt3j
+ /DSgtVsu5pADwlzcN5AbVhAar1eArkZvt2n5v0pTZAs8HDsA48jAi3RzLZ4XQLeZtA4m
+ rQUKoZgS8Ls1fM8oaESIW07H0qhlZgJ4PRBC9X3cGIB09f9d2Ha4qSl9w0qxnVeK+SLl
+ NFtw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW62rQAO/pJ/T2NRu/x5b3o3nnn8Z2TdcTM5D/VtjM3GZGPm+uMYILjDO5c/b1dV+RkMmc=@lists.linux.it
-X-Gm-Message-State: AOJu0YxIG7Q7BU+a618/jqKQdCwAJTBbfk71TgZ+M0m1V0haOjEC4Glh
- 67cj+1qsyq2/ijG/1mPMz3149oVMq+z9WXkjpyJ8PhjiwRGa2n3b2TOdmysF
-X-Gm-Gg: ASbGncsK5i2w7ekba00vAMF6wm3MIOQDdDgQ26JuVhDVkVTsgipVBK6AK8pvQKuOias
- eQzNtLeHtLalErsjRQ0DRF3dXfyob6b7xp6zDBG8C7IT047kOZemFqOsfeJ8auJYBIUpa7zZA4w
- iNzjxGF9wzJwiOk9pfr66HXs4AvT7b0t7Q6W5UeTxMziHqUMCeV8N8zXIL4uPxKIGlMTDLEEUCm
- cs4QyPcJaTs3Zl9+ELSqaXFCr3o6gIDMYMHdci2rVRbpWqMOlEPiYmSqn4swmMz2xMuqmIgAuRV
- Zz/sand8ZcWgOzSTY9V2Go1/CK9Xb8k4PkGpPT2WzwAGvMoHO8Mx2BcIhEQeaiNtvKUlCBDpLjv
- p9kdHzaCTdvkI
-X-Google-Smtp-Source: AGHT+IFdWFVpUp7fXgSmTPwUnMFVf+QtPX/mseJH6PbwQfaVr7St9fbJHdszRNKzyAeXME4hv6vyNw==
-X-Received: by 2002:a5d:59ab:0:b0:385:fd07:8616 with SMTP id
- ffacd0b85a97d-38dc891ff80mr10745149f8f.0.1739200400978; 
- Mon, 10 Feb 2025 07:13:20 -0800 (PST)
+ AJvYcCUfzeyWBq4s+Sj4Lj9LMyeQo1Yy3G2/Af94VldVqWHya1mMtGHzSUvBfERdYMx/fmO9z50=@lists.linux.it
+X-Gm-Message-State: AOJu0Yzpe7A7biKiUhH/4G3nh4p3PmAUkibEtncPnYXE2Pt4fKDuKLwu
+ fC4LrAg+BpXOdQbl237UhJrxjv67ez3QWzGsfz7poi9i3SpyA5/C+lGhtB3K
+X-Gm-Gg: ASbGncsYzWX+hz9kjMmwB3p/B+zALkmTHWB1lJ37iqQXJE+joU1BOpJ8gtcj5US1UPC
+ hN2zTb+RKCuLO0NDJw/wmLINjNH4WkgBq27BMlTsFYqz8vNqcsuqypH/Z7BmPfRlw36rQ+S5b9O
+ L8zMfohFjvR8WDqPSbia0hAxqne965CfipPQeLOgHniT0h3Zlya5SOz2YX2pHfBHQ+qVf0+D+CU
+ 5oz9CTpFjK3Kt+TDf/CvXuJt2qP0yCf/7jOI2ALiT/luRZeYetLmzOZRNPwuBj07knOVAIfu14V
+ zdPq0W+SdvqZ0hQvtSLG1gOEZGOfYA7Rn/LJ4uTz3QgRw9ji+IOdzJ5QBqp2o8XOwh+FC5JFU1z
+ oY6KE6Q3jwqTg
+X-Google-Smtp-Source: AGHT+IER8VL26eaIYLlm4UJWSIy2RzcA5oB6h6+06HQVLtNoAFBYdOC3lkwksPFU9EA8TWNvt3S4ow==
+X-Received: by 2002:a5d:540c:0:b0:38d:c55e:ebcf with SMTP id
+ ffacd0b85a97d-38dc9352269mr7307320f8f.52.1739200401650; 
+ Mon, 10 Feb 2025 07:13:21 -0800 (PST)
 Received: from amir-ThinkPad-T480.arnhem.chello.nl
  (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-38dce6f2c37sm9106869f8f.99.2025.02.10.07.13.20
+ ffacd0b85a97d-38dce6f2c37sm9106869f8f.99.2025.02.10.07.13.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 10 Feb 2025 07:13:20 -0800 (PST)
+ Mon, 10 Feb 2025 07:13:21 -0800 (PST)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 10 Feb 2025 16:13:13 +0100
-Message-Id: <20250210151316.246079-2-amir73il@gmail.com>
+Date: Mon, 10 Feb 2025 16:13:14 +0100
+Message-Id: <20250210151316.246079-3-amir73il@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250210151316.246079-1-amir73il@gmail.com>
 References: <20250210151316.246079-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/4] fanotify14: Test invalid init flags with
- permission and pre-content events
+Subject: [LTP] [PATCH 2/4] fanotify03: Add test cases for permission events
+ on children
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,68 +99,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Those events require an high priority fanotify group.
+Verify that permission events are delivered iff parent is watching
+children.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- include/lapi/fanotify.h                       |  5 +++++
- .../kernel/syscalls/fanotify/fanotify14.c     | 20 +++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ .../kernel/syscalls/fanotify/fanotify03.c     | 47 ++++++++++++++++---
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-diff --git a/include/lapi/fanotify.h b/include/lapi/fanotify.h
-index 40ea7ead7..e5b930f4e 100644
---- a/include/lapi/fanotify.h
-+++ b/include/lapi/fanotify.h
-@@ -109,6 +109,9 @@
- #ifndef FAN_FS_ERROR
- #define FAN_FS_ERROR		0x00008000
- #endif
-+#ifndef FAN_PRE_ACCESS
-+#define FAN_PRE_ACCESS		0x00100000
-+#endif
- #ifndef FAN_RENAME
- #define FAN_RENAME		0x10000000
- #endif
-@@ -134,6 +137,8 @@
- #define LTP_ALL_PERM_EVENTS	(FAN_OPEN_PERM | FAN_OPEN_EXEC_PERM | \
- 				 FAN_ACCESS_PERM)
- 
-+#define LTP_PRE_CONTENT_EVENTS	(FAN_PRE_ACCESS)
-+
- struct fanotify_group_type {
- 	unsigned int flag;
- 	const char *name;
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index ee583a095..b17bffd18 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -239,6 +239,26 @@ static struct test_case_t {
- 		.pfd = pipes,
- 		.expected_errno = EINVAL,
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 64c933c19..4b2f6e45e 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -121,12 +121,29 @@ static struct tcase {
+ 			{FAN_OPEN_EXEC_PERM, FAN_DENY}
+ 		}
  	},
-+	/* permission events in mask with priority < FAN_CLASS_CONTENT are not valid */
 +	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(LTP_ALL_PERM_EVENTS),
-+		.expected_errno = EINVAL,
-+	},
-+	/* pre-content events in mask with priority < FAN_CLASS_PRE_CONTENT are not valid */
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(LTP_PRE_CONTENT_EVENTS),
-+		.expected_errno = EINVAL,
++		"parent watching children, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events",
++		INIT_FANOTIFY_MARK_TYPE(PARENT),
++		FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM | FAN_EVENT_ON_CHILD, 2,
++		{
++			{FAN_ACCESS_PERM, FAN_DENY},
++			{FAN_OPEN_EXEC_PERM, FAN_DENY}
++		}
 +	},
 +	{
-+		.init = FLAGS_DESC(FAN_CLASS_CONTENT),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(LTP_PRE_CONTENT_EVENTS),
-+		.expected_errno = EINVAL,
++		"parent not watching children, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events",
++		INIT_FANOTIFY_MARK_TYPE(PARENT),
++		FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM, 0,
++		{
++		}
 +	},
  };
  
- static void do_test(unsigned int number)
+-static void generate_events(void)
++static void generate_events(struct tcase *tc)
+ {
+ 	int fd;
+ 	char *const argv[] = {FILE_EXEC_PATH, NULL};
++	int exp_ret, exp_errno = tc->event_count ? EPERM : 0;
+ 
+ 	/*
+ 	 * Generate sequence of events
+@@ -136,13 +153,25 @@ static void generate_events(void)
+ 	SAFE_WRITE(SAFE_WRITE_ANY, fd, fname, 1);
+ 	SAFE_LSEEK(fd, 0, SEEK_SET);
+ 
+-	if (read(fd, buf, BUF_SIZE) != -1)
++	exp_ret = exp_errno ? -1 : 1;
++	errno = 0;
++	if (read(fd, buf, BUF_SIZE) != exp_ret || errno != exp_errno) {
++		tst_res(TFAIL, "read() got errno %d (expected %d)", errno, exp_errno);
+ 		exit(3);
++	} else if (errno == exp_errno) {
++		tst_res(TINFO, "read() got errno %d as expected", errno);
++	}
+ 
+ 	SAFE_CLOSE(fd);
+ 
+-	if (execve(FILE_EXEC_PATH, argv, environ) != -1)
++	exp_ret = exp_errno ? -1 : 0;
++	errno = 0;
++	if (execve(FILE_EXEC_PATH, argv, environ) != exp_ret || errno != exp_errno) {
++		tst_res(TFAIL, "execve() got errno %d (expected %d)", errno, exp_errno);
+ 		exit(5);
++	} else if (errno == exp_errno) {
++		tst_res(TINFO, "execve() got errno %d as expected", errno);
++	}
+ }
+ 
+ static void child_handler(int tmp)
+@@ -156,7 +185,7 @@ static void child_handler(int tmp)
+ 	fd_notify = -1;
+ }
+ 
+-static void run_child(void)
++static void run_child(struct tcase *tc)
+ {
+ 	struct sigaction child_action;
+ 
+@@ -174,7 +203,7 @@ static void run_child(void)
+ 	if (child_pid == 0) {
+ 		/* Child will generate events now */
+ 		SAFE_CLOSE(fd_notify);
+-		generate_events();
++		generate_events(tc);
+ 		exit(0);
+ 	}
+ }
+@@ -220,6 +249,12 @@ static int setup_mark(unsigned int n)
+ 
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+ 
++	if (mark->flag == FAN_MARK_PARENT) {
++		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag,
++				   tc->mask, AT_FDCWD, MOUNT_PATH);
++		return 0;
++	}
++
+ 	for (; i < ARRAY_SIZE(files); i++) {
+ 		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag,
+ 				  tc->mask, AT_FDCWD, files[i]);
+@@ -237,7 +272,7 @@ static void test_fanotify(unsigned int n)
+ 	if (setup_mark(n) != 0)
+ 		return;
+ 
+-	run_child();
++	run_child(tc);
+ 
+ 	/*
+ 	 * Process events
 -- 
 2.34.1
 
