@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EA21C02198
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 11:34:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6071C0219D
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 11:34:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EAE7C3C989E
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 12:33:58 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6ECAF3C98AE
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 12:34:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FB8F3C79FA
+ by picard.linux.it (Postfix) with ESMTPS id A8C6E3C79FA
  for <ltp@lists.linux.it>; Mon, 10 Feb 2025 12:32:12 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D4CFB141D099
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 12:32:11 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2026A231823
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 12:32:12 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7C0C81F391;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1B674210FB;
  Mon, 10 Feb 2025 11:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1739187131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
- b=h0MtcVItIbwGUDkYjwy2PZWV9Fr9eAL19Bzu6ZLVUY5C0wo5l6jc+t2CMCSzxcM87MGVhq
- QSw16O9+cXYSkWnzQbGjJJ+7J1QjjH1958dfGQPmhx8oyUmaAflZMVcqLnIYL/tB41U4yL
- cM42jy50jq2WDZ1mO5DMU3OCtJVfGZ0=
+ bh=hQK1e4lKb+KWZNdzlf2M94nUkfF4znUELPel8UREXww=;
+ b=nZSBT1el6v2U6O6/eUAfo6OMo86FdcGhxrhgeRsGMeOrHw431bOSL1UFytK2pqBLN3J5gy
+ WUeXOPzB1VUo7ZhD3LLPwHMe0cETCUTbkw4lKsdgZf4ogUXAJ+iw44lbgIBii2DHx1XHeY
+ 9xuyd57K4bbQzDKx6cjwHZ9itaX7Rvs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1739187131;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
- b=IVRxild9ngDTzkED18GBbZLYq1e5Pkea/Oh1Y62bhehcaW6M2n54Qi9vn36wRNnIND0h4w
- GEMUhZhOFpwekgBA==
-Authentication-Results: smtp-out2.suse.de;
+ bh=hQK1e4lKb+KWZNdzlf2M94nUkfF4znUELPel8UREXww=;
+ b=EkbZjpyHiJP9yKpl4zhrr4FxkU91DB5PKrrkiGqdWKeTrKqV5UGSNCdzRLi1QFvR1RGC2M
+ OiR1JBQymPitRvAg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1739187131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
- b=h0MtcVItIbwGUDkYjwy2PZWV9Fr9eAL19Bzu6ZLVUY5C0wo5l6jc+t2CMCSzxcM87MGVhq
- QSw16O9+cXYSkWnzQbGjJJ+7J1QjjH1958dfGQPmhx8oyUmaAflZMVcqLnIYL/tB41U4yL
- cM42jy50jq2WDZ1mO5DMU3OCtJVfGZ0=
+ bh=hQK1e4lKb+KWZNdzlf2M94nUkfF4znUELPel8UREXww=;
+ b=nZSBT1el6v2U6O6/eUAfo6OMo86FdcGhxrhgeRsGMeOrHw431bOSL1UFytK2pqBLN3J5gy
+ WUeXOPzB1VUo7ZhD3LLPwHMe0cETCUTbkw4lKsdgZf4ogUXAJ+iw44lbgIBii2DHx1XHeY
+ 9xuyd57K4bbQzDKx6cjwHZ9itaX7Rvs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1739187131;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
- b=IVRxild9ngDTzkED18GBbZLYq1e5Pkea/Oh1Y62bhehcaW6M2n54Qi9vn36wRNnIND0h4w
- GEMUhZhOFpwekgBA==
+ bh=hQK1e4lKb+KWZNdzlf2M94nUkfF4znUELPel8UREXww=;
+ b=EkbZjpyHiJP9yKpl4zhrr4FxkU91DB5PKrrkiGqdWKeTrKqV5UGSNCdzRLi1QFvR1RGC2M
+ OiR1JBQymPitRvAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C4D413A62;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B32513A62;
  Mon, 10 Feb 2025 11:32:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aPCBGbvjqWf0YQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id QJqIAbvjqWfyYQAAD6G6ig
  (envelope-from <chrubis@suse.cz>); Mon, 10 Feb 2025 11:32:11 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 10 Feb 2025 12:32:05 +0100
-Message-ID: <20250210113212.29520-7-chrubis@suse.cz>
+Date: Mon, 10 Feb 2025 12:32:04 +0100
+Message-ID: <20250210113212.29520-6-chrubis@suse.cz>
 X-Mailer: git-send-email 2.45.3
 In-Reply-To: <20250210113212.29520-1-chrubis@suse.cz>
 References: <20250210113212.29520-1-chrubis@suse.cz>
@@ -97,12 +98,11 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 06/13] testcases/kernel/mem: Move check_hugepage()
- + PATH_THP
+Subject: [LTP] [PATCH v2 05/13] testcases/kernel/mem: Move update_shm_size()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,149 +119,81 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-These were only used in thp testcases, also after this the mem library
-is no longer needed in thp tests so it's removed from the Makefile.
-
-Also note that PATH_HUGEPAGES is defined in tst_hugepage.h which is
-included by tst_test.h so we can just remove this macro.
+Move update_shm_size() from the lib to the libhugetlb.c since the
+function is used only by the hugetlb testcases.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/mem/include/mem.h |  7 -------
- testcases/kernel/mem/lib/mem.c     |  6 ------
- testcases/kernel/mem/thp/Makefile  |  2 +-
- testcases/kernel/mem/thp/thp.h     | 17 +++++++++++++++++
- testcases/kernel/mem/thp/thp01.c   |  1 -
- testcases/kernel/mem/thp/thp02.c   |  3 ++-
- testcases/kernel/mem/thp/thp03.c   |  5 +++--
- 7 files changed, 23 insertions(+), 18 deletions(-)
- create mode 100644 testcases/kernel/mem/thp/thp.h
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c | 11 +++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h |  3 +++
+ testcases/kernel/mem/include/mem.h         |  2 --
+ testcases/kernel/mem/lib/mem.c             | 13 -------------
+ 4 files changed, 14 insertions(+), 15 deletions(-)
 
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+index 43a677ce9..6a2976a53 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+@@ -130,3 +130,14 @@ int do_readback(void *p, size_t size, char *desc)
+ 	}
+ 	return 0;
+ }
++
++void update_shm_size(size_t * shm_size)
++{
++	size_t shmmax;
++
++	SAFE_FILE_SCANF(PATH_SHMMAX, "%zu", &shmmax);
++	if (*shm_size > shmmax) {
++		tst_res(TINFO, "Set shm_size to shmmax: %zu", shmmax);
++		*shm_size = shmmax;
++	}
++}
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index a694514d2..abc88e25e 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -56,4 +56,7 @@ int getipckey(void);
+ int getuserid(char *user);
+ void rm_shm(int shm_id);
+ int do_readback(void *p, size_t size, char *desc);
++
++void update_shm_size(size_t *shm_size);
++
+ #endif /* hugetlb.h */
 diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 03dbe91d7..ba5a996a7 100644
+index 35a1f0834..03dbe91d7 100644
 --- a/testcases/kernel/mem/include/mem.h
 +++ b/testcases/kernel/mem/include/mem.h
-@@ -52,17 +52,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages);
- void ksm_group_check(int run, int pg_shared, int pg_sharing, int pg_volatile,
-                      int pg_unshared, int sleep_msecs, int pages_to_scan);
- 
--/* THP */
--
--#define PATH_THP		"/sys/kernel/mm/transparent_hugepage/"
--#define PATH_KHPD		PATH_THP "khugepaged/"
--
- /* HUGETLB */
- 
--#define PATH_HUGEPAGES		"/sys/kernel/mm/hugepages/"
- #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
- 
--void check_hugepage(void);
- void write_memcg(void);
- 
+@@ -68,6 +68,4 @@ void write_memcg(void);
  /* cpuset/memcg - include/tst_cgroup.h */
+ void write_cpusets(const struct tst_cg_group *cg, long nd);
+ 
+-void update_shm_size(size_t *shm_size);
+-
+ #endif
 diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index de9388a80..02199349d 100644
+index 06271f5d3..de9388a80 100644
 --- a/testcases/kernel/mem/lib/mem.c
 +++ b/testcases/kernel/mem/lib/mem.c
-@@ -324,12 +324,6 @@ static void verify(char **memory, char value, int proc,
- 	free(s);
+@@ -590,16 +590,3 @@ void write_cpusets(const struct tst_cg_group *cg, long nd)
+ 		SAFE_CG_PRINT(cg, "cpuset.cpus", "0");
+ 	}
  }
- 
--void check_hugepage(void)
--{
--	if (access(PATH_HUGEPAGES, F_OK))
--		tst_brk(TCONF, "Huge page is not supported.");
--}
 -
- struct ksm_merge_data {
- 	char data;
- 	unsigned int mergeable_size;
-diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
-index e95712eaf..d89ea1dd3 100644
---- a/testcases/kernel/mem/thp/Makefile
-+++ b/testcases/kernel/mem/thp/Makefile
-@@ -3,7 +3,7 @@
- 
- top_srcdir		?= ../../../..
- thp04:			LDLIBS += -lrt
-+thp04:			CFLAGS += -pthread
- 
- include $(top_srcdir)/include/mk/testcases.mk
--include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/thp/thp.h b/testcases/kernel/mem/thp/thp.h
-new file mode 100644
-index 000000000..7723bedc2
---- /dev/null
-+++ b/testcases/kernel/mem/thp/thp.h
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Linux Test Project, 2011-2021
-+ * Copyright (c) Cyril Hrubis 2024
-+ */
-+#ifndef THP_H
-+#define THP_H
-+
-+#define PATH_THP "/sys/kernel/mm/transparent_hugepage/"
-+
-+static inline void check_hugepage(void)
-+{
-+        if (access(PATH_HUGEPAGES, F_OK))
-+                tst_brk(TCONF, "Huge page is not supported.");
-+}
-+
-+#endif /* THP_H */
-diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
-index 69825b0f9..bdb2c54db 100644
---- a/testcases/kernel/mem/thp/thp01.c
-+++ b/testcases/kernel/mem/thp/thp01.c
-@@ -38,7 +38,6 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "tst_test.h"
--#include "mem.h"
- #include "tst_minmax.h"
- 
- #define ARGS_SZ	(256 * 32)
-diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
-index 56568d1d1..c6f9d2fd5 100644
---- a/testcases/kernel/mem/thp/thp02.c
-+++ b/testcases/kernel/mem/thp/thp02.c
-@@ -38,7 +38,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include "mem.h"
-+#include "tst_test.h"
-+#include "thp.h"
- 
- static int ps;
- static long hps, size;
-diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
-index 839efcb0e..e8d22669e 100644
---- a/testcases/kernel/mem/thp/thp03.c
-+++ b/testcases/kernel/mem/thp/thp03.c
-@@ -36,7 +36,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
--#include "mem.h"
-+#include "tst_test.h"
-+#include "thp.h"
- #include "lapi/mmap.h"
- 
- static void thp_test(void);
-@@ -83,7 +84,7 @@ static void setup(void)
- 
- 	check_hugepage();
- 
--	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
-+	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * TST_KB;
- 	unaligned_size = hugepage_size * 4 - 1;
- 	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
- }
+-/* shared */
+-
+-void update_shm_size(size_t * shm_size)
+-{
+-	size_t shmmax;
+-
+-	SAFE_FILE_SCANF(PATH_SHMMAX, "%zu", &shmmax);
+-	if (*shm_size > shmmax) {
+-		tst_res(TINFO, "Set shm_size to shmmax: %zu", shmmax);
+-		*shm_size = shmmax;
+-	}
+-}
 -- 
 2.45.3
 
