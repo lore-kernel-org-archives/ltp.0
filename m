@@ -4,101 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C322C02198
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 13:54:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2090C02198
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 15:13:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ACA6D3C98AA
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 14:54:38 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EA0303C98C1
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 16:13:38 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 248CA3C2F65
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 14:54:21 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E03B43C272F
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:21 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 77AA060F451
- for <ltp@lists.linux.it>; Mon, 10 Feb 2025 14:54:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7AE421F390;
- Mon, 10 Feb 2025 13:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739195660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pAse3lQ7R9CD11kowR8EMieDH5neCX+e3nPbK4kt4ec=;
- b=oe6s32b275eFA866hC2quZKsyKq9Sf4EZ3Yo7c3hlMhpAJyg0Cp1+AcPjOhXiyJP1Fc1bB
- s8lWabHoaO2fc/o8SunKkNK7qkerkmI8R0mhLY/Cdth/V7zxVL01tQR6kdoytYkTbUWohb
- dP+Cp3w3LrN2lKP7evzbLGB+p4Y++aI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739195660;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pAse3lQ7R9CD11kowR8EMieDH5neCX+e3nPbK4kt4ec=;
- b=eii9wGHYZbUSQUQn8QvPjN/2Spx/pRETXOBMuR7+02w7/NMsU2RyO0Bq3dqe6AMlFpXqV9
- EaOB/+HD/IAnseAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739195660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pAse3lQ7R9CD11kowR8EMieDH5neCX+e3nPbK4kt4ec=;
- b=oe6s32b275eFA866hC2quZKsyKq9Sf4EZ3Yo7c3hlMhpAJyg0Cp1+AcPjOhXiyJP1Fc1bB
- s8lWabHoaO2fc/o8SunKkNK7qkerkmI8R0mhLY/Cdth/V7zxVL01tQR6kdoytYkTbUWohb
- dP+Cp3w3LrN2lKP7evzbLGB+p4Y++aI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739195660;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pAse3lQ7R9CD11kowR8EMieDH5neCX+e3nPbK4kt4ec=;
- b=eii9wGHYZbUSQUQn8QvPjN/2Spx/pRETXOBMuR7+02w7/NMsU2RyO0Bq3dqe6AMlFpXqV9
- EaOB/+HD/IAnseAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FC8413A62;
- Mon, 10 Feb 2025 13:54:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 41ptFgwFqmcrFQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 10 Feb 2025 13:54:20 +0000
-Date: Mon, 10 Feb 2025 14:54:09 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: pvorel <pvorel@suse.de>
-Message-ID: <Z6oFAYL5a9dnxeUZ@yuki.lan>
-References: <20250210113212.29520-1-chrubis@suse.cz>
- <20250210113212.29520-3-chrubis@suse.cz>
- <01a16c47a0920ed4c60db277087f9ea7@suse.de>
- <Z6n59mHMpZxIMcZk@yuki.lan>
- <a3395c69a6b9c9b8de6ef0f0fe6e35f3@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 46403239255
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 16:13:21 +0100 (CET)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-38dcae0d6dcso1780545f8f.1
+ for <ltp@lists.linux.it>; Mon, 10 Feb 2025 07:13:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1739200401; x=1739805201; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=9DonbUXvak9yF2TDutSm7AcSC8S05uLqtViIXX2IZxI=;
+ b=VMS3hDao3XnsxrTPCpIi4T8ZhC3Yl3rwks0YwdUR2qOt+L+PkXJSryC1wpV+cwHkXG
+ pFEzmzlnAIE13Ggx7vw2Pbfg1fpEgM4x0otOG9d2Wgtfvd3Yt3zSLDiJW/jG3Vpm+U6F
+ GwWsTGgLRNz2QKgwaso9astT7F6hB5BP3HTdZ9DdOK+HEm44gVuhJ+lMF7Bw6xXNfhCs
+ gO6TJkCdmBMqBChjtwcYudMsouPBCv8J8xSv942gHP/lix8WgtadfbkOFpJA4zo7BPAK
+ V7h3LrLKvsIxFqhin4CGs7J2uVrWwPccpFsal4ULsqXSYhLV59TKQgHWXlYpAfEjdqZy
+ imoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739200401; x=1739805201;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=9DonbUXvak9yF2TDutSm7AcSC8S05uLqtViIXX2IZxI=;
+ b=fDACL70lWvupMjfnUezpe8RF916J1mnKnhd87SJesW7FQNS6DrcjChT7CruSzBKnD9
+ Yu8+/CoMyrl7NX2RX5cRXxXnp2qpANMe8X66lGZidI4IifBO9uQjqfoU7rYKO3DPkAiw
+ 9RahDbCpsptU5lv5oSfW/KO87Z9INaRw2t7YnTcmpuzjEx2sc2Q5Cs3Wf7Vi4q5mSnzh
+ VDesog2IRpn7QnAkkWFId2g6JSa6HN7uo4bU9hku527c7mO8vOBLsFTW95sRRyS9KIWu
+ Ua/sY6ZKyoMANWzJGD8RmqGDLuojxjipXYdblU2mLvZjkTEFd1FnT9XqWPBZwdM69mcg
+ K//g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUWJQlRoSwdbdFDCir+qj5RtN6jXV0WuXxmrpihyetXpsizJHqdI7NX0YX79bdEyfyFZ1Q=@lists.linux.it
+X-Gm-Message-State: AOJu0YxiV8y+S6qOFS1hHr4cThNqbZEs1eFmAu1QONZQFf7JXlLj3qM9
+ +5rHRTsGoIa1ABY3X+RWEpO1dSxPW04KJmsydyuTY0pwzRUa6QrwEb9Lwyom
+X-Gm-Gg: ASbGncv/Bi/3Gc13ToO3dCZwyRV5NhgqHLCJS3CrfZOqLQCftZHON6cpJfnvIs9NpUx
+ M0dH0jcMrLyXHyTRWanDslHZR7fYEoghJyrVlij+8s4E1wgwu0uZo1hvuypeklsvBYmkBqCPAeW
+ fqU1iFiub5AH30kLYL4WtMj9q6RywS/g6sNkIu4So6u0hAlfPnvtpRJNM0qCekYvOAsVBf+wCDD
+ V5RFX73HYh2F8fZwwvODBEbkOtCEoGFX1wYhE2BBUpmczxK2MuJ1+AdW86mqRwe0qxd7BcQKIFq
+ bd3ZNNYlu7TSrxWm78YJ9iDwUUEev5+1+2/NDiSytTd2SXAqIVsoZPtOwh+KuEyHRJRyFGFZBsW
+ +ELsUNF/sOjPn
+X-Google-Smtp-Source: AGHT+IGKpE/ejSW80IoVVydPFnQoq7zS0YpBRjP7FBSFoEBW/uQDb4/fWpPAZpHmVP/Vw6M9uszXZA==
+X-Received: by 2002:a5d:6da1:0:b0:38d:d946:db15 with SMTP id
+ ffacd0b85a97d-38dd946de79mr4202933f8f.5.1739200400330; 
+ Mon, 10 Feb 2025 07:13:20 -0800 (PST)
+Received: from amir-ThinkPad-T480.arnhem.chello.nl
+ (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38dce6f2c37sm9106869f8f.99.2025.02.10.07.13.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 10 Feb 2025 07:13:20 -0800 (PST)
+From: Amir Goldstein <amir73il@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 Feb 2025 16:13:12 +0100
+Message-Id: <20250210151316.246079-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a3395c69a6b9c9b8de6ef0f0fe6e35f3@suse.de>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 02/13] lib: Replace path_exist() with
- tst_path_exists()
+Subject: [LTP] [PATCH 0/4] New tests for fanotify pre-content events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,19 +89,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-I will wait till tomorrow so that other have chance to have a look and
-then push the patchset.
+Petr,
+
+These are the tests used for the development of the fanotify pre-content
+(a.k.a HSM) events feature that was merged to v6.14-rc1.
+
+Because this is a new test for a new feature, which is skipped on old
+kernels, I am posting it early, so that others could run the tests.
+
+Following the request to split out large fanotify LTP tests, I resisted
+the temptation to add a pre-content events variant to the existing
+fanotify03 test and I forked it to a new test.
+
+I did however add one test case to fanotify14, because as I wrote
+before, I find it useful to keep the test matrix of allowed flag
+combinations within the same test.
+
+I also added two test cases to fanotify03 before forking it for cases
+that were regressed during the 6.14 devlopment cycle and did not have
+proper test converage.
+
+The number of test cases in fanotify is still below 10, so I was hoping
+this addition is still acceptable.
+
+Thanks,
+Amir.
+
+Amir Goldstein (4):
+  fanotify14: Test invalid init flags with permission and pre-content
+    events
+  fanotify03: Add test cases for permission events on children
+  fanotify24: Add test for FAN_PRE_ACCESS and FAN_DENY_ERRNO
+  fanotify24: Test open for write of executable files with pre-content
+    watch
+
+ include/lapi/fanotify.h                       |  12 +
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |   3 +
+ .../kernel/syscalls/fanotify/fanotify03.c     |  47 +-
+ .../kernel/syscalls/fanotify/fanotify14.c     |  20 +
+ .../kernel/syscalls/fanotify/fanotify24.c     | 472 ++++++++++++++++++
+ 7 files changed, 550 insertions(+), 6 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify24.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
