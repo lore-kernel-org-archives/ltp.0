@@ -4,86 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CDCBC02198
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 11:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EA21C02198
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 11:34:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D45FE3C98AA
-	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 12:33:36 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EAE7C3C989E
+	for <ltp@archiver.kernel.org>; Mon, 10 Feb 2025 12:33:58 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 36D663C79FA
+ by picard.linux.it (Postfix) with ESMTPS id 5FB8F3C79FA
  for <ltp@lists.linux.it>; Mon, 10 Feb 2025 12:32:12 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 638FD630072
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D4CFB141D099
  for <ltp@lists.linux.it>; Mon, 10 Feb 2025 12:32:11 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5B30A21102;
- Mon, 10 Feb 2025 11:32:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7C0C81F391;
+ Mon, 10 Feb 2025 11:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739187130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1739187131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hz0wV9Aq94pDEc9RBy+iecdyQGfIqi723/085/Nkt6M=;
- b=hXc9Ea31BtR2WomhQLzCFrz9Sa73ZiwbNEDlU8u8nqt7koBvpEbQOeinAQQiIEmwXhhRgK
- xSDq0ITZvbLlbi6beaEfAaqkt0+bVnspnmSX+uo9EphvwNRlJRXQ/o24uo7L6vTOa3GEZi
- ffPGXEhuHlseL0BXMXecwlRT1pgnzkg=
+ bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
+ b=h0MtcVItIbwGUDkYjwy2PZWV9Fr9eAL19Bzu6ZLVUY5C0wo5l6jc+t2CMCSzxcM87MGVhq
+ QSw16O9+cXYSkWnzQbGjJJ+7J1QjjH1958dfGQPmhx8oyUmaAflZMVcqLnIYL/tB41U4yL
+ cM42jy50jq2WDZ1mO5DMU3OCtJVfGZ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739187130;
+ s=susede2_ed25519; t=1739187131;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hz0wV9Aq94pDEc9RBy+iecdyQGfIqi723/085/Nkt6M=;
- b=vwXNuzZwgXj83hi0hTLudqyS+2EsaE7AIOcwxGm42w6nxwRXycQpJ9k1RBmgN+SSizIv5+
- 2vbomsar7xRjH6DA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
+ b=IVRxild9ngDTzkED18GBbZLYq1e5Pkea/Oh1Y62bhehcaW6M2n54Qi9vn36wRNnIND0h4w
+ GEMUhZhOFpwekgBA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739187130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1739187131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hz0wV9Aq94pDEc9RBy+iecdyQGfIqi723/085/Nkt6M=;
- b=hXc9Ea31BtR2WomhQLzCFrz9Sa73ZiwbNEDlU8u8nqt7koBvpEbQOeinAQQiIEmwXhhRgK
- xSDq0ITZvbLlbi6beaEfAaqkt0+bVnspnmSX+uo9EphvwNRlJRXQ/o24uo7L6vTOa3GEZi
- ffPGXEhuHlseL0BXMXecwlRT1pgnzkg=
+ bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
+ b=h0MtcVItIbwGUDkYjwy2PZWV9Fr9eAL19Bzu6ZLVUY5C0wo5l6jc+t2CMCSzxcM87MGVhq
+ QSw16O9+cXYSkWnzQbGjJJ+7J1QjjH1958dfGQPmhx8oyUmaAflZMVcqLnIYL/tB41U4yL
+ cM42jy50jq2WDZ1mO5DMU3OCtJVfGZ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739187130;
+ s=susede2_ed25519; t=1739187131;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hz0wV9Aq94pDEc9RBy+iecdyQGfIqi723/085/Nkt6M=;
- b=vwXNuzZwgXj83hi0hTLudqyS+2EsaE7AIOcwxGm42w6nxwRXycQpJ9k1RBmgN+SSizIv5+
- 2vbomsar7xRjH6DA==
+ bh=rFTDnSqz8P/7uJzgbWhwSrK8hOySvn3QHix5pphDaww=;
+ b=IVRxild9ngDTzkED18GBbZLYq1e5Pkea/Oh1Y62bhehcaW6M2n54Qi9vn36wRNnIND0h4w
+ GEMUhZhOFpwekgBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40DFA13A62;
- Mon, 10 Feb 2025 11:32:10 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C4D413A62;
+ Mon, 10 Feb 2025 11:32:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id y/i0DrrjqWftYQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 10 Feb 2025 11:32:10 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aPCBGbvjqWf0YQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 10 Feb 2025 11:32:11 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 10 Feb 2025 12:32:02 +0100
-Message-ID: <20250210113212.29520-4-chrubis@suse.cz>
+Date: Mon, 10 Feb 2025 12:32:05 +0100
+Message-ID: <20250210113212.29520-7-chrubis@suse.cz>
 X-Mailer: git-send-email 2.45.3
 In-Reply-To: <20250210113212.29520-1-chrubis@suse.cz>
 References: <20250210113212.29520-1-chrubis@suse.cz>
@@ -100,9 +99,10 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 03/13] lib: Add tst_mapping_in_range()
+Subject: [LTP] [PATCH v2 06/13] testcases/kernel/mem: Move check_hugepage()
+ + PATH_THP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,228 +119,149 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This moves the range_is_mapped() function from
-testcases/kernel/mem/lib/mem.c to a top level library and renames the
-function to a better fitting name.
+These were only used in thp testcases, also after this the mem library
+is no longer needed in thp tests so it's removed from the Makefile.
+
+Also note that PATH_HUGEPAGES is defined in tst_hugepage.h which is
+included by tst_test.h so we can just remove this macro.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_memutils.h                        | 11 +++++++
- lib/tst_memutils.c                            | 31 ++++++++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap02.c  |  4 +--
- .../kernel/mem/hugetlb/hugemmap/hugemmap13.c  |  4 +--
- .../kernel/mem/hugetlb/hugemmap/hugemmap14.c  |  6 ++--
- .../mem/hugetlb/hugeshmat/hugeshmat04.c       |  2 +-
- testcases/kernel/mem/include/mem.h            |  2 --
- testcases/kernel/mem/lib/mem.c                | 32 -------------------
- 8 files changed, 50 insertions(+), 42 deletions(-)
+ testcases/kernel/mem/include/mem.h |  7 -------
+ testcases/kernel/mem/lib/mem.c     |  6 ------
+ testcases/kernel/mem/thp/Makefile  |  2 +-
+ testcases/kernel/mem/thp/thp.h     | 17 +++++++++++++++++
+ testcases/kernel/mem/thp/thp01.c   |  1 -
+ testcases/kernel/mem/thp/thp02.c   |  3 ++-
+ testcases/kernel/mem/thp/thp03.c   |  5 +++--
+ 7 files changed, 23 insertions(+), 18 deletions(-)
+ create mode 100644 testcases/kernel/mem/thp/thp.h
 
-diff --git a/include/tst_memutils.h b/include/tst_memutils.h
-index 0dd941ced..57c90c4a9 100644
---- a/include/tst_memutils.h
-+++ b/include/tst_memutils.h
-@@ -60,4 +60,15 @@ void tst_disable_oom_protection(pid_t pid);
- 
- #define TST_PRINT_MEMINFO() safe_print_file(__FILE__, __LINE__, "/proc/meminfo")
- 
-+/**
-+ * tst_mapping_in_range() - Returns true if there is a mapping provided range.
-+ *
-+ * @low: A lower address inside of the processe address space.
-+ * @high: A higher address inside of the processe address space.
-+ *
-+ * return: Returns true if there is a mapping between low and high addresses in
-+ *         the process address space.
-+ */
-+int tst_mapping_in_range(unsigned long low, unsigned long high);
-+
- #endif /* TST_MEMUTILS_H__ */
-diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
-index e33f19d29..e49684ba1 100644
---- a/lib/tst_memutils.c
-+++ b/lib/tst_memutils.c
-@@ -14,6 +14,7 @@
- #include "tst_test.h"
- #include "tst_memutils.h"
- #include "tst_capability.h"
-+#include "tst_safe_stdio.h"
- #include "lapi/syscalls.h"
- 
- #define BLOCKSIZE (16 * 1024 * 1024)
-@@ -184,3 +185,33 @@ void tst_disable_oom_protection(pid_t pid)
- {
- 	set_oom_score_adj(pid, 0);
- }
-+
-+int tst_mapping_in_range(unsigned long low, unsigned long high)
-+{
-+	FILE *fp;
-+
-+	fp = SAFE_FOPEN("/proc/self/maps", "r");
-+
-+	while (!feof(fp)) {
-+		unsigned long start, end;
-+		int ret;
-+
-+		ret = fscanf(fp, "%lx-%lx %*[^\n]\n", &start, &end);
-+		if (ret != 2) {
-+			fclose(fp);
-+			tst_brk(TBROK | TERRNO, "Couldn't parse /proc/self/maps line.");
-+		}
-+
-+		if ((start >= low) && (start < high)) {
-+			fclose(fp);
-+			return 1;
-+		}
-+		if ((end >= low) && (end < high)) {
-+			fclose(fp);
-+			return 1;
-+		}
-+	}
-+
-+	fclose(fp);
-+	return 0;
-+}
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index b788aeafb..611ae7090 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -62,7 +62,7 @@ static void test_hugemmap(void)
- 		addrlist[i] = addr;
- 	}
- 
--	while (range_is_mapped(low_addr, low_addr + map_sz) == 1) {
-+	while (tst_mapping_in_range(low_addr, low_addr + map_sz) == 1) {
- 		low_addr = low_addr + 0x10000000;
- 
- 		if (low_addr < LOW_ADDR)
-@@ -74,7 +74,7 @@ static void test_hugemmap(void)
- 	if (addr == MAP_FAILED)
- 		tst_brk(TBROK | TERRNO, "mmap failed on nfildes");
- 
--	while (range_is_mapped(low_addr2, low_addr2 + map_sz) == 1) {
-+	while (tst_mapping_in_range(low_addr2, low_addr2 + map_sz) == 1) {
- 		low_addr2 = low_addr2 + 0x10000000;
- 
- 		if (low_addr2 < LOW_ADDR2)
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
-index 06b5f8e08..90539aaeb 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
-@@ -45,7 +45,7 @@ static void run_test(void)
- 		below_start = FOURGB;
- 		above_end = 1024ULL*1024*1024*1024;
- 
--		if (range_is_mapped(below_start, above_end) == 1) {
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
- 			tst_res(TINFO|TERRNO, "region 4G-IT is not free & "
- 					"mmap() failed expected");
- 			tst_res(TPASS, "Successful but inconclusive");
-@@ -70,7 +70,7 @@ static void run_test(void)
- 		below_start = FOURGB - MMAP_GRANULARITY;
- 		above_end = FOURGB;
- 
--		if (range_is_mapped(below_start, above_end) == 1) {
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
- 			tst_res(TINFO|TERRNO, "region (4G-MMAP_GRANULARITY)-4G is not free & "
- 					"mmap() failed expected");
- 			tst_res(TPASS, "Successful but inconclusive");
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
-index d262b65b2..d3c43b024 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
-@@ -50,7 +50,7 @@ static void run_test(void)
- 		below_start = FOURGB - 256ULL*1024*1024;
- 		above_end = FOURGB;
- 
--		if (range_is_mapped(below_start, above_end) == 1) {
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
- 			tst_res(TINFO|TERRNO, "region (4G-256M)-4G is not free & "
- 					"mmap() failed expected");
- 			tst_res(TPASS, "Successful but inconclusive");
-@@ -73,7 +73,7 @@ static void run_test(void)
- 		below_start = FOURGB;
- 		above_end = FOURGB + page_size;
- 
--		if (range_is_mapped(below_start, above_end) == 1) {
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
- 			tst_res(TINFO|TERRNO, "region 4G-(4G+page) is not free & "
- 					"mmap() failed expected");
- 			tst_res(TPASS, "Successful but inconclusive");
-@@ -101,7 +101,7 @@ static void run_test(void)
- 		below_start = highaddr;
- 		above_end = highaddr + page_size;
- 
--		if (range_is_mapped(below_start, above_end) == 1) {
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
- 			tst_res(TINFO|TERRNO, "region haddr-(haddr+page) not free & "
- 					"mmap() failed unexpected");
- 			tst_res(TPASS, "Successful but inconclusive");
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-index 0d7bbf64f..9f877fd07 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-@@ -55,7 +55,7 @@ static void shared_hugepage(void)
- 		tst_brk(TBROK | TERRNO, "shmget");
- 
- 	while (boundary <= BOUNDARY_MAX
--		&& range_is_mapped(boundary, boundary+SIZE))
-+		&& tst_mapping_in_range(boundary, boundary+SIZE))
- 		boundary += 128*1024*1024;
- 	if (boundary > BOUNDARY_MAX)
- 		tst_brk(TCONF, "failed to find free unmapped range");
 diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 87528fdd0..7251a8839 100644
+index 03dbe91d7..ba5a996a7 100644
 --- a/testcases/kernel/mem/include/mem.h
 +++ b/testcases/kernel/mem/include/mem.h
-@@ -73,6 +73,4 @@ unsigned int get_a_numa_node(void);
+@@ -52,17 +52,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages);
+ void ksm_group_check(int run, int pg_shared, int pg_sharing, int pg_volatile,
+                      int pg_unshared, int sleep_msecs, int pages_to_scan);
  
- void update_shm_size(size_t *shm_size);
+-/* THP */
+-
+-#define PATH_THP		"/sys/kernel/mm/transparent_hugepage/"
+-#define PATH_KHPD		PATH_THP "khugepaged/"
+-
+ /* HUGETLB */
  
--/* MMAP */
--int range_is_mapped(unsigned long low, unsigned long high);
- #endif
+-#define PATH_HUGEPAGES		"/sys/kernel/mm/hugepages/"
+ #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
+ 
+-void check_hugepage(void);
+ void write_memcg(void);
+ 
+ /* cpuset/memcg - include/tst_cgroup.h */
 diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index f293e766e..16eb39cba 100644
+index de9388a80..02199349d 100644
 --- a/testcases/kernel/mem/lib/mem.c
 +++ b/testcases/kernel/mem/lib/mem.c
-@@ -636,35 +636,3 @@ void update_shm_size(size_t * shm_size)
- 		*shm_size = shmmax;
- 	}
+@@ -324,12 +324,6 @@ static void verify(char **memory, char value, int proc,
+ 	free(s);
  }
--
--int range_is_mapped(unsigned long low, unsigned long high)
+ 
+-void check_hugepage(void)
 -{
--	FILE *fp;
--
--	fp = fopen("/proc/self/maps", "r");
--	if (fp == NULL)
--		tst_brk(TBROK | TERRNO, "Failed to open /proc/self/maps.");
--
--	while (!feof(fp)) {
--		unsigned long start, end;
--		int ret;
--
--		ret = fscanf(fp, "%lx-%lx %*[^\n]\n", &start, &end);
--		if (ret != 2) {
--			fclose(fp);
--			tst_brk(TBROK | TERRNO, "Couldn't parse /proc/self/maps line.");
--		}
--
--		if ((start >= low) && (start < high)) {
--			fclose(fp);
--			return 1;
--		}
--		if ((end >= low) && (end < high)) {
--			fclose(fp);
--			return 1;
--		}
--	}
--
--	fclose(fp);
--	return 0;
+-	if (access(PATH_HUGEPAGES, F_OK))
+-		tst_brk(TCONF, "Huge page is not supported.");
 -}
+-
+ struct ksm_merge_data {
+ 	char data;
+ 	unsigned int mergeable_size;
+diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
+index e95712eaf..d89ea1dd3 100644
+--- a/testcases/kernel/mem/thp/Makefile
++++ b/testcases/kernel/mem/thp/Makefile
+@@ -3,7 +3,7 @@
+ 
+ top_srcdir		?= ../../../..
+ thp04:			LDLIBS += -lrt
++thp04:			CFLAGS += -pthread
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/thp/thp.h b/testcases/kernel/mem/thp/thp.h
+new file mode 100644
+index 000000000..7723bedc2
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp.h
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Linux Test Project, 2011-2021
++ * Copyright (c) Cyril Hrubis 2024
++ */
++#ifndef THP_H
++#define THP_H
++
++#define PATH_THP "/sys/kernel/mm/transparent_hugepage/"
++
++static inline void check_hugepage(void)
++{
++        if (access(PATH_HUGEPAGES, F_OK))
++                tst_brk(TCONF, "Huge page is not supported.");
++}
++
++#endif /* THP_H */
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+index 69825b0f9..bdb2c54db 100644
+--- a/testcases/kernel/mem/thp/thp01.c
++++ b/testcases/kernel/mem/thp/thp01.c
+@@ -38,7 +38,6 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "tst_test.h"
+-#include "mem.h"
+ #include "tst_minmax.h"
+ 
+ #define ARGS_SZ	(256 * 32)
+diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
+index 56568d1d1..c6f9d2fd5 100644
+--- a/testcases/kernel/mem/thp/thp02.c
++++ b/testcases/kernel/mem/thp/thp02.c
+@@ -38,7 +38,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include "mem.h"
++#include "tst_test.h"
++#include "thp.h"
+ 
+ static int ps;
+ static long hps, size;
+diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+index 839efcb0e..e8d22669e 100644
+--- a/testcases/kernel/mem/thp/thp03.c
++++ b/testcases/kernel/mem/thp/thp03.c
+@@ -36,7 +36,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+-#include "mem.h"
++#include "tst_test.h"
++#include "thp.h"
+ #include "lapi/mmap.h"
+ 
+ static void thp_test(void);
+@@ -83,7 +84,7 @@ static void setup(void)
+ 
+ 	check_hugepage();
+ 
+-	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
++	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * TST_KB;
+ 	unaligned_size = hugepage_size * 4 - 1;
+ 	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+ }
 -- 
 2.45.3
 
