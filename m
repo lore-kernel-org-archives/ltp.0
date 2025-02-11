@@ -4,101 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2317CC0219B
-	for <ltp@archiver.kernel.org>; Tue, 11 Feb 2025 09:33:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4287C0219B
+	for <ltp@archiver.kernel.org>; Tue, 11 Feb 2025 10:09:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 579433C9941
-	for <ltp@archiver.kernel.org>; Tue, 11 Feb 2025 10:33:48 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C757D3C9941
+	for <ltp@archiver.kernel.org>; Tue, 11 Feb 2025 11:09:19 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B4063C98EF
- for <ltp@lists.linux.it>; Tue, 11 Feb 2025 10:33:30 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=arndb.de (client-ip=103.168.172.155;
- helo=fhigh-a4-smtp.messagingengine.com; envelope-from=arnd@arndb.de;
- receiver=lists.linux.it)
-Received: from fhigh-a4-smtp.messagingengine.com
- (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9A0583C1876
+ for <ltp@lists.linux.it>; Tue, 11 Feb 2025 11:09:02 +0100 (CET)
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com
+ [IPv6:2607:f8b0:4864:20::92e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 19FC6232F33
- for <ltp@lists.linux.it>; Tue, 11 Feb 2025 10:33:27 +0100 (CET)
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal
- [10.202.2.50])
- by mailfhigh.phl.internal (Postfix) with ESMTP id 32CE21140121;
- Tue, 11 Feb 2025 04:33:26 -0500 (EST)
-Received: from phl-imap-11 ([10.202.2.101])
- by phl-compute-10.internal (MEProxy); Tue, 11 Feb 2025 04:33:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
- :cc:content-transfer-encoding:content-type:content-type:date
- :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
- :references:reply-to:subject:subject:to:to; s=fm2; t=1739266406;
- x=1739352806; bh=s4rBUSI4dAh8XWsfRTCFJvHBI1iLX3Omhg2y1TCystU=; b=
- CFW4RC5ge017Qy/5q9YpRRtVeRQHBGsNtWsqeSHq9IlPqU3D/1OpenSqa1yWLPz+
- 3jOpIl+Dqu7qLghltBFY06eTT97oongSU89kACZ01SivrvvOvk4k0PbPrexlXmsl
- 8tVg1b+LUnU4Z9yx2BBX7hMq/SV6tMsBX8MC8Pwn6H/h1f6R+WcA+AoBH6yUCOft
- EhU0nM60rH3QCPinBrAWv3dnGACFYomy2VG4SA8FI+YIi41WHeykauQMBo//1d41
- rNxf6iMoJSnGJ897SZ7HUwlyFxbJljSVMz4wVxWOpDRdwV1KnzAX1UUsZoc7gIBq
- zfvOuGMtK2CMAvM0zvp6AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding
- :content-type:content-type:date:date:feedback-id:feedback-id
- :from:from:in-reply-to:in-reply-to:message-id:mime-version
- :references:reply-to:subject:subject:to:to:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1739266406; x=
- 1739352806; bh=s4rBUSI4dAh8XWsfRTCFJvHBI1iLX3Omhg2y1TCystU=; b=S
- T/goioBamYzLG4znNoWRyLsSEh1pq0rd/BABhs2+3A3fmV0ny9OQBzLRelQ3HSo3
- XYVWqaAG/6P9Xyfj1APaXLcnrQG4iN1vFfEP8H6RKg8Gav6xMd7GaND1t79gqYZz
- aNAl4m05k7zakKUPfoejBmGWp7XqETkSovK3rS+pU3B0tULyD33UrWSPxJiUQvQO
- aY2loB0FM2kkHNcdfmXH3vLayBekYj6aQkq0I1ldIn5v2fm91j3FZPcW4hm5btqu
- lpt5kp4wpL2r1FuupczcJ7s4VYFjRGJhKPO2gT9fWhXCFyrxppDGwlA6xhrd0u+n
- JaPwX0qFXSQhjFTPYythA==
-X-ME-Sender: <xms:ZRmrZz0tpvAHtplLTDzHY9wvWle75B-BadVOKEYApMLeeqciw4AwBw>
- <xme:ZRmrZyEtmKVHr9wvI0Uqb1Si0OUZnWbWduF1_P3sS7DxttdHcGAXWnNVEHLDrhorl
- DXRrAWnRi5Ykg0EHCs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegtdeihecutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
- uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
- hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
- tdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusg
- druggvqeenucggtffrrghtthgvrhhnpeeifffgtdefteettdelgfeftdfhveegteehleet
- ffeuheffudeiieevheefieethfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhlih
- hnrghrohdrohhrghdpthhugihsuhhithgvrdgtohhmnecuvehluhhsthgvrhfuihiivgep
- tdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspg
- hrtghpthhtohepudehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehprghulhhm
- tghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsjheskhgvrhhnvghlrdhorhhgpd
- hrtghpthhtoheplhhinhhugidqmhhmsehkvhgrtghkrdhorhhgpdhrtghpthhtoheprghn
- uggvrhhsrdhrohigvghllheslhhinhgrrhhordhorhhgpdhrtghpthhtohepuggrnhdrtg
- grrhhpvghnthgvrheslhhinhgrrhhordhorhhgpdhrtghpthhtohepuggrnhhivghlrdhl
- vgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehnrghrvghshhdrkhgrmh
- gsohhjuheslhhinhgrrhhordhorhhgpdhrtghpthhtohepvhhinhgtvghnthdrghhuihht
- thhotheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfoh
- hunhgurghtihhonhdrohhrgh
-X-ME-Proxy: <xmx:ZRmrZz41I2pGnP5S-EbBKlRbBVRfgHmDFkIt0xxCskcGg_5nf342MA>
- <xmx:ZRmrZ43L3vDrHzIUbm9YVB055SlYFnrNos9Pr1R2c71s40qAvn5BgA>
- <xmx:ZRmrZ2Ed_eEOT2RZ9B9DnAjMri1ByTx9NfQtDBvs5YEyQ51k4eMjgg>
- <xmx:ZRmrZ59EfVWFdtHtG1SsxMJWndjtCVrSHGc9Pd7s4DNIfjqB5R9jUA>
- <xmx:ZhmrZze9rNN9vIlFfZ2j7nVfcE0RzBdfomn_eAVk8n9B4HjnFSUA9ZmV>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
- id 5BAE32220072; Tue, 11 Feb 2025 04:33:25 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C7BCB103874E
+ for <ltp@lists.linux.it>; Tue, 11 Feb 2025 11:08:59 +0100 (CET)
+Received: by mail-ua1-x92e.google.com with SMTP id
+ a1e0cc1a2514c-867032b0393so1294805241.2
+ for <ltp@lists.linux.it>; Tue, 11 Feb 2025 02:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1739268538; x=1739873338; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
+ b=L06SyTMrZF9WzouzDg+KrZwdrHYlLLummPYvsPqymvco0p6R4lGlIlsOmvfj1IMBRw
+ c3fqpghz3ON251vjMoIO9sZVRKUneGNJzxps6YI0gcyV1B/XW5ALb8eLYIenM3W3Bw4d
+ r6dIun2pmcP6SveT/uQZxUER9t+eAqEqz+QG1UkZ9Db34qBFQrAaWoLkg/s/MreoeQ8w
+ +GMZbLlFmOD74SIqQVwlzEcGkjaqneUfb6RHTdURtp+8/FJvLzqc0YkkfCLUKyEVMcdj
+ gGpd5T+oWTtrvOig2dxxX7YL5w4DuLQm644hzgOeTZeurQaApUkK9hzfC8oVaXvEcNIx
+ kbLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739268538; x=1739873338;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
+ b=c/6fReuxMXIZRpcHLCPGc+C7Y6MrJ6vvXzM2hvQETA69K/BNd+WwzaG9rVzYQZvRMW
+ S3ys/GILEkFiaVAxpX629pvgXZrm3KqcXrP+hEcSahAj1w969zE8Tm7sKHeRYfxAR2n4
+ Hr/aMbdiIfUj752C28NUDegNNq+IWRlEuiX3//Johros9EMKcIeh63kXs/Z1JB7/uuJ9
+ S62yBUjG21baPXYgXwyn8fpwta/vqg7XO0vZeQjLItZ6rCA1s6Wdrrkb5SCHz/W8E2Wr
+ +CivOcJ5Hp/dgr2vwrW0L03pSyXYjxzOA3FnnGmm870pmt0KCVs3EqP/58T0l4aUPZzd
+ yiWw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUnPlDU1gSWBSKtbi8TJMn9UdzQ3HEXHIXB2VD+ZeSxCM7DVgLtLAXtioUDixahegsMZI4=@lists.linux.it
+X-Gm-Message-State: AOJu0Yyw5tO5AU+FcFJZVv2mwKXdz5ps+YO9Qu6nDgePaZTa5n3YYtMZ
+ ENGzXi3zgTooXq7FT05gapzhZr5TAo/dZe+SO+NBUxxaHA+ppM8l6VzhUYN9gp4bO84JbBNpWbe
+ v9pwTCowfnW3ULSsRYHn6VdJNAQHSH2c7/j1Dpw==
+X-Gm-Gg: ASbGncvvPhQf3+/A+dDSD87XnseROMxpbNkP3rYVv5U/1Ve/RLwNYjpIMUJTdcvASsT
+ cMoZrAr0731pfjr8xsjMTVQ4nhuNlPwnA9F3tjqJmQdRGyfQMgW3AS98N1y1efAwRbiddr3EMlf
+ 8Ex/chdfRHeCGfVnlYOYVfAi1ONi2AXg==
+X-Google-Smtp-Source: AGHT+IHp1zdj8ZibeFlCfAdtduHOD6KnRYnX/ZueNTg9nfqkFNPLIXpI43V2qHdRl3eZSUUEm/vQoAR49cYDijtPvYw=
+X-Received: by 2002:a05:6102:3e0b:b0:4af:ba51:a25f with SMTP id
+ ada2fe7eead31-4ba85f1d603mr11334067137.20.1739268538258; Tue, 11 Feb 2025
+ 02:08:58 -0800 (PST)
 MIME-Version: 1.0
-Date: Tue, 11 Feb 2025 10:32:55 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "open list" <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- "Linux PM" <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
- "LTP List" <ltp@lists.linux.it>,
- "Linux Regressions" <regressions@lists.linux.dev>,
- lkft-triage@lists.linaro.org
-Message-Id: <fa1a7a10-f892-4e7e-acb4-0b058aa53d88@app.fastmail.com>
-In-Reply-To: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
 References: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 11 Feb 2025 15:38:46 +0530
+X-Gm-Features: AWEUYZlxubnV84-s1VVkx9iBxiTYmg01jsC7etcGK75gbLsVTjiAfHyBl1JrU90
+Message-ID: <CA+G9fYtf=NaCuLrs2BtfXRQvxDap214i4bJSC+mEqTWPV7676Q@mail.gmail.com>
+To: open list <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+ Linux PM <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>, 
+ LTP List <ltp@lists.linux.it>, Linux Regressions <regressions@lists.linux.dev>,
+ lkft-triage@lists.linaro.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] next-20250210: WARNING: at include/linux/rwsem.h:85
  madvise_unlock
@@ -113,9 +86,9 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: SeongJae Park <sj@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+Cc: SeongJae Park <sj@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -123,16 +96,15 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Feb 11, 2025, at 10:23, Naresh Kamboju wrote:
+On Tue, 11 Feb 2025 at 14:53, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
 > Regressions on arm64 Juno-r2 device while running LTP syscalls tests
 > madvise01 warnings on the Linux next-20250210 tag.
 >
 > First seen on next-20250210
 > Good: next-20250207
 > Bad: next-20250210
-
-Cc SeongJae Park <sj@kernel.org>
-
+>
 > This regression is reproducible with CONFIG_ARM64_64K_PAGES=y
 >
 > Test regression: LTP madvise01 WARNING include/linux/rwsem.h madvise_unlock
@@ -156,24 +128,6 @@ Cc SeongJae Park <sj@kernel.org>
 > include/linux/mmap_lock.h:70 (discriminator 1)
 > include/linux/mmap_lock.h:169 (discriminator 1)
 > include/linux/mmap_lock.h:176 (discriminator 1) mm/madvise.c:1599
-
-This is mmap_write_unlock() triggering
-rwsem_assert_held_write(&mm->mmap_lock);
-
-That code was changed in these commits:
-
-415553982a1e mm-madvise-remove-redundant-mmap_lock-operations-from-process_madvise-fix
-ec68fbd9e99f mm/madvise: remove redundant mmap_lock operations from process_madvise()
-f19c9d7b57cf mm/madvise: split out madvise() behavior execution
-a4d5a73cdc14 mm/madvise: split out madvise input validity check
-948a0a9ea070 mm/madvise: split out mmap locking operations for madvise()
-
-You could try reverting them to see if that fixes it again.
-
-     Arnd
-
-Fullquote below for reference.
-
 > (discriminator 1))
 > Tested kernel: 6.14.0-rc2-next-20[ 1190.646322] Modules linked in: tun
 > overlay btrfs blake2b_generic xor xor_neon raid6_pq zstd_compress
@@ -364,8 +318,7 @@ Fullquote below for reference.
 >
 > ## Source
 > * kernel version: 6.14.0-rc2-next-20250210
-> * git tree: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> * git tree: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 > * git sha: df5d6180169ae06a2eac57e33b077ad6f6252440
 > * git describe: next-20250210
 > * project details:
@@ -376,23 +329,22 @@ Fullquote below for reference.
 > * config : CONFIG_ARM64_64K_PAGES=y (gcc-13-lkftconfig-64k_page_size)
 > * build config:
 > https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/config
-> * build: 
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/
->
-> ## Boot log
-> Juno-r2 log: 
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/log
-> Juno-r2 details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/
-> Juno-r2 history:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/history/
-> Juno-r2 lava log 1:
-> https://lkft.validation.linaro.org/scheduler/job/8117395#L43180
-> Juno-r2 lava log 2: 
-> https://lkft.validation.linaro.org/scheduler/job/8118169
-> Juno-r2 lava log 3: 
-> https://lkft.validation.linaro.org/scheduler/job/8118170
->
+> * build: https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/
+
+Re posting links due format issue,
+
+## Boot log
+* Juno-r2 log: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/log
+* Juno-r2 details:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/
+* Juno-r2 history:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/history/
+* Juno-r2 lava log 1:
+https://lkft.validation.linaro.org/scheduler/job/8117395#L43180
+* Juno-r2 lava log 2: https://lkft.validation.linaro.org/scheduler/job/8118169
+* Juno-r2 lava log 3: https://lkft.validation.linaro.org/scheduler/job/8118170
+
+ >
 > --
 > Linaro LKFT
 > https://lkft.linaro.org
