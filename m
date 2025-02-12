@@ -4,63 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C792C021A0
-	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 10:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739355583; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Tl/spSh7PyWrcECLLte9xI2ePHn7zl+nWjSmJfE85uw=;
- b=jf15Ar5y+yRGIRVJ9P2FbUFZeIizhCiNwzXyoqgb0S25qbrv+hpLL2huJQWttDKeiYwBM
- A7N/qpgMN0ct3DAHadtb05Ny1cOSrwpGbiJKxMK2RUGlzjqtoXzfgEynU8y5jodsWyGCXoP
- HvrrnGNFdtEE/HoYBiG2lw7REr4xA1Y=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25715C02198
+	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 10:20:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8153D3C99D5
-	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 11:19:43 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 813AE3C99E8
+	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 11:20:00 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B2423C0277
- for <ltp@lists.linux.it>; Tue, 11 Feb 2025 19:35:36 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=139.178.84.217; helo=dfw.source.kernel.org;
- envelope-from=sj@kernel.org; receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ by picard.linux.it (Postfix) with ESMTPS id 933B03C8E63
+ for <ltp@lists.linux.it>; Wed, 12 Feb 2025 02:08:08 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=yoyang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 645EB1002890
- for <ltp@lists.linux.it>; Tue, 11 Feb 2025 19:35:36 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id 5ED685C4D46;
- Tue, 11 Feb 2025 18:34:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A7A7C4CEDD;
- Tue, 11 Feb 2025 18:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1739298933;
- bh=/GDgxa2V50tFPQOr9OXJ/5PrkxuGxrhpmwMTgMzj/T0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kl+DX5igmocajTRVwBOsdZaBjIkP6B6H3j2G+72XnR5gu5LDvnJzhET+0Vb1TMSD6
- A2JJP0TP1FLV+XAsv0hHXSjSVvmEa9pb6Aq69DOXfje6W4aQvorDhKm+HheB9iwZk0
- HuKXXpkcwLgd97YlZP+3rVJgybJj/l5FR2DN9O8+m+fzpo18vRtEJF4U3KODj2pDqk
- 5Y4+pUbVH2gHNtjDAj9Di2bjvymszhio/t1iBscgngU+cs1w6NolRNEgvJOkRh/XYU
- fLOI0ULS1WWzZnBE83kphBPURC+LTNVtCov0hoitU4GLBR2kBgB0FgKhKc+Y6s6q+5
- vUSGvKMQjmT/A==
-To: "Arnd Bergmann" <arnd@arndb.de>
-Date: Tue, 11 Feb 2025 10:35:31 -0800
-Message-Id: <20250211183531.4359-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <fa1a7a10-f892-4e7e-acb4-0b058aa53d88@app.fastmail.com>
-References: 
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6F2CE61EDA8
+ for <ltp@lists.linux.it>; Wed, 12 Feb 2025 02:08:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1739322485;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hPpev8pGGuMItNXO6iyQ+L0lnktTz9rAognaEBnFAAw=;
+ b=LoyBZaaXo/WwnNs3R2Z/yhzGMoRG+6zr1wZqxtlp4X9VA4ILW1XzTPH9Z8XS4/eglNZn7Z
+ SmHZXjTx13vaVYx5jooTXuEZqvqMQ6keYMtu9NDYFehpSu4jKfFBEOqIQAFe/nHErvDWWF
+ EgZHIqfuOwjDYnOBxPSwgfKYrpuoEHk=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-626-is3uXLIzPk-tC2iNkUbAjA-1; Tue,
+ 11 Feb 2025 20:08:01 -0500
+X-MC-Unique: is3uXLIzPk-tC2iNkUbAjA-1
+X-Mimecast-MFC-AGG-ID: is3uXLIzPk-tC2iNkUbAjA
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 8069319560AA; Wed, 12 Feb 2025 01:08:00 +0000 (UTC)
+Received: from dell-per750-06-vm-07.rhts.eng.pek2.redhat.com
+ (dell-per750-06-vm-07.rhts.eng.pek2.redhat.com [10.73.180.56])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id F15BB19560A3; Wed, 12 Feb 2025 01:07:56 +0000 (UTC)
+Date: Wed, 12 Feb 2025 09:07:51 +0800
+From: Yongcheng Yang <yoyang@redhat.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z6v0Z486y3h4IvKC@dell-per750-06-vm-07.rhts.eng.pek2.redhat.com>
+References: <20250211032457.7396-1-liwang@redhat.com>
+ <20250211172019.GA1906142@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <20250211172019.GA1906142@pevik>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: oGwJAgiS903SjiT4GwTRmC-v0J9--cZM4x8ySD2I4mU_1739322480
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Wed, 12 Feb 2025 11:18:57 +0100
-Subject: Re: [LTP] next-20250210: WARNING: at include/linux/rwsem.h:85
- madvise_unlock
+Subject: Re: [LTP] [PATCH] statx07: Skip test if NFS server is never enabled
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,55 +82,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: SeongJae Park via ltp <ltp@lists.linux.it>
-Reply-To: SeongJae Park <sj@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>,
- Linux Regressions <regressions@lists.linux.dev>,
- "Paul E. McKenney" <paulmck@kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- rcu <rcu@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Andrew Morton <akpm@linux-foundation.org>, LTP List <ltp@lists.linux.it>
+Cc: smayhew@redhat.com, Martin Doucha <martin.doucha@suse.com>,
+ Yongcheng Yang <yoyang@redhat.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, 11 Feb 2025 10:32:55 +0100 "Arnd Bergmann" <arnd@arndb.de> wrote:
+Hi Petr,
 
-> On Tue, Feb 11, 2025, at 10:23, Naresh Kamboju wrote:
-> > Regressions on arm64 Juno-r2 device while running LTP syscalls tests
-> > madvise01 warnings on the Linux next-20250210 tag.
-> >
-> > First seen on next-20250210
-> > Good: next-20250207
-> > Bad: next-20250210
+On Tue, Feb 11, 2025 at 06:20:19PM +0100, Petr Vorel wrote:
+> Hi Li, all,
 > 
-> Cc SeongJae Park <sj@kernel.org>
-[...]
-> This is mmap_write_unlock() triggering
-> rwsem_assert_held_write(&mm->mmap_lock);
+> > The statx07 test requires an active NFS server, as it relies on
+> > exportfs, which reads from '/var/lib/nfs/etab'. By default, etab
+> > file does not exist unless the NFS server is started at least once
+> > (since new version nfs-utils-2.5.4-32.el9).
 > 
-> That code was changed in these commits:
+> > This causing the test to fail when etab is missing:
 > 
-> 415553982a1e mm-madvise-remove-redundant-mmap_lock-operations-from-process_madvise-fix
-> ec68fbd9e99f mm/madvise: remove redundant mmap_lock operations from process_madvise()
-> f19c9d7b57cf mm/madvise: split out madvise() behavior execution
-> a4d5a73cdc14 mm/madvise: split out madvise input validity check
-> 948a0a9ea070 mm/madvise: split out mmap locking operations for madvise()
+> >   tst_test.c:1722: TINFO: Overall timeout per run is 0h 00m 30s
+> >   tst_buffers.c:57: TINFO: Test is using guarded buffers
+> >   exportfs: can't open /var/lib/nfs/etab for reading
+> >   statx07.c:136: TBROK: failed to exportfs
 > 
-> You could try reverting them to see if that fixes it again.
+> > This patch adds a check using access("/var/lib/nfs/etab", F_OK)
+> > before running the test. If the file does not exist, the test
+> > is skipped (TCONF) instead of failing, preventing misleading
+> > test failures.
+> 
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > Cc: Yongcheng Yang <yoyang@redhat.com>
+> > ---
+> >  testcases/kernel/syscalls/statx/statx07.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> 
+> > diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
+> > index 968174330..bc8e6fd65 100644
+> > --- a/testcases/kernel/syscalls/statx/statx07.c
+> > +++ b/testcases/kernel/syscalls/statx/statx07.c
+> > @@ -115,6 +115,9 @@ static void setup(void)
+> >  	int ret;
+> >  	char server_path[BUFF_SIZE];
+> 
+> > +	if (access("/var/lib/nfs/etab", F_OK) < 0)
+> > +		tst_brk(TCONF, "nfs-server might not set up");
+> 
+> On Tumbleweed with nfs-client-2.8.1-44.2.x86_64:
+> 
+> # systemctl stop nfs-server.service
+> # ./statx07
+> ...
+> tst_test.c:1904: TINFO: Tested kernel: 6.13.0-2.g0127a37-default #1 SMP PREEMPT_DYNAMIC Thu Jan 23 11:21:55 UTC 2025 (0127a37) x86_64
+> ...
+> statx07.c:141: TCONF: nfs server not set up?: EOPNOTSUPP (95)
+> 
+> $ ls -la /var/lib/nfs/etab
+> 
+> The same behavior is on older systems (I checked SLE15-SP4 with 5.14 based
+> kernel and nfs-client-2.1.1).
+> 
+> There is a working detection. I wonder what is different on the system you test.
+> OTOH fortunately this patch would not break SLES/openSUSE (it would just not
+> help to detect), therefore I'm not against it.
 
-Thank you for kindly Cc-ing me and further providing this nice information,
-Arnd!  I posted a fix and continuing discussion there:
-https://lore.kernel.org/20250211063201.5106-1-sj@kernel.org
+This is for an update of the nfs-utils spec file, see
+https://src.fedoraproject.org/rpms/nfs-utils/c/eea36e50024efbac78514f96a29f05306905118b?//branch=rawhide
 
+Now /var/lib/nfs/etab and /var/lib/nfs/rmtab are marked as %config files
+and they will not be created when nfs-utils is just installed.
 
-Thanks,
-SJ
+Best Regards,
+Yongcheng
 
-[...]
+> 
+> Kind regards,
+> Petr
+> 
+> > +
+> >  	mode_t old_umask = umask(0);
+> 
+> >  	SAFE_MKDIR(SERV_PATH, DEFAULT_MODE);
+> 
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
