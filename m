@@ -4,73 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E73E0C02198
-	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 17:06:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE825C02198
+	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 20:11:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5F96D3C9A40
-	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 18:06:11 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id BDFA73C9A38
+	for <ltp@archiver.kernel.org>; Wed, 12 Feb 2025 21:11:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16A7D3C76F0
- for <ltp@lists.linux.it>; Wed, 12 Feb 2025 18:05:55 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 3AF0E3C8938
+ for <ltp@lists.linux.it>; Wed, 12 Feb 2025 21:10:56 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 807B91421762
- for <ltp@lists.linux.it>; Wed, 12 Feb 2025 18:05:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1739379952;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2BFAA656FD6
+ for <ltp@lists.linux.it>; Wed, 12 Feb 2025 21:10:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E31191FCD6;
+ Wed, 12 Feb 2025 20:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739391054;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Nt+8s8iCDrWtJkd/lXP9kqd5JltevpeU3w3yhV0eT8Q=;
- b=jTlkAvLUpRT4M+j/hg57tQH67NKOrTAHCujJw3LrCzt2Od7sXexd8G/GrngmbH9EZqC6QR
- hZWHIRy8WmFiK7AJelWEcQgRA5dqmedfUz0JMF0lzi4EL9FKCG7lQ4/JHzl3Wsrr45ODZK
- 5MTtpi+tyQ4gGp6f5PMGqWbGbLf14TA=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-99-iiw6f_JnOu-1v-ZrKC7nLA-1; Wed,
- 12 Feb 2025 12:05:48 -0500
-X-MC-Unique: iiw6f_JnOu-1v-ZrKC7nLA-1
-X-Mimecast-MFC-AGG-ID: iiw6f_JnOu-1v-ZrKC7nLA_1739379947
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ bh=9G4wjedMJs49X1JOL2HJmoZWVFfph45URb+SPgcxw7g=;
+ b=Ho5YbmH6B7M0rykJ52+nGucwVJMBky4taJwQYg8kVyKEz3SZ+QCUyrfTZm7cUPdLpVEh3d
+ V8p3e5fMG4CtLIPfgaJeIAnlKbWdNblUTB4AviQpuZ5UtvQCIUz2JHLmObreua6HpNLhP3
+ DuCQ8Dh5pJy2ZBXqOkkFGvck7tZA6xY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739391054;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9G4wjedMJs49X1JOL2HJmoZWVFfph45URb+SPgcxw7g=;
+ b=KnK52r9QugAzcJuLjcOvhjw5yBBVxe5LCPQzBQGX5juziXCPNFb0Wm8ZvZ3c2qFKlKPT6/
+ DXEYih4Ah9FPclBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zkRZ7joX;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iXfV6yeH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739391053;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9G4wjedMJs49X1JOL2HJmoZWVFfph45URb+SPgcxw7g=;
+ b=zkRZ7joXM1Q55DDRujWuMdCZe+iOtGhyWTIRmVayJSU8l3Y5jz/axOTW8j53u4D9sUc4A8
+ 0rMpnoNLWJd5z1tap3fLxzvwpr0V0GQU/vRLVB2pQalX2t41Wh3KWkwsrW/0zeYbB9jdlR
+ m/qVqynIOd3KNp025AMWdILnI6Eya24=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739391053;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9G4wjedMJs49X1JOL2HJmoZWVFfph45URb+SPgcxw7g=;
+ b=iXfV6yeHBIbIe3MZbm3eEFw16veE/DDXqwzOkFLXYwFKvl/eH4oeLfBAP3I5pkYAPPVlC5
+ M/Bl2oNsxa/6Z9AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 50B9C1800268; Wed, 12 Feb 2025 17:05:47 +0000 (UTC)
-Received: from segfault.usersys.redhat.com (unknown [10.22.89.55])
- by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 6B7293001D10; Wed, 12 Feb 2025 17:05:46 +0000 (UTC)
-From: Jeff Moyer <jmoyer@redhat.com>
-To: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D13813AEF;
+ Wed, 12 Feb 2025 20:10:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id du7VFE0ArWdoIwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 12 Feb 2025 20:10:53 +0000
+Date: Wed, 12 Feb 2025 21:10:47 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Jeff Moyer <jmoyer@redhat.com>
+Message-ID: <20250212201047.GA2134110@pevik>
 References: <20250211214627.152634-1-jmoyer@redhat.com>
  <20250211214627.152634-3-jmoyer@redhat.com>
  <20250211235232.GA1992438@pevik>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date: Wed, 12 Feb 2025 12:05:44 -0500
-In-Reply-To: <20250211235232.GA1992438@pevik> (Petr Vorel's message of "Wed,
- 12 Feb 2025 00:52:32 +0100")
-Message-ID: <x49wmdvhz4n.fsf@segfault.usersys.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+ <x49wmdvhz4n.fsf@segfault.usersys.redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: juSElyAiI-bPpGuMMreEw6jNv6RMlndKk11dRzDr5zg_1739379947
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <x49wmdvhz4n.fsf@segfault.usersys.redhat.com>
+X-Rspamd-Queue-Id: E31191FCD6
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 2/3] lib/tst_device.c: check for
  BTRFS_SUPER_MAGIC instead of device major of 0
@@ -85,35 +122,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi, Petr,
+Hi Jeff,
 
-Thanks a lot for the review.  I just have one question, below:
+> Hi, Petr,
 
-Petr Vorel <pvorel@suse.cz> writes:
+> Thanks a lot for the review.  I just have one question, below:
 
->> @@ -595,8 +595,13 @@ void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
->>  	dev_minor = minor(buf.st_dev);
->>  	*dev = '\0';
->
->> -	if (dev_major == 0) {
->> +	if (statfs(path, &fsbuf) < 0)
->> +		tst_brkm(TWARN | TERRNO, NULL, "statfs() failed");
-> Please use SAFE_STATFS() here.
+> Petr Vorel <pvorel@suse.cz> writes:
 
-SAFE_STATFS appears to be part of the new safe macros
-(tst_safe_macros_inline.h), whereas tst_device.c includes the older
-macros via #include "safe_macros.h".  How would you like me to proceed?
-I could add a SAFE_STATFS to the old macros, or I could submit a prep
-patch that converts tst_device to the new macros.  Or something else?
+> >> @@ -595,8 +595,13 @@ void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
+> >>  	dev_minor = minor(buf.st_dev);
+> >>  	*dev = '\0';
 
-Thanks!
-Jeff
+> >> -	if (dev_major == 0) {
+> >> +	if (statfs(path, &fsbuf) < 0)
+> >> +		tst_brkm(TWARN | TERRNO, NULL, "statfs() failed");
+> > Please use SAFE_STATFS() here.
+
+> SAFE_STATFS appears to be part of the new safe macros
+> (tst_safe_macros_inline.h), whereas tst_device.c includes the older
+> macros via #include "safe_macros.h".  How would you like me to proceed?
+> I could add a SAFE_STATFS to the old macros, or I could submit a prep
+> patch that converts tst_device to the new macros.  Or something else?
+
+I'm sorry to overlook this. Your original is perfect then.
+
+Kind regards,
+Petr
+
+> Thanks!
+> Jeff
 
 
 -- 
