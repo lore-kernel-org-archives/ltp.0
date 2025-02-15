@@ -4,92 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76C05C02198
-	for <ltp@archiver.kernel.org>; Fri, 14 Feb 2025 15:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 308BDC021A0
+	for <ltp@archiver.kernel.org>; Sat, 15 Feb 2025 09:18:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C16903C9B17
-	for <ltp@archiver.kernel.org>; Fri, 14 Feb 2025 16:32:24 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 493803C9B55
+	for <ltp@archiver.kernel.org>; Sat, 15 Feb 2025 10:18:03 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A69013C9A5F
- for <ltp@lists.linux.it>; Fri, 14 Feb 2025 16:32:07 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=dbassey@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EC4923C9B03
+ for <ltp@lists.linux.it>; Sat, 15 Feb 2025 10:17:46 +0100 (CET)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1790720D181
- for <ltp@lists.linux.it>; Fri, 14 Feb 2025 16:32:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1739547125;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=62hFTzIEQH9cO5UyG69gZa76u6HMt/QqoG78qQpPONI=;
- b=O/jHmWV0hVaag+4So+gLMq9hPSi9bqFzjuvPC+Rn+t6a2LJKcKXJ614PIepm+V4pvSGG7I
- ZAuKDg2dRBoj1m0wxu79IPzzgNQuFSbM8Xu6lzYt1pJ847oOCd/PIXK4vo7crRz5K0rhHF
- JEMTVSr/VoDtm/hxPO3y0LXH0dnaeJg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-211-WJdMECh5MYy5VlMDlMoUPQ-1; Fri, 14 Feb 2025 10:32:03 -0500
-X-MC-Unique: WJdMECh5MYy5VlMDlMoUPQ-1
-X-Mimecast-MFC-AGG-ID: WJdMECh5MYy5VlMDlMoUPQ_1739547122
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-38dc88ed7caso1793500f8f.0
- for <ltp@lists.linux.it>; Fri, 14 Feb 2025 07:32:03 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 67F6D142F304
+ for <ltp@lists.linux.it>; Sat, 15 Feb 2025 10:17:46 +0100 (CET)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-5e0373c7f55so791387a12.0
+ for <ltp@lists.linux.it>; Sat, 15 Feb 2025 01:17:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1739611066; x=1740215866; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=D3AYJOxCvaJ6VLEimQMLfNW99jr14bZD6XS4mbqheD4=;
+ b=IZoOZej/yCYLTJEv7NEdR7jpr2u0hSWI/8f/ZpTkDx9qm3bThsWiOLKT8xALoVS961
+ 7faZHtl+ExTnh1bWtyEGJpBid1AAe9dCIpVoWL2PjYCNgfGCcvSMFe/KTPl5wz9uTWWN
+ L+bJ/eJL2/ne7WDTLTcHhQr0nSVbwKlGlIckRvhfOqTbHG6Z1Q0OAhqfjTp3e4qQWsXM
+ uj23kI5RMJtzrHulTHMCedZVW59z3LVUXrbmM9AIQC2dKltSl6gVIRfbvu+LbbxMobs4
+ CxctycWiq6hz2jOjgyo7xqyHxLt6dZxLA48jq/SxnwENxKRscRNwaQiZytxL4vLlvZ7/
+ PGxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739547122; x=1740151922;
+ d=1e100.net; s=20230601; t=1739611066; x=1740215866;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=62hFTzIEQH9cO5UyG69gZa76u6HMt/QqoG78qQpPONI=;
- b=HYTyr87E9Z+IAZbwLPQ9RkII2jQp91u8FIsuZnKBHxpR9dNUEq3f5dvKPfsaWqeeeA
- E8rjwGUVBUt1DTIKSVvA1P1gCNVrTNlzNjsgQtFuahqMJ81jevY0KccXlgoCK8UT2TYG
- Uvx2V4I9WO1dofzEGyEGde1REoP9Jz4yRS9bQ2OXy+iVFGcdb+X7aQnDVs6Go27cgy4Q
- zQrg7KruV1rR8kZ62hpsTmPTi1cjYhHjj7Z47UkPad4hnvk2kJ+72xQabVzDQ1J5/j/9
- g8vskwjhvi8zTmbSnlBmqk1R90+OEvenHuIKgtZ4dPGw8+F4zcAn+i7NHfH7D+IlMiV5
- mPAQ==
-X-Gm-Message-State: AOJu0Yx3PaxBkVW9RDFg2e1wMfxZJg5MGAqiIbnKxN0OJ+B63UpSicB0
- xeMR2TJWZ4h5RmLkitQoISVNMSV9m8d4bXpwAm9r9g9L9qdXwwHzmF3z330RjeRgV+UeVVkEXh0
- ipfehIVMdf77Cm4RYT0k5QyL3PFOXiny3HiqKOVTe2r2HbmoOq9diqmerYvVHKD6l/+BO6palgN
- QhGJ629tpsIGXOECwViVAOB3ezQeEZXk+1SQ==
-X-Gm-Gg: ASbGncseV/aMtrs9aMpELTV8lHyBflW5H1/JCVe4zSCSckpDwsxxSgmyz3Lbnd1lbVt
- 75tuSlaJ2yBFrGahHqGCscCzyLs7UO5a0c7XMvJK35bBdDI/P/c4gAbjWQ5zXxbK69Q/oURKKjX
- gU9u85+a6fW6pJFdP/QT2bvT14+I9SyZddyWZd6eXSoCQ9GX0gQFH1HU6RewUatpSIrkzSceFD1
- JvfqmdEUC2n/lGb0BEz80MpBSXPDeyElzsBxL62+slXnYLNV6S9yjp1NHI6PzZB8Qmrd9HbeZHj
- NmF8q0Cb5p9CI9dXh80IOlLUqjst0Sa2KOwhUbIQ0Ck=
-X-Received: by 2002:adf:ed04:0:b0:38f:31b6:4f30 with SMTP id
- ffacd0b85a97d-38f31b6505bmr2106292f8f.35.1739547122332; 
- Fri, 14 Feb 2025 07:32:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFkwGTigcD4gmVivGF38zWLH5nj/8r7thyx98Puu+JUti5fUjC6VzAkl9v7N5JF/sHZFLs4Nw==
-X-Received: by 2002:adf:ed04:0:b0:38f:31b6:4f30 with SMTP id
- ffacd0b85a97d-38f31b6505bmr2106237f8f.35.1739547121937; 
- Fri, 14 Feb 2025 07:32:01 -0800 (PST)
-Received: from 2624797214.wifi.kn.vutbr.com (nat-kn.net.vutbr.cz.
- [147.229.117.40]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-38f258fc7ecsm4839009f8f.49.2025.02.14.07.32.01
+ bh=D3AYJOxCvaJ6VLEimQMLfNW99jr14bZD6XS4mbqheD4=;
+ b=IeFkvdwLFAUSuySZeZNQSKB0g5DxadcByppRCV/ykhYvIZLRdlTlJ9ZwSOoCJprOD3
+ E/3aTyyRiMZv1YC7AtOQ+QYjJqaZQPakMQwUPTuuPj1Yo2huICFgEBbqeeCTscHu7rZ6
+ nhdRlUPgTwGBbNfkIsFARXE/RIb/1smHnSVlMRU4EvpCKd6Rnu1Npah+eEkJtkoNPyqW
+ TVF3/ix23RfObBrreul0lB3wI5UOOi0+VZGSAqtCRTRw6QgGu3Nn0lrADVEMZ2D8BpHk
+ 1tljQ+SuTaffOOjHKGqbgrzQopUq+K442/pMhKTZCsdgSsJiFAbTmijWoXasGLCqSquK
+ Pc6g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWPzs7omKQGUOzMXl+5LBsQ5YLQQxs4POojO8wFko4F2x3+5Jqs0Qvf9K0rOG6J+vbdu3Y=@lists.linux.it
+X-Gm-Message-State: AOJu0YwQ2ia97FC+bLK1usVX+/dVNKLMDVIMiS6GucBvwLHA22CDFSpH
+ z/ZyfrGBR7jwmdOb4ubtWT7gu0oQjDmi2cULTHLLYQAAUHturDZE
+X-Gm-Gg: ASbGncsWx8ha/mXlc1gKvzdb9OxwwyVPM27nb+DFkYYa5hMGe9Ke3HsM/N77R5TAvcJ
+ PETR8wWaEQFxUgu7vQ5kCvDCkyVmZvx8Dpd/8nytwhwETTyC4QEOTSyskHfwA3Z8RAByyOJ9BOv
+ EAZYLyy9NoN2F85Ifc15anfLmMG0loPTCF2qwEWtyPjZ5WywmCc7V7dXXuPihjrRuAYw4GXAdA5
+ CTyNHJ+KJi7aoZy5ADAR4dmsczclDuxkCdXdfEH6o4LfIPpkZzXiD60SlZOTFwRn1G2Em+x8owG
+ okTVzDjT/l5aMRL5qsXm0RiQoFpeAosbsXDVuDQdZ0b2T9fHZL52tdKCDstiMIz2R/l17mwn07n
+ XCuCwYZv7YGVu
+X-Google-Smtp-Source: AGHT+IF/r298bJNINoEsVf0K3qUkSdBXd4651MKKkDO9uqfcR7ueF8z5SZZh8CBxyfnjOIbZxOA18Q==
+X-Received: by 2002:a17:907:9308:b0:aba:6378:5ba8 with SMTP id
+ a640c23a62f3a-abb70e53d76mr172653566b.55.1739611065347; 
+ Sat, 15 Feb 2025 01:17:45 -0800 (PST)
+Received: from amir-ThinkPad-T480.arnhem.chello.nl
+ (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-aba53376953sm503661466b.101.2025.02.15.01.17.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 14 Feb 2025 07:32:01 -0800 (PST)
-From: Dorinda Bassey <dbassey@redhat.com>
-To: ltp@lists.linux.it
-Date: Fri, 14 Feb 2025 16:31:58 +0100
-Message-ID: <20250214153158.96460-1-dbassey@redhat.com>
-X-Mailer: git-send-email 2.48.1
+ Sat, 15 Feb 2025 01:17:44 -0800 (PST)
+From: Amir Goldstein <amir73il@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Sat, 15 Feb 2025 10:17:41 +0100
+Message-Id: <20250215091741.400782-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: HQKRjnZNPyYfhQQIboaagsMyXMwtx7NRaz9OjGzk2Sg_1739547122
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] kcmp03: Add check for KCMP_SYSVSEM before running test
+Subject: [LTP] [PATCH] fanotify01: fix test failure when running with nfs
+ TMPDIR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,58 +89,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbertram@redhat.com, javierm@redhat.com
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it,
+ Rhythm Mahajan <rhythm.m.mahajan@oracle.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This commit introduces a new function
-`is_kcmp_supported()` to check if the kernel supports the
-`KCMP_SYSVSEM` operation. In the `verify_kcmp()` function,
-we add logic to detect when the kernel does not support
-`KCMP_SYSVSEM` and skip the test for that case with a TCONF
-result. This ensures that the test does not fail when the
-Kconfig that supports `KCMP_SYSVSEM` is unavailable.
+If TMPDIR does not support mount watches due to ENODEV, the failure
+to watch multiple fs would be EXDEV and not ENODEV.
 
-Signed-off-by: Dorinda Bassey <dbassey@redhat.com>
+Reported-by: Rhythm Mahajan <rhythm.m.mahajan@oracle.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- testcases/kernel/syscalls/kcmp/kcmp03.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ testcases/kernel/syscalls/fanotify/fanotify01.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-index 37d5118d5..255171d98 100644
---- a/testcases/kernel/syscalls/kcmp/kcmp03.c
-+++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-@@ -52,6 +52,12 @@ static void cleanup(void)
- 	free(stack);
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
+index c7e759166..38f5a0791 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify01.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+@@ -375,8 +375,9 @@ static void setup(void)
+ 	}
+ 
+ 	if (fanotify_flags_supported_on_fs(FAN_REPORT_FID, FAN_MARK_MOUNT, FAN_OPEN, ".")) {
+-		inode_mark_fid_xdev = errno;
+-		tst_res(TINFO, "TMPDIR does not support reporting events with fid from multi fs");
++		inode_mark_fid_xdev = (errno == ENODEV) ? EXDEV : errno;
++		tst_res(TINFO, "TMPDIR does not support reporting events with fid from multi fs"
++				" (errno = %d)", errno);
+ 	}
  }
  
-+static int is_kcmp_supported(void)
-+{
-+	int result = syscall(__NR_kcmp, getpid(), getpid(), KCMP_SYSVSEM, 0, 0);
-+	return result == 0 || errno != EOPNOTSUPP;
-+}
-+
- static int do_child(void *arg)
- {
- 	pid2 = getpid();
-@@ -64,6 +70,13 @@ static void verify_kcmp(unsigned int n)
- 	int res;
- 	struct tcase *tc = &tcases[n];
- 
-+    // Handle the case for KCMP_SYSVSEM specifically
-+    if (tc->kcmp_type == KCMP_SYSVSEM) {
-+        if (!is_kcmp_supported()) {
-+            tst_brk(TCONF, "Kernel does not support KCMP_SYSVSEM, skipping test.");
-+	    }
-+	}
-+
- 	pid1 = getpid();
- 	tst_res(TINFO, "Testing %s", tc->desc);
- 
 -- 
-2.48.1
+2.34.1
 
 
 -- 
