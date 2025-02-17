@@ -4,75 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5A83C021AA
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 21:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBFD8C021AA
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 22:01:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B8293C9BCF
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 22:52:06 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 540173C9C10
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 23:01:43 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD2613C9C4D
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 22:50:58 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 527B93C993B
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 23:01:25 +0100 (CET)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com
+ [IPv6:2607:f8b0:4864:20::634])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1A0C141A280
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 22:50:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1739829055;
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C6C7B233323
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 23:01:24 +0100 (CET)
+Received: by mail-pl1-x634.google.com with SMTP id
+ d9443c01a7336-220e83d65e5so72543195ad.1
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:01:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739829682; x=1740434482;
+ h=cc:to:content-transfer-encoding:mime-version:message-id:date
+ :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=m7ali0KYU724+ZdRUJb/m/sUBmtpJ+nMNpBrmLzyb54=;
+ b=j9F1AVsjMJ5RxjSQ3/t3mCfnuHEgsyn4kbTdrC4iH2wDLoLunMfaZbUK1AnCp//DqF
+ KdQmL6qUxBPYAvy+SFOKnXBnHOpbO8KtYGPK/3tCK+iItnoJu83tO13BtWpvwf2r45Hh
+ mv0Y0GtVEtTd5H0Kf7N9xNbpMep/ZB+Ctq6taV9JHOMW2joRlzZ/LlAKhis4ptg8875D
+ ohmGDyyeRBG60FdIM9E8wN1j54ng+8XtSR1bZ4HajnSeo4zZMnoldSlgHs0Isyp+Vwzo
+ FIiTdWML1qtQ6WdKHgXQBwYzJZrDGdsJj+ijwbX6xfxi8JKdhBWm6jqp48joTA+nFvdi
+ fLQw==
+X-Gm-Message-State: AOJu0YzYMzjnE1t9Gut0MQZ8v2n/+oc81+KUGrSsgloA82AuJrMvfVkw
+ wvTliOR4Gf4LJGLhUTfe7nakRAMMfNUVrt8/fRWLeYQPMka9/ZvLgAEKcV2A
+X-Gm-Gg: ASbGncug82+hqz6AAOriMQSGBpaks/u9Cfu6RjWJnZ1hIzRhHmT61agPIF3LVlkAAnW
+ /Gj8ihA2g7fwfGYuHAPdCKnUBIgQRZaH0ryfcsOMeyr1xB6nfCW+c8No1nKTQBlKVd+Ra4zQp8/
+ Cm7dqe9D2m0ZJacyXKdMIP9xUBCMsPo3Bo9TXgMcL+K89/KuRrHuhpNNvOHr1xtfnUc4WG/VFy8
+ 0O2xX7VT5oBXA2zQcVKmZT6PdUr5DV1jHeZZJ+l0vQaCo7B73lX9N11n5TzPuBpIy2JMi6TYfxQ
+ AhVIC9838JVU88WwHDv+jCHPj+fe+Y1g
+X-Google-Smtp-Source: AGHT+IE77UoNnaIwl9M7Ll9jcdlkx5M889UyM9uRjh3ROebXRX7ET6FTHSzA2dksggbr30TYGEEqfQ==
+X-Received: by 2002:a17:902:e843:b0:220:f869:1e6e with SMTP id
+ d9443c01a7336-221040ac24dmr185519405ad.38.1739829682264; 
+ Mon, 17 Feb 2025 14:01:22 -0800 (PST)
+Received: from mail.marliere.net (marliere.net. [24.199.118.162])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-220d556f97dsm76301685ad.172.2025.02.17.14.01.21
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 17 Feb 2025 14:01:21 -0800 (PST)
+From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+ s=2025; t=1739829680;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xnQQFL3EicyDJTYD9AO1mmL7kclmPMTbgHMhj1+ehBE=;
- b=VJAjjWP2pj6NRW6yzSx7z9oI4AF9I9ev/BnumqZZJ7G4jQQksM7FE6x0hxS9Lnc4GPp2hY
- bRelWwcVb94sXUV/Y7KZtbmbmmdoOui9ZlH4gyco8ge8ArZgNaxuaGoyRvUplpKA283xgG
- J+UfakFS7LyjZPi355ItBISUGZ5ODh4=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-cywiiD0rOhWoWewLNTULOQ-1; Mon,
- 17 Feb 2025 16:50:49 -0500
-X-MC-Unique: cywiiD0rOhWoWewLNTULOQ-1
-X-Mimecast-MFC-AGG-ID: cywiiD0rOhWoWewLNTULOQ_1739829048
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 537121903085
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 21:50:48 +0000 (UTC)
-Received: from segfault.usersys.redhat.com (unknown [10.22.64.50])
- by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 0CDD51956094
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 21:50:47 +0000 (UTC)
-Received: by segfault.usersys.redhat.com (Postfix, from userid 3734)
- id 8DD7322AF2C9; Mon, 17 Feb 2025 16:50:45 -0500 (EST)
-From: Jeff Moyer <jmoyer@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 17 Feb 2025 16:46:28 -0500
-Message-ID: <20250217215038.177250-3-jmoyer@redhat.com>
-In-Reply-To: <20250217215038.177250-1-jmoyer@redhat.com>
-References: <20250217215038.177250-1-jmoyer@redhat.com>
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=m7ali0KYU724+ZdRUJb/m/sUBmtpJ+nMNpBrmLzyb54=;
+ b=fLHoxP6YNSIpB4F/ZazQpMtncvfVADZd5VabQJaMbSqa9l/XmWJMp1pmzGFaOYCAj6S67H
+ WXecnTQKvggq2xMLw/RTq1Kwjzfx3y2/572/lKm87s317CbW+js0gC9uaEa28curoE9Gzp
+ IzmzsZLFHd8PpJ+//mVoJBe7rVVTeIeaC0hJgf8fT6+C0cKvTOVbp3JEBsULaGlmgSC7Q9
+ hJ7qU6LQpruZx5YaTOvRT0c52Tm2qZqZSLylBC+9irZLQQxkInzdMA7KENQqKQ9dirS8jk
+ EGWap2lF7Bp4l/Lw59/5r1JiYC+VcGHo+Nf/reTLHEsfZmNXXIxslWfZetdIgQ==
+Authentication-Results: ORIGINATING;
+ auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 17 Feb 2025 19:01:14 -0300
+Message-Id: <20250217-conversions-pause-v1-0-be8be41cb154@marliere.net>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 98qqC4bX9WSZGOYJdNNELeYm71MUCgU7-pLLsbfsmBM_1739829048
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIAKqxs2cC/x2MwQ6CQAwFf4X07Cawoqi/Yjx0l4f04EJaJSaEf
+ 7d4nGRmVjKowOhWraRYxGQqDs2hojxyeSJI70yxjqc6Nl3IU1mgu2Zh5o8htOnatwnH4dKdybt
+ ZMcj3/7w/nBO7lJRLHvfTi+0NpW37ATnvXhN8AAAA
+X-Change-ID: 20250217-conversions-pause-4b9d4be3f876
+To: Linux Test Project <ltp@lists.linux.it>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=655; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=5ay74GFGU4xdru42bz5sAM9u3s3DxzzHXVpovFS+9U8=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBns7GsKdQ7t7P+dS2xKyFP+tuiBt3qHV9lbyDxn
+ hky0/kAKPOJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ7OxrAAKCRDJC4p8Y4ZY
+ puUFD/4ifY6PqAsWUQa6aJbrJemD4CPqwp6Tqf5/+VuJSOfDlm1EtoRbyWxJ5K9hjDpcACnsppg
+ wYZ6wCABxiXt/iP5JL1xX9JTW0aG+Lx+HMhXDLrQn0xShdKTQvmR/6VYRsGHr4v92aUBZG/VkId
+ OpM8VrrqzbF/scqZhR8aLPIOVngNv3CdGL1Op9RbQrN6jh2+LnGpAu1g9+6IAqi5U+e8lnEeu24
+ KyKjTUJLpxWXAelr7zUSxpJEOL7Z84EuWSK7cQiI1IZqDQQjDZdjID35Gt4v+Sq0ylTXJEZB1Co
+ prQ+CQgQmgpBqbo8szhmJNZK4RHIz2v9VvbtHP7cJu+bx1ubAnnMxTCzH8ySsO96Dn22eK56q3F
+ nGFSD2la1bHHCqtdCudJcvuQycdxNSpNgLt3y9rWscStLw3B7rZa1FAHQzvkqGGUleFnSwn+NvD
+ aoMs7v5as8WQCvE+me6a579EOmtrr71PJJIXm24IMlFjhjAStCDC6StPNQEEsvHcVYVutmgnhis
+ MsnyaF85yukTcv2gJG0Mftd8jm/G9IQk8KMPxDqw16ls8GM31A+s2Flu+gS1Pr9AXnDCQKyBE6g
+ PwSaS3BGELQAQutc+0nskdCNHel21hREW3N091PNfoEdGObi3p477L1/nThYxRQWSrxKv15s+dH
+ cb0pPolA94GucEA==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/3] lib/tst_device.c: check for BTRFS_SUPER_MAGIC
- instead of device major of 0
+Subject: [LTP] [PATCH 0/2] syscalls/pause: Refactor tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,73 +107,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-stat() may return a major number of 0 in st_dev for any number of
-pseudo file systems.  Check for the exact file system instead.  There
-should be no change in behavior with this patch.
-
-Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
----
-v3: Address review comments from Petr:
-    - use test-defined file system magic numbers
-    - use statfs.h instead of vfs.h
-v2: unchanged
----
- lib/tst_device.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 70234a83c..76c3a3e1e 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -17,6 +17,7 @@
- #include <sys/sysmacros.h>
- #include <linux/btrfs.h>
- #include <linux/limits.h>
-+#include <sys/statfs.h>
- #include "lapi/syscalls.h"
- #include "test.h"
- #include "safe_macros.h"
-@@ -546,9 +547,6 @@ static void btrfs_get_uevent_path(char *tmp_path, char *uevent_path)
- 		sprintf(bdev_path,
- 			"/sys/fs/btrfs/%s/devices", btrfs_uuid_str);
- 	} else {
--		if (errno == ENOTTY)
--			tst_brkm(TBROK | TERRNO, NULL, "BTRFS ioctl failed. Is %s on a tmpfs?", tmp_path);
--
- 		tst_brkm(TBROK | TERRNO, NULL, "BTRFS ioctl on %s failed.", tmp_path);
- 	}
- 	SAFE_CLOSE(NULL, fd);
-@@ -578,6 +576,7 @@ __attribute__((nonnull))
- void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
- {
- 	struct stat buf;
-+	struct statfs fsbuf;
- 	char uevent_path[PATH_MAX+PATH_MAX+10]; //10 is for the static uevent path
- 	char dev_name[NAME_MAX];
- 	char tmp_path[PATH_MAX];
-@@ -595,8 +594,13 @@ void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
- 	dev_minor = minor(buf.st_dev);
- 	*dev = '\0';
- 
--	if (dev_major == 0) {
-+	if (statfs(path, &fsbuf) < 0)
-+		tst_brkm(TBROK | TERRNO, NULL, "statfs() failed");
-+
-+	if (fsbuf.f_type == TST_BTRFS_MAGIC) {
- 		btrfs_get_uevent_path(tmp_path, uevent_path);
-+	} else if (dev_major == 0) {
-+		tst_brkm(TBROK, NULL, "%s resides on an unsupported pseudo-file system.", path);
- 	} else {
- 		tst_resm(TINFO, "Use uevent strategy");
- 		sprintf(uevent_path,
--- 
-2.43.5
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+QSBjb3VwbGUgb2Ygc21hbGwgY2xlYW51cHMsIHBsZWFzZSBjb25zaWRlciBwdWxsaW5nIDopCgpU
+aGFua3MsCi0JUmljYXJkby4KClNpZ25lZC1vZmYtYnk6IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxy
+aWNhcmRvQG1hcmxpZXJlLm5ldD4KLS0tClJpY2FyZG8gQi4gTWFybGnDqHJlICgyKToKICAgICAg
+c3lzY2FsbHMvcGF1c2UwMjogUmVmYWN0b3IgaW50byBuZXcgQVBJCiAgICAgIHN5c2NhbGxzL3Bh
+dXNlMDM6IFJlZmFjdG9yIGludG8gbmV3IEFQSQoKIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+cGF1c2UvcGF1c2UwMi5jIHwgMTU5ICsrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wYXVzZS9wYXVzZTAzLmMgfCAxMTQgKysrKystLS0tLS0t
+LS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDY2IGluc2VydGlvbnMoKyksIDIwNyBkZWxldGlv
+bnMoLSkKLS0tCmJhc2UtY29tbWl0OiA0NTliM2NkZjE1N2Y5ZDZiZTUxZjNhNjEwZGZmMzg1NWY1
+ZTlmZjM2CmNoYW5nZS1pZDogMjAyNTAyMTctY29udmVyc2lvbnMtcGF1c2UtNGI5ZDRiZTNmODc2
+CgpCZXN0IHJlZ2FyZHMsCi0tIApSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmljYXJkb0BtYXJsaWVy
+ZS5uZXQ+CgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
+c3RpbmZvL2x0cAo=
