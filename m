@@ -4,85 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EDA1C02198
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 02:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739757894; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=zMcUY0PteKeJkffPCTXDPCF4A6XMy0GgLmBVXkPzWpQ=;
- b=elDxPZditCt4Uumh3fTz4LldUXLtfPMQj6rGeAelan8fLMXCU1fEGpiLUCRIWtkWmYJyY
- 1To7B/ieLZM2ZxOe/0Pi1ShQlbois2i59yCor/qgAN5pgglgKl5QHehVhgisjIjpIx7AbYV
- QZ/P9ts2mx4kXoMGvyQVAop2BbwZ5Xc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6FE6C021A0
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 04:52:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2195F3C9B8C
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 03:04:54 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id CEDFD3C9B57
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 05:52:26 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 404E53C92B5
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 03:04:31 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EB9873C093B
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 05:52:09 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E708463007A
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 03:04:30 +0100 (CET)
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-43932b9b09aso41439605e9.3
- for <ltp@lists.linux.it>; Sun, 16 Feb 2025 18:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1739757870; x=1740362670; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=punHMebLZrJWM7DcVt2qJ76o6+9z1ETzEX2eHRGZV4k=;
- b=b5vYKKdNwvLEc+uFfa+HDFhBDk68SXI1bWtVTCWRQO02OniEV2SkcI9z/PdYKwMKhV
- GnWdMbAvDMfXqaeonQSBlQW4+Gn2yMc3VcozIB22VkAoKgqAReGJ2asjqEyvrtyiTiPI
- sVJs7gmP0u/xg7XOdT625cPhzUN2T1RBwb1EEgvIIMknpsZtpWgeH7bs3Hu9JyNUD454
- GBWNCGRBBf/0mKEsIS41pGK6n7hcYx78Xx0h3yzsZR6HAJPT1XSn6Y/p24HdAAhv6k2z
- oZEFIwbb5JEcZQBt9bkJvqWKf3vX9VctxKi2T7fNyXPGIZtrPfRZtITRw5cOfOGTpVoO
- liPQ==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3A2D365A5DF
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 05:52:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1739767927;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rMz/0TbcfolD+DoFPUk0DXadUo/kzWpcVYbc0Bp6Aew=;
+ b=Z2UC6Jzp3y6bwQpVhD0LrWvXhX3LgsYiewFFYIVZ6m6rZ+bdoGeuu4pV3ElmAUeUNMvruk
+ FB2eKQygC1JTnscJjMu+4n8RJJ2yujch6PVHEKNKCJi5MEh2inYUP3Ex8mFuIKQBS09kF7
+ U1TigwT8DxIChbrNbbixk7vV1DRz8rk=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-448-UcdJG1xfN-uoEIoXR-lIyQ-1; Sun, 16 Feb 2025 23:52:04 -0500
+X-MC-Unique: UcdJG1xfN-uoEIoXR-lIyQ-1
+X-Mimecast-MFC-AGG-ID: UcdJG1xfN-uoEIoXR-lIyQ_1739767924
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-220e62c4f27so90119415ad.0
+ for <ltp@lists.linux.it>; Sun, 16 Feb 2025 20:52:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739757870; x=1740362670;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ d=1e100.net; s=20230601; t=1739767924; x=1740372724;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=punHMebLZrJWM7DcVt2qJ76o6+9z1ETzEX2eHRGZV4k=;
- b=g3MXIFOze9v1CnNc61zmCpWIL3ObcNl6r7deZMLxRfRMxHULiDIj9/gNbx/C8MZEW1
- Flk6VV/ewBWe7pBWFNbH6go/X49tnTTTmfjo7/xBXypjfd3D4d0TuLhEI9qIGukcpu9v
- BfJ+Gb/XyjCP+3ZExWWb5zV+bFwdE3lb8sWEgSIXNjeueNBoAFICHh+KuSbiRxh/mqni
- ulX+RPIXHedlIam2N8KHmnSFiYzERr0ycRuUvZOPVZAqDH40+ubZZy+OKzfAWhVvfcAT
- d98nzEDzg7SOdyoGTrqQeUR1P9P06eQHRfjdK1rIU1xSw5A3SNaCWrUiBcdn9kbcvV3k
- 1wgA==
-X-Gm-Message-State: AOJu0YwQ8l6VX+e7sKRjA1HhM7SmdK0w8iMd6xbgEga3BZHrFnNCWKor
- 7io71rWyJBxLcpXjOyIRPE/6Et+ml+T1MK7KhdD9uUcdimSjCGApXFRLKKKPNMmBAtXJOJXXfCI
- =
-X-Gm-Gg: ASbGnct69U/nkWH+j02SWcs7ktn3VxMZJBKmyzT66KPjekQhYpe3Atpf/IEsE2aHQ6u
- UkdHUYFWblWyxoqoqXfRSjxZIWeLvnmfIx8mRgY45AX4eJ3x5lKAjHBvn6McH2qpUwrmVCDH/Eq
- 3vY5IPHhlAyT+yhXKgVifdJJVjD/4jpWKxfEqCwIkGdyPsjfKIfixiY1e7pQhonYY/X65pIaUgl
- eW17W3PU0DILy68BQ4nMPQQoPl0TbDBjGlYe+7uIUzANWAQEEA0/5vyztIgZ2KRCJ1/kZmXzm8W
- 5Rc7
-X-Google-Smtp-Source: AGHT+IHvazVPEglB+7VlQJBQgagxIVxLuWqvZCCCv9Uv+clxxGb6CCtildjSehGOZGHWA+wVn95Rcw==
-X-Received: by 2002:a05:600c:154c:b0:439:89d1:30dc with SMTP id
- 5b1f17b1804b1-43989d1328bmr1902565e9.10.1739757869685; 
- Sun, 16 Feb 2025 18:04:29 -0800 (PST)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43961e07252sm105469445e9.14.2025.02.16.18.04.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 16 Feb 2025 18:04:29 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Sun, 16 Feb 2025 21:04:23 -0500
-Message-Id: <20250217020423.31602-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
+ bh=rMz/0TbcfolD+DoFPUk0DXadUo/kzWpcVYbc0Bp6Aew=;
+ b=JyGyBq8K4LZsBD9/c+24zuBYvvwmKWHu7R/ALGZdZNDWOq5IhCpNf4Xy1q0tcyMZ1a
+ J0R/Wx1jkCB5y5LIYmvOM0sfmBYqG7XF1XMT+mJat6qxQFOTNF/DnBLTOuBolJOFRvx5
+ E9ysk3bdE1sDnKKso9kthnBc1KL5vZ17ACZM7yMjgwsNQ9V/VChfHRil4s9vx57UhaYM
+ 4eAgWKHG7mE85pXePtYm57TGCSYK+4XwQ6QGXIY2cvvgD7Vz8RxoThxdzFiwb+59XHNZ
+ hnM2+bHDYBElXDIATDMPnABn5VrzjJA7T/uPDXbTe468EwcyGRJBOzxqHDa/CgZUUWU2
+ df8Q==
+X-Gm-Message-State: AOJu0YxyamYhkSDQSXX1szV7hdPYYA6c1VAxlZWfoTEF0cGD8NdzUI0X
+ sMBGxKuAD3aBB561Uls6nd8rrMnMJ9lQpOQRF+76WnKZBgCbZFrtrINw7bJ5RZ7XR1cYoRsQ0NT
+ lunennhbaPF3kpk09SaSXZPl1SHfznQgDNvykfEjqnXNbY/0w0rAmZnDBnxuMYjBJFGJfAk6Q3K
+ jck9/ZuChdHwxY9YClFeSIX8Q=
+X-Gm-Gg: ASbGncuGwLZeOe34pYe2/4hk9kD/kkAIdY0UQgRbYt7mYcfuP9nYR6otp0eflIvm3me
+ 3j4e5GBA8WMKa3sJzqlzBXXm8YYs8Mw+d1gqCKjTTr0GISg+VFuw/aBlmQ1fEV1M=
+X-Received: by 2002:a05:6a21:33a9:b0:1ee:7c01:d16 with SMTP id
+ adf61e73a8af0-1ee8cbbccf0mr16996581637.30.1739767923875; 
+ Sun, 16 Feb 2025 20:52:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG3/j6xcHl+upPH/tUhNHW+KZxe4DSARchcXPIj7Vn8N2or9CFTFKsOlC21tKZyvKbVSvqI6tOEWKV6Aqu1GZc=
+X-Received: by 2002:a05:6a21:33a9:b0:1ee:7c01:d16 with SMTP id
+ adf61e73a8af0-1ee8cbbccf0mr16996557637.30.1739767923672; Sun, 16 Feb 2025
+ 20:52:03 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+References: <6b486134-632b-42d7-bc01-b8f6905ee7ca.jinguojie.jgj@alibaba-inc.com>
+ <CA+B+MYQd1_URO66whTCnVd7Kd7EwNPvBrnE-eQQEvTqTLXGYTg@mail.gmail.com>
+In-Reply-To: <CA+B+MYQd1_URO66whTCnVd7Kd7EwNPvBrnE-eQQEvTqTLXGYTg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 17 Feb 2025 12:51:52 +0800
+X-Gm-Features: AWEUYZksRqL5SbO_-FFPq6VejMZn-4mWkcLwaiTO-_pX7taNI5u4HX4OOObi0As
+Message-ID: <CAEemH2eroaD4es23EdOWNmaD+NL-2HKffPieMgJg06R3NENbAg@mail.gmail.com>
+To: Jin Guojie <guojie.jin@gmail.com>,
+ Harshvardhan Jha <harshvardhan.j.jha@oracle.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 80_GBZrD6Z_AAgX96v2_U3B4P5Anq99IL2k0oxUU85g_1739767924
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] mount_setattr02.c: Check mount_setattr
- attr.propagation
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v4] memcg/memcontrol04: Fix judgment for
+ recursive_protection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,151 +98,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/mount_setattr/.gitignore  |   1 +
- .../syscalls/mount_setattr/mount_setattr02.c  | 102 ++++++++++++++++++
- 3 files changed, 104 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+Hi Guojie,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4ab8436d3..b856027df 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -856,6 +856,7 @@ mount06 mount06
- mount07 mount07
- 
- mount_setattr01 mount_setattr01
-+mount_setattr02 mount_setattr02
- 
- move_mount01 move_mount01
- move_mount02 move_mount02
-diff --git a/testcases/kernel/syscalls/mount_setattr/.gitignore b/testcases/kernel/syscalls/mount_setattr/.gitignore
-index 52a77b9ca..1654f27de 100644
---- a/testcases/kernel/syscalls/mount_setattr/.gitignore
-+++ b/testcases/kernel/syscalls/mount_setattr/.gitignore
-@@ -1 +1,2 @@
- /mount_setattr01
-+/mount_setattr02
-diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-new file mode 100644
-index 000000000..c7c5b3e74
---- /dev/null
-+++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Basic mount_setattr() test.
-+ * Test basic propagation mount attributes are set correctly.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/statvfs.h>
-+#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+#include "tst_safe_stdio.h"
-+
-+#define DIRA "/DIRA_PROPAGATION_CHECK"
-+
-+static bool is_shared_mount(const char *path)
-+{
-+	FILE *file = SAFE_FOPEN("/proc/self/mountinfo", "r");
-+
-+	char line[PATH_MAX];
-+	bool found = false;
-+
-+	while (fgets(line, sizeof(line), file)) {
-+		char mntpoint[PATH_MAX];
-+		char opts[256];
-+
-+		if (sscanf(line, "%*d %*d %*d:%*d %*s %255s %*s %255s",
-+					mntpoint, opts) != 2)
-+			continue;
-+
-+		if (strcmp(mntpoint, path) != 0)
-+			continue;
-+
-+		if (strstr(opts, "shared:") != NULL) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	fclose(file);
-+	return found;
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_RMDIR(DIRA);
-+
-+}
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+
-+	SAFE_MKDIR(DIRA, 0777);
-+}
-+
-+static void run(void)
-+{
-+
-+	SAFE_UNSHARE(CLONE_NEWNS);
-+	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-+	SAFE_MOUNT("testing", DIRA, "tmpfs", MS_NOATIME | MS_NODEV, "");
-+
-+	struct mount_attr attr = {
-+		.attr_set       = MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOEXEC | MOUNT_ATTR_RELATIME,
-+		.attr_clr       = MOUNT_ATTR__ATIME,
-+	};
-+
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-+
-+	attr.propagation = -1;
-+	TST_EXP_FAIL_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)), EINVAL);
-+	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-+
-+	attr.propagation = MS_SHARED;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(DIRA), 1);
-+
-+	attr.propagation = MS_PRIVATE;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-+
-+	attr.propagation = MS_SLAVE;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-+
-+	SAFE_UMOUNT(DIRA);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+};
+I helped rebase the patch to the latest and pushed it with an improved
+description, thanks for you work!
+
 -- 
-2.35.3
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
