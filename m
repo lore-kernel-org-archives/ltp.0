@@ -4,93 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E47B4C021A9
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 13:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739798820; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=h5vtvlen8/hcGl98oaTvv1EEDIQeiz6wah0IAljSI5g=;
- b=YdttToEl/o9XidXcC9PLZV7jBEW+YAOe5kzoe/1P18FgGLBqdJqOH/xUXjEYbsKGV/2y0
- M8ieOOw1UWQ1Hnfs1mQTjMRtcNK4quNfQ0A4jEaJ8MuXh1svLElv4n9XS2gwvd46MsHLe8y
- Ahko99ZHNJ+7qAQE6cTTn2GiXAh7D7I=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9637C021A9
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 13:48:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1875B3C9C65
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 14:27:00 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5F3253C9CB6
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 14:48:24 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3137F3C99E9
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:26:31 +0100 (CET)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0A6693C9BDC
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:47:58 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=permerror (SPF Permanent Error: Unknown mechanism
+ found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D0AAA62CB91
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:26:30 +0100 (CET)
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-abb86beea8cso283492266b.1
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 05:26:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1739798790; x=1740403590; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=r7ROHAK7yXG4Vb6b4hAz1EWLFsgJ5WjZ8YXHo26HyT0=;
- b=T/ffzBTeVen76jAQgLjj+dIHNK6DE6MIrs7tdibTsyyxmP2pWGV5aT170WtTntP8yj
- 3Q4XylLwWTBfIlydajyJM2fBhhdwfguklSaaYW/v3H1KPUDbv6Gp4Nm8uNrVUgPgPwyY
- Tqvegyr8vDghi6FS1GQ5G7OXlTHRPqJTaDYQ/36oXCaSewpTZIEAE6c708Vyi+OQoXM9
- DTgJBrKcA56B85T0EOjwrsmGwVAKJYap/21EXw0rw+sVN4tmcc+gD3rT5ChV2xN+KiBw
- AD8BZVC5aMEigc8hs7zgFiWtzgwVAVAlAiaefEr+9w8gC2Kvj3RNJv6fvOavZalXkkby
- XcyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739798790; x=1740403590;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=r7ROHAK7yXG4Vb6b4hAz1EWLFsgJ5WjZ8YXHo26HyT0=;
- b=XoANRGAU/zm1OUXVKb32OtSVxSVUAixkbsOjyw85mL4owJ4I3NRKUALdHh02UZMMrJ
- YQ3IrvxrC7lHpA49bhB3L8oIEiosNjhmtIuk/pCK23QP15CdJ6GLGkgLnF+RZgD8qHaY
- YWBqZ8J4XNikwbdAjq0xQF4NNHdgWJROMHiVnPQ5K19H79DznQaFc7RarHb6YscKd1Xw
- swK4AcoIelZnVgAZin9pharkNVPgadI3BazQacyQFWxqq2JQ0+0KMAkVABgQh14/6orq
- TFLz4C4Cqf3REd2a2EFPMTalZgnGOyvRvzVdRhyTLmgxkWsI6+OUX3s8gEQdZAzEG/lr
- V56g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUkyfvnUB9q49A9EQlY4puYN2jf0WnTTOE/GyH/TA8FIH17LW/xkqJibwTyhMwQzKSZHKY=@lists.linux.it
-X-Gm-Message-State: AOJu0Yx4b8bnZ7xuanfG8gOeiMLaRFdEq/RlkjV2DVteenLg9pzvp/lD
- q0Neg+pwP8gMWk5pvJ20P9YPgiC89Fq4r+3b+cWz4mZgKwkCgzkDcvvoYeQ9IHfGmpvv2vIyaj7
- 4
-X-Gm-Gg: ASbGnctlMuNSHNFzEv6lA43kXgu5Qv4dAI8CpZ4JCtmv0of5cwUtF/BJRWBANheWVfm
- QhlPZCoyjoIU0h2zSCL9qMYUf2r5HDLIFz7ZlO66uXNkcIAqWFIFFi59BJ8p/57VyWoX8edMqQZ
- sFluhVUHZShmL2HuK7SsrB/mBhSX6HpX+SYIKtHWBKvWXP6z3hJthUHDFuzWlc4h+uKCQ96dvrk
- LaEhdrgrAE+lEvjdmXqcKtD44dPLIViZAY/CpPPm17WWE1JBELSj4pOuAnNcwv7ggsk+B4SegbA
- TZKzV39n3GLfvHPoOIHgE1+u+Jt+vl1GWClQUHTNq56WUX9H0Py0TmbdD8wXf7GvLvTAH2xIJJG
- yeVMh5FlBz+lGIwNbRw4bpYkcUEn4ReuvsGkXKlnpFIA7UukLpDI=
-X-Google-Smtp-Source: AGHT+IFprS7CS7mKbxQr4OZmOm4tdTlHWdD2l79TcBF9a94QmOW2xYYjoZu3wVFpVnlTl/3VVf6YHg==
-X-Received: by 2002:a17:906:3290:b0:aba:f6ff:d38a with SMTP id
- a640c23a62f3a-abb70dce3bbmr948943666b.29.1739798790057; 
- Mon, 17 Feb 2025 05:26:30 -0800 (PST)
-Received: from ?IPV6:2003:ef:2f02:800:9162:c8ad:3b21:a399?
- (p200300ef2f0208009162c8ad3b21a399.dip0.t-ipconnect.de.
- [2003:ef:2f02:800:9162:c8ad:3b21:a399])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-aba53376bccsm884875766b.116.2025.02.17.05.26.29
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 17 Feb 2025 05:26:29 -0800 (PST)
-Message-ID: <ea6764ea-db92-4f49-ba5a-650f62bcfa23@suse.com>
-Date: Mon, 17 Feb 2025 14:26:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B352110346E9
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:47:57 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B5F4D1F451;
+ Mon, 17 Feb 2025 13:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739800076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UN08rTgrg4jrZMeefBpeLigtywai5ug5K6JSD7x9Vv0=;
+ b=I1Hvq/NFZB3TCAmclMQWrxrpzooSsTXdqqgHeeS+r7Wr0OZtkHMKwERjkRSuKrqoWADnSR
+ EHRtSOODnp3BBlgC1qZz7o/J9YYJd+un/chkqXWuvK5k61rGYRYQkI3RPNtVvi/yww4HCl
+ fEm8vUlY0eQCO15hEmMCFKTddrnO48A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739800076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UN08rTgrg4jrZMeefBpeLigtywai5ug5K6JSD7x9Vv0=;
+ b=wkOjiTyQugLlPB/ytWxU0vnq4ZnxLYGNHqcexRawdalLVFYlBqIzv4T3qj5rJo1IqXAU6r
+ PtXKeIaMFBLtZ6Cg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=U+n2BevP;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=15+8oFxu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739800075;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UN08rTgrg4jrZMeefBpeLigtywai5ug5K6JSD7x9Vv0=;
+ b=U+n2BevPgjznYUr+McOKcuvz+IADNKdVTUQviekiskFCtupYzNtUrrdANjcMlkTz0hS3fH
+ tjrF2rXmHNKIgAc/Vr88ETzsgHoi0Fg4BNkfBWE1WggU63WT0V98+7+0jOA+n3sVRFJYmQ
+ dQMGRsTpPvbY8UxTMw5sah65oWLJYsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739800075;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UN08rTgrg4jrZMeefBpeLigtywai5ug5K6JSD7x9Vv0=;
+ b=15+8oFxubrTrDvyxUwQ0oXk0wW3mZqQHCYivNEoLzk1JfDT1VkzN21tGPrgUUoqkKNtyiz
+ dIhNtTw6w+a18BCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8EDF7133F9;
+ Mon, 17 Feb 2025 13:47:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RmSqIQs+s2dcFgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 17 Feb 2025 13:47:55 +0000
+Date: Mon, 17 Feb 2025 14:47:54 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <20250217134754.GA2397156@pevik>
 References: <20250217130839.2392666-1-pvorel@suse.cz>
  <20250217130839.2392666-2-pvorel@suse.cz>
-Content-Language: en-US
+MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20250217130839.2392666-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: B5F4D1F451
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 2/2] ima_selinux.sh: Detect SELinux before loading
  policy
@@ -105,59 +125,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Hi,
 
-On 2/17/25 14:08, Petr Vorel wrote:
 > Adding TST_SETUP_EARLY to run test specific setup before loading policy.
 > That allows to avoid loading IMA policy (which usually request reboot)
 > if the test would be skipped anyway.
->
+
 > Fixes: aac97cca96 ("ima_setup.sh: Allow to load predefined policy")
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->   testcases/kernel/security/integrity/ima/tests/ima_selinux.sh | 3 ++-
->   testcases/kernel/security/integrity/ima/tests/ima_setup.sh   | 2 ++
->   2 files changed, 4 insertions(+), 1 deletion(-)
->
+>  testcases/kernel/security/integrity/ima/tests/ima_selinux.sh | 3 ++-
+>  testcases/kernel/security/integrity/ima/tests/ima_setup.sh   | 2 ++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+
 > diff --git a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
 > index 97c5d64ec5..577f7c2aca 100755
 > --- a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
 > +++ b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
 > @@ -13,9 +13,10 @@
->   
->   TST_NEEDS_CMDS="awk cut grep tail"
->   TST_CNT=2
+
+>  TST_NEEDS_CMDS="awk cut grep tail"
+>  TST_CNT=2
 > -TST_SETUP="setup"
->   TST_MIN_KVER="5.12"
->   
+>  TST_MIN_KVER="5.12"
+
 > +TST_SETUP_EARLY="setup"
-> +
->   REQUIRED_POLICY_CONTENT='selinux.policy'
->   
->   setup()
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> index 1f1c267c4b..2a9f64978e 100644
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> @@ -265,6 +265,8 @@ ima_setup()
->   		cd "$TST_MNTPOINT"
->   	fi
->   
-> +	[ -n "$TST_SETUP_EARLY" ] && $TST_SETUP_EARLY
-> +
-Why not doing ". ima_setup.sh" at the end of setup() ?
->   	if ! verify_ima_policy; then
->   		load_ima_policy
->   	fi
-Andrea
+
+Hm, unlike TST_SETUP_CALLER, which is defined in ima_setup.sh, using "TST_"
+prefixed variables in the test itself is catched by variable checker in
+tst_test.sh:
+
+ima_selinux 1 TWARN: Reserved variable TST_SETUP_EARLY used!
+
+I need to redefine the variable to not use "TST_" prefix (see the diff below).
+I'm sorry for the noise.
+
+Kind regards,
+Petr
+
++++ testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+@@ -15,7 +15,7 @@ TST_NEEDS_CMDS="awk cut grep tail"
+ TST_CNT=2
+ TST_MIN_KVER="5.12"
+ 
+-TST_SETUP_EARLY="setup"
++IMA_SETUP_EARLY="setup"
+ 
+ REQUIRED_POLICY_CONTENT='selinux.policy'
+ 
+diff --git testcases/kernel/security/integrity/ima/tests/ima_setup.sh testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 2a9f64978e..befaf7f73c 100644
+--- testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -265,7 +265,7 @@ ima_setup()
+ 		cd "$TST_MNTPOINT"
+ 	fi
+ 
+-	[ -n "$TST_SETUP_EARLY" ] && $TST_SETUP_EARLY
++	[ -n "$IMA_SETUP_EARLY" ] && $IMA_SETUP_EARLY
+ 
+ 	if ! verify_ima_policy; then
+ 		load_ima_policy
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
