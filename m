@@ -4,105 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D9DC021AA
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 14:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F977C021A9
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 18:33:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ADC8E3C9C25
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 15:35:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 61CC53C9C4D
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 19:33:49 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C50693C0229
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 15:35:35 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id F05743C0294
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 19:33:32 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=permerror (SPF Permanent Error: Unknown mechanism
  found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E5C71141555B
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 15:35:34 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 250B567CABD
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 19:33:31 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B82E721172;
- Mon, 17 Feb 2025 14:35:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C1DC61F443;
+ Mon, 17 Feb 2025 18:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739802933;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=osH2yIRMon3beHg6dXYC4bmmZJF07X2KmM7uMOrspS0=;
- b=p5J/3NL4KxRExSu5gXw9fY5EhB69r+6uyAOv3qQe7EDPjk5ydAymqLhW8jf+zgtGff56DO
- t6YzJFn9m6cpK5jy8kabAr3G4Km7YuSasLy5CmbHOm0fADon/2UumYW9BXznOgh9m772ns
- c3X+QapQgRIqhJNbkIX78dNmbZAZdNM=
+ t=1739817210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RO28s2JbTmZ2ORFUutwm2rH7SuUmXZGUH6MAzf7uOxI=;
+ b=JrAOlgsUCz2E7jGyfyR3RtV5YXUrU9rq084ATTwIutW41tQ7IuxLXpntnsnpO890+cd1QQ
+ +KqRiFXCm+PsjqdlhBoY9vHzrEdOQ5bYx53EeMFfQwRA3jDElBDTBSmeXMNeAdo+ZsdRMQ
+ Ba5AUhhaO4Kc0DcwtKKeX+xGLZbVbHs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739802933;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=osH2yIRMon3beHg6dXYC4bmmZJF07X2KmM7uMOrspS0=;
- b=iDW3cZzdBu3Ru0iJRxUyyiGtoGckCIsWvzLX1NsvMQ3aK7PM1XSv3snufF2HFfBstFsFMl
- SOdaXooVmDz9tLDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ s=susede2_ed25519; t=1739817210;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RO28s2JbTmZ2ORFUutwm2rH7SuUmXZGUH6MAzf7uOxI=;
+ b=k6f4SKwqcrFEq8BafM+PwcRe4Fcf/+vgPvQaXzf1SFrG3gK5D5+ngruYoHl5YalyAtCZkw
+ NNnQEizdgpaJ5WAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ljaZ9XhE;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="99h0b/VG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739802932;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=osH2yIRMon3beHg6dXYC4bmmZJF07X2KmM7uMOrspS0=;
- b=WVpaqwGuBuD3c0X65i7vW7Kd14WqlbO+OIXCdXwjCFTsOYO2uASdUyKGOUmEVkIhYKY31j
- RU3rX1zsoGzwH+s/qH+fIfyKR4WUURcfl3I5urgydfzm4JgzGEw6iaZz26s2faFMtxqL62
- KDXy3XyOOIlUYNbaavG9eEfWFq4RHJg=
+ t=1739817209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RO28s2JbTmZ2ORFUutwm2rH7SuUmXZGUH6MAzf7uOxI=;
+ b=ljaZ9XhEmIaeYmksiA8MnmMlFQ/1RdphYNhILxXRwpN3k2DHFsqjpNDRZzUjPJeMBkk4fH
+ FuUvQWD37w830lDyMZf/sddAhgNR4NitOtIqBptQ59WPWrNRkRZxw+X6Z57PlEAsVsq9CZ
+ jURTolag9qNAbQtbWoD5M6WO0W6kaxI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739802932;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=osH2yIRMon3beHg6dXYC4bmmZJF07X2KmM7uMOrspS0=;
- b=yL5TndytC1khoRo/jPtRiT8GsVKSJu46g2k5sbvYs2Yiq8hQxcGWG2Oe6O7Qc1l53QhnQJ
- 3EAn/t7s46iaBPAg==
+ s=susede2_ed25519; t=1739817209;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RO28s2JbTmZ2ORFUutwm2rH7SuUmXZGUH6MAzf7uOxI=;
+ b=99h0b/VGzz77lqGNkRs6UmOF9OQTsTUdbbTMTnXlxe2rJM2ErlYn8jD7OVqrugL+6MS27Z
+ HDE7QiwoTK70aTDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 972E6133F9;
- Mon, 17 Feb 2025 14:35:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 500B5133F9;
+ Mon, 17 Feb 2025 18:33:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CjBmIzRJs2eBJgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 17 Feb 2025 14:35:32 +0000
-Date: Mon, 17 Feb 2025 15:35:26 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Z7saEfmAs2c0eAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 17 Feb 2025 18:33:29 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20250217143526.GA2402962@pevik>
-References: <20250217130839.2392666-1-pvorel@suse.cz>
- <f8d6c3fd-7b1d-4d16-b034-a2b01f956870@suse.com>
+To: ltp@lists.linux.it
+Date: Mon, 17 Feb 2025 19:33:22 +0100
+Message-ID: <20250217183322.2429271-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.47.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f8d6c3fd-7b1d-4d16-b034-a2b01f956870@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Rspamd-Queue-Id: C1DC61F443
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tst_security.sh: Fix SELinux detection
+Subject: [LTP] [PATCH COMMITTED] ima_setup.sh: Quit the test on unsuitable
+ IMA policy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,53 +112,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Fixing 2 bug:
 
-> Hi!
+1) Test wrongly continued testing on SUT with unsuitable IMA policy when
+LTP_IMA_LOAD_POLICY=1 was *not* set.  That caused ima_keys.sh and
+ima_kexec.sh TFAIL instead of TCONF.
 
-Thanks for your review, merged as a needed fix.
+2) Also don't attempt to load policy when needed but LTP_IMA_LOAD_POLICY=1
+was *not* set.
 
-Kind regards,
-Petr
+This also reverts a5c47143b5 ("ima_measurements.sh: Check policy for test3")
+which required the previous behavior. To restore behavior in the future
+loading policy will need to be rewritten to allow check only for a
+particular test or ima_measurements.sh can be split to require TCB
+policy only for 3rd test.
 
-> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Fixes: aac97cca96 ("ima_setup.sh: Allow to load predefined policy")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../integrity/ima/tests/ima_measurements.sh        |  2 +-
+ .../security/integrity/ima/tests/ima_setup.sh      | 14 ++++++--------
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
-> On 2/17/25 14:08, Petr Vorel wrote:
-> > Some SLES15 versions create /selinux directory which fails the detection
-> > if SELinux is actually not enabled. Therefore detect if directory
-> > actually contains the 'enforce' file.
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index d1e41b789a..60350f3926 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -77,7 +77,7 @@ test3()
+ 	tst_res TINFO "verify not measuring user files"
+ 	tst_check_cmds sudo || return
+ 
+-	if [ "$IMA_POLICY_CHECKED" != 1 ]; then
++	if [ "$IMA_MISSING_POLICY_CONTENT" = 1 ]; then
+ 		tst_res TCONF "test requires specific policy, try load it with LTP_IMA_LOAD_POLICY=1"
+ 		return
+ 	fi
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 69ee5a3d65..366e1257dc 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -190,10 +190,10 @@ verify_ima_policy()
+ 			while read line; do
+ 				if ! grep -q "$line" $IMA_POLICY; then
+ 					tst_res TINFO "WARNING: missing required policy content: '$line'"
++					IMA_MISSING_POLICY_CONTENT=1
+ 					return 1
+ 				fi
+ 			done < $file
+-			IMA_POLICY_CHECKED=1
+ 		else
+ 			tst_res TINFO "policy is not readable, failure will be treated as TCONF"
+ 			IMA_FAIL="TCONF"
+@@ -208,13 +208,11 @@ load_ima_policy()
+ {
+ 	local file="$TST_DATAROOT/$REQUIRED_POLICY_CONTENT"
+ 
+-	if [ "$LTP_IMA_LOAD_POLICY" != 1 -a "$IMA_POLICY_CHECKED" != 1 ]; then
+-		tst_res TCONF "missing required policy, example policy can be loaded with LTP_IMA_LOAD_POLICY=1"
+-		return 0
+-	fi
+-
+-	if [ "$IMA_POLICY_CHECKED" = 1 ]; then
+-		tst_res TINFO "valid policy already loaded, ignore LTP_IMA_LOAD_POLICY=1"
++	if [ "$LTP_IMA_LOAD_POLICY" != 1 ]; then
++		if [ "$IMA_MISSING_POLICY_CONTENT" = 1 ]; then
++			tst_brk TCONF "missing required policy, example policy can be loaded with LTP_IMA_LOAD_POLICY=1"
++		fi
++		return
+ 	fi
+ 
+ 	tst_res TINFO "trying to load '$file' policy:"
+-- 
+2.47.2
 
-> > Also drop /selinux directory detection and detect only /sys/fs/selinux,
-> > /sys/fs/selinux mount point was added in kernel 3.0 in commit
-> > 7a627e3b9a2b ("SELINUX: add /sys/fs/selinux mount point to put selinuxfs")
-> > 14 years is enough, kernel 3.0 is not even supported in current LTP and
-> > we don't even support /selinux in C API (tst_security.c).
-
-> > Fixes: e7b804df65 ("shell: Add tst_security.sh helper")
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >   testcases/lib/tst_security.sh | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-
-> > diff --git a/testcases/lib/tst_security.sh b/testcases/lib/tst_security.sh
-> > index 05640234ea..356c28fc73 100644
-> > --- a/testcases/lib/tst_security.sh
-> > +++ b/testcases/lib/tst_security.sh
-> > @@ -127,8 +127,7 @@ tst_get_selinux_dir()
-> >   {
-> >   	local dir="/sys/fs/selinux"
-> > -	[ -d "$dir" ] || dir="/selinux"
-> > -	[ -d "$dir" ] && echo "$dir"
-> > +	[ -f "$dir/enforce" ] && echo "$dir"
-> >   }
-> >   # Get SELinux enforce file path
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
