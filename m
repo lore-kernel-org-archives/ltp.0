@@ -4,110 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9C80C0219E
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 10:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A7AC021AA
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 12:49:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 433CC3C9BEA
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 11:12:27 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 420353C9BF5
+	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 13:49:00 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C9F323C8FFA
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 11:12:11 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=permerror (SPF Permanent Error: Unknown mechanism
- found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 109BE3C0722
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 13:48:39 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=dbassey@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 32AE061829E
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 11:12:10 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E9B191F74D;
- Mon, 17 Feb 2025 10:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739787130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EuwFPUNahC/88mvTyjyp8d3xcINwnbZDD1PwQiRUy+A=;
- b=hiut7F2EPbH+6RbABXexEqv/tr3CxqPql4w3nZ7BHGkGoORNGq9ir1SwQfcdRlavxTTtlV
- 3Q1w6Wk8rQWK51qY7jcVLbpDmhBVum1W9jTKWjp0st2C3lyhQWKQePABXKan010AZqQ/o3
- tEPfFeMNqZUo4wv8JcXMjs+Q6hEs+qE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739787130;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EuwFPUNahC/88mvTyjyp8d3xcINwnbZDD1PwQiRUy+A=;
- b=/CEZ1QPunWXhY34J5gSrXQ0ipt7S+2+lWiNW2EQPn1kzUjR3hQNK8pW5PT0j+SuxOHdAq8
- Hzz2LMkEH9oaSkBw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PHDlFLaJ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BSTDFDSg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739787127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EuwFPUNahC/88mvTyjyp8d3xcINwnbZDD1PwQiRUy+A=;
- b=PHDlFLaJgnoXE3vjEMjZbX+EEAf6sP50suM6QOEqJEnVORpPzV4HO1q6guldX+DovOPoYE
- cAT1rALHfLcrLj1W0m+Vba/fWHAnN1xyVir58rvrj9I9C6d3zRgxADrBlqjPyr+IVGYhJh
- hT/++WZpCpHFXUrvftJ8q1sqDg+Apus=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739787127;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EuwFPUNahC/88mvTyjyp8d3xcINwnbZDD1PwQiRUy+A=;
- b=BSTDFDSgL/jFV7MbgeAODX07yJ1rNuUeruLXVn+nnVmt1GmaYtaNqkW6S5KcLqcS9LRCse
- 5Jsf8BBYYOymtfCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB244133F9;
- Mon, 17 Feb 2025 10:12:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JZdrM3cLs2dPTAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 17 Feb 2025 10:12:07 +0000
-Date: Mon, 17 Feb 2025 11:12:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Dorinda Bassey <dbassey@redhat.com>
-Message-ID: <Z7MLfpxzQtcdhNzu@yuki.lan>
-References: <20250214153158.96460-1-dbassey@redhat.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3B0187C33DD
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 13:48:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1739796517;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4ZhlTnOjaZj1wqfZ7trlXzYqJZPPlR0UIPX1SmRv9fU=;
+ b=c3612xVEV2noX7pmzIL9Vta5yV3v/RU3lTpdOE9v5DLwql7cKX7ysFXJ1/hClLUXXtQlmM
+ tvX9DikjuDsRCTr0jHecXu1HhpN9WSJqt4y08+j9JJ0Ps0lSvl/PGVYitjmBRenqYz3n20
+ OWQ8Uk13XYk7wwNH70x37nYgK+smhVA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-477-p-TGjKvROHmTFrbpAOfXEA-1; Mon, 17 Feb 2025 07:48:35 -0500
+X-MC-Unique: p-TGjKvROHmTFrbpAOfXEA-1
+X-Mimecast-MFC-AGG-ID: p-TGjKvROHmTFrbpAOfXEA_1739796514
+Received: by mail-wr1-f72.google.com with SMTP id
+ ffacd0b85a97d-38f443b4949so404734f8f.3
+ for <ltp@lists.linux.it>; Mon, 17 Feb 2025 04:48:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739796514; x=1740401314;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=4ZhlTnOjaZj1wqfZ7trlXzYqJZPPlR0UIPX1SmRv9fU=;
+ b=F658rRza7vnQfVckOEBxR3vSYMh06c6DwDsr1TCqBu766reC64JB+yHVksJpnD9/Rv
+ t/5OI3Sk6INQUV/Y6BJ4UT8dzczHjgKeL6O+HQiNJ/BZKY/lvK/Xdgm0CB4/gHvgW1tZ
+ VB+pc5hPrILz8JawKJ7o0SLCwcv42hhFYF/kybzJBNgRjGpwelYfLYaWxH9FLx6wRC10
+ cvKViDoPnt/vfKjpp1Z94EcGyHqmKDyzkf0ggRV+mt5YLH4rkUYL7MPMXD3XCprT1Cbb
+ 7J8sGbPesFjl2mRK0MYSJ7t7gvaOcvyCjV53I8SnZF0KlZ1EHV4YvzJHVMm3nwsXAeZZ
+ ZRwg==
+X-Gm-Message-State: AOJu0YzCGgl/j/Pa8LSDSgE92dAVry3n2a6YMNB0yVQp/AUjGTqmaJHf
+ AGURpqmP50nanMVDoqrpho8/RAAHgIqbs1ed/I2vZO3GZuDuuPZCHm+T59uQsEwxj7H+Bpt2fx7
+ 467vjMbG1i6i7FIAOFoXK/AQYmEGNdP4l77RuPREORO4X7ihfT4I9QZZyBMnEENIuOU/CWX31iN
+ nj5d1um9fg/lY3IEBuGRu51xKlEpuE44e+4w==
+X-Gm-Gg: ASbGncvqefoj4arZkXo1DIqetdXN27bZA6BKlHFBN39vCfqHT4hLA8NEp6FBsLUaHt2
+ oXRAlXayeDnHhu4MtGTYpX7ZY6s4Elg11r0TOtzc+3I9nsDboelvxD6K79HIMRbPEYCPzO7jD6e
+ fQsjG2Y2dXSQtpFTMvoZ9UBn5LNH+3lRJCdZMGbMtoOUeiLgIwF+E6ICfVW6G1zs/jmCrCg2y6F
+ AfnNXX4lDVHRqNWsnVN75Ynlwxpst+f0cfKEeppOIP7NrCkw8JIRb+/jbxImnpMRUxfDsYKhWSd
+ CwJoiywVJ8WLwE7Mcm1NdzH9uKPVoI3LwmLtvOzEHS0=
+X-Received: by 2002:a05:6000:2a2:b0:38f:4531:397a with SMTP id
+ ffacd0b85a97d-38f45313c4fmr3146118f8f.3.1739796513980; 
+ Mon, 17 Feb 2025 04:48:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGyPcCNCE44eQa6XGILiWXlqlE5MG5NAovw62kO3OmPQ67TipMBU2yM3ntCrl6lRNWXF7mHJQ==
+X-Received: by 2002:a05:6000:2a2:b0:38f:4531:397a with SMTP id
+ ffacd0b85a97d-38f45313c4fmr3146088f8f.3.1739796513633; 
+ Mon, 17 Feb 2025 04:48:33 -0800 (PST)
+Received: from 2624797214.wifi.kn.vutbr.com (nat-kn.net.vutbr.cz.
+ [147.229.117.40]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38f258cccdesm12171686f8f.26.2025.02.17.04.48.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 17 Feb 2025 04:48:33 -0800 (PST)
+From: Dorinda Bassey <dbassey@redhat.com>
+To: ltp@lists.linux.it
+Date: Mon, 17 Feb 2025 13:43:48 +0100
+Message-ID: <20250217124804.143890-2-dbassey@redhat.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250214153158.96460-1-dbassey@redhat.com>
-X-Rspamd-Queue-Id: E9B191F74D
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:email, yuki.lan:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 3s5l4PVVtKaEtxCAur6-T_BwgF3VxTjUam_256B1rzY_1739796514
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] kcmp03: Add check for KCMP_SYSVSEM before running
+Subject: [LTP] [PATCH v2] kcmp03: Add check for KCMP_SYSVSEM before running
  test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -120,81 +101,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbertram@redhat.com, javierm@redhat.com, ltp@lists.linux.it
+Cc: sbertram@redhat.com, javierm@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> This commit introduces a new function
-> `is_kcmp_supported()` to check if the kernel supports the
-> `KCMP_SYSVSEM` operation. In the `verify_kcmp()` function,
-> we add logic to detect when the kernel does not support
-> `KCMP_SYSVSEM` and skip the test for that case with a TCONF
-> result. This ensures that the test does not fail when the
-> Kconfig that supports `KCMP_SYSVSEM` is unavailable.
+This commit introduces a new function
+`is_kcmp_supported()` to check if the kernel supports the
+`KCMP_SYSVSEM` operation. In the `verify_kcmp()` function,
+we add logic to detect when the kernel does not support
+`KCMP_SYSVSEM` and skip the test for that case with a TCONF
+result. This ensures that the test does not fail when the
+Kconfig that supports `KCMP_SYSVSEM` is unavailable.
 
-First of all the coding style is inconsistent, have you run 'make check'
-in the test directory and fixed all the problems?
+Signed-off-by: Dorinda Bassey <dbassey@redhat.com>
+---
+v2 changes
+fix coding style
+use `kcmp()` instead of `syscall()`
+do `is_kcmp_supported()` check in the setup and
+cache result
+use `tst_res` instead of `tst_brk`
 
-> Signed-off-by: Dorinda Bassey <dbassey@redhat.com>
-> ---
->  testcases/kernel/syscalls/kcmp/kcmp03.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> index 37d5118d5..255171d98 100644
-> --- a/testcases/kernel/syscalls/kcmp/kcmp03.c
-> +++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> @@ -52,6 +52,12 @@ static void cleanup(void)
->  	free(stack);
->  }
->  
-> +static int is_kcmp_supported(void)
-> +{
-> +	int result = syscall(__NR_kcmp, getpid(), getpid(), KCMP_SYSVSEM, 0, 0);
+ testcases/kernel/syscalls/kcmp/kcmp03.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Why syscall() instead of kcmp() that is used in the rest of the test?
-
-> +	return result == 0 || errno != EOPNOTSUPP;
-> +}
-> +
->  static int do_child(void *arg)
->  {
->  	pid2 = getpid();
-> @@ -64,6 +70,13 @@ static void verify_kcmp(unsigned int n)
->  	int res;
->  	struct tcase *tc = &tcases[n];
->  
-> +    // Handle the case for KCMP_SYSVSEM specifically
-> +    if (tc->kcmp_type == KCMP_SYSVSEM) {
-> +        if (!is_kcmp_supported()) {
-
-This function should be called once from the test setup and the results
-should be cached.
-
-> +            tst_brk(TCONF, "Kernel does not support KCMP_SYSVSEM, skipping test.");
-
-This should be just tst_res(TCONF, "..."); followed by return 0;
-
-We do not want to abort subseqent test iterations (e.g. -i 2 on command
-line) just because one operation is not supported.
-
-> +	    }
-> +	}
-
-
->  	pid1 = getpid();
->  	tst_res(TINFO, "Testing %s", tc->desc);
->  
-> -- 
-> 2.48.1
-> 
-
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
+index 37d5118d5..8610cea46 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp03.c
++++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
+@@ -42,9 +42,19 @@ static struct tcase {
+ 	{ARGS(CLONE_SYSVSEM, KCMP_SYSVSEM)}
+ };
+ 
++static int is_kcmp_supported_flag = -1;
++
++static int is_kcmp_supported(void)
++{
++	return kcmp(getpid(), getpid(), KCMP_SYSVSEM, 0, 0) == 0;
++}
++
+ static void setup(void)
+ {
+ 	stack = SAFE_MALLOC(STACK_SIZE);
++
++	if (is_kcmp_supported_flag == -1)
++		is_kcmp_supported_flag = is_kcmp_supported();
+ }
+ 
+ static void cleanup(void)
+@@ -64,6 +74,14 @@ static void verify_kcmp(unsigned int n)
+ 	int res;
+ 	struct tcase *tc = &tcases[n];
+ 
++    // Handle the case for KCMP_SYSVSEM specifically
++	if (tc->kcmp_type == KCMP_SYSVSEM) {
++		if (is_kcmp_supported_flag == 0) {
++			tst_res(TCONF, "Kernel does not support KCMP_SYSVSEM, skipping test.");
++			return;
++		}
++	}
++
+ 	pid1 = getpid();
+ 	tst_res(TINFO, "Testing %s", tc->desc);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.48.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
