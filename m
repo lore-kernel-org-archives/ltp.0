@@ -4,91 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994A3C02198
-	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 15:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739891813; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=OHvkXWI76M6mjdqzg94TVu+Ger66PPmjlKXiWahbnjc=;
- b=rmDpajauhcbrKy7qeqCDEHmCPnIQn+3TaZoo7OJfjoMzIY8cc5Hg/dmy3kHea+8LeD8kz
- 1sXC3/MHNLr2m4dmzglhMPZO74ldt0Ne2MTe5/+h3wW9UrCQoCGb3sYXp6ZojYeU7pjyHHQ
- Sljv549X5BycZy219nndhjyWLgoMgv0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70985C02198
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 15:19:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 013FC3C9C70
-	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 16:16:53 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 065EE3C9C74
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 16:19:26 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 828653C0722
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:16:30 +0100 (CET)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ECBCD3C0722
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:19:08 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=permerror (SPF Permanent Error: Unknown mechanism
+ found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AB52D102E44E
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:16:29 +0100 (CET)
-Received: by mail-ed1-x533.google.com with SMTP id
- 4fb4d7f45d1cf-5dec817f453so9672718a12.2
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 07:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1739891789; x=1740496589; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=DDKYfWll8J6a1OTPIJ8oS/6gdBDe8uPmi406yf8cTrk=;
- b=YVKKhUAOiubTI0uLJzgCQFPjfGwijZOxIb78ahRqb8+vqetJ2TkMoaTA2VelNbZNGX
- Vf/pp0THcAqAJgyuizRwBnUAkri5A2ulGnEnRxEFj5yb9WRBm3YdyNPdlOkZn3S5V0XE
- D/VqhSLz36nIGvLYCmLlvtqBWbL834fkkHWbGFP19X4Bqxmij3otsmjLpYFVYGTUuSSl
- p5on/GG0Y4m9tOnuCna/1pHKK8mxibvSbTpzO/hmctaHbosCWVMlNoMI0HNIjPPoVL+S
- mJSVY44vD23uoT4qxzcMaYWY2I9PXwN5naGIwgWD5qp1Kg95lFZJpwsfBZOvfpfO/HKG
- 93wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739891789; x=1740496589;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=DDKYfWll8J6a1OTPIJ8oS/6gdBDe8uPmi406yf8cTrk=;
- b=ia8equdrdFe8nHUIfwXNkrVYghxADe5vc5jRJdCNmblXVA8/z9Q5fFQQAuUyfje9vu
- kXW94cscXY4MktH5dWxtfPIqnvck54B4HDW+VgGiakF3kc0+FS6AoSsfJnVnA0hz3QXa
- 5HOlrFoZTmPEWoph+4Z0w/GKBl7eQyQFtfLYAq4D75rwuUTRnm1vgJ1We7O5tlNj3xED
- n1MgBE2rJEOmpcyOpJI0WOWNEnlCPPlbbc/lMl/pZxDkweco5+xl6ZQ3xRUsbJOANRwD
- neQHPHQpn/YY6Rfa57fQb1s7EQUJfzR/hUDAlUncTV1sjarPyKKgbV7htbAYF1uT5V5f
- Ww6g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVXFIMM82xA1QQ1RltuD5RFTb11zxBu3yzsEP2QPKuE2Th6ejl4Z0NdJ8NEtaOOZIEHBw0=@lists.linux.it
-X-Gm-Message-State: AOJu0YzLfNKN9TL3FK3apB8jRNPxkeBnbKrZIo8krKRvFpbaOgpKpvJ7
- I8oaS+I2Vh0PA4uUF8iTiWvcOCIIdf2TsxGAUiIzytmo3rOPSj4QnLwuFC20Ao0=
-X-Gm-Gg: ASbGncuhopzsZSNUUWwk2Njy2b8aQ64BKsa6yqrF0WD4KagoX/SvZuDlOjOMfvBcPQM
- 96sc4NLm+rsQ+cNSd03daGtRQXeEadd+fekxtICbTehpZwliD04R+s3H2aT9DgNcpbimSKHYo5b
- gwVKsudGqgPCcqzEEHLzvmbGI5KqEcEuT5+bWEhVobQayF7RI67cpkYPNHILHbUns9975UEOpPO
- ddcru+NM5R8aZ7S9R/bmR9CBVXN5vs87ZDfCJLfxHveMq1N7441FnSfXSmiphiLO84m92wAmMUq
- 1xmQuq8Y7h7eP95pZierCSGJQw==
-X-Google-Smtp-Source: AGHT+IGO8U/9X++4vAwWgXvKQuHL9U1Y72haW3klV9xXpxoLizmVRUvTDjdXS7fjqbdETC0zlqCeSw==
-X-Received: by 2002:a05:6402:2753:b0:5cf:e9d6:cc8a with SMTP id
- 4fb4d7f45d1cf-5e036216f84mr14085243a12.20.1739891788950; 
- Tue, 18 Feb 2025 07:16:28 -0800 (PST)
-Received: from [10.232.133.75] ([88.128.90.10])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5dece1d367dsm9027452a12.44.2025.02.18.07.16.27
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 18 Feb 2025 07:16:27 -0800 (PST)
-Message-ID: <f78329b1-2320-418a-8fe4-c47b37d3dbec@suse.com>
-Date: Tue, 18 Feb 2025 16:16:26 +0100
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22D35603441
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:19:07 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4AF242116B;
+ Tue, 18 Feb 2025 15:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739891944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
+ b=UGAMMceqbZVH/kYeiqBWSujLPyHGphPxlVq6XNjEH2t9O/8ekWiJ6F6CK3nWfDA1isnS7f
+ 8YlDOjApaQ7DAYw1UbqV7n6vA797IqVjlsufYD8EbgAzAD73PSy2e0o3eW87DVz44BBEEM
+ bblSr5U9le9qQVsVezIbAoLhuoo/MnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739891944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
+ b=F7z1vr+spHoFjcrc0U+7WN5gPzHCF9GIQfij2ykk5vGfDevMXNY6Az0Ed/WjV/+ImCWZTN
+ C9LIGaYwAGN2t0Cg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UGAMMceq;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=F7z1vr+s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739891944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
+ b=UGAMMceqbZVH/kYeiqBWSujLPyHGphPxlVq6XNjEH2t9O/8ekWiJ6F6CK3nWfDA1isnS7f
+ 8YlDOjApaQ7DAYw1UbqV7n6vA797IqVjlsufYD8EbgAzAD73PSy2e0o3eW87DVz44BBEEM
+ bblSr5U9le9qQVsVezIbAoLhuoo/MnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739891944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
+ b=F7z1vr+spHoFjcrc0U+7WN5gPzHCF9GIQfij2ykk5vGfDevMXNY6Az0Ed/WjV/+ImCWZTN
+ C9LIGaYwAGN2t0Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15CBB13A1D;
+ Tue, 18 Feb 2025 15:19:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aKMeA+iktGe3cwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 18 Feb 2025 15:19:04 +0000
+Date: Tue, 18 Feb 2025 16:18:58 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20250218151858.GA2492575@pevik>
+References: <20250217020423.31602-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Dorinda Bassey <dbassey@redhat.com>, ltp@lists.linux.it
-References: <20250217124804.143890-2-dbassey@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20250217124804.143890-2-dbassey@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250217020423.31602-1-wegao@suse.com>
+X-Rspamd-Queue-Id: 4AF242116B
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kcmp03: Add check for KCMP_SYSVSEM before
- running test
+Subject: Re: [LTP] [PATCH v1] mount_setattr02.c: Check mount_setattr
+ attr.propagation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,96 +126,154 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: sbertram@redhat.com, javierm@redhat.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Wei,
 
-there are still a couple of issues we can fix.
+nit: I guess you want to replace dot with space in subject.
 
-On 2/17/25 13:43, Dorinda Bassey wrote:
-> This commit introduces a new function
-> `is_kcmp_supported()` to check if the kernel supports the
-> `KCMP_SYSVSEM` operation. In the `verify_kcmp()` function,
-> we add logic to detect when the kernel does not support
-> `KCMP_SYSVSEM` and skip the test for that case with a TCONF
-> result. This ensures that the test does not fail when the
-> Kconfig that supports `KCMP_SYSVSEM` is unavailable.
-The commit message can be simplified, reducing implementation details 
-which might change in the future (such as functions names). We can use 
-an imperative text as well:
-
-Skip the test case verifying KCMP_SYSVSEM support if it's not enabled by 
-the kernel configuration.
-
-> Signed-off-by: Dorinda Bassey <dbassey@redhat.com>
-> ---
-> v2 changes
-> fix coding style
-> use `kcmp()` instead of `syscall()`
-> do `is_kcmp_supported()` check in the setup and
-> cache result
-> use `tst_res` instead of `tst_brk`
->
->   testcases/kernel/syscalls/kcmp/kcmp03.c | 18 ++++++++++++++++++
->   1 file changed, 18 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> index 37d5118d5..8610cea46 100644
-> --- a/testcases/kernel/syscalls/kcmp/kcmp03.c
-> +++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> @@ -42,9 +42,19 @@ static struct tcase {
->   	{ARGS(CLONE_SYSVSEM, KCMP_SYSVSEM)}
->   };
->   
-> +static int is_kcmp_supported_flag = -1;
-We don't need to initialize this flag.
+> +++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
+> + */
 > +
-> +static int is_kcmp_supported(void)
+> +/*\
+> + * [Description]
+> + *
+> + * Basic mount_setattr() test.
+> + * Test basic propagation mount attributes are set correctly.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <sys/statvfs.h>
+> +#include "tst_test.h"
+> +#include "lapi/fsmount.h"
+> +#include "tst_safe_stdio.h"
+> +
+> +#define DIRA "/DIRA_PROPAGATION_CHECK"
+
+Is it necessary to to use directory under root?
+
+...
+> +static void cleanup(void)
 > +{
-> +	return kcmp(getpid(), getpid(), KCMP_SYSVSEM, 0, 0) == 0;
+
+I guess this is due result of:
+SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
+There should be either a proper detection whether this works or 
+
+../../../../include/lapi/fsmount.h:113: TCONF: syscall(442) __NR_mount_setattr not supported on your arch
+mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: EBUSY (16)
+
+
+> +	SAFE_RMDIR(DIRA);
+
+When running on old kernel (e.g. SLES based 4.12) it fails due TCONF:
+
+../../../../include/lapi/fsmount.h:197: TCONF: Test not supported on kernel version < v5.2
+mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: ENOENT (2)
+
+There should be a flag to remove dir only when it was created.
+
+> +
+nit: please remove this new line (I have to keep asking this :( ).
 > +}
 > +
->   static void setup(void)
->   {
->   	stack = SAFE_MALLOC(STACK_SIZE);
+> +static void setup(void)
+> +{
+> +	fsopen_supported_by_kernel();
+I wonder if this needed for detecting new mount API support. Because second
+SAFE_MOUNT also runs code which detects code unsupported:
+
+../../../../include/lapi/fsmount.h:113: TCONF: syscall(442) __NR_mount_setattr not supported on your arch
+mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: EBUSY (16)
+
+But I have no idea what would be needed to be done to cleanup result of the
+first SAFE_MOUNT().
+
 > +
-> +	if (is_kcmp_supported_flag == -1)
-This statement is not needed. We can simply store the variable because 
-in the case malloc() will fail, we will never reach verify_kcmp() 
-function anyway. setup() is called once, unless we use tst_variant, 
-which is not our case here.
-> +		is_kcmp_supported_flag = is_kcmp_supported();
->   }
->   
->   static void cleanup(void)
-> @@ -64,6 +74,14 @@ static void verify_kcmp(unsigned int n)
->   	int res;
->   	struct tcase *tc = &tcases[n];
->   
-> +    // Handle the case for KCMP_SYSVSEM specifically
-This comment is not needed. Also, please run "make check" on the test 
-before sending the patch so you will have the chance to verify errors.
-> +	if (tc->kcmp_type == KCMP_SYSVSEM) {
-> +		if (is_kcmp_supported_flag == 0) {
-nit: in LTP we commonly use "!is_kcmp_supported_flag" format.
-> +			tst_res(TCONF, "Kernel does not support KCMP_SYSVSEM, skipping test.");
-> +			return;
-> +		}
-> +	}
+> +	SAFE_MKDIR(DIRA, 0777);
+> +}
 > +
->   	pid1 = getpid();
->   	tst_res(TINFO, "Testing %s", tc->desc);
->   
+> +static void run(void)
+> +{
+> +
+and here new line.
+> +	SAFE_UNSHARE(CLONE_NEWNS);
+> +	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
+> +	SAFE_MOUNT("testing", DIRA, "tmpfs", MS_NOATIME | MS_NODEV, "");
+Do these 2 needs to be in the run()? How about move them to setup()?
+
+static int dir_created, mounted;
+
+static void setup(void)
+{
+	fsopen_supported_by_kernel();
+
+	SAFE_MKDIR(DIRA, 0777);
+	dir_created = 1;
+	SAFE_UNSHARE(CLONE_NEWNS);
+	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
+	SAFE_MOUNT("testing", DIRA, "tmpfs", MS_NOATIME | MS_NODEV, "");
+	mounted = 1;
+}
+
+static void cleanup(void)
+{
+	if (mounted)
+		SAFE_UMOUNT(DIRA);
+
+	if (dir_created)
+		SAFE_RMDIR(DIRA);
+}
+
++ I later create generic helper from is_shared_mount().
 
 Kind regards,
-Andrea Cervesato
+Petr
 
+> +
+> +	struct mount_attr attr = {
+> +		.attr_set       = MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOEXEC | MOUNT_ATTR_RELATIME,
+> +		.attr_clr       = MOUNT_ATTR__ATIME,
+> +	};
+> +
+> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
+> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
+> +
+> +	attr.propagation = -1;
+> +	TST_EXP_FAIL_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)), EINVAL);
+> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
+> +
+> +	attr.propagation = MS_SHARED;
+> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
+> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 1);
+> +
+> +	attr.propagation = MS_PRIVATE;
+> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
+> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
+> +
+> +	attr.propagation = MS_SLAVE;
+> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
+> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
+> +
+> +	SAFE_UMOUNT(DIRA);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
