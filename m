@@ -4,117 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70985C02198
-	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 15:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436A8C021AA
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 15:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1739892083; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=ON5waKZL0R/nnD2zOJrEkmjKxUUx2FDM5W1IbAqt7Ic=;
+ b=dFhEd7/JlesFxvw89kLhI3N/cZh1Yb91Ik89yzc2ZpfwJ89AL3OtX/jMUIOC/CexaPcch
+ wy2UbrKxDmklYRyWKw5TTmylZ0yPwDthxVjmvIyr/WbvaFclMnAb5uvHqQaFXD6mrhu3mUI
+ nBAFr+dpNuMWmiADIQQ8CDOKP6VK/k4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 065EE3C9C74
-	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 16:19:26 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A90193C9CEF
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 16:21:23 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECBCD3C0722
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:19:08 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=permerror (SPF Permanent Error: Unknown mechanism
- found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D4B9F3C0722
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:21:02 +0100 (CET)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22D35603441
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:19:07 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4AF242116B;
- Tue, 18 Feb 2025 15:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739891944;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
- b=UGAMMceqbZVH/kYeiqBWSujLPyHGphPxlVq6XNjEH2t9O/8ekWiJ6F6CK3nWfDA1isnS7f
- 8YlDOjApaQ7DAYw1UbqV7n6vA797IqVjlsufYD8EbgAzAD73PSy2e0o3eW87DVz44BBEEM
- bblSr5U9le9qQVsVezIbAoLhuoo/MnM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739891944;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
- b=F7z1vr+spHoFjcrc0U+7WN5gPzHCF9GIQfij2ykk5vGfDevMXNY6Az0Ed/WjV/+ImCWZTN
- C9LIGaYwAGN2t0Cg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UGAMMceq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=F7z1vr+s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1739891944;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
- b=UGAMMceqbZVH/kYeiqBWSujLPyHGphPxlVq6XNjEH2t9O/8ekWiJ6F6CK3nWfDA1isnS7f
- 8YlDOjApaQ7DAYw1UbqV7n6vA797IqVjlsufYD8EbgAzAD73PSy2e0o3eW87DVz44BBEEM
- bblSr5U9le9qQVsVezIbAoLhuoo/MnM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1739891944;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PKZiPPJvUpCMuPllFtxXjchk8s+YxG6Aq6mXFlCyEvk=;
- b=F7z1vr+spHoFjcrc0U+7WN5gPzHCF9GIQfij2ykk5vGfDevMXNY6Az0Ed/WjV/+ImCWZTN
- C9LIGaYwAGN2t0Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15CBB13A1D;
- Tue, 18 Feb 2025 15:19:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aKMeA+iktGe3cwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 18 Feb 2025 15:19:04 +0000
-Date: Tue, 18 Feb 2025 16:18:58 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20250218151858.GA2492575@pevik>
-References: <20250217020423.31602-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7209C61BCE0
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 16:21:02 +0100 (CET)
+Received: by mail-ej1-x635.google.com with SMTP id
+ a640c23a62f3a-abb7a6ee2deso478169166b.0
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 07:21:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1739892062; x=1740496862; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=lzJF0lYw/+iRerIIECdy4cKz4Fl3lVn/Q7Oud5cp9D8=;
+ b=PhPIWJJpKTT2c+HNbfo/F+vhPnnllQdEhY4t8zxayEa8ZBo1QLw6dt0NuawNzzgEET
+ 89WSR+F2Jrqe6n4mZ+MCPxoRXqcQDbIdrJBK0BK9gz0lGO5W0M5fwIfeBURb5VLzqYWa
+ 8jRQFwxZrqJSOLOjMVpfIpOp23342RJ+WeHBHpQcHpYDN1J4ndCi5aX+UHLdJGzhSA9T
+ LEI8CWNNfvP6zj8bXSMwei+x1qN/G4N43ozOp4chpCpt+09ud0C6NWIIW5THHnGnnzBK
+ tRPk/kYA9ReaQo6fjM6b2mrW2aUaRgFuvroDY2svdKTIKx0QWuqujO1ZSw7tON77pV95
+ cqVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739892062; x=1740496862;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=lzJF0lYw/+iRerIIECdy4cKz4Fl3lVn/Q7Oud5cp9D8=;
+ b=l9k60gpa7VdPqFDt4BQkR02/jz3vH1HsVV2ZQe1dRYL5x75Y3lyFo08iFBvNu20nu6
+ Fc7OxvSBbG6UWywS84yTW5h83PGbtzwRlpFYqYMrM9qEeXDMsy00EcoyDKKbIiwg+9iB
+ ODPhdVZRdZ2mxv18qvKY3R/hzT3UJa7QyIAcckqPdf7/zB9wRtkZYd0NRTV5zpbRmmN+
+ nKDIUwOnmOTc4J+/ZPXdMW167Ezawru2CMyzfYByB+r4nPlwPIQq7CA5ahiPdzMtlQ55
+ c7loCpzcHjdBtV85p55fNELF9+aNaRA2IVbkqSCsYqh4+ICNmdyUkeFS143tLGJQkNvh
+ D11g==
+X-Gm-Message-State: AOJu0YyewzjbDAw0ny1EMEmqKnnBebjSCHrLV7Q3u5xjdXy+jAp42nCH
+ GfUj6W7g3E06XR/pT4JW9zelJRdc1u/Os+2+fKJKZD9rHwddRO4EtBCSqcEJdrk=
+X-Gm-Gg: ASbGncv7r4f75GICzYM1KawALOxqdh2uisjYDhgzPT4UNzJFieQkce3Ua8BEw1rGh6h
+ C61as+7sJvTmuq84iMqijiK0XrkFQdSmoJhI9/cxo5rsCp7SO6xZ63nxUj3c4k10G+9W2bEje1w
+ /ZI9ccsj8p7D4UghAMY4BLMz9YTlWWsTEw80aUgKe8Own/Wd/eyLPLTMl+aKHLmuVa/8hD32O6O
+ ij+W5CMazjXeyGYqBRgIRyt5ZxpyRen00mGrUPHQ5HyUXeDnnk924QeB2abTbJCEDaNGVlcXmuZ
+ Zchn7514Bh78G4WHSJOquENraQ==
+X-Google-Smtp-Source: AGHT+IGL/0sUI50ZdMl2b+8P6hiBAAGGEOnK743ND0jv0CuJGKiTnwGnhamYtMS0aS3hqj9eXgSsMQ==
+X-Received: by 2002:a17:907:c1b:b0:ab2:db7b:5db3 with SMTP id
+ a640c23a62f3a-abb70e37954mr1575662066b.54.1739892061842; 
+ Tue, 18 Feb 2025 07:21:01 -0800 (PST)
+Received: from [10.232.133.75] ([88.128.90.10])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-abbbbc95288sm130032466b.158.2025.02.18.07.21.00
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 18 Feb 2025 07:21:01 -0800 (PST)
+Message-ID: <fe303b19-c50a-48ed-9d16-4b4d9fcb6990@suse.com>
+Date: Tue, 18 Feb 2025 16:20:59 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250217020423.31602-1-wegao@suse.com>
-X-Rspamd-Queue-Id: 4AF242116B
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20250212125457.19014-1-andrea.cervesato@suse.de>
+ <20250212130446.GB2036911@pevik>
+Content-Language: en-US
+In-Reply-To: <20250212130446.GB2036911@pevik>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mount_setattr02.c: Check mount_setattr
- attr.propagation
+Subject: Re: [LTP] [PATCH v1] tools: upgrade kirk to version 1.5
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,154 +98,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Merged thanks
 
-nit: I guess you want to replace dot with space in subject.
+Andrea
 
-> +++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-> @@ -0,0 +1,102 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Basic mount_setattr() test.
-> + * Test basic propagation mount attributes are set correctly.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <sys/statvfs.h>
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +#include "tst_safe_stdio.h"
-> +
-> +#define DIRA "/DIRA_PROPAGATION_CHECK"
-
-Is it necessary to to use directory under root?
-
-...
-> +static void cleanup(void)
-> +{
-
-I guess this is due result of:
-SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-There should be either a proper detection whether this works or 
-
-../../../../include/lapi/fsmount.h:113: TCONF: syscall(442) __NR_mount_setattr not supported on your arch
-mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: EBUSY (16)
-
-
-> +	SAFE_RMDIR(DIRA);
-
-When running on old kernel (e.g. SLES based 4.12) it fails due TCONF:
-
-../../../../include/lapi/fsmount.h:197: TCONF: Test not supported on kernel version < v5.2
-mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: ENOENT (2)
-
-There should be a flag to remove dir only when it was created.
-
-> +
-nit: please remove this new line (I have to keep asking this :( ).
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	fsopen_supported_by_kernel();
-I wonder if this needed for detecting new mount API support. Because second
-SAFE_MOUNT also runs code which detects code unsupported:
-
-../../../../include/lapi/fsmount.h:113: TCONF: syscall(442) __NR_mount_setattr not supported on your arch
-mount_setattr02.c:52: TWARN: rmdir(/DIRA_PROPAGATION_CHECK) failed: EBUSY (16)
-
-But I have no idea what would be needed to be done to cleanup result of the
-first SAFE_MOUNT().
-
-> +
-> +	SAFE_MKDIR(DIRA, 0777);
-> +}
-> +
-> +static void run(void)
-> +{
-> +
-and here new line.
-> +	SAFE_UNSHARE(CLONE_NEWNS);
-> +	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-> +	SAFE_MOUNT("testing", DIRA, "tmpfs", MS_NOATIME | MS_NODEV, "");
-Do these 2 needs to be in the run()? How about move them to setup()?
-
-static int dir_created, mounted;
-
-static void setup(void)
-{
-	fsopen_supported_by_kernel();
-
-	SAFE_MKDIR(DIRA, 0777);
-	dir_created = 1;
-	SAFE_UNSHARE(CLONE_NEWNS);
-	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-	SAFE_MOUNT("testing", DIRA, "tmpfs", MS_NOATIME | MS_NODEV, "");
-	mounted = 1;
-}
-
-static void cleanup(void)
-{
-	if (mounted)
-		SAFE_UMOUNT(DIRA);
-
-	if (dir_created)
-		SAFE_RMDIR(DIRA);
-}
-
-+ I later create generic helper from is_shared_mount().
-
-Kind regards,
-Petr
-
-> +
-> +	struct mount_attr attr = {
-> +		.attr_set       = MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOEXEC | MOUNT_ATTR_RELATIME,
-> +		.attr_clr       = MOUNT_ATTR__ATIME,
-> +	};
-> +
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-> +
-> +	attr.propagation = -1;
-> +	TST_EXP_FAIL_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)), EINVAL);
-> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-> +
-> +	attr.propagation = MS_SHARED;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 1);
-> +
-> +	attr.propagation = MS_PRIVATE;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-> +
-> +	attr.propagation = MS_SLAVE;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, DIRA, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(DIRA), 0);
-> +
-> +	SAFE_UMOUNT(DIRA);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +};
+On 2/12/25 14:04, Petr Vorel wrote:
+> Hi Andrea,
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Thanks!
+>
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
