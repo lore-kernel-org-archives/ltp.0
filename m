@@ -4,97 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F235C021A9
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 22:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4ACEC021A9
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 02:31:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E8C723C993B
-	for <ltp@archiver.kernel.org>; Mon, 17 Feb 2025 23:02:22 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id F12E43C9C25
+	for <ltp@archiver.kernel.org>; Tue, 18 Feb 2025 03:31:35 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 38D6F3C9C10
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 23:01:31 +0100 (CET)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
- [IPv6:2607:f8b0:4864:20::62d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EE7963C0959
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 03:31:18 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=chwen@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BBDEB22BDD8
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 23:01:30 +0100 (CET)
-Received: by mail-pl1-x62d.google.com with SMTP id
- d9443c01a7336-220e989edb6so91896155ad.1
- for <ltp@lists.linux.it>; Mon, 17 Feb 2025 14:01:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739829689; x=1740434489;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:dkim-signature:from:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=aiVKgoc7isiai54kzwJcQgFeNxrWEHw51ZFfLDyVB3c=;
- b=qyfSVr/8RFCu0QaDvqrX4RTJQk7Uhhxiv1kvyEMgJY9qzldxuznqZYubI82hEz+h2f
- IxjaGTIZLS5n8jQqQsjS/3mdlr7zG4LuUe6jSg60mpottGw6/xcftXZxR3GTJLlWI5ar
- 9iDxfFi3fR+q5TV/6+4SGauJ1M0udQ0vqQ22HR/eWMgmLMcIBpjaNd2J1HWbK4Hr4Jya
- EUtCYqaKHRoPGWvjd6SJkT+z0tRhkHgQMb3vAlfVzvwIjqlm2fatOIm6766pFIsNTqfQ
- ggWGIPqO5XiQLE4E0tHU/JrTUNgKHbRkdQ8esosZKrEYit1BYe6bCoRl98vd4aatU/Qy
- PDiA==
-X-Gm-Message-State: AOJu0Ywlnv5LsGmQEDEgkfqdnvF0a1ja5wLnWKNPyhBvTOz+J1LmXHG9
- zQ7j61wvNhFKASyKWRftn++qoEcPksyCMonDi8fuc700qI9NW+cWcbBpnD1h
-X-Gm-Gg: ASbGncu/M1AhkukDXdOA7xE0wQN1lrDe2Avvwp9wdAoplCAmPdPHjQ/sOG6X9R4lrCQ
- mdfePfEMX5qyO1xTdhereN3zao+lAvcI1gRSgUnfFj2NRjbBPkXcjPsjrtN5TuydQTjYG94qbV/
- Ds5p9+tvbf0jYajdDycxSH4dHOR6K+G+BWEBRJ5vuX6fl44+Ed/pNgeOoTY7cBZx6cGguF6jJsY
- 9cc8clVAOgTewm+NCH0BNAy+DJjUvtCeQB3bRV4egD3CAAAFTyB3+i62/+11aQO0oFoGvffJe4D
- rpNoqRvh7ENb9jTGdFtagMshMQpDVlD3
-X-Google-Smtp-Source: AGHT+IFabgNvBQ9p0qXRfDAsEuA0vCVF3rwnVDOIey4Q8U6aGmWizxcQ2VC5IDoGORrPj6IKkbtHRQ==
-X-Received: by 2002:a17:902:fc4e:b0:21f:71b4:d2aa with SMTP id
- d9443c01a7336-22103efeebcmr203595845ad.5.1739829688681; 
- Mon, 17 Feb 2025 14:01:28 -0800 (PST)
-Received: from mail.marliere.net (marliere.net. [24.199.118.162])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-220d5366b24sm76714975ad.97.2025.02.17.14.01.27
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 Feb 2025 14:01:28 -0800 (PST)
-From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
- s=2025; t=1739829687;
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4DF761414C5B
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 03:31:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1739845876;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=aiVKgoc7isiai54kzwJcQgFeNxrWEHw51ZFfLDyVB3c=;
- b=M76EySSqBN9KycZJOaScTAhgMLIP+nCRIoO5CoTuZHYECfVZs3Uk3Xia1nc5vcoolCe0kw
- nlSFPRpy5MlhYZhb4MYF5Pe+jk3V1TEwspW+V1/I+fthg8pGbA3tlLLwgF7VA8UQOoO7th
- x0WZfkUUc42gqDobUW3VRc/Zwp1f8RB19Isb0FoFS+bOTgzQ2xj7M5IwLl7BncylDjPCpO
- Tx5tC3Fd+sckR7hGkwyd7l2Wgl2mJUFwVtLLqDltGTOeiGE/d/gFu+XbW00F3bpq2U0vcF
- Ta8F55WVDzmRIYIDrBQyifqxPqKeAaoDNEN+0qZRoCiGFAuFL3uWMZhqwiwtNg==
-Authentication-Results: ORIGINATING;
- auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 17 Feb 2025 19:01:16 -0300
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=wr36urdCXnyl+Lk+vHciQtUzHPqX7F6BmC2M43E+HmE=;
+ b=Wz05v/fXrAYWcgRrXfUqlqnh8jOnJuUtFkGSojb14YD3dBvCajBReqUPlVyAiPCbYxuv/J
+ Z22pDK2VNCzwonMR+3EGdxhrzRWDYH3t5lWwGBptsp98M89krRjNfxA08wqWtZM7UX5x8N
+ FxOg0QMERuFfWK/W815R1kooLE0UePQ=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-623-ZcAG8igxOnyjRNOzi3m1PA-1; Mon,
+ 17 Feb 2025 21:31:14 -0500
+X-MC-Unique: ZcAG8igxOnyjRNOzi3m1PA-1
+X-Mimecast-MFC-AGG-ID: ZcAG8igxOnyjRNOzi3m1PA_1739845874
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B02111800373
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 02:31:13 +0000 (UTC)
+Received: from dell-per430-17.gsslab.pek2.redhat.com
+ (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
+ by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 75972180034D
+ for <ltp@lists.linux.it>; Tue, 18 Feb 2025 02:31:12 +0000 (UTC)
+From: chunfuwen <chwen@redhat.com>
+To: ltp@lists.linux.it
+Date: Mon, 17 Feb 2025 21:31:07 -0500
+Message-ID: <20250218023107.1208990-1-chwen@redhat.com>
 MIME-Version: 1.0
-Message-Id: <20250217-conversions-pause-v1-2-be8be41cb154@marliere.net>
-References: <20250217-conversions-pause-v1-0-be8be41cb154@marliere.net>
-In-Reply-To: <20250217-conversions-pause-v1-0-be8be41cb154@marliere.net>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3768; i=ricardo@marliere.net; 
- h=from:subject:message-id;
- bh=jNd9jmSpXt0mDuKzQQ61bVX0azt3didrBOAei+wR3ns=; 
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBns7Gtfuw+cA6lVy+rhM2FVvqjKhSZ4C8Z99TFB
- 9SOf6nhfbKJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ7OxrQAKCRDJC4p8Y4ZY
- pkQaD/4mmVz+ot6pIFv3aQlE6aD0E5eQLEPeGYtKUpZGUV59kfofSjcQalh40LfaIXOoadKwUmb
- mHZyovk+GEIwq1sHFnRzIxoaFzLDvO7MT21Gx3C1eN9kqQTeoyytIFD6pJmDWiOE7qrQv7g5fwQ
- fvPW8fz+WeT1WvotvyAF7oWPMzUl8Nt1j4geBaHInqgw6NInI9HNCf6492GC6UgIOR7J95JrbHS
- hzjBL5cDu00yCORPxeTdPS0tU8G7le2mR69BzJQCeWaQQ2Ywt4Nc3fn/P7vF3MAn5+59RE2SgpD
- MS+tOYCzmUzvNQutnll4h+MgqhUvMpyAv3X3esGgXrrUAVNsuT//gfPfUVUpiRN3J+tLf0Ci0mB
- N814eWTDGZB5NWI5VmV5Gv2PM4HuWylypAawsANW7Y8z60Mgg2ZmwaY4B7a/HSl3RBPZ6Jmxsap
- QB2/eK11zjggddW7k29irY2wBzb0buHJlphQea89ps0ScFrws0uCkGMnzsm6bSQTTNVgcIvmAqG
- wkQBtEgPC5FC00hNBlechNYi1BBIdjO/r5PQ3voVG5kjiYRzWBE+SGnm7Loow0o+LpHWTB4Ot11
- NLLuDl32m7D0qmPx86jUFS4JFxA11OO2lm5FPhdEloHeYJOUyIi4VG+Y+Nnw0jUzUzimZFulnSt
- fd7OpuLQOEQbR+A==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: YrOkqbJGZ-xGO-jGqlkrJtgJIQGWfcQKsAVYFhbwv64_1739845874
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/pause03: Refactor into new API
+Subject: [LTP] [PATCH] Add test case to cover the setting resource limit64
+ for process
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,73 +79,160 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-U2lnbmVkLW9mZi1ieTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJpY2FyZG9AbWFybGllcmUubmV0
-PgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcGF1c2UvcGF1c2UwMy5jIHwgMTE0ICsr
-KysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDI1IGluc2VydGlv
-bnMoKyksIDg5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvcGF1c2UvcGF1c2UwMy5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wYXVzZS9w
-YXVzZTAzLmMKaW5kZXggNDU5MjIyMDQ1YzA4ZGMxZmM0ODA0ZWZkMmVjZTAyMzE2ZmU1NWEwZS4u
-NjQxNjEwYTc4MjkwZGUxZjI1YzFmODM4OGM3ZWM1MDIzZGQwMDE4MCAxMDA2NDQKLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wYXVzZS9wYXVzZTAzLmMKKysrIGIvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9wYXVzZS9wYXVzZTAzLmMKQEAgLTEsMTA0ICsxLDQwIEBACisvLyBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgogLyoKICAqIENvcHlyaWdodCAo
-YykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEKLSAqICAwNy8y
-MDAxIFBvcnRlZCBieSBXYXluZSBCb3llcgotICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNv
-ZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQotICogaXQgdW5k
-ZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNo
-ZWQgYnkKLSAqIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIg
-b2YgdGhlIExpY2Vuc2UsIG9yCi0gKiAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9u
-LgotICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0
-IHdpbGwgYmUgdXNlZnVsLAotICogYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBl
-dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCi0gKiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVT
-UyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUKLSAqIHRoZSBHTlUgR2VuZXJhbCBQdWJs
-aWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAqIFlvdSBzaG91bGQgaGF2ZSByZWNl
-aXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCi0gKiBhbG9uZyB3
-aXRoIHRoaXMgcHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgRm91
-bmRhdGlvbiwKLSAqIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3Rv
-biwgTUEgMDIxMTAtMTMwMSBVU0EKKyAqIENvcHlyaWdodCAoYykgTGludXggVGVzdCBQcm9qZWN0
-LCAyMDI1CisgKiAwNy8yMDAxIFBvcnRlZCBieSBXYXluZSBCb3llcgogICovCisKIC8qCi0gKiBU
-ZXN0IERlc2NyaXB0aW9uOgotICogIHBhdXNlKCkgZG9lcyBub3QgcmV0dXJuIGR1ZSB0byByZWNl
-aXB0IG9mIFNJR0tJTEwgc2lnbmFsIGFuZCBzcGVjaWZpZWQKLSAqICBwcm9jZXNzIHNob3VsZCBi
-ZSB0ZXJtaW5hdGVkLgorICogVGhpcyB0ZXN0IHZlcmlmaWVzIHRoYXQgcGF1c2UoKSBkb2VzIG5v
-dCByZXR1cm4gYWZ0ZXIgcmVjZWl2aW5nIGEgU0lHS0lMTAorICogc2lnbmFsLCBhdCB3aGljaCBw
-b2ludCB0aGUgcHJvY2VzcyBzaG91bGQgYmUgdGVybWluYXRlZC4KICAqLwotI2luY2x1ZGUgPHVu
-aXN0ZC5oPgotI2luY2x1ZGUgPGVycm5vLmg+Ci0jaW5jbHVkZSA8ZmNudGwuaD4KLSNpbmNsdWRl
-IDxzeXMvd2FpdC5oPgotCi0jaW5jbHVkZSAidGVzdC5oIgotI2luY2x1ZGUgInNhZmVfbWFjcm9z
-LmgiCi0KLXN0YXRpYyBwaWRfdCBjcGlkOwotCi1jaGFyICpUQ0lEID0gInBhdXNlMDMiOwotaW50
-IFRTVF9UT1RBTCA9IDE7CiAKLXN0YXRpYyB2b2lkIGRvX2NoaWxkKHZvaWQpOwotc3RhdGljIHZv
-aWQgc2V0dXAodm9pZCk7Ci1zdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpOworI2luY2x1ZGUgInRz
-dF90ZXN0LmgiCiAKLWludCBtYWluKGludCBhYywgY2hhciAqKmF2KQordm9pZCBydW4odm9pZCkK
-IHsKLQlpbnQgbGM7CiAJaW50IHN0YXR1czsKKwlwaWRfdCBwaWQ7CiAKLQl0c3RfcGFyc2Vfb3B0
-cyhhYywgYXYsIE5VTEwsIE5VTEwpOwotCi0Jc2V0dXAoKTsKLQotCWZvciAobGMgPSAwOyBURVNU
-X0xPT1BJTkcobGMpOyBsYysrKSB7Ci0JCXRzdF9jb3VudCA9IDA7Ci0KLQkJaWYgKChjcGlkID0g
-dHN0X2ZvcmsoKSkgPT0gLTEpCi0JCQl0c3RfYnJrbShUQlJPSyB8IFRFUlJOTywgTlVMTCwgImZv
-cmsoKSBmYWlsZWQiKTsKLQotCQlpZiAoY3BpZCA9PSAwKQotCQkJZG9fY2hpbGQoKTsKLQotCQlU
-U1RfUFJPQ0VTU19TVEFURV9XQUlUKGNsZWFudXAsIGNwaWQsICdTJyk7Ci0KLQkJa2lsbChjcGlk
-LCBTSUdLSUxMKTsKLQotCQlTQUZFX1dBSVQoTlVMTCwgJnN0YXR1cyk7Ci0KLQkJaWYgKFdJRlNJ
-R05BTEVEKHN0YXR1cykgJiYgV1RFUk1TSUcoc3RhdHVzKSA9PSBTSUdLSUxMKSB7Ci0JCQl0c3Rf
-cmVzbShUUEFTUywgInBhdXNlKCkgZGlkIG5vdCByZXR1cm4gYWZ0ZXIgU0lHS0lMTCIpOwotCQkJ
-Y29udGludWU7Ci0JCX0KLQotCQlpZiAoV0lGU0lHTkFMRUQoc3RhdHVzKSkgewotCQkJdHN0X3Jl
-c20oVEZBSUwsICJjaGlsZCBraWxsZWQgYnkgJXMgdW5leHBlY3RlZGx5IiwKLQkJCSAgICAgICAg
-IHRzdF9zdHJzaWcoV1RFUk1TSUcoc3RhdHVzKSkpOwotCQkJY29udGludWU7Ci0JCX0KLQotCQl0
-c3RfcmVzbShURkFJTCwgImNoaWxkIGV4aXRlZCB3aXRoICVpIiwgV0VYSVRTVEFUVVMoc3RhdHVz
-KSk7CisJcGlkID0gU0FGRV9GT1JLKCk7CisJaWYgKCFwaWQpIHsKKwkJcGF1c2UoKTsKKwkJdHN0
-X3JlcyhURkFJTCwgIlVuZXhwZWN0ZWQgcmV0dXJuIGZyb20gcGF1c2UoKSIpOworCQlleGl0KDAp
-OwogCX0KIAotCWNsZWFudXAoKTsKLQl0c3RfZXhpdCgpOworCVRTVF9QUk9DRVNTX1NUQVRFX1dB
-SVQocGlkLCAnUycsIDEwMDAwKTsKKwlraWxsKHBpZCwgU0lHS0lMTCk7CisJU0FGRV9XQUlUUElE
-KHBpZCwgJnN0YXR1cywgMCk7CiAKKwlpZiAoV0lGU0lHTkFMRUQoc3RhdHVzKSAmJiBXVEVSTVNJ
-RyhzdGF0dXMpID09IFNJR0tJTEwpCisJCXRzdF9yZXMoVFBBU1MsICJwYXVzZSgpIGRpZCBub3Qg
-cmV0dXJuIGFmdGVyIFNJR0tJTEwiKTsKKwllbHNlCisJCXRzdF9yZXMoVEZBSUwsICJDaGlsZCBl
-eGl0ZWQgd2l0aCAlaSIsIFdFWElUU1RBVFVTKHN0YXR1cykpOwogfQogCi12b2lkIGRvX2NoaWxk
-KHZvaWQpCi17Ci0JVEVTVChwYXVzZSgpKTsKLQotCXRzdF9yZXNtKFRGQUlMLCAiVW5leHBlY3Rl
-ZCByZXR1cm4gZnJvbSBwYXVzZSgpIik7Ci0KLQlleGl0KDApOwotfQotCi12b2lkIHNldHVwKHZv
-aWQpCi17Ci0JdHN0X3NpZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7Ci0KLQlURVNUX1BB
-VVNFOwotfQotCi0KLXZvaWQgY2xlYW51cCh2b2lkKQotewotCWtpbGwoY3BpZCwgU0lHS0lMTCk7
-Ci19CitzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7CisJLnRlc3RfYWxsID0gcnVuLAor
-CS5mb3Jrc19jaGlsZCA9IDEsCit9OwoKLS0gCjIuNDguMQoKCi0tIApNYWlsaW5nIGxpc3QgaW5m
-bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+The test ensures that the process gets the correct signals in the correct order:
+
+First, it should get SIGXCPU after reaching the soft CPU time limit64.
+Then, if the CPU time exceeds the hard limit, it should receive SIGKILL
+
+Signed-off-by: chunfuwen <chwen@redhat.com>
+---
+ .../kernel/syscalls/setrlimit/setrlimit07.c   | 129 ++++++++++++++++++
+ 1 file changed, 129 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setrlimit/setrlimit07.c
+
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit07.c b/testcases/kernel/syscalls/setrlimit/setrlimit07.c
+new file mode 100644
+index 000000000..031d58c64
+--- /dev/null
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit07.c
+@@ -0,0 +1,129 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2017 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*
++ * Description:
++ * Set CPU time limit64 for a process and check its behavior
++ * after reaching CPU time limit64.
++ * 1) Process got SIGXCPU after reaching soft limit of CPU time limit64.
++ * 2) Process got SIGKILL after reaching hard limit of CPU time limit64.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <errno.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/time.h>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <sys/mman.h>
++#include <inttypes.h>
++
++#include "tst_test.h"
++
++#include "lapi/syscalls.h"
++#include "lapi/abisize.h"
++
++#ifndef HAVE_STRUCT_RLIMIT64
++struct rlimit64 {
++	uint64_t rlim_cur;
++	uint64_t rlim_max;
++};
++#endif
++
++static int *end;
++
++static void sighandler(int sig)
++{
++	*end = sig;
++}
++
++static void setup(void)
++{
++	SAFE_SIGNAL(SIGXCPU, sighandler);
++
++	end = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++}
++
++static void cleanup(void)
++{
++	if (end)
++		SAFE_MUNMAP(end, sizeof(int));
++}
++
++static int setrlimit_u64(int resource, const struct rlimit64 *rlim)
++{
++    return tst_syscall(__NR_prlimit64, 0, resource, rlim, NULL);
++}
++
++static void verify_setrlimit64(void)
++{
++	int status;
++	pid_t pid;
++	struct rlimit64 rlim;
++	rlim.rlim_cur = 1;
++	rlim.rlim_max = 2;
++
++	*end = 0;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		TEST(setrlimit_u64(RLIMIT_CPU, &rlim));
++		if (TST_RET == -1) {
++			tst_res(TFAIL | TTERRNO,
++				"setrlimit_u64(RLIMIT_CPU) failed");
++			exit(1);
++		}
++
++		alarm(20);
++
++		while (1);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
++		return;
++
++	if (WIFSIGNALED(status)) {
++		if (WTERMSIG(status) == SIGKILL && *end == SIGXCPU) {
++			tst_res(TPASS,
++				"Got SIGXCPU then SIGKILL after reaching both limit");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGKILL && !*end) {
++			tst_res(TFAIL,
++				"Got only SIGKILL after reaching both limit");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGALRM && *end == SIGXCPU) {
++			tst_res(TFAIL,
++				"Got only SIGXCPU after reaching both limit");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGALRM && !*end) {
++			tst_res(TFAIL,
++				"Got no signal after reaching both limit");
++			return;
++		}
++	}
++
++	tst_res(TFAIL, "Child %s", tst_strstatus(status));
++}
++
++static struct tst_test test = {
++	.test_all = verify_setrlimit64,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++};
+-- 
+2.43.5
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
