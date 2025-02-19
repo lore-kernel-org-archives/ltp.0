@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D85CEC021B0
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA82AC021AA
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739958012; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1739958367; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=bvVOVfJ0iN7LHNFkXQEzWczFjFwrl0+1pFE8UhT6R+4=;
- b=aKlTpwhfnzlHywJYtr/ibWuFS9roenmTVSkPFYmP+RA0qH5Z7e5ylDJxmhL4FCa65/UIB
- MVmxlKi6BiL/VPT3rruwoRuct4KE9zXqYq8MKwMtGGZ3hnkt3wlm2HP8nslw33D6RNVOS4k
- u3/E/i5lqw6Q7Jj03I6ZU8L2qnYCE9A=
+ bh=VZULfg8gt9VticfokEcpV2FWVZiVT1ycnSVwtM+WqA0=;
+ b=C3lDaPNTC6sNtYVTuL82ccr5r/waUPED0+lTbMepyNfFXY5bNS7yTgi7wUi+yeQKaIbVl
+ NhMQLXpzUVZ3pA0WYwIjfmuqzvE21/pe+VTfRusXHydvi1J8wrbZkhwsSO/DVqr24VzDL6h
+ 2YYl7BYwHq1f55QpkhnKi3k94Us2fYE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3FBB53C2B53
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 10:40:12 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3E11B3C0503
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 10:46:07 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 57ADE3C0503
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:39:49 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id A81EC3C0503
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:45:45 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
+ helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
+ [139.138.37.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 378C7635344
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:39:47 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E33BE601CC0
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:45:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1739957988; x=1771493988;
+ t=1739958345; x=1771494345;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=jChU73NY3cDOunSz1EIjDuu6e6r0RRjKqSaWSbMWBD0=;
- b=VI8ORogyQ7HYdLAqAyVOiyz6yMoO4oKiRiBUI9/Zm84Ocpoqh4C2Ya/Q
- 9rpCBl/l183SDEHIty6GOQ1ZcgoG5Evv3wyiHOLcTu/SbQJr5c9ahMjcX
- cOZmHVl/KN8bbfycYDxdPQx62KeIMveQ12Ugj9aBGoNjWuty/6qBL0l9A
- qj2RttjnM4uthPDX+vCIqd38mJPbal6VhHuUiCvF5ZBoxXNW7S1jsmAOJ
- Y21tzn8LQMuX2S34hjsY1kDK0fvyL7++bFUyh5RRP9rZXxLZkCT/LKC6B
- dqbx2uz0Q+wFZng/zoKQ/+LUoedMktP4j2TS7zSDLQw60bu/eP2cPWfYv g==;
-X-CSE-ConnectionGUID: +dnYGVBVTHS5cpB9rD3vzA==
-X-CSE-MsgGUID: DpT+4AnbS2+NMbtT4W+68A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="169971822"
-X-IronPort-AV: E=Sophos;i="6.13,298,1732546800"; d="scan'208";a="169971822"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2025 18:39:45 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 72704DBB81
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:39:43 +0900 (JST)
+ bh=AHYITH5Ay2HgRlDewyuIOpo28oqJR404I/CEQm7oOe8=;
+ b=Tqeq4ivsmZoGI3FMbk7qpNxuAHYwzPPQXZTmys2icQNB4aZe6fPQnzdF
+ uqj0gZgyIO+bqDAMCvTJFhXqTPty2FK/z3rGZccqhmxPOuKFfua22TuKv
+ HzFGmxj0sQwfoLqHT0NSWUnpP9ESc12b7h/njZbFVOSG6w5uuVMeneBgo
+ RV1THh6okJDsIepQqaUW9zhkrvq4q1gxHXu8eNDMfN2+U7L6oosKhMw1b
+ 8X2MAbv2FRQfBrpPg13xk0ahK9Ae5obCjM5NHvsYtmZ9z5dFsCGQbtJBP
+ /f23Ge5cYo7O+S54PuKW7dpt1G4AFlg/GVh+uxvpNkjplK28prhinAALF A==;
+X-CSE-ConnectionGUID: M3wiRmG0QiuewcOZxAUy5Q==
+X-CSE-MsgGUID: pkpOSqQ8Twu83ZtEIJ6Czw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="169424719"
+X-IronPort-AV: E=Sophos;i="6.13,298,1732546800"; d="scan'208";a="169424719"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+ by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2025 18:45:43 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id CA967D4F5F
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:45:40 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 3C38DBDB6D
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:39:43 +0900 (JST)
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 949EF17CB0
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:45:40 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 98CE31A0003;
- Wed, 19 Feb 2025 17:39:42 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id F12D61A0003;
+ Wed, 19 Feb 2025 17:45:39 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Wed, 19 Feb 2025 17:39:47 +0800
-Message-ID: <20250219093947.1047597-1-maxj.fnst@fujitsu.com>
+Date: Wed, 19 Feb 2025 17:45:44 +0800
+Message-ID: <20250219094544.1048098-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getgid03: Add a blank line to fit RST format
+Subject: [LTP] [PATCH] getrlimit02: Fix comment indentation to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,21 +91,27 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- testcases/kernel/syscalls/getgid/getgid03.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/kernel/syscalls/getrlimit/getrlimit02.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getgid/getgid03.c b/testcases/kernel/syscalls/getgid/getgid03.c
-index 3e406ce64..80b0a0fc4 100644
---- a/testcases/kernel/syscalls/getgid/getgid03.c
-+++ b/testcases/kernel/syscalls/getgid/getgid03.c
-@@ -8,6 +8,7 @@
-  * Testcase to check the basic functionality of getgid().
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
+index 20c247a0e..bbedabe28 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
+@@ -8,10 +8,10 @@
+  * Test for checking error conditions for getrlimit(2):
   *
-  * [Algorithm]
-+ *
-  * For functionality test the return value from getgid() is compared to passwd
-  * entry.
+  * 1. getrlimit(2) returns -1 and sets errno to EFAULT if an invalid
+- *	  address is given for address parameter.
++ *    address is given for address parameter.
+  * 2. getrlimit(2) returns -1 and sets errno to EINVAL if an invalid
+- *	  resource type (RLIM_NLIMITS is a out of range resource type) is
+- *	  passed.
++ *    resource type (RLIM_NLIMITS is a out of range resource type) is
++ *    passed.
   */
+ 
+ #include <sys/resource.h>
 -- 
 2.47.0
 
