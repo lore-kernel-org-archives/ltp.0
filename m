@@ -4,73 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 615E1C021AA
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 08:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739955026; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=UdL9ETZ87ovw1Ww6A2Y/jkDkXaDWSvxbiF1h0CkgrL0=;
- b=Hd1bGCMb/5iuwalR4drNhw1zccHK9vxQKRCdOHHsFVA0HL3wfjXauf+c9rdIlpQr/6fQ4
- kHmUbI60KZHO74+9MofqBN21e4agrrZoNNixAFJPdnyf2y2A2EHTgVPLMnsB/9M2Lgcre8H
- M9qMULVEDzJAkJBFefEeu3D0BiH9Xic=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57E11C021AB
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 08:55:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C07423C25CE
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:50:26 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C00883C29B6
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:55:27 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 98D523C25CE
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 09:50:03 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.139;
- helo=esa6.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com
- [68.232.139.139])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 802FB3C25CE
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 09:55:10 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=permerror (SPF Permanent Error: Unknown mechanism
+ found: ipv4:195.135.223.131/32) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 98B5562537F
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 09:50:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1739955003; x=1771491003;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=sJH1eXjg5CI5y+2R/1I9Cfgg+c8lWxLI8lgpq3DZEV0=;
- b=hWA15FkDDpOO6qjDmJQOrmZ+7YXXav80bq862jJ43es3rt65khA451OC
- nQdqaLtDQ4grTSFjUXMmoWs7R91tipO8cbAGoLQwyac40Hlkxjj0bhjOZ
- rQpc4XkLa5+0oZIm2IZfBE5eNqDgGd0r5idxkIVLeNep4Lyq+8UmysZgG
- sxw+L1uUu2kpzzw1RXadezpLW8cRGrAoAjo+2smZu11O7b1pifZIwB1Pt
- begNl2T3YHbepsfcHt7zwzRScRwlY1gdO1jv+dRK9cp2UlIjVv3CJlcWr
- 6KQJhedemfcpl+7/WaSWQ8zc/6pdWftmyff5qvqKjGKs042BWj+JNRmJ0 g==;
-X-CSE-ConnectionGUID: br8iSLsSRiaeEZUMJj3MUw==
-X-CSE-MsgGUID: L3IgqUeOQF6pZ/Owtp2n3A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="193104274"
-X-IronPort-AV: E=Sophos;i="6.13,298,1732546800"; d="scan'208";a="193104274"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2025 17:50:00 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id C8A05D4F62
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 17:49:57 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 880C0E6475
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 17:49:57 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id EF7171A0003;
- Wed, 19 Feb 2025 16:49:56 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Wed, 19 Feb 2025 16:50:00 +0800
-Message-ID: <20250219085000.1038179-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 78B6110354A7
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 09:55:09 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2AB6421C2C;
+ Wed, 19 Feb 2025 08:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739955308;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7ltSi51ERMVU25JrqGSiecioaZ8UO6+YZALmHr5zyDg=;
+ b=cM7RjG6HdUpWBJtm3BDmShVlvMsjQy7Twc9xcLhCIRyKK7AVayktlR5BqiANJczn8mtfNX
+ UXHVcud/uLTlRgn5xthvsBfGEP5Y9ZCXdg2BKbJqoBy8u//m7lNeh9ujPGIckkK+zy+HVV
+ lC7Sjw2xu+paKuFXdhCkTduc6tt6Fog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739955308;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7ltSi51ERMVU25JrqGSiecioaZ8UO6+YZALmHr5zyDg=;
+ b=tdBVeGd1HYnLD/yf451ZYwgpmYK+2FmLQOiz0/Aau9LfzgVFeXu7/5CsmX6ZA5gXbWDKnz
+ SzoBYeep1Zt7QHAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1739955308;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7ltSi51ERMVU25JrqGSiecioaZ8UO6+YZALmHr5zyDg=;
+ b=cM7RjG6HdUpWBJtm3BDmShVlvMsjQy7Twc9xcLhCIRyKK7AVayktlR5BqiANJczn8mtfNX
+ UXHVcud/uLTlRgn5xthvsBfGEP5Y9ZCXdg2BKbJqoBy8u//m7lNeh9ujPGIckkK+zy+HVV
+ lC7Sjw2xu+paKuFXdhCkTduc6tt6Fog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1739955308;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7ltSi51ERMVU25JrqGSiecioaZ8UO6+YZALmHr5zyDg=;
+ b=tdBVeGd1HYnLD/yf451ZYwgpmYK+2FmLQOiz0/Aau9LfzgVFeXu7/5CsmX6ZA5gXbWDKnz
+ SzoBYeep1Zt7QHAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10C5313A53;
+ Wed, 19 Feb 2025 08:55:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id e5wHA2yctWdUKAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 19 Feb 2025 08:55:08 +0000
+Date: Wed, 19 Feb 2025 09:55:02 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Message-ID: <20250219085502.GA2544812@pevik>
+References: <20250218121745.GA2469726@pevik>
+ <20250219052009.1020281-1-maxj.fnst@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250219052009.1020281-1-maxj.fnst@fujitsu.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] capset02: Fix comment indentation to fit RST format
+Subject: Re: [LTP] [PATCH v2] fork13: Fix the doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,49 +113,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/capset/capset02.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Hi Ma Xinjian,
 
-diff --git a/testcases/kernel/syscalls/capset/capset02.c b/testcases/kernel/syscalls/capset/capset02.c
-index 36d799663..b3cece90d 100644
---- a/testcases/kernel/syscalls/capset/capset02.c
-+++ b/testcases/kernel/syscalls/capset/capset02.c
-@@ -9,17 +9,17 @@
-  * Tests basic error handling of the capset syscall.
-  *
-  * 1. capset() fails with errno set to EFAULT if an invalid address
-- * is given for header.
-+ *    is given for header.
-  * 2. capset() fails with errno set to EFAULT if an invalid address
-- * is given for data.
-+ *    is given for data.
-  * 3. capset() fails with errno set to EINVAL if an invalid value
-- * is given for header->version.
-+ *    is given for header->version.
-  * 4. capset() fails with errno set to EPERM if the new_Effective is
-- * not a subset of the new_Permitted.
-+ *    not a subset of the new_Permitted.
-  * 5. capset() fails with errno set to EPERM if the new_Permitted is
-- * not a subset of the old_Permitted.
-+ *    not a subset of the old_Permitted.
-  * 6. capset() fails with errno set ot EPERM if the new_Inheritable is
-- * not a subset of  the old_Inheritable and bounding set.
-+ *    not a subset of  the old_Inheritable and bounding set.
-  */
- 
- #include <stdlib.h>
--- 
-2.47.0
+...
+> +++ b/testcases/kernel/syscalls/fork/fork13.c
+> @@ -15,21 +15,22 @@
+>   * implementation.  Furthermore, many shell scripts assume that pid
+>   * numbers will not be used for some length of time.
+>   *
+> - * [Race Description]
+> - * ---------------------------------------------------------------------
+> - * A                                B
+> + * [Race Description] ::
+>   *
+> - * // pid == offset == n            // pid == offset == n + 1
+> - * test_and_set_bit(offset, map->page)
+> - *                                  test_and_set_bit(offset, map->page);
+> - *                                  pid_ns->last_pid = pid;
+> - * pid_ns->last_pid = pid;
+> - *                                  // pid == n + 1 is freed (wait())
+> + *    ---------------------------------------------------------------------
+I removed these --- lines (they were for asciidoc code formatting).
 
+> + *    A                                B
+>   *
+> - *                                  // Next fork()...
+> - *                                  last = pid_ns->last_pid; // == n
+> - *                                  pid = last + 1;
+> - * ---------------------------------------------------------------------
+> + *    // pid == offset == n            // pid == offset == n + 1
+> + *    test_and_set_bit(offset, map->page)
+And increase indent on the right side.
+
+Thanks, merged!
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
