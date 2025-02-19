@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70ED9C021AA
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 13:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C344FC021AA
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 15:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739971653; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1739977951; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=sjDyva2DNmjIad1DfznDzJRA55agosa6dvcamgxAKsY=;
- b=Ii7RqSy2OKVBfk/RlxgD8ZYuNQZ+HwGvX6vsAw53AMvOOvmldga3JWeikcB0jIuqmWffi
- vCJj+G9reqMwyqoCm3mhM/7zzzZSampg7TVMil3IfCtbHOuK7UZTKN9ePl/X/iWkbb5MBGW
- usEH+31uIuHA4TeC60ewpjAvygRtY4A=
+ bh=rYYQAr3B6Y5ZJstbelIyJl0YnUEBR6eWkDQdfjwlBcI=;
+ b=a/FttJvJI6cWBzsYr9sQne8mTp0E8btWD+G6qX0kZuz4sA7jSfcl3TxIRl6q9/AH/HJT8
+ Hfq4ngmtKQFqNpFkWGiMPpSpDsgtwkSXfhYCaHHKJuGtzbsnr2wkwd/DYz8LzaP60k5dxd9
+ 3AnFXIBsnx/TL45bUc5zJvd8hbTpOXM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3F713C2F69
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 14:27:33 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C40F23C30BC
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 16:12:31 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4287A3C0503
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 14:27:10 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+ by picard.linux.it (Postfix) with ESMTPS id 567D93C0722
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 16:12:10 +0100 (CET)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
+ [IPv6:2a00:1450:4864:20::535])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 41F0E1012BC1
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 14:27:10 +0100 (CET)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-abbda4349e9so89872566b.0
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 05:27:10 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 62E06611192
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 16:12:09 +0100 (CET)
+Received: by mail-ed1-x535.google.com with SMTP id
+ 4fb4d7f45d1cf-5e0813bd105so2982738a12.1
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 07:12:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1739971630; x=1740576430; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=wt+cW90UCf1klmvfTNw7WgQYfUFveJRExxsMwGX1kfI=;
- b=JNK3LHvkX1WquxGwFthwqLYZVwCOSVtMHLqUbiewEPZUqe21QR61PJPrtt2NXWu+J9
- dFzWTLAMZGqKTlCwXuR1h6JxL5GQSOjkgOfvfcPG4Cd2gi0NpmTw059Go74vbravugp1
- CCmx9y0BEvDiCE0/f+e2cUuusc2AKTQNaBHzBfuZ5hCJcpfnHxK2Wjah83DH/4RgzNYe
- eJhMIYngVnIxlzeWdEtOiP9lUvzx06HWcG8++VcBwlhspHGxLREOGU9jLjcW+tCjEzNH
- +zkPNIqEs8cLCVNBVfmNWENhlMR+/XlOCJbUxShmfvzeyNNs7+DV4OUPOaamVm5LYSwH
- 9cNw==
+ d=suse.com; s=google; t=1739977929; x=1740582729; darn=lists.linux.it;
+ h=in-reply-to:from:content-language:references:to:subject:user-agent
+ :mime-version:date:message-id:from:to:cc:subject:date:message-id
+ :reply-to; bh=sBL6wzSYj+eEyU05vNNf3FkRBja1d3Lf/UjJSbLl+Wg=;
+ b=JSTfj8cmFfADlDsXLoi+KXZDRO53UfhweH5N1vjYZoS2osneTka6jx1kfgf25KTqOO
+ 4dNPPJzxDGfPqU5i4UIaXlDy2Vo9alC8/5o+Q9HXZ183BrNSuoKec6uCpVf1Z2Lzmdd5
+ 3wLQ0xrBtROf76MaO42xk+ojM7DqQzJkaFQt8/MUumJuuQ+vBagE+Nby697ydjA9sKgc
+ gMSnNvVzdGHU9HdsYAD5vLOfHqr3lmjLgaR1WSQayZk3m7Ph0xffVGFMyCov1JryT8zM
+ zrDY0WvDmSCw9rakccx36QWURHXuUOvzbFv3rJIb966A0Z53/z1oYNgJmTiNfKi9kswJ
+ 12yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739971630; x=1740576430;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=wt+cW90UCf1klmvfTNw7WgQYfUFveJRExxsMwGX1kfI=;
- b=R1LsNRJoTyRrkKPVdxlapDgSiFRafHAt94NiywyU13dJWO5sPb6PWrLM5QbJ2BD7xi
- nkRLaf6v67abFAI7u/LD+NbboBnxhDVs5kfCno+UqD/qvH3Ji3GELjJCzmWVCk+FKhe1
- fbbEG5HTsXDV2zgcYa4agGRidf4SilPf6jFSqf5UMQ1MjLUt78TVuSpPqUBL8vWT71wh
- 7+aA8HjMvcUr7zmbtoWYAEoeLOIcmscCGtBENTHFBAtTFXZJ4qMleH2N2Df7vqoDSFme
- yra5y8BXSFDD1lsPzPjuzW10CwIdD8qSB3KoX+FIxLymewIPniOyQz3XKrTpSklnqH9w
- 5GNw==
+ d=1e100.net; s=20230601; t=1739977929; x=1740582729;
+ h=in-reply-to:from:content-language:references:to:subject:user-agent
+ :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=sBL6wzSYj+eEyU05vNNf3FkRBja1d3Lf/UjJSbLl+Wg=;
+ b=EDwSazhw2cZ4OeCckmZ9mdk2o1nWj5lZ8zWwSPKxzWyyBztHzFRL+27LJMi/ibVybS
+ H6us+9LYb7faYhlaR6g4DHhlmFYyjaqekurtwZS5gjVcWpk+jOqj5rWdzmlYmfrrbn9f
+ mk58wiH1jDB87BV6bf8wVxE+FkjzTNiv2qxxr7JA04BIztreX7wNTnXn0AVuf9vKxa5u
+ tzHxg/DmU4skGzt+9h1R5QV2Sywei6mUM+GeOFrtPKNIgsREJvva+7qVPzRR3ZZ4YmNq
+ 6LT//aL1a9XJszotNNNSEO7Vajg4EehRFy5xoEG/9epZl8DXBEAZ3/cUS/XexvSz4uik
+ HjeQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWwz5/14OBX4xl5PIRCUHeHh0HmKy2jHiKAYVi6KUWowpLUSG+UWs/gEbU2PGG99Zz3Prk=@lists.linux.it
-X-Gm-Message-State: AOJu0YyQghHVp/TFDTBLEuDmMAMNz1qVTGGhNCpUo/03ee8t6fSL7pwV
- NpbReEbmyUPNqwzVTHAyh7u2lQ3qddbQnp8YZ9dFyhbe7RRfKFliioJmlVWr3SAzGBVFp4JUNdl
- R
-X-Gm-Gg: ASbGncv+92x9IHBVCmVJRQhcyQl9bzg+enlFO1eY2T+qaoOhGOSKaipXsjyacCkNd9l
- 2ok7CNpFOSUsOBrakFelv2SFuaCM/IJmTsTgPF4yy3+xOl/R+grn2JztLG6Kb1kXnLvzaj5WVxj
- /BtPqLlqBd5FXUN8uMKSqXuiWwLNe6McWs8ErQV6TBp9iOXBNx5M5oMyQ17lrWLVwC50pHOhWT5
- YaDBx0pL0wfVLmOIX/oaLMzUJ9XAVLXDYNDQwVcRXI1pvWjc9Sx5bb4i2KRQd3GQr3aklRFJj0u
- /YUMtWMvsFPsTmZ48v2WWIwbn/hYaRWahsT6td73BKkD+ZM2+pvJ0x2kzZu4zux78Ue22djOZP7
- pJ9aE0luAdhUBBYYlO2Ld03DGIAZOjMoxjIA2NGNvLqRGOQTJxfk=
-X-Google-Smtp-Source: AGHT+IFfZeNtyVMoyN0pGrqirCz3stqEOcODyrTpTDI8vXJbsLrz2FObytazwvRDrgHcN2XGrcj3Qg==
-X-Received: by 2002:a17:907:7842:b0:ab6:f06b:4a26 with SMTP id
- a640c23a62f3a-abb70bbf513mr1863325866b.34.1739971629637; 
- Wed, 19 Feb 2025 05:27:09 -0800 (PST)
+ AJvYcCWnb6ekzyrVPTNHnWJox19BDyQPO1wgiiQ4zqjo+udpkf/3V+JKCB7zE0pZTd3SFiXAhYs=@lists.linux.it
+X-Gm-Message-State: AOJu0YyvVdIQgezi0AVdN6rUlvpV7RI4mpM7cDP4Ohw8hUSvygg5b0Wj
+ BbyinH4nCvlaqk6YR+rQDljgcTVT8w/5GoFmY3c3dH74+se+vNgPN2n2DtH2WLo=
+X-Gm-Gg: ASbGncsdQSoEV6PSQbjXxbqOPM2F588x+HuICNvotoX/gK8ztag8H76fqVCjdecOBO1
+ PpiMgsV69r1cYjP4HC9I9ziLnllqvPF310wTAbW/QglBS/WWu6b9aIziMqyt+6N0UESuwgAKDLB
+ pEY7510/IUt8My7aiyzZbFK1UIuyB8l1F47lWRqJw77wKhwBB1+ohrpg2qvwBjY7876fD1m5h7Z
+ MZSIR9Pew2CIf5AEFX8cBEFixw5mCzzJ1P140INzRFvsAs8wnRqBHg4KUcC0QdhNcV0X3W5mID+
+ A22orAogz4xZdE2Eyb8A5QPUpNWVuH0xIw1DAzGJ0bVuwF+eT5umwI9tHdDku6wDTV4uy9vq4af
+ tkURR+9GjGPaZurRlBxo9R+hVcCX6kR+ZOcbEM1hDh3VaEqSg6Pc=
+X-Google-Smtp-Source: AGHT+IHgLYjViASHgVhLfDLv7jXBJzHReRl1kSGI+GKGFb3XJwU4oHEnZiCRj0qhg1SFMl98rAIfTg==
+X-Received: by 2002:a05:6402:26ca:b0:5db:731d:4456 with SMTP id
+ 4fb4d7f45d1cf-5e0361f2985mr20616188a12.28.1739977928475; 
+ Wed, 19 Feb 2025 07:12:08 -0800 (PST)
 Received: from ?IPV6:2003:ef:2f02:800:9162:c8ad:3b21:a399?
  (p200300ef2f0208009162c8ad3b21a399.dip0.t-ipconnect.de.
  [2003:ef:2f02:800:9162:c8ad:3b21:a399])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-abba6f884f2sm483942566b.155.2025.02.19.05.27.08
+ 4fb4d7f45d1cf-5dece288e2dsm10623763a12.80.2025.02.19.07.12.06
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 19 Feb 2025 05:27:09 -0800 (PST)
-Message-ID: <db7c7437-32d9-4c41-b3a4-a153af2d68b5@suse.com>
-Date: Wed, 19 Feb 2025 14:27:08 +0100
+ Wed, 19 Feb 2025 07:12:07 -0800 (PST)
+Message-ID: <a0fe27a5-69eb-4974-af58-ad18805f6bcb@suse.com>
+Date: Wed, 19 Feb 2025 16:12:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
-References: <20241225114215.2973-1-wegao@suse.com>
+References: <20241219081951.8340-1-wegao@suse.com>
 Content-Language: en-US
-In-Reply-To: <20241225114215.2973-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <20241219081951.8340-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mount08.c: Restrict overmounting of ephemeral
- entities on /proc/<pid>/fd/<nr>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v1] unshare03.c: Add test coverage for dup_fd()
+ failure handling in unshare_fd()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,117 +112,153 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-Some comments below. LGTM otherwise
-
-On 12/25/24 12:42, Wei Gao via ltp wrote:
-> Signed-off-by: Wei Gao <wegao@suse.com>
-
-We miss a description here. Maybe something like:
-
-Add a new test to verify that mount will raise ENOENT if we try to mount 
-on magic links under /proc/<pid>/fd/<nr>.
-Refer to the following kernel commit for more information:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
-
+On 12/19/24 09:19, Wei Gao via ltp wrote:
+> Signed-off-by: Wei Gao<wegao@suse.com>
+Missing an explanation of the commit.
 > ---
->   runtest/syscalls                           |  1 +
->   testcases/kernel/syscalls/mount/.gitignore |  1 +
->   testcases/kernel/syscalls/mount/mount08.c  | 56 ++++++++++++++++++++++
->   3 files changed, 58 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/mount/mount08.c
+>   runtest/syscalls                              |  1 +
+>   testcases/kernel/syscalls/unshare/.gitignore  |  1 +
+>   testcases/kernel/syscalls/unshare/unshare03.c | 91 +++++++++++++++++++
+>   3 files changed, 93 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/unshare/unshare03.c
 >
 > diff --git a/runtest/syscalls b/runtest/syscalls
-> index ded035ee8..d3abc8b85 100644
+> index ded035ee8..10800c1a3 100644
 > --- a/runtest/syscalls
 > +++ b/runtest/syscalls
-> @@ -852,6 +852,7 @@ mount04 mount04
->   mount05 mount05
->   mount06 mount06
->   mount07 mount07
-> +mount08 mount08
+> @@ -1715,6 +1715,7 @@ unlinkat01 unlinkat01
 >   
->   mount_setattr01 mount_setattr01
+>   unshare01 unshare01
+>   unshare02 unshare02
+> +unshare03 unshare03
 >   
-> diff --git a/testcases/kernel/syscalls/mount/.gitignore b/testcases/kernel/syscalls/mount/.gitignore
-> index 80885dbf0..3eee5863a 100644
-> --- a/testcases/kernel/syscalls/mount/.gitignore
-> +++ b/testcases/kernel/syscalls/mount/.gitignore
-> @@ -6,3 +6,4 @@
->   /mount05
->   /mount06
->   /mount07
-> +/mount08
-> diff --git a/testcases/kernel/syscalls/mount/mount08.c b/testcases/kernel/syscalls/mount/mount08.c
+>   #
+>   # These tests require an unmounted block device
+> diff --git a/testcases/kernel/syscalls/unshare/.gitignore b/testcases/kernel/syscalls/unshare/.gitignore
+> index 855ffd055..e5b5c261d 100644
+> --- a/testcases/kernel/syscalls/unshare/.gitignore
+> +++ b/testcases/kernel/syscalls/unshare/.gitignore
+> @@ -1,2 +1,3 @@
+>   /unshare01
+>   /unshare02
+> +/unshare03
+> diff --git a/testcases/kernel/syscalls/unshare/unshare03.c b/testcases/kernel/syscalls/unshare/unshare03.c
 > new file mode 100644
-> index 000000000..9b54ea835
+> index 000000000..0ff40b242
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/mount/mount08.c
-> @@ -0,0 +1,56 @@
+> +++ b/testcases/kernel/syscalls/unshare/unshare03.c
+> @@ -0,0 +1,91 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
-> + * Copyright (C) 2024 Wei Gao <wegao@suse.com>
+> + * Copyright (c) 2024 Al Viro<viro@zeniv.linux.org.uk>
+> + * Copyright (C) 2024 Wei Gao<wegao@suse.com>
 > + */
 > +
 > +/*\
 > + * [Description]
-This is not needed anymore.
+No needed anymore.
 > + *
-> + * This test check restrict overmounting on /proc/<pid>/fd/<nr>.
-> + * It is based on the following kernel commit:
-> + * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
-
-"Verify that mount will raise ENOENT if we try to mount on magic links 
-under /proc/<pid>/fd/<nr>."
-
-Link is not needed if we already have .tags in the "struct tst_test". 
-See below
-
+> + * Test case is adapted from the kernel self test unshare_test.c.
+> + * Test coverage for dup_fd() failure handling in unshare_fd()
+The test is verifying whether unshare() raises EMFILE error when we 
+attempt to release the file descriptor table shared with the parent 
+process, after opening a new file descriptor in the parent and modifying 
+the maximum number of file descriptors in the child.
 > + */
 > +
-> +#include "tst_test.h"
-> +#include <sys/mount.h>
-> +#include "tst_safe_file_at.h"
+> +#define _GNU_SOURCE
 > +
-> +#define MNTPOINT "mntpoint"
-> +#define FOO MNTPOINT "/foo"
-> +#define BAR MNTPOINT "/bar"
+> +#include <stdio.h>
+> +#include <sys/wait.h>
+> +#include <sys/types.h>
+> +#include <sys/param.h>
+> +#include <sys/syscall.h>
+> +#include <sched.h>
+> +#include <limits.h>
+> +#include <unistd.h>
+All these imports are not needed.
+> +
+> +#include "tst_test.h"
+> +#include "config.h"
+> +#include "lapi/sched.h"
+> +
+> +#define FS_NR_OPEN "/proc/sys/fs/nr_open"
+> +
+> +#ifdef HAVE_UNSHARE
 > +
 > +static void run(void)
 > +{
-> +	char path[PATH_MAX];
-> +	int foo_fd, newfd, proc_fd;
+> +	int nr_open;
+> +	struct rlimit rlimit;
+> +	pid_t pid;
+> +	struct clone_args args = {
+> +		.flags = CLONE_FILES,
+> +		.exit_signal = SIGCHLD,
+> +	};
 > +
-> +	foo_fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
-> +	newfd = SAFE_DUP(foo_fd);
-> +	SAFE_CLOSE(foo_fd);
+> +	SAFE_FILE_SCANF(FS_NR_OPEN, "%d", &nr_open);
 > +
-> +	sprintf(path, "/proc/%d/fd/%d", getpid(), newfd);
+> +	SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_open + 1024);
 > +
-> +	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
+> +	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
+
+I don't get the point of this call, even in the kselftests. The limits 
+are overridden in the next 2 lines..
+
 > +
-> +	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
+> +	rlimit.rlim_cur = nr_open + 1024;
+> +	rlimit.rlim_max = nr_open + 1024;
 > +
-> +	TST_EXP_FAIL(
-> +		mount(BAR, path, "", MS_BIND, 0),
-> +		ENOENT,
-> +		"mount() on proc failed expectedly"
-> +	);
+> +	SAFE_SETRLIMIT(RLIMIT_NOFILE, &rlimit);
+> +
+> +	SAFE_DUP2(2, nr_open + 64);
+We have the control over file descriptors in this process, so I don't 
+see why adding such a big number of file descriptors, but I guess 
+nothing happens if we are adding high numbers. Maybe 
+rlimit.rlim_cur/rlim_max + 16 would be enough. And then here we can use 
+nr_open + 8 ...
+> +
+> +	pid = clone3(&args, sizeof(args));
+> +
+> +	if (pid < 0) {
+We can use SAFE_CLONE() here
+> +		tst_res(TFAIL | TTERRNO, "clone3() failed");
+> +		return;
+> +	}
+> +
+> +	if (!pid) {
+> +		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_open);
+> +		TST_EXP_FAIL(unshare(CLONE_FILES), EMFILE);
+> +		exit(0);
+> +	}
+> +
+> +	SAFE_WAITPID(pid, NULL, 0);
+No need for this, tst_reap_children() is running automatically at the 
+end of run().
 > +}
 > +
 > +static void setup(void)
 > +{
-> +	SAFE_CREAT(FOO, 0777);
-> +	SAFE_CREAT(BAR, 0777);
+> +	clone3_supported_by_kernel();
 > +}
 > +
 > +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test_all = run,
+> +	.forks_child = 1,
+> +	.needs_tmpdir = 1,
+Temporary folder is not used.
 > +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.min_kver = "6.12",
-We miss .tags to the kernel commit in here:
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.save_restore = (const struct tst_path_val[]) {
+> +		{FS_NR_OPEN, NULL, TST_SR_TCONF},
+> +		{}
+> +	},
 > +};
+> +
+> +#else
+> +TST_TEST_TCONF("unshare is undefined.");
+> +#endif
+>
 Kind regards,
 Andrea Cervesato
 
