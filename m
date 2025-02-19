@@ -4,92 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE95C021AA
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 02:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A15BC021AA
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 05:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1739942529; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=HDpMO0gMQ72+tmDgCdkHH4vrmu0/qW3Smp8hsyzwo6I=;
+ b=W4QLr7k0b4Nr9OykcHHyuGgzTlT3qwTDHFomtYnwcYt5QbygZ6Fi60yj5qLhIVck4c4/+
+ fzdunaydIedgFNchfyKQM6PNzSZZ7IDFhhb238+gSc62r5LpMqiKl7PTHr4THDmvBrOOCP7
+ Dx5mcHihKtc/Ufp2WoyvtsXUx33x/9w=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B5E903C280D
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 03:36:25 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6B3063C290F
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 06:22:09 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76F773C1AFC
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 03:36:08 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=chwen@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id BB4263C1769
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 06:21:48 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.61.253;
+ helo=esa8.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5073E1427612
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 03:36:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1739932566;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=48sHArHPsFz8DR7dLRVIjm1roscGc3lEFJbgtu5nA2g=;
- b=Ga3xRrua7yRKFRsD51nzQg6k937vrnLW+Z9Qh2pbY+CqaBUQX/DdCHnP5GrMQ2d8Z5Wno1
- lYmU+tf7AwjJlcANy/mMmXhyULIXy/5ZB/quHiDwJpf9MAdSiM5DlVogAfPn2DAWF5vG7u
- UYjUM0qIxIxEbhHbwqDH/DEjknB4mYE=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-599-Jq2DD8V7O3WM_iZGKwfJYQ-1; Tue, 18 Feb 2025 21:36:04 -0500
-X-MC-Unique: Jq2DD8V7O3WM_iZGKwfJYQ-1
-X-Mimecast-MFC-AGG-ID: Jq2DD8V7O3WM_iZGKwfJYQ_1739932564
-Received: by mail-yw1-f198.google.com with SMTP id
- 00721157ae682-6f28863ff05so89837147b3.1
- for <ltp@lists.linux.it>; Tue, 18 Feb 2025 18:36:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1739932564; x=1740537364;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=48sHArHPsFz8DR7dLRVIjm1roscGc3lEFJbgtu5nA2g=;
- b=W3VmpBsY3S6by7AcFYTYTITRqzZnBgLpu0sP5KGDtdurHLztvf+hNQurzWJmQE1mlL
- k+fLxf97GEmMrnuCrGZ2ZwGB7UerAMjUiEz4vfQRNsmthyu9hG9i8H5rgXOQm8E6Rb2b
- QuBesyLpuIXi2n+FxAxVkqN0IJBia8uyLQ2+yCPAI1ANgQYt8oHySl63yNoajxxafqFZ
- LbL502QvNsSU3pH7ZwLHfeWk+MSbesv9iHLtd27ytUjOIGC89Yr2liICy61L4sHUygo/
- XxFwh2umB6+68nFoEANlSE+BOKzZDOgNPrsNn1hfhi+3RCaKdaULkKFND1PhzL1wzUWO
- uiSQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVMEyDXpilHjMEQXEPC6O+xM9vIq3pjpl6x8QWWMLcImeEKmFCI9Tf9DS7Xa62LfVGnHM8=@lists.linux.it
-X-Gm-Message-State: AOJu0YwaAfdY/lm4tUw/cXHKYQTzPbpdH5hEbgzjfDq2SPTF/468hztt
- Gmb2M3IKP6MlDugJFmqjIIfSayp5phShWi45T6ZsRhsHAHID0BaFpj1sk2xEpJ8QVB9AuxWr0b+
- x5njueIjD7tEOrOXv2kjJooq1lxOg/0RDLCRVcvivA8/ArUwAqKtMEpDM8EdF1ZMV1JcCucgPsG
- 8izLuNffyxssOWAt1x0pKEzVw=
-X-Gm-Gg: ASbGncue1NXSiS+5/cz8KERvo1ea4P5Ke7itYLx8/uaRuoUMlStK0xvc2CCqV5jKtkM
- /8XqnPT62W6iBcO9GGklsDnNKqacSStgc0sAjX+U32qQKQfWwd61z7uifX4mhEtA=
-X-Received: by 2002:a05:690c:ed2:b0:6fb:9822:bbb8 with SMTP id
- 00721157ae682-6fba57a1b24mr20956377b3.35.1739932564203; 
- Tue, 18 Feb 2025 18:36:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgjseEMcUNDclkoVPOaw3jr79HpVvYKwBjfySeQ3O7j0mFaJam2tZMXhwz6VTGUmMiavMY46OmNbvbKKzHDR0=
-X-Received: by 2002:a05:690c:ed2:b0:6fb:9822:bbb8 with SMTP id
- 00721157ae682-6fba57a1b24mr20956267b3.35.1739932563854; Tue, 18 Feb 2025
- 18:36:03 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8A4D21029631
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 06:21:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1739942507; x=1771478507;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=8kYTwLzrdw1RSsHU38HAw/hSmofZFQSIBNdMJsVyF84=;
+ b=QLbixvsoLdHfw8uuecBU8ryIem+sfqrObWTuPsX6bVnH7KCuL86F3Cf8
+ pjk/93PFqhmyQp0aseTisE+ssYQ4Kv/If2wuzKhDBHfd+UGix3/FDdB08
+ cKpnyqTXzIakYcQJPxK1xQgMaGXHWASlviDp+tJPjSPoEltd4NOAJx9Dl
+ JSQ4I55lWOmMVIXH4r3WO1EGNRN0+4O98bXIGdJbudOTHm+hgN8FDw7zg
+ YTtBD9VP66WU5izfWmgxLVE4tWx0g5mmjbW/CuKBewTYUV3sDUIQiY3p7
+ ZBTckFpd5EVwaK6y98j1tqFREG3xIm8QjzRZ2ILMjLuG2o9VdSnNUYAmr Q==;
+X-CSE-ConnectionGUID: JTcrwpPlSrCIACWf9Y+nJw==
+X-CSE-MsgGUID: jwGX59k1S8qtQP4OsP+G+g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="178444357"
+X-IronPort-AV: E=Sophos;i="6.13,298,1732546800"; d="scan'208";a="178444357"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2025 14:21:43 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
+ [192.168.87.60])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 37FFADBB91
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 14:21:42 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id F1C4FD6FF9
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 14:21:41 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.135.101])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 2EFEB1A0003;
+ Wed, 19 Feb 2025 13:21:41 +0800 (CST)
+To: ltp@lists.linux.it,
+	pvorel@suse.cz
+Date: Wed, 19 Feb 2025 13:20:09 +0800
+Message-ID: <20250219052009.1020281-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20250218121745.GA2469726@pevik>
+References: <20250218121745.GA2469726@pevik>
 MIME-Version: 1.0
-References: <20250218023107.1208990-1-chwen@redhat.com>
- <D7VJNTFZM1Z5.1WXQYU2HD3T0P@marliere.net>
- <bc3276b8-8383-4ef8-a4d7-a2a786662cbd@suse.com>
-In-Reply-To: <bc3276b8-8383-4ef8-a4d7-a2a786662cbd@suse.com>
-From: Chunfu Wen <chwen@redhat.com>
-Date: Wed, 19 Feb 2025 10:35:52 +0800
-X-Gm-Features: AWEUYZn5pe6najvNsQZuGCk7EmEFSglWxI-5jwnjk28tWG1s2OiHFs2aAenf3Aw
-Message-ID: <CAAA2g-1G6q_+049zVD8=ZwuighYa6YHiXwzyXKUG8Uy3RAqaUw@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 5-rqis7p2mWObZ9qUkIP4ubiVftsDc-Q6phhEjpPngs_1739932564
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] Add test case to cover the setting resource
- limit64 for process
+Subject: [LTP] [PATCH v2] fork13: Fix the doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,41 +87,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp <ltp-bounces+ricardo=marliere.net@lists.linux.it>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8sClNlZSBpbmxpbmUgY29tbWVudHMuCkJlc3QgUmVnYXJkcywKQ2h1bmZ1IFdlbgoKT24g
-VHVlLCBGZWIgMTgsIDIwMjUgYXQgOToyOeKAr1BNIEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5j
-ZXJ2ZXNhdG9Ac3VzZS5jb20+Cndyb3RlOgoKPiBIaSEKPgo+IFRoZSB3aG9sZSB0ZXN0IGlzIGEg
-ZHVwbGljYXRpb24gb2YgdGhlIHNldHJsaW1pdDA2LCBzbyBpdCdzIGJldHRlciB0bwo+IHdvcmsg
-b24gdGhhdCBvbmUgYW5kIHRvIGludHJvZHVjZSB0aGUgNjRiaXRzIHN1cHBvcnQgdXNpbmcgNjRi
-aXQgdGVzdAo+IHZhcmlhbnQuCj4gW2Nod2VuXU1heWJlIGl0IGlzIGEgZ29vZCBpZGVhIHRvIHVz
-ZSBzZXBhcmF0ZSBzZXRybGltaXQwNy5jIGZpbGUgdG8KPiBzdXBwb3J0IHVzaW5nIDY0Yml0IHRl
-c3RpbmcsIHNpbmNlIGl0IGNhbiBicmluZyBpbnRvIHR3byBiZW5lZml0cy4gMSlhbGlnbgo+IHdp
-dGggZ2V0dHJsaW1pdCwgaXQgaGFzIHNlcGFyYXRlIGZpbGUgZ2V0cmxpbWl0MDMuYyBmb3IgNjRi
-aXRzLCBhbmQgaXQgaGVscAo+IGVhc2lseSBleHRlbmQgbW9yZSBzY2VybmFvIGNhc2VzIGZvciA2
-NGJpdHMgMikgUHV0dGluZyB0aGVtIGluIHNlcGFyYXRlCj4gZmlsZSBpcyBtb3JlIGNvbnZlbmll
-bnQgZm9yIHVzZXJzIHRvIHNlbGVjdCB0ZXN0IGNhc2Ugc3BlY2ZpYyA2NGJpdHMKPiB0ZXN0aW5n
-IG9uY2UgdXNlcnMgbmVlZCB0aGF0LgoKCgo+IEEgY291cGxlIG9mIGNvbW1lbnRzIGFib3V0IHRo
-ZSBpbXBsZW1lbnRhdGlvbjoKPgo+IC0gd2UgYXJlIGFscmVhZHkgZGVmaW5pbmcgdGhlICJzdHJ1
-Y3QgcmxpbWl0NjQiIGluc2lkZSBnZXRybGltaXQwMywgc28KPiB3ZSBuZWVkIHRvIGNyZWF0ZSBh
-IG5ldyBmaWxlIGxhcGkvcmVzb3VyY2UuaCB3aGVyZSB3ZSBtb3ZlIHRoYXQgc3RydWN0LAo+IGNo
-ZWNraW5nIGlmIEhBVkVfU1RSVUNUX1JMSU1JVDY0IGlzIG5vdCBkZWZpbmVkLiBJIGd1ZXNzIHRo
-ZSBzYW1lIHNob3VsZAo+IGJlIGRvbmUgZm9yIGdldHJsaW1pdF91NjQoKS9zZXRybGltaXRfdTY0
-KCkgc3lzY2FsbHMgZGVmaW5pdGlvbnMuIEJldHRlcgo+IHRvIG1vdmUgdGhlbSBpbiB0aGVyZSBp
-biBjYXNlIHdlIHdpbGwgbmVlZCBpdCBpbiB0aGUgZnV0dXJlIC4gV2UgY2FuCj4gc2tpcCBTQUZF
-XyogdmFyaWFudHMgYXQgdGhlIG1vbWVudCwgc2luY2Ugd2UgYXJlIG5vdCB1c2luZyB0aGVtIGFy
-b3VuZAo+IExUUCB0ZXN0IGZvciBub3cuCj4KPiAtIGluIGJvdGggc2V0cmxpbWl0MDYgYW5kIHNl
-dHJsaW1pdDA3IHdlIHNob3VsZCBwcm9iYWJseSB1c2UgdHN0X2J1ZmZlcnMKPiBmb3Igc2FmZXR5
-IHJlYXNvbnMgd2hlbiBwYXNzaW5nIHRoZSBwb2ludGVyIHRvIHRoZSBybGltaXQvcmxpbWl0NjQK
-PiBzdHJ1Y3Qgd2UgYXJlIGdvbm5hIHVzZQo+Cj4gLSBpdCdzIHdvcnRoIHRvIGNoZWNrIGlmIHRo
-ZSBvdGhlciB0ZXN0cyBtaWdodCBpbnRyb2R1Y2UgdGhlIHNhbWUgNjRiaXQKPiB2YXJpYW50cwo+
-Cj4gRllJIGkgbm90aWNlZCB0aGF0IHNldHJsaW1pdDA2IGRlc2NyaXB0aW9uIGNhbid0IGJlIGZl
-dGNoZWQgaW4gdGhlCj4gbWV0YWRhdGEgYmVjYXVzZSBpdCdzIG5vdCBpbml0aWFsaXplZCB3aXRo
-IC8qXCAuIEl0IGFsc28gbmVlZHMgdG8gYmUKPiBjaGFuZ2VkIGludG8gdGhlIFJTVCBmb3JtYXQg
-aW5zdGVhZCBvZiBhc2NpaWRvYy4KPgo+IEtpbmcgcmVnYXJkcywKPiBBbmRyZWEgQ2VydmVzYXRv
-Cj4KPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+Use :: to keep the race description as original text when viewed in RST format.
+
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+---
+ testcases/kernel/syscalls/fork/fork13.c | 27 +++++++++++++------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fork/fork13.c b/testcases/kernel/syscalls/fork/fork13.c
+index 3da698e33..add8fc77e 100644
+--- a/testcases/kernel/syscalls/fork/fork13.c
++++ b/testcases/kernel/syscalls/fork/fork13.c
+@@ -15,21 +15,22 @@
+  * implementation.  Furthermore, many shell scripts assume that pid
+  * numbers will not be used for some length of time.
+  *
+- * [Race Description]
+- * ---------------------------------------------------------------------
+- * A                                B
++ * [Race Description] ::
+  *
+- * // pid == offset == n            // pid == offset == n + 1
+- * test_and_set_bit(offset, map->page)
+- *                                  test_and_set_bit(offset, map->page);
+- *                                  pid_ns->last_pid = pid;
+- * pid_ns->last_pid = pid;
+- *                                  // pid == n + 1 is freed (wait())
++ *    ---------------------------------------------------------------------
++ *    A                                B
+  *
+- *                                  // Next fork()...
+- *                                  last = pid_ns->last_pid; // == n
+- *                                  pid = last + 1;
+- * ---------------------------------------------------------------------
++ *    // pid == offset == n            // pid == offset == n + 1
++ *    test_and_set_bit(offset, map->page)
++ *                                     test_and_set_bit(offset, map->page);
++ *                                     pid_ns->last_pid = pid;
++ *    pid_ns->last_pid = pid;
++ *                                     // pid == n + 1 is freed (wait())
++ *
++ *                                     // Next fork()...
++ *                                     last = pid_ns->last_pid; // == n
++ *                                     pid = last + 1;
++ *    ---------------------------------------------------------------------
+  */
+ 
+ #include <sys/types.h>
+-- 
+2.47.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
