@@ -4,73 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA82AC021AA
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84708C021AA
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 09:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1739958367; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=VZULfg8gt9VticfokEcpV2FWVZiVT1ycnSVwtM+WqA0=;
- b=C3lDaPNTC6sNtYVTuL82ccr5r/waUPED0+lTbMepyNfFXY5bNS7yTgi7wUi+yeQKaIbVl
- NhMQLXpzUVZ3pA0WYwIjfmuqzvE21/pe+VTfRusXHydvi1J8wrbZkhwsSO/DVqr24VzDL6h
- 2YYl7BYwHq1f55QpkhnKi3k94Us2fYE=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1739958701; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=dWstI7LRDHdx7yrJTMTLF5z7jJUW0kpmxRjgTvgtE0k=;
+ b=mwDjas3d/dZbYjg0VfLBkxgGvutRcezXZS1SNStaxQVrQe4H6JmCcS2+1r5bIycltC0d6
+ bJZ2F6cQGwH6NxnAZFKEkVNEyD3vp8KDNObmnXx2CxzdK0GZsgQVhkcq4E5SxUYh52zdA09
+ zdzAiEWfge1mM72R7x6hSICIBZdfLEw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E11B3C0503
-	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 10:46:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 88FCE3C2CCC
+	for <ltp@archiver.kernel.org>; Wed, 19 Feb 2025 10:51:41 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A81EC3C0503
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:45:45 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
- helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 503E23C25C7
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:51:18 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E33BE601CC0
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:45:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1739958345; x=1771494345;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=AHYITH5Ay2HgRlDewyuIOpo28oqJR404I/CEQm7oOe8=;
- b=Tqeq4ivsmZoGI3FMbk7qpNxuAHYwzPPQXZTmys2icQNB4aZe6fPQnzdF
- uqj0gZgyIO+bqDAMCvTJFhXqTPty2FK/z3rGZccqhmxPOuKFfua22TuKv
- HzFGmxj0sQwfoLqHT0NSWUnpP9ESc12b7h/njZbFVOSG6w5uuVMeneBgo
- RV1THh6okJDsIepQqaUW9zhkrvq4q1gxHXu8eNDMfN2+U7L6oosKhMw1b
- 8X2MAbv2FRQfBrpPg13xk0ahK9Ae5obCjM5NHvsYtmZ9z5dFsCGQbtJBP
- /f23Ge5cYo7O+S54PuKW7dpt1G4AFlg/GVh+uxvpNkjplK28prhinAALF A==;
-X-CSE-ConnectionGUID: M3wiRmG0QiuewcOZxAUy5Q==
-X-CSE-MsgGUID: pkpOSqQ8Twu83ZtEIJ6Czw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="169424719"
-X-IronPort-AV: E=Sophos;i="6.13,298,1732546800"; d="scan'208";a="169424719"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2025 18:45:43 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
- [192.168.83.66])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id CA967D4F5F
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:45:40 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 949EF17CB0
- for <ltp@lists.linux.it>; Wed, 19 Feb 2025 18:45:40 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id F12D61A0003;
- Wed, 19 Feb 2025 17:45:39 +0800 (CST)
-To: ltp@lists.linux.it
-Date: Wed, 19 Feb 2025 17:45:44 +0800
-Message-ID: <20250219094544.1048098-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3FF6B620974
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 10:51:18 +0100 (CET)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-38f325dd90eso2781061f8f.3
+ for <ltp@lists.linux.it>; Wed, 19 Feb 2025 01:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1739958677; x=1740563477; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=uVDPoAJGsJIF84iCRldDIglLiz6JtICnse/WsEZnnxI=;
+ b=AtOMZlB7pEwKc6rA0CfiyGKENsAr3fK+gFonry6Sl4HtFNzkPd9f1dbGfm4ti7kpZy
+ NtJdH5TiBKTQJXdAiXkMJmWTsV58HGS7UzV+yP0TWCcLkKzz5XwnFIYBvkRF7hheOVhU
+ jtQedSkXK5g96LkLM330RHWW4hoI2DvQ9BkBY0D8RmOnvkSWgoV6/bhCHduWrUS4ew46
+ D9uRkNvFcfTg5STjOzJQ3OT5ygwj/yQ7qtXcmuZIIzhQX8LfeTU4BiKih0wgTTzw9Kgu
+ ieQgQmqqLdvXNpT0eGlK7WOu9n0OiPUHcvxTjeGAgcVc/dX1JgXhQhh/yLnYqurQLjoY
+ xz6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1739958677; x=1740563477;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=uVDPoAJGsJIF84iCRldDIglLiz6JtICnse/WsEZnnxI=;
+ b=sQPpFMR4XTTgjyCcD0YJnrozmgM2GNd6rtyuxyYdHHk6apH78yo5MubjrpEnwmVi8d
+ uRHi1jodW4sSvguu5xYzc/LcWmjzdf7FrhNcLach3wIupvVzsVX9V1WusjGpCNP07+w0
+ ldVFsD/B1Eu6BhfOYU5lBjySdZAwhiERCXQP3bitBYTghTI/l37oaF/tFhjOOxO7GIP6
+ WMfq2ug8PDvMI8YO0wvyn4TSIT7b2/R1CMEiQ85dr8fXliVIEGHg5+SqnUaCMEfq69F+
+ 7C5seuF5k0+Epgzgqog38aizJ6d4mV1ltXsF4mcqdy0oDXadrU+xAdi1setQGwMWxJp3
+ +5nQ==
+X-Gm-Message-State: AOJu0YzQ9xeesiqhuQEQl4P0sHMqX+1QF+CQ1bQfbRPudtqOd/4rrLU2
+ 6fN3FR+Xj/nZm2cGq57OqrPJMmpXEEgnAJ7VTOUvZkNUIJlXfpsM7flo7DWmfjXes6HFMiUMq9Q
+ =
+X-Gm-Gg: ASbGncvASiNIQYfy8z1W4wdI98wL8fRPoY95q1kwv6XIwYRLJer3MN7aXCQ2Q8cf7t5
+ 3oDeFGMBHRjZUTeu7fwsG2J3HzuIrlPEVrTphTDEBJ9umgR+9PmJoWrXeELuBDNoAjnZ4SkLkw9
+ tPCu2ox9eR1EK0ydxRMIJ+crRjK//6KF0VJ0j4NFQZIYGstO2cv/Tp1fpEVoTzdOWpsHxdqEW3D
+ qNbB9LanlWmaCHryTiNUsIhlPDL6vzb6SH//jNgO64RcN74vM7teQVJ2Py257H3pmvZcMiPFDc=
+X-Google-Smtp-Source: AGHT+IHQcZc0jjn0P5npSwBLWNEXB+eDZwwhuWGZviRP66Cxe8+WrC9gQyNvEjjjlhnH59vLwk6WEA==
+X-Received: by 2002:a5d:6daa:0:b0:38f:394f:d83 with SMTP id
+ ffacd0b85a97d-38f394f9d8fmr15584277f8f.48.1739958677601; 
+ Wed, 19 Feb 2025 01:51:17 -0800 (PST)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-38f258ddbb2sm17059426f8f.40.2025.02.19.01.51.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 19 Feb 2025 01:51:17 -0800 (PST)
+Date: Wed, 19 Feb 2025 04:51:12 -0500
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z7WpkIMnaQPb5yeh@wegao>
+References: <20250217020423.31602-1-wegao@suse.com>
+ <20250218151858.GA2492575@pevik> <Z7WajlVc0xMSztSe@wegao>
+ <20250219090536.GB2544812@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250219090536.GB2544812@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getrlimit02: Fix comment indentation to fit RST format
+Subject: Re: [LTP] [PATCH v1] mount_setattr02.c: Check mount_setattr
+ attr.propagation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,39 +98,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/getrlimit/getrlimit02.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-index 20c247a0e..bbedabe28 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-@@ -8,10 +8,10 @@
-  * Test for checking error conditions for getrlimit(2):
-  *
-  * 1. getrlimit(2) returns -1 and sets errno to EFAULT if an invalid
-- *	  address is given for address parameter.
-+ *    address is given for address parameter.
-  * 2. getrlimit(2) returns -1 and sets errno to EINVAL if an invalid
-- *	  resource type (RLIM_NLIMITS is a out of range resource type) is
-- *	  passed.
-+ *    resource type (RLIM_NLIMITS is a out of range resource type) is
-+ *    passed.
-  */
- 
- #include <sys/resource.h>
--- 
-2.47.0
-
+On Wed, Feb 19, 2025 at 10:05:36AM +0100, Petr Vorel wrote:
+> > On Tue, Feb 18, 2025 at 04:18:58PM +0100, Petr Vorel wrote:
+> > > Hi Wei,
+> 
+> > > nit: I guess you want to replace dot with space in subject.
+> > You mean i s/attr.propagation/attr propagation ?
+> 
+> Yes.
+Will update it in v3
+> 
+> ...
+> > > > +#define DIRA "/DIRA_PROPAGATION_CHECK"
+> 
+> > > Is it necessary to to use directory under root?
+> > Yes. Otherwise failed will happen during mount_setattr.
+> > But i have not check for detail.
+> 
+> Ideally we would create files in TMPDIR. Specially if bug in the code leave
+> /DIRA_PROPAGATION_CHECK kept.
+Got it, will try using TMPDIR and investigate why it report error.
+> 
+> > > ...
+> Sure, it should not block your work on the test.
+> 
+> Kind regards,
+> Petr
+> 
+> > > Kind regards,
+> > > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
