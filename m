@@ -4,75 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C6BC021B2
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 09:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1740042017; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=DZUDIMEtQZCrlYJ/IJwnEao1yK5HHVtq/FWV0ubMuSo=;
- b=KroQHsfzl+a6vCfQ5Du8QeYGwex8Gq03S29Z35HsEjV2HEy+rsIAp35u0bcjwyu0KNx86
- XZFtrgF2D0/lPpBvbp0zvIpCS8mxD415l9KocHXp1b/0eYvfbOt02PW1nVa8EnSSn9GgD2c
- 1aTNBd14g0QkpUtAbv4Icdp692Ja3Gs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03E3AC021B3
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 09:29:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47B853C4F81
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 10:00:17 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 5F84C3C663B
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 10:29:56 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D2093C2F29
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:59:54 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E86943C0463
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 10:29:38 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.137;
- helo=esa11.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
  receiver=lists.linux.it)
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com
- [207.54.90.137])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B8F1F638110
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:59:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1740041994; x=1771577994;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=2jDbXyWgTDjuYiTI/rOxn2ldJWYlqPDYDEzJdei+fOA=;
- b=MwhBQlY5WSPsBjjX3ygqUxHTAJt+3Nyk68whaKg++ZJB4SCwaxF8SoIv
- sI5W70LQAHQMU1N62SacOI+8kIkEbdVE8vb52pypi0pZRTGsYzS/4mOn0
- lletmq2Q1uWaeEakuuC3xUO7a57vEGSivxN1g/RsmxdtUP1/ipbSobzj0
- jdpLaZyLuJNm8NewWL1c7kuaXQzS8worS+AAlq2SuI2/6Hv//eSZaDyq5
- WB/Nr7e9Xn2S1hcX51OWFgYdm4N4C2g/gwnWTnD/wPh9SePpYh9MUjiYT
- UyzFgnZ3vFMfFMsc8BAh/ovw78udHCmIfny2bVun6/2MGpdwaBKKSRtwa w==;
-X-CSE-ConnectionGUID: /Q4MSddSTuC4FbhQf8/jgQ==
-X-CSE-MsgGUID: 68x2VQHjSd+YyWb2dfKgqQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="170127795"
-X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="170127795"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2025 17:59:52 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 9270AD6EA7
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:59:49 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 536C4F31CD
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:59:49 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id CB6AB1A0003;
- Thu, 20 Feb 2025 16:59:48 +0800 (CST)
-To: ltp@lists.linux.it,
-	andrea.cervesato@suse.com
-Date: Thu, 20 Feb 2025 16:59:45 +0800
-Message-ID: <20250220085945.1128757-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4D7C16396EF
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 10:29:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1740043776;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ilEDaBqe9lx8NWuoLwG24YSyP9eCMVuGrPdmkq2qiAU=;
+ b=SVHoaaFwhHLtJtwv3g513qLmvuai4l+Jyg930eVSWv5lh8vAXDk62bOKOY6+wCTL2aG6NZ
+ CSGa34KROoRCCQLOr9vtTjCLUg8z8lcWwkGziiAuatdTuAtlCB06ypRupV4zvgstGqGgGF
+ h+ZTaW9KJ+a+K2LAJdDVtTqH+YAT7ss=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-270-tFuBDJOSNFikorQOmwsObQ-1; Thu,
+ 20 Feb 2025 04:29:34 -0500
+X-MC-Unique: tFuBDJOSNFikorQOmwsObQ-1
+X-Mimecast-MFC-AGG-ID: tFuBDJOSNFikorQOmwsObQ_1740043773
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 835411800373
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:29:33 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.85])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 50766180035F; Thu, 20 Feb 2025 09:29:31 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 20 Feb 2025 10:28:30 +0100
+Message-ID: <b379b9603036d9d4877f562f750e2d1515dfd962.1740042744.git.jstancek@redhat.com>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: MSpTOCgYAGoU3u8EBuzeYA855DVYSIyiHjqpEOfotnU_1740043773
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] fsync03: Convert docs to RST format
+Subject: [LTP] [PATCH] syscalls/utime03: relax the check for 1 second
+ difference
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,47 +78,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Cc: liwan@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/fsync/fsync03.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+The test is using tst_get_fs_timestamp() which is using REALTIME_COARSE
+clock, which is slightly less accurate. Back in 2022 we added extra log
+message to print also min and max time. In those rare instances where
+it fails this extra log shows it failed by one second difference.
 
-diff --git a/testcases/kernel/syscalls/fsync/fsync03.c b/testcases/kernel/syscalls/fsync/fsync03.c
-index d32c4a3e7..3eb47046e 100644
---- a/testcases/kernel/syscalls/fsync/fsync03.c
-+++ b/testcases/kernel/syscalls/fsync/fsync03.c
-@@ -4,14 +4,14 @@
-  *   Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
-  */
+Relax the check a little. Tested on aarch64 VMs, where it's usually
+reproducible after couple hundred iterations.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/utime/utime03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index 564e1de3dd77..abc2e6338af6 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -70,7 +70,7 @@ static void run(void)
+ 	SAFE_SETEUID(user_uid);
+ 	mintime = tst_get_fs_timestamp();
+ 	TST_EXP_PASS(utime(TEMP_FILE, NULL));
+-	maxtime = tst_get_fs_timestamp();
++	maxtime = tst_get_fs_timestamp() + 1;
+ 	SAFE_SETEUID(root_uid);
+ 	SAFE_STAT(TEMP_FILE, &statbuf);
  
--/*
-- * Test Description:
-- *  Testcase to check that fsync(2) sets errno correctly.
-- *  1. Call fsync() on a pipe(fd), and expect EINVAL.
-- *  2. Call fsync() on a socket(fd), and expect EINVAL.
-- *  3. Call fsync() on a closed fd, and test for EBADF.
-- *  4. Call fsync() on an invalid fd, and test for EBADF.
-- *  5. Call fsync() on a fifo(fd), and expect EINVAL.
-+/*\
-+ * Verify that, fsync(2) returns -1 and sets errno to
-+ *
-+ * - EINVAL if calling fsync() on a pipe(fd).
-+ * - EINVAL if calling fsync() on a socket(fd).
-+ * - EBADF if calling fsync() on a closed fd.
-+ * - EBADF if calling fsync() on an invalid fd.
-+ * - EINVAL if calling fsync() on a fifo(fd).
-  */
- 
- #include <unistd.h>
 -- 
-2.47.0
+2.43.0
 
 
 -- 
