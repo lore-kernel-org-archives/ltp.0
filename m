@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C857C021AD
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 07:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28FFAC021AD
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 07:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1740036752; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1740037170; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=9rIxLP+YZP6mdrwiOwuwY63/cNqeecIpBgb4zB7ex1k=;
- b=q5zu5lecarTM5U17bQ80tym5H08UicdKxu0xYboFVbw44m4qABdusyeAwfYqNuvh3yk1J
- FEoR7HWESc+Mn71vkRZPArcp6SUbP6HBje8QgZdwP7YBUSasa8zhZj40PJwCyXWLUNiau8m
- VzsHPInFiKsGqiEG3hlb9hCZrXCxKGQ=
+ bh=3IC3gamyspjNuVu8v4kEyrZnZVRw9SkBms4xm4gGCXo=;
+ b=pFHfJPJCSsgcXlxdoMsF5O0p087151+hDKixFsBSmLReWKcHxrzxynWk3oxHW+O3TWtzL
+ nZZUHSvuDENwod7MJs63bEdkk/hFc6GD7L27P42qfqB0eZpvbbV2oIytr4+AHH6e+RzW6ea
+ NRY014jbmJyoh0qfJa28RAIq9csmijM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B72643C663A
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:32:32 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 825F23C65B9
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:39:30 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 45F0A3C0FCF
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:32:10 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=207.54.90.47;
- helo=esa1.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id E80B93C0FCF
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:39:08 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
+ helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
- [207.54.90.47])
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
+ [139.138.37.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5AA4362D1EE
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:32:09 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47963652038
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:39:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1740036730; x=1771572730;
+ t=1740037148; x=1771573148;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=qkR2aruCfNSQypdhdnqRuRyEp12u09Yw3cx/nW8Qg0Q=;
- b=bzUDPIkvCY55jqNI6Y0IuVij2vZWeXydZViC0LU/+WJUN64QY2VPRiA/
- 7CwYQcDRbluheCdUmUeeDxe1nKLTn/+XfOaLLP3oJhv0KHiGMKH00OSET
- AlYL73LctgoqSPz4XqcfkZqqv3c9hbNvXrJQbd+dUZXkL0QuCLBOodT8X
- mcTm+hUiTYFj+21GgLM/r6L8gUqZqs8RJ1MBaMEfdq5kVuC66oyvzkp8o
- zEib7DY2hUUD4Yil4HbkARSuXYfN+FoiMGYjg4nekImX8ALS6Od+hQTwL
- T+Bd9Sy/KM9iNHYTWwFqzZFsaIMgyi5FYal4+rT6ZAwA9QUuuTcYQqvvT g==;
-X-CSE-ConnectionGUID: l+wQ1PVkQOqf1Njmz1YuVw==
-X-CSE-MsgGUID: fl1//uxqSKO0Ca2sPXhQ0w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="190688211"
-X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="190688211"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2025 16:32:08 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
- [192.168.83.65])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 0D527142CF
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:32:06 +0900 (JST)
+ bh=yAv2lSzk9gsvcD1fKOQcwS/Sp40vZ+f3sz1c1q89WXM=;
+ b=SE/gbrKmWf1jIE50DATYOzNDLd+Z+6Tz4hQ8fCyPJcH+1qVMKxgsXUWK
+ MQ7NBOJhAKOIeFeE3PpfgPWkPUEkcQFxggkoPGJT3nC2XyUj4dTKwgx/p
+ r52+ey+Hy2GYBWo95cIJZZ6EbdqGtee27oVwo2R9EcMtkFdd8t5rPCt3y
+ VYqKEdPmwNXVLuXp07D+HUTYiYM1wWYaz7RNbbXzah8JiRFmOdGs2IwY6
+ HkOpnE109zVRsrmuDJiD1k9Dlw7AuaqV65VFYFab+jWUC3uDrTtfFyUX1
+ 74OQJn4z+MxsY8gBNBYgAf8jqiAmOqRVx5+8dMZ5YJyKTrAeedQkZ9pZM A==;
+X-CSE-ConnectionGUID: ZGv/KGMQSBCaLxAg5Qinfw==
+X-CSE-MsgGUID: mSjNH6v6QdWxUPoHUStERA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="169570818"
+X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="169570818"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+ by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Feb 2025 16:39:06 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 4F35DC226D
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:39:04 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id BC03DD560F
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:32:05 +0900 (JST)
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 15D0AD52EF
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:39:04 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 2824A1A0003;
- Thu, 20 Feb 2025 15:32:05 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 73EFE1A0003;
+ Thu, 20 Feb 2025 15:39:03 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Thu, 20 Feb 2025 15:32:07 +0800
-Message-ID: <20250220073207.1121973-1-maxj.fnst@fujitsu.com>
+Date: Thu, 20 Feb 2025 15:39:07 +0800
+Message-ID: <20250220073907.1122535-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] pidns13: Add a blank line to fit RST format
+Subject: [LTP] [PATCH] readahead01: Fix comment indentation to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,21 +91,22 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- testcases/kernel/containers/pidns/pidns13.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/kernel/syscalls/readahead/readahead01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
-index 5b836c01f..1ea9f5cd3 100644
---- a/testcases/kernel/containers/pidns/pidns13.c
-+++ b/testcases/kernel/containers/pidns/pidns13.c
-@@ -13,6 +13,7 @@
-  * triggered by peer namespace process.
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+index fdf1bb044..890e48014 100644
+--- a/testcases/kernel/syscalls/readahead/readahead01.c
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -9,7 +9,7 @@
   *
-  * [Algorithm]
-+ *
-  * * create a pipe in parent namespace
-  * * create two PID namespace containers(cinit1 and cinit2)
-  * * in cinit1, set pipe read end to send SIGUSR1 for asynchronous I/O
+  * - EBADF when fd is not a valid file descriptor or is not open for reading.
+  * - EINVAL when fd does not refer to a file type to which readahead()
+- *          can be applied.
++ *   can be applied.
+  */
+ #define _GNU_SOURCE
+ #include <errno.h>
 -- 
 2.47.0
 
