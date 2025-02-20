@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9760C021B0
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 07:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CE47C021AD
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 07:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1740037418; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1740038024; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=F9a9/xpsFEwc48FkYwtuiH/jRXzzWk38q0FpwOO8BXg=;
- b=ld2Cq56fa04uNIKNzyAmRLd9f29wwzMMYHZUAjiBHtp8pPSBoTLj/weuXOsGxYP4QtdZX
- VBbK36NB2aXzEONAS4jF9XiqKzSZNCcB8wtPrVdnkrJ9ZbQGDFV0L/TMwoqWJNgOCJ9+U3y
- bocXSSNbjqygS3vI4HlmEPC2CLYK7L4=
+ bh=yDspC91YG3N2ZfOXjxwZ/3SBWJIjtlFncOqEb5LgF9M=;
+ b=X2WAj1Dgf0zcS3r5RFFPCHX+jkF5voD9zeah1FWC/zRkUrb2DRdWJyATxaZll55hHlXwT
+ hmkuYpj3pMXYbMGssyQvL67kjX/qd6615bemk1J/f9SCVku5T/hmKM19d81CTkvXEqqiV56
+ noM4BjipAJha8ukHGPVD/+ynaJGqNt4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 72F623C239D
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:43:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0C2E53C551A
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:53:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DF543C0FCF
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:43:16 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=68.232.139.139;
- helo=esa6.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id A4A8C3C0FCF
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:53:22 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.223;
+ helo=esa9.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
-Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com
- [68.232.139.139])
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2436A65375D
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:43:15 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2AF06226E07
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:53:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1740037396; x=1771573396;
+ t=1740038002; x=1771574002;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=T7hvW37zqxhSOGIALKwBPKNQOnC8Fwyp2s5YmVqa82c=;
- b=EZH8dl4Stqzshqszyp0iKh7LRr4vjmKzhIeTV8bfoubBMH3JvuDHNCOn
- MHHspXHak6DpUlS7PvEGbJ6sJP1u9X8Q4Pf2uCmudjRkSD3BgoQQl3LIv
- VtlYCTfwDVC/KTL2Kwp9OpISl6xC+wA9yWgAnWg9DQNy9gSoh63Bovrms
- sHkhZ+CXtQrmgH7YgfVPpaqMh7zXRL5Qa/F0Wg5DyUQWPZ4+EB9gjVpKL
- dM9C/dg9aStQlXzk5Dfm5Oo7O9y7ilbxbpoq0gqd6Y9xYjik2TkYWgjVB
- WrvHrBzQXHthUQ7PeF/eWvdtSfRuasXpo/s6C8Fdr7WGGHs36Hv7mWX11 A==;
-X-CSE-ConnectionGUID: SztdVHfxS0WmCPNKcTCZtg==
-X-CSE-MsgGUID: mEoPs3F1TFiJQHEiusKSsw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="193259957"
-X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="193259957"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2025 16:43:14 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id CF66BE8521
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:43:11 +0900 (JST)
+ bh=dEszStPLR4Wh0c1m4gMr4rHoiAJPUgm3+Wvhh+FCCNo=;
+ b=B8Q86hZTqTYntwFSg4Xy4ioO9rvVmruKjvaQidpjPjasRzWo3e34399Q
+ zBiqo5zXO30ASYEL88iCw5eOot6LmQLD/wrtQtkzKPOJCwHisDqY6lsuP
+ CMnETbLAHALgzvuLOW9VdEPqOjTIT9VaxKVupRgGBLU4ThpPLaY8crpG+
+ kedPZwgGdIrCNPML6Eur3SEgI27vKh9z71qqzMGvRrk2LhIrhWIUIJHKf
+ 73Nlemr3kWvr3pmd+RfY9tX23zWzxE+baiNp6nRz7RTD1ork0xIcVwQxx
+ 41JD+rS4TR5hOBFcntN8z33cyrBiotR0VW4fRzNkfmLI1oIG/1JgzOZdh Q==;
+X-CSE-ConnectionGUID: pO/7BekiSaS+MjWiJufN5w==
+X-CSE-MsgGUID: IvQrUKCmTRWBaD/2t68sUw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="179029366"
+X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="179029366"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Feb 2025 16:53:20 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 057BDD4807
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:53:18 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 8FED6F31A7
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:43:11 +0900 (JST)
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id BDB67BDB89
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 16:53:17 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 0D45C1A0071;
- Thu, 20 Feb 2025 15:43:11 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 2E7951A0003;
+ Thu, 20 Feb 2025 15:53:17 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Thu, 20 Feb 2025 15:43:13 +0800
-Message-ID: <20250220074313.1122911-1-maxj.fnst@fujitsu.com>
+Date: Thu, 20 Feb 2025 15:53:21 +0800
+Message-ID: <20250220075321.1123647-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sched_getparam01: Fix comment indentation to fit RST
- format
+Subject: [LTP] [PATCH] setpgid03: Fix comment indentation to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,25 +92,28 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- testcases/kernel/syscalls/sched_getparam/sched_getparam01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/setpgid/setpgid03.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-index 2c56286d6..554ef2ff5 100644
---- a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-+++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-@@ -10,9 +10,9 @@
-  * the specified process:
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+index 7f360f632..ed72fd347 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid03.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+@@ -10,12 +10,10 @@
+  * Tests setpgid(2) errors:
   *
-  * - If pid is zero, sched_getparam(2) gets the scheduling parameters
-- * for the calling process.
-+ *   for the calling process.
-  * - If pid is not zero, sched_getparam(2) gets the scheduling
-- * parameters for the specified [pid] process.
-+ *   parameters for the specified [pid] process.
+  * - EPERM The process specified by pid must not be a session leader.
+- *
+  * - EPERM The calling process, process specified by pid and the target
+- *         process group must be in the same session.
+- *
++ *   process group must be in the same session.
+  * - EACCESS Proccess cannot change process group ID of a child after child
+- *           has performed exec()
++ *   has performed exec()
   */
  
- #include <errno.h>
+ #include <unistd.h>
 -- 
 2.47.0
 
