@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24035C021B2
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1740040398; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=j1iTGHmDn/mDC4oB/vGlsgtBAaYBwUD5xRSaaQr63sQ=;
- b=BvxPpCZxnPd26Ifuj771MIgwF/TGupL2187oCy/oYipLsLRa7Lcsi6liK/EkQDtTnHNo/
- kpCT7HXUIN9i82fLmEcrtdS2VGNc0dagNMUsVMNSW0szPFrH65jrgeTDyHpJ6Fy66tT7KoH
- dH4ovev2Yadc5RvrJ96D9Ot+L0i7zfc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B853DC021B1
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 08:35:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 486D83C6751
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 09:33:18 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0554B3C0549
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 09:35:58 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03EA93C2F29
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:32:55 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.61.252;
- helo=esa7.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ by picard.linux.it (Postfix) with ESMTPS id CB2A73C0549
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:35:40 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=chwen@redhat.com;
  receiver=lists.linux.it)
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
- [139.138.61.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2ED14142D4F2
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:32:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1740040375; x=1771576375;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=JggJnK2k7MTVWjJuvpuWZ7JAZ7iMjNNpBdauAcgORis=;
- b=WzNQAMM52bLVdOoJOeqe7IKUgpCUNPpuicwt4xD/v30EAkknzJePishw
- VRq4S1OKxLTIN1GPevPfLNTbn0VOlriOkVmJE8Rko32WP/IzdbD2OSshs
- Ewx6lBLadepgbZyufAHAd12E7Dj2y22u5dGKlDSGgDf378MjqtRxl23VF
- talMkhfUzS+YWtXxCHIBxtvsNhXOnIIMx6Qz8pQdtZGzaOI0sE3s3HQUv
- BkMJiOGGyt2HTHdRuqmxOdemXuMbNqdWt/WZ8zWB0T4l9hgP8qekqQnkE
- Wof4806BdmNll+5Py2xIiGNGrhh4RTa4tq5bHlComn9vGymJ86SX6ArlW A==;
-X-CSE-ConnectionGUID: /yON46RHT8yrbyBdwXCzUg==
-X-CSE-MsgGUID: 20V88qqYS6W5bu9tUAmfQQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="169537973"
-X-IronPort-AV: E=Sophos;i="6.13,301,1732546800"; d="scan'208";a="169537973"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2025 17:32:52 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F16BAD480D
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:32:50 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id B273DBDB89
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:32:50 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 050AF1A0003;
- Thu, 20 Feb 2025 16:32:49 +0800 (CST)
-To: ltp@lists.linux.it,
-	andrea.cervesato@suse.com
-Date: Thu, 20 Feb 2025 16:32:45 +0800
-Message-ID: <20250220083245.1126543-1-maxj.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250219094544.1048098-1-maxj.fnst@fujitsu.com>
-References: <20250219094544.1048098-1-maxj.fnst@fujitsu.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 23D7B1011832
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 09:35:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1740040538;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+xBt0cSuuHkJ6iI9nIDaj+VH3q8u5B4DS0iy8Kuozro=;
+ b=glDfACCZjUZGg3n7TAEq4uQbMvoJdF01Nv1Au7jvfLVPicFvkoMWuUFVvZ0BX55ND9dlU/
+ Lp0ElurnW4P0B1Ge73AfV89EQOu43ru9yOJWS+iFxGFBNrZM25yDFNjtQRjm17uRz9Lq3e
+ IJK7Qn+p/I/7KoRqdl+nsmaG/OLsXjk=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-155-r9GV1rPCO6eeIz47cUjMrg-1; Thu,
+ 20 Feb 2025 03:35:36 -0500
+X-MC-Unique: r9GV1rPCO6eeIz47cUjMrg-1
+X-Mimecast-MFC-AGG-ID: r9GV1rPCO6eeIz47cUjMrg_1740040535
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id CF11D180087F
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:35:35 +0000 (UTC)
+Received: from dell-per430-17.gsslab.pek2.redhat.com
+ (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 2DE3D1800265; Thu, 20 Feb 2025 08:35:33 +0000 (UTC)
+From: Chunfu Wen <chwen@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 20 Feb 2025 03:35:28 -0500
+Message-ID: <20250220083528.1361819-1-chwen@redhat.com>
+In-Reply-To: <20250219164449.GB2590174@pevik>
+References: <20250219164449.GB2590174@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: zgsq-4M9oqq6gRNMVm7_BfGGDgODYTfdd_NO4KSj0aU_1740040535
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] getrlimit02: Fix the doc to fit RST format
+Subject: [LTP] [PATCH v3] Add test case to cover the setting resource
+ limit64 for process
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,42 +82,143 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ma Xinjian via ltp <ltp@lists.linux.it>
-Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/getrlimit/getrlimit02.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+From: chunfuwen <chwen@redhat.com>
 
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-index 20c247a0e..0d7c2bb32 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-@@ -5,13 +5,11 @@
-  */
+The test ensures that the process gets the correct signals in the correct order:
+
+First, it should get SIGXCPU after reaching the soft CPU time limit64.
+Then, if the CPU time exceeds the hard limit, it should receive SIGKILL
+
+Signed-off-by: chunfuwen <chwen@redhat.com>
+---
+Changes in v3:
+- Add test logic into current existed file :setrlimit06.c
+- Remove setrlimit07.c file
+- Use test_variants to loop different types
+- Address review comments related to lapi/resurce.h
+- Fix make check issue:while (1) on previous setrlimit06.c file
+- Link to v1:https://lore.kernel.org/all/20250218023107.1208990-1-chwen@redhat.com/
+- Note: it looks like while (1) can not be replaced here after testing by either usleep() or TST_CHECKPOINT_WAKE
+---
+ include/lapi/resource.h                       | 28 +++++++++++++++
+ .../kernel/syscalls/setrlimit/setrlimit06.c   | 34 +++++++++++++++----
+ 2 files changed, 55 insertions(+), 7 deletions(-)
+ create mode 100644 include/lapi/resource.h
+
+diff --git a/include/lapi/resource.h b/include/lapi/resource.h
+new file mode 100644
+index 000000000..a9bc57a0a
+--- /dev/null
++++ b/include/lapi/resource.h
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++#ifndef LAPI_RESOURCE_H__
++#define LAPI_RESOURCE_H__
++
++#define _GNU_SOURCE
++
++#include "config.h"
++#include <sys/resource.h>
++#include "lapi/syscalls.h"
++
++#ifndef HAVE_STRUCT_RLIMIT64
++struct rlimit64 {
++        uint64_t rlim_cur;
++        uint64_t rlim_max;
++};
++#endif
++
++static int setrlimit_u64(int resource, const struct rlimit64 *rlim)
++{
++        return tst_syscall(__NR_prlimit64, 0, resource, rlim, NULL);
++}
++
++#endif /* LAPI_RESOURCE_H__ */
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+index 9ff515d81..f40774de7 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit06.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+@@ -27,6 +27,12 @@
+ #include <sys/mman.h>
  
- /*\
-- * Test for checking error conditions for getrlimit(2):
-+ * Verify that, getrlimit(2) returns -1 and sets errno to 
-  *
-- * 1. getrlimit(2) returns -1 and sets errno to EFAULT if an invalid
-- *	  address is given for address parameter.
-- * 2. getrlimit(2) returns -1 and sets errno to EINVAL if an invalid
-- *	  resource type (RLIM_NLIMITS is a out of range resource type) is
-- *	  passed.
-+ * - EFAULT if an invalid address is given for address parameter.
-+ * - EINVAL if an invalid resource type (RLIM_NLIMITS is a out of
-+ *   range resource type) is passed.
-  */
+ #include "tst_test.h"
++#include "lapi/resource.h"
++
++#define TEST_VARIANTS 2
++
++static struct rlimit *rlim;
++static struct rlimit64 *rlim_64;
  
- #include <sys/resource.h>
+ static int *end;
+ 
+@@ -37,6 +43,11 @@ static void sighandler(int sig)
+ 
+ static void setup(void)
+ {
++	rlim->rlim_cur = 1;
++	rlim->rlim_max = 2;
++	rlim_64->rlim_cur = 1;
++	rlim_64->rlim_max = 2;
++
+ 	SAFE_SIGNAL(SIGXCPU, sighandler);
+ 
+ 	end = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
+@@ -58,12 +69,14 @@ static void verify_setrlimit(void)
+ 
+ 	pid = SAFE_FORK();
+ 	if (!pid) {
+-		struct rlimit rlim = {
+-			.rlim_cur = 1,
+-			.rlim_max = 2,
+-		};
+-
+-		TEST(setrlimit(RLIMIT_CPU, &rlim));
++		switch (tst_variant) {
++		case 0:
++			TEST(setrlimit(RLIMIT_CPU, rlim));
++		break;
++		case 1:
++			TEST(setrlimit_u64(RLIMIT_CPU, rlim_64));
++		break;
++		}
+ 		if (TST_RET == -1) {
+ 			tst_res(TFAIL | TTERRNO,
+ 				"setrlimit(RLIMIT_CPU) failed");
+@@ -72,7 +85,8 @@ static void verify_setrlimit(void)
+ 
+ 		alarm(20);
+ 
+-		while (1);
++		while (1)
++			;
+ 	}
+ 
+ 	SAFE_WAITPID(pid, &status, 0);
+@@ -112,6 +126,12 @@ static void verify_setrlimit(void)
+ static struct tst_test test = {
+ 	.test_all = verify_setrlimit,
+ 	.setup = setup,
++	.test_variants = TEST_VARIANTS,
++	.bufs = (struct tst_buffers []) {
++		{&rlim, .size = sizeof(*rlim)},
++		{&rlim_64, .size = sizeof(*rlim_64)},
++		{}
++	},
+ 	.cleanup = cleanup,
+ 	.forks_child = 1,
+ 	.tags = (const struct tst_tag[]) {
 -- 
-2.47.0
+2.43.5
 
 
 -- 
