@@ -4,104 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B354C021B1
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 18:50:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61403C021B1
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 19:00:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF3D83C7ACE
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 19:50:53 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id AF6D53C79AA
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 20:00:06 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 370FF3C0465
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 19:50:36 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 040A33C0572
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 19:59:49 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 727F51A09B0A
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 19:50:34 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8F1091F38F;
- Thu, 20 Feb 2025 18:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740077433;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3mAgeTxSAdu/tWsLhE16VOffBlYQ0u9ic275GezsMZw=;
- b=NMqh1uiEsRNdu5mNB4Xh1o9S1AnmsWx0xqtWAht+om+OGu0eDSSRSrzrLO9D/JpSUkRhZG
- t5qwxsolyt18TwZiYgY9oq7U0jXiDWnC3Xvvugixb+Z42q4bHolQwOOspi7FG2Fi5f4yl3
- +K93uVWyx2Y7TFtjgUhfXH3EAWrW1tw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740077433;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3mAgeTxSAdu/tWsLhE16VOffBlYQ0u9ic275GezsMZw=;
- b=ATRyU21BSlJwSmBERdzIk1rU9pdeMx6Inddk2TxumgRPrsTxT+xH/5PNxxjatLjfjm8zkW
- 2HLO6kVR9E+W7DBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740077432;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3mAgeTxSAdu/tWsLhE16VOffBlYQ0u9ic275GezsMZw=;
- b=JrZROVnLQ5iyz30NTs9VC7GbbNjRN2R4ir4f0HqPxTGNCoeK0uoSmaIprX4nqO2rSoMLG/
- EIChv5psVU14JEtWtguCO9MMaCDfYjwTpFDQeIzNky6envTmjtarRA5d3S6/U8esx4dcLr
- r8Y3g9LDFft9HcQby312M7IaJxk31rw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740077432;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3mAgeTxSAdu/tWsLhE16VOffBlYQ0u9ic275GezsMZw=;
- b=ZrmfCPjQV6kwY1kUgWBFiqn6C10yRCx+TiuEXwM5fRGYw259oWn2BUZuNajRI96epA4PNU
- 2OI0gfwabyuqvCDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E2C1713A42;
- Thu, 20 Feb 2025 18:50:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7/X1Lnd5t2cIMAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Feb 2025 18:50:31 +0000
-Date: Thu, 20 Feb 2025 19:50:26 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <20250220185026.GA2712942@pevik>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81B49220C42
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 19:59:47 +0100 (CET)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51KH1dch009312;
+ Thu, 20 Feb 2025 18:59:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=OQkyoP
+ DDFoOqdoxDmIN7TKNLFJjbaD8hujTu/sC9V+w=; b=UYiOD7h5lnzsm2FAOcFPu8
+ oxXN4ZkZvUAtAUa9yWZVn/Tt1Fe6HdGNY3+LFYzGpE9lkVb9qLLTp1TrGkRaH+tr
+ woBAqu2jyY0sRxPjW7vN2yl/+Yju+MCRGjx3fmIbUMI6Q/jtHWPlcUW6sOKdXFTi
+ ur3d2jbGRaoPkb9hbbtLR3A0lWgNGXl+GcEaD66GvKdRaoWeiWGMbrMyuLcOw1GG
+ nLHxGWkL3jV7o/B2h8k/CUHup/85yIhFH8FZO3/1bdQBJCcV6+HJj1ypxnAKTQVR
+ lzF/mzohRFuBCVZFZh1rt30eyoCiTtA9jNYtI5T93mGrPl5A2AujUKxjkU/K05Ig
+ ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44wu80csx0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 18:59:46 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51KI9rLR029299;
+ Thu, 20 Feb 2025 18:59:45 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44w024kpp1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 18:59:45 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com
+ [10.39.53.229])
+ by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 51KIxj3U65470928
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 20 Feb 2025 18:59:45 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3F92358059;
+ Thu, 20 Feb 2025 18:59:45 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id C46E658058;
+ Thu, 20 Feb 2025 18:59:44 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.31.103.152]) by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 20 Feb 2025 18:59:44 +0000 (GMT)
+Message-ID: <fd10e47b4c8b6af0e8d37975cdf1e82133add8c3.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Feb 2025 13:59:44 -0500
+In-Reply-To: <20250220181604.GA2709977@pevik>
 References: <20250220160054.12149-1-zohar@linux.ibm.com>
+ <20250220160054.12149-3-zohar@linux.ibm.com>
+ <20250220181604.GA2709977@pevik>
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250220160054.12149-1-zohar@linux.ibm.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xY-Nj3lZjWuHGwMvP2VebYEjdVSNyG5j
+X-Proofpoint-ORIG-GUID: xY-Nj3lZjWuHGwMvP2VebYEjdVSNyG5j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-20_08,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015
+ priorityscore=1501 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502200130
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/3] Update validate() to support multiple
- violations
+Subject: Re: [LTP] [RFC PATCH 3/3] ima: additional ToMToU violation tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,104 +102,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
  Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi,
-
-> Add support for the number of expected violations.  Include the
-> expected number of violations in the output.
-
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->  .../security/integrity/ima/tests/ima_violations.sh     | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-> index 37d8d473c..7f0382fb8 100755
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-> @@ -71,20 +71,26 @@ validate()
->  	local num_violations="$1"
->  	local count="$2"
->  	local search="$3"
-> +	local expected_violations=$4
-nit: safer to quote as much as possible (="$4") to avoid errors.
-
->  	local max_attempt=3
->  	local count2 i num_violations_new
-
-> +	[ -z $expected_violations ] && expected_violations=1
-Also here: -z "$expected_violations"
-
-I can add quotes before merge if you don't want to bother (I would send you a
-diff to ack it before merging).
-
-> +
->  	for i in $(seq 1 $max_attempt); do
->  		read num_violations_new < $IMA_VIOLATIONS
->  		count2="$(get_count $search)"
-> -		if [ $(($num_violations_new - $num_violations)) -gt 0 ]; then
-> +		if [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
->  			if [ $count2 -gt $count ]; then
-> -				tst_res TPASS "$search violation added"
-> +				tst_res TPASS "$expected_violations $search violation(s) added"
->  				return
->  			else
->  				tst_res TINFO "$search not found in $LOG ($i/$max_attempt attempt)..."
->  				tst_sleep 1s
->  			fi
-> +		elif [ $(($num_violations_new - $num_violations)) -gt 0 ]; then
-> +			tst_res $IMA_FAIL "$search too many violations added"
-nit: maybe print values for debugging?
-
-			tst_res $IMA_FAIL "$search too many violations added: $num_violations_new - $num_violations"
-
-FYI failing tests has 2 or 3 higher:
-
-ima_violations 1 TINFO: SUT has required policy content
-ima_violations 1 TINFO: using log /var/log/audit/audit.log
-ima_violations 1 TINFO: verify open writers violation
-ima_violations 1 TFAIL: open_writers too many violations added: 106 - 104
-ima_violations 2 TINFO: verify ToMToU violation
-ima_violations 2 TFAIL: ToMToU too many violations added: 109 - 107
-ima_violations 3 TINFO: verify open_writers using mmapped files
-tst_test.c:1900: TINFO: LTP version: 20250130-22-gcd2215702f
-tst_test.c:1904: TINFO: Tested kernel: 6.13.0-2.g0127a37-default #1 SMP PREEMPT_DYNAMIC Thu Jan 23 11:21:55 UTC 2025 (0127a37) x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
-ima_mmap.c:38: TINFO: sleep 3s
-ima_violations 3 TFAIL: open_writers too many violations added: 112 - 110
-ima_mmap.c:41: TPASS: test completed
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-ima_violations 4 TINFO: verify limiting single open writer violation
-ima_violations 4 TFAIL: open_writers too many violations added: 116 - 113
-ima_violations 5 TINFO: verify limiting multiple open writers violations
-ima_violations 5 TFAIL: open_writers too many violations added: 121 - 117
-ima_violations 6 TINFO: verify new open writer causes additional violation
-ima_violations 6 TFAIL: open_writers too many violations added: 126 - 122
-ima_violations 7 TINFO: verify limiting single open reader ToMToU violations
-ima_violations 7 TFAIL: ToMToU too many violations added: 130 - 127
-ima_violations 8 TINFO: verify new open reader causes additional ToMToU violation
-ima_violations 8 TFAIL: ToMToU too many violations added: 134 - 131
-
-As I noted in previous mail, either has of a backport (can be added later, we
-don't have to wait for merging) or skip on older kernels (tst_kvcmp -lt ...).
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCAyMDI1LTAyLTIwIGF0IDE5OjE2ICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+IEhp
+IE1pbWksCj4gCj4gPiBLZXJuZWwgcGF0Y2ggImltYTogbGltaXQgdGhlIG51bWJlciBvZiBUb01U
+b1UgaW50ZWdyaXR5IHZpb2xhdGlvbnMiCj4gPiBwcmV2ZW50cyBzdXBlcmZsdW91cyBUb01Ub1Ug
+dmlvbGF0aW9ucy7CoCBBZGQgY29ycmVzcG9uZGluZyBMVFAgdGVzdHMuCj4gCj4gPiBMaW5rOgo+
+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtaW50ZWdyaXR5LzIwMjUwMjE5MTYyMTMx
+LjQxNjcxOS0zLXpvaGFyQGxpbnV4LmlibS5jb20vCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaW1pIFpv
+aGFyIDx6b2hhckBsaW51eC5pYm0uY29tPgo+IAo+IFVuZm9ydHVuYXRlbHkgdGVzdHMgZmFpbCBv
+biBib3RoIG1haW5saW5lIGtlcm5lbCBhbmQga2VybmVsIHdpdGggeW91ciBwYXRjaGVzLgoKVGhl
+IG5ldyBMVFAgSU1BIHZpb2xhdGlvbnMgcGF0Y2hlcyBzaG91bGQgZmFpbCB3aXRob3V0IHRoZSBh
+c3NvY2lhdGVkIGtlcm5lbCBwYXRjaGVzLgo+IAo+IEFueSBoaW50IHdoYXQgY291bGQgYmUgd3Jv
+bmc/CgpPZiBjb3Vyc2UgaXQncyBkZXBlbmRlbnQgb24gdGhlIElNQSBwb2xpY3kuICBUaGUgdGVz
+dHMgYXNzdW1lIGJlaW5nIGJvb3RlZCB3aXRoIHRoZSBJTUEKVENCIG1lYXN1cmVtZW50IHBvbGlj
+eSBvciBzaW1pbGFyIHBvbGljeSBiZWluZyBsb2FkZWQuICBDYW4geW91IHNoYXJlIHRoZSBJTUEg
+cG9saWN5PwplLmcuIGNhdCAvc3lzL2tlcm5lbC9zZWN1cml0eS9pbWEvcG9saWN5Cgp0aGFua3Ms
+CgpNaW1pCgo+IAo+IE1haW5saW5lIGtlcm5lbCAob24ga2VybmVsIHdpdGggeW91ciBwYXRjaGVz
+IGl0IGxvb2tzIHRoZSBzYW1lKToKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBSdW5uaW5nOiBp
+bWFfdmlvbGF0aW9ucy5zaAo+IGltYV92aW9sYXRpb25zIDEgVElORk86IFRlc3RlZCBrZXJuZWw6
+IExpbnV4IHRzIDYuMTMuMC0yLmcwMTI3YTM3LWRlZmF1bHQgIzEgU01QCj4gUFJFRU1QVF9EWU5B
+TUlDIFRodSBKYW4gMjMgMTE6MjE6NTUgVVRDIDIwMjUgKDAxMjdhMzcpIHg4Nl82NCB4ODZfNjQg
+eDg2XzY0IEdOVS9MaW51eAo+IGltYV92aW9sYXRpb25zIDEgVElORk86IFVzaW5nIC90bXAvTFRQ
+X2ltYV92aW9sYXRpb25zLmNLbTM0WFZaazIgYXMgdG1wZGlyICh0bXBmcwo+IGZpbGVzeXN0ZW0p
+Cj4gdHN0X2RldmljZS5jOjk5OiBUSU5GTzogRm91bmQgZnJlZSBkZXZpY2UgMCAnL2Rldi9sb29w
+MCcKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBGb3JtYXR0aW5nIGV4dDMgd2l0aCBvcHRzPScv
+ZGV2L2xvb3AwJwo+IGltYV92aW9sYXRpb25zIDEgVElORk86IE1vdW50aW5nIGRldmljZTogbW91
+bnQgLXQgZXh0MyAvZGV2L2xvb3AwCj4gL3RtcC9MVFBfaW1hX3Zpb2xhdGlvbnMuY0ttMzRYVlpr
+Mi9tbnRwb2ludAo+IGltYV92aW9sYXRpb25zIDEgVElORk86IHRpbWVvdXQgcGVyIHJ1biBpcyAw
+aCA1bSAwcwo+IGltYV92aW9sYXRpb25zIDEgVElORk86IElNQSBrZXJuZWwgY29uZmlnOgo+IGlt
+YV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUE9eQo+IGltYV92aW9sYXRpb25zIDEgVElO
+Rk86IENPTkZJR19JTUFfTUVBU1VSRV9QQ1JfSURYPTEwCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5G
+TzogQ09ORklHX0lNQV9MU01fUlVMRVM9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJ
+R19JTUFfTkdfVEVNUExBVEU9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFf
+REVGQVVMVF9URU1QTEFURT0iaW1hLW5nIgo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJ
+R19JTUFfREVGQVVMVF9IQVNIX1NIQTI1Nj15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09O
+RklHX0lNQV9ERUZBVUxUX0hBU0g9InNoYTI1NiIKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBD
+T05GSUdfSU1BX1JFQURfUE9MSUNZPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdf
+SU1BX0FQUFJBSVNFPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FSQ0hf
+UE9MSUNZPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFX0JP
+T1RQQVJBTT15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9BUFBSQUlTRV9N
+T0RTSUc9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTUVBU1VSRV9BU1lN
+TUVUUklDX0tFWVM9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfUVVFVUVf
+RUFSTFlfQk9PVF9LRVlTPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1NF
+Q1VSRV9BTkRfT1JfVFJVU1RFRF9CT09UPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05G
+SUdfSU1BX0RJU0FCTEVfSFRBQkxFPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiAvcHJvYy9j
+bWRsaW5lOiBCT09UX0lNQUdFPS9ib290L3ZtbGludXotNi4xMy4wLTIuZzAxMjdhMzctCj4gZGVm
+YXVsdCByb290PVVVSUQ9ZTM2YjIzNjYtMWFmMi00NDA4LTkwM2MtMWZjYTgyYzYwZjRjIHNwbGFz
+aD1zaWxlbnQgdmlkZW89MTAyNHg3NjgKPiBwbHltb3V0aC5pZ25vcmUtc2VyaWFsLWNvbnNvbGVz
+IGNvbnNvbGU9dHR5UzAgY29uc29sZT10dHkga2VybmVsLnNvZnRsb2NrdXBfcGFuaWM9MQo+IHJl
+c3VtZT0vZGV2L2Rpc2svYnktdXVpZC9jM2I4NjVmOS01ZDViLTQxMGUtYTZkMS05ZWJjZjcyMTU4
+NGMgbWl0aWdhdGlvbnM9YXV0bwo+IHNlY3VyaXR5PWFwcGFybW9yIGlnbm9yZV9sb2dsZXZlbAo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86ICRUTVBESVIgaXMgb24gdG1wZnMgPT4gcnVuIG9uIGxv
+b3AgZGV2aWNlCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogdGVzdCByZXF1aXJlcyBJTUEgcG9s
+aWN5Ogo+IG1lYXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIGV1aWQ9MAo+IG1l
+YXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIHVpZD0wCj4gaW1hX3Zpb2xhdGlv
+bnMgMSBUSU5GTzogU1VUIGhhcyByZXF1aXJlZCBwb2xpY3kgY29udGVudAo+IGltYV92aW9sYXRp
+b25zIDEgVElORk86IHVzaW5nIGxvZyAvdmFyL2xvZy9hdWRpdC9hdWRpdC5sb2cKPiBpbWFfdmlv
+bGF0aW9ucyAxIFRJTkZPOiB2ZXJpZnkgb3BlbiB3cml0ZXJzIHZpb2xhdGlvbgo+IGltYV92aW9s
+YXRpb25zIDEgVEZBSUw6IG9wZW5fd3JpdGVycyB0b28gbWFueSB2aW9sYXRpb25zIGFkZGVkCj4g
+aW1hX3Zpb2xhdGlvbnMgMiBUSU5GTzogdmVyaWZ5IFRvTVRvVSB2aW9sYXRpb24KPiBpbWFfdmlv
+bGF0aW9ucyAyIFRGQUlMOiBUb01Ub1UgdG9vIG1hbnkgdmlvbGF0aW9ucyBhZGRlZAo+IGltYV92
+aW9sYXRpb25zIDMgVElORk86IHZlcmlmeSBvcGVuX3dyaXRlcnMgdXNpbmcgbW1hcHBlZCBmaWxl
+cwo+IHRzdF90ZXN0LmM6MTkwMDogVElORk86IExUUCB2ZXJzaW9uOiAyMDI1MDEzMC0yMi1nY2Qy
+MjE1NzAyZgo+IHRzdF90ZXN0LmM6MTkwNDogVElORk86IFRlc3RlZCBrZXJuZWw6IDYuMTMuMC0y
+LmcwMTI3YTM3LWRlZmF1bHQgIzEgU01QIFBSRUVNUFRfRFlOQU1JQwo+IFRodSBKYW4gMjMgMTE6
+MjE6NTUgVVRDIDIwMjUgKDAxMjdhMzcpIHg4Nl82NAo+IHRzdF9rY29uZmlnLmM6ODg6IFRJTkZP
+OiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9wcm9jL2NvbmZpZy5neicKPiB0c3Rfa2NvbmZpZy5j
+OjY3NjogVElORk86IENPTkZJR19GQVVMVF9JTkpFQ1RJT04ga2VybmVsIG9wdGlvbiBkZXRlY3Rl
+ZCB3aGljaCBtaWdodCBzbG93Cj4gdGhlIGV4ZWN1dGlvbgo+IHRzdF90ZXN0LmM6MTcyMjogVElO
+Rk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVuIGlzIDBoIDAybSAwMHMKPiBpbWFfbW1hcC5jOjM4
+OiBUSU5GTzogc2xlZXAgM3MKPiBpbWFfdmlvbGF0aW9ucyAzIFRGQUlMOiBvcGVuX3dyaXRlcnMg
+dG9vIG1hbnkgdmlvbGF0aW9ucyBhZGRlZAo+IGltYV9tbWFwLmM6NDE6IFRQQVNTOiB0ZXN0IGNv
+bXBsZXRlZAo+IAo+IFN1bW1hcnk6Cj4gcGFzc2VkwqDCoCAxCj4gZmFpbGVkwqDCoCAwCj4gYnJv
+a2VuwqDCoCAwCj4gc2tpcHBlZMKgIDAKPiB3YXJuaW5ncyAwCj4gaW1hX3Zpb2xhdGlvbnMgNCBU
+SU5GTzogdmVyaWZ5IGxpbWl0aW5nIHNpbmdsZSBvcGVuIHdyaXRlciB2aW9sYXRpb24KPiBpbWFf
+dmlvbGF0aW9ucyA0IFRGQUlMOiBvcGVuX3dyaXRlcnMgdG9vIG1hbnkgdmlvbGF0aW9ucyBhZGRl
+ZAo+IGltYV92aW9sYXRpb25zIDUgVElORk86IHZlcmlmeSBsaW1pdGluZyBtdWx0aXBsZSBvcGVu
+IHdyaXRlcnMgdmlvbGF0aW9ucwo+IGltYV92aW9sYXRpb25zIDUgVEZBSUw6IG9wZW5fd3JpdGVy
+cyB0b28gbWFueSB2aW9sYXRpb25zIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNiBUSU5GTzogdmVy
+aWZ5IG5ldyBvcGVuIHdyaXRlciBjYXVzZXMgYWRkaXRpb25hbCB2aW9sYXRpb24KPiBpbWFfdmlv
+bGF0aW9ucyA2IFRGQUlMOiBvcGVuX3dyaXRlcnMgdG9vIG1hbnkgdmlvbGF0aW9ucyBhZGRlZAo+
+IGltYV92aW9sYXRpb25zIDcgVElORk86IHZlcmlmeSBsaW1pdGluZyBzaW5nbGUgb3BlbiByZWFk
+ZXIgVG9NVG9VIHZpb2xhdGlvbnMKPiBpbWFfdmlvbGF0aW9ucyA3IFRGQUlMOiBUb01Ub1UgdG9v
+IG1hbnkgdmlvbGF0aW9ucyBhZGRlZAo+IGltYV92aW9sYXRpb25zIDggVElORk86IHZlcmlmeSBu
+ZXcgb3BlbiByZWFkZXIgY2F1c2VzIGFkZGl0aW9uYWwgVG9NVG9VIHZpb2xhdGlvbgo+IGltYV92
+aW9sYXRpb25zIDggVEZBSUw6IFRvTVRvVSB0b28gbWFueSB2aW9sYXRpb25zIGFkZGVkCj4gCj4g
+S2luZCByZWdhcmRzLAo+IFBldHIKPiAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
+bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
