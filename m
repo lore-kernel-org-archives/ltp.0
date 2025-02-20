@@ -4,76 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1425C021B2
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 16:25:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FCCC021B1
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 16:46:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C33D3C6BA8
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 17:25:49 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 799083C76FD
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 17:46:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4EAA3C02D2
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:25:30 +0100 (CET)
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com
- [IPv6:2607:f8b0:4864:20::e33])
+ by picard.linux.it (Postfix) with ESMTPS id 706363C054A
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:46:18 +0100 (CET)
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com
+ [IPv6:2607:f8b0:4864:20::c33])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 78F9E101C5B1
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:25:29 +0100 (CET)
-Received: by mail-vs1-xe33.google.com with SMTP id
- ada2fe7eead31-4be66604050so381629137.3
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:25:29 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4D9586009AF
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:46:18 +0100 (CET)
+Received: by mail-oo1-xc33.google.com with SMTP id
+ 006d021491bc7-5fce5eee2beso718136eaf.0
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 08:46:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1740068728; x=1740673528; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=o4NVZ4u4g0mYQeqWa/31JJuaJEaKiBQfTCzwM9NxQa8=;
- b=Qk+XJrcq07NZg2RQao8bMjeBCm8+M0nnxCh/2Aj/GM9O1lMvbRi5QAZJ52oDXG4/ml
- 0EVKGWQFxnbAWCrcqn74gRySFWwlK7PynlA71THV8bP5Z+sXEK0qyq77nY+nkPRQHGy6
- WxJ87Y86UzQJE8z6wjwJO6jn3G/qyDLpLxzvSWalSCD6/4vFzgIw7wd3pAf6KltDy2P6
- JiBE0/4MzjSXHTdrKFzrs8KmJ1YE96Bou9ZuXK8SqW1Sgh70rMkQjaXTetr/oCAf8Rxo
- Lirf3EU/Tq66+L/wABP3s7CbMC6dWlrijd6aQln7AUdLKvXex3d3aF9S7FORlxzVORIb
- ux6Q==
+ d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1740069977; x=1740674777;
+ darn=lists.linux.it; 
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Rh4eTXTu+c11RkR0T9DFkG9ZleZyfYRGduufAwusFKE=;
+ b=Hzqhivi6WPqN7pZSw/hD4QAtRAzfVfqoCnNbtwmZRGTkEYelaQ0Jm0JeC4cjCgj1Xe
+ v8YdB0unrIY/SZG0Zpl8+LNiQmeaNioK/GStuCzDuBYjPBkCe1M7NCxRVSF1F+1sl2F8
+ JKkr88IZ+ZV2GdripPj9AwHvYhfaRFjqWlJFJvRHQRaeB5jAq6jBmAt7FlXNBKXXGXuF
+ 4HndlBIzciZnQjMUd+S8KHRvhE80EtWL92KS7RyjV7HyCQme9D0WhIy3AYchfOH2N6oZ
+ nPBS84w0HkdD2sG2paQ3q882SUZD96mIp6NtK60jHTL/kNIqey6IblN6X4ff35gzudcC
+ DQAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1740068728; x=1740673528;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=o4NVZ4u4g0mYQeqWa/31JJuaJEaKiBQfTCzwM9NxQa8=;
- b=gOyF5wbBaVneSsRSxtJN2idWdP5jYFai3VgLpAhzQJfOjeLdUX8WAkRcoOXIzQ99ZX
- ZpUbW3gt7cOmCnujueAjLvU4gbYXkVyZlYtVeDSoKGaH7J4CS+JmENLlYqdLdG5UWK9T
- 9YLh2OLIieG0ModK/Y1aiOQ6Lj77oI9LT2Mp1aOcuuBHIxW7KNnjdU0MCPKmJZ2zJg+l
- GG7U1Lran9Tb0jQs1lL7lTDEwFjI2++0mCHH3ayk0axK75OCHeL3jkIna7b5+5DoO3sU
- XztWlAOJAH0uxq9muq91/BZQR9SHN1mudwEPAdq53CURYjliwkaSEfl6FOwBO1tN8zfv
- s0Tw==
+ d=1e100.net; s=20230601; t=1740069977; x=1740674777;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=Rh4eTXTu+c11RkR0T9DFkG9ZleZyfYRGduufAwusFKE=;
+ b=Vi7GgWyy7zSeLeBTmaA2/OcTL+BXM7qmYxWKbim5xUa8ehTA5p46rQVjMxMtNBdA9c
+ biBOQQb6iT6pxoaxCTVBOGWdhVWDFYxTT1DtTKr1Bb56ZwZ0riuEgDWOFYcAWXQQiPyj
+ 57MMCjeZhkrbr/oHg+ep/NGVquV+YvK0HVoHWCRcJ3cwFDXLKbo7pdARlIgfy4isMz2b
+ uy1r0G+eCQ0nIiL31ICtRXKonHWelgI6K3uH0Mfe0u/+O3KBYuFeeA5r2dHpZK1yWQJH
+ OkxNOfdj7B42+Fig20viFXiBeQ1GsOqNlr5i8b5ZsGubtL905BG6hVojjcfWydVoaZt4
+ ED3w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUnuYDyx8vdaNzDp7XCmO8QSLPcB8WyDn6QhLhjV7/lDfrQdLXNj8O+wwOqn0wHiN07AYs=@lists.linux.it
-X-Gm-Message-State: AOJu0Yy2rNdUQqGvjU2FKWI4k/oPqUJGS3G1RWPiQzvUAWPTzwKsHTNe
- sFfXbiETs9dZqdxORpoe2YF6U7kYbM8KnP6LUvASvFMUhhMgCqccW/iv2i560tXuykWEcikKbv6
- 4OSp4DaKcXhYEhdTv6Xr1nbrcyXLDvGkrC9kktA==
-X-Gm-Gg: ASbGncuVpY9ibNawvBqGXT6ckfsSNzapUEjuMocTa+xT+PiiErYUh2tSB5zFbYqdS/3
- Fw+03R/FZXV1Jhctcah3DePcs338y78B27w+5ZgLi6ur6ChgQ8Owuc2lt/I0nOWoqYkRlFUrg2C
- TbRVs9hMoHVJHlZmUlQF3KIV0zDXOCWw==
-X-Google-Smtp-Source: AGHT+IGAPsB8fOGFnMsc5bbDL/20Hc4p5mldlRlSsXETttbyejgn8/EaugsjmRRuL/VRAqS5GhQVa3kdI+AXpngBYvA=
-X-Received: by 2002:a05:6102:2c82:b0:4ba:9689:8725 with SMTP id
- ada2fe7eead31-4bd3fd51580mr13177418137.14.1740068728182; Thu, 20 Feb 2025
- 08:25:28 -0800 (PST)
+ AJvYcCXP/T2jTLPrlmOJh03s3MzaM2ZefqEeTtrPpXiTIA4xeV5Ns7Y8Dn7Zqjea0bGGR2jA1+I=@lists.linux.it
+X-Gm-Message-State: AOJu0YyH3AGrTcJc0c2VpKExJmVBvkGKtOl7Pt7IH1AMUzrGMjMSqhck
+ Oq/rJj23CbzLm3tc0VVA98j2WoCCrq/sBaJkj0+MXOKIOZ+izuCKpB59/ADIgzW8nNwaeJ9Zkxk
+ b
+X-Gm-Gg: ASbGnct8yfqHsqpZNTfUPpC+LmYNdDyOmO3xYp6LxBoF39HVFi17T5p1NlaHJkbTq3x
+ LVjRAO7ngORPOB14XMok3r09Vk/fCiukePZohceMyhCOhejtdsQs5qk+aqP62Cy0e0Hx+5x/ovR
+ JJDsZsEZFj/6lYl80DsDd5kX3GzQZu+xf54J7XgdjGnnaN9KxutJftg1wDOP4n/jFKEe0D0izuo
+ KkHWYjnhK2K18SDuE2f44xU6oy7luUFGI/HpgVFO0XtYIt6JsYMvrMlRBjrD2Enup1U3SNiJGju
+ XpeMPTO+tSo=
+X-Google-Smtp-Source: AGHT+IG+EYLLqM6THWYE8hAauMhRAcU2Nk6bktOc2WtjLtNwvqYq1DbYMyEayXYWgyo4XXN/dzNAHg==
+X-Received: by 2002:a05:6e02:12e8:b0:3d0:26a5:b2c with SMTP id
+ e9e14a558f8ab-3d2c01cbd32mr32793245ab.8.1740069966144; 
+ Thu, 20 Feb 2025 08:46:06 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+ by smtp.gmail.com with ESMTPSA id
+ 8926c6da1cb9f-4ee9f935135sm1841325173.42.2025.02.20.08.46.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 20 Feb 2025 08:46:04 -0800 (PST)
+Message-ID: <d178e65f-0168-4046-b516-1304db75820d@kernel.dk>
+Date: Thu, 20 Feb 2025 09:46:03 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>, Cgroups
+ <cgroups@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-mm <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>
 References: <CA+G9fYuVngeOP_t063LbiJ+8yf-f+5tRt-A3-Hj=_X9XmZ108w@mail.gmail.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
 In-Reply-To: <CA+G9fYuVngeOP_t063LbiJ+8yf-f+5tRt-A3-Hj=_X9XmZ108w@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 20 Feb 2025 21:55:17 +0530
-X-Gm-Features: AWEUYZn1l7Lv2Zb-WyCLSGTtO5qeqIeMQIdyyZsol69LDhzeihx6MkTJeGQixZg
-Message-ID: <CA+G9fYs-cbuu+o15E9V+AneYT0kp_e2CQWS+4HTxkM+zuz0cMQ@mail.gmail.com>
-To: linux-block <linux-block@vger.kernel.org>,
- Cgroups <cgroups@vger.kernel.org>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-mm <linux-mm@kvack.org>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
- LTP List <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] next-20250218: arm64 LTP pids kernel panic
  loop_free_idle_workers
@@ -88,8 +97,7 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
- Roman Gushchin <roman.gushchin@linux.dev>,
+Cc: Arnd Bergmann <arnd@arndb.de>, Roman Gushchin <roman.gushchin@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>,
  Thomas Gleixner <tglx@linutronix.de>, Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -97,186 +105,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 20 Feb 2025 at 21:43, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
+On 2/20/25 9:13 AM, Naresh Kamboju wrote:
 > Regression on qemu-arm64 the kernel panic noticed while running the
 > LTP controllers pids.sh test cases on Linux next 20250218 and started
 > from the next-20250214
->
+> 
 > Test regression: arm64 LTP pids kernel panic loop_free_idle_workers
->
+> 
 > Started noticing from next-20250214.
 > Good: next-20250213
 > Bad: next-20250213..next-20250218
-
-[Sorry typo ]
-Bad: next-20250214..next-20250218
-
->
+> 
 > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Boot log:
-> ---------
-> [    0.000000] Linux version 6.14.0-rc2-next-20250214
-> (tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 13.3.0-12) 13.3.0,
-> GNU ld (GNU Binutils for Debian) 2.43.90.20250127) #1 SMP PREEMPT
-> @1739528119
-> <trim>
-> command: pids.sh 6 50 0
-> <12>[  221.776255] /usr/local/bin/kirk[262]: starting test pids_6_50
-> (pids.sh 6 50 0)
-> pids 1 TINFO: Running: pids.sh 6 50 0
-> pids 1 TINFO: Tested kernel: Linux
-> runner-ykxhnyexq-project-40964107-concurrent-0
-> 6.14.0-rc2-next-20250214 #1 SMP PREEMPT @1739528119 aarch64 GNU/Linux
-> pids 1 TINFO: ceiling LTP_TIMEOUT_MUL to 11
-> pids 1 TINFO: timeout per run is 0h 55m 0s
-> pids 1 TINFO: test starts with cgroup version 2
-> pids 1 TINFO: Running testcase 6 with 50 processes
-> pids 1 TINFO: set a limit that is smaller than current number of pids
-> <1>[  224.406844] Unable to handle kernel paging request at virtual
-> address dead000000000108
-> <1>[  224.407052] Mem abort info:
-> <1>[  224.407100]   ESR = 0x0000000096000044
-> <1>[  224.407219]   EC = 0x25: DABT (current EL), IL = 32 bits
-> <1>[  224.407315]   SET = 0, FnV = 0
-> <1>[  224.407400]   EA = 0, S1PTW = 0
-> <1>[  224.407459]   FSC = 0x04: level 0 translation fault
-> <1>[  224.407536] Data abort info:
-> <1>[  224.407577]   ISV = 0, ISS = 0x00000044, ISS2 = 0x00000000
-> <1>[  224.407621]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-> <1>[  224.407697]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> <1>[  224.407809] [dead000000000108] address between user and kernel
-> address ranges
-> <0>[  224.408307] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
-> <4>[  224.416979] Modules linked in: btrfs blake2b_generic xor
-> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
-> sha512_arm64 fuse drm backlight ip_tables x_tables
-> <4>[  224.421352] CPU: 0 UID: 0 PID: 3368 Comm: pids_task2 Not tainted
-> 6.14.0-rc2-next-20250214 #1
-> <4>[  224.422657] Hardware name: linux,dummy-virt (DT)
-> <4>[  224.423946] pstate: 224020c9 (nzCv daIF +PAN -UAO +TCO -DIT
-> -SSBS BTYPE=--)
-> <4>[ 224.424677] pc : loop_free_idle_workers (include/linux/list.h:195
-> include/linux/list.h:218 include/linux/list.h:229
-> drivers/block/loop.c:917)
-> <4>[ 224.426548] lr : loop_free_idle_workers (drivers/block/loop.c:911
-> (discriminator 2))
-> <4>[  224.427338] sp : ffff800080003d50
-> <4>[  224.427910] x29: ffff800080003d50 x28: fff238a88301c500 x27:
-> fff238a883084c00
-> <4>[  224.429587] x26: ffffa298bac57000 x25: ffffffffffffc568 x24:
-> dead000000000122
-> <4>[  224.430697] x23: fff238a880370ac8 x22: dead000000000100 x21:
-> 0000000000000000
-> <4>[  224.432004] x20: fff238a880370ab8 x19: dead0000000000b8 x18:
-> ffff800083d9bb90
-> <4>[  224.432538] x17: fff296100496b000 x16: ffff800080000000 x15:
-> 0000ffff8d0a9fff
-> <4>[  224.433866] x14: 0000000000000000 x13: 1ffe47151065cc61 x12:
-> fff238a8832e630c
-> <4>[  224.434769] x11: 003a9cb01550c679 x10: fff238a8bf4b7f70 x9 :
-> ffffa298b8fc3cd0
-> <4>[  224.436209] x8 : ffff800080003c28 x7 : 0000000000000101 x6 :
-> ffff800080003ce0
-> <4>[  224.437070] x5 : fff238a880eba680 x4 : dead000000000100 x3 :
-> dead000000000122
-> <4>[  224.438027] x2 : 0000000000000000 x1 : 00000000ffff50fc x0 :
-> 00000000ffff7b68
-> <4>[  224.439174] Call trace:
-> <4>[ 224.439882] loop_free_idle_workers (include/linux/list.h:195
-> include/linux/list.h:218 include/linux/list.h:229
-> drivers/block/loop.c:917) (P)
-> <4>[ 224.440765] loop_free_idle_workers_timer (drivers/block/loop.c:932)
-> <4>[ 224.441223] call_timer_fn (arch/arm64/include/asm/jump_label.h:36
-> include/trace/events/timer.h:127 kernel/time/timer.c:1790)
-> <4>[ 224.441822] __run_timers (kernel/time/timer.c:1841
-> kernel/time/timer.c:2414)
-> <4>[ 224.442389] run_timer_base (kernel/time/timer.c:2427
-> kernel/time/timer.c:2418 kernel/time/timer.c:2435)
-> <4>[ 224.442855] run_timer_softirq
-> (arch/arm64/include/asm/jump_label.h:36 kernel/time/timer.c:342
-> kernel/time/timer.c:2448)
-> <4>[ 224.443547] handle_softirqs
-> (arch/arm64/include/asm/jump_label.h:36 include/trace/events/irq.h:142
-> kernel/softirq.c:562)
-> <4>[ 224.444121] __do_softirq (kernel/softirq.c:596)
-> <4>[ 224.444755] ____do_softirq (arch/arm64/kernel/irq.c:82)
-> <4>[ 224.445204] call_on_irq_stack (arch/arm64/kernel/entry.S:897)
-> <4>[ 224.445670] do_softirq_own_stack (arch/arm64/kernel/irq.c:87)
-> <4>[ 224.445964] __irq_exit_rcu (kernel/softirq.c:442 kernel/softirq.c:662)
-> <4>[ 224.446295] irq_exit_rcu (kernel/softirq.c:680)
-> <4>[ 224.446808] el1_interrupt (arch/arm64/include/asm/current.h:19
-> arch/arm64/kernel/entry-common.c:280
-> arch/arm64/kernel/entry-common.c:563
-> arch/arm64/kernel/entry-common.c:575)
-> <4>[ 224.447585] el1h_64_irq_handler (arch/arm64/kernel/entry-common.c:581)
-> <4>[ 224.448079] el1h_64_irq (arch/arm64/kernel/entry.S:596)
-> <4>[ 224.448796] try_charge_memcg (mm/memcontrol.c:1803
-> mm/memcontrol.c:2222) (P)
-> <4>[ 224.449589] charge_memcg (mm/memcontrol.c:4541)
-> <4>[ 224.450399] __mem_cgroup_charge (include/linux/cgroup_refcnt.h:78
-> mm/memcontrol.c:4558)
-> <4>[ 224.451234] __handle_mm_fault (mm/memory.c:1059 (discriminator 1)
-> mm/memory.c:5462 (discriminator 1) mm/memory.c:5574 (discriminator 1)
-> mm/memory.c:4091 (discriminator 1) mm/memory.c:5935 (discriminator 1)
-> mm/memory.c:6078 (discriminator 1))
-> <4>[ 224.451763] handle_mm_fault (mm/memory.c:6247)
-> <4>[ 224.452307] do_page_fault (arch/arm64/mm/fault.c:647)
-> <4>[ 224.452881] do_translation_fault (arch/arm64/mm/fault.c:787)
-> <4>[ 224.453358] do_mem_abort (arch/arm64/mm/fault.c:919 (discriminator 1))
-> <4>[ 224.453890] el0_da (arch/arm64/include/asm/irqflags.h:82
-> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:605 (discriminator 1))
-> <4>[ 224.454329] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:766)
-> <4>[ 224.454897] el0t_64_sync (arch/arm64/kernel/entry.S:600)
-> <0>[ 224.455654] Code: 8b190000 eb01001f 54000684 a9448f84 (f9000483)
-> All code
-> ========
->    0: 8b190000 add x0, x0, x25
->    4: eb01001f cmp x0, x1
->    8: 54000684 b.mi 0xd8  // b.first
->    c: a9448f84 ldp x4, x3, [x28, #72]
->   10:* f9000483 str x3, [x4, #8] <-- trapping instruction
->
-> Code starting with the faulting instruction
-> ===========================================
->    0: f9000483 str x3, [x4, #8]
-> <4>[  224.456945] ---[ end trace 0000000000000000 ]---
-> <0>[  224.458162] Kernel panic - not syncing: Oops: Fatal exception in interrupt
-> <2>[  224.459437] SMP: stopping secondary CPUs
-> <0>[  224.460808] Kernel Offset: 0x229838400000 from 0xffff800080000000
-> <0>[  224.461525] PHYS_OFFSET: 0xfffdc75880000000
-> <0>[  224.462166] CPU features: 0x000,000000d0,60bef2f8,cb7e7f3f
-> <0>[  224.463148] Memory Limit: none
-> <0>[  224.463861] ---[ end Kernel panic - not syncing: Oops: Fatal
-> exception in interrupt ]---
->
-> ## Source
-> * Kernel version: 6.14.0-rc2-next-20250214
-> * Git tree: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> * Git sha: 0ae0fa3bf0b44c8611d114a9f69985bf451010c3
-> * Git describe: next-20250214
-> * Project details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/
->
-> ## Build
-> * Test log: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/testrun/27292264/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef657ef456dab84b63ef36eb42dc7c556dfa0f7a59423da/log
-> * Test history:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/testrun/27292264/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef657ef456dab84b63ef36eb42dc7c556dfa0f7a59423da/history/
-> * Test details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/testrun/27292264/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef657ef456dab84b63ef36eb42dc7c556dfa0f7a59423da/
-> * Kernel config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2t1m4RtgCbRZ2vhQrdEIwwj3DIY/config
-> * Architecures: arm64
-> * Toolchain version: gcc-13
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+
+Should already be fixed in the current tree.
+
+-- 
+Jens Axboe
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
