@@ -4,73 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BEDC021B2
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 21:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2076C021B2
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 23:00:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 513413C7A20
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 22:43:57 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A32A13C7D0D
+	for <ltp@archiver.kernel.org>; Fri, 21 Feb 2025 00:00:28 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6763A3C0463
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 22:43:39 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D0E6F3C7982
+ for <ltp@lists.linux.it>; Fri, 21 Feb 2025 00:00:08 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B83F1419F3A
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 22:43:38 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 080701027466
+ for <ltp@lists.linux.it>; Fri, 21 Feb 2025 00:00:07 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2EC6B1F387;
- Thu, 20 Feb 2025 21:43:37 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9C3DA2118A;
+ Thu, 20 Feb 2025 23:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740092406;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=W9/vtvZiYYXfcKjJOkEsW/FqtFCZZSeX016LqwBJWEA=;
+ b=Zajqoznc+SUXrOauWgg8HhDllQRQ0sbVKMvUj5WGJiDAU4qlgIcDoLVdx7jlajfgLtCq0O
+ oQqyhLmMw4FpmCPYxzQ3mMBZPaz0HbtxMf0PDtuT8Cq3/WogOAiIlrnfhmWjyIDGCCPbsP
+ Ux1LlPrshe/KRkUN+uRM0IakxJjQeSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740092406;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=W9/vtvZiYYXfcKjJOkEsW/FqtFCZZSeX016LqwBJWEA=;
+ b=51TeQHretvROaqFte0tMHqGHfWndaXBhdUfAOVUYVvRKqtK8F1bp/nVrRYWcFbJ3n2RHOS
+ EdbBy2T89uFPBoCw==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740092405;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=W9/vtvZiYYXfcKjJOkEsW/FqtFCZZSeX016LqwBJWEA=;
+ b=M2ZGY4iuYKsamqrR6djge3ic5lormN0/QVM8RMZaS0mw27p0jU+HtdCLIvu2Dg/9XuRK1d
+ Z25XtBCYCefZeit8/zBNuhvKb2D8s20zKSWIznRKEwGJayr5bhQ4Ge7QzRgMyiuTbyI7l7
+ 8Gt9oGMW9nwZFjVIg0bfzBvWhxK5b2Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740092405;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=W9/vtvZiYYXfcKjJOkEsW/FqtFCZZSeX016LqwBJWEA=;
+ b=gIZ09YRwt+WTU94HWuxSpiB1udOknNBg20VGuxCULL+LsJ/SowXztSh7KnLyT7lDkJwhm3
+ CGaCeQaP49eDlDCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 48FED13301;
- Thu, 20 Feb 2025 21:43:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8134C13A42;
+ Thu, 20 Feb 2025 23:00:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2n6rCQiit2cYYAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Feb 2025 21:43:36 +0000
-Date: Thu, 20 Feb 2025 22:43:33 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jMi4HvWzt2egdQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Feb 2025 23:00:05 +0000
+Date: Fri, 21 Feb 2025 00:00:00 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <20250220214333.GA2726725@pevik>
-References: <20250220160054.12149-1-zohar@linux.ibm.com>
- <20250220160054.12149-3-zohar@linux.ibm.com>
- <20250220181604.GA2709977@pevik>
- <fd10e47b4c8b6af0e8d37975cdf1e82133add8c3.camel@linux.ibm.com>
- <20250220191342.GA2716312@pevik>
- <c625586b0dbc4302dfb7adf4acb0c891b74cf8bc.camel@linux.ibm.com>
- <2637152a2715b8e84e966b12bc9c9cb1c27592c2.camel@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250220230000.GB2726725@pevik>
+References: <20250219160143.2589026-1-pvorel@suse.cz>
+ <f2a0be74-94c4-480f-b53c-7ba4673014f1@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2637152a2715b8e84e966b12bc9c9cb1c27592c2.camel@linux.ibm.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 2EC6B1F387
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+In-Reply-To: <f2a0be74-94c4-480f-b53c-7ba4673014f1@suse.com>
+X-Spamd-Result: default: False [-3.48 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.18)[-0.889]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 3/3] ima: additional ToMToU violation tests
+Subject: Re: [LTP] [PATCH 1/1] doc: Link struct tst_test and tst_tag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,98 +113,44 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
- Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, 2025-02-20 at 15:22 -0500, Mimi Zohar wrote:
-> > On Thu, 2025-02-20 at 20:13 +0100, Petr Vorel wrote:
-> > > > On Thu, 2025-02-20 at 19:16 +0100, Petr Vorel wrote:
-> > > > > Hi Mimi,
+Hi Andrea,
 
-> > > > > > Kernel patch "ima: limit the number of ToMToU integrity violati=
-ons"
-> > > > > > prevents superfluous ToMToU violations.=A0 Add corresponding LT=
-P tests.
+> Hi,
 
-> > > > > > Link:
-> > > > > > https://lore.kernel.org/linux-integrity/20250219162131.416719-3=
--zohar@linux.ibm.com/
-> > > > > > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> mmh..result looks really weird. Basically every table item is a link to
+> tst_test. Did you check if it's possible to extend the struct parser in
+> order to have a link for each attribute?
 
-> > > > > Unfortunately tests fail on both mainline kernel and kernel with =
-your patches.
+I was although thinking about it, but haven't checked the code. I suppose you'll
+be much faster than me with this as you're more familiar with sphinx. I gave up
+because reader is nearly at the correct location.
 
-> > > > The new LTP IMA violations patches should fail without the associat=
-ed kernel
-> > > > patches.
+I suppose missing code needs to be done in linuxdoc.rstKernelDoc extension.
+Because although it's possible to link to the member in linuxdoc.rstKernelDoc 
+(e.g. &tst_test.needs_root), but it leads to "struct tst_test" [1] definition,
+which has only anchors for Definitions [2] and Members [3]. I guess it's somehow
+possible to link it via C domain [4], but it's not used in linuxdoc.rstKernelDoc
+extension.
 
-> > > > > Any hint what could be wrong?
-
-> > > > Of course it's dependent on the IMA policy.=A0 The tests assume bei=
-ng booted with the
-> > > > IMA
-> > > > TCB measurement policy or similar policy being loaded.=A0 Can you s=
-hare the IMA
-> > > > policy?
-> > > > e.g. cat /sys/kernel/security/ima/policy
-
-> > > > thanks,
-
-> > > > Mimi
-
-> > > Now testing on kernel *with* your patches. First run always fails, re=
-gardless
-> > > whether using ima_policy=3Dtcb or
-> > > /opt/ltp/testcases/data/ima_violations/violations.policy).
-
-> > > Kind regards,
-> > > Petr
-
-> > I'm not seeing that on my test machine.=A0 Could there be other things =
-running on your
-> > system causing violations.=A0 In anycase, your original test was less e=
-xacting.=A0=A0
-> > Similarly,
-> > instead of "-eq", try using "-qe" in the following test and removing th=
-e subsequent new
-> > "gt" test.
-
-> -> "-ge"
-
-Sure, changing to -ge fixes the problem:
-if [ $(($num_violations_new - $num_violations)) -ge $expected_violations ];=
- then
-
-I guess we need "-ge" for older kernels (unless "fix" for stable).  Should =
-we
-accept "$expected_violations || $expected_violations + 1" for new kernels to
-avoid problems like the one on my system.
-
-I wonder if the problem was somehow caused by the fact that I built kernel.=
- OTOH
-it's build by OBS (official openSUSE build service).
-
-I don't expect you'd have time to look into it, in case you're interested a=
-nd
-have time sending a links to rpm binary and src package.
-
-https://download.opensuse.org/repositories/home:/pevik:/ima-limit-open-writ=
-ers-ToMToU/standard/x86_64/kernel-default-6.14~rc3-1.1.gb6b4102.x86_64.rpm
-https://download.opensuse.org/repositories/home:/pevik:/ima-limit-open-writ=
-ers-ToMToU/standard/src/kernel-source-6.14~rc3-1.1.gb6b4102.src.rpm
+I tried linuxdoc [5] update to the latest 20240924 (not much changes anyway),
+but members still do not have id sections.
 
 Kind regards,
 Petr
 
-> > if [ $(($num_violations_new - $num_violations)) -eq $expected_violation=
-s ]; then
+[1] https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.html#struct-tst-test
+[2] https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.html#tst-test-definition
+[3] https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.html#tst-test-members
+[4] https://www.sphinx-doc.org/en/master/usage/domains/c.html#role-c-var
+[5] https://github.com/return42/linuxdoc.git
 
+> Andrea
 
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
