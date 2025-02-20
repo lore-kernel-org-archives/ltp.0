@@ -4,113 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BE4C021B2
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 14:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 160C8C021B1
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 16:01:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F1F83C678D
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 15:23:14 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 196F23C7ACE
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 17:01:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15FF93C02C9
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 15:22:56 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 17ED33C280D
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:01:06 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
+ helo=mx0a-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CA8B0630AF1
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 15:22:54 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5899D1F766;
- Thu, 20 Feb 2025 14:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740061373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=K8wSQg7gaSNctwncLVzH4kE/Xy0MctaT0+T8iAtX444=;
- b=EhTEruYi6VpIuhTT2dQ2uydNMjFBeGbgIuoc/MlmgptERD49NAbG0qOIote1Y+RSkG/7mP
- HpPQ9HghU5vNIa7j5nDeKsT9yPVelJU810m9JeBZ8kG4kSdoeetWcZEDYC1Sw0RctDwgFo
- ne89jP7AVWcEuZr07y0rU+gznQOiWwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740061373;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=K8wSQg7gaSNctwncLVzH4kE/Xy0MctaT0+T8iAtX444=;
- b=c4VNSg27JxJzWwoa+81d+b2oWj0KEEfdhacn691GctZv4Y0kQ3mQP9bD07FCijsCsitUse
- yZVMUo+/NRRXY1Cw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EhTEruYi;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=c4VNSg27
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740061373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=K8wSQg7gaSNctwncLVzH4kE/Xy0MctaT0+T8iAtX444=;
- b=EhTEruYi6VpIuhTT2dQ2uydNMjFBeGbgIuoc/MlmgptERD49NAbG0qOIote1Y+RSkG/7mP
- HpPQ9HghU5vNIa7j5nDeKsT9yPVelJU810m9JeBZ8kG4kSdoeetWcZEDYC1Sw0RctDwgFo
- ne89jP7AVWcEuZr07y0rU+gznQOiWwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740061373;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=K8wSQg7gaSNctwncLVzH4kE/Xy0MctaT0+T8iAtX444=;
- b=c4VNSg27JxJzWwoa+81d+b2oWj0KEEfdhacn691GctZv4Y0kQ3mQP9bD07FCijsCsitUse
- yZVMUo+/NRRXY1Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 480A913301;
- Thu, 20 Feb 2025 14:22:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Iwp5EL06t2dUVgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 20 Feb 2025 14:22:53 +0000
-Date: Thu, 20 Feb 2025 15:23:02 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Dorinda Bassey <dbassey@redhat.com>
-Message-ID: <Z7c6xizj4wUgVWA1@yuki.lan>
-References: <20250217124804.143890-2-dbassey@redhat.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 14BC51BDC8CC
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 17:01:05 +0100 (CET)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51KD5dGu002208;
+ Thu, 20 Feb 2025 16:01:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=ZBaeMWKBnDCdyczPSP1LPCqo8qHfeKkPSJaoyxEDx
+ yA=; b=DiwK+xxofEyTygsYWneuMF9vldkaSl4dKeu1q+t/WL0RA70CLo/biYuuT
+ EDSexpL77QEIkJT9VWPdndLl6fjLFN5g8409ahevaeNXSxaiRirjFDxCjH79ZgKo
+ pb17sz+fl5duneWZeHMvANJXZSv96JkIRnKVcC9j0d98bNuNk+DU890y6QAu3id6
+ mDVMy1064EFEAuvqJJINq7OwIALNgJUA/cy+nUdtcrkqoslV0YV8F6OkY8uvgVze
+ RwKOq2vvJF5vxw+pTTDT6V/Jy+p9lL1fizsnWpuC3LGjFNdkp+WGIsSJw4znBLz5
+ ENriXpYS/Rsi8uUMGr6yWLklszvAg==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44wtfa3vx9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 16:01:03 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51KFIsv9002297;
+ Thu, 20 Feb 2025 16:01:02 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 44w03xasmh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 16:01:02 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
+ [10.20.54.100])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 51KG0xYf35258720
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 20 Feb 2025 16:00:59 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0E93F20040;
+ Thu, 20 Feb 2025 16:00:59 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9B3A720043;
+ Thu, 20 Feb 2025 16:00:57 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com.com (unknown
+ [9.61.68.26]) by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 20 Feb 2025 16:00:57 +0000 (GMT)
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Date: Thu, 20 Feb 2025 11:00:52 -0500
+Message-ID: <20250220160054.12149-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250217124804.143890-2-dbassey@redhat.com>
-X-Rspamd-Queue-Id: 5899D1F766
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: dHQh1-JARp1NtoejAZc0jPExh8WTLmfC
+X-Proofpoint-GUID: dHQh1-JARp1NtoejAZc0jPExh8WTLmfC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-20_06,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 mlxlogscore=865
+ bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502200113
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kcmp03: Add check for KCMP_SYSVSEM before
- running test
+Subject: [LTP] [RFC PATCH 1/3] Update validate() to support multiple
+ violations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,86 +98,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbertram@redhat.com, javierm@redhat.com, ltp@lists.linux.it
+Cc: Stefan Berger <stefanb@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> This commit introduces a new function
-> `is_kcmp_supported()` to check if the kernel supports the
-> `KCMP_SYSVSEM` operation. In the `verify_kcmp()` function,
-> we add logic to detect when the kernel does not support
-> `KCMP_SYSVSEM` and skip the test for that case with a TCONF
-> result. This ensures that the test does not fail when the
-> Kconfig that supports `KCMP_SYSVSEM` is unavailable.
-> 
-> Signed-off-by: Dorinda Bassey <dbassey@redhat.com>
-> ---
-> v2 changes
-> fix coding style
-> use `kcmp()` instead of `syscall()`
-> do `is_kcmp_supported()` check in the setup and
-> cache result
-> use `tst_res` instead of `tst_brk`
-> 
->  testcases/kernel/syscalls/kcmp/kcmp03.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> index 37d5118d5..8610cea46 100644
-> --- a/testcases/kernel/syscalls/kcmp/kcmp03.c
-> +++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-> @@ -42,9 +42,19 @@ static struct tcase {
->  	{ARGS(CLONE_SYSVSEM, KCMP_SYSVSEM)}
->  };
->  
-> +static int is_kcmp_supported_flag = -1;
-> +
-> +static int is_kcmp_supported(void)
-> +{
-> +	return kcmp(getpid(), getpid(), KCMP_SYSVSEM, 0, 0) == 0;
-> +}
-> +
->  static void setup(void)
->  {
->  	stack = SAFE_MALLOC(STACK_SIZE);
-> +
-> +	if (is_kcmp_supported_flag == -1)
-> +		is_kcmp_supported_flag = is_kcmp_supported();
+Add support for the number of expected violations.  Include the
+expected number of violations in the output.
 
-The setup is executed once so all we need to do here is:
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ .../security/integrity/ima/tests/ima_violations.sh     | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-	is_kcmp_supported_flag = is_kmcp_supported();
-
->  }
->  
->  static void cleanup(void)
-> @@ -64,6 +74,14 @@ static void verify_kcmp(unsigned int n)
->  	int res;
->  	struct tcase *tc = &tcases[n];
->  
-> +    // Handle the case for KCMP_SYSVSEM specifically
-
-This comment is not add any information because the if does exactly what
-the comment say. We do not add comments like this into LTP.
-
-> +	if (tc->kcmp_type == KCMP_SYSVSEM) {
-> +		if (is_kcmp_supported_flag == 0) {
-> +			tst_res(TCONF, "Kernel does not support KCMP_SYSVSEM, skipping test.");
-> +			return;
-> +		}
-> +	}
-> +
->  	pid1 = getpid();
->  	tst_res(TINFO, "Testing %s", tc->desc);
-
-The rest looks good.
-
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+index 37d8d473c..7f0382fb8 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -71,20 +71,26 @@ validate()
+ 	local num_violations="$1"
+ 	local count="$2"
+ 	local search="$3"
++	local expected_violations=$4
+ 	local max_attempt=3
+ 	local count2 i num_violations_new
+ 
++	[ -z $expected_violations ] && expected_violations=1
++
+ 	for i in $(seq 1 $max_attempt); do
+ 		read num_violations_new < $IMA_VIOLATIONS
+ 		count2="$(get_count $search)"
+-		if [ $(($num_violations_new - $num_violations)) -gt 0 ]; then
++		if [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
+ 			if [ $count2 -gt $count ]; then
+-				tst_res TPASS "$search violation added"
++				tst_res TPASS "$expected_violations $search violation(s) added"
+ 				return
+ 			else
+ 				tst_res TINFO "$search not found in $LOG ($i/$max_attempt attempt)..."
+ 				tst_sleep 1s
+ 			fi
++		elif [ $(($num_violations_new - $num_violations)) -gt 0 ]; then
++			tst_res $IMA_FAIL "$search too many violations added"
++			return
+ 		else
+ 			tst_res $IMA_FAIL "$search violation not added"
+ 			return
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.48.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
