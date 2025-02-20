@@ -4,108 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE0DC021B1
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 19:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A527C021B1
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 20:22:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C26E13C7B85
-	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 20:14:13 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B14803C7ABD
+	for <ltp@archiver.kernel.org>; Thu, 20 Feb 2025 21:22:25 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C2A2A3C0430
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 20:13:52 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E47123C0463
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 21:22:06 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ receiver=lists.linux.it)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 045D71BDD08D
- for <ltp@lists.linux.it>; Thu, 20 Feb 2025 20:13:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 604B41F387;
- Thu, 20 Feb 2025 19:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740078829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BlzUcSTDSEkNHy8Fobz9oUsMdz91Ct8W7U/s9j/zWSI=;
- b=cFKOxLHn1FMUwUmSUNg2I+gsPkGtdFAeRVKew+EljQfPRG9PTJiQbIoprhMc8XE1D6AbaZ
- AqULBPwhm8TPq5XIAqO98MMILW8h9VRJW4/oOYNPSzh6JeLWHiIsefHc8CJEMdQY7EVAo9
- K7tEtyIo+MGoPH8XPo5r2l5o7ZwKwmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740078829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BlzUcSTDSEkNHy8Fobz9oUsMdz91Ct8W7U/s9j/zWSI=;
- b=cnKlinJ6clYdZuhNWVmTTgfhR4mMWILShB7bxf4WnuGq7kv9aud2RqZ2XVxs0UUeihA0pq
- 4nqRGZoxZ6kCbwCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740078829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BlzUcSTDSEkNHy8Fobz9oUsMdz91Ct8W7U/s9j/zWSI=;
- b=cFKOxLHn1FMUwUmSUNg2I+gsPkGtdFAeRVKew+EljQfPRG9PTJiQbIoprhMc8XE1D6AbaZ
- AqULBPwhm8TPq5XIAqO98MMILW8h9VRJW4/oOYNPSzh6JeLWHiIsefHc8CJEMdQY7EVAo9
- K7tEtyIo+MGoPH8XPo5r2l5o7ZwKwmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740078829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BlzUcSTDSEkNHy8Fobz9oUsMdz91Ct8W7U/s9j/zWSI=;
- b=cnKlinJ6clYdZuhNWVmTTgfhR4mMWILShB7bxf4WnuGq7kv9aud2RqZ2XVxs0UUeihA0pq
- 4nqRGZoxZ6kCbwCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D99213301;
- Thu, 20 Feb 2025 19:13:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +prKIOx+t2e0NgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Feb 2025 19:13:48 +0000
-Date: Thu, 20 Feb 2025 20:13:42 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <20250220191342.GA2716312@pevik>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 999C362D617
+ for <ltp@lists.linux.it>; Thu, 20 Feb 2025 21:22:05 +0100 (CET)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51KH1ghU007960;
+ Thu, 20 Feb 2025 20:22:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=J8BXBu
+ rZqtTVDqZCtDHWeGjY5WKGnG5lbCekbsOE3R4=; b=pMXNHZYCRzPINPJQ9DzH3G
+ Y17b2N+qdm69gUxWqBRnL01C3GLtBAg54C/C+HEMyuIeLOBCUktXSLSzT2Y3DMqJ
+ 0Wr1PJ1rb4Aj1mSVTfja/m0qTabX+3AaxTexQ1n3WzRmXFDzzkaZ3dGJMx2OAO4c
+ T/4gfPBwMbea4w6Hc1MLcIWh6gnwldAezBnAqEz5sSI4A8RAw3jH+9T4RlSYZWCV
+ LAs5zQTJd5uyqe51sIu6FqUPunfS1z+9fG5pqylnpIF31aGaHcuzGpeJWxnmLSlG
+ xC23JiXGLQ8g7Vhd+/KnOtYceJGno+3KzjdHUpYF1zzcPsJyzok1PJUiNFDxFyBA
+ ==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44x1qybavn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 20:22:03 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51KI8aJU002343;
+ Thu, 20 Feb 2025 20:22:02 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 44w03xc287-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Feb 2025 20:22:02 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com
+ [10.39.53.230])
+ by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 51KKM2Uu29557356
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 20 Feb 2025 20:22:02 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1F76358054;
+ Thu, 20 Feb 2025 20:22:02 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 784B05805A;
+ Thu, 20 Feb 2025 20:22:01 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.31.103.152]) by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 20 Feb 2025 20:22:01 +0000 (GMT)
+Message-ID: <c625586b0dbc4302dfb7adf4acb0c891b74cf8bc.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Feb 2025 15:22:01 -0500
+In-Reply-To: <20250220191342.GA2716312@pevik>
 References: <20250220160054.12149-1-zohar@linux.ibm.com>
  <20250220160054.12149-3-zohar@linux.ibm.com>
  <20250220181604.GA2709977@pevik>
  <fd10e47b4c8b6af0e8d37975cdf1e82133add8c3.camel@linux.ibm.com>
+ <20250220191342.GA2716312@pevik>
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <fd10e47b4c8b6af0e8d37975cdf1e82133add8c3.camel@linux.ibm.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZnGBjgV6bORbniMK06PyUAcTeo9hcquB
+X-Proofpoint-ORIG-GUID: ZnGBjgV6bORbniMK06PyUAcTeo9hcquB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-20_08,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 clxscore=1015
+ phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502200131
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH 3/3] ima: additional ToMToU violation tests
 X-BeenThere: ltp@lists.linux.it
@@ -119,399 +103,325 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
  Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, 2025-02-20 at 19:16 +0100, Petr Vorel wrote:
-> > Hi Mimi,
-
-> > > Kernel patch "ima: limit the number of ToMToU integrity violations"
-> > > prevents superfluous ToMToU violations.=A0 Add corresponding LTP test=
-s.
-
-> > > Link:
-> > > https://lore.kernel.org/linux-integrity/20250219162131.416719-3-zohar=
-@linux.ibm.com/
-> > > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-
-> > Unfortunately tests fail on both mainline kernel and kernel with your p=
-atches.
-
-> The new LTP IMA violations patches should fail without the associated ker=
-nel patches.
-
-> > Any hint what could be wrong?
-
-> Of course it's dependent on the IMA policy.  The tests assume being boote=
-d with the IMA
-> TCB measurement policy or similar policy being loaded.  Can you share the=
- IMA policy?
-> e.g. cat /sys/kernel/security/ima/policy
-
-> thanks,
-
-> Mimi
-
-Now testing on kernel *with* your patches. First run always fails, regardle=
-ss
-whether using ima_policy=3Dtcb or
-/opt/ltp/testcases/data/ima_violations/violations.policy).
-
-Kind regards,
-Petr
-
-First run fails:
-
-# LTP_IMA_LOAD_POLICY=3D1 LTPROOT=3D"/opt/ltp" PATH=3D"/opt/ltp/testcases/b=
-in:$PATH" ima_violations.sh
-(policy is /opt/ltp/testcases/data/ima_violations/violations.policy)
-ima_violations 1 TINFO: Running: ima_violations.sh =
-
-ima_violations 1 TINFO: Tested kernel: Linux ts 6.14.0-rc3-1.gb6b4102-defau=
-lt #1 SMP PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64 x86=
-_64 x86_64 GNU/Linux
-ima_violations 1 TINFO: Using /tmp/LTP_ima_violations.XR34KhtnDM as tmpdir =
-(tmpfs filesystem)
-tst_device.c:99: TINFO: Found free device 0 '/dev/loop0'
-ima_violations 1 TINFO: Formatting ext3 with opts=3D'/dev/loop0'
-ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_=
-ima_violations.XR34KhtnDM/mntpoint =
-
-ima_violations 1 TINFO: timeout per run is 0h 5m 0s
-ima_violations 1 TINFO: IMA kernel config:
-ima_violations 1 TINFO: CONFIG_IMA=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=3D10
-ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE=3D"ima-ng"
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH=3D"sha256"
-ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DISABLE_HTABLE=3Dy
-ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=3D/boot/vmlinuz-6.14.0-rc=
-3-1.gb6b4102-default root=3DUUID=3De36b2366-1af2-4408-903c-1fca82c60f4c spl=
-ash=3Dsilent video=3D1024x768 plymouth.ignore-serial-consoles console=3Dtty=
-S0 console=3Dtty kernel.softlockup_panic=3D1 resume=3D/dev/disk/by-uuid/c3b=
-865f9-5d5b-410e-a6d1-9ebcf721584c mitigations=3Dauto security=3Dapparmor ig=
-nore_loglevel
-ima_violations 1 TINFO: $TMPDIR is on tmpfs =3D> run on loop device
-ima_violations 1 TINFO: test requires IMA policy:
-measure func=3DFILE_CHECK mask=3D^MAY_READ euid=3D0
-measure func=3DFILE_CHECK mask=3D^MAY_READ uid=3D0
-ima_violations 1 TINFO: WARNING: missing required policy content: 'measure =
-func=3DFILE_CHECK mask=3D^MAY_READ euid=3D0'
-ima_violations 1 TINFO: trying to load '/opt/ltp/testcases/data/ima_violati=
-ons/violations.policy' policy:
-measure func=3DFILE_CHECK mask=3D^MAY_READ euid=3D0
-measure func=3DFILE_CHECK mask=3D^MAY_READ uid=3D0
-ima_violations 1 TINFO: example policy successfully loaded
-ima_violations 1 TINFO: using log /var/log/audit/audit.log
-ima_violations 1 TINFO: verify open writers violation
-ima_violations 1 TFAIL: open_writers too many violations added: 2 - 0
-ima_violations 2 TINFO: verify ToMToU violation
-ima_violations 2 TPASS: 1 ToMToU violation(s) added
-ima_violations 3 TINFO: verify open_writers using mmapped files
-tst_test.c:1900: TINFO: LTP version: 20250130-22-gcd2215702f
-tst_test.c:1904: TINFO: Tested kernel: 6.14.0-rc3-1.gb6b4102-default #1 SMP=
- PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected whi=
-ch might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
-ima_mmap.c:38: TINFO: sleep 3s
-ima_violations 3 TPASS: 1 open_writers violation(s) added
-ima_mmap.c:41: TPASS: test completed
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-ima_violations 4 TINFO: verify limiting single open writer violation
-ima_violations 4 TPASS: 1 open_writers violation(s) added
-ima_violations 5 TINFO: verify limiting multiple open writers violations
-ima_violations 5 TPASS: 1 open_writers violation(s) added
-ima_violations 6 TINFO: verify new open writer causes additional violation
-ima_violations 6 TPASS: 2 open_writers violation(s) added
-ima_violations 7 TINFO: verify limiting single open reader ToMToU violations
-ima_violations 7 TPASS: 1 ToMToU violation(s) added
-ima_violations 8 TINFO: verify new open reader causes additional ToMToU vio=
-lation
-ima_violations 8 TPASS: 2 ToMToU violation(s) added
-ima_violations 9 TINFO: WARNING: policy loaded via LTP_IMA_LOAD_POLICY=3D1,=
- reboot recommended
-
-Summary:
-passed   7
-failed   1
-broken   0
-skipped  0
-warnings 0
-
-Second run is ok:
-# LTPROOT=3D"/opt/ltp" PATH=3D"/opt/ltp/testcases/bin:$PATH" ima_violations=
-.sh
-ima_violations 1 TINFO: Running: ima_violations.sh =
-
-ima_violations 1 TINFO: Tested kernel: Linux ts 6.14.0-rc3-1.gb6b4102-defau=
-lt #1 SMP PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64 x86=
-_64 x86_64 GNU/Linux
-ima_violations 1 TINFO: Using /var/tmp/LTP_ima_violations.SWERFjvPTp as tmp=
-dir (btrfs filesystem)
-ima_violations 1 TINFO: timeout per run is 0h 5m 0s
-ima_violations 1 TINFO: IMA kernel config:
-ima_violations 1 TINFO: CONFIG_IMA=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=3D10
-ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE=3D"ima-ng"
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH=3D"sha256"
-ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DISABLE_HTABLE=3Dy
-ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=3D/boot/vmlinuz-6.14.0-rc=
-3-1.gb6b4102-default root=3DUUID=3De36b2366-1af2-4408-903c-1fca82c60f4c spl=
-ash=3Dsilent video=3D1024x768 plymouth.ignore-serial-consoles console=3Dtty=
-S0 console=3Dtty kernel.softlockup_panic=3D1 resume=3D/dev/disk/by-uuid/c3b=
-865f9-5d5b-410e-a6d1-9ebcf721584c mitigations=3Dauto security=3Dapparmor ig=
-nore_loglevel
-ima_violations 1 TINFO: test requires IMA policy:
-measure func=3DFILE_CHECK mask=3D^MAY_READ euid=3D0
-measure func=3DFILE_CHECK mask=3D^MAY_READ uid=3D0
-ima_violations 1 TINFO: SUT has required policy content
-ima_violations 1 TINFO: using log /var/log/audit/audit.log
-ima_violations 1 TINFO: verify open writers violation
-ima_violations 1 TPASS: 1 open_writers violation(s) added
-ima_violations 2 TINFO: verify ToMToU violation
-ima_violations 2 TPASS: 1 ToMToU violation(s) added
-ima_violations 3 TINFO: verify open_writers using mmapped files
-tst_test.c:1900: TINFO: LTP version: 20250130-22-gcd2215702f
-tst_test.c:1904: TINFO: Tested kernel: 6.14.0-rc3-1.gb6b4102-default #1 SMP=
- PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected whi=
-ch might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
-ima_mmap.c:38: TINFO: sleep 3s
-ima_violations 3 TPASS: 1 open_writers violation(s) added
-ima_mmap.c:41: TPASS: test completed
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-ima_violations 4 TINFO: verify limiting single open writer violation
-ima_violations 4 TPASS: 1 open_writers violation(s) added
-ima_violations 5 TINFO: verify limiting multiple open writers violations
-ima_violations 5 TPASS: 1 open_writers violation(s) added
-ima_violations 6 TINFO: verify new open writer causes additional violation
-ima_violations 6 TPASS: 2 open_writers violation(s) added
-ima_violations 7 TINFO: verify limiting single open reader ToMToU violations
-ima_violations 7 TPASS: 1 ToMToU violation(s) added
-ima_violations 8 TINFO: verify new open reader causes additional ToMToU vio=
-lation
-ima_violations 8 TPASS: 2 ToMToU violation(s) added
-
-Summary:
-passed   8
-failed   0
-broken   0
-skipped  0
-warnings 0
-
-Reboot and running with ima_policy=3Dtcb also fails on the first time:
-
-# LTPROOT=3D"/opt/ltp" PATH=3D"/opt/ltp/testcases/bin:$PATH" ima_violations=
-.sh =
-
-tmpfs is skipped
-ima_violations 1 TINFO: Running: ima_violations.sh =
-
-ima_violations 1 TINFO: Tested kernel: Linux ts 6.14.0-rc3-1.gb6b4102-defau=
-lt #1 SMP PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64 x86=
-_64 x86_64 GNU/Linux
-ima_violations 1 TINFO: Using /tmp/LTP_ima_violations.FKQSfezAwR as tmpdir =
-(tmpfs filesystem)
-tst_device.c:99: TINFO: Found free device 0 '/dev/loop0'
-ima_violations 1 TINFO: Formatting ext3 with opts=3D'/dev/loop0'
-ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_=
-ima_violations.FKQSfezAwR/mntpoint =
-
-ima_violations 1 TINFO: timeout per run is 0h 5m 0s
-ima_violations 1 TINFO: IMA kernel config:
-ima_violations 1 TINFO: CONFIG_IMA=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=3D10
-ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE=3D"ima-ng"
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH=3D"sha256"
-ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DISABLE_HTABLE=3Dy
-ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=3D/boot/vmlinuz-6.14.0-rc=
-3-1.gb6b4102-default root=3DUUID=3De36b2366-1af2-4408-903c-1fca82c60f4c spl=
-ash=3Dsilent video=3D1024x768 plymouth.ignore-serial-consoles console=3Dtty=
-S0 console=3Dtty kernel.softlockup_panic=3D1 resume=3D/dev/disk/by-uuid/c3b=
-865f9-5d5b-410e-a6d1-9ebcf721584c mitigations=3Dauto security=3Dapparmor ig=
-nore_loglevel ima_policy=3Dtcb
-ima_violations 1 TINFO: $TMPDIR is on tmpfs =3D> run on loop device
-ima_violations 1 TINFO: booted with IMA policy: tcb
-ima_violations 1 TINFO: using log /var/log/audit/audit.log
-ima_violations 1 TINFO: verify open writers violation
-ima_violations 1 TFAIL: open_writers too many violations added: 3 - 1
-ima_violations 2 TINFO: verify ToMToU violation
-ima_violations 2 TPASS: 1 ToMToU violation(s) added
-ima_violations 3 TINFO: verify open_writers using mmapped files
-tst_test.c:1900: TINFO: LTP version: 20250130-22-gcd2215702f
-tst_test.c:1904: TINFO: Tested kernel: 6.14.0-rc3-1.gb6b4102-default #1 SMP=
- PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected whi=
-ch might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
-ima_mmap.c:38: TINFO: sleep 3s
-ima_violations 3 TPASS: 1 open_writers violation(s) added
-ima_mmap.c:41: TPASS: test completed
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-ima_violations 4 TINFO: verify limiting single open writer violation
-ima_violations 4 TPASS: 1 open_writers violation(s) added
-ima_violations 5 TINFO: verify limiting multiple open writers violations
-ima_violations 5 TPASS: 1 open_writers violation(s) added
-ima_violations 6 TINFO: verify new open writer causes additional violation
-ima_violations 6 TPASS: 2 open_writers violation(s) added
-ima_violations 7 TINFO: verify limiting single open reader ToMToU violations
-ima_violations 7 TPASS: 1 ToMToU violation(s) added
-ima_violations 8 TINFO: verify new open reader causes additional ToMToU vio=
-lation
-ima_violations 8 TPASS: 2 ToMToU violation(s) added
-
-Summary:
-passed   7
-failed   1
-broken   0
-skipped  0
-warnings 0
-
-Second and later run is again OK
-# LTPROOT=3D"/opt/ltp" PATH=3D"/opt/ltp/testcases/bin:$PATH" ima_violations=
-.sh =
-
-tmpfs is skipped
-ima_violations 1 TINFO: Running: ima_violations.sh =
-
-ima_violations 1 TINFO: Tested kernel: Linux ts 6.14.0-rc3-1.gb6b4102-defau=
-lt #1 SMP PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64 x86=
-_64 x86_64 GNU/Linux
-ima_violations 1 TINFO: Using /tmp/LTP_ima_violations.1Qf6qJuSoo as tmpdir =
-(tmpfs filesystem)
-tst_device.c:99: TINFO: Found free device 0 '/dev/loop0'
-ima_violations 1 TINFO: Formatting ext3 with opts=3D'/dev/loop0'
-ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_=
-ima_violations.1Qf6qJuSoo/mntpoint =
-
-ima_violations 1 TINFO: timeout per run is 0h 5m 0s
-ima_violations 1 TINFO: IMA kernel config:
-ima_violations 1 TINFO: CONFIG_IMA=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=3D10
-ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE=3D"ima-ng"
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH=3D"sha256"
-ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=3Dy
-ima_violations 1 TINFO: CONFIG_IMA_DISABLE_HTABLE=3Dy
-ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=3D/boot/vmlinuz-6.14.0-rc=
-3-1.gb6b4102-default root=3DUUID=3De36b2366-1af2-4408-903c-1fca82c60f4c spl=
-ash=3Dsilent video=3D1024x768 plymouth.ignore-serial-consoles console=3Dtty=
-S0 console=3Dtty kernel.softlockup_panic=3D1 resume=3D/dev/disk/by-uuid/c3b=
-865f9-5d5b-410e-a6d1-9ebcf721584c mitigations=3Dauto security=3Dapparmor ig=
-nore_loglevel ima_policy=3Dtcb
-ima_violations 1 TINFO: $TMPDIR is on tmpfs =3D> run on loop device
-ima_violations 1 TINFO: booted with IMA policy: tcb
-ima_violations 1 TINFO: using log /var/log/audit/audit.log
-ima_violations 1 TINFO: verify open writers violation
-ima_violations 1 TPASS: 1 open_writers violation(s) added
-ima_violations 2 TINFO: verify ToMToU violation
-ima_violations 2 TPASS: 1 ToMToU violation(s) added
-ima_violations 3 TINFO: verify open_writers using mmapped files
-tst_test.c:1900: TINFO: LTP version: 20250130-22-gcd2215702f
-tst_test.c:1904: TINFO: Tested kernel: 6.14.0-rc3-1.gb6b4102-default #1 SMP=
- PREEMPT_DYNAMIC Thu Feb 20 12:26:55 UTC 2025 (b6b4102) x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected whi=
-ch might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
-ima_mmap.c:38: TINFO: sleep 3s
-ima_violations 3 TPASS: 1 open_writers violation(s) added
-ima_mmap.c:41: TPASS: test completed
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-ima_violations 4 TINFO: verify limiting single open writer violation
-ima_violations 4 TPASS: 1 open_writers violation(s) added
-ima_violations 5 TINFO: verify limiting multiple open writers violations
-ima_violations 5 TPASS: 1 open_writers violation(s) added
-ima_violations 6 TINFO: verify new open writer causes additional violation
-ima_violations 6 TPASS: 2 open_writers violation(s) added
-ima_violations 7 TINFO: verify limiting single open reader ToMToU violations
-ima_violations 7 TPASS: 1 ToMToU violation(s) added
-ima_violations 8 TINFO: verify new open reader causes additional ToMToU vio=
-lation
-ima_violations 8 TPASS: 2 ToMToU violation(s) added
-
-Summary:
-passed   8
-failed   0
-broken   0
-skipped  0
-warnings 0
-
--- =
-
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCAyMDI1LTAyLTIwIGF0IDIwOjEzICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+ID4g
+T24gVGh1LCAyMDI1LTAyLTIwIGF0IDE5OjE2ICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+ID4g
+PiBIaSBNaW1pLAo+IAo+ID4gPiA+IEtlcm5lbCBwYXRjaCAiaW1hOiBsaW1pdCB0aGUgbnVtYmVy
+IG9mIFRvTVRvVSBpbnRlZ3JpdHkgdmlvbGF0aW9ucyIKPiA+ID4gPiBwcmV2ZW50cyBzdXBlcmZs
+dW91cyBUb01Ub1UgdmlvbGF0aW9ucy7CoCBBZGQgY29ycmVzcG9uZGluZyBMVFAgdGVzdHMuCj4g
+Cj4gPiA+ID4gTGluazoKPiA+ID4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1pbnRl
+Z3JpdHkvMjAyNTAyMTkxNjIxMzEuNDE2NzE5LTMtem9oYXJAbGludXguaWJtLmNvbS8KPiA+ID4g
+PiBTaWduZWQtb2ZmLWJ5OiBNaW1pIFpvaGFyIDx6b2hhckBsaW51eC5pYm0uY29tPgo+IAo+ID4g
+PiBVbmZvcnR1bmF0ZWx5IHRlc3RzIGZhaWwgb24gYm90aCBtYWlubGluZSBrZXJuZWwgYW5kIGtl
+cm5lbCB3aXRoIHlvdXIgcGF0Y2hlcy4KPiAKPiA+IFRoZSBuZXcgTFRQIElNQSB2aW9sYXRpb25z
+IHBhdGNoZXMgc2hvdWxkIGZhaWwgd2l0aG91dCB0aGUgYXNzb2NpYXRlZCBrZXJuZWwgcGF0Y2hl
+cy4KPiAKPiA+ID4gQW55IGhpbnQgd2hhdCBjb3VsZCBiZSB3cm9uZz8KPiAKPiA+IE9mIGNvdXJz
+ZSBpdCdzIGRlcGVuZGVudCBvbiB0aGUgSU1BIHBvbGljeS7CoCBUaGUgdGVzdHMgYXNzdW1lIGJl
+aW5nIGJvb3RlZCB3aXRoIHRoZQo+ID4gSU1BCj4gPiBUQ0IgbWVhc3VyZW1lbnQgcG9saWN5IG9y
+IHNpbWlsYXIgcG9saWN5IGJlaW5nIGxvYWRlZC7CoCBDYW4geW91IHNoYXJlIHRoZSBJTUEgcG9s
+aWN5Pwo+ID4gZS5nLiBjYXQgL3N5cy9rZXJuZWwvc2VjdXJpdHkvaW1hL3BvbGljeQo+IAo+ID4g
+dGhhbmtzLAo+IAo+ID4gTWltaQo+IAo+IE5vdyB0ZXN0aW5nIG9uIGtlcm5lbCAqd2l0aCogeW91
+ciBwYXRjaGVzLiBGaXJzdCBydW4gYWx3YXlzIGZhaWxzLCByZWdhcmRsZXNzCj4gd2hldGhlciB1
+c2luZyBpbWFfcG9saWN5PXRjYiBvcgo+IC9vcHQvbHRwL3Rlc3RjYXNlcy9kYXRhL2ltYV92aW9s
+YXRpb25zL3Zpb2xhdGlvbnMucG9saWN5KS4KPiAKPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgoKSSdt
+IG5vdCBzZWVpbmcgdGhhdCBvbiBteSB0ZXN0IG1hY2hpbmUuICBDb3VsZCB0aGVyZSBiZSBvdGhl
+ciB0aGluZ3MgcnVubmluZyBvbiB5b3VyCnN5c3RlbSBjYXVzaW5nIHZpb2xhdGlvbnMuICBJbiBh
+bnljYXNlLCB5b3VyIG9yaWdpbmFsIHRlc3Qgd2FzIGxlc3MgZXhhY3RpbmcuICAgU2ltaWxhcmx5
+LAppbnN0ZWFkIG9mICItZXEiLCB0cnkgdXNpbmcgIi1xZSIgaW4gdGhlIGZvbGxvd2luZyB0ZXN0
+IGFuZCByZW1vdmluZyB0aGUgc3Vic2VxdWVudCBuZXcKImd0IiB0ZXN0LgoKaWYgWyAkKCgkbnVt
+X3Zpb2xhdGlvbnNfbmV3IC0gJG51bV92aW9sYXRpb25zKSkgLWVxICRleHBlY3RlZF92aW9sYXRp
+b25zIF07IHRoZW4KCj4gCj4gRmlyc3QgcnVuIGZhaWxzOgo+IAo+ICMgTFRQX0lNQV9MT0FEX1BP
+TElDWT0xIExUUFJPT1Q9Ii9vcHQvbHRwIiBQQVRIPSIvb3B0L2x0cC90ZXN0Y2FzZXMvYmluOiRQ
+QVRIIgo+IGltYV92aW9sYXRpb25zLnNoCj4gKHBvbGljeSBpcyAvb3B0L2x0cC90ZXN0Y2FzZXMv
+ZGF0YS9pbWFfdmlvbGF0aW9ucy92aW9sYXRpb25zLnBvbGljeSkKPiBpbWFfdmlvbGF0aW9ucyAx
+IFRJTkZPOiBSdW5uaW5nOiBpbWFfdmlvbGF0aW9ucy5zaCAKPiBpbWFfdmlvbGF0aW9ucyAxIFRJ
+TkZPOiBUZXN0ZWQga2VybmVsOiBMaW51eCB0cyA2LjE0LjAtcmMzLTEuZ2I2YjQxMDItZGVmYXVs
+dCAjMSBTTVAKPiBQUkVFTVBUX0RZTkFNSUMgVGh1IEZlYiAyMCAxMjoyNjo1NSBVVEMgMjAyNSAo
+YjZiNDEwMikgeDg2XzY0IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4Cj4gaW1hX3Zpb2xhdGlvbnMg
+MSBUSU5GTzogVXNpbmcgL3RtcC9MVFBfaW1hX3Zpb2xhdGlvbnMuWFIzNEtodG5ETSBhcyB0bXBk
+aXIgKHRtcGZzCj4gZmlsZXN5c3RlbSkKPiB0c3RfZGV2aWNlLmM6OTk6IFRJTkZPOiBGb3VuZCBm
+cmVlIGRldmljZSAwICcvZGV2L2xvb3AwJwo+IGltYV92aW9sYXRpb25zIDEgVElORk86IEZvcm1h
+dHRpbmcgZXh0MyB3aXRoIG9wdHM9Jy9kZXYvbG9vcDAnCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5G
+TzogTW91bnRpbmcgZGV2aWNlOiBtb3VudCAtdCBleHQzIC9kZXYvbG9vcDAKPiAvdG1wL0xUUF9p
+bWFfdmlvbGF0aW9ucy5YUjM0S2h0bkRNL21udHBvaW50IAo+IGltYV92aW9sYXRpb25zIDEgVElO
+Rk86IHRpbWVvdXQgcGVyIHJ1biBpcyAwaCA1bSAwcwo+IGltYV92aW9sYXRpb25zIDEgVElORk86
+IElNQSBrZXJuZWwgY29uZmlnOgo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUE9
+eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTUVBU1VSRV9QQ1JfSURYPTEw
+Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9MU01fUlVMRVM9eQo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTkdfVEVNUExBVEU9eQo+IGltYV92aW9sYXRp
+b25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9URU1QTEFURT0iaW1hLW5nIgo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9IQVNIX1NIQTI1Nj15Cj4gaW1h
+X3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9ERUZBVUxUX0hBU0g9InNoYTI1NiIKPiBp
+bWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1JFQURfUE9MSUNZPXkKPiBpbWFfdmlv
+bGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFPXkKPiBpbWFfdmlvbGF0aW9ucyAx
+IFRJTkZPOiBDT05GSUdfSU1BX0FSQ0hfUE9MSUNZPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZP
+OiBDT05GSUdfSU1BX0FQUFJBSVNFX0JPT1RQQVJBTT15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5G
+TzogQ09ORklHX0lNQV9BUFBSQUlTRV9NT0RTSUc9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86
+IENPTkZJR19JTUFfTUVBU1VSRV9BU1lNTUVUUklDX0tFWVM9eQo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IENPTkZJR19JTUFfUVVFVUVfRUFSTFlfQk9PVF9LRVlTPXkKPiBpbWFfdmlvbGF0aW9u
+cyAxIFRJTkZPOiBDT05GSUdfSU1BX1NFQ1VSRV9BTkRfT1JfVFJVU1RFRF9CT09UPXkKPiBpbWFf
+dmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0RJU0FCTEVfSFRBQkxFPXkKPiBpbWFfdmlv
+bGF0aW9ucyAxIFRJTkZPOiAvcHJvYy9jbWRsaW5lOiBCT09UX0lNQUdFPS9ib290L3ZtbGludXot
+Ni4xNC4wLXJjMy0xLmdiNmI0MTAyLQo+IGRlZmF1bHQgcm9vdD1VVUlEPWUzNmIyMzY2LTFhZjIt
+NDQwOC05MDNjLTFmY2E4MmM2MGY0YyBzcGxhc2g9c2lsZW50IHZpZGVvPTEwMjR4NzY4Cj4gcGx5
+bW91dGguaWdub3JlLXNlcmlhbC1jb25zb2xlcyBjb25zb2xlPXR0eVMwIGNvbnNvbGU9dHR5IGtl
+cm5lbC5zb2Z0bG9ja3VwX3BhbmljPTEKPiByZXN1bWU9L2Rldi9kaXNrL2J5LXV1aWQvYzNiODY1
+ZjktNWQ1Yi00MTBlLWE2ZDEtOWViY2Y3MjE1ODRjIG1pdGlnYXRpb25zPWF1dG8KPiBzZWN1cml0
+eT1hcHBhcm1vciBpZ25vcmVfbG9nbGV2ZWwKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiAkVE1Q
+RElSIGlzIG9uIHRtcGZzID0+IHJ1biBvbiBsb29wIGRldmljZQo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IHRlc3QgcmVxdWlyZXMgSU1BIHBvbGljeToKPiBtZWFzdXJlIGZ1bmM9RklMRV9DSEVD
+SyBtYXNrPV5NQVlfUkVBRCBldWlkPTAKPiBtZWFzdXJlIGZ1bmM9RklMRV9DSEVDSyBtYXNrPV5N
+QVlfUkVBRCB1aWQ9MAo+IGltYV92aW9sYXRpb25zIDEgVElORk86IFdBUk5JTkc6IG1pc3Npbmcg
+cmVxdWlyZWQgcG9saWN5IGNvbnRlbnQ6ICdtZWFzdXJlCj4gZnVuYz1GSUxFX0NIRUNLIG1hc2s9
+Xk1BWV9SRUFEIGV1aWQ9MCcKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB0cnlpbmcgdG8gbG9h
+ZAo+ICcvb3B0L2x0cC90ZXN0Y2FzZXMvZGF0YS9pbWFfdmlvbGF0aW9ucy92aW9sYXRpb25zLnBv
+bGljeScgcG9saWN5Ogo+IG1lYXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIGV1
+aWQ9MAo+IG1lYXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIHVpZD0wCj4gaW1h
+X3Zpb2xhdGlvbnMgMSBUSU5GTzogZXhhbXBsZSBwb2xpY3kgc3VjY2Vzc2Z1bGx5IGxvYWRlZAo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86IHVzaW5nIGxvZyAvdmFyL2xvZy9hdWRpdC9hdWRpdC5s
+b2cKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB2ZXJpZnkgb3BlbiB3cml0ZXJzIHZpb2xhdGlv
+bgo+IGltYV92aW9sYXRpb25zIDEgVEZBSUw6IG9wZW5fd3JpdGVycyB0b28gbWFueSB2aW9sYXRp
+b25zIGFkZGVkOiAyIC0gMAo+IGltYV92aW9sYXRpb25zIDIgVElORk86IHZlcmlmeSBUb01Ub1Ug
+dmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgMiBUUEFTUzogMSBUb01Ub1UgdmlvbGF0aW9uKHMp
+IGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgMyBUSU5GTzogdmVyaWZ5IG9wZW5fd3JpdGVycyB1c2lu
+ZyBtbWFwcGVkIGZpbGVzCj4gdHN0X3Rlc3QuYzoxOTAwOiBUSU5GTzogTFRQIHZlcnNpb246IDIw
+MjUwMTMwLTIyLWdjZDIyMTU3MDJmCj4gdHN0X3Rlc3QuYzoxOTA0OiBUSU5GTzogVGVzdGVkIGtl
+cm5lbDogNi4xNC4wLXJjMy0xLmdiNmI0MTAyLWRlZmF1bHQgIzEgU01QCj4gUFJFRU1QVF9EWU5B
+TUlDIFRodSBGZWIgMjAgMTI6MjY6NTUgVVRDIDIwMjUgKGI2YjQxMDIpIHg4Nl82NAo+IHRzdF9r
+Y29uZmlnLmM6ODg6IFRJTkZPOiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9wcm9jL2NvbmZpZy5n
+eicKPiB0c3Rfa2NvbmZpZy5jOjY3NjogVElORk86IENPTkZJR19GQVVMVF9JTkpFQ1RJT04ga2Vy
+bmVsIG9wdGlvbiBkZXRlY3RlZCB3aGljaCBtaWdodCBzbG93Cj4gdGhlIGV4ZWN1dGlvbgo+IHRz
+dF90ZXN0LmM6MTcyMjogVElORk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVuIGlzIDBoIDAybSAw
+MHMKPiBpbWFfbW1hcC5jOjM4OiBUSU5GTzogc2xlZXAgM3MKPiBpbWFfdmlvbGF0aW9ucyAzIFRQ
+QVNTOiAxIG9wZW5fd3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFfbW1hcC5jOjQxOiBU
+UEFTUzogdGVzdCBjb21wbGV0ZWQKPiAKPiBTdW1tYXJ5Ogo+IHBhc3NlZMKgwqAgMQo+IGZhaWxl
+ZMKgwqAgMAo+IGJyb2tlbsKgwqAgMAo+IHNraXBwZWTCoCAwCj4gd2FybmluZ3MgMAo+IGltYV92
+aW9sYXRpb25zIDQgVElORk86IHZlcmlmeSBsaW1pdGluZyBzaW5nbGUgb3BlbiB3cml0ZXIgdmlv
+bGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgNCBUUEFTUzogMSBvcGVuX3dyaXRlcnMgdmlvbGF0aW9u
+KHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNSBUSU5GTzogdmVyaWZ5IGxpbWl0aW5nIG11bHRp
+cGxlIG9wZW4gd3JpdGVycyB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNSBUUEFTUzogMSBv
+cGVuX3dyaXRlcnMgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNiBUSU5GTzog
+dmVyaWZ5IG5ldyBvcGVuIHdyaXRlciBjYXVzZXMgYWRkaXRpb25hbCB2aW9sYXRpb24KPiBpbWFf
+dmlvbGF0aW9ucyA2IFRQQVNTOiAyIG9wZW5fd3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBp
+bWFfdmlvbGF0aW9ucyA3IFRJTkZPOiB2ZXJpZnkgbGltaXRpbmcgc2luZ2xlIG9wZW4gcmVhZGVy
+IFRvTVRvVSB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNyBUUEFTUzogMSBUb01Ub1Ugdmlv
+bGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgOCBUSU5GTzogdmVyaWZ5IG5ldyBvcGVu
+IHJlYWRlciBjYXVzZXMgYWRkaXRpb25hbCBUb01Ub1UgdmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlv
+bnMgOCBUUEFTUzogMiBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMg
+OSBUSU5GTzogV0FSTklORzogcG9saWN5IGxvYWRlZCB2aWEgTFRQX0lNQV9MT0FEX1BPTElDWT0x
+LCByZWJvb3QKPiByZWNvbW1lbmRlZAo+IAo+IFN1bW1hcnk6Cj4gcGFzc2VkwqDCoCA3Cj4gZmFp
+bGVkwqDCoCAxCj4gYnJva2VuwqDCoCAwCj4gc2tpcHBlZMKgIDAKPiB3YXJuaW5ncyAwCj4gCj4g
+U2Vjb25kIHJ1biBpcyBvazoKPiAjIExUUFJPT1Q9Ii9vcHQvbHRwIiBQQVRIPSIvb3B0L2x0cC90
+ZXN0Y2FzZXMvYmluOiRQQVRIIiBpbWFfdmlvbGF0aW9ucy5zaAo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IFJ1bm5pbmc6IGltYV92aW9sYXRpb25zLnNoIAo+IGltYV92aW9sYXRpb25zIDEgVElO
+Rk86IFRlc3RlZCBrZXJuZWw6IExpbnV4IHRzIDYuMTQuMC1yYzMtMS5nYjZiNDEwMi1kZWZhdWx0
+ICMxIFNNUAo+IFBSRUVNUFRfRFlOQU1JQyBUaHUgRmViIDIwIDEyOjI2OjU1IFVUQyAyMDI1IChi
+NmI0MTAyKSB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKPiBpbWFfdmlvbGF0aW9ucyAx
+IFRJTkZPOiBVc2luZyAvdmFyL3RtcC9MVFBfaW1hX3Zpb2xhdGlvbnMuU1dFUkZqdlBUcCBhcyB0
+bXBkaXIgKGJ0cmZzCj4gZmlsZXN5c3RlbSkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB0aW1l
+b3V0IHBlciBydW4gaXMgMGggNW0gMHMKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBJTUEga2Vy
+bmVsIGNvbmZpZzoKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BPXkKPiBpbWFf
+dmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX01FQVNVUkVfUENSX0lEWD0xMAo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTFNNX1JVTEVTPXkKPiBpbWFfdmlvbGF0aW9u
+cyAxIFRJTkZPOiBDT05GSUdfSU1BX05HX1RFTVBMQVRFPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJ
+TkZPOiBDT05GSUdfSU1BX0RFRkFVTFRfVEVNUExBVEU9ImltYS1uZyIKPiBpbWFfdmlvbGF0aW9u
+cyAxIFRJTkZPOiBDT05GSUdfSU1BX0RFRkFVTFRfSEFTSF9TSEEyNTY9eQo+IGltYV92aW9sYXRp
+b25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9IQVNIPSJzaGEyNTYiCj4gaW1hX3Zpb2xh
+dGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9SRUFEX1BPTElDWT15Cj4gaW1hX3Zpb2xhdGlvbnMg
+MSBUSU5GTzogQ09ORklHX0lNQV9BUFBSQUlTRT15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzog
+Q09ORklHX0lNQV9BUkNIX1BPTElDWT15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklH
+X0lNQV9BUFBSQUlTRV9CT09UUEFSQU09eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJ
+R19JTUFfQVBQUkFJU0VfTU9EU0lHPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdf
+SU1BX01FQVNVUkVfQVNZTU1FVFJJQ19LRVlTPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBD
+T05GSUdfSU1BX1FVRVVFX0VBUkxZX0JPT1RfS0VZUz15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5G
+TzogQ09ORklHX0lNQV9TRUNVUkVfQU5EX09SX1RSVVNURURfQk9PVD15Cj4gaW1hX3Zpb2xhdGlv
+bnMgMSBUSU5GTzogQ09ORklHX0lNQV9ESVNBQkxFX0hUQUJMRT15Cj4gaW1hX3Zpb2xhdGlvbnMg
+MSBUSU5GTzogL3Byb2MvY21kbGluZTogQk9PVF9JTUFHRT0vYm9vdC92bWxpbnV6LTYuMTQuMC1y
+YzMtMS5nYjZiNDEwMi0KPiBkZWZhdWx0IHJvb3Q9VVVJRD1lMzZiMjM2Ni0xYWYyLTQ0MDgtOTAz
+Yy0xZmNhODJjNjBmNGMgc3BsYXNoPXNpbGVudCB2aWRlbz0xMDI0eDc2OAo+IHBseW1vdXRoLmln
+bm9yZS1zZXJpYWwtY29uc29sZXMgY29uc29sZT10dHlTMCBjb25zb2xlPXR0eSBrZXJuZWwuc29m
+dGxvY2t1cF9wYW5pYz0xCj4gcmVzdW1lPS9kZXYvZGlzay9ieS11dWlkL2MzYjg2NWY5LTVkNWIt
+NDEwZS1hNmQxLTllYmNmNzIxNTg0YyBtaXRpZ2F0aW9ucz1hdXRvCj4gc2VjdXJpdHk9YXBwYXJt
+b3IgaWdub3JlX2xvZ2xldmVsCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogdGVzdCByZXF1aXJl
+cyBJTUEgcG9saWN5Ogo+IG1lYXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIGV1
+aWQ9MAo+IG1lYXN1cmUgZnVuYz1GSUxFX0NIRUNLIG1hc2s9Xk1BWV9SRUFEIHVpZD0wCj4gaW1h
+X3Zpb2xhdGlvbnMgMSBUSU5GTzogU1VUIGhhcyByZXF1aXJlZCBwb2xpY3kgY29udGVudAo+IGlt
+YV92aW9sYXRpb25zIDEgVElORk86IHVzaW5nIGxvZyAvdmFyL2xvZy9hdWRpdC9hdWRpdC5sb2cK
+PiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB2ZXJpZnkgb3BlbiB3cml0ZXJzIHZpb2xhdGlvbgo+
+IGltYV92aW9sYXRpb25zIDEgVFBBU1M6IDEgb3Blbl93cml0ZXJzIHZpb2xhdGlvbihzKSBhZGRl
+ZAo+IGltYV92aW9sYXRpb25zIDIgVElORk86IHZlcmlmeSBUb01Ub1UgdmlvbGF0aW9uCj4gaW1h
+X3Zpb2xhdGlvbnMgMiBUUEFTUzogMSBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zp
+b2xhdGlvbnMgMyBUSU5GTzogdmVyaWZ5IG9wZW5fd3JpdGVycyB1c2luZyBtbWFwcGVkIGZpbGVz
+Cj4gdHN0X3Rlc3QuYzoxOTAwOiBUSU5GTzogTFRQIHZlcnNpb246IDIwMjUwMTMwLTIyLWdjZDIy
+MTU3MDJmCj4gdHN0X3Rlc3QuYzoxOTA0OiBUSU5GTzogVGVzdGVkIGtlcm5lbDogNi4xNC4wLXJj
+My0xLmdiNmI0MTAyLWRlZmF1bHQgIzEgU01QCj4gUFJFRU1QVF9EWU5BTUlDIFRodSBGZWIgMjAg
+MTI6MjY6NTUgVVRDIDIwMjUgKGI2YjQxMDIpIHg4Nl82NAo+IHRzdF9rY29uZmlnLmM6ODg6IFRJ
+TkZPOiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9wcm9jL2NvbmZpZy5neicKPiB0c3Rfa2NvbmZp
+Zy5jOjY3NjogVElORk86IENPTkZJR19GQVVMVF9JTkpFQ1RJT04ga2VybmVsIG9wdGlvbiBkZXRl
+Y3RlZCB3aGljaCBtaWdodCBzbG93Cj4gdGhlIGV4ZWN1dGlvbgo+IHRzdF90ZXN0LmM6MTcyMjog
+VElORk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVuIGlzIDBoIDAybSAwMHMKPiBpbWFfbW1hcC5j
+OjM4OiBUSU5GTzogc2xlZXAgM3MKPiBpbWFfdmlvbGF0aW9ucyAzIFRQQVNTOiAxIG9wZW5fd3Jp
+dGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFfbW1hcC5jOjQxOiBUUEFTUzogdGVzdCBjb21w
+bGV0ZWQKPiAKPiBTdW1tYXJ5Ogo+IHBhc3NlZMKgwqAgMQo+IGZhaWxlZMKgwqAgMAo+IGJyb2tl
+bsKgwqAgMAo+IHNraXBwZWTCoCAwCj4gd2FybmluZ3MgMAo+IGltYV92aW9sYXRpb25zIDQgVElO
+Rk86IHZlcmlmeSBsaW1pdGluZyBzaW5nbGUgb3BlbiB3cml0ZXIgdmlvbGF0aW9uCj4gaW1hX3Zp
+b2xhdGlvbnMgNCBUUEFTUzogMSBvcGVuX3dyaXRlcnMgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1h
+X3Zpb2xhdGlvbnMgNSBUSU5GTzogdmVyaWZ5IGxpbWl0aW5nIG11bHRpcGxlIG9wZW4gd3JpdGVy
+cyB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNSBUUEFTUzogMSBvcGVuX3dyaXRlcnMgdmlv
+bGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNiBUSU5GTzogdmVyaWZ5IG5ldyBvcGVu
+IHdyaXRlciBjYXVzZXMgYWRkaXRpb25hbCB2aW9sYXRpb24KPiBpbWFfdmlvbGF0aW9ucyA2IFRQ
+QVNTOiAyIG9wZW5fd3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFfdmlvbGF0aW9ucyA3
+IFRJTkZPOiB2ZXJpZnkgbGltaXRpbmcgc2luZ2xlIG9wZW4gcmVhZGVyIFRvTVRvVSB2aW9sYXRp
+b25zCj4gaW1hX3Zpb2xhdGlvbnMgNyBUUEFTUzogMSBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVk
+Cj4gaW1hX3Zpb2xhdGlvbnMgOCBUSU5GTzogdmVyaWZ5IG5ldyBvcGVuIHJlYWRlciBjYXVzZXMg
+YWRkaXRpb25hbCBUb01Ub1UgdmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgOCBUUEFTUzogMiBU
+b01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gCj4gU3VtbWFyeToKPiBwYXNzZWTCoMKgIDgKPiBm
+YWlsZWTCoMKgIDAKPiBicm9rZW7CoMKgIDAKPiBza2lwcGVkwqAgMAo+IHdhcm5pbmdzIDAKPiAK
+PiBSZWJvb3QgYW5kIHJ1bm5pbmcgd2l0aCBpbWFfcG9saWN5PXRjYiBhbHNvIGZhaWxzIG9uIHRo
+ZSBmaXJzdCB0aW1lOgo+IAo+ICMgTFRQUk9PVD0iL29wdC9sdHAiIFBBVEg9Ii9vcHQvbHRwL3Rl
+c3RjYXNlcy9iaW46JFBBVEgiIGltYV92aW9sYXRpb25zLnNoIAo+IHRtcGZzIGlzIHNraXBwZWQK
+PiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBSdW5uaW5nOiBpbWFfdmlvbGF0aW9ucy5zaCAKPiBp
+bWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBUZXN0ZWQga2VybmVsOiBMaW51eCB0cyA2LjE0LjAtcmMz
+LTEuZ2I2YjQxMDItZGVmYXVsdCAjMSBTTVAKPiBQUkVFTVBUX0RZTkFNSUMgVGh1IEZlYiAyMCAx
+MjoyNjo1NSBVVEMgMjAyNSAoYjZiNDEwMikgeDg2XzY0IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4
+Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogVXNpbmcgL3RtcC9MVFBfaW1hX3Zpb2xhdGlvbnMu
+RktRU2ZlekF3UiBhcyB0bXBkaXIgKHRtcGZzCj4gZmlsZXN5c3RlbSkKPiB0c3RfZGV2aWNlLmM6
+OTk6IFRJTkZPOiBGb3VuZCBmcmVlIGRldmljZSAwICcvZGV2L2xvb3AwJwo+IGltYV92aW9sYXRp
+b25zIDEgVElORk86IEZvcm1hdHRpbmcgZXh0MyB3aXRoIG9wdHM9Jy9kZXYvbG9vcDAnCj4gaW1h
+X3Zpb2xhdGlvbnMgMSBUSU5GTzogTW91bnRpbmcgZGV2aWNlOiBtb3VudCAtdCBleHQzIC9kZXYv
+bG9vcDAKPiAvdG1wL0xUUF9pbWFfdmlvbGF0aW9ucy5GS1FTZmV6QXdSL21udHBvaW50IAo+IGlt
+YV92aW9sYXRpb25zIDEgVElORk86IHRpbWVvdXQgcGVyIHJ1biBpcyAwaCA1bSAwcwo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IElNQSBrZXJuZWwgY29uZmlnOgo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IENPTkZJR19JTUE9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFf
+TUVBU1VSRV9QQ1JfSURYPTEwCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9M
+U01fUlVMRVM9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTkdfVEVNUExB
+VEU9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9URU1QTEFU
+RT0iaW1hLW5nIgo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9I
+QVNIX1NIQTI1Nj15Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9ERUZBVUxU
+X0hBU0g9InNoYTI1NiIKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1JFQURf
+UE9MSUNZPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFPXkK
+PiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FSQ0hfUE9MSUNZPXkKPiBpbWFf
+dmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFX0JPT1RQQVJBTT15Cj4gaW1h
+X3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9BUFBSQUlTRV9NT0RTSUc9eQo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTUVBU1VSRV9BU1lNTUVUUklDX0tFWVM9eQo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfUVVFVUVfRUFSTFlfQk9PVF9LRVlT
+PXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1NFQ1VSRV9BTkRfT1JfVFJV
+U1RFRF9CT09UPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0RJU0FCTEVf
+SFRBQkxFPXkKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiAvcHJvYy9jbWRsaW5lOiBCT09UX0lN
+QUdFPS9ib290L3ZtbGludXotNi4xNC4wLXJjMy0xLmdiNmI0MTAyLQo+IGRlZmF1bHQgcm9vdD1V
+VUlEPWUzNmIyMzY2LTFhZjItNDQwOC05MDNjLTFmY2E4MmM2MGY0YyBzcGxhc2g9c2lsZW50IHZp
+ZGVvPTEwMjR4NzY4Cj4gcGx5bW91dGguaWdub3JlLXNlcmlhbC1jb25zb2xlcyBjb25zb2xlPXR0
+eVMwIGNvbnNvbGU9dHR5IGtlcm5lbC5zb2Z0bG9ja3VwX3BhbmljPTEKPiByZXN1bWU9L2Rldi9k
+aXNrL2J5LXV1aWQvYzNiODY1ZjktNWQ1Yi00MTBlLWE2ZDEtOWViY2Y3MjE1ODRjIG1pdGlnYXRp
+b25zPWF1dG8KPiBzZWN1cml0eT1hcHBhcm1vciBpZ25vcmVfbG9nbGV2ZWwgaW1hX3BvbGljeT10
+Y2IKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiAkVE1QRElSIGlzIG9uIHRtcGZzID0+IHJ1biBv
+biBsb29wIGRldmljZQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IGJvb3RlZCB3aXRoIElNQSBw
+b2xpY3k6IHRjYgo+IGltYV92aW9sYXRpb25zIDEgVElORk86IHVzaW5nIGxvZyAvdmFyL2xvZy9h
+dWRpdC9hdWRpdC5sb2cKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB2ZXJpZnkgb3BlbiB3cml0
+ZXJzIHZpb2xhdGlvbgo+IGltYV92aW9sYXRpb25zIDEgVEZBSUw6IG9wZW5fd3JpdGVycyB0b28g
+bWFueSB2aW9sYXRpb25zIGFkZGVkOiAzIC0gMQo+IGltYV92aW9sYXRpb25zIDIgVElORk86IHZl
+cmlmeSBUb01Ub1UgdmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgMiBUUEFTUzogMSBUb01Ub1Ug
+dmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgMyBUSU5GTzogdmVyaWZ5IG9wZW5f
+d3JpdGVycyB1c2luZyBtbWFwcGVkIGZpbGVzCj4gdHN0X3Rlc3QuYzoxOTAwOiBUSU5GTzogTFRQ
+IHZlcnNpb246IDIwMjUwMTMwLTIyLWdjZDIyMTU3MDJmCj4gdHN0X3Rlc3QuYzoxOTA0OiBUSU5G
+TzogVGVzdGVkIGtlcm5lbDogNi4xNC4wLXJjMy0xLmdiNmI0MTAyLWRlZmF1bHQgIzEgU01QCj4g
+UFJFRU1QVF9EWU5BTUlDIFRodSBGZWIgMjAgMTI6MjY6NTUgVVRDIDIwMjUgKGI2YjQxMDIpIHg4
+Nl82NAo+IHRzdF9rY29uZmlnLmM6ODg6IFRJTkZPOiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9w
+cm9jL2NvbmZpZy5neicKPiB0c3Rfa2NvbmZpZy5jOjY3NjogVElORk86IENPTkZJR19GQVVMVF9J
+TkpFQ1RJT04ga2VybmVsIG9wdGlvbiBkZXRlY3RlZCB3aGljaCBtaWdodCBzbG93Cj4gdGhlIGV4
+ZWN1dGlvbgo+IHRzdF90ZXN0LmM6MTcyMjogVElORk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVu
+IGlzIDBoIDAybSAwMHMKPiBpbWFfbW1hcC5jOjM4OiBUSU5GTzogc2xlZXAgM3MKPiBpbWFfdmlv
+bGF0aW9ucyAzIFRQQVNTOiAxIG9wZW5fd3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFf
+bW1hcC5jOjQxOiBUUEFTUzogdGVzdCBjb21wbGV0ZWQKPiAKPiBTdW1tYXJ5Ogo+IHBhc3NlZMKg
+wqAgMQo+IGZhaWxlZMKgwqAgMAo+IGJyb2tlbsKgwqAgMAo+IHNraXBwZWTCoCAwCj4gd2Fybmlu
+Z3MgMAo+IGltYV92aW9sYXRpb25zIDQgVElORk86IHZlcmlmeSBsaW1pdGluZyBzaW5nbGUgb3Bl
+biB3cml0ZXIgdmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgNCBUUEFTUzogMSBvcGVuX3dyaXRl
+cnMgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNSBUSU5GTzogdmVyaWZ5IGxp
+bWl0aW5nIG11bHRpcGxlIG9wZW4gd3JpdGVycyB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMg
+NSBUUEFTUzogMSBvcGVuX3dyaXRlcnMgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlv
+bnMgNiBUSU5GTzogdmVyaWZ5IG5ldyBvcGVuIHdyaXRlciBjYXVzZXMgYWRkaXRpb25hbCB2aW9s
+YXRpb24KPiBpbWFfdmlvbGF0aW9ucyA2IFRQQVNTOiAyIG9wZW5fd3JpdGVycyB2aW9sYXRpb24o
+cykgYWRkZWQKPiBpbWFfdmlvbGF0aW9ucyA3IFRJTkZPOiB2ZXJpZnkgbGltaXRpbmcgc2luZ2xl
+IG9wZW4gcmVhZGVyIFRvTVRvVSB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNyBUUEFTUzog
+MSBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgOCBUSU5GTzogdmVy
+aWZ5IG5ldyBvcGVuIHJlYWRlciBjYXVzZXMgYWRkaXRpb25hbCBUb01Ub1UgdmlvbGF0aW9uCj4g
+aW1hX3Zpb2xhdGlvbnMgOCBUUEFTUzogMiBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gCj4g
+U3VtbWFyeToKPiBwYXNzZWTCoMKgIDcKPiBmYWlsZWTCoMKgIDEKPiBicm9rZW7CoMKgIDAKPiBz
+a2lwcGVkwqAgMAo+IHdhcm5pbmdzIDAKPiAKPiBTZWNvbmQgYW5kIGxhdGVyIHJ1biBpcyBhZ2Fp
+biBPSwo+ICMgTFRQUk9PVD0iL29wdC9sdHAiIFBBVEg9Ii9vcHQvbHRwL3Rlc3RjYXNlcy9iaW46
+JFBBVEgiIGltYV92aW9sYXRpb25zLnNoIAo+IHRtcGZzIGlzIHNraXBwZWQKPiBpbWFfdmlvbGF0
+aW9ucyAxIFRJTkZPOiBSdW5uaW5nOiBpbWFfdmlvbGF0aW9ucy5zaCAKPiBpbWFfdmlvbGF0aW9u
+cyAxIFRJTkZPOiBUZXN0ZWQga2VybmVsOiBMaW51eCB0cyA2LjE0LjAtcmMzLTEuZ2I2YjQxMDIt
+ZGVmYXVsdCAjMSBTTVAKPiBQUkVFTVBUX0RZTkFNSUMgVGh1IEZlYiAyMCAxMjoyNjo1NSBVVEMg
+MjAyNSAoYjZiNDEwMikgeDg2XzY0IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4Cj4gaW1hX3Zpb2xh
+dGlvbnMgMSBUSU5GTzogVXNpbmcgL3RtcC9MVFBfaW1hX3Zpb2xhdGlvbnMuMVFmNnFKdVNvbyBh
+cyB0bXBkaXIgKHRtcGZzCj4gZmlsZXN5c3RlbSkKPiB0c3RfZGV2aWNlLmM6OTk6IFRJTkZPOiBG
+b3VuZCBmcmVlIGRldmljZSAwICcvZGV2L2xvb3AwJwo+IGltYV92aW9sYXRpb25zIDEgVElORk86
+IEZvcm1hdHRpbmcgZXh0MyB3aXRoIG9wdHM9Jy9kZXYvbG9vcDAnCj4gaW1hX3Zpb2xhdGlvbnMg
+MSBUSU5GTzogTW91bnRpbmcgZGV2aWNlOiBtb3VudCAtdCBleHQzIC9kZXYvbG9vcDAKPiAvdG1w
+L0xUUF9pbWFfdmlvbGF0aW9ucy4xUWY2cUp1U29vL21udHBvaW50IAo+IGltYV92aW9sYXRpb25z
+IDEgVElORk86IHRpbWVvdXQgcGVyIHJ1biBpcyAwaCA1bSAwcwo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IElNQSBrZXJuZWwgY29uZmlnOgo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJ
+R19JTUE9eQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTUVBU1VSRV9QQ1Jf
+SURYPTEwCj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9MU01fUlVMRVM9eQo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfTkdfVEVNUExBVEU9eQo+IGltYV92
+aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9URU1QTEFURT0iaW1hLW5nIgo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86IENPTkZJR19JTUFfREVGQVVMVF9IQVNIX1NIQTI1Nj15
+Cj4gaW1hX3Zpb2xhdGlvbnMgMSBUSU5GTzogQ09ORklHX0lNQV9ERUZBVUxUX0hBU0g9InNoYTI1
+NiIKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1JFQURfUE9MSUNZPXkKPiBp
+bWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFPXkKPiBpbWFfdmlvbGF0
+aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0FSQ0hfUE9MSUNZPXkKPiBpbWFfdmlvbGF0aW9ucyAx
+IFRJTkZPOiBDT05GSUdfSU1BX0FQUFJBSVNFX0JPT1RQQVJBTT15Cj4gaW1hX3Zpb2xhdGlvbnMg
+MSBUSU5GTzogQ09ORklHX0lNQV9BUFBSQUlTRV9NT0RTSUc9eQo+IGltYV92aW9sYXRpb25zIDEg
+VElORk86IENPTkZJR19JTUFfTUVBU1VSRV9BU1lNTUVUUklDX0tFWVM9eQo+IGltYV92aW9sYXRp
+b25zIDEgVElORk86IENPTkZJR19JTUFfUVVFVUVfRUFSTFlfQk9PVF9LRVlTPXkKPiBpbWFfdmlv
+bGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX1NFQ1VSRV9BTkRfT1JfVFJVU1RFRF9CT09UPXkK
+PiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiBDT05GSUdfSU1BX0RJU0FCTEVfSFRBQkxFPXkKPiBp
+bWFfdmlvbGF0aW9ucyAxIFRJTkZPOiAvcHJvYy9jbWRsaW5lOiBCT09UX0lNQUdFPS9ib290L3Zt
+bGludXotNi4xNC4wLXJjMy0xLmdiNmI0MTAyLQo+IGRlZmF1bHQgcm9vdD1VVUlEPWUzNmIyMzY2
+LTFhZjItNDQwOC05MDNjLTFmY2E4MmM2MGY0YyBzcGxhc2g9c2lsZW50IHZpZGVvPTEwMjR4NzY4
+Cj4gcGx5bW91dGguaWdub3JlLXNlcmlhbC1jb25zb2xlcyBjb25zb2xlPXR0eVMwIGNvbnNvbGU9
+dHR5IGtlcm5lbC5zb2Z0bG9ja3VwX3BhbmljPTEKPiByZXN1bWU9L2Rldi9kaXNrL2J5LXV1aWQv
+YzNiODY1ZjktNWQ1Yi00MTBlLWE2ZDEtOWViY2Y3MjE1ODRjIG1pdGlnYXRpb25zPWF1dG8KPiBz
+ZWN1cml0eT1hcHBhcm1vciBpZ25vcmVfbG9nbGV2ZWwgaW1hX3BvbGljeT10Y2IKPiBpbWFfdmlv
+bGF0aW9ucyAxIFRJTkZPOiAkVE1QRElSIGlzIG9uIHRtcGZzID0+IHJ1biBvbiBsb29wIGRldmlj
+ZQo+IGltYV92aW9sYXRpb25zIDEgVElORk86IGJvb3RlZCB3aXRoIElNQSBwb2xpY3k6IHRjYgo+
+IGltYV92aW9sYXRpb25zIDEgVElORk86IHVzaW5nIGxvZyAvdmFyL2xvZy9hdWRpdC9hdWRpdC5s
+b2cKPiBpbWFfdmlvbGF0aW9ucyAxIFRJTkZPOiB2ZXJpZnkgb3BlbiB3cml0ZXJzIHZpb2xhdGlv
+bgo+IGltYV92aW9sYXRpb25zIDEgVFBBU1M6IDEgb3Blbl93cml0ZXJzIHZpb2xhdGlvbihzKSBh
+ZGRlZAo+IGltYV92aW9sYXRpb25zIDIgVElORk86IHZlcmlmeSBUb01Ub1UgdmlvbGF0aW9uCj4g
+aW1hX3Zpb2xhdGlvbnMgMiBUUEFTUzogMSBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1h
+X3Zpb2xhdGlvbnMgMyBUSU5GTzogdmVyaWZ5IG9wZW5fd3JpdGVycyB1c2luZyBtbWFwcGVkIGZp
+bGVzCj4gdHN0X3Rlc3QuYzoxOTAwOiBUSU5GTzogTFRQIHZlcnNpb246IDIwMjUwMTMwLTIyLWdj
+ZDIyMTU3MDJmCj4gdHN0X3Rlc3QuYzoxOTA0OiBUSU5GTzogVGVzdGVkIGtlcm5lbDogNi4xNC4w
+LXJjMy0xLmdiNmI0MTAyLWRlZmF1bHQgIzEgU01QCj4gUFJFRU1QVF9EWU5BTUlDIFRodSBGZWIg
+MjAgMTI6MjY6NTUgVVRDIDIwMjUgKGI2YjQxMDIpIHg4Nl82NAo+IHRzdF9rY29uZmlnLmM6ODg6
+IFRJTkZPOiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9wcm9jL2NvbmZpZy5neicKPiB0c3Rfa2Nv
+bmZpZy5jOjY3NjogVElORk86IENPTkZJR19GQVVMVF9JTkpFQ1RJT04ga2VybmVsIG9wdGlvbiBk
+ZXRlY3RlZCB3aGljaCBtaWdodCBzbG93Cj4gdGhlIGV4ZWN1dGlvbgo+IHRzdF90ZXN0LmM6MTcy
+MjogVElORk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVuIGlzIDBoIDAybSAwMHMKPiBpbWFfbW1h
+cC5jOjM4OiBUSU5GTzogc2xlZXAgM3MKPiBpbWFfdmlvbGF0aW9ucyAzIFRQQVNTOiAxIG9wZW5f
+d3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFfbW1hcC5jOjQxOiBUUEFTUzogdGVzdCBj
+b21wbGV0ZWQKPiAKPiBTdW1tYXJ5Ogo+IHBhc3NlZMKgwqAgMQo+IGZhaWxlZMKgwqAgMAo+IGJy
+b2tlbsKgwqAgMAo+IHNraXBwZWTCoCAwCj4gd2FybmluZ3MgMAo+IGltYV92aW9sYXRpb25zIDQg
+VElORk86IHZlcmlmeSBsaW1pdGluZyBzaW5nbGUgb3BlbiB3cml0ZXIgdmlvbGF0aW9uCj4gaW1h
+X3Zpb2xhdGlvbnMgNCBUUEFTUzogMSBvcGVuX3dyaXRlcnMgdmlvbGF0aW9uKHMpIGFkZGVkCj4g
+aW1hX3Zpb2xhdGlvbnMgNSBUSU5GTzogdmVyaWZ5IGxpbWl0aW5nIG11bHRpcGxlIG9wZW4gd3Jp
+dGVycyB2aW9sYXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNSBUUEFTUzogMSBvcGVuX3dyaXRlcnMg
+dmlvbGF0aW9uKHMpIGFkZGVkCj4gaW1hX3Zpb2xhdGlvbnMgNiBUSU5GTzogdmVyaWZ5IG5ldyBv
+cGVuIHdyaXRlciBjYXVzZXMgYWRkaXRpb25hbCB2aW9sYXRpb24KPiBpbWFfdmlvbGF0aW9ucyA2
+IFRQQVNTOiAyIG9wZW5fd3JpdGVycyB2aW9sYXRpb24ocykgYWRkZWQKPiBpbWFfdmlvbGF0aW9u
+cyA3IFRJTkZPOiB2ZXJpZnkgbGltaXRpbmcgc2luZ2xlIG9wZW4gcmVhZGVyIFRvTVRvVSB2aW9s
+YXRpb25zCj4gaW1hX3Zpb2xhdGlvbnMgNyBUUEFTUzogMSBUb01Ub1UgdmlvbGF0aW9uKHMpIGFk
+ZGVkCj4gaW1hX3Zpb2xhdGlvbnMgOCBUSU5GTzogdmVyaWZ5IG5ldyBvcGVuIHJlYWRlciBjYXVz
+ZXMgYWRkaXRpb25hbCBUb01Ub1UgdmlvbGF0aW9uCj4gaW1hX3Zpb2xhdGlvbnMgOCBUUEFTUzog
+MiBUb01Ub1UgdmlvbGF0aW9uKHMpIGFkZGVkCj4gCj4gU3VtbWFyeToKPiBwYXNzZWTCoMKgIDgK
+PiBmYWlsZWTCoMKgIDAKPiBicm9rZW7CoMKgIDAKPiBza2lwcGVkwqAgMAo+IHdhcm5pbmdzIDAK
+PiAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
+Zm8vbHRwCg==
