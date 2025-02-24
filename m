@@ -4,105 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97C5AC021A4
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 10:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE976C021A6
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:25:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1CBED3C98CF
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:59:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 289CB3C98C1
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 12:25:44 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 921DC3C090A
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:59:34 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 8BDFA3C05F4
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 12:25:26 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6D13D62E92B
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:59:33 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 54C5314109B2
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 12:25:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1740396320;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=iNh4K3pCa55pfe/0+FkYEkXKS5jjOe8yFmOMPDPD1gg=;
+ b=i9HG8mUbMQEvgYKR5m3ioyRD21aPREaW91mRmJ2FjQLG4/flK6UlFhfc4HrhZfunLm+wZ7
+ ZCn/Qugenow8OFHaYBlSVDOrafasJ2nQgKpVpm7vfoWRYbtPqDSSZlJTNGubokA9z5Ynt3
+ xwdkonyM6CrbAx7/nSKHVVY0jFqnpEw=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-404-Gxm97KnXMByQV53iv4ub7g-1; Mon,
+ 24 Feb 2025 06:25:18 -0500
+X-MC-Unique: Gxm97KnXMByQV53iv4ub7g-1
+X-Mimecast-MFC-AGG-ID: Gxm97KnXMByQV53iv4ub7g_1740396318
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7088421172;
- Mon, 24 Feb 2025 10:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740394772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4IDP5Qa4fHg0jOSo/lcZ+hHU/2+DC++btki4r8VUc0Y=;
- b=Ooby2wpDwvxqHtPbN+bKfVbPxW8hDJGrTlZkvGfN57SiK/DdSQTqmWFpDi980SeHLI+yE2
- UwTk+qYrZXlzyfqqx6V2fBYYHPlLpd3dct+tcWWzH5YO2Mxx6C6JA779TEjDxXCH4+ScBg
- UwtyMn2y8VlBAOY930pAvlbkSRvProM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740394772;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4IDP5Qa4fHg0jOSo/lcZ+hHU/2+DC++btki4r8VUc0Y=;
- b=nka6XfJHPTslCgCkdb2lKNthUBi/WM8qjlaL+udnJwV9mn9jvnDLo29vOnKSYobXNi+KxC
- 0wZiHZ46Rl71AEBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ooby2wpD;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nka6XfJH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740394772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4IDP5Qa4fHg0jOSo/lcZ+hHU/2+DC++btki4r8VUc0Y=;
- b=Ooby2wpDwvxqHtPbN+bKfVbPxW8hDJGrTlZkvGfN57SiK/DdSQTqmWFpDi980SeHLI+yE2
- UwTk+qYrZXlzyfqqx6V2fBYYHPlLpd3dct+tcWWzH5YO2Mxx6C6JA779TEjDxXCH4+ScBg
- UwtyMn2y8VlBAOY930pAvlbkSRvProM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740394772;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4IDP5Qa4fHg0jOSo/lcZ+hHU/2+DC++btki4r8VUc0Y=;
- b=nka6XfJHPTslCgCkdb2lKNthUBi/WM8qjlaL+udnJwV9mn9jvnDLo29vOnKSYobXNi+KxC
- 0wZiHZ46Rl71AEBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D40613332;
- Mon, 24 Feb 2025 10:59:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id rF2dERRRvGf8AQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 24 Feb 2025 10:59:32 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B1AD119783B6; Mon, 24 Feb 2025 11:25:17 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.85])
+ by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 91B041800352; Mon, 24 Feb 2025 11:25:16 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
 To: ltp@lists.linux.it
-Date: Mon, 24 Feb 2025 11:59:25 +0100
-Message-ID: <20250224105925.2865777-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.2
+Date: Mon, 24 Feb 2025 12:24:01 +0100
+Message-ID: <b70ade709f93e94f8219b5d18e1ce7be0578f183.1740396133.git.jstancek@redhat.com>
+In-Reply-To: <CAASaF6xJkkE8NEnDRwYEqs_abZxJqiuMnou+d=mYxmLRPddNKg@mail.gmail.com>
+References: <CAASaF6xJkkE8NEnDRwYEqs_abZxJqiuMnou+d=mYxmLRPddNKg@mail.gmail.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 7088421172
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,suse.cz:mid];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[4];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 01E0ABktps3322SWL4uq4a2EQN9oCA_W6INR0rX_gVE_1740396318
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] ima_selinux.sh: Require ima_policy=critical_data
- kernel cmdline
+Subject: [LTP] [PATCH v2] syscalls/utime03: use realtime clock for upper
+ bound check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,55 +80,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
+Cc: chhrubis@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test requires not only func=CRITICAL_DATA IMA policy content but also
-ima_policy=critical_data kernel cmdline. Without cmdline no measures are
-done.
+This test rarely fails with recent kernels (after 6.13-rc1):
+  tst_test.c:1833: TINFO: === Testing on ext4 ===
+  tst_test.c:1170: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+  mke2fs 1.47.2 (1-Jan-2025)
+  tst_test.c:1182: TINFO: Mounting /dev/loop0 to /tmp/LTP_uti42UpHj/mntpoint fstyp=ext4 flags=0
+  utime03.c:74: TPASS: utime(TEMP_FILE, NULL) passed
+  utime03.c:80: TFAIL: utime() did not set expected atime, mintime: 1738291930, maxtime: 1738291930, st_atime: 1738291931
+  utime03.c:85: TFAIL: utime() did not set expected mtime, mintime: 1738291930, maxtime: 1738291930, st_mtime: 1738291931
 
-https://ima-doc.readthedocs.io/en/latest/ima-policy.html#ima-policy-critical-data
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fdd1ffe8a812
+Since 4e40eff0b573 ("fs: add infrastructure for multigrain timestamps"),
+filesystem can use more precise clock to update the inode.
 
-Fixes: 4944a63ed9 ("IMA: Add test for SELinux measurement")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Relax the check by using realtime clock for upper bound check.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-FYI this is supposed to be applied on the top of "ima_setup.sh: Postpone
-loading policy after test setup" patchset
-https://patchwork.ozlabs.org/project/ltp/list/?series=445166&state=*
-https://lore.kernel.org/ltp/20250219181926.2620960-1-pvorel@suse.cz/t/#u
+ testcases/kernel/syscalls/utime/utime03.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- testcases/kernel/security/integrity/ima/tests/ima_selinux.sh | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
-index 97c5d64ec5..1a0de21efd 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
-@@ -5,7 +5,8 @@
- # Author: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
- #
- # Verify measurement of SELinux policy hash and state.
--# Test requires example IMA policy loadable with LTP_IMA_LOAD_POLICY=1.
-+# Test requires ima_policy=critical_data kernel command line and example IMA
-+# policy loadable with LTP_IMA_LOAD_POLICY=1.
- #
- # Relevant kernel commits:
- # * fdd1ffe8a812 ("selinux: include a consumer of the new IMA critical data hook")
-@@ -22,6 +23,8 @@ setup()
- {
- 	SELINUX_DIR=$(tst_get_selinux_dir)
- 	[ "$SELINUX_DIR" ] || tst_brk TCONF "SELinux is not enabled"
-+
-+	require_ima_policy_cmdline "critical_data"
- }
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index 564e1de3dd77..56eb9e722896 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -55,6 +55,7 @@ static void run(void)
+ 	struct utimbuf utbuf;
+ 	struct stat statbuf;
+ 	time_t mintime, maxtime;
++	struct timespec ts;
  
- # Format of the measured SELinux state data.
+ 	utbuf.modtime = time(0) - 5;
+ 	utbuf.actime = utbuf.modtime + 1;
+@@ -70,7 +71,8 @@ static void run(void)
+ 	SAFE_SETEUID(user_uid);
+ 	mintime = tst_get_fs_timestamp();
+ 	TST_EXP_PASS(utime(TEMP_FILE, NULL));
+-	maxtime = tst_get_fs_timestamp();
++	tst_clock_gettime(CLOCK_REALTIME, &ts);
++	maxtime = ts.tv_sec;
+ 	SAFE_SETEUID(root_uid);
+ 	SAFE_STAT(TEMP_FILE, &statbuf);
+ 
 -- 
-2.47.2
+2.43.0
 
 
 -- 
