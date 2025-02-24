@@ -4,93 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0ED8C021A4
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 17:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A83EC021A4
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 18:01:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56E903C9A01
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 18:12:03 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9D1A53C9984
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 19:01:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 75E473C9948
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 18:11:46 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 70E023C9984
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 19:01:01 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F05A1142F2F0
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 18:11:45 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AB27D61F913
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 19:01:00 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F0B591F441;
- Mon, 24 Feb 2025 17:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740417105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vGYJwWE+WwcPzAOgqNJEoFlfK2isgDtUhsRsthBa8sQ=;
- b=c0EumIHMy3HjtKjpQ/8rNVlT/KrIof+fS9sccUUvPgMNNf+N7PJkMxMcNKLPGr/fdmZ6dx
- m8va3811GP/mY+tWMRsY27/AH6Cb4eaTMbsaMc7Ah/spegewutBpeMfQDXyYr5mbNQM7CE
- M7eND5rEsK5rEFAOlZEa5EoSJ6PPe1E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740417105;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vGYJwWE+WwcPzAOgqNJEoFlfK2isgDtUhsRsthBa8sQ=;
- b=D1GwOp8uYsfq2fKnsqymJu1ja1cKG3Kyh1wbY2rZzhmrnRUCrwwdXetemV8kb+NKUfQxJ1
- rkVfueBxn0VplADg==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D1341F441;
+ Mon, 24 Feb 2025 18:00:59 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740417103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vGYJwWE+WwcPzAOgqNJEoFlfK2isgDtUhsRsthBa8sQ=;
- b=iny3GT/H8KNQuimCho4Yg9SfEy/myQy0dCGwoRLrezrDoBsZCFw4Fljeo+dSqSzGF75xo+
- 9dcOT6IeKO/GfN5H6NWubl9DAfGR+c7Y31I4SrmUMuBIbczFESIawgrVi57pWjvW5UV3PR
- DdEWQv5bwsw7H99G1MiTj3UyoG8IGjc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740417103;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vGYJwWE+WwcPzAOgqNJEoFlfK2isgDtUhsRsthBa8sQ=;
- b=veTi+f02n7oIp3Wsc4G8IbgzPL95HTE/Jw6F6mwNH/Yg8ly5Pz85df5D50ZVoN+7rBoOp8
- trf1vVEyrCrqnCDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B885913332;
- Mon, 24 Feb 2025 17:11:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2F4713707;
+ Mon, 24 Feb 2025 18:00:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2gCxKk+ovGf2fAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 24 Feb 2025 17:11:43 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LdhBMtqzvGcYDgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Feb 2025 18:00:58 +0000
+Date: Mon, 24 Feb 2025 19:00:57 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 24 Feb 2025 18:11:37 +0100
-Message-ID: <20250224171137.2893480-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.2
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250224180057.GA2897036@pevik>
+References: <20250224100016.2857704-1-pvorel@suse.cz>
+ <Z7yNVQAnQ5NPTtaz@yuki.lan>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Z7yNVQAnQ5NPTtaz@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 1D1341F441
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] ima_kexec.sh: Detect kernel image from BOOT_IMAGE
- from /proc/cmdline
+Subject: Re: [LTP] [PATCH 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
+ variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,66 +78,104 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Default value was suitable only for x86_64. This helps to use other
-archs on distros which set $BOOT_IMAGE.
+Hi Cyril,
+> Hi!
+> >  	lib_pid = getpid();
+> >  	tst_test = self;
+> > @@ -1899,7 +1901,6 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-NOTE: this will not help for non-x86_64 archs on distros which don't
-specify BOOT_IMAGE on kernel command line (e.g. aarch64 or ppc64le).
-But unless I get report it's needed I'm not going to do detection based
-on 'uname -m' or 'ls /boot/*linu*-$(uname -r) | head -1'.
+> >  	tst_res(TINFO, "LTP version: "LTP_VERSION);
 
- .../security/integrity/ima/tests/ima_kexec.sh | 23 ++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+> > -
+> >  	uname(&uval);
+> >  	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-index 5d178494b7..9093ba2d64 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-@@ -42,11 +42,32 @@ measure()
- 
- setup()
- {
--	tst_res TINFO "using kernel $IMA_KEXEC_IMAGE"
-+	local arch
-+
-+	if [ ! -f "$IMA_KEXEC_IMAGE" ]; then
-+		for arg in $(cat /proc/cmdline); do
-+			if echo "$arg" |grep -q '^BOOT_IMAGE'; then
-+				eval "$arg"
-+			fi
-+		done
-+
-+		tst_res TINFO "using as kernel BOOT_IMAGE from /proc/cmdline: '$BOOT_IMAGE'"
-+
-+		# replace grub partition, e.g. (hd0,gpt2) => /boot
-+		if echo "$BOOT_IMAGE" |grep -q '(.d[0-9]'; then
-+			echo "$BOOT_IMAGE" | sed 's|(.*,.*)/|/boot/|'
-+		fi
-+
-+		if [ -f "$BOOT_IMAGE" ]; then
-+			IMA_KEXEC_IMAGE="$BOOT_IMAGE"
-+		fi
-+	fi
- 
- 	if [ ! -f "$IMA_KEXEC_IMAGE" ]; then
- 		tst_brk TCONF "kernel image not found, specify path in \$IMA_KEXEC_IMAGE"
- 	fi
-+
-+	tst_res TINFO "using kernel $IMA_KEXEC_IMAGE"
- }
- 
- kexec_failure_hint()
--- 
-2.47.2
+> > @@ -1908,10 +1909,20 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
 
+> >  	set_overall_timeout();
+
+> > -	if (tst_test->test_variants)
+> > +	if (tst_test->test_variants) {
+> >  		test_variants = tst_test->test_variants;
+> > +		only_variant = getenv("LTP_SINGLE_VARIANT");
+> > +		if (only_variant && only_variant[0] != '\0') {
+> > +			tst_variant = MIN(SAFE_STRTOL((char *)only_variant, 0, INT_MAX),
+> > +							  test_variants - 1);
+> > +			tst_res(TINFO, "WARNING: testing only variant %d of %d",
+> > +					tst_variant, test_variants - 1);
+> > +			test_variants = tst_variant + 1;
+> > +		}
+> > +	}
+> > +
+> > +	for (; tst_variant < test_variants; tst_variant++) {
+
+> > -	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
+> >  		if (tst_test->all_filesystems || count_fs_descs() > 1)
+> >  			ret |= run_tcases_per_fs();
+> >  		else
+
+> Can we instead add a function that would set two integer variables,
+> first_variant and last variant as:
+
+> static void setup_variants(unsigned int *first_variant, unsigned int *last_variant)
+> {
+> 	//setup the defaults and parse the variables here
+> }
+
+Sure, I'll send v2 if you see the patch useful (Li was not sure if this is
+useful).
+
+> And the we can do:
+
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index e2803f04a..d19fe9aba 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1885,7 +1885,7 @@ unsigned int tst_variant;
+>  void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+>  {
+>         int ret = 0;
+> -       unsigned int test_variants = 1;
+> +       unsigned int first_variant, last_variant;
+>         struct utsname uval;
+
+>         lib_pid = getpid();
+> @@ -1908,10 +1908,9 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+
+>         set_overall_timeout();
+
+> -       if (tst_test->test_variants)
+> -               test_variants = tst_test->test_variants;
+> +       setup_variants(&first_variant, &last_variant);
+
+> -       for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
+> +       for (tst_variant = first_variant; tst_variant <= last_variant; tst_variant++) {
+>                 if (tst_test->all_filesystems || count_fs_descs() > 1)
+>                         ret |= run_tcases_per_fs();
+>                 else
+> diff --git a/testcases/kernel/syscalls/pause/pause01.c b/testcases/kernel/syscalls/pause/pause01.c
+> index adce0ddcf..74a7e514e 100644
+> --- a/testcases/kernel/syscalls/pause/pause01.c
+> +++ b/testcases/kernel/syscalls/pause/pause01.c
+> @@ -20,6 +20,8 @@ static void do_child(void)
+>         SAFE_SIGNAL(SIGINT, sig_handler);
+>         TST_EXP_FAIL(pause(), EINTR);
+>         TST_CHECKPOINT_WAKE(0);
+> +
+> +       tst_res(TPASS, "Process resumed from pause()");
+
+I guess this is part of some other work, right? (there is no TST_EXP_FAIL() in
+pause01.c).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
