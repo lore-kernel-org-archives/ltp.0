@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6160C021A4
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 10:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97CCC021A6
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 10:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1740394223; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=1diQmMNNi165j0n1vRw/46Tnh5eYMDqInZNJuM3yxZg=;
+ b=h4xpiOOfScbFZSTH2Q9VURX9mxgWbZHvr6cY8464nfzU69vfs7zqBOVHvvB8FkOtasAj9
+ dBtuZj6g4aDqKPpYD6253cbRL2PMIpEX9EvZYCkFduwqGF7b12EsSUlkmX3gYEnM8fiU6tn
+ AGnVGmYeWOyri9UN5dffAZ8aLkDK58w=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 11F5A3C98CB
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:32:49 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 50F113C9879
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:50:23 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B8A43C987F
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:32:32 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0CB6F3C090A
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:49:59 +0100 (CET)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B00111429EB1
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:32:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1740393149;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PMEQkMYv70xs9wE771eSI01liSJmVS1ifIdGM4Fdqss=;
- b=U607fpr3yDRwPAzEhQMVotfG5+z1NJSWLwSCd3tyTx6rU9OYtnBuPUjuBM+YiKPHD7D7Ps
- AzLjQWWjiZttpqERCIWMJdZfonxU0vYpaHyymjnS2D0hOcXoaCvNBopE1vcudFxW3clAHO
- B1uYEGGTXAjpxeccCDHc9jwxY10v23Y=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-347-DwCZOjZJP3uiwmi3tQfTNQ-1; Mon, 24 Feb 2025 05:32:27 -0500
-X-MC-Unique: DwCZOjZJP3uiwmi3tQfTNQ-1
-X-Mimecast-MFC-AGG-ID: DwCZOjZJP3uiwmi3tQfTNQ_1740393147
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-2fc1a4c150bso8212899a91.2
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 02:32:27 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 254AC1BD8F6E
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:49:58 +0100 (CET)
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-abb8045c3f3so522417366b.2
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 02:49:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1740394197; x=1740998997; darn=lists.linux.it;
+ h=in-reply-to:references:to:cc:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=7qyvP7E/erXRfkJQkTyhgz14TWqjZaN90YOB9/cRw1g=;
+ b=WUlyIpdUvVubo128t1yRL5GGr0xwS+eRCZIigYVOgpjWkH7+Qr1azFgLoEyQED4kWE
+ 0ljNXEEEWmQvsmWtWwV8cjZjlfnp8CW7ey43oVTKoT5s0AADNJ5Qag6VzJNyQSXd8AJE
+ w4JVbz/nuWveTTHrRCLe0Vq4E830jQFoLxUD6gwIl8x99LVfgoVKgLs1MAIoUTLjQ1FS
+ 4cIMaUai38+bzGR+ZgAa01dj3y2J2fxnmoGA1E+6cbqLKUMffNXvGrZxWOjfLZAOkb2A
+ L6fWKl6O78cxkjOhU3RcpiBSI2UFTCmI8sneVGJbj4oLiEbHDDJhXW3wrt5MvIP9d5Cf
+ DOAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1740393146; x=1740997946;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=PMEQkMYv70xs9wE771eSI01liSJmVS1ifIdGM4Fdqss=;
- b=cHxCZ3oYXYCx8QE/qIbxhFNooF/5QDbw28OihV9uJ6Qc01+zAad5yQ+uEzYnu4QFfG
- /7k9nlbRTer6A3eseo1pX8LxZj+fEcO/UcNhy07JXg1GWbfUe2cL1bEKT8iw4zZ+G/Q4
- dH61dMHd18Eaq2LeQVABXTACk9Ji+/twi7/qNBjiLi3MrKDWvas4HBGqMzbaGM6LWsmM
- mu70S/oM8zoqdngMcxPhf/YQkUz9xrWaqObvw/2Z52zWGtd8oMf36x/eP0O75ycTqGnz
- HbEDLBmUM4Y0ngdDbM9f/VimE2C+e5wJA/qeIniTjj34Z00qOl0BwA6faZbfBOMcAYUW
- lNzQ==
-X-Gm-Message-State: AOJu0YzQ5atnNi3SHvSj2Vc0w/BavqwAQD9zIsW/GdxKAV3DQ4fORywF
- qK/p+iQbYbIAAbWgCKgwzFVFIEsLApo/JI9IleVdNYfiJtEaMRYqD3fvsWEnrd3RMzvgHmsQ8zt
- vyY9R6QUQyyFtbHgB9aOmWHqESoBYYDtw9eARFf8AlPUlYhJwc8WAg2d4PvYQZHHH5cZyE1n9jj
- QzB/x6je1REu4/mVYJZiD4cFE=
-X-Gm-Gg: ASbGncvmRIwcfOKn5JvZYaqRKzThdRK79mU1n5a2QRBhHlcwOeICH+2v+LlR0R73EfQ
- IFq3y79kDpVd+QApAy6rHxrBPlCIfuWbd+LNj3teolZf7rQoOFk4u+MzWIJF4KsxUlegBUIg7fA
- ==
-X-Received: by 2002:a17:90b:4d0d:b0:2f7:7680:51a6 with SMTP id
- 98e67ed59e1d1-2fce76a1ed1mr19542822a91.6.1740393146671; 
- Mon, 24 Feb 2025 02:32:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEcCxt2BuPEeuxiM/Gk+nRFA7JolJEyVnG/pglhgLztOPqHWqpYwTQUhdlylTiZ3Ih4/DQkyzhpH2np6SFzcSk=
-X-Received: by 2002:a17:90b:4d0d:b0:2f7:7680:51a6 with SMTP id
- 98e67ed59e1d1-2fce76a1ed1mr19542803a91.6.1740393146413; Mon, 24 Feb 2025
- 02:32:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20250224100016.2857704-1-pvorel@suse.cz>
- <CAEemH2d=xOZCjNhMoavCE9hXB-9+efxWWDc6_pp_BFMkBZvZuQ@mail.gmail.com>
- <20250224102143.GA2858881@pevik>
-In-Reply-To: <20250224102143.GA2858881@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 24 Feb 2025 18:32:14 +0800
-X-Gm-Features: AWEUYZmStiT6NpCPgtM7duBrvn9P4-rTEh0sMXDnLF_yFW2PpadByXGTe8WPMuM
-Message-ID: <CAEemH2dhxvwghPV-f9eWSoNfCFWvaFeqwnMNXZy239dfdDCgxg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Hy9yy1AgZdy_N-E8U9P6wMPyXUf3G-T5DWc7y3v4FfQ_1740393147
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ d=1e100.net; s=20230601; t=1740394197; x=1740998997;
+ h=in-reply-to:references:to:cc:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=7qyvP7E/erXRfkJQkTyhgz14TWqjZaN90YOB9/cRw1g=;
+ b=kfJUTvqkGE26ojhFRHHPBBJ92p5IY9K+DGOBovBYfg//v7vid08XYV3I3zBzJHfJzG
+ CE5qMi96JEBdISmXs4UTjYRd4NcSztX6WPZy0Zf5QlyFhmdaW8dnQIOpLUUMB//WxG9e
+ B837uAxzC0rIAeTvTabonfduioZjinQRTIN1UYu25uly2r/xP/dfegs4+P6OCbiy+sYT
+ NIdfP6XmBsSThU2VA7Rc56NZedJtDoscEuzbRqFJyZrNLemt8jTq7suqwE9YWjykfr0m
+ wDznrlxDIHI7X9w8qNPFNtEloWXbkJ0dYRSV0eCj0ZOqRo3ESuYRcVvI3S7jRuubONUv
+ cALQ==
+X-Gm-Message-State: AOJu0YzSLoosBzpSiSW/USLdv0fH6Qgg66nwNt44fT3CX1uNTF8lSu1b
+ AW2zfVUHbPS1UQ4zUAk5AKEpjNLiIUgXoVGohHQbUWlpmocrYwecZSkIJzZoFyRrd1wyoWu3Ln5
+ C
+X-Gm-Gg: ASbGncurdl+zY7fZSo4e0USZi69Qo+aFZuGLA85QdS6BmxBDGUZOBHF4ODE5UJQt/mO
+ +u2xegDp0YvSzLWAIi+2BKVxd7QX4kELr4G9dmVfv1PMydAe21q/dslMHCrZSp4mjxxllSAJxQv
+ zQnNmxR+Zw9NoZVioL26ijLqVSN2HCmyjbZdI/Ot4u5u7vvkWx+UTOtkPqqLTS23e9jIxa9slZt
+ 9v3HpnmJWus4UAdc5C43UKu74d6CP6/lNumGtftMr0OJ8vWCiyOV3lmUSV0uWPLJd30i8CR2xF2
+ D5IEF4jxHgVh1cg=
+X-Google-Smtp-Source: AGHT+IHCl3/3w8rgqT4dkw5g5NjV7KYSsESKWURTAR7G4pRqNZ2Ucs7qMIRnNPlGY1pGG0rU68qRqg==
+X-Received: by 2002:a17:907:3f1d:b0:ab7:f0fa:1340 with SMTP id
+ a640c23a62f3a-abc09c28b79mr1228907366b.50.1740394197525; 
+ Mon, 24 Feb 2025 02:49:57 -0800 (PST)
+Received: from localhost ([179.228.215.131])
+ by smtp.gmail.com with UTF8SMTPSA id
+ d9443c01a7336-220d545d453sm174173525ad.115.2025.02.24.02.49.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 Feb 2025 02:49:57 -0800 (PST)
+Mime-Version: 1.0
+Date: Mon, 24 Feb 2025 07:49:54 -0300
+Message-Id: <D80M935MYRBS.29I55Z1ZG6OWT@suse.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+X-Mailer: aerc 0.20.1
+References: <20250218-conversions-pause-v2-0-8c72960fe1ec@suse.com>
+ <20250218-conversions-pause-v2-2-8c72960fe1ec@suse.com>
+ <Z7hX6iJN6hDSUgUZ@yuki.lan>
+In-Reply-To: <Z7hX6iJN6hDSUgUZ@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
- variant
+Subject: Re: [LTP] [PATCH v2 2/3] syscalls/pause02: Refactor into new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,27 +100,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
+Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBGZWIgMjQsIDIwMjUgYXQgNjoyMeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gSGkgTGksCj4KPiA+ID4gSGkgYWxsLAo+Cj4gPiA+IEFuZHJlYSB3YW50
-ZWQgdG8gcnVuIG9ubHkgc2luZ2xlIHZhcmlhbnQuCj4KPiA+IENvdWxkIHlvdSB0ZWxsIG1lIHdo
-YXQgdGhlIGJlbmVmaXQgaXM/IHdoeSBkbyB3ZSBuZWVkIHRoaXM/Cj4KPiBAQW5kcmVhIF4KPgo+
-IElNSE8gc2ltaWxhciB0byBMVFBfU0lOR0xFX0ZTX1RZUEUgLSBzcGVlZHVwLiBBbHRob3VnaCBJ
-IGFkbWl0Cj4gTFRQX1NJTkdMRV9GU19UWVBFIGFsbG93cyBtdWNoIGJpZ2dlciBjbGVhbnVwLgo+
-Cj4gPiBBbmQgYmFjayB0byB0aGUgcGF0Y2ggaXRzZWxmLCBpZiBMVFBfU0lOR0xFX0lURVJBVElP
-TiBpcyB1c2VkLCB3aGljaAo+ID4gdmFyaWFudCB3aWxsIGJlIGNob3NlbiB0byBydW4gYnkgZGVm
-YXVsdD8gSXMgdGhhdCBleHBlY3RlZD8KPgo+IEJ5IGRlZmF1bHQgYWxsIHZhcmlhbnRzIGFyZSB0
-ZXN0ZWQuCj4KClNvcnJ5LCBoZXJlIEkgd2FudGVkIHRvIGFzazoKIFdoaWNoIHZhcmlhbnQgd2ls
-bCBiZSBzZWxlY3RlZCB3aGVuIExUUF9TSU5HTEVfVkFSSUFOVCBpcyBzZXQ/CiBJcyB0aGUgc2Vs
-ZWN0ZWQgdmFyaWFudCB0aGUgZXhwZWN0ZWQgb25lPwoKU2luY2UgdGhlIG9yZGVyIG9mIHRlc3Qg
-dmFyaWFudHMgaXMgbm90IHN0YW5kYXJkaXplZCBhbmQgaXMgZGV0ZXJtaW5lZApieSB0aGUgYXV0
-aG9yIHdoaWxlIHRlc3Qgd3JpdGluZy4gT25jZSB3ZSB1c2VkIExUUF9TSU5HTEVfVkFSSUFOVApp
-dCBzdGlsbCBkb2VzIG5vdCBndWFyYW50ZWUgdGhlIGV4ZWN1dGVkIHZhcmlhbnQgaXMgdGhlIHNh
-bWUgZm9yIGFsbCB0ZXN0cy4KVW5sZXNzIHBlb3BsZSBvbmx5IHVzZSBpdCBpbiBtYW51YWwgZGVi
-dWdnaW5nIG1vZGUuCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5m
-bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hello Cyril,
+
+On Fri Feb 21, 2025 at 7:39 AM -03, Cyril Hrubis wrote:
+> Hi!
+> This is the same as pause01.c there is no point in having two tests that
+> do the same.
+>
+> So rather than rewriting this test we should add a check to the
+> pause01.c that the process resumed after the signal. Which should be as
+> easy as:
+>
+> diff --git a/testcases/kernel/syscalls/pause/pause01.c b/testcases/kernel/syscalls/pause/pause01.c
+> index adce0ddcf..74a7e514e 100644
+> --- a/testcases/kernel/syscalls/pause/pause01.c
+> +++ b/testcases/kernel/syscalls/pause/pause01.c
+> @@ -20,6 +20,8 @@ static void do_child(void)
+>         SAFE_SIGNAL(SIGINT, sig_handler);
+>         TST_EXP_FAIL(pause(), EINTR);
+>         TST_CHECKPOINT_WAKE(0);
+> +
+> +       tst_res(TPASS, "Process resumed from pause()");
+>  }
+>
+>
+> And it would also make sense to add more coverage to pause01 in a
+> subsequent patch. Currently it tests only a single signal, we should
+> iterate over all signals instead (minus the SIGKILL that is covered by
+> pause03).
+
+Thanks for the review and explanations! I'll address your points in the
+next revision.
+
+-    Ricardo.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
