@@ -4,103 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DB54C021A4
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 10:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C692C021A4
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 10:11:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 58C593C9898
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:01:02 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 230603C98BA
+	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 11:11:45 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 544E23C989E
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:00:23 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 191803C090A
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:11:29 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A0E691BD98AF
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:00:21 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 058B81F395;
- Mon, 24 Feb 2025 10:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740391219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4qAVHA9R/+JxhSsGOiJOvoHkh0KmvNSn3YXEsQM9mto=;
- b=PxQBqNBWIe7GE0vhLwUP+wQX8ca7U3Qtfu/DIsGFBu7aytmFz52p4EAf7THAtZDxuREgbC
- efG20zYd5KILNC15GAOPVJ7m7hwxxlQJSFiqH2pErqoblR+rf7V7sPIVpRxqxl8AYhHKZ4
- f14XnzUAZkC+FAnx/+wdCwq6VuXngd0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740391219;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4qAVHA9R/+JxhSsGOiJOvoHkh0KmvNSn3YXEsQM9mto=;
- b=EA2Z4ShCHdjZHQG0QVVWCwz4Lb+iyA/ssudEsa6ZiSqIqIiFiw9FWFPqbR/oaM6bpaFM2o
- cMvIYMpKUsbhCmCw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PxQBqNBW;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EA2Z4ShC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740391219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4qAVHA9R/+JxhSsGOiJOvoHkh0KmvNSn3YXEsQM9mto=;
- b=PxQBqNBWIe7GE0vhLwUP+wQX8ca7U3Qtfu/DIsGFBu7aytmFz52p4EAf7THAtZDxuREgbC
- efG20zYd5KILNC15GAOPVJ7m7hwxxlQJSFiqH2pErqoblR+rf7V7sPIVpRxqxl8AYhHKZ4
- f14XnzUAZkC+FAnx/+wdCwq6VuXngd0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740391219;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=4qAVHA9R/+JxhSsGOiJOvoHkh0KmvNSn3YXEsQM9mto=;
- b=EA2Z4ShCHdjZHQG0QVVWCwz4Lb+iyA/ssudEsa6ZiSqIqIiFiw9FWFPqbR/oaM6bpaFM2o
- cMvIYMpKUsbhCmCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC44513707;
- Mon, 24 Feb 2025 10:00:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id dPqeMDJDvGfQbgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 24 Feb 2025 10:00:18 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 24 Feb 2025 11:00:14 +0100
-Message-ID: <20250224100016.2857704-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.2
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 54CE01034D7E
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:11:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1740391885;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=O3Y4mFvkvb4wIbzC60Q55gsuNAmKLUfB11vCOwJUmEA=;
+ b=iqUw4Am+QRPca8vBUphozhBpKkVXQoKP4veOxwsM+N5pRKf+3bGQPRs9iWwTHYuVvQlYbs
+ m8fEurVWlHD05vVAsoCGtWXUOYoi7Txem0h+NBFQxeidzCEYNF9GRxus85qpLvoS7DYCSo
+ CrYFQFsI8ltG5iUD+WjId82pWtIvLHo=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-265-q9msbNIcOyKZjNq2gnkEww-1; Mon, 24 Feb 2025 05:11:20 -0500
+X-MC-Unique: q9msbNIcOyKZjNq2gnkEww-1
+X-Mimecast-MFC-AGG-ID: q9msbNIcOyKZjNq2gnkEww_1740391880
+Received: by mail-pl1-f199.google.com with SMTP id
+ d9443c01a7336-220cd43c75aso136049775ad.3
+ for <ltp@lists.linux.it>; Mon, 24 Feb 2025 02:11:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1740391880; x=1740996680;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=O3Y4mFvkvb4wIbzC60Q55gsuNAmKLUfB11vCOwJUmEA=;
+ b=dIlGf5JPHKRN2jIhi0tkIBzxNCErnvLM0KGWUTtxHbKeCoaHoU8rBtYQEeZD4StBvQ
+ AzfJD63E0y9TO/AiEsGZOvlgcZu2HJ/kEqqBR1PCQqvzSQPS46rxGNQXBzlO4hxSWQeD
+ Kjp/dGFcem3MY5jHk2WtjzkmVbnsOGckAwiIyCJeKo+92F+KHBqXKrpIIKYtK0KVjkIA
+ A04iOmIRTkYrUefiArs0TOOOkaRvq7QEMRe818tIOAf8yWS5SCvJS5C8WlWgYwpmYX2n
+ 6w5JHfc2T7lPIvWFKVrmUia9xa4/f2HjKXnp+s09Yt9g8XI9G/qBNBJF6S0H4lLlXYtX
+ cV6w==
+X-Gm-Message-State: AOJu0YzTeAH2XjkMAIZ78PvUaqeoRG4KQrlgu2GVgg1uhNIBXXLrtM2f
+ +PffOV3lqJbqBZQVx8Kj6hHfAUNXL2fSg17o5+VuSeD1S5DUs/6W8i408PwCUkkKtBrbtfMCyZe
+ MS/xcAFr74UV67+1GifpvUSNqOOF/1hr1xj/6XXMYcCFHFEXDu63Kne29FI0oE1al5McRofMbR+
+ kU5mgYaIpxHYxRwF1w13lhc+I=
+X-Gm-Gg: ASbGncuuhMci1j48HrR1qXNeXJn7/c7twZsx5Hmr13HkHxcFP5qGSKw77/iwLKiUWKx
+ g1J8IZ+Z08yZDbNWzeT7AFF6YFV3JrxckH/cklZYNykaD1RnqgjSorT3aNmEU3WC79k4xBV4RzQ
+ ==
+X-Received: by 2002:a17:903:191:b0:216:4853:4c0b with SMTP id
+ d9443c01a7336-2219ffc491dmr212718185ad.33.1740391879981; 
+ Mon, 24 Feb 2025 02:11:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH7DTsTuLQnlLB8+Tk2PQR7drIEj/OzSMCCPOZeuMKZXwb0FrmTyoMHkEUWBI3ymajuJ5BH8Mvcfhp0fwEkNnM=
+X-Received: by 2002:a17:903:191:b0:216:4853:4c0b with SMTP id
+ d9443c01a7336-2219ffc491dmr212717925ad.33.1740391879680; Mon, 24 Feb 2025
+ 02:11:19 -0800 (PST)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 058B81F395
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUBJECT_HAS_CURRENCY(1.00)[]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <20250224100016.2857704-1-pvorel@suse.cz>
+In-Reply-To: <20250224100016.2857704-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 24 Feb 2025 18:11:07 +0800
+X-Gm-Features: AWEUYZkOMGlMNj4SWw3MZFGAIwLxLEC1Vu3Tqf5DPxd0fu47a42BsIWF4vCEtvA
+Message-ID: <CAEemH2d=xOZCjNhMoavCE9hXB-9+efxWWDc6_pp_BFMkBZvZuQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 3mOzqfQb1xFAGJB1h349p1EBXcqtJPV-d-ZZQ_z4mvk_1740391880
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
  variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -113,130 +97,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Allow to test only single struct tst_test->test_variants.
-This is a similar feature to $LTP_SINGLE_FS_TYPE.
-
-Value is ignored when test does not specify test_variants.
-When value is higher than test_variants value lastest variant is used.
-
-	# LTP_SINGLE_VARIANT=0 LTP_SINGLE_FS_TYPE=ext4 ./getdents02
-	..
-	tst_test.c:1918: TINFO: WARNING: testing only variant 0 of 3
-	tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
-	tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-	tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-	tst_test.c:1834: TINFO: === Testing on ext4 ===
-	tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-	mke2fs 1.47.2 (1-Jan-2025)
-	tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_getx2HrGH/mntpoint fstyp=ext4 flags=0
-	getdents.h:148: TINFO: Testing the SYS_getdents syscall
-	tst_buffers.c:57: TINFO: Test is using guarded buffers
-	getdents02.c:77: TPASS: fd=-5 dirp=0x7f0587803ee9 size=279 : EBADF (9)
-	getdents02.c:77: TPASS: fd=3 dirp=0x5641617a31e8 size=1 : EINVAL (22)
-	getdents02.c:77: TPASS: fd=4 dirp=0x7f0587803ee9 size=279 : ENOTDIR (20)
-	getdents02.c:77: TPASS: fd=5 dirp=0x7f0587803ee9 size=279 : ENOENT (2)
-	getdents02.c:77: TPASS: fd=3 dirp=0x7f0587802000 size=279 : EFAULT (14)
-
-	# LTP_SINGLE_VARIANT=2 LTP_SINGLE_FS_TYPE=ext4 ./getdents02
-	...
-	tst_test.c:1918: TINFO: WARNING: testing only variant 2 of 3
-	tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
-	tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-	tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-	tst_test.c:1834: TINFO: === Testing on ext4 ===
-	tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-	mke2fs 1.47.2 (1-Jan-2025)
-	tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_getWtBnGE/mntpoint fstyp=ext4 flags=0
-	getdents.h:157: TCONF: libc getdents() is not implemented
-
-	# LTP_SINGLE_VARIANT=99 LTP_SINGLE_FS_TYPE=ext4 ./getdents02 # higher value is max value
-	tst_test.c:1918: TINFO: WARNING: testing only variant 3 of 3
-	tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
-	tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-	tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-	tst_test.c:1834: TINFO: === Testing on ext4 ===
-	tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-	mke2fs 1.47.2 (1-Jan-2025)
-	tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_get1fX70n/mntpoint fstyp=ext4 flags=0
-	getdents.h:162: TINFO: Testing libc getdents64()
-	tst_buffers.c:57: TINFO: Test is using guarded buffers
-	getdents02.c:77: TPASS: fd=-5 dirp=0x7fcf140f3ee8 size=280 : EBADF (9)
-	getdents02.c:77: TPASS: fd=3 dirp=0x55a76e4531e8 size=1 : EINVAL (22)
-	getdents02.c:77: TPASS: fd=4 dirp=0x7fcf140f3ee8 size=280 : ENOTDIR (20)
-	getdents02.c:77: TPASS: fd=5 dirp=0x7fcf140f3ee8 size=280 : ENOENT (2)
-	getdents02.c:77: TPASS: fd=3 dirp=0x7fcf140f2000 size=280 : EFAULT (14)
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi all,
-
-Andrea wanted to run only single variant.
-
-Kind regards,
-Petr
-
- lib/tst_test.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 3823ea109e..6edc310209 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -581,6 +581,7 @@ static void print_help(void)
- 	fprintf(stderr, "LTP_DEV              Path to the block device to be used (for .needs_device)\n");
- 	fprintf(stderr, "LTP_DEV_FS_TYPE      Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
- 	fprintf(stderr, "LTP_SINGLE_FS_TYPE   Testing only - specifies filesystem instead all supported (for .all_filesystems)\n");
-+	fprintf(stderr, "LTP_SINGLE_VARIANT   Testing only - specifies tst_variant to be run\n");
- 	fprintf(stderr, "LTP_TIMEOUT_MUL      Timeout multiplier (must be a number >=1)\n");
- 	fprintf(stderr, "LTP_RUNTIME_MUL      Runtime multiplier (must be a number >=1)\n");
- 	fprintf(stderr, "LTP_VIRT_OVERRIDE    Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
-@@ -1887,6 +1888,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 	int ret = 0;
- 	unsigned int test_variants = 1;
- 	struct utsname uval;
-+	const char *only_variant;
- 
- 	lib_pid = getpid();
- 	tst_test = self;
-@@ -1899,7 +1901,6 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	tst_res(TINFO, "LTP version: "LTP_VERSION);
- 
--
- 	uname(&uval);
- 	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
- 
-@@ -1908,10 +1909,20 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	set_overall_timeout();
- 
--	if (tst_test->test_variants)
-+	if (tst_test->test_variants) {
- 		test_variants = tst_test->test_variants;
-+		only_variant = getenv("LTP_SINGLE_VARIANT");
-+		if (only_variant && only_variant[0] != '\0') {
-+			tst_variant = MIN(SAFE_STRTOL((char *)only_variant, 0, INT_MAX),
-+							  test_variants - 1);
-+			tst_res(TINFO, "WARNING: testing only variant %d of %d",
-+					tst_variant, test_variants - 1);
-+			test_variants = tst_variant + 1;
-+		}
-+	}
-+
-+	for (; tst_variant < test_variants; tst_variant++) {
- 
--	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
- 		if (tst_test->all_filesystems || count_fs_descs() > 1)
- 			ret |= run_tcases_per_fs();
- 		else
--- 
-2.47.2
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGV0ciwgQW5kcmVhLAoKT24gTW9uLCBGZWIgMjQsIDIwMjUgYXQgNjowMOKAr1BNIFBldHIg
+Vm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCj4gQWxsb3cgdG8gdGVzdCBvbmx5IHNpbmds
+ZSBzdHJ1Y3QgdHN0X3Rlc3QtPnRlc3RfdmFyaWFudHMuCj4gVGhpcyBpcyBhIHNpbWlsYXIgZmVh
+dHVyZSB0byAkTFRQX1NJTkdMRV9GU19UWVBFLgo+Cj4gVmFsdWUgaXMgaWdub3JlZCB3aGVuIHRl
+c3QgZG9lcyBub3Qgc3BlY2lmeSB0ZXN0X3ZhcmlhbnRzLgo+IFdoZW4gdmFsdWUgaXMgaGlnaGVy
+IHRoYW4gdGVzdF92YXJpYW50cyB2YWx1ZSBsYXN0ZXN0IHZhcmlhbnQgaXMgdXNlZC4KPgo+ICAg
+ICAgICAgIyBMVFBfU0lOR0xFX1ZBUklBTlQ9MCBMVFBfU0lOR0xFX0ZTX1RZUEU9ZXh0NCAuL2dl
+dGRlbnRzMDIKPiAgICAgICAgIC4uCj4gICAgICAgICB0c3RfdGVzdC5jOjE5MTg6IFRJTkZPOiBX
+QVJOSU5HOiB0ZXN0aW5nIG9ubHkgdmFyaWFudCAwIG9mIDMKPiAgICAgICAgIHRzdF9zdXBwb3J0
+ZWRfZnNfdHlwZXMuYzoxNjE6IFRJTkZPOiBXQVJOSU5HOiB0ZXN0aW5nIG9ubHkgZXh0NAo+ICAg
+ICAgICAgdHN0X3N1cHBvcnRlZF9mc190eXBlcy5jOjk3OiBUSU5GTzogS2VybmVsIHN1cHBvcnRz
+IGV4dDQKPiAgICAgICAgIHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2MjogVElORk86IG1rZnMu
+ZXh0NCBkb2VzIGV4aXN0Cj4gICAgICAgICB0c3RfdGVzdC5jOjE4MzQ6IFRJTkZPOiA9PT0gVGVz
+dGluZyBvbiBleHQ0ID09PQo+ICAgICAgICAgdHN0X3Rlc3QuYzoxMTcxOiBUSU5GTzogRm9ybWF0
+dGluZyAvZGV2L2xvb3AwIHdpdGggZXh0NCBvcHRzPScnCj4gZXh0cmEgb3B0cz0nJwo+ICAgICAg
+ICAgbWtlMmZzIDEuNDcuMiAoMS1KYW4tMjAyNSkKPiAgICAgICAgIHRzdF90ZXN0LmM6MTE4Mzog
+VElORk86IE1vdW50aW5nIC9kZXYvbG9vcDAgdG8KPiAvdG1wL0xUUF9nZXR4MkhyR0gvbW50cG9p
+bnQgZnN0eXA9ZXh0NCBmbGFncz0wCj4gICAgICAgICBnZXRkZW50cy5oOjE0ODogVElORk86IFRl
+c3RpbmcgdGhlIFNZU19nZXRkZW50cyBzeXNjYWxsCj4gICAgICAgICB0c3RfYnVmZmVycy5jOjU3
+OiBUSU5GTzogVGVzdCBpcyB1c2luZyBndWFyZGVkIGJ1ZmZlcnMKPiAgICAgICAgIGdldGRlbnRz
+MDIuYzo3NzogVFBBU1M6IGZkPS01IGRpcnA9MHg3ZjA1ODc4MDNlZTkgc2l6ZT0yNzkgOiBFQkFE
+Rgo+ICg5KQo+ICAgICAgICAgZ2V0ZGVudHMwMi5jOjc3OiBUUEFTUzogZmQ9MyBkaXJwPTB4NTY0
+MTYxN2EzMWU4IHNpemU9MSA6IEVJTlZBTAo+ICgyMikKPiAgICAgICAgIGdldGRlbnRzMDIuYzo3
+NzogVFBBU1M6IGZkPTQgZGlycD0weDdmMDU4NzgwM2VlOSBzaXplPTI3OSA6Cj4gRU5PVERJUiAo
+MjApCj4gICAgICAgICBnZXRkZW50czAyLmM6Nzc6IFRQQVNTOiBmZD01IGRpcnA9MHg3ZjA1ODc4
+MDNlZTkgc2l6ZT0yNzkgOiBFTk9FTlQKPiAoMikKPiAgICAgICAgIGdldGRlbnRzMDIuYzo3Nzog
+VFBBU1M6IGZkPTMgZGlycD0weDdmMDU4NzgwMjAwMCBzaXplPTI3OSA6IEVGQVVMVAo+ICgxNCkK
+Pgo+ICAgICAgICAgIyBMVFBfU0lOR0xFX1ZBUklBTlQ9MiBMVFBfU0lOR0xFX0ZTX1RZUEU9ZXh0
+NCAuL2dldGRlbnRzMDIKPiAgICAgICAgIC4uLgo+ICAgICAgICAgdHN0X3Rlc3QuYzoxOTE4OiBU
+SU5GTzogV0FSTklORzogdGVzdGluZyBvbmx5IHZhcmlhbnQgMiBvZiAzCj4gICAgICAgICB0c3Rf
+c3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTYxOiBUSU5GTzogV0FSTklORzogdGVzdGluZyBvbmx5IGV4
+dDQKPiAgICAgICAgIHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo5NzogVElORk86IEtlcm5lbCBz
+dXBwb3J0cyBleHQ0Cj4gICAgICAgICB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjI6IFRJTkZP
+OiBta2ZzLmV4dDQgZG9lcyBleGlzdAo+ICAgICAgICAgdHN0X3Rlc3QuYzoxODM0OiBUSU5GTzog
+PT09IFRlc3Rpbmcgb24gZXh0NCA9PT0KPiAgICAgICAgIHRzdF90ZXN0LmM6MTE3MTogVElORk86
+IEZvcm1hdHRpbmcgL2Rldi9sb29wMCB3aXRoIGV4dDQgb3B0cz0nJwo+IGV4dHJhIG9wdHM9JycK
+PiAgICAgICAgIG1rZTJmcyAxLjQ3LjIgKDEtSmFuLTIwMjUpCj4gICAgICAgICB0c3RfdGVzdC5j
+OjExODM6IFRJTkZPOiBNb3VudGluZyAvZGV2L2xvb3AwIHRvCj4gL3RtcC9MVFBfZ2V0V3RCbkdF
+L21udHBvaW50IGZzdHlwPWV4dDQgZmxhZ3M9MAo+ICAgICAgICAgZ2V0ZGVudHMuaDoxNTc6IFRD
+T05GOiBsaWJjIGdldGRlbnRzKCkgaXMgbm90IGltcGxlbWVudGVkCj4KPiAgICAgICAgICMgTFRQ
+X1NJTkdMRV9WQVJJQU5UPTk5IExUUF9TSU5HTEVfRlNfVFlQRT1leHQ0IC4vZ2V0ZGVudHMwMiAj
+Cj4gaGlnaGVyIHZhbHVlIGlzIG1heCB2YWx1ZQo+ICAgICAgICAgdHN0X3Rlc3QuYzoxOTE4OiBU
+SU5GTzogV0FSTklORzogdGVzdGluZyBvbmx5IHZhcmlhbnQgMyBvZiAzCj4gICAgICAgICB0c3Rf
+c3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTYxOiBUSU5GTzogV0FSTklORzogdGVzdGluZyBvbmx5IGV4
+dDQKPiAgICAgICAgIHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo5NzogVElORk86IEtlcm5lbCBz
+dXBwb3J0cyBleHQ0Cj4gICAgICAgICB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjI6IFRJTkZP
+OiBta2ZzLmV4dDQgZG9lcyBleGlzdAo+ICAgICAgICAgdHN0X3Rlc3QuYzoxODM0OiBUSU5GTzog
+PT09IFRlc3Rpbmcgb24gZXh0NCA9PT0KPiAgICAgICAgIHRzdF90ZXN0LmM6MTE3MTogVElORk86
+IEZvcm1hdHRpbmcgL2Rldi9sb29wMCB3aXRoIGV4dDQgb3B0cz0nJwo+IGV4dHJhIG9wdHM9JycK
+PiAgICAgICAgIG1rZTJmcyAxLjQ3LjIgKDEtSmFuLTIwMjUpCj4gICAgICAgICB0c3RfdGVzdC5j
+OjExODM6IFRJTkZPOiBNb3VudGluZyAvZGV2L2xvb3AwIHRvCj4gL3RtcC9MVFBfZ2V0MWZYNzBu
+L21udHBvaW50IGZzdHlwPWV4dDQgZmxhZ3M9MAo+ICAgICAgICAgZ2V0ZGVudHMuaDoxNjI6IFRJ
+TkZPOiBUZXN0aW5nIGxpYmMgZ2V0ZGVudHM2NCgpCj4gICAgICAgICB0c3RfYnVmZmVycy5jOjU3
+OiBUSU5GTzogVGVzdCBpcyB1c2luZyBndWFyZGVkIGJ1ZmZlcnMKPiAgICAgICAgIGdldGRlbnRz
+MDIuYzo3NzogVFBBU1M6IGZkPS01IGRpcnA9MHg3ZmNmMTQwZjNlZTggc2l6ZT0yODAgOiBFQkFE
+Rgo+ICg5KQo+ICAgICAgICAgZ2V0ZGVudHMwMi5jOjc3OiBUUEFTUzogZmQ9MyBkaXJwPTB4NTVh
+NzZlNDUzMWU4IHNpemU9MSA6IEVJTlZBTAo+ICgyMikKPiAgICAgICAgIGdldGRlbnRzMDIuYzo3
+NzogVFBBU1M6IGZkPTQgZGlycD0weDdmY2YxNDBmM2VlOCBzaXplPTI4MCA6Cj4gRU5PVERJUiAo
+MjApCj4gICAgICAgICBnZXRkZW50czAyLmM6Nzc6IFRQQVNTOiBmZD01IGRpcnA9MHg3ZmNmMTQw
+ZjNlZTggc2l6ZT0yODAgOiBFTk9FTlQKPiAoMikKPiAgICAgICAgIGdldGRlbnRzMDIuYzo3Nzog
+VFBBU1M6IGZkPTMgZGlycD0weDdmY2YxNDBmMjAwMCBzaXplPTI4MCA6IEVGQVVMVAo+ICgxNCkK
+Pgo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pgo+IC0tLQo+IEhp
+IGFsbCwKPgo+IEFuZHJlYSB3YW50ZWQgdG8gcnVuIG9ubHkgc2luZ2xlIHZhcmlhbnQuCj4KCkNv
+dWxkIHlvdSB0ZWxsIG1lIHdoYXQgdGhlIGJlbmVmaXQgaXM/IHdoeSBkbyB3ZSBuZWVkIHRoaXM/
+CgpBbmQgYmFjayB0byB0aGUgcGF0Y2ggaXRzZWxmLCBpZiBMVFBfU0lOR0xFX0lURVJBVElPTiBp
+cyB1c2VkLCB3aGljaAp2YXJpYW50IHdpbGwgYmUgY2hvc2VuIHRvIHJ1biBieSBkZWZhdWx0PyBJ
+cyB0aGF0IGV4cGVjdGVkPwoKCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0
+IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
