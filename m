@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DED0C021B2
-	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 11:44:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E246C021B6
+	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 11:45:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B990F3C9B0F
-	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 12:44:44 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2BA123C9B53
+	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 12:45:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EADC13C9AF6
- for <ltp@lists.linux.it>; Tue, 25 Feb 2025 12:44:26 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 6F9DE3C9B21
+ for <ltp@lists.linux.it>; Tue, 25 Feb 2025 12:44:31 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -25,62 +25,73 @@ Received: from smtp-out2.suse.de (smtp-out2.suse.de
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 31E711BEBE93
- for <ltp@lists.linux.it>; Tue, 25 Feb 2025 12:44:25 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B7DD91413E50
+ for <ltp@lists.linux.it>; Tue, 25 Feb 2025 12:44:30 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7E90E1F455;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B959A1F457;
  Tue, 25 Feb 2025 11:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1740483864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=T+1kpfaXtp68DitAgjASbrTxRLaK41MbeQ/iJD1kDz4=;
- b=X7NdHikTTsY3xtKYyT/pr4qJheouqAU6khPEOq8g7ux2PfAwCk9vb12ZwZJuIupPexe3MS
- QIeqRXDuSudOZbzcBQrLTTDradK1CwAmKBJvqbwNDpvNsM6/C0AqzLq660ZunXJsmsJzwl
- 5i/jq4Ja9INJ2TEANKMeZCD5r0OBQfk=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K9vzfs5BMRNnZi6mFmUn/rrSlrjO4vtFLQEq0ombtzY=;
+ b=JuZGQQOs5JouWE6t49K2rNXvW97QpRXeJ73BAZTPRXGWXL5ce985SMl29Dp+rSUcWbLzkG
+ 1ZHa5z8cZoTNDsxFYXCLLAn8WUl7XGdK1+iSotKWtP4Pc7xVNN0gv/40rLfXZNE3zzJ/3Z
+ XK/j9ZtNSRataXnP7glTYLH6Yype64w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1740483864;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=T+1kpfaXtp68DitAgjASbrTxRLaK41MbeQ/iJD1kDz4=;
- b=IfsM01lU0ZoLv/k3fynfQUWCjaVd4ePtaQpx1QYc9EWQxv3Eo7/QIrdd0okGzhIe5iW3Ok
- PCOjcQ5VIRKmtlCg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K9vzfs5BMRNnZi6mFmUn/rrSlrjO4vtFLQEq0ombtzY=;
+ b=JDyJyjxZCj4o7wQsBxAGh/SPEBnqWf9gaCgwGTShdzWlNvWyKjWtMbhlhGx0f4GxKCe6R1
+ 6No/fAya5Q4nlyBw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=X7NdHikT;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IfsM01lU
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JuZGQQOs;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JDyJyjxZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1740483864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=T+1kpfaXtp68DitAgjASbrTxRLaK41MbeQ/iJD1kDz4=;
- b=X7NdHikTTsY3xtKYyT/pr4qJheouqAU6khPEOq8g7ux2PfAwCk9vb12ZwZJuIupPexe3MS
- QIeqRXDuSudOZbzcBQrLTTDradK1CwAmKBJvqbwNDpvNsM6/C0AqzLq660ZunXJsmsJzwl
- 5i/jq4Ja9INJ2TEANKMeZCD5r0OBQfk=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K9vzfs5BMRNnZi6mFmUn/rrSlrjO4vtFLQEq0ombtzY=;
+ b=JuZGQQOs5JouWE6t49K2rNXvW97QpRXeJ73BAZTPRXGWXL5ce985SMl29Dp+rSUcWbLzkG
+ 1ZHa5z8cZoTNDsxFYXCLLAn8WUl7XGdK1+iSotKWtP4Pc7xVNN0gv/40rLfXZNE3zzJ/3Z
+ XK/j9ZtNSRataXnP7glTYLH6Yype64w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1740483864;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=T+1kpfaXtp68DitAgjASbrTxRLaK41MbeQ/iJD1kDz4=;
- b=IfsM01lU0ZoLv/k3fynfQUWCjaVd4ePtaQpx1QYc9EWQxv3Eo7/QIrdd0okGzhIe5iW3Ok
- PCOjcQ5VIRKmtlCg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K9vzfs5BMRNnZi6mFmUn/rrSlrjO4vtFLQEq0ombtzY=;
+ b=JDyJyjxZCj4o7wQsBxAGh/SPEBnqWf9gaCgwGTShdzWlNvWyKjWtMbhlhGx0f4GxKCe6R1
+ 6No/fAya5Q4nlyBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5277B13332;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8556913A61;
  Tue, 25 Feb 2025 11:44:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1zjdEhitvWe2QQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gJVwHxitvWe2QQAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Tue, 25 Feb 2025 11:44:24 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Feb 2025 12:44:17 +0100
-Message-ID: <20250225114418.2940134-1-pvorel@suse.cz>
+Date: Tue, 25 Feb 2025 12:44:18 +0100
+Message-ID: <20250225114418.2940134-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250225114418.2940134-1-pvorel@suse.cz>
+References: <20250225114418.2940134-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 7E90E1F455
+X-Rspamd-Queue-Id: B959A1F457
+X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  SUBJECT_HAS_CURRENCY(1.00)[]; MID_CONTAINS_FROM(1.00)[];
  NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
@@ -93,16 +104,15 @@ X-Spamd-Result: default: False [-2.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
  FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email];
  RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
  RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
- variant
+Subject: [LTP] [PATCH v2 2/2] tst_supported_fs_types: Ignore empty
+ $LTP_SINGLE_FS_TYPE value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,160 +129,64 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Allow to test only single struct tst_test->test_variants.
-This is a similar feature to $LTP_SINGLE_FS_TYPE.
+Previously empty $LTP_SINGLE_FS_TYPE value caused no testing:
 
-Value is ignored when test does not specify test_variants.
-Variant counting starts with 0, latest value is test_variants - 1
-(C array like counting).
-When value is higher than test_variants value lastest variant is used.
-
-    # LTP_SINGLE_VARIANT=0 LTP_SINGLE_FS_TYPE=ext4 ./getdents02
+    # LTP_SINGLE_FS_TYPE= ./getdents02
     ...
-    tst_test.c:1904: TINFO: WARNING: testing only variant 0 of 3
-    tst_test.c:1937: TINFO: ===== Testing tst_variant: 0 =====
-    tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
+    LTP_SINGLE_VARIANT= LTP_SINGLE_FS_TYPE= ./getdents02
+    tst_kconfig.c:88: TINFO: Parsing kernel config '/boot/config-6.12.10-amd64'
+    tst_test.c:1722: TINFO: Overall timeout per run is 0h 00m 30s
+    tst_supported_fs_types.c:161: TINFO: WARNING: testing only
+    tst_supported_fs_types.c:128: TINFO: Filesystem  is not supported
+    tst_test.c:1861: TCONF: There are no supported filesystems
+
+Now value is ignored:
+
+    # LTP_SINGLE_FS_TYPE= ./getdents02
+    ...
+    tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
+    tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
+    tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
     tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
     tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-    tst_test.c:1834: TINFO: === Testing on ext4 ===
-    tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-    mke2fs 1.47.2 (1-Jan-2025)
-    tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_getrQ7dbE/mntpoint fstyp=ext4 flags=0
-    getdents.h:148: TINFO: Testing the SYS_getdents syscall
-    tst_buffers.c:57: TINFO: Test is using guarded buffers
-    getdents02.c:77: TPASS: fd=-5 dirp=0x7fdf76897ee9 size=279 : EBADF (9)
-    getdents02.c:77: TPASS: fd=3 dirp=0x557a810581e8 size=1 : EINVAL (22)
-    getdents02.c:77: TPASS: fd=4 dirp=0x7fdf76897ee9 size=279 : ENOTDIR (20)
-    getdents02.c:77: TPASS: fd=5 dirp=0x7fdf76897ee9 size=279 : ENOENT (2)
-    getdents02.c:77: TPASS: fd=3 dirp=0x7fdf76896000 size=279 : EFAULT (14)
+    tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
+    tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
+    tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports bcachefs
+    tst_supported_fs_types.c:62: TINFO: mkfs.bcachefs does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
+    tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports exfat
+    tst_supported_fs_types.c:62: TINFO: mkfs.exfat does exist
+    tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
+    tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
+    tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
+    tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+    tst_test.c:1834: TINFO: === Testing on ext2 ===
 
-    # LTP_SINGLE_VARIANT=2 LTP_SINGLE_FS_TYPE=ext4 ./getdents02
-    ...
-    tst_test.c:1904: TINFO: WARNING: testing only variant 2 of 3
-    tst_test.c:1937: TINFO: ===== Testing tst_variant: 2 =====
-    tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
-    tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-    tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-    tst_test.c:1834: TINFO: === Testing on ext4 ===
-    tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-    mke2fs 1.47.2 (1-Jan-2025)
-    tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_gethBuDHc/mntpoint fstyp=ext4 flags=0
-    getdents.h:157: TCONF: libc getdents() is not implemented
-
-    # LTP_SINGLE_VARIANT=99 LTP_SINGLE_FS_TYPE=ext4 ./getdents02 # higher value is max value
-    ...
-    tst_test.c:1904: TINFO: WARNING: testing only variant 3 of 3
-    tst_test.c:1937: TINFO: ===== Testing tst_variant: 3 =====
-    tst_supported_fs_types.c:161: TINFO: WARNING: testing only ext4
-    tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-    tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-    tst_test.c:1834: TINFO: === Testing on ext4 ===
-    tst_test.c:1171: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-    mke2fs 1.47.2 (1-Jan-2025)
-    tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_getnfis4f/mntpoint fstyp=ext4 flags=0
-    getdents.h:162: TINFO: Testing libc getdents64()
-    tst_buffers.c:57: TINFO: Test is using guarded buffers
-    getdents02.c:77: TPASS: fd=-5 dirp=0x7f1b029b2ee8 size=280 : EBADF (9)
-    getdents02.c:77: TPASS: fd=3 dirp=0x55fbc55661e8 size=1 : EINVAL (22)
-    getdents02.c:77: TPASS: fd=4 dirp=0x7f1b029b2ee8 size=280 : ENOTDIR (20)
-    getdents02.c:77: TPASS: fd=5 dirp=0x7f1b029b2ee8 size=280 : ENOENT (2)
-    getdents02.c:77: TPASS: fd=3 dirp=0x7f1b029b1000 size=280 : EFAULT (14)
-
+Fixes: 1199657e91 ("lib: Add support for debugging .all_filesystems")
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Changes v1->v2:
-* Add a function that would set two integer variables, first_variant and
-last variant (Cyril). NOTE: I'm not sure if the implementation is really
-better than the previous one.
-* Add documentation into setup_tests.rst.
+The same as v1.
 
- doc/users/setup_tests.rst |  3 +++
- lib/tst_test.c            | 33 ++++++++++++++++++++++++++++-----
- 2 files changed, 31 insertions(+), 5 deletions(-)
+ lib/tst_supported_fs_types.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
-index 2766ed719c..78e1098917 100644
---- a/doc/users/setup_tests.rst
-+++ b/doc/users/setup_tests.rst
-@@ -46,6 +46,9 @@ users.
-      - Testing only - specifies filesystem instead all supported
-        (for tests with ``.all_filesystems``).
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index bbbb8df19f..5e51595d82 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -157,7 +157,7 @@ const char **tst_get_supported_fs_types(const char *const *skiplist)
+ 	skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
+ 	only_fs = getenv("LTP_SINGLE_FS_TYPE");
  
-+   * - LTP_SINGLE_VARIANT
-+     - Testing only - specifies tst_variant to be run.
-+
-    * - LTP_DEV_FS_TYPE
-      - Filesystem used for testing (default: ``ext2``).
- 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 3823ea109e..ddeacfb228 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -581,6 +581,7 @@ static void print_help(void)
- 	fprintf(stderr, "LTP_DEV              Path to the block device to be used (for .needs_device)\n");
- 	fprintf(stderr, "LTP_DEV_FS_TYPE      Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
- 	fprintf(stderr, "LTP_SINGLE_FS_TYPE   Testing only - specifies filesystem instead all supported (for .all_filesystems)\n");
-+	fprintf(stderr, "LTP_SINGLE_VARIANT   Testing only - specifies tst_variant to be run\n");
- 	fprintf(stderr, "LTP_TIMEOUT_MUL      Timeout multiplier (must be a number >=1)\n");
- 	fprintf(stderr, "LTP_RUNTIME_MUL      Runtime multiplier (must be a number >=1)\n");
- 	fprintf(stderr, "LTP_VIRT_OVERRIDE    Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
-@@ -1882,10 +1883,33 @@ static int run_tcases_per_fs(void)
- 
- unsigned int tst_variant;
- 
-+static void setup_variants(unsigned int *first_variant, unsigned int *last_variant)
-+{
-+	const char *only_variant;
-+	*first_variant = 0;
-+	*last_variant = 1;
-+
-+	if (!tst_test->test_variants)
-+		return;
-+
-+	*last_variant = tst_test->test_variants;
-+
-+	only_variant = getenv("LTP_SINGLE_VARIANT");
-+	if (!only_variant || only_variant[0] == '\0')
-+		return;
-+
-+	*first_variant = MIN(SAFE_STRTOL((char *)only_variant, 0, INT_MAX),
-+					  *last_variant - 1);
-+
-+	tst_res(TINFO, "WARNING: testing only variant %d of %d",
-+			*first_variant, *last_variant - 1);
-+	*last_variant = *first_variant + 1;
-+}
-+
- void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- {
- 	int ret = 0;
--	unsigned int test_variants = 1;
-+	unsigned int first_variant, last_variant;
- 	struct utsname uval;
- 
- 	lib_pid = getpid();
-@@ -1899,7 +1923,6 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	tst_res(TINFO, "LTP version: "LTP_VERSION);
- 
--
- 	uname(&uval);
- 	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
- 
-@@ -1908,10 +1931,10 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	set_overall_timeout();
- 
--	if (tst_test->test_variants)
--		test_variants = tst_test->test_variants;
-+	setup_variants(&first_variant, &last_variant);
- 
--	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
-+	for (tst_variant = first_variant; tst_variant < last_variant; tst_variant++) {
-+		tst_res(TINFO, "===== Testing tst_variant: %d =====", tst_variant);
- 		if (tst_test->all_filesystems || count_fs_descs() > 1)
- 			ret |= run_tcases_per_fs();
- 		else
+-	if (only_fs) {
++	if (only_fs && only_fs[0] != '\0') {
+ 		tst_res(TINFO, "WARNING: testing only %s", only_fs);
+ 		if (tst_fs_is_supported(only_fs))
+ 			fs_types[0] = only_fs;
 -- 
 2.47.2
 
