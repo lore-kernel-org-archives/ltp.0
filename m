@@ -4,92 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8921EC021A4
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 19:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1740425086; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=S4OgaLSpp7coidtEOlEhvfy0EByI4iH7zPUUTc+16X4=;
- b=m494BkjR2Nw1+4DZVtcA3g0iGXx/R+Qx3KVHL4xFFBAWWrHamVDKmtxxF8DjLyvGvEqbr
- gN+tpoi6vZXRh3Rp6/I5n4jF4y/HS9TKiDw4XIwTEczfWLKBNBKtVOd88UOcYAltcQC3ok3
- vwceBjsAQN/YrP/nPhQJVD8ncK7VZu4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DF1C021B2
+	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 07:46:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E3B993C9A19
-	for <ltp@archiver.kernel.org>; Mon, 24 Feb 2025 20:24:46 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9DCF83C9AF6
+	for <ltp@archiver.kernel.org>; Tue, 25 Feb 2025 08:46:12 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CAD1D3C988C
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 20:24:25 +0100 (CET)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0476B3C2039
+ for <ltp@lists.linux.it>; Tue, 25 Feb 2025 08:45:53 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AE14D1008608
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 20:24:24 +0100 (CET)
-Received: by mail-ed1-x535.google.com with SMTP id
- 4fb4d7f45d1cf-5e0452f859cso7469498a12.2
- for <ltp@lists.linux.it>; Mon, 24 Feb 2025 11:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1740425064; x=1741029864; darn=lists.linux.it;
- h=in-reply-to:references:to:cc:subject:message-id:date
- :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=HKnj0YHSo2IzJ8woZvIBDldXp8jRzYtWZ+dnNqVT3cE=;
- b=gyDoYfb5KUrYkg1bhPpPhCEx9IYYulIHLMMlT9R1NEY4z+GSF+B4mWyF5uDe58XD/f
- ppPkwp9P9na+hHVGFwaTl3sFGsmNRYT0oPL3lQoYoRu8jdsA6rnY9WNETOjdwWj92O2p
- BS00wBaUL4PzWyPFTIwul55O08aECg1/w+yBkQ4/dqfJToYSl9fk0EW4X+DyijPKCGxi
- 0/C/tgBPvz+PkKAnyDtxqJNz9k0+uggyw+zo9jecXzL1ewfKwEQyKnYM285kUIzhbxIB
- zgz+4A1Yx0TJ31TGOp/I/Ang5aCNIr375oQI/o+HwYg++Ty+IUYJnZXPDz8Mp7eK5mhy
- 82Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1740425064; x=1741029864;
- h=in-reply-to:references:to:cc:subject:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=HKnj0YHSo2IzJ8woZvIBDldXp8jRzYtWZ+dnNqVT3cE=;
- b=dRcwCl8OvUfFY66+K61ndVzytdVceVW/3e9ypZj5ZPc4tQUP8fljBB7dGZJJuE3vBD
- iVmrB86hLoiyyBJgIk7PGwt0rRwpUtNCcHnxOHd1JC5hopdXlFZEuK65j5OncMxleWNf
- RA292vPFXQz2fvPUd3La0ByYhzUCSP5aubnS86iMUuLPhNKPSAjyRYxeP3ydsCDaPYMX
- I1BLmYjH+XMd1FHmWgcsvyJxOIEa/aIO/Tjw7ssbbbngGWXB0l1rcl7fodS+vZnmnd2p
- pQSuv2UOUr0l3KePh6ju5BCntcZ2QY7tdujzo559bpvV368DS19TqHOLsJhqK89cmE5Y
- yP7w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWjeQSCYI++TwbviicHJ8WA5XkS8N9VCc9EfzKrD39nLGepEoYhAAsyMp6az7Qxafcy0ZU=@lists.linux.it
-X-Gm-Message-State: AOJu0Yz31d7McS4I7HFSuKehUnUH41r+I1lLqTx6VxSWvwuBXtLr5nwR
- Avzr94Mgl9G5TtHFHcI+HUd9aCj2Cwgxef8yHyOLVV20lQd5JhFNphts+7iqUeE=
-X-Gm-Gg: ASbGnctv9Undqt3qVhlcl0ua7wAJh1DPRNLUKJbGwxkbCRylYYOWL+l/Wv1UyVE4obT
- Vt6dyKQ9CSJJe5pzVVs/iBeaZq5B7XatAJXI2QqMmj8NcTsmVPSHh9ZoccZ+iAjayt9e1o4alGH
- LP8xYRefQXKMrkic03SK7kn4n+gDaRIWNrTQnRlYdYAoqnk2oHJtNV4KyxBGSt9ktbcoe9h6SHQ
- q4ZVASe3+WTiDEGmgCObAgrLKMA+PX+xCiRquipZz6Ios/SSXXGKAYISjnS7i2Y+yLGZsl2yhP3
- Dyf1039qpYVv5iM=
-X-Google-Smtp-Source: AGHT+IE5wepCgQTzkmIJgnUAzVxu9eKX0B5opymT8XOerXgFl+r4BIXBkAa2TgLdgn9/wBm5C5RShw==
-X-Received: by 2002:a17:907:9721:b0:ab7:a274:d3df with SMTP id
- a640c23a62f3a-abc09a5f3aemr1300676866b.20.1740425064010; 
- Mon, 24 Feb 2025 11:24:24 -0800 (PST)
-Received: from localhost ([179.228.215.131])
- by smtp.gmail.com with UTF8SMTPSA id
- d2e1a72fcca58-7326e02b1a8sm16889738b3a.97.2025.02.24.11.24.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 24 Feb 2025 11:24:23 -0800 (PST)
-Mime-Version: 1.0
-Date: Mon, 24 Feb 2025 16:24:21 -0300
-Message-Id: <D80X6ZHMZ1SX.1KAXYMYMDCHKO@suse.com>
-To: =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>, "Linux Test
- Project" <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1
-References: <20250224-conversions-pause-v3-0-5e3989d37f1d@suse.com>
- <20250224-conversions-pause-v3-3-5e3989d37f1d@suse.com>
-In-Reply-To: <20250224-conversions-pause-v3-3-5e3989d37f1d@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B7A7D1BD4E91
+ for <ltp@lists.linux.it>; Tue, 25 Feb 2025 08:45:51 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4946B1F44F;
+ Tue, 25 Feb 2025 07:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740469550;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+loGt5I0RIal7QdaYVYL93YNtRnAfFHUzCDJ6+v6tw=;
+ b=j668kcDt1rW4kBJnKipZca5l6YX4cjCgY1Wjv5Og8P/IKoO6QpBIL44vZhcRMgp+hz30Bw
+ yd92vH2GqmFd9OnmPPmXPJ+2PeKdr/PmvXpt1RwsQu0mM/8agx7+O3zkod4LxdkIyR39Hh
+ iXEA3ddfGJkztnhjLbkKXxTnA0Uz7jI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740469550;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+loGt5I0RIal7QdaYVYL93YNtRnAfFHUzCDJ6+v6tw=;
+ b=8QjHUCm9Jm1yeUXQUkJRxLoPL88tnEg9cGY1hFH2CX36NFzujNOg6mkci/LR+xTvjfr+M5
+ fWMAJOR+m13wpxBQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740469550;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+loGt5I0RIal7QdaYVYL93YNtRnAfFHUzCDJ6+v6tw=;
+ b=j668kcDt1rW4kBJnKipZca5l6YX4cjCgY1Wjv5Og8P/IKoO6QpBIL44vZhcRMgp+hz30Bw
+ yd92vH2GqmFd9OnmPPmXPJ+2PeKdr/PmvXpt1RwsQu0mM/8agx7+O3zkod4LxdkIyR39Hh
+ iXEA3ddfGJkztnhjLbkKXxTnA0Uz7jI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740469550;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+loGt5I0RIal7QdaYVYL93YNtRnAfFHUzCDJ6+v6tw=;
+ b=8QjHUCm9Jm1yeUXQUkJRxLoPL88tnEg9cGY1hFH2CX36NFzujNOg6mkci/LR+xTvjfr+M5
+ fWMAJOR+m13wpxBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 287FE13332;
+ Tue, 25 Feb 2025 07:45:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id n6d/CC51vWfwcAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Feb 2025 07:45:50 +0000
+Date: Tue, 25 Feb 2025 08:45:43 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <20250225074543.GA2901073@pevik>
+References: <20250220160054.12149-3-zohar@linux.ibm.com>
+ <20250220181604.GA2709977@pevik>
+ <fd10e47b4c8b6af0e8d37975cdf1e82133add8c3.camel@linux.ibm.com>
+ <20250220191342.GA2716312@pevik>
+ <c625586b0dbc4302dfb7adf4acb0c891b74cf8bc.camel@linux.ibm.com>
+ <2637152a2715b8e84e966b12bc9c9cb1c27592c2.camel@linux.ibm.com>
+ <20250220214333.GA2726725@pevik>
+ <cd07d8052fbfa0cde426b4b07fde0c70e6aa046f.camel@linux.ibm.com>
+ <20250221081623.GA2739743@pevik>
+ <26a46dd0c56d95108c575937c15fa35d48f67577.camel@linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <26a46dd0c56d95108c575937c15fa35d48f67577.camel@linux.ibm.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/5] syscalls/pause02: Delete duplicated test
+Subject: Re: [LTP] [RFC PATCH 3/3] ima: additional ToMToU violation tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,26 +126,162 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
+ Stefan Berger <stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uIEZlYiAyNCwgMjAyNSBhdCAzOjUzIFBNIC0wMywgUmljYXJkbyBCLiBNYXJsacOocmUg
-d3JvdGU6Cj4gRnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KPgo+IFRo
-aXMgdGVzdCBpcyB2ZXJ5IHNpbWlsYXIgdG8gcGF1c2UwMSwgdGhlcmVmb3JlIGRlbGV0ZSBpdC4K
-Pgo+IFNpZ25lZC1vZmYtYnk6IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Cj4g
-LS0tCj4gIHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxIC0K
-PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wYXVzZS9wYXVzZTAyLmMgfCAxNDcgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTQ4IGRlbGV0aW9u
-cygtKQo+Cj4gZGlmZiAtLWdpdCBhL3J1bnRlc3Qvc3lzY2FsbHMgYi9ydW50ZXN0L3N5c2NhbGxz
-Cj4gaW5kZXggNGFiODQzNmQzMGNhNWZmZWU1MmQ5Nzc3NzI5ZWMxZWMwOWQwYmYxZC4uNjZlYmYy
-MGQyYWE5ZGZhMzZjYTliYzVlNTU1MzZmNWE5ZGMwZTgzZiAxMDA2NDQKPiAtLS0gYS9ydW50ZXN0
-L3N5c2NhbGxzCj4gKysrIGIvcnVudGVzdC9zeXNjYWxscwo+IEBAIC0xMDEwLDcgKzEwMTAsNiBA
-QCBwYXRoY29uZjAxIHBhdGhjb25mMDEKPiAgcGF0aGNvbmYwMiBwYXRoY29uZjAyCj4gIAo+ICBw
-YXVzZTAxIHBhdXNlMDEKPiAtcGF1c2UwMiBwYXVzZTAyCj4gIHBhdXNlMDMgcGF1c2UwMwoKU2hv
-dWxkIGFsc28gaGF2ZSByZW1vdmVkIGl0IGluIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcGF1
-c2UvLmdpdGlnbm9yZSAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGlu
-dXguaXQvbGlzdGluZm8vbHRwCg==
+> On Fri, 2025-02-21 at 09:16 +0100, Petr Vorel wrote:
+> > > On Thu, 2025-02-20 at 22:43 +0100, Petr Vorel wrote:
+> > > > > On Thu, 2025-02-20 at 15:22 -0500, Mimi Zohar wrote:
+> > > > > > On Thu, 2025-02-20 at 20:13 +0100, Petr Vorel wrote:
+> > > > > > > > On Thu, 2025-02-20 at 19:16 +0100, Petr Vorel wrote:
+> > > > > > > > > Hi Mimi,
+
+> > > > > > > > > > Kernel patch "ima: limit the number of ToMToU integrity
+> > > > > > > > > > violations"
+> > > > > > > > > > prevents superfluous ToMToU violations.=A0 Add correspo=
+nding LTP
+> > > > > > > > > > tests.
+
+> > > > > > > > > > Link:
+> > > > > > > > > > https://lore.kernel.org/linux-integrity/20250219162131.=
+416719-3-zohar@linux.ibm.com/
+> > > > > > > > > > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+
+> > > > > > > > > Unfortunately tests fail on both mainline kernel and kern=
+el with
+> > > > > > > > > your patches.
+
+> > > > > > > > The new LTP IMA violations patches should fail without the
+> > > > > > > > associated kernel
+> > > > > > > > patches.
+
+> > > > > > > > > Any hint what could be wrong?
+
+> > > > > > > > Of course it's dependent on the IMA policy.=A0 The tests as=
+sume
+> > > > > > > > being booted with
+> > > > > > > > the
+> > > > > > > > IMA
+> > > > > > > > TCB measurement policy or similar policy being loaded.=A0 C=
+an you
+> > > > > > > > share the IMA
+> > > > > > > > policy?
+> > > > > > > > e.g. cat /sys/kernel/security/ima/policy
+
+> > > > > > > > thanks,
+
+> > > > > > > > Mimi
+
+> > > > > > > Now testing on kernel *with* your patches. First run always f=
+ails,
+> > > > > > > regardless
+> > > > > > > whether using ima_policy=3Dtcb or
+> > > > > > > /opt/ltp/testcases/data/ima_violations/violations.policy).
+
+> > > > > > > Kind regards,
+> > > > > > > Petr
+
+> > > > > > I'm not seeing that on my test machine.=A0 Could there be other=
+ things
+> > > > > > running on your
+> > > > > > system causing violations.=A0 In anycase, your original test wa=
+s less
+> > > > > > exacting.=A0=A0
+> > > > > > Similarly,
+> > > > > > instead of "-eq", try using "-qe" in the following test and rem=
+oving
+> > > > > > the subsequent
+> > > > > > new
+> > > > > > "gt" test.
+
+> > > > > -> "-ge"
+
+> > > > Sure, changing to -ge fixes the problem:
+> > > > if [ $(($num_violations_new - $num_violations)) -ge $expected_viola=
+tions
+> > > > ]; then
+
+> > > > I guess we need "-ge" for older kernels (unless "fix" for stable).=
+=A0 Should
+> > > > we
+> > > > accept "$expected_violations || $expected_violations + 1" for new k=
+ernels
+> > > > to
+> > > > avoid problems like the one on my system.
+
+> > > The problem is that we don't control what else is running on the syst=
+em.=A0 So
+> > > there could
+> > > be other violations independent of these tests.=A0 I'll have to think=
+ about it
+> > > some more and
+> > > get back to you.=A0 (There's no rush to do anything with these LTP IMA
+> > > violation tests.)
+
+> > OK, thank you. The worse scenario would be to use less precise variant =
+"-ge".
+
+> > > > I wonder if the problem was somehow caused by the fact that I built
+> > > > kernel. OTOH
+> > > > it's build by OBS (official openSUSE build service).
+
+> > > As long as you weren't building the kernel and running the tests at t=
+he
+> > > same, I doubt it
+> > > would be the problem.
+
+> > Understand, just something on openSUSE Tumbleweed system.
+
+Hi Mimi,
+
+> Peter, thank you for the tumbleweed image.
+
+Thanks for debugging on the image!
+
+> The default IMA tcb policy results is measuring $LOG (/var/log/audit/audi=
+t.log)
+> on the first call to validate().  To prevent that from interfering with t=
+est1, I
+> would add the following line or something similar in setup() to force mea=
+suring
+> $LOG to happen earlier.
+
++1
+
+> exec 3< $LOG || exit 1
+Ideally use:
+exec 3< $LOG || tst_brk TBROK "some explanation..."
+
+> Assuming that works, I'll update the kernel and LTP tests.
+
++1 (patch from you is preferred)
+
+Kind regards,
+Petr
+
+> thanks,
+
+> Mimi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
