@@ -4,102 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2364C021BE
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 09:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B5AFC021BE
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 10:11:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E4DA33C9DA2
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 10:28:16 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 54B123C9DCE
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 11:11:51 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B09293C29CB
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:28:00 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 847BE3C262F
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 11:11:34 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CCF8B6296D8
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:27:59 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8AC9365BE3E
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 11:11:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1740651091;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=JO4kNd1rUFw2ZG0PG41P1U1uQr3Eyf4YODBf0hX55k8=;
+ b=Bh2Nez9hNHJZOgO4Wai+pG5KLCnVLcho1SxS+KqQG8JOK2BNvDsq8lSprzRY7mopyzo0WY
+ IQYK99ovi6+kb34xHR7Xy4Q9LlseYRt/QR6TV20NbE776Mqmxl9T4eIVjrN27125IpdKMX
+ +BhYLkOR+jm72jKL2d0Ymu2S/zcoNNQ=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-171-b2a9OwltNUKvFI79tCPncg-1; Thu,
+ 27 Feb 2025 05:11:29 -0500
+X-MC-Unique: b2a9OwltNUKvFI79tCPncg-1
+X-Mimecast-MFC-AGG-ID: b2a9OwltNUKvFI79tCPncg_1740651088
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E03211F38F;
- Thu, 27 Feb 2025 09:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740648479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
- b=lQZ4HuEbvpzO/LC3gC/pV/BCPtmIYiHivoSPNoL96x/MaAJVRpd/6V8Z5ewfveCqjdMeHO
- jH0uqG5VPCNmnSqr4UvYCnElgfNgMYbPahOut79jhburEsSWXpCatnGJ7qIiMBIjKYZ9Eo
- BSPZR3cHXbbqyfkHcUeVEU7cQqA3sQk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740648479;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
- b=WQK4hreVif/PGMB4etyDoA3PHbj5dL9ChaNi5/kBFdoLP11zlypVbFvmx5TsA3I1SRIgQB
- 5nP5hWQ2tC8/uXDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740648478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
- b=dmEBnyYh0o3XbqanOo52VLzt70Zs8gl8j7FgokFYk0mPv6y4Kqqaw4D2MQ4876MQWK2AeW
- WwolZ9JOu6QH5qos0dgM7hPyhUJvlk2VT3G3CbuPAaXmwvdhodMr7wdeyAVVOGvjtdIaQt
- KmiznTyriVOT0a6dxZEff7y6s6M1XyU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740648478;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
- b=Dw7ZERnJiSIfeaFhpZIDIZgN0iVEt7RDNR0zS9ON+R674tSva0YeevCvHIynohckmyjarP
- VVmNnVvq5HpA8JCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB0EA13888;
- Thu, 27 Feb 2025 09:27:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jGqbMB4wwGfdEwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 27 Feb 2025 09:27:58 +0000
-Date: Thu, 27 Feb 2025 10:28:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <ricardo@marliere.net>
-Message-ID: <Z8AwJ2Aobzm2FVVw@yuki.lan>
-References: <20250224-conversions-pause-v3-0-5e3989d37f1d@suse.com>
- <20250224-conversions-pause-v3-3-5e3989d37f1d@suse.com>
- <D80X6ZHMZ1SX.1KAXYMYMDCHKO@suse.com> <Z788OcCPwPz17CDM@yuki.lan>
- <D82IOHFBAC1P.1DMBD7WPNMXUW@suse.com> <Z79CtMlApmlZxcav@yuki.lan>
- <D82IYV81YNX5.2CLR90X81HYPS@marliere.net>
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 8568D180087E
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:11:28 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.85])
+ by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id A325819560AE
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:11:27 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 27 Feb 2025 11:10:17 +0100
+Message-ID: <18cb6752b375941581aa66617e52edad0913344e.1740650948.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <D82IYV81YNX5.2CLR90X81HYPS@marliere.net>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: vy99DUJZWsO99-SBANMupjfzKVSTKB5MUhe24KpdvYA_1740651088
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/5] syscalls/pause02: Delete duplicated test
+Subject: [LTP] [PATCH] openposix: sem_timedwait: replace sleep with
+ tst_process_state_wait3
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,22 +78,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>,
- Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> BTW, there's one final modification needed, below.
+This makes the test faster and also avoids a small race - when the
+time is very close to starting new second, this makes the test use
+timeout that's effectively just slightly over one second, because
+nanosecond portion is always set to 0. And previously child would
+sleep roughly one second.
 
-I did the change locally, but failed to --amend properly, that's what I
-get for applying patches at the end of the day... I will push a fix.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../conformance/interfaces/sem_timedwait/2-1.c                | 4 +++-
+ .../conformance/interfaces/sem_timedwait/9-1.c                | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+index d9012cc5ed1a..61603cee56b1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
+@@ -22,6 +22,7 @@
+ #include <time.h>
+ #include <sys/mman.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define TEST "2-1"
+ #define SHM_NAME "/posixtest_2-1"
+@@ -79,7 +80,8 @@ int main(void)
+ 	} else if (pid > 0)	// parent to unlock semaphore
+ 	{
+ 		int i;
+-		sleep(1);
++
++		tst_process_state_wait3(pid, 'S', 1);
+ 		if (sem_post(mysemp) == -1) {
+ 			perror(ERROR_PREFIX "sem_post");
+ 			return PTS_FAIL;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/9-1.c
+index f9175839dab3..ee7ad7aefe26 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/9-1.c
+@@ -21,6 +21,7 @@
+ #include <sys/wait.h>
+ #include <time.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define TEST "9-1"
+ #define FUNCTION "sem_timedwait"
+@@ -79,7 +80,8 @@ int main(void)
+ 
+ 	} else {		// parent to send a signal to child
+ 		int i;
+-		sleep(1);
++
++		tst_process_state_wait3(pid, 'S', 1);
+ 		(void)kill(pid, SIGABRT);	// send signal to child
+ 		if (wait(&i) == -1) {
+ 			perror("Error waiting for child to exit\n");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
