@@ -4,102 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06CCDC19F2E
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 14:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF35C19F2E
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 14:53:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 779843C9DE2
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 15:31:47 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BED143C9DE0
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 15:53:03 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FF3D3C9CFB
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 15:31:30 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ECE72658F6D
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 15:31:29 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 191761F457;
- Thu, 27 Feb 2025 14:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740666689;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XBTMh5lxnebVLYvgZVa3toMCrAgBt/xEGsUYFPGtf84=;
- b=mk8tx9flqeynQc1ZVtSZGshJEvjFmL//KGsINRm2gVlRyRpgVkd2hibRBZvl2tBIUHjy/O
- SCLn4CFj1rkykDi4vk6KWC7k5BCS/PedKN5qC3/XoacMbj8lw6W4vmX+Ymk3jD8cDJnxL6
- mxgX8tLXLR0jbC/whAJPetqCTG3dvp8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740666689;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XBTMh5lxnebVLYvgZVa3toMCrAgBt/xEGsUYFPGtf84=;
- b=5YpPRD/NW6/wEE5vEtFiWxP/R+hk212tJZ94ZlZSOyFZ1bFz/Oa6/NzPNd76+WtJKtDrde
- bsroh3p2hqg/TVCg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740666689;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XBTMh5lxnebVLYvgZVa3toMCrAgBt/xEGsUYFPGtf84=;
- b=mk8tx9flqeynQc1ZVtSZGshJEvjFmL//KGsINRm2gVlRyRpgVkd2hibRBZvl2tBIUHjy/O
- SCLn4CFj1rkykDi4vk6KWC7k5BCS/PedKN5qC3/XoacMbj8lw6W4vmX+Ymk3jD8cDJnxL6
- mxgX8tLXLR0jbC/whAJPetqCTG3dvp8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740666689;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XBTMh5lxnebVLYvgZVa3toMCrAgBt/xEGsUYFPGtf84=;
- b=5YpPRD/NW6/wEE5vEtFiWxP/R+hk212tJZ94ZlZSOyFZ1bFz/Oa6/NzPNd76+WtJKtDrde
- bsroh3p2hqg/TVCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC84F1376A;
- Thu, 27 Feb 2025 14:31:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1I5cMEB3wGeWdgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 27 Feb 2025 14:31:28 +0000
-Date: Thu, 27 Feb 2025 15:31:27 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: "Ricardo B. Marliere" <rbm@suse.com>
-Message-ID: <20250227143127.GC3130282@pevik>
-References: <20250114-conversions-v1-0-7869a9f786d0@suse.com>
- <20250114-conversions-v1-2-7869a9f786d0@suse.com>
+ by picard.linux.it (Postfix) with ESMTPS id 4F2483C9D44
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 13:43:40 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=arm.com
+ (client-ip=217.140.110.172; helo=foss.arm.com;
+ envelope-from=ross.burton@arm.com; receiver=lists.linux.it)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 5177C20D1B7
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 13:43:39 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD8102BCA
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 04:43:53 -0800 (PST)
+Received: from cesw-amp-gbt-1s-m12830-04.lab.cambridge.arm.com
+ (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BCDA13F673
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 04:43:37 -0800 (PST)
+From: Ross Burton <ross.burton@arm.com>
+To: ltp@lists.linux.it
+Date: Thu, 27 Feb 2025 12:43:30 +0000
+Message-ID: <20250227124330.949015-1-ross.burton@arm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250114-conversions-v1-2-7869a9f786d0@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] mmap03: Convert to new API
+X-Mailman-Approved-At: Thu, 27 Feb 2025 15:52:46 +0100
+Subject: [LTP] [PATCH] kernel/kvm: don't hardcode objcopy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,27 +50,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
+testcases/kernel/kvm uses objcopy to contruct a payload binary, but in
+cross builds the host objcopy may not know how to handle target
+binaries:
 
-this requires root otherwise it fails.
+ CC testcases/kernel/kvm/lib_host.o
+ objcopy: Unable to recognise the format of the input file `kvm_svm03-payload.elf'
+ make[3]: *** [ltp/testcases/kernel/kvm/Makefile:67: kvm_svm03-payload.o] Error 1
 
-mmap03.c:71: TBROK: open(mmapfile,65,0001) failed: EACCES (13)
+This is trivially fixed by searching for an objcopy tool (so
+host-prefixed in cross builds) and using that instead.
 
-Because Andrea by accident has been working on the same rewrite and has already
-got v2 reviewed by Cyril, I guess there is no need for your v2. I'm closing this
-as changes requested, but it's effectively refused.
+Signed-off-by: Ross Burton <ross.burton@arm.com>
+---
+ configure.ac                  | 1 +
+ include/mk/config.mk.in       | 1 +
+ testcases/kernel/kvm/Makefile | 4 ++--
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-Hopefully we avoid in the future working on the same patch.
+diff --git a/configure.ac b/configure.ac
+index 344b2ae2c..0f2b6f332 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -30,6 +30,7 @@ AC_PROG_RANLIB
+ AC_DEFUN([AC_PROG_STRIP], [AC_CHECK_TOOL(STRIP, strip, :)])
+ AC_PROG_STRIP
+ AC_PROG_YACC
++AC_CHECK_TOOL([OBJCOPY], [objcopy], [:])
+ 
+ m4_ifndef([PKG_CHECK_EXISTS],
+ 	[m4_fatal([must install pkg-config or pkgconfig and pkg.m4 macro (usual dependency), see INSTALL])])
+diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+index 2b7c8a071..4c3da304f 100644
+--- a/include/mk/config.mk.in
++++ b/include/mk/config.mk.in
+@@ -11,6 +11,7 @@ AR			:= @AR@
+ CC			:= @CC@
+ LEX			:= @LEX@
+ RANLIB			:= @RANLIB@
++OBJCOPY			:= @OBJCOPY@
+ STRIP			:= @STRIP@
+ YACC			:= @YACC@
+ 
+diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+index 07bdd9705..e93528a33 100644
+--- a/testcases/kernel/kvm/Makefile
++++ b/testcases/kernel/kvm/Makefile
+@@ -60,11 +60,11 @@ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ %-payload.o: %.c lib_guest.o $(ARCH_OBJ)
+ ifdef VERBOSE
+ 	$(CC) $(GUEST_CPPFLAGS) $(GUEST_CFLAGS) $(GUEST_LDFLAGS) -o $*-payload.elf $^ $(GUEST_LDLIBS)
+-	objcopy -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
++	$(OBJCOPY) -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
+ 	$(KVM_LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
+ else
+ 	@$(CC) $(GUEST_CPPFLAGS) $(GUEST_CFLAGS) $(GUEST_LDFLAGS) -o $*-payload.elf $^ $(GUEST_LDLIBS)
+-	@objcopy -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
++	@$(OBJCOPY) -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
+ 	@$(KVM_LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
+ 	@echo KVM_CC $(target_rel_dir)$@
+ endif
+-- 
+2.43.0
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
