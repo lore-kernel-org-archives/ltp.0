@@ -4,82 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C77FC021B8
-	for <ltp@archiver.kernel.org>; Wed, 26 Feb 2025 16:41:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2364C021BE
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 09:28:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3F7C43C9D2C
-	for <ltp@archiver.kernel.org>; Wed, 26 Feb 2025 17:41:16 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E4DA33C9DA2
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 10:28:16 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 798E43C29CB
- for <ltp@lists.linux.it>; Wed, 26 Feb 2025 17:41:00 +0100 (CET)
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com
- [IPv6:2607:f8b0:4864:20::62e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B09293C29CB
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:28:00 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 312396000FE
- for <ltp@lists.linux.it>; Wed, 26 Feb 2025 17:40:59 +0100 (CET)
-Received: by mail-pl1-x62e.google.com with SMTP id
- d9443c01a7336-2212a930001so81129005ad.0
- for <ltp@lists.linux.it>; Wed, 26 Feb 2025 08:40:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1740588057; x=1741192857;
- h=in-reply-to:references:subject:to:cc:message-id:date
- :content-transfer-encoding:mime-version:dkim-signature:from
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=J7Rw7KVZPKE3r5KctH8tYgGof4nhN6wZWZbteXF+Knc=;
- b=IBB3tb92woZeeHty+ak3upB6G1WvMdU/fdt6BiK8I3faSVOpQv63Wc+W18CAT7Fr6i
- zdgsQsdGck0ZP2RZ9HWFjd1OxgM3f66LxKjExoSGbsmEaCvwkLcnq/6f8uXkINUX0jRV
- YhHNjDXACvV71g784O8T5VCB78SEHdo9djsX/HRI0nXHl2uEOsSL8g/zP4Fux8XQgtb7
- roo+0CWTrEGsdLaJo0EIJ1iY5YTuXB6YZZ3ldIKI5AQARHFksmacuUEtFJkD5NSBC+JT
- H7qVra5EpmgbMgMe0Zx6LjdfLY+KWI5uqDUUlbz1wxsBU0itfFUWFZ+ptG2zLsygx5Od
- K6pA==
-X-Gm-Message-State: AOJu0Yyuqow3EMIki9GrjcG28GZkfa/wOzv8vFJ7UO2sU0HZ05tLxSWj
- 97qSpG5oJ4LKeYl9ufXggdvZ6kCfJUmsWY2p/CemInvqxBVHIGel1c7x1vG0
-X-Gm-Gg: ASbGncstDd/CyfPo/uG1+UhuZIWii2pupSfZddEp9AGjmhhDSyw+LNxUZjDXS0h5Hva
- +rqJE+bqeHDSDCvQXL2TrBPMozlX0tTo6cSQaJAtzMYHftXZbzDmnhbpkca3T09lYM0tEM7/A7i
- SehIM7wOHygjtm7AD7MJawFtzLJPSEZKojJ+mA88+OVapsF9CY0R1je348A5uTKSeJ2aZ8m2uEb
- E3Q+TqekNC/VC8Kh0jYl1hFTGEpzJD4DZxyFJYhIfFyPN80UL7oEUOsFbvhz3i/vNCSIosJOl5T
- 3rr9RlasneMyHBdfeS8V
-X-Google-Smtp-Source: AGHT+IEKziN37vqHMw4waU6nwf9esktfF+Kz7TPFYAzl93UFLF8EbEAtn3BsnRFQs1nYYtaf3uTEKg==
-X-Received: by 2002:a05:6a00:2445:b0:731:e974:f9c2 with SMTP id
- d2e1a72fcca58-73426af3a2dmr31345218b3a.0.1740588056916; 
- Wed, 26 Feb 2025 08:40:56 -0800 (PST)
-Received: from mail.marliere.net ([2604:a880:4:1d0::7f5:6000])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-7347a6fa24fsm3703576b3a.72.2025.02.26.08.40.55
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Feb 2025 08:40:56 -0800 (PST)
-From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
- s=2025; t=1740588053;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CCF8B6296D8
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:27:59 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E03211F38F;
+ Thu, 27 Feb 2025 09:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740648479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J7Rw7KVZPKE3r5KctH8tYgGof4nhN6wZWZbteXF+Knc=;
- b=lUB0fuf7k1qcf0U1vHswro7MHl3LlSFCXx/9fjCCgj4FwQkiJN7PU7j1kaXR4sxBQjW4eG
- T4wxbTlJx2SLa6IjpVYnb4XNmLL4VBZAvqJSdWsPLgpq8ysXeoyaIcJ+zVWtl66tNfLD7I
- +pbLixvqTxeujPpvRtpOpv9sAh7sKbw5+1cw+/sub7NwJP7Bo21lO+f5OmLdm40Iudeqb9
- DII/T38NLGZAZQou418c2vLKb1S//LQ0CGEcy92vHGt/63W/XJ5TwjWLlJLOjtZ/9yo14L
- bBakYxhkCaJlep/g8Ti2i/7NRkUgtTiflU9BAb86ejI1dfExEbJbJyhvcyMIJA==
-Authentication-Results: ORIGINATING;
- auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Mime-Version: 1.0
-Date: Wed, 26 Feb 2025 13:40:49 -0300
-Message-Id: <D82IYV81YNX5.2CLR90X81HYPS@marliere.net>
-To: "Cyril Hrubis" <chrubis@suse.cz>,
- =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+ bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
+ b=lQZ4HuEbvpzO/LC3gC/pV/BCPtmIYiHivoSPNoL96x/MaAJVRpd/6V8Z5ewfveCqjdMeHO
+ jH0uqG5VPCNmnSqr4UvYCnElgfNgMYbPahOut79jhburEsSWXpCatnGJ7qIiMBIjKYZ9Eo
+ BSPZR3cHXbbqyfkHcUeVEU7cQqA3sQk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740648479;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
+ b=WQK4hreVif/PGMB4etyDoA3PHbj5dL9ChaNi5/kBFdoLP11zlypVbFvmx5TsA3I1SRIgQB
+ 5nP5hWQ2tC8/uXDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1740648478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
+ b=dmEBnyYh0o3XbqanOo52VLzt70Zs8gl8j7FgokFYk0mPv6y4Kqqaw4D2MQ4876MQWK2AeW
+ WwolZ9JOu6QH5qos0dgM7hPyhUJvlk2VT3G3CbuPAaXmwvdhodMr7wdeyAVVOGvjtdIaQt
+ KmiznTyriVOT0a6dxZEff7y6s6M1XyU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1740648478;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5V9l4Lwa+fu4bRqRbdbX29g28ShAjT2ZnJLIiIzqjgo=;
+ b=Dw7ZERnJiSIfeaFhpZIDIZgN0iVEt7RDNR0zS9ON+R674tSva0YeevCvHIynohckmyjarP
+ VVmNnVvq5HpA8JCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB0EA13888;
+ Thu, 27 Feb 2025 09:27:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jGqbMB4wwGfdEwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 27 Feb 2025 09:27:58 +0000
+Date: Thu, 27 Feb 2025 10:28:07 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <ricardo@marliere.net>
+Message-ID: <Z8AwJ2Aobzm2FVVw@yuki.lan>
 References: <20250224-conversions-pause-v3-0-5e3989d37f1d@suse.com>
  <20250224-conversions-pause-v3-3-5e3989d37f1d@suse.com>
  <D80X6ZHMZ1SX.1KAXYMYMDCHKO@suse.com> <Z788OcCPwPz17CDM@yuki.lan>
  <D82IOHFBAC1P.1DMBD7WPNMXUW@suse.com> <Z79CtMlApmlZxcav@yuki.lan>
-In-Reply-To: <Z79CtMlApmlZxcav@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ <D82IYV81YNX5.2CLR90X81HYPS@marliere.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <D82IYV81YNX5.2CLR90X81HYPS@marliere.net>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v3 3/5] syscalls/pause02: Delete duplicated test
 X-BeenThere: ltp@lists.linux.it
@@ -93,38 +111,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: Linux Test Project <ltp@lists.linux.it>,
+ Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed Feb 26, 2025 at 1:35 PM -03, Cyril Hrubis wrote:
-> Hi!
->> > Will you also look into increasing the coverage for pause01.c as I
->> > described (make it loop over different signals)?
->> 
->> I gave it a shot here https://lore.kernel.org/all/20250224-conversions-pause-v3-2-5e3989d37f1d@suse.com/
->> 
->> Is that similar to what you had in mind?
->
-> Looks like I missed that one, sorry, merged now, thanks.
+Hi!
+> BTW, there's one final modification needed, below.
 
-BTW, there's one final modification needed, below.
+I did the change locally, but failed to --amend properly, that's what I
+get for applying patches at the end of the day... I will push a fix.
 
-Thank you,
--	Ricardo.
-
-
-diff --git a/testcases/kernel/syscalls/pause/.gitignore b/testcases/kernel/syscalls/pause/.gitignore
-index 8ea85563ca69..4923553440f1 100644
---- a/testcases/kernel/syscalls/pause/.gitignore
-+++ b/testcases/kernel/syscalls/pause/.gitignore
-@@ -1,2 +1,2 @@
- /pause01
--/pause03
-+/pause02
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
