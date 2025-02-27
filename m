@@ -4,93 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5844C19F32
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 17:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4236C19F32
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 18:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1740679495; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=5j7SzRmTD6BgARaPfZKD93YDfgPnhusRBGsHupU4vLY=;
+ b=A5nUEdUmjHV3lb3QSwnuKP861EeXGLhI85qN3pgnzpGFZ7A7KRdE4EjCfYSRcgSevjb01
+ X0XA9SoZX60Q3czFrIekjxFHxsg6tdA1ahMBFAD+USrcawVey3DVsCAXL+W9VhMaOVy8KuS
+ zDhfLyLRftesuFNoUwvYkbSKDvIU8t8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 41F523C9E26
-	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 18:05:46 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 560C53C9E30
+	for <ltp@archiver.kernel.org>; Thu, 27 Feb 2025 19:04:55 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0969D3C0516
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 18:05:29 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E0A063C280D
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 19:04:34 +0100 (CET)
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com
+ [IPv6:2607:f8b0:4864:20::1049])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E1F0B1002055
- for <ltp@lists.linux.it>; Thu, 27 Feb 2025 18:05:28 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CFAFF21174;
- Thu, 27 Feb 2025 17:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740675927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ua/+NF7qEXqyFMmb+zPsBfK8gdikZ3SaRTPu6aHwrc4=;
- b=L/E+7mY9Y6R6MHLShIJXN+gHNM+cz/bapxGgaouHY0SvkSYMbZ4y245EIOmEDd7td4WKR0
- mH/VEQG0YKhNqh5YHsdU5VJwYCKLX//uoueFmlsoF33xJQTIlIki8pJ+PCPThJgsKAw//t
- nrNtp6UoUNX3dXj4LSW3R0b9bQZHBPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740675927;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ua/+NF7qEXqyFMmb+zPsBfK8gdikZ3SaRTPu6aHwrc4=;
- b=ezsOy6Ic/R5Ivb5+5G+1H+JikeY8ehlRx+FdLk0bPrsBGIpNcfxjkEAmQSs3kdfgVj/jFY
- em1NRtN0ECM3WTBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740675927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ua/+NF7qEXqyFMmb+zPsBfK8gdikZ3SaRTPu6aHwrc4=;
- b=L/E+7mY9Y6R6MHLShIJXN+gHNM+cz/bapxGgaouHY0SvkSYMbZ4y245EIOmEDd7td4WKR0
- mH/VEQG0YKhNqh5YHsdU5VJwYCKLX//uoueFmlsoF33xJQTIlIki8pJ+PCPThJgsKAw//t
- nrNtp6UoUNX3dXj4LSW3R0b9bQZHBPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740675927;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ua/+NF7qEXqyFMmb+zPsBfK8gdikZ3SaRTPu6aHwrc4=;
- b=ezsOy6Ic/R5Ivb5+5G+1H+JikeY8ehlRx+FdLk0bPrsBGIpNcfxjkEAmQSs3kdfgVj/jFY
- em1NRtN0ECM3WTBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A10B13888;
- Thu, 27 Feb 2025 17:05:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KA9xDVebwGcGLgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 27 Feb 2025 17:05:27 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5199C20A6BF
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 19:04:34 +0100 (CET)
+Received: by mail-pj1-x1049.google.com with SMTP id
+ 98e67ed59e1d1-2fe9527c041so2839471a91.0
+ for <ltp@lists.linux.it>; Thu, 27 Feb 2025 10:04:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1740679472; x=1741284272; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=H1u941e04YqteTk7r7ik4JcKR8v8QXUlEnMPqzWSp7I=;
+ b=4qZoy/1YA9jN0nR0ldvf579fVv+IqEawusAP+Yv/7qPTrqloCvG+ed0nW5klXLmW/v
+ 60yQZBOj/zGMxhKws7NF9MKhRbEdzPcM3bFdJCsOHSrh5VQg9WE7nflUc7/KiqekBw3/
+ bASjRJe/PMFi46hvr0cFRLDnUg/J26i0vutgnmgerfL3hklZla+uyHWz/W0SUAjAUDbG
+ wB2NWVoW0EtwyT36VwKY7bB0oNvZVXymrQ8Zp1bH9b0B0/j6de9nSIgwfZNsBbVWv1vM
+ nOZlPYtEQXDrmJoEE1G0SSk2kQWbWxCJ9kvShokY9vS14+jb8WBkPoS6EXAwOiGLMyS9
+ OBLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1740679472; x=1741284272;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=H1u941e04YqteTk7r7ik4JcKR8v8QXUlEnMPqzWSp7I=;
+ b=Xy037bjrQ5LU0L9DzbJYxjJp5J6hLNcKKpKFEMT2Z2ACWIUIqDx4lgTwIeTGQ3kL/O
+ UFLYO06z0VzYBFH6PdTUHYZH1HB6HjktBxoOyelEnRAOZMXxY6GfKpPaq3fgyMHpF522
+ 6q/Mbow95Ef0+GBs94J9otMuRQeSTHvSRJMQFFy44ceu3IRpkQbBN/jvJND0420OdADM
+ oj7uEbJo6c8m7vhIs+RtPyz+SFEikunqdhdvR6n1VhCfwyR1JBVKexP/ORzHTKjhLdWm
+ KISlFD6ko2hlnau/Ac70kBYnzjnaq1vbmzLWv4ygw8Htciqv5GsuFQfk8HyFQ5CrCOu0
+ 4mlg==
+X-Gm-Message-State: AOJu0YzhEgG0u/sFR5YeKLGQy73944Bi+hskyYVByQdNR3MhKtehSm/p
+ cvqnPqSU0FDoOH+Smx63pwLM3BwlOHHd8/ObzACslBaskB4DwEmCNiNnpwQBf+0vx5JBh6L/+4Q
+ oHDye6Yrpb6kn9tCPk/XPjVNg8/QN6QJ2xOSKpVEpIduS/Syf/3pfziy7l4/urv8aXlXArop8Z1
+ QSZmdRMP38uWViKzxEBueshc/DnGI=
+X-Google-Smtp-Source: AGHT+IGCy11mg0EzZXEeBI9Lwjtrvu1kwWF1vYBP+Sl6vb2c8kL+7TjUv19EYCY7w8iqyKPhuTjCavQw+ic=
+X-Received: from pjbso11.prod.google.com ([2002:a17:90b:1f8b:b0:2fc:2959:b397])
+ (user=edliaw job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:1b06:b0:2ee:bc7b:9237
+ with SMTP id 98e67ed59e1d1-2febabc8023mr353295a91.27.1740679472618; Thu, 27
+ Feb 2025 10:04:32 -0800 (PST)
+Date: Thu, 27 Feb 2025 18:04:28 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.1.711.g2feabab25a-goog
+Message-ID: <20250227180428.354639-1-edliaw@google.com>
 To: ltp@lists.linux.it
-Date: Thu, 27 Feb 2025 18:05:24 +0100
-Message-ID: <20250227170524.3168535-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.47.2
-MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/1] include: Move safe_mmap into
- tst_safe_macros_inline.h
+Subject: [LTP] [PATCH] setrlimit01.c: use a more reliable segfault
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,111 +85,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tst_safe_macros_inline.h contains functions which are forced to be
-'inline' because the behaviour may depend on -D_FILE_OFFSET_BITS=64
-compile flag (type off_t or structures containing off_t fields).
-safe_mmap() was left from this conversion.
+When compiled for Android, strcpying to the null pointer was being
+optimized away as unreachable, so the segfault wasn't being thrown.  Use
+raise to throw the segfault instead of ub, since the test just needs the
+signal.
 
-Fixes: 3f571da28d ("include: Move inline functions to special header")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
-Changes v1->v2:
-* Fix build by moving also tst_prot_to_str() signature.
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Link to v1
-https://patchwork.ozlabs.org/project/ltp/patch/20250227165817.3166403-1-pvorel@suse.cz/
-
-Tested:
-https://github.com/pevik/ltp/actions/runs/13571853789
-
- include/tst_safe_macros.h        | 29 -----------------------------
- include/tst_safe_macros_inline.h | 28 ++++++++++++++++++++++++++++
- 2 files changed, 28 insertions(+), 29 deletions(-)
-
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 6985aa4bd8..3b02f86c76 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -271,35 +271,6 @@ int safe_getgroups(const char *file, const int lineno, int size, gid_t list[]);
- 	            "fcntl(%i,%s,...) failed", fd, #cmd), 0 \
- 	 : tst_ret_;})
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index 188d310b2..d00153533 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -33,6 +33,7 @@
+ #include <sys/wait.h>
+ #include <errno.h>
+ #include <fcntl.h>
++#include <signal.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "test.h"
+@@ -256,8 +257,7 @@ static void test4(void)
+ 		tst_brkm(TBROK, cleanup, "fork() failed");
  
--void tst_prot_to_str(const int prot, char *buf);
--
--static inline void *safe_mmap(const char *file, const int lineno,
--	void *addr, size_t length, int prot, int flags, int fd, off_t offset)
--{
--	void *rval;
--	char prot_buf[512];
--
--	tst_prot_to_str(prot, prot_buf);
--
--	tst_res_(file, lineno, TDEBUG,
--		"mmap(%p, %zu, %s(%x), %d, %d, %lld)",
--		addr, length, prot_buf, prot, flags, fd, (long long int)offset);
--
--	rval = mmap(addr, length, prot, flags, fd, offset);
--	if (rval == MAP_FAILED) {
--		tst_brk_(file, lineno, TBROK | TERRNO,
--			"mmap(%p,%zu,%s(%x),%d,%d,%ld) failed",
--			addr, length, prot_buf, prot, flags, fd, (long) offset);
--	}
--
--	return rval;
--}
--
--
--#define SAFE_MMAP(addr, length, prot, flags, fd, offset) \
--	safe_mmap(__FILE__, __LINE__, (addr), (length), (prot), \
--	(flags), (fd), (offset))
--
- int safe_mprotect(const char *file, const int lineno,
- 	char *addr, size_t len, int prot);
- 
-diff --git a/include/tst_safe_macros_inline.h b/include/tst_safe_macros_inline.h
-index 5eed3a18d0..15b756860e 100644
---- a/include/tst_safe_macros_inline.h
-+++ b/include/tst_safe_macros_inline.h
-@@ -227,4 +227,32 @@ static inline int safe_setrlimit(const char *file, const int lineno,
- #define SAFE_SETRLIMIT(resource, rlim) \
- 	safe_setrlimit(__FILE__, __LINE__, (resource), (rlim))
- 
-+void tst_prot_to_str(const int prot, char *buf);
-+
-+static inline void *safe_mmap(const char *file, const int lineno,
-+	void *addr, size_t length, int prot, int flags, int fd, off_t offset)
-+{
-+	void *rval;
-+	char prot_buf[512];
-+
-+	tst_prot_to_str(prot, prot_buf);
-+
-+	tst_res_(file, lineno, TDEBUG,
-+		"mmap(%p, %zu, %s(%x), %d, %d, %lld)",
-+		addr, length, prot_buf, prot, flags, fd, (long long int)offset);
-+
-+	rval = mmap(addr, length, prot, flags, fd, offset);
-+	if (rval == MAP_FAILED) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"mmap(%p,%zu,%s(%x),%d,%d,%ld) failed",
-+			addr, length, prot_buf, prot, flags, fd, (long) offset);
-+	}
-+
-+	return rval;
-+}
-+
-+#define SAFE_MMAP(addr, length, prot, flags, fd, offset) \
-+	safe_mmap(__FILE__, __LINE__, (addr), (length), (prot), \
-+	(flags), (fd), (offset))
-+
- #endif /* TST_SAFE_MACROS_INLINE_H__ */
+ 	if (pid == 0) {		/* child */
+-		char *testbuf = NULL;
+-		strcpy(testbuf, "abcd");
++		raise(SIGSEGV);
+ 		exit(0);
+ 	}
+ 	wait(&status);
 -- 
-2.47.2
+2.48.1.711.g2feabab25a-goog
 
 
 -- 
