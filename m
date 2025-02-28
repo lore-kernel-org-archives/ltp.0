@@ -4,111 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE01C282C1
-	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 15:35:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49F52C282C1
+	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 17:25:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 598923C9E83
-	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 16:35:08 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B4B693C9E7B
+	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 18:25:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B35A93C9E6D
- for <ltp@lists.linux.it>; Fri, 28 Feb 2025 16:34:51 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id E7A413C9AAF
+ for <ltp@lists.linux.it>; Fri, 28 Feb 2025 18:24:44 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 833FE230EF0
- for <ltp@lists.linux.it>; Fri, 28 Feb 2025 16:34:49 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 470F31425B56
+ for <ltp@lists.linux.it>; Fri, 28 Feb 2025 18:24:43 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AF3711F38F;
- Fri, 28 Feb 2025 15:34:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1625F1F460;
+ Fri, 28 Feb 2025 17:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740756888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9x6j6zt809y20xDJfyfGyI3Aoqsrqw5lnLEWOR6SKlw=;
- b=emLvyM5wq7ULXBG98aJEANnGsD9zrohAECo6MIWEVHCV1kRQaCcs7P6EsgoM8vPh8sQXJD
- NwM+V6tFOXwhcxzNR3/i+1QLQILI8v7FU7MLDuMXPhZ2+zqLgQxeR0e1/EW6DFEaOYNYfp
- fgcgnoj0IItilJzX/kJJz36oEM5kApA=
+ t=1740763483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CciwqdY0TdJKQdE+rOPlLhaGvLw1Y5ZT3pudZvyO4BQ=;
+ b=JrKv4I5ziR8gKQJBeb/NsC3rKZJDrLB1PU4gW8GR2V4dFBwEfBQjQrCFc5nuW1afXhVwQu
+ BNxtp7zi9SMBigKVnW8oSYsdH+NX7Su+7y0bcyzJkJs5pCkOkkoz6olemDNM8vIoDS7rXW
+ J8rG9Gle67SMBrfEVt4C7FHdE+iZnrc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740756888;
+ s=susede2_ed25519; t=1740763483;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9x6j6zt809y20xDJfyfGyI3Aoqsrqw5lnLEWOR6SKlw=;
- b=ZTHkpI3liJM35HbjZQVi8fL3CmQkOI7ws/XZaotopgP8UHk8fbnhGv+uUiNWVh704pcQ8V
- IPN9jGDJUUU3uTDQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CciwqdY0TdJKQdE+rOPlLhaGvLw1Y5ZT3pudZvyO4BQ=;
+ b=yYAlrqq2S9ruq2viUQ6pLCJH6kdyDubmm0N+MtQR+dOXmEtfYvRlAUS9focN+R/38bd0iy
+ KVCNkKY5Z/FBMMDQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=emLvyM5w;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZTHkpI3l
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1740756888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9x6j6zt809y20xDJfyfGyI3Aoqsrqw5lnLEWOR6SKlw=;
- b=emLvyM5wq7ULXBG98aJEANnGsD9zrohAECo6MIWEVHCV1kRQaCcs7P6EsgoM8vPh8sQXJD
- NwM+V6tFOXwhcxzNR3/i+1QLQILI8v7FU7MLDuMXPhZ2+zqLgQxeR0e1/EW6DFEaOYNYfp
- fgcgnoj0IItilJzX/kJJz36oEM5kApA=
+ t=1740763483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CciwqdY0TdJKQdE+rOPlLhaGvLw1Y5ZT3pudZvyO4BQ=;
+ b=JrKv4I5ziR8gKQJBeb/NsC3rKZJDrLB1PU4gW8GR2V4dFBwEfBQjQrCFc5nuW1afXhVwQu
+ BNxtp7zi9SMBigKVnW8oSYsdH+NX7Su+7y0bcyzJkJs5pCkOkkoz6olemDNM8vIoDS7rXW
+ J8rG9Gle67SMBrfEVt4C7FHdE+iZnrc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1740756888;
+ s=susede2_ed25519; t=1740763483;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9x6j6zt809y20xDJfyfGyI3Aoqsrqw5lnLEWOR6SKlw=;
- b=ZTHkpI3liJM35HbjZQVi8fL3CmQkOI7ws/XZaotopgP8UHk8fbnhGv+uUiNWVh704pcQ8V
- IPN9jGDJUUU3uTDQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CciwqdY0TdJKQdE+rOPlLhaGvLw1Y5ZT3pudZvyO4BQ=;
+ b=yYAlrqq2S9ruq2viUQ6pLCJH6kdyDubmm0N+MtQR+dOXmEtfYvRlAUS9focN+R/38bd0iy
+ KVCNkKY5Z/FBMMDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C3731344A;
- Fri, 28 Feb 2025 15:34:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 911881344A;
+ Fri, 28 Feb 2025 17:24:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xSFpJZjXwWc7TQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 28 Feb 2025 15:34:48 +0000
-Date: Fri, 28 Feb 2025 16:34:53 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Pavithra <pavrampu@linux.vnet.ibm.com>
-Message-ID: <Z8HXnd1myL8er-x3@yuki.lan>
-References: <20241125142932.760643-1-pavrampu@linux.vnet.ibm.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K+FyIFrxwWeQcQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 28 Feb 2025 17:24:42 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 28 Feb 2025 18:24:33 +0100
+Message-ID: <20250228172439.3276777-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.47.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241125142932.760643-1-pavrampu@linux.vnet.ibm.com>
-X-Rspamd-Queue-Id: AF3711F38F
-X-Spamd-Result: default: False [-2.62 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- LONG_SUBJ(1.89)[252]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] This test stress tests fallocate. This test
- starts three threads. First thread will continually punch/fill holes via
- falloc. Second thread will continually fault in those same pages. Third
- thread will continually mmap/munmap that page range.
+Subject: [LTP] [RFC PATCH 0/5] shell loader rewrite to support TST_SETUP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,298 +100,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, rnsastry@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-First of all the format for git commit is:
+Hi,
 
-```
-short description
+attempt to implement Cyril's suggestions:
 
-long description composing of several lines
-second lined of the long descrption
-...
+https://lore.kernel.org/ltp/Z69OLsDLMzNw6RGt@yuki.lan/
+https://lore.kernel.org/ltp/Z69QpMlrGVDwpz8w@yuki.lan/
 
-Signed-off-by: ...
-```
+Kind regards,
+Petr
 
-This patch is missing the short description and because of that the
-email has absurdly long subject.
+Cyril Hrubis (1):
+  shell lib: Add support for test cleanup
 
-> Changes in v3:
-> - Used MIN() macro instead of defining min function.
-> - struch ts initialization done at the declaration.
-> - Added memory unmap before pthread_cleanup_pop.
-> - Removed if (falloc_th_ret)
-> 
-> Signed-off-by: Pavithra <pavrampu@linux.vnet.ibm.com>
-> ---
->  runtest/hugetlb                               |   1 +
->  testcases/kernel/mem/.gitignore               |   1 +
->  .../hugetlb/hugefallocate/hugefallocate03.c   | 204 ++++++++++++++++++
->  3 files changed, 206 insertions(+)
->  create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
-> 
-> diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index f294e9aaa..bba2460ff 100644
-> --- a/runtest/hugetlb
-> +++ b/runtest/hugetlb
-> @@ -1,5 +1,6 @@
->  hugefallocate01 hugefallocate01
->  hugefallocate02 hugefallocate02
-> +hugefallocate03 hugefallocate03
->  
->  hugefork01 hugefork01
->  hugefork02 hugefork02
-> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-> index d88484fa1..2b84ac3b9 100644
-> --- a/testcases/kernel/mem/.gitignore
-> +++ b/testcases/kernel/mem/.gitignore
-> @@ -1,6 +1,7 @@
->  /cpuset/cpuset01
->  /hugetlb/hugefallocate/hugefallocate01
->  /hugetlb/hugefallocate/hugefallocate02
-> +/hugetlb/hugefallocate/hugefallocate03
->  /hugetlb/hugefork/hugefork01
->  /hugetlb/hugefork/hugefork02
->  /hugetlb/hugemmap/hugemmap01
-> diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
-> new file mode 100644
-> index 000000000..824816161
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
-> @@ -0,0 +1,204 @@
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2015 Oracle Corporation
-> + * Author: Mike Kravetz
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Stress test fallocate.  This test starts three threads.
-> + * Thread one will continually punch/fill holes via falloc.
-> + * Thread two will continually fault in those same pages.
-> + * Thread three will continually mmap/munmap that page range.
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +#include <pthread.h>
-> +
-> +#include "hugetlb.h"
-> +#include "lapi/fallocate.h"
-> +#include "tst_safe_pthread.h"
-> +
-> +#define MNTPOINT "hugetlbfs/"
-> +#define MAX_PAGES_TO_USE 100
-> +#define FALLOCATE_ITERATIONS 100000
-> +
-> +static int fd = -1;
-> +static long nr_hpages_free;
-> +static unsigned long max_hpages;
-> +static int err;
-> +static long hpage_size;
-> +static unsigned long free_before, free_after;
-> +static unsigned long rsvd_before, rsvd_after;
-> +
-> +static void *thread_fallocate(void *)
-> +{
-> +	int i, err;
-> +	long tpage;
-> +
-> +	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
+Petr Vorel (4):
+  lib: Allow test to have positional args
+  shell: Move shell code into functions
+  shell lib: Add basic support for test cleanup
+  shell: Add shell_loader_setup_cleanup.sh test
 
-This loop has to be made runtime aware, that means that we have to put
-an upper time limit into .runtime in the tst_test structure and exit
-this loop if runtime has been exhausted. That means we have to break
-from this loop if tst_remaining_runtime() returned zero.
-
-
-> +		tpage = ((long long)random()) % (max_hpages);
-> +		err = fallocate(fd,
-> +				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-> +				tpage * hpage_size, hpage_size);
-> +		if (err)
-> +			tst_res(TFAIL|TERRNO, "fallocate():");
-> +		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
-> +		if (err)
-> +			tst_res(TFAIL|TERRNO, "fallocate():");
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static void *fault_mmap_addr;
-> +
-> +static void thread_fault_cleanup(void *)
-> +{
-> +	if (fault_mmap_addr)
-> +		munmap(fault_mmap_addr, max_hpages * hpage_size);
-> +}
-> +
-> +static void *thread_fault(void *)
-> +{
-> +	long tpage;
-> +	char foo;
-> +	struct timespec ts = {};
-> +
-> +	fault_mmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
-> +			PROT_READ | PROT_WRITE, MAP_SHARED,
-> +			fd, 0);
-> +
-> +	pthread_cleanup_push(thread_fault_cleanup, NULL);
-> +
-> +	while (1) {
-> +		tpage = ((long long)random()) % (max_hpages);
-> +		foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
-> +		*((char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
-> +
-> +		nanosleep(&ts, NULL); /* thread cancellation point */
-> +	}
-> +
-> +	thread_fault_cleanup(NULL);
-> +
-> +	pthread_cleanup_pop(1);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void *mmap_munmap_addr;
-> +
-> +static void thread_mmap_munmap_cleanup(void *)
-> +{
-> +	if (mmap_munmap_addr)
-> +		munmap(mmap_munmap_addr, max_hpages * hpage_size);
-> +}
-> +
-> +static void *thread_mmap_munmap(void *)
-> +{
-> +	struct timespec ts = {};
-> +
-> +	pthread_cleanup_push(thread_mmap_munmap_cleanup, NULL);
-> +
-> +	while (1) {
-> +		mmap_munmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
-> +				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-> +		SAFE_MUNMAP(mmap_munmap_addr, max_hpages * hpage_size);
-> +		mmap_munmap_addr = NULL;
-> +
-> +		nanosleep(&ts, NULL);   /* thread cancellation point */
-> +	}
-> +
-> +	thread_mmap_munmap_cleanup(NULL);
-> +
-> +	pthread_cleanup_pop(1);
-> +	return NULL;
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +	fd = tst_creat_unlinked(MNTPOINT, 0);
-
-This should go after the variables.
-
-> +	pthread_t falloc_th, fault_th, mmap_munmap_th;
-> +	void *falloc_th_ret, *fault_th_ret, *mmap_munmap_th_ret;
-> +
-> +	unsigned int seed = (int)getpid() * time(NULL);
-> +
-> +	srandom(seed);
-> +	tst_res(TINFO, "Seed = %d", seed);
-> +	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +	max_hpages = MIN(nr_hpages_free, MAX_PAGES_TO_USE);
-> +	free_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +
-> +	/* First preallocate file with max_hpages pages */
-
-This comment is useless, please remove.
-
-> +	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
-> +	if (err) {
-> +		if (errno == EOPNOTSUPP)
-> +			tst_brk(TCONF, "fallocate() Operation is not supported");
-> +		if (err) {
-> +			tst_res(TFAIL|TERRNO, "fallocate():");
-> +			goto windup;
-> +		}
-> +	}
-> +
-> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +	if (free_before - free_after != max_hpages) {
-> +		tst_res(TFAIL, "fallocate did not preallocate %ld huge pages\n",
-
-No newlines in tst_res() messages.
-
-> +				max_hpages);
-> +		goto windup;
-> +	}
-> +
-> +	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
-> +
-> +	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
-> +
-> +	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
-> +
-> +	SAFE_PTHREAD_JOIN(falloc_th, &falloc_th_ret);
-> +
-> +	SAFE_PTHREAD_CANCEL(fault_th);
-> +
-> +	SAFE_PTHREAD_JOIN(fault_th, &fault_th_ret);
-> +
-> +	SAFE_PTHREAD_CANCEL(mmap_munmap_th);
-> +
-> +	SAFE_PTHREAD_JOIN(mmap_munmap_th, &mmap_munmap_th_ret);
-> +
-> +windup:
-> +	SAFE_CLOSE(fd);
-> +
-> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	if (free_after != free_before || rsvd_after != rsvd_before)
-> +		tst_res(TFAIL, "free or reserve counts incorrect after fallocate stress test");
-> +	else
-> +		tst_res(TPASS, "fallocate stress test passed");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = tst_get_hugepage_size();
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.needs_tmpdir = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {2, TST_NEEDS},
-> +};
-> -- 
-> 2.43.5
-> 
+ doc/developers/writing_tests.rst              |  2 +-
+ include/tst_test.h                            |  5 +-
+ lib/tst_test.c                                |  9 +++-
+ testcases/kernel/mem/vma/vma05.sh             | 47 ++++++++++---------
+ testcases/lib/run_tests.sh                    |  5 +-
+ testcases/lib/tests/shell_loader.sh           | 19 ++++----
+ .../lib/tests/shell_loader_all_filesystems.sh | 26 +++++-----
+ .../lib/tests/shell_loader_brk_cleanup.sh     | 23 +++++++++
+ testcases/lib/tests/shell_loader_c_child.sh   | 15 +++---
+ testcases/lib/tests/shell_loader_cleanup.sh   | 23 +++++++++
+ .../lib/tests/shell_loader_filesystems.sh     | 23 +++++----
+ .../lib/tests/shell_loader_invalid_block.sh   |  7 ++-
+ .../tests/shell_loader_invalid_metadata.sh    |  7 ++-
+ testcases/lib/tests/shell_loader_kconfigs.sh  |  7 ++-
+ .../lib/tests/shell_loader_no_metadata.sh     |  7 ++-
+ .../lib/tests/shell_loader_setup_cleanup.sh   | 29 ++++++++++++
+ .../lib/tests/shell_loader_supported_archs.sh |  7 ++-
+ testcases/lib/tests/shell_loader_tags.sh      |  7 ++-
+ testcases/lib/tests/shell_loader_tcnt.sh      |  7 ++-
+ .../lib/tests/shell_loader_wrong_metadata.sh  |  7 ++-
+ testcases/lib/tst_exec.sh                     | 19 ++++++++
+ testcases/lib/tst_loader.sh                   |  5 +-
+ testcases/lib/tst_run_shell.c                 | 16 +++++--
+ 23 files changed, 235 insertions(+), 87 deletions(-)
+ create mode 100755 testcases/lib/tests/shell_loader_brk_cleanup.sh
+ create mode 100755 testcases/lib/tests/shell_loader_cleanup.sh
+ create mode 100755 testcases/lib/tests/shell_loader_setup_cleanup.sh
+ create mode 100755 testcases/lib/tst_exec.sh
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.47.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
