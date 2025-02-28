@@ -4,95 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2675C19776
-	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 08:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76807C19776
+	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 09:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1740733589; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=I3nlVbBZq8LE1SrlKGB3QzvlN9o49/aASThBNua+sjw=;
+ b=qSdtmk9L+Y4uF0zHMu8gbaVOlFmkWgoAcz25/HSKItxA62/sSexZPtUg4QZY6lVACYRQx
+ mBgyqeqP2Bq2Vrj+vzuIvl3nbSw+3f5l6i49hI9r0GU2h7GAT0S1VKO2U1/d5yO1q2NeS9o
+ m/D+/FRbzizJp30Z8JuBDaacwh1rY6U=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F22D3C9CA9
-	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 09:40:25 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id CE9E93C262F
+	for <ltp@archiver.kernel.org>; Fri, 28 Feb 2025 10:06:29 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E50073C726B
- for <ltp@lists.linux.it>; Fri, 28 Feb 2025 09:40:08 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 518733C262F
+ for <ltp@lists.linux.it>; Fri, 28 Feb 2025 10:06:08 +0100 (CET)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A6C4163F2D9
- for <ltp@lists.linux.it>; Fri, 28 Feb 2025 09:40:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1740732002;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6UILga/1dM1qcyMHqluew1jL04aBkxRbk5B+S3iX90Q=;
- b=HXFGKNTQhvS5YrJ75t+UvtRc7oPpF4exLOqCsEhkzmNTiTPiNF7leG7fxV7vEnN/uXIizV
- GDDl2qy30TOvGNeAO5rliiUOLjyepQJFvWrOCFBQa8KddbvTtyTZNxiUdDAh5Jrehxkojx
- hsn6u18gwtIULJ12yMO3NXRmfqLvcDk=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-91-a4f_o1rwNs6MuO3TO78oOA-1; Fri, 28 Feb 2025 03:39:59 -0500
-X-MC-Unique: a4f_o1rwNs6MuO3TO78oOA-1
-X-Mimecast-MFC-AGG-ID: a4f_o1rwNs6MuO3TO78oOA_1740731998
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-2fc1a4c14d4so4235551a91.0
- for <ltp@lists.linux.it>; Fri, 28 Feb 2025 00:39:59 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B1CE91BD7390
+ for <ltp@lists.linux.it>; Fri, 28 Feb 2025 10:06:07 +0100 (CET)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-439a331d981so17155865e9.3
+ for <ltp@lists.linux.it>; Fri, 28 Feb 2025 01:06:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1740733567; x=1741338367; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=ReVLqUp0wQQfsi1fdtq9eMNUAkURyto5qYCEEH9xGus=;
+ b=YEArWMplu2Isk8Dc1DdsuJtdPQpyHymLSpA6ttkbyvgp/bT3UFqJOEurTJZvYUft+a
+ 10WVIi48t2pp+jUyeXQS//yWQXNovjEdg/LSB+auQSvOlTLuSRfcUm7liuL0ZN0fqUfR
+ nYSPVZAbi0gNP14OWE1U4qsj91JeNC3iouw3A2Y5gp0GQaxpftuntR4TOFltISVNySQo
+ AMf25Ccvw+Rlq2z2ITPKsq8N7EtSdLnhimYlu2eNTPisRFs3/Zv7yvWyy0J75LrnbF0k
+ dfAkaWarVK8OFR0itmIvMt+KuWJlJ/IUFIlD0khINTgTG2RnbXXpFOivg3yA7e4TEUpu
+ ZblA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1740731998; x=1741336798;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=6UILga/1dM1qcyMHqluew1jL04aBkxRbk5B+S3iX90Q=;
- b=rqJSu7INQ0c/Er3zVHTOgaKxsPJfUDCAD8KQ3BVF5Xtzrmid86qqH2ZpMQh2/tUf3D
- DwAWRKTra64am79n916ceEDXpBzRZzrWjyUq8ATRXg6HsuaZC1EvmnqbOLzRQECOmBmm
- JaloOFT6+PtQBA/54FvncvVwP9aQ+HW+AJtZSVwQ2kkqNwBX1R95pSiSzufNwbikQxxy
- cSu4jngtou2VXrr42rIhVyyskVbYy4MM6S4Qn59I+TK40L3Kq942E1RePu3maCpWsAUd
- gVWCKaJINNDI1bQjR1/x2pD2YSlLJj+tne6YClvoltwdDPNbauFCBtCErcW6AJ6869W7
- gG2g==
+ d=1e100.net; s=20230601; t=1740733567; x=1741338367;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=ReVLqUp0wQQfsi1fdtq9eMNUAkURyto5qYCEEH9xGus=;
+ b=cl9szalV11bhOYkVnC0bMhk3fSLYX2SdLC/gqN3QzebQrfky/BQbwE45DqlAEhFYCV
+ pQMv5fenRueapf4FV+snAZzsCLfdRiXDdzjWIYI11qmtzBtcXoZxB4KBO4bY7X3/ThWB
+ ExWvsKOt2yNou/fVmjKMJS1oiWELhzo2zK3uRwbIZAWLK6ITwbPBwojBOouD7PLHSPFj
+ Gy4KHItRCOvNHBG+oFtBm8xQ8Hjr0+sriW0fXc0psYRJ4qEaoErT7HSUxV7XwwJvRJ1a
+ 7XklqJOIk9zBfAfmQd8AXxV7nCTyDf0spxC8cr9r3AnvGNb/x37etgoI/wtBfuu3+RgU
+ Ujrg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXAK9YWXTU8+/dclmW4bo4Cc9yEldDntAmaPbrxjE44sXcxHSi5K+BMi3RYpbCodUckKik=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzn0tWksV++ffwd+RfMll+hXbP57UkB+h+8mC2g5EOa1UIs8mjb
- BeyrWh8orEATCFXvPmCIrSRvBTO1eC3yu69jYOAYTxn8PNqlazzbwfwY93cwViR6/Zl0n2hhKac
- ksUVQX/QZWRvIOa9gy1hKnpAS1UJGHBE/koOywGereFNtjZhJcHbKw68PZqVDJgV17n5ePfqFhf
- Q18amcvj/qZMK/8ngwKj1DB4E=
-X-Gm-Gg: ASbGncurjqki+UkazxSihwUer4Xfw8xgh8uNqHAN4dJUyr0PQ4akk2RMWAZIaT413Zy
- Uy+Kufn2AfIQ9rLDSfpYt1zbTQmK+wUkLXoO1K96akFSIjKUXuek5pMdggb3hhcWQW0z1zd920A
- ==
-X-Received: by 2002:a17:90b:4ac6:b0:2f6:be57:49cd with SMTP id
- 98e67ed59e1d1-2febabdcc28mr4166422a91.25.1740731998405; 
- Fri, 28 Feb 2025 00:39:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEyYeVop8cTpRYzoau3qhclfIsAsTn6lH37eFAIA3tH7K7Jaly5Zu6E7aqotHpeZWkbX6hAF6bBKsncVVVoEWE=
-X-Received: by 2002:a17:90b:4ac6:b0:2f6:be57:49cd with SMTP id
- 98e67ed59e1d1-2febabdcc28mr4166391a91.25.1740731998063; Fri, 28 Feb 2025
- 00:39:58 -0800 (PST)
+ AJvYcCX0umS64wM+36sC8jhlJeISVYuGs01SKHzT2DVy9WEq5ssYNbK0iPsVMhOLti02Sq3Ciqg=@lists.linux.it
+X-Gm-Message-State: AOJu0Yxw6seojKQUEOGHbm19d//vFXg2yFubHo98AJXCOGCxUaW4W8dV
+ wjuuDD8rsEwzfYES+DxEu0w6zPQqpbchlsFQy61xHHFxxqz4VdV9puybYgMqoRKHoV6pbtb+AcK
+ DCAw=
+X-Gm-Gg: ASbGncuKamzuMdSUyPO6iLoRbP1N4IUrGyNM8tU1/HmDdD5Rwsk+2qM6aUit0XPKi00
+ Kg+SsfsJvsHeGJ63v56xnbHgMS16iMy9Tue5LegxbFLHIRSzm+8MkLAiW6JJs0DckAcvp0Sm2OX
+ kA1eBQFWAuRDlaWhgjQS3etS8E1TmWJrF5mBXtYpMOXcR3xcVqrXtGQWZZzumN0/XhI6g6yulgS
+ I7sXVQnDWhwi2Mb+GQ9+emRaDA+YaX4Nmv0rCk2VfRRsUxY6Kj42nU8rYStc0H6xePvDmYxalqa
+ fSOfAR3G4Pk0xzgSJlJokeff8JbBf4Ur4OU=
+X-Google-Smtp-Source: AGHT+IGNatz9Bh88F4cmhmfktZv3WMEHmf40K5l1MkQ7/e/B/DEHaOkYulP4q/Yfwo1hL87KKI7IxQ==
+X-Received: by 2002:a05:600c:1384:b0:439:8bc3:a698 with SMTP id
+ 5b1f17b1804b1-43ba66e5e9bmr17707055e9.6.1740733567081; 
+ Fri, 28 Feb 2025 01:06:07 -0800 (PST)
+Received: from [192.168.1.91] ([151.71.237.5])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-43b8d6bc3fcsm40484015e9.0.2025.02.28.01.06.06
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 28 Feb 2025 01:06:06 -0800 (PST)
+Message-ID: <1649d47c-cf71-4d0d-872e-000579189e2f@suse.com>
+Date: Fri, 28 Feb 2025 10:06:05 +0100
 MIME-Version: 1.0
-References: <31878632-52fe-4aed-8018-8e30ebeae52d@suse.com>
- <20250224030743.1567840-1-chwen@redhat.com>
- <CAAA2g-1m5Hfq9nygiCnFFwt6Axgxjj3dO=2Ei_-cgSw3dT60Bg@mail.gmail.com>
- <CAEemH2cpdqSViHfDcRfFqsWtz4kkrkhU4DymfXW+5REPEMvYTw@mail.gmail.com>
- <54cd690b-dd2a-4285-8d53-5aef05be3d6c@suse.com>
-In-Reply-To: <54cd690b-dd2a-4285-8d53-5aef05be3d6c@suse.com>
-From: Li Wang <liwan@redhat.com>
-Date: Fri, 28 Feb 2025 16:39:45 +0800
-X-Gm-Features: AQ5f1Jq2JjNTkadwjec9X4JiLkGKXsFXfrZXuZTEoBJtVrwh3lmxQX4C83rUTMs
-Message-ID: <CAEemH2fPRiZOOY4UUfQQVLe6+8N8PtK3FON6pB=jpgbK_HQdfQ@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>, Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: mJOu7iXQYA96GsAudjdOTJJbe3DfAi4AczdshQ873x4_1740731998
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Edward Liaw <edliaw@google.com>, ltp@lists.linux.it
+References: <20250227180428.354639-1-edliaw@google.com>
+Content-Language: en-US
+In-Reply-To: <20250227180428.354639-1-edliaw@google.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v4] Add test case to cover the setting resource
- limit64 for process
+Subject: Re: [LTP] [PATCH] setrlimit01.c: use a more reliable segfault
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,24 +100,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Charles Shi <cheshi@redhat.com>, ltp@lists.linux.it,
- Irene Diez <idiez@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: kernel-team@android.com
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhLCBQZXRyLAoKT24gRnJpLCBGZWIgMjgsIDIwMjUgYXQgMzo0NeKAr1BNIEFuZHJl
-YSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cndyb3RlOgoKPiBIaSBMaSwK
-Pgo+IHRoYW5rcyBmb3IgY2hlY2tpbmcsIGJ1dCB3ZSBzdGlsbCBtaXNzZWQgYSBjb3VwbGUgb2Yg
-dGhpbmdzIHRvIGZpeCwgbGlrZQo+IGluZmluaXRlIGxvb3AgdGhhdCBtaWdodCBjYXVzZSBzb21l
-IGlzc3VlcyBhbmQgaXQgc2hvdWxkIGJlIHJlcGxhY2VkCj4gd2l0aCBjaGVja3BvaW50cyBhcyBw
-b2ludGVkIG91dCBieSBQZXRyLgo+CgpIZXJlIEkgd291bGRuJ3Qgc3VnZ2VzdCB1c2luZyB0aGUg
-Y2hlY2twb2ludC4KClJMSU1JVF9DUFUgaXMgYSByZXNvdXJjZSBsaW1pdCB0aGF0IGNvbnRyb2xz
-IHRoZSBDUFUgdGltZSBidXQgbm90CndhbGwtY2xvY2sgdGltZSwgaWYgYSBwcm9jZXNzIGV4Y2Vl
-ZHMgdGhlIHNvZnQgbGltaXQgaXQgcmVjZWl2ZXMgU0lHWENQVS4KU28gdGhlIHdoaWxlKDEpIGlz
-IGEgZ29vZCBjaG9pY2UgdW5sZXNzIEkgbWlzc2VkIHNvbWV0aGluZy4KClAucy4gdGhlIHBhdGNo
-IGNhdXNlZCBhIGNvbXBpbGluZyBlcnJvciBvbiBBbHBpbmUgSSBoYXZlbid0IGZpZ3VyZWQgb3V0
-CnJlYXNvbjopLgpodHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC9hY3Rp
-b25zL3J1bnMvMTM1ODA5ODU0Njcvam9iLzM3OTY2ODUwNDk3CgpMaSBXYW5nCgotLSAKTWFpbGlu
-ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi!
+
+obviously correct and merged. It would be nice to rewrite this test with 
+new API because it looks pretty ancient and there's a big margin of 
+improvement.
+
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Best regards,
+Andrea Cervesato
+
+On 2/27/25 19:04, Edward Liaw via ltp wrote:
+> When compiled for Android, strcpying to the null pointer was being
+> optimized away as unreachable, so the segfault wasn't being thrown.  Use
+> raise to throw the segfault instead of ub, since the test just needs the
+> signal.
+>
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>   testcases/kernel/syscalls/setrlimit/setrlimit01.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> index 188d310b2..d00153533 100644
+> --- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+> @@ -33,6 +33,7 @@
+>   #include <sys/wait.h>
+>   #include <errno.h>
+>   #include <fcntl.h>
+> +#include <signal.h>
+>   #include <stdlib.h>
+>   #include <unistd.h>
+>   #include "test.h"
+> @@ -256,8 +257,7 @@ static void test4(void)
+>   		tst_brkm(TBROK, cleanup, "fork() failed");
+>   
+>   	if (pid == 0) {		/* child */
+> -		char *testbuf = NULL;
+> -		strcpy(testbuf, "abcd");
+> +		raise(SIGSEGV);
+>   		exit(0);
+>   	}
+>   	wait(&status);
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
