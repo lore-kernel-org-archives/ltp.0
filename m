@@ -4,97 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC454C021B8
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 21:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AAA8C021B8
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 21:36:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A78313CA05A
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 22:33:31 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E1E213CA057
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 22:36:34 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D899F3C9D69
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:33:15 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
- helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
+ by picard.linux.it (Postfix) with ESMTPS id 1A4F83C9D69
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:36:17 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
  receiver=lists.linux.it)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 23107200BD4
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:33:14 +0100 (CET)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 524KaT99008926;
- Tue, 4 Mar 2025 21:33:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=IXDOt4
- dGMOUZ2E0gjatLE5EUFdlEMv/9mYYSZO4nvko=; b=HCArbirEC4VDWz/iAnbUF/
- XzvO6VEn12hseWchJaKDfCvzYFdTCXwK0W0sfx/OKH/cGBLLPxlxYYLgEFIV9TGJ
- P3KK9vVSv9eBgPxtentk1BYApbPP5tBsPTzlhriefZ7TvrpA7gUbGRtIbQIRKpVn
- ulg9r4zj/eiyA7eY8T9tWAvvqRuM1lgQcUM93qTbovXO5pOA4+eHEtBIvfFS6n3P
- 4wE8CGlAuBTVqWS50hGoljGLYOxF3e+qK7c2JoJXH/Ljl6K6xboJ4cl75bK9PQ5y
- z4bA5lZw1o7TE/TK/pI/4BOCLw1bFjgKY7dUTiI3+Vhx2FT63kzmBkypfs0zR4eQ
- ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4568pp869g-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 04 Mar 2025 21:33:12 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 524Ilsrg020841;
- Tue, 4 Mar 2025 21:33:12 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 454djnfhv4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 04 Mar 2025 21:33:12 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com
- [10.241.53.104])
- by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 524LXBBi27787824
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 4 Mar 2025 21:33:12 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9E25858067;
- Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 61A4358068;
- Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.31.103.152]) by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
-Message-ID: <a0da3808cec92300c67489539fbee3cbfd2fb4e5.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 04 Mar 2025 16:33:11 -0500
-In-Reply-To: <20250304174342.GA97130@pevik>
-References: <20250304115331.524842-1-zohar@linux.ibm.com>
- <20250304115331.524842-2-zohar@linux.ibm.com>
- <20250304133101.GC81126@pevik>
- <678478de87319625e591e8e956a57b31c700bbd2.camel@linux.ibm.com>
- <54cf5311ec5e0debd6dfd63669e8d01883c0ba23.camel@linux.ibm.com>
- <20250304174342.GA97130@pevik>
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E86931425B55
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:36:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1741124174;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type;
+ bh=L53Rt9dDGOVC1Ej8XrhvUa3+sTxRIwsIlPG3GNkRGj0=;
+ b=HAJDGpL8s2qhLyi9iHMgBZpAQPrP4enqLN9JW0gxcPMhkpjkS3YBdaW1alHcbjHLOGVCkq
+ VjIHorcIgCdGku7bJZsA3v11xQQ+kb6Wr/9bgC2EQsnddO/dIarqKWjnVeSsy32zQ8AoFZ
+ b+/DubshdKA9x8mtsnXaWRVCBC21+bc=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-601-Jp-AyQW_PymiMpEgXlMzFw-1; Tue,
+ 04 Mar 2025 16:36:11 -0500
+X-MC-Unique: Jp-AyQW_PymiMpEgXlMzFw-1
+X-Mimecast-MFC-AGG-ID: Jp-AyQW_PymiMpEgXlMzFw_1741124170
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 33B8219540FE; Tue,  4 Mar 2025 21:36:10 +0000 (UTC)
+Received: from segfault.usersys.redhat.com (unknown [10.22.81.178])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 2D397180035F; Tue,  4 Mar 2025 21:36:08 +0000 (UTC)
+From: Jeff Moyer <jmoyer@redhat.com>
+To: ltp@lists.linux.it, Petr Vorel <pvorel@suse.cz>, Cyril Hrubis
+ <chrubis@suse.cz>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date: Tue, 04 Mar 2025 16:36:06 -0500
+Message-ID: <x491pvczdfd.fsf@segfault.usersys.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4sbaRRjd-5lJge1lM-hzGxWKfY1NwILp
-X-Proofpoint-ORIG-GUID: 4sbaRRjd-5lJge1lM-hzGxWKfY1NwILp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-04_09,2025-03-04_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 phishscore=0
- bulkscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015 malwarescore=0
- mlxscore=0 impostorscore=0 adultscore=0 priorityscore=1501 mlxlogscore=941
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
- definitions=main-2503040173
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: Bhyo9Aw2c9rIhFbZJA0VsaIn9RKqwXA7oFyWGcuoPWE_1741124170
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/4] ima_violations.sh: Update validate() to
- support multiple violations
+Subject: [LTP] [PATCH v4]: tst_find_backing_dev(): add support for overlayfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,77 +79,199 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
- Stefan Berger <stefanb@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, 2025-03-04 at 18:43 +0100, Petr Vorel wrote:
-> > On Tue, 2025-03-04 at 09:44 -0500, Mimi Zohar wrote:
-> > > On Tue, 2025-03-04 at 14:31 +0100, Petr Vorel wrote:
-> > > > Hi Mimi,
-> 
-> > > > > Add support for the number of expected violations.  Include the
-> > > > > expected number of violations in the output.
-> 
-> > > > Unfortunately this works only on fixed kernel (e.g. the one with v1 of your
-> > > > "ima: limit both open-writers and ToMToU violations" kernel patchset [1]
-> > > > (I haven't built v2 [2], but it's really just
-> > > > s/IMA_LIMIT_VIOLATIONS/IMA_EMITTED_OPENWRITERS/ => it will work)
-> 
-> > > > Testing on any other kernel it fails on first testing after reboot:
-> 
-> > > Hi Petr,
-> 
-> > > I only tested by specifying the "ima_policy=tcb" on the boot command line.  This
-> > > failure happens when loading the test specific policy rules.  If setup() is
-> > > called before loading the test specific policy rules, forcing the $LOG file
-> > > violation at setup() would be too early.
-> 
-> > Sorry, that doesn't seem to be the case.
-> 
-> > With the changes to validate(), even the original tests will only work on a new
-> > kernel.  I'll rework the patch set, so at least the original tests will continue
-> > to work.
-> 
-> +1, thank you!
 
-Hi Petr,
+Add checks for overlayfs in tst_find_backing_dev.  As with btrfs, only
+a single device is checked (the upper one) and returned from
+tst_find_backing_dev().
 
-Since the original three tests don't provide the expected number of violations,
-the following should work for them.  The new tests will fail without the kernel
-patch.  The assumption is that LTP can handle some of the tests, not all of
-them, succeeding.  On a new kernel, all of the tests should succeed.  Tested
-only with bash.
+The implementation uses both /proc/self/mountinfo and /proc/self/mounts.
+The former is used to map a device to a mountpoint, and the latter is
+used to get the file system options for the mountpoint.  All of the
+information is present in mountinfo, but the file format is more complex,
+and there are no glibc helpers for parsing it.
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-index 2fbffc5da..0395f8d0a 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-@@ -87,12 +87,13 @@ validate()
-        local max_attempt=3
-        local count2 i num_violations_new
+The '#define _GNU_SOURCE' was added for the use of the strchrnul(3)
+function.
+
+Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+---
+v4: Address review comments from Petr:
+    - s/unsigned/unsigned int/
+    - string formatting
+    - code simplification: remove else block
+    - use SAFE_STAT
+    Address review comments from Cyril:
+    - s/PATH_MAX/4096
+    - string formatting fixes
+    - use strcmp() instead of strncmp() to prevent false matching
+    - don't re-implement strndup
+v3: Address review comments from Petr:
+    - Don't split long strings across lines
+    - use TST_OVERLAYFS_MAGIC instead of the kernel's definition
+    Note that I did not use SAFE_SSCANF, as tst_device.c uses the old
+    style safe macros, and that function is not covered.
+v2: Don't use libmount.  Instead, map from device number to mount-point
+    using /proc/self/mountinfo, and then use the mntent.h helpers to get
+    the mount options for the mountpoint from /proc/self/mounts.
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index f4ce64c70..6d1abf065 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2014 Cyril Hrubis chrubis@suse.cz
+  */
  
--       [ -z "$expected_violations" ] && expected_violations=1
--
-        for i in $(seq 1 $max_attempt); do
-                read num_violations_new < $IMA_VIOLATIONS
-                count2="$(get_count $search)"
--               if [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
-+               if [ -z "$expected_violations" ] && \
-+                  [ $(($num_violations_new - $num_violations)) -gt 0 ] || \
-+                  [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
-+                       [ -z "$expected_violations" ] && expected_violations=1
-                        if [ $count2 -gt $count ]; then
-                                tst_res TPASS "$expected_violations $search violation(s) added"
-                                return
-
-thanks,
-
-Mimi
-
++#define _GNU_SOURCE
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+@@ -570,6 +571,131 @@ static void btrfs_get_uevent_path(char *tmp_path, char *uevent_path)
+ 	SAFE_CLOSEDIR(NULL, dir);
+ }
+ 
++static char *overlay_mount_from_dev(dev_t dev)
++{
++	unsigned int dev_major, dev_minor, mnt_major, mnt_minor;
++	FILE *fp;
++	char line[4096];
++	char *mountpoint;
++	int ret;
++
++	dev_major = major(dev);
++	dev_minor = minor(dev);
++
++	fp = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
++	while (fgets(line, sizeof(line), fp) != NULL) {
++		ret = sscanf(line, "%*d %*d %u:%u %*s %ms",
++			     &mnt_major, &mnt_minor, &mountpoint);
++		if (ret != 3)
++			tst_brkm(TBROK, NULL,
++				 "failed to parse mountinfo line: '%s'",
++				 line);
++		if (mnt_major == dev_major && mnt_minor == dev_minor)
++			break;
++		free(mountpoint);
++		mountpoint = NULL;
++	}
++	SAFE_FCLOSE(NULL, fp);
++	if (!mountpoint)
++		tst_brkm(TBROK, NULL,
++			 "Unable to find mount entry for device %u:%u",
++			 dev_major, dev_minor);
++
++	return mountpoint;
++}
++
++static char *overlay_get_upperdir(char *mountpoint)
++{
++	FILE *mntf;
++	struct mntent *mnt;
++	char *optstr, *optstart, *optend;
++	char *upperdir = NULL;
++
++	mntf = setmntent("/proc/self/mounts", "r");
++	if (!mntf)
++		tst_brkm(TBROK | TERRNO, NULL, "Can't open /proc/self/mounts");
++
++	while ((mnt = getmntent(mntf)) != NULL) {
++		if (strcmp(mnt->mnt_dir, mountpoint))
++			continue;
++
++		if (strcmp(mnt->mnt_type, "overlay"))
++			tst_brkm(TBROK, NULL,
++				 "expected overlayfs on mount point \"%s\", but it is of type %s.",
++				 mountpoint, mnt->mnt_type);
++
++		optstr = hasmntopt(mnt, "upperdir");
++
++		if (optstr) {
++			optstart = strchr(optstr, '=');
++			optstart++;
++			optend = strchrnul(optstr, ',');
++			upperdir = strndup(optstart, optend - optstart);
++			break;
++		}
++
++		tst_brkm(TBROK, NULL,
++			 "mount point %s does not contain an upperdir",
++			 mountpoint);
++	}
++	endmntent(mntf);
++
++	if (!upperdir)
++		tst_brkm(TBROK, NULL,
++			 "Unable to find mount point \"%s\" in mount table",
++			 mountpoint);
++
++	return upperdir;
++}
++
++/*
++ * To get from a file or directory on an overlayfs to a device
++ * for an underlying mountpoint requires the following steps:
++ *
++ * 1. stat() the pathname and pick out st_dev.
++ * 2. use the st_dev to look up the mount point of the file
++ *    system in /proc/self/mountinfo
++ *
++ * Because 'mountinfo' is a much more complicated file format than
++ * 'mounts', we switch to looking up the mount point in /proc/mounts,
++ * and use the mntent.h helpers to parse the entries.
++ *
++ * 3. Using getmntent(), find the entry for the mount point identified
++ *    in step 2.
++ * 4. Call hasmntopt() to find the upperdir option, and parse that
++ *    option to get to the path name for the upper directory.
++ * 5. Call stat on the upper directory.  This should now contain
++ *    the major and minor number for the underlying device (assuming
++ *    that there aren't nested overlay file systems).
++ * 6. Populate the uevent path.
++ *
++ * Example /proc/self/mountinfo line for overlayfs:
++ *    471 69 0:48 / /tmp rw,relatime shared:242 - overlay overlay rw,seclabel,lowerdir=/tmp,upperdir=/mnt/upper/upper,workdir=/mnt/upper/work,uuid=null
++ *
++ * See section 3.5 of the kernel's Documentation/filesystems/proc.rst file
++ * for a detailed explanation of the mountinfo format.
++ */
++static void overlay_get_uevent_path(char *tmp_path, char *uevent_path)
++{
++	struct stat st;
++	char *mountpoint, *upperdir;
++
++	tst_resm(TINFO, "Use OVERLAYFS specific strategy");
++
++	SAFE_STAT(NULL, tmp_path, &st);
++
++	mountpoint = overlay_mount_from_dev(st.st_dev);
++	upperdir = overlay_get_upperdir(mountpoint);
++	free(mountpoint);
++
++	SAFE_STAT(NULL, upperdir, &st);
++	free(upperdir);
++
++	tst_resm(TINFO, "WARNING: used first of multiple backing devices");
++	sprintf(uevent_path, "/sys/dev/block/%d:%d/uevent",
++		major(st.st_dev), minor(st.st_dev));
++}
++
+ __attribute__((nonnull))
+ void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
+ {
+@@ -597,6 +723,8 @@ void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
+ 
+ 	if (fsbuf.f_type == TST_BTRFS_MAGIC) {
+ 		btrfs_get_uevent_path(tmp_path, uevent_path);
++	} else if (fsbuf.f_type == TST_OVERLAYFS_MAGIC) {
++		overlay_get_uevent_path(tmp_path, uevent_path);
+ 	} else if (dev_major == 0) {
+ 		tst_brkm(TBROK, NULL, "%s resides on an unsupported pseudo-file system", path);
+ 	} else {
 
 
 -- 
