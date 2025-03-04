@@ -4,91 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD818C021B8
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 13:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65DE7C021B8
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 13:24:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 701D13CA044
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 14:15:56 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EF7753C9FE0
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 14:24:27 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7FD543C1840
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:15:39 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 8E2F23C19CC
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:24:09 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B423E648709
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:15:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741094136;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A54ED1422B68
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:24:08 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 17D1A21196;
+ Tue,  4 Mar 2025 13:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741094647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6i0dd9MuFRc6/llWiwUPpo3o4S7wdnrFWoyw71YsN4w=;
- b=UDQZUFqwEoKgE264DlVEiLxHaMGpiJRfMqySgOLZ1bqHXTCythkyjtqyR3pgmt8JjllR/8
- NKlXWoNWJjBNBjLaXZPox5MlUOSuEyTPgRIztuorYwdy3yO5NTckkCxaobu06AHsiyImye
- /lEfmX3QcVaRLjERMceefgyU5h+iQDc=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-652-rJUs109oNqCG1Sd2DlCnuw-1; Tue, 04 Mar 2025 08:15:30 -0500
-X-MC-Unique: rJUs109oNqCG1Sd2DlCnuw-1
-X-Mimecast-MFC-AGG-ID: rJUs109oNqCG1Sd2DlCnuw_1741094129
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2fe870bc003so11208210a91.1
- for <ltp@lists.linux.it>; Tue, 04 Mar 2025 05:15:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1741094127; x=1741698927;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=6i0dd9MuFRc6/llWiwUPpo3o4S7wdnrFWoyw71YsN4w=;
- b=lh1YG1ATYwf4pQp03a/fK3xkhaMuSn1gG5vS15ZPvnhJN+f6VqLcefuxlYDzmlPDEn
- Vggjv/BH9sNkFFK1p8wWWgcb9AHLLL0Ej1LTGg7Hz64/N9w9h3Wu/ZKxz5Jbm/1OROdQ
- tJFQo7td3RjiAY2aWjcaLW46e27UIGtX+PZ1uzDIHYNhrvjT8ocDyiCaMvmfMTl4brCK
- 9omHPizYxquaulnZADTWaHqV9w1msvZa5Juwg37WcM+5G1cqq6l0CumwxjxFpBXEAHHG
- oWYUUb5yDrjTZ5q0rAPkZZeB8ZnKLvcwtKzX0+NwrXG10q8vo+Jv/NUyPRCLsABFnwR/
- +W8w==
-X-Gm-Message-State: AOJu0YwL2jAa+bWr7L9ma+8coDbJqB3nCM5ZnymLzIZQuxjYGz8BY+KK
- /ZHZG3PNA0i1wdSjDt4uNeF6oHh3aygHrTKT/U3jZ379/AerLja+nMCpWl5o7AGxmnfyRzQis73
- yUywGJuTb0xuMEUgoffBrmYRBcl5XaFOQ597FTMmhM52foxR2TmL0nRrlnaxoMYJJWHts+f9r7K
- my2uWsbwsJAhAgAG2GF+fBPggGlccC1Uz4MNfs
-X-Gm-Gg: ASbGncu0mp2ihMCvJEfad7TcGl1cFC2QCheuZaevtmaksevqhTD5WDvtOYTdGy4z6Wm
- LqOVMBxmXWZ/Xl3KcrwUjfCyety+4IPkoqORTPEQs4+f5He/QXOkNw5P7Okg9dNdJm08OP/NvCA
- ==
-X-Received: by 2002:a17:90b:2e06:b0:2fa:3b6b:3370 with SMTP id
- 98e67ed59e1d1-2ff33c223f4mr5057878a91.16.1741094127393; 
- Tue, 04 Mar 2025 05:15:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGOon46ahWkNDT3pUYg+FT/2rjNkVR7ZlJAUIyRFYWXMT50b9ytwM+hyg7vlZb+9gmbHDXuy9ddwL59zMpJXzs=
-X-Received: by 2002:a17:90b:2e06:b0:2fa:3b6b:3370 with SMTP id
- 98e67ed59e1d1-2ff33c223f4mr5057848a91.16.1741094127084; Tue, 04 Mar 2025
- 05:15:27 -0800 (PST)
+ bh=KIvgQUCKFqqYPFzkr4dACYOYvZG5mya4HJ2L+d2xe8c=;
+ b=G8B5Dvfh57opu9hOETcmxTcSfwtolHa1dG9pCseFBrAHkr9cIHFP08fsxnjcxAQtFewZza
+ EMStIykZQDB2K+Inql558hVDU/ret0UF78u8MdlZU2uQFxC1VJKoLIpaSPM/KM/Ga58fh9
+ UDVCgWtGxnmcvH3oqltU7hatJG+kMFo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741094647;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KIvgQUCKFqqYPFzkr4dACYOYvZG5mya4HJ2L+d2xe8c=;
+ b=04BhCPX6o1RG2FYUNJB0K+PjgnQa06SXHUnJwCjkNEtdtzZVZ386/dwE0l5gjIvmH2iXwC
+ Idj/okHXR7R/XhAw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=G8B5Dvfh;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=04BhCPX6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741094647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KIvgQUCKFqqYPFzkr4dACYOYvZG5mya4HJ2L+d2xe8c=;
+ b=G8B5Dvfh57opu9hOETcmxTcSfwtolHa1dG9pCseFBrAHkr9cIHFP08fsxnjcxAQtFewZza
+ EMStIykZQDB2K+Inql558hVDU/ret0UF78u8MdlZU2uQFxC1VJKoLIpaSPM/KM/Ga58fh9
+ UDVCgWtGxnmcvH3oqltU7hatJG+kMFo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741094647;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KIvgQUCKFqqYPFzkr4dACYOYvZG5mya4HJ2L+d2xe8c=;
+ b=04BhCPX6o1RG2FYUNJB0K+PjgnQa06SXHUnJwCjkNEtdtzZVZ386/dwE0l5gjIvmH2iXwC
+ Idj/okHXR7R/XhAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 095C413967;
+ Tue,  4 Mar 2025 13:24:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gtOHAff+xme/HAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 04 Mar 2025 13:24:07 +0000
+Date: Tue, 4 Mar 2025 14:24:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <Z8b_ASCxF6gTvanH@yuki.lan>
+References: <20250110-lsm-v2-0-bd38035f86bc@suse.com>
+ <20250110-lsm-v2-6-bd38035f86bc@suse.com>
 MIME-Version: 1.0
-References: <20250228172439.3276777-1-pvorel@suse.cz>
- <20250228172439.3276777-2-pvorel@suse.cz>
- <CAEemH2eBJ5AeTKgbDAbCpZKLA7DZMWhpEcrSUJAdJuNU5yULOA@mail.gmail.com>
- <20250304130833.GB81126@pevik>
-In-Reply-To: <20250304130833.GB81126@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 4 Mar 2025 21:15:15 +0800
-X-Gm-Features: AQ5f1JrhO9QTLxrqp0W_uyIJCvzB8hjljdic5bOYUcpD7KZ5qe7LdtnpEazXbO4
-Message-ID: <CAEemH2ejsGmgKmqtWTFG6ZPnUySN9NkVhEbOk3ge1MaB_2TGXg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: AHnNif3JWcPw-TCluzMU11iBKA34PYaDqJ9T8sXI9l8_1741094129
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250110-lsm-v2-6-bd38035f86bc@suse.com>
+X-Rspamd-Queue-Id: 17D1A21196
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, linux.it:url, suse.cz:dkim, suse.cz:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [RFC PATCH 1/5] shell lib: Add support for test cleanup
+Subject: Re: [LTP] [PATCH v2 6/7] Add lsm_list_modules02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,38 +125,174 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBNYXIgNCwgMjAyNSBhdCA5OjA44oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgoKPiBIaSBMaSwKPgo+IC4uLgo+ID4gPiArKysgYi90ZXN0Y2FzZXMvbGliL3J1
-bl90ZXN0cy5zaAo+ID4gPiBAQCAtOSw2ICs5LDcgQEAgc2hlbGxfbG9hZGVyX2ZpbGVzeXN0ZW1z
-LnNoCj4gPiA+ICBzaGVsbF9sb2FkZXJfa2NvbmZpZ3Muc2gKPiA+ID4gIHNoZWxsX2xvYWRlcl9z
-dXBwb3J0ZWRfYXJjaHMuc2gKPiA+ID4gIHNoZWxsX2xvYWRlcl90Y250LnNoCj4gPiA+ICtzaGVs
-bF9sb2FkZXJfY2xlYW51cC5zaAo+ID4gPiAgc2hlbGxfdGVzdDAxCj4gPiA+ICBzaGVsbF90ZXN0
-MDIKPiA+ID4gIHNoZWxsX3Rlc3QwMwo+ID4gPiBAQCAtMjEsNyArMjIsOCBAQCBURVNUU19UQlJP
-Sz0iCj4gPiA+ICBzaGVsbF9sb2FkZXJfaW52YWxpZF9ibG9jay5zaAo+ID4gPiAgc2hlbGxfbG9h
-ZGVyX2ludmFsaWRfbWV0YWRhdGEuc2gKPiA+ID4gIHNoZWxsX2xvYWRlcl9ub19tZXRhZGF0YS5z
-aAo+ID4gPiAtc2hlbGxfbG9hZGVyX3dyb25nX21ldGFkYXRhLnNoIgo+ID4gPiArc2hlbGxfbG9h
-ZGVyX3dyb25nX21ldGFkYXRhLnNoCj4KPiA+IEl0IHNlZW1zIHRoZSBzaGVsbF9sb2FkZXJfd3Jv
-bmdfbWV0YWRhdGEuc2ggaXMgYSBkdXBsaWNhdGUgb2YKPiA+IHNoZWxsX2xvYWRlcl9pbnZhbGlk
-X21ldGFkYXRhLiBNYXliZSB3ZSBjYW4gcmVtb3ZlIG9uZSBvZiB0aGVtLgo+Cj4gR29vZCBjYXRj
-aC4gQnV0IEkgdGhpbmsgdGhlcmUgYXJlIHRlc3RpbmcgYSBkaWZmZXJlbnQgdGhpbmc6CgoKPiBz
-aGVsbF9sb2FkZXJfd3JvbmdfbWV0YWRhdGEuc2ggSU1ITyBoYXMgdG9vIGhpZ2ggaW50IHZhbHVl
-Cj4gKCJXcm9uZyAnbmVlZHNfdG1wZGlyJyB0eXBlIGV4cGVjdGVkIGJvb2xlYW4iIGVycm9yKToK
-PgoKQWggaW5kZWVkLCBJIGhhZG4ndCBub3RpY2VkIHRoYXQsIHRoYW5rIHlvdSEKCgoKPiAibmVl
-ZHNfdG1wZGlyIjogNDIsCj4KPiAjIFBBVEg9IiRQV0Q6JFBXRC90ZXN0czokUEFUSCIgc2hlbGxf
-bG9hZGVyX3dyb25nX21ldGFkYXRhLnNoCj4gUGFyc2UgZXJyb3IgYXQgbGluZSAwMDIKPgo+IDAw
-MTogewo+IDAwMjogICJuZWVkc190bXBkaXIiOiA0MiwKPiAgICAgICAgICAgICAgICAgICAgICAg
-ICBeCj4gV3JvbmcgJ25lZWRzX3RtcGRpcicgdHlwZSBleHBlY3RlZCBib29sZWFuCj4gdHN0X3J1
-bl9zaGVsbC5jOjUwODogVEJST0s6IEludmFsaWQgbWV0YWRhdGEKPgo+IHNoZWxsX2xvYWRlcl9p
-bnZhbGlkX21ldGFkYXRhLnNoIElNSE8gaGFzIGludmFsaWQgSlNPTgo+ICgiRXhwZWN0ZWQgSUQg
-c3RyaW5nIiBlcnJvcik6Cj4KPiB7Im5lZWRzX3RtcGRpciI6IDQyLAo+Cj4gIyBQQVRIPSIkUFdE
-OiRQV0QvdGVzdHM6JFBBVEgiIHNoZWxsX2xvYWRlcl9pbnZhbGlkX21ldGFkYXRhLnNoCj4gUGFy
-c2UgZXJyb3IgYXQgbGluZSAwMDIKPgo+IDAwMTogewo+IDAwMjogIHsibmVlZHNfdG1wZGlyIjog
-NDIsCj4gICAgICAgXgo+IEV4cGVjdGVkIElEIHN0cmluZwo+IHRzdF9ydW5fc2hlbGwuYzo1MDg6
-IFRCUk9LOiBJbnZhbGlkIG1ldGFkYXRhCj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+Cj4KCi0t
-IApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi!
+> +#include "lsm_common.h"
+> +
+> +#define MAX_LSM_NUM 32
+> +
+> +static char lsm_names[MAX_LSM_NUM][BUFSIZ];
+> +static size_t lsm_names_count;
+> +static uint32_t page_size;
+> +static uint64_t *ids;
+> +static uint32_t *size;
+> +
+> +static void run(void)
+> +{
+> +	uint32_t lsm_num;
+> +	size_t count;
+> +
+> +	memset(ids, 0, sizeof(uint64_t) * MAX_LSM_NUM);
+> +	*size = page_size;
+> +
+> +	lsm_num = TST_EXP_POSITIVE(lsm_list_modules(ids, size, 0));
+
+If we want to pass the size as page_size here the buffer passed to the
+syscall would have to be page_size in size. The whole point of passing
+the size here is to tell the kernel the size of the buffer it can use
+and it's a pointer because kernel will return the size of the buffer it
+used back.
+
+> +
+> +	TST_EXP_EQ_LI(lsm_num, lsm_names_count);
+> +	TST_EXP_EQ_LI(*size, lsm_num * sizeof(uint64_t));
+> +
+> +	for (uint32_t i = 0; i < lsm_num; i++) {
+> +		char *name = NULL;
+> +
+> +		switch (ids[i]) {
+> +		case LSM_ID_CAPABILITY:
+> +			name = "capability";
+> +			break;
+> +		case LSM_ID_SELINUX:
+> +			name = "selinux";
+> +			break;
+> +		case LSM_ID_SMACK:
+> +			name = "smack";
+> +			break;
+> +		case LSM_ID_TOMOYO:
+> +			name = "tomoyo";
+> +			break;
+> +		case LSM_ID_APPARMOR:
+> +			name = "apparmor";
+> +			break;
+> +		case LSM_ID_YAMA:
+> +			name = "yama";
+> +			break;
+> +		case LSM_ID_LOADPIN:
+> +			name = "loadpin";
+> +			break;
+> +		case LSM_ID_SAFESETID:
+> +			name = "safesetid";
+> +			break;
+> +		case LSM_ID_LOCKDOWN:
+> +			name = "lockdown";
+> +			break;
+> +		case LSM_ID_BPF:
+> +			name = "bpf";
+> +			break;
+> +		case LSM_ID_LANDLOCK:
+> +			name = "landlock";
+> +			break;
+> +		case LSM_ID_IMA:
+> +			name = "ima";
+> +			break;
+> +		case LSM_ID_EVM:
+> +			name = "evm";
+> +			break;
+> +		case LSM_ID_IPE:
+> +			name = "ipe";
+> +			break;
+> +		default:
+> +			break;
+> +		}
+
+I guess that it may be also a good idea to have an array where we would
+record which LSM we have seen in the buffer to make sure that we didn't
+get any of them twice.
+
+I suppose that we can turn the lsm_names into a structure and add
+counters there with:
+
+
+struct lsm_name {
+	int cnt;
+	char name[MAX_LSM_NAME];
+};
+
+struct lsm_name lsm_names[MAX_LSM_NUM];
+
+> +		if (!name)
+> +			tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]);
+> +
+> +		for (count = 0; count < lsm_names_count; count++) {
+> +			if (!strcmp(name, lsm_names[count])) {
+> +				tst_res(TPASS, "'%s' is enabled", name);
+
+And then we can (assuming we zero the counters at the start of this
+function) do:
+
+				if (lsm_names[count].cnt)
+					tst_res(TFAIL, "Duplicated LSM entry %s", lsm_names[count].name);
+
+				lsm_names[count].cnt++;
+
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (count >= lsm_names_count)
+> +			tst_res(TFAIL, "'%s' has not been found", name);
+> +	}
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int fd;
+> +	char *ptr;
+> +	char data[BUFSIZ];
+> +
+> +	memset(data, 0, BUFSIZ);
+> +
+> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+> +	fd = SAFE_OPEN("/sys/kernel/security/lsm", O_RDONLY);
+> +	SAFE_READ(0, fd, data, BUFSIZ);
+> +	SAFE_CLOSE(fd);
+> +
+> +	ptr = strtok(data, ",");
+> +
+> +	while (ptr != NULL) {
+> +		strcpy(lsm_names[lsm_names_count], ptr);
+> +		ptr = strtok(NULL, ",");
+> +		lsm_names_count++;
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.min_kver = "6.8",
+> +	.bufs = (struct tst_buffers []) {
+> +		{&ids, .size = sizeof(uint64_t) * MAX_LSM_NUM},
+> +		{&size, .size = sizeof(uint32_t)},
+> +		{},
+> +	},
+> +};
+> 
+> -- 
+> 2.43.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
