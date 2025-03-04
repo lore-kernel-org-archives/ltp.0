@@ -4,75 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D4C4C021B8
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 21:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC454C021B8
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 21:33:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B1E743CA052
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 22:15:47 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A78313CA05A
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 22:33:31 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 156C33C65A8
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:15:30 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jmoyer@redhat.com;
+ by picard.linux.it (Postfix) with ESMTPS id D899F3C9D69
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:33:15 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=linux.ibm.com (client-ip=148.163.158.5;
+ helo=mx0b-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
  receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A03A5609181
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:15:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741122925;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Mv/Ewy8p3XavgC8xhz1Bo0c09l/FMi1rPKlcY/faOIo=;
- b=ITFF4tjoD1qbgyhKSFDf43yRM0Vd8HChh63g6LRBrWEzLV9CdgyYibc+64aTvrQFn2t9ia
- jb+FcJS8NAF9tDCvpXHmH93240Na2G2tWiyrALiy8b1iLZfr15VT7x57g2bwCHeaCQwLTP
- /h1dfHQ5Jpa0vf/7wLjOImBW7F8DqYM=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-7-D-ugz9NpNFKl3Z6RsLK4Wg-1; Tue,
- 04 Mar 2025 16:15:14 -0500
-X-MC-Unique: D-ugz9NpNFKl3Z6RsLK4Wg-1
-X-Mimecast-MFC-AGG-ID: D-ugz9NpNFKl3Z6RsLK4Wg_1741122912
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id EC1311800874; Tue,  4 Mar 2025 21:15:11 +0000 (UTC)
-Received: from segfault.usersys.redhat.com (unknown [10.22.81.178])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 1EB7F1800359; Tue,  4 Mar 2025 21:15:10 +0000 (UTC)
-From: Jeff Moyer <jmoyer@redhat.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20250217215038.177250-1-jmoyer@redhat.com>
- <20250217215038.177250-4-jmoyer@redhat.com>
- <Z7cOxcRhtPcZSpsL@yuki.lan>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date: Tue, 04 Mar 2025 16:15:08 -0500
-In-Reply-To: <Z7cOxcRhtPcZSpsL@yuki.lan> (Cyril Hrubis's message of "Thu, 20
- Feb 2025 12:15:17 +0100")
-Message-ID: <x495xkozeeb.fsf@segfault.usersys.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 23107200BD4
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 22:33:14 +0100 (CET)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 524KaT99008926;
+ Tue, 4 Mar 2025 21:33:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=IXDOt4
+ dGMOUZ2E0gjatLE5EUFdlEMv/9mYYSZO4nvko=; b=HCArbirEC4VDWz/iAnbUF/
+ XzvO6VEn12hseWchJaKDfCvzYFdTCXwK0W0sfx/OKH/cGBLLPxlxYYLgEFIV9TGJ
+ P3KK9vVSv9eBgPxtentk1BYApbPP5tBsPTzlhriefZ7TvrpA7gUbGRtIbQIRKpVn
+ ulg9r4zj/eiyA7eY8T9tWAvvqRuM1lgQcUM93qTbovXO5pOA4+eHEtBIvfFS6n3P
+ 4wE8CGlAuBTVqWS50hGoljGLYOxF3e+qK7c2JoJXH/Ljl6K6xboJ4cl75bK9PQ5y
+ z4bA5lZw1o7TE/TK/pI/4BOCLw1bFjgKY7dUTiI3+Vhx2FT63kzmBkypfs0zR4eQ
+ ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4568pp869g-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 04 Mar 2025 21:33:12 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 524Ilsrg020841;
+ Tue, 4 Mar 2025 21:33:12 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 454djnfhv4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 04 Mar 2025 21:33:12 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com
+ [10.241.53.104])
+ by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 524LXBBi27787824
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 4 Mar 2025 21:33:12 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9E25858067;
+ Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 61A4358068;
+ Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.31.103.152]) by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+ Tue,  4 Mar 2025 21:33:11 +0000 (GMT)
+Message-ID: <a0da3808cec92300c67489539fbee3cbfd2fb4e5.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 04 Mar 2025 16:33:11 -0500
+In-Reply-To: <20250304174342.GA97130@pevik>
+References: <20250304115331.524842-1-zohar@linux.ibm.com>
+ <20250304115331.524842-2-zohar@linux.ibm.com>
+ <20250304133101.GC81126@pevik>
+ <678478de87319625e591e8e956a57b31c700bbd2.camel@linux.ibm.com>
+ <54cf5311ec5e0debd6dfd63669e8d01883c0ba23.camel@linux.ibm.com>
+ <20250304174342.GA97130@pevik>
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: snpTCoft4W_Y0XvqpwM6rERk_tFs0KhDm5no9gsutA8_1741122912
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4sbaRRjd-5lJge1lM-hzGxWKfY1NwILp
+X-Proofpoint-ORIG-GUID: 4sbaRRjd-5lJge1lM-hzGxWKfY1NwILp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-04_09,2025-03-04_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 phishscore=0
+ bulkscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015 malwarescore=0
+ mlxscore=0 impostorscore=0 adultscore=0 priorityscore=1501 mlxlogscore=941
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
+ definitions=main-2503040173
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/3] tst_find_backing_dev(): add support for
- overlayfs
+Subject: Re: [LTP] [PATCH v2 2/4] ima_violations.sh: Update validate() to
+ support multiple violations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,110 +106,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
+ Stefan Berger <stefanb@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi, Cyril,
+On Tue, 2025-03-04 at 18:43 +0100, Petr Vorel wrote:
+> > On Tue, 2025-03-04 at 09:44 -0500, Mimi Zohar wrote:
+> > > On Tue, 2025-03-04 at 14:31 +0100, Petr Vorel wrote:
+> > > > Hi Mimi,
+> 
+> > > > > Add support for the number of expected violations.  Include the
+> > > > > expected number of violations in the output.
+> 
+> > > > Unfortunately this works only on fixed kernel (e.g. the one with v1 of your
+> > > > "ima: limit both open-writers and ToMToU violations" kernel patchset [1]
+> > > > (I haven't built v2 [2], but it's really just
+> > > > s/IMA_LIMIT_VIOLATIONS/IMA_EMITTED_OPENWRITERS/ => it will work)
+> 
+> > > > Testing on any other kernel it fails on first testing after reboot:
+> 
+> > > Hi Petr,
+> 
+> > > I only tested by specifying the "ima_policy=tcb" on the boot command line.  This
+> > > failure happens when loading the test specific policy rules.  If setup() is
+> > > called before loading the test specific policy rules, forcing the $LOG file
+> > > violation at setup() would be too early.
+> 
+> > Sorry, that doesn't seem to be the case.
+> 
+> > With the changes to validate(), even the original tests will only work on a new
+> > kernel.  I'll rework the patch set, so at least the original tests will continue
+> > to work.
+> 
+> +1, thank you!
 
-Thanks for the review.  Comments inline.
+Hi Petr,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Since the original three tests don't provide the expected number of violations,
+the following should work for them.  The new tests will fail without the kernel
+patch.  The assumption is that LTP can handle some of the tests, not all of
+them, succeeding.  On a new kernel, all of the tests should succeed.  Tested
+only with bash.
 
->> +static char *overlay_mount_from_dev(dev_t dev)
->> +{
->> +	unsigned dev_major, dev_minor, mnt_major, mnt_minor;
->> +	FILE *fp;
->> +	char line[PATH_MAX];
->
-> PATH_MAX does not really make any sense here. It's as good as any other
-> number so I would just hardcode 4096 here.
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+index 2fbffc5da..0395f8d0a 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -87,12 +87,13 @@ validate()
+        local max_attempt=3
+        local count2 i num_violations_new
+ 
+-       [ -z "$expected_violations" ] && expected_violations=1
+-
+        for i in $(seq 1 $max_attempt); do
+                read num_violations_new < $IMA_VIOLATIONS
+                count2="$(get_count $search)"
+-               if [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
++               if [ -z "$expected_violations" ] && \
++                  [ $(($num_violations_new - $num_violations)) -gt 0 ] || \
++                  [ $(($num_violations_new - $num_violations)) -eq $expected_violations ]; then
++                       [ -z "$expected_violations" ] && expected_violations=1
+                        if [ $count2 -gt $count ]; then
+                                tst_res TPASS "$expected_violations $search violation(s) added"
+                                return
 
-Agreed.  Also, the theoretical max is beyond 4k, but it shouldn't be a
-practical issue.  I did struggle with plucking a value out of thin air,
-here.
+thanks,
 
->> +		if (ret != 3)
->> +			tst_brkm(TBROK, NULL,
->> +				 "failed to parse mountinfo line: \"%s\"",
->                                                                    ^
->                 We usually use ' instead of " inside of strings in LTP.
+Mimi
 
-Ok.
-
->> +	if (!mountpoint)
->> +		tst_brkm(TBROK, NULL,
->> +			 "Unable to find mount entry for device %u:%u\n",
->                                                                       ^
-> 							No newlines in
-> 							tst_*()
-> 							messages please.
-
-Oops!
-
->> +	while ((mnt = getmntent(mntf)) != NULL) {
->> +		if (strncmp(mnt->mnt_dir, mountpoint, strlen(mountpoint)))
->> +			continue;
->
-> Why strncmp() here? Isn't this possibly generating false positives in
-> the case that we there is more mounts that have the same prefix that
-> matches mountpoint?
-
-Yes, good point.  Thanks!
-
->> +		if (strncmp(mnt->mnt_type, "overlay", strlen("overlay")))
->> +			tst_brkm(TBROK, NULL,
->> +				 "expected overlayfs on mount point \"%s\", but it is of type %s.",
->> +				 mountpoint, mnt->mnt_type);
->
-> Here as well, I suppose that the probability of false positive here is
-> close to zero, but I do not see the reason for strncmp() here either.
-
-Agreed.
-
->> +		optstr = hasmntopt(mnt, "upperdir");
->> +		if (optstr) {
->> +			optstart = strchr(optstr, '=');
->> +			optstart++;
->> +			optend = strchrnul(optstr, ',');
->> +			upperdir = calloc(optend - optstart + 1, 1);
->> +			memcpy(upperdir, optstart, optend - optstart);
->
-> Isn't this just a complicated way how to re-implement strndup()?
-
-Yes.  :)  I'll fix that up.
-
->> +static void overlay_get_uevent_path(char *tmp_path, char *uevent_path)
->> +{
->> +	int ret;
->> +	struct stat st;
->> +	char *mountpoint, *upperdir;
->> +
->> +	tst_resm(TINFO, "Use OVERLAYFS specific strategy");
->> +
->> +	ret = stat(tmp_path, &st);
->> +	if (ret)
->> +		tst_brkm(TBROK | TERRNO, NULL, "stat failed");
->> +
->> +	mountpoint = overlay_mount_from_dev(st.st_dev);
->> +	upperdir = overlay_get_upperdir(mountpoint);
->> +	free(mountpoint);
->
-> Since the mntpoint is only intermediate result, why can't we pass the
-> st.dev to the overlay_get_upperdir() and call overlay_mount_from_dev()
-> from there?
-
-It makes more logical sense to me to pass a mount point to that
-function.  Another argument against changing would be that
-overlay_get_upperdir is already pretty large.  However, if you feel
-strongly about it, I can certainly change it.
-
-Thanks again for the thorough review!
-
-Cheers,
-Jeff
 
 
 -- 
