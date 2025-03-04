@@ -4,101 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB054C021B8
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 13:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00553C021B8
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 13:31:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B9FA3CA037
-	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 14:26:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 7A2303CA014
+	for <ltp@archiver.kernel.org>; Tue,  4 Mar 2025 14:31:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6CED3C1B4B
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:26:10 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 1CA193C32FC
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:31:08 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E21D560085E
- for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:26:09 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0732A1BBEF1B
+ for <ltp@lists.linux.it>; Tue,  4 Mar 2025 14:31:04 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 67D2D2117C;
- Tue,  4 Mar 2025 13:26:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 376A321199;
+ Tue,  4 Mar 2025 13:31:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741094768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1741095063;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c717W6EeN4rTcCXXOnew4N6Dds4wq4qtW/4e3MC+Ggw=;
- b=2L8pb5SmUNy9kXNeNU5iha9QNbHmljHFaAGHior7Ek0DMdNnqbsXQBYEornqhdbKMDjQFI
- v35Gd80KqqjEJl5EyzlbI6QPlcF2CT+SOkeed9mCjsg7D/2hcU56x+EhCZTaf/Vca95D4W
- sZHkon+Uifv3mwQvJiXoE+3+vHo1IDE=
+ bh=V/kZrOsa9tD9+gamYifafCzB0KHy2gUJnD71URfRw4Y=;
+ b=LwiC/OWTkP/WeUZdhE7OWDVXpS+BIxB/7SQq/wfdzea4Sr6uq6QUxieggheFv2dfKPda9a
+ +i1mnaWLYz38avWmV6h4RKJQWsMH+ei0kMS0tUqfZTdi9dL1eEw39Wdilrr12PBREcRaXj
+ lZ7yia2utb6WKcAxw46QPR/aHG4G+Wg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741094768;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1741095063;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c717W6EeN4rTcCXXOnew4N6Dds4wq4qtW/4e3MC+Ggw=;
- b=bPTchU6h+mShqwFA9VMthEX2+slDTeLCurZSkh7DNvCWOXaB7D+3Mit0ayWbTn1+eXqnTj
- AIdNjV26Et7gIkBQ==
+ bh=V/kZrOsa9tD9+gamYifafCzB0KHy2gUJnD71URfRw4Y=;
+ b=f9O+pZxqgFl6JNqq3lD/EJxW4dmpa62XN8RQ1Ga/j5d130mXEmPnWaIPx+JdYgC6EZFWyH
+ FZ3qEPWipF0SO6BQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741094768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1741095063;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c717W6EeN4rTcCXXOnew4N6Dds4wq4qtW/4e3MC+Ggw=;
- b=2L8pb5SmUNy9kXNeNU5iha9QNbHmljHFaAGHior7Ek0DMdNnqbsXQBYEornqhdbKMDjQFI
- v35Gd80KqqjEJl5EyzlbI6QPlcF2CT+SOkeed9mCjsg7D/2hcU56x+EhCZTaf/Vca95D4W
- sZHkon+Uifv3mwQvJiXoE+3+vHo1IDE=
+ bh=V/kZrOsa9tD9+gamYifafCzB0KHy2gUJnD71URfRw4Y=;
+ b=LwiC/OWTkP/WeUZdhE7OWDVXpS+BIxB/7SQq/wfdzea4Sr6uq6QUxieggheFv2dfKPda9a
+ +i1mnaWLYz38avWmV6h4RKJQWsMH+ei0kMS0tUqfZTdi9dL1eEw39Wdilrr12PBREcRaXj
+ lZ7yia2utb6WKcAxw46QPR/aHG4G+Wg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741094768;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1741095063;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c717W6EeN4rTcCXXOnew4N6Dds4wq4qtW/4e3MC+Ggw=;
- b=bPTchU6h+mShqwFA9VMthEX2+slDTeLCurZSkh7DNvCWOXaB7D+3Mit0ayWbTn1+eXqnTj
- AIdNjV26Et7gIkBQ==
+ bh=V/kZrOsa9tD9+gamYifafCzB0KHy2gUJnD71URfRw4Y=;
+ b=f9O+pZxqgFl6JNqq3lD/EJxW4dmpa62XN8RQ1Ga/j5d130mXEmPnWaIPx+JdYgC6EZFWyH
+ FZ3qEPWipF0SO6BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5962A13967;
- Tue,  4 Mar 2025 13:26:08 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1742513967;
+ Tue,  4 Mar 2025 13:31:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id j69LFXD/xmdaHQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 04 Mar 2025 13:26:08 +0000
-Date: Tue, 4 Mar 2025 14:26:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Z8b_e1F1gX5avllJ@yuki.lan>
-References: <20250110-lsm-v2-0-bd38035f86bc@suse.com>
- <20250110-lsm-v2-7-bd38035f86bc@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id a+5/BJcAx2f8HgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Mar 2025 13:31:03 +0000
+Date: Tue, 4 Mar 2025 14:31:01 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <20250304133101.GC81126@pevik>
+References: <20250304115331.524842-1-zohar@linux.ibm.com>
+ <20250304115331.524842-2-zohar@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250110-lsm-v2-7-bd38035f86bc@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+In-Reply-To: <20250304115331.524842-2-zohar@linux.ibm.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- linux.it:url]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 7/7] Add lsm_set_self_attr01 test
+Subject: Re: [LTP] [PATCH v2 2/4] ima_violations.sh: Update validate() to
+ support multiple violations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,71 +115,163 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
+ Stefan Berger <stefanb@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	/* just in case lsm_set_self_attr() pass , we won't change
-> +	 * LSM configuration for the following process
-> +	 */
-> +	memcpy(ctx, ctx_orig, sizeof(struct lsm_ctx));
-> +
-> +	ctx_size = page_size;
-> +	ctx_size_small = 1;
-> +	ctx_size_big = ctx_size + 1;
-> +
-> +	TST_EXP_FAIL(lsm_set_self_attr(tc->attr, *tc->ctx, *tc->size, tc->flags),
-> +	      tc->exp_errno,
-> +	      "%s", tc->msg);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int ret;
-> +	uint32_t size;
-> +
-> +	verify_supported_attr_current();
-> +
-> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-> +	size = page_size;
-> +
-> +	ret = lsm_get_self_attr(LSM_ATTR_CURRENT, ctx_orig, &size, 0);
+Hi Mimi,
 
-Here as well, the handling of the size is wrong.
+> Add support for the number of expected violations.  Include the
+> expected number of violations in the output.
 
-> +	if (ret < 0)
-> +		tst_brk(TBROK, "Can't read LSM current attribute");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.setup = setup,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.min_kver = "6.8",
-> +	.bufs = (struct tst_buffers[]) {
-> +		{&ctx, .size = sizeof(struct lsm_ctx)},
-> +		{&ctx_orig, .size = sizeof(struct lsm_ctx)},
-> +		{}
-> +	},
-> +};
-> 
-> -- 
-> 2.43.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Unfortunately this works only on fixed kernel (e.g. the one with v1 of your
+"ima: limit both open-writers and ToMToU violations" kernel patchset [1]
+(I haven't built v2 [2], but it's really just
+s/IMA_LIMIT_VIOLATIONS/IMA_EMITTED_OPENWRITERS/ => it will work)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Testing on any other kernel it fails on first testing after reboot:
+
+# LTP_IMA_LOAD_POLICY=1 LTPROOT="/opt/ltp" PATH="/opt/ltp/testcases/bin:$PATH" ima_violations.sh # openSUSE Tumbleweed 6.13, without your patch
+tmpfs is skipped
+ima_violations 1 TINFO: Running: ima_violations.sh
+ima_violations 1 TINFO: Tested kernel: Linux tss 6.13.1-1-default #1 SMP PREEMPT_DYNAMIC Mon Feb  3 05:33:25 UTC 2025 (1918d13) x86_64 x86_64 x86_64 GNU/Linux
+ima_violations 1 TINFO: Using /tmp/LTP_ima_violations.bbGjQQLJIx as tmpdir (tmpfs filesystem)
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+ima_violations 1 TINFO: Formatting ext3 with opts='/dev/loop0'
+ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_ima_violations.bbGjQQLJIx/mntpoint
+ima_violations 1 TINFO: timeout per run is 0h 5m 0s
+ima_violations 1 TINFO: IMA kernel config:
+ima_violations 1 TINFO: CONFIG_IMA=y
+ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
+ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=y
+ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
+ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=y
+ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=y
+ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=y
+ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
+ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
+ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
+ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=y
+ima_violations 1 TINFO: CONFIG_IMA_DISABLE_HTABLE=y
+ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-6.13.1-1-default root=UUID=1e7acd04-4289-49c9-ba76-a406b385cdc9 splash=silent video=1024x768 plymouth.ignore-serial-consoles console=ttyS0 console=tty kernel.softlockup_panic=1 mitigations=auto ignore_loglevel security=selinux selinux=1 enforcing=1 ima_policy=critical_data
+ima_violations 1 TINFO: $TMPDIR is on tmpfs => run on loop device
+ima_violations 1 TINFO: test requires IMA policy:
+measure func=FILE_CHECK mask=^MAY_READ euid=0
+measure func=FILE_CHECK mask=^MAY_READ uid=0
+ima_violations 1 TINFO: WARNING: missing required policy content: 'measure func=FILE_CHECK mask=^MAY_READ euid=0'
+ima_violations 1 TINFO: trying to load '/opt/ltp/testcases/data/ima_violations/violations.policy' policy:
+measure func=FILE_CHECK mask=^MAY_READ euid=0
+measure func=FILE_CHECK mask=^MAY_READ uid=0
+ima_violations 1 TINFO: example policy successfully loaded
+ima_violations 1 TINFO: using log /var/log/audit/audit.log
+ima_violations 1 TINFO: verify open writers violation
+ima_violations 1 TFAIL: open_writers too many violations added: 3 - 1
+ima_violations 2 TINFO: verify ToMToU violation
+ima_violations 2 TFAIL: ToMToU too many violations added: 6 - 4
+ima_violations 3 TINFO: verify open_writers using mmapped files
+tst_test.c:1900: TINFO: LTP version: 20250130
+tst_test.c:1904: TINFO: Tested kernel: 6.13.1-1-default #1 SMP PREEMPT_DYNAMIC Mon Feb  3 05:33:25 UTC 2025 (1918d13) x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1722: TINFO: Overall timeout per run is 0h 02m 00s
+ima_mmap.c:38: TINFO: sleep 3s
+ima_violations 3 TFAIL: open_writers too many violations added: 9 - 7
+ima_violations 4 TINFO: WARNING: policy loaded via LTP_IMA_LOAD_POLICY=1, reboot recommended
+ima_mmap.c:41: TPASS: test completed
+
+It keeps failing repeatedly.
+I was able to reproduce the problem on SLE15-SP6 (6.4 based) and SLE15-SP4 (5.14 based).
+
+I tried to test also some Debian VM. It fails when run after reboot:
+
+# LTP_IMA_LOAD_POLICY=1 LTPROOT="/opt/ltp" PATH="/opt/ltp/testcases/bin:$PATH" ima_violations.sh # some Debian VM
+tmpfs is skipped
+ima_violations 1 TINFO: Running: ima_violations.sh
+ima_violations 1 TINFO: Tested kernel: Linux tt 6.9.9-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.9.9-1 (2024-07-13) x86_64 GNU/Linux
+ima_violations 1 TINFO: Using /tmp/LTP_ima_violations.RbX4HA7oZx as tmpdir (tmpfs filesystem)
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+ima_violations 1 TINFO: Formatting ext3 with opts='/dev/loop0'
+ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_ima_violations.RbX4HA7oZx/mntpoint
+ima_violations 1 TINFO: timeout per run is 0h 5m 0s
+ima_violations 1 TINFO: IMA kernel config:
+ima_violations 1 TINFO: CONFIG_IMA=y
+ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
+ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=y
+ima_violations 1 TINFO: CONFIG_IMA_SIG_TEMPLATE=y
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-sig"
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
+ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
+ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=y
+ima_violations 1 TINFO: CONFIG_IMA_ARCH_POLICY=y
+ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
+ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
+ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+ima_violations 1 TINFO: CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT=y
+ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-6.9.9-amd64 root=UUID=e55db984-06ad-45d3-9707-dcaec157aebd ro quiet
+ima_violations 1 TINFO: $TMPDIR is on tmpfs => run on loop device
+ima_violations 1 TINFO: test requires IMA policy:
+measure func=FILE_CHECK mask=^MAY_READ euid=0
+measure func=FILE_CHECK mask=^MAY_READ uid=0
+ima_violations 1 TINFO: WARNING: policy is not readable, failure will be treated as TCONF
+ima_violations 1 TINFO: trying to load '/opt/ltp/testcases/data/ima_violations/violations.policy' policy:
+measure func=FILE_CHECK mask=^MAY_READ euid=0
+measure func=FILE_CHECK mask=^MAY_READ uid=0
+ima_violations 1 TINFO: example policy successfully loaded
+ima_violations 1 TINFO: using log /var/log/audit/audit.log
+ima_violations 1 TINFO: verify open writers violation
+ima_violations 1 TFAIL: open_writers too many violations added: 3 - 1
+ima_violations 2 TINFO: verify ToMToU violation
+ima_violations 2 TFAIL: ToMToU too many violations added: 6 - 4
+ima_violations 3 TINFO: verify open_writers using mmapped files
+tst_test.c:1890: TINFO: LTP version: 20240930-58-g15ce5997c
+tst_test.c:1894: TINFO: Tested kernel: 6.9.9-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.9.9-1 (2024-07-13) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+ima_mmap.c:38: TINFO: sleep 3s
+ima_violations 3 TFAIL: open_writers too many violations added: 9 - 7
+ima_mmap.c:41: TPASS: test completed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+ima_violations 4 TINFO: WARNING: policy loaded via LTP_IMA_LOAD_POLICY=1, reboot recommended
+
+Summary:
+passed   0
+failed   3
+broken   0
+skipped  0
+warnings 0
+
+But it TCONF when repeatedly run:
+
+ima_violations 1 TCONF: open_writers too many violations added: 13 - 11
+ima_violations 2 TINFO: verify ToMToU violation
+ima_violations 2 TCONF: ToMToU too many violations added: 16 - 14
+ima_violations 3 TINFO: verify open_writers using mmapped files
+tst_test.c:1890: TINFO: LTP version: 20240930-58-g15ce5997c
+tst_test.c:1894: TINFO: Tested kernel: 6.9.9-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.9.9-1 (2024-07-13) x86_64
+tst_test.c:1725: TINFO: Timeout per run is 0h 00m 30s
+ima_mmap.c:38: TINFO: sleep 3s
+ima_violations 3 TCONF: open_writers too many violations added: 19 - 17
+
+I guess this is not what you expected. I wonder what is wrong.
+
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/linux-integrity/20250219162131.416719-1-zohar@linux.ibm.com/
+[2] https://lore.kernel.org/linux-integrity/20250228205505.476845-1-zohar@linux.ibm.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
