@@ -4,102 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA8A5C282D0
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 16:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A1CC28B25
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 22:58:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D69B03CA15D
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 17:40:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 14FAF3CA182
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 23:58:27 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8EA603C2969
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 17:40:21 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 66E883C9BE9
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 23:58:09 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=canonical.com (client-ip=185.125.188.122;
+ helo=smtp-relay-internal-0.canonical.com;
+ envelope-from=jacob.martin@canonical.com; receiver=lists.linux.it)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DD6BA68042F
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 17:40:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8CB721A004B1
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 23:58:09 +0100 (CET)
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AE9AE1F441;
- Fri,  7 Mar 2025 16:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741365618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/fUdJvNOPliZKhbTmuSh8ofF2yo1sL+I8nOrbH+4bsg=;
- b=yC++s9jSE9syYvuhENi+r1HLQEk374phOx7cV+zqLt+TIbazd4guSjGisvyiu9clxvbleu
- cRvymtQw3cLbUD1fl0bwyvIvBPDhoGgiYb7HshyQ9d9nsIKIkj3cS2ZXbfzX6qptb6zktj
- u1L025reB0lE6unM5wtL7GG+rE/F/n4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741365618;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/fUdJvNOPliZKhbTmuSh8ofF2yo1sL+I8nOrbH+4bsg=;
- b=thfjiK3BuPh/l666CWFdO9xwRJ2oFs+9skwqcWPqqg7mjXVuI9smiv9Flneo8OiFlUscfV
- L/nhTPmQqanrTGBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741365618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/fUdJvNOPliZKhbTmuSh8ofF2yo1sL+I8nOrbH+4bsg=;
- b=yC++s9jSE9syYvuhENi+r1HLQEk374phOx7cV+zqLt+TIbazd4guSjGisvyiu9clxvbleu
- cRvymtQw3cLbUD1fl0bwyvIvBPDhoGgiYb7HshyQ9d9nsIKIkj3cS2ZXbfzX6qptb6zktj
- u1L025reB0lE6unM5wtL7GG+rE/F/n4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741365618;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/fUdJvNOPliZKhbTmuSh8ofF2yo1sL+I8nOrbH+4bsg=;
- b=thfjiK3BuPh/l666CWFdO9xwRJ2oFs+9skwqcWPqqg7mjXVuI9smiv9Flneo8OiFlUscfV
- L/nhTPmQqanrTGBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94A1C13939;
- Fri,  7 Mar 2025 16:40:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QCpAI3Ihy2eTVgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 07 Mar 2025 16:40:18 +0000
-Date: Fri, 7 Mar 2025 17:40:30 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Z8shfrkfVkwsCOTw@yuki.lan>
-References: <20250228172439.3276777-1-pvorel@suse.cz>
- <20250228172439.3276777-5-pvorel@suse.cz>
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CEC903FCC5
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 22:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1741388287;
+ bh=DthZczQCezXsKD9zBwe5Cuc5cRjGwL1h8ZKUCS3/0bU=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=PeOZfD6vxqRs9QOmC8CVopfAn+eJc4Jwy73vWjKWWFJsE0CErJYaVRro3BVJ2AIMN
+ l4BAzjDR4HRaerEDC6C6Ry6y0+fzCBP3WiKCiP2qWYeqFaH0ZZt59IZEM1Tzv6ij8R
+ KSW4FnPueMNWIB7qiDBtTeVu9XnGp1d6/s9NAAZBjShlHoX9OvPYu0fEsGPAQ50A+s
+ 370tjxHLqD9ypxCAFvWCjF3pPsg9RhN04lYXHQgCj/V6FEhmKhhKZpaA0Mg5HyFZfQ
+ JEwj9W4u7VcRT5iLf9JUGY/epU3fx//MQ1v+YFVbDDu9r4jQjBNlr6tO0f9nsa8tx1
+ RyDunNBKDqvZA==
+Received: by mail-qv1-f69.google.com with SMTP id
+ 6a1803df08f44-6e8c4f5f477so40990136d6.3
+ for <ltp@lists.linux.it>; Fri, 07 Mar 2025 14:58:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1741388286; x=1741993086;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=DthZczQCezXsKD9zBwe5Cuc5cRjGwL1h8ZKUCS3/0bU=;
+ b=WLDUYSDZ3oCFJbIFfFYTHfDFuZyMns5/b/uROpG07TXFR2UgWWRq3fQUdS5VRPyZWT
+ ok7LqyXfK5n7mR6RfZV7f2ys0jmBSHy3heSyOuEC/hCbJ8lQs1VuBcZjimMfL9dgkxRu
+ /KNFwmdQqx0o7jcoPpKxgeRuWFJ5OicPvURX1G8PY0aRFAtkuiyIGbUQQ9LTfu25sfDP
+ HSu4hSGDX9VMBTDrtWamgaNNsUcStxUFr0PtMkrZMPR4ukuJG22Vv89KCRNtcfkWHIpa
+ WCdX6EXu/RN2XOhzCMh00r0nfnyUkjElAS4g8y2XdW/vtM+fbMARodgbKac1UxyDPWBp
+ iojQ==
+X-Gm-Message-State: AOJu0YyZKltFGaNj4qKTtax0xbvHPDN7PkfvhPIcHoIV2xOTbgNdXXRG
+ q3MElenoJPjYc9xYdDfPaskJ1eTBD+kGq+/HA4V/P7sS77CHa5TGgFX1ULjX6b8YfAQFtTlSd9f
+ gB04rPpt4ziOe3z7Gg0FlOTZqG4kCjNr4dNZrMKfQHwX4nuoOmoWT6yJeFs1zB3USTGL3EB7f
+X-Gm-Gg: ASbGncsqChLYv4ENUxzilAp3UFEXiPv7oUkluvCECRZe/SRrkUxh4lO6eDgKYAq8wa5
+ 7cdIgl9E0Kzy0WyPHJfhhtJcDQKkth2HfqfwiM3RVnHen9KjTjFpao7vYstmcV6UK0gTlahAbgi
+ ORKcyRG7kl3gCg88FoY5P6SAn6vfTunjWeoAAFqYg985TwI6vL/aGjiNz3pc+NL+uNF5M1stZML
+ QBLlz+m0tUXyixfNWcJWU8lb+8h5+gIXFTGvq7iwiJtp5sEzuOjqiCjf7kKRknmEu0JL1D75nOi
+ 0lEJBfhKFA7kdEdsOlyqkwg=
+X-Received: by 2002:a05:6214:500f:b0:6e8:f4d3:e8a5 with SMTP id
+ 6a1803df08f44-6e9005ebd75mr74632906d6.15.1741388285756; 
+ Fri, 07 Mar 2025 14:58:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGTiSEZeQ1Mju81INm+rCmE3ErUST8oo8BIujlKtrX5EtGTFt7GLoo0rIB1TyJ6nW8rXJT4pg==
+X-Received: by 2002:a05:6214:500f:b0:6e8:f4d3:e8a5 with SMTP id
+ 6a1803df08f44-6e9005ebd75mr74632686d6.15.1741388285509; 
+ Fri, 07 Mar 2025 14:58:05 -0800 (PST)
+Received: from localhost ([2601:441:8201:e8ff:9eef:76fd:782:3b7c])
+ by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-6e8f70a2dc8sm24457926d6.63.2025.03.07.14.58.04
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 07 Mar 2025 14:58:05 -0800 (PST)
+From: Jacob Martin <jacob.martin@canonical.com>
+To: ltp@lists.linux.it
+Date: Fri,  7 Mar 2025 16:58:04 -0600
+Message-ID: <20250307225804.380166-1-jacob.martin@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250228172439.3276777-5-pvorel@suse.cz>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
- yuki.lan:mid]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 4/5] shell lib: Add basic support for test
- cleanup
+Subject: [LTP] [PATCH] cpuset_memory_testset.sh: Give SIGUSR1 handler time
+ to run before changing target mapping node in tests 12 and 13
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,85 +99,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> diff --git a/testcases/lib/tst_env.sh b/testcases/lib/tst_env.sh
-> index b13bab37c3..68f9a0daa9 100644
-> --- a/testcases/lib/tst_env.sh
-> +++ b/testcases/lib/tst_env.sh
-> @@ -35,7 +35,3 @@ tst_brk_()
->  
->  alias tst_res="tst_res_ $tst_script_name \$LINENO"
->  alias tst_brk="tst_brk_ $tst_script_name \$LINENO"
-> -
-> -if [ -n "$TST_CLEANUP" ]; then
-> -	trap $TST_CLEANUP EXIT
-> -fi
-> diff --git a/testcases/lib/tst_exec.sh b/testcases/lib/tst_exec.sh
-> new file mode 100755
-> index 0000000000..dcf40fd5bb
-> --- /dev/null
-> +++ b/testcases/lib/tst_exec.sh
-> @@ -0,0 +1,19 @@
-> +#!/bin/sh
-> +# Copyright (c) 2025 Cyril Hrubis <chrubis@suse.cz>
-> +# Copyright (c) 2025 Petr Vorel <pvorel@suse.cz>
-> +
-> +. tst_env.sh
-> +
-> +. "$1"
-> +
-> +if [ -n "$TST_CLEANUP" ]; then
-> +	trap $TST_CLEANUP EXIT
-> +fi
-> +
-> +if [ -n "$TST_SETUP" ]; then
-> +    $TST_SETUP
-> +fi
-> +
-> +tst_test
-> +
-> +# vim: set ft=sh ts=4 sts=4 sw=4 expandtab :
+The cpuset_memory test occasionally fails on test12 and test13. Both
+intend to map anonymous memory on NUMA node 1, then swap to node 0 and
+map more anonymous memory, verifying that memory was mapped to the
+correct nodes along the way. On some high performance and high core
+count x86 instances we observed 0 would be written to cpuset.mems before
+the mapping program receives and handles SIGUSR1, causing the mapping
+program to map on node 0 instead of the expected node 1, and thus
+resulting in a test failure.
 
-Please do not add the vim formatting hints.
+ cpuset_memory 1 TINFO: CPUs are numbered continuously starting at 0 (0-223)
+ cpuset_memory 1 TINFO: Nodes are numbered continuously starting at 0 (0-1)
+ cpuset_memory 1 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 3 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 5 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 7 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 9 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 11 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 13 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 15 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 17 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 19 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 21 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 23 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 25 TFAIL: allocate memory on the Node#0(Expect: Node#1).
+ cpuset_memory 27 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 29 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 31 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 33 TPASS: Cpuset memory allocation test succeeded.
+ cpuset_memory 35 TPASS: Cpuset memory allocation test succeeded.
+ INFO: ltp-pan reported some tests FAIL
 
-> diff --git a/testcases/lib/tst_loader.sh b/testcases/lib/tst_loader.sh
-> index 62c9cc6d8f..e2d1bd7daf 100644
-> --- a/testcases/lib/tst_loader.sh
-> +++ b/testcases/lib/tst_loader.sh
-> @@ -3,11 +3,8 @@
->  # Copyright (c) 2024-2025 Cyril Hrubis <chrubis@suse.cz>
->  #
->  # This is a loader for shell tests that use the C test library.
-> -#
->  
->  if [ -z "$LTP_IPC_PATH" ]; then
-> -	tst_run_shell $(basename "$0") "$@"
-> +	tst_run_shell tst_exec.sh $(basename "$0") "$@"
->  	exit $?
-> -else
-> -	. tst_env.sh
->  fi
+This is resolved by adding a 1 second delay between sending the first
+SIGUSR1 signal and setting cpuset.mems to 0, which gives the SIGUSR1
+handler time to complete and map to node 1, before switching to node 0.
 
-Do we really need the tst_exec.sh?
+Fixes: 70259d6e7
+Signed-off-by: Jacob Martin <jacob.martin@canonical.com>
+---
+ .../cpuset/cpuset_memory_test/cpuset_memory_testset.sh          | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Doesn't it work if we add what is in the tst_exec here?
-
-The whole point of [ -z "$LTP_IPC_PATH" ]; is to detect when we are
-being re-executed by the tst_run_shell, so the else branch (which
-isn't really needed, because we do exit in the if) was when the test did
-run.
-
-If you change the tests to be in functions and source the tst_loader.sh
-at the end it should just work.
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+index c1e7cea8f..04d7cc877 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+@@ -383,7 +383,7 @@ talk2memory_test_for_case_12_13()
+ 	sleep 1
+ 	echo $1 > "$2/tasks"
+ 	/bin/kill -s SIGUSR1 $1
+-
++	sleep 1
+ 	echo 0 > "$2/cpuset.mems" || return 1
+ 	sleep 1
+ 	/bin/kill -s SIGUSR1 $1
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
