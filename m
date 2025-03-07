@@ -4,112 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D68C282DE
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 10:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA86CC28B23
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 16:17:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BD8C43CA128
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 11:24:56 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DC5843CA155
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 17:17:07 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C9C6B3CA00D
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:24:39 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id DC1523CA148
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 17:16:50 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7AA5E600677
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:24:37 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 537D21A00816
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 17:16:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 60BA91F38E;
- Fri,  7 Mar 2025 10:24:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8A4AE1F44F;
+ Fri,  7 Mar 2025 16:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741343076;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1741364209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
- b=206iIpJGngdxUtvntAfhGRGxs3+MOsXh2WIPsBDaihYSQ793WnV47LuqiYONxLB58nC6b/
- sfikihV2XKHby1UqDbbn/61bWNxNuIkEsHB3Ofx2Ew2QsIxU2Srm9BcVUbqJOeDt+a92Bt
- 1oK9nhhuTwXm/PbbyW3fJL6EPEIyBA4=
+ bh=qXge/HKR+/YYHZrcSeekZm31jrYkh/Jh9AVnhIHePbw=;
+ b=nCg3PrsLIRQ3jg7t8Sd6LJod2gyuAkHmTLmk/0E6bhsCnWYNgBHp+X4VSlQbh8BwPHGB91
+ CcO0Fvq7VqFDkkihs3zlQkNkMlCfnMZLDYbREYus86Ac+5cwDnrxRvh7USn0XOQzE/4c1N
+ cyrSBKtbWcswYvHEWLzYiDX/ekFMqY8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741343076;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1741364209;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
- b=tcYZkfrIFot+qp5/FVk1z9/TzWiE09MTaXHX6nTt/ZxWCfXAUWQLqFA2X99rzmo+Rk5cNn
- CrSNbkkjD/EOtDAg==
+ bh=qXge/HKR+/YYHZrcSeekZm31jrYkh/Jh9AVnhIHePbw=;
+ b=hgkgilJRGyjoZwlF9pEypA/Cx7DnSzmSCSSBK4rSoOsDo8bT/3YNCC/D49flLumX5BqniY
+ 76SQgmQqnpmOhsCw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=206iIpJG;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tcYZkfrI
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741343076;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1741364208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
- b=206iIpJGngdxUtvntAfhGRGxs3+MOsXh2WIPsBDaihYSQ793WnV47LuqiYONxLB58nC6b/
- sfikihV2XKHby1UqDbbn/61bWNxNuIkEsHB3Ofx2Ew2QsIxU2Srm9BcVUbqJOeDt+a92Bt
- 1oK9nhhuTwXm/PbbyW3fJL6EPEIyBA4=
+ bh=qXge/HKR+/YYHZrcSeekZm31jrYkh/Jh9AVnhIHePbw=;
+ b=ZuGdisSTIBZEQDgeUwEx0Tm+7UhqKGYh1ndsq7r0t3ZwG24Lgcer6Vx8RK+kwhXUASRwha
+ TKYG0Nszain/7X5gGNN12lQJfZ8Wfl/X2kaYLb04Rsfwj2TInAT2nH6YOxsMN01g8yNNuM
+ AjMHW8A9m7XZeQQAIivSBqiv2XgikkA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741343076;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1741364208;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
- b=tcYZkfrIFot+qp5/FVk1z9/TzWiE09MTaXHX6nTt/ZxWCfXAUWQLqFA2X99rzmo+Rk5cNn
- CrSNbkkjD/EOtDAg==
+ bh=qXge/HKR+/YYHZrcSeekZm31jrYkh/Jh9AVnhIHePbw=;
+ b=cDR0RxdGLaz3Hr+5MitgjoTu3TDJKGqeycTe7/Ga+kOgL8tugqElDQn3h1/mfli4LULne7
+ I5gO2lFj8ZsjdiAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C269113939;
- Fri,  7 Mar 2025 10:24:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CBBF13A22;
+ Fri,  7 Mar 2025 16:16:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VQnzJmPJymdNWQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 07 Mar 2025 10:24:35 +0000
-Date: Fri, 7 Mar 2025 11:24:29 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20250307102429.GA272497@pevik>
-References: <20250114113239.611278-1-pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dDePHfAby2emTwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 07 Mar 2025 16:16:48 +0000
+Date: Fri, 7 Mar 2025 17:17:04 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z8scAAdSbxjCjvV2@yuki.lan>
+References: <20250228172439.3276777-1-pvorel@suse.cz>
+ <20250228172439.3276777-3-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250114113239.611278-1-pvorel@suse.cz>
-X-Rspamd-Queue-Id: 60BA91F38E
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <20250228172439.3276777-3-pvorel@suse.cz>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] IMA: Remove evm_overlay.sh
+Subject: Re: [LTP] [RFC PATCH 2/5] lib: Allow test to have positional args
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,212 +109,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Ignaz Forster <iforster@suse.de>, linux-integrity@vger.kernel.org
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi, Ignaz,
+Hi!
+> diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+> index 9b18ec059c..f5796ddc49 100644
+> --- a/doc/developers/writing_tests.rst
+> +++ b/doc/developers/writing_tests.rst
+> @@ -521,7 +521,7 @@ LTP C And Shell Test API Comparison
+>      * - not applicable
+>        - TST_NEEDS_MODULE
+>  
+> -    * - not applicable
+> +    * - .pos_args (internal use for tst_run_shell.c)
+>        - TST_POS_ARGS
+>  
+>      * - not applicable
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index eb73cd593c..b249f833ab 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -292,8 +292,11 @@ struct tst_fs {
+>   *
+>   * @tcnt: A number of tests. If set the test() callback is called tcnt times
+>   *        and each time passed an increasing counter value.
+> + *
+>   * @options: An NULL optstr terminated array of struct tst_option.
+>   *
+> + * @pos_args: An number of positional parameters passed to tst_run_shell.c.
 
-> Proof of concept, it was never fixed in the kernel.
-> Instead we should have some basic EVM tests.
+We do not support positional arguments for the C API. Do we really need
+them for shell?
 
-gently ping. Is evm_overlay.sh test useful for you?
-Otherwise I'll delete it.
+>   * @min_kver: A minimal kernel version the test can run on. e.g. "3.10".
+>   *
+>   * @supported_archs: A NULL terminated array of architectures the test runs on
+> @@ -528,6 +531,7 @@ struct tst_fs {
+>  	unsigned int tcnt;
+>  
+>  	struct tst_option *options;
+> +	int pos_args;
+>  
+>  	const char *min_kver;
+>  
+> @@ -555,7 +559,6 @@ struct tst_fs {
+>  	unsigned int skip_in_secureboot:1;
+>  	unsigned int skip_in_compat:1;
+>  
+> -
+>  	int needs_abi_bits;
+>  
+>  	unsigned int needs_hugetlbfs:1;
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 3823ea109e..1c2cc5e3b2 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -711,6 +711,9 @@ static void parse_opts(int argc, char *argv[])
+>  
+>  	check_option_collision();
+>  
+> +	if (tst_test->pos_args < 0)
+> +		tst_brk(TBROK, ".pos_args must be >= 0");
 
-Kind regards,
-Petr
+You can declare pos_args as unsigned and you don't have to add this
+condition.
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  runtest/ima                                   |  1 -
->  .../kernel/security/integrity/ima/README.md   | 64 -------------
->  .../integrity/ima/tests/evm_overlay.sh        | 93 -------------------
->  3 files changed, 158 deletions(-)
->  delete mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+>  	optstr[0] = 0;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(options); i++)
+> @@ -751,8 +754,10 @@ static void parse_opts(int argc, char *argv[])
+>  		}
+>  	}
+>  
+> -	if (optind < argc)
+> -		tst_brk(TBROK, "Unexpected argument(s) '%s'...", argv[optind]);
+> +	if (optind + tst_test->pos_args < argc) {
+> +		tst_brk(TBROK, "Unexpected argument(s) '%s' (%d + %d < %d)",
+> +			argv[optind], optind, tst_test->pos_args, argc);
+> +	}
 
-> diff --git a/runtest/ima b/runtest/ima
-> index 01942eefa3..75e5a99e7c 100644
-> --- a/runtest/ima
-> +++ b/runtest/ima
-> @@ -7,4 +7,3 @@ ima_keys ima_keys.sh
->  ima_kexec ima_kexec.sh
->  ima_selinux ima_selinux.sh
->  ima_conditionals ima_conditionals.sh
-> -evm_overlay evm_overlay.sh
-> diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-> index 5b261a1914..d3c3206bf2 100644
-> --- a/testcases/kernel/security/integrity/ima/README.md
-> +++ b/testcases/kernel/security/integrity/ima/README.md
-> @@ -64,67 +64,3 @@ and reading the IMA policy allowed in the kernel configuration:
->  CONFIG_SECURITY_SELINUX=y
->  CONFIG_IMA_READ_POLICY=y
->  ```
-> -
-> -## EVM tests
-> -
-> -`evm_overlay.sh` requires a builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`
-> -kernel parameter) which appraises the integrity of all files owned by root and EVM setup.
-> -Again, for simplicity ignore possibility to load requires rules via custom policy.
-> -
-> -Mandatory kernel configuration for EVM tests:
-> -```
-> -CONFIG_INTEGRITY=y
-> -CONFIG_INTEGRITY_SIGNATURE=y
-> -CONFIG_IMA=y
-> -CONFIG_IMA_APPRAISE=y
-> -CONFIG_EVM=y
-> -CONFIG_KEYS=y
-> -CONFIG_TRUSTED_KEYS=y
-> -CONFIG_ENCRYPTED_KEYS=y
-> -```
-> -
-> -Example of preparing environment on for EVM on openSUSE:
-> -
-> -* Boot install system with `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters
-> -  (for IMA measurement, IMA appraisal and EVM protection)
-> -* Proceed with installation until summary screen, but do not start the installation yet
-> -* Select package `dracut-ima` (required for early boot EVM support) for installation
-> -  (Debian based distros already contain IMA + EVM support in `dracut` package)
-> -* Change to a console window and run commands to generate keys required by EVM:
-> -```
-> -# mkdir /etc/keys
-> -# user_key=$(keyctl add user kmk-user "`dd if=/dev/urandom bs=1 count=32 2>/dev/null`" @u)
-> -# keyctl pipe "$user_key" > /etc/keys/kmk-user.blob
-> -# evm_key=$(keyctl add encrypted evm-key "new user:kmk-user 64" @u)
-> -# keyctl pipe "$evm_key" >/etc/keys/evm.blob
-> -# cat <<END >/etc/sysconfig/masterkey
-> -MASTERKEYTYPE="user"
-> -MASTERKEY="/etc/keys/kmk-user.blob"
-> -END
-> -# cat <<END >/etc/sysconfig/evm
-> -EVMKEY="/etc/keys/evm.blob"
-> -END
-> -# mount -t securityfs security /sys/kernel/security
-> -# echo 1 >/sys/kernel/security/evm
-> -```
-> -
-> -* Go back to the installation summary screen and start the installation
-> -* During the installation execute the following commands from the console:
-> -```
-> -# cp -r /etc/keys /mnt/etc/ # Debian based distributions: use /target instead of /mnt
-> -# cp /etc/sysconfig/{evm,masterkey} /mnt/etc/sysconfig/
-> -```
-> -
-> -This should work on any distribution using dracut.
-> -Loading EVM keys is also possible with initramfs-tools (Debian based distributions).
-> -
-> -Of course it's possible to install OS usual way, add keys later and fix missing xattrs with:
-> -```
-> -evmctl -r ima_fix /
-> -```
-> -
-> -or with `find` if evmctl is not available:
-> -```
-> -find / \( -fstype rootfs -o -fstype ext4 -o -fstype btrfs -o -fstype xfs \) -exec sh -c "< '{}'" \;
-> -```
-> -Again, fixing requires `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters.
-> diff --git a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-> deleted file mode 100755
-> index 12b2a28c25..0000000000
-> --- a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-> +++ /dev/null
-> @@ -1,93 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0-or-later
-> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-> -# Based on reproducer and further discussion with Ignaz Forster <iforster@suse.de>
-> -# Reproducer for not upstreamed patchset [1] and previous report [2].
-> -# [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
-> -# [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
-> -
-> -TST_SETUP="setup"
-> -TST_CLEANUP="cleanup"
-> -TST_CNT=4
-> -
-> -setup()
-> -{
-> -	EVM_FILE="/sys/kernel/security/evm"
-> -
-> -	[ -f "$EVM_FILE" ] || tst_brk TCONF "EVM not enabled in kernel"
-> -	[ $(cat $EVM_FILE) -eq 1 ] || tst_brk TCONF "EVM not enabled for this boot"
-> -
-> -	require_ima_policy_cmdline "appraise_tcb"
-> -
-> -	lower="$TST_MNTPOINT/lower"
-> -	upper="$TST_MNTPOINT/upper"
-> -	work="$TST_MNTPOINT/work"
-> -	merged="$TST_MNTPOINT/merged"
-> -	mkdir -p $lower $upper $work $merged
-> -
-> -	device_backup="$TST_DEVICE"
-> -	TST_DEVICE="overlay"
-> -
-> -	fs_type_backup="$TST_FS_TYPE"
-> -	TST_FS_TYPE="overlay"
-> -
-> -	mntpoint_backup="$TST_MNTPOINT"
-> -	TST_MNTPOINT="$PWD/$merged"
-> -
-> -	params_backup="$TST_MNT_PARAMS"
-> -	TST_MNT_PARAMS="-o lowerdir=$lower,upperdir=$upper,workdir=$work"
-> -
-> -	tst_mount
-> -	mounted=1
-> -}
-> -
-> -test1()
-> -{
-> -	local file="foo1.txt"
-> -
-> -	tst_res TINFO "overwrite file in overlay"
-> -	EXPECT_PASS echo lower \> $lower/$file
-> -	EXPECT_PASS echo overlay \> $merged/$file
-> -}
-> -
-> -test2()
-> -{
-> -	local file="foo2.txt"
-> -
-> -	tst_res TINFO "append file in overlay"
-> -	EXPECT_PASS echo lower \> $lower/$file
-> -	EXPECT_PASS echo overlay \>\> $merged/$file
-> -}
-> -
-> -test3()
-> -{
-> -	local file="foo3.txt"
-> -
-> -	tst_res TINFO "create a new file in overlay"
-> -	EXPECT_PASS echo overlay \> $merged/$file
-> -}
-> -
-> -test4()
-> -{
-> -	local f
-> -
-> -	tst_res TINFO "read all created files"
-> -	for f in $(find $TST_MNTPOINT -type f); do
-> -		EXPECT_PASS cat $f \> /dev/null 2\> /dev/null
-> -	done
-> -}
-> -
-> -cleanup()
-> -{
-> -	[ -n "$mounted" ] || return 0
-> -
-> -	tst_umount $TST_MNTPOINT
-> -
-> -	TST_DEVICE="$device_backup"
-> -	TST_FS_TYPE="$fs_type_backup"
-> -	TST_MNTPOINT="$mntpoint_backup"
-> -	TST_MNT_PARAMS="$params_backup"
-> -}
-> -
-> -. ima_setup.sh
-> -tst_run
+And this half enables the positional arguments for the C API as well. If
+we set the pos_args in tst_test, then we can pass them, but there is no
+way how they can be passed to the test.
+
+So if we are going to add them, we should pass then in
+extern char **tst_args or something like that.
+
+>  }
+>  
+>  int tst_parse_int(const char *str, int *val, int min, int max)
+> -- 
+> 2.47.2
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
