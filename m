@@ -4,90 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A1CC28B25
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 22:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB980C282DE
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 23:46:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14FAF3CA182
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 23:58:27 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D81C23CA181
+	for <ltp@archiver.kernel.org>; Sat,  8 Mar 2025 00:46:17 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 66E883C9BE9
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 23:58:09 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=canonical.com (client-ip=185.125.188.122;
- helo=smtp-relay-internal-0.canonical.com;
- envelope-from=jacob.martin@canonical.com; receiver=lists.linux.it)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8CB721A004B1
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 23:58:09 +0100 (CET)
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69])
+ by picard.linux.it (Postfix) with ESMTPS id 0DA2F3CA0DD
+ for <ltp@lists.linux.it>; Sat,  8 Mar 2025 00:46:00 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CEC903FCC5
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 22:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1741388287;
- bh=DthZczQCezXsKD9zBwe5Cuc5cRjGwL1h8ZKUCS3/0bU=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=PeOZfD6vxqRs9QOmC8CVopfAn+eJc4Jwy73vWjKWWFJsE0CErJYaVRro3BVJ2AIMN
- l4BAzjDR4HRaerEDC6C6Ry6y0+fzCBP3WiKCiP2qWYeqFaH0ZZt59IZEM1Tzv6ij8R
- KSW4FnPueMNWIB7qiDBtTeVu9XnGp1d6/s9NAAZBjShlHoX9OvPYu0fEsGPAQ50A+s
- 370tjxHLqD9ypxCAFvWCjF3pPsg9RhN04lYXHQgCj/V6FEhmKhhKZpaA0Mg5HyFZfQ
- JEwj9W4u7VcRT5iLf9JUGY/epU3fx//MQ1v+YFVbDDu9r4jQjBNlr6tO0f9nsa8tx1
- RyDunNBKDqvZA==
-Received: by mail-qv1-f69.google.com with SMTP id
- 6a1803df08f44-6e8c4f5f477so40990136d6.3
- for <ltp@lists.linux.it>; Fri, 07 Mar 2025 14:58:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1741388286; x=1741993086;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=DthZczQCezXsKD9zBwe5Cuc5cRjGwL1h8ZKUCS3/0bU=;
- b=WLDUYSDZ3oCFJbIFfFYTHfDFuZyMns5/b/uROpG07TXFR2UgWWRq3fQUdS5VRPyZWT
- ok7LqyXfK5n7mR6RfZV7f2ys0jmBSHy3heSyOuEC/hCbJ8lQs1VuBcZjimMfL9dgkxRu
- /KNFwmdQqx0o7jcoPpKxgeRuWFJ5OicPvURX1G8PY0aRFAtkuiyIGbUQQ9LTfu25sfDP
- HSu4hSGDX9VMBTDrtWamgaNNsUcStxUFr0PtMkrZMPR4ukuJG22Vv89KCRNtcfkWHIpa
- WCdX6EXu/RN2XOhzCMh00r0nfnyUkjElAS4g8y2XdW/vtM+fbMARodgbKac1UxyDPWBp
- iojQ==
-X-Gm-Message-State: AOJu0YyZKltFGaNj4qKTtax0xbvHPDN7PkfvhPIcHoIV2xOTbgNdXXRG
- q3MElenoJPjYc9xYdDfPaskJ1eTBD+kGq+/HA4V/P7sS77CHa5TGgFX1ULjX6b8YfAQFtTlSd9f
- gB04rPpt4ziOe3z7Gg0FlOTZqG4kCjNr4dNZrMKfQHwX4nuoOmoWT6yJeFs1zB3USTGL3EB7f
-X-Gm-Gg: ASbGncsqChLYv4ENUxzilAp3UFEXiPv7oUkluvCECRZe/SRrkUxh4lO6eDgKYAq8wa5
- 7cdIgl9E0Kzy0WyPHJfhhtJcDQKkth2HfqfwiM3RVnHen9KjTjFpao7vYstmcV6UK0gTlahAbgi
- ORKcyRG7kl3gCg88FoY5P6SAn6vfTunjWeoAAFqYg985TwI6vL/aGjiNz3pc+NL+uNF5M1stZML
- QBLlz+m0tUXyixfNWcJWU8lb+8h5+gIXFTGvq7iwiJtp5sEzuOjqiCjf7kKRknmEu0JL1D75nOi
- 0lEJBfhKFA7kdEdsOlyqkwg=
-X-Received: by 2002:a05:6214:500f:b0:6e8:f4d3:e8a5 with SMTP id
- 6a1803df08f44-6e9005ebd75mr74632906d6.15.1741388285756; 
- Fri, 07 Mar 2025 14:58:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGTiSEZeQ1Mju81INm+rCmE3ErUST8oo8BIujlKtrX5EtGTFt7GLoo0rIB1TyJ6nW8rXJT4pg==
-X-Received: by 2002:a05:6214:500f:b0:6e8:f4d3:e8a5 with SMTP id
- 6a1803df08f44-6e9005ebd75mr74632686d6.15.1741388285509; 
- Fri, 07 Mar 2025 14:58:05 -0800 (PST)
-Received: from localhost ([2601:441:8201:e8ff:9eef:76fd:782:3b7c])
- by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-6e8f70a2dc8sm24457926d6.63.2025.03.07.14.58.04
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 07 Mar 2025 14:58:05 -0800 (PST)
-From: Jacob Martin <jacob.martin@canonical.com>
-To: ltp@lists.linux.it
-Date: Fri,  7 Mar 2025 16:58:04 -0600
-Message-ID: <20250307225804.380166-1-jacob.martin@canonical.com>
-X-Mailer: git-send-email 2.43.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7CDE510007BE
+ for <ltp@lists.linux.it>; Sat,  8 Mar 2025 00:46:00 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5AC351F38C;
+ Fri,  7 Mar 2025 23:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741391157;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AV2+qiyRU7vmMzfXxA3kgVPEE7+LrPSNpVZAat4CEt8=;
+ b=tc4lIt8r+M2Bus8fMzQBlPC/gtmJQumaGOGAXkW7KcgbXV/2ajS5Nc9gQm9fmboLAi2IeJ
+ vs2iLbhoby9Sdt4dNMEzMJAiG7LyZv/NgzyBTWflutrNZCMN7pXV0zb2IifZyxOyvYzYnM
+ 7ZwTwEoJmN40xrDF1cCAmBu8C//wSK4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741391157;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AV2+qiyRU7vmMzfXxA3kgVPEE7+LrPSNpVZAat4CEt8=;
+ b=RUkAhuiwxxlaXRc+Sc4QzNGyURv8YRugeMnR39hDjMsgv7XNKMcl8w+Pg17XxugbtvQOhA
+ 7osKjCSmS8FIWrAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741391156;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AV2+qiyRU7vmMzfXxA3kgVPEE7+LrPSNpVZAat4CEt8=;
+ b=2aKS0QLoGXGPNQhwGjalIPxytQiNYt55ukfb2aGPbhvhSutmNMJn7Kb1DHYapfA2S84ZzQ
+ 6iMEq5qZsaYNXD66POZQOE5PtDjXEqlEcOp1EgR+oot2ql1Cn1ymu3C6eom6Wc/K7HfgKp
+ mvU1KNIYMzvX1szZjWrpQMVN8DmuVdU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741391156;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AV2+qiyRU7vmMzfXxA3kgVPEE7+LrPSNpVZAat4CEt8=;
+ b=Yn+aw8sdBGD9joze591tYuJ/uhYxXfg6KLWld04LZzdlJbA6RKkNLE3ocB67Rm0lYfnfRH
+ +EcllTpoDStt8zDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BA7A13A22;
+ Fri,  7 Mar 2025 23:45:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +THdODOFy2fjSgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 07 Mar 2025 23:45:55 +0000
+Date: Sat, 8 Mar 2025 00:45:54 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>,
+ Stanislav Kholmanskikh <stanislav.kholmanskikh@bell-sw.com>,
+ ltp@lists.linux.it
+Message-ID: <20250307234554.GA347736@pevik>
+References: <20231027174322.710674-1-pvorel@suse.cz>
+ <CAEemH2fuA+YfFGNzSResMprEeT8+zhO1S_2Kscc14d2T828YYw@mail.gmail.com>
+ <20231030072819.GA9167@pevik>
+ <CAEemH2eUQxxQAh-Ln_hyzu_C_AL36fXsjbKZJqC3rcHsASgQgQ@mail.gmail.com>
+ <20231030142055.GA21733@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20231030142055.GA21733@pevik>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] cpuset_memory_testset.sh: Give SIGUSR1 handler time
- to run before changing target mapping node in tests 12 and 13
+Subject: Re: [LTP] [PATCH 1/1] compat_16.mk: Cleanup INTERMEDIATE object
+ syntax
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,68 +119,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The cpuset_memory test occasionally fails on test12 and test13. Both
-intend to map anonymous memory on NUMA node 1, then swap to node 0 and
-map more anonymous memory, verifying that memory was mapped to the
-correct nodes along the way. On some high performance and high core
-count x86 instances we observed 0 would be written to cpuset.mems before
-the mapping program receives and handles SIGUSR1, causing the mapping
-program to map on node 0 instead of the expected node 1, and thus
-resulting in a test failure.
+Hi Li,
 
- cpuset_memory 1 TINFO: CPUs are numbered continuously starting at 0 (0-223)
- cpuset_memory 1 TINFO: Nodes are numbered continuously starting at 0 (0-1)
- cpuset_memory 1 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 3 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 5 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 7 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 9 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 11 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 13 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 15 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 17 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 19 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 21 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 23 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 25 TFAIL: allocate memory on the Node#0(Expect: Node#1).
- cpuset_memory 27 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 29 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 31 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 33 TPASS: Cpuset memory allocation test succeeded.
- cpuset_memory 35 TPASS: Cpuset memory allocation test succeeded.
- INFO: ltp-pan reported some tests FAIL
+> > > > > -%_16: CPPFLAGS += -D$(DEF_16)=1
 
-This is resolved by adding a 1 second delay between sending the first
-SIGUSR1 signal and setting cpuset.mems to 0, which gives the SIGUSR1
-handler time to complete and map to node 1, before switching to node 0.
+> > > Not related to this effort: shouldn't we convert all CPPFLAGS to CFLAGS?
+> > > Or the
+> > > LTP build system it just prepared to the crazy ideas about using C++? :)
 
-Fixes: 70259d6e7
-Signed-off-by: Jacob Martin <jacob.martin@canonical.com>
----
- .../cpuset/cpuset_memory_test/cpuset_memory_testset.sh          | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-index c1e7cea8f..04d7cc877 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-@@ -383,7 +383,7 @@ talk2memory_test_for_case_12_13()
- 	sleep 1
- 	echo $1 > "$2/tasks"
- 	/bin/kill -s SIGUSR1 $1
--
-+	sleep 1
- 	echo 0 > "$2/cpuset.mems" || return 1
- 	sleep 1
- 	/bin/kill -s SIGUSR1 $1
--- 
-2.43.0
+> > No, I don't think so. I guess you memories it confused with CXXFLAGS :).
 
+> > FYI:
+
+> > CPPFLAGS (C PreProcessor Flags) are options for the C preprocessor,
+> > which is the first stage of compilation where macro substitution occurs,
+> > and conditional compilation directives are processed. These flags are often
+> > used to specify additional include directories.
+> >     e.g. CPPFLAGS="-I/some/include/path"
+
+> > CFLAGS (C Compiler Flags) are options for the C compiler. These
+> > flags are often used to specify various compiler settings, such as
+> > optimization level, warnings level, and debugging information.
+> >     e.g.  CFLAGS="-O2 -g -Wall"
+
+> > CXXFLAGS (C++ Compiler Flags) are options for the C++ compiler.
+> > It can be used to define options like optimization levels, debugging
+> > information, warning levels, and more.
+> >     e.g.  CXXFLAGS="-O2 -g -Wall"
+
+> Ah, you're right. Thanks!
+
+> > > > Seems we need to keep this one line, otherwise it can't transfer the
+> > > > 'TST_USE_COMPAT16_SYSCALL=1' macro in the compilation.
+
+> > > Ah, thanks!
+
+> > > > The rest looks good to me.
+> > > > Reviewed-by: Li Wang <liwang@redhat.com>
+
+> > > BTW I'm going to push it with you as an author + with your Signed-off-by:
+> > > tag
+> > > (you're effectively the autor of the code) and with my RBT.
+
+
+> > Sure, thanks for doing this for me.
+
+> Yw.
+
+Finally merged :).
+(Obviously I forgot to merge back then although I set this in patchwork as accepted.)
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
