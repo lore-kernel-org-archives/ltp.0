@@ -4,90 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF2B2C282DE
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 10:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D68C282DE
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 10:24:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D8863CA11A
-	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 11:07:28 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id BD8C43CA128
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 11:24:56 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7159C3CA00D
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:07:11 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id C9C6B3CA00D
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:24:39 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B0621400138
- for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:07:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741342028;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7AA5E600677
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 11:24:37 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 60BA91F38E;
+ Fri,  7 Mar 2025 10:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741343076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bL3eFzrUvokXeVo/hr/trTZwaFHAIg7dvVSR11Wokl0=;
- b=bxGXRI0HWFdf5uwhcBXwOYEQpz0602Hncuzh4i2zvxLMsQu3i6zeLMmZjscXMt9kZaScdd
- 01IhfiIzYKuuvzNLREnL/9RFUn7hT8ikL5qyXSnq3okpNPwVUwx9fSoV7E/neyi3ybiA/9
- rdFOQwZr50R6//PQIlpOqa8QC/yCWRo=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-490-WEgLT9ybNxKfnQkXGfcIIQ-1; Fri, 07 Mar 2025 05:07:04 -0500
-X-MC-Unique: WEgLT9ybNxKfnQkXGfcIIQ-1
-X-Mimecast-MFC-AGG-ID: WEgLT9ybNxKfnQkXGfcIIQ_1741342024
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-2ff58318acaso4811952a91.0
- for <ltp@lists.linux.it>; Fri, 07 Mar 2025 02:07:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1741342023; x=1741946823;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=bL3eFzrUvokXeVo/hr/trTZwaFHAIg7dvVSR11Wokl0=;
- b=sPJoc/urYChxt5FT5oEr7ZTtALkrKBhDWBEMB+ySEwDScJgWe7MMuzeIFpa0GmOL6s
- MFe1cMnTTKF9Y5bkSWDbLQs3NfYd70BMqlRfXyeOqTtc4I7BK13KHVXLKt49PC0RB/ON
- LTSkOEpUnL6LmnyxtFs5zydtJRvO1CAIox8Aq+2YTo4BMwmwGM3ORukGgV6t3X+uY2hM
- +IRjzjV7fSOXv08AHzEFbRBv2HvmmkNM50DNPnOLqI5uh6YlbPqvWhlL3wekfVgnYOq5
- hApuHvtHXZCsqoOfIwZoWVVlkIFA2n8TqFs78vxzXJRrPLMIyvBpMsMjz2QtMPlCdzGt
- VFgQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCU1Z69AE/8Ogyb/jK6jADCuETWYvYkPnIE8SqWhIUx/Fp2b9pjphPfzuA2MLervcuc8MwA=@lists.linux.it
-X-Gm-Message-State: AOJu0YwQiOh2S7eMBvcN3vG/4EjFgGefOkmfYrAnu6dCPj3DtIcoKkKp
- XRsQnje9sD3WnRd6cyp78bnIo/Xhz1CnK6ABGFRvad8g+DOm6HYJBKUHqcatjTOKFib4LySv4/s
- nyBIDYkqsI16JOEJLmqi+A5aCOPAjPMvHcRxqugghgebiCY5J9daIkJYu4YZ8pyIK0zmq11In67
- dIGsU8nHLheW6HGyl1ASOEmpw=
-X-Gm-Gg: ASbGncukC6dKrf1ohzoq41ikBmhMOIu559fwJqyAASmcyphwRkXYohVT8vIZLaG6+Q8
- PU/a7XNfEQB2g2dl90XE9SuocsRFTVfvSVKLyt5Mv4O1rJR4MHDjkCbhkt3M544kJC/VR+0gYEA
- ==
-X-Received: by 2002:a17:90b:2782:b0:2ef:2f49:7d7f with SMTP id
- 98e67ed59e1d1-2ff7ce938b6mr5175186a91.18.1741342023745; 
- Fri, 07 Mar 2025 02:07:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHSOnRhaUKVjotsFEIItilAh3aphdGUUcZitSP2WPBYcR2CPzwBBtNIaUJoW60hsqYhXKw0lo9YNdQMtIwAWFo=
-X-Received: by 2002:a17:90b:2782:b0:2ef:2f49:7d7f with SMTP id
- 98e67ed59e1d1-2ff7ce938b6mr5175155a91.18.1741342023483; Fri, 07 Mar 2025
- 02:07:03 -0800 (PST)
+ bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
+ b=206iIpJGngdxUtvntAfhGRGxs3+MOsXh2WIPsBDaihYSQ793WnV47LuqiYONxLB58nC6b/
+ sfikihV2XKHby1UqDbbn/61bWNxNuIkEsHB3Ofx2Ew2QsIxU2Srm9BcVUbqJOeDt+a92Bt
+ 1oK9nhhuTwXm/PbbyW3fJL6EPEIyBA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741343076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
+ b=tcYZkfrIFot+qp5/FVk1z9/TzWiE09MTaXHX6nTt/ZxWCfXAUWQLqFA2X99rzmo+Rk5cNn
+ CrSNbkkjD/EOtDAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=206iIpJG;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tcYZkfrI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741343076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
+ b=206iIpJGngdxUtvntAfhGRGxs3+MOsXh2WIPsBDaihYSQ793WnV47LuqiYONxLB58nC6b/
+ sfikihV2XKHby1UqDbbn/61bWNxNuIkEsHB3Ofx2Ew2QsIxU2Srm9BcVUbqJOeDt+a92Bt
+ 1oK9nhhuTwXm/PbbyW3fJL6EPEIyBA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741343076;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xGBPuazfuU8d/m3KNTLHqkIQ7W1iEh+aUAC591BnAzA=;
+ b=tcYZkfrIFot+qp5/FVk1z9/TzWiE09MTaXHX6nTt/ZxWCfXAUWQLqFA2X99rzmo+Rk5cNn
+ CrSNbkkjD/EOtDAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C269113939;
+ Fri,  7 Mar 2025 10:24:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id VQnzJmPJymdNWQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 07 Mar 2025 10:24:35 +0000
+Date: Fri, 7 Mar 2025 11:24:29 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <20250307102429.GA272497@pevik>
+References: <20250114113239.611278-1-pvorel@suse.cz>
 MIME-Version: 1.0
-References: <67cabd64-fb43-4d1a-a471-995fd51a0e2b@suse.com>
- <20250307092606.GA263657@pevik> <Z8q9QFilTbSc7QAw@yuki.lan>
-In-Reply-To: <Z8q9QFilTbSc7QAw@yuki.lan>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 7 Mar 2025 18:06:51 +0800
-X-Gm-Features: AQ5f1Jov-ox2z4JgdmOyjmsASox5OGO9fMXA5_F-WEI5S6EjZlkU0bwR8AgJnzE
-Message-ID: <CAEemH2cBTkmaDw7SU5V28_1VTDozEXifYD7XSwtA7A1Qqf2sgw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: fWaJKMysoo6Y0ZB-QJnvhCd37c1k1hpB0d2LE89g7E8_1741342024
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250114113239.611278-1-pvorel@suse.cz>
+X-Rspamd-Queue-Id: 60BA91F38E
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Meetings schedule
+Subject: Re: [LTP] [RFC PATCH] IMA: Remove evm_overlay.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,28 +121,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Xiao Yang <yangx.jy@fujitsu.com>, "Ricardo B. Marliere" <rbm@suse.com>,
- Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Ignaz Forster <iforster@suse.de>, linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBNYXIgNywgMjAyNSBhdCA1OjMy4oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
-c2UuY3o+IHdyb3RlOgoKPiBIaSEKPiA+ID4gLSBNb250aGx5IG1lZXRpbmdzCj4gPiA+IC0gTWVl
-dGluZ3MgZXZlcnkgdHdvIG1vbnRocwo+ID4gPiAtIE1lZXRpbmdzIGFmdGVyIGVhY2ggcmVsZWFz
-ZQo+ID4KPiA+IEkgZ3Vlc3Mgb25jZSBhIG1vbnRoIGlzIE9LLiBPciwgaWYgaXQncyB0b28gbXVj
-aCB0byBzb21lYm9keSBvbmNlIGV2ZXJ5IDIKPiA+IG1vbnRocy4gSSdtIG5vdCBzdXJlIGlmIGl0
-IHNob3VsZCBiZSBhaW1lZCBiZWZvcmUgdGhlIHJlbGVhc2Ugb3IgYWZ0ZXIKPiB0aGUKPiA+IHJl
-bGVhc2UuCj4KPiBBZ3JlZSBoZXJlLCBtb250aGx5IGlzIGZpbmUuCj4KCisxCgoKPiA+ID4gSSBz
-dWdnZXN0IHdlIGFpbSB0byBob2xkIG91ciBtZWV0aW5ncyBkdXJpbmcgdGhlIGZpcnN0IHdlZWsg
-b2YgdGhlCj4gbW9udGguIElmCj4gPiA+IGEgbWVldGluZyBjYW5ub3QgYmUgaGVsZCBkdWUgdG8g
-cHVibGljIGhvbGlkYXlzLCB3ZSBjYW4gY29uc2lkZXIKPiA+ID4gcmVzY2hlZHVsaW5nIGl0IGZv
-ciB0aGUgZm9sbG93aW5nIHdlZWsuCj4gPgo+ID4gTEdUTS4gV2hpY2ggZGF5PyBJIHdvdWxkIHBy
-ZWZlciBub3QgRnJpZGF5Lgo+ID4KPiA+IEFsc28sIEkgd291bGQgcHJlZmVyIGl0IG5vdCBjbGFz
-aCB3aXRoIE9BVFMgbW9udGhseSBjYWxsOiB3aGljaCBpcwo+ICpzZWNvbmQqCj4gPiBUaHVyc2Rh
-eSBpbiBtb250aCwgMTQ6MDAgVVRDICgxNWggQ0VUKS4KPgo+IEkgZ3Vlc3MgdGhhdCB3ZSB3aWxs
-IGtlZXAgdGhlIG1lZXRpbmdzIGluIHRoZSBDRVQvQ0VTVCBtb3JuaW5nIGFzIHdlCj4gZGlkLCB3
-aGljaCBpcyBtb3JlIHRpbWV6b25lIGZyaWVuZGx5IHdpdGggQXNpYS4KPgoKRXhhY3RseSEKCi0t
-IApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi Mimi, Ignaz,
+
+> Proof of concept, it was never fixed in the kernel.
+> Instead we should have some basic EVM tests.
+
+gently ping. Is evm_overlay.sh test useful for you?
+Otherwise I'll delete it.
+
+Kind regards,
+Petr
+
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  runtest/ima                                   |  1 -
+>  .../kernel/security/integrity/ima/README.md   | 64 -------------
+>  .../integrity/ima/tests/evm_overlay.sh        | 93 -------------------
+>  3 files changed, 158 deletions(-)
+>  delete mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+
+> diff --git a/runtest/ima b/runtest/ima
+> index 01942eefa3..75e5a99e7c 100644
+> --- a/runtest/ima
+> +++ b/runtest/ima
+> @@ -7,4 +7,3 @@ ima_keys ima_keys.sh
+>  ima_kexec ima_kexec.sh
+>  ima_selinux ima_selinux.sh
+>  ima_conditionals ima_conditionals.sh
+> -evm_overlay evm_overlay.sh
+> diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
+> index 5b261a1914..d3c3206bf2 100644
+> --- a/testcases/kernel/security/integrity/ima/README.md
+> +++ b/testcases/kernel/security/integrity/ima/README.md
+> @@ -64,67 +64,3 @@ and reading the IMA policy allowed in the kernel configuration:
+>  CONFIG_SECURITY_SELINUX=y
+>  CONFIG_IMA_READ_POLICY=y
+>  ```
+> -
+> -## EVM tests
+> -
+> -`evm_overlay.sh` requires a builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`
+> -kernel parameter) which appraises the integrity of all files owned by root and EVM setup.
+> -Again, for simplicity ignore possibility to load requires rules via custom policy.
+> -
+> -Mandatory kernel configuration for EVM tests:
+> -```
+> -CONFIG_INTEGRITY=y
+> -CONFIG_INTEGRITY_SIGNATURE=y
+> -CONFIG_IMA=y
+> -CONFIG_IMA_APPRAISE=y
+> -CONFIG_EVM=y
+> -CONFIG_KEYS=y
+> -CONFIG_TRUSTED_KEYS=y
+> -CONFIG_ENCRYPTED_KEYS=y
+> -```
+> -
+> -Example of preparing environment on for EVM on openSUSE:
+> -
+> -* Boot install system with `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters
+> -  (for IMA measurement, IMA appraisal and EVM protection)
+> -* Proceed with installation until summary screen, but do not start the installation yet
+> -* Select package `dracut-ima` (required for early boot EVM support) for installation
+> -  (Debian based distros already contain IMA + EVM support in `dracut` package)
+> -* Change to a console window and run commands to generate keys required by EVM:
+> -```
+> -# mkdir /etc/keys
+> -# user_key=$(keyctl add user kmk-user "`dd if=/dev/urandom bs=1 count=32 2>/dev/null`" @u)
+> -# keyctl pipe "$user_key" > /etc/keys/kmk-user.blob
+> -# evm_key=$(keyctl add encrypted evm-key "new user:kmk-user 64" @u)
+> -# keyctl pipe "$evm_key" >/etc/keys/evm.blob
+> -# cat <<END >/etc/sysconfig/masterkey
+> -MASTERKEYTYPE="user"
+> -MASTERKEY="/etc/keys/kmk-user.blob"
+> -END
+> -# cat <<END >/etc/sysconfig/evm
+> -EVMKEY="/etc/keys/evm.blob"
+> -END
+> -# mount -t securityfs security /sys/kernel/security
+> -# echo 1 >/sys/kernel/security/evm
+> -```
+> -
+> -* Go back to the installation summary screen and start the installation
+> -* During the installation execute the following commands from the console:
+> -```
+> -# cp -r /etc/keys /mnt/etc/ # Debian based distributions: use /target instead of /mnt
+> -# cp /etc/sysconfig/{evm,masterkey} /mnt/etc/sysconfig/
+> -```
+> -
+> -This should work on any distribution using dracut.
+> -Loading EVM keys is also possible with initramfs-tools (Debian based distributions).
+> -
+> -Of course it's possible to install OS usual way, add keys later and fix missing xattrs with:
+> -```
+> -evmctl -r ima_fix /
+> -```
+> -
+> -or with `find` if evmctl is not available:
+> -```
+> -find / \( -fstype rootfs -o -fstype ext4 -o -fstype btrfs -o -fstype xfs \) -exec sh -c "< '{}'" \;
+> -```
+> -Again, fixing requires `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters.
+> diff --git a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+> deleted file mode 100755
+> index 12b2a28c25..0000000000
+> --- a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+> +++ /dev/null
+> @@ -1,93 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> -# Based on reproducer and further discussion with Ignaz Forster <iforster@suse.de>
+> -# Reproducer for not upstreamed patchset [1] and previous report [2].
+> -# [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
+> -# [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
+> -
+> -TST_SETUP="setup"
+> -TST_CLEANUP="cleanup"
+> -TST_CNT=4
+> -
+> -setup()
+> -{
+> -	EVM_FILE="/sys/kernel/security/evm"
+> -
+> -	[ -f "$EVM_FILE" ] || tst_brk TCONF "EVM not enabled in kernel"
+> -	[ $(cat $EVM_FILE) -eq 1 ] || tst_brk TCONF "EVM not enabled for this boot"
+> -
+> -	require_ima_policy_cmdline "appraise_tcb"
+> -
+> -	lower="$TST_MNTPOINT/lower"
+> -	upper="$TST_MNTPOINT/upper"
+> -	work="$TST_MNTPOINT/work"
+> -	merged="$TST_MNTPOINT/merged"
+> -	mkdir -p $lower $upper $work $merged
+> -
+> -	device_backup="$TST_DEVICE"
+> -	TST_DEVICE="overlay"
+> -
+> -	fs_type_backup="$TST_FS_TYPE"
+> -	TST_FS_TYPE="overlay"
+> -
+> -	mntpoint_backup="$TST_MNTPOINT"
+> -	TST_MNTPOINT="$PWD/$merged"
+> -
+> -	params_backup="$TST_MNT_PARAMS"
+> -	TST_MNT_PARAMS="-o lowerdir=$lower,upperdir=$upper,workdir=$work"
+> -
+> -	tst_mount
+> -	mounted=1
+> -}
+> -
+> -test1()
+> -{
+> -	local file="foo1.txt"
+> -
+> -	tst_res TINFO "overwrite file in overlay"
+> -	EXPECT_PASS echo lower \> $lower/$file
+> -	EXPECT_PASS echo overlay \> $merged/$file
+> -}
+> -
+> -test2()
+> -{
+> -	local file="foo2.txt"
+> -
+> -	tst_res TINFO "append file in overlay"
+> -	EXPECT_PASS echo lower \> $lower/$file
+> -	EXPECT_PASS echo overlay \>\> $merged/$file
+> -}
+> -
+> -test3()
+> -{
+> -	local file="foo3.txt"
+> -
+> -	tst_res TINFO "create a new file in overlay"
+> -	EXPECT_PASS echo overlay \> $merged/$file
+> -}
+> -
+> -test4()
+> -{
+> -	local f
+> -
+> -	tst_res TINFO "read all created files"
+> -	for f in $(find $TST_MNTPOINT -type f); do
+> -		EXPECT_PASS cat $f \> /dev/null 2\> /dev/null
+> -	done
+> -}
+> -
+> -cleanup()
+> -{
+> -	[ -n "$mounted" ] || return 0
+> -
+> -	tst_umount $TST_MNTPOINT
+> -
+> -	TST_DEVICE="$device_backup"
+> -	TST_FS_TYPE="$fs_type_backup"
+> -	TST_MNTPOINT="$mntpoint_backup"
+> -	TST_MNT_PARAMS="$params_backup"
+> -}
+> -
+> -. ima_setup.sh
+> -tst_run
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
