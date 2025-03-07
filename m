@@ -4,94 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82076C282D1
-	for <ltp@archiver.kernel.org>; Thu,  6 Mar 2025 21:02:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A7C9C19F32
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 09:26:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D45B53CA115
-	for <ltp@archiver.kernel.org>; Thu,  6 Mar 2025 22:02:40 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 73B523CA15A
+	for <ltp@archiver.kernel.org>; Fri,  7 Mar 2025 10:26:26 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ED97F3C9D9E
- for <ltp@lists.linux.it>; Thu,  6 Mar 2025 22:02:22 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=linux.ibm.com (client-ip=148.163.156.1;
- helo=mx0a-001b2d01.pphosted.com; envelope-from=zohar@linux.ibm.com;
- receiver=lists.linux.it)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id DB6553CA0CC
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 10:26:09 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C80411A003F2
- for <ltp@lists.linux.it>; Thu,  6 Mar 2025 22:02:21 +0100 (CET)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 526E36wC019215;
- Thu, 6 Mar 2025 21:02:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=KIzB9L
- 0P5j+67GIo5o4poOoQOFZrFpnukv0t4SquZSk=; b=CezD1BislMTuZ0MiPPi+qZ
- h88j0/5Y8fwx//bQJ70TorLMI36CU0jJwCL93hExlJTx2EgX1DWGBK2ErSAJZtPN
- e98v++Zcu1jxDp8t0c62NUsb2/AkoaG7Chb+y2tnJ2P0YIVftibYZ9PrUtbejMQh
- 5WzDr/I+e9G8uNnDwPUyoDesjMNsKJ1pP9bvkwCSm2pSj5+wH+t0Yfru1jeCaH0w
- kjmIiTOBgUi1Z1m7mQkRSQmJN+ygYyI1dit+F/7+dOicJ6B4ISSp/bec8NJYUA9M
- fBvD5kN5CzdOHHASBJvQfydcFByoco+WtnualOJp/yU59KHFT4U10TCZ0A0idFXw
- ==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 457d4p26a3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 06 Mar 2025 21:02:19 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 526JY3d1013743;
- Thu, 6 Mar 2025 21:02:17 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 454e2m2vn5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 06 Mar 2025 21:02:17 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com
- [10.241.53.104])
- by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 526L2GHZ29950610
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 6 Mar 2025 21:02:17 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E1E775805D;
- Thu,  6 Mar 2025 21:02:16 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9E56358052;
- Thu,  6 Mar 2025 21:02:16 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.31.103.152]) by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Thu,  6 Mar 2025 21:02:16 +0000 (GMT)
-Message-ID: <a87d1f288726949f330e35df87c9df1f7327d2ac.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 06 Mar 2025 16:02:16 -0500
-In-Reply-To: <20250306172622.GB186319@pevik>
-References: <20250305145421.638857-1-zohar@linux.ibm.com>
- <20250305145421.638857-5-zohar@linux.ibm.com>
- <20250306172622.GB186319@pevik>
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 26A1C1A00653
+ for <ltp@lists.linux.it>; Fri,  7 Mar 2025 10:26:08 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2668921163;
+ Fri,  7 Mar 2025 09:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741339568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E+URSxYtcWw7yyn+ZO/M7eiY/RIxFJe3gYnuR2J1vV4=;
+ b=FPRY5ndriYTE7jKzT/UqtH8jrAiTaKLF5XBI7ibjm6g104rkSho8bJQMBirRwVAKKKF5F4
+ JIdBVtHPdUJZC2deaFDNSeB7D/Xk3dpoXoGPshl4oepsTpI/L0P7OfRLsB9MHF1bh35X38
+ 4vOmXOZeFWkAJXSq+TNtIPTAUp9jgnc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741339568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E+URSxYtcWw7yyn+ZO/M7eiY/RIxFJe3gYnuR2J1vV4=;
+ b=LC/5hTcnX4vr7X1Vno2lnXCvmKRY7rJh3WXTmynO7SiKuZyWISw4Fxd/bIaZcW6wlrXoxa
+ Lpn0UqO14tJ7v9DQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741339568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E+URSxYtcWw7yyn+ZO/M7eiY/RIxFJe3gYnuR2J1vV4=;
+ b=FPRY5ndriYTE7jKzT/UqtH8jrAiTaKLF5XBI7ibjm6g104rkSho8bJQMBirRwVAKKKF5F4
+ JIdBVtHPdUJZC2deaFDNSeB7D/Xk3dpoXoGPshl4oepsTpI/L0P7OfRLsB9MHF1bh35X38
+ 4vOmXOZeFWkAJXSq+TNtIPTAUp9jgnc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741339568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E+URSxYtcWw7yyn+ZO/M7eiY/RIxFJe3gYnuR2J1vV4=;
+ b=LC/5hTcnX4vr7X1Vno2lnXCvmKRY7rJh3WXTmynO7SiKuZyWISw4Fxd/bIaZcW6wlrXoxa
+ Lpn0UqO14tJ7v9DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3B7913A22;
+ Fri,  7 Mar 2025 09:26:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hKT+Na+7ymciRgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 07 Mar 2025 09:26:07 +0000
+Date: Fri, 7 Mar 2025 10:26:06 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250307092606.GA263657@pevik>
+References: <67cabd64-fb43-4d1a-a471-995fd51a0e2b@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7MErAH1D6imI1QKJsK4vPgwXRJLw_Gqr
-X-Proofpoint-ORIG-GUID: 7MErAH1D6imI1QKJsK4vPgwXRJLw_Gqr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-06_06,2025-03-06_04,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 malwarescore=0
- suspectscore=0 clxscore=1015 phishscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 mlxlogscore=737 adultscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502100000 definitions=main-2503060160
+Content-Disposition: inline
+In-Reply-To: <67cabd64-fb43-4d1a-a471-995fd51a0e2b@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_SEVEN(0.00)[8]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 5/5] ima_violations.sh: require kernel v6.14
- for minimizing violations tests
+Subject: Re: [LTP] Meetings schedule
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,26 +113,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
- Stefan Berger <stefanb@linux.ibm.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "Ricardo B. Marliere" <rbm@suse.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+ Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 2025-03-06 at 18:26 +0100, Petr Vorel wrote:
-> Hi Mimi,
-> 
-> > Depending on the IMA policy and the number of violations, the kernel
-> > patches for minimizing the number of open-writers and ToMToU (Time of
-> > Measure Time of Use) violations may be a major performance improvement.
-> 
-> I would prefer this to be squashed into "ima_violations.sh: additional
-> open-writer violation tests" commit, which adds this incompatibility.
-> 
-> But it's a minor detail, therefore I merged whole patchset as is.
+Hi Andrea, all,
 
-Thanks, Petr.
+[ Cc hopefully all relevant people ]
+
+Thanks for raising this, I'm sorry you have to wait 2 months to reply.
+
+> Hello everyone,
+
+> As you may have noticed, we haven't been able to follow our regular monthly
+> schedule for LTP meetings. This has been due to time constraints on my end,
+> as well as holidays and other commitments. As we enter the new year, I
+> believe it would be beneficial to establish a consistent schedule so we can
+> meet more frequently via public video calls.
+
+> I have a few proposals for our meeting frequency:
+
+> - Monthly meetings
+> - Meetings every two months
+> - Meetings after each release
+
+I guess once a month is OK. Or, if it's too much to somebody once every 2
+months. I'm not sure if it should be aimed before the release or after the
+release.
+
+> I suggest we aim to hold our meetings during the first week of the month. If
+> a meeting cannot be held due to public holidays, we can consider
+> rescheduling it for the following week.
+
+LGTM. Which day? I would prefer not Friday.
+
+Also, I would prefer it not clash with OATS monthly call: which is  *second*
+Thursday in month, 14:00 UTC (15h CET).
+
+Kind regards,
+Petr
+
+> Please feel free to share your suggestions and vote based on your
+> preferences. I look forward to hearing your thoughts! :-)
+
+> Best regards,
+> Andrea Cervesato
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
