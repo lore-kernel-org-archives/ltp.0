@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BB2FC28B30
-	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 07:41:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70C86C282DE
+	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 07:44:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 948F83CA1CA
-	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 08:41:25 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D1B073CA1E2
+	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 08:44:54 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19A1C3C2DA5
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 08:41:08 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.198.163.11; helo=mgamail.intel.com;
+ by picard.linux.it (Postfix) with ESMTPS id E2C133C2DA5
+ for <ltp@lists.linux.it>; Mon, 10 Mar 2025 08:44:37 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=intel.com (client-ip=198.175.65.14; helo=mgamail.intel.com;
  envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 80C6710007DA
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 08:41:06 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CD179200921
+ for <ltp@lists.linux.it>; Mon, 10 Mar 2025 08:44:34 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1741592468; x=1773128468;
+ t=1741592676; x=1773128676;
  h=date:from:to:cc:subject:message-id:mime-version;
- bh=mRxGHJ5xZLVD0zWiTLEwQVZbobHu6F3C6X+7NayxX04=;
- b=blsMDbNT01aoDhfjpRdK6anAxvXL+d9Hda4GG9AYXlyfXuJjffGJ0Y3v
- n4ImUnQ5irEmVgOFUADEfe8wiFBwEgOL0tZLaWRD4WyESFzMXaGhOxTDd
- k+IEvERycVLzqSeJLBmpBct+m8YWJIUx22wA5KAEDYzEQlJLaGN89phQk
- SVjmoF+TD9Kez+awYUX2zXl3yqERRYoD+x2GuPPpSJJSwZY7FyswRAOWP
- 0fhQHA3bxPrGtyVw5Q+HQyogCgj6bqDlMpzFlQ7HNZxLdh39gW+bTIIQQ
- Zb/bWEEKDvo67znNdA4j5mqKvYMtRkW6yrEvlSIvb3xj0Ci+7nrppYxVk A==;
-X-CSE-ConnectionGUID: 5mtjaMIcTE63G/sBbP+qow==
-X-CSE-MsgGUID: 1jLsCPVKR2eVy+wo279kJg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11368"; a="53211899"
-X-IronPort-AV: E=Sophos;i="6.14,235,1736841600"; d="scan'208";a="53211899"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
- by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2025 00:41:03 -0700
-X-CSE-ConnectionGUID: 3tHzxmwAQLCQsHfG9IjvOQ==
-X-CSE-MsgGUID: adcmhBNwTPSslvp3HI7Y/A==
+ bh=LJuJq9R5dvpSO8EGtz19V1qmlHaOt5UXdJzJ/k8p69E=;
+ b=TDKptnhpYfYkkKP8IzPEEj6n0OMxtfTh+Cklk35yFSlAdJ8zX7ZbzVmD
+ GtUkGZYWwpYGd6FNvWCRjR8ltptGV4JsMprWjDwXFfO879Hpp1H3QcCGC
+ Eg1LFU4cDsk5nU9q29rJEEGk9cFMiBSeWdRaTM7Gl+AQmy7089uMXR6NK
+ ZU7iRFXlmniNGEoP1PKKgWYuZWpDSqqjZ3HntAtpEmQk3SGPOGTjwnSNe
+ A11XskF+WPYWzZrxG2BoJfR5RgR9gPB9vlAPt25QrrwB14Oju4lZYD5hN
+ +qU2qERFsFLEAdWnQlfX2bB3pfDUhbklPtUwCmKZ3NCAqDopcbO9gJMsC w==;
+X-CSE-ConnectionGUID: vQkqh5XISziub6rKbxiOmg==
+X-CSE-MsgGUID: uOP3Kho0Qr6gJpOI6pw9qg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11368"; a="46357953"
+X-IronPort-AV: E=Sophos;i="6.14,235,1736841600"; d="scan'208";a="46357953"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+ by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Mar 2025 00:44:31 -0700
+X-CSE-ConnectionGUID: fd4girBlQJGtB4z3toypEQ==
+X-CSE-MsgGUID: hFrGYMVgQxeYq32OtHewjw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,235,1736841600"; d="scan'208";a="119867028"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
- by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2025 00:41:04 -0700
+X-IronPort-AV: E=Sophos;i="6.14,235,1736841600"; d="scan'208";a="124833979"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+ by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 10 Mar 2025 00:44:31 -0700
 Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Mon, 10 Mar 2025 00:41:03 -0700
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Mon, 10 Mar 2025 00:44:30 -0700
 Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
  ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Mon, 10 Mar 2025 00:41:03 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.48) by
+ 15.2.1544.14 via Frontend Transport; Mon, 10 Mar 2025 00:44:30 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.44) by
  edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Mon, 10 Mar 2025 00:41:00 -0700
+ 15.1.2507.44; Mon, 10 Mar 2025 00:44:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PaC/Kl6COWZYOGYPX9PGcaQv08fXW3a3iDXe/to+uceNEmQXiP5PJ99OlEKH7Y0n+wjsWmkJoEvUeBHpH9zvsjkmJWvNwPkkSutqAO/JnqQCaXUNv/oq/+rxCAsSAB7GOPAkBSe28uxxm8ixbAnqBRwaHz29x4oYyZFRyuKD/LDxRxequ/UQotJDXaSLB8xR+ZGutw3V7dIlyUCMXORS6mMPQSxYTBm5Lk6MnrPMnb1FVmBgZwnCxq8ZR44PJR9OCO18vSH7ALbAkh0fu7MtbYcj/L87IPAGtgSSoIOsA1cnPfkrQidFqJt/hQCugsJEgXCXhhoL/lqDtgd9Qo1IFw==
+ b=H2RpFKF5aJRVpEILOOiLYYMb6oTawqWLBoUVB1VxRHeLwimngIF7iZgz0/gVClz38zxxU7xNJldCGLjihJJ8dRZrdKkH8CxvLFUtMzCzpVMK4qReAllSrcrHv3gPPd03JRUa8u+gT4pOmGfv0pIWWp8nDAL0oBlEicOuT/bqkaS7s0p+43e0H5DwmA3nxFeRwvgMXKXHoaRcVOOVhm+o6LWTIOYnBSayVze884OpgOc+pgAgC9TLZNYuWnKvxfPDH5IjO4vQ9pKAQfTiV+kYOuFee05KhfuhXr4bJcyNKtU1VnXhtuJxnqbWNNgM2IikNM7/KlZgf5xDy896Tl97fA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q72svUbTfUK9j0Vbl3mEArX3eXGhHNkuIU6PpiB4HJ0=;
- b=dEuWmZkcbMRwfYxoDF81bNst3BftcNQh7+9CPUj3pBinb1hwu49hkK5bOoWRxjkgsz64rVwuQ0mdvb20ARyXhiK8Q2oKyu/Q+XRL1I7hRBsaL6yx+5VzI0Sadwk4RRepO/qWaaYLkMvRoomhIRyMZI+tTixSZRS24QSBUZrAwGfCU9qURhE/IhCBSRRVYyf4RrB0oajarc/l3VqHW7vbSrUYRNOc0vKdoyJMtGDiSNExWZtP5c0WdC//j0XZ/EXdnRmHus0MqzXv3TCoP8NWvlF0B72BTD0rTuiB1G8KRrvS27ObLj0lC9cI6JqJ67fvwFHgZgBpIUYOT6OGDeT9iQ==
+ bh=MyGNLmER56811MaeG0qHLv5CsMoQchuMGggYOPXJSKg=;
+ b=FxsDxvtBSX4dNdGrTP13jfFjKVTJy2WeaAVbxa27waASNpcnEqFd0+TD3WAy6JkrDWEUrSU0WE9VaolcRZOvtLTpUq8OcXYc3t9nh5n6aif369N6AJz7v8KHOa8Eth5CWPA+u7JJjpER3ISaulq7sb5fjNrsa/Q0tl0Tam7RO2NgTBdW/XGfkQ4Xtw77JCNnkaO3d+ZSyYjSPKptAl9vqw1pOMkhpYLNoQ29kt/rEUIssUixZKANY+aAL1NdCUDhKF6Agd7t+4ILLoJOMouG1kLE9E3kuPAxZ+jIl6InAuh1fFePNUnKZRoihdhTSq1yEvNW5vguaPcuvN4D0cF8Tg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -76,95 +77,95 @@ Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
  by PH8PR11MB6904.namprd11.prod.outlook.com (2603:10b6:510:227::5)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.26; Mon, 10 Mar
- 2025 07:40:13 +0000
+ 2025 07:44:00 +0000
 Received: from LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::4622:29cf:32b:7e5c%4]) with mapi id 15.20.8511.025; Mon, 10 Mar 2025
- 07:40:12 +0000
-Date: Mon, 10 Mar 2025 15:40:03 +0800
+ 07:44:00 +0000
+Date: Mon, 10 Mar 2025 15:43:49 +0800
 From: kernel test robot <oliver.sang@intel.com>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Message-ID: <202503101538.84c33cd4-lkp@intel.com>
+To: Hannes Reinecke <hare@suse.de>
+Message-ID: <202503101536.27099c77-lkp@intel.com>
 Content-Disposition: inline
-X-ClientProxiedBy: SG2PR01CA0185.apcprd01.prod.exchangelabs.com
- (2603:1096:4:189::19) To LV3PR11MB8603.namprd11.prod.outlook.com
+X-ClientProxiedBy: SI2PR02CA0019.apcprd02.prod.outlook.com
+ (2603:1096:4:195::13) To LV3PR11MB8603.namprd11.prod.outlook.com
  (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|PH8PR11MB6904:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c8ed7cf-6af3-4a85-7133-08dd5fa6cac8
+X-MS-Office365-Filtering-Correlation-Id: 43175f2b-c04d-4f4f-7a86-08dd5fa7528d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?oHsqO0IGV3nlCmtiY5lvGzwao7vwdJz59htcVTZQhDJORlwhQVE3I2hltua7?=
- =?us-ascii?Q?xNqR5yASzgrawtNNfn6iEKDuUDu2BG1N52y21dwrjhB4C4NZwgrzLFkl2L6f?=
- =?us-ascii?Q?8/IOEkag8bT+XBUy89ah9vK2E+qTgywkLif0tV4gwYs6daY7Ao6eRvv01yfJ?=
- =?us-ascii?Q?dgQdfgsQuMxMInZcN4IZlMRTl7sI6+bRLKS0E6fUR/KgJ80sIsRPI5p+HtG6?=
- =?us-ascii?Q?BabT+ysKyl/ak1n9bqUXcLaRGTxj9nEFQdpg/wvcCq1JM3ppQh1SsXZEYpj2?=
- =?us-ascii?Q?72sQbje80jCw2Godap0E2RBHCHs9oQkhhon6WhJsoHyTOr/cAP8NXYXR821M?=
- =?us-ascii?Q?8gHjfT6XBiWelOZOHcCULY3IdflyBge0YzkWZW8kbLi7GCQ4QO5K2Vuk8XUf?=
- =?us-ascii?Q?M9i1iDV39eqXoWp8FwYVOtEyNs7Ha7N2nFPcVv/SPrljN1NF4bGSvWAaFVWH?=
- =?us-ascii?Q?4xAjOKUKwbBpTIcDipiwYcXdc2YBcxGQxUMxWXrPbQCmX7ROe08ytPMqeZBf?=
- =?us-ascii?Q?sL6XO+v7Va7xdroG+z7+sqQmbFs1wAJDM8faDQbbv2xAPF1jDQkWB6adR8CE?=
- =?us-ascii?Q?SOdQxjMkqfKvvps1phqK5SokmWrlT0xEfLROQQ4ysg+jTKwQIMZRxuao7alV?=
- =?us-ascii?Q?TJjjBsQMtyebNLa0rhsiraPBVdyW3TztJ2/bLwkymUtTuJqoZoLehGeL8vh7?=
- =?us-ascii?Q?mIOX89dlSF5kzvbUSDjrbOE5O3IVk4TC7l9Wdfbu5RG1fH93pGjTz5Xxuu2Z?=
- =?us-ascii?Q?JPiS+udBJny83bKcCHOy54wrbiY8BonZHc+mfMaJF+JcX/JEhis5m9VgHXmj?=
- =?us-ascii?Q?T++PZ5RRSX3WX3msHu6TSoShk9E6SDuyMV6U7Ti8ZG8kYi6QQKJDkfEqecoN?=
- =?us-ascii?Q?QCdMZjat/LxhJTjBDOwSvYHCocrR/NWQKonGWgm0ZiJV84tcEZaK/J5xXUWr?=
- =?us-ascii?Q?is5Wg6zuojZ9m9z9ed3kEtHPcJ2fq8Bjklx/NCVj0W73aC6tjU+TD04TOrRJ?=
- =?us-ascii?Q?8G+mZddykCxA6bRTPDAlOMHKbUphOoH/10azHPlGioHMnvctZS1gKzE6LK7l?=
- =?us-ascii?Q?9Kx1zl9eHph0NXnLVBEs7AYB6MSbDhdG7jdn6Prlyf3okIkWG/T2PXw9lhtg?=
- =?us-ascii?Q?O6L4NcUc1x38XWxRsDVWzgFdBRLKvLgoQByXFn8p6yR9YRXk2lPXMNBbhd7P?=
- =?us-ascii?Q?RPUTpizOVmIllhwgO0lzXUcABnczP5Pz1lkfIYJxLRBWkTitCrbRbIkANn2R?=
- =?us-ascii?Q?CxWLUIarEzLoLO5Tl+0feNuoiAdqSVy1PwvsrqrjTypPadx3AFXREsnHlJzc?=
- =?us-ascii?Q?ufzXMK3G+MbuKuFVRiahUmCTjD7vQWSwQQAwBSi9ak4DQg=3D=3D?=
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?R/a0c1GfHsFtmKyA7ujDpNXLZexA44PqZdOEgVTXNp3Sdo2O6kIcoNcjo0xY?=
+ =?us-ascii?Q?tIQ8McB/QEYQrss9e7gaEg/YdJ5twCYkiYEMIFEnAAlVRPpUcRkT2FghY/lx?=
+ =?us-ascii?Q?DfdKHUbBX0XQ4FCdFOmuvklOt7ZAY4nOc9UJBHek+lvwXyZoG+BTFUUkrvC2?=
+ =?us-ascii?Q?6koUcdaJzGuUBZhG/fJBx39ndIAeLENCP4DMvPTTWcheuVvbIxPl5LmoqWLU?=
+ =?us-ascii?Q?Pw6QyPOWq1UFKBHLPrYjIokORPYQPyVFCQKCaHLyBSSHKNWiNzfvS130P16U?=
+ =?us-ascii?Q?OpRZEf/IVKauzHdGVFCgf/m/iZQr5OXxSoWozZ39Ot3Cs7PmmTIG3MK2LQkF?=
+ =?us-ascii?Q?5aRrF5gyy2V8V8VPTkLfr4NYLVJgED+s49lWf8beqprEyb6UYOS8WyDYc7cR?=
+ =?us-ascii?Q?el4MgTj9Macg7QozymynBeoHDfgYPOocdEB1GvV0b8+5pchvazyGkj41Okqv?=
+ =?us-ascii?Q?JQOX6hqD3E0d/RMR6FUmG7tntpMyPGVhNn8pH7deO/EHPbytNKiahRwFbB4B?=
+ =?us-ascii?Q?z65YrFvv5qS1hh3cpzs0OBxAXqnGExnCs29TtTpKhzr1CP7WVG1fy8KhyLRO?=
+ =?us-ascii?Q?TrV4o21ndEAI7GcEb9Ra3VC4wIlJlU4z/gKaXRG7WaDbqhAhBVQcsSSuS02Y?=
+ =?us-ascii?Q?cv7vmDlc/WISB9Ew2CcQyMpbEFTFwO+SUjNAo2X/OpD92FBJeRHY1tQs/+bN?=
+ =?us-ascii?Q?55lRq4pSbF7UCA8lS0Ak/wp+G8KWDfNEzNegGsMoY2rmX0GZKLrdEWEOYESi?=
+ =?us-ascii?Q?0yiLKMt8hn+RewNx/aswurmAbsB/uSXKptovn+t4mz0L801rWfsme0TgEcWu?=
+ =?us-ascii?Q?gug4O7M0Lk7nH+KNqYzoWD40viL/nwxPBHwX5jf2SIVGqR8C6/wWtmF0D3L9?=
+ =?us-ascii?Q?YgDmhXs757vt+WAQGjvuhtrMDlPBT8dciLxgcuKxKrxNz6XL82yQfg+6jvek?=
+ =?us-ascii?Q?RG7dDiePKUmZsgilVs4WQ9m+IVOghD6mudHhpN51b4wuCbT8ak/ev6jr0RPk?=
+ =?us-ascii?Q?n+C+pMbKIifZJgkirm8ukJ3gylNuCOo/v6F5tNDLYqS/NBMmz7q2geTA9n2f?=
+ =?us-ascii?Q?SLs6jvNdEdPBQAieLzx+eSXk6YX6Z+QvFuy9PyrNOn9us4Cxqam/Vi6QcHx1?=
+ =?us-ascii?Q?HlWgOxZ5HOhJowSCPhsk7QlXk7GfQPuGR9tRIUo5KsXk/PDrC+3hvvlQRVza?=
+ =?us-ascii?Q?RbWvnpde/MoPacQ/kk+X3juNd8EwEU7Ys3eqsVgjlpY7zUGfgaODlHBHshof?=
+ =?us-ascii?Q?jb3omrJVWY+8pXEZZUj7o8+cJ9J2xuMSbwWcTOZqBXKEVs7PAMNKWnyxxfoJ?=
+ =?us-ascii?Q?5IoVf+LcWHVnILKvSb5OSEo7M9xTWD9WDQt/P8flcMGSFQ=3D=3D?=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(13230040)(376014)(366016)(1800799024); DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Soejc22ZezezOq1IArkiuJPx4CikPfvFBo7NNRZCQkC2FjmTTW4wm+woBBLO?=
- =?us-ascii?Q?tW1hXkpHC9z9ntsxdqeOvE61y26jyviZEgvwvg2yiyqBvUlhA7+LLIQDabDw?=
- =?us-ascii?Q?PqyVX37oEzLEKSvUbmSMQA7OsH2zxyJ9khdQwFkMEgRFIt6ePPFkDZgLLvBW?=
- =?us-ascii?Q?mepH9uUTGe8YerAKK0ScAMCTHqXtJgISrCssFQFSvUKZ0db6GQVDGnjU05/3?=
- =?us-ascii?Q?tx0oJLGrfL4VvZ2mneBVpW0mbv6Rqg16+gripK0curowgQL30L+r9pfdjQna?=
- =?us-ascii?Q?cNvp3T2eXCv3OiAv14H/CH/IM1r31iruZTK/vRzOG/1mZxuEnZfUXtXig8Xy?=
- =?us-ascii?Q?NLBRw0JeJOpQaRFPmvDhu+bBzVIhQfAofTTWIHRpnCkuspktTSKi1RZctOYx?=
- =?us-ascii?Q?44JO8Z3InSugfC13OcbI0jZwfcVMRQH7jsjiWZ7y/4Vypc/ftu2ukq2MELxs?=
- =?us-ascii?Q?r9NgGuTqo/WKpJqNbT8d5mljc/cBgU6v0Ziiu00qOZdCj7zoc/ZwcXGDI1lP?=
- =?us-ascii?Q?T5t7pAOluiZSfIZagFvsWdctExe1G9KkbbtjZuH/lGhKVK41hOXnNeFfd/KO?=
- =?us-ascii?Q?vToX55cp3Sck1t4D5xgpAAnuiYQsjfJs7Voa2gg1G0ggej8GTviwx5cTzoOQ?=
- =?us-ascii?Q?7jXuYseHYd+bjwHOMiiejaxzfP1B/vRd2tNNBsOXf8nujIn0hnd3lb+3hTae?=
- =?us-ascii?Q?3KbUwkVU2TXzB22DmFivOB9LCWHxwaC2TgF6jUbimV7A2DP25TSYST3CJuzz?=
- =?us-ascii?Q?Lzini5jO18et+vpMRydV7Uy4LIlLAsIwW/mcf8EqF6BPygjshJTNSCzcjQjo?=
- =?us-ascii?Q?NKm+zN2wKAHmuHdq/0jOzRko3jpOkSq8I4YzLSYNJmIWyyReHaX3c3xQXsnp?=
- =?us-ascii?Q?PZKqx/1ExgAZfeMTv+0gN0kDGlF7BJs1SzQwgf8pLG6c8Eecx2oZM3TTjIne?=
- =?us-ascii?Q?Fw6RCa90P/Zev4ad040a4VWj+0U8m0zZ+QWeVXUeUHASMj8Psujc5JTRrYAT?=
- =?us-ascii?Q?MQh+cwaBdkGqDB5W/bwaDeqLx2fSgbDOtTPI3TB+z3Jgxn9HGRz7Hz8zpDGj?=
- =?us-ascii?Q?HZQK2mkNJSeoOzL6ur0yoVBT1r/226lxta4sB/vhIQcRl/Apd2sZqFWduXX6?=
- =?us-ascii?Q?bC+SvTvqINPQPPelxsSXxsAdIRiPUXO8J06JuJZi7hZkJLFwiJ1CV94JSCR/?=
- =?us-ascii?Q?FnmPPyLhJ3L1SSbc9w8n3rQAzboLcFqhK41TZ9n/pYzu91lMarG4TWADkWfi?=
- =?us-ascii?Q?lt0OkgKFLyhKczou01Ymo9p0KPW5btUiMHpx5M7lG0QtWRkiiS7OzNy22slE?=
- =?us-ascii?Q?oOky5MRRo03OAzf47/PHNgUSQnweAJhklhEuN0Op+lAbfOQEVbDpye8sYRJO?=
- =?us-ascii?Q?K77530Y6Zsx7Dp56A3LvWanKuhFxn8LWbUbf34NehQbCdlXLeT4jjTUhJqdw?=
- =?us-ascii?Q?0jDsEvn8giXkaTQ154wupsZHRW9VuOCM4KpzMxm860Kz8F0eqyO6xKbrREcT?=
- =?us-ascii?Q?vaBRMxSOHPdq8syTKoQ02aSPXsXfZqqT4QE/YHWsSYSJs8ttOJRMYmvu3UaW?=
- =?us-ascii?Q?T+F5YuJ5UU1XKwtnV7CRAnfPgGnchHk29dbcYZUTfYrx2nhcPZxnyCXEMcfG?=
- =?us-ascii?Q?aQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c8ed7cf-6af3-4a85-7133-08dd5fa6cac8
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tLKrZt7oZLIgq0ZN7obX+ypxuh+B8yrIPJC3eX1LwUyIeaAKn2QdVeNigdQv?=
+ =?us-ascii?Q?m9n+UGzJAciLpRA//pEk7tm+hNr7t70zBGgWCbZ5WHm17XbaV3X3vPgENWZa?=
+ =?us-ascii?Q?A+XhcjrQft5Qf1uzJONWy+W3jrrKqB6Z1W/Q3vt0PYe3JsaEuZkvNKXLCvSa?=
+ =?us-ascii?Q?F8xadl6CjKugq+EsALfvjHaC85C/4xjk482nrCfMVVhmydoqnMBq7CMvod+/?=
+ =?us-ascii?Q?7LzJuGyDXcB9dLda89gqIRGyB6CacQl6jQvb/FAoEC6t0m6Dr+Z5XFyGS3yi?=
+ =?us-ascii?Q?Bvhs4CxgPstHMUAjfdNTQEZ4oILYsOI33xhOA1Dfu8DnmMJxvS3q5pRjXklE?=
+ =?us-ascii?Q?riSod68eVMw67PeCefUUs60esnNNKIk0bgTZ2hEXqZq869Rqq4BGLP/GRLf4?=
+ =?us-ascii?Q?XYJGUrLdUM87cm3Zem2d/kmcq7SyNaumbJb+jthdt/IFg2lIvuhNHwi9jbId?=
+ =?us-ascii?Q?UPBBJGYQ06T2DujYEJDwcCXbyqJcMB+r1oqSVSa4M4TKGZAtgfh6EhZoqR5b?=
+ =?us-ascii?Q?a7h05XL/vVgk89PaQOaaJJM7H/DNu1apu6ouNR0Jd4o5gbWmDzwDgxXuDfMe?=
+ =?us-ascii?Q?YkAClqaKI34S4Oj88vOd8fFT6HZ8GVQ26j+smJYTzrOds1CNnkGJ/vb9z/14?=
+ =?us-ascii?Q?4GC5RXNPKazlFQI0mXj4lOUb1rWCU/NQRSR4W3s5wBAvUkAMvnMw8+sGWSng?=
+ =?us-ascii?Q?Ws6fkhvcNoD4puFUmjvDfSpdSmc+z8b0WLKtoy1Gvd0crnckrxCUKp+8WrD1?=
+ =?us-ascii?Q?brXRS09rA7lcTgUtfnTTEAxmplb775kWlVqvaFIyg0jND1kZslbJVCG13/dG?=
+ =?us-ascii?Q?FnZwGqQxE6RxEOXBLXgaWmed5HeWhS2ml9MxfoyZGz9XK8S7Ir8w15qRzDpK?=
+ =?us-ascii?Q?Q+xV6kLqYuIR7AgimuYVbQudt8u8JCPqwPy+SiQ/DQgjDWrJW/l4LHqx14GK?=
+ =?us-ascii?Q?ir8sa0sFUk56UI5lWag/Evq+J7uy42ISCo9rm41+hS/GwdNtPvaVVBfpAQSK?=
+ =?us-ascii?Q?Ypn/WneuaPQJ6GJRebwDIPFvASpqQzC5reyjdqguNaUaMCtKwco2CMlVOba0?=
+ =?us-ascii?Q?rC01Cu2d2MOfVtXbwbtcCDB9zlmrlklS+0y7nYDH9GWsWwWe+nm2m0WdPTab?=
+ =?us-ascii?Q?ov7ls10TftRpRsT2cu+SQMN1EbI5zKYGeGKBlzQ60/eOBuJ22jth81kiZHkl?=
+ =?us-ascii?Q?LZW7vzsmOnS1V8ZiJBc72cPFWYLMNkZYaChdPSxCEpuGaSo+qpnEnHsGdXfc?=
+ =?us-ascii?Q?IMwqh3TqsTW6jkHPT2dCCjLtZkcdb+BP19xWAOqGACdGuuvXynoWTTt21Ih9?=
+ =?us-ascii?Q?i9GIGAWIP5EXXfHzeBYjsHzIT1s2+yC3QqvkKwQ7xwHUlwxOjXev6YmAb4eR?=
+ =?us-ascii?Q?uA5IMjnGwoHdqKP8/4eTMvIMtFK8am/SkGVSphA1tlclJritDcYYN5VIEKZ3?=
+ =?us-ascii?Q?enMo/bnfVlM7NiF8qO2okI7X9bnPpoHwaVqQXd7eqgc0vf+KWfxCWUmAZXcg?=
+ =?us-ascii?Q?1/amLPKkTUsMxisaRCWPRseLQlEoDTj2r5/cAXmO3YZi4/pecQ0US+/JJdZk?=
+ =?us-ascii?Q?samAwbWWkoRrRaKI1QRQ+4xaoDZuaAhHV8QnqxoW/JIk4p+9p5Q5CneoGB1R?=
+ =?us-ascii?Q?5g=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43175f2b-c04d-4f4f-7a86-08dd5fa7528d
 X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2025 07:40:12.8627 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2025 07:44:00.6593 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2EtyOZ+HmfuwvtX9p0x+MFfljBi0hj2jFbXN+e6Z9gEeYOtiRrUkIVD+EYhxM8n7pjBwxMLguY3xOrHM/K3nFQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: LdUWa3+ajcJsc1i5+DvnOZSnfQVwbWytBaYExYCqDh+CJhI9KvZzr4zMzjXxgFR/UjgnnMJmniZnYChPsWwpcg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6904
 X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [linux-next:master] [block/bdev] 47dd675323:
- ltp.ioctl_loop06.fail
+Subject: [LTP] [linux-next:master] [block/bdev] 3c20917120:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/util.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -176,10 +177,11 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com, "Matthew Wilcox
+Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com,
+ John Garry <john.g.garry@oracle.com>, "Matthew Wilcox
  \(Oracle\)" <willy@infradead.org>, linux-block@vger.kernel.org,
- oliver.sang@intel.com, Hannes Reinecke <hare@suse.de>, oe-lkp@lists.linux.dev,
- ltp@lists.linux.it
+ Luis Chamberlain <mcgrof@kernel.org>, oliver.sang@intel.com,
+ oe-lkp@lists.linux.dev, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -189,9 +191,9 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-kernel test robot noticed "ltp.ioctl_loop06.fail" on:
+kernel test robot noticed "BUG:sleeping_function_called_from_invalid_context_at_mm/util.c" on:
 
-commit: 47dd67532303803a87f43195e088b3b4bcf0454d ("block/bdev: lift block size restrictions to 64k")
+commit: 3c20917120ce61f2a123ca0810293872f4c6b5a4 ("block/bdev: enable large folio support for large logical block sizes")
 https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
 in testcase: ltp
@@ -199,8 +201,8 @@ version: ltp-x86_64-0f9d817a3-1_20250222
 with following parameters:
 
 	disk: 1HDD
-	fs: xfs
-	test: syscalls-01/ioctl_loop06
+	fs: btrfs
+	test: syscalls-04/close_range01
 
 
 
@@ -212,66 +214,82 @@ test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy B
 
 
 
-
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202503101538.84c33cd4-lkp@intel.com
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202503101536.27099c77-lkp@intel.com
 
 
-Running tests.......
-<<<test_start>>>
-tag=ioctl_loop06 stime=1741322388
-cmdline="ioctl_loop06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_tmpdir.c:316: TINFO: Using /fs/sda2/tmpdir/ltp-f5uEC1THVm/LTP_iocbBycpj as tmpdir (xfs filesystem)
-tst_test.c:1900: TINFO: LTP version: 20250130-118-g0f9d817a3
-tst_test.c:1904: TINFO: Tested kernel: 6.14.0-rc1-00007-g47dd67532303 #1 SMP PREEMPT_DYNAMIC Fri Mar  7 11:25:50 CST 2025 x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_KASAN kernel option detected which might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 10m 00s
-tst_device.c:97: TINFO: Found free device 0 '/dev/loop0'
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg < 512
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
-ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg != power_of_2
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size < 512
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
-ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size != power_of_2
-ioctl_loop06.c:65: TPASS: Set block size failed as expected: EINVAL (22)
-
-Summary:
-passed   4
-failed   2
-broken   0
-skipped  0
-warnings 0
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=6
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20250130-118-g0f9d817a3
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20250130-118-g0f9d817a3
-       ###############################################################
-
-
+[  218.427851][   T51] BUG: sleeping function called from invalid context at mm/util.c:901
+[  218.435981][   T51] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 51, name: kcompactd0
+[  218.444773][   T51] preempt_count: 1, expected: 0
+[  218.449601][   T51] RCU nest depth: 0, expected: 0
+[  218.454476][   T51] CPU: 2 UID: 0 PID: 51 Comm: kcompactd0 Tainted: G S                 6.14.0-rc1-00006-g3c20917120ce #1
+[  218.454486][   T51] Tainted: [S]=CPU_OUT_OF_SPEC
+[  218.454488][   T51] Hardware name: Hewlett-Packard HP Pro 3340 MT/17A1, BIOS 8.07 01/24/2013
+[  218.454492][   T51] Call Trace:
+[  218.454495][   T51]  <TASK>
+[ 218.454498][ T51] dump_stack_lvl (lib/dump_stack.c:123 (discriminator 1)) 
+[ 218.454508][ T51] __might_resched (kernel/sched/core.c:8767) 
+[ 218.454517][ T51] folio_mc_copy (include/linux/sched.h:2072 mm/util.c:901) 
+[ 218.454525][ T51] ? _raw_spin_lock (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:134 kernel/locking/spinlock.c:154) 
+[ 218.454532][ T51] __migrate_folio+0x11a/0x2d0 
+[ 218.454541][ T51] __buffer_migrate_folio (mm/migrate.c:945 mm/migrate.c:876) 
+[ 218.454548][ T51] move_to_new_folio (mm/migrate.c:1080) 
+[ 218.454555][ T51] migrate_folio_move (mm/migrate.c:1360) 
+[ 218.454562][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454572][ T51] ? __pfx_migrate_folio_move (mm/migrate.c:1349) 
+[ 218.454578][ T51] ? compaction_alloc_noprof (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/page-flags.h:829 include/linux/page-flags.h:850 mm/internal.h:711 mm/compaction.c:1878) 
+[ 218.454587][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
+[ 218.454594][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454601][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454607][ T51] ? migrate_folio_unmap (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/atomic/atomic-instrumented.h:33 include/linux/mm.h:1257 include/linux/mm.h:1273 mm/migrate.c:1324) 
+[ 218.454614][ T51] migrate_pages_batch (mm/migrate.c:1721 mm/migrate.c:1959) 
+[ 218.454621][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454631][ T51] ? __pfx_migrate_pages_batch (mm/migrate.c:1779) 
+[ 218.454638][ T51] ? cgroup_rstat_updated (kernel/cgroup/rstat.c:45 kernel/cgroup/rstat.c:101) 
+[ 218.454648][ T51] migrate_pages_sync (mm/migrate.c:1992) 
+[ 218.454656][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
+[ 218.454662][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454669][ T51] ? lru_gen_del_folio (include/linux/list.h:215 include/linux/list.h:229 include/linux/mm_inline.h:300) 
+[ 218.454677][ T51] ? __pfx_migrate_pages_sync (mm/migrate.c:1982) 
+[ 218.454683][ T51] ? set_pfnblock_flags_mask (mm/page_alloc.c:415 (discriminator 14)) 
+[ 218.454691][ T51] ? __pfx_lru_gen_del_folio (include/linux/mm_inline.h:284) 
+[ 218.454699][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
+[ 218.454705][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454713][ T51] migrate_pages (mm/migrate.c:2098) 
+[ 218.454720][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
+[ 218.454726][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
+[ 218.454733][ T51] ? __pfx_buffer_migrate_folio_norefs (mm/migrate.c:936) 
+[ 218.454740][ T51] ? __pfx_migrate_pages (mm/migrate.c:2057) 
+[ 218.454748][ T51] ? isolate_migratepages (mm/compaction.c:2167) 
+[ 218.454757][ T51] compact_zone (mm/compaction.c:2667) 
+[ 218.454767][ T51] ? __pfx_compact_zone (mm/compaction.c:2529) 
+[ 218.454774][ T51] ? _raw_spin_lock_irqsave (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162) 
+[ 218.454780][ T51] ? __pfx__raw_spin_lock_irqsave (kernel/locking/spinlock.c:161) 
+[ 218.454788][ T51] compact_node (mm/compaction.c:2934) 
+[ 218.454795][ T51] ? __pfx_compact_node (mm/compaction.c:2910) 
+[ 218.454807][ T51] ? __pfx_extfrag_for_order (mm/vmstat.c:1138) 
+[ 218.454814][ T51] ? __pfx_mutex_unlock (kernel/locking/mutex.c:518) 
+[ 218.454822][ T51] ? finish_wait (include/linux/list.h:215 include/linux/list.h:287 kernel/sched/wait.c:376) 
+[ 218.454831][ T51] kcompactd (mm/compaction.c:2235 mm/compaction.c:3227) 
+[ 218.454839][ T51] ? __pfx_kcompactd (mm/compaction.c:3179) 
+[ 218.454846][ T51] ? _raw_spin_lock_irqsave (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162) 
+[ 218.454852][ T51] ? __pfx__raw_spin_lock_irqsave (kernel/locking/spinlock.c:161) 
+[ 218.454858][ T51] ? __pfx_autoremove_wake_function (kernel/sched/wait.c:383) 
+[ 218.454867][ T51] ? __kthread_parkme (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/kthread.c:291) 
+[ 218.454874][ T51] ? __pfx_kcompactd (mm/compaction.c:3179) 
+[ 218.454880][ T51] kthread (kernel/kthread.c:464) 
+[ 218.454887][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
+[ 218.454895][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
+[ 218.454902][ T51] ret_from_fork (arch/x86/kernel/process.c:154) 
+[ 218.454910][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
+[ 218.454915][ T51] ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+[  218.454924][   T51]  </TASK>
 
 
 The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20250310/202503101538.84c33cd4-lkp@intel.com
+https://download.01.org/0day-ci/archive/20250310/202503101536.27099c77-lkp@intel.com
 
 
 
