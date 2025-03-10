@@ -4,71 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 437FDC28B30
-	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 09:48:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBFCCC282DE
+	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 10:16:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 57BE93CA1FD
-	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 10:48:15 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 49C663CA216
+	for <ltp@archiver.kernel.org>; Mon, 10 Mar 2025 11:16:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 737533C9FAA
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 10:47:57 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 89F6D3C2DA5
+ for <ltp@lists.linux.it>; Mon, 10 Mar 2025 11:16:08 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6531810007F5
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 10:47:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741600075;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6WjrXdIrYzTG11kCqS3bBt6NyeIuYMdYLd4ilxMAYsQ=;
- b=bK5pif3qsOsMFgqD6XYIp8FD1CP099stdML3+2RsZd9k0GkreF1xCoiXJV08UeFiczvJDx
- Oh0IZlBuzYKA17ZdawffpVkIbsSJ4fGGWzEIcowqzahCpIfCNRMRtBosJIt+CjUgHY1CGp
- lhg3R9WM5ro+dIcWZwPJJy1hUFu2SsU=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-631-8t-9oZkCMpK9fgwm2fdTBw-1; Mon,
- 10 Mar 2025 05:47:53 -0400
-X-MC-Unique: 8t-9oZkCMpK9fgwm2fdTBw-1
-X-Mimecast-MFC-AGG-ID: 8t-9oZkCMpK9fgwm2fdTBw_1741600072
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0A7EC1A0090A
+ for <ltp@lists.linux.it>; Mon, 10 Mar 2025 11:16:07 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 747E61955DDF
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 09:47:52 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 46D0518009AE
- for <ltp@lists.linux.it>; Mon, 10 Mar 2025 09:47:50 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 10 Mar 2025 17:47:45 +0800
-Message-ID: <20250310094745.142249-1-liwang@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2F75E2115A;
+ Mon, 10 Mar 2025 10:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741601766;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Vq36f47MV6+4/a5GfHs6MEOv8gJxfmRn+3jBByHmU1k=;
+ b=Y3qafwTi5nknf8K00cIFxIMjPYMIYeHNBbQezjPVMvi4ZLORi7OqpOhf/ZhNrKnHyOkQpK
+ fhj306o03fYvGK5I/+bWfUKJ9AVaN+6kqntS7YpgCj4ulvy0BorV3Jzr1JXLHbZetVvUEh
+ wvTGAzyl/UKJzcc6ShckOeJJT/EU2oA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741601766;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Vq36f47MV6+4/a5GfHs6MEOv8gJxfmRn+3jBByHmU1k=;
+ b=H5Zez49KopbizXXsPmT9o8kkMX8gv0bcppphAwL6MYc0C1DrtL+yEF/uFVwVCaT2n9btqM
+ i6dax+ZwkU+42JAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Px95udE0;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=XUc0jWvO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1741601765;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Vq36f47MV6+4/a5GfHs6MEOv8gJxfmRn+3jBByHmU1k=;
+ b=Px95udE0C0CfP26Pm7U2hAfOnruLbLQ+rTP79yCvn3UcERxZ7BsQ/YIqoMn+on11mlTo3R
+ FZjySlHSm9aFH6BbS6lM3Gnc0TBqKu522vAOurH0U2zQ+y6RJZAw/T0UknshHwj7ljdRgS
+ 92g0WJqYiNW0WUv3zU/PBhmMi8H6HVE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1741601765;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Vq36f47MV6+4/a5GfHs6MEOv8gJxfmRn+3jBByHmU1k=;
+ b=XUc0jWvOEUl3x9Chcoc5fM6GBNX3bknQziq2wWjuvLeu5uctQeDnhYzJe7i2wAegMnluC6
+ sKq7B7B7jxWmYvAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3C7E139E7;
+ Mon, 10 Mar 2025 10:16:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dEM7L+S7zmdNZQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 10 Mar 2025 10:16:04 +0000
+Date: Mon, 10 Mar 2025 11:16:03 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250310101603.GA396000@pevik>
+References: <20250228172439.3276777-1-pvorel@suse.cz>
+ <20250228172439.3276777-3-pvorel@suse.cz>
+ <Z8sef_gY0UA6W1M0@yuki.lan>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: St96GV2NKH8l3iNbXzpisGMj9je-nYR8X6R980uXHxY_1741600072
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Z8sef_gY0UA6W1M0@yuki.lan>
+X-Rspamd-Queue-Id: 2F75E2115A
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; REPLYTO_EQ_FROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] ioctl_loop06: Update block size validation to align
- with kver
+Subject: Re: [LTP] [RFC PATCH 2/5] lib: Allow test to have positional args
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,75 +126,16 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel commit 47dd6753 ("block/bdev: lift block size restrictions to 64k")
-now supports block sizes larger than PAGE_SIZE, with a new upper limit of
-BLK_MAX_BLOCK_SIZE (64K). But ioctl_loop06 still assumes that PAGE_SIZE is the
-maximum allowed block size, causing failures on newer kernels (>= 6.14):
-
-  ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
-  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-  ...
-  ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
-  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-
-This patch updates ioctl_loop06 to use BLK_MAX_BLOCK_SIZE instead of PAGE_SIZE
-for block size validation. Also adjust failure expectations based on the
-running kernel version.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/ioctl/ioctl_loop06.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-index 573871bc1..321754108 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-@@ -17,6 +17,8 @@
- #include "lapi/loop.h"
- #include "tst_test.h"
- 
-+#define BLK_MAX_BLOCK_SIZE 0x00010000 /* SZ_64K */
-+
- static char dev_path[1024];
- static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
- static unsigned int invalid_value, half_value, unalign_value;
-@@ -31,7 +33,7 @@ static struct tcase {
- 	"Using LOOP_SET_BLOCK_SIZE with arg < 512"},
- 
- 	{&invalid_value, LOOP_SET_BLOCK_SIZE,
--	"Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE"},
-+	"Using LOOP_SET_BLOCK_SIZE with arg > BLK_MAX_BLOCK_SIZE"},
- 
- 	{&unalign_value, LOOP_SET_BLOCK_SIZE,
- 	"Using LOOP_SET_BLOCK_SIZE with arg != power_of_2"},
-@@ -40,7 +42,7 @@ static struct tcase {
- 	"Using LOOP_CONFIGURE with block_size < 512"},
- 
- 	{&invalid_value, LOOP_CONFIGURE,
--	"Using LOOP_CONFIGURE with block_size > PAGE_SIZE"},
-+	"Using LOOP_CONFIGURE with block_size > BLK_MAX_BLOCK_SIZE"},
- 
- 	{&unalign_value, LOOP_CONFIGURE,
- 	"Using LOOP_CONFIGURE with block_size != power_of_2"},
-@@ -106,8 +108,8 @@ static void setup(void)
- 	tst_fill_file("test.img", 0, 1024, 1024);
- 	half_value = 256;
- 	pg_size = getpagesize();
--	invalid_value = pg_size * 2 ;
- 	unalign_value = pg_size - 1;
-+	invalid_value = (tst_kvercmp(6, 14, 0) < 0) ? pg_size * 2 : BLK_MAX_BLOCK_SIZE + 1;
- 
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	ret = ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512);
--- 
-2.48.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBIaSEKPiBBbHNvIGlzbid0IHRoZSBwYXRjaCBtaXNzaW5nIHNvbWV0aGluZz8KCj4gVGhlcmUg
+YXJlIG9ubHkgbW9kaWZpY2F0aW9ucyB0byB0c3RfdGVzdC5jIGFuZCB0ZXN0X3Rlc3QuaC4KCkZZ
+SSBJIHdhbnRlZCB0byBzZXBhcmF0ZSB0aGlzIGNoYW5nZSBmcm9tIHRoZSBhY3R1YWwgdXNlIChu
+ZXh0IOKAkyAzcmQgY29tbWl0KS4KVGhhdCdzIHdoeSBJIG1lbnRpb25lZCBpdCBpbiB0aGUgY29t
+bWl0IG1lc3NhZ2UuCgpLaW5kIHJlZ2FyZHMsClBldHIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
+aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
