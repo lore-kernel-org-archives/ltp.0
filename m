@@ -4,66 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F05BC28B30
-	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 12:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1741695074; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=MOHWlR7Z0lZLGVW1VrC0Bh8RIzdoMbcQgXOpyOVwPnc=;
- b=Ua+Vz5ycXfZ0Y3AiRajCA5Xjcjh/kndkaW5Nok3GtEXipihH/A63Nnfip1FCCanWfRdTy
- VZQgTj5A7Y7u1d81czxyX5cafBFteOirGOj0J8wcdgNthGyZtFeC/NBBNYG/Rc7zmNgX4c2
- lP962ytnK7pgutAA9AiUPBaEnsIeWvQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 948FDC282EC
+	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 13:09:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AFDA3CA364
-	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 13:11:14 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8ED7F3CA34F
+	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 14:09:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D2DBA3C07C1
- for <ltp@lists.linux.it>; Tue, 11 Mar 2025 13:10:51 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:45d1:ec00::3;
- helo=nyc.source.kernel.org; envelope-from=brauner@kernel.org;
+ by picard.linux.it (Postfix) with ESMTPS id 1B47A3C829A
+ for <ltp@lists.linux.it>; Tue, 11 Mar 2025 14:09:28 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org
- [IPv6:2604:1380:45d1:ec00::3])
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 28E681400132
- for <ltp@lists.linux.it>; Tue, 11 Mar 2025 13:10:49 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by nyc.source.kernel.org (Postfix) with ESMTP id A1251A46B98;
- Tue, 11 Mar 2025 12:05:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32850C4CEEC;
- Tue, 11 Mar 2025 12:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1741695047;
- bh=MPQEg5ZspKJem06ktpIpqTUrYZgcnEZSH61y0z6cE1w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hT8F7hR2KxabWlh8ZZQRGkj7dxr8nftImoYF0q+KU6VsZTTVREPRD2dnMRH0WX3l2
- YmBXIlsDIwyIGHVU9B91AH2HAs7ObYRD2frrYHZAgSRe4ezF9qk7AwEXgOdTG4zd5q
- 7UMcUEZl2nlExVjCpCZ/bfV/TudPLcoAMZm/7EZ+YtxRRdgLBc1vf1Y6kj5bt78O44
- ZvEpg4IAaoG+i+brns+Qq9ml/nrjlkEYHwseDkQxPnw5urGZLrgY2cTZV6Kfio5892
- 58IirZJbIozOINhm3+TfIz0tzqQX6cfTEY5izi5OMEKaK5gEaYXTKmnwGxTxJKFfde
- 28oEb6E1lj0VA==
-Date: Tue, 11 Mar 2025 13:10:43 +0100
-To: kernel test robot <oliver.sang@intel.com>, 
- Luis Chamberlain <mcgrof@kernel.org>
-Message-ID: <20250311-testphasen-behelfen-09b950bbecbf@brauner>
-References: <202503101536.27099c77-lkp@intel.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 74927200220
+ for <ltp@lists.linux.it>; Tue, 11 Mar 2025 14:09:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1741698565;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J+LI7+2lnzJYKh6sMzBCd+5OCY/9yMQxJCS+RyOZNgA=;
+ b=D03hW4PMDm+J1oCLNYgZiUOyRamXIdS5z/5O0ZjPVaZzJ/L6Asbj4x7S1i0ZvYNKNscvZ2
+ e5fZ1To+FfAj/fOr6dk4AXVo+tsM1Pq/R5Ba3EYAmSzH0gJHW9MY6/BcnUUF2Q+kBZerfW
+ dH8+apP4Twr9L4OKMYDGEB5d66CtfIE=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-682-UGaZXNQ7NSyQyvABcYXQIg-1; Tue, 11 Mar 2025 09:09:21 -0400
+X-MC-Unique: UGaZXNQ7NSyQyvABcYXQIg-1
+X-Mimecast-MFC-AGG-ID: UGaZXNQ7NSyQyvABcYXQIg_1741698561
+Received: by mail-pj1-f71.google.com with SMTP id
+ 98e67ed59e1d1-2ff605a7a43so15597736a91.3
+ for <ltp@lists.linux.it>; Tue, 11 Mar 2025 06:09:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1741698561; x=1742303361;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=J+LI7+2lnzJYKh6sMzBCd+5OCY/9yMQxJCS+RyOZNgA=;
+ b=dCa4FqtuwHOiJNEMjpqBF8i5MYHdbGNfhdIqrp8Ake+9Oz7c6PAu28So0SpfCKNk9D
+ ehvXP6w4TZ/blFCB0BhQfc0T9WBzfWkT4hj/JziAMnZR2M0+G4yBRqZDoIx9F1piWzLV
+ +iHCiyKEe+M0823l3BIoFtHCmjgNkPF9pFb551j3ZN4gY8VlueKYc2zwUdv7pBqJo2j/
+ tevrHETWAM/SL5OaqW/Tont1OcPCyPeEAiMIPM4lREXZ66CmLtNNob9fPC2+sU58xddH
+ cWU62UrzxqSWPWjrqFSn/LoMalSn1a8kC98l9iw8nM0ImeTuivCz3eK0gzsBZTDpoRUA
+ t2HQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXOsgHz4MeHqeQPwwcz3VclKG+mTbN9Mf8KMJYktLaAOASE3m2ot234L6jqw3rJs3IhypU=@lists.linux.it
+X-Gm-Message-State: AOJu0Ywm+lzU3qC+OkU93cn5Yx/ZzLFG4YaPCNfnipU/acvJMy6Po9HC
+ MimH1psFBwNu+MREQ8lxXVSTiDjDQfi7+r8v9jGqZu+XSskAy8gkYUjo5u/Wy05SN59ly0O/qdk
+ +K25DwTPZd06nNFVh62kz2L9GUOaDefSIpHcg/PK03HvQ1bGR/h+m2hspMeHxKOzsFEw0K9js5e
+ LNns45233tqLa0Ho+69t54f94=
+X-Gm-Gg: ASbGnctgZfFku5IwMRglaKqKWNRVxgBbShmVjCxfHJKGo/fbjCtDsz/Nj0qM0vHYkJp
+ FCx6aYnZ4PzMLaXhvp1EKMIkjBSs33xuJdk+uYs/Ht2NhNOHCh2W800C6ICzlNFoInrXGIPD6QQ
+ ==
+X-Received: by 2002:a17:90b:1b0b:b0:2fc:c262:ef4b with SMTP id
+ 98e67ed59e1d1-2ff7cea9a99mr30714721a91.18.1741698560800; 
+ Tue, 11 Mar 2025 06:09:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfWT+wYrgBggkzhRfWt+2/vckJpJ2Ygr1ArVyOKu+aA/HJ+Ql4+MBisSxY/LvCYkKz/Q0SldW+00EbjI0LyZ4=
+X-Received: by 2002:a17:90b:1b0b:b0:2fc:c262:ef4b with SMTP id
+ 98e67ed59e1d1-2ff7cea9a99mr30714683a91.18.1741698560438; Tue, 11 Mar 2025
+ 06:09:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202503101536.27099c77-lkp@intel.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <202503101538.84c33cd4-lkp@intel.com>
+ <CAEemH2egF6ehr7B_5KDLuBQqoUJ5k7bVZkid-ERDBkxkChi7fw@mail.gmail.com>
+ <CAB=NE6UWzyq+qXhGmpH2-6bePE+Zi=dJjBH7y3HeJnYyh6xvtw@mail.gmail.com>
+ <CAEemH2c21vrSOKdJvHkyH+UOv-aXefXeFVZuv4-DSZ_P4Z3Mxw@mail.gmail.com>
+ <Z8-tV0zJKP7wRAxK@bombadil.infradead.org>
+In-Reply-To: <Z8-tV0zJKP7wRAxK@bombadil.infradead.org>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 11 Mar 2025 21:09:08 +0800
+X-Gm-Features: AQ5f1JoHrLR73BefZogi6hnZrxhXC-m4GK46v2XEAp1UbjQMgVmnLBNuxzXp-qI
+Message-ID: <CAEemH2d36bY-q-+P_vHKvj+kg6qi2k=y37PRNOr6mkY=pdFQrQ@mail.gmail.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: Qm8IqYlEtcXGrp7Ra1a5qe6PCLXokRHnkReSi5txnNQ_1741698561
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linux-next:master] [block/bdev] 3c20917120:
- BUG:sleeping_function_called_from_invalid_context_at_mm/util.c
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [linux-next:master] [block/bdev] 47dd675323:
+ ltp.ioctl_loop06.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,134 +104,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Christian Brauner via ltp <ltp@lists.linux.it>
-Reply-To: Christian Brauner <brauner@kernel.org>
-Cc: lkp@intel.com, John Garry <john.g.garry@oracle.com>,
+Cc: Christian Brauner <brauner@kernel.org>, 0day robot <lkp@intel.com>,
  "Matthew Wilcox \(Oracle\)" <willy@infradead.org>, linux-block@vger.kernel.org,
- Hannes Reinecke <hare@suse.de>, oe-lkp@lists.linux.dev, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ kernel test robot <oliver.sang@intel.com>, Hannes Reinecke <hare@suse.de>,
+ oe-lkp@lists.linux.dev, LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Mar 10, 2025 at 03:43:49PM +0800, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> kernel test robot noticed "BUG:sleeping_function_called_from_invalid_context_at_mm/util.c" on:
-> 
-> commit: 3c20917120ce61f2a123ca0810293872f4c6b5a4 ("block/bdev: enable large folio support for large logical block sizes")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-
-Is this also already fixed by:
-
-commit a64e5a596067 ("bdev: add back PAGE_SIZE block size validation for sb_set_blocksize()")
-
-?
-
-> 
-> in testcase: ltp
-> version: ltp-x86_64-0f9d817a3-1_20250222
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: btrfs
-> 	test: syscalls-04/close_range01
-> 
-> 
-> 
-> config: x86_64-rhel-9.4-ltp
-> compiler: gcc-12
-> test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
-> 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202503101536.27099c77-lkp@intel.com
-> 
-> 
-> [  218.427851][   T51] BUG: sleeping function called from invalid context at mm/util.c:901
-> [  218.435981][   T51] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 51, name: kcompactd0
-> [  218.444773][   T51] preempt_count: 1, expected: 0
-> [  218.449601][   T51] RCU nest depth: 0, expected: 0
-> [  218.454476][   T51] CPU: 2 UID: 0 PID: 51 Comm: kcompactd0 Tainted: G S                 6.14.0-rc1-00006-g3c20917120ce #1
-> [  218.454486][   T51] Tainted: [S]=CPU_OUT_OF_SPEC
-> [  218.454488][   T51] Hardware name: Hewlett-Packard HP Pro 3340 MT/17A1, BIOS 8.07 01/24/2013
-> [  218.454492][   T51] Call Trace:
-> [  218.454495][   T51]  <TASK>
-> [ 218.454498][ T51] dump_stack_lvl (lib/dump_stack.c:123 (discriminator 1)) 
-> [ 218.454508][ T51] __might_resched (kernel/sched/core.c:8767) 
-> [ 218.454517][ T51] folio_mc_copy (include/linux/sched.h:2072 mm/util.c:901) 
-> [ 218.454525][ T51] ? _raw_spin_lock (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:134 kernel/locking/spinlock.c:154) 
-> [ 218.454532][ T51] __migrate_folio+0x11a/0x2d0 
-> [ 218.454541][ T51] __buffer_migrate_folio (mm/migrate.c:945 mm/migrate.c:876) 
-> [ 218.454548][ T51] move_to_new_folio (mm/migrate.c:1080) 
-> [ 218.454555][ T51] migrate_folio_move (mm/migrate.c:1360) 
-> [ 218.454562][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454572][ T51] ? __pfx_migrate_folio_move (mm/migrate.c:1349) 
-> [ 218.454578][ T51] ? compaction_alloc_noprof (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/page-flags.h:829 include/linux/page-flags.h:850 mm/internal.h:711 mm/compaction.c:1878) 
-> [ 218.454587][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
-> [ 218.454594][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454601][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454607][ T51] ? migrate_folio_unmap (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/atomic/atomic-instrumented.h:33 include/linux/mm.h:1257 include/linux/mm.h:1273 mm/migrate.c:1324) 
-> [ 218.454614][ T51] migrate_pages_batch (mm/migrate.c:1721 mm/migrate.c:1959) 
-> [ 218.454621][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454631][ T51] ? __pfx_migrate_pages_batch (mm/migrate.c:1779) 
-> [ 218.454638][ T51] ? cgroup_rstat_updated (kernel/cgroup/rstat.c:45 kernel/cgroup/rstat.c:101) 
-> [ 218.454648][ T51] migrate_pages_sync (mm/migrate.c:1992) 
-> [ 218.454656][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
-> [ 218.454662][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454669][ T51] ? lru_gen_del_folio (include/linux/list.h:215 include/linux/list.h:229 include/linux/mm_inline.h:300) 
-> [ 218.454677][ T51] ? __pfx_migrate_pages_sync (mm/migrate.c:1982) 
-> [ 218.454683][ T51] ? set_pfnblock_flags_mask (mm/page_alloc.c:415 (discriminator 14)) 
-> [ 218.454691][ T51] ? __pfx_lru_gen_del_folio (include/linux/mm_inline.h:284) 
-> [ 218.454699][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
-> [ 218.454705][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454713][ T51] migrate_pages (mm/migrate.c:2098) 
-> [ 218.454720][ T51] ? __pfx_compaction_alloc (mm/compaction.c:1882) 
-> [ 218.454726][ T51] ? __pfx_compaction_free (mm/compaction.c:1892) 
-> [ 218.454733][ T51] ? __pfx_buffer_migrate_folio_norefs (mm/migrate.c:936) 
-> [ 218.454740][ T51] ? __pfx_migrate_pages (mm/migrate.c:2057) 
-> [ 218.454748][ T51] ? isolate_migratepages (mm/compaction.c:2167) 
-> [ 218.454757][ T51] compact_zone (mm/compaction.c:2667) 
-> [ 218.454767][ T51] ? __pfx_compact_zone (mm/compaction.c:2529) 
-> [ 218.454774][ T51] ? _raw_spin_lock_irqsave (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162) 
-> [ 218.454780][ T51] ? __pfx__raw_spin_lock_irqsave (kernel/locking/spinlock.c:161) 
-> [ 218.454788][ T51] compact_node (mm/compaction.c:2934) 
-> [ 218.454795][ T51] ? __pfx_compact_node (mm/compaction.c:2910) 
-> [ 218.454807][ T51] ? __pfx_extfrag_for_order (mm/vmstat.c:1138) 
-> [ 218.454814][ T51] ? __pfx_mutex_unlock (kernel/locking/mutex.c:518) 
-> [ 218.454822][ T51] ? finish_wait (include/linux/list.h:215 include/linux/list.h:287 kernel/sched/wait.c:376) 
-> [ 218.454831][ T51] kcompactd (mm/compaction.c:2235 mm/compaction.c:3227) 
-> [ 218.454839][ T51] ? __pfx_kcompactd (mm/compaction.c:3179) 
-> [ 218.454846][ T51] ? _raw_spin_lock_irqsave (arch/x86/include/asm/atomic.h:107 include/linux/atomic/atomic-arch-fallback.h:2170 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162) 
-> [ 218.454852][ T51] ? __pfx__raw_spin_lock_irqsave (kernel/locking/spinlock.c:161) 
-> [ 218.454858][ T51] ? __pfx_autoremove_wake_function (kernel/sched/wait.c:383) 
-> [ 218.454867][ T51] ? __kthread_parkme (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/kthread.c:291) 
-> [ 218.454874][ T51] ? __pfx_kcompactd (mm/compaction.c:3179) 
-> [ 218.454880][ T51] kthread (kernel/kthread.c:464) 
-> [ 218.454887][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
-> [ 218.454895][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
-> [ 218.454902][ T51] ret_from_fork (arch/x86/kernel/process.c:154) 
-> [ 218.454910][ T51] ? __pfx_kthread (kernel/kthread.c:413) 
-> [ 218.454915][ T51] ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
-> [  218.454924][   T51]  </TASK>
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20250310/202503101536.27099c77-lkp@intel.com
-> 
-> 
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBNYXIgMTEsIDIwMjUgYXQgMTE6MzPigK9BTSBMdWlzIENoYW1iZXJsYWluIDxtY2dy
+b2ZAa2VybmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFR1ZSwgTWFyIDExLCAyMDI1IGF0IDA5OjQzOjQy
+QU0gKzA4MDAsIExpIFdhbmcgd3JvdGU6Cj4gPiBPbiBNb24sIE1hciAxMCwgMjAyNSBhdCAxMTox
+NeKAr1BNIEx1aXMgQ2hhbWJlcmxhaW4gPG1jZ3JvZkBrZXJuZWwub3JnPgo+IHdyb3RlOgo+ID4K
+PiA+ID4gVGhlcmUncyBhIGZpeCBmb3IgdGhpcyBhbHJlYWR5IGluIG5leHQKPiA+ID4KPiA+Cj4g
+PiBPaD8gV2hpY2ggY29tbWl0Pwo+Cj4gT2ggc2VlbXMgbGludXgtbmV4dCBoYXNuJ3QgYmVlbiB1
+cGRhdGVkIGluIGEgZmV3IGRheXMsIHNvIHlvdSBjYW4gdHJ5Cj4gdGhpcyBwYXRjaDoKPgo+IGh0
+dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI1MDMwNzAyMDQwMy4zMDY4NTY3LTEtbWNncm9m
+QGtlcm5lbC5vcmcvCgoKLS0tIGEvYmxvY2svYmRldi5jCisrKyBiL2Jsb2NrL2JkZXYuYwpAQCAt
+MTgxLDYgKzE4MSw4IEBAIEVYUE9SVF9TWU1CT0woc2V0X2Jsb2Nrc2l6ZSk7CgogaW50IHNiX3Nl
+dF9ibG9ja3NpemUoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwgaW50IHNpemUpCiB7CisgICAgICAg
+aWYgKCEoc2ItPnNfdHlwZS0+ZnNfZmxhZ3MgJiBGU19MQlMpICYmIHNpemUgPiBQQUdFX1NJWkUp
+CisgICAgICAgICAgICAgICByZXR1cm4gMDsKICAgICAgICBpZiAoc2V0X2Jsb2Nrc2l6ZShzYi0+
+c19iZGV2X2ZpbGUsIHNpemUpKQogICAgICAgICAgICAgICAgcmV0dXJuIDA7Ci4uLgoKClRoYW5r
+cywgYnV0IGxvb2tpbmcgYXQgdGhlIGNvZGUgY2hhbmdlLCBzZWVtcyBmaWxlc3lzdGVtcyB3aXRo
+IEZTX0xCUwooZS5nLiwgYmNhY2hlZnMsIFhGUykgY2FuIHN0aWxsIG1vdW50IGxhcmdlciBibG9j
+ayBzaXplcyBwcm9wZXJseS4gSU9XLAp0aGUgdGVzdCBpb2N0bF9sb29wMDYgc3RpbGwgZmFpbGVk
+IG9uIFJIRUw5IChYRlMpIHBsYXRmb3JtLgoKSXMgdGhhdCBleHBlY3RlZD8gT3IsIHNob3VsZCB3
+ZSBhZGp1c3QgdGhlIHRlc3RjYXNlIGZvciBGUyB3aXRoIEZTX0xCUwphcyBleGNlcHRpb24/CgoK
+Ci0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
