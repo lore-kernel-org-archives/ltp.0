@@ -4,116 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA055C282EC
-	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 21:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C7C9C28B28
+	for <ltp@archiver.kernel.org>; Wed, 12 Mar 2025 05:01:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1741755665; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=OOGq8jumGuD66VYWxLTbSOxhGwAbcu6yWXUCz61huiI=;
+ b=e7LWsDH5pl81SFyjYQDPc/5BO1Sw3Wf50+MWJPGNG1PMoI9NjcgqpSnfiND9E+VjyqjiV
+ pNPyrMWE0KKFugMcrmcEZlSieBPCSzc/OiWrqf+R0kAAZJsCn0Z5VjIyoR1LXdPiRh51eIv
+ BiaWgLAndQCZWgzO7eGV3ISluwIetVE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D07E03CA3EF
-	for <ltp@archiver.kernel.org>; Tue, 11 Mar 2025 22:42:19 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3538C3CA40B
+	for <ltp@archiver.kernel.org>; Wed, 12 Mar 2025 06:01:05 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01E0A3CA336
- for <ltp@lists.linux.it>; Tue, 11 Mar 2025 22:42:01 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id A03763C0265
+ for <ltp@lists.linux.it>; Wed, 12 Mar 2025 06:00:44 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ spf=none (no SPF record) smtp.mailfrom=infradead.org
+ (client-ip=2607:7c80:54:3::133; helo=bombadil.infradead.org;
+ envelope-from=mcgrof@infradead.org; receiver=lists.linux.it)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CFF316002E8
- for <ltp@lists.linux.it>; Tue, 11 Mar 2025 22:41:59 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 58B6C1F388;
- Tue, 11 Mar 2025 21:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741729319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=s3toZruWSaFw7YvDgAvzYi1pZFYKA3g0p+Xy3IAwSo0=;
- b=XiW5MnJRVbyyOCp3EtCyhUh52V8Y8RBfh9+QpLTPRlG/s1c2ow0wBZof7RQe6wC0CHF1Xo
- Mhv+QKWPaOztb8vZHUqwings1pAdrJZjd1bGU1OGhCvjBRaT6ojPeA1XpqN9PMruFV3d4E
- Pvriw5A74XXtCcxxYKNMzZh6mkBBErM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741729319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=s3toZruWSaFw7YvDgAvzYi1pZFYKA3g0p+Xy3IAwSo0=;
- b=V0bGNMuVHN0WTUCWkh+qpEtV3Gz0ODH68BRI7IMS34XReXNltqan0clnBZH2DxizJmv7RO
- 1AY+ekJDcIOSvnCA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XiW5MnJR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=V0bGNMuV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741729319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=s3toZruWSaFw7YvDgAvzYi1pZFYKA3g0p+Xy3IAwSo0=;
- b=XiW5MnJRVbyyOCp3EtCyhUh52V8Y8RBfh9+QpLTPRlG/s1c2ow0wBZof7RQe6wC0CHF1Xo
- Mhv+QKWPaOztb8vZHUqwings1pAdrJZjd1bGU1OGhCvjBRaT6ojPeA1XpqN9PMruFV3d4E
- Pvriw5A74XXtCcxxYKNMzZh6mkBBErM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741729319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=s3toZruWSaFw7YvDgAvzYi1pZFYKA3g0p+Xy3IAwSo0=;
- b=V0bGNMuVHN0WTUCWkh+qpEtV3Gz0ODH68BRI7IMS34XReXNltqan0clnBZH2DxizJmv7RO
- 1AY+ekJDcIOSvnCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BC1F134A0;
- Tue, 11 Mar 2025 21:41:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ivclEieu0GdqVwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 11 Mar 2025 21:41:59 +0000
-Date: Tue, 11 Mar 2025 22:41:58 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250311214158.GA74256@pevik>
-References: <20231027174322.710674-1-pvorel@suse.cz>
- <CAEemH2fuA+YfFGNzSResMprEeT8+zhO1S_2Kscc14d2T828YYw@mail.gmail.com>
- <20231030072819.GA9167@pevik>
- <CAEemH2eUQxxQAh-Ln_hyzu_C_AL36fXsjbKZJqC3rcHsASgQgQ@mail.gmail.com>
- <20231030142055.GA21733@pevik> <20250307234554.GA347736@pevik>
- <CAEemH2dRoh_NpQyXNbhKB999hGmNuca2WNr3rg23HpR598O65Q@mail.gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AAAB6005C3
+ for <ltp@lists.linux.it>; Wed, 12 Mar 2025 06:00:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+ MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=4VfUOjWo+32AuDiC0iqDr/l/PZ8nRE39G5zh1X+A1H0=; b=t/IlGc//5oKhH6cZ8+VHa8bIfM
+ tvt1u6yhti395QXHvt9kcozQoMQbFXQZouoDZl+V2ogFnAQJqk/1QHNdwflgIwO/UhbQY6ft0lyU2
+ 6MpOs3RjEmatQ+7feZOUZaGhmt7nC11d8dLCRfIC7urgrHjiypoz6KwayU8iq8yAdeGDDc0t/BBIl
+ epyGrqE59e6CTlhp4neui5oR2SlfVz3+AaYwkHb+AOyhJgu9BMAf5VKZhHlIWc8C4S6MQymNXAD84
+ BcObPxnc+TcSehPM8PIDNsHyDEHH1zfY6rxeGK6Rf6liXSVNtNB3icLV8j33REoK6YIPEBIbrN6F7
+ CrPzSN/Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.98 #2 (Red
+ Hat Linux)) id 1tsECj-00000007U8E-2579;
+ Wed, 12 Mar 2025 05:00:29 +0000
+To: liwang@redhat.com, brauner@kernel.org, hare@suse.de, willy@infradead.org,
+ david@fromorbit.com, djwong@kernel.org
+Date: Tue, 11 Mar 2025 22:00:28 -0700
+Message-ID: <20250312050028.1784117-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2dRoh_NpQyXNbhKB999hGmNuca2WNr3rg23HpR598O65Q@mail.gmail.com>
-X-Rspamd-Queue-Id: 58B6C1F388
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] compat_16.mk: Cleanup INTERMEDIATE object
- syntax
+Subject: [LTP] [PATCH] block: add BLK_FEAT_LBS to check for PAGE_SIZE limit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,27 +68,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it,
- Stanislav Kholmanskikh <stanislav.kholmanskikh@bell-sw.com>
+From: Luis Chamberlain via ltp <ltp@lists.linux.it>
+Reply-To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: p.raghav@samsung.com, ritesh.list@gmail.com, lkp@intel.com,
+ john.g.garry@oracle.com, da.gomez@samsung.com, gost.dev@samsung.com,
+ oe-lkp@lists.linux.dev, linux-block@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, mcgrof@kernel.org, oliver.sang@intel.com,
+ kbusch@kernel.org, kernel@pankajraghav.com, hch@lst.de, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+The commit titled "block/bdev: lift block size restrictions to 64k"
+lifted the block layer's max supported block size to 64k inside the
+helper blk_validate_block_size() now that we support large folios on
+the block layer. However, block drivers have relied on the call for
+queue_limits_commit_update() to validate and ensure the logical block
+size < PAGE_SIZE.
 
-> > Finally merged :).
-> > (Obviously I forgot to merge back then although I set this in patchwork as
-> > accepted.)
+We should take time to validate each block driver before enabling
+support for larger logical block sizes, so that those that didn't
+have support stay that way and don't need modifications.
 
+Li Wang reported this as a regression on LTP via:
 
-> Well, thanks!! I'm wondering how you find this one being missed, it's been
-> so long:).
+testcases/kernel/syscalls/ioctl/ioctl_loop06
 
-Trying to tidy up messy branches in my fork :).
+Which uses the loopback driver to enable larger logical block sizes
+first with LOOP_CONFIGURE and then LOOP_SET_BLOCK_SIZE. While
+I see no reason why the loopback block driver can't support
+larger logical block sizes than PAGE_SIZE, leave this validation
+step as a secondary effort for each block driver.
 
-Kind regards,
-Petr
+Reported-by: Li Wang <liwang@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202503101538.84c33cd4-lkp@intel.com
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ block/blk-settings.c   | 4 +++-
+ include/linux/blkdev.h | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index c44dadc35e1e..5cdd0d7d2af2 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -254,7 +254,9 @@ int blk_validate_limits(struct queue_limits *lim)
+ 	 */
+ 	if (!lim->logical_block_size)
+ 		lim->logical_block_size = SECTOR_SIZE;
+-	else if (blk_validate_block_size(lim->logical_block_size)) {
++	else if (blk_validate_block_size(lim->logical_block_size) ||
++		 (lim->logical_block_size > PAGE_SIZE &&
++		   !(lim->features & BLK_FEAT_LBS))) {
+ 		pr_warn("Invalid logical block size (%d)\n", lim->logical_block_size);
+ 		return -EINVAL;
+ 	}
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index a97428e8bbbe..cdab3731a646 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -341,6 +341,9 @@ typedef unsigned int __bitwise blk_features_t;
+ #define BLK_FEAT_ATOMIC_WRITES \
+ 	((__force blk_features_t)(1u << 16))
+ 
++/* Supports sector sizes > PAGE_SIZE */
++#define BLK_FEAT_LBS		((__force blk_features_t)(1u << 17))
++
+ /*
+  * Flags automatically inherited when stacking limits.
+  */
+-- 
+2.47.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
