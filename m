@@ -4,104 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF56C28B28
-	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 09:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A0FCC282EC
+	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 13:04:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 005193CA4E2
-	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 10:59:01 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8DAEB3CA4D9
+	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 14:04:33 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 141443CA304
- for <ltp@lists.linux.it>; Thu, 13 Mar 2025 10:58:44 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 7A9673CA49A
+ for <ltp@lists.linux.it>; Thu, 13 Mar 2025 14:04:14 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 92E01200989
- for <ltp@lists.linux.it>; Thu, 13 Mar 2025 10:58:43 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0E975600872
+ for <ltp@lists.linux.it>; Thu, 13 Mar 2025 14:04:13 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C7AC91F388;
- Thu, 13 Mar 2025 09:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741859922;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UwkVBRKQJYYNyzoOqA9sXM9IN5y8qF51j0NTDG4ZhwM=;
- b=ENpN4frKFF474APZ2lCfgyiK7awjH3rcxjgGEKbup9M2axo9niZID1GVtVIoWuOoeUk0SD
- 7oOqpD5SL2E43qbYS1zjFYXywc5o4aNOOIEpt26myLf+werxIaj7ZrNCUZ9Amj89pVsPnh
- QTnZrotr8AH/otyxufpeUtMEDHSiRRg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741859922;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UwkVBRKQJYYNyzoOqA9sXM9IN5y8qF51j0NTDG4ZhwM=;
- b=YS/Fqrzh8X7/64CWgB4c2kNObc4rR/p7ZDLGRPOQRTV0A1j7zrqNmNomy3xgM3fanrdhha
- JJ1l3WcvawUI5fCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1741859922;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UwkVBRKQJYYNyzoOqA9sXM9IN5y8qF51j0NTDG4ZhwM=;
- b=ENpN4frKFF474APZ2lCfgyiK7awjH3rcxjgGEKbup9M2axo9niZID1GVtVIoWuOoeUk0SD
- 7oOqpD5SL2E43qbYS1zjFYXywc5o4aNOOIEpt26myLf+werxIaj7ZrNCUZ9Amj89pVsPnh
- QTnZrotr8AH/otyxufpeUtMEDHSiRRg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1741859922;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UwkVBRKQJYYNyzoOqA9sXM9IN5y8qF51j0NTDG4ZhwM=;
- b=YS/Fqrzh8X7/64CWgB4c2kNObc4rR/p7ZDLGRPOQRTV0A1j7zrqNmNomy3xgM3fanrdhha
- JJ1l3WcvawUI5fCA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 144DD21191;
+ Thu, 13 Mar 2025 13:04:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1741871053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FQugW9V8FfIa/9Pa7rV5FrSQm//+FUvN1h1H98vXLVQ=;
+ b=BcXpFq6nIwYRzoDyV+9r+rtJmhDYsY4Uy+tAAMXhmhxlgtjBU6Qj2631rb3slYth6144jh
+ F5auFRqRiBWkuvTVn9TGz3sfwoMzXJc+BpUD1/Kvp1g43300waZOx66f4OfuoG1SxpUteR
+ GGQWdbvlt6wtue4uCz7JSs4ZoU/wEbU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1741871053;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FQugW9V8FfIa/9Pa7rV5FrSQm//+FUvN1h1H98vXLVQ=;
+ b=7aSxgyxgDGMyHAtzLs/yCb+G8f6c1vSkyS++RhZP8AOLS2YoNoYvljTmAIpKQ6d/8q2rcQ
+ IH2xfQ+oKrpZVbAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=BcXpFq6n;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7aSxgyxg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1741871053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FQugW9V8FfIa/9Pa7rV5FrSQm//+FUvN1h1H98vXLVQ=;
+ b=BcXpFq6nIwYRzoDyV+9r+rtJmhDYsY4Uy+tAAMXhmhxlgtjBU6Qj2631rb3slYth6144jh
+ F5auFRqRiBWkuvTVn9TGz3sfwoMzXJc+BpUD1/Kvp1g43300waZOx66f4OfuoG1SxpUteR
+ GGQWdbvlt6wtue4uCz7JSs4ZoU/wEbU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1741871053;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FQugW9V8FfIa/9Pa7rV5FrSQm//+FUvN1h1H98vXLVQ=;
+ b=7aSxgyxgDGMyHAtzLs/yCb+G8f6c1vSkyS++RhZP8AOLS2YoNoYvljTmAIpKQ6d/8q2rcQ
+ IH2xfQ+oKrpZVbAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAFB8137BA;
- Thu, 13 Mar 2025 09:58:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F2EEE13797;
+ Thu, 13 Mar 2025 13:04:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jrJSLVKs0mdTQQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 13 Mar 2025 09:58:42 +0000
-Date: Thu, 13 Mar 2025 10:58:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20250313095837.GC135222@pevik>
-References: <20250313-mmap_suite_refactoring-v3-0-eb9172686230@suse.com>
- <20250313-mmap_suite_refactoring-v3-1-eb9172686230@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Wk2OOszX0mcncwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 13 Mar 2025 13:04:12 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 13 Mar 2025 14:03:55 +0100
+Message-Id: <20250313-mmap_suite_refactoring-v4-0-efd682ece39a@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250313-mmap_suite_refactoring-v3-1-eb9172686230@suse.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-B4-Tracking: v=1; b=H4sIALvX0mcC/3XN3Q6CMAwF4Fcxu3ama2GoV76HMWSwCrvgJwyIh
+ vDuDhIjMeHytKdfJ+G5c+zF9TCJjkfnXVOHEB0PIi9NXbB0NmSBgDEgxLKqTJv6wfWcdvw0ed9
+ 0ri4kIUKEJsso1iIct2HpXit8f4RcOh+a7/XPqJbpl0z2yFFJkBZA2wsqjmx884PnU95UYhFH3
+ CgKdhUMimbLhkxEmsyfQj+FFO0qFBTOLipBfdZIsFHmef4AXJXhNkcBAAA=
+X-Change-ID: 20250205-mmap_suite_refactoring-322042abb356
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1741871052; l=2426;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=Meb8doG90wQ8AVBKyGgVtsCuUmQRnPr4f24FSWhZ/H0=;
+ b=fRSyroy4CaRgNAvE1GlGdspWtScjBS5Byd5aD7ZGDiH4Fl+bUK+l/cDbXaeWixWRyIjcuxolk
+ chYd7fskZMiCS5dUI5NFjtmpsF5GaBQ6BD9yr0BDxpMtadxlkD53/SR
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 144DD21191
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/8] Refactor mmap03 test
+Subject: [LTP] [PATCH v4 0/8] Cleanup the mmap testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,79 +128,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea, Cyril,
+Some of the tests in the mmap testing suites are using old API, having
+documentation which is not linked to the metadata or need to be cleaned
+up a bit. This patch-set is meant to fix these issues. mmap11 is for
+IA64 only and that will require a separate patch and discussion.
 
-...
-> +++ b/testcases/kernel/syscalls/mmap/mmap03.c
-> -		/*
-> -		 * Check whether the mapped memory region
-> -		 * has the file contents.
-> -		 *
-> -		 * with ia64 and PARISC/hppa, this should
-> -		 * generate a SIGSEGV which will be caught below.
-> -		 *
-> -		 */
-> -
-> -		if (sigsetjmp(env, 1) == 0) {
-> -			if (memcmp(dummy, addr, page_sz)) {
-> -				tst_resm(TFAIL,
-> -					 "mapped memory region "
-> -					 "contains invalid data");
-> -			} else {
-> -				tst_resm(TPASS,
-> -					 "mmap() functionality is "
-> -					 "correct");
-> -			}
-> -		}
-> -#if defined(__ia64__) || defined(__hppa__) || defined(__mips__)
-> -		if (pass) {
-> -			tst_resm(TPASS, "Got SIGSEGV as expected");
-> -		} else {
-> -			tst_resm(TFAIL, "Mapped memory region with NO "
-> -				 "access is accessible");
-> -		}
-...
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v4:
+- mmap03: keep mips only arch and move buffer handling in setup/cleanup
+- mmap10: remove ifdef for MADV_MERGEABLE, since it's available from 2.6
+  get rid of options and use testcases instead
+- mmap12: remove [Description]
+- mmap17: move mmap() in setup
+- mmap19: munmap() if mmap() doesn't fail and simplify description
+- mmap21: create mmap21_01/02, remove child crash check and
+  allocate/deallocate in setup/cleanup
+- Link to v3: https://lore.kernel.org/r/20250313-mmap_suite_refactoring-v3-0-eb9172686230@suse.com
 
-> +#if defined(__ia64__) || defined(__hppa__) || defined(__mips__)
-> +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
-> +		tst_res(TPASS, "SIGSEGV has been received");
+Changes in v3:
+- mmap01: this and that
+- Link to v2: https://lore.kernel.org/r/20250210-mmap_suite_refactoring-v2-0-6edea3a4363a@suse.com
 
-In the previous discussion [1] Cyril noted:
+Changes in v2:
+- mmap21: verify SIGSEGV
+- Link to v1: https://lore.kernel.org/r/20250207-mmap_suite_refactoring-v1-0-d006d921e4d5@suse.com
 
-	The fact that memory mapped with PROT_EXEC is readable is an
-	implementation detail for an architecture and not guaranteed. So the
-	best result is either to expect that the child returns with 0 or dies
-	with SIGSEGV, either one is correct behavior.
+---
+Andrea Cervesato (8):
+      Refactor mmap03 test
+      Refactor mmap10 test
+      Cleanup mmap12 test
+      Cleanup mmap17 test
+      Cleanup mmap18 test
+      Cleanup mmap19 test
+      Cleanup mmap20 test
+      Refactor mmap001 test and move it to mmap21
 
-Therefore we don't need to check this for *any* specific architecture (e.g.
-remove #if defined preprocessor wrap. And we should check either for 0 or
-SIGSEGV, many tests do this, e.g. fstatfs/fstatfs02.c, clone/clone07.c.
+ runtest/mm                                |  13 +-
+ runtest/syscalls                          |   3 +-
+ testcases/kernel/syscalls/mmap/.gitignore |   2 +-
+ testcases/kernel/syscalls/mmap/mmap001.c  | 183 ---------------------
+ testcases/kernel/syscalls/mmap/mmap03.c   | 265 ++++++++----------------------
+ testcases/kernel/syscalls/mmap/mmap10.c   | 255 ++++++++++------------------
+ testcases/kernel/syscalls/mmap/mmap12.c   |  30 +---
+ testcases/kernel/syscalls/mmap/mmap17.c   |  53 +++---
+ testcases/kernel/syscalls/mmap/mmap18.c   |  90 +++++-----
+ testcases/kernel/syscalls/mmap/mmap19.c   |   2 +-
+ testcases/kernel/syscalls/mmap/mmap20.c   |   3 -
+ testcases/kernel/syscalls/mmap/mmap21.c   |  99 +++++++++++
+ 12 files changed, 333 insertions(+), 665 deletions(-)
+---
+base-commit: a92aedfabd5826d07809559508c8486c12ff7b96
+change-id: 20250205-mmap_suite_refactoring-322042abb356
 
-> +	} else {
-> +		tst_res(TFAIL, "Mapped memory region with NO "
-> +			"access is accessible");
-nit: Please no split strings (when they are reasonable long).
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/Z7ykr8it7KmHjWsY@yuki.lan/
-
-...
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.forks_child = 1,
-> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
