@@ -4,63 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CB28C282DE
-	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 22:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1741906793; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=4f5fQtd49gZCmzypAP5XG95fReajnUSdsXNYn/ayfVA=;
- b=F95FLNjBQGW2NlaMhx7f2V41mCkMZtWRTGbbeRLf+SmCGL+BnHP0t4SUZMgKM5DW49igd
- HUMzTcHkYWBJWVnnB1XESgO8snv8OP95pgNnic+oodYbPpaEuwgjwvVWDhfJD7eoSNC/7sl
- W1z54ImTlqV/2aiG2XSfzHo6SySzRxE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBA5AC282DE
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 02:25:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B92D3CA58B
-	for <ltp@archiver.kernel.org>; Thu, 13 Mar 2025 23:59:53 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BAA163CA52E
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 03:25:28 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ABCB43C2BFA
- for <ltp@lists.linux.it>; Thu, 13 Mar 2025 23:59:31 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 7C1513CA4E5
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 03:25:12 +0100 (CET)
 Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=kernel.org (client-ip=2604:1380:4641:c500::1;
- helo=dfw.source.kernel.org; envelope-from=mcgrof@kernel.org;
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DE0011A0091A
- for <ltp@lists.linux.it>; Thu, 13 Mar 2025 23:59:30 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id 6CC015C3478;
- Thu, 13 Mar 2025 22:57:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9505C4CEDD;
- Thu, 13 Mar 2025 22:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1741906767;
- bh=oWuRxyt3MUiP1swKqllJs5wW6pdT5rmMytRbKhSHBWQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=bdJNxZpe+TM+ddELHWgVHR4cJWwUnIoCrVw4wNYY86CpbV7+FP1ID585oxQ1W/Nc1
- eSPVYE1iT46ik4k4RtJfwRnihqcSKQnC4WX0zHQ9B1x0pbhV76MX2rnU7osCNtkuvJ
- uIpf+IjajEXErEqCQR4AypYEVWtdxVP16FwassxdsqimjHJrnXPLtHTjwlq2AZpd03
- j0Y0O9df9eGTksoLC6yReg4AOZK84Jd/o1ysri4Gqs5e6u6pAEKs8TnYl159q4GfMR
- MekW0voIP0lyRNyzH7RTBuCLEecUU2s+CEh3PyW/vSN6Zy3tY3RRktiPorCvqsHyla
- MU3kthIdlDnfw==
-Date: Thu, 13 Mar 2025 15:59:26 -0700
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Z9NjTtX3o15YDZ1w@bombadil.infradead.org>
-References: <20250313092445.164616-1-liwang@redhat.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 882C71A0099D
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 03:25:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1741919109;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rtoYWs+KB7Ys5kzxHuQ/Ln8UkOzdUkd/jLeMMkTqtzo=;
+ b=JsdpW12KOKByNnyCwULv5QROWlfsfd4Bzi58n9H3X9F+igjMD7CzBq7mjXblZ+gFs5vKNc
+ wUesPnj2mMrw1GaOqol8BmXzgGHXYzPF8zJr+ZTDVpINWjOq+599SMQwhAO7RlOftZiZKl
+ 48JIu8ZexVRU1u3zEMIOG71Ra9rCLRk=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-352-bZas_MYuMTikTj7sMPUC8g-1; Thu, 13 Mar 2025 22:25:07 -0400
+X-MC-Unique: bZas_MYuMTikTj7sMPUC8g-1
+X-Mimecast-MFC-AGG-ID: bZas_MYuMTikTj7sMPUC8g_1741919106
+Received: by mail-pj1-f72.google.com with SMTP id
+ 98e67ed59e1d1-2ff68033070so2485703a91.2
+ for <ltp@lists.linux.it>; Thu, 13 Mar 2025 19:25:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1741919106; x=1742523906;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=rtoYWs+KB7Ys5kzxHuQ/Ln8UkOzdUkd/jLeMMkTqtzo=;
+ b=EGOaITOT5wUINcGQTNEpJ5l7IsFuoYdWc/3tiSgQKzWVuLNR2D54Z+AMa996dWrkZD
+ 2Utjb7q/fcdGtUHUuxIc9J6uHbXt7yL8JuKiiDtq/UmtfS2DrvzhY8cxsf+fDMTH1Svw
+ cAp6rMK5ECkU0Z/3pDXW8eqHnliAQLeSl7jBiUtGA+xhyUqBnhqM3a3R77Af+MSyNpIk
+ 1LzF6dFOzlmU8MyI02lx6z6N+agXTzOgjqgxSdhTZa4ffk0mxqwngkkZDMlZL0hWV4Jj
+ 0GoS4lmFcGLJJnNG/kcKjfMxtJrNRanaPWdcD6QbhuU5hfM6rzKWxDjH06UHQSel71/U
+ hRDw==
+X-Gm-Message-State: AOJu0Yx5sBnoEtMrcZptVillO30x9loTx0UsxUbC1c0zMVYEQZGVtrjh
+ zop1UljnGwNuJWC9yLPBLhKq20GJaIAxKAgctRy1eo01Pruh+BWYn3iFO4kOuNGZEoEs4uMXNkD
+ dn6Fwjmu6R4VZ6hDg8/xIaAn1InT6RlM3guJgz36lPwJwJJh7EEWEM1cdWvTeKhR2PlmCLg340r
+ 1m3f9nhF9BzVPMFI38mHmz784=
+X-Gm-Gg: ASbGncuBM1O82zB42rrDqNYecNN1olmdIRvOJHMeOKedhUP/rmjxHnWqtHLXvGDKdsZ
+ Ly1g892v1+GYw2Hej46cCX+blQvANprcP84X94nnIsQEtkb1O0t4In/KKTPlrNdtO8MIgDEsPqg
+ ==
+X-Received: by 2002:a17:90a:d888:b0:2f8:34df:5652 with SMTP id
+ 98e67ed59e1d1-30151d00252mr922786a91.21.1741919105893; 
+ Thu, 13 Mar 2025 19:25:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEuJPx6l3RsciuErGsVsB+zAuCXtJN3znwv10axXFRe+N05ohIn73MqX298cgNLHCZptDCQMJMYQpcTs99Ddp8=
+X-Received: by 2002:a17:90a:d888:b0:2f8:34df:5652 with SMTP id
+ 98e67ed59e1d1-30151d00252mr922756a91.21.1741919105380; Thu, 13 Mar 2025
+ 19:25:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250313092445.164616-1-liwang@redhat.com>
+References: <20250313092445.164616-1-liwang@redhat.com>
+ <Z9NjTtX3o15YDZ1w@bombadil.infradead.org>
+In-Reply-To: <Z9NjTtX3o15YDZ1w@bombadil.infradead.org>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 14 Mar 2025 10:24:52 +0800
+X-Gm-Features: AQ5f1JooECBCZO1D7aH0Gca4YH4NFGlmOarXyQ6RqFpF_oSQM7hWpPpsekgIor0
+Message-ID: <CAEemH2cTkjGzYgvL3vw3+9MRPtxYfVTCmgexFWAVh5Q00J0oKg@mail.gmail.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: D6wF4kbwcRkjL7Q70tZCbiDRlijKn9wl_v1pakKuL1s_1741919106
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH v2] ioctl_loop06: update loopback block size
  validation
 X-BeenThere: ltp@lists.linux.it
@@ -74,87 +98,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Luis Chamberlain via ltp <ltp@lists.linux.it>
-Reply-To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it,
  Hannes Reinecke <hare@suse.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Mar 13, 2025 at 05:24:45PM +0800, Li Wang wrote:
-> The kernel commit 47dd6753 ("block/bdev: lift block size restrictions to 64k")
-> now supports block sizes larger than PAGE_SIZE, with a new upper limit of
-> BLK_MAX_BLOCK_SIZE (64K). But ioctl_loop06 still assumes that PAGE_SIZE is the
-> maximum allowed block size, causing failures on newer kernels(>= 6.14):
-> 
->   ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
->   ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
->   ...
->   ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
->   ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-> 
-> This patch updates ioctl_loop06 to use BLK_MAX_BLOCK_SIZE instead of PAGE_SIZE
-> for block size validation.
-> 
-> And, we give up the test size between (PAGE_SIZE, BLK_MAX_BLOCK_SIZE) even on
-> old kernels becase it makes no sense.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Hannes Reinecke <hare@suse.de>
-> ---
->  testcases/kernel/syscalls/ioctl/ioctl_loop06.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-> index 573871bc1..238a7c6f5 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-> @@ -17,6 +17,8 @@
->  #include "lapi/loop.h"
->  #include "tst_test.h"
->  
-> +#define BLK_MAX_BLOCK_SIZE 0x00010000 /* SZ_64K */
-
-Today its SZ_64K, tomorrow another value. If you have an ifdef check for
-kernel versions it may be good to do that. So if >= v6.15 then 64k
-othersize PAGE_SIZE is fine.
-
-> +
->  static char dev_path[1024];
->  static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
->  static unsigned int invalid_value, half_value, unalign_value;
-> @@ -31,7 +33,7 @@ static struct tcase {
->  	"Using LOOP_SET_BLOCK_SIZE with arg < 512"},
->  
->  	{&invalid_value, LOOP_SET_BLOCK_SIZE,
-> -	"Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE"},
-> +	"Using LOOP_SET_BLOCK_SIZE with arg > BLK_MAX_BLOCK_SIZE"},
->  
->  	{&unalign_value, LOOP_SET_BLOCK_SIZE,
->  	"Using LOOP_SET_BLOCK_SIZE with arg != power_of_2"},
-> @@ -40,7 +42,7 @@ static struct tcase {
->  	"Using LOOP_CONFIGURE with block_size < 512"},
->  
->  	{&invalid_value, LOOP_CONFIGURE,
-> -	"Using LOOP_CONFIGURE with block_size > PAGE_SIZE"},
-> +	"Using LOOP_CONFIGURE with block_size > BLK_MAX_BLOCK_SIZE"},
->  
->  	{&unalign_value, LOOP_CONFIGURE,
->  	"Using LOOP_CONFIGURE with block_size != power_of_2"},
-> @@ -106,7 +108,7 @@ static void setup(void)
->  	tst_fill_file("test.img", 0, 1024, 1024);
->  	half_value = 256;
->  	pg_size = getpagesize();
-> -	invalid_value = pg_size * 2 ;
-> +	invalid_value = BLK_MAX_BLOCK_SIZE + 1;
-
-I'd use BLK_MAX_BLOCK_SIZE * 2 as we use power of 2 values;
-
-  Luis
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTHVpcywKCk9uIEZyaSwgTWFyIDE0LCAyMDI1IGF0IDY6NTnigK9BTSBMdWlzIENoYW1iZXJs
+YWluIDxtY2dyb2ZAa2VybmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFRodSwgTWFyIDEzLCAyMDI1IGF0
+IDA1OjI0OjQ1UE0gKzA4MDAsIExpIFdhbmcgd3JvdGU6Cj4gPiBUaGUga2VybmVsIGNvbW1pdCA0
+N2RkNjc1MyAoImJsb2NrL2JkZXY6IGxpZnQgYmxvY2sgc2l6ZSByZXN0cmljdGlvbnMgdG8KPiA2
+NGsiKQo+ID4gbm93IHN1cHBvcnRzIGJsb2NrIHNpemVzIGxhcmdlciB0aGFuIFBBR0VfU0laRSwg
+d2l0aCBhIG5ldyB1cHBlciBsaW1pdCBvZgo+ID4gQkxLX01BWF9CTE9DS19TSVpFICg2NEspLiBC
+dXQgaW9jdGxfbG9vcDA2IHN0aWxsIGFzc3VtZXMgdGhhdCBQQUdFX1NJWkUKPiBpcyB0aGUKPiA+
+IG1heGltdW0gYWxsb3dlZCBibG9jayBzaXplLCBjYXVzaW5nIGZhaWx1cmVzIG9uIG5ld2VyIGtl
+cm5lbHMoPj0gNi4xNCk6Cj4KCldlbGwsIHRoaXMgc291bmRzIGxpa2Ugd2UgbmVlZCB0byBnbyBi
+YWNrIHRvIHBhdGNoIHYxOgogIGh0dHBzOi8vbGlzdHMubGludXguaXQvcGlwZXJtYWlsL2x0cC8y
+MDI1LU1hcmNoLzA0MjU5OS5odG1sCgpOb3RlOiBMVFAgaGFzIGEgZnVuY3Rpb24gdHN0X2t2ZXJj
+bXAoKSBmb3IgY29tcGFyaW5nIGtlcm5lbCB2ZXJzaW9ucy4KCgotLSAKUmVnYXJkcywKTGkgV2Fu
+ZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
+L2x0cAo=
