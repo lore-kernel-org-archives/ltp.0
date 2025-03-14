@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B94CFC282DE
-	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 02:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E19EC28B2F
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 04:45:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2287B3CA5FB
-	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 03:31:52 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 34CF83CA60E
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 05:45:12 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A27773CA4E5
- for <ltp@lists.linux.it>; Fri, 14 Mar 2025 03:31:35 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3B6533CA52E
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 05:44:54 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=uniontech.com (client-ip=54.92.39.34; helo=smtpbgjp3.qq.com;
+ envelope-from=lufei@uniontech.com; receiver=lists.linux.it)
+Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1231A10004BD
- for <ltp@lists.linux.it>; Fri, 14 Mar 2025 03:31:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741919493;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8lPS5EFjUdmvH5suaf2/jI0+nBzVAmZbvMbaeUDPoWs=;
- b=ZCMTt/g2exWcpsiH1lvRB0FnBup+K5yRhJE9vYOTya5Gfu+5Wo8yBY9FJJF5Y5E/m+luNE
- Qs946hTquod+caR0eo3RdkyN+HXMj0elzmH5pR10x4amjxBkaW46hfe22L8SRzic4TPxn4
- Wdbns8WHgfSn/vOBcf3+ZIl4EVRNBXo=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-499-TnakOz7BOICdYCDNe26Lhw-1; Thu,
- 13 Mar 2025 22:31:29 -0400
-X-MC-Unique: TnakOz7BOICdYCDNe26Lhw-1
-X-Mimecast-MFC-AGG-ID: TnakOz7BOICdYCDNe26Lhw_1741919488
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id C28EB180035E; Fri, 14 Mar 2025 02:31:27 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 6D6CA18001DE; Fri, 14 Mar 2025 02:31:24 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0535D1400073
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 05:44:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+ s=onoh2408; t=1741927483;
+ bh=55Ex6J7AkkchK+z5NTOpwYHBNEPPw5pH8rFq+pZhIBY=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=JsY3yERWVnv0GtJ/PzyFTwFgTr1LSxqCupPMZLLsaEFEP0ZNDrV5jWsvpXl1xNbuh
+ SOMiTE58uobqeVPhhGoBYRuYSgX2i5goAlUT2Ms/OGElomBu34rW2cRdhySaBDkUB0
+ qaBNgdIozRD3FzcH44XLZE8b7xfoirgESWBtGbOs=
+X-QQ-mid: bizesmtpsz8t1741927478t39hiap
+X-QQ-Originating-IP: yhBdVk+AQmIUwokpWPvPSjVKtLZWUGNIGUIRDIykXS8=
+Received: from localhost.localdomain ( [125.76.217.162])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Fri, 14 Mar 2025 12:44:37 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 15718559028157922928
+From: lufei <lufei@uniontech.com>
 To: ltp@lists.linux.it
-Date: Fri, 14 Mar 2025 10:31:20 +0800
-Message-ID: <20250314023120.169820-1-liwang@redhat.com>
-In-Reply-To: <CAEemH2cTkjGzYgvL3vw3+9MRPtxYfVTCmgexFWAVh5Q00J0oKg@mail.gmail.com>
-References: <CAEemH2cTkjGzYgvL3vw3+9MRPtxYfVTCmgexFWAVh5Q00J0oKg@mail.gmail.com>
+Date: Fri, 14 Mar 2025 12:42:57 +0800
+Message-Id: <20250314044257.1673303-1-lufei@uniontech.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: -vlXYUugo7sUfWTcHhOlSdd2zXTzbTSDSgDnqNKn4to_1741919488
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-0
+X-QQ-XMAILINFO: NDu8aKWRFc7D5nwLuLI0sReGCw+zTcYMo9UecIvSDhVzm/pN9BY6KHHP
+ Kl6ZrvgxcwhFLs4Vbdit+6vQLqmamFWDLj69qraBK3L/nfBjGeTf3OarI325V/SO3DKGkI2
+ 4xx68XyVKa+KPqRvKVZ/CcWULx6yDPWMxu2XstYFLi9vHxrMKgNNAW3+TIl03owygp19CKq
+ qQmfVcTftzCm5ojTYn/2AbFCA7E9CI2ueliGGwJCKMnGzNxY6tOJNXHa+J2ilmf9sxDhGUf
+ nv+UbBoETSVj6RG0rSUmaI08cnZGS8Zw/g7cTazRidEBhwUilHT4KmkSfQ0xIswvHiY94FU
+ qFcxHL23mCZTPwkDf1wX1M5Zz40K6Wgw9U5FFgExfInjQ8tfCIMmA4F/FsbWQGEj0ZTxXkG
+ V8Y4a9IC6c6xXW7n0XmsiDAjdLq6QlPOpsNs1LQfilJkKdo7+lcIpdteL+qofnz3j+CZe6q
+ /XU3YskAERYhVKDABwsqgOc9PiHrdihccNOsvbRnYBeVYBdEyh9eQ6ZVc4MLwCgeTKnliSq
+ ZTyiGP7hFawmP8RNw0Md9+vjstP7ERrm6wppTiX2dRsmxR4L9g2MtU/0pr7cgHmqEB4JgSm
+ wvAR8ECNMwItmm1DOwFjKHjmM2x+29uT52N5oKmH8I73UBZLGXlN3xCo3uVN/51V8PI0Rhq
+ Zi0z9v/DQCHmewh229S0D3Zreoz/l2rLuhD2pDH2eglPAMSEJh1fSliTKCkEgukXN2GB7tW
+ KsUsiSIroC83AmLiQ6EW1wkB11u4DXgqbQdIwGO/EDIi/moY3PENQKY4u+OaNJlT0kSG0ug
+ 9mc3gwOzYenmRe+BrgeHf6BQrOQ5KE3MncLHe+fjCGFbVJBmsUWe1Mtr4ibxIZ872tBD+WF
+ zUzWzsAUjQq340tctbYWmtCS59t2PSTzBZOYn0HwpdXc5KoA2bsSnX9GrtFY/QvR1+HmDKO
+ pkZ5n6NtzZ3nn8j8eiV36Y08J
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+X-QQ-RECHKSPAM: 0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] ioctl_loop06: update loopback block size validation
+Subject: [LTP] [PATCH] unshare03: using soft limit of NOFILE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,85 +78,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Hannes Reinecke <hare@suse.de>
+Cc: lufei <lufei@uniontech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel commit 47dd6753 ("block/bdev: lift block size restrictions to 64k")
-now supports block sizes larger than PAGE_SIZE, with a new upper limit of
-BLK_MAX_BLOCK_SIZE (64K). But ioctl_loop06 still assumes that PAGE_SIZE is the
-maximum allowed block size, causing failures on newer kernels(>= 6.14):
+I think it's safer to set NOFILE increasing from soft limit than from
+hard limit.
 
-  ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
-  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
-  ...
-  ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
-  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
+Hard limit may lead to dup2 ENOMEM error which bring the result to
+TBROK on little memory machine. (e.g. 2GB memory in my situation, hard
+limit in /proc/sys/fs/nr_open come out to be 1073741816)
 
-This patch updates ioctl_loop06 to use BLK_MAX_BLOCK_SIZE instead of PAGE_SIZE
-for block size validation. Also adjust failure expectations based on the
-running kernel version.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Hannes Reinecke <hare@suse.de>
+Signed-off-by: lufei <lufei@uniontech.com>
 ---
+ testcases/kernel/syscalls/unshare/unshare03.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-Notes:
-    v2 --> v3:
-    	* adding back the kernel version check to compare max value
-    	* use BLK_MAX_BLOCK_SIZE * 2 as Luis suggestted
-
- testcases/kernel/syscalls/ioctl/ioctl_loop06.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-index 573871bc1..be0aa2506 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-@@ -17,6 +17,8 @@
- #include "lapi/loop.h"
- #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/unshare/unshare03.c b/testcases/kernel/syscalls/unshare/unshare03.c
+index 7c5e71c4e..bb568264c 100644
+--- a/testcases/kernel/syscalls/unshare/unshare03.c
++++ b/testcases/kernel/syscalls/unshare/unshare03.c
+@@ -24,7 +24,7 @@
  
-+#define BLK_MAX_BLOCK_SIZE 0x00010000 /* SZ_64K */
-+
- static char dev_path[1024];
- static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
- static unsigned int invalid_value, half_value, unalign_value;
-@@ -31,7 +33,7 @@ static struct tcase {
- 	"Using LOOP_SET_BLOCK_SIZE with arg < 512"},
+ static void run(void)
+ {
+-	int nr_open;
++	int rlim_max;
+ 	int nr_limit;
+ 	struct rlimit rlimit;
+ 	struct tst_clone_args args = {
+@@ -32,14 +32,12 @@ static void run(void)
+ 		.exit_signal = SIGCHLD,
+ 	};
  
- 	{&invalid_value, LOOP_SET_BLOCK_SIZE,
--	"Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE"},
-+	"Using LOOP_SET_BLOCK_SIZE with arg > BLK_MAX_BLOCK_SIZE"},
+-	SAFE_FILE_SCANF(FS_NR_OPEN, "%d", &nr_open);
+-	tst_res(TDEBUG, "Maximum number of file descriptors: %d", nr_open);
++	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
++	rlim_max = rlimit.rlim_max;
  
- 	{&unalign_value, LOOP_SET_BLOCK_SIZE,
- 	"Using LOOP_SET_BLOCK_SIZE with arg != power_of_2"},
-@@ -40,7 +42,7 @@ static struct tcase {
- 	"Using LOOP_CONFIGURE with block_size < 512"},
+-	nr_limit = nr_open + NR_OPEN_LIMIT;
++	nr_limit = rlim_max + NR_OPEN_LIMIT;
+ 	SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_limit);
  
- 	{&invalid_value, LOOP_CONFIGURE,
--	"Using LOOP_CONFIGURE with block_size > PAGE_SIZE"},
-+	"Using LOOP_CONFIGURE with block_size > BLK_MAX_BLOCK_SIZE"},
+-	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
+-
+ 	rlimit.rlim_cur = nr_limit;
+ 	rlimit.rlim_max = nr_limit;
  
- 	{&unalign_value, LOOP_CONFIGURE,
- 	"Using LOOP_CONFIGURE with block_size != power_of_2"},
-@@ -106,8 +108,8 @@ static void setup(void)
- 	tst_fill_file("test.img", 0, 1024, 1024);
- 	half_value = 256;
- 	pg_size = getpagesize();
--	invalid_value = pg_size * 2 ;
- 	unalign_value = pg_size - 1;
-+	invalid_value = (tst_kvercmp(6, 14, 0) < 0) ? pg_size * 2 : BLK_MAX_BLOCK_SIZE * 2;
+@@ -47,10 +45,10 @@ static void run(void)
+ 	tst_res(TDEBUG, "Set new maximum number of file descriptors to : %d",
+ 		nr_limit);
  
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	ret = ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512);
+-	SAFE_DUP2(2, nr_open + NR_OPEN_DUP);
++	SAFE_DUP2(2, rlim_max + NR_OPEN_DUP);
+ 
+ 	if (!SAFE_CLONE(&args)) {
+-		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_open);
++		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", rlim_max);
+ 		TST_EXP_FAIL(unshare(CLONE_FILES), EMFILE);
+ 		exit(0);
+ 	}
 -- 
-2.48.1
+2.39.3
 
 
 -- 
