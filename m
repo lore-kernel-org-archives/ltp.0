@@ -4,92 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856F5C28B2F
-	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 06:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E04DC35FF1
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 11:59:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD25A3CA608
-	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 07:50:14 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1B1773CA6CC
+	for <ltp@archiver.kernel.org>; Fri, 14 Mar 2025 12:59:18 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C9F43CA12E
- for <ltp@lists.linux.it>; Fri, 14 Mar 2025 07:49:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 65C633CA6AF
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 12:59:01 +0100 (CET)
 Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 374101000742
- for <ltp@lists.linux.it>; Fri, 14 Mar 2025 07:49:54 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E71F10005DB
+ for <ltp@lists.linux.it>; Fri, 14 Mar 2025 12:59:00 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1741934993;
+ s=mimecast20190719; t=1741953539;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FB+jRBlpS/Y7d1qmR3o6UoscVtcAlCSKGSvsb8186os=;
- b=BaTmd7naPAF8RrgDqDE7ti5DOEBxyFwfom64jfoN7es4URYi16ktsOTq1CYAMwLMYVJ7/b
- 6p2lXiUYGiKNN26ZxvJ8/kClZ1scC+m4Aekhag8Jx54JAPj+1uvJpc5Hglnjv6AFEYFKso
- zFDMwRiT25RGZKmQJ4Bkvk5VQjzeDhg=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-404-EaggGy3NOKKO33J-cZ7GlQ-1; Fri, 14 Mar 2025 02:49:50 -0400
-X-MC-Unique: EaggGy3NOKKO33J-cZ7GlQ-1
-X-Mimecast-MFC-AGG-ID: EaggGy3NOKKO33J-cZ7GlQ_1741934990
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-2ff8119b436so3203080a91.0
- for <ltp@lists.linux.it>; Thu, 13 Mar 2025 23:49:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1741934990; x=1742539790;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=FB+jRBlpS/Y7d1qmR3o6UoscVtcAlCSKGSvsb8186os=;
- b=cA7Eo2DYToHLlU0/HRbXHJbj33w5z5crANFd0DzNEWxgIZ7ByUbylZuU/z9ulzzYhT
- XnkQrSzcnRl+7k0Kfz/Ei6+Os7ElcUXy8u+QCTf+Ru1GurQzZOei9TfxmzIigv7yFiw4
- mVM5tRUpRn0A01x8BNWrzc/Pde5C3e9AcDRInF9YEC/UPPwAfYG8D4mpDFEm68DfGs2a
- mtw1ikjPsLW4fLEtVXQ1H8oBSDCe6tK9PBOdYLtPKCCXB3OgcID2EhrPvYNCDPGvKZCc
- OPTivK1c72Qx7iHK8ZlGZdkyJyTEmWXkoP9b2Mf5Yg5p3GVUUC+KZ+AfhH6A0eZVXaoL
- ROqA==
-X-Gm-Message-State: AOJu0YxTGjv7FdNKaFbby6Uj9c3ORc4Ad9CrKpKHqsGBcPWef5uSKzxt
- ZmidkijY+NYgAxsS7H33KqEQrzDc4k7A3mItqtde0OjRU9xPRcr4JMx5dGIwfqhfOxdrEZ7avCH
- OJ02A34IoSDWRECqTexEk65BJigvRGSsjB/oWO0QXWY2DEP1ECTX4UAUvS5AIuzE705FUlmuALy
- +7KCBy1nrfwCmyYNRG+Db2z9k=
-X-Gm-Gg: ASbGncsDXeSXM9yhJnyy2Veru2CdAy5vy3A+GyepqJ/kQSO1qwxwuOUtkvKCpM23UDM
- tjjeP+gV05wbWfqDUDpJWJnjiczn77YV90EZhNuQbBXSobsBnlpMli5910PW7bkM5lEEzp8HGfw
- ==
-X-Received: by 2002:a17:90a:d004:b0:2ff:4bac:6fba with SMTP id
- 98e67ed59e1d1-30151d3cacbmr2126076a91.24.1741934989873; 
- Thu, 13 Mar 2025 23:49:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF4DBY+fkjb4OSjSC+VlmuzfAralKDMCh5ThUuK/dpLURMIewodysGGwOCLQFc03qO/8yuZ2bueBtfqkrVIwU0=
-X-Received: by 2002:a17:90a:d004:b0:2ff:4bac:6fba with SMTP id
- 98e67ed59e1d1-30151d3cacbmr2126056a91.24.1741934989491; Thu, 13 Mar 2025
- 23:49:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20250313092445.164616-1-liwang@redhat.com>
- <Z9NjTtX3o15YDZ1w@bombadil.infradead.org>
- <CAEemH2cTkjGzYgvL3vw3+9MRPtxYfVTCmgexFWAVh5Q00J0oKg@mail.gmail.com>
- <Z9PEHuBTVFlWZ9dM@bombadil.infradead.org>
- <Z9PFQR51mFwIEj0m@bombadil.infradead.org>
-In-Reply-To: <Z9PFQR51mFwIEj0m@bombadil.infradead.org>
+ bh=OgqoEuxLMpvMgF2oLNvTwu01DZ/4nmJSF/zS4/PTru4=;
+ b=YygN9L5TqnWSvvyQEFSYmH/zNzsSHHXkEmSRsPir3mIg+gVgVOFQb6Oqra/oy7J93O64Iz
+ MRj1t+kv1qm50Zdgwg/QHBdjbk2rozdhZ2HV0SLtYboQFkmlIPGbvcse6RuhNCT8O7QB2A
+ 0bEtbM2j8DaF7vZPOaULukIYtqC8e3o=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-312-EmcUKPcoNiWlRiBAx30h9Q-1; Fri,
+ 14 Mar 2025 07:58:57 -0400
+X-MC-Unique: EmcUKPcoNiWlRiBAx30h9Q-1
+X-Mimecast-MFC-AGG-ID: EmcUKPcoNiWlRiBAx30h9Q_1741953536
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 6C941180882E; Fri, 14 Mar 2025 11:58:56 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id EFBCA1955BCB; Fri, 14 Mar 2025 11:58:53 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 14 Mar 2025 14:49:37 +0800
-X-Gm-Features: AQ5f1JqJg_e4rbowXtxyF4rWBYJ4oSvfItK5AjpfEZAao1-gu0ebil6q3Dkgdss
-Message-ID: <CAEemH2c3pwvSjPYR4DAV4xpx-OjBcBC81n0msteHQw1yV6x=wQ@mail.gmail.com>
-To: Luis Chamberlain <mcgrof@kernel.org>
+To: ltp@lists.linux.it
+Date: Fri, 14 Mar 2025 19:58:48 +0800
+Message-ID: <20250314115848.173676-1-liwang@redhat.com>
+In-Reply-To: <20250314023120.169820-1-liwang@redhat.com>
+References: <20250314023120.169820-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 4zQ0t8c-nSfEpxYLUOdQ-rlh6IuYl7zHzFV_67U3iww_1741934990
+X-Mimecast-MFC-PROC-ID: GPzgl7Ogi7aIxZhaub1nhmqr_6kmPIQCxLGIDJB9Wuo_1741953536
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] ioctl_loop06: update loopback block size
- validation
+Subject: [LTP] [PATCH v4] ioctl_loop06: update loopback block size validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,48 +80,129 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it,
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Christoph Hellwig <hch@lst.de>,
  Hannes Reinecke <hare@suse.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBNYXIgMTQsIDIwMjUgYXQgMTo1N+KAr1BNIEx1aXMgQ2hhbWJlcmxhaW4gPG1jZ3Jv
-ZkBrZXJuZWwub3JnPiB3cm90ZToKCj4gT24gVGh1LCBNYXIgMTMsIDIwMjUgYXQgMTA6NTI6MzFQ
-TSAtMDcwMCwgTHVpcyBDaGFtYmVybGFpbiB3cm90ZToKPiA+IE9uIEZyaSwgTWFyIDE0LCAyMDI1
-IGF0IDEwOjI0OjUyQU0gKzA4MDAsIExpIFdhbmcgd3JvdGU6Cj4gPiA+IEhpIEx1aXMsCj4gPiA+
-Cj4gPiA+IE9uIEZyaSwgTWFyIDE0LCAyMDI1IGF0IDY6NTnigK9BTSBMdWlzIENoYW1iZXJsYWlu
-IDxtY2dyb2ZAa2VybmVsLm9yZz4KPiB3cm90ZToKPiA+ID4KPiA+ID4gPiBPbiBUaHUsIE1hciAx
-MywgMjAyNSBhdCAwNToyNDo0NVBNICswODAwLCBMaSBXYW5nIHdyb3RlOgo+ID4gPiA+ID4gVGhl
-IGtlcm5lbCBjb21taXQgNDdkZDY3NTMgKCJibG9jay9iZGV2OiBsaWZ0IGJsb2NrIHNpemUKPiBy
-ZXN0cmljdGlvbnMgdG8KPiA+ID4gPiA2NGsiKQo+ID4gPiA+ID4gbm93IHN1cHBvcnRzIGJsb2Nr
-IHNpemVzIGxhcmdlciB0aGFuIFBBR0VfU0laRSwgd2l0aCBhIG5ldyB1cHBlcgo+IGxpbWl0IG9m
-Cj4gPiA+ID4gPiBCTEtfTUFYX0JMT0NLX1NJWkUgKDY0SykuIEJ1dCBpb2N0bF9sb29wMDYgc3Rp
-bGwgYXNzdW1lcyB0aGF0Cj4gUEFHRV9TSVpFCj4gPiA+ID4gaXMgdGhlCj4gPiA+ID4gPiBtYXhp
-bXVtIGFsbG93ZWQgYmxvY2sgc2l6ZSwgY2F1c2luZyBmYWlsdXJlcyBvbiBuZXdlciBrZXJuZWxz
-KD49Cj4gNi4xNCk6Cj4gPiA+ID4KPiA+ID4KPiA+ID4gV2VsbCwgdGhpcyBzb3VuZHMgbGlrZSB3
-ZSBuZWVkIHRvIGdvIGJhY2sgdG8gcGF0Y2ggdjE6Cj4gPiA+ICAgaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9waXBlcm1haWwvbHRwLzIwMjUtTWFyY2gvMDQyNTk5Lmh0bWwKPiA+ID4KPiA+ID4gTm90
-ZTogTFRQIGhhcyBhIGZ1bmN0aW9uIHRzdF9rdmVyY21wKCkgZm9yIGNvbXBhcmluZyBrZXJuZWwg
-dmVyc2lvbnMuCj4gPgo+ID4gQ2xvc2UuCj4gPgo+ID4gQkxLX01BWF9CTE9DS19TSVpFIG1heSBj
-aGFuZ2UgaW4gdGhlIGZ1dHVyZSBzbyB0aGUgb25seSByZWFsIHdheSB0bwo+ID4gdGVzdCBmb3Ig
-YW4gaW52YWxpZCBibG9jayBzaXplIGlzIGhhdmluZyBhIGNoZWNrIGZvciBsaW51eC9ibGtkZXYu
-aC4KPiA+Cj4gPiBJIHNlZSBjb21taXQgN2M4NGZhNzEwZjc1ICgiaW9wcmlvOiB1c2UgaW9wcmlv
-Lmgga2VybmVsIGhlYWRlciBpZiBpdAo+ID4gZXhpc3RzIikgaXMgYW4gZXhhbXBsZSBvZiB1c2lu
-ZyBhIGtlcm5lbCBoZWFkZXIgZmlsZS4gSSB0aGluayBzaW1pbGFyCj4gPiB0aGluZyBjYW4gYmUg
-ZG9uZSB0byB1c2UgbGludXgvYmxrZGV2LmggYW5kIGlmIHlvdSBkb24ndCBoYXZlCj4gPiBIQVZF
-X0xJTlVYX0JMS0RFVl9IIHRoZW4geW91IGNhbiBkZWZpbmUgQkxLX01BWF9CTE9DS19TSVpFIHRv
-IDY0ayBmb3IKPiA+IGZvciBvbGRlciBrZXJuZWxzLgo+ID4KPiA+IEEgbW9yZSBhcHByb3ByaWF0
-ZSBpbnZhbGlkIHZhbHVlIHdvdWxkIGJlIEJMS19NQVhfQkxPQ0tfU0laRSAqIDIgYXMKPiA+IG5v
-biBwb3dlciBvZiAyIHZhbHVlcyB3aWxsIGJlIG91dHJpZ2h0IGRpc2FsbG93ZWQuCj4KPiBXaGls
-ZSBhdCBpdCwgYmUgc3VyZSB0byBzY2FsZSB0c3RfZmlsbF9maWxlKCJ0ZXN0LmltZyIsIDAsIDEw
-MjQsIDEwMjQpCj4gKEkgdGhpbmsgdGhhdCBpcyBicz0xMDI0LCBjb3VudD0xMDI0LCBzbyAxIE1p
-QiBmaWxlIHNpemUpIHNvIHRoYXQgeW91Cj4gdGFrZSBpbnRvIGNvbnNpZGVyYXRpb24gdGhlIEJM
-S19NQVhfQkxPQ0tfU0laRSBzbyB0aGF0IHRoZSBmaWxlIHNpemUKPiB3aWxsIGJlIGF0IGxlYXN0
-IG1heWJlIDEwICogQkxLX01BWF9CTE9DS19TSVpFIG9yIHNvbWV0aGluZyBzZW5zaWJsZS4KPgo+
-IEJlY2F1c2UgYXMgc29vbiBhcyB3ZSBjYW4gc3VwcG9ydCBhIEJMS19NQVhfQkxPQ0tfU0laRSBv
-ZiAyIE1pQiB0aGlzCj4gdGVzdCB3aWxsIGFsc28gZmFpbCBhZ2Fpbi4KPgoKTWFrZSBzZW5zZSEh
-IEkgd2lsbCBpbXByb3ZlIHRoaXMgaW4gdGhlIG5leHQgdmVyc2lvbiwgdG9vLgoKCi0tIApSZWdh
-cmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
-aXQvbGlzdGluZm8vbHRwCg==
+The kernel commit 47dd6753 ("block/bdev: lift block size restrictions to 64k")
+now supports block sizes larger than PAGE_SIZE, with a new upper limit of
+BLK_MAX_BLOCK_SIZE (64K). But ioctl_loop06 still assumes that PAGE_SIZE is the
+maximum allowed block size, causing failures on newer kernels(>= 6.14):
+
+  ioctl_loop06.c:74: TINFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
+  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
+  ...
+  ioctl_loop06.c:74: TINFO: Using LOOP_CONFIGURE with block_size > PAGE_SIZE
+  ioctl_loop06.c:57: TFAIL: Set block size succeed unexpectedly
+
+This patch updates ioctl_loop06 to use BLK_MAX_BLOCK_SIZE instead of PAGE_SIZE
+for block size validation.
+
+And, dynamically sets bs based on BLK_MAX_BLOCK_SIZE, using 1024 bytes if it's
+below 1MB or scaling it otherwise. Ensures tst_fill_file() writes efficiently
+while maintaining compatibility across different kernel versions.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hannes Reinecke <hare@suse.de>
+---
+ configure.ac                                  |  1 +
+ include/lapi/blkdev.h                         | 19 +++++++++++++++++++
+ .../kernel/syscalls/ioctl/ioctl_loop06.c      | 12 ++++++++----
+ 3 files changed, 28 insertions(+), 4 deletions(-)
+ create mode 100644 include/lapi/blkdev.h
+
+diff --git a/configure.ac b/configure.ac
+index 0f2b6f332..5538d88d5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -52,6 +52,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     emmintrin.h \
+     ifaddrs.h \
+     keyutils.h \
++    linux/blkdev.h \
+     linux/can.h \
+     linux/cgroupstats.h \
+     linux/cryptouser.h \
+diff --git a/include/lapi/blkdev.h b/include/lapi/blkdev.h
+new file mode 100644
+index 000000000..3ee058ce0
+--- /dev/null
++++ b/include/lapi/blkdev.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Linux Test Project
++ *  Li Wang <liwang@redhat.com>
++ */
++
++#ifndef LAPI_BLKDEV_H__
++#define LAPI_BLKDEV_H__
++
++#ifdef HAVE_LINUX_BLKDEV_H
++#include <linux/blkdev.h>
++#endif
++
++/* Define BLK_MAX_BLOCK_SIZE for older kernels */
++#ifndef BLK_MAX_BLOCK_SIZE
++#define BLK_MAX_BLOCK_SIZE 0x00010000 /* 64K */
++#endif
++
++#endif /* LAPI_BLKDEV_H */
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+index 573871bc1..35e9e79e9 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+@@ -14,7 +14,9 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <stdlib.h>
++#include "lapi/blkdev.h"
+ #include "lapi/loop.h"
++#include "tst_fs.h"
+ #include "tst_test.h"
+ 
+ static char dev_path[1024];
+@@ -31,7 +33,7 @@ static struct tcase {
+ 	"Using LOOP_SET_BLOCK_SIZE with arg < 512"},
+ 
+ 	{&invalid_value, LOOP_SET_BLOCK_SIZE,
+-	"Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE"},
++	"Using LOOP_SET_BLOCK_SIZE with arg > BLK_MAX_BLOCK_SIZE"},
+ 
+ 	{&unalign_value, LOOP_SET_BLOCK_SIZE,
+ 	"Using LOOP_SET_BLOCK_SIZE with arg != power_of_2"},
+@@ -40,7 +42,7 @@ static struct tcase {
+ 	"Using LOOP_CONFIGURE with block_size < 512"},
+ 
+ 	{&invalid_value, LOOP_CONFIGURE,
+-	"Using LOOP_CONFIGURE with block_size > PAGE_SIZE"},
++	"Using LOOP_CONFIGURE with block_size > BLK_MAX_BLOCK_SIZE"},
+ 
+ 	{&unalign_value, LOOP_CONFIGURE,
+ 	"Using LOOP_CONFIGURE with block_size != power_of_2"},
+@@ -103,10 +105,12 @@ static void setup(void)
+ 	if (dev_num < 0)
+ 		tst_brk(TBROK, "Failed to find free loop device");
+ 
+-	tst_fill_file("test.img", 0, 1024, 1024);
++	size_t bs = (BLK_MAX_BLOCK_SIZE < TST_MB) ? 1024 : 4 * BLK_MAX_BLOCK_SIZE / 1024;
++	tst_fill_file("test.img", 0, bs, 1024);
++
+ 	half_value = 256;
+ 	pg_size = getpagesize();
+-	invalid_value = pg_size * 2 ;
++	invalid_value = BLK_MAX_BLOCK_SIZE * 2;
+ 	unalign_value = pg_size - 1;
+ 
+ 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+-- 
+2.48.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
