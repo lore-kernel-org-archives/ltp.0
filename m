@@ -4,104 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E78C282EC
-	for <ltp@archiver.kernel.org>; Mon, 17 Mar 2025 12:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6FF6C35FF3
+	for <ltp@archiver.kernel.org>; Mon, 17 Mar 2025 14:01:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71D123CAB50
-	for <ltp@archiver.kernel.org>; Mon, 17 Mar 2025 13:24:16 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C37FD3CAB73
+	for <ltp@archiver.kernel.org>; Mon, 17 Mar 2025 15:01:07 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 94FA83C9C9C
- for <ltp@lists.linux.it>; Mon, 17 Mar 2025 13:24:00 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id D44BE3C06D0
+ for <ltp@lists.linux.it>; Mon, 17 Mar 2025 15:00:50 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 48EA160070E
- for <ltp@lists.linux.it>; Mon, 17 Mar 2025 13:23:58 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E4454600878
+ for <ltp@lists.linux.it>; Mon, 17 Mar 2025 15:00:49 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 186BA1F792;
- Mon, 17 Mar 2025 12:23:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9396821E5A;
+ Mon, 17 Mar 2025 14:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742214238;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1742220048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rGv207B7bA7R/6gzDSEGPZyFew2f8K8axMfFSzyEmJw=;
- b=c/nG9+WNjsx1pefGtkVvunNsG/xGzpVaV6k5WknQgfIZFsYtN95dTa3RJZ04Viu7/2/3EU
- SD5LKRkw6WI9/oMCTEeHX/nqO2v9aDaWdPIlloVokh6tPs5lHlguHM4fgyvhtoD0wMgFxd
- 4JvHwQo9LpDTRd4V7HMW/VK5dPIC788=
+ bh=gkTrHhFR2C4FuyWNVVSR/n2GMo4LPEzz4y1fI3iu2I8=;
+ b=Q6RUM1lW3rhKjsO2/6e7a7G+d2GEcw2wVW4ykAe5kb1OIlEh9hnyrdLAjUXjdlfm/32v7f
+ DDUwe0clb8ssurfvVeOC+Dbz64qriUAelwv3m5/IpTgWcJ7GzvUuXiIxxr3uYUTPItjgpo
+ iXHja8LEkxLcvWv/OIXQto4m4F9Qy3I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742214238;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1742220048;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rGv207B7bA7R/6gzDSEGPZyFew2f8K8axMfFSzyEmJw=;
- b=TtZAEB/lb5RMy7b5R3zTO9eIIggOVYgYAzFz8b0UVyIHskGcjFnxJ17e1DTclIeVr/+b4A
- IE2x90DeeaN238CQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=gkTrHhFR2C4FuyWNVVSR/n2GMo4LPEzz4y1fI3iu2I8=;
+ b=pZBA/zTqzrdf2o57IsPFN/jzIx7SFWGfHfu1tSzyTvsqR55Qn5hVDxoIHyvr1osa2acB06
+ 04hWUPymMMlSpCDA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742214237;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1742220048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rGv207B7bA7R/6gzDSEGPZyFew2f8K8axMfFSzyEmJw=;
- b=xXZc7z6Sn7FZnxlLrTMFATu9dyBkijo7qrjXPb+V6KEnC+/byy5ol/AK0NC4eqAepvt3of
- o5i9e0jNvt86tkH1TrzfCFFrTY6wb5mjBkPi91hkUPoEpRzEFARB3h4feiaz/lrPIiR3IA
- lEjSoBJIad5lk63NbPep8OcX5lhfP9E=
+ bh=gkTrHhFR2C4FuyWNVVSR/n2GMo4LPEzz4y1fI3iu2I8=;
+ b=Q6RUM1lW3rhKjsO2/6e7a7G+d2GEcw2wVW4ykAe5kb1OIlEh9hnyrdLAjUXjdlfm/32v7f
+ DDUwe0clb8ssurfvVeOC+Dbz64qriUAelwv3m5/IpTgWcJ7GzvUuXiIxxr3uYUTPItjgpo
+ iXHja8LEkxLcvWv/OIXQto4m4F9Qy3I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742214237;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1742220048;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rGv207B7bA7R/6gzDSEGPZyFew2f8K8axMfFSzyEmJw=;
- b=jHio1ToV90ed20U1gheVPIAJiwEEsVIADRH/l0MebI0qcwVsRBn9uKUBlW5JLxZRNNPDXM
- rJw1kTfLsrg3BeAQ==
+ bh=gkTrHhFR2C4FuyWNVVSR/n2GMo4LPEzz4y1fI3iu2I8=;
+ b=pZBA/zTqzrdf2o57IsPFN/jzIx7SFWGfHfu1tSzyTvsqR55Qn5hVDxoIHyvr1osa2acB06
+ 04hWUPymMMlSpCDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC114132CF;
- Mon, 17 Mar 2025 12:23:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 82956132CF;
+ Mon, 17 Mar 2025 14:00:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id P0FDOFwU2GckRgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 17 Mar 2025 12:23:56 +0000
-Date: Mon, 17 Mar 2025 13:23:51 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20250317122351.GA247824@pevik>
-References: <d1d830051aea3f077995c30b2183731cd2f04cf2.1742054500.git.jstancek@redhat.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jKb8HhAr2GcaZgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 17 Mar 2025 14:00:48 +0000
+Date: Mon, 17 Mar 2025 15:01:09 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <Z9grJVBa6G7qhBCF@yuki.lan>
+References: <20250313-mmap_suite_refactoring-v4-0-efd682ece39a@suse.com>
+ <20250313-mmap_suite_refactoring-v4-2-efd682ece39a@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <d1d830051aea3f077995c30b2183731cd2f04cf2.1742054500.git.jstancek@redhat.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20250313-mmap_suite_refactoring-v4-2-efd682ece39a@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tracing/pt_test: TCONF if Intel PT across VMXON
- is not supported
+Subject: Re: [LTP] [PATCH v4 2/8] Refactor mmap10 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,47 +108,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi!
+> +	struct tcase *tc = &tcases[i];
+> +	int fd = -1;
+>  
+> -	if (opt_ksm) {
+> +	if (tc->add_ksm) {
+>  		if (access(PATH_KSM, F_OK) == -1)
+> -			tst_brkm(TCONF, NULL,
+> -				 "KSM configuration is not enabled");
+> -#ifdef HAVE_DECL_MADV_MERGEABLE
+> -		tst_resm(TINFO, "add to KSM regions.");
+> -#else
+> -		tst_brkm(TCONF, NULL, "MADV_MERGEABLE missing in sys/mman.h");
+> -#endif
+> +			tst_brk(TCONF, "KSM configuration is not enabled");
+> +	} else {
+> +		tst_res(TINFO, "Add to KSM regions");
 
-> As noted in 1c5ac21a0e9b ("perf/x86/intel/pt: Don't die on VMXON"),
-> some Broadwell systems don't support Intel PT across VMXON.
-+1
+This else looks like it's for wrong if, shouldn't this be the else for
+the inner if?
 
-> If the test fails to find any events, check whether there is a
-> kvm_intel module loaded, and if so check for IA32_VMX_MISC[bit 14].
-> If this bit is 0, it's not supported. From commit mentioned above:
->     Intel SDM, 36.5 "Tracing post-VMXON" says that
->     "IA32_VMX_MISC[bit 14]" being 1 means PT can trace
->     post-VMXON.
+The rest looks good. With that else branch fixed:
 
-LGTM.
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-...
->  static void intel_pt_trace_check(void)
->  {
->  	uint64_t aux_head = 0;
-> @@ -117,6 +150,12 @@ static void intel_pt_trace_check(void)
->  	pmp = (struct perf_event_mmap_page *)bufm[0];
->  	aux_head = *(volatile uint64_t *)&pmp->aux_head;
->  	if (aux_head == 0) {
-> +		if ((access("/sys/module/kvm_intel", F_OK) == 0)
-> +			&& (!is_supported_across_vmxon())) {
-> +			tst_brk(TCONF, "Intel PT on this system can not"
-> +				" run at the same time as virtualization");
-
-As we discussed at the issue, please join the string before merge.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
