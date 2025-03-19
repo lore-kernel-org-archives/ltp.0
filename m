@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5319AC35FFF
-	for <ltp@archiver.kernel.org>; Wed, 19 Mar 2025 11:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67212C35FFA
+	for <ltp@archiver.kernel.org>; Wed, 19 Mar 2025 14:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742384537; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742394221; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=+ej4xoWAy82Xc/R19nbJ2S4/KzLVJepN0TxCiM15QzE=;
- b=Wy1ri8TURfUyuiBKDT8z2RcH/P7zk9QVnto6bg29aUVI40qxW+qfu7ovNlIBk/kp+9srw
- GW2EdHQFiv8uySJjAdhm5xTkKsHRxjK0peGge6OvhbD8McELgkeWDeBoy4bqBF7hCErP3fO
- LDEGifq+urI7vWRSgctLS9yK3D7T0Tg=
+ bh=M/LAuP3IHf9WBfF6Mslz0Kmo2/dROHdME5V+ywNAnd0=;
+ b=AMeV6wfBfFuyo2V1Whkn+daKV8lcaO9GuqvrxQI1PJnRjdZ2OguP/bMdW/487qk8Z/tim
+ S3ZdTB0TVnDkWXp96+QWDJPDF9eJH3mFpQGORENFBqC0KG707IANksu1KlYCBWaNmzfTVPN
+ GFijOp4vWlc1XQIuj/UisDjAjo6GCeg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F2613CACD4
-	for <ltp@archiver.kernel.org>; Wed, 19 Mar 2025 12:42:17 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 73B633CAD01
+	for <ltp@archiver.kernel.org>; Wed, 19 Mar 2025 15:23:41 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D5B43CACAA
- for <ltp@lists.linux.it>; Wed, 19 Mar 2025 12:41:54 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
+ by picard.linux.it (Postfix) with ESMTPS id 232403CAC72
+ for <ltp@lists.linux.it>; Wed, 19 Mar 2025 15:23:19 +0100 (CET)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C75A600B49
- for <ltp@lists.linux.it>; Wed, 19 Mar 2025 12:41:53 +0100 (CET)
-Received: by mail-wr1-x42c.google.com with SMTP id
- ffacd0b85a97d-39129fc51f8so6006532f8f.0
- for <ltp@lists.linux.it>; Wed, 19 Mar 2025 04:41:53 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 41DA06002CE
+ for <ltp@lists.linux.it>; Wed, 19 Mar 2025 15:23:18 +0100 (CET)
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-399737f4fa4so573626f8f.0
+ for <ltp@lists.linux.it>; Wed, 19 Mar 2025 07:23:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1742384513; x=1742989313; darn=lists.linux.it;
+ d=suse.com; s=google; t=1742394197; x=1742998997; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=dwg2wsMjhzUieTJiPDmwEbwX3GGk8pyrYY5aAV3A0cI=;
- b=JVSDRE0lc6s7sn4e2kytIo9OaZP+R8SjHVZAOIVRkbXoUx5MaKsDULO/oA+Cw4RvMG
- Akr+NKOimUFV8a9SExBN3hE4Unoorua2Habg/ml8cK0QAW8xfAyWo+pLNj6ag2nwHg+l
- fHDf6aZ0q4hHIsVzn8Gp314/0ZnqmX7ZNuPjZYxEQ8+hO5hqkHh/saHDU7RfXhnBHVDb
- 0F1R3PSmL2kw5r8Ys21r0C0CuC9ZoMzVxP5FQIOKqZwEm/0720YGASoiTv+rACVTF20a
- gnk9UT23XX02sEXU8uQHwxh9c72tjEW7qe6EO2ngHdneVA+ucV74a7rL43AMb0IzSxP0
- rHfQ==
+ bh=T0ctap1AcGAliWqzALjKj52iPdmNosXCVzrg2y8xxEo=;
+ b=HzRcTxGMOy9uj1W3Bl6iY2gcc61Wlz00u9A5c0yVyismF9zduJ6xNIuMhCqJbh1lKg
+ mh4pJD1SN1/tEZUtao/9iLt79lBdLdW1ARTJ8z+Y9sKg+hETnIaBs8aj46sE4ObTCh5E
+ DFLQflTA+gdtNrQudz+HhdWhJ8MabtCYTG3P9jpdCpH68I7Sqz3NVJ13IkohHECThZJV
+ MZOOrV2HgVllFmsW2FYqd7xk1P2x9YN0EeGYT0EufbBF27eoaVtV9GKGCJrc2rmqNYBR
+ H3sbpjEfBeL208pmhKe8jkmrKI1rop2cF3WGYKqYFCP8s3nfrTRVP3uYM/BCcl/vAMYQ
+ xq1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742384513; x=1742989313;
+ d=1e100.net; s=20230601; t=1742394197; x=1742998997;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=dwg2wsMjhzUieTJiPDmwEbwX3GGk8pyrYY5aAV3A0cI=;
- b=KU2wf+0H6KmkhDf6dpnhz2YQQxKJta8XoYnKIiW66+u7YQfzuLj5tnCNCx7IOGPaJE
- 7UCY4PHq6WGV3besx8g4YvwQfQ9KyXhw1bUirAsvXY1KG1hcWHi63ReCfRnwpQqUgvey
- Q4ZBfmUr9nB+FWjqd/DQ0tIt9kqLxUS5DfeIGBldZxDtgKTqVjlHTs84fQXaCVLI9okg
- AKmXli/6PFbzcJ4dWk2sHzlN18WTlOGU/m4ddHg2E3262K7JTNnjFd8eFw5F130yfmpP
- 7trygm/2l6NpkgdZlHa9i6pd5WQQT7wvohCI81krur2yh4xGBXsVDErlzoa94ENvpu0C
- nKIw==
-X-Gm-Message-State: AOJu0Yx1VzaFoV5tGlXlYxfHGgLjk+DNC0cAD+8Zbnh70FS4zJtz5Fc0
- 3CsEB2VATcCfQd+gv6/WC93FmVFN1F/of9J/1i4A+IkikSy5nkW1IMQTkDpy7/HnORI5T/QjA8Z
- VRe8+
-X-Gm-Gg: ASbGncsMBRKP/LKuwMcVq+mWnoKly0b2agr5mWAS82iuggKUU7UuY4w4dkq7VtADfuz
- CgCK1+w8RkKrYzkwAflDdtPk84Zj9VeB2JzoycfOQPs5eloNa0xF+yjllVErj1LcGOSob75c7Wa
- Vzt/BMRXE7IdZ/JHEpfetK4CxpfUJ2bxqoUu23yBLR2dtv6yA5CZag3T9LmYfVJI5W/Vfoepse/
- mvSLWWYOwz/T0vrzrwp39Rm4Ko8w6Yt365iyBYb25H0AlDF5DrzEKFl3/DJADL+ZFsIues1CE1S
- CDJ7bOnYgHKhVacRjoMmTzr2y8fh3Lz8p5TbEKDpr0qo
-X-Google-Smtp-Source: AGHT+IF+He+IxwgV7OCes13TbcKniAB+tWiGHWoLRuHjGty7yyFTaoPD+eq/weoYNio5ky9DUvfjxg==
-X-Received: by 2002:adf:a39c:0:b0:391:4889:5045 with SMTP id
- ffacd0b85a97d-39973afa548mr1334951f8f.36.1742384512683; 
- Wed, 19 Mar 2025 04:41:52 -0700 (PDT)
+ bh=T0ctap1AcGAliWqzALjKj52iPdmNosXCVzrg2y8xxEo=;
+ b=weB1ciMg6VOMT5JRa133sc7u4XhHyh3d9W1NKBA3zPTMOuUe7ksUpvFS3wtfTjgQoz
+ ZkrQw1MoCE4VMh1C5cCRx+g006c4CiTSsjqDMBKx4+wGVhvPLFw8XrjPHgJXmiHu/ede
+ YlcKIbf9POXtRu1r8oZmqCnVfvla8s9K7m5f5hhKWBn/oeJU7kMWC7TElKfWNxWQ6SO8
+ 5w1+oQLzkSkd8RF4PAH39L1BcU00W7YLupmObYE2Myx0/mRH+9wnxZyNZZR4NZHqSxmT
+ 9xlc4lrpluPpUtGZO7ItoeneSW0ZcWTJcLYtG52Gv8cLJoNUMJUDmFTubhniBh0n9bPc
+ qoTA==
+X-Gm-Message-State: AOJu0YxeI9IYuEpAYqzsPgqUwh5DaDMB1THEj+pupAYD+9zndqkWWM7J
+ XYg6pdfD17MRuMNMadbl+2MXHyf1kXFfyjIkbyL01Fy375o03ZHuh+S5R6pGsclOpYGC/AI8ZIS
+ ra9yP
+X-Gm-Gg: ASbGncvUdAnrdXoWMmK/fg3T0o/MrCK/7H7u19hyz/2zTCxqTwDGH3UGJgNHy1YEVBK
+ B7NxFG7u7gTwdSquUZxzkt/BKePwxFpIjibWdmIoHehSMjV8hp4wteffGBWhZU1yH3rCMUffJMr
+ h9cLYV3Aw6qgB7rPELAlphO4OYUBhpcczi5U/UAl7L2WRxERPxvZbkawSJBsi6Y0XqTaMco9VVA
+ ywYlzMOaXJiwO9JqkI6BykS0ZWZVV4YGc474iNP2gLf68j07/Kv9AEA40TNQKFPsch0mwjaXslZ
+ s6+iQat4QIwG0HllENFYqVLskdWlNDPbJtP9QwdHLnr3
+X-Google-Smtp-Source: AGHT+IGlhoOC3zUOPh5ieOCqYXDXafl9z5h5j6oIUmfEg9NzJFdQKHw8xG5cPSD4Sz/HmrrsFVxPlQ==
+X-Received: by 2002:a05:6000:1543:b0:391:4bf2:6f0d with SMTP id
+ ffacd0b85a97d-39973b423a3mr2961910f8f.52.1742394197417; 
+ Wed, 19 Mar 2025 07:23:17 -0700 (PDT)
 Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-225c6bbe595sm112104575ad.171.2025.03.19.04.41.51
+ d9443c01a7336-225c68aa815sm114933095ad.102.2025.03.19.07.23.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 19 Mar 2025 04:41:52 -0700 (PDT)
+ Wed, 19 Mar 2025 07:23:16 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Wed, 19 Mar 2025 07:41:44 -0400
-Message-Id: <20250319114144.24349-1-wegao@suse.com>
+Date: Wed, 19 Mar 2025 10:23:10 -0400
+Message-Id: <20250319142310.30036-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20250219082954.23552-1-wegao@suse.com>
-References: <20250219082954.23552-1-wegao@suse.com>
+In-Reply-To: <20240603125514.683-1-wegao@suse.com>
+References: <20240603125514.683-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] mount_setattr02.c: Check mount_setattr attr
- propagation
+Subject: [LTP] [PATCH v4] open16: allow restricted O_CREAT of FIFOs and
+ regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,136 +105,165 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Wei Gao <wegao@suse.com>
+
+This commit adds test cases to verify the security restrictions for opening
+FIFOs and regular files in world-writable sticky directories.
+
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/mount_setattr/.gitignore  |  1 +
- .../syscalls/mount_setattr/mount_setattr02.c  | 99 +++++++++++++++++++
- 3 files changed, 101 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/open/.gitignore |   1 +
+ testcases/kernel/syscalls/open/open16.c   | 121 ++++++++++++++++++++++
+ 3 files changed, 123 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/open/open16.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 839c23d0a..60cbb66b7 100644
+index 839c23d0a..7a1a64c01 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -858,6 +858,7 @@ mount06 mount06
- mount07 mount07
+@@ -974,6 +974,7 @@ open12 open12
+ open13 open13
+ open14 open14
+ open15 open15
++open16 open16
  
- mount_setattr01 mount_setattr01
-+mount_setattr02 mount_setattr02
- 
- move_mount01 move_mount01
- move_mount02 move_mount02
-diff --git a/testcases/kernel/syscalls/mount_setattr/.gitignore b/testcases/kernel/syscalls/mount_setattr/.gitignore
-index 52a77b9ca..1654f27de 100644
---- a/testcases/kernel/syscalls/mount_setattr/.gitignore
-+++ b/testcases/kernel/syscalls/mount_setattr/.gitignore
-@@ -1 +1,2 @@
- /mount_setattr01
-+/mount_setattr02
-diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+ openat01 openat01
+ openat02 openat02
+diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
+index af5997572..d2cacc02e 100644
+--- a/testcases/kernel/syscalls/open/.gitignore
++++ b/testcases/kernel/syscalls/open/.gitignore
+@@ -13,3 +13,4 @@
+ /open13
+ /open14
+ /open15
++/open16
+diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
 new file mode 100644
-index 000000000..fcc088e3b
+index 000000000..709c5c87f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-@@ -0,0 +1,99 @@
++++ b/testcases/kernel/syscalls/open/open16.c
+@@ -0,0 +1,121 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
 + */
 +
 +/*\
-+ * Basic mount_setattr() test.
-+ *
-+ * Test basic propagation mount attributes are set correctly.
++ * Verify disallows open of FIFOs or regular files not owned by the user in world
++ * writable sticky directories
 + */
 +
-+#define _GNU_SOURCE
-+
-+#include <sys/statvfs.h>
++#include <pwd.h>
++#include <stdlib.h>
 +#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+#include "tst_safe_stdio.h"
++#include "tst_safe_file_at.h"
 +
-+static char *tmpdir;
++#define  FILENAME  "setuid04_testfile"
++#define  DIR "ltp_tmp_check1"
++#define  TEST_FILE "test_file_1"
++#define  TEST_FIFO "test_fifo_1"
++#define  LTP_USR_UID1 1000
++#define  LTP_USR_UID2 1001
++#define  CONCAT(dir, filename) dir "/" filename
++#define  PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
++#define  PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
 +
-+static int mounted;
++static int dir_fd;
 +
-+static bool is_shared_mount(const char *path)
++static void run(void)
 +{
-+	FILE *file = SAFE_FOPEN("/proc/self/mountinfo", "r");
++	SAFE_CHMOD(DIR, 0777 | S_ISVTX);
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 0);
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 0);
 +
-+	char line[PATH_MAX];
-+	bool found = false;
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID1);
 +
-+	while (fgets(line, sizeof(line), file)) {
-+		char mntpoint[PATH_MAX];
-+		char opts[256];
++		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
 +
-+		if (sscanf(line, "%*d %*d %*d:%*d %*s %255s %*s %255s",
-+					mntpoint, opts) != 2)
-+			continue;
++		SAFE_CLOSE(fd);
 +
-+		if (strcmp(mntpoint, path) != 0)
-+			continue;
++		SAFE_MKFIFO(CONCAT(DIR, TEST_FIFO), 0777);
 +
-+		if (strstr(opts, "shared:") != NULL) {
-+			found = true;
-+			break;
-+		}
++		exit(0);
 +	}
 +
-+	fclose(file);
-+	return found;
-+}
++	tst_reap_children();
 +
-+static void cleanup(void)
-+{
-+	if (mounted)
-+		SAFE_UMOUNT(tmpdir);
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++
++		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
++
++		SAFE_CLOSE(fd);
++
++		fd = TST_EXP_FD(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777));
++		SAFE_CLOSE(fd);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 1);
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 1);
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 2);
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 2);
++	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++	SAFE_UNLINK(CONCAT(DIR, TEST_FIFO));
 +}
 +
 +static void setup(void)
 +{
-+	tmpdir = tst_tmpdir_path();
-+	SAFE_UNSHARE(CLONE_NEWNS);
-+	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-+	SAFE_MOUNT("testing", tmpdir, "tmpfs", MS_NOATIME | MS_NODEV, "");
-+	mounted = 1;
++	umask(0);
++	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
++	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
 +}
 +
-+static void run(void)
++static void cleanup(void)
 +{
-+	struct mount_attr attr = {
-+		.attr_set       = MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOEXEC | MOUNT_ATTR_RELATIME,
-+		.attr_clr       = MOUNT_ATTR__ATIME,
-+	};
-+
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-+
-+	attr.propagation = -1;
-+	TST_EXP_FAIL_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)), EINVAL);
-+	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-+
-+	attr.propagation = MS_SHARED;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 1);
-+
-+	attr.propagation = MS_PRIVATE;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-+
-+	attr.propagation = MS_SLAVE;
-+	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-+	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
++	if (dir_fd != -1)
++		SAFE_CLOSE(dir_fd);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
++	.test_all = run,
 +	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
++		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "30aba6656f61ed44cba445a3c0d38b296fa9e8f5"},
++		{}
++	}
 +};
 -- 
 2.35.3
