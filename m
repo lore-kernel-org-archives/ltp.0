@@ -4,70 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDBB6C28B30
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 10:59:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 887E7C28B30
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 11:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742469891; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=IgQagPx3vMkBpcLZyH/Ek1PevAZ2bcyg8i/1q/3Dy+o=;
+ b=nW1mMIq/pOPneKof5XK3T/vZRzJTIXmW39fjaZ5BEWxSZSJmhx7v/PP9Xj0mRm4RT16ME
+ BQJzM7zsJqZ3y6Q1q8qQDZNucMqC71M7/tuwGuguNoblrfGrpd6Arqrsex8Al/tX1YAnBX9
+ BPXhWusX4tZyoYTsMfkpMZI4FY8cqL8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 837D23CAE24
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 11:59:22 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 827FA3CAE3E
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 12:24:51 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 465963CAD83
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 02:24:37 +0100 (CET)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=none (no SPF record) smtp.mailfrom=linux.intel.com
- (client-ip=192.198.163.19; helo=mgamail.intel.com;
- envelope-from=yi1.lai@linux.intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6BACE3CAD4A
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 12:24:30 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 196F4600760
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 02:24:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1742433875; x=1773969875;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=mVjHOvtZt3NxlZEmYD6UIjkVerVA4XASUbcf/dG+FVs=;
- b=mifKe/jed6tmRZ82jqaGkbLpgMi6We+FFCWQ58Ugb7nsIm8SA/MFu6xf
- Twxbze+Q1cPVw9efAq1/IkwNueRWkWf5A/iiiE43EpDQarYahsXIcZ15R
- RssFHChOJy5yZQD3YVuhgHdqAo7iDWoP9AuoWiGAdfPZ8QWqHD3aomm+3
- y/s/AL1guGVIidq2x3oK+htXoGkASd2Gms7PdsvQUbsiKzYLNFu9oLuwz
- RlNaC1Fx5ZcLd/J5j/S4fObq5+qSqSf7VlrTDMD6caQ9i2O6gX76+i4nc
- mbKFCLlvOK83/FPp6WB8U5ppcXi/Z4lZ5/ChQ2RtEx+eb8uGO8rymxSgt g==;
-X-CSE-ConnectionGUID: tR64QYQnTCm6I5bIG0/dpg==
-X-CSE-MsgGUID: WHemOrFeSw+eavDfZr77Ng==
-X-IronPort-AV: E=McAfee;i="6700,10204,11378"; a="42819321"
-X-IronPort-AV: E=Sophos;i="6.14,260,1736841600"; d="scan'208";a="42819321"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
- by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Mar 2025 18:24:30 -0700
-X-CSE-ConnectionGUID: DbN0uQkNRpeSpgiOBLvoZg==
-X-CSE-MsgGUID: qfJrijahQaOY85HhtQR5NQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,260,1736841600"; d="scan'208";a="122600501"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation)
- ([10.239.161.23])
- by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Mar 2025 18:24:27 -0700
-Date: Thu, 20 Mar 2025 09:24:51 +0800
-From: "Lai, Yi" <yi1.lai@linux.intel.com>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Message-ID: <Z9tuY5hCGOOVrSVL@ly-workstation>
-References: <202503101536.27099c77-lkp@intel.com>
- <20250311-testphasen-behelfen-09b950bbecbf@brauner>
- <Z9kEdPLNT8SOyOQT@xsang-OptiPlex-9020>
- <Z9krpfrKjnFs6mfE@bombadil.infradead.org>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 92E016007A4
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 12:24:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1742469867;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rqrelvh38r3QpYDT2cJHVtGmzbrrmBmFx0XpnL3cF2Q=;
+ b=doH+ZTDqvZnHlZHR7ws5qtX0b1rtlXbqo+cZGk3rOfRdtS8zUtn5/Y7fJ5xecHIyZQ58/u
+ ALrNxWIpVtFm0dgrpRLxv0roRcUhEumLU60/Pm5GfRRNyp8vbrW88PvLaugkWYIdEuGB7k
+ 5ZHLw69Fql1nW8sReJgy8JjeNzzt+qA=
+Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
+ [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-682-xr7E-XYEPECIsaoHfGaewA-1; Thu, 20 Mar 2025 07:24:26 -0400
+X-MC-Unique: xr7E-XYEPECIsaoHfGaewA-1
+X-Mimecast-MFC-AGG-ID: xr7E-XYEPECIsaoHfGaewA_1742469866
+Received: by mail-vk1-f199.google.com with SMTP id
+ 71dfb90a1353d-523c33cfea8so818671e0c.1
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 04:24:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1742469866; x=1743074666;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=Rqrelvh38r3QpYDT2cJHVtGmzbrrmBmFx0XpnL3cF2Q=;
+ b=jRPXXXufHecOLVjZ70vOOzv4R86GSyDvw3FMZNntfu6Pj4Rv5Qy9VGOnXJXC84P4BH
+ jtLGoTUOMlzZme5jIBXWJteLEu+thtZthSuKDlzKuGOb6+UlEpW+2NsgubEjwlekaSAE
+ YjXBZCyyT8x4FWa7W7LzJpLpouq4m8ULgtKeujPhJF1Mh0f4csuQIxSzj6UTQ2tG7Bpi
+ Hapqc/Av0RIByDfUezEYHVyl3aX1hcvXxgXxqnKt+qobxNEP2oPYmEr1pxhwVCLPkb07
+ MAz3I5vxfJwWF8sTRl+JpxX+o5fc12cdXciOPPEzSomTkw5kRxRFqv3HK/K5z0L3HUgT
+ H1aw==
+X-Gm-Message-State: AOJu0YzCNO1fxj0sbmJh/U1pvr85K+LXguJ4gQGRbvt2mtGlfYPEL1i8
+ I/Y3xNk7osFG0MCbUoDOm0pY68gq7kq3Vkk1WkIqImTaY688PcE0rKdn4b6XDS+o4wJev9KrqNz
+ sOJGg7gbL4aYnSe8VUhW2SZEOOT1AhYsM70XO8E0KIR8uVcT1ISUX+gUkyVhtV+zaav8oDmZsqJ
+ 6HkE6PTFg86Q2/bvkk0AAiMik=
+X-Gm-Gg: ASbGncuCZyZLN0on34MU+HZ5MXaM9dd+SnY2cec1oFxD27d15/IA0GezKEu/n1bGUwu
+ pvfL4qNpMfcpb1gux0OcxmZ/LZgnzTvU/ZbeHP/RKUd2t1BeZO66W4fo34hXjeQozYZHQ/EIJ
+X-Received: by 2002:a05:6122:1b8a:b0:520:60c2:3f3 with SMTP id
+ 71dfb90a1353d-5259627de8amr2205170e0c.4.1742469865802; 
+ Thu, 20 Mar 2025 04:24:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGkWPOK7qINsBfgau+R4G+YWkEhsp5qGenF010g/wkPIShvUHAKvX1aH4d2pkKvsF7M49+/mLQ7AoXVw4rC/oY=
+X-Received: by 2002:a05:6122:1b8a:b0:520:60c2:3f3 with SMTP id
+ 71dfb90a1353d-5259627de8amr2205165e0c.4.1742469865456; Thu, 20 Mar 2025
+ 04:24:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Z9krpfrKjnFs6mfE@bombadil.infradead.org>
+References: <d1d830051aea3f077995c30b2183731cd2f04cf2.1742054500.git.jstancek@redhat.com>
+ <20250317122351.GA247824@pevik>
+In-Reply-To: <20250317122351.GA247824@pevik>
+Date: Thu, 20 Mar 2025 12:24:09 +0100
+X-Gm-Features: AQ5f1JoaAyMiPd9LjWWPq-Jm585atSm97aowgEpqw2wJgWU7fqMNIz9BcIeeXKI
+Message-ID: <CAASaF6yvKn-FN+jZRjMVcPyiW_0TZUOi+OJbXK+QrD1cvZQwOg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: vYg3EViukGxu7NBlODr52AeMburUrFy2Vh4yMscc0Wg_1742469866
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 20 Mar 2025 11:59:04 +0100
-Subject: Re: [LTP] [linux-next:master] [block/bdev] 3c20917120:
- BUG:sleeping_function_called_from_invalid_context_at_mm/util.c
+Subject: Re: [LTP] [PATCH] tracing/pt_test: TCONF if Intel PT across VMXON
+ is not supported
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,284 +106,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Pankaj Raghav <p.raghav@samsung.com>, Daniel Gomez <da.gomez@samsung.com>,
- Christian Brauner <brauner@kernel.org>, lkp@intel.com,
- David Hildenbrand <david@redhat.com>, Alistair Popple <apopple@nvidia.com>,
- "Matthew Wilcox \(Oracle\)" <willy@infradead.org>, linux-block@vger.kernel.org,
- linux-mm@kvack.org, Oliver Sang <oliver.sang@intel.com>,
- Hannes Reinecke <hare@suse.de>, John Garry <john.g.garry@oracle.com>,
- yi1.lai@intel.com, oe-lkp@lists.linux.dev, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Mar 18, 2025 at 01:15:33AM -0700, Luis Chamberlain wrote:
-> On Tue, Mar 18, 2025 at 01:28:20PM +0800, Oliver Sang wrote:
-> > hi, Christian Brauner,
-> > 
-> > On Tue, Mar 11, 2025 at 01:10:43PM +0100, Christian Brauner wrote:
-> > > On Mon, Mar 10, 2025 at 03:43:49PM +0800, kernel test robot wrote:
-> > > > 
-> > > > 
-> > > > Hello,
-> > > > 
-> > > > kernel test robot noticed "BUG:sleeping_function_called_from_invalid_context_at_mm/util.c" on:
-> > > > 
-> > > > commit: 3c20917120ce61f2a123ca0810293872f4c6b5a4 ("block/bdev: enable large folio support for large logical block sizes")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > > 
-> > > Is this also already fixed by:
-> > > 
-> > > commit a64e5a596067 ("bdev: add back PAGE_SIZE block size validation for sb_set_blocksize()")
-> > > 
-> > > ?
-> > 
-> > sorry for late.
-> > 
-> > commit a64e5a596067 cannot fix the issue. one dmesg is attached FYI.
-> > 
-> > we also tried to check linux-next/master tip, but neither below one can boot
-> > successfully in our env which we need further check.
-> > 
-> > da920b7df70177 (tag: next-20250314, linux-next/master) Add linux-next specific files for 20250314
-> > 
-> > e94bd4ec45ac1 (tag: next-20250317, linux-next/master) Add linux-next specific files for 20250317
-> > 
-> > so we are not sure the status of latest linux-next/master.
-> > 
-> > if you want us to check other commit or other patches, please let us know. thanks!
-> 
-> I cannot reproduce the issue by running the LTP test manually in a loop
-> for a long time:
-> 
-> export LTP_RUNTIME_MUL=2
-> 
-> while true; do \
-> 	./testcases/kernel/syscalls/close_range/close_range01; done
-> 
-> What's the failure rate of just running the test alone above?
-> Does it always fail on this system? Is this a deterministic failure
-> or does it have a lower failure rate?
->
-Hi Luis,
-
-Greetings!
-
-I used Syzkaller and found that this issue can also be reproduced using Syzkaller reproduction binary.
-
-All detailed into can be found at:
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy
-Syzkaller repro code:
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy/repro.c
-Syzkaller repro syscall steps:
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy/repro.prog
-Syzkaller report:
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy/repro.report
-Kconfig(make olddefconfig):
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy/kconfig_origin
-Bisect info:
-https://github.com/laifryiee/syzkaller_logs/tree/main/250320_033346_folio_mc_copy/bisect_info.log
-bzImage:
-https://github.com/laifryiee/syzkaller_logs/raw/refs/heads/main/250320_033346_folio_mc_copy/bzImage_e94bd4ec45ac156616da285a0bf03056cd7430fc
-Issue dmesg:
-https://github.com/laifryiee/syzkaller_logs/blob/main/250320_033346_folio_mc_copy/e94bd4ec45ac156616da285a0bf03056cd7430fc_dmesg.log
-
-
-After bisection and the first bad commit is:
-"
-3c20917120ce block/bdev: enable large folio support for large logical block sizes
-"
-
-"
-[   23.399326]  dump_stack+0x19/0x20
-[   23.399332]  __might_resched+0x37b/0x5a0
-[   23.399345]  ? __kasan_check_read+0x15/0x20
-[   23.399354]  folio_mc_copy+0x111/0x240
-[   23.399368]  __migrate_folio.constprop.0+0x173/0x3c0
-[   23.399377]  __buffer_migrate_folio+0x6a2/0x7b0
-[   23.399389]  buffer_migrate_folio_norefs+0x3d/0x50
-[   23.399398]  move_to_new_folio+0x153/0x5b0
-[   23.399403]  ? __pfx_buffer_migrate_folio_norefs+0x10/0x10
-[   23.399412]  migrate_pages_batch+0x19e0/0x2890
-[   23.399424]  ? __pfx_compaction_free+0x10/0x10
-[   23.399444]  ? __pfx_migrate_pages_batch+0x10/0x10
-[   23.399450]  ? __kasan_check_read+0x15/0x20
-[   23.399455]  ? __lock_acquire+0xdb6/0x5d60
-[   23.399475]  ? __pfx___lock_acquire+0x10/0x10
-[   23.399486]  migrate_pages+0x18de/0x2450
-[   23.399500]  ? __pfx_compaction_free+0x10/0x10
-[   23.399505]  ? __pfx_compaction_alloc+0x10/0x10
-[   23.399514]  ? __pfx_migrate_pages+0x10/0x10
-[   23.399519]  ? __this_cpu_preempt_check+0x21/0x30
-[   23.399533]  ? rcu_is_watching+0x19/0xc0
-[   23.399546]  ? isolate_migratepages_block+0x2253/0x41c0
-[   23.399565]  ? __pfx_isolate_migratepages_block+0x10/0x10
-[   23.399578]  compact_zone+0x1d66/0x4480
-[   23.399600]  ? perf_trace_lock+0xe0/0x4f0
-[   23.399612]  ? __pfx_compact_zone+0x10/0x10
-[   23.399617]  ? __pfx_perf_trace_lock+0x10/0x10
-[   23.399627]  ? __pfx_lock_acquire+0x10/0x10
-[   23.399639]  compact_node+0x190/0x2c0
-[   23.399647]  ? __pfx_compact_node+0x10/0x10
-[   23.399653]  ? __pfx_lock_release+0x10/0x10
-[   23.399678]  ? _raw_spin_unlock_irqrestore+0x45/0x70
-[   23.399694]  kcompactd+0x784/0xde0
-[   23.399705]  ? __pfx_kcompactd+0x10/0x10
-[   23.399711]  ? lockdep_hardirqs_on+0x89/0x110
-[   23.399721]  ? __pfx_autoremove_wake_function+0x10/0x10
-[   23.399731]  ? __sanitizer_cov_trace_const_cmp1+0x1e/0x30
-[   23.399742]  ? __kthread_parkme+0x15d/0x230
-[   23.399753]  ? __pfx_kcompactd+0x10/0x10
-[   23.399761]  kthread+0x444/0x980
-[   23.399769]  ? __pfx_kthread+0x10/0x10
-[   23.399776]  ? _raw_spin_unlock_irq+0x3c/0x60
-[   23.399784]  ? __pfx_kthread+0x10/0x10
-[   23.399792]  ret_from_fork+0x56/0x90
-[   23.399802]  ? __pfx_kthread+0x10/0x10
-[   23.399809]  ret_from_fork_asm+0x1a/0x30
-[   23.399827]  </TASK>
-"
-
-Hope this cound be insightful to you.
-
-Regards,
-Yi Lai
-
----
-
-If you don't need the following environment to reproduce the problem or if you
-already have one reproduced environment, please ignore the following information.
-
-How to reproduce:
-git clone https://gitlab.com/xupengfe/repro_vm_env.git
-cd repro_vm_env
-tar -xvf repro_vm_env.tar.gz
-cd repro_vm_env; ./start3.sh  // it needs qemu-system-x86_64 and I used v7.1.0
-  // start3.sh will load bzImage_2241ab53cbb5cdb08a6b2d4688feb13971058f65 v6.2-rc5 kernel
-  // You could change the bzImage_xxx as you want
-  // Maybe you need to remove line "-drive if=pflash,format=raw,readonly=on,file=./OVMF_CODE.fd \" for different qemu version
-You could use below command to log in, there is no password for root.
-ssh -p 10023 root@localhost
-
-After login vm(virtual machine) successfully, you could transfer reproduced
-binary to the vm by below way, and reproduce the problem in vm:
-gcc -pthread -o repro repro.c
-scp -P 10023 repro root@localhost:/root/
-
-Get the bzImage for target kernel:
-Please use target kconfig and copy it to kernel_src/.config
-make olddefconfig
-make -jx bzImage           //x should equal or less than cpu num your pc has
-
-Fill the bzImage file into above start3.sh to load the target kernel in vm.
-
-
-Tips:
-If you already have qemu-system-x86_64, please ignore below info.
-If you want to install qemu v7.1.0 version:
-git clone https://github.com/qemu/qemu.git
-cd qemu
-git checkout -f v7.1.0
-mkdir build
-cd build
-yum install -y ninja-build.x86_64
-yum -y install libslirp-devel.x86_64
-../configure --target-list=x86_64-softmmu --enable-kvm --enable-vnc --enable-gtk --enable-sdl --enable-usb-redir --enable-slirp
-make
-make install 
-
-> I also can't see how the patch ("("block/bdev: enable large folio
-> support for large logical block sizes") would trigger this.
-> 
-> You could try this patch but ...
-> 
-> https://lore.kernel.org/all/20250312050028.1784117-1-mcgrof@kernel.org/
-> 
-> we decided this is not right and not needed, and if we have a buggy
-> block driver we can address that.
-> 
-> I just can't see how this LTP test actually doing anything funky with block
-> devices at all.
-> 
-> The associated sleeping while atomic warning is triggered during
-> compaction though:
-> 
-> [  218.143642][  T299] Architecture:                         x86_64
-> [  218.143659][  T299] 
-> [  218.427851][   T51] BUG: sleeping function called from invalid context at mm/util.c:901
-> [  218.435981][   T51] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 51, name: kcompactd0
-> [  218.444773][   T51] preempt_count: 1, expected: 0
-> [  218.449601][   T51] RCU nest depth: 0, expected: 0
-> [  218.454476][   T51] CPU: 2 UID: 0 PID: 51 Comm: kcompactd0 Tainted: G S                 6.14.0-rc1-00006-g3c20917120ce #1
-> [  218.454486][   T51] Tainted: [S]=CPU_OUT_OF_SPEC
-> [  218.454488][   T51] Hardware name: Hewlett-Packard HP Pro 3340 MT/17A1, BIOS 8.07 01/24/2013
-> [  218.454492][   T51] Call Trace:
-> [  218.454495][   T51]  <TASK>
-> [  218.454498][   T51]  dump_stack_lvl+0x4f/0x70
-> [  218.454508][   T51]  __might_resched+0x2c6/0x450
-> [  218.454517][   T51]  folio_mc_copy+0xca/0x1f0
-> [  218.454525][   T51]  ? _raw_spin_lock+0x81/0xe0
-> [  218.454532][   T51]  __migrate_folio+0x11a/0x2d0
-> [  218.454541][   T51]  __buffer_migrate_folio+0x558/0x660
-> [  218.454548][   T51]  move_to_new_folio+0xf5/0x410
-> [  218.454555][   T51]  migrate_folio_move+0x211/0x770
-> [  218.454562][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454572][   T51]  ? __pfx_migrate_folio_move+0x10/0x10
-> [  218.454578][   T51]  ? compaction_alloc_noprof+0x441/0x720
-> [  218.454587][   T51]  ? __pfx_compaction_alloc+0x10/0x10
-> [  218.454594][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454601][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454607][   T51]  ? migrate_folio_unmap+0x329/0x890
-> [  218.454614][   T51]  migrate_pages_batch+0xddf/0x1810
-> [  218.454621][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454631][   T51]  ? __pfx_migrate_pages_batch+0x10/0x10
-> [  218.454638][   T51]  ? cgroup_rstat_updated+0xf1/0x860
-> [  218.454648][   T51]  migrate_pages_sync+0x10c/0x8e0
-> [  218.454656][   T51]  ? __pfx_compaction_alloc+0x10/0x10
-> [  218.454662][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454669][   T51]  ? lru_gen_del_folio+0x383/0x820
-> [  218.454677][   T51]  ? __pfx_migrate_pages_sync+0x10/0x10
-> [  218.454683][   T51]  ? set_pfnblock_flags_mask+0x179/0x220
-> [  218.454691][   T51]  ? __pfx_lru_gen_del_folio+0x10/0x10
-> [  218.454699][   T51]  ? __pfx_compaction_alloc+0x10/0x10
-> [  218.454705][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454713][   T51]  migrate_pages+0x846/0xe30
-> [  218.454720][   T51]  ? __pfx_compaction_alloc+0x10/0x10
-> [  218.454726][   T51]  ? __pfx_compaction_free+0x10/0x10
-> [  218.454733][   T51]  ? __pfx_buffer_migrate_folio_norefs+0x10/0x10
-> [  218.454740][   T51]  ? __pfx_migrate_pages+0x10/0x10
-> [  218.454748][   T51]  ? isolate_migratepages+0x32d/0xbd0
-> [  218.454757][   T51]  compact_zone+0x9e1/0x1680
-> [  218.454767][   T51]  ? __pfx_compact_zone+0x10/0x10
-> [  218.454774][   T51]  ? _raw_spin_lock_irqsave+0x87/0xe0
-> [  218.454780][   T51]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-> [  218.454788][   T51]  compact_node+0x159/0x250
-> [  218.454795][   T51]  ? __pfx_compact_node+0x10/0x10
-> [  218.454807][   T51]  ? __pfx_extfrag_for_order+0x10/0x10
-> [  218.454814][   T51]  ? __pfx_mutex_unlock+0x10/0x10
-> [  218.454822][   T51]  ? finish_wait+0xd1/0x280
-> [  218.454831][   T51]  kcompactd+0x582/0x960
-> [  218.454839][   T51]  ? __pfx_kcompactd+0x10/0x10
-> [  218.454846][   T51]  ? _raw_spin_lock_irqsave+0x87/0xe0
-> [  218.454852][   T51]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-> [  218.454858][   T51]  ? __pfx_autoremove_wake_function+0x10/0x10
-> [  218.454867][   T51]  ? __kthread_parkme+0xba/0x1e0
-> [  218.454874][   T51]  ? __pfx_kcompactd+0x10/0x10
-> [  218.454880][   T51]  kthread+0x3a1/0x770
-> [  218.454887][   T51]  ? __pfx_kthread+0x10/0x10
-> [  218.454895][   T51]  ? __pfx_kthread+0x10/0x10
-> [  218.454902][   T51]  ret_from_fork+0x30/0x70
-> [  218.454910][   T51]  ? __pfx_kthread+0x10/0x10
-> [  218.454915][   T51]  ret_from_fork_asm+0x1a/0x30
-> [  218.454924][   T51]  </TASK>
-> 
-> So the only thing I can think of the patch which the patch can do is
-> push more large folios to be used and so compaction can be a secondary
-> effect which managed to trigger another mm issue. I know there was a
-> recent migration fix but I can't see the relationship at all either.
-> 
->   Luis
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBNYXIgMTcsIDIwMjUgYXQgMToyNOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIEphbiwKPgo+ID4gQXMgbm90ZWQgaW4gMWM1YWMyMWEwZTliICgi
+cGVyZi94ODYvaW50ZWwvcHQ6IERvbid0IGRpZSBvbiBWTVhPTiIpLAo+ID4gc29tZSBCcm9hZHdl
+bGwgc3lzdGVtcyBkb24ndCBzdXBwb3J0IEludGVsIFBUIGFjcm9zcyBWTVhPTi4KPiArMQo+Cj4g
+PiBJZiB0aGUgdGVzdCBmYWlscyB0byBmaW5kIGFueSBldmVudHMsIGNoZWNrIHdoZXRoZXIgdGhl
+cmUgaXMgYQo+ID4ga3ZtX2ludGVsIG1vZHVsZSBsb2FkZWQsIGFuZCBpZiBzbyBjaGVjayBmb3Ig
+SUEzMl9WTVhfTUlTQ1tiaXQgMTRdLgo+ID4gSWYgdGhpcyBiaXQgaXMgMCwgaXQncyBub3Qgc3Vw
+cG9ydGVkLiBGcm9tIGNvbW1pdCBtZW50aW9uZWQgYWJvdmU6Cj4gPiAgICAgSW50ZWwgU0RNLCAz
+Ni41ICJUcmFjaW5nIHBvc3QtVk1YT04iIHNheXMgdGhhdAo+ID4gICAgICJJQTMyX1ZNWF9NSVND
+W2JpdCAxNF0iIGJlaW5nIDEgbWVhbnMgUFQgY2FuIHRyYWNlCj4gPiAgICAgcG9zdC1WTVhPTi4K
+Pgo+IExHVE0uCj4KPiBSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+CgpQ
+dXNoZWQgd2l0aCB0aGUgc3RyaW5nIGpvaW5lZC4KClRoYW5rcywKSmFuCgo+Cj4gLi4uCj4gPiAg
+c3RhdGljIHZvaWQgaW50ZWxfcHRfdHJhY2VfY2hlY2sodm9pZCkKPiA+ICB7Cj4gPiAgICAgICB1
+aW50NjRfdCBhdXhfaGVhZCA9IDA7Cj4gPiBAQCAtMTE3LDYgKzE1MCwxMiBAQCBzdGF0aWMgdm9p
+ZCBpbnRlbF9wdF90cmFjZV9jaGVjayh2b2lkKQo+ID4gICAgICAgcG1wID0gKHN0cnVjdCBwZXJm
+X2V2ZW50X21tYXBfcGFnZSAqKWJ1Zm1bMF07Cj4gPiAgICAgICBhdXhfaGVhZCA9ICoodm9sYXRp
+bGUgdWludDY0X3QgKikmcG1wLT5hdXhfaGVhZDsKPiA+ICAgICAgIGlmIChhdXhfaGVhZCA9PSAw
+KSB7Cj4gPiArICAgICAgICAgICAgIGlmICgoYWNjZXNzKCIvc3lzL21vZHVsZS9rdm1faW50ZWwi
+LCBGX09LKSA9PSAwKQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICYmICghaXNfc3VwcG9ydGVk
+X2Fjcm9zc192bXhvbigpKSkgewo+ID4gKyAgICAgICAgICAgICAgICAgICAgIHRzdF9icmsoVENP
+TkYsICJJbnRlbCBQVCBvbiB0aGlzIHN5c3RlbSBjYW4gbm90Igo+ID4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIiBydW4gYXQgdGhlIHNhbWUgdGltZSBhcyB2aXJ0dWFsaXphdGlvbiIp
+Owo+Cj4gQXMgd2UgZGlzY3Vzc2VkIGF0IHRoZSBpc3N1ZSwgcGxlYXNlIGpvaW4gdGhlIHN0cmlu
+ZyBiZWZvcmUgbWVyZ2UuCj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+CgoKLS0gCk1haWxpbmcg
+bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
