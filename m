@@ -4,106 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C15C28B30
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 17:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B0CAC28B30
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 17:32:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 205983CAE41
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 18:00:59 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 46D2C3CACE3
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 18:32:02 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 27B9F3CAE29
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 18:00:43 +0100 (CET)
-Authentication-Results: in-3.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 508CC3CAC1E
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 18:31:45 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A603F1A00CD7
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 18:00:41 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5BAA12003B5
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 18:31:43 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 531AC1F745;
- Thu, 20 Mar 2025 17:00:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1235921D6F;
+ Thu, 20 Mar 2025 17:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742490041;
+ t=1742491903;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zG0sCnfO8G1YpW4OO12hLVQTKPeTEZQo881Ntw4nBiA=;
- b=NOzzStpg4TrzYaiaI9nED9yLT6+3nvxRgkeIGkNhBWg6KC604mx3aCbMmKYqXUkTPz6WCa
- ndJnWW1BmhqH1foQ4ldJu5f6u47pwmTd5+wmAFMKY8Nxdm5PZzdqV8S5WeZDImMkMGlwv3
- 08RF3y68H/rnU2Z+sDAWJdi90iMw9t8=
+ bh=UodoN5jsp9iY/LJaL26IGz+WuQOPzFp9kI/ZNIunul4=;
+ b=jSY4oBflVYbp+AF0SpcJ773oRTqjhFfVpH0a+fHoLYRdFHulRpLbf6vaGe6ohFWT5XPbOv
+ 2Y1KTXbwzOc2TLBaPP6/iavF+nMgygCD93LBXWaDpOC+p5zCFAGsvA9/sYDovYqgyb108v
+ QoFR6S5tvTFC1TY5EqTi3r69CsCJ5Os=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742490041;
+ s=susede2_ed25519; t=1742491903;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zG0sCnfO8G1YpW4OO12hLVQTKPeTEZQo881Ntw4nBiA=;
- b=xOo6HCYwSJ9Pi/AFTGOTSVOHLlNX5emQJifqg0PUSiCeQAftLye70MTLaRbMjPK8MMh5Or
- mXO2825a7BC+T1AA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=UodoN5jsp9iY/LJaL26IGz+WuQOPzFp9kI/ZNIunul4=;
+ b=xGk3fUMSCAOiwMeDIVArr6GjR5O031c6RZ8G0Kel90WT3tNtwUzerBopXn5d4IovuQDt2N
+ ooFYjYGCBkqGTGCg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jSY4oBfl;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xGk3fUMS
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742490041;
+ t=1742491903;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zG0sCnfO8G1YpW4OO12hLVQTKPeTEZQo881Ntw4nBiA=;
- b=NOzzStpg4TrzYaiaI9nED9yLT6+3nvxRgkeIGkNhBWg6KC604mx3aCbMmKYqXUkTPz6WCa
- ndJnWW1BmhqH1foQ4ldJu5f6u47pwmTd5+wmAFMKY8Nxdm5PZzdqV8S5WeZDImMkMGlwv3
- 08RF3y68H/rnU2Z+sDAWJdi90iMw9t8=
+ bh=UodoN5jsp9iY/LJaL26IGz+WuQOPzFp9kI/ZNIunul4=;
+ b=jSY4oBflVYbp+AF0SpcJ773oRTqjhFfVpH0a+fHoLYRdFHulRpLbf6vaGe6ohFWT5XPbOv
+ 2Y1KTXbwzOc2TLBaPP6/iavF+nMgygCD93LBXWaDpOC+p5zCFAGsvA9/sYDovYqgyb108v
+ QoFR6S5tvTFC1TY5EqTi3r69CsCJ5Os=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742490041;
+ s=susede2_ed25519; t=1742491903;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zG0sCnfO8G1YpW4OO12hLVQTKPeTEZQo881Ntw4nBiA=;
- b=xOo6HCYwSJ9Pi/AFTGOTSVOHLlNX5emQJifqg0PUSiCeQAftLye70MTLaRbMjPK8MMh5Or
- mXO2825a7BC+T1AA==
+ bh=UodoN5jsp9iY/LJaL26IGz+WuQOPzFp9kI/ZNIunul4=;
+ b=xGk3fUMSCAOiwMeDIVArr6GjR5O031c6RZ8G0Kel90WT3tNtwUzerBopXn5d4IovuQDt2N
+ ooFYjYGCBkqGTGCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 09DB513757;
- Thu, 20 Mar 2025 17:00:41 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88E0613757;
+ Thu, 20 Mar 2025 17:31:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jNLdALlJ3GdpEwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Mar 2025 17:00:41 +0000
-Date: Thu, 20 Mar 2025 18:00:39 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +ZEkHv5Q3GffHAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Mar 2025 17:31:42 +0000
+Date: Thu, 20 Mar 2025 18:31:41 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20250320170039.GA113087@pevik>
-References: <20250319192742.999506-1-amir73il@gmail.com>
- <20250319192742.999506-4-amir73il@gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250320173141.GA114876@pevik>
+References: <20240612121106.11127-1-chrubis@suse.cz>
+ <20240612121106.11127-2-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250319192742.999506-4-amir73il@gmail.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-0.998];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+In-Reply-To: <20240612121106.11127-2-chrubis@suse.cz>
+X-Rspamd-Queue-Id: 1235921D6F
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] fanotify24: add mmap() and user page fault to
- test
+Subject: Re: [LTP] [PATCH v2 1/2] lib: tst_test: Add per filesystem mkfs and
+ mount opts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,58 +124,78 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Amir,
+Hi Cyril, all,
 
-> Commit 066e053fe208a ("fsnotify: add pre-content hooks on mmap()")
-> in 6.14-rc7 added a pre-content hooh in mmap() before the final release
-> of the fsnotify pre-content event feature.
+> This commit does:
 
-> To test pre-content hook on mmap(), increase the size of the test file
-> to 101 pages use mmap() to setup a buffer from the end of the test file.
+> * Group the filesystem type, mkfs and mount options into a separate
+>   structure
 
-> Change some of the test cases to allow the write() and use this buffer
-> as the input buffer to write(), which tests deadlock avoidance by
-> suppresing pre-content hook on user page faults.
+> * Add an array of these structures to be able to define per filesystem
+>   mkfs and mount options
 
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
->  .../kernel/syscalls/fanotify/fanotify24.c     | 41 ++++++++++++++++---
->  1 file changed, 35 insertions(+), 6 deletions(-)
+> The details on the usage should be hopefully clear from the
+> documentation comments for the struct tst_test.
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify24.c b/testcases/kernel/syscalls/fanotify/fanotify24.c
-> index 2d2479b39..3a76f2c1b 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify24.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify24.c
-> @@ -46,6 +46,7 @@
->  static char fname[BUF_SIZE];
->  static char buf[BUF_SIZE];
->  static volatile int fd_notify;
-> +static size_t page_sz;
-
->  static pid_t child_pid;
-
-> @@ -68,7 +69,8 @@ static struct tcase {
->  		FAN_OPEN_PERM | FAN_PRE_ACCESS,
->  		{
->  			{FAN_OPEN_PERM, FAN_ALLOW},
-> -			{FAN_PRE_ACCESS, FAN_DENY},
-> +			{FAN_PRE_ACCESS, FAN_ALLOW},
-> +			{FAN_PRE_ACCESS, FAN_ALLOW},
-
-If I understand correctly, these doubled FAN_PRE_ACCESS, FAN_ALLOW are for
-reusing the write buffer, right? Obviously it's needed but on the first look it
-looks like error.
-
-<snip>
+FYI, this merged as cce6188916 ("lib: tst_test: Add per filesystem mkfs and
+mount opts") causes this behavior of none testing run when there is no suitable
+filesystem. I found it when trying to bisect something with rapido-linux and
+compile kernel without Btrfs and XFS. Don't we want to add some TCONF?
 
 Kind regards,
 Petr
+
+ioctl_ficlone03.c:
+	.filesystems = (struct tst_fs []) {
+		{.type = "btrfs"},
+		{.type = "bcachefs"},
+		{
+			.type = "xfs",
+			.min_kver = "4.16",
+			.mkfs_ver = "mkfs.xfs >= 1.5.0",
+			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
+		},
+		{}
+	},
+
+rapido1:/opt/ltp/testcases/bin# ./ioctl_ficlone03; echo $?
+tst_buffers.c:57: TINFO: Test is using guarded buffers
+tst_tmpdir.c:317: TINFO: Using /tmp/LTP_iocSKLS9l as tmpdir (tmpfs filesystem)
+tst_device.c:99: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1900: TINFO: LTP version: 20250130-166-g17960d952
+tst_test.c:1904: TINFO: Tested kernel: 4.5.0-00002-g22bd332f11d4 #162 SMP Thu Mar 20 18:00:10 CET 2025 x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/.config'
+tst_test.c:1724: TINFO: Overall timeout per run is 0h 00m 31s
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:105: TINFO: Skipping bcachefs because of FUSE blacklist
+tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  0
+warnings 0
+0
+
+rapido1:/opt/ltp/testcases/bin# grep -e CONFIG_BTRFS_FS -e CONFIG_XFS_FS /.config
++ grep -e CONFIG_BTRFS_FS -e CONFIG_XFS_FS /.config
+# CONFIG_XFS_FS is not set
+# CONFIG_BTRFS_FS is not set
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
