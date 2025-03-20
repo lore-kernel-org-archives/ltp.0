@@ -4,97 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 887E7C28B30
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 11:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 570F6C28B30
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 12:11:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742469891; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742472706; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=IgQagPx3vMkBpcLZyH/Ek1PevAZ2bcyg8i/1q/3Dy+o=;
- b=nW1mMIq/pOPneKof5XK3T/vZRzJTIXmW39fjaZ5BEWxSZSJmhx7v/PP9Xj0mRm4RT16ME
- BQJzM7zsJqZ3y6Q1q8qQDZNucMqC71M7/tuwGuguNoblrfGrpd6Arqrsex8Al/tX1YAnBX9
- BPXhWusX4tZyoYTsMfkpMZI4FY8cqL8=
+ bh=kGwyo3i2oDNIuLbGxri0Q9gK4YW8SiUemAoauSpb/2c=;
+ b=EP2uwETQAMMFpG/DJhk+IzlHIN8uDqapxOER6WcYGbrbBDQg25PWZRMX4KBxViovYwq7C
+ fRUY27e7RzMCoeWGnXCeFGf7+MyDZLvIXrLrffNygzCmJzLdt6hSbf2vyDOq7OO4R0hQCG6
+ h4MDOL/VutRDZlKt7uESq9Sw02USUf8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 827FA3CAE3E
-	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 12:24:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C95953CACCE
+	for <ltp@archiver.kernel.org>; Thu, 20 Mar 2025 13:11:46 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BACE3CAD4A
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 12:24:30 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 145C03CACCE
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 13:11:25 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ smtp.mailfrom=kernel.org (client-ip=172.234.252.31; helo=sea.source.kernel.org;
+ envelope-from=mcgrof@kernel.org; receiver=lists.linux.it)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 92E016007A4
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 12:24:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1742469867;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Rqrelvh38r3QpYDT2cJHVtGmzbrrmBmFx0XpnL3cF2Q=;
- b=doH+ZTDqvZnHlZHR7ws5qtX0b1rtlXbqo+cZGk3rOfRdtS8zUtn5/Y7fJ5xecHIyZQ58/u
- ALrNxWIpVtFm0dgrpRLxv0roRcUhEumLU60/Pm5GfRRNyp8vbrW88PvLaugkWYIdEuGB7k
- 5ZHLw69Fql1nW8sReJgy8JjeNzzt+qA=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-xr7E-XYEPECIsaoHfGaewA-1; Thu, 20 Mar 2025 07:24:26 -0400
-X-MC-Unique: xr7E-XYEPECIsaoHfGaewA-1
-X-Mimecast-MFC-AGG-ID: xr7E-XYEPECIsaoHfGaewA_1742469866
-Received: by mail-vk1-f199.google.com with SMTP id
- 71dfb90a1353d-523c33cfea8so818671e0c.1
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 04:24:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742469866; x=1743074666;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Rqrelvh38r3QpYDT2cJHVtGmzbrrmBmFx0XpnL3cF2Q=;
- b=jRPXXXufHecOLVjZ70vOOzv4R86GSyDvw3FMZNntfu6Pj4Rv5Qy9VGOnXJXC84P4BH
- jtLGoTUOMlzZme5jIBXWJteLEu+thtZthSuKDlzKuGOb6+UlEpW+2NsgubEjwlekaSAE
- YjXBZCyyT8x4FWa7W7LzJpLpouq4m8ULgtKeujPhJF1Mh0f4csuQIxSzj6UTQ2tG7Bpi
- Hapqc/Av0RIByDfUezEYHVyl3aX1hcvXxgXxqnKt+qobxNEP2oPYmEr1pxhwVCLPkb07
- MAz3I5vxfJwWF8sTRl+JpxX+o5fc12cdXciOPPEzSomTkw5kRxRFqv3HK/K5z0L3HUgT
- H1aw==
-X-Gm-Message-State: AOJu0YzCNO1fxj0sbmJh/U1pvr85K+LXguJ4gQGRbvt2mtGlfYPEL1i8
- I/Y3xNk7osFG0MCbUoDOm0pY68gq7kq3Vkk1WkIqImTaY688PcE0rKdn4b6XDS+o4wJev9KrqNz
- sOJGg7gbL4aYnSe8VUhW2SZEOOT1AhYsM70XO8E0KIR8uVcT1ISUX+gUkyVhtV+zaav8oDmZsqJ
- 6HkE6PTFg86Q2/bvkk0AAiMik=
-X-Gm-Gg: ASbGncuCZyZLN0on34MU+HZ5MXaM9dd+SnY2cec1oFxD27d15/IA0GezKEu/n1bGUwu
- pvfL4qNpMfcpb1gux0OcxmZ/LZgnzTvU/ZbeHP/RKUd2t1BeZO66W4fo34hXjeQozYZHQ/EIJ
-X-Received: by 2002:a05:6122:1b8a:b0:520:60c2:3f3 with SMTP id
- 71dfb90a1353d-5259627de8amr2205170e0c.4.1742469865802; 
- Thu, 20 Mar 2025 04:24:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGkWPOK7qINsBfgau+R4G+YWkEhsp5qGenF010g/wkPIShvUHAKvX1aH4d2pkKvsF7M49+/mLQ7AoXVw4rC/oY=
-X-Received: by 2002:a05:6122:1b8a:b0:520:60c2:3f3 with SMTP id
- 71dfb90a1353d-5259627de8amr2205165e0c.4.1742469865456; Thu, 20 Mar 2025
- 04:24:25 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F185960080D
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 13:11:24 +0100 (CET)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sea.source.kernel.org (Postfix) with ESMTP id 98F48434B0;
+ Thu, 20 Mar 2025 12:11:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8452FC4CEDD;
+ Thu, 20 Mar 2025 12:11:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1742472681;
+ bh=lAA6dsHJHk9It386Fum5QAZ0hCirSjpfY33LKsMgCE4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=RDooq5R/FovOLHSj7M1hearKsRBi0uJDIUlrK2RPUohurT0kPQqO2XG5pn+WfIMcC
+ CkcWQIb32h22p3f1KSPmYNzRQZe2JSxuvHzG2rU/PjBKwaHp7hc5JIvi2kx6pRGXjF
+ smDPAdey/CSvCs4JjPJok7clPISdEE1yB1EQzWMwDMgGqnrGGIj7l1mbGF8DnYww7D
+ xNEabK6TtuoxdRdzKOm34JLTO38OwiKJNp1QWkTIn53u+I1WL0V0SM0QEAeOhFrZQ0
+ MtjOmFzSva/VR2pI9/Sylmdamaz9SNgKBwyzu9BZP/OoL3fGpdlqwW7vFVkWAzoCwy
+ LJ6VCZcapNSbg==
+Date: Thu, 20 Mar 2025 05:11:19 -0700
+To: Matthew Wilcox <willy@infradead.org>, Johannes Weiner <hannes@cmpxchg.org>
+Message-ID: <Z9wF57eEBR-42K9a@bombadil.infradead.org>
+References: <202503101536.27099c77-lkp@intel.com>
+ <20250311-testphasen-behelfen-09b950bbecbf@brauner>
+ <Z9kEdPLNT8SOyOQT@xsang-OptiPlex-9020>
+ <Z9krpfrKjnFs6mfE@bombadil.infradead.org>
+ <Z9mFKa3p5P9TBSTQ@casper.infradead.org>
+ <Z9n_Iu6W40ZNnKwT@bombadil.infradead.org>
+ <Z9oy3i3n_HKFu1M1@casper.infradead.org>
+ <Z9r27eUk993BNWTX@bombadil.infradead.org>
+ <Z9sYGccL4TocoITf@bombadil.infradead.org>
+ <Z9sZ5_lJzTwGShQT@casper.infradead.org>
 MIME-Version: 1.0
-References: <d1d830051aea3f077995c30b2183731cd2f04cf2.1742054500.git.jstancek@redhat.com>
- <20250317122351.GA247824@pevik>
-In-Reply-To: <20250317122351.GA247824@pevik>
-Date: Thu, 20 Mar 2025 12:24:09 +0100
-X-Gm-Features: AQ5f1JoaAyMiPd9LjWWPq-Jm585atSm97aowgEpqw2wJgWU7fqMNIz9BcIeeXKI
-Message-ID: <CAASaF6yvKn-FN+jZRjMVcPyiW_0TZUOi+OJbXK+QrD1cvZQwOg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: vYg3EViukGxu7NBlODr52AeMburUrFy2Vh4yMscc0Wg_1742469866
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <Z9sZ5_lJzTwGShQT@casper.infradead.org>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tracing/pt_test: TCONF if Intel PT across VMXON
- is not supported
+Subject: Re: [LTP] [linux-next:master] [block/bdev] 3c20917120:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/util.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,36 +81,187 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Luis Chamberlain via ltp <ltp@lists.linux.it>
+Reply-To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Pankaj Raghav <p.raghav@samsung.com>, Daniel Gomez <da.gomez@samsung.com>,
+ Christian Brauner <brauner@kernel.org>, David Bueso <dave@stgolabs.net>,
+ Jan Kara <jack@suse.cz>, lkp@intel.com, David Hildenbrand <david@redhat.com>,
+ Alistair Popple <apopple@nvidia.com>, linux-block@vger.kernel.org,
+ linux-mm@kvack.org, Oliver Sang <oliver.sang@intel.com>,
+ Hannes Reinecke <hare@suse.de>, John Garry <john.g.garry@oracle.com>,
+ oe-lkp@lists.linux.dev, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBNYXIgMTcsIDIwMjUgYXQgMToyNOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpIEphbiwKPgo+ID4gQXMgbm90ZWQgaW4gMWM1YWMyMWEwZTliICgi
-cGVyZi94ODYvaW50ZWwvcHQ6IERvbid0IGRpZSBvbiBWTVhPTiIpLAo+ID4gc29tZSBCcm9hZHdl
-bGwgc3lzdGVtcyBkb24ndCBzdXBwb3J0IEludGVsIFBUIGFjcm9zcyBWTVhPTi4KPiArMQo+Cj4g
-PiBJZiB0aGUgdGVzdCBmYWlscyB0byBmaW5kIGFueSBldmVudHMsIGNoZWNrIHdoZXRoZXIgdGhl
-cmUgaXMgYQo+ID4ga3ZtX2ludGVsIG1vZHVsZSBsb2FkZWQsIGFuZCBpZiBzbyBjaGVjayBmb3Ig
-SUEzMl9WTVhfTUlTQ1tiaXQgMTRdLgo+ID4gSWYgdGhpcyBiaXQgaXMgMCwgaXQncyBub3Qgc3Vw
-cG9ydGVkLiBGcm9tIGNvbW1pdCBtZW50aW9uZWQgYWJvdmU6Cj4gPiAgICAgSW50ZWwgU0RNLCAz
-Ni41ICJUcmFjaW5nIHBvc3QtVk1YT04iIHNheXMgdGhhdAo+ID4gICAgICJJQTMyX1ZNWF9NSVND
-W2JpdCAxNF0iIGJlaW5nIDEgbWVhbnMgUFQgY2FuIHRyYWNlCj4gPiAgICAgcG9zdC1WTVhPTi4K
-Pgo+IExHVE0uCj4KPiBSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+CgpQ
-dXNoZWQgd2l0aCB0aGUgc3RyaW5nIGpvaW5lZC4KClRoYW5rcywKSmFuCgo+Cj4gLi4uCj4gPiAg
-c3RhdGljIHZvaWQgaW50ZWxfcHRfdHJhY2VfY2hlY2sodm9pZCkKPiA+ICB7Cj4gPiAgICAgICB1
-aW50NjRfdCBhdXhfaGVhZCA9IDA7Cj4gPiBAQCAtMTE3LDYgKzE1MCwxMiBAQCBzdGF0aWMgdm9p
-ZCBpbnRlbF9wdF90cmFjZV9jaGVjayh2b2lkKQo+ID4gICAgICAgcG1wID0gKHN0cnVjdCBwZXJm
-X2V2ZW50X21tYXBfcGFnZSAqKWJ1Zm1bMF07Cj4gPiAgICAgICBhdXhfaGVhZCA9ICoodm9sYXRp
-bGUgdWludDY0X3QgKikmcG1wLT5hdXhfaGVhZDsKPiA+ICAgICAgIGlmIChhdXhfaGVhZCA9PSAw
-KSB7Cj4gPiArICAgICAgICAgICAgIGlmICgoYWNjZXNzKCIvc3lzL21vZHVsZS9rdm1faW50ZWwi
-LCBGX09LKSA9PSAwKQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICYmICghaXNfc3VwcG9ydGVk
-X2Fjcm9zc192bXhvbigpKSkgewo+ID4gKyAgICAgICAgICAgICAgICAgICAgIHRzdF9icmsoVENP
-TkYsICJJbnRlbCBQVCBvbiB0aGlzIHN5c3RlbSBjYW4gbm90Igo+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIiBydW4gYXQgdGhlIHNhbWUgdGltZSBhcyB2aXJ0dWFsaXphdGlvbiIp
-Owo+Cj4gQXMgd2UgZGlzY3Vzc2VkIGF0IHRoZSBpc3N1ZSwgcGxlYXNlIGpvaW4gdGhlIHN0cmlu
-ZyBiZWZvcmUgbWVyZ2UuCj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+CgoKLS0gCk1haWxpbmcg
-bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+On Wed, Mar 19, 2025 at 07:24:23PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 19, 2025 at 12:16:41PM -0700, Luis Chamberlain wrote:
+> > On Wed, Mar 19, 2025 at 09:55:11AM -0700, Luis Chamberlain wrote:
+> > > FWIW, I'm not seeing this crash or any kernel splat within the
+> > > same time (I'll let this run the full 2.5 hours now to verify) on
+> > > vanilla 6.14.0-rc3 + the 64k-sector-size patches, which would explain why I
+> > > hadn't seen this in my earlier testing over 10 ext4 profiles on fstests. This
+> > > particular crash seems likely to be an artifact on the development cycle on
+> > > next-20250317.
+> > 
+> > I confirm that with a vanilla 6.14.0-rc3 + the 64k-sector-size patches a 2.5
+> > hour run generic/750 doesn't crash at all. So indeed something on the
+> > development cycle leads to this particular crash.
+> 
+> We can't debug two problems at once.
+> 
+> FOr the first problem, I've demonstrated what the cause is, and that's
+> definitely introduced by your patch, so we need to figure out a
+> solution.
+
+Sure, yeah I followed that.
+
+> For the second problem, we don't know what it is.  Do you want to bisect
+> it to figure out which commit introduced it?
+
+Sure, the culprit is the patch titled:
+
+mm: page_alloc: trace type pollution from compaction capturing
+
+Johannes, any ideas? You can reproduce easily (1-2 minutes) by running
+fstests against ext4 with a 4k block size filesystem on linux-next
+against the test generic/750.
+
+Below is the splat decoded.
+
+Mar 20 11:52:55 extra-ext4-4k kernel: Linux version 6.14.0-rc6+ (mcgrof@beefy) (gcc (Debian 14.2.0-16) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #51 SMP PREEMPT_DYNAMIC Thu Mar 20 11:50:32 UTC 2025
+Mar 20 11:52:55 extra-ext4-4k kernel: Command line: BOOT_IMAGE=/boot/vmlinuz-6.14.0-rc6+ root=PARTUUID=503fa6f2-2d5b-4d7e-8cf8-3a811de326ce ro console=tty0 console=tty1 console=ttyS0,115200n8 console=ttyS0
+
+< -- etc -->
+
+Mar 20 11:55:27 extra-ext4-4k unknown: run fstests generic/750 at 2025-03-20 11:55:27
+Mar 20 11:55:28 extra-ext4-4k kernel: EXT4-fs (loop5): mounted filesystem c20cbdee-a370-4743-80aa-95dec0beaaa2 r/w with ordered data mode. Quota mode: none.
+Mar 20 11:56:29 extra-ext4-4k kernel: BUG: unable to handle page fault for address: ffff93098000ba00
+Mar 20 11:56:29 extra-ext4-4k kernel: #PF: supervisor read access in kernel mode
+Mar 20 11:56:29 extra-ext4-4k kernel: #PF: error_code(0x0000) - not-present page
+Mar 20 11:56:29 extra-ext4-4k kernel: PGD 3a201067 P4D 3a201067 PUD 0
+Mar 20 11:56:29 extra-ext4-4k kernel: Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
+Mar 20 11:56:29 extra-ext4-4k kernel: CPU: 0 UID: 0 PID: 74 Comm: kcompactd0 Not tainted 6.14.0-rc6+ #51
+Mar 20 11:56:29 extra-ext4-4k kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 2024.11-5 01/28/2025
+Mar 20 11:56:29 extra-ext4-4k kernel: RIP: 0010:__zone_watermark_ok (mm/page_alloc.c:3256) 
+Mar 20 11:56:29 extra-ext4-4k kernel: Code: 00 00 00 41 f7 c0 38 02 00 00 0f 85 2c 01 00 00 48 8b 4f 30 48 63 d2 48 01 ca 85 db 0f 84 f3 00 00 00 49 29 d1 bb 80 00 00 00 <4c> 03 54 f7 38 31 d2 4d 39 ca 0f 8d d2 00 00 00 ba 01 00 00 00 85
+All code
+========
+   0:	00 00                	add    %al,(%rax)
+   2:	00 41 f7             	add    %al,-0x9(%rcx)
+   5:	c0 38 02             	sarb   $0x2,(%rax)
+   8:	00 00                	add    %al,(%rax)
+   a:	0f 85 2c 01 00 00    	jne    0x13c
+  10:	48 8b 4f 30          	mov    0x30(%rdi),%rcx
+  14:	48 63 d2             	movslq %edx,%rdx
+  17:	48 01 ca             	add    %rcx,%rdx
+  1a:	85 db                	test   %ebx,%ebx
+  1c:	0f 84 f3 00 00 00    	je     0x115
+  22:	49 29 d1             	sub    %rdx,%r9
+  25:	bb 80 00 00 00       	mov    $0x80,%ebx
+  2a:*	4c 03 54 f7 38       	add    0x38(%rdi,%rsi,8),%r10		<-- trapping instruction
+  2f:	31 d2                	xor    %edx,%edx
+  31:	4d 39 ca             	cmp    %r9,%r10
+  34:	0f 8d d2 00 00 00    	jge    0x10c
+  3a:	ba 01 00 00 00       	mov    $0x1,%edx
+  3f:	85                   	.byte 0x85
+
+Code starting with the faulting instruction
+===========================================
+   0:	4c 03 54 f7 38       	add    0x38(%rdi,%rsi,8),%r10
+   5:	31 d2                	xor    %edx,%edx
+   7:	4d 39 ca             	cmp    %r9,%r10
+   a:	0f 8d d2 00 00 00    	jge    0xe2
+  10:	ba 01 00 00 00       	mov    $0x1,%edx
+  15:	85                   	.byte 0x85
+Mar 20 11:56:29 extra-ext4-4k kernel: RSP: 0018:ffffa5bb002b7c78 EFLAGS: 00010206
+Mar 20 11:56:29 extra-ext4-4k kernel: RAX: 0000000000000000 RBX: 0000000000000080 RCX: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: RDX: 0000000000000000 RSI: 0000000000002431 RDI: ffff93097fff9840
+Mar 20 11:56:29 extra-ext4-4k kernel: RBP: 0000000000000009 R08: 0000000000000080 R09: 0000000000005e90
+Mar 20 11:56:29 extra-ext4-4k kernel: R10: 0000000000000c8e R11: 0000000000000c8e R12: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: R13: 0000000000002431 R14: 0000000000000002 R15: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: FS:  0000000000000000(0000) GS:ffff93097bc00000(0000) knlGS:0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Mar 20 11:56:29 extra-ext4-4k kernel: CR2: ffff93098000ba00 CR3: 000000010c602004 CR4: 0000000000772ef0
+Mar 20 11:56:29 extra-ext4-4k kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Mar 20 11:56:29 extra-ext4-4k kernel: PKRU: 55555554
+Mar 20 11:56:29 extra-ext4-4k kernel: Call Trace:
+Mar 20 11:56:29 extra-ext4-4k kernel:  <TASK>
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __die_body.cold (arch/x86/kernel/dumpstack.c:478 (discriminator 1) arch/x86/kernel/dumpstack.c:465 (discriminator 1) arch/x86/kernel/dumpstack.c:420 (discriminator 1)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? page_fault_oops (arch/x86/mm/fault.c:710 (discriminator 1)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? search_module_extables (kernel/module/main.c:3733 (discriminator 3)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __zone_watermark_ok (mm/page_alloc.c:3256) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? search_bpf_extables (kernel/bpf/core.c:804) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? exc_page_fault (arch/x86/mm/fault.c:1182 (discriminator 1) arch/x86/mm/fault.c:1478 (discriminator 1) arch/x86/mm/fault.c:1538 (discriminator 1)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? asm_exc_page_fault (./arch/x86/include/asm/idtentry.h:574) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __zone_watermark_ok (mm/page_alloc.c:3256) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? asm_sysvec_call_function_single (./arch/x86/include/asm/idtentry.h:574) 
+Mar 20 11:56:29 extra-ext4-4k kernel: compaction_suitable (mm/compaction.c:2438) 
+Mar 20 11:56:29 extra-ext4-4k kernel: compaction_suit_allocation_order (mm/compaction.c:2525 (discriminator 1)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: kcompactd_do_work (mm/compaction.c:3106) 
+Mar 20 11:56:29 extra-ext4-4k kernel: kcompactd (mm/compaction.c:3220) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __pfx_autoremove_wake_function (kernel/sched/wait.c:383) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __pfx_kcompactd (mm/compaction.c:3184) 
+Mar 20 11:56:29 extra-ext4-4k kernel: kthread (kernel/kthread.c:464) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __pfx_kthread (kernel/kthread.c:413) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? _raw_spin_unlock (./include/linux/spinlock_api_smp.h:143 (discriminator 3) kernel/locking/spinlock.c:186 (discriminator 3)) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? finish_task_switch.isra.0 (./arch/x86/include/asm/paravirt.h:691 kernel/sched/sched.h:1533 kernel/sched/core.c:5132 kernel/sched/core.c:5250) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __pfx_kthread (kernel/kthread.c:413) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ret_from_fork (arch/x86/kernel/process.c:148) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ? __pfx_kthread (kernel/kthread.c:413) 
+Mar 20 11:56:29 extra-ext4-4k kernel: ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+Mar 20 11:56:29 extra-ext4-4k kernel:  </TASK>
+Mar 20 11:56:29 extra-ext4-4k kernel: Modules linked in: loop sunrpc 9p nls_iso8859_1 nls_cp437 vfat crc32c_generic fat kvm_intel kvm ghash_clmulni_intel sha512_ssse3 sha512_generic sha256_ssse3 sha1_ssse3 aesni_intel gf128mul crypto_simd 9pnet_virtio cryptd virtio_console virtio_balloon button evdev joydev serio_raw dm_mod nvme_fabrics drm nvme_core nfnetlink vsock_loopback vmw_vsock_virtio_transport_common vsock autofs4 ext4 crc16 mbcache jbd2 btrfs blake2b_generic efivarfs raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq raid1 raid0 md_mod virtio_net net_failover failover virtio_blk psmouse virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio virtio_ring
+Mar 20 11:56:29 extra-ext4-4k kernel: CR2: ffff93098000ba00
+Mar 20 11:56:29 extra-ext4-4k kernel: ---[ end trace 0000000000000000 ]---
+Mar 20 11:56:29 extra-ext4-4k kernel: RIP: 0010:__zone_watermark_ok (mm/page_alloc.c:3256) 
+Mar 20 11:56:29 extra-ext4-4k kernel: Code: 00 00 00 41 f7 c0 38 02 00 00 0f 85 2c 01 00 00 48 8b 4f 30 48 63 d2 48 01 ca 85 db 0f 84 f3 00 00 00 49 29 d1 bb 80 00 00 00 <4c> 03 54 f7 38 31 d2 4d 39 ca 0f 8d d2 00 00 00 ba 01 00 00 00 85
+All code
+========
+   0:	00 00                	add    %al,(%rax)
+   2:	00 41 f7             	add    %al,-0x9(%rcx)
+   5:	c0 38 02             	sarb   $0x2,(%rax)
+   8:	00 00                	add    %al,(%rax)
+   a:	0f 85 2c 01 00 00    	jne    0x13c
+  10:	48 8b 4f 30          	mov    0x30(%rdi),%rcx
+  14:	48 63 d2             	movslq %edx,%rdx
+  17:	48 01 ca             	add    %rcx,%rdx
+  1a:	85 db                	test   %ebx,%ebx
+  1c:	0f 84 f3 00 00 00    	je     0x115
+  22:	49 29 d1             	sub    %rdx,%r9
+  25:	bb 80 00 00 00       	mov    $0x80,%ebx
+  2a:*	4c 03 54 f7 38       	add    0x38(%rdi,%rsi,8),%r10		<-- trapping instruction
+  2f:	31 d2                	xor    %edx,%edx
+  31:	4d 39 ca             	cmp    %r9,%r10
+  34:	0f 8d d2 00 00 00    	jge    0x10c
+  3a:	ba 01 00 00 00       	mov    $0x1,%edx
+  3f:	85                   	.byte 0x85
+
+Code starting with the faulting instruction
+===========================================
+   0:	4c 03 54 f7 38       	add    0x38(%rdi,%rsi,8),%r10
+   5:	31 d2                	xor    %edx,%edx
+   7:	4d 39 ca             	cmp    %r9,%r10
+   a:	0f 8d d2 00 00 00    	jge    0xe2
+  10:	ba 01 00 00 00       	mov    $0x1,%edx
+  15:	85                   	.byte 0x85
+Mar 20 11:56:29 extra-ext4-4k kernel: RSP: 0018:ffffa5bb002b7c78 EFLAGS: 00010206
+Mar 20 11:56:29 extra-ext4-4k kernel: RAX: 0000000000000000 RBX: 0000000000000080 RCX: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: RDX: 0000000000000000 RSI: 0000000000002431 RDI: ffff93097fff9840
+Mar 20 11:56:29 extra-ext4-4k kernel: RBP: 0000000000000009 R08: 0000000000000080 R09: 0000000000005e90
+Mar 20 11:56:29 extra-ext4-4k kernel: R10: 0000000000000c8e R11: 0000000000000c8e R12: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: R13: 0000000000002431 R14: 0000000000000002 R15: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: FS:  0000000000000000(0000) GS:ffff93097bc00000(0000) knlGS:0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Mar 20 11:56:29 extra-ext4-4k kernel: CR2: ffff93098000ba00 CR3: 000000010c602004 CR4: 0000000000772ef0
+Mar 20 11:56:29 extra-ext4-4k kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+Mar 20 11:56:29 extra-ext4-4k kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Mar 20 11:56:29 extra-ext4-4k kernel: PKRU: 55555554
+Mar 20 11:56:29 extra-ext4-4k kernel: note: kcompactd0[74] exited with irqs disabled
+
+  Luis
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
