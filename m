@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7639DC36000
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 15:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5253C36000
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 15:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742569932; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742570100; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=xvUmth3q+D1fSIYj6Ubaf28+FV2Z3q5hQItKN1VJs/s=;
- b=BCmN1Fnvr38dxdVCMOFX68cSKb5tR4wIadhTB2D+vLgSHFLCFDUgp+ZpH2ZMrP74YSFIr
- AvdQGHijZO4qOCb50iHltvtAmNN4HNllr9Ph8SSsm4OzDn+A2WOd2XcRx9aAFyz3R0Drr1Z
- n1PsvIZwDB9exS24Tu1isZFDmvfFAMg=
+ bh=sp7c1ClZCf19gh45u66iBj7UyQpZb27qK40jSziLVeM=;
+ b=WjHsbTo3QGJXLkAZrgNTUHffbUZozxh3kU0oK4C9KdpBHbgvW94XJf3U7ovto7WlGDYOw
+ zzSWY64lKsjsxKBkPvn+1GJeAdZjV3hf+yjukHRckCr++hQ/30XwLDOE+Mxcdmpx5aK+h/5
+ XLhsssAbNZG0FMjhL85w2GzN7XsSnJ0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16AD53CAE2D
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 16:12:12 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 670333CAE88
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 16:15:00 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D8523CAD72
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 16:11:49 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ by picard.linux.it (Postfix) with ESMTPS id 0BD1C3CADA6
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 16:14:37 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C036B200212
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 16:11:48 +0100 (CET)
-Received: by mail-wr1-x444.google.com with SMTP id
- ffacd0b85a97d-3913d45a148so1747554f8f.3
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 08:11:48 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 70F0C100024A
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 16:14:37 +0100 (CET)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-394780e98easo1325525f8f.1
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 08:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1742569907; x=1743174707; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=th8lmtDBVdmtvzTbUlx2Plmrt/w/QjWm7OhR5DiMMck=;
- b=RIat7iOrf3b+PXyyjWNbn9Bul4ZAPXLon3+4fWltLGIDGl6LzWEBH/gxs1Ff3e6QHm
- kU6NGvpDIBdP0e0f6fXMz2SHt7oX5RpnqKGimViwyfLHdI5UwVHbgjQ0PwS/A9UMyYfm
- QQB83yLHJ6QUuCtG31e+CF0JdzYobrmLSooqJfWF++uKidzLBPIBHAKgw6cd4KHe/1JE
- JEAJXjGpiwva4VYotW6nKNUXdWEFMgAh8SiSB6abAeZyvXggmCULMNjBQK5XsD+3Qt6/
- 7oY/Qj+bblwW23lDN9FsrZJwNiM/0So9vCRByHkSnfnJD1wsGv+XwUykAs/Up5iwbMf2
- i7Dw==
+ d=suse.com; s=google; t=1742570077; x=1743174877; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=8/N/WnkKM1I8aQ1X1NKCV5aTcYpLM5cIDGp6bethNGo=;
+ b=Nwg4N3/cBjTrv2mfJn1OhUHu6ZH2a76GqSp2hNMSS3R0caJjJFGKzgQ46jFgYO5gel
+ eRdWpNzkKatWbkCY/RejU/c8rNeS8tBP+oIubQbZuYv01jVVMgjWczD5XAD1iUmN0pC1
+ F28LQ8H3+fqVbGZRBzFTr/vecQeBVO34DRtYODFRE1TrBZOT0OeaM4TjLrfyQgfirxXv
+ Uqj6fnm6/Y5YTBS3C+W1v3Eiss8Ux/w7kKFCh+vF3fgA1GcEwaTedRPSeG3D4ETPFHUo
+ ovWrJb+hv23PaKmGCpExqtUeiOJZ2K+h49/B/jyAHbivq4cWhy54kYY8JjxE3OukVd9w
+ oR1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742569907; x=1743174707;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=th8lmtDBVdmtvzTbUlx2Plmrt/w/QjWm7OhR5DiMMck=;
- b=lDD50kGmXZPtUZUtL/b78B5xtsQghapilLhQnXIzXMdKH3cR24hRr+ijjzdh/Ur5YP
- 32P7kS1ZoVdDGMNm2mV4sSByZr5WDqW7jsCHb7voSkOjh2EIl7dPXXEc4JbMLo9/UVFn
- B6HzooIXwOz0Mmvwa6lAjORL1O1ydEsBVBbesrd5q9M4YUGHWx+Z7w7SIOw8hqWH9g8K
- uAhLzTEZHEeCaaJ3B63OclLr7/AuCiCLVbd6gOkrULCS6QBkdaUF5Rs9TxyOf1PGIM4d
- 5ug05QvY17cb3dCnsF1iqXaGaeWz+q+30KdaH8rRQeEGetin4VxguqrQze1QDY5di8C0
- wg4g==
-X-Gm-Message-State: AOJu0YziSLdvKzdeXXk8nrJLGDQm3X63J3eWw0bELkjLz9D+C9j+UARk
- tkf824TGmGpT2cc3F8iBMZ0TAQi2GJ3hUSJ+mk5PHr3ayX8yB9kXl1pWQpRScgAXzuqrWUrRayA
- RAFwwmVo=
-X-Gm-Gg: ASbGncvXdrEWSyV84pTzfnl6AewXFK3lFimNL+waEYwdUx0yXeLigLn4G6II9u1aw9E
- vu0ZMs2wXl/2cmZqJwNFUK94eAKpA2ed717athprjtL1O2dp3Nlq+2v2g+VlKT5KGX13HiqNBuc
- vKivxOFisEMaclvsiAlWbukyDvXv7ehgVfGjWDNbDdk9/SU/1012C2svl85UjyAbJGyW+3rzRJ3
- 9wXuS7RU74W3+ac4E7ip2p3rK4l9aIHRBlQ15nNVjeqnd1U3ZVuwco9Y/RGoLv4PN/6d7WjsSqd
- 40QPQ7rtoJiikPSbJFyyPsph6xEaYawXszj2n+YzWvmo
-X-Google-Smtp-Source: AGHT+IEOz28jCbafIm+DmEi5TbXuZkY0CKmgzHoau+5ngMIFBBD/On0DeNrIy4EKSL1ngap2Uf/hpw==
-X-Received: by 2002:a5d:5889:0:b0:391:3f64:ecfe with SMTP id
- ffacd0b85a97d-3997f8f8339mr4001315f8f.10.1742569907303; 
- Fri, 21 Mar 2025 08:11:47 -0700 (PDT)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-22780f4a034sm17874065ad.98.2025.03.21.08.11.46
+ d=1e100.net; s=20230601; t=1742570077; x=1743174877;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=8/N/WnkKM1I8aQ1X1NKCV5aTcYpLM5cIDGp6bethNGo=;
+ b=I0oKijG7sXrrawgT53WchwNaxnIJZ+1k/wVXrTnt3oj/YDc8whDnHrIGutWlkk4lmh
+ zy7EZE6kVOd49SpQZULaG5Zd7Wjkd7Tcgcuy5sRP0e3wuO1aPLDLx9qlX2Z89dNvQfEc
+ 4jK3Ya0qk1yJc9Dd1rzhE20BpggjfSux7ZRk03F8ZoyGsKRse+aVOgjaXfDPT1x9tSC8
+ YWQpKWyBY8rLlJGeb/Y++9dEjkA/p/bwjd9UdNbeyO1xkosePa22s/qLR6oM0KGEROQ7
+ L+VUK+R35agR/8VU4XkBiS0kG6IWLldZmVu2/bv0JaUiVd4gWYWgnr4NBE1fIjlrP6gQ
+ sudg==
+X-Gm-Message-State: AOJu0YxwIllZlWdGr/RW6uyzlFvH/8KDtjTjd1E9jM7IBoNacxdsRk4w
+ wjzFSmGidGbVn9P+fojWVRhjiKJBClt2uZ2Tue7B4aURg8t4y8tW8TDtzHZRAw==
+X-Gm-Gg: ASbGnctjPZrb2307g/4jC1EnnWqSS7ZIv+3qxf/wzhFWdIW6Z6PecxA7qLZxCQ4gEiA
+ 5o+pLrYa7WxHtKSlJEo6Mjgck2WpemEHYKC6msikzSDmGe448J2046jIURmpqZRWyQAaDBy+5zh
+ QZr2WNxYw/XM901dS8iVwzKBIfEIJ9ZyE67+E0S7duv59RJ5D0P5R1lH3ft2/p8B0Wu9xuxO/6V
+ KLEe8dfI9MWFlCDrnHfTpa6MZzjEKmzMZ2v2UPYo9QvggKjmgUiYWPbUoCUw4lmIxxsq+N+3ylN
+ o+8VH2c9kvEYOhK77mLK1GjVVo5ptoCbvuttkLk=
+X-Google-Smtp-Source: AGHT+IGdxhShNPri/M+K6h3HjafMr+8LZ92KpmoioHixLGNSqVzvQujferZRD5eImQCdpaqG3QPeBA==
+X-Received: by 2002:a05:6000:1842:b0:391:ab2:9e71 with SMTP id
+ ffacd0b85a97d-3997f8f9f87mr4080970f8f.20.1742570076818; 
+ Fri, 21 Mar 2025 08:14:36 -0700 (PDT)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-af8a2a4747bsm1834637a12.68.2025.03.21.08.14.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Mar 2025 08:11:46 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Fri, 21 Mar 2025 11:11:43 -0400
-Message-Id: <20250321151143.11332-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20250321034248.3501-1-wegao@suse.com>
-References: <20250321034248.3501-1-wegao@suse.com>
+ Fri, 21 Mar 2025 08:14:36 -0700 (PDT)
+Date: Fri, 21 Mar 2025 11:14:32 -0400
+To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
+Message-ID: <Z92CWK4/YPyj8jiI@wegao>
+References: <20250319044750.19434-1-wegao@suse.com>
+ <20250321034248.3501-1-wegao@suse.com>
+ <D8LVFKC4QOWX.2OMOXDM6U0MQH@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <D8LVFKC4QOWX.2OMOXDM6U0MQH@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] mount08.c: Restrict overmounting of ephemeral
+Subject: Re: [LTP] [PATCH v3] mount08.c: Restrict overmounting of ephemeral
  entities
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -100,112 +100,29 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp <ltp-bounces+ricardo=marliere.net@lists.linux.it>, ltp@lists.linux.it
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a new test to verify that mount will raise ENOENT if we try to mount
-on magic links under /proc/<pid>/fd/<nr>.
-Refer to the following kernel commit for more information:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
+On Fri, Mar 21, 2025 at 07:27:30AM -0300, Ricardo B. Marli=E8re wrote:
+> On Fri Mar 21, 2025 at 12:42 AM -03, Wei Gao via ltp wrote:
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> =
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                           |  1 +
- testcases/kernel/syscalls/mount/.gitignore |  1 +
- testcases/kernel/syscalls/mount/mount08.c  | 57 ++++++++++++++++++++++
- 3 files changed, 59 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mount/mount08.c
+> This is still wrong. :(
+@Ricardo Thanks for point this out.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ded035ee8..d3abc8b85 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -852,6 +852,7 @@ mount04 mount04
- mount05 mount05
- mount06 mount06
- mount07 mount07
-+mount08 mount08
- 
- mount_setattr01 mount_setattr01
- 
-diff --git a/testcases/kernel/syscalls/mount/.gitignore b/testcases/kernel/syscalls/mount/.gitignore
-index 80885dbf0..3eee5863a 100644
---- a/testcases/kernel/syscalls/mount/.gitignore
-+++ b/testcases/kernel/syscalls/mount/.gitignore
-@@ -6,3 +6,4 @@
- /mount05
- /mount06
- /mount07
-+/mount08
-diff --git a/testcases/kernel/syscalls/mount/mount08.c b/testcases/kernel/syscalls/mount/mount08.c
-new file mode 100644
-index 000000000..1938c5519
---- /dev/null
-+++ b/testcases/kernel/syscalls/mount/mount08.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Verify that mount will raise ENOENT if we try to mount on magic links
-+ * under /proc/<pid>/fd/<nr>.
-+ */
-+
-+#include "tst_test.h"
-+#include <sys/mount.h>
-+#include "tst_safe_file_at.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define FOO MNTPOINT "/foo"
-+#define BAR MNTPOINT "/bar"
-+
-+static void run(void)
-+{
-+	char path[PATH_MAX];
-+	int foo_fd, newfd, proc_fd;
-+
-+	foo_fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
-+	newfd = SAFE_DUP(foo_fd);
-+	SAFE_CLOSE(foo_fd);
-+
-+	sprintf(path, "/proc/%d/fd/%d", getpid(), newfd);
-+
-+	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
-+
-+	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
-+
-+	TST_EXP_FAIL(
-+		mount(BAR, path, "", MS_BIND, 0),
-+		ENOENT,
-+		"mount() on proc failed expectedly"
-+	);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_CREAT(FOO, 0777);
-+	SAFE_CREAT(BAR, 0777);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.min_kver = "6.12",
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "d80b065bb172"},
-+		{}
-+	}
-+};
--- 
-2.35.3
+@Andrea Sorry for misunderstanding your comments in v2 comments.
+> =
 
+> >
+> > Add a new test to verify that mount will raise ENOENT if we try to mount
+> > on magic links under /proc/<pid>/fd/<nr>.
+> > Refer to the following kernel commit for more information:
 
--- 
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
