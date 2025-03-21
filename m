@@ -4,102 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE8BC28B30
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 03:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF0E6C35FF3
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 03:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742526086; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742528599; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=R2Tp9OdCbnMCK3C+W5z/oN4jNEss/bFxMDYPEuu2VTc=;
- b=ACyRF2yOhBLV3n45WId7ENwXOIoN+og/vMcGCu5xHNpyAPzOjZu/dYs8aJ6mfByzD1+CN
- w8emdy1pHOuL42qpVcaRrVy6z9+kPgTUrDl+OhizBhRMSnGhB032uJ7llWfidnCxl2nN+8D
- 2Nz03ZBRQT2G23uuB1hn8lifC2j0HsQ=
+ bh=aExEjRZbiSIlgZd+KPs17KfmP7bGhkpaVa6Lqf1sQl0=;
+ b=JxPAszqM1yImon1k1uuILfsoadxenmv+XDhbDLzr+bgqX6Q7+8qdbiQuawk10NJxuxfUm
+ CiXdCwbQrlVuvg8hXp3GdJ1av+LEfuySwfcAMOuttTfRSIHg4HDDqoX0ztNCW3ESMxoINdF
+ JBDRuJFqZ8iBdoNWx34zWjE1sZZbxwY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B28103CAECC
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 04:01:26 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 445C13CAE7B
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 04:43:19 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 501C33CAE68
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 04:01:03 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 419683CAE7B
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 04:42:57 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 34AE71400059
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 04:01:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1742526061;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3MPd8TBHHwOMOlX415jmLv1jd69jIJ2obZj9gb9t1hQ=;
- b=PDbNoaryuAZ4DhnwfciDSSuHnDc7I+CBKxNswy1//q4iAJnfc4tVfd+TIzhcX3zByT6W+m
- nrQ/DikkADof4EJYgXt+0nqoWf1ZRmqMD4znxMgCSjQVleLCAAukUC4HiwSdsT1KnkhFxC
- lc7ZhSl3pWqVYfgkI+y0D/+8rZ53PPw=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-RMmwF_fzOcKlXy8qy0h7VA-1; Thu, 20 Mar 2025 23:00:59 -0400
-X-MC-Unique: RMmwF_fzOcKlXy8qy0h7VA-1
-X-Mimecast-MFC-AGG-ID: RMmwF_fzOcKlXy8qy0h7VA_1742526058
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-2ff8c5d185aso4411123a91.1
- for <ltp@lists.linux.it>; Thu, 20 Mar 2025 20:00:58 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F3A50600735
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 04:42:55 +0100 (CET)
+Received: by mail-wr1-x444.google.com with SMTP id
+ ffacd0b85a97d-39143200ddaso898715f8f.1
+ for <ltp@lists.linux.it>; Thu, 20 Mar 2025 20:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1742528575; x=1743133375; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=zzd0KAm1/in1+khAQzATflT9w1LYbw+GtgFjraK+z44=;
+ b=DaBpCvUnRld6FHBahvdd7/VXKP44yuo2DFuoQN4xBRwdFNpzZaO1JoGB3O+hK2LNvp
+ 6KQLYiNXvpYveTmr8+feD2Vev5OsvnC8CZVf6c0rBmkvxf9ctMPhr9gMfyMb28TxX+09
+ 1u93DyckikK1VGV2qmdemeb6IDTHMqVvOK2Am/qH6rjv3OZFF7BNg8HwPt/55JPSdOhd
+ i50pqDCwDq8mxyDASxUPKQhmeSVXo0RzsSo2uuS2pTdgEbLrxRB1NzP/K0d87bMx8fwV
+ ddIVGxSyS4DIRTOXbY2d2du1IuYIQoCtP4ui938fXKpxD1bvuabXz8rTYhXEaLGYZPfZ
+ ErXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742526058; x=1743130858;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=3MPd8TBHHwOMOlX415jmLv1jd69jIJ2obZj9gb9t1hQ=;
- b=HWdNxHTk2BK8Lo5nWfCqmLMkbUyQu6xNSgdt/vbgEeGEhq1TWDU2LrIUvMo2GUZMiK
- 05O1yLUp7gXMDxOnZeV6cSVOm4iFrPgJ5yedH+d/SBuen1ELYTpGvUFvAdZ3xi0j03XP
- aOd62PPilw0Csi6mnM5e4ZfPX8WvA+kfzQshFF8F8XRiUpH5XcSRCjwlcyKOkOfr4Dvk
- oA9vtIyTMypAFgLqFtnzEUsWFySe1A1TVUTjIEw4kPRd+O2JQN8VUkKKEiREThhZxxRh
- 6bWUvP36moYidNqVl9rec9NsAl4Mn1ea9R/8ZkaDxvXwGjwF0CnZxpGtz9M7Xr9T/B1G
- chdA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXgZT0/rhX1UH2iaezf7Qy0NLjtcXPWH+O7YL7lZ5rTow3ZPBEJ79SrMmDNTHYfjD/K7os=@lists.linux.it
-X-Gm-Message-State: AOJu0YzlVFKv5aOOk5uyoR3MiHJ2jHB7+rAqvQ/Ee7oMN6cM4Gm0Em0X
- QzQiumAvZWuF6hYX7B491xlSFAlwWcQSkZy6pRuoTb3swCaMYgZ4IF05pvJT7ZWMmlOJR8z6+So
- 0Ft/iKxUMuwHKkRtRVn6urOmd8rKzggZQxv9ocBO7owvND2nwI3JgD418nP58vXgKEYmHF14rWN
- 6GtuEYa3KtbvzXHd5xwZcdb44=
-X-Gm-Gg: ASbGnctAUXx+RvDHgaT2V9A40B4cojTW8gdA3kW03HM261l6xECwe+yoU03QJ0zrYcO
- 6tOk1AIN74R5KSz4lY3LO3NDKq9W2hBe/+27F9KQ0L3CiGsTtRBv9sbYlTYofaO3mvlpbOHU0nQ
- ==
-X-Received: by 2002:a17:90b:1802:b0:2fe:8fc4:6f4b with SMTP id
- 98e67ed59e1d1-3030fe98a52mr2300513a91.8.1742526057844; 
- Thu, 20 Mar 2025 20:00:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHR4b7XbSwhG4jI0xcqyTVZ7A4IKuwIHQtF1mmUtpTg9OQXPk/Xyy9Dslr5z7vshc5DPaSlsqhW3VoP0N0IJhY=
-X-Received: by 2002:a17:90b:1802:b0:2fe:8fc4:6f4b with SMTP id
- 98e67ed59e1d1-3030fe98a52mr2300479a91.8.1742526057397; Thu, 20 Mar 2025
- 20:00:57 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1742528575; x=1743133375;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=zzd0KAm1/in1+khAQzATflT9w1LYbw+GtgFjraK+z44=;
+ b=eI8KCp75cIvujSCQmXB5Pw4/J5PxUGavgyX0pY+nFuFflPVATWfTGqJvQVN0N0pUmj
+ d+unIg5sae6C9+LSQnLeqwD50nZiM00K+t4ScpnrZVS1xOvHg4xslVhcfuVUJAma4jX+
+ EpJmSV5v4dR2uMCJUsZWEZ7xuAaxzY3f3G/WJp3X8NoOKZV4FySNpZcr+/+tEREXYhUP
+ 1UXCOGyagds+QWxN9omS10y3EvLpZW7AVgIIuERoK5838xnKyHIex71g9am6+2Nh+wL/
+ K8Sb+Nw3BHnjgCk7weej3hf1K7Qq2igXsQHKLI5BygEFPKdOJYp22fbWBLkc1flBxuld
+ x5YA==
+X-Gm-Message-State: AOJu0Yze5MRQTLSKQ8AOp4R4wqFUYsmEH+DBDDhzhKf6TdOhShAdKnJ0
+ SU3FHTACF28TWU6QXIw7FipXD0aOXch21hCYqXLqtlPfqjaTZ8OXoE6eocOsEPwlpwUCY9i7EdY
+ eMJFdGg0=
+X-Gm-Gg: ASbGncvvHGUdzRb/J+0GLnTB4wR5Qc0dMeTRjFE+tepFzjK03QFGFavoZXwbLC3ZZ97
+ fcassg+PXmoyhSBhDMPvLM6mpwh/3Urp3nueIA5qTWEbDQlkIJSCH110r2R4uuB4up/GI03TsXk
+ A0qtMi3e0ywmRXJ9Wk+0UYhM12yA9b/eb8vb5ahCb2JKSZ21Iu6+oWhBeAZImpgkyqd8dVILb8D
+ +4YXs1OZrK5M30bMEwgFqvkxdajJoirAp/DGLzXSkrELQ4Py1894uBhEIj3i4b3QgSYRWm3jloN
+ UkQke9smyoykuYywndEc3MOMEHPd/KMPrQw3iQ/Kez1O
+X-Google-Smtp-Source: AGHT+IESmG1Zk1ULirpJmT8YpVkXxI74m+BrRnKdoDbu25r7NOmT61AnCTWBmsKerbBJxEDnKKMfJA==
+X-Received: by 2002:a05:6000:156e:b0:391:2b04:73d9 with SMTP id
+ ffacd0b85a97d-3997f93d5d4mr1513949f8f.49.1742528574714; 
+ Thu, 20 Mar 2025 20:42:54 -0700 (PDT)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-af8a28001efsm719126a12.22.2025.03.20.20.42.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 20 Mar 2025 20:42:54 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 20 Mar 2025 23:42:48 -0400
+Message-Id: <20250321034248.3501-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20250319044750.19434-1-wegao@suse.com>
+References: <20250319044750.19434-1-wegao@suse.com>
 MIME-Version: 1.0
-References: <20240612121106.11127-1-chrubis@suse.cz>
- <20240612121106.11127-2-chrubis@suse.cz>
- <20250320173141.GA114876@pevik>
-In-Reply-To: <20250320173141.GA114876@pevik>
-Date: Fri, 21 Mar 2025 11:00:44 +0800
-X-Gm-Features: AQ5f1JqMeulgeBMYmtkUTJQp9a5aPVNL38DVCBrCNDjmdBsEcaGl8I3PikQ8th0
-Message-ID: <CAEemH2d8OzjHVi7ZJD3ah=C+JpDFmGcRTj=4CzDZ950uNqBfmw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 2poGj2nWei9V5O2Yvfm1lrbhXbFVjVJo3Mbc--l5H3k_1742526058
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 1/2] lib: tst_test: Add per filesystem mkfs and
- mount opts
+Subject: [LTP] [PATCH v3] mount08.c: Restrict overmounting of ephemeral
+ entities
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,78 +98,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBNYXIgMjEsIDIwMjUgYXQgMTozMeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gSGkgQ3lyaWwsIGFsbCwKPgo+ID4gVGhpcyBjb21taXQgZG9lczoKPgo+
-ID4gKiBHcm91cCB0aGUgZmlsZXN5c3RlbSB0eXBlLCBta2ZzIGFuZCBtb3VudCBvcHRpb25zIGlu
-dG8gYSBzZXBhcmF0ZQo+ID4gICBzdHJ1Y3R1cmUKPgo+ID4gKiBBZGQgYW4gYXJyYXkgb2YgdGhl
-c2Ugc3RydWN0dXJlcyB0byBiZSBhYmxlIHRvIGRlZmluZSBwZXIgZmlsZXN5c3RlbQo+ID4gICBt
-a2ZzIGFuZCBtb3VudCBvcHRpb25zCj4KPiA+IFRoZSBkZXRhaWxzIG9uIHRoZSB1c2FnZSBzaG91
-bGQgYmUgaG9wZWZ1bGx5IGNsZWFyIGZyb20gdGhlCj4gPiBkb2N1bWVudGF0aW9uIGNvbW1lbnRz
-IGZvciB0aGUgc3RydWN0IHRzdF90ZXN0Lgo+Cj4gRllJLCB0aGlzIG1lcmdlZCBhcyBjY2U2MTg4
-OTE2ICgibGliOiB0c3RfdGVzdDogQWRkIHBlciBmaWxlc3lzdGVtIG1rZnMgYW5kCj4gbW91bnQg
-b3B0cyIpIGNhdXNlcyB0aGlzIGJlaGF2aW9yIG9mIG5vbmUgdGVzdGluZyBydW4gd2hlbiB0aGVy
-ZSBpcyBubwo+IHN1aXRhYmxlCj4gZmlsZXN5c3RlbS4gSSBmb3VuZCBpdCB3aGVuIHRyeWluZyB0
-byBiaXNlY3Qgc29tZXRoaW5nIHdpdGggcmFwaWRvLWxpbnV4Cj4gYW5kCj4gY29tcGlsZSBrZXJu
-ZWwgd2l0aG91dCBCdHJmcyBhbmQgWEZTLiBEb24ndCB3ZSB3YW50IHRvIGFkZCBzb21lIFRDT05G
-Pwo+CgpJIHRoaW5rIHdlIG5lZWQgVENPTkYgdGhlcmUuIENhbiB5b3UgY29uZmlybSBiZWxvdyBj
-aGFuZ2UgbWFrZXMgc2Vuc2U/CgotLS0gYS9saWIvdHN0X3Rlc3QuYworKysgYi9saWIvdHN0X3Rl
-c3QuYwpAQCAtMTg1Niw2ICsxODU2LDcgQEAgc3RhdGljIGludCBydW5fdGNhc2VzX3Blcl9mcyh2
-b2lkKQogICAgICAgIGludCByZXQgPSAwOwogICAgICAgIHVuc2lnbmVkIGludCBpOwogICAgICAg
-IGNvbnN0IGNoYXIgKmNvbnN0ICpmaWxlc3lzdGVtcyA9CnRzdF9nZXRfc3VwcG9ydGVkX2ZzX3R5
-cGVzKHRzdF90ZXN0LT5za2lwX2ZpbGVzeXN0ZW1zKTsKKyAgICAgICBib29sIGZvdW5kX3ZhbGlk
-X2ZzID0gZmFsc2U7CgogICAgICAgIGlmICghZmlsZXN5c3RlbXNbMF0pCiAgICAgICAgICAgICAg
-ICB0c3RfYnJrKFRDT05GLCAiVGhlcmUgYXJlIG5vIHN1cHBvcnRlZCBmaWxlc3lzdGVtcyIpOwpA
-QCAtMTg2Niw2ICsxODY3LDcgQEAgc3RhdGljIGludCBydW5fdGNhc2VzX3Blcl9mcyh2b2lkKQog
-ICAgICAgICAgICAgICAgaWYgKCFmcykKICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7
-CgorICAgICAgICAgICAgICAgZm91bmRfdmFsaWRfZnMgPSB0cnVlOwogICAgICAgICAgICAgICAg
-cmV0ID0gcnVuX3RjYXNlX29uX2ZzKGZzLCBmaWxlc3lzdGVtc1tpXSk7CgogICAgICAgICAgICAg
-ICAgaWYgKHJldCA9PSBUQ09ORikKQEAgLTE4NzcsNiArMTg3OSw5IEBAIHN0YXRpYyBpbnQgcnVu
-X3RjYXNlc19wZXJfZnModm9pZCkKICAgICAgICAgICAgICAgIGRvX2V4aXQocmV0KTsKICAgICAg
-ICB9CgorICAgICAgIGlmICghZm91bmRfdmFsaWRfZnMpCisgICAgICAgICAgICAgICB0c3RfYnJr
-KFRDT05GLCAiTm8gcmVxdWlyZWQgZmlsZXN5c3RlbXMgYXJlIGF2YWlsYWJsZSIpOworCiAgICAg
-ICAgcmV0dXJuIHJldDsKIH0KCgoKPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiBpb2N0bF9m
-aWNsb25lMDMuYzoKPiAgICAgICAgIC5maWxlc3lzdGVtcyA9IChzdHJ1Y3QgdHN0X2ZzIFtdKSB7
-Cj4gICAgICAgICAgICAgICAgIHsudHlwZSA9ICJidHJmcyJ9LAo+ICAgICAgICAgICAgICAgICB7
-LnR5cGUgPSAiYmNhY2hlZnMifSwKPiAgICAgICAgICAgICAgICAgewo+ICAgICAgICAgICAgICAg
-ICAgICAgICAgIC50eXBlID0gInhmcyIsCj4gICAgICAgICAgICAgICAgICAgICAgICAgLm1pbl9r
-dmVyID0gIjQuMTYiLAo+ICAgICAgICAgICAgICAgICAgICAgICAgIC5ta2ZzX3ZlciA9ICJta2Zz
-LnhmcyA+PSAxLjUuMCIsCj4gICAgICAgICAgICAgICAgICAgICAgICAgLm1rZnNfb3B0cyA9IChj
-b25zdCBjaGFyICpjb25zdCBbXSkgeyItbSIsCj4gInJlZmxpbms9MSIsIE5VTEx9LAo+ICAgICAg
-ICAgICAgICAgICB9LAo+ICAgICAgICAgICAgICAgICB7fQo+ICAgICAgICAgfSwKPgo+IHJhcGlk
-bzE6L29wdC9sdHAvdGVzdGNhc2VzL2JpbiMgLi9pb2N0bF9maWNsb25lMDM7IGVjaG8gJD8KPiB0
-c3RfYnVmZmVycy5jOjU3OiBUSU5GTzogVGVzdCBpcyB1c2luZyBndWFyZGVkIGJ1ZmZlcnMKPiB0
-c3RfdG1wZGlyLmM6MzE3OiBUSU5GTzogVXNpbmcgL3RtcC9MVFBfaW9jU0tMUzlsIGFzIHRtcGRp
-ciAodG1wZnMKPiBmaWxlc3lzdGVtKQo+IHRzdF9kZXZpY2UuYzo5OTogVElORk86IEZvdW5kIGZy
-ZWUgZGV2aWNlIDAgJy9kZXYvbG9vcDAnCj4gdHN0X3Rlc3QuYzoxOTAwOiBUSU5GTzogTFRQIHZl
-cnNpb246IDIwMjUwMTMwLTE2Ni1nMTc5NjBkOTUyCj4gdHN0X3Rlc3QuYzoxOTA0OiBUSU5GTzog
-VGVzdGVkIGtlcm5lbDogNC41LjAtMDAwMDItZzIyYmQzMzJmMTFkNCAjMTYyIFNNUAo+IFRodSBN
-YXIgMjAgMTg6MDA6MTAgQ0VUIDIwMjUgeDg2XzY0Cj4gdHN0X2tjb25maWcuYzo4ODogVElORk86
-IFBhcnNpbmcga2VybmVsIGNvbmZpZyAnLy5jb25maWcnCj4gdHN0X3Rlc3QuYzoxNzI0OiBUSU5G
-TzogT3ZlcmFsbCB0aW1lb3V0IHBlciBydW4gaXMgMGggMDBtIDMxcwo+IHRzdF9zdXBwb3J0ZWRf
-ZnNfdHlwZXMuYzo5NzogVElORk86IEtlcm5lbCBzdXBwb3J0cyBleHQyCj4gdHN0X3N1cHBvcnRl
-ZF9mc190eXBlcy5jOjYyOiBUSU5GTzogbWtmcy5leHQyIGRvZXMgZXhpc3QKPiB0c3Rfc3VwcG9y
-dGVkX2ZzX3R5cGVzLmM6OTc6IFRJTkZPOiBLZXJuZWwgc3VwcG9ydHMgZXh0Mwo+IHRzdF9zdXBw
-b3J0ZWRfZnNfdHlwZXMuYzo2MjogVElORk86IG1rZnMuZXh0MyBkb2VzIGV4aXN0Cj4gdHN0X3N1
-cHBvcnRlZF9mc190eXBlcy5jOjk3OiBUSU5GTzogS2VybmVsIHN1cHBvcnRzIGV4dDQKPiB0c3Rf
-c3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjI6IFRJTkZPOiBta2ZzLmV4dDQgZG9lcyBleGlzdAo+IHRz
-dF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxMDU6IFRJTkZPOiBTa2lwcGluZyBiY2FjaGVmcyBiZWNh
-dXNlIG9mIEZVU0UKPiBibGFja2xpc3QKPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6OTc6IFRJ
-TkZPOiBLZXJuZWwgc3VwcG9ydHMgdmZhdAo+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2Mjog
-VElORk86IG1rZnMudmZhdCBkb2VzIGV4aXN0Cj4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5jOjk3
-OiBUSU5GTzogS2VybmVsIHN1cHBvcnRzIHRtcGZzCj4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5j
-OjQ5OiBUSU5GTzogbWtmcyBpcyBub3QgbmVlZGVkIGZvciB0bXBmcwo+Cj4gU3VtbWFyeToKPiBw
-YXNzZWQgICAwCj4gZmFpbGVkICAgMAo+IGJyb2tlbiAgIDAKPiBza2lwcGVkICAwCj4gd2Fybmlu
-Z3MgMAo+IDAKPgo+IHJhcGlkbzE6L29wdC9sdHAvdGVzdGNhc2VzL2JpbiMgZ3JlcCAtZSBDT05G
-SUdfQlRSRlNfRlMgLWUgQ09ORklHX1hGU19GUwo+IC8uY29uZmlnCj4gKyBncmVwIC1lIENPTkZJ
-R19CVFJGU19GUyAtZSBDT05GSUdfWEZTX0ZTIC8uY29uZmlnCj4gIyBDT05GSUdfWEZTX0ZTIGlz
-IG5vdCBzZXQKPiAjIENPTkZJR19CVFJGU19GUyBpcyBub3Qgc2V0Cj4KPgoKLS0gClJlZ2FyZHMs
-CkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
-aXN0aW5mby9sdHAK
+Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Add a new test to verify that mount will raise ENOENT if we try to mount
+on magic links under /proc/<pid>/fd/<nr>.
+Refer to the following kernel commit for more information:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/mount/.gitignore |  1 +
+ testcases/kernel/syscalls/mount/mount08.c  | 57 ++++++++++++++++++++++
+ 3 files changed, 59 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mount/mount08.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ded035ee8..d3abc8b85 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -852,6 +852,7 @@ mount04 mount04
+ mount05 mount05
+ mount06 mount06
+ mount07 mount07
++mount08 mount08
+ 
+ mount_setattr01 mount_setattr01
+ 
+diff --git a/testcases/kernel/syscalls/mount/.gitignore b/testcases/kernel/syscalls/mount/.gitignore
+index 80885dbf0..3eee5863a 100644
+--- a/testcases/kernel/syscalls/mount/.gitignore
++++ b/testcases/kernel/syscalls/mount/.gitignore
+@@ -6,3 +6,4 @@
+ /mount05
+ /mount06
+ /mount07
++/mount08
+diff --git a/testcases/kernel/syscalls/mount/mount08.c b/testcases/kernel/syscalls/mount/mount08.c
+new file mode 100644
+index 000000000..1938c5519
+--- /dev/null
++++ b/testcases/kernel/syscalls/mount/mount08.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * Verify that mount will raise ENOENT if we try to mount on magic links
++ * under /proc/<pid>/fd/<nr>.
++ */
++
++#include "tst_test.h"
++#include <sys/mount.h>
++#include "tst_safe_file_at.h"
++
++#define MNTPOINT "mntpoint"
++#define FOO MNTPOINT "/foo"
++#define BAR MNTPOINT "/bar"
++
++static void run(void)
++{
++	char path[PATH_MAX];
++	int foo_fd, newfd, proc_fd;
++
++	foo_fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
++	newfd = SAFE_DUP(foo_fd);
++	SAFE_CLOSE(foo_fd);
++
++	sprintf(path, "/proc/%d/fd/%d", getpid(), newfd);
++
++	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
++
++	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
++
++	TST_EXP_FAIL(
++		mount(BAR, path, "", MS_BIND, 0),
++		ENOENT,
++		"mount() on proc failed expectedly"
++	);
++}
++
++static void setup(void)
++{
++	SAFE_CREAT(FOO, 0777);
++	SAFE_CREAT(BAR, 0777);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.min_kver = "6.12",
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "d80b065bb172"},
++		{}
++	}
++};
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
