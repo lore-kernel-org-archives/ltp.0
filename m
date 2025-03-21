@@ -4,94 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B17BC36000
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 12:24:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 928FBC36000
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 13:16:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742559843; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=hngG7sA2Kik6uC3BnU9emJ8BRsr+OcSr+6m3McppLFY=;
- b=bngotANjknIjsDZ73JoGOB558Py7My6oi1UqEp1ml8WAtzC4qghapycj5vIfFIKcNO0qv
- wQUINEavgVJ1tN09kHo4PKvxj3W/xEpZxS6Vanl9KB741K1+TXWWElVEXzjvKGR5SqhpZNg
- UOQbiJXWmCqk4zrzKetc8TtGrYKcinc=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742563015; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=hvuE/crc4SJf5zVP0xkQsMO5TQe5fR3kW/lrdgBaGgU=;
+ b=BIadjzY2AatSX7Rn0o220UCHqPm+EqnfyJmqYe9WIDAmCchXnMctq3nN15Z5taU4xKOMP
+ HTvuqeu+x9OzCk8Js24m0yzXH0V8+KrmnFYlwysGxiKIetM6KDrPJBwUwfgCxlXswpZ+CG+
+ gU9ixOi57SrMpTppcS+Q3hF00f8MYqU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 900B93CAD19
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 13:24:03 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E6A973CAEF9
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 14:16:55 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 778413CAD19
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 13:23:41 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2A9B13C0614
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 14:16:33 +0100 (CET)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwang@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0CA1F1A000F2
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 13:23:36 +0100 (CET)
-Received: by mail-wr1-x429.google.com with SMTP id
- ffacd0b85a97d-39127512371so1271908f8f.0
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 05:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1742559816; x=1743164616; darn=lists.linux.it;
- h=in-reply-to:from:content-language:references:cc:to:subject
- :user-agent:mime-version:date:message-id:from:to:cc:subject:date
- :message-id:reply-to;
- bh=/tb4mI4GccF4DKdzI9e14lp7HsBcjlkFD7pvscxosHA=;
- b=cNQRoiNayoL7410AI65S7n0HIvpN2+uD2jCe38BeKUXqiW8VV8X+GQ+NGgyjrJvIPt
- vsppTAIA5QFvjH2djnwLmBrQ6FRsL0aBBjaBR1xLOk5HGbse0DGDaoeIUDZVY3SSUg8N
- sjiSy0ybqm3NVwyvnBiWkA2Q1FXk1QB1S8RA+ugjmGt1ULNxYO5fw5kXlXpLw2c3IB14
- bX9DL0CqkSiRvotss+9hiZqgN//N3W2dF6wwdPZcz1rVzzPbeYWPH0BBfdr8RwKv7+4D
- CKpSEI+tB2ryL45OnuoFy4n5mO7diOItoN5n8Nt+g5JQ7CTEEVb08Mqt5CS7XquTz7VE
- 9yhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742559816; x=1743164616;
- h=in-reply-to:from:content-language:references:cc:to:subject
- :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=/tb4mI4GccF4DKdzI9e14lp7HsBcjlkFD7pvscxosHA=;
- b=hYBUoFED9UmOuqUrkI20L3TKyeijOI8MMaIe4lfethA1xXqHsIHt7UpvYy0YY8o6ki
- mqMdWfUcNJ6pSm7ln3dfl2dO//7MmZ/bRS+nP7zxHNx64jIa+i1Npn44sPhYdzb8o6nS
- 1TLrMxOrMpggpdYKl6XsXfDx/VpkX0fKJiCwFPmVmrT+gaqATCu2li4J21fmlp3ArTSz
- 4OW3saBtHI6vJezuyWYufqlvzdsvwunK436aPKNufzrPuDIrb+rQhDcAr4Not5c7jROQ
- xunEymnthR3zb/e8ZRF+30DkhgyGY4jUio0VnvKUHonPfcavpSWmKEmD1g6UMy/Q1b4n
- OWSg==
-X-Gm-Message-State: AOJu0YziBG+uSnFuuyYQfc+Whupd//s2iMXk4KehMHS3ioPa2HQGKgr7
- cBVFbSgtF95KPFT2LARcVig7Q3kMOXHWb8lF81qyy8WjXOBvYbg0pa/QFkUepVE=
-X-Gm-Gg: ASbGncsrswXbzLTAyqDhsWO8Bgi9xuaZ2YEOctwjfE9QLNLExVPyZ8AdXV0JNisiJF2
- O8G4fFXhMfKFYTv5WEZMAivcyLKCTl6YxxfoL1bG79xPi0yNwLI/RTs/PECl0TbqLVUZxvc4gYk
- U+vX8DdYWO/CJDlGxm+hEVMXDw53D2Efwkpwi4iNyCuJIPap2SCXWAKGsapGahUHlh8IGyA7Qr2
- 9CTTWlQIXZdqxoLuj2ujpDq+g2iRNBqiC6ZcqVeLb8g7Wbp9yRul0Lz06lCvCQfyYOybNjijHQB
- eeEVx/RmsKicsPJOD2H12AQ+Ik/ZTNz7tga5K8L6nBf+SZTsXhUx856m1g/Y2/Xd+Z6M7iFTdof
- slXYIx7W+hMbEAFjUv0E+Jyc8y07kc+1R13rIssMGiWW8RGIsXNz+WJldYeMDKiCBLTxjOVcSj2
- 8zgS39uos=
-X-Google-Smtp-Source: AGHT+IFXt0Y8Lg8nh4Rsq02XHKuIvC6F27IZ510lqn3m9o+v6neyROwEXfGEDH9/3k99lZrEEmcRXg==
-X-Received: by 2002:a05:6000:210b:b0:390:df02:47f0 with SMTP id
- ffacd0b85a97d-3997f9336fdmr2302460f8f.42.1742559816215; 
- Fri, 21 Mar 2025 05:23:36 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
- (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
- [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3997f9b2654sm2201783f8f.41.2025.03.21.05.23.35
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 21 Mar 2025 05:23:35 -0700 (PDT)
-Message-ID: <bd982369-c0bc-4952-9ff3-a3fd5181667e@suse.com>
-Date: Fri, 21 Mar 2025 13:23:35 +0100
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E13B51000498
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 14:16:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1742562990;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=pMQ5l/6YfQy++jI6cW9TBrbibOi4/2DsRb12Tuws7a4=;
+ b=DBVoREc5hVpOA1sxNY/Qc5q2AAfsO+7Cza7NEb0sFzoMiJgbOiS0pllAWXx2hzne8/V5Lm
+ 5sJ0aNfaTeXN6EXcOhlBm0yN6m6aAKhsxgqa9KG/gty2uIrJh+ulchOZcTIF+z9UATP+4Y
+ xYXP35jNMUBihjcEqxaJnfvZbikjV+U=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-260-gPAHwoToMYiGCExq7x9LDg-1; Fri,
+ 21 Mar 2025 09:16:29 -0400
+X-MC-Unique: gPAHwoToMYiGCExq7x9LDg-1
+X-Mimecast-MFC-AGG-ID: gPAHwoToMYiGCExq7x9LDg_1742562988
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 873161933B5A
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 13:16:28 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 3B57519560AF
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 13:16:26 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Fri, 21 Mar 2025 21:16:21 +0800
+Message-ID: <20250321131621.1870655-1-liwang@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20250110-lsm-v2-0-bd38035f86bc@suse.com>
- <20250110-lsm-v2-4-bd38035f86bc@suse.com> <Z8b8CLkKbrRkkt9P@yuki.lan>
-Content-Language: en-US
-In-Reply-To: <Z8b8CLkKbrRkkt9P@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: sFuPXXGPNVy483n3SJg5Rn__YFqrAigCJ_bVEsS6xu0_1742562988
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 4/7] Add lsm_get_self_attr03 test
+Subject: [LTP] [PATCH] shell_loader_filesystems: add tmpfs support to avoid
+ fail in GitHub CI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,27 +87,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQ3lyaWwsCgpPbiAzLzQvMjUgMTQ6MTEsIEN5cmlsIEhydWJpcyB3cm90ZToKPj4gKwo+PiAr
-CWNvdW50ID0gVFNUX0VYUF9QT1NJVElWRSgKPj4gKwkJbHNtX2dldF9zZWxmX2F0dHIoTFNNX0FU
-VFJfQ1VSUkVOVCwgY3R4LCAmc2l6ZSwgMCkpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgo+IAkJCQkJCQkgIFRoaXMgZG9lcyBu
-b3QKPiAJCQkJCQkJICBsb29rIHJpZ2h0Lgo+Cj4KPiBTaG91bGRuJ3Qgd2UgcGFzcyBzaXplIGlu
-aXRpYWxpemVkIHRvIHNpemUgb2YgdGhlIGN0eC0+Y3R4W10gdGhlcmU/Cj4KPiBZb3UgYXJlIG1p
-eGluZyB0aGUgc2l6ZSBvZiB0aGUgYXR0cltdIGFycmF5IGFuZCB0aGUgc2l6ZSBvZiB0aGUgY3R4
-Cj4gaW50byBhIHNpbmdsZSB2YXJpYWJsZSB3aGljaCBpc24ndCByaWdodCBhdCBhbGwuIFRoZSBh
-dHRyW10gc2l6ZSBjYW4KPiBhbHNvIGJlIG11Y2ggc21hbGxlciwgc2luY2UgaXQncyBqdXN0IGEg
-c2luZ2xlIHN0cmluZy4KClRoaXMgaXMgaG93IGtzZWxmdGVzdHMgYXJlIHdvcmtpbmcgYXMgd2Vs
-bCwgc28gSSdtIGEgYml0IGNvbmZ1c2VkLgpBY2NvcmRpbmcgdG8gdGhlIGRvY3VtZW50YXRpb24g
-b2YgbHNtX2dldF9zZWxmX2F0dHI6CgogwqAqIEBzaXplOiBwb2ludGVyIHRvIHRoZSBzaXplIG9m
-IHNwYWNlIGF2YWlsYWJsZSB0byByZWNlaXZlIHRoZSBkYXRhCgpJIGd1ZXNzIGtzZWxmdGVzdHMg
-YXJlIGdpdmluZyBhIGJhcmUgbWluaW11bSBzaXplIGFjY29yZGluZyB0byB0aGUgCm1lbW9yeSBw
-YWdlcy4KCkFuZHJlYQoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4
-Lml0L2xpc3RpbmZvL2x0cAo=
+GitHub CI currently fails when running shell_loader_filesystems.sh because
+the Docker environment does not have support for XFS and Btrfs. This results
+in a TCONF failure, causing the CI job to fail:
+
+  * shell_loader_filesystems.sh (TCONF, exp: TPASS)
+  make: *** [Makefile:210: test-shell-loader] Error 1
+
+To resolve this, we add tmpfs to the list of tested filesystems. Since tmpfs
+is always available in GitHub CI, this ensures that the test runs successfully
+even when XFS and Btrfs are unavailable.
+
+CI: https://github.com/wangli5665/ltp/actions/runs/13992429178
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/lib/tests/shell_loader_filesystems.sh | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/testcases/lib/tests/shell_loader_filesystems.sh b/testcases/lib/tests/shell_loader_filesystems.sh
+index fe6170800..b7e1f9ba4 100755
+--- a/testcases/lib/tests/shell_loader_filesystems.sh
++++ b/testcases/lib/tests/shell_loader_filesystems.sh
+@@ -9,6 +9,9 @@
+ #  "mntpoint": "ltp_mntpoint",
+ #  "filesystems": [
+ #   {
++#    "type": "tmpfs"
++#   },
++#   {
+ #    "type": "btrfs"
+ #   },
+ #   {
+-- 
+2.48.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
