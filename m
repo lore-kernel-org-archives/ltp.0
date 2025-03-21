@@ -4,78 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4986C35FFF
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 10:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DEF1C35FFF
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 10:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742552878; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : cc : content-type : content-transfer-encoding
- : sender : from; bh=i5TGU845Ku99XtKDKNazK9usoS8IEatkc9pHfK6FQwE=;
- b=aefF26DdF5r0y5qhqIkNa3ds6PSUih2VnjYbdAfDvi/h0FhOyZ/bljrLziMOsic9KgtQc
- /K28+qXAUY1TCi2wLoHb/YwyjprYVp5iOSYKi8BhkcvkHHe6HzSAyosQt3+qScpZXT99m4x
- hjwD1/xLDctPMzS5ZSPOfXrHc0o4ucQ=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742553639; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=SqaGbGOMub5bDRvnz/rHYB9BMjFMfH9ZJ8FrAGIfGsg=;
+ b=p/mQpsSSrwO/+dfE9qQ9iMXXmry9r1ZMTbblZSAx1+lXsBld33CHaGrnr02eZIzQSNF9L
+ ICO50aSt961OucNc7yyBU4zUJgdhONiStkA5Sj/OlPLObbw7A9H4z9P4YGMa9TKyFpZ6aT9
+ EqNe41xXkIjoNyJURVoNW2XSVcZEKQk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 440203CAEF9
-	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 11:27:58 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5F40C3CAF13
+	for <ltp@archiver.kernel.org>; Fri, 21 Mar 2025 11:40:39 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with UTF8SMTPS id 0E5DB3CAE81
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 11:27:36 +0100 (CET)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com
- [209.85.221.48])
+ by picard.linux.it (Postfix) with ESMTPS id 6A0753CAEED
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 11:40:18 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with UTF8SMTPS id 103211A008BB
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 11:27:36 +0100 (CET)
-Received: by mail-wr1-f48.google.com with SMTP id
- ffacd0b85a97d-3913958ebf2so1507988f8f.3
- for <ltp@lists.linux.it>; Fri, 21 Mar 2025 03:27:36 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7285C100037D
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 11:40:17 +0100 (CET)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-3912d2c89ecso1622257f8f.2
+ for <ltp@lists.linux.it>; Fri, 21 Mar 2025 03:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1742553617; x=1743158417; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=ixNuLvanyaco0wQA7vSAFL278mg24lB5E/26HJbUbOk=;
+ b=Fa8DASiCUoJJmWSUtUP5eduto1uUOBrMyg6a26htF1mEFhlWdrAnt7/qGWJ5Gb/ioD
+ zekrFCdMVhZbi1nEbI8YQpeNvoCVn2Uv+fZPz0N2Bp7dnjujR3eYgLYTA1cDidTSNyr5
+ S75YBeP0+g6dVq4QGdigPTNCCHrItjbGI4JY/HR2qm9uniJKk+o2n/66qLqiodgLRnQ1
+ IQdSzri0yRr+MB+aSUDfUmEUA5wAI6ZooIoSNJ5Hk1gGhdKObAk4RLA2GFwqOoBHAEJI
+ 2GzOBQqNrMBfaXzPckQLZfnH+cY5EIFaZxks/NcIguXvhUV0USA88uHMTgpv7Z/91otr
+ 7/cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742552855; x=1743157655;
- h=in-reply-to:references:to:cc:subject:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=WyCfrHPUc3V08SLwCKuPi2WkEyFdHf3GxKeN5GKyBJo=;
- b=tCJ6XlElp+qGblWDipDizN2C0Yq4Qp40I+xEeVgIKmEiXCczsOWk4I7Ifan0BetW8X
- asilvvT9BEG97qv9NeP/oca6ReeeZXh5TEFI7HFHy4nvm+3l/vudT6jd1zbHyj1d8CoJ
- DLGEYLH0Pz5FaKo1JfzUqrJ2Krzh1Ogd7/TDQhI+9WKcayZ7vXwstTWwvTaJDhcD+i31
- 1YicfoQRF/99S29AcMPNPQ4vIUGZPUC7gz9QZhsCfNZkN+SxT9MsQLoWhjQCpILSrkYi
- nXfXFPUjYqaG1NdvkLokgtYZgYTytQmUzDM0Ca0r3kRJEHRY8KZXLeSprK81asWdBO34
- JQwA==
+ d=1e100.net; s=20230601; t=1742553617; x=1743158417;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=ixNuLvanyaco0wQA7vSAFL278mg24lB5E/26HJbUbOk=;
+ b=KzodEsgvhGm3YiyTb0C4Y7L6RanS27VNQgeoMbG6JsS3+QIPrsUbQxqK7GZgx0fbsG
+ bPfvRC59e0rGCA+zQJGV+ilnlTQbTZ4Feq91o99Et7dCIuptllVouSbsDHEpQMuv1Glo
+ EVnATilTvsNNjngGbC8nMAhrp2GyRNzR1kaDuPzbkXNvTM5xi74fP3jDmLj+Im/uls2q
+ uOyMd9pqc/pAWED/DwaQI00voOrlsl2pAgAMdwFqgRAM0YIFcoSaUh/bEGwmhbjCyEba
+ 2XXsPg24QdauiVXBQqkEPg42tokWeEHB54H+nVrktXyruqworiPHCW16ajbaw89NdWbe
+ 7l6w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUZtxfuAyN4jlaZ5+HWCzlAxkAWr3S+JFrf6q02aXqPnxJHsF22KhH0i3SLVeLzFUu2PTI=@lists.linux.it
-X-Gm-Message-State: AOJu0YzUzHQp4CxNGM/4hmzb2AxS3zGbuH8k4k6h+XXkPo/azuId39JG
- QmLaeqYqXz2kW5D6VRrcB1EXSVwcgJwsi8J9GiLSDIhqdZqGKuZhDw7akN/FdzM=
-X-Gm-Gg: ASbGncuh1aPgjZJRAIJppYEhHcZDUBrNFw7SIyq+F+2T8CAfqpzTjjBRPCic+Sch//m
- YGdt+aWwTCeJI3+GTzjnczp8IPyRVMBNAN9yWTMNEv6O5F3B1u4qg/VdJHt7mHki0XYbRw7cz8K
- o7VWyYEvx3aqzr7Ucf8CopkDOP+zJEWYnN9zNcymIvMZepa4y/q2ii8iH8sIN/0iAG8IQNYB4st
- PCa0NDZDKeeek4TAB7qv6HnKmJwUGEm9P+tbKSKH8dvuVXnnN+jq1i889wlS0M806FlQnwTAKny
- 4L+RBPqspaAE/10y+haancrn5drDKIzyNw==
-X-Google-Smtp-Source: AGHT+IEArPWjVKT+8IYZaAEEEBpBE6cOIELfG3myXhJ8L/5dx5nrZwDkJN2ovQaNgsfEOzwRfvpyBQ==
-X-Received: by 2002:a05:6000:188e:b0:391:31c8:ba59 with SMTP id
- ffacd0b85a97d-3997f8f26b5mr2124481f8f.4.1742552855275; 
- Fri, 21 Mar 2025 03:27:35 -0700 (PDT)
-Received: from localhost ([179.228.213.210]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-227811da668sm12941615ad.188.2025.03.21.03.27.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Mar 2025 03:27:34 -0700 (PDT)
-Mime-Version: 1.0
-Date: Fri, 21 Mar 2025 07:27:30 -0300
-Message-Id: <D8LVFKC4QOWX.2OMOXDM6U0MQH@suse.com>
-To: "Wei Gao" <wegao@suse.com>, <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
-References: <20250319044750.19434-1-wegao@suse.com>
- <20250321034248.3501-1-wegao@suse.com>
-In-Reply-To: <20250321034248.3501-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ AJvYcCUPEYwTOZ8ffP85goxAY6lXDiC4y0f6rT6xhFOxaWywPbrC3fI4k7teYqx1DMqKOdg0B5o=@lists.linux.it
+X-Gm-Message-State: AOJu0YyPwZDh5vY3EIRVdIdp/C2zv4ioXLHFdOaB781QlADtej6DHVy1
+ z3pUJM6I0ay95vwI8ZOzCF2F7UeIPgPoAJiqWsaGW/0loAoQumhrLkprgThEQLc=
+X-Gm-Gg: ASbGncvhb2SrSchUv9RdPqB0gzx1XBgH+4rxejMK/FapAudrUlLNHEmCgCcifW0S+y6
+ 6tKnx0/eVXgkOFJ42dyF361ikmN4BW1ZZLarkaX3QNOSv5tRGmE67rUu/sLLONjyDe1h7N82VHH
+ lCyM4vcVAxrMSoz9j8fdUWgt1SCu47u5UOL3RXlqT6vQoB3r6cbmFFik2AgCjNTebi7KkRnhcpx
+ p2VHBtc/h/Meb8Dy8w7k1nCKveREETd5gmFSyTXvQpohdAFpp1wDLhlrEV/MDSLzT6RkuAJoilX
+ Yp7QCZItUWz890iUFTFY4IlmihQJZ+uhp5dcwHfpte/6Dfwdsa/+o000Ij7h65dfZcCCGebiGC+
+ OwEvWqKV0m6elvkZobYbv3OSlU2DYPtpe+FEhEtaKchjeVSmXJ1fpjjyHet1PAofTSTN6sym/1n
+ AhZjPAv0rvo07khTulBA==
+X-Google-Smtp-Source: AGHT+IFCqrz8IcuX+/4i1bYx5eOZ2uB/Ha8J127JzYPmP+M7dpcQDBa++6sQn9yPNG9LbJAG+/olcw==
+X-Received: by 2002:a5d:47a5:0:b0:390:f699:8c27 with SMTP id
+ ffacd0b85a97d-3997f902e3dmr2570376f8f.12.1742553616661; 
+ Fri, 21 Mar 2025 03:40:16 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-43d440ed4cbsm74522575e9.34.2025.03.21.03.40.15
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 21 Mar 2025 03:40:16 -0700 (PDT)
+Message-ID: <2136af4d-d224-440d-85b9-2abaaac501c2@suse.com>
+Date: Fri, 21 Mar 2025 11:40:15 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20250321100320.162107-1-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250321100320.162107-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] mount08.c: Restrict overmounting of ephemeral
- entities
+Subject: Re: [LTP] [RFC PATCH 1/1] ioctl_ficlone03: Require 5.10 for XFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,120 +103,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?b?UmljYXJkbyBCLiBNYXJsae+/ve+/vXJlIHZpYSBsdHA=?=
- <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marlière" <rbm@suse.com>
-Cc: ltp <ltp-bounces+ricardo=marliere.net@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: linux-xfs@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
+ "Darrick J . Wong" <darrick.wong@oracle.com>, fstests@vger.kernel.org,
+ Allison Collins <allison.henderson@oracle.com>,
+ Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+ Christoph Hellwig <hch@lst.de>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri Mar 21, 2025 at 12:42 AM -03, Wei Gao via ltp wrote:
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Petr,
 
-This is still wrong. :(
+thanks for checking and finding the issue of the test, it was really 
+helpful.
+Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
+Kind regards,
+Andrea Cervesato
+
+On 3/21/25 11:03, Petr Vorel wrote:
+> Test fails on XFS on kernel older than 5.10:
 >
-> Add a new test to verify that mount will raise ENOENT if we try to mount
-> on magic links under /proc/<pid>/fd/<nr>.
-> Refer to the following kernel commit for more information:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
+>      # ./ioctl_ficlone03
+> 	...
+>      tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_ioc6ARHZ7/mnt fstyp=xfs flags=0
+>      [   10.122070] XFS (loop0): Superblock has unknown incompatible features (0x8) enabled.
+>      [   10.123035] XFS (loop0): Filesystem cannot be safely mounted by this kernel.
+>      [   10.123916] XFS (loop0): SB validate failed with error -22.
+>      tst_test.c:1183: TBROK: mount(/dev/loop0, mnt, xfs, 0, (nil)) failed: EINVAL (22)
 >
-> Signed-off-by: Wei Gao <wegao@suse.com>
+> This also causes Btrfs testing to be skipped due TBROK on XFS. With increased version we get on 5.4 LTS:
+>
+>      # ./ioctl_ficlone03
+>      tst_test.c:1904: TINFO: Tested kernel: 5.4.291 #194 SMP Fri Mar 21 10:18:02 CET 2025 x86_64
+>      ...
+>      tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+>      tst_test.c:1833: TINFO: === Testing on xfs ===
+>      tst_cmd.c:281: TINFO: Parsing mkfs.xfs version
+>      tst_test.c:969: TCONF: The test requires kernel 5.10 or newer
+>      tst_test.c:1833: TINFO: === Testing on btrfs ===
+>      tst_test.c:1170: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+>      [   30.143670] BTRFS: device fsid 1a6d250c-0636-11f0-850f-c598bdcd84c4 devid 1 transid 6 /dev/loop0
+>      tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocjwzyal/mnt fstyp=btrfs flags=0
+>      [   30.156563] BTRFS info (device loop0): using crc32c (crc32c-generic) checksum algorithm
+>      [   30.157363] BTRFS info (device loop0): flagging fs with big metadata feature
+>      [   30.158061] BTRFS info (device loop0): using free space tree
+>      [   30.158620] BTRFS info (device loop0): has skinny extents
+>      [   30.159911] BTRFS info (device loop0): enabling ssd optimizations
+>      [   30.160652] BTRFS info (device loop0): checking UUID tree
+>      ioctl_ficlone03_fix.c:49: TPASS: invalid source : EBADF (9)
+>      ioctl_ficlone03_fix.c:55: TPASS: invalid source : EBADF (9)
+>
+> Fixing commit is 29887a2271319 ("xfs: enable big timestamps").
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  runtest/syscalls                           |  1 +
->  testcases/kernel/syscalls/mount/.gitignore |  1 +
->  testcases/kernel/syscalls/mount/mount08.c  | 57 ++++++++++++++++++++++
->  3 files changed, 59 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/mount/mount08.c
+> Hi all,
 >
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index ded035ee8..d3abc8b85 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -852,6 +852,7 @@ mount04 mount04
->  mount05 mount05
->  mount06 mount06
->  mount07 mount07
-> +mount08 mount08
->  
->  mount_setattr01 mount_setattr01
->  
-> diff --git a/testcases/kernel/syscalls/mount/.gitignore b/testcases/kernel/syscalls/mount/.gitignore
-> index 80885dbf0..3eee5863a 100644
-> --- a/testcases/kernel/syscalls/mount/.gitignore
-> +++ b/testcases/kernel/syscalls/mount/.gitignore
-> @@ -6,3 +6,4 @@
->  /mount05
->  /mount06
->  /mount07
-> +/mount08
-> diff --git a/testcases/kernel/syscalls/mount/mount08.c b/testcases/kernel/syscalls/mount/mount08.c
-> new file mode 100644
-> index 000000000..1938c5519
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mount/mount08.c
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-> + * Verify that mount will raise ENOENT if we try to mount on magic links
-> + * under /proc/<pid>/fd/<nr>.
-> + */
-> +
-> +#include "tst_test.h"
-> +#include <sys/mount.h>
-> +#include "tst_safe_file_at.h"
-> +
-> +#define MNTPOINT "mntpoint"
-> +#define FOO MNTPOINT "/foo"
-> +#define BAR MNTPOINT "/bar"
-> +
-> +static void run(void)
-> +{
-> +	char path[PATH_MAX];
-> +	int foo_fd, newfd, proc_fd;
-> +
-> +	foo_fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
-> +	newfd = SAFE_DUP(foo_fd);
-> +	SAFE_CLOSE(foo_fd);
-> +
-> +	sprintf(path, "/proc/%d/fd/%d", getpid(), newfd);
-> +
-> +	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
-> +
-> +	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
-> +
-> +	TST_EXP_FAIL(
-> +		mount(BAR, path, "", MS_BIND, 0),
-> +		ENOENT,
-> +		"mount() on proc failed expectedly"
-> +	);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_CREAT(FOO, 0777);
-> +	SAFE_CREAT(BAR, 0777);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test_all = run,
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.min_kver = "6.12",
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "d80b065bb172"},
-> +		{}
-> +	}
-> +};
-
+> I suppose we aren't covering a test bug with this and test is really
+> wrong expecting 4.16 would work on XFS. FYI this affects 5.4.291
+> (latest 5.4 LTS which is still supported) and would not be fixed due a
+> lot of missing functionality from 5.10.
+>
+> Kind regards,
+> Petr
+>
+>   testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> index 6a9d270d9f..e2ab10cba1 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> @@ -113,7 +113,7 @@ static struct tst_test test = {
+>   		{.type = "bcachefs"},
+>   		{
+>   			.type = "xfs",
+> -			.min_kver = "4.16",
+> +			.min_kver = "5.10",
+>   			.mkfs_ver = "mkfs.xfs >= 1.5.0",
+>   			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
+>   		},
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
