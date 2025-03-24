@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15707C36002
-	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 13:06:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33742C36002
+	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 13:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1742821591; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742821782; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=ZlyZI1cnSBL/D9ZbSeELNLAaxtBTp7Usvp2KBqN1Uuw=;
- b=cysVDbv/KKJmecbwwryx/OIU0DbffcD8/he2feII0KrP4Vg9CueZCmfpMhf6DPixD+E1k
- YJMWoW3NLKrVK6SmoMduc+PG+SMR3OYk6yF/4llWztbQGXvdqsW6oaqVXvfxhs6+s6wfwTj
- dZhhWBTmnU1yyMVuXHlzB/xmOUqCqvY=
+ bh=Ba2qmF7vd5pwUgAj4wbwVn4eIidltWUzcjglRvImbcE=;
+ b=T1Z9dCWsHDpTdUuDnC5WuWXUBVLI5Q384iAZLg+8mo95ZI1UZ3iiHuqu7SRiFMcaSM0DE
+ pcLhqep45rKze0ZYmvheAWrcGJUzytLR/T2yvFDkgFl6ECO0ZCLDEgqVwDfTuQku5hqFK2Y
+ SwzbpHxGQSqtcoANrfDNKFNBkiicwZ8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 43CA13C8EC7
-	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 14:06:31 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2798A3C8F93
+	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 14:09:42 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 000523C85D0
- for <ltp@lists.linux.it>; Mon, 24 Mar 2025 14:06:08 +0100 (CET)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ by picard.linux.it (Postfix) with ESMTPS id BC9443C85D0
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 14:09:19 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
  helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
  receiver=lists.linux.it)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4D07C201180
- for <ltp@lists.linux.it>; Mon, 24 Mar 2025 14:06:07 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3E4F01400DFD
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 14:09:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1742821566;
+ s=mimecast20190719; t=1742821757;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hVmPsmWtX2sioQDm8RaAaiv5MP3cvscLMUiIVBglfno=;
- b=Que3wFLanqmwjO7G+ZdUfsLMW1E1ho/B+Eypy8RN9Ex1BX9pCuFGafB6rwHVQYeqcB2wmO
- cqayYHUCGT2q9HwlRrohrn4jyo1Cb7re1Ynhi4dvFFTrBLDAwlorrCog7a0qOnTSYtkKNA
- tViM7XtrvaTXdN5VoVv+Fx5aWvUwvdo=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=IN+oiW6/WXEKFuuKKjGxcPGPYMclAXpm/xYSorYKQiM=;
+ b=Q0qlfVLV6nVz20SpOqpuVfsYTEY7OoCEo3Pum40B2Q6SmUiXXDVRTW7xeFyPy7PK8gP6ON
+ zjKcsDCGjQI50boE7Sv7AM6+OyD4anQIjs/zGVjA3T6gGF2zpeDpCijL0q0u37qI3ZIRzi
+ oEa++4FrSf7e4lXudnNUx7DOiyCY12c=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-601-uaLpYsWGPnaiYrjmigf4_w-1; Mon, 24 Mar 2025 09:06:04 -0400
-X-MC-Unique: uaLpYsWGPnaiYrjmigf4_w-1
-X-Mimecast-MFC-AGG-ID: uaLpYsWGPnaiYrjmigf4_w_1742821563
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-2ff5296726fso12737989a91.0
- for <ltp@lists.linux.it>; Mon, 24 Mar 2025 06:06:04 -0700 (PDT)
+ us-mta-478-rxIYmEkxNsK-_OQhGnmKLA-1; Mon, 24 Mar 2025 09:09:15 -0400
+X-MC-Unique: rxIYmEkxNsK-_OQhGnmKLA-1
+X-Mimecast-MFC-AGG-ID: rxIYmEkxNsK-_OQhGnmKLA_1742821754
+Received: by mail-pj1-f71.google.com with SMTP id
+ 98e67ed59e1d1-2ff8a2c7912so7284428a91.1
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 06:09:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1742821563; x=1743426363;
+ d=1e100.net; s=20230601; t=1742821752; x=1743426552;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=hVmPsmWtX2sioQDm8RaAaiv5MP3cvscLMUiIVBglfno=;
- b=X4yPt+LRGAV5OGVjCJpuVMw1D56As14Df0z4dHCGwoHrBYHNMoZh5Ef7J1v6gJiBL+
- /hF8/+KBA0onAwOomNLfQZAXGWW4ppyTh7TbfuFwJIu07SRmWduKVBl5DQlfp5pnQbsj
- WA+0CYlRNeQVBi8Rbg28yYuS+a8WWLZLZPe8+KSQXno+fUwYJKh+4dHHP+u60nqH2MgX
- g9gMT55NxZVNSE3KNxFnKIiJt49nLjg/I+tPDhY2schqRfPaXcNaGlodceDMrqRyg1bW
- dPLx1dk/kcuh/q6W7OeEErXTbR1QXkg5VmtttBEjxEOK6pNDqGMDFEM3q1UuwOPFyJ40
- +0lw==
-X-Gm-Message-State: AOJu0YzH656hs056iCAGrQ+Ha0zTqwF1AFWTHxNeT71ekOWBWm/f53Kz
- SM+6u+ZOapuMyM5xujX/BXd/ZIkaLSXHQ0ajktW0BqsTvAXw34IexGHNCpGr1QV2Twbl4UNYED+
- Ip5nS0P8pI3xwXEyvubx5oh0QmPNkJC7ayrJUcTcnjeEJe5NZFXLJ77dyKGzMbHO46PxBNZfV5t
- 3mrdKvjbg1/urJRjfeKpcqg4w=
-X-Gm-Gg: ASbGnctPQuzwy9tQkOHH1/8f/6TDmIrDEqavCqDt66F4Ecb+quvIE4IrQe8wLlK9DAZ
- 9oyUeWVhbKVOQ/pYu42fC+lVaRm8n8eRB3C6urck5AEFbFncXz5EZr6+s27j8kdWXHMv5LHMtSQ
+ bh=IN+oiW6/WXEKFuuKKjGxcPGPYMclAXpm/xYSorYKQiM=;
+ b=O9emgocF1tUfRGnj5KAYpvRX1qC45iPqAvaxlXpp/rxY9bf7Qgq3a7eLInGbzifGoq
+ TyhsNnC86QyhtWpF24usgtAa4ZZsjWJIc14yL6Kk+CgOzhV8z+lSJmmYP9KBOsq8kBke
+ 7FEUV1QguGRgFjvuQyu2IvmTV+B7gmfG9sWBazK+4lXW+QxseXRdsfkWJIHKBsvWBbd4
+ 8HCotj7JjlG5rrPfqZNi5V8OQX406TONIsHThTiTH/PnYFLZhMFY9xWwm/FOgOWt9lkm
+ H5m20cQZXAoiTrFGeq+uOVf61wftQykrHUgVwC0lweD8lwbvUhPWQEe5+vh0rgM3aKOZ
+ /CLg==
+X-Gm-Message-State: AOJu0Yx+vM3DXsWJUFB6KqTMJOWYKwm8m2TQnEDfMb3lw0VP967WFRc+
+ ne63i4R4cRCOa3EMSuswL78wVCZzPO0WtFNt6cWMGEqkJHUOJd24r8KpdTwBLbw1zNdw5n6Bhtj
+ xNKsyH4KHub8boENEE19rEFNuH0EOi++aJyDyHlMWahD2Ckm2VjvOqdZLKYWLRhVwxMD9DSSSdj
+ 8elvALTVfeTlsqJqOyevThsqsgSxM/gSWTUA==
+X-Gm-Gg: ASbGncv2pdmp2ML6jZfaehv/HvYgWdkn6jyz57aRKE101zmH9625GI+zsA6BAPXsMDY
+ 2tCdYe3nTl380e5I6zoVm3Hviu9LodFi/dtozdnz7jayqEDc+x3Dbr/ngiK2wNZZOutMHfBJZKA
  ==
-X-Received: by 2002:a17:90b:3b84:b0:301:98fc:9b5a with SMTP id
- 98e67ed59e1d1-3030fe856e2mr16717591a91.6.1742821563389; 
- Mon, 24 Mar 2025 06:06:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHZvZbXter7ahPkME2oEkVYqQaaWAf3dS6gyvRF631oBcqFplT0+nxFwWoo8G9zvvmNlfrt6EZbgWTljzfCVc=
-X-Received: by 2002:a17:90b:3b84:b0:301:98fc:9b5a with SMTP id
- 98e67ed59e1d1-3030fe856e2mr16717540a91.6.1742821562804; Mon, 24 Mar 2025
- 06:06:02 -0700 (PDT)
+X-Received: by 2002:a17:90b:3810:b0:2fa:2268:1af4 with SMTP id
+ 98e67ed59e1d1-301d42c50b9mr26844561a91.7.1742821752262; 
+ Mon, 24 Mar 2025 06:09:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4bLIl3Yt8VKmgt/egVlL0V7xrBejGjeOQ/xp+r3UA+nhZTw/2Hr3Ex+qteakO0VvrIi9C8whTZBjF7ZcfTuI=
+X-Received: by 2002:a17:90b:3810:b0:2fa:2268:1af4 with SMTP id
+ 98e67ed59e1d1-301d42c50b9mr26844523a91.7.1742821751859; Mon, 24 Mar 2025
+ 06:09:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250319172424.42961-1-mdoucha@suse.cz>
- <CAEemH2c8=bE6DkNXbS13-wNUXUYp1wSXiBEHNd+c5NNYKKfOdg@mail.gmail.com>
-In-Reply-To: <CAEemH2c8=bE6DkNXbS13-wNUXUYp1wSXiBEHNd+c5NNYKKfOdg@mail.gmail.com>
-Date: Mon, 24 Mar 2025 21:05:50 +0800
-X-Gm-Features: AQ5f1Jrw5viaBm0oKMs6La2WlHKhL-SfbHoWiXcCRKZxP0NDC28JFEQT_owQ8jE
-Message-ID: <CAEemH2fpibu2d5EY8yvWRM57F1fKk6RHfNef7zKZExB7Zn-_iw@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
+References: <20250321131621.1870655-1-liwang@redhat.com>
+In-Reply-To: <20250321131621.1870655-1-liwang@redhat.com>
+Date: Mon, 24 Mar 2025 21:08:59 +0800
+X-Gm-Features: AQ5f1JpAG1JKE48ktNIor7RXKNTk_aZ2n_DxENTIncA6l71hynp1scWrFIrSz2g
+Message-ID: <CAEemH2eUDYC6HCCbWacEqD-wpvawZBUGrsRTHaAHB3YppDfe3g@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: bfdDd6oD2A2xr9Au8rsrwqv-VV7HASYI--8EDBCjAUA_1742821563
+X-Mimecast-MFC-PROC-ID: Mg_wHRoAWNCtR0wWAf_VjpVHLDJJkVRJL5EMJKCzo7Y_1742821754
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/2] move_pages12: Ignore ENOMEM from
- madvise(MADV_SOFT_OFFLINE)
+Subject: Re: [LTP] [PATCH] shell_loader_filesystems: add tmpfs support to
+ avoid fail in GitHub CI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,41 +109,16 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-UGF0Y2hzZXQgbWVyZ2VkLCB0aGFua3MhCgpPbiBUaHUsIE1hciAyMCwgMjAyNSBhdCA5OjQy4oCv
-QU0gTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+IHdyb3RlOgoKPiBIaSBNYXJ0aW4sCj4KPiBJ
-IGhhZCBldmVyIGFkZGVkIGEgY29tcHJlc3NlZCBtZW1vcnkgc3RlcCB0byBkaXMgZnJhZ21lbnRh
-bAo+IGJlZm9yZSBkb2luZyBodWdlcGFnZSBhbGxvY2F0aW9ucyAoaW4gY29tbWl0IGU5N2Y0MTk3
-MDU4MiApLAo+IGJ1dCB0aGF0IGRpZG4ndCBzZWVtIHRvIHNvbHZlIHRoZSBwcm9ibGVtIGlkZWFs
-bHkuCj4KPiBBbnl3YXksIHRoaXMgcGF0Y2ggbG9va3MgZ29vZC4KPiBSZXZpZXdlZC1ieTogTGkg
-V2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+Cj4KPgo+IE9uIFRodSwgTWFyIDIwLCAyMDI1IGF0IDE6
-MjXigK9BTSBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+IHdyb3RlOgo+Cj4+IFRoZSB0
-ZXN0IGRpc3NvbHZlcyBodWdlcGFnZXMgd2hpY2ggcmVzdWx0cyBpbiBzb2Z0LW9mZmxpbmUgbWFk
-dmlzZSgpIGNhbGwKPj4gcmV0dXJuaW5nIEVOT01FTSBhZnRlciBhIGZldyBpdGVyYXRpb25zLiBU
-aGlzIGlzIGV4cGVjdGVkIGJlaGF2aW9yLgo+PiBIb3dldmVyLAo+PiB0cnlpbmcgdG8gcHJlYWxs
-b2NhdGUgbW9yZSBodWdlcGFnZXMgdG8gcHJldmVudCB0aGUgZXJyb3Igd2lsbCBicmVhawo+PiB0
-aGUgYWJpbGl0eSB0byByZXByb2R1Y2UgdGhlIFNJR0JVUyBidWcuIFNpbXBseSBpZ25vcmluZyB0
-aGUgRU5PTUVNIGVycm9yCj4+IGlzIGdvb2QgZW5vdWdoLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBN
-YXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+Cj4+IC0tLQo+PiAgdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9tb3ZlX3BhZ2VzL21vdmVfcGFnZXMxMi5jIHwgMiArLQo+PiAgMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdmVfcGFnZXMvbW92ZV9wYWdlczEyLmMKPj4gYi90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdmVfcGFnZXMvbW92ZV9wYWdlczEyLmMKPj4gaW5k
-ZXggODc5YTg5YjZmLi5hNTQ1NGIxZWMgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvbW92ZV9wYWdlcy9tb3ZlX3BhZ2VzMTIuYwo+PiArKysgYi90ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL21vdmVfcGFnZXMvbW92ZV9wYWdlczEyLmMKPj4gQEAgLTEwMCw3ICsxMDAs
-NyBAQCBzdGF0aWMgdm9pZCAqYWRkcjsKPj4gIHN0YXRpYyBpbnQgZG9fc29mdF9vZmZsaW5lKGlu
-dCB0cGdzKQo+PiAgewo+PiAgICAgICAgIGlmIChtYWR2aXNlKGFkZHIsIHRwZ3MgKiBocHN6LCBN
-QURWX1NPRlRfT0ZGTElORSkgPT0gLTEpIHsKPj4gLSAgICAgICAgICAgICAgIGlmIChlcnJubyAh
-PSBFSU5WQUwgJiYgZXJybm8gIT0gRUJVU1kpCj4+ICsgICAgICAgICAgICAgICBpZiAoZXJybm8g
-IT0gRUlOVkFMICYmIGVycm5vICE9IEVCVVNZICYmIGVycm5vICE9IEVOT01FTSkKPj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgdHN0X3JlcyhURkFJTCB8IFRFUlJOTywgIm1hZHZpc2UgZmFpbGVk
-Iik7Cj4+ICAgICAgICAgICAgICAgICByZXR1cm4gZXJybm87Cj4+ICAgICAgICAgfQo+PiAtLQo+
-PiAyLjQ3LjAKPj4KPj4KPj4gLS0KPj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCj4+Cj4+Cj4KPiAtLQo+IFJlZ2FyZHMsCj4gTGkgV2FuZwo+
-CgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
-aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Patch merged to get rid of CI failures.
+
+-- 
+Regards,
+Li Wang
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
