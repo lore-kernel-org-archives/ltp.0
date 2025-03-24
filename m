@@ -4,168 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A676C3600C
-	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 16:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 669C1C3600B
+	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 16:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1742918991; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=3G/fAsi0VfmHu9c+0WCtjzt6GtAN0VmDugma+mMLu3Y=;
+ b=nA/rM6d6PLVlwLoqTEGOtI88wiGslf5OCnnkyBd0GFsV0+F2ljx8vfJGpOJxYv9o/8DMl
+ prmXcU5LTzHm0+Eu8wkVW0Tmne2cXGRitqX+Q21OfyLPMly97wkoKst8hWAETFn9zy3n60m
+ a82GXn5W5E2x7kNj0W5C/ta2OwjKYMM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D317B3C9A3E
-	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 17:09:28 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 622753C9A88
+	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 17:09:51 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C3E13C07C1
- for <ltp@lists.linux.it>; Mon, 24 Mar 2025 09:50:38 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=intel.com (client-ip=192.198.163.11; helo=mgamail.intel.com;
- envelope-from=oliver.sang@intel.com; receiver=lists.linux.it)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 390A33C726B
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 12:54:05 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=david@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7C5A61000223
- for <ltp@lists.linux.it>; Mon, 24 Mar 2025 09:50:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1742806237; x=1774342237;
- h=date:from:to:cc:subject:message-id:mime-version;
- bh=AZoTVSEEFwJfJgClD/+26D6AF8shAF+6rjEGzsTEmYs=;
- b=ey61t0kSZRIefDQ2Wmfj1fu5kmVV5EOUeWxpvV1J5x+YWJ3+Yrl0D6oY
- dtRoeMrUAIZdFugMmwNd3RPMQUEIjF56hJoxmB5zkVkZPWpmuRUudPj9d
- WQlKRX6xUWCIJlNA1C/QAENiJ2xAyLUtFRmH1aQOcGSzF3xHhOPoeeq/M
- hax2zWuLI3rn8Kk+3AV6x09F5v0HW5AAGQXGUPsvuvlW9mccT0SU3nnrz
- CiUgxDxDB8pd/03V2OLzuG5mSxmLvvBOfGIO+0Z6tOXmiLPheEpvmyxtp
- bgRcrly+UR4yex4UG+5ZY3h9hI/mtPmmQYkRcwT4m/jXm2SqzOgUpPepy A==;
-X-CSE-ConnectionGUID: cuYGPRimSzuzCeS3gz0vhg==
-X-CSE-MsgGUID: GpFysYmjTKeQUBrIHUWVQA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11382"; a="54665237"
-X-IronPort-AV: E=Sophos;i="6.14,271,1736841600"; d="scan'208";a="54665237"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
- by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2025 01:50:21 -0700
-X-CSE-ConnectionGUID: 6XR4BQYLTtG05SCr/O5ODg==
-X-CSE-MsgGUID: A/Y+8e30TJq/D3OFQOP3BQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,271,1736841600"; d="scan'208";a="123788670"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
- by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2025 01:50:20 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Mon, 24 Mar 2025 01:50:19 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Mon, 24 Mar 2025 01:50:19 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Mon, 24 Mar 2025 01:50:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JfAGOL5d5/j0E/btii8gNbAqiaPNck5xHkDCyRJB3mrrksEd8ekmPiG6iJehmaoLJkexyiC6Ya4bZEoSCjtXCTmZvzUfkndECmQ3Ip8zWifxVy9llisP1AGgccutVd/lbFxlYnm9SDsfuG61+CKFsrQ5x+eeZt6JQBN9zt+bHwazI7xd/tnalW0TwnpV/7RiIZ/v3sdi7uQwrxG2rJVq6SN9VR4AyZ9dWXjg9vTg6Y1xk3kohgouxCbtUapHv25uO5EY0wpoCTRPyH/WhBXtqtWA1DZuHWfpzsqJl9xSHnuiai+GoIb/8cUqpNbpEMvfh8S628qD/MYhgyWzYWfTXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VueueoxJ573B1Otx8gp2lLI8SWuKzkrVHcQG4Js8mRQ=;
- b=rlmsrWcYfTiEAxpxMPt8cjof3tEW8/qfaditmNpq2F3OdKvP4HVxZx3AROSE6t5h1LC3vRbZHU//4U/W63W0W1Hxd+nrI3Od1g2WwlTKKA2l9XKrOnw3x5HijXN7xdgLfvSIImw2s/92wIRcnrR1nhWK4RYaKhKooVPK8ykEpGnp1SsDup/oZErAtz7U8MteGBnNSWH2WFBfnl4lHTXjBdwwhCgZa3p53OeLmcm1FGm4N1Hf4v92hEBmAl2Fp3nDvR8tbitpi5IzL8Tm+hx73RHcYNf2wksZvu5RiBhdgb7dOWFUBS6p//O0yQD6iFEnmVLZjppKjW8M+Xto40b4QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by DM4PR11MB6334.namprd11.prod.outlook.com (2603:10b6:8:b5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.42; Mon, 24 Mar
- 2025 08:49:48 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%4]) with mapi id 15.20.8534.040; Mon, 24 Mar 2025
- 08:49:48 +0000
-Date: Mon, 24 Mar 2025 16:49:33 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: David Hildenbrand <david@redhat.com>
-Message-ID: <202503241635.4c94156d-lkp@intel.com>
-Content-Disposition: inline
-X-ClientProxiedBy: SI2P153CA0002.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::16) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 54674140110E
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 12:54:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1742817242;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=C2sfeu8L38fTcPcGuMWEFZogzyzrv4bdx0MHI8FDP0g=;
+ b=AfxAKE80tvWdc0mV35bqtKNTkM4KAVxT59tzJlfzmGuXTkcoayM8BHmbJizA3iyBfJ+hrL
+ tHWdKs+yucaNG8uECe086OZMxPUjGDfT54Dyfh7oGxlI4sTtxjWPAmCfR5NusLYBiJplAS
+ dC7GQmCrYX0xZM3NRkTXxTKp+6DCqqc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-5-5QhNlWTFMwCuQEsg-aWc3g-1; Mon, 24 Mar 2025 07:53:58 -0400
+X-MC-Unique: 5QhNlWTFMwCuQEsg-aWc3g-1
+X-Mimecast-MFC-AGG-ID: 5QhNlWTFMwCuQEsg-aWc3g_1742817238
+Received: by mail-qt1-f198.google.com with SMTP id
+ d75a77b69052e-4767261982eso79276081cf.2
+ for <ltp@lists.linux.it>; Mon, 24 Mar 2025 04:53:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1742817238; x=1743422038;
+ h=content-transfer-encoding:in-reply-to:organization:autocrypt
+ :content-language:from:references:cc:to:subject:user-agent
+ :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=C2sfeu8L38fTcPcGuMWEFZogzyzrv4bdx0MHI8FDP0g=;
+ b=j1LPolRe2d60SlHynvA/pBMxtUblNiFM0DVPKvgJyic1MVAjtbNp48YeZ7ZqH1xS+z
+ PefNGd+BbcVmBQRi3uAx499BXo9o5S4cZBEfgvZc6EJaFkNL7VkLjaqv4M+ZPri64M4T
+ qnVWvERoQgN8DaE92fKTPawyinJvDCR3U4UtZajVAL1lnPIicPC79/gcIeFPOM9Xeh/F
+ tnnydXBM/e1ui/3m1Yhh/RxUCAn5yY5PqtBefVSNCPB/Rb+GMcCW1tMdbguRc7w9F7d7
+ VpRcUr+j55SqLMQ99Ku+JvF8J8iWP17LdqgOvJRbQ1S7aGMR87TyqWwxiDDa45u1uvKP
+ lN5g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXeADe7vQmQzRdwT+gz61YikQLOTu+OhJL8y7iCLqJpZ75HrPw3EHXSTxFaR5y/cMpWYwY=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx8RWkDvcilolsRsA5NTTab3CDhwucZc8cbwzAKCyq/99yFSWow
+ Q3Yc5zpB3M8cTjDPNa5dzeUsTObri1Yt+zPdCC7GbNVcvRFiTt9V+BKPtYgS5FK78H2noT+shuf
+ Zsjc/d46nBRX6Sg/GuRnqvI9zcOsLTpR6pzp/TGrJAIMkuPT+
+X-Gm-Gg: ASbGncvhNrrw+lUZjP+A6JJC2ZN7csOUia74mbYO/hywle6j4jQ7RnnjIg0EUGwDBFS
+ /EqoHcdY74tzTyRtQ4BCgRFFG+WD+AijzHCHgVfR/1LxWM4qpXn1Pei5uT8YoGYcsAlHhRIDDWh
+ tFBGYD7IPR7jLsz9ELmYaliizzstdKjnV5+3VxUM+OoCdxurDC5KFv0RdsuCszRww4ykxLBOAoZ
+ FOzvUVcwfIQhbkXJrpmcFur85Jsltyheta1MkYXgQyyEH/VZSLwt9gQzfQ667o97ekTDfg0J0CF
+ GmZPSD4dw6Gq
+X-Received: by 2002:a05:622a:1345:b0:477:1f59:2876 with SMTP id
+ d75a77b69052e-4771f592a4dmr160264981cf.28.1742817238145; 
+ Mon, 24 Mar 2025 04:53:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFJX1ZUsULbp6GUHAiEzkOwnrqQhf5LhF8C61B07lJEt8sE2bo3aPiY2wZwMlVNZp1+6u1IWA==
+X-Received: by 2002:a05:622a:1345:b0:477:1f59:2876 with SMTP id
+ d75a77b69052e-4771f592a4dmr160264461cf.28.1742817237670; 
+ Mon, 24 Mar 2025 04:53:57 -0700 (PDT)
+Received: from [172.20.3.205] ([99.209.85.25])
+ by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-4771d176093sm46156621cf.19.2025.03.24.04.53.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 24 Mar 2025 04:53:57 -0700 (PDT)
+Message-ID: <73bea938-15a2-4b4a-8d31-0db9f9c476e0@redhat.com>
+Date: Mon, 24 Mar 2025 12:53:55 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DM4PR11MB6334:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f94ee72-250c-410e-eaf1-08dd6ab0d578
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Lf4wXFWttgvKtgbo+kdj4a0l/l5UIIdX/BYW3P22jAOdCX1JYsBKdYgwZOZG?=
- =?us-ascii?Q?C0z/aWyULyZZUxmTJnJ+Ow8UL8CJAIgQLZsRHGtkXSDj1fCE9p/ggVLXgbdY?=
- =?us-ascii?Q?yFSvEWIeYf5Jrxm+VyEnTNi1BSPhvb08rna7kkoxM0GmQDfCB9MGxjyq4E+Y?=
- =?us-ascii?Q?c0lMZugCtH4JEs0gUBkB8Sx4JWX+N9xUXZGoXUDyqAVcDBbukKgIDeRdT9ha?=
- =?us-ascii?Q?Fjyf1yM52YDeY4khbrN9iRVarUP+ZD8h6gFL43oh+OFBsNTJx0Fslsy/FIUg?=
- =?us-ascii?Q?qmWfsnRbW62zDwXQKbFJrdonoFpN3UHVWAOeAtAi29TP02EUf1NvfoDBqjqg?=
- =?us-ascii?Q?4+8YTrGnFJdMtERqRbcyBUWQ4xVMRNP1eic8UKJ69vqoDG9TQusOp0+v5rfz?=
- =?us-ascii?Q?II0ZsQUMMbmC7NpG5Rj96/XANmuMs0ogRiLurfAd6fx83lz6QVA2uI2vvHdl?=
- =?us-ascii?Q?YXPIXCHLojnh46TcTFwzZ5ZRf+Bw2LIsMDjKV5K7rY2AHQEn5p5zdjLWB+hd?=
- =?us-ascii?Q?NaMxpd3kXEX4554UoiIX9EYHzSqKO9Xp4zlVCDX0wmmQvUGpWUintvxj8q6C?=
- =?us-ascii?Q?psjUgLKUIMI69ps4qpbAYKSC8g5Agv1/KUER1plafNn7vb0F6EOjP/WAtI0s?=
- =?us-ascii?Q?wpUD2LhXOH6xoI6iZkCve1uXb5DQhoauSsmNXYXv1jG2kh+U2Fet/d3T796S?=
- =?us-ascii?Q?o1U13MD41o2f96YMILpKl9/lZuzRWfYg2CGlf60MahxXr/i4wfkfoUXdvgQb?=
- =?us-ascii?Q?S/A0gnU3xWcKF8MidHZtljtwiNfVlV6T+jzGjLFsW2AlIZAORSDtPDBgr+QB?=
- =?us-ascii?Q?RQlcPv/PU98sVkSM6QJNjhipVlv4ogFkpuDJcqHGmsTsGCS7jYo/IAUYBFeF?=
- =?us-ascii?Q?vriqOwCUtvNTp6Zpm2p/I113ppcZY7KNhJyRSYmp9NZRtm7DxGHc6pXgban6?=
- =?us-ascii?Q?uMZ4EKx00a9pz7J04qGVhisyja5zhsLTv2zum8TKYduFnuQIzTp9mqkssxYb?=
- =?us-ascii?Q?VjVOGEQKJohEV1/XjlKV5cgSzeDUnSGAZ2Uwz85KAwJF7sYtKFyxO0ye+FfY?=
- =?us-ascii?Q?+xUcvmhH7rIr7nVCQw7S1bBTVgwbM8IloSVRPrgKvPmwftqoLxnrxT6oGNg5?=
- =?us-ascii?Q?vN7X4C2CPW0QQd07W6VgnE0BlihKz1yA8tZQxc/1pa5kwcKVROxtji9TJv81?=
- =?us-ascii?Q?svc47PJUUein/ayVSYFm0Z6rGxjExI8BdTWHsrF1ryr1YFi+sBAmvAGk0uL0?=
- =?us-ascii?Q?+6OXq1nWKMiWERHkZWHqALmkn/Sx4CoK3L9AUkUoz0Kg5l9ngvXP+wuehTqy?=
- =?us-ascii?Q?4O8s7mFgAWQj7mH8Ow4UPLCLQ36y7NCzN8r4LwPOd2jyfQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(366016)(1800799024)(376014)(7416014); DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cc02qzV71GSOhYDQVt2WNIS7Rk6x9vVCC2VFFP6R8pGtgPecJNvyxl2/ipeI?=
- =?us-ascii?Q?8IlsdmGDJL5BtHrNjcZuPxlhFPio4geiE/NaBwRM1K1CahnsuUS7+nTXaVLm?=
- =?us-ascii?Q?Zp4gKbagzky6qEDhjaRtXPK0ctRwKqweBSKvpUeiZOJ3zZUuQ1aOyOLnrFGw?=
- =?us-ascii?Q?KW6F0BiryvvCny6lXZ3g2JliKHY7Qmw/TGvgeOzjTq/qdIQ13t5ePekUEtTG?=
- =?us-ascii?Q?cylKDHWd2CJZVpsOnyNRJijK/l/xP4UJfS38/5wcmNTqHrCP+VyCjQx2skoT?=
- =?us-ascii?Q?qfoz7PpRaK6j+5+5Yp/XgxgSosoKiT48EB7DVJPJP10Wb+OqnlQK0QJEIhI8?=
- =?us-ascii?Q?SgHcRN6KzJ+MkDXmZqCt3fFxvAzk4Wb54uQQB91erP6r//qtcSCyyvls4GNj?=
- =?us-ascii?Q?Va53/99Loc/aQSSSoL7+PBE/tXv3Lh2dRy3CCmbzBV3GuF0KuHnfoLaarV/I?=
- =?us-ascii?Q?cGkCD6lxXjIjy66XJRokDo3PVP/nwW3a05iXuEJGjp4szhlwYGTFikmt18JW?=
- =?us-ascii?Q?XZZbGG6x9OMFeKvXqFrZoqhOu86iRG3WmraEk4EaD2VQa+dkDwKkus0sNz5b?=
- =?us-ascii?Q?s5ynoUQCjW038iDzmN9cLx+oqGcF80fJBECy3FwF7UfKOR6MkzvPOL1RZDkw?=
- =?us-ascii?Q?cjWMeO+kOQrH12HC2gp/MiDKhoChkJy/Yl8me3ZPQ/4G9TmBaFc54r3jtF2V?=
- =?us-ascii?Q?z4TN2ig6plQ5X1RJwq5Kfc/e27KM8pZs4k0cEpbBYudVLsmxLTrWL+8l8rUY?=
- =?us-ascii?Q?KJE27PIiXbRvg97yCDJes2TIOGsF2yHZfMF1SjNjm655GDhOF0ptUOhhvcFe?=
- =?us-ascii?Q?EYLXGiUhQGhnEVY9htdmMbxKORNwVTuVe6TgptNjcJkFmkodOVMj9xjUy9lz?=
- =?us-ascii?Q?FR8xbRyN1Z5BXmKExvJwPf6KiW9HoIL3JZfoWMks5Ekhrw720jS0+NFrD4/x?=
- =?us-ascii?Q?gsFVpAO42J7l2WhdhWXfiqLQewoU0OKFqVbVOrwwS7abgeTd8fGub+RSNRHO?=
- =?us-ascii?Q?kTc090NSXkQHPKftU7t7XrW5P5Y0rUqQHiTfI0Q1rkpHgD7DqJCNosWus8Ok?=
- =?us-ascii?Q?qNr2krJPM3Lzd4Tj3NrEFozL7HeUmgvJzdqQbtAd9CaltiFn+XfDiZXvjarM?=
- =?us-ascii?Q?HbA43MP/j/0Sidx96sfYPSRGq3EIzHeizQ7EViOCjEEaQPtVVW6eu9Acy7Kf?=
- =?us-ascii?Q?ICCQ1t3Q7XiTCfL9qkyJhAJt0MfCI/RmhQvoY33p1OApArlBFcYVo7CDRmJX?=
- =?us-ascii?Q?8RA7aJ9JfAG8iGxTDKRvJgxbJ6bKvZFXHbzfCKL4cvMPQHQ3/UZx8IN/35QK?=
- =?us-ascii?Q?hhzXuWVrp2MRXndaTZvwoZAkdIupixg5K5EYQQAwspryhLdE6bjiTCeHmZaC?=
- =?us-ascii?Q?hNO6N2Yy4oVwLxrIhtF5pROGyPxuEe6PkpgIN1dlxUVtEtMr+53zs16hktlz?=
- =?us-ascii?Q?ByoxfGcx5bmHogXRo06A3K7FI690hTRYMXGhzdHKqC04SqzL5g5BhQUhAYyn?=
- =?us-ascii?Q?BZT5ZPbgir0CAYerOtSkPCTLC3KtUqZo7W9QoBTfKkc7WsLgEJgfvOS+mHkz?=
- =?us-ascii?Q?JWG+BVnillnE4NWDXIV/nREv3BlaZOYBdH0NBewh3mmrpBvEwUv/Lm5NaLlV?=
- =?us-ascii?Q?9w=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f94ee72-250c-410e-eaf1-08dd6ab0d578
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2025 08:49:48.7779 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1Vgzt6umHznFY2KTRnP8cx1ziJpa54ZDQ6q4eBkNlT9i7AZmGhWPxJNne7RQbZoB10oaMp9LHzYlsZHnc82u8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6334
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: kernel test robot <oliver.sang@intel.com>
+References: <202503241635.4c94156d-lkp@intel.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <202503241635.4c94156d-lkp@intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 9creBBPxmWNq_Hi1uzC6qZy8G0f3iZoAUUDiGrqkzXU_1742817238
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Tue, 25 Mar 2025 17:09:09 +0100
-Subject: [LTP] [akpm-mm:mm-stable] [mm]  c25465eb76: ltp.swapon03.fail
+Subject: Re: [LTP] [akpm-mm:mm-stable] [mm] c25465eb76: ltp.swapon03.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -177,6 +161,8 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: David Hildenbrand via ltp <ltp@lists.linux.it>
+Reply-To: David Hildenbrand <david@redhat.com>
 Cc: Yanteng Si <si.yanteng@linux.dev>, Barry Song <v-songbaohua@oppo.com>,
  Karol Herbst <kherbst@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
  Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -189,211 +175,54 @@ Cc: Yanteng Si <si.yanteng@linux.dev>, Barry Song <v-songbaohua@oppo.com>,
  Jann Horn <jannh@google.com>, John Hubbard <jhubbard@nvidia.com>,
  Liam Howlett <liam.howlett@oracle.com>, Jerome Glisse <jglisse@redhat.com>,
  Vlastimil Babka <vbabka@suse.cz>, SeongJae Park <sj@kernel.org>,
- Oleg Nesterov <oleg@redhat.com>, oliver.sang@intel.com,
+ Oleg Nesterov <oleg@redhat.com>,
  "Masami Hiramatsu \(Google\)" <mhiramat@kernel.org>, oe-lkp@lists.linux.dev,
  Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On 24.03.25 09:49, kernel test robot wrote:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "ltp.swapon03.fail" on:
+> 
+> commit: c25465eb7630ffcadaab29c1010071512f8c9621 ("mm: use single SWP_DEVICE_EXCLUSIVE entry type")
+> https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-stable
+> 
+> 
+> in testcase: ltp
+> version: ltp-x86_64-042eff32a-1_20250322
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: btrfs
+> 	test: syscalls-04/swapon03
+> 
+> 
+> 
+> config: x86_64-rhel-9.4-ltp
+> compiler: gcc-12
+> test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
 
+LTP needs fixing.
 
-Hello,
+tst_max_swapfiles() detects the number of supported swapfiles by parsing 
+the kernel config, expecting that with CONFIG_DEVICE_PRIVATE we'd use 4 
+on newer kernels.
 
-kernel test robot noticed "ltp.swapon03.fail" on:
+Now it's "3", and consequently we support one more swapfile which the 
+test cannot deal with (expecting a failure)
 
-commit: c25465eb7630ffcadaab29c1010071512f8c9621 ("mm: use single SWP_DEVICE_EXCLUSIVE entry type")
-https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-stable
-
-
-in testcase: ltp
-version: ltp-x86_64-042eff32a-1_20250322
-with following parameters:
-
-	disk: 1HDD
-	fs: btrfs
-	test: syscalls-04/swapon03
-
-
-
-config: x86_64-rhel-9.4-ltp
-compiler: gcc-12
-test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202503241635.4c94156d-lkp@intel.com
-
-
-
-Running tests.......
-<<<test_start>>>
-tag=swapon03 stime=1742744454
-cmdline="swapon03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_tmpdir.c:316: TINFO: Using /fs/sda2/tmpdir/ltp-N0rQjX9YWD/LTP_swarbcULG as tmpdir (btrfs filesystem)
-tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
-tst_test.c:1905: TINFO: LTP version: 20250130-167-g042eff32a
-tst_test.c:1909: TINFO: Tested kernel: 6.14.0-rc6-00040-gc25465eb7630 #1 SMP PREEMPT_DYNAMIC Sun Mar 23 23:05:21 CST 2025 x86_64
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:676: TINFO: CONFIG_KASAN kernel option detected which might slow the execution
-tst_test.c:1722: TINFO: Overall timeout per run is 0h 10m 00s
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
-tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
-tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
-tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
-tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:105: TINFO: Skipping bcachefs because of FUSE blacklist
-tst_supported_fs_types.c:97: TINFO: Kernel supports vfat
-tst_supported_fs_types.c:62: TINFO: mkfs.vfat does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports exfat
-tst_supported_fs_types.c:62: TINFO: mkfs.exfat does exist
-tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
-tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
-tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
-tst_test.c:1833: TINFO: === Testing on ext2 ===
-tst_test.c:1170: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.47.0 (5-Feb-2023)
-tst_test.c:1182: TINFO: Mounting /dev/loop0 to /fs/sda2/tmpdir/ltp-N0rQjX9YWD/LTP_swarbcULG/mntpoint fstyp=ext2 flags=0
-libswap.c:198: TINFO: create a swapfile size of 1 megabytes (MB)
-tst_ioctl.c:26: TINFO: FIBMAP ioctl is supported
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:51: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:63: TINFO: Successfully created 23 swap files
-swapon03.c:64: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:105: TFAIL: swapon(mntpoint/testswap, 0) succeeded
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  1...
-tst_device.c:420: TINFO: Likely gvfsd-trash is probing newly mounted fs, kill it to speed up tests.
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  2...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  3...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  4...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  5...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  6...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  7...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  8...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try  9...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 10...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 11...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 12...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 13...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 14...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 15...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 16...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 17...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 18...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 19...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 20...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 21...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 22...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 23...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 24...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 25...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 26...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 27...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 28...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 29...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 30...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 31...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 32...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 33...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 34...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 35...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 36...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 37...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 38...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 39...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 40...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 41...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 42...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 43...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 44...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 45...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 46...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 47...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 48...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 49...
-tst_device.c:416: TINFO: umount('mntpoint') failed with EBUSY, try 50...
-tst_device.c:427: TWARN: Failed to umount('mntpoint') after 50 retries
-tst_test.c:1833: TINFO: === Testing on ext3 ===
-tst_test.c:1170: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.47.0 (5-Feb-2023)
-/dev/loop0 is mounted; will not make a filesystem here!
-tst_test.c:1170: TBROK: mkfs.ext3 failed with exit code 1
-
-Summary:
-passed   0
-failed   1
-broken   1
-skipped  0
-warnings 1
-tst_device.c:271: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
-tst_tmpdir.c:347: TWARN: tst_rmdir: rmobj(/fs/sda2/tmpdir/ltp-N0rQjX9YWD/LTP_swarbcULG) failed: unlink(/fs/sda2/tmpdir/ltp-N0rQjX9YWD/LTP_swarbcULG/mntpoint/testswap24) failed; errno=5: EIO
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=13 termination_type=exited termination_id=7 corefile=no
-cutime=5 cstime=124
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20250130-167-g042eff32a
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20250130-167-g042eff32a
-       ###############################################################
-
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20250324/202503241635.4c94156d-lkp@intel.com
-
-
+So, all good from a kernel perspective.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
 
 
 -- 
