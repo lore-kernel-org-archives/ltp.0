@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85F81C36002
-	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 23:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97247C36002
+	for <ltp@archiver.kernel.org>; Mon, 24 Mar 2025 23:41:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2086C3C9450
-	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 00:40:56 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2FC793C9909
+	for <ltp@archiver.kernel.org>; Tue, 25 Mar 2025 00:41:13 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D86063C91BC
- for <ltp@lists.linux.it>; Tue, 25 Mar 2025 00:40:21 +0100 (CET)
-Authentication-Results: in-6.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id C243F3C98E7
+ for <ltp@lists.linux.it>; Tue, 25 Mar 2025 00:40:25 +0100 (CET)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
  (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
@@ -24,73 +24,46 @@ Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 930A514044D8
- for <ltp@lists.linux.it>; Tue, 25 Mar 2025 00:40:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B334A60564B
+ for <ltp@lists.linux.it>; Tue, 25 Mar 2025 00:40:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7B32521185;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F3FED2118A;
  Mon, 24 Mar 2025 23:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742859619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yah0Of8ApbczGd1MRNq2yFDNtt0Ju5SCcVViYk5HWik=;
- b=3DITrX8SDBDx8cef4JfH1MEc7yReUsSrhWiKVH54qnXDH3dPHVb1tIWSJqMYPQxDKk+uZM
- fqF2YHu1Fnq3Wab2ZoY5DoJCPuIsApSVNUvoFOWXcjQg0kqrn5zS3HfeAJGQRAKptVDU6j
- BqpngKF9ZWqPIywaX25uYM1tl5cc+4s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742859619;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yah0Of8ApbczGd1MRNq2yFDNtt0Ju5SCcVViYk5HWik=;
- b=A2gm1jhjHsZz+DgfrRgXNWTYSSP9fWuvaI7JL16MP+FWZFKWEZYdTH9RHe6EPYCqqyqChs
- C1qfPeMZdKNIVSCA==
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1742859619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yah0Of8ApbczGd1MRNq2yFDNtt0Ju5SCcVViYk5HWik=;
- b=3DITrX8SDBDx8cef4JfH1MEc7yReUsSrhWiKVH54qnXDH3dPHVb1tIWSJqMYPQxDKk+uZM
- fqF2YHu1Fnq3Wab2ZoY5DoJCPuIsApSVNUvoFOWXcjQg0kqrn5zS3HfeAJGQRAKptVDU6j
- BqpngKF9ZWqPIywaX25uYM1tl5cc+4s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1742859619;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yah0Of8ApbczGd1MRNq2yFDNtt0Ju5SCcVViYk5HWik=;
- b=A2gm1jhjHsZz+DgfrRgXNWTYSSP9fWuvaI7JL16MP+FWZFKWEZYdTH9RHe6EPYCqqyqChs
- C1qfPeMZdKNIVSCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5755113874;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4C5813874;
  Mon, 24 Mar 2025 23:40:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id dmJ1EmPt4WdEbAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +HxnMmPt4WdEbAAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Mon, 24 Mar 2025 23:40:19 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Mar 2025 00:40:12 +0100
-Message-ID: <20250324234016.367228-1-pvorel@suse.cz>
+Date: Tue, 25 Mar 2025 00:40:15 +0100
+Message-ID: <20250324234016.367228-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250324234016.367228-1-pvorel@suse.cz>
+References: <20250324234016.367228-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[ozlabs.org:url,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: F3FED2118A
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/4] Update doc related Makefile
+Subject: [LTP] [PATCH v3 3/4] Makefile: Update 'doc' target, add 'doc-clean'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,37 +80,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+'doc' target previously run docparse documentation. Point it to doc/
+directory so that it build sphinx docs. doc/ dir has metadata/ dir as
+dependency, no need to specify it. Call also '.venv' target.
 
-we talked about this in the meetup yesterday.
+NOTE: it's still possible to avoid virtualenv by calling 'make -C doc'
 
-I would also prefer to change 'make help' to add few reasonable targets
-(e.g. make doc), but that'll be another effort.
+Add 'doc-clean': to remove only generated data (not optional .venv).
 
-Kind regards,
-Petr
-
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
 Changes since v2:
-* Add new commit "doc/Makefile: Remove also metadata/ltp.json"
-* Add distclean in "doc/Makefile: Allow to create and use .venv"
-* Makefile: doc target: calls also '.venv' target
-* Makefile: Add 'doc-clean' target
+* 'doc' target: call also '.venv' target
+* Add 'doc-clean' target
 
-Link to v2:
-https://patchwork.ozlabs.org/project/ltp/list/?series=443894&state=*
-https://lore.kernel.org/ltp/20250211233552.1990618-1-pvorel@suse.cz/
+ Makefile | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Petr Vorel (4):
-  doc/Makefile: Remove also metadata/ltp.json
-  doc/Makefile: Allow to create and use .venv
-  Makefile: Update 'doc' target, add 'doc-clean'
-  doc: Note 'make doc' in the building doc
-
- Makefile                         | 10 ++++++++--
- doc/Makefile                     | 22 +++++++++++++++++++---
- doc/developers/documentation.rst |  2 ++
- 3 files changed, 29 insertions(+), 5 deletions(-)
-
+diff --git a/Makefile b/Makefile
+index 5066789349..0c572248a4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -169,8 +169,14 @@ INSTALL_TARGETS		+= $(addprefix $(DESTDIR)/$(bindir)/,$(BINDIR_INSTALL_SCRIPTS))
+ 
+ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ 
+-.PHONY: doc
+-doc: metadata-all
++.PHONY: doc doc-clean
++
++doc:
++	$(MAKE) -C $(abs_builddir)/doc .venv
++	$(MAKE) -C $(abs_builddir)/doc
++
++doc-clean:
++	$(MAKE) -C $(abs_builddir)/doc clean
+ 
+ .PHONY: check
+ check: $(CHECK_TARGETS)
 -- 
 2.47.2
 
