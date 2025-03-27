@@ -4,77 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8CA9C3600B
-	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 20:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3285C3600B
+	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 21:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743105672; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=/jVghR0h1e/2njk7/7yJ5emLCgrgh95lSkCmw4uubUc=;
- b=DgnZLWB3/E/Entn/LQeb6KlSEL/QMCjzwyl6gDXkSaAfoJbpwdHjMJ0abB3XpCEhyAgZM
- dPzT0vpZf1Y0HpnEEX2qZIW7LZDAcL3NdruGkK07KX9XIT+Iup0NS4r+r+tH1RT2ewc5AQD
- ZYVW7SlSDSdVtzxWGhkzieDEOKjiqJo=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743110599; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=RfIvEETI6WDBwvvEkngTDEroLx6HuxDyULX2vUNK7J4=;
+ b=Z3WtcCGk1pGkY9URzmbtryGZbzTMt+QbnoJGMK8jv3SStiKQ7VWqwAMa7Kg/JMm+oP2W6
+ DNyRjx1Rxs45Z0Ddej9KP0GKUCz1GkA2Zt9l5RxssE3xzHpY0Amqj38kkSnSr2HPWX0dsqh
+ meU27n3RJ1we7Qm0cFXUccTNsWSLA/0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16B293CA179
-	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 21:01:12 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 203263CA166
+	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 22:23:19 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 097343CA0F0
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 21:00:49 +0100 (CET)
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com
- [IPv6:2607:f8b0:4864:20::64a])
+ by picard.linux.it (Postfix) with ESMTPS id CA2533C264A
+ for <ltp@lists.linux.it>; Thu, 27 Mar 2025 22:22:57 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 171531A010CF
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 21:00:49 +0100 (CET)
-Received: by mail-pl1-x64a.google.com with SMTP id
- d9443c01a7336-2242ade807fso43740685ad.2
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 13:00:48 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A972F6023A2
+ for <ltp@lists.linux.it>; Thu, 27 Mar 2025 22:22:55 +0100 (CET)
+Received: by mail-wm1-x341.google.com with SMTP id
+ 5b1f17b1804b1-43cfebc343dso11647365e9.2
+ for <ltp@lists.linux.it>; Thu, 27 Mar 2025 14:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1743105647; x=1743710447; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=LMCT61g6Pnsmmk/rjuONE7+5nCNqd7Ej5DUpkPjvyxQ=;
- b=cwpActT0pjRV5kQyxqVb6IBtc4OrFVfnfZFeXu7yA6ZgYJVII9GpRinLghVHHBxllS
- Cr2R632Dq01nBXJiGyCZUHgkSNq0vJHtKAz/n93/WYPelDNoJyLi+VVlENkN3Eltvpc0
- /+uruc3tjtLU7ixmfy4qsuLHh/SolvuPyVSScArLuP+M8/yCRThZE7RpBTQnG9i8Vvke
- lHi08iNq+JxT7KaU65S1rSDxFfihd4V6Jm9mnNRlSBRB8qGjLZCiS2mUI9M2oImqSKBo
- VdI9izZuQ/yC1PelDz4R6Io1WmP2q+pBKMmv/3J8oQTR9AUwVZ8hKX9Gy2gAipb0IEYI
- oztw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743105647; x=1743710447;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ d=suse.com; s=google; t=1743110575; x=1743715375; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=LMCT61g6Pnsmmk/rjuONE7+5nCNqd7Ej5DUpkPjvyxQ=;
- b=iPflXFmQNS/7tgMArJoqjQtxZecmrWOT0jyOxKRy6/nRAh7Vcv0ApQyqmfE7oLMbYH
- +xNrNGm57267oYPyeLoIphdL/cFf5w9xJCJRxL0SLQ+w+V0amDnbu0v9xom7IutbjaeF
- UKNM2r+o7hO0yJsnVm1jJOZ3ZIUXnpff5REJonJASTRKC8wgEdbjKCM895HdhawdT3mi
- i89HSnRlnGvX3tC7FPpemgOai4JhpzCkiHKhxe9r6jTymj8V9sBODQn+9sfcA9GWdFHw
- wngKOMVWmu02pkTqTaCE+eRSxRX6+gQkLDRd5MMGejCIyWhG5+DhdIjFxmlPyMcEawr5
- qvPQ==
-X-Gm-Message-State: AOJu0YxIWVMm0Q8DhELNwfv8KK09om9TB5IPcGOP0xpWAEj1ARzOatmP
- KSmkiK2XXjbmRTwvo1tsdYPf1+qEBOUXwOiD7ftJcksbcvArpPGpI1ku7rNVpCKRo8g3XU1oVhc
- s/VlHM/JvIW7y8sQnPX4Atzu4rG3YiiddSpTCX9mrEu71c31GbaHALcYSUAB1R5E5j66k8Rs9tp
- q75AP8BstWSVneODaUy7Z8IuZ9cBasuiBF2PAftFBXGQw=
-X-Google-Smtp-Source: AGHT+IFtyTE3/KxKBzwnj4w2Z4Vm3KsqbDHgK5jLhAyFGPFp8Dzo8hxj7WhATN849CIms1NvqKm9R2ioyAkCxQQ=
-X-Received: from pgcg12.prod.google.com ([2002:a05:6a02:14c:b0:af1:6dd2:2c79])
- (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a21:99a0:b0:1f5:8655:3287 with SMTP id
- adf61e73a8af0-1fea2f70a02mr9914139637.40.1743105647323; 
- Thu, 27 Mar 2025 13:00:47 -0700 (PDT)
-Date: Thu, 27 Mar 2025 20:00:44 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.49.0.472.ge94155a9ec-goog
-Message-ID: <20250327200044.4104125-1-tjmercier@google.com>
-To: ltp@lists.linux.it, mkoutny@suse.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+ bh=58PkvwMWCZuE3IddUJ3Rg1M5k53HChb/W62589qXqug=;
+ b=gApqA4e80XLG/ZJ9fRNB+oHlq21P1lrEElHpr8iXOBAmy10XCE2U2ND9Fj5Ibr55mD
+ RWJiKI9cuff8HYzs73WBdfa1Gispib3vfaR65mSj6qHvLeSIEgHDoHrsJMdAJ6GLKrNW
+ mbGBjK04tCGeMgdL9ULbuNeaFDeBOgpAIXl65Ch+PHtiAMf/5i0MGpsYPuxbMOEiQAcz
+ dVl3O9/SwBgihBKWNOn3RoX7qoVsndFUR+Ql6vYvNNIPwRQn8zW5zwH2zilcu+Ry5meE
+ H9bWIgMDjXprdkdiU9B2qizXNjEP29xX/unTuX6P9ZiZPo+IQK1bf6CAXGdAgFX4wm2q
+ uBHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1743110575; x=1743715375;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=58PkvwMWCZuE3IddUJ3Rg1M5k53HChb/W62589qXqug=;
+ b=ehhjgDsplXkw41EYTiDd5eYMgsJKfISTPOCauZCD4EAjFdTNmt9b7GwCZBQrGebnGU
+ bt5r9tP87En1mSoru84CRKtJIujFfoRS4579WGgUnm4cTMrf2I28LKl3Vxgzm0EhgSZY
+ D86yqmia9h7rPjuA2fcmzHBGBb+q8f2agokmlgwFbmzYZUeBu6ae8jUE5SZl4HzdNTEg
+ wngtYMJKv4aLolcKZk1Vy43r+oQlQbIU5dBhI64JKh1H8kbWz4v/ZmVS+q17AC4thAjI
+ 0UPUmSdIAFSt4FGbeSVq1gyYGo01c2qsWnBF2j3l8ULkbK8cifFPp5l58BY3EYqxSNcu
+ 0nIg==
+X-Gm-Message-State: AOJu0YxzCXrzfS286LhWqz/qpE3FMFSi9jgPo0FLSfsviWYAGjwxc+tz
+ +FPFrzBbGM/oYojMeimf1ekUPPJkuscd4qYgG0oA6AVXuYMrrWdvpiUYN9BxAwT56gaBW4NnOJI
+ d7JvM6hl0
+X-Gm-Gg: ASbGncvtsOylD7hNvQhgsqUktzcRUpfo5T57twzMNYS432qfr1fRRsJq60N66y9B+5O
+ H6dmaHN+VYRVvds33rqYd1xUbGNjhOpwxe3yVkSMoY9+e8pXy6iS1i0egCF6mVZDb6mA+5NHi8p
+ wFe5FsGabp3o6mnz3iRjS4aBcETnYAkRiV7tPCBxRJffZKPyFOwi73MGXcAp43N4fSnl+wu25nW
+ HhyPXslS8+EQzIBDap9u3ocD17VNhHgjjK8L+zEnHIt7sfBXp/VOP9sDO0U3KtuRLikd3PryUk9
+ KT5gbGBZ9FhPJ5aDALZPDGp57Cip2OJBljteoLHHaA8El4UQPKaZQRPgftnDzRKP7242XvWGg9b
+ s8/XXvSxCTXCOKP5nRgk/6mi8bT6u1OKNQegg7MOMUgd/44oVLL8FQDJLJqMp6V17TrhE+fAtpN
+ LKa5/SSoA=
+X-Google-Smtp-Source: AGHT+IHLwilIt2NkVxY5uME2+ORmlhbGz+ycx6Vvdhw5t1trd5Ro5pC6QawsOsMfi5bFIBqp34emAg==
+X-Received: by 2002:a05:600c:46c5:b0:43c:fe90:1282 with SMTP id
+ 5b1f17b1804b1-43d8df2dafcmr23188495e9.7.1743110574789; 
+ Thu, 27 Mar 2025 14:22:54 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-43d82dede98sm49954105e9.6.2025.03.27.14.22.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 27 Mar 2025 14:22:53 -0700 (PDT)
+Message-ID: <e25e8ddd-a5ea-414f-a5d7-50afd50fd20a@suse.com>
+Date: Thu, 27 Mar 2025 22:22:53 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <20250324234016.367228-1-pvorel@suse.cz>
+ <20250324234016.367228-3-pvorel@suse.cz>
+ <4c07a227-8fb6-4a9a-b664-d75d726a3d39@suse.com>
+ <20250325094825.GA372417@pevik>
+ <67679d92-f7fa-4720-bb42-343edfe2fd3a@suse.com>
+ <20250327145707.GA88071@pevik>
+Content-Language: en-US
+In-Reply-To: <20250327145707.GA88071@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] memcg_control_test: Disable swapping in test cgroup
- for v2
+Subject: Re: [LTP] [PATCH v3 2/4] doc/Makefile: Allow to create and use .venv
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,68 +108,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "T.J. Mercier via ltp" <ltp@lists.linux.it>
-Reply-To: "T.J. Mercier" <tjmercier@google.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-memcg_control_test_1 sets both a memory limit and a memsw/swap limit to
-a single page, and then asks mem_process to allocate 2 pages in an
-attempt to cause a memcg OOM kill. However, if swapping is enabled the
-first page can be swapped before the second is allocated causing neither
-limit to be exceeded in v2 since there is no combined memsw counter in
-v2. In this case no OOM kill will occur which results in a test failure.
-Fix this by disabling swap in the test cgroup for v2 if swap is enabled,
-causing both pages to always be accounted under the same counter such
-that memory.max causes an OOM kill.
+Hi Petyr,
 
-Fixes: c0b815736 ("New testcase added by Naufal.")
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
----
- .../memcg/control/memcg_control_test.sh            | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+On 3/27/25 15:57, Petr Vorel wrote:
+> Hi Andrea,
+>
+>> Hi Petr,
+>> On 3/25/25 10:48, Petr Vorel wrote:
+>>> Hi Andrea,
+>>> first, thanks for your review.
+>>>> Hi,
+>>>> On 3/25/25 00:40, Petr Vorel wrote:
+>>>>> This is an optional target (not run by default).
+>>>>> If .venv exists, it's used in other targets.
+>>>>> This helps to use virtualenv for development, but avoid using it by
+>>>>> default (readthedoc uses container with virtualenv, creating it would be
+>>>>> waste of time).
+>>>>> Add 'distclean' target which removes also .venv/ directory.
+>>>>> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+>>>>> ---
+>>>>> Changes since v2:
+>>>>> * Add distclean in "doc/Makefile: Allow to create and use .venv"
+>>>>>     doc/Makefile | 19 +++++++++++++++++--
+>>>>>     1 file changed, 17 insertions(+), 2 deletions(-)
+>>>>> diff --git a/doc/Makefile b/doc/Makefile
+>>>>> index 3c5682ad00..3b8265d88e 100644
+>>>>> --- a/doc/Makefile
+>>>>> +++ b/doc/Makefile
+>>>>> @@ -5,15 +5,30 @@ top_srcdir		?= ..
+>>>>>     include $(top_srcdir)/include/mk/env_pre.mk
+>>>>> +PYTHON := python3
+>>>>> +VENV_DIR := .venv
+>>>>> +VENV_CMD := . $(VENV_DIR)/bin/activate
+>>>> This will cut off all shells not supporting "activate" script, such as fish
+>>>> or csh.
+>>> I would guess csh is not much used nowadays in Linux. I would dare to say bash
+>>> is much more popular than modern fish (I know more people using zsh), but sure,
+>>> how about:
+>>> VENV_CMD := . $(VENV_DIR)/bin/activate || . venv/bin/activate.fish
+>>> Or even add also activate.csh if you think people are using it.
+>>> I would ignore the rest of activate.* scripts
+>> Yeah, somehow we need to handle those shells.
+> I don't have openSUSE statistics, thus using Debian popcon:
+>
+> * bash: 99.98%
+> https://qa.debian.org/popcon.php?package=bash
+>
+> * zsh (compatible with bash):  7.32%
+> https://qa.debian.org/popcon.php?package=zsh
+>
+> * fish (you're using): 1.95%
+> https://qa.debian.org/popcon.php?package=fish
+>
+> * csh + tcsh: 0.67% + 1.91%
+> https://qa.debian.org/popcon.php?package=tcsh
+> https://qa.debian.org/popcon.php?package=csh
+>
+> I'm not really convinced anybody uses {t}csh on shell development, but ok,
+> giving up and add also this support :).
+Thanks for the stats. Let's keep bash only then. Default will be good.
+>>>> Quite possible this Makefile would work only on CI, since developers often
+>>>> customize their own shells, unless you override VENV_CMD. And, in that case,
+>>>> virtualenv creation is 1 command away and it makes this Makefile feature
+>>>> superfluous.
+>>> I would say in with the above it will work for most of the users (I have heavily
+>>> customised shell and venv always worked) and yes, it allows to overwrite.
+>>> make VENV_CMD=". .venv/bin/activate.csh"
+>>>>> +RUN_VENV := if [ -d $(VENV_DIR) ]; then $(VENV_CMD); fi
+>>>>> +
+>>>>> +# install sphinx only if needed
+>>>>> +INSTALL_SPHINX := $(shell $(PYTHON) -c "import sphinx" 2>/dev/null && echo ":" || echo "pip install sphinx")
+>>>> This can be added to requirements.txt, there's no need to handle it in
+>>>> Makefile.
+>>> I added this as it speeds up the installation. Sure, I can remove it.
+>>>>> +
+>>>>> +$(VENV_DIR):
+>>>> "setup" stage is more clear than using virtualenv directory name.
+>>> Using directory name gives us detection if it's needed for free. You complained
+>>> about Makefile getting complicated, using setup would complicate it more. Do you
+>>> want that?
+>> "make setup" is not complicated. Fixing command based on the folder name is:
+>> none cares how the virtualenv folder is named and none really wants to
+>> remember how it's called.
+>> If the goal is to keep things simple, exposing Makefile implementations to
+>> the users sounds weird and counterintuitive.
+> I'm ok to have phony target 'setup' which points to '.venv' target (less code
+> than to have only setup target bug check for directory presence). I suppose you
+> talk only about the make target, not about the virtualenv directory name.
+>
+> About the directory name: I felt '.venv' is kind of the default directory which
+> is used by people for virtualenv. Looking at:
+> https://codesearch.debian.net/search?q=%5C.venv&perpkg=1&page=1
+> People mostly use: .venv, then venv, .venv*, venv*, .env, env, .eggs
+>
+> That's why it make sense to me create the directory as '.venv'. Also it's good
+> that it's a hidden directory (starts with '.'). Hope you agree.
+>
+> Kind regards,
+> Petr
+>
+>> Andrea
+Yes I meant "make setup" target, not the virtualenv directory name. That 
+can be anything and ".venv" is fine.
 
-diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-index 68287a70c..79b3a02a9 100644
---- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-+++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-@@ -12,7 +12,6 @@ TST_NEEDS_TMPDIR=1
- 
- PAGE_SIZE=$(tst_getconf PAGESIZE)
- 
--TOT_MEM_LIMIT=$PAGE_SIZE
- ACTIVE_MEM_LIMIT=$PAGE_SIZE
- PROC_MEM=$((PAGE_SIZE * 2))
- 
-@@ -50,13 +49,22 @@ test1()
- 
- 	# If the kernel is built without swap, the $memsw_memory_limit file is missing
- 	if [ -e "$test_dir/$memsw_memory_limit" ]; then
--		ROD echo "$TOT_MEM_LIMIT" \> "$test_dir/$memsw_memory_limit"
-+		if [ "$cgroup_version" = "2" ]; then
-+			# v2 does not have a combined memsw limit like v1.
-+			# Disable swapping in v2 so all pages get acccounted to the non-swap counter.
-+			SWAP_LIMIT=0
-+		else
-+			# Swapping cannot be disabled via memsw.limit_in_bytes in v1.
-+			# Apply a memsw limit in v1 to capture any swapped pages
-+			SWAP_LIMIT=$ACTIVE_MEM_LIMIT
-+		fi
-+		ROD echo "$SWAP_LIMIT" \> "$test_dir/$memsw_memory_limit"
- 	fi
- 
- 	KILLED_CNT=0
- 	test_proc_kill
- 
--	if [ $PROC_MEM -gt $TOT_MEM_LIMIT ] && [ $KILLED_CNT -eq 0 ]; then
-+	if [ $KILLED_CNT -eq 0 ]; then
- 		tst_res TFAIL "Test #1: failed"
- 	else
- 		tst_res TPASS "Test #1: passed"
--- 
-2.49.0.472.ge94155a9ec-goog
+
+Andrea
 
 
 -- 
