@@ -4,104 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436EAC3600B
-	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 14:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743085900; h=date :
- mime-version : message-id : references : in-reply-to : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=AV76jqivhDCYNpKuhLikOWIRFrgc3uQ0UW3R/oax04A=;
- b=COvmDJ2bw9lRzZBWIJe9LyK8BpetyVc8VBaGe1cwF0/5u27m4+ZX+pC89AzXtYqw1G8Zi
- xgMIxMKWRnWkzB7jvzcf5RmnUWbz45wuJlVoses1ozRODiii/BEA6thES6Wtd8C7vj+8Ip5
- 0rxUrpfoCq9O2Oz+w1hjA2wNjJF103c=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C420C3600B
+	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 14:57:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C518C3C9FB0
-	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 15:31:40 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0D4943C9FF6
+	for <ltp@archiver.kernel.org>; Thu, 27 Mar 2025 15:57:33 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8E1513C9FBD
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 15:29:01 +0100 (CET)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 39BFF3C9F5B
+ for <ltp@lists.linux.it>; Thu, 27 Mar 2025 15:57:16 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D10DB1A00EB6
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 15:29:00 +0100 (CET)
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-39ac8e7688aso854176f8f.2
- for <ltp@lists.linux.it>; Thu, 27 Mar 2025 07:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743085740; x=1743690540; darn=lists.linux.it;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:from:to:cc:subject:date:message-id
- :reply-to; bh=uJMbBPVckLEJWngXQ/gDKhKzm4vzNo4dDxryMqxsppY=;
- b=O4PKsETBpGUBTKG84PGVACz5m3Qi/D1FH+T/renx/haVilrS9DV0aY95yj6f+FiVrq
- CHNPhNaMmP89aUYh0bvt1wKOzw9IHPKq8CWukoxjZjk0Zyy9X6dZbWtdFKNvM9a22Ami
- ad1u5S45JBH/WqoUxuLgn34YlfU/LNvQ6o0vMa/4oxpSGkPDt9sS09cZBJgDa8ztDsTW
- eXt+o7gg9SkIWN5osOE1h+ovkvgNLUpOfRiMMgZsNl1K+ZTPeUxaq2bptWUGt75xJLND
- 2OXcp8EOGcXxd10f1GwU+PN+TcH6pSMWoNdeVH6IUdBBn5b4zYztgLjhFHiV5KbWWPqY
- j9Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743085740; x=1743690540;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=uJMbBPVckLEJWngXQ/gDKhKzm4vzNo4dDxryMqxsppY=;
- b=uTS688DAof5blPUOpWDRBPUby3iLrtym4i9y0JiR1mhtN7yz4+y1ERtD5nna1pCAX9
- SqgwhXjKwPHZEjrJYmsUpEIrnDbPyS7KcGxM+hwYsistmoVYwobgBp5hUIREQ1WYKUt+
- kNk9Q+kW4FWmB6MZX7KLIGU3kEScxgElp/zziirzxsBTdoAgekJKkoW1kkus9O+WqTv+
- 5O6ZP6mU/+SoW9u/JKAeVwQoCv88wSIPI40x8S+Ui6DWmJpZ7wTvMNwg+SfD69mGPWQb
- N/jA4De/uUNY0jKeYx5SrdGP3wwUk3NhFVFb3basU4NrXvt3DcBbmhhytKEOR83uU0dO
- Z40Q==
-X-Gm-Message-State: AOJu0YyoSsd79bOe1dlR1bODOtQvHIajh8DNaT7LzSf8fvcIXcuydYsN
- OgOoFsnSpq3ISgEb0QjiHFKfsgojyKvDlWhe6F/AmUYw08k3cp6yJ9qx+Hxz/VW0XL9/zSUGkJ3
- T
-X-Gm-Gg: ASbGncsebKXe2oKJPBxYKpvBWNOsDud2phDaSplqpQ7q1N6680w1g5kEIYh8KtSGA4J
- k6p8OQYp4kdvq3b5VzGJkGdf6L6vvY9dLXFtar2lpUQ6yoyyS5lKshmbX9YZN3y6p7e3emRN9KM
- eqqRBTwM192aAyMPunD14Sto5RKFaW/EVGHOnIDAfW8NSiyZ0iHDfxXxSlsp6Afkx/oVYZqUkGw
- 9Gz4xIJdX9KCa2ePnxgvevtAKaaS0lmeOmiNbFKns9OIPO7ZKn9tfmOqmlwKoc4i7nJi2RGL5oy
- wuY8jjjufuY7xIE0ao/BTlLWSU6LLa7RgQ==
-X-Google-Smtp-Source: AGHT+IEWp+ODzQXF5Sz0zklQOX+GQFdLyYbEbcIMbYNmoCA7IxPHxCGPc/+Ca547uO664aT87r89ZQ==
-X-Received: by 2002:a5d:47a9:0:b0:391:ab2:9e71 with SMTP id
- ffacd0b85a97d-39ad174b4d3mr2731274f8f.20.1743085740204; 
- Thu, 27 Mar 2025 07:29:00 -0700 (PDT)
-Received: from localhost ([179.228.213.210])
- by smtp.gmail.com with UTF8SMTPSA id
- d9443c01a7336-227811b808bsm128993395ad.141.2025.03.27.07.28.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Mar 2025 07:28:59 -0700 (PDT)
-Date: Thu, 27 Mar 2025 11:28:29 -0300
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6DFEE1400F2F
+ for <ltp@lists.linux.it>; Thu, 27 Mar 2025 15:57:15 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 215A71F78D;
+ Thu, 27 Mar 2025 14:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743087433;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SC4kKTNrwGnKy9+iPFfTPIV1jH6r0PrR7Bwv5sm9O80=;
+ b=X1kL7FIhF0zqUUIynMAiKpzgGaFyrqxcctrDPGvCg76zKoUJ4oQ5CbAS9q3/3gVCXh4on1
+ hGp8Uxt36iXKuOcJHe5ZpYqOLWN2+HXQ2tFdnB3/b+m9DNDNfU7d4wWoP/p07V4Wj//LJU
+ Lxozap8vh0S9BLQE9B1e5GjsEkcuSZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743087433;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SC4kKTNrwGnKy9+iPFfTPIV1jH6r0PrR7Bwv5sm9O80=;
+ b=H7M0PyGtXdJ8Wj9zjlukjwneQdMibVi1baWpBeQVvDN6pEhlpFSPWrbPMBhilHHG0NfUNf
+ v5W+t+t7uR4q4BBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743087433;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SC4kKTNrwGnKy9+iPFfTPIV1jH6r0PrR7Bwv5sm9O80=;
+ b=X1kL7FIhF0zqUUIynMAiKpzgGaFyrqxcctrDPGvCg76zKoUJ4oQ5CbAS9q3/3gVCXh4on1
+ hGp8Uxt36iXKuOcJHe5ZpYqOLWN2+HXQ2tFdnB3/b+m9DNDNfU7d4wWoP/p07V4Wj//LJU
+ Lxozap8vh0S9BLQE9B1e5GjsEkcuSZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743087433;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SC4kKTNrwGnKy9+iPFfTPIV1jH6r0PrR7Bwv5sm9O80=;
+ b=H7M0PyGtXdJ8Wj9zjlukjwneQdMibVi1baWpBeQVvDN6pEhlpFSPWrbPMBhilHHG0NfUNf
+ v5W+t+t7uR4q4BBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 046891376E;
+ Thu, 27 Mar 2025 14:57:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id C6cMAEln5WfdawAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 27 Mar 2025 14:57:13 +0000
+Date: Thu, 27 Mar 2025 15:57:07 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250327145707.GA88071@pevik>
+References: <20250324234016.367228-1-pvorel@suse.cz>
+ <20250324234016.367228-3-pvorel@suse.cz>
+ <4c07a227-8fb6-4a9a-b664-d75d726a3d39@suse.com>
+ <20250325094825.GA372417@pevik>
+ <67679d92-f7fa-4720-bb42-343edfe2fd3a@suse.com>
 MIME-Version: 1.0
-Message-Id: <20250327-conversions-modify_ldt-v2-6-2907d4d3f6c0@suse.com>
-References: <20250327-conversions-modify_ldt-v2-0-2907d4d3f6c0@suse.com>
-In-Reply-To: <20250327-conversions-modify_ldt-v2-0-2907d4d3f6c0@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6501; i=rbm@suse.com;
- h=from:subject:message-id; bh=1CburQga58RYgTg+eXLBTZIkIpE9iFkypbwrOwxZKo8=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBn5WCXZl7u0MYbf3XQ1cTaEdA9OQXx1Lhy4bqkr
- DsE+eOYUjSJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ+VglwAKCRDJC4p8Y4ZY
- pt8FEACHvtp9uGsBcCSu9Ri+05yj8P61bmHEDlKmbgU0zB6i8R0j5ahKcPcuaYzcYywdTGhq83Q
- 8qDa/Qd+sQDJ+TuOCvYdglYUXVoDGELk70kYke9AeABpG3nswOZ7Nnw0nkoR2YLtoir7UWFzf6j
- 9T9yRtSwV5bctmphCqKrw8YYR71HC/gQILxbYbR7XlY+GdXXNBFP8elUkXQ3f3jdzwXepCdhTLs
- C5uV5+pQtMkJtgyzjJD0Pey8BE9wWpM8gS8xsR0vU8fZz1qwoHqRKlIp8GDb8QPtqC6szCXglJ3
- Os2lYZ67t6JxH3HPecLhLvKZUHV1B7e/fjmCfN2ccoKx1XVoq5kYXrh4ae7UDrpzeg06UjE7oZG
- 7YGqiFS88xJjU08OegVQ0rI6GSA6dMcrz8GqxD3/t5oOkbue47lptKOloV//CZIJgHnIkEhk8r4
- PjQlNezy3BRHidmgSMDUBn5t3mXHceYRtuYOyTi8VUhpi07DCixwUbfCfS3QzPkleOfnfbWNox4
- U+ZkEn90BDPMsl+A6sLw9NbLcYz6lrn/v+zZPr6p7FAfZwhI8+6pbJ2og6FifjBjdp8GNbRm27r
- EKAAHLl7GLP0A/rLOuty/pCSQ27YFFpwlGoxUNu9f0QvzuTTcvb2aCKLfJX8u5Ykbt65BiBW2Vg
- inWu6c8+LSWYY7A==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <67679d92-f7fa-4720-bb42-343edfe2fd3a@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/6] syscalls/set_thread_area01: Refactor into new
- API
+Subject: Re: [LTP] [PATCH v3 2/4] doc/Makefile: Allow to create and use .venv
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,124 +116,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: rbm@suse.com
-Cc: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClNpZ25lZC1vZmYtYnk6
-IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Ci0tLQogLi4uL3N5c2NhbGxzL3Nl
-dF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEuaCAgICAgfCAgMzEgLS0tLS0tCiAuLi4vc3lz
-Y2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAxLmMgICB8IDEyMCArKysrKyst
-LS0tLS0tLS0tLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKSwgMTE2IGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3Ro
-cmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYS5oIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9z
-ZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhLmgKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0
-CmluZGV4IDJiZDI0NjlkNTQ5ZWNmOGM1YzU4OWEwYTk0ODVmODg2ZDA0M2Y3ZWQuLjAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhLmgKKysrIC9kZXYvbnVsbApA
-QCAtMSwzMSArMCwwIEBACi0jaW5jbHVkZSA8c3RkaW8uaD4KLSNpbmNsdWRlIDxlcnJuby5oPgot
-Ci0vKiBIYXJuZXNzIFNwZWNpZmljIEluY2x1ZGUgRmlsZXMuICovCi0jaW5jbHVkZSAidGVzdC5o
-IgotI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKLSNpbmNsdWRlICJjb25maWcuaCIKLQotI2lm
-IGRlZmluZWQgSEFWRV9BU01fTERUX0gKLSNpbmNsdWRlIDxsaW51eC91bmlzdGQuaD4KLSNpbmNs
-dWRlIDxhc20vbGR0Lmg+Ci0KLSNpZiBkZWZpbmVkIEhBVkVfU1RSVUNUX1VTRVJfREVTQwotdHlw
-ZWRlZiBzdHJ1Y3QgdXNlcl9kZXNjIHRocmVhZF9hcmVhX3M7Ci0jZWxpZiBkZWZpbmVkIEhBVkVf
-U1RSVUNUX01PRElGWV9MRFRfTERUX1MKLXR5cGVkZWYgc3RydWN0IG1vZGlmeV9sZHRfbGR0X3Mg
-dGhyZWFkX2FyZWFfczsKLSNlbHNlCi10eXBlZGVmIHN0cnVjdCB1c2VyX2Rlc2MgewotCXVuc2ln
-bmVkIGludCBlbnRyeV9udW1iZXI7Ci0JdW5zaWduZWQgbG9uZyBpbnQgYmFzZV9hZGRyOwotCXVu
-c2lnbmVkIGludCBsaW1pdDsKLQl1bnNpZ25lZCBpbnQgc2VnXzMyYml0OjE7Ci0JdW5zaWduZWQg
-aW50IGNvbnRlbnRzOjI7Ci0JdW5zaWduZWQgaW50IHJlYWRfZXhlY19vbmx5OjE7Ci0JdW5zaWdu
-ZWQgaW50IGxpbWl0X2luX3BhZ2VzOjE7Ci0JdW5zaWduZWQgaW50IHNlZ19ub3RfcHJlc2VudDox
-OwotCXVuc2lnbmVkIGludCB1c2VhYmxlOjE7Ci0JdW5zaWduZWQgaW50IGVtcHR5OjI1OwotfSB0
-aHJlYWRfYXJlYV9zOwotI2VuZGlmIC8qIEhBVkVfU1RSVUNUX1VTRVJfREVTQyAqLwotI2VuZGlm
-IC8qIEhBVkVfQVNNX0xEVF9IICovCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMS5jIGIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhMDEuYwppbmRleCAzMDYy
-NmQ1ZTkwZWJmOGUyMDYyNGMzNzBjYzQ0NzRjYjUxYTZiMTAyLi5iYmMyMTk3NTZiNDE0NjE3MjIy
-NDM1NDE2YzZlY2Q2M2EwNmM1YjQxIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMS5jCisrKyBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAxLmMKQEAgLTEs
-NjAgKzEsMzcgQEAKLS8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMC1vci1sYXRlcgorLyoKICAqIENvcHlyaWdodCAoYykgQ3JhY2tlcmphY2sgUHJv
-amVjdC4sIDIwMDcKICAqIENvcHlyaWdodCAoYykgTWFuYXMgS3VtYXIgTmF5YWsgPG1ha25heWFr
-QGluLmlibS5jb20+CiAgKiBDb3B5cmlnaHQgKGMpIEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNl
-LmN6PiAyMDExCi0gKgotICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2Fu
-IHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Ci0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2Yg
-dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQotICogdGhlIEZy
-ZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwg
-b3IKLSAqIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCi0gKgotICogVGhpcyBw
-cm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWws
-Ci0gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQg
-d2FycmFudHkgb2YKLSAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VM
-QVIgUFVSUE9TRS4gIFNlZQotICogdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBt
-b3JlIGRldGFpbHMuCi0gKgotICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0
-aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSAqIGFsb25nIHdpdGggdGhpcyBwcm9ncmFt
-OyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQotICogRm91bmRhdGlvbiwgSW5j
-LiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAx
-IFVTQQotICoKLSAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKiovCisgKiBDb3B5cmlnaHQgKGMpIDIwMjUgU1VTRSBM
-TEMgUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KKyAqLwogCi0jaW5jbHVkZSAi
-c2V0X3RocmVhZF9hcmVhLmgiCisvKlwKKyAqIFRoZSB0ZXN0IHdpbGwgZmlyc3QgY2FsbCBzZXRf
-dGhyZWFkX2FyZWEgdG8gYSBzdHJ1Y3QgdXNlcl9kZXNjIHBvaW50ZXIgd2l0aAorICogZW50cnlf
-bnVtYmVyID0gLTEsIHdoaWNoIHdpbGwgYmUgc2V0IHRvIGEgZnJlZSBlbnRyeV9udW1iZXIgdXBv
-biBleGl0aW5nLgorICogVGhlcmVmb3JlLCBhIHN1YnNlcXVlbnQgY2FsbCB0byBnZXRfdGhyZWFk
-X2FyZWEgdXNpbmcgdGhlIHNhbWUgcG9pbnRlciB3aWxsCisgKiBiZSB2YWxpZC4gVGhlIHNhbWUg
-cHJvY2VzcyBpcyBkb25lIGJ1dCB1c2luZyAtMiBpbnN0ZWFkLCB3aGljaCByZXR1cm5zIEVJTlZB
-TAorICogdG8gYm90aCBjYWxscy4gRmluYWxseSwgaXQncyBkb25lIG9uZSBtb3JlIHRpbWUgYnV0
-IHRvIGFuIGludmFsaWQgcG9pbnRlciBhbmQKKyAqIHRoZXJlZm9yZSBhbiBFRkFVTFQgaXMgcmV0
-dXJuZWQuCisgKi8KIAotY2hhciAqVENJRCA9ICJzZXRfdGhyZWFkX2FyZWFfMDEiOwotaW50IFRT
-VF9UT1RBTCA9IDY7CisjaW5jbHVkZSAidHN0X3Rlc3QuaCIKIAotI2lmIGRlZmluZWQoSEFWRV9B
-U01fTERUX0gpICYmIGRlZmluZWQoSEFWRV9TVFJVQ1RfVVNFUl9ERVNDKQorI2lmZGVmIF9faTM4
-Nl9fCisjaW5jbHVkZSAibGFwaS9sZHQuaCIKIAotc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQot
-ewotfQorI2RlZmluZSBWQUxVRV9BTkRfU1RSSU5HKHZhbCkgdmFsLCAjdmFsCiAKLXN0YXRpYyB2
-b2lkIHNldHVwKHZvaWQpCi17Ci0JVEVTVF9QQVVTRTsKLX0KK3N0YXRpYyBzdHJ1Y3QgdXNlcl9k
-ZXNjIHVfaW5mbzEgPSB7LmVudHJ5X251bWJlciA9IC0xIH07CitzdGF0aWMgc3RydWN0IHVzZXJf
-ZGVzYyB1X2luZm8yID0gey5lbnRyeV9udW1iZXIgPSAtMiB9OwogCi1zdHJ1Y3QgdGVzdCB7Citz
-dGF0aWMgc3RydWN0IHRzdF9jYXNlIHsKIAlpbnQgc3lzY2FsbDsKIAljb25zdCBjaGFyICpjb25z
-dCBzeXNjYWxsX25hbWU7Ci0JdGhyZWFkX2FyZWFfcyAqdV9pbmZvOworCXN0cnVjdCB1c2VyX2Rl
-c2MgKnVfaW5mbzsKIAlpbnQgZXhwX3JldDsKIAlpbnQgZXhwX2Vycm5vOwotfTsKLQotLyoKLSAq
-IFRoZSBzZXRfdGhyZWFkX2FyZWEgdXNlcyBhIGZyZWUgZW50cnlfbnVtYmVyIGlmIGVudHJ5IG51
-bWJlciBpcyBzZXQgdG8gLTEKLSAqIGFuZCB1cG9uIHRoZSBzeXNjYWxsIGV4aXQgdGhlIGVudHJ5
-IG51bWJlciBpcyBzZXQgdG8gZW50cnkgd2hpY2ggd2FzIHVzZWQuCi0gKiBTbyB3aGVuIHdlIGNh
-bGwgZ2V0X3RocmVhZF9hcmVhIG9uIHVfaW5mbzEsIHRoZSBlbnRyeSBudW1iZXIgaXMgaW5pdGFs
-aXplZAotICogY29yZWN0bHkgYnkgdGhlIHByZXZpb3VzIHNldF90aHJlYWRfYXJlYS4KLSAqLwot
-c3RhdGljIHN0cnVjdCB1c2VyX2Rlc2MgdV9pbmZvMSA9IHsuZW50cnlfbnVtYmVyID0gLTEgfTsK
-LXN0YXRpYyBzdHJ1Y3QgdXNlcl9kZXNjIHVfaW5mbzIgPSB7LmVudHJ5X251bWJlciA9IC0yIH07
-Ci0KLSNkZWZpbmUgVkFMVUVfQU5EX1NUUklORyh2YWwpIHZhbCwgI3ZhbAotCi1zdGF0aWMgc3Ry
-dWN0IHRlc3QgdGVzdHNbXSA9IHsKK30gdHN0X2Nhc2VzW10gPSB7CiAJe1ZBTFVFX0FORF9TVFJJ
-TkcoX19OUl9zZXRfdGhyZWFkX2FyZWEpLCAmdV9pbmZvMSwgMCwgMH0sCiAJe1ZBTFVFX0FORF9T
-VFJJTkcoX19OUl9nZXRfdGhyZWFkX2FyZWEpLCAmdV9pbmZvMSwgMCwgMH0sCiAJe1ZBTFVFX0FO
-RF9TVFJJTkcoX19OUl9zZXRfdGhyZWFkX2FyZWEpLCAmdV9pbmZvMiwgLTEsIEVJTlZBTH0sCkBA
-IC02Myw0OSArNDAsMjIgQEAgc3RhdGljIHN0cnVjdCB0ZXN0IHRlc3RzW10gPSB7CiAJe1ZBTFVF
-X0FORF9TVFJJTkcoX19OUl9nZXRfdGhyZWFkX2FyZWEpLCAodm9pZCAqKS05LCAtMSwgRUZBVUxU
-fSwKIH07CiAKLWludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCi17Ci0JaW50IGxjOwot
-CXVuc2lnbmVkIGk7Ci0KLQl0c3RfcGFyc2Vfb3B0cyhhcmdjLCBhcmd2LCBOVUxMLCBOVUxMKTsK
-LQotCXNldHVwKCk7CiAKLQlmb3IgKGxjID0gMDsgVEVTVF9MT09QSU5HKGxjKTsgbGMrKykgewot
-CQlmb3IgKGkgPSAwOyBpIDwgc2l6ZW9mKHRlc3RzKSAvIHNpemVvZihzdHJ1Y3QgdGVzdCk7IGkr
-KykgewotCQkJVEVTVCh0c3Rfc3lzY2FsbCh0ZXN0c1tpXS5zeXNjYWxsLCB0ZXN0c1tpXS51X2lu
-Zm8pKTsKLQotCQkJaWYgKFRFU1RfUkVUVVJOICE9IHRlc3RzW2ldLmV4cF9yZXQpIHsKLQkJCQl0
-c3RfcmVzbShURkFJTCwgIiVzIHJldHVybmVkICVsaSBleHBlY3RlZCAlaSIsCi0JCQkJCSB0ZXN0
-c1tpXS5zeXNjYWxsX25hbWUsCi0JCQkJCSBURVNUX1JFVFVSTiwgdGVzdHNbaV0uZXhwX3JldCk7
-Ci0JCQkJY29udGludWU7Ci0JCQl9Cit2b2lkIHJ1bih1bnNpZ25lZCBpbnQgaSkKK3sKKwlzdHJ1
-Y3QgdHN0X2Nhc2UgKnRjID0gJnRzdF9jYXNlc1tpXTsKIAotCQkJaWYgKFRFU1RfRVJSTk8gIT0g
-dGVzdHNbaV0uZXhwX2Vycm5vKSB7Ci0JCQkJdHN0X3Jlc20oVEZBSUwsCi0JCQkJCSAiJXMgZmFp
-bGVkIHdpdGggJWkgKCVzKSBleHBlY3RlZCAlaSAoJXMpIiwKLQkJCQkJIHRlc3RzW2ldLnN5c2Nh
-bGxfbmFtZSwgVEVTVF9FUlJOTywKLQkJCQkJIHN0cmVycm9yKFRFU1RfRVJSTk8pLAotCQkJCQkg
-dGVzdHNbaV0uZXhwX2Vycm5vLAotCQkJCQkgc3RyZXJyb3IodGVzdHNbaV0uZXhwX2Vycm5vKSk7
-Ci0JCQkJY29udGludWU7Ci0JCQl9CisJaWYgKHRjLT5leHBfZXJybm8pCisJCVRTVF9FWFBfRkFJ
-TCh0c3Rfc3lzY2FsbCh0Yy0+c3lzY2FsbCwgdGMtPnVfaW5mbyksIHRjLT5leHBfZXJybm8pOwor
-CWVsc2UKKwkJVFNUX0VYUF9QQVNTKHRzdF9zeXNjYWxsKHRjLT5zeXNjYWxsLCB0Yy0+dV9pbmZv
-KSk7Cit9CiAKLQkJCXRzdF9yZXNtKFRQQVNTLCAiJXMgcmV0dXJuZWQgJWxpIGVycm5vICVpICgl
-cykiLAotCQkJCSB0ZXN0c1tpXS5zeXNjYWxsX25hbWUsIFRFU1RfUkVUVVJOLAotCQkJCSBURVNU
-X0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5PKSk7Ci0JCX0KLQl9CitzdGF0aWMgc3RydWN0IHRz
-dF90ZXN0IHRlc3QgPSB7CisJLnRlc3QgPSBydW4sCisJLnRjbnQgPSBBUlJBWV9TSVpFKHRzdF9j
-YXNlcyksCit9OwogCi0JY2xlYW51cCgpOwotCXRzdF9leGl0KCk7Ci19CiAjZWxzZQotaW50IG1h
-aW4odm9pZCkKLXsKLQl0c3RfYnJrbShUQ09ORiwgTlVMTCwKLQkJICJzZXRfdGhyZWFkX2FyZWEg
-aXNuJ3QgYXZhaWxhYmxlIGZvciB0aGlzIGFyY2hpdGVjdHVyZSIpOwotfQotI2VuZGlmCitUU1Rf
-VEVTVF9UQ09ORigiVGVzdCBzdXBwb3J0ZWQgb25seSBvbiBpMzg2Iik7CisjZW5kaWYgLyogX19p
-Mzg2X18gKi8KCi0tIAoyLjQ5LjAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi Andrea,
+
+> Hi Petr,
+
+> On 3/25/25 10:48, Petr Vorel wrote:
+> > Hi Andrea,
+
+> > first, thanks for your review.
+
+> > > Hi,
+> > > On 3/25/25 00:40, Petr Vorel wrote:
+> > > > This is an optional target (not run by default).
+> > > > If .venv exists, it's used in other targets.
+> > > > This helps to use virtualenv for development, but avoid using it by
+> > > > default (readthedoc uses container with virtualenv, creating it would be
+> > > > waste of time).
+> > > > Add 'distclean' target which removes also .venv/ directory.
+> > > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > > ---
+> > > > Changes since v2:
+> > > > * Add distclean in "doc/Makefile: Allow to create and use .venv"
+> > > >    doc/Makefile | 19 +++++++++++++++++--
+> > > >    1 file changed, 17 insertions(+), 2 deletions(-)
+> > > > diff --git a/doc/Makefile b/doc/Makefile
+> > > > index 3c5682ad00..3b8265d88e 100644
+> > > > --- a/doc/Makefile
+> > > > +++ b/doc/Makefile
+> > > > @@ -5,15 +5,30 @@ top_srcdir		?= ..
+> > > >    include $(top_srcdir)/include/mk/env_pre.mk
+> > > > +PYTHON := python3
+> > > > +VENV_DIR := .venv
+> > > > +VENV_CMD := . $(VENV_DIR)/bin/activate
+> > > This will cut off all shells not supporting "activate" script, such as fish
+> > > or csh.
+> > I would guess csh is not much used nowadays in Linux. I would dare to say bash
+> > is much more popular than modern fish (I know more people using zsh), but sure,
+> > how about:
+
+> > VENV_CMD := . $(VENV_DIR)/bin/activate || . venv/bin/activate.fish
+
+> > Or even add also activate.csh if you think people are using it.
+> > I would ignore the rest of activate.* scripts
+> Yeah, somehow we need to handle those shells.
+
+I don't have openSUSE statistics, thus using Debian popcon:
+
+* bash: 99.98%
+https://qa.debian.org/popcon.php?package=bash
+
+* zsh (compatible with bash):  7.32%
+https://qa.debian.org/popcon.php?package=zsh
+
+* fish (you're using): 1.95%
+https://qa.debian.org/popcon.php?package=fish
+
+* csh + tcsh: 0.67% + 1.91%
+https://qa.debian.org/popcon.php?package=tcsh
+https://qa.debian.org/popcon.php?package=csh
+
+I'm not really convinced anybody uses {t}csh on shell development, but ok,
+giving up and add also this support :).
+
+> > > Quite possible this Makefile would work only on CI, since developers often
+> > > customize their own shells, unless you override VENV_CMD. And, in that case,
+> > > virtualenv creation is 1 command away and it makes this Makefile feature
+> > > superfluous.
+> > I would say in with the above it will work for most of the users (I have heavily
+> > customised shell and venv always worked) and yes, it allows to overwrite.
+
+> > make VENV_CMD=". .venv/bin/activate.csh"
+
+> > > > +RUN_VENV := if [ -d $(VENV_DIR) ]; then $(VENV_CMD); fi
+> > > > +
+> > > > +# install sphinx only if needed
+> > > > +INSTALL_SPHINX := $(shell $(PYTHON) -c "import sphinx" 2>/dev/null && echo ":" || echo "pip install sphinx")
+> > > This can be added to requirements.txt, there's no need to handle it in
+> > > Makefile.
+> > I added this as it speeds up the installation. Sure, I can remove it.
+
+> > > > +
+> > > > +$(VENV_DIR):
+> > > "setup" stage is more clear than using virtualenv directory name.
+> > Using directory name gives us detection if it's needed for free. You complained
+> > about Makefile getting complicated, using setup would complicate it more. Do you
+> > want that?
+> "make setup" is not complicated. Fixing command based on the folder name is:
+> none cares how the virtualenv folder is named and none really wants to
+> remember how it's called.
+> If the goal is to keep things simple, exposing Makefile implementations to
+> the users sounds weird and counterintuitive.
+
+I'm ok to have phony target 'setup' which points to '.venv' target (less code
+than to have only setup target bug check for directory presence). I suppose you
+talk only about the make target, not about the virtualenv directory name.
+
+About the directory name: I felt '.venv' is kind of the default directory which
+is used by people for virtualenv. Looking at:
+https://codesearch.debian.net/search?q=%5C.venv&perpkg=1&page=1
+People mostly use: .venv, then venv, .venv*, venv*, .env, env, .eggs
+
+That's why it make sense to me create the directory as '.venv'. Also it's good
+that it's a hidden directory (starts with '.'). Hope you agree.
+
+Kind regards,
+Petr
+
+> Andrea
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
