@@ -4,103 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6F0FC28B20
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 11:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3824C36010
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 11:44:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE65C3CA3DD
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 12:43:54 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 322A53CA48E
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 12:44:12 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 378B63CA273
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 12:43:21 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B3F683CA305
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 12:43:24 +0100 (CET)
 Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9C848600750
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 12:43:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CC9A6600750
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 12:43:23 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 66D191F388;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EE7F3211BA;
  Fri, 28 Mar 2025 11:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1743162199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1743162200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAZ1VJWPyuQf2UtkBVrWzjLPu3q6f3Kr0Hu+FF8r53U=;
- b=d7Msjlgk6Ofkec6m3pVcbxjboNuGjszaLoj28qwJJhDYKvo18DrUuTqtTXrc/1k+DvVn8K
- 5fmFjCAwi2r8LqAk0mmf76i1Is9yVStxWG7jga4CuwO4vLo9g+5e+JXIVi4a0pRPCQ2lrG
- +WQqe43/qWvnTXjaXRs8g3SnhSX/7Eo=
+ bh=tY2+2StgQ6j3Wu1cbuZc4EW9ykeg/4F6cO9Jiq9Z9VM=;
+ b=NpBow5Z6QzCXgUdn049u+qMFurg1c88r5kKCEby4sOhc/ybXQIndaDJ4zrYsw1Nu/cBpiB
+ k9/o7Bmj/JrWcsFiCjPMd0vygONmn1ReSPKoA61ZzTXZ7CZ9ql+M7ifU1HbaszJTsG2fLg
+ 3wkLafniS2XXEtUNlkog88fylelwUak=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1743162199;
+ s=susede2_ed25519; t=1743162200;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAZ1VJWPyuQf2UtkBVrWzjLPu3q6f3Kr0Hu+FF8r53U=;
- b=Faeina/OWlRKnuv+L+wvhidEXJL2DgyYUgGQcfPMmkcKwOoUkMWV6dHYruN6ag03jlOcvq
- 60TR7rS0mJNh0qBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=tY2+2StgQ6j3Wu1cbuZc4EW9ykeg/4F6cO9Jiq9Z9VM=;
+ b=ZeCjRl3hNM1JHuBNGjyhxzZzgwyy/YCnLBzplVSU7Qc61eJ7CISj8JWyow7qeC034iIWV+
+ ONiDhoAzw4uVRWBA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=K+i3RLvP;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4eaBZQUg
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1743162199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAZ1VJWPyuQf2UtkBVrWzjLPu3q6f3Kr0Hu+FF8r53U=;
- b=d7Msjlgk6Ofkec6m3pVcbxjboNuGjszaLoj28qwJJhDYKvo18DrUuTqtTXrc/1k+DvVn8K
- 5fmFjCAwi2r8LqAk0mmf76i1Is9yVStxWG7jga4CuwO4vLo9g+5e+JXIVi4a0pRPCQ2lrG
- +WQqe43/qWvnTXjaXRs8g3SnhSX/7Eo=
+ bh=tY2+2StgQ6j3Wu1cbuZc4EW9ykeg/4F6cO9Jiq9Z9VM=;
+ b=K+i3RLvPGBIAVU/YCOQIEXizbD3F1kAAn4b4tvEFGAeyVCL9jUhdu8eBVsfAowu+JjbEzj
+ iSkz9VgMwdaMUbWtdy0lUSMakVWlk6JbhAj9X6bRKCE8EqoPTv+IhLHhmtTdfvf1qGlkHd
+ DOg5J8JdvQGdXN+G18NhK0xz7phTc8o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1743162199;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAZ1VJWPyuQf2UtkBVrWzjLPu3q6f3Kr0Hu+FF8r53U=;
- b=Faeina/OWlRKnuv+L+wvhidEXJL2DgyYUgGQcfPMmkcKwOoUkMWV6dHYruN6ag03jlOcvq
- 60TR7rS0mJNh0qBA==
+ bh=tY2+2StgQ6j3Wu1cbuZc4EW9ykeg/4F6cO9Jiq9Z9VM=;
+ b=4eaBZQUgypL4aXkRzHpEWn3pgVAnqpv2YQ7an+fyFOfYVpZDX7NluW+ToBBygnbfnTqPuY
+ wqY1o825gqr5lfDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFE9713A64;
- Fri, 28 Mar 2025 11:43:18 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88B6F13A5B;
+ Fri, 28 Mar 2025 11:43:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id EB2CN1aL5mdqQQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 28 Mar 2025 11:43:18 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6CqEHVeL5mdqQQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 28 Mar 2025 11:43:19 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 28 Mar 2025 12:43:10 +0100
-Message-ID: <20250328114311.187541-2-pvorel@suse.cz>
+Date: Fri, 28 Mar 2025 12:43:11 +0100
+Message-ID: <20250328114311.187541-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250328114311.187541-1-pvorel@suse.cz>
 References: <20250328114311.187541-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+X-Rspamd-Queue-Id: EE7F3211BA
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC][PATCH 1/2] libs: Add safe_get_nodemap()
+Subject: [LTP] [RFC][PATCH 2/2] Use safe_get_nodemap()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,94 +128,170 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This requires to add also tst_numa_type_name().
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_numa.h   | 41 +++++++++++++++++++++++++++++++++++++++--
- libs/numa/tst_numa.c | 14 ++++++++++++++
- 2 files changed, 53 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/ksm/ksm06.c                          | 4 +---
+ testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c | 4 +---
+ testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c | 4 +---
+ testcases/kernel/syscalls/mbind/mbind02.c                 | 4 +---
+ testcases/kernel/syscalls/mbind/mbind03.c                 | 4 +---
+ testcases/kernel/syscalls/mbind/mbind04.c                 | 4 +---
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c | 4 +---
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c | 4 +---
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c | 4 +---
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c | 4 +---
+ 10 files changed, 10 insertions(+), 30 deletions(-)
 
-diff --git a/include/tst_numa.h b/include/tst_numa.h
-index a1f9616300..191a57fa6b 100644
---- a/include/tst_numa.h
-+++ b/include/tst_numa.h
-@@ -106,8 +106,30 @@ enum tst_numa_types {
- };
+diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+index a8e73275dd..936980dee6 100644
+--- a/testcases/kernel/mem/ksm/ksm06.c
++++ b/testcases/kernel/mem/ksm/ksm06.c
+@@ -124,9 +124,7 @@ static void setup(void)
  
- /**
-- * tst_get_nodemap() - Allocates and returns numa node map, which is an array of numa nodes which
-- * contain desired resources e.g. memory.
-+ * tst_numa_type_name() - Convert enum tst_numa_types to a description of a NUMA type.
-+ *
-+ * @type Bitflags of enum tst_numa_types specifying desired resources.
-+ *
-+ * @return a string describing a NUMA type.
-+ */
-+static inline const char *tst_numa_type_name(int type)
-+{
-+	if (type & ~(TST_NUMA_MEM))
-+		tst_brk(TBROK, "Invalid type %i\n", type);
-+
-+	switch (type) {
-+	case TST_NUMA_MEM:
-+		return " memory";
-+	case TST_NUMA_ANY:
-+		return "";
-+	default:
-+		return " unknown";
-+	}
-+}
-+
-+/**
-+ * tst_get_nodemap() - Allocates and returns numa node map, which is an array of
-+ * NUMA nodes which contain desired resources e.g. memory.
-  *
-  * @type:       Bitflags of enum tst_numa_types specifying desired resources.
-  * @min_mem_kb: Minimal free RAM on memory nodes, if given node has less than
-@@ -119,4 +141,19 @@ enum tst_numa_types {
-  */
- struct tst_nodemap *tst_get_nodemap(int type, size_t min_mem_kb);
+ 	page_size = getpagesize();
  
-+/**
-+ * safe_get_nodemap() - Calls tst_get_nodemap() with check for minimal required
-+ * NUMA nodes. Call tst_brk(TCONF) if not enough NUMA nodes.
-+ *
-+ * @type:       Bitflags of enum tst_numa_types specifying desired resources.
-+ * @min_mem_kb: Minimal free RAM on memory nodes, if given node has less than
-+ *             requested amount of free+buffers memory it's not included in
-+ *             the resulting list of nodes.
-+ * @required:   Minimal number of a required NUMA nodes.
-+ *
-+ * return: On success returns allocated and initialized struct tst_nodemap which contains
-+ *         array of numa node ids that contains desired resources.
-+ */
-+struct tst_nodemap *safe_get_nodemap(int type, size_t min_mem_kb, size_t required);
-+
- #endif /* TST_NUMA_H__ */
-diff --git a/libs/numa/tst_numa.c b/libs/numa/tst_numa.c
-index c3297013be..f004e29014 100644
---- a/libs/numa/tst_numa.c
-+++ b/libs/numa/tst_numa.c
-@@ -221,4 +221,18 @@ struct tst_nodemap *tst_get_nodemap(int type, size_t min_mem_kb)
- 	return nodes;
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, nr_pages * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, nr_pages * page_size / 1024, 2);
  }
  
-+struct tst_nodemap *safe_get_nodemap(int type, size_t min_mem_kb, size_t required)
-+{
-+	struct tst_nodemap *nodes;
-+
-+	nodes = tst_get_nodemap(type, min_mem_kb);
-+
-+	if (nodes->cnt < required) {
-+		tst_brk(TCONF, "Test requires at least %zi NUMA%s node%s",
-+				required, tst_numa_type_name(type), required > 1 ? "s" : "");
-+	}
-+
-+	return nodes;
-+}
-+
- #endif
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+index 3c854d1096..031c35f40e 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+@@ -142,9 +142,7 @@ static void setup(void)
+ {
+ 	unsigned int i;
+ 
+-	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
+-	if (node->cnt < 1)
+-		tst_brk(TCONF, "test requires at least one NUMA memory node");
++	node = safe_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024, 1);
+ 
+ 	nodemask = numa_allocate_nodemask();
+ 	empty_nodemask = numa_allocate_nodemask();
+diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
+index 79ff5d94f8..9344cdbb12 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
++++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
+@@ -55,9 +55,7 @@ static struct test_case tcase[] = {
+ 
+ static void setup(void)
+ {
+-	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
+-	if (node->cnt < 1)
+-		tst_brk(TCONF, "test requires at least one NUMA memory node");
++	node = safe_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024, 1);
+ 
+ 	nodemask = numa_allocate_nodemask();
+ }
+diff --git a/testcases/kernel/syscalls/mbind/mbind02.c b/testcases/kernel/syscalls/mbind/mbind02.c
+index cd6a032269..c690ac858e 100644
+--- a/testcases/kernel/syscalls/mbind/mbind02.c
++++ b/testcases/kernel/syscalls/mbind/mbind02.c
+@@ -32,9 +32,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/mbind/mbind03.c b/testcases/kernel/syscalls/mbind/mbind03.c
+index 3d477c9cbb..58967cc06a 100644
+--- a/testcases/kernel/syscalls/mbind/mbind03.c
++++ b/testcases/kernel/syscalls/mbind/mbind03.c
+@@ -29,9 +29,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/mbind/mbind04.c b/testcases/kernel/syscalls/mbind/mbind04.c
+index 50028835f9..795905cc14 100644
+--- a/testcases/kernel/syscalls/mbind/mbind04.c
++++ b/testcases/kernel/syscalls/mbind/mbind04.c
+@@ -31,9 +31,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
+index 39e7156d06..92ef165d79 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
+@@ -32,9 +32,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024, 2);
+ 
+ 	/*
+ 	 * In most cases, set_mempolicy01 finish quickly, but when the platform
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
+index 3db9c20090..57fef862da 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
+@@ -33,9 +33,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * ALLOC_ON_NODE * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * ALLOC_ON_NODE * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
+index 5cfcda6d8c..ac464e5bc1 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
+@@ -31,9 +31,7 @@ static void setup(void)
+ {
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
+index 2a1d2e1b9a..8e0ed2dc2a 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
+@@ -44,9 +44,7 @@ static void setup(void)
+ 
+ 	page_size = getpagesize();
+ 
+-	nodes = tst_get_nodemap(TST_NUMA_MEM, node_min_pages * page_size / 1024);
+-	if (nodes->cnt <= 1)
+-		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
++	nodes = safe_get_nodemap(TST_NUMA_MEM, node_min_pages * page_size / 1024, 2);
+ }
+ 
+ static void cleanup(void)
 -- 
 2.49.0
 
