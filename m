@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FA97C36011
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 14:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33EAEC28B20
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 14:27:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3351E3CA44D
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 15:27:00 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C5C4A3CA45D
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 15:27:17 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55D3C3CA443
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 15:25:48 +0100 (CET)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 0621F3CA2DD
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 15:25:51 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3393600D82
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 15:25:47 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 737C81400192
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 15:25:50 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DAB031F390;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id ADF4E211DD;
  Fri, 28 Mar 2025 14:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1743171942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oHNCDAloQAG/ZEzjTH8WT0ktCWEY4z2OwQntv1iszCU=;
- b=tgyFyq9RHd9RrbbKcy9ZJhjm4RlNUl7TFsXA2sPrmb504vc0yc2U/ei2PfuO8GZDD/66bn
- 2Jqv0VeEQ8PoKF+NMNr5eDTF7Kw1qt2RNNIoSQ7QaSPmRZe1g34XUxhIdND0Ykl2nv5Sv4
- JdsarGv5Bt5ItVr0gob54NZ6BwBAIQY=
+ bh=zeRc0bYR12FWdpoWtOznDwSsfkmtuAmNa5U3aJs8iSE=;
+ b=G9eNiYp8hD7n+BMDeF6haRfH3pIfy3FiyhkMBoBvrkwKbILw59OwNyZYmerhagMqAplYjB
+ MQDIof90KNQ1cXwAlH2gjyQvo/BNf33+X27rFu38+5diuZX/Dc87whJtBXjFoR+GXZcT0c
+ DXH10Py8+xCpuhfMpC1S86Igt1V6fuA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1743171942;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oHNCDAloQAG/ZEzjTH8WT0ktCWEY4z2OwQntv1iszCU=;
- b=AGMSHUdyba6G4kri38wKKwMK/Gwa4s41eh1AkqouRoA6Lx6Gu4dtf0YXE8Y+6/Px+A/w/A
- 0YBOkwDgolei14Cw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=zeRc0bYR12FWdpoWtOznDwSsfkmtuAmNa5U3aJs8iSE=;
+ b=f/69i9KLWVuzzEaztPaGRssKqpLIBiBsWDTNApY63waEwWQFaaVTQcwFY/jwTFZwl/JoC+
+ 3pHztAppfUH3wFAw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1743171942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oHNCDAloQAG/ZEzjTH8WT0ktCWEY4z2OwQntv1iszCU=;
- b=tgyFyq9RHd9RrbbKcy9ZJhjm4RlNUl7TFsXA2sPrmb504vc0yc2U/ei2PfuO8GZDD/66bn
- 2Jqv0VeEQ8PoKF+NMNr5eDTF7Kw1qt2RNNIoSQ7QaSPmRZe1g34XUxhIdND0Ykl2nv5Sv4
- JdsarGv5Bt5ItVr0gob54NZ6BwBAIQY=
+ bh=zeRc0bYR12FWdpoWtOznDwSsfkmtuAmNa5U3aJs8iSE=;
+ b=G9eNiYp8hD7n+BMDeF6haRfH3pIfy3FiyhkMBoBvrkwKbILw59OwNyZYmerhagMqAplYjB
+ MQDIof90KNQ1cXwAlH2gjyQvo/BNf33+X27rFu38+5diuZX/Dc87whJtBXjFoR+GXZcT0c
+ DXH10Py8+xCpuhfMpC1S86Igt1V6fuA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1743171942;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oHNCDAloQAG/ZEzjTH8WT0ktCWEY4z2OwQntv1iszCU=;
- b=AGMSHUdyba6G4kri38wKKwMK/Gwa4s41eh1AkqouRoA6Lx6Gu4dtf0YXE8Y+6/Px+A/w/A
- 0YBOkwDgolei14Cw==
+ bh=zeRc0bYR12FWdpoWtOznDwSsfkmtuAmNa5U3aJs8iSE=;
+ b=f/69i9KLWVuzzEaztPaGRssKqpLIBiBsWDTNApY63waEwWQFaaVTQcwFY/jwTFZwl/JoC+
+ 3pHztAppfUH3wFAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B981A13927;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BDD6139D4;
  Fri, 28 Mar 2025 14:25:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mBSlK2ax5mfndgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iD+GIGax5mfndgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Fri, 28 Mar 2025 14:25:42 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 28 Mar 2025 15:24:56 +0100
+Date: Fri, 28 Mar 2025 15:24:55 +0100
 MIME-Version: 1.0
-Message-Id: <20250328-landlock_unix_socket-v3-4-e2643f65b25e@suse.com>
+Message-Id: <20250328-landlock_unix_socket-v3-3-e2643f65b25e@suse.com>
 References: <20250328-landlock_unix_socket-v3-0-e2643f65b25e@suse.com>
 In-Reply-To: <20250328-landlock_unix_socket-v3-0-e2643f65b25e@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1743171941; l=4142;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1743171941; l=5609;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=JKjoLBz5m6+jhGN1xoHvt2eQyGvIOTAq/UaEOS06fL4=;
- b=js4oKx92L/H2ObOATrpjOzbbvnwhtfa65FbYegDKTRX2gQq7iG01oGFxlDOfSGe/Nacei06lv
- ME5xffzU/5dBQYsbRvquy7pbjXChd6AUDbRZ0lxZ3g3RUbN4G0prJ7O
+ bh=WFpyCov6OfGomS+hBh5rafP1Lht5D9vv6oW8PUfR7Zw=;
+ b=Vdbi/P0YGnH73snYvmX9f4JVvncloqEUI9UrF/8M/scmB48/2q7jgf3y8z/2iuC/zEkYNGSlk
+ OvjEjotPCwECwtahMRE+hFOauhTWr96sxWQYOixZrqciBnWFD1RlY8D
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -103,11 +103,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/4] landlock: add landlock10 test
+Subject: [LTP] [PATCH v3 3/4] landlock: add landlock09 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,73 +126,129 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Verify that landlock's LANDLOCK_SCOPE_SIGNAL rule rejects any
-signal coming from a process on a different domain, but accept
-signals from processes in the same domain.
+Create landlock09 test in order to verify that sandboxed processes
+enforced with LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET rule can't
+connect to any UNIX socket from non-sandboxed processes.
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                                |   1 +
- testcases/kernel/syscalls/landlock/.gitignore   |   1 +
- testcases/kernel/syscalls/landlock/landlock10.c | 108 ++++++++++++++++++++++++
- 3 files changed, 110 insertions(+)
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/landlock/.gitignore      |   1 +
+ testcases/kernel/syscalls/landlock/landlock09.c    | 131 +++++++++++++++++++++
+ .../kernel/syscalls/landlock/landlock_common.h     |  11 ++
+ 4 files changed, 144 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index e3ed1738922a954493b56240be12cc40de691b6e..de7aacbba4a082df8d3d1c5228b6d5b6e7370c78 100644
+index 05b3e0d376fae3adf1eb29c22c0b83fa49eee56f..e3ed1738922a954493b56240be12cc40de691b6e 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -711,6 +711,7 @@ landlock06 landlock06
+@@ -710,6 +710,7 @@ landlock05 landlock05
+ landlock06 landlock06
  landlock07 landlock07
  landlock08 landlock08
- landlock09 landlock09
-+landlock10 landlock10
++landlock09 landlock09
  
  lchown01 lchown01
  lchown01_16 lchown01_16
 diff --git a/testcases/kernel/syscalls/landlock/.gitignore b/testcases/kernel/syscalls/landlock/.gitignore
-index cda8d871e051ec88abba4634a2bcda4b10470d9f..8c88803df4580605da800c414ada62994b35d268 100644
+index fc7317394948c4ac20cd14c3cd7ba7a47282b2bf..cda8d871e051ec88abba4634a2bcda4b10470d9f 100644
 --- a/testcases/kernel/syscalls/landlock/.gitignore
 +++ b/testcases/kernel/syscalls/landlock/.gitignore
-@@ -8,3 +8,4 @@ landlock06
+@@ -7,3 +7,4 @@ landlock05
+ landlock06
  landlock07
  landlock08
- landlock09
-+landlock10
-diff --git a/testcases/kernel/syscalls/landlock/landlock10.c b/testcases/kernel/syscalls/landlock/landlock10.c
++landlock09
+diff --git a/testcases/kernel/syscalls/landlock/landlock09.c b/testcases/kernel/syscalls/landlock/landlock09.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..a29e3bca82fe813e9e2dbec5f1f0f42db9ebf367
+index 0000000000000000000000000000000000000000..2e7f0021299152a1dbd0d7d7594487f551f04a24
 --- /dev/null
-+++ b/testcases/kernel/syscalls/landlock/landlock10.c
-@@ -0,0 +1,108 @@
++++ b/testcases/kernel/syscalls/landlock/landlock09.c
+@@ -0,0 +1,131 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Verify that landlock's LANDLOCK_SCOPE_SIGNAL rule rejects any signal coming
-+ * from a process on a different domain, but accept signals from processes in
-+ * the same domain.
++ * Verify that landlock's LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET rule reject any
++ * connect() coming from a client on a different server domain, but accept any
++ * connection.
 + */
 +
++#include <stddef.h>
 +#include "tst_test.h"
 +#include "landlock_common.h"
 +
-+static struct tst_landlock_ruleset_attr_abi6 *ruleset_attr;
++#define SOCKET_NAME "test.sock"
++#define ABSTRACT_SOCKET_NAME "\0"SOCKET_NAME
++#define SOCKET_LENGTH (offsetof(struct sockaddr_un, sun_path) + strlen(SOCKET_NAME) + 1)
 +
 +enum {
-+	DOMAIN_PAUSED = 0,
-+	DOMAIN_KILLER,
++	DOMAIN_CLIENT = 0,
++	DOMAIN_SERVER,
 +	DOMAIN_BOTH,
 +};
 +
++static struct tst_landlock_ruleset_attr_abi6 *ruleset_attr;
++
 +static void scoped_sandbox(const char *from)
 +{
-+	tst_res(TINFO, "Enforcing rule LANDLOCK_SCOPE_SIGNAL for %s process", from);
++	tst_res(TINFO, "Enforcing rule LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET on %s", from);
 +
-+	ruleset_attr->scoped = LANDLOCK_SCOPE_SIGNAL;
++	ruleset_attr->scoped = LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET;
 +	apply_landlock_scoped_layer(ruleset_attr, sizeof(*ruleset_attr));
++}
++
++static void run_client(void)
++{
++	if (tst_variant == DOMAIN_CLIENT)
++		scoped_sandbox("client");
++
++	int sendsock;
++	struct sockaddr_un addr = {
++		.sun_family = AF_UNIX,
++		.sun_path = ABSTRACT_SOCKET_NAME,
++	};
++
++	TST_CHECKPOINT_WAIT(0);
++
++	tst_res(TINFO, "Connecting to UNIX socket");
++
++	sendsock = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
++
++	if (tst_variant != DOMAIN_CLIENT)
++		TST_EXP_PASS(connect(sendsock, (struct sockaddr *)&addr, SOCKET_LENGTH));
++	else
++		TST_EXP_FAIL(connect(sendsock, (struct sockaddr *)&addr, SOCKET_LENGTH), EPERM);
++
++	SAFE_CLOSE(sendsock);
++
++	TST_CHECKPOINT_WAKE(0);
++}
++
++static void run_server(void)
++{
++	if (tst_variant == DOMAIN_SERVER)
++		scoped_sandbox("server");
++
++	int recvsock;
++	struct sockaddr_un addr = {
++		.sun_family = AF_UNIX,
++		.sun_path = ABSTRACT_SOCKET_NAME,
++	};
++
++	recvsock = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
++
++	SAFE_BIND(recvsock, (struct sockaddr *)&addr, SOCKET_LENGTH);
++	SAFE_LISTEN(recvsock, 5);
++
++	tst_res(TINFO, "Listening on UNIX socket");
++
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++
++	SAFE_CLOSE(recvsock);
 +}
 +
 +static void run(void)
@@ -204,48 +260,16 @@ index 0000000000000000000000000000000000000000..a29e3bca82fe813e9e2dbec5f1f0f42d
 +		return;
 +
 +	if (tst_variant == DOMAIN_BOTH)
-+		scoped_sandbox("paused and killer");
++		scoped_sandbox("server and client");
 +
-+	pid_t paused_pid;
-+	pid_t killer_pid;
-+
-+	paused_pid = SAFE_FORK();
-+	if (!paused_pid) {
-+		if (tst_variant == DOMAIN_PAUSED)
-+			scoped_sandbox("paused");
-+
-+		TST_CHECKPOINT_WAKE(0);
-+		pause();
++	if (!SAFE_FORK()) {
++		run_client();
 +		exit(0);
 +	}
 +
-+	TST_CHECKPOINT_WAIT(0);
-+	TST_PROCESS_STATE_WAIT(paused_pid, 'S', 10000);
++	run_server();
 +
-+	killer_pid = SAFE_FORK();
-+	if (!killer_pid) {
-+		if (tst_variant == DOMAIN_KILLER)
-+			scoped_sandbox("killer");
-+
-+		TST_CHECKPOINT_WAKE(0);
-+
-+		if (tst_variant == DOMAIN_KILLER)
-+			TST_EXP_FAIL(kill(paused_pid, SIGKILL), EPERM);
-+		else
-+			TST_EXP_PASS(kill(paused_pid, SIGKILL));
-+
-+		exit(0);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+	SAFE_WAITPID(killer_pid, NULL, 0);
-+
-+	if (kill(paused_pid, SIGKILL) == -1) {
-+		if (errno != ESRCH)
-+			tst_brk(TBROK | TERRNO, "kill(%u, SIGKILL) error", paused_pid);
-+	}
-+
-+	SAFE_WAITPID(paused_pid, NULL, 0);
++	tst_reap_children();
 +}
 +
 +static void setup(void)
@@ -254,7 +278,7 @@ index 0000000000000000000000000000000000000000..a29e3bca82fe813e9e2dbec5f1f0f42d
 +
 +	abi = verify_landlock_is_enabled();
 +	if (abi < 6)
-+		tst_brk(TCONF, "LANDLOCK_SCOPE_SIGNAL is unsupported on ABI < 6");
++		tst_brk(TCONF, "LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET is unsupported on ABI < 6");
 +}
 +
 +static struct tst_test test = {
@@ -273,6 +297,28 @@ index 0000000000000000000000000000000000000000..a29e3bca82fe813e9e2dbec5f1f0f42d
 +		{}
 +	},
 +};
+diff --git a/testcases/kernel/syscalls/landlock/landlock_common.h b/testcases/kernel/syscalls/landlock/landlock_common.h
+index 4aa11b7d2ad46915cd1ce1592bdaa2fb6ad77628..8857745d6f1c1c30fc914924b8d0da381b36059f 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_common.h
++++ b/testcases/kernel/syscalls/landlock/landlock_common.h
+@@ -115,6 +115,17 @@ static inline void apply_landlock_net_layer(
+ 	SAFE_CLOSE(ruleset_fd);
+ }
+ 
++static inline void apply_landlock_scoped_layer(
++	void *ruleset_attr, size_t attr_size)
++{
++	int ruleset_fd;
++
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(ruleset_attr, attr_size, 0);
++	enforce_ruleset(ruleset_fd);
++
++	SAFE_CLOSE(ruleset_fd);
++}
++
+ static inline in_port_t getsocket_port(struct socket_data *socket,
+ 	const int addr_family)
+ {
 
 -- 
 2.43.0
