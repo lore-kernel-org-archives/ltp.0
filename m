@@ -4,80 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65689C36013
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 09:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A4F5C28B20
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 09:48:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743155284; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : content-type : content-transfer-encoding :
- sender : from; bh=ORZSJGRU/LgwLWDh+UvRfo2F40x1J67fT858QCfsfD8=;
- b=Wz8SPhfsOh64TlOPcxe9ewmWSTLRQ8NuyAdNy1JI6FnvsRIySeWjOtDY4Zd3lo0007OiE
- Iw30eavAPw+a/dt8yqKZ9bKH2NbupmWivEYNP5HIU2Ge9Oki7lGrXNH0R/TkQUpc7v4CLi7
- TgQ1/Lka2NEDwowJPidIX8loKbj8JCw=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743155309; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=0QN05F9fMsMX5Chyi8MkgGOrc8lbseQUA5NDOsD9kcI=;
+ b=RI49yZSkexpdapdA1CUV1BTCwPK6b+kGtgZMBPHVIgV+7ywI4qRES5jGfBoTpkFml4NKC
+ 6Nr5Jm9EfX2lQfW+dE5gOsQNJVEpqq5IYzgN3zacMo0xLHpXAomYhwSEft2U7Add7NG9VeP
+ dO1Ilk25bYszOA9vpCDy8Yi/ROp9Aww=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3EB13CA2DD
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 10:48:04 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C632E3CA2CE
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 10:48:29 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with UTF8SMTPS id 7DAC23CA17D
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 10:47:42 +0100 (CET)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com
- [209.85.221.44])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D35CF3CA1FE
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 10:48:04 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=kernel.org (client-ip=147.75.193.91; helo=nyc.source.kernel.org;
+ envelope-from=mcgrof@kernel.org; receiver=lists.linux.it)
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with UTF8SMTPS id 9B7D7600494
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 10:47:41 +0100 (CET)
-Received: by mail-wr1-f44.google.com with SMTP id
- ffacd0b85a97d-3914bc3e01aso1102779f8f.2
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 02:47:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743155261; x=1743760061;
- h=in-reply-to:references:to:subject:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=LSn2GZEsGIegi+biefmjQJrflsKCWvD/VG0PqcwzlT0=;
- b=r1xMDM+fhSdQ/ZBM3GNS/pqLpXCmSZZOyT5UNMgjV5I/wKFFPmg+S1nO6hRsl5yiyl
- V5H3QlYv2uK3KYaWWHAriqfUnNoGdW4UKnT7YhRxa2Jy58csau/Vz6qe5dzREwLt4+eD
- BWbxG9VmOLCmhp9KD16yMJuVhdeEJpRW9Wh4ruWKCfx6Go5SHacxVP1Z1ggsSKv3EeHp
- OmDmtak1i1v/LKrj+mcSafssTCW/7gaLxuhQzYlEJ7oaH+8ulgPBPmMNvUmi6QPP8x81
- GhuhQefrZ0VrJALYeCHeewiSv+z2fNY1m8K0JJJPm+2C8cSu8jB5TLqiCl3glIxlzlAo
- J0pw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUE4tFBI0Q3E62/1sP60RD23RAZdRE0xnh2HZm9kgNZMnEJF0V1jsnW4AhMD4e4+7BUsKQ=@lists.linux.it
-X-Gm-Message-State: AOJu0YydZl7bVbCJf0nwWDsCQLDcn6l6h1blqoS71eg1cIcR43llccwa
- /vqhwm+B99n4IzHJM/h+/n5ySfVbbT2iPx09Um8HEGNPAEMvmFDcV5OuOJbInO/zHHeEzKGg8xt
- h
-X-Gm-Gg: ASbGncuGX++ZhKhNXLFRFli0GO/ylwRF4z4Bmy6k+88dlbyTAD1wlNG0eRfso+BHW+C
- 7qxY97AmBL2QQfrlK8p78yFjEkV1pT9FfiEVo9NPTlwbevC30qO4bzheVQzrgW6czH6CEjZuVBT
- wRiu8aJopzj/QO/V/JFK8G8U2QofetAUTir019flHxIxXhGP6Gds2kjtMGX/RC7DoJIlJkIf76Q
- FWJIkR9xytIIr067beVTq0PImQytV6ubfSLW4q8UFP8nSvtvRskQOxSSVBeSHiLGTuKbYxlKqS9
- 5JhNNNEpNsq7EONWLTGy7FFfBkNQ4rYXUCDwjgsXJKPE
-X-Google-Smtp-Source: AGHT+IGUFHR5XxbK+TowRYwnGhXCkMkv9lHXvZbD+PoEqLicz6FOUwfD4ByDys4j5A3nx7vn++apdg==
-X-Received: by 2002:a5d:47c7:0:b0:391:2163:dd67 with SMTP id
- ffacd0b85a97d-39ad1740167mr5771176f8f.6.1743155260838; 
- Fri, 28 Mar 2025 02:47:40 -0700 (PDT)
-Received: from localhost ([179.228.213.210]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-7397106856bsm1331481b3a.105.2025.03.28.02.47.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Mar 2025 02:47:40 -0700 (PDT)
-Mime-Version: 1.0
-Date: Fri, 28 Mar 2025 06:47:35 -0300
-Message-Id: <D8RSYT35B4UP.3OQHI5EATH81Q@suse.com>
-To: "Andrea Cervesato" <andrea.cervesato@suse.com>, "Linux Test Project"
- <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
-References: <20250327-conversions-modify_ldt-v2-0-2907d4d3f6c0@suse.com>
- <20250327-conversions-modify_ldt-v2-4-2907d4d3f6c0@suse.com>
- <5ab3a708-388d-4cec-a632-17441be43278@suse.com>
-In-Reply-To: <5ab3a708-388d-4cec-a632-17441be43278@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 458C01A0025D
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 10:48:02 +0100 (CET)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by nyc.source.kernel.org (Postfix) with ESMTP id 5F479A416E9;
+ Fri, 28 Mar 2025 09:42:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66014C4CEE4;
+ Fri, 28 Mar 2025 09:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1743155280;
+ bh=L1ZhqRI/3AJIXQgEqaTudZR8WC5Mp92X10KbrCftwaE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=enYSWdxwpGyjDxGb/SJLtqANY8cacr0AHWSdU8cA/Uspwi3xJRKoaFea0DNJBuTD1
+ 6qqR1EKuZP1hm8jAD7n1U4b9zBP5lnQpCfGHtWTEh+PUTwc80D++zBXCcvutiPb/w1
+ KzAhWJ4LMIg2pE6AZMDXUHWq01IEgwFpHuAzjFDQFUFK+px0fYNeBcv8R9yA5x1OYc
+ RhEerHZvXx+UjG3amXr5TnTjF7riaCxXREOOJyCXhlSGdnd1xvB4quocMb88cZUU/4
+ 9NcurqWuhoic9KipXxlMwIYLN8zpGJhhvM6IL1dXI2PJvzZ8arGnoX0FV1f+8crihO
+ yY3MIMZjpR/aA==
+Date: Fri, 28 Mar 2025 02:47:58 -0700
+To: Jan Kara <jack@suse.cz>, Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <Z-ZwToVfJbdTVRtG@bombadil.infradead.org>
+References: <Z9r27eUk993BNWTX@bombadil.infradead.org>
+ <Z9sYGccL4TocoITf@bombadil.infradead.org>
+ <Z9sZ5_lJzTwGShQT@casper.infradead.org>
+ <Z9wF57eEBR-42K9a@bombadil.infradead.org>
+ <20250322231440.GA1894930@cmpxchg.org>
+ <Z99dk_ZMNRFgaaH8@bombadil.infradead.org>
+ <Z9-zL3pRpCHm5a0w@bombadil.infradead.org>
+ <Z+JSwb8BT0tZrSrx@xsang-OptiPlex-9020>
+ <Z-X_FiXDTSvRSksp@bombadil.infradead.org>
+ <Z-YjyBF-M9ciJC7X@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Z-YjyBF-M9ciJC7X@bombadil.infradead.org>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/6] syscalls/modify_ldt01: Refactor into new
- API
+Subject: Re: [LTP] [linux-next:master] [block/bdev] 3c20917120:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/util.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,165 +81,351 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?b?UmljYXJkbyBCLiBNYXJsae+/ve+/vXJlIHZpYSBsdHA=?=
- <ltp@lists.linux.it>
-Reply-To: "Ricardo B. Marlière" <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Luis Chamberlain via ltp <ltp@lists.linux.it>
+Reply-To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Pankaj Raghav <p.raghav@samsung.com>, Daniel Gomez <da.gomez@samsung.com>,
+ Christian Brauner <brauner@kernel.org>, David Bueso <dave@stgolabs.net>,
+ lkp@intel.com, David Hildenbrand <david@redhat.com>,
+ Alistair Popple <apopple@nvidia.com>, Matthew Wilcox <willy@infradead.org>,
+ linux-block@vger.kernel.org, linux-mm@kvack.org,
+ Oliver Sang <oliver.sang@intel.com>, Hannes Reinecke <hare@suse.de>,
+ John Garry <john.g.garry@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ oe-lkp@lists.linux.dev, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpIE1hciAyOCwgMjAyNSBhdCA2OjI5IEFNIC0wMywgQW5kcmVhIENlcnZlc2F0byB3cm90
-ZToKPiBIaSEKPgo+IFRoaXMgZm9sbG93LXVwIHBhdGNoIHNob3VsZCBiZSBtZXJnZWQgd2l0aCBt
-b2RpZnlfbGR0MDEgcmVmYWN0b3JpbmcgcGF0Y2guCj4gVGhlcmUncyBubyBuZWVkIHRvIGNyZWF0
-ZSB0b28gbWFueSBwYXRjaGVzLiBUbyBtYWtlIGl0IGVhc2llciwgd2Ugc2hvdWxkIAo+IGhhdmUg
-dGhlIGZvbGxvd2luZyBvbmVzOgo+Cj4gLSBjcmVhdGUgZmFsbGJhY2sgZmlsZSB3aXRoIFNBRkVf
-KiBtYWNybyArIFNBRkVfKiBtYWNybyB1c2FnZSBpbnNpZGUgCj4gb3RoZXIgdGVzdHMKPiAtIHJl
-ZmFjdG9yIG1vZGlmeV9sZHQwMSAoaW5jbHVkaW5nIG1vZGlmeV9sZHQwMyBpbiBpdCkKPiAtIHJl
-ZmFjdG9yIG1vZGlmeV9sZHQwMgo+IC0gcmVmYWN0b3Igc2V0X3RocmVhZF9hcmVhMDEKCldvcmtz
-IGZvciBtZSwgd2lsbCBzcXVhc2ggaW4gdjMuCgo+Cj4gU29tZSBjb21tZW50cyBiZWxvdy4KPgo+
-IE9uIDMvMjcvMjUgMTU6MjgsIFJpY2FyZG8gQi4gTWFybGllcmUgdmlhIGx0cCB3cm90ZToKPj4g
-RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KPj4KPj4gTm93IHRoYXQg
-d2UncmUgdXNpbmcgdGhlIHdyYXBwZXIgbW9kaWZ5X2xkdCgpIGZyb20gdGhlIGxhcGkvbGR0Lmgg
-d2hpY2gKPj4gdXNlcyB0c3Rfc3lzY2FsbCgpLCBpdCBkb2VzIG5vdCBtYWtlIHNlbnNlIHRvIGtl
-ZXAgdGhlIGZpcnN0IGJsb2NrIG9mIHRoZQo+PiBvcmlnaW5hbCB0ZXN0Lgo+Pgo+PiBTaWduZWQt
-b2ZmLWJ5OiBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJtQHN1c2UuY29tPgo+PiAtLS0KPj4gICAu
-Li4va2VybmVsL3N5c2NhbGxzL21vZGlmeV9sZHQvbW9kaWZ5X2xkdDAxLmMgICAgICB8IDI1NCAr
-KysrLS0tLS0tLS0tLS0tLS0tLS0KPj4gICAxIGZpbGUgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygr
-KSwgMjEwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy9tb2RpZnlfbGR0L21vZGlmeV9sZHQwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9tb2RpZnlfbGR0L21vZGlmeV9sZHQwMS5jCj4+IGluZGV4IDY4NGU1Mzc3MjQxNGFlNDY4
-YjRmMTY4NTc4NTk2ZWFiYjI3ZWYxOGIuLmQ5M2EyODE1Zjk4MGMxN2U5NDkwZDAyODVjNjNkNzZj
-NjllODhkMDIgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW9kaWZ5
-X2xkdC9tb2RpZnlfbGR0MDEuYwo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21v
-ZGlmeV9sZHQvbW9kaWZ5X2xkdDAxLmMKPj4gQEAgLTEsMjMwICsxLDY0IEBACj4+ICsvLyBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgo+PiAgIC8qCj4+IC0gKgo+PiAt
-ICogICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAu
-LCAyMDAxCj4+IC0gKgo+PiAtICogICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlv
-dSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKPj4gLSAqICAgaXQgdW5kZXIgdGhl
-IHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkK
-Pj4gLSAqICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBv
-ZiB0aGUgTGljZW5zZSwgb3IKPj4gLSAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVy
-c2lvbi4KPj4gLSAqCj4+IC0gKiAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUg
-aG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo+PiAtICogICBidXQgV0lUSE9VVCBBTlkgV0FS
-UkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKPj4gLSAqICAgTUVS
-Q0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCj4+
-IC0gKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+
-PiAtICoKPj4gLSAqICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05V
-IEdlbmVyYWwgUHVibGljIExpY2Vuc2UKPj4gLSAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07
-ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCj4+IC0gKiAgIEZvdW5kYXRpb24s
-IEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAt
-MTMwMSBVU0EKPj4gKyAqIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNo
-aW5lcyAgQ29ycC4sIDIwMDEKPj4gKyAqCTA3LzIwMDEgUG9ydGVkIGJ5IFdheW5lIEJveWVyCj4+
-ICsgKiBDb3B5cmlnaHQgKGMpIDIwMjUgU1VTRSBMTEMgUmljYXJkbyBCLiBNYXJsacOocmUgPHJi
-bUBzdXNlLmNvbT4KPj4gICAgKi8KPj4gICAKPj4gLS8qCj4+IC0gKiBOQU1FCj4+IC0gKgltb2Rp
-ZnlfbGR0MDEuYwo+PiAtICoKPj4gLSAqIERFU0NSSVBUSU9OCj4+IC0gKglUZXN0Y2FzZSB0byBj
-aGVjayB0aGUgZXJyb3IgY29uZGl0aW9ucyBmb3IgbW9kaWZ5X2xkdCgyKQo+PiArLypcCj4+ICsg
-KiBWZXJpZnkgdGhhdCBtb2RpZnlfbGR0KCkgY2FsbCBmYWlscyB3aXRoIGVycm5vOgo+PiAgICAq
-Cj4+IC0gKiBDQUxMUwo+PiAtICoJbW9kaWZ5X2xkdCgpCj4+IC0gKgo+PiAtICogQUxHT1JJVEhN
-Cj4+IC0gKglibG9jazE6Cj4+IC0gKgkJSW52b2tlIG1vZGlmeV9sZHQoKSB3aXRoIGEgZnVuYyB2
-YWx1ZSB3aGljaCBpcyBuZWl0aGVyCj4+IC0gKgkJMCBvciAxLiBWZXJpZnkgdGhhdCBFTk9TWVMg
-aXMgc2V0Lgo+PiAtICoJYmxvY2syOgo+PiAtICoJCUludm9rZSBtcHJvdGVjdCgpIHdpdGggcHRy
-ID09IE5VTEwuIFZlcmlmeSB0aGF0IEVJTlZBTAo+PiAtICoJCWlzIHNldC4KPj4gLSAqCWJsb2Nr
-MzoKPj4gLSAqCQlDcmVhdGUgYW4gTERUIHNlZ21lbnQuCj4+IC0gKgkJVHJ5IHRvIHJlYWQgZnJv
-bSBhbiBpbnZhbGlkIHBvaW50ZXIuCj4+IC0gKgkJVmVyaWZ5IHRoYXQgRUZBVUxUIGlzIHNldC4K
-Pj4gLSAqCj4+IC0gKiBVU0FHRQo+PiAtICoJbW9kaWZ5X2xkdDAxCj4+IC0gKgo+PiAtICogSElT
-VE9SWQo+PiAtICoJMDcvMjAwMSBQb3J0ZWQgYnkgV2F5bmUgQm95ZXIKPj4gLSAqCj4+IC0gKiBS
-RVNUUklDVElPTlMKPj4gLSAqCU5vbmUKPj4gKyAqIC0gRUlOVkFMLCB3aGVuIHdyaXRpbmcgKGZ1
-bmM9MSkgdG8gYW4gaW52YWxpZCBwb2ludGVyCj4+ICsgKiAtIEVGQVVMVCwgd2hlbiByZWFkaW5n
-IChmdW5jPTApIGZyb20gYW4gaW52YWxpZCBwb2ludGVyCj4+ICAgICovCj4+ICAgCj4+IC0jaW5j
-bHVkZSAiY29uZmlnLmgiCj4+IC0jaW5jbHVkZSAidGVzdC5oIgo+PiAtCj4+IC1UQ0lEX0RFRklO
-RShtb2RpZnlfbGR0MDEpOwo+PiAtaW50IFRTVF9UT1RBTCA9IDE7Cj4+ICsjaW5jbHVkZSAidHN0
-X3Rlc3QuaCIKPj4gICAKPj4gLSNpZiBkZWZpbmVkKF9faTM4Nl9fKSAmJiBkZWZpbmVkKEhBVkVf
-TU9ESUZZX0xEVCkKPj4gLQo+PiAtI2lmZGVmIEhBVkVfQVNNX0xEVF9ICj4+IC0jaW5jbHVkZSA8
-YXNtL2xkdC5oPgo+PiAtI2VuZGlmCj4+IC1leHRlcm4gaW50IG1vZGlmeV9sZHQoaW50LCB2b2lk
-ICosIHVuc2lnbmVkIGxvbmcpOwo+PiAtCj4+IC0jaW5jbHVkZSA8YXNtL3VuaXN0ZC5oPgo+PiAt
-I2luY2x1ZGUgPGVycm5vLmg+Cj4+IC0KPj4gLS8qIE5ld2VyIGxkdC5oIGZpbGVzIHVzZSB1c2Vy
-X2Rlc2MsIGluc3RlYWQgb2YgbW9kaWZ5X2xkdF9sZHRfcyAqLwo+PiAtI2lmZGVmIEhBVkVfU1RS
-VUNUX1VTRVJfREVTQwo+PiAtdHlwZWRlZiBzdHJ1Y3QgdXNlcl9kZXNjIG1vZGlmeV9sZHRfczsK
-Pj4gLSNlbGlmICBIQVZFX1NUUlVDVF9NT0RJRllfTERUX0xEVF9TCj4+IC10eXBlZGVmIHN0cnVj
-dCBtb2RpZnlfbGR0X2xkdF9zIG1vZGlmeV9sZHRfczsKPj4gLSNlbHNlCj4+IC10eXBlZGVmIHN0
-cnVjdCBtb2RpZnlfbGR0X2xkdF90IHsKPj4gLQl1bnNpZ25lZCBpbnQgZW50cnlfbnVtYmVyOwo+
-PiAtCXVuc2lnbmVkIGxvbmcgaW50IGJhc2VfYWRkcjsKPj4gLQl1bnNpZ25lZCBpbnQgbGltaXQ7
-Cj4+IC0JdW5zaWduZWQgaW50IHNlZ18zMmJpdDoxOwo+PiAtCXVuc2lnbmVkIGludCBjb250ZW50
-czoyOwo+PiAtCXVuc2lnbmVkIGludCByZWFkX2V4ZWNfb25seToxOwo+PiAtCXVuc2lnbmVkIGlu
-dCBsaW1pdF9pbl9wYWdlczoxOwo+PiAtCXVuc2lnbmVkIGludCBzZWdfbm90X3ByZXNlbnQ6MTsK
-Pj4gLQl1bnNpZ25lZCBpbnQgdXNlYWJsZToxOwo+PiAtCXVuc2lnbmVkIGludCBlbXB0eToyNTsK
-Pj4gLX0gbW9kaWZ5X2xkdF9zOwo+PiAtI2VuZGlmCj4+IC0KPj4gLWludCBjcmVhdGVfc2VnbWVu
-dCh2b2lkICosIHNpemVfdCk7Cj4+IC12b2lkIGNsZWFudXAodm9pZCk7Cj4+IC12b2lkIHNldHVw
-KHZvaWQpOwo+PiAtCj4+IC1pbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPj4gLXsKPj4gLQlp
-bnQgbGM7Cj4+ICsjaWZkZWYgX19pMzg2X18KPj4gKyNpbmNsdWRlICJsYXBpL2xkdC5oIgo+PiAr
-I2luY2x1ZGUgImNvbW1vbi5oIgo+PiAgIAo+PiArc3RhdGljIHZvaWQgKnB0cjsKPj4gK3N0YXRp
-YyBjaGFyICpidWY7Cj4+ICtzdGF0aWMgc3RydWN0IHRzdF9jYXNlIHsKPiB0c3RfKiBpcyBhIHJl
-c2VydmVkIHByZWZpeCBmb3IgTFRQIGxpYnJhcnksIHNvIGl0J3MgaW1wb3J0YW50IHRvIHVzZSAK
-PiBzb21ldGhpbmcgZGlmZmVyZW50LiBXZSB1c3VhbGx5IG5hbWUgaXQgInRjYXNlIgoKQWgsIG1h
-a2VzIHNlbnNlLCBJIGRpZG4ndCBrbm93IHRoYXQhCgpUaGFua3MgZm9yIHJldmlld2luZywKLQlS
-aWNhcmRvLgoKCj4+ICsJaW50IHRmdW5jOwo+PiAgIAl2b2lkICpwdHI7Cj4+IC0JaW50IHJldHZh
-bCwgZnVuYzsKPj4gLQo+PiAtCWludCBzZWdbNF07Cj4+IC0KPj4gLQl0c3RfcGFyc2Vfb3B0cyhh
-YywgYXYsIE5VTEwsIE5VTEwpOwo+PiAtCj4+IC0Jc2V0dXAoKTsKPj4gLQo+PiAtCWZvciAobGMg
-PSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Cj4+IC0KPj4gLQkJLyogcmVzZXQgdHN0X2Nv
-dW50IGluIGNhc2Ugd2UgYXJlIGxvb3BpbmcgKi8KPj4gLQkJdHN0X2NvdW50ID0gMDsKPj4gLQo+
-PiAtCQkvKgo+PiAtCQkgKiBDaGVjayBmb3IgRU5PU1lTLgo+PiAtCQkgKi8KPj4gLQkJcHRyID0g
-bWFsbG9jKDEwKTsKPj4gLQkJZnVuYyA9IDEwMDsKPj4gLQkJcmV0dmFsID0gbW9kaWZ5X2xkdChm
-dW5jLCBwdHIsIHNpemVvZihwdHIpKTsKPj4gLQkJaWYgKHJldHZhbCA8IDApIHsKPj4gLQkJCWlm
-IChlcnJubyAhPSBFTk9TWVMpIHsKPj4gLQkJCQl0c3RfcmVzbShURkFJTCwgIm1vZGlmeV9sZHQo
-KSBzZXQgaW52YWxpZCAiCj4+IC0JCQkJCSAiZXJybm8sIGV4cGVjdGVkIEVOT1NZUywgZ290OiAl
-ZCIsCj4+IC0JCQkJCSBlcnJubyk7Cj4+IC0JCQl9IGVsc2Ugewo+PiAtCQkJCXRzdF9yZXNtKFRQ
-QVNTLAo+PiAtCQkJCQkibW9kaWZ5X2xkdCgpIHNldCBleHBlY3RlZCBlcnJubyIpOwo+PiAtCQkJ
-fQo+PiAtCQl9IGVsc2Ugewo+PiAtCQkJdHN0X3Jlc20oVEZBSUwsICJtb2RpZnlfbGR0IGVycm9y
-OiAiCj4+IC0JCQkJICJ1bmV4cGVjdGVkIHJldHVybiB2YWx1ZSAlZCIsIHJldHZhbCk7Cj4+IC0J
-CX0KPj4gLQo+PiAtCQlmcmVlKHB0cik7Cj4+IC0KPj4gLQkJLyoKPj4gLQkJICogQ2hlY2sgZm9y
-IEVJTlZBTAo+PiAtCQkgKi8KPj4gLQkJcHRyID0gMDsKPj4gLQo+PiAtCQlyZXR2YWwgPSBtb2Rp
-ZnlfbGR0KDEsIHB0ciwgc2l6ZW9mKHB0cikpOwo+PiAtCQlpZiAocmV0dmFsIDwgMCkgewo+PiAt
-CQkJaWYgKGVycm5vICE9IEVJTlZBTCkgewo+PiAtCQkJCXRzdF9yZXNtKFRGQUlMLCAibW9kaWZ5
-X2xkdCgpIHNldCBpbnZhbGlkICIKPj4gLQkJCQkJICJlcnJubywgZXhwZWN0ZWQgRUlOVkFMLCBn
-b3Q6ICVkIiwKPj4gLQkJCQkJIGVycm5vKTsKPj4gLQkJCX0gZWxzZSB7Cj4+IC0JCQkJdHN0X3Jl
-c20oVFBBU1MsCj4+IC0JCQkJCSJtb2RpZnlfbGR0KCkgc2V0IGV4cGVjdGVkIGVycm5vIik7Cj4+
-IC0JCQl9Cj4+IC0JCX0gZWxzZSB7Cj4+IC0JCQl0c3RfcmVzbShURkFJTCwgIm1vZGlmeV9sZHQg
-ZXJyb3I6ICIKPj4gLQkJCQkgInVuZXhwZWN0ZWQgcmV0dXJuIHZhbHVlICVkIiwgcmV0dmFsKTsK
-Pj4gLQkJfQo+PiAtCj4+IC0JCS8qCj4+IC0JCSAqIENyZWF0ZSBhIG5ldyBMRFQgc2VnbWVudC4K
-Pj4gLQkJICovCj4+IC0JCWlmIChjcmVhdGVfc2VnbWVudChzZWcsIHNpemVvZihzZWcpKSA9PSAt
-MSkgewo+PiAtCQkJdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJDcmVhdGlvbiBvZiBzZWdtZW50
-IGZhaWxlZCIpOwo+PiAtCQl9Cj4+IC0KPj4gLQkJLyoKPj4gLQkJICogQ2hlY2sgZm9yIEVGQVVM
-VAo+PiAtCQkgKi8KPj4gLQkJcHRyID0gc2JyaygwKTsKPj4gLQo+PiAtCQlyZXR2YWwgPSBtb2Rp
-ZnlfbGR0KDAsIHB0ciArIDB4RkZGLCBzaXplb2YocHRyKSk7Cj4+IC0JCWlmIChyZXR2YWwgPCAw
-KSB7Cj4+IC0JCQlpZiAoZXJybm8gIT0gRUZBVUxUKSB7Cj4+IC0JCQkJdHN0X3Jlc20oVEZBSUws
-ICJtb2RpZnlfbGR0KCkgc2V0IGludmFsaWQgIgo+PiAtCQkJCQkgImVycm5vLCBleHBlY3RlZCBF
-RkFVTFQsIGdvdDogJWQiLAo+PiAtCQkJCQkgZXJybm8pOwo+PiAtCQkJfSBlbHNlIHsKPj4gLQkJ
-CQl0c3RfcmVzbShUUEFTUywKPj4gLQkJCQkJIm1vZGlmeV9sZHQoKSBzZXQgZXhwZWN0ZWQgZXJy
-bm8iKTsKPj4gLQkJCX0KPj4gLQkJfSBlbHNlIHsKPj4gLQkJCXRzdF9yZXNtKFRGQUlMLCAibW9k
-aWZ5X2xkdCBlcnJvcjogIgo+PiAtCQkJCSAidW5leHBlY3RlZCByZXR1cm4gdmFsdWUgJWQiLCBy
-ZXR2YWwpOwo+PiAtCQl9Cj4+IC0JfQo+PiAtCWNsZWFudXAoKTsKPj4gLQl0c3RfZXhpdCgpOwo+
-PiAtfQo+PiAtCj4+IC0vKgo+PiAtICogY3JlYXRlX3NlZ21lbnQoKSAtCj4+IC0gKi8KPj4gLWlu
-dCBjcmVhdGVfc2VnbWVudCh2b2lkICpzZWcsIHNpemVfdCBzaXplKQo+PiArCXVuc2lnbmVkIGxv
-bmcgYnl0ZWNvdW50Owo+PiArCWludCBleHBfZXJybm87Cj4+ICt9IHRzdF9jYXNlc1tdID0gewo+
-IEhlcmUgdGNhc2VzW10KPj4gKwkvKiB7IDEwMCwgJmJ1Ziwgc2l6ZW9mKGJ1ZiksIEVOT1NZUyB9
-LCAgLy8gMDEgYmxvY2sxICovCj4+ICsJeyAxLCAodm9pZCAqKTAsIDAsIEVJTlZBTCB9LCAvLyAw
-MSBibG9jazIKPj4gKwl7IDAsICZwdHIsIHNpemVvZihwdHIpLCBFRkFVTFQgfSwgLy8gMDEgYmxv
-Y2szCj4+ICt9Owo+PiArCj4+ICt2b2lkIHJ1bih1bnNpZ25lZCBpbnQgaSkKPj4gICB7Cj4+IC0J
-bW9kaWZ5X2xkdF9zIGVudHJ5Owo+PiArCXN0cnVjdCB0c3RfY2FzZSAqdGMgPSAmdHN0X2Nhc2Vz
-W2ldOwo+PiAgIAo+PiAtCWVudHJ5LmVudHJ5X251bWJlciA9IDA7Cj4+IC0JZW50cnkuYmFzZV9h
-ZGRyID0gKHVuc2lnbmVkIGxvbmcpc2VnOwo+PiAtCWVudHJ5LmxpbWl0ID0gc2l6ZTsKPj4gLQll
-bnRyeS5zZWdfMzJiaXQgPSAxOwo+PiAtCWVudHJ5LmNvbnRlbnRzID0gMDsKPj4gLQllbnRyeS5y
-ZWFkX2V4ZWNfb25seSA9IDA7Cj4+IC0JZW50cnkubGltaXRfaW5fcGFnZXMgPSAwOwo+PiAtCWVu
-dHJ5LnNlZ19ub3RfcHJlc2VudCA9IDA7Cj4+IC0KPj4gLQlyZXR1cm4gbW9kaWZ5X2xkdCgxLCAm
-ZW50cnksIHNpemVvZihlbnRyeSkpOwo+PiArCVRTVF9FWFBfRkFJTChtb2RpZnlfbGR0KHRjLT50
-ZnVuYywgdGMtPnB0ciwgdGMtPmJ5dGVjb3VudCksCj4+ICsJCSAgICAgdGMtPmV4cF9lcnJubyk7
-Cj4+ICAgfQo+PiAgIAo+PiAgIHZvaWQgc2V0dXAodm9pZCkKPj4gICB7Cj4+ICsJaW50IHNlZ1s0
-XTsKPj4gICAKPj4gLQl0c3Rfc2lnKEZPUkssIERFRl9IQU5ETEVSLCBjbGVhbnVwKTsKPj4gLQo+
-PiAtCVRFU1RfUEFVU0U7Cj4+IC19Cj4+IC0KPj4gLXZvaWQgY2xlYW51cCh2b2lkKQo+PiAtewo+
-PiAtCj4+ICsJcHRyID0gc2JyaygwKSArIDB4RkZGOwo+PiArCWNyZWF0ZV9zZWdtZW50KHNlZywg
-c2l6ZW9mKHNlZykpOwo+PiArCXRzdF9jYXNlc1sxXS5wdHIgPSBwdHI7Cj4+ICAgfQo+PiAgIAo+
-PiAtI2VsaWYgSEFWRV9NT0RJRllfTERUCj4+IC1pbnQgbWFpbih2b2lkKQo+PiAtewo+PiAtCXRz
-dF9icmttKFRDT05GLAo+PiAtCQkgTlVMTCwKPj4gLQkJICJtb2RpZnlfbGR0IGlzIGF2YWlsYWJs
-ZSBidXQgbm90IHRlc3RlZCBvbiB0aGUgcGxhdGZvcm0gdGhhbiBfX2kzODZfXyIpOwo+PiAtfQo+
-PiArc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+PiArCS50ZXN0ID0gcnVuLAo+PiAr
-CS50Y250ID0gQVJSQVlfU0laRSh0c3RfY2FzZXMpLAo+PiArCS5zZXR1cCA9IHNldHVwLAo+PiAr
-CS5idWZzID0KPj4gKwkJKHN0cnVjdCB0c3RfYnVmZmVyc1tdKXsKPj4gKwkJCXsgJmJ1ZiwgLnNp
-emUgPSBzaXplb2Yoc3RydWN0IHVzZXJfZGVzYykgfSwKPj4gKwkJCXt9LAo+PiArCQl9LAo+PiAr
-fTsKPj4gICAKPj4gICAjZWxzZQo+PiAtaW50IG1haW4odm9pZCkKPj4gLXsKPj4gLQl0c3RfcmVz
-bShUSU5GTywgIm1vZGlmeV9sZHQwMSB0ZXN0IG9ubHkgZm9yIGl4ODYiKTsKPj4gLQl0c3RfZXhp
-dCgpOwo+PiAtfQo+PiAtCj4+IC0jZW5kaWYgLyogZGVmaW5lZChfX2kzODZfXykgKi8KPj4gK1RT
-VF9URVNUX1RDT05GKCJUZXN0IHN1cHBvcnRlZCBvbmx5IG9uIGkzODYiKTsKPj4gKyNlbmRpZiAv
-KiBfX2kzODZfXyAqLwo+Pgo+IEFuZHJlYQoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6
-Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Thu, Mar 27, 2025 at 09:21:30PM -0700, Luis Chamberlain wrote:
+> Would the extra ref check added via commit 060913999d7a9e50 ("mm:
+> migrate: support poisoned recover from migrate folio") make the removal
+> of the spin lock safe now given all the buffers are locked from the
+> folio? This survives some basic sanity checks on my end with
+> generic/750 against ext4 and also filling a drive at the same time with
+> fio. I have a feeling is we are not sure, do we have a reproducer for
+> the issue reported through ebdf4de5642fb6 ("mm: migrate: fix reference
+> check race between __find_get_block() and migration")? I suspect the
+> answer is no.
+
+<-- snip -->
+
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 97f0edf0c032..6a5d125ecde9 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -859,12 +859,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+>  			}
+>  			bh = bh->b_this_page;
+>  		} while (bh != head);
+> +		spin_unlock(&mapping->i_private_lock);
+>  		if (busy) {
+>  			if (invalidated) {
+>  				rc = -EAGAIN;
+>  				goto unlock_buffers;
+>  			}
+> -			spin_unlock(&mapping->i_private_lock);
+>  			invalidate_bh_lrus();
+>  			invalidated = true;
+>  			goto recheck_buffers;
+> @@ -882,8 +882,6 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+>  	} while (bh != head);
+>  
+>  unlock_buffers:
+> -	if (check_refs)
+> -		spin_unlock(&mapping->i_private_lock);
+>  	bh = head;
+>  	do {
+>  		unlock_buffer(bh);
+> diff --git a/mm/util.c b/mm/util.c
+> index 448117da071f..3585bdb8700a 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -735,6 +735,8 @@ int folio_mc_copy(struct folio *dst, struct folio *src)
+>  	long nr = folio_nr_pages(src);
+>  	long i = 0;
+>  
+> +	might_sleep();
+> +
+>  	for (;;) {
+>  		if (copy_mc_highpage(folio_page(dst, i), folio_page(src, i)))
+>  			return -EHWPOISON;
+
+Nah, this ends up producing the following so I'm inclined at this point
+to just rever the 64k 64k block size enablment until we get this figured
+out because I can't think of an easy quick solution to this.
+
+
+Mar 28 03:35:30 extra-ext4-4k kernel: Linux version 6.14.0-rc7-next-20250321-dirty (mcgrof@beef) (gcc (Debian 14.2.0-16) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #57 SMP PREEMPT_DYNAMIC Fri Mar 28 03:33:04 UTC 2025
+Mar 28 03:35:30 extra-ext4-4k kernel: Command line: BOOT_IMAGE=/boot/vmlinuz-6.14.0-rc7-next-20250321-dirty root=PARTUUID=503fa6f2-2d5b-4d7e-8cf8-3a811de326ce ro console=tty0 console=tty1 console=ttyS0,115200n8 console=ttyS0
+
+<-- snip -->
+
+Mar 28 03:36:32 extra-ext4-4k kernel: EXT4-fs (loop16): mounted filesystem 90cdb700-ad4a-4261-a1be-4f4627772317 r/w with ordered data mode. Quota mode: none.
+Mar 28 03:36:37 extra-ext4-4k kernel: EXT4-fs (loop5): mounted filesystem fef0662d-01fc-483d-87ac-8e4ef2939de3 r/w with ordered data mode. Quota mode: none.
+Mar 28 03:36:37 extra-ext4-4k kernel: EXT4-fs (loop5): unmounting filesystem fef0662d-01fc-483d-87ac-8e4ef2939de3.
+Mar 28 03:36:37 extra-ext4-4k kernel: EXT4-fs (loop16): unmounting filesystem 90cdb700-ad4a-4261-a1be-4f4627772317.
+Mar 28 03:36:37 extra-ext4-4k kernel: EXT4-fs (loop16): mounted filesystem 90cdb700-ad4a-4261-a1be-4f4627772317 r/w with ordered data mode. Quota mode: none.
+Mar 28 03:36:37 extra-ext4-4k unknown: run fstests generic/750 at 2025-03-28 03:36:37
+Mar 28 03:36:39 extra-ext4-4k kernel: EXT4-fs (loop5): mounted filesystem ed8a8fa0-0ea1-4820-aa26-366cd64a6e36 r/w with ordered data mode. Quota mode: none.
+Mar 28 03:39:06 extra-ext4-4k kernel: rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P7603 } 8 jiffies s: 565 root: 0x0/T
+Mar 28 03:39:06 extra-ext4-4k kernel: rcu: blocking rcu_node structures (internal RCU debug):
+Mar 28 03:59:47 extra-ext4-4k kernel: NOHZ tick-stop error: local softirq work is pending, handler #10!!!
+Mar 28 04:24:47 extra-ext4-4k kernel: ------------[ cut here ]------------
+Mar 28 04:24:47 extra-ext4-4k kernel: WARNING: CPU: 7 PID: 1790 at mm/slub.c:4756 free_large_kmalloc+0xc1/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel: Modules linked in: loop sunrpc 9p nls_iso8859_1 kvm_intel nls_cp437 vfat crc32c_generic fat kvm ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 aesni_intel gf128mul crypto_simd cryptd 9pnet_virtio virtio_balloon virtio_console evdev button joydev serio_raw nvme_fabrics nvme_core dm_mod drm nfnetlink vsock_loopback vmw_vsock_virtio_transport_common vsock autofs4 ext4 crc16 mbcache jbd2 btrfs blake2b_generic efivarfs raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq raid1 raid0 md_mod virtio_net net_failover failover virtio_blk virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev psmouse virtio virtio_ring
+Mar 28 04:24:47 extra-ext4-4k kernel: CPU: 7 UID: 0 PID: 1790 Comm: fsstress Not tainted 6.14.0-rc7-next-20250321-dirty #57 PREEMPT(full) 
+Mar 28 04:24:47 extra-ext4-4k kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 2024.11-5 01/28/2025
+Mar 28 04:24:47 extra-ext4-4k kernel: RIP: 0010:free_large_kmalloc+0xc1/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel: Code: f8 00 00 00 75 24 0f 0b 80 3d de 57 3b 01 00 0f 84 4f 63 be ff bd 00 f0 ff ff eb 8e 48 c7 c6 10 03 27 90 e8 61 32 fa ff 0f 0b <0f> 0b 48 83 c4 08 48 89 df 48 c7 c6 18 db 31 90 5b 5d e9 48 32 fa
+Mar 28 04:24:47 extra-ext4-4k kernel: RSP: 0018:ffffa95942a67ac8 EFLAGS: 00010202
+Mar 28 04:24:47 extra-ext4-4k kernel: RAX: 00000000000000ff RBX: fffffc63c4219c40 RCX: 0000000000000001
+Mar 28 04:24:47 extra-ext4-4k kernel: RDX: 0000000000000000 RSI: ffff978e08671000 RDI: fffffc63c4219c40
+Mar 28 04:24:47 extra-ext4-4k kernel: RBP: 0000000000000000 R08: 0000000000000020 R09: fffffffffffffff0
+Mar 28 04:24:47 extra-ext4-4k kernel: R10: 00000000000000a0 R11: 0000000000000004 R12: 0000000000000000
+Mar 28 04:24:47 extra-ext4-4k kernel: R13: ffff978e08671000 R14: 0000000000000000 R15: ffff978d03bf1000
+Mar 28 04:24:47 extra-ext4-4k kernel: FS:  00007fefc4670740(0000) GS:ffff978eecda0000(0000) knlGS:0000000000000000
+Mar 28 04:24:47 extra-ext4-4k kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Mar 28 04:24:47 extra-ext4-4k kernel: CR2: 00007fefc4872000 CR3: 0000000075fa6002 CR4: 0000000000772ef0
+Mar 28 04:24:47 extra-ext4-4k kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+Mar 28 04:24:47 extra-ext4-4k kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Mar 28 04:24:47 extra-ext4-4k kernel: PKRU: 55555554
+Mar 28 04:24:47 extra-ext4-4k kernel: Call Trace:
+Mar 28 04:24:47 extra-ext4-4k kernel:  <TASK>
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? __warn.cold+0xb7/0x14f
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? free_large_kmalloc+0xc1/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? report_bug+0xe6/0x170
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? free_large_kmalloc+0xc1/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? handle_bug+0x199/0x260
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? exc_invalid_op+0x13/0x60
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? asm_exc_invalid_op+0x16/0x20
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? free_large_kmalloc+0xc1/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel:  ext4_xattr_block_set+0x191/0x1200 [ext4]
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? xattr_find_entry+0x96/0x110 [ext4]
+Mar 28 04:24:47 extra-ext4-4k kernel:  ext4_xattr_set_handle+0x572/0x630 [ext4]
+Mar 28 04:24:47 extra-ext4-4k kernel:  ext4_xattr_set+0x7c/0x150 [ext4]
+Mar 28 04:24:47 extra-ext4-4k kernel:  __vfs_removexattr+0x7c/0xb0
+Mar 28 04:24:47 extra-ext4-4k kernel:  __vfs_removexattr_locked+0xb7/0x150
+Mar 28 04:24:47 extra-ext4-4k kernel:  vfs_removexattr+0x58/0x100
+Mar 28 04:24:47 extra-ext4-4k kernel:  path_removexattrat+0x17d/0x330
+Mar 28 04:24:47 extra-ext4-4k kernel:  ? __do_sys_newfstatat+0x33/0x60
+Mar 28 04:24:47 extra-ext4-4k kernel:  __x64_sys_removexattr+0x19/0x20
+Mar 28 04:24:47 extra-ext4-4k kernel:  do_syscall_64+0x69/0x140
+Mar 28 04:24:47 extra-ext4-4k kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Mar 28 04:24:47 extra-ext4-4k kernel: RIP: 0033:0x7fefc4781037
+Mar 28 04:24:47 extra-ext4-4k kernel: Code: f0 ff ff 73 01 c3 48 8b 0d be 8d 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 c5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 91 8d 0d 00 f7 d8 64 89 01 48
+Mar 28 04:24:47 extra-ext4-4k kernel: RSP: 002b:00007ffc2b5a5d48 EFLAGS: 00000206 ORIG_RAX: 00000000000000c5
+Mar 28 04:24:47 extra-ext4-4k kernel: RAX: ffffffffffffffda RBX: 000000000002d937 RCX: 00007fefc4781037
+Mar 28 04:24:47 extra-ext4-4k kernel: RDX: 0000000000000000 RSI: 00007ffc2b5a5d70 RDI: 0000563075ae5850
+Mar 28 04:24:47 extra-ext4-4k kernel: RBP: 00007ffc2b5a5d70 R08: 0000000000000064 R09: 00000000ffffffff
+Mar 28 04:24:47 extra-ext4-4k kernel: R10: 0000000000000000 R11: 0000000000000206 R12: 00000000000030d4
+Mar 28 04:24:47 extra-ext4-4k kernel: R13: 8f5c28f5c28f5c29 R14: 00007ffc2b5a5e20 R15: 0000563064291ea0
+Mar 28 04:24:47 extra-ext4-4k kernel:  </TASK>
+Mar 28 04:24:47 extra-ext4-4k kernel: irq event stamp: 94586373
+Mar 28 04:24:47 extra-ext4-4k kernel: hardirqs last  enabled at (94586383): [<ffffffff8f19ee1e>] __up_console_sem+0x5e/0x70
+Mar 28 04:24:47 extra-ext4-4k kernel: hardirqs last disabled at (94586394): [<ffffffff8f19ee03>] __up_console_sem+0x43/0x70
+Mar 28 04:24:47 extra-ext4-4k kernel: softirqs last  enabled at (94585948): [<ffffffff8f0ffa53>] __irq_exit_rcu+0xc3/0x120
+Mar 28 04:24:47 extra-ext4-4k kernel: softirqs last disabled at (94585929): [<ffffffff8f0ffa53>] __irq_exit_rcu+0xc3/0x120
+Mar 28 04:24:47 extra-ext4-4k kernel: ---[ end trace 0000000000000000 ]---
+Mar 28 04:24:47 extra-ext4-4k kernel: page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x402a88 pfn:0x108671
+Mar 28 04:24:47 extra-ext4-4k kernel: flags: 0x57fffc000000000(node=1|zone=2|lastcpupid=0x1ffff)
+Mar 28 04:24:47 extra-ext4-4k kernel: raw: 057fffc000000000 dead000000000100 dead000000000122 0000000000000000
+Mar 28 04:24:47 extra-ext4-4k kernel: raw: 0000000000402a88 0000000000000000 00000000ffffffff 0000000000000000
+Mar 28 04:24:47 extra-ext4-4k kernel: page dumped because: Not a kmalloc allocation
+Mar 28 04:50:41 extra-ext4-4k kernel: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Mar 28 04:50:41 extra-ext4-4k kernel: turning off the locking correctness validator.
+Mar 28 04:50:41 extra-ext4-4k kernel: CPU: 4 UID: 0 PID: 668 Comm: btrfs-transacti Tainted: G        W           6.14.0-rc7-next-20250321-dirty #57 PREEMPT(full) 
+Mar 28 04:50:41 extra-ext4-4k kernel: Tainted: [W]=WARN
+Mar 28 04:50:41 extra-ext4-4k kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 2024.11-5 01/28/2025
+Mar 28 04:50:41 extra-ext4-4k kernel: Call Trace:
+Mar 28 04:50:41 extra-ext4-4k kernel:  <TASK>
+Mar 28 04:50:41 extra-ext4-4k kernel:  dump_stack_lvl+0x68/0x90
+Mar 28 04:50:41 extra-ext4-4k kernel:  __lock_acquire+0x1eaf/0x2210
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __lock_acquire+0xc77/0x2210
+Mar 28 04:50:41 extra-ext4-4k kernel:  lock_acquire+0xd1/0x2e0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? put_cpu_partial+0x5f/0x1d0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? lock_acquire+0xe1/0x2e0
+Mar 28 04:50:41 extra-ext4-4k kernel:  put_cpu_partial+0x68/0x1d0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? put_cpu_partial+0x5f/0x1d0
+Mar 28 04:50:41 extra-ext4-4k kernel:  get_partial_node.part.0+0xde/0x400
+Mar 28 04:50:41 extra-ext4-4k kernel:  ___slab_alloc+0x361/0x13c0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __alloc_object+0x2f/0x240
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? mark_held_locks+0x40/0x70
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? ___slab_alloc+0x701/0x13c0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? lockdep_hardirqs_on+0x78/0x100
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __alloc_object+0x2f/0x240
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __slab_alloc.isra.0+0x52/0xa0
+Mar 28 04:50:41 extra-ext4-4k kernel:  __slab_alloc.isra.0+0x52/0xa0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __alloc_object+0x2f/0x240
+Mar 28 04:50:41 extra-ext4-4k kernel:  kmem_cache_alloc_noprof+0x1e3/0x430
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? xas_alloc+0x9f/0xc0
+Mar 28 04:50:41 extra-ext4-4k kernel:  __alloc_object+0x2f/0x240
+Mar 28 04:50:41 extra-ext4-4k kernel:  __create_object+0x22/0x90
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? xas_alloc+0x9f/0xc0
+Mar 28 04:50:41 extra-ext4-4k kernel:  kmem_cache_alloc_lru_noprof+0x337/0x430
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __lock_acquire+0x45d/0x2210
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? stack_depot_save_flags+0x23/0x9d0
+Mar 28 04:50:41 extra-ext4-4k kernel:  xas_alloc+0x9f/0xc0
+Mar 28 04:50:41 extra-ext4-4k kernel:  xas_create+0x309/0x6f0
+Mar 28 04:50:41 extra-ext4-4k kernel:  xas_store+0x54/0x700
+Mar 28 04:50:41 extra-ext4-4k kernel:  __xa_cmpxchg+0xb9/0x140
+Mar 28 04:50:41 extra-ext4-4k kernel:  add_delayed_ref+0x11d/0xa50 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  btrfs_alloc_tree_block+0x3ea/0x5a0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  split_leaf+0x167/0x6d0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  setup_leaf_for_split+0x19f/0x200 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  btrfs_split_item+0x21/0x50 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  btrfs_del_csums+0x270/0x3a0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? btrfs_csum_root+0x83/0xb0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  __btrfs_free_extent.isra.0+0x5fb/0xcc0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  __btrfs_run_delayed_refs+0x51d/0xf40 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  btrfs_run_delayed_refs+0x3d/0x110 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  btrfs_commit_transaction+0x8f/0xee0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? btrfs_init_block_rsv+0x51/0x60 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? start_transaction+0x22c/0xaa0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  transaction_kthread+0x152/0x1b0 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
+Mar 28 04:50:41 extra-ext4-4k kernel:  kthread+0x107/0x250
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? find_held_lock+0x2b/0x80
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? ret_from_fork+0x17/0x50
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? ret_from_fork+0x17/0x50
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? lock_release+0x17d/0x2c0
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __pfx_kthread+0x10/0x10
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __pfx_kthread+0x10/0x10
+Mar 28 04:50:41 extra-ext4-4k kernel:  ret_from_fork+0x2d/0x50
+Mar 28 04:50:41 extra-ext4-4k kernel:  ? __pfx_kthread+0x10/0x10
+Mar 28 04:50:41 extra-ext4-4k kernel:  ret_from_fork_asm+0x1a/0x30
+Mar 28 04:50:41 extra-ext4-4k kernel:  </TASK>
+Mar 28 05:04:32 extra-ext4-4k kernel: page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x20889c pfn:0x4a3e
+Mar 28 05:04:32 extra-ext4-4k kernel: flags: 0xffffc000000000(node=0|zone=1|lastcpupid=0x1ffff)
+Mar 28 05:04:32 extra-ext4-4k kernel: raw: 00ffffc000000000 fffffc63c041d448 ffff978d7bc347f0 0000000000000000
+Mar 28 05:04:32 extra-ext4-4k kernel: raw: 000000000020889c 0000000000000000 00000000ffffffff 0000000000000000
+Mar 28 05:04:32 extra-ext4-4k kernel: page dumped because: Not a kmalloc allocation
+Mar 28 05:31:13 extra-ext4-4k kernel: page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x498b96 pfn:0x76f4
+Mar 28 05:31:13 extra-ext4-4k kernel: flags: 0xffffc000000000(node=0|zone=1|lastcpupid=0x1ffff)
+Mar 28 05:31:13 extra-ext4-4k kernel: raw: 00ffffc000000000 fffffc63c01d9308 fffffc63c01df648 0000000000000000
+Mar 28 05:31:13 extra-ext4-4k kernel: raw: 0000000000498b96 0000000000000000 00000000ffffffff 0000000000000000
+Mar 28 05:31:13 extra-ext4-4k kernel: page dumped because: Not a kmalloc allocation
+Mar 28 05:57:09 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5174: comm fsstress: directory missing '.'
+Mar 28 06:04:43 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 06:05:19 extra-ext4-4k kernel: page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x243117 pfn:0x104ddb
+Mar 28 06:05:19 extra-ext4-4k kernel: flags: 0x57fffc000000000(node=1|zone=2|lastcpupid=0x1ffff)
+Mar 28 06:05:19 extra-ext4-4k kernel: raw: 057fffc000000000 fffffc63c4136fc8 ffff978d7bcb4970 0000000000000000
+Mar 28 06:05:19 extra-ext4-4k kernel: raw: 0000000000243117 0000000000000000 00000000ffffffff 0000000000000000
+Mar 28 06:05:19 extra-ext4-4k kernel: page dumped because: Not a kmalloc allocation
+Mar 28 06:15:16 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 06:23:04 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:23:15 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:23:23 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:23:28 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:23:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:24:02 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:24:35 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:30:04 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 06:32:30 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5188: comm fsstress: directory missing '.'
+Mar 28 06:32:39 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 06:38:54 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 06:41:37 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5187: comm fsstress: directory missing '.'
+Mar 28 06:42:05 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:06 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:22 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:38 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:42 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:53 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:42:54 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:43:02 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:43:12 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:43:15 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:53:28 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5188: comm fsstress: directory missing '.'
+Mar 28 06:54:36 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 06:55:07 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:55:09 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 06:55:12 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 07:04:21 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5173: comm fsstress: directory missing '.'
+Mar 28 07:11:04 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 07:13:11 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5174: comm fsstress: directory missing '.'
+Mar 28 07:15:45 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:15:49 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:15:51 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:15:52 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:16:00 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:16:41 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5187: comm fsstress: directory missing '.'
+Mar 28 07:24:00 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:24:31 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:25:40 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8703: comm fsstress: checksumming directory block 0
+Mar 28 07:25:47 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8703: comm fsstress: checksumming directory block 0
+Mar 28 07:25:50 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8703: comm fsstress: checksumming directory block 0
+Mar 28 07:26:18 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8684: comm fsstress: checksumming directory block 0
+Mar 28 07:41:04 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5188: comm fsstress: directory missing '.'
+Mar 28 07:41:11 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5174: comm fsstress: checksumming directory block 0
+Mar 28 07:44:41 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5187: comm fsstress: directory missing '.'
+Mar 28 07:47:20 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5187: comm fsstress: directory missing '.'
+Mar 28 07:47:28 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5187: comm fsstress: directory missing '.'
+Mar 28 07:47:56 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 07:49:05 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5187: comm fsstress: directory missing '.'
+Mar 28 07:53:26 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:16:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:19:26 extra-ext4-4k kernel: EXT4-fs error: 6 callbacks suppressed
+Mar 28 08:19:26 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 08:21:37 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 08:28:17 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 08:30:17 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 08:31:02 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 08:32:21 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:32:23 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:32:24 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:32:31 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:32:36 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:32:43 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 08:34:47 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5174: comm fsstress: directory missing '.'
+Mar 28 08:34:58 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 08:35:01 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5187: comm fsstress: directory missing '.'
+Mar 28 08:37:11 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:37:12 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:37:14 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5188: comm fsstress: directory missing '.'
+Mar 28 08:37:17 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #8699: comm fsstress: checksumming directory block 0
+Mar 28 08:39:32 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5174: comm fsstress: directory missing '.'
+Mar 28 08:40:52 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 08:40:55 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 08:41:03 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5173: comm fsstress: directory missing '.'
+Mar 28 08:54:04 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5187: comm fsstress: directory missing '.'
+Mar 28 08:58:02 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5188: comm fsstress: directory missing '.'
+Mar 28 09:00:10 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_get_first_dir_block:3538: inode #5174: comm fsstress: directory missing '.'
+Mar 28 09:01:30 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5174: comm fsstress: checksumming directory block 0
+Mar 28 09:04:55 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5176: comm fsstress: directory missing '.'
+Mar 28 09:05:48 extra-ext4-4k kernel: EXT4-fs warning (device loop5): ext4_empty_dir:3088: inode #5188: comm fsstress: directory missing '.'
+Mar 28 09:07:16 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 09:07:21 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 09:07:31 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5176: comm fsstress: checksumming directory block 0
+Mar 28 09:07:33 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 09:07:34 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 09:07:42 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 09:07:43 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 09:07:49 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5173: comm fsstress: checksumming directory block 0
+Mar 28 09:13:23 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5188: comm fsstress: checksumming directory block 0
+Mar 28 09:13:44 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5188: comm fsstress: checksumming directory block 0
+Mar 28 09:13:56 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5188: comm fsstress: checksumming directory block 0
+Mar 28 09:14:06 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5188: comm fsstress: checksumming directory block 0
+Mar 28 09:14:33 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:35 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:50 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:51 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:53 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:54 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:55 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:56 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:14:57 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:15:00 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:15:11 extra-ext4-4k kernel: EXT4-fs error (device loop5): __ext4_find_entry:1626: inode #5187: comm fsstress: checksumming directory block 0
+Mar 28 09:16:55 extra-ext4-4k kernel: EXT4-fs error (device loop5): ext4_find_extent:938: inode #1104560: comm fsstress: pblk 4932229 bad header/extent: invalid magic - magic 8383, entries 33667, max 33667(0), depth 33667(0)
+Mar 28 09:17:22 extra-ext4-4k kernel: NOHZ tick-stop error: local softirq work is pending, handler #10!!!
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
