@@ -4,97 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBCFEC3600C
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 13:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E861C3600C
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 13:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743167136; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743167930; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-transfer-encoding :
  content-type : sender : from;
- bh=SEm8mtB15xIUUO94smITnp5zy0SZTG5FuT1mdEY3l1Q=;
- b=Z2sznmlOtPXyFHstrjksDjLZEwgthN1lisfDlyKoWKh2g7yMJNUYYtPhvvbyqm7FzwOoO
- 37Ocw8+5CAdiPKPPEH7Po5Zyb+U0uFJDl42+qQ85vi7fq5Yz+V1xsLSrv1rjmgpsO7zUC96
- KusgaBql/Lv7HEjG74eTrh2cLo7mOaE=
+ bh=jU+brkVtOmypo7fvCiyffnjK6fya3rre5EwomHvdhbQ=;
+ b=b/u9Qb8TQFTg55TI1f/Z5brgWBwRG73iDWEM44mrQJjxYc/2ToPxtNdjPuLqKEIEU8KOO
+ 9J45Cw4jEci/YF4tqbPMd9cSsxR6jazD6L37MYzFKKCRBjjvRSqKYQoWnneRm64npB1Nxou
+ tZh0xjij4L+1rx79qefPLx8Y02VkNa0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 559073CA494
-	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 14:05:36 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8B1293CA3C9
+	for <ltp@archiver.kernel.org>; Fri, 28 Mar 2025 14:18:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 821583C264E
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 14:05:14 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ by picard.linux.it (Postfix) with ESMTPS id 95C9E3C91B5
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 14:18:27 +0100 (CET)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C1C981A009AA
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 14:05:13 +0100 (CET)
-Received: by mail-wm1-x344.google.com with SMTP id
- 5b1f17b1804b1-43cfdc2c8c9so12109705e9.2
- for <ltp@lists.linux.it>; Fri, 28 Mar 2025 06:05:13 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 72311140045F
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 14:18:26 +0100 (CET)
+Received: by mail-wr1-x442.google.com with SMTP id
+ ffacd0b85a97d-3913958ebf2so1712264f8f.3
+ for <ltp@lists.linux.it>; Fri, 28 Mar 2025 06:18:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743167113; x=1743771913; darn=lists.linux.it;
+ d=suse.com; s=google; t=1743167906; x=1743772706; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=9hp5Si1HpWyn4uNX8ir0JmGhCpztl4QFUaoCbINrPZ8=;
- b=TX/YGEE1ZezieFCGxUPYlO9/xZ+lf3VX+NyJSzoPwVy/tGSpFOMxnZTrKo34bW5uBL
- RljF+cyEjb45daZM4GlHUIGO6yXv3Ncf4ybBHasUIdAWr9ZZ0VjwQMUPEhL+3pYQRMk0
- Or/M7ITmRs1wHTq5GPHKmbutNGVkkRpejh//t7DArMd1M+pAHEfN5dpk/84lbHYekeX5
- 9R974uUWtYgw8K0vaOd6gYoOy3GpEM/skbFTBgdsPqdSS5bhm4oOdbXUxpF7Th7ZyVZy
- ceMlnxgoRlgwQSxvbaMUIeyZkzg8dX2ttA8X0HWDaP/SjqYWF7HH60r2Gc5ps9IxI1ew
- QyVQ==
+ bh=UC7qmywPveYG7sR21BVO3MQgpnb+qq8fIdAYx3gWzO8=;
+ b=giZwFDedxMYUr0JzntpK0jrfQUNiBhFYXiZBY0591wrJYJVC7an3tV+wgrY8p9WOY5
+ nvPuvLJmNqis5rNT9/IVxiEAz5Wom1FY6Fpkt8PuhF+2TRU2khL1eGLkgxjOSEu49Lzc
+ 9nsCQBsnN9/m1ioSffYuiy9vE8u39icamBOOBdMki5azzHeje6ejmCKxxX+diwU4aM8Z
+ YToIjybv1h1fUAFFscgwkUWbEPLEF5OFP3BWVkWK2IN1ye9nV5QNSgFmdInr4vJ91JLK
+ hZRpcYFeoM+3MdxS6qEvncYFCoNQJk5MaCCCTz7b6QXfNwq6+dHvdKLiXzUMuvmoDwhq
+ EF2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743167113; x=1743771913;
+ d=1e100.net; s=20230601; t=1743167906; x=1743772706;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=9hp5Si1HpWyn4uNX8ir0JmGhCpztl4QFUaoCbINrPZ8=;
- b=ezFwiAXFv8lMKu4Xp+rf9lZfnV1HDsLbh3B6W6IpG0G9bJWXygtCljyafbSg2jPfeJ
- 6SrOynGu0melrgdVnBCWWcv3oA255DqkdHMWTHsZuWUWhhOzZB6iScEEtMg38iOOGk9F
- fY0azytNL2OHhzZTKQO4J1JkD1pq0JnAG43s6rNlr5IXUNULWrmeU1ElhASij+yqe6YI
- U5lFFlSLs8OvO+JtELLVIlBgfKE5DaRoWF+HtpBbQHzrFu9cCstnYs6iB/Z1ntoz8DYm
- Jj450GSTbqD79gb1gb2bGkYXTj7e7NEZ4gzO4s7MZTAHv8op1OS2Bh+Rk0ApqEZWpKGZ
- CSAQ==
+ bh=UC7qmywPveYG7sR21BVO3MQgpnb+qq8fIdAYx3gWzO8=;
+ b=gfKB9npa0KPMnP/3x++UZ+/mG9nmpKNe7Y1/NdJ+4Kqivvi1D9NhcyqGgU3S34sGB/
+ s6RdCcCeXhlWOa1SHN6HHzGnb3R17904sEjXRedqwnecMjoq5Y/Djf2JdCcc1ArgLZXs
+ SJe0AGRpcHS4PRP0OavN0X7ldnQaHJ4KRPIAN+MobMAvBNpBVYoq6ShMjHPqc8EPW5+e
+ DQDeq+SIUIsRj8HQiNkaigA+Q/FzBVnIyE2ekDZphC7ECU1bN5CVGWMdDeeuU6aKJFf5
+ ndEHsqGe8HpuTunrHa+nghKxwddr3WlqiQQHs22LH6fuTEJ+2HQqoMmb8isPznw4GtPP
+ dcqQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCV8y3ydzoc5pjW2LORG/Fc4cm90VPT/BIu4T9fVpdBFNHwbVJ9GOrxQvyDB4WLe1AZ+MXo=@lists.linux.it
-X-Gm-Message-State: AOJu0Yw5xK+TJNj726P4O41wW7EEIkGhccqMy8tUAeND05RNdwn9Vk4z
- jZzJfATjBUn2JBIhjglv+mXkzc5hi2haAAVjCLSoZFztQ08Z42CPXh/9QYsrdiAjPKEZGUDcvGS
- UNS8dCwlV
-X-Gm-Gg: ASbGnctGDR9IJrvp/8ioMxwj2nQ/7Mblc+u4Wouq74G2plKzdeb4rJhQXKntSjYlPcs
- gZf51YypdixXt6CuEfddicinChEdYJB1hnL3hv4EQ79u6Smrw4A/KoR7oNGPjM7EzxjHb/Ppw8w
- VodrkCjK5LD+kAB9WAYWe4vbA7mW12q+q6rGsh26ec0ybW6kGYvgUVAwaDZu3IJZxrqgq/Q5OaH
- rJF3OdgA25/zxTjdiG9fOmwCxKEQmI27/sYL0feuH7KM5G9s/kZ+MtEDJ0CdBFHXE3cnTI+JoyB
- EPQfe74kr2dxED6lrbTDQoFnjIbwjTqcqstgOk9NIdGqlwVE/VIQgPziBsg4R0+cEa1uOSjdWrK
- 5sMLH6I15DTHhkBEKoIxeV71N0kZQcbpZOMEiX8JomZwbTrZLMVfHjO89MY8tKPVOvzhSYsnU2r
- 2zUMIztqA=
-X-Google-Smtp-Source: AGHT+IGrsF72l8CitBBCgUArQmMqKACaYZ7dcgQS5bfaSn5wA7VpsvknQM69Gr8YlRE9lcAjpQg98g==
-X-Received: by 2002:a05:600c:1d9e:b0:43d:609:b305 with SMTP id
- 5b1f17b1804b1-43d84fb435amr81477145e9.17.1743167112518; 
- Fri, 28 Mar 2025 06:05:12 -0700 (PDT)
+ AJvYcCWv+HsNe52CL71/XkvCjjfMKEKRT0MrZOpX6zay5szApJt0AEVI8QkDnCOaVU7w/y+aj08=@lists.linux.it
+X-Gm-Message-State: AOJu0YyS3Jj/WpqjAYjUsKDYedeVE/gTjOlN/sbGjIoxbsANLOW2jGv1
+ DvvZLd+qGV31JtXKXp89lZSlLdpnXHNz19ltRV99f2K9NmpPlHizBE0YrAo7cXo=
+X-Gm-Gg: ASbGnct8rQP/NfTwGrUHTwGRBGRm15sxYSEWHiHijUYvEClZSgwJnt5yPSsX+nTb0uN
+ XGatle/0hDbHG6WamMKttjPEmetDha/DpRqKTFruByJmV78z9vMmMVfH8nwCux7Ls0PQn6UWqS/
+ +CgHmZMITG5BMKaJSNDZTU+om/PGEHhmMDWv4Zx06WDRnQbiE8/tlQz620K61/uBuI0RwX2UIF1
+ fA5HrO+Ngs+jgquFf2+VyiDeuvGapqFKHMXmYdKVc6UEkFphki/yQJBeNzwjRaWYCafiS6tT57H
+ whOd2jqr6XKd7lMUVZQkvKF5F9XIF3FOWZSRIti5npowMe4WSd+84r8DhLDpB+LI0Jlqc0ZGU8g
+ g5oF3FXy9Q64uXfnCinUiblD3YI0fOQy18MLTdWFZu2etOpP/W0HegoIsa2mSfyt0YTzzNqW7NB
+ S6tiEo3Pk=
+X-Google-Smtp-Source: AGHT+IHyF99kNI2eKpwY3eNeTysFpog8guyNy89/u9oPI8+uRj5rD3BXkYEVYkDxwnE0VwSitQ23OA==
+X-Received: by 2002:a05:6000:2ae:b0:399:79a7:95ac with SMTP id
+ ffacd0b85a97d-39ad17606e0mr7001492f8f.41.1743167905706; 
+ Fri, 28 Mar 2025 06:18:25 -0700 (PDT)
 Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
  (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
  [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43d900013afsm27143235e9.36.2025.03.28.06.05.11
+ ffacd0b85a97d-39c0b79e141sm2596647f8f.77.2025.03.28.06.18.25
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 28 Mar 2025 06:05:11 -0700 (PDT)
-Message-ID: <58bb7954-319e-4d56-a321-da66a6974c1e@suse.com>
-Date: Fri, 28 Mar 2025 14:05:10 +0100
+ Fri, 28 Mar 2025 06:18:25 -0700 (PDT)
+Message-ID: <8b216cc2-8675-4f09-83d4-c9d4f78f1397@suse.com>
+Date: Fri, 28 Mar 2025 14:18:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
 References: <20250328095747.169011-1-pvorel@suse.cz>
- <20250328095747.169011-4-pvorel@suse.cz>
 Content-Language: en-US
-In-Reply-To: <20250328095747.169011-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+In-Reply-To: <20250328095747.169011-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/5] doc/Makefile: Allow to create and use .venv
+Subject: Re: [LTP] [PATCH v4 0/5] Update doc related Makefile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,73 +112,51 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Petr,
 
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 On 3/28/25 10:57, Petr Vorel wrote:
-> Add 'setup' target (alias to '.venv') to create virtualenv directory.
-> This is an optional target (not run by default).
-> If .venv exists, it's used in other targets, activation supports only
-> fish and bash/zsh (known shells used by LTP developers, csh/tcsh is
-> ignored atm).
+> Changes from v3 (all by Andrea):
 >
-> This helps to use virtualenv for development, but avoid using it by
-> default (readthedoc uses container with virtualenv, creating it would be
-> waste of time).
->
-> Add 'distclean' target which removes also .venv/ directory.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes in v4:
 > * Add setup (alias to .venv)
 > * Move sphinx to requirements.txt (therefore remove handling in Makefile)
 > * Add support also for fish (csh/tcsh ignored, supporting: fish, bash/zsh)
+> * Use 'setup' instead of '.venv' in the top level doc target
 >
->   doc/Makefile | 22 ++++++++++++++++++++--
->   1 file changed, 20 insertions(+), 2 deletions(-)
+> NOTE: 'distclean' of doc/ directory is not in the top level directory
+> (IMHO not needed).
 >
-> diff --git a/doc/Makefile b/doc/Makefile
-> index 3c5682ad00..2062d6e935 100644
-> --- a/doc/Makefile
-> +++ b/doc/Makefile
-> @@ -5,15 +5,33 @@ top_srcdir		?= ..
->   
->   include $(top_srcdir)/include/mk/env_pre.mk
->   
-> +PYTHON := python3
-> +VENV_DIR := .venv
-> +
-> +# only fish and bash/zsh supported
-> +VENV_CMD := if [ "x${FISH_VERSION}" != "x" ]; then . $(VENV_DIR)/bin/activate.fish; else . $(VENV_DIR)/bin/activate; fi
-> +
-> +RUN_VENV := if [ -d $(VENV_DIR) ]; then $(VENV_CMD); fi
-> +
-> +$(VENV_DIR):
-> +	$(PYTHON) -m virtualenv $(VENV_DIR)
-> +	$(VENV_CMD) && pip install -r requirements.txt
-> +
-> +.PHONY: setup
-> +setup: $(VENV_DIR)
-> +
->   ${abs_top_builddir}/metadata/ltp.json:
->   	$(MAKE) -C ${abs_top_builddir}/metadata
->   
->   all: ${abs_top_builddir}/metadata/ltp.json
-> -	sphinx-build -b html . html
-> +	$(RUN_VENV); sphinx-build -b html . html
->   
->   spelling:
-> -	sphinx-build -b spelling -d build/doctree . build/spelling
-> +	$(RUN_VENV); sphinx-build -b spelling -d build/doctree . build/spelling
->   
->   clean:
->   	rm -rf html/ build/ _static/syscalls.rst _static/tests.rst syscalls.tbl \
->   		${abs_top_builddir}/metadata/ltp.json
-> +
-> +distclean: clean
-> +	rm -rf $(VENV_DIR)
+> Are we there yet?
+>
+> Kind regards,
+> Petr
+>
+> Link to v3:
+> https://patchwork.ozlabs.org/project/ltp/list/?series=449828&state=*
+> https://lore.kernel.org/ltp/20250324234016.367228-1-pvorel@suse.cz/T/#t
+>
+> Link to v2:
+> https://patchwork.ozlabs.org/project/ltp/list/?series=443894&state=*
+> https://lore.kernel.org/ltp/20250211233552.1990618-1-pvorel@suse.cz/#r
+>
+> Link to v1:
+> https://patchwork.ozlabs.org/project/ltp/patch/20250206143421.1571918-4-pvorel@suse.cz/
+> https://lore.kernel.org/ltp/20250206143421.1571918-4-pvorel@suse.cz/
+>
+> Petr Vorel (5):
+>    doc/Makefile: Remove also metadata/ltp.json
+>    doc: Add sphinx to requirements.txt
+>    doc/Makefile: Allow to create and use .venv
+>    Makefile: Update 'doc' target, add 'doc-clean'
+>    doc: Note 'make doc' in the building doc
+>
+>   Makefile                         |  8 +++++++-
+>   doc/Makefile                     | 25 ++++++++++++++++++++++---
+>   doc/developers/documentation.rst |  4 ++--
+>   doc/requirements.txt             |  1 +
+>   4 files changed, 32 insertions(+), 6 deletions(-)
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
