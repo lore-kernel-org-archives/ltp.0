@@ -4,90 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0B90C3600B
-	for <ltp@archiver.kernel.org>; Mon, 31 Mar 2025 11:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743420688; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=HGCX53bjwJ1zYtwMySKuyMx9gqIHU8ZkxBBjBTtFyks=;
- b=UFzIpFyBdgmL9OkHO7sWxu8BpFoKs9Nx1hF7TIZRb8/r2u60PNAHBOEmIMl6SfrSMZMjc
- YDkwk65LXmZlXNPTrewyU64ayhqJr1awPBroNDRFbeM5xFV8tylAW/fLuVu5II6UCHLGPRg
- PEpzP3CymyEM96c227pKxkDNONDGeDg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3DBAC36010
+	for <ltp@archiver.kernel.org>; Mon, 31 Mar 2025 11:39:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48A393CABC3
-	for <ltp@archiver.kernel.org>; Mon, 31 Mar 2025 13:31:28 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 35A643CABC3
+	for <ltp@archiver.kernel.org>; Mon, 31 Mar 2025 13:39:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89D0C3CA84B
- for <ltp@lists.linux.it>; Mon, 31 Mar 2025 13:31:07 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 380F23CAB4F
+ for <ltp@lists.linux.it>; Mon, 31 Mar 2025 13:39:04 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4FFFB10007C7
- for <ltp@lists.linux.it>; Mon, 31 Mar 2025 13:31:06 +0200 (CEST)
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-39ac9aea656so3609529f8f.3
- for <ltp@lists.linux.it>; Mon, 31 Mar 2025 04:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743420666; x=1744025466; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=Hdc+xBN146pkCAeTvQ+hOSg3EVuGVtz4zxf1i2nqkOA=;
- b=d9K7fbjt+1QBtooqlLNXpxVmpNEb6jlocOd7p++1WjfJyz5oLogPPg78uw9+zWB0QP
- BLINa4QRA68CCdqpSB22zC9qxNb8rKUBgwdv4kLrOcMJxCs5Ola5jH6gMQ5EgXd9XIVn
- U+ie3elSswOu7B8iRqF9MrrqeZ73XhYcoK0jww5VbGHxO6QGSm2/j+n1baeG81908mVF
- 4ewtjrCvBs+hShrKXEBc6jl2w+z18NqkaYaJQWQgeEL0osL43cWzijS4z7tn+QJC7IRk
- +vq0G9JTyeBN3oh2PAVBzL45itQuSg1zLtjiQxQ6TvcyRL1lf/HDKZcO0GmGFjv1n0Y1
- m0qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743420666; x=1744025466;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Hdc+xBN146pkCAeTvQ+hOSg3EVuGVtz4zxf1i2nqkOA=;
- b=BudtJh0P3NDtzgtRugSwFC8YDebuSipP0bL0qukf9Z25jnbKoZq/KuhLWyYgAN8qvj
- Gucm57fQ2G+vdniUFJbrPWkX/H51rVUd3doIivz49o7lxJmx5UcMrB/IJZ4G3h2sH3Cc
- //f7c61iTLdc51RacB8vQUzagp1RJpWFj40ZSk356GqD9jmx3i5Qsm/l3aBfoMJhbwZ6
- WSJ4j2/q4YFcbgR+M7dJgmotZTAHBraD7zcutJVuGj4anOy3DLWG10CDu7CRjmMC4x3g
- 5c8Gl+Qe8sZhDFwMmCLB6CujfW3TsckV/fnLPAFXxRemAWIcvlDLbYLrmyqHf20sYhpf
- +K7A==
-X-Gm-Message-State: AOJu0Yxr3DoAdTL/sRSKn1I3jIma9cwoA7ajl4FVll4kZIsCHcXHxt5V
- aIadoKqKWw+MBXnBN57w6cmWVpzzvlPp6sCoEMquE8DUWL5CqVf0E2f4+dJ35w==
-X-Gm-Gg: ASbGncs6rYUMPVhQDYw4g8ZGS4h1LfnIJwSI9DCD+A+25lfgMN6GUSXi3QkpyXRJTkI
- hihMaFkPbXeGNtMyqLV7RHrOVsvucTm6ynZtdTUvFAUJ3JhDSm8N5JmY6YukhuIhW3fZhns1rZ6
- 55gmDKwZ+Fl6blZ+61PIBP6o4LY1/Ln/n0teAopsx7XBu+HlCgwzN5HSvf6HDLoQKQA1xoZq96/
- /hk5PnlvIQFCTQmq7YEPG9GIks3bw+T+zmfncQ74jdsjO2M8hH7wDuPt9xwStBg27Rd/DWJ/NkE
- iEVQM6fslDd0L8nl+n8+QQCG9/Je
-X-Google-Smtp-Source: AGHT+IES5bi9U5TS4T7URmaOGUXeHu557mWy3/FG7T66QldoA8ZJVrGRH8b3psnZWvuICVsYl64TIQ==
-X-Received: by 2002:a05:6000:2807:b0:390:dfa1:3448 with SMTP id
- ffacd0b85a97d-39c12117a67mr5162632f8f.43.1743420665618; 
- Mon, 31 Mar 2025 04:31:05 -0700 (PDT)
-Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43d8fbc10f7sm120411005e9.14.2025.03.31.04.31.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 31 Mar 2025 04:31:05 -0700 (PDT)
-Date: Mon, 31 Mar 2025 07:30:59 -0400
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Z+p8wSoc83cH2Hub@wegao>
-References: <20250328075958.7616-1-wegao@suse.com>
- <20250331031945.5948-1-wegao@suse.com>
- <20250331031945.5948-2-wegao@suse.com>
- <20250331103751.GB244431@pevik>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1C56A600BE6
+ for <ltp@lists.linux.it>; Mon, 31 Mar 2025 13:39:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2A2401F38D;
+ Mon, 31 Mar 2025 11:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743421141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tk4lEM51ceMkxLn4o+hcxUMwhfooZHQ83r9EQzcv/S4=;
+ b=CltvPisDrhA03AOGusdJsmxlsTY/C5FBL2PiClKTEdMC5sZ7VZnYu7jMjmyx0WLGysFemB
+ nBG0vDDtA2NXNCy8L+s1ieYbaWMU2V1j6Kj9rOumdvRZOB6++GERoYttmqStX9YXb4LLk7
+ h+E4aHnan7yXT1JhN/Twcrj9YDnMP5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743421141;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tk4lEM51ceMkxLn4o+hcxUMwhfooZHQ83r9EQzcv/S4=;
+ b=tTtXcNHwGt57htUgLph/iiMOagVScDL4xDwG2dBkPIvcl/bAlTKcogk6z9m/Nl+pgSwBDB
+ nKJ7Rz566bAFSqBQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CltvPisD;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tTtXcNHw
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743421141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tk4lEM51ceMkxLn4o+hcxUMwhfooZHQ83r9EQzcv/S4=;
+ b=CltvPisDrhA03AOGusdJsmxlsTY/C5FBL2PiClKTEdMC5sZ7VZnYu7jMjmyx0WLGysFemB
+ nBG0vDDtA2NXNCy8L+s1ieYbaWMU2V1j6Kj9rOumdvRZOB6++GERoYttmqStX9YXb4LLk7
+ h+E4aHnan7yXT1JhN/Twcrj9YDnMP5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743421141;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tk4lEM51ceMkxLn4o+hcxUMwhfooZHQ83r9EQzcv/S4=;
+ b=tTtXcNHwGt57htUgLph/iiMOagVScDL4xDwG2dBkPIvcl/bAlTKcogk6z9m/Nl+pgSwBDB
+ nKJ7Rz566bAFSqBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A5C713A1F;
+ Mon, 31 Mar 2025 11:39:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id P5oVAdV+6md3ewAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 31 Mar 2025 11:39:01 +0000
+Date: Mon, 31 Mar 2025 13:39:25 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Message-ID: <Z-p-7Q8OIJYai2Xp@yuki.lan>
+References: <Z-pP_i-Iq4PSjoT3@stanley.mountain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250331103751.GB244431@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <Z-pP_i-Iq4PSjoT3@stanley.mountain>
+X-Rspamd-Queue-Id: 2A2401F38D
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_FIVE(0.00)[6];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v9 1/2] cpuset02: Convert the test6 from
- cpuset_memory_testset.sh to C code
+Subject: Re: [LTP] pty: Update slave device permission check to allow 0600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,31 +118,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Mar 31, 2025 at 12:37:51PM +0200, Petr Vorel wrote:
-> Hi Wei, Li, Cyril,
+Hi!
+> Systemd changed the default permissions for PTY slave devices from 0620
+> to 0600 in response to CVE-2024-28085.  Allow either 0620 or 0600 as
+> valid permissions.
+>
+> Link: https://security-tracker.debian.org/tracker/CVE-2024-28085
+> Link: https://github.com/systemd/systemd/commit/a4d18914751e687c9e44f22fe4e5f95b843a45c8
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Tested-by: Anders Roxell <anders.roxell@linaro.org>
 > 
-> ...
-> > +static void setup(void)
-> > +{
-> > +	node = tst_get_nodemap(TST_NUMA_MEM, getpagesize() / 1024);
-> > +	if (node->cnt <= 1)
-> > +		tst_brk(TCONF, "test requires at least 2 NUMA memory nodes");
-> Naive question: why test requires 2 memory nodes? Wouldn't be 1 enough?
-Depend on what test's purpuse, if you need check kernel select correct node, i
-suppose we need at least 2 nodes. Of course, test case also can support 1 node check.
+> diff --git a/testcases/kernel/pty/common.h b/testcases/kernel/pty/common.h
+> index 51760b1d39fa..7cda16096d4d 100644
+> --- a/testcases/kernel/pty/common.h
+> +++ b/testcases/kernel/pty/common.h
+> @@ -54,7 +54,8 @@ static inline int open_slave(const int masterfd)
+>  			st.st_uid, uid);
+>  	}
+>  
+> -	if (st.st_mode != (S_IFCHR | 0620)) {
+> +	if (st.st_mode != (S_IFCHR | 0620) &&
+> +	    st.st_mode != (S_IFCHR | 0600)) {
+>  		tst_brk(TBROK, "unexpected slave device permission: %o",
+>  			st.st_mode);
+>  	}
 
-> 
-> Kind regards,
-> Petr
-> 
+Looks good to me:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
