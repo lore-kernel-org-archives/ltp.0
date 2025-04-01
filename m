@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C164C36014
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 08:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9FC4C36014
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 08:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743497562; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743497809; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-transfer-encoding :
  content-type : sender : from;
- bh=P7z4K2hYohr3TuKf/cvXi6qtOSd3O5VJiHpVzvKktoM=;
- b=ez9gLgWPyTrdU9i3P2loGtJAAWN6a/rf/CIWVkLLKhYGdxDuZEUICJF0zd6V82rBRsTaC
- W/qW5IfnLjVooSWV6+G8AGHPbTETbksJDP41rUAwECHd69FKo/7mqKIeNZ6Kb2nb0d28SOc
- u2sDkxZbsyFolFvmrbpCbpXuO7c1tBs=
+ bh=omp8O5F6LpWT1ovBJe3w5TPIHobPp8R6JaIAzGtvBFs=;
+ b=YvRYdq//8cYANwXJpePlJcDVEEZb8yTcCPYJEqwQupuOM1CWWoBijQt9A161otkRcBWK5
+ 5CyN87XplTnMOsADdrLQzcGKAgmzWMryxNHwFcNByKon8lpnsL5G5Pc8zZFk9EU6gK7z2Gs
+ bXVZtM4FoHempvIqRdXgfIVuLOmaWac=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2A673CAFCE
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 10:52:42 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 53D2C3CAFB3
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 10:56:49 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5D3273CAEDE
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:52:21 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id 021EC3CAE55
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:56:28 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BEAF21000952
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:52:19 +0200 (CEST)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-43cfb6e9031so47875315e9.0
- for <ltp@lists.linux.it>; Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DCEC360042D
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:56:26 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-43cfa7e7f54so32033805e9.1
+ for <ltp@lists.linux.it>; Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743497539; x=1744102339; darn=lists.linux.it;
+ d=suse.com; s=google; t=1743497786; x=1744102586; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=dFOv+lQiGrEww5gGEC+0b/IsVB3+IcCOANeSqRV1pfk=;
- b=Ug5/mejQ3jBOlgAsgGbpLNssglSj+9II4fPHDMFkA2KKF7oDToGEj08HAfmMGw2MSf
- YSG2sA/TZbCQWf04x/q79EEze/R1ozYtYNibd4kRPSSc67KKpljdZz6fvoi5vk9MichT
- IxFg1n3S28IzoOL8pXlAXEXH76+Z30KGKxSyPuTN5IvaQi4vA6XpIdutQx4trwDq+aSY
- 6+9pQx3fmbNYD/dwtU7Dncv4j5MGim74bez+tGMIvtI8IonE2M12TDh7pnEk6udxUoVj
- lTbYITD2NthT2pMJT9kRdtSUljKCk/9YP5zYbQ1cclAfZ4ttrrq6I8hO6Z4/VdkojIEq
- r2GA==
+ bh=5HA0LA6NHuU68a1gZjIr6lsNO8x+G7DD+v60mWaed1U=;
+ b=VtcDNmkrfh1DoVM2IUGkdVFHMR0iUzYGHwrYg+J2BHyNPTOblLdNu576m3jOum+5D3
+ NpumKsgP3agq8c6NBNeWo11p1FFBE5H7kpbj0gI9DNdzyaPpAt8rsCRq9/irWVR36Qm8
+ NU4k0i7KsEfVSPnsMHRihPasFZvr32yKxANK4+2hZZQe05ggRGjyZpznFO6cxjKQ40o7
+ ZCQ/KZ3X1evBYgcPUvu1jknOlVS8qgkSruFaBHyzu0w3gOX1eRNLIz8oZnJLvaGh0S0U
+ iUOQzae3+xzTZbqyAV5zIlOpTSB2sd4HdkPz5bODvehYhfzfx8vG43TnP7kewcJ0ZpyQ
+ EBjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743497539; x=1744102339;
+ d=1e100.net; s=20230601; t=1743497786; x=1744102586;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:cc:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=dFOv+lQiGrEww5gGEC+0b/IsVB3+IcCOANeSqRV1pfk=;
- b=dOfVKptNB3+8u+AyP5ZWufMadHtYFlfQGOWIBWtEREMpm13FjHGCTkr7IXYH4jFFvw
- QcQS95QajThL+yYCw1P8XeLNgQPu2q9PUvyyUJLO8p3cM9+kz+/VVGB76StAVZDNKsUG
- gkIsfWMhaKrYhJksUON/KgLt8AltujYoxPkTdwpoWKrLgBkMAl22F1YC06ondo9s7oNL
- QQzUHBZhMW8sid3A7xbHZVDpDjvC2/+ybOFNE16GJDLiHBCDDZTdYCONhP+YIb5x3dAW
- 1ILlkreNce/8yPWn2ndrrYmAKf7ypvbeG4fsQ7N9H4ZL4emYQLaoHHo+yJaIfQG7Yohj
- 237g==
-X-Gm-Message-State: AOJu0Yzj9WVcNJgVBh1gA1gBnXxrZSVf1NHcBdOyc0St1gsoajn/+0/u
- eEtQ3xM00BucA3+BCpg2BLZv5rRC5283wB8CmgNsCqznT2LlkEuzb4zqDOt8iaoeUHAveATMx0Z
- Aozg=
-X-Gm-Gg: ASbGncv2xIXfPhXDR+LWB7cwx62Wdr10brCtYMhL9d4vNK85O9qUIIVIcsx87+/DE5O
- TNcbLDRnos08g3pUO0jFy5WmVop5m633n6VSrGlkdi6xFs4gQqW+JT+LnZ+JOErNilWtNzOlXxq
- BMRq0sl6Dz2o560gBfyhzSvthgaZom7cOG8iPz2G2ODOsjn83u9yTtl9o7uzyX72ybRAnHaDOgQ
- ShWriZghglwTMH5BeyF6Odvh4UIMVOMw52ToQ4Ktg/AyDqMArJimFfiaLukIMXS96CkoKPSiEe0
- 9rBuR/FvDY4VH9MPRybKaWG884/jn37iJRWKKNqMde97D7c14loKUbO344lqO9xTIqRzeh88twy
- rkndgW6Wtcujce+o8ZqhYMjcNUs8=
-X-Google-Smtp-Source: AGHT+IGYw6J7DjLJJE8xvSm+cgRBGIO25vzofWAIhyE8Kj6QdB0Dq0KZoyaUX0NEkkrzW9ahVGRpUw==
-X-Received: by 2002:a5d:47ca:0:b0:391:158f:3d59 with SMTP id
- ffacd0b85a97d-39c120de81dmr7557944f8f.15.1743497539012; 
- Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
+ bh=5HA0LA6NHuU68a1gZjIr6lsNO8x+G7DD+v60mWaed1U=;
+ b=GRBVNxeOlttvQYOTJuclmcEP/xikHaM5nh/axgo7xFsA9ufPcaXWNUnOK8HPanmllk
+ oELqMOjdybuQuvDhCoggFx8m2M4ehLHAKslxlZt3obfLK21wpcACb6w2idud3csHYr/B
+ pTzhWHrmiNv9W9dXtAK2Naok7EoDBuvjcB6m6/BsWaAp5SDcEHk0NebALLibGUGGEgje
+ ri037KM/EpHtAq/31EFiwIHdInMMotfV4dAkY5ngrru5fW0Ujmv+BtGdF0gGrmk4BZl5
+ 5Fs+JqdtyqKaXYHQ7wehBXqdODwUV3u8sVtjbMKT46yHtQzQdrPu/3iNVx1Opp5/KVvM
+ UJOw==
+X-Gm-Message-State: AOJu0YxQN82BHNL1cKsTHL/YBsHgZVyAMo0ymzJn2VsmGSn6oTx1K3qd
+ I+mWGgrZFIav1WDhvJWYc52y7U7dP8MSXUirZbE/pCW3o0Hn8XdSl62/sMHMUrQ=
+X-Gm-Gg: ASbGncub8JWS0EJDZZf5GTtbKpRCHFg4cEcZ5BYuUOXLgoCBDTZQa4OZGAYKxMQ6bc+
+ mquyuLdEUEX2907neMMgTT1oJbPLsW1eoqqHlkqmxG6j1sDxecOmvFLMlU63p3RDsTuSBY8T7vV
+ Azj2/rxj9rX0CToCQBXCr3N6BBpWCGtT/wsFnOUy3rJAr//aHxY4VSQo4+zxSKn7ZGX8LiglOif
+ EmsMQjyQp89xG+MfLHYEtjXaGYETSLKn+0w1IvRIWpPjF8nkkt/9hZ2mta0jtXbIEOLGsVro1Ej
+ /8xXhjA20tHNTZr3xHsQibUJkMYV2u0zpoHsMtftASBJvbzPSd5W5EZrtddbp/gA9+P81i7bTfo
+ 2zST/Gibt992YpOOk0HGLXXTPBos=
+X-Google-Smtp-Source: AGHT+IGlxiQT0TngWc/KqoOj2XahWhqP1wk9Y5vkKh8QcE0z2iAaZQo21TksFRU8edhDmCJnOv4/Mg==
+X-Received: by 2002:a05:600c:a086:b0:43d:186d:a4bf with SMTP id
+ 5b1f17b1804b1-43dabe2384dmr85599315e9.0.1743497786406; 
+ Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
 Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
  ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-39c0b7a4351sm13751301f8f.98.2025.04.01.01.52.18
+ 5b1f17b1804b1-43d8ff02e84sm148723475e9.32.2025.04.01.01.56.25
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 01 Apr 2025 01:52:18 -0700 (PDT)
-Message-ID: <edd62e1f-689e-4157-8666-4d97e277e73a@suse.com>
-Date: Tue, 1 Apr 2025 10:52:18 +0200
+ Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
+Message-ID: <be455754-b62e-47f6-97bf-086f90078fa1@suse.com>
+Date: Tue, 1 Apr 2025 10:56:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <f1833ac3-5c28-4a19-945c-2112dbd898eb@suse.com>
- <Z-rAFF9yX3de8CZw@yuki.lan>
+To: Petr Vorel <pvorel@suse.cz>, rbm@suse.com
+References: <20250331-conversions-modify_ldt-v5-0-fd6ea1491956@suse.com>
+ <20250331-conversions-modify_ldt-v5-1-fd6ea1491956@suse.com>
+ <20250401084827.GA329205@pevik>
 Content-Language: en-US
-In-Reply-To: <Z-rAFF9yX3de8CZw@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+In-Reply-To: <20250401084827.GA329205@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [kirk] Remove support for external testing suite
+Subject: Re: [LTP] [PATCH v5 1/3] syscalls/modify_ldt: Add lapi/ldt.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,46 +110,24 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Petr,
 
-Thanks for your reply. I sent a pull request to fix this:
-
-https://github.com/linux-test-project/kirk/pull/44
-
-Andrea
-
-On 3/31/25 18:17, Cyril Hrubis wrote:
-> Hi!
->> As you may know, Kirk supports the execution of certain kselftests and
->> liburing testing suites. It was initially created as an experiment.
->>
->> We have made attempts to implement these features, but it seems we have
->> not succeeded. They appear to be largely unused by most users and are
->> creating a bottleneck for new Kirk implementations, such as the
->> automatic installation of LTP inside the SUT. This feature would be
->> particularly beneficial for QEMU vanilla images. We had it in the past
->> already and probably it's time to get this feature back. And we should
->> probably implement it for other testing suites due to the current API:
->> something that we really don't want to do (see eBPF kselftests compile
->> madness).
->>
->> Another concern is the maintainability of supporting for additional
->> testing suites. While they are interesting, the implementation is
->> somewhat flawed. Each testing suite has its own
->> input/output/configuration/compilation methods, leading to confusion and
->> over-engineered solutions. While we understand that no solution is
->> perfect, it seems we have reached a point where Kirk = LTP. Therefore,
->> we should reconsider maintaining features that require updates due to
->> changes in external testing suites.
->>
->> For these reasons, I propose that we remove support for the additional
->> testing suites and focus exclusively on LTP for Kirk maintenance.
->>
->> What do you think?
-> Sounds reasonable to me. There is quite a bit of work to be done in
-> order to implement all the advanced features in kirk and it does not
-> help if we get distracted by side quests.
+On 4/1/25 10:48, Petr Vorel wrote:
+> nit: IMHO modify_ldt() is not used anywhere outside lapi file, right?
+> I would also consider instead of creating modify_ldt() just put raw syscall:
 >
+> 	rval = tst_syscall(__NR_modify_ldt, func, &ptr, bytecount);
+
+Just yesterday I got a review from @Cyril asking me to add syscalls 
+function definition which are missing inside the lapi/.h header. The 
+reason is that we want to fallback libc and eventually check for 
+HAVE_FUNCT_* via autotools.
+
+In general I agree with this approach.
+
+Kind regards,
+Andrea Cervesato
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
