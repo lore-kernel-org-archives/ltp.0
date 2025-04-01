@@ -4,99 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0629CC36014
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 09:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743501555; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=PKxnKMinVxkFBUiN3KeaskJ2QId5qOmLVyUdN6UaPc4=;
- b=pEFcJ0C5CmUb746V2Ji/8avCi9MZQng5KLexWqGSKfKS+qrF83XRgPIS14HvOKFRqUNbE
- wRCrXqqxoR+DEXFGzyNpB4M54c8hdhEinILpoeek1mcmXI/5muCQl8zO0zZV5Bn0ISh1Lm/
- aaaFGU7D82h8FPqBnBRaxyX/sD43HX4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CFB0C36014
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 10:11:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 629123CAFB5
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 11:59:15 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8948C3CAFC4
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 12:11:14 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A1DDA3CAECA
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 11:58:53 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id F05A83CADF2
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 12:10:57 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EB6B9200978
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 11:58:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1743501529;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 176E710009A4
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 12:10:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EDEB2211C6;
+ Tue,  1 Apr 2025 10:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743502256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YnGh+zO25i/4IaIq7hKVl/vpVbcqtjkXPT2QFIdzcC8=;
- b=E53osU3q75SE6HuIcjVGIRC2HtFfFgWm0iVYLc5tpUIH4IoAeOQ7RhUJnXQMk3kaGMUJCW
- LO2st4KkJ1MlsUQ0y8NVBO6qFI+aF11+cP+H9wdGt1qXhvVc10BJtjdrqvM37wy4Dgh2Jr
- sI+b12c+6TZVCOa68rSLgqKHNLFLygI=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-T-IsGMxvNp68T9Wd4xunJw-1; Tue, 01 Apr 2025 05:58:48 -0400
-X-MC-Unique: T-IsGMxvNp68T9Wd4xunJw-1
-X-Mimecast-MFC-AGG-ID: T-IsGMxvNp68T9Wd4xunJw_1743501527
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-3011bee1751so9158812a91.1
- for <ltp@lists.linux.it>; Tue, 01 Apr 2025 02:58:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743501527; x=1744106327;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=YnGh+zO25i/4IaIq7hKVl/vpVbcqtjkXPT2QFIdzcC8=;
- b=CtAr0otAp6PXUjTcwcnyaeDfRftCEog8CzXGZZX4Tk+2btKtk327LyvL2qspSPt/um
- uQw1UPfazQtLY3itlk8tp+byZpKR0fWpuu4AUboejFfk2MvQz1DKd52UkYwlzK0Uj9+e
- lnHtVYFhPiHkQOHpniFfxsM50es70hNI7iEMIOAnYyh5WTqyMKnv9vOlxbYWfmwhdXhn
- oMlg31n945BGeVJAm+enxS8xWKTrDRiP7ENFuC4Bcwu+4tkShQTQef3JWJStEm8GAEHq
- cyj99ql3rEfpkp8Z6k7BqiKCJzAzR5kE0Ucvn1rhgtG4HPq1onas6r6SAPQevwYb9FZG
- hClQ==
-X-Gm-Message-State: AOJu0Yz/KAtcezI395oCQ9eqjfSSUrk3r3j+6ePxKr/pxV2CWGOFVa1X
- US++M0U+Umaz6XbSOk68OHw0J9RnG5WbV9HlzxvHhSkzEoDItjG21SysY3MZmWKWrQmNUGlYkvE
- DzqISoZW69oH6EVu6lWS9nsrkcz7pclrJKtq+jBquHlakRXDvEw36T0xV2nH2cRr4WveSIgE1qN
- b1x6lc2frGmypy8rGNa/i7LNg=
-X-Gm-Gg: ASbGnctN2dqpanjNCIDOR70euMXuJv4TaoeoeWmnWZRBqDCS0Sn5k9HvYt0Kt/abkkI
- fNXjFV60GoBliKVsimgCpyTdXn9jv7lJ3s0ARfBgJbdwdich482DFkbrXta3dOdcJZZ9fA0OYzw
- ==
-X-Received: by 2002:a17:90b:1e11:b0:2f7:4cce:ae37 with SMTP id
- 98e67ed59e1d1-305320b0883mr18843552a91.18.1743501527166; 
- Tue, 01 Apr 2025 02:58:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFDShigyYsPd7Om70oA/1FBZ3Dc+liMY06FAhmH5u9Ji4XB8B499bTZyE4DF+B/cYci2LLBqUxPnuz3zvTFS+M=
-X-Received: by 2002:a17:90b:1e11:b0:2f7:4cce:ae37 with SMTP id
- 98e67ed59e1d1-305320b0883mr18843529a91.18.1743501526848; Tue, 01 Apr 2025
- 02:58:46 -0700 (PDT)
+ bh=3EZiF5bZT9YiH5NEsm9/mVAkCWOvqrrztPwKIwhxIlg=;
+ b=HHXaw4L4Tx59WGvY3BvNuhoZhaa/gEfpSKOQj8TOnTS8QpZxWizFP140ukagl8CAywZGTO
+ wyECksKXR6CLdyB8oTXNrr0rg6zonIetgGNQP+1sy2cY9J0XBVtBGzRSOB10+j0Ilxz/kB
+ 2cZhiE8JKePdnFCvRMxOr9OvhYJjXHE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743502256;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3EZiF5bZT9YiH5NEsm9/mVAkCWOvqrrztPwKIwhxIlg=;
+ b=8EngYfBEoUOgn8B2DKxqBvf83WFikM1EEf6xrzZqKo7moelww77yPzdlav4Kymq6BnjZFU
+ jhBiDO1ZrR13CrDg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E25zEdTn;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="Iu/GCs6n"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743502255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3EZiF5bZT9YiH5NEsm9/mVAkCWOvqrrztPwKIwhxIlg=;
+ b=E25zEdTnNr7E6q8b4ib+aqF7LJLl+nsxhSlVqF8YCB9ySCkq/Isl1r3KHfT37rUtdWrdP8
+ x6v5g3oI640+EtSaxoSGqIHpIAbYBcP3Rx7ognSVOhJNa3tM0Wkcwg0dkUqybCYOLh+b3n
+ UxJwqhAfOlZY5IxQTCqbYiTKsJeafzE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743502255;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3EZiF5bZT9YiH5NEsm9/mVAkCWOvqrrztPwKIwhxIlg=;
+ b=Iu/GCs6nP9iUwcYpst20YQFbdZPsYQkhy5EBptG0tGS7qfqRds07CG12EyYHFCmpHuQhbf
+ nbvOuvpdd9JoPHDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD4BA138A5;
+ Tue,  1 Apr 2025 10:10:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CFzFNK+762cKDwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 01 Apr 2025 10:10:55 +0000
+Date: Tue, 1 Apr 2025 12:11:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: lufei <lufei@uniontech.com>
+Message-ID: <Z-u7yYJpTBG8Hi6A@yuki.lan>
+References: <20250314044257.1673303-1-lufei@uniontech.com>
 MIME-Version: 1.0
-References: <20250331031945.5948-1-wegao@suse.com>
- <20250331132537.26417-1-wegao@suse.com>
- <20250331132537.26417-2-wegao@suse.com>
-In-Reply-To: <20250331132537.26417-2-wegao@suse.com>
-Date: Tue, 1 Apr 2025 17:58:33 +0800
-X-Gm-Features: AQ5f1Jqr6SXMxQmBtmzSca0Cz2dc9-wsxmVJ48OC3peV1fuMdlgMnf0QuhzgQGc
-Message-ID: <CAEemH2e4=oxgk_-i4TN6D7XoXjEg3f+XigLwTOHoezPXwuvoJA@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: xdmwXOzffuls1_90kJ8Ca4rI1J1IBQn3TM_lXAFPoCs_1743501527
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250314044257.1673303-1-lufei@uniontech.com>
+X-Rspamd-Queue-Id: EDEB2211C6
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v10 1/2] cpuset02: Convert the test6 from
- cpuset_memory_testset.sh to C code
+Subject: Re: [LTP] [PATCH] unshare03: using soft limit of NOFILE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,19 +114,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Pushed with minor improvements.
+Hi!
+> I think it's safer to set NOFILE increasing from soft limit than from
+> hard limit.
+> 
+> Hard limit may lead to dup2 ENOMEM error which bring the result to
+> TBROK on little memory machine. (e.g. 2GB memory in my situation, hard
+> limit in /proc/sys/fs/nr_open come out to be 1073741816)
+> 
+> Signed-off-by: lufei <lufei@uniontech.com>
+> ---
+>  testcases/kernel/syscalls/unshare/unshare03.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/unshare/unshare03.c b/testcases/kernel/syscalls/unshare/unshare03.c
+> index 7c5e71c4e..bb568264c 100644
+> --- a/testcases/kernel/syscalls/unshare/unshare03.c
+> +++ b/testcases/kernel/syscalls/unshare/unshare03.c
+> @@ -24,7 +24,7 @@
+>  
+>  static void run(void)
+>  {
+> -	int nr_open;
+> +	int rlim_max;
+>  	int nr_limit;
+>  	struct rlimit rlimit;
+>  	struct tst_clone_args args = {
+> @@ -32,14 +32,12 @@ static void run(void)
+>  		.exit_signal = SIGCHLD,
+>  	};
+>  
+> -	SAFE_FILE_SCANF(FS_NR_OPEN, "%d", &nr_open);
+> -	tst_res(TDEBUG, "Maximum number of file descriptors: %d", nr_open);
+> +	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
+> +	rlim_max = rlimit.rlim_max;
+>  
+> -	nr_limit = nr_open + NR_OPEN_LIMIT;
+> +	nr_limit = rlim_max + NR_OPEN_LIMIT;
+>  	SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_limit);
+>  
+> -	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
+> -
+>  	rlimit.rlim_cur = nr_limit;
+>  	rlimit.rlim_max = nr_limit;
+>  
+> @@ -47,10 +45,10 @@ static void run(void)
+>  	tst_res(TDEBUG, "Set new maximum number of file descriptors to : %d",
+>  		nr_limit);
+>  
+> -	SAFE_DUP2(2, nr_open + NR_OPEN_DUP);
+> +	SAFE_DUP2(2, rlim_max + NR_OPEN_DUP);
+>  
+>  	if (!SAFE_CLONE(&args)) {
+> -		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_open);
+> +		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", rlim_max);
+>  		TST_EXP_FAIL(unshare(CLONE_FILES), EMFILE);
+>  		exit(0);
+>  	}
+
+Why do we bother with reading the /rpoc/sys/fs/nr_open file? All that we
+need to to do is to dup() a file descriptor and tnen set the nr_open
+limit to fd - 2. And if we do so we can drop the rlimit that increases
+the limit so that it's greater than nr_open as well.
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
