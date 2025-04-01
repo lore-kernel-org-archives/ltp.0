@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08AD4C36010
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 11:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E82DEC36010
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 11:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743507018; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743507300; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=Mu3OjnMixuytf1sPr9S4sgwi1ZdxN52nbsmiIQIZEv8=;
- b=htsOM9m45zajp64Y9AUqGBSNZqI0xOMBmxG9ja6QTVULMDkhDB0py41U5l4a2tLDckTFc
- /QBpg9JIVH60Q/vLVT/As05zrVm/AHT+1/wumgmR2tdlVtZr+PDwSY4/dsdZkrwZpq67FTg
- cML9uC+E3FsPO3Qh5+MhVb5XDQRmgZQ=
+ bh=+sPRaSi9LKCRA+upF9E+K5wGdxYmuChg8OcNu9fd8/k=;
+ b=NNWruThagkspyVF3CnmtOxW0ZwM/WdecW/oKTpeRTOosUVcM6R7Q4Hxk0vuQkOqYWPhvD
+ 7mUJZ1wpPEe5cLX0qsBmGqEKVMEj8joEq2z9BaPk4tzErl5eZufvVk/6nWX9YN4dVlDg1vT
+ GnUl3oHOtRi+Nzyt8MPZz+qo69r2vkA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E34E3CAFF8
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 13:30:18 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 666243CB020
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 13:35:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2965B3CAFC0
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 13:29:55 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+ by picard.linux.it (Postfix) with ESMTPS id 86FAB3CAFC0
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 13:34:38 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C14E7600740
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 13:29:54 +0200 (CEST)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-43cfba466b2so54402805e9.3
- for <ltp@lists.linux.it>; Tue, 01 Apr 2025 04:29:54 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AACE910007A5
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 13:34:37 +0200 (CEST)
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-43690d4605dso37173645e9.0
+ for <ltp@lists.linux.it>; Tue, 01 Apr 2025 04:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743506994; x=1744111794; darn=lists.linux.it;
+ d=suse.com; s=google; t=1743507277; x=1744112077; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=9AvlU9Ld5bcQ+JL+EDSLQfD8c5T4bI4R/k72ZSzVDHE=;
- b=eY7nrRBly8Bmb6oVSo/DBaF2P3mhBYKvh1JzZCNaUnh1UcpqA8Arpk2C+TeqXdRhwv
- zOp/a984IHSdgh5qvttvHKau9+lNUDdya1Wofudd+Yjha6JULUiIMy3ETDxb7R4N2dVQ
- qJTI/JbLJjhVyZxpXdr/nW7EWl2tshrAlqvM9xVZ+IT9W9yaUGOLjAWhG8ZHjCgplU2A
- LxTiZG4OfnHfW31GZD6pZTxr4SWiFkwk9A0CmtcRrVvW2JuYw5yP8TKXg/EmMqMXd7V8
- TNVDOelMv8tonRpzdQ3r57Mprfnv8RU5kOfASwyo/kpry0rY+3w0J7SIwVBpi8MTKntT
- 8lmg==
+ bh=bBvLaXAmWJtP38xVXjvLMWcekYRCZuAZd8dWtsAgx6g=;
+ b=Op6GbJptUzs+MUJByal7W/4BWvR1Di9a6Oag+b+7vrSJWIQQ7UABOXDFkgaD1Zmij2
+ PJz9AV3GZy4UAPRYayHuvf2TJNEOunywrFvpuREqWfpJWei2HF4hVdMRM1c9+aBhU1Oo
+ 7qWKeqehP59ZbM4OFhX7hyKMJSVdFjTRL0/AGzFX+r2kWpryq/hXj1rOERfses0suy9X
+ ZLAx3af/1rnKxXIVBlavc8Lzx+ZKmUZ0gHgPdFiplAU3QHc74eL4WMLGitrbTazg/4zJ
+ vk/SZPKMiAEbcRihV8e+FM2Vo/Sm5urE6HYjriunItr6E+qzepcpttM0/edEVscO1R9z
+ lfoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743506994; x=1744111794;
+ d=1e100.net; s=20230601; t=1743507277; x=1744112077;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=9AvlU9Ld5bcQ+JL+EDSLQfD8c5T4bI4R/k72ZSzVDHE=;
- b=iQtwQxeV06O55mikpBK46AjZqgzC4Ewj072r1dBGm/xrl4zrNSStRys4N2mRW/t4B1
- VVrYgJKpHlKVBRnMdYnzb9RkHeRhmoI6BTjw3/oehhaOCzHwKkLhluOMuUmIBKp1b6Pa
- PV1CGt7Gz9SdoZUSdTpWAN8RDQgp4ekc/qBaEwwTRPE8RIYoF0yhWL8vRBRGUfPM5Bqm
- fspzvF2xhH0oqu2X1nuaLbywG4i50+kfUwmky2dCKAfVu4AtLhKd/6nSi2sA5USNGl17
- eusqLZIUmZQKFnF6ll76sNC3Bl0dsxoTpT8e96w/GmICWH7mzQPIKPiYDzTrVck+bgbj
- +ikg==
+ bh=bBvLaXAmWJtP38xVXjvLMWcekYRCZuAZd8dWtsAgx6g=;
+ b=MlESbqdgqfAsNLxFmtfS6Gz27qFvBbYfCKlAMBd2KF7MBBCiBh+i1OQv7ALicBfvR2
+ luZO8Ub/dSkaxXK3rmAXu25bsPpjYbG7DNMGkTRbqtYE82WCozRHtCFXlaGGfSmxezrn
+ Sb5j/EW0s8U5n6XHkS6R/JaBJM/O6ktd1X+ITH6oo7bbwj5PVZ/qkk7ASInsWis8QvNf
+ pRQUzRA3RvuSfxbYdgwgDrECeplkbJVoaQEsBD1UNXvBGpuhRkq2NY8I74yT8Lc0MrP7
+ 4Se0Jbug8tebvPHrvYLdJ0IA4psv9s/nqT3vBrnM/b5FY/R+p/uzxmnnyRb09OFkkTFf
+ YcUQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCX/SlaNb98xLd2Egi/QQI2vc2Xcrdrn9jKreDzox5wvUPtYiWCLjfzp++qev0MVtOpOwYc=@lists.linux.it
-X-Gm-Message-State: AOJu0YwxRYrJV8wFeadNLzZ1lIv5ZMnMIaaQ6iKa9HNjX0L2EAnngNzv
- PQl6k1vBSFvKdn1nLIZvRaXUKgpf7McCCoqgWn8RWyQIQjp1jJ/CwD/pWc7D8IY=
-X-Gm-Gg: ASbGncunTTEYuXF0O0ttD4591R8UrQWj1fSpiwZ9UlgY4wjlbWEqhnYKla1OIm3U5/w
- AEQ8PsbYWjRepqLlcjtEp9HDV8/ynjMgB7N0TDZ+/WAwKN+71Ovm0cIzzwdFvWciYjyJUf0Ujmc
- x0XJxtShrngibW8Edgrs9LEmYVrjPYQOaD3QWL2+jxYLUhc9FJuj2JoaabffR9+5Mm5idx0qBqw
- nDV1ss8WVJioBNk5+R8dfGdD95Pz28Mq3rFLmcfwoxdc4zD5+hicR4NfB9dFTwGZWjrkV3Z0BRN
- 0bVClOdDR6dFJii4Dde2dTOmLM7M1zSnLnGz2fnAXkBRXTibNTqJHjLWe2w/XExcxc91hZd+7UM
- ACeo+N8a59+z6vmBEB4Q3I9mhl4c=
-X-Google-Smtp-Source: AGHT+IGc2AHN/GeLXEsJJxVwj6P3sPnFsFRekPxQAA9Jan4XgqPkTXw8ZGlV9j2Lk2hda/5CkKsd0w==
-X-Received: by 2002:a05:6000:4387:b0:39c:266c:400a with SMTP id
- ffacd0b85a97d-39c266c40f0mr1219358f8f.50.1743506994082; 
- Tue, 01 Apr 2025 04:29:54 -0700 (PDT)
+ AJvYcCWlp6rowzJoV2Ns4h5NK/izl/IbHNf0VIM+iVYbZZaRs6G4iZSjYZ2ZPGuMITLY24Zz8y0=@lists.linux.it
+X-Gm-Message-State: AOJu0Yz3vb7WQJm5xBSf/CVaqxY4Brh3DrayPlwY+NeKNdGUlEb8/wpb
+ GM5R0MFm+qNqhZrP43uT3eul+Zj6z8djyxiNJmvLx0I3r4apTKQqqYTb0wfTBzURT32eb6CWJvw
+ 1jyM=
+X-Gm-Gg: ASbGncuF/doJ3CXtsYCifkd17BgHcVGDy4kcQBsGQ5/09j+Cb7Oi3OE6NGZOdE4556U
+ mhi2UzWBhpOBz7hag9tmfk1FzBv+bWmHn2eQOSx0dhx8ObKHE9ZMxkIZ26TMIxXZJx4EYqiy0PH
+ PE2R7EW9WvVUF1lk8wBtJfa+loKRm5WRnAp5Vq27834sTa0FriV63q9W5QGeX1NYL/Cr2sSTdIL
+ 6oPVuiVV5ubeCemVVdXhOeGWA5XHgbNf3Ge5Y5+NtdG3fwBooXprxBuh00czLm24Wq/sBgRzCAS
+ 9mD1tqdLwnD59DR0fcxM3TNR7i7/7eDwy2IcVnqepxa0wftkd1PdtwRDjLDVC18ZKAzoLGplF2h
+ 699BAaQska8J4eL5PhdSwTJGv6CQ=
+X-Google-Smtp-Source: AGHT+IHrJYHU/mxlPY+jNbXWqCbNIy/0O9Tm6payaZA1uReUqyVLuVBwOQOjRSfd5rLe6Zzy6cLZ/g==
+X-Received: by 2002:a05:6000:2512:b0:39c:1efc:b02 with SMTP id
+ ffacd0b85a97d-39c1efc0b5amr5223000f8f.28.1743507277101; 
+ Tue, 01 Apr 2025 04:34:37 -0700 (PDT)
 Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
  ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43d82efe678sm196175475e9.20.2025.04.01.04.29.53
+ ffacd0b85a97d-39c0b79e097sm13663256f8f.80.2025.04.01.04.34.36
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 01 Apr 2025 04:29:53 -0700 (PDT)
-Message-ID: <54c380d2-7221-4302-8fa1-ba280610cc4e@suse.com>
-Date: Tue, 1 Apr 2025 13:29:52 +0200
+ Tue, 01 Apr 2025 04:34:36 -0700 (PDT)
+Message-ID: <2ca68e18-d4fb-41b7-8a59-b76e656d1955@suse.com>
+Date: Tue, 1 Apr 2025 13:34:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Ma Xinjian <maxj.fnst@fujitsu.com>, ltp@lists.linux.it
-References: <20250401092913.135745-1-maxj.fnst@fujitsu.com>
+References: <20250401093910.136401-1-maxj.fnst@fujitsu.com>
 Content-Language: en-US
-In-Reply-To: <20250401092913.135745-1-maxj.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+In-Reply-To: <20250401093910.136401-1-maxj.fnst@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] move_pages04: Fix the doc to fit RST format
+Subject: Re: [LTP] [PATCH] pwritev202: Fix the doc to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,59 +110,34 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-On 4/1/25 11:29, Ma Xinjian via ltp wrote:
-> Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
-> ---
->   .../kernel/syscalls/move_pages/move_pages04.c | 28 +++++++++----------
->   1 file changed, 14 insertions(+), 14 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
-> index e1ee733f0..3a56cdaca 100644
-> --- a/testcases/kernel/syscalls/move_pages/move_pages04.c
-> +++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
-> @@ -10,21 +10,21 @@
->    *
->    * [Algorithm]
->    *
-> - *      1. Pass the address of a valid memory area where no page is
-> - *         mapped yet (not read/written), the address of a valid memory area
-> - *         where the shared zero page is mapped (read, but not written to)
-> - *         and the address of an invalid memory area as page addresses to
-> - *         move_pages().
-> - *      2. Check if the corresponding status for "no page mapped" is set to
-> - *         -ENOENT. Note that kernels >= 4.3 [1] and < 6.12 [2] wrongly returned
-> - *         -EFAULT by accident.
-> - *      3. Check if the corresponding status for "shared zero page" is set to:
-> - *         -EFAULT. Note that kernels < 4.3 [1] wrongly returned -ENOENT.
-> - *      4. Check if the corresponding status for "invalid memory area" is set
-> - *         to -EFAULT.
-> + * #. Pass the address of a valid memory area where no page is
-> + *    mapped yet (not read/written), the address of a valid memory area
-> + *    where the shared zero page is mapped (read, but not written to)
-> + *    and the address of an invalid memory area as page addresses to
-> + *    move_pages().
-> + * #. Check if the corresponding status for "no page mapped" is set to
-> + *    -ENOENT. Note that kernels >= 4.3 [1] and < 6.12 [2] wrongly returned
-> + *    -EFAULT by accident.
-> + * #. Check if the corresponding status for "shared zero page" is set to:
-> + *    -EFAULT. Note that kernels < 4.3 [1] wrongly returned -ENOENT.
-> + * #. Check if the corresponding status for "invalid memory area" is set
-> + *    to -EFAULT.
->    *
-> - *   [1] d899844e9c98 "mm: fix status code which move_pages() returns for zero page"
-> - *   [2] 7dff875c9436 "mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk"
-> + * | [1] d899844e9c98 "mm: fix status code which move_pages() returns for zero page"
-> + * | [2] 7dff875c9436 "mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk"
-These two lines can be removed due to the presence of Tags table. If we 
-want to keep it, then we should probably leave them inside a dotted 
-list. Please take a look at:
-
-https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html#move-pages04
+Merged thanks!
 
 Kind regards,
 Andrea Cervesato
+
+On 4/1/25 11:39, Ma Xinjian via ltp wrote:
+> Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+> ---
+>   testcases/kernel/syscalls/pwritev2/pwritev202.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/pwritev2/pwritev202.c b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+> index b17d84067..30345fa79 100644
+> --- a/testcases/kernel/syscalls/pwritev2/pwritev202.c
+> +++ b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+> @@ -9,10 +9,10 @@
+>    *
+>    * - pwritev2() fails and sets errno to EINVAL if iov_len is invalid.
+>    * - pwritev2() fails and sets errno to EINVAL if the vector count iovcnt is
+> - *    less than zero.
+> + *   less than zero.
+>    * - pwritev2() fails and sets errno to EOPNOTSUPP if flag is invalid.
+>    * - pwritev2() fails and sets errno to EFAULT when writing data from invalid
+> - *    address.
+> + *   address.
+>    * - pwritev2() fails and sets errno to EBADF if file descriptor is invalid.
+>    * - pwritev2() fails and sets errno to EBADF if file descriptor is open for
+>    *   reading.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
