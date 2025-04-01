@@ -4,96 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52D0DC36010
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 18:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5462C36010
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 19:36:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1CDA83CB065
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 20:28:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 89BFD3CB062
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 21:36:03 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7FE803CAFF1
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 20:27:52 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=canonical.com (client-ip=185.125.188.123;
- helo=smtp-relay-internal-1.canonical.com;
- envelope-from=jacob.martin@canonical.com; receiver=lists.linux.it)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id EACA73C9A52
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 21:35:44 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 13EF8600963
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 20:27:50 +0200 (CEST)
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18E4560094E
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 21:35:43 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B81E63F59C
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 18:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1743532069;
- bh=pGnnvoGOpPxkU777gYZPbxKC9IgkxAndxA450df/AeQ=;
- h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
- In-Reply-To:Content-Type;
- b=qCrk8E8ccbcb1kONdqjAwdWC9UFmsE8sPQ6HeNVZopEXYYHB7qWoCdMld7agp0Rzp
- 675Sl7ZGzzDEESCkc1lG6fdJqGBa1r2Iex+VXcQLpI4yUj+tgtSTZy4RsP50qujYMZ
- GC51eokcylvXCXZSUmNw824n0lXyffQ6U8w2keJW2bibWbo60/JXnCbAHwJLPhtV/n
- c1T7yWgxeWkpcVKOZh7HVHQOmplSQcuscxB6zHW8+xGalZKMNmEdAm19IQXvVaLHoe
- OhN06vkuS0r7kk49o+bnJwsJntdjiVgYUVGzcCre1PPnaOG8W1wnz7nRPwj2/KAqjd
- ng4M6d5P94GXA==
-Received: by mail-ot1-f69.google.com with SMTP id
- 46e09a7af769-72b846873b2so5191033a34.2
- for <ltp@lists.linux.it>; Tue, 01 Apr 2025 11:27:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743532068; x=1744136868;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=pGnnvoGOpPxkU777gYZPbxKC9IgkxAndxA450df/AeQ=;
- b=cXIxY/B59ui0dNWHReaNmVUlpcWqoNiBENqXKy1tU46ITAZpU/3yYyv4Oso38UV97p
- 2qghp7BWTR9iVBXKK9cPlJ8cxtfgU+cbtFS2n1N6LPkFHUQSL1ghNrtAEJQuFh3Jqwql
- IoZrmMM69zHkm8XPbLeEXmwMM/GkhAtykxfLCTS1uYTYB29tQo8yn+FA/rYex02olECd
- sVsEl4dsZkwEoLbupFbuAabUwcnQmix9Mhh3bBeNgS6m6o37Uj8DPszJfva9aeqfGhbF
- s/sHb6v79ZSg+lABUpYHFaaFV3+D8VM5huLHzbQMINn0ry88Te7bvMFJLViUt3QkgJAh
- u/Fw==
-X-Gm-Message-State: AOJu0YyBMReZ/txT4dP+pWykqekiIuX15y1d6Lp7GycHVC/ZkSayvLRA
- KEStyh/hKwNwh1iDP7qAmFGtdgtQKFqpTmVVqB0KGFKJ8SoOLIZseAdYhl0F7O652449u5I5YUq
- XaUQ6z/ZRiLr40+RdPDmR0kR2JgxRlMW1lhh9n/3pjHWHfN32DCyWA5pZD4ywsObQ
-X-Gm-Gg: ASbGncul4IPmDwthaZHs0Ftm00NbUIJOavDgVDXzDP1qPJASSmRfs/AGz/JfwoRPLqV
- 4kSB6/3AaHV7LTEUkkUpgwXVpCLaRrJV8CmvNm8QxffoYM+rTAnLzBh6SXw6VRQvIDgxd/LZQ7r
- jIUEu2ujHXgvvCp3lgk4bsoXG32IjaOUvfqLMaUcKRJZ4wFbHHD2SDgZwnLens4HXp4ESSKJmRE
- nDy9fWVjzgtsb7Au3t4VgEO+rLxzwFQJq74O1rw3SPrd4nX14NkW2lLv8k8jgLcqfWs2WrEjHuj
- IKY+o+oPJpv+H1M1JV28HIAkmNj9XqOt2SLK3aghgkausCYunD9X69AUDItEi9CBcSkOJQ==
-X-Received: by 2002:a05:6830:6088:b0:72a:1a9f:7dc7 with SMTP id
- 46e09a7af769-72dae5b485amr2600907a34.7.1743532068644; 
- Tue, 01 Apr 2025 11:27:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/ew0OPhdlqOrgYKKWnHxvs0xVFuvRfeJuFMwNHpr4Tz4H+AUtX1vXJqV1M58FEX+9PrQhsQ==
-X-Received: by 2002:a05:6830:6088:b0:72a:1a9f:7dc7 with SMTP id
- 46e09a7af769-72dae5b485amr2600888a34.7.1743532068225; 
- Tue, 01 Apr 2025 11:27:48 -0700 (PDT)
-Received: from ?IPV6:2601:441:8201:e8ff:3a9f:51d:3eeb:7009?
- ([2601:441:8201:e8ff:3a9f:51d:3eeb:7009])
- by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-602844e6574sm1919096eaf.2.2025.04.01.11.27.47
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 01 Apr 2025 11:27:47 -0700 (PDT)
-Message-ID: <9bcb3681-4a12-4b12-a341-664aa52b4314@canonical.com>
-Date: Tue, 1 Apr 2025 13:27:46 -0500
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0AE6E1F38E;
+ Tue,  1 Apr 2025 19:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743536143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aYH3PGztWl9SZg+vcZZGEBqqSBDEQl3hLckmmZid76k=;
+ b=WGSIgh9FDTq12XtKFPNvVBrn0nTs2gtOD3sWdUuUUBnp+ha+3KeaRgSuEqEixQxwDXN4NP
+ tYVTFKwnz41tpTXFmz0Nn1/1SJJbomGV/r+5M2sDjyUJsvij+OhEK09UpYn6wSZKl3733E
+ jdkvKGXeTtWzZPMdpBlhjaxITi9YJdQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743536143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aYH3PGztWl9SZg+vcZZGEBqqSBDEQl3hLckmmZid76k=;
+ b=NiDDB5ZQjU1/ad4BPTPfLsmzZ9AWCMV7QUaC7nEx4wRuCRuBoYUQMHzRIlVsuynIz+AlJE
+ qBSHzWCoL+nrJ/CQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743536143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aYH3PGztWl9SZg+vcZZGEBqqSBDEQl3hLckmmZid76k=;
+ b=WGSIgh9FDTq12XtKFPNvVBrn0nTs2gtOD3sWdUuUUBnp+ha+3KeaRgSuEqEixQxwDXN4NP
+ tYVTFKwnz41tpTXFmz0Nn1/1SJJbomGV/r+5M2sDjyUJsvij+OhEK09UpYn6wSZKl3733E
+ jdkvKGXeTtWzZPMdpBlhjaxITi9YJdQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743536143;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aYH3PGztWl9SZg+vcZZGEBqqSBDEQl3hLckmmZid76k=;
+ b=NiDDB5ZQjU1/ad4BPTPfLsmzZ9AWCMV7QUaC7nEx4wRuCRuBoYUQMHzRIlVsuynIz+AlJE
+ qBSHzWCoL+nrJ/CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A921F13691;
+ Tue,  1 Apr 2025 19:35:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ttGNIA5A7GejQwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 01 Apr 2025 19:35:42 +0000
+Date: Tue, 1 Apr 2025 21:35:39 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
+Message-ID: <20250401193539.GA362719@pevik>
+References: <20250327-fix_make_clean-v1-0-8b9ed2a8d96a@suse.com>
+ <20250327-fix_make_clean-v1-3-8b9ed2a8d96a@suse.com>
+ <20250401074726.GE299271@pevik>
+ <D8VDRQTQRJJ7.2GET721U22NIL@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, Cyril Hrubis <chrubis@suse.cz>
-References: <20250307225804.380166-1-jacob.martin@canonical.com>
- <Z9lTTX4BrkpFhmQV@yuki.lan> <20250401072006.GB299271@pevik>
-Content-Language: en-US
-From: Jacob Martin <jacob.martin@canonical.com>
-In-Reply-To: <20250401072006.GB299271@pevik>
+Content-Disposition: inline
+In-Reply-To: <D8VDRQTQRJJ7.2GET721U22NIL@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cpuset_memory_testset.sh: Give SIGUSR1 handler
- time to run before changing target mapping node in tests 12 and 13
+Subject: Re: [LTP] [PATCH 3/4] include/Makefile: Fix cleaning targets
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,52 +115,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux Test Project <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 4/1/25 2:20 AM, Petr Vorel wrote:
-> Hi all,
-> 
->> Hi!
->>> Fixes: 70259d6e7
->>> Signed-off-by: Jacob Martin <jacob.martin@canonical.com>
->>> ---
->>>   .../cpuset/cpuset_memory_test/cpuset_memory_testset.sh          | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
->>> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
->>> index c1e7cea8f..04d7cc877 100755
->>> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
->>> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
->>> @@ -383,7 +383,7 @@ talk2memory_test_for_case_12_13()
->>>   	sleep 1
->>>   	echo $1 > "$2/tasks"
->>>   	/bin/kill -s SIGUSR1 $1
->>> -
->>> +	sleep 1
-> 
->> This is just another workaround that does not fix the real issue and
->> that is that the C child does not communicate properly with the shell
->> code. The best solution here would be to rewrite these tests into C.
->> There is not that much work the shell does and we would avoid parsing
->> files written by the C helper in the shell as well.
-> 
-> @Jacob FYI how looks the patchset which rewrites test6 to C:
-> https://patchwork.ozlabs.org/project/ltp/list/?series=450626&state=*
-> 
-> Feel free to pick another test.
-> 
-> Kind regards,
-> Petr
+> On Tue Apr 1, 2025 at 4:47 AM -03, Petr Vorel wrote:
+> > Hi Ricardo,
 
-Thank you both for the feedback and info here. I'll work on converting 
-cpuset_memory tests formerly 12 and 13 (now 11 and 12) to C.
+> >> Add ac-clean target as dependency of ac-maintainer-clean and add missing
+> >> files to the removal list. This way the project top level Makefile cleaning
+> >> targets can make use of it.
 
-Thanks,
-Jacob
+> >> Cc: Andrea Cervesato <andrea.cervesato@suse.com>
+> >> Fixes: 817d8095fbfe ("Rename linux_syscall_numbers.h to lapi/syscalls.h")
+
+> > I did not get how this commit broke the functionality.
+
+> It did not break anything, but either that commit or the one that added
+> the older "linux_syscall_numbers.h" file should have also marked it for
+> removal. Should I drop the Fixes: tag?
+
+I guess it's ok to keep.
+
+Kind regards,
+Petr
+
+
+> > Change LGTM.
+
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> Thanks,
+> -	Ricardo.
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
