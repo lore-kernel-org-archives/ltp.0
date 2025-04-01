@@ -4,116 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2CA3C36014
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 07:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82291C36018
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 07:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743494231; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=IFlAXbn8jnlNvyyQWleo38+nALxBokVuEifgJkHHdlw=;
+ b=fAjgqxfdV1Q33awzkd54qJGoTn4SUWJ/ZkFC+jPrzj1r7BLScBvrTsQlyD62K0hwX4iwN
+ GLnusI8EtzwABbypAghe4izxa71THU5iOJY1xFLDVHN11/JtUe4oR4JvZuCW991Bu1TDr1g
+ fcBBo954OhlKnELBjXK7ZgJDnggGbYU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6068B3CAFD3
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 09:47:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E22343CAF92
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 09:57:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B9DA73CAE7F
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 09:47:33 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4CCC33CAE86
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 09:56:50 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9189160078D
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 09:47:32 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7BD031F38D;
- Tue,  1 Apr 2025 07:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1743493651;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5BQbAg1K0Z93yUWL5mvA6+TXZ0IvABPw6zbClqd9OQg=;
- b=hH1FI2arB9lIIKD31CGwG5qGyy5D6Nc+Elh8xko9W5Nh3tywQNltN+yjpAfecZEkA9B7De
- ms+B+1u7WD4sasGlW1WhEFLtkEdh+vMKnJpVb2IqUPC9UsdhSEsJbUP0Bebh0SQvAOBHPT
- rvl92CwoL6jBifgNZp3fZRcbf/nknv8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1743493651;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5BQbAg1K0Z93yUWL5mvA6+TXZ0IvABPw6zbClqd9OQg=;
- b=aB5QualBcz4R3WivH28YpqJl4FDiXIgm9ySEkNNAXL8PZCa7Lh271O9kHCjSu5DpsdZ6Oh
- qjHmcUI1zhru96AQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hH1FI2ar;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aB5QualB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1743493651;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5BQbAg1K0Z93yUWL5mvA6+TXZ0IvABPw6zbClqd9OQg=;
- b=hH1FI2arB9lIIKD31CGwG5qGyy5D6Nc+Elh8xko9W5Nh3tywQNltN+yjpAfecZEkA9B7De
- ms+B+1u7WD4sasGlW1WhEFLtkEdh+vMKnJpVb2IqUPC9UsdhSEsJbUP0Bebh0SQvAOBHPT
- rvl92CwoL6jBifgNZp3fZRcbf/nknv8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1743493651;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5BQbAg1K0Z93yUWL5mvA6+TXZ0IvABPw6zbClqd9OQg=;
- b=aB5QualBcz4R3WivH28YpqJl4FDiXIgm9ySEkNNAXL8PZCa7Lh271O9kHCjSu5DpsdZ6Oh
- qjHmcUI1zhru96AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66F4F138A5;
- Tue,  1 Apr 2025 07:47:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wBWGGBOa62d9WwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 01 Apr 2025 07:47:31 +0000
-Date: Tue, 1 Apr 2025 09:47:26 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: rbm@suse.com
-Message-ID: <20250401074726.GE299271@pevik>
-References: <20250327-fix_make_clean-v1-0-8b9ed2a8d96a@suse.com>
- <20250327-fix_make_clean-v1-3-8b9ed2a8d96a@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8DEC51400512
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 09:56:49 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-43d07ca6a80so27227685e9.1
+ for <ltp@lists.linux.it>; Tue, 01 Apr 2025 00:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1743494209; x=1744099009; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=2MfpCCOhEG8uM/4HHgQ68ZNYTEt9qvkyRdeLpWhPYP8=;
+ b=fUMylFhkZkA0/2HxBTrAhW3D+Kkx9UnqnLTjSRH7Ik1JB8F9Dpyn+tTfzyW+d2ZQUR
+ BqtmFKd1RFFcdafBeABAkb6eC5CEp9lPfLJKixOLE8IE+MahTRMVaZ0afGNRlpwWgPvp
+ 02xHBG5aYCXaqYwh8SlFfM2TcqptZq+jvunQCXYfTaTVV6wpjvlsDir/3Jwi90ED3G4I
+ 8ZZw/2nXn9uGmGklzM2+j1XRaoYBq4PHCrNn/oqqAe70psLT2ZhypnHvnJ5cM+bSyDIG
+ 9jNfbiIiylRTL5IV4la9qA39kXG7bAFRrFf49RiBvYhJfHZzs86xTW4d7Yk9K51Ox4KC
+ K56g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1743494209; x=1744099009;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=2MfpCCOhEG8uM/4HHgQ68ZNYTEt9qvkyRdeLpWhPYP8=;
+ b=CQF9CZdmvnuM+izut1rATsJRXo+I+5z4mjSCzfjFj51Ugzsdw9E7AKdjF8yYURP9+e
+ 34+HRlxxunjnMK4xy4ZB39Plxe76pX/33hTfclis+3RPYIId4cbPGwpOvDZPzycc9JmU
+ 7YIXut0xEeZmRU+9OSTzQRyPdpYQrrYGnzpOW6paXLAPZhQpSi67ke++YX6rMHhWIonX
+ GUuTbZBywdTeP5gydwVq3Ruml3VQQhpFxzx0Xu3eyFZG3uU0lVFVRU9z6ekZ493vZwZc
+ 3yWH0PDeoOJnUtNJKsxDM9AGO9aTkcI+dytDzvNOYR61UlcpCajO30zrCtL8YN/J1jcc
+ 32Gg==
+X-Gm-Message-State: AOJu0YziTOa81qBKOsYX2tayHcXbLZcngRf2oKmhxQRFkwT/V1iDr5WI
+ T3B4DvNjTykeLpb3Fe1axSJJCuIWMwKYzXi8nOFajv6VJX8Cq4YBeK5YefBI9BXmm7GTtGxuQ5u
+ +hJrX
+X-Gm-Gg: ASbGnct5oawNr0Bs5B1Rwlk/0TIbqA1lOaYZYqC/p3t+s2/jduk9iVYHlbA7zWNAHWK
+ PlmwUiIB1dHk862tDn+5AeUmq921NhdabqSCBSacjS11C9UU7P99okGAqqwFtkWQJO+e2W5huF9
+ HMQa8bx+iMFN0oufawC6CDtINoaY2v2v2X47GSIBN2KKf5ema57dT58h35H9vKdu4/KhebuzZzg
+ mm8B3ME6WiG3aB87YvVZIkOcdE2vc9OG+U6MN6vkMyvpsw0+ytzGDM+BX4g6FiIOOa7mketszdo
+ /nkgVUPFTYS60ybUBP8CtzCyyecrVMi5FA==
+X-Google-Smtp-Source: AGHT+IHT/o3l0TQ+Tb1DN3LQLXVTVbyiflxnbzPvOQfSgdQrPGzH6VDOOPNbTCt+cc3lUeH9y/Zoxw==
+X-Received: by 2002:a05:600c:1f8b:b0:43c:f332:703a with SMTP id
+ 5b1f17b1804b1-43dbc6fb97fmr119116605e9.31.1743494208790; 
+ Tue, 01 Apr 2025 00:56:48 -0700 (PDT)
+Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-39c0b66b015sm13823550f8f.54.2025.04.01.00.56.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 01 Apr 2025 00:56:48 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue,  1 Apr 2025 03:56:42 -0400
+Message-Id: <20250401075642.16656-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20250301063134.14515-1-wegao@suse.com>
+References: <20250301063134.14515-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250327-fix_make_clean-v1-3-8b9ed2a8d96a@suse.com>
-X-Rspamd-Queue-Id: 7BD031F38D
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/4] include/Makefile: Fix cleaning targets
+Subject: [LTP] [PATCH v3] fcntl40.c: Test fcntl using F_CREATED_QUERY
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,27 +96,130 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
+Signed-off-by: Wei Gao <wegao@suse.com>
 
-> Add ac-clean target as dependency of ac-maintainer-clean and add missing
-> files to the removal list. This way the project top level Makefile cleaning
-> targets can make use of it.
+This is new test case for fcntl using new F_CREATED_QUERY operation.
+Based on a kernel selftest.
 
-> Cc: Andrea Cervesato <andrea.cervesato@suse.com>
-> Fixes: 817d8095fbfe ("Rename linux_syscall_numbers.h to lapi/syscalls.h")
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ include/lapi/fcntl.h                       |  8 ++++
+ runtest/syscalls                           |  2 +
+ testcases/kernel/syscalls/fcntl/.gitignore |  2 +
+ testcases/kernel/syscalls/fcntl/fcntl40.c  | 52 ++++++++++++++++++++++
+ 4 files changed, 64 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl40.c
 
-I did not get how this commit broke the functionality.
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index 761331798..7c0502488 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -154,6 +154,14 @@
+ # define RENAME_WHITEOUT		(1 << 2)
+ #endif
+ 
++#ifndef F_LINUX_SPECIFIC_BASE
++#define F_LINUX_SPECIFIC_BASE 1024
++#endif
++
++#ifndef F_CREATED_QUERY
++#define F_CREATED_QUERY (F_LINUX_SPECIFIC_BASE + 4)
++#endif
++
+ /* splice, vmsplice, tee */
+ 
+ #ifndef SPLICE_F_NONBLOCK
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 5cd1ae656..5ba2315d1 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -364,6 +364,8 @@ fcntl38 fcntl38
+ fcntl38_64 fcntl38_64
+ fcntl39 fcntl39
+ fcntl39_64 fcntl39_64
++fcntl40 fcntl40
++fcntl40_64 fcntl40_64
+ 
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/testcases/kernel/syscalls/fcntl/.gitignore b/testcases/kernel/syscalls/fcntl/.gitignore
+index e60176973..e3486ee45 100644
+--- a/testcases/kernel/syscalls/fcntl/.gitignore
++++ b/testcases/kernel/syscalls/fcntl/.gitignore
+@@ -72,3 +72,5 @@
+ /fcntl38_64
+ /fcntl39
+ /fcntl39_64
++/fcntl40
++/fcntl40_64
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl40.c b/testcases/kernel/syscalls/fcntl/fcntl40.c
+new file mode 100644
+index 000000000..882e0163f
+--- /dev/null
++++ b/testcases/kernel/syscalls/fcntl/fcntl40.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2024 SUSE Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * Basic test for fcntl using F_CREATED_QUERY.
++ * Verify if the fcntl() syscall is recognizing whether a file has been
++ * created or not via O_CREAT when O_CLOEXEC is also used.
++ *
++ * Test is based on a kernel selftests.
++ */
++
++#include "lapi/fcntl.h"
++#include "tst_test.h"
++
++#define TEST_NAME "LTP_FCNTL_CREATED_QUERY_TEST"
++
++static void verify_fcntl(void)
++{
++	int fd;
++
++	fd = SAFE_OPEN("/dev/null", O_RDONLY | O_CLOEXEC);
++
++	/* We didn't create "/dev/null". */
++	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
++	SAFE_CLOSE(fd);
++
++	fd = SAFE_OPEN(TEST_NAME, O_CREAT | O_RDONLY | O_CLOEXEC, 0600);
++
++	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 1);
++	SAFE_CLOSE(fd);
++
++	fd = SAFE_OPEN(TEST_NAME, O_RDONLY | O_CLOEXEC);
++
++	/* We're opening it again, so no positive creation check. */
++	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK(TEST_NAME);
++
++	/* tst_res(TPASS, "fcntl F_CREATED_QUERY check pass"); */
++}
++
++static struct tst_test test = {
++	.test_all = verify_fcntl,
++	.needs_tmpdir = 1,
++	.min_kver = "6.12",
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "d0fe8920cbe4"},
++		{}
++	}
++};
+-- 
+2.35.3
 
-Change LGTM.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
