@@ -4,93 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9FC4C36014
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 08:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EACFC36014
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 09:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743497809; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=omp8O5F6LpWT1ovBJe3w5TPIHobPp8R6JaIAzGtvBFs=;
- b=YvRYdq//8cYANwXJpePlJcDVEEZb8yTcCPYJEqwQupuOM1CWWoBijQt9A161otkRcBWK5
- 5CyN87XplTnMOsADdrLQzcGKAgmzWMryxNHwFcNByKon8lpnsL5G5Pc8zZFk9EU6gK7z2Gs
- bXVZtM4FoHempvIqRdXgfIVuLOmaWac=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743499877; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=pWs+UMa6xTGv2KtqGdWS4ZT+j5mC2HecC6S+gDe76zY=;
+ b=PfA+Lku58MNCd1YhkaUb1yCjBvQLiDsIc0kQNQCPqg/enzmodsO/G6SyZHaqheoZCiBCg
+ qAvLVDwSXlqTIRUmYT6z0cX5I8lgXomjiqCYyQTdV/JQtAVH8SmeylREmfDHYEt8J72lwLy
+ a/zWekAx4/bePlsjyTMi+YKSRJIOLU8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53D2C3CAFB3
-	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 10:56:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 97F293CAFD2
+	for <ltp@archiver.kernel.org>; Tue,  1 Apr 2025 11:31:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 021EC3CAE55
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:56:28 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 414F83CAE9F
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 11:30:55 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=68.232.139.130;
+ helo=esa5.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
+ [68.232.139.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DCEC360042D
- for <ltp@lists.linux.it>; Tue,  1 Apr 2025 10:56:26 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-43cfa7e7f54so32033805e9.1
- for <ltp@lists.linux.it>; Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743497786; x=1744102586; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=5HA0LA6NHuU68a1gZjIr6lsNO8x+G7DD+v60mWaed1U=;
- b=VtcDNmkrfh1DoVM2IUGkdVFHMR0iUzYGHwrYg+J2BHyNPTOblLdNu576m3jOum+5D3
- NpumKsgP3agq8c6NBNeWo11p1FFBE5H7kpbj0gI9DNdzyaPpAt8rsCRq9/irWVR36Qm8
- NU4k0i7KsEfVSPnsMHRihPasFZvr32yKxANK4+2hZZQe05ggRGjyZpznFO6cxjKQ40o7
- ZCQ/KZ3X1evBYgcPUvu1jknOlVS8qgkSruFaBHyzu0w3gOX1eRNLIz8oZnJLvaGh0S0U
- iUOQzae3+xzTZbqyAV5zIlOpTSB2sd4HdkPz5bODvehYhfzfx8vG43TnP7kewcJ0ZpyQ
- EBjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743497786; x=1744102586;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=5HA0LA6NHuU68a1gZjIr6lsNO8x+G7DD+v60mWaed1U=;
- b=GRBVNxeOlttvQYOTJuclmcEP/xikHaM5nh/axgo7xFsA9ufPcaXWNUnOK8HPanmllk
- oELqMOjdybuQuvDhCoggFx8m2M4ehLHAKslxlZt3obfLK21wpcACb6w2idud3csHYr/B
- pTzhWHrmiNv9W9dXtAK2Naok7EoDBuvjcB6m6/BsWaAp5SDcEHk0NebALLibGUGGEgje
- ri037KM/EpHtAq/31EFiwIHdInMMotfV4dAkY5ngrru5fW0Ujmv+BtGdF0gGrmk4BZl5
- 5Fs+JqdtyqKaXYHQ7wehBXqdODwUV3u8sVtjbMKT46yHtQzQdrPu/3iNVx1Opp5/KVvM
- UJOw==
-X-Gm-Message-State: AOJu0YxQN82BHNL1cKsTHL/YBsHgZVyAMo0ymzJn2VsmGSn6oTx1K3qd
- I+mWGgrZFIav1WDhvJWYc52y7U7dP8MSXUirZbE/pCW3o0Hn8XdSl62/sMHMUrQ=
-X-Gm-Gg: ASbGncub8JWS0EJDZZf5GTtbKpRCHFg4cEcZ5BYuUOXLgoCBDTZQa4OZGAYKxMQ6bc+
- mquyuLdEUEX2907neMMgTT1oJbPLsW1eoqqHlkqmxG6j1sDxecOmvFLMlU63p3RDsTuSBY8T7vV
- Azj2/rxj9rX0CToCQBXCr3N6BBpWCGtT/wsFnOUy3rJAr//aHxY4VSQo4+zxSKn7ZGX8LiglOif
- EmsMQjyQp89xG+MfLHYEtjXaGYETSLKn+0w1IvRIWpPjF8nkkt/9hZ2mta0jtXbIEOLGsVro1Ej
- /8xXhjA20tHNTZr3xHsQibUJkMYV2u0zpoHsMtftASBJvbzPSd5W5EZrtddbp/gA9+P81i7bTfo
- 2zST/Gibt992YpOOk0HGLXXTPBos=
-X-Google-Smtp-Source: AGHT+IGlxiQT0TngWc/KqoOj2XahWhqP1wk9Y5vkKh8QcE0z2iAaZQo21TksFRU8edhDmCJnOv4/Mg==
-X-Received: by 2002:a05:600c:a086:b0:43d:186d:a4bf with SMTP id
- 5b1f17b1804b1-43dabe2384dmr85599315e9.0.1743497786406; 
- Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
- ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43d8ff02e84sm148723475e9.32.2025.04.01.01.56.25
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 01 Apr 2025 01:56:26 -0700 (PDT)
-Message-ID: <be455754-b62e-47f6-97bf-086f90078fa1@suse.com>
-Date: Tue, 1 Apr 2025 10:56:25 +0200
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 69448600872
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 11:30:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+ t=1743499854; x=1775035854;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=QiKARr/3SDNwEKwbaw1cnGgEIzps8pER4Z5ycwM/Ciw=;
+ b=LB9tFnLr9s+ow5rX/Cf17k/73BeXWQMW9YUv86gPCq7WWk6w74zjg2vd
+ UJHqQLvFG4hkBwIXCJ7wnu6v9Y9ryQXslHscLw2/6/FF3VmPl6OC3e+1Q
+ dRlaMLmFSx1aUZGOkuxelpEYttxi17Uop52uO6yytTgoMpWVqDF9tpNpU
+ Q6fC6p5uheNuZskO1xFlWGlYAjnRHXZ3LjkLoj9PVN/IRaoLFuOqtqm/S
+ xbkdERdo+G35QVEhu/rNwAe2wHn8tUwxyhWUByFd1LS7vUndwjjLs6idJ
+ nO95vWNQ3a7YVlXUn5Owo/2BMNaSALjZSwijqOTD9ulp+ovvUlUaYyBV0 w==;
+X-CSE-ConnectionGUID: tL89FInDQmGHRbOVGTScJQ==
+X-CSE-MsgGUID: GjEcrG38Qn+Q4sSLcPF/sw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11390"; a="194271366"
+X-IronPort-AV: E=Sophos;i="6.14,293,1736780400"; d="scan'208";a="194271366"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Apr 2025 18:30:52 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
+ [192.168.83.65])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 38489D6EA5
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 18:30:50 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id EC795D50A8
+ for <ltp@lists.linux.it>; Tue,  1 Apr 2025 18:30:49 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.135.101])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 445061A0078;
+ Tue,  1 Apr 2025 17:30:49 +0800 (CST)
+To: ltp@lists.linux.it
+Date: Tue,  1 Apr 2025 17:29:13 +0800
+Message-ID: <20250401092913.135745-1-maxj.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, rbm@suse.com
-References: <20250331-conversions-modify_ldt-v5-0-fd6ea1491956@suse.com>
- <20250331-conversions-modify_ldt-v5-1-fd6ea1491956@suse.com>
- <20250401084827.GA329205@pevik>
-Content-Language: en-US
-In-Reply-To: <20250401084827.GA329205@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/3] syscalls/modify_ldt: Add lapi/ldt.h
+Subject: [LTP] [PATCH] move_pages04: Fix the doc to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,31 +83,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Ma Xinjian via ltp <ltp@lists.linux.it>
+Reply-To: Ma Xinjian <maxj.fnst@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
+---
+ .../kernel/syscalls/move_pages/move_pages04.c | 28 +++++++++----------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-On 4/1/25 10:48, Petr Vorel wrote:
-> nit: IMHO modify_ldt() is not used anywhere outside lapi file, right?
-> I would also consider instead of creating modify_ldt() just put raw syscall:
->
-> 	rval = tst_syscall(__NR_modify_ldt, func, &ptr, bytecount);
-
-Just yesterday I got a review from @Cyril asking me to add syscalls 
-function definition which are missing inside the lapi/.h header. The 
-reason is that we want to fallback libc and eventually check for 
-HAVE_FUNCT_* via autotools.
-
-In general I agree with this approach.
-
-Kind regards,
-Andrea Cervesato
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
+index e1ee733f0..3a56cdaca 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages04.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
+@@ -10,21 +10,21 @@
+  *
+  * [Algorithm]
+  *
+- *      1. Pass the address of a valid memory area where no page is
+- *         mapped yet (not read/written), the address of a valid memory area
+- *         where the shared zero page is mapped (read, but not written to)
+- *         and the address of an invalid memory area as page addresses to
+- *         move_pages().
+- *      2. Check if the corresponding status for "no page mapped" is set to
+- *         -ENOENT. Note that kernels >= 4.3 [1] and < 6.12 [2] wrongly returned
+- *         -EFAULT by accident.
+- *      3. Check if the corresponding status for "shared zero page" is set to:
+- *         -EFAULT. Note that kernels < 4.3 [1] wrongly returned -ENOENT.
+- *      4. Check if the corresponding status for "invalid memory area" is set
+- *         to -EFAULT.
++ * #. Pass the address of a valid memory area where no page is
++ *    mapped yet (not read/written), the address of a valid memory area
++ *    where the shared zero page is mapped (read, but not written to)
++ *    and the address of an invalid memory area as page addresses to
++ *    move_pages().
++ * #. Check if the corresponding status for "no page mapped" is set to
++ *    -ENOENT. Note that kernels >= 4.3 [1] and < 6.12 [2] wrongly returned
++ *    -EFAULT by accident.
++ * #. Check if the corresponding status for "shared zero page" is set to:
++ *    -EFAULT. Note that kernels < 4.3 [1] wrongly returned -ENOENT.
++ * #. Check if the corresponding status for "invalid memory area" is set
++ *    to -EFAULT.
+  *
+- *   [1] d899844e9c98 "mm: fix status code which move_pages() returns for zero page"
+- *   [2] 7dff875c9436 "mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk"
++ * | [1] d899844e9c98 "mm: fix status code which move_pages() returns for zero page"
++ * | [2] 7dff875c9436 "mm/migrate: convert add_page_for_migration() from follow_page() to folio_walk"
+  */
+ 
+ #include <sys/mman.h>
+-- 
+2.47.0
 
 
 -- 
