@@ -4,102 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7E83C36014
-	for <ltp@archiver.kernel.org>; Wed,  2 Apr 2025 10:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A299C28B20
+	for <ltp@archiver.kernel.org>; Wed,  2 Apr 2025 17:07:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 166CC3CB0AE
-	for <ltp@archiver.kernel.org>; Wed,  2 Apr 2025 12:29:41 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 31CDD3CB225
+	for <ltp@archiver.kernel.org>; Wed,  2 Apr 2025 19:07:43 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01A103CB083
- for <ltp@lists.linux.it>; Wed,  2 Apr 2025 12:29:24 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 56D783CAE17
+ for <ltp@lists.linux.it>; Wed,  2 Apr 2025 19:07:26 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=gotplt.org (client-ip=23.83.218.254;
+ helo=toucan.tulip.relay.mailchannels.net; envelope-from=siddhesh@gotplt.org;
+ receiver=lists.linux.it)
+Received: from toucan.tulip.relay.mailchannels.net
+ (toucan.tulip.relay.mailchannels.net [23.83.218.254])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 34FE91400C5A
- for <ltp@lists.linux.it>; Wed,  2 Apr 2025 12:29:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CB601A00F0D
+ for <ltp@lists.linux.it>; Wed,  2 Apr 2025 19:07:24 +0200 (CEST)
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+ by relay.mailchannels.net (Postfix) with ESMTP id 3B5632C2C93
+ for <ltp@lists.linux.it>; Wed,  2 Apr 2025 17:07:23 +0000 (UTC)
+Received: from pdx1-sub0-mail-a226.dreamhost.com
+ (trex-1.trex.outbound.svc.cluster.local [100.98.185.235])
+ (Authenticated sender: dreamhost)
+ by relay.mailchannels.net (Postfix) with ESMTPA id ABEDD2C3958
+ for <ltp@lists.linux.it>; Wed,  2 Apr 2025 17:07:22 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1743613642; a=rsa-sha256;
+ cv=none;
+ b=pPsOENhnHWzStQtsu1FLFk9QotcAvmjeaW7TeM8cDm33wOLKg/h0TGpszLgbxtaNK+lDsY
+ IdYIAypAgmdrDJQO4mxChMCxbr0Q28tZ8zky3L/IpI6YuDSxgZRWtY3J+rsry7YTYCgetp
+ /kcp9gekgulFamIKpI9Jxx/NSDMhZKOkqCVe6MgpHGYHWR5jtDCcVU5lGU2PAQ0VaeAKTs
+ XLBb6/ThQfOHZHKd2oxxEx4fjLFwPyyuIiPItsaB/XQ9ehOWEUwgb3cEl9EPqOBmXySO++
+ dlDPDNun0Cw1qRRcdP7VcwqB77iSJzRgtiXxbtE4KGgGya2LKKrC62fEhpBTqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net; s=arc-2022; t=1743613642;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:dkim-signature;
+ bh=czFdtefyOHnPOIWuSakSMdPSN8oNi5utE6X7tDj9Sg8=;
+ b=K5ltaUw3KO8p9dXc9YCb7AcrqGnyXgmX0CR2Ng37e/2Y6HboB4oCFRDxI1GFXEMC9rb6FO
+ RES4jNRFGLuFMHNJzphM4nSw376vk25EhI/PWAd4aTO+T8uqb2+H3SjFgEyubRRzX1WELq
+ Xoo9wzXMZAN1lDFqvPJJDj4lnXYKiiFQKrbgKBemX5SeZMmGFuyQEusCc69y/8Aqvqmcfw
+ ZXK2ce1Xh2utgN3xR3dj3Ziy+QTYvRNk7BR+AYY7Ks+QYTQc8eGbUuhGTK+fTe47W4y2kn
+ 2vZuxhFdAvjI47VSpy3S9n0LPEnfGsNAeQh/j80s2q6Qctp733FIwgGwl7ZggQ==
+ARC-Authentication-Results: i=1; rspamd-85757496c5-d6tch;
+ auth=pass smtp.auth=dreamhost smtp.mailfrom=siddhesh@gotplt.org
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
+X-MailChannels-Auth-Id: dreamhost
+X-Illustrious-Invention: 5168679f5b312ce1_1743613642921_2355643433
+X-MC-Loop-Signature: 1743613642921:2126495990
+X-MC-Ingress-Time: 1743613642920
+Received: from pdx1-sub0-mail-a226.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162]) (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+ by 100.98.185.235 (trex/7.0.3); Wed, 02 Apr 2025 17:07:22 +0000
+Received: from fedora.redhat.com (unknown [38.23.181.90])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5F2C221190;
- Wed,  2 Apr 2025 10:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1743589762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j0XSj7i/g/Fus/py/WHUAib/+zR1E7NtFIEC6NZbPSI=;
- b=0czKlkiYuezwBMvP9BaYqx/feQi4eKiy38blsa8bCYN+7dYkiLaQXxbqUl7bbLKIDuyQ8T
- CnIGMDV7CVsv4s8GxZTg8EgT+cwE75bgYvWzMrtTFulO34dCFLgOZoFRd8TtyERgE/WV0l
- MosawFhN8PZ99ofKYNjfzjh4f8cJ1UA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1743589762;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j0XSj7i/g/Fus/py/WHUAib/+zR1E7NtFIEC6NZbPSI=;
- b=ThHLdqtkt0u9ws+GFQuQ2mQDKj6Skok/oUvV6l5KEidEjKEPIQ0HezPseD43zMAqEO3yS2
- bHa1co8yjhjTzKCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1743589762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j0XSj7i/g/Fus/py/WHUAib/+zR1E7NtFIEC6NZbPSI=;
- b=0czKlkiYuezwBMvP9BaYqx/feQi4eKiy38blsa8bCYN+7dYkiLaQXxbqUl7bbLKIDuyQ8T
- CnIGMDV7CVsv4s8GxZTg8EgT+cwE75bgYvWzMrtTFulO34dCFLgOZoFRd8TtyERgE/WV0l
- MosawFhN8PZ99ofKYNjfzjh4f8cJ1UA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1743589762;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j0XSj7i/g/Fus/py/WHUAib/+zR1E7NtFIEC6NZbPSI=;
- b=ThHLdqtkt0u9ws+GFQuQ2mQDKj6Skok/oUvV6l5KEidEjKEPIQ0HezPseD43zMAqEO3yS2
- bHa1co8yjhjTzKCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 512AC137D4;
- Wed,  2 Apr 2025 10:29:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Z+qJEoIR7WcHWQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 02 Apr 2025 10:29:22 +0000
-Date: Wed, 2 Apr 2025 12:29:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Z-0Rl4jlbplAQQR_@yuki.lan>
-References: <20250301063134.14515-1-wegao@suse.com>
- <20250401075642.16656-1-wegao@suse.com>
+ (Authenticated sender: siddhesh@gotplt.org)
+ by pdx1-sub0-mail-a226.dreamhost.com (Postfix) with ESMTPSA id 4ZSWWZ1q9czJj
+ for <ltp@lists.linux.it>; Wed,  2 Apr 2025 10:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gotplt.org;
+ s=dreamhost; t=1743613642;
+ bh=czFdtefyOHnPOIWuSakSMdPSN8oNi5utE6X7tDj9Sg8=;
+ h=From:To:Subject:Date:Content-Transfer-Encoding;
+ b=lsw7Ul6apckwBvE3v9PtnbamarrmfabIDjVYNKoEYqn390fmN1dhTNay8nyDLDNWM
+ wImOHLQvBMUcUjIWq6j+7ARwzFEj8OJbf/cWnbhjAwybnSjyHqC0RVHZiAzBN3Hh38
+ 5qo6jo47FF4BFgPogRtP0zO6snRXs4iuuEceemurMstcc9nJsdi8L+Se8etyutqVbG
+ NPKMbQaz/GTqhLEdh4QEzkCFXm9nwC3t3Gnpjtm2MFyeiJ19kzC2SaRgkrLCHduC3d
+ AQOXkNQ63H03/qY9sZn6IcUqv+SwDNtrHfWw1GuEmrH0WIYBTzdU2KU+x5aDUCdYeF
+ 62mDIWQlzXHzg==
+From: Siddhesh Poyarekar <siddhesh@gotplt.org>
+To: ltp@lists.linux.it
+Date: Wed,  2 Apr 2025 13:07:18 -0400
+Message-ID: <20250402170718.1710388-1-siddhesh@gotplt.org>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250401075642.16656-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo, linux.it:url]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] fcntl40.c: Test fcntl using F_CREATED_QUERY
+Subject: [LTP] [PATCH] cve-2015-3290: Bump up stack boundary requirement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,66 +102,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void verify_fcntl(void)
-> +{
-> +	int fd;
-> +
-> +	fd = SAFE_OPEN("/dev/null", O_RDONLY | O_CLOEXEC);
-> +
-> +	/* We didn't create "/dev/null". */
-> +	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-> +	SAFE_CLOSE(fd);
-> +
-> +	fd = SAFE_OPEN(TEST_NAME, O_CREAT | O_RDONLY | O_CLOEXEC, 0600);
-> +
-> +	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 1);
-> +	SAFE_CLOSE(fd);
-> +
-> +	fd = SAFE_OPEN(TEST_NAME, O_RDONLY | O_CLOEXEC);
-> +
-> +	/* We're opening it again, so no positive creation check. */
-> +	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-> +	SAFE_CLOSE(fd);
-> +	SAFE_UNLINK(TEST_NAME);
-> +
-> +	/* tst_res(TPASS, "fcntl F_CREATED_QUERY check pass"); */
+When the input compiler defaults to AVX enabled, stack realignment
+requirements causes gcc to fail to omit %rbp use, due to which the test
+fails to clobber %rbp in inline asm.  Bump up the preferred stack
+boundary to avoid this stack realignment for AVX, so the frame pointer
+omission goes through.
 
-Why is this line here? It's not even proper comment, just commented out
-code. It should have been removed.
+Signed-off-by: Siddhesh Poyarekar <siddhesh@gotplt.org>
+---
+ testcases/cve/Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_fcntl,
-> +	.needs_tmpdir = 1,
-> +	.min_kver = "6.12",
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "d0fe8920cbe4"},
-
-This points to the kernel commit that added the test. Commit tags are
-only for kernel commits that fixed a kernel bug, not for commits where
-functionality was added.
-
-> +		{}
-> +	}
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 01b9b9ccb..06bd1b3db 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -22,6 +22,9 @@ ifneq (,$(filter $(HOST_CPU),x86 x86_64))
+ meltdown: CFLAGS += -msse2
+ endif
+ 
+-cve-2015-3290:	CFLAGS += -pthread -fomit-frame-pointer
++# The test needs to clobber %rbp, which requires frame pointer omission.  Also
++# bump up the preferred stack boundary to ensure that the compiler manages to
++# omit the frame pointer even with AVX enabled.
++cve-2015-3290:	CFLAGS += -pthread -fomit-frame-pointer -mpreferred-stack-boundary=5
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.49.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
