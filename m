@@ -4,92 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA02C3600C
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 11:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743680054; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=W6T4RptoBTfffjey83fqifPGbbiE7tqNXmZcJyBy18U=;
- b=TtgsJXN3/2oUe5fKv1VerU0NepHARf9eqGxovnpXpGKBEHLwZZiT3q4QECt3tZwpqU8o9
- RBHYYWNM9FVXt/oIuBZ+udYoqDlmjwsQOVm9Q7NjWMf2nVPWOm341omW0g9K/+t9vYCe5d2
- /xA/EqY4FKvjrLkLXnjkap0m5ItmdFU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE312C3601E
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 12:36:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D1B493CB285
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 13:34:14 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3A5B93CB09B
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 14:36:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1A663CB27E
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 13:33:52 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 26A013CA5B8
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 14:36:16 +0200 (CEST)
+Authentication-Results: in-7.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E93451A00437
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 13:33:51 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-4394a823036so7309265e9.0
- for <ltp@lists.linux.it>; Thu, 03 Apr 2025 04:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743680031; x=1744284831; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=u7UPeqxXjbB8UELfuj50555+LCCn+ny0sPGm7R8wVAM=;
- b=G2997ReQ6JMsO9r2Dk4IT97ymipEz7qROtuBXGD5sD7j0KJ54Z79cgbRMvbqNhE/Oq
- dzuspvrd9MZytYttiyF3SS0xu2allB+wQ6bL67Zv1qhLmDldZlTjbxhXsJjvb8p5NLc8
- mWAjYZZ7260S8WfxDQUw9+/mGGguuE6kor/DK+iA3on+gaHwFytwkVHsyjipO+VsG2WB
- gt/+R7VqNO+6Mn7nNmg6XWuRS/OHkB13ww989WrUL1zBUUsu/fchFrOYo8jSjWPgJQQc
- 3LzKc1eLpJM1YgCuzFy33RskizxV8YY6yvNlTtFdEtKQgOpAm/hjzWOu8y/85fxXK5VH
- ZjYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743680031; x=1744284831;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=u7UPeqxXjbB8UELfuj50555+LCCn+ny0sPGm7R8wVAM=;
- b=JZRzdVzgjBtVtiu8VYl4QJv1OddbNmluTfjfKXUyCCi3KvmPyuZjywwv5gptA5FFRl
- cENu5u0jRKvRgcb4YoXon3bv+Exo18sGRV+glIO6kdrc6Itu26J8DVTE7P8+PPxbdZ5F
- zh0hsUU+CCRrQRsiauwORci9/LzkNpMh1hEGgRTnMm2xjb+zPIyQ8FqGtOAddFdiYycU
- /tCM2C6cyjXo/bJ/WjrCAoua5m9DDpXR6NJ/azBmRsT+M4/AKBFDkwa1i4NoKxEyZlxT
- LQ3q+nBWnOSTx+rKa8EWsLYXXkl0wOGB+M1yDMntMDT1L+MGJnfA3Q+UCnZDsifcYV3q
- svqg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXLvqI27Xel/tbiIM5I4nRjWHSp8IE8/C/RKlME2olwmEPWi+Ys1qzSNZi8eNiI7B0xiMg=@lists.linux.it
-X-Gm-Message-State: AOJu0YwLhYvvjbEKaEkSMu1k8Rsb+d5UHzJITuBRYRrcnOtA/2zMzD34
- +FsE0JoebJAG2YFOBdTaL2tJtIFXoIeRRYmyRFADyX4tU7BB8RrRdC/9nQ0T8bI=
-X-Gm-Gg: ASbGncvNTREzuJQtp0ZX1VtlPrv8SrqY3yncyMwnEsMChO6anfWPsWTix3BKbPaAEr+
- TdtHlMx2WD80hcd2uMNpYiRym+KWQl+Z/8hxytcGSOzkKVEb3E+zp0FScK1JZl1VBVezeV/XnaU
- EPGaCk6ulm8iNaGxo8Fy7hZ0NZ3iaguOdyotQVcFDLNub5QnFx33sBCn3K+g9I+T1ZNl3GXpH1R
- vome85UU2SZImSR8+njRUxElh2Uo4VYoerZMJ+E2IdKzXrXwrBST1st5JibG83QrglPXUEinQq0
- GHryqAfMLtX/kdGTJy0VyuyVucNKK5orNUtbTHiFu1oPoFJ3Q/t0UumOB3tzPS31wq5FO5j9fNs
- xIsjx7s4IlALabCI27LJgX1RN3Tk=
-X-Google-Smtp-Source: AGHT+IE5ppp1Rk7ekeVIafsVcIp6DTqOW5KQph24Kq0M0IbojkKcpf+qBn9PxRqV86sHFfjz3LJUZA==
-X-Received: by 2002:a5d:5f91:0:b0:39c:d05:3779 with SMTP id
- ffacd0b85a97d-39c29806115mr4915728f8f.49.1743680031233; 
- Thu, 03 Apr 2025 04:33:51 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
- ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43ec342827fsm16274815e9.6.2025.04.03.04.33.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 03 Apr 2025 04:33:50 -0700 (PDT)
-Message-ID: <0045063b-ae7f-4dd6-9b8e-9d760713ea3b@suse.com>
-Date: Thu, 3 Apr 2025 13:33:49 +0200
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 245D9200097
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 14:36:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E6CB01F749;
+ Thu,  3 Apr 2025 12:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743683773;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WyxhdNpFymzeOyVRGqQ2lzXqDYG67DDLAF0h5tIma+c=;
+ b=wCAyxrY7agAtiu4gE+mEqo9VOr/GSiMZMJTwuouphwfGOd9GiVzzvtnB3r7KImzOI4eipa
+ k9UepontFFu1OcZe41LRuuqqzc/xqDgMIvQgsmsct1/bQhcgWdz65UliPKW01zwL6rjN73
+ q72ORp43/n9Dw3I9HeQbsYwpnr5l2lo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743683773;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WyxhdNpFymzeOyVRGqQ2lzXqDYG67DDLAF0h5tIma+c=;
+ b=MpsLDW8Gfc4TknZ4kbk45SRktqfQfiUr7vf+/ZxwuOseyp1v8YAzf5MCOmiNwwgQQ01xif
+ KMkMqWj2Absgy4AA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nrmC9ttn;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Yb0z+ayh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743683772;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WyxhdNpFymzeOyVRGqQ2lzXqDYG67DDLAF0h5tIma+c=;
+ b=nrmC9ttn3DwITjFNBw6oc1RD7q/dz6lFsQIHauYjBCIF9b8flFv91NXaCkJpiZBYP9/mWG
+ hePGn2YlSd2/Y++JHyxO9Re9CkDjNajh0KVT1DDSeczlZW1QTnuaHw0wd1BCl+bg2Lsyke
+ ODwInJyT9IUAQJsB+hqZv9wYI5AJepE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743683772;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WyxhdNpFymzeOyVRGqQ2lzXqDYG67DDLAF0h5tIma+c=;
+ b=Yb0z+ayhj5ZN2gMMJMtdJinr/0roMdQSA4mmU7tDupXKZQPp1rowqzkJxl5+ZhKy81mNLN
+ X1bNCvcWnBGaQwCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 63D6C1392A;
+ Thu,  3 Apr 2025 12:36:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WHRXEbyA7meXMAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 03 Apr 2025 12:36:12 +0000
+Date: Thu, 3 Apr 2025 14:36:10 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250403123610.GA465253@pevik>
+References: <20250403113053.20040-1-chrubis@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20250403101912.459507-1-pvorel@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20250403101912.459507-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250403113053.20040-1-chrubis@suse.cz>
+X-Rspamd-Queue-Id: E6CB01F749
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH 0/2] Merge runtest files
+Subject: Re: [LTP] [PATCH] lib/tst_test.c: Fix tst_brk() handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,112 +123,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi all,
 
-this is a _huge_ topic that might affect LTP automation configurations.
+[ Cc Jan and Li s there can be some hidden problems. ]
 
-It's a job that IMHO should be done, but it makes more sense to wait for 
-testing suites definition in metadata, as well as a total refactoring of 
-old LTP tests.
+> This makes the tst_brk() handling cleaner and saner as instead of
+> propagating the tst_brk() result in a return value an abort flag is
+> introduced into the shared memory.
 
-The reason of my statements is not only that runtest files should be 
-removed one day, but also that known issues inside products which are 
-tested, often require years of analysis of the runtest files and their 
-executions. By shuffling tests around will create issues where there's 
-no need due to a small logical improvement.
+> Now:
 
-I think we should start to push more on testing suites definition inside 
-metadata and to refactor tests as fast as possible. So we will be free 
-from runtest files, leading to a more coherent structure of the tests 
-organization.
+> - All the processes but the library one that reports the results exit
+>   with 0
+> - tst_brk(TBROK, ...) increments result conters, sets the abort flag.
+>   and exit current process
+> - all other tst_brk() variants will just increments the countes and
+>   exits the current process
 
-- Andrea
+> This makes the tst_brk() behavior well defined so we can now even call
+> tst_brk() with TFAIL and TPASS as well.
 
-On 4/3/25 12:19, Petr Vorel wrote:
-> Hi,
->
-> besides runtest/ipc, there are other small runtest files.  I know we are
-> slowly working towards removing runtest files, but until it happen we
-> might want to optimize (=> merge) small runtest files into others.
->
-> With this change we have in the runtest files (ignoring comments):
->
-> $ for i in runtest/*; do echo "$(grep -v '#' $i | wc -l): $i"; done | sort -rn
->
->
-> $ wc -l runtest/* | sort -nr # not taking into account the comments
-> 1823: runtest/syscalls
-> 392: runtest/controllers
-> 140: runtest/scsi_debug.part1
-> 140: runtest/ltp-aiodio.part1
-> 137: runtest/net.nfs
-> ...
-> 9: runtest/watchqueue
-> 9: runtest/tracing
-> 9: runtest/ima
-> 7: runtest/dma_thread_diotest
-> 7: runtest/cpuhotplug
-> 6: runtest/net.ipv6_lib
-> 6: runtest/input
-> 6: runtest/capability
-> 5: runtest/power_management_tests_exclusive
-> 5: runtest/power_management_tests
-> 5: runtest/kvm
-> 4: runtest/net.multicast
-> 3: runtest/uevent
-> 3: runtest/hyperthreading
-> 3: runtest/crashme
-> 3: runtest/can
-> 2: runtest/nptl
-> 1: runtest/s390x_tests
-> 1: runtest/irq
-> 1: runtest/fcntl-locktests
-> 0: runtest/staging
->
-> I would suggest to:
->
-> * move runtest/can to runtest/kernel_misc (better
-> name would be kernel_drivers, but I don't want to do renames, even
-> merging runtest files will disturb folks testing with LTP.
->
-> * move runtest/fcntl-locktests to runtest/net.nfs.
->
-> * runtest/nptl is NPTL test for pthread_cond_timedwait(), can this be
->    moved to runtest/sched? (there are other pthread_* tests). Not sure if
->    tests are relevant now.
->
-> * runtest/irq Obviously we would need more IRQ tests (IMHO none even in
->    kselftest)
->
-> I wonder if runtest/dma_thread_diotest. runtest/crashme,
-> runtest/power_management_tests and runtest/power_management_tests_exclusive
-> are still relevant or that much outdated, that it should be removed.
->
-> I think vmcp_m.sh (the only one in runtest/s390x_tests) should be removed.
->
-> Other should probably be kept separate.
->
-> runtest/staging is expected to be often 0.
->
-> Kind regards,
-> Petr
->
-> Petr Vorel (2):
->    runtest/ipc: Enable named pipes on non-blocking IO
->    runtest: Move ipc into syscalls
->
->   runtest/ipc      | 30 ------------------------------
->   runtest/syscalls |  9 +++++++++
->   2 files changed, 9 insertions(+), 30 deletions(-)
->   delete mode 100644 runtest/ipc
->
++1. As a separate effort we can replace with coccinelle
+tst_res(TFAIL or TPASS) followed by return by tst_brk(TFAIL or TPASS).
+
+> And since TBROK is supposed to exit the test immediatelly (i.e.
+> unrecoverable error) we are now properly doing so.
+
+> The case that main test pid called TBROK was working correctly before
+> this patch, since send the SIGKILL signal to he process group after we
+> waited for the main test pid. All that was missing is a code that sends
+> a signal to the main test pid in the case that TBROK was triggered by
+> one of it's children and now we properly kill all test processes in that
+> case as well.
+
++1
+
+Also thanks for doing tests.
+
+Generally LGTM.
+
+One thing I'm worried is the fact that some shell loader tests core dumped in CI:
+https://github.com/pevik/ltp/actions/runs/14242818586/job/39916477770
+e.g. these which are supposed to TBROK due broken metadata:
+shell_loader_invalid_block.sh, shell_loader_no_metadata.sh,
+shell_loader_wrong_metadata.sh:
+
+Segmentation fault (core dumped)
+
+I also wonder if tst_brk() related doc should be updated.
+
+Isn't there anything which should be updated in doc/old/C-Test-API.asciidoc ?
+This docs will stay with us for some time, the conversion to kerneldoc takes
+time, it'd be good to keep it updated (valuable texts will be migrated to
+kerneldoc).
+
+Maybe parts:
+1.8 Doing the test in the child process
+1.9 Fork() and Parent-child synchronization
+(both code examples and the description).
+
+very nit: please before merge fix typos in both code and commit message:
+exitting => exiting
+countes|countes => counters
+immediatelly => immediately
+filtesystem => filesystem
+
+NOTE: test_brk_pass could be added to lib/newlib_tests/runtest.sh. I would also
+prefer, if we changed tests to behave like testcases/lib/run_tests.sh, i.e.
+allow to run all tests and check exit code (intermediate step before we compare
+the test output).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
