@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CD3CC3600C
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 06:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743663530; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=NAyGIkfNCZvHifT7xHqxvXEpIo+4/wov341AGNtpa6U=;
- b=osO4aa04VyAob+z9SsVVmpLrA7nMg43h6a8TFyvHjEXZw6VpfkjKFuhxCNJ92+rEaSYkC
- oEPogwpE5o1eZYmzza9lqlo7ojzI/+SPmLhgKp4y5kRghOarp/f+XyihruIf8t7pyC3Ofjk
- NYVUz55h0aTRjsPi6+ZPXRWIyY8eCUI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B99C3600C
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 10:19:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EA8B3CAF0D
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 08:58:50 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 2AAFA3CB29A
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 12:19:37 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 387443CAD5E
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 08:58:27 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E1BE93CB251
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 12:19:20 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D039E10005B4
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 08:58:26 +0200 (CEST)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-43d0618746bso3180825e9.2
- for <ltp@lists.linux.it>; Wed, 02 Apr 2025 23:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743663506; x=1744268306; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=aYs4vzFo1xT3BTOMfn/Fi788a7GJA+1T8pRhYRN++AU=;
- b=eiynBIAreigGhWhPniLfksjlKZJzY0uoFZI+m78h1ywVStiFDPg8JtNv+PDQzigkNg
- XVWGTwWsr91CaQFj3ZZ1arGlJRejsjzqxABNgoBlOERH/NG6MLllj8LHpv1Zb9HrZ8vD
- XvjkKy7LBCv1HkTc8IabVoqAmFSpLQ0xkwn0ThX6IzZJWAKySUwCzY3AHbrwNx8BMJxC
- Ni8vz6NmLMK1bsrMBm0iANwl90R7KQgFPymN1QP8SfD8nIhpCSzCUHrgChi2QQ+7PvQi
- BQ8dW/NYlLou5Iu4m0sJsno8DKuclleYGBvdmk+E8YkboG0AWM+5KJY+TMVTT0aG1aEj
- QxJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743663506; x=1744268306;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=aYs4vzFo1xT3BTOMfn/Fi788a7GJA+1T8pRhYRN++AU=;
- b=KtR4XQXG1QMJUS8vjIX4Dk3/QC1PkQGybdZocvN/taDXQp1y4FD4rUrvzDDS1dPdDU
- xLSRRnr9AuocpoqZQugXmgQe4zneTjyNm1KvAvOxzltpPU/a3r7RSW7a3wLLsyygZxPn
- 3+O5bU+t1mBFkA4gb2lK8+rNa6Wbqr6Nc5Z4L7bfv9VMlgidy1ebADesOY+JvcmRuRk9
- rO+ei4EatHy3+flidp/nXymSkd7upl0iN96NJo7O8JTxTdovtd6MQ/mKFl5qo9c0O1ih
- tAEw6oSGWD0BPADVMpQSsXLf24CBduF1Hn+9fP08AG+KAULSAp18EOU2rmwA0sy3NHQE
- 6cog==
-X-Gm-Message-State: AOJu0YwfR+ugL1BpRZvEIOuZqv29xFvnKtc5thjWn7f40TlZ5SLfTMJt
- LOB/W0F0MHc6SJS79iOSdsShgagGD1nMlGd8hC67MiGzQgoJqhseBSQjoY0TPR9fuvojFHu0W/v
- /SxL/
-X-Gm-Gg: ASbGncsOfzBgHd9NNQsmSbAm6woX+hr68SDKVv+SdTS4A4R/2oJFr/3/5KIXfg1ZaX4
- EnWdj7s8+CYn0Ofid0MZZOqA2AiglblZe2dFVo7T+XIsoGz4n7zRTfZbhurlpxU3O+H1zUe3ZUZ
- 13L9QZeyEekkRKuGB2sWtPyq7xr+OAAI4neIEFq6s0TKYwjWeTkHP5a8tBs+a6tU78mDNouKHrV
- O7FWiko8gH88d2MXW/E56E7e0t8zh1wU+WhCnIvFMxZ6sgcj5oGr0o6YjxYW4tLovNubUTNimft
- YFZIe1R1lp/MQauD6yZB20QiHcNfSEwi/Q==
-X-Google-Smtp-Source: AGHT+IFZpTzdbFHkdWy22M+uKG9U9Ep4cz2cdvFJGwGHKWAjz9MgcBxZ+WzimwzuysVDZ/wVQDiSPw==
-X-Received: by 2002:a05:6000:2905:b0:391:4189:d28d with SMTP id
- ffacd0b85a97d-39c2f8f23e8mr1215835f8f.34.1743663506059; 
- Wed, 02 Apr 2025 23:58:26 -0700 (PDT)
-Received: from localhost ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-39c3020d98bsm915026f8f.76.2025.04.02.23.58.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 02 Apr 2025 23:58:25 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4F06D1400176
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 12:19:19 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E27761F385;
+ Thu,  3 Apr 2025 10:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743675559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xuQyKzG0H2f6MXDLS3kMJgSslzfue3Ww/w9d4mdRmgs=;
+ b=PiKcwYiUuCChvlmoz1tHk1qbyxO/Ho0zRw5lyTJRxRHOvGWtpFo/nCBk+sXApv7y6UNX8H
+ 2S2bDvRny16L2qWL13/yEgjIRccjj0R/C7xsZ8jGuwed2dBLpjcFrN7EkHeX9eAMaKD2fQ
+ jxWNzB3oucedpRVs5YCiqNP+TYZrq2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743675559;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xuQyKzG0H2f6MXDLS3kMJgSslzfue3Ww/w9d4mdRmgs=;
+ b=x9bH5wZkH8UOHpLrUSRgqVMhCQa6XUu1bn6yF1FCGZoMyXVtaJnKkRbQ1XJka5/4BvffDe
+ HlbQVIhL5A3IifCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1743675558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xuQyKzG0H2f6MXDLS3kMJgSslzfue3Ww/w9d4mdRmgs=;
+ b=Wsb4iA4TabV4SOe/vwmZH8eQGMysHedE+oSSwfA8347J1JQ3EpbW/Bnd11w0gt84naKkeM
+ mZ5keM6lbW53WSA3S5Pr7kwdQdtVnRyHM8HFUBA15kIjBCstJyAaEBiKlMzDNAT5ofElMX
+ igVtDKQmjYVleRx3b2RIGrwjz0ZPXfI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1743675558;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xuQyKzG0H2f6MXDLS3kMJgSslzfue3Ww/w9d4mdRmgs=;
+ b=RMv2+1R8ud7Uc1Sx76k5QOruGJCBZ9VYq101+w18yEgHLPh1wAbXhNYaKSMh6M6VQ8Y1vs
+ zUkG8ObAgEzKT4Ag==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B80A81392A;
+ Thu,  3 Apr 2025 10:19:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id pLX3K6Zg7mcUAgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 03 Apr 2025 10:19:18 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  3 Apr 2025 02:58:18 -0400
-Message-Id: <20250403065818.21722-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20250401075642.16656-1-wegao@suse.com>
-References: <20250401075642.16656-1-wegao@suse.com>
+Date: Thu,  3 Apr 2025 12:19:10 +0200
+Message-ID: <20250403101912.459507-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] fcntl40.c: Test fcntl using F_CREATED_QUERY
+Subject: [LTP] [RFC][PATCH 0/2] Merge runtest files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,123 +101,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+Hi,
 
-This is new test case for fcntl using new F_CREATED_QUERY operation.
-Based on a kernel selftest commit d0fe8920cbe4.
+besides runtest/ipc, there are other small runtest files.  I know we are
+slowly working towards removing runtest files, but until it happen we
+might want to optimize (=> merge) small runtest files into others.
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- include/lapi/fcntl.h                       |  8 ++++
- runtest/syscalls                           |  2 +
- testcases/kernel/syscalls/fcntl/.gitignore |  2 +
- testcases/kernel/syscalls/fcntl/fcntl40.c  | 46 ++++++++++++++++++++++
- 4 files changed, 58 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl40.c
+With this change we have in the runtest files (ignoring comments):
 
-diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
-index 761331798..7c0502488 100644
---- a/include/lapi/fcntl.h
-+++ b/include/lapi/fcntl.h
-@@ -154,6 +154,14 @@
- # define RENAME_WHITEOUT		(1 << 2)
- #endif
- 
-+#ifndef F_LINUX_SPECIFIC_BASE
-+#define F_LINUX_SPECIFIC_BASE 1024
-+#endif
-+
-+#ifndef F_CREATED_QUERY
-+#define F_CREATED_QUERY (F_LINUX_SPECIFIC_BASE + 4)
-+#endif
-+
- /* splice, vmsplice, tee */
- 
- #ifndef SPLICE_F_NONBLOCK
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5cd1ae656..5ba2315d1 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -364,6 +364,8 @@ fcntl38 fcntl38
- fcntl38_64 fcntl38_64
- fcntl39 fcntl39
- fcntl39_64 fcntl39_64
-+fcntl40 fcntl40
-+fcntl40_64 fcntl40_64
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/fcntl/.gitignore b/testcases/kernel/syscalls/fcntl/.gitignore
-index e60176973..e3486ee45 100644
---- a/testcases/kernel/syscalls/fcntl/.gitignore
-+++ b/testcases/kernel/syscalls/fcntl/.gitignore
-@@ -72,3 +72,5 @@
- /fcntl38_64
- /fcntl39
- /fcntl39_64
-+/fcntl40
-+/fcntl40_64
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl40.c b/testcases/kernel/syscalls/fcntl/fcntl40.c
-new file mode 100644
-index 000000000..e90525fef
---- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl40.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 SUSE Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Basic test for fcntl using F_CREATED_QUERY.
-+ * Verify if the fcntl() syscall is recognizing whether a file has been
-+ * created or not via O_CREAT when O_CLOEXEC is also used.
-+ *
-+ * Test is based on a kernel selftests commit d0fe8920cbe4.
-+ */
-+
-+#include "lapi/fcntl.h"
-+#include "tst_test.h"
-+
-+#define TEST_NAME "LTP_FCNTL_CREATED_QUERY_TEST"
-+
-+static void verify_fcntl(void)
-+{
-+	int fd;
-+
-+	fd = SAFE_OPEN("/dev/null", O_RDONLY | O_CLOEXEC);
-+
-+	/* We didn't create "/dev/null". */
-+	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-+	SAFE_CLOSE(fd);
-+
-+	fd = SAFE_OPEN(TEST_NAME, O_CREAT | O_RDONLY | O_CLOEXEC, 0600);
-+
-+	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 1);
-+	SAFE_CLOSE(fd);
-+
-+	fd = SAFE_OPEN(TEST_NAME, O_RDONLY | O_CLOEXEC);
-+
-+	/* We're opening it again, so no positive creation check. */
-+	TST_EXP_EQ_LI(fcntl(fd, F_CREATED_QUERY, 0), 0);
-+	SAFE_CLOSE(fd);
-+	SAFE_UNLINK(TEST_NAME);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_fcntl,
-+	.needs_tmpdir = 1,
-+	.min_kver = "6.12",
-+};
+$ for i in runtest/*; do echo "$(grep -v '#' $i | wc -l): $i"; done | sort -rn
+
+
+$ wc -l runtest/* | sort -nr # not taking into account the comments
+1823: runtest/syscalls
+392: runtest/controllers
+140: runtest/scsi_debug.part1
+140: runtest/ltp-aiodio.part1
+137: runtest/net.nfs
+...
+9: runtest/watchqueue
+9: runtest/tracing
+9: runtest/ima
+7: runtest/dma_thread_diotest
+7: runtest/cpuhotplug
+6: runtest/net.ipv6_lib
+6: runtest/input
+6: runtest/capability
+5: runtest/power_management_tests_exclusive
+5: runtest/power_management_tests
+5: runtest/kvm
+4: runtest/net.multicast
+3: runtest/uevent
+3: runtest/hyperthreading
+3: runtest/crashme
+3: runtest/can
+2: runtest/nptl
+1: runtest/s390x_tests
+1: runtest/irq
+1: runtest/fcntl-locktests
+0: runtest/staging
+
+I would suggest to:
+
+* move runtest/can to runtest/kernel_misc (better
+name would be kernel_drivers, but I don't want to do renames, even
+merging runtest files will disturb folks testing with LTP.
+
+* move runtest/fcntl-locktests to runtest/net.nfs.
+
+* runtest/nptl is NPTL test for pthread_cond_timedwait(), can this be
+  moved to runtest/sched? (there are other pthread_* tests). Not sure if
+  tests are relevant now.
+
+* runtest/irq Obviously we would need more IRQ tests (IMHO none even in
+  kselftest)
+
+I wonder if runtest/dma_thread_diotest. runtest/crashme,
+runtest/power_management_tests and runtest/power_management_tests_exclusive
+are still relevant or that much outdated, that it should be removed.
+
+I think vmcp_m.sh (the only one in runtest/s390x_tests) should be removed.
+
+Other should probably be kept separate.
+
+runtest/staging is expected to be often 0.
+
+Kind regards,
+Petr
+
+Petr Vorel (2):
+  runtest/ipc: Enable named pipes on non-blocking IO
+  runtest: Move ipc into syscalls
+
+ runtest/ipc      | 30 ------------------------------
+ runtest/syscalls |  9 +++++++++
+ 2 files changed, 9 insertions(+), 30 deletions(-)
+ delete mode 100644 runtest/ipc
+
 -- 
-2.35.3
+2.49.0
 
 
 -- 
