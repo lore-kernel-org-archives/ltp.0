@@ -4,65 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97030C3600C
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 20:32:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE600C3601B
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 21:28:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743715732; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : cc : content-type : content-transfer-encoding
+ : sender : from; bh=hb44s4C3JZhgrGHE9vq3ybu4+u1R7Vv86hn4AtNvmzQ=;
+ b=fRyTjnOsuoa33noNSmRWV+41sfs292IfjbkymDND4cqtqbGQ+V95wuIx5gLpXLQo//a5e
+ qCjEqZKvKtDyCMpFtpakN3J4BZVNPJNwuIBnhuQ9HiLQd7bPb5yYq7s1cMwv6PrY7ywpujZ
+ idP2JvhX2He8GSvVQ/PZEthbXoU1r8g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEFB53CB2CF
-	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 22:32:51 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DFF4F3CB2CE
+	for <ltp@archiver.kernel.org>; Thu,  3 Apr 2025 23:28:52 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 889E43CB2A9
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 22:32:34 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with UTF8SMTPS id DE4273CA1EA
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 23:28:31 +0200 (CEST)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com
+ [209.85.128.54])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F2C6A1400FA3
- for <ltp@lists.linux.it>; Thu,  3 Apr 2025 22:32:33 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AC0C92118C;
- Thu,  3 Apr 2025 20:32:32 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 518D51392A;
- Thu,  3 Apr 2025 20:32:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KmubD2Dw7meFPwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 03 Apr 2025 20:32:32 +0000
-Date: Thu, 3 Apr 2025 22:32:30 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20250403203230.GA510190@pevik>
+ by in-5.smtp.seeweb.it (Postfix) with UTF8SMTPS id CAFAA600746
+ for <ltp@lists.linux.it>; Thu,  3 Apr 2025 23:28:30 +0200 (CEST)
+Received: by mail-wm1-f54.google.com with SMTP id
+ 5b1f17b1804b1-43cef035a3bso9833775e9.1
+ for <ltp@lists.linux.it>; Thu, 03 Apr 2025 14:28:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1743715710; x=1744320510;
+ h=in-reply-to:references:subject:to:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=iUHjBDA245CmsFsasP09P1h7CpCC4kS+4LEVPebldeQ=;
+ b=abvF0Km9w+hoFkwhlT5AFgAAVm4QDR4JuaQ22tcWJGAYnKDZCwZ8/SvOo+WNV8PcvU
+ A09HtEIfBEblL60uhiWPbeJqtpzXGx0EoOejhDG9w3oOvDYWdkx8B1SKJ+6kzxUB+qvZ
+ ZdlZqJblS3upGmHJfvK+edwTEjM9Xz8SVesajTGEzIJC752JW5Vb6W0g2YReuUlMcQ/R
+ 14d6Pm2FTZmiG9WOZSrUYhjo8X9nAD2oAKx0WA3nZVT4GR6BYhsVU9p52juzzAGtYQEP
+ 23MYX+m4MzaVaaeBD7GPYPApNY46sFLHWjYslJA9LcOhTlsbr2CMJtipUmTgCYio7XJh
+ zV4A==
+X-Gm-Message-State: AOJu0Yx8m3OLkU3XWy1ufyvK7ZsaNKcQrMKYuY3VQmwcVjKFwhRI2B43
+ yGmRYom5n0PTasFq1rVBnAIDCxNkZ0O5v+3wgnMHzuYr3Sz/EWtAqhNIlJM4BI0=
+X-Gm-Gg: ASbGncsxYN+kyF9bnj+KyXwz2Wd3NkzKQEksjBPQ3VjQMWi16tgZbxrUhcArX6RWzD0
+ Y3dGrVdNZGIyzWyq4tNWOcN7UFNmF0orKZ6tsrtxHyYAHrEikHllZKSLsxhJao753c84v7QnBJi
+ v/TRhEWbrvTQ6Viu/yMRBDc5OKQ1xGU8rS4puUFClMiA4QHD5s0yY0dptppbwpZlSGKWQjB4OVq
+ XXaJ1i4wCHDjcK4HrKkIOz/MegB2XGpDxB8neyMdr4qJFIPA+yS5zaxlqSBrOmWVZ5f90Kqjfvu
+ sLg4vqYIRFBC7EGnlE+KOUm9cMhN9R/VPNXuIYTLmPHa
+X-Google-Smtp-Source: AGHT+IH+6EUMRhudNgVpluXgND16Rj60sMLfNJ9Nuay2cQrIKRb60JAXHxeN7qQRBXcEjSI2GWvJ5Q==
+X-Received: by 2002:a05:6000:430d:b0:390:e5c6:920 with SMTP id
+ ffacd0b85a97d-39cb3575c83mr735342f8f.3.1743715710208; 
+ Thu, 03 Apr 2025 14:28:30 -0700 (PDT)
+Received: from localhost ([179.228.213.210]) by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-af9bc31c00csm1686441a12.20.2025.04.03.14.28.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Apr 2025 14:28:29 -0700 (PDT)
+Mime-Version: 1.0
+Date: Thu, 03 Apr 2025 18:28:24 -0300
+Message-Id: <D8XBMNU7ROVE.LA0GJR3HGTSA@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, "Andrea Cervesato"
+ <andrea.cervesato@suse.com>
+X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
 References: <20250403-conversions-set_thread_area-v2-1-a177e5c2b28d@suse.com>
  <20250403135922.GA478597@pevik>
  <bf3c1a0c-e739-463f-8b19-6c3cc2f92027@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bf3c1a0c-e739-463f-8b19-6c3cc2f92027@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: AC0C92118C
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ <20250403203230.GA510190@pevik>
+In-Reply-To: <20250403203230.GA510190@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] syscalls/set_thread_area01: Refactor into new
  API
@@ -77,31 +88,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>,
- Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
+From: =?utf-8?b?UmljYXJkbyBCLiBNYXJsae+/ve+/vXJlIHZpYSBsdHA=?=
+ <ltp@lists.linux.it>
+Reply-To: "Ricardo B. Marlière" <rbm@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+On Thu Apr 3, 2025 at 5:32 PM -03, Petr Vorel wrote:
+> Hi Andrea,
+>
+>> Hi Petr,
+>
+> ...
+>> > Ah, the dependency [1] is at the end in b4 tag:
+>> > > prerequisite-message-id:<20250402-conversions-modify_ldt-v6-0-2e4b0e27870e@suse.com>
+>> b4 shazam command downloads the prerequisites commits inside the current
+>> branch, before applying any patch, so there's no need to download patches
+>> manually and to apply them before reviewing.
+>
+> Unfortunately most of the maintainers and reviewers don't use b4 (yet).
+> Most still use patches directly from ML or from patchwork/lore. We get by with
+> this, but it complicates things a bit.
 
-> Hi Petr,
+No worries, next time I have the need I'll provide a public git ref.
 
-...
-> > Ah, the dependency [1] is at the end in b4 tag:
-> > > prerequisite-message-id:<20250402-conversions-modify_ldt-v6-0-2e4b0e27870e@suse.com>
-> b4 shazam command downloads the prerequisites commits inside the current
-> branch, before applying any patch, so there's no need to download patches
-> manually and to apply them before reviewing.
+>
+> Kind regards,
+> Petr
 
-Unfortunately most of the maintainers and reviewers don't use b4 (yet).
-Most still use patches directly from ML or from patchwork/lore. We get by with
-this, but it complicates things a bit.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
