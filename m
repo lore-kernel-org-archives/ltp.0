@@ -4,94 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B02C36010
-	for <ltp@archiver.kernel.org>; Fri,  4 Apr 2025 15:47:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53C90C36010
+	for <ltp@archiver.kernel.org>; Fri,  4 Apr 2025 16:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1743781667; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=dEXMZC4GjG8AWUX8xmGjBjOgV6fgPjHd8o6gB1SxRp8=;
- b=a461H4ba2hAM9s7abBjml1m5T+kyWVDyRUzu1P7sWPb7Gv0poU/u61//C/gtyS/N8UjRE
- ZURLI/nDp0A0wi3QKUbUQttXhft/puPmeBvP/EggwjtyVUTjl1T6/iIhJ06O9wvU5wgjP4N
- 1y4mHLTQBWY8iLdTjI6agjr0OQyYjTc=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1743784021; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=+M8CX1Ml4lGzHKH6YNjLDT0gb+XCOz70rI8G8RGzAw8=;
+ b=qeBBI+7V/zgOUWp2Wspa4TOhiuf6yMYueZKl2hD5PthyEznvTyVl8ArNZABnWX+3auxJj
+ qxeYd67baanuVXdwKHQuidTNaZEChKSqnDtfPGfI22J2a6ncoB+mkGDZCn18ytC0dNPXDXP
+ iV5jubEsA+etaXphKlHLGi8x2b0PTzc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B452A3CB339
-	for <ltp@archiver.kernel.org>; Fri,  4 Apr 2025 17:47:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 886363CB338
+	for <ltp@archiver.kernel.org>; Fri,  4 Apr 2025 18:27:01 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E0EA83CB313
- for <ltp@lists.linux.it>; Fri,  4 Apr 2025 17:47:26 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id E184A3CB2E0
+ for <ltp@lists.linux.it>; Fri,  4 Apr 2025 18:26:39 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DE6EC200CE8
- for <ltp@lists.linux.it>; Fri,  4 Apr 2025 17:47:25 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-43cf0d787eeso23348445e9.3
- for <ltp@lists.linux.it>; Fri, 04 Apr 2025 08:47:25 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AC7536009B4
+ for <ltp@lists.linux.it>; Fri,  4 Apr 2025 18:26:38 +0200 (CEST)
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-43690d4605dso15341365e9.0
+ for <ltp@lists.linux.it>; Fri, 04 Apr 2025 09:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1743781645; x=1744386445; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ucl67JYp4k4neaE1t0331vQ3lwQ6T4q8XvdGHaU4nNQ=;
- b=C5cy4ThWOsZFELVfwTBX9RtTsDJRBSd/iiLBNM3vEoWu/TTsEtOHtiYq9hs5d6pYS1
- 1kCjYAW7+Ot8tCqBm0aPczEx96HLM3U5BWPdd6TMdPZq9j9SCWC0fh8VlfrCD/EgQLEL
- Gs2uKum6CpcfilwI/YIK8qMxwpKp01ciaIodwhOG4OF53EYC/fl8RTtnW1mCOvjpQMiO
- usZHalETts6ulnRKS5UqU2xkfzJOjkDrt2HzINnH1onbEb6xPIDeoekQM7NdaZLpM2oD
- O9UkmpTkg3/sAYY12ijTw4bqtvcrQMS+b1wLDLlfL2vxTSMtORbGDkev/yADX3ztsDB0
- 8nEw==
+ d=suse.com; s=google; t=1743783998; x=1744388798; darn=lists.linux.it;
+ h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+ :date:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=2A6NPDsok3JzkAgBd9JbEWayA9m6fb2lC4LvDq89xik=;
+ b=RiRr7DNHm71zU6ODMZ4o5UxxkEiV7hSeypldqCdhXM/HfvBMTaEG8CmA+fgyuW6LmN
+ FAfT3M0vZEV4nFLiffkAOKSckaqzknUVpMVwWJA4cOFkIaaJdstt6W7yaefhyWAu4Gk2
+ N8IcnYsx6ZLhV6x6j//lwDIM+M4e+fzxODo6pbrrMXQBtMtAWbDKtPMmZNMzP4QVNEf9
+ zmhntVzZdDhpvbW5KJcpTCVQBG+aTdN+g+AxBLsJE9N6FOoYtrx+eV7J5PpV4Y6s3aaR
+ Qrc13AOVSgS+Sgdh16/iWWEznnYbzNi+L4AuNChA3kY9lRdM/QI93kXYJxxCuQ2LmEFR
+ rFGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1743781645; x=1744386445;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ucl67JYp4k4neaE1t0331vQ3lwQ6T4q8XvdGHaU4nNQ=;
- b=Sfm5LP2E2GfK2Ttj2E5K/Hm6psc7vM7MRQfHxs2FXw3fvRJuRk2vwDas507v1nmqhx
- 35TMFivoZv1gJZL+Wjy9eRLr9ozjd0vyXAszNGXXvhgP2ShrNxLkNRwoLmUKy7/58gdL
- JqI0BZj+Qc3hnjTokWutrtoYcK/aBeCrIGAympR1uNkUywK6keBmZiTtshZhGeNN/qc1
- Q7tjaiT16AZeMpgWAr7YAEBOm3HQo3fNacWrEkqg5b/GJFH7zhmOSg5I6sUSyhzcXTwT
- +bqyiFNisfCdXmgNMno+SHemXxUZmw8ZmqbHm9SqpT6kEb37vcgRSTx1Wv+IkV6V/ISG
- CSoA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWB9OxBUQKSbcszCkzr7a/XCFAeDAqYXXpPdGmEvNXOvVdKga09Tj7nV02LnLhEB16uSLw=@lists.linux.it
-X-Gm-Message-State: AOJu0YzHGRRPFO6l1M7bpwuApkBuhNUw/X5WgcOmG+/eHCeoEVMgXbn2
- IEhixnlQvnAK8jiwQa/Spx2wrdhERBMsNa3P30IpznXGlkqVentR27udqj13IKEaRN2wlD0pque
- lYQA=
-X-Gm-Gg: ASbGncu+YAx9Qch89wo33vykQJHaK5ir3EWwg+EBq1cDChqs2dTqbU0J2MMGipVyrsE
- 342KyEdSnq2qMr6lNYUlaZbmaeRDoVDNBRNHkb6gMK3bTW8MRqmi+haIdRqmnxU8Jygfb5ejwcC
- 6lsT60OcHZzheBEQEAxmxHcWkbj460Dl9fYWw1xoqUEVjGkQvFnwMENtG6Qf8Q6oY/eOseaLmzU
- A7oj1ZOh29NXHS6EAudwGajKhIBlrVtbynRW7F0PA2tVKzukhdGKgwxZEhYt0hVVfu4qeyZk4UX
- Nbbz+8NA+L0jlRLFL2jh2gnJrr5/Un1zWt+mCC56+13WSEeMyD3AxOubIOpb1bVgcatyuuunxFq
- BY0W7T+A8hVMPMimQJIr7j3po2ng=
-X-Google-Smtp-Source: AGHT+IHryN0CEa/U7C64iu12pTZkI3rwQothLzwhNcLIrm+F9dgavyBlcMalBXZTcG74igMK4N3PQg==
-X-Received: by 2002:a05:6000:1a87:b0:398:fd9b:b935 with SMTP id
- ffacd0b85a97d-39d1475794amr3165221f8f.53.1743781644890; 
- Fri, 04 Apr 2025 08:47:24 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
- ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-39c30226f2bsm4691000f8f.96.2025.04.04.08.47.23
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 04 Apr 2025 08:47:24 -0700 (PDT)
-Message-ID: <38be099e-3f04-46f7-92ce-e41fa524c41c@suse.com>
-Date: Fri, 4 Apr 2025 17:47:23 +0200
+ d=1e100.net; s=20230601; t=1743783998; x=1744388798;
+ h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+ :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=2A6NPDsok3JzkAgBd9JbEWayA9m6fb2lC4LvDq89xik=;
+ b=cY/hO4jyswEOTYhqUDhtXq9mSqiGTZVr3SdK5ZnE3p26OVVL6p9O3CxNmW888d1qvZ
+ gIVKkcEBcVe3qgCQGgQn9SJrrRYsU9cmtOB2TuoAirNSgPb4OgM7ib14RD9kJqL63/+S
+ krG9jpckqyWW3ADz/0GHTleap04alc39kGNpepo0VH1Px3f52boILiU8FHwyNsYo3oaN
+ WnjSwmtdl4vgNOmHQutEkLWPPEJvBTfS2jDgE94XMvUIVHqJy2p22YYuWWh4mEBmUjw6
+ p1WXKk8XAhSaa+E1XgFuURHiVEMwawKRbHJVP6TNiy4QaTl9y5vR00z85RLHYMnf0FcR
+ eq2w==
+X-Gm-Message-State: AOJu0YzJ9/8qYjO2e3gsKFSwe9e7Sdrb0IEw49xxjL+HQmrqh3kNzrUm
+ m6LaCHUzKJomFL7kjrSjVKric+DwSpngfbLzYm/it0MoAkLkO16WR2ap3rRB1kt3GSf/EqragxT
+ U
+X-Gm-Gg: ASbGnctAmxGpzYJVkzYh8k3QQrRR5DMGtzc29uHcrdrosvQb++dK7H+LrOwXi0e/MOv
+ LFGCve8ghDTrJmpzkwTvK8OML9tdm/LicYMwdMqQTqhRXeHu46KCU1YQqDCXPwObGeLrvG0ZN+2
+ +3hOrtl7rJBJtboAI9Y4ytjJOepwZaHeHpMi1ViQ6QvzMruUz2FffcU3nYkzDokVHgTKjJu3Iq5
+ M2EcWGyXDeL8EOOxMwAAr1w9f9pKnHHykGGVwFsRc4ED5jLIDeftFdPLRDqmb0vNOrjuw6UAA42
+ hNsQUfVZEq/GF95NuSC+S6Lwj/esQuva+A==
+X-Google-Smtp-Source: AGHT+IE8oTj+0Dr0a7s1kaM5lcxbfoRw3G8dfBv9BeBlWGugrnmSetfHLizjH4p4Fcn9j9F4tq4C7A==
+X-Received: by 2002:a05:6000:2406:b0:38f:3a89:fdb5 with SMTP id
+ ffacd0b85a97d-39cb3575d97mr3613517f8f.11.1743783997650; 
+ Fri, 04 Apr 2025 09:26:37 -0700 (PDT)
+Received: from localhost ([179.228.213.210])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 41be03b00d2f7-af9bc3fd01esm3069356a12.57.2025.04.04.09.26.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 04 Apr 2025 09:26:37 -0700 (PDT)
+Date: Fri, 04 Apr 2025 13:26:31 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <20250404143423.16268-1-chrubis@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20250404143423.16268-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Message-Id: <20250404-conversions-set_thread_area-v4-1-de663fa7dd9b@suse.com>
+X-B4-Tracking: v=1; b=H4sIADYI8GcC/5WQ207EIBiEX6XhWpQCLbQxxvcwpuHwY0lsq8ASN
+ 5t9dylrdL3TG5IhzDcznFCE4CGisTmhtwDOf1Tx9HzTIK0iYB3UauZyhcy2ZgjRb2u8Wzbr3XF
+ 6tQmVh8UY4P3go08X98VqtmXxaWzkII1pubK8pU53tJW90Jw5sJ3hQIoQvZNk2FELxKheAHs7N
+ veU0I5wQvFVNP6JxrnHBFPgmgAVUhB4jIcItyX3Ae0DAmS/m0olXqSZ1VrR+5ovNvvFjpCmNAd
+ QdlLlxESogQAxlvPabvYxbeFYfyvTuvRPnExxi1UrBHSGairtd9HaM7N/oFhBWTcIwfpeA6NXq
+ PP5/AlEUPXz0QEAAA==
+X-Change-ID: 20250403-conversions-set_thread_area-07a90e0cd449
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=12358; i=rbm@suse.com;
+ h=from:subject:message-id; bh=/fQoL42tqGOob4lElqpHDZYkX7I0L5oSCsGmPIvHSIw=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBn8Ag6/6z1nYV7IsN7XCSK7qNNF7UPE4B+tTgwG
+ aTXfLzvldGJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZ/AIOgAKCRDJC4p8Y4ZY
+ ptYND/4iWXNNshzPGcugdhkBXd/DDr5Bxn76wzvz99jxhyxEoqQXLUDk0Sf/MKCX3PhZiqPwbGN
+ 81MHhYqA8LX1x+z0W1wb/zSyXuwlswUMKcspB7JUlGwlQIAK0H3TAoA/pvkZTnfk/qBi2PiR0JQ
+ AoLdbFATnOBdQYbN5OqJweCda+2MQak0il9pP1d3uxPT1kC5/vL+A2qGKMjvdacKO80ehNgM/wn
+ HR3LKQm/EI0nz8ERtoc12tzXi61dE68c3mGFubGPkXn+JqddJr6gzvtJi+xPqev/Z0JnhcYgGZ2
+ 0vAQ8G4t79b/XzzgJ1N2QDT3YhLMM4Yd/f6SWmHIjZWKAcpfR0hbNWanisCZ3eJDUycXc/Bc9n9
+ LWvlJbdWSDStjpK3Z1UvEzzDD26tXurgeeWau6PpOQULtjb+GnQDIsGs/XqTAwS0R32PuP8ICe9
+ b5xCPJ2qh96iAjw8KlE4gIFjlVtPFiUfxm4i0xUmgINBqBfEj3IJiYxLYyGkXsxL2nuuEnLoYTd
+ P8OVsm1rICi8u6MKNrqOXpc+abBNrMB5pRnJvjQBo1TDrLqQclKNxu//VQPxgM8VN9Pk1f80QGa
+ ocOg1ArgC8U01Xtj/EGKYnVgQI6dwaB+dTmOobTjue/aj0yuLUuuSNcQD2eQTqd3dEy68NVu19j
+ 5JI9Q+TbSHNgA+Q==
+X-Developer-Key: i=rbm@suse.com; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib/tst_test.c: Fix tst_brk() handling
+Subject: [LTP] [PATCH v4] syscalls/set_thread_area01: Refactor into new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,574 +116,224 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
+Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Cc: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-Thanks for this fix, it was really needed.
-
-Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-On 4/4/25 16:34, Cyril Hrubis wrote:
-> This makes the tst_brk() handling cleaner and saner as instead of
-> propagating the tst_brk() result in a return value an abort flag is
-> introduced into the shared memory.
->
-> Now:
->
-> - All the processes but the library one that reports the results exit
->    with 0
->
-> - tst_brk(TBROK, ...) increments result conters, sets the abort flag,
->    exit current process and makes sure all process group processes are
->    terminated
->
-> - all other tst_brk() variants will just increments the counters and
->    exits the current process (which is current iteration for
->    .all_filesysstems, .test_variants, etc.)
->
-> This makes the tst_brk() behavior well defined so we can now even call
-> tst_brk() with TFAIL and TPASS as well. And since TBROK is supposed to
-> exit the test immediately (i.e.  unrecoverable error) we are now
-> properly doing so.
->
-> The case that main test pid called TBROK was working correctly before
-> this patch, since send the SIGKILL signal to the process group after we
-> waited for the main test pid. All that was missing is a code that sends
-> a signal to the main test pid in the case that TBROK was triggered by
-> one of it's children and now we properly kill all test processes in that
-> case as well.
->
-> There is also special case where we call tst_brk() before the test
-> library has been initialized (mostly done by the C shell helpers) in
-> that case we have to exit with a proper return value, which is normally
-> done by the test library process.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
-> v2:
->   - Fix cases where tst_brk() was called before library was initialize
->     (fixes tst_run_shell segfaults)
->   - Fixes typos reported by Peter
->   - Renames tests to have descriptive file names
->   - Fix C-Test-API paragraphs that describe tst_brk() to match new
->     implementation
->
->   doc/old/C-Test-API.asciidoc          | 24 +++----
->   include/tst_test.h                   | 26 ++++----
->   lib/newlib_tests/.gitignore          |  8 ++-
->   lib/newlib_tests/test_brk_child.c    | 31 ++++++++++
->   lib/newlib_tests/test_brk_fail.c     | 25 ++++++++
->   lib/newlib_tests/test_brk_parent.c   | 28 +++++++++
->   lib/newlib_tests/test_brk_pass.c     | 25 ++++++++
->   lib/newlib_tests/test_brk_variant.c  | 19 ++++++
->   lib/newlib_tests/test_fail_variant.c | 20 ++++++
->   lib/tst_test.c                       | 93 +++++++++++++++++++---------
->   10 files changed, 245 insertions(+), 54 deletions(-)
->   create mode 100644 lib/newlib_tests/test_brk_child.c
->   create mode 100644 lib/newlib_tests/test_brk_fail.c
->   create mode 100644 lib/newlib_tests/test_brk_parent.c
->   create mode 100644 lib/newlib_tests/test_brk_pass.c
->   create mode 100644 lib/newlib_tests/test_brk_variant.c
->   create mode 100644 lib/newlib_tests/test_fail_variant.c
->
-> diff --git a/doc/old/C-Test-API.asciidoc b/doc/old/C-Test-API.asciidoc
-> index 3fe9cd1d9..7212f4e75 100644
-> --- a/doc/old/C-Test-API.asciidoc
-> +++ b/doc/old/C-Test-API.asciidoc
-> @@ -245,13 +245,13 @@ The 'ttype' can be combined bitwise with 'TERRNO' or 'TTERRNO' to print
->   void tst_brk(int ttype, char *arg_fmt, ...);
->   -------------------------------------------------------------------------------
->   
-> -Printf-like function to report error and exit the test, it can be used with ttype:
-> +Printf-like function to report result and exits current test. If test uses
-> +'.all_filesystems', '.test_variants' etc. the 'tst_brk()' exits current test
-> +iteration e.g. currently running filesystem test or a test variant unless
-> +'ttype' is set to 'TBROK'.
->   
-> -|============================================================
-> -| 'TBROK' | Something has failed in test preparation phase.
-> -| 'TCONF' | Test is not appropriate for current configuration
-> -            (syscall not implemented, unsupported arch, ...)
-> -|============================================================
-> +If 'ttype' is set to 'TBROK' all test processes are killed and the test exits
-> +immediatelly with an error.
->   
->   The 'ttype' can be combined bitwise with 'TERRNO' or 'TTERRNO' to print
->   'errno', 'TST_ERR' respectively.
-> @@ -647,15 +647,15 @@ IMPORTANT: You have to set the '.forks_child' flag in the test structure
->   Results reported by 'tst_res()' are propagated to the parent test process via
->   block of shared memory.
->   
-> -Calling 'tst_brk()' causes child process to exit with non-zero exit value.
-> -Which means that it's safe to use 'SAFE_*()' macros in the child processes as
-> -well.
-> +Calling 'tst_brk()' causes child process to set the test library abort flag and
-> +exits the test immediately. Which means that it's safe to use 'SAFE_*()' macros
-> +in the child processes as well.
->   
->   Children that outlive the 'test()' function execution are waited for in the
->   test library. Unclean child exit (killed by signal, non-zero exit value, etc.)
-> -will cause the main test process to exit with 'tst_brk()', which especially
-> -means that 'TBROK' propagated from a child process will cause the whole test
-> -to exit with 'TBROK'.
-> +will cause the main test process to exit with 'tst_brk()'. That means that all
-> +test child processes are supposed to exit with success unless they are
-> +explicitly waited for.
->   
->   If a test needs a child that segfaults or does anything else that cause it to
->   exit uncleanly all you need to do is to wait for such children from the
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index eb73cd593..d71474e2a 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -98,28 +98,32 @@ void tst_brk_(const char *file, const int lineno, int ttype,
->                 __attribute__ ((format (printf, 4, 5)));
->   
->   /**
-> - * tst_brk() - Reports a breakage and exits the test.
-> + * tst_brk() - Reports a breakage and exits the test or test process.
->    *
->    * @ttype: An enum tst_res_type.
->    * @arg_fmt: A printf-like format.
->    * @...: A printf-like parameters.
->    *
-> - * Reports either TBROK or TCONF and exits the test immediately. When called
-> - * all children in the same process group as the main test library process are
-> - * killed. This function, unless in a test cleanup, calls _exit() and does not
-> - * return.
-> + * Reports a single result and exits immediately. The call behaves differently
-> + * based on the ttype parameter. For all ttype results but TBROK the call exits
-> + * the current test process, i.e. increments test result counters and calls
-> + * exit(0).
-> + *
-> + * The TBROK ttype is special that apart from exiting the current test process
-> + * it also tells to the test library to exit immediately. When TBROK is
-> + * triggered by any of the test processes the whole process group is killed so
-> + * that there are no processes left after the library process exits. This also
-> + * means that any subsequent test iterations are not executed, e.g. if a test
-> + * runs for all filesystems and tst_brk() with TBROK is called, the test exits
-> + * and does not attempt to continue a test iteration for the next filesystem.
->    *
->    * When test is in cleanup() function TBROK is converted into TWARN by the test
->    * library and we attempt to carry on with a cleanup even when tst_brk() was
->    * called. This makes it possible to use SAFE_FOO() macros in the test cleanup
->    * without interrupting the cleanup process on a failure.
->    */
-> -#define tst_brk(ttype, arg_fmt, ...)						\
-> -	({									\
-> -		TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(!((ttype) &			\
-> -			(TBROK | TCONF | TFAIL)));				\
-> -		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
-> -	})
-> +#define tst_brk(ttype, arg_fmt, ...) \
-> +		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
->   
->   void tst_printf(const char *const fmt, ...)
->   		__attribute__((nonnull(1), format (printf, 1, 2)));
-> diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-> index 6d125f933..8acaec0b6 100644
-> --- a/lib/newlib_tests/.gitignore
-> +++ b/lib/newlib_tests/.gitignore
-> @@ -58,4 +58,10 @@ test_runtime01
->   test_runtime02
->   test_children_cleanup
->   tst_res_flags
-> -tst_safe_sscanf
-> \ No newline at end of file
-> +tst_safe_sscanf
-> +test_brk_child
-> +test_brk_fail
-> +test_brk_parent
-> +test_brk_pass
-> +test_brk_variant
-> +test_fail_variant
-> diff --git a/lib/newlib_tests/test_brk_child.c b/lib/newlib_tests/test_brk_child.c
-> new file mode 100644
-> index 000000000..68c50ed1e
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_brk_child.c
-> @@ -0,0 +1,31 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2025 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TFAIL, ...) exits only single test variant.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < 10; i++) {
-> +		if (!SAFE_FORK()) {
-> +			tst_res(TINFO, "Suspending child %i", i);
-> +			pause();
-> +		}
-> +	}
-> +
-> +	if (!SAFE_FORK())
-> +		tst_brk(TBROK, "Child triggers TBROK");
-> +
-> +	pause();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.forks_child = 1,
-> +};
-> diff --git a/lib/newlib_tests/test_brk_fail.c b/lib/newlib_tests/test_brk_fail.c
-> new file mode 100644
-> index 000000000..ee1e554a6
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_brk_fail.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TFAIL, ...) works properly.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	int pid = SAFE_FORK();
-> +
-> +	if (pid)
-> +		return;
-> +
-> +	tst_brk(TFAIL, "Test child exiting...");
-> +	tst_res(TWARN, "Test child stil alive!");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.forks_child = 1,
-> +};
-> diff --git a/lib/newlib_tests/test_brk_parent.c b/lib/newlib_tests/test_brk_parent.c
-> new file mode 100644
-> index 000000000..974e77829
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_brk_parent.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2025 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TFAIL, ...) exits only single test variant.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < 10; i++) {
-> +		if (!SAFE_FORK()) {
-> +			tst_res(TINFO, "Suspending child %i", i);
-> +			pause();
-> +		}
-> +	}
-> +
-> +	tst_brk(TBROK, "Parent triggers TBROK");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.forks_child = 1,
-> +};
-> diff --git a/lib/newlib_tests/test_brk_pass.c b/lib/newlib_tests/test_brk_pass.c
-> new file mode 100644
-> index 000000000..135270780
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_brk_pass.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TPASS, ...) works properly.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	int pid = SAFE_FORK();
-> +
-> +	if (pid)
-> +		return;
-> +
-> +	tst_brk(TPASS, "Test child exiting...");
-> +	tst_res(TWARN, "Test child stil alive!");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.forks_child = 1,
-> +};
-> diff --git a/lib/newlib_tests/test_brk_variant.c b/lib/newlib_tests/test_brk_variant.c
-> new file mode 100644
-> index 000000000..6f91a72aa
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_brk_variant.c
-> @@ -0,0 +1,19 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TBROK, ...) exits the test immediately.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	tst_brk(TBROK, "Exitting the test during the first variant");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.test_variants = 10,
-> +};
-> diff --git a/lib/newlib_tests/test_fail_variant.c b/lib/newlib_tests/test_fail_variant.c
-> new file mode 100644
-> index 000000000..27829c703
-> --- /dev/null
-> +++ b/lib/newlib_tests/test_fail_variant.c
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Test that tst_brk(TFAIL, ...) exits only single test variant.
-> + */
-> +#include "tst_test.h"
-> +
-> +static void do_test(void)
-> +{
-> +	tst_brk(TFAIL, "Failing a test variant");
-> +	tst_res(TWARN, "Shouldn't be reached");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.test_variants = 10,
-> +};
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 9a23cd4a0..8210912f6 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later
->   /*
-> - * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
-> + * Copyright (c) 2015-2025 Cyril Hrubis <chrubis@suse.cz>
->    * Copyright (c) Linux Test Project, 2016-2024
->    */
->   
-> @@ -71,6 +71,11 @@ struct results {
->   	int failed;
->   	int warnings;
->   	int broken;
-> +	/*
-> +	 * This is set by a call to tst_brk() with TBROK parameter and means
-> +	 * that the test should exit immediately.
-> +	 */
-> +	int abort_flag;
->   	unsigned int runtime;
->   	unsigned int overall_time;
->   };
-> @@ -381,6 +386,14 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
->   	       va_list va)
->   {
->   	print_result(file, lineno, ttype, fmt, va);
-> +
-> +	/*
-> +	 * If tst_brk() is called from some of the C helpers even before the
-> +	 * library was initialized, just exit.
-> +	 */
-> +	if (!lib_pid)
-> +		exit(TTYPE_RESULT(ttype));
-> +
->   	update_results(TTYPE_RESULT(ttype));
->   
->   	/*
-> @@ -392,10 +405,34 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
->   	if (tst_getpid() == main_pid)
->   		do_test_cleanup();
->   
-> +	/*
-> +	 * The test library process reports result statistics and exits.
-> +	 */
->   	if (getpid() == lib_pid)
->   		do_exit(TTYPE_RESULT(ttype));
->   
-> -	exit(TTYPE_RESULT(ttype));
-> +	/*
-> +	 * If we get here we are in a child process, either the main child
-> +	 * running the test or its children. If any of them called tst_brk()
-> +	 * with TBROK we need to exit the test. Otherwise we just exit the
-> +	 * current process.
-> +	 */
-> +	if (TTYPE_RESULT(ttype) == TBROK) {
-> +		if (results)
-> +			tst_atomic_inc(&results->abort_flag);
-> +
-> +		/*
-> +		 * If TBROK was called from one of the child processes we kill
-> +		 * the main test process. That in turn triggers the code that
-> +		 * kills leftover children once the main test process did exit.
-> +		 */
-> +		if (main_pid && tst_getpid() != main_pid) {
-> +			tst_res(TINFO, "Child process reported TBROK killing the test");
-> +			kill(main_pid, SIGKILL);
-> +		}
-> +	}
-> +
-> +	exit(0);
->   }
->   
->   void tst_res_(const char *file, const int lineno, int ttype,
-> @@ -432,8 +469,6 @@ void tst_printf(const char *const fmt, ...)
->   
->   static void check_child_status(pid_t pid, int status)
->   {
-> -	int ret;
-> -
->   	if (WIFSIGNALED(status)) {
->   		tst_brk(TBROK, "Child (%i) killed by signal %s", pid,
->   			tst_strsig(WTERMSIG(status)));
-> @@ -442,15 +477,8 @@ static void check_child_status(pid_t pid, int status)
->   	if (!(WIFEXITED(status)))
->   		tst_brk(TBROK, "Child (%i) exited abnormally", pid);
->   
-> -	ret = WEXITSTATUS(status);
-> -	switch (ret) {
-> -	case TPASS:
-> -	case TBROK:
-> -	case TCONF:
-> -	break;
-> -	default:
-> -		tst_brk(TBROK, "Invalid child (%i) exit value %i", pid, ret);
-> -	}
-> +	if (WEXITSTATUS(status))
-> +		tst_brk(TBROK, "Invalid child (%i) exit value %i", pid, WEXITSTATUS(status));
->   }
->   
->   void tst_reap_children(void)
-> @@ -912,6 +940,14 @@ static void print_failure_hints(void)
->   	show_failure_hints = 0;
->   }
->   
-> +/*
-> + * Prints results, cleans up after the test library and exits the test library
-> + * process. The ret parameter is used to pass the result flags in a case of a
-> + * failure before we managed to set up the shared memory where we store the
-> + * results. This allows us to use SAFE_MACROS() in the initialization of the
-> + * shared memory. The ret parameter is not used (passed 0) when called
-> + * explicitly from the rest of the library.
-> + */
->   static void do_exit(int ret)
->   {
->   	if (results) {
-> @@ -1557,6 +1593,7 @@ static void run_tests(void)
->   
->   		if (results_equal(&saved_results, results))
->   			tst_brk(TBROK, "Test haven't reported results!");
-> +
->   		return;
->   	}
->   
-> @@ -1651,6 +1688,7 @@ static volatile sig_atomic_t sigkill_retries;
->   static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
->   {
->   	WRITE_MSG("Test timeouted, sending SIGKILL!\n");
-> +
->   	kill(-test_pid, SIGKILL);
->   	alarm(5);
->   
-> @@ -1785,7 +1823,10 @@ static int fork_testrun(void)
->   		tst_res(TINFO, "Killed the leftover descendant processes");
->   
->   	if (WIFEXITED(status) && WEXITSTATUS(status))
-> -		return WEXITSTATUS(status);
-> +		tst_brk(TBROK, "Child returned with %i", WEXITSTATUS(status));
-> +
-> +	if (results->abort_flag)
-> +		return 0;
->   
->   	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
->   		tst_res(TINFO, "If you are running on slow machine, "
-> @@ -1868,15 +1909,10 @@ static int run_tcases_per_fs(void)
->   			continue;
->   
->   		found_valid_fs = true;
-> -		ret = run_tcase_on_fs(fs, filesystems[i]);
-> -
-> -		if (ret == TCONF)
-> -			continue;
-> +		run_tcase_on_fs(fs, filesystems[i]);
->   
-> -		if (ret == 0)
-> -			continue;
-> -
-> -		do_exit(ret);
-> +		if (tst_atomic_load(&results->abort_flag))
-> +			do_exit(0);
->   	}
->   
->   	if (!found_valid_fs)
-> @@ -1889,7 +1925,6 @@ unsigned int tst_variant;
->   
->   void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
->   {
-> -	int ret = 0;
->   	unsigned int test_variants = 1;
->   	struct utsname uval;
->   
-> @@ -1918,19 +1953,17 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
->   
->   	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
->   		if (tst_test->all_filesystems || count_fs_descs() > 1)
-> -			ret |= run_tcases_per_fs();
-> +			run_tcases_per_fs();
->   		else
-> -			ret |= fork_testrun();
-> +			fork_testrun();
->   
-> -		if (ret & ~(TCONF))
-> -			goto exit;
-> +		if (tst_atomic_load(&results->abort_flag))
-> +			do_exit(0);
->   	}
->   
-> -exit:
-> -	do_exit(ret);
-> +	do_exit(0);
->   }
->   
-> -
->   void tst_flush(void)
->   {
->   	int rval;
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClNpZ25lZC1vZmYtYnk6
+IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Ci0tLQpIZWxsbywKClRoaXMgcGF0
+Y2ggaXMgYXZhaWxhYmxlIGF0OgoKaHR0cHM6Ly9naXRodWIuY29tL3JibWFybGllcmUvbHRwL3Ry
+ZWUvY29udmVyc2lvbnMvc2V0X3RocmVhZF9hcmVhCgpJdCdzIGEgc2luZ2xlIHBhdGNoLCBvbiB0
+b3Agb2YgdGhpcyBwcmVyZXF1aXNpdGU6CgpodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAy
+NTA0MDItY29udmVyc2lvbnMtbW9kaWZ5X2xkdC12Ni0wLTJlNGIwZTI3ODcwZUBzdXNlLmNvbS9U
+LyN0CgpUaGFua3MsCi0JUmljYXJkby4KLS0tCkNoYW5nZXMgaW4gdjQ6Ci0gQWRkZWQgc2V0X3Ro
+cmVhZF9hcmVhMDIgdG8gcnVudGVzdC9zeXNjYWxscwotIEFkZGVkIG1pc3Npbmcgc3RhdGljIG1v
+ZGlmaWVycwotIEZpeGVkIGZvcm1hdHRpbmcgaXNzdWUgaW4gLmJ1ZnMKLSBSZW1vdmVkIHN0cnVj
+dCB0dmFyaWFudCBpbiBzZXRfdGhyZWFkX2FyZWEwMgotIFJlbmFtZWQgZW50cnkgLT4gdV9pbmZv
+IHRvIGZvbGxvdyBtYW5wYWdlIHN0YW5kYXJkCi0gQWRkZWQgZXhwZWN0ZWQgZXJybm9zIHRvIHNl
+dF90aHJlYWRfYXJlYTAyIGRlc2NyaXB0aW9uCi0gTGluayB0byB2MzogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvci8yMDI1MDQwMy1jb252ZXJzaW9ucy1zZXRfdGhyZWFkX2FyZWEtdjMtMS1kZjk3
+NzM2NmJlMzJAc3VzZS5jb20KCkNoYW5nZXMgaW4gdjM6Ci0gTW92ZWQgc3lzY2FsbCB3cmFwcGVy
+cyB0byBpbmNsdWRlL2xhcGkvbGR0LmgKLSBTcGxpdCB0aGUgdGVzdCBpbnRvIGEgbmV3IHNldF90
+aHJlYWRfYXJlYTAyLmMgZmlsZQotIFVzZWQgZ3VhcmRlZCBidWZmZXJzCi0gVXNlZCAuc3VwcG9y
+dGVkX2FyY2hzIGluc3RlYWQgb2YgI2lmZGVmIF9faTM4Nl9fCi0gVXNlZCAudGVzdF92YXJpYW50
+cyBhbmQgLnRjbnQrLnRlc3QgaW4gc2V0X3RocmVhZF9hcmVhMDIuYwotIFR3ZWFrZWQgdGVzdCBk
+ZWNyaXB0aW9ucwotIExpbmsgdG8gdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyNTA0
+MDMtY29udmVyc2lvbnMtc2V0X3RocmVhZF9hcmVhLXYyLTEtYTE3N2U1YzJiMjhkQHN1c2UuY29t
+CgpDaGFuZ2VzIGluIHYyOgotIFVzZWQgdHN0X3Rlc3QudGVzdF9hbGwgaW5zdGVhZCBvZiAudGVz
+dAotIFJlbW92ZWQgVkFMVUVfQU5EX1NUUklORyBtYWNybwotIEFkZGVkIGxvY2FsIHdyYXBwZXJz
+IHRvIHRoZSBzeXNjYWxscwotIEZpeGVkIHRoZSB0ZXN0IGRlc2NyaXB0aW9uCi0gQWRkZWQgYSBj
+b21tZW50IHF1b3RlIGZyb20gdGhlIHNldF90aHJlYWRfYXJlYSBtYW51YWwgdG8gYWRkIGNvbnRl
+eHQKLSBMaW5rIHRvIHYxOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNTAzMjctY29u
+dmVyc2lvbnMtbW9kaWZ5X2xkdC12Mi02LTI5MDdkNGQzZjZjMEBzdXNlLmNvbQotLS0KIGluY2x1
+ZGUvbGFwaS9sZHQuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwICsrCiBy
+dW50ZXN0L3N5c2NhbGxzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSAr
+CiAuLi4va2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS8uZ2l0aWdub3JlICAgICB8ICAg
+MyArLQogLi4uL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEuaCAgICAg
+fCAgMzEgLS0tLS0KIC4uLi9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVh
+MDEuYyAgIHwgMTM3ICsrKysrKystLS0tLS0tLS0tLS0tLQogLi4uL3N5c2NhbGxzL3NldF90aHJl
+YWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMi5jICAgfCAgNTcgKysrKysrKysrCiA2IGZpbGVzIGNo
+YW5nZWQsIDExMyBpbnNlcnRpb25zKCspLCAxMjYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9sYXBpL2xkdC5oIGIvaW5jbHVkZS9sYXBpL2xkdC5oCmluZGV4IDA2OGE1NzdjZjEx
+M2JhNDdhNDVkMjk5MjBjNmFkYjY4NTFmNGZjNTIuLjdjNjE5YzVjOWVkODczMWUxMjQ0OTkzNDZj
+ODgzMzNiMGIxMjY3YjMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGFwaS9sZHQuaAorKysgYi9pbmNs
+dWRlL2xhcGkvbGR0LmgKQEAgLTMzLDQgKzMzLDE0IEBAIHN0YXRpYyBpbmxpbmUgaW50IHNhZmVf
+bW9kaWZ5X2xkdChjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGluZW5vLCBpbnQgZnVuYywK
+ICNkZWZpbmUgU0FGRV9NT0RJRllfTERUKGZ1bmMsIHB0ciwgYnl0ZWNvdW50KSBcCiAJc2FmZV9t
+b2RpZnlfbGR0KF9fRklMRV9fLCBfX0xJTkVfXywgKGZ1bmMpLCAocHRyKSwgKGJ5dGVjb3VudCkp
+CiAKK3N0YXRpYyBpbmxpbmUgaW50IHNldF90aHJlYWRfYXJlYShjb25zdCBzdHJ1Y3QgdXNlcl9k
+ZXNjICp1X2luZm8pCit7CisJcmV0dXJuIHRzdF9zeXNjYWxsKF9fTlJfc2V0X3RocmVhZF9hcmVh
+LCB1X2luZm8pOworfQorCitzdGF0aWMgaW5saW5lIGludCBnZXRfdGhyZWFkX2FyZWEoY29uc3Qg
+c3RydWN0IHVzZXJfZGVzYyAqdV9pbmZvKQoreworCXJldHVybiB0c3Rfc3lzY2FsbChfX05SX2dl
+dF90aHJlYWRfYXJlYSwgdV9pbmZvKTsKK30KKwogI2VuZGlmIC8qIExBUElfTERUX0hfXyAqLwpk
+aWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qvc3lzY2FsbHMKaW5kZXggMDVi
+M2UwZDM3NmZhZTNhZGYxZWIyOWMyMmMwYjgzZmE0OWVlZTU2Zi4uMjM0YjE0ZjhiZDY2ZGIxMjgz
+YjA0NmMxMDM2ODJlOTM3YmZmMDA1MiAxMDA2NDQKLS0tIGEvcnVudGVzdC9zeXNjYWxscworKysg
+Yi9ydW50ZXN0L3N5c2NhbGxzCkBAIC0xMzQwLDYgKzEzNDAsNyBAQCBzZXRfbWVtcG9saWN5MDQg
+c2V0X21lbXBvbGljeTA0CiAKIHNldF9yb2J1c3RfbGlzdDAxIHNldF9yb2J1c3RfbGlzdDAxCiBz
+ZXRfdGhyZWFkX2FyZWEwMSBzZXRfdGhyZWFkX2FyZWEwMQorc2V0X3RocmVhZF9hcmVhMDIgc2V0
+X3RocmVhZF9hcmVhMDIKIHNldF90aWRfYWRkcmVzczAxIHNldF90aWRfYWRkcmVzczAxCiAKIHNl
+dGRvbWFpbm5hbWUwMQlzZXRkb21haW5uYW1lMDEKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhLy5naXRpZ25vcmUgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS8uZ2l0aWdub3JlCmluZGV4IDU0N2ViODZlM2M0ZWU4
+NmUyMzQzMDY3ODY3YzNiYjAyN2UwZWU4NWEuLmI4MGNlNzQxODEyYzMzZmQ5YWY0N2VjYmE4NTYx
+ZWYzODUyMTJlOTcgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3Ro
+cmVhZF9hcmVhLy5naXRpZ25vcmUKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRf
+dGhyZWFkX2FyZWEvLmdpdGlnbm9yZQpAQCAtMSArMSwyIEBACi0vc2V0X3RocmVhZF9hcmVhMDEK
+K3NldF90aHJlYWRfYXJlYTAxCitzZXRfdGhyZWFkX2FyZWEwMgpkaWZmIC0tZ2l0IGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhLmggYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEu
+aApkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMmJkMjQ2OWQ1NDllY2Y4YzVjNTg5YTBh
+OTQ4NWY4ODZkMDQzZjdlZC4uMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhy
+ZWFkX2FyZWEuaAorKysgL2Rldi9udWxsCkBAIC0xLDMxICswLDAgQEAKLSNpbmNsdWRlIDxzdGRp
+by5oPgotI2luY2x1ZGUgPGVycm5vLmg+Ci0KLS8qIEhhcm5lc3MgU3BlY2lmaWMgSW5jbHVkZSBG
+aWxlcy4gKi8KLSNpbmNsdWRlICJ0ZXN0LmgiCi0jaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgot
+I2luY2x1ZGUgImNvbmZpZy5oIgotCi0jaWYgZGVmaW5lZCBIQVZFX0FTTV9MRFRfSAotI2luY2x1
+ZGUgPGxpbnV4L3VuaXN0ZC5oPgotI2luY2x1ZGUgPGFzbS9sZHQuaD4KLQotI2lmIGRlZmluZWQg
+SEFWRV9TVFJVQ1RfVVNFUl9ERVNDCi10eXBlZGVmIHN0cnVjdCB1c2VyX2Rlc2MgdGhyZWFkX2Fy
+ZWFfczsKLSNlbGlmIGRlZmluZWQgSEFWRV9TVFJVQ1RfTU9ESUZZX0xEVF9MRFRfUwotdHlwZWRl
+ZiBzdHJ1Y3QgbW9kaWZ5X2xkdF9sZHRfcyB0aHJlYWRfYXJlYV9zOwotI2Vsc2UKLXR5cGVkZWYg
+c3RydWN0IHVzZXJfZGVzYyB7Ci0JdW5zaWduZWQgaW50IGVudHJ5X251bWJlcjsKLQl1bnNpZ25l
+ZCBsb25nIGludCBiYXNlX2FkZHI7Ci0JdW5zaWduZWQgaW50IGxpbWl0OwotCXVuc2lnbmVkIGlu
+dCBzZWdfMzJiaXQ6MTsKLQl1bnNpZ25lZCBpbnQgY29udGVudHM6MjsKLQl1bnNpZ25lZCBpbnQg
+cmVhZF9leGVjX29ubHk6MTsKLQl1bnNpZ25lZCBpbnQgbGltaXRfaW5fcGFnZXM6MTsKLQl1bnNp
+Z25lZCBpbnQgc2VnX25vdF9wcmVzZW50OjE7Ci0JdW5zaWduZWQgaW50IHVzZWFibGU6MTsKLQl1
+bnNpZ25lZCBpbnQgZW1wdHk6MjU7Ci19IHRocmVhZF9hcmVhX3M7Ci0jZW5kaWYgLyogSEFWRV9T
+VFJVQ1RfVVNFUl9ERVNDICovCi0jZW5kaWYgLyogSEFWRV9BU01fTERUX0ggKi8KZGlmZiAtLWdp
+dCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRf
+YXJlYTAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRf
+dGhyZWFkX2FyZWEwMS5jCmluZGV4IDMwNjI2ZDVlOTBlYmY4ZTIwNjI0YzM3MGNjNDQ3NGNiNTFh
+NmIxMDIuLjM4OTJkNDJhNTNhOGFkMjA2NWM0ZGEzMzdlODlkNTI2NWE1MjllZTUgMTAwNjQ0Ci0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRf
+YXJlYTAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEv
+c2V0X3RocmVhZF9hcmVhMDEuYwpAQCAtMSwxMTEgKzEsNjAgQEAKLS8qKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+CisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgorLyoKICAqIENv
+cHlyaWdodCAoYykgQ3JhY2tlcmphY2sgUHJvamVjdC4sIDIwMDcKICAqIENvcHlyaWdodCAoYykg
+TWFuYXMgS3VtYXIgTmF5YWsgPG1ha25heWFrQGluLmlibS5jb20+CiAgKiBDb3B5cmlnaHQgKGMp
+IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PiAyMDExCisgKiBDb3B5cmlnaHQgKGMpIDIw
+MjUgU1VTRSBMTEMgUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KKyAqLworCisv
+KlwKKyAqIEJhc2ljIHRlc3Qgb2YgaTM4NiB0aHJlYWQtbG9jYWwgc3RvcmFnZSBmb3Igc2V0X3Ro
+cmVhZF9hcmVhIGFuZAorICogZ2V0X3RocmVhZF9hcmVhIHN5c2NhbGxzLiBJdCB2ZXJpZmllcyBh
+IHNpbXBsZSB3cml0ZSBhbmQgcmVhZCBvZiBhbiBlbnRyeQorICogd29ya3MuCiAgKgotICogVGhp
+cyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQv
+b3IgbW9kaWZ5Ci0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
+YyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQotICogdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlv
+bjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IKLSAqIChhdCB5b3VyIG9wdGlv
+bikgYW55IGxhdGVyIHZlcnNpb24uCi0gKgotICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVk
+IGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCi0gKiBidXQgV0lUSE9VVCBBTlkg
+V0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKLSAqIE1FUkNI
+QU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQotICog
+dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCi0gKgotICog
+WW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGlj
+IExpY2Vuc2UKLSAqIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0
+aGUgRnJlZSBTb2Z0d2FyZQotICogRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0
+LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQQorICogW0FsZ29yaXRobV0K
+ICAqCi0gKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqLworICogLSBDYWxsIHNldF90aHJlYWRfYXJlYSB0byBhIHN0
+cnVjdCB1c2VyX2Rlc2MgcG9pbnRlciB3aXRoIGVudHJ5X251bWJlciA9IC0xLAorICogICB3aGlj
+aCB3aWxsIGJlIHNldCB0byBhIGZyZWUgZW50cnlfbnVtYmVyIHVwb24gZXhpdGluZy4KKyAqIC0g
+Q2FsbCBnZXRfdGhyZWFkX2FyZWEgdG8gcmVhZCB0aGUgbmV3IGVudHJ5LgorICogLSBVc2UgdGhl
+IG5ldyBlbnRyeV9udW1iZXIgaW4gYW5vdGhlciBwb2ludGVyIGFuZCBjYWxsIGdldF90aHJlYWRf
+YXJlYS4KKyAqIC0gTWFrZSBzdXJlIHRoZXkgaGF2ZSB0aGUgc2FtZSBkYXRhLgorICovCiAKLSNp
+bmNsdWRlICJzZXRfdGhyZWFkX2FyZWEuaCIKKyNpbmNsdWRlICJ0c3RfdGVzdC5oIgogCi1jaGFy
+ICpUQ0lEID0gInNldF90aHJlYWRfYXJlYV8wMSI7Ci1pbnQgVFNUX1RPVEFMID0gNjsKKyNpbmNs
+dWRlICJsYXBpL2xkdC5oIgogCi0jaWYgZGVmaW5lZChIQVZFX0FTTV9MRFRfSCkgJiYgZGVmaW5l
+ZChIQVZFX1NUUlVDVF9VU0VSX0RFU0MpCitzdGF0aWMgc3RydWN0IHVzZXJfZGVzYyAqdV9pbmZv
+MTsKK3N0YXRpYyBzdHJ1Y3QgdXNlcl9kZXNjICp1X2luZm8yOwogCi1zdGF0aWMgdm9pZCBjbGVh
+bnVwKHZvaWQpCitzdGF0aWMgdm9pZCBydW4odm9pZCkKIHsKKwlUU1RfRVhQX1BBU1NfU0lMRU5U
+KHNldF90aHJlYWRfYXJlYSh1X2luZm8xKSk7CisJVFNUX0VYUF9QQVNTX1NJTEVOVChnZXRfdGhy
+ZWFkX2FyZWEodV9pbmZvMSkpOworCisJdV9pbmZvMi0+ZW50cnlfbnVtYmVyID0gdV9pbmZvMS0+
+ZW50cnlfbnVtYmVyOworCVRTVF9FWFBfUEFTU19TSUxFTlQoZ2V0X3RocmVhZF9hcmVhKHVfaW5m
+bzIpKTsKKworCVRTVF9FWFBfUEFTUyhtZW1jbXAodV9pbmZvMSwgdV9pbmZvMiwgc2l6ZW9mKHN0
+cnVjdCB1c2VyX2Rlc2MpKSk7CiB9CiAKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiB7Ci0JVEVT
+VF9QQVVTRTsKKwkvKiBXaGVuIHNldF90aHJlYWRfYXJlYSgpIGlzIHBhc3NlZCBhbiBlbnRyeV9u
+dW1iZXIgb2YgLTEsIGl0ICBzZWFyY2hlcworCSAqIGZvciBhIGZyZWUgVExTIGVudHJ5LiBJZiBz
+ZXRfdGhyZWFkX2FyZWEoKSBmaW5kcyBhIGZyZWUgVExTIGVudHJ5LAorCSAqIHRoZSB2YWx1ZSBv
+ZiB1X2luZm8tPmVudHJ5X251bWJlciBpcyBzZXQgdXBvbiByZXR1cm4gdG8gc2hvdyB3aGljaAor
+CSAqIGVudHJ5IHdhcyBjaGFuZ2VkLgorCSAqLworCXVfaW5mbzEtPmVudHJ5X251bWJlciA9IC0x
+OwogfQogCi1zdHJ1Y3QgdGVzdCB7Ci0JaW50IHN5c2NhbGw7Ci0JY29uc3QgY2hhciAqY29uc3Qg
+c3lzY2FsbF9uYW1lOwotCXRocmVhZF9hcmVhX3MgKnVfaW5mbzsKLQlpbnQgZXhwX3JldDsKLQlp
+bnQgZXhwX2Vycm5vOwotfTsKLQotLyoKLSAqIFRoZSBzZXRfdGhyZWFkX2FyZWEgdXNlcyBhIGZy
+ZWUgZW50cnlfbnVtYmVyIGlmIGVudHJ5IG51bWJlciBpcyBzZXQgdG8gLTEKLSAqIGFuZCB1cG9u
+IHRoZSBzeXNjYWxsIGV4aXQgdGhlIGVudHJ5IG51bWJlciBpcyBzZXQgdG8gZW50cnkgd2hpY2gg
+d2FzIHVzZWQuCi0gKiBTbyB3aGVuIHdlIGNhbGwgZ2V0X3RocmVhZF9hcmVhIG9uIHVfaW5mbzEs
+IHRoZSBlbnRyeSBudW1iZXIgaXMgaW5pdGFsaXplZAotICogY29yZWN0bHkgYnkgdGhlIHByZXZp
+b3VzIHNldF90aHJlYWRfYXJlYS4KLSAqLwotc3RhdGljIHN0cnVjdCB1c2VyX2Rlc2MgdV9pbmZv
+MSA9IHsuZW50cnlfbnVtYmVyID0gLTEgfTsKLXN0YXRpYyBzdHJ1Y3QgdXNlcl9kZXNjIHVfaW5m
+bzIgPSB7LmVudHJ5X251bWJlciA9IC0yIH07Ci0KLSNkZWZpbmUgVkFMVUVfQU5EX1NUUklORyh2
+YWwpIHZhbCwgI3ZhbAotCi1zdGF0aWMgc3RydWN0IHRlc3QgdGVzdHNbXSA9IHsKLQl7VkFMVUVf
+QU5EX1NUUklORyhfX05SX3NldF90aHJlYWRfYXJlYSksICZ1X2luZm8xLCAwLCAwfSwKLQl7VkFM
+VUVfQU5EX1NUUklORyhfX05SX2dldF90aHJlYWRfYXJlYSksICZ1X2luZm8xLCAwLCAwfSwKLQl7
+VkFMVUVfQU5EX1NUUklORyhfX05SX3NldF90aHJlYWRfYXJlYSksICZ1X2luZm8yLCAtMSwgRUlO
+VkFMfSwKLQl7VkFMVUVfQU5EX1NUUklORyhfX05SX2dldF90aHJlYWRfYXJlYSksICZ1X2luZm8y
+LCAtMSwgRUlOVkFMfSwKLQl7VkFMVUVfQU5EX1NUUklORyhfX05SX3NldF90aHJlYWRfYXJlYSks
+ICh2b2lkICopLTksIC0xLCBFRkFVTFR9LAotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfZ2V0X3Ro
+cmVhZF9hcmVhKSwgKHZvaWQgKiktOSwgLTEsIEVGQVVMVH0sCitzdGF0aWMgc3RydWN0IHRzdF90
+ZXN0IHRlc3QgPSB7CisJLnNldHVwID0gc2V0dXAsCisJLnRlc3RfYWxsID0gcnVuLAorCS5zdXBw
+b3J0ZWRfYXJjaHMgPSAoY29uc3QgY2hhciAqY29uc3RbXSl7ICJ4ODYiLCBOVUxMIH0sCisJLmJ1
+ZnMgPSAoc3RydWN0IHRzdF9idWZmZXJzW10pIHsKKwkJCXsgJnVfaW5mbzEsIC5zaXplID0gc2l6
+ZW9mKHN0cnVjdCB1c2VyX2Rlc2MpIH0sCisJCQl7ICZ1X2luZm8yLCAuc2l6ZSA9IHNpemVvZihz
+dHJ1Y3QgdXNlcl9kZXNjKSB9LAorCQkJe30sCisJCX0sCiB9OwotCi1pbnQgbWFpbihpbnQgYXJn
+YywgY2hhciAqYXJndltdKQotewotCWludCBsYzsKLQl1bnNpZ25lZCBpOwotCi0JdHN0X3BhcnNl
+X29wdHMoYXJnYywgYXJndiwgTlVMTCwgTlVMTCk7Ci0KLQlzZXR1cCgpOwotCi0JZm9yIChsYyA9
+IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKLQkJZm9yIChpID0gMDsgaSA8IHNpemVvZih0
+ZXN0cykgLyBzaXplb2Yoc3RydWN0IHRlc3QpOyBpKyspIHsKLQkJCVRFU1QodHN0X3N5c2NhbGwo
+dGVzdHNbaV0uc3lzY2FsbCwgdGVzdHNbaV0udV9pbmZvKSk7Ci0KLQkJCWlmIChURVNUX1JFVFVS
+TiAhPSB0ZXN0c1tpXS5leHBfcmV0KSB7Ci0JCQkJdHN0X3Jlc20oVEZBSUwsICIlcyByZXR1cm5l
+ZCAlbGkgZXhwZWN0ZWQgJWkiLAotCQkJCQkgdGVzdHNbaV0uc3lzY2FsbF9uYW1lLAotCQkJCQkg
+VEVTVF9SRVRVUk4sIHRlc3RzW2ldLmV4cF9yZXQpOwotCQkJCWNvbnRpbnVlOwotCQkJfQotCi0J
+CQlpZiAoVEVTVF9FUlJOTyAhPSB0ZXN0c1tpXS5leHBfZXJybm8pIHsKLQkJCQl0c3RfcmVzbShU
+RkFJTCwKLQkJCQkJICIlcyBmYWlsZWQgd2l0aCAlaSAoJXMpIGV4cGVjdGVkICVpICglcykiLAot
+CQkJCQkgdGVzdHNbaV0uc3lzY2FsbF9uYW1lLCBURVNUX0VSUk5PLAotCQkJCQkgc3RyZXJyb3Io
+VEVTVF9FUlJOTyksCi0JCQkJCSB0ZXN0c1tpXS5leHBfZXJybm8sCi0JCQkJCSBzdHJlcnJvcih0
+ZXN0c1tpXS5leHBfZXJybm8pKTsKLQkJCQljb250aW51ZTsKLQkJCX0KLQotCQkJdHN0X3Jlc20o
+VFBBU1MsICIlcyByZXR1cm5lZCAlbGkgZXJybm8gJWkgKCVzKSIsCi0JCQkJIHRlc3RzW2ldLnN5
+c2NhbGxfbmFtZSwgVEVTVF9SRVRVUk4sCi0JCQkJIFRFU1RfRVJSTk8sIHN0cmVycm9yKFRFU1Rf
+RVJSTk8pKTsKLQkJfQotCX0KLQotCWNsZWFudXAoKTsKLQl0c3RfZXhpdCgpOwotfQotI2Vsc2UK
+LWludCBtYWluKHZvaWQpCi17Ci0JdHN0X2Jya20oVENPTkYsIE5VTEwsCi0JCSAic2V0X3RocmVh
+ZF9hcmVhIGlzbid0IGF2YWlsYWJsZSBmb3IgdGhpcyBhcmNoaXRlY3R1cmUiKTsKLX0KLSNlbmRp
+ZgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEv
+c2V0X3RocmVhZF9hcmVhMDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVh
+ZF9hcmVhL3NldF90aHJlYWRfYXJlYTAyLmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMC4uZjE5OTc5NzRlNjJhOWRiNmM0
+YTk4NGYyZGJlMjcyNWRjMWJmMTdkZgotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAyLmMKQEAgLTAsMCAr
+MSw1NyBAQAorLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKKy8q
+CisgKiBDb3B5cmlnaHQgKGMpIENyYWNrZXJqYWNrIFByb2plY3QuLCAyMDA3CisgKiBDb3B5cmln
+aHQgKGMpIE1hbmFzIEt1bWFyIE5heWFrIDxtYWtuYXlha0Bpbi5pYm0uY29tPgorICogQ29weXJp
+Z2h0IChjKSBDeXJpbCBIcnViaXMgPGNocnViaXNAc3VzZS5jej4gMjAxMQorICogQ29weXJpZ2h0
+IChjKSAyMDI1IFNVU0UgTExDIFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Cisg
+Ki8KKworLypcCisgKiBUZXN0cyBzZXRfdGhyZWFkX2FyZWEgYW5kIGdldF90aHJlYWRfYXJlYSBz
+eXNjYWxscyBmb3IgdGhlaXIgZXhwZWN0ZWQgZXJyb3JzOgorICoKKyAqIC0gRUlOVkFMIHVfaW5m
+by0+ZW50cnlfbnVtYmVyIGlzIG91dCBvZiBib3VuZHMuCisgKiAtIEVGQVVMVCB1X2luZm8gaXMg
+YW4gaW52YWxpZCBwb2ludGVyLgorICovCisKKyNpbmNsdWRlICJ0c3RfdGVzdC5oIgorCisjaW5j
+bHVkZSAibGFwaS9sZHQuaCIKKworc3RhdGljIHN0cnVjdCB1c2VyX2Rlc2MgKnVfaW5mbzsKKwor
+c3RhdGljIHN0cnVjdCB0Y2FzZSB7CisJc3RydWN0IHVzZXJfZGVzYyAqdV9pbmZvOworCWludCBl
+eHBfZXJybm87Cit9IHRjYXNlc1tdID0geworCXsgTlVMTCwgRUlOVkFMIH0sCisJeyAodm9pZCAq
+KS05LCBFRkFVTFQgfSwKK307CisKK3N0YXRpYyB2b2lkIHJ1bih1bnNpZ25lZCBpbnQgaSkKK3sK
+KwlzdHJ1Y3QgdGNhc2UgdGMgPSB0Y2FzZXNbaV07CisKKwlpZiAodHN0X3ZhcmlhbnQpCisJCVRT
+VF9FWFBfRkFJTChnZXRfdGhyZWFkX2FyZWEodGMudV9pbmZvKSwgdGMuZXhwX2Vycm5vKTsKKwll
+bHNlCisJCVRTVF9FWFBfRkFJTChzZXRfdGhyZWFkX2FyZWEodGMudV9pbmZvKSwgdGMuZXhwX2Vy
+cm5vKTsKK30KKworc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKK3sKKwkvKiBUaGlzIG1ha2VzICpl
+bnRyeSBpbnZhbGlkICovCisJdV9pbmZvLT5lbnRyeV9udW1iZXIgPSAtMjsKKwl0Y2FzZXNbMF0u
+dV9pbmZvID0gdV9pbmZvOworfQorCitzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7CisJ
+LnNldHVwID0gc2V0dXAsCisJLnRjbnQgPSBBUlJBWV9TSVpFKHRjYXNlcyksCisJLnRlc3QgPSBy
+dW4sCisJLnRlc3RfdmFyaWFudHMgPSAyLAorCS5zdXBwb3J0ZWRfYXJjaHMgPSAoY29uc3QgY2hh
+ciAqY29uc3RbXSl7ICJ4ODYiLCBOVUxMIH0sCisJLmJ1ZnMgPSAoc3RydWN0IHRzdF9idWZmZXJz
+W10pIHsKKwkJCXsgJnVfaW5mbywgLnNpemUgPSBzaXplb2Yoc3RydWN0IHVzZXJfZGVzYykgfSwK
+KwkJCXt9LAorCQl9LAorfTsKCi0tLQpiYXNlLWNvbW1pdDogODk4Y2MxNGFkNDEyZmI1MjE4Njdi
+NDNmZWQ1YzRlMDY3Yjc2ZjgwOQpjaGFuZ2UtaWQ6IDIwMjUwNDAzLWNvbnZlcnNpb25zLXNldF90
+aHJlYWRfYXJlYS0wN2E5MGUwY2Q0NDkKcHJlcmVxdWlzaXRlLW1lc3NhZ2UtaWQ6IDwyMDI1MDQw
+Mi1jb252ZXJzaW9ucy1tb2RpZnlfbGR0LXY2LTAtMmU0YjBlMjc4NzBlQHN1c2UuY29tPgpwcmVy
+ZXF1aXNpdGUtcGF0Y2gtaWQ6IDQ5MGEzZTZiYzQwMDRkYjUyMzQyMjRiNmZkNmQ0YmY1MDMwYjIx
+OWQKcHJlcmVxdWlzaXRlLXBhdGNoLWlkOiA5NjJiYjgxNTQ0NGViMmRlOTc1NmRkMjY1OWUwOTc1
+NjdiNmQ2ZmU4CnByZXJlcXVpc2l0ZS1wYXRjaC1pZDogYTgzNTdmYjg3MGE4ZDcyNzhlMjA2YjRm
+YzY1ZjFkOTQ1MGZlZTgwMgoKQmVzdCByZWdhcmRzLAotLSAKUmljYXJkbyBCLiBNYXJsacOocmUg
+PHJibUBzdXNlLmNvbT4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGlu
+dXguaXQvbGlzdGluZm8vbHRwCg==
