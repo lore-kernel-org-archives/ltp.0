@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24629C369A3
-	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 14:25:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D300EC36010
+	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 14:25:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E451A3CB1E9
-	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 16:25:13 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 59E073CB1CB
+	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 16:25:38 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D8203CB16B
- for <ltp@lists.linux.it>; Mon,  7 Apr 2025 16:24:06 +0200 (CEST)
-Authentication-Results: in-5.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 88B563CB2CC
+ for <ltp@lists.linux.it>; Mon,  7 Apr 2025 16:24:10 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=mdoucha@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7AFCD600857
- for <ltp@lists.linux.it>; Mon,  7 Apr 2025 16:24:04 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 86FD16003AC
+ for <ltp@lists.linux.it>; Mon,  7 Apr 2025 16:24:08 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B77252115A
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8E18A1F38D
  for <ltp@lists.linux.it>; Mon,  7 Apr 2025 14:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1744035840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TD5BmEl0t6f0syyNFIFel+Kl/L7+ggb0ADcnjcUPrsg=;
- b=H0cwzwcQusjnljN3TJ0siruetcA8RA3HfQhcUXRjqYdEIHqFF8QzE7Ck/FdR0vWvWITeCu
- LlMo0uVdmJjFQUf/tU3ntw1+GH3Z1BnmEu//oyygjiHAkaBorQJgQ7HSiBRAK7ZhCqDTsM
- 52rNf4ZcKSRFyRrVAcYfVQ+C036RxBA=
+ bh=5TAWq4d5zvlatDWEK96+zQhnR6c98isfbXENiGQNmrg=;
+ b=rkuXljSoUKYXh/QaYd3ClpGGMh2zBJfcbbhHBdU5P3ACsP8+y1hi6fR1oP5iuwIUDFGJWG
+ ul3Ml+rWHj2J8R/RzEP+158l5FsqDCm0ddVzmkFUMrGoWb0f77QDuGx6U3v6/hxWfYCPth
+ dQfJ/O51H0ROFHb7ECzWHx/ND//BVxY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1744035840;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TD5BmEl0t6f0syyNFIFel+Kl/L7+ggb0ADcnjcUPrsg=;
- b=A+JdZYEXhzZZx0yEqGI56mAkLbCUpuK5XO27YDDtgSO2lyHYuctiY2yfXFH7j0OpDXy4jF
- MvLvMxTlXVLeHzDw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=rzPU0uOI;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=vdZbraF3
+ bh=5TAWq4d5zvlatDWEK96+zQhnR6c98isfbXENiGQNmrg=;
+ b=RKtx9KNdz8IQbm9jtyWZAzPYTGknFfoSNpkl5Tolm3MYNLnrVGOlnrSS+9pLrxolrpXHNJ
+ w7t2opdeV+dZqlBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2mPWNR3R;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IV0RzkHZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1744035839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TD5BmEl0t6f0syyNFIFel+Kl/L7+ggb0ADcnjcUPrsg=;
- b=rzPU0uOIQNdzZVMe3vO6Ll7myRKOZ145HcLUxyffI3q0RxR+nOeZvVkg/40VDLlt0zLQll
- ceLJeumOkVWjxjytnYBpbqXE6EAoftnDAfI9VTaA+j8wfMTYrtg4g6Ma6jPVyyJloAupBV
- rAGNNJhxr9g1SedTmyP8UQLwVS3svBY=
+ bh=5TAWq4d5zvlatDWEK96+zQhnR6c98isfbXENiGQNmrg=;
+ b=2mPWNR3RYS9LIGWb2k6TYaq8cQparcRGsA4NxszJuei7c7NHA9CvPXtDxAjozxGcqbRQtI
+ za+ybGhUWXl1IITtbPnxmyKnxVy8WpGen0HdgSEnGB53S1dHjfmN3gJl1hA+pbH/KdDOjY
+ elwmqtNHPh/en5Vs2IkhOrkc1K7jq9Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1744035839;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TD5BmEl0t6f0syyNFIFel+Kl/L7+ggb0ADcnjcUPrsg=;
- b=vdZbraF32UOI5AtBBX7znEgjoa2svtjANu3j4QFVbCv5DwdHJfyrLRXDOh+L4+RlOAOnN8
- KSdB8TSnB4JFhKCQ==
+ bh=5TAWq4d5zvlatDWEK96+zQhnR6c98isfbXENiGQNmrg=;
+ b=IV0RzkHZVFb+UWjlHWq1DB/KYV32+OoGPkMWZ93ptFXTQKaC2hYICGSpi3IL8RWbi3Ouz2
+ pYH1x+h/O/EMBoCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C83F13ACB
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A2B313AB8
  for <ltp@lists.linux.it>; Mon,  7 Apr 2025 14:23:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WKv+Jf/f82e5KAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iICiHf/f82e5KAAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Mon, 07 Apr 2025 14:23:59 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  7 Apr 2025 16:23:47 +0200
-Message-ID: <20250407142351.25900-4-mdoucha@suse.cz>
+Date: Mon,  7 Apr 2025 16:23:45 +0200
+Message-ID: <20250407142351.25900-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250407142351.25900-1-mdoucha@suse.cz>
 References: <20250407142351.25900-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: B77252115A
+X-Rspamd-Queue-Id: 8E18A1F38D
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
@@ -114,9 +114,9 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/5] KVM: Simplify reading VMX control field masks
+Subject: [LTP] [PATCH 1/5] kvm_vmx01: Fix 32bit compiler warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,141 +133,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some VMX control fields have two different MSRs holding supported bit
-masks. Add a helper function to read the correct MSR.
+Fix printf formatting warnings due to type mismatch during 32bit
+compilation.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/kvm/include/kvm_x86_vmx.h | 10 +++++
- testcases/kernel/kvm/kvm_vmx01.c           |  7 +---
- testcases/kernel/kvm/lib_x86.c             | 48 +++++++++++++++++-----
- 3 files changed, 49 insertions(+), 16 deletions(-)
+ testcases/kernel/kvm/kvm_vmx01.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/kvm/include/kvm_x86_vmx.h b/testcases/kernel/kvm/include/kvm_x86_vmx.h
-index 180a114e7..92e3c683e 100644
---- a/testcases/kernel/kvm/include/kvm_x86_vmx.h
-+++ b/testcases/kernel/kvm/include/kvm_x86_vmx.h
-@@ -28,6 +28,15 @@
- #define MSR_IA32_VMX_EXECCTL_MASK2 0x48e
- #define MSR_IA32_VMX_EXITCTL_MASK2 0x48f
- #define MSR_IA32_VMX_ENTRYCTL_MASK2 0x490
-+#define MSR_IA32_VMX_EXECCTL3_MASK 0x492
-+
-+#define VMX_CTLMASK_PINX 0
-+#define VMX_CTLMASK_EXECCTL 1
-+#define VMX_CTLMASK_EXECCTL2 2
-+#define VMX_CTLMASK_EXECCTL3 3
-+#define VMX_CTLMASK_EXITCTL 4
-+#define VMX_CTLMASK_ENTRYCTL 5
-+#define VMX_CTLMASK_MAX 6
- 
- #define IA32FC_LOCK (1 << 0)
- #define IA32FC_VMXON_SMX (1 << 1)
-@@ -174,6 +183,7 @@ struct kvm_vmcs *kvm_alloc_vmcs(void);
- void kvm_vmcs_copy_gdt_descriptor(unsigned int gdt_id,
- 	unsigned long vmcs_selector, unsigned long vmcs_flags,
- 	unsigned long vmcs_limit, unsigned long vmcs_baseaddr);
-+uint64_t kvm_vmx_read_vmctl_mask(unsigned int ctl_id);
- void kvm_init_vmx_vcpu(struct kvm_vmx_vcpu *cpu, uint16_t ss, void *rsp,
- 	int (*guest_main)(void));
- struct kvm_vmx_vcpu *kvm_create_vmx_vcpu(int (*guest_main)(void),
 diff --git a/testcases/kernel/kvm/kvm_vmx01.c b/testcases/kernel/kvm/kvm_vmx01.c
-index 31ad75137..5bffbe946 100644
+index c413b4148..31ad75137 100644
 --- a/testcases/kernel/kvm/kvm_vmx01.c
 +++ b/testcases/kernel/kvm/kvm_vmx01.c
-@@ -152,10 +152,7 @@ void main(void)
- 	kvm_set_vmx_state(1);
- 
- 	/* Check secondary VMCS execctl support */
--	if (kvm_rdmsr(MSR_IA32_VMX_BASIC) & IA32_VMXBASIC_USELESS_CTL_MASKS)
--		val = kvm_rdmsr(MSR_IA32_VMX_EXECCTL_MASK2);
--	else
--		val = kvm_rdmsr(MSR_IA32_VMX_EXECCTL_MASK);
-+	val = kvm_vmx_read_vmctl_mask(VMX_CTLMASK_EXECCTL);
- 
- 	if (!((val >> 32) & VMX_EXECCTL_ENABLE_CTL2))
- 		tst_brk(TCONF, "CPU does not support shadow VMCS");
-@@ -169,7 +166,7 @@ void main(void)
- 	val = kvm_vmx_vmread(VMX_VMCS_VMEXEC_CTL);
- 	val |= VMX_EXECCTL_ENABLE_CTL2;
- 	kvm_vmx_vmwrite(VMX_VMCS_VMEXEC_CTL, val);
--	val = kvm_rdmsr(MSR_IA32_VMX_EXECCTL2_MASK);
-+	val = kvm_vmx_read_vmctl_mask(VMX_CTLMASK_EXECCTL2);
- 
- 	if (!((val >> 32) & VMX_EXECCTL2_SHADOW_VMCS))
- 		tst_brk(TCONF, "CPU does not support shadow VMCS");
-diff --git a/testcases/kernel/kvm/lib_x86.c b/testcases/kernel/kvm/lib_x86.c
-index e6acc0797..c3363e033 100644
---- a/testcases/kernel/kvm/lib_x86.c
-+++ b/testcases/kernel/kvm/lib_x86.c
-@@ -119,6 +119,24 @@ static const char *vmx_error_description[VMX_VMINST_ERR_COUNT] = {
- 	"Invalid operand to INVEPT/INVVPID"
+@@ -25,7 +25,7 @@
+ struct vmcs_field_table {
+ 	unsigned long field_id;
+ 	const char *name;
+-	uint64_t value;
++	unsigned long value;
  };
  
-+static const unsigned int vmx_ctl_masks_old[VMX_CTLMASK_MAX] = {
-+	MSR_IA32_VMX_PINX_MASK,
-+	MSR_IA32_VMX_EXECCTL_MASK,
-+	MSR_IA32_VMX_EXECCTL2_MASK,
-+	MSR_IA32_VMX_EXECCTL3_MASK,
-+	MSR_IA32_VMX_EXITCTL_MASK,
-+	MSR_IA32_VMX_ENTRYCTL_MASK
-+};
-+
-+static const unsigned int vmx_ctl_masks_new[VMX_CTLMASK_MAX] = {
-+	MSR_IA32_VMX_PINX_MASK2,
-+	MSR_IA32_VMX_EXECCTL_MASK2,
-+	MSR_IA32_VMX_EXECCTL2_MASK,
-+	MSR_IA32_VMX_EXECCTL3_MASK,
-+	MSR_IA32_VMX_EXITCTL_MASK2,
-+	MSR_IA32_VMX_ENTRYCTL_MASK2
-+};
-+
- static void kvm_set_intr_handler(unsigned int id, uintptr_t func)
+ /* Data written into shadow VMCS by the parent VM and read by the nested VM */
+@@ -110,7 +110,7 @@ static struct vmcs_field_table guest_data[SHADOW_DATA_LENGTH] = {
+ 	{VMCS_FIELD(VMX_VMCS_GUEST_LDTR_BASE), 0xb1d72}
+ };
+ 
+-static uint64_t vmread_buffer[SHADOW_DATA_LENGTH];
++static unsigned long vmread_buffer[SHADOW_DATA_LENGTH];
+ 
+ int guest_main(void)
  {
- 	memset(kvm_idt + id, 0, sizeof(kvm_idt[0]));
-@@ -711,6 +729,21 @@ void kvm_vmcs_copy_gdt_descriptor(unsigned int gdt_id,
- 	kvm_vmx_vmwrite(vmcs_baseaddr, baseaddr);
- }
+@@ -221,7 +221,7 @@ void main(void)
+ 			continue;
  
-+uint64_t kvm_vmx_read_vmctl_mask(unsigned int ctl_id)
-+{
-+	unsigned int msr;
-+
-+	if (ctl_id >= VMX_CTLMASK_MAX)
-+		tst_brk(TBROK, "Invalid VMX control ID %u", ctl_id);
-+
-+	if (kvm_rdmsr(MSR_IA32_VMX_BASIC) & IA32_VMXBASIC_USELESS_CTL_MASKS)
-+		msr = vmx_ctl_masks_new[ctl_id];
-+	else
-+		msr = vmx_ctl_masks_old[ctl_id];
-+
-+	return kvm_rdmsr(msr);
-+}
-+
- void kvm_init_vmx_vcpu(struct kvm_vmx_vcpu *cpu, uint16_t ss, void *rsp,
- 	int (*guest_main)(void))
- {
-@@ -730,17 +763,10 @@ void kvm_init_vmx_vcpu(struct kvm_vmx_vcpu *cpu, uint16_t ss, void *rsp,
- 	kvm_vmx_vmptrld(cpu->vmcs);
+ 		errors++;
+-		tst_res(TFAIL, "Shadow %s guest mismatch: %llx != %llx",
++		tst_res(TFAIL, "Shadow %s guest mismatch: %lx != %lx",
+ 			host_data[i].name, vmread_buffer[i],
+ 			host_data[i].value);
+ 	}
+@@ -239,7 +239,7 @@ void main(void)
+ 			continue;
  
- 	/* Configure VM execution control fields */
--	if (kvm_rdmsr(MSR_IA32_VMX_BASIC) & IA32_VMXBASIC_USELESS_CTL_MASKS) {
--		pinxctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_PINX_MASK2);
--		execctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_EXECCTL_MASK2);
--		exitctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_EXITCTL_MASK2);
--		entryctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_ENTRYCTL_MASK2);
--	} else {
--		pinxctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_PINX_MASK);
--		execctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_EXECCTL_MASK);
--		exitctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_EXITCTL_MASK);
--		entryctl = (uint32_t)kvm_rdmsr(MSR_IA32_VMX_ENTRYCTL_MASK);
--	}
-+	pinxctl = (uint32_t)kvm_vmx_read_vmctl_mask(VMX_CTLMASK_PINX);
-+	execctl = (uint32_t)kvm_vmx_read_vmctl_mask(VMX_CTLMASK_EXECCTL);
-+	exitctl = (uint32_t)kvm_vmx_read_vmctl_mask(VMX_CTLMASK_EXITCTL);
-+	entryctl = (uint32_t)kvm_vmx_read_vmctl_mask(VMX_CTLMASK_ENTRYCTL);
- 
- 	execctl |= VMX_INTERCEPT_HLT;
+ 		errors++;
+-		tst_res(TFAIL, "Shadow %s parent mismatch: %llx != %llx",
++		tst_res(TFAIL, "Shadow %s parent mismatch: %llx != %lx",
+ 			guest_data[i].name, val, guest_data[i].value);
+ 	}
  
 -- 
 2.49.0
