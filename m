@@ -4,95 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85769C36010
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 11:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F571C3600C
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 12:55:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 07D1F3CB389
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 13:45:03 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 46CA83CB376
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 14:55:29 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 360EB3CB381
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 13:44:37 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 5FDBD3CB340
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 14:55:10 +0200 (CEST)
+Authentication-Results: in-3.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4A713100045A
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 13:44:35 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6ACDC1A00CD2
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 14:55:10 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8EFA821166;
- Tue,  8 Apr 2025 11:44:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6C1691F38E;
+ Tue,  8 Apr 2025 12:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744112674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=a6fIMxJRVHh7LHm8/B91MdPb/x73Q8lOHLyA+VUo5pw=;
- b=Q9hcKiZtim+7Cy/KtIPYVJ+M3L09OHVdYTEGi/2K0UnRb2tIyXhqTPA7BsaMzmSVVdk2kJ
- p6Hqu7lnzyMssJ7F8eKL+O5Vg5N/fg12ZUnJZd2WY9ttQn5cdDJHMpCNDopTyp423/o16X
- +vrbEVEMq2OycTa590tmdND/Inph6FU=
+ t=1744116909;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2iQkkFK7zxqp1bdCB3Wz0zn6NEvZByULgGJ/C049gkY=;
+ b=eo8DjQlh6BgRjJoIES3Ax0uJjYAiiXzEY1NdEE2Wr0h/blp6sNUmzYjRZ7m7uS4+JoOguB
+ CwAF/bYU/zq0qDYBWmJMvpjY/WU55a2hW76i2Qs3mUl9k7P417RqvgcXHwZlzqYVqw0mCO
+ keuKU1Bn2XwO3EyMcjwsVIF+gxThghA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744112674;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=a6fIMxJRVHh7LHm8/B91MdPb/x73Q8lOHLyA+VUo5pw=;
- b=3VgfmoqPi3IUw+Vp4EiYdBianLTyU6T4Wjbt0GgPnmKMb9EdwSyt9lvxckxJjp72/SYPVJ
- K2i5gLHxeT5HIBDg==
-Authentication-Results: smtp-out1.suse.de;
+ s=susede2_ed25519; t=1744116909;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2iQkkFK7zxqp1bdCB3Wz0zn6NEvZByULgGJ/C049gkY=;
+ b=niJ7Ivf/T1mQSRaYGgmitEi6xb/lrOilXbUU2QlVCPXMnosXTeYJRda0LboT87JrWbF+II
+ H5S5M7NlYG10JXCA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744112674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=a6fIMxJRVHh7LHm8/B91MdPb/x73Q8lOHLyA+VUo5pw=;
- b=Q9hcKiZtim+7Cy/KtIPYVJ+M3L09OHVdYTEGi/2K0UnRb2tIyXhqTPA7BsaMzmSVVdk2kJ
- p6Hqu7lnzyMssJ7F8eKL+O5Vg5N/fg12ZUnJZd2WY9ttQn5cdDJHMpCNDopTyp423/o16X
- +vrbEVEMq2OycTa590tmdND/Inph6FU=
+ t=1744116909;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2iQkkFK7zxqp1bdCB3Wz0zn6NEvZByULgGJ/C049gkY=;
+ b=eo8DjQlh6BgRjJoIES3Ax0uJjYAiiXzEY1NdEE2Wr0h/blp6sNUmzYjRZ7m7uS4+JoOguB
+ CwAF/bYU/zq0qDYBWmJMvpjY/WU55a2hW76i2Qs3mUl9k7P417RqvgcXHwZlzqYVqw0mCO
+ keuKU1Bn2XwO3EyMcjwsVIF+gxThghA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744112674;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=a6fIMxJRVHh7LHm8/B91MdPb/x73Q8lOHLyA+VUo5pw=;
- b=3VgfmoqPi3IUw+Vp4EiYdBianLTyU6T4Wjbt0GgPnmKMb9EdwSyt9lvxckxJjp72/SYPVJ
- K2i5gLHxeT5HIBDg==
+ s=susede2_ed25519; t=1744116909;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2iQkkFK7zxqp1bdCB3Wz0zn6NEvZByULgGJ/C049gkY=;
+ b=niJ7Ivf/T1mQSRaYGgmitEi6xb/lrOilXbUU2QlVCPXMnosXTeYJRda0LboT87JrWbF+II
+ H5S5M7NlYG10JXCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54E3513A1E;
- Tue,  8 Apr 2025 11:44:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4613F13691;
+ Tue,  8 Apr 2025 12:55:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id rN+bEiIM9WdkEAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 08 Apr 2025 11:44:34 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id QVq9D60c9WdaKAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 08 Apr 2025 12:55:09 +0000
+Date: Tue, 8 Apr 2025 14:55:07 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  8 Apr 2025 13:44:31 +0200
-Message-ID: <20250408114432.220841-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.49.0
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20250408125507.GA225750@pevik>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:mid];
+Content-Disposition: inline
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-0.998]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
+ MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] sphinx: Update to 7.2.6, python 3.12, ubuntu-24.04
+Subject: [LTP] foo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,79 +107,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: =?UTF-8?q?Ricardo=20B=20=2E=20Marli=C3=A8re?= <rbm@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update sphinx to 7.2.6, python 3.12. This requires to update
-.readthedocs.yml to use ubuntu-24.04 [1], because keep in sync sphinx in
-readthedocs with with the one for local development and github CI.
-Raising python makes sense, as development is usually done on newer
-distros, we were still using old python 3.6.
+Hi Amir, Jan,
 
-This fixes the problem on local development trying to run older sphinx
-5.3 on python 3.13 requires to use imghdr, which was removed from
-standard library (alternatively we'd need to install it from pip via
-adding standard-imghdr into requirements.txt).
+LTP tested on btrfs on TMPDIR is skipped with TCONF:
+# TMPDIR=/var/tmp ./fanotify23
+tst_tmpdir.c:316: TINFO: Using /var/tmp/LTP_fanzN3sOS as tmpdir (btrfs filesystem)
+tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1194: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.47.0 (5-Feb-2023)
+tst_test.c:1206: TINFO: Mounting /dev/loop0 to /var/tmp/LTP_fanzN3sOS/fs_mnt fstyp=ext2 flags=0
+tst_test.c:1928: TINFO: LTP version: 20250130-190-g2c79e30c2c
+tst_test.c:1932: TINFO: Tested kernel: 6.14.0-3.g5e7754e-default #1 SMP PREEMPT_DYNAMIC Mon Mar 31 14:34:31 UTC 2025 (5e7754e) x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1748: TINFO: Overall timeout per run is 0h 02m 00s
+fanotify23.c:233: TCONF: FAN_ATTRIB not supported on ext2 filesystem
 
-[1] https://about.readthedocs.com/blog/2024/06/ubuntu-24-04/
+The same is fanotify22.c
+fanotify22.c:296: TCONF: FAN_FS_ERROR not supported on ext4 filesystem
 
-Fixes: b900b790e9 ("doc: Add sphinx to requirements.txt")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+They work on tmpfs on TMPDIR:
 
-first, I'm sorry for a regression. I tested all the previous versions
-carefully even locally, but in the end the final variant I obviously
-omit to test.
+# ./fanotify23
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_fanh6TUn4 as tmpdir (tmpfs filesystem)
+tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1194: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.47.0 (5-Feb-2023)
+tst_test.c:1206: TINFO: Mounting /dev/loop0 to /tmp/LTP_fanh6TUn4/fs_mnt fstyp=ext2 flags=0
+tst_test.c:1928: TINFO: LTP version: 20250130-190-g2c79e30c2c
+tst_test.c:1932: TINFO: Tested kernel: 6.14.0-3.g5e7754e-default #1 SMP PREEMPT_DYNAMIC Mon Mar 31 14:34:31 UTC 2025 (5e7754e) x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1748: TINFO: Overall timeout per run is 0h 02m 00s
+fanotify23.c:109: TPASS: FAN_MARK_ADD failed with EEXIST as expected when trying to downgrade to evictable mark
+fanotify23.c:72: TPASS: FAN_MARK_REMOVE failed with ENOENT as expected after empty mask
+fanotify23.c:155: TPASS: Got no events as expected
+fanotify23.c:72: TPASS: FAN_MARK_REMOVE failed with ENOENT as expected after drop_caches
+fanotify23.c:196: TPASS: got event: mask=4
+fanotify23.c:196: TPASS: got event: mask=4
+fanotify23.c:56: TINFO: Umounting /tmp/LTP_fanh6TUn4/fs_mnt
+fanotify23.c:57: TINFO: Mounting /dev/loop0 to /tmp/LTP_fanh6TUn4/fs_mnt fstyp=ext2 flags=0
 
-Tested:
-https://app.readthedocs.org/projects/linux-test-project/builds/27784588/
+Is there a way to avoid TCONF on btrfs?
 
-Alternatively, we could keep old distros and just add standard-imghdr
-(without version) to doc/requirements.txt. But sooner or later we will
-need to upgrade thus I'm sending this version.
+# df -hT /var/tmp/ /tmp/
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/vda2      btrfs   28G   24G  1.6G  94% /var
+tmpfs          tmpfs  1.4G   32K  1.4G   1% /tmp
 
 Kind regards,
 Petr
-
- .readthedocs.yml     | 4 ++--
- doc/requirements.txt | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/.readthedocs.yml b/.readthedocs.yml
-index 5434ef49d6..51825da77f 100644
---- a/.readthedocs.yml
-+++ b/.readthedocs.yml
-@@ -1,9 +1,9 @@
- version: 2
- 
- build:
--  os: "ubuntu-22.04"
-+  os: "ubuntu-24.04"
-   tools:
--    python: "3.6"
-+    python: "3.12"
-   apt_packages:
-     - autoconf
-     - enchant-2
-diff --git a/doc/requirements.txt b/doc/requirements.txt
-index 6302ecd9f2..1b9a984547 100644
---- a/doc/requirements.txt
-+++ b/doc/requirements.txt
-@@ -1,6 +1,6 @@
- # Use the same sphinx as on readthedocs.org. When updated, make sure
- # sphinx-rtd-theme is compatible with sphinx.
--sphinx==5.3.0
-+sphinx==7.2.6
- sphinx-rtd-theme==2.0.0
- 
- linuxdoc==20231020
--- 
-2.49.0
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
