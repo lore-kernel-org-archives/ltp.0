@@ -4,103 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B22C36010
-	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 15:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 982F7C3600C
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 06:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744094010; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=nL65MrEf/IG4aNuyVsPcM0cGwr0GEJVljqx4kZ3NzP8=;
+ b=T0Hf/jMEA6dXyIpQNP6saglJlrH+gm0x8DGNK5QbmKGVxaVRJ1ZIqFd0i88R1ZET6gO12
+ +k27VHGmU+j+KAtiqox5mWn+ZajFN93qBph/TsRHyR6ljL/qxlsnLWPLKyEOZIMY3sq1/xR
+ 4OatsdShUJeSLXQYW8IOV+mK7yZFTyI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C08F23CAFA9
-	for <ltp@archiver.kernel.org>; Mon,  7 Apr 2025 17:02:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 79E5C3CB366
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 08:33:30 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 436E13CB2BB
- for <ltp@lists.linux.it>; Mon,  7 Apr 2025 17:01:53 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E2C1A3CA6BB
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 08:33:08 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8425E1A00CAE
- for <ltp@lists.linux.it>; Mon,  7 Apr 2025 17:01:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0594C21180;
- Mon,  7 Apr 2025 15:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744038102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9oaOghw6wuztVNKlRY5MCFyno6nN9CItpGLxc/Zlh0w=;
- b=IEJsCSTb/iwcxuNPAGQYhvj2tvQDhTbXdZo+f1wHSIXQ2qCkhbU8iUHFfXx4G4Bd8e/cCB
- fleEktNIeQCC1ZqHvPCtfr2Z0QKCWF1pkdT02gowDdsc5CvjSfvdb8WG5D/mhLeidN6AuM
- cipz2qC4NJ2s67U5+JbYPREJtW7r+Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744038102;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9oaOghw6wuztVNKlRY5MCFyno6nN9CItpGLxc/Zlh0w=;
- b=k3ACjEJhqgcY5SIEGc3oS9TZnsIhZiuMNzkkFl6khfMODAI+PJD49KdD+dCORtz9ne3FJx
- 2eQQ54b4YjVCG2Dg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744038102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9oaOghw6wuztVNKlRY5MCFyno6nN9CItpGLxc/Zlh0w=;
- b=IEJsCSTb/iwcxuNPAGQYhvj2tvQDhTbXdZo+f1wHSIXQ2qCkhbU8iUHFfXx4G4Bd8e/cCB
- fleEktNIeQCC1ZqHvPCtfr2Z0QKCWF1pkdT02gowDdsc5CvjSfvdb8WG5D/mhLeidN6AuM
- cipz2qC4NJ2s67U5+JbYPREJtW7r+Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744038102;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9oaOghw6wuztVNKlRY5MCFyno6nN9CItpGLxc/Zlh0w=;
- b=k3ACjEJhqgcY5SIEGc3oS9TZnsIhZiuMNzkkFl6khfMODAI+PJD49KdD+dCORtz9ne3FJx
- 2eQQ54b4YjVCG2Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B55F713691;
- Mon,  7 Apr 2025 15:01:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KFY6KdXo82dhNQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 07 Apr 2025 15:01:41 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon,  7 Apr 2025 17:01:31 +0200
-Message-ID: <20250407150133.115790-3-pvorel@suse.cz>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250407150133.115790-1-pvorel@suse.cz>
-References: <20250407150133.115790-1-pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 00B6E200398
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 08:33:06 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-43d07ca6a80so26234945e9.1
+ for <ltp@lists.linux.it>; Mon, 07 Apr 2025 23:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1744093985; x=1744698785; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=dCWZP90vK21XxEg5Dw3cnCA4ERoyFGITAZYN2TqcgC0=;
+ b=YRVs/l/OeZC5C2/v9Y47zB4or8y1U0Z6Qobx9EXvPmhmYYn0NATJagyTB93+23KNZg
+ 4UwKbmErmccss6OD1MqWa7+Ey37KAPtSZbdROjU0lwhl8J68V+6PW0HgzZ1/qzhmgP5u
+ G3xZ2fNgUjitXRBFrce66snQLOQN6UaI1kLLRnPiT1mGEHyYh7vVp6w2Evop8tq3+AUi
+ if1mXsUTNtH4ipCuS8ubZsiNTVffkqFOGm2pLTaQqCGBhDzk0uRN9s2r9uFMQNkF/X7I
+ jhPfUv0PMAhERs5/PZWoa7AgTL0GTh4I2TJwrqzsItH0xgM5rcj/aGpLd6k37mfVGfN9
+ ZtmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1744093985; x=1744698785;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=dCWZP90vK21XxEg5Dw3cnCA4ERoyFGITAZYN2TqcgC0=;
+ b=ToRHR8Xo5Dk1QkvXZI6+uDMNbldTVnnSWLaeh4CW1yHUoKggCKTGCWJ9flPo5HblZl
+ 4TZhqTJArpHn6kJFg5KhOMKjw1xMUf/W0/78x4ybV2qi39FxxsfL7sNb3TifNKXRngVG
+ iZnmzJ2TizLX/nViuA8AYaNP93OsBu+1+JmFkUpaswckph/1Lm/y8nlIEf4m29256ScM
+ ULNPksevh4pqMunalmK9MUHKpoRtC2PHbTmoJQRT2B4UB8042gZ7ZYWBoMOzBcvPkEA2
+ PqDrG6snwLd8pxKDGcQHAzVqILS5dAAz9Mus+Jj6Q0wvZizCnORiWaKka5nGUhYFVQuh
+ D8lg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUlVO85tw12Yu4POqvIzIgVdJTvJkFAYCDPqwyWXMRtEznprVaD1HAnd/GcNWVufl9OQJ0=@lists.linux.it
+X-Gm-Message-State: AOJu0YxH9R2dyJvsF27Xv72MPItHuoPcbZyjcbdaPjM+BiggZllhEVK1
+ G3UDkcBxn/Lp2goRrhJovq2C9JxkKp55HLKwcSVsi3MR5A4w4Qs7nNqv3Z1l6u0=
+X-Gm-Gg: ASbGnctpa527vAOLVU0vGkhg328Nf2iH/Sf2wkkIJPbkF3RuvtSQinBfMOKjJzY60NG
+ ApzqQ+Fd7Pib5LuWFYH45DtBtAVLid93JkIX8nKHUPIl5HO0zrxkzquXRoQ7gH527GrV9H5dP8q
+ GJK2xolvk2oHj2LPl8h7a1ehyJUImRUVoMIGN3TxWV6xSapGpqrgA7fgcO8CyOuCL7o72U6Y7uk
+ U0lel/8BGt6U3ppOxKbASl4FpukuXoLLEfq0s7lJamKJ/B8jcZz5DkO7P251YAm3aLylkaiRC9s
+ k4T/ZFxYpvptR3f24GRRkmw7ncou77j2tVe4wUuu25hgHSN6orwupi+w7tgCOjov/HHgwDZmC40
+ zWSmsHqt464SqabmRCKQ6p+e5WS8I7NQDy/3K5WusTDy26euUyoLy7IP5hDlKJxInJ5AhI5m+pc
+ /5oa/DxHQ=
+X-Google-Smtp-Source: AGHT+IHnX+MV0SjlM08jbpxXLuJn9OMFmCtSISEUe5xoIphv+JdGOND8zu+kRwRkSLxrR86O3UE3gQ==
+X-Received: by 2002:a05:600c:3505:b0:43d:cc9:b0a3 with SMTP id
+ 5b1f17b1804b1-43ecf9fed8fmr103595425e9.22.1744093985330; 
+ Mon, 07 Apr 2025 23:33:05 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-43ec34a75fcsm148945955e9.11.2025.04.07.23.33.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 07 Apr 2025 23:33:04 -0700 (PDT)
+Message-ID: <a2197905-94b2-4f84-a19a-fb26b2ff65f4@suse.com>
+Date: Tue, 8 Apr 2025 08:33:04 +0200
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20250407150133.115790-1-pvorel@suse.cz>
+ <20250407150133.115790-4-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250407150133.115790-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 2/3] doc: Add sphinx to requirements.txt
+Subject: Re: [LTP] [PATCH v5 3/3] doc/Makefile: Allow to create and use .venv
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,75 +105,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: =?UTF-8?q?Ricardo=20B=20=2E=20Marli=C3=A8re?= <rbm@suse.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: =?UTF-8?Q?Ricardo_B_=2E_Marli=C3=A8re?= <rbm@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Although that slightly prolongs creating virtualenv (and CI job), but
-it's probably better to handle it as the other requirements.
+Hi Petr,
 
-Use the same sphinx and sphinx-rtd-theme versions as on readthedocs.org.
-That way we get doc generation tested by CI and by local build (to avoid
-incompatibility changes).
+some comments below.
 
-Also don't install python3-sphinx via apt in CI job to keep usage the
-same as in readthedocs.org.
+On 4/7/25 17:01, Petr Vorel wrote:
+> Add 'setup' target (alias to '.venv') to create virtualenv directory.
+> This is an optional target (not run by default).
+> If .venv exists, it's used in other targets, activation supports only
+> fish and bash/zsh (known shells used by LTP developers, csh/tcsh is
+> ignored atm).
+>
+> This helps to use virtualenv for development, but avoid using it by
+> default (readthedoc uses container with virtualenv, creating it would be
+> waste of time).
+>
+> Add 'distclean' target which removes also .venv/ directory.
+>
+> Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> * The same as v4
+>
+> NOTE: doc/Makefile should be rewritten to use generic_leaf_target.mk,
+> then integration to the top level Makefile will not be a hack).
+>
+>   doc/Makefile | 22 ++++++++++++++++++++--
+>   1 file changed, 20 insertions(+), 2 deletions(-)
+>
+> diff --git a/doc/Makefile b/doc/Makefile
+> index 3c5682ad00..2062d6e935 100644
+> --- a/doc/Makefile
+> +++ b/doc/Makefile
+> @@ -5,15 +5,33 @@ top_srcdir		?= ..
+>   
+>   include $(top_srcdir)/include/mk/env_pre.mk
+>   
+> +PYTHON := python3
+> +VENV_DIR := .venv
+> +
+> +# only fish and bash/zsh supported
+> +VENV_CMD := if [ "x${FISH_VERSION}" != "x" ]; then . $(VENV_DIR)/bin/activate.fish; else . $(VENV_DIR)/bin/activate; fi
+I had to think carefully about this, but I think you are right. It's 
+better not to over-complicate this and to support other shells but bash.
+make command can override environment variables, so it's better to use 
+that feature instead of complicating Makefile that can be really messy 
+when adding new features.
+> +
+> +RUN_VENV := if [ -d $(VENV_DIR) ]; then $(VENV_CMD); fi
+> +
+> +$(VENV_DIR):
+> +	$(PYTHON) -m virtualenv $(VENV_DIR)
+> +	$(VENV_CMD) && pip install -r requirements.txt
+> +
+> +.PHONY: setup
+> +setup: $(VENV_DIR)
+> +
+>   ${abs_top_builddir}/metadata/ltp.json:
+>   	$(MAKE) -C ${abs_top_builddir}/metadata
+>   
+>   all: ${abs_top_builddir}/metadata/ltp.json
+> -	sphinx-build -b html . html
+> +	$(RUN_VENV); sphinx-build -b html . html
+>   
+>   spelling:
+> -	sphinx-build -b spelling -d build/doctree . build/spelling
+> +	$(RUN_VENV); sphinx-build -b spelling -d build/doctree . build/spelling
+>   
+>   clean:
+>   	rm -rf html/ build/ _static/syscalls.rst _static/tests.rst syscalls.tbl \
+>   		${abs_top_builddir}/metadata/ltp.json
+> +
+> +distclean: clean
+> +	rm -rf $(VENV_DIR)
 
-Suggested-by: Andrea Cervesato <andrea.cervesato@suse.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Changes from v4:
-* Use sphinx version used on readthedocs.org (to really test in devel
-  and github CI what will be deployed).
-* Don't install sphinx in github CI (python3-sphinx package)
+The rest looks fine.
 
- .github/workflows/ci-sphinx-doc.yml | 2 +-
- doc/developers/documentation.rst    | 2 --
- doc/requirements.txt                | 4 ++++
- 3 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/.github/workflows/ci-sphinx-doc.yml b/.github/workflows/ci-sphinx-doc.yml
-index a5f9d74d1f..e77c766871 100644
---- a/.github/workflows/ci-sphinx-doc.yml
-+++ b/.github/workflows/ci-sphinx-doc.yml
-@@ -23,7 +23,7 @@ jobs:
-       - name: Install sphinx and autotools
-         run: |
-           sudo apt update
--          sudo apt install autoconf make python3-sphinx python3-virtualenv
-+          sudo apt install autoconf make python3-virtualenv
- 
-       - name: Run configure
-         run: |
-diff --git a/doc/developers/documentation.rst b/doc/developers/documentation.rst
-index 27c847e125..a303253693 100644
---- a/doc/developers/documentation.rst
-+++ b/doc/developers/documentation.rst
-@@ -23,8 +23,6 @@ Before building, make sure you have python3 ``virtualenv`` module installed.
-     # prepare virtual environment
-     python3 -m virtualenv .venv
-     . .venv/bin/activate
--
--    pip install sphinx # usually packaged in distros
-     pip install -r requirements.txt
- 
-     # build documentation
-diff --git a/doc/requirements.txt b/doc/requirements.txt
-index 742fb8b4bb..6302ecd9f2 100644
---- a/doc/requirements.txt
-+++ b/doc/requirements.txt
-@@ -1,3 +1,7 @@
-+# Use the same sphinx as on readthedocs.org. When updated, make sure
-+# sphinx-rtd-theme is compatible with sphinx.
-+sphinx==5.3.0
- sphinx-rtd-theme==2.0.0
-+
- linuxdoc==20231020
- sphinxcontrib-spelling==7.7.0
--- 
-2.49.0
+Andrea
 
 
 -- 
