@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DED0DC369A2
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 15:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2C52C369A5
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 16:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744126478; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744128248; h=mime-version :
  date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : content-type : content-transfer-encoding :
- sender : from; bh=P7PMAxx3V6KuAFagyBuoRJvSsUYk0cV1lhw9fWkvs3w=;
- b=QPFzYNWSkwwxxISRP55C34bIxWwf6oFz0JK03yegxY1tPoPv0x+oACI/D3Q/cDcyS8Gxr
- /oiXvg5S4ph9Db1u6QAcMCF7W/sPR6ShWERwAFS/NAplfq561bd7ooDtx0jrPDbsU5AQFIJ
- DYwzdNErdB37Y4G3l046qmNj8lwCSJY=
+ sender : from; bh=gMrKCp+8K7fNdYtp/w+/QKIBzPfhN0eOWTPI28Z/Tp0=;
+ b=TzSTif4P70oTZV4PGuzthNMLiMoYT8LNfonrPFLVN+AHfdqK6GlikJd+HwzIxmFIjBucT
+ 0eXnbvctMq5LgNM1PJWNLPBPikCMLcIjLxjuirJcbpuGGH28A4IKOkgK9fYUu3lwkJ8B1yO
+ 5lgpf9uXl57GRjckvEPf4VHZnS4/+og=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1CE393CB3C9
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 17:34:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2449B3CB3D1
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 18:04:08 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with UTF8SMTPS id E53983CB379
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 17:34:15 +0200 (CEST)
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com
- [209.85.221.50])
+ by picard.linux.it (Postfix) with UTF8SMTPS id 27E823CB35A
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 18:03:46 +0200 (CEST)
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com
+ [209.85.221.46])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with UTF8SMTPS id 2A8141A00E40
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 17:34:14 +0200 (CEST)
-Received: by mail-wr1-f50.google.com with SMTP id
- ffacd0b85a97d-39c1efbefc6so3390890f8f.1
- for <ltp@lists.linux.it>; Tue, 08 Apr 2025 08:34:14 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with UTF8SMTPS id 2DA45140075B
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 18:03:45 +0200 (CEST)
+Received: by mail-wr1-f46.google.com with SMTP id
+ ffacd0b85a97d-391342fc0b5so4522779f8f.3
+ for <ltp@lists.linux.it>; Tue, 08 Apr 2025 09:03:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1744126453; x=1744731253;
+ d=1e100.net; s=20230601; t=1744128224; x=1744733024;
  h=in-reply-to:references:to:cc:subject:message-id:date
  :content-transfer-encoding:mime-version:from:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=VlEIbPB0oS2+ndk4EynCA0YzgDv3gUx4tNkF6d/+B2s=;
- b=quQnXTUGJQuNp3GXMv4UbOVb1Fg/a4XJGGzde73KH/EM8L1uClcUotnx+VsM4ikNpf
- /fwCopPTxnj9IZzVn1bejU5SHBsWo52i4fb3c6vV1n13qcWqL1gg/ZmLpWbTtz3PHS66
- zEKRAIyP5+xoqbCi/DnQAvc0plZs0XUT6G5YTUG3DAA0z/Muc7p2wjwAI13D/uNeqXIn
- IqpSjq51Qc+y/Jt+E44cBtt8PqTDtK1GEDDG1u1OhURDI1bo5yJ0DTVTJ6kAXgpW0202
- cdUpRwsmiQIIfpOtmo3bms3e1qd2Tej5vk1Q7MSDa2VtrN7FcP39L/jnjmPSyUOh3sO0
- h/Yg==
+ bh=ovt8WiLl5CT2hf0ZhPrYhWsvQN7zLvOZ5ECWzMmN+Go=;
+ b=UX7MWqluvuX+4wHTKVu9gm4hmnxg3L9K+a/H58uv/eDx5Wsi7bok9wmzlfKmV6uDn2
+ hoUQw8Sz3bfdAjM1RCLo8G3GwPcuCGoY9X0r18wcZfV6hrMoA3Hzc/wH6WXVklkW35hI
+ YX5Q858QCYyuEBK0Xgx9NQFE6XSlkaJltmRSFiHTMK+6DyvWWq7GOYh+g6IbsWekOXvd
+ +317NaoRYl86pL4OBIBTzekZAuKNLEIea5gh6r/qvWtusEWJeMZZXL7eFje0njmS+XFI
+ 9GIslsxk3rRTr1LDS9Hd+yzUvKefhNgLuLYydMddimr2tIyD8l0E4amd67Iv/tKneTPJ
+ +FaA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUfd4ykTSLQIEK9SOX/iUgzXqWJ+1mYjAuf2+iat+EDKfXSFrNj3+5/7G+kWba6jg/Zwzg=@lists.linux.it
-X-Gm-Message-State: AOJu0Yw2DdfjyHDna5eIrOzLhoSDebNEDuiHNak1Dq1mqwOWMc8FSBFz
- XwOraFUF5pN2RudvOpj6RMMbBJ3cpR8T+dXCu/ZV7ig9SwiGmFnns52EvzrToqOfa30/cs94SUX
- /
-X-Gm-Gg: ASbGncucSVkT2gJ5Jl3CbP7JJijW+RZUkjK01ODaI37yWJXZnXSx8SMknNxXTA2FJGe
- tQAvhkqRaBj4RxpNIWYXGRWev4w0aEIm3x2h6VGbBhaNr1USfRS8z2/DbTFBbbX+ZmipmuRGg/N
- b9ZGujLmDXKcnnxpQo3H244eESgjyxW6rY0j4AnaFbrfZ9bT92eEt2nep8CZSHA3NjDZ65V15n3
- Me133viwthdvzXeiKWE0jarJJ/T8n3NRw1EcXck+65vYQu13acKMWnvZKQ7tAhy08o7fjL9ftMz
- NcyutXD9d/WlMaBCz8i2EE4k6wl3BQE9E20RLIT51boI
-X-Google-Smtp-Source: AGHT+IHvLKP+M7BFdEz9+sgjLExnIjSBK9zcHaiOdk+2IJvy9ww0Sr1ztwJ3uoa7kmYl19aQGgzSig==
-X-Received: by 2002:a5d:584c:0:b0:391:ab2:9e71 with SMTP id
- ffacd0b85a97d-39d6fc29654mr10183672f8f.20.1744126453447; 
- Tue, 08 Apr 2025 08:34:13 -0700 (PDT)
+ AJvYcCXJK5vHZl+BRcn7vSK0iyhLevBqUih607xlOGD3voOI6Wt6tNxVUEJWwereP73kcCT4uZY=@lists.linux.it
+X-Gm-Message-State: AOJu0YyglCm320lj6xsjPMqnvMP5NspCpbOgfNrNIFTj61rlQ5ZAKCyo
+ X7sy53Qe7b1eX4VMT0jMV7LV5RG73ZacAnPS+SYgpb7IcWhBU5FJmO1dSztxvUo=
+X-Gm-Gg: ASbGncuE8eWY9ul6AaVhkWaVB0S+DZ9ozgvSLamamtuGDoWeCZJksqjU7l1mO/woydI
+ QUsLCOjozNP1hj2kB/XJ/Ue+pIB951Q9+0krhdi9WHRgr1cAbvVLq5HIDdbPG3JMcoB7HWoo9YA
+ Egi/ZoKkToCX7fFAuOqDnBNSWQ13GzsifA/hoKY1aisNFhtlJSQAVsWJU21YtKUiBqYIwd+OuiB
+ OlMriSJHnOZQM04PPMOo01KgAlIq5XpwAf2dA8TksUY+Uq+zDShA/FrwDSVQSPmsevcLEDx96D1
+ TS1LPYQ2A4nkBjUYwiqwKXQpLrEBRJ485osjcKofvzl5
+X-Google-Smtp-Source: AGHT+IGkRZ8Q3teI773pqrusxbctWOM86ZLFJGbvPgTOJm2UHOUQXAJkPwsTJ6k3Dy24wlaFpYb/2w==
+X-Received: by 2002:a5d:5f48:0:b0:38f:3e1c:211d with SMTP id
+ ffacd0b85a97d-39cba9329b4mr15276688f8f.14.1744128224395; 
+ Tue, 08 Apr 2025 09:03:44 -0700 (PDT)
 Received: from localhost ([179.228.213.210]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-739da0e2f6asm10702068b3a.165.2025.04.08.08.34.12
+ d9443c01a7336-229785bfe40sm102379935ad.72.2025.04.08.09.03.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Apr 2025 08:34:12 -0700 (PDT)
+ Tue, 08 Apr 2025 09:03:43 -0700 (PDT)
 Mime-Version: 1.0
-Date: Tue, 08 Apr 2025 12:34:08 -0300
-Message-Id: <D91D850OFM7I.2P5YPKY3FWCG8@suse.com>
+Date: Tue, 08 Apr 2025 13:03:41 -0300
+Message-Id: <D91DURHVD1PG.XSV2D1XPW2YA@suse.com>
 To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
 X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
 References: <20250408114432.220841-1-pvorel@suse.cz>
 In-Reply-To: <20250408114432.220841-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] sphinx: Update to 7.2.6, python 3.12,
  ubuntu-24.04
@@ -90,88 +88,61 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
 From: =?utf-8?b?UmljYXJkbyBCLiBNYXJsae+/ve+/vXJlIHZpYSBsdHA=?=
  <ltp@lists.linux.it>
 Reply-To: "Ricardo B. Marlière" <rbm@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-
-On Tue Apr 8, 2025 at 8:44 AM -03, Petr Vorel wrote:
-> Update sphinx to 7.2.6, python 3.12. This requires to update
-> .readthedocs.yml to use ubuntu-24.04 [1], because keep in sync sphinx in
-> readthedocs with with the one for local development and github CI.
-> Raising python makes sense, as development is usually done on newer
-> distros, we were still using old python 3.6.
->
-> This fixes the problem on local development trying to run older sphinx
-> 5.3 on python 3.13 requires to use imghdr, which was removed from
-> standard library (alternatively we'd need to install it from pip via
-> adding standard-imghdr into requirements.txt).
->
-> [1] https://about.readthedocs.com/blog/2024/06/ubuntu-24-04/
->
-> Fixes: b900b790e9 ("doc: Add sphinx to requirements.txt")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
->
-> first, I'm sorry for a regression. I tested all the previous versions
-> carefully even locally, but in the end the final variant I obviously
-> omit to test.
->
-> Tested:
-> https://app.readthedocs.org/projects/linux-test-project/builds/27784588/
->
-> Alternatively, we could keep old distros and just add standard-imghdr
-> (without version) to doc/requirements.txt. But sooner or later we will
-> need to upgrade thus I'm sending this version.
->
-> Kind regards,
-> Petr
->
->  .readthedocs.yml     | 4 ++--
->  doc/requirements.txt | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/.readthedocs.yml b/.readthedocs.yml
-> index 5434ef49d6..51825da77f 100644
-> --- a/.readthedocs.yml
-> +++ b/.readthedocs.yml
-> @@ -1,9 +1,9 @@
->  version: 2
->  
->  build:
-> -  os: "ubuntu-22.04"
-> +  os: "ubuntu-24.04"
->    tools:
-> -    python: "3.6"
-> +    python: "3.12"
-
-Can you please update the docs?
-
-https://github.com/linux-test-project/ltp/blob/master/doc/developers/documentation.rst?plain=1#L36
-
-Thanks,
--	Ricardo.
-
-
->    apt_packages:
->      - autoconf
->      - enchant-2
-> diff --git a/doc/requirements.txt b/doc/requirements.txt
-> index 6302ecd9f2..1b9a984547 100644
-> --- a/doc/requirements.txt
-> +++ b/doc/requirements.txt
-> @@ -1,6 +1,6 @@
->  # Use the same sphinx as on readthedocs.org. When updated, make sure
->  # sphinx-rtd-theme is compatible with sphinx.
-> -sphinx==5.3.0
-> +sphinx==7.2.6
->  sphinx-rtd-theme==2.0.0
->  
->  linuxdoc==20231020
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlIEFwciA4LCAyMDI1IGF0IDg6NDQgQU0gLTAzLCBQZXRyIFZvcmVsIHdyb3RlOgo+IFVw
+ZGF0ZSBzcGhpbnggdG8gNy4yLjYsIHB5dGhvbiAzLjEyLiBUaGlzIHJlcXVpcmVzIHRvIHVwZGF0
+ZQo+IC5yZWFkdGhlZG9jcy55bWwgdG8gdXNlIHVidW50dS0yNC4wNCBbMV0sIGJlY2F1c2Uga2Vl
+cCBpbiBzeW5jIHNwaGlueCBpbgo+IHJlYWR0aGVkb2NzIHdpdGggd2l0aCB0aGUgb25lIGZvciBs
+b2NhbCBkZXZlbG9wbWVudCBhbmQgZ2l0aHViIENJLgo+IFJhaXNpbmcgcHl0aG9uIG1ha2VzIHNl
+bnNlLCBhcyBkZXZlbG9wbWVudCBpcyB1c3VhbGx5IGRvbmUgb24gbmV3ZXIKPiBkaXN0cm9zLCB3
+ZSB3ZXJlIHN0aWxsIHVzaW5nIG9sZCBweXRob24gMy42Lgo+Cj4gVGhpcyBmaXhlcyB0aGUgcHJv
+YmxlbSBvbiBsb2NhbCBkZXZlbG9wbWVudCB0cnlpbmcgdG8gcnVuIG9sZGVyIHNwaGlueAo+IDUu
+MyBvbiBweXRob24gMy4xMyByZXF1aXJlcyB0byB1c2UgaW1naGRyLCB3aGljaCB3YXMgcmVtb3Zl
+ZCBmcm9tCj4gc3RhbmRhcmQgbGlicmFyeSAoYWx0ZXJuYXRpdmVseSB3ZSdkIG5lZWQgdG8gaW5z
+dGFsbCBpdCBmcm9tIHBpcCB2aWEKPiBhZGRpbmcgc3RhbmRhcmQtaW1naGRyIGludG8gcmVxdWly
+ZW1lbnRzLnR4dCkuCj4KPiBbMV0gaHR0cHM6Ly9hYm91dC5yZWFkdGhlZG9jcy5jb20vYmxvZy8y
+MDI0LzA2L3VidW50dS0yNC0wNC8KPgo+IEZpeGVzOiBiOTAwYjc5MGU5ICgiZG9jOiBBZGQgc3Bo
+aW54IHRvIHJlcXVpcmVtZW50cy50eHQiKQo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2
+b3JlbEBzdXNlLmN6PgoKVGVzdGVkLWJ5OiBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJtQHN1c2Uu
+Y29tPgpSZXZpZXdlZC1ieTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClRl
+c3RlZCBvbiBUdW1ibGV3ZWVkLCBJIHdhcyBoYXZpbmcgdGhpcyBiZWZvcmU6CgokIG1ha2UKbWFr
+ZSAtQyAvbW50L2V4dC9zcmMvbGludXgvbHRwL2ZpeGVzL21ha2VfZG9jL21ldGFkYXRhCm1ha2Vb
+MV06IEVudGVyaW5nIGRpcmVjdG9yeSAnL21udC9leHQvc3JjL2xpbnV4L2x0cC9maXhlcy9tYWtl
+X2RvYy9tZXRhZGF0YScKSE9TVENDIG1ldGFkYXRhL21ldGFwYXJzZQpIT1NUQ0MgbWV0YWRhdGEv
+bWV0YXBhcnNlLXNoCi9tbnQvZXh0L3NyYy9saW51eC9sdHAvZml4ZXMvbWFrZV9kb2MvbWV0YWRh
+dGEvcGFyc2Uuc2ggPiBsdHAuanNvbgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSAnL21udC9l
+eHQvc3JjL2xpbnV4L2x0cC9maXhlcy9tYWtlX2RvYy9tZXRhZGF0YScKaWYgWyAtZCAudmVudiBd
+OyB0aGVuIGlmIFsgIngiICE9ICJ4IiBdOyB0aGVuIC4gLnZlbnYvYmluL2FjdGl2YXRlLmZpc2g7
+IGVsc2UgLiAudmVudi9iaW4vYWN0aXZhdGU7IGZpOyBmaTsKc3BoaW54LWJ1aWxkIC1iIGh0bWwg
+LiBodG1sClJ1bm5pbmcgU3BoaW54IHY1LjMuMAoKRXh0ZW5zaW9uIGVycm9yOgpDb3VsZCBub3Qg
+aW1wb3J0IGV4dGVuc2lvbiBzcGhpbnguYnVpbGRlcnMuZXB1YjMgKGV4Y2VwdGlvbjogTm8gbW9k
+dWxlIG5hbWVkICdpbWdoZHInKQptYWtlOiAqKiogW01ha2VmaWxlOjI3OiBhbGxdIEVycm9yIDIK
+ClRoYW5rIHlvdSwKLQlSaWNhcmRvLgoKCj4gLS0tCj4gSGksCj4KPiBmaXJzdCwgSSdtIHNvcnJ5
+IGZvciBhIHJlZ3Jlc3Npb24uIEkgdGVzdGVkIGFsbCB0aGUgcHJldmlvdXMgdmVyc2lvbnMKPiBj
+YXJlZnVsbHkgZXZlbiBsb2NhbGx5LCBidXQgaW4gdGhlIGVuZCB0aGUgZmluYWwgdmFyaWFudCBJ
+IG9idmlvdXNseQo+IG9taXQgdG8gdGVzdC4KPgo+IFRlc3RlZDoKPiBodHRwczovL2FwcC5yZWFk
+dGhlZG9jcy5vcmcvcHJvamVjdHMvbGludXgtdGVzdC1wcm9qZWN0L2J1aWxkcy8yNzc4NDU4OC8K
+Pgo+IEFsdGVybmF0aXZlbHksIHdlIGNvdWxkIGtlZXAgb2xkIGRpc3Ryb3MgYW5kIGp1c3QgYWRk
+IHN0YW5kYXJkLWltZ2hkcgo+ICh3aXRob3V0IHZlcnNpb24pIHRvIGRvYy9yZXF1aXJlbWVudHMu
+dHh0LiBCdXQgc29vbmVyIG9yIGxhdGVyIHdlIHdpbGwKPiBuZWVkIHRvIHVwZ3JhZGUgdGh1cyBJ
+J20gc2VuZGluZyB0aGlzIHZlcnNpb24uCj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+Cj4gIC5y
+ZWFkdGhlZG9jcy55bWwgICAgIHwgNCArKy0tCj4gIGRvYy9yZXF1aXJlbWVudHMudHh0IHwgMiAr
+LQo+ICAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgo+
+IGRpZmYgLS1naXQgYS8ucmVhZHRoZWRvY3MueW1sIGIvLnJlYWR0aGVkb2NzLnltbAo+IGluZGV4
+IDU0MzRlZjQ5ZDYuLjUxODI1ZGE3N2YgMTAwNjQ0Cj4gLS0tIGEvLnJlYWR0aGVkb2NzLnltbAo+
+ICsrKyBiLy5yZWFkdGhlZG9jcy55bWwKPiBAQCAtMSw5ICsxLDkgQEAKPiAgdmVyc2lvbjogMgo+
+Cj4gIGJ1aWxkOgo+IC0gIG9zOiAidWJ1bnR1LTIyLjA0Igo+ICsgIG9zOiAidWJ1bnR1LTI0LjA0
+Igo+ICAgIHRvb2xzOgo+IC0gICAgcHl0aG9uOiAiMy42Igo+ICsgICAgcHl0aG9uOiAiMy4xMiIK
+PiAgICBhcHRfcGFja2FnZXM6Cj4gICAgICAtIGF1dG9jb25mCj4gICAgICAtIGVuY2hhbnQtMgo+
+IGRpZmYgLS1naXQgYS9kb2MvcmVxdWlyZW1lbnRzLnR4dCBiL2RvYy9yZXF1aXJlbWVudHMudHh0
+Cj4gaW5kZXggNjMwMmVjZDlmMi4uMWI5YTk4NDU0NyAxMDA2NDQKPiAtLS0gYS9kb2MvcmVxdWly
+ZW1lbnRzLnR4dAo+ICsrKyBiL2RvYy9yZXF1aXJlbWVudHMudHh0Cj4gQEAgLTEsNiArMSw2IEBA
+Cj4gICMgVXNlIHRoZSBzYW1lIHNwaGlueCBhcyBvbiByZWFkdGhlZG9jcy5vcmcuIFdoZW4gdXBk
+YXRlZCwgbWFrZSBzdXJlCj4gICMgc3BoaW54LXJ0ZC10aGVtZSBpcyBjb21wYXRpYmxlIHdpdGgg
+c3BoaW54Lgo+IC1zcGhpbng9PTUuMy4wCj4gK3NwaGlueD09Ny4yLjYKPiAgc3BoaW54LXJ0ZC10
+aGVtZT09Mi4wLjAKPgo+ICBsaW51eGRvYz09MjAyMzEwMjAKCgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
