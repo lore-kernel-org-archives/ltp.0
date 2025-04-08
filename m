@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D233C3600C
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 06:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4939BC3600C
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 10:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744094126; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=3W8XutDfui+yzNueJZjNxshAeawVP4euf6yWKBLdRu8=;
- b=r2g3vwUFESWUEnbXwSczQOWfUzUJgM3TErNX5XFJKS3iFYgztZQjljfGhCHeW19W1PoBe
- iEllVm/+bGFqiv6jE9bSH7q7Rqc+LQL5guRUq5xNpc16I2a1mfneuSP7gob7RYX2LHKNFGV
- 0CmGXSwDe52x6iqF6cTdc9BtUrMZu/A=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744106870; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=GfknBZbNAFc+m8d5WljqoI/nCB79jiGIwnXKDviJfos=;
+ b=ods8gBqgrgEwP6wgjsASQ7/go7hhDqcE/HfRx2qRe0mF0a/7/230GK47lJgVO10E0NqNc
+ E2vSBaO1VC5KRfl9Snms0qufA96RO+qUxPCbPFMSr6eeOcYNAkFcRL8lK1rnmv6N4OAFAOK
+ a9LcwPayhni5T1uIJ0a0ZiFEH0fxaBU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5381B3CB044
-	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 08:35:26 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id AE6003CB359
+	for <ltp@archiver.kernel.org>; Tue,  8 Apr 2025 12:07:50 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68FD83CA6BB
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 08:35:04 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 42DC23C0574
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 12:07:29 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=jstancek@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DD1341000485
- for <ltp@lists.linux.it>; Tue,  8 Apr 2025 08:35:03 +0200 (CEST)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-43cf06eabdaso47709515e9.2
- for <ltp@lists.linux.it>; Mon, 07 Apr 2025 23:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1744094103; x=1744698903; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=HozNZKlYpLZA2PQ9tWC50E/FktQVo2i9guvQdqUh6KE=;
- b=PeFAfN31HowPSp+48SNkcGcqoqRwTqbFdOGDIBwf6fmjvdZmoKYI00K/fI+20G+dkG
- +RhVu9kl+qIc2lsGnoCxQ6FDRLj+k798OJSW4zEza4CsgRHz8z9ztCC9QN8gxrNqQJfR
- EClF7pm+AQZ/6l6gsGz9HFD3qB2q2zTAuliB9HW3Jc3otNFrsgP2AOZZNSiOG1Co3owO
- sxfNKAp5G2le0eiVw63x81nyXYTh3Fi6kvvjRO6ofu4JnYq/qT76mr8DFaBV6MtuGBZI
- 7O8b4n2z2tARmYHOAJSMHHx9MQOowBbCGWm6ZwyJHNjTjCOFpaaDqodHk3sMRDix5Dhm
- 9JqQ==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 493631000A4D
+ for <ltp@lists.linux.it>; Tue,  8 Apr 2025 12:07:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1744106846;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=X0roLoC2jA0RQ7VoGpKZLS9f+wRqxHvkKTcAGHNbNuQ=;
+ b=A9I+wM5RlKCuWqc8f0XpHWFErPIsU4U9nU4x834b0E+/U4IwDv4uDyp8dXgTNMq9aXqvFw
+ mNfD/5EZpq4BVuI5cp70TU/9SbosMYkxWKFIMgaUgodGuWP2YG7mnW0RzCfOk9OM/7Cqt7
+ K3qdShYCnA8TbjF4tl9pJW7AF4nIkRU=
+Received: from mail-vk1-f200.google.com (mail-vk1-f200.google.com
+ [209.85.221.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-n2F1ChdJPNa_YyUnwXYsSg-1; Tue, 08 Apr 2025 06:07:25 -0400
+X-MC-Unique: n2F1ChdJPNa_YyUnwXYsSg-1
+X-Mimecast-MFC-AGG-ID: n2F1ChdJPNa_YyUnwXYsSg_1744106844
+Received: by mail-vk1-f200.google.com with SMTP id
+ 71dfb90a1353d-523fb4b14c2so1195448e0c.1
+ for <ltp@lists.linux.it>; Tue, 08 Apr 2025 03:07:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1744094103; x=1744698903;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=HozNZKlYpLZA2PQ9tWC50E/FktQVo2i9guvQdqUh6KE=;
- b=loiwOO+JqCWHMxi8YYIBCUESx5WeJ6rnPxST7EKW6OvpS3X/oB4nryMII9+JtSd1UW
- r0vJN0gS1dbaKfyxySyTe/4Z/d1X2PjXBrvzwkbATYQ2uoFqBymfH16epOQi6k3NbFeu
- 4yLuqnmPeBG0X1g6p05GdHJjTxM8GQn1r3Q3u7jO9SBCL8I48Jn2Ddlmrjws5AsLF3uX
- QpfFohVzZpgeK72nQDHIOwv5H4idNmqSfj/jleh7hmovPoVQWBCzRqfv0gbdrWdhgp7N
- vhUIurvwHMiBGpXnff8IIc1NYW23DftT+nifPTI1Y6nnYNH6nY+Vk314KiqC+kPt3Bxf
- /qCw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWHoODrvl3hrSXinwQw+fkWcnOxi93NRSdMlTEiQ/9o8UA2iq08janX1eUSGVx1oIkAsqM=@lists.linux.it
-X-Gm-Message-State: AOJu0YwDsTicozk/UI1TfXAXOMxvnqGMxxki7kbhsyoYnpCm2LWqQAXV
- urjAH2GKPoBqrGL/qAJqqRJjbfx7LxBBRv7yEVYDgwu5xkYnkjS2q0o79dI/Cuk=
-X-Gm-Gg: ASbGnct/L8J0E7sLnc8b0jbquCXxnfYS/eRYDu1anXlLyh0yNtAEiuQOerEPiygdE7F
- vdfT9yvUkPZ0Bns3RBMXusGo5jV8PnxZhYt0bYNHNUF0rbdCFzAKi1VrBWct5pAvUm2PVZNEA03
- Isz/znGerPp4neZEtLOoqVO9SpGRX7QWlTJOANiVCvMlbZCkp7O4UR8wL5ae4Ntuos5a4PhDub0
- 8wRlfIMiVB6ndrLAjonWKhHFYIrXOGgr8/YGbGKHrMbzMn9DulEyw5RppBgNF1RHMHTJpghKckm
- 65UdKq/lltSUxNjSYFzgZGzlqeigJVktSU+8YSHtQIQ2zPAceusJ/9SYumLz+3crMbpqik8Pfbr
- etpPZLKt94bgSbfXjdNGli9MmBytDhspJ4Bm5B1rGy7n49XPbtr3jD/34m6fgKMEd96aNNO3lrm
- sFyixv79E=
-X-Google-Smtp-Source: AGHT+IHal2g0Xw+saCSvE4hAhL3eeJ8p7SiYsc3xHLmc3noUIPYJYsxPKSrw5TIUvG4aIHl72gQvnw==
-X-Received: by 2002:a05:600c:3489:b0:43c:f87c:24ce with SMTP id
- 5b1f17b1804b1-43ecf9c77ecmr119239125e9.21.1744094103270; 
- Mon, 07 Apr 2025 23:35:03 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
- (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
- [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-43ec36691b3sm153099795e9.34.2025.04.07.23.35.02
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 07 Apr 2025 23:35:02 -0700 (PDT)
-Message-ID: <bfe38d56-8ec1-4750-8f28-61dc41c83aa4@suse.com>
-Date: Tue, 8 Apr 2025 08:35:02 +0200
+ d=1e100.net; s=20230601; t=1744106844; x=1744711644;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=X0roLoC2jA0RQ7VoGpKZLS9f+wRqxHvkKTcAGHNbNuQ=;
+ b=GbhBn9xvJFvHAoqeIb1PwsJ1A/pyaRWDcLtP9wWHGrrOHRRXTXcdDxuqqwN7lJOAhq
+ qcy35kGzdj/Ki6GBpfeibdGbCxYc04RYh9OqhUsv6Ktmtt1w8lSK53zS3uGck6aq6A0H
+ uCwzXYtFrMZsi0UroBEQiBk8fgczLqc1U+DiG/Pga3APBCFO3I/vJBOuYTkdP4o+COeV
+ MpfGDhqTfZm1HPxnUBEkSHQgE92c6JPwVD0IjUi8arWQXrVSNTJY/Eict8TCWY6rHUh7
+ XJZHxM8OXWydvwuODyO1TFWeRUMKWTt6U+LGd3TbcSlYP+PA00fL+Tr1latcsQA6gxrJ
+ psKw==
+X-Gm-Message-State: AOJu0Yx17Ee243EtUr+pBCKqtjRtrRYY7wYzCIh9I6n+cQZnBpi95/0v
+ VlNiMFBJryqoQqjC3O8AXV2FxGaCWn0Y9VuFcef6V3Lw6EQ7oEq/OmHsi+i5gOYrX24M47dcqXR
+ hWb4ZrAz5xUcv98Ti8Xkq4tubUjBRXH3HvjzOlBLV7dxuPmq1S+S9R9/3rFrGbFiosQl78AO8il
+ h5djgBMenBUxIeJH4HijXXz98=
+X-Gm-Gg: ASbGncsYnFoqE0dpn235MssMYanWwd/E8falSzoL8InOIvA34/hAEQFxUJOE5GYGJdw
+ sjSNu/iYMbjMk++jb2PZpLwgRYu3jEaufYgrgGexcC6tjqK4hm0jMTBn8XA2eYhJ9I71oAmyA
+X-Received: by 2002:a05:6102:3f87:b0:4c3:6ba1:4129 with SMTP id
+ ada2fe7eead31-4c855482f61mr14008755137.20.1744106844606; 
+ Tue, 08 Apr 2025 03:07:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfOPiwyoPJJkBWkBKnZ01YCxXAFU9DaTVSjTys/tgxY0pTYeS8vCZ9YhZ6wCmP9Snjdl3UGbuzy7wbvzEqSDY=
+X-Received: by 2002:a05:6102:3f87:b0:4c3:6ba1:4129 with SMTP id
+ ada2fe7eead31-4c855482f61mr14008741137.20.1744106844246; Tue, 08 Apr 2025
+ 03:07:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20250407150133.115790-1-pvorel@suse.cz>
- <20250407150133.115790-3-pvorel@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20250407150133.115790-3-pvorel@suse.cz>
+References: <20250404143423.16268-1-chrubis@suse.cz>
+In-Reply-To: <20250404143423.16268-1-chrubis@suse.cz>
+Date: Tue, 8 Apr 2025 12:07:08 +0200
+X-Gm-Features: ATxdqUE1LCYy6TomL_uIInS8jFOHsbGd5FuOpSY6vDc-lRwyza4AeqzHTnG34IQ
+Message-ID: <CAASaF6xybTMG1ZNqh0oc3Rv7Nx2Qt0poBt22JbOyaXNkCZUD8w@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 34QtY3B7WKTl0AUxHIDdFNy-tjj8O5VRR_3hsAhQ2BI_1744106844
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/3] doc: Add sphinx to requirements.txt
+Subject: Re: [LTP] [PATCH v2] lib/tst_test.c: Fix tst_brk() handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,84 +104,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: =?UTF-8?Q?Ricardo_B_=2E_Marli=C3=A8re?= <rbm@suse.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-On 4/7/25 17:01, Petr Vorel wrote:
-> Although that slightly prolongs creating virtualenv (and CI job), but
-> it's probably better to handle it as the other requirements.
->
-> Use the same sphinx and sphinx-rtd-theme versions as on readthedocs.org.
-> That way we get doc generation tested by CI and by local build (to avoid
-> incompatibility changes).
->
-> Also don't install python3-sphinx via apt in CI job to keep usage the
-> same as in readthedocs.org.
->
-> Suggested-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes from v4:
-> * Use sphinx version used on readthedocs.org (to really test in devel
->    and github CI what will be deployed).
-> * Don't install sphinx in github CI (python3-sphinx package)
->
->   .github/workflows/ci-sphinx-doc.yml | 2 +-
->   doc/developers/documentation.rst    | 2 --
->   doc/requirements.txt                | 4 ++++
->   3 files changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/.github/workflows/ci-sphinx-doc.yml b/.github/workflows/ci-sphinx-doc.yml
-> index a5f9d74d1f..e77c766871 100644
-> --- a/.github/workflows/ci-sphinx-doc.yml
-> +++ b/.github/workflows/ci-sphinx-doc.yml
-> @@ -23,7 +23,7 @@ jobs:
->         - name: Install sphinx and autotools
->           run: |
->             sudo apt update
-> -          sudo apt install autoconf make python3-sphinx python3-virtualenv
-> +          sudo apt install autoconf make python3-virtualenv
->   
->         - name: Run configure
->           run: |
-> diff --git a/doc/developers/documentation.rst b/doc/developers/documentation.rst
-> index 27c847e125..a303253693 100644
-> --- a/doc/developers/documentation.rst
-> +++ b/doc/developers/documentation.rst
-> @@ -23,8 +23,6 @@ Before building, make sure you have python3 ``virtualenv`` module installed.
->       # prepare virtual environment
->       python3 -m virtualenv .venv
->       . .venv/bin/activate
-> -
-> -    pip install sphinx # usually packaged in distros
->       pip install -r requirements.txt
->   
->       # build documentation
-> diff --git a/doc/requirements.txt b/doc/requirements.txt
-> index 742fb8b4bb..6302ecd9f2 100644
-> --- a/doc/requirements.txt
-> +++ b/doc/requirements.txt
-> @@ -1,3 +1,7 @@
-> +# Use the same sphinx as on readthedocs.org. When updated, make sure
-> +# sphinx-rtd-theme is compatible with sphinx.
-> +sphinx==5.3.0
-I'm still not 100% sure about this, since readthedocs might change the 
-version and "pip install sphinx==5.3.0" would override it. But we can 
-try and see how it goes in the future.
->   sphinx-rtd-theme==2.0.0
-> +
->   linuxdoc==20231020
->   sphinxcontrib-spelling==7.7.0
-
-Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBBcHIgNCwgMjAyNSBhdCA0OjM04oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
+c2UuY3o+IHdyb3RlOgo+Cj4gVGhpcyBtYWtlcyB0aGUgdHN0X2JyaygpIGhhbmRsaW5nIGNsZWFu
+ZXIgYW5kIHNhbmVyIGFzIGluc3RlYWQgb2YKPiBwcm9wYWdhdGluZyB0aGUgdHN0X2JyaygpIHJl
+c3VsdCBpbiBhIHJldHVybiB2YWx1ZSBhbiBhYm9ydCBmbGFnIGlzCj4gaW50cm9kdWNlZCBpbnRv
+IHRoZSBzaGFyZWQgbWVtb3J5Lgo+Cj4gTm93Ogo+Cj4gLSBBbGwgdGhlIHByb2Nlc3NlcyBidXQg
+dGhlIGxpYnJhcnkgb25lIHRoYXQgcmVwb3J0cyB0aGUgcmVzdWx0cyBleGl0Cj4gICB3aXRoIDAK
+Pgo+IC0gdHN0X2JyayhUQlJPSywgLi4uKSBpbmNyZW1lbnRzIHJlc3VsdCBjb250ZXJzLCBzZXRz
+IHRoZSBhYm9ydCBmbGFnLAo+ICAgZXhpdCBjdXJyZW50IHByb2Nlc3MgYW5kIG1ha2VzIHN1cmUg
+YWxsIHByb2Nlc3MgZ3JvdXAgcHJvY2Vzc2VzIGFyZQo+ICAgdGVybWluYXRlZAo+Cj4gLSBhbGwg
+b3RoZXIgdHN0X2JyaygpIHZhcmlhbnRzIHdpbGwganVzdCBpbmNyZW1lbnRzIHRoZSBjb3VudGVy
+cyBhbmQKPiAgIGV4aXRzIHRoZSBjdXJyZW50IHByb2Nlc3MgKHdoaWNoIGlzIGN1cnJlbnQgaXRl
+cmF0aW9uIGZvcgo+ICAgLmFsbF9maWxlc3lzc3RlbXMsIC50ZXN0X3ZhcmlhbnRzLCBldGMuKQo+
+Cj4gVGhpcyBtYWtlcyB0aGUgdHN0X2JyaygpIGJlaGF2aW9yIHdlbGwgZGVmaW5lZCBzbyB3ZSBj
+YW4gbm93IGV2ZW4gY2FsbAo+IHRzdF9icmsoKSB3aXRoIFRGQUlMIGFuZCBUUEFTUyBhcyB3ZWxs
+LiBBbmQgc2luY2UgVEJST0sgaXMgc3VwcG9zZWQgdG8KPiBleGl0IHRoZSB0ZXN0IGltbWVkaWF0
+ZWx5IChpLmUuICB1bnJlY292ZXJhYmxlIGVycm9yKSB3ZSBhcmUgbm93Cj4gcHJvcGVybHkgZG9p
+bmcgc28uCj4KPiBUaGUgY2FzZSB0aGF0IG1haW4gdGVzdCBwaWQgY2FsbGVkIFRCUk9LIHdhcyB3
+b3JraW5nIGNvcnJlY3RseSBiZWZvcmUKPiB0aGlzIHBhdGNoLCBzaW5jZSBzZW5kIHRoZSBTSUdL
+SUxMIHNpZ25hbCB0byB0aGUgcHJvY2VzcyBncm91cCBhZnRlciB3ZQo+IHdhaXRlZCBmb3IgdGhl
+IG1haW4gdGVzdCBwaWQuIEFsbCB0aGF0IHdhcyBtaXNzaW5nIGlzIGEgY29kZSB0aGF0IHNlbmRz
+Cj4gYSBzaWduYWwgdG8gdGhlIG1haW4gdGVzdCBwaWQgaW4gdGhlIGNhc2UgdGhhdCBUQlJPSyB3
+YXMgdHJpZ2dlcmVkIGJ5Cj4gb25lIG9mIGl0J3MgY2hpbGRyZW4gYW5kIG5vdyB3ZSBwcm9wZXJs
+eSBraWxsIGFsbCB0ZXN0IHByb2Nlc3NlcyBpbiB0aGF0Cj4gY2FzZSBhcyB3ZWxsLgo+Cj4gVGhl
+cmUgaXMgYWxzbyBzcGVjaWFsIGNhc2Ugd2hlcmUgd2UgY2FsbCB0c3RfYnJrKCkgYmVmb3JlIHRo
+ZSB0ZXN0Cj4gbGlicmFyeSBoYXMgYmVlbiBpbml0aWFsaXplZCAobW9zdGx5IGRvbmUgYnkgdGhl
+IEMgc2hlbGwgaGVscGVycykgaW4KPiB0aGF0IGNhc2Ugd2UgaGF2ZSB0byBleGl0IHdpdGggYSBw
+cm9wZXIgcmV0dXJuIHZhbHVlLCB3aGljaCBpcyBub3JtYWxseQo+IGRvbmUgYnkgdGhlIHRlc3Qg
+bGlicmFyeSBwcm9jZXNzLgo+Cj4gU2lnbmVkLW9mZi1ieTogQ3lyaWwgSHJ1YmlzIDxjaHJ1Ymlz
+QHN1c2UuY3o+CgpBY2tlZC1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+CgoK
+LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
+cAo=
