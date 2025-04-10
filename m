@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB6AFC3601E
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 05:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 824AAC3601E
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 05:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744263149; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744263591; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=a+GQijybxPN7NIkkWkyw4EFspP/pW0sNfe+yZ7ce0H8=;
- b=jUgI8gzD7KEnOAcvVaVctD4iifWQly3N75qiEecf+BLmULH3j0MCaq/RSpf8sq7OmrVi6
- H20sJgKPAVl3E7WKFnh6rPSFGA6haqreB0EOYRpfrx9DATeyIX2nswdtDbUgg88bmlAFXIH
- zmYoupkr7ySI/7G7gmcyi97n+TEAyts=
+ bh=+Z8zFVRnoSLpisAOPd8g3w/ux/jb8uS9wkfZGy+fq7I=;
+ b=HLrl30wzR1Tmx81hmmyXNidV6j2nNul7eFP1OP/kHKg8bMr6IvQp6ewEbWmaPejxa7FUX
+ uIxSkEXqr+6AJrZ/wU19TY/b/Bzc274dU0fYZDYOVigAWqIkwlSnVjmUnYqlGmIVJkc+0z3
+ uUTw1UNZwK62xbZnxgE6BrS7x1ZJ7fM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 191453CB44A
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 07:32:29 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 14DF13CB45A
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 07:39:51 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AEFE3CA46A
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:32:06 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
+ by picard.linux.it (Postfix) with ESMTPS id 704543C193C
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:39:28 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27F832009AC
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:32:03 +0200 (CEST)
-Received: by mail-wm1-x342.google.com with SMTP id
- 5b1f17b1804b1-43cef035a3bso2682215e9.1
- for <ltp@lists.linux.it>; Wed, 09 Apr 2025 22:32:03 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5254B600954
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:39:27 +0200 (CEST)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-43ea40a6e98so3733165e9.1
+ for <ltp@lists.linux.it>; Wed, 09 Apr 2025 22:39:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1744263122; x=1744867922; darn=lists.linux.it;
+ d=suse.com; s=google; t=1744263567; x=1744868367; darn=lists.linux.it;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=pMWTC9cSiZXW49/zzmqWRMs+DVD/X03/vic9OUobLDk=;
- b=gL60LTyLH+SksP9A8XBxbGjBXHMX9TWGpyDfkF90YsbRh4UfMHZ5+WInhuDrhyKg5N
- 1LQjVeWhVlM2BdUuybJqrYlxih7+9UmlVRUW1Hj4x9vti+6m7YJhhZOqmM2ByG8j58P9
- OIZUzwATxGsDhGBPxgdeFyYckEmOjmAqSB4L1UOzHSYZUnbzSnRIVo+DTjBpHstBrmfW
- Cc11SaK8tRbgSsSDBZuaUFJ0SCqmR6hCb8MMfEec6MsV97/eDAc0oCbZ7JGVaRNIKGs0
- /NoQdtKYy+c5xnBPzM5pD+kOstadeCgJLQXMrKL6IaiZt17jdOLdWCnAmKPABz5JZnyA
- 7eMw==
+ bh=f1e1HtbZZqjy6wcOZyG6Ec0MVJzCHdwSjAcbVFmN1CI=;
+ b=NDjt9IAc4tuu5IQ0LL5aYhFxGOlYFgIxyNoSSdHJZn33IzpAbRXFbzES6vL1c61ZW0
+ /MifrJudZcOoZgIE2Zp3gb1V7kMM1nSL9DGDJzKgBDUFwCJ3E2hs/Qz/QD/H0DGi5p1H
+ oPUSW5vA/390AReFxBSni/dCeR8WnYQ+YMnroUTOgaPcbX2MTLGFhuAmv0hggD4GSvF9
+ jXTot2ws9ymvEy4tF38YWl3lHdE6cwPEXJo76ZlbHvkEzSJ+WnSxXBqeF4fKsi4zs+4b
+ ozXougjmuwGMFB2O7q6Di6uhZNq+rv+BF4+L1lZdZbqx67A/t6XZTXGest/4vOHX9dyT
+ Wdlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1744263122; x=1744867922;
+ d=1e100.net; s=20230601; t=1744263567; x=1744868367;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=pMWTC9cSiZXW49/zzmqWRMs+DVD/X03/vic9OUobLDk=;
- b=v/gj70qry2GaVOql1eE4PiPvuQVY73w4WNINSxvNtccrB1ZLEnyopKJ7onyMYKZxWE
- FeD0PZY1SIPYe80PEbzDC8IjWDG1PBPQUDbWC/kAXkruNMYEJbf8bACXsYNp6hhpyw5b
- SQlBtTjasDv8oN8l4lFRkpOrkThqBs0ik1ehclCh12OqMpLAgIFOyeb8b/NGeVbg7rdU
- 6ujtQx+rGEhn20fK5v0SjhzWbIAOEjPMHpL8lkjuTX0skpWWo1v+hK3yGdpThThQyOyX
- +GmABunXkLxMcWfmiwVbB4OebBoAilPfmBHAHa9/lXKOhQkuomphAWlGtUvJ7wolshst
- QsDw==
-X-Gm-Message-State: AOJu0YysI4hIKeFzt8VN8kKnYOlU1qGlVZg0wLXtzsZ1fK/DRgtbFPU2
- kSuee9zB4puzba7mUBEMjPNAmrZIpVGGd3f2iHBhqW1REhucMj4Pb1tR/CDwWG8kaS8kftMsiVN
- lyQv5
-X-Gm-Gg: ASbGncsuYE4y9XSJ/3/5T4BcrYd5kd4ZnzH/6p1ZBvAu7Xf01c10a1RsHbi+OiY9/6e
- UbxLkTq7XZ4Bct7UhmHEoCWXT3hvK57K+Ad0hcoSjbaOF3QzPVZXff6quFM4dN/lwNDxSgP04ZW
- V+1MiuzBkHoMlbYoz1a4f4nfmqVaTJORgw7iIUfjsAGrnJOFZwDr0ggM6u79EBDi3SZ0BQgpzOq
- jy4UEsRqprNCyvUVoOsG6wHJNEovjHo8p0HY6r7GhRdUu0nBZAbdQASMUnBd6QdNnj562Gfxd0Z
- vHqzgjALc+jjtarHFhOwp74I
-X-Google-Smtp-Source: AGHT+IHd/4FrMDaYyK+9SLyzNHdL8Ag9ro9f+O3RnIednxNnWtN9DARhYzYwJlTQrsNdNE6DoiUoEw==
-X-Received: by 2002:a5d:648c:0:b0:391:49f6:dad4 with SMTP id
- ffacd0b85a97d-39d8f4e4712mr960277f8f.41.1744263122420; 
- Wed, 09 Apr 2025 22:32:02 -0700 (PDT)
+ bh=f1e1HtbZZqjy6wcOZyG6Ec0MVJzCHdwSjAcbVFmN1CI=;
+ b=LEgziJbp55ig2jIu3EoA55Z8ZyEdW2r2Q2Tj692uICod4PujHhMzdVGyfMI1XeTSVU
+ 1dK+DBAdib/LLoRcvqpFyA8/qc985ql00qHGWBWrOz/UV0sCr2EWIQWeNUDd3FU246oi
+ w2ELmOtXzLJadcT1GC1k8fbPeURltfaq6R7TfUh7XRZ4IuU70yfbaaJDRgMDsDfBKtV4
+ XXC2KOd1fT6e5faEQu1b8sWP1dB6+LwDmjevp7BH9L9z7Cu+o7ncJl4eoWnc9sNcOwVc
+ gyNd51r+FBgAFzZpjZlzKGDibfcrj/XO9TkaeAG/tmUreY7PWWMAxjuBm+EAOIMR59Wj
+ szkg==
+X-Gm-Message-State: AOJu0YymNJyPKwcMewQyHYAxn88hY/5jeat2FjO6FMVvFf09Lz/o6nF5
+ fZIghymHYiIKrIGrn+MhjBWHlKWq2CDfossJDhCVTz9n6oKT2+mr4iiPcoMsYw==
+X-Gm-Gg: ASbGncun3kaXmqzwN4jx8bx3e7kp+3i6otZ9W8FrZ9/W+bE5J1Im0C/MvtR9s3ksQaw
+ TXfcdPZK+dJAx2TFuN93OEdFg7TceiXaHTfVYqyBGiTGlC/OFW2cmiCFzm6gwBkreYmEVxdqwl3
+ sdqCPr9ElSLXdiTlQl+z1AKmAE93SPQ4ul6RMrzN/6FGv938O+20eMvcum0fEYKoAT9B7c6IwMQ
+ X4Xi3N6wYvzQvtXwSVzPMLwnsQYjSXOzt3pM7EHAcujJuk1Ew8v4AQ+D5dSJa3ZLpgJ2CtkUDzj
+ w9okxpoWQwQ7tlVdj0eVZzur
+X-Google-Smtp-Source: AGHT+IEI/iVfx6iAB65LkmsIKCA9zZFurFDJxoP6dVZXYviO/8BSc+wOBjpX12beC0JkohUvKLxacA==
+X-Received: by 2002:a5d:59ad:0:b0:39c:13fa:3eb with SMTP id
+ ffacd0b85a97d-39d8f4e43c0mr898196f8f.39.1744263566657; 
+ Wed, 09 Apr 2025 22:39:26 -0700 (PDT)
 Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-306df06a165sm2539416a91.4.2025.04.09.22.32.00
+ d2e1a72fcca58-73bb1e6aac6sm2441121b3a.179.2025.04.09.22.39.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Apr 2025 22:32:01 -0700 (PDT)
-Date: Thu, 10 Apr 2025 01:31:57 -0400
+ Wed, 09 Apr 2025 22:39:26 -0700 (PDT)
+Date: Thu, 10 Apr 2025 01:39:22 -0400
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Z/dXzRQsXnXKYYkh@wegao>
+Message-ID: <Z/dZinuUeyrkfQhG@wegao>
 References: <20240415114652.22687-1-wegao@suse.com>
  <20241212085058.29551-1-wegao@suse.com>
- <20241212085058.29551-3-wegao@suse.com>
- <20250227164338.GG3130282@pevik>
+ <20241212085058.29551-2-wegao@suse.com>
+ <20250227162717.GF3130282@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250227164338.GG3130282@pevik>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+In-Reply-To: <20250227162717.GF3130282@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/2] ioctl_fiemap01: New test for fiemap ioctl()
+Subject: Re: [LTP] [PATCH v5 1/2] tst_safe_macros.h: Add SAFE_STATVFS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,140 +105,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Feb 27, 2025 at 05:43:38PM +0100, Petr Vorel wrote:
+On Thu, Feb 27, 2025 at 05:27:17PM +0100, Petr Vorel wrote:
 > Hi Wei,
 > 
-> ...
+> > +++ b/include/tst_safe_macros.h
+> > @@ -429,6 +429,27 @@ static inline int safe_statfs(const char *file, const int lineno,
+> >  #define SAFE_STATFS(path, buf) \
+> >  	safe_statfs(__FILE__, __LINE__, (path), (buf))
 > 
+> > +static inline int safe_statvfs(const char *file, const int lineno,
+> > +                              const char *path, struct statvfs *buf)
+> > +{
+> > +	int rval;
 > > +
-> > +	ret = ioctl(fd, FS_IOC_FIEMAP, fiemap);
-> > +	if (ret == -1) {
-> > +		if (errno == ENOTTY)
-> > +			tst_res(TCONF, "ioctl(FS_IOC_FIEMAP) not implemented");
-> I wonder if it's safe to put errno == ENOTTY check into SAFE_IOCTL().
-> We have similar checks in safe_socket() and other.
-> 
-> e.g.:
-> #define TTYPE (errno == ENOTTY ? TCONF : TBROK)
-> 
-> Maybe it's not safe, ENOTTY might be caused by some test error which deserves
-> TBROK:
-> 
->        ENOTTY fd is not associated with a character special device.
-> 
->        ENOTTY The specified operation does not apply to the kind of object that the file descriptor fd references.
-> 
-I remove this code in next version, i have done quick test on our old build such as 12-sp5 , result is pass
-
-susetest:~ # cat /etc/os-release
-NAME="SLES"
-VERSION="12-SP5"
-VERSION_ID="12.5"
-PRETTY_NAME="SUSE Linux Enterprise Server 12 SP5"
-ID="sles"
-ANSI_COLOR="0;32"
-CPE_NAME="cpe:/o:suse:sles:12:sp5"
-susetest:~ # uname
-uname    uname26
-susetest:~ # uname -r
-4.12.14-122.231-default
-
+> > +	rval = statvfs(path, buf);
 > > +
-> > +static struct tst_test test = {
-> > +	.mount_device = 1,
-> > +	.mntpoint = MNTPOINT,
-> > +	.all_filesystems = 1,
-> > +	.skip_filesystems = (const char *const[]) {
-> > +		"exfat", "vfat", "ntfs", "tmpfs", NULL
+> > +	if (rval == -1) {
+> > +		tst_brk_(file, lineno, TBROK | TERRNO,
+> > +			"statvfs(%s,%p) failed", path, buf);
+> > +	} else if (rval) {
+> > +		tst_brk_(file, lineno, TBROK | TERRNO,
+> > +			"Invalid statvfs(%s,%p) return value %d", path, buf,
+> > +			rval);
+> > +	}
 > 
-> Is the function unimplemented on these (even on tmpfs)? I would expect that but
-tmpfs is an in-memory filesystem and does not store any file into real disk, so it
-not suppose to support it. 
-> better to explain in the commit message why it's skipped.
-I have done some check on other filesystems such as exfat/vfat/ntfs, it show unsupport
-error, still need further investigation if we want figure out root cause, just for
-safe reason i skip those filesystem in this case currently.
-
-
-attach test log:
-cat /etc/os-release
-NAME="openSUSE Leap"
-VERSION="15.5"
-ID="opensuse-leap"
-ID_LIKE="suse opensuse"
-VERSION_ID="15.5"
-PRETTY_NAME="openSUSE Leap 15.5"
-ANSI_COLOR="0;32"
-CPE_NAME="cpe:/o:opensuse:leap:15.5"
-BUG_REPORT_URL="https://bugs.opensuse.org"
-HOME_URL="https://www.opensuse.org/"
-DOCUMENTATION_URL="https://en.opensuse.org/Portal:Leap"
-LOGO="distributor-logo-Leap"
-
-
-tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:678: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
-tst_test.c:1724: TINFO: Overall timeout per run is 0h 02m 00s
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
-tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
-tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
-tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
-tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
-tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:105: TINFO: Skipping bcachefs because of FUSE blacklist
-tst_supported_fs_types.c:170: TINFO: Skipping vfat as requested by the test
-tst_supported_fs_types.c:170: TINFO: Skipping exfat as requested by the test
-tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
-tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
-tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
-tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
-
-tst_test.c:1833: TINFO: === Testing on vfat ===
-tst_test.c:1170: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocNjlayn/mntpoint fstyp=vfat flags=0
-ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
-ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
-tst_test.c:1797: TBROK: Test killed by SIGSEGV!
-
-
-
-tst_test.c:1833: TINFO: === Testing on exfat ===
-tst_test.c:1170: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_ioclNusF7/mntpoint fstyp=exfat flags=0
-ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
-ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
-tst_test.c:1797: TBROK: Test killed by SIGSEGV!
-
-
-
-tst_test.c:1833: TINFO: === Testing on ntfs ===
-tst_test.c:1170: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocGtgwCr/mntpoint fstyp=ntfs flags=0
-tst_test.c:1183: TINFO: Trying FUSE...
-ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
-ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
-tst_test.c:1797: TBROK: Test killed by SIGSEGV!
-
-
-
-tst_test.c:1833: TINFO: === Testing on tmpfs ===
-tst_test.c:1170: TINFO: Skipping mkfs for TMPFS filesystem
-tst_test.c:1146: TINFO: Limiting tmpfs size to 32MB
-tst_test.c:1183: TINFO: Mounting ltp-tmpfs to /tmp/LTP_iocUtSP0X/mntpoint fstyp=tmpfs flags=0
-ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
-ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
-tst_test.c:1797: TBROK: Test killed by SIGSEGV!
-
-
+> @Wei We usually add only function signature to headers, the rest goes into
+> lib/tst_safe_macros.c. The only exception are functions in
+> include/tst_safe_macros_inline.h due off_t or structs which contain it, which is
+> not this case.
+> 
+> Besides following ioctl_fiemap01.c it could be used also in libs/swap/libswap.c
+> and lib/tst_fill_fs.c, where we don't even check return code. Not that many
+> cases but probably useful.
+> 
+> FYI fstatvfs() with TBROK is used in fsync02.c not sure if to add it as well.
+Sure, i can take a look once above patch merged, thanks for your information.
 > 
 > Kind regards,
 > Petr
