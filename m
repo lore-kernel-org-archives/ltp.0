@@ -4,101 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B92E0C3601E
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 14:50:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D67B8C3601E
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 15:29:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A57833C0574
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 16:50:47 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id F3ACC3CB50F
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 17:29:39 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BC2FE3CB52D
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 16:50:30 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=gotplt.org (client-ip=23.83.212.18;
- helo=bisque.elm.relay.mailchannels.net; envelope-from=siddhesh@gotplt.org;
- receiver=lists.linux.it)
-Received: from bisque.elm.relay.mailchannels.net
- (bisque.elm.relay.mailchannels.net [23.83.212.18])
+ by picard.linux.it (Postfix) with ESMTPS id 35ACB3C9EB0
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 17:29:22 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CC023140017A
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 16:50:26 +0200 (CEST)
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
- by relay.mailchannels.net (Postfix) with ESMTP id 7336E183960;
- Thu, 10 Apr 2025 14:50:24 +0000 (UTC)
-Received: from pdx1-sub0-mail-a228.dreamhost.com
- (100-96-135-11.trex-nlb.outbound.svc.cluster.local [100.96.135.11])
- (Authenticated sender: dreamhost)
- by relay.mailchannels.net (Postfix) with ESMTPA id C77ED1830B8;
- Thu, 10 Apr 2025 14:50:23 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1744296624; a=rsa-sha256;
- cv=none;
- b=tc2lpFbwk8jnNlzZxhTdJR+0tUlm/N8biAgLfXipx+ENhsK603Lp70iydt6Nr8ip+CHez2
- jMu+SjKN3bRNBBW2DA5eMcMn8ikjr93P7NnEG0ESZUOuYpJSF+Kq/N2FaNHJSUH1FxNj8V
- 2U0MEC77oBrcTmqGML2cF/6wYcxyxYouQ6Ge7kxSILwB2bQuOO8sblZURUtwGyV8fr0G6v
- JStO1ZcAAxNtitPUcVk88VwuNyjRA6Oq2vEAWbt50rWgqzUtcurq+DvifcS1JXA5HPEnON
- qsdlqTLu166RnRxg+zvAl4zk554kpocCSfz1cs17BOtB7PmR9vsoWNew8PVZhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net; s=arc-2022; t=1744296623;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:dkim-signature;
- bh=tM3k07OgqcktIgsgr6W4e15TL9iSkIgjQ0VcMjmJlIE=;
- b=b083zWSupTIMvcwMjQSk9ZC/Ank+lrsNl8ml9OVm+EeX3dwJzT7XQz8LzN21JQ9+Kcnhbl
- EzfMfQfagaxRwIc6Qs72KyCBm9EYgpfD9dXVBzUk/Z3WKPNnTNw/j7ELwG79iwka988FEs
- xQToBO28s+FbkfTGzOnq3YNlSrg3qB4ljpcek7bxI6LyMvVT3Lvm/xJuIQJr0J8vFtNTMZ
- dHCEpKVul61VCY7USq5t75G9J3tRBqriJ7RwxWqqhsZCjiJ5rfoixxL6h95D+d4SUGjLre
- C39zWb7XUblQkq1IpyD0sZyuK8cbDNw9CnwRZzdrgZp7a9sY8mkHXfwRpayNeg==
-ARC-Authentication-Results: i=1; rspamd-6c89d5bdcb-xtnfc;
- auth=pass smtp.auth=dreamhost smtp.mailfrom=siddhesh@gotplt.org
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
-X-MailChannels-Auth-Id: dreamhost
-X-Skirt-Absorbed: 24fcf4da2d501f8b_1744296624205_4102630143
-X-MC-Loop-Signature: 1744296624205:2165414224
-X-MC-Ingress-Time: 1744296624204
-Received: from pdx1-sub0-mail-a228.dreamhost.com (pop.dreamhost.com
- [64.90.62.162]) (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
- by 100.96.135.11 (trex/7.0.3); Thu, 10 Apr 2025 14:50:24 +0000
-Received: from [192.168.0.135] (unknown [38.23.181.90])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6F1E4600F8C
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 17:29:19 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- (Authenticated sender: siddhesh@gotplt.org)
- by pdx1-sub0-mail-a228.dreamhost.com (Postfix) with ESMTPSA id 4ZYN5q1XRpz8T; 
- Thu, 10 Apr 2025 07:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gotplt.org;
- s=dreamhost; t=1744296623;
- bh=tM3k07OgqcktIgsgr6W4e15TL9iSkIgjQ0VcMjmJlIE=;
- h=Date:Subject:To:Cc:From:Content-Type:Content-Transfer-Encoding;
- b=JQxzIOGpSP6L3ymCUDh7ssfBbSmyfyfzTarE78gL5pcRfFIpNbRQ+sRNxEICtx/r5
- ijDaRujy6QToAaaGOOAaR/1E+PWBbB0vCJC/e12454aD+O2CMvMlgPem/fmi0/3JNi
- N+DKgj4ZXax2hGo3Q8pWkdlV2nQ6bmQTtJX4zSvCK9P0t2ifTjDn12ZnlLl7a/AVRq
- Imb3pKpfmSe0rKttwkB2la0iSciGauwb6l68LN0vcxO2Gn9SxAVoKI0oqZ6MQWqolJ
- WUnwQktRkeBPiqwVluHoEB14zObNZIxMzZx3idhZAX2iMyXioZIJ10Yy5TdjDioj3Z
- IZMA/vEpQl6rQ==
-Message-ID: <87116021-5a21-4248-ac4a-6da24dac26dd@gotplt.org>
-Date: Thu, 10 Apr 2025 10:50:22 -0400
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EB6D12116A;
+ Thu, 10 Apr 2025 15:29:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1744298959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=aeR+hvJytvB60JijgKUEZZJxTVluUpe3Sff9CeFDQz4=;
+ b=By50yKP9+TEg7INUY5/Sccdj7OiEj5Eg/hGTiefTTsw6XW9le+bbtCZpJ2UvRWiowSGfwd
+ NfS58d0H7Uab9TDDwSqAVYYX+Gjzoow+3ndDILGegHwz7Ytu8s3gTmy0rj6ArdHEanC1HZ
+ pBsHo8Rr6/gqx0ieq1JtD/jbHkHVjL4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1744298959;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=aeR+hvJytvB60JijgKUEZZJxTVluUpe3Sff9CeFDQz4=;
+ b=OnzcvI6fZUCipJJg8RJkQXYCMUHycsaE1wIYFoVx6S0dwExrlH4lJ0Eajj85uC2QnGC4Be
+ bRnOlwIa5lCCm7Aw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1744298958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=aeR+hvJytvB60JijgKUEZZJxTVluUpe3Sff9CeFDQz4=;
+ b=OHTIK8zfXOSwQMpJTiyGvPIOGtiT0r84BvXS3ILAIkn4SBwt32npd55mqVsQDoP7s8TB+9
+ y8zEAtJoLyixtuFSQyib875t8WrGCBA/1I277+RRYtNZML0uZ5D7v1fjH6QKNQtDT71bs+
+ 8JStG2Wa3Ld7YdCFxtTjXLMRVrT8yvE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1744298958;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=aeR+hvJytvB60JijgKUEZZJxTVluUpe3Sff9CeFDQz4=;
+ b=g6dHABz5G8NehUYYn7/LU1lN2JU5VI1S/JZ1KW1jVjKyIy72HHtE4ycskSBduatStyeV/+
+ dkn0sOHciQSlwkBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA9C5132D8;
+ Thu, 10 Apr 2025 15:29:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id C0lKJ87j92eADwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 10 Apr 2025 15:29:18 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 10 Apr 2025 17:29:09 +0200
+Message-Id: <20250410-patchwork_ci-v1-0-def85825f46a@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <liwang@redhat.com>
-References: <20250402170718.1710388-1-siddhesh@gotplt.org>
- <20250407102448.2605506-1-siddhesh@gotplt.org>
- <20250407102448.2605506-3-siddhesh@gotplt.org> <20250407111343.GA83774@pevik>
- <ea5bf29e-cfe8-411c-bccc-0a586231e4f7@gotplt.org>
- <CAEemH2e_vqHjCmwCDhK444=RGMvcG69Bv2GYgGXP7d=OqYrG1A@mail.gmail.com>
-Content-Language: en-US
-From: Siddhesh Poyarekar <siddhesh@gotplt.org>
-In-Reply-To: <CAEemH2e_vqHjCmwCDhK444=RGMvcG69Bv2GYgGXP7d=OqYrG1A@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIAMXj92cC/x3MQQqAIBBA0avErBMmMYKuEhEyTjkEKRoVhHdPW
+ r7F/y9kTsIZxuaFxJdkCUdF1zZA3h4bK3HVoFH3aDpU0Z7k75D2hUQNjoxl1GTQQU1i4lWefzf
+ NpXwVnYXnXgAAAA==
+X-Change-ID: 20250410-patchwork_ci-7dc4ae02c40d
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744298958; l=2086;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=oOs+cMU1l6vv86j0behqaHxIV3fVfX0nvKhzysX6EZ4=;
+ b=tdkqj1p2uxX8PJIh//31FgsUnLBpxKvFzOc8/XyTsz2dtvxyezqve1maqP1WaCq/1e8ek8sC2
+ Tr82iVt8UZ9C7TUExsIfabgpW7jZeSVtt79/yHbBkPf+FmeSGeQdVxi
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] Add centos10 to test matrix
+Subject: [LTP] [PATCH 0/4] Support for Patchwork CI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,28 +117,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 2025-04-09 23:03, Li Wang wrote:
-> Hi Petr, Siddhesh,
-> 
-> Siddhesh's words make sense, but considering we (RedHat) already test
-> Fedora-ELN [1] internally with the LTP latest branch, so it's not necessary
-> to enable CentOS-10 stream in GitHub CI again.
-> 
-> [1] Acts as a testing ground for RHEL's next major version (e.g., RHEL 10).
-> 
-> @Siddhesh, you can find the Fedora-ELN test in CKI system, which plays
-> an important role in testing LTP master branch.
+Add support for patch-series validation in the patchwork ML.
+We use Github to schedule a trigger every 30 minutes, checking for new
+patche-series in parchwork which has not been tested yet.
 
-Ahh ok, that's fair.  I wasn't aware that LTP tests were run on ELN.
+The way we decide if a patch-series has been tested in patchwork, is
+by looking at its status (in particular, if it's "Needs Review / ACK"),
+as well as checking if test report has been uploaded to any of the
+series patches.
 
-Thanks,
-Sid
+All communication to Patchwrok is done via REST API, using curl and js
+tools.
+
+First, we create a script called patchwork-ci.sh that provides all the
+commands to read new untested patch-series, set their status and testing
+report. Then, we create a scheduled workflow in Gitlab, checking every
+30 minutes if there are new untested patch-series. At the end, we
+trigger the main build workflow, used to validate LTP commits in our
+Github mainline. All the times we trigger the build workflow, we also
+provide the patch-series ID, that will be fetched and applied on the
+current branch before running the tests.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Andrea Cervesato (4):
+      ci: install dependences for patchwork-ci script
+      ci: add patchwork-ci script
+      ci: add ci-patchwork-trigger workflow
+      ci: apply patchwork series in ci-docker-build workflow
+
+ .github/workflows/ci-docker-build.yml      |  29 ++++-
+ .github/workflows/ci-patchwork-trigger.yml |  53 ++++++++++
+ ci/alpine-runtime.sh                       |   2 +
+ ci/alpine.sh                               |   2 +
+ ci/debian.i386.sh                          |   2 +
+ ci/debian.sh                               |  28 ++---
+ ci/fedora.sh                               |   2 +
+ ci/patchwork-ci.sh                         | 164 +++++++++++++++++++++++++++++
+ ci/tumbleweed.sh                           |   2 +
+ 9 files changed, 270 insertions(+), 14 deletions(-)
+---
+base-commit: 8000c950d6ba61a541a9278cdda6d68141c2fc0d
+change-id: 20250410-patchwork_ci-7dc4ae02c40d
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
