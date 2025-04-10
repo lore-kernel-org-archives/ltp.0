@@ -4,101 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4EB9C369A1
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 03:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB6AFC3601E
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 05:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744254267; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744263149; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=RdECxGQD1POvzUhDR3Km1Bbm8FWALIPUoXqwgXiIh3w=;
- b=btpHjLIY93Jrog2VuUoiPiCHs8aO5ZVoMxw/4aFCWV5RrVJ4S+HRfuUzFoaoS/05Dc04F
- tg7/zgObePmdl0jcmhRGY9c6hT6GPg3EI6Z/p7G7j5Ql/CRMtUa7nU8pZRsrmUwUNya8kIf
- avG+eTh8CXQhsiGiwxMh49gDxkOg25k=
+ bh=a+GQijybxPN7NIkkWkyw4EFspP/pW0sNfe+yZ7ce0H8=;
+ b=jUgI8gzD7KEnOAcvVaVctD4iifWQly3N75qiEecf+BLmULH3j0MCaq/RSpf8sq7OmrVi6
+ H20sJgKPAVl3E7WKFnh6rPSFGA6haqreB0EOYRpfrx9DATeyIX2nswdtDbUgg88bmlAFXIH
+ zmYoupkr7ySI/7G7gmcyi97n+TEAyts=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB0233CB45A
-	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 05:04:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 191453CB44A
+	for <ltp@archiver.kernel.org>; Thu, 10 Apr 2025 07:32:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5546A3CB41F
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 05:04:05 +0200 (CEST)
-Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
- helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
- receiver=lists.linux.it)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7AEFE3CA46A
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:32:06 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5719420010F
- for <ltp@lists.linux.it>; Thu, 10 Apr 2025 05:04:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1744254243;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kMTNFvuN1CsZT68SpLOrWCUmVc0APEWuktEV1StsH7w=;
- b=Ea76RUgFqsZjlr9l9cGOtGzHY54vJeFwFkyNFjuCv2vtLBdXNw5oO+GWlMJns2ZstIZDFU
- 023oHR1qUeqZ53yaJCSh85lt6yYffl/fhgOJEd3MsBQ8lAvRUmaqeBfvqRzlDZ/TaSwctn
- ld3sepzFc9vZzaqgTMDaPwm5Kl/04zU=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-MezTGgrrMRKP6ML3pKJTOA-1; Wed, 09 Apr 2025 23:04:01 -0400
-X-MC-Unique: MezTGgrrMRKP6ML3pKJTOA-1
-X-Mimecast-MFC-AGG-ID: MezTGgrrMRKP6ML3pKJTOA_1744254240
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-2ff7f9a0b9bso346993a91.0
- for <ltp@lists.linux.it>; Wed, 09 Apr 2025 20:04:01 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27F832009AC
+ for <ltp@lists.linux.it>; Thu, 10 Apr 2025 07:32:03 +0200 (CEST)
+Received: by mail-wm1-x342.google.com with SMTP id
+ 5b1f17b1804b1-43cef035a3bso2682215e9.1
+ for <ltp@lists.linux.it>; Wed, 09 Apr 2025 22:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1744263122; x=1744867922; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=pMWTC9cSiZXW49/zzmqWRMs+DVD/X03/vic9OUobLDk=;
+ b=gL60LTyLH+SksP9A8XBxbGjBXHMX9TWGpyDfkF90YsbRh4UfMHZ5+WInhuDrhyKg5N
+ 1LQjVeWhVlM2BdUuybJqrYlxih7+9UmlVRUW1Hj4x9vti+6m7YJhhZOqmM2ByG8j58P9
+ OIZUzwATxGsDhGBPxgdeFyYckEmOjmAqSB4L1UOzHSYZUnbzSnRIVo+DTjBpHstBrmfW
+ Cc11SaK8tRbgSsSDBZuaUFJ0SCqmR6hCb8MMfEec6MsV97/eDAc0oCbZ7JGVaRNIKGs0
+ /NoQdtKYy+c5xnBPzM5pD+kOstadeCgJLQXMrKL6IaiZt17jdOLdWCnAmKPABz5JZnyA
+ 7eMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1744254240; x=1744859040;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=kMTNFvuN1CsZT68SpLOrWCUmVc0APEWuktEV1StsH7w=;
- b=mYri3BqLw/4zvewxxEJ6iVt9vc+IeV33pUsJVPeAdjHHXZotATe1v4wPJNDJewFawz
- 1RoK0eO0E9HaGI3vL5KsxLY5tl1O07uR+5pAB2HPUVNClQOV/ydyfAjHCfxd7kmgpn/B
- YD0oxfdhejzwvpb8iflUzeH6Ohszl9NHJH8fpOvSGIVb8/nUQ5ZeKvwWxxKPHQCfY+yQ
- mPxy6fdO61fvvs08tRzFAL++PLmXnVUnD12g5mzwOM0k95HWK6FxMv44kDGqcc3nNt6v
- SPGWf7sNiCIQwPJLM0wB7wuNTJ+jeC0w6xHevrAk6L6s5lad/QVncwrp3K9YcznC6Txq
- 2QMQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWzBvW3hU8zDhWKQaPMfNGaTMeI/1idoefmCVzwLeEM6mRHspzK5ZnIBGRUv7nzuNFurKQ=@lists.linux.it
-X-Gm-Message-State: AOJu0Yx1fL/GvgsvZKr7PtOT5NB6CTalSDl4LYSaDKWT5Jrf4WMYyBpS
- 6Ug5bphBgeu1TTrMrogRC2SaGSTBGPNp5V3jUHIl5XfZk8rDWBVrzWSggEerK7nC3rhlYtJVcsZ
- aia5TMmkw99WbyJ9IXe3/6M+FE67+mO/9stM+7ZOAkmw9I3cJiRZc7TFeBKMBvsVtp4ASyu+h/4
- F+9cwMapOL596afnoSg46LoeE=
-X-Gm-Gg: ASbGncuqSSz5RzV/NTZ7A/xkIpOftZhEA0OMAgY4vGzcA+GeP4LodWMusZsq+ImMzqp
- gRKyf5YYPbENS7KA0/aueQyHp5j0qXuhwKEKbC5CQm4W9Rsk6/T11Tr39Bcy1Ic1NrNLsBA==
-X-Received: by 2002:a17:90b:4d0d:b0:305:2d27:7ba5 with SMTP id
- 98e67ed59e1d1-30718b62c3fmr1617586a91.6.1744254240431; 
- Wed, 09 Apr 2025 20:04:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhWdecf2qyI5B6UPGXIoFtn9z0Tm1t9oNEf6Hw7+u790bRa7N5M6fPqJjU20Mawq6oU0Gt0JjDyF/s906k3/0=
-X-Received: by 2002:a17:90b:4d0d:b0:305:2d27:7ba5 with SMTP id
- 98e67ed59e1d1-30718b62c3fmr1617561a91.6.1744254239963; Wed, 09 Apr 2025
- 20:03:59 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1744263122; x=1744867922;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=pMWTC9cSiZXW49/zzmqWRMs+DVD/X03/vic9OUobLDk=;
+ b=v/gj70qry2GaVOql1eE4PiPvuQVY73w4WNINSxvNtccrB1ZLEnyopKJ7onyMYKZxWE
+ FeD0PZY1SIPYe80PEbzDC8IjWDG1PBPQUDbWC/kAXkruNMYEJbf8bACXsYNp6hhpyw5b
+ SQlBtTjasDv8oN8l4lFRkpOrkThqBs0ik1ehclCh12OqMpLAgIFOyeb8b/NGeVbg7rdU
+ 6ujtQx+rGEhn20fK5v0SjhzWbIAOEjPMHpL8lkjuTX0skpWWo1v+hK3yGdpThThQyOyX
+ +GmABunXkLxMcWfmiwVbB4OebBoAilPfmBHAHa9/lXKOhQkuomphAWlGtUvJ7wolshst
+ QsDw==
+X-Gm-Message-State: AOJu0YysI4hIKeFzt8VN8kKnYOlU1qGlVZg0wLXtzsZ1fK/DRgtbFPU2
+ kSuee9zB4puzba7mUBEMjPNAmrZIpVGGd3f2iHBhqW1REhucMj4Pb1tR/CDwWG8kaS8kftMsiVN
+ lyQv5
+X-Gm-Gg: ASbGncsuYE4y9XSJ/3/5T4BcrYd5kd4ZnzH/6p1ZBvAu7Xf01c10a1RsHbi+OiY9/6e
+ UbxLkTq7XZ4Bct7UhmHEoCWXT3hvK57K+Ad0hcoSjbaOF3QzPVZXff6quFM4dN/lwNDxSgP04ZW
+ V+1MiuzBkHoMlbYoz1a4f4nfmqVaTJORgw7iIUfjsAGrnJOFZwDr0ggM6u79EBDi3SZ0BQgpzOq
+ jy4UEsRqprNCyvUVoOsG6wHJNEovjHo8p0HY6r7GhRdUu0nBZAbdQASMUnBd6QdNnj562Gfxd0Z
+ vHqzgjALc+jjtarHFhOwp74I
+X-Google-Smtp-Source: AGHT+IHd/4FrMDaYyK+9SLyzNHdL8Ag9ro9f+O3RnIednxNnWtN9DARhYzYwJlTQrsNdNE6DoiUoEw==
+X-Received: by 2002:a5d:648c:0:b0:391:49f6:dad4 with SMTP id
+ ffacd0b85a97d-39d8f4e4712mr960277f8f.41.1744263122420; 
+ Wed, 09 Apr 2025 22:32:02 -0700 (PDT)
+Received: from wegao ([202.127.77.110]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-306df06a165sm2539416a91.4.2025.04.09.22.32.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 09 Apr 2025 22:32:01 -0700 (PDT)
+Date: Thu, 10 Apr 2025 01:31:57 -0400
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Z/dXzRQsXnXKYYkh@wegao>
+References: <20240415114652.22687-1-wegao@suse.com>
+ <20241212085058.29551-1-wegao@suse.com>
+ <20241212085058.29551-3-wegao@suse.com>
+ <20250227164338.GG3130282@pevik>
 MIME-Version: 1.0
-References: <20250402170718.1710388-1-siddhesh@gotplt.org>
- <20250407102448.2605506-1-siddhesh@gotplt.org>
- <20250407102448.2605506-3-siddhesh@gotplt.org> <20250407111343.GA83774@pevik>
- <ea5bf29e-cfe8-411c-bccc-0a586231e4f7@gotplt.org>
-In-Reply-To: <ea5bf29e-cfe8-411c-bccc-0a586231e4f7@gotplt.org>
-Date: Thu, 10 Apr 2025 11:03:47 +0800
-X-Gm-Features: ATxdqUFeHBQgDg5tCM0W7HwARmLbnFi8D1EInj30Ew2pwzdapx9I4hOQKdM-FFg
-Message-ID: <CAEemH2e_vqHjCmwCDhK444=RGMvcG69Bv2GYgGXP7d=OqYrG1A@mail.gmail.com>
-To: Siddhesh Poyarekar <siddhesh@gotplt.org>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 2mPtEtO3B44ECqULwTJ78k6yGInfohWLqYxECjN5JoM_1744254240
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <20250227164338.GG3130282@pevik>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v3 2/2] Add centos10 to test matrix
+Subject: Re: [LTP] [PATCH v5 2/2] ioctl_fiemap01: New test for fiemap ioctl()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,45 +98,151 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwgU2lkZGhlc2gsCgpTaWRkaGVzaCdzIHdvcmRzIG1ha2Ugc2Vuc2UsIGJ1dCBjb25z
-aWRlcmluZyB3ZSAoUmVkSGF0KSBhbHJlYWR5IHRlc3QKRmVkb3JhLUVMTiBbMV0gaW50ZXJuYWxs
-eSB3aXRoIHRoZSBMVFAgbGF0ZXN0IGJyYW5jaCwgc28gaXQncyBub3QgbmVjZXNzYXJ5CnRvIGVu
-YWJsZSBDZW50T1MtMTAgc3RyZWFtIGluIEdpdEh1YiBDSSBhZ2Fpbi4KClsxXSBBY3RzIGFzIGEg
-dGVzdGluZyBncm91bmQgZm9yIFJIRUwncyBuZXh0IG1ham9yIHZlcnNpb24gKGUuZy4sIFJIRUwg
-MTApLgoKQFNpZGRoZXNoLCB5b3UgY2FuIGZpbmQgdGhlIEZlZG9yYS1FTE4gdGVzdCBpbiBDS0kg
-c3lzdGVtLCB3aGljaCBwbGF5cwphbiBpbXBvcnRhbnQgcm9sZSBpbiB0ZXN0aW5nIExUUCBtYXN0
-ZXIgYnJhbmNoLgoKCk9uIE1vbiwgQXByIDcsIDIwMjUgYXQgMTA6MDDigK9QTSBTaWRkaGVzaCBQ
-b3lhcmVrYXIgPHNpZGRoZXNoQGdvdHBsdC5vcmc+Cndyb3RlOgoKPiBPbiAyMDI1LTA0LTA3IDA3
-OjEzLCBQZXRyIFZvcmVsIHdyb3RlOgo+ID4+IGdjYyBvbiBDZW50T1MgMTAgaXMgY29uZmlndXJl
-ZCB0byBidWlsZCB3aXRoIEFWWCBvbiBieSBkZWZhdWx0Cj4gPj4gKHNwZWNpZmljYWxseSwgLW1h
-cmNoPXg4Ni02NC12MyksIHVubGlrZSBvdGhlciBjb21waWxlcnMsIHNvIGl0IHNob3VsZAo+ID4+
-IGJlIGEgdXNlZnVsIGFkZGl0aW9uIHRvIHRoZSB0ZXN0IG1hdHJpeC4KPiA+Cj4gPj4gY3ZlLTIw
-MTUtMzI5MCBmb3IgZXhhbXBsZSBmYWlscyB0byBidWlsZCBvbiB0aGlzIHdpdGhvdXQgYC1tbm8t
-YXZ4YCBpbgo+ID4+IHRoZSBidWlsZCBmbGFncy4KPiA+Cj4gPiBJIGRvbid0IHdhbnQgdG8gYWRk
-IHlldCBhbm90aGVyIENJIGpvYiBqdXN0IHRvIHRlc3QgcHJldmlvdXMgY29tbWl0Lgo+ID4gV2Ug
-YWxyZWFkeSBoYXZlIHF1aXRlIGEgbG90IG9mIGRpc3Ryb3MgKHJ1bm5pbmcgaXMgcXVpdGUgbG9u
-ZykuCj4KPiBTbyB0aGUgcmVhc29uIEkgc3VnZ2VzdGVkIGFkZGluZyBjZW50b3MxMCBpcyB0aGF0
-IGl0IGhhcyBhIGRpc3RpbmN0bHkKPiBkaWZmZXJlbnQgdG9vbGNoYWluIGZyb20gdGhlIG90aGVy
-IGNvbnRhaW5lcnMgaW4gdGhlIG1hdHJpeC4gIFRoZSBnY2Mgb24KPiBjZW50b3MxMCBkZWZhdWx0
-cyB0byBnZW5lcmF0aW5nIGNvZGUgZm9yIHRoZSB4ODYtNjQtdjMgYmFzZWxpbmUgKHdoaWNoCj4g
-ZW5hYmxlcyBBVlggYnkgZGVmYXVsdCkgb24geDg2XzY0IHdoaWNoIGlzIGRpZmZlcmVudCBmcm9t
-IGFsbCBvZiB0aGUKPiBvdGhlciB0ZXN0IGVudmlyb25tZW50cyBpbiB0aGUgbWF0cml4Lgo+Cj4g
-PiBATGkgSSBzdXBwb3NlIHlvdSB3YW50IHRvIGtlZXAgY2VudG9zIDkgdGhhbiB0byBoYXZlIGNl
-bnRvcyAxMC4KPiA+IEkgZ3Vlc3MgZm9yIG5ldyBkaXN0cm9zIHdlIGhhdmUgRmVkb3JhLgo+Cj4g
-Y2VudG9zOSBkZWZhdWx0cyB0byB4ODYtNjQtdjIgRldJVywgc28gaXQncyBraW5kYSB1bmlxdWUg
-aW4gdGhhdCBzZW5zZQo+IHRvby4gIEZlZG9yYSBkb2VzIG5vdCBjaGFuZ2UgSVNBIGJhc2VsaW5l
-cyB0aGUgd2F5IGNlbnRvcy9SSEVMIGRvZXMKPiBzaW5jZSB0aGUgRmVkb3JhIGNvbW11bml0eSB3
-b3VsZCBsaWtlIHRvIGNvbnRpbnVlIHN1cHBvcnRpbmcgdGhlIGxvd2VzdAo+IGNvbW1vbiBkZW5v
-bWluYXRvciBpbiB0ZXJtcyBvZiBhcmNoaXRlY3R1cmUgc3VwcG9ydC4KCgo+IEFsdGhvdWdoIEkg
-dW5kZXJzdGFuZCB0aGUgbmVlZCB0byBrZWVwIHRoZSBwcmUtY29tbWl0IENJIHJ1biBzbGltLCBq
-dXN0Cj4gdGhvdWdodCBJJ2QgYWRkIG15ICQwLjAyIDopCj4KPiBUaGFua3MsCj4gU2lkCj4KPgoK
-LS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Thu, Feb 27, 2025 at 05:43:38PM +0100, Petr Vorel wrote:
+> Hi Wei,
+> 
+> ...
+> 
+> > +
+> > +	ret = ioctl(fd, FS_IOC_FIEMAP, fiemap);
+> > +	if (ret == -1) {
+> > +		if (errno == ENOTTY)
+> > +			tst_res(TCONF, "ioctl(FS_IOC_FIEMAP) not implemented");
+> I wonder if it's safe to put errno == ENOTTY check into SAFE_IOCTL().
+> We have similar checks in safe_socket() and other.
+> 
+> e.g.:
+> #define TTYPE (errno == ENOTTY ? TCONF : TBROK)
+> 
+> Maybe it's not safe, ENOTTY might be caused by some test error which deserves
+> TBROK:
+> 
+>        ENOTTY fd is not associated with a character special device.
+> 
+>        ENOTTY The specified operation does not apply to the kind of object that the file descriptor fd references.
+> 
+I remove this code in next version, i have done quick test on our old build such as 12-sp5 , result is pass
+
+susetest:~ # cat /etc/os-release
+NAME="SLES"
+VERSION="12-SP5"
+VERSION_ID="12.5"
+PRETTY_NAME="SUSE Linux Enterprise Server 12 SP5"
+ID="sles"
+ANSI_COLOR="0;32"
+CPE_NAME="cpe:/o:suse:sles:12:sp5"
+susetest:~ # uname
+uname    uname26
+susetest:~ # uname -r
+4.12.14-122.231-default
+
+> > +
+> > +static struct tst_test test = {
+> > +	.mount_device = 1,
+> > +	.mntpoint = MNTPOINT,
+> > +	.all_filesystems = 1,
+> > +	.skip_filesystems = (const char *const[]) {
+> > +		"exfat", "vfat", "ntfs", "tmpfs", NULL
+> 
+> Is the function unimplemented on these (even on tmpfs)? I would expect that but
+tmpfs is an in-memory filesystem and does not store any file into real disk, so it
+not suppose to support it. 
+> better to explain in the commit message why it's skipped.
+I have done some check on other filesystems such as exfat/vfat/ntfs, it show unsupport
+error, still need further investigation if we want figure out root cause, just for
+safe reason i skip those filesystem in this case currently.
+
+
+attach test log:
+cat /etc/os-release
+NAME="openSUSE Leap"
+VERSION="15.5"
+ID="opensuse-leap"
+ID_LIKE="suse opensuse"
+VERSION_ID="15.5"
+PRETTY_NAME="openSUSE Leap 15.5"
+ANSI_COLOR="0;32"
+CPE_NAME="cpe:/o:opensuse:leap:15.5"
+BUG_REPORT_URL="https://bugs.opensuse.org"
+HOME_URL="https://www.opensuse.org/"
+DOCUMENTATION_URL="https://en.opensuse.org/Portal:Leap"
+LOGO="distributor-logo-Leap"
+
+
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:678: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1724: TINFO: Overall timeout per run is 0h 02m 00s
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:62: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:62: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:62: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:62: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:62: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:105: TINFO: Skipping bcachefs because of FUSE blacklist
+tst_supported_fs_types.c:170: TINFO: Skipping vfat as requested by the test
+tst_supported_fs_types.c:170: TINFO: Skipping exfat as requested by the test
+tst_supported_fs_types.c:132: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:62: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:97: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
+
+tst_test.c:1833: TINFO: === Testing on vfat ===
+tst_test.c:1170: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocNjlayn/mntpoint fstyp=vfat flags=0
+ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
+ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
+tst_test.c:1797: TBROK: Test killed by SIGSEGV!
+
+
+
+tst_test.c:1833: TINFO: === Testing on exfat ===
+tst_test.c:1170: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_ioclNusF7/mntpoint fstyp=exfat flags=0
+ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
+ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
+tst_test.c:1797: TBROK: Test killed by SIGSEGV!
+
+
+
+tst_test.c:1833: TINFO: === Testing on ntfs ===
+tst_test.c:1170: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1183: TINFO: Mounting /dev/loop0 to /tmp/LTP_iocGtgwCr/mntpoint fstyp=ntfs flags=0
+tst_test.c:1183: TINFO: Trying FUSE...
+ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
+ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
+tst_test.c:1797: TBROK: Test killed by SIGSEGV!
+
+
+
+tst_test.c:1833: TINFO: === Testing on tmpfs ===
+tst_test.c:1170: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1146: TINFO: Limiting tmpfs size to 32MB
+tst_test.c:1183: TINFO: Mounting ltp-tmpfs to /tmp/LTP_iocUtSP0X/mntpoint fstyp=tmpfs flags=0
+ioctl_fiemap01.c:87: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) expected EBADR: EOPNOTSUPP (95)
+ioctl_fiemap01.c:90: TFAIL: ioctl(fd, FS_IOC_FIEMAP, fiemap) failed: EOPNOTSUPP (95)
+tst_test.c:1797: TBROK: Test killed by SIGSEGV!
+
+
+> 
+> Kind regards,
+> Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
