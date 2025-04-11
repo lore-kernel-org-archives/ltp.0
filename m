@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF66C36010
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 03:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E065C36010
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 04:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744343424; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744344627; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=BoDGLbxDtk1sDPTXpEMdbqQQCokI+rssFiY5jWHMmoI=;
- b=ijrbvQRl4kGF8V/obB0/QiEk/UvdnifcBmazldnS3R4JtgHAhuZJzCP0AX++HveYvuWBa
- xvyHwKCIveWZjjYb4H/bfRMVponp4vChZZe9uSMtzvD4uui615rWZPY4/rkQtNpuedFoIuO
- ZDjB/KeYtjtZU3GqootYYCVo03V0P8I=
+ bh=gY7KUyIoVfWWZrRJyOVrtK+KJc9Qv+odMOZXilOMyHM=;
+ b=RfvPU3Esed+oZA8J3EJRu3BlsmROT8lqIaJNlT635D1WNMrMIqJg0YixckW0jG67d/YjX
+ NNGP92Ry+B01uZTpY/9TQG0IXRHYxAS5ogkcqyFxek6FgQbtb2YTE7kakOQu41oz/KMPUMk
+ i0QleB5S5vgjC9jG2ILD3OC6L2SKxgA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96B6C3CB532
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 05:50:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id E59673CB54F
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 06:10:27 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 87A9D3CA355
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 05:50:02 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ by picard.linux.it (Postfix) with ESMTPS id 80EE83CA320
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 06:10:05 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it; spf=pass (sender SPF authorized)
  smtp.mailfrom=fujitsu.com (client-ip=68.232.139.139;
  helo=esa6.hc1455-7.c3s2.iphmx.com; envelope-from=maxj.fnst@fujitsu.com;
  receiver=lists.linux.it)
@@ -33,45 +33,45 @@ Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com
  [68.232.139.139])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6890014004E5
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 05:50:00 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3CB05600735
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 06:10:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
- t=1744343401; x=1775879401;
+ t=1744344606; x=1775880606;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=SmR2+AOSC0jTq6XXZovZWJQLwcfHwIKnAEpIImTB1nQ=;
- b=Vk4lCudDhRcIqlCqwTZQsc6zJiMprTvpr7MHf9p+0jeyfauRMpMGUQub
- 1L6z7IFLNEiQVT+3UIIjy4pTL9Ah5h0l1UMVIRxB0rWSQ5mTF/AoDCKR4
- OLuoPPagT47UGVUrIz0KoGM9QlpfbxiDlcSxHranzgUqOa1MTacNNaBJK
- kgJC4xDoxIiE39666WN9qSN4P8ew+8Lr0g6KxaQsYVd1PjIi4Lg30ZzQV
- X1Yp+RGON5sZKHNswzpV8KAyLnHuep5ok+K9IUHrGc5l3vnw1i8fouptx
- jFt115y2FEtZrmhHPOkFPYp+U6VTqObw27HFTJzxUf5RTRDfQY7Mw8nl5 w==;
-X-CSE-ConnectionGUID: gmI+j1cgTOOhh/p5UzgNRg==
-X-CSE-MsgGUID: qwBmePO0RkuBuyV2GZxCAw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11400"; a="198911287"
-X-IronPort-AV: E=Sophos;i="6.15,203,1739804400"; d="scan'208";a="198911287"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ bh=g4vp5uE4fc2XRjQSfGKnVhkvc+AXayeIRGQOn5UVQzo=;
+ b=WIJSSU97Sw37ZV/cVSzmkphvNxhOXftnF6z9UmwvBfdurZY6Sl/4XyrH
+ 1mI/GERQ35GF/zgHtYOJ1sVRYbX4uBX6jnba4LHArrDe7chMFhVzwWrp/
+ K9XM+FWyQ2RQzMwOSVUHBEoDkBJcHu4As/oC3dF587MG+hUhsG3r/y6hG
+ BX34lzE8UZvRlu9qR2UlOnI3Qdp0mX07nWeAS8NYIL9pDtIcR6l9rCE1a
+ zeKN9/tH+iI2+mym9vohp00qbYvrb4xGV/O17Q0G5ymhjwooPQH1LsFly
+ biVwSoHrdPSRjNBJF5koRdGOhtCUwybJj3HoajBT+6MpmNxCpP9yHZ0Sv w==;
+X-CSE-ConnectionGUID: DxxK5n8MQ8KSYnFM+Ujr/g==
+X-CSE-MsgGUID: qlISSGChQhioMppfKP89Lw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11400"; a="198913953"
+X-IronPort-AV: E=Sophos;i="6.15,203,1739804400"; d="scan'208";a="198913953"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
  by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2025 12:49:59 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id A1E5FD4809
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 12:49:56 +0900 (JST)
+ 11 Apr 2025 13:10:04 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 33E46E8528
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 13:10:01 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5CD3ED8C12
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 12:49:56 +0900 (JST)
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id E58E1D198B
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 13:10:00 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.135.101])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id BA9601A009A;
- Fri, 11 Apr 2025 11:49:55 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 6F7521A0078;
+ Fri, 11 Apr 2025 12:09:59 +0800 (CST)
 To: ltp@lists.linux.it
-Date: Fri, 11 Apr 2025 11:47:03 +0800
-Message-ID: <20250411034703.13290-1-maxj.fnst@fujitsu.com>
+Date: Fri, 11 Apr 2025 12:10:08 +0800
+Message-ID: <20250411041008.20272-1-maxj.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] readlink03: Fix the doc to fit RST format
+Subject: [LTP] [PATCH] sched_getparam03: Fix the doc to fit RST format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,42 +92,32 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Ma Xinjian <maxj.fnst@fujitsu.com>
 ---
- .../kernel/syscalls/readlink/readlink03.c     | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ .../kernel/syscalls/sched_getparam/sched_getparam03.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/readlink/readlink03.c b/testcases/kernel/syscalls/readlink/readlink03.c
-index 834838737..5c7b5e34c 100644
---- a/testcases/kernel/syscalls/readlink/readlink03.c
-+++ b/testcases/kernel/syscalls/readlink/readlink03.c
-@@ -7,17 +7,17 @@
- /*\
-  * Verify that, readlink(2) returns -1 and sets errno to
-  *
-- * 1. EACCES if search/write permission is denied in the directory where the
-- * symbolic link esides.
-- * 2. EINVAL if the buffer size is not positive.
-- * 3. EINVAL if the specified file is not a symbolic link file.
-- * 4. ENAMETOOLONG if the pathname component of symbolic link is too long
-- * (ie, > PATH_MAX).
-- * 5. ENOENT if the component of symbolic link points to an empty string.
-- * 6. ENOTDIR if a component of the path prefix is not a directory.
-- * 7. ELOOP if too many symbolic links were encountered in translating the
-- * pathname.
-- * 8. EFAULT if buf outside the process allocated address space.
-+ * - EACCES if search/write permission is denied in the directory where the
-+ *   symbolic link esides.
-+ * - EINVAL if the buffer size is not positive.
-+ * - EINVAL if the specified file is not a symbolic link file.
-+ * - ENAMETOOLONG if the pathname component of symbolic link is too long
-+ *   (ie, > PATH_MAX).
-+ * - ENOENT if the component of symbolic link points to an empty string.
-+ * - ENOTDIR if a component of the path prefix is not a directory.
-+ * - ELOOP if too many symbolic links were encountered in translating the
-+ *   pathname.
-+ * - EFAULT if buf outside the process allocated address space.
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+index 7192b0170..567bc6f7c 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+@@ -4,14 +4,11 @@
   */
  
- #include <pwd.h>
+ /*\
+- * Verify that:
++ * Verify that, sched_getparam(2) returns -1 and sets errno to
+  *
+- * - sched_getparam(2) returns -1 and sets errno to ESRCH if the
+- * process with specified pid could not be found
+- * - sched_getparam(2) returns -1 and sets errno to EINVAL if
+- * the parameter pid is an invalid value (-1)
+- * - sched_getparam(2) returns -1 and sets errno to EINVAL if the
+- * parameter p is an invalid address
++ * - ESRCH if the process with specified pid could not be found
++ * - EINVAL if the parameter pid is an invalid value (-1)
++ * - EINVAL if the parameter p is an invalid address
+  */
+ 
+ #include <errno.h>
 -- 
 2.47.0
 
