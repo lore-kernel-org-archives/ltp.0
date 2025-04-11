@@ -4,73 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76F0FC36010
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 09:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5309FC369A8
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 10:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744366128; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=zULNSZPybDYZi0GsVpRoIsaoR+8jiOfBZdQitKqGPzQ=;
+ b=aYFDVKGHwUVRqTyTRCqJMaJqKnTWYfp8q7MNXwYXx9Hy0XjegFEVW+lr4Cf5eyYQqDne3
+ mRu+UyGXaLkZcioGX5mZTWxYbN/7cGUSzQnsn0mkjmD+XCpG7UByS+ANERdGMwdB8BqZXMB
+ CaEkCe1fJ+d+aroNMlJT7P+u6sXeM90=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BBA0D3CB5AF
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 11:31:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 396E53CB5B4
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 12:08:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF5353CAE86
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 11:31:11 +0200 (CEST)
-Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=uniontech.com (client-ip=54.92.39.34; helo=smtpbgjp3.qq.com;
- envelope-from=lufei@uniontech.com; receiver=lists.linux.it)
-Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E3AB63CA320
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 12:08:26 +0200 (CEST)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.129.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D27B91A0088F
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 11:31:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
- s=onoh2408; t=1744363864;
- bh=SuMEp762eGLtzJJ7RvWmsJR9toiUXK7AnqoefGooP1E=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=VrFwv2akesgHxoEhbrSZcxp5rKC7rvsbDctyItDvKFx7DP+8txCGWZ+IRzxkexDEj
- l0VJVOLfQH7mx4XPWvk5sxMgoJK0mSPgR8GKjNKo4vBQnfoi0ZEv4jN+6EwIuY2izm
- 7JSkVUY0840L5TgiQ5VFdIahdpanQhoiqHwjRiQc=
-X-QQ-mid: bizesmtpsz8t1744363861tf0a86e
-X-QQ-Originating-IP: S6sHpQOtWT3JrVK0PZzZeeSSnPYJ4uuG7sjE1ZTBu0g=
-Received: from localhost.localdomain ( [125.76.217.162])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Fri, 11 Apr 2025 17:30:59 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16623960031988647301
-EX-QQ-RecipientCnt: 7
-From: lufei <lufei@uniontech.com>
-To: ltp@lists.linux.it
-Date: Fri, 11 Apr 2025 17:30:49 +0800
-Message-Id: <20250411093049.131850-1-lufei@uniontech.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20250409074906.128290-1-lufei@uniontech.com>
-References: <20250409074906.128290-1-lufei@uniontech.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 63AE7600655
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 12:08:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1744366103;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=14gH8Je7/tW2GbplMKNfq/URtwknK26zDFSO2aTq/DE=;
+ b=FqlbgvR0AFbSqj/LwkQXp+hM1/M6pxBy8rs+XYosWbpqDvqsyjj/2hwTl7X9zKmmbvewKe
+ QzpEajyLw/Legynej7vYkylpCanPzS5/DZwZ5mK483zbJ6S21geRKWZoLB3ignHsgIqplp
+ NAAN22FwMnghdp2QoTmXAwoEUnq8BZ4=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-467-hj4M0jKrPJ-NS7-7y1ItYw-1; Fri, 11 Apr 2025 06:08:19 -0400
+X-MC-Unique: hj4M0jKrPJ-NS7-7y1ItYw-1
+X-Mimecast-MFC-AGG-ID: hj4M0jKrPJ-NS7-7y1ItYw_1744366098
+Received: by mail-pg1-f199.google.com with SMTP id
+ 41be03b00d2f7-af5156fbe79so2002333a12.1
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 03:08:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1744366098; x=1744970898;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=14gH8Je7/tW2GbplMKNfq/URtwknK26zDFSO2aTq/DE=;
+ b=Xbb8St4nyZTBwkhnuTTvz4Vq6raw+dmrM7BBIc/wWuimLpckLsYbL9jy4Gr9LYnEot
+ JR0f+QR4Gzll21s2oprSCJIOymbWit9Yq8+h3eBU1HBIN+oB9YAE7ycfwT9yCeel2w0b
+ IS2FSjXmYnBi8m79d2hgVHv4fCAsQJyBSGM1vb7aBajM+C/03oYWCtAg77nGuv1Z8i8E
+ 2jjAZB/XvL0QZrO4t/zAJyXASL5+YOHNQklgdcGPVeGqYr54sYwoH02letY9U0txvGhR
+ koIbfsIaGuE7E5sFbssGdRVx2K1x0vediPIeiJCDcvwGfAkzDDvKL+oWTNQPdECZgfLU
+ IJfw==
+X-Gm-Message-State: AOJu0Yy5UWrXKch0oX7OPm3GwJlzoJpJgOOFtf2aYtvmN4dmFhNCHPcK
+ AN+9GJDUx7d9pSdB4rf/rqIkeR1oczb9k8F5APIHYC/c5N4xekBo6zGz8qAOURglWU5/Xf3RD8X
+ AUHxSNc2WUUXE2D+RI3ubjI/0KYbLK4UCg6x7ek3U//PTNWtCkUqfyZWgaW4p5CR/gPquZrfYIB
+ Ouf7Vb7jU6IyM8b8V7bUJijFk=
+X-Gm-Gg: ASbGncsygWXKV+7vo/IjDvpTVxFvauH+4tjNYh15W2BiywZAco3AB326qrHMd8aUEUR
+ qJeo2MKXaFeClli0bMidN/unnXNzNPkv3Yqlb6P2wY7pHzyoiQvJSxd/Y6iiDal2w5/dVzg==
+X-Received: by 2002:a17:90b:3cc6:b0:301:1c11:aa83 with SMTP id
+ 98e67ed59e1d1-3082367df8dmr3437241a91.28.1744366098094; 
+ Fri, 11 Apr 2025 03:08:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHSsEAyA0Q3seBpLXvrQgY4Y9nMh1Jzz5j+FiO8t4YyYCa+OzusbxrWE4qwhnn9qwvPCwzu3XmDSHoYzCGtjB0=
+X-Received: by 2002:a17:90b:3cc6:b0:301:1c11:aa83 with SMTP id
+ 98e67ed59e1d1-3082367df8dmr3437215a91.28.1744366097767; Fri, 11 Apr 2025
+ 03:08:17 -0700 (PDT)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-0
-X-QQ-XMAILINFO: MoZhE1FC+PwrVjYp8zQIHge3mEa79L+/aJ32fGt60/LrOKIZtCx/IJ1u
- q5cpV1eZsU12pxpc1NwUqT1hsKWneADGxMqvUuVtXhaRH9DrS+eIJZ1Pb20APCP0HQwtS/X
- mapi61NYPqrvpAP3bRakVJlwyi1JyF/d6fMe+ogpFkkU6kaM4TZ98YJQduivhlg/qniKioj
- aJs4tYD4KNW2wK1MOmkH16/hUTesCJJosVfHx1rK8oQoNO8bp8o9FOXolZHYV4Xu/XtLrT+
- 4VIUBMfna+asOYIp9HmArebAyZyKaRehbTY2y/fAOLNLFDO8vA+iZXcjSCQrOtlt29GsWyZ
- JgTXcVYc7MchSEqQh00GXJKXIoGYpRt0qtP/BspMrLQC8pHIav6opaXqzNzPaw/znSFD6C6
- qsiHnSGTxvdNMHvDhzZpVcyRhenrsim4t4jYdBKL070RMs0xP1Xeu/FZh0Vhb5XBh3AnaxY
- X+vKtooBGxnCU5crq7H1Ies4ZVlUwW1SuoJ9AwURO8O5PK2hKi/g5fQVscbKkTn/+0Kow+e
- UWNr5pc8UbQK8k/L6CTHQCsM0tAY3xHjVoqXCGF31kEsScyxINjNVPGPeKostojRLvYFWOs
- E8XRfIBkS+Dio3zQjCsLmBttWtmpGcFzT310+5dovwIacV8QvdT7aEtw17I0TjXxl5e5A6l
- e9oA4X+siW2jDHaFwWy1XlgJ0aSzdwgmxvCNT0EsSE6XeChup0x4N/9Fg/Mrrt+ao05pDqO
- NgzXksJz31y5u7D0QKgudP97/iFQsRH/E6K4yI+3IYAbnoR9Xs3UC5GrpXN0Xkznhaj/sxB
- KsNjLSJbkyJ95b+qaqLSrZturH2jL91yfy90+zgrnusdv8hg/Hy+Q+qSIRT7IWqr3dKkosc
- zOVg2IutYtzbORSsm4AwY7ad+gwDikYfENJ0sn4L+VZ+gidKZJJpO3EbXGt0IGbnTGTl8Ny
- JhtkquIr+wHwT5K/dd3sBNEJcvbxFw7U++r0jIls+GVcNdwbijGoIMYtzN2fnWYnRMnlcCd
- NKJhkT7Apj1SmPb5Pw
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-QQ-RECHKSPAM: 0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
+References: <20250314023120.169820-1-liwang@redhat.com>
+ <20250314115848.173676-1-liwang@redhat.com>
+ <5894423.DvuYhMxLoT@thinkpad>
+In-Reply-To: <5894423.DvuYhMxLoT@thinkpad>
+Date: Fri, 11 Apr 2025 18:08:05 +0800
+X-Gm-Features: ATxdqUEQ3lytMtXGns2SvXXfOpKiMeTU6IYz_w85QwB_pDQCOqZRpLg5nFdatq0
+Message-ID: <CAEemH2cUt-rWXOctyBxLvsQu6uBq3Q+6tWHp8NyOF3T4nk3=Xw@mail.gmail.com>
+To: Avinesh Kumar <akumar@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ibuKbC-tPQ-QL91xARMbuXOkzl1ekHsimSydZFGv_o4_1744366098
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] unshare03: set nr_open with sizeof(long)*8
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v4] ioctl_loop06: update loopback block size
+ validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,74 +107,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lufei <lufei@uniontech.com>, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ ltp@lists.linux.it, Hannes Reinecke <hare@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-dup2(2, nr_open+64) may cause ENOMEM error, which makes the testcase
-BROKEN. Change to dup2(2, sizeof(long)*8 +1) and set nr_open to sizeof(long)*8
-
-Signed-off-by: lufei <lufei@uniontech.com>
----
- testcases/kernel/syscalls/unshare/unshare03.c | 23 ++-----------------
- 1 file changed, 2 insertions(+), 21 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/unshare/unshare03.c b/testcases/kernel/syscalls/unshare/unshare03.c
-index 7c5e71c4e..c3b98930d 100644
---- a/testcases/kernel/syscalls/unshare/unshare03.c
-+++ b/testcases/kernel/syscalls/unshare/unshare03.c
-@@ -17,44 +17,25 @@
- #include "lapi/sched.h"
- 
- #define FS_NR_OPEN "/proc/sys/fs/nr_open"
--#define NR_OPEN_LIMIT 1024
--#define NR_OPEN_DUP 64
- 
- #ifdef HAVE_UNSHARE
- 
- static void run(void)
- {
--	int nr_open;
--	int nr_limit;
--	struct rlimit rlimit;
- 	struct tst_clone_args args = {
- 		.flags = CLONE_FILES,
- 		.exit_signal = SIGCHLD,
- 	};
- 
--	SAFE_FILE_SCANF(FS_NR_OPEN, "%d", &nr_open);
--	tst_res(TDEBUG, "Maximum number of file descriptors: %d", nr_open);
-+	int nr_open = sizeof(long) * 8;
- 
--	nr_limit = nr_open + NR_OPEN_LIMIT;
--	SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_limit);
--
--	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlimit);
--
--	rlimit.rlim_cur = nr_limit;
--	rlimit.rlim_max = nr_limit;
--
--	SAFE_SETRLIMIT(RLIMIT_NOFILE, &rlimit);
--	tst_res(TDEBUG, "Set new maximum number of file descriptors to : %d",
--		nr_limit);
--
--	SAFE_DUP2(2, nr_open + NR_OPEN_DUP);
-+	SAFE_DUP2(2, nr_open + 1);
- 
- 	if (!SAFE_CLONE(&args)) {
- 		SAFE_FILE_PRINTF(FS_NR_OPEN, "%d", nr_open);
- 		TST_EXP_FAIL(unshare(CLONE_FILES), EMFILE);
- 		exit(0);
- 	}
--
- }
- 
- static void setup(void)
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQXZpbmVzaCwgQWxsLAoKT24gRnJpLCBBcHIgMTEsIDIwMjUgYXQgNDozOOKAr1BNIEF2aW5l
+c2ggS3VtYXIgPGFrdW1hckBzdXNlLmRlPiB3cm90ZToKCj4gT24gRnJpZGF5LCBNYXJjaCAxNCwg
+MjAyNSAxMjo1ODo0OCBQTSBDRVNUIExpIFdhbmcgd3JvdGU6Cj4gPiBUaGUga2VybmVsIGNvbW1p
+dCA0N2RkNjc1MyAoImJsb2NrL2JkZXY6IGxpZnQgYmxvY2sgc2l6ZSByZXN0cmljdGlvbnMgdG8K
+PiA2NGsiKQo+ID4gbm93IHN1cHBvcnRzIGJsb2NrIHNpemVzIGxhcmdlciB0aGFuIFBBR0VfU0la
+RSwgd2l0aCBhIG5ldyB1cHBlciBsaW1pdCBvZgo+ID4gQkxLX01BWF9CTE9DS19TSVpFICg2NEsp
+LiBCdXQgaW9jdGxfbG9vcDA2IHN0aWxsIGFzc3VtZXMgdGhhdCBQQUdFX1NJWkUKPiBpcyB0aGUK
+PiA+IG1heGltdW0gYWxsb3dlZCBibG9jayBzaXplLCBjYXVzaW5nIGZhaWx1cmVzIG9uIG5ld2Vy
+IGtlcm5lbHMoPj0gNi4xNCk6Cj4gPgo+ID4gICBpb2N0bF9sb29wMDYuYzo3NDogVElORk86IFVz
+aW5nIExPT1BfU0VUX0JMT0NLX1NJWkUgd2l0aCBhcmcgPgo+IFBBR0VfU0laRQo+ID4gICBpb2N0
+bF9sb29wMDYuYzo1NzogVEZBSUw6IFNldCBibG9jayBzaXplIHN1Y2NlZWQgdW5leHBlY3RlZGx5
+Cj4gPiAgIC4uLgo+ID4gICBpb2N0bF9sb29wMDYuYzo3NDogVElORk86IFVzaW5nIExPT1BfQ09O
+RklHVVJFIHdpdGggYmxvY2tfc2l6ZSA+Cj4gUEFHRV9TSVpFCj4gPiAgIGlvY3RsX2xvb3AwNi5j
+OjU3OiBURkFJTDogU2V0IGJsb2NrIHNpemUgc3VjY2VlZCB1bmV4cGVjdGVkbHkKPiA+Cj4gPiBU
+aGlzIHBhdGNoIHVwZGF0ZXMgaW9jdGxfbG9vcDA2IHRvIHVzZSBCTEtfTUFYX0JMT0NLX1NJWkUg
+aW5zdGVhZCBvZgo+IFBBR0VfU0laRQo+ID4gZm9yIGJsb2NrIHNpemUgdmFsaWRhdGlvbi4KPiA+
+Cj4gPiBBbmQsIGR5bmFtaWNhbGx5IHNldHMgYnMgYmFzZWQgb24gQkxLX01BWF9CTE9DS19TSVpF
+LCB1c2luZyAxMDI0IGJ5dGVzCj4gaWYgaXQncwo+ID4gYmVsb3cgMU1CIG9yIHNjYWxpbmcgaXQg
+b3RoZXJ3aXNlLiBFbnN1cmVzIHRzdF9maWxsX2ZpbGUoKSB3cml0ZXMKPiBlZmZpY2llbnRseQo+
+ID4gd2hpbGUgbWFpbnRhaW5pbmcgY29tcGF0aWJpbGl0eSBhY3Jvc3MgZGlmZmVyZW50IGtlcm5l
+bCB2ZXJzaW9ucy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0
+LmNvbT4KPiA+IENjOiBMdWlzIENoYW1iZXJsYWluIDxtY2dyb2ZAa2VybmVsLm9yZz4KPiA+IENj
+OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4KPiA+IENjOiBIYW5uZXMgUmVpbmVja2Ug
+PGhhcmVAc3VzZS5kZT4KPgo+IFRlc3RlZC1ieTogQXZpbmVzaCBLdW1hciA8YWt1bWFyQHN1c2Uu
+ZGU+Cj4KClRoYW5rcyBmb3IgdGVzdGluZy4gSSB0aG91Z2h0IHRoaXMgb25lIHdhcyBtZXJnZWQs
+IGJ1dCB3aGVuIEkgY2hlY2tlZCB0aGUKbG9nLCBpdCB3YXMgbm90LgpBbnl3YXksIEkgcHVzaGVk
+IGl0IG5vdy4KCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
+dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
