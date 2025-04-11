@@ -4,121 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85BE7C36010
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 05:55:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42160C369A2
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 05:56:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A17B3CB55D
-	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 07:55:42 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AA4263CB577
+	for <ltp@archiver.kernel.org>; Fri, 11 Apr 2025 07:56:05 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EFBA93CB56F
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 07:54:51 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id DE5F83CB54D
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 07:54:53 +0200 (CEST)
+Authentication-Results: in-6.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DDF44600657
- for <ltp@lists.linux.it>; Fri, 11 Apr 2025 07:54:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 23DDA1400DBC
+ for <ltp@lists.linux.it>; Fri, 11 Apr 2025 07:54:51 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 74D321F444;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2F0232116B;
  Fri, 11 Apr 2025 05:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1744350885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=/rPnu6bwj5DPJdy+Y5IBcB503xiXmJvaPACzUBOsoKs=;
- b=UKuk9+W5GZ0WBTeYPFt4xxgrNmqJiAAhn5833umFNJamoI0S78QdeU7cGsiNiIwTouGAQS
- +eBwb7bRmNySh3ucYJj+SHgjniT77uZVtBmbFOarA0Sq7PDOGB2KwMkWJO5Ojic54+BXej
- bBYo7SS54f/V0+ot8xoG+ZdRvYwb8RM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1744350885;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=/rPnu6bwj5DPJdy+Y5IBcB503xiXmJvaPACzUBOsoKs=;
- b=JK1V1AXVCyeNm02CIxi9ekY0WwpYyvu+aCBV09z7P9NpDE49OO70dUXyjU2f7//K6Pkcvp
- LtJVxpRYwxVUFgCQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EaJHGigy;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=VfVguSIk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1744350884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/rPnu6bwj5DPJdy+Y5IBcB503xiXmJvaPACzUBOsoKs=;
- b=EaJHGigy+f1w4j9FRxDELHAD34o7I5zVqSCz8lfpTAQYQEBeUe1dbb8Lqh6tD+wSrx+K3T
- DHORunaEm5RqAVX8+cGFzrrSdcdSG6RuhkY5QrL/6J1v1pN1jIm8KGPt5zHxz7CYrtvwMl
- Nq3ztNoK/Oglr9HVamRikW29zAZL1tY=
+ bh=BU9IkawT6q9XwOV/lSydEUq4QVLLawKeM2Xc0HHj0es=;
+ b=aFvhTttbtupTAhKUiNZE+tOoYk2Dr2gsbD5XNdz2z2vsjz8YotP74dVb6IkYf3odBVVEtu
+ Xi3CH0v97iOhZBL52fdrKVYbYCbqbLnhsst555qUlGFMYwKEjgn32eaOO4NF0k+ih0PQfW
+ CiDuvfPbMNCXnFokJNU5WQsdcu9CTtQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1744350884;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/rPnu6bwj5DPJdy+Y5IBcB503xiXmJvaPACzUBOsoKs=;
- b=VfVguSIkVs+TCzPYpgxvwQxEZ1S8mlfWYtHL8dDtTM5u6lfQkoACY6LYp54Wqab6ZU07xk
- 8lhcPcCHE/1f63CA==
+ bh=BU9IkawT6q9XwOV/lSydEUq4QVLLawKeM2Xc0HHj0es=;
+ b=p6ioXoNiM00qjIDe9ywEpM6HGaSgH2fek6wfZonUYvZgG2VXye+ZlLqjTGXvtS7AfWkpqS
+ W76RtkjyDTz8rKCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1744350884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BU9IkawT6q9XwOV/lSydEUq4QVLLawKeM2Xc0HHj0es=;
+ b=aFvhTttbtupTAhKUiNZE+tOoYk2Dr2gsbD5XNdz2z2vsjz8YotP74dVb6IkYf3odBVVEtu
+ Xi3CH0v97iOhZBL52fdrKVYbYCbqbLnhsst555qUlGFMYwKEjgn32eaOO4NF0k+ih0PQfW
+ CiDuvfPbMNCXnFokJNU5WQsdcu9CTtQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1744350884;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BU9IkawT6q9XwOV/lSydEUq4QVLLawKeM2Xc0HHj0es=;
+ b=p6ioXoNiM00qjIDe9ywEpM6HGaSgH2fek6wfZonUYvZgG2VXye+ZlLqjTGXvtS7AfWkpqS
+ W76RtkjyDTz8rKCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B07F13A5C;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 135BF13A67;
  Fri, 11 Apr 2025 05:54:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yJyaFKSu+GdPaAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GAAXA6Su+GdPaAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Fri, 11 Apr 2025 05:54:44 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 11 Apr 2025 07:54:45 +0200
+Date: Fri, 11 Apr 2025 07:54:43 +0200
 MIME-Version: 1.0
-Message-Id: <20250411-patchwork_ci-v3-4-c9bb90c6961b@suse.com>
+Message-Id: <20250411-patchwork_ci-v3-2-c9bb90c6961b@suse.com>
 References: <20250411-patchwork_ci-v3-0-c9bb90c6961b@suse.com>
 In-Reply-To: <20250411-patchwork_ci-v3-0-c9bb90c6961b@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744350883; l=2135;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744350883; l=5879;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=4wQ2TM4BDNf/T+9wvvr8FmGQutFSqax3ZzK0l6etukc=;
- b=DpaylUuxVYzQsc18aoMzRmijjFF5TX+ymqoA9Q1fO3/EbJtFCpTK6Gx3ZUqXGfKUzZhGVJK9H
- S8RaGe7gD+ABGyvv0t9yIlcDSvnbWs9ZtUZX7RbgCgwyE2YtcdfGWC6
+ bh=ro8UyfRtU0Evzp4aACJhTQse4WKSQuDwJ0hNP20SkDc=;
+ b=BLHmLzcLwiNb+SuYP8QAUecVSUBK1cPGD95N3Wal8dFE9DxOg1Y9MX6Hl6Rfo5bf3XDfSCzAK
+ n6qWAEjW6vPArdwxlKdRvjzlzvmFl16AUCBJaRwQZcmiwCDQVRwitP7
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: 74D321F444
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid,suse.cz:email];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/4] ci: apply patchwork series in ci-docker-build
- workflow
+Subject: [LTP] [PATCH v3 2/4] ci: add patchwork-ci script
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -137,66 +126,194 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Modify ci-docker-build workflow in order to apply untested new
-patchwork patch-series inside the current branch and to send back
-results in the patchwork instance.
+Add a script to communicate with patchwork. Available commands are:
+
+- verify: will print a list of new patch-series which has not been
+  tested in the past hour (by default)
+- apply: apply a patch-series to the current git branch using git-am
+- check: send a tests report to patchwork
+
+The script can be configured defining:
+
+- PATCHWORK_URL: patchwork url to communicate with
+- PATCHWORK_SINCE: timespan in seconds where we want to fetch
+  patch-series
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- .github/workflows/ci-docker-build.yml | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ ci/patchwork-ci.sh | 164 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 164 insertions(+)
 
-diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
-index 44dcca055018a1fb06541a788e3152239aea2e66..21a9ba0bf6af3fdf77f15258d761da0ab311ce16 100644
---- a/.github/workflows/ci-docker-build.yml
-+++ b/.github/workflows/ci-docker-build.yml
-@@ -1,7 +1,19 @@
- # Copyright (c) 2021-2024 Petr Vorel <pvorel@suse.cz>
- 
- name: "Test building in various distros in Docker"
--on: [push, pull_request]
-+on:
-+  push:
-+  pull_request:
-+  workflow_dispatch:
-+    inputs:
-+      SERIES_ID:
-+        description: LTP patch series ID
-+        required: false
-+        default: ''
-+      SERIES_MBOX:
-+        description: LTP patch series URL
-+        required: false
-+        default: ''
- 
- permissions:
-   contents: read # to fetch code (actions/checkout)
-@@ -125,6 +137,10 @@ jobs:
-     - name: Compiler version
-       run: $CC --version
- 
-+    - name: Apply Patchwork series
-+      if: inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
-+      run: ./ci/patchwork-ci.sh apply ${{ inputs.SERIES_ID }} ${{ inputs.SERIES_MBOX }}
+diff --git a/ci/patchwork-ci.sh b/ci/patchwork-ci.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..f363055578c831f9426564cd8530348a8f9f76e2
+--- /dev/null
++++ b/ci/patchwork-ci.sh
+@@ -0,0 +1,164 @@
++#!/bin/sh -ex
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
 +
-     - name: ver_linux
-       run: ./ver_linux
- 
-@@ -158,3 +174,14 @@ jobs:
-       run: |
-         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
-         ./build.sh -r install -o ${TREE:-in} $INSTALL_OPT
++if [ -z "$PATCHWORK_URL" ]; then
++        PATCHWORK_URL="https://patchwork.ozlabs.org"
++fi
 +
-+    - name: Send results to Patchwork
-+      if: always() && inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
-+      env:
-+        PATCHWORK_TOKEN: ${{ secrets.PATCHWORK_TOKEN }}
-+      run: |
-+        ./ci/patchwork-ci.sh check \
-+          "${{ inputs.SERIES_ID }}" \
-+          "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-+          "${{ matrix.container }}" \
-+          "${{ job.status }}"
++if [ -z "$PATCHWORK_SINCE" ]; then
++        PATCHWORK_SINCE=3600
++fi
++
++fetch_series() {
++        local current_time=$(date +%s)
++        local since_time=$(expr $current_time - $PATCHWORK_SINCE)
++        local date=$(date -u -d @$since_time +"%Y-%m-%dT%H:%M:%SZ")
++
++        curl -k -G "$PATCHWORK_URL/api/events/" \
++                --data "category=series-completed" \
++                --data "project=ltp" \
++                --data "state=new" \
++                --data "since=$date" \
++                --data "archive=no" |
++                jq -r '.[] | "\(.payload.series.id):\(.payload.series.mbox)"'
++}
++
++get_patches() {
++        local series_id="$1"
++
++        curl -k -G "$PATCHWORK_URL/api/patches/" \
++                --data "project=ltp" \
++                --data "series=$series_id" |
++                jq -r '.[] | "\(.id)"'
++}
++
++set_patch_state() {
++        local patch_id="$1"
++        local state="$2"
++
++        curl -k -X PATCH \
++                -H "Authorization: Token $PATCHWORK_TOKEN" \
++                -F "state=$state" \
++                "$PATCHWORK_URL/api/patches/$patch_id/"
++}
++
++set_series_state() {
++        local series_id="$1"
++        local state="$2"
++
++        get_patches "$series_id" | while IFS= read -r patch_id; do
++                if [ -n "$patch_id" ]; then
++                        set_patch_state "$patch_id" "$state"
++                fi
++        done
++}
++
++get_checks() {
++        local patch_id="$1"
++
++        curl -k -G "$PATCHWORK_URL/api/patches/$patch_id/checks/" |
++                jq -r '.[] | "\(.id)"'
++}
++
++already_tested() {
++        local series_id="$1"
++
++        get_patches "$series_id" | while IFS= read -r patch_id; do
++                if [ ! -n "$patch_id" ]; then
++                        continue
++                fi
++
++                get_checks "$patch_id" | while IFS= read -r check_id; do
++                        if [ -n "$check_id" ]; then
++                                echo "$check_id"
++                                return
++                        fi
++                done
++        done
++}
++
++verify_new_patches() {
++        local output="output.txt"
++
++        fetch_series | while IFS=: read -r series_id series_mbox; do
++                if [ ! -n "$series_id" ]; then
++                        continue
++                fi
++
++                tested=$(already_tested "$series_id")
++                if [ -n "$tested" ]; then
++                        continue
++                fi
++
++                echo -n "$series_id:$series_mbox;" >>"$output"
++        done
++
++        if [ -e "$output" ]; then
++                cat "$output"
++        fi
++}
++
++apply_series() {
++        local series_id="$1"
++        local series_mbox="$2"
++
++        git config --global user.name 'GitHub CI'
++        git config --global user.email 'patchwork.tester@example.org'
++        git config --global --add safe.directory $GITHUB_WORKSPACE
++
++        curl -k "$series_mbox" | git am
++
++        # we set patch state after applying it, so
++        # the next triggering won't take patch into account
++        set_series_state "$series_id" "needs-review-ack"
++}
++
++send_results() {
++        local series_id="$1"
++        local target_url="$2"
++
++        local context=$(echo "$3" | sed 's/:/_/g; s/\//_/g')
++        if [ -n "$CC" ]; then
++                context="${context}_${CC}"
++        fi
++
++        if [ -n "$ARCH" ]; then
++                context="${context}_${ARCH}"
++        fi
++
++        local result="$4"
++        if [ "$result" = "cancelled" ]; then
++                return
++        fi
++
++        local state="fail"
++        if [ "$result" = "success" ]; then
++                state="success"
++        fi
++
++        get_patches "$series_id" | while IFS= read -r patch_id; do
++                if [ -n "$patch_id" ]; then
++                        curl -k -X POST \
++                                -H "Authorization: Token $PATCHWORK_TOKEN" \
++                                -F "state=$state" \
++                                -F "context=$context" \
++                                -F "target_url=$target_url" \
++                                -F "description=$result" \
++                                "$PATCHWORK_URL/api/patches/$patch_id/checks/"
++                fi
++        done
++}
++
++run="$1"
++
++if [ -z "$run" -o "$run" = "verify" ]; then
++        verify_new_patches
++elif [ -z "$run" -o "$run" = "apply" ]; then
++        apply_series "$2" "$3"
++elif [ -z "$run" -o "$run" = "check" ]; then
++        send_results "$2" "$3" "$4" "$5"
++else
++        echo "Available commands: apply, check, verify"
++        exit 1
++fi
 
 -- 
 2.43.0
