@@ -4,121 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A24C369AB
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 13:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF53AC369AB
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 13:48:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0921E3CB874
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 15:08:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 5152C3CB8C1
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 15:48:54 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B892F3C0EF7
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 15:08:42 +0200 (CEST)
-Authentication-Results: in-2.smtp.seeweb.it;
+ by picard.linux.it (Postfix) with ESMTPS id 023D73CB874
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 15:48:35 +0200 (CEST)
+Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
  envelope-from=pvorel@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 95C64601019
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 15:08:41 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C5C7260070F
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 15:48:34 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F0D5A21134;
- Tue, 15 Apr 2025 13:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1744722520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FsAhAsuF17BNj0xifYIH6ij0AF2krflrsxx+Tdtf7A=;
- b=PKMnN6dFSlAj4xG4Y3mDWhWIoVh7ffmb244IoxGOR5wGztiN2vNhUwoWIWqFiDqmG9YfOX
- j+grHzVz0Ldo6EUCwl5nj3r3cgl/ABaWRtFTMr7ValUpd5esNt7cKYFGOHxXgPHBz5ujBQ
- PtBPKdNg366YHcG9e9CpNAp7VRnNDCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1744722520;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FsAhAsuF17BNj0xifYIH6ij0AF2krflrsxx+Tdtf7A=;
- b=x5uHcNTvyM8LkVWt+EFMTdhAGIwH2Yveh/ZxrIGZPlTMMuLOh7PtvDH8Z+VszbtL7sjye1
- 7zjVZnQZMuLtbvDg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PKMnN6dF;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=x5uHcNTv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1744722520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FsAhAsuF17BNj0xifYIH6ij0AF2krflrsxx+Tdtf7A=;
- b=PKMnN6dFSlAj4xG4Y3mDWhWIoVh7ffmb244IoxGOR5wGztiN2vNhUwoWIWqFiDqmG9YfOX
- j+grHzVz0Ldo6EUCwl5nj3r3cgl/ABaWRtFTMr7ValUpd5esNt7cKYFGOHxXgPHBz5ujBQ
- PtBPKdNg366YHcG9e9CpNAp7VRnNDCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1744722520;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FsAhAsuF17BNj0xifYIH6ij0AF2krflrsxx+Tdtf7A=;
- b=x5uHcNTvyM8LkVWt+EFMTdhAGIwH2Yveh/ZxrIGZPlTMMuLOh7PtvDH8Z+VszbtL7sjye1
- 7zjVZnQZMuLtbvDg==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 14B481F385;
+ Tue, 15 Apr 2025 13:48:34 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E60D5137A5;
- Tue, 15 Apr 2025 13:08:39 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E2A0139A1;
+ Tue, 15 Apr 2025 13:48:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7N7PN1da/meSHwAAD6G6ig
- (envelope-from <pvorel@suse.de>); Tue, 15 Apr 2025 13:08:39 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id acVdA7Jj/mfCLQAAD6G6ig
+ (envelope-from <pvorel@suse.de>); Tue, 15 Apr 2025 13:48:34 +0000
 MIME-Version: 1.0
-Date: Tue, 15 Apr 2025 15:08:39 +0200
+Date: Tue, 15 Apr 2025 15:48:33 +0200
 From: pvorel <pvorel@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-In-Reply-To: <549aa0bf-86b0-4a06-b4a2-0c158a17b8ba@suse.com>
-References: <20250408114432.220841-1-pvorel@suse.cz>
- <549aa0bf-86b0-4a06-b4a2-0c158a17b8ba@suse.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+In-Reply-To: <20250415-patchwork_ci-v6-2-81e6d4184af5@suse.com>
+References: <20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com>
+ <20250415-patchwork_ci-v6-2-81e6d4184af5@suse.com>
 User-Agent: Roundcube Webmail
-Message-ID: <74b96111220702ca1d5df4e2b4401e07@suse.de>
+Message-ID: <f7ad5026615f4b00ae033a649fa15b26@suse.de>
 X-Sender: pvorel@suse.de
-X-Rspamd-Queue-Id: F0D5A21134
-X-Spamd-Result: default: False [-4.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; XM_UA_NO_VERSION(0.01)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.de:+]; MID_RHS_MATCH_FROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_THREE(0.00)[3];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.de:dkim, suse.de:mid, suse.cz:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Queue-Id: 14B481F385
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] sphinx: Update to 7.2.6, python 3.12,
- ubuntu-24.04
+Subject: Re: [LTP] [PATCH v6 2/4] ci: add patchwork communication script
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,87 +84,255 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On 2025-04-15 12:07, Andrea Cervesato wrote:
-> Hi Petr,
+TL;DR:
+With fixed == and curl pipe redirect, you may add:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+More info below.
+
+> ---
+>  ci/tools/patchwork.sh | 169 
+> ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
 > 
-> feel free to merge.
+> diff --git a/ci/tools/patchwork.sh b/ci/tools/patchwork.sh
+> new file mode 100755
+> index
+> 0000000000000000000000000000000000000000..bef6998b6168714e0cfaef443a4573017440bb2d
+> --- /dev/null
+> +++ b/ci/tools/patchwork.sh
+> @@ -0,0 +1,169 @@
+> +#!/bin/sh -x
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +#
+> +# Shell script to communicate with Patchwork via REST API.
+> +# It has been mainly created for CI purposes, but it can be used in 
+> the shell
+> +# by satisfying minimum requirements.
+> +#
+> +# Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
+> +
+> +PATCHWORK_URL="${PATCHWORK_URL:-https://patchwork.ozlabs.org}"
+> +PATCHWORK_SINCE="${PATCHWORK_SINCE:-3600}"
+> +
+> +command_exists() {
+Can you please add before merge?
+local cmd
 
-Thanks for your ack.
+> +        for cmd in "$@"; do
+> +                if ! command -v "$cmd" >/dev/null 2>&1; then
+> +                        echo "'$1' must be present in the system" >&2
+> +                        exit 1
+> +                fi
+> +        done
+> +}
+> +
+> +command_exists "curl" "jq"
+> +
+> +fetch_series() {
+> +        local current_time=$(date +%s)
+> +        local since_time=$(expr $current_time - $PATCHWORK_SINCE)
+> +        local date=$(date -u -d @$since_time +"%Y-%m-%dT%H:%M:%SZ")
+> +
+> +        curl -k -G "$PATCHWORK_URL/api/events/" \
+> +                --data "category=series-completed" \
+> +                --data "project=ltp" \
+> +                --data "state=new" \
+> +                --data "since=$date" \
+> +                --data "archive=no" |
+> +                jq -r '.[] | 
+> "\(.payload.series.id):\(.payload.series.mbox)"'
+> +
+> +        [ $? -eq 0 ] || exit 1
 
-FYI You did not Cc LTP ML, therefore I noticed this after push to 
-master. But as it was just few minutes after the push, I dared to force 
-push the master with amended commit message.
+FYI $? holds exit code of the last member of pipe, 'jq -r ...' in this 
+case.
+I guess you'd prefer to check curl exit code, right?
+
+You have 2 options:
+1) Redirect curl with '-o log', and call jq after $? evaluation.
+2) Depend on bash and use ${PIPESTATUS[0]} (e.g. $PIPESTATUS array).
+NOTE: that really requires /bin/bash shebang (e.g. not working on dash 
+and busybox sh, thus CI will depend on bash), also will not work on zsh 
+which uses $pipestatus array (lower case) :(. We prefer to avoid bash 
+(unlike kernel developers) for a good reason (bash incompatibility 
+between versions, need to install bash in container, also if arrays are 
+needed it's a question whether use shell scripting), but it's mainly due 
+the need tests (LTP shell API and tests) to be portable, it could be 
+used in tools (with /bin/bash shebang).
+
+> +}
+> +
+> +get_patches() {
+> +        local series_id="$1"
+> +
+> +        curl -k -G "$PATCHWORK_URL/api/patches/" \
+> +                --data "project=ltp" \
+> +                --data "series=$series_id" |
+> +                jq -r '.[] | "\(.id)"'
+> +
+> +        [ $? -eq 0 ] || exit 1
+> +}
+> +
+> +verify_token_exists() {
+> +        if [ -z "$PATCHWORK_TOKEN" ]; then
+> +                echo "For this feature you need \$PATCHWORK_TOKEN"
+> +                exit 1
+> +        fi
+> +}
+> +
+> +set_patch_state() {
+> +        local patch_id="$1"
+> +        local state="$2"
+> +
+> +        verify_token_exists
+> +
+> +        curl -k -X PATCH \
+> +                -H "Authorization: Token $PATCHWORK_TOKEN" \
+> +                -F "state=$state" \
+> +                "$PATCHWORK_URL/api/patches/$patch_id/"
+> +
+> +        [ $? -eq 0 ] || exit 1
+> +}
+> +
+> +set_series_state() {
+> +        local series_id="$1"
+> +        local state="$2"
+> +
+> +        get_patches "$series_id" | while IFS= read -r patch_id; do
+> +                [ "$patch_id" ] && set_patch_state "$patch_id" 
+> "$state"
+
+FYI if you ever wish to use '-e' in a script, construct [ ... ] && ... 
+will be broken with it.
+It would have to be [ ... ] || ... (or use if  ...; then ...; fi).
+
+> +        done
+> +}
+> +
+> +get_checks() {
+> +        local patch_id="$1"
+> +
+> +        curl -k -G "$PATCHWORK_URL/api/patches/$patch_id/checks/" |
+> +                jq -r '.[] | "\(.id)"'
+> +
+> +        [ $? -eq 0 ] || exit 1
+> +}
+> +
+> +already_tested() {
+> +        local series_id="$1"
+> +
+> +        get_patches "$series_id" | while IFS= read -r patch_id; do
+> +                [ "$patch_id" ] || continue
+> +
+> +                get_checks "$patch_id" | while IFS= read -r check_id; 
+> do
+> +                        if [ -n "$check_id" ]; then
+> +                                echo "$check_id"
+> +                                return
+> +                        fi
+> +                done
+> +        done
+> +}
+> +
+> +verify_new_patches() {
+> +        local tmp=$(mktemp -d)
+> +        local output="$tmp/series_ids.txt"
+> +
+> +        echo -n '' >"$output"
+
+FYI echo switches are known to have non-portable edge cases, which 
+printf does not have, but this works (ok to use). Using printf would be 
+simpler:
+
+printf >"$output"
+
+> +
+> +        fetch_series | while IFS=: read -r series_id series_mbox; do
+> +                [ "$series_id" ] || continue
+> +
+> +                tested=$(already_tested "$series_id")
+> +                [ "$tested" ] && continue
+> +
+> +                echo "$series_id|$series_mbox" >>"$output"
+> +        done
+> +
+> +        cat "$output"
+> +}
+> +
+> +send_results() {
+> +        local series_id="$1"
+> +        local target_url="$2"
+> +
+> +        verify_token_exists
+> +
+> +        local context=$(echo "$3" | sed 's/:/_/g; s/\//-/g; s/\./-/g')
+> +
+> +        [ "$CC" ] && context="${context}_${CC}"
+> +        [ "$ARCH" ] && context="${context}_${ARCH}"
+> +
+> +        local result="$4"
+> +        [ "$result" == "cancelled" ] && return
+== is a bashism, please use =
+> +
+> +        local state="fail"
+> +        [ "$result" == "success" ] && state="success"
+And here as well.
+
+We have checkbashisms part of make check, but that's for our LTP build 
+system directories, here you must call it directly:
+
+$ checkbashisms ci/tools/patchwork.sh
+possible bashism in ci/tools/patchwork.sh line 135 (should be 'b = a'):
+         [ "$result" == "cancelled" ] && return
+possible bashism in ci/tools/patchwork.sh line 138 (should be 'b = a'):
+         [ "$result" == "success" ] && state="success"
+
+
+> +
+> +        get_patches "$series_id" | while IFS= read -r patch_id; do
+> +                [ "$patch_id" ] || continue
+> +
+> +                curl -k -X POST \
+> +                        -H "Authorization: Token $PATCHWORK_TOKEN" \
+> +                        -F "state=$state" \
+> +                        -F "context=$context" \
+> +                        -F "target_url=$target_url" \
+> +                        -F "description=$result" \
+> +                        "$PATCHWORK_URL/api/patches/$patch_id/checks/"
+> +
+> +                [ $? -eq 0 ] && exit 1
+> +        done
+> +}
+> +
+> +case "$1" in
+> +state)
+
+I see you don't want to support running whole script in once for 
+debugging.
+
+Using '' would allow it (up to you of course, as most of comments):
+''|state)
 
 Kind regards,
 Petr
 
+> +        set_series_state "$2" "$3"
+> +        ;;
+> +check)
+> +        send_results "$2" "$3" "$4" "$5"
+> +        ;;
+> +verify)
+> +        verify_new_patches
+> +        ;;
+> +*)
+> +        echo "Available commands: state, check, verify"
+> +        exit 1
+> +        ;;
+> +esac
 > 
-> Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> On 4/8/25 13:44, Petr Vorel wrote:
->> Update sphinx to 7.2.6, python 3.12. This requires to update
->> .readthedocs.yml to use ubuntu-24.04 [1], because keep in sync sphinx 
->> in
->> readthedocs with with the one for local development and github CI.
->> Raising python makes sense, as development is usually done on newer
->> distros, we were still using old python 3.6.
->> 
->> This fixes the problem on local development trying to run older sphinx
->> 5.3 on python 3.13 requires to use imghdr, which was removed from
->> standard library (alternatively we'd need to install it from pip via
->> adding standard-imghdr into requirements.txt).
->> 
->> [1] https://about.readthedocs.com/blog/2024/06/ubuntu-24-04/
->> 
->> Fixes: b900b790e9 ("doc: Add sphinx to requirements.txt")
->> Signed-off-by: Petr Vorel <pvorel@suse.cz>
->> ---
->> Hi,
->> 
->> first, I'm sorry for a regression. I tested all the previous versions
->> carefully even locally, but in the end the final variant I obviously
->> omit to test.
->> 
->> Tested:
->> https://app.readthedocs.org/projects/linux-test-project/builds/27784588/
->> 
->> Alternatively, we could keep old distros and just add standard-imghdr
->> (without version) to doc/requirements.txt. But sooner or later we will
->> need to upgrade thus I'm sending this version.
->> 
->> Kind regards,
->> Petr
->> 
->>   .readthedocs.yml     | 4 ++--
->>   doc/requirements.txt | 2 +-
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->> 
->> diff --git a/.readthedocs.yml b/.readthedocs.yml
->> index 5434ef49d6..51825da77f 100644
->> --- a/.readthedocs.yml
->> +++ b/.readthedocs.yml
->> @@ -1,9 +1,9 @@
->>   version: 2
->>     build:
->> -  os: "ubuntu-22.04"
->> +  os: "ubuntu-24.04"
->>     tools:
->> -    python: "3.6"
->> +    python: "3.12"
->>     apt_packages:
->>       - autoconf
->>       - enchant-2
->> diff --git a/doc/requirements.txt b/doc/requirements.txt
->> index 6302ecd9f2..1b9a984547 100644
->> --- a/doc/requirements.txt
->> +++ b/doc/requirements.txt
->> @@ -1,6 +1,6 @@
->>   # Use the same sphinx as on readthedocs.org. When updated, make sure
->>   # sphinx-rtd-theme is compatible with sphinx.
->> -sphinx==5.3.0
->> +sphinx==7.2.6
->>   sphinx-rtd-theme==2.0.0
->>     linuxdoc==20231020
+> --
+> 2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
