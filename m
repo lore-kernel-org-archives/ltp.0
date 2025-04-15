@@ -4,68 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C785CC369AB
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 15:36:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75462C369AB
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 16:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744733426; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=9fZzkesIluJ2rpxoC93qWGZSpP2lrgcdNyBy970BrrU=;
+ b=eCyaH7dmjQHwoYO61tpnixwtN3ORoJcrk+xUaQvlpyWxGdYMaLILfd0XiW/bcZxfSFY6c
+ aAd7Z5skUscrFAsZF67eZitqq3WCI0nokNJELp+4ctG053js5bWzQMk/hx8nXdqPXXKEZyO
+ t7Ixw7Oemg569zxlF/C4du0bjfMXrIU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2CE23CB928
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 17:36:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CD9483CB923
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 18:10:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8042C3CA59D
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 17:35:56 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=chrubis@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C2E173CABE1
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 18:10:04 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0054C1000ECF
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 17:35:54 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 942321F387;
- Tue, 15 Apr 2025 15:35:53 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84979139A1;
- Tue, 15 Apr 2025 15:35:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GE4yH9l8/mc9UgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 15 Apr 2025 15:35:53 +0000
-Date: Tue, 15 Apr 2025 17:36:25 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Z_58-c488Qb3dkYn@yuki.lan>
-References: <20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com>
- <20250415-patchwork_ci-v6-2-81e6d4184af5@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 969001A010DD
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 18:10:03 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-43cfebc343dso44759595e9.2
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 09:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1744733403; x=1745338203; darn=lists.linux.it;
+ h=in-reply-to:from:content-language:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=jsMl+dEiZVmGUWV5wXkaBAyBAVz58lGhdZe6zUZoWIs=;
+ b=anSXdCDYWAEr1DTS11ShO5EJ9IKElCfzkGLDrz4vhQ6y14rc8GQJdQint6v/VW3nn5
+ mHACinZhjenp03/iD6FOKuBdCWRd3GmDHQDh+TDryatBycsFFDMAJC06QqLkpcWwITwB
+ uRmUz0hpadriW2udqQFIOxIPbah4B56z/MypBGh519EVzZ4geQInj47u/yeF2SvsTVbC
+ NNOxW+M5Ug6grVnBBj2fQ3vTP6hMblBBG4Q909IakAeMu5P6blTfRMSITkZCTfqpxc+H
+ OZseG+c2GVZYJopUt75o/sCPifiAXS1sxlYLKo35+46pF6bPuQTufNa7vm8oP0Wh0cu7
+ 1pCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1744733403; x=1745338203;
+ h=in-reply-to:from:content-language:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=jsMl+dEiZVmGUWV5wXkaBAyBAVz58lGhdZe6zUZoWIs=;
+ b=Phc3BvzDPeadQkTN0xN35DJYesK0aTtcQ4HjkOmO8mpdvREeJczcfYPFXBWSNS7ABH
+ Go/3XeNe6XVxiP4iv3X5BnoMuiOeLILF69/15zMREwUbyROPj/qxju6WRJPSWbCM15G+
+ odQtuCkONRifMK7Utun9lIhPx6WoHfFTrXYRNie6MZ68Ct3kt8+NuDR/ISCA17x137MC
+ Cp6ZVw7o9ndJuY5lwrA80YHnV0COQLjshHrvQvbTFx4ngJEQCMdN9o+CyWwEH5DSdBKM
+ RqPGUbm2+p4V0g/fDXHnNG7IFMw2eIDFfvJNE2TzTFd/4CWiLAJ9TcUd3UqOUwVu6SUh
+ nxvQ==
+X-Gm-Message-State: AOJu0YzcQFGhZuLRRfzk9O9X0WAelbhqvmZardzv0eAZKyS0N+bl1gaP
+ 9Y/iUow641mXq2lOOCVo3gauSl22gISrYwgxMV+ns+4naJ1wUJGcvG1W7tU3kzywwvShPRqwW3g
+ k
+X-Gm-Gg: ASbGnctkwX4iucTxgSB1n1j+k/u6fKkuNB4LjnpP6Guy6ol6lmfSPxAaJwQnHnx5ScG
+ mVLQHVxQmbK4Ln6ayWJJe1IELA9H7lr5wlS0LXOwI5HiaYMkk+VWRGGTDUouXHvaCeih/+PSHAB
+ VFgIAfHvN0bRm/w9jeDZwrmMrxbL7GDfs4x7NCrnPpXj1lJ1WdZJv8fU5jpqkSDQDEmlrwTKe/y
+ VDuMd5Nm7i9iC6bgwfrwQLSJ30o6+QersocmvxOIWHjqTj0YMA0f6zrEd/Tl7ZJ/t6uqPJZG5jS
+ SOK3h+TCmJ0ND1ec7DF1/wa8TyxLGPCTnVESKiq3j/etAw6GQ2HCZZhyp6cjVsUQwQ5rMDAuygC
+ kltV7dd4ke1MkAJ+F48KTpKeMDOLggJ/rsDOWJe2SlPEBXEg2xeeEAxJdQpZ9UdTI0Ojxtg9uYy
+ sweTk=
+X-Google-Smtp-Source: AGHT+IEoOvJH8+FXxNkTK2+vuTwmhwxGr/v5Ge5X9pubJXtBUzxyV3Sex+5aAysuVkhtXaifBpKcZg==
+X-Received: by 2002:a05:600c:1e1c:b0:43c:f8fc:f687 with SMTP id
+ 5b1f17b1804b1-43f3a9adc61mr172894325e9.27.1744733402833; 
+ Tue, 15 Apr 2025 09:10:02 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-43f233c824bsm212344705e9.24.2025.04.15.09.10.01
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 15 Apr 2025 09:10:02 -0700 (PDT)
+Message-ID: <f3fb764f-2b51-4cae-a47f-bb2b859a37d9@suse.com>
+Date: Tue, 15 Apr 2025 18:10:01 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250415-patchwork_ci-v6-2-81e6d4184af5@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 942321F387
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com>
+ <20250415-patchwork_ci-v6-3-81e6d4184af5@suse.com>
+ <Z_53eNAcp0piNyuO@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <Z_53eNAcp0piNyuO@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 2/4] ci: add patchwork communication script
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v6 3/4] ci: add ci-patchwork-trigger workflow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,211 +106,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  ci/tools/patchwork.sh | 169 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 169 insertions(+)
-> 
-> diff --git a/ci/tools/patchwork.sh b/ci/tools/patchwork.sh
-> new file mode 100755
-> index 0000000000000000000000000000000000000000..bef6998b6168714e0cfaef443a4573017440bb2d
-> --- /dev/null
-> +++ b/ci/tools/patchwork.sh
-> @@ -0,0 +1,169 @@
-> +#!/bin/sh -x
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +#
-> +# Shell script to communicate with Patchwork via REST API.
-> +# It has been mainly created for CI purposes, but it can be used in the shell
-> +# by satisfying minimum requirements.
-> +#
-> +# Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
-> +
-> +PATCHWORK_URL="${PATCHWORK_URL:-https://patchwork.ozlabs.org}"
-> +PATCHWORK_SINCE="${PATCHWORK_SINCE:-3600}"
-> +
-> +command_exists() {
-> +        for cmd in "$@"; do
-> +                if ! command -v "$cmd" >/dev/null 2>&1; then
-> +                        echo "'$1' must be present in the system" >&2
-> +                        exit 1
-> +                fi
-> +        done
-> +}
-> +
-> +command_exists "curl" "jq"
-> +
-> +fetch_series() {
-> +        local current_time=$(date +%s)
-> +        local since_time=$(expr $current_time - $PATCHWORK_SINCE)
-> +        local date=$(date -u -d @$since_time +"%Y-%m-%dT%H:%M:%SZ")
-> +
-> +        curl -k -G "$PATCHWORK_URL/api/events/" \
-> +                --data "category=series-completed" \
-> +                --data "project=ltp" \
-> +                --data "state=new" \
-> +                --data "since=$date" \
-> +                --data "archive=no" |
-> +                jq -r '.[] | "\(.payload.series.id):\(.payload.series.mbox)"'
-                                                      ^
-We add ':' here and then we have to use IFS=':' to parse these values.
-Wouldn't this work without the need to fiddle with IFS if we just added
-space here instead?
+Hi Cyril,
 
-If that worked we could get rid of all the IFS= assigments in the
-script.
+On 4/15/25 17:12, Cyril Hrubis wrote:
+>> +name: "Patchwork checker"
+>> +on:
+>> +  push:
+> Does it make sense to run the script both on schedulle and push?
+It makes sense if you develop the pipeline. I can disable it tho, but 
+then we need to remember that for each new feature on the pipeline we 
+need to add "push:" as well.
+>> +  schedule:
+>> +    - cron: '*/15 * * * 1-5'
+>> +    - cron: '*/45 * * * 6,0'
+> So we run this less on weekends, I suppose that may make some sense.
 
-> +        [ $? -eq 0 ] || exit 1
-> +}
-> +
-> +get_patches() {
-> +        local series_id="$1"
-> +
-> +        curl -k -G "$PATCHWORK_URL/api/patches/" \
-> +                --data "project=ltp" \
-> +                --data "series=$series_id" |
-> +                jq -r '.[] | "\(.id)"'
-> +
-> +        [ $? -eq 0 ] || exit 1
-> +}
-> +
-> +verify_token_exists() {
-> +        if [ -z "$PATCHWORK_TOKEN" ]; then
-> +                echo "For this feature you need \$PATCHWORK_TOKEN"
-> +                exit 1
-> +        fi
-> +}
-> +
-> +set_patch_state() {
-> +        local patch_id="$1"
-> +        local state="$2"
-> +
-> +        verify_token_exists
-> +
-> +        curl -k -X PATCH \
-> +                -H "Authorization: Token $PATCHWORK_TOKEN" \
-> +                -F "state=$state" \
-> +                "$PATCHWORK_URL/api/patches/$patch_id/"
-> +
-> +        [ $? -eq 0 ] || exit 1
-> +}
-> +
-> +set_series_state() {
-> +        local series_id="$1"
-> +        local state="$2"
-> +
-> +        get_patches "$series_id" | while IFS= read -r patch_id; do
-> +                [ "$patch_id" ] && set_patch_state "$patch_id" "$state"
-> +        done
-> +}
-> +
-> +get_checks() {
-> +        local patch_id="$1"
-> +
-> +        curl -k -G "$PATCHWORK_URL/api/patches/$patch_id/checks/" |
-> +                jq -r '.[] | "\(.id)"'
-> +
-> +        [ $? -eq 0 ] || exit 1
-> +}
-> +
-> +already_tested() {
-> +        local series_id="$1"
-> +
-> +        get_patches "$series_id" | while IFS= read -r patch_id; do
-> +                [ "$patch_id" ] || continue
-> +
-> +                get_checks "$patch_id" | while IFS= read -r check_id; do
-> +                        if [ -n "$check_id" ]; then
-> +                                echo "$check_id"
-> +                                return
-> +                        fi
-> +                done
-> +        done
-> +}
-> +
-> +verify_new_patches() {
-> +        local tmp=$(mktemp -d)
-> +        local output="$tmp/series_ids.txt"
-> +
-> +        echo -n '' >"$output"
-> +
-> +        fetch_series | while IFS=: read -r series_id series_mbox; do
-> +                [ "$series_id" ] || continue
-> +
-> +                tested=$(already_tested "$series_id")
-> +                [ "$tested" ] && continue
-> +
-> +                echo "$series_id|$series_mbox" >>"$output"
-> +        done
-> +
-> +        cat "$output"
-> +}
-> +
-> +send_results() {
-> +        local series_id="$1"
-> +        local target_url="$2"
-> +
-> +        verify_token_exists
-> +
-> +        local context=$(echo "$3" | sed 's/:/_/g; s/\//-/g; s/\./-/g')
-> +
-> +        [ "$CC" ] && context="${context}_${CC}"
-> +        [ "$ARCH" ] && context="${context}_${ARCH}"
-> +
-> +        local result="$4"
-> +        [ "$result" == "cancelled" ] && return
-> +
-> +        local state="fail"
-> +        [ "$result" == "success" ] && state="success"
-> +
-> +        get_patches "$series_id" | while IFS= read -r patch_id; do
-> +                [ "$patch_id" ] || continue
-> +
-> +                curl -k -X POST \
-> +                        -H "Authorization: Token $PATCHWORK_TOKEN" \
-> +                        -F "state=$state" \
-> +                        -F "context=$context" \
-> +                        -F "target_url=$target_url" \
-> +                        -F "description=$result" \
-> +                        "$PATCHWORK_URL/api/patches/$patch_id/checks/"
-> +
-> +                [ $? -eq 0 ] && exit 1
-> +        done
-> +}
-> +
-> +case "$1" in
-> +state)
-> +        set_series_state "$2" "$3"
-> +        ;;
-> +check)
-> +        send_results "$2" "$3" "$4" "$5"
-> +        ;;
-> +verify)
-> +        verify_new_patches
-> +        ;;
-> +*)
-> +        echo "Available commands: state, check, verify"
+Yes, it makes sense if we receive patches in the weekend. Just in case, 
+it will take a few seconds to complete the workflow anyway.
 
-Possibly write this to stderr (&>2)?
-
-> +        exit 1
-> +        ;;
-> +esac
-
-Other than these:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+- Andrea
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
