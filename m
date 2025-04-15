@@ -4,111 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 395D8C369AB
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 10:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 239ADC369B5
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 10:01:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9DEFE3CB894
-	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 12:01:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B165B3CB87B
+	for <ltp@archiver.kernel.org>; Tue, 15 Apr 2025 12:01:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF5473CB888
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 12:00:09 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 615903CB88C
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 12:00:14 +0200 (CEST)
 Authentication-Results: in-5.smtp.seeweb.it;
  spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.131; helo=smtp-out2.suse.de;
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
  envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0B8D460055F
- for <ltp@lists.linux.it>; Tue, 15 Apr 2025 12:00:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7F4C86006DD
+ for <ltp@lists.linux.it>; Tue, 15 Apr 2025 12:00:13 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7C0041F38F;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 55F781F38D;
  Tue, 15 Apr 2025 10:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1744711203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0UqGlnW0kablDfxuRY44Yo04ruyMms7lxLkH/tr5l4M=;
- b=d01EUO+AhZW6wblIUcm6WYb7DgimnKFVhccEcCJoExYWq819FgYRbNktro/32aXAmA/UMq
- 0db2fXaiGwWoLjqlD4aDULBMWYsB1CTWJWFawvbFsLRrZC66iA3zxpfORYQUNSTnMo+tpw
- G897ehA/sGENiRxCT6yiy1518L3AJxY=
+ bh=JRBUsAY/iLMEXLeC5adS5Ck/Uvf3AIHMsdmW3Co7wTA=;
+ b=RyOWDtLHGCSAKleBdGPKXoKcMvv8scZ/Pcs5NsmP+S9LDWvTLTir0KJaSaeN/IaL4ik63t
+ 4F1T31BBQRMR+5oFN094wChjNOSoAwDLrz5MEkslbVkPty6xGzdh1upPS/+BE5YFYxUPRc
+ ZJTM5ydPeLQwDt4hZgvaFTudA7PC23I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1744711203;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0UqGlnW0kablDfxuRY44Yo04ruyMms7lxLkH/tr5l4M=;
- b=bUpX79l6vzPiETkKBLMwkZZTYLNT/My4bw0/QEMt4ZRdyu44h1mSI4fLdlHmB3F5OkDpMi
- a7ErlPk8Nh/9z5Dw==
+ bh=JRBUsAY/iLMEXLeC5adS5Ck/Uvf3AIHMsdmW3Co7wTA=;
+ b=AcDk+8EAwkVFRICe6Wv8upfpuoxS/U9gdB153OwZQBThUDUTA54v0rLJW/akXjD1Hngn/Q
+ K7+eYsyCPqvtSQAA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RyOWDtLH;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=AcDk+8EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1744711203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0UqGlnW0kablDfxuRY44Yo04ruyMms7lxLkH/tr5l4M=;
- b=d01EUO+AhZW6wblIUcm6WYb7DgimnKFVhccEcCJoExYWq819FgYRbNktro/32aXAmA/UMq
- 0db2fXaiGwWoLjqlD4aDULBMWYsB1CTWJWFawvbFsLRrZC66iA3zxpfORYQUNSTnMo+tpw
- G897ehA/sGENiRxCT6yiy1518L3AJxY=
+ bh=JRBUsAY/iLMEXLeC5adS5Ck/Uvf3AIHMsdmW3Co7wTA=;
+ b=RyOWDtLHGCSAKleBdGPKXoKcMvv8scZ/Pcs5NsmP+S9LDWvTLTir0KJaSaeN/IaL4ik63t
+ 4F1T31BBQRMR+5oFN094wChjNOSoAwDLrz5MEkslbVkPty6xGzdh1upPS/+BE5YFYxUPRc
+ ZJTM5ydPeLQwDt4hZgvaFTudA7PC23I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1744711203;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0UqGlnW0kablDfxuRY44Yo04ruyMms7lxLkH/tr5l4M=;
- b=bUpX79l6vzPiETkKBLMwkZZTYLNT/My4bw0/QEMt4ZRdyu44h1mSI4fLdlHmB3F5OkDpMi
- a7ErlPk8Nh/9z5Dw==
+ bh=JRBUsAY/iLMEXLeC5adS5Ck/Uvf3AIHMsdmW3Co7wTA=;
+ b=AcDk+8EAwkVFRICe6Wv8upfpuoxS/U9gdB153OwZQBThUDUTA54v0rLJW/akXjD1Hngn/Q
+ K7+eYsyCPqvtSQAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5C94713A9F;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3150C13A89;
  Tue, 15 Apr 2025 10:00:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0ETgFCMu/me6YQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KAVGCiMu/me6YQAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Apr 2025 10:00:03 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 15 Apr 2025 12:00:02 +0200
+Date: Tue, 15 Apr 2025 12:00:01 +0200
 MIME-Version: 1.0
-Message-Id: <20250415-patchwork_ci-v6-2-81e6d4184af5@suse.com>
+Message-Id: <20250415-patchwork_ci-v6-1-81e6d4184af5@suse.com>
 References: <20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com>
 In-Reply-To: <20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744711202; l=5774;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744711202; l=2258;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=+ATCVgaHVzG2X/GrtiRDchJbMq+FZc+hz7s1lPoHkqs=;
- b=/O27ybWndAUNr3RYrqsBrV9xqoimMdi8d+YPpGewa8KbRXoufSA+MLc7IbnGPCFvq5xAcjDbf
- TMpGJxHmiYCDXnNwrLepDToKs941hOksxpBt//Y1obHkX2cXMwowQ57
+ bh=itXUBMAEj5bbr4VRzA7S6gFdXwrmbvvel02eQ4ChPgc=;
+ b=ZiLXGBXYM+/4YGjgdUt9gA3JwUmYqOaDG7zL4atjKlIXdnbqnsDdt67+mbw6ULODteCrb7e7m
+ Bgn0Atxq/5rC2baOhMdIKH/orfmRBZV1ZOfBKFUapQ5zgVJYIYywlkm
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 55F781F38D
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, ozlabs.org:url,
- suse.com:mid, suse.com:email]
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 2/4] ci: add patchwork communication script
+Subject: [LTP] [PATCH v6 1/4] ci: install dependences for patchwork-ci script
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,200 +137,95 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add a script to communicate with patchwork. Available commands are:
-
-- state: change patch-series state
-- check: send a tests report to patchwork
-- verify: will print a list of new patch-series which has not been
-  tested in the past hour (by default)
-
-The script can be configured defining:
-
-- PATCHWORK_URL: patchwork url to communicate with
-- PATCHWORK_TOKEN: patchwork authentication token
-- PATCHWORK_SINCE: timespan in seconds where we want to fetch
-  patch-series
-
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- ci/tools/patchwork.sh | 169 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 169 insertions(+)
+ ci/alpine-runtime.sh | 2 ++
+ ci/alpine.sh         | 2 ++
+ ci/debian.i386.sh    | 2 ++
+ ci/debian.sh         | 2 ++
+ ci/fedora.sh         | 2 ++
+ ci/tumbleweed.sh     | 2 ++
+ 6 files changed, 12 insertions(+)
 
-diff --git a/ci/tools/patchwork.sh b/ci/tools/patchwork.sh
-new file mode 100755
-index 0000000000000000000000000000000000000000..bef6998b6168714e0cfaef443a4573017440bb2d
---- /dev/null
-+++ b/ci/tools/patchwork.sh
-@@ -0,0 +1,169 @@
-+#!/bin/sh -x
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Shell script to communicate with Patchwork via REST API.
-+# It has been mainly created for CI purposes, but it can be used in the shell
-+# by satisfying minimum requirements.
-+#
-+# Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
-+
-+PATCHWORK_URL="${PATCHWORK_URL:-https://patchwork.ozlabs.org}"
-+PATCHWORK_SINCE="${PATCHWORK_SINCE:-3600}"
-+
-+command_exists() {
-+        for cmd in "$@"; do
-+                if ! command -v "$cmd" >/dev/null 2>&1; then
-+                        echo "'$1' must be present in the system" >&2
-+                        exit 1
-+                fi
-+        done
-+}
-+
-+command_exists "curl" "jq"
-+
-+fetch_series() {
-+        local current_time=$(date +%s)
-+        local since_time=$(expr $current_time - $PATCHWORK_SINCE)
-+        local date=$(date -u -d @$since_time +"%Y-%m-%dT%H:%M:%SZ")
-+
-+        curl -k -G "$PATCHWORK_URL/api/events/" \
-+                --data "category=series-completed" \
-+                --data "project=ltp" \
-+                --data "state=new" \
-+                --data "since=$date" \
-+                --data "archive=no" |
-+                jq -r '.[] | "\(.payload.series.id):\(.payload.series.mbox)"'
-+
-+        [ $? -eq 0 ] || exit 1
-+}
-+
-+get_patches() {
-+        local series_id="$1"
-+
-+        curl -k -G "$PATCHWORK_URL/api/patches/" \
-+                --data "project=ltp" \
-+                --data "series=$series_id" |
-+                jq -r '.[] | "\(.id)"'
-+
-+        [ $? -eq 0 ] || exit 1
-+}
-+
-+verify_token_exists() {
-+        if [ -z "$PATCHWORK_TOKEN" ]; then
-+                echo "For this feature you need \$PATCHWORK_TOKEN"
-+                exit 1
-+        fi
-+}
-+
-+set_patch_state() {
-+        local patch_id="$1"
-+        local state="$2"
-+
-+        verify_token_exists
-+
-+        curl -k -X PATCH \
-+                -H "Authorization: Token $PATCHWORK_TOKEN" \
-+                -F "state=$state" \
-+                "$PATCHWORK_URL/api/patches/$patch_id/"
-+
-+        [ $? -eq 0 ] || exit 1
-+}
-+
-+set_series_state() {
-+        local series_id="$1"
-+        local state="$2"
-+
-+        get_patches "$series_id" | while IFS= read -r patch_id; do
-+                [ "$patch_id" ] && set_patch_state "$patch_id" "$state"
-+        done
-+}
-+
-+get_checks() {
-+        local patch_id="$1"
-+
-+        curl -k -G "$PATCHWORK_URL/api/patches/$patch_id/checks/" |
-+                jq -r '.[] | "\(.id)"'
-+
-+        [ $? -eq 0 ] || exit 1
-+}
-+
-+already_tested() {
-+        local series_id="$1"
-+
-+        get_patches "$series_id" | while IFS= read -r patch_id; do
-+                [ "$patch_id" ] || continue
-+
-+                get_checks "$patch_id" | while IFS= read -r check_id; do
-+                        if [ -n "$check_id" ]; then
-+                                echo "$check_id"
-+                                return
-+                        fi
-+                done
-+        done
-+}
-+
-+verify_new_patches() {
-+        local tmp=$(mktemp -d)
-+        local output="$tmp/series_ids.txt"
-+
-+        echo -n '' >"$output"
-+
-+        fetch_series | while IFS=: read -r series_id series_mbox; do
-+                [ "$series_id" ] || continue
-+
-+                tested=$(already_tested "$series_id")
-+                [ "$tested" ] && continue
-+
-+                echo "$series_id|$series_mbox" >>"$output"
-+        done
-+
-+        cat "$output"
-+}
-+
-+send_results() {
-+        local series_id="$1"
-+        local target_url="$2"
-+
-+        verify_token_exists
-+
-+        local context=$(echo "$3" | sed 's/:/_/g; s/\//-/g; s/\./-/g')
-+
-+        [ "$CC" ] && context="${context}_${CC}"
-+        [ "$ARCH" ] && context="${context}_${ARCH}"
-+
-+        local result="$4"
-+        [ "$result" == "cancelled" ] && return
-+
-+        local state="fail"
-+        [ "$result" == "success" ] && state="success"
-+
-+        get_patches "$series_id" | while IFS= read -r patch_id; do
-+                [ "$patch_id" ] || continue
-+
-+                curl -k -X POST \
-+                        -H "Authorization: Token $PATCHWORK_TOKEN" \
-+                        -F "state=$state" \
-+                        -F "context=$context" \
-+                        -F "target_url=$target_url" \
-+                        -F "description=$result" \
-+                        "$PATCHWORK_URL/api/patches/$patch_id/checks/"
-+
-+                [ $? -eq 0 ] && exit 1
-+        done
-+}
-+
-+case "$1" in
-+state)
-+        set_series_state "$2" "$3"
-+        ;;
-+check)
-+        send_results "$2" "$3" "$4" "$5"
-+        ;;
-+verify)
-+        verify_new_patches
-+        ;;
-+*)
-+        echo "Available commands: state, check, verify"
-+        exit 1
-+        ;;
-+esac
+diff --git a/ci/alpine-runtime.sh b/ci/alpine-runtime.sh
+index 3bff42770bd8ae7da3e6e571a843e44c7a56181b..d0e1990d2c25c9f300dd47fb979af4d38e3ad3f9 100755
+--- a/ci/alpine-runtime.sh
++++ b/ci/alpine-runtime.sh
+@@ -4,6 +4,8 @@
+ 
+ apk add \
+         acl \
++        curl \
++        jq \
+         keyutils \
+         libaio \
+         libacl \
+diff --git a/ci/alpine.sh b/ci/alpine.sh
+index 5a44a6687b9eb7743c0fbbb288a133366b17da75..254f4aaece66ef177bc5b4a92cf5160443552378 100755
+--- a/ci/alpine.sh
++++ b/ci/alpine.sh
+@@ -9,6 +9,8 @@ apk add \
+ 	autoconf \
+ 	automake \
+ 	clang \
++	curl \
++	jq \
+ 	gcc \
+ 	git \
+ 	acl-dev \
+diff --git a/ci/debian.i386.sh b/ci/debian.i386.sh
+index 2846053098033dd0215aa724738a90baff290430..44c7ddf2ff6f049ab847b374213c6aee74fbc130 100755
+--- a/ci/debian.i386.sh
++++ b/ci/debian.i386.sh
+@@ -6,6 +6,8 @@ dpkg --add-architecture i386
+ apt update
+ 
+ apt install -y --no-install-recommends \
++	curl \
++	jq \
+ 	linux-libc-dev:i386 \
+ 	gcc-multilib \
+ 	libacl1-dev:i386 \
+diff --git a/ci/debian.sh b/ci/debian.sh
+index f590b4b9a4f910c7e4229f4e2a818cf5b1e818bb..0445c92ec40819e49c0435b1881cf6b202d14087 100755
+--- a/ci/debian.sh
++++ b/ci/debian.sh
+@@ -23,6 +23,8 @@ pkg_minimal="
+ 	debhelper
+ 	devscripts
+ 	clang
++	curl
++	jq
+ 	gcc
+ 	git
+ 	iproute2
+diff --git a/ci/fedora.sh b/ci/fedora.sh
+index bef5bcd2b519f4a32533a2d52f182c6dd5e1b7d0..494de928f7434f3310979e595e18162c2042f1e8 100755
+--- a/ci/fedora.sh
++++ b/ci/fedora.sh
+@@ -9,6 +9,8 @@ $yum \
+ 	automake \
+ 	make \
+ 	clang \
++	curl \
++	jq \
+ 	gcc \
+ 	git \
+ 	findutils \
+diff --git a/ci/tumbleweed.sh b/ci/tumbleweed.sh
+index 33937ec63a372ed92e8d4f05ecd435ce902fa5bb..d0607eed25f06fec3064ca75ec7875ce833f9d96 100755
+--- a/ci/tumbleweed.sh
++++ b/ci/tumbleweed.sh
+@@ -8,6 +8,8 @@ $zyp \
+ 	autoconf \
+ 	automake \
+ 	clang \
++	curl \
++	jq \
+ 	findutils \
+ 	gcc \
+ 	git \
 
 -- 
 2.43.0
