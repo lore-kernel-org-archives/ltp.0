@@ -4,120 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4950DC369B1
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 09:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE08C369B9
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 09:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744795974; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=buT11RdXKBLoSjqTzKpOcAnFTXCn2zqZPFEkMtSOuNA=;
+ b=h4+T/K8Dd6iut/zyv25FIaz8ZDBYg2P/HqeJclse8QDpqvL05bg3mbULmJ/ytK0y5bO59
+ vgHiV9r66veA9Jt6roBSJn0MiYDJ109TZPROFiuwyti21905QaRsINS5f5mPdiwm1JYHMr5
+ c3sMEW29cxtDSKKgY7NO8URnuNzN5bU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D201B3CB968
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 11:05:35 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 4837D3CB957
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 11:32:54 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA0B83CB96A
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 11:04:10 +0200 (CEST)
-Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
- (client-ip=195.135.223.130; helo=smtp-out1.suse.de;
- envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0A8BB3CA59D
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 11:32:33 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3A84F1000996
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 11:04:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 28B272119A;
- Wed, 16 Apr 2025 09:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1744794240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Cx0g+CM29NmXJ+cXLWtJ3xZGLOwxY7OOFDii4xy6m2Q=;
- b=I0WXwG1aJ41Ww1jlP4B/nVNvlnTxqEzgs49oeBnJ8jjFiGaJkD8Vku8QNnRcTShORlYgkN
- 3yXqgmdCg4wOGYzcbfcihBahWYs2NAOSIv3oPjGFDF7c0vnaPGRLee5tAWOfJtrq3qKPa7
- 7wwwNxU4hQCFrFa7TMWECLw70Sqd2vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1744794240;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Cx0g+CM29NmXJ+cXLWtJ3xZGLOwxY7OOFDii4xy6m2Q=;
- b=KkufUQAONN0TCWmJGhAqDM/CFwVVxLw/QWEagp3xf66UINTlwxoHjTyl1jaQprZzOUd1Tj
- 1aKyw9AraFaMd1BA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=I0WXwG1a;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KkufUQAO
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1744794240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Cx0g+CM29NmXJ+cXLWtJ3xZGLOwxY7OOFDii4xy6m2Q=;
- b=I0WXwG1aJ41Ww1jlP4B/nVNvlnTxqEzgs49oeBnJ8jjFiGaJkD8Vku8QNnRcTShORlYgkN
- 3yXqgmdCg4wOGYzcbfcihBahWYs2NAOSIv3oPjGFDF7c0vnaPGRLee5tAWOfJtrq3qKPa7
- 7wwwNxU4hQCFrFa7TMWECLw70Sqd2vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1744794240;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Cx0g+CM29NmXJ+cXLWtJ3xZGLOwxY7OOFDii4xy6m2Q=;
- b=KkufUQAONN0TCWmJGhAqDM/CFwVVxLw/QWEagp3xf66UINTlwxoHjTyl1jaQprZzOUd1Tj
- 1aKyw9AraFaMd1BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0129813976;
- Wed, 16 Apr 2025 09:03:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UCE2On9y/2foagAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 16 Apr 2025 09:03:59 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 16 Apr 2025 11:04:01 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D34991000999
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 11:32:32 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-39c266c2dd5so5808621f8f.3
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 02:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1744795952; x=1745400752; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=w7g+ZbPYqCFCajchC4Lcj2g8qMSNKoSjwnSI9hQQ+Pw=;
+ b=ZByMc+3jverzlFAapPv+7obEtrRCHIw2aWZb7BqsGeWs416ThvL8BObdq8ovDLxNZb
+ 4FxrmMNu/R6ACzpVkBrRWDHdbR3JR1GDxTbewJ02rgFyWacb2lK33rNsaMNuM35STk9o
+ AqCR7Zcg/hDUebFFqA4sCDeXeukRGsbTACibnVlUTKGlnOy2HOjil+EQ04L9ftE9E4X+
+ yGBzArQxVg3QmTDko1wHVHexyWtx3Ye3cDMCxTs78D+48KvTBBoYNqPMRHTlLdwPMkzv
+ zhCzLE9foEbbTfmdxK3jIuHfvMdzAdxIlKGauZ2h58QEuMbo4Skmm+VBc+Lxx5EfaOMd
+ 6gBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1744795952; x=1745400752;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=w7g+ZbPYqCFCajchC4Lcj2g8qMSNKoSjwnSI9hQQ+Pw=;
+ b=JBxyRt8z3HqwKK6hq5RXxBauHC/cSPhdiRgbFxA+Stx5Q+LdEBTzwY2ygH5yB6eSO7
+ mYGWXdOfm4MYGxyrqrw1gIR3KoDbzQ1iVo+vvzVgRYo4UATD2Fh2cBu9EVncx9sFWKPD
+ 7HhTrdUVj15KOmS9yCH+FGIVEc9mA5pyDQxjNJXeC04fhoZS88qFb8WZyxkhgqXLe+UH
+ g7dnL57Dy/Q3ep+EM7RHt+d0/ZgHyv+bn856Eashinr85pAXnB1Z6CdI1fsXCspaHuoh
+ TeAbaaLLBigXao+6NBkeQxJhz1EiTvByA/BKVejSxUyLY+N6rdZ8M9GhE1vtNs7b+l9l
+ tLvQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWfKl2P0sOlmiFGp4c+s9VBrcI9jHfwQIB7taLoDttKwZ8PFFH+s/Lp397DbQJneLI5SZ8=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx12GVraHrY6Ag0HumOd0iz+XXMK5sTzkJLEICoSMC+LvlChpNx
+ /T+6xansWL+YxppOh7fh7Y4BURTp+punrkcAJbuBKm6nGJoIWsGcWwyXsI/6QEY=
+X-Gm-Gg: ASbGncuySRMQwmZlgWrjNMf+hPlws4jDpo97CuIEi++O4VVm8fDz2qmlZIG1xnZf27t
+ a7TwTRyyy3jCL2sMilQv1RRPAecpuSksufduB4DHcu1jdlGAbEM8Vn0xuQHs/Iz6Yq4b7pgv/0M
+ s2oZSX1gBBkLw7MnyY7OzLCOoOrlxfk/6ncgvbSaHVm+0oB3spgiYTdgRtBQ6Wc7dI2/xl5+e36
+ 3kZ1DSodcVbmvztH3pc5/QnWCF+T1slRFnNbVAiQ3rCKSyonOkDXXlYAgP+y1OXw+QBZJ9qX3ti
+ KfUQddGOSD9y2QJ4/VARd1tNWt9gSjiGK9iSrv9cNjj7azDT+ANybwcoB86Ci3+tXAb61PPJhnj
+ toZmHmMCupxhN/XUItyVP0i2JfwQwPkr1Twyp/JWplzJSxdRRY7CiDfzyaRU1RqkVbedAkmyT8N
+ e61ww=
+X-Google-Smtp-Source: AGHT+IHjJgVIR5ymxefc+01uQvWWXnIc8GW9JE/6vPoWYJlRuJvNcLJfUBjkgL3vPuew3LO4MTvsKw==
+X-Received: by 2002:a05:6000:250c:b0:38f:4acd:975c with SMTP id
+ ffacd0b85a97d-39ee5b1cb72mr997881f8f.27.1744795952192; 
+ Wed, 16 Apr 2025 02:32:32 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4404352a536sm34664555e9.1.2025.04.16.02.32.31
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 16 Apr 2025 02:32:31 -0700 (PDT)
+Message-ID: <14be2206-74e5-4d29-a43d-3796f83f68b1@suse.com>
+Date: Wed, 16 Apr 2025 11:32:31 +0200
 MIME-Version: 1.0
-Message-Id: <20250416-patchwork_ci-v8-4-503a29526f0a@suse.com>
-References: <20250416-patchwork_ci-v8-0-503a29526f0a@suse.com>
-In-Reply-To: <20250416-patchwork_ci-v8-0-503a29526f0a@suse.com>
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744794239; l=2630;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=zh34Jh8b5Ap0B58mebrIoN0H5JqoAQNg28FizzT6u0I=;
- b=nVuAaeDm8sRk39Y8Dy5AXObVzSJ3byvH4FDxnT86fLlYMx0nW7t1Eth1g6mCChnjTtLCRR+r7
- uqizUp+EKUCA8NdoIR/M10QYzxrvVirVhBiW1G+rQkYAJr3ligoiU6D
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: 28B272119A
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email,suse.de:dkim,suse.cz:email];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+User-Agent: Mozilla Thunderbird
+To: Ma Xinjian <maxj.fnst@fujitsu.com>, ltp@lists.linux.it
+References: <20250411072309.43689-1-maxj.fnst@fujitsu.com>
+Content-Language: en-US
+In-Reply-To: <20250411072309.43689-1-maxj.fnst@fujitsu.com>
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 4/4] ci: apply patchwork series in ci-docker-build
- workflow
+Subject: Re: [LTP] [PATCH] mmap18: Fix the doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,89 +103,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Modify ci-docker-build workflow in order to apply untested new
-patchwork patch-series inside the current branch and to send back
-results in the patchwork instance.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .github/workflows/ci-docker-build.yml | 39 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
-
-diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
-index 44dcca055018a1fb06541a788e3152239aea2e66..b476d993c50a3369efdaa9a72787a7f006cfe0b9 100644
---- a/.github/workflows/ci-docker-build.yml
-+++ b/.github/workflows/ci-docker-build.yml
-@@ -1,7 +1,19 @@
- # Copyright (c) 2021-2024 Petr Vorel <pvorel@suse.cz>
- 
- name: "Test building in various distros in Docker"
--on: [push, pull_request]
-+on:
-+  push:
-+  pull_request:
-+  workflow_dispatch:
-+    inputs:
-+      SERIES_ID:
-+        description: LTP patch series ID
-+        required: false
-+        default: ''
-+      SERIES_MBOX:
-+        description: LTP patch series URL
-+        required: false
-+        default: ''
- 
- permissions:
-   contents: read # to fetch code (actions/checkout)
-@@ -125,6 +137,20 @@ jobs:
-     - name: Compiler version
-       run: $CC --version
- 
-+    - name: Apply Patchwork series
-+      if: inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
-+      env:
-+        PATCHWORK_TOKEN: ${{ secrets.PATCHWORK_TOKEN }}
-+      run: |
-+        git config --global user.name 'GitHub CI'
-+        git config --global user.email 'github@example.com'
-+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
-+
-+        git checkout -b review_patch_series_"${{ inputs.SERIES_ID }}"
-+        curl -k "${{ inputs.SERIES_MBOX }}" | git am
-+
-+        ./ci/tools/patchwork.sh state "${{ inputs.SERIES_ID }}" "needs-review-ack"
-+
-     - name: ver_linux
-       run: ./ver_linux
- 
-@@ -158,3 +184,14 @@ jobs:
-       run: |
-         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
-         ./build.sh -r install -o ${TREE:-in} $INSTALL_OPT
-+
-+    - name: Send results to Patchwork
-+      if: always() && inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
-+      env:
-+        PATCHWORK_TOKEN: ${{ secrets.PATCHWORK_TOKEN }}
-+      run: |
-+        ./ci/tools/patchwork.sh check \
-+          "${{ inputs.SERIES_ID }}" \
-+          "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-+          "${{ matrix.container }}" \
-+          "${{ job.status }}"
-
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTWEsCgpJIG1lcmdlZCB0aGlzwqAgcGF0Y2gsIGFzIHdlbGwgYXMgYWxsIHRoZSBvdGhlcnMg
+cmVsYXRlZCB0byB0ZXN0cyAKZGVzY3JpcHRpb24gaW4gUlNUIGZvcm1hdC4KCktpbmQgcmVnYXJk
+cywKQW5kcmVhIENlcnZlc2F0bwoKT24gNC8xMS8yNSAwOToyMywgTWEgWGluamlhbiB2aWEgbHRw
+IHdyb3RlOgo+IFVzZSA6OiB0byBrZWVwIHRoZSBkZXNjcmlwdGlvbiBvZiBzdGFjayBtZW1vcnkg
+bWFwIGFzIG9yaWdpbmFsIHRleHQgd2hlbiB2aWV3ZWQgaW4gUlNUIGZvcm1hdC4KPgo+IFNpZ25l
+ZC1vZmYtYnk6IE1hIFhpbmppYW4gPG1heGouZm5zdEBmdWppdHN1LmNvbT4KPiAtLS0KPiAgIHRl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTguYyB8IDIwICsrKysrKysrKystLS0t
+LS0tLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25z
+KC0pCj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAx
+OC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxOC5jCj4gaW5kZXggM2Rl
+NTI0ZWNjLi41ZjBlZWU2YmEgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9tbWFwL21tYXAxOC5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21t
+YXAxOC5jCj4gQEAgLTI4LDE4ICsyOCwxOCBAQAo+ICAgICoKPiAgICAqIEtlcm5lbCBkZWZhdWx0
+IGBzdGFja19ndWFyZF9nYXBgIHNpemUgaXMgYDI1NiAqIGdldHBhZ2VzaXplKClgLgo+ICAgICoK
+PiAtICogVGhlIHN0YWNrIG1lbW9yeSBtYXAgd291bGQgbG9vayBsaWtlOgo+ICsgKiBUaGUgc3Rh
+Y2sgbWVtb3J5IG1hcCB3b3VsZCBsb29rIGxpa2U6Ogo+ICAgICoKPiAtICogfCAgLSAgLSAgLSAg
+IHJlc2VydmVkICBzaXplICAgLSAgLSAgLSAgfAo+ICsgKiAgIHwgIC0gIC0gIC0gICByZXNlcnZl
+ZCAgc2l6ZSAgIC0gIC0gIC0gIHwKPiAgICAqCj4gLSAqICstLSAtIC0gLSAtLSstLS0tLS0tLS0t
+LS0rLS0tLS0tLS0tLS0tLSsKPiAtICogfCAyNTYgcGFnZXMgfCAgdW5tYXBwZWQgIHwgICBtYXBw
+ZWQgICAgfAo+IC0gKiArLS0gLSAtIC0gLS0rLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0rCj4g
+LSAqICAgICAgICAgICAgICAgICAgICAgICAgICB8IG1hcHBlZCBzaXplIHwKPiAtICogXiAgICAg
+ICAgICAgfCAgLSAgLSAgc3RhY2sgc2l6ZSAgLSAgLSAgfAo+IC0gKiBzdGFydAo+IC0gKiAgICAg
+ICAgICAgICBeICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gLSAqICAgICAgICAgICAgIHN0
+YWNrIGJvdHRvbSAgICAgICBzdGFjayB0b3AKPiArICogICArLS0gLSAtIC0gLS0rLS0tLS0tLS0t
+LS0tKy0tLS0tLS0tLS0tLS0rCj4gKyAqICAgfCAyNTYgcGFnZXMgfCAgdW5tYXBwZWQgIHwgICBt
+YXBwZWQgICAgfAo+ICsgKiAgICstLSAtIC0gLSAtLSstLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0t
+LSsKPiArICogICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBtYXBwZWQgc2l6ZSB8Cj4gKyAq
+ICAgXiAgICAgICAgICAgfCAgLSAgLSAgc3RhY2sgc2l6ZSAgLSAgLSAgfAo+ICsgKiAgIHN0YXJ0
+Cj4gKyAqICAgICAgICAgICAgICAgXiAgICAgICAgICAgICAgICAgICAgICAgICAgXgo+ICsgKiAg
+ICAgICAgICAgICAgIHN0YWNrIGJvdHRvbSAgICAgICBzdGFjayB0b3AKPiAgICAqCj4gICAgKiAq
+KlRlc3QgMioqCj4gICAgKgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
+bnV4Lml0L2xpc3RpbmZvL2x0cAo=
