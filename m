@@ -4,95 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D95F0C369BD
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 11:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744802899; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=H/T2H8pJ3OVYmxin9P55HEaWA/HyYl2gWhUcSh2lbCQ=;
- b=SUsPnalZeA25zrE9owDO3jcIkh4z9ep7DjhCeEM9TQXqo9RxMoTfi522rkCgKcO1gCaPv
- SB0Q2eCvWvYvXnd6LFX78LzRJmZh+6FMnYQRhMPXfIs8JdEMlkK088n5CLRsr9sipDNM53G
- 0acEClrPSBENTvWA9ZlIavHYPIxTNus=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99E5C369BD
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 12:15:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2EBA3CB962
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 13:28:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 39E5C3CB95D
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 14:15:45 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 705093CB8FB
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 13:27:59 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0BCA63CB5B0
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:15:27 +0200 (CEST)
+Authentication-Results: in-4.smtp.seeweb.it;
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
+ (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
+ envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 004346001E1
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 13:27:57 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-43d07ca6a80so31969985e9.1
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 04:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1744802877; x=1745407677; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=QoiEqQ0qmUUPs52mMW7C0+/mSLB7EPHTChI3tUAeeLA=;
- b=SvHHgbbRApPeyNEDhoJx0gnYjYIpbYUanFfeQVLTaoiN6Fj+b/saBBHmdaA3BYAaym
- NKDZUVE99hZpBo7paKTwKpwcOPCZUvASEFwWqeiF7/tKTwfSlEHtmIq/bv6vOo8XMOu1
- +Ss7fs+QHz70dKJ+pgULjb+RMidmyDy48VTLuJNNAaEN2RrOeHOF+f4K3XCKU3V1a5aX
- Dt8VTSm6R7AuO3cYk45E2EoqPC7WWK2hFV/nSK8Q/tIdttMbHctxSws/9y3bIN0TcT8Z
- qBXyQxwCZEcTG3xm7OIRhgibCtIsWLBFts5wmWEVltc/AsUiHneqQvLe6GRaSyqpm5ye
- eCpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1744802877; x=1745407677;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=QoiEqQ0qmUUPs52mMW7C0+/mSLB7EPHTChI3tUAeeLA=;
- b=MCAaNudcJc87QySMki//5eaFCFjZaZICGj01yhYKTIqCULu7a6+aZ8zIr8ASqUIEEg
- lB86qDcLG54z/wSjmAEm7Q4+5c42i4bt+nhp2pmAlM9jAZiriT+6ox1J509qBke0D5En
- zxi4sr26PadugMlj9EISWwSsLiIihoHcF5PL5bY+a5AVdFQoXI+uRt+fJVGKDraMabwu
- pcvM+xaa3U60B00/CvsSiSMBi8iHERlYSSxyIwVwBwEPGLr6FlXWSZZBXYNfR5peNBhI
- rRFuAyac8VEgzTA+zS2JQ7kTgeYEfq8S6bsREh7GqXMMHlVrw2AfozJQ2kVSFcyTzRQ/
- 4ejQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXgXZLFWkzCDr93JnPSREkq6H2d3XDacvxQbQiITPYvkbZm6XbzWV0JJUouQ0klQMa5FXI=@lists.linux.it
-X-Gm-Message-State: AOJu0YxujPW4wxik8cpUv7xacmwiPQGNkaIOBaXy49kFUPmFBE+U3MXj
- MDoXpopP7jmzKjDbGCo54u/WQRkyLAopbOrWn2R4QOvgVOu7O3zfBsGiMk+31lA1h7sczPlgvTy
- Y
-X-Gm-Gg: ASbGncu7lctzARu9FmGKSFonuMs7BdyluRWeKSRbt4aGDV0bvPIoJZMx/XeqNXNZMbk
- CMAUyBMX0P03KvFi/USJeJxrxxWfhrgrlm11X+/Vdwfpiq0jqeSXKQ6bA2WiqVYEQxwTJtCsZM3
- i6pym4LcxkBer9HAlFZa1Lw1K9MFCqgkZf942fb8e0/lvyDzi7eOzeqU7fJiGoD+T+C3CRUQyTh
- PRHbPHuwzrFNJnhs0s+i7DKpsKPWfyf7SGbQOoojIA1DnpwPo43bVliLTxsU/omnse2uKnlWXu6
- ypkXETgGGKgZTp3XIQgu6HRhzXOMucI1RpaPfSOLo/Rm2YKD9tXRvqhsh5UWepBprx0uMdv4dUl
- +Obnyj/8axUd1Uo0XEnKqvXOz7K4Os4jGDik2ex203hH3y3QIiOPCuMIVJ9Rc6YRb4no5BuqqqU
- ZZ/Q3Yl/wG/92KaA==
-X-Google-Smtp-Source: AGHT+IFqkRSyThCaSZOnxOgY2245shhPvOb9srurHscUhB+5WLqIjBziiaOvw5hmHL1xy428t55QTQ==
-X-Received: by 2002:a05:600c:45c9:b0:43d:16a0:d82c with SMTP id
- 5b1f17b1804b1-4405d5fce94mr14274745e9.2.1744802877208; 
- Wed, 16 Apr 2025 04:27:57 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
- (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
- [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4405b50b964sm18235715e9.27.2025.04.16.04.27.56
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 16 Apr 2025 04:27:56 -0700 (PDT)
-Message-ID: <3462bbea-857b-480c-90bc-b0d00cdff831@suse.com>
-Date: Wed, 16 Apr 2025 13:27:56 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F15F410005FE
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:15:25 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7566C1F461;
+ Wed, 16 Apr 2025 12:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1744805724;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
+ b=gt6HCmYWCyNEvgeowael/FEkQcTe+3X5yONxpA69R8zhMitUajbGaVKEKLdn/Ajunz5z3A
+ 5r/JInSBJlkYj6JInBuJJ4q+4Aq3gYH8+zfiXE+LqEC+36LM6Wv36HUpcfJDIt0fJJ0P8d
+ kR2QgMqkjcFN4hSksZLmdlz61hXWyF4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1744805724;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
+ b=DJon8Pleyx1HKpEG2GJl6rvvk4LeAQovr+CoVrMOZQfMLmoSzKlvZpD7RtgYkngKxr2Cxn
+ 4lHKqxjI1jeysEAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1744805724;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
+ b=gt6HCmYWCyNEvgeowael/FEkQcTe+3X5yONxpA69R8zhMitUajbGaVKEKLdn/Ajunz5z3A
+ 5r/JInSBJlkYj6JInBuJJ4q+4Aq3gYH8+zfiXE+LqEC+36LM6Wv36HUpcfJDIt0fJJ0P8d
+ kR2QgMqkjcFN4hSksZLmdlz61hXWyF4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1744805724;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
+ b=DJon8Pleyx1HKpEG2GJl6rvvk4LeAQovr+CoVrMOZQfMLmoSzKlvZpD7RtgYkngKxr2Cxn
+ 4lHKqxjI1jeysEAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61C7C139A1;
+ Wed, 16 Apr 2025 12:15:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uBTYFlyf/2cqJQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Apr 2025 12:15:24 +0000
+Date: Wed, 16 Apr 2025 14:15:23 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: "John.Morin@gd-ms.com" <John.Morin@gd-ms.com>
+Message-ID: <20250416121523.GB589568@pevik>
+References: <BN1P110MB067481F2145E0C1A6A34240CDFB7A@BN1P110MB0674.NAMP110.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20250416-patchwork_ci-v8-0-503a29526f0a@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250416-patchwork_ci-v8-0-503a29526f0a@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <BN1P110MB067481F2145E0C1A6A34240CDFB7A@BN1P110MB0674.NAMP110.PROD.OUTLOOK.COM>
+X-Spamd-Result: default: False [1.00 / 50.00];
+ RSPAMD_URIBL(4.50)[gd-ms.com:email]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_EQ_ADDR_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,linux-test-project.readthedocs.io:url,tst_test.sh:url,gd-ms.com:email,imap1.dmz-prg2.suse.org:helo];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 0/4] Support for Patchwork CI
+Subject: Re: [LTP] Bug: ROD_SILENT does not preserve its argument list
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,111 +113,101 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged!
+Hi John,
 
-Thanks everyone for reviewing it.
+> Hello:
+> Submitting bug against ROD_SILENT.
+> Sincerely,
+
+NOTE: if you put the above below first '---', we read it on the mailing list,
+but it will not be part of the commit message, see example [1].
+
+>   *   John Morin.
+
+> ==== Bug in ROD_SILENT ====
+> Need to quote "$@" in ROD_SILENT so each parameter is individually quoted. Otherwise, the original structure of its arguments is lost.
+
+> ==== Fix ====
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 718a6b0ca..cfa327a8a 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -153,7 +153,7 @@ ROD_SILENT()
+> {
+>         local tst_out
+
+> -       tst_out="$(tst_rod $@ 2>&1)"
+> +       tst_out=$(tst_rod "$@" 2>&1)
+>         if [ $? -ne 0 ]; then
+>                 echo "$tst_out"
+>                 tst_brk TBROK "$@ failed"
+
+> ==== Test showing bug ====
+> Test "test1" is an LTP tests. The runs the same command using ROD and ROD_SILENT. The command it runs simply greps for string "blah1 blah2" in file data2. When run, ROD passes while ROD_SILENT fails. This is because ROD_SILENT does not preserve quoted arguments.
+
+> % cat data2
+> --- blah1 blah2 blah3 ---
+
+Thank you for a valid fix + example how to test, merged as [2].
+
+IMHO this was broken from the original implementation
+14cefa9 ("tst_test.sh: Implement ROD_BASE in C") [3].
+
+FYI patch was not applicable neither to the current master nor to the latest
+LTP release 20250130. It was not difficult to apply the patch manually, but for
+bigger changes it's better when the patch apply.
+
+Before merging I reworded the commit message and added your SBT:
+
+Signed-off-by: John Morin <John.Morin@gd-ms.com>
+
+> % cat test1
+> #!/bin/bash
+
+Also, LTP uses POSIX shell syntax [4] (FYI it's better to test against /bin/dash, or
+use checkbashisms, to make sure there is no bashism).
 
 Kind regards,
-Andrea Cervesato
+Petr
 
-On 4/16/25 11:03, Andrea Cervesato wrote:
-> Add support for patch-series validation in the patchwork ML.
-> We use Github to schedule a trigger every 30 minutes, checking for new
-> patche-series in parchwork which has not been tested yet.
->
-> The way we decide if a patch-series has been tested in patchwork, is
-> by looking at its status (in particular, if it's "Needs Review / ACK"),
-> as well as checking if test report has been uploaded to any of the
-> series patches.
->
-> All communication to Patchwrok is done via REST API, using curl and js
-> tools.
->
-> First, we create a script called patchwork-ci.sh that provides all the
-> commands to read new untested patch-series, set their status and testing
-> report. Then, we create a scheduled workflow in Gitlab, checking every
-> 30 minutes if there are new untested patch-series. At the end, we
-> trigger the main build workflow, used to validate LTP commits in our
-> Github mainline. All the times we trigger the build workflow, we also
-> provide the patch-series ID, that will be fetched and applied on the
-> current branch before running the tests.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Changes in v8:
-> - patchwork.sh: avoid masking curl stdout with local
-> - Link to v7: https://lore.kernel.org/r/20250415-patchwork_ci-v7-0-bc0b9adca971@suse.com
->
-> Changes in v7:
-> - patchwork.sh: fix bashism ==
-> - patchwork.sh: fix return code check for curl
-> - patchwork.sh: remove IFS= from loops
-> - patchwork.sh: local cmd in command_exists
-> - fix message for trigger scripts commit
-> - Link to v6: https://lore.kernel.org/r/20250415-patchwork_ci-v6-0-81e6d4184af5@suse.com
->
-> Changes in v6:
-> - patchwork.sh: use more "[ $stuff ] || do_something" syntax
-> - patchwork.sh: remove set -ex
-> - patchwork.sh: variables default setup
-> - patchwork.sh: move file creation in tmp folder
-> - patchwork.sh: check multiple commands exist in once
-> - trigger workflow now triggers only on linux-test-project/ltp repo
-> - Link to v5: https://patchwork.ozlabs.org/project/ltp/list/?series=452320
->
-> Changes in v5:
-> - patchwork is now a utility that can be used separately
-> - Link to v4: https://lore.kernel.org/r/20250411-patchwork_ci-v4-0-7f3c5ba298a1@suse.com
->
-> Changes in v4:
-> - make use of secrets to apply patches in order to set state to
->    needs-review-ack
-> - check for curl failures and eventually exit 1
-> - use a different format for stored file in 'patchwork-ci.sh verify'
->    command
-> - define PATCHWORK_CI_FILE
-> - some symbols like . are not supported by patchwork checks, so slurmify
->    the string before sending checks context
-> - Link to v3: https://lore.kernel.org/r/20250411-patchwork_ci-v3-0-c9bb90c6961b@suse.com
->
-> Changes in v3:
-> - secrets are not supported by if: statement, so we remove it
-> - Link to v2: https://lore.kernel.org/r/20250410-patchwork_ci-v2-0-288f4be835ff@suse.com
->
-> Changes in v2:
-> - check for secrets.PATCHWORK_TOKEN before sending tests results
-> - v2 to re-trigger lore after missing 3/4 patch
-> - Link to v1: https://lore.kernel.org/r/20250410-patchwork_ci-v1-0-def85825f46a@suse.com
->
-> ---
-> Andrea Cervesato (4):
->        ci: install dependences for patchwork-ci script
->        ci: add patchwork communication script
->        ci: add ci-patchwork-trigger workflow
->        ci: apply patchwork series in ci-docker-build workflow
->
->   .github/workflows/ci-docker-build.yml      |  39 ++++++-
->   .github/workflows/ci-patchwork-trigger.yml |  65 +++++++++++
->   ci/alpine-runtime.sh                       |   2 +
->   ci/alpine.sh                               |   2 +
->   ci/debian.i386.sh                          |   2 +
->   ci/debian.sh                               |   2 +
->   ci/fedora.sh                               |   2 +
->   ci/tools/patchwork.sh                      | 179 +++++++++++++++++++++++++++++
->   ci/tumbleweed.sh                           |   2 +
->   9 files changed, 294 insertions(+), 1 deletion(-)
-> ---
-> base-commit: 40c559787d15b2167ba657b3ba431e3299969d98
-> change-id: 20250410-patchwork_ci-7dc4ae02c40d
->
-> Best regards,
+[1] https://lore.kernel.org/ltp/20250402224148.435022-1-pvorel@suse.cz/
+[2] https://github.com/linux-test-project/ltp/commit/0c0076fbaf6e0059b470fadff6240fc56952c218
+[3] https://github.com/linux-test-project/ltp/commit/14cefa9387de5c23174c1a013dc2a04bb3717d4d
+[4] https://linux-test-project.readthedocs.io/en/latest/developers/writing_tests.html#shell-coding-style
+
+> TST_TESTFUNC="do_test"
+> do_test()
+> {
+>     ROD        grep "blah1 blah2" data2
+>     ROD_SILENT grep "blah1 blah2" data2
+>     tst_res TPASS "pass"
+> }
+> . tst_test.sh
+> tst_run
+
+> % ./test1 # Note ROD passes while ROD_SILENT fails
+> > ./test1
+> test1 1 TINFO: Running: test1
+> test1 1 TINFO: Tested kernel: ...
+> test1 1 TINFO: timeout per run is 0h 5m 0s
+> --- blah1 blah2 blah3 ---
+> grep: blah2: No such file or directory
+> data2:--- blah1 blah2 blah3 ---
+> test1 1 TBROK: grep blah1 blah2 data2 failed
+
+> Summary:
+> passed   0
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
