@@ -4,104 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99E5C369BD
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 12:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A98B3C369C2
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 12:19:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 39E5C3CB95D
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 14:15:45 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 063083CB972
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 14:19:34 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BCA63CB5B0
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:15:27 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 292A83CB5B0
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:19:16 +0200 (CEST)
 Authentication-Results: in-4.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:2; helo=smtp-out2.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ spf=pass (sender SPF authorized) smtp.mailfrom=suse.de
+ (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
+ envelope-from=andrea.cervesato@suse.de; receiver=lists.linux.it)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F15F410005FE
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:15:25 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F0B4E100014B
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:19:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7566C1F461;
- Wed, 16 Apr 2025 12:15:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744805724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
- b=gt6HCmYWCyNEvgeowael/FEkQcTe+3X5yONxpA69R8zhMitUajbGaVKEKLdn/Ajunz5z3A
- 5r/JInSBJlkYj6JInBuJJ4q+4Aq3gYH8+zfiXE+LqEC+36LM6Wv36HUpcfJDIt0fJJ0P8d
- kR2QgMqkjcFN4hSksZLmdlz61hXWyF4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744805724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
- b=DJon8Pleyx1HKpEG2GJl6rvvk4LeAQovr+CoVrMOZQfMLmoSzKlvZpD7RtgYkngKxr2Cxn
- 4lHKqxjI1jeysEAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744805724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
- b=gt6HCmYWCyNEvgeowael/FEkQcTe+3X5yONxpA69R8zhMitUajbGaVKEKLdn/Ajunz5z3A
- 5r/JInSBJlkYj6JInBuJJ4q+4Aq3gYH8+zfiXE+LqEC+36LM6Wv36HUpcfJDIt0fJJ0P8d
- kR2QgMqkjcFN4hSksZLmdlz61hXWyF4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744805724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sbIY2W5BTKIjioDi99XuIsQt9dOtjFe86sMpdqvFWRY=;
- b=DJon8Pleyx1HKpEG2GJl6rvvk4LeAQovr+CoVrMOZQfMLmoSzKlvZpD7RtgYkngKxr2Cxn
- 4lHKqxjI1jeysEAQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3457D211A8;
+ Wed, 16 Apr 2025 12:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1744805954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=8dwMt/EbA+bF/jbdSyIJzH7he3sY5UuTkjPWhZBogJQ=;
+ b=NNY2cyxfSllsOVUQCHMbfeQehCKbf7bd5l5Bz5TXu/CxzrN735W+8xSCpAz9GCB+WNslz9
+ twauudP4iYSokJ3jBU2iIzg9SBrsqXVJ75lszl8R1dgxZ1psonL06uIBabJPu0GEIxmkQn
+ WMIgjvl+rbODq1618o1ROe3hTNKDr4o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1744805954;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=8dwMt/EbA+bF/jbdSyIJzH7he3sY5UuTkjPWhZBogJQ=;
+ b=dFCkwP9iQDcjnB7YnhFPszXn58YjRp6EPMib8HNrlmhRPCzipTUQxiHyymSytJaNws0G7R
+ ylzUaF/mQuUeriCg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="QuUHh/E9";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Nrg+JEj4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1744805953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=8dwMt/EbA+bF/jbdSyIJzH7he3sY5UuTkjPWhZBogJQ=;
+ b=QuUHh/E99WgxFGQ1jwJlZ4HRYTWW7KQjmC97etRzQ6ab2Vn7IHsAFy0BBDgpXfWwF2H3C/
+ SBHslp6JfywJi1H6ZO+hVU3MNDC8mvBWewdKDzOTUeLpJmaB3Ym1FiyKtbQzp718/igFl1
+ pgWXjEFsCXD9Hs1VUQMCQ8mNHIsIEkw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1744805953;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=8dwMt/EbA+bF/jbdSyIJzH7he3sY5UuTkjPWhZBogJQ=;
+ b=Nrg+JEj4g+Je7STTSB8tH1F/gt0Mkf66PR/OEFVzNaeGjCyxeWUf5zpQ5kaJXDSQWUulbB
+ /xpev1cuoO9AroBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61C7C139A1;
- Wed, 16 Apr 2025 12:15:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18270139A1;
+ Wed, 16 Apr 2025 12:19:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uBTYFlyf/2cqJQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 16 Apr 2025 12:15:24 +0000
-Date: Wed, 16 Apr 2025 14:15:23 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: "John.Morin@gd-ms.com" <John.Morin@gd-ms.com>
-Message-ID: <20250416121523.GB589568@pevik>
-References: <BN1P110MB067481F2145E0C1A6A34240CDFB7A@BN1P110MB0674.NAMP110.PROD.OUTLOOK.COM>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gnIFBEGg/2crJgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 16 Apr 2025 12:19:13 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 16 Apr 2025 14:19:12 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BN1P110MB067481F2145E0C1A6A34240CDFB7A@BN1P110MB0674.NAMP110.PROD.OUTLOOK.COM>
-X-Spamd-Result: default: False [1.00 / 50.00];
- RSPAMD_URIBL(4.50)[gd-ms.com:email]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+Message-Id: <20250416-fix_docs_stats-v1-1-2423b7602690@suse.com>
+X-B4-Tracking: v=1; b=H4sIAD+g/2cC/x2MQQqAIBAAvxJ7TtAwsb4SIaJb7aXClQjEvycdB
+ 2amAGMiZJi7AgkfYrrOBqrvIBz+3FFQbAyDHEaplREbvS5egR1nn1loI62V0esJDbToTtiMf7i
+ stX6fHrdoYAAAAA==
+X-Change-ID: 20250416-fix_docs_stats-460880da49e6
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744805953; l=1892;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=MKELJGIMbDd5+Uq6IzgOX4Bo9qb/lMfLfvZjmfb1fa8=;
+ b=RHJVSHRanCdw4hOeenHuu2NYNwbPXtLFgBOx4MEfGQrbfF31jd4MWPu3WL4e56sDt5xaEhubG
+ gG5IzISRWRdBTLhMpkCYCBvxlggryF+4hfrPWdhFiqtLZfCtPvdyyC3
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 3457D211A8
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_EQ_ADDR_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,linux-test-project.readthedocs.io:url,tst_test.sh:url,gd-ms.com:email,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.de:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Bug: ROD_SILENT does not preserve its argument list
+Subject: [LTP] [PATCH] doc: fix stats page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,101 +130,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi John,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> Hello:
-> Submitting bug against ROD_SILENT.
-> Sincerely,
+In the last documentation builds we faced syscalls file download error.
+In particular, git.kernel.org communication started to fail with 403.
+The reason seems to be realted to the server configuration, that is now
+requiring a specific User-Agent. Set User-Agent to 'curl/8.6.0' to avoid
+this issue.
 
-NOTE: if you put the above below first '---', we read it on the mailing list,
-but it will not be part of the commit message, see example [1].
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Fix the following error during 'make':
 
->   *   John Morin.
+	WARNING: Can't download syscall_n64.tbl from kernel sources (HTTP Error 403: Forbidden)
+---
+ doc/conf.py | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-> ==== Bug in ROD_SILENT ====
-> Need to quote "$@" in ROD_SILENT so each parameter is individually quoted. Otherwise, the original structure of its arguments is lost.
+diff --git a/doc/conf.py b/doc/conf.py
+index 8cc890fcc8d0650aac82adabbbd434c55c7b8ad3..23fe7a1b9742f604a5b97f0db62b29ed9c64c445 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -126,8 +126,18 @@ def generate_syscalls_stats(_):
+     error = False
+     try:
+         socket.setdefaulttimeout(3)
+-        urllib.request.urlretrieve(
+-            f"{syscalls_url}/syscall_n64.tbl", "syscalls.tbl")
++
++        # kernel.org doesn't always allow to download syscalls file, so we need
++        # to emulate a different client in order to download it. Browser
++        # emulation might fail due to captcha request and for this reason we
++        # use the 'curl' command instead
++        req = urllib.request.Request(
++            f"{syscalls_url}/syscall_n64.tbl",
++            headers={'User-Agent': 'curl/8.6.0'})
++
++        with urllib.request.urlopen(req) as response:
++            with open("syscalls.tbl", 'wb') as out_file:
++                out_file.write(response.read())
+     except urllib.error.URLError as err:
+         error = True
+         logger = sphinx.util.logging.getLogger(__name__)
 
-> ==== Fix ====
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 718a6b0ca..cfa327a8a 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -153,7 +153,7 @@ ROD_SILENT()
-> {
->         local tst_out
+---
+base-commit: 8e0d3347944b2044a198ddd69d4be186fcda65ef
+change-id: 20250416-fix_docs_stats-460880da49e6
 
-> -       tst_out="$(tst_rod $@ 2>&1)"
-> +       tst_out=$(tst_rod "$@" 2>&1)
->         if [ $? -ne 0 ]; then
->                 echo "$tst_out"
->                 tst_brk TBROK "$@ failed"
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
-> ==== Test showing bug ====
-> Test "test1" is an LTP tests. The runs the same command using ROD and ROD_SILENT. The command it runs simply greps for string "blah1 blah2" in file data2. When run, ROD passes while ROD_SILENT fails. This is because ROD_SILENT does not preserve quoted arguments.
-
-> % cat data2
-> --- blah1 blah2 blah3 ---
-
-Thank you for a valid fix + example how to test, merged as [2].
-
-IMHO this was broken from the original implementation
-14cefa9 ("tst_test.sh: Implement ROD_BASE in C") [3].
-
-FYI patch was not applicable neither to the current master nor to the latest
-LTP release 20250130. It was not difficult to apply the patch manually, but for
-bigger changes it's better when the patch apply.
-
-Before merging I reworded the commit message and added your SBT:
-
-Signed-off-by: John Morin <John.Morin@gd-ms.com>
-
-> % cat test1
-> #!/bin/bash
-
-Also, LTP uses POSIX shell syntax [4] (FYI it's better to test against /bin/dash, or
-use checkbashisms, to make sure there is no bashism).
-
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/20250402224148.435022-1-pvorel@suse.cz/
-[2] https://github.com/linux-test-project/ltp/commit/0c0076fbaf6e0059b470fadff6240fc56952c218
-[3] https://github.com/linux-test-project/ltp/commit/14cefa9387de5c23174c1a013dc2a04bb3717d4d
-[4] https://linux-test-project.readthedocs.io/en/latest/developers/writing_tests.html#shell-coding-style
-
-> TST_TESTFUNC="do_test"
-> do_test()
-> {
->     ROD        grep "blah1 blah2" data2
->     ROD_SILENT grep "blah1 blah2" data2
->     tst_res TPASS "pass"
-> }
-> . tst_test.sh
-> tst_run
-
-> % ./test1 # Note ROD passes while ROD_SILENT fails
-> > ./test1
-> test1 1 TINFO: Running: test1
-> test1 1 TINFO: Tested kernel: ...
-> test1 1 TINFO: timeout per run is 0h 5m 0s
-> --- blah1 blah2 blah3 ---
-> grep: blah2: No such file or directory
-> data2:--- blah1 blah2 blah3 ---
-> test1 1 TBROK: grep blah1 blah2 data2 failed
-
-> Summary:
-> passed   0
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
