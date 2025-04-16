@@ -4,70 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3C26C369BD
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 12:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7130C369BD
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 13:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744809081; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=UQBUBzUz4l0fbzEjX5474iEueRVXwtBUJ2aWZS1DjWE=;
+ b=T9B68eXm+2jxOEWpasI9fthhY02wDdy2SZCt1OeJUtaqHZWX+PUDjI5G8/wqcWWchjxo6
+ 0dQkJA9MFmBf55egy9RDOxq6RE1+okcEPCmcltB/DezHIPBtsm1DCM4PbT09GihvH/HDSqx
+ uu5ltyDKm2fmwDNsdYVHatR+0g50yg4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 462FE3CB96A
-	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 14:49:11 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 4E5FA3CB979
+	for <ltp@archiver.kernel.org>; Wed, 16 Apr 2025 15:11:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1C063C0F8A
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:48:54 +0200 (CEST)
-Authentication-Results: in-6.smtp.seeweb.it;
- spf=pass (sender SPF authorized) smtp.mailfrom=suse.cz
- (client-ip=2a07:de40:b251:101:10:150:64:1; helo=smtp-out1.suse.de;
- envelope-from=pvorel@suse.cz; receiver=lists.linux.it)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C65023CB94A
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 15:10:59 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CB5151400445
- for <ltp@lists.linux.it>; Wed, 16 Apr 2025 14:48:52 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6B7E3211BF;
- Wed, 16 Apr 2025 12:48:51 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D96713976;
- Wed, 16 Apr 2025 12:48:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RAoyETOn/2dPLwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 16 Apr 2025 12:48:51 +0000
-Date: Wed, 16 Apr 2025 14:48:46 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Dennis Brendel <dbrendel@redhat.com>
-Message-ID: <20250416124846.GA602689@pevik>
-References: <20250415-patchwork_ci-v7-0-bc0b9adca971@suse.com>
- <20250415-patchwork_ci-v7-2-bc0b9adca971@suse.com>
- <20250415173535.GA520691@pevik>
- <9af81e6d-e0b5-4488-a589-76061f2be18b@redhat.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0B4C56005C7
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 15:10:59 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-43ed8d32a95so57088465e9.3
+ for <ltp@lists.linux.it>; Wed, 16 Apr 2025 06:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1744809058; x=1745413858; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=UwPOljDPuORWTQLPU0+Q2W0q27PkiGKAZAee7Tbze3M=;
+ b=ALMFNSxy+PM4P4a/2+SImuJJhiu+Qr28Mws0hs92IfFa56u2wUAhdpug/G52TViDh7
+ 1hRU0sAA3Lh7YI+JCG2eBZlcho02ZmtPYnYlNO15D54gZTCYSIwQ//p/gbVKthdbbPay
+ gVdEuC0dxB3jEwDjfsFl455jb3qp7rfRlj3knV36V8xCGKRHuJWEJEFbs/eZsabISRBS
+ oDbhytZqmXyydJInNlxnEecDYb9ztimLyq+SEiINxm6nWAqU2HADB7+Udk1u1tKVKwbo
+ 9auF7YLaEWwG5VRb8oz2K4WHyDtT0zNb4jMnHDGQr1kg+wkV4yV/4ac1TIc2LKzXEk8P
+ 2log==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1744809058; x=1745413858;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=UwPOljDPuORWTQLPU0+Q2W0q27PkiGKAZAee7Tbze3M=;
+ b=gpgFxvRI3fpfi5/Epq9ZxKFw7L6et5HjNzex6BBq3/rOtRy6EpdcRVDWnr9o44A5KY
+ w9jzqylY3F57MJJ/XmTfWAG/zFVJsW1WvY66XB82KCtGfTJ030bSRZTqtcGYOsOhmhYQ
+ 68su6xZNwm3zj8TPE2ZHxbvvUEvBorRcW0Yg9TL/xNb/dVzFHnzVLZte18hoept51xLf
+ 95WnRzFxuma7HNtDTT1hcQBOtnKrT2elFGWakf3stp6aLury381Adx8rulxePFZe+ieC
+ NWA/2CZbZMVZADwTNbZ+DB20WVTQKrRH0H0KLCQoXk3pf8dIxW2YWH7uoCHg5YYdgyDf
+ fQgw==
+X-Gm-Message-State: AOJu0YwI8nK26Li2JIR+QmtTZ8KLxwbMKM/DrRMqTUcQIOyynOioafHm
+ MlhKUXEXiSFtrIaSXQOSyx/9GI8nO2wEqPdyZAwfSdcwGeDqrZhw1R5fTclTLMU=
+X-Gm-Gg: ASbGncv3b5JlGfQDmizucvXvTCXbKR4cShpecmY73pKlEsBYhVEUeQM/Z+PzXnCFPvb
+ AgB0nDpD+1yd0/3E7cDe8RKY4tT6uhulUBuF04koqCc+ZD2vUIpaa+36xM6fbPotRoZrvIfgZHE
+ nUgJceD1dABCkmQUuVP8JuVbqLIHjJgoNxberXkDNNKnZxYu0vjKqiLKIV0W9du6WEH4X3tIcCT
+ l2vLisvjD/PJawxp+TRIFwuqVgXhfxfEiZSdpiomSrRUrMwbxXBifn8+py826ZgavA0DlbRctH6
+ sDiRR93VFfTL9/yJE0KnY1zaMc2gacyQ8xIMCxinI+opBYSAVY4l2sPsoU2iLnoeTG3nR3GSIIu
+ sZC9fUBQ5fbfENRNbbyyegVn76tkZTFOEClrEApAxVHdX+nYZJ2BjDDLudlwvf1tC+ICpYNfcoM
+ zdj698Xw61avwXaA==
+X-Google-Smtp-Source: AGHT+IHbwrt04xnlQXWWn+6TCJURwcskFXKG+vr71QR8Wh6EsIK3rh9DYRfA4vAI3Z/SOuQJ0N7dpw==
+X-Received: by 2002:a05:600c:3151:b0:43b:b756:f0a9 with SMTP id
+ 5b1f17b1804b1-4405d61d03cmr18581795e9.11.1744809058369; 
+ Wed, 16 Apr 2025 06:10:58 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f1a:ea00:b220:7501:321e:5c31?
+ (p200300ef2f1aea00b2207501321e5c31.dip0.t-ipconnect.de.
+ [2003:ef:2f1a:ea00:b220:7501:321e:5c31])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4405b50b897sm20841745e9.26.2025.04.16.06.10.57
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 16 Apr 2025 06:10:58 -0700 (PDT)
+Message-ID: <f6632800-7344-4cfb-b8d2-60fd0affd71e@suse.com>
+Date: Wed, 16 Apr 2025 15:10:57 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9af81e6d-e0b5-4488-a589-76061f2be18b@redhat.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 6B7E3211BF
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20250416-fix_docs_stats-v1-1-2423b7602690@suse.com>
+ <20250416123035.GA602141@pevik>
+Content-Language: en-US
+In-Reply-To: <20250416123035.GA602141@pevik>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 2/4] ci: add patchwork communication script
+Subject: Re: [LTP] [PATCH] doc: fix stats page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,78 +103,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Dennis,
+Pushed thanks.
 
-> On 4/15/25 7:35 PM, Petr Vorel wrote:
-> > Hi Andrea,
-> > You may have noticed in tst_test.sh, that local variable never uses $(...).
-> > It assign single value, but never call $(...). This is for a reason.
-> > [...]
-> > What happen? $? is assigned from result of local keyword,
-> > it overwrite previous result from $(...). Note even '#!/bin/sh -e'
-> > would not cause it to fail early.
+- Andrea
 
-> Here is the corresponding documentation:
-> https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#index-local
-
-> > The return status is zero unless local is used outside a function, an
-> invalid name is supplied, or name is a readonly variable
-
-> So:
-> If you are interested in return statuses then don't *mask them* with local.
-
-> Use this pattern instead:
-
-> local my_var
-> my_var=$(my_expr)
-
-Thanks for much better explanation than I provided + link to the doc. I'll Cc
-you on my shell related patches :).
-
-I remember this since 87a82a62ce ("lib/tst_test.sh: fix ROD_SILENT command
-return status check") [1], another related is e267a022cd ("tst_test.sh: Fix $@
-usage on older dash releases") [2].
-
-Because shell has quirks (both POSIX portable syntax or bash or whatever shell
-extension) we've had many fixes for shell code, e.g. 0c0076fbaf ("tst_test.sh:
-Fix ROD_SILENT() quoting") [3], although some of them are non-bash specific,
-e.g. 0bb01e67b3 ("shell: Fix handling default parameters in tst_mkfs()") [4]
-(just to list very few).
-
-The biggest problem is that some things aren't easily done with plain shell,
-that's why we need to use C helpers in testcases/lib (some of them are just
-reusing C API to avoid reimplementing code, but e.g.  testcases/lib/tst_timeout_kill.c
-was really needed after few attempts to write code in bash). Also cgroup tests
-aren't reliable when written in shell. Therefore we're trying to get rid of
-shell API (rewritten tests into C, or make them to use testcases/lib/tst_run_shell.c,
-which makes the layer really thin).
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/commit/87a82a62ce3fcdaf174d6e4529e0324742e13684
-[2] https://github.com/linux-test-project/ltp/commit/e267a022cd2deb0d5e7280570c711420927ad817
-[3] https://github.com/linux-test-project/ltp/commit/0c0076fbaf6e0059b470fadff6240fc56952c218
-[4] https://github.com/linux-test-project/ltp/commit/0bb01e67b3ba079f8f069a99422d783fe6da4287
-
+On 4/16/25 14:30, Petr Vorel wrote:
+> Hi Andrea,
+>
+>> In the last documentation builds we faced syscalls file download error.
+>> In particular, git.kernel.org communication started to fail with 403.
+>> The reason seems to be realted to the server configuration, that is now
+>> requiring a specific User-Agent. Set User-Agent to 'curl/8.6.0' to avoid
+>> this issue.
+> Thanks for fixing this! I also noticed this, was in my TODO.
+> I also prefer to keep using korg if possible than start using
+> github/torvalds/linux (which is not official, might be outdated or also limited
+> similar way for bots).
+>
+> IMHO this is part of the changes in the korg infrastructure detecting bots.
+> I guess they need to reduce the traffic.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
 > Kind regards,
-> Dennis
-
-> > (Deliberately test with bash to demonstrate local behaves oddly not even in dash
-> > or 'busybox sh' but even with bash. And yes, given how many errors we caught
-> > with this script and generate_arch.sh and generate_syscalls.sh due shell strange
-> > syntax and behavior makes me wonder if we really want to use shell scripts for
-> > anything longer than 5 lines.)
-
-> > Kind regards,
-> > Petr
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
