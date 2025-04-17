@@ -4,74 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94AFDC369C7
-	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 09:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1744880738; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=Ma+lUdajcIGIipNPkBiPp5Ep1BDV7hiADWRSL6+EyYw=;
- b=lnIGbhe0Q9r9fYVb81Loi8DPc/8He9ZTNFYRlslTvrgBXkz4OOrU8mNBO3srFTzb1apjo
- +xw7S60Q6wj5dpQBKCZonh6lw/e/hdwtXIUgsX6OVBsgt1CCRS/3dd31/DrvEVyKGbr1Xnz
- 3WJMw4IKdCNi1fmbdtjpurk1DFul7wE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3CB1C369B2
+	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 09:22:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C10B83CB9E0
-	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 11:05:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E4CDB3CB9F9
+	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 11:22:30 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1E8CF3CB9BE
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 11:05:17 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 85E603CB9E7
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 11:22:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F1851600055
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 11:05:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1744880714;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=K5uIHrztNU8cWqugNhQ80/8EamxKxgJwana+yG/r6Wo=;
- b=PGPYfUsNAupLjlx7KAzrJdcqp/0DzL4IkMn55CzX1odo+32P//sbDWXUIMbKxtpJxvFHN4
- 5eQSQ+7LlVVg8ufmhAgtKO7dU1btxUA6MGPtRqMe0eL3MEHVRyCWlBrup32DgIHgH7mdaZ
- clx6JPukigY1PxZDSObFIx+JIYLZoUU=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-607-n2CZ6azgM1Gn6eatufZC2g-1; Thu,
- 17 Apr 2025 05:05:13 -0400
-X-MC-Unique: n2CZ6azgM1Gn6eatufZC2g-1
-X-Mimecast-MFC-AGG-ID: n2CZ6azgM1Gn6eatufZC2g_1744880712
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8D9961A0BC56
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 11:22:13 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 1E7161801A04
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 09:05:12 +0000 (UTC)
-Received: from t14ultra.redhat.com (unknown [10.44.32.38])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 25B77180045B
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 09:05:10 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Thu, 17 Apr 2025 11:05:29 +0200
-Message-ID: <a2bdb9dc2d4160f11751053c4c047bb302d0c1a1.1744880683.git.jstancek@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3C391211AD;
+ Thu, 17 Apr 2025 09:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1744881732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=reQwBapRcyYzuGcq28mYeTb8HX9GYPmlpYrao1Lte9+f+8EqXdOIwUZSvUa/JB75U6//DN
+ 6Vdp0nlB1gnE5X+a4AcwF2Y5SosZOyX9t+apFxszJ5dYlq5VhgzG0mr6wfOJ/bwptClWfC
+ 1HNhGgiIhEDmkKxYANvuNfpZ14Sa6uc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1744881732;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=H/pQFfNCK77exNd+DMDk8QqQu/dVjTOUQUtVJZpWwIjNGvqGmpG3+5dAO2kD2gfnTN8LaL
+ BMLcWlib/NeDCCDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1744881732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=reQwBapRcyYzuGcq28mYeTb8HX9GYPmlpYrao1Lte9+f+8EqXdOIwUZSvUa/JB75U6//DN
+ 6Vdp0nlB1gnE5X+a4AcwF2Y5SosZOyX9t+apFxszJ5dYlq5VhgzG0mr6wfOJ/bwptClWfC
+ 1HNhGgiIhEDmkKxYANvuNfpZ14Sa6uc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1744881732;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=H/pQFfNCK77exNd+DMDk8QqQu/dVjTOUQUtVJZpWwIjNGvqGmpG3+5dAO2kD2gfnTN8LaL
+ BMLcWlib/NeDCCDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2541D137CF;
+ Thu, 17 Apr 2025 09:22:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8uvBCETIAGg8cwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 17 Apr 2025 09:22:12 +0000
+Date: Thu, 17 Apr 2025 11:22:44 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aADIZFWeoNONVE68@yuki.lan>
+References: <20250403101912.459507-1-pvorel@suse.cz>
+ <20250403101912.459507-3-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: fxzBqPJrVEmvQoJW46PL1lpCoUtiPRYJF_NTMTdGAq8_1744880712
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250403101912.459507-3-pvorel@suse.cz>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/setsockopt10: handle explicit disallow of
- disconnect
+Subject: Re: [LTP] [RFC][PATCH 2/2] runtest: Move ipc into syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,46 +104,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since commit 5071a1e606b3 ("net: tls: explicitly disallow disconnect") in
-6.15 kernel, disconnect is now explicitly disallowed.
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/setsockopt/setsockopt10.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt10.c b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
-index e52c6cd9338f..f955f4e83a44 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt10.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
-@@ -145,7 +145,16 @@ static void run(void)
- 	TST_CHECKPOINT_WAKE(1);
- 
- 	tst_res(TINFO, "parent: Disconnect by setting unspec address");
--	SAFE_CONNECT(tcp1_sk, &unspec_addr, sizeof(unspec_addr));
-+	TEST(connect(tcp1_sk, &unspec_addr, sizeof(unspec_addr)));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP)
-+			tst_res(TPASS | TTERRNO, "parent: tls disallows disconnect");
-+		else
-+			tst_res(TFAIL | TTERRNO, "parent: unexpected errno from connect");
-+		TST_CHECKPOINT_WAKE(2);
-+		tst_reap_children();
-+		return;
-+	}
- 	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
- 
- 	TEST(listen(tcp1_sk, 1));
 -- 
-2.47.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
