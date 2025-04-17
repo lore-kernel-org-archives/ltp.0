@@ -4,104 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47126C369B2
-	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 06:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B4FDC369B2
+	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 08:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1744879006; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Aq3poldKU0UHfVAmgyBq5+KlPyltuhzKfN6GLwKXUcE=;
+ b=f3QSIy5WbQK93tsWm32NdkFYmxx+Q3aJSNdTCiTx1Wkc8Q2c4qTrEhxV9Nxv9w1fwRMBm
+ scPGrGvCup6NnW15DC4PNxlv5SSD32TFBaSKzKQuZkwlwEvFaKMF7yiaPCEv28YaArIfSNJ
+ gGEEWWa+xyTlJJAQ38xuxDZoshTMi4I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C88733CB9E1
-	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 08:55:47 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id BC5223CB9E7
+	for <ltp@archiver.kernel.org>; Thu, 17 Apr 2025 10:36:46 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BAB6E3C0E7E
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 08:55:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id C51043C0B7C
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 10:36:24 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EF0F7600B07
- for <ltp@lists.linux.it>; Thu, 17 Apr 2025 08:55:30 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DADBE600C99
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 10:36:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1744878981;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=AectQK+U5Q3lcjTAJSU9robbmYAeb6737Q60Rixa1gA=;
+ b=d2rDj9IRflExcZ69yXiof5uyqDH1dLC4qEpL2l6PrJE0iwfQeAvBflZA7qH8pOQZdLFjtQ
+ esibDeYJGTeY/qPc5saUZNKg+UrGBPWysHA2t4zaWCr9+88t1h719nFrXH6fEFFYslm41I
+ zf7FTIsr5r1IX2g7E+drQ9ig7Mdzh5A=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-547-D1KSo5SwPVq4mJ0zGNY66w-1; Thu,
+ 17 Apr 2025 04:36:17 -0400
+X-MC-Unique: D1KSo5SwPVq4mJ0zGNY66w-1
+X-Mimecast-MFC-AGG-ID: D1KSo5SwPVq4mJ0zGNY66w_1744878977
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 828A21F457;
- Thu, 17 Apr 2025 06:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744872929;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4SeZNObhIlrNt4iJhDxiFSCh03zHMr2Zuzx2GsMY+b8=;
- b=w5HI9Max/AmDQbw5aOAeHdifpIg0a3odIQ/v5LaEbRuXwj1LCE5fsEZpv3DnRwZXR4uAnK
- rxCgRCidKHEBpLuc/PnEUjCOEuPq0250nnpzR54gxQ91HFHD3OfH9b4N04MC1D5lVzuW5p
- pYIH+pmc9wk9LWO5TqAu3NEplkMgc0I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744872929;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4SeZNObhIlrNt4iJhDxiFSCh03zHMr2Zuzx2GsMY+b8=;
- b=U5pgdklyj4+HjMt81hntbpa7uvHkZgfcUalgDB2nJuHohiyi3pSswwCuzIMRdtXUuP8un6
- +tswKsHpaDEvlOBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1744872929;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4SeZNObhIlrNt4iJhDxiFSCh03zHMr2Zuzx2GsMY+b8=;
- b=w5HI9Max/AmDQbw5aOAeHdifpIg0a3odIQ/v5LaEbRuXwj1LCE5fsEZpv3DnRwZXR4uAnK
- rxCgRCidKHEBpLuc/PnEUjCOEuPq0250nnpzR54gxQ91HFHD3OfH9b4N04MC1D5lVzuW5p
- pYIH+pmc9wk9LWO5TqAu3NEplkMgc0I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1744872929;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4SeZNObhIlrNt4iJhDxiFSCh03zHMr2Zuzx2GsMY+b8=;
- b=U5pgdklyj4+HjMt81hntbpa7uvHkZgfcUalgDB2nJuHohiyi3pSswwCuzIMRdtXUuP8un6
- +tswKsHpaDEvlOBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FD281388F;
- Thu, 17 Apr 2025 06:55:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eWClFeGlAGgsRQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 17 Apr 2025 06:55:29 +0000
-Date: Thu, 17 Apr 2025 08:55:24 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250417065524.GB638986@pevik>
-References: <20250415220845.548155-1-pvorel@suse.cz>
- <CAEemH2ciYNmtKLz-ZM+wACTQwAvUA=EcOoJNdQprtRxCMA0azA@mail.gmail.com>
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id E87511800570
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 08:36:16 +0000 (UTC)
+Received: from t14ultra.redhat.com (unknown [10.44.32.38])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id ECDD11800362
+ for <ltp@lists.linux.it>; Thu, 17 Apr 2025 08:36:15 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu, 17 Apr 2025 10:36:21 +0200
+Message-ID: <8c3549cbda426969943a2beefa4f50f214b1a8c4.1744878941.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2ciYNmtKLz-ZM+wACTQwAvUA=EcOoJNdQprtRxCMA0azA@mail.gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: bLcBD9P0C7Tv7pb8qVbJSENK2SCTqrPn7HZbJGmsj6I_1744878977
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tst_cgroup: Add "dmem" cgroup controller
+Subject: [LTP] [PATCH] libswap: 6.15 supports one more swapfile with
+ CONFIG_DEVICE_PRIVATE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,20 +82,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGksIEF2aW5lc2gsCgo+IEhpIFBldHIsIEF2aW5lc2gsCgo+IE9uIFdlZCwgQXByIDE2LCAy
-MDI1IGF0IDY6MDjigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6CgouLi4K
-PiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGNncm91cF9maWxlIGRtZW1fY3RybF9maWxlc1tdID0g
-ewo+ID4gKyAgICAgICB7ICJkbWVtLmNhcGFjaXR5IiwgTlVMTCwgQ1RSTF9ETUVNIH0sCj4gPiAr
-ICAgICAgIHsgImRtZW0uY3VycmVudCIsIE5VTEwsIENUUkxfRE1FTSB9LAoKCj4gSXQgaXMgbm8g
-aGFybSB0byBhZGQgbW9yZSBjdHJsX2ZpbGVzIGxpa2UgZG1lbS5tYXgsIGRtZW0ubWluLCBkbWVt
-LmxvdywKPiB3aGljaCBtaWdodCBiZSB1c2VmdWwgaW4gdGhlIGZ1dHVyZS4KCkdvb2QgaWRlYSwg
-SSBhZGRlZCB0aGVtIGJlZm9yZSBtZXJnZS4KCj4gQW55d2F5LCBsb29rcyBnb29kIHRvIG1lLgoK
-VGhhbmsgeW91IGJvdGggZm9yIHlvdXIgcmV2aWV3LgoKS2luZCByZWdhcmRzLApQZXRyCgotLSAK
-TWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Since c25465eb7630 ("mm: use single SWP_DEVICE_EXCLUSIVE entry type")
+kernel supports onre more swap file.
+
+Link: https://lore.kernel.org/all/73bea938-15a2-4b4a-8d31-0db9f9c476e0@redhat.com/#t
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ libs/swap/libswap.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libs/swap/libswap.c b/libs/swap/libswap.c
+index 63a995f4e31e..e10355502916 100644
+--- a/libs/swap/libswap.c
++++ b/libs/swap/libswap.c
+@@ -288,6 +288,8 @@ int tst_max_swapfiles(void)
+ 			swp_device_num = 2;
+ 		if (tst_kvercmp(5, 14, 0) >= 0)
+ 			swp_device_num = 4;
++		if (tst_kvercmp(6, 15, 0) >= 0)
++			swp_device_num = 3;
+ 	}
+ 
+ 	if ((marker.choice == 'y' &&
+-- 
+2.47.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
