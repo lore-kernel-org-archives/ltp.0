@@ -4,98 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B26EEC369D1
-	for <ltp@archiver.kernel.org>; Fri, 25 Apr 2025 07:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 853ECC369D1
+	for <ltp@archiver.kernel.org>; Fri, 25 Apr 2025 09:06:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92FFD3CB4E6
-	for <ltp@archiver.kernel.org>; Fri, 25 Apr 2025 09:44:56 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5A9273C5860
+	for <ltp@archiver.kernel.org>; Fri, 25 Apr 2025 11:06:54 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9EFA3C0626
- for <ltp@lists.linux.it>; Fri, 25 Apr 2025 09:44:40 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id F29293C5860
+ for <ltp@lists.linux.it>; Fri, 25 Apr 2025 11:06:36 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9FE32600846
- for <ltp@lists.linux.it>; Fri, 25 Apr 2025 09:44:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7085010001DE
+ for <ltp@lists.linux.it>; Fri, 25 Apr 2025 11:06:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 75FC4210F9;
- Fri, 25 Apr 2025 07:44:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8A940210F4;
+ Fri, 25 Apr 2025 09:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1745567078;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1745571995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jbK+KdkB5qRxf08R9bXog6nJjgHwj6FOVKQedjNqtPo=;
- b=WrILOzDQopQpD+H5QknR6eRspCl3WeHRwXd3rtH0T9l4zzO8hfMregva7zeannomvHU3Tv
- /lKBkAM0tdWZV8/+5ldvmXwn6N4fQQV+H6Y3O8pmh6Grd2o4WTIlwW8ony2um/jxKx97Jh
- YSm9nz9UcPoTrV9L+WdOE914XHfFiCU=
+ bh=VaN6rCgXGXGj7lJ3/ZI3tDpRTxBYKE7cHmXc9YbiFbE=;
+ b=2ROj8tLUodn3dLIDGj4t48sorND6fP3Wvn8p+i8R2TIf6T1HxbioyV63FZkylH8ejq8aHQ
+ 1fDm8omvQRQan6D+dIY27nTgahGa0dHdSNPAhwLy6nUG8IPJcAbbg0AkhJoSPBYrQicD2j
+ rnZP8+ue574dTqebxOOyA79mvr+BXOQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1745567078;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1745571995;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jbK+KdkB5qRxf08R9bXog6nJjgHwj6FOVKQedjNqtPo=;
- b=bAYcS7JuW4is7YPMsEZ8rJQN1OhCs34jMiTSJWxYdJR9dyW+msUKs4o5leVALjlTA3zcdN
- Hb1/tFN3x1XvhLAg==
+ bh=VaN6rCgXGXGj7lJ3/ZI3tDpRTxBYKE7cHmXc9YbiFbE=;
+ b=gADz4EGBQWdT33XQb3oEzb0nC4jmp89b/hbAfCziN3AVgO/pa86ETWxLUxPZZYVfx1N7QQ
+ ZsxP0oPGdYG2XDBw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2ROj8tLU;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gADz4EGB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1745567077;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1745571995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jbK+KdkB5qRxf08R9bXog6nJjgHwj6FOVKQedjNqtPo=;
- b=ToEkJ031j293fYkQfDKwt/nReAX/PNLqY0jgw5w3dx3YWi7szYRh1rmqII2uW87TUv07mQ
- OkymN5/2iGqGnbjY/LpFehfHqW/8eezQjZN8jnfbxl6QHvpOnDIhnssVxktTYAQCjirepQ
- 5Bxt37aQWst/6HlbidhYDWy6mFbu5Gk=
+ bh=VaN6rCgXGXGj7lJ3/ZI3tDpRTxBYKE7cHmXc9YbiFbE=;
+ b=2ROj8tLUodn3dLIDGj4t48sorND6fP3Wvn8p+i8R2TIf6T1HxbioyV63FZkylH8ejq8aHQ
+ 1fDm8omvQRQan6D+dIY27nTgahGa0dHdSNPAhwLy6nUG8IPJcAbbg0AkhJoSPBYrQicD2j
+ rnZP8+ue574dTqebxOOyA79mvr+BXOQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1745567077;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1745571995;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jbK+KdkB5qRxf08R9bXog6nJjgHwj6FOVKQedjNqtPo=;
- b=uFs2BQWRvhOx8W7/xaIoyXSc+kBUuOkyBQpqxDAoUWM8U7DONXIbXllJkXLTPqbRaGkl5z
- vIc8Ds9lHJkX9kAA==
+ bh=VaN6rCgXGXGj7lJ3/ZI3tDpRTxBYKE7cHmXc9YbiFbE=;
+ b=gADz4EGBQWdT33XQb3oEzb0nC4jmp89b/hbAfCziN3AVgO/pa86ETWxLUxPZZYVfx1N7QQ
+ ZsxP0oPGdYG2XDBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A88113A80;
- Fri, 25 Apr 2025 07:44:37 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7891013A79;
+ Fri, 25 Apr 2025 09:06:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tl1IFWU9C2jOcgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 25 Apr 2025 07:44:37 +0000
-Date: Fri, 25 Apr 2025 09:44:35 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20250425074435.GA18650@pevik>
-References: <20250424105536.21645-1-akumar@suse.de>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id orGzHJtQC2gYCwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 25 Apr 2025 09:06:35 +0000
+Date: Fri, 25 Apr 2025 11:07:11 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: lufei <lufei@uniontech.com>
+Message-ID: <aAtQvzjrXc49XoHH@yuki.lan>
+References: <20250423044601.9320-1-lufei@uniontech.com>
+ <20250423120516.10680-1-lufei@uniontech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250424105536.21645-1-akumar@suse.de>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20250423120516.10680-1-lufei@uniontech.com>
+X-Rspamd-Queue-Id: 8A940210F4
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] unshare03: use sizeof(long long) to fix for 32bit
+Subject: Re: [LTP] [PATCH v2] syscalls/unshare: New test: CLONE_NEWNS
+ unshares fs info
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,42 +117,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Lu Fei <lufei@uniontech.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh, all,
+Hi!
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2025 lufei <lufei@uniontech.com>
+> + */
+> +
+> +/*\
+> + * This test case is to verify unshare(CLONE_NEWNS) also unshares filesystem
+> + * information.
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include "tst_test.h"
+> +#include "lapi/sched.h"
+> +
+> +#define TMP "/tmp1"
+> +
+> +static char *cwd;
+> +static char *tmpdir;
+> +static char *c_cwd;
+> +static char *p_cwd;
+> +static size_t size = 1024;
+> +
+> +static void setup(void)
+> +{
+> +	cwd = SAFE_MALLOC(size);
+> +	SAFE_GETCWD(cwd, size);
+> +
+> +	tmpdir = tst_tmpdir_genpath(TMP);
+> +	SAFE_MKDIR(tmpdir, 0700);
 
-merged, thank you!
+There no need for absolute paths, the test starts with CWD pointing to
+the newly created temporary directory. So all that we need to do is to
+use relative paths with:
 
-> when executing on 32bit compat layer
-> "nr_open = sizeof(long) * 8" does not evaluate to a large enough value
-> for /proc/sys/fs/nr_open.
-> unshare03.c:38: TBROK: Failed to close FILE '/proc/sys/fs/nr_open': EINVAL (22)
-> Use (long long) instead.
+#define TESTDIR "test_dir"
 
-> Fixes: fc8be6ed4 ("unshare03: Simplify EMFILE test by using fixed fd limit (sizeof(long) * 8)")
-> Suggested-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->  testcases/kernel/syscalls/unshare/unshare03.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+	SAFE_MKDIR(TESTDIR, 0700);
 
-> diff --git a/testcases/kernel/syscalls/unshare/unshare03.c b/testcases/kernel/syscalls/unshare/unshare03.c
-> index c3b98930d..7128b3b97 100644
-> --- a/testcases/kernel/syscalls/unshare/unshare03.c
-> +++ b/testcases/kernel/syscalls/unshare/unshare03.c
-> @@ -27,7 +27,7 @@ static void run(void)
->  		.exit_signal = SIGCHLD,
->  	};
+And then later do SAFE_CHDIR(TESTDIR) in the child.
 
-> -	int nr_open = sizeof(long) * 8;
-> +	int nr_open = sizeof(long long) * 8;
+> +	c_cwd = SAFE_MALLOC(size);
+> +	p_cwd = SAFE_MALLOC(size);
 
->  	SAFE_DUP2(2, nr_open + 1);
+We do not need two of these, we can use the same buffer both in child
+and parent.
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	free(c_cwd);
+> +	free(p_cwd);
+> +	free(cwd);
+> +}
+> +
+> +
+> +static void run(void)
+> +{
+> +	struct tst_clone_args args = {
+> +		.flags = CLONE_FS,
+> +		.exit_signal = SIGCHLD,
+> +	};
+> +
+> +	if (!SAFE_CLONE(&args)) {
+> +
+> +		TST_EXP_PASS(unshare(CLONE_NEWNS));
+> +
+> +		SAFE_CHDIR(tmpdir);
+> +		SAFE_GETCWD(c_cwd, size);
+> +
+> +		if (strcmp(cwd, c_cwd) == 0)
+> +			tst_res(TFAIL, "current dir not changed");
+> +		else
+> +			tst_res(TPASS, "current dir changed to %s", c_cwd);
+> +	} else {
+> +		SAFE_WAIT(NULL);
+> +
+> +		SAFE_GETCWD(p_cwd, size);
+> +
+> +		if (strcmp(cwd, p_cwd) == 0)
+> +			tst_res(TPASS, "cwd unshared");
+> +		else
+> +			tst_res(TFAIL, "cwd not unshare as expected");
+                                                  ^
+						unshared
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.forks_child = 1,
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +};
+> -- 
+> 2.39.3
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
