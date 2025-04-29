@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3393C369DC
-	for <ltp@archiver.kernel.org>; Mon, 28 Apr 2025 15:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 723B2C369CB
+	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 03:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1745853947; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=dpeXCHke4HZgoDPAjeghCF9nZlqlt794dHf6TowyDaM=;
- b=nRw3Mz1LTzPyR/JuRxXONAZKOrBo9VTWilE6/HPF3D3SRdTcc7Qag7NdsPQ9jBizXxJra
- uuxHSo6d8G36PVjZMTeAB1Y2fBEsyo6vIe2ulcwMMjWJlmeFYpdtSL9IbiAeRDeSw7AaL7l
- w/vnpJvmmDhUqirjm3II/n95oRNSnqI=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1745898315; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=6+D8vIyw77Bx0CHDAmj95gV2HRicDEOYRlmlXPt2dlo=;
+ b=X85Y+8PJfqTU/JWwgTUjcOwn+z8CzkX5tu1L4M1ZWa35377iLOPLZGE1yL4UWLg/Edm8L
+ SV7yMCqf7yMx5VpJD3BBA61sqBBCHvjGsDw+TM9HmianonZYLBh3DmhDjKhPAH75fZFKtsK
+ 7BOggeMG600EnsKlSY7rYFowqaPB0RA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E7033CBBD0
-	for <ltp@archiver.kernel.org>; Mon, 28 Apr 2025 17:25:47 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7A7EB3CBBFF
+	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 05:45:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C56A33C06A7
- for <ltp@lists.linux.it>; Mon, 28 Apr 2025 17:25:24 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1C2DC3C7B33
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 05:44:53 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 007AD6001EA
- for <ltp@lists.linux.it>; Mon, 28 Apr 2025 17:25:23 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B40E06002BE
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 05:44:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1745853921;
+ s=mimecast20190719; t=1745898289;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UsVHQRVhWL2/Mj8KQ2a/mg9XwjSMuGc4b8d7Y26zv4E=;
- b=E5XA2IpYLkaKcPZOzrQzXdXtltom5EkzJY3NcKRH16Qlelu0TtGjsVMiUiwW4dap/RBolV
- 9ny86uOy0LXqLeQb8mMzyB6WroI8239KUnqMUSjOtbkTfXrZPggiTs87r1nqmFD7iwM56x
- BVxLwHEmWpgC7YDJW/SbpXooB+1k0YQ=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ content-transfer-encoding:content-transfer-encoding;
+ bh=8mLMQ95P7DQAWl2pztEQVoGjfGG0a7S/YXP/8lCf00c=;
+ b=KGRq5l9+VvOnX1NjqM+TMwA04LOZEyls5dciHvMNLtt4sGoPrUfErVSdQE15XAMqB6Uikl
+ NYizEReDF51RhmyPk85znRtsyd9gInUQG3Mj2MsLYf22gb7vbiN1Fym7v3OZJMazSwxiML
+ 6bQwjj6fbqGH7TMx8Huz14RxuIMStf4=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-308-19hig4DXOzGkouLZK7hAIw-1; Mon,
- 28 Apr 2025 11:24:12 -0400
-X-MC-Unique: 19hig4DXOzGkouLZK7hAIw-1
-X-Mimecast-MFC-AGG-ID: 19hig4DXOzGkouLZK7hAIw_1745853851
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-383-mzePKrtePMWW6KJ24LLqRA-1; Mon,
+ 28 Apr 2025 23:44:47 -0400
+X-MC-Unique: mzePKrtePMWW6KJ24LLqRA-1
+X-Mimecast-MFC-AGG-ID: mzePKrtePMWW6KJ24LLqRA_1745898286
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 01F86180087A
- for <ltp@lists.linux.it>; Mon, 28 Apr 2025 15:24:11 +0000 (UTC)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id C6BAE180087A
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 03:44:45 +0000 (UTC)
 Received: from dell-per430-17.gsslab.pek2.redhat.com
  (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
- by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 954E5195608D
- for <ltp@lists.linux.it>; Mon, 28 Apr 2025 15:24:09 +0000 (UTC)
+ by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 692B61800352
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 03:44:43 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Mon, 28 Apr 2025 11:24:04 -0400
-Message-ID: <20250428152404.610913-1-chwen@redhat.com>
-In-Reply-To: <CAEemH2fbmOFokFMXB=XVOgb45M0vLOSckH9Ytbuees6AZMaSKg@mail.gmail.com>
-References: <CAEemH2fbmOFokFMXB=XVOgb45M0vLOSckH9Ytbuees6AZMaSKg@mail.gmail.com>
+Date: Mon, 28 Apr 2025 23:44:39 -0400
+Message-ID: <20250429034439.629653-1-chwen@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: WOWvEhAJZVsYc1r2kb8oDcN282r_ZmellGISxw-pJeQ_1745853851
+X-Mimecast-MFC-PROC-ID: Kv9HTXiaisB4yFg6RTYQmHBOjQ9NRpqlzC5-xGwIPkM_1745898286
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Add tls parameter and flag:CLONE_SETTLS cover for
+Subject: [LTP] [PATCH v3] Add tls parameter and flag:CLONE_SETTLS cover for
  clone and clone3 syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -99,18 +96,18 @@ so add them into existed test case
 
 Signed-off-by: chunfuwen <chwen@redhat.com>
 ---
- testcases/kernel/syscalls/clone/clone10.c   | 164 ++++++++++++++++++++
- testcases/kernel/syscalls/clone3/clone304.c | 164 ++++++++++++++++++++
- 2 files changed, 328 insertions(+)
+ testcases/kernel/syscalls/clone/clone10.c   | 167 ++++++++++++++++++++
+ testcases/kernel/syscalls/clone3/clone304.c | 167 ++++++++++++++++++++
+ 2 files changed, 334 insertions(+)
  create mode 100644 testcases/kernel/syscalls/clone/clone10.c
  create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
 
 diff --git a/testcases/kernel/syscalls/clone/clone10.c b/testcases/kernel/syscalls/clone/clone10.c
 new file mode 100644
-index 000000000..8ef0f73cb
+index 000000000..03588d5ef
 --- /dev/null
 +++ b/testcases/kernel/syscalls/clone/clone10.c
-@@ -0,0 +1,164 @@
+@@ -0,0 +1,167 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
@@ -127,6 +124,9 @@ index 000000000..8ef0f73cb
 +#include <errno.h>
 +#include <sched.h>
 +#include <sys/wait.h>
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
 +
 +#include "tst_test.h"
 +#include "clone_platform.h"
@@ -277,10 +277,10 @@ index 000000000..8ef0f73cb
 +};
 diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
 new file mode 100644
-index 000000000..418d86134
+index 000000000..f46d48e34
 --- /dev/null
 +++ b/testcases/kernel/syscalls/clone3/clone304.c
-@@ -0,0 +1,164 @@
+@@ -0,0 +1,167 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
@@ -295,6 +295,9 @@ index 000000000..418d86134
 +
 +#include <stdlib.h>
 +#include <sys/wait.h>
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
 +
 +#include "tst_test.h"
 +#include "lapi/sched.h"
