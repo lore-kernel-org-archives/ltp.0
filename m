@@ -4,91 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37201C369CB
-	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 07:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1745911101; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=Xoin5S9Y0uONc6bISyVxF/YH11VQj7NwUR4bdriOA14=;
- b=kletBUQ1+lx3jD28JUVmCEU8MSFTN08PAzx5ZpSRjbWTn8M3Y3XjDxNDleGNVNH26v4Dw
- DdULqR9qP7/emfbXxuQHMKJnAoPzIGNV8ZA/0rjytC//61RfdlArCr5Usw+Ffzz9kItxNtL
- yo5mX4/Y7W6re6Z+1I4IlaG4Dv4njxo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9242AC369CB
+	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 07:23:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F4F73CBBE8
-	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 09:18:21 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 00B143CBBE8
+	for <ltp@archiver.kernel.org>; Tue, 29 Apr 2025 09:23:51 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 658EF3C53B4
- for <ltp@lists.linux.it>; Tue, 29 Apr 2025 09:18:00 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9F23A3C53B4
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 09:23:32 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2703F14002DE
- for <ltp@lists.linux.it>; Tue, 29 Apr 2025 09:17:59 +0200 (CEST)
-Received: by mail-wr1-x432.google.com with SMTP id
- ffacd0b85a97d-3a064a3e143so2838508f8f.3
- for <ltp@lists.linux.it>; Tue, 29 Apr 2025 00:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1745911078; x=1746515878; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=gTKniJdJBCA5hgML1KQ3tzalGH0wU+FIJrm+Plk/QvM=;
- b=AjR3K3C3NYI4upULg7FGE3j7GF9FpRCoSci+ax9b0VEcC9JC9j3BSi9gtTHBL4PN+l
- pZ/t/O+wd/dofDqjvXnRNYC78/UMNBaU7L9eTjquwMHw8KHq59yj3OcyD2o0Rmi7DUcW
- Be+j7oj/9C203+QZc6pjb0I0coDWrbI8KjJTIjQha+lUiMIad/7aHrQjKokR7EN3sRI8
- H8hKXhmJWtrGNhxWhDAK/U0Hp4Vwfxp3fU5FoHS8NDXy8OU2rE4bZwyqv4a/YtXrSBzY
- WLt34TDyI2wU4cGARFJxGWRcbeegyni4MUT/GjwygsrC77+2/+3wkyAWJpgJm1uzJs35
- 3HcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1745911078; x=1746515878;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=gTKniJdJBCA5hgML1KQ3tzalGH0wU+FIJrm+Plk/QvM=;
- b=dhFeV/ZJbmlBU4Pv9VV8EPX9d35Whai77/ivDcZZz5imk3ENlpYwlXIHOaCAz9CjKV
- 0rdTjHZw9rOoF7xT5XnGpGA5mhHh949PlMU0l3NXNp6L0FqQ5YW5qQhljdcfAoQki42L
- 4Zk4AU8uve9/q66FbNABDa0cl9NJFP5XgORXMj2FqviK+UWhdB3qyOqs4DJZcBXXM6f+
- CD72FryVtuj6iuO3QWF01dCbI527Z/Itdn8c/AUxSVstsGghrlhlpRXdHAKqUzQ5oLBa
- IIYG25f4sKA4E/nk52jzNqVreiBL2/zuVGWGPPMr3eer5IspZ7CopVpKlAF1QLUqnTcX
- NG8g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUuPUGD6IWEIdm4WFex1tcdEkp3lhW1eXHjE2ja3xpZxjx9rOsJPoff8x6UkFY9Df97E+0=@lists.linux.it
-X-Gm-Message-State: AOJu0YyU3VBdA2i3WI5Rr2sN8LGv+e3oGo3t/iVn+QadugoIjpJwutiF
- 5fQsScB4KfUQNjBp694MM55XCttK55a5EmASzx0zUra60uvEX2YiKaGwgCluqWI=
-X-Gm-Gg: ASbGncsDo3QYF2fbclhMB4QwnA7+Lstd/MyaWhi6r7rrE35pZxNb3ONmPrfW9IkF/o+
- jFh3WIukB2BRN2NeY1d7bW9mEmNYuNlcK2B+GHfad4X3UUs9mZC8w7N6sOQRY09Qjvo/TKIq+qV
- UjyFy/Hfj2VEqiwmtir5NPEsSRg0Rp/G+reLV5L0zMv17BLejVMj8ZN4TmK1hZ9WpD2SNMrSK3R
- BFSoU9ZzEnl1wx560/70hrQ1yYl5vOvDwaZqcTWvmXrp9AHuIj/dCpJbN03X1p9KQVXpo6ZwHbp
- kzGNGhvNFvGuUkpVkQJMIkx0OSFbVUz6dvRunQyhHdJ9vKWmrdyCDJuZ3VwzGilvQdeqxxjAZAq
- K+BjMtFzxvg==
-X-Google-Smtp-Source: AGHT+IFwVc0XyBt5w5MLhQeXqmJAp8+hrz4S6b4rIUKfjLudJhfr+piPDVyWbA+Aevn6tcV7VLAv5A==
-X-Received: by 2002:a5d:5850:0:b0:39c:1257:dbab with SMTP id
- ffacd0b85a97d-3a0894a3d64mr2213646f8f.59.1745911078440; 
- Tue, 29 Apr 2025 00:17:58 -0700 (PDT)
-Received: from [192.168.178.20] (p54ad816b.dip0.t-ipconnect.de.
- [84.173.129.107]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3a073cc4679sm13181190f8f.58.2025.04.29.00.17.57
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 29 Apr 2025 00:17:58 -0700 (PDT)
-Message-ID: <b6e83fda-d0b2-4d23-b27a-668706e4382b@suse.com>
-Date: Tue, 29 Apr 2025 09:17:57 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6CEA2140043E
+ for <ltp@lists.linux.it>; Tue, 29 Apr 2025 09:23:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4F91C21A45;
+ Tue, 29 Apr 2025 07:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1745911410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uFwdNO/reG7lsVdWo81PV2/wJOGBAeF+GU7szblUqk4=;
+ b=zX+QhTPH5uAbXWuNHWXx9VVY+9Ehsty5N4wAbSna/E4GO0qLCwqlB85KCz3/qH+3xgL5CV
+ oYsbDxOprfeT8hEulATWb3ick9RWZIPxPOQXttzfvOowxBz9SHEPpDt9gzJvOQAz1tu3+b
+ devr79h1ReeEPiDGmX/xRhisIeCIOTI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1745911410;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uFwdNO/reG7lsVdWo81PV2/wJOGBAeF+GU7szblUqk4=;
+ b=vvCKqDTkSqe6I/D6oqR2kM7hDuy5SE2QuUM8HtmzsG3iCyLUnEsY3+T8Qpn7ULCiQYZWrh
+ 7mqYEwM4hMoCqyAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=zX+QhTPH;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vvCKqDTk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1745911410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uFwdNO/reG7lsVdWo81PV2/wJOGBAeF+GU7szblUqk4=;
+ b=zX+QhTPH5uAbXWuNHWXx9VVY+9Ehsty5N4wAbSna/E4GO0qLCwqlB85KCz3/qH+3xgL5CV
+ oYsbDxOprfeT8hEulATWb3ick9RWZIPxPOQXttzfvOowxBz9SHEPpDt9gzJvOQAz1tu3+b
+ devr79h1ReeEPiDGmX/xRhisIeCIOTI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1745911410;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uFwdNO/reG7lsVdWo81PV2/wJOGBAeF+GU7szblUqk4=;
+ b=vvCKqDTkSqe6I/D6oqR2kM7hDuy5SE2QuUM8HtmzsG3iCyLUnEsY3+T8Qpn7ULCiQYZWrh
+ 7mqYEwM4hMoCqyAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2720F1340C;
+ Tue, 29 Apr 2025 07:23:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tba5B3J+EGgbcAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Apr 2025 07:23:30 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 29 Apr 2025 09:18:29 +0200
+Message-Id: <20250429-lsm-v4-0-602b7097e722@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20250428-lsm-v3-0-33a4caa9aaf2@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250428-lsm-v3-0-33a4caa9aaf2@suse.com>
+X-B4-Tracking: v=1; b=H4sIAEV9EGgC/13NTQ7CIBAF4Ks0rMXAAE1x5T2Miyk/lsRaA0o0T
+ e8ubTUal+9lvjcjSS4Gl8iuGkl0OaQwXEqQm4qYDi8nR4MtmQADyTlT9Jx6qiyCrw0gd5qUy2t
+ 0PjyWlcOx5C6k2xCfy2jmc/v2HBafOWXUgRbYWK2Nr/fpntzWDD2ZeYYPUaz8XAkU0lrRMKF8U
+ 7fmj4gvkdCsRBQiBEqDqBE9/JBpml7yCxZH+wAAAA==
+X-Change-ID: 20241105-lsm-5da2f6c2a1e9
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1745911410; l=2291;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=6g/o+kdEZhvy1Cr8o9jHvJXvzQbzFZZJ3bSNFKNKOFQ=;
+ b=8mj5PflVbAtD2eFqNOHFJEHd3iH+U3pB8yerW87uovWbUHWAgryVieNLgSig2dZl7mKyDXcbz
+ H4WdXdRs6nXBuLwQ5ROEU4rN5Up5OxQXjUzPS7ixXdVJWcVK7CV6GIg
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: 4F91C21A45
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid,suse.de:dkim];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 0/7] LSM testing suite
+Subject: [LTP] [PATCH v4 0/7] LSM testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,71 +123,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Testing the following syscalls which are providing support for the LSM
+communication added in kernel 6.8:
 
-There's an error in the patch. I'm going to send v4
+- lsm_get_self_attr
+- lsm_set_self_attr
+- lsm_list_modules
 
-- Andrea
+Please consider the following documentation as reference:
+https://docs.kernel.org/userspace-api/lsm.html
 
-On 4/28/25 16:43, Andrea Cervesato wrote:
-> Testing the following syscalls which are providing support for the LSM
-> communication added in kernel 6.8:
->
-> - lsm_get_self_attr
-> - lsm_set_self_attr
-> - lsm_list_modules
->
-> Please consider the following documentation as reference:
-> https://docs.kernel.org/userspace-api/lsm.html
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Changes in v3:
-> - lsm_common.h cleanup
-> - better overall check for supported LSM(s) when using LSM_ATTR_CURRENT
-> - simplify tests using more common functions
-> - use the right size for lsm_ctx
-> - Link to v2: https://lore.kernel.org/r/20250110-lsm-v2-0-bd38035f86bc@suse.com
->
-> Changes in v2:
-> - correctly fallback <linux/lsm.h> include
-> - Link to v1: https://lore.kernel.org/r/20241112-lsm-v1-0-e293a8d99cf6@suse.com
->
-> ---
-> Andrea Cervesato (7):
->        Add fallback definitions of LSM syscalls
->        Add lsm_get_self_attr01 test
->        Add lsm_get_self_attr02 test
->        Add lsm_get_self_attr03 test
->        Add lsm_list_modules01 test
->        Add lsm_list_modules02 test
->        Add lsm_set_self_attr01 test
->
->   configure.ac                                       |   3 +-
->   include/lapi/lsm.h                                 | 177 +++++++++++++++++++++
->   runtest/syscalls                                   |   7 +
->   testcases/kernel/syscalls/lsm/.gitignore           |   6 +
->   testcases/kernel/syscalls/lsm/Makefile             |   7 +
->   testcases/kernel/syscalls/lsm/lsm_common.h         |  91 +++++++++++
->   .../kernel/syscalls/lsm/lsm_get_self_attr01.c      |  92 +++++++++++
->   .../kernel/syscalls/lsm/lsm_get_self_attr02.c      |  45 ++++++
->   .../kernel/syscalls/lsm/lsm_get_self_attr03.c      |  68 ++++++++
->   testcases/kernel/syscalls/lsm/lsm_list_modules01.c |  75 +++++++++
->   testcases/kernel/syscalls/lsm/lsm_list_modules02.c | 153 ++++++++++++++++++
->   .../kernel/syscalls/lsm/lsm_set_self_attr01.c      | 110 +++++++++++++
->   12 files changed, 833 insertions(+), 1 deletion(-)
-> ---
-> base-commit: 746286c5ccf4fe3176ad636383a7235c5f1d4131
-> change-id: 20241105-lsm-5da2f6c2a1e9
->
-> Best regards,
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v4:
+- fix integer index loop that should be size_t
+- correctly cast lsm_ctx pointer to char*
+- Link to v3: https://lore.kernel.org/r/20250428-lsm-v3-0-33a4caa9aaf2@suse.com
+
+Changes in v3:
+- lsm_common.h cleanup
+- better overall check for supported LSM(s) when using LSM_ATTR_CURRENT
+- simplify tests using more common functions
+- use the right size for lsm_ctx
+- Link to v2: https://lore.kernel.org/r/20250110-lsm-v2-0-bd38035f86bc@suse.com
+
+Changes in v2:
+- correctly fallback <linux/lsm.h> include
+- Link to v1: https://lore.kernel.org/r/20241112-lsm-v1-0-e293a8d99cf6@suse.com
+
+---
+Andrea Cervesato (7):
+      Add fallback definitions of LSM syscalls
+      Add lsm_get_self_attr01 test
+      Add lsm_get_self_attr02 test
+      Add lsm_get_self_attr03 test
+      Add lsm_list_modules01 test
+      Add lsm_list_modules02 test
+      Add lsm_set_self_attr01 test
+
+ configure.ac                                       |   3 +-
+ include/lapi/lsm.h                                 | 177 +++++++++++++++++++++
+ runtest/syscalls                                   |   7 +
+ testcases/kernel/syscalls/lsm/.gitignore           |   6 +
+ testcases/kernel/syscalls/lsm/Makefile             |   7 +
+ testcases/kernel/syscalls/lsm/lsm_common.h         |  91 +++++++++++
+ .../kernel/syscalls/lsm/lsm_get_self_attr01.c      |  92 +++++++++++
+ .../kernel/syscalls/lsm/lsm_get_self_attr02.c      |  45 ++++++
+ .../kernel/syscalls/lsm/lsm_get_self_attr03.c      |  68 ++++++++
+ testcases/kernel/syscalls/lsm/lsm_list_modules01.c |  75 +++++++++
+ testcases/kernel/syscalls/lsm/lsm_list_modules02.c | 153 ++++++++++++++++++
+ .../kernel/syscalls/lsm/lsm_set_self_attr01.c      | 110 +++++++++++++
+ 12 files changed, 833 insertions(+), 1 deletion(-)
+---
+base-commit: 746286c5ccf4fe3176ad636383a7235c5f1d4131
+change-id: 20241105-lsm-5da2f6c2a1e9
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
