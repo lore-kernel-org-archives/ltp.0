@@ -4,106 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFAB2C369D9
-	for <ltp@archiver.kernel.org>; Wed, 30 Apr 2025 13:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 178EFC369D9
+	for <ltp@archiver.kernel.org>; Wed, 30 Apr 2025 13:38:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB4533C0229
-	for <ltp@archiver.kernel.org>; Wed, 30 Apr 2025 15:35:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 909793CBC90
+	for <ltp@archiver.kernel.org>; Wed, 30 Apr 2025 15:38:57 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BFAB63C0229
- for <ltp@lists.linux.it>; Wed, 30 Apr 2025 15:35:43 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A7A293CBC87
+ for <ltp@lists.linux.it>; Wed, 30 Apr 2025 15:38:40 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18F5A600199
- for <ltp@lists.linux.it>; Wed, 30 Apr 2025 15:35:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C9F021A00A21
+ for <ltp@lists.linux.it>; Wed, 30 Apr 2025 15:38:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8E49121859;
- Wed, 30 Apr 2025 13:35:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0098621859;
+ Wed, 30 Apr 2025 13:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746020141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=lGnIsrA+3yislY7dMOdo/BX8hLoUb3pPRygH1vP3h9s=;
- b=Wp17+OsJJagZKWvZWnYwhx9s1eQXeriV/G6XaMpMiLHYKEraHJc9bossi5/AXPuFHJJk/a
- lK7sa02BH+0WSoEvq879TJE+TUOBPaUtax3R90G9XZE+ZkMqZUJb/Uj3ZZeR7RcfzLcePv
- wsZM8EY7MMjrv6dwUjTx2EcYbRdCQ7c=
+ t=1746020318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mJgBVD+kxLq1HlTZjNbiU0Z02m2UwNpR5q/xh8cAVA8=;
+ b=dDqVWbRJEelkQ2pxFqrfJrcN2WlTSUYlL+N2MPa96Jjwue4aUxRNoJNAr5n3zxRylyBgqz
+ 234kHzXLnct9jQxGuXpMNzdDeKygr4U7aG9B+5xz6vRF0YgPJaoAbxujk/qF+A57GRGGai
+ Fb0xh9Dns1GVnz0rBFmdeFzn3CLf3ug=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746020141;
+ s=susede2_ed25519; t=1746020318;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=lGnIsrA+3yislY7dMOdo/BX8hLoUb3pPRygH1vP3h9s=;
- b=ufmBQFsPkUp3yhZuYMrr2o5RbgDd/5jVbkxOoxMQfj1X168gSf467dRU/DMXHSfuLGvkH0
- 8BrWzaOYLYArwTDQ==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mJgBVD+kxLq1HlTZjNbiU0Z02m2UwNpR5q/xh8cAVA8=;
+ b=gMxHtgeKEhO0cISRBXir9MSB7sxA9uE5U+AExJUgXwQ139jkxNWu5OLgZu5OpEqXv+pM8s
+ NtcE7SZAlGm7dsDg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Wp17+OsJ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ufmBQFsP
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746020141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=lGnIsrA+3yislY7dMOdo/BX8hLoUb3pPRygH1vP3h9s=;
- b=Wp17+OsJJagZKWvZWnYwhx9s1eQXeriV/G6XaMpMiLHYKEraHJc9bossi5/AXPuFHJJk/a
- lK7sa02BH+0WSoEvq879TJE+TUOBPaUtax3R90G9XZE+ZkMqZUJb/Uj3ZZeR7RcfzLcePv
- wsZM8EY7MMjrv6dwUjTx2EcYbRdCQ7c=
+ t=1746020318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mJgBVD+kxLq1HlTZjNbiU0Z02m2UwNpR5q/xh8cAVA8=;
+ b=dDqVWbRJEelkQ2pxFqrfJrcN2WlTSUYlL+N2MPa96Jjwue4aUxRNoJNAr5n3zxRylyBgqz
+ 234kHzXLnct9jQxGuXpMNzdDeKygr4U7aG9B+5xz6vRF0YgPJaoAbxujk/qF+A57GRGGai
+ Fb0xh9Dns1GVnz0rBFmdeFzn3CLf3ug=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746020141;
+ s=susede2_ed25519; t=1746020318;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=lGnIsrA+3yislY7dMOdo/BX8hLoUb3pPRygH1vP3h9s=;
- b=ufmBQFsPkUp3yhZuYMrr2o5RbgDd/5jVbkxOoxMQfj1X168gSf467dRU/DMXHSfuLGvkH0
- 8BrWzaOYLYArwTDQ==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mJgBVD+kxLq1HlTZjNbiU0Z02m2UwNpR5q/xh8cAVA8=;
+ b=gMxHtgeKEhO0cISRBXir9MSB7sxA9uE5U+AExJUgXwQ139jkxNWu5OLgZu5OpEqXv+pM8s
+ NtcE7SZAlGm7dsDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C6F213A25;
- Wed, 30 Apr 2025 13:35:41 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E15BA13A25;
+ Wed, 30 Apr 2025 13:38:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OiwiHS0nEmiPdgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 30 Apr 2025 13:35:41 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4TprNd0nEmiGdwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 30 Apr 2025 13:38:37 +0000
+Date: Wed, 30 Apr 2025 15:39:11 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 30 Apr 2025 15:36:15 +0200
-Message-ID: <20250430133615.15571-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.49.0
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aBIn_7KdymKPYA9m@yuki.lan>
+References: <20250228172439.3276777-1-pvorel@suse.cz>
+ <20250228172439.3276777-5-pvorel@suse.cz>
+ <Z8shfrkfVkwsCOTw@yuki.lan> <20250425183345.GA79209@pevik>
+ <aBHkswcLfiC7sXSz@yuki.lan> <aBHl-Rqg1QFe8tjw@yuki.lan>
+ <20250430114701.GA16680@pevik>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 8E49121859
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+Content-Disposition: inline
+In-Reply-To: <20250430114701.GA16680@pevik>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,suse.cz:mid];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:email, suse.cz:dkim, suse.cz:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, tst_loader.sh:url, tst_env.sh:url,
+ imap1.dmz-prg2.suse.org:helo, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib: tlibio.c: Restore LIO_IO_SYNCV
+Subject: Re: [LTP] [RFC PATCH 4/5] shell lib: Add basic support for test
+ cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,98 +111,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There was a single case of "#ifndef CRAY" in all the "#ifdef CRAY"
-macros that got removed accidentally. This patch restores that piece.
+Hi!
+> > And one possible solution is to source the environment first and the
+> > loader last, on the top of your shell-loader-setup-cleanup.v2 branch:
+> 
+> > diff --git a/testcases/lib/tests/shell_loader.sh b/testcases/lib/tests/shell_loader.sh
+> > index eeed122c1..01acf6d35 100755
+> > --- a/testcases/lib/tests/shell_loader.sh
+> > +++ b/testcases/lib/tests/shell_loader.sh
+> > @@ -14,6 +14,8 @@
+> >  # }
+> >  # ---
+> 
+> > +. tst_env.sh
+> > +
+> 
+> OK, that is the missing piece, thank you!
+> 
+> i.e. sourcing tst_env.sh at the beginning before test function setup and
+> tst_loader.sh at the end after test function setup). I thought we would avoid
+> sourcing two files in the tests, that's why I haven't tried, but that's a minor
+> detail. And it's better solution than having tst_exec.sh, which requires
+> tst_run_shell.c modification, just to do the same thing (source tst_env.sh).
 
-Fixes: fed3e3ee6399 ('lib/tlibio: Get rid of support for old UNIXes')
-Reported-by: Avinesh Kumar <akumar@suse.de>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tlibio.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
+Given all the choices I too think that soucing tst_env.sh first to get
+all the defitions and tst_loader.sh to start the test is the cleanest
+solution.
 
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index 451244525..b3e723aa7 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -767,6 +767,34 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 			return -errno;
- 		}
- 	}
-+	else if (method & LIO_IO_SYNCV) {
-+		io_type = "writev(2)";
-+
-+		sprintf(Lio_SysCall, "writev(%d, &iov, 1) nbyte:%d", fd, size);
-+
-+		if (Debug_level) {
-+			printf("DEBUG %s/%d: %s\n", __FILE__, __LINE__,
-+			       Lio_SysCall);
-+		}
-+		if ((ret = writev(fd, &iov, 1)) == -1) {
-+			sprintf(Errormsg,
-+				"%s/%d writev(%d, iov, 1) nbyte:%d ret:-1, errno=%d %s",
-+				__FILE__, __LINE__, fd, size, errno,
-+				strerror(errno));
-+			return -errno;
-+		}
-+
-+		if (ret != size) {
-+			sprintf(Errormsg,
-+				"%s/%d writev(%d, iov, 1) nbyte:%d returned=%d",
-+				__FILE__, __LINE__, fd, size, ret);
-+		} else if (Debug_level > 1)
-+			printf
-+			    ("DEBUG %s/%d: writev completed without error (ret %d)\n",
-+			     __FILE__, __LINE__, ret);
-+
-+		return ret;
-+	}			/* LIO_IO_SYNCV */
- 	/* LIO_IO_ALISTIO */
- 	else if (method & LIO_IO_SYNCP) {
- 		io_type = "pwrite(2)";
-@@ -1150,6 +1178,34 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 		}
- 	}
- 	/* LIO_IO_ALISTIO */
-+	else if (method & LIO_IO_SYNCV) {
-+		io_type = "readv(2)";
-+
-+		sprintf(Lio_SysCall, "readv(%d, &iov, 1) nbyte:%d", fd, size);
-+
-+		if (Debug_level) {
-+			printf("DEBUG %s/%d: %s\n", __FILE__, __LINE__,
-+			       Lio_SysCall);
-+		}
-+		if ((ret = readv(fd, &iov, 1)) == -1) {
-+			sprintf(Errormsg,
-+				"%s/%d readv(%d, iov, 1) nbyte:%d ret:-1, errno=%d %s",
-+				__FILE__, __LINE__, fd, size, errno,
-+				strerror(errno));
-+			return -errno;
-+		}
-+
-+		if (ret != size) {
-+			sprintf(Errormsg,
-+				"%s/%d readv(%d, iov, 1) nbyte:%d returned=%d",
-+				__FILE__, __LINE__, fd, size, ret);
-+		} else if (Debug_level > 1)
-+			printf
-+			    ("DEBUG %s/%d: readv completed without error (ret %d)\n",
-+			     __FILE__, __LINE__, ret);
-+
-+		return ret;
-+	}			/* LIO_IO_SYNCV */
- 	else if (method & LIO_IO_SYNCP) {
- 		io_type = "pread(2)";
- 
 -- 
-2.49.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
