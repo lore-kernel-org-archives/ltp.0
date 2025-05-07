@@ -4,98 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C2A1C3ABC3
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 15:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 940B0C3ABC0
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 15:28:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E933D3CBFE0
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:25:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 33EF73CBFF8
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:28:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 09CF13CBD4C
- for <ltp@lists.linux.it>; Wed,  7 May 2025 17:25:08 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 064DE3CBF46
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 17:28:24 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E90BD600BE8
- for <ltp@lists.linux.it>; Wed,  7 May 2025 17:25:01 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7A20B1000761
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 17:28:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2695C21216;
- Wed,  7 May 2025 15:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746631501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8nXa+wpzsspJ/2UuuSnrYegeWwkf/0hnELlk96rkYz0=;
- b=MEvmBclPlkeVoaZVsDA4KrIUAfpGs3daw2qMuA00Wc4uRJdO8isMxxgY/r1IfuMG/QHJMB
- b+HHgVHjJHUjeNB56ba/t8T964y4uOoZc+d8vPMSImCT1/BYxPCvvTOwPrEbm8vSfog9El
- aooCBU4wasjneJQTt4yB2YbdbIiehtg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746631501;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8nXa+wpzsspJ/2UuuSnrYegeWwkf/0hnELlk96rkYz0=;
- b=WwJPgh03Cs1YUA96vh3H/5Pt8h1OrX7lifCr4VwSB/ypnVmWN4PXTIIwm8hFbskG3LDGuQ
- Lgm/+Tm/sFEK35BQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8B8312121C;
+ Wed,  7 May 2025 15:28:23 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746631501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8nXa+wpzsspJ/2UuuSnrYegeWwkf/0hnELlk96rkYz0=;
- b=MEvmBclPlkeVoaZVsDA4KrIUAfpGs3daw2qMuA00Wc4uRJdO8isMxxgY/r1IfuMG/QHJMB
- b+HHgVHjJHUjeNB56ba/t8T964y4uOoZc+d8vPMSImCT1/BYxPCvvTOwPrEbm8vSfog9El
- aooCBU4wasjneJQTt4yB2YbdbIiehtg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746631501;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8nXa+wpzsspJ/2UuuSnrYegeWwkf/0hnELlk96rkYz0=;
- b=WwJPgh03Cs1YUA96vh3H/5Pt8h1OrX7lifCr4VwSB/ypnVmWN4PXTIIwm8hFbskG3LDGuQ
- Lgm/+Tm/sFEK35BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 149C713882;
- Wed,  7 May 2025 15:25:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75BBA13882;
+ Wed,  7 May 2025 15:28:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ZKnjAk17G2gVaAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 07 May 2025 15:25:01 +0000
-Date: Wed, 7 May 2025 17:25:38 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jJ1GGxd8G2j4aAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 07 May 2025 15:28:23 +0000
+Date: Wed, 7 May 2025 17:29:00 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aBt7ck35Dq8GIKHc@yuki.lan>
-References: <20250416191645.355088-1-wegao@suse.com>
- <20250428160421.3457215-1-wegao@suse.com>
+To: Martin Cermak <mcermak@redhat.com>
+Message-ID: <aBt8PJNmiJNuSEB5@yuki.lan>
+References: <20250429052247.GA144682@pevik> <aBSVO8uOE86UGIcp@yuki.lan>
+ <4428939d-dc71-488b-9728-030accaca3e8@suse.cz>
+ <aBh9Z4QA2YcdOFq1@rei.lan> <20250506080520.GA64990@pevik>
+ <20250507151148.yhrnckco7zkrpfzw@lida.tpb.lab.eng.brq.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250428160421.3457215-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
- yuki.lan:mid]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+In-Reply-To: <20250507151148.yhrnckco7zkrpfzw@lida.tpb.lab.eng.brq.redhat.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 8B8312121C
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] mmap22.c: Test for new MAP_DROPPABLE flag for
- mmap
+Subject: Re: [LTP] LTP in valgrind :)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,37 +73,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Mark Wielaard <mark@klomp.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Pushed with a minor change, thanks.
+> > > > > It also opens some interesting questions, i.e. how do we make comparing
+> > > > > results from two different tests easier. Currently they grep the test
+> > > > > results for a summary, but maybe we can do better.
+> >
+> > > > One option is to extract all TPASS/TFAIL/TWARN/TBROK/TCONF messages,
+> > > > discard any message contents past the file:line header and then compare
+> > > > whether the sanitized output is identical. That'll take care of random
+> > > > values in the output while ensuring that the test went through the same
+> > > > code paths as before. We could provide a sanitizer script for that.
+> >
+> > > Maybe we can even add an option to the test library to supress the
+> > > messages in output, that would be fairly simple.
+> >
+> > @Martin @Mark: feel free to comment what we can do for you :).
+> > Whole thread:
+> > https://lore.kernel.org/ltp/20250505195003.GB137650@pevik/T/#t
+> 
+> Nice to see you noticed!  Primarily we're trying to identify
+> valgrind gaps and bugs.  For our use-case it's good to have
+> reproducible test runs in a sense of identical test results for
+> repeated test runs.  We got pretty close to this by only taking
+> into account the testcase summaries at the very end of the test
+> logs.  Any steps to get closer to reproducible test runs on the
+> LTP side are interesting for us, and we'll try to reflect those!
 
-We should check if the addr is valid before we attemp to unmap it in the
-setup() so I've added:
+I've proposed a simple solution that would cut the message from tests
+only to contain the line numbers and results in:
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap22.c b/testcases/kernel/syscalls/mmap/mmap22.c
-index bfef559e4..0e589dfab 100644
---- a/testcases/kernel/syscalls/mmap/mmap22.c
-+++ b/testcases/kernel/syscalls/mmap/mmap22.c
-@@ -72,8 +72,13 @@ static void setup(void)
- {
-        void *addr = mmap(0, 1, PROT_READ | PROT_WRITE,
-                        MAP_ANONYMOUS | MAP_DROPPABLE, -1, 0);
-+
-        if (addr == MAP_FAILED && errno == EINVAL)
--               tst_brk(TCONF, "MAP_DROPPABLE not support");
-+               tst_brk(TCONF, "MAP_DROPPABLE not supported");
-+
-+       if (addr == MAP_FAILED)
-+               tst_brk(TBROK | TERRNO, "mmap() MAP_DROPPABLE failed");
-+
-        SAFE_MUNMAP(addr, 1);
- }
+https://lore.kernel.org/ltp/20250505195003.GB137650@pevik/T/#m98317262b25ede62704b005fcefc63c62198bb90
 
+If that works for you we can get this in LTP before the next release.
 
 -- 
 Cyril Hrubis
