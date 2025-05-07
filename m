@@ -4,60 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F513C3ABBF
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8075FC3ABBF
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:57:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF8193CBF57
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 19:55:07 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id EBA3C3CC00D
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 19:57:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9BD733CBC35
- for <ltp@lists.linux.it>; Wed,  7 May 2025 19:54:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 165F73CBC35
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 19:57:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CCF6010006CF
- for <ltp@lists.linux.it>; Wed,  7 May 2025 19:54:49 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 168DA60035A
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 19:57:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 474201F393;
- Wed,  7 May 2025 17:54:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6ED381F393;
+ Wed,  7 May 2025 17:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1746640634;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ax7RChMe9BBof+HOdQJzfQqmEGT2Rw43/5ISXT65y0=;
+ b=Cx5vi0ZyoIOkJybg4QcorIL6terWSvIClKnSQoWQfrEURK0DfiuMtYwd8Hrs0Ebfugo0lj
+ pQHxNKm/tNh+cG1E3i3eCTIXTlQtNZoFXv9Ux6w559xbriLoI5j4cJuUAEbZ534+QukWZy
+ Lh9Kg/czE/5B/AWKRcCyjA6SvfS3hG4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1746640634;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ax7RChMe9BBof+HOdQJzfQqmEGT2Rw43/5ISXT65y0=;
+ b=UwZjwUDQPuXSk0+w18XB89y167XYwWV3f23TESrkwVynVujGDg1GoGP75T4V0ubsHlsDGl
+ 5qwvLcRDMa8ABQAQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1746640634;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ax7RChMe9BBof+HOdQJzfQqmEGT2Rw43/5ISXT65y0=;
+ b=Cx5vi0ZyoIOkJybg4QcorIL6terWSvIClKnSQoWQfrEURK0DfiuMtYwd8Hrs0Ebfugo0lj
+ pQHxNKm/tNh+cG1E3i3eCTIXTlQtNZoFXv9Ux6w559xbriLoI5j4cJuUAEbZ534+QukWZy
+ Lh9Kg/czE/5B/AWKRcCyjA6SvfS3hG4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1746640634;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ax7RChMe9BBof+HOdQJzfQqmEGT2Rw43/5ISXT65y0=;
+ b=UwZjwUDQPuXSk0+w18XB89y167XYwWV3f23TESrkwVynVujGDg1GoGP75T4V0ubsHlsDGl
+ 5qwvLcRDMa8ABQAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA017139D9;
- Wed,  7 May 2025 17:54:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A97E139D9;
+ Wed,  7 May 2025 17:57:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kPtsMmieG2gzEQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 07 May 2025 17:54:48 +0000
-Date: Wed, 7 May 2025 19:54:47 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aeOGOPmeG2jiEQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 07 May 2025 17:57:13 +0000
+Date: Wed, 7 May 2025 19:57:07 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20250507175447.GB182617@pevik>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250507175707.GC182617@pevik>
 References: <aBSURzY2zu2HGI2x@yuki.lan>
- <2957515c-8e46-48ed-b07b-4bedb4752828@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2957515c-8e46-48ed-b07b-4bedb4752828@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 474201F393
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+In-Reply-To: <aBSURzY2zu2HGI2x@yuki.lan>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
@@ -78,20 +115,15 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 02. 05. 25 11:45, Cyril Hrubis wrote:
-> > Hi!
-> > As usuall we are going to produce a release at the end of the May, let's
-> > start with pointing out patches that should be reviewed before we freeze
-> > the git. If there is anything I should have a look on please let me
-> > know.
+> Hi!
+> As usuall we are going to produce a release at the end of the May, let's
+> start with pointing out patches that should be reviewed before we freeze
+> the git. If there is anything I should have a look on please let me
+> know.
 
-> I've also sent a simple fix for mmap_24-1 (openposix) for OOM issues when
-> the test system has very high vm.max_map_count. It'd also be nice to include
-> it in the new release.
+It'd be nice also this macros doc related patchset merged:
 
-+1 for adding it.
-
-I hoped to finish shell loader v3, but not sure if I manage it (but I'll try).
+https://patchwork.ozlabs.org/project/ltp/list/?series=439525&state=*
 
 Kind regards,
 Petr
