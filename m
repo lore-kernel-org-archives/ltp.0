@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7FAFC3ABC0
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 14:23:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F304C3ABC0
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 14:58:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DBF0C3CBDA0
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 16:23:09 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id C1CA93CBF80
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 16:58:41 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C0E8A3CBD49
- for <ltp@lists.linux.it>; Wed,  7 May 2025 16:22:52 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 5E0313CBE30
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 16:58:25 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3FAF2200BB9
- for <ltp@lists.linux.it>; Wed,  7 May 2025 16:22:51 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 755A16009D3
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 16:58:23 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 07CB22121E;
- Wed,  7 May 2025 14:22:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8BF2C1F395
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 14:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746627771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1746629902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9IfQSt6fP9THWhkizfyFpl9ivT444+KOe0clSrMCMQE=;
- b=RgfFBERoIbTsRPE+JrURIBhfg8Mbw5FmaWSdo4ExVO8DM0TuBaaSMLsOOahDv86JIJDCrZ
- k5v3qh3eO+rTsqTQggwsvDu0wFHlo1PkSPIApc8s4wdHuR2fJQckadHrYc8o7ISEWXusc0
- jJvjePfSO5g5LLfKZNmqzJyzaV2cUow=
+ bh=iEGjgUN5k/wsI4dIaTeiNbKRgp76bQ7kCG/9jP5bW68=;
+ b=RWZ7RzlbH5nHdDantPqRQMpsGcT+aBJrTtu1QdxAl2FY41uJ95/8W3tMJvY6Wjg6vsNJml
+ 3a8F20XdY+IXfpYVcs5Cr102TQAXqrrhrR0+QC+/M6XSMMNg6EIRwXuKkrk8yPcKeUSHM0
+ uKWYDM/zMSrrVv0s8q9rp1JSRXLBgjs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746627771;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1746629902;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9IfQSt6fP9THWhkizfyFpl9ivT444+KOe0clSrMCMQE=;
- b=g5pZ9KdkU51+m3tL2ILzsKk1nchP09g1s6omYRMlnnHdZttpq4G88rWspVGfSBoMcxfwkS
- I/H6s1Tzna6ohABg==
-Authentication-Results: smtp-out1.suse.de;
+ bh=iEGjgUN5k/wsI4dIaTeiNbKRgp76bQ7kCG/9jP5bW68=;
+ b=WBvYue7fMDg5H5J/NznRA/1hb57sD5u7lb1HgO2IIaQO5LpQCrtGQQnw06J8WSMO+T7Mnt
+ xJ/yFaMgPn8PQ4DA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746627770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1746629902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9IfQSt6fP9THWhkizfyFpl9ivT444+KOe0clSrMCMQE=;
- b=Xg9pOgWTo36T3SXpCElM3/gUYqmfcT0RpJOGQNdpukeRrCmFxSiIPCS916eO2R8oMbJEQm
- w0xm9eV/+bdourSoksqz/IZBcfrcjrcOLx+iGAbOrnwB3K41pVh2IEzeRJHIr06o1YIvL4
- I16C26P25HJ2ahkZWP9XOocJ+tNplr8=
+ bh=iEGjgUN5k/wsI4dIaTeiNbKRgp76bQ7kCG/9jP5bW68=;
+ b=RWZ7RzlbH5nHdDantPqRQMpsGcT+aBJrTtu1QdxAl2FY41uJ95/8W3tMJvY6Wjg6vsNJml
+ 3a8F20XdY+IXfpYVcs5Cr102TQAXqrrhrR0+QC+/M6XSMMNg6EIRwXuKkrk8yPcKeUSHM0
+ uKWYDM/zMSrrVv0s8q9rp1JSRXLBgjs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746627770;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1746629902;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9IfQSt6fP9THWhkizfyFpl9ivT444+KOe0clSrMCMQE=;
- b=KHWQw0SXnIEtg+e9C2aEbRrVpuVr8vrglJb7eUslTMR1TL0b1gCvpne9sng7barKkcY0rh
- Ky7oQy9o7OqO/nAQ==
+ bh=iEGjgUN5k/wsI4dIaTeiNbKRgp76bQ7kCG/9jP5bW68=;
+ b=WBvYue7fMDg5H5J/NznRA/1hb57sD5u7lb1HgO2IIaQO5LpQCrtGQQnw06J8WSMO+T7Mnt
+ xJ/yFaMgPn8PQ4DA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DDDB0139D9;
- Wed,  7 May 2025 14:22:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E31D13882
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 14:58:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OAAqNrlsG2hlVQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 07 May 2025 14:22:49 +0000
-Date: Wed, 7 May 2025 16:23:30 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sCDFHQ51G2juXwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 07 May 2025 14:58:22 +0000
+Date: Wed, 7 May 2025 16:59:03 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <aBts4kDaqLKLJUuw@yuki.lan>
-References: <20250505105310.15072-1-mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <aBt1Nzag-h64UU1X@yuki.lan>
+References: <20250404143423.16268-1-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250505105310.15072-1-mdoucha@suse.cz>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20250404143423.16268-1-chrubis@suse.cz>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, imap1.dmz-prg2.suse.org:helo,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] memcontrol03: Account for process size in cgroup
- allocation
+Subject: Re: [LTP] [PATCH v2] lib/tst_test.c: Fix tst_brk() handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,57 +106,13 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> The first trunk_G allocation has 2MB safety margin to avoid triggering
-> OOM killer. However, on systems with 64K pagesize, this may not be enough.
-> Account for process size as reported by cgroup memory stats before
-> allocating memory in child processes.
-
-Is there a reason to keep the 2MB safety after this patch?
-
-Or can we do:
-
-diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
-index b5bbb9954..e7f126880 100644
---- a/testcases/kernel/controllers/memcg/memcontrol03.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol03.c
-@@ -200,7 +200,7 @@ static void test_memcg_min(void)
-                sleep(1);
-        }
-
--       alloc_anon_in_child(trunk_cg[G], MB(148), 0);
-+       alloc_anon_in_child(trunk_cg[G], MB(150), 0);
-
-        SAFE_CG_SCANF(trunk_cg[B], "memory.current", "%ld", c);
-        TST_EXP_EXPR(values_close(c[0], MB(50), 5),
-
-> --- a/testcases/kernel/controllers/memcg/memcontrol03.c
-> +++ b/testcases/kernel/controllers/memcg/memcontrol03.c
-> @@ -94,17 +94,23 @@ static void cleanup_sub_groups(void)
->  }
->  
->  static void alloc_anon_in_child(const struct tst_cg_group *const cg,
-> -				const size_t size, const int expect_oom)
-> +	size_t size, const int expect_oom)
->  {
->  	int status;
->  	const pid_t pid = SAFE_FORK();
-> +	size_t cgmem;
->  
->  	if (!pid) {
->  		SAFE_CG_PRINTF(cg, "cgroup.procs", "%d", getpid());
-> +		SAFE_CG_SCANF(cg, "memory.current", "%zu", &cgmem);
-> +		size = size > cgmem ? size - cgmem : 0;
-
-Here we depend on the fact that process memory has been properly
-accounted for when it starts running its code. Are you sure that we can
-rely on this or does this just happen to work?
+Thanks for the reviews, pushed.
 
 -- 
 Cyril Hrubis
