@@ -4,105 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60686C3ABBF
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 15:46:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95856C3ABBF
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 15:52:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ECADD3CC000
-	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:46:03 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 054243CC002
+	for <ltp@archiver.kernel.org>; Wed,  7 May 2025 17:52:12 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACBAD3C02B9
- for <ltp@lists.linux.it>; Wed,  7 May 2025 17:45:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 398003CB4B5
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 17:51:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D48541A004E6
- for <ltp@lists.linux.it>; Wed,  7 May 2025 17:45:46 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8A4B91A004E6
+ for <ltp@lists.linux.it>; Wed,  7 May 2025 17:51:54 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AE3B31F395
- for <ltp@lists.linux.it>; Wed,  7 May 2025 15:45:45 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 101F921235;
+ Wed,  7 May 2025 15:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746632745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=aaZlgJGQJQcAkDFi9HHv9sspLlEZt8/WE573E2MbHJg=;
- b=r1CYpTTH6XWkcPaDhbbgtUylIY8LX3/C0jVibk5VWWQVVdw9nhgJy6rB84MrhobZmSibYZ
- fMWyuVpHwcf1AYPqPTxOkSLMd2sD8XiYpvawBVOZDgZ4+Jx/SMsF8QZKsiuQmpZoYvZyON
- Zrd1k1M6aRi4ko/edFiwbZmdqMomT34=
+ t=1746633113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=GL6nt8el5lwRBTXRkLMpysrG1BHyXbG2wI1MpvjlW8s=;
+ b=AYPTyG4Hg2ofo/7qzXXRIrAWmmqYeHkXwsaxtfrhgwhHokC0UNWs4dwraog95bBZ5oAPpr
+ ms7HpFfEhs8mxxFUagj6Zi805Ai5shQ4MJtjvGxlyjL/cBTo7aaXycDkMn2QsZSFohuqqZ
+ XcEVMAcV05Xb4/nDtLVY3UF0lbtMzxU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746632745;
+ s=susede2_ed25519; t=1746633113;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=aaZlgJGQJQcAkDFi9HHv9sspLlEZt8/WE573E2MbHJg=;
- b=9Pq4yxQaE21BYR0bzqQKz7uvZoAgpe8emaxe7u+4pce0ELNAjjnCR3o5bU0i44fbWCFGQ/
- etpeNMY8lrB3RxBg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=r1CYpTTH;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9Pq4yxQa
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=GL6nt8el5lwRBTXRkLMpysrG1BHyXbG2wI1MpvjlW8s=;
+ b=qUyGJpXZdXorQc5hqIpMOX7UiP2TjopaX2DuuhpW8A3Wkl12OpFDYfEVEB+80TPA7OSnCk
+ jiuIbDUk46V6AeAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AYPTyG4H;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qUyGJpXZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746632745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=aaZlgJGQJQcAkDFi9HHv9sspLlEZt8/WE573E2MbHJg=;
- b=r1CYpTTH6XWkcPaDhbbgtUylIY8LX3/C0jVibk5VWWQVVdw9nhgJy6rB84MrhobZmSibYZ
- fMWyuVpHwcf1AYPqPTxOkSLMd2sD8XiYpvawBVOZDgZ4+Jx/SMsF8QZKsiuQmpZoYvZyON
- Zrd1k1M6aRi4ko/edFiwbZmdqMomT34=
+ t=1746633113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=GL6nt8el5lwRBTXRkLMpysrG1BHyXbG2wI1MpvjlW8s=;
+ b=AYPTyG4Hg2ofo/7qzXXRIrAWmmqYeHkXwsaxtfrhgwhHokC0UNWs4dwraog95bBZ5oAPpr
+ ms7HpFfEhs8mxxFUagj6Zi805Ai5shQ4MJtjvGxlyjL/cBTo7aaXycDkMn2QsZSFohuqqZ
+ XcEVMAcV05Xb4/nDtLVY3UF0lbtMzxU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746632745;
+ s=susede2_ed25519; t=1746633113;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=aaZlgJGQJQcAkDFi9HHv9sspLlEZt8/WE573E2MbHJg=;
- b=9Pq4yxQaE21BYR0bzqQKz7uvZoAgpe8emaxe7u+4pce0ELNAjjnCR3o5bU0i44fbWCFGQ/
- etpeNMY8lrB3RxBg==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=GL6nt8el5lwRBTXRkLMpysrG1BHyXbG2wI1MpvjlW8s=;
+ b=qUyGJpXZdXorQc5hqIpMOX7UiP2TjopaX2DuuhpW8A3Wkl12OpFDYfEVEB+80TPA7OSnCk
+ jiuIbDUk46V6AeAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A404413882
- for <ltp@lists.linux.it>; Wed,  7 May 2025 15:45:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0461C139D9;
+ Wed,  7 May 2025 15:51:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id w8OiJymAG2iabQAAD6G6ig
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 07 May 2025 15:45:45 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed,  7 May 2025 17:45:41 +0200
-Message-ID: <20250507154543.22309-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.49.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Kj51AJmBG2hLbwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Wed, 07 May 2025 15:51:53 +0000
+Message-ID: <2957515c-8e46-48ed-b07b-4bedb4752828@suse.cz>
+Date: Wed, 7 May 2025 17:51:48 +0200
 MIME-Version: 1.0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: AE3B31F395
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <aBSURzY2zu2HGI2x@yuki.lan>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <aBSURzY2zu2HGI2x@yuki.lan>
+X-Rspamd-Queue-Id: 101F921235
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim,suse.cz:mid];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_ONE(0.00)[1]; FUZZY_BLOCKED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_TRACE(0.00)[suse.cz:+]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; TO_DN_NONE(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:dkim, suse.cz:mid,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Action: no action
+ FUZZY_BLOCKED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; MID_RHS_MATCH_FROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mmap_24-1: Change vm.max_map_count if needed
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,80 +163,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-If vm.max_map_count system parameter is too high, mmap24-1 may get
-killed by OOM. Set the parameter to a reasonable low value so that
-mmap() quickly fails as expected.
+On 02. 05. 25 11:45, Cyril Hrubis wrote:
+> Hi!
+> As usuall we are going to produce a release at the end of the May, let's
+> start with pointing out patches that should be reviewed before we freeze
+> the git. If there is anything I should have a look on please let me
+> know.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- .../conformance/interfaces/mmap/24-1.c        | 35 ++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+I've also sent a simple fix for mmap_24-1 (openposix) for OOM issues 
+when the test system has very high vm.max_map_count. It'd also be nice 
+to include it in the new release.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-index 6cc8349e1..91677d289 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-@@ -31,12 +31,40 @@
- #include <stdint.h>
- #include "posixtest.h"
- 
-+#define MAX_MAP_COUNT_PATH "/proc/sys/vm/max_map_count"
-+#define MAP_COUNT_LIMIT 65530
-+
-+void proc_write_val(const char *path, size_t val)
-+{
-+	FILE *procfile;
-+
-+	procfile = fopen(path, "r+");
-+
-+	if (!procfile)
-+		return;
-+
-+	fprintf(procfile, "%zu", val);
-+	fclose(procfile);
-+}
-+
- int main(void)
- {
- 	char tmpfname[256];
- 	void *pa;
--	size_t len;
-+	size_t len, max_map_count = 0;
- 	int fd;
-+	FILE *procfile;
-+
-+	/* Change vm.max_map_count to avoid OOM */
-+	procfile = fopen(MAX_MAP_COUNT_PATH, "r+");
-+
-+	if (procfile) {
-+		fscanf(procfile, "%zu", &max_map_count);
-+		fclose(procfile);
-+	}
-+
-+	if (max_map_count > MAP_COUNT_LIMIT)
-+		proc_write_val(MAX_MAP_COUNT_PATH, MAP_COUNT_LIMIT);
- 
- 	/* Size of the shared memory object */
- 	size_t shm_size = 1024;
-@@ -78,5 +106,10 @@ int main(void)
- 
- 	close(fd);
- 	printf("Test FAILED: Did not get ENOMEM as expected\n");
-+
-+	/* Restore original vm.max_map_count */
-+	if (max_map_count > MAP_COUNT_LIMIT)
-+		proc_write_val(MAX_MAP_COUNT_PATH, max_map_count);
-+
- 	return PTS_FAIL;
- }
 -- 
-2.49.0
-
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
