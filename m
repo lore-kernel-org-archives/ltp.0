@@ -4,111 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDB40C3ABC3
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 08:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 730F6C3ABBC
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 08:33:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C06D3CC1C5
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 10:24:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DA0E43CC199
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 10:33:57 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8AA173CC155
- for <ltp@lists.linux.it>; Fri,  9 May 2025 10:23:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id B77223CC155
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 10:33:40 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D219260070D
- for <ltp@lists.linux.it>; Fri,  9 May 2025 10:23:44 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 02676200C20
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 10:33:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 511F52115A;
- Fri,  9 May 2025 08:23:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E284C1F45E;
+ Fri,  9 May 2025 08:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746779023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
- b=KPqmjro41mh2lKUukmMcIa99kDstg4EgPSs7WIiltz224xYiKJflJDPF1hajv8ZCaEXB+l
- oHo1vKEFHWR1TIQAk6T5/0RcsTw2pvtmKQFyvXjxU7MGwT+st84B5wS/rBYoOP9H4l8Ajd
- 21lfEIfBWXBT1vjvmU95dFSGygPX6Fg=
+ t=1746779619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qb3gDPazDUuKx/wOH8HQRt3EZEp/z3UHDAfsduU0J4=;
+ b=zp50bNUnp7RJ4bQ7kA9fsO4hA2Bx3VKZ8jwjyWHBKNInS+TOp67HFuExlYTIbSrahGPyvz
+ J7I+3pGOKX4+/V67u45Y7BqgzKTRFT7Ga3jI/Fl7bp67GTqFfCpPAd9Khw8KDZk87RIWmY
+ pKnm+1IrA3nAndxrOWk/Q1d8ebPux+I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746779023;
+ s=susede2_ed25519; t=1746779619;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
- b=amKWhqi0PiW6I7lhdAT1OWb/Zj5EzNiw6bhKIh2uHRRgz1gG+6UvQjOY+sSIce5uxFolaE
- fLqNBSRa03bRgKDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KPqmjro4;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=amKWhqi0
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qb3gDPazDUuKx/wOH8HQRt3EZEp/z3UHDAfsduU0J4=;
+ b=DA/hM4qRiz8veNHynrE/+XibiuWU+P1wxT47z4SqFaeHsIjwTQp9JuEUI073sjCtY68HK1
+ c6Z9IFEuMUM4iZBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746779023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
- b=KPqmjro41mh2lKUukmMcIa99kDstg4EgPSs7WIiltz224xYiKJflJDPF1hajv8ZCaEXB+l
- oHo1vKEFHWR1TIQAk6T5/0RcsTw2pvtmKQFyvXjxU7MGwT+st84B5wS/rBYoOP9H4l8Ajd
- 21lfEIfBWXBT1vjvmU95dFSGygPX6Fg=
+ t=1746779618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qb3gDPazDUuKx/wOH8HQRt3EZEp/z3UHDAfsduU0J4=;
+ b=hyAzRCGMrwG1NvR+Zr4YTkfOwQ5ytPWjB0lUXTkXA5XYUKqOlaqKUWWZUf+jSfo+dFHPSS
+ ijr6XKM77+EQNfda56zXCZInrUEeEfK7viaWNoEkqRtpvoppomnPL6wXIVp4GXVwRPysYz
+ Jgef+KFrc7kXu9ivHvCS/Nk9jZ2MrsE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746779023;
+ s=susede2_ed25519; t=1746779618;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
- b=amKWhqi0PiW6I7lhdAT1OWb/Zj5EzNiw6bhKIh2uHRRgz1gG+6UvQjOY+sSIce5uxFolaE
- fLqNBSRa03bRgKDQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qb3gDPazDUuKx/wOH8HQRt3EZEp/z3UHDAfsduU0J4=;
+ b=g4XYbgxrPaB515k3J+UjdaEDaATd+ISmcd28v85UNq+ZopgGDDsXVth/Vpm0e93UWbJE+9
+ BKqEH3+EVuXajvAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D7E513931;
- Fri,  9 May 2025 08:23:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C68BB13931;
+ Fri,  9 May 2025 08:33:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XjfzDY+7HWh9WAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 09 May 2025 08:23:43 +0000
-Date: Fri, 9 May 2025 10:24:25 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PXsYLeK9HWgXXAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 09 May 2025 08:33:38 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Mark Wielaard <mark@klomp.org>
-Message-ID: <aB27uWaPgL1q-akl@yuki.lan>
-References: <20250429052247.GA144682@pevik> <aBSVO8uOE86UGIcp@yuki.lan>
- <4428939d-dc71-488b-9728-030accaca3e8@suse.cz>
- <aBh9Z4QA2YcdOFq1@rei.lan> <20250506080520.GA64990@pevik>
- <20250507151148.yhrnckco7zkrpfzw@lida.tpb.lab.eng.brq.redhat.com>
- <aBt8PJNmiJNuSEB5@yuki.lan>
- <adfcd1e3f129c97c2132a138e70599642566886a.camel@klomp.org>
+To: ltp@lists.linux.it
+Date: Fri,  9 May 2025 10:34:20 +0200
+Message-ID: <20250509083420.26936-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <adfcd1e3f129c97c2132a138e70599642566886a.camel@klomp.org>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 511F52115A
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; URIBL_BLOCKED(0.00)[yuki.lan:mid];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP in valgrind :)
+Subject: [LTP] [PATCH] lib: tst_test: Add reproducible output.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,58 +97,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Martin Cermak <mcermak@redhat.com>, ltp@lists.linux.it
+Cc: valgrind-developers@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> That looks pretty interesting, I just tried it and it turns:
-> 
-> $ ./testcases/kernel/syscalls/dup/dup01 
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_dupbmNNGn as tmpdir (tmpfs filesystem)
-> tst_test.c:1907: TINFO: LTP version: VALGRIND_3_25_0-10-g0ce068434ec3
-> tst_test.c:1911: TINFO: Tested kernel: 6.13.11-200.fc41.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Apr 10 19:02:09 UTC 2025 x86_64
-> tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.13.11-200.fc41.x86_64/build/.config'
-> tst_test.c:1729: TINFO: Overall timeout per run is 0h 00m 30s
-> dup01.c:24: TPASS: dup(fd) returned fd 4
-> dup01.c:27: TPASS: buf1.st_ino == buf2.st_ino (6921515)
-> 
-> Summary:
-> passed   2
-> failed   0
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> into:
-> 
-> $ LTP_REPRODUCIBLE_OUTPUT=1 ./testcases/kernel/syscalls/dup/dup01 
-> tst_tmpdir.c:316: 
-> tst_test.c:1907: 
-> tst_test.c:1911: 
-> tst_kconfig.c:88: 
-> tst_test.c:1729: 
-> dup01.c:24: 
-> dup01.c:27: 
-> 
-> Summary:
-> passed   2
-> failed   0
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> So that still shows the "code flow" and the test results Summary (all
-> output goes to stderr). I think this would indeed be useful to compare
-> if a testcase runs the same "native" and under valgrind.
+This commit adds an environment variable LTP_REPRODUCIBLE_OUTPUT that
+when set skips printing parts of the test messages that may contain data
+that differ on subsequent runs (e.g. pids).
 
-I will send a proper LTP patch.
+With this you can run a test twice under a different conditions and
+check if the test codeflow was identical by simply doing diff of the
+outputs from the two runs.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+CC: valgrind-developers@lists.sourceforge.net
+---
+ lib/tst_test.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2bb4519dd..3f94a1607 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -64,6 +64,7 @@ static int mntpoint_mounted;
+ static int ovl_mounted;
+ static struct timespec tst_start_time; /* valid only for test pid */
+ static int tdebug;
++static int reproducible_output;
+ 
+ struct results {
+ 	int passed;
+@@ -304,6 +305,9 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 	str += ret;
+ 	size -= ret;
+ 
++	if (reproducible_output)
++		goto print;
++
+ 	if (tst_color_enabled(STDERR_FILENO))
+ 		ret = snprintf(str, size, "%s%s: %s", tst_ttype2color(ttype),
+ 			       res, ANSI_COLOR_RESET);
+@@ -329,6 +333,7 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 				"Next message is too long and truncated:");
+ 	}
+ 
++print:
+ 	snprintf(str, size, "\n");
+ 
+ 	/* we might be called from signal handler, so use write() */
+@@ -1312,6 +1317,8 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+ 		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+ 
++	reproducible_output = !!getenv("LTP_REPRODUCIBLE_OUTPUT");
++
+ 	assert_test_fn();
+ 
+ 	TCID = tid = get_tid(argv);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.49.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
