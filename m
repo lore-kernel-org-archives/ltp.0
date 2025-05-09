@@ -4,44 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 980FFC3ABBC
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 07:52:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDB40C3ABC3
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 08:24:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 381AD3CC16E
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 09:52:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 4C06D3CC1C5
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 10:24:01 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A13463CC0B7
- for <ltp@lists.linux.it>; Thu,  8 May 2025 18:40:38 +0200 (CEST)
-Received: from gnu.wildebeest.org (gnu.wildebeest.org [45.83.234.184])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8AA173CC155
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 10:23:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 79972600AFA
- for <ltp@lists.linux.it>; Thu,  8 May 2025 18:40:35 +0200 (CEST)
-Received: from r6.localdomain (82-217-174-174.cable.dynamic.v4.ziggo.nl
- [82.217.174.174])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D219260070D
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 10:23:44 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by gnu.wildebeest.org (Postfix) with ESMTPSA id 5215E303C2A0;
- Thu,  8 May 2025 18:40:35 +0200 (CEST)
-Received: by r6.localdomain (Postfix, from userid 1000)
- id F3CF7340687; Thu, 08 May 2025 18:40:34 +0200 (CEST)
-Message-ID: <3c55aaf36ed4312cdfd603808db295ac09617412.camel@klomp.org>
-From: Mark Wielaard <mark@klomp.org>
-To: Petr Vorel <pvorel@suse.cz>, Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 08 May 2025 18:40:34 +0200
-In-Reply-To: <20250506080520.GA64990@pevik>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 511F52115A;
+ Fri,  9 May 2025 08:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1746779023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
+ b=KPqmjro41mh2lKUukmMcIa99kDstg4EgPSs7WIiltz224xYiKJflJDPF1hajv8ZCaEXB+l
+ oHo1vKEFHWR1TIQAk6T5/0RcsTw2pvtmKQFyvXjxU7MGwT+st84B5wS/rBYoOP9H4l8Ajd
+ 21lfEIfBWXBT1vjvmU95dFSGygPX6Fg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1746779023;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
+ b=amKWhqi0PiW6I7lhdAT1OWb/Zj5EzNiw6bhKIh2uHRRgz1gG+6UvQjOY+sSIce5uxFolaE
+ fLqNBSRa03bRgKDQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KPqmjro4;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=amKWhqi0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1746779023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
+ b=KPqmjro41mh2lKUukmMcIa99kDstg4EgPSs7WIiltz224xYiKJflJDPF1hajv8ZCaEXB+l
+ oHo1vKEFHWR1TIQAk6T5/0RcsTw2pvtmKQFyvXjxU7MGwT+st84B5wS/rBYoOP9H4l8Ajd
+ 21lfEIfBWXBT1vjvmU95dFSGygPX6Fg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1746779023;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=B3RzVtxQnnilXY22E9Ktae77gAB+PImeg8CofiwQC9M=;
+ b=amKWhqi0PiW6I7lhdAT1OWb/Zj5EzNiw6bhKIh2uHRRgz1gG+6UvQjOY+sSIce5uxFolaE
+ fLqNBSRa03bRgKDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D7E513931;
+ Fri,  9 May 2025 08:23:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id XjfzDY+7HWh9WAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 09 May 2025 08:23:43 +0000
+Date: Fri, 9 May 2025 10:24:25 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Mark Wielaard <mark@klomp.org>
+Message-ID: <aB27uWaPgL1q-akl@yuki.lan>
 References: <20250429052247.GA144682@pevik> <aBSVO8uOE86UGIcp@yuki.lan>
- <4428939d-dc71-488b-9728-030accaca3e8@suse.cz> <aBh9Z4QA2YcdOFq1@rei.lan>
- <20250506080520.GA64990@pevik>
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+ <4428939d-dc71-488b-9728-030accaca3e8@suse.cz>
+ <aBh9Z4QA2YcdOFq1@rei.lan> <20250506080520.GA64990@pevik>
+ <20250507151148.yhrnckco7zkrpfzw@lida.tpb.lab.eng.brq.redhat.com>
+ <aBt8PJNmiJNuSEB5@yuki.lan>
+ <adfcd1e3f129c97c2132a138e70599642566886a.camel@klomp.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <adfcd1e3f129c97c2132a138e70599642566886a.camel@klomp.org>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 511F52115A
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; URIBL_BLOCKED(0.00)[yuki.lan:mid];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
+ imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 09 May 2025 09:52:10 +0200
 Subject: Re: [LTP] LTP in valgrind :)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -54,87 +120,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, Martin Cermak <mcermak@redhat.com>
+Cc: Martin Cermak <mcermak@redhat.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, Hi ltp hackers,
-
-On Tue, 2025-05-06 at 10:05 +0200, Petr Vorel wrote:
-> > > > It also opens some interesting questions, i.e. how do we make comparing
-> > > > results from two different tests easier. Currently they grep the test
-> > > > results for a summary, but maybe we can do better.
+Hi!
+> That looks pretty interesting, I just tried it and it turns:
 > 
-> > > One option is to extract all TPASS/TFAIL/TWARN/TBROK/TCONF messages, 
-> > > discard any message contents past the file:line header and then compare 
-> > > whether the sanitized output is identical. That'll take care of random 
-> > > values in the output while ensuring that the test went through the same 
-> > > code paths as before. We could provide a sanitizer script for that.
+> $ ./testcases/kernel/syscalls/dup/dup01 
+> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_dupbmNNGn as tmpdir (tmpfs filesystem)
+> tst_test.c:1907: TINFO: LTP version: VALGRIND_3_25_0-10-g0ce068434ec3
+> tst_test.c:1911: TINFO: Tested kernel: 6.13.11-200.fc41.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Apr 10 19:02:09 UTC 2025 x86_64
+> tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.13.11-200.fc41.x86_64/build/.config'
+> tst_test.c:1729: TINFO: Overall timeout per run is 0h 00m 30s
+> dup01.c:24: TPASS: dup(fd) returned fd 4
+> dup01.c:27: TPASS: buf1.st_ino == buf2.st_ino (6921515)
 > 
-> > Maybe we can even add an option to the test library to supress the
-> > messages in output, that would be fairly simple.
+> Summary:
+> passed   2
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
 > 
-> @Martin @Mark: feel free to comment what we can do for you :).
-> Whole thread:
-> https://lore.kernel.org/ltp/20250505195003.GB137650@pevik/T/#t
+> into:
+> 
+> $ LTP_REPRODUCIBLE_OUTPUT=1 ./testcases/kernel/syscalls/dup/dup01 
+> tst_tmpdir.c:316: 
+> tst_test.c:1907: 
+> tst_test.c:1911: 
+> tst_kconfig.c:88: 
+> tst_test.c:1729: 
+> dup01.c:24: 
+> dup01.c:27: 
+> 
+> Summary:
+> passed   2
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> So that still shows the "code flow" and the test results Summary (all
+> output goes to stderr). I think this would indeed be useful to compare
+> if a testcase runs the same "native" and under valgrind.
 
-Thanks. Something small, but if you could CC
-valgrind-developers@lists.sourceforge.net on new ltp releases that
-would be great.
+I will send a proper LTP patch.
 
-I saw a question at the top of that thread about "They consider some
-test long running". In general that is not about the actual ltp tests
-(we currently only run the testcases/kernel/syscalls ones), but because
-valgrind:
-
-a) is basically a giant Just In Time compiler, which instruments all
-code, and might slow down your code 20x (yeah, we know).
-
-b) serializes all threads, so only one thread runs at a time, all
-parallel code is executed as if it was serial code.
-
-c) memcheck keeps track of all memory to see if values are "valid"
-(have a known value written to them). This cost about 25% more memory
-than the program itself uses (and might actually double the amount).
-
-So for now we have the following exclude file:
-https://sourceware.org/cgit/valgrind/tree/auxprogs/ltp-excludes.txt
-
-bind06
-epoll-ltp
-fork14
-futex_cmp_requeue01
-futex_cmp_requeue02
-inotify09
-msgstress01
-pidfd_send_signal01
-pidfd_send_signal02
-pidfd_send_signal03
-sendmsg03
-setsockopt06
-setsockopt07
-signal05
-signal06
-timerfd_settime02
-
-We haven't yet analyzed them to see what exactly makes them so slow
-(under valgrind). It was more important to get the ltpchecks run on all
-our CI systems:
-https://builder.sourceware.org/buildbot/#/builders?tags=valgrind
-Some of those systems only have 8GB of memory or are fairly slow
-(specifically the arm32 and riscv builders).
-
-The pidfd_send_signal tests are excluded because they seemed to kill
-the container they were running inside. Again, this could be a valgrind
-bug. valgrind doesn't implement a proper syscall wrapper for
-pidfd_send_signal so it might be possible we are just killing a random
-process...
-
-Cheers,
-
-Mark
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
