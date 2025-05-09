@@ -4,83 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3E18C3ABBC
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 09:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7586C3ABC3
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 09:40:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 677CE3CC17A
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 11:36:33 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 53DC73CC14E
+	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 11:40:46 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2010A3C01E9
- for <ltp@lists.linux.it>; Fri,  9 May 2025 11:36:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 1F3833CC10B
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 11:40:28 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0BDD51A00FED
- for <ltp@lists.linux.it>; Fri,  9 May 2025 11:36:15 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0D12C200C20
+ for <ltp@lists.linux.it>; Fri,  9 May 2025 11:40:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5A82321157;
- Fri,  9 May 2025 09:36:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746783374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=P8LsIjCvo1a1Cl/nUhUnyaAZz/Gu/+lYWd76U6zEvNU=;
- b=bprdKHiDzGqIL4FoWThv6sXZE2WJ1z+5roPKKjhDNvyo92YAJeccp1xF8ykDxSI4kz9+1o
- n89bDRQoctd/4Jcm+7bq6v2ljmcDot1PwX4JbgfyR0ngXVYDf4n0ACX0ReLIuranTBHsFZ
- b9qCGV8lB/rgb6Ou5XhGGdNeff50odU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746783374;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=P8LsIjCvo1a1Cl/nUhUnyaAZz/Gu/+lYWd76U6zEvNU=;
- b=3wnzdDLAnPbtnuxH8jbu7ZZINKX3gGgJGqYJbXaeF4xdTCEUxS4XcTvnIy/MfM+VQ8TbqS
- ZGtD/KalPkNnAIBQ==
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3BCC41F390;
+ Fri,  9 May 2025 09:40:27 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746783374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=P8LsIjCvo1a1Cl/nUhUnyaAZz/Gu/+lYWd76U6zEvNU=;
- b=bprdKHiDzGqIL4FoWThv6sXZE2WJ1z+5roPKKjhDNvyo92YAJeccp1xF8ykDxSI4kz9+1o
- n89bDRQoctd/4Jcm+7bq6v2ljmcDot1PwX4JbgfyR0ngXVYDf4n0ACX0ReLIuranTBHsFZ
- b9qCGV8lB/rgb6Ou5XhGGdNeff50odU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746783374;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=P8LsIjCvo1a1Cl/nUhUnyaAZz/Gu/+lYWd76U6zEvNU=;
- b=3wnzdDLAnPbtnuxH8jbu7ZZINKX3gGgJGqYJbXaeF4xdTCEUxS4XcTvnIy/MfM+VQ8TbqS
- ZGtD/KalPkNnAIBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 48E111399F;
- Fri,  9 May 2025 09:36:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30FEB1399F;
+ Fri,  9 May 2025 09:40:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iBIxEY7MHWhecAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Fri, 09 May 2025 09:36:14 +0000
-Message-ID: <a76a07b8-d964-4bb8-ba75-247c1f6f9388@suse.cz>
-Date: Fri, 9 May 2025 11:36:10 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PgOMC4vNHWihcQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Fri, 09 May 2025 09:40:27 +0000
+Message-ID: <f3cbed38-82b1-45e3-b037-a943f9956ae8@suse.cz>
+Date: Fri, 9 May 2025 11:40:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <20250509092813.12860-1-chrubis@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20250505105310.15072-1-mdoucha@suse.cz>
+ <aBts4kDaqLKLJUuw@yuki.lan> <3ff8ee4c-881a-435d-a416-8bd32c35a17e@suse.cz>
+ <aB3JFz8PK2okhULz@yuki.lan>
 Content-Language: en-US
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
@@ -126,22 +93,20 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  sOf6M5s7RKNzreVXkrlArE+x29swkXZbxFoXuahA2iykPyyCAgPz0ikRI+374jXVAtbZAAut
  HD1KfuCahogFT4upYpOUl26KquywYOGciSan4jHuqXIVCQzjYd/zOzsL7hTJiteae/oOg4m5
  i8BUUzanmo3FPwFBcjEn4nDvkw/YEo5gtQZmrxOHQAdSHdyqtFgRxu4+w3JFmnQvkResUgm3 ag==
-In-Reply-To: <20250509092813.12860-1-chrubis@suse.cz>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MID_RHS_MATCH_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
- suse.cz:mid]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+In-Reply-To: <aB3JFz8PK2okhULz@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 3BCC41F390
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib: tst_test: Add reproducible output.
+Subject: Re: [LTP] [PATCH] memcontrol03: Account for process size in cgroup
+ allocation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -153,71 +118,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: valgrind-developers@lists.sourceforge.net
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+On 09. 05. 25 11:21, Cyril Hrubis wrote:
+> Hi!
+>>> Here we depend on the fact that process memory has been properly
+>>> accounted for when it starts running its code. Are you sure that we can
+>>> rely on this or does this just happen to work?
+>>
+>> Actually, my commit message is slightly misleading because the existing
+>> process memory does not get migrated to the new cgroup. But the cgroup
+>> itself may already have non-zero memory usage even when empty, likely
+>> for internal kernel structures. Any new allocations of kernel structures
+>> should also be finished when the process migration completes. So unless
+>> the migration behavior changes in the near future, we can rely on this.
+> 
+> I suppose that the cgroup is charged for the memory it needs to track
+> the resources, that makes sense. I wonder if we can read that once at
+> the start of the test when we create the cgroups and use that value
+> later on.
 
-On 09. 05. 25 11:28, Cyril Hrubis wrote:
-> This commit adds an environment variable LTP_REPRODUCIBLE_OUTPUT that
-> when set skips printing parts of the test messages that may contain data
-> that differ on subsequent runs (e.g. pids).
-> 
-> With this you can run a test twice under a different conditions and
-> check if the test codeflow was identical by simply doing diff of the
-> outputs from the two runs.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> Suggested-by: Martin Doucha <mdoucha@suse.cz>
-> CC: valgrind-developers@lists.sourceforge.net
-> ---
->   lib/tst_test.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 2bb4519dd..f14627544 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -64,6 +64,7 @@ static int mntpoint_mounted;
->   static int ovl_mounted;
->   static struct timespec tst_start_time; /* valid only for test pid */
->   static int tdebug;
-> +static int reproducible_output;
->   
->   struct results {
->   	int passed;
-> @@ -312,6 +313,9 @@ static void print_result(const char *file, const int lineno, int ttype,
->   	str += ret;
->   	size -= ret;
->   
-> +	if (reproducible_output)
-> +		goto print;
-> +
->   	ssize = size - 2;
->   	ret = vsnprintf(str, size, fmt, va);
->   	str += MIN(ret, ssize);
-> @@ -329,6 +333,7 @@ static void print_result(const char *file, const int lineno, int ttype,
->   				"Next message is too long and truncated:");
->   	}
->   
-> +print:
->   	snprintf(str, size, "\n");
->   
->   	/* we might be called from signal handler, so use write() */
-> @@ -1312,6 +1317,8 @@ static void do_setup(int argc, char *argv[])
->   	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
->   		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
->   
-> +	reproducible_output = !!getenv("LTP_REPRODUCIBLE_OUTPUT");
-> +
->   	assert_test_fn();
->   
->   	TCID = tid = get_tid(argv);
-
+Unfortunately, we can't. I've tested this and memory.current can change 
+a lot during the first process migration.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
