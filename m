@@ -4,149 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22D50C3ABC3
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 14:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F819C3ABC3
+	for <ltp@archiver.kernel.org>; Sat, 10 May 2025 08:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1746867250; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Er0ZEt5Es2Zk2uOVwMvV7DRXqeggZ9aLJpR3s0ffnuE=;
+ b=f+IDZOf3OlH1k94rmGaJX6cvJY7Auy5WucAEP1QMSKGjcd3mmUXgC7+oGd3yCQVmhb8JO
+ 6IGUd6lO42HJKN1yo93xa0Xq37v72HuRIpW9CTVNOijUWoSpmgCndpwn45bHSOnjeHlIgG/
+ YT9ZiCxM9h0PR7BNViU7ARKK8QfsDZA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77AD03CC1FF
-	for <ltp@archiver.kernel.org>; Fri,  9 May 2025 16:42:16 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3D0363CC22D
+	for <ltp@archiver.kernel.org>; Sat, 10 May 2025 10:54:10 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A15C23CC1FF
- for <ltp@lists.linux.it>; Fri,  9 May 2025 16:42:00 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 252D43CC208
+ for <ltp@lists.linux.it>; Sat, 10 May 2025 10:53:48 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E96A20014D
- for <ltp@lists.linux.it>; Fri,  9 May 2025 16:41:59 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F32731F38A;
- Fri,  9 May 2025 14:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746801718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=01FZUiKkHzt49IKrxUZbkVo88loQn57TH+8uE9BhEqM=;
- b=FlgojeuabXxu1zKubhVMdNdpgXPnk0IFQ8/DBRN/uEsqLLwzBGYtSA9jewTsghbbeaChL3
- ih0OXhsy1+5PhOO2Y6QNCwhHgai6xGB7WTkXx+i+c8uROsSKbNU6qvThI7JBFj3sciWKvc
- kIpSUCrK/H8lO51SP1ofbk3KmchZ0Fo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746801718;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=01FZUiKkHzt49IKrxUZbkVo88loQn57TH+8uE9BhEqM=;
- b=n21jbZK2tLhuQ4XoPjgK3/8WZRXBEOy8vrm9TXoCxjDHtf70Ik41vBZw4i/DPKmfrq9EB7
- tTaQxcMUqo8s6nAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1746801718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=01FZUiKkHzt49IKrxUZbkVo88loQn57TH+8uE9BhEqM=;
- b=FlgojeuabXxu1zKubhVMdNdpgXPnk0IFQ8/DBRN/uEsqLLwzBGYtSA9jewTsghbbeaChL3
- ih0OXhsy1+5PhOO2Y6QNCwhHgai6xGB7WTkXx+i+c8uROsSKbNU6qvThI7JBFj3sciWKvc
- kIpSUCrK/H8lO51SP1ofbk3KmchZ0Fo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1746801718;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=01FZUiKkHzt49IKrxUZbkVo88loQn57TH+8uE9BhEqM=;
- b=n21jbZK2tLhuQ4XoPjgK3/8WZRXBEOy8vrm9TXoCxjDHtf70Ik41vBZw4i/DPKmfrq9EB7
- tTaQxcMUqo8s6nAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1D1F13931;
- Fri,  9 May 2025 14:41:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yFBSNjUUHmjHUAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Fri, 09 May 2025 14:41:57 +0000
-Message-ID: <144b6bac-edba-470a-bf87-abf492d85ef5@suse.cz>
-Date: Fri, 9 May 2025 16:41:57 +0200
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 51D1D600721
+ for <ltp@lists.linux.it>; Sat, 10 May 2025 10:53:47 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-3a20257c815so96773f8f.3
+ for <ltp@lists.linux.it>; Sat, 10 May 2025 01:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1746867226; x=1747472026; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=uOds1PPV6uR+4OMv93+lxYN6lkLYBAVonAN+6o2Paxc=;
+ b=Q7WT6+QNkwgntIH1+wKlvRQNzQe0oeyl0eKosVlgRP44xvyYM04Jyf+RoaGvutMO3z
+ AKO88IwnlxEy0gtbs4A2HpdTmHt8Jwa7D21o0mNJ7ygvicqzjv5uSjqu2/a8rAAlqbyr
+ TdhUF/zS3dCOss+cz4GwRwIm2Cf8glHbQyNYMQTBGe7vDYW3JhWSEyaqdPRxakAiIOXj
+ J+bHSqzzVSSj49cb5n0T+ShQ6plANzIGwYlHnGTHINPNSCL9yX7JzsSTBBuP/kAnIw/f
+ ujYdBS92/lb3Ik3i6Qg4VF+3MuqqhXdus8oDJ0OBE2YVkfMK/NA9X2/AmUiaxXQhWzIo
+ 8g9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1746867226; x=1747472026;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=uOds1PPV6uR+4OMv93+lxYN6lkLYBAVonAN+6o2Paxc=;
+ b=TRH9E+Atxa0I8iK7mYF7vPGT5w7rWqWnGkNgRm5+nKpsaBAobsfxlqC/MrIWRBDg/q
+ nko4UoWf6RNfxgIPikL1hPwAzI8fOjQF0+SmrAr/HowOLPpMmnj3hVzazcAKolr35CRU
+ 020sD2qeKwwIgm32aPNkm8gbIxdyuBXSbYMIHmY4hKlf83oVGW6h2j9sKNs+37zaVtD+
+ pgzo3mF8hYumVMfxT3Q8N4zDL2nYyG/VsfXhO4HS7H71I3E2gbt2MwSL0/5X3iYUQQNo
+ PrATzfwEltDmRum+NzM0gBAL7t6PmWmzJ+dCTzMI0uzGoisC/iFOeV/IA+V3WyDT5+ik
+ uqeg==
+X-Gm-Message-State: AOJu0YyFuWdNmVTrNf70o/wVK4aoyHZnMsNz7axzvNp9AGiUdEHjRJ9w
+ 7AtQGgR0qIEux7pDsRmB8y4fPcMr6oVqajgbO/NQTXPai13OFaDQ8zhydcOd/A6tMzsSGCf1YUR
+ k3g==
+X-Gm-Gg: ASbGncuGWbMiG+tE7Zt3wfvHRkvut742aZmOV2Sl/yqm/WcA9zorilv9zN3og8BwdCz
+ xDP5ssFoiP035rxVaeSElTErM2Cbs4M2FEdrIn12QcpD0HlVOxx/CEJSxcVJ8tWnRuYpOn44b5t
+ QNzpPxNhvw7MyM3RJwlTLAogP90/v9ZIjiIN6Rcg2bcEVcr3KPq7bMUn3hOFW6eg2EoDOdFaH1c
+ 352vxLcpwz1OMj3ZhGGeJ+x23yzkKvhRZvHrKc1e3jNrT7qEvj1kNi+vq6HC5vFifkpy756wPqZ
+ +4j4zykq4iUo2FGgJ8MgzBhc+NAwxJB4mAbgc2pnCYga4kO0fys=
+X-Google-Smtp-Source: AGHT+IHgemniMFUW7DPDf/K0wsbXx/ZzcybfQzNarO4mDxlh7XovgQLnZL+Lgys0fUv9lxMtDSxrnQ==
+X-Received: by 2002:a05:6000:b07:b0:3a1:f7ca:a9cb with SMTP id
+ ffacd0b85a97d-3a1f7caaa92mr3528770f8f.59.1746867226387; 
+ Sat, 10 May 2025 01:53:46 -0700 (PDT)
+Received: from localhost ([202.127.77.110])
+ by smtp.gmail.com with UTF8SMTPSA id
+ d9443c01a7336-22fc8271c52sm29595245ad.138.2025.05.10.01.53.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 10 May 2025 01:53:45 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Sat, 10 May 2025 16:53:24 -0400
+Message-ID: <20250510205326.1353857-1-wegao@suse.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Cyril Hrubis <chrubis@suse.cz>
-References: <20250505105310.15072-1-mdoucha@suse.cz>
- <aBts4kDaqLKLJUuw@yuki.lan> <3ff8ee4c-881a-435d-a416-8bd32c35a17e@suse.cz>
- <aB3JFz8PK2okhULz@yuki.lan> <f3cbed38-82b1-45e3-b037-a943f9956ae8@suse.cz>
- <aB3Si02rxzhhZYFv@yuki.lan>
- <qbca5sxzfw53o6nku5ulu2dl2xygxqghgsuerjjjfoea62bacs@a5qm6cl7hhnu>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <qbca5sxzfw53o6nku5ulu2dl2xygxqghgsuerjjjfoea62bacs@a5qm6cl7hhnu>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MID_RHS_MATCH_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] memcontrol03: Account for process size in cgroup
- allocation
+Subject: [LTP] [PATCH v1] Fix: dirtyc0w_shmem child process exit with error
+ due to uninitialized lib_pid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,30 +95,185 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMDkuIDA1LiAyNSAxNjoxMSwgTWljaGFsIEtvdXRuw70gd3JvdGU6Cj4gT24gRnJpLCBNYXkg
-MDksIDIwMjUgYXQgMTI6MDE6NDdQTSArMDIwMCwgQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2Uu
-Y3o+IHdyb3RlOgo+Pj4gVW5mb3J0dW5hdGVseSwgd2UgY2FuJ3QuIEkndmUgdGVzdGVkIHRoaXMg
-YW5kIG1lbW9yeS5jdXJyZW50IGNhbiBjaGFuZ2UKPj4+IGEgbG90IGR1cmluZyB0aGUgZmlyc3Qg
-cHJvY2VzcyBtaWdyYXRpb24uCj4+Cj4+IFRoYXQgZG9lcyBzb3VuZCBzdHJhbmdlLiBATWljaGFs
-IGFueSBpZGVhIHdoYXQgaGFwcGVucyBoZXJlPwo+IAo+IFtQcm9jZXNzIG1pZ3JhdGVzIGl0c2Vs
-ZiAoZWNobyAwID4kdGFyZ2V0X2NnL2Nncm91cC5wcm9jcykgb3JdIGl0J3MKPiBvdGhlcndpc2Ug
-YWN0aXZlIGR1cmluZyB0aGUgbWlncmF0aW9uPwo+IAo+IChBbHNvLCB0aGUgYXBwYXJlbnQgaW5j
-cmVhc2Ugb2YgbWVtb3J5LmN1cnJlbnQgbWF5IGJlIGFtcGxpZmllZCBiZWNhdXNlCj4gb2YgTUVN
-Q0dfQ0hBUkdFX0JBVENIIGV2ZW4gd2l0aCBpbml0aWFsbHkgc21hbGwgYWxsb2NhdGlvbi4pCgpU
-aGUgcHJvY2VzcyBtaWdyYXRlcyBpdHNlbGY6ClNBRkVfQ0dfUFJJTlRGKGNnLCAiY2dyb3VwLnBy
-b2NzIiwgIiVkIiwgZ2V0cGlkKCkpOwoKV2UncmUgZGVhbGluZyB3aXRoIGFuIGlzc3VlIHdoZXJl
-IHRoZSB0ZXN0IGhhcyAyTUIgc2FmZXR5IG1hcmdpbiBmcm9tIAp0cmlnZ2VyaW5nIE9PTSBidXQg
-aW1tZWRpYXRlbHkgYWZ0ZXIgdGhlIHByb2Nlc3MgbWlncmF0ZXMgaXRzZWxmIGludG8gCnRoZSBj
-Z3JvdXAgb24gUFBDNjRMRSwgbWVtb3J5LmN1cnJlbnQgd2lsbCBiZSB+NE1CIGFuZCB0aGUgcHJv
-Y2VzcyB3aWxsIApyYW5kb21seSB0cmlnZ2VyIE9PTSBhbnl3YXkuIFNvIHdlJ3JlIGluY3JlYXNp
-bmcgdGhlIHNhZmV0eSBtYXJnaW4gYnkgCndoYXRldmVyIG1lbW9yeS5jdXJyZW50IHNheXMgaW1t
-ZWRpYXRlbHkgYWZ0ZXIgdGhlIG1pZ3JhdGlvbi4KCi0tIApNYXJ0aW4gRG91Y2hhICAgbWRvdWNo
-YUBzdXNlLmN6ClNXIFF1YWxpdHkgRW5naW5lZXIKU1VTRSBMSU5VWCwgcy5yLm8uCkNPUlNPIElJ
-YQpLcml6aWtvdmEgMTQ4LzM0CjE4NiAwMCBQcmFndWUgOApDemVjaCBSZXB1YmxpYwoKLS0gCk1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+The dirtyc0w_shmem test spawns a child process using execlp. This child process then calls tst_brk(), which exits early
+with a non-zero status because execlp does not inherit the parent's lib_pid variable. Consequently, the parent process
+incorrectly reports an "Invalid child exit value".
+
+This commit addresses this by ensuring the child process has access to the necessary lib_pid and main_pid by passing
+them through a shared results structure. This prevents the premature exit in the child and the subsequent error report
+in the parent.
+
+Related commit:
+commit a1f82704c28d9e027ca899f5ca2841e7fe49de72
+lib/tst_test.c: Fix tst_brk() handling
+
+Detail failure log:
+tst_tmpdir.c:317: TINFO: Using /tmp/LTP_dirSOGVBC as tmpdir (btrfs filesystem)
+tst_test.c:1938: TINFO: LTP version: 20250507.4a0e3a8fa
+tst_test.c:1942: TINFO: Tested kernel: 6.4.0-150700.51-default #1 SMP Wed Apr 30 21:35:43 UTC 2025 (6930611) s390x
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:678: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1760: TINFO: Overall timeout per run is 0h 04m 00s
+dirtyc0w_shmem.c:54: TINFO: Mounting tmp_dirtyc0w_shmem to /tmp/LTP_dirSOGVBC/tmp_dirtyc0w_shmem fstyp=tmpfs flags=0
+dirtyc0w_shmem_child.c:160: TCONF: System does not have userfaultfd minor fault support for shmem <<<<<<<<<< 1
+tst_test.c:481: TBROK: Invalid child (8163) exit value 32 <<<<<<<< 2
+dirtyc0w_shmem.c:102: TINFO: Umounting /tmp/LTP_dirSOGVBC/tmp_dirtyc0w_shmem
+
+tmp_dirtyc0w_shmem.c call execlp to create new process run dirtyc0w_shmem_child bin.
+
+SAFE_EXECLP("dirtyc0w_shmem_child", "dirtyc0w_shmem_child", NULL)
+
+Within dirtyc0w_shmem_child.c trigger
+
+tst_brk(TCONF, "System does not have userfaultfd minor fault support for shmem")
+
+Since execlp does not inherit the parent process's variables lib_pid, so it will return TCONF(32) directly.
+
+void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+               va_list va)
+{
+...
+        if (!lib_pid)
+                exit(TTYPE_RESULT(ttype));   <<<<<
+...
+}
+
+So finally captured by check_child_status report an error.
+
+static void check_child_status(pid_t pid, int status)
+{
+...
+        if (WEXITSTATUS(status))
+                tst_brk(TBROK, "Invalid child (%i) exit value %i", pid, WEXITSTATUS(status));  <<<<
+}
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ lib/tst_test.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2bb4519dd..b666715b9 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -59,7 +59,7 @@ static const char *tid;
+ static int iterations = 1;
+ static float duration = -1;
+ static float timeout_mul = -1;
+-static pid_t main_pid, lib_pid;
++static pid_t lib_pid;
+ static int mntpoint_mounted;
+ static int ovl_mounted;
+ static struct timespec tst_start_time; /* valid only for test pid */
+@@ -78,6 +78,8 @@ struct results {
+ 	int abort_flag;
+ 	unsigned int runtime;
+ 	unsigned int overall_time;
++	pid_t lib_pid;
++	pid_t main_pid;
+ };
+ 
+ static struct results *results;
+@@ -141,6 +143,7 @@ static void setup_ipc(void)
+ 		tst_futexes = (char *)results + sizeof(struct results);
+ 		tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
+ 	}
++	results->lib_pid = lib_pid;
+ }
+ 
+ static void cleanup_ipc(void)
+@@ -391,7 +394,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 	 * If tst_brk() is called from some of the C helpers even before the
+ 	 * library was initialized, just exit.
+ 	 */
+-	if (!lib_pid)
++	if (!results->lib_pid)
+ 		exit(TTYPE_RESULT(ttype));
+ 
+ 	update_results(TTYPE_RESULT(ttype));
+@@ -402,13 +405,13 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+ 	 * cleanup running in the child.
+ 	 */
+-	if (tst_getpid() == main_pid)
++	if (tst_getpid() == results->main_pid)
+ 		do_test_cleanup();
+ 
+ 	/*
+ 	 * The test library process reports result statistics and exits.
+ 	 */
+-	if (getpid() == lib_pid)
++	if (getpid() == results->lib_pid)
+ 		do_exit(TTYPE_RESULT(ttype));
+ 
+ 	/*
+@@ -426,9 +429,9 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 		 * the main test process. That in turn triggers the code that
+ 		 * kills leftover children once the main test process did exit.
+ 		 */
+-		if (main_pid && tst_getpid() != main_pid) {
++		if (results->main_pid && tst_getpid() != results->main_pid) {
+ 			tst_res(TINFO, "Child process reported TBROK killing the test");
+-			kill(main_pid, SIGKILL);
++			kill(results->main_pid, SIGKILL);
+ 		}
+ 	}
+ 
+@@ -1501,7 +1504,7 @@ static void do_setup(int argc, char *argv[])
+ 
+ static void do_test_setup(void)
+ {
+-	main_pid = getpid();
++	results->main_pid = getpid();
+ 
+ 	if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
+ 		long fs_type = tst_fs_type(".");
+@@ -1521,7 +1524,7 @@ static void do_test_setup(void)
+ 	if (tst_test->setup)
+ 		tst_test->setup();
+ 
+-	if (main_pid != tst_getpid())
++	if (results->main_pid != tst_getpid())
+ 		tst_brk(TBROK, "Runaway child in setup()!");
+ 
+ 	if (tst_test->caps)
+@@ -1584,7 +1587,7 @@ static void run_tests(void)
+ 		heartbeat();
+ 		tst_test->test_all();
+ 
+-		if (tst_getpid() != main_pid)
++		if (tst_getpid() != results->main_pid)
+ 			exit(0);
+ 
+ 		tst_reap_children();
+@@ -1600,7 +1603,7 @@ static void run_tests(void)
+ 		heartbeat();
+ 		tst_test->test(i);
+ 
+-		if (tst_getpid() != main_pid)
++		if (tst_getpid() != results->main_pid)
+ 			exit(0);
+ 
+ 		tst_reap_children();
+@@ -1930,7 +1933,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	tst_test = self;
+ 
+ 	do_setup(argc, argv);
+-	tst_enable_oom_protection(lib_pid);
++	tst_enable_oom_protection(results->lib_pid);
+ 
+ 	SAFE_SIGNAL(SIGALRM, alarm_handler);
+ 	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
