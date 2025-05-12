@@ -4,96 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58440C3ABC3
-	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 08:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747040327; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=dHi0Sk4oFgs16aQsk+vlLzQFDWBGc6PbIrNY6tvwurA=;
- b=NqvOPKhHw2ipsd7UoAvh0vzmzQo4nDCQ0/ggTW+gmRSe0gCxwA54v9MQJVVWGDNjJykZb
- a/YHTGs+QhRYuSo2A6tEUSHSHur61zriP39JFMKtAFdhuig/79rydj+noc6dmDvt5sHPmZh
- VqxGVlKwW5BUF3FJ7cjFM+fSvmIZV4Y=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F17CCC3ABC3
+	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 09:17:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3EB03CC29B
-	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 10:58:47 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 75B273CC29C
+	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 11:17:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D17C3CC28A
- for <ltp@lists.linux.it>; Mon, 12 May 2025 10:58:25 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 4D4443CB376
+ for <ltp@lists.linux.it>; Mon, 12 May 2025 11:17:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DAB0B600217
- for <ltp@lists.linux.it>; Mon, 12 May 2025 10:58:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1747040301;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 01DD71A00689
+ for <ltp@lists.linux.it>; Mon, 12 May 2025 11:17:26 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2E5DA21174;
+ Mon, 12 May 2025 09:17:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1747041445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=s0gcTpuwYBf0cGIs0xnG0fks8wDAJIB01bvWYltfESE=;
- b=VgYa6vqFfIvtwHYuhWOJmM3GQGzvNQme7R+SOpOczEqcRSvfE0b3V6TM0rqVF5Y8HTE5BB
- 8L45qJtC4XJPr2QoLzHc3iy/Ku2s2ycY5azZF2ZAp5Tc8BagZSs3a1SA7eHhX5CDK5o+BR
- 6zfgLwbQBSBTM1U5g3TdNn29/YFBnAU=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-621-6mTrHBiCMDenB2GmxW7HJA-1; Mon, 12 May 2025 04:58:19 -0400
-X-MC-Unique: 6mTrHBiCMDenB2GmxW7HJA-1
-X-Mimecast-MFC-AGG-ID: 6mTrHBiCMDenB2GmxW7HJA_1747040298
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-30a4627dd0dso4471110a91.2
- for <ltp@lists.linux.it>; Mon, 12 May 2025 01:58:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747040298; x=1747645098;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=s0gcTpuwYBf0cGIs0xnG0fks8wDAJIB01bvWYltfESE=;
- b=EJh5DWB603C9DoqBm5M1nGSCHdOmtYQLskg4bqshxv/1Xe1d/vEN6u1th7ufNE+mrE
- Y1MncECXju3dXFImosQ5hKTL5IBSe+J/oFiRdnDmpxVXHoTUaMDT9yu0VXjjB2OgQgif
- AKXrND9ml+GUnTK6j4lEOW1QWbMPVb+Ltj2LORVB10Av2KfD6F280QmZFI/Fxky5ZoVJ
- a8q8E4ebPF3KZMJVzLCOvyjKq8TuQx0/ejnZTffmwFajhKmioQCEZ88ZOtgnXnm2kv/i
- xjlDsEKul6ULWryqN/IK4kxHz7XxSl4JqrC15TJ25jGm5V2YSl7aPzeuQ/0Iju2a9hX4
- XuwA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCX1ydy4FNeyTXokPVIhSxJAzmdu2Oy5C2w/kdi/T9p9JVhJbtTA9M4DIEzf4g1lZPQDuQs=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzdnvo5pUn/HHtpaMK5eatpFxr1lyNcM4OSkIbRtlBHmV5wUX1E
- FGDqpLu6SjroCVXy/v83fg0H/WW9uG75aZ1r/+zt9EAUH6Sd8CiBEU4KE7rhJNbk+GS8u+na5fg
- xjEugoDB8iuC1OenceBttSIsROZfC88Po7jFqBWI9qJ0f89PROr2SO0YsBGKKMcMlDG0tyeFHaP
- sZ/5EZTnFgYttd6asVXzTd2Rw=
-X-Gm-Gg: ASbGncurGtG6X058/bqcsb2Yy0O24DdHh0qcxKSKaC63eiLYTixV10C9sikEKgJW4sf
- HMMVeXGxbx/VA8euX5jrswoaGVrHKIe7t6A7lcAitTFoDxm/PHrpOe8vty2HYql84Nk2Ymg==
-X-Received: by 2002:a17:903:1948:b0:227:eb61:34b8 with SMTP id
- d9443c01a7336-22fc8b60b7emr165950835ad.25.1747040298292; 
- Mon, 12 May 2025 01:58:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHnnAtJ7v2uOjSvRWSpHq5keq2u79w8CpS/rDo8Ddh6uCJ1usbpTBZ2nWAnaBEzcPmd1D29YU8ulWpoSmxBsZs=
-X-Received: by 2002:a17:903:1948:b0:227:eb61:34b8 with SMTP id
- d9443c01a7336-22fc8b60b7emr165950625ad.25.1747040297960; Mon, 12 May 2025
- 01:58:17 -0700 (PDT)
+ bh=VjX9svJe4/O6Oxbuf3oasjVYLbuqFNGpj5KNeoYIVZc=;
+ b=My46/SuCsdIp1pH34l9KSjo3PmoWYkpBANqW6B2TFPI5yg96mrz/YmXARyXoAAH/L0n1MZ
+ mIRB5yvxBpl9/B0Tkg2M59WkXzq+s27vFZjZ0uWoLWVyLMbMWqV1p9h4eUPTPGfsb15xim
+ NOGTSXH8J7lhHABmXZLALWEsAZpEL7c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1747041445;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=VjX9svJe4/O6Oxbuf3oasjVYLbuqFNGpj5KNeoYIVZc=;
+ b=6qrueDximXb41UfOdStU2zzSxM0ED7T9Tq35RurV3Xp4/YQTW2wvRGQ/9YPHLVp4Mhf1Tm
+ tMAPuJYaRz5py2BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1747041445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=VjX9svJe4/O6Oxbuf3oasjVYLbuqFNGpj5KNeoYIVZc=;
+ b=My46/SuCsdIp1pH34l9KSjo3PmoWYkpBANqW6B2TFPI5yg96mrz/YmXARyXoAAH/L0n1MZ
+ mIRB5yvxBpl9/B0Tkg2M59WkXzq+s27vFZjZ0uWoLWVyLMbMWqV1p9h4eUPTPGfsb15xim
+ NOGTSXH8J7lhHABmXZLALWEsAZpEL7c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1747041445;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=VjX9svJe4/O6Oxbuf3oasjVYLbuqFNGpj5KNeoYIVZc=;
+ b=6qrueDximXb41UfOdStU2zzSxM0ED7T9Tq35RurV3Xp4/YQTW2wvRGQ/9YPHLVp4Mhf1Tm
+ tMAPuJYaRz5py2BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 254A3137D2;
+ Mon, 12 May 2025 09:17:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id J2vmCKW8IWjOLwAAD6G6ig
+ (envelope-from <akumar@suse.de>); Mon, 12 May 2025 09:17:25 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 12 May 2025 11:17:24 +0200
+Message-ID: <4653486.LvFx2qVVIh@thinkpad>
+In-Reply-To: <20250109132334.212281-2-pvorel@suse.cz>
+References: <20250109132334.212281-1-pvorel@suse.cz>
+ <20250109132334.212281-2-pvorel@suse.cz>
 MIME-Version: 1.0
-References: <20250510205326.1353857-1-wegao@suse.com>
- <CAEemH2cJHz3aLRi0HeSvJWy=XvPMfJ_nv0F7=L7P2ubn8-zv5A@mail.gmail.com>
- <aCGyTkkA6iSQHNzg@yuki.lan>
-In-Reply-To: <aCGyTkkA6iSQHNzg@yuki.lan>
-Date: Mon, 12 May 2025 16:58:06 +0800
-X-Gm-Features: AX0GCFvchxffsCxsrVgD94Ne7HPTZiET_V9PWvnP2xt8IZLO1azkxGBqj_8-45I
-Message-ID: <CAEemH2fbbqZU0ir-9YQ6wh2v+6EXveOr3NRkjhk0MK1ipF_xkw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: P8IE5jlHNXSAAFccROSoVb0K8tZAwj9MTNfELAVyLk8_1747040298
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ CTE_CASE(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.de:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v1] Fix: dirtyc0w_shmem child process exit with
- error due to uninitialized lib_pid
+Subject: Re: [LTP] [PATCH 2/2] macros: Add basic docs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,83 +111,509 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBNYXkgMTIsIDIwMjUgYXQgNDozOOKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
-dXNlLmN6PiB3cm90ZToKCj4gSGkhCj4gPiA+IGRpZmYgLS1naXQgYS9saWIvdHN0X3Rlc3QuYyBi
-L2xpYi90c3RfdGVzdC5jCj4gPiA+IGluZGV4IDJiYjQ1MTlkZC4uYjY2NjcxNWI5IDEwMDY0NAo+
-ID4gPiAtLS0gYS9saWIvdHN0X3Rlc3QuYwo+ID4gPiArKysgYi9saWIvdHN0X3Rlc3QuYwo+ID4g
-PiBAQCAtNTksNyArNTksNyBAQCBzdGF0aWMgY29uc3QgY2hhciAqdGlkOwo+ID4gPiAgc3RhdGlj
-IGludCBpdGVyYXRpb25zID0gMTsKPiA+ID4gIHN0YXRpYyBmbG9hdCBkdXJhdGlvbiA9IC0xOwo+
-ID4gPiAgc3RhdGljIGZsb2F0IHRpbWVvdXRfbXVsID0gLTE7Cj4gPiA+IC1zdGF0aWMgcGlkX3Qg
-bWFpbl9waWQsIGxpYl9waWQ7Cj4gPiA+ICtzdGF0aWMgcGlkX3QgbGliX3BpZDsKPiA+ID4gIHN0
-YXRpYyBpbnQgbW50cG9pbnRfbW91bnRlZDsKPiA+ID4gIHN0YXRpYyBpbnQgb3ZsX21vdW50ZWQ7
-Cj4gPiA+ICBzdGF0aWMgc3RydWN0IHRpbWVzcGVjIHRzdF9zdGFydF90aW1lOyAvKiB2YWxpZCBv
-bmx5IGZvciB0ZXN0IHBpZCAqLwo+ID4gPiBAQCAtNzgsNiArNzgsOCBAQCBzdHJ1Y3QgcmVzdWx0
-cyB7Cj4gPiA+ICAgICAgICAgaW50IGFib3J0X2ZsYWc7Cj4gPiA+ICAgICAgICAgdW5zaWduZWQg
-aW50IHJ1bnRpbWU7Cj4gPiA+ICAgICAgICAgdW5zaWduZWQgaW50IG92ZXJhbGxfdGltZTsKPiA+
-ID4gKyAgICAgICBwaWRfdCBsaWJfcGlkOwo+ID4gPiArICAgICAgIHBpZF90IG1haW5fcGlkOwo+
-ID4gPiAgfTsKPiA+Cj4gPiBDYW4gd2UgYXZvaWQgcG9sbHV0aW5nIHRoZSBzdHJ1Y3QgcmVzdWx0
-cyB3aXRoIG1haW5fcGlkIGFuZCBsaWJfcGlkPwo+ID4gRnJvbSBhIGRlc2lnbiBzZXBhcmF0aW9u
-IHN0YW5kcG9pbnQsIHJlc3VsdHMgc2hvdWxkIG9ubHkgc3RvcmUgdGVzdAo+ID4gb3V0Y29tZSBk
-YXRhLCBub3QgdGVzdCBpbmZyYXN0cnVjdHVyZSBzdGF0ZS4KPgo+IFdlIGRvIGhhdmUgdGhlIGFi
-b3J0X2ZsYWcgYW5kIHJ1bnRpbWUgdGhlcmUgYW5kIGNoZWNrcG9pbnRzIHVzZSB0aGUKPiBtZW1v
-cnkgYWZ0ZXIgdGhpcyBzdHJ1Y3R1cmUgYXMgd2VsbCwgc28gSSB3b3VsZG4ndCBiZSBzbyBzdHJp
-Y3QuCj4KCkkgdGhpbmsgd2UnZCBiZXR0ZXIgbW92ZSB0aGVtIGludG8gYSBuZXcgc3RydWN0dXJl
-IGRlZGljYXRlZCB0byBzdG9yaW5nCmxpYnJhcnkgaW5mcmFzdHJ1Y3R1cmUuCgoKPgo+ID4gQXMg
-TFRQIGxpYnJhcnkgYWxyZWFkeSBwcm92aWRlcyBhIHRzdF9yZWluaXQoKSBmdW5jdGlvbiBmb3Ig
-Y2hpbGQKPiBwcm9jZXNzZXMKPiA+IHNwYXduZWQgdmlhIGV4ZWMoKS9leGVjbHAoKSB0byByZXN0
-b3JlIHRoZWlyIHRlc3QgY29udGV4dC4KPiA+Cj4gPiBXZSBjb3VsZCBjb25zaWRlciB0d28gYXBw
-cm9hY2hlczoKPiA+Cj4gPiAxLiBDcmVhdGUgYSBzZXBhcmF0ZSBJUEMgcmVnaW9uIHRvIHN0b3Jl
-IGluZnJhc3RydWN0dXJlIHN0YXRlKGUuZy4sCj4gPiBtYWluX3BpZCwgbGliX3BpZCkKPiA+IGlu
-IGEgbmV3IHN0cnVjdCB0c3RfbWV0YV9pbmZvLiBUaGUgY2hpbGQgY2FuIHRoZW4gYWNjZXNzIHRo
-aXMgZGF0YSB2aWEKPiA+IHRzdF9yZWluaXQoKQo+ID4gd2l0aG91dCBtb2RpZnlpbmcgdGhlIHN0
-cnVjdCByZXN1bHRzLgo+Cj4gSSB3b3VsZCBsaWtlIHRvIGtlZXAgYSBzaW5nbGUgSVBDIHJlZ2lv
-biBiZWNhdXNlIHdlIGhhdmUgdG8gcGFzcyBhCj4gcGF0aCB0byBpdCB0byBhbGwgY2hpbGRyZW4g
-dG9vLgo+Cj4gQWxzbyBnaXZlbiB0aGF0IHRoZSBtaW5pbWFsIGFtb3VudCBvZiBtZW1vcnkgd2Ug
-Y2FuIGFsbG9jYXRlIGZvciBJUEMgaXMKPiBhIHBhZ2Ugd2UgY2FuIGFzIHdlbGwgaGF2ZSB0d28g
-c3RydWN0dXJlcywgb25lIGZvciBkYXRhIGFuZCBvbmUgZm9yCj4gbGlicmFyeSBpbmZyYXN0cnVj
-dHVyZSBiaXRzIGFuZCBwbGFjZSB0aGVzZSBzdHJ1Y3R1cmVzIGluIHRoZXJlCj4gbWFudWFsbHku
-IEFsbCB3ZSBuZWVkIHRvIGRvIGlzIHRvIG1ha2Ugc3VyZSB0aGF0IHdlIHBsYWNlIHRoZW0gYXQK
-PiBhbGlnbmVkIG9mZnNldHMuCj4KClllcywgdGhhdCB3YXMgbXkgdGhvdWdodCBhcyB3ZWxsLiBT
-b21ldGhpbmcgbWF5YmUgbGlrZToKCiNkZWZpbmUgTFRQX01BR0lDIDB4NEM1NDUwNEQKCnN0cnVj
-dCBjb250ZXh0IHsKICAgICAgICBwaWRfdCBtYWluX3BpZDsKICAgICAgICBwaWRfdCBsaWJfcGlk
-OwogICAgICAgIHN0cnVjdCB0aW1lc3BlYyB0c3Rfc3RhcnRfdGltZTsKICAgICAgICAvKgogICAg
-ICAgICAqIFRoaXMgaXMgc2V0IGJ5IGEgY2FsbCB0byB0c3RfYnJrKCkgd2l0aCBUQlJPSyBwYXJh
-bWV0ZXIgYW5kIG1lYW5zCiAgICAgICAgICogdGhhdCB0aGUgdGVzdCBzaG91bGQgZXhpdCBpbW1l
-ZGlhdGVseS4KICAgICAgICAgKi8KICAgICAgICB1bnNpZ25lZCBpbnQgcnVudGltZTsKICAgICAg
-ICB1bnNpZ25lZCBpbnQgb3ZlcmFsbF90aW1lOwogICAgICAgIGludCBhYm9ydF9mbGFnOwogICAg
-ICAgIGludCBtbnRwb2ludF9tb3VudGVkOwogICAgICAgIGludCBvdmxfbW91bnRlZDsKICAgICAg
-ICBpbnQgdGRlYnVnOwp9OwoKc3RydWN0IHJlc3VsdHMgewogICAgICAgIGludCBwYXNzZWQ7CiAg
-ICAgICAgaW50IHNraXBwZWQ7CiAgICAgICAgaW50IGZhaWxlZDsKICAgICAgICBpbnQgd2Fybmlu
-Z3M7CiAgICAgICAgaW50IGJyb2tlbjsKfTsKCnN0YXRpYyBzdHJ1Y3QgaXBjX2Jsb2NrIHsKICAg
-ICAgICB1bnNpZ25lZCBpbnQgbWFnaWM7CiAgICAgICAgc3RydWN0IGNvbnRleHQgY29udGV4dDsK
-ICAgICAgICBzdHJ1Y3QgcmVzdWx0cyByZXN1bHRzOwogICAgICAgIGZ1dGV4X3QgZnV0ZXhlc1td
-Owp9OwoKc3RhdGljIHN0cnVjdCBpcGNfYmxvY2sgKmlwYyA9IE5VTEw7CnN0YXRpYyBzdHJ1Y3Qg
-Y29udGV4dCAqY29udGV4dCA9IE5VTEw7CnN0YXRpYyBzdHJ1Y3QgcmVzdWx0cyAqcmVzdWx0cyA9
-IE5VTEw7CgojZGVmaW5lIFRTVF9DT05URVhUKGlwYykgKChzdHJ1Y3QgY29udGV4dCAqKSYoaXBj
-KS0+Y29udGV4dCkKI2RlZmluZSBUU1RfUkVTVUxUUyhpcGMpICgoc3RydWN0IHJlc3VsdHMgKikm
-KGlwYyktPnJlc3VsdHMpCiNkZWZpbmUgVFNUX0ZVVEVYRVMoaXBjKSAoKGZ1dGV4X3QgKikoaXBj
-KS0+ZnV0ZXhlcykKCi4uLgoKCgo+Cj4gPiAyLiBTaW1wbHkgcGFzcyBtYWluX3BpZCBhbmQgbGli
-X3BpZCB0aHJvdWdoIGVudmlyb25tZW50IHZhcmlhYmxlcyBpbiB0aGUKPiA+IGx0cCBsaWJyYXJ5
-LCBhbmQgcmV0cmlldmUgdGhlbSBmcm9tIHRzdF9yZWluaXQoKSBpbiB0aGUgY2hpbGQuCj4KPiBU
-aGF0IHdvdWxkIHdvcmsgdG9vLCBidXQgdGhpcyBhZGRzIG1vcmUgY29tcGxleGl0eS4KPgo+ID4g
-T3IsIG1heWJlIG90aGVycyBoYXZlIHNpbXBsZXIgb3B0aW9ucy4gQ2MnaW5nIHRoZW0uCj4gPgo+
-ID4gSW4gZWl0aGVyIGNhc2UsIHdlIHNob3VsZCBzZXQgJ3RzdF90ZXN0LT5jaGlsZF9uZWVkX3Jl
-aW5pdCcgaW4gdGhlCj4gcGFyZW50Lgo+ID4KPiA+IEBDeXJpbCwgQFBldHIsIEkgc3VwcG9ydCBt
-ZXJnaW5nIHRoaXMgZml4IGJlZm9yZSB0aGUgTWF5IHJlbGVhc2UsIGFzCj4gSeKAmXZlIGFsc28K
-PiA+IGVuY291bnRlcmVkIHRoZSBzYW1lIGZhaWx1cmUgZHVyaW5nIG15IHByZS1yZWxlYXNlIHRl
-c3RpbmcuCj4KPiBZZXMsIHBsZWFzZSwgaXQncyBnb29kIGVub3VnaCBldmVuIGlmIGl0J3MgZ29p
-bmcgdG8gYmUgYSB0ZW1wb3JhcnkKPiBzb2x1dGlvbi4KPgoKU3VyZSwgd2UgY2FuIG1lcmdlIHRo
-aXMgb25lLiBBbmQgbGF0ZXIsIEkgd2lsbCB3b3JrIG9uIGEgbmV3IHBhdGNoCnRvIHJlZmFjdG9y
-IHRoZSBzdHJ1Y3R1cmUgbGlrZSBhYm92ZS4KClJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdA
-cmVkaGF0LmNvbT4KCgoKPgo+IFJldmlld2VkLWJ5OiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3Vz
-ZS5jej4KPgo+IC0tCj4gQ3lyaWwgSHJ1YmlzCj4gY2hydWJpc0BzdXNlLmN6Cj4KPgoKLS0gClJl
-Z2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Hi Petr,
+
+This is very helpful. Thank you!
+
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
+for both patches in series.
+
+
+On Thursday, January 9, 2025 2:23:34 PM CEST Petr Vorel wrote:
+> Describe all "public" macros.
+> Move variables to the top.
+> Add header to the sphinx doc.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> * I also wanted to document extern variables, but I haven't found a proper
+>   syntax.
+> 
+> * TPASS/TFAIL cross reference is a bit verbose. I'd like to have some
+>   helper for it, but creating extension is overkill.
+> 
+> extern long TST_RET;
+> extern void *TST_RET_PTR;
+> extern int TST_ERR;
+> extern int TST_PASS;
+> 
+> 
+>  doc/developers/api_c_tests.rst |   1 +
+>  include/tst_test_macros.h      | 257 ++++++++++++++++++++++++++++++++-
+>  2 files changed, 251 insertions(+), 7 deletions(-)
+> 
+> diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
+> index 46f5d3360b..515d843c00 100644
+> --- a/doc/developers/api_c_tests.rst
+> +++ b/doc/developers/api_c_tests.rst
+> @@ -11,6 +11,7 @@ Core LTP API
+>  ------------
+>  .. kernel-doc:: ../../include/tst_res_flags.h
+>  .. kernel-doc:: ../../include/tst_test.h
+> +.. kernel-doc:: ../../include/tst_test_macros.h
+>  
+>  Capabilities
+>  ------------
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index b2b446b70c..2e8d88b1b7 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -1,7 +1,11 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2015-2024 Cyril Hrubis <chrubis@suse.cz>
+> - * Copyright (c) Linux Test Project, 2021-2022
+> + * Copyright (c) Linux Test Project, 2021-2024
+> + */
+> +
+> +/**
+> + * DOC: tst_test_macros.h -- helpers for testing syscalls
+>   */
+>  
+>  #ifndef TST_TEST_MACROS_H__
+> @@ -9,6 +13,18 @@
+>  
+>  #include <stdbool.h>
+>  
+> +extern long TST_RET;
+> +extern void *TST_RET_PTR;
+> +extern int TST_ERR;
+> +extern int TST_PASS;
+> +
+> +/**
+> + * TEST() - Test syscall which return long (most of syscalls).
+> + *
+> + * @SCALL: Tested syscall.
+> + *
+> + * Sets TST_RET and TST_ERR.
+> + */
+>  #define TEST(SCALL) \
+>  	do { \
+>  		errno = 0; \
+> @@ -16,12 +32,13 @@
+>  		TST_ERR = errno; \
+>  	} while (0)
+>  
+> -extern long TST_RET;
+> -extern int TST_ERR;
+> -extern int TST_PASS;
+> -
+> -extern void *TST_RET_PTR;
+> -
+> +/**
+> + * TESTPTR() - Test syscall which returns void pointer.
+> + *
+> + * @SCALL: Tested syscall.
+> + *
+> + * Sets TST_RET_PTR and TST_ERR.
+> + */
+>  #define TESTPTR(SCALL) \
+>  	do { \
+>  		errno = 0; \
+> @@ -74,6 +91,12 @@ extern void *TST_RET_PTR;
+>  		TST_RET;                                                       \
+>  	})
+>  
+> +/**
+> + * TST_EXP_POSITIVE() - Test syscall, expect return value >= 0.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_POSITIVE(SCALL, ...)                                           \
+>  	({                                                                     \
+>  		TST_EXP_POSITIVE__(SCALL, #SCALL, ##__VA_ARGS__);              \
+> @@ -86,8 +109,22 @@ extern void *TST_RET_PTR;
+>  		TST_RET;                                                       \
+>  	})
+>  
+> +/**
+> + * TST_EXP_FD_SILENT() - Test syscall to return a file descriptor, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_FD() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_FD_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__)
+>  
+> +/**
+> + * TST_EXP_FD() - Test syscall to return a file descriptor.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_FD(SCALL, ...)                                                 \
+>  	({                                                                     \
+>  		TST_EXP_POSITIVE__(SCALL, #SCALL, ##__VA_ARGS__);              \
+> @@ -99,6 +136,18 @@ extern void *TST_RET_PTR;
+>  		TST_RET;                                                       \
+>  	})
+>  
+> +/**
+> + * TST_EXP_FD_OR_FAIL() - Test syscall to return file descriptor or fail with
+> + * expected errno.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @ERRNO: Expected errno or 0.
+> + * @...: A printf-like parameters.
+> + *
+> + * Expect a file descriptor if errno is 0 otherwise fail with expected errno.
+> + *
+> + * Internally it uses TST_EXP_FAIL() and TST_EXP_FD().
+> + */
+>  #define TST_EXP_FD_OR_FAIL(SCALL, ERRNO, ...)                                  \
+>  	({                                                                     \
+>  		if (ERRNO)                                                     \
+> @@ -109,8 +158,22 @@ extern void *TST_RET_PTR;
+>  		TST_RET;                                                       \
+>  	})
+>  
+> +/**
+> + * TST_EXP_PID_SILENT() - Test syscall to return PID, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_PID() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__)
+>  
+> +/**
+> + * TST_EXP_PID() - Test syscall to return PID.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_PID(SCALL, ...)                                                \
+>  	({                                                                     \
+>  		TST_EXP_POSITIVE__(SCALL, #SCALL, ##__VA_ARGS__);              \
+> @@ -138,8 +201,24 @@ extern void *TST_RET_PTR;
+>  		                                                               \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_VAL_SILENT() - Test syscall to return specified value, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @VAL: Expected return value.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_VAL() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_VAL_SILENT(SCALL, VAL, ...) TST_EXP_VAL_SILENT_(SCALL, VAL, #SCALL, ##__VA_ARGS__)
+>  
+> +/**
+> + * TST_EXP_VAL() - Test syscall to return specified value.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @VAL: Expected return value.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_VAL(SCALL, VAL, ...)                                           \
+>  	do {                                                                   \
+>  		TST_EXP_VAL_SILENT_(SCALL, VAL, #SCALL, ##__VA_ARGS__);        \
+> @@ -171,8 +250,22 @@ extern void *TST_RET_PTR;
+>                                                                                 \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_PASS_SILENT() - Test syscall to return 0, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_PASS() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_PASS_SILENT(SCALL, ...) TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__)
+>  
+> +/**
+> + * TST_EXP_PASS() - Test syscall to return 0.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_PASS(SCALL, ...)                                               \
+>  	do {                                                                   \
+>  		TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__);            \
+> @@ -263,6 +356,15 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  			TST_MSG_(TPASS | TTERRNO, " ", SSCALL, ##__VA_ARGS__); \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL() - Test syscall to fail with expected errno.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * For syscalls which valid return value is 0.
+> + */
+>  #define TST_EXP_FAIL(SCALL, EXP_ERR, ...)                                      \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -270,6 +372,14 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>                                    ##__VA_ARGS__);                              \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL_ARR() - Test syscall to fail with expected errnos.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERRS: Array of expected errnos.
+> + * @EXP_ERRS_CNT: Lenght of EXP_ERRS.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_FAIL_ARR(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)                   \
+>  		TST_EXP_FAIL_ARR_(SCALL, #SCALL, EXP_ERRS,                     \
+>  				  EXP_ERRS_CNT, ##__VA_ARGS__);
+> @@ -286,6 +396,15 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  		TST_EXP_FAIL2_ARR_(SCALL, #SCALL, EXP_ERRS,                    \
+>  		                  EXP_ERRS_CNT, ##__VA_ARGS__);
+>  
+> +/**
+> + * TST_EXP_FAIL_PTR_NULL() - Test syscall to fail with expected errno and return a NULL pointer.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike most of macros it sets TST_RET_PTR instead of TST_RET.
+> + */
+>  #define TST_EXP_FAIL_PTR_NULL(SCALL, EXP_ERR, ...)                          \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -293,12 +412,31 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  			&tst_exp_err__, 1, ##__VA_ARGS__);                     \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL_PTR_NULL_ARR() - Test syscall to fail with expected errnos and return a NULL pointer.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERRS: Array of expected errnos.
+> + * @EXP_ERRS_CNT: Lenght of EXP_ERRS.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike most of macros it sets TST_RET_PTR instead of TST_RET.
+> + */
+>  #define TST_EXP_FAIL_PTR_NULL_ARR(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)      \
+>  	do {                                                                   \
+>  		TST_EXP_FAIL_PTR_(SCALL, #SCALL, NULL,                         \
+>  			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);        \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL_PTR_VOID() - Test syscall to fail with expected errno and return a void pointer.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike most of macros it sets TST_RET_PTR instead of TST_RET.
+> + */
+>  #define TST_EXP_FAIL_PTR_VOID(SCALL, EXP_ERR, ...)                         \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -306,12 +444,31 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  			&tst_exp_err__, 1, ##__VA_ARGS__);                     \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL_PTR_VOID_ARR() - Test syscall to fail with expected errnos and return a void pointer.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERRS: Array of expected errnos.
+> + * @EXP_ERRS_CNT: Lenght of EXP_ERRS.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike most of macros it sets TST_RET_PTR instead of TST_RET.
+> + */
+>  #define TST_EXP_FAIL_PTR_VOID_ARR(SCALL, EXP_ERRS, EXP_ERRS_CNT, ...)      \
+>  	do {                                                                   \
+>  		TST_EXP_FAIL_PTR_(SCALL, #SCALL, (void *)-1,                   \
+>  			EXP_ERRS, EXP_ERRS_CNT, ##__VA_ARGS__);        \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL2() - Test syscall to fail with expected errno.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * For syscalls which valid return value is >= 0.
+> + */
+>  #define TST_EXP_FAIL2(SCALL, EXP_ERR, ...)                                     \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -319,6 +476,15 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>                                    ##__VA_ARGS__);                              \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL_SILENT() - Test syscall to fail with expected errno, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_FAIL() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_FAIL_SILENT(SCALL, EXP_ERR, ...)                               \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -326,6 +492,15 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  			&tst_exp_err__, 1, ##__VA_ARGS__);                     \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_FAIL2_SILENT() - Test syscall to fail with expected errno, silent variant.
+> + *
+> + * @SCALL: Tested syscall.
+> + * @EXP_ERR: Expected errno.
+> + * @...: A printf-like parameters.
+> + *
+> + * Unlike TST_EXP_FAIL2() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_FAIL2_SILENT(SCALL, EXP_ERR, ...)                              \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> @@ -333,6 +508,12 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  			&tst_exp_err__, 1, ##__VA_ARGS__);                     \
+>  	} while (0)
+>  
+> +/**
+> + * TST_EXP_EXPR() - Check for expected expression.
+> + *
+> + * @EXPR: Expression to be tested.
+> + * @...: A printf-like parameters.
+> + */
+>  #define TST_EXP_EXPR(EXPR, ...)                                              \
+>         tst_res_(__FILE__, __LINE__, (EXPR) ? TPASS : TFAIL, "Expect: "       \
+>                  TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, #EXPR), __VA_ARGS__));
+> @@ -352,6 +533,12 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	}                                                                      \
+>  } while (0)
+>  
+> +/**
+> + * TST_EXP_EQ_LI() - Compare two long long values.
+> + *
+> + * @VAL_A: long long value A.
+> + * @VAL_B: long long value B.
+> + */
+>  #define TST_EXP_EQ_LI(VAL_A, VAL_B) do {                                       \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli");   \
+>  								               \
+> @@ -362,9 +549,23 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	}                                                                      \
+>  } while (0)
+>  
+> +/**
+> + * TST_EXP_EQ_LI_SILENT() - Compare two long long values, silent variant.
+> + *
+> + * @VAL_A: long long value A.
+> + * @VAL_B: long long value B.
+> + *
+> + * Unlike TST_EXP_EQ_LI() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_EQ_LI_SILENT(VAL_A, VAL_B) \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, long long, "%lli")
+>  
+> +/**
+> + * TST_EXP_EQ_LU() - Compare two unsigned long long values.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + */
+>  #define TST_EXP_EQ_LU(VAL_A, VAL_B) do {                                       \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, unsigned long long, "%llu"); \
+>  								               \
+> @@ -375,9 +576,23 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	}                                                                      \
+>  } while (0)
+>  
+> +/**
+> + * TST_EXP_EQ_LU_SILENT() - Compare two unsigned long long values, silent variant.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + *
+> + * Unlike TST_EXP_EQ_LU() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_EQ_LU_SILENT(VAL_A, VAL_B) \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, unsigned long long, "%llu")
+>  
+> +/**
+> + * TST_EXP_EQ_SZ() - Compare two unsigned size_t values.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + */
+>  #define TST_EXP_EQ_SZ(VAL_A, VAL_B) do {                                       \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zu");       \
+>  								               \
+> @@ -388,9 +603,23 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	}                                                                      \
+>  } while (0)
+>  
+> +/**
+> + * TST_EXP_EQ_SZ_SILENT() - Compare two unsigned size_t values, silent variant.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + *
+> + * Unlike TST_EXP_EQ_SZ() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_EQ_SZ_SILENT(VAL_A, VAL_B) \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zu")
+>  
+> +/**
+> + * TST_EXP_EQ_SSZ() - Compare two unsigned ssize_t values.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + */
+>  #define TST_EXP_EQ_SSZ(VAL_A, VAL_B) do {                                      \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, size_t, "%zi");       \
+>  								               \
+> @@ -401,9 +630,23 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>  	}                                                                      \
+>  } while (0)
+>  
+> +/**
+> + * TST_EXP_EQ_SSZ_SILENT() - Compare two unsigned ssize_t values, silent variant.
+> + *
+> + * @VAL_A: unsigned long long value A.
+> + * @VAL_B: unsigned long long value B.
+> + *
+> + * Unlike TST_EXP_EQ_SSZ() does not print :c:enum:`TPASS <tst_res_flags>` on success, only prints :c:enum:`TFAIL <tst_res_flags>` on failure.
+> + */
+>  #define TST_EXP_EQ_SSZ_SILENT(VAL_A, VAL_B) \
+>  	TST_EXP_EQ_SILENT_(VAL_A, #VAL_A, VAL_B, #VAL_B, ssize_t, "%zi")
+>  
+> +/**
+> + * TST_EXP_EQ_STR() - Compare two strings.
+> + *
+> + * @STR_A: string to compare.
+> + * @STR_B: string to compare.
+> + */
+>  #define TST_EXP_EQ_STR(STR_A, STR_B) do {                                      \
+>  	TST_PASS = strcmp(STR_A, STR_B) == 0;                                  \
+>                                                                                 \
+> 
+
+Regards,
+Avinesh
+
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
