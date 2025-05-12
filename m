@@ -4,91 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 676ECC3ABBC
-	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 10:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747046047; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=fNcero2zkM4BztOPPpF4BC+0gdSVBOTyOR7wp1AcV9I=;
- b=ki2lB5+kDcoMLNi0HJ/Pi8T/fSd1M30qtdil6ZuUk62liG1n8VV8UlhS73h+l9CrIKVYx
- F0YcoIMy9nyHRClAyj+UX+THeohJ91sObOAqqQ4OW7MWT8nubQY10cCRgA8RhQQK2kIR4sO
- +cYAWGGIi+Ej2X9+YN160uF8sV5YYKE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 863FCC3ABC3
+	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 11:13:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B878B3CC2A7
-	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 12:34:07 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C38C43CC2C3
+	for <ltp@archiver.kernel.org>; Mon, 12 May 2025 13:13:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3488C3CC2A0
- for <ltp@lists.linux.it>; Mon, 12 May 2025 12:33:45 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6E0823CC26C
+ for <ltp@lists.linux.it>; Mon, 12 May 2025 13:13:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2B05A140043B
- for <ltp@lists.linux.it>; Mon, 12 May 2025 12:33:45 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-43d0618746bso32107155e9.2
- for <ltp@lists.linux.it>; Mon, 12 May 2025 03:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1747046024; x=1747650824; darn=lists.linux.it;
- h=in-reply-to:references:to:subject:message-id:date
- :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=vQhhvQrs2nm6QqRDnenZl+P1YC5EF9DKIAfbGaLmPII=;
- b=YgDl9IFv9u1AQzPa3zzsri49BHJuWuJvi69f4Q8K5Le9ygcOmVTo5Aeqzf1yP1Ctq/
- NpivaPXWI0D35hiTc1iaRkw8j24ls8md1KA5dv9ZRnqHxJRI9wItWhEt4v3qk/VyiUZW
- mHU2DgHqTdlpYDvJVpXvXOlIax3sYXHtn6N/X9spWnjiVf9hC3vcvdxHZKKjgNqAXVVW
- 8Kdn0ZbEfqWuDtaoz/a/A1e2fr3oB/Uf+1JiF6TsZlEqT8USEqmDjrDC2voajqwjk/ct
- Lrhbzpci0osDHrmZaIQnhDQaklqF3pNRYyi0sN/iZJB/x5F75bveDq3JWMn6tNmNkjpv
- UOVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747046024; x=1747650824;
- h=in-reply-to:references:to:subject:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=vQhhvQrs2nm6QqRDnenZl+P1YC5EF9DKIAfbGaLmPII=;
- b=bd7fT6NGmcspo/9Sp6OIf0e5C0G9r/fgQGPpB9TiyiN3ufpYxEyKVZhJNIBDhhtZrY
- sa5lnY/hHDNvqnlAMeufq1/86mSgI5SvNDSreeMWbWXq2TJMOxQBhX5ZnQGuqTEIqiin
- ntIwy8g2M906zZqONLgyzJb0fDfEjLWND1EcntgcTQU5GUhV6ZAG3LL7Fb/Xwln2cth0
- 1HtXqJBVdXJsT6hraU0sOCwiJsy5xpHxdV18gcO9cF8bFJRFucwuR31oaRKWblOPhMD2
- dlAhtcQ8ZTT10g06RuT5iJXUx/uw40zaBkqlV0hdcCWlvn/AS0V/ZJMljelWYdIEtz39
- M/jw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXv5z8mKSpeNowl3AwOneHfNKi9kIi64dJM/tECvIUoFWceHt7bie+0KzaAX14IbH7aZ8A=@lists.linux.it
-X-Gm-Message-State: AOJu0YxTUJocEca1eWQDXOkAbrHrfZ/+/Yj7tTHSoLVaiyjstVw5JI5O
- RjU1hboI8vh0KjDOzlExr3AsD4a63f6gghshYqVYZFo7z8G4OGzx2iom3V0h5zI=
-X-Gm-Gg: ASbGnct8su5ykz/V7goeZEHz88M0j5H1c6E1s3MCL81o8btq/pPm3yZh2Q9fWQk5qCi
- 6nlYzH4VxSyv7yz3v+rBoKNrQCPjbMikO4g0mVMapbeqFnqskwMF6snmT6xGFH4MsrEODRiwwF+
- yc2L/XK5DZU3NNWM1Mwl7D7dn15VTDoROdJzgavvGuvcKf01HaXDKH8xdcquFp7vCQZDVC/UrL7
- dkrbCQy8js2+5DAaSwjlVFQYRaLhlOt1TGiAXzXobTha5gB6CSuO/KcWQri91ZwBMfH1NiPfWRD
- 5WeccqNtRaqjsU0nG/P9xgGMB3Zd4NfvSw3im8WSVV6UHGd0hg==
-X-Google-Smtp-Source: AGHT+IFFo1siR+M8k8tEEWRKpecGLJlqyETXtullnMNmajLOv/SDLMyshHKdr1vufPHCT277mnfmkA==
-X-Received: by 2002:a05:6000:1786:b0:3a0:8c4d:7033 with SMTP id
- ffacd0b85a97d-3a1f646d8c0mr9712888f8f.5.1747046024398; 
- Mon, 12 May 2025 03:33:44 -0700 (PDT)
-Received: from localhost ([177.45.162.169])
- by smtp.gmail.com with UTF8SMTPSA id
- a1e0cc1a2514c-879f626bee0sm4807788241.26.2025.05.12.03.33.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 12 May 2025 03:33:43 -0700 (PDT)
-Mime-Version: 1.0
-Date: Mon, 12 May 2025 07:33:39 -0300
-Message-Id: <D9U44LEC2E1Q.1AZIKCSTUCZGM@suse.com>
-To: "Martin Doucha" <mdoucha@suse.cz>, "Linux Test Project"
- <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
-References: <20250512-fixes-modify_ldt-v2-1-eaef5577e44e@suse.com>
- <f4e06a94-e613-4afb-bc7b-afc833fcc5c1@suse.cz>
-In-Reply-To: <f4e06a94-e613-4afb-bc7b-afc833fcc5c1@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5989E600810
+ for <ltp@lists.linux.it>; Mon, 12 May 2025 13:13:25 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9879621186;
+ Mon, 12 May 2025 11:13:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1747048404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knvRdRJprZVv+ar4TbCjAgE6j36Km6BEUWe/NvWinwg=;
+ b=UzfGB1xWZzK7ICk8B9tKGT+EyaAQGJkxpgIvSwJP04uSv4Z9rsgPHD9KrcBUJHKeNn6kvZ
+ 5OKFHfGJY3RniOS/iaiQ00RBLZV0SlfOwur94tP+UKzmg+elqDA0bqlgp2rTLapesH30WI
+ 0SqOx0k5CSwU3B4hg0K+LNPcjQiqGG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1747048404;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knvRdRJprZVv+ar4TbCjAgE6j36Km6BEUWe/NvWinwg=;
+ b=IK7EinHE/wEdR+UQQYPKj5mkYgLCYv91UKUCMn8ZjdETjLxaHlYKUzEQi0nWZdzig75h99
+ iVUUFltFOVD/XbAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UzfGB1xW;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IK7EinHE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1747048404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knvRdRJprZVv+ar4TbCjAgE6j36Km6BEUWe/NvWinwg=;
+ b=UzfGB1xWZzK7ICk8B9tKGT+EyaAQGJkxpgIvSwJP04uSv4Z9rsgPHD9KrcBUJHKeNn6kvZ
+ 5OKFHfGJY3RniOS/iaiQ00RBLZV0SlfOwur94tP+UKzmg+elqDA0bqlgp2rTLapesH30WI
+ 0SqOx0k5CSwU3B4hg0K+LNPcjQiqGG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1747048404;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knvRdRJprZVv+ar4TbCjAgE6j36Km6BEUWe/NvWinwg=;
+ b=IK7EinHE/wEdR+UQQYPKj5mkYgLCYv91UKUCMn8ZjdETjLxaHlYKUzEQi0nWZdzig75h99
+ iVUUFltFOVD/XbAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 893D1137D2;
+ Mon, 12 May 2025 11:13:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 9T9VINTXIWjGZgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 12 May 2025 11:13:24 +0000
+Date: Mon, 12 May 2025 13:13:58 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <aCHX9rcKFhQKbxuM@yuki.lan>
+References: <20250510205326.1353857-1-wegao@suse.com>
+ <CAEemH2cJHz3aLRi0HeSvJWy=XvPMfJ_nv0F7=L7P2ubn8-zv5A@mail.gmail.com>
+ <aCGyTkkA6iSQHNzg@yuki.lan>
+ <CAEemH2fbbqZU0ir-9YQ6wh2v+6EXveOr3NRkjhk0MK1ipF_xkw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fbbqZU0ir-9YQ6wh2v+6EXveOr3NRkjhk0MK1ipF_xkw@mail.gmail.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9879621186
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] ldt.h: Add workaround for x86_64
+Subject: Re: [LTP] [PATCH v1] Fix: dirtyc0w_shmem child process exit with
+ error due to uninitialized lib_pid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,66 +118,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uIE1heSAxMiwgMjAyNSBhdCA3OjEwIEFNIC0wMywgTWFydGluIERvdWNoYSB3cm90ZToK
-PiBIaSwKPiBSZXZpZXdlZC1ieTogTWFydGluIERvdWNoYSA8bWRvdWNoYUBzdXNlLmN6PgoKVGhh
-bmtzIGZvciByZXZpZXdpbmcgYW5kIGFsbCB0aGUgaGVscCEKCi0JUmljYXJkby4KCgo+Cj4gT24g
-MTIuIDA1LiAyNSAxMjowNSwgUmljYXJkbyBCLiBNYXJsacOocmUgd3JvdGU6Cj4+IEZyb206IFJp
-Y2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Cj4+IAo+PiBUaGUgY29tbWl0IGJlMGFh
-Y2EyZjc0MiAoInN5c2NhbGxzL21vZGlmeV9sZHQ6IEFkZCBsYXBpL2xkdC5oIikgbGVmdCBiZWhp
-bmQKPj4gYW4gaW1wb3J0YW50IGZhY3RvciBvZiBtb2RpZnlfbGR0KCk6IHRoZSBrZXJuZWwgaW50
-ZW50aW9uYWxseSBjYXN0cyB0aGUKPj4gcmV0dXJuIHZhbHVlIHRvIHVuc2lnbmVkIGludC4gVGhp
-cyB3YXMgaGFuZGxlZCBpbgo+PiB0ZXN0Y2FzZXMvY3ZlL2N2ZS0yMDE1LTMyOTAuYyBidXQgd2Fz
-IHJlbW92ZWQuIEFkZCBpdCBiYWNrIHRvIHRoZSByZWxldmFudAo+PiBmaWxlLgo+PiAKPj4gUmVw
-b3J0ZWQtYnk6IE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFAc3VzZS5jej4KPj4gU2lnbmVkLW9mZi1i
-eTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KPj4gLS0tCj4+IENoYW5nZXMg
-aW4gdjI6Cj4+IC0gQWRkZWQgVEJST0sgZm9yIGFueSByZXQgIT0gMCBpbiBtb2RpZnlfbGR0IGNh
-bGwgaW4gY3ZlLTIwMTUtMzI5MC5jCj4+IC0gTGluayB0byB2MTogaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvci8yMDI1MDUwNy1maXhlcy1tb2RpZnlfbGR0LXYxLTEtNzBhMjY5NGNmZGRjQHN1c2Uu
-Y29tCj4+IC0tLQo+PiAgIGluY2x1ZGUvbGFwaS9sZHQuaCAgICAgICAgICAgIHwgMjIgKysrKysr
-KysrKysrKysrKysrKysrLQo+PiAgIHRlc3RjYXNlcy9jdmUvY3ZlLTIwMTUtMzI5MC5jIHwgIDgg
-KysrKysrKy0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDI4IGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL2xkdC5oIGIvaW5jbHVkZS9s
-YXBpL2xkdC5oCj4+IGluZGV4IDZiNWEyZDU5Y2I0MWJmYzI0ZWI1YWMyNmMzZDQ3ZDQ5ZmI4ZmY3
-OGYuLjE3MzMyMWRkOWFjMzRiYTg3ZWZmMGVlZTk2MDYzNWYzMGQ4Nzg5OTEgMTAwNjQ0Cj4+IC0t
-LSBhL2luY2x1ZGUvbGFwaS9sZHQuaAo+PiArKysgYi9pbmNsdWRlL2xhcGkvbGR0LmgKPj4gQEAg
-LTMxLDcgKzMxLDI3IEBAIHN0cnVjdCB1c2VyX2Rlc2Mgewo+PiAgIHN0YXRpYyBpbmxpbmUgaW50
-IG1vZGlmeV9sZHQoaW50IGZ1bmMsIGNvbnN0IHN0cnVjdCB1c2VyX2Rlc2MgKnB0ciwKPj4gICAJ
-CQkgICAgIHVuc2lnbmVkIGxvbmcgYnl0ZWNvdW50KQo+PiAgIHsKPj4gLQlyZXR1cm4gdHN0X3N5
-c2NhbGwoX19OUl9tb2RpZnlfbGR0LCBmdW5jLCBwdHIsIGJ5dGVjb3VudCk7Cj4+ICsJbG9uZyBy
-dmFsOwo+PiArCj4+ICsJZXJybm8gPSAwOwo+PiArCXJ2YWwgPSB0c3Rfc3lzY2FsbChfX05SX21v
-ZGlmeV9sZHQsIGZ1bmMsIHB0ciwgYnl0ZWNvdW50KTsKPj4gKwo+PiArI2lmZGVmIF9feDg2XzY0
-X18KPj4gKwkvKgo+PiArCSAqIFRoZSBrZXJuZWwgaW50ZW50aW9uYWxseSBjYXN0cyBtb2RpZnlf
-bGR0KCkgcmV0dXJuIHZhbHVlCj4+ICsJICogdG8gdW5zaWduZWQgaW50IHRvIHByZXZlbnQgc2ln
-biBleHRlbnNpb24gdG8gNjQgYml0cy4gVGhpcyBtYXkKPj4gKwkgKiByZXN1bHQgaW4gc3lzY2Fs
-bCgpIHJldHVybmluZyB0aGUgdmFsdWUgYXMgaXMgaW5zdGVhZCBvZiBzZXR0aW5nCj4+ICsJICog
-ZXJybm8gYW5kIHJldHVybmluZyAtMS4KPj4gKwkgKi8KPj4gKwlpZiAocnZhbCA+IDAgJiYgKGlu
-dClydmFsIDwgMCkgewo+PiArCQl0c3RfcmVzKFRJTkZPLAo+PiArCQkJIldBUk5JTkc6IExpYmMg
-bWlzaGFuZGxlZCBtb2RpZnlfbGR0KCkgcmV0dXJuIHZhbHVlIik7Cj4+ICsJCWVycm5vID0gLShp
-bnQpZXJybm87Cj4+ICsJCXJ2YWwgPSAtMTsKPj4gKwl9Cj4+ICsjZW5kaWYgLyogX194ODZfNjRf
-XyAqLwo+PiArCj4+ICsJcmV0dXJuIHJ2YWw7Cj4+ICAgfQo+PiAgIAo+PiAgIHN0YXRpYyBpbmxp
-bmUgaW50IHNhZmVfbW9kaWZ5X2xkdChjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGluZW5v
-LCBpbnQgZnVuYywKPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9jdmUvY3ZlLTIwMTUtMzI5MC5j
-IGIvdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMKPj4gaW5kZXggOGVjMWQ1M2JiYjVhOWYz
-ZTc3NjFkMzk4NTVkMzRmNTkzZTExOGEyOC4uZTcwNzQyYWNjODdjMzkwODg5NTNlMDJmMTYxNDZi
-N2I1OGE3NWZkMSAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMK
-Pj4gKysrIGIvdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMKPj4gQEAgLTE5Nyw3ICsxOTcs
-MTMgQEAgc3RhdGljIHZvaWQgc2V0X2xkdCh2b2lkKQo+PiAgIAkJLnVzZWFibGUJID0gMAo+PiAg
-IAl9Owo+PiAgIAo+PiAtCVNBRkVfTU9ESUZZX0xEVCgxLCAmZGF0YV9kZXNjLCBzaXplb2YoZGF0
-YV9kZXNjKSk7Cj4+ICsJVEVTVChtb2RpZnlfbGR0KDEsICZkYXRhX2Rlc2MsIHNpemVvZihkYXRh
-X2Rlc2MpKSk7Cj4+ICsJaWYgKFRTVF9SRVQgPT0gLTEgJiYgVFNUX0VSUiA9PSBFSU5WQUwpIHsK
-Pj4gKwkJdHN0X2JyayhUQ09ORiB8IFRURVJSTk8sCj4+ICsJCQkibW9kaWZ5X2xkdDogMTYtYml0
-IGRhdGEgc2VnbWVudHMgYXJlIHByb2JhYmx5IGRpc2FibGVkIik7Cj4+ICsJfSBlbHNlIGlmIChU
-U1RfUkVUICE9IDApIHsKPj4gKwkJdHN0X2JyayhUQlJPSyB8IFRURVJSTk8sICJtb2RpZnlfbGR0
-Iik7Cj4+ICsJfQo+PiAgIH0KPj4gICAKPj4gICBzdGF0aWMgdm9pZCB0cnlfY29ycnVwdF9zdGFj
-ayh1bnNpZ25lZCBzaG9ydCAqb3JpZ19zcykKPj4gCj4+IC0tLQo+PiBiYXNlLWNvbW1pdDogYjA3
-MGE1NjkyZTAzNWVjMTJjM2QzYzdhN2U5ZTk3YzI3MGZkNGQ3ZAo+PiBjaGFuZ2UtaWQ6IDIwMjUw
-NTA3LWZpeGVzLW1vZGlmeV9sZHQtZWJjZmRkMmE3ZDMwCj4+IAo+PiBCZXN0IHJlZ2FyZHMsCgoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+Hi!
+> I think we'd better move them into a new structure dedicated to storing
+> library infrastructure.
+
+Sounds good.
+
+> > > As LTP library already provides a tst_reinit() function for child
+> > processes
+> > > spawned via exec()/execlp() to restore their test context.
+> > >
+> > > We could consider two approaches:
+> > >
+> > > 1. Create a separate IPC region to store infrastructure state(e.g.,
+> > > main_pid, lib_pid)
+> > > in a new struct tst_meta_info. The child can then access this data via
+> > > tst_reinit()
+> > > without modifying the struct results.
+> >
+> > I would like to keep a single IPC region because we have to pass a
+> > path to it to all children too.
+> >
+> > Also given that the minimal amount of memory we can allocate for IPC is
+> > a page we can as well have two structures, one for data and one for
+> > library infrastructure bits and place these structures in there
+> > manually. All we need to do is to make sure that we place them at
+> > aligned offsets.
+> >
+> 
+> Yes, that was my thought as well. Something maybe like:
+> 
+> #define LTP_MAGIC 0x4C54504D
+
+I suppose that we will check this in the tst_reinit() right? That is
+nice improvement.
+
+> struct context {
+>         pid_t main_pid;
+>         pid_t lib_pid;
+>         struct timespec tst_start_time;
+>         /*
+>          * This is set by a call to tst_brk() with TBROK parameter and means
+>          * that the test should exit immediately.
+>          */
+>         unsigned int runtime;
+>         unsigned int overall_time;
+>         int abort_flag;
+>         int mntpoint_mounted;
+>         int ovl_mounted;
+>         int tdebug;
+> };
+> 
+> struct results {
+>         int passed;
+>         int skipped;
+>         int failed;
+>         int warnings;
+>         int broken;
+> };
+> 
+> static struct ipc_block {
+>         unsigned int magic;
+>         struct context context;
+>         struct results results;
+>         futex_t futexes[];
+> };
+
+Maybe it would make sense to switch to the uint32_t and int32_t here
+when we are doing the cleanup. Currently we we call tst_reinit() from a
+32bit process and the parent was 64bit it wouldn't work at all. We do
+not have tests like that at the moment but we may possibly end up in
+this situation later on.
+
+> static struct ipc_block *ipc = NULL;
+> static struct context *context = NULL;
+> static struct results *results = NULL;
+> 
+> #define TST_CONTEXT(ipc) ((struct context *)&(ipc)->context)
+> #define TST_RESULTS(ipc) ((struct results *)&(ipc)->results)
+> #define TST_FUTEXES(ipc) ((futex_t *)(ipc)->futexes)
+
+Is there a reason for these macros? The types should be correct, so
+there should be no need for the casts.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
