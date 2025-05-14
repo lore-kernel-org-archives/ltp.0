@@ -4,71 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4998C3ABCB
-	for <ltp@archiver.kernel.org>; Wed, 14 May 2025 04:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747197005; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=iGZvmx19sGAWR+iwfehlH/6D58yyPNByaNknGXcHKSg=;
- b=DarAL79sidWPuSiogNzb264+5utFfMdmTxBS4P39UYlpuXLpOxIgfCKFKav7Ym/H6+3S6
- Q5sxp9I/OTWpS8j2vFiuNgfKurioxr2XilPmEKN7eqt1IRvqkqF5/KQ8WELd9imAUF4yZwD
- hCtwVvU+s+CKenPb6fhEN2+lsWpmCGw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC06AC3ABD9
+	for <ltp@archiver.kernel.org>; Wed, 14 May 2025 08:00:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71B8A3CC361
-	for <ltp@archiver.kernel.org>; Wed, 14 May 2025 06:30:05 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BAE243CC393
+	for <ltp@archiver.kernel.org>; Wed, 14 May 2025 10:00:22 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CCD83CC326
- for <ltp@lists.linux.it>; Wed, 14 May 2025 06:28:47 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id E79433CC349
+ for <ltp@lists.linux.it>; Wed, 14 May 2025 10:00:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A31D96009F9
- for <ltp@lists.linux.it>; Wed, 14 May 2025 06:28:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1747196920;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=/rd07gUtYEQ14++Iw79a/xhxJ4uHH5EWdb6zoG16cBg=;
- b=BoP6cd9bS4llPVBAKBD04aOjpFIMp3CxtHGsMsw5hHo1xSxTECc2767W/zTE06Mxb+frRk
- mPYMDwpaOzs25Zkd26np2d/FOuvqvJfbjcAx06QLZP283MFHptJwiq56zL2VC0fq9j96ul
- lO8RzQ9LCwLj2nYKO5oH6HyQdWcnmBs=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-630-vDKcQTiHP4KMVqkthmrsOw-1; Wed,
- 14 May 2025 00:28:27 -0400
-X-MC-Unique: vDKcQTiHP4KMVqkthmrsOw-1
-X-Mimecast-MFC-AGG-ID: vDKcQTiHP4KMVqkthmrsOw_1747196899
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 041261A00EBC
+ for <ltp@lists.linux.it>; Wed, 14 May 2025 10:00:03 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 8B20018004A7; Wed, 14 May 2025 04:28:19 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id AD7E319560A7; Wed, 14 May 2025 04:28:16 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Wed, 14 May 2025 12:28:10 +0800
-Message-ID: <20250514042811.58339-1-liwang@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 96B091F391;
+ Wed, 14 May 2025 08:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1747209601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AlHHLOPlh1RrpQn1G74ISrVw2AFUFZ0PDM5u11UKmys=;
+ b=RM0cUehOrHfFNVDIMboQb3s9bfwrZw3HKOT19NMapVmIPvCFrDy7O5zvXofj3IKNrO5iwW
+ jea70oSlQ2OSAP3q2mMXwditMgtb8MWmRu4ZMkHYizZ9x12f7BLxgKhYk8Zkc9FTmw1vhN
+ lLy9VXRmeyZUrkKqaZWLxlO4evGSTDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1747209601;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AlHHLOPlh1RrpQn1G74ISrVw2AFUFZ0PDM5u11UKmys=;
+ b=Xch1l8OInTym9qV+SB2hkniLkNz6abGcsmpd2hnBqnsBce4MXOYsqAZC8nHC5OQERRz4t5
+ b3WuX1K2iIItBBAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1747209601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AlHHLOPlh1RrpQn1G74ISrVw2AFUFZ0PDM5u11UKmys=;
+ b=RM0cUehOrHfFNVDIMboQb3s9bfwrZw3HKOT19NMapVmIPvCFrDy7O5zvXofj3IKNrO5iwW
+ jea70oSlQ2OSAP3q2mMXwditMgtb8MWmRu4ZMkHYizZ9x12f7BLxgKhYk8Zkc9FTmw1vhN
+ lLy9VXRmeyZUrkKqaZWLxlO4evGSTDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1747209601;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AlHHLOPlh1RrpQn1G74ISrVw2AFUFZ0PDM5u11UKmys=;
+ b=Xch1l8OInTym9qV+SB2hkniLkNz6abGcsmpd2hnBqnsBce4MXOYsqAZC8nHC5OQERRz4t5
+ b3WuX1K2iIItBBAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8422E13306;
+ Wed, 14 May 2025 08:00:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id H4H6H4FNJGjFCwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 14 May 2025 08:00:01 +0000
+Date: Wed, 14 May 2025 10:00:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <aCRNqIAGRnZQJzua@yuki.lan>
+References: <20250513050530.47541-1-liwang@redhat.com>
+ <aCM2PrCrCdPqNIGc@yuki.lan>
+ <CAEemH2cP78yxJEWi-Z_v=EuXWP+6XDQBNnGMVHKq3pYLiGQRdw@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: _-yND4DuHoKZUkdck2VCu5a4FBvKUbYtikjmhD31glA_1747196899
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2cP78yxJEWi-Z_v=EuXWP+6XDQBNnGMVHKq3pYLiGQRdw@mail.gmail.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [Patch v2 1/2] dirtyc0w_shmem: set child_needs_reinit
+Subject: Re: [LTP] [PATCH 1/2] lib: initialize lib|main_pid to zero in the
+ setup_ipc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,33 +108,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi!
+> > > @@ -1393,8 +1396,6 @@ static void do_setup(int argc, char *argv[])
+> > >       if (tst_test->hugepages.number)
+> > >               tst_reserve_hugepages(&tst_test->hugepages);
+> > >
+> > > -     setup_ipc();
+> > > -
+> >
+> > I suppose that this has to go before the tst_reserve_hugepages() so that
+> > we have results->lib_pid defined and properly clean up after the
+> > hugepages. However for that to work we have to set the
+> > results->lib_pid directly in the setup_ipc().
+> 
+> In this patch, setup_ipc() is already moved up before the
+> tst_reserve_hugpages(). I particularly put it after tst_test->runs_scripts,
+> which is mandatory to have .child_needs_reinit initialized first.
+> 
+> And the hugpages cleanup work is completed in tst_sys_conf_restore(0)
+> in the do_cleanup, so that might not be a problem.
+> I have validated that all hugetlb tests work well.
+> 
+> Also,
+> 
+> Or, did I miss anything?
 
-diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-index 64b187b35..2c7ad00f2 100644
---- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-+++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-@@ -104,6 +104,7 @@ static void cleanup(void)
- 
- static struct tst_test test = {
- 	.needs_checkpoints = 1,
-+	.child_needs_reinit =1,
- 	.forks_child = 1,
- 	.needs_root = 1,
- 	.runtime = 120,
+The problem is that no library cleanup will happen unless lib_pid is
+set, that means that tst_brk() will be triggered anywhere in do_setup()
+the clanup will not be run because we set the lib_pid after the
+do_setup() in the patch.
+
 -- 
-2.49.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
