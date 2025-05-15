@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 117FDC2D0CD
-	for <ltp@archiver.kernel.org>; Thu, 15 May 2025 08:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AF65C3ABC9
+	for <ltp@archiver.kernel.org>; Thu, 15 May 2025 09:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747298824; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1747299745; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=mRQWbof5WyBHYT/N7vR9MQGawOQAhtHEHPo0y2uddeU=;
- b=cdKPtsASYw8hgqdKn3JxU1K3g4FrkxVGNV9/M9J4jw5zwOqtx3z/+NxegbXWw4sOJCf7o
- tJnkCddSSLY9uvcjy8UXV5V+oQAA4KqLjgfBvu/QnjdZ8nKq59+nbqGpzk0Om2IwG10Fdq4
- M+YPquLlxi0baJSyT2rOEcmxVhuhevQ=
+ bh=CBACeI5cWR9CVCMYB6RT/v8ttlLbeeVk+HPuLj5poes=;
+ b=l4owoc0VmMR8z7eIXLXzIqR+TbdE6TEYzS5ylG7rRO92B/J6i3GR5O22LkSR0Ii+cGa37
+ gsmirGd4TBBPpMRco+vHTwNRkXVNQvy8DtkFwXvymVc4MVPs+Vgnl4UDULMo0TYAS4xxJPQ
+ xP9Sb9yrETLwtY3F7tp63CKUYis7pdI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C6DE3CC470
-	for <ltp@archiver.kernel.org>; Thu, 15 May 2025 10:47:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6C0B33CC473
+	for <ltp@archiver.kernel.org>; Thu, 15 May 2025 11:02:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DB093CC454
- for <ltp@lists.linux.it>; Thu, 15 May 2025 10:46:41 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 816D13CB7DE
+ for <ltp@lists.linux.it>; Thu, 15 May 2025 11:02:03 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1B09A1400984
- for <ltp@lists.linux.it>; Thu, 15 May 2025 10:46:41 +0200 (CEST)
-Received: by mail-wr1-x429.google.com with SMTP id
- ffacd0b85a97d-3a0b9c371d8so537141f8f.0
- for <ltp@lists.linux.it>; Thu, 15 May 2025 01:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1747298800; x=1747903600; darn=lists.linux.it;
- h=in-reply-to:references:subject:to:cc:message-id:date
- :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=wnvStXgT1wrox2babaubbNl0QKQmjN0u7Nc04BdDQTA=;
- b=U0sP63pbIQv3WfbxYrWglKubQpka8fc5HxbLal77XNpY/rcBNlVaWGgBtUqoKV0zbo
- jGAJzDKjPXt1n9T09M17ruwoGgBhAZF513jEXQxNOkZcblXfKIawAveKHQ/gt+TQKM5F
- x/Y3VOJwPSbD5Dm3ciEUzgJr4Gop3igjJewbREweJd+nzE+2NxshXwSAjKFhc068mZlS
- BKJSC6x/JzMW0d1T/MSvLzmkEvacUrNX28G5rFMwzXHvLBGwb0U02fSf/Nz5EY74tI7p
- TnLJkMwSL83+XYPiuh5Zp9wfPZyC+wew8p08aAWP58jW52LtJGHob4X6jjQD3bg0f4RC
- V7Sw==
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5572E600909
+ for <ltp@lists.linux.it>; Thu, 15 May 2025 11:02:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1747299720;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Knyi98d9eRHd3Qm8baCuRQU3IzEvaWzfO4cNpMmMAXE=;
+ b=P5l8S5+SU5FX9iOnX4DZsgA455op6gtx4RYO8WUpEMPX1dsUlM86wj7IYdGUDVxlaLWlJb
+ 81FB5tfXhal/7sPmjNHa/AOx1LV36ARIP03IpS4QtanDYVvOTsone7Oa7j4ki4YEXJM9Cs
+ mhNAXdvm/yfjhysx8KWkluNJ5TyotuQ=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-_oaCoBoAM7-VIXa_FIL_ZQ-1; Thu, 15 May 2025 05:01:58 -0400
+X-MC-Unique: _oaCoBoAM7-VIXa_FIL_ZQ-1
+X-Mimecast-MFC-AGG-ID: _oaCoBoAM7-VIXa_FIL_ZQ_1747299718
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-22fc829046fso7385485ad.2
+ for <ltp@lists.linux.it>; Thu, 15 May 2025 02:01:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747298800; x=1747903600;
- h=in-reply-to:references:subject:to:cc:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=wnvStXgT1wrox2babaubbNl0QKQmjN0u7Nc04BdDQTA=;
- b=tc3SAOF8VhvJMVssZAaCBhSKsN5p7Pf0yeqqblQyMbYI/IZGEC/1dHyUuD4et7pEFG
- DimOhdIvVYx9xhAtuPiCmVmnKkKtbBd+Oqrwg67CGi0ejQPd2+XFX/w4HASmtn1I2y3d
- XNj1rikn3ydg/iYT3LnYJnCwMbfZZneMizbN1YGZdgKaq5h5OYy/6rSZqx8Csle30m0z
- OkDE0+Ca/RDvXD2V0CPr+9iP9S1YRQQIsG28we6Rj23XerFaakR6OWfcDaR+Ti+XwboN
- A+WCsH6/zvxZ4A+4BgF8uaw5idXcT8Q4EERmlUFgZVglEZyTXxZXUEOuiGE3TX+GDMdA
- hvdw==
-X-Gm-Message-State: AOJu0YwkIciVqqgl+eQxEo3fM9lG3//c3ft33h1SC0+XT8pKbCJVFjIa
- xvyor8NlahdSjzNfsaAc1pBluKpIyxxUsTpjUqDvgioRRNttyZuxfwjXk06SE1s=
-X-Gm-Gg: ASbGncvSPIRnNgD4iiE2YLrJQmdePVcAdqVnmZO7FS3zrYEPbVZ7xgiXPk64/mYXeK9
- nyiM+eE1F2EHKQuDvmIDG6iy4+1ZP7adoqSM6txmyYWAfig0CPoQXLe1RzFfFkIMc6+1t03DffX
- hUOcNGkLyJZ4h2V03yqdoGhh3cjeNEi9eoyZ+KRUAlY4s5AjtCfh4Zz8vs4wGXLwskLwr4c18Hz
- R6NGikwyfbzPpIvFZZD3aqYnObrhPYo1S8KbzIIND+7xK2e5SnP0lnZrj8Rego1eg6TOb4Pgar6
- qq3HoaghASX/Due1lgfV8YngtIn8qbMQTB1EP1A=
-X-Google-Smtp-Source: AGHT+IFYk9sSmxZ04KRf/2+U5/QAIVdqlTJLJRdH8fSdYwpFEQTXsL0nmD8Dud5yRfVyZrcJ7ZhB5Q==
-X-Received: by 2002:a05:6000:250a:b0:39e:db6a:4744 with SMTP id
- ffacd0b85a97d-3a353741abcmr1451432f8f.32.1747298800377; 
- Thu, 15 May 2025 01:46:40 -0700 (PDT)
-Received: from localhost ([177.45.162.169])
- by smtp.gmail.com with UTF8SMTPSA id
- a1e0cc1a2514c-87be7a5c528sm66072241.11.2025.05.15.01.46.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 15 May 2025 01:46:39 -0700 (PDT)
-Mime-Version: 1.0
-Date: Thu, 15 May 2025 05:46:35 -0300
-Message-Id: <D9WLQ935PWHU.15YKNJYVP25PV@suse.com>
-To: "Li Wang" <liwang@redhat.com>
-X-Mailer: aerc 0.20.1-31-gf6db7c329ce0-dirty
+ d=1e100.net; s=20230601; t=1747299718; x=1747904518;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=Knyi98d9eRHd3Qm8baCuRQU3IzEvaWzfO4cNpMmMAXE=;
+ b=uHr1tOYzOnTpYpsMQwIHxUW5FaLPJAji+484H5iQvgN+zhTxIFO7kxUpFkDIN4fgb8
+ mYhlxL3KPb4hx1W1AUiHTUMRPZk3Iy5n+ACPlJ7I3SbuKdxt3W3GPZURHu7vxGHam5Rb
+ hiQM2INaihmUzwpfUPZxfD7gLHKQ0XPoA1cYmlHPuMHR92sz7UDwF6XmheqAUs1CLjbq
+ 4l3P5pIJ+c0txZsed37IARWSCk8dGxtYmbnelxjSE8EwIbg/iqV4UDy/hRjg1yidmkXm
+ jwdpeWDwrHr2BPYtieTUC66GJHMjZAek04z4a9/e5b8HicYC9IBRkU5PZ/OxphLcrx60
+ tvFg==
+X-Gm-Message-State: AOJu0YxdyaTjPc2bcdFDT5Az1s889e/1V9xUYIYDoiy2vMwit0Tyvao3
+ +wSG7ge4DX3g8n4inqGsEoXn9HC1v6gbGbndKE3lu1dTa8+4IeUEzf7QBDjJyrMsbr5Z0xhN9zm
+ UYu5FbNeYjAuwAEJtst9ozUoHg11aPNCrtablaOPCrUQy3AFcpVrOB7BoLQq21X+TvR25SrpjRZ
+ SZtNHNWesU9Lk2V9cSzSCEwVM=
+X-Gm-Gg: ASbGncuvCd/xCRlK+YTVqQ4u2Ld9lkMdthw/IbXjXZKAVS6daYe9oJWupsW64akWWFg
+ 8774KQsa4hNxT05wSvwr3xEd1REnM66gujrY2eaQcXlgqnkgYFRLIEcDG1VUW4Rq5t070Pg==
+X-Received: by 2002:a17:903:124d:b0:22e:62da:2e66 with SMTP id
+ d9443c01a7336-23198154a16mr106624925ad.24.1747299717892; 
+ Thu, 15 May 2025 02:01:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG3//y+xFCUFIfeGukns7BqlzneamASjy7At4agG0Q/2sBtTgwhvy6kZ2CMtETqkfPc/dORK81t1/sgM7iUixc=
+X-Received: by 2002:a17:903:124d:b0:22e:62da:2e66 with SMTP id
+ d9443c01a7336-23198154a16mr106624675ad.24.1747299717550; Thu, 15 May 2025
+ 02:01:57 -0700 (PDT)
+MIME-Version: 1.0
 References: <20250514-conversions-kill-v1-0-cd633e941e8b@suse.com>
  <20250514-conversions-kill-v1-5-cd633e941e8b@suse.com>
  <CAEemH2cqO7AHyibDxNUOsr4eLRJvXkD-ckj=YmLQQGrHO08OXA@mail.gmail.com>
-In-Reply-To: <CAEemH2cqO7AHyibDxNUOsr4eLRJvXkD-ckj=YmLQQGrHO08OXA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ <D9WLQ935PWHU.15YKNJYVP25PV@suse.com>
+In-Reply-To: <D9WLQ935PWHU.15YKNJYVP25PV@suse.com>
+Date: Thu, 15 May 2025 17:01:45 +0800
+X-Gm-Features: AX0GCFuFaEDqo_1DN1SDbbrZZuyWn4cIVwcrd33QJiw5MEp3H4XsT4ZxwgTxsbc
+Message-ID: <CAEemH2fHu8JjL3Q3dxY8nwCC-W92KZd=LrR7u7+6mMq25sDerg@mail.gmail.com>
+To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: eGvDIB3eyb_jjcLYFgkK295XIWHZVXuGYERQAdsz8pw_1747299718
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 5/6] syscalls/kill09: Convert to new API
 X-BeenThere: ltp@lists.linux.it
@@ -99,34 +103,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
 Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li!
-
-On Wed May 14, 2025 at 11:27 PM -03, Li Wang wrote:
-> Hi Ricardo,
->
-> In this patch, you convert kill09.c to the new API, which is good,
-> but in patch 6/6 you remove kill09.c entirally.
->
-> I don't understand why we still need this conversion if we finally
-> need to remove it :).
-
-Unfortunately it only became apparent that it could be removed entirely
-after I converted it. So I sent it this way to see if it's acceptable to
-remove, as its easier to see why. But agreed that it should be squashed,
-I'll send a v2.
-
-Thanks for reviewing,
--	Ricardo.
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBNYXkgMTUsIDIwMjUgYXQgNDo0NuKAr1BNIFJpY2FyZG8gQi4gTWFybGnDqHJlIDxy
+Ym1Ac3VzZS5jb20+IHdyb3RlOgo+Cj4gSGkgTGkhCj4KPiBPbiBXZWQgTWF5IDE0LCAyMDI1IGF0
+IDExOjI3IFBNIC0wMywgTGkgV2FuZyB3cm90ZToKPiA+IEhpIFJpY2FyZG8sCj4gPgo+ID4gSW4g
+dGhpcyBwYXRjaCwgeW91IGNvbnZlcnQga2lsbDA5LmMgdG8gdGhlIG5ldyBBUEksIHdoaWNoIGlz
+IGdvb2QsCj4gPiBidXQgaW4gcGF0Y2ggNi82IHlvdSByZW1vdmUga2lsbDA5LmMgZW50aXJhbGx5
+Lgo+ID4KPiA+IEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgd2Ugc3RpbGwgbmVlZCB0aGlzIGNvbnZl
+cnNpb24gaWYgd2UgZmluYWxseQo+ID4gbmVlZCB0byByZW1vdmUgaXQgOikuCj4KPiBVbmZvcnR1
+bmF0ZWx5IGl0IG9ubHkgYmVjYW1lIGFwcGFyZW50IHRoYXQgaXQgY291bGQgYmUgcmVtb3ZlZCBl
+bnRpcmVseQo+IGFmdGVyIEkgY29udmVydGVkIGl0LiBTbyBJIHNlbnQgaXQgdGhpcyB3YXkgdG8g
+c2VlIGlmIGl0J3MgYWNjZXB0YWJsZSB0bwo+IHJlbW92ZSwgYXMgaXRzIGVhc2llciB0byBzZWUg
+d2h5LiBCdXQgYWdyZWVkIHRoYXQgaXQgc2hvdWxkIGJlIHNxdWFzaGVkLAo+IEknbGwgc2VuZCBh
+IHYyLgoKT2gsIEkgc2VlLiBUaGFua3MgZm9yIHRoZSBjbGFyaWZpY2F0aW9uLgpZb3Ugb25seSBu
+ZWVkIHRvIHNlbmQgdGhlIGxhc3QgbmV3IHBhdGNoIGFmdGVyIHNxdWFzaGluZy4KCi0tIApSZWdh
+cmRzLApMaSBXYW5nCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4
+Lml0L2xpc3RpbmZvL2x0cAo=
