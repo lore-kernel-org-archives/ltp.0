@@ -4,41 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80DA7C3ABD8
-	for <ltp@archiver.kernel.org>; Fri, 16 May 2025 12:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07A5BC3ABD8
+	for <ltp@archiver.kernel.org>; Fri, 16 May 2025 12:22:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BD6953CC5B2
-	for <ltp@archiver.kernel.org>; Fri, 16 May 2025 14:13:01 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 807A63CC5B2
+	for <ltp@archiver.kernel.org>; Fri, 16 May 2025 14:22:30 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86EB43CC505
- for <ltp@lists.linux.it>; Fri, 16 May 2025 14:12:45 +0200 (CEST)
-Received: from gnu.wildebeest.org (gnu.wildebeest.org [45.83.234.184])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 86D873CC505
+ for <ltp@lists.linux.it>; Fri, 16 May 2025 14:22:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D138E1400E6F
- for <ltp@lists.linux.it>; Fri, 16 May 2025 14:12:44 +0200 (CEST)
-Received: from r6.localdomain (82-217-174-174.cable.dynamic.v4.ziggo.nl
- [82.217.174.174])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D0A4B200B6B
+ for <ltp@lists.linux.it>; Fri, 16 May 2025 14:22:12 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by gnu.wildebeest.org (Postfix) with ESMTPSA id 7708E3021E80;
- Fri, 16 May 2025 14:12:43 +0200 (CEST)
-Received: by r6.localdomain (Postfix, from userid 1000)
- id 2FCB93405BA; Fri, 16 May 2025 14:12:43 +0200 (CEST)
-Message-ID: <1579a022f9ea78ae74060c03d10a8e1601f1af80.camel@klomp.org>
-From: Mark Wielaard <mark@klomp.org>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 May 2025 14:12:43 +0200
-In-Reply-To: <20250516120943.GA303097@pevik>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 50CCB1F394;
+ Fri, 16 May 2025 12:22:10 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A76A513411;
+ Fri, 16 May 2025 12:22:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3GxzJvEtJ2h/JgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 16 May 2025 12:22:09 +0000
+Date: Fri, 16 May 2025 14:22:07 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Mark Wielaard <mark@klomp.org>
+Message-ID: <20250516122207.GB303097@pevik>
 References: <20250516075113.522145-1-pvorel@suse.cz>
- <aCb7Pi6Vgkc8OMja@yuki.lan> <20250516093129.GG12775@gnu.wildebeest.org>
+ <aCb7Pi6Vgkc8OMja@yuki.lan>
+ <20250516093129.GG12775@gnu.wildebeest.org>
  <20250516120943.GA303097@pevik>
-User-Agent: Evolution 3.56.1 (3.56.1-1.fc42) 
+ <1579a022f9ea78ae74060c03d10a8e1601f1af80.camel@klomp.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1579a022f9ea78ae74060c03d10a8e1601f1af80.camel@klomp.org>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 50CCB1F394
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] valgrind-announce: Update valgrind ML
 X-BeenThere: ltp@lists.linux.it
@@ -52,6 +75,7 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it,
  Martin Cermak <mcermak@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
@@ -59,35 +83,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, Hi Cyril,
+Hi Mark,
 
-On Fri, 2025-05-16 at 14:09 +0200, Petr Vorel wrote:
-> > On Fri, May 16, 2025 at 10:45:50AM +0200, Cyril Hrubis wrote:
-> > > > valgrind-developers has heavy traffic, use valgrind-announce.
-> 
-> > > Was this requested by valgrind devs? I suppose this is fine as long as
-> > > we get their ack.
-> 
-> > I think valgrind-developers is a better place for announcing new
-> > versions of LTP.  We can then update our own valgrind testing.
-> > valgrind-announce is really for users when valgrind itself has a new
-> > release.
-> 
-> Sure, let's keep valgrind-developers. Thanks for feedback.
-> 
-> I would consider it disturbing for myself to need to subscribe on
-> valgrind-developers before the release and unsubscribe then, but
-> it's Cyril who is going to send the announcement mail anyway.
+> Hi Petr, Hi Cyril,
 
-You don't really need to subscribe tp valgrind-developers. If you
-aren't subscribed then the message goes to moderation and will normally
-be approved within a day (and the sender is normally added to the
-approved list). I think this is similar to the ltp list (I am not
-subscribed, but seem able to post anyway).
+> On Fri, 2025-05-16 at 14:09 +0200, Petr Vorel wrote:
+> > > On Fri, May 16, 2025 at 10:45:50AM +0200, Cyril Hrubis wrote:
+> > > > > valgrind-developers has heavy traffic, use valgrind-announce.
 
-Cheers,
+> > > > Was this requested by valgrind devs? I suppose this is fine as long as
+> > > > we get their ack.
 
-Mark
+> > > I think valgrind-developers is a better place for announcing new
+> > > versions of LTP.  We can then update our own valgrind testing.
+> > > valgrind-announce is really for users when valgrind itself has a new
+> > > release.
+
+> > Sure, let's keep valgrind-developers. Thanks for feedback.
+
+> > I would consider it disturbing for myself to need to subscribe on
+> > valgrind-developers before the release and unsubscribe then, but
+> > it's Cyril who is going to send the announcement mail anyway.
+
+> You don't really need to subscribe tp valgrind-developers. If you
+> aren't subscribed then the message goes to moderation and will normally
+> be approved within a day (and the sender is normally added to the
+> approved list). I think this is similar to the ltp list (I am not
+> subscribed, but seem able to post anyway).
+
+Great, we can rely on you looking at the "pending moderator requests".
+
+This is also maintained on our side, mostly by Cyril. When I notice valid mail
+(there is a lot of spam of course) I approve the sender to be able to send
+without a subscription.
+
+I got used to mailing lists on lore.kernel.org to which one can post without any
+subscription. Also kernel developers got used to it (as they often send to LTP
+ML without a subscription). But I'm never sure if the "pending moderator requests"
+on other MLs is actively monitored.
+
+Kind regards,
+Petr
+
+> Cheers,
+
+> Mark
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
