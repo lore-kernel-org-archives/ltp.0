@@ -4,85 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6727C3DA6D
-	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 02:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3232C54E65
+	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 08:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747793849; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1747816162; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=Yo7bA5/1gY7Ywt+mbN/2l9U1KvqhC6OIoBPkM7q/Fkg=;
- b=VwgYmlQn69IdsiEh2Bh9N4JG2znpjPPC9reRlh2nNT9Gr7QsLIm4/Dg+bUbmOsL+LbSoP
- GiHuV9GPrE80zxo87Hg2ND9++pS+ZQs1Go2mzRiLCnT1ArhaN3Fo/8fCsMDIiNLrUfJDT5h
- 9GoxhRe1mK6+yZx2D8YGdn2oy9dKSKs=
+ bh=PauY9pGHkrWw/d5caSzbPllcw3etaZpyF+au4kptcUI=;
+ b=BTgpuT7nOKw377t51WCq4eCWnwnjlpKW6ydnS1HJ2hB1AFmKyuN9VF7e5nFX/oVQ790/E
+ yfS4hmu1iJPMwPQA7pGOTXSWl17tzt1hHVjisRK2yRCc3/YxUQjPOegxMtblcZwcRGZccl4
+ knrT9BaJnQaZgmakFBIEqg77hEaWFC4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C8F73CC7AB
-	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 04:17:29 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C97213CC7C0
+	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 10:29:22 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4BC693CC15D
- for <ltp@lists.linux.it>; Wed, 21 May 2025 04:17:05 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 055113CC772
+ for <ltp@lists.linux.it>; Tue, 20 May 2025 22:24:54 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9BDF61A0239A
- for <ltp@lists.linux.it>; Wed, 21 May 2025 04:17:04 +0200 (CEST)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-43d2d952eb1so50072415e9.1
- for <ltp@lists.linux.it>; Tue, 20 May 2025 19:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1747793823; x=1748398623; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=CHgLkJolrW9q+1FNtl0c/IazgCDSG8DrqtJuzigFvU0=;
- b=H8tFZl6qrSemEn4KeEwtuPHZ3qsPEGFdT7ZAXanozD4EJYjXa51hhYRw+T1x1hz3HC
- j3weSYkqSkh9DF/pHlmOnoABIzVw3XM74QX249BsnDJEasMuKQCxpIxgZoQ92z4qUF+f
- dyyHG1a4FXm17GcJ7MVJblDiZ3IHKMigqwkBQ7uExMV/GiPmAWICXy+70oBkN71GuCGv
- QMr0dmgVTLiD5psmAMRKiWIumX13EslA58jkE+2DlDSAkmmqVutJhCj1OklZz8CMvNxN
- 724BrJMQn1uU/tE4bp5ULg5/xqc5Y6UXVUh7GS86orWghk5IeDOWzF7Y8Zonvyl7zCe3
- gWhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747793823; x=1748398623;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=CHgLkJolrW9q+1FNtl0c/IazgCDSG8DrqtJuzigFvU0=;
- b=vPtl3wFBRKgjylkLjwBU2bm0QpmbWi1qPQsxFSeBV7Bv2uRfU4jT5oE+xutMRdmQog
- vng5Cv5dIVpUIUwEsDJvnyjs/N7BLmd2MPSRS4w60tWpA9dQNrlxzwIOF4InvhT/7qUp
- CWzEgebQF9xiD4OO3BxnSiFT7IOtZpM//KxgwS6tG3rV+T9iif23TBFEVWmWMFiXFfLZ
- ODsmQC92bpGOKsoK5Gy0zzqLux6YaZ/+52GcIyEoU1fogfxNUCme9yjga+AN6dq+SuBy
- 5TUcZM6mwrW5HoQMBO877Lg7dWIsGMOBAmmTbWjcEdQFnKs6+gqnonxbu2+wjj4vVxTR
- 1/tw==
-X-Gm-Message-State: AOJu0YxhflMSr04GAlM01890ENsqnALEDbe7Te3x9fIEJRkc81fprYiX
- mvssXNAVStNBgngLuORtY45Fhes1D49OgsDVwfoPXlLEX7kZdv4WVos5oqSk6pCqN06GiPGxBUg
- g1f8=
-X-Gm-Gg: ASbGncuIlWFRk+K1SzfFHADtLQiOz6zRssg/fzK3j2ZWRTt6NfmmAQqQIOhrMj+FIro
- SFw9JcAkXZu6BdPYRfztvrP9Qg3RZlA9+kbjCBRLzHucUkEdycqqtSPTq7/iLnQB82sLft77Twl
- DzyBNPGWDp3Lsq7NR06IXgmojJ4d61Mn8OuTWq5QCiCexnMK962SN2p/hwsF0q2Gj7L079HRQM5
- MnxUDUpYLyagyiHKwywqxzPNGVIJOrUdfTtB1LwhTcz1UeDZJrtAIXBdCSsWh2XrDlVXvcVXGrM
- mmu9aebU9OdOoH0F3MYMt3mn6ypbzBzWhUquIhWK
-X-Google-Smtp-Source: AGHT+IG1GECUMKmMmA1c0p2kbsE+kqsAkS+e69LyG1v3zs4UY34V9+mhBzgCZqUZjT5aLK49q7yL2g==
-X-Received: by 2002:a5d:64ee:0:b0:3a0:8291:20d0 with SMTP id
- ffacd0b85a97d-3a35c83f19bmr17498426f8f.29.1747793823591; 
- Tue, 20 May 2025 19:17:03 -0700 (PDT)
-Received: from localhost ([202.127.77.110])
- by smtp.gmail.com with UTF8SMTPSA id
- d2e1a72fcca58-742a986b38bsm8589270b3a.129.2025.05.20.19.17.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 May 2025 19:17:03 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F23AB1A01096
+ for <ltp@lists.linux.it>; Tue, 20 May 2025 22:24:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1747772690;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Nri0cTkx1f2VEu4zYbiyLnc3whGLAim1j0hDUtur0gE=;
+ b=Soq+OtNlAwxyiM9PzvOUdoeanOFk+Wht9kPQhFth7RX0BrtzZiCB6cTYUT1mUMgMn2+D3I
+ Y8ke7iPQhLvkNrX8dRot6EGZySlPwlWxUwpbAiYt3S75iukQhu5XAJ8Gr2pRMAd0DI9OGk
+ 5xDdVGRbZ2RdxC62mMoBeojXz+Op+2A=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-619-9EmgJM3nO3OUMmnYMb_psg-1; Tue,
+ 20 May 2025 16:24:49 -0400
+X-MC-Unique: 9EmgJM3nO3OUMmnYMb_psg-1
+X-Mimecast-MFC-AGG-ID: 9EmgJM3nO3OUMmnYMb_psg_1747772689
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 400061800446
+ for <ltp@lists.linux.it>; Tue, 20 May 2025 20:24:48 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.80.14])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id A46C719560AD
+ for <ltp@lists.linux.it>; Tue, 20 May 2025 20:24:47 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Wed, 21 May 2025 10:16:53 -0400
-Message-ID: <20250521141655.3202240-1-wegao@suse.com>
-X-Mailer: git-send-email 2.49.0
+Date: Tue, 20 May 2025 16:24:29 -0400
+Message-ID: <20250520202429.577890-1-luizcap@redhat.com>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: QBKnU4J1R4gwW5Pv_msDaorWz6-UpSJA4Vtcaf_1mrw_1747772689
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] tst_tmpdir: Fix buffer overflow in tst_tmpdir.c
+X-Mailman-Approved-At: Wed, 21 May 2025 10:29:00 +0200
+Subject: [LTP] [PATCH] ksm: fix segfault on s390
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,216 +83,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Luiz Capitulino via ltp <ltp@lists.linux.it>
+Reply-To: Luiz Capitulino <luizcap@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Using sprintf without length checking in tst_tmpdir may lead to buffer overflow.
-So in this patch use openat() instead of open().
+Recently, we started seeing the following segfault when running ksm01
+and ksm02 tests on an s390 KSM guest:
 
-Fixs:1241
-Signed-off-by: Wei Gao <wegao@suse.com>
+"""
+[  119.302817] User process fault: interruption code 0011 ilc:3 in libc.so.6[b14ae,3ff91500000+1c9000]
+[  119.302824] Failing address: 000003ff91400000 TEID: 000003ff91400800
+[  119.302826] Fault in primary space mode while using user ASCE.
+[  119.302828] AS:0000000084bec1c7 R3:00000000824cc007 S:0000000081a28001 P:0000000000000400
+[  119.302833] CPU: 0 UID: 0 PID: 5578 Comm: ksm01 Kdump: loaded Not tainted 6.15.0-rc6+ #8 NONE
+[  119.302837] Hardware name: IBM 3931 LA1 400 (KVM/Linux)
+[  119.302839] User PSW : 0705200180000000 000003ff915b14ae
+[  119.302841]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:1 AS:0 CC:2 PM:0 RI:0 EA:3
+[  119.302843] User GPRS: cccccccccccccccd 000000000007efff 000003ff91400000 000003ff814ff010
+[  119.302845]            0000000007ffffff 0000000000000000 0000000000000000 000003ff00000000
+[  119.302847]            0000000000000063 0000000000100000 00000000023db500 0000000008000000
+[  119.302848]            0000000000000063 0000000000000080 00000000010066da 000003ffd7777e20
+[  119.302855] User Code: 000003ff915b149e: a784ffee            brc     8,000003ff915b147a
+                          000003ff915b14a2: e31032000036        pfd     1,512(%r3)
+                         #000003ff915b14a8: e31022000036        pfd     1,512(%r2)
+                         >000003ff915b14ae: d5ff30002000        clc     0(256,%r3),0(%r2)
+                          000003ff915b14b4: a784ffef            brc     8,000003ff915b1492
+                          000003ff915b14b8: b2220020            ipm     %r2
+                          000003ff915b14bc: eb220022000d        sllg    %r2,%r2,34
+                          000003ff915b14c2: eb22003e000a        srag    %r2,%r2,62
+[  119.302867] Last Breaking-Event-Address:
+[  119.302868]  [<000003ff915b14b4>] libc.so.6[b14b4,3ff91500000+1c9000]
+"""
+
+This segfault is triggered by the memcmp() call in verify():
+
+"""
+memcmp(memory[start], s, (end - start) * (end2 - start2)
+"""
+
+In the default case, this call checks if the memory area starting in
+memory[0] (since start=0 by default) matches 's' for 128MB. IOW, this
+assumes that the memory areas in memory[] are contiguous. This is wrong,
+since create_ksm_child() allocates 128 individual areas of 1MB each. As,
+in this particular case, memory[0] happens to be the last 1MB area in
+the VMA created by the kernel, we hit a segault at the first byte beyond
+memory[0].
+
+Now, the question is how this has worked for so long and why it may still
+work on arm64 and x86 (even on s390 it ocassionaly works).
+
+For the s390 case, the reason is upstream kernel commit efa7df3e3bb5
+("mm: align larger anonymous mappings on THP boundaries"). Before this
+commit, the kernel would always map a library right after the memory[0]
+area in the process address space. This causes memcmp() to return
+non-zero when reading the first byte beyond memory[0], which in turn
+causes the nested loop in verify() to execute. The nested loop is correct
+(ie. it doesn't assume the memory areas in memory[] are contiguous) so
+the test doesn't fail. The mentioned upstream commit causes the first byte
+beyond memory[0] not to be mapped most of the time on s390, which may
+result in a segfault.
+
+Now, as it turns out on arm64 and x86 the kernel still maps a library right
+after memory[0] which causes the test to suceed as explained above (this
+can be easily verified by printing the return value for memcmp()).
+
+This commit fixes verify() to do a byte-by-byte check on each individual
+memory area. This also simplifies verify() a lot, which is what we want
+to avoid this kind of issue in the future.
+
+Signed-off-by: Luiz Capitulino <luizcap@redhat.com>
 ---
- lib/tst_tmpdir.c | 119 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 111 insertions(+), 8 deletions(-)
+ testcases/kernel/mem/ksm/ksm_test.h | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 6ed2367b9..7bd55022d 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -102,6 +102,7 @@ static char test_start_work_dir[PATH_MAX];
- extern futex_t *tst_futexes;
- 
- static int rmobj(const char *obj, char **errmsg);
-+static int rmobjat(int dir_fd, const char *obj, char **errmsg);
- 
- int tst_tmpdir_created(void)
+diff --git a/testcases/kernel/mem/ksm/ksm_test.h b/testcases/kernel/mem/ksm/ksm_test.h
+index 0db759d5a..cbad147d4 100644
+--- a/testcases/kernel/mem/ksm/ksm_test.h
++++ b/testcases/kernel/mem/ksm/ksm_test.h
+@@ -74,22 +74,15 @@ static inline void verify(char **memory, char value, int proc,
+ 		    int start, int end, int start2, int end2)
  {
-@@ -149,8 +150,8 @@ static int purge_dir(const char *path, char **errptr)
- 	int ret_val = 0;
- 	DIR *dir;
- 	struct dirent *dir_ent;
--	char dirobj[PATH_MAX];
- 	static char err_msg[PATH_MAX + 1280];
-+	int dir_fd = -1;
+ 	int i, j;
+-	void *s = NULL;
+-
+-	s = SAFE_MALLOC((end - start) * (end2 - start2));
  
- 	/* Do NOT perform the request if the directory is "/" */
- 	if (!strcmp(path, "/")) {
-@@ -167,7 +168,7 @@ static int purge_dir(const char *path, char **errptr)
- 	/* Open the directory to get access to what is in it */
- 	if (!(dir = opendir(path))) {
- 		if (errptr) {
--			sprintf(err_msg,
-+			snprintf(err_msg, sizeof(err_msg),
- 				"Cannot open directory %s; errno=%d: %s",
- 				path, errno, tst_strerrno(errno));
- 			*errptr = err_msg;
-@@ -175,6 +176,18 @@ static int purge_dir(const char *path, char **errptr)
- 		return -1;
- 	}
- 
-+	dir_fd = dirfd(dir);
-+	if (dir_fd == -1) {
-+		closedir(dir);
-+		if (errptr) {
-+			snprintf(err_msg, sizeof(err_msg),
-+				"Cannot get file descriptor for directory %s; errno=%d: %s",
-+				path, errno, tst_strerrno(errno));
-+			*errptr = err_msg;
-+		}
-+		return -1;
-+	}
+ 	tst_res(TINFO, "child %d verifies memory content.", proc);
+-	memset(s, value, (end - start) * (end2 - start2));
+-	if (memcmp(memory[start], s, (end - start) * (end2 - start2))
+-	    != 0)
+-		for (j = start; j < end; j++)
+-			for (i = start2; i < end2; i++)
+-				if (memory[j][i] != value)
+-					tst_res(TFAIL, "child %d has %c at "
+-						 "%d,%d,%d.",
+-						 proc, memory[j][i], proc,
+-						 j, i);
+-	free(s);
 +
- 	/* Loop through the entries in the directory, removing each one */
- 	for (dir_ent = readdir(dir); dir_ent; dir_ent = readdir(dir)) {
- 		/* Don't remove "." or ".." */
-@@ -183,8 +196,57 @@ static int purge_dir(const char *path, char **errptr)
- 			continue;
- 
- 		/* Recursively remove the current entry */
--		sprintf(dirobj, "%s/%s", path, dir_ent->d_name);
--		if (rmobj(dirobj, errptr) != 0)
-+		if (rmobjat(dir_fd, dir_ent->d_name, errptr) != 0)
-+			ret_val = -1;
-+	}
-+
-+	closedir(dir);
-+	return ret_val;
-+}
-+
-+static int purge_dirat(int dir_fd, const char *path, char **errptr)
-+{
-+	int ret_val = 0;
-+	DIR *dir;
-+	struct dirent *dir_ent;
-+	static char err_msg[PATH_MAX + 1280];
-+	int subdir_fd;
-+
-+	errno = 0;
-+
-+	/* Open the subdirectory using openat */
-+	subdir_fd = openat(dir_fd, path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
-+	if (subdir_fd < 0) {
-+		if (errptr) {
-+			snprintf(err_msg, sizeof(err_msg),
-+				 "Cannot open subdirectory %s (via fd %d); errno=%d: %s",
-+				 path, dir_fd, errno, tst_strerrno(errno));
-+			*errptr = err_msg;
-+		}
-+		return -1;
-+	}
-+
-+	dir = fdopendir(subdir_fd);
-+	if (!dir) {
-+		if (errptr) {
-+			snprintf(err_msg, sizeof(err_msg),
-+				 "Cannot open directory stream for %s (via fd %d); errno=%d: %s",
-+				 path, dir_fd, errno, tst_strerrno(errno));
-+			*errptr = err_msg;
-+		}
-+		close(subdir_fd);
-+		return -1;
-+	}
-+
-+	/* Loop through the entries in the directory, removing each one */
-+	for (dir_ent = readdir(dir); dir_ent; dir_ent = readdir(dir)) {
-+		/* Don't remove "." or ".." */
-+		if (!strcmp(dir_ent->d_name, ".")
-+		    || !strcmp(dir_ent->d_name, ".."))
-+			continue;
-+
-+		/* Recursively remove the current entry */
-+		if (rmobjat(subdir_fd, dir_ent->d_name, errptr) != 0)
- 			ret_val = -1;
- 	}
- 
-@@ -212,7 +274,7 @@ static int rmobj(const char *obj, char **errmsg)
- 		/* Get the link count, now that all the entries have been removed */
- 		if (lstat(obj, &statbuf) < 0) {
- 			if (errmsg != NULL) {
--				sprintf(err_msg,
-+				snprintf(err_msg, sizeof(err_msg),
- 					"lstat(%s) failed; errno=%d: %s", obj,
- 					errno, tst_strerrno(errno));
- 				*errmsg = err_msg;
-@@ -225,7 +287,7 @@ static int rmobj(const char *obj, char **errmsg)
- 			/* The directory is linked; unlink() must be used */
- 			if (unlink(obj) < 0) {
- 				if (errmsg != NULL) {
--					sprintf(err_msg,
-+					snprintf(err_msg, sizeof(err_msg),
- 						"unlink(%s) failed; errno=%d: %s",
- 						obj, errno, tst_strerrno(errno));
- 					*errmsg = err_msg;
-@@ -236,7 +298,7 @@ static int rmobj(const char *obj, char **errmsg)
- 			/* The directory is not linked; remove() can be used */
- 			if (remove(obj) < 0) {
- 				if (errmsg != NULL) {
--					sprintf(err_msg,
-+					snprintf(err_msg, sizeof(err_msg),
- 						"remove(%s) failed; errno=%d: %s",
- 						obj, errno, tst_strerrno(errno));
- 					*errmsg = err_msg;
-@@ -247,7 +309,7 @@ static int rmobj(const char *obj, char **errmsg)
- 	} else {
- 		if (unlink(obj) < 0) {
- 			if (errmsg != NULL) {
--				sprintf(err_msg,
-+				snprintf(err_msg, sizeof(err_msg),
- 					"unlink(%s) failed; errno=%d: %s", obj,
- 					errno, tst_strerrno(errno));
- 				*errmsg = err_msg;
-@@ -259,6 +321,47 @@ static int rmobj(const char *obj, char **errmsg)
- 	return 0;
++	for (j = start; j < end; j++)
++		for (i = start2; i < end2; i++)
++			if (memory[j][i] != value)
++				tst_res(TFAIL, "child %d has %c at "
++					"%d,%d,%d.",
++					proc, memory[j][i], proc, j, i);
  }
  
-+static int rmobjat(int dir_fd, const char *obj, char **errmsg)
-+{
-+	int ret_val = 0;
-+	struct stat statbuf;
-+	static char err_msg[PATH_MAX + 1280];
-+	int fd;
-+
-+	fd = openat(dir_fd, obj, O_DIRECTORY | O_NOFOLLOW);
-+	if (fd >= 0) {
-+		close(fd);
-+		ret_val = purge_dirat(dir_fd, obj, errmsg);
-+
-+		/* If there were problems removing an entry, don't attempt to
-+		   remove the directory itself */
-+		if (ret_val == -1)
-+			return -1;
-+
-+		if (unlinkat(dir_fd, obj, AT_REMOVEDIR) < 0) {
-+			if (errmsg != NULL) {
-+				snprintf(err_msg, sizeof(err_msg),
-+						"remove(%s) failed; errno=%d: %s",
-+						obj, errno, tst_strerrno(errno));
-+				*errmsg = err_msg;
-+			}
-+			return -1;
-+		}
-+	} else {
-+		if (unlinkat(dir_fd, obj, 0) < 0) {
-+			if (errmsg != NULL) {
-+				snprintf(err_msg, sizeof(err_msg),
-+					"unlinkat(%s) failed; errno=%d: %s", obj,
-+					errno, tst_strerrno(errno));
-+				*errmsg = err_msg;
-+			}
-+			return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- void tst_tmpdir(void)
- {
- 	char template[PATH_MAX];
+ struct ksm_merge_data {
 -- 
 2.49.0
 
