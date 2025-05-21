@@ -4,74 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3232C54E65
-	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 08:29:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFCE7C2D0CD
+	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 08:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747816162; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=PauY9pGHkrWw/d5caSzbPllcw3etaZpyF+au4kptcUI=;
- b=BTgpuT7nOKw377t51WCq4eCWnwnjlpKW6ydnS1HJ2hB1AFmKyuN9VF7e5nFX/oVQ790/E
- yfS4hmu1iJPMwPQA7pGOTXSWl17tzt1hHVjisRK2yRCc3/YxUQjPOegxMtblcZwcRGZccl4
- knrT9BaJnQaZgmakFBIEqg77hEaWFC4=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1747816303; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=EG7Hl8L85JAX3gpxgMBBJw/LFHlxl3GjVS/A77POnps=;
+ b=oau3sLQeD21Cgv+Rb49q+Sx7Jr9CpZSpvCiF3nYPL8ynkFBiRRp7BMlTLkZnjWNew2YBt
+ uxDyp6BJIMpI0k8oEHq07H4rO/tkvDa/tsTbKnuZW8jTIX2z49LHIrd2qzY4srZRJwzigxN
+ lQZvaeMN5kvXrB86T0K8q96flLgSpFg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C97213CC7C0
-	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 10:29:22 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 1E5A53CC6DF
+	for <ltp@archiver.kernel.org>; Wed, 21 May 2025 10:31:43 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 055113CC772
- for <ltp@lists.linux.it>; Tue, 20 May 2025 22:24:54 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 368683CA55C
+ for <ltp@lists.linux.it>; Wed, 21 May 2025 10:31:21 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F23AB1A01096
- for <ltp@lists.linux.it>; Tue, 20 May 2025 22:24:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1747772690;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=Nri0cTkx1f2VEu4zYbiyLnc3whGLAim1j0hDUtur0gE=;
- b=Soq+OtNlAwxyiM9PzvOUdoeanOFk+Wht9kPQhFth7RX0BrtzZiCB6cTYUT1mUMgMn2+D3I
- Y8ke7iPQhLvkNrX8dRot6EGZySlPwlWxUwpbAiYt3S75iukQhu5XAJ8Gr2pRMAd0DI9OGk
- 5xDdVGRbZ2RdxC62mMoBeojXz+Op+2A=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-619-9EmgJM3nO3OUMmnYMb_psg-1; Tue,
- 20 May 2025 16:24:49 -0400
-X-MC-Unique: 9EmgJM3nO3OUMmnYMb_psg-1
-X-Mimecast-MFC-AGG-ID: 9EmgJM3nO3OUMmnYMb_psg_1747772689
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 400061800446
- for <ltp@lists.linux.it>; Tue, 20 May 2025 20:24:48 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.80.14])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id A46C719560AD
- for <ltp@lists.linux.it>; Tue, 20 May 2025 20:24:47 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 20 May 2025 16:24:29 -0400
-Message-ID: <20250520202429.577890-1-luizcap@redhat.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 308B820007A
+ for <ltp@lists.linux.it>; Wed, 21 May 2025 10:31:20 +0200 (CEST)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-43ede096d73so47549485e9.2
+ for <ltp@lists.linux.it>; Wed, 21 May 2025 01:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1747816279; x=1748421079; darn=lists.linux.it;
+ h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+ :date:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=KbL9R96QqqjEY0ApcAxYwo9d+tIUCLFWQs7lav+vIRk=;
+ b=UyJ0khHflO3ecNWrTLZ1rXgwGGpL7iwkNW5kDszsuizPoEDmpDFEsiTUGgw/jrluGA
+ dZ7+He5w6kmUxli4XOK9V/eHCIYGdROBL6t/Z2iNVnDbRfoiowsmFteZ8Z0M3JmuMQBw
+ +c0EmGYh6A1N7fLBGgHZhcyi49QmJLRCpKooq6YpMKqoe8n5NODAzp7/FsumGO4M5vT+
+ 8RVARrVsFeb9qSzu6jq4p+GltDg+eo+a5Lw9l5vD72aS5kRMFVvdW4OoyjvdFnoi4b/J
+ EqKZ9Dv56bKvVf6XaE/Mq1x+kfgVTRAh+z7uhNRI5eFj62xBhGHs/0NZl8a/BKRS/DYl
+ i+Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1747816279; x=1748421079;
+ h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+ :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=KbL9R96QqqjEY0ApcAxYwo9d+tIUCLFWQs7lav+vIRk=;
+ b=R+Zwr2d7mUtVspQbpsW/dcQ0PZ1elClwHpK61UiZg4Ay6CTPBuu04UmBU0kCxLaDa1
+ eakEHLYgwUsJ+K43AoNYa7ctQKQXByoVHJ9mGfRqSuUGaWpHYKrysNP2+EA7t1CcrKTv
+ f6XuqlPrCB1ic2EAdttjotpjassCZZZBP4ORafFSFXSE6f0aeWF37k06Kz/3QOjjtiuk
+ xRzr46uOVhc86Wftyb2yOkVp8IXAwOYgv/ioYm3dDlhYQks4WxoUETuUdzaacVEUlkhv
+ chIU0rXi3i8P8B6oGwsXWI3Z2P+2HfM52+ausyMwh7gLNSNUDG4C2pLoFhcgu2tEEIVs
+ NWCw==
+X-Gm-Message-State: AOJu0YxqYR8WRyR4D1jOkouMYWtPOkjm8Eof+ZKgMxdSQT9TSeFfzM24
+ j5D0rSZ+80fKRQ3cglFx/2lkOWetHsCeDRylveLNR6okXmAqyQ6f3aTMovVM3OIVu+viqtzIp6c
+ BSNoS
+X-Gm-Gg: ASbGncvxBKjv1BRFGJ5fCAx0ZQYvtuYIn5aR6B2Ba3v9EH6VMTa7M0283Evz4hSlASS
+ afbm8x2aGY/ODNRXDEypbH4jtgqn6ZnRNQWfZHgp8h61ij92Acs3qNbHXK3EvAChT60rzVYmFvi
+ LoOJHTq1VAesAsR/H5DzvGS7WqqwU/iJh/iiap1iEbiRNuX4cKWGrgVBVOxDcEbS04ps95aF0OL
+ iJu8w6zp17gitL8bgoP/4A+OljgqAUSgCWnRiER6g+/zN0DL5BYfbTW2ls0MeV+99bM9ra2iLOd
+ vzdYoJSsA7dNWOrxegWAAwWRW9q/ERJDVzXx73Q=
+X-Google-Smtp-Source: AGHT+IG7ICckZNLbhyf39agAeh3O5NEpeZy88jzxeEsZUE5sDwWSJznyJLRchUu+24cTcwzBON+L7Q==
+X-Received: by 2002:a05:6000:186d:b0:3a3:6b0c:a8a3 with SMTP id
+ ffacd0b85a97d-3a36b0ca9b1mr10445667f8f.17.1747816279263; 
+ Wed, 21 May 2025 01:31:19 -0700 (PDT)
+Received: from localhost ([177.45.162.169])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ada2fe7eead31-4dfa66c95cdsm9207503137.12.2025.05.21.01.31.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 21 May 2025 01:31:18 -0700 (PDT)
+Date: Wed, 21 May 2025 05:31:12 -0300
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: QBKnU4J1R4gwW5Pv_msDaorWz6-UpSJA4Vtcaf_1mrw_1747772689
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+Message-Id: <20250521-fixes-msgstress01-v3-1-5d82167cb3e5@suse.com>
+X-B4-Tracking: v=1; b=H4sIAE+PLWgC/4WOOQ7CMBRErxK5xuAlVggV90AUXn4SF7GRf7BAU
+ e6OnYoKypHmvZmVICQPSC7NShJkjz6GEuShIXbSYQTqXclEMKGY4oIO/gVIZxxxSYDIOG256iw
+ Y1Rp5JoV7JNhLBbvdSzYagZqkg52qKSY/+nCaNS6Qan/yuMT03i9kXqlfa5lTTp2Uaugsl9yyK
+ z4RjjbOpI5l8VcgiqDt3dDJ3vXS6i/Btm0ff32jlhIBAAA=
+X-Change-ID: 20250512-fixes-msgstress01-4157ceb54b38
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1805; i=rbm@suse.com;
+ h=from:subject:message-id; bh=zDYz6odJUogkfxSJiWzbP8sVgz3qMJPGyNLJkEDeNao=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBoLY9REVVKxSFUVPgmVVTlWFuGZh8yBRNBFnjLe
+ sNAEcvVp8aJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaC2PUQAKCRDJC4p8Y4ZY
+ pm/kD/9ip8m1nztwtZ7ZtsTgFOpy2ITsOQ7OroXdM0DdYN18AnJaSzAV1aWeze9crXDbEyhGZS/
+ YVGuTeQrwbqVwdr0/eFOyXHen9k8xdzUEDoLBBbq/ZFcbvH23KxXguRRjdMAZbes2s1J4oxpF6R
+ f7Z+diJjvmTajtZY7iWPEFveyI4WctTU7fwP+uDBwNIEEeEvxBkWCTcQpPHcoeu31YmYPe35P65
+ hL0wWceGevOZhoWJwz/8fItO8NXPNcR3QOH++c2eVRkzdSoPSXeCkoGN/tGMlDbEZfx7sMWCzlv
+ 8PD9ZqqXmPpttowsmzpprg39j1kPUCqF+Zlp06ld0fq6t9U7dcGtof9kNHu6jUxdP0EXB1TG1Jm
+ stDriqoMun1L7sHSWhNuqyQYiC/Mzbo88wdu3XdAbAsyv0s4uIcaXgDCgJkdxdqae9/JVZrRvZy
+ zbIQdTzpZTZe44kaeEXkNYNVqlQexf50UKgt5zLt8A4H+y2mHysPuHIqyL01kkJ6NIIAWTqLNSm
+ mE2cauORfecIm4ZLjVYQYFDaShijGZ1+p40Ab74p0ojrRRN5XzfCX83hNRMdX9r4BblP37gPqvR
+ Gy58/BeCtGq1LjHZAKtSjQ7Ilkh+eXGU2aIh430SqS6jr0vi4l4KIxGIvptC0uf9z1ODZo87xwc
+ grrp4YbD4Qv4zBg==
+X-Developer-Key: i=rbm@suse.com; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 21 May 2025 10:29:00 +0200
-Subject: [LTP] [PATCH] ksm: fix segfault on s390
+Subject: [LTP] [PATCH v3] syscalls/msgstress01: Set upper bound for
+ num_messages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,119 +116,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Luiz Capitulino via ltp <ltp@lists.linux.it>
-Reply-To: Luiz Capitulino <luizcap@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
+Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Cc: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Recently, we started seeing the following segfault when running ksm01
-and ksm02 tests on an s390 KSM guest:
-
-"""
-[  119.302817] User process fault: interruption code 0011 ilc:3 in libc.so.6[b14ae,3ff91500000+1c9000]
-[  119.302824] Failing address: 000003ff91400000 TEID: 000003ff91400800
-[  119.302826] Fault in primary space mode while using user ASCE.
-[  119.302828] AS:0000000084bec1c7 R3:00000000824cc007 S:0000000081a28001 P:0000000000000400
-[  119.302833] CPU: 0 UID: 0 PID: 5578 Comm: ksm01 Kdump: loaded Not tainted 6.15.0-rc6+ #8 NONE
-[  119.302837] Hardware name: IBM 3931 LA1 400 (KVM/Linux)
-[  119.302839] User PSW : 0705200180000000 000003ff915b14ae
-[  119.302841]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:1 AS:0 CC:2 PM:0 RI:0 EA:3
-[  119.302843] User GPRS: cccccccccccccccd 000000000007efff 000003ff91400000 000003ff814ff010
-[  119.302845]            0000000007ffffff 0000000000000000 0000000000000000 000003ff00000000
-[  119.302847]            0000000000000063 0000000000100000 00000000023db500 0000000008000000
-[  119.302848]            0000000000000063 0000000000000080 00000000010066da 000003ffd7777e20
-[  119.302855] User Code: 000003ff915b149e: a784ffee            brc     8,000003ff915b147a
-                          000003ff915b14a2: e31032000036        pfd     1,512(%r3)
-                         #000003ff915b14a8: e31022000036        pfd     1,512(%r2)
-                         >000003ff915b14ae: d5ff30002000        clc     0(256,%r3),0(%r2)
-                          000003ff915b14b4: a784ffef            brc     8,000003ff915b1492
-                          000003ff915b14b8: b2220020            ipm     %r2
-                          000003ff915b14bc: eb220022000d        sllg    %r2,%r2,34
-                          000003ff915b14c2: eb22003e000a        srag    %r2,%r2,62
-[  119.302867] Last Breaking-Event-Address:
-[  119.302868]  [<000003ff915b14b4>] libc.so.6[b14b4,3ff91500000+1c9000]
-"""
-
-This segfault is triggered by the memcmp() call in verify():
-
-"""
-memcmp(memory[start], s, (end - start) * (end2 - start2)
-"""
-
-In the default case, this call checks if the memory area starting in
-memory[0] (since start=0 by default) matches 's' for 128MB. IOW, this
-assumes that the memory areas in memory[] are contiguous. This is wrong,
-since create_ksm_child() allocates 128 individual areas of 1MB each. As,
-in this particular case, memory[0] happens to be the last 1MB area in
-the VMA created by the kernel, we hit a segault at the first byte beyond
-memory[0].
-
-Now, the question is how this has worked for so long and why it may still
-work on arm64 and x86 (even on s390 it ocassionaly works).
-
-For the s390 case, the reason is upstream kernel commit efa7df3e3bb5
-("mm: align larger anonymous mappings on THP boundaries"). Before this
-commit, the kernel would always map a library right after the memory[0]
-area in the process address space. This causes memcmp() to return
-non-zero when reading the first byte beyond memory[0], which in turn
-causes the nested loop in verify() to execute. The nested loop is correct
-(ie. it doesn't assume the memory areas in memory[] are contiguous) so
-the test doesn't fail. The mentioned upstream commit causes the first byte
-beyond memory[0] not to be mapped most of the time on s390, which may
-result in a segfault.
-
-Now, as it turns out on arm64 and x86 the kernel still maps a library right
-after memory[0] which causes the test to suceed as explained above (this
-can be easily verified by printing the return value for memcmp()).
-
-This commit fixes verify() to do a byte-by-byte check on each individual
-memory area. This also simplifies verify() a lot, which is what we want
-to avoid this kind of issue in the future.
-
-Signed-off-by: Luiz Capitulino <luizcap@redhat.com>
----
- testcases/kernel/mem/ksm/ksm_test.h | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
-
-diff --git a/testcases/kernel/mem/ksm/ksm_test.h b/testcases/kernel/mem/ksm/ksm_test.h
-index 0db759d5a..cbad147d4 100644
---- a/testcases/kernel/mem/ksm/ksm_test.h
-+++ b/testcases/kernel/mem/ksm/ksm_test.h
-@@ -74,22 +74,15 @@ static inline void verify(char **memory, char value, int proc,
- 		    int start, int end, int start2, int end2)
- {
- 	int i, j;
--	void *s = NULL;
--
--	s = SAFE_MALLOC((end - start) * (end2 - start2));
- 
- 	tst_res(TINFO, "child %d verifies memory content.", proc);
--	memset(s, value, (end - start) * (end2 - start2));
--	if (memcmp(memory[start], s, (end - start) * (end2 - start2))
--	    != 0)
--		for (j = start; j < end; j++)
--			for (i = start2; i < end2; i++)
--				if (memory[j][i] != value)
--					tst_res(TFAIL, "child %d has %c at "
--						 "%d,%d,%d.",
--						 proc, memory[j][i], proc,
--						 j, i);
--	free(s);
-+
-+	for (j = start; j < end; j++)
-+		for (i = start2; i < end2; i++)
-+			if (memory[j][i] != value)
-+				tst_res(TFAIL, "child %d has %c at "
-+					"%d,%d,%d.",
-+					proc, memory[j][i], proc, j, i);
- }
- 
- struct ksm_merge_data {
--- 
-2.49.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClRoZSBtc2dzdHJlc3Mw
+MSB0ZXN0IGhhcyBhIHdvcmthcm91bmQgdG8gbGltaXQgdGhlIGFtb3VudCBvZiBwcm9jZXNzZXMg
+aXQKd2lsbCBzcGF3biwgYnV0IGl0IGlzIG9ubHkgdXNlZCBpZiB0aGUgb3B0aW9uIHN0cl9udW1f
+bWVzc2FnZXMgKC1uKSBpcwpwYXNzZWQuIFRoaXMgaXMga25vd24gdG8gYmUgcHJvYmxlbWF0aWMg
+aW4gbG93IG1lbW9yeSBTVVRzLCBzbyBtYWtlIHN1cmUKaXQncyB1c2VkLgoKU3VnZ2VzdGVkLWJ5
+OiBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+ClNpZ25lZC1vZmYtYnk6IFJpY2FyZG8g
+Qi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Ci0tLQpDaGFuZ2VzIGluIHYzOgotIFNpbXBsaWZ5
+IFRXQVJOfFRJTkZPIGNoZWNrCi0gTGluayB0byB2MjogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
+ci8yMDI1MDUxMi1maXhlcy1tc2dzdHJlc3MwMS12Mi0xLTQ5ZGY3MzlkOTNjYUBzdXNlLmNvbQoK
+Q2hhbmdlcyBpbiB2MjoKLSBQcmludCBhIG1lc3NhZ2UgaWYgbnVtX21lc3NhZ2VzIHZhbHVlIGlz
+IHJlZHVjZWQKLSBMaW5rIHRvIHYxOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjUwNTEy
+LWZpeGVzLW1zZ3N0cmVzczAxLXYxLTEtZDMzNWY3YzEzMWMwQHN1c2UuY29tCi0tLQogdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnc3RyZXNzL21zZ3N0cmVzczAxLmMgfCA2ICsrKysr
+KwogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3N0cmVzcy9tc2dzdHJlc3MwMS5jIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnc3RyZXNzL21zZ3N0cmVzczAxLmMKaW5kZXggYWU2Mzdl
+NWQ3YWQ4OWMxMjU3YzljY2UwMTQ1MTIyNDk3YzE5ZWU2NC4uMjJhMmMwZTdhYTUyYTM5NTZmNjIy
+MWZhMmQwOTk5MWI5ODcxZDQwZCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvbXNnc3RyZXNzL21zZ3N0cmVzczAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pcGMvbXNnc3RyZXNzL21zZ3N0cmVzczAxLmMKQEAgLTI3MSw2ICsyNzEsMTIgQEAgc3Rh
+dGljIHZvaWQgc2V0dXAodm9pZCkKIAlpZiAodHN0X3BhcnNlX2ludChzdHJfbnVtX21lc3NhZ2Vz
+LCAmbnVtX21lc3NhZ2VzLCAxLCBhdmFpbF9tc2cpKQogCQl0c3RfYnJrKFRCUk9LLCAiSW52YWxp
+ZCBudW1iZXIgb2YgbWVzc2FnZXMgJyVzJyIsIHN0cl9udW1fbWVzc2FnZXMpOwogCisJaWYgKG51
+bV9tZXNzYWdlcyA+IGF2YWlsX21zZykgeworCQl0c3RfcmVzKGF2YWlsX21zZyA8IG51bV9tZXNz
+YWdlcyAvIDIgPyBUV0FSTiA6IFRJTkZPLAorCQkJIk51bWJlciBvZiBtZXNzYWdlcyByZWR1Y2Vk
+IHRvICVkIiwgYXZhaWxfbXNnKTsKKwkJbnVtX21lc3NhZ2VzID0gYXZhaWxfbXNnOworCX0KKwog
+CWlmICh0c3RfcGFyc2VfaW50KHN0cl9udW1faXRlcmF0aW9ucywgJm51bV9pdGVyYXRpb25zLCAx
+LCBNQVhOUkVQUykpCiAJCXRzdF9icmsoVEJST0ssICJJbnZhbGlkIG51bWJlciBvZiBtZXNzYWdl
+cyBpdGVyYXRpb25zICclcyciLCBzdHJfbnVtX2l0ZXJhdGlvbnMpOwogCgotLS0KYmFzZS1jb21t
+aXQ6IDVkOGNiNWEzZWYzNzQ5ZWIyNmVlMjJkOTZjOTY1NGJmZGU0MzAzMGYKY2hhbmdlLWlkOiAy
+MDI1MDUxMi1maXhlcy1tc2dzdHJlc3MwMS00MTU3Y2ViNTRiMzgKCkJlc3QgcmVnYXJkcywKLS0g
+ClJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+CgoKLS0gCk1haWxpbmcgbGlzdCBp
+bmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
