@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2937C54E90
-	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 14:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747925398; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=w94gYd0IiUacnfWbGZEE5BK+mITZ/p+jfdmaxSgnR/U=;
- b=DyKSJN4dwRhtzvX9sFa/wrLoVpQQa2u8ts84hnfiLrh7L6HKBiAJB5+nu7kLXyCxmVgoK
- wz1WHYnGRJUmcpSFH7MY2TTLLJmoY6YxcvfB1ElUk/TOV4n6kNmaJ3acvP1gzVyUYBtxgLd
- 4OXUifjm/bagIOSnhGPDMLPbxvF0mtw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14FC7C54ED0
+	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 15:21:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CA62C3CC872
-	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 16:49:58 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6A1E83CC88C
+	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 17:21:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F29403CC85D
- for <ltp@lists.linux.it>; Thu, 22 May 2025 16:49:37 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id AF6553C9A6D
+ for <ltp@lists.linux.it>; Thu, 22 May 2025 17:21:30 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 56AC36002AE
- for <ltp@lists.linux.it>; Thu, 22 May 2025 16:49:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1747925375;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TRG9PwnO3pyaPP3XFBkB/qV0N+o3ns/lWyQrG7120cw=;
- b=Bpfrf8CBGFH4EaMPZnNJSyzLFiZQBNPfVM8gU5lo7Q387TkM2Goin2gLuWKawTHZVZPtzV
- szxKe/LT1MLq/PHor0ZR+TSMAX9PrvTRbeVF/GnCqwGLWJt2SZo4opiraSYMOuzrQ8Qe1H
- lwyLLOngpJDmXpaJ7ZstP8Iy17YctsA=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-629-yMcA_VoPNyygUzvRxUZizw-1; Thu, 22 May 2025 10:49:32 -0400
-X-MC-Unique: yMcA_VoPNyygUzvRxUZizw-1
-X-Mimecast-MFC-AGG-ID: yMcA_VoPNyygUzvRxUZizw_1747925371
-Received: by mail-pl1-f199.google.com with SMTP id
- d9443c01a7336-2326a6d667eso33223915ad.1
- for <ltp@lists.linux.it>; Thu, 22 May 2025 07:49:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747925371; x=1748530171;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=TRG9PwnO3pyaPP3XFBkB/qV0N+o3ns/lWyQrG7120cw=;
- b=wIIAVc2zKitWsNNlJfiybUKUkKZmLphdAzV7/FYx76jUBMdGYFYkkh1kd6jgSJ5stj
- R5cI3RZIeDtng8XHfGKR6UiQeRXkgy+KPELdd76z7PA7GFHivoiiH3Gf8ug68KyS2ebT
- EZBfS8DJhta1PwyWSXKtZmQA3e+24Of0rXt11NTRYxXR6ZbeHk78XaMawoC/K5m9ssN1
- RXIftEkamzGUmV7DazH1XEmw5Kle9rXg45YfvGZiGpgP5f7f87HWW2v/O964cRbzNXZG
- 27z440V5lGI4wIE3XP6pL5jOpa/zQ2RW8Uf0aP3Xq2qWWYJBor+Di2IEDX5e+aBGubUy
- Jiiw==
-X-Gm-Message-State: AOJu0YxZwjSZFP7vP4UpD+iDH8WoCXYwmmy5lOytVgWKDRfsPyWPOeyL
- L8T8mn4gw+SN3hrOEEWDU5VK7rIRq+99uxO8ohHhuUzLwU14NwVsE2RdeDDO3p/7Z11zwleUg9i
- mtcKriaw91hPPd5YHTlvbd7SwlSGpr887dk6unjCZ7gbXOLv2UlBrYfy5s+4VqpgM/etMfR5EbE
- dSaJ7jh/eE9T3zN1x7TSD88sNnME8=
-X-Gm-Gg: ASbGncvT2o4//JYjRGtgJkObB+1Zu46ix6WRfcKXUqfRzl06RiU1+b9EO49xhr65CzF
- m4zlF5odhvEuN23tW6Wp14yRGTnkUdWhMoz+RIiWYJEjS93e/11ZN/bW6Lv3sp3FwJgGGzQ==
-X-Received: by 2002:a17:903:183:b0:21f:4c8b:c4de with SMTP id
- d9443c01a7336-231d459a702mr330244575ad.42.1747925371121; 
- Thu, 22 May 2025 07:49:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGb0YkzD4rgXgCm0oexfqQ907JOBgQhByoRBpbyWMXKdZI0XrPHhwYXwVjuiErnVhvXP7+EGkxtCbAhf/se0AE=
-X-Received: by 2002:a17:903:183:b0:21f:4c8b:c4de with SMTP id
- d9443c01a7336-231d459a702mr330244365ad.42.1747925370775; Thu, 22 May 2025
- 07:49:30 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BFED56008FD
+ for <ltp@lists.linux.it>; Thu, 22 May 2025 17:21:29 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54MDnRe4011149;
+ Thu, 22 May 2025 15:21:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=FA+8Sp+U9CNX27S/5NyOtU6gMiJhwzQEvLIStiyk0
+ d4=; b=Kzwh4T+e9FBHc79AxhDwKehscw4FWC/ygE0OR0TEH8Nd5ivLC3110Rfo5
+ qkhPSuRfyDzA42FTdD0QLDI4MdntMCr6nJ4c+1aFco7a+jQ3CX90lOW7s6uHzr9F
+ 63ZYeolNhI5/MHNtHDQsw0XVzGmVxs7dLUlpb+NXD3dVg64biEpaNoD8WuR4PTV+
+ x4ouKiOqZKWhZmekdZHvYOPwCxXz2HxW+/2IFLb0L2bKK0oiuz90dJZuBBlMohI5
+ RD/Wtyrb9sMAXUJZchAkFX/MjP+rvbHoy9Y7/BtQQtVjbcv7/VeZxwscjbqDpMGp
+ 62dl1uxtOA1Yz2gqx+QBv5ySMvjTA==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46t5530ewy-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 22 May 2025 15:21:27 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54MDxuPC032070;
+ Thu, 22 May 2025 15:21:26 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 46rwnmj07d-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 22 May 2025 15:21:26 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
+ [10.20.54.102])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 54MFLNwA53412190
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 22 May 2025 15:21:23 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E752520043;
+ Thu, 22 May 2025 15:21:22 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A079920040;
+ Thu, 22 May 2025 15:21:22 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
+ [9.111.61.232]) by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 22 May 2025 15:21:22 +0000 (GMT)
+From: Jan Polensky <japo@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu, 22 May 2025 17:21:18 +0200
+Message-ID: <20250522152118.35942-1-japo@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-References: <20250520202429.577890-1-luizcap@redhat.com>
- <CAEemH2cdN6mcYJk06ksp7nyzz5qOmmRM=sR_SAqLtquD=8ya3g@mail.gmail.com>
- <ae7ee313-21f4-4f82-b522-4028947c8a1c@redhat.com>
- <CAEemH2dccNNvuEE_GNLxd3eR1_uiVX+UhmFBaNXTPU7sRYg29w@mail.gmail.com>
- <CAEemH2f33e0287pfngF+dczQ_AS0Yvt6YxNQOnrpSGHuqODRbQ@mail.gmail.com>
- <72dcba43-6d27-40e9-a110-3db7990e58d1@redhat.com>
-In-Reply-To: <72dcba43-6d27-40e9-a110-3db7990e58d1@redhat.com>
-Date: Thu, 22 May 2025 22:49:18 +0800
-X-Gm-Features: AX0GCFtq3wg-E8RmfnrT_IN1LyFm-nCQgE4PlK9VPQ0TTzGmFmESZq2RaxCWy1I
-Message-ID: <CAEemH2ewJYavkogUsfMXqEbt6=V+fndxF5U00Rw7JZ1RbkebsQ@mail.gmail.com>
-To: Luiz Capitulino <luizcap@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: bGVOExfb6mqmhfjQGrqYDGQFzwDCEZ87vGeUyCc6nE8_1747925371
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ttHQtFBQ9Q9YvFlSPl8lGXGeYxCLTWFC
+X-Proofpoint-ORIG-GUID: ttHQtFBQ9Q9YvFlSPl8lGXGeYxCLTWFC
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIyMDE1NCBTYWx0ZWRfX53FjXK5jj+5v
+ vXv4kwzNOeSXULCbqSVd/mxdGgecf0sUUS8CMzzQn+fESaq08nV1+Rfw63oV7MQKLEnwcjbwwjm
+ nk7PIwA2wGT6gEDlwwbWdNKyo3MtRS8w7TuwRc2XsylaxOR2ytnJVnBqNGFRSYqta38UrO3Qw4k
+ pUmtlNdT3QrvWQlNYiEmOUOrDE+Md3HZo33lgZIZ7QCtzzIm/TDrIQ37F+llgBchHVduNHOaQyv
+ gg6SB4aN13RFaxtusmuGb1+fhsdULG/YHTYSoRrc1FwbWocWplfBrlkdwouD67NyL32wbCVIBBg
+ MzPb8kY4RvUVX9g71GhogH7f5Z2rD0E9qq54Bzn4P3gTbRZijGWFovksC79TVmKiZFFuyuWvEFi
+ tK9vKiIVwyAz7VuUP4IDgIhmxvLKHB3e877WvfbAFgKwfQ2sBnEPceEZjDkaRZpbOywdF2ZW
+X-Authority-Analysis: v=2.4 cv=BOmzrEQG c=1 sm=1 tr=0 ts=682f40f7 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=dt9VzEwgFbYA:10 a=mDV3o1hIAAAA:8 a=VnNF1IyMAAAA:8 a=9x3qNozUb_5_nAeUTvYA:9
+ a=Ww0i4ybIxbYA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-22_07,2025-05-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxlogscore=999
+ priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 lowpriorityscore=0 mlxscore=0
+ adultscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505220154
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ksm: fix segfault on s390
+Subject: [LTP] [PATCH v2 1/1] overcommit_memory: Disable optimization for
+ malloc to prevent false positives
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,43 +105,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Luiz Capitulino <luizcap@redhat.com> wrote:
+When compiling with GCC 15.1.1+, the default-enabled -fmalloc-dce=2 and
+-fallocation-dce under -O2 can eliminate the entire malloc block because its
+result is only compared to NULL and/or passed to free().
 
-> Just to make sure I understand: you measured total test run-time, correct?
-> How many times did you run it?
+This leads to false positives in tests that expect malloc() to fail under memory
+pressure, as the allocation is optimized away.
 
-Yes, I measure the ksm01 test total time, more than 10 times, each time
-checking in per-block is faster than per-byte method 1 second.
+Disable this optimization for the affected function to preserve the intended
+test behavior.
 
-If we test with 10 cycles, we still get similar results. So, I would keep this
-as a open question to see if others care about the 1 second (like me).
+References: https://gcc.gnu.org/onlinedocs/gcc-15.1.0/gcc/Optimize-Options.html
+Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+---
+Changes since v1 (thanks to Cyril Hrubis):
+- Use LTP_VAR_USED macro to prevent GCC from optimizing away malloc().
 
-Per-block:
-# time ./ksm01 -i 10
-...
-real 0m58.723s
-user 0m10.530s
-sys 0m13.973s
+ testcases/kernel/mem/tunable/overcommit_memory.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Per-byte:
-# time ./ksm01 -i 10
-...
-real 1m7.958s
-user 0m24.990s
-sys 0m14.016s
+diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+index b5beebbcd3c4..9b2cb479d5ee 100644
+--- a/testcases/kernel/mem/tunable/overcommit_memory.c
++++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -62,6 +62,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <limits.h>
++#include "tst_common.h"
+ #include "tst_test.h"
 
+ #define DEFAULT_OVER_RATIO	50L
+@@ -155,7 +156,7 @@ static int heavy_malloc(long size)
+ {
+ 	char *p;
 
--- 
-Regards,
-Li Wang
+-	p = malloc(size * TST_KB);
++	LTP_VAR_USED(p) = malloc(size * TST_KB);
+ 	if (p != NULL) {
+ 		tst_res(TINFO, "malloc %ld kB successfully", size);
+ 		free(p);
+--
+2.49.0
 
 
 -- 
