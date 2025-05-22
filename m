@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69D8FC54E65
-	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 14:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2937C54E90
+	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 14:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1747924618; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1747925398; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Zlzc22jLdI2Hm1B1705J3wV9Sk92GC+Yn+wxdtuZ+T8=;
- b=gf1WbdS+PMNKTKHFg2BAG5FIJC5Es7lvK6Pz5hmMFb9oVqUkrAMpe7LuGJkuQsf+ryySH
- WyNJaMmkb7eW8mcAZm0eKqOwGNP4BCnmlQoWmVCdvF5cNcyWFaiZ08JNVrOl9/YEg1g/oPO
- YsrVvMnyFcjqksBpW4GcZ3FU4NDcgxo=
+ bh=w94gYd0IiUacnfWbGZEE5BK+mITZ/p+jfdmaxSgnR/U=;
+ b=DyKSJN4dwRhtzvX9sFa/wrLoVpQQa2u8ts84hnfiLrh7L6HKBiAJB5+nu7kLXyCxmVgoK
+ wz1WHYnGRJUmcpSFH7MY2TTLLJmoY6YxcvfB1ElUk/TOV4n6kNmaJ3acvP1gzVyUYBtxgLd
+ 4OXUifjm/bagIOSnhGPDMLPbxvF0mtw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F7A13CC871
-	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 16:36:58 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id CA62C3CC872
+	for <ltp@archiver.kernel.org>; Thu, 22 May 2025 16:49:58 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 838D73C0880
- for <ltp@lists.linux.it>; Thu, 22 May 2025 16:36:36 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id F29403CC85D
+ for <ltp@lists.linux.it>; Thu, 22 May 2025 16:49:37 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 928DF600567
- for <ltp@lists.linux.it>; Thu, 22 May 2025 16:36:31 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 56AC36002AE
+ for <ltp@lists.linux.it>; Thu, 22 May 2025 16:49:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1747924590;
+ s=mimecast20190719; t=1747925375;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YFZ46KafMHzhebWhbuTRdfMVMmLuWDQmhl3O/HFkZe0=;
- b=h5Uf2KTs1/CuUUnoDD2e3ghznSkVdBRYsjs2AJsXBMZqgdImi6inn2dnHs5pl6cecerdS/
- rNQrNvaZf1t5Lyf3fADW23o4bs7e5WyphYZO+Lw9+tyYafoP9Sc+cZwnqQ1tp1iozn/inI
- 4xwKU+gzghBSCoNNi/c5+7FjU2NuM8o=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=TRG9PwnO3pyaPP3XFBkB/qV0N+o3ns/lWyQrG7120cw=;
+ b=Bpfrf8CBGFH4EaMPZnNJSyzLFiZQBNPfVM8gU5lo7Q387TkM2Goin2gLuWKawTHZVZPtzV
+ szxKe/LT1MLq/PHor0ZR+TSMAX9PrvTRbeVF/GnCqwGLWJt2SZo4opiraSYMOuzrQ8Qe1H
+ lwyLLOngpJDmXpaJ7ZstP8Iy17YctsA=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-1qLHHJRRPtum480e0EtQuQ-1; Thu, 22 May 2025 10:36:29 -0400
-X-MC-Unique: 1qLHHJRRPtum480e0EtQuQ-1
-X-Mimecast-MFC-AGG-ID: 1qLHHJRRPtum480e0EtQuQ_1747924588
-Received: by mail-pl1-f198.google.com with SMTP id
- d9443c01a7336-231e76f6eafso55689045ad.0
- for <ltp@lists.linux.it>; Thu, 22 May 2025 07:36:29 -0700 (PDT)
+ us-mta-629-yMcA_VoPNyygUzvRxUZizw-1; Thu, 22 May 2025 10:49:32 -0400
+X-MC-Unique: yMcA_VoPNyygUzvRxUZizw-1
+X-Mimecast-MFC-AGG-ID: yMcA_VoPNyygUzvRxUZizw_1747925371
+Received: by mail-pl1-f199.google.com with SMTP id
+ d9443c01a7336-2326a6d667eso33223915ad.1
+ for <ltp@lists.linux.it>; Thu, 22 May 2025 07:49:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1747924588; x=1748529388;
+ d=1e100.net; s=20230601; t=1747925371; x=1748530171;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=YFZ46KafMHzhebWhbuTRdfMVMmLuWDQmhl3O/HFkZe0=;
- b=hHO7GFLQsT5c2WXahflWApiRx2K5ayoBxI1xcTgfJ9OlFfaXzozTdgHHDdmYAqcEiY
- pQrZQSGQOuBmr/fYmE5jQp2of+H8ccADp/lPF1hRi9JlWU8ovUotO4LMoJG0w54zHppd
- t8+dJlI1Olx53rIKWtV10J+HUuqihBDM8xZ03xAeNyUJPF3ApM3kWAVCBTbt2CPbwfjF
- CgiLMPd5/Wlt5i1a/kaaFvleYyMwvyrujFIoE3khydTModY/3KlhKw4QEPpZvnc3obr4
- H/uwZBWPcx8w74yzRlxs/hThXKDy4JclpH4cQLtlpgR3/UlfZd1SxQh5wygN9F+uV2Ig
- TV/w==
-X-Gm-Message-State: AOJu0YwINwwSfxefUb0YitGro1Fs6U1xDcMk785SXcWm4KFr4P0EeJbc
- g1GuDBjm6PT1XISJTCyUwrxC9JJ9iCcVhEWDgFthzqAT31/Y5iJbwau2eId5ozpFZNZqLxQtJT5
- H6CYPYRcvwX9hgH4WCkhDcWXQuoNP68lcW8qn5+KSUPuV1uPZLNZGuawFjyQGGvclB/TwAsZ936
- UP391/HtOjWy/frQAmZylqfjXhLTA=
-X-Gm-Gg: ASbGncs1OoUrr6IOf69HEJoUrgV8RGNvmRZBpU7jCWurnL1XKTHekawvQfyXgaHQCBj
- Ovhr7GEawURbGK+sAT97CEQ3JgP96mFV+EaZkVYIaECXZ0Ya7JUklICwkFqpoPODF6Yiq6Q==
-X-Received: by 2002:a17:902:ce87:b0:215:b473:1dc9 with SMTP id
- d9443c01a7336-231de37ed18mr315160865ad.46.1747924588335; 
- Thu, 22 May 2025 07:36:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyvHy6nYtXG9nb+pI2b9VHKvuZGF2kv0HctHbWaSiOtvLsJHWCCfPYBCOY8iI3+/7lyb0/mRWyxmDgRvALpLw=
-X-Received: by 2002:a17:902:ce87:b0:215:b473:1dc9 with SMTP id
- d9443c01a7336-231de37ed18mr315160575ad.46.1747924587970; Thu, 22 May 2025
- 07:36:27 -0700 (PDT)
+ bh=TRG9PwnO3pyaPP3XFBkB/qV0N+o3ns/lWyQrG7120cw=;
+ b=wIIAVc2zKitWsNNlJfiybUKUkKZmLphdAzV7/FYx76jUBMdGYFYkkh1kd6jgSJ5stj
+ R5cI3RZIeDtng8XHfGKR6UiQeRXkgy+KPELdd76z7PA7GFHivoiiH3Gf8ug68KyS2ebT
+ EZBfS8DJhta1PwyWSXKtZmQA3e+24Of0rXt11NTRYxXR6ZbeHk78XaMawoC/K5m9ssN1
+ RXIftEkamzGUmV7DazH1XEmw5Kle9rXg45YfvGZiGpgP5f7f87HWW2v/O964cRbzNXZG
+ 27z440V5lGI4wIE3XP6pL5jOpa/zQ2RW8Uf0aP3Xq2qWWYJBor+Di2IEDX5e+aBGubUy
+ Jiiw==
+X-Gm-Message-State: AOJu0YxZwjSZFP7vP4UpD+iDH8WoCXYwmmy5lOytVgWKDRfsPyWPOeyL
+ L8T8mn4gw+SN3hrOEEWDU5VK7rIRq+99uxO8ohHhuUzLwU14NwVsE2RdeDDO3p/7Z11zwleUg9i
+ mtcKriaw91hPPd5YHTlvbd7SwlSGpr887dk6unjCZ7gbXOLv2UlBrYfy5s+4VqpgM/etMfR5EbE
+ dSaJ7jh/eE9T3zN1x7TSD88sNnME8=
+X-Gm-Gg: ASbGncvT2o4//JYjRGtgJkObB+1Zu46ix6WRfcKXUqfRzl06RiU1+b9EO49xhr65CzF
+ m4zlF5odhvEuN23tW6Wp14yRGTnkUdWhMoz+RIiWYJEjS93e/11ZN/bW6Lv3sp3FwJgGGzQ==
+X-Received: by 2002:a17:903:183:b0:21f:4c8b:c4de with SMTP id
+ d9443c01a7336-231d459a702mr330244575ad.42.1747925371121; 
+ Thu, 22 May 2025 07:49:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGb0YkzD4rgXgCm0oexfqQ907JOBgQhByoRBpbyWMXKdZI0XrPHhwYXwVjuiErnVhvXP7+EGkxtCbAhf/se0AE=
+X-Received: by 2002:a17:903:183:b0:21f:4c8b:c4de with SMTP id
+ d9443c01a7336-231d459a702mr330244365ad.42.1747925370775; Thu, 22 May 2025
+ 07:49:30 -0700 (PDT)
 MIME-Version: 1.0
 References: <20250520202429.577890-1-luizcap@redhat.com>
  <CAEemH2cdN6mcYJk06ksp7nyzz5qOmmRM=sR_SAqLtquD=8ya3g@mail.gmail.com>
@@ -84,12 +83,12 @@ References: <20250520202429.577890-1-luizcap@redhat.com>
  <CAEemH2f33e0287pfngF+dczQ_AS0Yvt6YxNQOnrpSGHuqODRbQ@mail.gmail.com>
  <72dcba43-6d27-40e9-a110-3db7990e58d1@redhat.com>
 In-Reply-To: <72dcba43-6d27-40e9-a110-3db7990e58d1@redhat.com>
-Date: Thu, 22 May 2025 22:36:15 +0800
-X-Gm-Features: AX0GCFsN-AKnu1vqt32ItKT7vo2cnutG_F7Km9jt0iPTvq2e3Kn8cfUPwqkwWro
-Message-ID: <CAEemH2dx1HFd1jxjtujA3JHAQBER4RrW_xiW0tS5xb5M2pkhiw@mail.gmail.com>
+Date: Thu, 22 May 2025 22:49:18 +0800
+X-Gm-Features: AX0GCFtq3wg-E8RmfnrT_IN1LyFm-nCQgE4PlK9VPQ0TTzGmFmESZq2RaxCWy1I
+Message-ID: <CAEemH2ewJYavkogUsfMXqEbt6=V+fndxF5U00Rw7JZ1RbkebsQ@mail.gmail.com>
 To: Luiz Capitulino <luizcap@redhat.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: mE4GdMyAeOlKWw5JLCENrpj5DEGV9F77dSJbMj1JjWw_1747924588
+X-Mimecast-MFC-PROC-ID: bGVOExfb6mqmhfjQGrqYDGQFzwDCEZ87vGeUyCc6nE8_1747925371
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
@@ -115,48 +114,29 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Luiz Capitulino <luizcap@redhat.com> wrote:
 
-> > I might be a bit too picky:). So I compared the two approaches on a
-> > 2 CPUs, KVM, x86_64 system:
-> >
-> > Per-block checking cost time:
-> >     real 0m5.862s
-> >     user 0m1.098s
-> >     sys 0m1.505s
-> >
-> > Per-byte checking cost time:
-> >    real    0m6.819s
-> >    user    0m2.498s
-> >    sys     0m1.495s
-> >
-> >  From the data, block-by-block checking can reduce the total execution
-> > time by about 14% and reduce CPU usage by more than 35%, especially
-> > in user-space calculations. This number may not be large, but considering
-> > that tests are frequently run in CI, I think it would be a good thing if we can
-> > reduce 1 second each time :).
->
 > Just to make sure I understand: you measured total test run-time, correct?
 > How many times did you run it?
->
-> In any case, I'm not sure a 1 second run-time (or even CPU utilization) matters
-> that much. You're running test code, you shouldn't expect otherwise unless you
-> hit a very bad case (say something taking several hours to complete).
->
-> The trade off is more complex code with bugs that can hide for 10+ years and
-> take developer time to debug. Also, higher memory utilization: 's' doubles
-> memory utilization per child only to do that check.
 
-Ture, that's why the problem not been find so many years!
+Yes, I measure the ksm01 test total time, more than 10 times, each time
+checking in per-block is faster than per-byte method 1 second.
 
->
-> So, I suggest we stick to the simpler code. Or, get it merged now (since it's
-> fixing a bug and possibly making the code _faster_) and then you can optimize
-> on top later if you like.
+If we test with 10 cycles, we still get similar results. So, I would keep this
+as a open question to see if others care about the 1 second (like me).
 
-Ok, sounds reasonable.
+Per-block:
+# time ./ksm01 -i 10
+...
+real 0m58.723s
+user 0m10.530s
+sys 0m13.973s
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Per-byte:
+# time ./ksm01 -i 10
+...
+real 1m7.958s
+user 0m24.990s
+sys 0m14.016s
 
-@Cyril, @Petr, I vote to merge this one (as it is) before our May release.
 
 -- 
 Regards,
